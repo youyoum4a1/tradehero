@@ -4,5 +4,24 @@
     <string name="app_name">TradeHero</string>
     <string name="action_settings">Settings</string>
     <string name="hello_world">Hello world!</string>
+    <string name="new_user">New User</string>
+    <string name="sign_in">Sign In</string>
+    <string name="facbook">Facebook</string>
+    <string name="linkedin">LinkedIn</string>
+    <string name="twiter">Twitter</string>
+    <string name="Signup_content">Sign up with:</string>
+    <string name="Signup_content1">or sign up with an</string>
+    <string name="Signup_content2">email address</string>
+    <string name="Signup_content3">We respect your privacy: we will never post to your feeds without your express permission.</string>
+    <string name="Signup_content4">Read our Terms of Service</string>
+    <string name="required">Required:</string>
+    <string name="emai_adds">Email Address</string>
+    <string name="pwd">Password</string>
+    <string name="confirm_pwd">Confirm Password</string>
+    <string name="display_name">Display Name</string>
+    <string name="optional">Optional</string>
+    <string name="first_name">First Name</string>
+    <string name="last_name">Last Name</string>
+   
 
 </resources>
