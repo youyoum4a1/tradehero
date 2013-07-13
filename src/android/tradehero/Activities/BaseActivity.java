@@ -39,7 +39,7 @@ public class BaseActivity extends Activity {
 							
 
 				timerToShiftActivity.cancel();
-				startActivity(new Intent(BaseActivity.this,Sign_in_Activity.class));
+				startActivity(new Intent(BaseActivity.this,WelcomeActivity.class));
 				finish();
 
 			}
