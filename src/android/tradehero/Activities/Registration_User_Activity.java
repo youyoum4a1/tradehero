@@ -53,9 +53,9 @@ public class Registration_User_Activity extends Activity implements OnClickListe
 		if(!TextUtils.isEmpty(email_id.getText().toString()) || !TextUtils.isEmpty(pwd.getText().toString())
 				|| !TextUtils.isEmpty(c_pwd.getText().toString()) || !TextUtils.isEmpty(disp_name.getText().toString())){
 			
-			if(){}else{
+			//if(){}else{
 				Constants.show_toast(this, "Enter a valid email address.");
-			}
+			//}
 			
 		}else{
 			Constants.show_toast(this, "Required Field should not left blank.");
