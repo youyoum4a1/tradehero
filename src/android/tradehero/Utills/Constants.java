@@ -10,8 +10,9 @@ public class Constants {
 	public static final int EMAIL_OPERATION=10003;
 	public static final int LOGIN_OPERATION=10004;
 	public static final int SIGNUP_OPERATION=10004;
-
-
+	//Get Result
+	public static final String GETRESULT="getResult";
+    //URL
 	public static final String BASE_API_URL= "https://www.tradehero.mobi/";
 	public static final String SIGN_UP_WITH_EMAIL_URL=BASE_API_URL+"api/SignupWithEmail";
 	public static final String SIGN_UP_WITH_SOCIAL_MEDIA_USER_URL=BASE_API_URL+"api/users";
@@ -40,7 +41,7 @@ public class Constants {
 	public static final String TH_CLIENT_VERSION="TH-Client-Version";
 	public static final String TH_CLIENT_VERSION_VALUE="TH-Client-Version";
 	public static final String TH_AUTHORIZATION="Authorization";
-
+	public static final String TH_FB_PREFIX="TH-Facebook";	
 	//SignUp FaceBook
 	public static final String FB_ACCESS_TOKEN="facebook_access_token";
 
