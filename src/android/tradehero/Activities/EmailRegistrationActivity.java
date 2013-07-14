@@ -29,6 +29,7 @@ import android.tradehero.Models.Request;
 import android.tradehero.Utills.Util;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnFocusChangeListener;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -37,7 +38,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-public class EmailRegistrationActivity extends Activity implements OnClickListener,RequestTaskCompleteListener{
+public class EmailRegistrationActivity extends Activity implements OnClickListener,RequestTaskCompleteListener,OnFocusChangeListener{
 
 	private EditText mEmailId,mPasword,mConfirmPassword,mDisplayName,mFirstName,mLastName;
 	private Button mSignUpButton;
@@ -87,6 +88,8 @@ public class EmailRegistrationActivity extends Activity implements OnClickListen
 		imgInValidConfirmPassword = (ImageView) findViewById(R.id.invalid_cpwd_img);
 		mSignUpButton.setOnClickListener(this);
 		mProgressDialog= new ProgressDialog(this);
+		mEmailId.setOnFocusChangeListener(this);
+		mConfirmPassword.setOnFocusChangeListener(this);
 		mProgressDialog.setMessage("Registering User");
 		mEMailProgressBar= (ProgressBar) findViewById(R.id.pdilog_mail);
 		mOptionalImage = (ImageView) findViewById(R.id.image_optional);
@@ -480,7 +483,7 @@ public class EmailRegistrationActivity extends Activity implements OnClickListen
 		}else{
 
 			imgInValidConfirmPassword.setVisibility(View.VISIBLE);
-			imgInValidConfirmPassword.setVisibility(View.INVISIBLE);
+			imgValidvConfirmPwd.setVisibility(View.INVISIBLE);
 		}
 
 	}
@@ -491,6 +494,29 @@ public class EmailRegistrationActivity extends Activity implements OnClickListen
 		mConfirmPasswordProgressBar.setVisibility(View.VISIBLE);
 		imgValidvConfirmPwd.setVisibility(View.INVISIBLE);
 		imgValidvConfirmPwd.setVisibility(View.INVISIBLE);
+
+	}
+	@Override
+	public void onFocusChange(View arg0, boolean arg1) {
+		switch (arg0.getId()) {
+		case R.id.et_emailid:
+
+			mWhichEdittext = 1;
+
+			break;
+		case R.id.et_confirm_password:
+
+			mWhichEdittext = 2;
+
+			break;
+
+		case R.id.et_password:
+
+			break;
+
+		default:
+			break;
+		}
 
 	}
 
