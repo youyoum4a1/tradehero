@@ -2,14 +2,13 @@ package android.tradehero.Http;
 
 import java.io.IOException;
 import java.io.InputStream;
+
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -31,7 +30,7 @@ public class HttpRequestTask extends AsyncTask<Request, Void, JSONObject> {
 	protected JSONObject doInBackground(Request... pRequest) {
 
 		JSONObject result =null;
-		HttpClient client = new DefaultHttpClient();
+		HttpClient client = HttpConnection.getHttpClient();
 		HttpPost post = new HttpPost(pRequest[0].getApiUrl());
 
 		try {

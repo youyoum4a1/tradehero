@@ -30,7 +30,16 @@ public class Constants {
 	public static final String FIRST_NAME="firstName";
 	public static final String EMAIL="email";
 	public static final String LAST_NAME="lastName";
+	//Login
+	public static final String CLIENT_VERSION="clientVersion";
+	public static final String CLIENT_VERSION_VALUE="1.4.1";
+	public static final String CLIENT_OS="clientiOS";
+	public static final String CLIENT_OS_VALUE="1";
 	
+	//Header
+	public static final String TH_CLIENT_VERSION="TH-Client-Version";
+	public static final String TH_CLIENT_VERSION_VALUE="TH-Client-Version";
+	public static final String TH_AUTHORIZATION="Authorization";
 
 	//SignUp FaceBook
 	public static final String FB_ACCESS_TOKEN="facebook_access_token";

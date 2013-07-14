@@ -22,6 +22,9 @@
     <string name="optional">Optional</string>
     <string name="first_name">First Name</string>
     <string name="last_name">Last Name</string>
-   
+    <string name="sign_up">Sign Up</string>
+    <string name="Signin_content">Sign in with:</string>
+    <string name="Signin_content1">or sign in with an</string>
+    <string name="forgot_password">forgot your password ?</string>
 
 </resources>

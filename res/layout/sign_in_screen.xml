@@ -5,31 +5,37 @@
     android:background="@color/white"
     android:orientation="vertical" >
 
-    <LinearLayout
+    <RelativeLayout
+        android:id="@+id/wraper2"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:background="@color/white"
         android:orientation="vertical" >
 
         <include
+            android:id="@+id/ligin_topbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
             android:layout_gravity="top|center_horizontal"
             layout="@layout/topbar" />
 
         <TextView
+            android:id="@+id/Sigin_with"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
+            android:layout_below="@+id/ligin_topbar"
+            android:layout_centerHorizontal="true"
             android:layout_marginTop="20dp"
-            android:text="@string/Signup_content"
+            android:text="@string/Signin_content"
             android:textColor="@color/signinfnt_color"
             android:textSize="20sp" />
 
         <Button
-            android:id="@+id/btn_fbook"
+            android:id="@+id/btn_fbook_signin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_below="@+id/Sigin_with"
             android:layout_marginLeft="30dp"
             android:layout_marginRight="30dp"
             android:layout_marginTop="10dp"
@@ -41,9 +47,10 @@
             android:textStyle="bold" />
 
         <Button
-            android:id="@+id/btn_twitter"
+            android:id="@+id/btn_twitter_signin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_below="@+id/btn_fbook_signin"
             android:layout_marginLeft="30dp"
             android:layout_marginRight="30dp"
             android:layout_marginTop="10dp"
@@ -55,9 +62,10 @@
             android:textStyle="bold" />
 
         <Button
-            android:id="@+id/btn_linkedin"
+            android:id="@+id/btn_linkedin_linkedin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_below="@+id/btn_twitter_signin"
             android:layout_marginLeft="30dp"
             android:layout_marginRight="30dp"
             android:layout_marginTop="10dp"
@@ -69,14 +77,17 @@
             android:textStyle="bold" />
 
         <LinearLayout
+            android:id="@+id/ll_login_content"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center|center_horizontal" >
+            android:layout_below="@+id/btn_linkedin_linkedin"
+            android:layout_centerHorizontal="true" >
 
             <TextView
+                android:id="@+id/txt_bottom"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/Signup_content1"
+                android:text="@string/Signin_content1"
                 android:textColor="@color/gray_1"
                 android:textSize="15sp"
                 android:textStyle="normal" />
@@ -93,28 +104,32 @@
         </LinearLayout>
 
         <TextView
+            android:id="@+id/txt_login_cont"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_below="@+id/ll_login_content"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
             android:layout_marginTop="20dp"
             android:gravity="center"
             android:text="@string/Signup_content3"
             android:textColor="@color/gray_1"
             android:textSize="12sp"
-            android:textStyle="normal"
-             android:layout_marginLeft="30dp"
-            android:layout_marginRight="30dp" />
+            android:textStyle="normal" />
 
         <TextView
-            android:id="@+id/terms"
+            android:id="@+id/txt_termservice_signin"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom|center_horizontal"
+            android:layout_alignParentBottom="true"
+            android:layout_below="@+id/txt_login_cont"
+            android:layout_centerHorizontal="true"
             android:layout_marginTop="20dp"
             android:padding="5dp"
             android:text="@string/Signup_content4"
             android:textColor="@color/linkd_color2"
             android:textSize="14sp"
             android:textStyle="normal" />
-    </LinearLayout>
+    </RelativeLayout>
 
 </ScrollView>

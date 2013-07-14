@@ -35,6 +35,7 @@
         </activity>
         <activity
             android:name="android.tradehero.Activities.EmailRegistrationActivity"
+            android:theme="@android:style/Theme.Holo.Light.NoActionBar"
             android:screenOrientation="portrait" >
         </activity>
         <activity

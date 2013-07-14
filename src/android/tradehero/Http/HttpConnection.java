@@ -10,11 +10,11 @@ public class HttpConnection {
 	/**
 	 * Connection timeout set for the HttpClient
 	 */
-	private static final int CONNECTION_TIMEOUT= 6000;
+	private static final int CONNECTION_TIMEOUT= 60000;
 	/**
 	 * Socket timeout set for the HttpClient
 	 */
-	private static final int SOCKET_TIMEOUT = 10000;
+	private static final int SOCKET_TIMEOUT = 100000;
 	private static final String TAG = HttpConnection.class.getSimpleName(); 
 
 	/**

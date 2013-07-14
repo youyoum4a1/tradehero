@@ -1,10 +1,15 @@
 package android.tradehero.Models;
 
+import java.lang.reflect.Array;
+
 import org.json.JSONObject;
+
+import android.preference.PreferenceActivity.Header;
 
 public class Request {
 	private String mApiUrl;
 	private JSONObject mRequestJSonObject;
+	private Array<>
 	public String getApiUrl() {
 		return mApiUrl;
 	}

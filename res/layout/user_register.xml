@@ -6,6 +6,7 @@
     android:orientation="vertical" >
 
     <RelativeLayout
+        android:id="@+id/wraper"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:background="@color/white"
@@ -28,52 +29,161 @@
             android:textColor="@color/black"
             android:textSize="18sp" />
 
-        <EditText
-            android:id="@+id/et_emailid"
+        <LinearLayout
+            android:id="@+id/ll_emailid"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/required_text"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="0dp"
             android:layout_marginTop="5dp"
-            android:ems="10"
-            android:hint="@string/emai_adds"
-            android:inputType="textEmailAddress"
-            android:textColor="@color/gray_2" />
+            android:orientation="horizontal"
+            android:weightSum="1" >
 
-        <EditText
-            android:id="@+id/et_password"
+            <EditText
+                android:id="@+id/et_emailid"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight=".9"
+                android:ems="10"
+                android:hint="@string/emai_adds"
+                android:imeOptions="actionNext"
+                android:inputType="textEmailAddress"
+                android:textColor="@color/gray_2"
+                />
+
+            <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginRight="20dp"
+                android:layout_weight=".1" >
+
+                <ImageView
+                    android:id="@+id/valid_mail_img"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/valid_sign"
+                    android:visibility="invisible" />
+
+                <ImageView
+                    android:id="@+id/invalid_mail_img"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ivalid_sign"
+                    android:visibility="invisible" />
+
+                <ProgressBar
+                    android:id="@+id/pdilog_mail"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginLeft="2dp"
+                    android:visibility="invisible" />
+            </FrameLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_password"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/et_emailid"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
+            android:layout_below="@+id/ll_emailid"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="0dp"
             android:layout_marginTop="5dp"
-            android:ems="10"
-            android:hint="@string/pwd"
-            android:inputType="textPassword"
-            android:textColor="@color/gray_2" />
+            android:orientation="horizontal"
+            android:weightSum="1" >
 
-        <EditText
-            android:id="@+id/et_confirm_password"
+            <EditText
+                android:id="@+id/et_password"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight=".9"
+                android:ems="10"
+                android:hint="@string/pwd"
+                android:inputType="textPassword"
+                android:textColor="@color/gray_2" />
+
+            <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginRight="20dp"
+                android:layout_weight=".1" >
+
+                <ImageView
+                    android:id="@+id/valid_pwd_img"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/valid_sign"
+                    android:visibility="invisible" />
+
+                <ImageView
+                    android:id="@+id/invalid_pwd_img"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ivalid_sign"
+                    android:visibility="invisible" />
+                
+            </FrameLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_confirm_password"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/et_password"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
+            android:layout_below="@+id/ll_password"
+            android:layout_marginLeft="30dp"
             android:layout_marginTop="5dp"
-            android:ems="10"
-            android:hint="@string/confirm_pwd"
-            android:inputType="textPassword"
-            android:textColor="@color/gray_2" />
+            android:orientation="horizontal"
+            android:weightSum="1" >
+
+            <EditText
+                android:id="@+id/et_confirm_password"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight=".9"
+                android:ems="10"
+                android:hint="@string/confirm_pwd"
+                android:inputType="textPassword"
+                android:textColor="@color/gray_2" />
+
+            <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginRight="20dp"
+                android:layout_weight=".1" >
+
+                <ImageView
+                    android:id="@+id/valid_cpwd_img"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/valid_sign"
+                    android:visibility="invisible" />
+
+                <ImageView
+                    android:id="@+id/invalid_cpwd_img"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ivalid_sign"
+                    android:visibility="invisible" />
+                
+                 <ProgressBar
+                    android:id="@+id/pdilog_cpwd"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginLeft="2dp"
+                    android:visibility="invisible" />
+            </FrameLayout>
+        </LinearLayout>
 
         <EditText
             android:id="@+id/et_display_name"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/et_confirm_password"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
+            android:layout_below="@+id/ll_confirm_password"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="35dp"
             android:layout_marginTop="5dp"
             android:ems="10"
             android:hint="@string/display_name"
@@ -98,17 +208,18 @@
 
             <ImageView
                 android:id="@+id/image_optional"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="100dp"
+                android:layout_height="120dp"
                 android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
                 android:padding="10dp"
                 android:src="@drawable/avatar" />
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
+                android:layout_marginRight="35dp"
                 android:layout_toRightOf="@+id/image_optional"
                 android:orientation="vertical" >
 
@@ -116,7 +227,6 @@
                     android:id="@+id/et_firstname"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="20dp"
                     android:ems="10"
                     android:hint="@string/first_name"
                     android:inputType="text"
@@ -126,7 +236,6 @@
                     android:id="@+id/et_lasttname"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="20dp"
                     android:ems="10"
                     android:hint="@string/last_name"
                     android:inputType="text"
@@ -136,15 +245,17 @@
 
         <Button
             android:id="@+id/btn_register"
-            android:layout_width="match_parent"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
             android:layout_below="@+id/layout_optional"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
             android:layout_marginTop="10dp"
             android:background="@drawable/roundrectangle_signin"
             android:padding="10dp"
-            android:text="Sign Up"
+            android:text="@string/sign_up"
             android:textColor="@color/signinfnt_color"
             android:textSize="25sp"
             android:textStyle="normal" />
