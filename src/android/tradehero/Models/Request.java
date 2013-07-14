@@ -1,24 +1,23 @@
 package android.tradehero.Models;
 
-import java.util.ArrayList;
-
-import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONObject;
 
 public class Request {
 	private String mApiUrl;
-	private ArrayList<BasicNameValuePair> mParameter = new ArrayList<BasicNameValuePair>();
+	private JSONObject mRequestJSonObject;
 	public String getApiUrl() {
 		return mApiUrl;
 	}
 	public void setApiUrl(String pApiUrl) {
-		this.mApiUrl = mApiUrl;
+		this.mApiUrl = pApiUrl;
 	}
-	public ArrayList<BasicNameValuePair> getParameter() {
-		return mParameter;
+	public JSONObject getRequestJSonObject() {
+		return mRequestJSonObject;
 	}
-	public void setParameter(ArrayList<BasicNameValuePair> mParameter) {
-		this.mParameter = mParameter;
+	public void setRequestJSonObject(JSONObject pRequestJSonObject) {
+		this.mRequestJSonObject = pRequestJSonObject;
 	}
+	
 	
 	
  

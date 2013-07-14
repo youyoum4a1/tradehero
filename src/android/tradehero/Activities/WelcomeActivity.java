@@ -9,7 +9,7 @@ import android.widget.Button;
 
 public class WelcomeActivity extends Activity implements OnClickListener{
 
-	Button new_user,existing_user;
+	private Button mNewUser,mExistingUser;
 
 
 	@Override
@@ -22,10 +22,10 @@ public class WelcomeActivity extends Activity implements OnClickListener{
 
 	private void _initSetup(){
 		setContentView(R.layout.sign_in_sign_up_screen);
-		new_user = (Button) findViewById(R.id.btn_newuser);
-		existing_user = (Button) findViewById(R.id.btn_signin);
-		new_user.setOnClickListener(this);
-		existing_user.setOnClickListener(this);
+		mNewUser = (Button) findViewById(R.id.btn_newuser);
+		mExistingUser = (Button) findViewById(R.id.btn_signin);
+		mNewUser.setOnClickListener(this);
+		mExistingUser.setOnClickListener(this);
 	}
 
 	@Override
