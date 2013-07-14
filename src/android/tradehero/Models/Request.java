@@ -13,7 +13,7 @@ public class Request {
 	public static int REQUEST_TYPE_GET=-200;
 	private String mApiUrl;
 	private JSONObject mRequestJSonObject;
-	private int mRequestType;
+	private int mRequestType=REQUEST_TYPE_POST;
 	private ArrayList<BasicHeader> mBasicHeaders=new ArrayList<BasicHeader>();
 	public String getApiUrl() {
 		return mApiUrl;
