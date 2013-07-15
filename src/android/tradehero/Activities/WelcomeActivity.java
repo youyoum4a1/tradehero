@@ -36,14 +36,14 @@ public class WelcomeActivity extends Activity implements OnClickListener{
 			startActivity(new Intent(WelcomeActivity.this,IntialSignUpActivity .class)
 			.putExtra("BOTTOM_LINE", "or sign up with an")
 			.putExtra("HEADER_LINE", "New User")
-			.putExtra("HEADER_LINEBELLOW", "sign up with:")
+			.putExtra("HEADER_LINEBELLOW", "sign up with")
 			.putExtra("ACTIVITY_TYPE", IntialSignUpActivity.SIGNUP));
 			break;
 		case R.id.btn_signin:
 			startActivity(new Intent(WelcomeActivity.this,IntialSignUpActivity.class)
 			.putExtra("BOTTOM_LINE", "or sign in with an")
 			.putExtra("HEADER_LINE", "Sign In")
-			.putExtra("HEADER_LINEBELLOW", "sign in with:")
+			.putExtra("HEADER_LINEBELLOW", "sign in with")
 			.putExtra("ACTIVITY_TYPE", IntialSignUpActivity.LOGIN));
 			break;
 

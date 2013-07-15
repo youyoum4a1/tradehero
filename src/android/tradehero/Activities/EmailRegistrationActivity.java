@@ -7,14 +7,18 @@ import org.json.JSONObject;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.app.AlertDialog.Builder;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.BitmapShader;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.Shader.TileMode;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -29,9 +33,9 @@ import android.tradehero.Models.Request;
 import android.tradehero.Utills.Util;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.View.OnFocusChangeListener;
 import android.view.ViewGroup;
-import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -43,9 +47,9 @@ public class EmailRegistrationActivity extends Activity implements OnClickListen
 	private EditText mEmailId,mPasword,mConfirmPassword,mDisplayName,mFirstName,mLastName;
 	private Button mSignUpButton;
 	private ProgressDialog mProgressDialog;
-	private ProgressBar mConfirmPasswordProgressBar,mEMailProgressBar;
+	private ProgressBar mConfirmPasswordProgressBar,mEMailProgressBar,mPaswordProgressbar,mDisplayNameProgressbar;
 	private LayoutInflater mLayoutInflater;
-	private ImageView imgValidEMail,imgInValidEmail,imgValidPwd,imgInValidPwd,imgValidvConfirmPwd,imgInValidConfirmPassword;
+	private ImageView imgValidEMail,imgInValidEmail,imgValidPwd,imgInValidPwd,imgValidvConfirmPwd,imgInValidConfirmPassword,imgValidDisplyName,imgInvalidDisplyName;
 	private int  mWhichEdittext = 0;
 	private CharSequence  mText;
 	private ImageView mOptionalImage;
@@ -86,12 +90,17 @@ public class EmailRegistrationActivity extends Activity implements OnClickListen
 		imgInValidPwd= (ImageView) findViewById(R.id.invalid_pwd_img);
 		imgValidvConfirmPwd = (ImageView) findViewById(R.id.valid_cpwd_img);
 		imgInValidConfirmPassword = (ImageView) findViewById(R.id.invalid_cpwd_img);
+		imgValidDisplyName = (ImageView) findViewById(R.id.valid_nmdisplay_img);
+		imgInvalidDisplyName = (ImageView) findViewById(R.id.invalid_nmdisplay_img);
+		
 		mSignUpButton.setOnClickListener(this);
 		mProgressDialog= new ProgressDialog(this);
 		mEmailId.setOnFocusChangeListener(this);
 		mConfirmPassword.setOnFocusChangeListener(this);
 		mProgressDialog.setMessage("Registering User");
 		mEMailProgressBar= (ProgressBar) findViewById(R.id.pdilog_mail);
+		mDisplayNameProgressbar= (ProgressBar) findViewById(R.id.pdilog_nmdisplay);
+		mPaswordProgressbar= (ProgressBar) findViewById(R.id.pdilog_pwd);
 		mOptionalImage = (ImageView) findViewById(R.id.image_optional);
 		mOptionalImage.setOnClickListener(this);
 		mEmailId.addTextChangedListener(new TextWatcher() {
@@ -199,16 +208,16 @@ public class EmailRegistrationActivity extends Activity implements OnClickListen
 
 			processRequest=false;
 
-			showDIlog("Required Field should not left blank.");
+			showDIlog(getResources().getString(R.string.field_not_balnk));
 
 		}else if(!email_valid.matcher(lEmail).matches()){
 			processRequest=false;
-			showDIlog("Enter a valid email address.");
+			showDIlog(getResources().getString(R.string.email_validation_string));
 
 		}else if(lPassword.length()<6){
 			processRequest=false;
 			//Constants.show_toast(this, "Password should not be less than six charecter.");
-			showDIlog("Password should not be less than six charecter.");
+			showDIlog(getResources().getString(R.string.password_validation_string));
 
 		}else if(!lPassword.equals(mConfirmPassword)){
 			processRequest=false;
@@ -288,8 +297,16 @@ public class EmailRegistrationActivity extends Activity implements OnClickListen
 					}
 
 
-
-					mOptionalImage.setImageBitmap(imageBmp);
+//					Bitmap circleBitmap = Bitmap.createBitmap(imageBmp.getWidth(), imageBmp.getHeight(), Bitmap.Config.ARGB_8888);
+//					BitmapShader shader = new BitmapShader (imageBmp,  TileMode.CLAMP, TileMode.CLAMP);
+//					Paint paint = new Paint();
+//					        paint.setShader(shader);
+//					        Canvas c = new Canvas(circleBitmap);
+//					        c.drawCircle(imageBmp.getWidth()/2, imageBmp.getHeight()/2, imageBmp.getWidth()/2, paint);
+					
+					Bitmap circleBitmap = Util.getRoundedShape(imageBmp);
+					
+					mOptionalImage.setImageBitmap(circleBitmap);
 
 
 				} catch (Exception e) {

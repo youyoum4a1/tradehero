@@ -16,13 +16,15 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/top_bar_login"
-        android:layout_marginLeft="30dp"
-        android:layout_marginRight="30dp"
-        android:layout_marginTop="50dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="30dp"
+        android:background="@drawable/roundrectangle_signin"
         android:ems="10"
         android:hint="@string/emai_adds"
         android:inputType="textEmailAddress"
-        android:textColor="@color/gray_2" >
+        android:padding="15dp"
+        android:textColor="@color/black" >
 
         <requestFocus />
     </EditText>
@@ -32,13 +34,15 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/et_emailid_login"
-        android:layout_marginLeft="30dp"
-        android:layout_marginRight="30dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
         android:layout_marginTop="20dp"
+        android:background="@drawable/roundrectangle_signin"
         android:ems="10"
         android:hint="@string/pwd"
-        android:inputType="text"
-        android:textColor="@color/gray_2" />
+        android:inputType="textPassword"
+        android:padding="15dp"
+        android:textColor="@color/black" />
 
     <Button
         android:id="@+id/btn_login"
@@ -46,11 +50,11 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/et_pwd_login"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="30dp"
-        android:layout_marginLeft="30dp"
+        android:layout_marginBottom="20dp"
+        android:layout_marginLeft="20dp"
         android:layout_marginRight="30dp"
         android:layout_marginTop="30dp"
-        android:background="@drawable/roundrectangle_signin"
+        android:background="@drawable/rectangle_login"
         android:padding="10dp"
         android:text="Sign In"
         android:textColor="@color/signinfnt_color"

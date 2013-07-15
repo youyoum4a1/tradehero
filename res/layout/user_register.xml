@@ -49,8 +49,7 @@
                 android:hint="@string/emai_adds"
                 android:imeOptions="actionNext"
                 android:inputType="textEmailAddress"
-                android:textColor="@color/gray_2"
-                />
+                android:textColor="@color/black" />
 
             <FrameLayout
                 android:layout_width="wrap_content"
@@ -101,7 +100,7 @@
                 android:ems="10"
                 android:hint="@string/pwd"
                 android:inputType="textPassword"
-                android:textColor="@color/gray_2" />
+                android:textColor="@color/black" />
 
             <FrameLayout
                 android:layout_width="wrap_content"
@@ -123,7 +122,13 @@
                     android:layout_height="wrap_content"
                     android:src="@drawable/ivalid_sign"
                     android:visibility="invisible" />
-                
+
+                <ProgressBar
+                    android:id="@+id/pdilog_pwd"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginLeft="2dp"
+                    android:visibility="invisible" />
             </FrameLayout>
         </LinearLayout>
 
@@ -145,7 +150,7 @@
                 android:ems="10"
                 android:hint="@string/confirm_pwd"
                 android:inputType="textPassword"
-                android:textColor="@color/gray_2" />
+                android:textColor="@color/black" />
 
             <FrameLayout
                 android:layout_width="wrap_content"
@@ -167,8 +172,8 @@
                     android:layout_height="wrap_content"
                     android:src="@drawable/ivalid_sign"
                     android:visibility="invisible" />
-                
-                 <ProgressBar
+
+                <ProgressBar
                     android:id="@+id/pdilog_cpwd"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
@@ -177,24 +182,61 @@
             </FrameLayout>
         </LinearLayout>
 
-        <EditText
-            android:id="@+id/et_display_name"
+        <LinearLayout
+            android:id="@+id/ll_display_name"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/ll_confirm_password"
             android:layout_marginLeft="30dp"
-            android:layout_marginRight="35dp"
             android:layout_marginTop="5dp"
-            android:ems="10"
-            android:hint="@string/display_name"
-            android:inputType="text"
-            android:textColor="@color/gray_2" />
+            android:orientation="horizontal"
+            android:weightSum="1" >
+
+            <EditText
+                android:id="@+id/et_display_name"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight=".9"
+                android:ems="10"
+                android:hint="@string/display_name"
+                android:inputType="text"
+                android:textColor="@color/black" />
+
+            <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginRight="20dp"
+                android:layout_weight=".1" >
+
+                <ImageView
+                    android:id="@+id/valid_nmdisplay_img"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/valid_sign"
+                    android:visibility="invisible" />
+
+                <ImageView
+                    android:id="@+id/invalid_nmdisplay_img"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ivalid_sign"
+                    android:visibility="invisible" />
+
+                <ProgressBar
+                    android:id="@+id/pdilog_nmdisplay"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginLeft="2dp"
+                    android:visibility="invisible" />
+            </FrameLayout>
+        </LinearLayout>
 
         <TextView
             android:id="@+id/optional_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/et_display_name"
+            android:layout_below="@+id/ll_display_name"
             android:padding="10dp"
             android:text="@string/optional"
             android:textColor="@color/signinfnt_color"
@@ -208,11 +250,14 @@
 
             <ImageView
                 android:id="@+id/image_optional"
-                android:layout_width="100dp"
-                android:layout_height="120dp"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
                 android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
-                android:padding="10dp"
+                android:layout_margin="10dp"
+                android:adjustViewBounds="true"
+                android:gravity="center"
+                android:background="@drawable/layout_oval"
                 android:src="@drawable/avatar" />
 
             <LinearLayout
@@ -230,16 +275,17 @@
                     android:ems="10"
                     android:hint="@string/first_name"
                     android:inputType="text"
-                    android:textColor="@color/gray_2" />
+                    android:textColor="@color/black" />
 
                 <EditText
                     android:id="@+id/et_lasttname"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
                     android:ems="10"
                     android:hint="@string/last_name"
                     android:inputType="text"
-                    android:textColor="@color/gray_2" />
+                    android:textColor="@color/black" />
             </LinearLayout>
         </RelativeLayout>
 
@@ -253,7 +299,7 @@
             android:layout_marginLeft="30dp"
             android:layout_marginRight="30dp"
             android:layout_marginTop="10dp"
-            android:background="@drawable/roundrectangle_signin"
+            android:background="@drawable/rectangle_login"
             android:padding="10dp"
             android:text="@string/sign_up"
             android:textColor="@color/signinfnt_color"

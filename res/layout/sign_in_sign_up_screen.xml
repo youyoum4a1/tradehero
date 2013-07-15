@@ -34,29 +34,27 @@
         android:layout_marginLeft="30dp"
         android:layout_marginRight="30dp"
         android:layout_marginTop="20dp" >
-        
 
-       
         <Button
             android:id="@+id/btn_signin"
-            
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/roundrectangle_signin"
             android:paddingTop="25dp"
             android:text="@string/sign_in"
             android:textColor="@color/signinfnt_color"
-            android:textSize="30sp"
-            android:textStyle="normal" />
-         <TextView
-             android:gravity="top|center_horizontal"
-             android:layout_marginTop="5dp"
+            android:textSize="25sp"
+            android:textStyle="bold" />
+
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Existing User"
-            android:textColor="@color/signinfnt_color"
-            android:textSize="15sp" />
-        
+            android:layout_marginTop="5dp"
+            android:gravity="top|center_horizontal"
+            android:text="@string/existing_user"
+            android:textColor="@color/gray_1"
+            android:textSize="15sp"
+            android:textStyle="bold" />
     </FrameLayout>
 
 </LinearLayout>

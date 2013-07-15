@@ -28,8 +28,9 @@
             android:layout_centerHorizontal="true"
             android:layout_marginTop="20dp"
             android:text="@string/Signin_content"
-            android:textColor="@color/signinfnt_color"
-            android:textSize="20sp" />
+            android:textColor="@color/gray_1"
+            android:textSize="20sp"
+            android:textStyle="bold" />
 
         <Button
             android:id="@+id/btn_fbook_signin"
