@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">TradeHero</string>
+    <string name="action_settings">Settings</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="new_user">New User</string>
+    <string name="sign_in">Sign In</string>
+    <string name="facbook">Facebook</string>
+    <string name="linkedin">LinkedIn</string>
+    <string name="twiter">Twitter</string>
+    <string name="Signup_content">Sign up with:</string>
+    <string name="Signup_content1">or sign up with an</string>
+    <string name="Signup_content2">email address</string>
+    <string name="Signup_content3">We respect your privacy: we will never post to your feeds without your express permission.</string>
+    <string name="Signup_content4">Read our Terms of Service</string>
+    <string name="required">Required</string>
+    <string name="emai_adds">Email Address</string>
+    <string name="pwd">Password</string>
+    <string name="confirm_pwd">Confirm Password</string>
+    <string name="display_name">Display Name</string>
+    <string name="optional">Optional</string>
+    <string name="first_name">First Name</string>
+    <string name="last_name">Last Name</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="Signin_content">sign in with</string>
+    <string name="Signin_content1">or sign in with an</string>
+    <string name="forgot_password">forgot your password ?</string>
+    <string name="existing_user">existing user</string>
+    <string name="field_not_balnk">Field should not left blank.</string>
+    <string name="password_validation_string">Password should not be less than six charecter.</string>
+    <string name="email_validation_string">Enter a valid email address.</string>
+    <string name="Roi">ROI:</string>
+    <string name="Hq">HQ:</string>
+    <string name="Trade_Profit">Trade Profit: US$</string>
+    <string name="Followers">Followers</string>
+    <string name="Heroes">Heroes</string>
+    <string name="Trades">Trades</string>
+    <string name="Exchanges">Exchanges</string>
+    <string name="facebook_app_id">431745923529834</string>
+    
+
+</resources>

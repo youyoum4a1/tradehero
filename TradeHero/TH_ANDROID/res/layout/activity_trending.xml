@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<GridView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/trendig_gridview"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg"
+    android:gravity="center"
+    android:horizontalSpacing="15dp"
+    android:numColumns="2"
+    android:padding="9dp"
+    android:drawSelectorOnTop="false"
+    android:listSelector="@android:color/transparent"
+    android:verticalSpacing="15dp" >
+
+</GridView>
