@@ -39,5 +39,20 @@
     <string name="Exchanges">Exchanges</string>
     <string name="facebook_app_id">431745923529834</string>
     
+    <!-- What's Trending -->
+    <string name="header_trending">Trending</string>
+    <string name="positive_prefix">▲</string>
+    <string name="negetive_prefix">▼</string>
+    <string name="zero_prefix"></string>
+    
+    <!-- What's Trending Details-->
+    <string name="tab_trade">TRADE</string>
+    <string name="tab_stock_info">STOCK INFO</string>
+    <string name="tab_news">NEWS</string>
+    <string name="price_as_of">Price as of</string>
+    <string name="cash_available">Cash Available</string>
+    <string name="quantity">Quantity</string>
+    <string name="trade_value">Trade Value</string>
+    
 
 </resources>

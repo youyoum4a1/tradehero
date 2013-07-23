@@ -8,7 +8,8 @@ import android.tradehero.fragments.CommunityScreenFragment;
 import android.tradehero.fragments.HomeScreenFragment;
 import android.tradehero.fragments.PortfolioScreenFragment;
 import android.tradehero.fragments.StoreScreenFragment;
-import android.tradehero.fragments.TrendingScreenFragment;
+import android.tradehero.fragments.TrendingFragment;
+import android.view.View;
 
 public class TradeHeroTabActivity extends FragmentActivity {
 
@@ -35,7 +36,7 @@ public class TradeHeroTabActivity extends FragmentActivity {
 		mTabHost.addTab(mTabHost
 				.newTabSpec("Trending")
 				.setIndicator("", ressources.getDrawable(R.drawable.trending_selector)),
-				TrendingScreenFragment.class, b);
+				TrendingFragment.class, b);
 
 		b = new Bundle();
 		b.putString("key", "Community");
@@ -70,6 +71,12 @@ public class TradeHeroTabActivity extends FragmentActivity {
 		// setContentView(mTabHost);
 		mTabHost.setCurrentTabByTag("Home");
 
+	}
+	
+	public void showTabs(boolean value) {
+		if(mTabHost != null) {
+			mTabHost.getTabWidget().setVisibility(value? View.VISIBLE: View.GONE);
+		}
 	}
 
 }

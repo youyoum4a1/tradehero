@@ -3,13 +3,12 @@
     android:layout_width="175dp"
     android:layout_height="98dp" >
 
-    <ImageView
+    <com.loopj.android.image.SmartImageView
         android:id="@+id/stock_bg_logo"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="175dp"
+        android:layout_height="98dp"
         android:contentDescription="@null"
-        android:scaleType="fitCenter"
-        android:src="@drawable/facebook" />
+        android:scaleType="fitCenter" />
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -24,33 +23,37 @@
             android:layout_centerHorizontal="true"
             android:ellipsize="end"
             android:lines="1"
-            android:text="Facebook again face book took" />
+            android:textColor="@color/black"
+            android:text=""
+            android:textStyle="bold" />
 
-        <ImageView
+        <com.loopj.android.image.SmartImageView
             android:id="@+id/stock_logo"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="30dp"
             android:layout_below="@id/stock_name"
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="4dp"
             android:layout_marginTop="4dp"
+            android:adjustViewBounds="true"
             android:contentDescription="@null"
-            android:src="@drawable/facebook" />
+            android:scaleType="centerInside" />
 
         <TextView
-            android:id="@+id/exchange_name"
+            android:id="@+id/exchange_symbol"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/stock_logo"
             android:layout_centerHorizontal="true"
             android:ellipsize="end"
             android:lines="1"
-            android:text="NASDAQ: " />
+            android:textColor="@color/black"
+            android:text="" />
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/exchange_name"
+            android:layout_below="@id/exchange_symbol"
             android:layout_centerHorizontal="true"
             android:orientation="horizontal" >
 
@@ -58,22 +61,29 @@
                 android:id="@+id/profit_indicator"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="2dp"
                 android:lines="1"
-                android:text="▲" />
+                android:text="" 
+                android:textColor="@color/black"
+                android:textSize="20sp"
+                />
 
             <TextView
-                android:id="@+id/stock_price_type"
+                android:id="@+id/currency_display"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="2dp"
+                android:lines="1"
+                android:textColor="@color/black"
+                android:text="" />
+
+            <TextView
+                android:id="@+id/last_price"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:lines="1"
-                android:text="US$: " />
-
-            <TextView
-                android:id="@+id/stock_price_value"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:lines="1"
-                android:text="12345"
+                android:text=""
+                android:textColor="@color/black"
                 android:textStyle="bold" />
         </LinearLayout>
     </RelativeLayout>

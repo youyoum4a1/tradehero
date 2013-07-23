@@ -33,7 +33,6 @@ public class HomeScreenFragment extends Fragment{
 	}
 
 
-
 	private void _initView(View view) {
 
 		mUserName ="Rajiv Bhatia";

@@ -6,10 +6,6 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.tradehero.fragments.WelcomScreenFragment;
-import android.view.MotionEvent;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.View.OnTouchListener;
 
 public class WelcomeActivity extends FragmentActivity {
 
@@ -35,5 +31,6 @@ public class WelcomeActivity extends FragmentActivity {
 		WelcomScreenFragment fragment = new WelcomScreenFragment();
 		fragmentTransaction.replace(R.id.sign_in_up_content, fragment,"welcome_screen");
 		fragmentTransaction.commit();
+
 	}
 }

@@ -23,6 +23,12 @@
     <color name="gray_1">#C0C0C0</color>
     <color name="gray_3">#F3F3F3</color>
     <color name="gray_4">#F6F6F6</color>
-     <color name="font_roi">#00CC00</color>
-
+    <color name="font_roi">#00CC00</color>
+    
+    <!-- What's Trending -->
+	<color name="grid_item_bg">#b4ffffff</color>
+	
+	<!-- Trending detail -->
+	<color name="trending_detail_bg">#ffebebeb</color>
+	
    </resources>
