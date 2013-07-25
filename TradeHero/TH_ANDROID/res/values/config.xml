@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="trending_feed">https://www.tradehero.mobi/api/securities/trending</string>
+    <string name="trending_chart">http://chart.finance.yahoo.com/z?s=%s&amp;t=3m&amp;q=l&amp;z=s </string>
 </resources>
