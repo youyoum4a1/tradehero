@@ -185,7 +185,7 @@ public class TwitterActivity extends Activity implements RequestTaskCompleteList
 		RequestFactory mRF= new RequestFactory();
 		android.tradehero.models.Request[] lRequests =new android.tradehero.models.Request[1];
 		try {
-			lRequests[0] = mRF.getRegirstationThroughTwitter(twitter_email, mSharedPreferences.getString(Constants.PREF_KEY_OAUTH_SECRET, null),mSharedPreferences.getString(Constants.PREF_KEY_OAUTH_TOKEN, null));
+			lRequests[0] = mRF.getRegistrationThroughTwitter(twitter_email, mSharedPreferences.getString(Constants.PREF_KEY_OAUTH_SECRET, null),mSharedPreferences.getString(Constants.PREF_KEY_OAUTH_TOKEN, null));
 
 		} catch (JSONException ex) {
 			// TODO Auto-generated catch block

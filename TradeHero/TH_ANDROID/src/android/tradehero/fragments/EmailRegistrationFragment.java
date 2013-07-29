@@ -191,7 +191,7 @@ public class EmailRegistrationFragment extends Fragment implements OnClickListen
 		String lConfirmPassword= mConfirmPassword.getText()!=null?mConfirmPassword.getText().toString():"";
 		boolean processRequest=true;
 
-		if(TextUtils.isEmpty(lEmail) || TextUtils.isEmpty(lPassword) || TextUtils.isEmpty(lFName) || TextUtils.isEmpty(lDName))
+		if(TextUtils.isEmpty(lEmail) || TextUtils.isEmpty(lPassword) || TextUtils.isEmpty(lDName))
 		{
 			processRequest=false;
 			//Util.showDIlog(getActivity(),getResources().getString(R.string.field_not_balnk));
@@ -230,7 +230,26 @@ public class EmailRegistrationFragment extends Fragment implements OnClickListen
 		// TODO Auto-generated method stub
 		mProgressDialog.dismiss();
 		if(pResponseObject!=null){
-			Util.show_toast(getActivity(), pResponseObject.toString());
+			
+			System.out.println("result response----"+pResponseObject.toString());
+			
+			try {
+				
+				if(pResponseObject.has("Message"))
+				{
+					String msg = pResponseObject.getString("Message");
+					Util.show_toast(getActivity(), msg);					
+				}
+				else
+				{
+					Util.show_toast(getActivity(), pResponseObject.toString());
+				}
+								
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
 		}
 	}
 
@@ -503,7 +522,7 @@ public class EmailRegistrationFragment extends Fragment implements OnClickListen
 
 			switch (v.getId()) {
 			case R.id.btn_register:
-				mSignUpButton.setBackgroundResource(R.drawable.roundrectangle_signin);
+				mSignUpButton.setBackgroundResource(R.drawable.rectangle_login);
 
 				break;
 			case R.id.image_optional:
@@ -523,7 +542,7 @@ public class EmailRegistrationFragment extends Fragment implements OnClickListen
 
 			switch (v.getId()) {
 			case R.id.btn_register:
-				mSignUpButton.setBackgroundResource(R.drawable.rectangle_login);
+				mSignUpButton.setBackgroundResource(R.drawable.roundrectangle_signin);
 
 				break;
 			case R.id.image_optional:

@@ -48,7 +48,7 @@ public class RequestFactory {
 		 return lLoginRequest;
 	}
 
-	public Request getRegirstationThroughFB(String pFacebookAccessToken) throws JSONException{
+	public Request getRegistrationThroughFB(String pFacebookAccessToken) throws JSONException{
 		Request lRegistrationRequest = new Request();
 		lRegistrationRequest.setApiUrl(Constants.SIGN_UP_WITH_SOCIAL_MEDIA_USER_URL);
 		lRegistrationRequest.setParameter(new BasicNameValuePair(Constants.FB_ACCESS_TOKEN,pFacebookAccessToken));
@@ -60,7 +60,7 @@ public class RequestFactory {
 		//lRegistrationRequest.setRequestJSonObject(jsonRegistrationObject);
 		return lRegistrationRequest;
 	}
-	public Request getRegirstationThroughLinkedIn(Context pContext,String pLinkedinAccessTokenSecret,String pLinkedinAccessToken) throws JSONException{
+	public Request getRegistrationThroughLinkedIn(Context pContext,String pLinkedinAccessTokenSecret,String pLinkedinAccessToken) throws JSONException{
 		Request lRegistrationRequest = new Request();
 		lRegistrationRequest.setApiUrl(Constants.SIGN_UP_WITH_SOCIAL_MEDIA_USER_URL);
 		lRegistrationRequest.setContext(pContext); 
@@ -83,7 +83,7 @@ public class RequestFactory {
 		System.out.println("variables--------------"+"secret-"+pLinkedinAccessTokenSecret+" token-"+pLinkedinAccessToken);
 		return lRegistrationRequest;
 	}
-	public Request getRegirstationThroughTwitter(String pEmailId,String pTwitterAccessTokenSecret,String pTwitrerAccessToken) throws JSONException{
+	public Request getRegistrationThroughTwitter(String pEmailId,String pTwitterAccessTokenSecret,String pTwitrerAccessToken) throws JSONException{
 		Request lRegistrationRequest = new Request();
 		lRegistrationRequest.setApiUrl(Constants.SIGN_UP_WITH_SOCIAL_MEDIA_USER_URL);
 		lRegistrationRequest.addRequestHeader(new BasicHeader(Constants.TH_CLIENT_VERSION, Constants.TH_CLIENT_VERSION_VALUE_NEW));

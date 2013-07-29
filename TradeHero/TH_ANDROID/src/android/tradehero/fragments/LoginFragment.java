@@ -186,7 +186,7 @@ public class LoginFragment extends Fragment implements OnClickListener,RequestTa
 
 			switch (v.getId()) {
 			case R.id.btn_login:
-				mSignIn.setBackgroundResource(R.drawable.roundrectangle_signin);
+				mSignIn.setBackgroundResource(R.drawable.rectangle_login);
 
 				String uname=inputEmailName.getText()!=null?inputEmailName.getText().toString():"";
 				String pass =inputPassword.getText()!=null?inputPassword.getText().toString():"";
@@ -218,7 +218,7 @@ public class LoginFragment extends Fragment implements OnClickListener,RequestTa
 
 			switch (v.getId()) {
 			case R.id.btn_login:
-				mSignIn.setBackgroundResource(R.drawable.rectangle_login);
+				mSignIn.setBackgroundResource(R.drawable.roundrectangle_signin);
 
 				break;
 

@@ -416,7 +416,7 @@ public class InitialSignUpFragment extends Fragment implements OnClickListener,R
 				}
 			}else{
 				try {
-					lRequests[0] = mRF.getRegirstationThroughFB(accessToken);
+					lRequests[0] = mRF.getRegistrationThroughFB(accessToken);
 
 				} catch (JSONException e) {
 					// TODO Auto-generated catch block
@@ -472,7 +472,7 @@ public class InitialSignUpFragment extends Fragment implements OnClickListener,R
 					}else
 					{
 						try {
-							lRequests[0] = mRF.getRegirstationThroughLinkedIn(getActivity(),accessToken.getTokenSecret(), accessToken.getToken());
+							lRequests[0] = mRF.getRegistrationThroughLinkedIn(getActivity(),accessToken.getTokenSecret(), accessToken.getToken());
 
 						} catch (JSONException e) {
 							// TODO Auto-generated catch block
