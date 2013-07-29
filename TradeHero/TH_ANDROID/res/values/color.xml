@@ -26,9 +26,14 @@
     <color name="font_roi">#00CC00</color>
     
     <!-- What's Trending -->
-	<color name="grid_item_bg">#b4ffffff</color>
+	<color name="trending_grid_item_bg">#b4ffffff</color>
+	<color name="title">#ffb0b0b0</color>
 	
 	<!-- Trending detail -->
 	<color name="trending_detail_bg">#ffebebeb</color>
+	<color name="price_bar_bg">#ffbfbdbd</color>
+	<color name="price_bar_text_default">#ff636363</color>
+	<color name="btn_buy_default">#ff636363</color>
+	<color name="btn_buy_pressed">#ff636363</color>
 	
    </resources>

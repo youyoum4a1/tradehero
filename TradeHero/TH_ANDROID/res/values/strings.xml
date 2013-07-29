@@ -38,14 +38,14 @@
     <string name="Trades">Trades</string>
     <string name="Exchanges">Exchanges</string>
     <string name="facebook_app_id">431745923529834</string>
-    
+
     <!-- What's Trending -->
     <string name="header_trending">Trending</string>
     <string name="positive_prefix">▲</string>
     <string name="negetive_prefix">▼</string>
     <string name="zero_prefix"></string>
-    
-    <!-- What's Trending Details-->
+
+    <!-- What's Trending Details -->
     <string name="tab_trade">TRADE</string>
     <string name="tab_stock_info">STOCK INFO</string>
     <string name="tab_news">NEWS</string>
@@ -54,6 +54,12 @@
     <string name="quantity">Quantity</string>
     <string name="trade_value">Trade Value</string>
     <string name="loading_loading">Loading...</string>
-    
-
+    <string name="bid_with_bracket">(bid)</string>
+    <string name="ask_with_bracket">(ask)</string>
+    <string name="p5k">$5K</string>
+    <string name="p10k">$10K</string>
+    <string name="p25k">$25K</string>
+    <string name="p50k">$50K</string>
+    <string name="buy"> BUY </string>
+
 </resources>

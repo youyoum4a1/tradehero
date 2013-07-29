@@ -8,6 +8,6 @@
         android:width="1dp"
         android:color="@android:color/transparent" />
 
-    <solid android:color="@color/trending_grid_item_bg" />
+    <solid android:color="@color/price_bar_bg" />
 
 </shape>

@@ -19,8 +19,10 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.tradehero.activities.R;
 import android.tradehero.application.App;
+import android.tradehero.application.Config;
 import android.tradehero.cache.ImageLoader;
 import android.tradehero.cache.ImageLoader.ImageLoadingListener;
 import android.tradehero.models.Trend;
@@ -28,13 +30,24 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 public class TradeFragment extends Fragment {
 	
 	private ImageView mStockBgLogo;
 	private ImageView mStockLogo;
 	private ImageView mStockChart;
+	
+	private TextView mStockPrice;
+	private TextView mBidPrice;
+	private TextView mAskPrice;
+	private TextView mPriceAsOfValue;
+	private TextView mCashAvailableValue;
+	private TextView mQuantityValue;
+	private TextView mTradeValue;
+	
 	private Trend trend;
+	private ImageLoader mImageLoader;
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -45,16 +58,25 @@ public class TradeFragment extends Fragment {
 	}
 	
 	private void initViews(View v) {
-	
+		mImageLoader = new ImageLoader(getActivity());
+		
 		mStockBgLogo = (ImageView) v.findViewById(R.id.stock_bg_logo);
 		mStockLogo = (ImageView) v.findViewById(R.id.stock_logo);
 		mStockChart = (ImageView) v.findViewById(R.id.stock_chart);
 		
+		mStockPrice = (TextView) v.findViewById(R.id.stock_price);
+		mBidPrice = (TextView) v.findViewById(R.id.bid_price);
+		mAskPrice = (TextView) v.findViewById(R.id.ask_price);
+		mPriceAsOfValue = (TextView) v.findViewById(R.id.vprice_as_of);
+		mCashAvailableValue = (TextView) v.findViewById(R.id.vcash_available);
+		mQuantityValue = (TextView) v.findViewById(R.id.vquantity);
+		mTradeValue = (TextView) v.findViewById(R.id.vtrade_value);
+		
 		trend = ((App)getActivity().getApplication()).getTrend();
 		
-		if(trend.getImageBlobUrl() != null && trend.getImageBlobUrl().length() > 0) {
+		if(!TextUtils.isEmpty(trend.getImageBlobUrl())) {
 			//Bitmap b = convertToMutable((new WebImageCache(TrendingActivity.this)).get(trend.getImageBlobUrl()));
-			new ImageLoader(getActivity()).getBitmapImage(trend.getImageBlobUrl(), new ImageLoadingListener() {
+			mImageLoader.getBitmapImage(trend.getImageBlobUrl(), new ImageLoadingListener() {
 				public void onLoadingComplete(Bitmap loadedImage) {
 					final Bitmap b = convertToMutableAndRemoveBackground(loadedImage);
 					mStockLogo.setImageBitmap(b);
@@ -63,6 +85,13 @@ public class TradeFragment extends Fragment {
 			});	
 		}
 		
+		if(!TextUtils.isEmpty(trend.getYahooSymbol())) 
+			mImageLoader.DisplayImage(String.format(Config.getTrendingChartUrl(), trend.getYahooSymbol()), 
+					mStockChart);
+		
+		mStockPrice.setText(String.format("%s:%s", trend.getCurrencyDisplay(), trend.getLastPrice()));
+		mAskPrice.setText(trend.getAskPrice()+getString(R.string.ask_with_bracket));
+		mBidPrice.setText(" x "+trend.getBidPrice()+getString(R.string.bid_with_bracket));
 	}
 	
 	/**

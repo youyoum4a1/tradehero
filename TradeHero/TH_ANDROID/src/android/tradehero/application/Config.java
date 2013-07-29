@@ -20,5 +20,9 @@ public class Config {
 		return localValueForKey(R.string.trending_feed);
 	}
 	
+	public static String getTrendingChartUrl() {
+		return localValueForKey(R.string.trending_chart);
+	}
+	
 	
 }
