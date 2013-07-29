@@ -10,5 +10,6 @@
 	<classpathentry exported="true" kind="lib" path="/FacebookSDK/libs/android-support-v4.jar"/>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="gen"/>
+	<classpathentry exported="true" kind="lib" path="libs/signpost-commonshttp4-1.2.1.1.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>
