@@ -1,5 +1,7 @@
 package android.tradehero.utills;
 
+import twitter4j.auth.RequestToken;
+
 
 public class Constants {	
 
@@ -18,6 +20,8 @@ public class Constants {
 	public static String OAUTH_CALLBACK_URL = OAUTH_CALLBACK_SCHEME + "://" + OAUTH_CALLBACK_HOST;
 	
 	//Twitter
+	public static boolean TWITTER_FLAG= false;
+	public static RequestToken requestToken;
 	public static String TWITTER_CONSUMER_KEY = "sJY7n9k29TAhraq4VjDYeg"; // place your cosumer key here
 	public static String TWITTER_CONSUMER_SECRET = "gRLhwCd3YgdaKKEH7Gwq9FI75TJuqHfi2TiDRwUHo"; // place your consumer secret here
 	//public static String TWITTER_CALLBACK_URL = "x-oauthflow-twitter://callback";
@@ -51,8 +55,8 @@ public class Constants {
 	public static final String FORGOT_PASSWORD=BASE_API_URL+"api/forgotPassword";
 	//header
 	public static final String CONTENT_TYPE="Content-type";
-	public static final String CONTENT_TYPE_VALUE_URL_ENCODED="application/x-www-form-urlencoded; charset=UTF-8";
-	public static final String CONTENT_TYPE_VALUE_JSON="application/json; charset=UTF-8";
+	public static final String CONTENT_TYPE_VALUE_URL_ENCODED="application/x-www-form-urlencoded";
+	public static final String CONTENT_TYPE_VALUE_JSON="application/json";
 	public static final String CHARSET="charset" ;
 	public static final String CHARSET_VALUE="utf-8";	
 	//SingUp 
@@ -70,7 +74,8 @@ public class Constants {
 	
 	//Header
 	public static final String TH_CLIENT_VERSION="TH-Client-Version";
-	public static final String TH_CLIENT_VERSION_VALUE="1.4.1.2813";
+	public static final String TH_CLIENT_VERSION_VALUE="1.4.1.2910";
+	//public static final String TH_CLIENT_VERSION_VALUE="1.4.1.2813";
 	public static final String TH_CLIENT_VERSION_VALUE_NEW="1.4.1.2853";
 	public static final String AUTHORIZATION="Authorization";
 	public static final String TH_FB_PREFIX="TH-Facebook";

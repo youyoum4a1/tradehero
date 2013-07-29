@@ -4,35 +4,29 @@ package android.tradehero.fragments;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import twitter4j.Twitter;
-import twitter4j.TwitterException;
-import twitter4j.TwitterFactory;
-import twitter4j.User;
-import twitter4j.auth.AccessToken;
-import twitter4j.auth.RequestToken;
-import twitter4j.conf.Configuration;
-import twitter4j.conf.ConfigurationBuilder;
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.tradehero.activities.R;
-import android.tradehero.activities.TwitterOAuthActivity;
-import android.tradehero.activities.WebViewActivity;
 import android.tradehero.activities.dialog.LinkedinDialog;
 import android.tradehero.activities.dialog.LinkedinDialog.OnVerifyListener;
 import android.tradehero.http.HttpRequestTask;
 import android.tradehero.http.RequestFactory;
 import android.tradehero.http.RequestTaskCompleteListener;
+import android.tradehero.twitter.Twitter;
+import android.tradehero.twitter.TwitterError;
 import android.tradehero.utills.Constants;
 import android.tradehero.utills.Util;
+import android.tradehero.webbrowser.WebViewActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -41,6 +35,7 @@ import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.facebook.Session;
@@ -57,6 +52,7 @@ import com.google.code.linkedinapi.schema.Person;
 public class InitialSignUpFragment extends Fragment implements OnClickListener,RequestTaskCompleteListener,OnTouchListener{
 
 	public static final int LOGIN=90001;
+	public static  int mCurCheckPosition=2;
 	public static final int SIGNUP=90002;
 	public static final int OP_FB=11111;
 	public static final int OP_LINKEDIN=22222;
@@ -71,13 +67,13 @@ public class InitialSignUpFragment extends Fragment implements OnClickListener,R
 	private RequestTaskCompleteListener mRequestTaskCompleteListener;
 	private ProgressDialog mProgressDialog;
 	// Twitter
-	private static Twitter twitter;
-	private static RequestToken requestToken;
-
+	private Twitter mTwitter;
+    public static String email="";
 	// Shared Preferences
 	private static SharedPreferences mSharedPreferences;
-
+	private String twitter_email="";
 	private String mBottmLine,mHeader,mHeaderBellow;
+	private EditText mail_id_twitter;
 	private int activityType;
 	private int operationType;
 	private Bundle mData;
@@ -111,20 +107,23 @@ public class InitialSignUpFragment extends Fragment implements OnClickListener,R
 
 		mData = getArguments();
 		mRequestTaskCompleteListener= this;
-		mBottmLine = mData.getString("BOTTOM_LINE");
-		mHeader  = mData.getString("HEADER_LINE");
-		mHeaderBellow  = mData.getString("HEADER_LINEBELLOW");
-		activityType=mData.getInt("ACTIVITY_TYPE",0);
-		inflater=(LayoutInflater)getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		v = inflater.inflate(R.layout.topbar, null);
-		mBottomtxt = (TextView)view.findViewById(R.id.txt_bottom);
-		mHeaderBellowtxt = (TextView)view.findViewById(R.id.Sigin_with);
-		mBottomtxt.setText(mBottmLine);
-		mHeaderBellowtxt.setText(mHeaderBellow);
-		TextView txt = (TextView) v.findViewById(R.id.header_txt);
-		txt.setText(mHeader);
-		ViewGroup header = (ViewGroup)view.findViewById(R.id.wraper2);
-		header.addView(v);
+		if(mData!=null)
+		{
+			mBottmLine = mData.getString("BOTTOM_LINE");
+			mHeader  = mData.getString("HEADER_LINE");
+			mHeaderBellow  = mData.getString("HEADER_LINEBELLOW");
+			activityType=mData.getInt("ACTIVITY_TYPE",0);
+			inflater=(LayoutInflater)getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+			v = inflater.inflate(R.layout.topbar, null);
+			mBottomtxt = (TextView)view.findViewById(R.id.txt_bottom);
+			mHeaderBellowtxt = (TextView)view.findViewById(R.id.Sigin_with);
+			mBottomtxt.setText(mBottmLine);
+			mHeaderBellowtxt.setText(mHeaderBellow);
+			TextView txt = (TextView) v.findViewById(R.id.header_txt);
+			txt.setText(mHeader);
+			ViewGroup header = (ViewGroup)view.findViewById(R.id.wraper2);
+			header.addView(v);
+		}
 		mFaceBookBtn = (Button)view.findViewById(R.id.btn_fbook_signin);
 		mTwitterBtn = (Button)view.findViewById(R.id.btn_twitter_signin);
 		mLinkedinBtn = (Button)view.findViewById(R.id.btn_linkedin_linkedin);
@@ -147,11 +146,12 @@ public class InitialSignUpFragment extends Fragment implements OnClickListener,R
 		mProgressDialog= new ProgressDialog(getActivity());
 		mProgressDialog.setMessage("Logging In");
 		mContext=getActivity();
+		mTwitter = new Twitter(Constants.TWITTER_CONSUMER_KEY, Constants.TWITTER_CONSUMER_SECRET);
 		/** This if conditions is tested once is
 		 * redirected from twitter page. Parse the uri to get oAuth
 		 * Verifier
 		 * */
-		if (!isTwitterLoggedInAlready()) 
+		/*if (!isTwitterLoggedInAlready()) 
 		{
 			Uri uri = getActivity().getIntent().getData();
 			if (uri != null && uri.toString().startsWith(Constants.TWITTER_CALLBACK_URL))
@@ -162,7 +162,7 @@ public class InitialSignUpFragment extends Fragment implements OnClickListener,R
 				try {
 					// Get the access token
 					AccessToken accessToken = twitter.getOAuthAccessToken(
-							requestToken, verifier);
+							Constants.requestToken, verifier);
 
 					// Shared Preferences
 					Editor e = mSharedPreferences.edit();
@@ -190,17 +190,31 @@ public class InitialSignUpFragment extends Fragment implements OnClickListener,R
 					// For now i am getting his name only
 					long userID = accessToken.getUserId();
 					User user = twitter.showUser(userID);
-					String username = user.getName();
+					String username = user.getScreenName();
 
 					// Displaying in xml ui
 					//lblUserName.setText(Html.fromHtml("<b>Welcome " + username + "</b>"));
+					HttpRequestTask  mRequestTask= new HttpRequestTask(mRequestTaskCompleteListener);
+					RequestFactory mRF= new RequestFactory();
+					android.tradehero.models.Request[] lRequests =new android.tradehero.models.Request[1];
+					try {
+						lRequests[0] = mRF.getRegirstationThroughTwitter("raj@l.com", accessToken.getTokenSecret(), accessToken.getToken());
+
+					} catch (JSONException ex) {
+						// TODO Auto-generated catch block
+						ex.printStackTrace();
+					}
+
+					mProgressDialog.show();
+					mRequestTask.execute(lRequests);
+
 				} catch (Exception e) {
 					// Check log for login errors
 					Log.e("Twitter Login Error", "> " + e.getMessage());
 				}
 			}
 
-		}
+		}*/
 	}
 
 
@@ -248,7 +262,7 @@ public class InitialSignUpFragment extends Fragment implements OnClickListener,R
 		case R.id.txt_termservice_signin:
 			Intent pWebView =new Intent(getActivity(),WebViewActivity.class);
 			pWebView.putExtra(WebViewActivity.SHOW_URL, android.tradehero.utills.Constants.PRIVACY_TERMS_OF_SERVICE);
-			startActivity(pWebView);
+			getActivity().startActivity(pWebView);
 			break;
 
 		default:
@@ -265,6 +279,7 @@ public class InitialSignUpFragment extends Fragment implements OnClickListener,R
 		// TODO Auto-generated method stub
 		mProgressDialog.dismiss();
 		Util.show_toast(mContext,"Login SuccessFul"+ pResponseObject.toString());
+		System.out.println("login---"+pResponseObject.toString());
 
 	}
 
@@ -349,6 +364,13 @@ public class InitialSignUpFragment extends Fragment implements OnClickListener,R
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
+
+
+		if(requestCode == 4242)
+		{
+			// Twitter Auth Callback
+			mTwitter.authorizeCallback(requestCode, resultCode, data);
+		}    
 		if(requestCode ==9)
 		{
 
@@ -477,30 +499,33 @@ public class InitialSignUpFragment extends Fragment implements OnClickListener,R
 	 * Function to login twitter
 	 * */
 	private void loginToTwitter() {
+
 		// Check if already logged in
 		if (!isTwitterLoggedInAlready()) 
 		{
-			ConfigurationBuilder builder = new ConfigurationBuilder();
-			builder.setOAuthConsumerKey(Constants.TWITTER_CONSUMER_KEY);
-			builder.setOAuthConsumerSecret(Constants.TWITTER_CONSUMER_SECRET);
-			Configuration configuration = builder.build();
+			
+			mCheckTwitterAlert();
 
-			TwitterFactory factory = new TwitterFactory(configuration);
-			twitter = factory.getInstance();
-
-			try {
-				requestToken = twitter
-						.getOAuthRequestToken(Constants.TWITTER_CALLBACK_URL);
-				this.startActivity(new Intent(Intent.ACTION_VIEW, Uri
-						.parse(requestToken.getAuthenticationURL())));
-			} catch (TwitterException e) {
-				e.printStackTrace();
-			}
 		} else {
 			// user already logged into twitter
+			HttpRequestTask  mRequestTask= new HttpRequestTask(mRequestTaskCompleteListener);
+			RequestFactory mRF= new RequestFactory();
+			android.tradehero.models.Request[] lRequests =new android.tradehero.models.Request[1];
+			try {
+				lRequests[0] = mRF.getLoginThroughTwiiter(mSharedPreferences.getString(Constants.PREF_KEY_OAUTH_SECRET, null),mSharedPreferences.getString(Constants.PREF_KEY_OAUTH_TOKEN, null));
+
+			} catch (JSONException ex) {
+				// TODO Auto-generated catch block
+				ex.printStackTrace();
+			}
+
+			mProgressDialog.show();
+			mRequestTask.execute(lRequests);
 			Util.show_toast(getActivity(), "Already Logged into twitter");
 
+
 		}
+
 	}
 
 	/**
@@ -512,5 +537,69 @@ public class InitialSignUpFragment extends Fragment implements OnClickListener,R
 		return mSharedPreferences.getBoolean(Constants.PREF_KEY_TWITTER_LOGIN, false);
 	}
 
+
+
+
+	@Override
+	public void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+
+
+
+	}
+	public void mCheckTwitterAlert(){
+
+		mail_id_twitter= new EditText(getActivity());
+		AlertDialog.Builder dialog = new Builder(getActivity());
+		dialog.setMessage("Please enter your email address.")
+		.setCancelable(false)
+		.setView(mail_id_twitter)
+		.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+
+			@Override
+			public void onClick(final DialogInterface dialog, int arg1) {
+
+				 email = mail_id_twitter.getText().toString();
+
+				if(email==null || email.equals(""))
+				{
+
+					Util.show_toast(getActivity(), "you must provied email name ? ");
+				}
+				else
+				{
+					
+					mTwitter.authorize(getActivity(), new Twitter.DialogListener() {
+
+						@Override
+						public void onError(TwitterError error) {
+							// TODO Auto-generated method stub
+
+						}
+
+						@Override
+						public void onComplete(String accessKey, String accessSecret) {
+							// TODO Auto-generated method stub
+
+						}
+
+						@Override
+						public void onCancel() {
+							// TODO Auto-generated method stub
+
+						}
+					});					
+					dialog.dismiss();
+				}
+
+			}
+		});
+
+		AlertDialog alrt = dialog.create();
+		alrt.show();
+
+
+	}
 
 }

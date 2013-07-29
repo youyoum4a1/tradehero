@@ -96,9 +96,10 @@ public class LoginFragment extends Fragment implements OnClickListener,RequestTa
 					e.printStackTrace();
 				}
 
-			}else
+			}else 
 			{
-
+				startActivity(new Intent(getActivity(),TradeHeroTabActivity.class));
+				getActivity().finish();
 				Util.show_toast(getActivity(), "Field should not be blank .");
 
 			}
@@ -149,11 +150,8 @@ public class LoginFragment extends Fragment implements OnClickListener,RequestTa
 					dialog.dismiss();
 				}
 
-
-
 			}
 		});
-
 
 		AlertDialog alrt = dialog.create();
 		alrt.show();
@@ -163,11 +161,9 @@ public class LoginFragment extends Fragment implements OnClickListener,RequestTa
 	public void onTaskComplete(JSONObject pResponseObject) {
 		// TODO Auto-generated method stub
 		mProgressDialog.dismiss();
-
 		Log.e("Response ",pResponseObject.toString() );
 		Util.show_toast(getActivity(), "Login SuccessFul"+pResponseObject.toString());
-		startActivity(new Intent(getActivity(),TradeHeroTabActivity.class));
-		getActivity().finish();
+		
 	}
 
 	@Override
@@ -212,7 +208,6 @@ public class LoginFragment extends Fragment implements OnClickListener,RequestTa
 				}
 				break;
 
-
 			default:
 				break;
 			}
@@ -221,13 +216,11 @@ public class LoginFragment extends Fragment implements OnClickListener,RequestTa
 
 		case MotionEvent.ACTION_UP:
 
-
 			switch (v.getId()) {
 			case R.id.btn_login:
 				mSignIn.setBackgroundResource(R.drawable.rectangle_login);
 
 				break;
-
 
 			default:
 				break;
@@ -238,7 +231,6 @@ public class LoginFragment extends Fragment implements OnClickListener,RequestTa
 		default:
 			break;
 		}
-
 
 		return false;
 	}
