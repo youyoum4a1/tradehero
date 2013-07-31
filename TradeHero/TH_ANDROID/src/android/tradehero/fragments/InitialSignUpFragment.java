@@ -68,7 +68,7 @@ public class InitialSignUpFragment extends Fragment implements OnClickListener,R
 	private ProgressDialog mProgressDialog;
 	// Twitter
 	private Twitter mTwitter;
-    public static String email="";
+	public static String email="";
 	// Shared Preferences
 	private static SharedPreferences mSharedPreferences;
 	private String twitter_email="";
@@ -402,30 +402,40 @@ public class InitialSignUpFragment extends Fragment implements OnClickListener,R
 		@Override
 		public void call(Session session, SessionState state, Exception exception) {
 			String accessToken = session.getAccessToken();
-			HttpRequestTask  mRequestTask= new HttpRequestTask(mRequestTaskCompleteListener);
-			RequestFactory mRF= new RequestFactory();
-			android.tradehero.models.Request[] lRequests =new android.tradehero.models.Request[1];
-			if(activityType==LOGIN){
-				try {
 
-					lRequests[0] = mRF.getLoginThroughFB(accessToken);
+			if(!accessToken.equals("")) 
+			{
+				HttpRequestTask  mRequestTask= new HttpRequestTask(mRequestTaskCompleteListener);
+				RequestFactory mRF= new RequestFactory();
+				android.tradehero.models.Request[] lRequests =new android.tradehero.models.Request[1];
+				if(activityType==LOGIN){
+					try {
 
-				} catch (JSONException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+						lRequests[0] = mRF.getLoginThroughFB(accessToken);
+						mProgressDialog.show();
+						mRequestTask.execute(lRequests);
+
+					} catch (JSONException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				}
-			}else{
-				try {
-					lRequests[0] = mRF.getRegistrationThroughFB(accessToken);
+				else if(activityType == SIGNUP)
+				{
+					try {
+						lRequests[0] = mRF.getRegistrationThroughFB(accessToken);
+						mProgressDialog.show();
+						mRequestTask.execute(lRequests);
 
-				} catch (JSONException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					} catch (JSONException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				}
+
 			}
-			mProgressDialog.show();
-			mRequestTask.execute(lRequests);
 		}
+
 	}
 	private void linkedInLogin() {
 		ProgressDialog progressDialog = new ProgressDialog(getActivity());
@@ -465,22 +475,25 @@ public class InitialSignUpFragment extends Fragment implements OnClickListener,R
 						try {
 
 							lRequests[0] = mRF.getLoginThroughLinkedIn(getActivity(),accessToken.getTokenSecret(), accessToken.getToken());
+							mProgressDialog.show();
+							mRequestTask.execute(lRequests);
 						} catch (JSONException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
-					}else
+					}
+					else if(activityType == SIGNUP)
 					{
 						try {
 							lRequests[0] = mRF.getRegistrationThroughLinkedIn(getActivity(),accessToken.getTokenSecret(), accessToken.getToken());
+							mProgressDialog.show();
+							mRequestTask.execute(lRequests);
 
 						} catch (JSONException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
 					}
-					mProgressDialog.show();
-					mRequestTask.execute(lRequests);
 
 
 				} catch (Exception e) {
@@ -503,7 +516,7 @@ public class InitialSignUpFragment extends Fragment implements OnClickListener,R
 		// Check if already logged in
 		if (!isTwitterLoggedInAlready()) 
 		{
-			
+
 			mCheckTwitterAlert();
 
 		} else {
@@ -560,7 +573,7 @@ public class InitialSignUpFragment extends Fragment implements OnClickListener,R
 			@Override
 			public void onClick(final DialogInterface dialog, int arg1) {
 
-				 email = mail_id_twitter.getText().toString();
+				email = mail_id_twitter.getText().toString();
 
 				if(email==null || email.equals(""))
 				{
@@ -569,7 +582,7 @@ public class InitialSignUpFragment extends Fragment implements OnClickListener,R
 				}
 				else
 				{
-					
+
 					mTwitter.authorize(getActivity(), new Twitter.DialogListener() {
 
 						@Override
