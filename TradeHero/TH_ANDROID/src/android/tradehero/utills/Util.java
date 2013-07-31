@@ -35,6 +35,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+
 import android.Manifest;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
@@ -396,5 +402,75 @@ public final class Util {
 	public static final Pattern email_valid = Pattern.compile(
 			"^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$"
 			);
+	
+	
+	public static String httpGetConnection(String url) {
+		String result = null;
+		Log.d("Final URL : ", url);
+		HttpClient httpClient = new DefaultHttpClient();
+
+		// Sending a GET request to the web page that we want
+		// Because of we are sending a GET request, we have to pass the values
+		// through the URL
+		HttpGet httpGet = new HttpGet(url);
+
+		try {
+			// execute(); executes a request using the default context.
+			// Then we assign the execution result to HttpResponse
+			HttpResponse httpResponse = httpClient.execute(httpGet);
+
+			// getEntity() ; obtains the message entity of this response
+			// getContent() ; creates a new InputStream object of the entity.
+			// Now we need a readable source to read the byte stream that comes
+			// as the httpResponse
+			InputStream inputStream = httpResponse.getEntity().getContent();
+
+			// We have a byte stream. Next step is to convert it to a Character
+			// stream
+			InputStreamReader inputStreamReader = new InputStreamReader(
+					inputStream);
+
+			// Then we have to wraps the existing reader (InputStreamReader) and
+			// buffer the input
+			BufferedReader bufferedReader = new BufferedReader(
+					inputStreamReader);
+
+			// InputStreamReader contains a buffer of bytes read from the source
+			// stream and converts these into characters as needed.
+			// The buffer size is 8K
+			// Therefore we need a mechanism to append the separately coming
+			// chunks in to one String element
+			// We have to use a class that can handle modifiable sequence of
+			// characters for use in creating String
+			StringBuilder stringBuilder = new StringBuilder();
+
+			String bufferedStrChunk = null;
+
+			// There may be so many buffered chunks. We have to go through each
+			// and every chunk of characters
+			// and assign a each chunk to bufferedStrChunk String variable
+			// and append that value one by one to the stringBuilder
+			while ((bufferedStrChunk = bufferedReader.readLine()) != null) {
+				stringBuilder.append(bufferedStrChunk);
+			}
+
+			Log.d("result:", stringBuilder + "");
+			return stringBuilder.toString();
+
+		} catch (ClientProtocolException cpe) {
+			System.out.println("Exception generates caz of httpResponse :"
+					+ cpe);
+			cpe.printStackTrace();
+		} catch (IOException ioe) {
+			System.out
+					.println("Second exception generates caz of httpResponse :"
+							+ ioe);
+			ioe.printStackTrace();
+		}
+
+		return null;
+
+	}
+
 
 }

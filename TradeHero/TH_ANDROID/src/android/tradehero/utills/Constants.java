@@ -53,6 +53,7 @@ public class Constants {
 	public static final String PRIVACY_WEB_URL=BASE_API_URL+"privacy";
 	public static final String PRIVACY_TERMS_OF_SERVICE=BASE_API_URL+"privacy";
 	public static final String FORGOT_PASSWORD=BASE_API_URL+"api/forgotPassword";
+	public static final String CHECK_NAME_URL= BASE_API_URL+"api/checkDisplayNameAvailable?displayName=";
 	//header
 	public static final String CONTENT_TYPE="Content-type";
 	public static final String CONTENT_TYPE_VALUE_URL_ENCODED="application/x-www-form-urlencoded";

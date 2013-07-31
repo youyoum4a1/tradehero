@@ -22,6 +22,8 @@ import android.tradehero.http.HttpRequestTask;
 import android.tradehero.http.RequestFactory;
 import android.tradehero.http.RequestTaskCompleteListener;
 import android.tradehero.models.Request;
+import android.tradehero.networkstatus.NetworkStatus;
+import android.tradehero.utills.Constants;
 import android.tradehero.utills.Util;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -35,22 +37,23 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class EmailRegistrationFragment extends Fragment implements OnClickListener,RequestTaskCompleteListener,OnFocusChangeListener,OnTouchListener{
 
 	private EditText mEmailId,mPasword,
-					 mConfirmPassword,
-					 mDisplayName,mFirstName,
-					 mLastName;
+	mConfirmPassword,
+	mDisplayName,mFirstName,
+	mLastName;
 	private Button mSignUpButton;
 	private ProgressDialog mProgressDialog;
 	private ProgressBar mConfirmPasswordProgressBar,mEMailProgressBar,
-						mPaswordProgressbar,mDisplayNameProgressbar;
+	mPaswordProgressbar,mDisplayNameProgressbar;
 	private LayoutInflater mLayoutInflater;
 	private ImageView imgValidEMail,imgInValidEmail,
-					  imgValidPwd,imgInValidPwd,
-					  imgValidvConfirmPwd,imgInValidConfirmPassword,
-					  imgValidDisplyName,imgInvalidDisplyName;
+	imgValidPwd,imgInValidPwd,
+	imgValidvConfirmPwd,imgInValidConfirmPassword,
+	imgValidDisplyName,imgInvalidDisplyName;
 	private int  mWhichEdittext = 0;
 	private CharSequence  mText;
 	private ImageView mOptionalImage;
@@ -101,6 +104,7 @@ public class EmailRegistrationFragment extends Fragment implements OnClickListen
 		mSignUpButton.setOnTouchListener(this);
 		mProgressDialog= new ProgressDialog(getActivity());
 		mEmailId.setOnFocusChangeListener(this);
+		mDisplayName.setOnFocusChangeListener(this);
 		mConfirmPassword.setOnFocusChangeListener(this);
 		mProgressDialog.setMessage("Registering User");
 		mEMailProgressBar= (ProgressBar)view.findViewById(R.id.pdilog_mail);
@@ -138,6 +142,37 @@ public class EmailRegistrationFragment extends Fragment implements OnClickListen
 				mText = s;
 				new CheckValidation().execute();
 
+			}
+
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count,
+					int after) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void afterTextChanged(Editable s) {
+				// TODO Auto-generated method stub
+
+			}
+		});
+
+
+		mDisplayName.addTextChangedListener(new TextWatcher() {
+
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before, int count) {
+				// TODO Auto-generated method stub
+				mText = s;
+
+				if(NetworkStatus.getInstance().isConnected(getActivity()))
+				{
+					new CheckValidation().execute();
+				}else{
+					Toast.makeText(getActivity(), getResources().getString(R.string.network_error),200).show();
+
+				}
 			}
 
 			@Override
@@ -230,11 +265,11 @@ public class EmailRegistrationFragment extends Fragment implements OnClickListen
 		// TODO Auto-generated method stub
 		mProgressDialog.dismiss();
 		if(pResponseObject!=null){
-			
+
 			System.out.println("result response----"+pResponseObject.toString());
-			
+
 			try {
-				
+
 				if(pResponseObject.has("Message"))
 				{
 					String msg = pResponseObject.getString("Message");
@@ -244,12 +279,12 @@ public class EmailRegistrationFragment extends Fragment implements OnClickListen
 				{
 					Util.show_toast(getActivity(), pResponseObject.toString());
 				}
-								
+
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			
+
 		}
 	}
 
@@ -351,6 +386,10 @@ public class EmailRegistrationFragment extends Fragment implements OnClickListen
 			{
 				confirmPwdValidationPrework();
 			}
+			else if(mWhichEdittext == 3)
+			{
+				nameDisplayPrework();
+			}
 		}
 
 		@Override
@@ -366,6 +405,12 @@ public class EmailRegistrationFragment extends Fragment implements OnClickListen
 			}else if(mWhichEdittext == 2)
 			{
 				mReturn = confirmPwdValidationChecker();
+
+			}else if(mWhichEdittext == 3)
+			{
+
+				mReturn = displayName_ValidationChecker(mText);
+
 			}
 			return mReturn;
 		}
@@ -382,8 +427,53 @@ public class EmailRegistrationFragment extends Fragment implements OnClickListen
 			}else if(mWhichEdittext == 2)
 			{
 				confirmPwdValidationPostwork(result);
+			}else if(mWhichEdittext == 3)
+			{
+				nameDisplayPostwork(result);
 			}
 		}
+
+	}
+
+	private boolean displayName_ValidationChecker(CharSequence text){
+
+		String response = Util.httpGetConnection(Constants.CHECK_NAME_URL+text);
+		System.out.println("disply name chk url ======"+Constants.CHECK_NAME_URL+text);
+
+		if(response != null)
+		{
+
+			try {
+				JSONObject jsonObj = new JSONObject(response);
+				boolean result = jsonObj.getString("available").equalsIgnoreCase("true");
+				if (result)
+				{
+					try {
+						Thread.sleep(1000);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					return true;
+				}
+				else
+				{	
+					try {
+						Thread.sleep(1000);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+
+					return false;
+				}
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+		}
+		return false;
 
 	}
 
@@ -439,6 +529,33 @@ public class EmailRegistrationFragment extends Fragment implements OnClickListen
 
 	}
 
+
+
+	private void nameDisplayPostwork(boolean result){
+
+		mDisplayNameProgressbar.setVisibility(View.INVISIBLE);
+		if(result){
+
+			imgInvalidDisplyName.setVisibility(View.VISIBLE);
+			imgValidDisplyName.setVisibility(View.INVISIBLE);
+
+		}else{
+
+
+			imgValidDisplyName.setVisibility(View.VISIBLE);
+			imgInvalidDisplyName.setVisibility(View.INVISIBLE);
+		}
+
+	}
+
+	private void nameDisplayPrework(){
+
+
+		mDisplayNameProgressbar.setVisibility(View.VISIBLE);
+		imgInvalidDisplyName.setVisibility(View.INVISIBLE);
+		imgValidDisplyName.setVisibility(View.INVISIBLE);
+
+	}
 
 	private boolean confirmPwdValidationChecker(){
 
@@ -505,6 +622,11 @@ public class EmailRegistrationFragment extends Fragment implements OnClickListen
 			break;
 
 		case R.id.et_password:
+
+			break;
+
+		case R.id.et_display_name:
+			mWhichEdittext = 3;
 
 			break;
 
