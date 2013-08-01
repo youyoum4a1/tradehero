@@ -1,6 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<WebView  xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/webView1"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-/>
+    android:background="#ffFFFFFF"
+    android:orientation="vertical" >
+
+    <WebView
+        android:id="@+id/WebView_browser"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_alignParentTop="true" />
+    <ProgressBar 
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:id="@+id/webview_progressbar"
+        android:visibility="gone"
+        />
+
+</RelativeLayout>

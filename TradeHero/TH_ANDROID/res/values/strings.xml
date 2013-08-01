@@ -22,6 +22,7 @@
     <string name="optional">Optional</string>
     <string name="first_name">First Name</string>
     <string name="last_name">Last Name</string>
+    <string name="network_error">Check your Network connection !</string>
     <string name="sign_up">Sign Up</string>
     <string name="Signin_content">sign in with</string>
     <string name="Signin_content1">or sign in with an</string>
@@ -38,6 +39,7 @@
     <string name="Trades">Trades</string>
     <string name="Exchanges">Exchanges</string>
     <string name="facebook_app_id">431745923529834</string>
+    <string name="loading_loading">Loading...</string>
     
     <!-- What's Trending -->
     <string name="header_trending">Trending</string>
@@ -73,5 +75,6 @@
     <string name="avg_volume">Avg Volume</string>
     <string name="na">N/A</string>
     
+
 
 </resources>

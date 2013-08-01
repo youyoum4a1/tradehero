@@ -42,6 +42,9 @@ public class HttpRequestTask extends AsyncTask<Request, Void, JSONObject> {
 			case 8:
 				responseBody=HttpRequestUtil.doLinkedLoginRequestNgetResponseBody(pRequest[0].getContext(), pRequest[0].getApiUrl(), pRequest[0].getUserName(),pRequest[0].getPassword());
 				break;
+			case 9:
+				responseBody=HttpRequestUtil.doTwitterLoginRequestNgetResponseBody(pRequest[0].getContext(), pRequest[0].getApiUrl(), pRequest[0].getUserName(),pRequest[0].getPassword());
+				break;
 			default:
 				break;
 			}

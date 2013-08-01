@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.List;
 
@@ -157,15 +158,15 @@ public class HttpRequestUtil {
 		try {
 
 			//ent =new UrlEncodedFormEntity(params);
-				ent =new UrlEncodedFormEntity(params, HTTP.UTF_8);
-				
+			ent =new UrlEncodedFormEntity(params, HTTP.UTF_8);
+
 
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		}
 
 		if (ent != null)
-			
+
 			post.setEntity(ent);
 
 
@@ -203,11 +204,11 @@ public class HttpRequestUtil {
 			//post.setHeader("Authorization","Basic "+token.substring(0, token.length()-1));
 			System.out.println( "Mukul ----- "+ token);
 			//post.setHeader("Authorization","Basic bmVlcmFqQGVhdGVjaG5vbG9naWVzLmNvbTp0ZXN0aW5n");
-			
+
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		}
-		
+
 
 
 		return getResponseBody(context, post);
@@ -223,19 +224,22 @@ public class HttpRequestUtil {
 	public static String doLinkedLoginRequestNgetResponseBody(Context context, String url, String pTokenSceret,String pToken) {
 
 		HttpPost post = new HttpPost(url);
+
+
+
 		try {
-			String r = "{ \"linkedin_access_token\": \""+pToken+"\", \"linkedin_access_token_secret\": \""+pTokenSceret+"\" }";
-			System.out.println(r);
+			
+
+			String r = "{ \"linkedin_access_token\": \""+pToken+"\", \"linkedin_access_token_secret\": \""+pTokenSceret+"\"}";
+			//String r = "{ \"linkedin_access_token\": \""+"53b4314f-ed6e-455f-a100-f3bd23f37ada"+"\", \"linkedin_access_token_secret\": \""+"d1890c45-d4f7-4c17-914d-085ebcd7e8c4"+"\"}";
+			System.out.println("json data------"+r);
 			post.setEntity(new StringEntity(r));
-			post.setHeader(Constants.TH_CLIENT_VERSION,Constants.TH_CLIENT_VERSION_VALUE_NEW);
-			post.setHeader("Accept-Language","en-us");
+			post.setHeader(Constants.TH_CLIENT_VERSION,Constants.TH_CLIENT_VERSION_VALUE);
+		//	post.setHeader("Accept-Language","en-us");
 			post.setHeader("Content-type", "application/json");
-			post.setHeader("Accept", "application/json");
-			post.setHeader("Accept-Encoding", "gzip, deflate");
-			
-			/*//post.setEntity(new StringEntity(Constants.LINKED_ACCESS_TOKEN_SCERET+"="+pPassword+"&"+Constants.LINKED_ACCESS_TOKEN+"="+pUserName));
-			 * 
-			
+			post.setHeader("Authorization","TH-LinkedIn "+pToken + ":" + pTokenSceret);
+			//post.setHeader("Accept", "application/json");
+		//	post.setHeader("Accept-Encoding", "gzip, deflate");
 			post.setHeader(Constants.TH_CLIENT_VERSION,Constants.TH_CLIENT_VERSION_VALUE_NEW);
 			post.setHeader("Content-type", "application/json; charset=UTF-8");
 			JSONObject jsonParams = new JSONObject();
@@ -247,12 +251,43 @@ public class HttpRequestUtil {
 			//post.setHeader("TH-Client-Version","1.4.1.2813");
 			//post.setParams(new BasicHttpParams().setParameter(Constants.LINKED_ACCESS_TOKEN_SCERET, pPassword).setParameter(Constants.LINKED_ACCESS_TOKEN, pUserName));
 			//post.setParams(new BasicHttpParams().setParamet	er(Constants.LINKED_ACCESS_TOKEN, pUserName));\
-*/						
+								
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
 
+		return getResponseBody(context, post);
+
+	} 
+
+
+	public static String doTwitterLoginRequestNgetResponseBody(Context context, String url, String pTokenSceret,String pToken) {
+
+		HttpPost post = new HttpPost(url);
+		try {
+			String r = "{ \"twitter_access_token\": \""+pToken+"\", \"twitter_access_token_secret\": \""+pTokenSceret+"\" }";
+			System.out.println(r);
+			post.setEntity(new StringEntity(r));
+			post.setHeader(Constants.TH_CLIENT_VERSION,Constants.TH_CLIENT_VERSION_VALUE_NEW);
+			post.setHeader("Accept-Language","en-us");
+			post.setHeader("Content-type", "application/json");
+			post.setHeader("Accept", "application/json");
+			post.setHeader("Accept-Encoding", "gzip, deflate");
+
+			post.setHeader(Constants.TH_CLIENT_VERSION,Constants.TH_CLIENT_VERSION_VALUE_NEW);
+			post.setHeader("Content-type", "application/json; charset=UTF-8");
+			JSONObject jsonParams = new JSONObject();
+			jsonParams.put(Constants.LINKED_ACCESS_TOKEN_SCERET, pTokenSceret);
+			jsonParams.put(Constants.LINKED_ACCESS_TOKEN, pToken);
+			StringEntity ent = new StringEntity(jsonParams.toString(), HTTP.UTF_8);
+			//ent.setContentType("application/json");
+			post.setEntity(ent);
+			//post.setHeader("TH-Client-Version","1.4.1.2813");
+			//post.setParams(new BasicHttpParams().setParameter(Constants.LINKED_ACCESS_TOKEN_SCERET, pPassword).setParameter(Constants.LINKED_ACCESS_TOKEN, pUserName));
+			//post.setParams(new BasicHttpParams().setParamet	er(Constants.LINKED_ACCESS_TOKEN, pUserName));\
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
 		return getResponseBody(context, post);
 

@@ -48,7 +48,7 @@ public class RequestFactory {
 		 return lLoginRequest;
 	}
 
-	public Request getRegirstationThroughFB(String pFacebookAccessToken) throws JSONException{
+	public Request getRegistrationThroughFB(String pFacebookAccessToken) throws JSONException{
 		Request lRegistrationRequest = new Request();
 		lRegistrationRequest.setApiUrl(Constants.SIGN_UP_WITH_SOCIAL_MEDIA_USER_URL);
 		lRegistrationRequest.setParameter(new BasicNameValuePair(Constants.FB_ACCESS_TOKEN,pFacebookAccessToken));
@@ -60,31 +60,39 @@ public class RequestFactory {
 		//lRegistrationRequest.setRequestJSonObject(jsonRegistrationObject);
 		return lRegistrationRequest;
 	}
-	public Request getRegirstationThroughLinkedIn(Context pContext,String pLinkedinAccessTokenSecret,String pLinkedinAccessToken) throws JSONException{
+	public Request getRegistrationThroughLinkedIn(Context pContext,String pLinkedinAccessTokenSecret,String pLinkedinAccessToken) throws JSONException{
 		Request lRegistrationRequest = new Request();
 		lRegistrationRequest.setApiUrl(Constants.SIGN_UP_WITH_SOCIAL_MEDIA_USER_URL);
-		lRegistrationRequest.setContext(pContext);
+		lRegistrationRequest.setContext(pContext); 
 		lRegistrationRequest.addRequestHeader(new BasicHeader(Constants.TH_CLIENT_VERSION, Constants.TH_CLIENT_VERSION_VALUE));
 		lRegistrationRequest.addRequestHeader(new BasicHeader(Constants.CONTENT_TYPE,Constants.CONTENT_TYPE_VALUE_URL_ENCODED ));
-		JSONObject jsonRegistrationObject = new JSONObject();
-		jsonRegistrationObject.put(Constants.LINKED_ACCESS_TOKEN_SCERET,pLinkedinAccessTokenSecret);
-		jsonRegistrationObject.put(Constants.LINKED_ACCESS_TOKEN,pLinkedinAccessToken);
+		//lRegistrationRequest.addRequestHeader(new BasicHeader("Authorization","TH-LinkedIn "+pLinkedinAccessToken + ":" + pLinkedinAccessTokenSecret));
+//		JSONObject jsonRegistrationObject = new JSONObject();
+//		jsonRegistrationObject.put(Constants.LINKED_ACCESS_TOKEN_SCERET,pLinkedinAccessToken);
+//		jsonRegistrationObject.put(Constants.LINKED_ACCESS_TOKEN,pLinkedinAccessTokenSecret);
+//		lRegistrationRequest.setReqJsonObject(jsonRegistrationObject);
 		lRegistrationRequest.setParameter(new BasicNameValuePair(Constants.LINKED_ACCESS_TOKEN_SCERET,pLinkedinAccessTokenSecret));
 		lRegistrationRequest.setParameter(new BasicNameValuePair(Constants.LINKED_ACCESS_TOKEN,pLinkedinAccessToken));
+	//	lRegistrationRequest.setParameter(new BasicNameValuePair("clientiOS","1"));
+		
 		lRegistrationRequest.setPassword((pLinkedinAccessTokenSecret));
 		lRegistrationRequest.setUserName(pLinkedinAccessToken);
-		lRegistrationRequest.setRequestType(8);
-		//lRegistrationRequest.setRequestType(Request.REQUEST_TYPE_POST);```																																																																																																																							
+		//lRegistrationRequest.setRequestType(8);
+		lRegistrationRequest.setRequestType(Request.REQUEST_TYPE_POST);	
+		
+		System.out.println("variables--------------"+"secret-"+pLinkedinAccessTokenSecret+" token-"+pLinkedinAccessToken);
 		return lRegistrationRequest;
 	}
-	public Request getRegirstationThroughTwitter(String pEmailId,String pTwitterAccessTokenSecret,String pTwitrerAccessToken) throws JSONException{
+	public Request getRegistrationThroughTwitter(String pEmailId,String pTwitterAccessTokenSecret,String pTwitrerAccessToken) throws JSONException{
 		Request lRegistrationRequest = new Request();
 		lRegistrationRequest.setApiUrl(Constants.SIGN_UP_WITH_SOCIAL_MEDIA_USER_URL);
 		lRegistrationRequest.addRequestHeader(new BasicHeader(Constants.TH_CLIENT_VERSION, Constants.TH_CLIENT_VERSION_VALUE_NEW));
 		lRegistrationRequest.addRequestHeader(new BasicHeader(Constants.CONTENT_TYPE,Constants.CONTENT_TYPE_VALUE_URL_ENCODED ));
+		lRegistrationRequest.setParameter(new BasicNameValuePair("email",pEmailId));
 		lRegistrationRequest.setParameter(new BasicNameValuePair(Constants.TWITTER_ACCESS_TOKEN,pTwitrerAccessToken));
 		lRegistrationRequest.setParameter(new BasicNameValuePair(Constants.TWITTER_ACCESS_TOKEN_SCERET,pTwitterAccessTokenSecret));
 		//lRegistrationRequest.setRequestJSonObject(jsonRegistrationObject);
+		//lRegistrationRequest.setRequestType(9);
 		lRegistrationRequest.setRequestType(Request.REQUEST_TYPE_POST);
 		// lRegistrationRequest.setRequestJSonObject(jsonRegistrationObject);
 		return lRegistrationRequest;

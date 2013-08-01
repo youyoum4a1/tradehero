@@ -28,6 +28,7 @@ public class LinkedinDialog extends Dialog {
 	public static LinkedInApiClientFactory factory;
 	public static LinkedInOAuthService oAuthService;
 	public static LinkedInRequestToken liToken;
+	private String scopeParams="r_basicprofile%20r_emailaddress%20r_network%20r_contactinfo%20rw_nus%20w_messages";
 
 	/**
 	 * Construct a new LinkedIn dialog
@@ -57,7 +58,7 @@ public class LinkedinDialog extends Dialog {
 	{
 		LinkedinDialog.oAuthService = LinkedInOAuthServiceFactory.getInstance()
 				.createLinkedInOAuthService(Constants.LINKEDIN_CONSUMER_KEY,
-						Constants.LINKEDIN_CONSUMER_SECRET);
+						Constants.LINKEDIN_CONSUMER_SECRET,scopeParams);
 		LinkedinDialog.factory = LinkedInApiClientFactory.newInstance(
 				Constants.LINKEDIN_CONSUMER_KEY, Constants.LINKEDIN_CONSUMER_SECRET);
 
