@@ -45,7 +45,7 @@
     <string name="negetive_prefix">▼</string>
     <string name="zero_prefix"></string>
     
-    <!-- What's Trending Details-->
+    <!-- What's Trending Details - Trade -->
     <string name="tab_trade">TRADE</string>
     <string name="tab_stock_info">STOCK INFO</string>
     <string name="tab_news">NEWS</string>
@@ -60,6 +60,18 @@
     <string name="p25k">$25K</string>
     <string name="p50k">$50K</string>
     <string name="buy"> BUY </string>
+    
+    <!-- What's Trending Details - StockInfo -->
+    <string name="previous_close">Previous Close</string>
+    <string name="open">Open</string>
+    <string name="days_high">Day\'s High</string>
+    <string name="days_low">Day\'s Low</string>
+    <string name="market_cap">Market Cap</string>
+    <string name="pe_ratio">P/E Ratio</string>
+    <string name="eps">EPS</string>
+    <string name="volume">Volume</string>
+    <string name="avg_volume">Avg Volume</string>
+    <string name="na">N/A</string>
     
 
 </resources>

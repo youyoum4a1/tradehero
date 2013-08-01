@@ -163,11 +163,16 @@ public class LoginFragment extends Fragment implements OnClickListener,RequestTa
 	public void onTaskComplete(JSONObject pResponseObject) {
 		// TODO Auto-generated method stub
 		mProgressDialog.dismiss();
-
-		Log.e("Response ",pResponseObject.toString() );
-		Util.show_toast(getActivity(), "Login SuccessFul"+pResponseObject.toString());
-		startActivity(new Intent(getActivity(),TradeHeroTabActivity.class));
-		getActivity().finish();
+		
+		try {
+			Log.e("Response ",pResponseObject.toString() );
+			Util.show_toast(getActivity(), "Login SuccessFul"+pResponseObject.toString());
+			startActivity(new Intent(getActivity(),TradeHeroTabActivity.class));
+			getActivity().finish();
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override

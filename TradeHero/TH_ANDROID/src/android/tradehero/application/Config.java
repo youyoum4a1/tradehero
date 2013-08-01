@@ -24,5 +24,13 @@ public class Config {
 		return localValueForKey(R.string.trending_chart);
 	}
 	
+	public static String getYahooQuotes() {
+		return localValueForKey(R.string.yahoo_quotes);
+	}
+	
+	public static String getTrendRssFeed() {
+		return localValueForKey(R.string.trend_rss_feed);
+	}
+	
 	
 }

@@ -23,15 +23,6 @@
             android:layout_height="match_parent"
             android:background="@color/trending_grid_item_bg" />
 
-        <!--  <ImageView
-            android:id="@+id/stock_chart"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:adjustViewBounds="true"
-            android:contentDescription="@null"
-            android:scaleType="fitXY" />-->
-
         <ImageView
             android:id="@+id/stock_logo"
             android:layout_width="84dp"
@@ -52,7 +43,7 @@
             android:orientation="vertical" >
 
             <TextView
-                android:id="@+id/stock_price"
+                android:id="@+id/last_price"
                 style="@style/TH.Value"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -66,7 +57,7 @@
                 style="@style/TH.Value"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/stock_price"
+                android:layout_below="@id/last_price"
                 android:text="ask"
                 android:textSize="13sp" />
 
@@ -75,10 +66,18 @@
                 style="@style/TH.Title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/stock_price"
+                android:layout_below="@id/last_price"
                 android:layout_toRightOf="@id/ask_price"
                 android:text="bid"
                 android:textSize="13sp" />
+
+            <ProgressBar
+                android:id="@+id/progress"
+                android:layout_below="@id/bid_price"
+                android:layout_alignWithParentIfMissing="true"
+                style="?android:attr/progressBarStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
         </RelativeLayout>
 
         <TableLayout
@@ -210,45 +209,49 @@
         android:orientation="vertical" >
 
         <SeekBar
-            android:id="@+id/seekBar1"
+            android:id="@+id/seekBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="#ffd7d7e0"
-            android:paddingBottom="4dp"
             android:paddingLeft="18dp"
             android:paddingRight="18dp"
             android:paddingTop="4dp" />
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="48dp"
+            android:layout_height="45dp"
             android:layout_margin="10dp"
             android:background="@drawable/trend_price_bar"
             android:orientation="horizontal" >
 
             <Button
+                android:id="@+id/toggle5k"
                 style="@style/TH.Btn_Price_Bar"
                 android:text="@string/p5k" />
 
             <View style="@style/TH.Btn_Price_Bar_Separator" />
 
             <Button
+                android:id="@+id/toggle10k"
                 style="@style/TH.Btn_Price_Bar"
                 android:text="@string/p10k" />
 
             <View style="@style/TH.Btn_Price_Bar_Separator" />
 
             <Button
+                android:id="@+id/toggle25k"
                 style="@style/TH.Btn_Price_Bar"
                 android:text="@string/p25k" />
 
             <View style="@style/TH.Btn_Price_Bar_Separator" />
 
             <Button
+                android:id="@+id/toggle50k"
                 style="@style/TH.Btn_Price_Bar"
                 android:text="@string/p50k" />
 
             <Button
+                android:id="@+id/btn_buy"
                 style="@style/TH.Btn_Price_Bar"
                 android:layout_weight="5"
                 android:background="@drawable/btn_buy"
@@ -264,8 +267,7 @@
             android:adjustViewBounds="true"
             android:contentDescription="@null"
             android:padding="10dp"
-            android:scaleType="fitXY"
-             />
+            android:scaleType="fitXY" />
     </LinearLayout>
 
 </LinearLayout>

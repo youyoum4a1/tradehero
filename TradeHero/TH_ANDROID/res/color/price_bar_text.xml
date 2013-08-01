@@ -1,0 +1,6 @@
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:color="@color/price_bar_text_default" android:state_checked="true"/> <!-- pressed -->
+    <item android:color="@color/black"/> <!-- default/unchecked -->
+
+</selector>

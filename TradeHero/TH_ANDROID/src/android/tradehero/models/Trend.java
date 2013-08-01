@@ -33,7 +33,7 @@ public class Trend {
 	public String low;
 	public String pe;
 	public String eps;
-	public String marketOpen;
+	public boolean marketOpen;
 	public int pc50DMA;
 	public String pc200DMA;
 	public String exchangeTimezoneMsftName;
@@ -192,10 +192,10 @@ public class Trend {
 	public void setEps(String eps) {
 		this.eps = eps;
 	}
-	public String getMarketOpen() {
+	public boolean getMarketOpen() {
 		return marketOpen;
 	}
-	public void setMarketOpen(String marketOpen) {
+	public void setMarketOpen(boolean marketOpen) {
 		this.marketOpen = marketOpen;
 	}
 	public int getPc50DMA() {
