@@ -22,6 +22,7 @@ import android.tradehero.activities.dialog.LinkedinDialog.OnVerifyListener;
 import android.tradehero.http.HttpRequestTask;
 import android.tradehero.http.RequestFactory;
 import android.tradehero.http.RequestTaskCompleteListener;
+import android.tradehero.networkstatus.NetworkStatus;
 import android.tradehero.twitter.Twitter;
 import android.tradehero.twitter.TwitterError;
 import android.tradehero.utills.Constants;
@@ -71,7 +72,6 @@ public class InitialSignUpFragment extends Fragment implements OnClickListener,R
 	public static String email="";
 	// Shared Preferences
 	private static SharedPreferences mSharedPreferences;
-	private String twitter_email="";
 	private String mBottmLine,mHeader,mHeaderBellow;
 	private EditText mail_id_twitter;
 	private int activityType;
@@ -151,70 +151,7 @@ public class InitialSignUpFragment extends Fragment implements OnClickListener,R
 		 * redirected from twitter page. Parse the uri to get oAuth
 		 * Verifier
 		 * */
-		/*if (!isTwitterLoggedInAlready()) 
-		{
-			Uri uri = getActivity().getIntent().getData();
-			if (uri != null && uri.toString().startsWith(Constants.TWITTER_CALLBACK_URL))
-			{
-				// oAuth verifier
-				String verifier = uri.getQueryParameter(Constants.URL_TWITTER_OAUTH_VERIFIER);
-
-				try {
-					// Get the access token
-					AccessToken accessToken = twitter.getOAuthAccessToken(
-							Constants.requestToken, verifier);
-
-					// Shared Preferences
-					Editor e = mSharedPreferences.edit();
-
-					// After getting access token, access token secret
-					// store them in application preferences
-					e.putString(Constants.PREF_KEY_OAUTH_TOKEN, accessToken.getToken());
-					e.putString(Constants.PREF_KEY_OAUTH_SECRET,accessToken.getTokenSecret());
-					// Store login status - true
-					e.putBoolean(Constants.PREF_KEY_TWITTER_LOGIN, true);
-					e.commit(); // save changes
-
-					Log.e("Twitter OAuth Token", "> " + accessToken.getToken());
-
-					// Hide login button
-					// btnLoginTwitter.setVisibility(View.GONE);
-
-					// Show Update Twitter
-					//lblUpdate.setVisibility(View.VISIBLE);
-					//txtUpdate.setVisibility(View.VISIBLE);
-					//btnUpdateStatus.setVisibility(View.VISIBLE);
-					// btnLogoutTwitter.setVisibility(View.VISIBLE);
-
-					// Getting user details from twitter
-					// For now i am getting his name only
-					long userID = accessToken.getUserId();
-					User user = twitter.showUser(userID);
-					String username = user.getScreenName();
-
-					// Displaying in xml ui
-					//lblUserName.setText(Html.fromHtml("<b>Welcome " + username + "</b>"));
-					HttpRequestTask  mRequestTask= new HttpRequestTask(mRequestTaskCompleteListener);
-					RequestFactory mRF= new RequestFactory();
-					android.tradehero.models.Request[] lRequests =new android.tradehero.models.Request[1];
-					try {
-						lRequests[0] = mRF.getRegirstationThroughTwitter("raj@l.com", accessToken.getTokenSecret(), accessToken.getToken());
-
-					} catch (JSONException ex) {
-						// TODO Auto-generated catch block
-						ex.printStackTrace();
-					}
-
-					mProgressDialog.show();
-					mRequestTask.execute(lRequests);
-
-				} catch (Exception e) {
-					// Check log for login errors
-					Log.e("Twitter Login Error", "> " + e.getMessage());
-				}
-			}
-
-		}*/
+		
 	}
 
 
@@ -223,18 +160,38 @@ public class InitialSignUpFragment extends Fragment implements OnClickListener,R
 
 		switch (v.getId()) {
 		case R.id.btn_fbook_signin:
-			operationType=OP_FB;
-			onClickLoginFaceBook();
+			if(NetworkStatus.getInstance().isConnected(getActivity()))
+			{
+				operationType=OP_FB;
+				onClickLoginFaceBook();
+				
+			}else
+			{
+				Util.show_toast(getActivity(), getResources().getString(R.string.network_error));
+			}
 			break;
 		case R.id.btn_twitter_signin:
-			operationType=OP_TWITTER;
-			loginToTwitter();
+			if(NetworkStatus.getInstance().isConnected(getActivity()))
+			{
+				operationType=OP_TWITTER;
+				loginToTwitter();
+				
+			}else
+			{
+				Util.show_toast(getActivity(), getResources().getString(R.string.network_error));
+			}
 			break;
 		case R.id.btn_linkedin_linkedin:
-			operationType=OP_LINKEDIN;
-			linkedInLogin();
-
-
+			if(NetworkStatus.getInstance().isConnected(getActivity()))
+			{
+				operationType=OP_LINKEDIN;
+				linkedInLogin();
+				
+			}else
+			{
+				Util.show_toast(getActivity(), getResources().getString(R.string.network_error));
+			}
+			
 			break;
 		case R.id.txt_email:
 			if(activityType==LOGIN)
@@ -278,8 +235,26 @@ public class InitialSignUpFragment extends Fragment implements OnClickListener,R
 	public void onTaskComplete(JSONObject pResponseObject) {
 		// TODO Auto-generated method stub
 		mProgressDialog.dismiss();
-		Util.show_toast(mContext,"Login SuccessFul"+ pResponseObject.toString());
 		System.out.println("login---"+pResponseObject.toString());
+		if(pResponseObject != null)
+		{
+			try {
+
+				if(pResponseObject.has("Message"))
+				{
+					String msg = pResponseObject.getString("Message");
+					Util.show_toast(getActivity(), msg);					
+				}
+				else
+				{
+					Util.show_toast(getActivity(), pResponseObject.toString());
+				}
+
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 
 	}
 

@@ -56,7 +56,7 @@ public class Constants {
 	public static final String CHECK_NAME_URL= BASE_API_URL+"api/checkDisplayNameAvailable?displayName=";
 	//header
 	public static final String CONTENT_TYPE="Content-type";
-	public static final String CONTENT_TYPE_VALUE_URL_ENCODED="application/x-www-form-urlencoded";
+	public static final String CONTENT_TYPE_VALUE_URL_ENCODED="application/x-www-form-urlencoded; charset=utf-8";
 	public static final String CONTENT_TYPE_VALUE_JSON="application/json";
 	public static final String CHARSET="charset" ;
 	public static final String CHARSET_VALUE="utf-8";	

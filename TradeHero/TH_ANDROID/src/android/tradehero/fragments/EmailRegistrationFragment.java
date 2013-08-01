@@ -199,8 +199,17 @@ public class EmailRegistrationFragment extends Fragment implements OnClickListen
 
 
 		if(v.getId()== R.id.btn_register){
-			try {
-				_handle_registration();
+			try {			
+				
+				if(NetworkStatus.getInstance().isConnected(getActivity()))
+				{
+					_handle_registration();
+					
+				}else
+				{
+					Util.show_toast(getActivity(), getResources().getString(R.string.network_error));
+				}
+								
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

@@ -14,10 +14,12 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.tradehero.activities.R;
 import android.tradehero.activities.TradeHeroTabActivity;
+import android.tradehero.activities.WelcomeActivity;
 import android.tradehero.http.HttpRequestTask;
 import android.tradehero.http.RequestFactory;
 import android.tradehero.http.RequestTaskCompleteListener;
 import android.tradehero.models.Request;
+import android.tradehero.networkstatus.NetworkStatus;
 import android.tradehero.utills.Util;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -85,13 +87,22 @@ public class LoginFragment extends Fragment implements OnClickListener,RequestTa
 			String pass =inputPassword.getText()!=null?inputPassword.getText().toString():"";
 			if(uname.trim().length()>0 && pass.trim().length()>0)
 			{
-				HttpRequestTask  mRequestTask= new HttpRequestTask(this);
-				RequestFactory mRF= new RequestFactory();
+				
 				try {
-					Request[] lRequests={ mRF.getLoginThroughEmail(mContext,uname,pass)};
-					mRequestTask.execute(lRequests);
-					mProgressDialog.show();
-				} catch (JSONException e){
+					
+					if(NetworkStatus.getInstance().isConnected(getActivity()))
+					{
+						HttpRequestTask  mRequestTask= new HttpRequestTask(this);
+						RequestFactory mRF= new RequestFactory();
+						Request[] lRequests={ mRF.getLoginThroughEmail(mContext,uname,pass)};
+						mRequestTask.execute(lRequests);
+						mProgressDialog.show();
+					}else
+					{
+						Util.show_toast(getActivity(), getResources().getString(R.string.network_error));
+					}
+					
+				} catch (Exception e){
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
@@ -162,8 +173,19 @@ public class LoginFragment extends Fragment implements OnClickListener,RequestTa
 		// TODO Auto-generated method stub
 		mProgressDialog.dismiss();
 		Log.e("Response ",pResponseObject.toString() );
-		Util.show_toast(getActivity(), "Login SuccessFul"+pResponseObject.toString());
+		if(pResponseObject != null)
+		{
+			try {
+				String msg = pResponseObject.getString("Message");
+				Util.show_toast(getActivity(), msg);
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 		
+		
+
 	}
 
 	@Override
@@ -193,18 +215,32 @@ public class LoginFragment extends Fragment implements OnClickListener,RequestTa
 
 				if(uname.trim().length()>0 && pass.trim().length()>0)
 				{
-					HttpRequestTask  mRequestTask= new HttpRequestTask(this);
-					RequestFactory mRF= new RequestFactory();
+					
 					try {
-						Request[] lRequests={ mRF.getLoginThroughEmail(mContext,uname,pass)};
-						mRequestTask.execute(lRequests);
-					} catch (JSONException e){
+						
+						if(NetworkStatus.getInstance().isConnected(getActivity()))
+						{
+							HttpRequestTask  mRequestTask= new HttpRequestTask(this);
+							RequestFactory mRF= new RequestFactory();
+							Request[] lRequests={ mRF.getLoginThroughEmail(mContext,uname,pass)};
+							mRequestTask.execute(lRequests);
+							mProgressDialog.show();
+						}else
+						{
+							Util.show_toast(getActivity(), getResources().getString(R.string.network_error));
+						}
+						
+					} catch (Exception e){
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 
-				}else{
-					Util.show_toast(getActivity(), "Log In");
+				}else 
+				{
+					startActivity(new Intent(getActivity(),TradeHeroTabActivity.class));
+					getActivity().finish();
+					Util.show_toast(getActivity(), "Field should not be blank .");
+
 				}
 				break;
 
