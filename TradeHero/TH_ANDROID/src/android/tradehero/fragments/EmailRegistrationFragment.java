@@ -1,7 +1,10 @@
 package android.tradehero.fragments;
 
+import java.net.URLEncoder;
+
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -18,6 +21,7 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.tradehero.activities.R;
+import android.tradehero.activities.TradeHeroTabActivity;
 import android.tradehero.http.HttpRequestTask;
 import android.tradehero.http.RequestFactory;
 import android.tradehero.http.RequestTaskCompleteListener;
@@ -261,7 +265,8 @@ public class EmailRegistrationFragment extends Fragment implements OnClickListen
 		{
 			HttpRequestTask  mRequestTask= new HttpRequestTask(this);
 			RequestFactory mRF= new RequestFactory();
-			Request[] lRequests ={ mRF.getRegistrationThroughEmailRequest(mContext,lEmail, lDName, lFName, lLName,lPassword, lConfirmPassword)};
+			@SuppressWarnings("deprecation")
+			Request[] lRequests ={ mRF.getRegistrationThroughEmailRequest(mContext,lEmail,lDName, lFName, lLName,lPassword, lConfirmPassword)};
 			mRequestTask.execute(lRequests);
 			mProgressDialog.show();
 		}
@@ -286,6 +291,8 @@ public class EmailRegistrationFragment extends Fragment implements OnClickListen
 				}
 				else
 				{
+					Util.show_toast(getActivity(), pResponseObject.toString());
+					startActivity(new Intent(getActivity(),TradeHeroTabActivity.class).putExtra("DNAME", pResponseObject.optString("displayName")));
 					Util.show_toast(getActivity(), pResponseObject.toString());
 				}
 
@@ -446,7 +453,7 @@ public class EmailRegistrationFragment extends Fragment implements OnClickListen
 
 	private boolean displayName_ValidationChecker(CharSequence text){
 
-		String response = Util.httpGetConnection(Constants.CHECK_NAME_URL+text);
+		String response = Util.httpGetConnection(Constants.CHECK_NAME_URL+URLEncoder.encode(text.toString()));
 		System.out.println("disply name chk url ======"+Constants.CHECK_NAME_URL+text);
 
 		if(response != null)

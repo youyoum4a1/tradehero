@@ -109,8 +109,8 @@ public class LoginFragment extends Fragment implements OnClickListener,RequestTa
 
 			}else 
 			{
-				startActivity(new Intent(getActivity(),TradeHeroTabActivity.class));
-				getActivity().finish();
+				//startActivity(new Intent(getActivity(),TradeHeroTabActivity.class));
+				//getActivity().finish();
 				Util.show_toast(getActivity(), "Field should not be blank .");
 
 			}
@@ -153,7 +153,7 @@ public class LoginFragment extends Fragment implements OnClickListener,RequestTa
 				if(email==null || email.equals(""))
 				{
 
-					Util.show_toast(getActivity(), "you must provied email name ? ");
+					Util.show_toast(getActivity(), getResources().getString(R.string.enter_message_email));
 				}
 				else
 				{
@@ -172,13 +172,23 @@ public class LoginFragment extends Fragment implements OnClickListener,RequestTa
 	public void onTaskComplete(JSONObject pResponseObject) {
 		// TODO Auto-generated method stub
 		mProgressDialog.dismiss();
-		Log.e("Response ",pResponseObject.toString() );
+		Log.i("Response ",pResponseObject.toString() );
 		if(pResponseObject != null)
 		{
 			try {
-				String msg = pResponseObject.getString("Message");
-				Util.show_toast(getActivity(), msg);
-			} catch (JSONException e) {
+
+				if(pResponseObject.has("Message"))
+				{
+					String msg = pResponseObject.optString("Message");
+					Util.show_toast(getActivity(), msg);					
+				}
+				else
+				{    
+					startActivity(new Intent(getActivity(),TradeHeroTabActivity.class));
+					Util.show_toast(getActivity(), pResponseObject.toString());
+				}
+
+			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
@@ -237,8 +247,7 @@ public class LoginFragment extends Fragment implements OnClickListener,RequestTa
 
 				}else 
 				{
-					startActivity(new Intent(getActivity(),TradeHeroTabActivity.class));
-					getActivity().finish();
+					
 					Util.show_toast(getActivity(), "Field should not be blank .");
 
 				}
@@ -278,8 +287,8 @@ public class LoginFragment extends Fragment implements OnClickListener,RequestTa
 			public void onTaskComplete(JSONObject pResponseObject) {
 				// TODO Auto-generated method stub
 				mProgressDialog.dismiss();
-
-				Util.show_toast(getActivity(), "Thank You ! Please follow your mail box" +pResponseObject!=null?pResponseObject.toString():"Error");
+				startActivity(new Intent(getActivity(),TradeHeroTabActivity.class));
+				Util.show_toast(getActivity(), getResources().getString(R.string.thank_you_message_email) +pResponseObject!=null?pResponseObject.toString():"Error");
 			}
 
 			@Override
