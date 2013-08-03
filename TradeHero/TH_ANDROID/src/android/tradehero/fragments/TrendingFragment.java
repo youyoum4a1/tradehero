@@ -107,6 +107,7 @@ public class TrendingFragment extends Fragment{
 			public void onSuccess(String response) {
 				
 				try {
+					System.out.println("trending response---"+response);
 					ObjectMapper objectMapper = new ObjectMapper();
 					trendList = objectMapper.readValue(response, TypeFactory.defaultInstance().constructCollectionType(List.class, Trend.class));
 					setDataAdapterToGridView(trendList);

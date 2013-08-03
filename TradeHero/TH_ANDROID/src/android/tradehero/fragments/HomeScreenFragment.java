@@ -34,8 +34,9 @@ public class HomeScreenFragment extends Fragment{
 
 
 	private void _initView(View view) {
-
-		mUserName ="Rajiv Bhatia";
+		
+        String mUserName = getActivity().getIntent().getStringExtra("DNAME");
+		//mUserName ="Rajiv Bhatia";
 		txtUserName = (TextView)view.findViewById(R.id.header_txt_homescreen);
 		txtUserName.setText(mUserName);
 
