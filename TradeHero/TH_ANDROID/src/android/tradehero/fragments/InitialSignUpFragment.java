@@ -234,7 +234,6 @@ public class InitialSignUpFragment extends Fragment implements OnClickListener,R
 
 	@Override
 	public void onTaskComplete(JSONObject pResponseObject) {
-		// TODO Auto-generated method stub
 		if(mProgressDialog.isShowing())
 		{
 			mProgressDialog.dismiss();	
@@ -261,7 +260,6 @@ public class InitialSignUpFragment extends Fragment implements OnClickListener,R
 				}
 
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -270,7 +268,6 @@ public class InitialSignUpFragment extends Fragment implements OnClickListener,R
 
 	@Override
 	public void onErrorOccured(int pErrorCode, String pErrorMessage) {
-		// TODO Auto-generated method stub
 
 	}
 
@@ -348,7 +345,6 @@ public class InitialSignUpFragment extends Fragment implements OnClickListener,R
 						mRequestTask.execute(lRequests);
 
 					} catch (JSONException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 				}
@@ -360,7 +356,6 @@ public class InitialSignUpFragment extends Fragment implements OnClickListener,R
 						mRequestTask.execute(lRequests);
 
 					} catch (JSONException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 				}
@@ -410,7 +405,6 @@ public class InitialSignUpFragment extends Fragment implements OnClickListener,R
 							mProgressDialog.show();
 							mRequestTask.execute(lRequests);
 						} catch (JSONException e) {
-							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
 					}
@@ -422,7 +416,6 @@ public class InitialSignUpFragment extends Fragment implements OnClickListener,R
 							mRequestTask.execute(lRequests);
 
 						} catch (JSONException e) {
-							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
 					}
@@ -460,13 +453,12 @@ public class InitialSignUpFragment extends Fragment implements OnClickListener,R
 				lRequests[0] = mRF.getLoginThroughTwiiter(mSharedPreferences.getString(Constants.PREF_KEY_OAUTH_SECRET, null),mSharedPreferences.getString(Constants.PREF_KEY_OAUTH_TOKEN, null));
 
 			} catch (JSONException ex) {
-				// TODO Auto-generated catch block
 				ex.printStackTrace();
 			}
 
 			mProgressDialog.show();
 			mRequestTask.execute(lRequests);
-			Util.show_toast(getActivity(), "Already Logged into twitter");
+			Util.show_toast(getActivity(), getResources().getString(R.string.twitter_login_message));
 
 
 		}
@@ -487,7 +479,6 @@ public class InitialSignUpFragment extends Fragment implements OnClickListener,R
 
 	@Override
 	public void onResume() {
-		// TODO Auto-generated method stub
 		super.onResume();
 
 
@@ -510,7 +501,7 @@ public class InitialSignUpFragment extends Fragment implements OnClickListener,R
 				if(email==null || email.equals(""))
 				{
 
-					Util.show_toast(getActivity(),getResources().getString(R.string.twitter_email));
+					Util.show_toast(getActivity(),getResources().getString(R.string.email_alert));
 				}
 				else
 				{
@@ -519,19 +510,16 @@ public class InitialSignUpFragment extends Fragment implements OnClickListener,R
 
 						@Override
 						public void onError(TwitterError error) {
-							// TODO Auto-generated method stub
 
 						}
 
 						@Override
 						public void onComplete(String accessKey, String accessSecret) {
-							// TODO Auto-generated method stub
 
 						}
 
 						@Override
 						public void onCancel() {
-							// TODO Auto-generated method stub
 
 						}
 					});					

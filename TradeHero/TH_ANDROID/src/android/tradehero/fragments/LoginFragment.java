@@ -34,7 +34,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 
-public class LoginFragment extends Fragment implements OnClickListener,RequestTaskCompleteListener,OnFocusChangeListener,OnTouchListener{
+public class LoginFragment extends Fragment implements OnClickListener,RequestTaskCompleteListener,OnFocusChangeListener{
 
 	private TextView mForgotPassword;
 	private Button mSignIn;
@@ -73,7 +73,7 @@ public class LoginFragment extends Fragment implements OnClickListener,RequestTa
 		mProgressDialog.setMessage("Logging In");
 		mForgotPassword.setOnClickListener(this);
 		mSignIn.setOnClickListener(this);
-		mSignIn.setOnTouchListener(this);
+		//mSignIn.setOnTouchListener(this);
 		//mForgotPassword.setOnTouchListener(this)
 	}
 
@@ -103,7 +103,6 @@ public class LoginFragment extends Fragment implements OnClickListener,RequestTa
 					}
 					
 				} catch (Exception e){
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 
@@ -111,7 +110,7 @@ public class LoginFragment extends Fragment implements OnClickListener,RequestTa
 			{
 				//startActivity(new Intent(getActivity(),TradeHeroTabActivity.class));
 				//getActivity().finish();
-				Util.show_toast(getActivity(), "Field should not be blank .");
+				Util.show_toast(getActivity(),getResources().getString(R.string.field_not_balnk));
 
 			}
 
@@ -131,14 +130,13 @@ public class LoginFragment extends Fragment implements OnClickListener,RequestTa
 		inputEmailName= new EditText(getActivity());
 
 		AlertDialog.Builder dialog = new Builder(getActivity());
-		dialog.setMessage("Please enter your email address.")
+		dialog.setMessage(getResources().getString(R.string.enter_message_email))
 		.setCancelable(false)
 		.setView(inputEmailName)
 		.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
 
 			@Override
 			public void onClick(DialogInterface dialog, int arg1) {
-				// TODO Auto-generated method stub
 				dialog.cancel();
 
 			}
@@ -153,7 +151,7 @@ public class LoginFragment extends Fragment implements OnClickListener,RequestTa
 				if(email==null || email.equals(""))
 				{
 
-					Util.show_toast(getActivity(), getResources().getString(R.string.enter_message_email));
+					Util.show_toast(getActivity(), getResources().getString(R.string.email_alert));
 				}
 				else
 				{
@@ -170,7 +168,6 @@ public class LoginFragment extends Fragment implements OnClickListener,RequestTa
 
 	@Override
 	public void onTaskComplete(JSONObject pResponseObject) {
-		// TODO Auto-generated method stub
 		mProgressDialog.dismiss();
 		Log.i("Response ",pResponseObject.toString() );
 		if(pResponseObject != null)
@@ -189,7 +186,6 @@ public class LoginFragment extends Fragment implements OnClickListener,RequestTa
 				}
 
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -200,25 +196,21 @@ public class LoginFragment extends Fragment implements OnClickListener,RequestTa
 
 	@Override
 	public void onErrorOccured(int pErrorCode, String pErrorMessage) {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void onFocusChange(View arg0, boolean arg1) {
-		// TODO Auto-generated method stub
 
 	}
 
-	@Override
+	/*@Override
 	public boolean onTouch(View v, MotionEvent event) {
-		// TODO Auto-generated method stub
 		switch (event.getAction()) {
 		case MotionEvent.ACTION_DOWN:
 
 			switch (v.getId()) {
 			case R.id.btn_login:
-				mSignIn.setBackgroundResource(R.drawable.rectangle_login);
 
 				String uname=inputEmailName.getText()!=null?inputEmailName.getText().toString():"";
 				String pass =inputPassword.getText()!=null?inputPassword.getText().toString():"";
@@ -241,7 +233,6 @@ public class LoginFragment extends Fragment implements OnClickListener,RequestTa
 						}
 						
 					} catch (Exception e){
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 
@@ -279,13 +270,12 @@ public class LoginFragment extends Fragment implements OnClickListener,RequestTa
 
 		return false;
 	}
-
+*/
 
 	private void doForgotPassword(String email){
 		HttpRequestTask  mRequestTask= new HttpRequestTask(new RequestTaskCompleteListener(){
 			@Override
 			public void onTaskComplete(JSONObject pResponseObject) {
-				// TODO Auto-generated method stub
 				mProgressDialog.dismiss();
 				startActivity(new Intent(getActivity(),TradeHeroTabActivity.class));
 				Util.show_toast(getActivity(), getResources().getString(R.string.thank_you_message_email) +pResponseObject!=null?pResponseObject.toString():"Error");
@@ -294,7 +284,6 @@ public class LoginFragment extends Fragment implements OnClickListener,RequestTa
 			@Override
 			public void onErrorOccured(int pErrorCode,
 					String pErrorMessage) {
-				// TODO Auto-generated method stub
 
 			}});
 		RequestFactory mRF= new RequestFactory();
@@ -305,7 +294,7 @@ public class LoginFragment extends Fragment implements OnClickListener,RequestTa
 		}
 
 		catch (JSONException e)
-		{// TODO Auto-generated catch block
+		{
 			e.printStackTrace();
 		}	
 		mRequestTask.execute(lRequests);

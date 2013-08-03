@@ -257,7 +257,7 @@
                 android:layout_margin="10dp"
                 android:adjustViewBounds="true"
                 android:gravity="center"
-                android:background="@drawable/layout_oval"
+                android:background="@drawable/image_selector"
                 android:src="@drawable/avatar" />
 
             <LinearLayout
@@ -299,7 +299,7 @@
             android:layout_marginLeft="30dp"
             android:layout_marginRight="30dp"
             android:layout_marginTop="30dp"
-            android:background="@drawable/roundrectangle_signin"
+            android:background="@drawable/signin_button_selector"
             android:padding="10dp"
             android:text="@string/sign_up"
             android:textColor="@color/signinfnt_color"
