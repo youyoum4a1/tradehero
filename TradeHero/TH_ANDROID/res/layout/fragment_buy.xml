@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#90000000">
+
+    <include
+        android:id="@+id/header"
+        layout="@layout/topbar" />
+
+    <EditText
+        android:id="@+id/comments"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:ems="10"
+        android:gravity="top"
+        android:hint="@string/hint_buy_comment"
+        android:inputType="textMultiLine" 
+        android:background="@color/white"
+        android:padding="5dp">
+
+        <requestFocus />
+    </EditText>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        
+        android:orientation="horizontal"
+        android:background="@color/stock_info_bg">
+    </LinearLayout>
+    
+    <TextView 
+        android:id="@+id/buy_info"
+        android:padding="10dp"
+        android:layout_marginTop="15dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/white"
+        android:text=""    />
+    
+
+</LinearLayout>
