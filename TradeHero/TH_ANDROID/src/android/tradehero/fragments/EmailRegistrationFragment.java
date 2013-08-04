@@ -1,7 +1,10 @@
 package android.tradehero.fragments;
 
+import java.net.URLEncoder;
+
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -18,6 +21,7 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.tradehero.activities.R;
+import android.tradehero.activities.TradeHeroTabActivity;
 import android.tradehero.http.HttpRequestTask;
 import android.tradehero.http.RequestFactory;
 import android.tradehero.http.RequestTaskCompleteListener;
@@ -39,7 +43,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class EmailRegistrationFragment extends Fragment implements OnClickListener,RequestTaskCompleteListener,OnFocusChangeListener,OnTouchListener{
+public class EmailRegistrationFragment extends Fragment implements OnClickListener,RequestTaskCompleteListener,OnFocusChangeListener{
 
 	private EditText mEmailId,mPasword,
 	mConfirmPassword,
@@ -101,7 +105,7 @@ public class EmailRegistrationFragment extends Fragment implements OnClickListen
 		imgInvalidDisplyName = (ImageView)view.findViewById(R.id.invalid_nmdisplay_img);
 
 		mSignUpButton.setOnClickListener(this);
-		mSignUpButton.setOnTouchListener(this);
+		//mSignUpButton.setOnTouchListener(this);
 		mProgressDialog= new ProgressDialog(getActivity());
 		mEmailId.setOnFocusChangeListener(this);
 		mDisplayName.setOnFocusChangeListener(this);
@@ -112,12 +116,11 @@ public class EmailRegistrationFragment extends Fragment implements OnClickListen
 		mPaswordProgressbar= (ProgressBar)view.findViewById(R.id.pdilog_pwd);
 		mOptionalImage = (ImageView)view.findViewById(R.id.image_optional);
 		mOptionalImage.setOnClickListener(this);
-		mOptionalImage.setOnTouchListener(this);
+		//mOptionalImage.setOnTouchListener(this);
 
 		mEmailId.addTextChangedListener(new TextWatcher() {
 			@Override
 			public void onTextChanged(CharSequence s, int start, int before, int count) {
-				// TODO Auto-generated method stub
 				mText = s;
 				new CheckValidation().execute();
 			}
@@ -125,7 +128,6 @@ public class EmailRegistrationFragment extends Fragment implements OnClickListen
 			@Override
 			public void beforeTextChanged(CharSequence s, int start, int count,
 					int after) {
-				// TODO Auto-generated method stub
 			}
 
 			@Override
@@ -147,13 +149,11 @@ public class EmailRegistrationFragment extends Fragment implements OnClickListen
 			@Override
 			public void beforeTextChanged(CharSequence s, int start, int count,
 					int after) {
-				// TODO Auto-generated method stub
 
 			}
 
 			@Override
 			public void afterTextChanged(Editable s) {
-				// TODO Auto-generated method stub
 
 			}
 		});
@@ -163,7 +163,6 @@ public class EmailRegistrationFragment extends Fragment implements OnClickListen
 
 			@Override
 			public void onTextChanged(CharSequence s, int start, int before, int count) {
-				// TODO Auto-generated method stub
 				mText = s;
 
 				if(NetworkStatus.getInstance().isConnected(getActivity()))
@@ -178,13 +177,11 @@ public class EmailRegistrationFragment extends Fragment implements OnClickListen
 			@Override
 			public void beforeTextChanged(CharSequence s, int start, int count,
 					int after) {
-				// TODO Auto-generated method stub
 
 			}
 
 			@Override
 			public void afterTextChanged(Editable s) {
-				// TODO Auto-generated method stub
 
 			}
 		});
@@ -211,7 +208,6 @@ public class EmailRegistrationFragment extends Fragment implements OnClickListen
 				}
 								
 			} catch (JSONException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -261,7 +257,8 @@ public class EmailRegistrationFragment extends Fragment implements OnClickListen
 		{
 			HttpRequestTask  mRequestTask= new HttpRequestTask(this);
 			RequestFactory mRF= new RequestFactory();
-			Request[] lRequests ={ mRF.getRegistrationThroughEmailRequest(mContext,lEmail, lDName, lFName, lLName,lPassword, lConfirmPassword)};
+			@SuppressWarnings("deprecation")
+			Request[] lRequests ={ mRF.getRegistrationThroughEmailRequest(mContext,lEmail,lDName, lFName, lLName,lPassword, lConfirmPassword)};
 			mRequestTask.execute(lRequests);
 			mProgressDialog.show();
 		}
@@ -271,7 +268,6 @@ public class EmailRegistrationFragment extends Fragment implements OnClickListen
 
 	@Override
 	public void onTaskComplete(JSONObject pResponseObject) {
-		// TODO Auto-generated method stub
 		mProgressDialog.dismiss();
 		if(pResponseObject!=null){
 
@@ -287,10 +283,11 @@ public class EmailRegistrationFragment extends Fragment implements OnClickListen
 				else
 				{
 					Util.show_toast(getActivity(), pResponseObject.toString());
+					startActivity(new Intent(getActivity(),TradeHeroTabActivity.class).putExtra("DNAME", pResponseObject.optString("displayName")));
+					Util.show_toast(getActivity(), pResponseObject.toString());
 				}
 
 			} catch (JSONException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 
@@ -300,7 +297,6 @@ public class EmailRegistrationFragment extends Fragment implements OnClickListen
 
 	@Override
 	public void onErrorOccured(int pErrorCode, String pErrorMessage) {
-		// TODO Auto-generated method stub
 
 	}
 
@@ -349,7 +345,6 @@ public class EmailRegistrationFragment extends Fragment implements OnClickListen
 					mOptionalImage.setImageBitmap(Util.getImagerotation(selectedPath,circleBitmap));
 
 				} catch (Exception e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 
@@ -384,7 +379,6 @@ public class EmailRegistrationFragment extends Fragment implements OnClickListen
 
 		@Override
 		protected void onPreExecute() {
-			// TODO Auto-generated method stub
 			super.onPreExecute();
 
 			if(mWhichEdittext == 1)
@@ -405,7 +399,6 @@ public class EmailRegistrationFragment extends Fragment implements OnClickListen
 		protected Boolean doInBackground(String... arg0) {
 
 			boolean mReturn = false; 
-			// TODO Auto-generated method stub
 			if(mWhichEdittext == 1)
 			{
 
@@ -426,7 +419,6 @@ public class EmailRegistrationFragment extends Fragment implements OnClickListen
 
 		@Override
 		protected void onPostExecute(Boolean result) {
-			// TODO Auto-generated method stub
 			super.onPostExecute(result);
 
 			if(mWhichEdittext == 1)
@@ -446,7 +438,7 @@ public class EmailRegistrationFragment extends Fragment implements OnClickListen
 
 	private boolean displayName_ValidationChecker(CharSequence text){
 
-		String response = Util.httpGetConnection(Constants.CHECK_NAME_URL+text);
+		String response = Util.httpGetConnection(Constants.CHECK_NAME_URL+URLEncoder.encode(text.toString()));
 		System.out.println("disply name chk url ======"+Constants.CHECK_NAME_URL+text);
 
 		if(response != null)
@@ -460,7 +452,6 @@ public class EmailRegistrationFragment extends Fragment implements OnClickListen
 					try {
 						Thread.sleep(1000);
 					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 					return true;
@@ -470,14 +461,12 @@ public class EmailRegistrationFragment extends Fragment implements OnClickListen
 					try {
 						Thread.sleep(1000);
 					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 
 					return false;
 				}
 			} catch (JSONException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 
@@ -494,7 +483,6 @@ public class EmailRegistrationFragment extends Fragment implements OnClickListen
 			try {
 				Thread.sleep(1000);
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			return true;
@@ -504,7 +492,6 @@ public class EmailRegistrationFragment extends Fragment implements OnClickListen
 			try {
 				Thread.sleep(1000);
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 
@@ -574,7 +561,6 @@ public class EmailRegistrationFragment extends Fragment implements OnClickListen
 			try {
 				Thread.sleep(1000);
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			return true;
@@ -583,7 +569,6 @@ public class EmailRegistrationFragment extends Fragment implements OnClickListen
 			try {
 				Thread.sleep(1000);
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 
@@ -645,9 +630,8 @@ public class EmailRegistrationFragment extends Fragment implements OnClickListen
 
 	}
 
-	@Override
+	/*@Override
 	public boolean onTouch(View v, MotionEvent event) {
-		// TODO Auto-generated method stub
 		switch (event.getAction()) {
 		case MotionEvent.ACTION_DOWN:
 
@@ -695,7 +679,7 @@ public class EmailRegistrationFragment extends Fragment implements OnClickListen
 
 		return false;
 	}
-
+*/
 
 }
 

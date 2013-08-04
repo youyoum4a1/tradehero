@@ -407,10 +407,14 @@ public class HttpRequestUtil {
 	 * @return
 	 */
 	private static String getResponseBody(Context context, HttpRequestBase httpRequest) {
-
+		
 		HttpResponse response = getResponse( context, httpRequest);
-		Logger.log("Response ", "Response "+response.toString(), LogLevel.LOGGING_LEVEL_INFO);
-		return getResponseBody(response);
+		//Logger.log("Response ", "Response "+response.toString(), LogLevel.LOGGING_LEVEL_INFO);
+		if(response!= null){
+			return getResponseBody(response);
+		}
+		return "";
+		
 	}
 
 	/**

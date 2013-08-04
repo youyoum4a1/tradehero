@@ -17,6 +17,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.tradehero.activities.R;
+import android.tradehero.activities.TradeHeroTabActivity;
 import android.tradehero.activities.dialog.LinkedinDialog;
 import android.tradehero.activities.dialog.LinkedinDialog.OnVerifyListener;
 import android.tradehero.http.HttpRequestTask;
@@ -50,7 +51,7 @@ import com.google.code.linkedinapi.client.oauth.LinkedInRequestToken;
 import com.google.code.linkedinapi.schema.Person;
 
 
-public class InitialSignUpFragment extends Fragment implements OnClickListener,RequestTaskCompleteListener,OnTouchListener{
+public class InitialSignUpFragment extends Fragment implements OnClickListener,RequestTaskCompleteListener{
 
 	public static final int LOGIN=90001;
 	public static  int mCurCheckPosition=2;
@@ -137,9 +138,9 @@ public class InitialSignUpFragment extends Fragment implements OnClickListener,R
 		mTerms.setOnClickListener(this);
 		mEmailTv.setOnClickListener(this);
 
-		mFaceBookBtn.setOnTouchListener(this);
-		mTwitterBtn.setOnTouchListener(this);
-		mLinkedinBtn.setOnTouchListener(this);
+		//mFaceBookBtn.setOnTouchListener(this);
+//		mTwitterBtn.setOnTouchListener(this);
+//		mLinkedinBtn.setOnTouchListener(this);
 		//mTerms.setOnTouchListener(this);
 		//mEmailTv.setOnTouchListener(this);
 
@@ -151,7 +152,7 @@ public class InitialSignUpFragment extends Fragment implements OnClickListener,R
 		 * redirected from twitter page. Parse the uri to get oAuth
 		 * Verifier
 		 * */
-		
+
 	}
 
 
@@ -164,7 +165,7 @@ public class InitialSignUpFragment extends Fragment implements OnClickListener,R
 			{
 				operationType=OP_FB;
 				onClickLoginFaceBook();
-				
+
 			}else
 			{
 				Util.show_toast(getActivity(), getResources().getString(R.string.network_error));
@@ -175,7 +176,7 @@ public class InitialSignUpFragment extends Fragment implements OnClickListener,R
 			{
 				operationType=OP_TWITTER;
 				loginToTwitter();
-				
+
 			}else
 			{
 				Util.show_toast(getActivity(), getResources().getString(R.string.network_error));
@@ -186,12 +187,12 @@ public class InitialSignUpFragment extends Fragment implements OnClickListener,R
 			{
 				operationType=OP_LINKEDIN;
 				linkedInLogin();
-				
+
 			}else
 			{
 				Util.show_toast(getActivity(), getResources().getString(R.string.network_error));
 			}
-			
+
 			break;
 		case R.id.txt_email:
 			if(activityType==LOGIN)
@@ -233,25 +234,32 @@ public class InitialSignUpFragment extends Fragment implements OnClickListener,R
 
 	@Override
 	public void onTaskComplete(JSONObject pResponseObject) {
-		// TODO Auto-generated method stub
-		mProgressDialog.dismiss();
-		System.out.println("login---"+pResponseObject.toString());
-		if(pResponseObject != null)
+		if(mProgressDialog.isShowing())
 		{
+			mProgressDialog.dismiss();	
+		}
+
+		if(pResponseObject != null)
+		{   		
+			System.out.println("login---"+pResponseObject.toString());
 			try {
 
 				if(pResponseObject.has("Message"))
 				{
-					String msg = pResponseObject.getString("Message");
+					String msg = pResponseObject.optString("Message");
 					Util.show_toast(getActivity(), msg);					
 				}
 				else
-				{
+				{   
+					//for testing
 					Util.show_toast(getActivity(), pResponseObject.toString());
+					startActivity(new Intent(getActivity(),TradeHeroTabActivity.class).putExtra("DNAME", pResponseObject.optString("displayName")));
+					
+					
+					
 				}
 
-			} catch (JSONException e) {
-				// TODO Auto-generated catch block
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
@@ -260,64 +268,10 @@ public class InitialSignUpFragment extends Fragment implements OnClickListener,R
 
 	@Override
 	public void onErrorOccured(int pErrorCode, String pErrorMessage) {
-		// TODO Auto-generated method stub
 
 	}
 
-	@SuppressLint("ResourceAsColor")
-	@Override
-	public boolean onTouch(View v, MotionEvent event) {
-		// TODO Auto-generated method stub
-
-		switch (event.getAction()) {
-		case MotionEvent.ACTION_DOWN:
-
-			switch (v.getId()) {
-			case R.id.btn_fbook_signin:
-				mFaceBookBtn.setBackgroundResource(R.drawable.twit_rectangle);
-				break;
-			case R.id.btn_twitter_signin:
-				mTwitterBtn.setBackgroundResource(R.drawable.linkedin_rectangle);
-				break;
-			case R.id.btn_linkedin_linkedin:
-				mLinkedinBtn.setBackgroundResource(R.drawable.rectangle_fbook);
-				break;
-
-			default:
-				break;
-			}
-
-			break;
-
-		case MotionEvent.ACTION_UP:
-
-			switch (v.getId()) {
-			case R.id.btn_fbook_signin:
-				mFaceBookBtn.setBackgroundResource(R.drawable.rectangle_fbook);
-
-				break;
-			case R.id.btn_twitter_signin:
-
-				mTwitterBtn.setBackgroundResource(R.drawable.twit_rectangle);
-				break;
-			case R.id.btn_linkedin_linkedin:
-				mLinkedinBtn.setBackgroundResource(R.drawable.linkedin_rectangle);
-				break;
-
-			default:
-				break;
-			}
-
-			break;
-
-		default:
-			break;
-		}
-
-
-		return false;
-	}
-
+	
 	@Override
 	public void onStart() {
 		super.onStart();
@@ -391,7 +345,6 @@ public class InitialSignUpFragment extends Fragment implements OnClickListener,R
 						mRequestTask.execute(lRequests);
 
 					} catch (JSONException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 				}
@@ -403,7 +356,6 @@ public class InitialSignUpFragment extends Fragment implements OnClickListener,R
 						mRequestTask.execute(lRequests);
 
 					} catch (JSONException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 				}
@@ -453,7 +405,6 @@ public class InitialSignUpFragment extends Fragment implements OnClickListener,R
 							mProgressDialog.show();
 							mRequestTask.execute(lRequests);
 						} catch (JSONException e) {
-							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
 					}
@@ -465,7 +416,6 @@ public class InitialSignUpFragment extends Fragment implements OnClickListener,R
 							mRequestTask.execute(lRequests);
 
 						} catch (JSONException e) {
-							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
 					}
@@ -503,13 +453,12 @@ public class InitialSignUpFragment extends Fragment implements OnClickListener,R
 				lRequests[0] = mRF.getLoginThroughTwiiter(mSharedPreferences.getString(Constants.PREF_KEY_OAUTH_SECRET, null),mSharedPreferences.getString(Constants.PREF_KEY_OAUTH_TOKEN, null));
 
 			} catch (JSONException ex) {
-				// TODO Auto-generated catch block
 				ex.printStackTrace();
 			}
 
 			mProgressDialog.show();
 			mRequestTask.execute(lRequests);
-			Util.show_toast(getActivity(), "Already Logged into twitter");
+			Util.show_toast(getActivity(), getResources().getString(R.string.twitter_login_message));
 
 
 		}
@@ -530,7 +479,6 @@ public class InitialSignUpFragment extends Fragment implements OnClickListener,R
 
 	@Override
 	public void onResume() {
-		// TODO Auto-generated method stub
 		super.onResume();
 
 
@@ -540,7 +488,7 @@ public class InitialSignUpFragment extends Fragment implements OnClickListener,R
 
 		mail_id_twitter= new EditText(getActivity());
 		AlertDialog.Builder dialog = new Builder(getActivity());
-		dialog.setMessage("Please enter your email address.")
+		dialog.setMessage(getResources().getString(R.string.enter_message_email))
 		.setCancelable(false)
 		.setView(mail_id_twitter)
 		.setPositiveButton("OK", new DialogInterface.OnClickListener() {
@@ -553,7 +501,7 @@ public class InitialSignUpFragment extends Fragment implements OnClickListener,R
 				if(email==null || email.equals(""))
 				{
 
-					Util.show_toast(getActivity(), "you must provied email name ? ");
+					Util.show_toast(getActivity(),getResources().getString(R.string.email_alert));
 				}
 				else
 				{
@@ -562,19 +510,16 @@ public class InitialSignUpFragment extends Fragment implements OnClickListener,R
 
 						@Override
 						public void onError(TwitterError error) {
-							// TODO Auto-generated method stub
 
 						}
 
 						@Override
 						public void onComplete(String accessKey, String accessSecret) {
-							// TODO Auto-generated method stub
 
 						}
 
 						@Override
 						public void onCancel() {
-							// TODO Auto-generated method stub
 
 						}
 					});					
@@ -590,4 +535,7 @@ public class InitialSignUpFragment extends Fragment implements OnClickListener,R
 
 	}
 
+	
+	
+	
 }
