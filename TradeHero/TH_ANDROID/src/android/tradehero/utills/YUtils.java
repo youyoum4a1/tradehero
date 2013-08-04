@@ -132,7 +132,7 @@ public class YUtils {
     }
 	
 	public static double parseQuoteValue(String value) {
-		Logger.log(TAG, "parseQuoteCSVValue: "+value, LogLevel.LOGGING_LEVEL_DEBUG);
+		Logger.log(TAG, "parseQuoteValue: "+value, LogLevel.LOGGING_LEVEL_DEBUG);
 		if(!TextUtils.isEmpty(value)) {
 			try {
 				double requiredValue = Double.parseDouble(value);
@@ -170,24 +170,5 @@ public class YUtils {
 		 
 		return value;
 	}
-	
-//	private void roundOfCurrency(String value) {
-//		if(!TextUtils.isEmpty(value)) {
-//			int len = value.length();
-//			
-//			switch (len) {
-//			case 4:
-//				double v = parseQuoteValue(value);
-//				if(!Double.isNaN(v)) {
-//					//v = v/1000;
-//					String.format(""%.2f%s", args)
-//				}
-//				break;
-//
-//			default:
-//				break;
-//			}
-//		}
-//	}
-	
+		
 }

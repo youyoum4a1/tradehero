@@ -4,4 +4,6 @@
     <string name="trending_chart">http://chart.finance.yahoo.com/z?s=%s&amp;t=3m&amp;q=l&amp;z=s </string>
     <string name="yahoo_quotes">http://finance.yahoo.com/d/quotes.csv?s=%1$s&amp;f=%2$s</string>
     <string name="trend_rss_feed">http://finance.yahoo.com/rss/headline?s=%s</string>
+    <string name="trend_buy">https://www.tradehero.mobi/api/securities/NASDAQ/YHOO/buy</string>
+    
 </resources>

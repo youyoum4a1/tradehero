@@ -13,7 +13,6 @@ import java.util.List;
 import org.xml.sax.SAXException;
 
 import android.content.Context;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -47,7 +46,7 @@ public class NewsFragment extends ListFragment {
 		super.onActivityCreated(savedInstanceState);
 		
 		getListView().setCacheColorHint(android.R.color.transparent);
-		getListView().setDivider(new ColorDrawable(R.color.black));
+		//getListView().setDivider(new ColorDrawable(R.color.black));
 		
 		trend = ((App)getActivity().getApplication()).getTrend();
 		

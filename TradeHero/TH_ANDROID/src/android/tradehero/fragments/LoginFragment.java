@@ -187,13 +187,12 @@ public class LoginFragment extends Fragment implements OnClickListener,RequestTa
 		Log.e("Response ",pResponseObject.toString() );
 		if(pResponseObject != null)
 		{
-			try {
-				String msg = pResponseObject.getString("Message");
-				Util.show_toast(getActivity(), msg);
-			} catch (JSONException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			String msg = pResponseObject.optString("Message");
+			Util.show_toast(getActivity(), msg);
+			
+			startActivity(new Intent(getActivity(),TradeHeroTabActivity.class));
+			getActivity().finish();
+			Util.show_toast(getActivity(), "Field should not be blank .");
 		}
 		
 	}

@@ -11,6 +11,7 @@ import java.util.HashMap;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
 import android.tradehero.activities.R;
 import android.tradehero.application.App;
@@ -19,6 +20,7 @@ import android.tradehero.cache.ImageLoader;
 import android.tradehero.cache.ImageLoader.ImageLoadingListener;
 import android.tradehero.fragments.TrendingDetailFragment.YahooQuoteUpdateListener;
 import android.tradehero.models.Trend;
+import android.tradehero.utills.DateUtils;
 import android.tradehero.utills.ImageUtils;
 import android.tradehero.utills.Logger;
 import android.tradehero.utills.Logger.LogLevel;
@@ -33,11 +35,16 @@ import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class TradeFragment extends Fragment implements YahooQuoteUpdateListener {
 	
 	private final static String TAG = TradeFragment.class.getSimpleName();
+	
+	public final static String HEADER = "header";
+	public final static String BUY_DETAIL_STR = "buy_detail_str";
+	public final static String LAST_PRICE = "last_price";
+	public final static String QUANTITY = "quantity";
+	
 	
 	private ImageView mStockBgLogo;
 	private ImageView mStockLogo;
@@ -66,11 +73,13 @@ public class TradeFragment extends Fragment implements YahooQuoteUpdateListener 
 	
 	double lastPrice;
 	int sliderIncrement = 0;
-	int maxQuantity = 0;
+	//int maxQuantity = 0;
+	int mQuantity = 0;
+	int sliderMaxValue = 0;
 	
 	
 	//dummy
-	private int defaultCashAvailable = 75889;
+	private int defaultCashAvailable = 71543;
 	private int defaultTHTransferFee = 10;
 	private boolean isTransactionTypeBuy = true;
 	
@@ -82,6 +91,7 @@ public class TradeFragment extends Fragment implements YahooQuoteUpdateListener 
 		return view;
 	}
 	
+
 	private void initViews(View v) {
 		mImageLoader = new ImageLoader(getActivity());
 		
@@ -122,31 +132,57 @@ public class TradeFragment extends Fragment implements YahooQuoteUpdateListener 
 			public void onProgressChanged(SeekBar seekBar, int progress,
 					boolean fromUser) {
 				
-				int q = 0;
-				
-				if(progress < seekBar.getMax())
-					q = progress * sliderIncrement;
-				else
-					q = maxQuantity;
-				
-				updateQuantityAndTradeValue(q);
+				//if(fromUser) {
+					int q = 0;
 					
+					if(progress < seekBar.getMax())
+						q = progress * sliderIncrement;
+					else
+						q = mQuantity;
+					
+					Logger.log(TAG, "Progress: "+progress, LogLevel.LOGGING_LEVEL_INFO);
+					Logger.log(TAG, "SeeBar Max: "+seekBar.getMax(), LogLevel.LOGGING_LEVEL_INFO);
+					Logger.log(TAG, "Qty: "+q, LogLevel.LOGGING_LEVEL_INFO);
+					Logger.log(TAG, "sliderIncrement: "+sliderIncrement, LogLevel.LOGGING_LEVEL_INFO);
+					//Logger.log(TAG, "SeeBar Max: "+seekBar.getMax(), LogLevel.LOGGING_LEVEL_INFO);
+					
+					updateQuantityAndTradeValue(q);
+				//}
 				
-			}
-		});
-		
-		mBuyBtn = (Button) v.findViewById(R.id.btn_buy);
-		mBuyBtn.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				Toast.makeText(getActivity(), "Under progress...", Toast.LENGTH_SHORT).show();
 			}
 		});
 		
 		trend = ((App)getActivity().getApplication()).getTrend();
 		
+		mBuyBtn = (Button) v.findViewById(R.id.btn_buy);
+		mBuyBtn.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				
+				String buyDetail = String.format("Buy %s %s:%s @ %s %f\nTransaction fee: virtual US$ 10\nTotal cost: US$ %.2f", 
+						tvQuantity.getText(), trend.getExchange(), trend.getSymbol(), trend.getCurrencyDisplay(),
+						lastPrice, getTotalCostForBuy());
+				
+				Bundle b = new Bundle();
+				b.putString(HEADER, String.format("%s:%s", trend.getExchange(), trend.getSymbol()));
+				b.putString(BUY_DETAIL_STR, buyDetail);
+				b.putString(LAST_PRICE, String.valueOf(lastPrice));
+				b.putString(QUANTITY, tvQuantity.getText().toString());
+				
+				Fragment newFragment = Fragment.instantiate(getActivity(),
+						BuyFragment.class.getName(), b);
+
+		        // Add the fragment to the activity, pushing this transaction
+		        // on to the back stack.
+		        FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+		        ft.replace(R.id.realtabcontent, newFragment, "trend_buy");
+		        ft.addToBackStack("trend_buy");
+		        ft.commit();
+			}
+		});
+		
+		
 		if(!TextUtils.isEmpty(trend.getImageBlobUrl())) {
-			//Bitmap b = convertToMutable((new WebImageCache(TrendingActivity.this)).get(trend.getImageBlobUrl()));
 			mImageLoader.getBitmapImage(trend.getImageBlobUrl(), new ImageLoadingListener() {
 				public void onLoadingComplete(Bitmap loadedImage) {
 					final Bitmap b = ImageUtils.convertToMutableAndRemoveBackground(loadedImage);
@@ -183,10 +219,12 @@ public class TradeFragment extends Fragment implements YahooQuoteUpdateListener 
 		updateQuantityAndTradeValue(qty);
 		//tvQuantity.setText(String.valueOf(qty));
 		
-		//TODO Format date
-		tvPriceAsOf.setText(trend.getLastPriceDateAndTimeUtc());
+		tvPriceAsOf.setText(DateUtils.getFormatedTrendDate(trend.getLastPriceDateAndTimeUtc()));
 		
-		tvCashAvailable.setText("US$ "+defaultCashAvailable);
+		tvCashAvailable.setText(String.format("US$ %,d", defaultCashAvailable));
+		
+		enableFields(false);
+
 	}
 	
 	private OnClickListener onClickListener = new OnClickListener() {
@@ -200,7 +238,8 @@ public class TradeFragment extends Fragment implements YahooQuoteUpdateListener 
 				mBtn10k.setTextColor(getResources().getColor(R.color.price_bar_text_default));
 				mBtn25k.setTextColor(getResources().getColor(R.color.price_bar_text_default));
 				mBtn50k.setTextColor(getResources().getColor(R.color.price_bar_text_default));
-				UpdateValues(5000);
+				//UpdateValues(5000, true);
+				segmentedUpdate(5000);
 				break;
 			
 			case R.id.toggle10k:
@@ -208,7 +247,8 @@ public class TradeFragment extends Fragment implements YahooQuoteUpdateListener 
 				mBtn10k.setTextColor(getResources().getColor(R.color.black));
 				mBtn25k.setTextColor(getResources().getColor(R.color.price_bar_text_default));
 				mBtn50k.setTextColor(getResources().getColor(R.color.price_bar_text_default));
-				UpdateValues(10000);
+				//UpdateValues(10000, true);
+				segmentedUpdate(10000);
 				break;
 				
 			case R.id.toggle25k:
@@ -216,7 +256,8 @@ public class TradeFragment extends Fragment implements YahooQuoteUpdateListener 
 				mBtn10k.setTextColor(getResources().getColor(R.color.price_bar_text_default));
 				mBtn25k.setTextColor(getResources().getColor(R.color.black));
 				mBtn50k.setTextColor(getResources().getColor(R.color.price_bar_text_default));
-				UpdateValues(25000);
+				//UpdateValues(25000, true);
+				segmentedUpdate(25000);
 				break;
 				
 			case R.id.toggle50k:
@@ -224,7 +265,8 @@ public class TradeFragment extends Fragment implements YahooQuoteUpdateListener 
 				mBtn10k.setTextColor(getResources().getColor(R.color.price_bar_text_default));
 				mBtn25k.setTextColor(getResources().getColor(R.color.price_bar_text_default));
 				mBtn50k.setTextColor(getResources().getColor(R.color.black));
-				UpdateValues(50000);
+				//UpdateValues(50000, true);
+				segmentedUpdate(50000);
 				break;
 
 			default:
@@ -240,17 +282,30 @@ public class TradeFragment extends Fragment implements YahooQuoteUpdateListener 
 				.findFragmentByTag("trending_detail")).setYahooQuoteUpdateListener(this);
 	}
 	
+	private void enableFields(boolean flag) {
+		mBtn5k.setEnabled(flag);
+		mBtn10k.setEnabled(flag);
+		mBtn25k.setEnabled(flag);
+		mBtn50k.setEnabled(flag);
+		mBuyBtn.setEnabled(flag);
+	}
 	
-
-
+	@Override
+	public void onYahooQuoteUpdateStarted() {
+		mProgressBar.setVisibility(View.VISIBLE);
+	}
+	
 	@Override
 	public void onYahooQuoteUpdateListener(HashMap<String, String> yQuotes) {
 		
 		mProgressBar.setVisibility(View.GONE);
+		enableFields(true);
 		
-		lastPrice = YUtils.parseQuoteValue(yQuotes.get("Last Trade (Price Only)"));
-		if(!Double.isNaN(lastPrice)) 
+		double LastPrice  = YUtils.parseQuoteValue(yQuotes.get("Last Trade (Price Only)"));
+		if(!Double.isNaN(LastPrice)) {
+			lastPrice = LastPrice;
 			tvLastPrice.setText(String.format("%s%.2f", trend.getCurrencyDisplay(), lastPrice));
+		}
 		else
 			Logger.log(TAG, "Unable to parse Last Trade (Price Only)", LogLevel.LOGGING_LEVEL_ERROR);
 		
@@ -286,21 +341,26 @@ public class TradeFragment extends Fragment implements YahooQuoteUpdateListener 
 		else
 			Logger.log(TAG, "Unable to parse Ask & Bid Price", LogLevel.LOGGING_LEVEL_ERROR);
 		
-		UpdateValues(defaultCashAvailable);
+		UpdateValues(defaultCashAvailable, false);
 
 	}
 	
-	private void UpdateValues(int cash) {
+	private void UpdateValues(int cash, boolean isPriceSlot) {
 		
-		int mQuantity = 0;
+		Logger.log(TAG, "Cash: "+cash, LogLevel.LOGGING_LEVEL_INFO);
+		
+		mQuantity = 0;
+		
 		int totalCashAvailable = cash - defaultTHTransferFee;
 		
 		mQuantity = (int)Math.ceil(totalCashAvailable / lastPrice);
 		
+		
 		int avgDailyVolume = (int)Math.ceil(Double.parseDouble(trend.getAverageDailyVolume()));
 		int volume = (int)Math.ceil(Double.parseDouble(trend.getVolume()));
 		
-		maxQuantity = avgDailyVolume;
+		
+		int maxQuantity = avgDailyVolume;
 		
 		if(volume > avgDailyVolume)
 			maxQuantity = volume;
@@ -315,48 +375,102 @@ public class TradeFragment extends Fragment implements YahooQuoteUpdateListener 
 		if(mQuantity > maxQuantity)
 			mQuantity = maxQuantity;
 		
+		
+		
+		int defaultQuantity = 0;
+		
 		if(isTransactionTypeBuy)
-			mQuantity = (int)Math.ceil((mQuantity/3.0));
+			defaultQuantity = (int)Math.ceil((mQuantity/3.0));
+		
+		Logger.log(TAG, "defaultQuantity: "+defaultQuantity, LogLevel.LOGGING_LEVEL_INFO);
+		updateQuantityAndTradeValue(defaultQuantity);
 		
 		
-		updateQuantityAndTradeValue(mQuantity);
-		
-		
-		//Slider
-		int sliderValue = maxQuantity;
-		
-		//int sliderIncrement = 0;
-		
-		if(maxQuantity > 1000)
-			sliderIncrement = 100;
-		else {
-			if(maxQuantity > 100)
-				sliderIncrement = 10;
-			else
-				sliderIncrement = 1;
-		}
-		
-		int sliderMaxValue = maxQuantity/sliderIncrement;
-		
-		if((sliderIncrement*sliderMaxValue) < maxQuantity)
-			++sliderMaxValue;
-		
-		if(sliderValue > sliderMaxValue)
-			sliderValue = sliderMaxValue;
-		
-		//int initialSliderValue = 
-		
-		mSlider.setMax(sliderMaxValue);
-		mSlider.incrementProgressBy(sliderIncrement);
-		mSlider.setProgress(sliderValue);
+		if(isPriceSlot) {
+			defaultQuantity = mQuantity;
 			
+			//int quantityForSlots = (int)Math.ceil(totalCashAvailable / lastPrice);
+			
+			//if the closest quantity is greater than the maximum the user can buy, 
+			//we set the quantity to the maximum he can buy
+		    //int slidervalue = (defaultQuantity/sliderIncrement);
+		    		
+		    		///Math.min(defaultQuantity, sliderMaxValue);
+		    //mSlider.setProgress(slidervalue);
+		    //mSlider.setMax(sliderMaxValue);
+		    
+		}
+		//else {
+			
+			//Slider
+			int sliderValue = 0; //mQuantity; //155
+			
+			//if(!isPriceSlot)
+				sliderIncrement = (mQuantity > 1000) ? 100 : ((mQuantity > 100) ? 10 : 1);
+			
+			//Logger.log(TAG, "Slider Increment: "+sliderIncrement, LogLevel.LOGGING_LEVEL_INFO);
+			
+			int sliderMaxValue = mQuantity/sliderIncrement;
+			
+			//Logger.log(TAG, "Slider MaxVaule: "+sliderMaxValue, LogLevel.LOGGING_LEVEL_INFO);
+			
+			int currentAbsoluteValue = mQuantity;
+			if(defaultQuantity >= currentAbsoluteValue)
+				sliderValue = sliderMaxValue;
+			else {
+				int value = (int)defaultQuantity / sliderIncrement;
+				sliderValue = value;
+			}
+				//float value2 = absoluteValue / sliderIncrement;
+			
+			Logger.log(TAG, "Slider Vaule: "+sliderValue, LogLevel.LOGGING_LEVEL_INFO);
+			
+			mSlider.setMax(sliderMaxValue);
+			mSlider.incrementProgressBy(sliderIncrement);
+			mSlider.setProgress(sliderValue);
+		//}
+	}
+	
+	private void segmentedUpdate(int cash) {
+		
+		int totalCashAvailable = cash - defaultTHTransferFee;
+		
+		int mQuantity = (int)Math.ceil(totalCashAvailable / lastPrice);
+		
+		int avgDailyVolume = (int)Math.ceil(Double.parseDouble(trend.getAverageDailyVolume()));
+		int volume = (int)Math.ceil(Double.parseDouble(trend.getVolume()));
+		
+		
+		int maxQuantity = avgDailyVolume;
+		
+		if(volume > avgDailyVolume)
+			maxQuantity = volume;
+		
+		maxQuantity = (int)Math.ceil(maxQuantity*0.2);
+		
+		if(maxQuantity == 0)
+			maxQuantity = 1;
+		
+		if(mQuantity > maxQuantity)
+			mQuantity = maxQuantity;
+		
+		int sValue = mQuantity/sliderIncrement;
+		mSlider.setProgress(sValue);
 	}
 	
 	private void updateQuantityAndTradeValue(int qty) {
-		tvQuantity.setText(String.valueOf(qty));
+		
+		tvQuantity.setText(String.format("%,d", qty));
 		
 		if(!Double.isNaN(lastPrice) && !(Double.compare(lastPrice, 0.0) == 0)) 
-			tvTradeValue.setText(String.valueOf((int)Math.ceil((qty*lastPrice))));
+			tvTradeValue.setText(String.format("%,d", (int)Math.ceil((qty*lastPrice))));
+	}
+	
+	private double getTotalCostForBuy() {
+		double q = Double.parseDouble(tvQuantity.getText().toString());
+		double totalCost = q*(lastPrice + defaultTHTransferFee);
+		
+		return totalCost;
 	}
 	
 	@Override
@@ -365,4 +479,7 @@ public class TradeFragment extends Fragment implements YahooQuoteUpdateListener 
 				.findFragmentByTag("trending_detail")).setYahooQuoteUpdateListener(null);
 		super.onDestroy();
 	}
+
+
+	
 }

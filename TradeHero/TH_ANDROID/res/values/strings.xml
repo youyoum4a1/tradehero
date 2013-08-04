@@ -74,6 +74,8 @@
     <string name="volume">Volume</string>
     <string name="avg_volume">Avg Volume</string>
     <string name="na">N/A</string>
+    <string name="hint_buy_comment">Post comments to attract followers...(optional)</string>
+    <string name="btn_buy">Confirm</string>
     
 
 
