@@ -98,14 +98,16 @@ public class ImageLoader {
         executorService.submit(new PhotosLoader(p));
     }
     
-    private Bitmap getBitmap(String url) 
+    public Bitmap getBitmap(String url) 
     {
         File f = fileCache.getFile(url);
         
         //from SD cache
         Bitmap b = decodeFile(f);
         if(b!=null)
+        {
             return b;
+        }
         
         //from web
         try {
@@ -127,6 +129,29 @@ public class ImageLoader {
                memoryCache.clear();
            return null;
         }
+        
+    }  
+        public Bitmap getMyBitmap(String url) 
+        {
+            
+            
+            //from web
+            try {
+                Bitmap bitmap=null;
+                URL imageUrl = new URL(url);
+                HttpURLConnection conn = (HttpURLConnection)imageUrl.openConnection();
+                conn.setConnectTimeout(30000);
+                conn.setReadTimeout(30000);
+                conn.setInstanceFollowRedirects(true);
+                InputStream is=conn.getInputStream();
+                bitmap = BitmapFactory.decodeStream(is);
+                return bitmap;
+            } catch (Throwable ex){
+               ex.printStackTrace();
+               if(ex instanceof OutOfMemoryError)
+                   memoryCache.clear();
+               return null;
+            }
     }
 
     //decodes image and scales it to reduce memory consumption

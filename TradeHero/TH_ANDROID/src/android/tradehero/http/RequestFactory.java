@@ -12,7 +12,6 @@ import org.json.JSONObject;
 import android.content.Context;
 import android.tradehero.models.Request;
 import android.tradehero.utills.Constants;
-import android.util.Base64;
 
 
 
@@ -43,9 +42,15 @@ public class RequestFactory {
 		lLoginRequest.setContext(pContext);
 		lLoginRequest.setUserName(pUserName);
 		lLoginRequest.setRequestType(Request.REQUEST_TYPE_POST_PARAMS);
-		 
-
-		 return lLoginRequest;
+		
+		
+		/*lLoginRequest.setParameter(new BasicNameValuePair(Constants.CLIENT_VERSION, "1.5.0"));
+		lLoginRequest.setParameter(new BasicNameValuePair("clientiOS", "1"));
+		lLoginRequest.addRequestHeader(new BasicHeader(Constants.CONTENT_TYPE, Constants.CONTENT_TYPE_VALUE_URL_ENCODED));
+		lLoginRequest.addRequestHeader(new BasicHeader(Constants.TH_CLIENT_VERSION, "1.4.1.2813"));
+		lLoginRequest.addRequestHeader(new BasicHeader("Authorization", "Basic "+pUserName+pPassword));
+		lLoginRequest.setRequestType(Request.REQUEST_TYPE_POST);*/
+		return lLoginRequest;
 	}
 
 	public Request getRegistrationThroughFB(String pFacebookAccessToken) throws JSONException{
@@ -152,4 +157,9 @@ public class RequestFactory {
 	
 		return lFPRequest;
 	}
+	
+	
+	
+	
+	
 }

@@ -41,8 +41,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="0.6"
-        android:alpha="0.755"
-        android:background="@drawable/vatia1"
+        android:background="@drawable/th_logo"
         android:orientation="vertical"
         android:weightSum="1" >
 
@@ -54,13 +53,13 @@
 
             <ImageView
                 android:id="@+id/img_banner_user"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
                 android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="15dp"
                 android:background="@drawable/layout_oval"
-                android:padding="2dp"
+                android:padding="0.5dp"
                 android:src="@drawable/th_logo" />
 
             <LinearLayout
@@ -90,7 +89,7 @@
                         android:id="@+id/txt_ROI"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="29.4%"
+                        android:text=" 29.4%"
                         android:textColor="@color/font_roi"
                         android:textSize="18sp"
                         android:textStyle="bold" />
@@ -108,7 +107,7 @@
                         android:id="@+id/txt_HQ"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="132"
+                        android:text=" 132"
                         android:textColor="@color/white"
                         android:textSize="18sp"
                         android:textStyle="bold" />

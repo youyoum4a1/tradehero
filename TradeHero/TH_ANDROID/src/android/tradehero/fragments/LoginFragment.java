@@ -15,11 +15,14 @@ import android.support.v4.app.Fragment;
 import android.tradehero.activities.R;
 import android.tradehero.activities.TradeHeroTabActivity;
 import android.tradehero.activities.WelcomeActivity;
+import android.tradehero.application.App;
 import android.tradehero.http.HttpRequestTask;
 import android.tradehero.http.RequestFactory;
 import android.tradehero.http.RequestTaskCompleteListener;
+import android.tradehero.models.ProfileDTO;
 import android.tradehero.models.Request;
 import android.tradehero.networkstatus.NetworkStatus;
+import android.tradehero.utills.PUtills;
 import android.tradehero.utills.Util;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -181,8 +184,16 @@ public class LoginFragment extends Fragment implements OnClickListener,RequestTa
 				}
 				else
 				{    
+//					startActivity(new Intent(getActivity(),TradeHeroTabActivity.class));
+//					Util.show_toast(getActivity(), pResponseObject.toString());
+					System.out.println("log in throuh email---"+pResponseObject.toString());
+					JSONObject obj = pResponseObject.getJSONObject("profileDTO");
+
+					ProfileDTO prof =	new PUtills(getActivity())._parseJson(obj);
+
+					((App)getActivity().getApplication()).setProfileDTO(prof);
 					startActivity(new Intent(getActivity(),TradeHeroTabActivity.class));
-					Util.show_toast(getActivity(), pResponseObject.toString());
+					getActivity().finish();
 				}
 
 			} catch (Exception e) {
