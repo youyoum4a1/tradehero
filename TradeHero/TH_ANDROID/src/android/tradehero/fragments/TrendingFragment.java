@@ -18,6 +18,9 @@ import android.tradehero.cache.ImageLoader;
 import android.tradehero.cache.ImageLoader.ImageLoadingListener;
 import android.tradehero.models.Trend;
 import android.tradehero.utills.ImageUtils;
+import android.tradehero.utills.Logger;
+import android.tradehero.utills.YUtils;
+import android.tradehero.utills.Logger.LogLevel;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -163,7 +166,12 @@ public class TrendingFragment extends Fragment{
 			stockName.setText(trend.getName());
 			exchangeSymbol.setText(String.format("%s:%s", trend.getExchange(), trend.getSymbol()));
 			currencyDisplay.setText(trend.getCurrencyDisplay());
-			lastPrice.setText(trend.getLastPrice());
+			
+			double dLastPrice = YUtils.parseQuoteValue(trend.getLastPrice());
+			if(!Double.isNaN(dLastPrice)) 
+				lastPrice.setText(String.format("%.2f", dLastPrice));
+			else
+				Logger.log(TAG, "TH: Unable to parse Last Price", LogLevel.LOGGING_LEVEL_ERROR);
 			
 			if(trend.getPc50DMA() > 0)
 				profitIndicator.setText(getContext().getString(R.string.positive_prefix));

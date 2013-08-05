@@ -6,6 +6,10 @@
  */
 package android.tradehero.application;
 
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 import android.app.Application;
 import android.content.Context;
 import android.tradehero.models.ProfileDTO;
@@ -16,6 +20,7 @@ public class App extends Application {
 	private static App instance;
 	
 	private Trend trend;
+
 	private ProfileDTO profileDTO;
 	
 	public ProfileDTO getProfileDTO() {
@@ -24,6 +29,25 @@ public class App extends Application {
 
 	public void setProfileDTO(ProfileDTO profileDTO) {
 		this.profileDTO = profileDTO;
+	}
+	private LinkedHashMap<String, String> yahooQuotesMap;
+	
+	public static Context getContext() {
+		return instance;
+	}
+	
+	public App() {
+		super();
+		instance = this;
+	}
+	
+	public LinkedHashMap<String, String> getYahooQuotesMap() {
+		return yahooQuotesMap;
+	}
+
+	public void setYahooQuotesMap(LinkedHashMap<String, String> yahooQuotesMap) {
+		this.yahooQuotesMap = yahooQuotesMap;
+
 	}
 
 	public Trend getTrend() {
@@ -34,14 +58,9 @@ public class App extends Application {
 		this.trend = trend;
 	}
 
-	public App() {
-		super();
-		instance = this;
-	}
+	
 
-	public static Context getContext() {
-		return instance;
-	}
+	
 	
 	
 	

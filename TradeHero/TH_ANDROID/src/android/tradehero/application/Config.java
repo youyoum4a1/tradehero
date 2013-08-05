@@ -32,5 +32,9 @@ public class Config {
 		return localValueForKey(R.string.trend_rss_feed);
 	}
 	
+	public static String getBuyTrend() {
+		return localValueForKey(R.string.trend_buy);
+	}
+	
 	
 }

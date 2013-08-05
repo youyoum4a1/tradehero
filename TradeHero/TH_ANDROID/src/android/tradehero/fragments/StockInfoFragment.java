@@ -71,19 +71,21 @@ public class StockInfoFragment extends Fragment implements YahooQuoteUpdateListe
 		
 		double prevClose = YUtils.parseQuoteValue(t.getPreviousClose());
 		if(!Double.isNaN(prevClose))
-			mPreviousClose.setText(String.format("%.2f", prevClose));
+			mPreviousClose.setText(String.format("%.3f", prevClose));
 		else
 			Logger.log(TAG, "Unable to parse Previous Close", LogLevel.LOGGING_LEVEL_ERROR);
 		
 		
-		if(!TextUtils.isEmpty(t.getAverageDailyVolume()))
-			mAvgVolume.setText(t.getAverageDailyVolume());
+		double avgVolume = YUtils.parseQuoteValue(t.getAverageDailyVolume());
+		if(!Double.isNaN(avgVolume))
+			mAvgVolume.setText(String.format("%,d", (int)avgVolume));
 		else
 			Logger.log(TAG, "TH: Unable to parse Avg. Volume", LogLevel.LOGGING_LEVEL_ERROR);
 		
 		
-		if(!TextUtils.isEmpty(t.getVolume()))
-			mVolume.setText(t.getVolume());
+		double volume = YUtils.parseQuoteValue(t.getVolume());
+		if(!Double.isNaN(volume))
+			mVolume.setText(String.format("%,d", (int)volume));
 		else
 			Logger.log(TAG, "TH: Unable to parse Volume", LogLevel.LOGGING_LEVEL_ERROR);
 		
@@ -94,10 +96,12 @@ public class StockInfoFragment extends Fragment implements YahooQuoteUpdateListe
 			Logger.log(TAG, "Unable to parse Market Cap", LogLevel.LOGGING_LEVEL_ERROR);
 		
 		
-		if(!TextUtils.isEmpty(t.getEps()))
-			mEps.setText(t.getEps());
+		double eps = YUtils.parseQuoteValue(t.getEps());
+		if(!Double.isNaN(eps))
+			mEps.setText(String.format("%.3f", eps));
 		else
 			Logger.log(TAG, "Unable to parse EPS", LogLevel.LOGGING_LEVEL_ERROR);
+		
 		
 	}
 
@@ -139,17 +143,17 @@ public class StockInfoFragment extends Fragment implements YahooQuoteUpdateListe
 			
 			double avgVolume = YUtils.parseQuoteValue(yQuotes.get("Average Daily Volume"));
 			if(!Double.isNaN(avgVolume))
-				mAvgVolume.setText(""+avgVolume);
+				mAvgVolume.setText(String.format("%,d", (int)avgVolume));
 			else
 				Logger.log(TAG, "Y: Unable to parse Avg. Volume", LogLevel.LOGGING_LEVEL_ERROR);
 			
 			double volume = YUtils.parseQuoteValue(yQuotes.get("Volume"));
-			if(!Double.isNaN(volume)){
-				if(!Double.isNaN(avgVolume))
-					mVolume.setText(""+volume);
+			//if(!Double.isNaN(volume)){
+				if(!Double.isNaN(volume))
+					mVolume.setText(String.format("%,d", (int)volume));
 				else
 					Logger.log(TAG, "Y: Unable to parse Volume", LogLevel.LOGGING_LEVEL_ERROR);
-			}
+			//}
 		}
 	}
 	
@@ -162,6 +166,12 @@ public class StockInfoFragment extends Fragment implements YahooQuoteUpdateListe
 		((TrendingDetailFragment)getActivity().getSupportFragmentManager()
 				.findFragmentByTag("trending_detail")).setYahooQuoteUpdateListener(null);
 		super.onDestroy();
+	}
+
+
+	@Override
+	public void onYahooQuoteUpdateStarted() {
+		
 	}
 	
 	

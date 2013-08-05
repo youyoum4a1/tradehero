@@ -1,10 +1,12 @@
 package android.tradehero.utills;
 
+import android.annotation.SuppressLint;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class Dateutil {
+@SuppressLint("SimpleDateFormat")
+public class DateUtils {
 
 	public static Date convertToDate(String dateString) {
 
@@ -24,6 +26,36 @@ public class Dateutil {
 		return date;
 	}
 
+	public static String getCurrentTimeStampWithFormat() {
+
+		String dateString = null;
+		String pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'";
+		SimpleDateFormat format = new SimpleDateFormat(pattern);
+
+		try {
+			dateString = format.format(new Date());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return dateString;
+	}
+	
+	public static String getFormatedTrendDate(String dateStr) {
+		
+		String dateString = "";
+		
+		SimpleDateFormat currentformat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+		SimpleDateFormat requiredformat = new SimpleDateFormat("dd MMM HH:mm 'GMT'");
+		try {
+			Date d = currentformat.parse(dateStr);
+			dateString = requiredformat.format(d);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return dateString;
+	}
+	
 	public static String convertToDateString(Date dateObj) {
 
 		String dateString = null;

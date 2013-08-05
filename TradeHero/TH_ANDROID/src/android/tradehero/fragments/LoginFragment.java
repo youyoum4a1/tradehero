@@ -175,6 +175,7 @@ public class LoginFragment extends Fragment implements OnClickListener,RequestTa
 
 		if(pResponseObject != null)
 		{
+
 			try {
 
 				if(pResponseObject.has("Message"))
@@ -199,6 +200,7 @@ public class LoginFragment extends Fragment implements OnClickListener,RequestTa
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
+
 		}
 		
 	}

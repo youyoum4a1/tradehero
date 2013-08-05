@@ -9,9 +9,11 @@ package android.tradehero.fragments;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTabHost;
 import android.text.TextUtils;
@@ -34,8 +36,8 @@ import com.loopj.android.http.AsyncHttpResponseHandler;
 public class TrendingDetailFragment extends Fragment {
 	
 	private final static String TAG = TrendingDetailFragment.class.getSimpleName();
-	//private final static String YAHOO_SYMBOL = "yahooSymbol";
 	
+	private final static int YAHOO_QUOTE_INTERVAL = 60*1000;
 	
 	private FragmentTabHost mTabHost;
 	private TextView mHeaderText;
@@ -43,7 +45,8 @@ public class TrendingDetailFragment extends Fragment {
 	private String mYahooQuotesString = "";
 	private List<String> mYahooQuoteValues;
 	private boolean isRequestCompleted = false;
-	private HashMap<String, String> yQuotes;
+	private LinkedHashMap<String, String> yQuotes;
+	private Handler mYahooQuotesUpdateTaskHandler;
 
 	
 	@Override
@@ -81,10 +84,14 @@ public class TrendingDetailFragment extends Fragment {
 		mYahooQuotesString = YUtils.getYahooQuoteKeysString();
 		mYahooQuoteValues = Arrays.asList(YUtils.YAHOO_QUOTE_VALUES);
 		
-		requestToGetYahooQuotes();
+		mYahooQuotesUpdateTaskHandler = new Handler();
+		
+		//requestToGetYahooQuotes();
 	}
 	
 	private void requestToGetYahooQuotes() {
+		Logger.log(TAG, "requestToGetYahooQuotes()", LogLevel.LOGGING_LEVEL_INFO);
+		
 		isRequestCompleted = false;
 		AsyncHttpClient client = new AsyncHttpClient(); 
 		client.get(String.format(Config.getYahooQuotes(), trend.getYahooSymbol(), mYahooQuotesString),
@@ -95,9 +102,15 @@ public class TrendingDetailFragment extends Fragment {
 				Logger.log(TAG, response, LogLevel.LOGGING_LEVEL_DEBUG);
 				
 				if(!TextUtils.isEmpty(response)) {
-					HashMap<String, String> yahooQuotes = 
+					LinkedHashMap<String, String> yahooQuotes = 
 							mapYahooQuoteResposeWithItsValues(YUtils.CSVToStringList(response));
 					yQuotes = yahooQuotes;
+					try {
+						((App)getActivity().getApplication()).setYahooQuotesMap(yahooQuotes);
+					}
+					catch (NullPointerException e) {
+						e.printStackTrace();
+					}
 					notifyYahooQuoteUpdate(yahooQuotes);
 				}
 			}
@@ -110,9 +123,36 @@ public class TrendingDetailFragment extends Fragment {
 	}
 	
 	
-	private HashMap<String, String> mapYahooQuoteResposeWithItsValues(List<String> csvList) {
+//	private TimerTask mYahooQuotesUpdateTask = new TimerTask() {
+//		@Override
+//		public void run() {
+//			notityYahooQuoteUpdateStart();
+//			requestToGetYahooQuotes();
+//		}
+//	};
+	
+	private Runnable mYahooQuotesUpdateTask = new Runnable() {
+	     @Override 
+	     public void run() {
+	    	 notityYahooQuoteUpdateStart();
+	    	 requestToGetYahooQuotes();
+	    	 mYahooQuotesUpdateTaskHandler.postDelayed(mYahooQuotesUpdateTask, YAHOO_QUOTE_INTERVAL);
+	     }
+	};
+	
+	private void startYahooQuotesUpdateTask() {
+		Logger.log(TAG, "startYahooQuotesUpdateTask()", LogLevel.LOGGING_LEVEL_INFO);
+		mYahooQuotesUpdateTask.run();
+	}
+	
+	private void stopYahooQuotesUpdateTask() {
+		Logger.log(TAG, "stopYahooQuotesUpdateTask()", LogLevel.LOGGING_LEVEL_INFO);
+		mYahooQuotesUpdateTaskHandler.removeCallbacks(mYahooQuotesUpdateTask);
+	}
+	
+	private LinkedHashMap<String, String> mapYahooQuoteResposeWithItsValues(List<String> csvList) {
 		final int size = mYahooQuoteValues.size();
-		HashMap<String, String> map = new HashMap<String, String>();
+		LinkedHashMap<String, String> map = new LinkedHashMap<String, String>();
 		for(int i = 0; i < size; i++) {
 			map.put(mYahooQuoteValues.get(i), csvList.get(i));
 		}
@@ -140,8 +180,29 @@ public class TrendingDetailFragment extends Fragment {
 		}
 	}
 	
+	public void notityYahooQuoteUpdateStart() {
+		if(mYahooQuoteUpdateListener != null) {
+			mYahooQuoteUpdateListener.onYahooQuoteUpdateStarted();
+		}
+	}
+	
 	public interface YahooQuoteUpdateListener {
 		public void onYahooQuoteUpdateListener(HashMap<String, String> yQuotes);
+		public void onYahooQuoteUpdateStarted();
+	}
+	
+	
+	@Override
+	public void onResume() {
+		super.onResume();
+		startYahooQuotesUpdateTask();
+	}
+
+	
+	@Override
+	public void onStop() {
+		stopYahooQuotesUpdateTask();
+		super.onStop();
 	}
 
 }
