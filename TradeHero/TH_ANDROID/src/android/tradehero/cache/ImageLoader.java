@@ -21,6 +21,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Handler;
+import android.tradehero.utills.Util;
 import android.widget.ImageView;
 
 /**
@@ -49,6 +50,18 @@ public class ImageLoader {
         Bitmap bitmap=memoryCache.get(url);
         if(bitmap!=null)
             imageView.setImageBitmap(bitmap);
+        else
+        {
+            queuePhoto(url, imageView);
+            imageView.setImageDrawable(null);
+        }
+    }
+    public void DisplayRoundImage(String url, ImageView imageView)
+    {
+        imageViews.put(imageView, url);
+        Bitmap bitmap=memoryCache.get(url);
+        if(bitmap!=null)
+            imageView.setImageBitmap(Util.getRoundedShape(bitmap));
         else
         {
             queuePhoto(url, imageView);

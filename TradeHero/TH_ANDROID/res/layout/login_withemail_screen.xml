@@ -25,9 +25,8 @@
         android:hint="@string/emai_adds"
         android:inputType="textEmailAddress"
         android:padding="15dp"
-        android:textColor="@color/black" 
-        android:text="neeraj@eatechnologies.com">
-		
+        android:textColor="@color/black" >
+
         <requestFocus />
     </EditText>
 
@@ -44,8 +43,7 @@
         android:hint="@string/pwd"
         android:inputType="textPassword"
         android:padding="15dp"
-        android:textColor="@color/black" 
-        android:text="testing"/>
+        android:textColor="@color/black" />
 
     <Button
         android:id="@+id/btn_login"

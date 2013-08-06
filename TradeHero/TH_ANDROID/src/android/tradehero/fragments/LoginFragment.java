@@ -171,8 +171,13 @@ public class LoginFragment extends Fragment implements OnClickListener,RequestTa
 
 	@Override
 	public void onTaskComplete(JSONObject pResponseObject) {
-		mProgressDialog.dismiss();
-
+		
+		if(mProgressDialog.isShowing())
+		{
+			mProgressDialog.dismiss();
+			_resetField();
+			
+		}		
 		if(pResponseObject != null)
 		{
 
@@ -311,6 +316,12 @@ public class LoginFragment extends Fragment implements OnClickListener,RequestTa
 		mRequestTask.execute(lRequests);
 		mProgressDialog.show();
 
+	}
+	
+	private void _resetField(){
+		
+		inputEmailName.setText("");
+		inputPassword.setText("");
 	}
 
 }

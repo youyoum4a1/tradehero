@@ -162,5 +162,10 @@ public class Constants {
 	public static final String USE_TH_PRICE="useTHPrice";
 	public static final String USER_ALERT_PLAN="userAlertPlans";
 	public static final String WEBSITE="website";
+	
+	/*trade of week*/
+	
+	public static final String TH_TRADE_WEEK_POSTFIX = "/timeline?maxCount=42";
+	
 
 }

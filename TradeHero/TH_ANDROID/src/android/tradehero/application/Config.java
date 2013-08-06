@@ -36,5 +36,8 @@ public class Config {
 		return localValueForKey(R.string.trend_buy);
 	}
 	
+	public static String getTradeofWeekfeeds() {
+		return localValueForKey(R.string.trend_buy);
+	}
 	
 }

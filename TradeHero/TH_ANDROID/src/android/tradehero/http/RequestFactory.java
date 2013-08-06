@@ -10,7 +10,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.content.Context;
+import android.tradehero.application.App;
 import android.tradehero.models.Request;
+import android.tradehero.models.Token;
 import android.tradehero.utills.Constants;
 
 
@@ -18,6 +20,8 @@ import android.tradehero.utills.Constants;
 
 
 public class RequestFactory {
+
+
 	public Request getRegistrationThroughEmailRequest(Context pContext,String pEmail,String pDisplayName ,String pFirstName,String pLastName,String pPassword,String pConfirmPassword) throws JSONException{
 		Request lRegistrationRequest = new Request();
 		lRegistrationRequest.setApiUrl(Constants.SIGN_UP_WITH_EMAIL_URL);
@@ -30,10 +34,12 @@ public class RequestFactory {
 		lRegistrationRequest.setParameter(new BasicNameValuePair(Constants.LAST_NAME,pLastName));
 		lRegistrationRequest.setParameter(new BasicNameValuePair(Constants.TH_CLIENT_VERSION, Constants.TH_CLIENT_VERSION_VALUE));
 		//RegistrationRequest.setRequestJSonObject(jsonRegistrationObject);
+		_setToken(pContext, pEmail, pPassword);
 		lRegistrationRequest.setContext(pContext);
 		return lRegistrationRequest;
 	}
 	public Request getLoginThroughEmail(Context pContext,String pUserName,String pPassword ) throws JSONException{
+
 		Request lLoginRequest = new Request();
 		lLoginRequest.setApiUrl(Constants.LOGIN_URL);
 		//JSONObject mLJsonObject = new JSONObject(); 
@@ -42,8 +48,7 @@ public class RequestFactory {
 		lLoginRequest.setContext(pContext);
 		lLoginRequest.setUserName(pUserName);
 		lLoginRequest.setRequestType(Request.REQUEST_TYPE_POST_PARAMS);
-		
-		
+		_setToken(pContext, pUserName, pPassword);
 		/*lLoginRequest.setParameter(new BasicNameValuePair(Constants.CLIENT_VERSION, "1.5.0"));
 		lLoginRequest.setParameter(new BasicNameValuePair("clientiOS", "1"));
 		lLoginRequest.addRequestHeader(new BasicHeader(Constants.CONTENT_TYPE, Constants.CONTENT_TYPE_VALUE_URL_ENCODED));
@@ -72,19 +77,19 @@ public class RequestFactory {
 		lRegistrationRequest.addRequestHeader(new BasicHeader(Constants.TH_CLIENT_VERSION, Constants.TH_CLIENT_VERSION_VALUE));
 		lRegistrationRequest.addRequestHeader(new BasicHeader(Constants.CONTENT_TYPE,Constants.CONTENT_TYPE_VALUE_URL_ENCODED ));
 		//lRegistrationRequest.addRequestHeader(new BasicHeader("Authorization","TH-LinkedIn "+pLinkedinAccessToken + ":" + pLinkedinAccessTokenSecret));
-//		JSONObject jsonRegistrationObject = new JSONObject();
-//		jsonRegistrationObject.put(Constants.LINKED_ACCESS_TOKEN_SCERET,pLinkedinAccessToken);
-//		jsonRegistrationObject.put(Constants.LINKED_ACCESS_TOKEN,pLinkedinAccessTokenSecret);
-//		lRegistrationRequest.setReqJsonObject(jsonRegistrationObject);
+		//		JSONObject jsonRegistrationObject = new JSONObject();
+		//		jsonRegistrationObject.put(Constants.LINKED_ACCESS_TOKEN_SCERET,pLinkedinAccessToken);
+		//		jsonRegistrationObject.put(Constants.LINKED_ACCESS_TOKEN,pLinkedinAccessTokenSecret);
+		//		lRegistrationRequest.setReqJsonObject(jsonRegistrationObject);
 		lRegistrationRequest.setParameter(new BasicNameValuePair(Constants.LINKED_ACCESS_TOKEN_SCERET,pLinkedinAccessTokenSecret));
 		lRegistrationRequest.setParameter(new BasicNameValuePair(Constants.LINKED_ACCESS_TOKEN,pLinkedinAccessToken));
-	//	lRegistrationRequest.setParameter(new BasicNameValuePair("clientiOS","1"));
-		
+		//	lRegistrationRequest.setParameter(new BasicNameValuePair("clientiOS","1"));
+
 		lRegistrationRequest.setPassword((pLinkedinAccessTokenSecret));
 		lRegistrationRequest.setUserName(pLinkedinAccessToken);
 		//lRegistrationRequest.setRequestType(8);
 		lRegistrationRequest.setRequestType(Request.REQUEST_TYPE_POST);	
-		
+
 		System.out.println("variables--------------"+"secret-"+pLinkedinAccessTokenSecret+" token-"+pLinkedinAccessToken);
 		return lRegistrationRequest;
 	}
@@ -141,7 +146,7 @@ public class RequestFactory {
 		//lLoginRequest.addRequestHeader(new BasicHeader(Constants.TH_FB_PREFIX,pFBAuthToken ));
 		lLoginRequest.addRequestHeader(new BasicHeader(Constants.CONTENT_TYPE,Constants.CONTENT_TYPE_VALUE_URL_ENCODED ));
 		lLoginRequest.setRequestType(Request.REQUEST_TYPE_POST);		//lLoginRequest.setRequestJSonObject(jsonLoginObject);
-	
+
 		return lLoginRequest;
 	}
 	public Request getFogotPasswordRequest(String pEmailId) throws JSONException{
@@ -154,12 +159,17 @@ public class RequestFactory {
 		//lLoginRequest.addRequestHeader(new BasicHeader(Constants.TH_FB_PREFIX,pFBAuthToken ));
 		lFPRequest.addRequestHeader(new BasicHeader(Constants.CONTENT_TYPE,Constants.CONTENT_TYPE_VALUE_JSON ));
 		lFPRequest.setRequestType(Request.REQUEST_TYPE_POST_JSON);		//lLoginRequest.setRequestJSonObject(jsonLoginObject);
-	
+
 		return lFPRequest;
 	}
-	
-	
-	
-	
-	
+
+
+	private void _setToken(Context ctx,String username,String pwd)
+	{
+		Token token = new Token();
+		token.setToken(username+":"+pwd);
+		((App)ctx.getApplicationContext()).setToken(token); 
+	}
+
+
 }

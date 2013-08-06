@@ -287,9 +287,9 @@ public class EmailRegistrationFragment extends Fragment implements OnClickListen
 				{
 //					Util.show_toast(getActivity(), pResponseObject.toString());
 //					startActivity(new Intent(getActivity(),TradeHeroTabActivity.class).putExtra("DNAME", pResponseObject.optString("displayName")));
-//					Util.show_toast(getActivity(), pResponseObject.toString());
+					Util.show_toast(getActivity(), pResponseObject.toString());
 					
-						//JSONObject obj = pResponseObject.getJSONObject("profileDTO");
+					//	JSONObject obj = pResponseObject.getJSONObject("profileDTO");
 
 						ProfileDTO prof =	new PUtills(getActivity())._parseJson(pResponseObject);
 

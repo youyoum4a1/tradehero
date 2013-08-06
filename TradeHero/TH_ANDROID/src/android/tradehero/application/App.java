@@ -6,23 +6,41 @@
  */
 package android.tradehero.application;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
-import java.util.Map;
 
 import android.app.Application;
 import android.content.Context;
 import android.tradehero.models.ProfileDTO;
+import android.tradehero.models.Token;
+import android.tradehero.models.TradeofWeek;
 import android.tradehero.models.Trend;
 
 public class App extends Application {
-	
-	private static App instance;
-	
-	private Trend trend;
 
+	private static App instance;
+
+	private Trend trend;
+	private Token token;
+	private ArrayList<TradeofWeek> tradeofweek;
+
+	public ArrayList<TradeofWeek> getTradeofweek() {
+		return tradeofweek;
+	}
+
+	public void setTradeofweek(TradeofWeek tradeofweek) {
+		this.tradeofweek.add(tradeofweek);
+	}
+
+	public Token getToken() {
+		return token;
+	}
+
+	public void setToken(Token token) {
+		this.token = token;
+	}
 	private ProfileDTO profileDTO;
-	
+
 	public ProfileDTO getProfileDTO() {
 		return profileDTO;
 	}
@@ -31,16 +49,16 @@ public class App extends Application {
 		this.profileDTO = profileDTO;
 	}
 	private LinkedHashMap<String, String> yahooQuotesMap;
-	
+
 	public static Context getContext() {
 		return instance;
 	}
-	
+
 	public App() {
 		super();
 		instance = this;
 	}
-	
+
 	public LinkedHashMap<String, String> getYahooQuotesMap() {
 		return yahooQuotesMap;
 	}
@@ -58,11 +76,11 @@ public class App extends Application {
 		this.trend = trend;
 	}
 
-	
 
-	
-	
-	
-	
+
+
+
+
+
 
 }
