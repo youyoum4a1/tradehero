@@ -74,16 +74,21 @@ public class HomeScreenFragment extends Fragment implements OnClickListener,Requ
 		listview_content_progress =  (ProgressBar)view.findViewById(R.id.progressbar_tradeofweek);
 		mListviewContent = (ListView)view.findViewById(R.id.list_user_content);
 		txtUserName = (TextView)view.findViewById(R.id.header_txt_homescreen);
-
 		profile = ((App)getActivity().getApplication()).getProfileDTO();
-		String mUserName = profile.getDisplayName();
-		picture = profile.getPicture();
-		id = profile.getId();
-		txtUserName.setText(mUserName);
-		mBagroundImage = (LinearLayout) view.findViewById(R.id.top_layout);
-		mUserImg = (ImageView)view.findViewById(R.id.img_banner_user);
-		new UpdateUi().execute();
-		_getDataOfTrade();
+		
+		if(profile != null)
+		{
+			
+			String mUserName = profile.getDisplayName();
+			picture = profile.getPicture();
+			id = profile.getId();
+			txtUserName.setText(mUserName);
+			mBagroundImage = (LinearLayout) view.findViewById(R.id.top_layout);
+			mUserImg = (ImageView)view.findViewById(R.id.img_banner_user);
+			new UpdateUi().execute();
+			_getDataOfTrade();
+		}
+		
 
 	}
 

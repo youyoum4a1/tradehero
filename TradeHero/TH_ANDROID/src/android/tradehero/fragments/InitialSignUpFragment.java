@@ -82,6 +82,7 @@ public class InitialSignUpFragment extends Fragment implements OnClickListener,R
 	private int activityType;
 	private int operationType;
 	private Bundle mData;
+	public static boolean linkedinButtonPressed= false;
 	private FragmentManager fragmentManager;
 	private FragmentTransaction fragmentTransaction ;
 	final LinkedInOAuthService oAuthService = LinkedInOAuthServiceFactory
@@ -94,6 +95,7 @@ public class InitialSignUpFragment extends Fragment implements OnClickListener,R
 	LinkedInRequestToken liToken;
 	LinkedInApiClient client;
 	LinkedInAccessToken accessToken = null;
+	public static ProgressDialog linkedinProgress;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -143,14 +145,15 @@ public class InitialSignUpFragment extends Fragment implements OnClickListener,R
 		mEmailTv.setOnClickListener(this);
 
 		mProgressDialog= new ProgressDialog(getActivity());
-		mProgressDialog.setMessage("Logging In");
+		mProgressDialog.setMessage(getResources().getString(R.string.loading_loading));
 		mContext=getActivity();
 		mTwitter = new Twitter(Constants.TWITTER_CONSUMER_KEY, Constants.TWITTER_CONSUMER_SECRET);
 		/** This if conditions is tested once is
 		 * redirected from twitter page. Parse the uri to get oAuth
 		 * Verifier
 		 * */
-
+		linkedinProgress = new ProgressDialog(getActivity());
+		linkedinProgress.setMessage(getResources().getString(R.string.loading_loading));
 	}
 
 
@@ -181,14 +184,23 @@ public class InitialSignUpFragment extends Fragment implements OnClickListener,R
 			}
 			break;
 		case R.id.btn_linkedin_linkedin:
-			if(NetworkStatus.getInstance().isConnected(getActivity()))
+			if(!linkedinButtonPressed)
 			{
-				operationType=OP_LINKEDIN;
-				linkedInLogin();
+				if(NetworkStatus.getInstance().isConnected(getActivity()))
+				{ 
+					linkedinProgress.show();
+					operationType=OP_LINKEDIN;
+					linkedInLogin();
 
-			}else
+				}else
+				{
+					Util.show_toast(getActivity(), getResources().getString(R.string.network_error));
+				}
+
+			}
+			else
 			{
-				Util.show_toast(getActivity(), getResources().getString(R.string.network_error));
+				Util.show_toast(getActivity(), getResources().getString(R.string.loading_loading));
 			}
 
 			break;
@@ -235,6 +247,10 @@ public class InitialSignUpFragment extends Fragment implements OnClickListener,R
 		if(mProgressDialog.isShowing())
 		{
 			mProgressDialog.dismiss();	
+		}
+		if(linkedinButtonPressed)
+		{
+			linkedinButtonPressed=false;
 		}
 
 		if(pResponseObject != null)
@@ -386,6 +402,8 @@ public class InitialSignUpFragment extends Fragment implements OnClickListener,R
 
 	}
 	private void linkedInLogin() {
+
+		linkedinButtonPressed = true;
 		ProgressDialog progressDialog = new ProgressDialog(getActivity());
 
 		LinkedinDialog d = new LinkedinDialog(getActivity(),progressDialog);
@@ -526,40 +544,68 @@ public class InitialSignUpFragment extends Fragment implements OnClickListener,R
 				}
 				else
 				{
+					if(Util.email_valid.matcher(mail_id_twitter.getText().toString()).matches())
+					{
+						mTwitter.authorize(getActivity(), new Twitter.DialogListener() {
 
-					mTwitter.authorize(getActivity(), new Twitter.DialogListener() {
+							@Override
+							public void onError(TwitterError error) {
 
-						@Override
-						public void onError(TwitterError error) {
+							}
 
-						}
+							@Override
+							public void onComplete(String accessKey, String accessSecret) {
 
-						@Override
-						public void onComplete(String accessKey, String accessSecret) {
+							}
 
-						}
+							@Override
+							public void onCancel() {
 
-						@Override
-						public void onCancel() {
+							}
+						});			
 
-						}
-					});					
-					dialog.dismiss();
+					}
+					else
+					{
+						Util.show_toast(getActivity(),getResources().getString(R.string.email_validation_string));
+					}
+
+
+
 				}
 
 			}
+		})
+		.setNegativeButton("Cancel",  new DialogInterface.OnClickListener() {
+
+			@Override
+			public void onClick(final DialogInterface dialog, int arg1) {
+
+
+				dialog.dismiss();
+				Util.show_toast(getActivity(),getResources().getString(R.string.thank_you_message));
+
+			}
 		});
+
 
 		AlertDialog alrt = dialog.create();
 		alrt.show();
 
 
 	}
-	
-	
 
 
-	
-	
-	
+	/*public void linkedinclick(View v){
+
+	if(v.getId() == R.id.btn_linkedin_linkedin)
+	{
+		Util.show_toast(getActivity(), "alok");
+	}
+
+}*/
+
+
+
+
 }

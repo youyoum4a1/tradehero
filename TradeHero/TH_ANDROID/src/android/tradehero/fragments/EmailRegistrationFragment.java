@@ -107,11 +107,13 @@ public class EmailRegistrationFragment extends Fragment implements OnClickListen
 		imgValidDisplyName = (ImageView)view.findViewById(R.id.valid_nmdisplay_img);
 		imgInvalidDisplyName = (ImageView)view.findViewById(R.id.invalid_nmdisplay_img);
 
+		mSignUpButton.setBackgroundResource(R.drawable.rectangle_login);
 		mSignUpButton.setOnClickListener(this);
 		//mSignUpButton.setOnTouchListener(this);
 		mProgressDialog= new ProgressDialog(getActivity());
 		mEmailId.setOnFocusChangeListener(this);
 		mDisplayName.setOnFocusChangeListener(this);
+		mPasword.setOnFocusChangeListener(this);
 		mConfirmPassword.setOnFocusChangeListener(this);
 		mProgressDialog.setMessage("Registering User");
 		mEMailProgressBar= (ProgressBar)view.findViewById(R.id.pdilog_mail);
@@ -124,8 +126,15 @@ public class EmailRegistrationFragment extends Fragment implements OnClickListen
 		mEmailId.addTextChangedListener(new TextWatcher() {
 			@Override
 			public void onTextChanged(CharSequence s, int start, int before, int count) {
-				mText = s;
-				new CheckValidation().execute();
+
+				if(TextUtils.isEmpty(s))
+				{
+					mSignUpButton.setBackgroundResource(R.drawable.rectangle_login);
+				}
+				
+					mText = s;
+					new CheckValidation().execute();
+				
 			}
 
 			@Override
@@ -144,8 +153,14 @@ public class EmailRegistrationFragment extends Fragment implements OnClickListen
 			@Override
 			public void onTextChanged(CharSequence s, int start, int before, int count) {
 
-				mText = s;
-				new CheckValidation().execute();
+				if(TextUtils.isEmpty(s))
+				{
+					mSignUpButton.setBackgroundResource(R.drawable.rectangle_login);
+				}
+				
+					mText = s;
+					new CheckValidation().execute();
+				
 
 			}
 
@@ -166,15 +181,46 @@ public class EmailRegistrationFragment extends Fragment implements OnClickListen
 
 			@Override
 			public void onTextChanged(CharSequence s, int start, int before, int count) {
-				mText = s;
 
-				if(NetworkStatus.getInstance().isConnected(getActivity()))
+				if(TextUtils.isEmpty(s))
 				{
-					new CheckValidation().execute();
-				}else{
-					Toast.makeText(getActivity(), getResources().getString(R.string.network_error),200).show();
-
+					mSignUpButton.setBackgroundResource(R.drawable.rectangle_login);
 				}
+				
+					mText = s;
+
+					if(NetworkStatus.getInstance().isConnected(getActivity()))
+					{
+						new CheckValidation().execute();
+					}else{
+						Toast.makeText(getActivity(), getResources().getString(R.string.network_error),200).show();
+
+					}
+				
+
+			}
+
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count,
+					int after) {
+
+			}
+
+			@Override
+			public void afterTextChanged(Editable s) {
+
+			}
+		});
+		mPasword.addTextChangedListener(new TextWatcher() {
+
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+				if(TextUtils.isEmpty(s))
+				{
+					mSignUpButton.setBackgroundResource(R.drawable.rectangle_login);
+				}
+
 			}
 
 			@Override
@@ -200,16 +246,16 @@ public class EmailRegistrationFragment extends Fragment implements OnClickListen
 
 		if(v.getId()== R.id.btn_register){
 			try {			
-				
+
 				if(NetworkStatus.getInstance().isConnected(getActivity()))
 				{
 					_handle_registration();
-					
+
 				}else
 				{
 					Util.show_toast(getActivity(), getResources().getString(R.string.network_error));
 				}
-								
+
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}
@@ -285,19 +331,19 @@ public class EmailRegistrationFragment extends Fragment implements OnClickListen
 				}
 				else
 				{
-//					Util.show_toast(getActivity(), pResponseObject.toString());
-//					startActivity(new Intent(getActivity(),TradeHeroTabActivity.class).putExtra("DNAME", pResponseObject.optString("displayName")));
+					//					Util.show_toast(getActivity(), pResponseObject.toString());
+					//					startActivity(new Intent(getActivity(),TradeHeroTabActivity.class).putExtra("DNAME", pResponseObject.optString("displayName")));
 					Util.show_toast(getActivity(), pResponseObject.toString());
-					
+
 					//	JSONObject obj = pResponseObject.getJSONObject("profileDTO");
 
-						ProfileDTO prof =	new PUtills(getActivity())._parseJson(pResponseObject);
+					ProfileDTO prof =	new PUtills(getActivity())._parseJson(pResponseObject);
 
-						((App)getActivity().getApplication()).setProfileDTO(prof);
-						startActivity(new Intent(getActivity(),TradeHeroTabActivity.class));
-                        getActivity().finish();
-					
-					
+					((App)getActivity().getApplication()).setProfileDTO(prof);
+					startActivity(new Intent(getActivity(),TradeHeroTabActivity.class));
+					getActivity().finish();
+
+
 
 				}
 
@@ -460,11 +506,11 @@ public class EmailRegistrationFragment extends Fragment implements OnClickListen
 
 			try {
 				JSONObject jsonObj = new JSONObject(response);
-				boolean result = jsonObj.getString("available").equalsIgnoreCase("true");
+				boolean result = jsonObj.getString("available").equals("true");
 				if (result)
 				{
 					try {
-						Thread.sleep(1000);
+						Thread.sleep(500);
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
@@ -473,7 +519,7 @@ public class EmailRegistrationFragment extends Fragment implements OnClickListen
 				else
 				{	
 					try {
-						Thread.sleep(1000);
+						Thread.sleep(500);
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
@@ -495,7 +541,7 @@ public class EmailRegistrationFragment extends Fragment implements OnClickListen
 		if(Util.email_valid.matcher(text).matches())
 		{
 			try {
-				Thread.sleep(1000);
+				Thread.sleep(500);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
@@ -504,7 +550,7 @@ public class EmailRegistrationFragment extends Fragment implements OnClickListen
 		else
 		{	
 			try {
-				Thread.sleep(1000);
+				Thread.sleep(500);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
@@ -573,7 +619,7 @@ public class EmailRegistrationFragment extends Fragment implements OnClickListen
 		if(mPasword.getText().toString().equals(mConfirmPassword.getText().toString()) && mPasword.getText().toString().length()>0)
 		{
 			try {
-				Thread.sleep(1000);
+				Thread.sleep(500);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
@@ -581,7 +627,7 @@ public class EmailRegistrationFragment extends Fragment implements OnClickListen
 		}else
 		{	
 			try {
-				Thread.sleep(1000);
+				Thread.sleep(500);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
@@ -612,29 +658,59 @@ public class EmailRegistrationFragment extends Fragment implements OnClickListen
 
 		mConfirmPasswordProgressBar.setVisibility(View.VISIBLE);
 		imgValidvConfirmPwd.setVisibility(View.INVISIBLE);
-		imgValidvConfirmPwd.setVisibility(View.INVISIBLE);
+		imgInValidConfirmPassword.setVisibility(View.INVISIBLE);
 
 	}
 	@Override
 	public void onFocusChange(View arg0, boolean arg1) {
 		switch (arg0.getId()) {
 		case R.id.et_emailid:
+			if(TextUtils.isEmpty(mDisplayName.getText().toString()) || TextUtils.isEmpty(mPasword.getText().toString()) || TextUtils.isEmpty(mConfirmPassword.getText().toString()))
+			{
+				mSignUpButton.setBackgroundResource(R.drawable.rectangle_login);
 
+			}else
+			{
+				mSignUpButton.setBackgroundResource(R.drawable.signin_button_selector);
+			}
 			mWhichEdittext = 1;
 
 			break;
 		case R.id.et_confirm_password:
+			if(TextUtils.isEmpty(mEmailId.getText().toString()) || TextUtils.isEmpty(mPasword.getText().toString()) || TextUtils.isEmpty(mDisplayName.getText().toString()))
+			{
+				mSignUpButton.setBackgroundResource(R.drawable.rectangle_login);
 
+			}else
+			{
+				mSignUpButton.setBackgroundResource(R.drawable.signin_button_selector);
+			}
 			mWhichEdittext = 2;
 
 			break;
 
 		case R.id.et_password:
+			if(TextUtils.isEmpty(mEmailId.getText().toString()) || TextUtils.isEmpty(mDisplayName.getText().toString()) || TextUtils.isEmpty(mConfirmPassword.getText().toString()))
+			{
+				mSignUpButton.setBackgroundResource(R.drawable.rectangle_login);
 
+			}else
+			{
+				mSignUpButton.setBackgroundResource(R.drawable.signin_button_selector);
+			}
 			break;
 
 		case R.id.et_display_name:
 			mWhichEdittext = 3;
+
+			if(TextUtils.isEmpty(mEmailId.getText().toString()) || TextUtils.isEmpty(mPasword.getText().toString()) || TextUtils.isEmpty(mConfirmPassword.getText().toString()))
+			{
+				mSignUpButton.setBackgroundResource(R.drawable.rectangle_login);
+
+			}else
+			{
+				mSignUpButton.setBackgroundResource(R.drawable.signin_button_selector);
+			}
 
 			break;
 
@@ -693,7 +769,7 @@ public class EmailRegistrationFragment extends Fragment implements OnClickListen
 
 		return false;
 	}
-*/
+	 */
 
 }
 
