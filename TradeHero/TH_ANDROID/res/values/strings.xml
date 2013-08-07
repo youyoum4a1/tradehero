@@ -29,7 +29,7 @@
     <string name="forgot_password">forgot your password ?</string>
     <string name="existing_user">existing user</string>
     <string name="field_not_balnk">Field should not left blank.</string>
-    <string name="password_validation_string">Password should not be less than six charecter.</string>
+    <string name="password_validation_string">Password should not be less than six charecter and should be equal with confirm password !</string>
     <string name="email_validation_string">Enter a valid email address.</string>
     <string name="Roi">ROI: </string>
     <string name="email_alert">You must provide an Email id.</string>
@@ -63,8 +63,8 @@
     <string name="p25k">$25K</string>
     <string name="p50k">$50K</string>
     <string name="buy"> BUY </string>
-    
-     <!-- What's Trending Details - StockInfo -->
+
+    <!-- What's Trending Details - StockInfo -->
     <string name="previous_close">Previous Close</string>
     <string name="open">Open</string>
     <string name="days_high">Day\'s High</string>
@@ -75,17 +75,14 @@
     <string name="volume">Volume</string>
     <string name="avg_volume">Avg Volume</string>
     <string name="na">N/A</string>
-
     <string name="hint_buy_comment">Post comments to attract followers...(optional)</string>
     <string name="btn_buy">Confirm</string>
-
 
     <!-- alert message -->
     <string name="enter_message_email">Please enter your email address.</string>
     <string name="thank_you_message_email">Thank You ! Please follow your mail box</string>
     <string name="twitter_login_message">Already Logged into twitter !</string>
-
-   
-
+    <string name="thank_you_message">Thank You !</string>
+    <string name="twitter_login_message">Already Logged into twitter !</string>
 
 </resources>

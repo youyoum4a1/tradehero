@@ -1,5 +1,6 @@
 package android.tradehero.fragments;
 
+
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
@@ -16,10 +17,15 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.tradehero.activities.R;
+
 import android.tradehero.adapters.ProfileContentAdapter;
 import android.tradehero.adapters.TradeWeekAdapter;
 import android.tradehero.application.App;
 import android.tradehero.application.Config;
+
+import android.tradehero.adapters.TradeWeekAdapter;
+import android.tradehero.application.App;
+
 import android.tradehero.application.ConvolutionMatrix;
 import android.tradehero.cache.ImageLoader;
 import android.tradehero.http.RequestTaskCompleteListener;
@@ -31,6 +37,7 @@ import android.tradehero.models.TradeofWeek;
 import android.tradehero.models.Trend;
 import android.tradehero.utills.Constants;
 import android.tradehero.utills.PostData;
+import android.tradehero.utills.Constants;
 import android.tradehero.utills.Util;
 import android.util.Base64;
 import android.view.LayoutInflater;
@@ -79,21 +86,29 @@ public class HomeScreenFragment extends Fragment implements OnClickListener,Requ
 
 	private void _initView(View view) {
 
+
+
 		mProgressDialog= new ProgressDialog(getActivity());
 		mProgressDialog.setMessage(getResources().getString(R.string.loading_loading));
 		listview_content_progress =  (ProgressBar)view.findViewById(R.id.progressbar_tradeofweek);
 		mListviewContent = (ListView)view.findViewById(R.id.list_user_content);
 		txtUserName = (TextView)view.findViewById(R.id.header_txt_homescreen);
-
 		profile = ((App)getActivity().getApplication()).getProfileDTO();
-		String mUserName = profile.getDisplayName();
-		picture = profile.getPicture();
-		id = profile.getId();
-		txtUserName.setText(mUserName);
-		mBagroundImage = (LinearLayout) view.findViewById(R.id.top_layout);
-		mUserImg = (ImageView)view.findViewById(R.id.img_banner_user);
-		new UpdateUi().execute();
-		_getDataOfTrade();
+
+		if(profile != null)
+		{
+
+			String mUserName = profile.getDisplayName();
+			picture = profile.getPicture();
+			id = profile.getId();
+			txtUserName.setText(mUserName);
+			mBagroundImage = (LinearLayout) view.findViewById(R.id.top_layout);
+			mUserImg = (ImageView)view.findViewById(R.id.img_banner_user);
+			new UpdateUi().execute();
+			_getDataOfTrade();
+		}
+
+
 
 	}
 

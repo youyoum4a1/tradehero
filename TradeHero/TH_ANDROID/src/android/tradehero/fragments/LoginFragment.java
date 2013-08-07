@@ -12,6 +12,10 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
+import android.text.style.BackgroundColorSpan;
 import android.tradehero.activities.R;
 import android.tradehero.activities.TradeHeroTabActivity;
 import android.tradehero.activities.WelcomeActivity;
@@ -76,8 +80,67 @@ public class LoginFragment extends Fragment implements OnClickListener,RequestTa
 		mProgressDialog.setMessage("Logging In");
 		mForgotPassword.setOnClickListener(this);
 		mSignIn.setOnClickListener(this);
+
+		mSignIn.setBackgroundResource(R.drawable.rectangle_login);
+
 		//mSignIn.setOnTouchListener(this);
 		//mForgotPassword.setOnTouchListener(this)
+		inputPassword.setOnFocusChangeListener(this);
+		inputEmailName.setOnFocusChangeListener(this);
+
+		inputEmailName.addTextChangedListener(new TextWatcher() {
+
+			@Override
+			public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
+				// TODO Auto-generated method stub
+				if(TextUtils.isEmpty(arg0))
+				{
+					mSignIn.setBackgroundResource(R.drawable.rectangle_login);
+				}
+
+
+			}
+
+			@Override
+			public void beforeTextChanged(CharSequence arg0, int arg1, int arg2,
+					int arg3) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void afterTextChanged(Editable arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+		
+		inputPassword.addTextChangedListener(new TextWatcher() {
+
+			@Override
+			public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
+				// TODO Auto-generated method stub
+				if(TextUtils.isEmpty(arg0))
+				{
+					mSignIn.setBackgroundResource(R.drawable.rectangle_login);
+				}
+
+			}
+
+			@Override
+			public void beforeTextChanged(CharSequence arg0, int arg1, int arg2,
+					int arg3) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void afterTextChanged(Editable arg0) {
+				// TODO Auto-generated method stub
+				
+
+			}
+		});
 	}
 
 	@Override
@@ -90,23 +153,32 @@ public class LoginFragment extends Fragment implements OnClickListener,RequestTa
 			String pass =inputPassword.getText()!=null?inputPassword.getText().toString():"";
 			if(uname.trim().length()>0 && pass.trim().length()>0)
 			{
-				
-				try {
-					
-					if(NetworkStatus.getInstance().isConnected(getActivity()))
-					{
-						HttpRequestTask  mRequestTask= new HttpRequestTask(this);
-						RequestFactory mRF= new RequestFactory();
-						Request[] lRequests={ mRF.getLoginThroughEmail(mContext,uname,pass)};
-						mRequestTask.execute(lRequests);
-						mProgressDialog.show();
-					}else
-					{
-						Util.show_toast(getActivity(), getResources().getString(R.string.network_error));
-					}
-					
-				} catch (Exception e){
-					e.printStackTrace();
+
+				if(Util.email_valid.matcher(inputEmailName.getText().toString()).matches())
+				{
+					try {
+
+						if(NetworkStatus.getInstance().isConnected(getActivity()))
+						{
+							HttpRequestTask  mRequestTask= new HttpRequestTask(this);
+							RequestFactory mRF= new RequestFactory();
+							Request[] lRequests={ mRF.getLoginThroughEmail(mContext,uname,pass)};
+							mRequestTask.execute(lRequests);
+							mProgressDialog.show();
+						}else
+						{
+							Util.show_toast(getActivity(), getResources().getString(R.string.network_error));
+						}
+
+					} catch (Exception e){
+						e.printStackTrace();
+					}					
+				}
+				else
+				{
+					Util.show_toast(getActivity(),getResources().getString(R.string.email_validation_string));
+
+
 				}
 
 			}else 
@@ -156,10 +228,21 @@ public class LoginFragment extends Fragment implements OnClickListener,RequestTa
 
 					Util.show_toast(getActivity(), getResources().getString(R.string.email_alert));
 				}
-				else
+				else 
 				{
-					doForgotPassword(email);
-					dialog.dismiss();
+					if(Util.email_valid.matcher(inputEmailName.getText().toString()).matches())
+					{
+
+						doForgotPassword(email);
+						dialog.dismiss();
+
+					}
+					else
+					{
+						Util.show_toast(getActivity(),getResources().getString(R.string.email_validation_string));
+
+
+					}
 				}
 
 			}
@@ -171,13 +254,15 @@ public class LoginFragment extends Fragment implements OnClickListener,RequestTa
 
 	@Override
 	public void onTaskComplete(JSONObject pResponseObject) {
+
 		
 		if(mProgressDialog.isShowing())
 		{
 			mProgressDialog.dismiss();
 			_resetField();
-			
+
 		}		
+		
 		if(pResponseObject != null)
 		{
 
@@ -190,8 +275,8 @@ public class LoginFragment extends Fragment implements OnClickListener,RequestTa
 				}
 				else
 				{    
-//					startActivity(new Intent(getActivity(),TradeHeroTabActivity.class));
-//					Util.show_toast(getActivity(), pResponseObject.toString());
+
+
 					System.out.println("log in throuh email---"+pResponseObject.toString());
 					JSONObject obj = pResponseObject.getJSONObject("profileDTO");
 
@@ -207,7 +292,7 @@ public class LoginFragment extends Fragment implements OnClickListener,RequestTa
 			}
 
 		}
-		
+
 	}
 
 	@Override
@@ -218,64 +303,27 @@ public class LoginFragment extends Fragment implements OnClickListener,RequestTa
 	@Override
 	public void onFocusChange(View arg0, boolean arg1) {
 
-	}
 
-	/*@Override
-	public boolean onTouch(View v, MotionEvent event) {
-		switch (event.getAction()) {
-		case MotionEvent.ACTION_DOWN:
-
-			switch (v.getId()) {
-			case R.id.btn_login:
-
-				String uname=inputEmailName.getText()!=null?inputEmailName.getText().toString():"";
-				String pass =inputPassword.getText()!=null?inputPassword.getText().toString():"";
-
-				if(uname.trim().length()>0 && pass.trim().length()>0)
-				{
-					
-					try {
-						
-						if(NetworkStatus.getInstance().isConnected(getActivity()))
-						{
-							HttpRequestTask  mRequestTask= new HttpRequestTask(this);
-							RequestFactory mRF= new RequestFactory();
-							Request[] lRequests={ mRF.getLoginThroughEmail(mContext,uname,pass)};
-							mRequestTask.execute(lRequests);
-							mProgressDialog.show();
-						}else
-						{
-							Util.show_toast(getActivity(), getResources().getString(R.string.network_error));
-						}
-						
-					} catch (Exception e){
-						e.printStackTrace();
-					}
-
-				}else 
-				{
-					
-					Util.show_toast(getActivity(), "Field should not be blank .");
-
-				}
-				break;
-
-			default:
-				break;
+		switch (arg0.getId()) {
+		case R.id.et_pwd_login:
+			if(!TextUtils.isEmpty(inputEmailName.getText().toString()))
+			{
+				mSignIn.setBackgroundResource(R.drawable.signin_button_selector);
+			}
+			else{
+				mSignIn.setBackgroundResource(R.drawable.rectangle_login);
 			}
 
 			break;
 
-		case MotionEvent.ACTION_UP:
+		case R.id.et_emailid_login:
 
-			switch (v.getId()) {
-			case R.id.btn_login:
-				mSignIn.setBackgroundResource(R.drawable.roundrectangle_signin);
-
-				break;
-
-			default:
-				break;
+			if(!TextUtils.isEmpty(inputPassword.getText().toString()))
+			{
+				mSignIn.setBackgroundResource(R.drawable.signin_button_selector);
+			}
+			else{
+				mSignIn.setBackgroundResource(R.drawable.rectangle_login);
 			}
 
 			break;
@@ -284,44 +332,68 @@ public class LoginFragment extends Fragment implements OnClickListener,RequestTa
 			break;
 		}
 
-		return false;
+
 	}
-*/
+
+	
+
+	
 
 	private void doForgotPassword(String email){
-		HttpRequestTask  mRequestTask= new HttpRequestTask(new RequestTaskCompleteListener(){
-			@Override
-			public void onTaskComplete(JSONObject pResponseObject) {
-				mProgressDialog.dismiss();
-				startActivity(new Intent(getActivity(),TradeHeroTabActivity.class));
-				Util.show_toast(getActivity(), getResources().getString(R.string.thank_you_message_email) +pResponseObject!=null?pResponseObject.toString():"Error");
+
+		if(NetworkStatus.getInstance().isConnected(getActivity()))
+		{
+			HttpRequestTask  mRequestTask= new HttpRequestTask(new RequestTaskCompleteListener(){
+				@Override
+				public void onTaskComplete(JSONObject pResponseObject) {
+					System.out.println("forgot password---------------"+pResponseObject);
+					if(pResponseObject != null)
+					{
+						mProgressDialog.dismiss();
+						Util.show_toast(getActivity(), getResources().getString(R.string.thank_you_message_email));
+
+					}
+
+
+				}
+
+				@Override
+				public void onErrorOccured(int pErrorCode,
+						String pErrorMessage) {
+					mProgressDialog.dismiss();
+					Util.show_toast(getActivity(),pErrorMessage );
+
+				}});
+			RequestFactory mRF= new RequestFactory();
+			android.tradehero.models.Request[] lRequests = new Request[1];
+			try 
+			{
+				lRequests[0]=mRF.getFogotPasswordRequest(email);
 			}
 
-			@Override
-			public void onErrorOccured(int pErrorCode,
-					String pErrorMessage) {
+			catch (JSONException e)
+			{
+				e.printStackTrace();
+			}	
+			mRequestTask.execute(lRequests);
+			mProgressDialog.show();
 
-			}});
-		RequestFactory mRF= new RequestFactory();
-		android.tradehero.models.Request[] lRequests = new Request[1];
-		try 
+
+		}else
 		{
-			lRequests[0]=mRF.getFogotPasswordRequest(email);
+			Util.show_toast(getActivity(), getResources().getString(R.string.network_error));
 		}
 
-		catch (JSONException e)
-		{
-			e.printStackTrace();
-		}	
-		mRequestTask.execute(lRequests);
-		mProgressDialog.show();
-
 	}
+
+
 	
+
 	private void _resetField(){
-		
+
 		inputEmailName.setText("");
 		inputPassword.setText("");
 	}
-
+	
+	
 }

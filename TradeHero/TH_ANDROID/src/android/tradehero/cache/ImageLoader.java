@@ -170,6 +170,7 @@ public class ImageLoader {
     //decodes image and scales it to reduce memory consumption
     private Bitmap decodeFile(File f){
         try {
+        	
             //decode image size
             BitmapFactory.Options o = new BitmapFactory.Options();
             o.inJustDecodeBounds = true;
