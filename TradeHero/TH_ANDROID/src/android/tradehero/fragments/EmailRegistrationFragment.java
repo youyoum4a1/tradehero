@@ -22,12 +22,15 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.tradehero.activities.R;
 import android.tradehero.activities.TradeHeroTabActivity;
+import android.tradehero.application.App;
 import android.tradehero.http.HttpRequestTask;
 import android.tradehero.http.RequestFactory;
 import android.tradehero.http.RequestTaskCompleteListener;
+import android.tradehero.models.ProfileDTO;
 import android.tradehero.models.Request;
 import android.tradehero.networkstatus.NetworkStatus;
 import android.tradehero.utills.Constants;
+import android.tradehero.utills.PUtills;
 import android.tradehero.utills.Util;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -282,9 +285,20 @@ public class EmailRegistrationFragment extends Fragment implements OnClickListen
 				}
 				else
 				{
+//					Util.show_toast(getActivity(), pResponseObject.toString());
+//					startActivity(new Intent(getActivity(),TradeHeroTabActivity.class).putExtra("DNAME", pResponseObject.optString("displayName")));
 					Util.show_toast(getActivity(), pResponseObject.toString());
-					startActivity(new Intent(getActivity(),TradeHeroTabActivity.class).putExtra("DNAME", pResponseObject.optString("displayName")));
-					Util.show_toast(getActivity(), pResponseObject.toString());
+					
+					//	JSONObject obj = pResponseObject.getJSONObject("profileDTO");
+
+						ProfileDTO prof =	new PUtills(getActivity())._parseJson(pResponseObject);
+
+						((App)getActivity().getApplication()).setProfileDTO(prof);
+						startActivity(new Intent(getActivity(),TradeHeroTabActivity.class));
+                        getActivity().finish();
+					
+					
+
 				}
 
 			} catch (JSONException e) {

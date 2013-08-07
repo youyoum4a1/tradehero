@@ -7,6 +7,7 @@ import org.json.JSONObject;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
+import android.app.FragmentManager.OnBackStackChangedListener;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -20,13 +21,16 @@ import android.tradehero.activities.R;
 import android.tradehero.activities.TradeHeroTabActivity;
 import android.tradehero.activities.dialog.LinkedinDialog;
 import android.tradehero.activities.dialog.LinkedinDialog.OnVerifyListener;
+import android.tradehero.application.App;
 import android.tradehero.http.HttpRequestTask;
 import android.tradehero.http.RequestFactory;
 import android.tradehero.http.RequestTaskCompleteListener;
+import android.tradehero.models.ProfileDTO;
 import android.tradehero.networkstatus.NetworkStatus;
 import android.tradehero.twitter.Twitter;
 import android.tradehero.twitter.TwitterError;
 import android.tradehero.utills.Constants;
+import android.tradehero.utills.PUtills;
 import android.tradehero.utills.Util;
 import android.tradehero.webbrowser.WebViewActivity;
 import android.util.Log;
@@ -138,12 +142,6 @@ public class InitialSignUpFragment extends Fragment implements OnClickListener,R
 		mTerms.setOnClickListener(this);
 		mEmailTv.setOnClickListener(this);
 
-		//mFaceBookBtn.setOnTouchListener(this);
-//		mTwitterBtn.setOnTouchListener(this);
-//		mLinkedinBtn.setOnTouchListener(this);
-		//mTerms.setOnTouchListener(this);
-		//mEmailTv.setOnTouchListener(this);
-
 		mProgressDialog= new ProgressDialog(getActivity());
 		mProgressDialog.setMessage("Logging In");
 		mContext=getActivity();
@@ -200,7 +198,7 @@ public class InitialSignUpFragment extends Fragment implements OnClickListener,R
 				//startActivity(new Intent(getActivity(),LoginActivity.class));
 				fragmentManager = getActivity().getSupportFragmentManager();
 				fragmentTransaction = fragmentManager.beginTransaction();
-				fragmentTransaction.setCustomAnimations(R.anim.slide_in_right,0);
+				fragmentTransaction.setCustomAnimations(R.anim.slide_in_right,0,R.anim.slide_out_left,0);
 				LoginFragment fragment = new LoginFragment();
 				fragmentTransaction.replace(R.id.sign_in_up_content, fragment,"login");
 				fragmentTransaction.addToBackStack("login");
@@ -210,7 +208,7 @@ public class InitialSignUpFragment extends Fragment implements OnClickListener,R
 				//startActivity(new Intent(getActivity(),EmailRegistrationActivity.class));
 				fragmentManager = getActivity().getSupportFragmentManager();
 				fragmentTransaction = fragmentManager.beginTransaction();
-				fragmentTransaction.setCustomAnimations(R.anim.slide_in_right,0);
+				fragmentTransaction.setCustomAnimations(R.anim.slide_in_right,0,R.anim.slide_out_left,0);
 				EmailRegistrationFragment fragment = new EmailRegistrationFragment();
 				fragmentTransaction.replace(R.id.sign_in_up_content, fragment,"email_registration");
 				fragmentTransaction.addToBackStack("email_registration");
@@ -251,12 +249,34 @@ public class InitialSignUpFragment extends Fragment implements OnClickListener,R
 				}
 				else
 				{   
-					//for testing
-					Util.show_toast(getActivity(), pResponseObject.toString());
-					startActivity(new Intent(getActivity(),TradeHeroTabActivity.class).putExtra("DNAME", pResponseObject.optString("displayName")));
-					
-					
-					
+
+					if(activityType==LOGIN)
+					{
+
+
+						JSONObject obj = pResponseObject.getJSONObject("profileDTO");
+
+						ProfileDTO prof =	new PUtills(getActivity())._parseJson(obj);
+
+						((App)getActivity().getApplication()).setProfileDTO(prof);
+						startActivity(new Intent(getActivity(),TradeHeroTabActivity.class));
+						getActivity().finish();
+
+					}
+					else if(activityType==SIGNUP)
+					{
+
+						//JSONObject obj = pResponseObject.getJSONObject("profileDTO");
+
+						ProfileDTO prof =	new PUtills(getActivity())._parseJson(pResponseObject);
+
+						((App)getActivity().getApplication()).setProfileDTO(prof);
+						startActivity(new Intent(getActivity(),TradeHeroTabActivity.class));
+						getActivity().finish();
+
+					}
+
+
 				}
 
 			} catch (Exception e) {
@@ -266,12 +286,13 @@ public class InitialSignUpFragment extends Fragment implements OnClickListener,R
 
 	}
 
+
 	@Override
 	public void onErrorOccured(int pErrorCode, String pErrorMessage) {
 
 	}
 
-	
+
 	@Override
 	public void onStart() {
 		super.onStart();
@@ -534,6 +555,9 @@ public class InitialSignUpFragment extends Fragment implements OnClickListener,R
 
 
 	}
+	
+	
+
 
 	
 	

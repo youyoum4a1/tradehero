@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:weightSum="1" >
+    android:orientation="vertical" >
 
     <RelativeLayout
+        android:id="@+id/top_header_banner"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="top"
+        android:layout_height="50dp"
+        android:layout_alignParentTop="true"
         android:background="@drawable/topbarrectangle"
         android:orientation="horizontal" >
 
@@ -39,14 +39,14 @@
     <LinearLayout
         android:id="@+id/top_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="0.6"
-        android:alpha="0.755"
-        android:background="@drawable/vatia1"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/top_header_banner"
+        android:background="@drawable/bhatia_img"
         android:orientation="vertical"
         android:weightSum="1" >
 
         <RelativeLayout
+            android:id="@+id/top_layout_sublauyt1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight=".4"
@@ -54,13 +54,13 @@
 
             <ImageView
                 android:id="@+id/img_banner_user"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
                 android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="15dp"
                 android:background="@drawable/layout_oval"
-                android:padding="2dp"
+                android:padding="0.5dp"
                 android:src="@drawable/th_logo" />
 
             <LinearLayout
@@ -90,7 +90,7 @@
                         android:id="@+id/txt_ROI"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="29.4%"
+                        android:text=" 29.4%"
                         android:textColor="@color/font_roi"
                         android:textSize="18sp"
                         android:textStyle="bold" />
@@ -108,7 +108,7 @@
                         android:id="@+id/txt_HQ"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="132"
+                        android:text=" 132"
                         android:textColor="@color/white"
                         android:textSize="18sp"
                         android:textStyle="bold" />
@@ -334,23 +334,30 @@
 
     <!-- bottom layout -->
 
-    <RelativeLayout
-        android:id="@+id/ll_bottom"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="0.4"
-        android:background="@color/gray_1"
-        android:gravity="bottom" >
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/top_layout"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:background="@color/gray_1" >
+
+        <ProgressBar
+            android:id="@+id/progressbar_tradeofweek"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_vertical|center_horizontal" 
+            android:visibility="visible"/>
 
         <ListView
             android:id="@+id/list_user_content"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
+            android:layout_height="match_parent"
             android:layout_margin="3dp"
-            android:dividerHeight="2dp" >
+            android:background="@color/gray_1"
+            android:dividerHeight="2dp"
+            android:visibility="invisible" >
         </ListView>
-    </RelativeLayout>
+    </FrameLayout>
 
-</LinearLayout>
+</RelativeLayout>

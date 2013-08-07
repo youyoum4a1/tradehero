@@ -29,7 +29,7 @@ public class BaseActivity extends Activity {
 				startActivity(new Intent(BaseActivity.this,WelcomeActivity.class));
 				finish();
 			}
-		}, 1000);
+		}, 3000);
         
     }
 

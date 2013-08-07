@@ -7,7 +7,7 @@ public class Logger {
 		LOGGING_LEVEL_DEBUG, LOGGING_LEVEL_ERROR, LOGGING_LEVEL_INFO, LOGGING_LEVEL_VERBOSE, LOGGING_LEVEL_WARN
 	}
 
-	public static final boolean ENABLE_LOGGING = false;
+	public static final boolean ENABLE_LOGGING = true;
 
 	private static final LogLevel CURRENT_LOGGING_LEVEL = LogLevel.LOGGING_LEVEL_VERBOSE;
 

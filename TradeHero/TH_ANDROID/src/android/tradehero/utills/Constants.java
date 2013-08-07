@@ -69,21 +69,22 @@ public class Constants {
 	public static final String LAST_NAME="lastName";
 	//Login
 	public static final String CLIENT_VERSION="clientVersion";
-	public static final String CLIENT_VERSION_VALUE="1.4.1";
+	public static final String CLIENT_VERSION_VALUE="1.5.1";
 	public static final String CLIENT_OS="clientiOS";
 	public static final String CLIENT_OS_VALUE="1";
 	
 	//Header
 	public static final String TH_CLIENT_VERSION="TH-Client-Version";
-	public static final String TH_CLIENT_VERSION_VALUE="1.4.1.2910";
+	
+	public static final String TH_CLIENT_VERSION_VALUE="1.5.1";
 	//public static final String TH_CLIENT_VERSION_VALUE="1.4.1.2813";
-	public static final String TH_CLIENT_VERSION_VALUE_NEW="1.4.1.2853";
+	public static final String TH_CLIENT_VERSION_VALUE_NEW="1.5.1";
 	public static final String AUTHORIZATION="Authorization";
 	public static final String TH_FB_PREFIX="TH-Facebook";
 	public static final String TH_TWITTER_PREFIX="TH-Twitter";
 	public static final String TH_LINKEDIN_PREFIX="TH-LinkedIn";
 	public static final String TH_EMAIL_PREFIX="Basic";
-	public static final String TH_ENTITY="{\"clientVersion\":\"1.4.1\",\"clientiOS\":1}";
+	public static final String TH_ENTITY="{\"clientVersion\":\"1.5.1\",\"clientiOS\":1}";
 	//SignUp FaceBook
 	public static final String FB_ACCESS_TOKEN="facebook_access_token";
 
@@ -95,7 +96,7 @@ public class Constants {
 	public static final String LINKED_ACCESS_TOKEN_SCERET="linkedin_access_token_secret";
 
 	//Login Params 
-	public static final String  CLIENT_PARAMS ="{\"clientVersion\":\"1.4.1\",\"clientiOS\":1}";
+	public static final String  CLIENT_PARAMS ="{\"clientVersion\":\"1.5.1\",\"clientiOS\":1}";
 	
 	//fwp
 	
@@ -161,5 +162,10 @@ public class Constants {
 	public static final String USE_TH_PRICE="useTHPrice";
 	public static final String USER_ALERT_PLAN="userAlertPlans";
 	public static final String WEBSITE="website";
+	
+	/*trade of week*/
+	
+	public static final String TH_TRADE_WEEK_POSTFIX = "/timeline?maxCount=42";
+	
 
 }

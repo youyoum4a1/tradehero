@@ -35,5 +35,6 @@
 	<color name="price_bar_text_default">#ff636363</color>
 	<color name="btn_buy_default">#ff636363</color>
 	<color name="btn_buy_pressed">#ff636363</color>
+	<color name="stock_info_bg">#ffebebeb</color>
 	
    </resources>
