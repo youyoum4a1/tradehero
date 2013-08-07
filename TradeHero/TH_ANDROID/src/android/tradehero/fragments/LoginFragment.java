@@ -20,6 +20,8 @@ import android.tradehero.http.RequestFactory;
 import android.tradehero.http.RequestTaskCompleteListener;
 import android.tradehero.models.Request;
 import android.tradehero.networkstatus.NetworkStatus;
+import android.tradehero.utills.Logger;
+import android.tradehero.utills.Logger.LogLevel;
 import android.tradehero.utills.Util;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -35,7 +37,9 @@ import android.widget.TextView;
 
 
 public class LoginFragment extends Fragment implements OnClickListener,RequestTaskCompleteListener,OnFocusChangeListener{
-
+	
+	private final static String TAG = LoginFragment.class.getName();
+	
 	private TextView mForgotPassword;
 	private Button mSignIn;
 	private EditText inputEmailName,inputPassword;
@@ -174,11 +178,12 @@ public class LoginFragment extends Fragment implements OnClickListener,RequestTa
 		{
 
 			try {
-
+				Logger.log(TAG, pResponseObject.toString(), LogLevel.LOGGING_LEVEL_INFO);
 				if(pResponseObject.has("Message"))
-				{
+				{	
 					String msg = pResponseObject.optString("Message");
-					Util.show_toast(getActivity(), msg);					
+					Util.show_toast(getActivity(), msg);	
+					//startActivity(new Intent(getActivity(),TradeHeroTabActivity.class));
 				}
 				else
 				{    
