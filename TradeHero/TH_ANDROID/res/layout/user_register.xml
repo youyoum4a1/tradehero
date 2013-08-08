@@ -35,8 +35,9 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/required_text"
             android:layout_marginLeft="30dp"
-            android:layout_marginRight="0dp"
+            android:layout_marginRight="30dp"
             android:layout_marginTop="5dp"
+            android:background="@drawable/layout_one_side_border"
             android:orientation="horizontal"
             android:weightSum="1" >
 
@@ -45,17 +46,18 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight=".9"
+                android:background="@android:color/transparent"
                 android:ems="10"
                 android:hint="@string/emai_adds"
                 android:imeOptions="actionNext"
                 android:inputType="textEmailAddress"
+                android:padding="5dp"
                 android:textColor="@color/black" />
 
             <FrameLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:layout_marginRight="20dp"
                 android:layout_weight=".1" >
 
                 <ImageView
@@ -87,8 +89,9 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/ll_emailid"
             android:layout_marginLeft="30dp"
-            android:layout_marginRight="0dp"
-            android:layout_marginTop="5dp"
+            android:layout_marginRight="30dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/layout_one_side_border"
             android:orientation="horizontal"
             android:weightSum="1" >
 
@@ -97,16 +100,17 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight=".9"
+                android:background="@android:color/transparent"
                 android:ems="10"
                 android:hint="@string/pwd"
                 android:inputType="textPassword"
+                android:padding="5dp"
                 android:textColor="@color/black" />
 
             <FrameLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:layout_marginRight="20dp"
                 android:layout_weight=".1" >
 
                 <ImageView
@@ -138,8 +142,11 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/ll_password"
             android:layout_marginLeft="30dp"
-            android:layout_marginTop="5dp"
+            android:layout_marginRight="30dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/layout_one_side_border"
             android:orientation="horizontal"
+            android:padding="5dp"
             android:weightSum="1" >
 
             <EditText
@@ -147,6 +154,7 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight=".9"
+                android:background="@android:color/transparent"
                 android:ems="10"
                 android:hint="@string/confirm_pwd"
                 android:inputType="textPassword"
@@ -156,7 +164,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:layout_marginRight="20dp"
                 android:layout_weight=".1" >
 
                 <ImageView
@@ -188,8 +195,11 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/ll_confirm_password"
             android:layout_marginLeft="30dp"
-            android:layout_marginTop="5dp"
+            android:layout_marginRight="30dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/layout_one_side_border"
             android:orientation="horizontal"
+            android:padding="5dp"
             android:weightSum="1" >
 
             <EditText
@@ -197,6 +207,7 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight=".9"
+                android:background="@android:color/transparent"
                 android:ems="10"
                 android:hint="@string/display_name"
                 android:inputType="text"
@@ -206,7 +217,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:layout_marginRight="20dp"
                 android:layout_weight=".1" >
 
                 <ImageView
@@ -256,8 +266,8 @@
                 android:layout_centerVertical="true"
                 android:layout_margin="10dp"
                 android:adjustViewBounds="true"
-                android:gravity="center"
                 android:background="@drawable/image_selector"
+                android:gravity="center"
                 android:src="@drawable/avatar" />
 
             <LinearLayout
@@ -272,6 +282,7 @@
                     android:id="@+id/et_firstname"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
+                    android:background="@drawable/layout_one_side_border"
                     android:ems="10"
                     android:hint="@string/first_name"
                     android:inputType="text"
@@ -282,6 +293,7 @@
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
+                    android:background="@drawable/layout_one_side_border"
                     android:ems="10"
                     android:hint="@string/last_name"
                     android:inputType="text"

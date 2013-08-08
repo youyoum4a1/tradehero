@@ -62,7 +62,12 @@ import android.os.Bundle;
 import android.tradehero.activities.R;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.View;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 /**
@@ -471,6 +476,34 @@ public final class Util {
 		return null;
 
 	}
+public static void CustomToast(Context ctx,String message)
+{
+    Context context = ctx;
+   String text = "Sorry ! "+ message;
+   Toast customizedToast = Toast.makeText(ctx, text,Toast.LENGTH_LONG);
+   customizedToast.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
+   LinearLayout mLayout = new LinearLayout(context);
+   mLayout.setOrientation(LinearLayout.VERTICAL);
+   mLayout.setBackgroundResource(R.color.black);
+   TextView mTV = new TextView(context);
+   mTV.setTextColor(Color.WHITE);
+   mTV.setTextSize(18);
+ //  CustomView cv = new CustomView(context);
+   mTV.setText(text);
+   mTV.setGravity(Gravity.CENTER_HORIZONTAL|Gravity.CENTER_VERTICAL);
+   int width = LinearLayout.LayoutParams.FILL_PARENT;
+   int height = LinearLayout.LayoutParams.WRAP_CONTENT;
+  // mLayout.addView(cv, new LinearLayout.LayoutParams(height, width));
+   mLayout.addView(mTV, new LinearLayout.LayoutParams(width, 100));
+   customizedToast.setView(mLayout);
+   customizedToast.show();
+	
+}
 
+public static void dismissKeyBoard(Context ctx,View v){
+	
+	InputMethodManager imm = (InputMethodManager)ctx.getSystemService(Context.INPUT_METHOD_SERVICE);
+	imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+}
 
 }

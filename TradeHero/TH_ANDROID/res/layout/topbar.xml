@@ -12,7 +12,7 @@
         android:layout_alignParentLeft="true"
         android:layout_centerInParent="true"
         android:paddingLeft="15dp"
-        android:src="@drawable/th_logo" />
+        android:src="@drawable/th_app_logo" />
 
     <TextView
         android:id="@+id/header_txt"
@@ -20,7 +20,7 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:layout_toRightOf="@+id/logo_img"
-        android:paddingLeft="15dp"
+        android:paddingLeft="10dp"
         android:singleLine="true"
         android:text=""
         android:textColor="@color/white"

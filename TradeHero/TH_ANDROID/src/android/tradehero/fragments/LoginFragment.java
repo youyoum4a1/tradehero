@@ -32,9 +32,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.View.OnClickListener;
 import android.view.View.OnFocusChangeListener;
 import android.view.View.OnTouchListener;
+import android.view.inputmethod.InputMethodManager;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
@@ -85,7 +87,8 @@ public class LoginFragment extends Fragment implements OnClickListener,RequestTa
 		//mForgotPassword.setOnTouchListener(this)
 		inputPassword.setOnFocusChangeListener(this);
 		inputEmailName.setOnFocusChangeListener(this);
-
+		//		InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+		//		imm.showSoftInput(inputEmailName, InputMethodManager.SHOW_IMPLICIT);
 		inputEmailName.addTextChangedListener(new TextWatcher() {
 
 			@Override
@@ -109,10 +112,10 @@ public class LoginFragment extends Fragment implements OnClickListener,RequestTa
 			@Override
 			public void afterTextChanged(Editable arg0) {
 				// TODO Auto-generated method stub
-				
+
 			}
 		});
-		
+
 		inputPassword.addTextChangedListener(new TextWatcher() {
 
 			@Override
@@ -135,7 +138,7 @@ public class LoginFragment extends Fragment implements OnClickListener,RequestTa
 			@Override
 			public void afterTextChanged(Editable arg0) {
 				// TODO Auto-generated method stub
-				
+
 
 			}
 		});
@@ -146,7 +149,7 @@ public class LoginFragment extends Fragment implements OnClickListener,RequestTa
 
 		switch (v.getId()) {
 		case R.id.btn_login:
-
+			Util.dismissKeyBoard(getActivity(), v);
 			String uname=inputEmailName.getText()!=null?inputEmailName.getText().toString():"";
 			String pass =inputPassword.getText()!=null?inputPassword.getText().toString():"";
 			if(uname.trim().length()>0 && pass.trim().length()>0)
@@ -244,7 +247,15 @@ public class LoginFragment extends Fragment implements OnClickListener,RequestTa
 			}
 		});
 
-		AlertDialog alrt = dialog.create();
+		final AlertDialog alrt = dialog.create();
+		inputEmailName.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+			@Override
+			public void onFocusChange(View v, boolean hasFocus) {
+				if (hasFocus) {
+					alrt.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+				}
+			}
+		});
 		alrt.show();
 	}
 
@@ -310,6 +321,7 @@ public class LoginFragment extends Fragment implements OnClickListener,RequestTa
 			break;
 
 		case R.id.et_emailid_login:
+
 
 			if(!TextUtils.isEmpty(inputPassword.getText().toString()))
 			{

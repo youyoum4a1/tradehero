@@ -131,10 +131,10 @@ public class EmailRegistrationFragment extends Fragment implements OnClickListen
 				{
 					mSignUpButton.setBackgroundResource(R.drawable.rectangle_login);
 				}
-				
-					mText = s;
-					new CheckValidation().execute();
-				
+
+				mText = s;
+				new CheckValidation().execute();
+
 			}
 
 			@Override
@@ -157,10 +157,10 @@ public class EmailRegistrationFragment extends Fragment implements OnClickListen
 				{
 					mSignUpButton.setBackgroundResource(R.drawable.rectangle_login);
 				}
-				
-					mText = s;
-					new CheckValidation().execute();
-				
+
+				mText = s;
+				new CheckValidation().execute();
+
 
 			}
 
@@ -186,17 +186,17 @@ public class EmailRegistrationFragment extends Fragment implements OnClickListen
 				{
 					mSignUpButton.setBackgroundResource(R.drawable.rectangle_login);
 				}
-				
-					mText = s;
 
-					if(NetworkStatus.getInstance().isConnected(getActivity()))
-					{
-						new CheckValidation().execute();
-					}else{
-						Toast.makeText(getActivity(), getResources().getString(R.string.network_error),200).show();
+				mText = s;
 
-					}
-				
+				if(NetworkStatus.getInstance().isConnected(getActivity()))
+				{
+					new CheckValidation().execute();
+				}else{
+					Toast.makeText(getActivity(), getResources().getString(R.string.network_error),200).show();
+
+				}
+
 
 			}
 
@@ -220,6 +220,8 @@ public class EmailRegistrationFragment extends Fragment implements OnClickListen
 				{
 					mSignUpButton.setBackgroundResource(R.drawable.rectangle_login);
 				}
+				mText = s;
+				new CheckValidation().execute();
 
 			}
 
@@ -245,6 +247,9 @@ public class EmailRegistrationFragment extends Fragment implements OnClickListen
 
 
 		if(v.getId()== R.id.btn_register){
+			
+			Util.dismissKeyBoard(getActivity(), v);
+			
 			try {			
 
 				if(NetworkStatus.getInstance().isConnected(getActivity()))
@@ -321,13 +326,14 @@ public class EmailRegistrationFragment extends Fragment implements OnClickListen
 		if(pResponseObject!=null){
 
 			System.out.println("result response----"+pResponseObject.toString());
+			
 
 			try {
 
 				if(pResponseObject.has("Message"))
 				{
 					String msg = pResponseObject.getString("Message");
-					Util.show_toast(getActivity(), msg);					
+					Util.CustomToast(getActivity(), msg);					
 				}
 				else
 				{
@@ -698,6 +704,7 @@ public class EmailRegistrationFragment extends Fragment implements OnClickListen
 			{
 				mSignUpButton.setBackgroundResource(R.drawable.signin_button_selector);
 			}
+			mWhichEdittext = 2;
 			break;
 
 		case R.id.et_display_name:

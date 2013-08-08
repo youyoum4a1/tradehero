@@ -28,7 +28,7 @@
     <string name="Signin_content1">or sign in with an</string>
     <string name="forgot_password">forgot your password ?</string>
     <string name="existing_user">existing user</string>
-    <string name="field_not_balnk">Field should not left blank.</string>
+    <string name="field_not_balnk">Field should not be left blank.</string>
     <string name="password_validation_string">Password should not be less than six charecter and should be equal with confirm password !</string>
     <string name="email_validation_string">Enter a valid email address.</string>
     <string name="Roi">ROI: </string>

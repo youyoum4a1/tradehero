@@ -4,10 +4,8 @@ package android.tradehero.fragments;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
-import android.app.FragmentManager.OnBackStackChangedListener;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -35,11 +33,10 @@ import android.tradehero.utills.Util;
 import android.tradehero.webbrowser.WebViewActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -583,13 +580,20 @@ public class InitialSignUpFragment extends Fragment implements OnClickListener,R
 
 
 				dialog.dismiss();
-				Util.show_toast(getActivity(),getResources().getString(R.string.thank_you_message));
 
 			}
 		});
 
 
-		AlertDialog alrt = dialog.create();
+		final AlertDialog alrt = dialog.create();
+		mail_id_twitter.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+			@Override
+			public void onFocusChange(View v, boolean hasFocus) {
+				if (hasFocus) {
+					alrt.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+				}
+			}
+		});
 		alrt.show();
 
 

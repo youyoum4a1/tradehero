@@ -27,16 +27,18 @@ public class TradeHeroTabActivity extends FragmentActivity {
 	public void onBackPressed() {
 		// TODO Auto-generated method stub
 		super.onBackPressed();
-		
-		
+
+
 	}
-	
-	
+
+
 	private void initialSetup() {
 
 		Resources ressources = getResources(); 
 
 		mTabHost = (FragmentTabHost) findViewById(android.R.id.tabhost);
+		
+
 		mTabHost.setup(this, getSupportFragmentManager(), R.id.realtabcontent);
 
 		Bundle b = new Bundle();
@@ -80,7 +82,7 @@ public class TradeHeroTabActivity extends FragmentActivity {
 		mTabHost.setCurrentTabByTag("Home");
 
 	}
-	
+
 	public void showTabs(boolean value) {
 		if(mTabHost != null) {
 			mTabHost.getTabWidget().setVisibility(value? View.VISIBLE: View.GONE);
