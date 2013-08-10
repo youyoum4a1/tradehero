@@ -13,7 +13,7 @@ import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-public class WelcomScreenFragment extends Fragment implements OnClickListener,OnTouchListener{
+public class WelcomScreenFragment extends Fragment implements OnClickListener{
 
 	private Button mNewUser,mExistingUser;
 	private FragmentManager fragmentManager;
@@ -37,8 +37,7 @@ public class WelcomScreenFragment extends Fragment implements OnClickListener,On
 		mExistingUser = (Button)view.findViewById(R.id.btn_signin);
 		mNewUser.setOnClickListener(this);
 		mExistingUser.setOnClickListener(this);
-		mExistingUser.setOnTouchListener(this);
-		mNewUser.setOnTouchListener(this);
+
 
 	}
 
@@ -87,53 +86,6 @@ public class WelcomScreenFragment extends Fragment implements OnClickListener,On
 
 
 
-	@Override
-	public boolean onTouch(View v, MotionEvent event) {
-		switch (event.getAction()) {
-		case MotionEvent.ACTION_DOWN:
-
-			switch (v.getId()) {
-			case R.id.btn_newuser:
-				mNewUser.setBackgroundResource(R.drawable.twit_rectangle);
-
-				break;
-			case R.id.btn_signin:
-
-				mExistingUser.setBackgroundResource(R.drawable.rectangle_login);
-
-				break;
-
-			default:
-				break;
-			}
-
-			break;
-
-		case MotionEvent.ACTION_UP:
-
-
-			switch (v.getId()) {
-			case R.id.btn_newuser:
-				mNewUser.setBackgroundResource(R.drawable.roundrectangle_fb);
-
-				break;
-			case R.id.btn_signin:
-
-				mExistingUser.setBackgroundResource(R.drawable.roundrectangle_signin);
-
-				break;
-
-			default:
-				break;
-			}
-
-			break;
-
-		default:
-			break;
-		}
-
-		return false;
-	}
+	
 
 }

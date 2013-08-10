@@ -10,6 +10,7 @@ import android.graphics.Picture;
 import android.net.Uri;
 import android.os.Bundle;
 import android.tradehero.activities.R;
+import android.tradehero.fragments.InitialSignUpFragment;
 import android.tradehero.utills.Constants;
 import android.util.Log;
 import android.view.Window;
@@ -37,10 +38,21 @@ public class LinkedinDialog extends Dialog {
 	 *            activity {@link Context}
 	 * @param progressDialog
 	 *            {@link ProgressDialog}
+	 *            
+	 *            
 	 */
+
+	@Override
+	public void onBackPressed() {
+		// TODO Auto-generated method stub
+		super.onBackPressed();
+		InitialSignUpFragment.linkedinButtonPressed = false;
+	}
 	public LinkedinDialog(Context context, ProgressDialog progressDialog) {
 		super(context);
 		this.progressDialog = progressDialog;
+		
+
 	}
 
 	@Override
@@ -108,7 +120,7 @@ public class LinkedinDialog extends Dialog {
 			{ //if (url.contains(Constants.BASE_API_URL)){
 				cancel();
 			} /*else {
-				
+
 				view.loadUrl(url);
 			}*/
 
