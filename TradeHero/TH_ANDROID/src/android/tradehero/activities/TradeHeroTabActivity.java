@@ -22,6 +22,13 @@ public class TradeHeroTabActivity extends FragmentActivity {
 		initialSetup();
 	}
 
+	@Override
+	public void onBackPressed() {
+		// TODO Auto-generated method stub
+		super.onBackPressed();
+		
+		
+	}
 	
 	
 	private void initialSetup() {

@@ -31,9 +31,9 @@
     <string name="field_not_balnk">Field should not left blank.</string>
     <string name="password_validation_string">Password should not be less than six charecter.</string>
     <string name="email_validation_string">Enter a valid email address.</string>
-    <string name="Roi">ROI:</string>
+    <string name="Roi">ROI: </string>
     <string name="email_alert">You must provide an Email id.</string>
-    <string name="Hq">HQ:</string>
+    <string name="Hq">HQ: </string>
     <string name="Trade_Profit">Trade Profit: US$</string>
     <string name="Followers">Followers</string>
     <string name="Heroes">Heroes</string>
@@ -78,6 +78,8 @@
 
     <string name="hint_buy_comment">Post comments to attract followers...(optional)</string>
     <string name="btn_buy">Confirm</string>
+    <string name="share_on">Share on</string>
+    <string name="public_str">Public</string>
 
 
     <!-- alert message -->
@@ -85,7 +87,7 @@
     <string name="thank_you_message_email">Thank You ! Please follow your mail box</string>
     <string name="twitter_login_message">Already Logged into twitter !</string>
 
-    
+   
 
 
 </resources>

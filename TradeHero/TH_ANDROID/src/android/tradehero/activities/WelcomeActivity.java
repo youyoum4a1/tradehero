@@ -1,22 +1,13 @@
 package android.tradehero.activities;
 
 import twitter4j.Twitter;
-import twitter4j.User;
-import twitter4j.auth.AccessToken;
-import twitter4j.auth.RequestToken;
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.tradehero.fragments.InitialSignUpFragment;
 import android.tradehero.fragments.WelcomScreenFragment;
-import android.tradehero.utills.Constants;
-import android.tradehero.utills.Util;
-import android.util.Log;
 
 public class WelcomeActivity extends FragmentActivity {
 

@@ -21,6 +21,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Handler;
+import android.tradehero.utills.Util;
 import android.widget.ImageView;
 
 /**
@@ -49,6 +50,18 @@ public class ImageLoader {
         Bitmap bitmap=memoryCache.get(url);
         if(bitmap!=null)
             imageView.setImageBitmap(bitmap);
+        else
+        {
+            queuePhoto(url, imageView);
+            imageView.setImageDrawable(null);
+        }
+    }
+    public void DisplayRoundImage(String url, ImageView imageView)
+    {
+        imageViews.put(imageView, url);
+        Bitmap bitmap=memoryCache.get(url);
+        if(bitmap!=null)
+            imageView.setImageBitmap(Util.getRoundedShape(bitmap));
         else
         {
             queuePhoto(url, imageView);
@@ -98,14 +111,16 @@ public class ImageLoader {
         executorService.submit(new PhotosLoader(p));
     }
     
-    private Bitmap getBitmap(String url) 
+    public Bitmap getBitmap(String url) 
     {
         File f = fileCache.getFile(url);
         
         //from SD cache
         Bitmap b = decodeFile(f);
         if(b!=null)
+        {
             return b;
+        }
         
         //from web
         try {
@@ -127,6 +142,29 @@ public class ImageLoader {
                memoryCache.clear();
            return null;
         }
+        
+    }  
+        public Bitmap getMyBitmap(String url) 
+        {
+            
+            
+            //from web
+            try {
+                Bitmap bitmap=null;
+                URL imageUrl = new URL(url);
+                HttpURLConnection conn = (HttpURLConnection)imageUrl.openConnection();
+                conn.setConnectTimeout(30000);
+                conn.setReadTimeout(30000);
+                conn.setInstanceFollowRedirects(true);
+                InputStream is=conn.getInputStream();
+                bitmap = BitmapFactory.decodeStream(is);
+                return bitmap;
+            } catch (Throwable ex){
+               ex.printStackTrace();
+               if(ex instanceof OutOfMemoryError)
+                   memoryCache.clear();
+               return null;
+            }
     }
 
     //decodes image and scales it to reduce memory consumption

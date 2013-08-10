@@ -75,9 +75,10 @@ public class Constants {
 	
 	//Header
 	public static final String TH_CLIENT_VERSION="TH-Client-Version";
+
 	public static final String TH_CLIENT_VERSION_VALUE="1.5.1";
 	//public static final String TH_CLIENT_VERSION_VALUE="1.4.1.2813";
-	public static final String TH_CLIENT_VERSION_VALUE_NEW="1.4.1.2853";
+	public static final String TH_CLIENT_VERSION_VALUE_NEW="1.5.1";
 	public static final String AUTHORIZATION="Authorization";
 	public static final String TH_FB_PREFIX="TH-Facebook";
 	public static final String TH_TWITTER_PREFIX="TH-Twitter";
@@ -161,5 +162,10 @@ public class Constants {
 	public static final String USE_TH_PRICE="useTHPrice";
 	public static final String USER_ALERT_PLAN="userAlertPlans";
 	public static final String WEBSITE="website";
+	
+	/*trade of week*/
+	
+	public static final String TH_TRADE_WEEK_POSTFIX = "/timeline?maxCount=42";
+	
 
 }

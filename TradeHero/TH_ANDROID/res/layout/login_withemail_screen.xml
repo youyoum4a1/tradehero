@@ -22,12 +22,13 @@
         android:layout_marginTop="30dp"
         android:background="@drawable/roundrectangle_signin"
         android:ems="10"
+        android:text="neeraj@eatechnologies.com"
+        
         android:hint="@string/emai_adds"
         android:inputType="textEmailAddress"
         android:padding="15dp"
-        android:textColor="@color/black" 
-        android:text="neeraj@eatechnologies.com">
-		
+        android:textColor="@color/black" >
+
         <requestFocus />
     </EditText>
 
@@ -41,11 +42,11 @@
         android:layout_marginTop="20dp"
         android:background="@drawable/roundrectangle_signin"
         android:ems="10"
+        android:text="testing"
         android:hint="@string/pwd"
         android:inputType="textPassword"
         android:padding="15dp"
-        android:textColor="@color/black" 
-        android:text="testing"/>
+        android:textColor="@color/black" />
 
     <Button
         android:id="@+id/btn_login"

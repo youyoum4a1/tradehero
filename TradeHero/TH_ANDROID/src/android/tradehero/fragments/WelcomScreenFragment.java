@@ -13,7 +13,7 @@ import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-public class WelcomScreenFragment extends Fragment implements OnClickListener{
+public class WelcomScreenFragment extends Fragment implements OnClickListener,OnTouchListener{
 
 	private Button mNewUser,mExistingUser;
 	private FragmentManager fragmentManager;
@@ -37,7 +37,8 @@ public class WelcomScreenFragment extends Fragment implements OnClickListener{
 		mExistingUser = (Button)view.findViewById(R.id.btn_signin);
 		mNewUser.setOnClickListener(this);
 		mExistingUser.setOnClickListener(this);
-
+		mExistingUser.setOnTouchListener(this);
+		mNewUser.setOnTouchListener(this);
 
 	}
 
@@ -48,7 +49,7 @@ public class WelcomScreenFragment extends Fragment implements OnClickListener{
 
 			fragmentManager = getActivity().getSupportFragmentManager();
 			fragmentTransaction = fragmentManager.beginTransaction();
-			fragmentTransaction.setCustomAnimations(R.anim.slide_in_right,0);
+			fragmentTransaction.setCustomAnimations(R.anim.slide_in_right,0,R.anim.slide_out_left,0);
 			fragment = new InitialSignUpFragment();
 			fragmentTransaction.replace(R.id.sign_in_up_content, fragment,"initial_signup");
 			mData = new Bundle();
@@ -65,7 +66,7 @@ public class WelcomScreenFragment extends Fragment implements OnClickListener{
 
 			fragmentManager = getActivity().getSupportFragmentManager();
 			fragmentTransaction = fragmentManager.beginTransaction();
-			fragmentTransaction.setCustomAnimations(R.anim.slide_in_right,0);
+			fragmentTransaction.setCustomAnimations(R.anim.slide_in_right,0,R.anim.slide_out_left,0);
 			fragment = new InitialSignUpFragment();
 			fragmentTransaction.replace(R.id.sign_in_up_content, fragment,"initial_signup");
 			mData = new Bundle();
@@ -86,6 +87,53 @@ public class WelcomScreenFragment extends Fragment implements OnClickListener{
 
 
 
-	
+	@Override
+	public boolean onTouch(View v, MotionEvent event) {
+		switch (event.getAction()) {
+		case MotionEvent.ACTION_DOWN:
+
+			switch (v.getId()) {
+			case R.id.btn_newuser:
+				mNewUser.setBackgroundResource(R.drawable.twit_rectangle);
+
+				break;
+			case R.id.btn_signin:
+
+				mExistingUser.setBackgroundResource(R.drawable.rectangle_login);
+
+				break;
+
+			default:
+				break;
+			}
+
+			break;
+
+		case MotionEvent.ACTION_UP:
+
+
+			switch (v.getId()) {
+			case R.id.btn_newuser:
+				mNewUser.setBackgroundResource(R.drawable.roundrectangle_fb);
+
+				break;
+			case R.id.btn_signin:
+
+				mExistingUser.setBackgroundResource(R.drawable.roundrectangle_signin);
+
+				break;
+
+			default:
+				break;
+			}
+
+			break;
+
+		default:
+			break;
+		}
+
+		return false;
+	}
 
 }

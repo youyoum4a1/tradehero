@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_height="match_parent"
+    android:background="@drawable/bg" >
 
     <include
         android:id="@+id/header"
@@ -12,7 +13,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/header"
-        android:background="@drawable/bg"
         android:drawSelectorOnTop="false"
         android:gravity="center"
         android:horizontalSpacing="15dp"
@@ -23,6 +23,16 @@
         android:paddingTop="9dp"
         android:verticalSpacing="15dp" >
     </GridView>
+
+    <ListView
+        android:id="@+id/trendig_listview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/header"
+        android:cacheColorHint="@android:color/transparent"
+        android:divider="@null"
+        android:visibility="gone" >
+    </ListView>
 
     <ProgressBar
         android:id="@+id/progress_spinner"

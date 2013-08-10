@@ -1,86 +1,82 @@
 package android.tradehero.adapters;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.tradehero.activities.R;
+import android.tradehero.cache.ImageLoader;
+import android.tradehero.cache.ImageLoader.ImageLoadingListener;
+import android.tradehero.models.Trend;
+import android.tradehero.utills.ImageUtils;
+import android.tradehero.utills.Logger;
+import android.tradehero.utills.Logger.LogLevel;
+import android.tradehero.utills.TrendUtils;
+import android.tradehero.utills.YUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
-import android.widget.ImageView;
+import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import android.tradehero.activities.R;
+import com.loopj.android.image.SmartImageView;
 
-public class TrendingAdapter extends BaseAdapter {
-
-	private List<Item> items = new ArrayList<Item>();
-	private LayoutInflater inflater;
-	public TrendingAdapter(Context context) {
-		inflater = LayoutInflater.from(context);
-		//add static item
-		items.add(new Item("Red",       R.drawable.fbook));
-		items.add(new Item("Magenta",   R.drawable.google));
-		items.add(new Item("Dark Gray", R.drawable.dbs));
-		items.add(new Item("Gray",      R.drawable.google_g));
-		items.add(new Item("Green",     R.drawable.google));
-		items.add(new Item("Cyan",      R.drawable.dbs));
-		items.add(new Item("Red",       R.drawable.fbook));
-		items.add(new Item("Magenta",   R.drawable.google));
-		items.add(new Item("Dark Gray", R.drawable.dbs));
-		items.add(new Item("Gray",      R.drawable.google_g));
-		items.add(new Item("Green",     R.drawable.google));
-		items.add(new Item("Cyan",      R.drawable.dbs));
+public class TrendingAdapter extends ArrayAdapter<Trend> {
+	
+	private final static String TAG = TrendingAdapter.class.getSimpleName();
+	
+	public TrendingAdapter(Context context, List<Trend> trendList) {
+		super(context, 0, trendList);
 	}
-
-	@Override
-	public int getCount() {
-		return items.size();
-	}
-
-	@Override
-	public Object getItem(int i) {
-		return items.get(i);
-	}
-
-	@Override
-	public long getItemId(int i) {
-		return items.get(i).drawableId;
-	}
-
-	@Override
-	public View getView(int i, View view, ViewGroup viewGroup) {
-		View v = view;
-		ImageView picture;
-		TextView name;
-
-		if(v == null) 
-		{
-			v = inflater.inflate(R.layout.trendinditem_screen, viewGroup, false);
-			v.setTag(R.id.picture, v.findViewById(R.id.picture));
-			v.setTag(R.id.text, v.findViewById(R.id.text));
+	
+	@SuppressWarnings("deprecation")
+	public View getView(final int position, View convertView,
+			ViewGroup parent) {
+		
+		if (convertView == null) {
+			convertView = LayoutInflater.from(getContext()).inflate(
+					R.layout.trending_grid_item, null);
+		}
+		
+		TextView stockName = (TextView) convertView.findViewById(R.id.stock_name);
+		TextView exchangeSymbol = (TextView) convertView.findViewById(R.id.exchange_symbol);
+		TextView profitIndicator = (TextView) convertView.findViewById(R.id.profit_indicator);
+		TextView currencyDisplay = (TextView) convertView.findViewById(R.id.currency_display);
+		TextView lastPrice = (TextView) convertView.findViewById(R.id.last_price);
+		final SmartImageView stockLogo = (SmartImageView) convertView.findViewById(R.id.stock_logo);
+		final SmartImageView stockBgLogo = (SmartImageView) convertView.findViewById(R.id.stock_bg_logo);
+		
+		Trend trend = getItem(position);
+		
+		stockName.setText(trend.getName());
+		exchangeSymbol.setText(String.format("%s:%s", trend.getExchange(), trend.getSymbol()));
+		currencyDisplay.setText(trend.getCurrencyDisplay());
+		
+		double dLastPrice = YUtils.parseQuoteValue(trend.getLastPrice());
+		if(!Double.isNaN(dLastPrice)) 
+			lastPrice.setText(String.format("%.2f", dLastPrice));
+		else
+			Logger.log(TAG, "TH: Unable to parse Last Price", LogLevel.LOGGING_LEVEL_ERROR);
+		
+		if(trend.getPc50DMA() > 0)
+			profitIndicator.setText(getContext().getString(R.string.positive_prefix));
+		else if(trend.getPc50DMA() < 0) 
+			profitIndicator.setText(getContext().getString(R.string.negetive_prefix));
+		
+		profitIndicator.setTextColor(TrendUtils.colorForPercentage(trend.getPc50DMA()));
+		
+		stockBgLogo.setAlpha(26); //15% opaque
+		if(trend.getImageBlobUrl() != null && trend.getImageBlobUrl().length() > 0) {
+			//Bitmap b = convertToMutable((new WebImageCache(TrendingActivity.this)).get(trend.getImageBlobUrl()));
+			new ImageLoader(getContext()).getBitmapImage(trend.getImageBlobUrl(), new ImageLoadingListener() {
+				public void onLoadingComplete(Bitmap loadedImage) {
+					final Bitmap b = ImageUtils.convertToMutableAndRemoveBackground(loadedImage);
+					stockLogo.setImageBitmap(b);
+					stockBgLogo.setImageBitmap(b);
+				}
+			});	
 		}
 
-		picture = (ImageView)v.getTag(R.id.picture);
-		name = (TextView)v.getTag(R.id.text);
-
-		Item item = (Item)getItem(i);
-
-		picture.setImageResource(item.drawableId);
-		name.setText(item.name);
-
-		return v;
+		return convertView;
 	}
-
-	private class Item {
-		final String name;
-		final int drawableId;
-
-		Item(String name, int drawableId) {
-			this.name = name;
-			this.drawableId = drawableId;
-		}
-	}
-
 }
