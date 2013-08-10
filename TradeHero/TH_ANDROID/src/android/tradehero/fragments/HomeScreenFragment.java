@@ -153,10 +153,14 @@ public class HomeScreenFragment extends Fragment implements OnClickListener,Requ
 		@Override
 		protected void onPostExecute(Void result) {
 			// TODO Auto-generated method stub
-
-			mUserImg.setImageBitmap( Util.getRoundedShape(mBitmap));
-			drawableBitmap=new BitmapDrawable(applyGaussianBlur(mBGBtmp));
-			mBagroundImage.setBackgroundDrawable(drawableBitmap);
+			
+			if(mBitmap != null) 
+				mUserImg.setImageBitmap( Util.getRoundedShape(mBitmap));
+			
+			if(mBGBtmp != null) {
+				drawableBitmap=new BitmapDrawable(applyGaussianBlur(mBGBtmp));
+				mBagroundImage.setBackgroundDrawable(drawableBitmap);
+			}
 
 			if(dlg.isShowing())
 			{

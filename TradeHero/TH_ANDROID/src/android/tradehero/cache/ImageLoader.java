@@ -201,9 +201,13 @@ public class ImageLoader {
             Bitmap bitmap=BitmapFactory.decodeStream(stream2, null, o2);
             stream2.close();
             return bitmap;
-        } catch (FileNotFoundException e) {
+        } 
+        catch (FileNotFoundException e) {
         } 
         catch (IOException e) {
+            e.printStackTrace();
+        }
+        catch (Exception e) {
             e.printStackTrace();
         }
         return null;

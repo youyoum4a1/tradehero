@@ -15,10 +15,8 @@ import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.text.style.BackgroundColorSpan;
 import android.tradehero.activities.R;
 import android.tradehero.activities.TradeHeroTabActivity;
-import android.tradehero.activities.WelcomeActivity;
 import android.tradehero.application.App;
 import android.tradehero.http.HttpRequestTask;
 import android.tradehero.http.RequestFactory;
@@ -26,20 +24,14 @@ import android.tradehero.http.RequestTaskCompleteListener;
 import android.tradehero.models.ProfileDTO;
 import android.tradehero.models.Request;
 import android.tradehero.networkstatus.NetworkStatus;
-
 import android.tradehero.utills.Logger;
 import android.tradehero.utills.Logger.LogLevel;
-
 import android.tradehero.utills.PUtills;
-
 import android.tradehero.utills.Util;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnFocusChangeListener;
-import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
