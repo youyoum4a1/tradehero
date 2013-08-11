@@ -11,6 +11,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -80,6 +81,7 @@ public class InitialSignUpFragment extends Fragment implements OnClickListener,R
 	private int operationType;
 	private Bundle mData;
 	public static boolean linkedinButtonPressed= false;
+	//public static boolean twitterButtonPressed= false;
 	private FragmentManager fragmentManager;
 	private FragmentTransaction fragmentTransaction ;
 	final LinkedInOAuthService oAuthService = LinkedInOAuthServiceFactory
@@ -181,11 +183,13 @@ public class InitialSignUpFragment extends Fragment implements OnClickListener,R
 			}
 			break;
 		case R.id.btn_linkedin_linkedin:
+
+
 			if(!linkedinButtonPressed)
 			{
 				if(NetworkStatus.getInstance().isConnected(getActivity()))
 				{ 
-					linkedinProgress.show();
+                   linkedinProgress.show();
 					operationType=OP_LINKEDIN;
 					linkedInLogin();
 
@@ -344,6 +348,9 @@ public class InitialSignUpFragment extends Fragment implements OnClickListener,R
 	}
 	private void onClickLoginFaceBook() {
 		Session session = Session.getActiveSession();
+
+
+
 		if (session!=null &&!session.isOpened() && !session.isClosed()) 
 		{
 			session.openForRead(new Session.OpenRequest(this).setCallback(statusCallback));
@@ -402,6 +409,7 @@ public class InitialSignUpFragment extends Fragment implements OnClickListener,R
 
 		linkedinButtonPressed = true;
 		ProgressDialog progressDialog = new ProgressDialog(getActivity());
+		
 
 		LinkedinDialog d = new LinkedinDialog(getActivity(),progressDialog);
 		d.show();
@@ -424,12 +432,12 @@ public class InitialSignUpFragment extends Fragment implements OnClickListener,R
 					Log.i("LinkedinSample",
 							"ln_access_token: " + accessToken.getTokenSecret());
 					Person p = client.getProfileForCurrentUser();
-					/*name.setText("Welcome " + p.getFirstName() + " "
-							+ p.getLastName());
-					name.setVisibility(0);
-					login.setVisibility(4);
-					share.setVisibility(0);
-					et.setVisibility(0);*/
+//					name.setText("Welcome " + p.getFirstName() + " "
+//							+ p.getLastName());
+//					name.setVisibility(0);
+//					login.setVisibility(4);
+//					share.setVisibility(0);
+//					et.setVisibility(0);
 					HttpRequestTask  mRequestTask= new HttpRequestTask(mRequestTaskCompleteListener);
 					RequestFactory mRF= new RequestFactory();
 					android.tradehero.models.Request[] lRequests =new android.tradehero.models.Request[1];
@@ -463,11 +471,14 @@ public class InitialSignUpFragment extends Fragment implements OnClickListener,R
 				}
 			}
 		});
-
+		
 		// set progress dialog
-		progressDialog.setMessage("Loading...");
-		progressDialog.setCancelable(true);
-		progressDialog.show();
+				progressDialog.setMessage("Loading...");
+				progressDialog.setCancelable(true);
+				progressDialog.show();
+
+		//new Linkedin().execute();
+
 	}
 	/**
 	 * Function to login twitter
@@ -482,19 +493,27 @@ public class InitialSignUpFragment extends Fragment implements OnClickListener,R
 
 		} else {
 			// user already logged into twitter
-			HttpRequestTask  mRequestTask= new HttpRequestTask(mRequestTaskCompleteListener);
-			RequestFactory mRF= new RequestFactory();
-			android.tradehero.models.Request[] lRequests =new android.tradehero.models.Request[1];
-			try {
-				lRequests[0] = mRF.getLoginThroughTwiiter(mSharedPreferences.getString(Constants.PREF_KEY_OAUTH_SECRET, null),mSharedPreferences.getString(Constants.PREF_KEY_OAUTH_TOKEN, null));
+			if(activityType == LOGIN)
+			{
+				HttpRequestTask  mRequestTask= new HttpRequestTask(mRequestTaskCompleteListener);
+				RequestFactory mRF= new RequestFactory();
+				android.tradehero.models.Request[] lRequests =new android.tradehero.models.Request[1];
+				try {
+					lRequests[0] = mRF.getLoginThroughTwiiter(getActivity(),mSharedPreferences.getString(Constants.PREF_KEY_OAUTH_SECRET, null),mSharedPreferences.getString(Constants.PREF_KEY_OAUTH_TOKEN, null));
 
-			} catch (JSONException ex) {
-				ex.printStackTrace();
+				} catch (JSONException ex) {
+					ex.printStackTrace();
+				}
+
+				mProgressDialog.show();
+				mRequestTask.execute(lRequests);
+				Util.show_toast(getActivity(), getResources().getString(R.string.twitter_login_message));
+			}
+			else if(activityType==SIGNUP)
+			{
+				Util.show_toast(getActivity(), getResources().getString(R.string.twitter_login_message)+" "+getResources().getString(R.string.go_login_twitter));
 			}
 
-			mProgressDialog.show();
-			mRequestTask.execute(lRequests);
-			Util.show_toast(getActivity(), getResources().getString(R.string.twitter_login_message));
 
 
 		}
@@ -553,6 +572,8 @@ public class InitialSignUpFragment extends Fragment implements OnClickListener,R
 							@Override
 							public void onComplete(String accessKey, String accessSecret) {
 
+								Util.show_toast(getActivity(), "hi "+accessSecret+accessKey);
+
 							}
 
 							@Override
@@ -609,7 +630,88 @@ public class InitialSignUpFragment extends Fragment implements OnClickListener,R
 
 }*/
 
+	/*class Linkedin extends AsyncTask<Void, Void, Void>{
+		ProgressDialog progressDialog;
+		LinkedinDialog d;
+		
+		@Override
+		protected void onPreExecute() {
+			// TODO Auto-generated method stub
+			progressDialog = new ProgressDialog(getActivity());
+			// set progress dialog
+			progressDialog.setMessage("Loading...");
+			progressDialog.setCancelable(true);
+			progressDialog.show();
+			d = new LinkedinDialog(getActivity(),progressDialog);
+			d.show();
 
+			super.onPreExecute();
+		}
+
+		@Override
+		protected Void doInBackground(Void... arg0) {
+			// TODO Auto-generated method stub
+			// set call back listener to get oauth_verifier value
+			d.setVerifierListener(new OnVerifyListener() {
+				@Override
+				public void onVerify(String verifier) {
+					try {
+						Log.i("LinkedinSample", "verifier: " + verifier);
+
+						accessToken = LinkedinDialog.oAuthService
+								.getOAuthAccessToken(LinkedinDialog.liToken,
+										verifier);
+						LinkedinDialog.factory.createLinkedInApiClient(accessToken);
+						client = factory.createLinkedInApiClient(accessToken);
+						// client.postNetworkUpdate("Testing by Mukesh!!! LinkedIn wall post from Android app");
+						Log.i("LinkedinSample",
+								"ln_access_token: " + accessToken.getToken());
+						Log.i("LinkedinSample",
+								"ln_access_token: " + accessToken.getTokenSecret());
+						Person p = client.getProfileForCurrentUser();
+						name.setText("Welcome " + p.getFirstName() + " "
+								+ p.getLastName());
+						name.setVisibility(0);
+						login.setVisibility(4);
+						share.setVisibility(0);
+						et.setVisibility(0);
+						HttpRequestTask  mRequestTask= new HttpRequestTask(mRequestTaskCompleteListener);
+						RequestFactory mRF= new RequestFactory();
+						android.tradehero.models.Request[] lRequests =new android.tradehero.models.Request[1];
+						if(activityType==LOGIN)
+						{
+							try {
+
+								lRequests[0] = mRF.getLoginThroughLinkedIn(getActivity(),accessToken.getTokenSecret(), accessToken.getToken());
+								mProgressDialog.show();
+								mRequestTask.execute(lRequests);
+							} catch (JSONException e) {
+								e.printStackTrace();
+							}
+						}
+						else if(activityType == SIGNUP)
+						{
+							try {
+								lRequests[0] = mRF.getRegistrationThroughLinkedIn(getActivity(),accessToken.getTokenSecret(), accessToken.getToken());
+								mProgressDialog.show();
+								mRequestTask.execute(lRequests);
+
+							} catch (JSONException e) {
+								e.printStackTrace();
+							}
+						}
+
+
+					} catch (Exception e) {
+						Log.i("LinkedinSample", "error to get verifier");
+						e.printStackTrace();
+					}
+				}
+			});
+			return null;
+		}
+
+	}*/
 
 
 }

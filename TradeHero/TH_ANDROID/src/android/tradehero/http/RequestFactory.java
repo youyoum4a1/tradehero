@@ -134,9 +134,10 @@ public class RequestFactory {
 		lLoginRequest.setContext(pContext);
 		lLoginRequest.addRequestHeader(new BasicHeader(Constants.CONTENT_TYPE,Constants.CONTENT_TYPE_VALUE_URL_ENCODED ));
 		lLoginRequest.setRequestType(Request.REQUEST_TYPE_POST);		//lLoginRequest.setRequestJSonObject(jsonLoginObject);
+		_setToken(pContext, pLinkedinAccessToken, pLinkedinAccessTokenSecret);
 		return lLoginRequest;
 	}
-	public Request getLoginThroughTwiiter(String pTwitterAccessTokenSecret,String pTwitrerAccessToken) throws JSONException{
+	public Request getLoginThroughTwiiter(Context ctx,String pTwitterAccessTokenSecret,String pTwitrerAccessToken) throws JSONException{
 		Request lLoginRequest = new Request();
 		lLoginRequest.setApiUrl(Constants.LOGIN_URL);
 		lLoginRequest.setParameter(new BasicNameValuePair(Constants.CLIENT_VERSION,Constants.CLIENT_VERSION_VALUE));
@@ -146,7 +147,9 @@ public class RequestFactory {
 		//lLoginRequest.addRequestHeader(new BasicHeader(Constants.TH_FB_PREFIX,pFBAuthToken ));
 		lLoginRequest.addRequestHeader(new BasicHeader(Constants.CONTENT_TYPE,Constants.CONTENT_TYPE_VALUE_URL_ENCODED ));
 		lLoginRequest.setRequestType(Request.REQUEST_TYPE_POST);		//lLoginRequest.setRequestJSonObject(jsonLoginObject);
-
+		lLoginRequest.setContext(ctx);
+		_setToken(ctx, pTwitrerAccessToken, pTwitterAccessTokenSecret);
+		
 		return lLoginRequest;
 	}
 	public Request getFogotPasswordRequest(String pEmailId) throws JSONException{

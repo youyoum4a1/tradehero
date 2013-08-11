@@ -50,7 +50,7 @@ public class HomeScreenFragment extends Fragment implements OnClickListener,Requ
 	private ProfileDTO profile;
 	private String picture ;
 	private BitmapDrawable drawableBitmap;
-	private Bitmap mBitmap,mBGBtmp;
+	private Bitmap mBitmap;
 	private String id;
 	private ProgressDialog mProgressDialog;
 	private ProgressBar listview_content_progress;
@@ -75,20 +75,28 @@ public class HomeScreenFragment extends Fragment implements OnClickListener,Requ
 		mListviewContent = (ListView)view.findViewById(R.id.list_user_content);
 		txtUserName = (TextView)view.findViewById(R.id.header_txt_homescreen);
 		profile = ((App)getActivity().getApplication()).getProfileDTO();
-		
+
 		if(profile != null)
 		{
-			
+
 			String mUserName = profile.getDisplayName();
 			picture = profile.getPicture();
 			id = profile.getId();
 			txtUserName.setText(mUserName);
 			mBagroundImage = (LinearLayout) view.findViewById(R.id.top_layout);
 			mUserImg = (ImageView)view.findViewById(R.id.img_banner_user);
-			new UpdateUi().execute();
+			if(mBitmap == null){
+				new UpdateUi().execute();
+			}else{
+				mUserImg.setImageBitmap( Util.getRoundedShape(mBitmap)); 
+				drawableBitmap=new BitmapDrawable(applyGaussianBlur(mBitmap));
+				mBagroundImage.setBackgroundDrawable(drawableBitmap);
+			}
+
+
 			_getDataOfTrade();
 		}
-		
+
 
 	}
 
@@ -126,17 +134,18 @@ public class HomeScreenFragment extends Fragment implements OnClickListener,Requ
 		protected Void doInBackground(Void... arg0) {
 			// TODO Auto-generated method stub
 			mBitmap = imgLoader.getBitmap(picture);
-			mBGBtmp = applyGaussianBlur(imgLoader.getBitmap(picture));
+			//mBGBtmp = imgLoader.getBitmap(picture);
 
 			return null;
 		}
 		@Override
 		protected void onPostExecute(Void result) {
 			// TODO Auto-generated method stub
-
-			mUserImg.setImageBitmap( Util.getRoundedShape(mBitmap));
-			drawableBitmap=new BitmapDrawable(applyGaussianBlur(mBGBtmp));
-			mBagroundImage.setBackgroundDrawable(drawableBitmap);
+			if(mBitmap!=null){
+				mUserImg.setImageBitmap( Util.getRoundedShape(mBitmap)); 
+				drawableBitmap=new BitmapDrawable(applyGaussianBlur(mBitmap));
+				mBagroundImage.setBackgroundDrawable(drawableBitmap);
+			}
 
 			if(dlg.isShowing())
 			{
@@ -190,6 +199,7 @@ public class HomeScreenFragment extends Fragment implements OnClickListener,Requ
 				public void onSuccess(String response) {
 
 					Util.show_toast(getActivity(), response);
+					System.out.println("response---------------"+response);
 					parseResponse(response);
 					listview_content_progress.setVisibility(View.INVISIBLE);
 					mListviewContent.setVisibility(View.VISIBLE);
@@ -200,7 +210,11 @@ public class HomeScreenFragment extends Fragment implements OnClickListener,Requ
 
 					listview_content_progress.setVisibility(View.INVISIBLE);
 					mListviewContent.setVisibility(View.INVISIBLE);
-					Util.show_toast(getActivity(), arg1);
+					if(arg1!=null)
+					{
+						Util.show_toast(getActivity(), arg1);
+					}
+					
 
 				}
 			});

@@ -25,11 +25,15 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.tradehero.activities.R;
+import android.tradehero.activities.TradeHeroTabActivity;
+import android.tradehero.application.App;
 import android.tradehero.fragments.InitialSignUpFragment;
 import android.tradehero.http.HttpRequestTask;
 import android.tradehero.http.RequestFactory;
 import android.tradehero.http.RequestTaskCompleteListener;
+import android.tradehero.models.ProfileDTO;
 import android.tradehero.utills.Constants;
+import android.tradehero.utills.PUtills;
 import android.tradehero.utills.Util;
 import android.tradehero.webbrowser.WebViewActivity;
 import android.util.Log;
@@ -55,12 +59,12 @@ public class TwitterActivity extends Activity implements RequestTaskCompleteList
 	private RequestTaskCompleteListener mRequestTaskCompleteListener;
 	private OAuthConsumer mConsumer;
 	private OAuthProvider mProvider;
-    private String twitter_email;
-    private EditText mail_id_twitter;
+	private String twitter_email;
+	private EditText mail_id_twitter;
 	private ProgressDialog mSpinner;
 	private WebView mWebView;
-    private Thread thread;
-    private AlertDialog alert;
+	private Thread thread;
+	private AlertDialog alert;
 	/**
 	 * Handler to run shit on the UI thread
 	 *
@@ -118,7 +122,7 @@ public class TwitterActivity extends Activity implements RequestTaskCompleteList
 		mWebView.getSettings().setSavePassword(false);
 		mWebView.setScrollBarStyle(WebView.SCROLLBARS_OUTSIDE_OVERLAY);
 		mWebView.setWebViewClient(new TwitterWebViewClient());
-		
+
 		thread = new Thread() {
 			@Override
 			public void run() {
@@ -137,9 +141,9 @@ public class TwitterActivity extends Activity implements RequestTaskCompleteList
 				}
 			}
 		};
-		
+
 		thread.start();
-		
+
 	}
 
 	@Override
@@ -180,7 +184,7 @@ public class TwitterActivity extends Activity implements RequestTaskCompleteList
 		// Store login status - true
 		e.putBoolean(Constants.PREF_KEY_TWITTER_LOGIN, true);
 		e.commit(); // save changes
-        
+
 		HttpRequestTask  mRequestTask= new HttpRequestTask(mRequestTaskCompleteListener);
 		RequestFactory mRF= new RequestFactory();
 		android.tradehero.models.Request[] lRequests =new android.tradehero.models.Request[1];
@@ -265,9 +269,20 @@ public class TwitterActivity extends Activity implements RequestTaskCompleteList
 	@Override
 	public void onTaskComplete(JSONObject pResponseObject) {
 		mProgressDialog.dismiss();
-		Util.show_toast(this,"Login SuccessFul"+ pResponseObject.toString());
+		//Util.show_toast(this,"Login SuccessFul"+ pResponseObject.toString());
 		System.out.println("login---"+pResponseObject.toString());
-		finish();
+		try {
+			if(pResponseObject!=null)
+			{//JSONObject obj = pResponseObject.getJSONObject("profileDTO");
+				ProfileDTO prof =	new PUtills(this)._parseJson(pResponseObject);
+				((App)this.getApplication()).setProfileDTO(prof);
+				startActivity(new Intent(TwitterActivity.this,TradeHeroTabActivity.class));
+			}
+			finish();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 	}
 
@@ -277,7 +292,7 @@ public class TwitterActivity extends Activity implements RequestTaskCompleteList
 
 	};
 
-	
+
 
 
 }

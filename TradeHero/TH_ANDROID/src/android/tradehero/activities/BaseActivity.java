@@ -10,10 +10,13 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
-import android.tradehero.activities.WelcomeActivity;;
+import android.tradehero.application.App;
+import android.tradehero.models.Token;
+import android.tradehero.utills.Util;
 public class BaseActivity extends Activity {
 	
 	private Timer timerToShiftActivity;
+	public static String LOGGEDIN = "_logged";
    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,7 +29,18 @@ public class BaseActivity extends Activity {
 			public void run()
 			{
 				timerToShiftActivity.cancel();
-				startActivity(new Intent(BaseActivity.this,WelcomeActivity.class));
+				Token token = ((App)BaseActivity.this.getApplication()).getToken();
+				if(token!=null)
+				{
+					startActivity(new Intent(BaseActivity.this,TradeHeroTabActivity.class).putExtra(LOGGEDIN, true));
+					
+				}
+				else
+				{
+					startActivity(new Intent(BaseActivity.this,WelcomeActivity.class));
+
+				}		
+				
 				finish();
 			}
 		}, 3000);

@@ -1,5 +1,6 @@
 package android.tradehero.activities;
 
+import android.app.TabActivity;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
@@ -10,6 +11,7 @@ import android.tradehero.fragments.HomeScreenFragment;
 import android.tradehero.fragments.PortfolioScreenFragment;
 import android.tradehero.fragments.StoreScreenFragment;
 import android.tradehero.fragments.TrendingFragment;
+import android.tradehero.utills.Util;
 import android.view.View;
 
 public class TradeHeroTabActivity extends FragmentActivity {
@@ -33,6 +35,12 @@ public class TradeHeroTabActivity extends FragmentActivity {
 
 
 	private void initialSetup() {
+		
+		boolean response = getIntent().getBooleanExtra(BaseActivity.LOGGEDIN, false);
+		if(response)
+		{
+			Util.show_toast(TradeHeroTabActivity.this, getResources().getString(R.string.login_message));
+		}
 
 		Resources ressources = getResources(); 
 
