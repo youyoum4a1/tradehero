@@ -123,8 +123,11 @@ public class TrendingFragment extends Fragment {
 		
 		if(trendList != null && trendList.size() > 0)
 			setDataAdapterToGridView(trendList);
-		
-		
+		//else {
+		//	trendList = new ArrayList<Trend>();
+		//	mTrendingGridView.setAdapter(new TrendingAdapter(getActivity(), trendList));
+		//}
+
 		mSearchTypeSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
 
 			@Override
@@ -188,9 +191,14 @@ public class TrendingFragment extends Fragment {
 		mTrendingGridView.setAdapter(new TrendingAdapter(getActivity(), trendList));
 	}
 	
-	//private void setDataAdapterToSearchListView(List<Trend> trendList) {
-	//	mSearchListView.setAdapter(new SearchStockAdapter(getActivity(), trendList));
-	//}
+//	private void setInitialAdapterToGridView() {
+//		trendList = new ArrayList<Trend>();
+//		mTrendingGridView.setAdapter(new TrendingAdapter(getActivity(), trendList));
+//	}
+	
+	private void setDataAdapterToSearchListView(List<Trend> trendList) {
+		mSearchListView.setAdapter(new SearchStockAdapter(getActivity(), trendList));
+	}
 	
 	private void requestToGetTrendingInfo() {
 		
@@ -256,7 +264,7 @@ public class TrendingFragment extends Fragment {
 						ObjectMapper objectMapper = new ObjectMapper();
 						searchStockList = objectMapper.readValue(response, TypeFactory.defaultInstance().constructCollectionType(List.class, Trend.class));
 						mSearchListView.setAdapter(new SearchStockAdapter(getActivity(), searchStockList));
-						//setDataAdapterToSearchListView(searchStockList);
+						setDataAdapterToSearchListView(searchStockList);
 					}
 					else {
 						ObjectMapper objectMapper = new ObjectMapper();

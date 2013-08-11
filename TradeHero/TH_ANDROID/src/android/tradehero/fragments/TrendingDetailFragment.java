@@ -40,7 +40,7 @@ public class TrendingDetailFragment extends Fragment {
 	
 	private final static String TAG = TrendingDetailFragment.class.getSimpleName();
 	
-	private final static int YAHOO_QUOTE_INTERVAL = 10*1000;
+	private final static int YAHOO_QUOTE_INTERVAL = 60*1000;
 	
 	private FragmentTabHost mTabHost;
 	private TextView mHeaderText;

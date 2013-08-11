@@ -134,7 +134,9 @@ public class TradeFragment extends Fragment implements YahooQuoteUpdateListener 
 			public void onProgressChanged(SeekBar seekBar, int progress,
 					boolean fromUser) {
 				
-				//if(fromUser) {
+				//int q = progress;
+				
+				if(fromUser) {
 					int q = 0;
 					
 					if(progress < seekBar.getMax())
@@ -149,7 +151,9 @@ public class TradeFragment extends Fragment implements YahooQuoteUpdateListener 
 					//Logger.log(TAG, "SeeBar Max: "+seekBar.getMax(), LogLevel.LOGGING_LEVEL_INFO);
 					
 					updateQuantityAndTradeValue(q);
-				//}
+				}
+				
+				Logger.log(TAG, "Progress: "+progress, LogLevel.LOGGING_LEVEL_INFO);
 				
 			}
 		});
@@ -215,6 +219,7 @@ public class TradeFragment extends Fragment implements YahooQuoteUpdateListener 
 		if(!Double.isNaN(askPrice) && !Double.isNaN(bidPrice)) {
 			tvAskPrice.setText(String.format("%.2f%s", askPrice, getString(R.string.ask_with_bracket)));
 			tvBidPrice.setText(String.format(" x %.2f%s", bidPrice, getString(R.string.bid_with_bracket)));
+			lastPrice = askPrice;
 		}
 		else
 			Logger.log(TAG, "TH: Unable to parse Ask & Bid Price", LogLevel.LOGGING_LEVEL_ERROR);
@@ -341,6 +346,9 @@ public class TradeFragment extends Fragment implements YahooQuoteUpdateListener 
 				Logger.log(TAG, "Unable to parse Ask (Real-time)", LogLevel.LOGGING_LEVEL_ERROR);
 		}
 		
+		if(!Double.isNaN(askPrice))
+			lastPrice = askPrice;
+		
 		double bidPrice = YUtils.parseQuoteValue(yQuotes.get("Bid"));
 		if(Double.isNaN(bidPrice)) {
 			Logger.log(TAG, "Unable to parse Bid, will try using real-time data", LogLevel.LOGGING_LEVEL_ERROR);
@@ -355,6 +363,7 @@ public class TradeFragment extends Fragment implements YahooQuoteUpdateListener 
 				&& (Double.compare(bidPrice, 0.0) == 0)) {
 			tvAskPrice.setText(String.format("%.2f%s", askPrice, getString(R.string.ask_with_bracket)));
 			tvBidPrice.setText(String.format(" x %.2f%s", bidPrice, getString(R.string.bid_with_bracket)));
+			
 		}
 		else
 			Logger.log(TAG, "Unable to parse Ask & Bid Price", LogLevel.LOGGING_LEVEL_ERROR);
@@ -381,14 +390,14 @@ public class TradeFragment extends Fragment implements YahooQuoteUpdateListener 
 		
 		int totalCashAvailable = cash - TRANSACTION_COST;
 		
-		mQuantity = (int)Math.ceil(totalCashAvailable / lastPrice);
+		mQuantity = (int)Math.floor(totalCashAvailable / lastPrice);
 		
 		int maxQuantity = avgDailyVolume;
 		
 		if(volume > avgDailyVolume)
 			maxQuantity = volume;
 		
-		maxQuantity = (int)Math.ceil(maxQuantity*0.2);
+		maxQuantity = (int)Math.floor(maxQuantity*0.2);
 		
 		if(maxQuantity == 0)
 			maxQuantity = 1;
@@ -403,7 +412,7 @@ public class TradeFragment extends Fragment implements YahooQuoteUpdateListener 
 		int defaultQuantity = 0;
 		
 		if(isTransactionTypeBuy)
-			defaultQuantity = (int)Math.ceil((mQuantity/3.0));
+			defaultQuantity = (int)Math.floor((mQuantity/3.0));
 		
 		Logger.log(TAG, "defaultQuantity: "+defaultQuantity, LogLevel.LOGGING_LEVEL_INFO);
 		updateQuantityAndTradeValue(defaultQuantity);
@@ -458,27 +467,28 @@ public class TradeFragment extends Fragment implements YahooQuoteUpdateListener 
 		
 		int totalCashAvailable = cash - TRANSACTION_COST;
 		
-		int mQuantity = (int)Math.ceil(totalCashAvailable / lastPrice);
+		int mQuantity = (int)Math.floor(totalCashAvailable / lastPrice);
 		
-		int avgDailyVolume = (int)Math.ceil(Double.parseDouble(trend.getAverageDailyVolume()));
-		int volume = (int)Math.ceil(Double.parseDouble(trend.getVolume()));
-		
-		
-		int maxQuantity = avgDailyVolume;
-		
-		if(volume > avgDailyVolume)
-			maxQuantity = volume;
-		
-		maxQuantity = (int)Math.ceil(maxQuantity*0.2);
-		
-		if(maxQuantity == 0)
-			maxQuantity = 1;
-		
-		if(mQuantity > maxQuantity)
-			mQuantity = maxQuantity;
+//		int avgDailyVolume = (int)Math.ceil(Double.parseDouble(trend.getAverageDailyVolume()));
+//		int volume = (int)Math.ceil(Double.parseDouble(trend.getVolume()));
+//		
+//		
+//		int maxQuantity = avgDailyVolume;
+//		
+//		if(volume > avgDailyVolume)
+//			maxQuantity = volume;
+//		
+//		maxQuantity = (int)Math.ceil(maxQuantity*0.2);
+//		
+//		if(maxQuantity == 0)
+//			maxQuantity = 1;
+//		
+//		if(mQuantity > maxQuantity)
+//			mQuantity = maxQuantity;
 		
 		int sValue = mQuantity/sliderIncrement;
 		mSlider.setProgress(sValue);
+		updateQuantityAndTradeValue(mQuantity);
 	}
 	
 	private void updateQuantityAndTradeValue(int qty) {
@@ -486,7 +496,7 @@ public class TradeFragment extends Fragment implements YahooQuoteUpdateListener 
 		tvQuantity.setText(String.format("%,d", qty));
 		
 		if(!Double.isNaN(lastPrice) && !(Double.compare(lastPrice, 0.0) == 0)) 
-			tvTradeValue.setText(String.format("%,d", (int)Math.ceil((qty*lastPrice))));
+			tvTradeValue.setText(String.format("%,d", (int)Math.floor((qty*lastPrice))));
 	}
 	
 	private double getTotalCostForBuy() {
