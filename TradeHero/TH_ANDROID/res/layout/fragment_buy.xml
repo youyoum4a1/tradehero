@@ -2,8 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="#90000000">
+    android:background="#90000000"
+    android:orientation="vertical" >
 
     <include
         android:id="@+id/header"
@@ -13,12 +13,12 @@
         android:id="@+id/comments"
         android:layout_width="match_parent"
         android:layout_height="100dp"
+        android:background="@color/white"
         android:ems="10"
         android:gravity="top"
         android:hint="@string/hint_buy_comment"
-        android:inputType="textMultiLine" 
-        android:background="@color/white"
-        android:padding="5dp">
+        android:inputType="textMultiLine"
+        android:padding="5dp" >
 
         <requestFocus />
     </EditText>
@@ -26,19 +26,91 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        
+        android:background="@color/stock_info_bg"
+        android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:background="@color/stock_info_bg">
+        android:padding="5dp" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
+            android:text="@string/share_on"
+            android:textColor="@color/gray_2" />
+
+        <ImageButton
+            android:id="@+id/btn_fb"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
+            android:background="@null"
+            android:contentDescription="@null"
+            android:src="@drawable/facebook" />
+
+        <ImageButton
+            android:id="@+id/btn_tw"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
+            android:background="@null"
+            android:contentDescription="@null"
+            android:src="@drawable/twitter" />
+
+        <ImageButton
+            android:id="@+id/btn_li"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
+            android:background="@null"
+            android:contentDescription="@null"
+            android:src="@drawable/linkedin" />
+
+        <ImageButton
+            android:id="@+id/btn_location"
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:layout_marginRight="20dp"
+            android:background="@null"
+            android:contentDescription="@null"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_location" />
+
+        <View
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+        <TextView
+            android:id="@+id/btn_public"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="5dp"
+            android:drawablePadding="5dp"
+            android:drawableRight="@drawable/btn_toggle_off"
+            android:text="@string/public_str"
+            android:textColor="@color/gray_2" />
+
+        <!--
+             <ImageButton
+            android:id="@+id/btn_public"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
+            android:background="@null"
+            android:contentDescription="@null"
+            android:scaleType="fitCenter"
+            android:src="@drawable/btn_toggle_off" />-->
+        
+
     </LinearLayout>
-    
-    <TextView 
+
+    <TextView
         android:id="@+id/buy_info"
-        android:padding="10dp"
-        android:layout_marginTop="15dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="@color/white"
-        android:text=""    />
-    
+        android:layout_marginTop="15dp"
+        android:padding="10dp"
+        android:text=""
+        android:textColor="@color/white" />
 
 </LinearLayout>

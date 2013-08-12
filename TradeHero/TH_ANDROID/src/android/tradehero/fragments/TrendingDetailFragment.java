@@ -21,10 +21,13 @@ import android.tradehero.activities.R;
 import android.tradehero.activities.TradeHeroTabActivity;
 import android.tradehero.application.App;
 import android.tradehero.application.Config;
+import android.tradehero.models.Token;
 import android.tradehero.models.Trend;
+import android.tradehero.utills.Constants;
 import android.tradehero.utills.Logger;
 import android.tradehero.utills.Logger.LogLevel;
 import android.tradehero.utills.YUtils;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -123,19 +126,37 @@ public class TrendingDetailFragment extends Fragment {
 	}
 	
 	
-//	private TimerTask mYahooQuotesUpdateTask = new TimerTask() {
-//		@Override
-//		public void run() {
-//			notityYahooQuoteUpdateStart();
-//			requestToGetYahooQuotes();
-//		}
-//	};
+	private void requestToGetBuyQuotes() {
+		
+		Token mToken = ((App)getActivity().getApplication()).getToken();
+		
+		AsyncHttpClient client = new AsyncHttpClient(); 
+		String  authToken = Base64.encodeToString(mToken.getToken().getBytes(), Base64.DEFAULT);
+		client.addHeader(Constants.TH_CLIENT_VERSION, Constants.TH_CLIENT_VERSION_VALUE);
+		client.addHeader(Constants.AUTHORIZATION, String.format("%s %s", Constants.TH_EMAIL_PREFIX, authToken));
+		
+		client.get(String.format(Config.getTrendNewBuyQuotes(), trend.getExchange(), 
+				trend.getSymbol()), new AsyncHttpResponseHandler() {
+			
+			@Override
+			public void onSuccess(int arg0, String response) {
+				Logger.log(TAG, response, LogLevel.LOGGING_LEVEL_INFO);
+				
+			}
+			
+			@Override
+			public void onFailure(Throwable arg0, String response) {
+				Logger.log(TAG, "Unable to get Buy Quotes:\n"+response, LogLevel.LOGGING_LEVEL_ERROR);
+			}
+		});
+	}
 	
 	private Runnable mYahooQuotesUpdateTask = new Runnable() {
 	     @Override 
 	     public void run() {
 	    	 notityYahooQuoteUpdateStart();
 	    	 requestToGetYahooQuotes();
+	    	 //requestToGetBuyQuotes();
 	    	 mYahooQuotesUpdateTaskHandler.postDelayed(mYahooQuotesUpdateTask, YAHOO_QUOTE_INTERVAL);
 	     }
 	};

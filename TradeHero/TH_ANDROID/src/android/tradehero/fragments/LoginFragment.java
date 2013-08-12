@@ -15,10 +15,8 @@ import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.text.style.BackgroundColorSpan;
 import android.tradehero.activities.R;
 import android.tradehero.activities.TradeHeroTabActivity;
-import android.tradehero.activities.WelcomeActivity;
 import android.tradehero.application.App;
 import android.tradehero.http.HttpRequestTask;
 import android.tradehero.http.RequestFactory;
@@ -26,16 +24,15 @@ import android.tradehero.http.RequestTaskCompleteListener;
 import android.tradehero.models.ProfileDTO;
 import android.tradehero.models.Request;
 import android.tradehero.networkstatus.NetworkStatus;
+import android.tradehero.utills.Logger;
+import android.tradehero.utills.Logger.LogLevel;
 import android.tradehero.utills.PUtills;
 import android.tradehero.utills.Util;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.View.OnClickListener;
 import android.view.View.OnFocusChangeListener;
-import android.view.View.OnTouchListener;
 import android.view.inputmethod.InputMethodManager;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -44,7 +41,9 @@ import android.widget.TextView;
 
 
 public class LoginFragment extends Fragment implements OnClickListener,RequestTaskCompleteListener,OnFocusChangeListener{
-
+	
+	private final static String TAG = LoginFragment.class.getName();
+	
 	private TextView mForgotPassword;
 	private Button mSignIn;
 	private EditText inputEmailName,inputPassword;
@@ -82,7 +81,9 @@ public class LoginFragment extends Fragment implements OnClickListener,RequestTa
 		mProgressDialog.setMessage("Logging In");
 		mForgotPassword.setOnClickListener(this);
 		mSignIn.setOnClickListener(this);
+
 		mSignIn.setBackgroundResource(R.drawable.rectangle_login);
+
 		//mSignIn.setOnTouchListener(this);
 		//mForgotPassword.setOnTouchListener(this)
 		inputPassword.setOnFocusChangeListener(this);
@@ -154,6 +155,7 @@ public class LoginFragment extends Fragment implements OnClickListener,RequestTa
 			String pass =inputPassword.getText()!=null?inputPassword.getText().toString():"";
 			if(uname.trim().length()>0 && pass.trim().length()>0)
 			{
+
 				if(Util.email_valid.matcher(inputEmailName.getText().toString()).matches())
 				{
 					try {
@@ -177,6 +179,7 @@ public class LoginFragment extends Fragment implements OnClickListener,RequestTa
 				else
 				{
 					Util.show_toast(getActivity(),getResources().getString(R.string.email_validation_string));
+
 
 				}
 
@@ -261,27 +264,29 @@ public class LoginFragment extends Fragment implements OnClickListener,RequestTa
 
 	@Override
 	public void onTaskComplete(JSONObject pResponseObject) {
-		mProgressDialog.dismiss();
-		System.out.println("log in throuh email---"+pResponseObject);
 
+		
 		if(mProgressDialog.isShowing())
 		{
 			mProgressDialog.dismiss();
 			_resetField();
 
 		}		
+		
 		if(pResponseObject != null)
 		{
 
 			try {
-
+				Logger.log(TAG, pResponseObject.toString(), LogLevel.LOGGING_LEVEL_INFO);
 				if(pResponseObject.has("Message"))
-				{
+				{	
 					String msg = pResponseObject.optString("Message");
-					Util.show_toast(getActivity(), msg);					
+					Util.show_toast(getActivity(), msg);	
+					//startActivity(new Intent(getActivity(),TradeHeroTabActivity.class));
 				}
 				else
 				{    
+
 
 					System.out.println("log in throuh email---"+pResponseObject.toString());
 					JSONObject obj = pResponseObject.getJSONObject("profileDTO");
@@ -308,6 +313,8 @@ public class LoginFragment extends Fragment implements OnClickListener,RequestTa
 
 	@Override
 	public void onFocusChange(View arg0, boolean arg1) {
+
+
 		switch (arg0.getId()) {
 		case R.id.et_pwd_login:
 			if(!TextUtils.isEmpty(inputEmailName.getText().toString()))
@@ -337,75 +344,12 @@ public class LoginFragment extends Fragment implements OnClickListener,RequestTa
 			break;
 		}
 
+
 	}
 
-	/*@Override
-	public boolean onTouch(View v, MotionEvent event) {
-		switch (event.getAction()) {
-		case MotionEvent.ACTION_DOWN:
+	
 
-			switch (v.getId()) {
-			case R.id.btn_login:
-
-				String uname=inputEmailName.getText()!=null?inputEmailName.getText().toString():"";
-				String pass =inputPassword.getText()!=null?inputPassword.getText().toString():"";
-
-				if(uname.trim().length()>0 && pass.trim().length()>0)
-				{
-
-					try {
-
-						if(NetworkStatus.getInstance().isConnected(getActivity()))
-						{
-							HttpRequestTask  mRequestTask= new HttpRequestTask(this);
-							RequestFactory mRF= new RequestFactory();
-							Request[] lRequests={ mRF.getLoginThroughEmail(mContext,uname,pass)};
-							mRequestTask.execute(lRequests);
-							mProgressDialog.show();
-						}else
-						{
-							Util.show_toast(getActivity(), getResources().getString(R.string.network_error));
-						}
-
-					} catch (Exception e){
-						e.printStackTrace();
-					}
-
-				}else 
-				{
-
-					Util.show_toast(getActivity(), "Field should not be blank .");
-
-				}
-				break;
-
-			default:
-				break;
-			}
-
-			break;
-
-		case MotionEvent.ACTION_UP:
-
-			switch (v.getId()) {
-			case R.id.btn_login:
-				mSignIn.setBackgroundResource(R.drawable.roundrectangle_signin);
-
-				break;
-
-			default:
-				break;
-			}
-
-			break;
-
-		default:
-			break;
-		}
-
-		return false;
-	}
-	 */
+	
 
 	private void doForgotPassword(String email){
 
@@ -446,19 +390,22 @@ public class LoginFragment extends Fragment implements OnClickListener,RequestTa
 			mRequestTask.execute(lRequests);
 			mProgressDialog.show();
 
+
 		}else
 		{
 			Util.show_toast(getActivity(), getResources().getString(R.string.network_error));
 		}
 
-
-
 	}
+
+
+	
 
 	private void _resetField(){
 
 		inputEmailName.setText("");
 		inputPassword.setText("");
 	}
-
+	
+	
 }

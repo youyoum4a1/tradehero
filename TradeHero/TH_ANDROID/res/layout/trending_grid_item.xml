@@ -8,7 +8,8 @@
         android:layout_width="175dp"
         android:layout_height="98dp"
         android:contentDescription="@null"
-        android:scaleType="fitCenter" />
+        android:scaleType="fitCenter" 
+        android:src="@drawable/default_image"/>
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -38,7 +39,7 @@
             android:adjustViewBounds="true"
             android:contentDescription="@null"
             android:scaleType="centerInside" 
-            />
+            android:src="@drawable/default_image"/>
 
         <TextView
             android:id="@+id/exchange_symbol"

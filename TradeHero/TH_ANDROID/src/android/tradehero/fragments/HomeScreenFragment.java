@@ -1,6 +1,10 @@
 package android.tradehero.fragments;
 
+
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -13,8 +17,15 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.tradehero.activities.R;
+
+import android.tradehero.adapters.ProfileContentAdapter;
 import android.tradehero.adapters.TradeWeekAdapter;
 import android.tradehero.application.App;
+import android.tradehero.application.Config;
+
+import android.tradehero.adapters.TradeWeekAdapter;
+import android.tradehero.application.App;
+
 import android.tradehero.application.ConvolutionMatrix;
 import android.tradehero.cache.ImageLoader;
 import android.tradehero.http.RequestTaskCompleteListener;
@@ -23,6 +34,9 @@ import android.tradehero.models.ProfileDTO;
 import android.tradehero.models.Request;
 import android.tradehero.models.Token;
 import android.tradehero.models.TradeofWeek;
+import android.tradehero.models.Trend;
+import android.tradehero.utills.Constants;
+import android.tradehero.utills.PostData;
 import android.tradehero.utills.Constants;
 import android.tradehero.utills.Util;
 import android.util.Base64;
@@ -36,6 +50,10 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 
@@ -67,6 +85,7 @@ public class HomeScreenFragment extends Fragment implements OnClickListener,Requ
 
 
 	private void _initView(View view) {
+
 
 
 		mProgressDialog= new ProgressDialog(getActivity());
@@ -141,6 +160,7 @@ public class HomeScreenFragment extends Fragment implements OnClickListener,Requ
 		@Override
 		protected void onPostExecute(Void result) {
 			// TODO Auto-generated method stub
+
 			if(mBitmap!=null){
 				mUserImg.setImageBitmap( Util.getRoundedShape(mBitmap)); 
 				drawableBitmap=new BitmapDrawable(applyGaussianBlur(mBitmap));
@@ -214,7 +234,7 @@ public class HomeScreenFragment extends Fragment implements OnClickListener,Requ
 					{
 						Util.show_toast(getActivity(), arg1);
 					}
-					
+
 
 				}
 			});

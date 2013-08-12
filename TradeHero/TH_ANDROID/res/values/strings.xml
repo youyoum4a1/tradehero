@@ -77,10 +77,12 @@
     <string name="na">N/A</string>
     <string name="hint_buy_comment">Post comments to attract followers...(optional)</string>
     <string name="btn_buy">Confirm</string>
-
+    <string name="share_on">Share on</string>
+    <string name="public_str">Public</string>
     <!-- alert message -->
     <string name="enter_message_email">Please enter your email address.</string>
     <string name="thank_you_message_email">Thank You ! Please follow your mail box</string>
+    <string name="twitter_login_message">Already Logged into twitter !</string>
     <string name="thank_you_message">Thank You !</string>
     <string name="twitter_login_message">Already Logged into twitter !</string>
     <string name="login_message">Already Logged in !</string>

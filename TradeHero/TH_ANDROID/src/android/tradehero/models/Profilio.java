@@ -27,8 +27,24 @@ public class Profilio {
 	private String creationDate;
 	private String plY2D;
 	private String yahooSymbols;//class
-	private String cashBalance;
+	private int cashBalance;
 	private String roiQ2D;
+	
+	public String getId() {
+		return id;
+	}
+	public void setId(String id) {
+		this.id = id;
+	}
+	
+	public int getCashBalance() {
+		return cashBalance;
+	}
+	public void setCashBalance(int cashBalance) {
+		this.cashBalance = cashBalance;
+	}
+	
+	
 	
 		
 

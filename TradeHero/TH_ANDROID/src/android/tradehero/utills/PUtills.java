@@ -5,6 +5,7 @@ import org.json.JSONObject;
 
 import android.content.Context;
 import android.tradehero.models.ProfileDTO;
+import android.tradehero.models.Profilio;
 
 public class PUtills {
 
@@ -36,6 +37,18 @@ public class PUtills {
 				mdata.setAlertCount(mjsonObject.getString("alertCount"));
 				mdata.setLiLinked(mjsonObject.getString("thLinked"));
 				mdata.setCcPerMonthBalance(mjsonObject.getString("ccPerMonthBalance"));
+				
+				JSONObject portfolioObj = mjsonObject.getJSONObject("portfolio");
+				
+				if(portfolioObj != null) {
+					Profilio portfolio = new Profilio();
+					portfolio.setId(portfolioObj.optString("id"));
+					portfolio.setCashBalance(portfolioObj.optInt("cashBalance"));
+					
+					mdata.setPortfolio(portfolio);
+				}
+				
+				
 				
 				
 			} catch (JSONException e) {

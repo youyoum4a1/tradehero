@@ -51,10 +51,7 @@ public class LinkedinDialog extends Dialog {
 	public LinkedinDialog(Context context, ProgressDialog progressDialog) {
 		super(context);
 		this.progressDialog = progressDialog;
-		if(InitialSignUpFragment.linkedinProgress.isShowing()){
-			InitialSignUpFragment.linkedinProgress.cancel();
-		}
-
+		
 
 	}
 

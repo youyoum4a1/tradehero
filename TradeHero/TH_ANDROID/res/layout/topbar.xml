@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="50dp"
     android:background="@drawable/topbarrectangle"
     android:orientation="horizontal" >
 
@@ -11,8 +11,65 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_centerInParent="true"
+        android:contentDescription="@null"
         android:paddingLeft="15dp"
         android:src="@drawable/th_app_logo" />
+
+    <ImageButton
+        android:id="@+id/btn_search"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:background="@null"
+        android:contentDescription="@null"
+        android:src="@drawable/ic_action_search" 
+        android:visibility="invisible"/>
+
+    <RelativeLayout
+        android:id="@+id/search_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toLeftOf="@+id/btn_search"
+        android:paddingLeft="4dp"
+        android:paddingRight="4dp"
+        android:visibility="invisible" >
+
+        <ImageButton
+            android:id="@+id/btn_back"
+            android:layout_width="20dp"
+            android:layout_height="50dp"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:background="@null"
+            android:contentDescription="@null"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_indicator" />
+
+        <EditText
+            android:id="@+id/searh_field"
+            style="@style/AppBaseTheme"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/btn_back"
+            android:background="@drawable/edit_text_holo_light"
+            android:imeOptions="actionSearch"
+            android:inputType="text"
+            android:textColor="@color/white" />
+
+        <Spinner
+            android:id="@+id/spinner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginBottom="2dp"
+            android:layout_marginLeft="2dp"
+            android:paddingRight="5dp"
+            android:padding="2dp" />
+    </RelativeLayout>
 
     <TextView
         android:id="@+id/header_txt"
@@ -32,7 +89,7 @@
         android:layout_width="wrap_content"
         android:layout_height="40dp"
         android:layout_alignParentRight="true"
-        android:text="" 
-        android:visibility="gone"/>
+        android:text=""
+        android:visibility="gone" />
 
 </RelativeLayout>

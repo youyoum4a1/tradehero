@@ -1,8 +1,6 @@
 package android.tradehero.models;
 
 public class ProfileContent {
-	
-	
 
 	private String suggestLiReauth;
 	public String getSuggestLiReauth() {
@@ -39,15 +37,15 @@ public class ProfileContent {
 	private String suggestUpgrade;
 	private String suggestTwReauth;
 	private ProfileDTO profileDTO;//class
-	
-	
-	
-	
 
-	
-	
-	
-	
-	
+
+
+
+
+
+
+
+
+
 
 }

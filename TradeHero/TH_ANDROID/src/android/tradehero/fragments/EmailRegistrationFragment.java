@@ -135,6 +135,7 @@ public class EmailRegistrationFragment extends Fragment implements OnClickListen
 				mText = s;
 				new CheckValidation().execute();
 
+
 			}
 
 			@Override
@@ -181,6 +182,7 @@ public class EmailRegistrationFragment extends Fragment implements OnClickListen
 
 			@Override
 			public void onTextChanged(CharSequence s, int start, int before, int count) {
+
 
 				if(TextUtils.isEmpty(s))
 				{
@@ -337,9 +339,7 @@ public class EmailRegistrationFragment extends Fragment implements OnClickListen
 				}
 				else
 				{
-					//					Util.show_toast(getActivity(), pResponseObject.toString());
-					//					startActivity(new Intent(getActivity(),TradeHeroTabActivity.class).putExtra("DNAME", pResponseObject.optString("displayName")));
-					Util.show_toast(getActivity(), pResponseObject.toString());
+				Util.show_toast(getActivity(), pResponseObject.toString());
 
 					//	JSONObject obj = pResponseObject.getJSONObject("profileDTO");
 
@@ -348,6 +348,7 @@ public class EmailRegistrationFragment extends Fragment implements OnClickListen
 					((App)getActivity().getApplication()).setProfileDTO(prof);
 					startActivity(new Intent(getActivity(),TradeHeroTabActivity.class));
 					getActivity().finish();
+
 
 
 
@@ -776,7 +777,9 @@ public class EmailRegistrationFragment extends Fragment implements OnClickListen
 
 		return false;
 	}
-	 */
+
+*/
+
 
 }
 

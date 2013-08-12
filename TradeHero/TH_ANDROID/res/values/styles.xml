@@ -20,10 +20,14 @@
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
     </style>
     
+    
+    
     <style name="TH" />
     
-    
+   
+  	
     <style name="TH.Title">
+    
         <item name="android:textColor">@color/title</item>
     </style>
     
