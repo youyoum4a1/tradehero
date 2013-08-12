@@ -119,6 +119,7 @@ public class LinkedinDialog extends Dialog {
 			else
 			{ //if (url.contains(Constants.BASE_API_URL)){
 				cancel();
+				InitialSignUpFragment.linkedinButtonPressed = false;
 			} /*else {
 
 				view.loadUrl(url);

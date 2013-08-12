@@ -1,6 +1,7 @@
 package android.tradehero.utills;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -8,7 +9,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,15 +28,22 @@ import org.apache.http.conn.scheme.Scheme;
 import org.apache.http.conn.scheme.SchemeRegistry;
 import org.apache.http.conn.ssl.SSLSocketFactory;
 import org.apache.http.conn.ssl.X509HostnameVerifier;
+import org.apache.http.entity.mime.HttpMultipartMode;
+import org.apache.http.entity.mime.MultipartEntity;
+import org.apache.http.entity.mime.content.ByteArrayBody;
+import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.SingleClientConnManager;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.protocol.BasicHttpContext;
+import org.apache.http.protocol.HttpContext;
 import org.xml.sax.InputSource;
+
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.telephony.TelephonyManager;
 import android.util.Log;
-import android.widget.Toast;
 
 public class PostData {
 	private HostnameVerifier hostnameVerifier;
@@ -226,6 +233,61 @@ public class PostData {
 
 		return null;
 
+	}
+	
+	
+public String httpMultipartCon(String url,String token, Bitmap bmp,String image_name){
+		
+		StringBuilder stringBuilder = null;
+		HttpClient httpClient = new DefaultHttpClient();
+		HttpContext localContext = new BasicHttpContext();
+		HttpPost httpPost ;
+		HttpResponse response = null;
+		MultipartEntity entity;
+		
+		try {
+			
+			System.out.println("upload url..."+url);
+			httpPost = new HttpPost(url);
+			httpPost.addHeader("Content-Type", "image/jpeg");
+			entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
+			ByteArrayOutputStream bao = new ByteArrayOutputStream();
+			bmp.compress(Bitmap.CompressFormat.JPEG, 100, bao);
+			byte [] ba = bao.toByteArray();
+			
+			entity.addPart("'profilePicture", new ByteArrayBody(ba, image_name));
+		
+			httpPost.setEntity(entity);
+
+			response = httpClient.execute(httpPost, localContext);
+			InputStream inputStream = response.getEntity().getContent();
+			InputStreamReader inputStreamReader = new InputStreamReader(
+					inputStream);
+			BufferedReader bufferedReader = new BufferedReader(
+					inputStreamReader);
+			 stringBuilder = new StringBuilder();
+
+			String bufferedStrChunk = null;
+			while ((bufferedStrChunk = bufferedReader.readLine()) != null) {
+				stringBuilder.append(bufferedStrChunk);
+			}
+
+			Log.d("result:", stringBuilder + "");
+			
+			System.out.println("SSERVER RESPONSE    ......."+stringBuilder.toString());
+			
+			
+
+			
+			
+
+		} catch (Exception e) {
+			e.printStackTrace();
+
+
+		}
+		return stringBuilder.toString();
+		
 	}
 
 }

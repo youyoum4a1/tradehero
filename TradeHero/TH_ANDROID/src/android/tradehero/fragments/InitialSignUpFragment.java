@@ -221,7 +221,7 @@ public class InitialSignUpFragment extends Fragment implements OnClickListener,R
 			{
 				if(NetworkStatus.getInstance().isConnected(getActivity()))
 				{ 
-					linkedinProgress.show();
+					//linkedinProgress.show();
 					operationType=OP_LINKEDIN;
 					linkedInLogin();
 
