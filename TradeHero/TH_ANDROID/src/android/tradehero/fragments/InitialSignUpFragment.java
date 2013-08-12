@@ -143,8 +143,6 @@ public class InitialSignUpFragment extends Fragment implements OnClickListener,R
 		mTerms.setOnClickListener(this);
 		mEmailTv.setOnClickListener(this);
 
-
-
 		mProgressDialog= new ProgressDialog(getActivity());
 		mProgressDialog.setMessage(getResources().getString(R.string.loading_loading));
 		mContext=getActivity();
@@ -153,7 +151,8 @@ public class InitialSignUpFragment extends Fragment implements OnClickListener,R
 		 * redirected from twitter page. Parse the uri to get oAuth
 		 * Verifier
 		 * */
-
+		linkedinProgress = new ProgressDialog(getActivity());
+		linkedinProgress.setMessage(getResources().getString(R.string.loading_loading));
 	}
 
 
@@ -172,7 +171,6 @@ public class InitialSignUpFragment extends Fragment implements OnClickListener,R
 				Util.show_toast(getActivity(), getResources().getString(R.string.network_error));
 			}
 			break;
-			
 		case R.id.btn_twitter_signin:
 			if(NetworkStatus.getInstance().isConnected(getActivity()))
 			{
@@ -184,16 +182,14 @@ public class InitialSignUpFragment extends Fragment implements OnClickListener,R
 				Util.show_toast(getActivity(), getResources().getString(R.string.network_error));
 			}
 			break;
-			
 		case R.id.btn_linkedin_linkedin:
 
 
 			if(!linkedinButtonPressed)
 			{
-
 				if(NetworkStatus.getInstance().isConnected(getActivity()))
 				{ 
-					//linkedinProgress.show();
+                   linkedinProgress.show();
 					operationType=OP_LINKEDIN;
 					linkedInLogin();
 
@@ -202,143 +198,154 @@ public class InitialSignUpFragment extends Fragment implements OnClickListener,R
 					Util.show_toast(getActivity(), getResources().getString(R.string.network_error));
 				}
 
-		}
-		else
-		{
-			Util.show_toast(getActivity(), getResources().getString(R.string.loading_loading));
+			}
+			else
+			{
+				Util.show_toast(getActivity(), getResources().getString(R.string.loading_loading));
+			}
+
+			break;
+		case R.id.txt_email:
+			if(activityType==LOGIN)
+			{
+				//startActivity(new Intent(getActivity(),LoginActivity.class));
+				fragmentManager = getActivity().getSupportFragmentManager();
+				fragmentTransaction = fragmentManager.beginTransaction();
+				fragmentTransaction.setCustomAnimations(R.anim.slide_in_right,0,R.anim.slide_out_left,0);
+				LoginFragment fragment = new LoginFragment();
+				fragmentTransaction.replace(R.id.sign_in_up_content, fragment,"login");
+				fragmentTransaction.addToBackStack("login");
+				fragmentTransaction.commit();
+			}else
+			{
+				//startActivity(new Intent(getActivity(),EmailRegistrationActivity.class));
+				fragmentManager = getActivity().getSupportFragmentManager();
+				fragmentTransaction = fragmentManager.beginTransaction();
+				fragmentTransaction.setCustomAnimations(R.anim.slide_in_right,0,R.anim.slide_out_left,0);
+				EmailRegistrationFragment fragment = new EmailRegistrationFragment();
+				fragmentTransaction.replace(R.id.sign_in_up_content, fragment,"email_registration");
+				fragmentTransaction.addToBackStack("email_registration");
+				fragmentTransaction.commit();
+			}
+			break;
+		case R.id.txt_termservice_signin:
+			Intent pWebView =new Intent(getActivity(),WebViewActivity.class);
+			pWebView.putExtra(WebViewActivity.SHOW_URL, android.tradehero.utills.Constants.PRIVACY_TERMS_OF_SERVICE);
+			getActivity().startActivity(pWebView);
+			break;
+
+		default:
+			break;
 		}
 
-		break;
-
-	case R.id.txt_email:
-		if(activityType==LOGIN)
-		{
-			//startActivity(new Intent(getActivity(),LoginActivity.class));
-			fragmentManager = getActivity().getSupportFragmentManager();
-			fragmentTransaction = fragmentManager.beginTransaction();
-			fragmentTransaction.setCustomAnimations(R.anim.slide_in_right,0,R.anim.slide_out_left,0);
-			LoginFragment fragment = new LoginFragment();
-			fragmentTransaction.replace(R.id.sign_in_up_content, fragment,"login");
-			fragmentTransaction.addToBackStack("login");
-			fragmentTransaction.commit();
-		}else
-		{
-			//startActivity(new Intent(getActivity(),EmailRegistrationActivity.class));
-			fragmentManager = getActivity().getSupportFragmentManager();
-			fragmentTransaction = fragmentManager.beginTransaction();
-			fragmentTransaction.setCustomAnimations(R.anim.slide_in_right,0,R.anim.slide_out_left,0);
-			EmailRegistrationFragment fragment = new EmailRegistrationFragment();
-			fragmentTransaction.replace(R.id.sign_in_up_content, fragment,"email_registration");
-			fragmentTransaction.addToBackStack("email_registration");
-			fragmentTransaction.commit();
-		}
-		break;
-	case R.id.txt_termservice_signin:
-		Intent pWebView =new Intent(getActivity(),WebViewActivity.class);
-		pWebView.putExtra(WebViewActivity.SHOW_URL, android.tradehero.utills.Constants.PRIVACY_TERMS_OF_SERVICE);
-		getActivity().startActivity(pWebView);
-		break;
-
-	default:
-		break;
 	}
 
-}
 
 
 
-
-@Override
-public void onTaskComplete(JSONObject pResponseObject) {
-	if(mProgressDialog.isShowing())
-	{
-		mProgressDialog.dismiss();	
-
+	@Override
+	public void onTaskComplete(JSONObject pResponseObject) {
+		if(mProgressDialog.isShowing())
 		{
 			mProgressDialog.dismiss();	
 		}
 		if(linkedinButtonPressed)
 		{
 			linkedinButtonPressed=false;
-
 		}
 
-
-
-		if(activityType==LOGIN)
-		{
-
-
-
+		if(pResponseObject != null)
+		{   		
+			System.out.println("login---"+pResponseObject.toString());
 			try {
-				JSONObject obj = pResponseObject.getJSONObject("profileDTO");
 
-				ProfileDTO prof =	new PUtills(getActivity())._parseJson(obj);
+				if(pResponseObject.has("Message"))
+				{
+					String msg = pResponseObject.optString("Message");
+					Util.show_toast(getActivity(), msg);					
+				}
+				else
+				{   
 
-				((App)getActivity().getApplication()).setProfileDTO(prof);
-				startActivity(new Intent(getActivity(),TradeHeroTabActivity.class));
-				getActivity().finish();
-			} catch (JSONException e) {
-				// TODO Auto-generated catch block
+					if(activityType==LOGIN)
+					{
+
+
+						JSONObject obj = pResponseObject.getJSONObject("profileDTO");
+
+						ProfileDTO prof =	new PUtills(getActivity())._parseJson(obj);
+
+						((App)getActivity().getApplication()).setProfileDTO(prof);
+						startActivity(new Intent(getActivity(),TradeHeroTabActivity.class));
+						getActivity().finish();
+
+					}
+					else if(activityType==SIGNUP)
+					{
+
+						//JSONObject obj = pResponseObject.getJSONObject("profileDTO");
+
+						ProfileDTO prof =	new PUtills(getActivity())._parseJson(pResponseObject);
+
+						((App)getActivity().getApplication()).setProfileDTO(prof);
+						startActivity(new Intent(getActivity(),TradeHeroTabActivity.class));
+						getActivity().finish();
+
+					}
+
+
+				}
+
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
-
 		}
-		else if(activityType==SIGNUP)
+
+	}
+
+
+	@Override
+	public void onErrorOccured(int pErrorCode, String pErrorMessage) {
+
+	}
+
+
+	@Override
+	public void onStart() {
+		super.onStart();
+		if(Session.getActiveSession()!=null && statusCallback!=null && Session.getActiveSession()!=null)
+		{
+			Session.getActiveSession().addCallback(statusCallback);
+		}
+	}
+
+	@Override
+	public void onStop() {
+		super.onStop();
+		if(Session.getActiveSession()!=null && statusCallback!=null&& Session.getActiveSession()!=null)
+		{
+			Session.getActiveSession().removeCallback(statusCallback);
+		}
+	}
+
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+
+
+		if(requestCode == 4242)
+		{
+			// Twitter Auth Callback
+			mTwitter.authorizeCallback(requestCode, resultCode, data);
+		}    
+		if(requestCode ==9)
 		{
 
-			//JSONObject obj = pResponseObject.getJSONObject("profileDTO");
+		}else{
 
-			ProfileDTO prof =	new PUtills(getActivity())._parseJson(pResponseObject);
-
-			((App)getActivity().getApplication()).setProfileDTO(prof);
-			startActivity(new Intent(getActivity(),TradeHeroTabActivity.class));
-			getActivity().finish();
-
+			Session.getActiveSession().onActivityResult(getActivity(), requestCode, resultCode, data);
 		}
-
-
 	}
-
-}
-
-
-@Override
-public void onStart() {
-	super.onStart();
-	if(Session.getActiveSession()!=null && statusCallback!=null && Session.getActiveSession()!=null)
-	{
-		Session.getActiveSession().addCallback(statusCallback);
-	}
-}
-
-@Override
-public void onStop() {
-	super.onStop();
-	if(Session.getActiveSession()!=null && statusCallback!=null&& Session.getActiveSession()!=null)
-	{
-		Session.getActiveSession().removeCallback(statusCallback);
-	}
-}
-
-@Override
-public void onActivityResult(int requestCode, int resultCode, Intent data) {
-	super.onActivityResult(requestCode, resultCode, data);
-
-
-	if(requestCode == 4242)
-	{
-		// Twitter Auth Callback
-		mTwitter.authorizeCallback(requestCode, resultCode, data);
-	}    
-	if(requestCode ==9)
-	{
-
-	}else{
-
-		Session.getActiveSession().onActivityResult(getActivity(), requestCode, resultCode, data);
-	}
-<<<<<<< HEAD
 	private void onClickLoginFaceBook() {
 		Session session = Session.getActiveSession();
 
@@ -352,107 +359,32 @@ public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		{
 			Session.openActiveSession(getActivity(), this, true, statusCallback);
 		}
-=======
-}
-private void onClickLoginFaceBook() {
-	Session session = Session.getActiveSession();
-	if (session!=null &&!session.isOpened() && !session.isClosed()) 
-	{
-		session.openForRead(new Session.OpenRequest(this).setCallback(statusCallback));
 	}
-	else
-	{
-		Session.openActiveSession(getActivity(), this, true, statusCallback);
-	}
-}
-private void onClickLogout() {
-	Session session = Session.getActiveSession();
-	if (!session.isClosed()) 
-	{
-		session.closeAndClearTokenInformation();
->>>>>>> b0662c935b0132b2952f6fea6a502fad67dd737b
-	}
-}
-
-private class SessionStatusCallback implements Session.StatusCallback {
-	@Override
-	public void call(Session session, SessionState state, Exception exception) {
-		String accessToken = session.getAccessToken();
-
-		if(!accessToken.equals("")) 
+	private void onClickLogout() {
+		Session session = Session.getActiveSession();
+		if (!session.isClosed()) 
 		{
-			HttpRequestTask  mRequestTask= new HttpRequestTask(mRequestTaskCompleteListener);
-			RequestFactory mRF= new RequestFactory();
-			android.tradehero.models.Request[] lRequests =new android.tradehero.models.Request[1];
-			if(activityType==LOGIN){
-				try {
-
-					lRequests[0] = mRF.getLoginThroughFB(accessToken);
-					mProgressDialog.show();
-					mRequestTask.execute(lRequests);
-
-				} catch (JSONException e) {
-					e.printStackTrace();
-				}
-			}
-			else if(activityType == SIGNUP)
-			{
-				try {
-					lRequests[0] = mRF.getRegistrationThroughFB(accessToken);
-					mProgressDialog.show();
-					mRequestTask.execute(lRequests);
-
-				} catch (JSONException e) {
-					e.printStackTrace();
-				}
-			}
-
+			session.closeAndClearTokenInformation();
 		}
 	}
 
-}
-private void linkedInLogin() {
-
-	linkedinButtonPressed = true;
-	ProgressDialog progressDialog = new ProgressDialog(getActivity());
-
-	LinkedinDialog d = new LinkedinDialog(getActivity(),progressDialog);
-	d.show();
-
-	// set call back listener to get oauth_verifier value
-	d.setVerifierListener(new OnVerifyListener() {
+	private class SessionStatusCallback implements Session.StatusCallback {
 		@Override
-		public void onVerify(String verifier) {
-			try {
-				Log.i("LinkedinSample", "verifier: " + verifier);
+		public void call(Session session, SessionState state, Exception exception) {
+			String accessToken = session.getAccessToken();
 
-				accessToken = LinkedinDialog.oAuthService
-						.getOAuthAccessToken(LinkedinDialog.liToken,
-								verifier);
-				LinkedinDialog.factory.createLinkedInApiClient(accessToken);
-				client = factory.createLinkedInApiClient(accessToken);
-				// client.postNetworkUpdate("Testing by Mukesh!!! LinkedIn wall post from Android app");
-				Log.i("LinkedinSample",
-						"ln_access_token: " + accessToken.getToken());
-				Log.i("LinkedinSample",
-						"ln_access_token: " + accessToken.getTokenSecret());
-				Person p = client.getProfileForCurrentUser();
-				/*name.setText("Welcome " + p.getFirstName() + " "
-							+ p.getLastName());
-					name.setVisibility(0);
-					login.setVisibility(4);
-					share.setVisibility(0);
-					et.setVisibility(0);*/
+			if(!accessToken.equals("")) 
+			{
 				HttpRequestTask  mRequestTask= new HttpRequestTask(mRequestTaskCompleteListener);
 				RequestFactory mRF= new RequestFactory();
 				android.tradehero.models.Request[] lRequests =new android.tradehero.models.Request[1];
-				if(activityType==LOGIN)
-				{
+				if(activityType==LOGIN){
 					try {
 
-						lRequests[0] = mRF.getLoginThroughLinkedIn(getActivity(),accessToken.getTokenSecret(), accessToken.getToken());
+						lRequests[0] = mRF.getLoginThroughFB(accessToken);
 						mProgressDialog.show();
 						mRequestTask.execute(lRequests);
+
 					} catch (JSONException e) {
 						e.printStackTrace();
 					}
@@ -460,7 +392,7 @@ private void linkedInLogin() {
 				else if(activityType == SIGNUP)
 				{
 					try {
-						lRequests[0] = mRF.getRegistrationThroughLinkedIn(getActivity(),accessToken.getTokenSecret(), accessToken.getToken());
+						lRequests[0] = mRF.getRegistrationThroughFB(accessToken);
 						mProgressDialog.show();
 						mRequestTask.execute(lRequests);
 
@@ -469,7 +401,6 @@ private void linkedInLogin() {
 					}
 				}
 
-<<<<<<< HEAD
 			}
 		}
 
@@ -533,14 +464,12 @@ private void linkedInLogin() {
 						}
 					}
 
-=======
->>>>>>> b0662c935b0132b2952f6fea6a502fad67dd737b
 
-			} catch (Exception e) {
-				Log.i("LinkedinSample", "error to get verifier");
-				e.printStackTrace();
+				} catch (Exception e) {
+					Log.i("LinkedinSample", "error to get verifier");
+					e.printStackTrace();
+				}
 			}
-<<<<<<< HEAD
 		});
 		
 		// set progress dialog
@@ -555,26 +484,13 @@ private void linkedInLogin() {
 	 * Function to login twitter
 	 * */
 	private void loginToTwitter() {
-=======
-		}
-	});
->>>>>>> b0662c935b0132b2952f6fea6a502fad67dd737b
 
-	// set progress dialog
-	progressDialog.setMessage("Loading...");
-	progressDialog.setCancelable(true);
-	progressDialog.show();
-}
-/**
- * Function to login twitter
- * */
-private void loginToTwitter() {
+		// Check if already logged in
+		if (!isTwitterLoggedInAlready()) 
+		{
 
-	// Check if already logged in
-	if (!isTwitterLoggedInAlready()) 
-	{
+			mCheckTwitterAlert();
 
-<<<<<<< HEAD
 		} else {
 			// user already logged into twitter
 			if(activityType == LOGIN)
@@ -598,137 +514,98 @@ private void loginToTwitter() {
 				Util.show_toast(getActivity(), getResources().getString(R.string.twitter_login_message)+" "+getResources().getString(R.string.go_login_twitter));
 			}
 
-=======
-		mCheckTwitterAlert();
 
-	} else {
-		// user already logged into twitter
-		HttpRequestTask  mRequestTask= new HttpRequestTask(mRequestTaskCompleteListener);
-		RequestFactory mRF= new RequestFactory();
-		android.tradehero.models.Request[] lRequests =new android.tradehero.models.Request[1];
-		try {
-			lRequests[0] = mRF.getLoginThroughTwiiter(mSharedPreferences.getString(Constants.PREF_KEY_OAUTH_SECRET, null),mSharedPreferences.getString(Constants.PREF_KEY_OAUTH_TOKEN, null));
 
-		} catch (JSONException ex) {
-			ex.printStackTrace();
 		}
->>>>>>> b0662c935b0132b2952f6fea6a502fad67dd737b
-
-		mProgressDialog.show();
-		mRequestTask.execute(lRequests);
-		Util.show_toast(getActivity(), getResources().getString(R.string.twitter_login_message));
-
 
 	}
 
-}
-
-/**
- * Check user already logged in your application using twitter Login flag is
- * fetched from Shared Preferences
- * */
-private boolean isTwitterLoggedInAlready() {
-	// return twitter login status from Shared Preferences
-	return mSharedPreferences.getBoolean(Constants.PREF_KEY_TWITTER_LOGIN, false);
-}
+	/**
+	 * Check user already logged in your application using twitter Login flag is
+	 * fetched from Shared Preferences
+	 * */
+	private boolean isTwitterLoggedInAlready() {
+		// return twitter login status from Shared Preferences
+		return mSharedPreferences.getBoolean(Constants.PREF_KEY_TWITTER_LOGIN, false);
+	}
 
 
 
 
-@Override
-public void onResume() {
-	super.onResume();
+	@Override
+	public void onResume() {
+		super.onResume();
 
 
 
-}
-public void mCheckTwitterAlert(){
+	}
+	public void mCheckTwitterAlert(){
 
-	mail_id_twitter= new EditText(getActivity());
-	AlertDialog.Builder dialog = new Builder(getActivity());
-	dialog.setMessage(getResources().getString(R.string.enter_message_email))
-	.setCancelable(false)
-	.setView(mail_id_twitter)
-	.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+		mail_id_twitter= new EditText(getActivity());
+		AlertDialog.Builder dialog = new Builder(getActivity());
+		dialog.setMessage(getResources().getString(R.string.enter_message_email))
+		.setCancelable(false)
+		.setView(mail_id_twitter)
+		.setPositiveButton("OK", new DialogInterface.OnClickListener() {
 
-		@Override
-		public void onClick(final DialogInterface dialog, int arg1) {
+			@Override
+			public void onClick(final DialogInterface dialog, int arg1) {
 
-			email = mail_id_twitter.getText().toString();
+				email = mail_id_twitter.getText().toString();
 
-			if(email==null || email.equals(""))
-			{
-
-				Util.show_toast(getActivity(),getResources().getString(R.string.email_alert));
-			}
-			else
-			{
-				if(Util.email_valid.matcher(mail_id_twitter.getText().toString()).matches())
+				if(email==null || email.equals(""))
 				{
-					mTwitter.authorize(getActivity(), new Twitter.DialogListener() {
 
-						@Override
-						public void onError(TwitterError error) {
+					Util.show_toast(getActivity(),getResources().getString(R.string.email_alert));
+				}
+				else
+				{
+					if(Util.email_valid.matcher(mail_id_twitter.getText().toString()).matches())
+					{
+						mTwitter.authorize(getActivity(), new Twitter.DialogListener() {
 
-						}
+							@Override
+							public void onError(TwitterError error) {
+
+							}
 
 							@Override
 							public void onComplete(String accessKey, String accessSecret) {
 
-<<<<<<< HEAD
 								Util.show_toast(getActivity(), "hi "+accessSecret+accessKey);
 
 							}
-=======
-								
-								}
->>>>>>> b0662c935b0132b2952f6fea6a502fad67dd737b
 
-								@Override
-								public void onCancel() {
+							@Override
+							public void onCancel() {
 
-								}
-							});			
-
-						}
-						else
-						{
-							Util.show_toast(getActivity(),getResources().getString(R.string.email_validation_string));
-						}
-				
-			}
-		}			
-				})
-				.setNegativeButton("Cancel",  new DialogInterface.OnClickListener() {
-
-					@Override
-					public void onClick(final DialogInterface dialog, int arg1) {
-
-
-						dialog.dismiss();
-						Util.show_toast(getActivity(),getResources().getString(R.string.thank_you_message));
+							}
+						});			
 
 					}
-				});
+					else
+					{
+						Util.show_toast(getActivity(),getResources().getString(R.string.email_validation_string));
+					}
 
 
-	AlertDialog alrt = dialog.create();
-	alrt.show();
 
-<<<<<<< HEAD
-				dialog.dismiss();
-=======
->>>>>>> b0662c935b0132b2952f6fea6a502fad67dd737b
+				}
 
 			}
+		})
+		.setNegativeButton("Cancel",  new DialogInterface.OnClickListener() {
 
-@Override
-public void onErrorOccured(int pErrorCode, String pErrorMessage) {
-	// TODO Auto-generated method stub
-	
-}
+			@Override
+			public void onClick(final DialogInterface dialog, int arg1) {
 
-<<<<<<< HEAD
+
+				dialog.dismiss();
+
+			}
+		});
+
+
 		final AlertDialog alrt = dialog.create();
 		mail_id_twitter.setOnFocusChangeListener(new View.OnFocusChangeListener() {
 			@Override
@@ -739,13 +616,12 @@ public void onErrorOccured(int pErrorCode, String pErrorMessage) {
 			}
 		});
 		alrt.show();
-=======
->>>>>>> b0662c935b0132b2952f6fea6a502fad67dd737b
 
 
+	}
 
 
-			/*public void linkedinclick(View v){
+	/*public void linkedinclick(View v){
 
 	if(v.getId() == R.id.btn_linkedin_linkedin)
 	{
@@ -838,4 +714,4 @@ public void onErrorOccured(int pErrorCode, String pErrorMessage) {
 	}*/
 
 
-		}
+}
