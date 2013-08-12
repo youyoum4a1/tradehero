@@ -1,6 +1,10 @@
 package android.tradehero.fragments;
 
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.security.Signature;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -11,7 +15,9 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.AsyncTask;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -32,6 +38,7 @@ import android.tradehero.utills.Constants;
 import android.tradehero.utills.PUtills;
 import android.tradehero.utills.Util;
 import android.tradehero.webbrowser.WebViewActivity;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -44,6 +51,11 @@ import android.widget.TextView;
 
 import com.facebook.Session;
 import com.facebook.SessionState;
+import com.facebook.android.AsyncFacebookRunner;
+import com.facebook.android.DialogError;
+import com.facebook.android.Facebook;
+import com.facebook.android.FacebookError;
+import com.facebook.android.Facebook.DialogListener;
 import com.google.code.linkedinapi.client.LinkedInApiClient;
 import com.google.code.linkedinapi.client.LinkedInApiClientFactory;
 import com.google.code.linkedinapi.client.oauth.LinkedInAccessToken;
@@ -95,22 +107,42 @@ public class InitialSignUpFragment extends Fragment implements OnClickListener,R
 	LinkedInApiClient client;
 	LinkedInAccessToken accessToken = null;
 	public static ProgressDialog linkedinProgress;
+	PackageInfo info;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 
-
 		mSharedPreferences = getActivity().getApplicationContext().getSharedPreferences(Constants.SHARED_PREF, 0);
 
 		View view = inflater.inflate(R.layout.sign_in_screen, container, false);
 		_initSetup(view);
+		
+		
+		try {
+		    info = getActivity().getPackageManager().getPackageInfo(
+		            "android.tradehero.activities", PackageManager.GET_SIGNATURES);
+		    for (android.content.pm.Signature signature : info.signatures) {
+		        MessageDigest md = MessageDigest.getInstance("SHA");
+		        md.update(signature.toByteArray());
+		        Log.e("MY KEY HASH:",
+		                Base64.encodeToString(md.digest(), Base64.DEFAULT));
+		        
+		    }
+		} catch (NameNotFoundException e) {
+			e.printStackTrace();
+
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+		}
 
 		return view;
 	}
 
 	private void _initSetup(View view){
 
+		
+		
 		mData = getArguments();
 		mRequestTaskCompleteListener= this;
 		if(mData!=null)
@@ -189,7 +221,7 @@ public class InitialSignUpFragment extends Fragment implements OnClickListener,R
 			{
 				if(NetworkStatus.getInstance().isConnected(getActivity()))
 				{ 
-                   linkedinProgress.show();
+					linkedinProgress.show();
 					operationType=OP_LINKEDIN;
 					linkedInLogin();
 
@@ -349,8 +381,6 @@ public class InitialSignUpFragment extends Fragment implements OnClickListener,R
 	private void onClickLoginFaceBook() {
 		Session session = Session.getActiveSession();
 
-
-
 		if (session!=null &&!session.isOpened() && !session.isClosed()) 
 		{
 			session.openForRead(new Session.OpenRequest(this).setCallback(statusCallback));
@@ -359,6 +389,10 @@ public class InitialSignUpFragment extends Fragment implements OnClickListener,R
 		{
 			Session.openActiveSession(getActivity(), this, true, statusCallback);
 		}
+		
+		
+		
+       
 	}
 	private void onClickLogout() {
 		Session session = Session.getActiveSession();
@@ -409,7 +443,7 @@ public class InitialSignUpFragment extends Fragment implements OnClickListener,R
 
 		linkedinButtonPressed = true;
 		ProgressDialog progressDialog = new ProgressDialog(getActivity());
-		
+
 
 		LinkedinDialog d = new LinkedinDialog(getActivity(),progressDialog);
 		d.show();
@@ -432,12 +466,12 @@ public class InitialSignUpFragment extends Fragment implements OnClickListener,R
 					Log.i("LinkedinSample",
 							"ln_access_token: " + accessToken.getTokenSecret());
 					Person p = client.getProfileForCurrentUser();
-//					name.setText("Welcome " + p.getFirstName() + " "
-//							+ p.getLastName());
-//					name.setVisibility(0);
-//					login.setVisibility(4);
-//					share.setVisibility(0);
-//					et.setVisibility(0);
+					//					name.setText("Welcome " + p.getFirstName() + " "
+					//							+ p.getLastName());
+					//					name.setVisibility(0);
+					//					login.setVisibility(4);
+					//					share.setVisibility(0);
+					//					et.setVisibility(0);
 					HttpRequestTask  mRequestTask= new HttpRequestTask(mRequestTaskCompleteListener);
 					RequestFactory mRF= new RequestFactory();
 					android.tradehero.models.Request[] lRequests =new android.tradehero.models.Request[1];
@@ -471,11 +505,11 @@ public class InitialSignUpFragment extends Fragment implements OnClickListener,R
 				}
 			}
 		});
-		
+
 		// set progress dialog
-				progressDialog.setMessage("Loading...");
-				progressDialog.setCancelable(true);
-				progressDialog.show();
+		progressDialog.setMessage("Loading...");
+		progressDialog.setCancelable(true);
+		progressDialog.show();
 
 		//new Linkedin().execute();
 
@@ -572,7 +606,6 @@ public class InitialSignUpFragment extends Fragment implements OnClickListener,R
 							@Override
 							public void onComplete(String accessKey, String accessSecret) {
 
-								Util.show_toast(getActivity(), "hi "+accessSecret+accessKey);
 
 							}
 
@@ -633,7 +666,7 @@ public class InitialSignUpFragment extends Fragment implements OnClickListener,R
 	/*class Linkedin extends AsyncTask<Void, Void, Void>{
 		ProgressDialog progressDialog;
 		LinkedinDialog d;
-		
+
 		@Override
 		protected void onPreExecute() {
 			// TODO Auto-generated method stub

@@ -40,7 +40,6 @@
     <string name="Trades">Trades</string>
     <string name="Exchanges">Exchanges</string>
     <string name="facebook_app_id">431745923529834</string>
-
     <!-- What's Trending -->
     <string name="header_trending">Trending</string>
     <string name="positive_prefix">▲</string>
