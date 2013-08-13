@@ -43,6 +43,7 @@ import org.xml.sax.InputSource;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.telephony.TelephonyManager;
+import android.util.Base64;
 import android.util.Log;
 
 public class PostData {
@@ -65,7 +66,7 @@ public class PostData {
 		registry = new SchemeRegistry();
 		socketFactory = SSLSocketFactory.getSocketFactory();
 		socketFactory
-				.setHostnameVerifier((X509HostnameVerifier) hostnameVerifier);
+		.setHostnameVerifier((X509HostnameVerifier) hostnameVerifier);
 		registry.register(new Scheme("https", socketFactory, 443));
 		registry.register(new Scheme("http", PlainSocketFactory
 				.getSocketFactory(), 80));
@@ -139,15 +140,15 @@ public class PostData {
 
 			List<NameValuePair> postParameters = new ArrayList<NameValuePair>();
 			for (int i = 0; i < value.length; i++) {
-//				System.out.println("@@@@@@@ key---- " + value[i]);
+				//				System.out.println("@@@@@@@ key---- " + value[i]);
 				postParameters.add(new BasicNameValuePair(key[i], value[i]));
 			}
-			
+
 			UrlEncodedFormEntity formEntity = new UrlEncodedFormEntity(
 					postParameters);
 			request.setEntity(formEntity);
 			HttpResponse response = client.execute(request);
-			
+
 			in = new BufferedReader(new InputStreamReader(response.getEntity()
 					.getContent()));
 			StringBuffer sb = new StringBuffer("");
@@ -158,7 +159,7 @@ public class PostData {
 			}
 			in.close();
 			String result = sb.toString();
-//			System.out.println("@@@@@@@---- " + result);
+			//			System.out.println("@@@@@@@---- " + result);
 			return result;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -226,18 +227,19 @@ public class PostData {
 			cpe.printStackTrace();
 		} catch (IOException ioe) {
 			System.out
-					.println("Second exception generates caz of httpResponse :"
-							+ ioe);
+			.println("Second exception generates caz of httpResponse :"
+					+ ioe);
 			ioe.printStackTrace();
 		}
 
 		return null;
 
 	}
-	
-	
-public String httpMultipartCon(String url,String token, Bitmap bmp,String image_name){
-		
+
+
+	public String httpMultipartCon(String url,String displayname,
+			String email,String firstName,String lastName,String password,String passwordConfirmation){
+
 		StringBuilder stringBuilder = null;
 		HttpClient httpClient = new DefaultHttpClient();
 		HttpContext localContext = new BasicHttpContext();
@@ -245,18 +247,30 @@ public String httpMultipartCon(String url,String token, Bitmap bmp,String image_
 		HttpResponse response = null;
 		MultipartEntity entity;
 		
+
+
+		
+
 		try {
-			
+
 			System.out.println("upload url..."+url);
 			httpPost = new HttpPost(url);
-			httpPost.addHeader("Content-Type", "image/jpeg");
+			//httpPost.addHeader("Content-Type", "image/jpeg");
+			httpPost.addHeader("Content-Type", "application/x-www-form-urlencoded; charset=utf-8");
+			//httpPost.addHeader("TH-Client-Version", "1.5.1");
 			entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
-			ByteArrayOutputStream bao = new ByteArrayOutputStream();
-			bmp.compress(Bitmap.CompressFormat.JPEG, 100, bao);
-			byte [] ba = bao.toByteArray();
 			
-			entity.addPart("'profilePicture", new ByteArrayBody(ba, image_name));
-		
+//			ByteArrayOutputStream bao = new ByteArrayOutputStream();
+//			bmp.compress(Bitmap.CompressFormat.JPEG, 100, bao);
+//			byte [] ba = bao.toByteArray();
+//			entity.addPart("profilePicture", new ByteArrayBody(ba,"profile_pic.jpg"));
+			entity.addPart("TH-Client-Version", new StringBody("1.5.1"));
+			entity.addPart("displayName", new StringBody(displayname));
+			entity.addPart("email", new StringBody(email));
+			entity.addPart("firstName", new StringBody(firstName));
+			entity.addPart("lastName", new StringBody(lastName));
+			entity.addPart("password", new StringBody(password));
+			entity.addPart("passwordConfirmation", new StringBody(passwordConfirmation));
 			httpPost.setEntity(entity);
 
 			response = httpClient.execute(httpPost, localContext);
@@ -265,7 +279,7 @@ public String httpMultipartCon(String url,String token, Bitmap bmp,String image_
 					inputStream);
 			BufferedReader bufferedReader = new BufferedReader(
 					inputStreamReader);
-			 stringBuilder = new StringBuilder();
+			stringBuilder = new StringBuilder();
 
 			String bufferedStrChunk = null;
 			while ((bufferedStrChunk = bufferedReader.readLine()) != null) {
@@ -273,13 +287,13 @@ public String httpMultipartCon(String url,String token, Bitmap bmp,String image_
 			}
 
 			Log.d("result:", stringBuilder + "");
-			
-			System.out.println("SSERVER RESPONSE    ......."+stringBuilder.toString());
-			
-			
 
-			
-			
+			System.out.println("SSERVER RESPONSE    ......."+stringBuilder.toString());
+
+
+
+
+
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -287,7 +301,7 @@ public String httpMultipartCon(String url,String token, Bitmap bmp,String image_
 
 		}
 		return stringBuilder.toString();
-		
+
 	}
 
 }

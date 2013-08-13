@@ -31,6 +31,7 @@ import android.tradehero.models.Request;
 import android.tradehero.networkstatus.NetworkStatus;
 import android.tradehero.utills.Constants;
 import android.tradehero.utills.PUtills;
+import android.tradehero.utills.PostData;
 import android.tradehero.utills.Util;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -70,6 +71,13 @@ public class EmailRegistrationFragment extends Fragment implements OnClickListen
 	private int mImagesize = 0;
 	private Context mContext;
 	private static final int REQUEST_GALLERY = 111;
+
+	String lEmail;
+	String lDName;
+	String lFName;
+	String lLName;
+	String lPassword;
+	String lConfirmPassword;
 
 
 	@Override
@@ -249,9 +257,9 @@ public class EmailRegistrationFragment extends Fragment implements OnClickListen
 
 
 		if(v.getId()== R.id.btn_register){
-			
+
 			Util.dismissKeyBoard(getActivity(), v);
-			
+
 			try {			
 
 				if(NetworkStatus.getInstance().isConnected(getActivity()))
@@ -270,7 +278,7 @@ public class EmailRegistrationFragment extends Fragment implements OnClickListen
 		if(v.getId()==  R.id.image_optional)
 		{
 			Intent intent = new Intent(Intent.ACTION_PICK);
-			intent.setType("image/*");
+			intent.setType("image/jpeg");
 			startActivityForResult(intent, REQUEST_GALLERY);
 		}
 
@@ -308,8 +316,14 @@ public class EmailRegistrationFragment extends Fragment implements OnClickListen
 			processRequest=false;
 			Util.show_toast(getActivity(),getResources().getString(R.string.password_validation_string));
 		}
+		
+		/*if(processRequest)
+		{
+			new Imageupload().execute(lDName,lEmail,lFName,lLName,lPassword,lConfirmPassword);
+		}
+*/
 
-		if(processRequest)
+		 if(processRequest)
 		{
 			HttpRequestTask  mRequestTask= new HttpRequestTask(this);
 			RequestFactory mRF= new RequestFactory();
@@ -328,7 +342,7 @@ public class EmailRegistrationFragment extends Fragment implements OnClickListen
 		if(pResponseObject!=null){
 
 			System.out.println("result response----"+pResponseObject.toString());
-			
+
 
 			try {
 
@@ -339,7 +353,7 @@ public class EmailRegistrationFragment extends Fragment implements OnClickListen
 				}
 				else
 				{
-				Util.show_toast(getActivity(), pResponseObject.toString());
+					Util.show_toast(getActivity(), pResponseObject.toString());
 
 					//	JSONObject obj = pResponseObject.getJSONObject("profileDTO");
 
@@ -410,6 +424,8 @@ public class EmailRegistrationFragment extends Fragment implements OnClickListen
 
 					Bitmap circleBitmap = Util.getRoundedShape(imageBmp);
 					mOptionalImage.setImageBitmap(Util.getImagerotation(selectedPath,circleBitmap));
+
+
 
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -778,7 +794,47 @@ public class EmailRegistrationFragment extends Fragment implements OnClickListen
 		return false;
 	}
 
-*/
+	 */
+
+	class Imageupload extends AsyncTask<String, Void, String>{
+
+		ProgressDialog dlg;
+
+		@Override
+		protected void onPreExecute() {
+			// TODO Auto-generated method stub
+			dlg = new ProgressDialog(getActivity());
+			dlg.setMessage("Loading...");
+			dlg.show();
+			super.onPreExecute();
+		}
+
+		@Override
+		protected String doInBackground(String... params) {
+			// TODO Auto-generated method stub
+
+			String lDName = params[0];
+			String lEmail = params[1];
+			String lFName = params[2];
+			String lLName = params[3];
+			String lPassword = params[4];
+			String lConfirmPassword = params[5];
+			Bitmap myimg = imageBmp;
+
+			String response = new PostData(getActivity()).httpMultipartCon("https://www.tradehero.mobi/api/SignupWithEmail",lDName,lEmail,lFName,lLName,lPassword,lConfirmPassword);
+
+			return response;
+		}
+		@Override
+		protected void onPostExecute(String result) {
+			// TODO Auto-generated method stub
+			super.onPostExecute(result);
+			Util.show_toast(getActivity(), result);
+			System.out.println("response for image upload----------"+result);
+			dlg.dismiss();
+		}
+
+	}
 
 
 }

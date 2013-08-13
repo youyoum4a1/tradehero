@@ -243,7 +243,7 @@ public class InitialSignUpFragment extends Fragment implements OnClickListener,R
 				//startActivity(new Intent(getActivity(),LoginActivity.class));
 				fragmentManager = getActivity().getSupportFragmentManager();
 				fragmentTransaction = fragmentManager.beginTransaction();
-				fragmentTransaction.setCustomAnimations(R.anim.slide_in_right,0,R.anim.slide_out_left,0);
+				fragmentTransaction.setCustomAnimations(R.anim.slide_in_right,R.anim.slide_out_right,R.anim.slide_out_left,R.anim.slide_out_right);
 				LoginFragment fragment = new LoginFragment();
 				fragmentTransaction.replace(R.id.sign_in_up_content, fragment,"login");
 				fragmentTransaction.addToBackStack("login");
@@ -253,7 +253,7 @@ public class InitialSignUpFragment extends Fragment implements OnClickListener,R
 				//startActivity(new Intent(getActivity(),EmailRegistrationActivity.class));
 				fragmentManager = getActivity().getSupportFragmentManager();
 				fragmentTransaction = fragmentManager.beginTransaction();
-				fragmentTransaction.setCustomAnimations(R.anim.slide_in_right,0,R.anim.slide_out_left,0);
+				fragmentTransaction.setCustomAnimations(R.anim.slide_in_right,R.anim.slide_out_right,R.anim.slide_out_left,R.anim.slide_out_right);
 				EmailRegistrationFragment fragment = new EmailRegistrationFragment();
 				fragmentTransaction.replace(R.id.sign_in_up_content, fragment,"email_registration");
 				fragmentTransaction.addToBackStack("email_registration");

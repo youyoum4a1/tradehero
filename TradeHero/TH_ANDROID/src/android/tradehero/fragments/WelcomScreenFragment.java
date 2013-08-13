@@ -48,7 +48,7 @@ public class WelcomScreenFragment extends Fragment implements OnClickListener{
 
 			fragmentManager = getActivity().getSupportFragmentManager();
 			fragmentTransaction = fragmentManager.beginTransaction();
-			fragmentTransaction.setCustomAnimations(R.anim.slide_in_right,0,R.anim.slide_out_left,0);
+			fragmentTransaction.setCustomAnimations(R.anim.slide_in_right,R.anim.slide_out_right,R.anim.slide_out_left,R.anim.slide_out_right);
 			fragment = new InitialSignUpFragment();
 			fragmentTransaction.replace(R.id.sign_in_up_content, fragment,"initial_signup");
 			mData = new Bundle();
@@ -65,7 +65,7 @@ public class WelcomScreenFragment extends Fragment implements OnClickListener{
 
 			fragmentManager = getActivity().getSupportFragmentManager();
 			fragmentTransaction = fragmentManager.beginTransaction();
-			fragmentTransaction.setCustomAnimations(R.anim.slide_in_right,0,R.anim.slide_out_left,0);
+			fragmentTransaction.setCustomAnimations(R.anim.slide_in_right,R.anim.slide_out_right,R.anim.slide_out_left,R.anim.slide_out_right);
 			fragment = new InitialSignUpFragment();
 			fragmentTransaction.replace(R.id.sign_in_up_content, fragment,"initial_signup");
 			mData = new Bundle();
