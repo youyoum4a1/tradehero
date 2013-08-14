@@ -4,3 +4,6 @@
 [submodule "java-code-styles"]
 	path = java-code-styles
 	url = git@github.com:nguyentruongtho/java-code-styles.git
+[submodule "retrofit"]
+	path = retrofit
+	url = git@github.com:nguyentruongtho/retrofit.git

@@ -1,6 +1,6 @@
 package com.tradehero.th.models;
 
-public class TradeofWeek
+public class TradeOfWeek
 {
 
     private String id;

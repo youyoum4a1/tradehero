@@ -13,7 +13,7 @@ public class Config
 
     protected static String localValueForKey(int key)
     {
-        return App.getContext().getResources().getString(key);
+        return App.context().getResources().getString(key);
     }
 
     public static String getTrendingFeed()

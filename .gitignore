@@ -7,3 +7,7 @@ gen/
 *.ear
 lib/
 out/
+.DS_Store
+.idea/libraries/
+.idea/codeStyleSettings.xml
+.idea/workspace.xml

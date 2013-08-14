@@ -6,33 +6,30 @@
  */
 package com.tradehero.th.application;
 
+import com.tradehero.kit.application.PApplication;
+import com.tradehero.th.models.ProfileDTO;
+import com.tradehero.th.models.Token;
+import com.tradehero.th.models.TradeOfWeek;
+import com.tradehero.th.models.Trend;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
-import android.app.Application;
-import android.content.Context;
-import com.tradehero.th.models.ProfileDTO;
-import com.tradehero.th.models.Token;
-import com.tradehero.th.models.TradeofWeek;
-import com.tradehero.th.models.Trend;
-
-public class App extends Application
+public class App extends PApplication
 {
-
-    private static App instance;
-
     private Trend trend;
     private Token token;
-    private ArrayList<TradeofWeek> tradeofweek;
 
-    public ArrayList<TradeofWeek> getTradeofweek()
+    private ArrayList<TradeOfWeek> tradeOfWeek;
+    private LinkedHashMap<String, String> yahooQuotesMap;
+
+    public ArrayList<TradeOfWeek> getTradeOfWeek()
     {
-        return tradeofweek;
+        return tradeOfWeek;
     }
 
-    public void setTradeofweek(TradeofWeek tradeofweek)
+    public void setTradeOfWeek(TradeOfWeek tradeOfWeek)
     {
-        this.tradeofweek.add(tradeofweek);
+        this.tradeOfWeek.add(tradeOfWeek);
     }
 
     public Token getToken()
@@ -55,24 +52,6 @@ public class App extends Application
     public void setProfileDTO(ProfileDTO profileDTO)
     {
         this.profileDTO = profileDTO;
-    }
-
-    private LinkedHashMap<String, String> yahooQuotesMap;
-
-    public static Context getContext()
-    {
-        return instance;
-    }
-
-    public App()
-    {
-        super();
-        instance = this;
-    }
-
-    public LinkedHashMap<String, String> getYahooQuotesMap()
-    {
-        return yahooQuotesMap;
     }
 
     public void setYahooQuotesMap(LinkedHashMap<String, String> yahooQuotesMap)

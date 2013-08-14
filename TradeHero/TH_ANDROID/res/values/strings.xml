@@ -86,5 +86,11 @@
     <string name="twitter_login_message">Already Logged into twitter !</string>
     <string name="login_message">Already Logged in !</string>
     <string name="go_login_twitter">Please press Signin Twitter button.</string>
+  <string name="apprate_later">Remind me later</string>
+  <string name="apprate_no_thanks">No thanks</string>
+  <string name="apprate_message">Rate our apps</string>
+  <string name="apprate">Rate me</string>
+  <string name="apprate_dialog_title">Rate TradeHero</string>
+  <string name="API_URL">https://www.tradehero.mobi/api</string>
 
 </resources>

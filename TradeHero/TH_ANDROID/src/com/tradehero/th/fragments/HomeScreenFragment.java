@@ -1,5 +1,6 @@
 package com.tradehero.th.fragments;
 
+import com.tradehero.th.models.TradeOfWeek;
 import java.util.ArrayList;
 
 import org.json.JSONArray;
@@ -24,7 +25,6 @@ import com.tradehero.th.models.Medias;
 import com.tradehero.th.models.ProfileDTO;
 import com.tradehero.th.models.Request;
 import com.tradehero.th.models.Token;
-import com.tradehero.th.models.TradeofWeek;
 import com.tradehero.th.utills.Constants;
 import com.tradehero.th.utills.Util;
 import android.util.Base64;
@@ -233,8 +233,8 @@ public class HomeScreenFragment extends Fragment
 
     private void parseResponse(String response)
     {
-        ArrayList<TradeofWeek> tradweekList = new ArrayList<TradeofWeek>();
-        TradeofWeek mTradeWeek = null;
+        ArrayList<TradeOfWeek> tradweekList = new ArrayList<TradeOfWeek>();
+        TradeOfWeek mTradeWeek = null;
         Medias objMedia = null;
         try
         {
@@ -245,7 +245,7 @@ public class HomeScreenFragment extends Fragment
             for (int i = 0; i < mJsonArray.length(); i++)
             {
 
-                mTradeWeek = new TradeofWeek();
+                mTradeWeek = new TradeOfWeek();
                 JSONObject mobj = mJsonArray.getJSONObject(i);
 
                 String _id = mobj.getString("id");

@@ -1,5 +1,6 @@
 package com.tradehero.th.adapters;
 
+import com.tradehero.th.models.TradeOfWeek;
 import java.util.ArrayList;
 
 import android.content.Context;
@@ -7,7 +8,6 @@ import com.tradehero.th.R;
 import com.tradehero.th.application.App;
 import com.tradehero.th.cache.ImageLoader;
 import com.tradehero.th.models.ProfileDTO;
-import com.tradehero.th.models.TradeofWeek;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,14 +18,14 @@ import android.widget.TextView;
 public class TradeWeekAdapter extends BaseAdapter
 {
 
-    private static ArrayList<TradeofWeek> tradeofweeklist;
+    private static ArrayList<TradeOfWeek> tradeofweeklist;
 
     Context ctx;
     ProfileDTO mprofile;
     private LayoutInflater l_Inflater;
     ImageLoader mLoader;
 
-    public TradeWeekAdapter(Context context, ArrayList<TradeofWeek> results)
+    public TradeWeekAdapter(Context context, ArrayList<TradeOfWeek> results)
     {
         tradeofweeklist = results;
         l_Inflater = LayoutInflater.from(context);
