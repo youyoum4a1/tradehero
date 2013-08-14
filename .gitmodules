@@ -1,0 +1,6 @@
+[submodule "facebook-android-sdk"]
+	path = facebook-android-sdk
+	url = git@github.com:facebook/facebook-android-sdk.git
+[submodule "java-code-styles"]
+	path = java-code-styles
+	url = git@github.com:nguyentruongtho/java-code-styles.git

@@ -30,7 +30,7 @@
             android:scaleType="centerInside"
             android:src="@drawable/default_image" />
 
-        <android.tradehero.application.CircularImageView
+        <com.tradehero.application.CircularImageView
             android:id="@+id/user_image"
             android:layout_width="60dp"
             android:layout_height="60dp"

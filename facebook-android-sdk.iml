@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="JAVA_MODULE" version="4">
+  <component name="FacetManager">
+    <facet type="android" name="Android">
+      <configuration>
+        <option name="GEN_FOLDER_RELATIVE_PATH_APT" value="/facebook-android-sdk/facebook/gen" />
+        <option name="GEN_FOLDER_RELATIVE_PATH_AIDL" value="/facebook-android-sdk/facebook/gen" />
+        <option name="MANIFEST_FILE_RELATIVE_PATH" value="/facebook-android-sdk/facebook/AndroidManifest.xml" />
+        <option name="RES_FOLDER_RELATIVE_PATH" value="/facebook-android-sdk/facebook/res" />
+        <option name="ASSETS_FOLDER_RELATIVE_PATH" value="/facebook-android-sdk/facebook/assets" />
+        <option name="LIBS_FOLDER_RELATIVE_PATH" value="/facebook-android-sdk/facebook/libs" />
+        <option name="LIBRARY_PROJECT" value="true" />
+        <resOverlayFolders>
+          <path>/facebook-android-sdk/facebook/res-overlay</path>
+        </resOverlayFolders>
+      </configuration>
+    </facet>
+  </component>
+  <component name="NewModuleRootManager" inherit-compiler-output="true">
+    <exclude-output />
+    <content url="file://$MODULE_DIR$/facebook-android-sdk/facebook">
+      <sourceFolder url="file://$MODULE_DIR$/facebook-android-sdk/facebook/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/facebook-android-sdk/facebook/gen" isTestSource="false" />
+    </content>
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="com.google.android:support-v4:r7" level="project" />
+  </component>
+</module>
+

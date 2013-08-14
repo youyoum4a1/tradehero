@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:background="@drawable/layout_border" >
 
-    <android.tradehero.application.SquareImageView
+    <com.tradehero.application.SquareImageView
         android:id="@+id/picture"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

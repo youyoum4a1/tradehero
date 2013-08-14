@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="android.tradehero.activities"
+    package="com.tradehero.th"
     android:versionCode="1"
     android:versionName="1.0" 
     android:installLocation="auto">
@@ -22,27 +22,26 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
-        android:name="android.tradehero.application.App"
+        android:name=".application.App"
         android:allowBackup="true"
         android:icon="@drawable/splash_logo"
         android:label="@string/app_name"
         android:theme="@style/AppBaseTheme" >
         <activity
-            android:name="android.tradehero.activities.BaseActivity"
+            android:name=".activities.BaseActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
-            android:name="android.tradehero.webbrowser.WebViewActivity"
+            android:name=".webbrowser.WebViewActivity"
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name="android.tradehero.activities.WelcomeActivity"
+            android:name=".activities.WelcomeActivity"
             android:screenOrientation="portrait" >
            <!--  <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -60,11 +59,11 @@
                 android:scheme="oauth" />
         </activity>
         <activity
-            android:name="android.tradehero.twitter.TwitterActivity"
+            android:name=".twitter.TwitterActivity"
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name="android.tradehero.activities.TradeHeroTabActivity"
+            android:name=".activities.TradeHeroTabActivity"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.DeviceDefault.NoActionBar" >
         </activity>
@@ -74,8 +73,7 @@
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
 
         <meta-data
-            android:name="com.facebook.sdk.ApplicationId"
-            android:value="@string/facebook_app_id" />
+            android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id" />
     </application>
 
 </manifest>

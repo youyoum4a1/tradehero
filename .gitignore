@@ -5,3 +5,4 @@ bin/
 gen/
 *.war
 *.ear
+lib/
