@@ -69,13 +69,6 @@
     <file path="$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/models/TradeofWeek.java" changelist="483fef33-cda5-4250-9887-8b840b74f5de" time="1376471058719" ignored="false" />
     <file path="$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/models/ProfileDTO.java" changelist="483fef33-cda5-4250-9887-8b840b74f5de" time="1376471058719" ignored="false" />
     <file path="/ProfileContentAdapter.java" changelist="483fef33-cda5-4250-9887-8b840b74f5de" time="1376471195399" ignored="false" />
-    <file path="$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/utills/Util.java" changelist="483fef33-cda5-4250-9887-8b840b74f5de" time="1376471239306" ignored="false" />
-    <file path="$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/activities/dialog/LinkedinDialog.java" changelist="483fef33-cda5-4250-9887-8b840b74f5de" time="1376471239306" ignored="false" />
-    <file path="$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/adapters/SearchStockAdapter.java" changelist="483fef33-cda5-4250-9887-8b840b74f5de" time="1376471239306" ignored="false" />
-    <file path="$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/adapters/TradeWeekAdapter.java" changelist="483fef33-cda5-4250-9887-8b840b74f5de" time="1376471239306" ignored="false" />
-    <file path="$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/adapters/TrendingAdapter.java" changelist="483fef33-cda5-4250-9887-8b840b74f5de" time="1376471239306" ignored="false" />
-    <file path="$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/adapters/SearchPeopleAdapter.java" changelist="483fef33-cda5-4250-9887-8b840b74f5de" time="1376471239306" ignored="false" />
-    <file path="$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/webbrowser/WebViewActivity.java" changelist="483fef33-cda5-4250-9887-8b840b74f5de" time="1376471239306" ignored="false" />
     <file path="/InitialSignUpFragment.java" changelist="483fef33-cda5-4250-9887-8b840b74f5de" time="1376471320232" ignored="false" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -137,99 +130,73 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="AndroidManifest.xml" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/AndroidManifest.xml">
+      <file leaf-file-name="HomeScreenFragment.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/fragments/HomeScreenFragment.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="2" column="29" selection-start="137" selection-end="137" vertical-scroll-proportion="0.0">
+            <state line="43" column="13" selection-start="1373" selection-end="1373" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="ProfileContentAdapter.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/adapters/ProfileContentAdapter.java">
+      <file leaf-file-name="NewsFragment.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/fragments/NewsFragment.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="16" column="97" selection-start="471" selection-end="471" vertical-scroll-proportion="0.0">
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="TradeHeroTabActivity.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/activities/TradeHeroTabActivity.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="55" column="58" selection-start="1681" selection-end="1681" vertical-scroll-proportion="0.0">
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="InitialSignUpFragment.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/fragments/InitialSignUpFragment.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="269" column="24" selection-start="11410" selection-end="11410" vertical-scroll-proportion="0.0">
+            <state line="36" column="13" selection-start="1027" selection-end="1027" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="BaseActivity.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/activities/BaseActivity.java">
+      <file leaf-file-name="PortfolioScreenFragment.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/fragments/PortfolioScreenFragment.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="24" column="23" selection-start="587" selection-end="587" vertical-scroll-proportion="0.0">
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="WelcomeActivity.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/activities/WelcomeActivity.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="35" column="23" selection-start="1090" selection-end="1090" vertical-scroll-proportion="0.0">
+            <state line="9" column="13" selection-start="242" selection-end="242" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="LoginFragment.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/fragments/LoginFragment.java">
+      <file leaf-file-name="StockInfoFragment.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/fragments/StockInfoFragment.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="394" column="12" selection-start="13710" selection-end="13710" vertical-scroll-proportion="0.0">
+            <state line="25" column="13" selection-start="718" selection-end="718" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="TwitterActivity.java" pinned="false" current="true" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/twitter/TwitterActivity.java">
+      <file leaf-file-name="StoreScreenFragment.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/fragments/StoreScreenFragment.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="211" column="62" selection-start="7150" selection-end="7150" vertical-scroll-proportion="5.093863">
+            <state line="9" column="13" selection-start="242" selection-end="242" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="App.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/application/App.java">
+      <file leaf-file-name="TrendingDetailFragment.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/fragments/TrendingDetailFragment.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="30" column="102" selection-start="680" selection-end="680" vertical-scroll-proportion="0.0">
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
+            <state line="37" column="13" selection-start="1107" selection-end="1107" vertical-scroll-proportion="0.0">
+              <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="CircularImageView.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/application/CircularImageView.java">
+      <file leaf-file-name="TrendingFragment.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/fragments/TrendingFragment.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="14" column="13" selection-start="437" selection-end="437" vertical-scroll-proportion="0.0">
+            <state line="51" column="13" selection-start="1854" selection-end="1854" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="WebViewFragment.java" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/fragments/WebViewFragment.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="26" column="13" selection-start="759" selection-end="759" vertical-scroll-proportion="0.14782609">
               <folding />
             </state>
           </provider>
@@ -257,6 +224,8 @@
         <option value="$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/activities/WelcomeActivity.java" />
         <option value="$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/fragments/LoginFragment.java" />
         <option value="$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/twitter/TwitterActivity.java" />
+        <option value="$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/networkstatus/NetworkStatus.java" />
+        <option value="$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/activities/dialog/LinkedinDialog.java" />
       </list>
     </option>
   </component>
@@ -301,15 +270,15 @@
               <option name="myItemId" value="TH_Android" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
             </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="External Libraries" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ExternalLibrariesNode" />
-            </PATH_ELEMENT>
           </PATH>
           <PATH>
             <PATH_ELEMENT>
               <option name="myItemId" value="TH_Android" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="TH_ANDROID" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
           <PATH>
@@ -319,6 +288,264 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="TH_ANDROID" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="th" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="webbrowser" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="TH_Android" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="TH_ANDROID" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="th" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="utills" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="TH_Android" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="TH_ANDROID" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="th" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="twitter" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="TH_Android" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="TH_ANDROID" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="th" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="rss" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="TH_Android" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="TH_ANDROID" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="th" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="networkstatus" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="TH_Android" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="TH_ANDROID" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="th" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="TH_Android" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="TH_ANDROID" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="th" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="fragments" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="TH_Android" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="TH_ANDROID" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="th" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="fragments" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="authentication" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="TH_Android" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="TH_ANDROID" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="th" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="application" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="TH_Android" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="TH_ANDROID" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="th" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="adapters" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="TH_Android" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="TH_ANDROID" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="th" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="activities" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="TH_Android" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="TH_ANDROID" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="th" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="activities" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="dialog" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -589,64 +816,44 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/facebook-android-sdk/facebook/src/com/facebook/internal/SessionTracker.java">
+    <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/networkstatus/NetworkStatus.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="22" column="33" selection-start="809" selection-end="809" vertical-scroll-proportion="0.23652174">
+        <state line="14" column="5" selection-start="312" selection-end="312" vertical-scroll-proportion="-1.2469565">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/facebook-android-sdk/facebook/src/com/facebook/internal/Logger.java">
+    <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/rss/RssFeed.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="18" column="19" selection-start="653" selection-end="653" vertical-scroll-proportion="0.11826087">
+        <state line="9" column="13" selection-start="157" selection-end="157" vertical-scroll-proportion="0.14782609">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/application/CircularImageView.java">
+    <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/rss/RssReader.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="14" column="13" selection-start="437" selection-end="437" vertical-scroll-proportion="0.0">
+        <state line="14" column="13" selection-start="334" selection-end="334" vertical-scroll-proportion="0.14782609">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/application/App.java">
+    <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/rss/RssItem.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="30" column="102" selection-start="680" selection-end="680" vertical-scroll-proportion="0.0">
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/AndroidManifest.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="2" column="29" selection-start="137" selection-end="137" vertical-scroll-proportion="0.0">
+        <state line="11" column="13" selection-start="220" selection-end="220" vertical-scroll-proportion="0.14782609">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/adapters/ProfileContentAdapter.java">
+    <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/rss/RssHandler.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="16" column="97" selection-start="471" selection-end="471" vertical-scroll-proportion="0.0">
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
+        <state line="11" column="13" selection-start="266" selection-end="266" vertical-scroll-proportion="0.14782609">
+          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/activities/TradeHeroTabActivity.java">
+    <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/activities/dialog/LinkedinDialog.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="55" column="58" selection-start="1681" selection-end="1681" vertical-scroll-proportion="0.0">
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/fragments/InitialSignUpFragment.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="269" column="24" selection-start="11410" selection-end="11410" vertical-scroll-proportion="0.0">
+        <state line="42" column="4" selection-start="1428" selection-end="1428" vertical-scroll-proportion="0.6208696">
           <folding />
         </state>
       </provider>
@@ -660,23 +867,67 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/activities/WelcomeActivity.java">
+    <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/adapters/ProfileContentAdapter.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="35" column="23" selection-start="1090" selection-end="1090" vertical-scroll-proportion="0.0">
+        <state line="16" column="97" selection-start="471" selection-end="471" vertical-scroll-proportion="0.029565217">
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/fragments/HomeScreenFragment.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="43" column="13" selection-start="1373" selection-end="1373" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/fragments/LoginFragment.java">
+    <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/fragments/NewsFragment.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="394" column="12" selection-start="13710" selection-end="13710" vertical-scroll-proportion="0.0">
+        <state line="36" column="13" selection-start="1027" selection-end="1027" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/twitter/TwitterActivity.java">
+    <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/fragments/PortfolioScreenFragment.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="211" column="62" selection-start="7150" selection-end="7150" vertical-scroll-proportion="5.093863">
+        <state line="9" column="13" selection-start="242" selection-end="242" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/fragments/StockInfoFragment.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="25" column="13" selection-start="718" selection-end="718" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/fragments/StoreScreenFragment.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="9" column="13" selection-start="242" selection-end="242" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/fragments/TrendingDetailFragment.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="37" column="13" selection-start="1107" selection-end="1107" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/fragments/TrendingFragment.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="51" column="13" selection-start="1854" selection-end="1854" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/fragments/WebViewFragment.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="26" column="13" selection-start="759" selection-end="759" vertical-scroll-proportion="0.14782609">
           <folding />
         </state>
       </provider>

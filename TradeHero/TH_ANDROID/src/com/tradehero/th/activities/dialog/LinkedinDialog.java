@@ -10,7 +10,7 @@ import android.graphics.Picture;
 import android.net.Uri;
 import android.os.Bundle;
 import com.tradehero.th.R;
-import com.tradehero.th.fragments.InitialSignUpFragment;
+import com.tradehero.th.fragments.authentication.InitialSignUpFragment;
 import com.tradehero.th.utills.Constants;
 import android.util.Log;
 import android.view.Window;
@@ -32,12 +32,6 @@ public class LinkedinDialog extends Dialog
     private String scopeParams =
             "r_basicprofile%20r_emailaddress%20r_network%20r_contactinfo%20rw_nus%20w_messages";
 
-    /**
-     * Construct a new LinkedIn dialog
-     *
-     * @param context activity {@link Context}
-     * @param progressDialog {@link ProgressDialog}
-     */
 
     @Override
     public void onBackPressed()
@@ -47,6 +41,12 @@ public class LinkedinDialog extends Dialog
         InitialSignUpFragment.linkedinButtonPressed = false;
     }
 
+    /**
+     * Construct a new LinkedIn dialog
+     *
+     * @param context activity {@link Context}
+     * @param progressDialog {@link ProgressDialog}
+     */
     public LinkedinDialog(Context context, ProgressDialog progressDialog)
     {
         super(context);

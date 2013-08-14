@@ -8,7 +8,7 @@ import android.os.StrictMode;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import com.tradehero.th.fragments.WelcomScreenFragment;
+import com.tradehero.th.fragments.authentication.WelcomScreenFragment;
 
 public class WelcomeActivity extends FragmentActivity
 {

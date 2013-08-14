@@ -14,8 +14,6 @@ public final class NetworkStatus
     {
     }
 
-    ;
-
     public static NetworkStatus getInstance()
     {
         return instance;

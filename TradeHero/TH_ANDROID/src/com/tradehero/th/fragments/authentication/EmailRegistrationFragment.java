@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments;
+package com.tradehero.th.fragments.authentication;
 
 import java.net.URLEncoder;
 

@@ -26,7 +26,7 @@ import android.os.Message;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.TradeHeroTabActivity;
 import com.tradehero.th.application.App;
-import com.tradehero.th.fragments.InitialSignUpFragment;
+import com.tradehero.th.fragments.authentication.InitialSignUpFragment;
 import com.tradehero.th.http.HttpRequestTask;
 import com.tradehero.th.http.RequestFactory;
 import com.tradehero.th.http.RequestTaskCompleteListener;
@@ -56,11 +56,9 @@ public class TwitterActivity extends Activity implements RequestTaskCompleteList
     private OAuthConsumer mConsumer;
     private OAuthProvider mProvider;
     private String twitter_email;
-    private EditText mail_id_twitter;
     private ProgressDialog mSpinner;
     private WebView mWebView;
     private Thread thread;
-    private AlertDialog alert;
 
     /**
      * Handler to run shit on the UI thread

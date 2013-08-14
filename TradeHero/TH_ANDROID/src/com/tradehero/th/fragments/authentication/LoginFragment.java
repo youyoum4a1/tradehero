@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments;
+package com.tradehero.th.fragments.authentication;
 
 import org.json.JSONException;
 import org.json.JSONObject;

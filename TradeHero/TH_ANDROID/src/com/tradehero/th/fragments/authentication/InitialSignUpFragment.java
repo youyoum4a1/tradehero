@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments;
+package com.tradehero.th.fragments.authentication;
 
 import com.tradehero.th.models.Request;
 import java.security.MessageDigest;
