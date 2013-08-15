@@ -214,19 +214,19 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="AuthenticationActivity.java" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="AuthenticationActivity.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/activities/AuthenticationActivity.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="129" column="74" selection-start="4814" selection-end="4814" vertical-scroll-proportion="0.23448277">
+            <state line="123" column="0" selection-start="4467" selection-end="5271" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="SignUpFragment.java" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="SignUpFragment.java" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/fragments/authentication/SignUpFragment.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="238" column="58" selection-start="10010" selection-end="10010" vertical-scroll-proportion="0.0">
+            <state line="252" column="28" selection-start="10860" selection-end="10921" vertical-scroll-proportion="5.0898438">
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="method#onTaskComplete#0;class#SignUpFragment#0" expanded="false" />
@@ -841,7 +841,7 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
-    <editor active="true" />
+    <editor active="false" />
     <layout>
       <window_info id="Palette&#9;" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32959402" sideWeight="0.6004464" order="-1" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.29220086" sideWeight="0.6004464" order="-1" side_tool="false" content_ui="tabs" />
@@ -852,7 +852,7 @@
       <window_info id="CheckStyle" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32924107" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.39955357" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.39955357" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="IDEtalk Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32924107" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
@@ -1061,20 +1061,20 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/activities/AuthenticationActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="123" column="0" selection-start="4467" selection-end="5271" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/fragments/authentication/SignUpFragment.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="238" column="58" selection-start="10010" selection-end="10010" vertical-scroll-proportion="0.0">
+        <state line="252" column="28" selection-start="10860" selection-end="10921" vertical-scroll-proportion="5.0898438">
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="method#onTaskComplete#0;class#SignUpFragment#0" expanded="false" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/activities/AuthenticationActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="129" column="74" selection-start="4814" selection-end="4814" vertical-scroll-proportion="0.23448277">
-          <folding />
         </state>
       </provider>
     </entry>
