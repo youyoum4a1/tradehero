@@ -1,5 +1,6 @@
 package com.tradehero.th.fragments.authentication;
 
+import com.tradehero.th.activities.DashboardActivity;
 import java.net.URLEncoder;
 
 import org.json.JSONException;
@@ -21,7 +22,6 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import com.tradehero.th.R;
-import com.tradehero.th.activities.TradeHeroTabActivity;
 import com.tradehero.th.application.App;
 import com.tradehero.th.http.HttpRequestTask;
 import com.tradehero.th.http.RequestFactory;
@@ -373,7 +373,7 @@ public class EmailRegistrationFragment extends Fragment
                     ProfileDTO prof = new PUtills(getActivity())._parseJson(pResponseObject);
 
                     ((App) getActivity().getApplication()).setProfileDTO(prof);
-                    startActivity(new Intent(getActivity(), TradeHeroTabActivity.class));
+                    startActivity(new Intent(getActivity(), DashboardActivity.class));
                     getActivity().finish();
                 }
             } catch (JSONException e)

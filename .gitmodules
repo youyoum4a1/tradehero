@@ -7,3 +7,6 @@
 [submodule "retrofit"]
 	path = retrofit
 	url = git@github.com:nguyentruongtho/retrofit.git
+[submodule "ActionBarSherlock"]
+	path = ActionBarSherlock
+	url = git@github.com:nguyentruongtho/ActionBarSherlock.git

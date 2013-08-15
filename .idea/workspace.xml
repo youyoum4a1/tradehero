@@ -28,7 +28,7 @@
     <list default="true" id="483fef33-cda5-4250-9887-8b840b74f5de" name="Default" comment="" />
     <ignored path="TH_Android.iws" />
     <ignored path=".idea/workspace.xml" />
-    <file path="/fragment.java" changelist="483fef33-cda5-4250-9887-8b840b74f5de" time="1376475344244" ignored="false" />
+    <file path="/fragment.java" changelist="483fef33-cda5-4250-9887-8b840b74f5de" time="1376540219369" ignored="false" />
     <file path="$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/utills/DateUtils.java" changelist="483fef33-cda5-4250-9887-8b840b74f5de" time="1376470840801" ignored="false" />
     <file path="$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/utills/HttpUtil.java" changelist="483fef33-cda5-4250-9887-8b840b74f5de" time="1376470840801" ignored="false" />
     <file path="$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/utills/PUtills.java" changelist="483fef33-cda5-4250-9887-8b840b74f5de" time="1376470840801" ignored="false" />
@@ -93,7 +93,7 @@
     <file path="$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/models/TradeofWeek.java" changelist="483fef33-cda5-4250-9887-8b840b74f5de" time="1376471058719" ignored="false" />
     <file path="$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/models/ProfileDTO.java" changelist="483fef33-cda5-4250-9887-8b840b74f5de" time="1376474578745" ignored="false" />
     <file path="/ProfileContentAdapter.java" changelist="483fef33-cda5-4250-9887-8b840b74f5de" time="1376471195399" ignored="false" />
-    <file path="/InitialSignUpFragment.java" changelist="483fef33-cda5-4250-9887-8b840b74f5de" time="1376471320232" ignored="false" />
+    <file path="/InitialSignUpFragment.java" changelist="483fef33-cda5-4250-9887-8b840b74f5de" time="1376541852940" ignored="false" />
     <file path="/RssReader.java" changelist="483fef33-cda5-4250-9887-8b840b74f5de" time="1376472356441" ignored="false" />
     <file path="$PROJECT_DIR$/facebook-android-sdk/facebook/gen/com/facebook/android/R.java" changelist="483fef33-cda5-4250-9887-8b840b74f5de" time="1376472587321" ignored="false" />
     <file path="$PROJECT_DIR$/TradeHero/TH_ANDROID/gen/com/tradehero/th/Manifest.java" changelist="483fef33-cda5-4250-9887-8b840b74f5de" time="1376472587321" ignored="false" />
@@ -102,16 +102,20 @@
     <file path="$PROJECT_DIR$/TradeHero/TH_ANDROID/res/values/strings.xml" changelist="483fef33-cda5-4250-9887-8b840b74f5de" time="1376475231058" ignored="false" />
     <file path="/pom.xml" changelist="483fef33-cda5-4250-9887-8b840b74f5de" time="1376474560900" ignored="false" />
     <file path="$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/rss/RssReader.java" changelist="483fef33-cda5-4250-9887-8b840b74f5de" time="1376474578745" ignored="false" />
-    <file path="$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/fragments/authentication/InitialSignUpFragment.java" changelist="483fef33-cda5-4250-9887-8b840b74f5de" time="1376474578745" ignored="false" />
-    <file path="$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/fragments/authentication/LoginFragment.java" changelist="483fef33-cda5-4250-9887-8b840b74f5de" time="1376474578745" ignored="false" />
-    <file path="$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/adapters/ProfileContentAdapter.java" changelist="483fef33-cda5-4250-9887-8b840b74f5de" time="1376474578745" ignored="false" />
-    <file path="$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/fragments/authentication/EmailRegistrationFragment.java" changelist="483fef33-cda5-4250-9887-8b840b74f5de" time="1376474578745" ignored="false" />
-    <file path="$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/fragments/HomeScreenFragment.java" changelist="483fef33-cda5-4250-9887-8b840b74f5de" time="1376474578745" ignored="false" />
-    <file path="$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/fragments/authentication/WelcomScreenFragment.java" changelist="483fef33-cda5-4250-9887-8b840b74f5de" time="1376474578745" ignored="false" />
     <file path="/THLog.java" changelist="483fef33-cda5-4250-9887-8b840b74f5de" time="1376474595412" ignored="false" />
     <file path="/Config.java" changelist="483fef33-cda5-4250-9887-8b840b74f5de" time="1376474659858" ignored="false" />
     <file path="/NetworkEngine.java" changelist="483fef33-cda5-4250-9887-8b840b74f5de" time="1376475568241" ignored="false" />
     <file path="/FHUser.java" changelist="483fef33-cda5-4250-9887-8b840b74f5de" time="1376475438322" ignored="false" />
+    <file path="/ActivityHelper.java" changelist="483fef33-cda5-4250-9887-8b840b74f5de" time="1376476234680" ignored="false" />
+    <file path="$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/twitter/TwitterActivity.java" changelist="483fef33-cda5-4250-9887-8b840b74f5de" time="1376476238898" ignored="false" />
+    <file path="$PROJECT_DIR$/TradeHero/TH_ANDROID/gen/com/tradehero/th/R.java" changelist="483fef33-cda5-4250-9887-8b840b74f5de" time="1376540285968" ignored="false" />
+    <file path="/BaseActivity.java" changelist="483fef33-cda5-4250-9887-8b840b74f5de" time="1376476319401" ignored="false" />
+    <file path="/SplashActivity.java" changelist="483fef33-cda5-4250-9887-8b840b74f5de" time="1376541802824" ignored="false" />
+    <file path="/AuthenticationActivity.java" changelist="483fef33-cda5-4250-9887-8b840b74f5de" time="1376541679813" ignored="false" />
+    <file path="$PROJECT_DIR$/../FH_ANDROID/FH_Android/src/main/java/com/tradehero/fh/activities/authentication/AuthenticationActivity.java" changelist="483fef33-cda5-4250-9887-8b840b74f5de" time="1376541351226" ignored="false" />
+    <file path="/WelcomeFragment.java" changelist="483fef33-cda5-4250-9887-8b840b74f5de" time="1376540626832" ignored="false" />
+    <file path="/AuthenticationFragment.java" changelist="483fef33-cda5-4250-9887-8b840b74f5de" time="1376540527841" ignored="false" />
+    <file path="$PROJECT_DIR$/TradeHero/TH_ANDROID/res/values/integers.xml" changelist="483fef33-cda5-4250-9887-8b840b74f5de" time="1376541755166" ignored="false" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -175,34 +179,34 @@
       <file leaf-file-name="App.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/application/App.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="41" column="27" selection-start="939" selection-end="939" vertical-scroll-proportion="0.0">
+            <state line="39" column="21" selection-start="884" selection-end="892" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="AndroidManifest.xml" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/AndroidManifest.xml">
+      <file leaf-file-name="RequestFactory.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/http/RequestFactory.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="30" column="42" selection-start="1171" selection-end="1171" vertical-scroll-proportion="0.0">
+            <state line="234" column="44" selection-start="12570" selection-end="12570" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="pom.xml" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/retrofit/retrofit/pom.xml">
+      <file leaf-file-name="ActivityHelper.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/activities/ActivityHelper.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="17" column="45" selection-start="607" selection-end="607" vertical-scroll-proportion="0.0">
+            <state line="14" column="48" selection-start="523" selection-end="523" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="NetworkEngine.java" pinned="false" current="true" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/network/NetworkEngine.java">
+      <file leaf-file-name="AuthenticationActivity.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/activities/AuthenticationActivity.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="15" column="0" selection-start="422" selection-end="422" vertical-scroll-proportion="0.29310346">
+            <state line="23" column="58" selection-start="925" selection-end="925" vertical-scroll-proportion="0.0">
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -210,55 +214,65 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="THUser.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/base/THUser.java">
+      <file leaf-file-name="slide_left_in.xml" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/res/anim/slide_left_in.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="16" column="25" selection-start="345" selection-end="345" vertical-scroll-proportion="0.0">
+            <state line="8" column="53" selection-start="363" selection-end="383" vertical-scroll-proportion="-5.44">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="THJsonAdapter.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/kit/utils/THJsonAdapter.java">
+      <file leaf-file-name="slide_right_in.xml" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/res/anim/slide_right_in.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="124" column="15" selection-start="3155" selection-end="3155" vertical-scroll-proportion="0.0">
+            <state line="7" column="43" selection-start="371" selection-end="371" vertical-scroll-proportion="-4.76">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="TrendingDetailFragment.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/fragments/TrendingDetailFragment.java">
+      <file leaf-file-name="WelcomeFragment.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/fragments/authentication/WelcomeFragment.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="121" column="88" selection-start="4483" selection-end="4500" vertical-scroll-proportion="0.0">
+            <state line="16" column="52" selection-start="529" selection-end="537" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="pom.xml" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/pom.xml">
+      <file leaf-file-name="SplashActivity.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/activities/SplashActivity.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="37" column="22" selection-start="1216" selection-end="1216" vertical-scroll-proportion="0.0">
+            <state line="17" column="72" selection-start="467" selection-end="467" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="THLog.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/kit/utils/THLog.java">
+      <file leaf-file-name="InitialSignUpFragment.java" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/fragments/authentication/InitialSignUpFragment.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="39" column="33" selection-start="1012" selection-end="1012" vertical-scroll-proportion="0.0">
-              <folding />
+            <state line="254" column="28" selection-start="10405" selection-end="10405" vertical-scroll-proportion="0.53514737">
+              <folding>
+                <element signature="imports" expanded="true" />
+                <element signature="e#17075#20030#0" expanded="true" />
+                <element signature="e#20019#20020#0" expanded="true" />
+                <element signature="e#22582#24490#0" expanded="true" />
+                <element signature="e#24471#24472#0" expanded="true" />
+                <element signature="e#24537#24808#0" expanded="true" />
+                <element signature="e#24789#24790#0" expanded="true" />
+                <element signature="e#24911#25324#0" expanded="true" />
+                <element signature="e#25313#25314#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Config.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/application/Config.java">
+      <file leaf-file-name="DashboardActivity.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/activities/DashboardActivity.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="15" column="28" selection-start="270" selection-end="270" vertical-scroll-proportion="0.0">
+            <state line="38" column="74" selection-start="1090" selection-end="1090" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -274,14 +288,6 @@
   <component name="IdeDocumentHistory">
     <option name="changedFiles">
       <list>
-        <option value="$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/twitter/TwitterActivity.java" />
-        <option value="$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/networkstatus/NetworkStatus.java" />
-        <option value="$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/activities/dialog/LinkedinDialog.java" />
-        <option value="$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/utills/EncryptionUtils.java" />
-        <option value="$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/rss/RssReader.java" />
-        <option value="$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/utills/PostData.java" />
-        <option value="$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/kit/activity/SherlockFacebookActivity.java" />
-        <option value="$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/kit/notification/AppRater.java" />
         <option value="$PROJECT_DIR$/retrofit/retrofit/pom.xml" />
         <option value="$PROJECT_DIR$/TradeHero/TH_ANDROID/pom.xml" />
         <option value="$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/kit/utils/THLog.java" />
@@ -290,6 +296,14 @@
         <option value="$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/base/FHUser.java" />
         <option value="$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/base/THUser.java" />
         <option value="$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/network/NetworkEngine.java" />
+        <option value="$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/activities/BaseActivity.java" />
+        <option value="$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/fragments/authentication/WelcomScreenFragment.java" />
+        <option value="$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/fragments/authentication/AuthenticationFragment.java" />
+        <option value="$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/fragments/authentication/WelcomeFragment.java" />
+        <option value="$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/activities/ActivityHelper.java" />
+        <option value="$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/activities/AuthenticationActivity.java" />
+        <option value="$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/activities/SplashActivity.java" />
+        <option value="$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/fragments/authentication/InitialSignUpFragment.java" />
       </list>
     </option>
   </component>
@@ -335,7 +349,7 @@
     <ConfirmationsSetting value="0" id="Remove" />
   </component>
   <component name="ProjectReloadState">
-    <option name="STATE" value="0" />
+    <option name="STATE" value="2" />
   </component>
   <component name="ProjectView">
     <navigator currentView="ProjectPane" proportions="" version="1" splitterProportion="0.5">
@@ -350,7 +364,6 @@
       <sortByType />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="PackagesPane" />
       <pane id="ProjectPane">
         <subPane>
@@ -414,7 +427,7 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="network" />
+              <option name="myItemId" value="activities" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -436,46 +449,39 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="TH_Android" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="retrofit" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
     <property name="GoToFile.includeJavaFiles" value="false" />
     <property name="project.structure.last.edited" value="Modules" />
+    <property name="OverrideImplement.combined" value="true" />
     <property name="jdk.selected.JAVA_MODULE" value="Maven Android 4.0 Platform" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="options.splitter.main.proportions" value="0.3" />
     <property name="Repository.Attach.JavaDocs" value="false" />
-    <property name="options.lastSelected" value="fileTemplates" />
+    <property name="options.lastSelected" value="preferences.sourceCode" />
     <property name="recentsLimit" value="5" />
     <property name="MemberChooser.sorted" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/libs/android-support-v4.jar!/" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/ActionBarSherlock/actionbarsherlock" />
     <property name="AndroidLayoutSelectedEditor" value="text-editor" />
     <property name="project.structure.side.proportion" value="0.38470453" />
     <property name="MemberChooser.copyJavadoc" value="false" />
     <property name="GoToClass.toSaveIncludeLibraries" value="false" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="restartRequiresConfirmation" value="true" />
-    <property name="Repository.Attach.Sources" value="false" />
     <property name="MemberChooser.showClasses" value="true" />
+    <property name="Repository.Attach.Sources" value="false" />
     <property name="GoToClass.includeLibraries" value="false" />
-    <property name="options.searchVisible" value="true" />
-    <property name="options.splitter.details.proportions" value="0.2" />
     <property name="Downloaded.Files.Path" value="C:\Users\tho\Desktop\TH_ANDROID\lib" />
+    <property name="options.splitter.details.proportions" value="0.2" />
+    <property name="options.searchVisible" value="true" />
   </component>
   <component name="RecentsManager">
     <key name="CreateClassDialog.RecentsKey">
+      <recent name="com.tradehero.th.fragments.authentication" />
       <recent name="com.tradehero.th.base" />
     </key>
     <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
@@ -516,19 +522,6 @@
       <option name="PORT" value="5005" />
       <method />
     </configuration>
-    <configuration default="true" type="Applet" factoryName="Applet">
-      <module name="" />
-      <option name="MAIN_CLASS_NAME" />
-      <option name="HTML_FILE_NAME" />
-      <option name="HTML_USED" value="false" />
-      <option name="WIDTH" value="400" />
-      <option name="HEIGHT" value="300" />
-      <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
-      <option name="VM_PARAMETERS" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" />
-      <method />
-    </configuration>
     <configuration default="true" type="TestNG" factoryName="TestNG">
       <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
       <module name="" />
@@ -555,6 +548,19 @@
       <envs />
       <properties />
       <listeners />
+      <method />
+    </configuration>
+    <configuration default="true" type="Applet" factoryName="Applet">
+      <module name="" />
+      <option name="MAIN_CLASS_NAME" />
+      <option name="HTML_FILE_NAME" />
+      <option name="HTML_USED" value="false" />
+      <option name="WIDTH" value="400" />
+      <option name="HEIGHT" value="300" />
+      <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
+      <option name="VM_PARAMETERS" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
       <method />
     </configuration>
     <configuration default="true" type="Application" factoryName="Application">
@@ -661,6 +667,26 @@
     </task>
     <servers />
   </component>
+  <component name="TodoView" selected-index="0">
+    <todo-panel id="selected-file">
+      <are-packages-shown value="false" />
+      <are-modules-shown value="false" />
+      <flatten-packages value="false" />
+      <is-autoscroll-to-source value="true" />
+    </todo-panel>
+    <todo-panel id="all">
+      <are-packages-shown value="true" />
+      <are-modules-shown value="false" />
+      <flatten-packages value="false" />
+      <is-autoscroll-to-source value="true" />
+    </todo-panel>
+    <todo-panel id="default-changelist">
+      <are-packages-shown value="false" />
+      <are-modules-shown value="false" />
+      <flatten-packages value="false" />
+      <is-autoscroll-to-source value="false" />
+    </todo-panel>
+  </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
     <editor active="true" />
@@ -670,19 +696,19 @@
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="CheckStyle" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.39955357" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.39955357" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="IDEtalk Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="IDEtalk" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32924107" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Android" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Android" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32924107" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32924107" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.2497332" sideWeight="0.6707589" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.2497332" sideWeight="0.6004464" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
@@ -757,117 +783,128 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/activities/BaseActivity.java">
+    <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/adapters/SearchPeopleAdapter.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="31" column="34" selection-start="845" selection-end="845" vertical-scroll-proportion="0.0">
+        <state line="26" column="13" selection-start="694" selection-end="694" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/kit/activity/DialogControl.java">
+    <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/fragments/HomeScreenFragment.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="7" column="26" selection-start="212" selection-end="212" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/kit/application/PApplication.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="11" column="24" selection-start="383" selection-end="392" vertical-scroll-proportion="0.116972476">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/kit/notification/AppRater.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="76" column="73" selection-start="2683" selection-end="2683" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/kit/utils/JacksonConverter.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="18" column="13" selection-start="583" selection-end="583" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/res/layout/profile_item_list_screen.xml">
-      <provider editor-type-id="android-designer">
-        <state />
-      </provider>
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="7" column="0" selection-start="257" selection-end="257" vertical-scroll-proportion="0.0" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/kit/utils/THLog.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="39" column="33" selection-start="1012" selection-end="1012" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/kit/utils/THJsonAdapter.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="124" column="15" selection-start="3155" selection-end="3155" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/application/Config.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="15" column="28" selection-start="270" selection-end="270" vertical-scroll-proportion="0.0">
+        <state line="43" column="13" selection-start="1373" selection-end="1373" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/fragments/TrendingDetailFragment.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="121" column="88" selection-start="4483" selection-end="4500" vertical-scroll-proportion="0.0">
+        <state line="121" column="32" selection-start="4438" selection-end="4494" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/fragments/TradeFragment.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="38" column="13" selection-start="1259" selection-end="1259" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/kit/utils/THLog.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="15" column="18" selection-start="458" selection-end="463" vertical-scroll-proportion="0.15632184">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/application/App.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="41" column="27" selection-start="939" selection-end="939" vertical-scroll-proportion="0.0">
+        <state line="39" column="21" selection-start="884" selection-end="892" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/AndroidManifest.xml">
+    <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/http/RequestFactory.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="30" column="42" selection-start="1171" selection-end="1171" vertical-scroll-proportion="0.0">
+        <state line="234" column="44" selection-start="12570" selection-end="12570" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/pom.xml">
+    <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/fragments/authentication/AuthenticationFragment.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="37" column="22" selection-start="1216" selection-end="1216" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/base/THUser.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="16" column="25" selection-start="345" selection-end="345" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/retrofit/retrofit/pom.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="17" column="45" selection-start="607" selection-end="607" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/network/NetworkEngine.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="15" column="0" selection-start="422" selection-end="422" vertical-scroll-proportion="0.29310346">
+        <state line="9" column="50" selection-start="355" selection-end="370" vertical-scroll-proportion="0.26608697">
           <folding>
             <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/fragments/authentication/WelcomeFragment.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="16" column="52" selection-start="529" selection-end="537" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/activities/ActivityHelper.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="14" column="48" selection-start="523" selection-end="523" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/activities/AuthenticationActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="23" column="58" selection-start="925" selection-end="925" vertical-scroll-proportion="0.0">
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/res/anim/slide_left_in.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="8" column="53" selection-start="363" selection-end="383" vertical-scroll-proportion="-5.44">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/res/anim/slide_right_in.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="7" column="43" selection-start="371" selection-end="371" vertical-scroll-proportion="-4.76">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/activities/DashboardActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="38" column="74" selection-start="1090" selection-end="1090" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/activities/SplashActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="17" column="72" selection-start="467" selection-end="467" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/fragments/authentication/InitialSignUpFragment.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="254" column="28" selection-start="10405" selection-end="10405" vertical-scroll-proportion="0.53514737">
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#17075#20030#0" expanded="true" />
+            <element signature="e#20019#20020#0" expanded="true" />
+            <element signature="e#22582#24490#0" expanded="true" />
+            <element signature="e#24471#24472#0" expanded="true" />
+            <element signature="e#24537#24808#0" expanded="true" />
+            <element signature="e#24789#24790#0" expanded="true" />
+            <element signature="e#24911#25324#0" expanded="true" />
+            <element signature="e#25313#25314#0" expanded="true" />
           </folding>
         </state>
       </provider>

@@ -15,7 +15,7 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import com.tradehero.th.R;
-import com.tradehero.th.activities.TradeHeroTabActivity;
+import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.application.App;
 import com.tradehero.th.http.HttpRequestTask;
 import com.tradehero.th.http.RequestFactory;
@@ -196,7 +196,7 @@ public class LoginFragment extends Fragment
                 }
                 else
                 {
-                    //startActivity(new Intent(getActivity(),TradeHeroTabActivity.class));
+                    //startActivity(new Intent(getActivity(),DashboardActivity.class));
                     //getActivity().finish();
                     Util.show_toast(getActivity(),
                             getResources().getString(R.string.field_not_balnk));
@@ -301,7 +301,7 @@ public class LoginFragment extends Fragment
                 {
                     String msg = pResponseObject.optString("Message");
                     Util.show_toast(getActivity(), msg);
-                    //startActivity(new Intent(getActivity(),TradeHeroTabActivity.class));
+                    //startActivity(new Intent(getActivity(),DashboardActivity.class));
                 }
                 else
                 {
@@ -312,7 +312,7 @@ public class LoginFragment extends Fragment
                     ProfileDTO prof = new PUtills(getActivity())._parseJson(obj);
 
                     ((App) getActivity().getApplication()).setProfileDTO(prof);
-                    startActivity(new Intent(getActivity(), TradeHeroTabActivity.class));
+                    startActivity(new Intent(getActivity(), DashboardActivity.class));
                     getActivity().finish();
                 }
             } catch (Exception e)

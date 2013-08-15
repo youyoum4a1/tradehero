@@ -9,7 +9,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.text.Editable;
 import android.text.TextWatcher;
 import com.tradehero.th.R;
-import com.tradehero.th.activities.TradeHeroTabActivity;
+import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.adapters.SearchPeopleAdapter;
 import com.tradehero.th.adapters.SearchStockAdapter;
 import com.tradehero.th.adapters.TrendingAdapter;
@@ -400,7 +400,7 @@ public class TrendingFragment extends Fragment
     public void onResume()
     {
         super.onResume();
-        ((TradeHeroTabActivity) getActivity()).showTabs(true);
+        ((DashboardActivity) getActivity()).showTabs(true);
         ((App) getActivity().getApplication()).setTrend(null);
     }
 }

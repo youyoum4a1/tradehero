@@ -15,7 +15,7 @@ import retrofit.RestAdapter;
 public class NetworkEngine
 {
     private static final String API_URL = App.getResourceString(R.string.API_URL);
-    private static final String API_FACEBOOK_TOKEN_HEADER = "FH-Facebook";
+    private static final String API_FACEBOOK_TOKEN_HEADER = "TH-Facebook";
 
     private static NetworkEngine instance = null;
     private RestAdapter restAdapter;

@@ -1,6 +1,7 @@
 package com.tradehero.th.activities;
 
 import com.tradehero.th.R;
+import com.tradehero.th.base.THUser;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -11,11 +12,11 @@ import android.view.Menu;
 import com.tradehero.th.application.App;
 import com.tradehero.th.models.Token;
 
-public class BaseActivity extends Activity
+public class SplashActivity extends Activity
 {
 
+    public static final String LOGGEDIN = SplashActivity.class.getName();
     private Timer timerToShiftActivity;
-    public static String LOGGEDIN = "_logged";
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -29,16 +30,13 @@ public class BaseActivity extends Activity
             public void run()
             {
                 timerToShiftActivity.cancel();
-                Token token = ((App) BaseActivity.this.getApplication()).getToken();
-                if (token != null)
+                if (THUser.getSessionToken() != null)
                 {
-                    startActivity(
-                            new Intent(BaseActivity.this, TradeHeroTabActivity.class).putExtra(
-                                    LOGGEDIN, true));
+                    ActivityHelper.goRoot(SplashActivity.this);
                 }
                 else
                 {
-                    startActivity(new Intent(BaseActivity.this, WelcomeActivity.class));
+                    ActivityHelper.doStart(SplashActivity.this);
                 }
 
                 finish();

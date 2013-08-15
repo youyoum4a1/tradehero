@@ -28,6 +28,7 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="facebook-android-sdk" />
     <orderEntry type="module" module-name="retrofit" />
+    <orderEntry type="module" module-name="ActionBarSherlock" />
     <orderEntry type="module-library">
       <library>
         <CLASSES>

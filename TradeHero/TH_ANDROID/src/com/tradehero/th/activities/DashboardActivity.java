@@ -13,7 +13,7 @@ import com.tradehero.th.fragments.TrendingFragment;
 import com.tradehero.th.utills.Util;
 import android.view.View;
 
-public class TradeHeroTabActivity extends FragmentActivity
+public class DashboardActivity extends FragmentActivity
 {
 
     private FragmentTabHost mTabHost;
@@ -36,10 +36,10 @@ public class TradeHeroTabActivity extends FragmentActivity
     private void initialSetup()
     {
 
-        boolean response = getIntent().getBooleanExtra(BaseActivity.LOGGEDIN, false);
+        boolean response = getIntent().getBooleanExtra(SplashActivity.LOGGEDIN, false);
         if (response)
         {
-            Util.show_toast(TradeHeroTabActivity.this,
+            Util.show_toast(DashboardActivity.this,
                     getResources().getString(R.string.login_message));
         }
 

@@ -1,5 +1,6 @@
 package com.tradehero.th.twitter;
 
+import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.models.Request;
 import oauth.signpost.OAuth;
 import oauth.signpost.OAuthConsumer;
@@ -11,7 +12,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
@@ -24,7 +24,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import com.tradehero.th.R;
-import com.tradehero.th.activities.TradeHeroTabActivity;
 import com.tradehero.th.application.App;
 import com.tradehero.th.fragments.authentication.InitialSignUpFragment;
 import com.tradehero.th.http.HttpRequestTask;
@@ -39,7 +38,6 @@ import android.view.View;
 import android.view.Window;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.EditText;
 
 public class TwitterActivity extends Activity implements RequestTaskCompleteListener
 {
@@ -311,7 +309,7 @@ public class TwitterActivity extends Activity implements RequestTaskCompleteList
             {//JSONObject obj = pResponseObject.getJSONObject("profileDTO");
                 ProfileDTO prof = new PUtills(this)._parseJson(pResponseObject);
                 ((App) this.getApplication()).setProfileDTO(prof);
-                startActivity(new Intent(TwitterActivity.this, TradeHeroTabActivity.class));
+                startActivity(new Intent(TwitterActivity.this, DashboardActivity.class));
             }
             finish();
         } catch (Exception e)

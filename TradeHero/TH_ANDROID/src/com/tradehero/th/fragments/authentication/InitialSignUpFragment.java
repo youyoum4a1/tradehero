@@ -22,7 +22,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import com.tradehero.th.R;
-import com.tradehero.th.activities.TradeHeroTabActivity;
+import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.activities.dialog.LinkedinDialog;
 import com.tradehero.th.activities.dialog.LinkedinDialog.OnVerifyListener;
 import com.tradehero.th.application.App;
@@ -243,8 +243,8 @@ public class InitialSignUpFragment extends Fragment
                     //startActivity(new Intent(getActivity(),LoginActivity.class));
                     fragmentManager = getActivity().getSupportFragmentManager();
                     fragmentTransaction = fragmentManager.beginTransaction();
-                    fragmentTransaction.setCustomAnimations(R.anim.slide_in_right,
-                            R.anim.slide_out_right, R.anim.slide_out_left, R.anim.slide_out_right);
+                    fragmentTransaction.setCustomAnimations(R.anim.slide_right_in,
+                            R.anim.slide_right_out, R.anim.slide_left_out, R.anim.slide_right_out);
                     LoginFragment fragment = new LoginFragment();
                     fragmentTransaction.replace(R.id.sign_in_up_content, fragment, "login");
                     fragmentTransaction.addToBackStack("login");
@@ -255,8 +255,8 @@ public class InitialSignUpFragment extends Fragment
                     //startActivity(new Intent(getActivity(),EmailRegistrationActivity.class));
                     fragmentManager = getActivity().getSupportFragmentManager();
                     fragmentTransaction = fragmentManager.beginTransaction();
-                    fragmentTransaction.setCustomAnimations(R.anim.slide_in_right,
-                            R.anim.slide_out_right, R.anim.slide_out_left, R.anim.slide_out_right);
+                    fragmentTransaction.setCustomAnimations(R.anim.slide_right_in,
+                            R.anim.slide_right_out, R.anim.slide_left_out, R.anim.slide_right_out);
                     EmailRegistrationFragment fragment = new EmailRegistrationFragment();
                     fragmentTransaction.replace(R.id.sign_in_up_content, fragment,
                             "email_registration");
@@ -310,7 +310,7 @@ public class InitialSignUpFragment extends Fragment
                         ProfileDTO prof = new PUtills(getActivity())._parseJson(obj);
 
                         ((App) getActivity().getApplication()).setProfileDTO(prof);
-                        startActivity(new Intent(getActivity(), TradeHeroTabActivity.class));
+                        startActivity(new Intent(getActivity(), DashboardActivity.class));
                         getActivity().finish();
                     }
                     else if (activityType == SIGNUP)
@@ -321,7 +321,7 @@ public class InitialSignUpFragment extends Fragment
                         ProfileDTO prof = new PUtills(getActivity())._parseJson(pResponseObject);
 
                         ((App) getActivity().getApplication()).setProfileDTO(prof);
-                        startActivity(new Intent(getActivity(), TradeHeroTabActivity.class));
+                        startActivity(new Intent(getActivity(), DashboardActivity.class));
                         getActivity().finish();
                     }
                 }

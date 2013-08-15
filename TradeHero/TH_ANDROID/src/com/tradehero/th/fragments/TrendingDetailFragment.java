@@ -7,6 +7,7 @@
 package com.tradehero.th.fragments;
 
 import android.support.v4.app.FragmentTabHost;
+import com.tradehero.th.activities.DashboardActivity;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -17,7 +18,6 @@ import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import com.tradehero.th.R;
-import com.tradehero.th.activities.TradeHeroTabActivity;
 import com.tradehero.th.application.App;
 import com.tradehero.th.application.Config;
 import com.tradehero.th.models.Token;
@@ -85,7 +85,7 @@ public class TrendingDetailFragment extends Fragment
     public void onActivityCreated(Bundle savedInstanceState)
     {
         super.onActivityCreated(savedInstanceState);
-        ((TradeHeroTabActivity) getActivity()).showTabs(false);
+        ((DashboardActivity) getActivity()).showTabs(false);
 
         mYahooQuotesString = YUtils.getYahooQuoteKeysString();
         mYahooQuoteValues = Arrays.asList(YUtils.YAHOO_QUOTE_VALUES);
