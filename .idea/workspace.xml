@@ -93,7 +93,7 @@
     <file path="$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/utills/Util.java" changelist="483fef33-cda5-4250-9887-8b840b74f5de" time="1376470840800" ignored="false" />
     <file path="$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/utills/ImageUtils.java" changelist="483fef33-cda5-4250-9887-8b840b74f5de" time="1376470846229" ignored="false" />
     <file path="$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/utills/TrendUtils.java" changelist="483fef33-cda5-4250-9887-8b840b74f5de" time="1376470840801" ignored="false" />
-    <file path="/AndroidManifest.xml" changelist="483fef33-cda5-4250-9887-8b840b74f5de" time="1376471220538" ignored="false" />
+    <file path="/AndroidManifest.xml" changelist="483fef33-cda5-4250-9887-8b840b74f5de" time="1376568418466" ignored="false" />
     <file path="$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/models/TradeofWeek.java" changelist="483fef33-cda5-4250-9887-8b840b74f5de" time="1376471058719" ignored="false" />
     <file path="/ProfileContentAdapter.java" changelist="483fef33-cda5-4250-9887-8b840b74f5de" time="1376471195399" ignored="false" />
     <file path="/InitialSignUpFragment.java" changelist="483fef33-cda5-4250-9887-8b840b74f5de" time="1376542224132" ignored="false" />
@@ -107,7 +107,7 @@
     <file path="/NetworkEngine.java" changelist="483fef33-cda5-4250-9887-8b840b74f5de" time="1376561734221" ignored="false" />
     <file path="/FHUser.java" changelist="483fef33-cda5-4250-9887-8b840b74f5de" time="1376475438322" ignored="false" />
     <file path="/ActivityHelper.java" changelist="483fef33-cda5-4250-9887-8b840b74f5de" time="1376476234680" ignored="false" />
-    <file path="$PROJECT_DIR$/TradeHero/TH_ANDROID/gen/com/tradehero/th/R.java" changelist="483fef33-cda5-4250-9887-8b840b74f5de" time="1376567934315" ignored="false" />
+    <file path="$PROJECT_DIR$/TradeHero/TH_ANDROID/gen/com/tradehero/th/R.java" changelist="483fef33-cda5-4250-9887-8b840b74f5de" time="1376568419528" ignored="false" />
     <file path="/BaseActivity.java" changelist="483fef33-cda5-4250-9887-8b840b74f5de" time="1376476319401" ignored="false" />
     <file path="/SplashActivity.java" changelist="483fef33-cda5-4250-9887-8b840b74f5de" time="1376567328001" ignored="false" />
     <file path="/AuthenticationActivity.java" changelist="483fef33-cda5-4250-9887-8b840b74f5de" time="1376566551739" ignored="false" />
@@ -143,7 +143,7 @@
     <file path="/AdDTO.java" changelist="483fef33-cda5-4250-9887-8b840b74f5de" time="1376565200878" ignored="false" />
     <file path="$PROJECT_DIR$/../FH_ANDROID/FH_Android/src/main/java/com/tradehero/fh/api/users/User.java" changelist="483fef33-cda5-4250-9887-8b840b74f5de" time="1376565414892" ignored="false" />
     <file path="/User.java" changelist="483fef33-cda5-4250-9887-8b840b74f5de" time="1376565414386" ignored="false" />
-    <file path="/styles.xml" changelist="483fef33-cda5-4250-9887-8b840b74f5de" time="1376568196801" ignored="false" />
+    <file path="/styles.xml" changelist="483fef33-cda5-4250-9887-8b840b74f5de" time="1376568488439" ignored="false" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -213,10 +213,19 @@
           </provider>
         </entry>
       </file>
+      <file leaf-file-name="AndroidManifest.xml" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/AndroidManifest.xml">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="28" column="37" selection-start="1102" selection-end="1102" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
       <file leaf-file-name="styles.xml" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/res/values/styles.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="9" column="63" selection-start="417" selection-end="417" vertical-scroll-proportion="0.31416836">
+            <state line="15" column="43" selection-start="656" selection-end="656" vertical-scroll-proportion="0.523614">
               <folding />
             </state>
           </provider>
@@ -262,11 +271,11 @@
         <option value="$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/misc/callback/LogInCallback.java" />
         <option value="$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/base/THUser.java" />
         <option value="$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/activities/SplashActivity.java" />
-        <option value="$PROJECT_DIR$/TradeHero/TH_ANDROID/AndroidManifest.xml" />
         <option value="$PROJECT_DIR$/TradeHero/TH_ANDROID/res/values-v11/styles.xml" />
         <option value="$PROJECT_DIR$/TradeHero/TH_ANDROID/res/values-v14/styles.xml" />
         <option value="$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/fragments/authentication/WelcomeFragment.java" />
         <option value="$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/activities/AuthenticationActivity.java" />
+        <option value="$PROJECT_DIR$/TradeHero/TH_ANDROID/AndroidManifest.xml" />
         <option value="$PROJECT_DIR$/TradeHero/TH_ANDROID/res/values/styles.xml" />
       </list>
     </option>
@@ -344,46 +353,6 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="TH_ANDROID" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="TH_Android" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="TH_ANDROID" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="tradehero" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="th" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="TH_Android" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="TH_ANDROID" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="tradehero" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -681,7 +650,7 @@
       <window_info id="CheckStyle" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32924107" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.39955357" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.39955357" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="IDEtalk Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32924107" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
@@ -855,13 +824,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/AndroidManifest.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="28" column="37" selection-start="1102" selection-end="1102" vertical-scroll-proportion="0.9296875">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/fragments/authentication/AuthenticationFragment.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="7" column="13" selection-start="270" selection-end="270" vertical-scroll-proportion="0.0">
@@ -885,9 +847,16 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/AndroidManifest.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="28" column="37" selection-start="1102" selection-end="1102" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/res/values/styles.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="9" column="63" selection-start="417" selection-end="417" vertical-scroll-proportion="0.31416836">
+        <state line="15" column="43" selection-start="656" selection-end="656" vertical-scroll-proportion="0.523614">
           <folding />
         </state>
       </provider>

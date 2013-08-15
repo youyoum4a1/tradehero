@@ -5,11 +5,16 @@
         by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
 
     -->
-    <style name="AppBaseTheme"  parent="Theme.Sherlock.Light">
+    <style name="AppBaseTheme" parent="Theme.Sherlock.Light">
         <item name="android:windowActionBar">true</item>
         <item name="android:windowNoTitle">false</item>
         <item name="android:windowActionBarOverlay">true</item>
     </style>
+
+  <style name="AppBaseTheme.NoActionBar" parent="AppBaseTheme">
+    <item name="android:windowActionBar">false</item>
+    <item name="android:windowNoTitle">true</item>
+  </style>
 
     <!-- Application theme. -->
     <style name="AppTheme" parent="AppBaseTheme">
