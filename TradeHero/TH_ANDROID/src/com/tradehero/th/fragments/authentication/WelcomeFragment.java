@@ -23,4 +23,10 @@ public class WelcomeFragment extends AuthenticationFragment
 
         return view;
     }
+
+    @Override public void onResume()
+    {
+        getSherlockActivity().getSupportActionBar().hide();
+        super.onResume();
+    }
 }

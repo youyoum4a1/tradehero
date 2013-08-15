@@ -117,6 +117,7 @@ public class AuthenticationActivity extends SherlockFragmentActivity
                     .replace(R.id.sign_in_up_content, mCurrentFragment)
                     .addToBackStack(null)
                     .commit();
+            getSupportActionBar().show();
         }
 
         switch (view.getId())

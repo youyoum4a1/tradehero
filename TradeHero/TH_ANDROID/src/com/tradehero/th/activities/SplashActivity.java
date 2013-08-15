@@ -1,5 +1,6 @@
 package com.tradehero.th.activities;
 
+import com.actionbarsherlock.app.SherlockActivity;
 import com.tradehero.th.R;
 import com.tradehero.th.base.THUser;
 import java.util.Timer;
@@ -12,7 +13,7 @@ import android.view.Menu;
 import com.tradehero.th.application.App;
 import com.tradehero.th.models.Token;
 
-public class SplashActivity extends Activity
+public class SplashActivity extends SherlockActivity
 {
 
     public static final String LOGGEDIN = SplashActivity.class.getName();
@@ -42,13 +43,5 @@ public class SplashActivity extends Activity
                 finish();
             }
         }, 3000);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu)
-    {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.fullscreen, menu);
-        return true;
     }
 }
