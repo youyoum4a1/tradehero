@@ -39,7 +39,7 @@ public class THLog
         {
             PackageInfo info = App.context()
                     .getPackageManager()
-                    .getPackageInfo("com.tradehero.fh", PackageManager.GET_SIGNATURES);
+                    .getPackageInfo("com.tradehero.th", PackageManager.GET_SIGNATURES);
             for (Signature signature : info.signatures)
             {
                 MessageDigest md = MessageDigest.getInstance("SHA");

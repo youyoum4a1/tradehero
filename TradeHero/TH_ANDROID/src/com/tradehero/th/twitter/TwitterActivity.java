@@ -1,6 +1,7 @@
 package com.tradehero.th.twitter;
 
 import com.tradehero.th.activities.DashboardActivity;
+import com.tradehero.th.fragments.authentication.SignUpFragment;
 import com.tradehero.th.models.Request;
 import oauth.signpost.OAuth;
 import oauth.signpost.OAuthConsumer;
@@ -25,7 +26,6 @@ import android.os.Handler;
 import android.os.Message;
 import com.tradehero.th.R;
 import com.tradehero.th.application.App;
-import com.tradehero.th.fragments.authentication.InitialSignUpFragment;
 import com.tradehero.th.http.HttpRequestTask;
 import com.tradehero.th.http.RequestFactory;
 import com.tradehero.th.http.RequestTaskCompleteListener;
@@ -96,7 +96,7 @@ public class TwitterActivity extends Activity implements RequestTaskCompleteList
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.twitter_layout);
-        twitter_email = InitialSignUpFragment.email;
+        twitter_email = SignUpFragment.email;
         Intent intent = getIntent();
         mConsumer = (OAuthConsumer) intent.getSerializableExtra(Twitter.EXTRA_CONSUMER);
         String authorizeParams = intent.getStringExtra(Twitter.EXTRA_AUTHORIZE_PARAMS);

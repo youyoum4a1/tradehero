@@ -6,7 +6,7 @@
  */
 package com.tradehero.th.application;
 
-import com.tradehero.kit.application.PApplication;
+import com.tradehero.th.base.Application;
 import com.tradehero.th.models.ProfileDTO;
 import com.tradehero.th.models.Token;
 import com.tradehero.th.models.TradeOfWeek;
@@ -14,7 +14,7 @@ import com.tradehero.th.models.Trend;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
-public class App extends PApplication
+public class App extends Application
 {
     private Trend trend;
     private Token token;

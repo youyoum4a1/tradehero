@@ -10,35 +10,27 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:background="@color/white"
+        android:layout_marginTop="20dp"
+        android:paddingLeft="30dp"
+        android:paddingRight="30dp"
         android:orientation="vertical" >
 
-        <include
-            android:id="@+id/ligin_topbar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_gravity="top|center_horizontal"
-            layout="@layout/topbar" />
-
         <TextView
-            android:id="@+id/Sigin_with"
+            android:id="@+id/signin_with"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/ligin_topbar"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="20dp"
             android:text="@string/Signin_content"
             android:textColor="@color/gray_1"
             android:textSize="20sp"
             android:textStyle="bold" />
 
         <Button
-            android:id="@+id/btn_fbook_signin"
+            android:id="@+id/btn_facebook_signin"
             android:layout_width="match_parent"
             android:layout_height="78dp"
-            android:layout_below="@+id/Sigin_with"
-            android:layout_marginLeft="30dp"
-            android:layout_marginRight="30dp"
+            android:layout_below="@+id/signin_with"
             android:layout_marginTop="10dp"
             android:background="@drawable/fbbutton_selector"
             android:text="@string/facbook"
@@ -50,9 +42,7 @@
             android:id="@+id/btn_twitter_signin"
             android:layout_width="match_parent"
             android:layout_height="75dp"
-            android:layout_below="@+id/btn_fbook_signin"
-            android:layout_marginLeft="30dp"
-            android:layout_marginRight="30dp"
+            android:layout_below="@+id/btn_facebook_signin"
             android:layout_marginTop="10dp"
             android:background="@drawable/tw_button_selector"
             android:text="@string/twiter"
@@ -61,12 +51,10 @@
             android:textStyle="bold" />
 
         <Button
-            android:id="@+id/btn_linkedin_linkedin"
+            android:id="@+id/btn_linkedin_signin"
             android:layout_width="match_parent"
             android:layout_height="75dp"
             android:layout_below="@+id/btn_twitter_signin"
-            android:layout_marginLeft="30dp"
-            android:layout_marginRight="30dp"
             android:layout_marginTop="10dp"
             android:background="@drawable/linkedin_button_selector"
             android:text="@string/linkedin"
@@ -78,7 +66,7 @@
             android:id="@+id/ll_login_content"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/btn_linkedin_linkedin"
+            android:layout_below="@+id/btn_linkedin_signin"
             android:layout_centerHorizontal="true" >
 
             <TextView
@@ -91,7 +79,7 @@
                 android:textStyle="normal" />
 
             <TextView
-                android:id="@+id/txt_email"
+                android:id="@+id/txt_email_signin"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="5dp"
@@ -102,7 +90,7 @@
         </LinearLayout>
 
         <TextView
-            android:id="@+id/txt_termservice_signin"
+            android:id="@+id/txt_term_of_service_signin"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"

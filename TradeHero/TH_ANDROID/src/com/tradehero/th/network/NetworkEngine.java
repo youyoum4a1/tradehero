@@ -17,10 +17,9 @@ public class NetworkEngine
     private static final String API_URL = App.getResourceString(R.string.API_URL);
     private static final String API_FACEBOOK_TOKEN_HEADER = "TH-Facebook";
 
-    private static NetworkEngine instance = null;
-    private RestAdapter restAdapter;
+    private static RestAdapter restAdapter;
 
-    private NetworkEngine()
+    public static void initialize()
     {
         restAdapter = new RestAdapter.Builder()
                 .setServer(API_URL)
@@ -39,27 +38,19 @@ public class NetworkEngine
                 .build();
     }
 
-    private final void buildAuthorizationHeader(RequestInterceptor.RequestFacade request)
+    private static void buildAuthorizationHeader(RequestInterceptor.RequestFacade request)
     {
         StringBuilder sb = new StringBuilder();
         sb.append(API_FACEBOOK_TOKEN_HEADER);
         sb.append(" ");
         sb.append(THUser.getSessionToken());
 
+        request.addHeader("TH-Client-Version", "1.5.1");
         request.addHeader("Authorization", sb.toString());
     }
 
-    public static NetworkEngine getInstance()
+    public static <T> T createService(Class<T> service)
     {
-        if (instance == null)
-        {
-            instance = new NetworkEngine();
-        }
-        return instance;
-    }
-
-    public RestAdapter getRestAdapter()
-    {
-        return restAdapter;
+        return restAdapter.create(service);
     }
 }

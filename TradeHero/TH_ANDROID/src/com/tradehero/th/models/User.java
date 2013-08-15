@@ -1,5 +1,5 @@
 /**
- * User.java 
+ * UserDTO.java
  * TradeHero
  *
  * Created by @author Siddesh Bingi on Aug 10, 2013

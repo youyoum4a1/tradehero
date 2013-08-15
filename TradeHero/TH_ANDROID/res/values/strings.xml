@@ -92,5 +92,7 @@
   <string name="apprate">Rate me</string>
   <string name="apprate_dialog_title">Rate TradeHero</string>
   <string name="API_URL">https://www.tradehero.mobi/api</string>
+  <string name="fh_please_wait">Please wait</string>
+  <string name="fh_connecting_to_facebook">Connecting ...</string>
 
 </resources>

@@ -1,12 +1,5 @@
 package com.tradehero.th.fragments.authentication;
 
-import com.tradehero.th.models.Request;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.app.ProgressDialog;
@@ -15,29 +8,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import com.tradehero.th.R;
-import com.tradehero.th.activities.DashboardActivity;
-import com.tradehero.th.activities.dialog.LinkedinDialog;
-import com.tradehero.th.activities.dialog.LinkedinDialog.OnVerifyListener;
-import com.tradehero.th.application.App;
-import com.tradehero.th.http.HttpRequestTask;
-import com.tradehero.th.http.RequestFactory;
-import com.tradehero.th.http.RequestTaskCompleteListener;
-import com.tradehero.th.models.ProfileDTO;
-import com.tradehero.th.networkstatus.NetworkStatus;
-import com.tradehero.th.twitter.Twitter;
-import com.tradehero.th.twitter.TwitterError;
-import com.tradehero.th.utills.Constants;
-import com.tradehero.th.utills.PUtills;
-import com.tradehero.th.utills.Util;
-import com.tradehero.th.webbrowser.WebViewActivity;
-import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -47,7 +20,6 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-
 import com.facebook.Session;
 import com.facebook.SessionState;
 import com.google.code.linkedinapi.client.LinkedInApiClient;
@@ -57,22 +29,33 @@ import com.google.code.linkedinapi.client.oauth.LinkedInOAuthService;
 import com.google.code.linkedinapi.client.oauth.LinkedInOAuthServiceFactory;
 import com.google.code.linkedinapi.client.oauth.LinkedInRequestToken;
 import com.google.code.linkedinapi.schema.Person;
+import com.tradehero.th.R;
+import com.tradehero.th.activities.DashboardActivity;
+import com.tradehero.th.activities.dialog.LinkedinDialog;
+import com.tradehero.th.activities.dialog.LinkedinDialog.OnVerifyListener;
+import com.tradehero.th.application.App;
+import com.tradehero.th.http.HttpRequestTask;
+import com.tradehero.th.http.RequestFactory;
+import com.tradehero.th.http.RequestTaskCompleteListener;
+import com.tradehero.th.models.ProfileDTO;
+import com.tradehero.th.models.Request;
+import com.tradehero.th.networkstatus.NetworkStatus;
+import com.tradehero.th.twitter.Twitter;
+import com.tradehero.th.twitter.TwitterError;
+import com.tradehero.th.utills.Constants;
+import com.tradehero.th.utills.PUtills;
+import com.tradehero.th.utills.Util;
+import com.tradehero.th.webbrowser.WebViewActivity;
+import org.json.JSONException;
+import org.json.JSONObject;
 
-public class InitialSignUpFragment extends Fragment
-        implements OnClickListener, RequestTaskCompleteListener
+public class SignInFragment extends AuthenticationFragment implements RequestTaskCompleteListener
 {
 
     public static final int LOGIN = 90001;
-    public static int mCurCheckPosition = 2;
     public static final int SIGNUP = 90002;
-    public static final int OP_FB = 11111;
-    public static final int OP_LINKEDIN = 22222;
-    public static final int OP_TWITTER = 33333;
-    private Button mFaceBookBtn, mTwitterBtn, mLinkedinBtn;
     private Session.StatusCallback statusCallback = new SessionStatusCallback();
-    private TextView mEmailTv, mTerms;
     private TextView mBottomtxt, mHeaderBellowtxt;
-    private Context mContext;
     private LayoutInflater inflater;
     private View v;
     private RequestTaskCompleteListener mRequestTaskCompleteListener;
@@ -89,20 +72,12 @@ public class InitialSignUpFragment extends Fragment
     private Bundle mData;
     public static boolean linkedinButtonPressed = false;
     //public static boolean twitterButtonPressed= false;
-    private FragmentManager fragmentManager;
-    private FragmentTransaction fragmentTransaction;
-    final LinkedInOAuthService oAuthService = LinkedInOAuthServiceFactory
-            .getInstance().createLinkedInOAuthService(
-                    Constants.LINKEDIN_CONSUMER_KEY,
-                    Constants.LINKEDIN_CONSUMER_SECRET);
     final LinkedInApiClientFactory factory = LinkedInApiClientFactory
             .newInstance(Constants.LINKEDIN_CONSUMER_KEY,
                     Constants.LINKEDIN_CONSUMER_SECRET);
-    LinkedInRequestToken liToken;
     LinkedInApiClient client;
     LinkedInAccessToken accessToken = null;
     public static ProgressDialog linkedinProgress;
-    PackageInfo info;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -114,26 +89,6 @@ public class InitialSignUpFragment extends Fragment
 
         View view = inflater.inflate(R.layout.sign_in_screen, container, false);
         _initSetup(view);
-
-        try
-        {
-            info = getActivity().getPackageManager().getPackageInfo(
-                    "com.tradehero.activities", PackageManager.GET_SIGNATURES);
-            for (android.content.pm.Signature signature : info.signatures)
-            {
-                MessageDigest md = MessageDigest.getInstance("SHA");
-                md.update(signature.toByteArray());
-                Log.e("MY KEY HASH:",
-                        Base64.encodeToString(md.digest(), Base64.DEFAULT));
-            }
-        } catch (NameNotFoundException e)
-        {
-            e.printStackTrace();
-        } catch (NoSuchAlgorithmException e)
-        {
-            e.printStackTrace();
-        }
-
         return view;
     }
 
@@ -152,7 +107,7 @@ public class InitialSignUpFragment extends Fragment
                     Context.LAYOUT_INFLATER_SERVICE);
             v = inflater.inflate(R.layout.topbar, null);
             mBottomtxt = (TextView) view.findViewById(R.id.txt_bottom);
-            mHeaderBellowtxt = (TextView) view.findViewById(R.id.Sigin_with);
+            mHeaderBellowtxt = (TextView) view.findViewById(R.id.signin_with);
             mBottomtxt.setText(mBottmLine);
             mHeaderBellowtxt.setText(mHeaderBellow);
             TextView txt = (TextView) v.findViewById(R.id.header_txt);
@@ -160,120 +115,24 @@ public class InitialSignUpFragment extends Fragment
             ViewGroup header = (ViewGroup) view.findViewById(R.id.wraper2);
             header.addView(v);
         }
-        mFaceBookBtn = (Button) view.findViewById(R.id.btn_fbook_signin);
-        mTwitterBtn = (Button) view.findViewById(R.id.btn_twitter_signin);
-        mLinkedinBtn = (Button) view.findViewById(R.id.btn_linkedin_linkedin);
-        mEmailTv = (TextView) view.findViewById(R.id.txt_email);
-        mTerms = (TextView) view.findViewById(R.id.txt_termservice_signin);
 
-        mFaceBookBtn.setOnClickListener(this);
-        mTwitterBtn.setOnClickListener(this);
-        mLinkedinBtn.setOnClickListener(this);
-        mTerms.setOnClickListener(this);
-        mEmailTv.setOnClickListener(this);
+        View[] navigationViews = new View[] {
+                view.findViewById(R.id.btn_facebook_signin),
+                view.findViewById(R.id.btn_twitter_signin),
+                view.findViewById(R.id.txt_email_signin),
+                view.findViewById(R.id.btn_linkedin_signin),
+                view.findViewById(R.id.txt_term_of_service_signin)
+        };
+        for (View v: navigationViews)
+        {
+            v.setOnClickListener(onClickListener);
+        }
 
         mProgressDialog = new ProgressDialog(getActivity());
         mProgressDialog.setMessage(getResources().getString(R.string.loading_loading));
-        mContext = getActivity();
         mTwitter = new Twitter(Constants.TWITTER_CONSUMER_KEY, Constants.TWITTER_CONSUMER_SECRET);
-        /** This if conditions is tested once is
-         * redirected from twitter page. Parse the uri to get oAuth
-         * Verifier
-         * */
         linkedinProgress = new ProgressDialog(getActivity());
         linkedinProgress.setMessage(getResources().getString(R.string.loading_loading));
-    }
-
-    @Override
-    public void onClick(View v)
-    {
-
-        switch (v.getId())
-        {
-            case R.id.btn_fbook_signin:
-                if (NetworkStatus.getInstance().isConnected(getActivity()))
-                {
-                    operationType = OP_FB;
-                    onClickLoginFaceBook();
-                }
-                else
-                {
-                    Util.show_toast(getActivity(),
-                            getResources().getString(R.string.network_error));
-                }
-                break;
-            case R.id.btn_twitter_signin:
-                if (NetworkStatus.getInstance().isConnected(getActivity()))
-                {
-                    operationType = OP_TWITTER;
-                    loginToTwitter();
-                }
-                else
-                {
-                    Util.show_toast(getActivity(),
-                            getResources().getString(R.string.network_error));
-                }
-                break;
-            case R.id.btn_linkedin_linkedin:
-
-                if (!linkedinButtonPressed)
-                {
-                    if (NetworkStatus.getInstance().isConnected(getActivity()))
-                    {
-                        //linkedinProgress.show();
-                        operationType = OP_LINKEDIN;
-                        linkedInLogin();
-                    }
-                    else
-                    {
-                        Util.show_toast(getActivity(),
-                                getResources().getString(R.string.network_error));
-                    }
-                }
-                else
-                {
-                    Util.show_toast(getActivity(),
-                            getResources().getString(R.string.loading_loading));
-                }
-
-                break;
-            case R.id.txt_email:
-                if (activityType == LOGIN)
-                {
-                    //startActivity(new Intent(getActivity(),LoginActivity.class));
-                    fragmentManager = getActivity().getSupportFragmentManager();
-                    fragmentTransaction = fragmentManager.beginTransaction();
-                    fragmentTransaction.setCustomAnimations(R.anim.slide_right_in,
-                            R.anim.slide_right_out, R.anim.slide_left_out, R.anim.slide_right_out);
-                    LoginFragment fragment = new LoginFragment();
-                    fragmentTransaction.replace(R.id.sign_in_up_content, fragment, "login");
-                    fragmentTransaction.addToBackStack("login");
-                    fragmentTransaction.commit();
-                }
-                else
-                {
-                    //startActivity(new Intent(getActivity(),EmailRegistrationActivity.class));
-                    fragmentManager = getActivity().getSupportFragmentManager();
-                    fragmentTransaction = fragmentManager.beginTransaction();
-                    fragmentTransaction.setCustomAnimations(R.anim.slide_right_in,
-                            R.anim.slide_right_out, R.anim.slide_left_out, R.anim.slide_right_out);
-                    EmailRegistrationFragment fragment = new EmailRegistrationFragment();
-                    fragmentTransaction.replace(R.id.sign_in_up_content, fragment,
-                            "email_registration");
-                    fragmentTransaction.addToBackStack("email_registration");
-                    fragmentTransaction.commit();
-                }
-                break;
-            case R.id.txt_termservice_signin:
-                Intent pWebView = new Intent(getActivity(), WebViewActivity.class);
-                pWebView.putExtra(WebViewActivity.SHOW_URL,
-                        Constants.PRIVACY_TERMS_OF_SERVICE);
-                getActivity().startActivity(pWebView);
-                break;
-
-            default:
-                break;
-        }
     }
 
     @Override
@@ -595,7 +454,7 @@ public class InitialSignUpFragment extends Fragment
     {
 
         mail_id_twitter = new EditText(getActivity());
-        AlertDialog.Builder dialog = new Builder(getActivity());
+        Builder dialog = new Builder(getActivity());
         dialog.setMessage(getResources().getString(R.string.enter_message_email))
                 .setCancelable(false)
                 .setView(mail_id_twitter)

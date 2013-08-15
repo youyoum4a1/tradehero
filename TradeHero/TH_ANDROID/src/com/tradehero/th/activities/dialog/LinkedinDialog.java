@@ -1,5 +1,6 @@
 package com.tradehero.th.activities.dialog;
 
+import com.tradehero.th.fragments.authentication.SignUpFragment;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,7 +11,6 @@ import android.graphics.Picture;
 import android.net.Uri;
 import android.os.Bundle;
 import com.tradehero.th.R;
-import com.tradehero.th.fragments.authentication.InitialSignUpFragment;
 import com.tradehero.th.utills.Constants;
 import android.util.Log;
 import android.view.Window;
@@ -38,7 +38,7 @@ public class LinkedinDialog extends Dialog
     {
         // TODO Auto-generated method stub
         super.onBackPressed();
-        InitialSignUpFragment.linkedinButtonPressed = false;
+        SignUpFragment.linkedinButtonPressed = false;
     }
 
     /**
@@ -116,7 +116,7 @@ public class LinkedinDialog extends Dialog
             else
             { //if (url.contains(Constants.BASE_API_URL)){
                 cancel();
-                InitialSignUpFragment.linkedinButtonPressed = false;
+                SignUpFragment.linkedinButtonPressed = false;
             } /*else {
 
 				view.loadUrl(url);

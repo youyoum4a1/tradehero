@@ -15,7 +15,7 @@
         android:src="@drawable/th_text" />
 
     <Button
-        android:id="@+id/btn_newuser"
+        android:id="@+id/btn_signup"
         android:layout_width="match_parent"
         android:layout_height="75dp"
         android:layout_marginLeft="30dp"
