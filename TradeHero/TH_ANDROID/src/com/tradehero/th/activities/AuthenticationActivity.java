@@ -4,9 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.View;
-import android.widget.ProgressBar;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
@@ -63,9 +61,9 @@ public class AuthenticationActivity extends SherlockFragmentActivity
 
     private void setupViewFragmentMapping()
     {
-        mapViewFragment.put(R.id.btn_signup, SignUpFragment.class);
-        mapViewFragment.put(R.id.btn_signin, SignInFragment.class);
-        mapViewFragment.put(R.id.txt_email_signin, LoginFragment.class);
+        mapViewFragment.put(R.id.authentication_sign_up, SignUpFragment.class);
+        mapViewFragment.put(R.id.authentication_sign_in, SignInFragment.class);
+        mapViewFragment.put(R.id.txt_email_sign_up, LoginFragment.class);
         mapViewFragment.put(R.id.txt_term_of_service_signin, WebViewActivity.class);
     }
 
@@ -88,7 +86,7 @@ public class AuthenticationActivity extends SherlockFragmentActivity
     @Override public boolean onCreateOptionsMenu(Menu menu)
     {
         getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
-        getSupportActionBar().setCustomView(R.layout.topbar);
+        getSupportActionBar().setCustomView(R.layout.authentication_actionbar);
         return super.onCreateOptionsMenu(menu);
     }
 

@@ -17,7 +17,7 @@ public class SignInFragment extends AuthenticationFragment
         View[] navigationViews = new View[] {
                 view.findViewById(R.id.btn_facebook_signin),
                 view.findViewById(R.id.btn_twitter_signin),
-                view.findViewById(R.id.txt_email_signin),
+                view.findViewById(R.id.txt_email_sign_in),
                 view.findViewById(R.id.btn_linkedin_signin),
                 view.findViewById(R.id.txt_term_of_service_signin)
         };

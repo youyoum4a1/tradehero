@@ -41,7 +41,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/top_header_banner"
-        android:background="@color/gray_1"
+        android:background="@color/text_gray_normal"
         android:orientation="vertical"
         android:weightSum="1" >
 
@@ -342,7 +342,7 @@
         android:layout_below="@+id/top_layout"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
-        android:background="@color/gray_1" >
+        android:background="@color/text_gray_normal" >
 
         <ProgressBar
             android:id="@+id/progressbar_tradeofweek"
@@ -356,7 +356,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_margin="3dp"
-            android:background="@color/gray_1"
+            android:background="@color/text_gray_normal"
             android:dividerHeight="2dp"
             android:visibility="invisible" >
         </ListView>

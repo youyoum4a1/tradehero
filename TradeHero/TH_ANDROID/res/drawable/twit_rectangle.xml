@@ -4,7 +4,7 @@
       android:angle="270"
       android:endColor="@color/twit_color2"
       android:startColor="@color/twit_color1"/>
-  <corners android:radius="5dp"/>
+  <corners android:radius="@dimen/authentication_button_radius"/>
   <stroke
       android:width="0.5dp"
       android:color="@color/white"/>

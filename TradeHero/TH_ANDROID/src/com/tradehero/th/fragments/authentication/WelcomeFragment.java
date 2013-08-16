@@ -1,11 +1,11 @@
 package com.tradehero.th.fragments.authentication;
 
 import android.os.Bundle;
+import android.view.animation.AnimationUtils;
 import com.tradehero.th.R;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 
 public class WelcomeFragment extends AuthenticationFragment
 {
@@ -15,8 +15,10 @@ public class WelcomeFragment extends AuthenticationFragment
     {
         View view = inflater.inflate(R.layout.authentication_welcome_screen, container, false);
 
-        view.findViewById(R.id.btn_signup).setOnClickListener(onClickListener);
-        view.findViewById(R.id.btn_signin).setOnClickListener(onClickListener);
+        view.findViewById(R.id.authentication_sign_up).setOnClickListener(onClickListener);
+        view.findViewById(R.id.authentication_sign_in).setOnClickListener(onClickListener);
+        view.findViewById(R.id.authentication_sign_in).startAnimation(
+                AnimationUtils.loadAnimation(getActivity(), R.anim.fade_in));
 
         getSherlockActivity().getSupportActionBar().hide();
         return view;

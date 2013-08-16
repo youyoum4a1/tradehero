@@ -1,65 +1,66 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <!--
-        Base application theme, dependent on API level. This theme is replaced
-        by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
+  <!--
+      Base application theme, dependent on API level. This theme is replaced
+      by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
 
-    -->
-    <style name="AppBaseTheme" parent="Theme.Sherlock.Light">
-        <item name="android:windowActionBar">true</item>
-        <item name="android:windowNoTitle">false</item>
-        <item name="android:windowActionBarOverlay">true</item>
-    </style>
+  -->
+  <style name="AppBaseTheme" parent="Theme.Sherlock.Light">
+    <item name="android:windowActionBar">true</item>
+    <item name="android:windowNoTitle">false</item>
+    <item name="android:windowActionBarOverlay">true</item>
+  </style>
 
   <style name="AppBaseTheme.NoActionBar" parent="AppBaseTheme">
     <item name="android:windowActionBar">false</item>
     <item name="android:windowNoTitle">true</item>
   </style>
 
-    <!-- Application theme. -->
-    <style name="AppTheme" parent="AppBaseTheme">
-        <!-- All customizations that are NOT specific to a particular API-level can go here. -->
-    </style>
-    
-    
-    
-    <style name="TH" />
-    
-   
-  	
-    <style name="TH.Title">
-    
-        <item name="android:textColor">@color/title</item>
-    </style>
-    
-    <style name="TH.Value">
-        <item name="android:textColor">@color/black</item>
-    </style>
-    
-    <style name="TH.Btn_Price_Bar">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">match_parent</item>
-        <item name="android:background">@null</item>
-        <item name="android:layout_weight">1</item>
-        <item name="android:textColor">@color/price_bar_text_default</item>
-        <item name="android:textStyle">bold</item>
-    </style>
-    
-    <style name="TH.Btn_Price_Bar_Separator">
-        <item name="android:layout_width">1dp</item>
-        <item name="android:layout_height">match_parent</item>
-        <item name="android:background">@color/price_bar_text_default</item>
-        <item name="android:layout_marginBottom">10dp</item>
-        <item name="android:layout_marginTop">10dp</item>
-    </style>
+  <!-- Application theme. -->
+  <style name="AppTheme" parent="AppBaseTheme">
+    <!-- All customizations that are NOT specific to a particular API-level can go here. -->
+  </style>
+
+
+  <style name="TH"/>
+
+
+  <style name="TH.Title">
+
+    <item name="android:textColor">@color/title</item>
+  </style>
+
+  <style name="TH.Value">
+    <item name="android:textColor">@color/black</item>
+  </style>
+
+  <style name="TH.Btn_Price_Bar">
+    <item name="android:layout_width">wrap_content</item>
+    <item name="android:layout_height">match_parent</item>
+    <item name="android:background">@null</item>
+    <item name="android:layout_weight">1</item>
+    <item name="android:textColor">@color/price_bar_text_default</item>
+    <item name="android:textStyle">bold</item>
+  </style>
+
+  <style name="TH.Btn_Price_Bar_Separator">
+    <item name="android:layout_width">1dp</item>
+    <item name="android:layout_height">match_parent</item>
+    <item name="android:background">@color/price_bar_text_default</item>
+    <item name="android:layout_marginBottom">10dp</item>
+    <item name="android:layout_marginTop">10dp</item>
+  </style>
   <style name="AppBaseTheme.Authentication" parent="AppBaseTheme">
-    <item name="android:layout_marginTop">60dip</item>
+    <item name="android:layout_marginTop">80dip</item>
+    <item name="android:paddingRight">30dip</item>
+    <item name="android:paddingLeft">30dip</item>
+    <item name="android:paddingBottom">10dip</item>
   </style>
   <style name="AppBaseTheme.Welcome" parent="AppBaseTheme">
     <item name="android:paddingTop">65dip</item>
     <item name="android:paddingLeft">30dip</item>
     <item name="android:paddingRight">30dip</item>
-    <item name="android:background">#f2f2f2</item>
+    <item name="android:background">@color/authentication_background_color</item>
   </style>
   <style name="AppBaseTheme.Welcome.SignIn" parent="@android:style/Widget.Button">
     <item name="android:layout_marginTop">0dip</item>

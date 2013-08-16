@@ -34,7 +34,7 @@
         android:layout_alignParentTop="true"
         android:layout_marginRight="10dp"
         android:text="3 min"
-        android:textColor="@color/gray_1"
+        android:textColor="@color/text_gray_normal"
         android:textSize="12sp"
         android:textStyle="bold" />
 
@@ -45,7 +45,7 @@
         android:layout_marginLeft="10dp"
         android:layout_toRightOf="@+id/img_user"
         android:text="Name"
-        android:textColor="@color/fbook_color1"
+        android:textColor="@color/btn_facebook_color_start"
         android:textSize="15sp"
         android:textStyle="normal" />
 
@@ -57,7 +57,7 @@
         android:layout_marginLeft="10dp"
         android:layout_toRightOf="@+id/img_user"
         android:text="Name"
-        android:textColor="@color/gray_1"
+        android:textColor="@color/text_gray_normal"
         android:textSize="13sp"
         android:textStyle="normal" />
 

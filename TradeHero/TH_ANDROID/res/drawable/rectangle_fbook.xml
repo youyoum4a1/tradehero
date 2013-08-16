@@ -1,19 +1,13 @@
-<shape xmlns:android="http://schemas.android.com/apk/res/android" >
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <gradient
-        android:angle="270"
-        android:endColor="@color/fbook_color2"
-        android:startColor="@color/fbook_color1" />
+  <gradient
+      android:angle="270"
+      android:endColor="@color/btn_facebook_color_end"
+      android:startColor="@color/btn_facebook_color_start"/>
 
-    <corners android:radius="10dp" />
-
-  <padding
-        android:bottom="10dp"
-        android:left="10dp"
-        android:right="10dp"
-        android:top="10dp" />
-     <stroke
-        android:width="0.5dp"
-        android:color="@color/white" />
+  <corners android:radius="@dimen/authentication_button_radius"/>
+  <stroke
+      android:width="0.5dp"
+      android:color="@color/white"/>
 
 </shape>

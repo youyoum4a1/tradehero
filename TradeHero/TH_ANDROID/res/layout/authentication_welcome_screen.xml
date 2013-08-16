@@ -13,7 +13,7 @@
       android:layout_marginBottom="45dip"/>
 
   <Button
-      android:id="@+id/btn_signup"
+      android:id="@+id/authentication_sign_up"
       android:layout_below="@id/authentication_welcome_logo_text"
       android:layout_width="match_parent"
       android:layout_height="80dp"
@@ -24,8 +24,8 @@
       android:textStyle="bold"/>
 
   <LinearLayout
-      android:id="@+id/btn_signin"
-      android:layout_below="@id/btn_signup"
+      android:id="@+id/authentication_sign_in"
+      android:layout_below="@id/authentication_sign_up"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_marginTop="20dp"
@@ -38,7 +38,7 @@
         android:layout_height="wrap_content"
         android:gravity="top|center_horizontal"
         android:text="@string/existing_user"
-        android:textColor="@color/gray_1"
+        android:textColor="@color/text_gray_normal"
         android:textSize="15dip"
         android:textStyle="bold"/>
 

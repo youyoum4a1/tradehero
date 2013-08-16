@@ -13,14 +13,14 @@
     <color name="white">#FFFFFF</color>
     <color name="signinbg_color">#D6D6D6</color>
     <color name="signinfnt_color">#47454A</color>
-    <color name="fbook_color1">#4E6DAE</color>
-    <color name="fbook_color2">#2B4170</color>
+    <color name="btn_facebook_color_start">#4E6DAE</color>
+    <color name="btn_facebook_color_end">#2B4170</color>
     <color name="twit_color1">#00CCED</color>
     <color name="twit_color2">#0087CE</color>
     <color name="linkd_color1">#009CDA</color>
     <color name="linkd_color2">#0167A3</color>
     <color name="gray_2">#A0AFAFAF</color>
-    <color name="gray_1">#A0C0C0C0</color>
+    <color name="text_gray_normal">#A0C0C0C0</color>
     <color name="gray_3">#F3F3F3</color>
     <color name="gray_4">#F6F6F6</color>
     <color name="font_roi">#00CC00</color>
@@ -40,4 +40,5 @@
 	<color name="tab_color">#313131</color>
 	<color name="tab_scroll_color">#217ac8</color>
   <color name="authentication_welcome_bg">#f2f2f2</color>
+  <color name="authentication_background_color">#f2f2f2</color>
 </resources>

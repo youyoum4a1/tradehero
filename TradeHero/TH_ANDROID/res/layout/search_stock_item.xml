@@ -108,7 +108,7 @@
                     android:layout_marginRight="2dp"
                     android:lines="1"
                     android:text=""
-                    android:textColor="@color/gray_1"
+                    android:textColor="@color/text_gray_normal"
                     android:textSize="13sp" />
 
                 <TextView
@@ -117,7 +117,7 @@
                     android:layout_height="wrap_content"
                     android:lines="1"
                     android:text=""
-                    android:textColor="@color/gray_1"
+                    android:textColor="@color/text_gray_normal"
                     
                     android:textSize="13sp" />
             </LinearLayout>
@@ -131,7 +131,7 @@
                 android:gravity="right"
                 android:lines="1"
                 android:text=""
-                android:textColor="@color/gray_1"
+                android:textColor="@color/text_gray_normal"
                 android:textSize="12sp" />
 
             <TextView

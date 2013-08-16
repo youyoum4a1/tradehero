@@ -121,14 +121,12 @@ public class SignUpFragment extends Fragment
         mFaceBookBtn = (Button) view.findViewById(R.id.btn_facebook_signin);
         mTwitterBtn = (Button) view.findViewById(R.id.btn_twitter_signin);
         mLinkedinBtn = (Button) view.findViewById(R.id.btn_linkedin_signin);
-        mEmailTv = (TextView) view.findViewById(R.id.txt_email_signin);
+        mEmailTv = (TextView) view.findViewById(R.id.txt_email_sign_up);
         mTerms = (TextView) view.findViewById(R.id.txt_term_of_service_signin);
 
         mFaceBookBtn.setOnClickListener(this);
         mTwitterBtn.setOnClickListener(this);
         mLinkedinBtn.setOnClickListener(this);
-        mTerms.setOnClickListener(this);
-        mEmailTv.setOnClickListener(this);
 
         mProgressDialog = new ProgressDialog(getActivity());
         mProgressDialog.setMessage(getResources().getString(R.string.loading_loading));
@@ -195,7 +193,7 @@ public class SignUpFragment extends Fragment
                 }
 
                 break;
-            case R.id.txt_email_signin:
+            case R.id.txt_email_sign_up:
                 if (activityType == LOGIN)
                 {
                     //startActivity(new Intent(getActivity(),LoginActivity.class));
