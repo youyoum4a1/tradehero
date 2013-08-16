@@ -108,11 +108,11 @@
     <file path="$PROJECT_DIR$/TradeHero/TH_ANDROID/gen/com/tradehero/th/R.java" changelist="483fef33-cda5-4250-9887-8b840b74f5de" time="1376644526838" ignored="false" />
     <file path="/BaseActivity.java" changelist="483fef33-cda5-4250-9887-8b840b74f5de" time="1376476319401" ignored="false" />
     <file path="/SplashActivity.java" changelist="483fef33-cda5-4250-9887-8b840b74f5de" time="1376567328001" ignored="false" />
-    <file path="/AuthenticationActivity.java" changelist="483fef33-cda5-4250-9887-8b840b74f5de" time="1376647067750" ignored="false" />
+    <file path="/AuthenticationActivity.java" changelist="483fef33-cda5-4250-9887-8b840b74f5de" time="1376647409364" ignored="false" />
     <file path="$PROJECT_DIR$/../FH_ANDROID/FH_Android/src/main/java/com/tradehero/fh/activities/authentication/AuthenticationActivity.java" changelist="483fef33-cda5-4250-9887-8b840b74f5de" time="1376541351226" ignored="false" />
     <file path="/WelcomeFragment.java" changelist="483fef33-cda5-4250-9887-8b840b74f5de" time="1376635148800" ignored="false" />
     <file path="/AuthenticationFragment.java" changelist="483fef33-cda5-4250-9887-8b840b74f5de" time="1376540527841" ignored="false" />
-    <file path="/SignInFragment.java" changelist="483fef33-cda5-4250-9887-8b840b74f5de" time="1376639307242" ignored="false" />
+    <file path="/SignInFragment.java" changelist="483fef33-cda5-4250-9887-8b840b74f5de" time="1376647489685" ignored="false" />
     <file path="/FacebookUtils.java" changelist="483fef33-cda5-4250-9887-8b840b74f5de" time="1376557547450" ignored="false" />
     <file path="/TwitterUtils.java" changelist="483fef33-cda5-4250-9887-8b840b74f5de" time="1376543607374" ignored="false" />
     <file path="/THAuthenticationProvider.java" changelist="483fef33-cda5-4250-9887-8b840b74f5de" time="1376565832371" ignored="false" />
@@ -143,11 +143,11 @@
     <file path="/User.java" changelist="483fef33-cda5-4250-9887-8b840b74f5de" time="1376565414386" ignored="false" />
     <file path="/styles.xml" changelist="483fef33-cda5-4250-9887-8b840b74f5de" time="1376637630263" ignored="false" />
     <file path="/SignUpFragment.java" changelist="483fef33-cda5-4250-9887-8b840b74f5de" time="1376646926447" ignored="false" />
-    <file path="/authentication_sign_in.xml" changelist="483fef33-cda5-4250-9887-8b840b74f5de" time="1376646727519" ignored="false" />
-    <file path="/authentication_welcome_screen.xml" changelist="483fef33-cda5-4250-9887-8b840b74f5de" time="1376627075007" ignored="false" />
-    <file path="/Dummy.txt" changelist="483fef33-cda5-4250-9887-8b840b74f5de" time="1376643331464" ignored="false" />
+    <file path="/authentication_sign_in.xml" changelist="483fef33-cda5-4250-9887-8b840b74f5de" time="1376647571019" ignored="false" />
+    <file path="/authentication_welcome_screen.xml" changelist="483fef33-cda5-4250-9887-8b840b74f5de" time="1376650752295" ignored="false" />
+    <file path="/Dummy.txt" changelist="483fef33-cda5-4250-9887-8b840b74f5de" time="1376650833381" ignored="false" />
     <file path="/colors.xml" changelist="483fef33-cda5-4250-9887-8b840b74f5de" time="1376624108105" ignored="false" />
-    <file path="/strings.xml" changelist="483fef33-cda5-4250-9887-8b840b74f5de" time="1376644166255" ignored="false" />
+    <file path="/strings.xml" changelist="483fef33-cda5-4250-9887-8b840b74f5de" time="1376650632762" ignored="false" />
     <file path="/rectangle_login.xml" changelist="483fef33-cda5-4250-9887-8b840b74f5de" time="1376625088361" ignored="false" />
     <file path="/signin_button_selector.xml" changelist="483fef33-cda5-4250-9887-8b840b74f5de" time="1376626378853" ignored="false" />
     <file path="/roundrectangle_signin.xml" changelist="483fef33-cda5-4250-9887-8b840b74f5de" time="1376626466454" ignored="false" />
@@ -156,7 +156,7 @@
     <file path="/authentication_facebook_button_xml.xml" changelist="483fef33-cda5-4250-9887-8b840b74f5de" time="1376642581604" ignored="false" />
     <file path="/rectangle_fbook.xml" changelist="483fef33-cda5-4250-9887-8b840b74f5de" time="1376630873624" ignored="false" />
     <file path="/twit_rectangle.xml" changelist="483fef33-cda5-4250-9887-8b840b74f5de" time="1376630929350" ignored="false" />
-    <file path="/authentication_actionbar.xml" changelist="483fef33-cda5-4250-9887-8b840b74f5de" time="1376631671461" ignored="false" />
+    <file path="/authentication_actionbar.xml" changelist="483fef33-cda5-4250-9887-8b840b74f5de" time="1376650982635" ignored="false" />
     <file path="$PROJECT_DIR$/../FH_ANDROID/FH_Android/res/anim/fade_forward.xml" changelist="483fef33-cda5-4250-9887-8b840b74f5de" time="1376635045112" ignored="false" />
     <file path="/authentication_sign_up.xml" changelist="483fef33-cda5-4250-9887-8b840b74f5de" time="1376638615832" ignored="false" />
     <file path="/authentication_social_auth.xml" changelist="483fef33-cda5-4250-9887-8b840b74f5de" time="1376635847992" ignored="false" />
@@ -172,6 +172,9 @@
     <file path="/login_withemail_screen.xml" changelist="483fef33-cda5-4250-9887-8b840b74f5de" time="1376645989060" ignored="false" />
     <file path="$PROJECT_DIR$/TradeHero/TH_ANDROID/res/values/colors.xml" changelist="483fef33-cda5-4250-9887-8b840b74f5de" time="1376644249108" ignored="false" />
     <file path="/TradeofWeek.java" changelist="483fef33-cda5-4250-9887-8b840b74f5de" time="1376646013299" ignored="false" />
+    <file path="/authentication_welcome_newuser_button_xml.xml" changelist="483fef33-cda5-4250-9887-8b840b74f5de" time="1376650822049" ignored="false" />
+    <file path="$PROJECT_DIR$/TradeHero/TH_ANDROID/res/drawable/topbarrectangle.xml" changelist="483fef33-cda5-4250-9887-8b840b74f5de" time="1376650874085" ignored="false" />
+    <file path="/btn_new_user_pressed.xml" changelist="483fef33-cda5-4250-9887-8b840b74f5de" time="1376650880500" ignored="false" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -235,7 +238,7 @@
       <file leaf-file-name="authentication_sign_in.xml" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/res/layout/authentication_sign_in.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="26" column="0" selection-start="957" selection-end="1985" vertical-scroll-proportion="-0.5555556">
+            <state line="20" column="49" selection-start="791" selection-end="791" vertical-scroll-proportion="-0.4074074">
               <folding />
             </state>
           </provider>
@@ -247,7 +250,7 @@
       <file leaf-file-name="authentication_sign_up.xml" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/res/layout/authentication_sign_up.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="37" column="45" selection-start="1434" selection-end="1434" vertical-scroll-proportion="-3.7407408">
+            <state line="13" column="40" selection-start="514" selection-end="514" vertical-scroll-proportion="-7.2222223">
               <folding />
             </state>
           </provider>
@@ -256,48 +259,81 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="pom.xml" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/retrofit/retrofit/pom.xml">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="12" column="22" selection-start="481" selection-end="489" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="SignUpFragment.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/fragments/authentication/SignUpFragment.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="124" column="17" selection-start="4972" selection-end="4972" vertical-scroll-proportion="0.0">
+            <state line="566" column="54" selection-start="20945" selection-end="20945" vertical-scroll-proportion="-11.08">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="SignInFragment.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/fragments/authentication/SignInFragment.java">
+      <file leaf-file-name="RequestFactory.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/http/RequestFactory.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0">
+            <state line="184" column="19" selection-start="10024" selection-end="10024" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="AuthenticationActivity.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/activities/AuthenticationActivity.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="144" column="61" selection-start="5461" selection-end="5461" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="strings.xml" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="strings.xml" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/res/values/strings.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="27" column="71" selection-start="1499" selection-end="1499" vertical-scroll-proportion="0.17274168">
+            <state line="100" column="17" selection-start="5342" selection-end="5342" vertical-scroll-proportion="0.0">
               <folding />
             </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="authentication_welcome_screen.xml" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/res/layout/authentication_welcome_screen.xml">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="20" column="57" selection-start="804" selection-end="845" vertical-scroll-proportion="-11.111111">
+              <folding />
+            </state>
+          </provider>
+          <provider editor-type-id="android-designer">
+            <state />
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="authentication_welcome_newuser_button_xml.xml" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/res/drawable/authentication_welcome_newuser_button_xml.xml">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="5" column="53" selection-start="372" selection-end="372" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="btn_new_user_pressed.xml" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/res/drawable/btn_new_user_pressed.xml">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="5" column="67" selection-start="144" selection-end="327" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="btn_new_user_normal.xml" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/res/drawable/btn_new_user_normal.xml">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="7" column="26" selection-start="315" selection-end="315" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="authentication_actionbar.xml" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/res/layout/authentication_actionbar.xml">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="7" column="0" selection-start="277" selection-end="672" vertical-scroll-proportion="0.28688523">
+              <folding />
+            </state>
+          </provider>
+          <provider editor-type-id="android-designer">
+            <state />
           </provider>
         </entry>
       </file>
@@ -311,22 +347,22 @@
   <component name="IdeDocumentHistory">
     <option name="changedFiles">
       <list>
-        <option value="$PROJECT_DIR$/TradeHero/TH_ANDROID/res/drawable/btn_twitter_background_pressed.xml" />
-        <option value="$PROJECT_DIR$/TradeHero/TH_ANDROID/res/layout/authentication_social_auth.xml" />
-        <option value="$PROJECT_DIR$/TradeHero/TH_ANDROID/res/drawable/authentication_linkedin_button_xml.xml" />
-        <option value="$PROJECT_DIR$/TradeHero/TH_ANDROID/res/drawable/btn_linkedin_background_pressed.xml" />
-        <option value="$PROJECT_DIR$/TradeHero/TH_ANDROID/res/drawable/btn_linkedin_background_normal.xml" />
-        <option value="$PROJECT_DIR$/TradeHero/TH_ANDROID/res/values/dimens.xml" />
         <option value="$PROJECT_DIR$/TradeHero/TH_ANDROID/res/drawable/color_selector.xml" />
         <option value="$PROJECT_DIR$/TradeHero/TH_ANDROID/res/values/color.xml" />
         <option value="$PROJECT_DIR$/TradeHero/TH_ANDROID/res/layout/authentication_agreement.xml" />
         <option value="$PROJECT_DIR$/TradeHero/TH_ANDROID/res/layout/login_withemail_screen.xml" />
         <option value="$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/models/TradeofWeek.java" />
-        <option value="$PROJECT_DIR$/TradeHero/TH_ANDROID/res/values/strings.xml" />
-        <option value="$PROJECT_DIR$/TradeHero/TH_ANDROID/res/layout/authentication_sign_in.xml" />
         <option value="$PROJECT_DIR$/TradeHero/TH_ANDROID/res/layout/authentication_sign_up.xml" />
-        <option value="$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/fragments/authentication/SignUpFragment.java" />
         <option value="$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/activities/AuthenticationActivity.java" />
+        <option value="$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/fragments/authentication/SignInFragment.java" />
+        <option value="$PROJECT_DIR$/TradeHero/TH_ANDROID/res/layout/authentication_sign_in.xml" />
+        <option value="$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/fragments/authentication/SignUpFragment.java" />
+        <option value="$PROJECT_DIR$/TradeHero/TH_ANDROID/res/values/strings.xml" />
+        <option value="$PROJECT_DIR$/TradeHero/TH_ANDROID/res/layout/authentication_welcome_screen.xml" />
+        <option value="$PROJECT_DIR$/TradeHero/TH_ANDROID/res/drawable/authentication_welcome_newuser_button_xml.xml" />
+        <option value="$PROJECT_DIR$/TradeHero/TH_ANDROID/res/drawable/btn_new_user_pressed.xml" />
+        <option value="$PROJECT_DIR$/TradeHero/TH_ANDROID/res/drawable/btn_new_user_normal.xml" />
+        <option value="$PROJECT_DIR$/TradeHero/TH_ANDROID/res/layout/authentication_actionbar.xml" />
       </list>
     </option>
   </component>
@@ -422,6 +458,60 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="tradehero" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="TH_Android" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="TH_ANDROID" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="tradehero" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="kit" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="TH_Android" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="TH_ANDROID" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="res" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="TH_Android" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="TH_ANDROID" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="res" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="layout" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -703,13 +793,13 @@
       <window_info id="CheckStyle" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.6115108" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.28057554" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="IDEtalk Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32924107" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="IDEtalk" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32805756" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32805756" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="CDI" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
       <window_info id="Android" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32924107" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32924107" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
@@ -717,7 +807,7 @@
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.28192252" sideWeight="0.38848922" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.2823276" sideWeight="0.6719425" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3294964" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Palette&#9;" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32924226" sideWeight="0.59709823" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.2497332" sideWeight="0.6707589" order="2" side_tool="false" content_ui="combo" />
@@ -793,105 +883,6 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/res/drawable/btn_linkedin_background_pressed.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="7" column="82" selection-start="329" selection-end="409" vertical-scroll-proportion="0.24586777" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/res/drawable/btn_linkedin_background_normal.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="9" column="8" selection-start="0" selection-end="377" vertical-scroll-proportion="0.3161157" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/res/layout/authentication_social_auth.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="18" column="7" selection-start="631" selection-end="631" vertical-scroll-proportion="0.09150327">
-          <folding />
-        </state>
-      </provider>
-      <provider editor-type-id="android-designer">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/res/values/color.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="20" column="49" selection-start="979" selection-end="985" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/res/layout/authentication_agreement.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="12" column="25" selection-start="483" selection-end="514" vertical-scroll-proportion="0.24878049" />
-      </provider>
-      <provider editor-type-id="android-designer">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/adapters/TradeWeekAdapter.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="17" column="13" selection-start="502" selection-end="502" vertical-scroll-proportion="0.33257404">
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/res/layout/authentication_sign_in.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="26" column="0" selection-start="957" selection-end="1985" vertical-scroll-proportion="-0.5555556">
-          <folding />
-        </state>
-      </provider>
-      <provider editor-type-id="android-designer">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/res/layout/authentication_sign_up.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="37" column="45" selection-start="1434" selection-end="1434" vertical-scroll-proportion="-3.7407408">
-          <folding />
-        </state>
-      </provider>
-      <provider editor-type-id="android-designer">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/retrofit/retrofit/pom.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="12" column="22" selection-start="481" selection-end="489" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/fragments/authentication/SignUpFragment.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="124" column="17" selection-start="4972" selection-end="4972" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/fragments/authentication/SignInFragment.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/activities/AuthenticationActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="144" column="61" selection-start="5461" selection-end="5461" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/res/values/dimens.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="6" column="15" selection-start="0" selection-end="378" vertical-scroll-proportion="0.13975155">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/application/App.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="19" column="37" selection-start="462" selection-end="482" vertical-scroll-proportion="0.32608697">
@@ -911,11 +902,119 @@
         <state />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/res/values/strings.xml">
+    <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/fragments/authentication/LoginFragment.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="27" column="71" selection-start="1499" selection-end="1499" vertical-scroll-proportion="0.17274168">
+        <state line="39" column="13" selection-start="1379" selection-end="1379" vertical-scroll-proportion="0.0">
           <folding />
         </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/activities/AuthenticationActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="65" column="50" selection-start="2513" selection-end="2530" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/res/layout/authentication_social_auth.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="29" column="18" selection-start="1021" selection-end="1021" vertical-scroll-proportion="-4.5925927">
+          <folding />
+        </state>
+      </provider>
+      <provider editor-type-id="android-designer">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/fragments/authentication/SignInFragment.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="19" column="28" selection-start="641" selection-end="641" vertical-scroll-proportion="0.0">
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/res/layout/authentication_sign_in.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="20" column="49" selection-start="791" selection-end="791" vertical-scroll-proportion="-0.4074074">
+          <folding />
+        </state>
+      </provider>
+      <provider editor-type-id="android-designer">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/http/RequestFactory.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="184" column="19" selection-start="10024" selection-end="10024" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/fragments/authentication/SignUpFragment.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="566" column="54" selection-start="20945" selection-end="20945" vertical-scroll-proportion="-11.08">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/res/layout/authentication_sign_up.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="13" column="40" selection-start="514" selection-end="514" vertical-scroll-proportion="-7.2222223">
+          <folding />
+        </state>
+      </provider>
+      <provider editor-type-id="android-designer">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/res/values/strings.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="100" column="17" selection-start="5342" selection-end="5342" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/res/layout/authentication_welcome_screen.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="20" column="57" selection-start="804" selection-end="845" vertical-scroll-proportion="-11.111111">
+          <folding />
+        </state>
+      </provider>
+      <provider editor-type-id="android-designer">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/res/drawable/authentication_welcome_newuser_button_xml.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="5" column="53" selection-start="372" selection-end="372" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/res/drawable/btn_new_user_pressed.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="5" column="67" selection-start="144" selection-end="327" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/res/drawable/btn_new_user_normal.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="7" column="26" selection-start="315" selection-end="315" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/res/layout/authentication_actionbar.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="7" column="0" selection-start="277" selection-end="672" vertical-scroll-proportion="0.28688523">
+          <folding />
+        </state>
+      </provider>
+      <provider editor-type-id="android-designer">
+        <state />
       </provider>
     </entry>
   </component>

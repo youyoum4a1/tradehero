@@ -10,14 +10,15 @@
       android:layout_height="wrap_content"
       android:layout_gravity="center|top"
       android:src="@drawable/logo_text"
-      android:layout_marginBottom="45dip"/>
+      android:layout_marginBottom="45dip"
+      android:contentDescription="@string/empty"/>
 
   <Button
       android:id="@+id/authentication_sign_up"
       android:layout_below="@id/authentication_welcome_logo_text"
       android:layout_width="match_parent"
       android:layout_height="80dp"
-      android:background="@drawable/newuser_button_selector"
+      android:background="@drawable/authentication_welcome_newuser_button_xml"
       android:text="@string/authentication_welcome_new_user"
       android:textColor="@color/white"
       android:textSize="30dip"

@@ -3,8 +3,8 @@
 
     <color name="actionbar_gradient1">#6B748E</color>
     <color name="actionbar_gradient2">#929CBA</color>
-    <color name="round_rectangle1">#A04E6DAE</color>
-    <color name="round_rectangle2">#2B4170</color>
+    <color name="btn_new_user_color_light">#A04E6DAE</color>
+    <color name="btn_new_user_color_dark">#2B4170</color>
     <color name="round_rectangle3">#00CCED</color>
     <color name="round_rectangle4">#0087CE</color>
     <color name="round_rectangle5">#009CDA</color>

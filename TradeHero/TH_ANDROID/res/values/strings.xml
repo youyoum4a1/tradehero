@@ -96,7 +96,8 @@
   <string name="fh_please_wait">Please wait</string>
   <string name="fh_connecting_to_facebook">Connecting ...</string>
   <string name="version_text">v1.5(2813)</string>
-  <string name="authentication_sign_up_with">Sign up with</string>
+  <string name="authentication_sign_up_with">sign up with</string>
   <string name="email_address">email address</string>
+  <string name="empty"/>
 
 </resources>

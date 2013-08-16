@@ -13,6 +13,6 @@
 
     <stroke
         android:width="0.5dp"
-        android:color="@color/round_rectangle1" />
+        android:color="@color/btn_new_user_color_light" />
 
 </shape>

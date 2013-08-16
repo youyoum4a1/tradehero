@@ -14,16 +14,16 @@ public class SignInFragment extends AuthenticationFragment
     {
         View view = inflater.inflate(R.layout.authentication_sign_in, container, false);
 
-        View[] navigationViews = new View[] {
-                view.findViewById(R.id.btn_facebook_signin),
-                view.findViewById(R.id.btn_twitter_signin),
-                view.findViewById(R.id.txt_email_sign_in),
-                view.findViewById(R.id.btn_linkedin_signin),
-                view.findViewById(R.id.txt_term_of_service_signin)
+        int[] navigationViewIds = new int[] {
+                R.id.btn_facebook_signin,
+                R.id.btn_twitter_signin,
+                R.id.txt_email_sign_in,
+                R.id.btn_linkedin_signin,
+                R.id.txt_term_of_service_signin
         };
-        for (View v: navigationViews)
+        for (int id: navigationViewIds)
         {
-            v.setOnClickListener(onClickListener);
+            view.findViewById(id).setOnClickListener(onClickListener);
         }
 
         return view;

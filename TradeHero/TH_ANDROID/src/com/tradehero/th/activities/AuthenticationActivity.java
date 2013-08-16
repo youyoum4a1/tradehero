@@ -63,7 +63,7 @@ public class AuthenticationActivity extends SherlockFragmentActivity
     {
         mapViewFragment.put(R.id.authentication_sign_up, SignUpFragment.class);
         mapViewFragment.put(R.id.authentication_sign_in, SignInFragment.class);
-        mapViewFragment.put(R.id.txt_email_sign_up, LoginFragment.class);
+        mapViewFragment.put(R.id.txt_email_sign_in, LoginFragment.class);
         mapViewFragment.put(R.id.txt_term_of_service_signin, WebViewActivity.class);
     }
 
