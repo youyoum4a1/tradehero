@@ -10,7 +10,7 @@
       android:layout_height="wrap_content"
       android:layout_gravity="center|top"
       android:src="@drawable/logo_text"
-      android:layout_marginBottom="30dip"/>
+      android:layout_marginBottom="45dip"/>
 
   <Button
       android:id="@+id/btn_signup"

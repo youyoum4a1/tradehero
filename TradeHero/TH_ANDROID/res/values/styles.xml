@@ -56,10 +56,10 @@
     <item name="android:layout_marginTop">60dip</item>
   </style>
   <style name="AppBaseTheme.Welcome" parent="AppBaseTheme">
-    <item name="android:paddingTop">50dip</item>
+    <item name="android:paddingTop">65dip</item>
     <item name="android:paddingLeft">30dip</item>
     <item name="android:paddingRight">30dip</item>
-    <item name="android:background">@drawable/bg</item>
+    <item name="android:background">#f2f2f2</item>
   </style>
   <style name="AppBaseTheme.Welcome.SignIn" parent="@android:style/Widget.Button">
     <item name="android:layout_marginTop">0dip</item>
