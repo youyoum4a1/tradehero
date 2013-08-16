@@ -25,8 +25,8 @@
     <string name="network_error">Check your Network connection !</string>
     <string name="sign_up">Sign Up</string>
     <string name="authentication_sign_in_with">sign in with</string>
-    <string name="authentication_sign_up_with_email">or sign up with an <a href="#">email address</a></string>
-    <string name="authentication_sign_in_with_email">or sign in with an <a href="#">email address</a></string>
+    <string name="authentication_sign_up_with_email">or sign up with an </string>
+    <string name="authentication_sign_in_with_email">or sign in with an </string>
     <string name="forgot_password">forgot your password ?</string>
     <string name="existing_user">existing user</string>
     <string name="field_not_balnk">Field should not be left blank.</string>
@@ -97,5 +97,6 @@
   <string name="fh_connecting_to_facebook">Connecting ...</string>
   <string name="version_text">v1.5(2813)</string>
   <string name="authentication_sign_up_with">Sign up with</string>
+  <string name="email_address">email address</string>
 
 </resources>

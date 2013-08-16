@@ -4,7 +4,7 @@
   <dimen name="activity_horizontal_margin">16dp</dimen>
   <dimen name="activity_vertical_margin">16dp</dimen>
   <dimen name="authentication_button_radius">5dip</dimen>
-  <dimen name="authentication_head_text_size">16sp</dimen>
+  <dimen name="authentication_head_text_size">18sp</dimen>
   <dimen name="authentication_text_size">14sp</dimen>
 
 </resources>

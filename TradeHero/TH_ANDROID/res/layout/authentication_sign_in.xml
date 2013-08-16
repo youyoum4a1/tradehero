@@ -25,14 +25,23 @@
 
   <TextView
       android:id="@+id/txt_email_sign_in"
-      android:layout_width="match_parent"
+      android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:text="@string/authentication_sign_in_with_email"
       android:textColor="@color/text_gray_normal"
       android:textSize="@dimen/authentication_head_text_size"
       android:layout_below="@id/authentication_social_sign_up"
-      android:gravity="center_horizontal"
       android:layout_marginTop="10dip"
+      android:singleLine="true"
+      />
+  <TextView
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="@string/email_address"
+      android:textColor="@color/authentication_link_text"
+      android:textSize="@dimen/authentication_head_text_size"
+      android:layout_toRightOf="@id/txt_email_sign_in"
+      android:singleLine="true"
       />
 
   <include

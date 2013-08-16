@@ -1,0 +1,12 @@
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+
+  <gradient
+      android:angle="270"
+      android:endColor="@color/btn_twitter_color_end"
+      android:startColor="@color/btn_twitter_color_start"/>
+  <corners android:radius="@dimen/authentication_button_radius"/>
+  <stroke
+      android:width="0.5dp"
+      android:color="@color/white"/>
+
+</shape>

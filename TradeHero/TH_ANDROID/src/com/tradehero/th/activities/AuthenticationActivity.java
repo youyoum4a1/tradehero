@@ -151,7 +151,6 @@ public class AuthenticationActivity extends SherlockFragmentActivity
             case R.id.btn_twitter_signin:
                 TwitterUtils.logIn(this, new LogInCallback()
                 {
-
                     @Override public void done(UserBaseDTO user, THException ex)
                     {
                         //To change body of implemented methods use File | Settings | File Templates.
