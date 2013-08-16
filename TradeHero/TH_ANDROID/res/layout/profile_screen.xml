@@ -29,7 +29,7 @@
             android:layout_toRightOf="@+id/logo_img"
             android:paddingLeft="15dp"
             android:singleLine="true"
-            android:text="@string/new_user"
+            android:text="@string/authentication_welcome_new_user"
             android:textColor="@color/white"
             android:textSize="20sp" />
     </RelativeLayout>

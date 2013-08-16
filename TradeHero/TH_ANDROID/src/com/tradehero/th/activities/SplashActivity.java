@@ -42,6 +42,6 @@ public class SplashActivity extends SherlockActivity
 
                 finish();
             }
-        }, 3000);
+        }, 1000);
     }
 }

@@ -3,31 +3,21 @@ package com.tradehero.th.fragments.authentication;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageInfo;
 import android.os.Bundle;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import com.facebook.Session;
 import com.facebook.SessionState;
 import com.google.code.linkedinapi.client.LinkedInApiClient;
 import com.google.code.linkedinapi.client.LinkedInApiClientFactory;
 import com.google.code.linkedinapi.client.oauth.LinkedInAccessToken;
-import com.google.code.linkedinapi.client.oauth.LinkedInOAuthService;
-import com.google.code.linkedinapi.client.oauth.LinkedInOAuthServiceFactory;
-import com.google.code.linkedinapi.client.oauth.LinkedInRequestToken;
 import com.google.code.linkedinapi.schema.Person;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.DashboardActivity;
@@ -39,13 +29,11 @@ import com.tradehero.th.http.RequestFactory;
 import com.tradehero.th.http.RequestTaskCompleteListener;
 import com.tradehero.th.models.ProfileDTO;
 import com.tradehero.th.models.Request;
-import com.tradehero.th.networkstatus.NetworkStatus;
 import com.tradehero.th.twitter.Twitter;
 import com.tradehero.th.twitter.TwitterError;
 import com.tradehero.th.utills.Constants;
 import com.tradehero.th.utills.PUtills;
 import com.tradehero.th.utills.Util;
-import com.tradehero.th.webbrowser.WebViewActivity;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -55,9 +43,6 @@ public class SignInFragment extends AuthenticationFragment implements RequestTas
     public static final int LOGIN = 90001;
     public static final int SIGNUP = 90002;
     private Session.StatusCallback statusCallback = new SessionStatusCallback();
-    private TextView mBottomtxt, mHeaderBellowtxt;
-    private LayoutInflater inflater;
-    private View v;
     private RequestTaskCompleteListener mRequestTaskCompleteListener;
     private ProgressDialog mProgressDialog;
     // Twitter
@@ -65,7 +50,6 @@ public class SignInFragment extends AuthenticationFragment implements RequestTas
     public static String email = "";
     // Shared Preferences
     private static SharedPreferences mSharedPreferences;
-    private String mBottmLine, mHeader, mHeaderBellow;
     private EditText mail_id_twitter;
     private int activityType;
     private int operationType;
@@ -87,7 +71,7 @@ public class SignInFragment extends AuthenticationFragment implements RequestTas
         mSharedPreferences = getActivity().getApplicationContext()
                 .getSharedPreferences(Constants.SHARED_PREF, 0);
 
-        View view = inflater.inflate(R.layout.sign_in_screen, container, false);
+        View view = inflater.inflate(R.layout.authentication_sign_in, container, false);
         _initSetup(view);
         return view;
     }
@@ -95,26 +79,7 @@ public class SignInFragment extends AuthenticationFragment implements RequestTas
     private void _initSetup(View view)
     {
 
-        mData = getArguments();
         mRequestTaskCompleteListener = this;
-        if (mData != null)
-        {
-            mBottmLine = mData.getString("BOTTOM_LINE");
-            mHeader = mData.getString("HEADER_LINE");
-            mHeaderBellow = mData.getString("HEADER_LINEBELLOW");
-            activityType = mData.getInt("ACTIVITY_TYPE", 0);
-            inflater = (LayoutInflater) getActivity().getSystemService(
-                    Context.LAYOUT_INFLATER_SERVICE);
-            v = inflater.inflate(R.layout.topbar, null);
-            mBottomtxt = (TextView) view.findViewById(R.id.txt_bottom);
-            mHeaderBellowtxt = (TextView) view.findViewById(R.id.signin_with);
-            mBottomtxt.setText(mBottmLine);
-            mHeaderBellowtxt.setText(mHeaderBellow);
-            TextView txt = (TextView) v.findViewById(R.id.header_txt);
-            txt.setText(mHeader);
-            ViewGroup header = (ViewGroup) view.findViewById(R.id.wraper2);
-            header.addView(v);
-        }
 
         View[] navigationViews = new View[] {
                 view.findViewById(R.id.btn_facebook_signin),

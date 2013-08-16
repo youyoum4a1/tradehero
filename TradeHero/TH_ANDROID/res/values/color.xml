@@ -3,7 +3,7 @@
 
     <color name="actionbar_gradient1">#6B748E</color>
     <color name="actionbar_gradient2">#929CBA</color>
-    <color name="round_rectangle1">#4E6DAE</color>
+    <color name="round_rectangle1">#A04E6DAE</color>
     <color name="round_rectangle2">#2B4170</color>
     <color name="round_rectangle3">#00CCED</color>
     <color name="round_rectangle4">#0087CE</color>
@@ -19,8 +19,8 @@
     <color name="twit_color2">#0087CE</color>
     <color name="linkd_color1">#009CDA</color>
     <color name="linkd_color2">#0167A3</color>
-    <color name="gray_2">#AFAFAF</color>
-    <color name="gray_1">#C0C0C0</color>
+    <color name="gray_2">#A0AFAFAF</color>
+    <color name="gray_1">#A0C0C0C0</color>
     <color name="gray_3">#F3F3F3</color>
     <color name="gray_4">#F6F6F6</color>
     <color name="font_roi">#00CC00</color>
@@ -39,4 +39,5 @@
 	<color name="stock_info_bg">#ffebebeb</color>
 	<color name="tab_color">#313131</color>
 	<color name="tab_scroll_color">#217ac8</color>
-   </resources>
+  <color name="authentication_welcome_bg">#f2f2f2</color>
+</resources>

@@ -4,7 +4,7 @@
     <string name="app_name">TradeHero</string>
     <string name="action_settings">Settings</string>
     <string name="hello_world">Hello world!</string>
-    <string name="new_user">New User</string>
+    <string name="authentication_welcome_new_user">New User</string>
     <string name="sign_in">Sign In</string>
     <string name="facbook">Facebook</string>
     <string name="linkedin">LinkedIn</string>
@@ -94,5 +94,6 @@
   <string name="API_URL">https://www.tradehero.mobi/api</string>
   <string name="fh_please_wait">Please wait</string>
   <string name="fh_connecting_to_facebook">Connecting ...</string>
+  <string name="version_text">v1.5(2813)</string>
 
 </resources>

@@ -13,14 +13,12 @@ public class WelcomeFragment extends AuthenticationFragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState)
     {
-        View view = inflater.inflate(R.layout.welcome_screen, container, false);
+        View view = inflater.inflate(R.layout.authentication_welcome_screen, container, false);
 
-        Button btnNewUser = (Button) view.findViewById(R.id.btn_signup);
-        btnNewUser.setOnClickListener(onClickListener);
+        view.findViewById(R.id.btn_signup).setOnClickListener(onClickListener);
+        view.findViewById(R.id.btn_signin).setOnClickListener(onClickListener);
 
-        Button btnSignIn = (Button)view.findViewById(R.id.btn_signin);
-        btnSignIn.setOnClickListener(onClickListener);
-
+        getSherlockActivity().getSupportActionBar().hide();
         return view;
     }
 

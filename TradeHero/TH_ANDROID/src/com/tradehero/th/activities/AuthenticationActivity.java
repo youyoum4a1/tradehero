@@ -4,9 +4,12 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
+import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
+import com.actionbarsherlock.view.Menu;
 import com.tradehero.kit.utils.THLog;
 import com.tradehero.th.R;
 import com.tradehero.th.api.users.UserBaseDTO;
@@ -82,6 +85,13 @@ public class AuthenticationActivity extends SherlockFragmentActivity
         }
     }
 
+    @Override public boolean onCreateOptionsMenu(Menu menu)
+    {
+        getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+        getSupportActionBar().setCustomView(R.layout.topbar);
+        return super.onCreateOptionsMenu(menu);
+    }
+
     private static class FragmentFactory
     {
         private static Map<Class<?>, Fragment> instances = new HashMap<>();
@@ -135,7 +145,8 @@ public class AuthenticationActivity extends SherlockFragmentActivity
                     {
                         progressDialog = ProgressDialog.show(AuthenticationActivity.this,
                                 Application.context().getResourceString(R.string.fh_please_wait),
-                                Application.getResourceString(R.string.fh_connecting_to_facebook), true);
+                                Application.getResourceString(R.string.fh_connecting_to_facebook),
+                                true);
                     }
                 });
                 break;

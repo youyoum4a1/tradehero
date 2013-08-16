@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    style="@style/AppBaseTheme.Welcome">
+
+  <ImageView
+      android:id="@+id/authentication_welcome_logo_text"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_gravity="center|top"
+      android:src="@drawable/logo_text"
+      android:layout_marginBottom="30dip"/>
+
+  <Button
+      android:id="@+id/btn_signup"
+      android:layout_below="@id/authentication_welcome_logo_text"
+      android:layout_width="match_parent"
+      android:layout_height="80dp"
+      android:background="@drawable/newuser_button_selector"
+      android:text="@string/authentication_welcome_new_user"
+      android:textColor="@color/white"
+      android:textSize="30dip"
+      android:textStyle="bold"/>
+
+  <LinearLayout
+      android:id="@+id/btn_signin"
+      android:layout_below="@id/btn_signup"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="20dp"
+      android:padding="5dip"
+      android:orientation="vertical"
+      android:background="@drawable/signin_button_selector"
+      style="@android:style/Widget.Button">
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="top|center_horizontal"
+        android:text="@string/existing_user"
+        android:textColor="@color/gray_1"
+        android:textSize="15dip"
+        android:textStyle="bold"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/sign_in"
+        android:gravity="top|center_horizontal"
+        android:textColor="@color/signinfnt_color"
+        android:textSize="18dip"
+        android:textStyle="bold"
+        android:layout_marginTop="-6dip"/>
+  </LinearLayout>
+
+
+  <TextView
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:text="@string/version_text"
+      android:gravity="top|center_horizontal"
+      android:textColor="@color/signinfnt_color"
+      android:layout_alignParentBottom="true"
+      android:layout_marginBottom="30dip"
+      />
+</RelativeLayout>

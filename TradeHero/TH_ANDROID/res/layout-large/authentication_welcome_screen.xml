@@ -17,7 +17,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center|top"
         android:paddingTop="40dp"
-        android:src="@drawable/th_text"
+        android:src="@drawable/logo_text"
         android:paddingLeft="20dp"
         android:paddingRight="20dp" />
 
@@ -30,7 +30,7 @@
         android:layout_marginTop="30dp"
         android:background="@drawable/roundrectangle_fb"
         android:padding="20dp"
-        android:text="@string/new_user"
+        android:text="@string/authentication_welcome_new_user"
         android:textColor="@color/white"
         android:textSize="20sp"
         android:textStyle="normal" />

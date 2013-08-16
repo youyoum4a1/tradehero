@@ -1,8 +1,6 @@
 package com.tradehero.th.fragments.authentication;
 
 import com.tradehero.th.models.Request;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -15,8 +13,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -37,7 +33,6 @@ import com.tradehero.th.utills.Constants;
 import com.tradehero.th.utills.PUtills;
 import com.tradehero.th.utills.Util;
 import com.tradehero.th.webbrowser.WebViewActivity;
-import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -112,7 +107,7 @@ public class SignUpFragment extends Fragment
         mSharedPreferences = getActivity().getApplicationContext()
                 .getSharedPreferences(Constants.SHARED_PREF, 0);
 
-        View view = inflater.inflate(R.layout.sign_in_screen, container, false);
+        View view = inflater.inflate(R.layout.authentication_sign_up, container, false);
         _initSetup(view);
 
         return view;
@@ -121,26 +116,8 @@ public class SignUpFragment extends Fragment
     private void _initSetup(View view)
     {
 
-        mData = getArguments();
         mRequestTaskCompleteListener = this;
-        if (mData != null)
-        {
-            mBottmLine = mData.getString("BOTTOM_LINE");
-            mHeader = mData.getString("HEADER_LINE");
-            mHeaderBellow = mData.getString("HEADER_LINEBELLOW");
-            activityType = mData.getInt("ACTIVITY_TYPE", 0);
-            inflater = (LayoutInflater) getActivity().getSystemService(
-                    Context.LAYOUT_INFLATER_SERVICE);
-            v = inflater.inflate(R.layout.topbar, null);
-            mBottomtxt = (TextView) view.findViewById(R.id.txt_bottom);
-            mHeaderBellowtxt = (TextView) view.findViewById(R.id.signin_with);
-            mBottomtxt.setText(mBottmLine);
-            mHeaderBellowtxt.setText(mHeaderBellow);
-            TextView txt = (TextView) v.findViewById(R.id.header_txt);
-            txt.setText(mHeader);
-            ViewGroup header = (ViewGroup) view.findViewById(R.id.wraper2);
-            header.addView(v);
-        }
+
         mFaceBookBtn = (Button) view.findViewById(R.id.btn_facebook_signin);
         mTwitterBtn = (Button) view.findViewById(R.id.btn_twitter_signin);
         mLinkedinBtn = (Button) view.findViewById(R.id.btn_linkedin_signin);
