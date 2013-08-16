@@ -73,7 +73,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="10dp"
         android:text="@string/forgot_password"
-        android:textColor="@drawable/authentication_link_text"
+        android:textColor="@color/authentication_link_text"
         android:textSize="15sp"
         android:textStyle="normal" />
 

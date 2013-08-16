@@ -6,7 +6,7 @@
         <option name="device" value="2.7in QVGA" />
         <option name="deviceConfiguration" value="Portrait" />
         <option name="localeLanguage" value="es" />
-        <option name="targetHashString" value="android-14" />
+        <option name="targetHashString" value="android-17" />
         <option name="theme" value="AppBaseTheme" />
       </profile>
     </option>
@@ -18,7 +18,7 @@
         <option name="device" value="2.7in QVGA" />
         <option name="dockMode" value="" />
         <option name="nightMode" value="notnight" />
-        <option name="targetHashString" value="android-14" />
+        <option name="targetHashString" value="android-17" />
         <option name="theme" value="AppBaseTheme" />
         <option name="visible" value="false" />
       </GlobalState>
@@ -92,7 +92,6 @@
     <file path="$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/utills/ImageUtils.java" changelist="483fef33-cda5-4250-9887-8b840b74f5de" time="1376470846229" ignored="false" />
     <file path="$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/utills/TrendUtils.java" changelist="483fef33-cda5-4250-9887-8b840b74f5de" time="1376470840801" ignored="false" />
     <file path="/AndroidManifest.xml" changelist="483fef33-cda5-4250-9887-8b840b74f5de" time="1376621308512" ignored="false" />
-    <file path="$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/models/TradeofWeek.java" changelist="483fef33-cda5-4250-9887-8b840b74f5de" time="1376471058719" ignored="false" />
     <file path="/ProfileContentAdapter.java" changelist="483fef33-cda5-4250-9887-8b840b74f5de" time="1376471195399" ignored="false" />
     <file path="/InitialSignUpFragment.java" changelist="483fef33-cda5-4250-9887-8b840b74f5de" time="1376542224132" ignored="false" />
     <file path="/RssReader.java" changelist="483fef33-cda5-4250-9887-8b840b74f5de" time="1376472356441" ignored="false" />
@@ -169,8 +168,9 @@
     <file path="/authentication_twitter_button_xml.xml" changelist="483fef33-cda5-4250-9887-8b840b74f5de" time="1376643174379" ignored="false" />
     <file path="/authentication_linkedin_button_xml.xml" changelist="483fef33-cda5-4250-9887-8b840b74f5de" time="1376643327451" ignored="false" />
     <file path="/btn_linkedin_background_pressed.xml" changelist="483fef33-cda5-4250-9887-8b840b74f5de" time="1376643402096" ignored="false" />
-    <file path="/login_withemail_screen.xml" changelist="483fef33-cda5-4250-9887-8b840b74f5de" time="1376643765628" ignored="false" />
+    <file path="/login_withemail_screen.xml" changelist="483fef33-cda5-4250-9887-8b840b74f5de" time="1376645989060" ignored="false" />
     <file path="$PROJECT_DIR$/TradeHero/TH_ANDROID/res/values/colors.xml" changelist="483fef33-cda5-4250-9887-8b840b74f5de" time="1376644249108" ignored="false" />
+    <file path="/TradeofWeek.java" changelist="483fef33-cda5-4250-9887-8b840b74f5de" time="1376646013299" ignored="false" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -231,36 +231,47 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="authentication_sign_in.xml" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="authentication_sign_in.xml" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/res/layout/authentication_sign_in.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="46" column="36" selection-start="1780" selection-end="1780" vertical-scroll-proportion="1.3464053">
+            <state line="46" column="36" selection-start="1780" selection-end="1780" vertical-scroll-proportion="-17.962963">
               <folding />
             </state>
           </provider>
           <provider editor-type-id="android-designer">
             <state />
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="drawables.xml" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/res/values/drawables.xml">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="2" column="51" selection-start="96" selection-end="102" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
           </provider>
         </entry>
       </file>
       <file leaf-file-name="login_withemail_screen.xml" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/res/layout/login_withemail_screen.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="75" column="61" selection-start="2773" selection-end="2773" vertical-scroll-proportion="0.0">
+            <state line="75" column="33" selection-start="2745" selection-end="2745" vertical-scroll-proportion="-18.148148">
               <folding />
             </state>
           </provider>
           <provider editor-type-id="android-designer">
             <state />
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="TradeWeekAdapter.java" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/adapters/TradeWeekAdapter.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="17" column="13" selection-start="502" selection-end="502" vertical-scroll-proportion="0.33257404">
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="App.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/application/App.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="11" column="30" selection-start="281" selection-end="281" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
           </provider>
         </entry>
       </file>
@@ -292,7 +303,6 @@
   <component name="IdeDocumentHistory">
     <option name="changedFiles">
       <list>
-        <option value="$PROJECT_DIR$/TradeHero/TH_ANDROID/res/drawable/authentication_facebook_button_xml.xml" />
         <option value="$PROJECT_DIR$/TradeHero/TH_ANDROID/res/drawable/btn_facebook_background_pressed.xml" />
         <option value="$PROJECT_DIR$/TradeHero/TH_ANDROID/res/drawable/btn_facebook_background_normal.xml" />
         <option value="$PROJECT_DIR$/TradeHero/TH_ANDROID/res/drawable/authentication_twitter_button_xml.xml" />
@@ -304,18 +314,19 @@
         <option value="$PROJECT_DIR$/TradeHero/TH_ANDROID/res/values/dimens.xml" />
         <option value="$PROJECT_DIR$/TradeHero/TH_ANDROID/res/drawable/color_selector.xml" />
         <option value="$PROJECT_DIR$/TradeHero/TH_ANDROID/res/values/color.xml" />
-        <option value="$PROJECT_DIR$/TradeHero/TH_ANDROID/res/layout/login_withemail_screen.xml" />
         <option value="$PROJECT_DIR$/TradeHero/TH_ANDROID/res/values/strings.xml" />
         <option value="$PROJECT_DIR$/TradeHero/TH_ANDROID/res/layout/authentication_agreement.xml" />
         <option value="$PROJECT_DIR$/TradeHero/TH_ANDROID/res/layout/authentication_sign_in.xml" />
+        <option value="$PROJECT_DIR$/TradeHero/TH_ANDROID/res/layout/login_withemail_screen.xml" />
+        <option value="$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/models/TradeofWeek.java" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
     <option name="x" value="-8" />
-    <option name="y" value="-8" />
+    <option name="y" value="22" />
     <option name="width" value="1936" />
-    <option name="height" value="1056" />
+    <option name="height" value="815" />
   </component>
   <component name="ProjectInspectionProfilesVisibleTreeState">
     <entry key="Project Default">
@@ -349,6 +360,8 @@
     <OptionsSetting value="true" id="Update" />
     <OptionsSetting value="true" id="Status" />
     <OptionsSetting value="true" id="Edit" />
+    <OptionsSetting value="true" id="Undo Check Out" />
+    <OptionsSetting value="true" id="Get Latest Version" />
     <ConfirmationsSetting value="0" id="Add" />
     <ConfirmationsSetting value="0" id="Remove" />
   </component>
@@ -368,6 +381,7 @@
       <sortByType />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -456,6 +470,32 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
+              <option name="myItemId" value="models" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="TH_Android" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="TH_ANDROID" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="tradehero" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="th" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
               <option name="myItemId" value="auth" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
@@ -477,6 +517,14 @@
               <option name="myItemId" value="tradehero" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="th" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="adapters" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
           </PATH>
           <PATH>
             <PATH_ELEMENT>
@@ -488,25 +536,28 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="res" />
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="tradehero" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
         </subPane>
       </pane>
-      <pane id="Scope" />
       <pane id="PackagesPane" />
     </panes>
   </component>
   <component name="PropertiesComponent">
     <property name="project.structure.last.edited" value="Modules" />
-    <property name="project.structure.proportion" value="0.15" />
-    <property name="jdk.selected.JAVA_MODULE" value="Maven Android 4.0 Platform" />
     <property name="OverrideImplement.combined" value="true" />
+    <property name="jdk.selected.JAVA_MODULE" value="Maven Android 4.0 Platform" />
+    <property name="project.structure.proportion" value="0.15" />
     <property name="options.splitter.main.proportions" value="0.3" />
     <property name="Repository.Attach.JavaDocs" value="false" />
-    <property name="MemberChooser.sorted" value="false" />
     <property name="recentsLimit" value="5" />
+    <property name="MemberChooser.sorted" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="GoToClass.includeJavaFiles" value="false" />
     <property name="GoToClass.toSaveIncludeLibraries" value="false" />
@@ -585,6 +636,19 @@
       <option name="PORT" value="5005" />
       <method />
     </configuration>
+    <configuration default="true" type="Applet" factoryName="Applet">
+      <module name="" />
+      <option name="MAIN_CLASS_NAME" />
+      <option name="HTML_FILE_NAME" />
+      <option name="HTML_USED" value="false" />
+      <option name="WIDTH" value="400" />
+      <option name="HEIGHT" value="300" />
+      <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
+      <option name="VM_PARAMETERS" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <method />
+    </configuration>
     <configuration default="true" type="TestNG" factoryName="TestNG">
       <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
       <module name="" />
@@ -611,19 +675,6 @@
       <envs />
       <properties />
       <listeners />
-      <method />
-    </configuration>
-    <configuration default="true" type="Applet" factoryName="Applet">
-      <module name="" />
-      <option name="MAIN_CLASS_NAME" />
-      <option name="HTML_FILE_NAME" />
-      <option name="HTML_USED" value="false" />
-      <option name="WIDTH" value="400" />
-      <option name="HEIGHT" value="300" />
-      <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
-      <option name="VM_PARAMETERS" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" />
       <method />
     </configuration>
     <configuration default="true" type="Application" factoryName="Application">
@@ -751,7 +802,7 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
+    <frame x="-8" y="22" width="1936" height="815" extended-state="0" />
     <editor active="false" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
@@ -759,6 +810,7 @@
       <window_info id="Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32977587" sideWeight="0.6004464" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="CheckStyle" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4029018" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="IDEtalk Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
@@ -766,13 +818,15 @@
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="IDEtalk" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.328125" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32805756" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="CDI" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
       <window_info id="Android" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32924107" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32924107" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.20833333" sideWeight="0.59709823" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.20793651" sideWeight="0.6719425" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Palette&#9;" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32924226" sideWeight="0.59709823" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.2497332" sideWeight="0.6707589" order="2" side_tool="false" content_ui="combo" />
@@ -848,75 +902,44 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/res/drawable/btn_facebook_background_normal.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="6" column="44" selection-start="266" selection-end="266" vertical-scroll-proportion="0.2107438">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/res/drawable/authentication_facebook_button_xml.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="4" column="63" selection-start="289" selection-end="289" vertical-scroll-proportion="0.123411976">
-          <folding />
-        </state>
+        <state line="4" column="63" selection-start="289" selection-end="289" vertical-scroll-proportion="0.123411976" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/res/drawable/btn_twitter_background_pressed.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="1" column="30" selection-start="39" selection-end="39" vertical-scroll-proportion="0.035123967">
-          <folding />
-        </state>
+        <state line="1" column="30" selection-start="39" selection-end="39" vertical-scroll-proportion="0.035123967" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/res/drawable/authentication_twitter_button_xml.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="3" column="50" selection-start="265" selection-end="265" vertical-scroll-proportion="0.1053719">
-          <folding />
-        </state>
+        <state line="3" column="50" selection-start="265" selection-end="265" vertical-scroll-proportion="0.1053719" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/res/drawable/btn_twitter_background_normal.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="5" column="56" selection-start="193" selection-end="216" vertical-scroll-proportion="0.17561984">
-          <folding />
-        </state>
+        <state line="5" column="56" selection-start="193" selection-end="216" vertical-scroll-proportion="0.17561984" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/res/drawable/authentication_linkedin_button_xml.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="3" column="51" selection-start="266" selection-end="266" vertical-scroll-proportion="0.1053719">
-          <folding />
-        </state>
+        <state line="3" column="51" selection-start="266" selection-end="266" vertical-scroll-proportion="0.1053719" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/res/drawable/btn_linkedin_background_pressed.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="7" column="82" selection-start="329" selection-end="409" vertical-scroll-proportion="0.24586777">
-          <folding />
-        </state>
+        <state line="7" column="82" selection-start="329" selection-end="409" vertical-scroll-proportion="0.24586777" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/res/drawable/btn_linkedin_background_normal.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="9" column="8" selection-start="0" selection-end="377" vertical-scroll-proportion="0.3161157">
-          <folding />
-        </state>
+        <state line="9" column="8" selection-start="0" selection-end="377" vertical-scroll-proportion="0.3161157" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/res/layout/authentication_social_auth.xml">
       <provider selected="true" editor-type-id="text-editor">
         <state line="18" column="7" selection-start="631" selection-end="631" vertical-scroll-proportion="0.09150327">
-          <folding />
-        </state>
-      </provider>
-      <provider editor-type-id="android-designer">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/res/layout/login_withemail_screen.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="75" column="61" selection-start="2773" selection-end="2773" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
@@ -938,18 +961,9 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/res/values/drawables.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="2" column="51" selection-start="96" selection-end="102" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/res/layout/authentication_agreement.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="12" column="25" selection-start="483" selection-end="514" vertical-scroll-proportion="0.24878049">
-          <folding />
-        </state>
+        <state line="12" column="25" selection-start="483" selection-end="514" vertical-scroll-proportion="0.24878049" />
       </provider>
       <provider editor-type-id="android-designer">
         <state />
@@ -964,12 +978,38 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/res/layout/authentication_sign_in.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="46" column="36" selection-start="1780" selection-end="1780" vertical-scroll-proportion="1.3464053">
+        <state line="46" column="36" selection-start="1780" selection-end="1780" vertical-scroll-proportion="-17.962963">
           <folding />
         </state>
       </provider>
       <provider editor-type-id="android-designer">
         <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/application/App.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="11" column="30" selection-start="281" selection-end="281" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/res/layout/login_withemail_screen.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="75" column="33" selection-start="2745" selection-end="2745" vertical-scroll-proportion="-18.148148">
+          <folding />
+        </state>
+      </provider>
+      <provider editor-type-id="android-designer">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/src/com/tradehero/th/adapters/TradeWeekAdapter.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="17" column="13" selection-start="502" selection-end="502" vertical-scroll-proportion="0.33257404">
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
       </provider>
     </entry>
   </component>
