@@ -65,7 +65,7 @@ public class SignUpFragment extends Fragment
     public static final int OP_TWITTER = 33333;
     private Button mFaceBookBtn, mTwitterBtn, mLinkedinBtn;
     private Session.StatusCallback statusCallback = new SessionStatusCallback();
-    private TextView mEmailTv, mTerms;
+    private View mEmailTv, mTerms;
     private TextView mBottomtxt, mHeaderBellowtxt;
     private Context mContext;
     private LayoutInflater inflater;
@@ -121,8 +121,8 @@ public class SignUpFragment extends Fragment
         mFaceBookBtn = (Button) view.findViewById(R.id.btn_facebook_signin);
         mTwitterBtn = (Button) view.findViewById(R.id.btn_twitter_signin);
         mLinkedinBtn = (Button) view.findViewById(R.id.btn_linkedin_signin);
-        mEmailTv = (TextView) view.findViewById(R.id.txt_email_sign_up);
-        mTerms = (TextView) view.findViewById(R.id.txt_term_of_service_signin);
+        mEmailTv = view.findViewById(R.id.txt_email_sign_up);
+        mTerms = view.findViewById(R.id.txt_term_of_service_signin);
 
         mFaceBookBtn.setOnClickListener(this);
         mTwitterBtn.setOnClickListener(this);

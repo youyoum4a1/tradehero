@@ -23,17 +23,34 @@
       android:layout_centerHorizontal="true"
       android:layout_below="@+id/authentication_sign_up_with"/>
 
-  <TextView
+  <LinearLayout
       android:id="@+id/txt_email_sign_up"
+      android:orientation="horizontal"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:text="@string/authentication_sign_up_with_email"
-      android:textColor="@color/text_gray_normal"
-      android:textSize="@dimen/authentication_head_text_size"
       android:layout_below="@id/authentication_social_sign_up"
-      android:gravity="center_horizontal"
       android:layout_marginTop="10dip"
-      />
+      android:layout_marginLeft="5sp"
+      >
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/authentication_sign_up_with_email"
+        android:textColor="@color/text_gray_normal"
+        android:textSize="@dimen/authentication_head_text_size"
+        android:singleLine="true"
+        />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/email_address"
+        android:textColor="@color/authentication_link_text"
+        android:textSize="@dimen/authentication_head_text_size"
+        android:paddingLeft="8sp"
+        android:singleLine="true"
+        />
+
+  </LinearLayout>
 
   <include
       android:layout_width="match_parent"

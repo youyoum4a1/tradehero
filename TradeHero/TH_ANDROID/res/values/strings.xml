@@ -25,8 +25,8 @@
     <string name="network_error">Check your Network connection !</string>
     <string name="sign_up">Sign Up</string>
     <string name="authentication_sign_in_with">sign in with</string>
-    <string name="authentication_sign_up_with_email">or sign up with an </string>
-    <string name="authentication_sign_in_with_email">or sign in with an </string>
+    <string name="authentication_sign_up_with_email">or sign up with an</string>
+    <string name="authentication_sign_in_with_email">or sign in with an</string>
     <string name="forgot_password">forgot your password ?</string>
     <string name="existing_user">existing user</string>
     <string name="field_not_balnk">Field should not be left blank.</string>

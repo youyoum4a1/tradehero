@@ -142,7 +142,7 @@ public class AuthenticationActivity extends SherlockFragmentActivity
                     @Override public void onStart()
                     {
                         progressDialog = ProgressDialog.show(AuthenticationActivity.this,
-                                Application.context().getResourceString(R.string.fh_please_wait),
+                                Application.getResourceString(R.string.fh_please_wait),
                                 Application.getResourceString(R.string.fh_connecting_to_facebook),
                                 true);
                     }
