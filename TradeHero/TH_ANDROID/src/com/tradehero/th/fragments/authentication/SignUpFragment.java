@@ -53,7 +53,7 @@ import com.google.code.linkedinapi.client.oauth.LinkedInOAuthServiceFactory;
 import com.google.code.linkedinapi.client.oauth.LinkedInRequestToken;
 import com.google.code.linkedinapi.schema.Person;
 
-public class SignUpFragment extends Fragment
+public class SignUpFragment extends AuthenticationFragment
         implements OnClickListener, RequestTaskCompleteListener
 {
 
@@ -63,7 +63,6 @@ public class SignUpFragment extends Fragment
     public static final int OP_FB = 11111;
     public static final int OP_LINKEDIN = 22222;
     public static final int OP_TWITTER = 33333;
-    private Button mFaceBookBtn, mTwitterBtn, mLinkedinBtn;
     private Session.StatusCallback statusCallback = new SessionStatusCallback();
     private View mEmailTv, mTerms;
     private TextView mBottomtxt, mHeaderBellowtxt;
@@ -118,15 +117,11 @@ public class SignUpFragment extends Fragment
 
         mRequestTaskCompleteListener = this;
 
-        mFaceBookBtn = (Button) view.findViewById(R.id.btn_facebook_signin);
-        mTwitterBtn = (Button) view.findViewById(R.id.btn_twitter_signin);
-        mLinkedinBtn = (Button) view.findViewById(R.id.btn_linkedin_signin);
+        view.findViewById(R.id.btn_facebook_signin).setOnClickListener(onClickListener);
+        view.findViewById(R.id.btn_twitter_signin).setOnClickListener(this);
+        view.findViewById(R.id.btn_linkedin_signin).setOnClickListener(this);
         mEmailTv = view.findViewById(R.id.txt_email_sign_up);
         mTerms = view.findViewById(R.id.txt_term_of_service_signin);
-
-        mFaceBookBtn.setOnClickListener(this);
-        mTwitterBtn.setOnClickListener(this);
-        mLinkedinBtn.setOnClickListener(this);
 
         mProgressDialog = new ProgressDialog(getActivity());
         mProgressDialog.setMessage(getResources().getString(R.string.loading_loading));
@@ -146,18 +141,6 @@ public class SignUpFragment extends Fragment
 
         switch (v.getId())
         {
-            case R.id.btn_facebook_signin:
-                if (NetworkStatus.getInstance().isConnected(getActivity()))
-                {
-                    operationType = OP_FB;
-                    onClickLoginFaceBook();
-                }
-                else
-                {
-                    Util.show_toast(getActivity(),
-                            getResources().getString(R.string.network_error));
-                }
-                break;
             case R.id.btn_twitter_signin:
                 if (NetworkStatus.getInstance().isConnected(getActivity()))
                 {
