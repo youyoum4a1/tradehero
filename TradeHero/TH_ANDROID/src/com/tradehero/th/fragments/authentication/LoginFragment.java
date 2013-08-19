@@ -56,7 +56,7 @@ public class LoginFragment extends Fragment
             Bundle savedInstanceState)
     {
         //View view = null;
-        View view = inflater.inflate(R.layout.login_withemail_screen, container, false);
+        View view = inflater.inflate(R.layout.authentication_email_sign_in, container, false);
         _initView(view);
         mContext = getActivity();
         return view;
@@ -69,8 +69,6 @@ public class LoginFragment extends Fragment
         v = inflater.inflate(R.layout.topbar, null);
         TextView txt = (TextView) v.findViewById(R.id.header_txt);
         txt.setText(getString(R.string.sign_in));
-        ViewGroup header = (ViewGroup) view.findViewById(R.id.loginemail_wraper);
-        header.addView(v);
         mSignIn = (Button) view.findViewById(R.id.btn_login);
         mForgotPassword = (TextView) view.findViewById(R.id.txt_forgotpwd);
         inputEmailName = (EditText) view.findViewById(R.id.et_emailid_login);
@@ -337,7 +335,7 @@ public class LoginFragment extends Fragment
             case R.id.et_pwd_login:
                 if (!TextUtils.isEmpty(inputEmailName.getText().toString()))
                 {
-                    mSignIn.setBackgroundResource(R.drawable.signin_button_selector);
+                    mSignIn.setBackgroundResource(R.drawable.authentication_sign_in_button_xml);
                 }
                 else
                 {
@@ -350,7 +348,7 @@ public class LoginFragment extends Fragment
 
                 if (!TextUtils.isEmpty(inputPassword.getText().toString()))
                 {
-                    mSignIn.setBackgroundResource(R.drawable.signin_button_selector);
+                    mSignIn.setBackgroundResource(R.drawable.authentication_sign_in_button_xml);
                 }
                 else
                 {

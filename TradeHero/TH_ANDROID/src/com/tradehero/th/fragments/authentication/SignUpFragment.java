@@ -14,7 +14,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import com.tradehero.th.R;
@@ -39,7 +38,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -64,7 +62,6 @@ public class SignUpFragment extends AuthenticationFragment
     public static final int OP_LINKEDIN = 22222;
     public static final int OP_TWITTER = 33333;
     private Session.StatusCallback statusCallback = new SessionStatusCallback();
-    private View mEmailTv, mTerms;
     private TextView mBottomtxt, mHeaderBellowtxt;
     private Context mContext;
     private LayoutInflater inflater;
@@ -118,10 +115,9 @@ public class SignUpFragment extends AuthenticationFragment
         mRequestTaskCompleteListener = this;
 
         view.findViewById(R.id.btn_facebook_signin).setOnClickListener(onClickListener);
+        view.findViewById(R.id.txt_email_sign_up).setOnClickListener(onClickListener);
         view.findViewById(R.id.btn_twitter_signin).setOnClickListener(this);
         view.findViewById(R.id.btn_linkedin_signin).setOnClickListener(this);
-        mEmailTv = view.findViewById(R.id.txt_email_sign_up);
-        mTerms = view.findViewById(R.id.txt_term_of_service_signin);
 
         mProgressDialog = new ProgressDialog(getActivity());
         mProgressDialog.setMessage(getResources().getString(R.string.loading_loading));
@@ -175,33 +171,6 @@ public class SignUpFragment extends AuthenticationFragment
                             getResources().getString(R.string.loading_loading));
                 }
 
-                break;
-            case R.id.txt_email_sign_up:
-                if (activityType == LOGIN)
-                {
-                    //startActivity(new Intent(getActivity(),LoginActivity.class));
-                    fragmentManager = getActivity().getSupportFragmentManager();
-                    fragmentTransaction = fragmentManager.beginTransaction();
-                    fragmentTransaction.setCustomAnimations(R.anim.slide_right_in,
-                            R.anim.slide_right_out, R.anim.slide_left_out, R.anim.slide_right_out);
-                    LoginFragment fragment = new LoginFragment();
-                    fragmentTransaction.replace(R.id.sign_in_up_content, fragment, "login");
-                    fragmentTransaction.addToBackStack("login");
-                    fragmentTransaction.commit();
-                }
-                else
-                {
-                    //startActivity(new Intent(getActivity(),EmailRegistrationActivity.class));
-                    fragmentManager = getActivity().getSupportFragmentManager();
-                    fragmentTransaction = fragmentManager.beginTransaction();
-                    fragmentTransaction.setCustomAnimations(R.anim.slide_right_in,
-                            R.anim.slide_right_out, R.anim.slide_left_out, R.anim.slide_right_out);
-                    EmailRegistrationFragment fragment = new EmailRegistrationFragment();
-                    fragmentTransaction.replace(R.id.sign_in_up_content, fragment,
-                            "email_registration");
-                    fragmentTransaction.addToBackStack("email_registration");
-                    fragmentTransaction.commit();
-                }
                 break;
             case R.id.txt_term_of_service_signin:
                 Intent pWebView = new Intent(getActivity(), WebViewActivity.class);

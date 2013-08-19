@@ -13,12 +13,14 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.application.App;
 import com.tradehero.th.base.Application;
+import com.tradehero.th.fragments.authentication.EmailSignUpFragment;
 import com.tradehero.th.fragments.authentication.LoginFragment;
 import com.tradehero.th.fragments.authentication.SignInFragment;
 import com.tradehero.th.fragments.authentication.SignUpFragment;
 import com.tradehero.th.fragments.authentication.WelcomeFragment;
 import com.tradehero.th.misc.callback.LogInCallback;
 import com.tradehero.th.misc.exception.THException;
+import com.tradehero.th.utills.Constants;
 import com.tradehero.th.utils.FacebookUtils;
 import com.tradehero.th.utils.LinkedInUtils;
 import com.tradehero.th.utils.TwitterUtils;
@@ -64,7 +66,8 @@ public class AuthenticationActivity extends SherlockFragmentActivity
         mapViewFragment.put(R.id.authentication_sign_up, SignUpFragment.class);
         mapViewFragment.put(R.id.authentication_sign_in, SignInFragment.class);
         mapViewFragment.put(R.id.txt_email_sign_in, LoginFragment.class);
-        mapViewFragment.put(R.id.txt_term_of_service_signin, WebViewActivity.class);
+        mapViewFragment.put(R.id.txt_email_sign_up, EmailSignUpFragment.class);
+        //mapViewFragment.put(R.id.txt_term_of_service_signin, WebViewActivity.class);
     }
 
     @Override protected void onSaveInstanceState(Bundle outState)
@@ -176,6 +179,12 @@ public class AuthenticationActivity extends SherlockFragmentActivity
                         //To change body of implemented methods use File | Settings | File Templates.
                     }
                 });
+                break;
+
+            case R.id.txt_term_of_service_signin:
+                Intent pWebView = new Intent(this, WebViewActivity.class);
+                pWebView.putExtra(WebViewActivity.SHOW_URL, Constants.PRIVACY_TERMS_OF_SERVICE);
+                startActivity(pWebView);
                 break;
         }
     }

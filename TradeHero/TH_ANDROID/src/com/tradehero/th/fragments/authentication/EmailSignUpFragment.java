@@ -45,7 +45,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class EmailRegistrationFragment extends Fragment
+public class EmailSignUpFragment extends Fragment
         implements OnClickListener, RequestTaskCompleteListener, OnFocusChangeListener
 {
 
@@ -83,7 +83,6 @@ public class EmailRegistrationFragment extends Fragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState)
     {
-        //View view = null;
         View view = inflater.inflate(R.layout.user_register, container, false);
         initSetup(view);
         return view;
@@ -94,11 +93,6 @@ public class EmailRegistrationFragment extends Fragment
         mContext = getActivity();
         mLayoutInflater =
                 (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        mView = mLayoutInflater.inflate(R.layout.topbar, null);
-        TextView txt = (TextView) mView.findViewById(R.id.header_txt);
-        txt.setText("Sign Up with Email");
-        ViewGroup header = (ViewGroup) view.findViewById(R.id.wraper);
-        header.addView(mView);
         mEmailId = (EditText) view.findViewById(R.id.et_emailid);
         mPasword = (EditText) view.findViewById(R.id.et_password);
         mConfirmPassword = (EditText) view.findViewById(R.id.et_confirm_password);
@@ -278,7 +272,8 @@ public class EmailRegistrationFragment extends Fragment
                     Util.show_toast(getActivity(),
                             getResources().getString(R.string.network_error));
                 }
-            } catch (JSONException e)
+            }
+            catch (JSONException e)
             {
                 e.printStackTrace();
             }
@@ -329,7 +324,7 @@ public class EmailRegistrationFragment extends Fragment
         }
 
 		/*if(processRequest)
-		{
+        {
 			new Imageupload().execute(lDName,lEmail,lFName,lLName,lPassword,lConfirmPassword);
 		}
 */
@@ -376,7 +371,8 @@ public class EmailRegistrationFragment extends Fragment
                     startActivity(new Intent(getActivity(), DashboardActivity.class));
                     getActivity().finish();
                 }
-            } catch (JSONException e)
+            }
+            catch (JSONException e)
             {
                 e.printStackTrace();
             }
@@ -434,7 +430,8 @@ public class EmailRegistrationFragment extends Fragment
                     Bitmap circleBitmap = Util.getRoundedShape(imageBmp);
                     mOptionalImage.setImageBitmap(
                             Util.getImagerotation(selectedPath, circleBitmap));
-                } catch (Exception e)
+                }
+                catch (Exception e)
                 {
                     e.printStackTrace();
                 }
@@ -548,7 +545,8 @@ public class EmailRegistrationFragment extends Fragment
                     try
                     {
                         Thread.sleep(500);
-                    } catch (InterruptedException e)
+                    }
+                    catch (InterruptedException e)
                     {
                         e.printStackTrace();
                     }
@@ -559,14 +557,16 @@ public class EmailRegistrationFragment extends Fragment
                     try
                     {
                         Thread.sleep(500);
-                    } catch (InterruptedException e)
+                    }
+                    catch (InterruptedException e)
                     {
                         e.printStackTrace();
                     }
 
                     return false;
                 }
-            } catch (JSONException e)
+            }
+            catch (JSONException e)
             {
                 e.printStackTrace();
             }
@@ -582,7 +582,8 @@ public class EmailRegistrationFragment extends Fragment
             try
             {
                 Thread.sleep(500);
-            } catch (InterruptedException e)
+            }
+            catch (InterruptedException e)
             {
                 e.printStackTrace();
             }
@@ -593,7 +594,8 @@ public class EmailRegistrationFragment extends Fragment
             try
             {
                 Thread.sleep(500);
-            } catch (InterruptedException e)
+            }
+            catch (InterruptedException e)
             {
                 e.printStackTrace();
             }
@@ -663,7 +665,8 @@ public class EmailRegistrationFragment extends Fragment
             try
             {
                 Thread.sleep(500);
-            } catch (InterruptedException e)
+            }
+            catch (InterruptedException e)
             {
                 e.printStackTrace();
             }
@@ -674,7 +677,8 @@ public class EmailRegistrationFragment extends Fragment
             try
             {
                 Thread.sleep(500);
-            } catch (InterruptedException e)
+            }
+            catch (InterruptedException e)
             {
                 e.printStackTrace();
             }
@@ -723,7 +727,8 @@ public class EmailRegistrationFragment extends Fragment
                 }
                 else
                 {
-                    mSignUpButton.setBackgroundResource(R.drawable.signin_button_selector);
+                    mSignUpButton.setBackgroundResource(
+                            R.drawable.authentication_sign_in_button_xml);
                 }
                 mWhichEdittext = 1;
 
@@ -737,7 +742,8 @@ public class EmailRegistrationFragment extends Fragment
                 }
                 else
                 {
-                    mSignUpButton.setBackgroundResource(R.drawable.signin_button_selector);
+                    mSignUpButton.setBackgroundResource(
+                            R.drawable.authentication_sign_in_button_xml);
                 }
                 mWhichEdittext = 2;
 
@@ -752,7 +758,8 @@ public class EmailRegistrationFragment extends Fragment
                 }
                 else
                 {
-                    mSignUpButton.setBackgroundResource(R.drawable.signin_button_selector);
+                    mSignUpButton.setBackgroundResource(
+                            R.drawable.authentication_sign_in_button_xml);
                 }
                 mWhichEdittext = 2;
                 break;
@@ -768,7 +775,8 @@ public class EmailRegistrationFragment extends Fragment
                 }
                 else
                 {
-                    mSignUpButton.setBackgroundResource(R.drawable.signin_button_selector);
+                    mSignUpButton.setBackgroundResource(
+                            R.drawable.authentication_sign_in_button_xml);
                 }
 
                 break;
@@ -805,7 +813,7 @@ public class EmailRegistrationFragment extends Fragment
 
 			switch (v.getId()) {
 			case R.id.btn_register:
-				mSignUpButton.setBackgroundResource(R.drawable.roundrectangle_signin);
+				mSignUpButton.setBackgroundResource(R.drawable.authentication_sign_in_button_normal);
 
 				break;
 			case R.id.image_optional:

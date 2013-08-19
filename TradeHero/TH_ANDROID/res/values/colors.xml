@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
   <color name="authentication_link_text">#324f85</color>
+  <color name="authentication_forgot_password_link">#9F9F9F</color>
 </resources>

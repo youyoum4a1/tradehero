@@ -7,7 +7,4 @@
     <string name="trend_new_buy">https://www.tradehero.mobi/api/securities/%1$s/%2$s/newbuy</string>
     <string name="trend_new_buy_quotes">https://www.tradehero.mobi/api/securities/%1$s/%2$s/quote</string>
     <string name="trend_search">https://www.tradehero.mobi/api/%1$s/search?q=%2$s&amp;page=%3$s</string>
-    
-    
-    
 </resources>

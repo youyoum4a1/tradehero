@@ -65,4 +65,10 @@
   <style name="AppBaseTheme.Welcome.SignIn" parent="@android:style/Widget.Button">
     <item name="android:layout_marginTop">0dip</item>
   </style>
+  <style name="AppBaseTheme.ButtonTextShadow">
+    <item name="android:shadowRadius">5.6</item>
+    <item name="android:shadowDx">0</item>
+    <item name="android:shadowDy">-1</item>
+    <item name="android:shadowColor">#000000</item>
+  </style>
 </resources>

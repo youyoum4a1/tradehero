@@ -29,7 +29,7 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_below="@id/authentication_social_sign_up"
-      android:layout_marginTop="10dip"
+      android:paddingTop="10dip"
       android:layout_marginLeft="5sp"
       >
     <TextView

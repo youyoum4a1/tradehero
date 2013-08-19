@@ -22,7 +22,8 @@
       android:text="@string/authentication_welcome_new_user"
       android:textColor="@color/white"
       android:textSize="30dip"
-      android:textStyle="bold"/>
+      android:textStyle="bold"
+      style="@style/AppBaseTheme.ButtonTextShadow"/>
 
   <LinearLayout
       android:id="@+id/authentication_sign_in"
@@ -32,7 +33,7 @@
       android:layout_marginTop="20dp"
       android:padding="5dip"
       android:orientation="vertical"
-      android:background="@drawable/signin_button_selector"
+      android:background="@drawable/authentication_sign_in_button_xml"
       style="@android:style/Widget.Button">
     <TextView
         android:layout_width="match_parent"

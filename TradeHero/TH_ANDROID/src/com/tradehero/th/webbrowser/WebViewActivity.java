@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import com.tradehero.kit.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.utills.Constants;
 import android.view.View;
@@ -69,10 +70,8 @@ public class WebViewActivity extends Activity
         public void onReceivedError(WebView view, int errorCode,
                 String description, String failingUrl)
         {
-            // TODO Auto-generated method stub
             super.onReceivedError(view, errorCode, description, failingUrl);
-            Toast.makeText(m_context, "Network Problem", Toast.LENGTH_SHORT)
-                    .show();
+            THToast.show(R.string.network_error);
         }
 
         @Override

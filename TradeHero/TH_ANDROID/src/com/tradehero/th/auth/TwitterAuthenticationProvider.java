@@ -1,6 +1,7 @@
 package com.tradehero.th.auth;
 
 import android.content.Context;
+import com.tradehero.th.auth.twitter.Twitter;
 import java.lang.ref.WeakReference;
 import org.json.JSONException;
 import org.json.JSONObject;

@@ -74,7 +74,7 @@
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
 
         <meta-data
-            android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id" />
+            android:name="com.facebook.sdk.ApplicationId" android:value="@string/FACEBOOK_APP_ID" />
     </application>
 
 </manifest>

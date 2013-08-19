@@ -1,34 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/loginemail_wraper"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" >
-
-    <include
-        android:id="@+id/top_bar_login"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        layout="@layout/topbar" />
+    android:orientation="vertical"
+    style="@style/AppBaseTheme.Authentication">
 
     <EditText
         android:id="@+id/et_emailid_login"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/top_bar_login"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:layout_marginTop="30dp"
-        android:background="@drawable/roundrectangle_signin"
+        android:layout_marginTop="20dip"
+        android:background="@drawable/authentication_sign_in_button_normal"
         android:ems="10"
         android:text="neeraj@eatechnologies.com"
-        
         android:hint="@string/emai_adds"
         android:inputType="textEmailAddress"
         android:padding="15dp"
         android:textColor="@color/black" >
-
         <requestFocus />
     </EditText>
 
@@ -37,10 +25,8 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/et_emailid_login"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:layout_marginTop="20dp"
-        android:background="@drawable/roundrectangle_signin"
+        android:layout_marginTop="10dip"
+        android:background="@drawable/authentication_sign_in_button_normal"
         android:ems="10"
         android:text="testing"
         android:hint="@string/pwd"
@@ -54,13 +40,10 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/et_pwd_login"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="20dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="30dp"
-        android:layout_marginTop="30dp"
-        android:background="@drawable/signin_button_selector"
+        android:layout_marginTop="10dip"
+        android:background="@drawable/authentication_sign_in_button_xml"
         android:padding="10dp"
-        android:text="Sign In"
+        android:text="@string/sign_in"
         android:textColor="@color/signinfnt_color"
         android:textSize="25sp"
         android:textStyle="bold" />
@@ -71,9 +54,9 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/btn_login"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="10dp"
+        android:padding="15dip"
         android:text="@string/forgot_password"
-        android:textColor="@color/authentication_link_text"
+        android:textColor="@color/authentication_forgot_password_link"
         android:textSize="15sp"
         android:textStyle="normal" />
 

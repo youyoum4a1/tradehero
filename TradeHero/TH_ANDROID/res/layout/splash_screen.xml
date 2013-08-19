@@ -2,14 +2,67 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="@drawable/bg" >
+    android:background="@drawable/splash_background_xml"
+    android:paddingTop="20dip"
+    android:paddingBottom="20dip"
+    android:paddingLeft="20dip"
+    android:paddingRight="20dip">
 
+  <ImageView
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_alignParentTop="true"
+      android:layout_centerHorizontal="true"
+      android:padding="20dp"
+      android:src="@drawable/splash_logo"/>
+
+  <FrameLayout
+      android:layout_above="@+id/copyright"
+      android:layout_width="fill_parent"
+      android:layout_height="wrap_content"
+      android:paddingBottom="20dip"
+      >
     <ImageView
+        android:layout_gravity="center_horizontal"
         android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:src="@drawable/trophy"
+        />
+
+  </FrameLayout>
+
+  <LinearLayout
+      android:id="@+id/copyright"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_alignParentBottom="true"
+      android:layout_centerHorizontal="true"
+      android:orientation="vertical">
+
+    <TextView
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:padding="20dp"
-        android:src="@drawable/splash_logo" />
+        android:gravity="center"
+        android:textColor="#ffffff"
+        android:textSize="@dimen/copyright_text_size"
+        android:text="@string/copyright_1"
+        />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="#ffffff"
+        android:gravity="center"
+        android:textSize="@dimen/copyright_text_size"
+        android:text="@string/copyright_2"
+        />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textColor="#ffffff"
+        android:textSize="@dimen/copyright_text_size"
+        android:text="@string/copyright_3"
+        />
+  </LinearLayout>
 
 </RelativeLayout>

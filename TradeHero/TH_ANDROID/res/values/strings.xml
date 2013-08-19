@@ -22,7 +22,7 @@
     <string name="optional">Optional</string>
     <string name="first_name">First Name</string>
     <string name="last_name">Last Name</string>
-    <string name="network_error">Check your Network connection !</string>
+    <string name="network_error">Please check your network connection!</string>
     <string name="sign_up">Sign Up</string>
     <string name="authentication_sign_in_with">sign in with</string>
     <string name="authentication_sign_up_with_email">or sign up with an</string>
@@ -40,7 +40,6 @@
     <string name="Heroes">Heroes</string>
     <string name="Trades">Trades</string>
     <string name="Exchanges">Exchanges</string>
-    <string name="facebook_app_id">431745923529834</string>
     <!-- What's Trending -->
     <string name="header_trending">Trending</string>
     <string name="positive_prefix">▲</string>
@@ -99,5 +98,8 @@
   <string name="authentication_sign_up_with">sign up with</string>
   <string name="email_address">email address</string>
   <string name="empty"/>
+  <string name="copyright_1">© Copyright 2012, 2013 My Manisku Pte. Ltd.</string>
+  <string name="copyright_2">Registered in Singapore company number 201003309N</string>
+  <string name="copyright_3">Patents Pending</string>
 
 </resources>

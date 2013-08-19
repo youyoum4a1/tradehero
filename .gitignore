@@ -53,3 +53,7 @@ out/
 .idea/codeStyleSettings.xml
 .idea/workspace.xml
 
+# Ant build file
+th_android.xml
+build.xml
+th_android.properties
