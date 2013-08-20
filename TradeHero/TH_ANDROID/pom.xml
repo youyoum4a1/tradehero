@@ -72,5 +72,10 @@
       <artifactId>commons-lang3</artifactId>
       <version>3.1</version>
     </dependency>
+    <dependency>
+      <groupId>com.squareup.retrofit</groupId>
+      <artifactId>retrofit</artifactId>
+      <version>1.1.2-SNAPSHOT</version>
+    </dependency>
   </dependencies>
 </project>
