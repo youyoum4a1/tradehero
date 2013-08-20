@@ -128,10 +128,11 @@ public class Twitter
                 getConsumerSecret());
         final ProgressDialog progress = new ProgressDialog(context);
         progress.setMessage("Loading...");
-        AsyncTask task = new AsyncTask()
+        AsyncTask task = new AsyncTask<Object, Object, String>()
         {
             private Throwable error;
 
+            @Override
             protected void onPostExecute(String result)
             {
                 super.onPostExecute(result);
@@ -147,6 +148,7 @@ public class Twitter
                             new OAuthDialog(context, result, "twitter-oauth://complete",
                                     "api.twitter", new OAuthDialog.FlowResultHandler()
                             {
+                                @Override
                                 public void onError(int errorCode, String description,
                                         String failingUrl)
                                 {
@@ -155,6 +157,7 @@ public class Twitter
                                                     errorCode, description, failingUrl)));
                                 }
 
+                                @Override
                                 public void onComplete(String callbackUrl)
                                 {
                                     CookieSyncManager.getInstance().sync();
@@ -165,10 +168,11 @@ public class Twitter
                                         callback.onCancel();
                                         return;
                                     }
-                                    AsyncTask getTokenTask = new AsyncTask()
+                                    AsyncTask getTokenTask = new AsyncTask<Object, Object, HttpParameters>()
                                     {
                                         private Throwable error;
 
+                                        @Override
                                         protected HttpParameters doInBackground(Object... params)
                                         {
                                             try
@@ -184,12 +188,14 @@ public class Twitter
                                             return Twitter.PROVIDER.getResponseParameters();
                                         }
 
+                                        @Override
                                         protected void onPreExecute()
                                         {
                                             super.onPreExecute();
                                             progress.show();
                                         }
 
+                                        @Override
                                         protected void onPostExecute(HttpParameters result)
                                         {
                                             super.onPostExecute(result);
@@ -229,6 +235,7 @@ public class Twitter
                                     getTokenTask.execute();
                                 }
 
+                                @Override
                                 public void onCancel()
                                 {
                                     callback.onCancel();
@@ -243,18 +250,20 @@ public class Twitter
                 progress.dismiss();
             }
 
+            @Override
             protected void onPreExecute()
             {
                 super.onPreExecute();
                 progress.show();
             }
 
+            @Override
             protected String doInBackground(Object... params)
             {
                 try
                 {
                     return Twitter.PROVIDER
-                            .retrieveRequestToken(consumer, "twitter-oauth://th");
+                            .retrieveRequestToken(consumer, "twitter-oauth://complete");
                 }
                 catch (Throwable e)
                 {
