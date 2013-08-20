@@ -50,7 +50,7 @@
 
         <EditText
             android:id="@+id/searh_field"
-            style="@style/AppBaseTheme"
+            style="@style/TradeHero"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"

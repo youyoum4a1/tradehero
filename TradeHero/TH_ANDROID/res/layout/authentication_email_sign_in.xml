@@ -3,61 +3,58 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    style="@style/AppBaseTheme.Authentication">
+    style="@style/TradeHero.Authentication">
 
-    <EditText
-        android:id="@+id/et_emailid_login"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dip"
-        android:background="@drawable/authentication_sign_in_button_normal"
-        android:ems="10"
-        android:text="neeraj@eatechnologies.com"
-        android:hint="@string/email"
-        android:inputType="textEmailAddress"
-        android:padding="15dp"
-        android:textColor="@color/black" >
-        <requestFocus />
-    </EditText>
+  <EditText
+      android:id="@+id/et_emailid_login"
+      android:layout_width="fill_parent"
+      android:layout_height="wrap_content"
+      android:text="neeraj@eatechnologies.com"
+      android:hint="@string/email"
+      android:inputType="textEmailAddress"
+      style="@style/TradeHero.Authentication.EditText">
+    <requestFocus/>
+  </EditText>
 
-    <EditText
-        android:id="@+id/et_pwd_login"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/et_emailid_login"
-        android:layout_marginTop="10dip"
-        android:background="@drawable/authentication_sign_in_button_normal"
-        android:ems="10"
-        android:text="testing"
-        android:hint="@string/pwd"
-        android:inputType="textPassword"
-        android:padding="15dp"
-        android:textColor="@color/black" />
+  <EditText
+      android:id="@+id/et_pwd_login"
+      android:layout_width="fill_parent"
+      android:layout_height="wrap_content"
+      android:layout_below="@+id/et_emailid_login"
+      android:layout_marginTop="10dip"
+      android:text="testing"
+      android:hint="@string/pwd"
+      android:inputType="textPassword"
+      style="@style/TradeHero.Authentication.EditText"/>
 
-    <Button
-        android:id="@+id/btn_login"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/et_pwd_login"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="10dip"
-        android:background="@drawable/authentication_sign_in_button_xml"
-        android:padding="10dp"
-        android:text="@string/sign_in"
-        android:textColor="@color/signinfnt_color"
-        android:textSize="25sp"
-        android:textStyle="bold" />
+  <Button
+      android:id="@+id/btn_login"
+      android:layout_width="fill_parent"
+      android:layout_height="wrap_content"
+      android:layout_below="@+id/et_pwd_login"
+      android:layout_centerHorizontal="true"
+      android:layout_marginTop="10dip"
+      android:background="@drawable/authentication_button_xml"
+      android:padding="5dp"
+      android:text="@string/sign_in"
+      android:textColor="@color/signinfnt_color"
+      android:textSize="25sp"
+      android:textStyle="bold"
+      android:shadowColor="@color/white"
+      android:shadowDy="-1"
+      android:shadowRadius="3"
+      />
 
-    <TextView
-        android:id="@+id/txt_forgotpwd"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/btn_login"
-        android:layout_centerHorizontal="true"
-        android:padding="15dip"
-        android:text="@string/forgot_password"
-        android:textColor="@color/authentication_forgot_password_link"
-        android:textSize="15sp"
-        android:textStyle="normal" />
+  <TextView
+      android:id="@+id/txt_forgotpwd"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_below="@+id/btn_login"
+      android:layout_centerHorizontal="true"
+      android:padding="15dip"
+      android:text="@string/forgot_password"
+      android:textColor="@color/text_gray_normal"
+      android:textSize="15sp"
+      android:textStyle="bold"/>
 
 </RelativeLayout>

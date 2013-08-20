@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+  <item>
+    <shape>
+      <gradient
+          android:angle="90"
+          android:endColor="@color/signinbg_color"
+          android:startColor="@color/white"/>
+      <corners android:radius="@dimen/authentication_textbox_radius"/>
+      <stroke android:width="0.5dp" android:color="@color/btn_new_user_color_light"/>
+    </shape>
+  </item>
+  <!--(for inner shadow)-->
+  <item android:drawable="@drawable/util_inner_shadow_top"/>
+  <item android:drawable="@drawable/util_inner_shadow_left"/>
+  <item android:drawable="@drawable/util_inner_shadow_right"/>
+</layer-list>

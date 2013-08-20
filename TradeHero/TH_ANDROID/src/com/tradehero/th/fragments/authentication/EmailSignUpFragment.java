@@ -54,13 +54,9 @@ public class EmailSignUpFragment extends Fragment
             mLastName;
     private Button mSignUpButton;
     private ProgressDialog mProgressDialog;
-    private ProgressBar mConfirmPasswordProgressBar, mEMailProgressBar,
-            mPaswordProgressbar, mDisplayNameProgressbar;
     private LayoutInflater mLayoutInflater;
-    private ImageView imgValidEMail, imgInValidEmail,
-            imgValidPwd, imgInValidPwd,
-            imgValidvConfirmPwd, imgInValidConfirmPassword,
-            imgValidDisplyName, imgInvalidDisplyName;
+    private ImageView imgValidEMail, imgValidPwd,
+            imgValidvConfirmPwd,             imgValidDisplyName;
     private int mWhichEdittext = 0;
     private CharSequence mText;
     private ImageView mOptionalImage;
@@ -95,21 +91,15 @@ public class EmailSignUpFragment extends Fragment
         mEmailId = (EditText) view.findViewById(R.id.et_emailid);
         mPasword = (EditText) view.findViewById(R.id.et_password);
         mConfirmPassword = (EditText) view.findViewById(R.id.et_confirm_password);
-        mConfirmPasswordProgressBar = (ProgressBar) view.findViewById(R.id.pdilog_cpwd);
         mDisplayName = (EditText) view.findViewById(R.id.et_display_name);
         mFirstName = (EditText) view.findViewById(R.id.et_firstname);
         mLastName = (EditText) view.findViewById(R.id.et_lasttname);
         mSignUpButton = (Button) view.findViewById(R.id.btn_register);
         imgValidEMail = (ImageView) view.findViewById(R.id.valid_mail_img);
-        imgInValidEmail = (ImageView) view.findViewById(R.id.invalid_mail_img);
         imgValidPwd = (ImageView) view.findViewById(R.id.valid_pwd_img);
-        imgInValidPwd = (ImageView) view.findViewById(R.id.invalid_pwd_img);
         imgValidvConfirmPwd = (ImageView) view.findViewById(R.id.valid_cpwd_img);
-        imgInValidConfirmPassword = (ImageView) view.findViewById(R.id.invalid_cpwd_img);
         imgValidDisplyName = (ImageView) view.findViewById(R.id.valid_nmdisplay_img);
-        imgInvalidDisplyName = (ImageView) view.findViewById(R.id.invalid_nmdisplay_img);
 
-        mSignUpButton.setBackgroundResource(R.drawable.rectangle_login);
         mSignUpButton.setOnClickListener(this);
         //mSignUpButton.setOnTouchListener(this);
         mProgressDialog = new ProgressDialog(getActivity());
@@ -118,9 +108,6 @@ public class EmailSignUpFragment extends Fragment
         mPasword.setOnFocusChangeListener(this);
         mConfirmPassword.setOnFocusChangeListener(this);
         mProgressDialog.setMessage("Registering User");
-        mEMailProgressBar = (ProgressBar) view.findViewById(R.id.pdilog_mail);
-        mDisplayNameProgressbar = (ProgressBar) view.findViewById(R.id.pdilog_nmdisplay);
-        mPaswordProgressbar = (ProgressBar) view.findViewById(R.id.pdilog_pwd);
         mOptionalImage = (ImageView) view.findViewById(R.id.image_optional);
         mOptionalImage.setOnClickListener(this);
         //mOptionalImage.setOnTouchListener(this);
@@ -605,53 +592,44 @@ public class EmailSignUpFragment extends Fragment
 
     private void emailValidationPostwork(boolean result)
     {
-
-        mEMailProgressBar.setVisibility(View.INVISIBLE);
         if (result)
         {
 
             imgValidEMail.setVisibility(View.VISIBLE);
-            imgInValidEmail.setVisibility(View.INVISIBLE);
+            //imgInValidEmail.setVisibility(View.INVISIBLE);
         }
         else
         {
-
-            imgInValidEmail.setVisibility(View.VISIBLE);
+            //imgInValidEmail.setVisibility(View.VISIBLE);
             imgValidEMail.setVisibility(View.INVISIBLE);
         }
     }
 
     private void emailValidationPrework()
     {
-
-        mEMailProgressBar.setVisibility(View.VISIBLE);
-        imgInValidEmail.setVisibility(View.INVISIBLE);
+        //imgInValidEmail.setVisibility(View.INVISIBLE);
         imgValidEMail.setVisibility(View.INVISIBLE);
     }
 
     private void nameDisplayPostwork(boolean result)
     {
-
-        mDisplayNameProgressbar.setVisibility(View.INVISIBLE);
         if (result)
         {
 
-            imgInvalidDisplyName.setVisibility(View.VISIBLE);
+            //imgInvalidDisplyName.setVisibility(View.VISIBLE);
             imgValidDisplyName.setVisibility(View.INVISIBLE);
         }
         else
         {
 
             imgValidDisplyName.setVisibility(View.VISIBLE);
-            imgInvalidDisplyName.setVisibility(View.INVISIBLE);
+            //imgInvalidDisplyName.setVisibility(View.INVISIBLE);
         }
     }
 
     private void nameDisplayPrework()
     {
-
-        mDisplayNameProgressbar.setVisibility(View.VISIBLE);
-        imgInvalidDisplyName.setVisibility(View.INVISIBLE);
+        //imgInvalidDisplyName.setVisibility(View.INVISIBLE);
         imgValidDisplyName.setVisibility(View.INVISIBLE);
     }
 
@@ -688,28 +666,24 @@ public class EmailSignUpFragment extends Fragment
 
     private void confirmPwdValidationPostwork(boolean result)
     {
-        mConfirmPasswordProgressBar.setVisibility(View.INVISIBLE);
-
         if (result)
         {
 
             imgValidvConfirmPwd.setVisibility(View.VISIBLE);
-            imgInValidConfirmPassword.setVisibility(View.INVISIBLE);
+            //imgInValidConfirmPassword.setVisibility(View.INVISIBLE);
         }
         else
         {
 
-            imgInValidConfirmPassword.setVisibility(View.VISIBLE);
+            //imgInValidConfirmPassword.setVisibility(View.VISIBLE);
             imgValidvConfirmPwd.setVisibility(View.INVISIBLE);
         }
     }
 
     private void confirmPwdValidationPrework()
     {
-
-        mConfirmPasswordProgressBar.setVisibility(View.VISIBLE);
         imgValidvConfirmPwd.setVisibility(View.INVISIBLE);
-        imgInValidConfirmPassword.setVisibility(View.INVISIBLE);
+        //imgInValidConfirmPassword.setVisibility(View.INVISIBLE);
     }
 
     @Override

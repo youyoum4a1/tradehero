@@ -4,7 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    style="@style/AppBaseTheme.Authentication">
+    style="@style/TradeHero.Authentication">
+
 
   <TextView
       android:id="@+id/authentication_sign_up_with"

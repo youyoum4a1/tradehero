@@ -23,7 +23,7 @@
       android:textColor="@color/white"
       android:textSize="30dip"
       android:textStyle="bold"
-      style="@style/AppBaseTheme.ButtonTextShadow"/>
+      style="@style/TradeHero.ButtonTextShadow"/>
 
   <LinearLayout
       android:id="@+id/authentication_sign_in"

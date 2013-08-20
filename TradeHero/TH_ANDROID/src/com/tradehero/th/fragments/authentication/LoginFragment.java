@@ -80,8 +80,6 @@ public class LoginFragment extends Fragment
         mForgotPassword.setOnClickListener(this);
         mSignIn.setOnClickListener(this);
 
-        mSignIn.setBackgroundResource(R.drawable.rectangle_login);
-
         //mSignIn.setOnTouchListener(this);
         //mForgotPassword.setOnTouchListener(this)
         inputPassword.setOnFocusChangeListener(this);
