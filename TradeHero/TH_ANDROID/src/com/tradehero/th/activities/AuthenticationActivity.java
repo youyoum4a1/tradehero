@@ -156,7 +156,7 @@ public class AuthenticationActivity extends SherlockFragmentActivity
                 {
                     @Override public void done(UserBaseDTO user, THException ex)
                     {
-                        //To change body of implemented methods use File | Settings | File Templates.
+                        THLog.d(TAG, "done!");
                     }
 
                     @Override public void onStart()

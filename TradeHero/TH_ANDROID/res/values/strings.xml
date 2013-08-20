@@ -11,11 +11,11 @@
     <string name="twiter">Twitter</string>
     <string name="Signup_content">Sign up with:</string>
     <string name="Signup_content1">or sign up with an</string>
-    <string name="Signup_content2">email address</string>
+    <string name="Signup_content2"> email address</string>
     <string name="authentication_guarantee">We respect your privacy: we will never post to your feeds without your express permission.</string>
     <string name="authentication_sign_in_tos">terms of service</string>
     <string name="required">Required</string>
-    <string name="emai_adds">Email Address</string>
+    <string name="email">Email Address</string>
     <string name="pwd">Password</string>
     <string name="confirm_pwd">Confirm Password</string>
     <string name="display_name">Display Name</string>
@@ -25,8 +25,8 @@
     <string name="network_error">Please check your network connection!</string>
     <string name="sign_up">Sign Up</string>
     <string name="authentication_sign_in_with">sign in with</string>
-    <string name="authentication_sign_up_with_email">or sign up with an</string>
-    <string name="authentication_sign_in_with_email">or sign in with an</string>
+    <string name="authentication_sign_up_with_email">or sign up with an\u0020</string>
+    <string name="authentication_sign_in_with_email">or sign in with an\u0020</string>
     <string name="forgot_password">forgot your password ?</string>
     <string name="existing_user">existing user</string>
     <string name="field_not_balnk">Field should not be left blank.</string>

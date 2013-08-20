@@ -42,7 +42,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 public class EmailSignUpFragment extends Fragment
@@ -83,7 +82,7 @@ public class EmailSignUpFragment extends Fragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState)
     {
-        View view = inflater.inflate(R.layout.user_register, container, false);
+        View view = inflater.inflate(R.layout.authentication_email_sign_up, container, false);
         initSetup(view);
         return view;
     }

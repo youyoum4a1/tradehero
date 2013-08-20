@@ -13,7 +13,7 @@
         android:background="@drawable/authentication_sign_in_button_normal"
         android:ems="10"
         android:text="neeraj@eatechnologies.com"
-        android:hint="@string/emai_adds"
+        android:hint="@string/email"
         android:inputType="textEmailAddress"
         android:padding="15dp"
         android:textColor="@color/black" >
