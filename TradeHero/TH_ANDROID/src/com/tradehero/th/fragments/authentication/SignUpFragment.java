@@ -1,46 +1,19 @@
 package com.tradehero.th.fragments.authentication;
 
-import com.tradehero.th.models.Request;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import android.app.AlertDialog;
-import android.app.AlertDialog.Builder;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import com.tradehero.th.R;
-import com.tradehero.th.activities.DashboardActivity;
-import com.tradehero.th.activities.dialog.LinkedinDialog;
-import com.tradehero.th.activities.dialog.LinkedinDialog.OnVerifyListener;
-import com.tradehero.th.application.App;
-import com.tradehero.th.http.HttpRequestTask;
-import com.tradehero.th.http.RequestFactory;
-import com.tradehero.th.http.RequestTaskCompleteListener;
-import com.tradehero.th.models.ProfileDTO;
-import com.tradehero.th.networkstatus.NetworkStatus;
-import com.tradehero.th.twitter.Twitter;
-import com.tradehero.th.twitter.TwitterError;
-import com.tradehero.th.utills.Constants;
-import com.tradehero.th.utills.PUtills;
-import com.tradehero.th.utills.Util;
-import com.tradehero.th.webbrowser.WebViewActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.view.WindowManager;
-import android.widget.EditText;
 import android.widget.TextView;
-
 import com.facebook.Session;
 import com.facebook.SessionState;
 import com.google.code.linkedinapi.client.LinkedInApiClient;
@@ -50,6 +23,23 @@ import com.google.code.linkedinapi.client.oauth.LinkedInOAuthService;
 import com.google.code.linkedinapi.client.oauth.LinkedInOAuthServiceFactory;
 import com.google.code.linkedinapi.client.oauth.LinkedInRequestToken;
 import com.google.code.linkedinapi.schema.Person;
+import com.tradehero.th.R;
+import com.tradehero.th.activities.DashboardActivity;
+import com.tradehero.th.activities.dialog.LinkedinDialog;
+import com.tradehero.th.activities.dialog.LinkedinDialog.OnVerifyListener;
+import com.tradehero.th.application.App;
+import com.tradehero.th.http.HttpRequestTask;
+import com.tradehero.th.http.RequestFactory;
+import com.tradehero.th.http.RequestTaskCompleteListener;
+import com.tradehero.th.models.ProfileDTO;
+import com.tradehero.th.models.Request;
+import com.tradehero.th.networkstatus.NetworkStatus;
+import com.tradehero.th.utills.Constants;
+import com.tradehero.th.utills.PUtills;
+import com.tradehero.th.utills.Util;
+import com.tradehero.th.webbrowser.WebViewActivity;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class SignUpFragment extends AuthenticationFragment
         implements OnClickListener, RequestTaskCompleteListener
@@ -68,13 +58,9 @@ public class SignUpFragment extends AuthenticationFragment
     private View v;
     private RequestTaskCompleteListener mRequestTaskCompleteListener;
     private ProgressDialog mProgressDialog;
-    // Twitter
-    private Twitter mTwitter;
-    public static String email = "";
     // Shared Preferences
     private static SharedPreferences mSharedPreferences;
     private String mBottmLine, mHeader, mHeaderBellow;
-    private EditText mail_id_twitter;
     private int activityType;
     private int operationType;
     private Bundle mData;
@@ -116,13 +102,12 @@ public class SignUpFragment extends AuthenticationFragment
 
         view.findViewById(R.id.btn_facebook_signin).setOnClickListener(onClickListener);
         view.findViewById(R.id.txt_email_sign_up).setOnClickListener(onClickListener);
-        view.findViewById(R.id.btn_twitter_signin).setOnClickListener(this);
+        view.findViewById(R.id.btn_twitter_signin).setOnClickListener(onClickListener);
         view.findViewById(R.id.btn_linkedin_signin).setOnClickListener(this);
 
         mProgressDialog = new ProgressDialog(getActivity());
         mProgressDialog.setMessage(getResources().getString(R.string.loading_loading));
         mContext = getActivity();
-        mTwitter = new Twitter(Constants.TWITTER_CONSUMER_KEY, Constants.TWITTER_CONSUMER_SECRET);
         /** This if conditions is tested once is
          * redirected from twitter page. Parse the uri to get oAuth
          * Verifier
@@ -137,18 +122,6 @@ public class SignUpFragment extends AuthenticationFragment
 
         switch (v.getId())
         {
-            case R.id.btn_twitter_signin:
-                if (NetworkStatus.getInstance().isConnected(getActivity()))
-                {
-                    operationType = OP_TWITTER;
-                    loginToTwitter();
-                }
-                else
-                {
-                    Util.show_toast(getActivity(),
-                            getResources().getString(R.string.network_error));
-                }
-                break;
             case R.id.btn_linkedin_signin:
 
                 if (!linkedinButtonPressed)
@@ -275,11 +248,6 @@ public class SignUpFragment extends AuthenticationFragment
     {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == 4242)
-        {
-            // Twitter Auth Callback
-            mTwitter.authorizeCallback(requestCode, resultCode, data);
-        }
         if (requestCode == 9)
         {
 
@@ -440,152 +408,11 @@ public class SignUpFragment extends AuthenticationFragment
 
     }
 
-    /** Function to login twitter */
-    private void loginToTwitter()
-    {
-
-        // Check if already logged in
-        if (!isTwitterLoggedInAlready())
-        {
-
-            mCheckTwitterAlert();
-        }
-        else
-        {
-            // user already logged into twitter
-            if (activityType == LOGIN)
-            {
-                HttpRequestTask mRequestTask = new HttpRequestTask(mRequestTaskCompleteListener);
-                RequestFactory mRF = new RequestFactory();
-                Request[] lRequests = new Request[1];
-                try
-                {
-                    lRequests[0] = mRF.getLoginThroughTwiiter(getActivity(),
-                            mSharedPreferences.getString(Constants.PREF_KEY_OAUTH_SECRET, null),
-                            mSharedPreferences.getString(Constants.PREF_KEY_OAUTH_TOKEN, null));
-                } catch (JSONException ex)
-                {
-                    ex.printStackTrace();
-                }
-
-                mProgressDialog.show();
-                mRequestTask.execute(lRequests);
-                Util.show_toast(getActivity(),
-                        getResources().getString(R.string.twitter_login_message));
-            }
-            else if (activityType == SIGNUP)
-            {
-                Util.show_toast(getActivity(),
-                        getResources().getString(R.string.twitter_login_message)
-                                + " "
-                                + getResources().getString(R.string.go_login_twitter));
-            }
-        }
-    }
-
-    /**
-     * Check user already logged in your application using twitter Login flag is fetched from Shared
-     * Preferences
-     */
-    private boolean isTwitterLoggedInAlready()
-    {
-        // return twitter login status from Shared Preferences
-        return mSharedPreferences.getBoolean(Constants.PREF_KEY_TWITTER_LOGIN, false);
-    }
-
     @Override
     public void onResume()
     {
         super.onResume();
     }
-
-    public void mCheckTwitterAlert()
-    {
-
-        mail_id_twitter = new EditText(getActivity());
-        AlertDialog.Builder dialog = new Builder(getActivity());
-        dialog.setMessage(getResources().getString(R.string.enter_message_email))
-                .setCancelable(false)
-                .setView(mail_id_twitter)
-                .setPositiveButton("OK", new DialogInterface.OnClickListener()
-                {
-
-                    @Override
-                    public void onClick(final DialogInterface dialog, int arg1)
-                    {
-
-                        email = mail_id_twitter.getText().toString();
-
-                        if (email == null || email.equals(""))
-                        {
-
-                            Util.show_toast(getActivity(),
-                                    getResources().getString(R.string.email_alert));
-                        }
-                        else
-                        {
-                            if (Util.email_valid
-                                    .matcher(mail_id_twitter.getText().toString())
-                                    .matches())
-                            {
-                                mTwitter.authorize(getActivity(), new Twitter.DialogListener()
-                                {
-
-                                    @Override
-                                    public void onError(TwitterError error)
-                                    {
-
-                                    }
-
-                                    @Override
-                                    public void onComplete(String accessKey, String accessSecret)
-                                    {
-
-                                    }
-
-                                    @Override
-                                    public void onCancel()
-                                    {
-
-                                    }
-                                });
-                            }
-                            else
-                            {
-                                Util.show_toast(getActivity(),
-                                        getResources().getString(R.string.email_validation_string));
-                            }
-                        }
-                    }
-                })
-                .setNegativeButton("Cancel", new DialogInterface.OnClickListener()
-                {
-
-                    @Override
-                    public void onClick(final DialogInterface dialog, int arg1)
-                    {
-
-                        dialog.dismiss();
-                    }
-                });
-
-        final AlertDialog alrt = dialog.create();
-        mail_id_twitter.setOnFocusChangeListener(new View.OnFocusChangeListener()
-        {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus)
-            {
-                if (hasFocus)
-                {
-                    alrt.getWindow()
-                            .setSoftInputMode(
-                                    WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
-                }
-            }
-        });
-        alrt.show();
-    }
-
 
 	/*public void linkedinclick(View v){
 

@@ -252,6 +252,7 @@ public class FacebookAuthenticationProvider
             throws JSONException
     {
         JSONObject authData = new JSONObject();
+        authData.put("type", "facebook");
         authData.put("id", id);
         authData.put("access_token", accessToken);
         authData.put("expiration_date", this.preciseDateFormat.format(expiration));

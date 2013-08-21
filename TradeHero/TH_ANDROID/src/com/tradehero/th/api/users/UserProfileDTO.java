@@ -41,6 +41,6 @@ public class UserProfileDTO extends UserProfileCompactDTO
 
     public int tradesSharedCount_FB;
 
-    public Enumeration<UserAlertPlanDTO> userAlertPlans;
-    public Enumeration<ProviderDTO> enrolledProviders;
+    public List<UserAlertPlanDTO> userAlertPlans;
+    public List<ProviderDTO> enrolledProviders;
 }

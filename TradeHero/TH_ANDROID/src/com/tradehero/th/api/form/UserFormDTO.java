@@ -42,7 +42,25 @@ public class UserFormDTO
     {
         try
         {
-            facebook_access_token = json.getString("access_token");
+            if (json.has("type"))
+            {
+                String type = json.getString("type");
+                if ("facebook".equals(type))
+                {
+                    facebook_access_token = json.getString("access_token");
+                }
+                else if ("twitter".equals(type))
+                {
+                    twitter_access_token = json.getString("auth_token");
+                    twitter_access_token_secret = json.getString("auth_token_secret");
+                    email = json.getString("email");
+                }
+                else if ("linkedin".equals(type))
+                {
+                    linkedin_access_token = json.getString("auth_token");
+                    linkedin_access_token_secret = json.getString("auth_token_secret");
+                }
+            }
         }
         catch (JSONException e)
         {

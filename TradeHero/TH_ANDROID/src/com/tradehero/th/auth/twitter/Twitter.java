@@ -12,6 +12,7 @@ import oauth.signpost.commonshttp.CommonsHttpOAuthConsumer;
 import oauth.signpost.commonshttp.CommonsHttpOAuthProvider;
 import oauth.signpost.http.HttpParameters;
 import org.apache.http.client.methods.HttpUriRequest;
+import org.json.JSONObject;
 
 public class Twitter
 {
@@ -127,7 +128,7 @@ public class Twitter
         final OAuthConsumer consumer = new CommonsHttpOAuthConsumer(getConsumerKey(),
                 getConsumerSecret());
         final ProgressDialog progress = new ProgressDialog(context);
-        progress.setMessage("Loading...");
+        progress.setMessage("Connecting ...");
         AsyncTask task = new AsyncTask<Object, Object, String>()
         {
             private Throwable error;
@@ -222,14 +223,14 @@ public class Twitter
                                                     callback.onError(e);
                                                     return;
                                                 }
-                                                // TODO FIX IT
+                                                // since all parameters is stored as field of
+                                                // twitter object, json is not needed
                                                 callback.onSuccess(null);
                                             }
                                             finally
                                             {
                                                 progress.dismiss();
                                             }
-                                            progress.dismiss();
                                         }
                                     };
                                     getTokenTask.execute();
@@ -247,7 +248,6 @@ public class Twitter
                 {
                     progress.dismiss();
                 }
-                progress.dismiss();
             }
 
             @Override

@@ -15,7 +15,7 @@
     <string name="authentication_guarantee">We respect your privacy: we will never post to your feeds without your express permission.</string>
     <string name="authentication_sign_in_tos">terms of service</string>
     <string name="required">Required</string>
-    <string name="email">Email Address</string>
+    <string name="email">Email</string>
     <string name="pwd">Password</string>
     <string name="confirm_pwd">Confirm Password</string>
     <string name="display_name">Display Name</string>
@@ -79,7 +79,7 @@
     <string name="share_on">Share on</string>
     <string name="public_str">Public</string>
     <!-- alert message -->
-    <string name="enter_message_email">Please enter your email address.</string>
+    <string name="enter_email">Please enter your email address:</string>
     <string name="thank_you_message_email">Thank You ! Please follow your mail box</string>
     <string name="twitter_login_message">Already Logged into twitter !</string>
     <string name="thank_you_message">Thank You !</string>
@@ -92,7 +92,7 @@
   <string name="apprate">Rate me</string>
   <string name="apprate_dialog_title">Rate TradeHero</string>
   <string name="API_URL">https://www.tradehero.mobi/api</string>
-  <string name="fh_please_wait">Please wait</string>
+  <string name="please_wait">Please wait</string>
   <string name="fh_connecting_to_facebook">Connecting ...</string>
   <string name="version_text">v1.5.2(2813)</string>
   <string name="authentication_sign_up_with">sign up with</string>
@@ -101,5 +101,7 @@
   <string name="copyright_1">© Copyright 2012, 2013 My Manisku Pte. Ltd.</string>
   <string name="copyright_2">Registered in Singapore company number 201003309N</string>
   <string name="copyright_3">Patents Pending</string>
+  <string name="confirm">Confirm</string>
+  <string name="pd_authorizing_twitter">Authorizing Twitter</string>
 
 </resources>

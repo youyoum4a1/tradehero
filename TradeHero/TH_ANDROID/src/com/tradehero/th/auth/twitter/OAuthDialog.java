@@ -2,6 +2,7 @@ package com.tradehero.th.auth.twitter;
 
 /** Created with IntelliJ IDEA. User: tho Date: 8/19/13 Time: 6:40 PM Copyright (c) TradeHero */
 
+import android.R;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -21,8 +22,7 @@ import android.widget.LinearLayout;
 
 public class OAuthDialog extends Dialog
 {
-    private static final FrameLayout.LayoutParams FILL = new FrameLayout.LayoutParams(
-            -1, -1);
+    private static final FrameLayout.LayoutParams FILL = new FrameLayout.LayoutParams(-1, -1);
     private final String callbackUrl;
     private final String requestUrl;
     private final String serviceUrlIdentifier;
@@ -35,7 +35,7 @@ public class OAuthDialog extends Dialog
     public OAuthDialog(Context context, String requestUrl, String callbackUrl,
             String serviceUrlIdentifier, FlowResultHandler resultHandler)
     {
-        super(context, 16973840);
+        super(context, R.style.Theme_Translucent_NoTitleBar);
         this.requestUrl = requestUrl;
         this.callbackUrl = callbackUrl;
         this.serviceUrlIdentifier = serviceUrlIdentifier;

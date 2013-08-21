@@ -214,7 +214,7 @@ public class LoginFragment extends Fragment
         inputEmailName = new EditText(getActivity());
 
         AlertDialog.Builder dialog = new Builder(getActivity());
-        dialog.setMessage(getResources().getString(R.string.enter_message_email))
+        dialog.setMessage(getResources().getString(R.string.enter_email))
                 .setCancelable(false)
                 .setView(inputEmailName)
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener()

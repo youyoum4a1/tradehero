@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.View;
+import android.widget.EditText;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
@@ -13,6 +14,8 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.application.App;
 import com.tradehero.th.base.Application;
+import com.tradehero.th.base.THUser;
+import com.tradehero.th.fragments.TwitterEmailFragment;
 import com.tradehero.th.fragments.authentication.EmailSignUpFragment;
 import com.tradehero.th.fragments.authentication.LoginFragment;
 import com.tradehero.th.fragments.authentication.SignInFragment;
@@ -27,6 +30,8 @@ import com.tradehero.th.utils.TwitterUtils;
 import com.tradehero.th.webbrowser.WebViewActivity;
 import java.util.HashMap;
 import java.util.Map;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class AuthenticationActivity extends SherlockFragmentActivity
         implements View.OnClickListener
@@ -38,6 +43,7 @@ public class AuthenticationActivity extends SherlockFragmentActivity
     private Fragment mCurrentFragment;
 
     private ProgressDialog progressDialog;
+    private JSONObject twitterJson;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -138,30 +144,50 @@ public class AuthenticationActivity extends SherlockFragmentActivity
                 {
                     @Override public void done(UserBaseDTO user, THException ex)
                     {
-                        progressDialog.hide();
                         ActivityHelper.goRoot(AuthenticationActivity.this);
+                        progressDialog.hide();
                     }
 
                     @Override public void onStart()
                     {
                         progressDialog = ProgressDialog.show(AuthenticationActivity.this,
-                                Application.getResourceString(R.string.fh_please_wait),
+                                Application.getResourceString(R.string.please_wait),
                                 Application.getResourceString(R.string.fh_connecting_to_facebook),
                                 true);
+                    }
+                    @Override public boolean onSocialAuthDone(JSONObject json)
+                    {
+                        return true;
                     }
                 });
                 break;
             case R.id.btn_twitter_signin:
+                final boolean isSigningUp = mCurrentFragment != FragmentFactory.getInstance(SignInFragment.class);
                 TwitterUtils.logIn(this, new LogInCallback()
                 {
                     @Override public void done(UserBaseDTO user, THException ex)
                     {
-                        THLog.d(TAG, "done!");
+                        ActivityHelper.goRoot(AuthenticationActivity.this);
                     }
 
-                    @Override public void onStart()
+                    @Override public boolean onSocialAuthDone(JSONObject json)
                     {
-                        //To change body of implemented methods use File | Settings | File Templates.
+                        if (!isSigningUp)
+                        {
+                            return true;
+                        }
+                        // twitter does not return email for authentication user,
+                        // we need to ask user for that
+                        setTwitterData(json);
+                        mCurrentFragment = FragmentFactory.getInstance(TwitterEmailFragment.class);
+                        getSupportFragmentManager().beginTransaction()
+                                .setCustomAnimations(
+                                        R.anim.slide_right_in, R.anim.slide_left_out,
+                                        R.anim.slide_left_in, R.anim.slide_right_out)
+                                .replace(R.id.sign_in_up_content, mCurrentFragment)
+                                .addToBackStack(null)
+                                .commit();
+                        return false;
                     }
                 });
                 break;
@@ -171,12 +197,12 @@ public class AuthenticationActivity extends SherlockFragmentActivity
 
                     @Override public void done(UserBaseDTO user, THException ex)
                     {
-                        //To change body of implemented methods use File | Settings | File Templates.
+                        ActivityHelper.goRoot(AuthenticationActivity.this);
                     }
 
-                    @Override public void onStart()
+                    @Override public boolean onSocialAuthDone(JSONObject json)
                     {
-                        //To change body of implemented methods use File | Settings | File Templates.
+                        return true;
                     }
                 });
                 break;
@@ -186,6 +212,41 @@ public class AuthenticationActivity extends SherlockFragmentActivity
                 pWebView.putExtra(WebViewActivity.SHOW_URL, Constants.PRIVACY_TERMS_OF_SERVICE);
                 startActivity(pWebView);
                 break;
+            case R.id.authentication_twitter_email_button:
+                EditText txtTwitterEmail = (EditText) mCurrentFragment.getView()
+                        .findViewById(R.id.authentication_twitter_email_txt);
+                try
+                {
+                    twitterJson.put("email", txtTwitterEmail.getText());
+                    THUser.logInAsyncWithJson(twitterJson, new LogInCallback()
+                    {
+                        @Override public void onStart()
+                        {
+                            progressDialog = ProgressDialog.show(AuthenticationActivity.this,
+                                    Application.getResourceString(R.string.please_wait),
+                                    Application.getResourceString(R.string.pd_authorizing_twitter),
+                                    true);
+                        }
+
+                        @Override public void done(UserBaseDTO user, THException ex)
+                        {
+                            if (user != null)
+                            {
+                                ActivityHelper.goRoot(AuthenticationActivity.this);
+                            }
+                        }
+                    });
+                }
+                catch (JSONException e)
+                {
+                    //nothing for now
+                }
+                break;
         }
+    }
+
+    private void setTwitterData(JSONObject json)
+    {
+        twitterJson = json;
     }
 }

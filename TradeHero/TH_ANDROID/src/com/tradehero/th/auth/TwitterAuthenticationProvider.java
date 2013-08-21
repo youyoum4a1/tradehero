@@ -62,11 +62,13 @@ public class TwitterAuthenticationProvider
                 }
             }
 
-            @Override public void onStart()
+            @Override
+            public void onStart()
             {
-                //To change body of implemented methods use File | Settings | File Templates.
+                callback.onStart();
             }
 
+            @Override
             public void onSuccess(JSONObject result)
             {
                 if (TwitterAuthenticationProvider.this.currentOperationCallback != callback)
@@ -105,6 +107,7 @@ public class TwitterAuthenticationProvider
             throws JSONException
     {
         JSONObject authData = new JSONObject();
+        authData.put("type", "twitter");
         authData.put("auth_token", authToken);
         authData.put("auth_token_secret", authTokenSecret);
         authData.put("id", userId);

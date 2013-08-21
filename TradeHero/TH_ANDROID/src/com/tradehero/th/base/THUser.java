@@ -70,21 +70,10 @@ public class THUser
 
             @Override public void onSuccess(JSONObject json)
             {
-                service.authenticate(new UserFormDTO(json),
-                        new Callback<UserProfileDTO>()
-                        {
-                            @Override
-                            public void success(UserProfileDTO userDTO, Response response)
-                            {
-                                saveCurrentUser(userDTO);
-                                callback.done(userDTO, null);
-                            }
-
-                            @Override public void failure(RetrofitError error)
-                            {
-                                callback.done(null, new THException(error));
-                            }
-                        });
+                if (callback.onSocialAuthDone(json))
+                {
+                    logInAsyncWithJson(json, callback);
+                }
             }
 
             @Override public void onCancel()
@@ -96,6 +85,26 @@ public class THUser
                 callback.done(null, new THException(throwable));
             }
         });
+    }
+
+    public static void logInAsyncWithJson(JSONObject json, final LogInCallback callback)
+    {
+        callback.onStart();
+        service.authenticate(new UserFormDTO(json),
+                new Callback<UserProfileDTO>()
+                {
+                    @Override
+                    public void success(UserProfileDTO userDTO, Response response)
+                    {
+                        saveCurrentUser(userDTO);
+                        callback.done(userDTO, null);
+                    }
+
+                    @Override public void failure(RetrofitError error)
+                    {
+                        callback.done(null, new THException(error));
+                    }
+                });
     }
 
     private static void saveCurrentUser(UserBaseDTO userDTO)
