@@ -132,11 +132,6 @@ public class TwitterAuthenticationProvider
         return "twitter";
     }
 
-    public Twitter getTwitter()
-    {
-        return this.twitter;
-    }
-
     private void handleCancel(THAuthenticationProvider.THAuthenticationCallback callback)
     {
         if ((this.currentOperationCallback != callback) || (callback == null))

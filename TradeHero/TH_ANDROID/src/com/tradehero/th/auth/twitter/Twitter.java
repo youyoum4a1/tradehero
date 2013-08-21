@@ -12,7 +12,6 @@ import oauth.signpost.commonshttp.CommonsHttpOAuthConsumer;
 import oauth.signpost.commonshttp.CommonsHttpOAuthProvider;
 import oauth.signpost.http.HttpParameters;
 import org.apache.http.client.methods.HttpUriRequest;
-import org.json.JSONObject;
 
 public class Twitter
 {
@@ -169,70 +168,72 @@ public class Twitter
                                         callback.onCancel();
                                         return;
                                     }
-                                    AsyncTask getTokenTask = new AsyncTask<Object, Object, HttpParameters>()
-                                    {
-                                        private Throwable error;
+                                    AsyncTask getTokenTask =
+                                            new AsyncTask<Object, Object, HttpParameters>()
+                                            {
+                                                private Throwable error;
 
-                                        @Override
-                                        protected HttpParameters doInBackground(Object... params)
-                                        {
-                                            try
-                                            {
-                                                Twitter.PROVIDER
-                                                        .retrieveAccessToken(consumer,
-                                                                verifier);
-                                            }
-                                            catch (Throwable e)
-                                            {
-                                                this.error = e;
-                                            }
-                                            return Twitter.PROVIDER.getResponseParameters();
-                                        }
+                                                @Override
+                                                protected HttpParameters doInBackground(
+                                                        Object... params)
+                                                {
+                                                    try
+                                                    {
+                                                        Twitter.PROVIDER
+                                                                .retrieveAccessToken(consumer,
+                                                                        verifier);
+                                                    }
+                                                    catch (Throwable e)
+                                                    {
+                                                        this.error = e;
+                                                    }
+                                                    return Twitter.PROVIDER.getResponseParameters();
+                                                }
 
-                                        @Override
-                                        protected void onPreExecute()
-                                        {
-                                            super.onPreExecute();
-                                            progress.show();
-                                        }
+                                                @Override
+                                                protected void onPreExecute()
+                                                {
+                                                    super.onPreExecute();
+                                                    progress.show();
+                                                }
 
-                                        @Override
-                                        protected void onPostExecute(HttpParameters result)
-                                        {
-                                            super.onPostExecute(result);
-                                            try
-                                            {
-                                                if (this.error != null)
+                                                @Override
+                                                protected void onPostExecute(HttpParameters result)
                                                 {
-                                                    callback.onError(this.error);
-                                                    return;
+                                                    super.onPostExecute(result);
+                                                    try
+                                                    {
+                                                        if (this.error != null)
+                                                        {
+                                                            callback.onError(this.error);
+                                                            return;
+                                                        }
+                                                        try
+                                                        {
+                                                            Twitter.this.setAuthToken(
+                                                                    consumer.getToken());
+                                                            Twitter.this.setAuthTokenSecret(
+                                                                    consumer.getTokenSecret());
+                                                            Twitter.this.setScreenName(
+                                                                    result.getFirst("screen_name"));
+                                                            Twitter.this.setUserId(
+                                                                    result.getFirst("user_id"));
+                                                        }
+                                                        catch (Throwable e)
+                                                        {
+                                                            callback.onError(e);
+                                                            return;
+                                                        }
+                                                        // since all parameters is stored as field of
+                                                        // twitter object, json is not needed
+                                                        callback.onSuccess(null);
+                                                    }
+                                                    finally
+                                                    {
+                                                        progress.dismiss();
+                                                    }
                                                 }
-                                                try
-                                                {
-                                                    Twitter.this.setAuthToken(
-                                                            consumer.getToken());
-                                                    Twitter.this.setAuthTokenSecret(
-                                                            consumer.getTokenSecret());
-                                                    Twitter.this.setScreenName(
-                                                            result.getFirst("screen_name"));
-                                                    Twitter.this.setUserId(
-                                                            result.getFirst("user_id"));
-                                                }
-                                                catch (Throwable e)
-                                                {
-                                                    callback.onError(e);
-                                                    return;
-                                                }
-                                                // since all parameters is stored as field of
-                                                // twitter object, json is not needed
-                                                callback.onSuccess(null);
-                                            }
-                                            finally
-                                            {
-                                                progress.dismiss();
-                                            }
-                                        }
-                                    };
+                                            };
                                     getTokenTask.execute();
                                 }
 

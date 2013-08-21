@@ -15,7 +15,7 @@ import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.application.App;
 import com.tradehero.th.base.Application;
 import com.tradehero.th.base.THUser;
-import com.tradehero.th.fragments.TwitterEmailFragment;
+import com.tradehero.th.fragments.authentication.TwitterEmailFragment;
 import com.tradehero.th.fragments.authentication.EmailSignUpFragment;
 import com.tradehero.th.fragments.authentication.LoginFragment;
 import com.tradehero.th.fragments.authentication.SignInFragment;
@@ -191,27 +191,7 @@ public class AuthenticationActivity extends SherlockFragmentActivity
                     }
                 });
                 break;
-            case R.id.btn_linkedin_signin:
-                LinkedInUtils.logIn(this, new LogInCallback()
-                {
 
-                    @Override public void done(UserBaseDTO user, THException ex)
-                    {
-                        ActivityHelper.goRoot(AuthenticationActivity.this);
-                    }
-
-                    @Override public boolean onSocialAuthDone(JSONObject json)
-                    {
-                        return true;
-                    }
-                });
-                break;
-
-            case R.id.txt_term_of_service_signin:
-                Intent pWebView = new Intent(this, WebViewActivity.class);
-                pWebView.putExtra(WebViewActivity.SHOW_URL, Constants.PRIVACY_TERMS_OF_SERVICE);
-                startActivity(pWebView);
-                break;
             case R.id.authentication_twitter_email_button:
                 EditText txtTwitterEmail = (EditText) mCurrentFragment.getView()
                         .findViewById(R.id.authentication_twitter_email_txt);
@@ -241,6 +221,27 @@ public class AuthenticationActivity extends SherlockFragmentActivity
                 {
                     //nothing for now
                 }
+                break;
+            case R.id.btn_linkedin_signin:
+                LinkedInUtils.logIn(this, new LogInCallback()
+                {
+
+                    @Override public void done(UserBaseDTO user, THException ex)
+                    {
+                        ActivityHelper.goRoot(AuthenticationActivity.this);
+                    }
+
+                    @Override public boolean onSocialAuthDone(JSONObject json)
+                    {
+                        return true;
+                    }
+                });
+                break;
+
+            case R.id.txt_term_of_service_signin:
+                Intent pWebView = new Intent(this, WebViewActivity.class);
+                pWebView.putExtra(WebViewActivity.SHOW_URL, Constants.PRIVACY_TERMS_OF_SERVICE);
+                startActivity(pWebView);
                 break;
         }
     }

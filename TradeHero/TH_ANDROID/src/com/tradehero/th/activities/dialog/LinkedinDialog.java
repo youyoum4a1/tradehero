@@ -38,7 +38,6 @@ public class LinkedinDialog extends Dialog
     {
         // TODO Auto-generated method stub
         super.onBackPressed();
-        SignUpFragment.linkedinButtonPressed = false;
     }
 
     /**
@@ -116,7 +115,6 @@ public class LinkedinDialog extends Dialog
             else
             { //if (url.contains(Constants.BASE_API_URL)){
                 cancel();
-                SignUpFragment.linkedinButtonPressed = false;
             } /*else {
 
 				view.loadUrl(url);

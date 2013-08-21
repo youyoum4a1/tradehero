@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments;
+package com.tradehero.th.fragments.authentication;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
