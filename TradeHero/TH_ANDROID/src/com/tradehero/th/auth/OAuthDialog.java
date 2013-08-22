@@ -132,8 +132,9 @@ public class OAuthDialog extends Dialog
                 return false;
             }
 
-            OAuthDialog.this.getContext()
-                    .startActivity(new Intent("android.intent.action.VIEW", Uri.parse(url)));
+            cancel();
+            //OAuthDialog.this.getContext()
+            //        .startActivity(new Intent("android.intent.action.VIEW", Uri.parse(url)));
             return true;
         }
 
