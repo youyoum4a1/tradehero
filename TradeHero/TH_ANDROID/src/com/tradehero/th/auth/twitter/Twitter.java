@@ -5,6 +5,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.webkit.CookieSyncManager;
+import com.tradehero.th.auth.OAuthDialog;
 import com.tradehero.th.auth.THAuthenticationProvider;
 import oauth.signpost.OAuth;
 import oauth.signpost.OAuthConsumer;

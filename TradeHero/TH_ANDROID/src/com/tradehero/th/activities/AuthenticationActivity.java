@@ -28,7 +28,6 @@ import com.tradehero.th.utills.Constants;
 import com.tradehero.th.utils.FacebookUtils;
 import com.tradehero.th.utils.LinkedInUtils;
 import com.tradehero.th.utils.TwitterUtils;
-import com.tradehero.th.webbrowser.WebViewActivity;
 import java.util.HashMap;
 import java.util.Map;
 import org.json.JSONException;

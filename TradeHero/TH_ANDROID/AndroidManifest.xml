@@ -38,7 +38,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".webbrowser.WebViewActivity"
+            android:name=".activities.WebViewActivity"
             android:screenOrientation="portrait" >
         </activity>
         <activity

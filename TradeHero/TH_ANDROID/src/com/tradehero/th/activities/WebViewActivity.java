@@ -1,4 +1,4 @@
-package com.tradehero.th.webbrowser;
+package com.tradehero.th.activities;
 
 import android.app.Activity;
 import android.content.Context;
@@ -14,6 +14,9 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 
+/**
+ * I don't know who wrote this but need to be refactor as soon as possible
+ */
 public class WebViewActivity extends Activity
 {
 
