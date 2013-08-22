@@ -1,4 +1,4 @@
-package com.tradehero.kit.utils;
+package com.tradehero.common.utils;
 
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;

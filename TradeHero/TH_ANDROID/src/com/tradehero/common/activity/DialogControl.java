@@ -1,4 +1,4 @@
-package com.tradehero.kit.activity;
+package com.tradehero.common.activity;
 
 /**
  * Created with IntelliJ IDEA. User: nguyentruongtho.sg@gmail.com Date: 6/30/13 Time: 12:30 AM

@@ -1,4 +1,4 @@
-package com.tradehero.kit.utils;
+package com.tradehero.common.utils;
 
 import android.widget.Toast;
 import com.tradehero.th.base.Application;

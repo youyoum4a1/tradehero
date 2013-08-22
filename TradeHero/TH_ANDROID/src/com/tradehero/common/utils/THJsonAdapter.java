@@ -1,4 +1,4 @@
-package com.tradehero.kit.utils;
+package com.tradehero.common.utils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;

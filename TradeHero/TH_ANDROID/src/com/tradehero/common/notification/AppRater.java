@@ -1,4 +1,4 @@
-package com.tradehero.kit.notification;
+package com.tradehero.common.notification;
 
 import android.app.AlertDialog;
 import android.content.Context;

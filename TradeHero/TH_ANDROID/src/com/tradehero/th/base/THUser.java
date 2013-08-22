@@ -1,8 +1,8 @@
 package com.tradehero.th.base;
 
 import android.content.SharedPreferences;
-import com.tradehero.kit.utils.THJsonAdapter;
-import com.tradehero.kit.utils.THLog;
+import com.tradehero.common.utils.THJsonAdapter;
+import com.tradehero.common.utils.THLog;
 import com.tradehero.th.api.form.UserFormDTO;
 import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.api.users.UserProfileDTO;

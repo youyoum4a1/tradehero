@@ -1,11 +1,11 @@
-package com.tradehero.kit.application;
+package com.tradehero.common.application;
 
 import android.app.Application;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
-import com.tradehero.kit.utils.TConstants;
+import com.tradehero.common.utils.TConstants;
 
 /**
  * Created with IntelliJ IDEA. User: nguyentruongtho.sg@gmail.com Date: 6/29/13 Time: 9:10 PM
@@ -14,8 +14,8 @@ import com.tradehero.kit.utils.TConstants;
 
 public class PApplication extends Application
 {
-    private static final String PREFERENCE_KEY = "tvt";
-    private static final String PERSIST_NAME = "tvt.persist";
+    private static final String PREFERENCE_KEY = "th";
+    private static final String PERSIST_NAME = "t.persist";
     private static Context context;
     private static Resources res;
 
