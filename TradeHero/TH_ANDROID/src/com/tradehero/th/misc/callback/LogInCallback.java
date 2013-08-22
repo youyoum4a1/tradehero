@@ -1,6 +1,5 @@
 package com.tradehero.th.misc.callback;
 
-import com.tradehero.kit.utils.THLog;
 import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.misc.exception.THException;
 import org.json.JSONObject;

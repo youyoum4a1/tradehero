@@ -9,7 +9,7 @@ import android.widget.EditText;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
-import com.tradehero.kit.utils.THLog;
+import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
 import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.application.App;
@@ -33,6 +33,7 @@ import java.util.Map;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+/** Created with IntelliJ IDEA. User: tho Date: 8/14/13 Time: 6:28 PM Copyright (c) TradeHero */
 public class AuthenticationActivity extends SherlockFragmentActivity
         implements View.OnClickListener
 {
@@ -40,40 +41,42 @@ public class AuthenticationActivity extends SherlockFragmentActivity
     private static final String M_FRAGMENT = "M_CURRENT_FRAGMENT";
 
     private Map<Integer, Class<?>> mapViewFragment = new HashMap<>();
-    private Fragment mCurrentFragment;
+    private Fragment currentFragment;
 
     private ProgressDialog progressDialog;
     private JSONObject twitterJson;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState)
+    @Override protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+
         // check if there is a saved fragment, restore it
         if (savedInstanceState != null)
         {
-            mCurrentFragment = getSupportFragmentManager()
+            currentFragment = getSupportFragmentManager()
                     .getFragment(savedInstanceState, M_FRAGMENT);
         }
         else
         {
-            mCurrentFragment = FragmentFactory.getInstance(WelcomeFragment.class);
+            currentFragment = FragmentFactory.getInstance(WelcomeFragment.class);
         }
 
         setupViewFragmentMapping();
         setContentView(R.layout.sign_in_up_content);
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.sign_in_up_content, mCurrentFragment)
+                .replace(R.id.sign_in_up_content, currentFragment)
                 .commit();
     }
 
+    /**
+     * map view and the next fragment, which is appears when click on that view
+     */
     private void setupViewFragmentMapping()
     {
         mapViewFragment.put(R.id.authentication_sign_up, SignUpFragment.class);
         mapViewFragment.put(R.id.authentication_sign_in, SignInFragment.class);
         mapViewFragment.put(R.id.txt_email_sign_in, LoginFragment.class);
         mapViewFragment.put(R.id.txt_email_sign_up, EmailSignUpFragment.class);
-        //mapViewFragment.put(R.id.txt_term_of_service_signin, WebViewActivity.class);
     }
 
     @Override protected void onSaveInstanceState(Bundle outState)
@@ -83,7 +86,7 @@ public class AuthenticationActivity extends SherlockFragmentActivity
         {
             if (getSupportFragmentManager().getBackStackEntryCount() > 0)
             {
-                getSupportFragmentManager().putFragment(outState, M_FRAGMENT, mCurrentFragment);
+                getSupportFragmentManager().putFragment(outState, M_FRAGMENT, currentFragment);
             }
         }
         catch (Exception ex)
@@ -126,12 +129,12 @@ public class AuthenticationActivity extends SherlockFragmentActivity
         Class<?> fragmentClass = mapViewFragment.get(view.getId());
         if (fragmentClass != null)
         {
-            mCurrentFragment = FragmentFactory.getInstance(fragmentClass);
+            currentFragment = FragmentFactory.getInstance(fragmentClass);
             getSupportFragmentManager().beginTransaction()
                     .setCustomAnimations(
                             R.anim.slide_right_in, R.anim.slide_left_out,
                             R.anim.slide_left_in, R.anim.slide_right_out)
-                    .replace(R.id.sign_in_up_content, mCurrentFragment)
+                    .replace(R.id.sign_in_up_content, currentFragment)
                     .addToBackStack(null)
                     .commit();
             getSupportActionBar().show();
@@ -155,14 +158,17 @@ public class AuthenticationActivity extends SherlockFragmentActivity
                                 Application.getResourceString(R.string.fh_connecting_to_facebook),
                                 true);
                     }
+
                     @Override public boolean onSocialAuthDone(JSONObject json)
                     {
                         return true;
                     }
                 });
                 break;
+
             case R.id.btn_twitter_signin:
-                final boolean isSigningUp = mCurrentFragment != FragmentFactory.getInstance(SignInFragment.class);
+                final boolean isSigningUp =
+                        currentFragment != FragmentFactory.getInstance(SignInFragment.class);
                 TwitterUtils.logIn(this, new LogInCallback()
                 {
                     @Override public void done(UserBaseDTO user, THException ex)
@@ -179,12 +185,12 @@ public class AuthenticationActivity extends SherlockFragmentActivity
                         // twitter does not return email for authentication user,
                         // we need to ask user for that
                         setTwitterData(json);
-                        mCurrentFragment = FragmentFactory.getInstance(TwitterEmailFragment.class);
+                        currentFragment = FragmentFactory.getInstance(TwitterEmailFragment.class);
                         getSupportFragmentManager().beginTransaction()
                                 .setCustomAnimations(
                                         R.anim.slide_right_in, R.anim.slide_left_out,
                                         R.anim.slide_left_in, R.anim.slide_right_out)
-                                .replace(R.id.sign_in_up_content, mCurrentFragment)
+                                .replace(R.id.sign_in_up_content, currentFragment)
                                 .addToBackStack(null)
                                 .commit();
                         return false;
@@ -193,7 +199,7 @@ public class AuthenticationActivity extends SherlockFragmentActivity
                 break;
 
             case R.id.authentication_twitter_email_button:
-                EditText txtTwitterEmail = (EditText) mCurrentFragment.getView()
+                EditText txtTwitterEmail = (EditText) currentFragment.getView()
                         .findViewById(R.id.authentication_twitter_email_txt);
                 try
                 {
@@ -222,6 +228,7 @@ public class AuthenticationActivity extends SherlockFragmentActivity
                     //nothing for now
                 }
                 break;
+
             case R.id.btn_linkedin_signin:
                 LinkedInUtils.logIn(this, new LogInCallback()
                 {

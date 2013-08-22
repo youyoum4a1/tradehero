@@ -1,7 +1,7 @@
 package com.tradehero.th.base;
 
-import com.tradehero.kit.application.PApplication;
-import com.tradehero.kit.utils.THLog;
+import com.tradehero.common.application.PApplication;
+import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
 import com.tradehero.th.network.NetworkEngine;
 import com.tradehero.th.utils.FacebookUtils;

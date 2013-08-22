@@ -5,7 +5,7 @@ package com.tradehero.th.network;
  * File | Settings | File Templates.
  */
 
-import com.tradehero.kit.utils.THJsonAdapter;
+import com.tradehero.common.utils.THJsonAdapter;
 import com.tradehero.th.R;
 import com.tradehero.th.application.App;
 import com.tradehero.th.base.THUser;

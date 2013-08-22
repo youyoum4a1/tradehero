@@ -1,6 +1,6 @@
 package com.tradehero.th.api.form;
 
-import com.tradehero.kit.utils.THLog;
+import com.tradehero.common.utils.THLog;
 import org.json.JSONException;
 import org.json.JSONObject;
 
