@@ -93,7 +93,6 @@
   <string name="apprate_dialog_title">Rate TradeHero</string>
   <string name="API_URL">https://www.tradehero.mobi/api</string>
   <string name="please_wait">Please wait</string>
-  <string name="fh_connecting_to_facebook">Connecting ...</string>
   <string name="version_text">v1.5.2(2813)</string>
   <string name="authentication_sign_up_with">sign up with</string>
   <string name="email_address">email address</string>
@@ -103,5 +102,9 @@
   <string name="copyright_3">Patents Pending</string>
   <string name="confirm">Confirm</string>
   <string name="pd_authorizing_twitter">Authorizing Twitter</string>
+  <string name="connecting_to_twitter">Connecting to Twitter</string>
+  <string name="connecting_tradehero">Authenticated with %s, connecting to TradeHero</string>
+  <string name="pd_authorizing_linkedIn">Connecting to LinkedIn</string>
+  <string name="connecting_to_facebook">Connecting to Facebook</string>
 
 </resources>

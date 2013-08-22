@@ -1,4 +1,4 @@
-package com.tradehero.th.auth.linkedin;
+package com.tradehero.th.auth.operator;
 
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -16,9 +16,8 @@ import oauth.signpost.commonshttp.CommonsHttpOAuthProvider;
 import oauth.signpost.http.HttpParameters;
 
 /** Created with IntelliJ IDEA. User: tho Date: 8/21/13 Time: 12:48 PM Copyright (c) TradeHero */
-public class LinkedIn
+public class LinkedIn extends SocialOperator
 {
-
     private static final String REQUEST_TOKEN_URL = "https://www.linkedin.com/uas/oauth/requestToken";
     private static final String AUTHORIZE_URL = "https://www.linkedin.com/uas/oauth/authorize";
     private static final String ACCESS_TOKEN_URL = "https://www.linkedin.com/uas/oauth/accessToken";
@@ -36,11 +35,12 @@ public class LinkedIn
 
     public LinkedIn(String consumerKey, String consumerSecret)
     {
-        this.consumerKey = consumerKey;
-        this.consumerSecret = consumerSecret;
+        setConsumerKey(consumerKey);
+        setConsumerSecret(consumerSecret);
     }
 
-    public static String getScope() {
+    public static String getScope()
+    {
         try
         {
             return URLEncoder.encode(PERMISSION_SCOPE, "UTF-8");
@@ -51,30 +51,14 @@ public class LinkedIn
         }
     }
 
-    public void setConsumerKey(String consumerKey)
+    public void authorize(final Context context, final THAuthenticationProvider.THAuthenticationCallback callback)
     {
-        this.consumerKey = consumerKey;
-    }
-
-    public void setConsumerSecret(String consumerSecret)
-    {
-        this.consumerSecret = consumerSecret;
-    }
-
-    public void authorize(final Context context,
-            final THAuthenticationProvider.THAuthenticationCallback callback)
-    {
-        if ((getConsumerKey() == null) || (getConsumerKey().length() == 0) || (getConsumerSecret()
-                == null) ||
-                (getConsumerSecret().length() == 0))
+        if ((getConsumerKey() == null) || (getConsumerKey().length() == 0) || (getConsumerSecret() == null) || (getConsumerSecret().length() == 0))
         {
-            throw new IllegalStateException(
-                    "LinkedIn must be initialized with a consumer key and secret before authorization.");
+            throw new IllegalStateException("LinkedIn must be initialized with a consumer key and secret before authorization.");
         }
-        final OAuthConsumer consumer = new CommonsHttpOAuthConsumer(getConsumerKey(),
-                getConsumerSecret());
-        final ProgressDialog progress = new ProgressDialog(context);
-        progress.setMessage("Connecting ...");
+
+        final OAuthConsumer consumer = new CommonsHttpOAuthConsumer(getConsumerKey(), getConsumerSecret());
         AsyncTask task = new AsyncTask<Object, Object, String>()
         {
             private Throwable error;
@@ -120,8 +104,7 @@ public class LinkedIn
                                         private Throwable error;
 
                                         @Override
-                                        protected HttpParameters doInBackground(
-                                                Object... params)
+                                        protected HttpParameters doInBackground(Object... params)
                                         {
                                             try
                                             {
@@ -140,7 +123,7 @@ public class LinkedIn
                                         protected void onPreExecute()
                                         {
                                             super.onPreExecute();
-                                            progress.show();
+                                            showProgress();
                                         }
 
                                         @Override
@@ -157,8 +140,7 @@ public class LinkedIn
                                                 try
                                                 {
                                                     LinkedIn.this.setAuthToken(consumer.getToken());
-                                                    LinkedIn.this.setAuthTokenSecret(
-                                                            consumer.getTokenSecret());
+                                                    LinkedIn.this.setAuthTokenSecret(consumer.getTokenSecret());
                                                 }
                                                 catch (Throwable e)
                                                 {
@@ -169,7 +151,7 @@ public class LinkedIn
                                             }
                                             finally
                                             {
-                                                progress.dismiss();
+                                                hideProgress();
                                             }
                                         }
                                     };
@@ -186,7 +168,7 @@ public class LinkedIn
                 }
                 finally
                 {
-                    progress.dismiss();
+                    hideProgress();
                 }
             }
 
@@ -194,7 +176,7 @@ public class LinkedIn
             protected void onPreExecute()
             {
                 super.onPreExecute();
-                progress.show();
+                showProgress();
             }
 
             @Override
@@ -213,35 +195,5 @@ public class LinkedIn
             }
         };
         task.execute();
-    }
-
-    public String getConsumerKey()
-    {
-        return consumerKey;
-    }
-
-    public String getConsumerSecret()
-    {
-        return consumerSecret;
-    }
-
-    public void setAuthToken(String authToken)
-    {
-        this.authToken = authToken;
-    }
-
-    public String getAuthToken()
-    {
-        return authToken;
-    }
-
-    public void setAuthTokenSecret(String authTokenSecret)
-    {
-        this.authTokenSecret = authTokenSecret;
-    }
-
-    public String getAuthTokenSecret()
-    {
-        return authTokenSecret;
     }
 }

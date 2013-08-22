@@ -2,7 +2,7 @@ package com.tradehero.th.utils;
 
 import android.content.Context;
 import com.tradehero.th.auth.TwitterAuthenticationProvider;
-import com.tradehero.th.auth.twitter.Twitter;
+import com.tradehero.th.auth.operator.Twitter;
 import com.tradehero.th.base.THUser;
 import com.tradehero.th.misc.callback.LogInCallback;
 

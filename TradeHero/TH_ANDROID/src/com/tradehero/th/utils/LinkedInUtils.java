@@ -1,11 +1,8 @@
 package com.tradehero.th.utils;
 
-import android.app.Activity;
 import android.content.Context;
 import com.tradehero.th.auth.LinkedInAuthenticationProvider;
-import com.tradehero.th.auth.TwitterAuthenticationProvider;
-import com.tradehero.th.auth.linkedin.LinkedIn;
-import com.tradehero.th.auth.twitter.Twitter;
+import com.tradehero.th.auth.operator.LinkedIn;
 import com.tradehero.th.base.THUser;
 import com.tradehero.th.misc.callback.LogInCallback;
 

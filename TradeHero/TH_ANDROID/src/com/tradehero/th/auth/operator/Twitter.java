@@ -1,4 +1,4 @@
-package com.tradehero.th.auth.twitter;
+package com.tradehero.th.auth.operator;
 
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -15,7 +15,7 @@ import oauth.signpost.commonshttp.CommonsHttpOAuthProvider;
 import oauth.signpost.http.HttpParameters;
 import org.apache.http.client.methods.HttpUriRequest;
 
-public class Twitter
+public class Twitter extends SocialOperator
 {
     static final String REQUEST_TOKEN_URL = "https://api.twitter.com/oauth/request_token";
     static final String AUTHORIZE_URL = "https://api.twitter.com/oauth/authorize";
@@ -25,57 +25,14 @@ public class Twitter
     private static final OAuthProvider PROVIDER =
             new CommonsHttpOAuthProvider(REQUEST_TOKEN_URL, ACCESS_TOKEN_URL, AUTHORIZE_URL);
     private static final String CALLBACK_URL = "twitter-oauth://complete";
-    private String consumerKey;
-    private String consumerSecret;
-    private String authToken;
-    private String authTokenSecret;
+
     private String userId;
     private String screenName;
 
     public Twitter(String consumerKey, String consumerSecret)
     {
-        this.consumerKey = consumerKey;
-        this.consumerSecret = consumerSecret;
-    }
-
-    public String getConsumerKey()
-    {
-        return this.consumerKey;
-    }
-
-    public void setConsumerKey(String consumerKey)
-    {
-        this.consumerKey = consumerKey;
-    }
-
-    public String getConsumerSecret()
-    {
-        return this.consumerSecret;
-    }
-
-    public void setConsumerSecret(String consumerSecret)
-    {
-        this.consumerSecret = consumerSecret;
-    }
-
-    public String getAuthToken()
-    {
-        return this.authToken;
-    }
-
-    public void setAuthToken(String authToken)
-    {
-        this.authToken = authToken;
-    }
-
-    public String getAuthTokenSecret()
-    {
-        return this.authTokenSecret;
-    }
-
-    public void setAuthTokenSecret(String authTokenSecret)
-    {
-        this.authTokenSecret = authTokenSecret;
+        setConsumerKey(consumerKey);
+        setConsumerSecret(consumerSecret);
     }
 
     public String getUserId()
@@ -113,20 +70,14 @@ public class Twitter
         }
     }
 
-    public void authorize(final Context context,
-            final THAuthenticationProvider.THAuthenticationCallback callback)
+    public void authorize(final Context context, final THAuthenticationProvider.THAuthenticationCallback callback)
     {
-        if ((getConsumerKey() == null) || (getConsumerKey().length() == 0) || (getConsumerSecret()
-                == null) ||
-                (getConsumerSecret().length() == 0))
+        if ((getConsumerKey() == null) || (getConsumerKey().length() == 0) || (getConsumerSecret() == null) ||  (getConsumerSecret().length() == 0))
         {
             throw new IllegalStateException(
                     "Twitter must be initialized with a consumer key and secret before authorization.");
         }
-        final OAuthConsumer consumer = new CommonsHttpOAuthConsumer(getConsumerKey(),
-                getConsumerSecret());
-        final ProgressDialog progress = new ProgressDialog(context);
-        progress.setMessage("Connecting ...");
+        final OAuthConsumer consumer = new CommonsHttpOAuthConsumer(getConsumerKey(), getConsumerSecret());
         AsyncTask task = new AsyncTask<Object, Object, String>()
         {
             private Throwable error;
@@ -178,9 +129,7 @@ public class Twitter
                                                 {
                                                     try
                                                     {
-                                                        Twitter.PROVIDER
-                                                                .retrieveAccessToken(consumer,
-                                                                        verifier);
+                                                        Twitter.PROVIDER.retrieveAccessToken(consumer, verifier);
                                                     }
                                                     catch (Throwable e)
                                                     {
@@ -193,7 +142,7 @@ public class Twitter
                                                 protected void onPreExecute()
                                                 {
                                                     super.onPreExecute();
-                                                    progress.show();
+                                                    showProgress();
                                                 }
 
                                                 @Override
@@ -209,14 +158,10 @@ public class Twitter
                                                         }
                                                         try
                                                         {
-                                                            Twitter.this.setAuthToken(
-                                                                    consumer.getToken());
-                                                            Twitter.this.setAuthTokenSecret(
-                                                                    consumer.getTokenSecret());
-                                                            Twitter.this.setScreenName(
-                                                                    result.getFirst(SCREEN_NAME_PARAM));
-                                                            Twitter.this.setUserId(
-                                                                    result.getFirst(USER_ID_PARAM));
+                                                            Twitter.this.setAuthToken(consumer.getToken());
+                                                            Twitter.this.setAuthTokenSecret(consumer.getTokenSecret());
+                                                            Twitter.this.setScreenName(result.getFirst(SCREEN_NAME_PARAM));
+                                                            Twitter.this.setUserId(result.getFirst(USER_ID_PARAM));
                                                         }
                                                         catch (Throwable e)
                                                         {
@@ -229,7 +174,7 @@ public class Twitter
                                                     }
                                                     finally
                                                     {
-                                                        progress.dismiss();
+                                                        hideProgress();
                                                     }
                                                 }
                                             };
@@ -246,7 +191,7 @@ public class Twitter
                 }
                 finally
                 {
-                    progress.dismiss();
+                    hideProgress();
                 }
             }
 
@@ -254,7 +199,7 @@ public class Twitter
             protected void onPreExecute()
             {
                 super.onPreExecute();
-                progress.show();
+                showProgress();
             }
 
             @Override
@@ -262,8 +207,7 @@ public class Twitter
             {
                 try
                 {
-                    return Twitter.PROVIDER
-                            .retrieveRequestToken(consumer, CALLBACK_URL);
+                    return Twitter.PROVIDER.retrieveRequestToken(consumer, CALLBACK_URL);
                 }
                 catch (Throwable e)
                 {

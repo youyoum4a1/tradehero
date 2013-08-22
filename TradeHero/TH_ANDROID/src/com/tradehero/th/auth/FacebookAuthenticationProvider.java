@@ -31,7 +31,6 @@ public class FacebookAuthenticationProvider
 {
     private final DateFormat preciseDateFormat =
             new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault());
-    public static final int DEFAULT_AUTH_ACTIVITY_CODE = 32665;
     private static final String AUTH_TYPE_NAME = "facebook";
     private Facebook facebook;
     private Session session;

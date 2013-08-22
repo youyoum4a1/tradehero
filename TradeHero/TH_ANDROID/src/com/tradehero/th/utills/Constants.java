@@ -35,8 +35,6 @@ public class Constants
     public static final String PREF_KEY_FB_LOGIN = "isFBLogedIn";
     public static final String PREF_KEY_LINKED_LOGIN = "isLinkedInLogedIn";
 
-    public static final String TWITTER_CALLBACK_URL = "oauth://thhero";
-
     // Twitter oauth urls
     public static final String URL_TWITTER_AUTH = "https://api.twitter.com/oauth/request_token";
     public static final String URL_TWITTER_OAUTH_VERIFIER = "oauth_verifier";

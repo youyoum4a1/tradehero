@@ -1,17 +1,18 @@
 package com.tradehero.th.auth;
 
 import android.content.Context;
-import com.tradehero.th.auth.linkedin.LinkedIn;
-import java.lang.ref.WeakReference;
+import com.tradehero.th.auth.operator.LinkedIn;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 /** Created with IntelliJ IDEA. User: tho Date: 8/21/13 Time: 12:49 PM Copyright (c) TradeHero */
-public class LinkedInAuthenticationProvider
-        implements THAuthenticationProvider
+public class LinkedInAuthenticationProvider extends SocialAuthenticationProvider
 {
+    private static final String AUTH_TOKEN_SECRET_KEY = "auth_token_secret";
+    private static final String AUTH_TOKEN_KEY = "auth_token";
+    private static final String CONSUMER_KEY_KEY = "consumer_key";
+    private static final String CONSUMER_SECRET_KEY = "consumer_secret";
     private final LinkedIn linkedIn;
-    private WeakReference<Context> baseContext;
     private THAuthenticationCallback currentOperationCallback;
 
     public LinkedInAuthenticationProvider(LinkedIn linkedIn)
@@ -19,27 +20,22 @@ public class LinkedInAuthenticationProvider
         this.linkedIn = linkedIn;
     }
 
-    public void setContext(Context context)
-    {
-        this.baseContext = new WeakReference<>(context);
-    }
-
     @Override public void authenticate(final THAuthenticationCallback callback)
     {
-        if (this.currentOperationCallback != null)
+        if (currentOperationCallback != null)
         {
             cancel();
         }
-        this.currentOperationCallback = callback;
+        currentOperationCallback = callback;
 
-        Context context = this.baseContext == null ? null : this.baseContext.get();
+        Context context = baseContext == null ? null : baseContext.get();
         if (context == null)
         {
             throw new IllegalStateException(
-                    "Context must be non-null for Twitter authentication to proceed.");
+                    "Context must be non-null for LinkedIn authentication to proceed.");
         }
 
-        this.linkedIn.authorize(context, new THAuthenticationCallback()
+        linkedIn.authorize(context, new THAuthenticationCallback()
         {
             public void onCancel()
             {
@@ -101,17 +97,28 @@ public class LinkedInAuthenticationProvider
 
     @Override public void deauthenticate()
     {
-        //To change body of implemented methods use File | Settings | File Templates.
+        linkedIn.setAuthToken(null);
+        linkedIn.setAuthTokenSecret(null);
     }
 
-    @Override public boolean restoreAuthentication(JSONObject paramJSONObject)
+    @Override public boolean restoreAuthentication(JSONObject authData)
     {
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
-    }
+        if (authData == null)
+        {
+            deauthenticate();
+            return true;
+        }
+        try
+        {
+            linkedIn.setAuthToken(authData.getString(AUTH_TOKEN_KEY));
+            linkedIn.setAuthTokenSecret(authData.getString(AUTH_TOKEN_SECRET_KEY));
 
-    @Override public void cancel()
-    {
-        handleCancel(this.currentOperationCallback);
+            return true;
+        }
+        catch (Exception e)
+        {
+        }
+        return false;
     }
 
     public String getAuthType()
@@ -119,31 +126,15 @@ public class LinkedInAuthenticationProvider
         return "linkedin";
     }
 
-    private void handleCancel(THAuthenticationProvider.THAuthenticationCallback callback)
-    {
-        if ((this.currentOperationCallback != callback) || (callback == null))
-        {
-            return;
-        }
-        try
-        {
-            callback.onCancel();
-        }
-        finally
-        {
-            this.currentOperationCallback = null;
-        }
-    }
-
     public JSONObject getAuthData(String authToken, String authTokenSecret)
             throws JSONException
     {
         JSONObject authData = new JSONObject();
-        authData.put("type", "linkedin");
-        authData.put("auth_token", authToken);
-        authData.put("auth_token_secret", authTokenSecret);
-        authData.put("consumer_key", this.linkedIn.getConsumerKey());
-        authData.put("consumer_secret", this.linkedIn.getConsumerSecret());
+        authData.put("type", getAuthType());
+        authData.put(AUTH_TOKEN_KEY, authToken);
+        authData.put(AUTH_TOKEN_SECRET_KEY, authTokenSecret);
+        authData.put(CONSUMER_KEY_KEY, linkedIn.getConsumerKey());
+        authData.put(CONSUMER_SECRET_KEY, linkedIn.getConsumerSecret());
         return authData;
     }
 }

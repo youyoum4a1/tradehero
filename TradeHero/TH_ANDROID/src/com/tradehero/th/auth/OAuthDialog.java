@@ -7,10 +7,8 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,7 +43,7 @@ public class OAuthDialog extends Dialog
         {
             public void onCancel(DialogInterface dialog)
             {
-                OAuthDialog.this.handler.onCancel();
+                handler.onCancel();
             }
         });
     }
@@ -53,27 +51,23 @@ public class OAuthDialog extends Dialog
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        this.progressDialog = new ProgressDialog(getContext());
-        this.progressDialog.requestWindowFeature(1);
-        this.progressDialog.setMessage("Loading...");
-
         requestWindowFeature(1);
-        this.content = new FrameLayout(getContext());
+        content = new FrameLayout(getContext());
 
         createCloseImage();
 
-        int webViewMargin = this.closeImage.getDrawable().getIntrinsicWidth() / 2;
+        int webViewMargin = closeImage.getDrawable().getIntrinsicWidth() / 2;
         setUpWebView(webViewMargin);
 
-        this.content.addView(this.closeImage, new ViewGroup.LayoutParams(-2, -2));
-        addContentView(this.content, new ViewGroup.LayoutParams(-1, -1));
+        content.addView(closeImage, new ViewGroup.LayoutParams(-2, -2));
+        addContentView(content, new ViewGroup.LayoutParams(-1, -1));
     }
 
     private void createCloseImage()
     {
-        this.closeImage = new ImageView(getContext());
+        closeImage = new ImageView(getContext());
 
-        this.closeImage.setOnClickListener(new View.OnClickListener()
+        closeImage.setOnClickListener(new View.OnClickListener()
         {
             public void onClick(View v)
             {
@@ -81,26 +75,31 @@ public class OAuthDialog extends Dialog
             }
         });
         Drawable closeDrawable = getContext().getResources().getDrawable(R.drawable.btn_dialog);
-        this.closeImage.setImageDrawable(closeDrawable);
+        closeImage.setImageDrawable(closeDrawable);
 
-        this.closeImage.setVisibility(4);
+        closeImage.setVisibility(4);
+    }
+
+    public void setProgressDialog(ProgressDialog progressDialog)
+    {
+        this.progressDialog = progressDialog;
     }
 
     private void setUpWebView(int margin)
     {
         LinearLayout webViewContainer = new LinearLayout(getContext());
-        this.webView = new WebView(getContext());
-        this.webView.setVerticalScrollBarEnabled(false);
-        this.webView.setHorizontalScrollBarEnabled(false);
-        this.webView.setWebViewClient(new OAuth1WebViewClient());
-        this.webView.getSettings().setJavaScriptEnabled(true);
-        this.webView.loadUrl(this.requestUrl);
-        this.webView.setLayoutParams(FILL);
-        this.webView.setVisibility(4);
+        webView = new WebView(getContext());
+        webView.setVerticalScrollBarEnabled(false);
+        webView.setHorizontalScrollBarEnabled(false);
+        webView.setWebViewClient(new OAuth1WebViewClient());
+        webView.getSettings().setJavaScriptEnabled(true);
+        webView.loadUrl(requestUrl);
+        webView.setLayoutParams(FILL);
+        webView.setVisibility(4);
 
         webViewContainer.setPadding(margin, margin, margin, margin);
-        webViewContainer.addView(this.webView);
-        this.content.addView(webViewContainer);
+        webViewContainer.addView(webView);
+        content.addView(webViewContainer);
     }
 
     public static abstract interface FlowResultHandler
@@ -151,24 +150,24 @@ public class OAuthDialog extends Dialog
         public void onPageStarted(WebView view, String url, Bitmap favicon)
         {
             super.onPageStarted(view, url, favicon);
-            OAuthDialog.this.progressDialog.show();
+            if (progressDialog != null)
+            {
+                progressDialog.show();
+            }
         }
 
         @Override
         public void onPageFinished(WebView view, String url)
         {
             super.onPageFinished(view, url);
-            try
+            if (progressDialog != null)
             {
-                OAuthDialog.this.progressDialog.dismiss();
-            }
-            catch (IllegalArgumentException localIllegalArgumentException)
-            {
+                progressDialog.dismiss();
             }
 
-            OAuthDialog.this.content.setBackgroundColor(0);
-            OAuthDialog.this.webView.setVisibility(0);
-            OAuthDialog.this.closeImage.setVisibility(0);
+            content.setBackgroundColor(0);
+            webView.setVisibility(0);
+            closeImage.setVisibility(0);
         }
     }
 }

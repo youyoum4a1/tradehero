@@ -53,8 +53,7 @@ public class AuthenticationActivity extends SherlockFragmentActivity
         // check if there is a saved fragment, restore it
         if (savedInstanceState != null)
         {
-            currentFragment = getSupportFragmentManager()
-                    .getFragment(savedInstanceState, M_FRAGMENT);
+            currentFragment = getSupportFragmentManager().getFragment(savedInstanceState, M_FRAGMENT);
         }
         else
         {
@@ -62,6 +61,7 @@ public class AuthenticationActivity extends SherlockFragmentActivity
         }
 
         setupViewFragmentMapping();
+
         setContentView(R.layout.sign_in_up_content);
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.sign_in_up_content, currentFragment)
@@ -143,36 +143,40 @@ public class AuthenticationActivity extends SherlockFragmentActivity
         switch (view.getId())
         {
             case R.id.btn_facebook_signin:
+                progressDialog = ProgressDialog.show(
+                        AuthenticationActivity.this,
+                        Application.getResourceString(R.string.please_wait),
+                        Application.getResourceString(R.string.connecting_to_facebook),
+                        true);
                 FacebookUtils.logIn(this, new LogInCallback()
                 {
                     @Override public void done(UserBaseDTO user, THException ex)
                     {
-                        ActivityHelper.goRoot(AuthenticationActivity.this);
                         progressDialog.hide();
-                    }
-
-                    @Override public void onStart()
-                    {
-                        progressDialog = ProgressDialog.show(AuthenticationActivity.this,
-                                Application.getResourceString(R.string.please_wait),
-                                Application.getResourceString(R.string.fh_connecting_to_facebook),
-                                true);
+                        ActivityHelper.goRoot(AuthenticationActivity.this);
                     }
 
                     @Override public boolean onSocialAuthDone(JSONObject json)
                     {
+                        progressDialog.setMessage(String.format(getString(R.string.connecting_tradehero), "Facebook"));
                         return true;
                     }
                 });
                 break;
 
             case R.id.btn_twitter_signin:
-                final boolean isSigningUp =
-                        currentFragment != FragmentFactory.getInstance(SignInFragment.class);
+                final boolean isSigningUp = currentFragment != FragmentFactory.getInstance(SignInFragment.class);
+
+                progressDialog = ProgressDialog.show(
+                        AuthenticationActivity.this,
+                        Application.getResourceString(R.string.please_wait),
+                        Application.getResourceString(R.string.connecting_to_twitter),
+                        true);
                 TwitterUtils.logIn(this, new LogInCallback()
                 {
                     @Override public void done(UserBaseDTO user, THException ex)
                     {
+                        progressDialog.dismiss();
                         ActivityHelper.goRoot(AuthenticationActivity.this);
                     }
 
@@ -180,6 +184,7 @@ public class AuthenticationActivity extends SherlockFragmentActivity
                     {
                         if (!isSigningUp)
                         {
+                            progressDialog.setMessage(String.format(getString(R.string.connecting_tradehero), "Twitter"));
                             return true;
                         }
                         // twitter does not return email for authentication user,
@@ -199,21 +204,12 @@ public class AuthenticationActivity extends SherlockFragmentActivity
                 break;
 
             case R.id.authentication_twitter_email_button:
-                EditText txtTwitterEmail = (EditText) currentFragment.getView()
-                        .findViewById(R.id.authentication_twitter_email_txt);
+                EditText txtTwitterEmail = (EditText) currentFragment.getView().findViewById(R.id.authentication_twitter_email_txt);
                 try
                 {
                     twitterJson.put("email", txtTwitterEmail.getText());
                     THUser.logInAsyncWithJson(twitterJson, new LogInCallback()
                     {
-                        @Override public void onStart()
-                        {
-                            progressDialog = ProgressDialog.show(AuthenticationActivity.this,
-                                    Application.getResourceString(R.string.please_wait),
-                                    Application.getResourceString(R.string.pd_authorizing_twitter),
-                                    true);
-                        }
-
                         @Override public void done(UserBaseDTO user, THException ex)
                         {
                             if (user != null)
@@ -230,11 +226,15 @@ public class AuthenticationActivity extends SherlockFragmentActivity
                 break;
 
             case R.id.btn_linkedin_signin:
+                progressDialog = ProgressDialog.show(AuthenticationActivity.this,
+                        Application.getResourceString(R.string.please_wait),
+                        Application.getResourceString(R.string.pd_authorizing_linkedIn),
+                        true);
                 LinkedInUtils.logIn(this, new LogInCallback()
                 {
-
                     @Override public void done(UserBaseDTO user, THException ex)
                     {
+                        progressDialog.dismiss();
                         if (user != null) {
                             ActivityHelper.goRoot(AuthenticationActivity.this);
                         } else {
@@ -244,6 +244,7 @@ public class AuthenticationActivity extends SherlockFragmentActivity
 
                     @Override public boolean onSocialAuthDone(JSONObject json)
                     {
+                        progressDialog.setMessage(String.format(getString(R.string.connecting_tradehero), "LinkedIn"));
                         return true;
                     }
                 });

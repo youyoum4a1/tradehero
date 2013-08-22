@@ -23,14 +23,12 @@ public class WebViewActivity extends Activity
     private WebView mWebView;
     private ProgressBar mProgress;
     public static final String SHOW_URL = "showUrl";
-    public static final String SHOW_TWITTER_URL = "TWITER_URI";
 
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.webview);
         String url = getIntent().getStringExtra(SHOW_URL);
-        String url_twitter = getIntent().getStringExtra("TWITTER");
         mWebView = (WebView) findViewById(R.id.WebView_browser);
 
         // Set the required Web View settings
@@ -46,13 +44,7 @@ public class WebViewActivity extends Activity
 
         if (url != null)
         {
-
             mWebView.loadUrl(url);
-        }
-        else if (url_twitter != null)
-        {
-            System.out.println("url_twitter===========" + url_twitter);
-            mWebView.loadUrl(url_twitter);
         }
     }
 
@@ -64,7 +56,6 @@ public class WebViewActivity extends Activity
         MyWebViewClient(Context context)
         {
             m_context = context;
-            // pDialog = new ProgressDialog(m_context);
             mProgress = (ProgressBar) findViewById(R.id.webview_progressbar);
         }
 
@@ -77,28 +68,9 @@ public class WebViewActivity extends Activity
         }
 
         @Override
-        public boolean shouldOverrideUrlLoading(WebView view, String url)
-        {
-
-            System.out.println("should url@@@@@@@@@@@@@@@@@@@@@@@@@" + url);
-            view.loadUrl(url);
-
-            if (url.contains(Constants.TWITTER_CALLBACK_URL))
-            {
-                Uri uri = Uri.parse(url);
-                String verifier = uri.getQueryParameter("oauth_verifier");
-
-                finish();
-            }
-
-            return true;
-        }
-
-        @Override
         public void onPageStarted(WebView view, String url, Bitmap favicon)
         {
             super.onPageStarted(view, url, favicon);
-
             mProgress.setVisibility(View.VISIBLE);
         }
 
