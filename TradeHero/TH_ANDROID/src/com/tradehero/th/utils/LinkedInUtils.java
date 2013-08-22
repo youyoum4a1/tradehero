@@ -16,11 +16,7 @@ public class LinkedInUtils
     private static LinkedIn linkedIn;
     private static LinkedInAuthenticationProvider provider;
     private static boolean isInitialized;
-    public static void logIn(Activity activity,
-            LogInCallback logInCallback)
-    {
 
-    }
     private static LinkedInAuthenticationProvider getAuthenticationProvider()
     {
         if (provider == null)
@@ -52,7 +48,7 @@ public class LinkedInUtils
         if (!isInitialized)
         {
             throw new IllegalStateException(
-                    "You must call TwitterUtils.initialize() before using TwitterUtils");
+                    "You must call LinkedInUtils.initialize() before using LinkedInUtils");
         }
     }
 

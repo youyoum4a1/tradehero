@@ -46,10 +46,6 @@
             android:screenOrientation="portrait">
         </activity>
         <activity
-            android:name=".twitter.TwitterActivity"
-            android:screenOrientation="portrait" >
-        </activity>
-        <activity
             android:name=".activities.DashboardActivity"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.DeviceDefault.NoActionBar" >

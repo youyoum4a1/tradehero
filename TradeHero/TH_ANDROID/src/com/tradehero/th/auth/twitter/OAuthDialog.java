@@ -65,8 +65,7 @@ public class OAuthDialog extends Dialog
         int webViewMargin = this.closeImage.getDrawable().getIntrinsicWidth() / 2;
         setUpWebView(webViewMargin);
 
-        this.content.addView(this.closeImage, new ViewGroup.LayoutParams(-2,
-                -2));
+        this.content.addView(this.closeImage, new ViewGroup.LayoutParams(-2, -2));
         addContentView(this.content, new ViewGroup.LayoutParams(-1, -1));
     }
 
@@ -81,7 +80,7 @@ public class OAuthDialog extends Dialog
                 OAuthDialog.this.cancel();
             }
         });
-        Drawable closeDrawable = getContext().getResources().getDrawable(17301527);
+        Drawable closeDrawable = getContext().getResources().getDrawable(R.drawable.btn_dialog);
         this.closeImage.setImageDrawable(closeDrawable);
 
         this.closeImage.setVisibility(4);
@@ -119,6 +118,7 @@ public class OAuthDialog extends Dialog
         {
         }
 
+        @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url)
         {
             if (url.startsWith(OAuthDialog.this.callbackUrl))
@@ -137,6 +137,7 @@ public class OAuthDialog extends Dialog
             return true;
         }
 
+        @Override
         public void onReceivedError(WebView view, int errorCode, String description,
                 String failingUrl)
         {
@@ -145,12 +146,14 @@ public class OAuthDialog extends Dialog
             OAuthDialog.this.handler.onError(errorCode, description, failingUrl);
         }
 
+        @Override
         public void onPageStarted(WebView view, String url, Bitmap favicon)
         {
             super.onPageStarted(view, url, favicon);
             OAuthDialog.this.progressDialog.show();
         }
 
+        @Override
         public void onPageFinished(WebView view, String url)
         {
             super.onPageFinished(view, url);

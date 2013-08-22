@@ -14,9 +14,9 @@ public class Constants
     //Linked In
     public static final String LINKEDIN_CONSUMER_KEY = "afed437khxve";
     public static final String LINKEDIN_CONSUMER_SECRET = "hO7VeSyL4y1W2ZiK";
-    public static String OAUTH_CALLBACK_SCHEME = "x-oauthflow-linkedin";
+    public static String OAUTH_CALLBACK_SCHEME = "";
     public static String OAUTH_CALLBACK_HOST = "callback";
-    public static String OAUTH_CALLBACK_URL = OAUTH_CALLBACK_SCHEME + "://" + OAUTH_CALLBACK_HOST;
+    public static String OAUTH_CALLBACK_URL = "x-oauthflow-linkedin://callback";
 
     //Twitter
     public static boolean TWITTER_FLAG = false;

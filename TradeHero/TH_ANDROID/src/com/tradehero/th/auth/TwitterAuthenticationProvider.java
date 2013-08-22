@@ -97,7 +97,6 @@ public class TwitterAuthenticationProvider
                 {
                     TwitterAuthenticationProvider.this.currentOperationCallback = null;
                 }
-                TwitterAuthenticationProvider.this.currentOperationCallback = null;
             }
         });
     }
@@ -117,7 +116,7 @@ public class TwitterAuthenticationProvider
         return authData;
     }
 
-    public void cancel()
+    @Override public void cancel()
     {
         handleCancel(this.currentOperationCallback);
     }
@@ -172,6 +171,6 @@ public class TwitterAuthenticationProvider
 
     public void setContext(Context context)
     {
-        this.baseContext = new WeakReference(context);
+        this.baseContext = new WeakReference<>(context);
     }
 }

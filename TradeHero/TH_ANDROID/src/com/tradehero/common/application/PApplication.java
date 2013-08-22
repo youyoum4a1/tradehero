@@ -15,7 +15,7 @@ import com.tradehero.common.utils.TConstants;
 public class PApplication extends Application
 {
     private static final String PREFERENCE_KEY = "th";
-    private static final String PERSIST_NAME = "t.persist";
+    private static final String PERSIST_NAME = "th.persist";
     private static Context context;
     private static Resources res;
 

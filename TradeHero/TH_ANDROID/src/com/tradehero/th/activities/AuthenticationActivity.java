@@ -10,6 +10,7 @@ import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.tradehero.common.utils.THLog;
+import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.application.App;
@@ -235,7 +236,11 @@ public class AuthenticationActivity extends SherlockFragmentActivity
 
                     @Override public void done(UserBaseDTO user, THException ex)
                     {
-                        ActivityHelper.goRoot(AuthenticationActivity.this);
+                        if (user != null) {
+                            ActivityHelper.goRoot(AuthenticationActivity.this);
+                        } else {
+                            THToast.show("LinkedIn failed: " + ex.getMessage());
+                        }
                     }
 
                     @Override public boolean onSocialAuthDone(JSONObject json)

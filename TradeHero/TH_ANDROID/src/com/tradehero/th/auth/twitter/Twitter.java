@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.webkit.CookieSyncManager;
 import com.tradehero.th.auth.THAuthenticationProvider;
+import oauth.signpost.OAuth;
 import oauth.signpost.OAuthConsumer;
 import oauth.signpost.OAuthProvider;
 import oauth.signpost.commonshttp.CommonsHttpOAuthConsumer;
@@ -18,13 +19,10 @@ public class Twitter
     static final String REQUEST_TOKEN_URL = "https://api.twitter.com/oauth/request_token";
     static final String AUTHORIZE_URL = "https://api.twitter.com/oauth/authorize";
     static final String ACCESS_TOKEN_URL = "https://api.twitter.com/oauth/access_token";
-    private static final String VERIFIER_PARAM = "oauth_verifier";
     private static final String USER_ID_PARAM = "user_id";
     private static final String SCREEN_NAME_PARAM = "screen_name";
     private static final OAuthProvider PROVIDER =
-            new CommonsHttpOAuthProvider("https://api.twitter.com/oauth/request_token",
-                    "https://api.twitter.com/oauth/access_token",
-                    "https://api.twitter.com/oauth/authorize");
+            new CommonsHttpOAuthProvider(REQUEST_TOKEN_URL, ACCESS_TOKEN_URL, AUTHORIZE_URL);
     private static final String CALLBACK_URL = "twitter-oauth://complete";
     private String consumerKey;
     private String consumerSecret;
@@ -145,7 +143,7 @@ public class Twitter
                     }
                     CookieSyncManager.createInstance(context);
                     OAuthDialog dialog =
-                            new OAuthDialog(context, result, "twitter-oauth://complete",
+                            new OAuthDialog(context, result, CALLBACK_URL,
                                     "api.twitter", new OAuthDialog.FlowResultHandler()
                             {
                                 @Override
@@ -162,7 +160,7 @@ public class Twitter
                                 {
                                     CookieSyncManager.getInstance().sync();
                                     Uri uri = Uri.parse(callbackUrl);
-                                    final String verifier = uri.getQueryParameter("oauth_verifier");
+                                    final String verifier = uri.getQueryParameter(OAuth.OAUTH_VERIFIER);
                                     if (verifier == null)
                                     {
                                         callback.onCancel();
@@ -215,9 +213,9 @@ public class Twitter
                                                             Twitter.this.setAuthTokenSecret(
                                                                     consumer.getTokenSecret());
                                                             Twitter.this.setScreenName(
-                                                                    result.getFirst("screen_name"));
+                                                                    result.getFirst(SCREEN_NAME_PARAM));
                                                             Twitter.this.setUserId(
-                                                                    result.getFirst("user_id"));
+                                                                    result.getFirst(USER_ID_PARAM));
                                                         }
                                                         catch (Throwable e)
                                                         {
@@ -264,7 +262,7 @@ public class Twitter
                 try
                 {
                     return Twitter.PROVIDER
-                            .retrieveRequestToken(consumer, "twitter-oauth://complete");
+                            .retrieveRequestToken(consumer, CALLBACK_URL);
                 }
                 catch (Throwable e)
                 {
