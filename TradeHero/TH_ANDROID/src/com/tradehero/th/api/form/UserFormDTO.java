@@ -1,6 +1,7 @@
 package com.tradehero.th.api.form;
 
 import com.tradehero.common.utils.THLog;
+import com.tradehero.th.auth.SocialAuthenticationProvider;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -45,17 +46,17 @@ public class UserFormDTO
             if (json.has("type"))
             {
                 String type = json.getString("type");
-                if ("facebook".equals(type))
+                if (SocialAuthenticationProvider.FACEBOOK_AUTH_TYPE.equals(type))
                 {
                     facebook_access_token = json.getString("access_token");
                 }
-                else if ("twitter".equals(type))
+                else if (SocialAuthenticationProvider.TWITTER_AUTH_TYPE.equals(type))
                 {
                     twitter_access_token = json.getString("auth_token");
                     twitter_access_token_secret = json.getString("auth_token_secret");
                     email = json.getString("email");
                 }
-                else if ("linkedin".equals(type))
+                else if (SocialAuthenticationProvider.LINKEDIN_AUTH_TYPE.equals(type))
                 {
                     linkedin_access_token = json.getString("auth_token");
                     linkedin_access_token_secret = json.getString("auth_token_secret");

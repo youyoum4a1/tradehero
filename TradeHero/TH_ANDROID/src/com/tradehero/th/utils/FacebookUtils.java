@@ -28,8 +28,7 @@ public class FacebookUtils
         logIn(null, activity, 32655, callback);
     }
 
-    public static void logIn(Collection<String> permissions, Activity activity, int activityCode,
-            LogInCallback callback)
+    public static void logIn(Collection<String> permissions, Activity activity, int activityCode, LogInCallback callback)
     {
         checkInitialization();
         provider.setActivity(activity);
@@ -46,8 +45,7 @@ public class FacebookUtils
     {
         if (!isInitialized)
         {
-            throw new IllegalStateException(
-                    "You must call THFacebookUtils.initialize() before using THFacebookUtils");
+            throw new IllegalStateException("You must call FacebookUtils.initialize() before using FacebookUtils");
         }
     }
 

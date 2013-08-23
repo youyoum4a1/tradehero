@@ -15,6 +15,7 @@ public class Application extends PApplication
     {
         super.init();
         NetworkEngine.initialize();
+        THUser.initialize();
         FacebookUtils.initialize(Application.getResourceString(R.string.FACEBOOK_APP_ID));
         TwitterUtils.initialize(
                 Application.getResourceString(R.string.TWITTER_CONSUMER_KEY),

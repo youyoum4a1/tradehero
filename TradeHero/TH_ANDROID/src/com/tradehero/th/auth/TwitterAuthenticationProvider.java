@@ -93,7 +93,6 @@ public class TwitterAuthenticationProvider extends SocialAuthenticationProvider
             throws JSONException
     {
         JSONObject authData = new JSONObject();
-        authData.put("type", getAuthType());
         authData.put(AUTH_TOKEN_KEY, authToken);
         authData.put(AUTH_TOKEN_SECRET_KEY, authTokenSecret);
         authData.put(ID_KEY, userId);
@@ -113,7 +112,14 @@ public class TwitterAuthenticationProvider extends SocialAuthenticationProvider
 
     @Override public String getAuthType()
     {
-        return "twitter";
+        return SocialAuthenticationProvider.TWITTER_AUTH_TYPE;
+    }
+
+    @Override public String getAuthHeader()
+    {
+        StringBuilder sb = new StringBuilder();
+        sb.append(getAuthType()).append(" ").append(twitter.getAuthToken()).append(":").append(twitter.getAuthTokenSecret());
+        return sb.toString();
     }
 
     @Override public boolean restoreAuthentication(JSONObject authData)

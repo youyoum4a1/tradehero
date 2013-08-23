@@ -166,6 +166,11 @@ public class AuthenticationActivity extends SherlockFragmentActivity
                         progressDialog.setMessage(String.format(getString(R.string.connecting_tradehero), "Facebook"));
                         return true;
                     }
+
+                    @Override public void onStart()
+                    {
+                        progressDialog.setMessage(getString(R.string.connecting_tradehero_only));
+                    }
                 });
                 break;
 
@@ -214,6 +219,10 @@ public class AuthenticationActivity extends SherlockFragmentActivity
                                 .addToBackStack(null)
                                 .commit();
                         return false;
+                    }
+                    @Override public void onStart()
+                    {
+                        progressDialog.setMessage(getString(R.string.connecting_tradehero_only));
                     }
                 });
                 break;
@@ -267,6 +276,10 @@ public class AuthenticationActivity extends SherlockFragmentActivity
                     {
                         progressDialog.setMessage(String.format(getString(R.string.connecting_tradehero), "LinkedIn"));
                         return true;
+                    }
+                    @Override public void onStart()
+                    {
+                        progressDialog.setMessage(getString(R.string.connecting_tradehero_only));
                     }
                 });
                 break;

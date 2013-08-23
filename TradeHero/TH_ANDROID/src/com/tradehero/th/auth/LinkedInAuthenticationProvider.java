@@ -121,14 +121,20 @@ public class LinkedInAuthenticationProvider extends SocialAuthenticationProvider
 
     public String getAuthType()
     {
-        return "linkedin";
+        return SocialAuthenticationProvider.LINKEDIN_AUTH_TYPE;
+    }
+
+    @Override public String getAuthHeader()
+    {
+        StringBuilder sb = new StringBuilder();
+        sb.append(getAuthType()).append(" ").append(linkedIn.getAuthToken()).append(":").append(linkedIn.getAuthTokenSecret());
+        return sb.toString();
     }
 
     public JSONObject getAuthData(String authToken, String authTokenSecret)
             throws JSONException
     {
         JSONObject authData = new JSONObject();
-        authData.put("type", getAuthType());
         authData.put(AUTH_TOKEN_KEY, authToken);
         authData.put(AUTH_TOKEN_SECRET_KEY, authTokenSecret);
         authData.put(CONSUMER_KEY_KEY, linkedIn.getConsumerKey());

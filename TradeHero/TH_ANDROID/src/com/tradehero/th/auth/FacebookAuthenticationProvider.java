@@ -26,12 +26,9 @@ import java.util.SimpleTimeZone;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class FacebookAuthenticationProvider
-        implements THAuthenticationProvider
+public class FacebookAuthenticationProvider implements THAuthenticationProvider
 {
-    private final DateFormat preciseDateFormat =
-            new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault());
-    private static final String AUTH_TYPE_NAME = "facebook";
+    private final DateFormat preciseDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault());
     private Facebook facebook;
     private Session session;
     private SessionDefaultAudience defaultAudience;
@@ -62,8 +59,7 @@ public class FacebookAuthenticationProvider
     }
 
     @Deprecated
-    public synchronized void extendAccessToken(Context context,
-            THAuthenticationProvider.THAuthenticationCallback callback)
+    public synchronized void extendAccessToken(Context context, THAuthenticationProvider.THAuthenticationCallback callback)
     {
         if (this.currentOperationCallback != null)
         {
@@ -94,8 +90,7 @@ public class FacebookAuthenticationProvider
         }
     }
 
-    public synchronized void authenticate(
-            THAuthenticationProvider.THAuthenticationCallback callback)
+    public synchronized void authenticate(THAuthenticationProvider.THAuthenticationCallback callback)
     {
         if (this.currentOperationCallback != null)
         {
@@ -202,7 +197,12 @@ public class FacebookAuthenticationProvider
 
     public String getAuthType()
     {
-        return "facebook";
+        return SocialAuthenticationProvider.FACEBOOK_AUTH_TYPE;
+    }
+
+    @Override public String getAuthHeader()
+    {
+        return getAuthType() + " " + this.session.getAccessToken();
     }
 
     public Facebook getFacebook()
@@ -247,11 +247,9 @@ public class FacebookAuthenticationProvider
         }
     }
 
-    public JSONObject getAuthData(String id, String accessToken, Date expiration)
-            throws JSONException
+    public JSONObject getAuthData(String id, String accessToken, Date expiration) throws JSONException
     {
         JSONObject authData = new JSONObject();
-        authData.put("type", "facebook");
         authData.put("id", id);
         authData.put("access_token", accessToken);
         authData.put("expiration_date", this.preciseDateFormat.format(expiration));
@@ -269,8 +267,7 @@ public class FacebookAuthenticationProvider
         JSONObject authData = null;
         try
         {
-            authData = getAuthData(userId, this.session.getAccessToken(),
-                    this.session.getExpirationDate());
+            authData = getAuthData(userId, this.session.getAccessToken(), this.session.getExpirationDate());
         }
         catch (JSONException e)
         {
@@ -289,7 +286,7 @@ public class FacebookAuthenticationProvider
 
     public synchronized void setActivity(Activity activity)
     {
-        this.baseActivity = new WeakReference(activity);
+        this.baseActivity = new WeakReference<>(activity);
     }
 
     public synchronized void setActivityCode(int activityCode)

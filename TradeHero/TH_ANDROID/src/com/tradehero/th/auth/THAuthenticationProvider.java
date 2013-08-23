@@ -15,6 +15,8 @@ public interface THAuthenticationProvider
 
     public String getAuthType();
 
+    String getAuthHeader();
+
     public static interface THAuthenticationCallback
     {
         public void onStart();

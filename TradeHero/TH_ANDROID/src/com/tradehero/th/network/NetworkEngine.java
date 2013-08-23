@@ -40,13 +40,8 @@ public class NetworkEngine
 
     private static void buildAuthorizationHeader(RequestInterceptor.RequestFacade request)
     {
-        StringBuilder sb = new StringBuilder();
-        sb.append(API_FACEBOOK_TOKEN_HEADER);
-        sb.append(" ");
-        sb.append(THUser.getSessionToken());
-
-        request.addHeader("TH-Client-Version", "1.5.1");
-        request.addHeader("Authorization", sb.toString());
+        request.addHeader("TH-Client-Version", "1.5.2");
+        request.addHeader("Authorization", THUser.getAuthenticationHeader());
     }
 
     public static <T> T createService(Class<T> service)
