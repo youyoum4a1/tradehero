@@ -10,3 +10,6 @@
 [submodule "ActionBarSherlock"]
 	path = ActionBarSherlock
 	url = git@github.com:nguyentruongtho/ActionBarSherlock.git
+[submodule "android-hero-validator"]
+	path = android-hero-validator
+	url = git@github.com:nguyentruongtho/android-hero-validator.git

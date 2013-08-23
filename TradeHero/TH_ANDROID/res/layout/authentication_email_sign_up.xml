@@ -113,7 +113,7 @@
           android:hint="@string/display_name"
           android:inputType="text"
           style="@style/TradeHero.Authentication.EditText"
-          android:drawableLeft="@drawable/accounts_glyph_name_default"
+          android:drawableLeft="@drawable/accounts_glyph_username_default"
           />
 
       <ImageView
@@ -167,6 +167,7 @@
             android:layout_height="wrap_content"
             android:hint="@string/first_name"
             android:inputType="text"
+            android:drawableLeft="@drawable/accounts_glyph_name_default"
             style="@style/TradeHero.Authentication.EditText"/>
 
         <EditText
@@ -176,6 +177,7 @@
             android:layout_marginTop="5dip"
             android:hint="@string/last_name"
             android:inputType="text"
+            android:drawableLeft="@drawable/accounts_glyph_name_default"
             style="@style/TradeHero.Authentication.EditText"/>
       </LinearLayout>
     </RelativeLayout>

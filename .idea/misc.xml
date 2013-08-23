@@ -9,7 +9,13 @@
       <list>
         <option value="$PROJECT_DIR$/retrofit/retrofit/pom.xml" />
         <option value="$PROJECT_DIR$/TradeHero/TH_ANDROID/pom.xml" />
+        <option value="$PROJECT_DIR$/../android-hero-validator/hero-validator/pom.xml" />
       </list>
+    </option>
+    <option name="ignoredFiles">
+      <set>
+        <option value="$PROJECT_DIR$/../android-hero-validator/hero-validator/pom.xml" />
+      </set>
     </option>
   </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_1_7" assert-keyword="true" jdk-15="true" project-jdk-name="Android 4.2.2 Platform" project-jdk-type="Android SDK">

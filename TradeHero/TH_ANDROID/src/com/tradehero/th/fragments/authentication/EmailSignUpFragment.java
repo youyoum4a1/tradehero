@@ -1,5 +1,6 @@
 package com.tradehero.th.fragments.authentication;
 
+import android.widget.TextView;
 import com.tradehero.th.activities.DashboardActivity;
 import java.net.URLEncoder;
 
@@ -41,20 +42,18 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 
 public class EmailSignUpFragment extends Fragment
         implements OnClickListener, RequestTaskCompleteListener, OnFocusChangeListener
 {
 
-    private EditText mEmailId, mPasword,
-            mConfirmPassword,
-            mDisplayName, mFirstName,
-            mLastName;
-    private Button mSignUpButton;
+    private EditText email, password,
+            confirmPassword,
+            displayName, firstName,
+            lastName;
+    private Button signupButton;
     private ProgressDialog mProgressDialog;
-    private LayoutInflater mLayoutInflater;
     private ImageView imgValidEMail, imgValidPwd,
             imgValidvConfirmPwd,             imgValidDisplyName;
     private int mWhichEdittext = 0;
@@ -86,59 +85,32 @@ public class EmailSignUpFragment extends Fragment
     private void initSetup(View view)
     {
         mContext = getActivity();
-        mLayoutInflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        mEmailId = (EditText) view.findViewById(R.id.et_emailid);
-        mPasword = (EditText) view.findViewById(R.id.et_password);
-        mConfirmPassword = (EditText) view.findViewById(R.id.et_confirm_password);
-        mDisplayName = (EditText) view.findViewById(R.id.et_display_name);
-        mFirstName = (EditText) view.findViewById(R.id.et_firstname);
-        mLastName = (EditText) view.findViewById(R.id.et_lasttname);
-        mSignUpButton = (Button) view.findViewById(R.id.btn_register);
+        email = (EditText) view.findViewById(R.id.et_emailid);
+        password = (EditText) view.findViewById(R.id.et_password);
+        confirmPassword = (EditText) view.findViewById(R.id.et_confirm_password);
+        displayName = (EditText) view.findViewById(R.id.et_display_name);
+        firstName = (EditText) view.findViewById(R.id.et_firstname);
+        lastName = (EditText) view.findViewById(R.id.et_lasttname);
+        signupButton = (Button) view.findViewById(R.id.btn_register);
         imgValidEMail = (ImageView) view.findViewById(R.id.valid_mail_img);
         imgValidPwd = (ImageView) view.findViewById(R.id.valid_pwd_img);
         imgValidvConfirmPwd = (ImageView) view.findViewById(R.id.valid_cpwd_img);
         imgValidDisplyName = (ImageView) view.findViewById(R.id.valid_nmdisplay_img);
 
-        mSignUpButton.setOnClickListener(this);
-        //mSignUpButton.setOnTouchListener(this);
+        signupButton.setOnClickListener(this);
+        //signupButton.setOnTouchListener(this);
         mProgressDialog = new ProgressDialog(getActivity());
-        mEmailId.setOnFocusChangeListener(this);
-        mDisplayName.setOnFocusChangeListener(this);
-        mPasword.setOnFocusChangeListener(this);
-        mConfirmPassword.setOnFocusChangeListener(this);
+        email.setOnFocusChangeListener(this);
+        displayName.setOnFocusChangeListener(this);
+        password.setOnFocusChangeListener(this);
+        confirmPassword.setOnFocusChangeListener(this);
         mProgressDialog.setMessage("Registering User");
         mOptionalImage = (ImageView) view.findViewById(R.id.image_optional);
         mOptionalImage.setOnClickListener(this);
         //mOptionalImage.setOnTouchListener(this);
 
-        mEmailId.addTextChangedListener(new TextWatcher()
-        {
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count)
-            {
-
-                if (TextUtils.isEmpty(s))
-                {
-                    mSignUpButton.setBackgroundResource(R.drawable.rectangle_login);
-                }
-
-                mText = s;
-                new CheckValidation().execute();
-            }
-
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count,
-                    int after)
-            {
-            }
-
-            @Override
-            public void afterTextChanged(Editable s)
-            {
-
-            }
-        });
-        mConfirmPassword.addTextChangedListener(new TextWatcher()
+        email.addTextChangedListener(new EmptyValidator(email));
+        confirmPassword.addTextChangedListener(new TextWatcher()
         {
 
             @Override
@@ -147,7 +119,7 @@ public class EmailSignUpFragment extends Fragment
 
                 if (TextUtils.isEmpty(s))
                 {
-                    mSignUpButton.setBackgroundResource(R.drawable.rectangle_login);
+                    signupButton.setBackgroundResource(R.drawable.rectangle_login);
                 }
 
                 mText = s;
@@ -168,7 +140,7 @@ public class EmailSignUpFragment extends Fragment
             }
         });
 
-        mDisplayName.addTextChangedListener(new TextWatcher()
+        displayName.addTextChangedListener(new TextWatcher()
         {
 
             @Override
@@ -177,7 +149,7 @@ public class EmailSignUpFragment extends Fragment
 
                 if (TextUtils.isEmpty(s))
                 {
-                    mSignUpButton.setBackgroundResource(R.drawable.rectangle_login);
+                    signupButton.setBackgroundResource(R.drawable.rectangle_login);
                 }
 
                 mText = s;
@@ -205,7 +177,7 @@ public class EmailSignUpFragment extends Fragment
 
             }
         });
-        mPasword.addTextChangedListener(new TextWatcher()
+        password.addTextChangedListener(new TextWatcher()
         {
 
             @Override
@@ -214,7 +186,7 @@ public class EmailSignUpFragment extends Fragment
 
                 if (TextUtils.isEmpty(s))
                 {
-                    mSignUpButton.setBackgroundResource(R.drawable.rectangle_login);
+                    signupButton.setBackgroundResource(R.drawable.rectangle_login);
                 }
                 mText = s;
                 new CheckValidation().execute();
@@ -271,13 +243,13 @@ public class EmailSignUpFragment extends Fragment
     private void _handle_registration() throws JSONException
     {
 
-        String lEmail = mEmailId.getText() != null ? mEmailId.getText().toString() : "";
-        String lDName = mDisplayName.getText() != null ? mDisplayName.getText().toString() : "";
-        String lFName = mFirstName.getText() != null ? mFirstName.getText().toString() : "";
-        String lLName = mLastName.getText() != null ? mLastName.getText().toString() : "";
-        String lPassword = mPasword.getText() != null ? mPasword.getText().toString() : "";
+        String lEmail = email.getText() != null ? email.getText().toString() : "";
+        String lDName = displayName.getText() != null ? displayName.getText().toString() : "";
+        String lFName = firstName.getText() != null ? firstName.getText().toString() : "";
+        String lLName = lastName.getText() != null ? lastName.getText().toString() : "";
+        String lPassword = password.getText() != null ? password.getText().toString() : "";
         String lConfirmPassword =
-                mConfirmPassword.getText() != null ? mConfirmPassword.getText().toString() : "";
+                confirmPassword.getText() != null ? confirmPassword.getText().toString() : "";
         boolean processRequest = true;
 
         if (TextUtils.isEmpty(lEmail) || TextUtils.isEmpty(lPassword) || TextUtils.isEmpty(lDName))
@@ -436,12 +408,12 @@ public class EmailSignUpFragment extends Fragment
 
     private void _resetField()
     {
-        mEmailId.setText("");
-        mPasword.setText("");
-        mConfirmPassword.setText("");
-        mDisplayName.setText("");
-        mFirstName.setText("");
-        mLastName.setText("");
+        email.setText("");
+        password.setText("");
+        confirmPassword.setText("");
+        displayName.setText("");
+        firstName.setText("");
+        lastName.setText("");
     }
 
     private class CheckValidation extends AsyncTask<String, Void, Boolean>
@@ -632,8 +604,8 @@ public class EmailSignUpFragment extends Fragment
     private boolean confirmPwdValidationChecker()
     {
 
-        if (mPasword.getText().toString().equals(mConfirmPassword.getText().toString())
-                && mPasword.getText().toString().length() > 0)
+        if (password.getText().toString().equals(confirmPassword.getText().toString())
+                && password.getText().toString().length() > 0)
         {
             try
             {
@@ -688,30 +660,30 @@ public class EmailSignUpFragment extends Fragment
         switch (arg0.getId())
         {
             case R.id.et_emailid:
-                if (TextUtils.isEmpty(mDisplayName.getText().toString()) || TextUtils.isEmpty(
-                        mPasword.getText().toString()) || TextUtils.isEmpty(
-                        mConfirmPassword.getText().toString()))
+                if (TextUtils.isEmpty(displayName.getText().toString()) || TextUtils.isEmpty(
+                        password.getText().toString()) || TextUtils.isEmpty(
+                        confirmPassword.getText().toString()))
                 {
-                    mSignUpButton.setBackgroundResource(R.drawable.rectangle_login);
+                    signupButton.setBackgroundResource(R.drawable.rectangle_login);
                 }
                 else
                 {
-                    mSignUpButton.setBackgroundResource(
+                    signupButton.setBackgroundResource(
                             R.drawable.authentication_sign_in_button_xml);
                 }
                 mWhichEdittext = 1;
 
                 break;
             case R.id.et_confirm_password:
-                if (TextUtils.isEmpty(mEmailId.getText().toString()) || TextUtils.isEmpty(
-                        mPasword.getText().toString()) || TextUtils.isEmpty(
-                        mDisplayName.getText().toString()))
+                if (TextUtils.isEmpty(email.getText().toString()) || TextUtils.isEmpty(
+                        password.getText().toString()) || TextUtils.isEmpty(
+                        displayName.getText().toString()))
                 {
-                    mSignUpButton.setBackgroundResource(R.drawable.rectangle_login);
+                    signupButton.setBackgroundResource(R.drawable.rectangle_login);
                 }
                 else
                 {
-                    mSignUpButton.setBackgroundResource(
+                    signupButton.setBackgroundResource(
                             R.drawable.authentication_sign_in_button_xml);
                 }
                 mWhichEdittext = 2;
@@ -719,15 +691,15 @@ public class EmailSignUpFragment extends Fragment
                 break;
 
             case R.id.et_password:
-                if (TextUtils.isEmpty(mEmailId.getText().toString()) || TextUtils.isEmpty(
-                        mDisplayName.getText().toString()) || TextUtils.isEmpty(
-                        mConfirmPassword.getText().toString()))
+                if (TextUtils.isEmpty(email.getText().toString()) || TextUtils.isEmpty(
+                        displayName.getText().toString()) || TextUtils.isEmpty(
+                        confirmPassword.getText().toString()))
                 {
-                    mSignUpButton.setBackgroundResource(R.drawable.rectangle_login);
+                    signupButton.setBackgroundResource(R.drawable.rectangle_login);
                 }
                 else
                 {
-                    mSignUpButton.setBackgroundResource(
+                    signupButton.setBackgroundResource(
                             R.drawable.authentication_sign_in_button_xml);
                 }
                 mWhichEdittext = 2;
@@ -736,15 +708,15 @@ public class EmailSignUpFragment extends Fragment
             case R.id.et_display_name:
                 mWhichEdittext = 3;
 
-                if (TextUtils.isEmpty(mEmailId.getText().toString()) || TextUtils.isEmpty(
-                        mPasword.getText().toString()) || TextUtils.isEmpty(
-                        mConfirmPassword.getText().toString()))
+                if (TextUtils.isEmpty(email.getText().toString()) || TextUtils.isEmpty(
+                        password.getText().toString()) || TextUtils.isEmpty(
+                        confirmPassword.getText().toString()))
                 {
-                    mSignUpButton.setBackgroundResource(R.drawable.rectangle_login);
+                    signupButton.setBackgroundResource(R.drawable.rectangle_login);
                 }
                 else
                 {
-                    mSignUpButton.setBackgroundResource(
+                    signupButton.setBackgroundResource(
                             R.drawable.authentication_sign_in_button_xml);
                 }
 
@@ -762,7 +734,7 @@ public class EmailSignUpFragment extends Fragment
 
 			switch (v.getId()) {
 			case R.id.btn_register:
-				mSignUpButton.setBackgroundResource(R.drawable.rectangle_login);
+				signupButton.setBackgroundResource(R.drawable.rectangle_login);
 
 				break;
 			case R.id.image_optional:
@@ -782,7 +754,7 @@ public class EmailSignUpFragment extends Fragment
 
 			switch (v.getId()) {
 			case R.id.btn_register:
-				mSignUpButton.setBackgroundResource(R.drawable.authentication_sign_in_button_normal);
+				signupButton.setBackgroundResource(R.drawable.authentication_sign_in_button_normal);
 
 				break;
 			case R.id.image_optional:
@@ -850,6 +822,38 @@ public class EmailSignUpFragment extends Fragment
             Util.show_toast(getActivity(), result);
             System.out.println("response for image upload----------" + result);
             dlg.dismiss();
+        }
+    }
+
+    private class EmptyValidator implements TextWatcher
+    {
+        TextView textView = null;
+        public EmptyValidator(TextView textView)
+        {
+            this.textView = textView;
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count)
+        {
+
+            if (TextUtils.isEmpty(s))
+            {
+                signupButton.setBackgroundResource(R.drawable.rectangle_login);
+            }
+
+            mText = s;
+            new CheckValidation().execute();
+        }
+
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after)
+        {
+        }
+
+        @Override
+        public void afterTextChanged(Editable s)
+        {
         }
     }
 }
