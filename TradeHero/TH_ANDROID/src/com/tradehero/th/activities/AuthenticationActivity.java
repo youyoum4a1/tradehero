@@ -187,6 +187,7 @@ public class AuthenticationActivity extends SherlockFragmentActivity
 
                     @Override public boolean onSocialAuthDone(JSONObject json)
                     {
+
                         if (!isSigningUp)
                         {
                             progressDialog.setMessage(String.format(getString(R.string.connecting_tradehero), "Twitter"));
@@ -194,6 +195,8 @@ public class AuthenticationActivity extends SherlockFragmentActivity
                         }
                         // twitter does not return email for authentication user,
                         // we need to ask user for that
+                        progressDialog.hide();
+                        progressDialog.setMessage(String.format(getString(R.string.connecting_tradehero), "Twitter"));
                         setTwitterData(json);
                         currentFragment = FragmentFactory.getInstance(TwitterEmailFragment.class);
                         getSupportFragmentManager().beginTransaction()
@@ -213,10 +216,12 @@ public class AuthenticationActivity extends SherlockFragmentActivity
                 try
                 {
                     twitterJson.put("email", txtTwitterEmail.getText());
+                    progressDialog.show();
                     THUser.logInAsyncWithJson(twitterJson, new LogInCallback()
                     {
                         @Override public void done(UserBaseDTO user, THException ex)
                         {
+                            progressDialog.dismiss();
                             if (user != null)
                             {
                                 ActivityHelper.goRoot(AuthenticationActivity.this);
