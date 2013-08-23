@@ -15,7 +15,6 @@ import retrofit.RestAdapter;
 public class NetworkEngine
 {
     private static final String API_URL = App.getResourceString(R.string.API_URL);
-    private static final String API_FACEBOOK_TOKEN_HEADER = "TH-Facebook";
 
     private static RestAdapter restAdapter;
 
@@ -35,13 +34,13 @@ public class NetworkEngine
                         }
                     }
                 })
+                .setLogLevel(RestAdapter.LogLevel.FULL)
                 .build();
     }
 
     private static void buildAuthorizationHeader(RequestInterceptor.RequestFacade request)
     {
-        request.addHeader("TH-Client-Version", "1.5.2");
-        request.addHeader("Authorization", THUser.getAuthenticationHeader());
+        request.addHeader("TH-Client-Version", "1.5.3");
     }
 
     public static <T> T createService(Class<T> service)

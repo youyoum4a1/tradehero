@@ -133,33 +133,30 @@ public class FacebookAuthenticationProvider implements THAuthenticationProvider
                     {
                         return;
                     }
-                    Request meRequest =
-                            Request.newGraphPathRequest(session, "me", new Request.Callback()
+                    Request meRequest = Request.newGraphPathRequest(session, "me", new Request.Callback()
+                    {
+                        public void onCompleted(Response response)
+                        {
+                            if (response.getError() != null)
                             {
-                                public void onCompleted(Response response)
+                                if (response.getError().getException() != null)
                                 {
-                                    if (response.getError() != null)
-                                    {
-                                        if (response.getError().getException() != null)
-                                        {
-                                            FacebookAuthenticationProvider.this.handleError(
-                                                    response.getError().getException());
-                                        }
-                                        else
-                                        {
-                                            FacebookAuthenticationProvider.this.handleError(
-                                                    new Exception(
-                                                            "An error occurred while fetching the Facebook user's identity."));
-                                        }
-                                    }
-                                    else
-                                    {
-                                        FacebookAuthenticationProvider.this.handleSuccess(
-                                                (String) response.getGraphObject()
-                                                        .getProperty("id"));
-                                    }
+                                    FacebookAuthenticationProvider.this.handleError(response.getError().getException());
                                 }
-                            });
+                                else
+                                {
+                                    FacebookAuthenticationProvider.this.handleError(
+                                            new Exception("An error occurred while fetching the Facebook user's identity."));
+                                }
+                            }
+                            else
+                            {
+                                FacebookAuthenticationProvider.this.handleSuccess(
+                                        (String) response.getGraphObject()
+                                                .getProperty("id"));
+                            }
+                        }
+                    });
                     meRequest.getParameters().putString("fields", "id");
                     meRequest.executeAsync();
                 }
@@ -178,7 +175,7 @@ public class FacebookAuthenticationProvider implements THAuthenticationProvider
 
     public void onActivityResult(int requestCode, int resultCode, Intent data)
     {
-        Activity activity = (Activity) this.baseActivity.get();
+        Activity activity = this.baseActivity.get();
         if (activity != null)
         {
             this.session.onActivityResult(activity, requestCode, resultCode, data);

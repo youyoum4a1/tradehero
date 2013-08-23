@@ -42,6 +42,8 @@ public class THUser
     }
 
     private static HashMap<String, JSONObject> credentials;
+    private static String authenticationMode = "users";
+    private static THAuthenticationProvider authenticator;
 
     public static String getSessionToken()
     {
@@ -59,6 +61,7 @@ public class THUser
         {
             throw new IllegalArgumentException("No authentication provider could be found for the provided authType");
         }
+        authenticator = authenticationProviders.get(authType);
         logInWithAsync(authenticationProviders.get(authType), callback);
     }
 
@@ -69,7 +72,6 @@ public class THUser
         {
             callback.onStart();
             authenticator.restoreAuthentication(savedTokens);
-            currentAuthenticationHeader = authenticator.getAuthHeader();
             logInAsyncWithJson(savedTokens, callback);
             return;
         }
@@ -92,7 +94,6 @@ public class THUser
                 saveCredentialsToUserDefaults(json);
                 if (callback.onSocialAuthDone(json))
                 {
-                    currentAuthenticationHeader = authenticator.getAuthHeader();
                     logInAsyncWithJson(json, callback);
                 }
             }
@@ -111,7 +112,7 @@ public class THUser
 
     public static void logInAsyncWithJson(JSONObject json, final LogInCallback callback)
     {
-        service.authenticate(new UserFormDTO(json), new Callback<UserProfileDTO>()
+        service.authenticate(authenticator.getAuthHeader(), authenticationMode, new UserFormDTO(json), new Callback<UserProfileDTO>()
         {
             @Override
             public void success(UserProfileDTO userDTO, Response response)
@@ -221,5 +222,15 @@ public class THUser
     public static String getAuthenticationHeader()
     {
         return currentAuthenticationHeader;
+    }
+
+    public static void setAuthenticationMode(String authenticationMode)
+    {
+        THUser.authenticationMode = authenticationMode;
+    }
+
+    public static String getAuthenticationMode()
+    {
+        return authenticationMode;
     }
 }

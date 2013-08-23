@@ -135,6 +135,11 @@ public class AuthenticationActivity extends SherlockFragmentActivity
                     .replace(R.id.sign_in_up_content, currentFragment)
                     .addToBackStack(null)
                     .commit();
+            if (fragmentClass.getSimpleName().contains("SignUp")) {
+                THUser.setAuthenticationMode("users");
+            } else if (fragmentClass.getSimpleName().contains("SignIn")) {
+                THUser.setAuthenticationMode("login");
+            }
             getSupportActionBar().show();
         }
 

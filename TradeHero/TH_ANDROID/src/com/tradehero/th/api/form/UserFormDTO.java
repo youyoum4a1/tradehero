@@ -54,7 +54,13 @@ public class UserFormDTO
                 {
                     twitter_access_token = json.getString("auth_token");
                     twitter_access_token_secret = json.getString("auth_token_secret");
-                    email = json.getString("email");
+                    if (json.has("email"))
+                    {
+                        email = json.getString("email");
+                    }
+                    else
+                    {
+                    }
                 }
                 else if (SocialAuthenticationProvider.LINKEDIN_AUTH_TYPE.equals(type))
                 {
