@@ -1,12 +1,11 @@
 package com.tradehero.th.auth.operator;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.webkit.CookieSyncManager;
-import com.tradehero.th.auth.THAuthenticationProvider;
 import com.tradehero.th.auth.OAuthDialog;
+import com.tradehero.th.auth.THAuthenticationProvider;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import oauth.signpost.OAuthConsumer;
@@ -23,15 +22,8 @@ public class LinkedIn extends SocialOperator
     private static final String ACCESS_TOKEN_URL = "https://www.linkedin.com/uas/oauth/accessToken";
     private static final String PERMISSION_SCOPE = "r_basicprofile r_emailaddress r_network r_contactinfo rw_nus w_messages";
     private static final String CALLBACK_URL = "x-oauthflow-linkedin://callback";
-    private String consumerSecret;
-    private String consumerKey;
     private static final OAuthProvider PROVIDER =
-            new CommonsHttpOAuthProvider(
-                    REQUEST_TOKEN_URL + "?scope=" + getScope(),
-                    ACCESS_TOKEN_URL,
-                    AUTHORIZE_URL);
-    private String authToken;
-    private String authTokenSecret;
+            new CommonsHttpOAuthProvider(REQUEST_TOKEN_URL + "?scope=" + getScope(), ACCESS_TOKEN_URL, AUTHORIZE_URL);
 
     public LinkedIn(String consumerKey, String consumerSecret)
     {
@@ -63,8 +55,7 @@ public class LinkedIn extends SocialOperator
         {
             private Throwable error;
 
-            @Override
-            protected void onPostExecute(String result)
+            @Override protected void onPostExecute(String result)
             {
                 super.onPostExecute(result);
                 try
@@ -78,8 +69,7 @@ public class LinkedIn extends SocialOperator
                     OAuthDialog dialog = new OAuthDialog(context, result, CALLBACK_URL,
                             "www.linkedin", new OAuthDialog.FlowResultHandler()
                     {
-                        @Override
-                        public void onError(int errorCode, String description,
+                        @Override public void onError(int errorCode, String description,
                                 String failingUrl)
                         {
                             callback.onError(new Exception(
@@ -87,8 +77,7 @@ public class LinkedIn extends SocialOperator
                                             errorCode, description, failingUrl)));
                         }
 
-                        @Override
-                        public void onComplete(String callbackUrl)
+                        @Override public void onComplete(String callbackUrl)
                         {
                             CookieSyncManager.getInstance().sync();
                             Uri uri = Uri.parse(callbackUrl);
@@ -103,8 +92,7 @@ public class LinkedIn extends SocialOperator
                                     {
                                         private Throwable error;
 
-                                        @Override
-                                        protected HttpParameters doInBackground(Object... params)
+                                        @Override protected HttpParameters doInBackground(Object... params)
                                         {
                                             try
                                             {
@@ -119,15 +107,13 @@ public class LinkedIn extends SocialOperator
                                             return LinkedIn.PROVIDER.getResponseParameters();
                                         }
 
-                                        @Override
-                                        protected void onPreExecute()
+                                        @Override protected void onPreExecute()
                                         {
                                             super.onPreExecute();
                                             showProgress();
                                         }
 
-                                        @Override
-                                        protected void onPostExecute(HttpParameters result)
+                                        @Override protected void onPostExecute(HttpParameters result)
                                         {
                                             super.onPostExecute(result);
                                             try
@@ -158,8 +144,7 @@ public class LinkedIn extends SocialOperator
                             getTokenTask.execute();
                         }
 
-                        @Override
-                        public void onCancel()
+                        @Override public void onCancel()
                         {
                             callback.onCancel();
                         }
@@ -172,15 +157,13 @@ public class LinkedIn extends SocialOperator
                 }
             }
 
-            @Override
-            protected void onPreExecute()
+            @Override protected void onPreExecute()
             {
                 super.onPreExecute();
                 showProgress();
             }
 
-            @Override
-            protected String doInBackground(Object... params)
+            @Override protected String doInBackground(Object... params)
             {
                 try
                 {

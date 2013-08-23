@@ -1,6 +1,5 @@
 package com.tradehero.th.auth.operator;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -22,8 +21,7 @@ public class Twitter extends SocialOperator
     static final String ACCESS_TOKEN_URL = "https://api.twitter.com/oauth/access_token";
     private static final String USER_ID_PARAM = "user_id";
     private static final String SCREEN_NAME_PARAM = "screen_name";
-    private static final OAuthProvider PROVIDER =
-            new CommonsHttpOAuthProvider(REQUEST_TOKEN_URL, ACCESS_TOKEN_URL, AUTHORIZE_URL);
+    private static final OAuthProvider PROVIDER = new CommonsHttpOAuthProvider(REQUEST_TOKEN_URL, ACCESS_TOKEN_URL, AUTHORIZE_URL);
     private static final String CALLBACK_URL = "twitter-oauth://complete";
 
     private String userId;
@@ -72,7 +70,7 @@ public class Twitter extends SocialOperator
 
     public void authorize(final Context context, final THAuthenticationProvider.THAuthenticationCallback callback)
     {
-        if ((getConsumerKey() == null) || (getConsumerKey().length() == 0) || (getConsumerSecret() == null) ||  (getConsumerSecret().length() == 0))
+        if ((getConsumerKey() == null) || (getConsumerKey().length() == 0) || (getConsumerSecret() == null) || (getConsumerSecret().length() == 0))
         {
             throw new IllegalStateException(
                     "Twitter must be initialized with a consumer key and secret before authorization.");
@@ -82,8 +80,7 @@ public class Twitter extends SocialOperator
         {
             private Throwable error;
 
-            @Override
-            protected void onPostExecute(String result)
+            @Override protected void onPostExecute(String result)
             {
                 super.onPostExecute(result);
                 try
@@ -94,99 +91,90 @@ public class Twitter extends SocialOperator
                         return;
                     }
                     CookieSyncManager.createInstance(context);
-                    OAuthDialog dialog =
-                            new OAuthDialog(context, result, CALLBACK_URL,
-                                    "api.twitter", new OAuthDialog.FlowResultHandler()
+                    OAuthDialog dialog = new OAuthDialog(context, result, CALLBACK_URL, "api.twitter", new OAuthDialog.FlowResultHandler()
+                    {
+                        @Override public void onError(int errorCode, String description,
+                                String failingUrl)
+                        {
+                            callback.onError(new Exception(
+                                    String.format("Error {0}, description: {1}, url: {2}",
+                                            errorCode, description, failingUrl)));
+                        }
+
+                        @Override public void onComplete(String callbackUrl)
+                        {
+                            CookieSyncManager.getInstance().sync();
+                            Uri uri = Uri.parse(callbackUrl);
+                            final String verifier = uri.getQueryParameter(OAuth.OAUTH_VERIFIER);
+                            if (verifier == null)
                             {
-                                @Override
-                                public void onError(int errorCode, String description,
-                                        String failingUrl)
-                                {
-                                    callback.onError(new Exception(
-                                            String.format("Error {0}, description: {1}, url: {2}",
-                                                    errorCode, description, failingUrl)));
-                                }
+                                callback.onCancel();
+                                return;
+                            }
+                            AsyncTask getTokenTask = new AsyncTask<Object, Object, HttpParameters>()
+                            {
+                                private Throwable error;
 
-                                @Override
-                                public void onComplete(String callbackUrl)
+                                @Override protected HttpParameters doInBackground(
+                                        Object... params)
                                 {
-                                    CookieSyncManager.getInstance().sync();
-                                    Uri uri = Uri.parse(callbackUrl);
-                                    final String verifier = uri.getQueryParameter(OAuth.OAUTH_VERIFIER);
-                                    if (verifier == null)
+                                    try
                                     {
-                                        callback.onCancel();
-                                        return;
+                                        Twitter.PROVIDER.retrieveAccessToken(consumer, verifier);
                                     }
-                                    AsyncTask getTokenTask =
-                                            new AsyncTask<Object, Object, HttpParameters>()
-                                            {
-                                                private Throwable error;
-
-                                                @Override
-                                                protected HttpParameters doInBackground(
-                                                        Object... params)
-                                                {
-                                                    try
-                                                    {
-                                                        Twitter.PROVIDER.retrieveAccessToken(consumer, verifier);
-                                                    }
-                                                    catch (Throwable e)
-                                                    {
-                                                        this.error = e;
-                                                    }
-                                                    return Twitter.PROVIDER.getResponseParameters();
-                                                }
-
-                                                @Override
-                                                protected void onPreExecute()
-                                                {
-                                                    super.onPreExecute();
-                                                    showProgress();
-                                                }
-
-                                                @Override
-                                                protected void onPostExecute(HttpParameters result)
-                                                {
-                                                    super.onPostExecute(result);
-                                                    try
-                                                    {
-                                                        if (this.error != null)
-                                                        {
-                                                            callback.onError(this.error);
-                                                            return;
-                                                        }
-                                                        try
-                                                        {
-                                                            Twitter.this.setAuthToken(consumer.getToken());
-                                                            Twitter.this.setAuthTokenSecret(consumer.getTokenSecret());
-                                                            Twitter.this.setScreenName(result.getFirst(SCREEN_NAME_PARAM));
-                                                            Twitter.this.setUserId(result.getFirst(USER_ID_PARAM));
-                                                        }
-                                                        catch (Throwable e)
-                                                        {
-                                                            callback.onError(e);
-                                                            return;
-                                                        }
-                                                        // since all parameters is stored as field of
-                                                        // twitter object, json is not needed
-                                                        callback.onSuccess(null);
-                                                    }
-                                                    finally
-                                                    {
-                                                        hideProgress();
-                                                    }
-                                                }
-                                            };
-                                    getTokenTask.execute();
+                                    catch (Throwable e)
+                                    {
+                                        this.error = e;
+                                    }
+                                    return Twitter.PROVIDER.getResponseParameters();
                                 }
 
-                                @Override
-                                public void onCancel()
+                                @Override protected void onPreExecute()
                                 {
-                                    callback.onCancel();
+                                    super.onPreExecute();
+                                    showProgress();
                                 }
-                            });
+
+                                @Override protected void onPostExecute(HttpParameters result)
+                                {
+                                    super.onPostExecute(result);
+                                    try
+                                    {
+                                        if (this.error != null)
+                                        {
+                                            callback.onError(this.error);
+                                            return;
+                                        }
+                                        try
+                                        {
+                                            Twitter.this.setAuthToken(consumer.getToken());
+                                            Twitter.this.setAuthTokenSecret(consumer.getTokenSecret());
+                                            Twitter.this.setScreenName(result.getFirst(SCREEN_NAME_PARAM));
+                                            Twitter.this.setUserId(result.getFirst(USER_ID_PARAM));
+                                        }
+                                        catch (Throwable e)
+                                        {
+                                            callback.onError(e);
+                                            return;
+                                        }
+                                        // since all parameters is stored as field of
+                                        // twitter object, json is not needed
+                                        callback.onSuccess(null);
+                                    }
+                                    finally
+                                    {
+                                        hideProgress();
+                                    }
+                                }
+                            };
+                            getTokenTask.execute();
+                        }
+
+                        @Override public void onCancel()
+                        {
+                            callback.onCancel();
+                        }
+                    });
                     dialog.show();
                 }
                 finally
@@ -195,15 +183,13 @@ public class Twitter extends SocialOperator
                 }
             }
 
-            @Override
-            protected void onPreExecute()
+            @Override protected void onPreExecute()
             {
                 super.onPreExecute();
                 showProgress();
             }
 
-            @Override
-            protected String doInBackground(Object... params)
+            @Override protected String doInBackground(Object... params)
             {
                 try
                 {
