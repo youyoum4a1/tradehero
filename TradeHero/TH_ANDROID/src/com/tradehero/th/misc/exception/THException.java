@@ -10,4 +10,10 @@ public class THException extends Exception
         super(cause);
         this.code = -1;
     }
+
+    public THException(String message)
+    {
+        super(new Exception(message));
+        this.code = -1;
+    }
 }

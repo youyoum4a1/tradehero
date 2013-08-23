@@ -68,9 +68,7 @@ public class AuthenticationActivity extends SherlockFragmentActivity
                 .commit();
     }
 
-    /**
-     * map view and the next fragment, which is appears when click on that view
-     */
+    /** map view and the next fragment, which is appears when click on that view */
     private void setupViewFragmentMapping()
     {
         mapViewFragment.put(R.id.authentication_sign_up, SignUpFragment.class);
@@ -177,7 +175,14 @@ public class AuthenticationActivity extends SherlockFragmentActivity
                     @Override public void done(UserBaseDTO user, THException ex)
                     {
                         progressDialog.dismiss();
-                        ActivityHelper.goRoot(AuthenticationActivity.this);
+                        if (user != null)
+                        {
+                            ActivityHelper.goRoot(AuthenticationActivity.this);
+                        }
+                        else
+                        {
+                            THToast.show("Twitter failed: " + ex.getMessage());
+                        }
                     }
 
                     @Override public boolean onSocialAuthDone(JSONObject json)
@@ -235,9 +240,12 @@ public class AuthenticationActivity extends SherlockFragmentActivity
                     @Override public void done(UserBaseDTO user, THException ex)
                     {
                         progressDialog.dismiss();
-                        if (user != null) {
+                        if (user != null)
+                        {
                             ActivityHelper.goRoot(AuthenticationActivity.this);
-                        } else {
+                        }
+                        else
+                        {
                             THToast.show("LinkedIn failed: " + ex.getMessage());
                         }
                     }

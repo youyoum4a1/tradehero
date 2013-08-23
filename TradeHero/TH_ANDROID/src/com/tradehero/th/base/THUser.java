@@ -78,6 +78,7 @@ public class THUser
 
             @Override public void onCancel()
             {
+                callback.done(null, new THException("Canceled by User"));
             }
 
             @Override public void onError(Throwable throwable)

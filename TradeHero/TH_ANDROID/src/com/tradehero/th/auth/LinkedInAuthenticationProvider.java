@@ -13,7 +13,6 @@ public class LinkedInAuthenticationProvider extends SocialAuthenticationProvider
     private static final String CONSUMER_KEY_KEY = "consumer_key";
     private static final String CONSUMER_SECRET_KEY = "consumer_secret";
     private final LinkedIn linkedIn;
-    private THAuthenticationCallback currentOperationCallback;
 
     public LinkedInAuthenticationProvider(LinkedIn linkedIn)
     {
@@ -31,8 +30,7 @@ public class LinkedInAuthenticationProvider extends SocialAuthenticationProvider
         Context context = baseContext == null ? null : baseContext.get();
         if (context == null)
         {
-            throw new IllegalStateException(
-                    "Context must be non-null for LinkedIn authentication to proceed.");
+            throw new IllegalStateException("Context must be non-null for LinkedIn authentication to proceed.");
         }
 
         linkedIn.authorize(context, new THAuthenticationCallback()
