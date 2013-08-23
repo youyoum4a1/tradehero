@@ -86,8 +86,7 @@ public class EmailSignUpFragment extends Fragment
     private void initSetup(View view)
     {
         mContext = getActivity();
-        mLayoutInflater =
-                (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        mLayoutInflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         mEmailId = (EditText) view.findViewById(R.id.et_emailid);
         mPasword = (EditText) view.findViewById(R.id.et_password);
         mConfirmPassword = (EditText) view.findViewById(R.id.et_confirm_password);
@@ -189,8 +188,7 @@ public class EmailSignUpFragment extends Fragment
                 }
                 else
                 {
-                    Toast.makeText(getActivity(), getResources().getString(R.string.network_error),
-                            200).show();
+                    Toast.makeText(getActivity(), getResources().getString(R.string.network_error), 200).show();
                 }
             }
 
@@ -240,35 +238,33 @@ public class EmailSignUpFragment extends Fragment
     @Override
     public void onClick(View v)
     {
+        switch (v.getId()) {
+            case R.id.btn_register:
+                Util.dismissKeyBoard(getActivity(), v);
 
-        if (v.getId() == R.id.btn_register)
-        {
-
-            Util.dismissKeyBoard(getActivity(), v);
-
-            try
-            {
-
-                if (NetworkStatus.getInstance().isConnected(getActivity()))
+                try
                 {
-                    _handle_registration();
+
+                    if (NetworkStatus.getInstance().isConnected(getActivity()))
+                    {
+                        _handle_registration();
+                    }
+                    else
+                    {
+                        Util.show_toast(getActivity(),
+                                getResources().getString(R.string.network_error));
+                    }
                 }
-                else
+                catch (JSONException e)
                 {
-                    Util.show_toast(getActivity(),
-                            getResources().getString(R.string.network_error));
+                    e.printStackTrace();
                 }
-            }
-            catch (JSONException e)
-            {
-                e.printStackTrace();
-            }
-        }
-        if (v.getId() == R.id.image_optional)
-        {
-            Intent intent = new Intent(Intent.ACTION_PICK);
-            intent.setType("image/jpeg");
-            startActivityForResult(intent, REQUEST_GALLERY);
+                break;
+            case R.id.image_optional:
+                Intent intent = new Intent(Intent.ACTION_PICK);
+                intent.setType("image/jpeg");
+                startActivityForResult(intent, REQUEST_GALLERY);
+                break;
         }
     }
 

@@ -20,6 +20,7 @@
       android:layout_height="wrap_content"
       android:hint="@string/email"
       android:layout_marginBottom="5dip"
+      android:inputType="textEmailAddress"
       style="@style/TradeHero.Authentication.EditText"/>
   <Button
       android:id="@+id/authentication_twitter_email_button"
