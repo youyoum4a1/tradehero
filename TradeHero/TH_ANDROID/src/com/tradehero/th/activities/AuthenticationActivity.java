@@ -150,8 +150,15 @@ public class AuthenticationActivity extends SherlockFragmentActivity
                 {
                     @Override public void done(UserBaseDTO user, THException ex)
                     {
-                        progressDialog.hide();
-                        ActivityHelper.goRoot(AuthenticationActivity.this);
+                        if (user != null)
+                        {
+                            ActivityHelper.goRoot(AuthenticationActivity.this);
+                        }
+                        else
+                        {
+                            THToast.show("Facebook failed: " + ex.getMessage());
+                        }
+                        progressDialog.dismiss();
                     }
 
                     @Override public boolean onSocialAuthDone(JSONObject json)
@@ -174,7 +181,6 @@ public class AuthenticationActivity extends SherlockFragmentActivity
                 {
                     @Override public void done(UserBaseDTO user, THException ex)
                     {
-                        progressDialog.dismiss();
                         if (user != null)
                         {
                             ActivityHelper.goRoot(AuthenticationActivity.this);
@@ -183,6 +189,7 @@ public class AuthenticationActivity extends SherlockFragmentActivity
                         {
                             THToast.show("Twitter failed: " + ex.getMessage());
                         }
+                        progressDialog.dismiss();
                     }
 
                     @Override public boolean onSocialAuthDone(JSONObject json)
@@ -221,11 +228,11 @@ public class AuthenticationActivity extends SherlockFragmentActivity
                     {
                         @Override public void done(UserBaseDTO user, THException ex)
                         {
-                            progressDialog.dismiss();
                             if (user != null)
                             {
                                 ActivityHelper.goRoot(AuthenticationActivity.this);
                             }
+                            progressDialog.dismiss();
                         }
                     });
                 }
@@ -236,7 +243,8 @@ public class AuthenticationActivity extends SherlockFragmentActivity
                 break;
 
             case R.id.btn_linkedin_signin:
-                progressDialog = ProgressDialog.show(AuthenticationActivity.this,
+                progressDialog = ProgressDialog.show(
+                        AuthenticationActivity.this,
                         Application.getResourceString(R.string.please_wait),
                         Application.getResourceString(R.string.pd_authorizing_linkedIn),
                         true);
@@ -244,7 +252,6 @@ public class AuthenticationActivity extends SherlockFragmentActivity
                 {
                     @Override public void done(UserBaseDTO user, THException ex)
                     {
-                        progressDialog.dismiss();
                         if (user != null)
                         {
                             ActivityHelper.goRoot(AuthenticationActivity.this);
@@ -253,6 +260,7 @@ public class AuthenticationActivity extends SherlockFragmentActivity
                         {
                             THToast.show("LinkedIn failed: " + ex.getMessage());
                         }
+                        progressDialog.dismiss();
                     }
 
                     @Override public boolean onSocialAuthDone(JSONObject json)

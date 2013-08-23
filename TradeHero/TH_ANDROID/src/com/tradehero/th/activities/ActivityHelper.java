@@ -17,7 +17,7 @@ public class ActivityHelper
     public static void goRoot(Context activity)
     {
         Intent localIntent = new Intent(App.context(), DashboardActivity.class);
-        localIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        localIntent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
         activity.startActivity(localIntent);
     }
 }
