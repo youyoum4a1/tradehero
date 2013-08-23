@@ -74,7 +74,11 @@
   </style>
   <style name="TradeHero.Authentication.EditText" parent="@android:style/Widget.EditText">
     <item name="android:ems">10</item>
-    <item name="android:padding">10dip</item>
+    <item name="android:paddingRight">5dip</item>
+    <item name="android:paddingTop">5dip</item>
+    <item name="android:paddingBottom">5dip</item>
+    <item name="android:paddingLeft">6dip</item>
+    <item name="android:drawablePadding">2dip</item>
     <item name="android:textColor">@color/black</item>
     <item name="android:background">@drawable/authentication_sign_up_textbox</item>
   </style>

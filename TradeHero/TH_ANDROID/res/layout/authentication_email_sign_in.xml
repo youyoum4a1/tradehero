@@ -11,6 +11,7 @@
       android:layout_height="wrap_content"
       android:text="neeraj@eatechnologies.com"
       android:hint="@string/email"
+      android:drawableLeft="@drawable/accounts_glyph_email_default"
       android:inputType="textEmailAddress"
       style="@style/TradeHero.Authentication.EditText">
     <requestFocus/>
@@ -24,6 +25,7 @@
       android:layout_marginTop="10dip"
       android:text="testing"
       android:hint="@string/pwd"
+      android:drawableLeft="@drawable/accounts_glyph_password_default"
       android:inputType="textPassword"
       style="@style/TradeHero.Authentication.EditText"/>
 

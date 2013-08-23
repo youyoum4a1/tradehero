@@ -14,12 +14,12 @@
     <string name="Signup_content2"> email address</string>
     <string name="authentication_guarantee">We respect your privacy: we will never post to your feeds without your express permission.</string>
     <string name="authentication_sign_in_tos">terms of service</string>
-    <string name="required">Required</string>
+    <string name="required">required</string>
     <string name="email">Email</string>
     <string name="pwd">Password</string>
     <string name="confirm_pwd">Confirm Password</string>
     <string name="display_name">Display Name</string>
-    <string name="optional">Optional</string>
+    <string name="optional">optional</string>
     <string name="first_name">First Name</string>
     <string name="last_name">Last Name</string>
     <string name="network_error">Please check your network connection!</string>
