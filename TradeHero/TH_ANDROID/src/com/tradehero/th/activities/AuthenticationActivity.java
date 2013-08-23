@@ -16,9 +16,9 @@ import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.application.App;
 import com.tradehero.th.base.Application;
 import com.tradehero.th.base.THUser;
+import com.tradehero.th.fragments.authentication.EmailSignInFragment;
 import com.tradehero.th.fragments.authentication.TwitterEmailFragment;
 import com.tradehero.th.fragments.authentication.EmailSignUpFragment;
-import com.tradehero.th.fragments.authentication.LoginFragment;
 import com.tradehero.th.fragments.authentication.SignInFragment;
 import com.tradehero.th.fragments.authentication.SignUpFragment;
 import com.tradehero.th.fragments.authentication.WelcomeFragment;
@@ -73,7 +73,7 @@ public class AuthenticationActivity extends SherlockFragmentActivity
     {
         mapViewFragment.put(R.id.authentication_sign_up, SignUpFragment.class);
         mapViewFragment.put(R.id.authentication_sign_in, SignInFragment.class);
-        mapViewFragment.put(R.id.txt_email_sign_in, LoginFragment.class);
+        mapViewFragment.put(R.id.txt_email_sign_in, EmailSignInFragment.class);
         mapViewFragment.put(R.id.txt_email_sign_up, EmailSignUpFragment.class);
     }
 

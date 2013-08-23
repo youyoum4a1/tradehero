@@ -58,8 +58,7 @@ public class THUser
         logInWithAsync(authenticationProviders.get(authType), callback);
     }
 
-    private static void logInWithAsync(THAuthenticationProvider authenticator,
-            final LogInCallback callback)
+    private static void logInWithAsync(THAuthenticationProvider authenticator, final LogInCallback callback)
     {
         authenticator.authenticate(new THAuthenticationProvider.THAuthenticationCallback()
         {

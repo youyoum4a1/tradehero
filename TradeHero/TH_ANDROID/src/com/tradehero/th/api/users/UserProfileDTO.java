@@ -2,7 +2,6 @@ package com.tradehero.th.api.users;
 
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.portfolio.PortfolioDTO;
-import java.util.Enumeration;
 import java.util.List;
 
 /** Created with IntelliJ IDEA. User: tho Date: 8/15/13 Time: 7:03 PM Copyright (c) TradeHero */

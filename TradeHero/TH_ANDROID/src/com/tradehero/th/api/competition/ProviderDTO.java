@@ -2,7 +2,7 @@ package com.tradehero.th.api.competition;
 
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import java.util.Date;
-import java.util.Enumeration;
+import java.util.List;
 
 /** Created with IntelliJ IDEA. User: tho Date: 8/15/13 Time: 7:12 PM Copyright (c) TradeHero */
 public class ProviderDTO
@@ -13,7 +13,7 @@ public class ProviderDTO
     public boolean isUserEnrolled;
     public String hexColor;
     public String navigationLogoUrl;
-    public Enumeration<AdDTO> advertisements;
+    public List<AdDTO> advertisements;
     public String competitionScreenTitle;
     public String competitionScreenSubtitle;
     public String joinedLogoUrl;

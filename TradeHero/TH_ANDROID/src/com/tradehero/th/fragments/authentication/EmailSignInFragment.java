@@ -37,11 +37,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-public class LoginFragment extends Fragment
+public class EmailSignInFragment extends Fragment
         implements OnClickListener, RequestTaskCompleteListener, OnFocusChangeListener
 {
 
-    private final static String TAG = LoginFragment.class.getName();
+    private final static String TAG = EmailSignInFragment.class.getName();
 
     private TextView mForgotPassword;
     private Button mSignIn;
