@@ -3,8 +3,6 @@ package com.tradehero.th.widget;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.EditText;
@@ -30,7 +28,6 @@ public class ValidatedText extends EditText implements ValidatedView, View.OnFoc
         init(context, attrs);
     }
 
-
     public ValidatedText(Context context, AttributeSet attrs, int defStyle)
     {
         super(context, attrs, defStyle);
@@ -50,7 +47,7 @@ public class ValidatedText extends EditText implements ValidatedView, View.OnFoc
 
     @Override public void onFocusChange(View view, boolean hasFocus)
     {
-        updateViewForStatus ();
+        updateViewForStatus();
     }
 
     protected void setValid(boolean isValidated)
@@ -62,7 +59,7 @@ public class ValidatedText extends EditText implements ValidatedView, View.OnFoc
 
     private void updateViewForStatus()
     {
-        if (!isValid && invalidDrawable!=null)
+        if (!isValid && invalidDrawable != null)
         {
             invalidDrawable.setBounds(validDrawable.getBounds());
             this.setCompoundDrawables(invalidDrawable, null, null, null);
