@@ -1,15 +1,22 @@
 package com.tradehero.th.widget;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.util.AttributeSet;
 import android.view.View;
+import com.tradehero.th.R;
+import java.util.regex.Pattern;
 
 /** Created with IntelliJ IDEA. User: tho Date: 8/27/13 Time: 2:58 PM Copyright (c) TradeHero */
 public class SelfValidatedText extends ValidatedText
 {
-    private static final long TIME_TO_WAIT = 1000;
+    private final int DEFAULT_VALIDATE_DELAY = 200;
+
+    private long validateDelay;
 
     private Runnable validateRunnable;
+
+    protected Pattern validatePattern;
 
     private boolean hasHadInteraction = false;
 
@@ -31,6 +38,14 @@ public class SelfValidatedText extends ValidatedText
     @Override protected void init(Context context, AttributeSet attrs)
     {
         super.init(context, attrs);
+        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.SelfValidatedText);
+        String validatePatternString = a.getString(R.styleable.SelfValidatedText_validatePattern);
+        validateDelay = a.getInt(R.styleable.SelfValidatedText_validateDelay, DEFAULT_VALIDATE_DELAY);
+        if (validatePatternString != null) {
+            validatePattern = Pattern.compile(validatePatternString);
+        }
+        a.recycle();
+
         validateRunnable = new Runnable()
         {
             @Override public void run()
@@ -64,7 +79,7 @@ public class SelfValidatedText extends ValidatedText
         if (validateRunnable != null)
         {
             this.removeCallbacks(validateRunnable);
-            this.postDelayed(validateRunnable, TIME_TO_WAIT);
+            this.postDelayed(validateRunnable, validateDelay);
         }
 
     }
@@ -79,6 +94,20 @@ public class SelfValidatedText extends ValidatedText
 
     protected boolean validate()
     {
+        return validateSize() && validatePattern();
+    }
+
+    protected boolean validateSize ()
+    {
         return (getText() != null && getText().length() > 0) || allowEmpty;
+    }
+
+    protected boolean validatePattern ()
+    {
+        if (getText() == null || validatePattern == null)
+        {
+            return true;
+        }
+        return validatePattern.matcher(getText()).matches();
     }
 }

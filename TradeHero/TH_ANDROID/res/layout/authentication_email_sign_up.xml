@@ -29,7 +29,7 @@
         android:layout_gravity="center_vertical"
         android:layout_margin="2dip">
 
-      <com.tradehero.th.widget.ValidatedEmailText
+      <com.tradehero.th.widget.ServerValidatedEmailText
           android:id="@+id/authentication_sign_up_email"
           android:layout_width="match_parent"
           android:layout_height="match_parent"
@@ -41,6 +41,8 @@
           app:allowEmpty="false"
           app:indicator="@+id/authentication_sign_up_email_validator"
           app:invalidDrawable="@drawable/accounts_glyph_email_error"
+          app:validatePattern="@string/regex_validator"
+          app:validateDelay="500"
           />
 
       <ProgressBar
