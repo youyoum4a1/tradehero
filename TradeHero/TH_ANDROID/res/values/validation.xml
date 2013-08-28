@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="validation_bad_size">Bad size</string>
+  <string name="validation_incorrect_format">Invalid format input</string>
+  <string name="validation_server_username_not_available">Username is taken</string>
+</resources>

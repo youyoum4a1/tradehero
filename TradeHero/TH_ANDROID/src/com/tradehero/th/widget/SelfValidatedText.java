@@ -44,6 +44,7 @@ public class SelfValidatedText extends ValidatedText
         if (validatePatternString != null) {
             validatePattern = Pattern.compile(validatePatternString);
         }
+
         a.recycle();
 
         validateRunnable = new Runnable()
@@ -109,5 +110,18 @@ public class SelfValidatedText extends ValidatedText
             return true;
         }
         return validatePattern.matcher(getText()).matches();
+    }
+
+    @Override public ValidationMessage getCurrentValidationMessage()
+    {
+        if (!validateSize())
+        {
+            return (new ValidationMessage(this, false, getContext().getString(R.string.validation_bad_size)));
+        }
+        if (!validatePattern())
+        {
+            return new ValidationMessage(this, false, getContext().getString(R.string.validation_incorrect_format));
+        }
+        return super.getCurrentValidationMessage();
     }
 }

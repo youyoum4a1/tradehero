@@ -39,20 +39,11 @@
           style="@style/TradeHero.Authentication.EditText"
           android:drawableLeft="@drawable/accounts_glyph_email_default"
           app:allowEmpty="false"
-          app:indicator="@+id/authentication_sign_up_email_validator"
           app:invalidDrawable="@drawable/accounts_glyph_email_error"
-          app:validatePattern="@string/regex_validator"
+          app:validatePattern="@string/regex_email_validator"
           app:validateDelay="500"
           />
 
-      <ProgressBar
-          android:id="@+id/authentication_sign_up_email_validator"
-          android:layout_width="32dip"
-          android:layout_height="32dip"
-          android:layout_gravity="right|center"
-          android:layout_marginRight="5dip"
-          android:visibility="invisible"
-          />
     </FrameLayout>
 
     <FrameLayout
@@ -109,24 +100,29 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:layout_margin="2dip">
-      <EditText
+
+
+      <com.tradehero.th.widget.ServerValidatedUsernameText
           android:id="@+id/authentication_sign_up_username"
           android:layout_width="match_parent"
           android:layout_height="match_parent"
           android:hint="@string/display_name"
           android:inputType="text"
-          style="@style/TradeHero.Authentication.EditText"
+          style="@style/TradeHero.Authentication.ServerValidatedUsernameText"
           android:drawableLeft="@drawable/accounts_glyph_username_default"
+          app:invalidDrawable="@drawable/accounts_glyph_username_error"
+          app:indicator="@+id/authentication_sign_up_username_validator"
+          app:validateDelay="500"
+          app:progressIndicator="@+id/authentication_sign_up_username_validator"
           />
-
-      <ImageView
-          android:id="@+id/valid_nmdisplay_img"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:src="@drawable/valid_sign"
+      <ProgressBar
+          android:id="@+id/authentication_sign_up_username_validator"
+          android:layout_width="32dip"
+          android:layout_height="32dip"
           android:layout_gravity="right|center"
-          android:contentDescription="@string/empty"
-          android:visibility="invisible"/>
+          android:layout_marginRight="5dip"
+          android:visibility="gone"
+          />
     </FrameLayout>
 
     <TextView
@@ -170,6 +166,7 @@
             android:layout_height="wrap_content"
             android:hint="@string/first_name"
             android:inputType="text"
+
             android:drawableLeft="@drawable/accounts_glyph_name_default"
             style="@style/TradeHero.Authentication.EditText"/>
 

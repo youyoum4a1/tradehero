@@ -1,12 +1,11 @@
 package com.tradehero.th.fragments.authentication;
 
 import android.widget.TextView;
-import com.thont.validator.HeroValidator;
+import com.tradehero.common.utils.THToast;
 import com.tradehero.th.activities.DashboardActivity;
-import com.tradehero.th.utils.validator.EmailValidator;
-import com.tradehero.th.utils.validator.HumanNameValidator;
-import com.tradehero.th.utils.validator.MatchValidator;
-import com.tradehero.th.utils.validator.PasswordValidator;
+import com.tradehero.th.widget.ValidatedText;
+import com.tradehero.th.widget.ValidationListener;
+import com.tradehero.th.widget.ValidationMessage;
 import java.net.URLEncoder;
 
 import org.json.JSONException;
@@ -44,13 +43,11 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnFocusChangeListener;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 public class EmailSignUpFragment extends Fragment
-        implements OnClickListener, RequestTaskCompleteListener, OnFocusChangeListener
+        implements OnClickListener, RequestTaskCompleteListener, OnFocusChangeListener, ValidationListener
 {
 
     private EditText email, password,
@@ -73,29 +70,45 @@ public class EmailSignUpFragment extends Fragment
     String lEmail;
     String lDName;
     String lFName;
-    String lLName;
     String lPassword;
+    String lLName;
+
     String lConfirmPassword;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.authentication_email_sign_up, container, false);
-        //HeroValidator validator = ValidatorBuilder.with(getActivity()).setForm(view).setSubmit(R.id.authentication_sign_up_button);
-        //validator.registerValidator(R.id.authentication_sign_up_email, new EmailValidator(), R.id.authentication_sign_up_email_validator);
-        //validator.registerValidator(R.id.authentication_sign_up_password, new PasswordValidator());
-        //validator.registerValidator(R.id.authentication_sign_up_confirm_password).use(new MatchValidator());
-        //validator.registerValidator(R.id.authentication_sign_up_username).use(new HumanNameValidator());
+
+        ValidatedText validatedEmail = (ValidatedText) view.findViewById(R.id.authentication_sign_up_email);
+        validatedEmail.addListener(this);
+
+        ValidatedText validatedUsername = (ValidatedText) view.findViewById(R.id.authentication_sign_up_username);
+        validatedUsername.addListener(this);
 
         initSetup(view);
         return view;
+    }
+
+    @Override public void notifyValidation(ValidationMessage message)
+    {
+        switch (message.getSender().getId())
+        {
+            case R.id.authentication_sign_up_email:
+            case R.id.authentication_sign_up_username:
+
+                if (message != null && message.getMessage() != null)
+                {
+                        THToast.show(message.getMessage());
+                }
+                break;
+        }
     }
 
     private void initSetup(View view)
     {
         imgValidPwd = (ImageView) view.findViewById(R.id.valid_pwd_img);
         imgValidvConfirmPwd = (ImageView) view.findViewById(R.id.valid_cpwd_img);
-        imgValidDisplyName = (ImageView) view.findViewById(R.id.valid_nmdisplay_img);
 
         ////signupButton.setOnClickListener(this);
         ////signupButton.setOnTouchListener(this);

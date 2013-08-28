@@ -9,4 +9,7 @@
     <attr name="validatePattern" format="string"/>
     <attr name="validateDelay" format="integer"/>
   </declare-styleable>
+  <declare-styleable name="ServerValidatedText">
+    <attr name="progressIndicator" format="reference"/>
+  </declare-styleable>
 </resources>
