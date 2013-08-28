@@ -39,7 +39,8 @@
         </activity>
         <activity
             android:name=".activities.WebViewActivity"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait"
+            android:theme="@style/AppBaseTheme.NoActionBar">
         </activity>
         <activity
             android:name=".activities.AuthenticationActivity"
