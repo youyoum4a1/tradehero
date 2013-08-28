@@ -37,7 +37,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-public class EmailSignInFragment extends Fragment
+public class EmailSignInFragment extends AuthenticationFragment
         implements OnClickListener, RequestTaskCompleteListener, OnFocusChangeListener
 {
 
@@ -65,13 +65,9 @@ public class EmailSignInFragment extends Fragment
     private void _initView(View view)
     {
 
-        inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        v = inflater.inflate(R.layout.topbar, null);
-        TextView txt = (TextView) v.findViewById(R.id.header_txt);
-        txt.setText(getString(R.string.sign_in));
-        mSignIn = (Button) view.findViewById(R.id.btn_login);
-        mForgotPassword = (TextView) view.findViewById(R.id.txt_forgotpwd);
-        inputEmailName = (EditText) view.findViewById(R.id.et_emailid_login);
+        mForgotPassword = (TextView) view.findViewById(R.id.authentication_sign_in_forgot_password);
+        view.findViewById(R.id.authentication_sign_in_email).setOnClickListener(onClickListener);
+
         inputPassword = (EditText) view.findViewById(R.id.et_pwd_login);
         //inputEmailName.setText("neeraj@eatechnologies.com");
         //inputPassword.setText("testing");
@@ -151,55 +147,7 @@ public class EmailSignInFragment extends Fragment
 
         switch (v.getId())
         {
-            case R.id.btn_login:
-                Util.dismissKeyBoard(getActivity(), v);
-                String uname =
-                        inputEmailName.getText() != null ? inputEmailName.getText().toString() : "";
-                String pass =
-                        inputPassword.getText() != null ? inputPassword.getText().toString() : "";
-                if (uname.trim().length() > 0 && pass.trim().length() > 0)
-                {
-
-                    if (Util.email_valid.matcher(inputEmailName.getText().toString()).matches())
-                    {
-                        try
-                        {
-
-                            if (NetworkStatus.getInstance().isConnected(getActivity()))
-                            {
-                                HttpRequestTask mRequestTask = new HttpRequestTask(this);
-                                RequestFactory mRF = new RequestFactory();
-                                Request[] lRequests =
-                                        {mRF.getLoginThroughEmail(mContext, uname, pass)};
-                                mRequestTask.execute(lRequests);
-                                mProgressDialog.show();
-                            }
-                            else
-                            {
-                                Util.show_toast(getActivity(),
-                                        getResources().getString(R.string.network_error));
-                            }
-                        } catch (Exception e)
-                        {
-                            e.printStackTrace();
-                        }
-                    }
-                    else
-                    {
-                        Util.show_toast(getActivity(),
-                                getResources().getString(R.string.email_validation_string));
-                    }
-                }
-                else
-                {
-                    //startActivity(new Intent(getActivity(),DashboardActivity.class));
-                    //getActivity().finish();
-                    Util.show_toast(getActivity(),
-                            getResources().getString(R.string.field_not_balnk));
-                }
-
-                break;
-            case R.id.txt_forgotpwd:
+            case R.id.authentication_sign_in_forgot_password:
                 showForgotDIlog();
                 break;
 
@@ -342,7 +290,7 @@ public class EmailSignInFragment extends Fragment
 
                 break;
 
-            case R.id.et_emailid_login:
+            case R.id.authentication_sign_in_email:
 
                 if (!TextUtils.isEmpty(inputPassword.getText().toString()))
                 {

@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res/com.tradehero.th"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
     android:orientation="vertical">
 
   <LinearLayout
-      android:id="@+id/wraper"
+      android:id="@+id/sign_up_form_wrapper"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:background="@color/white"
@@ -27,8 +28,9 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:layout_margin="2dip">
-      <EditText
-          android:id="@+id/et_emailid"
+
+      <com.tradehero.th.widget.ValidatedEmailText
+          android:id="@+id/authentication_sign_up_email"
           android:layout_width="match_parent"
           android:layout_height="match_parent"
           android:hint="@string/email"
@@ -36,19 +38,20 @@
           android:imeOptions="actionNext"
           style="@style/TradeHero.Authentication.EditText"
           android:drawableLeft="@drawable/accounts_glyph_email_default"
+          app:allowEmpty="false"
+          app:indicator="@+id/authentication_sign_up_email_validator"
+          app:invalidDrawable="@drawable/accounts_glyph_email_error"
           />
 
-      <ImageView
-          android:id="@+id/valid_mail_img"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:src="@drawable/valid_sign"
+      <ProgressBar
+          android:id="@+id/authentication_sign_up_email_validator"
+          android:layout_width="32dip"
+          android:layout_height="32dip"
           android:layout_gravity="right|center"
-          android:contentDescription="@string/empty"
+          android:layout_marginRight="5dip"
           android:visibility="invisible"
           />
     </FrameLayout>
-
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -56,7 +59,7 @@
         android:layout_gravity="center_vertical"
         android:layout_margin="2dip">
       <EditText
-          android:id="@+id/et_password"
+          android:id="@+id/authentication_sign_up_password"
           android:layout_width="match_parent"
           android:layout_height="match_parent"
           android:hint="@string/pwd"
@@ -74,7 +77,6 @@
           android:visibility="invisible"/>
     </FrameLayout>
 
-
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -82,7 +84,7 @@
         android:layout_margin="2dip">
 
       <EditText
-          android:id="@+id/et_confirm_password"
+          android:id="@+id/authentication_sign_up_confirm_password"
           android:layout_width="match_parent"
           android:layout_height="match_parent"
           android:hint="@string/confirm_pwd"
@@ -100,14 +102,13 @@
           android:visibility="invisible"/>
     </FrameLayout>
 
-
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:layout_margin="2dip">
       <EditText
-          android:id="@+id/et_display_name"
+          android:id="@+id/authentication_sign_up_username"
           android:layout_width="match_parent"
           android:layout_height="match_parent"
           android:hint="@string/display_name"
@@ -183,7 +184,7 @@
     </RelativeLayout>
 
     <Button
-        android:id="@+id/btn_register"
+        android:id="@+id/authentication_sign_up_button"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"

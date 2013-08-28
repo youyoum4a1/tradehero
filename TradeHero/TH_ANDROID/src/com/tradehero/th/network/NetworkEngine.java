@@ -6,17 +6,27 @@ package com.tradehero.th.network;
  */
 
 import com.tradehero.common.utils.THJsonAdapter;
+import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.application.App;
 import com.tradehero.th.base.THUser;
+import retrofit.ErrorHandler;
 import retrofit.RequestInterceptor;
 import retrofit.RestAdapter;
+import retrofit.RetrofitError;
 
 public class NetworkEngine
 {
     private static final String API_URL = App.getResourceString(R.string.API_URL);
 
     private static RestAdapter restAdapter;
+    private static ErrorHandler retrofitErrorHandler = new ErrorHandler()
+    {
+        @Override public Throwable handleError(RetrofitError cause)
+        {
+            return cause;
+        }
+    };
 
     public static void initialize()
     {
@@ -34,6 +44,7 @@ public class NetworkEngine
                         }
                     }
                 })
+                .setErrorHandler(retrofitErrorHandler)
                 .setLogLevel(RestAdapter.LogLevel.FULL)
                 .build();
     }

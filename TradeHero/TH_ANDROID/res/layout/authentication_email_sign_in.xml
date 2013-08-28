@@ -6,7 +6,7 @@
     style="@style/TradeHero.Authentication">
 
   <EditText
-      android:id="@+id/et_emailid_login"
+      android:id="@+id/authentication_sign_in_email"
       android:layout_width="fill_parent"
       android:layout_height="wrap_content"
       android:text="neeraj@eatechnologies.com"
@@ -21,7 +21,7 @@
       android:id="@+id/et_pwd_login"
       android:layout_width="fill_parent"
       android:layout_height="wrap_content"
-      android:layout_below="@+id/et_emailid_login"
+      android:layout_below="@+id/authentication_sign_in_email"
       android:layout_marginTop="10dip"
       android:text="testing"
       android:hint="@string/pwd"
@@ -48,7 +48,7 @@
       />
 
   <TextView
-      android:id="@+id/txt_forgotpwd"
+      android:id="@+id/authentication_sign_in_forgot_password"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_below="@+id/btn_login"

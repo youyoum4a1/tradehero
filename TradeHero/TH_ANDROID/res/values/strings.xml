@@ -107,5 +107,6 @@
   <string name="connecting_tradehero_only">Processing</string>
   <string name="pd_authorizing_linkedIn">Connecting to LinkedIn</string>
   <string name="connecting_to_facebook">Connecting to Facebook</string>
+  <string name="not_registered">You need to go back and sign up</string>
 
 </resources>

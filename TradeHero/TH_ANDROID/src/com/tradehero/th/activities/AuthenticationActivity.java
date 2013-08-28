@@ -32,6 +32,7 @@ import java.util.HashMap;
 import java.util.Map;
 import org.json.JSONException;
 import org.json.JSONObject;
+import retrofit.RetrofitError;
 
 /** Created with IntelliJ IDEA. User: tho Date: 8/14/13 Time: 6:28 PM Copyright (c) TradeHero */
 public class AuthenticationActivity extends SherlockFragmentActivity
@@ -197,7 +198,15 @@ public class AuthenticationActivity extends SherlockFragmentActivity
                         }
                         else
                         {
-                            THToast.show("Twitter failed: " + ex.getMessage());
+                            if (((RetrofitError)ex.getCause()).getResponse().getStatus() == 403) // Forbidden
+                            {
+                                THToast.show(App.getResourceString(R.string.not_registered));
+                            }
+                            else
+                            {
+                                THToast.show("Error: " + ex.getMessage());
+                            }
+
                         }
                         progressDialog.dismiss();
                     }
@@ -245,6 +254,8 @@ public class AuthenticationActivity extends SherlockFragmentActivity
                             if (user != null)
                             {
                                 ActivityHelper.goRoot(AuthenticationActivity.this);
+                            } else {
+                                THToast.show("Error: " + ex.getMessage() );
                             }
                             progressDialog.dismiss();
                         }

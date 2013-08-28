@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <declare-styleable name="ValidatedText">
+    <attr name="allowEmpty" format="boolean"/>
+    <attr name="indicator" format="reference"/>
+    <attr name="invalidDrawable" format="reference"/>
+  </declare-styleable>
+</resources>

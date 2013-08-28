@@ -31,6 +31,7 @@
       android:layout_height="wrap_content"
       android:layout_below="@id/authentication_social_sign_up"
       android:paddingTop="10dip"
+      android:paddingBottom="10dip"
       android:layout_centerHorizontal="true"
       >
     <TextView
