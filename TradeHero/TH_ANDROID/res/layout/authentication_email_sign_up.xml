@@ -45,7 +45,7 @@
 
         android:drawableLeft="@drawable/accounts_glyph_email_default"
         app:invalidDrawable="@drawable/accounts_glyph_email_error"
-        app:validDrawable="@drawable/accounts_glyph_email_required"
+        app:validDrawable="@drawable/accounts_glyph_email_ok"
         android:drawableRight="@drawable/accounts_glyph_transparent_default"
         app:invalidDrawableRight="@drawable/close"
         app:validDrawableRight="@drawable/foursquare"
@@ -66,7 +66,7 @@
 
         android:drawableLeft="@drawable/accounts_glyph_password_default"
         app:invalidDrawable="@drawable/accounts_glyph_password_error"
-        app:validDrawable="@drawable/accounts_glyph_password_required"
+        app:validDrawable="@drawable/accounts_glyph_password_ok"
         android:drawableRight="@drawable/accounts_glyph_transparent_default"
         app:invalidDrawableRight="@drawable/close"
         app:validDrawableRight="@drawable/foursquare"
@@ -88,7 +88,7 @@
 
           android:drawableLeft="@drawable/accounts_glyph_password_default"
           app:invalidDrawable="@drawable/accounts_glyph_password_error"
-          app:validDrawable="@drawable/accounts_glyph_password_required"
+          app:validDrawable="@drawable/accounts_glyph_password_ok"
           android:drawableRight="@drawable/accounts_glyph_transparent_default"
           app:invalidDrawableRight="@drawable/close"
           app:validDrawableRight="@drawable/foursquare"
@@ -111,10 +111,11 @@
           android:layout_height="match_parent"
           android:hint="@string/display_name"
           android:inputType="text"
+          style="@style/TradeHero.Authentication.EditText"
 
           android:drawableLeft="@drawable/accounts_glyph_username_default"
           app:invalidDrawable="@drawable/accounts_glyph_username_error"
-          app:validDrawable="@drawable/accounts_glyph_email_required"
+          app:validDrawable="@drawable/accounts_glyph_username_ok"
           android:drawableRight="@drawable/accounts_glyph_transparent_default"
           app:invalidDrawableRight="@drawable/close"
           app:validDrawableRight="@drawable/foursquare"

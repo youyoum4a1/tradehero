@@ -84,6 +84,4 @@
     <!--<item name="android:background">@drawable/authentication_sign_up_textbox</item>-->
   </style>
 
-  <style name="TradeHero.Authentication.ServerValidatedText" parent="TradeHero.Authentication.EditText">
-  </style>
 </resources>
