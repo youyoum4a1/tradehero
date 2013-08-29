@@ -2,8 +2,11 @@ package com.tradehero.th.widget;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.form.UserAvailabilityRequester;
+import retrofit.RetrofitError;
+
 import java.util.HashMap;
 import java.util.Map;
 
