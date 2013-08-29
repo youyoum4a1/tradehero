@@ -38,6 +38,8 @@ public class ServerValidatedUsernameText extends ServerValidatedText
 
         if (!superValidate)
         {
+            // We need to reset the value as otherwise it will prompt username taken even when field is empty
+            isValidInServer = true;
             return false;
         }
 
