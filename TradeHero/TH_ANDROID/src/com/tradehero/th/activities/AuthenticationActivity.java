@@ -63,9 +63,9 @@ public class AuthenticationActivity extends SherlockFragmentActivity
 
         setupViewFragmentMapping();
 
-        setContentView(R.layout.sign_in_up_content);
+        setContentView(R.layout.authentication_layout);
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.sign_in_up_content, currentFragment)
+                .replace(R.id.fragment_content, currentFragment)
                 .commit();
     }
 
@@ -133,12 +133,15 @@ public class AuthenticationActivity extends SherlockFragmentActivity
                     .setCustomAnimations(
                             R.anim.slide_right_in, R.anim.slide_left_out,
                             R.anim.slide_left_in, R.anim.slide_right_out)
-                    .replace(R.id.sign_in_up_content, currentFragment)
+                    .replace(R.id.fragment_content, currentFragment)
                     .addToBackStack(null)
                     .commit();
-            if (fragmentClass.getSimpleName().contains("SignUp")) {
+            if (fragmentClass.getSimpleName().contains("SignUp"))
+            {
                 THUser.setAuthenticationMode("users");
-            } else if (fragmentClass.getSimpleName().contains("SignIn")) {
+            }
+            else if (fragmentClass.getSimpleName().contains("SignIn"))
+            {
                 THUser.setAuthenticationMode("login");
             }
             getSupportActionBar().show();
@@ -198,7 +201,7 @@ public class AuthenticationActivity extends SherlockFragmentActivity
                         }
                         else
                         {
-                            if (((RetrofitError)ex.getCause()).getResponse().getStatus() == 403) // Forbidden
+                            if (((RetrofitError) ex.getCause()).getResponse().getStatus() == 403) // Forbidden
                             {
                                 THToast.show(App.getResourceString(R.string.not_registered));
                             }
@@ -229,7 +232,7 @@ public class AuthenticationActivity extends SherlockFragmentActivity
                                 .setCustomAnimations(
                                         R.anim.slide_right_in, R.anim.slide_left_out,
                                         R.anim.slide_left_in, R.anim.slide_right_out)
-                                .replace(R.id.sign_in_up_content, currentFragment)
+                                .replace(R.id.fragment_content, currentFragment)
                                 .addToBackStack(null)
                                 .commit();
                         return false;
@@ -254,7 +257,9 @@ public class AuthenticationActivity extends SherlockFragmentActivity
                             if (user != null)
                             {
                                 ActivityHelper.goRoot(AuthenticationActivity.this);
-                            } else {
+                            }
+                            else
+                            {
                                 THToast.show("Error: " + ex.getMessage() );
                             }
                             progressDialog.dismiss();

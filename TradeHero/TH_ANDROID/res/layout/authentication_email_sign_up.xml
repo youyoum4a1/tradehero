@@ -1,18 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res/com.tradehero.th"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
-    android:orientation="vertical">
-
+    android:orientation="vertical"
+    android:focusableInTouchMode="true"
+    android:stackFromBottom="true"
+    android:clickable="true"
+    android:fillViewport="true"
+    android:focusable="false">
   <LinearLayout
       android:id="@+id/sign_up_form_wrapper"
       android:layout_width="match_parent"
-      android:layout_height="wrap_content"
+      android:layout_height="fill_parent"
       android:background="@color/white"
       android:orientation="vertical"
-      style="@style/TradeHero.Authentication">
+      style="@style/TradeHero.Authentication"
+      android:clickable="true"
+      android:focusable="true"
+      android:focusableInTouchMode="true"
+      android:gravity="top">
 
     <TextView
         android:layout_width="wrap_content"
@@ -25,9 +34,9 @@
     <com.tradehero.th.widget.ServerValidatedEmailText
           android:id="@+id/authentication_sign_up_email"
           android:layout_width="match_parent"
-          android:layout_height="match_parent"
+          android:layout_height="wrap_content"
           android:layout_margin="2dip"
-          android:layout_gravity="center_vertical"
+          android:layout_gravity="left|bottom"
           android:hint="@string/email"
           android:inputType="textEmailAddress"
           android:imeOptions="actionNext"
@@ -37,12 +46,11 @@
           app:invalidDrawable="@drawable/accounts_glyph_email_error"
           app:validatePattern="@string/regex_email_validator"
           app:validateDelay="500"
-          />
-
+        />
     <com.tradehero.th.widget.ValidatedPasswordText
           android:id="@+id/authentication_sign_up_password"
           android:layout_width="match_parent"
-          android:layout_height="match_parent"
+          android:layout_height="wrap_content"
           android:layout_margin="2dip"
           android:layout_gravity="center_vertical"
           android:hint="@string/pwd"
@@ -53,12 +61,12 @@
           app:invalidDrawable="@drawable/accounts_glyph_password_error"
           app:validatePattern="@string/regex_password_validator"
           app:validateDelay="700"
-          />
+        />
 
       <com.tradehero.th.widget.MatchingPasswordText
               android:id="@+id/authentication_sign_up_confirm_password"
               android:layout_width="match_parent"
-              android:layout_height="match_parent"
+              android:layout_height="wrap_content"
               android:layout_margin="2dip"
               android:layout_gravity="center_vertical"
               android:hint="@string/confirm_pwd"
@@ -172,5 +180,4 @@
         android:textStyle="bold"
         />
   </LinearLayout>
-
 </ScrollView>

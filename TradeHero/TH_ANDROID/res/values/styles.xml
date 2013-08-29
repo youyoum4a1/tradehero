@@ -52,7 +52,7 @@
   </style>
   <style name="TradeHero.Authentication" parent="TradeHero">
     <item name="android:editTextStyle">@style/TradeHero.Authentication.EditText</item>
-    <item name="android:layout_marginTop">80dip</item>
+    <item name="android:paddingTop">80dip</item>
     <item name="android:paddingRight">30dip</item>
     <item name="android:paddingLeft">30dip</item>
     <item name="android:paddingBottom">10dip</item>
