@@ -3,7 +3,6 @@
   <!--
       Base application theme, dependent on API level. This theme is replaced
       by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
-
   -->
   <style name="TradeHero" parent="Theme.Sherlock.Light">
     <item name="android:windowActionBar">true</item>
@@ -21,12 +20,9 @@
     <!-- All customizations that are NOT specific to a particular API-level can go here. -->
   </style>
 
-
   <style name="TH"/>
 
-
   <style name="TH.Title">
-
     <item name="android:textColor">@color/title</item>
   </style>
 
@@ -50,6 +46,7 @@
     <item name="android:layout_marginBottom">10dp</item>
     <item name="android:layout_marginTop">10dp</item>
   </style>
+
   <style name="TradeHero.Authentication" parent="TradeHero">
     <item name="android:editTextStyle">@style/TradeHero.Authentication.EditText</item>
     <item name="android:paddingTop">80dip</item>
@@ -57,21 +54,25 @@
     <item name="android:paddingLeft">30dip</item>
     <item name="android:paddingBottom">10dip</item>
   </style>
+
   <style name="AppBaseTheme.Welcome" parent="TradeHero">
     <item name="android:paddingTop">65dip</item>
     <item name="android:paddingLeft">30dip</item>
     <item name="android:paddingRight">30dip</item>
     <item name="android:background">@color/authentication_background_color</item>
   </style>
+
   <style name="AppBaseTheme.Welcome.SignIn" parent="@android:style/Widget.Button">
     <item name="android:layout_marginTop">0dip</item>
   </style>
+
   <style name="TradeHero.ButtonTextShadow">
     <item name="android:shadowRadius">5.6</item>
     <item name="android:shadowDx">0</item>
     <item name="android:shadowDy">-1</item>
     <item name="android:shadowColor">#000000</item>
   </style>
+
   <style name="TradeHero.Authentication.EditText" parent="@android:style/Widget.EditText">
     <item name="android:ems">10</item>
     <item name="android:paddingRight">5dip</item>
@@ -80,12 +81,9 @@
     <item name="android:paddingLeft">6dip</item>
     <item name="android:drawablePadding">2dip</item>
     <item name="android:textColor">@color/black</item>
-    <item name="android:background">@drawable/authentication_sign_up_textbox</item>
+    <!--<item name="android:background">@drawable/authentication_sign_up_textbox</item>-->
   </style>
-  <style name="TradeHero.Authentication.ServerValidatedText" parent="TradeHero.Authentication.EditText">
 
-  </style>
-  <style name="TradeHero.Authentication.ServerValidatedUsernameText" parent="TradeHero.Authentication.ServerValidatedText" >
-    <item name="android:paddingRight">38dip</item>
+  <style name="TradeHero.Authentication.ServerValidatedText" parent="TradeHero.Authentication.EditText">
   </style>
 </resources>

@@ -13,11 +13,8 @@ public class SelfValidatedText extends ValidatedText
     private final int DEFAULT_VALIDATE_DELAY = 200;
 
     protected long validateDelay;
-
     protected Runnable validateRunnable;
-
     protected Pattern validatePattern;
-
     protected boolean hasHadInteraction = false;
 
     public SelfValidatedText(Context context)
@@ -59,13 +56,13 @@ public class SelfValidatedText extends ValidatedText
 
     @Override public void onFocusChange(View view, boolean hasFocus)
     {
-        super.onFocusChange(view, hasFocus);
         if (!hasFocus)
         {
             // This means the player has moved away
             // It assumes that this method is not called as part of the constructor.
             hasHadInteraction = true;
         }
+        super.onFocusChange(view, hasFocus);
         conditionalValidation();
     }
 
@@ -83,7 +80,14 @@ public class SelfValidatedText extends ValidatedText
             this.removeCallbacks(validateRunnable);
             this.postDelayed(validateRunnable, validateDelay);
         }
+    }
 
+    @Override protected void hintValidStatus()
+    {
+        if (hasHadInteraction)
+        {
+            super.hintValidStatus();
+        }
     }
 
     protected void conditionalValidation()

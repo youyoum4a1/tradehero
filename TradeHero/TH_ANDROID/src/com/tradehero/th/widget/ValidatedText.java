@@ -3,7 +3,6 @@ package com.tradehero.th.widget;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
-import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.EditText;
@@ -19,6 +18,10 @@ public class ValidatedText extends EditText implements ValidatedView, View.OnFoc
     protected boolean isValid = true;
     private Drawable invalidDrawable;
     private Drawable validDrawable;
+    private Drawable defaultDrawable;
+    private Drawable invalidDrawableRight;
+    private Drawable validDrawableRight;
+    protected Drawable defaultDrawableRight;
     private List<ValidationListener> listeners = new LinkedList<>();
 
     public ValidatedText(Context context)
@@ -44,8 +47,12 @@ public class ValidatedText extends EditText implements ValidatedView, View.OnFoc
         allowEmpty = a.getBoolean(R.styleable.ValidatedText_allowEmpty, false);
         indicator = a.getResourceId(R.styleable.ValidatedText_indicator, 0);
         invalidDrawable = a.getDrawable(R.styleable.ValidatedText_invalidDrawable);
+        validDrawable = a.getDrawable(R.styleable.ValidatedText_validDrawable);
+        invalidDrawableRight = a.getDrawable(R.styleable.ValidatedText_invalidDrawableRight);
+        validDrawableRight = a.getDrawable(R.styleable.ValidatedText_validDrawableRight);
         a.recycle();
-        validDrawable = this.getCompoundDrawables()[0];
+        defaultDrawable = this.getCompoundDrawables()[0];
+        defaultDrawableRight = this.getCompoundDrawables()[2];
         this.setOnFocusChangeListener(this);
     }
 
@@ -76,16 +83,49 @@ public class ValidatedText extends EditText implements ValidatedView, View.OnFoc
 
     protected void hintValidStatus ()
     {
+        hintValidStatusLeft();
+        hintValidStatusRight();
+    }
+
+    protected void hintValidStatusLeft ()
+    {
         if (!isValid && invalidDrawable != null)
         {
-            invalidDrawable.setBounds(validDrawable.getBounds());
-            this.setCompoundDrawables(invalidDrawable, null, null, null);
+            invalidDrawable.setBounds(defaultDrawable.getBounds());
+            replaceCompoundDrawable(0, invalidDrawable);
         }
-        else if (isValid && invalidDrawable != null)
+        else if (isValid && validDrawable != null)
         {
-            this.setCompoundDrawables(validDrawable, null, null, null);
+            validDrawable.setBounds(defaultDrawable.getBounds());
+            replaceCompoundDrawable(0, validDrawable);
+        }
+        else if (isValid && defaultDrawable != null)
+        {
+            replaceCompoundDrawable(0, defaultDrawable);
         }
     }
+
+    protected void hintValidStatusRight ()
+    {
+        if (!isValid && invalidDrawableRight != null)
+        {
+            invalidDrawableRight.setBounds(defaultDrawableRight.getBounds());
+            replaceCompoundDrawable(2, invalidDrawableRight);
+        }
+        else if (isValid && validDrawableRight != null)
+        {
+            validDrawableRight.setBounds(defaultDrawableRight.getBounds());
+            replaceCompoundDrawable(2, validDrawableRight);
+        }
+    }
+
+    protected void replaceCompoundDrawable (int index, Drawable drawable)
+    {
+        Drawable[] drawables = this.getCompoundDrawables();
+        drawables[index] = drawable;
+        this.setCompoundDrawables(drawables[0], drawables[1], drawables[2], drawables[3]);
+    }
+
 
     public void setIndicator(int indicator)
     {

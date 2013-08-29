@@ -4,6 +4,9 @@
     <attr name="allowEmpty" format="boolean"/>
     <attr name="indicator" format="reference"/>
     <attr name="invalidDrawable" format="reference"/>
+    <attr name="validDrawable" format="reference"/>
+    <attr name="invalidDrawableRight" format="reference"/>
+    <attr name="validDrawableRight" format="reference"/>
   </declare-styleable>
   <declare-styleable name="MatchingPasswordText">
     <attr name="matchWith" format="reference"/>

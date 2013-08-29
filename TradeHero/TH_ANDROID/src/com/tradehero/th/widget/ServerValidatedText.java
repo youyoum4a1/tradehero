@@ -10,6 +10,7 @@ import com.tradehero.th.R;
 public class ServerValidatedText extends SelfValidatedText
 {
     private int progressIndicatorId;
+    private boolean requesting;
 
     public ServerValidatedText(Context context)
     {
@@ -37,13 +38,27 @@ public class ServerValidatedText extends SelfValidatedText
 
     public void handleServerRequest(boolean requesting)
     {
+        this.requesting = requesting;
         if (progressIndicatorId != 0)
         {
             View progressIndicator = getRootView().findViewById(progressIndicatorId);
             if (progressIndicator != null)
             {
+                hintValidStatusRight();
                 progressIndicator.setVisibility(requesting ?  View.VISIBLE : View.GONE);
             }
+        }
+    }
+
+    @Override protected void hintValidStatusRight()
+    {
+        if (requesting && defaultDrawableRight != null)
+        {
+            replaceCompoundDrawable(2, defaultDrawableRight);
+        }
+        else
+        {
+            super.hintValidStatusRight();
         }
     }
 }
