@@ -12,13 +12,13 @@ public class SelfValidatedText extends ValidatedText
 {
     private final int DEFAULT_VALIDATE_DELAY = 200;
 
-    private long validateDelay;
+    protected long validateDelay;
 
-    private Runnable validateRunnable;
+    protected Runnable validateRunnable;
 
     protected Pattern validatePattern;
 
-    private boolean hasHadInteraction = false;
+    protected boolean hasHadInteraction = false;
 
     public SelfValidatedText(Context context)
     {
@@ -41,7 +41,8 @@ public class SelfValidatedText extends ValidatedText
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.SelfValidatedText);
         String validatePatternString = a.getString(R.styleable.SelfValidatedText_validatePattern);
         validateDelay = a.getInt(R.styleable.SelfValidatedText_validateDelay, DEFAULT_VALIDATE_DELAY);
-        if (validatePatternString != null) {
+        if (validatePatternString != null)
+        {
             validatePattern = Pattern.compile(validatePatternString);
         }
 

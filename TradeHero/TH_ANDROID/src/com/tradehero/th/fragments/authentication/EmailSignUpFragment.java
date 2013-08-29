@@ -107,8 +107,8 @@ public class EmailSignUpFragment extends Fragment
 
     private void initSetup(View view)
     {
-        imgValidPwd = (ImageView) view.findViewById(R.id.valid_pwd_img);
-        imgValidvConfirmPwd = (ImageView) view.findViewById(R.id.valid_cpwd_img);
+//        imgValidPwd = (ImageView) view.findViewById(R.id.valid_pwd_img);
+//        imgValidvConfirmPwd = (ImageView) view.findViewById(R.id.valid_cpwd_img);
 
         ////signupButton.setOnClickListener(this);
         ////signupButton.setOnTouchListener(this);

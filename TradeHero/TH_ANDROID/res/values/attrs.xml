@@ -5,6 +5,9 @@
     <attr name="indicator" format="reference"/>
     <attr name="invalidDrawable" format="reference"/>
   </declare-styleable>
+  <declare-styleable name="MatchingPasswordText">
+    <attr name="matchWith" format="reference"/>
+  </declare-styleable>
   <declare-styleable name="SelfValidatedText">
     <attr name="validatePattern" format="string"/>
     <attr name="validateDelay" format="integer"/>
