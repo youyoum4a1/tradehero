@@ -47,8 +47,8 @@
         app:invalidDrawable="@drawable/accounts_glyph_email_error"
         app:validDrawable="@drawable/accounts_glyph_email_ok"
         android:drawableRight="@drawable/accounts_glyph_transparent_default"
-        app:invalidDrawableRight="@drawable/close"
-        app:validDrawableRight="@drawable/foursquare"
+        app:invalidDrawableRight="@drawable/warning_red"
+        app:validDrawableRight="@drawable/tick_green"
 
         app:validatePattern="@string/regex_email_validator"
         app:validateDelay="500"
@@ -68,8 +68,8 @@
         app:invalidDrawable="@drawable/accounts_glyph_password_error"
         app:validDrawable="@drawable/accounts_glyph_password_ok"
         android:drawableRight="@drawable/accounts_glyph_transparent_default"
-        app:invalidDrawableRight="@drawable/close"
-        app:validDrawableRight="@drawable/foursquare"
+        app:invalidDrawableRight="@drawable/warning_red"
+        app:validDrawableRight="@drawable/tick_green"
 
         app:validatePattern="@string/regex_password_validator"
         app:validateDelay="700"
@@ -90,8 +90,8 @@
           app:invalidDrawable="@drawable/accounts_glyph_password_error"
           app:validDrawable="@drawable/accounts_glyph_password_ok"
           android:drawableRight="@drawable/accounts_glyph_transparent_default"
-          app:invalidDrawableRight="@drawable/close"
-          app:validDrawableRight="@drawable/foursquare"
+          app:invalidDrawableRight="@drawable/warning_red"
+          app:validDrawableRight="@drawable/tick_green"
 
           app:validatePattern="@string/regex_password_validator"
           app:matchWith="@id/authentication_sign_up_password"
@@ -117,8 +117,8 @@
           app:invalidDrawable="@drawable/accounts_glyph_username_error"
           app:validDrawable="@drawable/accounts_glyph_username_ok"
           android:drawableRight="@drawable/accounts_glyph_transparent_default"
-          app:invalidDrawableRight="@drawable/close"
-          app:validDrawableRight="@drawable/foursquare"
+          app:invalidDrawableRight="@drawable/warning_red"
+          app:validDrawableRight="@drawable/tick_green"
 
           app:indicator="@+id/authentication_sign_up_username_validator"
           app:validateDelay="500"
