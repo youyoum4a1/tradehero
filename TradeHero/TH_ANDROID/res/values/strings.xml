@@ -105,7 +105,7 @@
   <string name="connecting_to_twitter">Connecting to Twitter</string>
   <string name="connecting_tradehero">Authenticated with %s, connecting to TradeHero</string>
   <string name="connecting_tradehero_only">Processing</string>
-  <string name="pd_authorizing_linkedIn">Connecting to LinkedIn</string>
+  <string name="connecting_to_linkedin">Connecting to LinkedIn</string>
   <string name="connecting_to_facebook">Connecting to Facebook</string>
   <string name="not_registered">You need to go back and sign up</string>
 

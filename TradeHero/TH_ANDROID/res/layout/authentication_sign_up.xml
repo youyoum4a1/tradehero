@@ -25,7 +25,7 @@
       android:layout_below="@+id/authentication_sign_up_with"/>
 
   <LinearLayout
-      android:id="@+id/txt_email_sign_up"
+      android:id="@+id/authentication_email_sign_up_link"
       android:orientation="horizontal"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"

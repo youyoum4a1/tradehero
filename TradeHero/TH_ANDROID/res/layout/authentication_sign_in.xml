@@ -25,7 +25,7 @@
 
 
   <LinearLayout
-      android:id="@+id/txt_email_sign_in"
+      android:id="@+id/authentication_email_sign_in_link"
       android:orientation="horizontal"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"

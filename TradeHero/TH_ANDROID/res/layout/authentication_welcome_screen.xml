@@ -14,7 +14,7 @@
       android:contentDescription="@string/empty"/>
 
   <Button
-      android:id="@+id/authentication_sign_up"
+      android:id="@+id/authentication_sign_up_button"
       android:layout_below="@id/authentication_welcome_logo_text"
       android:layout_width="match_parent"
       android:layout_height="80dp"
@@ -26,8 +26,8 @@
       style="@style/TradeHero.ButtonTextShadow"/>
 
   <LinearLayout
-      android:id="@+id/authentication_sign_in"
-      android:layout_below="@id/authentication_sign_up"
+      android:id="@+id/authentication_sign_in_button"
+      android:layout_below="@id/authentication_sign_up_button"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_marginTop="20dp"
