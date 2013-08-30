@@ -2,7 +2,6 @@ package com.tradehero.th.network;
 
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
-import com.tradehero.th.api.users.UserAvailabilityDTO;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
