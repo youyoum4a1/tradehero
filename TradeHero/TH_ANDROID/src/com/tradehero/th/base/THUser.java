@@ -12,6 +12,7 @@ import com.tradehero.th.misc.callback.LogInCallback;
 import com.tradehero.th.misc.callback.THCallback;
 import com.tradehero.th.misc.callback.THResponse;
 import com.tradehero.th.misc.exception.THException;
+import com.tradehero.th.misc.exception.THException.ExceptionCode;
 import com.tradehero.th.network.NetworkEngine;
 import com.tradehero.th.network.service.UserService;
 import java.io.ByteArrayOutputStream;
@@ -97,7 +98,7 @@ public class THUser
 
             @Override public void onCancel()
             {
-                callback.done(null, new THException("Canceled by User"));
+                callback.done(null, ExceptionCode.UserCanceled.toException());
             }
 
             @Override public void onError(Throwable throwable)

@@ -1,5 +1,6 @@
 package com.tradehero.th.misc.exception;
 
+import com.facebook.FacebookOperationCanceledException;
 import com.tradehero.th.R;
 import com.tradehero.th.base.Application;
 import retrofit.RetrofitError;
@@ -32,6 +33,10 @@ public class THException extends Exception
             {
                 this.code = ExceptionCode.NetworkError;
             }
+        }
+        else if (getCause() instanceof FacebookOperationCanceledException)
+        {
+            this.code = ExceptionCode.UserCanceled;
         }
     }
 
@@ -83,6 +88,13 @@ public class THException extends Exception
         public boolean isCanContinue()
         {
             return canContinue;
+        }
+
+        public THException toException()
+        {
+            THException exception = new THException(errorMessage);
+            exception.code = this;
+            return exception;
         }
     }
 }

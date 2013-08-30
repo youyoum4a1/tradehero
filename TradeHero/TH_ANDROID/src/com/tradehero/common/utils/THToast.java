@@ -9,6 +9,8 @@ import com.tradehero.th.misc.exception.THException.ExceptionCode;
 /** Created with IntelliJ IDEA. User: tho Date: 8/19/13 Time: 12:33 PM Copyright (c) TradeHero */
 public class THToast
 {
+    private static final String TAG = THToast.class.getName();
+
     public static void show(String message)
     {
         Toast toast = Toast.makeText(Application.context(), message, Toast.LENGTH_SHORT);
@@ -30,6 +32,10 @@ public class THToast
         else if (!ex.getCode().isCanContinue())
         {
             show(ex.getMessage());
+        }
+        else
+        {
+            THLog.e(TAG, "Unable to continue by the exception", ex);
         }
     }
 }
