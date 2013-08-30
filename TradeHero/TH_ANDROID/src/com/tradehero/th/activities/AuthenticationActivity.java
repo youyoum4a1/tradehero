@@ -118,7 +118,6 @@ public class AuthenticationActivity extends SherlockFragmentActivity
             {
                 THUser.setAuthenticationMode(((AuthenticationFragment) currentFragment).getAuthenticationMode());
             }
-            getSupportActionBar().show();
         }
 
         switch (view.getId())

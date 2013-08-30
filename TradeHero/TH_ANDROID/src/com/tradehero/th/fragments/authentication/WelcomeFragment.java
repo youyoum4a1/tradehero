@@ -31,6 +31,12 @@ public class WelcomeFragment extends AuthenticationFragment
         super.onResume();
     }
 
+    @Override
+    public void onStop() {
+        super.onStop();
+        getSherlockActivity().getSupportActionBar().show();
+    }
+
     @Override public AuthenticationMode getAuthenticationMode()
     {
         return AuthenticationMode.Unknown;

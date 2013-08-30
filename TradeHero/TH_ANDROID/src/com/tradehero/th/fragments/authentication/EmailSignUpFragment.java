@@ -3,6 +3,7 @@ package com.tradehero.th.fragments.authentication;
 import android.widget.TextView;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.activities.DashboardActivity;
+import com.tradehero.th.auth.AuthenticationMode;
 import com.tradehero.th.widget.ValidatedText;
 import com.tradehero.th.widget.ValidationListener;
 import com.tradehero.th.widget.ValidationMessage;
@@ -46,7 +47,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 
-public class EmailSignUpFragment extends Fragment
+public class EmailSignUpFragment extends AuthenticationFragment
         implements OnClickListener, RequestTaskCompleteListener, OnFocusChangeListener, ValidationListener
 {
 
@@ -322,6 +323,11 @@ public class EmailSignUpFragment extends Fragment
         displayName.setText("");
         firstName.setText("");
         lastName.setText("");
+    }
+
+    @Override
+    public AuthenticationMode getAuthenticationMode() {
+        return AuthenticationMode.SignUp;
     }
 
     private class CheckValidation extends AsyncTask<String, Void, Boolean>
