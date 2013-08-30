@@ -201,7 +201,7 @@ public class AuthenticationActivity extends SherlockFragmentActivity
                         }
                         else
                         {
-                            if (((RetrofitError) ex.getCause()).getResponse().getStatus() == 403) // Forbidden
+                            if (ex.getCause() instanceof RetrofitError && ((RetrofitError) ex.getCause()).getResponse().getStatus() == 403) // Forbidden
                             {
                                 THToast.show(App.getResourceString(R.string.not_registered));
                             }
