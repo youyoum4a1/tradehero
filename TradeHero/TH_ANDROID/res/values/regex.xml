@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
   <string name="regex_email_validator">"^\\b[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,4}\\b$"</string>
-  <string name="regex_password_validator">"^.{6,}$"</string>
 </resources>

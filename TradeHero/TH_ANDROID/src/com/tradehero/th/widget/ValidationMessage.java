@@ -11,6 +11,7 @@ public class ValidationMessage
 
     private boolean status;
 
+    //<editor-fold desc="Accessors">
     public String getMessage()
     {
         return message;
@@ -25,6 +26,7 @@ public class ValidationMessage
     {
         return sender;
     }
+    //</editor-fold>
 
     public ValidationMessage(View sender, boolean status, String message)
     {

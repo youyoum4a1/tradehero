@@ -30,7 +30,7 @@ public class MatchingPasswordText extends ValidatedPasswordText
             if (validateRunnable != null)
             {
                 MatchingPasswordText.this.removeCallbacks(validateRunnable);
-                MatchingPasswordText.this.postDelayed(validateRunnable, validateDelay);
+                MatchingPasswordText.this.postDelayed(validateRunnable, getValidateDelay());
             }
         }
     };
@@ -88,7 +88,7 @@ public class MatchingPasswordText extends ValidatedPasswordText
 
         String targetPassword = target.getText().toString();
 
-        return getText().toString().equals(targetPassword);
+        return target.validate() && getText().toString().equals(targetPassword);
     }
 
     private void associateTargetIfNone()
@@ -113,27 +113,18 @@ public class MatchingPasswordText extends ValidatedPasswordText
         }
     }
 
-    public boolean needsConfirmFailNotification ()
+    @Override public boolean needsConfirmFailNotification ()
     {
-        return super.validate() && target.validate() && !matchesWithTarget();
+        associateTargetIfNone();
+        return hasHadInteraction && super.validate() && target.validate() && !matchesWithTarget();
     }
 
-    @Override protected void conditionalValidation()
+    @Override public ValidationMessage getCurrentValidationMessage()
     {
-        super.conditionalValidation();
         if (needsConfirmFailNotification())
         {
-            notifyInvalidMatchTarget();
+            return new ValidationMessage(this, false, getContext().getString(R.string.password_validation_confirm_fail_string));
         }
-    }
-
-    protected void notifyInvalidMatchTarget ()
-    {
-        THToast.show(R.string.password_validation_confirm_fail_string);
-    }
-
-    @Override protected void notifyInvalidPattern()
-    {
-        // Do nothing on purpose
+        return super.getCurrentValidationMessage();
     }
 }

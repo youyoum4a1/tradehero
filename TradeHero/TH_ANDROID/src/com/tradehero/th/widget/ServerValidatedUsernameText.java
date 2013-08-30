@@ -2,7 +2,6 @@ package com.tradehero.th.widget;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.form.UserAvailabilityRequester;
 import retrofit.RetrofitError;
@@ -14,9 +13,9 @@ import java.util.Map;
 public class ServerValidatedUsernameText extends ServerValidatedText
 {
     private boolean isValidInServer = true;
-
     private Map<String, UserAvailabilityRequester> alreadyRequested = new HashMap<>();
 
+    //<editor-fold desc="Constructors">
     public ServerValidatedUsernameText(Context context)
     {
         super(context);
@@ -31,6 +30,7 @@ public class ServerValidatedUsernameText extends ServerValidatedText
     {
         super(context, attrs, defStyle);
     }
+    //</editor-fold>
 
     @Override protected boolean validate()
     {
@@ -38,7 +38,7 @@ public class ServerValidatedUsernameText extends ServerValidatedText
 
         if (!superValidate)
         {
-            // We need to reset the value as otherwise it will prompt username taken even when field is empty
+            // We need to reset the value as otherwise it will prompt that the username is taken even when the field is empty
             isValidInServer = true;
             return false;
         }
@@ -62,24 +62,35 @@ public class ServerValidatedUsernameText extends ServerValidatedText
         String displayName = getText().toString();
         if (!alreadyRequested.containsKey(displayName))
         {
-            UserAvailabilityRequester requester = new UserAvailabilityRequester(displayName) {
-
-                @Override public void notifyAvailabilityChanged()
-                {
-                    if (this.getDisplayName().equals(getText().toString()))
-                    {
-                        handleReturnFromServer (this.isAvailable());
-                    }
-                }
-
-                @Override public void notifyIsQuerying(boolean isQuerying)
-                {
-                    handleServerRequest(isQuerying);
-                }
-            };
+            UserAvailabilityRequester requester = createUserAvailabilityRequester(displayName);
             alreadyRequested.put(displayName, requester);
             requester.askServerIfNeeded();
         }
+    }
+
+    private UserAvailabilityRequester createUserAvailabilityRequester(String displayName)
+    {
+        return new UserAvailabilityRequester(displayName) {
+
+            @Override public void notifyAvailabilityChanged()
+            {
+                if (this.getDisplayName().equals(getText().toString()))
+                {
+                    handleReturnFromServer (this.isAvailable());
+                }
+            }
+
+            @Override public void notifyIsQuerying(boolean isQuerying)
+            {
+                handleServerRequest(isQuerying);
+            }
+
+            @Override public void notifyNetworkError(RetrofitError retrofitError)
+            {
+                super.notifyNetworkError(retrofitError);
+                handleNetworkError(retrofitError);
+            }
+        };
     }
 
     private void handleReturnFromServer (boolean newIsValidFromServer)
@@ -105,6 +116,11 @@ public class ServerValidatedUsernameText extends ServerValidatedText
         {
             return new ValidationMessage(this, false, getContext().getString(R.string.validation_server_username_not_available));
         }
-        return new ValidationMessage(this, isValid, null);
+        return super.getCurrentValidationMessage();// new ValidationMessage(this, isValid(), null);
+    }
+
+    public void handleNetworkError (RetrofitError retrofitError)
+    {
+        hintDefaultStatus();
     }
 }

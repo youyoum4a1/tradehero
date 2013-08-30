@@ -12,6 +12,7 @@ public class ServerValidatedText extends SelfValidatedText
     private int progressIndicatorId;
     private boolean requesting;
 
+    //<editor-fold desc="Constructors">
     public ServerValidatedText(Context context)
     {
         super(context);
@@ -26,6 +27,7 @@ public class ServerValidatedText extends SelfValidatedText
     {
         super(context, attrs, defStyle);
     }
+    //</editor-fold>
 
     @Override protected void init(Context context, AttributeSet attrs)
     {
@@ -45,16 +47,16 @@ public class ServerValidatedText extends SelfValidatedText
             if (progressIndicator != null)
             {
                 hintValidStatusRight();
-                progressIndicator.setVisibility(requesting ?  View.VISIBLE : View.GONE);
+                progressIndicator.setVisibility(requesting ? View.VISIBLE : View.GONE);
             }
         }
     }
 
     @Override protected void hintValidStatusRight()
     {
-        if (requesting && defaultDrawableRight != null)
+        if (requesting && getDefaultDrawableRight() != null)
         {
-            replaceCompoundDrawable(2, defaultDrawableRight);
+            replaceCompoundDrawable(2, getDefaultDrawableRight());
         }
         else
         {

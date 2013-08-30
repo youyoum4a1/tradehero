@@ -3,16 +3,18 @@ package com.tradehero.th.widget;
 import android.content.Context;
 import android.util.AttributeSet;
 import com.tradehero.common.utils.THToast;
-import com.tradehero.th.R;
 
 /** Created with IntelliJ IDEA. User: tho Date: 8/27/13 Time: 10:30 AM Copyright (c) TradeHero */
 public class ValidatedPasswordText extends SelfValidatedText
 {
-    public ValidatedPasswordText(Context context) {
+    //<editor-fold desc="Constructors">
+    public ValidatedPasswordText(Context context)
+    {
         super(context);
     }
 
-    public ValidatedPasswordText(Context context, AttributeSet attrs) {
+    public ValidatedPasswordText(Context context, AttributeSet attrs)
+    {
         super(context, attrs);
     }
 
@@ -20,23 +22,33 @@ public class ValidatedPasswordText extends SelfValidatedText
     {
         super(context, attrs, defStyle);
     }
+    //</editor-fold>
 
     @Override protected void onTextChanged(CharSequence text, int start, int lengthBefore, int lengthAfter)
     {
         super.onTextChanged(text, start, lengthBefore, lengthAfter);
     }
 
+    public boolean needsConfirmFailNotification ()
+    {
+        return hasHadInteraction && !validate();
+    }
+
     @Override protected void conditionalValidation()
     {
         super.conditionalValidation();
-        if (hasHadInteraction && !validatePattern())
+        if (needsConfirmFailNotification ())
         {
-            notifyInvalidPattern();
+            notifyInvalid();
         }
     }
 
-    protected void notifyInvalidPattern()
+    protected void notifyInvalid()
     {
-        THToast.show(R.string.password_validation_pattern_string);
+        ValidationMessage validationMessage = getCurrentValidationMessage();
+        if (validationMessage != null && validationMessage.getMessage() != null)
+        {
+            THToast.show(validationMessage.getMessage());
+        }
     }
 }
