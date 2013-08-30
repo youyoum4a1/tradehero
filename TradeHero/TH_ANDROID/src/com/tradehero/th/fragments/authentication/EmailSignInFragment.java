@@ -1,8 +1,5 @@
 package com.tradehero.th.fragments.authentication;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.app.ProgressDialog;
@@ -10,13 +7,22 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.View.OnFocusChangeListener;
+import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.application.App;
+import com.tradehero.th.auth.AuthenticationMode;
 import com.tradehero.th.http.HttpRequestTask;
 import com.tradehero.th.http.RequestFactory;
 import com.tradehero.th.http.RequestTaskCompleteListener;
@@ -27,15 +33,8 @@ import com.tradehero.th.utills.Logger;
 import com.tradehero.th.utills.Logger.LogLevel;
 import com.tradehero.th.utills.PUtills;
 import com.tradehero.th.utills.Util;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.WindowManager;
-import android.view.View.OnClickListener;
-import android.view.View.OnFocusChangeListener;
-import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class EmailSignInFragment extends AuthenticationFragment
         implements OnClickListener, RequestTaskCompleteListener, OnFocusChangeListener
@@ -358,5 +357,10 @@ public class EmailSignInFragment extends AuthenticationFragment
 
         inputEmailName.setText("");
         inputPassword.setText("");
+    }
+
+    @Override public AuthenticationMode getAuthenticationMode()
+    {
+        return AuthenticationMode.SignIn;
     }
 }

@@ -6,8 +6,11 @@ import com.tradehero.common.utils.THLog;
 import com.tradehero.th.api.form.UserFormDTO;
 import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.auth.AuthenticationMode;
 import com.tradehero.th.auth.THAuthenticationProvider;
 import com.tradehero.th.misc.callback.LogInCallback;
+import com.tradehero.th.misc.callback.THCallback;
+import com.tradehero.th.misc.callback.THResponse;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.NetworkEngine;
 import com.tradehero.th.network.service.UserService;
@@ -17,42 +20,36 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
-import retrofit.converter.ConversionException;
 
-/** Created with IntelliJ IDEA. User: tho Date: 8/14/13 Time: 6:15 PM To change this template use File | Settings | File Templates. */
+/** Created with IntelliJ IDEA. User: tho Date: 8/14/13 Time: 6:15 PM */
 public class THUser
 {
     private static final String TAG = THUser.class.getName();
     private static final String PREF_MY_USER = "PREF_MY_USER";
     private static final String PREF_MY_TOKEN = "PREF_MY_TOKEN";
+
+    private static AuthenticationMode authenticationMode;
+    private static HashMap<String, JSONObject> credentials;
+    private static THAuthenticationProvider authenticator;
     private static Map<String, THAuthenticationProvider> authenticationProviders = new HashMap<>();
 
-    private static String currentAuthenticationHeader = null;
-    private static final UserService service;
-
-    static
+    public static void initialize()
     {
-        service = NetworkEngine.createService(UserService.class);
+        credentials = new HashMap<>();
+        loadCredentialsToUserDefaults();
     }
-
-    private static HashMap<String, JSONObject> credentials;
-    private static String authenticationMode = "users";
-    private static THAuthenticationProvider authenticator;
 
     public static String getSessionToken()
     {
+        // TODO get session token from cache
         return null;
     }
 
     public static boolean hasSessionToken()
     {
-        return false;
+        return getSessionToken() != null;
     }
 
     public static void logInWithAsync(String authType, LogInCallback callback)
@@ -112,20 +109,22 @@ public class THUser
 
     public static void logInAsyncWithJson(JSONObject json, final LogInCallback callback)
     {
-        service.authenticate(authenticator.getAuthHeader(), authenticationMode, new UserFormDTO(json), new Callback<UserProfileDTO>()
-        {
-            @Override
-            public void success(UserProfileDTO userDTO, Response response)
-            {
-                saveCurrentUser(userDTO);
-                callback.done(userDTO, null);
-            }
+        NetworkEngine.createService(UserService.class)
+                .authenticate(authenticator.getAuthHeader(), authenticationMode.getEndPoint(), new UserFormDTO(json),
+                        new THCallback<UserProfileDTO>()
+                        {
+                            @Override
+                            public void success(UserProfileDTO userDTO, THResponse response)
+                            {
+                                saveCurrentUser(userDTO);
+                                callback.done(userDTO, null);
+                            }
 
-            @Override public void failure(RetrofitError error)
-            {
-                callback.done(null, new THException(error));
-            }
-        });
+                            @Override public void failure(THException error)
+                            {
+                                callback.done(null, error);
+                            }
+                        });
     }
 
     private static void saveCurrentUser(UserBaseDTO userDTO)
@@ -146,19 +145,12 @@ public class THUser
 
     public static UserProfileDTO getCurrentUser()
     {
-        try
+        String serializedUser = Application.getPreferences().getString(PREF_MY_USER, null);
+        if (serializedUser != null)
         {
-            String serializedUser = Application.getPreferences().getString(PREF_MY_USER, null);
-            if (serializedUser != null)
-            {
-                UserProfileDTO user = (UserProfileDTO) THJsonAdapter.getInstance()
-                        .fromBody(serializedUser, UserProfileDTO.class);
-                return user;
-            }
-        }
-        catch (ConversionException ex)
-        {
-            THLog.d(TAG, "User is not in cache!");
+            UserProfileDTO user = (UserProfileDTO) THJsonAdapter.getInstance()
+                    .fromBody(serializedUser, UserProfileDTO.class);
+            return user;
         }
         return null;
     }
@@ -166,12 +158,6 @@ public class THUser
     public static void registerAuthenticationProvider(THAuthenticationProvider provider)
     {
         authenticationProviders.put(provider.getAuthType(), provider);
-    }
-
-    public static void initialize()
-    {
-        credentials = new HashMap<>();
-        loadCredentialsToUserDefaults();
     }
 
     private static void saveCredentialsToUserDefaults(JSONObject json)
@@ -219,18 +205,8 @@ public class THUser
         }
     }
 
-    public static String getAuthenticationHeader()
-    {
-        return currentAuthenticationHeader;
-    }
-
-    public static void setAuthenticationMode(String authenticationMode)
+    public static void setAuthenticationMode(AuthenticationMode authenticationMode)
     {
         THUser.authenticationMode = authenticationMode;
-    }
-
-    public static String getAuthenticationMode()
-    {
-        return authenticationMode;
     }
 }

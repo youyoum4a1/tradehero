@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import com.tradehero.th.R;
+import com.tradehero.th.auth.AuthenticationMode;
 
 public class SignInFragment extends AuthenticationFragment
 {
@@ -17,7 +18,7 @@ public class SignInFragment extends AuthenticationFragment
         int[] navigationViewIds = new int[] {
                 R.id.btn_facebook_signin,
                 R.id.btn_twitter_signin,
-                R.id.txt_email_sign_in,
+                R.id.authentication_email_sign_in_link,
                 R.id.btn_linkedin_signin,
                 R.id.txt_term_of_service_signin
         };
@@ -27,5 +28,10 @@ public class SignInFragment extends AuthenticationFragment
         }
 
         return view;
+    }
+
+    @Override public AuthenticationMode getAuthenticationMode()
+    {
+        return AuthenticationMode.SignIn;
     }
 }

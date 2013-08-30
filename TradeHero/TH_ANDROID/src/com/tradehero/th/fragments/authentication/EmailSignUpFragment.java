@@ -107,118 +107,11 @@ public class EmailSignUpFragment extends Fragment
 
     private void initSetup(View view)
     {
-//        imgValidPwd = (ImageView) view.findViewById(R.id.valid_pwd_img);
-//        imgValidvConfirmPwd = (ImageView) view.findViewById(R.id.valid_cpwd_img);
-
         ////signupButton.setOnClickListener(this);
         ////signupButton.setOnTouchListener(this);
-        //mProgressDialog = new ProgressDialog(getActivity());
-        //email.setOnFocusChangeListener(this);
-        //displayName.setOnFocusChangeListener(this);
-        //password.setOnFocusChangeListener(this);
-        //confirmPassword.setOnFocusChangeListener(this);
-        //mProgressDialog.setMessage("Registering User");
         //mOptionalImage = (ImageView) view.findViewById(R.id.image_optional);
         //mOptionalImage.setOnClickListener(this);
         //mOptionalImage.setOnTouchListener(this);
-
-        //email.addTextChangedListener(new EmptyValidator(email));
-        //confirmPassword.addTextChangedListener(new TextWatcher()
-        //{
-        //
-        //    @Override
-        //    public void onTextChanged(CharSequence s, int start, int before, int count)
-        //    {
-        //
-        //        if (TextUtils.isEmpty(s))
-        //        {
-        //            //signupButton.setBackgroundResource(R.drawable.rectangle_login);
-        //        }
-        //
-        //        mText = s;
-        //        new CheckValidation().execute();
-        //    }
-        //
-        //    @Override
-        //    public void beforeTextChanged(CharSequence s, int start, int count,
-        //            int after)
-        //    {
-        //
-        //    }
-        //
-        //    @Override
-        //    public void afterTextChanged(Editable s)
-        //    {
-        //
-        //    }
-        //});
-        //
-        //displayName.addTextChangedListener(new TextWatcher()
-        //{
-        //
-        //    @Override
-        //    public void onTextChanged(CharSequence s, int start, int before, int count)
-        //    {
-        //
-        //        if (TextUtils.isEmpty(s))
-        //        {
-        //            //signupButton.setBackgroundResource(R.drawable.rectangle_login);
-        //        }
-        //
-        //        mText = s;
-        //
-        //        if (NetworkStatus.getInstance().isConnected(getActivity()))
-        //        {
-        //            new CheckValidation().execute();
-        //        }
-        //        else
-        //        {
-        //            Toast.makeText(getActivity(), getResources().getString(R.string.network_error), 200).show();
-        //        }
-        //    }
-        //
-        //    @Override
-        //    public void beforeTextChanged(CharSequence s, int start, int count,
-        //            int after)
-        //    {
-        //
-        //    }
-        //
-        //    @Override
-        //    public void afterTextChanged(Editable s)
-        //    {
-        //
-        //    }
-        //});
-        //
-        //password.addTextChangedListener(new TextWatcher()
-        //{
-        //
-        //    @Override
-        //    public void onTextChanged(CharSequence s, int start, int before, int count)
-        //    {
-        //
-        //        if (TextUtils.isEmpty(s))
-        //        {
-        //            //signupButton.setBackgroundResource(R.drawable.rectangle_login);
-        //        }
-        //        mText = s;
-        //        new CheckValidation().execute();
-        //    }
-        //
-        //    @Override
-        //    public void beforeTextChanged(CharSequence s, int start, int count,
-        //            int after)
-        //    {
-        //
-        //    }
-        //
-        //    @Override
-        //    public void afterTextChanged(Editable s)
-        //    {
-        //
-        //    }
-        //});
     }
 
     @Override
