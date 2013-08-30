@@ -29,17 +29,26 @@ public class ValidatedPasswordText extends SelfValidatedText
         super.onTextChanged(text, start, lengthBefore, lengthAfter);
     }
 
+    public boolean needsConfirmFailNotification ()
+    {
+        return hasHadInteraction && !validate();
+    }
+
     @Override protected void conditionalValidation()
     {
         super.conditionalValidation();
-        if (hasHadInteraction && !validate())
+        if (needsConfirmFailNotification ())
         {
             notifyInvalid();
         }
     }
 
-    private void notifyInvalid()
+    protected void notifyInvalid()
     {
-        THToast.show(getCurrentValidationMessage().getMessage());
+        ValidationMessage validationMessage = getCurrentValidationMessage();
+        if (validationMessage != null && validationMessage.getMessage() != null)
+        {
+            THToast.show(validationMessage.getMessage());
+        }
     }
 }

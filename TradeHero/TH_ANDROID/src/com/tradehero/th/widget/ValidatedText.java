@@ -135,7 +135,7 @@ public class ValidatedText extends EditText implements ValidatedView, View.OnFoc
     //<editor-fold desc="Listeners">
     public void addListener(ValidationListener listener)
     {
-        if (!listeners.contains(listener))
+        if (listener != null && !listeners.contains(listener))
         {
             listeners.add(listener);
         }
@@ -161,10 +161,6 @@ public class ValidatedText extends EditText implements ValidatedView, View.OnFoc
 
     public ValidationMessage getCurrentValidationMessage()
     {
-        if (valid)
-        {
-            return null;
-        }
         return new ValidationMessage(this, valid, null);
     }
     //</editor-fold>
