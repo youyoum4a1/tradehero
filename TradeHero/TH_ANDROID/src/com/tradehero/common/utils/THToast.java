@@ -25,17 +25,6 @@ public class THToast
 
     public static void show(THException ex)
     {
-        if (ex.getCode() != ExceptionCode.UnknownError)
-        {
-            show(ex.getCode().getErrorMessage());
-        }
-        else if (!ex.getCode().isCanContinue())
-        {
-            show(ex.getMessage());
-        }
-        else
-        {
-            THLog.e(TAG, "Unable to continue by the exception", ex);
-        }
+        show(ex.getMessage());
     }
 }

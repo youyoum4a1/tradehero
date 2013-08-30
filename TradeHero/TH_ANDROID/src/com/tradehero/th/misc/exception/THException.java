@@ -1,7 +1,9 @@
 package com.tradehero.th.misc.exception;
 
 import com.facebook.FacebookOperationCanceledException;
+import com.tradehero.common.utils.THJsonAdapter;
 import com.tradehero.th.R;
+import com.tradehero.th.api.ErrorMessageDTO;
 import com.tradehero.th.base.Application;
 import retrofit.RetrofitError;
 
@@ -13,31 +15,51 @@ public class THException extends Exception
 
     public THException(Throwable cause)
     {
-        super(cause);
-        init();
+        initCause(cause);
     }
 
     public THException(String message)
     {
-        super(new Exception(message));
-        init();
+        initCause(new Exception(message));
     }
 
-    private void init()
-    {
+    @Override
+    public Throwable initCause(Throwable throwable) {
         this.code = ExceptionCode.UnknownError;
-        if (getCause() instanceof RetrofitError)
+        if (throwable instanceof RetrofitError)
         {
-            RetrofitError error = (RetrofitError) getCause();
+            RetrofitError error = (RetrofitError) throwable;
             if (error.isNetworkError())
             {
                 this.code = ExceptionCode.NetworkError;
             }
+            else if (error.getResponse() != null && error.getResponse().getStatus() == 400) // Bad Request
+            {
+                ErrorMessageDTO dto = (ErrorMessageDTO) THJsonAdapter.getInstance()
+                        .fromBody(error.getResponse().getBody(), ErrorMessageDTO.class);
+                this.code = ExceptionCode.UnknownError;
+                return super.initCause(new Exception(dto.Message));
+            }
         }
-        else if (getCause() instanceof FacebookOperationCanceledException)
+        else if (throwable instanceof FacebookOperationCanceledException)
         {
             this.code = ExceptionCode.UserCanceled;
         }
+        return super.initCause(throwable);
+    }
+
+    @Override
+    public String getMessage() {
+        if (code != ExceptionCode.UnknownError)
+        {
+            return code.getErrorMessage();
+        }
+        else if (code.isCanContinue())
+        {
+            return getCause().getMessage();
+        }
+        else
+            return getCause().getMessage();
     }
 
     public ExceptionCode getCode()
