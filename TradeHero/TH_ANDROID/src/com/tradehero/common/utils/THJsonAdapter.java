@@ -20,17 +20,18 @@ import java.lang.reflect.Type;
  */
 public class THJsonAdapter implements Converter
 {
+    private static final String TAG = THJsonAdapter.class.getSimpleName();
     private static ConverterType CONVERTER_TYPE = ConverterType.JACKSON;
-    private static THJsonAdapter THJSONAdapter = null;
+    private static THJsonAdapter instance = null;
     private Converter converter;
 
     public static THJsonAdapter getInstance()
     {
-        if (THJSONAdapter == null)
+        if (instance == null)
         {
-            THJSONAdapter = new THJsonAdapter();
+            instance = new THJsonAdapter();
         }
-        return THJSONAdapter;
+        return instance;
     }
 
     public THJsonAdapter()
@@ -62,7 +63,7 @@ public class THJsonAdapter implements Converter
         };
     }
 
-    private TypedInput toTypedInput(String jsonString) throws ConversionException
+    private TypedInput toTypedInput(String jsonString)
     {
         try
         {
@@ -70,24 +71,30 @@ public class THJsonAdapter implements Converter
         }
         catch (IOException ex)
         {
-            throw new ConversionException(ex);
+            throw new IllegalArgumentException(ex);
         }
     }
 
-    public Object fromBody(String body, Type type) throws ConversionException
+    public Object fromBody(String body, Type type)
     {
         return fromBody(toTypedInput(body), type);
     }
 
-    public Object fromBody(byte[] json, Type type) throws ConversionException
+    public Object fromBody(byte[] json, Type type)
     {
         return fromBody(toTypedInput(json), type);
     }
 
     @Override
-    public Object fromBody(TypedInput body, Type type) throws ConversionException
+    public Object fromBody(TypedInput body, Type type)
     {
-        return converter.fromBody(body, type);
+        try
+        {
+            return converter.fromBody(body, type);
+        }   catch (ConversionException ex) {
+            THLog.e(TAG, "Conversion error", ex);
+            return null;
+        }
     }
 
     @Override
