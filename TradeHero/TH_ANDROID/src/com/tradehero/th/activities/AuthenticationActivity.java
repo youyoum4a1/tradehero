@@ -16,6 +16,7 @@ import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.application.App;
 import com.tradehero.th.base.Application;
 import com.tradehero.th.base.THUser;
+import com.tradehero.th.fragments.authentication.AuthenticationFragment;
 import com.tradehero.th.fragments.authentication.EmailSignInFragment;
 import com.tradehero.th.fragments.authentication.TwitterEmailFragment;
 import com.tradehero.th.fragments.authentication.EmailSignUpFragment;
@@ -72,10 +73,10 @@ public class AuthenticationActivity extends SherlockFragmentActivity
     /** map view and the next fragment, which is appears when click on that view */
     private void setupViewFragmentMapping()
     {
-        mapViewFragment.put(R.id.authentication_sign_up, SignUpFragment.class);
-        mapViewFragment.put(R.id.authentication_sign_in, SignInFragment.class);
-        mapViewFragment.put(R.id.txt_email_sign_in, EmailSignInFragment.class);
-        mapViewFragment.put(R.id.txt_email_sign_up, EmailSignUpFragment.class);
+        mapViewFragment.put(R.id.authentication_sign_up_button, SignUpFragment.class);
+        mapViewFragment.put(R.id.authentication_sign_in_button, SignInFragment.class);
+        mapViewFragment.put(R.id.authentication_email_sign_in_link, EmailSignInFragment.class);
+        mapViewFragment.put(R.id.authentication_email_sign_up_link, EmailSignUpFragment.class);
     }
 
     @Override protected void onSaveInstanceState(Bundle outState)
@@ -101,6 +102,203 @@ public class AuthenticationActivity extends SherlockFragmentActivity
         return super.onCreateOptionsMenu(menu);
     }
 
+    @Override protected void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        super.onActivityResult(requestCode, resultCode, data);
+        FacebookUtils.finishAuthentication(requestCode, resultCode, data);
+    }
+
+    @Override public void onClick(View view)
+    {
+        Class<?> fragmentClass = mapViewFragment.get(view.getId());
+        if (fragmentClass != null)
+        {
+            setCurrentFragmentByClass(fragmentClass);
+            if (currentFragment instanceof AuthenticationFragment)
+            {
+                THUser.setAuthenticationMode(((AuthenticationFragment) currentFragment).getAuthenticationMode());
+            }
+            getSupportActionBar().show();
+        }
+
+        switch (view.getId())
+        {
+            case R.id.btn_facebook_signin:
+                authenticateWithFacebook();
+                break;
+
+            case R.id.btn_twitter_signin:
+                authenticateWithTwitter();
+                break;
+
+            case R.id.authentication_twitter_email_button:
+                complementEmailForTwitterAuthentication();
+                break;
+
+            case R.id.btn_linkedin_signin:
+                authenticateWithLinkedIn();
+                break;
+
+            case R.id.txt_term_of_service_signin:
+                Intent pWebView = new Intent(this, WebViewActivity.class);
+                pWebView.putExtra(WebViewActivity.SHOW_URL, Constants.PRIVACY_TERMS_OF_SERVICE);
+                startActivity(pWebView);
+                break;
+        }
+    }
+
+    private void setCurrentFragmentByClass(Class<?> fragmentClass)
+    {
+        currentFragment = FragmentFactory.getInstance(fragmentClass);
+        getSupportFragmentManager().beginTransaction()
+                .setCustomAnimations(
+                        R.anim.slide_right_in, R.anim.slide_left_out,
+                        R.anim.slide_left_in, R.anim.slide_right_out)
+                .replace(R.id.fragment_content, currentFragment)
+                .addToBackStack(null)
+                .commit();
+    }
+
+    //<editor-fold desc="Authenticate with Facebook/Twitter/LinkedIn">
+    private void authenticateWithLinkedIn()
+    {
+        progressDialog = ProgressDialog.show(
+                AuthenticationActivity.this,
+                Application.getResourceString(R.string.please_wait),
+                Application.getResourceString(R.string.connecting_to_linkedin),
+                true);
+        LinkedInUtils.logIn(this, new SocialAuthenticationCallback("LinkedIn"));
+    }
+
+    private void authenticateWithFacebook()
+    {
+        progressDialog = ProgressDialog.show(
+                AuthenticationActivity.this,
+                Application.getResourceString(R.string.please_wait),
+                Application.getResourceString(R.string.connecting_to_facebook),
+                true);
+        FacebookUtils.logIn(this, new SocialAuthenticationCallback("Facebook"));
+    }
+
+    private void complementEmailForTwitterAuthentication()
+    {
+        EditText txtTwitterEmail = (EditText) currentFragment.getView().findViewById(R.id.authentication_twitter_email_txt);
+        try
+        {
+            twitterJson.put("email", txtTwitterEmail.getText());
+            progressDialog.setMessage(String.format(getString(R.string.connecting_tradehero), "Twitter"));
+            progressDialog.show();
+            THUser.logInAsyncWithJson(twitterJson, new LogInCallback()
+            {
+                @Override public void done(UserBaseDTO user, THException ex)
+                {
+                    if (user != null)
+                    {
+                        ActivityHelper.goRoot(AuthenticationActivity.this);
+                    }
+                    else
+                    {
+                        THToast.show(ex);
+                    }
+                    progressDialog.dismiss();
+                }
+
+                @Override public void onStart()
+                {
+                    // do nothing for now
+                }
+            });
+        }
+        catch (JSONException e)
+        {
+            //nothing for now
+        }
+    }
+
+    private void authenticateWithTwitter()
+    {
+        progressDialog = ProgressDialog.show(
+                AuthenticationActivity.this,
+                Application.getResourceString(R.string.please_wait),
+                Application.getResourceString(R.string.connecting_to_twitter),
+                true);
+        TwitterUtils.logIn(this, new SocialAuthenticationCallback("Twitter")
+        {
+            @Override public boolean isSigningUp()
+            {
+                return currentFragment != FragmentFactory.getInstance(SignInFragment.class);
+            }
+
+            @Override public boolean onSocialAuthDone(JSONObject json)
+            {
+                if (super.onSocialAuthDone(json)) return true;
+                // twitter does not return email for authentication user,
+                // we need to ask user for that
+                setTwitterData(json);
+                progressDialog.hide();
+                setCurrentFragmentByClass(TwitterEmailFragment.class);
+                return false;
+            }
+        });
+    }
+
+    private void setTwitterData(JSONObject json)
+    {
+        twitterJson = json;
+    }
+    //</editor-fold>
+
+    private class SocialAuthenticationCallback extends LogInCallback
+    {
+
+        private final String providerName;
+        public SocialAuthenticationCallback(String providerName)
+        {
+            this.providerName = providerName;
+        }
+
+        @Override public void done(UserBaseDTO user, THException ex)
+        {
+            if (user != null)
+            {
+                ActivityHelper.goRoot(AuthenticationActivity.this);
+            }
+            else
+            {
+                if (ex.getCause() instanceof RetrofitError && ((RetrofitError) ex.getCause()).getResponse().getStatus() == 403) // Forbidden
+                {
+                    THToast.show(App.getResourceString(R.string.not_registered));
+                }
+                else
+                {
+                    THToast.show(ex);
+                }
+            }
+            progressDialog.dismiss();
+        }
+
+        @Override public boolean onSocialAuthDone(JSONObject json)
+        {
+            if (!isSigningUp())
+            {
+                progressDialog.setMessage(String.format(getString(R.string.connecting_tradehero), providerName));
+                return true;
+            }
+            return false;
+        }
+
+        @Override public void onStart()
+        {
+            progressDialog.setMessage(getString(R.string.connecting_tradehero_only));
+        }
+
+        public boolean isSigningUp()
+        {
+            return false;
+        }
+
+    }
+
     private static class FragmentFactory
     {
         private static Map<Class<?>, Fragment> instances = new HashMap<>();
@@ -115,206 +313,5 @@ public class AuthenticationActivity extends SherlockFragmentActivity
             }
             return fragment;
         }
-    }
-
-    @Override protected void onActivityResult(int requestCode, int resultCode, Intent data)
-    {
-        super.onActivityResult(requestCode, resultCode, data);
-        FacebookUtils.finishAuthentication(requestCode, resultCode, data);
-    }
-
-    @Override public void onClick(View view)
-    {
-        Class<?> fragmentClass = mapViewFragment.get(view.getId());
-        if (fragmentClass != null)
-        {
-            currentFragment = FragmentFactory.getInstance(fragmentClass);
-            getSupportFragmentManager().beginTransaction()
-                    .setCustomAnimations(
-                            R.anim.slide_right_in, R.anim.slide_left_out,
-                            R.anim.slide_left_in, R.anim.slide_right_out)
-                    .replace(R.id.fragment_content, currentFragment)
-                    .addToBackStack(null)
-                    .commit();
-            if (fragmentClass.getSimpleName().contains("SignUp"))
-            {
-                THUser.setAuthenticationMode("users");
-            }
-            else if (fragmentClass.getSimpleName().contains("SignIn"))
-            {
-                THUser.setAuthenticationMode("login");
-            }
-            getSupportActionBar().show();
-        }
-
-        switch (view.getId())
-        {
-            case R.id.btn_facebook_signin:
-                progressDialog = ProgressDialog.show(
-                        AuthenticationActivity.this,
-                        Application.getResourceString(R.string.please_wait),
-                        Application.getResourceString(R.string.connecting_to_facebook),
-                        true);
-                FacebookUtils.logIn(this, new LogInCallback()
-                {
-                    @Override public void done(UserBaseDTO user, THException ex)
-                    {
-                        if (user != null)
-                        {
-                            ActivityHelper.goRoot(AuthenticationActivity.this);
-                        }
-                        else
-                        {
-                            THToast.show("Facebook failed: " + ex.getMessage());
-                        }
-                        progressDialog.dismiss();
-                    }
-
-                    @Override public boolean onSocialAuthDone(JSONObject json)
-                    {
-                        progressDialog.setMessage(String.format(getString(R.string.connecting_tradehero), "Facebook"));
-                        return true;
-                    }
-
-                    @Override public void onStart()
-                    {
-                        progressDialog.setMessage(getString(R.string.connecting_tradehero_only));
-                    }
-                });
-                break;
-
-            case R.id.btn_twitter_signin:
-                final boolean isSigningUp = currentFragment != FragmentFactory.getInstance(SignInFragment.class);
-
-                progressDialog = ProgressDialog.show(
-                        AuthenticationActivity.this,
-                        Application.getResourceString(R.string.please_wait),
-                        Application.getResourceString(R.string.connecting_to_twitter),
-                        true);
-                TwitterUtils.logIn(this, new LogInCallback()
-                {
-                    @Override public void done(UserBaseDTO user, THException ex)
-                    {
-                        if (user != null)
-                        {
-                            ActivityHelper.goRoot(AuthenticationActivity.this);
-                        }
-                        else
-                        {
-                            if (ex.getCause() instanceof RetrofitError && ((RetrofitError) ex.getCause()).getResponse().getStatus() == 403) // Forbidden
-                            {
-                                THToast.show(App.getResourceString(R.string.not_registered));
-                            }
-                            else
-                            {
-                                THToast.show("Error: " + ex.getMessage());
-                            }
-
-                        }
-                        progressDialog.dismiss();
-                    }
-
-                    @Override public boolean onSocialAuthDone(JSONObject json)
-                    {
-
-                        if (!isSigningUp)
-                        {
-                            progressDialog.setMessage(String.format(getString(R.string.connecting_tradehero), "Twitter"));
-                            return true;
-                        }
-                        // twitter does not return email for authentication user,
-                        // we need to ask user for that
-                        progressDialog.hide();
-                        progressDialog.setMessage(String.format(getString(R.string.connecting_tradehero), "Twitter"));
-                        setTwitterData(json);
-                        currentFragment = FragmentFactory.getInstance(TwitterEmailFragment.class);
-                        getSupportFragmentManager().beginTransaction()
-                                .setCustomAnimations(
-                                        R.anim.slide_right_in, R.anim.slide_left_out,
-                                        R.anim.slide_left_in, R.anim.slide_right_out)
-                                .replace(R.id.fragment_content, currentFragment)
-                                .addToBackStack(null)
-                                .commit();
-                        return false;
-                    }
-                    @Override public void onStart()
-                    {
-                        progressDialog.setMessage(getString(R.string.connecting_tradehero_only));
-                    }
-                });
-                break;
-
-            case R.id.authentication_twitter_email_button:
-                EditText txtTwitterEmail = (EditText) currentFragment.getView().findViewById(R.id.authentication_twitter_email_txt);
-                try
-                {
-                    twitterJson.put("email", txtTwitterEmail.getText());
-                    progressDialog.show();
-                    THUser.logInAsyncWithJson(twitterJson, new LogInCallback()
-                    {
-                        @Override public void done(UserBaseDTO user, THException ex)
-                        {
-                            if (user != null)
-                            {
-                                ActivityHelper.goRoot(AuthenticationActivity.this);
-                            }
-                            else
-                            {
-                                THToast.show("Error: " + ex.getMessage() );
-                            }
-                            progressDialog.dismiss();
-                        }
-                    });
-                }
-                catch (JSONException e)
-                {
-                    //nothing for now
-                }
-                break;
-
-            case R.id.btn_linkedin_signin:
-                progressDialog = ProgressDialog.show(
-                        AuthenticationActivity.this,
-                        Application.getResourceString(R.string.please_wait),
-                        Application.getResourceString(R.string.pd_authorizing_linkedIn),
-                        true);
-                LinkedInUtils.logIn(this, new LogInCallback()
-                {
-                    @Override public void done(UserBaseDTO user, THException ex)
-                    {
-                        if (user != null)
-                        {
-                            ActivityHelper.goRoot(AuthenticationActivity.this);
-                        }
-                        else
-                        {
-                            THToast.show("LinkedIn failed: " + ex.getMessage());
-                        }
-                        progressDialog.dismiss();
-                    }
-
-                    @Override public boolean onSocialAuthDone(JSONObject json)
-                    {
-                        progressDialog.setMessage(String.format(getString(R.string.connecting_tradehero), "LinkedIn"));
-                        return true;
-                    }
-                    @Override public void onStart()
-                    {
-                        progressDialog.setMessage(getString(R.string.connecting_tradehero_only));
-                    }
-                });
-                break;
-
-            case R.id.txt_term_of_service_signin:
-                Intent pWebView = new Intent(this, WebViewActivity.class);
-                pWebView.putExtra(WebViewActivity.SHOW_URL, Constants.PRIVACY_TERMS_OF_SERVICE);
-                startActivity(pWebView);
-                break;
-        }
-    }
-
-    private void setTwitterData(JSONObject json)
-    {
-        twitterJson = json;
     }
 }
