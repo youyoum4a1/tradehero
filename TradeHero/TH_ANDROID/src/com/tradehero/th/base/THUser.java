@@ -89,7 +89,6 @@ public class THUser
                 catch (JSONException ex)
                 {
                 }
-                saveCredentialsToUserDefaults(json);
                 if (callback.onSocialAuthDone(json))
                 {
                     logInAsyncWithJson(json, callback);
@@ -108,7 +107,7 @@ public class THUser
         });
     }
 
-    public static void logInAsyncWithJson(JSONObject json, final LogInCallback callback)
+    public static void logInAsyncWithJson(final JSONObject json, final LogInCallback callback)
     {
         NetworkEngine.createService(UserService.class)
                 .authenticate(authenticator.getAuthHeader(), authenticationMode.getEndPoint(), new UserFormDTO(json),
@@ -118,6 +117,7 @@ public class THUser
                             public void success(UserProfileDTO userDTO, THResponse response)
                             {
                                 saveCurrentUser(userDTO);
+                                saveCredentialsToUserDefaults(json);
                                 callback.done(userDTO, null);
                             }
 
