@@ -52,9 +52,9 @@ public class ServerValidatedText extends SelfValidatedText
 
     @Override protected void hintValidStatusRight()
     {
-        if (requesting && defaultDrawableRight != null)
+        if (requesting && getDefaultDrawableRight() != null)
         {
-            replaceCompoundDrawable(2, defaultDrawableRight);
+            replaceCompoundDrawable(2, getDefaultDrawableRight());
         }
         else
         {

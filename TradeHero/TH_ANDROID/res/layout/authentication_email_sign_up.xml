@@ -41,7 +41,6 @@
         android:inputType="textEmailAddress"
         android:imeOptions="actionNext"
         style="@style/TradeHero.Authentication.EditText"
-        app:allowEmpty="false"
 
         android:drawableLeft="@drawable/accounts_glyph_email_default"
         app:invalidDrawable="@drawable/accounts_glyph_email_error"
@@ -50,8 +49,10 @@
         app:invalidDrawableRight="@drawable/warning_red"
         app:validDrawableRight="@drawable/tick_green"
 
+        app:minSize="1"
         app:validatePattern="@string/regex_email_validator"
-        app:validateDelay="500"
+        app:invalidPatternMessage="@string/validation_incorrect_pattern_email"
+        app:delayValidationByMilliSec="500"
       />
     <com.tradehero.th.widget.ValidatedPasswordText
         android:id="@+id/authentication_sign_up_password"
@@ -62,7 +63,6 @@
         android:hint="@string/pwd"
         android:inputType="textPassword"
         style="@style/TradeHero.Authentication.EditText"
-        app:allowEmpty="false"
 
         android:drawableLeft="@drawable/accounts_glyph_password_default"
         app:invalidDrawable="@drawable/accounts_glyph_password_error"
@@ -71,8 +71,8 @@
         app:invalidDrawableRight="@drawable/warning_red"
         app:validDrawableRight="@drawable/tick_green"
 
-        app:validatePattern="@string/regex_password_validator"
-        app:validateDelay="700"
+        app:minSize="6"
+        app:delayValidationByMilliSec="1000"
       />
 
       <com.tradehero.th.widget.MatchingPasswordText
@@ -84,7 +84,6 @@
           android:hint="@string/confirm_pwd"
           android:inputType="textPassword"
           style="@style/TradeHero.Authentication.EditText"
-          app:allowEmpty="false"
 
           android:drawableLeft="@drawable/accounts_glyph_password_default"
           app:invalidDrawable="@drawable/accounts_glyph_password_error"
@@ -93,9 +92,8 @@
           app:invalidDrawableRight="@drawable/warning_red"
           app:validDrawableRight="@drawable/tick_green"
 
-          app:validatePattern="@string/regex_password_validator"
           app:matchWith="@id/authentication_sign_up_password"
-          app:validateDelay="1000"
+          app:delayValidationByMilliSec="1000"
       />
 
     <FrameLayout
@@ -120,8 +118,9 @@
           app:invalidDrawableRight="@drawable/warning_red"
           app:validDrawableRight="@drawable/tick_green"
 
+          app:minSize="1"
           app:indicator="@+id/authentication_sign_up_username_validator"
-          app:validateDelay="500"
+          app:delayValidationByMilliSec="500"
           app:progressIndicator="@+id/authentication_sign_up_username_validator"
           />
       <ProgressBar

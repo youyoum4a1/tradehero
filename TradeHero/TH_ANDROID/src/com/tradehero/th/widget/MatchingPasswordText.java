@@ -30,7 +30,7 @@ public class MatchingPasswordText extends ValidatedPasswordText
             if (validateRunnable != null)
             {
                 MatchingPasswordText.this.removeCallbacks(validateRunnable);
-                MatchingPasswordText.this.postDelayed(validateRunnable, validateDelay);
+                MatchingPasswordText.this.postDelayed(validateRunnable, getValidateDelay());
             }
         }
     };
@@ -115,6 +115,7 @@ public class MatchingPasswordText extends ValidatedPasswordText
 
     public boolean needsConfirmFailNotification ()
     {
+        associateTargetIfNone();
         return super.validate() && target.validate() && !matchesWithTarget();
     }
 
@@ -130,10 +131,5 @@ public class MatchingPasswordText extends ValidatedPasswordText
     protected void notifyInvalidMatchTarget ()
     {
         THToast.show(R.string.password_validation_confirm_fail_string);
-    }
-
-    @Override protected void notifyInvalidPattern()
-    {
-        // Do nothing on purpose
     }
 }

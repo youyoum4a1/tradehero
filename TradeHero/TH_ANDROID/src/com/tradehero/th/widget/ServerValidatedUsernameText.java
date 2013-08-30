@@ -2,7 +2,6 @@ package com.tradehero.th.widget;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.form.UserAvailabilityRequester;
 import retrofit.RetrofitError;
@@ -76,6 +75,12 @@ public class ServerValidatedUsernameText extends ServerValidatedText
                 {
                     handleServerRequest(isQuerying);
                 }
+
+                @Override public void notifyNetworkError(RetrofitError retrofitError)
+                {
+                    super.notifyNetworkError(retrofitError);
+                    handleNetworkError(retrofitError);
+                }
             };
             alreadyRequested.put(displayName, requester);
             requester.askServerIfNeeded();
@@ -105,6 +110,11 @@ public class ServerValidatedUsernameText extends ServerValidatedText
         {
             return new ValidationMessage(this, false, getContext().getString(R.string.validation_server_username_not_available));
         }
-        return new ValidationMessage(this, isValid, null);
+        return new ValidationMessage(this, isValid(), null);
+    }
+
+    public void handleNetworkError (RetrofitError retrofitError)
+    {
+        hintDefaultStatus();
     }
 }
