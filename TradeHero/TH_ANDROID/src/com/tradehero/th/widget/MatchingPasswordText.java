@@ -5,6 +5,7 @@ import android.content.res.TypedArray;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
+import android.view.View;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 
@@ -127,4 +128,35 @@ public class MatchingPasswordText extends ValidatedPasswordText
         }
         return super.getCurrentValidationMessage();
     }
+
+    //<editor-fold desc="Accessors">
+    public void setTargetId(int targetId)
+    {
+        if (this.target == null || this.target.getId() != targetId)
+        {
+            View view = getRootView().findViewById(targetId);
+            if (!(view instanceof ValidatedPasswordText))
+            {
+                throw new IllegalArgumentException("Target view has to be a ValidatedPasswordText");
+            }
+            setTarget((ValidatedPasswordText)view);
+        }
+    }
+
+    public ValidatedPasswordText getTarget()
+    {
+        if (targetId != 0)
+        {
+            setTargetId(targetId);
+        }
+        return target;
+    }
+
+    public void setTarget(ValidatedPasswordText target)
+    {
+        this.target = target;
+        this.targetId = target == null ? 0 : target.getId();
+    }
+    //</editor-fold>
+
 }

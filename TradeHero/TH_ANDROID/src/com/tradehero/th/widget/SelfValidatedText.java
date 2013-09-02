@@ -180,4 +180,70 @@ public class SelfValidatedText extends ValidatedText
         return super.getCurrentValidationMessage();
     }
 
+    //<editor-fold desc="Accessors">
+    public int getMinSize()
+    {
+        return minSize;
+    }
+
+    public void setMinSize(int minSize)
+    {
+        this.minSize = minSize;
+    }
+
+    public int getMaxSize()
+    {
+        return maxSize;
+    }
+
+    public void setMaxSize(int maxSize)
+    {
+        this.maxSize = maxSize;
+    }
+
+    public void setValidateDelay(long validateDelay)
+    {
+        this.validateDelay = validateDelay;
+    }
+
+    public String getInvalidMinSizeMessage()
+    {
+        return invalidMinSizeMessage;
+    }
+
+    public void setInvalidMinSizeMessage(String invalidMinSizeMessage)
+    {
+        this.invalidMinSizeMessage = invalidMinSizeMessage;
+    }
+
+    public String getInvalidMaxSizeMessage()
+    {
+        return invalidMaxSizeMessage;
+    }
+
+    public void setInvalidMaxSizeMessage(String invalidMaxSizeMessage)
+    {
+        this.invalidMaxSizeMessage = invalidMaxSizeMessage;
+    }
+
+    public String getInvalidBetweenSizeMessage()
+    {
+        return invalidBetweenSizeMessage;
+    }
+
+    public void setInvalidBetweenSizeMessage(String invalidBetweenSizeMessage)
+    {
+        this.invalidBetweenSizeMessage = invalidBetweenSizeMessage;
+    }
+
+    public String getInvalidPatternMessage()
+    {
+        return invalidPatternMessage;
+    }
+
+    public void setInvalidPatternMessage(String invalidPatternMessage)
+    {
+        this.invalidPatternMessage = invalidPatternMessage;
+    }
+    //</editor-fold>
 }

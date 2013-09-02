@@ -3,6 +3,7 @@ package com.tradehero.th.widget;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
+import android.util.Base64;
 import android.view.View;
 import com.tradehero.th.R;
 
@@ -11,6 +12,7 @@ public class ServerValidatedText extends SelfValidatedText
 {
     private int progressIndicatorId;
     private boolean requesting;
+    private View progressIndicator;
 
     //<editor-fold desc="Constructors">
     public ServerValidatedText(Context context)
@@ -43,7 +45,7 @@ public class ServerValidatedText extends SelfValidatedText
         this.requesting = requesting;
         if (progressIndicatorId != 0)
         {
-            View progressIndicator = getRootView().findViewById(progressIndicatorId);
+            View progressIndicator = getProgressIndicator();
             if (progressIndicator != null)
             {
                 hintValidStatusRight();
@@ -63,4 +65,29 @@ public class ServerValidatedText extends SelfValidatedText
             super.hintValidStatusRight();
         }
     }
+
+    //<editor-fold desc="Accessors">
+    public void setProgressIndicatorId(int progressIndicatorId)
+    {
+        if (this.progressIndicator == null || this.progressIndicator.getId() != progressIndicatorId)
+        {
+            setProgressIndicator(getRootView().findViewById(progressIndicatorId));
+        }
+    }
+
+    public View getProgressIndicator()
+    {
+        if (progressIndicatorId != 0)
+        {
+            setProgressIndicatorId(progressIndicatorId);
+        }
+        return progressIndicator;
+    }
+
+    public void setProgressIndicator(View progressIndicator)
+    {
+        this.progressIndicator = progressIndicator;
+        this.progressIndicatorId = progressIndicator == null ? 0 : progressIndicator.getId();
+    }
+    //</editor-fold>
 }
