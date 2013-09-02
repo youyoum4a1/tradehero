@@ -73,8 +73,8 @@ public class AuthenticationActivity extends SherlockFragmentActivity
     /** map view and the next fragment, which is appears when click on that view */
     private void setupViewFragmentMapping()
     {
-        mapViewFragment.put(R.id.authentication_sign_up_button, SignUpFragment.class);
-        mapViewFragment.put(R.id.authentication_sign_in_button, SignInFragment.class);
+        mapViewFragment.put(R.id.authentication_by_sign_up_button, SignUpFragment.class);
+        mapViewFragment.put(R.id.authentication_by_sign_in_button, SignInFragment.class);
         mapViewFragment.put(R.id.authentication_email_sign_in_link, EmailSignInFragment.class);
         mapViewFragment.put(R.id.authentication_email_sign_up_link, EmailSignUpFragment.class);
     }

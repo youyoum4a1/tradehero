@@ -16,9 +16,9 @@ public class WelcomeFragment extends AuthenticationFragment
     {
         View view = inflater.inflate(R.layout.authentication_welcome_screen, container, false);
 
-        view.findViewById(R.id.authentication_sign_up_button).setOnClickListener(onClickListener);
-        view.findViewById(R.id.authentication_sign_in_button).setOnClickListener(onClickListener);
-        view.findViewById(R.id.authentication_sign_in_button).startAnimation(
+        view.findViewById(R.id.authentication_by_sign_up_button).setOnClickListener(onClickListener);
+        view.findViewById(R.id.authentication_by_sign_in_button).setOnClickListener(onClickListener);
+        view.findViewById(R.id.authentication_by_sign_in_button).startAnimation(
                 AnimationUtils.loadAnimation(getActivity(), R.anim.fade_in));
 
         getSherlockActivity().getSupportActionBar().hide();
