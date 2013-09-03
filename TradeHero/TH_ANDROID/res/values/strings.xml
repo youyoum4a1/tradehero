@@ -78,7 +78,7 @@
   <string name="share_on">Share on</string>
   <string name="public_str">Public</string>
   <!-- alert message -->
-  <string name="authentication_forgot_password_ask_for_email">Please enter your email address:</string>
+  <string name="ask_for_email">Please enter your email address:</string>
   <string name="thank_you_message_email">Thank You ! Please follow your mail box</string>
   <string name="twitter_login_message">Already Logged into twitter !</string>
   <string name="thank_you_message">Thank You !</string>
