@@ -8,13 +8,17 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.TextView;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.form.ForgotPasswordFormDTO;
+import com.tradehero.th.api.form.UserFormFactory;
 import com.tradehero.th.api.users.ForgotPasswordDTO;
 import com.tradehero.th.application.App;
 import com.tradehero.th.auth.AuthenticationMode;
+import com.tradehero.th.auth.EmailAuthenticationProvider;
 import com.tradehero.th.base.Application;
 import com.tradehero.th.http.RequestTaskCompleteListener;
 import com.tradehero.th.misc.callback.THCallback;
@@ -23,40 +27,59 @@ import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.ProfileDTO;
 import com.tradehero.th.network.NetworkEngine;
 import com.tradehero.th.network.service.UserService;
+import com.tradehero.th.networkstatus.NetworkStatus;
 import com.tradehero.th.utills.Logger;
 import com.tradehero.th.utills.Logger.LogLevel;
 import com.tradehero.th.utills.PUtills;
 import com.tradehero.th.utills.Util;
+import com.tradehero.th.widget.SelfValidatedText;
 import com.tradehero.th.widget.ServerValidatedEmailText;
+import com.tradehero.th.widget.ValidatedPasswordText;
+import com.tradehero.th.widget.ValidationListener;
+import com.tradehero.th.widget.ValidationMessage;
+import java.util.HashMap;
+import java.util.Map;
+import org.json.JSONException;
 import org.json.JSONObject;
 
-public class EmailSignInFragment extends AuthenticationFragment
-        implements View.OnClickListener, RequestTaskCompleteListener
+public class EmailSignInFragment extends EmailSignInOrUpFragment implements RequestTaskCompleteListener
 {
-
+    private SelfValidatedText email;
+    private ValidatedPasswordText password;
+    private Button signButton;
+    private TextView forgotPasswordLink;
     private final static String TAG = EmailSignInFragment.class.getName();
     private ProgressDialog mProgressDialog;
     private View forgotDialogView;
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-            Bundle savedInstanceState)
+    @Override protected View inflateView (LayoutInflater inflater, ViewGroup container)
     {
-        //View view = null;
-        View view = inflater.inflate(R.layout.authentication_email_sign_in, container, false);
+        return inflater.inflate(R.layout.authentication_email_sign_in, container, false);
+    }
+    @Override protected void initSetup(View view)
+    {
+        email = (SelfValidatedText) view.findViewById(R.id.authentication_sign_in_email);
+        email.addListener(this);
 
-        view.findViewById(R.id.authentication_sign_in_email).setOnClickListener(onClickListener);
-        view.findViewById(R.id.authentication_sign_in_forgot_password).setOnClickListener(this);
+        password = (ValidatedPasswordText) view.findViewById(R.id.et_pwd_login);
+        password.addListener(this);
 
-        return view;
+        signButton = (Button) view.findViewById(R.id.btn_login);
+        signButton.setOnClickListener(this);
+
+        forgotPasswordLink = (TextView) view.findViewById(R.id.authentication_sign_in_forgot_password);
+        forgotPasswordLink.setOnClickListener(this);
     }
 
     @Override
-    public void onClick(View v)
+    public void onClick(View view)
     {
-
-        switch (v.getId())
+        switch (view.getId())
         {
+            case R.id.btn_login:
+                handleSignInOrUpButtonClicked(view);
+                break;
+
             case R.id.authentication_sign_in_forgot_password:
                 showForgotPasswordUI();
                 break;
@@ -64,6 +87,25 @@ public class EmailSignInFragment extends AuthenticationFragment
             default:
                 break;
         }
+    }
+
+    @Override protected void forceValidateFields ()
+    {
+        email.forceValidate();
+        password.forceValidate();
+    }
+
+    @Override public boolean areFieldsValid ()
+    {
+        return email.isValid() && password.isValid();
+    }
+
+    @Override protected Map<String, Object> getUserFormMap ()
+    {
+        Map<String, Object> map = super.getUserFormMap();
+        map.put(UserFormFactory.KEY_EMAIL, email.getText());
+        map.put(UserFormFactory.KEY_PASSWORD, password.getText());
+        return map;
     }
 
     private void showForgotPasswordUI()
@@ -74,7 +116,7 @@ public class EmailSignInFragment extends AuthenticationFragment
             forgotDialogView = inflater.inflate(R.layout.forgot_password_dialog, (ViewGroup)getView(), false);
         }
 
-        String message = getActivity().getString(R.string.authentication_forgot_password_ask_for_email);
+        String message = getActivity().getString(R.string.ask_for_email);
         final AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
         dialog.setMessage(message)
                 .setView(forgotDialogView)

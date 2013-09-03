@@ -114,17 +114,19 @@ public class SelfValidatedText extends ValidatedText
         }
     }
 
-    @Override protected void hintValidStatus()
+    @Override public boolean needsToHintValidStatus()
     {
-        if (hasHadInteraction)
-        {
-            super.hintValidStatus();
-        }
+        return hasHadInteraction;
+    }
+
+    public boolean needsToValidate()
+    {
+        return hasHadInteraction;
     }
 
     protected void conditionalValidation()
     {
-        if (hasHadInteraction)
+        if (needsToValidate())
         {
             setValid(validate());
         }
@@ -157,6 +159,13 @@ public class SelfValidatedText extends ValidatedText
             return true;
         }
         return validatePattern.matcher(getText()).matches();
+    }
+
+    @Override public void forceValidate()
+    {
+        hasHadInteraction = true;
+        conditionalValidation();
+        super.forceValidate();
     }
 
     @Override public ValidationMessage getCurrentValidationMessage()

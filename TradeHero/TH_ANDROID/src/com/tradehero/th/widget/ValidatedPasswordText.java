@@ -23,22 +23,4 @@ public class ValidatedPasswordText extends SelfValidatedText
         super(context, attrs, defStyle);
     }
     //</editor-fold>
-
-    @Override protected void onTextChanged(CharSequence text, int start, int lengthBefore, int lengthAfter)
-    {
-        super.onTextChanged(text, start, lengthBefore, lengthAfter);
-    }
-
-    public boolean needsConfirmFailNotification ()
-    {
-        return hasHadInteraction && !validate();
-    }
-
-    @Override protected void conditionalValidation()
-    {
-        if (needsConfirmFailNotification ())
-        {
-            super.conditionalValidation();
-        }
-    }
 }

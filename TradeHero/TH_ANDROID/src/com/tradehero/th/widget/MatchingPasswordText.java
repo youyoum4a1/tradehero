@@ -36,6 +36,7 @@ public class MatchingPasswordText extends ValidatedPasswordText
         }
     };
 
+    //<editor-fold desc="Constructors">
     public MatchingPasswordText(Context context)
     {
         super(context);
@@ -50,6 +51,7 @@ public class MatchingPasswordText extends ValidatedPasswordText
     {
         super(context, attrs, defStyle);
     }
+    //</editor-fold>
 
     @Override protected void init(Context context, AttributeSet attrs)
     {
@@ -57,14 +59,6 @@ public class MatchingPasswordText extends ValidatedPasswordText
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.MatchingPasswordText);
         targetId = a.getResourceId(R.styleable.MatchingPasswordText_matchWith, 0);
         a.recycle();
-
-        validateRunnable = new Runnable()
-        {
-            @Override public void run()
-            {
-                conditionalValidation();
-            }
-        };
     }
 
     @Override protected boolean validate()
@@ -94,39 +88,42 @@ public class MatchingPasswordText extends ValidatedPasswordText
 
     private void associateTargetIfNone()
     {
+        if (target != null)
+        {
+            return;
+        }
+
+        if (targetId == 0)
+        {
+            throw new IllegalArgumentException("TargetId cannot be 0. MatchWith attribute needs to be set.");
+        }
+
+        target = (ValidatedPasswordText) getRootView().findViewById(targetId);
         if (target == null)
         {
-            if (targetId == 0)
-            {
-                throw new IllegalArgumentException("TargetId cannot be 0. MatchWith attribute needs to be set.");
-            }
-
-            target = (ValidatedPasswordText) getRootView().findViewById(targetId);
-            if (target != null)
-            {
-                // We want to know when the original password no longer matches the confirmation one.
-                target.addTextChangedListener(targetWatcher);
-            }
-            else
-            {
-                throw new IllegalArgumentException("TargetId was not found. MatchWith attribute needs to be set.");
-            }
+            throw new IllegalArgumentException("TargetId was not found. MatchWith attribute needs to be set.");
         }
+
+        // We want to know when the original password no longer matches the confirmation one.
+        target.addTextChangedListener(targetWatcher);
     }
 
-    @Override public boolean needsConfirmFailNotification ()
+    @Override public boolean needsToNotifyListeners()
     {
         associateTargetIfNone();
-        return hasHadInteraction && super.validate() && target.validate() && !matchesWithTarget();
+        return super.needsToNotifyListeners() && target.validate() && !validate();
     }
 
     @Override public ValidationMessage getCurrentValidationMessage()
     {
-        if (needsConfirmFailNotification())
-        {
-            return new ValidationMessage(this, false, getContext().getString(R.string.password_validation_confirm_fail_string));
-        }
-        return super.getCurrentValidationMessage();
+        return new ValidationMessage(this, false, getContext().getString(R.string.password_validation_confirm_fail_string));
+    }
+
+    @Override public void forceValidate()
+    {
+        hasHadInteraction = true;
+        setValid(validate());
+        super.forceValidate();
     }
 
     //<editor-fold desc="Accessors">

@@ -62,11 +62,11 @@ public class ValidatedText extends EditText implements ValidatedView, View.OnFoc
         return valid;
     }
 
-    protected void setValid(boolean isValidated)
+    public void setValid(boolean isValid)
     {
-        this.valid = isValidated;
-        notifyListeners();
-        hintValidStatus();
+        this.valid = isValid;
+        conditionalNotifyListeners();
+        conditionalHintValidStatus();
     }
 
     public Drawable getDefaultDrawableRight()
@@ -77,13 +77,26 @@ public class ValidatedText extends EditText implements ValidatedView, View.OnFoc
 
     @Override public void onFocusChange(View view, boolean hasFocus)
     {
-        hintValidStatus();
+        conditionalHintValidStatus();
     }
 
     //<editor-fold desc="Change look">
     protected void hintDefaultStatus ()
     {
         setCompoundDrawables(defaultDrawable, null, defaultDrawableRight, null);
+    }
+
+    private void conditionalHintValidStatus ()
+    {
+        if (needsToHintValidStatus())
+        {
+            hintValidStatus();
+        }
+    }
+
+    public boolean needsToHintValidStatus ()
+    {
+        return true;
     }
 
     protected void hintValidStatus ()
@@ -151,11 +164,25 @@ public class ValidatedText extends EditText implements ValidatedView, View.OnFoc
         listeners.clear();
     }
 
-    private void notifyListeners()
+    protected void conditionalNotifyListeners ()
     {
+        if (needsToNotifyListeners())
+        {
+            notifyListeners();
+        }
+    }
+
+    public boolean needsToNotifyListeners ()
+    {
+        return true;
+    }
+
+    protected void notifyListeners()
+    {
+        ValidationMessage currentValidationMessage = getCurrentValidationMessage();
         for (ValidationListener listener: listeners)
         {
-            listener.notifyValidation(getCurrentValidationMessage());
+            listener.notifyValidation(currentValidationMessage);
         }
     }
 

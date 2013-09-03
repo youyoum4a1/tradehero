@@ -11,31 +11,19 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.text.Editable;
-import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.View.OnFocusChangeListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.TextView;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
-import com.tradehero.th.activities.DashboardActivity;
-import com.tradehero.th.application.App;
+import com.tradehero.th.api.form.UserFormFactory;
 import com.tradehero.th.auth.AuthenticationMode;
-import com.tradehero.th.http.HttpRequestTask;
-import com.tradehero.th.http.RequestFactory;
-import com.tradehero.th.http.RequestTaskCompleteListener;
-import com.tradehero.th.models.ProfileDTO;
-import com.tradehero.th.models.Request;
+import com.tradehero.th.auth.EmailAuthenticationProvider;
 import com.tradehero.th.networkstatus.NetworkStatus;
-import com.tradehero.th.utills.Constants;
-import com.tradehero.th.utills.PUtills;
 import com.tradehero.th.utills.PostData;
 import com.tradehero.th.utills.Util;
 import com.tradehero.th.widget.MatchingPasswordText;
@@ -43,24 +31,20 @@ import com.tradehero.th.widget.ServerValidatedEmailText;
 import com.tradehero.th.widget.ServerValidatedUsernameText;
 import com.tradehero.th.widget.ValidatedPasswordText;
 import com.tradehero.th.widget.ValidationListener;
-import com.tradehero.th.widget.ValidationMessage;
-import java.net.URLEncoder;
+import java.util.HashMap;
+import java.util.Map;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class EmailSignUpFragment extends AuthenticationFragment
-        implements OnClickListener, RequestTaskCompleteListener, OnFocusChangeListener, ValidationListener
+public class EmailSignUpFragment extends EmailSignInOrUpFragment
 {
     private ServerValidatedEmailText email;
     private ValidatedPasswordText password;
     private MatchingPasswordText confirmPassword;
     private ServerValidatedUsernameText displayName;
     private EditText firstName, lastName;
-    private Button signUpButton;
 
     private ProgressDialog mProgressDialog;
-    //private ImageView imgValidPwd,
-    //        imgValidvConfirmPwd, imgValidDisplyName;
     private int mWhichEdittext = 0;
     private CharSequence mText;
     private ImageView mOptionalImage;
@@ -71,21 +55,12 @@ public class EmailSignUpFragment extends AuthenticationFragment
     private Context mContext;
     private static final int REQUEST_GALLERY = 111;
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    @Override protected View inflateView (LayoutInflater inflater, ViewGroup container)
     {
-        View view = inflater.inflate(R.layout.authentication_email_sign_up, container, false);
-
-        initSetup(view);
-
-        email.addListener(this);
-        displayName.addListener(this);
-
-        return view;
-
+        return inflater.inflate(R.layout.authentication_email_sign_up, container, false);
     }
 
-    private void initSetup(View view)
+    @Override protected void initSetup(View view)
     {
         email = (ServerValidatedEmailText) view.findViewById(R.id.authentication_sign_up_email);
         email.addListener(this);
@@ -102,21 +77,13 @@ public class EmailSignUpFragment extends AuthenticationFragment
         firstName = (EditText) view.findViewById(R.id.et_firstname);
         lastName = (EditText) view.findViewById(R.id.et_lastname);
 
-        signUpButton = (Button) view.findViewById(R.id.authentication_sign_up_button);
-        signUpButton.setOnClickListener(this);
+        signButton = (Button) view.findViewById(R.id.authentication_sign_up_button);
+        signButton.setOnClickListener(this);
 
         //signupButton.setOnTouchListener(this);
         //mOptionalImage = (ImageView) view.findViewById(R.id.image_optional);
         //mOptionalImage.setOnClickListener(this);
         //mOptionalImage.setOnTouchListener(this);
-    }
-
-    @Override public void notifyValidation(ValidationMessage message)
-    {
-        if (message != null && !message.getStatus() && message.getMessage() != null)
-        {
-            THToast.show(message.getMessage());
-        }
     }
 
     @Override
@@ -125,7 +92,7 @@ public class EmailSignUpFragment extends AuthenticationFragment
         switch (view.getId())
         {
             case R.id.authentication_sign_up_button:
-                handleSignUpButtonClicked(view);
+                handleSignInOrUpButtonClicked(view);
                 break;
             case R.id.image_optional:
                 Intent intent = new Intent(Intent.ACTION_PICK);
@@ -135,134 +102,30 @@ public class EmailSignUpFragment extends AuthenticationFragment
         }
     }
 
-    private void handleSignUpButtonClicked (View view)
+    @Override protected void forceValidateFields ()
     {
-        Util.dismissKeyBoard(getActivity(), view);
-
-        try
-        {
-            if (!NetworkStatus.getInstance().isConnected(getActivity()))
-
-            {
-                Util.show_toast(getActivity(), getResources().getString(R.string.network_error));
-            }
-            else if (!areFieldsValid ())
-            {
-                THToast.show(R.string.validation_please_correct);
-            }
-            else
-            {
-                _handle_registration();
-            }
-        }
-        catch (JSONException e)
-        {
-            e.printStackTrace();
-        }
+        email.forceValidate();
+        password.forceValidate();
+        confirmPassword.forceValidate();
+        displayName.forceValidate();
     }
 
-    public boolean areFieldsValid ()
+    @Override public boolean areFieldsValid ()
     {
         return email.isValid() && password.isValid() && confirmPassword.isValid() && displayName.isValid();
     }
 
-    private void _handle_registration() throws JSONException
+    @Override protected Map<String, Object> getUserFormMap ()
     {
-
-        String lEmail = email.getText() != null ? email.getText().toString() : "";
-        String lDName = displayName.getText() != null ? displayName.getText().toString() : "";
-        String lFName = firstName.getText() != null ? firstName.getText().toString() : "";
-        String lLName = lastName.getText() != null ? lastName.getText().toString() : "";
-        String lPassword = password.getText() != null ? password.getText().toString() : "";
-        String lConfirmPassword =
-                confirmPassword.getText() != null ? confirmPassword.getText().toString() : "";
-        boolean processRequest = true;
-
-        if (TextUtils.isEmpty(lEmail) || TextUtils.isEmpty(lPassword) || TextUtils.isEmpty(lDName))
-        {
-            processRequest = false;
-            //Util.showDIlog(getActivity(),getResources().getString(R.string.field_not_balnk));
-            Util.show_toast(getActivity(), getResources().getString(R.string.field_not_balnk));
-        }
-        else if (!Util.email_valid.matcher(lEmail).matches())
-        {
-            processRequest = false;
-            Util.show_toast(getActivity(),
-                    getResources().getString(R.string.email_validation_string));
-        }
-        else if (lPassword.length() < 6)
-        {
-            processRequest = false;
-            Util.show_toast(getActivity(),
-                    getResources().getString(R.string.password_validation_string));
-        }
-        else if (!lPassword.equals(lConfirmPassword))
-        {
-            processRequest = false;
-            Util.show_toast(getActivity(),
-                    getResources().getString(R.string.password_validation_string));
-        }
-
-		/*if(processRequest)
-        {
-			new Imageupload().execute(lDName,lEmail,lFName,lLName,lPassword,lConfirmPassword);
-		}
-*/
-
-        if (processRequest)
-        {
-            HttpRequestTask mRequestTask = new HttpRequestTask(this);
-            RequestFactory mRF = new RequestFactory();
-            @SuppressWarnings("deprecation")
-            Request[] lRequests =
-                    {mRF.getRegistrationThroughEmailRequest(mContext, lEmail, lDName, lFName,
-                            lLName, lPassword, lConfirmPassword)};
-            mRequestTask.execute(lRequests);
-            mProgressDialog.show();
-        }
-    }
-
-    @Override
-    public void onTaskComplete(JSONObject pResponseObject)
-    {
-        mProgressDialog.dismiss();
-        if (pResponseObject != null)
-        {
-
-            System.out.println("result response----" + pResponseObject.toString());
-
-            try
-            {
-
-                if (pResponseObject.has("Message"))
-                {
-                    String msg = pResponseObject.getString("Message");
-                    Util.CustomToast(getActivity(), msg);
-                }
-                else
-                {
-                    Util.show_toast(getActivity(), pResponseObject.toString());
-
-                    //	JSONObject obj = pResponseObject.getJSONObject("profileDTO");
-
-                    ProfileDTO prof = new PUtills(getActivity())._parseJson(pResponseObject);
-
-                    ((App) getActivity().getApplication()).setProfileDTO(prof);
-                    startActivity(new Intent(getActivity(), DashboardActivity.class));
-                    getActivity().finish();
-                }
-            }
-            catch (JSONException e)
-            {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    @Override
-    public void onErrorOccured(int pErrorCode, String pErrorMessage)
-    {
-
+        Map<String, Object> map = super.getUserFormMap();
+        map.put(UserFormFactory.KEY_EMAIL, email.getText());
+        map.put(UserFormFactory.KEY_PASSWORD, password.getText());
+        map.put(UserFormFactory.KEY_PASSWORD_CONFIRM, confirmPassword.getText());
+        map.put(UserFormFactory.KEY_DISPLAY_NAME, displayName.getText());
+        map.put(UserFormFactory.KEY_FIRST_NAME, firstName.getText());
+        map.put(UserFormFactory.KEY_LAST_NAME, lastName.getText());
+        // TODO add profile picture
+        return map;
     }
 
     @Override
@@ -321,7 +184,6 @@ public class EmailSignUpFragment extends AuthenticationFragment
 
     public String getPath(Uri uri)
     {
-
         String[] projection = {MediaStore.Images.Media.DATA};
         Cursor cursor = getActivity().managedQuery(uri, projection, null, null, null);
         int column_index = cursor
@@ -330,327 +192,10 @@ public class EmailSignUpFragment extends AuthenticationFragment
         return cursor.getString(column_index);
     }
 
-    //reset of every field
-
-    private void _resetField()
-    {
-        email.setText("");
-        password.setText("");
-        confirmPassword.setText("");
-        displayName.setText("");
-        firstName.setText("");
-        lastName.setText("");
-    }
-
     @Override
-    public AuthenticationMode getAuthenticationMode() {
+    public AuthenticationMode getAuthenticationMode()
+    {
         return AuthenticationMode.SignUp;
-    }
-
-    private class CheckValidation extends AsyncTask<String, Void, Boolean>
-    {
-
-        @Override
-        protected void onPreExecute()
-        {
-            super.onPreExecute();
-
-            if (mWhichEdittext == 1)
-            {
-                emailValidationPrework();
-            }
-            else if (mWhichEdittext == 2)
-            {
-                confirmPwdValidationPrework();
-            }
-            else if (mWhichEdittext == 3)
-            {
-                nameDisplayPrework();
-            }
-        }
-
-        @Override
-        protected Boolean doInBackground(String... arg0)
-        {
-
-            boolean mReturn = false;
-            if (mWhichEdittext == 1)
-            {
-
-                mReturn = emailValidationChecker(mText);
-            }
-            else if (mWhichEdittext == 2)
-            {
-                mReturn = confirmPwdValidationChecker();
-            }
-            else if (mWhichEdittext == 3)
-            {
-
-                mReturn = displayName_ValidationChecker(mText);
-            }
-            return mReturn;
-        }
-
-        @Override
-        protected void onPostExecute(Boolean result)
-        {
-            super.onPostExecute(result);
-
-            if (mWhichEdittext == 1)
-            {
-                emailValidationPostwork(result);
-            }
-            else if (mWhichEdittext == 2)
-            {
-                confirmPwdValidationPostwork(result);
-            }
-            else if (mWhichEdittext == 3)
-            {
-                nameDisplayPostwork(result);
-            }
-        }
-    }
-
-    private boolean displayName_ValidationChecker(CharSequence text)
-    {
-
-        String response = Util.httpGetConnection(
-                Constants.CHECK_NAME_URL + URLEncoder.encode(text.toString()));
-        System.out.println("disply name chk url ======" + Constants.CHECK_NAME_URL + text);
-
-        if (response != null)
-        {
-
-            try
-            {
-                JSONObject jsonObj = new JSONObject(response);
-                boolean result = jsonObj.getString("available").equals("true");
-                if (result)
-                {
-                    try
-                    {
-                        Thread.sleep(500);
-                    }
-                    catch (InterruptedException e)
-                    {
-                        e.printStackTrace();
-                    }
-                    return true;
-                }
-                else
-                {
-                    try
-                    {
-                        Thread.sleep(500);
-                    }
-                    catch (InterruptedException e)
-                    {
-                        e.printStackTrace();
-                    }
-
-                    return false;
-                }
-            }
-            catch (JSONException e)
-            {
-                e.printStackTrace();
-            }
-        }
-        return false;
-    }
-
-    private boolean emailValidationChecker(CharSequence text)
-    {
-
-        if (Util.email_valid.matcher(text).matches())
-        {
-            try
-            {
-                Thread.sleep(500);
-            }
-            catch (InterruptedException e)
-            {
-                e.printStackTrace();
-            }
-            return true;
-        }
-        else
-        {
-            try
-            {
-                Thread.sleep(500);
-            }
-            catch (InterruptedException e)
-            {
-                e.printStackTrace();
-            }
-
-            return false;
-        }
-    }
-    private void emailValidationPostwork(boolean result)
-    {
-        if (result)
-        {
-
-            //imgValidEMail.setVisibility(View.VISIBLE);
-            //imgInValidEmail.setVisibility(View.INVISIBLE);
-        }
-        else
-        {
-            //imgInValidEmail.setVisibility(View.VISIBLE);
-            //imgValidEMail.setVisibility(View.INVISIBLE);
-        }
-    }
-
-    private void emailValidationPrework()
-    {
-        //imgInValidEmail.setVisibility(View.INVISIBLE);
-        //imgValidEMail.setVisibility(View.INVISIBLE);
-    }
-
-    private void nameDisplayPostwork(boolean result)
-    {
-        if (result)
-        {
-
-            //imgInvalidDisplyName.setVisibility(View.VISIBLE);
-            //imgValidDisplyName.setVisibility(View.INVISIBLE);
-        }
-        else
-        {
-
-            //imgValidDisplyName.setVisibility(View.VISIBLE);
-            //imgInvalidDisplyName.setVisibility(View.INVISIBLE);
-        }
-    }
-
-    private void nameDisplayPrework()
-    {
-        //imgInvalidDisplyName.setVisibility(View.INVISIBLE);
-        //imgValidDisplyName.setVisibility(View.INVISIBLE);
-    }
-
-    private boolean confirmPwdValidationChecker()
-    {
-
-        if (password.getText().toString().equals(confirmPassword.getText().toString())
-                && password.getText().toString().length() > 0)
-        {
-            try
-            {
-                Thread.sleep(500);
-            }
-            catch (InterruptedException e)
-            {
-                e.printStackTrace();
-            }
-            return true;
-        }
-        else
-        {
-            try
-            {
-                Thread.sleep(500);
-            }
-            catch (InterruptedException e)
-            {
-                e.printStackTrace();
-            }
-
-            return false;
-        }
-    }
-
-    private void confirmPwdValidationPostwork(boolean result)
-    {
-        if (result)
-        {
-
-            //imgValidvConfirmPwd.setVisibility(View.VISIBLE);
-            //imgInValidConfirmPassword.setVisibility(View.INVISIBLE);
-        }
-        else
-        {
-
-            //imgInValidConfirmPassword.setVisibility(View.VISIBLE);
-            //imgValidvConfirmPwd.setVisibility(View.INVISIBLE);
-        }
-    }
-
-    private void confirmPwdValidationPrework()
-    {
-        //imgValidvConfirmPwd.setVisibility(View.INVISIBLE);
-        //imgInValidConfirmPassword.setVisibility(View.INVISIBLE);
-    }
-
-    @Override
-    public void onFocusChange(View arg0, boolean arg1)
-    {
-        switch (arg0.getId())
-        {
-            case R.id.authentication_sign_up_email:
-                if (TextUtils.isEmpty(displayName.getText().toString()) || TextUtils.isEmpty(
-                        password.getText().toString()) || TextUtils.isEmpty(
-                        confirmPassword.getText().toString()))
-                {
-                    //signupButton.setBackgroundResource(R.drawable.rectangle_login);
-                }
-                else
-                {
-                    //signupButton.setBackgroundResource(R.drawable.authentication_sign_in_button_xml);
-                }
-                mWhichEdittext = 1;
-
-                break;
-            case R.id.authentication_sign_up_confirm_password:
-                if (TextUtils.isEmpty(email.getText().toString()) || TextUtils.isEmpty(
-                        password.getText().toString()) || TextUtils.isEmpty(
-                        displayName.getText().toString()))
-                {
-                    ////signupButton.setBackgroundResource(R.drawable.rectangle_login);
-                }
-                else
-                {
-                    ////signupButton.setBackgroundResource(R.drawable.authentication_sign_in_button_xml);
-                }
-                mWhichEdittext = 2;
-
-                break;
-
-            case R.id.authentication_sign_up_password:
-                if (TextUtils.isEmpty(email.getText().toString()) || TextUtils.isEmpty(
-                        displayName.getText().toString()) || TextUtils.isEmpty(
-                        confirmPassword.getText().toString()))
-                {
-                    ////signupButton.setBackgroundResource(R.drawable.rectangle_login);
-                }
-                else
-                {
-                    ////signupButton.setBackgroundResource(R.drawable.authentication_sign_in_button_xml);
-                }
-                mWhichEdittext = 2;
-                break;
-
-            case R.id.authentication_sign_up_username:
-                mWhichEdittext = 3;
-
-                if (TextUtils.isEmpty(email.getText().toString()) || TextUtils.isEmpty(
-                        password.getText().toString()) || TextUtils.isEmpty(
-                        confirmPassword.getText().toString()))
-                {
-                    //signupButton.setBackgroundResource(R.drawable.rectangle_login);
-                }
-                else
-                {
-                    //signupButton.setBackgroundResource(R.drawable.authentication_sign_in_button_xml);
-                }
-
-                break;
-
-            default:
-                break;
-        }
     }
 
 	/*@Override
@@ -748,39 +293,6 @@ public class EmailSignUpFragment extends AuthenticationFragment
             Util.show_toast(getActivity(), result);
             System.out.println("response for image upload----------" + result);
             dlg.dismiss();
-        }
-    }
-
-    private class EmptyValidator implements TextWatcher
-    {
-        TextView textView = null;
-
-        public EmptyValidator(TextView textView)
-        {
-            this.textView = textView;
-        }
-
-        @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count)
-        {
-
-            if (TextUtils.isEmpty(s))
-            {
-                //signupButton.setBackgroundResource(R.drawable.rectangle_login);
-            }
-
-            mText = s;
-            new CheckValidation().execute();
-        }
-
-        @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after)
-        {
-        }
-
-        @Override
-        public void afterTextChanged(Editable s)
-        {
         }
     }
 }

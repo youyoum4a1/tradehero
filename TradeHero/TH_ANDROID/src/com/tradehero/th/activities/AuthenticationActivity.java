@@ -14,6 +14,7 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.application.App;
+import com.tradehero.th.auth.AuthenticationMode;
 import com.tradehero.th.base.Application;
 import com.tradehero.th.base.THUser;
 import com.tradehero.th.fragments.authentication.AuthenticationFragment;
@@ -122,6 +123,11 @@ public class AuthenticationActivity extends SherlockFragmentActivity
 
         switch (view.getId())
         {
+            case R.id.authentication_sign_up_button:
+            case R.id.btn_login:
+                authenticateWithEmail();
+                break;
+
             case R.id.btn_facebook_signin:
                 authenticateWithFacebook();
                 break;
@@ -158,6 +164,36 @@ public class AuthenticationActivity extends SherlockFragmentActivity
                 .commit();
     }
 
+    private void authenticateWithEmail()
+    {
+        if (currentFragment instanceof EmailSignUpFragment)
+        {
+            THUser.setAuthenticationMode(((AuthenticationFragment)currentFragment).getAuthenticationMode());
+            THUser.logInAsyncWithJson(((EmailSignUpFragment) currentFragment).getUserFormJSON(), createCallbackForEmailSign(true));
+        }
+        else if (currentFragment instanceof EmailSignInFragment)
+        {
+            THUser.setAuthenticationMode(((AuthenticationFragment)currentFragment).getAuthenticationMode());
+            THUser.logInAsyncWithJson(((EmailSignInFragment) currentFragment).getUserFormJSON(), createCallbackForEmailSign(true));
+        }
+        else
+        {
+            throw new IllegalArgumentException("Expected an EmailSignUpFragment or EmailSignInFragment");
+        }
+    }
+
+    private LogInCallback createCallbackForEmailSign(final boolean isSigningUp)
+    {
+        return new SocialAuthenticationCallback("Email")
+        {
+            private boolean signingUp = isSigningUp;
+            @Override public boolean isSigningUp()
+            {
+                return signingUp;
+            }
+        };
+    }
+
     //<editor-fold desc="Authenticate with Facebook/Twitter/LinkedIn">
     private void authenticateWithLinkedIn()
     {
@@ -177,6 +213,41 @@ public class AuthenticationActivity extends SherlockFragmentActivity
                 Application.getResourceString(R.string.connecting_to_facebook),
                 true);
         FacebookUtils.logIn(this, new SocialAuthenticationCallback("Facebook"));
+    }
+
+    private void authenticateWithTwitter()
+    {
+        progressDialog = ProgressDialog.show(
+                AuthenticationActivity.this,
+                Application.getResourceString(R.string.please_wait),
+                Application.getResourceString(R.string.connecting_to_twitter),
+                true);
+        TwitterUtils.logIn(this, createTwitterAuthenticationCallback());
+    }
+
+    private SocialAuthenticationCallback createTwitterAuthenticationCallback ()
+    {
+        return new SocialAuthenticationCallback("Twitter")
+        {
+            @Override public boolean isSigningUp()
+            {
+                return currentFragment != FragmentFactory.getInstance(SignInFragment.class);
+            }
+
+            @Override public boolean onSocialAuthDone(JSONObject json)
+            {
+                if (super.onSocialAuthDone(json))
+                {
+                    return true;
+                }
+                // twitter does not return email for authentication user,
+                // we need to ask user for that
+                setTwitterData(json);
+                progressDialog.hide();
+                setCurrentFragmentByClass(TwitterEmailFragment.class);
+                return false;
+            }
+        };
     }
 
     private void complementEmailForTwitterAuthentication()
@@ -215,41 +286,6 @@ public class AuthenticationActivity extends SherlockFragmentActivity
             @Override public void onStart()
             {
                 // do nothing for now
-            }
-        };
-    }
-
-    private void authenticateWithTwitter()
-    {
-        progressDialog = ProgressDialog.show(
-                AuthenticationActivity.this,
-                Application.getResourceString(R.string.please_wait),
-                Application.getResourceString(R.string.connecting_to_twitter),
-                true);
-        TwitterUtils.logIn(this, createTwitterAuthenticationCallback());
-    }
-
-    private SocialAuthenticationCallback createTwitterAuthenticationCallback ()
-    {
-        return new SocialAuthenticationCallback("Twitter")
-        {
-            @Override public boolean isSigningUp()
-            {
-                return currentFragment != FragmentFactory.getInstance(SignInFragment.class);
-            }
-
-            @Override public boolean onSocialAuthDone(JSONObject json)
-            {
-                if (super.onSocialAuthDone(json))
-                {
-                    return true;
-                }
-                // twitter does not return email for authentication user,
-                // we need to ask user for that
-                setTwitterData(json);
-                progressDialog.hide();
-                setCurrentFragmentByClass(TwitterEmailFragment.class);
-                return false;
             }
         };
     }

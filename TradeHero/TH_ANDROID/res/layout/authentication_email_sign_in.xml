@@ -5,7 +5,7 @@
     android:orientation="vertical"
     style="@style/TradeHero.Authentication">
 
-  <EditText
+  <com.tradehero.th.widget.SelfValidatedText
       android:id="@+id/authentication_sign_in_email"
       android:layout_width="fill_parent"
       android:layout_height="wrap_content"
@@ -15,9 +15,9 @@
       android:inputType="textEmailAddress"
       style="@style/TradeHero.Authentication.EditText">
     <requestFocus/>
-  </EditText>
+  </com.tradehero.th.widget.SelfValidatedText>
 
-  <EditText
+  <com.tradehero.th.widget.ValidatedPasswordText
       android:id="@+id/et_pwd_login"
       android:layout_width="fill_parent"
       android:layout_height="wrap_content"
