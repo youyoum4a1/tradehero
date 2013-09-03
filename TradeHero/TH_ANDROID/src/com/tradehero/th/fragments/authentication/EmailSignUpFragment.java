@@ -1,17 +1,5 @@
 package com.tradehero.th.fragments.authentication;
 
-import android.widget.TextView;
-import com.tradehero.common.utils.THToast;
-import com.tradehero.th.activities.DashboardActivity;
-import com.tradehero.th.auth.AuthenticationMode;
-import com.tradehero.th.widget.ValidatedText;
-import com.tradehero.th.widget.ValidationListener;
-import com.tradehero.th.widget.ValidationMessage;
-import java.net.URLEncoder;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -23,12 +11,23 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.View.OnFocusChangeListener;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.TextView;
+import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
+import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.application.App;
+import com.tradehero.th.auth.AuthenticationMode;
 import com.tradehero.th.http.HttpRequestTask;
 import com.tradehero.th.http.RequestFactory;
 import com.tradehero.th.http.RequestTaskCompleteListener;
@@ -39,25 +38,29 @@ import com.tradehero.th.utills.Constants;
 import com.tradehero.th.utills.PUtills;
 import com.tradehero.th.utills.PostData;
 import com.tradehero.th.utills.Util;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.View.OnFocusChangeListener;
-import android.view.ViewGroup;
-import android.widget.EditText;
-import android.widget.ImageView;
+import com.tradehero.th.widget.MatchingPasswordText;
+import com.tradehero.th.widget.ServerValidatedEmailText;
+import com.tradehero.th.widget.ServerValidatedUsernameText;
+import com.tradehero.th.widget.ValidatedPasswordText;
+import com.tradehero.th.widget.ValidationListener;
+import com.tradehero.th.widget.ValidationMessage;
+import java.net.URLEncoder;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class EmailSignUpFragment extends AuthenticationFragment
         implements OnClickListener, RequestTaskCompleteListener, OnFocusChangeListener, ValidationListener
 {
+    private ServerValidatedEmailText email;
+    private ValidatedPasswordText password;
+    private MatchingPasswordText confirmPassword;
+    private ServerValidatedUsernameText displayName;
+    private EditText firstName, lastName;
+    private Button signUpButton;
 
-    private EditText email, password,
-            confirmPassword,
-            displayName, firstName,
-            lastName;
     private ProgressDialog mProgressDialog;
-    private ImageView imgValidPwd,
-            imgValidvConfirmPwd, imgValidDisplyName;
+    //private ImageView imgValidPwd,
+    //        imgValidvConfirmPwd, imgValidDisplyName;
     private int mWhichEdittext = 0;
     private CharSequence mText;
     private ImageView mOptionalImage;
@@ -68,78 +71,61 @@ public class EmailSignUpFragment extends AuthenticationFragment
     private Context mContext;
     private static final int REQUEST_GALLERY = 111;
 
-    String lEmail;
-    String lDName;
-    String lFName;
-    String lPassword;
-    String lLName;
-
-    String lConfirmPassword;
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.authentication_email_sign_up, container, false);
 
-        ValidatedText validatedEmail = (ValidatedText) view.findViewById(R.id.authentication_sign_up_email);
-        validatedEmail.addListener(this);
-
-        ValidatedText validatedUsername = (ValidatedText) view.findViewById(R.id.authentication_sign_up_username);
-        validatedUsername.addListener(this);
-
         initSetup(view);
+
+        email.addListener(this);
+        displayName.addListener(this);
+
         return view;
-    }
 
-    @Override public void notifyValidation(ValidationMessage message)
-    {
-        switch (message.getSender().getId())
-        {
-            case R.id.authentication_sign_up_email:
-            case R.id.authentication_sign_up_username:
-
-                if (message != null && message.getMessage() != null)
-                {
-                        THToast.show(message.getMessage());
-                }
-                break;
-        }
     }
 
     private void initSetup(View view)
     {
-        ////signupButton.setOnClickListener(this);
-        ////signupButton.setOnTouchListener(this);
+        email = (ServerValidatedEmailText) view.findViewById(R.id.authentication_sign_up_email);
+        email.addListener(this);
+
+        password = (ValidatedPasswordText) view.findViewById(R.id.authentication_sign_up_password);
+        password.addListener(this);
+
+        confirmPassword = (MatchingPasswordText) view.findViewById(R.id.authentication_sign_up_confirm_password);
+        confirmPassword.addListener(this);
+
+        displayName = (ServerValidatedUsernameText) view.findViewById(R.id.authentication_sign_up_username);
+        displayName.addListener(this);
+
+        firstName = (EditText) view.findViewById(R.id.et_firstname);
+        lastName = (EditText) view.findViewById(R.id.et_lastname);
+
+        signUpButton = (Button) view.findViewById(R.id.authentication_sign_up_button);
+        signUpButton.setOnClickListener(this);
+
+        //signupButton.setOnTouchListener(this);
         //mOptionalImage = (ImageView) view.findViewById(R.id.image_optional);
         //mOptionalImage.setOnClickListener(this);
         //mOptionalImage.setOnTouchListener(this);
     }
 
-    @Override
-    public void onClick(View v)
+    @Override public void notifyValidation(ValidationMessage message)
     {
-        switch (v.getId())
+        if (message != null && !message.getStatus() && message.getMessage() != null)
+        {
+            THToast.show(message.getMessage());
+        }
+    }
+
+    @Override
+    public void onClick(View view)
+    {
+        switch (view.getId())
         {
             case R.id.authentication_sign_up_button:
-                Util.dismissKeyBoard(getActivity(), v);
-
-                try
-                {
-
-                    if (NetworkStatus.getInstance().isConnected(getActivity()))
-                    {
-                        _handle_registration();
-                    }
-                    else
-                    {
-                        Util.show_toast(getActivity(),
-                                getResources().getString(R.string.network_error));
-                    }
-                }
-                catch (JSONException e)
-                {
-                    e.printStackTrace();
-                }
+                handleSignUpButtonClicked(view);
                 break;
             case R.id.image_optional:
                 Intent intent = new Intent(Intent.ACTION_PICK);
@@ -147,6 +133,37 @@ public class EmailSignUpFragment extends AuthenticationFragment
                 startActivityForResult(intent, REQUEST_GALLERY);
                 break;
         }
+    }
+
+    private void handleSignUpButtonClicked (View view)
+    {
+        Util.dismissKeyBoard(getActivity(), view);
+
+        try
+        {
+            if (!NetworkStatus.getInstance().isConnected(getActivity()))
+
+            {
+                Util.show_toast(getActivity(), getResources().getString(R.string.network_error));
+            }
+            else if (!areFieldsValid ())
+            {
+                THToast.show(R.string.validation_please_correct);
+            }
+            else
+            {
+                _handle_registration();
+            }
+        }
+        catch (JSONException e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    public boolean areFieldsValid ()
+    {
+        return email.isValid() && password.isValid() && confirmPassword.isValid() && displayName.isValid();
     }
 
     private void _handle_registration() throws JSONException
@@ -498,12 +515,12 @@ public class EmailSignUpFragment extends AuthenticationFragment
         {
 
             //imgInvalidDisplyName.setVisibility(View.VISIBLE);
-            imgValidDisplyName.setVisibility(View.INVISIBLE);
+            //imgValidDisplyName.setVisibility(View.INVISIBLE);
         }
         else
         {
 
-            imgValidDisplyName.setVisibility(View.VISIBLE);
+            //imgValidDisplyName.setVisibility(View.VISIBLE);
             //imgInvalidDisplyName.setVisibility(View.INVISIBLE);
         }
     }
@@ -511,7 +528,7 @@ public class EmailSignUpFragment extends AuthenticationFragment
     private void nameDisplayPrework()
     {
         //imgInvalidDisplyName.setVisibility(View.INVISIBLE);
-        imgValidDisplyName.setVisibility(View.INVISIBLE);
+        //imgValidDisplyName.setVisibility(View.INVISIBLE);
     }
 
     private boolean confirmPwdValidationChecker()
@@ -550,20 +567,20 @@ public class EmailSignUpFragment extends AuthenticationFragment
         if (result)
         {
 
-            imgValidvConfirmPwd.setVisibility(View.VISIBLE);
+            //imgValidvConfirmPwd.setVisibility(View.VISIBLE);
             //imgInValidConfirmPassword.setVisibility(View.INVISIBLE);
         }
         else
         {
 
             //imgInValidConfirmPassword.setVisibility(View.VISIBLE);
-            imgValidvConfirmPwd.setVisibility(View.INVISIBLE);
+            //imgValidvConfirmPwd.setVisibility(View.INVISIBLE);
         }
     }
 
     private void confirmPwdValidationPrework()
     {
-        imgValidvConfirmPwd.setVisibility(View.INVISIBLE);
+        //imgValidvConfirmPwd.setVisibility(View.INVISIBLE);
         //imgInValidConfirmPassword.setVisibility(View.INVISIBLE);
     }
 

@@ -1,5 +1,6 @@
 package com.tradehero.th.api.form;
 
+import com.tradehero.th.auth.EmailAuthenticationProvider;
 import com.tradehero.th.auth.FacebookAuthenticationProvider;
 import com.tradehero.th.auth.SocialAuthenticationProvider;
 import org.json.JSONException;
