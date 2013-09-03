@@ -36,19 +36,9 @@ public class ValidatedPasswordText extends SelfValidatedText
 
     @Override protected void conditionalValidation()
     {
-        super.conditionalValidation();
         if (needsConfirmFailNotification ())
         {
-            notifyInvalid();
-        }
-    }
-
-    protected void notifyInvalid()
-    {
-        ValidationMessage validationMessage = getCurrentValidationMessage();
-        if (validationMessage != null && validationMessage.getMessage() != null)
-        {
-            THToast.show(validationMessage.getMessage());
+            super.conditionalValidation();
         }
     }
 }
