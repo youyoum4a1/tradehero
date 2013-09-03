@@ -6,7 +6,6 @@
     android:orientation="vertical"
     style="@style/TradeHero.Authentication">
 
-
   <TextView
       android:id="@+id/authentication_sign_up_with"
       android:layout_width="wrap_content"
@@ -17,19 +16,20 @@
       android:textSize="@dimen/authentication_head_text_size"/>
 
   <include
+      android:layout_below="@id/authentication_sign_up_with"
+      android:id="@+id/authentication_social_sign_up"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      layout="@layout/authentication_social_auth"
-      android:id="@+id/authentication_social_sign_up"
       android:layout_centerHorizontal="true"
-      android:layout_below="@+id/authentication_sign_up_with"/>
+      layout="@layout/authentication_social_auth"
+      />
 
   <LinearLayout
+      android:layout_below="@id/authentication_social_sign_up"
       android:id="@+id/authentication_email_sign_up_link"
       android:orientation="horizontal"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:layout_below="@id/authentication_social_sign_up"
       android:paddingTop="10dip"
       android:paddingBottom="10dip"
       android:layout_centerHorizontal="true"

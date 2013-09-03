@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+  <string name="validation_please_correct">Please correct the fields marked as invalid</string>
   <string name="validation_size_too_short">It needs at least %d characters</string>
   <string name="validation_size_too_long">It cannot be longer than %d characters</string>
   <string name="validation_size_in_between">It must be between %1$d and %2$d characters</string>

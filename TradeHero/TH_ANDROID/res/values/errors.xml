@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-  <string name="error_unknown">A surprising error has occurs. Try again.</string>
+  <string name="error_unknown">A surprising error has occured. Try again.</string>
   <string name="error_canceled">Action has been canceled</string>
   <string name="error_network_connection">Please check the network connection</string>
 </resources>
