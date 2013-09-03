@@ -29,6 +29,9 @@ import org.json.JSONObject;
 public class FacebookAuthenticationProvider implements THAuthenticationProvider
 {
     private final DateFormat preciseDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault());
+    public static final String ACCESS_TOKEN_KEY =  "access_token";
+    public static final String EXPIRATION_DATE_KEY = "expiration_date";
+
     private Facebook facebook;
     private Session session;
     private SessionDefaultAudience defaultAudience;
@@ -247,9 +250,9 @@ public class FacebookAuthenticationProvider implements THAuthenticationProvider
     public JSONObject getAuthData(String id, String accessToken, Date expiration) throws JSONException
     {
         JSONObject authData = new JSONObject();
-        authData.put("id", id);
-        authData.put("access_token", accessToken);
-        authData.put("expiration_date", this.preciseDateFormat.format(expiration));
+        authData.put(SocialAuthenticationProvider.ID_KEY, id);
+        authData.put(ACCESS_TOKEN_KEY, accessToken);
+        authData.put(EXPIRATION_DATE_KEY, this.preciseDateFormat.format(expiration));
         return authData;
     }
 
@@ -310,9 +313,9 @@ public class FacebookAuthenticationProvider implements THAuthenticationProvider
         }
         try
         {
-            String accessToken = authData.getString("access_token");
+            String accessToken = authData.getString(ACCESS_TOKEN_KEY);
             Date expirationDate =
-                    this.preciseDateFormat.parse(authData.getString("expiration_date"));
+                    this.preciseDateFormat.parse(authData.getString(EXPIRATION_DATE_KEY));
 
             if (this.facebook != null)
             {
@@ -322,7 +325,7 @@ public class FacebookAuthenticationProvider implements THAuthenticationProvider
             TokenCachingStrategy tcs = new SharedPreferencesTokenCachingStrategy(
                     this.applicationContext);
             Bundle data = tcs.load();
-            TokenCachingStrategy.putToken(data, authData.getString("access_token"));
+            TokenCachingStrategy.putToken(data, authData.getString(ACCESS_TOKEN_KEY));
             TokenCachingStrategy.putExpirationDate(data, expirationDate);
             tcs.save(data);
 

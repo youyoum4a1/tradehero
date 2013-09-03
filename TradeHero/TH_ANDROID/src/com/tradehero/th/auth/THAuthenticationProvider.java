@@ -9,6 +9,12 @@ public interface THAuthenticationProvider
 
     public void deauthenticate();
 
+    /**
+     * Provides the opportunity to populate missing fields in the authentication object.
+     * Typically, those would come from the local storage.
+     * @param paramJSONObject
+     * @return success
+     */
     public boolean restoreAuthentication(JSONObject paramJSONObject);
 
     public void cancel();
