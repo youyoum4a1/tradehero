@@ -4,6 +4,7 @@ import com.tradehero.common.application.PApplication;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
 import com.tradehero.th.network.NetworkEngine;
+import com.tradehero.th.utils.EmailSignUtils;
 import com.tradehero.th.utils.FacebookUtils;
 import com.tradehero.th.utils.LinkedInUtils;
 import com.tradehero.th.utils.TwitterUtils;
@@ -16,6 +17,7 @@ public class Application extends PApplication
         super.init();
         NetworkEngine.initialize();
         THUser.initialize();
+        EmailSignUtils.initialize();
         FacebookUtils.initialize(Application.getResourceString(R.string.FACEBOOK_APP_ID));
         TwitterUtils.initialize(
                 Application.getResourceString(R.string.TWITTER_CONSUMER_KEY),
