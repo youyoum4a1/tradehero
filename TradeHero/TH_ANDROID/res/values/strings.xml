@@ -33,7 +33,6 @@
   <string name="password_validation_string">Password should not be less than six characters and should be equal with confirm password !</string>
   <string name="email_validation_string">Enter a valid email address.</string>
   <string name="Roi">ROI:</string>
-  <string name="email_alert">You must provide an Email id.</string>
   <string name="Hq">HQ:</string>
   <string name="Trade_Profit">Trade Profit: US$</string>
   <string name="Followers">Followers</string>
@@ -79,7 +78,7 @@
   <string name="share_on">Share on</string>
   <string name="public_str">Public</string>
   <!-- alert message -->
-  <string name="enter_email">Please enter your email address:</string>
+  <string name="authentication_forgot_password_ask_for_email">Please enter your email address:</string>
   <string name="thank_you_message_email">Thank You ! Please follow your mail box</string>
   <string name="twitter_login_message">Already Logged into twitter !</string>
   <string name="thank_you_message">Thank You !</string>
@@ -108,5 +107,9 @@
   <string name="connecting_to_linkedin">Connecting to LinkedIn</string>
   <string name="connecting_to_facebook">Connecting to Facebook</string>
   <string name="not_registered">You need to go back and sign up</string>
+  <string name="test_email">neeraj@eatechnologies.com</string>
+  <string name="test_password">testing</string>
+  <string name="cancel">\"Cancel\"</string>
+  <string name="ok">OK</string>
 
 </resources>
