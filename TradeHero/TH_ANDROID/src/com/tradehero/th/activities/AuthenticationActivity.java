@@ -15,10 +15,12 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.application.App;
 import com.tradehero.th.auth.AuthenticationMode;
+import com.tradehero.th.auth.EmailAuthenticationProvider;
 import com.tradehero.th.base.Application;
 import com.tradehero.th.base.THUser;
 import com.tradehero.th.fragments.authentication.AuthenticationFragment;
 import com.tradehero.th.fragments.authentication.EmailSignInFragment;
+import com.tradehero.th.fragments.authentication.EmailSignInOrUpFragment;
 import com.tradehero.th.fragments.authentication.TwitterEmailFragment;
 import com.tradehero.th.fragments.authentication.EmailSignUpFragment;
 import com.tradehero.th.fragments.authentication.SignInFragment;
@@ -166,15 +168,18 @@ public class AuthenticationActivity extends SherlockFragmentActivity
 
     private void authenticateWithEmail()
     {
-        if (currentFragment instanceof EmailSignUpFragment)
+        if (currentFragment instanceof EmailSignInOrUpFragment)
         {
-            THUser.setAuthenticationMode(((AuthenticationFragment)currentFragment).getAuthenticationMode());
-            THUser.logInAsyncWithJson(((EmailSignUpFragment) currentFragment).getUserFormJSON(), createCallbackForEmailSign(true));
-        }
-        else if (currentFragment instanceof EmailSignInFragment)
-        {
-            THUser.setAuthenticationMode(((AuthenticationFragment)currentFragment).getAuthenticationMode());
-            THUser.logInAsyncWithJson(((EmailSignInFragment) currentFragment).getUserFormJSON(), createCallbackForEmailSign(true));
+            progressDialog = ProgressDialog.show(
+                    AuthenticationActivity.this,
+                    Application.getResourceString(R.string.please_wait),
+                    Application.getResourceString(R.string.connecting_tradehero),
+                    true);
+            EmailSignInOrUpFragment castedFragment = (EmailSignInOrUpFragment) currentFragment;
+            EmailAuthenticationProvider.setCredentials(castedFragment.getUserFormJSON());
+            AuthenticationMode authenticationMode = castedFragment.getAuthenticationMode();
+            THUser.setAuthenticationMode(authenticationMode);
+            THUser.logInWithAsync(EmailAuthenticationProvider.EMAIL_AUTH_TYPE, createCallbackForEmailSign(authenticationMode));
         }
         else
         {
@@ -182,14 +187,19 @@ public class AuthenticationActivity extends SherlockFragmentActivity
         }
     }
 
-    private LogInCallback createCallbackForEmailSign(final boolean isSigningUp)
+    private LogInCallback createCallbackForEmailSign(final AuthenticationMode authenticationMode)
     {
+        final boolean isSigningUp = authenticationMode == AuthenticationMode.SignUp;
         return new SocialAuthenticationCallback("Email")
         {
             private boolean signingUp = isSigningUp;
             @Override public boolean isSigningUp()
             {
                 return signingUp;
+            }
+            @Override public boolean onSocialAuthDone(JSONObject json)
+            {
+                return !isSigningUp();
             }
         };
     }

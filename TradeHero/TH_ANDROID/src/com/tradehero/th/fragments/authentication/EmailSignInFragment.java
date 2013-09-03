@@ -46,7 +46,6 @@ public class EmailSignInFragment extends EmailSignInOrUpFragment implements Requ
 {
     private SelfValidatedText email;
     private ValidatedPasswordText password;
-    private Button signButton;
     private TextView forgotPasswordLink;
     private final static String TAG = EmailSignInFragment.class.getName();
     private ProgressDialog mProgressDialog;

@@ -1,29 +1,28 @@
 package com.tradehero.th.auth;
 
+import com.tradehero.th.api.form.UserFormFactory;
 import org.apache.commons.codec.binary.Base64;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 9/3/13 Time: 12:06 PM To change this template use File | Settings | File Templates. */
 public class EmailAuthenticationProvider implements THAuthenticationProvider
 {
     public static final String EMAIL_AUTH_TYPE = "Basic";
-
-    private String email;
-    private String password;
+    private static JSONObject credentials;
 
     public EmailAuthenticationProvider()
     {
     }
 
-    public EmailAuthenticationProvider(String email, String password)
+    public EmailAuthenticationProvider(JSONObject credentials)
     {
-        setCredentials (email, password);
+        setCredentials (credentials);
     }
 
-    public void setCredentials (String email, String password)
+    public static void setCredentials (JSONObject credentials)
     {
-        this.email = email;
-        this.password = password;
+        EmailAuthenticationProvider.credentials = credentials;
     }
 
     @Override public String getAuthType()
@@ -38,16 +37,32 @@ public class EmailAuthenticationProvider implements THAuthenticationProvider
 
     private String computeAuthHeaderParameter()
     {
-        if (email == null || password == null)
+        if (credentials == null || !credentials.has(UserFormFactory.KEY_EMAIL) || !credentials.has(UserFormFactory.KEY_PASSWORD))
         {
-            throw new IllegalArgumentException("Email or Password is null");
+            throw new IllegalArgumentException("Credentials or Email or Password is null");
         }
-        return new String (Base64.encodeBase64(String.format("%1$s:%2$s", email, password).getBytes()));
+        String authHeaderParameter = null;
+        try
+        {
+            authHeaderParameter = new String (Base64.encodeBase64(String.format("%1$s:%2$s", credentials.get(UserFormFactory.KEY_EMAIL), credentials.get(UserFormFactory.KEY_PASSWORD)).getBytes()));
+        }
+        catch (JSONException e)
+        {
+            throw new IllegalArgumentException(e);
+        }
+        return authHeaderParameter;
     }
 
     @Override public void authenticate(THAuthenticationCallback callback)
     {
-        throw new UnsupportedOperationException();
+        if (credentials == null)
+        {
+            callback.onError(new IllegalArgumentException("Credentials are null"));
+        }
+        else
+        {
+            callback.onSuccess(credentials);
+        }
     }
 
     @Override public void deauthenticate()
@@ -57,7 +72,8 @@ public class EmailAuthenticationProvider implements THAuthenticationProvider
 
     @Override public boolean restoreAuthentication(JSONObject paramJSONObject)
     {
-        throw new UnsupportedOperationException();
+        // Do nothing
+        return true;
     }
 
     @Override public void cancel()

@@ -76,7 +76,13 @@ public class THUser
                 return;
             }
         }
-        authenticator.authenticate(new THAuthenticationProvider.THAuthenticationCallback()
+        THAuthenticationProvider.THAuthenticationCallback outerCallback = createCallbackForLogInWithAsync (callback);
+        authenticator.authenticate(outerCallback);
+    }
+
+    private static THAuthenticationProvider.THAuthenticationCallback createCallbackForLogInWithAsync (final LogInCallback callback)
+    {
+        return new THAuthenticationProvider.THAuthenticationCallback()
         {
             @Override public void onStart()
             {
@@ -107,7 +113,7 @@ public class THUser
             {
                 callback.done(null, new THException(throwable));
             }
-        });
+        };
     }
 
     public static void logInAsyncWithJson(final JSONObject json, final LogInCallback callback)
@@ -122,8 +128,10 @@ public class THUser
             THLog.e("THUser.logInAsyncWithJson", e.getMessage(), e);
             return;
         }
-        NetworkEngine.createService(UserService.class)
-            .authenticate(authenticator.getAuthHeader(), authenticationMode.getEndPoint(), userFormDTO,
+        UserService userService = NetworkEngine.createService(UserService.class);
+        userService.authenticate(authenticator.getAuthHeader(),
+                authenticationMode.getEndPoint(),
+                userFormDTO,
                 createCallbackForLogInAsyncWithJson(json, callback));
     }
 
