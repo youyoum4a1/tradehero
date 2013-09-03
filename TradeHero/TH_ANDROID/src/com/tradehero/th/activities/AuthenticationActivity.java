@@ -187,31 +187,36 @@ public class AuthenticationActivity extends SherlockFragmentActivity
             twitterJson.put("email", txtTwitterEmail.getText());
             progressDialog.setMessage(String.format(getString(R.string.connecting_tradehero), "Twitter"));
             progressDialog.show();
-            THUser.logInAsyncWithJson(twitterJson, new LogInCallback()
-            {
-                @Override public void done(UserBaseDTO user, THException ex)
-                {
-                    if (user != null)
-                    {
-                        ActivityHelper.goRoot(AuthenticationActivity.this);
-                    }
-                    else
-                    {
-                        THToast.show(ex);
-                    }
-                    progressDialog.dismiss();
-                }
-
-                @Override public void onStart()
-                {
-                    // do nothing for now
-                }
-            });
+            THUser.logInAsyncWithJson(twitterJson, createCallbackForTwitterComplementEmail());
         }
         catch (JSONException e)
         {
             //nothing for now
         }
+    }
+
+    private LogInCallback createCallbackForTwitterComplementEmail ()
+    {
+        return new LogInCallback()
+        {
+            @Override public void done(UserBaseDTO user, THException ex)
+            {
+                if (user != null)
+                {
+                    ActivityHelper.goRoot(AuthenticationActivity.this);
+                }
+                else
+                {
+                    THToast.show(ex);
+                }
+                progressDialog.dismiss();
+            }
+
+            @Override public void onStart()
+            {
+                // do nothing for now
+            }
+        };
     }
 
     private void authenticateWithTwitter()
@@ -221,7 +226,12 @@ public class AuthenticationActivity extends SherlockFragmentActivity
                 Application.getResourceString(R.string.please_wait),
                 Application.getResourceString(R.string.connecting_to_twitter),
                 true);
-        TwitterUtils.logIn(this, new SocialAuthenticationCallback("Twitter")
+        TwitterUtils.logIn(this, createTwitterAuthenticationCallback());
+    }
+
+    private SocialAuthenticationCallback createTwitterAuthenticationCallback ()
+    {
+        return new SocialAuthenticationCallback("Twitter")
         {
             @Override public boolean isSigningUp()
             {
@@ -230,7 +240,10 @@ public class AuthenticationActivity extends SherlockFragmentActivity
 
             @Override public boolean onSocialAuthDone(JSONObject json)
             {
-                if (super.onSocialAuthDone(json)) return true;
+                if (super.onSocialAuthDone(json))
+                {
+                    return true;
+                }
                 // twitter does not return email for authentication user,
                 // we need to ask user for that
                 setTwitterData(json);
@@ -238,7 +251,7 @@ public class AuthenticationActivity extends SherlockFragmentActivity
                 setCurrentFragmentByClass(TwitterEmailFragment.class);
                 return false;
             }
-        });
+        };
     }
 
     private void setTwitterData(JSONObject json)
@@ -262,17 +275,15 @@ public class AuthenticationActivity extends SherlockFragmentActivity
             {
                 ActivityHelper.goRoot(AuthenticationActivity.this);
             }
+            else if (ex.getCause() instanceof RetrofitError && ((RetrofitError) ex.getCause()).getResponse().getStatus() == 403) // Forbidden
+            {
+                THToast.show(App.getResourceString(R.string.not_registered));
+            }
             else
             {
-                if (ex.getCause() instanceof RetrofitError && ((RetrofitError) ex.getCause()).getResponse().getStatus() == 403) // Forbidden
-                {
-                    THToast.show(App.getResourceString(R.string.not_registered));
-                }
-                else
-                {
-                    THToast.show(ex);
-                }
+                THToast.show(ex);
             }
+
             progressDialog.dismiss();
         }
 
