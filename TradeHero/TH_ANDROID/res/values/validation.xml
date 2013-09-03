@@ -8,4 +8,6 @@
   <string name="validation_server_username_not_available">Display name is already taken</string>
   <string name="password_validation_confirm_fail_string">Passwords do not match</string>
   <string name="validation_incorrect_pattern_email">This does not look like a legit email</string>
+
+  <string name="forgot_email_incorrect_input_email">You must provide an Email id.</string>
 </resources>

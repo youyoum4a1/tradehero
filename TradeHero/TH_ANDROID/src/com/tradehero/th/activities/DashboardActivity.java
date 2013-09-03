@@ -1,91 +1,57 @@
 package com.tradehero.th.activities;
 
-import android.content.res.Resources;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTabHost;
+import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.CommunityScreenFragment;
 import com.tradehero.th.fragments.HomeScreenFragment;
 import com.tradehero.th.fragments.PortfolioScreenFragment;
 import com.tradehero.th.fragments.StoreScreenFragment;
 import com.tradehero.th.fragments.TrendingFragment;
-import com.tradehero.th.utills.Util;
 import android.view.View;
 
-public class DashboardActivity extends FragmentActivity
+public class DashboardActivity extends SherlockFragmentActivity
 {
-
+    private static final String BUNDLE_KEY = "key";
     private FragmentTabHost mTabHost;
 
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.bottom_bar);
+        setContentView(R.layout.dashboard_with_bottom_bar);
 
-        initialSetup();
+        initiateViews();
     }
 
     @Override
     public void onBackPressed()
     {
-        // TODO Auto-generated method stub
         super.onBackPressed();
     }
 
-    private void initialSetup()
+    private void initiateViews()
     {
-
-        boolean response = getIntent().getBooleanExtra(SplashActivity.LOGGEDIN, false);
-        if (response)
-        {
-            Util.show_toast(DashboardActivity.this,
-                    getResources().getString(R.string.login_message));
-        }
-
-        Resources ressources = getResources();
-
         mTabHost = (FragmentTabHost) findViewById(android.R.id.tabhost);
-
         mTabHost.setup(this, getSupportFragmentManager(), R.id.realtabcontent);
 
+        addNewTab(getString(R.string.trending), R.drawable.trending_selector, TrendingFragment.class);
+        addNewTab(getString(R.string.community), R.drawable.community_selector, CommunityScreenFragment.class);
+        addNewTab(getString(R.string.home), R.drawable.home_selector, HomeScreenFragment.class);
+        addNewTab(getString(R.string.portfolio), R.drawable.pofilio_selector, PortfolioScreenFragment.class);
+        addNewTab(getString(R.string.store), R.drawable.store_selector, StoreScreenFragment.class);
+
+        mTabHost.setCurrentTabByTag(getString(R.string.home));
+    }
+
+    private void addNewTab(String tabTag, int tabIndicatorDrawableId, Class<?> fragmentClass)
+    {
         Bundle b = new Bundle();
-        b.putString("key", "Trending");
+        b.putString(BUNDLE_KEY, tabTag);
         mTabHost.addTab(mTabHost
-                .newTabSpec("Trending")
-                .setIndicator("", ressources.getDrawable(R.drawable.trending_selector)),
-                TrendingFragment.class, b);
-
-        b = new Bundle();
-        b.putString("key", "Community");
-        mTabHost.addTab(mTabHost
-                .newTabSpec("Community")
-                .setIndicator("", ressources.getDrawable(R.drawable.community_selector)),
-                CommunityScreenFragment.class, b);
-
-        b = new Bundle();
-        b.putString("key", "Home");
-        mTabHost.addTab(mTabHost
-                .newTabSpec("Home")
-                .setIndicator("", ressources.getDrawable(R.drawable.home_selector)),
-                HomeScreenFragment.class, b);
-
-        b = new Bundle();
-        b.putString("key", "Portfolio");
-        mTabHost.addTab(mTabHost
-                .newTabSpec("Portfolio")
-                .setIndicator("", ressources.getDrawable(R.drawable.pofilio_selector)),
-                PortfolioScreenFragment.class, b);
-
-        b = new Bundle();
-        b.putString("key", "Store");
-        mTabHost.addTab(mTabHost
-                .newTabSpec("Store")
-                .setIndicator("", ressources.getDrawable(R.drawable.store_selector)),
-                StoreScreenFragment.class, b);
-
-        // setContentView(mTabHost);
-        mTabHost.setCurrentTabByTag("Home");
+                .newTabSpec(tabTag)
+                .setIndicator("", getResources().getDrawable(tabIndicatorDrawableId)),
+                fragmentClass, b);
     }
 
     public void showTabs(boolean value)

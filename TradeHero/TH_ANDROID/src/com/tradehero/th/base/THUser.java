@@ -124,21 +124,26 @@ public class THUser
         }
         NetworkEngine.createService(UserService.class)
             .authenticate(authenticator.getAuthHeader(), authenticationMode.getEndPoint(), userFormDTO,
-                new THCallback<UserProfileDTO>()
-                {
-                    @Override
-                    public void success(UserProfileDTO userDTO, THResponse response)
-                    {
-                        saveCurrentUser(userDTO);
-                        saveCredentialsToUserDefaults(json);
-                        callback.done(userDTO, null);
-                    }
+                createCallbackForLogInAsyncWithJson(json, callback));
+    }
 
-                    @Override public void failure(THException error)
-                    {
-                        callback.done(null, error);
-                    }
-                });
+    private static THCallback<UserProfileDTO> createCallbackForLogInAsyncWithJson (final JSONObject json, final LogInCallback callback)
+    {
+        return new THCallback<UserProfileDTO>()
+        {
+            @Override
+            public void success(UserProfileDTO userDTO, THResponse response)
+            {
+                saveCurrentUser(userDTO);
+                saveCredentialsToUserDefaults(json);
+                callback.done(userDTO, null);
+            }
+
+            @Override public void failure(THException error)
+            {
+                callback.done(null, error);
+            }
+        };
     }
 
     private static void saveCurrentUser(UserBaseDTO userDTO)
