@@ -73,7 +73,12 @@ public class THUser
             logInAsyncWithJson(savedTokens, callback);
             return;
         }
-        authenticator.authenticate(new THAuthenticationProvider.THAuthenticationCallback()
+        authenticator.authenticate(createCallbackForLoginWithAsync (callback));
+    }
+
+    private static THAuthenticationProvider.THAuthenticationCallback createCallbackForLoginWithAsync (final LogInCallback callback)
+    {
+        return new THAuthenticationProvider.THAuthenticationCallback()
         {
             @Override public void onStart()
             {
@@ -104,28 +109,33 @@ public class THUser
             {
                 callback.done(null, new THException(throwable));
             }
-        });
+        };
     }
 
     public static void logInAsyncWithJson(final JSONObject json, final LogInCallback callback)
     {
         NetworkEngine.createService(UserService.class)
                 .authenticate(authenticator.getAuthHeader(), authenticationMode.getEndPoint(), new UserFormDTO(json),
-                        new THCallback<UserProfileDTO>()
-                        {
-                            @Override
-                            public void success(UserProfileDTO userDTO, THResponse response)
-                            {
-                                saveCurrentUser(userDTO);
-                                saveCredentialsToUserDefaults(json);
-                                callback.done(userDTO, null);
-                            }
+                        createCallbackForLogInAsyncWithJson (json, callback));
+    }
 
-                            @Override public void failure(THException error)
-                            {
-                                callback.done(null, error);
-                            }
-                        });
+    private static  THCallback<UserProfileDTO> createCallbackForLogInAsyncWithJson (final JSONObject json, final LogInCallback callback)
+    {
+        return new THCallback<UserProfileDTO>()
+        {
+            @Override
+            public void success(UserProfileDTO userDTO, THResponse response)
+            {
+                saveCurrentUser(userDTO);
+                saveCredentialsToUserDefaults(json);
+                callback.done(userDTO, null);
+            }
+
+            @Override public void failure(THException error)
+            {
+                callback.done(null, error);
+            }
+        };
     }
 
     private static void saveCurrentUser(UserBaseDTO userDTO)
