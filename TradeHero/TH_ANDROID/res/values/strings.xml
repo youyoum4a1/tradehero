@@ -111,5 +111,10 @@
   <string name="test_password">testing</string>
   <string name="cancel">\"Cancel\"</string>
   <string name="ok">OK</string>
+  <string name="trending">Trending</string>
+  <string name="community">Community</string>
+  <string name="home">Home</string>
+  <string name="portfolio">Portfolio</string>
+  <string name="store">Store</string>
 
 </resources>
