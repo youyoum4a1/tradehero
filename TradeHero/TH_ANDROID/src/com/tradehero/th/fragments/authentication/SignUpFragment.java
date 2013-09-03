@@ -14,6 +14,11 @@ public class SignUpFragment extends SignInOrUpFragment
         return R.layout.authentication_sign_up;
     }
 
+    @Override protected int getEmailSignUpViewId()
+    {
+        return R.id.authentication_email_sign_up_link;
+    }
+
     @Override public AuthenticationMode getAuthenticationMode()
     {
         return AuthenticationMode.SignUp;

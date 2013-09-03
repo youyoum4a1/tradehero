@@ -12,6 +12,8 @@ abstract public class SignInOrUpFragment extends AuthenticationFragment
 {
     abstract protected int getViewId ();
 
+    abstract protected int getEmailSignUpViewId ();
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState)
@@ -21,7 +23,7 @@ abstract public class SignInOrUpFragment extends AuthenticationFragment
         view.findViewById(R.id.btn_facebook_signin).setOnClickListener(onClickListener);
         view.findViewById(R.id.btn_twitter_signin).setOnClickListener(onClickListener);
         view.findViewById(R.id.btn_linkedin_signin).setOnClickListener(onClickListener);
-        view.findViewById(R.id.authentication_email_sign_up_link).setOnClickListener(onClickListener);
+        view.findViewById(getEmailSignUpViewId ()).setOnClickListener(onClickListener);
         view.findViewById(R.id.txt_term_of_service_signin).setOnClickListener(onClickListener);
 
         return view;
