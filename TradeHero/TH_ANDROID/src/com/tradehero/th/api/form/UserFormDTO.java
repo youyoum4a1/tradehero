@@ -22,58 +22,11 @@ public class UserFormDTO
     public Boolean pushNotificationsEnabled;
     public Boolean emailNotificationsEnabled;
 
-    // facebook
-    public String facebook_access_token;
-
-    // linkedin
-    public String linkedin_access_token;
-    public String linkedin_access_token_secret;
-
-    // twitter
-    public String twitter_access_token;
-    public String twitter_access_token_secret;
-
     // optional
     public String biography;
     public String location;
     public String website;
     public String deviceToken;
-
-    public UserFormDTO(JSONObject json)
-    {
-        try
-        {
-            if (json.has("type"))
-            {
-                String type = json.getString("type");
-                if (SocialAuthenticationProvider.FACEBOOK_AUTH_TYPE.equals(type))
-                {
-                    facebook_access_token = json.getString("access_token");
-                }
-                else if (SocialAuthenticationProvider.TWITTER_AUTH_TYPE.equals(type))
-                {
-                    twitter_access_token = json.getString("auth_token");
-                    twitter_access_token_secret = json.getString("auth_token_secret");
-                    if (json.has("email"))
-                    {
-                        email = json.getString("email");
-                    }
-                    else
-                    {
-                    }
-                }
-                else if (SocialAuthenticationProvider.LINKEDIN_AUTH_TYPE.equals(type))
-                {
-                    linkedin_access_token = json.getString("auth_token");
-                    linkedin_access_token_secret = json.getString("auth_token_secret");
-                }
-            }
-        }
-        catch (JSONException e)
-        {
-            THLog.e(TAG, "Parsing error", e);
-        }
-    }
 
     public UserFormDTO()
     {

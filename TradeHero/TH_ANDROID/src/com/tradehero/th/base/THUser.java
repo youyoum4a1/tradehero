@@ -4,6 +4,7 @@ import android.content.SharedPreferences;
 import com.tradehero.common.utils.THJsonAdapter;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.api.form.UserFormDTO;
+import com.tradehero.th.api.form.UserFormFactory;
 import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.auth.AuthenticationMode;
@@ -69,9 +70,11 @@ public class THUser
         if (savedTokens != null)
         {
             callback.onStart();
-            authenticator.restoreAuthentication(savedTokens);
-            logInAsyncWithJson(savedTokens, callback);
-            return;
+            if (authenticator.restoreAuthentication(savedTokens))
+            {
+                logInAsyncWithJson(savedTokens, callback);
+                return;
+            }
         }
         authenticator.authenticate(new THAuthenticationProvider.THAuthenticationCallback()
         {
@@ -84,7 +87,7 @@ public class THUser
             {
                 try
                 {
-                    json.put("type", authenticator.getAuthType());
+                    json.put(UserFormFactory.KEY_TYPE, authenticator.getAuthType());
                 }
                 catch (JSONException ex)
                 {
@@ -109,23 +112,33 @@ public class THUser
 
     public static void logInAsyncWithJson(final JSONObject json, final LogInCallback callback)
     {
+        UserFormDTO userFormDTO;
+        try
+        {
+            userFormDTO = UserFormFactory.create(json);
+        }
+        catch (JSONException e)
+        {
+            THLog.e("THUser.logInAsyncWithJson", e.getMessage(), e);
+            return;
+        }
         NetworkEngine.createService(UserService.class)
-                .authenticate(authenticator.getAuthHeader(), authenticationMode.getEndPoint(), new UserFormDTO(json),
-                        new THCallback<UserProfileDTO>()
-                        {
-                            @Override
-                            public void success(UserProfileDTO userDTO, THResponse response)
-                            {
-                                saveCurrentUser(userDTO);
-                                saveCredentialsToUserDefaults(json);
-                                callback.done(userDTO, null);
-                            }
+            .authenticate(authenticator.getAuthHeader(), authenticationMode.getEndPoint(), userFormDTO,
+                new THCallback<UserProfileDTO>()
+                {
+                    @Override
+                    public void success(UserProfileDTO userDTO, THResponse response)
+                    {
+                        saveCurrentUser(userDTO);
+                        saveCredentialsToUserDefaults(json);
+                        callback.done(userDTO, null);
+                    }
 
-                            @Override public void failure(THException error)
-                            {
-                                callback.done(null, error);
-                            }
-                        });
+                    @Override public void failure(THException error)
+                    {
+                        callback.done(null, error);
+                    }
+                });
     }
 
     private static void saveCurrentUser(UserBaseDTO userDTO)
@@ -171,11 +184,11 @@ public class THUser
 
         try
         {
-            credentials.put(json.getString("type"), json);
+            credentials.put(json.getString(UserFormFactory.KEY_TYPE), json);
         }
         catch (JSONException ex)
         {
-            THLog.e(TAG, String.format("JSON (%s) does not has type", json.toString()), ex);
+            THLog.e(TAG, String.format("JSON (%s) does not have type", json.toString()), ex);
         }
 
         Set<String> toSave = new HashSet<>();
@@ -197,7 +210,7 @@ public class THUser
             try
             {
                 JSONObject json = new JSONObject(token);
-                credentials.put(json.getString("type"), json);
+                credentials.put(json.getString(UserFormFactory.KEY_TYPE), json);
             }
             catch (JSONException e)
             {
