@@ -41,19 +41,17 @@ public abstract class THAsyncClientFactory
     {
         final int DEFAULT_TIMEOUT = 20 * 1000;
         private final String authorizationType;
-        private final Token tokenWrapper;
 
         public THAsyncClient(String authorizationType)
         {
             this.authorizationType = authorizationType;
-            this.tokenWrapper = new Token(THUser.getSessionToken());
             injectAuthenticationHeader();
             setTimeout(DEFAULT_TIMEOUT);
         }
 
         private void injectAuthenticationHeader()
         {
-            String authToken = Base64.encodeToString(tokenWrapper.getToken().getBytes(), Base64.NO_WRAP);
+            String authToken = Base64.encodeToString(THUser.getSessionToken().getBytes(), Base64.NO_WRAP);
             addHeader(Constants.TH_CLIENT_VERSION, Constants.TH_CLIENT_VERSION_VALUE);
             addHeader(Constants.AUTHORIZATION,
                     String.format("%s %s", authorizationType, authToken));

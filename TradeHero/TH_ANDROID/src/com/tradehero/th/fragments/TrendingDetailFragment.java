@@ -7,6 +7,7 @@
 package com.tradehero.th.fragments;
 
 import com.tradehero.th.R;
+import com.tradehero.th.base.THUser;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -139,11 +140,8 @@ public class TrendingDetailFragment extends Fragment
 
     private void requestToGetBuyQuotes()
     {
-
-        Token mToken = ((App) getActivity().getApplication()).getToken();
-
         AsyncHttpClient client = new AsyncHttpClient();
-        String authToken = Base64.encodeToString(mToken.getToken().getBytes(), Base64.DEFAULT);
+        String authToken = Base64.encodeToString(THUser.getSessionToken().getBytes(), Base64.DEFAULT);
         client.addHeader(Constants.TH_CLIENT_VERSION, Constants.TH_CLIENT_VERSION_VALUE);
         client.addHeader(Constants.AUTHORIZATION, String.format("%s %s", Constants.TH_EMAIL_PREFIX, authToken));
 

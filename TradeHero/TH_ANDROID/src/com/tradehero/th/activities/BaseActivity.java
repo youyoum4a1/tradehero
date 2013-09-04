@@ -1,6 +1,7 @@
 package com.tradehero.th.activities;
 
 import com.tradehero.th.R;
+import com.tradehero.th.base.THUser;
 import java.util.Timer;
 import java.util.TimerTask;
 import android.app.Activity;
@@ -28,8 +29,7 @@ public class BaseActivity extends Activity
             public void run()
             {
                 timerToShiftActivity.cancel();
-                Token token = ((App) BaseActivity.this.getApplication()).getToken();
-                if (token != null)
+                if (THUser.getSessionToken() != null)
                 {
                     startActivity(new Intent(BaseActivity.this, TradeHeroTabActivity.class).putExtra(LOGGEDIN, true));
                 }

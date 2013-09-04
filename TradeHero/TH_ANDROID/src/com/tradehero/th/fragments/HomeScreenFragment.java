@@ -1,6 +1,8 @@
 package com.tradehero.th.fragments;
 
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.base.THUser;
+import com.tradehero.th.http.THAsyncClientFactory;
 import com.tradehero.th.models.TradeOfWeek;
 import java.util.ArrayList;
 
@@ -192,20 +194,16 @@ public class HomeScreenFragment extends Fragment
 
     private void _getDataOfTrade()
     {
-        Token token = ((App) getActivity().getApplication()).getToken();
+        Token token = new Token(THUser.getSessionToken());
 
         if (token != null)
         {
-            String tokenData = token.getToken();
-            String mytoken = Base64.encodeToString(tokenData.getBytes(), Base64.DEFAULT);
-            System.out.println("my toke ------" + mytoken);
+            String  mytoken = token.getToken();
+            System.out.println("my token is ------"+ mytoken);
             AsyncHttpClient client = new AsyncHttpClient();
             client.addHeader(Constants.TH_CLIENT_VERSION, Constants.TH_CLIENT_VERSION_VALUE);
             client.addHeader(Constants.AUTHORIZATION, Constants.TH_EMAIL_PREFIX + " " + mytoken);
-            client.get(Constants.SIGN_UP_WITH_SOCIAL_MEDIA_USER_URL
-                    + "/"
-                    + id
-                    + Constants.TH_TRADE_WEEK_POSTFIX, new AsyncHttpResponseHandler()
+            client.get(Constants.SIGN_UP_WITH_SOCIAL_MEDIA_USER_URL+"/"+id+Constants.TH_TRADE_WEEK_POSTFIX, new AsyncHttpResponseHandler()
             {
                 @Override
                 public void onSuccess(String response)

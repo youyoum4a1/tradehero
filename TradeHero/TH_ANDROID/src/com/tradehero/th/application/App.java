@@ -35,16 +35,6 @@ public class App extends Application
         this.tradeOfWeek.add(tradeOfWeek);
     }
 
-    public Token getToken()
-    {
-        return token;
-    }
-
-    public void setToken(Token token)
-    {
-        this.token = token;
-    }
-
     public UserProfileDTO getProfileDTO()
     {
         return THUser.getCurrentUser();
