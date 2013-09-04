@@ -105,7 +105,7 @@ public class SearchStockAdapter extends ArrayAdapter<Trend>
         }
         else if (trend.getPc50DMA() < 0)
         {
-            holder.profitIndicator.setText(getContext().getString(R.string.negetive_prefix));
+            holder.profitIndicator.setText(getContext().getString(R.string.negative_prefix));
         }
 
         holder.profitIndicator.setTextColor(TrendUtils.colorForPercentage(trend.getPc50DMA()));
@@ -116,7 +116,7 @@ public class SearchStockAdapter extends ArrayAdapter<Trend>
         if (trend.getImageBlobUrl() != null && trend.getImageBlobUrl().length() > 0)
         {
             //Bitmap b = convertToMutable((new WebImageCache(TrendingActivity.this)).get(trend.getImageBlobUrl()));
-            new ImageLoader(getContext()).getBitmapImage(trend.getImageBlobUrl(),
+            ImageLoader.getInstance(getContext()).getBitmapImage(trend.getImageBlobUrl(),
                     new ImageLoadingListener()
                     {
                         public void onLoadingComplete(Bitmap loadedImage)

@@ -42,7 +42,7 @@
   <!-- What's Trending -->
   <string name="header_trending">Trending</string>
   <string name="positive_prefix">▲</string>
-  <string name="negetive_prefix">▼</string>
+  <string name="negative_prefix">▼</string>
   <string name="zero_prefix"></string>
 
   <!-- What's Trending Details -->

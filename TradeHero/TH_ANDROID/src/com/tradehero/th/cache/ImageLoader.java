@@ -1,5 +1,6 @@
 package com.tradehero.th.cache;
 
+import com.tradehero.th.application.App;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -29,6 +30,7 @@ import android.widget.ImageView;
  */
 public class ImageLoader
 {
+    private static ImageLoader instance;
 
     MemoryCache memoryCache = new MemoryCache();
     FileCache fileCache;
@@ -36,6 +38,15 @@ public class ImageLoader
             Collections.synchronizedMap(new WeakHashMap<ImageView, String>());
     ExecutorService executorService;
     Handler handler = new Handler();//handler to display images in UI thread
+
+    public static ImageLoader getInstance(Context context)
+    {
+        if (instance == null)
+        {
+            instance = new ImageLoader(context);
+        }
+        return instance;
+    }
 
     public ImageLoader(Context context)
     {

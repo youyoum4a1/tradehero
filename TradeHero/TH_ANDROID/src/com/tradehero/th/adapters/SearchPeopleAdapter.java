@@ -33,7 +33,7 @@ public class SearchPeopleAdapter extends ArrayAdapter<User>
     public SearchPeopleAdapter(Context context, List<User> userList)
     {
         super(context, 0, userList);
-        mImageLoader = new ImageLoader(getContext());
+        mImageLoader = ImageLoader.getInstance(context);
     }
 
     public static class ViewHolder
@@ -106,7 +106,7 @@ public class SearchPeopleAdapter extends ArrayAdapter<User>
                 else
                 {
                     holder.profitIndicator
-                            .setText(getContext().getString(R.string.negetive_prefix));
+                            .setText(getContext().getString(R.string.negative_prefix));
                     holder.profitIndicator.setTextColor(Color.RED);
                     roi = Math.abs(roi);
                     holder.stockPercentage.setText(String.format("%.2f", roi) + "%");

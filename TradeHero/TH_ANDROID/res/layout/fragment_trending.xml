@@ -9,10 +9,10 @@
         layout="@layout/topbar" />
 
     <GridView
+        android:layout_below="@id/header"
         android:id="@+id/trending_gridview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/header"
         android:drawSelectorOnTop="false"
         android:gravity="center"
         android:horizontalSpacing="15dp"
@@ -25,10 +25,10 @@
     </GridView>
 
     <ListView
+        android:layout_below="@id/header"
         android:id="@+id/trending_listview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/header"
         android:cacheColorHint="@android:color/transparent"
         android:divider="@null"
         android:visibility="gone" >

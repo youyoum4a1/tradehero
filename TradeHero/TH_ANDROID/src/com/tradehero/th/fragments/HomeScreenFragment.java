@@ -123,7 +123,7 @@ public class HomeScreenFragment extends SherlockFragment
         protected void onPreExecute()
         {
             // TODO Auto-generated method stub
-            imgLoader = new ImageLoader(getActivity());
+            imgLoader = ImageLoader.getInstance(getActivity());
             dlg = new ProgressDialog(getActivity());
             dlg.setMessage(getResources().getString(R.string.loading_loading));
             dlg.show();

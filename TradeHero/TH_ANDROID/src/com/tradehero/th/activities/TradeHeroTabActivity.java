@@ -3,26 +3,17 @@ package com.tradehero.th.activities;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTabHost;
+import android.widget.TabHost;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.CommunityScreenFragment;
 import com.tradehero.th.fragments.HomeScreenFragment;
-import com.tradehero.th.fragments.LeftMenuFragment;
 import com.tradehero.th.fragments.PortfolioScreenFragment;
 import com.tradehero.th.fragments.StoreScreenFragment;
 import com.tradehero.th.fragments.TrendingFragment;
-import com.tradehero.th.slidermenue.CollapseAnimation;
-import com.tradehero.th.slidermenue.ExpandAnimation;
 import com.tradehero.th.utills.Util;
-import android.util.DisplayMetrics;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.animation.Animation;
-import android.view.animation.TranslateAnimation;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 public class TradeHeroTabActivity extends SherlockFragmentActivity implements OnClickListener
@@ -50,46 +41,35 @@ public class TradeHeroTabActivity extends SherlockFragmentActivity implements On
         Resources resources = getResources();
 
         mTabHost = (FragmentTabHost) findViewById(android.R.id.tabhost);
-
         mTabHost.setup(this, getSupportFragmentManager(), R.id.realtabcontent);
 
         Bundle b = new Bundle();
         b.putString("key", "Trending");
-        mTabHost.addTab(mTabHost
-                .newTabSpec("Trending")
-                .setIndicator("", resources.getDrawable(R.drawable.trending_selector)),
-                TrendingFragment.class, b);
+        mTabHost.addTab(createTabSpecWithIcon("Trending", R.drawable.trending_selector), TrendingFragment.class, b);
 
         b = new Bundle();
         b.putString("key", "Community");
-        mTabHost.addTab(mTabHost
-                .newTabSpec("Community")
-                .setIndicator("", resources.getDrawable(R.drawable.community_selector)),
-                CommunityScreenFragment.class, b);
+        mTabHost.addTab(createTabSpecWithIcon("Community", R.drawable.community_selector), CommunityScreenFragment.class, b);
 
         b = new Bundle();
         b.putString("key", "Home");
-        mTabHost.addTab(mTabHost
-                .newTabSpec("Home")
-                .setIndicator("", resources.getDrawable(R.drawable.home_selector)),
-                HomeScreenFragment.class, b);
+        mTabHost.addTab(createTabSpecWithIcon("Home", R.drawable.home_selector), HomeScreenFragment.class, b);
 
         b = new Bundle();
         b.putString("key", "Portfolio");
-        mTabHost.addTab(mTabHost
-                .newTabSpec("Portfolio")
-                .setIndicator("", resources.getDrawable(R.drawable.pofilio_selector)),
-                PortfolioScreenFragment.class, b);
+        mTabHost.addTab(createTabSpecWithIcon("Portfolio", R.drawable.pofilio_selector), PortfolioScreenFragment.class, b);
 
         b = new Bundle();
         b.putString("key", "Store");
-        mTabHost.addTab(mTabHost
-                .newTabSpec("Store")
-                .setIndicator("", resources.getDrawable(R.drawable.store_selector)),
-                StoreScreenFragment.class, b);
+        mTabHost.addTab(createTabSpecWithIcon("Store", R.drawable.store_selector), StoreScreenFragment.class, b);
 
         // setContentView(mTabHost);
         mTabHost.setCurrentTabByTag("Trending");
+    }
+
+    private TabHost.TabSpec createTabSpecWithIcon(String tag, int drawableId)
+    {
+        return mTabHost.newTabSpec(tag).setIndicator("", getResources().getDrawable(drawableId));
     }
 
     public void showTabs(boolean value)

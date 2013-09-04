@@ -30,24 +30,30 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
+import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.SearchPeopleAdapter;
 import com.tradehero.th.adapters.SearchStockAdapter;
 import com.tradehero.th.adapters.TrendingAdapter;
+import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.application.App;
 import com.tradehero.th.application.Config;
 import com.tradehero.th.http.THAsyncClientFactory;
 import com.tradehero.th.models.Trend;
 import com.tradehero.th.models.User;
+import com.tradehero.th.network.CallbackWithSpecificNotifiers;
+import com.tradehero.th.network.NetworkEngine;
+import com.tradehero.th.network.service.SecurityService;
 import com.tradehero.th.utills.Constants;
 import com.tradehero.th.utills.Logger;
 import com.tradehero.th.utills.Logger.LogLevel;
 import java.io.IOException;
 import java.util.List;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 public class TrendingFragment extends SherlockFragment
 {
-
     private final static String TAG = TrendingFragment.class.getSimpleName();
     private final static String[] SEARCH_TYPE = {"Stocks", "People"};
 
@@ -55,9 +61,9 @@ public class TrendingFragment extends SherlockFragment
     private ListView mSearchListView;
     private ProgressBar mProgressSpinner;
 
-    private List<Trend> trendList;
+    private List<SecurityCompactDTO> trendList;
     private List<Trend> searchStockList;
-    private List<User> searchPoepleList;
+    private List<User> searchPeopleList;
 
     private Spinner mSearchTypeSpinner;
     private TextView mHeaderText;
@@ -71,8 +77,7 @@ public class TrendingFragment extends SherlockFragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        View view = null;
-        view = inflater.inflate(R.layout.fragment_trending, container, false);
+        View view = inflater.inflate(R.layout.fragment_trending, container, false);
         initViews(view);
         return view;
     }
@@ -208,7 +213,7 @@ public class TrendingFragment extends SherlockFragment
         ft.commit();
     }
 
-    private void setDataAdapterToGridView(List<Trend> trendList)
+    private void setDataAdapterToGridView(List<SecurityCompactDTO> trendList)
     {
         mTrendingGridView.setAdapter(new TrendingAdapter(getActivity(), trendList));
         showProgressSpinner(false);
@@ -226,6 +231,14 @@ public class TrendingFragment extends SherlockFragment
 
     private void requestToGetTrendingInfo()
     {
+        SecurityService securityService = NetworkEngine.createService(SecurityService.class);
+        securityService.getTrendingSecurities(createCallbackForTrending());
+
+        if (1==1)
+        {
+            return;
+        }
+
         AsyncHttpClient client = THAsyncClientFactory.getInstance(Constants.TH_EMAIL_PREFIX);
         client.get(Config.getTrendingFeed(), new AsyncHttpResponseHandler()
         {
@@ -233,7 +246,6 @@ public class TrendingFragment extends SherlockFragment
             @Override
             public void onSuccess(String response)
             {
-
                 try
                 {
                     Logger.log(TAG, "Trending Response\n" + response, LogLevel.LOGGING_LEVEL_INFO);
@@ -262,10 +274,48 @@ public class TrendingFragment extends SherlockFragment
             @Override
             public void onFailure(Throwable arg0, String arg1)
             {
+                THToast.show(arg1);
+            }
 
+            @Override public void onFinish()
+            {
+                super.onFinish();
+            }
+
+            @Override public void onSuccess(int i, String s)
+            {
+                this.onSuccess(s);    //To change body of overridden methods use File | Settings | File Templates.
+            }
+
+            @Override public void onStart()
+            {
+                super.onStart();    //To change body of overridden methods use File | Settings | File Templates.
             }
         });
     }
+
+    private CallbackWithSpecificNotifiers<List<SecurityCompactDTO>> createCallbackForTrending ()
+    {
+        return new CallbackWithSpecificNotifiers<List<SecurityCompactDTO>>()
+        {
+            @Override public void notifyIsQuerying(boolean isQuerying)
+            {
+                //To change body of implemented methods use File | Settings | File Templates.
+            }
+
+            @Override public void success(List<SecurityCompactDTO> returned, Response response)
+            {
+                super.success(returned, response);    //To change body of overridden methods use File | Settings | File Templates.
+                setDataAdapterToGridView(returned);
+            }
+
+            @Override public void failure(RetrofitError retrofitError)
+            {
+                super.failure(retrofitError);    //To change body of overridden methods use File | Settings | File Templates.
+            }
+        };
+    }
+
 
     private void requestToGetSearchQuery(String searchQuery, String searchType, String pageNumber)
     {
@@ -295,9 +345,9 @@ public class TrendingFragment extends SherlockFragment
                             else
                             {
                                 ObjectMapper objectMapper = new ObjectMapper();
-                                searchPoepleList = objectMapper.readValue(response,
+                                searchPeopleList = objectMapper.readValue(response,
                                         TypeFactory.defaultInstance().constructCollectionType(List.class, User.class));
-                                mSearchListView.setAdapter(new SearchPeopleAdapter(getActivity(), searchPoepleList));
+                                mSearchListView.setAdapter(new SearchPeopleAdapter(getActivity(), searchPeopleList));
                             }
                         } catch (JsonParseException e)
                         {
