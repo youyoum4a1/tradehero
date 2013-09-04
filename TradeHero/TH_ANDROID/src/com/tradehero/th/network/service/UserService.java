@@ -4,6 +4,7 @@ import com.tradehero.th.api.form.ForgotPasswordFormDTO;
 import com.tradehero.th.api.form.UserFormDTO;
 import com.tradehero.th.api.users.ForgotPasswordDTO;
 import com.tradehero.th.api.users.UserAvailabilityDTO;
+import com.tradehero.th.api.users.UserLoginDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
 import org.json.JSONObject;
 import retrofit.Callback;
@@ -20,8 +21,11 @@ import retrofit.http.Query;
 
 public interface UserService
 {
-    @POST("/{mode}")
-    void authenticate(@Header("Authorization") String authorization, @Path("mode") String mode, @Body UserFormDTO user, Callback<UserProfileDTO> cb);
+    @POST("/users")
+    void signUp(@Header("Authorization") String authorization, @Body UserFormDTO user, Callback<UserProfileDTO> cb);
+
+    @POST("/login")
+    void signIn(@Header("Authorization") String authorization, @Body UserFormDTO user, Callback<UserLoginDTO> cb);
 
     @GET("/checkDisplayNameAvailable")
     void checkDisplayNameAvailable(@Query("displayName") String username, Callback<UserAvailabilityDTO> callback);
