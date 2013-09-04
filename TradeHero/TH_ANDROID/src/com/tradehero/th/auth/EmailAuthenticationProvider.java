@@ -1,7 +1,7 @@
 package com.tradehero.th.auth;
 
+import android.util.Base64;
 import com.tradehero.th.api.form.UserFormFactory;
-import org.apache.commons.codec.binary.Base64;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -44,7 +44,9 @@ public class EmailAuthenticationProvider implements THAuthenticationProvider
         String authHeaderParameter = null;
         try
         {
-            authHeaderParameter = new String (Base64.encodeBase64(String.format("%1$s:%2$s", credentials.get(UserFormFactory.KEY_EMAIL), credentials.get(UserFormFactory.KEY_PASSWORD)).getBytes()));
+            authHeaderParameter = Base64.encodeToString(
+                    String.format("%1$s:%2$s", credentials.get(UserFormFactory.KEY_EMAIL), credentials.get(UserFormFactory.KEY_PASSWORD)).getBytes(),
+                    Base64.NO_PADDING);
         }
         catch (JSONException e)
         {
