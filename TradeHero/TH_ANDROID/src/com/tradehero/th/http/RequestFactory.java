@@ -1,5 +1,6 @@
 package com.tradehero.th.http;
 
+import com.tradehero.th.base.THUser;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONException;
@@ -230,8 +231,7 @@ public class RequestFactory
 
     private void _setToken(Context ctx, String username, String pwd)
     {
-        Token token = new Token();
-        token.setToken(username + ":" + pwd);
+        Token token = new Token(username + ":" + pwd);
         ((App) ctx.getApplicationContext()).setToken(token);
     }
 }

@@ -34,8 +34,7 @@ public class WebViewFragment extends Fragment
     private boolean isLoading = false;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-            Bundle savedInstanceState)
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         View view = null;
         view = inflater.inflate(R.layout.fragment_webview, container, false);

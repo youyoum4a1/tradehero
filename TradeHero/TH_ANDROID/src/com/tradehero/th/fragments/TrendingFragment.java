@@ -1,5 +1,6 @@
 package com.tradehero.th.fragments;
 
+import com.tradehero.th.R;
 import java.io.IOException;
 import java.util.List;
 
@@ -8,21 +9,18 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.text.Editable;
 import android.text.TextWatcher;
-import com.tradehero.th.R;
-import com.tradehero.th.activities.DashboardActivity;
+import com.tradehero.th.activities.TradeHeroTabActivity;
 import com.tradehero.th.adapters.SearchPeopleAdapter;
 import com.tradehero.th.adapters.SearchStockAdapter;
 import com.tradehero.th.adapters.TrendingAdapter;
 import com.tradehero.th.application.App;
 import com.tradehero.th.application.Config;
-import com.tradehero.th.models.Token;
+import com.tradehero.th.http.THAsyncClientFactory;
 import com.tradehero.th.models.Trend;
 import com.tradehero.th.models.User;
 import com.tradehero.th.utills.Constants;
 import com.tradehero.th.utills.Logger;
 import com.tradehero.th.utills.Logger.LogLevel;
-import android.util.Base64;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -70,10 +68,10 @@ public class TrendingFragment extends Fragment
     private ImageButton mBackBtn;
     private ImageButton mSearchBtn;
     private ImageView mBullIcon;
+    private RelativeLayout header;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-            Bundle savedInstanceState)
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         View view = null;
         view = inflater.inflate(R.layout.fragment_trending, container, false);
@@ -95,10 +93,12 @@ public class TrendingFragment extends Fragment
         mBackBtn = (ImageButton) v.findViewById(R.id.btn_back);
         mSearchContainer = (RelativeLayout) v.findViewById(R.id.search_container);
 
+        // TODO header bar
+        //header = (RelativeLayout) getActivity().findViewById(R.id.top_tabactivity);
+        //header.setVisibility(View.GONE);
         mHeaderText.setText(R.string.header_trending);
-        ArrayAdapter<String> adapter =
-                new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item,
-                        SEARCH_TYPE);
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, SEARCH_TYPE);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mSearchTypeSpinner.setAdapter(adapter);
 
@@ -110,6 +110,8 @@ public class TrendingFragment extends Fragment
     {
         super.onActivityCreated(savedInstanceState);
 
+        // TODO sliding menu
+        //((TradeHeroTabActivity) getActivity()).showSlidingMenue(true);
         mBackBtn.setOnClickListener(new OnClickListener()
         {
             @Override
@@ -140,7 +142,6 @@ public class TrendingFragment extends Fragment
 
         mSearchTypeSpinner.setOnItemSelectedListener(new OnItemSelectedListener()
         {
-
             @Override
             public void onItemSelected(AdapterView<?> arg0, View arg1,
                     int arg2, long arg3)
@@ -157,7 +158,6 @@ public class TrendingFragment extends Fragment
 
         mTrendingGridView.setOnItemClickListener(new OnItemClickListener()
         {
-
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position,
                     long id)
@@ -190,6 +190,11 @@ public class TrendingFragment extends Fragment
             }
         });
 
+        if (mTrendingGridView != null && mTrendingGridView.getCount() == 0)
+        {
+            showProgressSpinner(true);
+        }
+
         requestToGetTrendingInfo();
     }
 
@@ -208,6 +213,7 @@ public class TrendingFragment extends Fragment
     private void setDataAdapterToGridView(List<Trend> trendList)
     {
         mTrendingGridView.setAdapter(new TrendingAdapter(getActivity(), trendList));
+        showProgressSpinner(false);
     }
 
     //	private void setInitialAdapterToGridView() {
@@ -222,13 +228,7 @@ public class TrendingFragment extends Fragment
 
     private void requestToGetTrendingInfo()
     {
-
-        if (mTrendingGridView != null && mTrendingGridView.getCount() == 0)
-        {
-            mProgressSpinner.setVisibility(View.VISIBLE);
-        }
-
-        AsyncHttpClient client = new AsyncHttpClient();
+        AsyncHttpClient client = THAsyncClientFactory.getInstance(Constants.TH_EMAIL_PREFIX);
         client.get(Config.getTrendingFeed(), new AsyncHttpResponseHandler()
         {
 
@@ -238,27 +238,27 @@ public class TrendingFragment extends Fragment
 
                 try
                 {
-                    Logger.log(TAG, "Trending Response: ---\n" + response,
-                            LogLevel.LOGGING_LEVEL_INFO);
+                    Logger.log(TAG, "Trending Response\n" + response, LogLevel.LOGGING_LEVEL_INFO);
                     ObjectMapper objectMapper = new ObjectMapper();
-                    trendList = objectMapper.readValue(response, TypeFactory.defaultInstance()
-                            .constructCollectionType(List.class, Trend.class));
+                    trendList = objectMapper.readValue(response, TypeFactory.defaultInstance().constructCollectionType(List.class, Trend.class));
                     setDataAdapterToGridView(trendList);
                 } catch (JsonParseException e)
                 {
+                    showProgressSpinner(false);
                     e.printStackTrace();
                 } catch (JsonMappingException e)
                 {
+                    showProgressSpinner(false);
                     e.printStackTrace();
                 } catch (IOException e)
                 {
+                    showProgressSpinner(false);
                     e.printStackTrace();
                 } catch (Exception e)
                 {
+                    showProgressSpinner(false);
                     e.printStackTrace();
                 }
-
-                mProgressSpinner.setVisibility(View.GONE);
             }
 
             @Override
@@ -271,17 +271,9 @@ public class TrendingFragment extends Fragment
 
     private void requestToGetSearchQuery(String searchQuery, String searchType, String pageNumber)
     {
+        showProgressSpinner(true);
 
-        mProgressSpinner.setVisibility(View.VISIBLE);
-
-        Token mToken = ((App) getActivity().getApplication()).getToken();
-
-        AsyncHttpClient client = new AsyncHttpClient();
-        String authToken = Base64.encodeToString(mToken.getToken().getBytes(), Base64.DEFAULT);
-        client.addHeader(Constants.TH_CLIENT_VERSION, Constants.TH_CLIENT_VERSION_VALUE);
-        client.addHeader(Constants.AUTHORIZATION,
-                String.format("%s %s", Constants.TH_EMAIL_PREFIX, authToken));
-
+        AsyncHttpClient client = THAsyncClientFactory.getInstance(Constants.TH_EMAIL_PREFIX);
         client.get(String.format(Config.getTrendSearch(), searchType, searchQuery, pageNumber),
                 new AsyncHttpResponseHandler()
                 {
@@ -292,28 +284,22 @@ public class TrendingFragment extends Fragment
 
                         try
                         {
-                            Logger.log(TAG, "Search Response: ---\n" + response,
-                                    LogLevel.LOGGING_LEVEL_INFO);
+                            Logger.log(TAG, "Search Response: ---\n" + response, LogLevel.LOGGING_LEVEL_INFO);
 
-                            if (((String) mSearchTypeSpinner.getSelectedItem()).equalsIgnoreCase(
-                                    SEARCH_TYPE[0]))
+                            if (((String) mSearchTypeSpinner.getSelectedItem()).equalsIgnoreCase(SEARCH_TYPE[0]))
                             {
                                 ObjectMapper objectMapper = new ObjectMapper();
                                 searchStockList = objectMapper.readValue(response,
-                                        TypeFactory.defaultInstance()
-                                                .constructCollectionType(List.class, Trend.class));
-                                mSearchListView.setAdapter(
-                                        new SearchStockAdapter(getActivity(), searchStockList));
+                                        TypeFactory.defaultInstance().constructCollectionType(List.class, Trend.class));
+                                mSearchListView.setAdapter(new SearchStockAdapter(getActivity(), searchStockList));
                                 setDataAdapterToSearchListView(searchStockList);
                             }
                             else
                             {
                                 ObjectMapper objectMapper = new ObjectMapper();
                                 searchPoepleList = objectMapper.readValue(response,
-                                        TypeFactory.defaultInstance()
-                                                .constructCollectionType(List.class, User.class));
-                                mSearchListView.setAdapter(
-                                        new SearchPeopleAdapter(getActivity(), searchPoepleList));
+                                        TypeFactory.defaultInstance().constructCollectionType(List.class, User.class));
+                                mSearchListView.setAdapter(new SearchPeopleAdapter(getActivity(), searchPoepleList));
                             }
                         } catch (JsonParseException e)
                         {
@@ -329,14 +315,13 @@ public class TrendingFragment extends Fragment
                             e.printStackTrace();
                         }
 
-                        mProgressSpinner.setVisibility(View.GONE);
+                        showProgressSpinner(false);
                     }
 
                     @Override
                     public void onFailure(Throwable arg0, String arg1)
                     {
                         super.onFailure(arg0, arg1);
-                        System.out.println("onFailure: " + arg1);
                     }
                 });
     }
@@ -355,8 +340,7 @@ public class TrendingFragment extends Fragment
                 showSearchList(true);
 
                 String searchType = "securities";
-                if (((String) mSearchTypeSpinner.getSelectedItem()).equalsIgnoreCase(
-                        SEARCH_TYPE[1]))
+                if (((String) mSearchTypeSpinner.getSelectedItem()).equalsIgnoreCase(SEARCH_TYPE[1]))
                 {
                     searchType = "users";
                 }
@@ -383,24 +367,35 @@ public class TrendingFragment extends Fragment
 
     private void showSearchList(boolean flag)
     {
-        mSearchListView.setVisibility(flag ? View.VISIBLE : View.GONE);
-        mTrendingGridView.setVisibility(!flag ? View.VISIBLE : View.GONE);
+        mSearchListView.setVisibility(getVisibility(flag));
+        mTrendingGridView.setVisibility(getVisibility(!flag));
         mProgressSpinner.setVisibility(View.GONE);
     }
 
     private void showSearchView(boolean flag)
     {
-        mHeaderText.setVisibility(!flag ? View.VISIBLE : View.INVISIBLE);
-        mBullIcon.setVisibility(!flag ? View.VISIBLE : View.INVISIBLE);
-        mSearchContainer.setVisibility(flag ? View.VISIBLE : View.GONE);
+        mHeaderText.setVisibility(getVisibility(!flag));
+        mBullIcon.setVisibility(getVisibility(!flag));
+        mSearchContainer.setVisibility(getVisibility(flag));
         mSearchField.setText("");
+    }
+
+    private void showProgressSpinner(boolean flag)
+    {
+        mProgressSpinner.setVisibility(getVisibility(flag));
+    }
+
+    private int getVisibility(boolean flag)
+    {
+        return flag ? View.VISIBLE : View.INVISIBLE;
     }
 
     @Override
     public void onResume()
     {
         super.onResume();
-        ((DashboardActivity) getActivity()).showTabs(true);
-        ((App) getActivity().getApplication()).setTrend(null);
+        // TODO move to somewhere else
+        //((TradeHeroTabActivity) getActivity()).showTabs(true);
+        //((App) getActivity().getApplication()).setTrend(null);
     }
 }

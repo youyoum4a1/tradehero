@@ -42,7 +42,7 @@ import java.util.Map;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class EmailSignInFragment extends EmailSignInOrUpFragment implements RequestTaskCompleteListener
+public class EmailSignInFragment extends EmailSignInOrUpFragment
 {
     private SelfValidatedText email;
     private ValidatedPasswordText password;
@@ -51,9 +51,9 @@ public class EmailSignInFragment extends EmailSignInOrUpFragment implements Requ
     private ProgressDialog mProgressDialog;
     private View forgotDialogView;
 
-    @Override protected View inflateView (LayoutInflater inflater, ViewGroup container)
+    @Override public int getDefaultViewId ()
     {
-        return inflater.inflate(R.layout.authentication_email_sign_in, container, false);
+        return R.layout.authentication_email_sign_in;
     }
     @Override protected void initSetup(View view)
     {
@@ -152,49 +152,6 @@ public class EmailSignInFragment extends EmailSignInOrUpFragment implements Requ
                         }
                     }
                 }).create().show();
-    }
-
-    @Override
-    public void onTaskComplete(JSONObject pResponseObject)
-    {
-
-        if (mProgressDialog.isShowing())
-        {
-            mProgressDialog.dismiss();
-        }
-
-        if (pResponseObject != null)
-        {
-
-            try
-            {
-                Logger.log(TAG, pResponseObject.toString(), LogLevel.LOGGING_LEVEL_INFO);
-                if (pResponseObject.has("Message"))
-                {
-                    THToast.show(pResponseObject.optString("Message"));
-                    //startActivity(new Intent(getActivity(),DashboardActivity.class));
-                }
-                else
-                {
-                    JSONObject obj = pResponseObject.getJSONObject("profileDTO");
-
-                    ProfileDTO prof = new PUtills(getActivity())._parseJson(obj);
-
-                    ((App) getActivity().getApplication()).setProfileDTO(prof);
-                    startActivity(new Intent(getActivity(), DashboardActivity.class));
-                    getActivity().finish();
-                }
-            }
-            catch (Exception e)
-            {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    @Override public void onErrorOccured(int pErrorCode, String pErrorMessage)
-    {
-        //To change body of implemented methods use File | Settings | File Templates.
     }
 
     private void doForgotPassword(String email)

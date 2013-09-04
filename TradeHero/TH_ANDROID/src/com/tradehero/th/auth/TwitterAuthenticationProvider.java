@@ -115,10 +115,10 @@ public class TwitterAuthenticationProvider extends SocialAuthenticationProvider
         return SocialAuthenticationProvider.TWITTER_AUTH_TYPE;
     }
 
-    @Override public String getAuthHeader()
+    @Override public String getAuthHeaderParameter()
     {
         StringBuilder sb = new StringBuilder();
-        sb.append(getAuthType()).append(" ").append(twitter.getAuthToken()).append(":").append(twitter.getAuthTokenSecret());
+        sb.append(twitter.getAuthToken()).append(":").append(twitter.getAuthTokenSecret());
         return sb.toString();
     }
 

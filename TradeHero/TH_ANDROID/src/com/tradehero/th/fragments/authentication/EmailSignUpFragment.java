@@ -55,9 +55,9 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment
     private Context mContext;
     private static final int REQUEST_GALLERY = 111;
 
-    @Override protected View inflateView (LayoutInflater inflater, ViewGroup container)
+    @Override public int getDefaultViewId ()
     {
-        return inflater.inflate(R.layout.authentication_email_sign_up, container, false);
+        return R.layout.authentication_email_sign_up;
     }
 
     @Override protected void initSetup(View view)

@@ -2,6 +2,10 @@ package com.tradehero.th.models;
 
 import java.util.ArrayList;
 
+/**
+ * Will remove it. Use UserProfileDTO
+ */
+@Deprecated
 public class ProfileDTO
 {
 

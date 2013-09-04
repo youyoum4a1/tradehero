@@ -6,12 +6,12 @@
  */
 package com.tradehero.th.fragments;
 
+import com.tradehero.th.R;
 import java.util.HashMap;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
-import com.tradehero.th.R;
 import com.tradehero.th.application.App;
 import com.tradehero.th.fragments.TrendingDetailFragment.YahooQuoteUpdateListener;
 import com.tradehero.th.models.Trend;
@@ -40,8 +40,7 @@ public class StockInfoFragment extends Fragment implements YahooQuoteUpdateListe
     private Trend t;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-            Bundle savedInstanceState)
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         View view = null;
         view = inflater.inflate(R.layout.fragment_stockinfo, container, false);

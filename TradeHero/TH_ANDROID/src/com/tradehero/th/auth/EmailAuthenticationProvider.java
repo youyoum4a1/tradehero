@@ -32,10 +32,10 @@ public class EmailAuthenticationProvider implements THAuthenticationProvider
 
     @Override public String getAuthHeader()
     {
-        return String.format("%1$s %2$s", getAuthType(), computeAuthHeaderParameter());
+        return String.format("%1$s %2$s", getAuthType(), getAuthHeaderParameter());
     }
 
-    private String computeAuthHeaderParameter()
+    @Override public String getAuthHeaderParameter()
     {
         if (credentials == null || !credentials.has(UserFormFactory.KEY_EMAIL) || !credentials.has(UserFormFactory.KEY_PASSWORD))
         {

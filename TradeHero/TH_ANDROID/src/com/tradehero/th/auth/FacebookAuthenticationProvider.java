@@ -202,7 +202,12 @@ public class FacebookAuthenticationProvider implements THAuthenticationProvider
 
     @Override public String getAuthHeader()
     {
-        return getAuthType() + " " + this.session.getAccessToken();
+        return getAuthType() + " " + getAuthHeaderParameter ();
+    }
+
+    @Override public String getAuthHeaderParameter()
+    {
+        return this.session.getAccessToken();
     }
 
     public Facebook getFacebook()

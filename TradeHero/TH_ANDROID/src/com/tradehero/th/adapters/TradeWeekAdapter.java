@@ -1,5 +1,6 @@
 package com.tradehero.th.adapters;
 
+import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.models.TradeOfWeek;
 import java.util.ArrayList;
 
@@ -21,7 +22,7 @@ public class TradeWeekAdapter extends BaseAdapter
     private static ArrayList<TradeOfWeek> tradeofweeklist;
 
     Context ctx;
-    ProfileDTO mprofile;
+    UserProfileDTO mprofile;
     private LayoutInflater l_Inflater;
     ImageLoader mLoader;
 
@@ -70,9 +71,9 @@ public class TradeWeekAdapter extends BaseAdapter
             holder = (ViewHolder) convertView.getTag();
         }
 
-        holder.txt_username.setText(mprofile.getDisplayName());
+        holder.txt_username.setText(mprofile.displayName);
         holder.txt_usercontent.setText(tradeofweeklist.get(position).getText());
-        mLoader.DisplayRoundImage(mprofile.getPicture(), holder.user_img);
+        mLoader.DisplayRoundImage(mprofile.picture, holder.user_img);
         /*if(tradeofweeklist.get(position).getMedias().getUrl()!=null)
 		{
 			mLoader.DisplayImage( tradeofweeklist.get(position).getMedias().getUrl(), holder.vendr_image);

@@ -23,6 +23,8 @@ public interface THAuthenticationProvider
 
     String getAuthHeader();
 
+    String getAuthHeaderParameter ();
+
     public static interface THAuthenticationCallback
     {
         public void onStart();

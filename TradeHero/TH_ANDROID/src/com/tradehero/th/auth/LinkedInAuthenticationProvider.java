@@ -124,11 +124,11 @@ public class LinkedInAuthenticationProvider extends SocialAuthenticationProvider
         return SocialAuthenticationProvider.LINKEDIN_AUTH_TYPE;
     }
 
-    @Override public String getAuthHeader()
+    @Override public String getAuthHeaderParameter()
     {
         StringBuilder sb = new StringBuilder();
-        sb.append(getAuthType()).append(" ").append(linkedIn.getAuthToken()).append(":").append(linkedIn.getAuthTokenSecret());
-        return sb.toString();
+        sb.append(linkedIn.getAuthToken()).append(":").append(linkedIn.getAuthTokenSecret());
+        return  sb.toString();
     }
 
     public JSONObject getAuthData(String authToken, String authTokenSecret)

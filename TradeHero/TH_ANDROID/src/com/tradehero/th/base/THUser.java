@@ -31,11 +31,13 @@ public class THUser
     private static final String TAG = THUser.class.getName();
     private static final String PREF_MY_USER = "PREF_MY_USER";
     private static final String PREF_MY_TOKEN = "PREF_MY_TOKEN";
+    private static final String CURRENT_SESSION_TOKEN = "PREF_CURRENT_SESSION_TOKEN";
 
     private static AuthenticationMode authenticationMode;
     private static HashMap<String, JSONObject> credentials;
     private static THAuthenticationProvider authenticator;
     private static Map<String, THAuthenticationProvider> authenticationProviders = new HashMap<>();
+    private static String currentSessionToken;
 
     public static void initialize()
     {
@@ -45,8 +47,7 @@ public class THUser
 
     public static String getSessionToken()
     {
-        // TODO get session token from cache
-        return null;
+        return currentSessionToken;
     }
 
     public static boolean hasSessionToken()
@@ -193,11 +194,17 @@ public class THUser
         {
             return;
         }
+
         THLog.d(TAG, String.format("%d authentication tokens loaded", credentials.size()));
 
         try
         {
+            THAuthenticationProvider currentProvider = authenticationProviders.get(json.get(UserFormFactory.KEY_TYPE));
+
+            currentSessionToken = currentProvider.getAuthHeaderParameter();
+
             credentials.put(json.getString(UserFormFactory.KEY_TYPE), json);
+
         }
         catch (JSONException ex)
         {
@@ -212,12 +219,14 @@ public class THUser
 
         SharedPreferences.Editor prefEditor = Application.getPreferences().edit();
         prefEditor.putStringSet(PREF_MY_TOKEN, toSave);
+        prefEditor.putString(CURRENT_SESSION_TOKEN, currentSessionToken);
         prefEditor.commit();
     }
 
     private static void loadCredentialsToUserDefaults()
     {
         Set<String> savedTokens = Application.getPreferences().getStringSet(PREF_MY_TOKEN, new HashSet<String>());
+        currentSessionToken = Application.getPreferences().getString(CURRENT_SESSION_TOKEN, null);
         for (String token : savedTokens)
         {
             try

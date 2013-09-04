@@ -6,7 +6,10 @@
  */
 package com.tradehero.th.application;
 
+import android.content.Context;
+import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.Application;
+import com.tradehero.th.base.THUser;
 import com.tradehero.th.models.ProfileDTO;
 import com.tradehero.th.models.Token;
 import com.tradehero.th.models.TradeOfWeek;
@@ -42,16 +45,9 @@ public class App extends Application
         this.token = token;
     }
 
-    private ProfileDTO profileDTO;
-
-    public ProfileDTO getProfileDTO()
+    public UserProfileDTO getProfileDTO()
     {
-        return profileDTO;
-    }
-
-    public void setProfileDTO(ProfileDTO profileDTO)
-    {
-        this.profileDTO = profileDTO;
+        return THUser.getCurrentUser();
     }
 
     public void setYahooQuotesMap(LinkedHashMap<String, String> yahooQuotesMap)
@@ -59,7 +55,7 @@ public class App extends Application
         this.yahooQuotesMap = yahooQuotesMap;
     }
 
-    public Trend getTrend()
+     public Trend getTrend()
     {
         return trend;
     }

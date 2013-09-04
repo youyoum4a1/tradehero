@@ -6,6 +6,7 @@
  */
 package com.tradehero.th.fragments;
 
+import com.tradehero.th.R;
 import java.util.HashMap;
 
 import android.graphics.Bitmap;
@@ -13,7 +14,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
-import com.tradehero.th.R;
 import com.tradehero.th.application.App;
 import com.tradehero.th.application.Config;
 import com.tradehero.th.cache.ImageLoader;
@@ -83,12 +83,11 @@ public class TradeFragment extends Fragment implements YahooQuoteUpdateListener
     int volume = 0;
     int avgDailyVolume = 0;
 
-    private int mCashAvailable = 0;
+    private double mCashAvailable = 0;
     private boolean isTransactionTypeBuy = true;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-            Bundle savedInstanceState)
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         View view = null;
         view = inflater.inflate(R.layout.fragment_trade, container, false);
@@ -159,8 +158,7 @@ public class TradeFragment extends Fragment implements YahooQuoteUpdateListener
                     Logger.log(TAG, "Progress: " + progress, LogLevel.LOGGING_LEVEL_INFO);
                     Logger.log(TAG, "SeeBar Max: " + seekBar.getMax(), LogLevel.LOGGING_LEVEL_INFO);
                     Logger.log(TAG, "Qty: " + q, LogLevel.LOGGING_LEVEL_INFO);
-                    Logger.log(TAG, "sliderIncrement: " + sliderIncrement,
-                            LogLevel.LOGGING_LEVEL_INFO);
+                    Logger.log(TAG, "sliderIncrement: " + sliderIncrement, LogLevel.LOGGING_LEVEL_INFO);
                     //Logger.log(TAG, "SeeBar Max: "+seekBar.getMax(), LogLevel.LOGGING_LEVEL_INFO);
 
                     updateQuantityAndTradeValue(q);
@@ -179,27 +177,23 @@ public class TradeFragment extends Fragment implements YahooQuoteUpdateListener
             public void onClick(View v)
             {
 
-                String buyDetail = String.format(
-                        "Buy %s %s:%s @ %s %f\nTransaction fee: virtual US$ 10\nTotal cost: US$ %.2f",
-                        tvQuantity.getText(), trend.getExchange(), trend.getSymbol(),
-                        trend.getCurrencyDisplay(),
+                String buyDetail = String.format("Buy %s %s:%s @ %s %f\nTransaction fee: virtual US$ 10\nTotal cost: US$ %.2f",
+                        tvQuantity.getText(), trend.getExchange(), trend.getSymbol(), trend.getCurrencyDisplay(),
                         lastPrice, getTotalCostForBuy());
 
                 Bundle b = new Bundle();
 
                 b.putString(BUY_DETAIL_STR, buyDetail);
                 b.putString(LAST_PRICE, String.valueOf(lastPrice));
-                b.putString(QUANTITY, tvQuantity.getText().toString());
+                b.putString(QUANTITY, tvQuantity.getText().toString().replace(",", ""));
                 b.putString(SYMBOL, trend.getSymbol());
                 b.putString(EXCHANGE, trend.getExchange());
 
-                Fragment newFragment = Fragment.instantiate(getActivity(),
-                        BuyFragment.class.getName(), b);
+                Fragment newFragment = Fragment.instantiate(getActivity(), BuyFragment.class.getName(), b);
 
                 // Add the fragment to the activity, pushing this transaction
                 // on to the back stack.
-                FragmentTransaction ft =
-                        getActivity().getSupportFragmentManager().beginTransaction();
+                FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
                 ft.replace(R.id.realtabcontent, newFragment, "trend_buy");
                 ft.addToBackStack("trend_buy");
                 ft.commit();
@@ -223,8 +217,7 @@ public class TradeFragment extends Fragment implements YahooQuoteUpdateListener
 
         if (!TextUtils.isEmpty(trend.getYahooSymbol()))
         {
-            mImageLoader.DisplayImage(
-                    String.format(Config.getTrendingChartUrl(), trend.getYahooSymbol()),
+            mImageLoader.DisplayImage(String.format(Config.getTrendingChartUrl(), trend.getYahooSymbol()),
                     mStockChart);
         }
 
@@ -244,10 +237,8 @@ public class TradeFragment extends Fragment implements YahooQuoteUpdateListener
         // only update ask & bid if both are present.
         if (!Double.isNaN(askPrice) && !Double.isNaN(bidPrice))
         {
-            tvAskPrice.setText(
-                    String.format("%.2f%s", askPrice, getString(R.string.ask_with_bracket)));
-            tvBidPrice.setText(
-                    String.format(" x %.2f%s", bidPrice, getString(R.string.bid_with_bracket)));
+            tvAskPrice.setText(String.format("%.2f%s", askPrice, getString(R.string.ask_with_bracket)));
+            tvBidPrice.setText(String.format(" x %.2f%s", bidPrice, getString(R.string.bid_with_bracket)));
             lastPrice = askPrice;
         }
         else
@@ -331,9 +322,7 @@ public class TradeFragment extends Fragment implements YahooQuoteUpdateListener
         ((TrendingDetailFragment) getActivity().getSupportFragmentManager()
                 .findFragmentByTag("trending_detail")).setYahooQuoteUpdateListener(this);
 
-        mCashAvailable = ((App) getActivity().getApplication()).getProfileDTO()
-                .getPortfolio()
-                .getCashBalance();
+        mCashAvailable = ((App) getActivity().getApplication()).getProfileDTO().portfolio.cashBalance;
 
         tvCashAvailable.setText(String.format("US$ %,d", mCashAvailable));
 
@@ -372,8 +361,7 @@ public class TradeFragment extends Fragment implements YahooQuoteUpdateListener
         }
         else
         {
-            Logger.log(TAG, "Unable to parse Last Trade (Price Only)",
-                    LogLevel.LOGGING_LEVEL_ERROR);
+            Logger.log(TAG, "Unable to parse Last Trade (Price Only)", LogLevel.LOGGING_LEVEL_ERROR);
         }
 
         //TODO Format date
@@ -386,8 +374,7 @@ public class TradeFragment extends Fragment implements YahooQuoteUpdateListener
         double askPrice = YUtils.parseQuoteValue(yQuotes.get("Ask"));
         if (Double.isNaN(askPrice))
         {
-            Logger.log(TAG, "Unable to parse Ask, will try using real-time data",
-                    LogLevel.LOGGING_LEVEL_ERROR);
+            Logger.log(TAG, "Unable to parse Ask, will try using real-time data", LogLevel.LOGGING_LEVEL_ERROR);
 
             askPrice = YUtils.parseQuoteValue(yQuotes.get("Ask (Real-time)"));
             if (Double.isNaN(askPrice))
@@ -404,8 +391,7 @@ public class TradeFragment extends Fragment implements YahooQuoteUpdateListener
         double bidPrice = YUtils.parseQuoteValue(yQuotes.get("Bid"));
         if (Double.isNaN(bidPrice))
         {
-            Logger.log(TAG, "Unable to parse Bid, will try using real-time data",
-                    LogLevel.LOGGING_LEVEL_ERROR);
+            Logger.log(TAG, "Unable to parse Bid, will try using real-time data", LogLevel.LOGGING_LEVEL_ERROR);
 
             bidPrice = YUtils.parseQuoteValue(yQuotes.get("Bid (Real-time)"));
             if (Double.isNaN(bidPrice))
@@ -415,14 +401,11 @@ public class TradeFragment extends Fragment implements YahooQuoteUpdateListener
         }
 
         // only update ask & bid if both are present.
-        if (!Double.isNaN(askPrice) && (Double.compare(askPrice, 0.0) == 0) && !Double.isNaN(
-                bidPrice)
+        if (!Double.isNaN(askPrice) && (Double.compare(askPrice, 0.0) == 0) && !Double.isNaN(bidPrice)
                 && (Double.compare(bidPrice, 0.0) == 0))
         {
-            tvAskPrice.setText(
-                    String.format("%.2f%s", askPrice, getString(R.string.ask_with_bracket)));
-            tvBidPrice.setText(
-                    String.format(" x %.2f%s", bidPrice, getString(R.string.bid_with_bracket)));
+            tvAskPrice.setText(String.format("%.2f%s", askPrice, getString(R.string.ask_with_bracket)));
+            tvBidPrice.setText(String.format(" x %.2f%s", bidPrice, getString(R.string.bid_with_bracket)));
         }
         else
         {
@@ -444,14 +427,14 @@ public class TradeFragment extends Fragment implements YahooQuoteUpdateListener
         UpdateValues(mCashAvailable, false);
     }
 
-    private void UpdateValues(int cash, boolean isPriceSlot)
+    private void UpdateValues(double cash, boolean isPriceSlot)
     {
 
         Logger.log(TAG, "Cash: " + cash, LogLevel.LOGGING_LEVEL_INFO);
 
         mQuantity = 0;
 
-        int totalCashAvailable = cash - TRANSACTION_COST;
+        double totalCashAvailable = cash - TRANSACTION_COST;
 
         mQuantity = (int) Math.floor(totalCashAvailable / lastPrice);
 
@@ -577,7 +560,7 @@ public class TradeFragment extends Fragment implements YahooQuoteUpdateListener
 
     private double getTotalCostForBuy()
     {
-        double q = Double.parseDouble(tvQuantity.getText().toString());
+        double q = Double.parseDouble(tvQuantity.getText().toString().replace(",", ""));
         double totalCost = q * (lastPrice + TRANSACTION_COST);
 
         return totalCost;

@@ -78,43 +78,41 @@ public class NewsFragment extends ListFragment
     {
 
         AsyncHttpClient client = new AsyncHttpClient();
-        client.get(String.format(Config.getTrendRssFeed(), trend.getYahooSymbol()),
-                new AsyncHttpResponseHandler()
+        client.get(String.format(Config.getTrendRssFeed(), trend.getYahooSymbol()), new AsyncHttpResponseHandler()
+        {
+
+            @Override
+            public void onSuccess(String response)
+            {
+
+                RssFeed mRssFeed = null;
+
+                try
                 {
+                    mRssFeed = RssReader.read(response);
 
-                    @Override
-                    public void onSuccess(String response)
+                    if (mRssFeed != null)
                     {
-
-                        RssFeed mRssFeed = null;
-
-                        try
-                        {
-                            mRssFeed = RssReader.read(response);
-
-                            if (mRssFeed != null)
-                            {
-                                setListAdapter(new TrendRssNewsFeedAdapter(getActivity(),
-                                        mRssFeed.getRssItems()));
-                            }
-                        } catch (MalformedURLException e)
-                        {
-                            e.printStackTrace();
-                        } catch (SAXException e)
-                        {
-                            e.printStackTrace();
-                        } catch (IOException e)
-                        {
-                            e.printStackTrace();
-                        }
+                        setListAdapter(new TrendRssNewsFeedAdapter(getActivity(), mRssFeed.getRssItems()));
                     }
+                } catch (MalformedURLException e)
+                {
+                    e.printStackTrace();
+                } catch (SAXException e)
+                {
+                    e.printStackTrace();
+                } catch (IOException e)
+                {
+                    e.printStackTrace();
+                }
+            }
 
-                    @Override
-                    public void onFailure(Throwable arg0, String arg1)
-                    {
+            @Override
+            public void onFailure(Throwable arg0, String arg1)
+            {
 
-                    }
-                });
+            }
+        });
     }
 
     private class TrendRssNewsFeedAdapter extends ArrayAdapter<RssItem>

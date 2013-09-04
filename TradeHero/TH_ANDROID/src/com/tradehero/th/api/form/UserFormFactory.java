@@ -11,7 +11,7 @@ public class UserFormFactory
 {
     public static final String KEY_TYPE = "type";
     public static final String KEY_EMAIL = "email";
-    private static final String KEY_USERNAME = "username";
+    public static final String KEY_USERNAME = "username";
     public static final String KEY_PASSWORD = "password";
     public static final String KEY_PASSWORD_CONFIRM = "confirmPassword";
     public static final String KEY_DISPLAY_NAME = "displayName";

@@ -6,6 +6,11 @@
  */
 package com.tradehero.th.fragments;
 
+import java.util.LinkedHashMap;
+
+import org.apache.http.entity.StringEntity;
+import org.apache.http.message.BasicHeader;
+import org.apache.http.protocol.HTTP;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -14,25 +19,23 @@ import android.support.v4.app.Fragment;
 import com.tradehero.th.R;
 import com.tradehero.th.application.App;
 import com.tradehero.th.application.Config;
-import com.tradehero.th.models.Token;
+import com.tradehero.th.http.THAsyncClientFactory;
 import com.tradehero.th.networkstatus.NetworkStatus;
 import com.tradehero.th.utills.Constants;
 import com.tradehero.th.utills.Logger;
 import com.tradehero.th.utills.Logger.LogLevel;
 import com.tradehero.th.utills.Util;
-import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
 
 public class BuyFragment extends Fragment
 {
@@ -53,21 +56,22 @@ public class BuyFragment extends Fragment
     //private final static String BP_TRANSACTION_COST = "transactioncost";
     //private final static String BP_YCSV_QUOTE_DATA = "ycsvQuoteData";
     //private final static String BP_TRADE_COMMENT = "tradeComment";
-    private final static String BP_SIGNED_QUOTE_DTO = "signedQuoteDto ";
+    private final static String BP_SIGNED_QUOTE_DTO = "signedQuoteDto";
 
-    private EditText mCommentsET;
+    //private EditText mCommentsET;
     private Button mBtnConform;
     private TextView mBuyDetails;
     private TextView mHeaderText;
 
     //private String lastPrice;
     private String quantity;
-    private String quotes;
+
     //private String yahooQuoteStr;
+    //private Quote mQuote;
+    private Object quotes;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-            Bundle savedInstanceState)
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         View view = null;
         view = inflater.inflate(R.layout.fragment_buy, container, false);
@@ -85,7 +89,7 @@ public class BuyFragment extends Fragment
         mHeaderText.setText(String.format("%s:%s", getArguments().getString(TradeFragment.EXCHANGE),
                 getArguments().getString(TradeFragment.SYMBOL)));
 
-        mCommentsET = (EditText) v.findViewById(R.id.comments);
+        //mCommentsET = (EditText) v.findViewById(R.id.comments);
         mBtnConform = (Button) v.findViewById(R.id.right_button);
         mBtnConform.setText(R.string.btn_buy);
         mBtnConform.setVisibility(View.VISIBLE);
@@ -93,7 +97,7 @@ public class BuyFragment extends Fragment
         mBuyDetails = (TextView) v.findViewById(R.id.buy_info);
         mBuyDetails.setText(getArguments().getString(TradeFragment.BUY_DETAIL_STR));
         //lastPrice = getArguments().getString(TradeFragment.LAST_PRICE);
-        quantity = getArguments().getString(TradeFragment.QUANTITY);
+
     }
 
     @Override
@@ -106,7 +110,6 @@ public class BuyFragment extends Fragment
             @Override
             public void onClick(View v)
             {
-                //requestToBuyRequiredSecurities();
 
                 if (NetworkStatus.getInstance().isConnected(getActivity()))
                 {
@@ -114,8 +117,7 @@ public class BuyFragment extends Fragment
                 }
                 else
                 {
-                    Util.show_toast(getActivity(),
-                            getResources().getString(R.string.network_error));
+                    Util.show_toast(getActivity(), getResources().getString(R.string.network_error));
                 }
             }
         });
@@ -123,82 +125,11 @@ public class BuyFragment extends Fragment
 
     private void requestToGetBuyQuotes()
     {
-
-        Token mToken = ((App) getActivity().getApplication()).getToken();
-
-        AsyncHttpClient client = new AsyncHttpClient();
-        String authToken = Base64.encodeToString(mToken.getToken().getBytes(), Base64.DEFAULT);
-        client.addHeader(Constants.TH_CLIENT_VERSION, Constants.TH_CLIENT_VERSION_VALUE);
-        client.addHeader(Constants.AUTHORIZATION,
-                String.format("%s %s", Constants.TH_EMAIL_PREFIX, authToken));
+        AsyncHttpClient client = THAsyncClientFactory.getInstance(Constants.TH_EMAIL_PREFIX);
 
         client.get(String.format(Config.getTrendNewBuyQuotes(),
                 getArguments().getString(TradeFragment.EXCHANGE),
-                getArguments().getString(TradeFragment.SYMBOL)), new AsyncHttpResponseHandler()
-        {
-
-            @Override
-            public void onSuccess(int arg0, String response)
-            {
-
-                if (response.length() > 0)
-                {
-
-                    String rawStr = JSONObject.quote(response.trim());
-                    rawStr = rawStr.replace(" ", "");
-                    setQuotes(rawStr);
-                    requestToBuyTransaction();
-                }
-                else
-                {
-                    Logger.log(TAG, "TH Quote response is blank", LogLevel.LOGGING_LEVEL_ERROR);
-                }
-            }
-
-            @Override
-            public void onFailure(Throwable arg0, String response)
-            {
-                Logger.log(TAG, "Unable to get TH Quotes:\n" + response,
-                        LogLevel.LOGGING_LEVEL_ERROR);
-            }
-        });
-    }
-
-    private void requestToBuyTransaction()
-    {
-
-        Token mToken = ((App) getActivity().getApplication()).getToken();
-
-        AsyncHttpClient client = new AsyncHttpClient();
-        String authToken = Base64.encodeToString(mToken.getToken().getBytes(), Base64.DEFAULT);
-        client.addHeader(Constants.TH_CLIENT_VERSION, Constants.TH_CLIENT_VERSION_VALUE);
-        client.addHeader(Constants.AUTHORIZATION,
-                String.format("%s %s", Constants.TH_EMAIL_PREFIX, authToken));
-
-        RequestParams postParams = new RequestParams();
-        postParams.put(BP_QUANTITY, quantity);
-        postParams.put(BP_PORTFOLIO,
-                ((App) getActivity().getApplication()).getProfileDTO().getPortfolio().getId());
-        postParams.put(BP_SIGNED_QUOTE_DTO, getQuotes());
-        postParams.put(BP_GEO_ALT, "");
-        postParams.put(BP_GEO_LAT, "");
-        postParams.put(BP_GEO_LONG, "");
-        postParams.put(BP_IS_PUBLIC, "false");  //Yes = 1 No = 0
-        postParams.put(BP_PUBLIST_TO_FB, "false"); //Yes = 1 No = 0
-        postParams.put(BP_PUBLIST_TO_LI, "false"); //Yes = 1 No = 0
-        postParams.put(BP_PUBLIST_TO_TW, "false"); //Yes = 1 No = 0
-
-        //postParams.put(BP_TIMESTAMP, DateUtils.getCurrentTimeStampWithFormat());
-        //postParams.put(BP_TRANSACTION_COST, String.valueOf(TradeFragment.TRANSACTION_COST));
-
-        //postParams.put(BP_SIGNATURE, genarateSignatureUsingBuyParametersAndItsValues());
-        //postParams.put(BP_YCSV_QUOTE_DATA, yahooQuoteStr);
-
-        Logger.log(TAG, "--Post Params:--\n" + postParams.toString(), LogLevel.LOGGING_LEVEL_INFO);
-
-        client.post(String.format(Config.getBuyNewTrend(),
-                getArguments().getString(TradeFragment.EXCHANGE),
-                getArguments().getString(TradeFragment.SYMBOL)), postParams,
+                getArguments().getString(TradeFragment.SYMBOL)),
                 new AsyncHttpResponseHandler()
                 {
 
@@ -206,47 +137,147 @@ public class BuyFragment extends Fragment
                     public void onSuccess(int arg0, String response)
                     {
 
-                        Logger.log(TAG, response, LogLevel.LOGGING_LEVEL_INFO);
+                        if (response.length() > 0)
+                        {
 
-                        try
+                            Logger.log(TAG, "Buy Quote Response:\n" + response, LogLevel.LOGGING_LEVEL_INFO);
+
+                            //Object rawStr = (Object)JSONObject.quote(response);
+
+                            setQuotes(response);
+
+                            requestToBuyTransaction();
+                        }
+                        else
                         {
-                            JSONObject jsonObj = new JSONObject(response);
-                            Toast.makeText(getActivity(), jsonObj.optString("Message"),
-                                    Toast.LENGTH_SHORT).show();
-                        } catch (JSONException e)
-                        {
-                            e.printStackTrace();
+                            Logger.log(TAG, "TH Quote response is blank", LogLevel.LOGGING_LEVEL_ERROR);
                         }
                     }
 
                     @Override
                     public void onFailure(Throwable arg0, String response)
                     {
-                        super.onFailure(arg0, response);
-                        Logger.log(TAG, response, LogLevel.LOGGING_LEVEL_ERROR);
-
-                        try
-                        {
-                            JSONObject jsonObj = new JSONObject(response);
-                            Toast.makeText(getActivity(), jsonObj.optString("Message"),
-                                    Toast.LENGTH_SHORT).show();
-                        } catch (JSONException e)
-                        {
-                            e.printStackTrace();
-                        }
+                        Logger.log(TAG, "Unable to get TH Quotes:\n" + response, LogLevel.LOGGING_LEVEL_ERROR);
                     }
                 });
     }
 
-    public String getQuotes()
+    private void requestToBuyTransaction()
+    {
+        LinkedHashMap<String, Object> postParams = new LinkedHashMap<String, Object>();
+
+        postParams.put(BP_QUANTITY, Integer.valueOf(quantity));
+        postParams.put(BP_PORTFOLIO, Integer.valueOf(((App) getActivity().getApplication()).getProfileDTO().portfolio.id));
+        postParams.put(BP_SIGNED_QUOTE_DTO, getQuotes().toString());
+        postParams.put(BP_GEO_ALT, null);
+        postParams.put(BP_GEO_LAT, null);
+        postParams.put(BP_GEO_LONG, null);
+        postParams.put(BP_IS_PUBLIC, false);  //Yes = 1 No = 0
+        postParams.put(BP_PUBLIST_TO_FB, false); //Yes = 1 No = 0
+        postParams.put(BP_PUBLIST_TO_LI, false); //Yes = 1 No = 0
+        postParams.put(BP_PUBLIST_TO_TW, false); //Yes = 1 No = 0]
+
+        //Logger.log(TAG, "Params: \n"+postParams.toString(), LogLevel.LOGGING_LEVEL_INFO);
+
+        StringEntity entity = null;
+
+        try
+        {
+
+            ObjectMapper mapper = new ObjectMapper();
+            String json = mapper.writeValueAsString(postParams);
+
+            Logger.log(TAG, "Post Params for Buy request: \n" + json, LogLevel.LOGGING_LEVEL_INFO);
+
+            entity = new StringEntity(json, HTTP.UTF_8);
+            entity.setContentEncoding(new BasicHeader(Constants.CONTENT_TYPE, "application/json"));
+            entity.setContentType("application/json; charset=utf-8");
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+
+        AsyncHttpClient client = THAsyncClientFactory.getInstance(Constants.TH_EMAIL_PREFIX);
+
+        String url = String.format(
+                Config.getBuyNewTrend(),
+                getArguments().getString(TradeFragment.EXCHANGE),
+                getArguments().getString(TradeFragment.SYMBOL));
+
+        Logger.log(TAG, url, LogLevel.LOGGING_LEVEL_INFO);
+
+        client.post(getActivity(), url, entity, "application/json", new AsyncHttpResponseHandler()
+        {
+
+            @Override
+            public void onSuccess(int arg0, String response)
+            {
+
+                Logger.log(TAG, "Buy Transaction Response:\n" + response, LogLevel.LOGGING_LEVEL_INFO);
+
+                try
+                {
+                    JSONObject jsonObj = new JSONObject(response);
+                    Toast.makeText(getActivity(), jsonObj.optString("Message"), Toast.LENGTH_SHORT).show();
+                } catch (JSONException e)
+                {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(Throwable arg0, String response)
+            {
+                super.onFailure(arg0, response);
+
+                Logger.log(TAG, "Buy Transaction Response:\n" + response, LogLevel.LOGGING_LEVEL_ERROR);
+
+                try
+                {
+                    JSONObject jsonObj = new JSONObject(response);
+                    Toast.makeText(getActivity(), response, Toast.LENGTH_SHORT).show();
+                } catch (JSONException e)
+                {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    //	public class PostData implements Serializable {
+    //
+    //		private static final long serialVersionUID = 1L;
+    //
+    //		private Object aquotes;
+    //
+    //		public Object getQuotes() {
+    //			return aquotes;
+    //		}
+    //
+    //		public void setQuotes(Object quotes) {
+    //			this.aquotes = quotes;
+    //		}
+    //	}
+
+    public Object getQuotes()
     {
         return quotes;
     }
 
-    public void setQuotes(String quotes)
+    public void setQuotes(Object quotes)
     {
         this.quotes = quotes;
     }
+
+    //	StringEntity entity = null;
+    //	try {
+    //	entity = new StringEntity(someData);
+    //	entity.setContentEncoding(new BasicHeader(HTTP.CONTENT_TYPE, "application/json"));
+    //	} catch(Exception e) {
+    //	//Exception
+    //	}
+    //
+    //	client.post(null,url,entity,"application/json",new AsyncHttpResponseHandler() { });
 
     //	private LinkedHashMap<String, String> getBuyParametersWithValues() {
     //

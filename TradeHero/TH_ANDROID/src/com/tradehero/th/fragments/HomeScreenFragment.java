@@ -1,5 +1,6 @@
 package com.tradehero.th.fragments;
 
+import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.models.TradeOfWeek;
 import java.util.ArrayList;
 
@@ -50,11 +51,11 @@ public class HomeScreenFragment extends Fragment
     private String mUserName;
     private ListView mListviewContent;
     private LinearLayout mBagroundImage;
-    private ProfileDTO profile;
+    private UserProfileDTO profile;
     private String picture;
     private BitmapDrawable drawableBitmap;
     private Bitmap mBitmap;
-    private String id;
+    private int id;
     private ProgressDialog mProgressDialog;
     private ProgressBar listview_content_progress;
     private Request lLoginRequest;
@@ -83,12 +84,13 @@ public class HomeScreenFragment extends Fragment
         if (profile != null)
         {
 
-            String mUserName = profile.getDisplayName();
-            picture = profile.getPicture();
-            id = profile.getId();
+            String mUserName = profile.displayName;
+            picture = profile.picture;
+            id = profile.id;
             txtUserName.setText(mUserName);
             mBagroundImage = (LinearLayout) view.findViewById(R.id.top_layout);
             mUserImg = (ImageView) view.findViewById(R.id.img_banner_user);
+
             if (mBitmap == null)
             {
                 new UpdateUi().execute();
@@ -137,8 +139,8 @@ public class HomeScreenFragment extends Fragment
         @Override
         protected Void doInBackground(Void... arg0)
         {
-            // TODO Auto-generated method stub
-            mBitmap = imgLoader.getBitmap(picture);
+            // TODO load user profile picture
+            //mBitmap = imgLoader.getBitmap(picture);
             //mBGBtmp = imgLoader.getBitmap(picture);
 
             return null;

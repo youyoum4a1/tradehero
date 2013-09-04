@@ -45,4 +45,11 @@ public abstract class SocialAuthenticationProvider implements THAuthenticationPr
             currentOperationCallback = null;
         }
     }
+
+    @Override public String getAuthHeader()
+    {
+        StringBuilder sb = new StringBuilder();
+        sb.append(getAuthType()).append(" ").append(getAuthHeaderParameter());
+        return sb.toString();
+    }
 }

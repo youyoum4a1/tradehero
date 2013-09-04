@@ -1,5 +1,7 @@
 package com.tradehero.th.models;
 
+import com.tradehero.th.api.users.UserProfileDTO;
+
 public class ProfileContent
 {
 
@@ -45,12 +47,12 @@ public class ProfileContent
         this.suggestTwReauth = suggestTwReauth;
     }
 
-    public ProfileDTO getProfileDTO()
+    public UserProfileDTO getProfileDTO()
     {
         return profileDTO;
     }
 
-    public void setProfileDTO(ProfileDTO profileDTO)
+    public void setProfileDTO(UserProfileDTO profileDTO)
     {
         this.profileDTO = profileDTO;
     }
@@ -58,5 +60,5 @@ public class ProfileContent
     private String suggestFbReauth;
     private String suggestUpgrade;
     private String suggestTwReauth;
-    private ProfileDTO profileDTO;//class
+    private UserProfileDTO profileDTO;//class
 }

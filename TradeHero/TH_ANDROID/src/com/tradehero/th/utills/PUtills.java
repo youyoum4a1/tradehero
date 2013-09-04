@@ -1,5 +1,6 @@
 package com.tradehero.th.utills;
 
+import com.tradehero.th.api.users.UserProfileDTO;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -11,16 +12,16 @@ public class PUtills
 {
 
     private Context ctx;
-    private ProfileDTO mdata;
+    private UserProfileDTO mdata;
 
     public PUtills(Context ctx)
     {
         super();
         this.ctx = ctx;
-        mdata = new ProfileDTO();
+        mdata = new UserProfileDTO();
     }
 
-    public ProfileDTO _parseJson(JSONObject mjsonObject)
+    public UserProfileDTO _parseJson(JSONObject mjsonObject)
     {
 
         if (mjsonObject != null)
@@ -34,13 +35,13 @@ public class PUtills
 		        "ccBalance": 0,
 		        "id": 229667*/
 
-                mdata.setDisplayName(mjsonObject.getString("displayName"));
-                mdata.setPicture(mjsonObject.getString("picture"));
-                mdata.setId(mjsonObject.getString("id"));
-                mdata.setFollowerCount(mjsonObject.getString("followerCount"));
-                mdata.setAlertCount(mjsonObject.getString("alertCount"));
-                mdata.setLiLinked(mjsonObject.getString("thLinked"));
-                mdata.setCcPerMonthBalance(mjsonObject.getString("ccPerMonthBalance"));
+                //mdata.setDisplayName(mjsonObject.getString("displayName"));
+                //mdata.setPicture(mjsonObject.getString("picture"));
+                //mdata.setId(mjsonObject.getString("id"));
+                //mdata.setFollowerCount(mjsonObject.getString("followerCount"));
+                //mdata.setAlertCount(mjsonObject.getString("alertCount"));
+                //mdata.setLiLinked(mjsonObject.getString("thLinked"));
+                //mdata.setCcPerMonthBalance(mjsonObject.getString("ccPerMonthBalance"));
 
                 JSONObject portfolioObj = mjsonObject.getJSONObject("portfolio");
 
@@ -50,7 +51,7 @@ public class PUtills
                     portfolio.setId(portfolioObj.optString("id"));
                     portfolio.setCashBalance(portfolioObj.optInt("cashBalance"));
 
-                    mdata.setPortfolio(portfolio);
+                    //mdata.setPortfolio(portfolio);
                 }
             } catch (JSONException e)
             {

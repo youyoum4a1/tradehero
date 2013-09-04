@@ -6,8 +6,7 @@
  */
 package com.tradehero.th.fragments;
 
-import android.support.v4.app.FragmentTabHost;
-import com.tradehero.th.activities.DashboardActivity;
+import com.tradehero.th.R;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -16,8 +15,10 @@ import java.util.List;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTabHost;
 import android.text.TextUtils;
 import com.tradehero.th.R;
+import com.tradehero.th.activities.TradeHeroTabActivity;
 import com.tradehero.th.application.App;
 import com.tradehero.th.application.Config;
 import com.tradehero.th.models.Token;
@@ -30,6 +31,7 @@ import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.loopj.android.http.AsyncHttpClient;
@@ -50,6 +52,7 @@ public class TrendingDetailFragment extends Fragment
     private boolean isRequestCompleted = false;
     private LinkedHashMap<String, String> yQuotes;
     private Handler mYahooQuotesUpdateTaskHandler;
+    private RelativeLayout header;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -63,14 +66,11 @@ public class TrendingDetailFragment extends Fragment
         //mTabHost.setBackgroundColor(getResources().getColor(R.color.trending_detail_bg));
         mTabHost.setup(getActivity(), getChildFragmentManager(), R.id.realtabcontent1);
 
-        mTabHost.addTab(mTabHost.newTabSpec(getString(R.string.tab_trade))
-                .setIndicator(getString(R.string.tab_trade)),
+        mTabHost.addTab(mTabHost.newTabSpec(getString(R.string.tab_trade)).setIndicator(getString(R.string.tab_trade)),
                 TradeFragment.class, null);
-        mTabHost.addTab(mTabHost.newTabSpec(getString(R.string.tab_stock_info))
-                .setIndicator(getString(R.string.tab_stock_info)),
+        mTabHost.addTab(mTabHost.newTabSpec(getString(R.string.tab_stock_info)).setIndicator(getString(R.string.tab_stock_info)),
                 StockInfoFragment.class, null);
-        mTabHost.addTab(mTabHost.newTabSpec(getString(R.string.tab_news))
-                .setIndicator(getString(R.string.tab_news)),
+        mTabHost.addTab(mTabHost.newTabSpec(getString(R.string.tab_news)).setIndicator(getString(R.string.tab_news)),
                 NewsFragment.class, null);
 
         trend = ((App) getActivity().getApplication()).getTrend();
@@ -85,7 +85,10 @@ public class TrendingDetailFragment extends Fragment
     public void onActivityCreated(Bundle savedInstanceState)
     {
         super.onActivityCreated(savedInstanceState);
-        ((DashboardActivity) getActivity()).showTabs(false);
+        ((TradeHeroTabActivity) getActivity()).showTabs(false);
+
+        header = (RelativeLayout) getActivity().findViewById(R.id.top_tabactivity);
+        header.setVisibility(View.GONE);
 
         mYahooQuotesString = YUtils.getYahooQuoteKeysString();
         mYahooQuoteValues = Arrays.asList(YUtils.YAHOO_QUOTE_VALUES);
@@ -101,8 +104,7 @@ public class TrendingDetailFragment extends Fragment
 
         isRequestCompleted = false;
         AsyncHttpClient client = new AsyncHttpClient();
-        client.get(
-                String.format(Config.getYahooQuotes(), trend.getYahooSymbol(), mYahooQuotesString),
+        client.get(String.format(Config.getYahooQuotes(), trend.getYahooSymbol(), mYahooQuotesString),
                 new AsyncHttpResponseHandler()
                 {
 
@@ -114,13 +116,11 @@ public class TrendingDetailFragment extends Fragment
                         if (!TextUtils.isEmpty(response))
                         {
                             LinkedHashMap<String, String> yahooQuotes =
-                                    mapYahooQuoteResposeWithItsValues(
-                                            YUtils.CSVToStringList(response));
+                                    mapYahooQuoteResposeWithItsValues(YUtils.CSVToStringList(response));
                             yQuotes = yahooQuotes;
                             try
                             {
-                                ((App) getActivity().getApplication()).setYahooQuotesMap(
-                                        yahooQuotes);
+                                ((App) getActivity().getApplication()).setYahooQuotesMap(yahooQuotes);
                             } catch (NullPointerException e)
                             {
                                 e.printStackTrace();
@@ -145,8 +145,7 @@ public class TrendingDetailFragment extends Fragment
         AsyncHttpClient client = new AsyncHttpClient();
         String authToken = Base64.encodeToString(mToken.getToken().getBytes(), Base64.DEFAULT);
         client.addHeader(Constants.TH_CLIENT_VERSION, Constants.TH_CLIENT_VERSION_VALUE);
-        client.addHeader(Constants.AUTHORIZATION,
-                String.format("%s %s", Constants.TH_EMAIL_PREFIX, authToken));
+        client.addHeader(Constants.AUTHORIZATION, String.format("%s %s", Constants.TH_EMAIL_PREFIX, authToken));
 
         client.get(String.format(Config.getTrendNewBuyQuotes(), trend.getExchange(),
                 trend.getSymbol()), new AsyncHttpResponseHandler()
@@ -161,8 +160,7 @@ public class TrendingDetailFragment extends Fragment
             @Override
             public void onFailure(Throwable arg0, String response)
             {
-                Logger.log(TAG, "Unable to get Buy Quotes:\n" + response,
-                        LogLevel.LOGGING_LEVEL_ERROR);
+                Logger.log(TAG, "Unable to get Buy Quotes:\n" + response, LogLevel.LOGGING_LEVEL_ERROR);
             }
         });
     }

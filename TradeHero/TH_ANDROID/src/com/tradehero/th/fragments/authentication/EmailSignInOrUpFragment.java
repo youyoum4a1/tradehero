@@ -23,15 +23,16 @@ abstract public class EmailSignInOrUpFragment extends AuthenticationFragment imp
 {
     protected Button signButton;
 
-    abstract protected View inflateView (LayoutInflater inflater, ViewGroup container);
+    abstract public int getDefaultViewId ();
     abstract protected void initSetup(View view);
     abstract protected void forceValidateFields();
+
     abstract public boolean areFieldsValid();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        View view = inflateView(inflater, container);
+        View view = inflater.inflate(getDefaultViewId(), container, false);
         initSetup(view);
         return view;
     }
