@@ -6,6 +6,7 @@ import com.tradehero.common.utils.THLog;
 import com.tradehero.th.api.form.UserFormDTO;
 import com.tradehero.th.api.form.UserFormFactory;
 import com.tradehero.th.api.users.UserBaseDTO;
+import com.tradehero.th.api.users.UserLoginDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.auth.AuthenticationMode;
 import com.tradehero.th.auth.THAuthenticationProvider;
@@ -129,20 +130,46 @@ public class THUser
             THLog.e("THUser.logInAsyncWithJson", e.getMessage(), e);
             return;
         }
+
         UserService userService = NetworkEngine.createService(UserService.class);
-        userService.authenticate(authenticator.getAuthHeader(),
-                authenticationMode.getEndPoint(),
-                userFormDTO,
-                createCallbackForLogInAsyncWithJson(json, callback));
+        switch (authenticationMode)
+        {
+            case SignUp:
+                userService.signUp(authenticator.getAuthHeader(), userFormDTO, createCallbackForSignUpAsyncWithJson(json, callback));
+                break;
+            case SignIn:
+                userService.signIn(authenticator.getAuthHeader(), userFormDTO, createCallbackForSignInAsyncWithJson(json, callback));
+                break;
+        }
     }
 
-    private static THCallback<UserProfileDTO> createCallbackForLogInAsyncWithJson (final JSONObject json, final LogInCallback callback)
+    private static THCallback<UserProfileDTO> createCallbackForSignUpAsyncWithJson(final JSONObject json, final LogInCallback callback)
     {
         return new THCallback<UserProfileDTO>()
         {
             @Override
             public void success(UserProfileDTO userDTO, THResponse response)
             {
+                saveCurrentUser(userDTO);
+                saveCredentialsToUserDefaults(json);
+                callback.done(userDTO, null);
+            }
+
+            @Override public void failure(THException error)
+            {
+                callback.done(null, error);
+            }
+        };
+    }
+
+    private static THCallback<UserLoginDTO> createCallbackForSignInAsyncWithJson(final JSONObject json, final LogInCallback callback)
+    {
+        return new THCallback<UserLoginDTO>()
+        {
+            @Override
+            public void success(UserLoginDTO userLoginDTO, THResponse response)
+            {
+                UserProfileDTO userDTO = userLoginDTO.profileDTO;
                 saveCurrentUser(userDTO);
                 saveCredentialsToUserDefaults(json);
                 callback.done(userDTO, null);
