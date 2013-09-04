@@ -1,26 +1,10 @@
 package com.tradehero.th.fragments;
 
-import com.tradehero.th.R;
-import java.io.IOException;
-import java.util.List;
-
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.text.Editable;
 import android.text.TextWatcher;
-import com.tradehero.th.activities.TradeHeroTabActivity;
-import com.tradehero.th.adapters.SearchPeopleAdapter;
-import com.tradehero.th.adapters.SearchStockAdapter;
-import com.tradehero.th.adapters.TrendingAdapter;
-import com.tradehero.th.application.App;
-import com.tradehero.th.application.Config;
-import com.tradehero.th.http.THAsyncClientFactory;
-import com.tradehero.th.models.Trend;
-import com.tradehero.th.models.User;
-import com.tradehero.th.utills.Constants;
-import com.tradehero.th.utills.Logger;
-import com.tradehero.th.utills.Logger.LogLevel;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -39,15 +23,29 @@ import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-
+import com.actionbarsherlock.app.SherlockFragment;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
+import com.tradehero.th.R;
+import com.tradehero.th.adapters.SearchPeopleAdapter;
+import com.tradehero.th.adapters.SearchStockAdapter;
+import com.tradehero.th.adapters.TrendingAdapter;
+import com.tradehero.th.application.App;
+import com.tradehero.th.application.Config;
+import com.tradehero.th.http.THAsyncClientFactory;
+import com.tradehero.th.models.Trend;
+import com.tradehero.th.models.User;
+import com.tradehero.th.utills.Constants;
+import com.tradehero.th.utills.Logger;
+import com.tradehero.th.utills.Logger.LogLevel;
+import java.io.IOException;
+import java.util.List;
 
-public class TrendingFragment extends Fragment
+public class TrendingFragment extends SherlockFragment
 {
 
     private final static String TAG = TrendingFragment.class.getSimpleName();
@@ -81,8 +79,8 @@ public class TrendingFragment extends Fragment
 
     private void initViews(View v)
     {
-        mTrendingGridView = (GridView) v.findViewById(R.id.trendig_gridview);
-        mSearchListView = (ListView) v.findViewById(R.id.trendig_listview);
+        mTrendingGridView = (GridView) v.findViewById(R.id.trending_gridview);
+        mSearchListView = (ListView) v.findViewById(R.id.trending_listview);
         mProgressSpinner = (ProgressBar) v.findViewById(R.id.progress_spinner);
         mSearchTypeSpinner = (Spinner) v.findViewById(R.id.spinner);
         mHeaderText = (TextView) v.findViewById(R.id.header_txt);

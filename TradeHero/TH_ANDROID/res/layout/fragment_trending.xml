@@ -9,7 +9,7 @@
         layout="@layout/topbar" />
 
     <GridView
-        android:id="@+id/trendig_gridview"
+        android:id="@+id/trending_gridview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/header"
@@ -25,7 +25,7 @@
     </GridView>
 
     <ListView
-        android:id="@+id/trendig_listview"
+        android:id="@+id/trending_listview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/header"

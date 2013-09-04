@@ -1,19 +1,17 @@
 package com.tradehero.th.fragments;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import com.tradehero.th.R;
-import com.tradehero.th.activities.TradeHeroTabActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import com.actionbarsherlock.app.SherlockFragment;
+import com.tradehero.th.R;
+import com.tradehero.th.activities.TradeHeroTabActivity;
 
-public class LeftmenueFragment extends Fragment implements OnClickListener
+public class LeftMenuFragment extends SherlockFragment implements OnClickListener
 {
 
     private LinearLayout mHomeWraper, mTrendingwrapper;
@@ -26,7 +24,7 @@ public class LeftmenueFragment extends Fragment implements OnClickListener
             Bundle savedInstanceState)
     {
         // TODO Auto-generated method stub
-        View v = inflater.inflate(R.layout.leftmenue_container, container, false);
+        View v = inflater.inflate(R.layout.leftmenu_container, container, false);
         _setView(v);
 
         return v;
@@ -34,7 +32,6 @@ public class LeftmenueFragment extends Fragment implements OnClickListener
 
     private void _setView(View v)
     {
-
         mHomeWraper = (LinearLayout) v.findViewById(R.id.home_wrapper);
         mTrendingwrapper = (LinearLayout) v.findViewById(R.id.trending_wrapper);
         mHomeWraper.setOnClickListener(this);
@@ -44,18 +41,17 @@ public class LeftmenueFragment extends Fragment implements OnClickListener
     @Override
     public void onClick(View v)
     {
-
         switch (v.getId())
         {
             case R.id.home_wrapper:
 
-                ((TradeHeroTabActivity) getActivity()).showSlidingMenue(true);
+                //((TradeHeroTabActivity) getActivity()).showSlidingMenue(true);
 
                 break;
             case R.id.trending_wrapper:
 
                 ((TradeHeroTabActivity) getActivity()).showTabContent("Trending");
-                ((TradeHeroTabActivity) getActivity()).showSlidingMenue(true);
+                //((TradeHeroTabActivity) getActivity()).showSlidingMenue(true);
 
                 break;
 

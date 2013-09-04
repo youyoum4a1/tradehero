@@ -18,7 +18,7 @@ public class ActivityHelper
 
     public static void goRoot(Activity activity)
     {
-        Intent localIntent = new Intent(App.context(), DashboardActivity.class);
+        Intent localIntent = new Intent(activity.getApplicationContext(), TradeHeroTabActivity.class);
         localIntent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
         activity.startActivity(localIntent);
         activity.overridePendingTransition(R.anim.alpha_in, R.anim.alpha_out);
