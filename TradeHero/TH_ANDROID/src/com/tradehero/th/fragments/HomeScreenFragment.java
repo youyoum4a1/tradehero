@@ -1,36 +1,10 @@
 package com.tradehero.th.fragments;
 
-import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.base.THUser;
-import com.tradehero.th.http.THAsyncClientFactory;
-import com.tradehero.th.models.TradeOfWeek;
-import java.util.ArrayList;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import android.app.ProgressDialog;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import com.tradehero.th.R;
-
-import com.tradehero.th.adapters.TradeWeekAdapter;
-import com.tradehero.th.application.App;
-
-import com.tradehero.th.application.ConvolutionMatrix;
-import com.tradehero.th.cache.ImageLoader;
-import com.tradehero.th.http.RequestTaskCompleteListener;
-import com.tradehero.th.models.Medias;
-import com.tradehero.th.models.ProfileDTO;
-import com.tradehero.th.models.Request;
-import com.tradehero.th.models.Token;
-import com.tradehero.th.utills.Constants;
-import com.tradehero.th.utills.Util;
-import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -40,11 +14,29 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-
+import com.actionbarsherlock.app.SherlockFragment;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
+import com.tradehero.th.R;
+import com.tradehero.th.adapters.TradeWeekAdapter;
+import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.application.App;
+import com.tradehero.th.application.ConvolutionMatrix;
+import com.tradehero.th.base.THUser;
+import com.tradehero.th.cache.ImageLoader;
+import com.tradehero.th.http.RequestTaskCompleteListener;
+import com.tradehero.th.models.Medias;
+import com.tradehero.th.models.Request;
+import com.tradehero.th.models.Token;
+import com.tradehero.th.models.TradeOfWeek;
+import com.tradehero.th.utills.Constants;
+import com.tradehero.th.utills.Util;
+import java.util.ArrayList;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
-public class HomeScreenFragment extends Fragment
+public class HomeScreenFragment extends SherlockFragment
         implements OnClickListener, RequestTaskCompleteListener
 {
 
@@ -203,14 +195,11 @@ public class HomeScreenFragment extends Fragment
             AsyncHttpClient client = new AsyncHttpClient();
             client.addHeader(Constants.TH_CLIENT_VERSION, Constants.TH_CLIENT_VERSION_VALUE);
             client.addHeader(Constants.AUTHORIZATION, Constants.TH_EMAIL_PREFIX + " " + mytoken);
-            client.get(Constants.SIGN_UP_WITH_SOCIAL_MEDIA_USER_URL+"/"+id+Constants.TH_TRADE_WEEK_POSTFIX, new AsyncHttpResponseHandler()
+            client.get(Constants.SIGN_UP_WITH_SOCIAL_MEDIA_USER_URL + "/" + id + Constants.TH_TRADE_WEEK_POSTFIX, new AsyncHttpResponseHandler()
             {
                 @Override
                 public void onSuccess(String response)
                 {
-
-                    Util.show_toast(getActivity(), response);
-                    System.out.println("response---------------" + response);
                     parseResponse(response);
                     listview_content_progress.setVisibility(View.INVISIBLE);
                     mListviewContent.setVisibility(View.VISIBLE);
