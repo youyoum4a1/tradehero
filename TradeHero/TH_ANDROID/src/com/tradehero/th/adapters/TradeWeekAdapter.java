@@ -32,7 +32,7 @@ public class TradeWeekAdapter extends BaseAdapter
         l_Inflater = LayoutInflater.from(context);
         ctx = context;
         mprofile = ((App) ctx.getApplicationContext()).getProfileDTO();
-        mLoader = new ImageLoader(ctx);
+        mLoader = ImageLoader.getInstance(ctx);
     }
 
     public int getCount()

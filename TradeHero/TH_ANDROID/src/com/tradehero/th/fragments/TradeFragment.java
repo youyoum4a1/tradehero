@@ -97,7 +97,7 @@ public class TradeFragment extends Fragment implements YahooQuoteUpdateListener
 
     private void initViews(View v)
     {
-        mImageLoader = new ImageLoader(getActivity());
+        mImageLoader = ImageLoader.getInstance(getActivity());
 
         mStockBgLogo = (ImageView) v.findViewById(R.id.stock_bg_logo);
         mStockLogo = (ImageView) v.findViewById(R.id.stock_logo);

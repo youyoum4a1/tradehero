@@ -37,7 +37,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
-            android:src="@drawable/th_logo" />
+            android:src="@drawable/th_logo"
+            android:contentDescription="TradeHero white logo"
+        />
 
         <TextView
             android:layout_width="wrap_content"
@@ -70,7 +72,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
-            android:src="@drawable/icn_trending" />
+            android:src="@drawable/icn_trending"
+            android:contentDescription="Trending icon"
+        />
 
         <TextView
             android:layout_width="wrap_content"
@@ -103,7 +107,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
-            android:src="@drawable/icn_community" />
+            android:src="@drawable/icn_community"
+            android:contentDescription="Community icon"
+        />
 
         <TextView
             android:layout_width="wrap_content"
@@ -136,7 +142,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
-            android:src="@drawable/icn_portfolio" />
+            android:src="@drawable/icn_portfolio"
+            android:contentDescription="Portfolio icon"
+        />
 
         <TextView
             android:layout_width="wrap_content"
@@ -169,7 +177,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
-            android:src="@drawable/icn_store" />
+            android:src="@drawable/icn_store"
+            android:contentDescription="Storefront icon"
+        />
 
         <TextView
             android:layout_width="wrap_content"
@@ -213,7 +223,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
-            android:src="@drawable/icn_drawer_signout" />
+            android:src="@drawable/icn_drawer_signout"
+            android:contentDescription="Signout icon"
+        />
 
         <TextView
             android:layout_width="wrap_content"
@@ -245,7 +257,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
-            android:src="@drawable/icn_drawer_resetcache" />
+            android:src="@drawable/icn_drawer_resetcache"
+            android:contentDescription="Reset icon"
+        />
 
         <TextView
             android:layout_width="wrap_content"
@@ -277,7 +291,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
-            android:src="@drawable/icn_drawer_about" />
+            android:src="@drawable/icn_drawer_about"
+            android:contentDescription="About icon"
+        />
 
         <TextView
             android:layout_width="wrap_content"

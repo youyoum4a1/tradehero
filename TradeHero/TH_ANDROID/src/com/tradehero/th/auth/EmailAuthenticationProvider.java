@@ -46,7 +46,7 @@ public class EmailAuthenticationProvider implements THAuthenticationProvider
         {
             authHeaderParameter = Base64.encodeToString(
                     String.format("%1$s:%2$s", credentials.get(UserFormFactory.KEY_EMAIL), credentials.get(UserFormFactory.KEY_PASSWORD)).getBytes(),
-                    Base64.NO_PADDING);
+                    Base64.NO_WRAP);
         }
         catch (JSONException e)
         {

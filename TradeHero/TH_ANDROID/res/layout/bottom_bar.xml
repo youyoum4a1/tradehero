@@ -32,7 +32,9 @@
                 android:layout_marginLeft="0dp"
                 android:clickable="true"
                 android:src="@drawable/icon_menu"
-                android:visibility="visible" />
+                android:contentDescription="Left menu access"
+                android:visibility="visible"
+              />
 
             <ImageView
                 android:id="@+id/logo_img"
@@ -40,7 +42,9 @@
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
                 android:layout_toRightOf="@+id/menuViewButton"
-                android:src="@drawable/th_app_logo" />
+                android:src="@drawable/th_app_logo"
+                android:contentDescription="TradeHero logo"
+            />
 
             <TextView
                 android:id="@+id/header_txt_homescreen_tabactivity"

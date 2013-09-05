@@ -16,5 +16,5 @@
         android:stretchMode="columnWidth"
         android:numColumns="2" 
         android:padding="10dp"
-        />
+    />
 </FrameLayout>

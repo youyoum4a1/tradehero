@@ -22,9 +22,9 @@ public abstract class THAsyncClientFactory
         // make sure we have correct authorization type
         if (authorizationType == null || !(
                 authorizationType.equals(Constants.TH_EMAIL_PREFIX) ||
-                        authorizationType.equals(Constants.TH_TWITTER_PREFIX) ||
-                        authorizationType.equals(Constants.TH_FB_PREFIX) ||
-                        authorizationType.equals(Constants.TH_LINKEDIN_PREFIX)))
+                authorizationType.equals(Constants.TH_TWITTER_PREFIX) ||
+                authorizationType.equals(Constants.TH_FB_PREFIX) ||
+                authorizationType.equals(Constants.TH_LINKEDIN_PREFIX)))
         {
             Log.e(TAG, "Wrong authorization type");
         }
@@ -51,7 +51,7 @@ public abstract class THAsyncClientFactory
 
         private void injectAuthenticationHeader()
         {
-            String authToken = Base64.encodeToString(THUser.getSessionToken().getBytes(), Base64.NO_WRAP);
+            String authToken = THUser.getSessionToken();
             addHeader(Constants.TH_CLIENT_VERSION, Constants.TH_CLIENT_VERSION_VALUE);
             addHeader(Constants.AUTHORIZATION,
                     String.format("%s %s", authorizationType, authToken));

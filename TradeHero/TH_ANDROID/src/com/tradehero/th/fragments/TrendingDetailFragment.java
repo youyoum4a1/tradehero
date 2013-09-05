@@ -6,39 +6,35 @@
  */
 package com.tradehero.th.fragments;
 
-import com.tradehero.th.R;
-import com.tradehero.th.base.THUser;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTabHost;
 import android.text.TextUtils;
-import com.tradehero.th.R;
-import com.tradehero.th.activities.TradeHeroTabActivity;
-import com.tradehero.th.application.App;
-import com.tradehero.th.application.Config;
-import com.tradehero.th.models.Token;
-import com.tradehero.th.models.Trend;
-import com.tradehero.th.utills.Constants;
-import com.tradehero.th.utills.Logger;
-import com.tradehero.th.utills.Logger.LogLevel;
-import com.tradehero.th.utills.YUtils;
 import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
+import com.actionbarsherlock.app.SherlockFragment;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
+import com.tradehero.th.R;
+import com.tradehero.th.activities.TradeHeroTabActivity;
+import com.tradehero.th.application.App;
+import com.tradehero.th.application.Config;
+import com.tradehero.th.base.THUser;
+import com.tradehero.th.models.Trend;
+import com.tradehero.th.utills.Constants;
+import com.tradehero.th.utills.Logger;
+import com.tradehero.th.utills.Logger.LogLevel;
+import com.tradehero.th.utills.YUtils;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
 
-public class TrendingDetailFragment extends Fragment
+public class TrendingDetailFragment extends SherlockFragment
 {
 
     private final static String TAG = TrendingDetailFragment.class.getSimpleName();
