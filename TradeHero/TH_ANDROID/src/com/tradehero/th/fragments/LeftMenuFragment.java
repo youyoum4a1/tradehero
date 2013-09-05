@@ -9,7 +9,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import com.actionbarsherlock.app.SherlockFragment;
 import com.tradehero.th.R;
-import com.tradehero.th.activities.TradeHeroTabActivity;
+import com.tradehero.th.activities.DashboardActivity;
 
 public class LeftMenuFragment extends SherlockFragment implements OnClickListener
 {
@@ -50,7 +50,7 @@ public class LeftMenuFragment extends SherlockFragment implements OnClickListene
                 break;
             case R.id.trending_wrapper:
 
-                ((TradeHeroTabActivity) getActivity()).showTabContent("Trending");
+                //((DashboardActivity) getActivity()).showTabContent("Trending");
                 //((TradeHeroTabActivity) getActivity()).showSlidingMenue(true);
 
                 break;

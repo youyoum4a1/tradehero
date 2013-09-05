@@ -11,16 +11,25 @@ import android.widget.ListView;
 import com.actionbarsherlock.app.SherlockFragment;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.RequestBuilder;
+import com.squareup.picasso.Target;
+import com.squareup.picasso.Transformation;
+import com.tradehero.common.graphics.GaussianTransformation;
 import com.tradehero.common.graphics.RoundedShapeTransformation;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
-import com.tradehero.th.adapters.TradeWeekAdapter;
+import com.tradehero.th.adapters.UserTimelineAdapter;
+import com.tradehero.th.api.timeline.TimelineDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.application.ConvolutionMatrix;
 import com.tradehero.th.base.THUser;
 import com.tradehero.th.http.THAsyncClientFactory;
+import com.tradehero.th.misc.callback.THCallback;
+import com.tradehero.th.misc.callback.THResponse;
+import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.Medias;
 import com.tradehero.th.models.TradeOfWeek;
+import com.tradehero.th.network.NetworkEngine;
+import com.tradehero.th.network.service.UserTimelineService;
 import com.tradehero.th.utills.Constants;
 import java.util.ArrayList;
 import org.json.JSONArray;
@@ -32,7 +41,7 @@ public class HomeScreenFragment extends SherlockFragment
 
     private ImageView userProfileImage;
     private ListView userTimelineItemList;
-    //private LinearLayout mBagroundImage;
+    private View mBagroundImage;
     private UserProfileDTO profile;
     private BitmapDrawable drawableBitmap;
 
@@ -54,48 +63,53 @@ public class HomeScreenFragment extends SherlockFragment
         if (profile != null)
         {
             userProfileImage = (ImageView) view.findViewById(R.id.user_profile_image);
-            Picasso.with(getActivity())
-                    .load(profile.picture)
-                    .transform(new RoundedShapeTransformation())
-                    .into(userProfileImage);
+            mBagroundImage = view.findViewById(R.id.top_layout_sublauyt1);
+            loadPictureWithTransformation(profile.picture, new RoundedShapeTransformation()).into(userProfileImage);
+            loadPictureWithTransformation(profile.picture, new GaussianTransformation()).fetch(new Target()
+            {
+                @Override public void onSuccess(Bitmap bitmap)
+                {
+                    mBagroundImage.setBackground(new BitmapDrawable(getResources(), bitmap));
+                }
+
+                @Override public void onError()
+                {
+                    //To change body of implemented methods use File | Settings | File Templates.
+                }
+            });
+
             getSherlockActivity().getSupportActionBar().setTitle(profile.displayName);
 
             _getDataOfTrade();
         }
     }
 
-    public static Bitmap applyGaussianBlur(Bitmap src)
+    private RequestBuilder loadPictureWithTransformation(String url, Transformation transformation)
     {
-        double[][] GaussianBlurConfig = new double[][] {
-                {1, 2, 1},
-                {2, 4, 2},
-                {1, 2, 1}
-        };
-        ConvolutionMatrix convMatrix = new ConvolutionMatrix(3);
-        convMatrix.applyConfig(GaussianBlurConfig);
-        convMatrix.Factor = 27;
-        convMatrix.Offset = 0;
-        return ConvolutionMatrix.computeConvolution3x3(src, convMatrix);
+        return Picasso.with(getActivity()).load(url).transform(transformation);
     }
 
     private void _getDataOfTrade()
     {
-        THAsyncClientFactory.getInstance(Constants.TH_EMAIL_PREFIX)
-                .get(Constants.SIGN_UP_WITH_SOCIAL_MEDIA_USER_URL + "/" + profile.id + Constants.TH_TRADE_WEEK_POSTFIX, new AsyncHttpResponseHandler()
+        NetworkEngine.createService(UserTimelineService.class)
+                .getTimeline(profile.id, 42, new THCallback<TimelineDTO>()
                 {
-                    @Override
-                    public void onSuccess(String response)
+                    @Override protected void success(TimelineDTO timelineDTO, THResponse thResponse)
                     {
-                        parseResponse(response);
                         userTimelineItemList.setVisibility(View.VISIBLE);
+                        refreshTimeline(timelineDTO);
                     }
 
-                    @Override
-                    public void onFailure(Throwable arg0, String errorMessage)
+                    @Override protected void failure(THException ex)
                     {
-                        THToast.show(errorMessage);
+                        //To change body of implemented methods use File | Settings | File Templates.
                     }
                 });
+    }
+
+    private void refreshTimeline(TimelineDTO timelineDTO)
+    {
+        userTimelineItemList.setAdapter(new UserTimelineAdapter(getActivity(), timelineDTO));
     }
 
     private void parseResponse(String response)
@@ -148,7 +162,7 @@ public class HomeScreenFragment extends SherlockFragment
 
             System.out.println("Trade week size=======" + tradweekList.size());
 
-            userTimelineItemList.setAdapter(new TradeWeekAdapter(getActivity(), tradweekList));
+            userTimelineItemList.setAdapter(new UserTimelineAdapter(getActivity(), tradweekList));
         }
         catch (JSONException e)
         {

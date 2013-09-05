@@ -31,7 +31,7 @@ public class BaseActivity extends Activity
                 timerToShiftActivity.cancel();
                 if (THUser.getSessionToken() != null)
                 {
-                    startActivity(new Intent(BaseActivity.this, TradeHeroTabActivity.class).putExtra(LOGGEDIN, true));
+                    startActivity(new Intent(BaseActivity.this, DashboardActivity.class).putExtra(LOGGEDIN, true));
                 }
                 else
                 {

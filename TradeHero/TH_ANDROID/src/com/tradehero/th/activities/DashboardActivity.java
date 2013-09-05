@@ -35,7 +35,7 @@ public class DashboardActivity extends SherlockFragmentActivity
         mTabHost = (FragmentTabHost) findViewById(android.R.id.tabhost);
         mTabHost.setup(this, getSupportFragmentManager(), R.id.realtabcontent);
 
-        addNewTab(getString(R.string.trending), R.drawable.trending_selector, TrendingFragment.class);
+        addNewTab(getString(R.string.trending), R.drawable.trending_selector, HomeScreenFragment.class);
         addNewTab(getString(R.string.community), R.drawable.community_selector, CommunityScreenFragment.class);
         addNewTab(getString(R.string.home), R.drawable.home_selector, HomeScreenFragment.class);
         addNewTab(getString(R.string.portfolio), R.drawable.pofilio_selector, PortfolioScreenFragment.class);

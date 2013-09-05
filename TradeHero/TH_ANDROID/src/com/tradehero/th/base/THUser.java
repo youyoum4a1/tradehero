@@ -33,12 +33,14 @@ public class THUser
     private static final String PREF_MY_USER = "PREF_MY_USER";
     private static final String PREF_MY_TOKEN = "PREF_MY_TOKEN";
     private static final String CURRENT_SESSION_TOKEN = "PREF_CURRENT_SESSION_TOKEN";
+    private static final String CURRENT_AUTHENTICATION_TYPE = "PREF_AUTHENTICATION_TYPE";
 
     private static AuthenticationMode authenticationMode;
     private static HashMap<String, JSONObject> credentials;
     private static THAuthenticationProvider authenticator;
     private static Map<String, THAuthenticationProvider> authenticationProviders = new HashMap<>();
     private static String currentSessionToken;
+    private static String currentAuthenticationType;
 
     public static void initialize()
     {
@@ -226,16 +228,13 @@ public class THUser
 
         try
         {
-            THAuthenticationProvider currentProvider = authenticationProviders.get(json.get(UserFormFactory.KEY_TYPE));
-
-            currentSessionToken = currentProvider.getAuthHeaderParameter();
-
-            credentials.put(json.getString(UserFormFactory.KEY_TYPE), json);
-
+            currentAuthenticationType = json.getString(UserFormFactory.KEY_TYPE);
+            credentials.put(currentAuthenticationType, json);
         }
         catch (JSONException ex)
         {
             THLog.e(TAG, String.format("JSON (%s) does not have type", json.toString()), ex);
+            return;
         }
 
         Set<String> toSave = new HashSet<>();
@@ -244,9 +243,13 @@ public class THUser
             toSave.add(entry.getValue().toString());
         }
 
+        THAuthenticationProvider currentProvider = authenticationProviders.get(currentAuthenticationType);
+        currentSessionToken = currentProvider.getAuthHeaderParameter();
+
         SharedPreferences.Editor prefEditor = Application.getPreferences().edit();
         prefEditor.putStringSet(PREF_MY_TOKEN, toSave);
         prefEditor.putString(CURRENT_SESSION_TOKEN, currentSessionToken);
+        prefEditor.putString(CURRENT_AUTHENTICATION_TYPE, currentAuthenticationType);
         prefEditor.commit();
     }
 
@@ -254,6 +257,7 @@ public class THUser
     {
         Set<String> savedTokens = Application.getPreferences().getStringSet(PREF_MY_TOKEN, new HashSet<String>());
         currentSessionToken = Application.getPreferences().getString(CURRENT_SESSION_TOKEN, null);
+        currentAuthenticationType = Application.getPreferences().getString(CURRENT_AUTHENTICATION_TYPE, null);
         for (String token : savedTokens)
         {
             try
@@ -271,5 +275,10 @@ public class THUser
     public static void setAuthenticationMode(AuthenticationMode authenticationMode)
     {
         THUser.authenticationMode = authenticationMode;
+    }
+
+    public static String getAuthHeader()
+    {
+        return currentAuthenticationType + " " + currentSessionToken;
     }
 }

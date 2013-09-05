@@ -51,7 +51,8 @@ public class NetworkEngine
 
     private static void buildAuthorizationHeader(RequestInterceptor.RequestFacade request)
     {
-        request.addHeader("TH-Client-Version", "1.5.3");
+        request.addHeader("TH-Client-Version", "1.5.3.3016");
+        request.addHeader("Authorization", THUser.getAuthHeader());
     }
 
     public static <T> T createService(Class<T> service)

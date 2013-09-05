@@ -20,7 +20,7 @@ import com.actionbarsherlock.app.SherlockFragment;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.tradehero.th.R;
-import com.tradehero.th.activities.TradeHeroTabActivity;
+import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.application.App;
 import com.tradehero.th.application.Config;
 import com.tradehero.th.base.THUser;
@@ -82,7 +82,7 @@ public class TrendingDetailFragment extends SherlockFragment
     public void onActivityCreated(Bundle savedInstanceState)
     {
         super.onActivityCreated(savedInstanceState);
-        ((TradeHeroTabActivity) getActivity()).showTabs(false);
+        ((DashboardActivity) getActivity()).showTabs(false);
 
         header = (RelativeLayout) getActivity().findViewById(R.id.top_tabactivity);
         header.setVisibility(View.GONE);

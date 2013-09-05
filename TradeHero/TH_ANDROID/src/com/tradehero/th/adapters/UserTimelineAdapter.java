@@ -1,6 +1,9 @@
 package com.tradehero.th.adapters;
 
+import android.support.v4.app.FragmentActivity;
+import com.tradehero.th.api.timeline.TimelineDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.base.THUser;
 import com.tradehero.th.models.TradeOfWeek;
 import java.util.ArrayList;
 
@@ -16,39 +19,46 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class TradeWeekAdapter extends BaseAdapter
+public class UserTimelineAdapter extends BaseAdapter
 {
+    private final TimelineDTO timelineDTO;
 
-    private static ArrayList<TradeOfWeek> tradeofweeklist;
-
-    Context ctx;
     UserProfileDTO mprofile;
     private LayoutInflater l_Inflater;
     ImageLoader mLoader;
 
-    public TradeWeekAdapter(Context context, ArrayList<TradeOfWeek> results)
+    public UserTimelineAdapter(Context context, ArrayList<TradeOfWeek> results)
     {
-        tradeofweeklist = results;
         l_Inflater = LayoutInflater.from(context);
-        ctx = context;
-        mprofile = ((App) ctx.getApplicationContext()).getProfileDTO();
-        mLoader = ImageLoader.getInstance(ctx);
+        mprofile = THUser.getCurrentUser();
+        mLoader = ImageLoader.getInstance(context);
+        timelineDTO = null;
+    }
+
+    public UserTimelineAdapter(Context context, TimelineDTO timelineDTO)
+    {
+        this.timelineDTO = timelineDTO;
+        l_Inflater = LayoutInflater.from(context);
+        mprofile = THUser.getCurrentUser();
+        mLoader = ImageLoader.getInstance(context);
     }
 
     public int getCount()
     {
-        return tradeofweeklist.size();
+        return timelineDTO.enhancedItems.size();
     }
 
     public Object getItem(int position)
     {
-        return tradeofweeklist.get(position);
+        return timelineDTO.enhancedItems.get(position);
     }
 
     public long getItemId(int position)
     {
         return position;
     }
+
+
 
     public View getView(int position, View convertView, ViewGroup parent)
     {
@@ -72,7 +82,7 @@ public class TradeWeekAdapter extends BaseAdapter
         }
 
         holder.txt_username.setText(mprofile.displayName);
-        holder.txt_usercontent.setText(tradeofweeklist.get(position).getText());
+        holder.txt_usercontent.setText(timelineDTO.enhancedItems.get(position).text);
         mLoader.DisplayRoundImage(mprofile.picture, holder.user_img);
         /*if(tradeofweeklist.get(position).getMedias().getUrl()!=null)
 		{
