@@ -16,3 +16,6 @@
 [submodule "Android-PullToRefresh"]
 	path = Android-PullToRefresh
 	url = git@github.com:nguyentruongtho/Android-PullToRefresh.git
+[submodule "lazyList"]
+	path = lazyList
+	url = git@github.com:xavierlepretre/LazyList.git
