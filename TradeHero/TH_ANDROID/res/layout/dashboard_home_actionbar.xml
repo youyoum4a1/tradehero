@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+      android:id="@+id/top_header_profile"
+      android:layout_width="match_parent"
+      android:layout_height="50dp"
+      android:background="@drawable/topbarrectangle"
+      android:orientation="horizontal" >
+    <TextView
+        android:id="@+id/header_txt_profile_screen"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_toRightOf="@+id/logo_img"
+        android:paddingLeft="15dp"
+        android:singleLine="true"
+        android:text="@string/new_user"
+        android:textColor="@color/white"
+        android:textSize="20sp" />
+  </RelativeLayout>

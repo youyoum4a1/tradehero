@@ -1,58 +1,40 @@
 package com.tradehero.th.fragments;
 
-import android.app.ProgressDialog;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 import com.actionbarsherlock.app.SherlockFragment;
-import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
+import com.squareup.picasso.Picasso;
+import com.tradehero.common.graphics.RoundedShapeTransformation;
+import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.TradeWeekAdapter;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.application.App;
 import com.tradehero.th.application.ConvolutionMatrix;
 import com.tradehero.th.base.THUser;
-import com.tradehero.th.cache.ImageLoader;
-import com.tradehero.th.http.RequestTaskCompleteListener;
+import com.tradehero.th.http.THAsyncClientFactory;
 import com.tradehero.th.models.Medias;
-import com.tradehero.th.models.Request;
-import com.tradehero.th.models.Token;
 import com.tradehero.th.models.TradeOfWeek;
 import com.tradehero.th.utills.Constants;
-import com.tradehero.th.utills.Util;
 import java.util.ArrayList;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 public class HomeScreenFragment extends SherlockFragment
-        implements OnClickListener, RequestTaskCompleteListener
 {
 
-    private ImageView mUserImg;
-    private TextView txtUserName;
-    private String mUserName;
-    private ListView mListviewContent;
-    private LinearLayout mBagroundImage;
+    private ImageView userProfileImage;
+    private ListView userTimelineItemList;
+    //private LinearLayout mBagroundImage;
     private UserProfileDTO profile;
-    private String picture;
     private BitmapDrawable drawableBitmap;
-    private Bitmap mBitmap;
-    private int id;
-    private ProgressDialog mProgressDialog;
-    private ProgressBar listview_content_progress;
-    private Request lLoginRequest;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -60,41 +42,23 @@ public class HomeScreenFragment extends SherlockFragment
     {
         View view = inflater.inflate(R.layout.profile_screen, container, false);
         _initView(view);
-        lLoginRequest = new Request();
 
         return view;
     }
 
     private void _initView(View view)
     {
-
-        mProgressDialog = new ProgressDialog(getActivity());
-        mProgressDialog.setMessage(getResources().getString(R.string.loading_loading));
-        listview_content_progress = (ProgressBar) view.findViewById(R.id.progressbar_tradeofweek);
-        mListviewContent = (ListView) view.findViewById(R.id.list_user_content);
-        txtUserName = (TextView) view.findViewById(R.id.header_txt_homescreen);
-        profile = ((App) getActivity().getApplication()).getProfileDTO();
+        userTimelineItemList = (ListView) view.findViewById(R.id.list_user_content);
+        profile = THUser.getCurrentUser();
 
         if (profile != null)
         {
-
-            String mUserName = profile.displayName;
-            picture = profile.picture;
-            id = profile.id;
-            txtUserName.setText(mUserName);
-            mBagroundImage = (LinearLayout) view.findViewById(R.id.top_layout);
-            mUserImg = (ImageView) view.findViewById(R.id.img_banner_user);
-
-            if (mBitmap == null)
-            {
-                new UpdateUi().execute();
-            }
-            else
-            {
-                mUserImg.setImageBitmap(Util.getRoundedShape(mBitmap));
-                drawableBitmap = new BitmapDrawable(applyGaussianBlur(mBitmap));
-                mBagroundImage.setBackgroundDrawable(drawableBitmap);
-            }
+            userProfileImage = (ImageView) view.findViewById(R.id.user_profile_image);
+            Picasso.with(getActivity())
+                    .load(profile.picture)
+                    .transform(new RoundedShapeTransformation())
+                    .into(userProfileImage);
+            getSherlockActivity().getSupportActionBar().setTitle(profile.displayName);
 
             _getDataOfTrade();
         }
@@ -114,115 +78,29 @@ public class HomeScreenFragment extends SherlockFragment
         return ConvolutionMatrix.computeConvolution3x3(src, convMatrix);
     }
 
-    class UpdateUi extends AsyncTask<Void, Void, Void>
-    {
-        ImageLoader imgLoader;
-        ProgressDialog dlg;
-
-        @Override
-        protected void onPreExecute()
-        {
-            // TODO Auto-generated method stub
-            imgLoader = ImageLoader.getInstance(getActivity());
-            dlg = new ProgressDialog(getActivity());
-            dlg.setMessage(getResources().getString(R.string.loading_loading));
-            dlg.show();
-            super.onPreExecute();
-        }
-
-        @Override
-        protected Void doInBackground(Void... arg0)
-        {
-            // TODO load user profile picture
-            //mBitmap = imgLoader.getBitmap(picture);
-            //mBGBtmp = imgLoader.getBitmap(picture);
-
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void result)
-        {
-            // TODO Auto-generated method stub
-
-            if (mBitmap != null)
-            {
-                mUserImg.setImageBitmap(Util.getRoundedShape(mBitmap));
-                drawableBitmap = new BitmapDrawable(applyGaussianBlur(mBitmap));
-                mBagroundImage.setBackgroundDrawable(drawableBitmap);
-            }
-
-            if (dlg.isShowing())
-            {
-                dlg.cancel();
-            }
-
-            super.onPostExecute(result);
-        }
-    }
-
-    @Override
-    public void onTaskComplete(JSONObject pResponseObject)
-    {
-        //mProgressDialog.dismiss();
-        System.out.println("botm line----" + pResponseObject.toString());
-        //Util.show_toast(getActivity(), pResponseObject.toString());
-
-    }
-
-    @Override
-    public void onErrorOccured(int pErrorCode, String pErrorMessage)
-    {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void onClick(View arg0)
-    {
-        // TODO Auto-generated method stub
-
-    }
-
     private void _getDataOfTrade()
     {
-        Token token = new Token(THUser.getSessionToken());
-
-        if (token != null)
-        {
-            String  mytoken = token.getToken();
-            System.out.println("my token is ------"+ mytoken);
-            AsyncHttpClient client = new AsyncHttpClient();
-            client.addHeader(Constants.TH_CLIENT_VERSION, Constants.TH_CLIENT_VERSION_VALUE);
-            client.addHeader(Constants.AUTHORIZATION, Constants.TH_EMAIL_PREFIX + " " + mytoken);
-            client.get(Constants.SIGN_UP_WITH_SOCIAL_MEDIA_USER_URL + "/" + id + Constants.TH_TRADE_WEEK_POSTFIX, new AsyncHttpResponseHandler()
-            {
-                @Override
-                public void onSuccess(String response)
+        THAsyncClientFactory.getInstance(Constants.TH_EMAIL_PREFIX)
+                .get(Constants.SIGN_UP_WITH_SOCIAL_MEDIA_USER_URL + "/" + profile.id + Constants.TH_TRADE_WEEK_POSTFIX, new AsyncHttpResponseHandler()
                 {
-                    parseResponse(response);
-                    listview_content_progress.setVisibility(View.INVISIBLE);
-                    mListviewContent.setVisibility(View.VISIBLE);
-                }
-
-                @Override
-                public void onFailure(Throwable arg0, String arg1)
-                {
-
-                    listview_content_progress.setVisibility(View.INVISIBLE);
-                    mListviewContent.setVisibility(View.INVISIBLE);
-                    if (arg1 != null)
+                    @Override
+                    public void onSuccess(String response)
                     {
-                        Util.show_toast(getActivity(), arg1);
+                        parseResponse(response);
+                        userTimelineItemList.setVisibility(View.VISIBLE);
                     }
-                }
-            });
-        }
+
+                    @Override
+                    public void onFailure(Throwable arg0, String errorMessage)
+                    {
+                        THToast.show(errorMessage);
+                    }
+                });
     }
 
     private void parseResponse(String response)
     {
-        ArrayList<TradeOfWeek> tradweekList = new ArrayList<TradeOfWeek>();
+        ArrayList<TradeOfWeek> tradweekList = new ArrayList<>();
         TradeOfWeek mTradeWeek = null;
         Medias objMedia = null;
         try
@@ -270,10 +148,10 @@ public class HomeScreenFragment extends SherlockFragment
 
             System.out.println("Trade week size=======" + tradweekList.size());
 
-            mListviewContent.setAdapter(new TradeWeekAdapter(getActivity(), tradweekList));
-        } catch (JSONException e)
+            userTimelineItemList.setAdapter(new TradeWeekAdapter(getActivity(), tradweekList));
+        }
+        catch (JSONException e)
         {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }

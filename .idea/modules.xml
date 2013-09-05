@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/ActionBarSherlock.iml" filepath="$PROJECT_DIR$/ActionBarSherlock.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Android-PullToRefresh.iml" filepath="$PROJECT_DIR$/Android-PullToRefresh.iml" />
       <module fileurl="file://$PROJECT_DIR$/TH_Android.iml" filepath="$PROJECT_DIR$/TH_Android.iml" />
       <module fileurl="file://$PROJECT_DIR$/facebook-android-sdk.iml" filepath="$PROJECT_DIR$/facebook-android-sdk.iml" />
       <module fileurl="file://$PROJECT_DIR$/android-hero-validator/hero-validator.iml" filepath="$PROJECT_DIR$/android-hero-validator/hero-validator.iml" />

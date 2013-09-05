@@ -13,3 +13,6 @@
 [submodule "android-hero-validator"]
 	path = android-hero-validator
 	url = git@github.com:nguyentruongtho/android-hero-validator.git
+[submodule "Android-PullToRefresh"]
+	path = Android-PullToRefresh
+	url = git@github.com:nguyentruongtho/Android-PullToRefresh.git
