@@ -6,16 +6,16 @@
  */
 package com.tradehero.th.adapters;
 
+import com.fedorvlasov.lazylist.ImageLoader;
 import java.util.List;
 
 import android.content.Context;
 import android.graphics.Bitmap;
 import com.tradehero.th.R;
-import com.tradehero.th.cache.ImageLoader;
 import com.tradehero.th.cache.ImageLoader.ImageLoadingListener;
 import com.tradehero.th.models.Trend;
 import com.tradehero.th.utills.DateUtils;
-import com.tradehero.th.utills.ImageUtils;
+import com.tradehero.common.graphics.ImageUtils;
 import com.tradehero.th.utills.Logger;
 import com.tradehero.th.utills.Logger.LogLevel;
 import com.tradehero.th.utills.TrendUtils;
@@ -116,18 +116,20 @@ public class SearchStockAdapter extends ArrayAdapter<Trend>
         if (trend.getImageBlobUrl() != null && trend.getImageBlobUrl().length() > 0)
         {
             //Bitmap b = convertToMutable((new WebImageCache(TrendingActivity.this)).get(trend.getImageBlobUrl()));
-            ImageLoader.getInstance(getContext()).getBitmapImage(trend.getImageBlobUrl(),
-                    new ImageLoadingListener()
-                    {
-                        public void onLoadingComplete(Bitmap loadedImage)
-                        {
-                            final Bitmap b =
-                                    ImageUtils.convertToMutableAndRemoveBackground(loadedImage);
-                            sLogo.setImageBitmap(b);
-                            sBgLogo.setImageBitmap(b);
-                            sBgLogo.setAlpha(26);
-                        }
-                    });
+
+            // TODO uncomment next line
+            //ImageLoader.getInstance(getContext()).getBitmapImage(trend.getImageBlobUrl(),
+            //        new ImageLoadingListener()
+            //        {
+            //            public void onLoadingComplete(Bitmap loadedImage)
+            //            {
+            //                final Bitmap b =
+            //                        ImageUtils.convertToMutableAndRemoveBackground(loadedImage);
+            //                sLogo.setImageBitmap(b);
+            //                sBgLogo.setImageBitmap(b);
+            //                sBgLogo.setAlpha(26);
+            //            }
+            //        });
         }
 
         return convertView;

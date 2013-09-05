@@ -30,6 +30,7 @@ import android.widget.ImageView;
  * @author Vineet Aggarwal
  */
 
+@Deprecated
 public class ImageLoader
 {
 

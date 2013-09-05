@@ -1,6 +1,12 @@
 package com.tradehero.th.cache;
 
-import com.tradehero.th.application.App;
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
+import android.os.Handler;
+import android.widget.ImageView;
+import com.tradehero.th.utills.Util;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -16,18 +22,11 @@ import java.util.WeakHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.os.AsyncTask;
-import android.os.Handler;
-import com.tradehero.th.utills.Util;
-import android.widget.ImageView;
-
 /**
  * Using LazyList via https://github.com/thest1/LazyList/tree/master/src/com/fedorvlasov/lazylist
  * for the example since its super lightweight I barely modified this file
  */
+@Deprecated
 public class ImageLoader
 {
     private static ImageLoader instance;

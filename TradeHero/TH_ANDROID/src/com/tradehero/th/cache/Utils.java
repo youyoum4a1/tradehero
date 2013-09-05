@@ -3,6 +3,7 @@ package com.tradehero.th.cache;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+@Deprecated
 public class Utils
 {
     public static void CopyStream(InputStream is, OutputStream os)

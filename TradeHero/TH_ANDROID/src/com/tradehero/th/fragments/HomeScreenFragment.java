@@ -26,6 +26,8 @@ import com.tradehero.th.http.THAsyncClientFactory;
 import com.tradehero.th.misc.callback.THCallback;
 import com.tradehero.th.misc.callback.THResponse;
 import com.tradehero.th.misc.exception.THException;
+import com.tradehero.th.http.ImageLoader;
+import com.tradehero.th.http.RequestTaskCompleteListener;
 import com.tradehero.th.models.Medias;
 import com.tradehero.th.models.TradeOfWeek;
 import com.tradehero.th.network.NetworkEngine;
@@ -67,10 +69,61 @@ public class HomeScreenFragment extends SherlockFragment
             loadPictureWithTransformation(profile.picture, new RoundedShapeTransformation()).into(userProfileImage);
             loadPictureWithTransformation(profile.picture, new GaussianTransformation()).fetch(new Target()
             {
+<<<<<<< HEAD
                 @Override public void onSuccess(Bitmap bitmap)
                 {
                     mBagroundImage.setBackground(new BitmapDrawable(getResources(), bitmap));
                 }
+=======
+                mUserImg.setImageBitmap(Util.getRoundedShape(mBitmap));
+                drawableBitmap = new BitmapDrawable(applyGaussianBlur(mBitmap));
+                mBagroundImage.setBackgroundDrawable(drawableBitmap);
+            }
+
+            _getDataOfTrade();
+        }
+    }
+
+    public static Bitmap applyGaussianBlur(Bitmap src)
+    {
+        double[][] GaussianBlurConfig = new double[][] {
+                {1, 2, 1},
+                {2, 4, 2},
+                {1, 2, 1}
+        };
+        ConvolutionMatrix convMatrix = new ConvolutionMatrix(3);
+        convMatrix.applyConfig(GaussianBlurConfig);
+        convMatrix.Factor = 27;
+        convMatrix.Offset = 0;
+        return ConvolutionMatrix.computeConvolution3x3(src, convMatrix);
+    }
+
+    class UpdateUi extends AsyncTask<Void, Void, Void>
+    {
+        ImageLoader imgLoader;
+        ProgressDialog dlg;
+
+        @Override
+        protected void onPreExecute()
+        {
+            // TODO Auto-generated method stub
+            imgLoader = new ImageLoader(getActivity());
+            dlg = new ProgressDialog(getActivity());
+            dlg.setMessage(getResources().getString(R.string.loading_loading));
+            dlg.show();
+            super.onPreExecute();
+        }
+
+        @Override
+        protected Void doInBackground(Void... arg0)
+        {
+            // TODO load user profile picture
+            //mBitmap = imgLoader.getBitmap(picture);
+            //mBGBtmp = imgLoader.getBitmap(picture);
+
+            return null;
+        }
+>>>>>>> Refactored TrendingView with more OOP and new ImageLoader
 
                 @Override public void onError()
                 {

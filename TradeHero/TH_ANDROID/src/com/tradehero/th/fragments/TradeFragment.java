@@ -6,25 +6,11 @@
  */
 package com.tradehero.th.fragments;
 
-import com.tradehero.th.R;
-import java.util.HashMap;
-
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
-import com.tradehero.th.application.App;
-import com.tradehero.th.application.Config;
-import com.tradehero.th.cache.ImageLoader;
-import com.tradehero.th.cache.ImageLoader.ImageLoadingListener;
-import com.tradehero.th.fragments.TrendingDetailFragment.YahooQuoteUpdateListener;
-import com.tradehero.th.models.Trend;
-import com.tradehero.th.utills.DateUtils;
-import com.tradehero.th.utills.ImageUtils;
-import com.tradehero.th.utills.Logger;
-import com.tradehero.th.utills.Logger.LogLevel;
-import com.tradehero.th.utills.YUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -35,6 +21,19 @@ import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
+import com.tradehero.common.graphics.ImageUtils;
+import com.tradehero.th.R;
+import com.tradehero.th.application.App;
+import com.tradehero.th.application.Config;
+import com.tradehero.th.cache.ImageLoader;
+import com.tradehero.th.cache.ImageLoader.ImageLoadingListener;
+import com.tradehero.th.fragments.TrendingDetailFragment.YahooQuoteUpdateListener;
+import com.tradehero.th.models.Trend;
+import com.tradehero.th.utills.DateUtils;
+import com.tradehero.th.utills.Logger;
+import com.tradehero.th.utills.Logger.LogLevel;
+import com.tradehero.th.utills.YUtils;
+import java.util.HashMap;
 
 public class TradeFragment extends Fragment implements YahooQuoteUpdateListener
 {
@@ -97,7 +96,7 @@ public class TradeFragment extends Fragment implements YahooQuoteUpdateListener
 
     private void initViews(View v)
     {
-        mImageLoader = ImageLoader.getInstance(getActivity());
+        mImageLoader = new ImageLoader(getActivity());
 
         mStockBgLogo = (ImageView) v.findViewById(R.id.stock_bg_logo);
         mStockLogo = (ImageView) v.findViewById(R.id.stock_logo);
@@ -202,23 +201,23 @@ public class TradeFragment extends Fragment implements YahooQuoteUpdateListener
 
         if (!TextUtils.isEmpty(trend.getImageBlobUrl()))
         {
-            mImageLoader.getBitmapImage(trend.getImageBlobUrl(), new ImageLoadingListener()
-            {
-                public void onLoadingComplete(Bitmap loadedImage)
-                {
-                    final Bitmap b = ImageUtils.convertToMutableAndRemoveBackground(loadedImage);
-                    mStockLogo.setImageBitmap(b);
-                    mStockBgLogo.setImageBitmap(b);
-                }
-            });
+            //mImageLoader.getBitmapImage(trend.getImageBlobUrl(), new ImageLoadingListener()
+            //{
+            //    public void onLoadingComplete(Bitmap loadedImage)
+            //    {
+            //        final Bitmap b = ImageUtils.convertToMutableAndRemoveBackground(loadedImage, 5);
+            //        mStockLogo.setImageBitmap(b);
+            //        mStockBgLogo.setImageBitmap(b);
+            //    }
+            //});
         }
 
         //mCashAvailableValue
 
         if (!TextUtils.isEmpty(trend.getYahooSymbol()))
         {
-            mImageLoader.DisplayImage(String.format(Config.getTrendingChartUrl(), trend.getYahooSymbol()),
-                    mStockChart);
+            //mImageLoader.DisplayImage(String.format(Config.getTrendingChartUrl(), trend.getYahooSymbol()),
+            //        mStockChart);
         }
 
         lastPrice = YUtils.parseQuoteValue(trend.getLastPrice());

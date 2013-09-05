@@ -6,13 +6,12 @@
  */
 package com.tradehero.th.adapters;
 
+import com.tradehero.th.http.ImageLoader;
 import java.util.List;
-
 import android.content.Context;
 import android.graphics.Color;
 import com.tradehero.th.R;
 import com.tradehero.th.application.CircularImageView;
-import com.tradehero.th.cache.ImageLoader;
 import com.tradehero.th.models.User;
 import com.tradehero.th.utills.DateUtils;
 import com.tradehero.th.utills.YUtils;
@@ -33,7 +32,7 @@ public class SearchPeopleAdapter extends ArrayAdapter<User>
     public SearchPeopleAdapter(Context context, List<User> userList)
     {
         super(context, 0, userList);
-        mImageLoader = ImageLoader.getInstance(context);
+        mImageLoader = new ImageLoader(context);
     }
 
     public static class ViewHolder

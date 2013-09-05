@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.tradehero.th.widget.trending.TrendingSecurityView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="175dp"
     android:layout_height="98dp" >
 
-    <com.loopj.android.image.SmartImageView
+    <ImageView
         android:id="@+id/stock_bg_logo"
         android:layout_width="175dp"
         android:layout_height="98dp"
@@ -28,7 +28,7 @@
             android:text=""
             android:textStyle="bold" />
 
-        <com.loopj.android.image.SmartImageView
+        <ImageView
             android:id="@+id/stock_logo"
             android:layout_width="wrap_content"
             android:layout_height="30dp"
@@ -90,4 +90,4 @@
         </LinearLayout>
     </RelativeLayout>
 
-</FrameLayout>
+</com.tradehero.th.widget.trending.TrendingSecurityView>

@@ -1,9 +1,9 @@
 package com.tradehero.th.cache;
 
+import android.content.Context;
 import java.io.File;
 
-import android.content.Context;
-
+@Deprecated
 public class FileCache
 {
 
