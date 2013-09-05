@@ -4,38 +4,50 @@
  *
  * Created by @author Siddesh Bingi on Jul 27, 2013
  */
-package com.tradehero.th.utills;
+package com.tradehero.common.graphics;
 
+import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.os.Environment;
+import com.fedorvlasov.lazylist.ImageLoader;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileChannel.MapMode;
 
-import android.graphics.Bitmap;
-import android.graphics.Color;
-import android.os.Environment;
-
 public class ImageUtils
 {
+    public static ImageLoader.BitmapProcessor createDefaultWhiteToTransparentProcessor()
+    {
+        return createWhiteToTransparentProcessor(5);
+    }
+
+    public static ImageLoader.BitmapProcessor createWhiteToTransparentProcessor(final int tolerance)
+    {
+        return new ImageLoader.BitmapProcessor()
+        {
+            @Override public Bitmap process(Bitmap bitmap)
+            {
+                return convertToMutableAndRemoveBackground(bitmap, tolerance);
+            }
+        };
+    }
 
     /**
-     * Converts a immutable bitmap to a mutable bitmap. This operation doesn't allocates more memory
-     * that there is already allocated.
+     * Converts a immutable bitmap to a mutable bitmap. This operation doesn't allocates more memory that there is already allocated.
      *
      * @param imgIn - Source image. It will be released, and should not be used more
+     * @param tolerance - example 5 will tell white is between 255 and 255
      * @return a copy of imgIn, but muttable.
      */
-    public static Bitmap convertToMutableAndRemoveBackground(Bitmap imgIn)
+    public static Bitmap convertToMutableAndRemoveBackground(Bitmap imgIn, final int tolerance)
     {
         try
         {
-            //this is the file going to use temporally to save the bytes.
+            //this is the file going to use temporarily to save the bytes.
             // This file will not be a image, it will store the raw image data.
-            File file = new File(
-                    Environment.getExternalStorageDirectory() + File.separator + "temp.tmp");
+            File file = File.createTempFile("ImageUtils.", ".tmp.bmp", Environment.getExternalStorageDirectory());
 
             //Open an RandomAccessFile
             //Make sure you have added uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
@@ -54,7 +66,8 @@ public class ImageUtils
             imgIn.copyPixelsToBuffer(map);
             //recycle the source bitmap, this will be no longer used.
             imgIn.recycle();
-            System.gc();// try to force the bytes from the imgIn to be released
+
+            //System.gc();// try to force the bytes from the imgIn to be released
 
             //Create a new bitmap to load the bitmap again. Probably the memory will be available.
             imgIn = Bitmap.createBitmap(width, height, type);
@@ -68,18 +81,20 @@ public class ImageUtils
             int pixelSize = iWidth * iHeight;
             int[] imagePixels = new int[pixelSize];
             imgIn.getPixels(imagePixels, 0, iWidth, 0, 0, iWidth, iHeight);
+            int lowerBound = 255 - tolerance;
+            int alpha, red, green, blue;
             for (int i = 0; i < pixelSize; i++)
             {
 
-                int alpha = Color.alpha(imagePixels[i]);
-                int red = Color.red(imagePixels[i]);
-                int green = Color.green(imagePixels[i]);
-                int blue = Color.blue(imagePixels[i]);
+                alpha = Color.alpha(imagePixels[i]);
+                red = Color.red(imagePixels[i]);
+                green = Color.green(imagePixels[i]);
+                blue = Color.blue(imagePixels[i]);
 
-                if (((alpha >= 250) && (alpha <= 255)) &&
-                        ((red >= 250) && (red <= 255)) &&
-                        ((green >= 250) && (green <= 255)) &&
-                        ((blue >= 250) && (blue <= 255)))
+                if (((alpha >= lowerBound) && (alpha <= 255)) &&
+                        ((red >= lowerBound) && (red <= 255)) &&
+                        ((green >= lowerBound) && (green <= 255)) &&
+                        ((blue >= lowerBound) && (blue <= 255)))
                 {
 
                     imagePixels[i] = Color.TRANSPARENT;
@@ -92,13 +107,7 @@ public class ImageUtils
 
             // delete the temp file
             file.delete();
-        } catch (FileNotFoundException e)
-        {
-            e.printStackTrace();
-        } catch (IOException e)
-        {
-            e.printStackTrace();
-        } catch (Exception e)
+        } catch (/*FileNotFoundException | IOException |*/ Exception e)
         {
             e.printStackTrace();
         }
