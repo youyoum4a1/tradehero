@@ -1,11 +1,10 @@
 package com.tradehero.common.graphics;
 
 import android.graphics.Bitmap;
-import com.squareup.picasso.Transformation;
 import com.tradehero.th.application.ConvolutionMatrix;
 
 /** Created with IntelliJ IDEA. User: tho Date: 9/5/13 Time: 2:26 PM Copyright (c) TradeHero */
-public class GaussianTransformation implements Transformation
+public class GaussianTransformation implements com.squareup.picasso.Transformation, com.fedorvlasov.lazylist.ImageLoader.Transformation
 {
     @Override public Bitmap transform(Bitmap bitmap)
     {
