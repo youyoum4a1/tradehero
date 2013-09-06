@@ -19,14 +19,12 @@
   <color name="twit_color2">#0087CE</color>
   <color name="linkd_color1">#009CDA</color>
   <color name="linkd_color2">#0167A3</color>
-  <color name="gray_2">#AFAFAF</color>
   <color name="gray_1">#C0C0C0</color>
   <color name="gray_3">#F3F3F3</color>
   <color name="gray_4">#F6F6F6</color>
   <color name="font_roi">#00CC00</color>
 
   <!-- What's Trending -->
-  <color name="trending_grid_item_bg">#33ffffff</color>
   <color name="title">#ffb0b0b0</color>
   <color name="sec_type">#ff5791bd</color>
   <color name="stock_name">#485263</color>
