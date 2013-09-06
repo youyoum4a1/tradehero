@@ -1,6 +1,7 @@
 package com.tradehero.th.widget.trending;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -8,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import com.fedorvlasov.lazylist.ImageLoader;
 import com.tradehero.common.graphics.ImageUtils;
+import com.tradehero.common.graphics.THBitmapFactory;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
@@ -151,7 +153,7 @@ public class TrendingSecurityView extends FrameLayout implements DTOView<Securit
     {
         if (trend.imageBlobUrl != null && trend.imageBlobUrl.length() > 0)
         {
-            mImageLoader.displayImage(trend.imageBlobUrl, stockLogo, true);
+            mImageLoader.displayImage(trend.imageBlobUrl, stockLogo, true, createImageLoadingListener ());
         }
         else
         {
@@ -160,5 +162,16 @@ public class TrendingSecurityView extends FrameLayout implements DTOView<Securit
             stockBgLogo.setImageResource(R.drawable.default_image);
             invalidate();
         }
+    }
+
+    private ImageLoader.ImageLoadingListener createImageLoadingListener ()
+    {
+        return new ImageLoader.ImageLoadingListener()
+        {
+            @Override public void onLoadingComplete(String url, Bitmap loadedImage)
+            {
+                stockBgLogo.setImageBitmap(THBitmapFactory.toGrayscale(loadedImage));
+            }
+        };
     }
 }

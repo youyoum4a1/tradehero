@@ -24,7 +24,7 @@ public class TrendingAdapter extends ArrayAdapter<SecurityCompactDTO>
     private final static String TAG = TrendingAdapter.class.getSimpleName();
     static public ImageLoader mImageLoader;
 
-    public TrendingAdapter(Context context, List<SecurityCompactDTO> trendList)
+    public TrendingAdapter(final Context context, final List<SecurityCompactDTO> trendList)
     {
         super(context, 0, trendList);
         if (mImageLoader == null)
@@ -35,7 +35,7 @@ public class TrendingAdapter extends ArrayAdapter<SecurityCompactDTO>
     }
 
     @SuppressWarnings("deprecation")
-    public View getView(final int position, View convertView, ViewGroup parent)
+    public View getView(final int position, View convertView, final ViewGroup parent)
     {
         if (convertView == null)
         {
@@ -51,7 +51,7 @@ public class TrendingAdapter extends ArrayAdapter<SecurityCompactDTO>
     {
         return new ImageLoader.ImageLoadingListener()
         {
-            public void onLoadingComplete(Bitmap b)
+            public void onLoadingComplete(final String url, final Bitmap b)
             {
                 //final Bitmap bCleaned =
                 //        ImageUtils.convertToMutableAndRemoveBackground(loadedImage);
@@ -64,6 +64,4 @@ public class TrendingAdapter extends ArrayAdapter<SecurityCompactDTO>
             }
         };
     }
-
-
 }
