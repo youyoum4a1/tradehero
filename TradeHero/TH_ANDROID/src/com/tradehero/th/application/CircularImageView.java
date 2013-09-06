@@ -23,6 +23,7 @@ public class CircularImageView extends ImageView
     private Paint paintBorder;
     private BitmapShader shader;
 
+    //<editor-fold desc="Constructors">
     public CircularImageView(Context context)
     {
         super(context);
@@ -40,6 +41,7 @@ public class CircularImageView extends ImageView
         super(context, attrs, defStyle);
         setup();
     }
+    //</editor-fold>
 
     private void setup()
     {
