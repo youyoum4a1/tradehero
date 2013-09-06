@@ -6,16 +6,12 @@
  */
 package com.tradehero.th.adapters;
 
-import com.fedorvlasov.lazylist.ImageLoader;
 import java.util.List;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import com.tradehero.th.R;
-import com.tradehero.th.cache.ImageLoader.ImageLoadingListener;
 import com.tradehero.th.models.Trend;
 import com.tradehero.th.utills.DateUtils;
-import com.tradehero.common.graphics.ImageUtils;
 import com.tradehero.th.utills.Logger;
 import com.tradehero.th.utills.Logger.LogLevel;
 import com.tradehero.th.utills.TrendUtils;

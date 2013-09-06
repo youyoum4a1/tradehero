@@ -1,47 +1,31 @@
-/**
- * ImageUtils.java 
- * TradeHero
- *
- * Created by @author Siddesh Bingi on Jul 27, 2013
- */
 package com.tradehero.common.graphics;
 
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Environment;
-import com.fedorvlasov.lazylist.ImageLoader;
 import java.io.File;
 import java.io.RandomAccessFile;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
-import java.nio.channels.FileChannel.MapMode;
 
-public class ImageUtils
+/** Created with IntelliJ IDEA. User: xavier Date: 9/6/13 Time: 12:38 PM To change this template use File | Settings | File Templates. */
+public class WhiteToTransparentTransformation implements com.squareup.picasso.Transformation, com.fedorvlasov.lazylist.ImageLoader.Transformation
 {
-    public static ImageLoader.BitmapProcessor createDefaultWhiteToTransparentProcessor()
+    public static final int DEFAULT_TOLERANCE = 5;
+    public int tolerance;
+
+    public WhiteToTransparentTransformation()
     {
-        return createWhiteToTransparentProcessor(5);
+        super();
+        this.tolerance = DEFAULT_TOLERANCE;
     }
 
-    public static ImageLoader.BitmapProcessor createWhiteToTransparentProcessor(final int tolerance)
+    public WhiteToTransparentTransformation(final int tolerance)
     {
-        return new ImageLoader.BitmapProcessor()
-        {
-            @Override public Bitmap process(Bitmap bitmap)
-            {
-                return convertToMutableAndRemoveBackground(bitmap, tolerance);
-            }
-        };
+        this.tolerance = tolerance;
     }
 
-    /**
-     * Converts a immutable bitmap to a mutable bitmap. This operation doesn't allocates more memory that there is already allocated.
-     *
-     * @param imgIn - Source image. It will be released, and should not be used more
-     * @param tolerance - example 5 will tell white is between 255 and 255
-     * @return a copy of imgIn, but muttable.
-     */
-    public static Bitmap convertToMutableAndRemoveBackground(Bitmap imgIn, final int tolerance)
+    @Override public Bitmap transform(Bitmap imgIn)
     {
         try
         {
@@ -62,7 +46,7 @@ public class ImageUtils
             //Copy the byte to the file
             //Assume source bitmap loaded using options.inPreferredConfig = Config.ARGB_8888;
             FileChannel channel = randomAccessFile.getChannel();
-            MappedByteBuffer map = channel.map(MapMode.READ_WRITE, 0, imgIn.getRowBytes() * height);
+            MappedByteBuffer map = channel.map(FileChannel.MapMode.READ_WRITE, 0, imgIn.getRowBytes() * height);
             imgIn.copyPixelsToBuffer(map);
             //recycle the source bitmap, this will be no longer used.
             imgIn.recycle();
@@ -107,11 +91,17 @@ public class ImageUtils
 
             // delete the temp file
             file.delete();
-        } catch (/*FileNotFoundException | IOException |*/ Exception e)
+        }
+        catch (/*FileNotFoundException | IOException |*/ Exception e)
         {
             e.printStackTrace();
         }
 
         return imgIn;
+    }
+
+    @Override public String key()
+    {
+        return "whiteToTransparent()";
     }
 }

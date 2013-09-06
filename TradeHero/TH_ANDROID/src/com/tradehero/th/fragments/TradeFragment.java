@@ -6,7 +6,6 @@
  */
 package com.tradehero.th.fragments;
 
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -21,12 +20,9 @@ import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
-import com.tradehero.common.graphics.ImageUtils;
 import com.tradehero.th.R;
 import com.tradehero.th.application.App;
-import com.tradehero.th.application.Config;
 import com.tradehero.th.cache.ImageLoader;
-import com.tradehero.th.cache.ImageLoader.ImageLoadingListener;
 import com.tradehero.th.fragments.TrendingDetailFragment.YahooQuoteUpdateListener;
 import com.tradehero.th.models.Trend;
 import com.tradehero.th.utills.DateUtils;

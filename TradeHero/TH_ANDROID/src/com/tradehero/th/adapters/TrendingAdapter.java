@@ -7,15 +7,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
-import android.widget.TextView;
 import com.fedorvlasov.lazylist.ImageLoader;
-import com.loopj.android.image.SmartImageView;
-import com.tradehero.common.graphics.ImageUtils;
-import com.tradehero.common.utils.THLog;
+import com.tradehero.common.graphics.WhiteToTransparentTransformation;
 import com.tradehero.th.R;
 import com.tradehero.th.api.security.SecurityCompactDTO;
-import com.tradehero.th.utills.TrendUtils;
-import com.tradehero.th.utills.YUtils;
 import com.tradehero.th.widget.trending.TrendingSecurityView;
 import java.util.List;
 
@@ -29,7 +24,7 @@ public class TrendingAdapter extends ArrayAdapter<SecurityCompactDTO>
         super(context, 0, trendList);
         if (mImageLoader == null)
         {
-            mImageLoader = new ImageLoader(context, ImageUtils.createDefaultWhiteToTransparentProcessor(), 3, R.drawable.default_image);
+            mImageLoader = new ImageLoader(context, new WhiteToTransparentTransformation(), 3, R.drawable.default_image);
             //mImageLoader = new com.fedorvlasov.lazylist.ImageLoader(context);
         }
     }
