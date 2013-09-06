@@ -8,25 +8,22 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.fedorvlasov.lazylist.ImageLoader;
+import com.squareup.picasso.Picasso;
 import com.tradehero.th.R;
 import com.tradehero.th.api.timeline.TimelineDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.application.App;
 import com.tradehero.th.base.THUser;
 
 public class UserTimelineAdapter extends BaseAdapter
 {
     private final TimelineDTO timelineDTO;
-
     private final UserProfileDTO profile;
-    private final LayoutInflater inflater;
-    private final ImageLoader mLoader;
 
     public UserTimelineAdapter(Context context, TimelineDTO timelineDTO)
     {
         this.timelineDTO = timelineDTO;
-        this.inflater = LayoutInflater.from(context);
         this.profile = THUser.getCurrentUser();
-        mLoader = new ImageLoader(context);
     }
 
     @Override
@@ -53,13 +50,14 @@ public class UserTimelineAdapter extends BaseAdapter
         ViewHolder holder;
         if (convertView == null)
         {
-            convertView = inflater.inflate(R.layout.profile_item_list_screen, parent);
+            LayoutInflater inflater = (LayoutInflater) App.context().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            convertView = inflater.inflate(R.layout.profile_item_list_screen, null);
+
             holder = new ViewHolder();
-            holder.txt_username = (TextView) convertView.findViewById(R.id.txt_user_name);
-            holder.txt_usercontent =
-                    (TextView) convertView.findViewById(R.id.txt_user_content_name);
-            holder.user_img = (ImageView) convertView.findViewById(R.id.img_user);
-            holder.vendr_image = (ImageView) convertView.findViewById(R.id.img_vender);
+            holder.username = (TextView) convertView.findViewById(R.id.txt_user_name);
+            holder.userContent = (TextView) convertView.findViewById(R.id.txt_user_content_name);
+            holder.userAvatar = (ImageView) convertView.findViewById(R.id.img_user);
+            holder.vendorImage = (ImageView) convertView.findViewById(R.id.img_vender);
             //holder.txt_code = (TextView) convertView.findViewById(R.id.txt_dlrcode);
 
             convertView.setTag(holder);
@@ -69,15 +67,13 @@ public class UserTimelineAdapter extends BaseAdapter
             holder = (ViewHolder) convertView.getTag();
         }
 
-        holder.txt_username.setText(profile.displayName);
-        holder.txt_usercontent.setText(timelineDTO.enhancedItems.get(position).text);
-        mLoader.displayImage(profile.picture, holder.user_img);
+        holder.username.setText(profile.displayName);
+        holder.userContent.setText(timelineDTO.enhancedItems.get(position).text);
+        Picasso.with(App.context()).load(profile.picture).into(holder.userAvatar);
 
-        // TODO uncomment next line
-        //mLoader.DisplayRoundImage(profile.picture, holder.user_img);
         /*if(tradeofweeklist.get(position).getMedias().getUrl()!=null)
 		{
-			mLoader.DisplayImage( tradeofweeklist.get(position).getMedias().getUrl(), holder.vendr_image);
+			mLoader.DisplayImage( tradeofweeklist.get(position).getMedias().getUrl(), holder.vendorImage);
 		}
 		*/
         return convertView;
@@ -85,10 +81,10 @@ public class UserTimelineAdapter extends BaseAdapter
 
     static class ViewHolder
     {
-        TextView txt_username;
-        TextView txt_usercontent;
-        TextView txt_time;
-        ImageView user_img;
-        ImageView vendr_image;
+        TextView username;
+        TextView userContent;
+        TextView time;
+        ImageView userAvatar;
+        ImageView vendorImage;
     }
 }

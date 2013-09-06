@@ -50,7 +50,7 @@ public class HomeScreenFragment extends SherlockFragment
 
     private void _initView(View view)
     {
-        userTimelineItemList = (ListView) view.findViewById(R.id.list_user_content);
+        userTimelineItemList = (ListView) view.findViewById(android.R.id.list);
 
         if (profile != null)
         {
@@ -108,7 +108,6 @@ public class HomeScreenFragment extends SherlockFragment
 
     private void refreshTimeline(TimelineDTO timelineDTO)
     {
-        //userTimelineItemList.setAdapter(new UserTimelineAdapter(getActivity(), timelineDTO));
-        //userTimelineItemList.getAd
+        userTimelineItemList.setAdapter(new UserTimelineAdapter(getActivity(), timelineDTO));
     }
 }
