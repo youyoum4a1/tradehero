@@ -1,16 +1,15 @@
 package com.tradehero.common.graphics;
 
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Paint;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 9/5/13 Time: 1:20 PM To change this template use File | Settings | File Templates. */
-public class THBitmapFactory extends BitmapFactory
+/** Created with IntelliJ IDEA. User: xavier Date: 9/6/13 Time: 12:33 PM To change this template use File | Settings | File Templates. */
+public class GrayscaleTransformation implements com.squareup.picasso.Transformation, com.fedorvlasov.lazylist.ImageLoader.Transformation
 {
-    public static Bitmap toGrayscale(Bitmap bmpOriginal)
+    @Override public Bitmap transform(Bitmap bmpOriginal)
     {
         int width, height;
         height = bmpOriginal.getHeight();
@@ -33,5 +32,10 @@ public class THBitmapFactory extends BitmapFactory
         paint.setColorFilter(f);
         c.drawBitmap(bmpOriginal, 0, 0, paint);
         return bmpGrayscale;
+    }
+
+    @Override public String key()
+    {
+        return "toGrayscale()";
     }
 }

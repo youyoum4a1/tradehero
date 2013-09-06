@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.tradehero.th.widget.trending.TrendingSecurityView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.tradehero.th.widget.trending.TrendingSecurityView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res/com.tradehero.th"
     android:layout_width="175dp"
     android:layout_height="98dp" >
 
     <ImageView
         android:id="@+id/stock_bg_logo"
-        android:layout_width="175dp"
-        android:layout_height="98dp"
-        android:contentDescription="@null"
-        android:scaleType="fitCenter" 
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:scaleType="centerCrop"
+        android:contentDescription="background logo"
         android:src="@drawable/default_image"/>
 
     <RelativeLayout

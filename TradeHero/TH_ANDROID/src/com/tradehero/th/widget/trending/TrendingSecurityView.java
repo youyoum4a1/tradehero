@@ -2,14 +2,17 @@ package com.tradehero.th.widget.trending;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.fedorvlasov.lazylist.ImageLoader;
-import com.tradehero.common.graphics.ImageUtils;
-import com.tradehero.common.graphics.THBitmapFactory;
+import com.squareup.picasso.Transformation;
+import com.tradehero.common.graphics.GaussianGrayscaleTransformation;
+import com.tradehero.common.graphics.GaussianWhiteToTransparentTransformation;
+import com.tradehero.common.graphics.WhiteToTransparentTransformation;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
@@ -20,9 +23,11 @@ import com.tradehero.th.utills.YUtils;
 /** Created with IntelliJ IDEA. User: xavier Date: 9/5/13 Time: 5:19 PM To change this template use File | Settings | File Templates. */
 public class TrendingSecurityView extends FrameLayout implements DTOView<SecurityCompactDTO>
 {
-    private final static String TAG = TrendingSecurityView.class.getSimpleName();
+    private static final String TAG = TrendingSecurityView.class.getSimpleName();
     public static final int DEFAULT_CONCURRENT_DOWNLOAD = 3;
-    static public ImageLoader mImageLoader;
+    public static ImageLoader mImageLoader;
+    public static ImageLoader mImageBgLoader;
+    public static final Transformation toGaussianGrayscaleTransformation = new GaussianGrayscaleTransformation();
 
     private ImageView stockBgLogo;
     private ImageView stockLogo;
@@ -57,7 +62,11 @@ public class TrendingSecurityView extends FrameLayout implements DTOView<Securit
     {
         if (mImageLoader == null)
         {
-            mImageLoader = new ImageLoader(getContext(), ImageUtils.createDefaultWhiteToTransparentProcessor(), DEFAULT_CONCURRENT_DOWNLOAD, R.drawable.default_image);
+            mImageLoader = new ImageLoader(getContext(), new GaussianWhiteToTransparentTransformation(), DEFAULT_CONCURRENT_DOWNLOAD, R.drawable.default_image, "Main");
+        }
+        if (mImageBgLoader == null)
+        {
+            mImageBgLoader = new ImageLoader(getContext(), new GaussianGrayscaleTransformation(), DEFAULT_CONCURRENT_DOWNLOAD, R.drawable.default_image, "Bg");
         }
 
         stockBgLogo = (ImageView) findViewById(R.id.stock_bg_logo);
@@ -80,7 +89,20 @@ public class TrendingSecurityView extends FrameLayout implements DTOView<Securit
     @Override protected void onAttachedToWindow()
     {
         super.onAttachedToWindow();
+        post(new Runnable()
+        {
+            @Override public void run()
+            {
+                // Dummy
+            }
+        });
         invalidate(); // To ensure processing of the queue
+    }
+
+    @Override protected void onWindowVisibilityChanged(int visibility)
+    {
+        super.onWindowVisibilityChanged(visibility);
+        invalidate();
     }
 
     @Override protected void onDetachedFromWindow()
@@ -153,7 +175,7 @@ public class TrendingSecurityView extends FrameLayout implements DTOView<Securit
     {
         if (trend.imageBlobUrl != null && trend.imageBlobUrl.length() > 0)
         {
-            mImageLoader.displayImage(trend.imageBlobUrl, stockLogo, true, createImageLoadingListener ());
+            mImageLoader.displayImage(trend.imageBlobUrl, stockLogo, true, createImageLoadingListener (trend));
         }
         else
         {
@@ -164,13 +186,24 @@ public class TrendingSecurityView extends FrameLayout implements DTOView<Securit
         }
     }
 
-    private ImageLoader.ImageLoadingListener createImageLoadingListener ()
+    private ImageLoader.ImageLoadingListener createImageLoadingListener (final SecurityCompactDTO trend)
     {
         return new ImageLoader.ImageLoadingListener()
         {
             @Override public void onLoadingComplete(String url, Bitmap loadedImage)
             {
-                stockBgLogo.setImageBitmap(THBitmapFactory.toGrayscale(loadedImage));
+                mImageBgLoader.displayImage(trend.imageBlobUrl, stockBgLogo, true, createImageBgLoadingListener());
+            }
+        };
+    }
+
+    private ImageLoader.ImageLoadingListener createImageBgLoadingListener ()
+    {
+        return new ImageLoader.ImageLoadingListener()
+        {
+            @Override public void onLoadingComplete(String url, Bitmap loadedImage)
+            {
+                stockBgLogo.invalidate();
             }
         };
     }

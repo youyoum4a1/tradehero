@@ -173,7 +173,7 @@ public class AuthenticationActivity extends SherlockFragmentActivity
             progressDialog = ProgressDialog.show(
                     AuthenticationActivity.this,
                     Application.getResourceString(R.string.please_wait),
-                    Application.getResourceString(R.string.connecting_tradehero),
+                    Application.getResourceString(R.string.connecting_tradehero_only),
                     true);
             EmailSignInOrUpFragment castedFragment = (EmailSignInOrUpFragment) currentFragment;
             EmailAuthenticationProvider.setCredentials(castedFragment.getUserFormJSON());
@@ -337,7 +337,15 @@ public class AuthenticationActivity extends SherlockFragmentActivity
         {
             if (!isSigningUp())
             {
-                progressDialog.setMessage(String.format(getString(R.string.connecting_tradehero), providerName));
+                // HACK
+                if (providerName != "Email")
+                {
+                    progressDialog.setMessage(String.format(getString(R.string.connecting_tradehero), providerName));
+                }
+                else
+                {
+                    progressDialog.setMessage(getString(R.string.connecting_tradehero_only));
+                }
                 return true;
             }
             return false;
