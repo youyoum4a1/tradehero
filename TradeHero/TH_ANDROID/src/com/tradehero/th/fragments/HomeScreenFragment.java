@@ -45,7 +45,6 @@ public class HomeScreenFragment extends SherlockFragment
     private ListView userTimelineItemList;
     private View mBagroundImage;
     private UserProfileDTO profile;
-    private BitmapDrawable drawableBitmap;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -69,69 +68,16 @@ public class HomeScreenFragment extends SherlockFragment
             loadPictureWithTransformation(profile.picture, new RoundedShapeTransformation()).into(userProfileImage);
             loadPictureWithTransformation(profile.picture, new GaussianTransformation()).fetch(new Target()
             {
-<<<<<<< HEAD
                 @Override public void onSuccess(Bitmap bitmap)
                 {
                     mBagroundImage.setBackground(new BitmapDrawable(getResources(), bitmap));
                 }
-=======
-                mUserImg.setImageBitmap(Util.getRoundedShape(mBitmap));
-                drawableBitmap = new BitmapDrawable(applyGaussianBlur(mBitmap));
-                mBagroundImage.setBackgroundDrawable(drawableBitmap);
-            }
-
-            _getDataOfTrade();
-        }
-    }
-
-    public static Bitmap applyGaussianBlur(Bitmap src)
-    {
-        double[][] GaussianBlurConfig = new double[][] {
-                {1, 2, 1},
-                {2, 4, 2},
-                {1, 2, 1}
-        };
-        ConvolutionMatrix convMatrix = new ConvolutionMatrix(3);
-        convMatrix.applyConfig(GaussianBlurConfig);
-        convMatrix.Factor = 27;
-        convMatrix.Offset = 0;
-        return ConvolutionMatrix.computeConvolution3x3(src, convMatrix);
-    }
-
-    class UpdateUi extends AsyncTask<Void, Void, Void>
-    {
-        ImageLoader imgLoader;
-        ProgressDialog dlg;
-
-        @Override
-        protected void onPreExecute()
-        {
-            // TODO Auto-generated method stub
-            imgLoader = new ImageLoader(getActivity());
-            dlg = new ProgressDialog(getActivity());
-            dlg.setMessage(getResources().getString(R.string.loading_loading));
-            dlg.show();
-            super.onPreExecute();
-        }
-
-        @Override
-        protected Void doInBackground(Void... arg0)
-        {
-            // TODO load user profile picture
-            //mBitmap = imgLoader.getBitmap(picture);
-            //mBGBtmp = imgLoader.getBitmap(picture);
-
-            return null;
-        }
->>>>>>> Refactored TrendingView with more OOP and new ImageLoader
 
                 @Override public void onError()
                 {
                     //To change body of implemented methods use File | Settings | File Templates.
                 }
             });
-
-            getSherlockActivity().getSupportActionBar().setTitle(profile.displayName);
 
             _getDataOfTrade();
         }
@@ -163,63 +109,5 @@ public class HomeScreenFragment extends SherlockFragment
     private void refreshTimeline(TimelineDTO timelineDTO)
     {
         userTimelineItemList.setAdapter(new UserTimelineAdapter(getActivity(), timelineDTO));
-    }
-
-    private void parseResponse(String response)
-    {
-        ArrayList<TradeOfWeek> tradweekList = new ArrayList<>();
-        TradeOfWeek mTradeWeek = null;
-        Medias objMedia = null;
-        try
-        {
-            JSONObject obj = new JSONObject(response);
-
-            JSONArray mJsonArray = obj.getJSONArray("enhancedItems");
-
-            for (int i = 0; i < mJsonArray.length(); i++)
-            {
-
-                mTradeWeek = new TradeOfWeek();
-                JSONObject mobj = mJsonArray.getJSONObject(i);
-
-                String _id = mobj.getString("id");
-                String _createdAtUtc = mobj.getString("createdAtUtc");
-                String _userId = mobj.getString("userId");
-                String _text = mobj.getString("text");
-                //String _pushTypeId = mobj.getString("pushTypeId");
-                JSONArray mediajson = mobj.getJSONArray("medias");
-                for (int j = 0; j < mediajson.length(); j++)
-                {
-
-                    objMedia = new Medias();
-                    JSONObject mediajobj = mediajson.getJSONObject(j);
-                    String _securityId = mediajobj.getString("securityId");
-                    String _exchange = mediajobj.getString("exchange");
-                    String _symbol = mediajobj.getString("symbol");
-                    String _url = mediajobj.getString("url");
-                    String _type = mediajobj.getString("type");
-                    objMedia.setExchange(_exchange);
-                    objMedia.setSecurityId(_securityId);
-                    objMedia.setUrl(_url);
-                    objMedia.setType(_type);
-                    objMedia.setSymbol(_symbol);
-                }
-                mTradeWeek.setCreatedAtUtc(_createdAtUtc);
-                mTradeWeek.setId(_id);
-                mTradeWeek.setUserId(_userId);
-                mTradeWeek.setMedias(objMedia);
-                mTradeWeek.setText(_text);
-                //mTradeWeek.setPushTypeId(_pushTypeId);
-                tradweekList.add(mTradeWeek);
-            }
-
-            System.out.println("Trade week size=======" + tradweekList.size());
-
-            userTimelineItemList.setAdapter(new UserTimelineAdapter(getActivity(), tradweekList));
-        }
-        catch (JSONException e)
-        {
-            e.printStackTrace();
-        }
     }
 }
