@@ -1,6 +1,6 @@
 package com.tradehero.th.utills;
 
-public class HttpUtil
+@Deprecated public class HttpUtil
 {
 
     public static boolean isValid(String iconURL)

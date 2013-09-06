@@ -6,7 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 @SuppressLint("SimpleDateFormat")
-public class DateUtils
+@Deprecated public class DateUtils
 {
 
     public static Date convertToDate(String dateString)

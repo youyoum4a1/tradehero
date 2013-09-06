@@ -2,7 +2,7 @@ package com.tradehero.th.utills;
 
 import twitter4j.auth.RequestToken;
 
-public class Constants
+@Deprecated public class Constants
 {
 
     public static final int FB_OPERATION = 10000;

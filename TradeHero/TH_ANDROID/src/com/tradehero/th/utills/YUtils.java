@@ -13,7 +13,7 @@ import java.util.List;
 import android.text.TextUtils;
 import com.tradehero.th.utills.Logger.LogLevel;
 
-public class YUtils
+@Deprecated public class YUtils
 {
 
     private final static String TAG = YUtils.class.getSimpleName();

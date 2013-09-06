@@ -77,7 +77,7 @@ import android.widget.Toast;
  * @author abhinav.maheswari@3pillarglobal.com
  */
 
-public final class Util
+@Deprecated public final class Util
 {
 
     public static int UI_DENSITY;

@@ -2,7 +2,7 @@ package com.tradehero.th.utills;
 
 import android.util.Log;
 
-public class Logger
+@Deprecated public class Logger
 {
     public enum LogLevel
     {

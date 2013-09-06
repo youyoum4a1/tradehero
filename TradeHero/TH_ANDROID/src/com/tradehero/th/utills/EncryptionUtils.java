@@ -16,7 +16,7 @@ import android.util.Base64;
  * This class defines common routines for generating authentication signatures. Source:
  * http://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/AuthJavaSampleHMACSignature.html
  */
-public class EncryptionUtils
+@Deprecated public class EncryptionUtils
 {
 
     private static final String HMAC_SHA1_ALGORITHM = "HmacSHA1";

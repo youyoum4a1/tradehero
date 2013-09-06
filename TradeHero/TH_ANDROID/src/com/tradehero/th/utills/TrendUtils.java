@@ -8,7 +8,7 @@ package com.tradehero.th.utills;
 
 import android.graphics.Color;
 
-public class TrendUtils
+@Deprecated public class TrendUtils
 {
 
     public static int colorForPercentage(int percentage)

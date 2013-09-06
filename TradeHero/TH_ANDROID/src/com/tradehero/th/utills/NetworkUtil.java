@@ -7,7 +7,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Log;
 
-public class NetworkUtil
+@Deprecated public class NetworkUtil
 {
     private static final String TAG = NetworkUtil.class.getSimpleName();
 

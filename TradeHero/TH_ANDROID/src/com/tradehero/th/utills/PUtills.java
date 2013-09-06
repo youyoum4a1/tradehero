@@ -8,7 +8,7 @@ import android.content.Context;
 import com.tradehero.th.models.ProfileDTO;
 import com.tradehero.th.models.Profilio;
 
-public class PUtills
+@Deprecated public class PUtills
 {
 
     private Context ctx;

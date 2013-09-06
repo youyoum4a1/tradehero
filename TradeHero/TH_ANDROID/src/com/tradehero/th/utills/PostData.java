@@ -42,7 +42,7 @@ import android.content.Context;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
-public class PostData
+@Deprecated public class PostData
 {
     private HostnameVerifier hostnameVerifier;
     private DefaultHttpClient client;
