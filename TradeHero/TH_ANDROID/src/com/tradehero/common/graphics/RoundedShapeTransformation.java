@@ -37,12 +37,11 @@ public class RoundedShapeTransformation implements Transformation
         canvas.clipPath(path);
 
 
-        Bitmap sourceBitmap = scaleBitmapImage;
-        canvas.drawBitmap(sourceBitmap, new Rect(0, 0, sourceBitmap.getWidth(),
-                sourceBitmap.getHeight()), new RectF(0, 0, targetWidth,
+        canvas.drawBitmap(scaleBitmapImage, new Rect(0, 0, scaleBitmapImage.getWidth(),
+                scaleBitmapImage.getHeight()), new RectF(0, 0, targetWidth,
                 targetHeight), paint);
-        if (targetBitmap != sourceBitmap) {
-            sourceBitmap.recycle();
+        if (targetBitmap != scaleBitmapImage) {
+            scaleBitmapImage.recycle();
         }
         return targetBitmap;
     }

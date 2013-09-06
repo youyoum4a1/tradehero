@@ -19,3 +19,6 @@
 [submodule "lazyList"]
 	path = lazyList
 	url = git@github.com:xavierlepretre/LazyList.git
+[submodule "picasso"]
+	path = picasso
+	url = git@github.com:nguyentruongtho/picasso.git

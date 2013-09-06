@@ -7,6 +7,7 @@
       <module fileurl="file://$PROJECT_DIR$/TH_Android.iml" filepath="$PROJECT_DIR$/TH_Android.iml" />
       <module fileurl="file://$PROJECT_DIR$/facebook-android-sdk.iml" filepath="$PROJECT_DIR$/facebook-android-sdk.iml" />
       <module fileurl="file://$PROJECT_DIR$/lazyList.iml" filepath="$PROJECT_DIR$/lazyList.iml" />
+      <module fileurl="file://$PROJECT_DIR$/picasso.iml" filepath="$PROJECT_DIR$/picasso.iml" />
       <module fileurl="file://$PROJECT_DIR$/retrofit.iml" filepath="$PROJECT_DIR$/retrofit.iml" />
     </modules>
   </component>

@@ -1,16 +1,11 @@
 package com.tradehero.th.http;
 
+import android.util.Log;
+import com.loopj.android.http.AsyncHttpClient;
 import com.tradehero.th.base.THUser;
+import com.tradehero.th.utills.Constants;
 import java.util.HashMap;
 import java.util.Map;
-
-import com.tradehero.th.application.App;
-import com.tradehero.th.models.Token;
-import com.tradehero.th.utills.Constants;
-import android.util.Base64;
-import android.util.Log;
-
-import com.loopj.android.http.AsyncHttpClient;
 
 public abstract class THAsyncClientFactory
 {

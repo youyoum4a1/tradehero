@@ -22,11 +22,13 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="true" />
+        <module name="picasso" />
         <module name="retrofit" />
         <module name="TH_Android" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="picasso" target="1.6" />
       <module name="retrofit" target="1.6" />
     </bytecodeTargetLevel>
   </component>

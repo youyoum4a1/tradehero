@@ -1,64 +1,59 @@
 package com.tradehero.th.adapters;
 
-import android.view.LayoutInflater;
-
-import android.support.v4.app.FragmentActivity;
-import com.tradehero.th.api.timeline.TimelineDTO;
-import com.fedorvlasov.lazylist.ImageLoader;
-import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.base.THUser;
-import com.tradehero.th.models.TradeOfWeek;
-import java.util.ArrayList;
-
 import android.content.Context;
-import com.tradehero.th.R;
-import com.tradehero.th.application.App;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+import com.fedorvlasov.lazylist.ImageLoader;
+import com.tradehero.th.R;
+import com.tradehero.th.api.timeline.TimelineDTO;
+import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.base.THUser;
 
 public class UserTimelineAdapter extends BaseAdapter
 {
     private final TimelineDTO timelineDTO;
 
-    UserProfileDTO mprofile;
-    private LayoutInflater l_Inflater;
-    ImageLoader mLoader;
+    private final UserProfileDTO profile;
+    private final LayoutInflater inflater;
+    private final ImageLoader mLoader;
 
     public UserTimelineAdapter(Context context, TimelineDTO timelineDTO)
     {
         this.timelineDTO = timelineDTO;
-        l_Inflater = LayoutInflater.from(context);
-        mprofile = THUser.getCurrentUser();
+        this.inflater = LayoutInflater.from(context);
+        this.profile = THUser.getCurrentUser();
         mLoader = new ImageLoader(context);
     }
 
+    @Override
     public int getCount()
     {
         return timelineDTO.enhancedItems.size();
     }
 
+    @Override
     public Object getItem(int position)
     {
         return timelineDTO.enhancedItems.get(position);
     }
 
+    @Override
     public long getItemId(int position)
     {
         return position;
     }
 
-
-
+    @Override
     public View getView(int position, View convertView, ViewGroup parent)
     {
         ViewHolder holder;
         if (convertView == null)
         {
-            convertView = l_Inflater.inflate(R.layout.profile_item_list_screen, null);
+            convertView = inflater.inflate(R.layout.profile_item_list_screen, parent);
             holder = new ViewHolder();
             holder.txt_username = (TextView) convertView.findViewById(R.id.txt_user_name);
             holder.txt_usercontent =
@@ -74,12 +69,12 @@ public class UserTimelineAdapter extends BaseAdapter
             holder = (ViewHolder) convertView.getTag();
         }
 
-        holder.txt_username.setText(mprofile.displayName);
+        holder.txt_username.setText(profile.displayName);
         holder.txt_usercontent.setText(timelineDTO.enhancedItems.get(position).text);
-        mLoader.displayImage(mprofile.picture, holder.user_img);
+        mLoader.displayImage(profile.picture, holder.user_img);
 
         // TODO uncomment next line
-        //mLoader.DisplayRoundImage(mprofile.picture, holder.user_img);
+        //mLoader.DisplayRoundImage(profile.picture, holder.user_img);
         /*if(tradeofweeklist.get(position).getMedias().getUrl()!=null)
 		{
 			mLoader.DisplayImage( tradeofweeklist.get(position).getMedias().getUrl(), holder.vendr_image);
