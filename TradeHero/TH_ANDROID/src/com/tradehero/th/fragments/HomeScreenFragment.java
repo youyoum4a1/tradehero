@@ -8,6 +8,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import com.actionbarsherlock.app.SherlockFragment;
+import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
 import com.squareup.picasso.Transformation;
@@ -26,11 +27,9 @@ import com.tradehero.th.network.service.UserTimelineService;
 
 public class HomeScreenFragment extends SherlockFragment
 {
-
-    private static final String TAG = HomeScreenFragment.class.getName();
     private ImageView userProfileAvatar;
     private ImageView userProfileBackgroundBySketchedAvatar;
-    private ListView userTimelineItemList;
+    private PullToRefreshListView userTimelineItemList;
     private UserProfileDTO profile;
 
     @Override
@@ -50,7 +49,9 @@ public class HomeScreenFragment extends SherlockFragment
 
     private void _initView(View view)
     {
-        userTimelineItemList = (ListView) view.findViewById(android.R.id.list);
+        userTimelineItemList = (PullToRefreshListView) view.findViewById(R.id.pull_refresh_list);
+        View headerView = getActivity().getLayoutInflater().inflate(R.layout.profile_screen_user_detail, null);
+        userTimelineItemList.getRefreshableView().addHeaderView(headerView);
 
         if (profile != null)
         {
@@ -58,8 +59,8 @@ public class HomeScreenFragment extends SherlockFragment
 
             getSherlockActivity().getSupportActionBar().setTitle(profile.displayName);
 
-            userProfileAvatar = (ImageView) view.findViewById(R.id.user_profile_avatar);
-            userProfileBackgroundBySketchedAvatar = (ImageView) view.findViewById(R.id.user_profile_background_by_sketched_avatar);
+            userProfileAvatar = (ImageView) headerView.findViewById(R.id.user_profile_avatar);
+            userProfileBackgroundBySketchedAvatar = (ImageView) headerView.findViewById(R.id.user_profile_background_by_sketched_avatar);
             loadPictureWithTransformation(profile.picture, new RoundedShapeTransformation()).into(userProfileAvatar);
             loadPictureWithTransformation(profile.picture, new GaussianTransformation()).into(userProfileBackgroundBySketchedAvatar);
 
