@@ -8,5 +8,8 @@
   <dimen name="authentication_text_size">14sp</dimen>
   <dimen name="copyright_text_size">12sp</dimen>
   <dimen name="authentication_textbox_radius">5dp</dimen>
+  <dimen name="user_profile_corner_radius">8dp</dimen>
+  <dimen name="dashboard_padding">5dip</dimen>
+  <dimen name="home_screen_list_item_padding">5dip</dimen>
 
 </resources>

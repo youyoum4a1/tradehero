@@ -2,61 +2,62 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/profile_item_border"
+    android:background="@color/home_screen_list_item_background"
+    android:padding="@dimen/home_screen_list_item_padding"
     >
-
     <ImageView
-        android:id="@+id/img_user"
+        android:id="@+id/timeline_user_profile_picture"
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_marginLeft="5dp"
         android:background="@drawable/layout_oval"
         android:padding="2dp"
-        android:src="@drawable/th_logo" />
-
-    <ImageView
-        android:id="@+id/img_vender"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"
-        android:layout_marginRight="10dp"
-        android:layout_marginTop="5dp"
-        android:src="@drawable/google_g" />
+        android:src="@drawable/th_logo"
+        android:contentDescription="@null"/>
 
     <TextView
-        android:id="@+id/txt_time_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginRight="10dp"
-        android:text="3 min"
-        android:textColor="@color/text_gray_normal"
-        android:textSize="12sp"
-        android:textStyle="bold" />
-
-    <TextView
-        android:id="@+id/txt_user_name"
+        android:id="@+id/timeline_user_profile_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
-        android:layout_toRightOf="@+id/img_user"
-        android:text="Name"
-        android:textColor="@color/btn_facebook_color_start"
+        android:layout_toRightOf="@+id/timeline_user_profile_picture"
+        android:text="@null"
+        android:textColor="@color/black"
         android:textSize="15sp"
         android:textStyle="normal" />
+
+    <TextView
+        android:id="@+id/timeline_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/timeline_user_profile_name"
+        android:layout_toRightOf="@id/timeline_user_profile_picture"
+        android:layout_marginLeft="10dp"
+        android:text="3 min"
+        android:textColor="@color/black"
+        android:textSize="12sp"
+        android:textStyle="bold" />
+
+    <ImageView
+        android:id="@+id/timeline_vendor_picture"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="5dp"
+        android:src="@drawable/google_g"
+        android:contentDescription="@null"/>
 
     <TextView
         android:id="@+id/txt_user_content_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/txt_user_name"
+        android:layout_below="@id/timeline_vendor_picture"
         android:layout_marginLeft="10dp"
-        android:layout_toRightOf="@+id/img_user"
-        android:text="Name"
+        android:layout_toRightOf="@+id/timeline_user_profile_picture"
+        android:text="Content"
         android:textColor="@color/text_gray_normal"
         android:textSize="13sp"
         android:textStyle="normal" />

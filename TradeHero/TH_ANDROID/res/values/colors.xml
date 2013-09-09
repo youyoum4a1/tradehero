@@ -4,4 +4,5 @@
   <color name="authentication_forgot_password_link">#9F9F9F</color>
   <color name="authentication_button_dark">#9e9e9e</color>
   <color name="authentication_button_light">#808080</color>
+  <color name="home_screen_list_item_background">#f2f2f2</color>
 </resources>

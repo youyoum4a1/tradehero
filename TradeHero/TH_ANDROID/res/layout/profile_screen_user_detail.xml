@@ -1,16 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content"
+    android:background="@drawable/user_profile_rounded_background"
+    android:layout_marginBottom="10dip">
+
+  <!-- layout_marginBottom: dirty trick to reserve background rounded corner radius-->
   <ImageView
       android:id="@+id/user_profile_background_by_sketched_avatar"
       android:layout_height="match_parent"
       android:layout_width="match_parent"
       android:scaleType="centerCrop"
       android:contentDescription="@null"
+      android:layout_marginBottom="@dimen/user_profile_corner_radius"
       />
+
   <ImageView
       android:layout_height="match_parent"
       android:layout_width="match_parent"
