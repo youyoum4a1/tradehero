@@ -2,6 +2,7 @@ package com.tradehero.th.widget.trending;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.ColorMatrix;
 import android.graphics.drawable.BitmapDrawable;
 import android.util.AttributeSet;
 import android.view.View;
@@ -12,6 +13,9 @@ import com.fedorvlasov.lazylist.ImageLoader;
 import com.squareup.picasso.Transformation;
 import com.tradehero.common.graphics.GaussianGrayscaleTransformation;
 import com.tradehero.common.graphics.GaussianWhiteToTransparentTransformation;
+import com.tradehero.common.graphics.GrayscaleTransformation;
+import com.tradehero.common.graphics.RoundedCornerGrayscaleTransformation;
+import com.tradehero.common.graphics.RoundedCornerTransformation;
 import com.tradehero.common.graphics.WhiteToTransparentTransformation;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
@@ -27,7 +31,6 @@ public class TrendingSecurityView extends FrameLayout implements DTOView<Securit
     public static final int DEFAULT_CONCURRENT_DOWNLOAD = 3;
     public static ImageLoader mImageLoader;
     public static ImageLoader mImageBgLoader;
-    public static final Transformation toGaussianGrayscaleTransformation = new GaussianGrayscaleTransformation();
 
     private ImageView stockBgLogo;
     private ImageView stockLogo;
@@ -62,11 +65,11 @@ public class TrendingSecurityView extends FrameLayout implements DTOView<Securit
     {
         if (mImageLoader == null)
         {
-            mImageLoader = new ImageLoader(getContext(), new GaussianWhiteToTransparentTransformation(), DEFAULT_CONCURRENT_DOWNLOAD, R.drawable.default_image, "Main");
+            mImageLoader = new ImageLoader(getContext(), new WhiteToTransparentTransformation(), DEFAULT_CONCURRENT_DOWNLOAD, R.drawable.default_image, "Main");
         }
         if (mImageBgLoader == null)
         {
-            mImageBgLoader = new ImageLoader(getContext(), new GaussianGrayscaleTransformation(), DEFAULT_CONCURRENT_DOWNLOAD, R.drawable.default_image, "Bg");
+            mImageBgLoader = new ImageLoader(getContext(), new GaussianGrayscaleTransformation(getDefaultGrayScaleMatrix()), DEFAULT_CONCURRENT_DOWNLOAD, R.drawable.default_image, "Bg");
         }
 
         stockBgLogo = (ImageView) findViewById(R.id.stock_bg_logo);
@@ -78,6 +81,19 @@ public class TrendingSecurityView extends FrameLayout implements DTOView<Securit
         //marketCloseIcon = (ImageView) findViewById(R.id.ic_market_close);
         stockLogo = (ImageView) findViewById(R.id.stock_logo);
         stockBgLogo = (ImageView) findViewById(R.id.stock_bg_logo);
+    }
+
+    private static ColorMatrix getDefaultGrayScaleMatrix()
+    {
+        ColorMatrix matrix = new ColorMatrix(
+            new float[] {
+                    1f, 0f, 0f, 0, 0,
+                    0f, 1f, 0f, 0, 0,
+                    0f, 0f, 1f, 0, 0,
+                    0,  0,  0,  1, 0
+            });
+        matrix.setSaturation(0);
+        return matrix;
     }
 
     @Override protected void onFinishInflate()
@@ -156,7 +172,7 @@ public class TrendingSecurityView extends FrameLayout implements DTOView<Securit
         stockLogo.setImageResource(R.drawable.default_image);
         stockBgLogo.setImageResource(R.drawable.default_image);
 
-        stockBgLogo.setAlpha(26); //15% opaque
+        //stockBgLogo.setAlpha(26); //15% opaque
         final View finalisedConvertView = this;
 
         boolean posted = post(new Runnable()
