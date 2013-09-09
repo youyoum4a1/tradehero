@@ -1,13 +1,17 @@
 package com.tradehero.th.activities;
 
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTabHost;
+import android.support.v4.app.FragmentTransaction;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.tradehero.th.R;
+import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.fragments.CommunityScreenFragment;
 import com.tradehero.th.fragments.HomeScreenFragment;
 import com.tradehero.th.fragments.PortfolioScreenFragment;
 import com.tradehero.th.fragments.StoreScreenFragment;
+import com.tradehero.th.fragments.TrendingDetailFragment;
 import com.tradehero.th.fragments.TrendingFragment;
 import android.view.View;
 
@@ -61,4 +65,22 @@ public class DashboardActivity extends SherlockFragmentActivity
             mTabHost.getTabWidget().setVisibility(value ? View.VISIBLE : View.GONE);
         }
     }
+
+    public void pushTrendingDetailFragment(SecurityCompactDTO securityCompactDTO)
+    {
+        TrendingDetailFragment newFragment = (TrendingDetailFragment) Fragment.instantiate(this, TrendingDetailFragment.class.getName(), null);
+        newFragment.setSecurityCompactDTO(securityCompactDTO);
+        // Add the fragment to the activity, pushing this transaction
+        // on to the back stack.
+        getSupportFragmentManager()
+                .beginTransaction()
+                .setCustomAnimations(
+                        R.anim.slide_right_in, R.anim.slide_left_out,
+                        R.anim.slide_left_in, R.anim.slide_right_out)
+                .replace(R.id.realtabcontent, newFragment, "trending_detail")
+                .addToBackStack("trending_detail")
+                .commit();
+    }
+
+
 }
