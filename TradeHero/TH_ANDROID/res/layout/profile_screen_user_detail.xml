@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/user_profile_rounded_background"
-    android:layout_marginBottom="10dip">
+    android:paddingTop="10dip"
+    android:paddingBottom="10dip">
 
   <!-- layout_marginBottom: dirty trick to reserve background rounded corner radius-->
   <ImageView
