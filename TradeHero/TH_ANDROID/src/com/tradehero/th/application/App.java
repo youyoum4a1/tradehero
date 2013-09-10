@@ -19,7 +19,6 @@ import java.util.LinkedHashMap;
 
 public class App extends Application
 {
-    private Trend trend;
     private Token token;
 
     private ArrayList<TradeOfWeek> tradeOfWeek;
@@ -43,15 +42,5 @@ public class App extends Application
     public void setYahooQuotesMap(LinkedHashMap<String, String> yahooQuotesMap)
     {
         this.yahooQuotesMap = yahooQuotesMap;
-    }
-
-     public Trend getTrend()
-    {
-        return trend;
-    }
-
-    public void setTrend(Trend trend)
-    {
-        this.trend = trend;
     }
 }

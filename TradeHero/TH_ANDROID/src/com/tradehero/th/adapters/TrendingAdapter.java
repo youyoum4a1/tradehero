@@ -37,7 +37,8 @@ public class TrendingAdapter extends ArrayAdapter<SecurityCompactDTO>
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.trending_grid_item, null);
         }
 
-        ((TrendingSecurityView) convertView).display(getItem(position));
+        final TrendingSecurityView trendingSecurityView = ((TrendingSecurityView) convertView);
+        trendingSecurityView.display(getItem(position));
 
         return convertView;
     }

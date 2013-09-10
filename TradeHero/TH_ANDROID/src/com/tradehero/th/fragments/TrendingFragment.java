@@ -32,6 +32,7 @@ import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
+import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.adapters.SearchPeopleAdapter;
 import com.tradehero.th.adapters.SearchStockAdapter;
 import com.tradehero.th.adapters.TrendingAdapter;
@@ -166,9 +167,8 @@ public class TrendingFragment extends SherlockFragment
                     long id)
             {
 
-                Trend t = (Trend) parent.getItemAtPosition(position);
-                ((App) getActivity().getApplication()).setTrend(t);
-                pushTrendingDetailFragment();
+                SecurityCompactDTO securityCompactDTO = (SecurityCompactDTO) parent.getItemAtPosition(position);
+                ((DashboardActivity)getActivity()).pushTrendingDetailFragment(securityCompactDTO);
             }
         });
 
@@ -181,9 +181,8 @@ public class TrendingFragment extends SherlockFragment
                 //((String)mSearchTypeSpinner.getSelectedItem()).equalsIgnoreCase(SEARCH_TYPE[0])
                 if (adapter.getItemAtPosition(position) instanceof Trend)
                 {
-                    Trend t = (Trend) adapter.getItemAtPosition(position);
-                    ((App) getActivity().getApplication()).setTrend(t);
-                    pushTrendingDetailFragment();
+                    SecurityCompactDTO securityCompactDTO = (SecurityCompactDTO) adapter.getItemAtPosition(position);
+                    ((DashboardActivity) getActivity()).pushTrendingDetailFragment(securityCompactDTO);
                 }
                 else
                 {
@@ -201,19 +200,7 @@ public class TrendingFragment extends SherlockFragment
         requestToGetTrendingInfo();
     }
 
-    private void pushTrendingDetailFragment()
-    {
-        Fragment newFragment = Fragment.instantiate(getActivity(),
-                TrendingDetailFragment.class.getName(), null);
-        // Add the fragment to the activity, pushing this transaction
-        // on to the back stack.
-        FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.realtabcontent, newFragment, "trending_detail");
-        ft.addToBackStack("trending_detail");
-        ft.commit();
-    }
-
-    private void setDataAdapterToGridView(List<SecurityCompactDTO> trendList)
+   private void setDataAdapterToGridView(List<SecurityCompactDTO> trendList)
     {
         mTrendingGridView.setAdapter(new TrendingAdapter(getActivity(), trendList));
         showProgressSpinner(false);
