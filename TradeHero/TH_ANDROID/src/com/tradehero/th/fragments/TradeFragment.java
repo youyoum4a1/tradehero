@@ -23,7 +23,6 @@ import android.widget.TextView;
 import com.tradehero.th.R;
 import com.tradehero.th.application.App;
 import com.tradehero.th.cache.ImageLoader;
-import com.tradehero.th.fragments.TrendingDetailFragment.YahooQuoteUpdateListener;
 import com.tradehero.th.models.Trend;
 import com.tradehero.th.utills.DateUtils;
 import com.tradehero.th.utills.Logger;
@@ -31,7 +30,7 @@ import com.tradehero.th.utills.Logger.LogLevel;
 import com.tradehero.th.utills.YUtils;
 import java.util.HashMap;
 
-public class TradeFragment extends Fragment implements YahooQuoteUpdateListener
+public class TradeFragment extends Fragment
 {
 
     private final static String TAG = TradeFragment.class.getSimpleName();
@@ -163,7 +162,7 @@ public class TradeFragment extends Fragment implements YahooQuoteUpdateListener
             }
         });
 
-        trend = ((App) getActivity().getApplication()).getTrend();
+        //trend = ((App) getActivity().getApplication()).getTrend();
 
         mBuyBtn = (Button) v.findViewById(R.id.btn_buy);
         mBuyBtn.setOnClickListener(new OnClickListener()
@@ -314,8 +313,8 @@ public class TradeFragment extends Fragment implements YahooQuoteUpdateListener
     {
         super.onActivityCreated(savedInstanceState);
 
-        ((TrendingDetailFragment) getActivity().getSupportFragmentManager()
-                .findFragmentByTag("trending_detail")).setYahooQuoteUpdateListener(this);
+        //((TrendingDetailFragment) getActivity().getSupportFragmentManager()
+        //        .findFragmentByTag("trending_detail")).setYahooQuoteUpdateListener(this);
 
         mCashAvailable = ((App) getActivity().getApplication()).getProfileDTO().portfolio.cashBalance;
 
@@ -335,92 +334,92 @@ public class TradeFragment extends Fragment implements YahooQuoteUpdateListener
         mBuyBtn.setEnabled(flag);
     }
 
-    @Override
-    public void onYahooQuoteUpdateStarted()
-    {
-        mProgressBar.setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    public void onYahooQuoteUpdateListener(HashMap<String, String> yQuotes)
-    {
-
-        mProgressBar.setVisibility(View.GONE);
-        enableFields(true);
-
-        double LastPrice = YUtils.parseQuoteValue(yQuotes.get("Last Trade (Price Only)"));
-        if (!Double.isNaN(LastPrice))
-        {
-            lastPrice = LastPrice;
-            tvLastPrice.setText(String.format("%s%.2f", trend.getCurrencyDisplay(), lastPrice));
-        }
-        else
-        {
-            Logger.log(TAG, "Unable to parse Last Trade (Price Only)", LogLevel.LOGGING_LEVEL_ERROR);
-        }
-
-        //TODO Format date
-        String lastPriceDatetimeUtc = yQuotes.get("Last Trade Date");
-        if (TextUtils.isEmpty(lastPriceDatetimeUtc))
-        {
-            tvPriceAsOf.setText(lastPriceDatetimeUtc);
-        }
-
-        double askPrice = YUtils.parseQuoteValue(yQuotes.get("Ask"));
-        if (Double.isNaN(askPrice))
-        {
-            Logger.log(TAG, "Unable to parse Ask, will try using real-time data", LogLevel.LOGGING_LEVEL_ERROR);
-
-            askPrice = YUtils.parseQuoteValue(yQuotes.get("Ask (Real-time)"));
-            if (Double.isNaN(askPrice))
-            {
-                Logger.log(TAG, "Unable to parse Ask (Real-time)", LogLevel.LOGGING_LEVEL_ERROR);
-            }
-        }
-
-        if (!Double.isNaN(askPrice))
-        {
-            lastPrice = askPrice;
-        }
-
-        double bidPrice = YUtils.parseQuoteValue(yQuotes.get("Bid"));
-        if (Double.isNaN(bidPrice))
-        {
-            Logger.log(TAG, "Unable to parse Bid, will try using real-time data", LogLevel.LOGGING_LEVEL_ERROR);
-
-            bidPrice = YUtils.parseQuoteValue(yQuotes.get("Bid (Real-time)"));
-            if (Double.isNaN(bidPrice))
-            {
-                Logger.log(TAG, "Unable to parse Bid (Real-time)", LogLevel.LOGGING_LEVEL_ERROR);
-            }
-        }
-
-        // only update ask & bid if both are present.
-        if (!Double.isNaN(askPrice) && (Double.compare(askPrice, 0.0) == 0) && !Double.isNaN(bidPrice)
-                && (Double.compare(bidPrice, 0.0) == 0))
-        {
-            tvAskPrice.setText(String.format("%.2f%s", askPrice, getString(R.string.ask_with_bracket)));
-            tvBidPrice.setText(String.format(" x %.2f%s", bidPrice, getString(R.string.bid_with_bracket)));
-        }
-        else
-        {
-            Logger.log(TAG, "Unable to parse Ask & Bid Price", LogLevel.LOGGING_LEVEL_ERROR);
-        }
-
-        double avgDailyVol = YUtils.parseQuoteValue(yQuotes.get("Average Daily Volume"));
-        if (!Double.isNaN(avgDailyVol))
-        {
-            avgDailyVolume = (int) Math.ceil(avgDailyVol);
-        }
-
-        double vol = YUtils.parseQuoteValue(yQuotes.get("Volume"));
-        if (!Double.isNaN(vol))
-        {
-            avgDailyVolume = (int) Math.ceil(vol);
-        }
-
-        UpdateValues(mCashAvailable, false);
-    }
+    //@Override
+    //public void onYahooQuoteUpdateStarted()
+    //{
+    //    mProgressBar.setVisibility(View.VISIBLE);
+    //}
+    //
+    //@Override
+    //public void onYahooQuoteUpdateListener(HashMap<String, String> yQuotes)
+    //{
+    //
+    //    mProgressBar.setVisibility(View.GONE);
+    //    enableFields(true);
+    //
+    //    double LastPrice = YUtils.parseQuoteValue(yQuotes.get("Last Trade (Price Only)"));
+    //    if (!Double.isNaN(LastPrice))
+    //    {
+    //        lastPrice = LastPrice;
+    //        tvLastPrice.setText(String.format("%s%.2f", trend.getCurrencyDisplay(), lastPrice));
+    //    }
+    //    else
+    //    {
+    //        Logger.log(TAG, "Unable to parse Last Trade (Price Only)", LogLevel.LOGGING_LEVEL_ERROR);
+    //    }
+    //
+    //    //TODO Format date
+    //    String lastPriceDatetimeUtc = yQuotes.get("Last Trade Date");
+    //    if (TextUtils.isEmpty(lastPriceDatetimeUtc))
+    //    {
+    //        tvPriceAsOf.setText(lastPriceDatetimeUtc);
+    //    }
+    //
+    //    double askPrice = YUtils.parseQuoteValue(yQuotes.get("Ask"));
+    //    if (Double.isNaN(askPrice))
+    //    {
+    //        Logger.log(TAG, "Unable to parse Ask, will try using real-time data", LogLevel.LOGGING_LEVEL_ERROR);
+    //
+    //        askPrice = YUtils.parseQuoteValue(yQuotes.get("Ask (Real-time)"));
+    //        if (Double.isNaN(askPrice))
+    //        {
+    //            Logger.log(TAG, "Unable to parse Ask (Real-time)", LogLevel.LOGGING_LEVEL_ERROR);
+    //        }
+    //    }
+    //
+    //    if (!Double.isNaN(askPrice))
+    //    {
+    //        lastPrice = askPrice;
+    //    }
+    //
+    //    double bidPrice = YUtils.parseQuoteValue(yQuotes.get("Bid"));
+    //    if (Double.isNaN(bidPrice))
+    //    {
+    //        Logger.log(TAG, "Unable to parse Bid, will try using real-time data", LogLevel.LOGGING_LEVEL_ERROR);
+    //
+    //        bidPrice = YUtils.parseQuoteValue(yQuotes.get("Bid (Real-time)"));
+    //        if (Double.isNaN(bidPrice))
+    //        {
+    //            Logger.log(TAG, "Unable to parse Bid (Real-time)", LogLevel.LOGGING_LEVEL_ERROR);
+    //        }
+    //    }
+    //
+    //    // only update ask & bid if both are present.
+    //    if (!Double.isNaN(askPrice) && (Double.compare(askPrice, 0.0) == 0) && !Double.isNaN(bidPrice)
+    //            && (Double.compare(bidPrice, 0.0) == 0))
+    //    {
+    //        tvAskPrice.setText(String.format("%.2f%s", askPrice, getString(R.string.ask_with_bracket)));
+    //        tvBidPrice.setText(String.format(" x %.2f%s", bidPrice, getString(R.string.bid_with_bracket)));
+    //    }
+    //    else
+    //    {
+    //        Logger.log(TAG, "Unable to parse Ask & Bid Price", LogLevel.LOGGING_LEVEL_ERROR);
+    //    }
+    //
+    //    double avgDailyVol = YUtils.parseQuoteValue(yQuotes.get("Average Daily Volume"));
+    //    if (!Double.isNaN(avgDailyVol))
+    //    {
+    //        avgDailyVolume = (int) Math.ceil(avgDailyVol);
+    //    }
+    //
+    //    double vol = YUtils.parseQuoteValue(yQuotes.get("Volume"));
+    //    if (!Double.isNaN(vol))
+    //    {
+    //        avgDailyVolume = (int) Math.ceil(vol);
+    //    }
+    //
+    //    UpdateValues(mCashAvailable, false);
+    //}
 
     private void UpdateValues(double cash, boolean isPriceSlot)
     {
@@ -564,8 +563,8 @@ public class TradeFragment extends Fragment implements YahooQuoteUpdateListener
     @Override
     public void onDestroy()
     {
-        ((TrendingDetailFragment) getActivity().getSupportFragmentManager()
-                .findFragmentByTag("trending_detail")).setYahooQuoteUpdateListener(null);
+        //((TrendingDetailFragment) getActivity().getSupportFragmentManager()
+        //        .findFragmentByTag("trending_detail")).setYahooQuoteUpdateListener(null);
         super.onDestroy();
     }
 }

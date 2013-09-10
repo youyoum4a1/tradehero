@@ -5,8 +5,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.ListView;
-import android.widget.TextView;
 import com.actionbarsherlock.app.SherlockFragment;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.squareup.picasso.Picasso;
@@ -64,7 +62,7 @@ public class HomeScreenFragment extends SherlockFragment
             loadPictureWithTransformation(profile.picture, new RoundedShapeTransformation()).into(userProfileAvatar);
             loadPictureWithTransformation(profile.picture, new GaussianTransformation()).into(userProfileBackgroundBySketchedAvatar);
 
-            _getDataOfTrade();
+            createTimelineRequest();
         }
     }
 
@@ -90,7 +88,7 @@ public class HomeScreenFragment extends SherlockFragment
         return Picasso.with(getActivity()).load(url).transform(transformation);
     }
 
-    private void _getDataOfTrade()
+    private void createTimelineRequest()
     {
         NetworkEngine.createService(UserTimelineService.class)
                 .getTimeline(profile.id, 42, new THCallback<TimelineDTO>()

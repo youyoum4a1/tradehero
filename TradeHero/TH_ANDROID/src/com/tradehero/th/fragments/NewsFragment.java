@@ -50,7 +50,7 @@ public class NewsFragment extends ListFragment
         getListView().setCacheColorHint(android.R.color.transparent);
         //getListView().setDivider(new ColorDrawable(R.color.black));
 
-        trend = ((App) getActivity().getApplication()).getTrend();
+        //trend = ((App) getActivity().getApplication()).getTrend();
 
         requestToGetTrendRssNewsFeed();
     }
