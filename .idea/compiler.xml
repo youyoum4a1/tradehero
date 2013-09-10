@@ -23,12 +23,14 @@
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="true" />
         <module name="picasso" />
+        <module name="prettytime" />
         <module name="retrofit" />
         <module name="TH_Android" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="picasso" target="1.6" />
+      <module name="prettytime" target="1.6" />
       <module name="retrofit" target="1.6" />
     </bytecodeTargetLevel>
   </component>

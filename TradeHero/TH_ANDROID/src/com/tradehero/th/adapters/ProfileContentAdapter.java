@@ -76,19 +76,19 @@ public class ProfileContentAdapter extends BaseAdapter
 
         if (v == null)
         {
-            v = inflater.inflate(R.layout.profile_item_list_screen, viewGroup, false);
-            v.setTag(R.id.img_user, v.findViewById(R.id.img_user));
-            v.setTag(R.id.txt_user_name, v.findViewById(R.id.txt_user_name));
-            v.setTag(R.id.txt_user_content_name, v.findViewById(R.id.txt_user_content_name));
-            v.setTag(R.id.txt_time_name, v.findViewById(R.id.txt_time_name));
-            v.setTag(R.id.img_vender, v.findViewById(R.id.img_vender));
+            v = inflater.inflate(R.layout.user_profile_timeline_item, viewGroup, false);
+            v.setTag(R.id.timeline_user_profile_picture, v.findViewById(R.id.timeline_user_profile_picture));
+            v.setTag(R.id.timeline_user_profile_name, v.findViewById(R.id.timeline_user_profile_name));
+            v.setTag(R.id.timeline_item_content, v.findViewById(R.id.timeline_item_content));
+            v.setTag(R.id.timeline_time, v.findViewById(R.id.timeline_time));
+            v.setTag(R.id.timeline_vendor_picture, v.findViewById(R.id.timeline_vendor_picture));
         }
 
-        Userpicture = (ImageView) v.getTag(R.id.img_user);
-        VenderImg = (ImageView) v.getTag(R.id.img_vender);
-        name = (TextView) v.getTag(R.id.txt_user_name);
-        content = (TextView) v.getTag(R.id.txt_user_content_name);
-        time = (TextView) v.getTag(R.id.txt_time_name);
+        Userpicture = (ImageView) v.getTag(R.id.timeline_user_profile_picture);
+        VenderImg = (ImageView) v.getTag(R.id.timeline_vendor_picture);
+        name = (TextView) v.getTag(R.id.timeline_user_profile_name);
+        content = (TextView) v.getTag(R.id.timeline_item_content);
+        time = (TextView) v.getTag(R.id.timeline_time);
         Item item = (Item) getItem(i);
         Userpicture.setImageBitmap(Util.getRoundedShape(
                 BitmapFactory.decodeResource(ctx.getResources(), item.drawableUserImg)));

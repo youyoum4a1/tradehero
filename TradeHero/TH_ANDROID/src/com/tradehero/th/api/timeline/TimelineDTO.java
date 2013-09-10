@@ -11,4 +11,9 @@ public class TimelineDTO
     public List<SecurityCompactDTO>      securities;
     public List<TimelineItemDTO>         items;
     public List<TimelineItemDTOEnhanced> enhancedItems;
+
+    public UserProfileCompactDTO getUserById(int userId)
+    {
+        return null;
+    }
 }

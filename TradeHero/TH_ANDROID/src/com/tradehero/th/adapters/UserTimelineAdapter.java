@@ -7,35 +7,46 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-import com.fedorvlasov.lazylist.ImageLoader;
 import com.squareup.picasso.Picasso;
+import com.tradehero.common.graphics.RoundedShapeTransformation;
 import com.tradehero.th.R;
+import com.tradehero.th.api.local.TimelineItem;
+import com.tradehero.th.api.local.TimelineItemBuilder;
+import com.tradehero.th.api.misc.MediaDTO;
 import com.tradehero.th.api.timeline.TimelineDTO;
+import com.tradehero.th.api.timeline.TimelineItemDTOEnhanced;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.application.App;
 import com.tradehero.th.base.THUser;
+import com.tradehero.th.widget.timeline.TimelineItemView;
+import java.util.List;
 
 public class UserTimelineAdapter extends BaseAdapter
 {
-    private final TimelineDTO timelineDTO;
+    private final List<TimelineItem> timelineItems;
     private final UserProfileDTO profile;
+    private final Context context;
 
     public UserTimelineAdapter(Context context, TimelineDTO timelineDTO)
     {
-        this.timelineDTO = timelineDTO;
+        this.context = context;
         this.profile = THUser.getCurrentUser();
+
+        TimelineItemBuilder timelineBuilder = new TimelineItemBuilder(timelineDTO);
+        timelineBuilder.buildFrom(timelineDTO);
+        timelineItems = timelineBuilder.getItems();
     }
 
     @Override
     public int getCount()
     {
-        return timelineDTO.enhancedItems.size();
+        return timelineItems.size();
     }
 
     @Override
     public Object getItem(int position)
     {
-        return timelineDTO.enhancedItems.get(position);
+        return timelineItems.get(position);
     }
 
     @Override
@@ -47,44 +58,13 @@ public class UserTimelineAdapter extends BaseAdapter
     @Override
     public View getView(int position, View convertView, ViewGroup parent)
     {
-        ViewHolder holder;
         if (convertView == null)
         {
-            LayoutInflater inflater = (LayoutInflater) App.context().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = inflater.inflate(R.layout.profile_item_list_screen, null);
-
-            holder = new ViewHolder();
-            holder.username = (TextView) convertView.findViewById(R.id.txt_user_name);
-            holder.userContent = (TextView) convertView.findViewById(R.id.txt_user_content_name);
-            holder.userAvatar = (ImageView) convertView.findViewById(R.id.img_user);
-            holder.vendorImage = (ImageView) convertView.findViewById(R.id.img_vender);
-            //holder.txt_code = (TextView) convertView.findViewById(R.id.txt_dlrcode);
-
-            convertView.setTag(holder);
+            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            convertView = inflater.inflate(R.layout.user_profile_timeline_item, null);
         }
-        else
-        {
-            holder = (ViewHolder) convertView.getTag();
-        }
-
-        holder.username.setText(profile.displayName);
-        holder.userContent.setText(timelineDTO.enhancedItems.get(position).text);
-        Picasso.with(App.context()).load(profile.picture).into(holder.userAvatar);
-
-        /*if(tradeofweeklist.get(position).getMedias().getUrl()!=null)
-		{
-			mLoader.DisplayImage( tradeofweeklist.get(position).getMedias().getUrl(), holder.vendorImage);
-		}
-		*/
-        return convertView;
-    }
-
-    static class ViewHolder
-    {
-        TextView username;
-        TextView userContent;
-        TextView time;
-        ImageView userAvatar;
-        ImageView vendorImage;
+        TimelineItemView itemView = (TimelineItemView) convertView;
+        itemView.display((TimelineItem) getItem(position));
+        return itemView;
     }
 }
