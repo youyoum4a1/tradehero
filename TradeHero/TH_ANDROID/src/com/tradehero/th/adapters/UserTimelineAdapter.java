@@ -24,13 +24,11 @@ import java.util.List;
 public class UserTimelineAdapter extends BaseAdapter
 {
     private final List<TimelineItem> timelineItems;
-    private final UserProfileDTO profile;
     private final Context context;
 
     public UserTimelineAdapter(Context context, TimelineDTO timelineDTO)
     {
         this.context = context;
-        this.profile = THUser.getCurrentUser();
 
         TimelineItemBuilder timelineBuilder = new TimelineItemBuilder(timelineDTO);
         timelineBuilder.buildFrom(timelineDTO);
