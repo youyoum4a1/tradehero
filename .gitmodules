@@ -22,3 +22,6 @@
 [submodule "picasso"]
 	path = picasso
 	url = git@github.com:nguyentruongtho/picasso.git
+[submodule "prettytime"]
+	path = prettytime
+	url = git@github.com:nguyentruongtho/prettytime.git

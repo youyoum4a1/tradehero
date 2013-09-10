@@ -3,6 +3,7 @@
   <component name="Encoding" useUTFGuessing="true" native2AsciiForPropertiesFiles="false">
     <file url="file://$PROJECT_DIR$/TradeHero/TH_ANDROID" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/picasso/picasso" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/prettytime/core" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/retrofit/retrofit" charset="UTF-8" />
   </component>
 </project>
