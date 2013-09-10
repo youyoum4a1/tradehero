@@ -2,17 +2,21 @@ package com.tradehero.th.widget.trending;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.ColorMatrix;
 import android.os.Handler;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
+import com.fedorvlasov.lazylist.FileCache;
 import com.fedorvlasov.lazylist.ImageLoader;
+import com.squareup.picasso.Transformation;
+import com.tradehero.common.cache.BitmapFiler;
+import com.tradehero.common.cache.KnownCaches;
 import com.tradehero.common.graphics.ColorMatrixFactory;
 import com.tradehero.common.graphics.GaussianGrayscaleTransformation;
 import com.tradehero.common.graphics.WhiteToTransparentTransformation;
+import com.tradehero.common.thread.CPUExecutorService;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
@@ -26,7 +30,9 @@ public class TrendingSecurityView extends FrameLayout implements DTOView<Securit
     private static final String TAG = TrendingSecurityView.class.getSimpleName();
     public static final int DEFAULT_CONCURRENT_DOWNLOAD = 3;
     public static ImageLoader mImageLoader;
-    public static ImageLoader mImageBgLoader;
+    @Deprecated public static ImageLoader mImageBgLoader;
+    private static WhiteToTransparentTransformation whiteToTransparentTransformation;
+    private static GaussianGrayscaleTransformation gaussianGrayscaleTransformation;
 
     private Handler handler;
 
@@ -65,12 +71,15 @@ public class TrendingSecurityView extends FrameLayout implements DTOView<Securit
     {
         if (mImageLoader == null)
         {
-            mImageLoader = new ImageLoader(getContext(), new WhiteToTransparentTransformation(), DEFAULT_CONCURRENT_DOWNLOAD, R.drawable.default_image, "Main");
+            mImageLoader = new ImageLoader(null, DEFAULT_CONCURRENT_DOWNLOAD, R.drawable.default_image, KnownCaches.getOriginal());
         }
         if (mImageBgLoader == null)
         {
             mImageBgLoader = new ImageLoader(getContext(), new GaussianGrayscaleTransformation(ColorMatrixFactory.getDefaultGrayScaleMatrix()), DEFAULT_CONCURRENT_DOWNLOAD, R.drawable.default_image, "Bg");
         }
+
+        whiteToTransparentTransformation = new WhiteToTransparentTransformation();
+        gaussianGrayscaleTransformation = new GaussianGrayscaleTransformation();
 
         stockBgLogo = (ImageView) findViewById(R.id.stock_bg_logo);
         stockName = (TextView) findViewById(R.id.stock_name);
@@ -123,6 +132,13 @@ public class TrendingSecurityView extends FrameLayout implements DTOView<Securit
     public Handler getHandler()
     {
         return handler;
+    }
+
+    public boolean isMyUrl (String url)
+    {
+        return (TrendingSecurityView.this.trend != null) &&
+            (TrendingSecurityView.this.trend.imageBlobUrl != null) && // Yes, some urls can be null
+            TrendingSecurityView.this.trend.imageBlobUrl.equals(url);
     }
 
     public void display (final SecurityCompactDTO trend)
@@ -179,18 +195,18 @@ public class TrendingSecurityView extends FrameLayout implements DTOView<Securit
             @Override
             public void run()
             {
-                THLog.d (TAG, trend.imageBlobUrl + " running");
-                loadImage ();
+                THLog.d(TAG, trend.imageBlobUrl + " running");
+                loadImages();
             }
         });
         THLog.d(TAG, trend.imageBlobUrl + (posted ? "" : " not") + " posted");
     }
 
-    public void loadImage ()
+    public void loadImages()
     {
         if (this.trend != null && this.trend.imageBlobUrl != null && this.trend.imageBlobUrl.length() > 0)
         {
-            mImageLoader.displayImage(this.trend.imageBlobUrl, null, true, createImageLoadingListener ());
+            mImageLoader.displayImage(this.trend.imageBlobUrl, null, true, createOriginalImageLoadingListener());
         }
         else
         {
@@ -201,37 +217,57 @@ public class TrendingSecurityView extends FrameLayout implements DTOView<Securit
         }
     }
 
-    private ImageLoader.ImageLoadingListener createImageLoadingListener ()
+    private ImageLoader.ImageLoadingListener createOriginalImageLoadingListener()
     {
         return new ImageLoader.ImageLoadingListener()
         {
-            @Override public void onLoadingComplete(String url, Bitmap loadedImage)
+            @Override public void onLoadingComplete(String url, Bitmap originalImage)
             {
                 // Make sure we do not show another's
-                if ((TrendingSecurityView.this.trend != null) &&
-                        (TrendingSecurityView.this.trend.imageBlobUrl != null) && // Yes, some urls can be null
-                        TrendingSecurityView.this.trend.imageBlobUrl.equals(url))
+                if (isMyUrl(url))
                 {
-                    stockLogo.setImageBitmap(loadedImage);
-                    stockLogo.invalidate();
-                    mImageBgLoader.displayImage(TrendingSecurityView.this.trend.imageBlobUrl, null, true, createImageBgLoadingListener());
+                    CPUExecutorService.getExecutor().submit(createTransformAndCacheRunnable(url, originalImage,
+                            whiteToTransparentTransformation, KnownCaches.getTransparentBg(), stockLogo));
+                    CPUExecutorService.getExecutor().submit(createTransformAndCacheRunnable(url, originalImage,
+                            gaussianGrayscaleTransformation, KnownCaches.getGreyGaussian(), stockBgLogo));
                 }
             }
         };
     }
 
-    private ImageLoader.ImageLoadingListener createImageBgLoadingListener ()
+    /**
+     * Needs to run outside the UI thread
+     * @param url
+     * @param original
+     * @return
+     */
+    private Runnable createTransformAndCacheRunnable (final String url, final Bitmap original, final  Transformation transformation, final FileCache fileCache, final ImageView imageView)
     {
-        return new ImageLoader.ImageLoadingListener()
+        return new Runnable()
         {
-            @Override public void onLoadingComplete(String url, Bitmap loadedImage)
+            @Override public void run()
             {
-                if ((TrendingSecurityView.this.trend != null) &&
-                        (TrendingSecurityView.this.trend.imageBlobUrl != null) &&
-                        TrendingSecurityView.this.trend.imageBlobUrl.equals(url))
+                // We care to transform only if it the same image to show
+                if (isMyUrl(url))
                 {
-                    stockBgLogo.setImageBitmap(loadedImage);
-                    stockBgLogo.invalidate();
+                    final Bitmap converted = transformation.transform(original);
+                    BitmapFiler.cache(fileCache.getFile(url), converted);
+                    post(createLogoImageSetter(url, converted, imageView));
+                }
+            }
+        };
+    }
+
+    private Runnable createLogoImageSetter (final String url, final Bitmap bitmap, final ImageView imageView)
+    {
+        return new Runnable()
+        {
+            @Override public void run()
+            {
+                if (isMyUrl(url))
+                {
+                    imageView.setImageBitmap(bitmap);
+                    imageView.invalidate();
                 }
             }
         };

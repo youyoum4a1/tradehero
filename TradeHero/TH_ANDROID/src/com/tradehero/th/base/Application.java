@@ -1,6 +1,7 @@
 package com.tradehero.th.base;
 
 import com.tradehero.common.application.PApplication;
+import com.tradehero.common.thread.CPUExecutorService;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
 import com.tradehero.th.network.NetworkEngine;
@@ -15,6 +16,10 @@ public class Application extends PApplication
     @Override protected void init()
     {
         super.init();
+
+        // Supposedly get the count of cores
+        CPUExecutorService.setThreadCount(Runtime.getRuntime().availableProcessors());
+
         NetworkEngine.initialize();
         THUser.initialize();
         EmailSignUtils.initialize();
