@@ -71,8 +71,8 @@ public class TimelineItemView extends RelativeLayout implements DTOView<Timeline
         }
         content.setText(item.getText());
 
-        PrettyTime prettyTime = new PrettyTime(item.getDate());
-        time.setText(prettyTime.format(new Date()));
+        PrettyTime prettyTime = new PrettyTime(new Date());
+        time.setText(prettyTime.format(item.getDate()));
 
         MediaDTO firstMediaWithLogo = item.firstMediaWithLogo();
         if (firstMediaWithLogo != null)
