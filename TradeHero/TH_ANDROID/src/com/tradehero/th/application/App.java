@@ -6,14 +6,11 @@
  */
 package com.tradehero.th.application;
 
-import android.content.Context;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.Application;
 import com.tradehero.th.base.THUser;
-import com.tradehero.th.models.ProfileDTO;
 import com.tradehero.th.models.Token;
 import com.tradehero.th.models.TradeOfWeek;
-import com.tradehero.th.models.Trend;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 

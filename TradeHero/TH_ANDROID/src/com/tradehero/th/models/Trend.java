@@ -6,7 +6,7 @@
  */
 package com.tradehero.th.models;
 
-public class Trend
+@Deprecated public class Trend
 {
 
     public String id;

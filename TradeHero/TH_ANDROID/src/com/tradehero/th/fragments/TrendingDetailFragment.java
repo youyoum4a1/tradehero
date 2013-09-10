@@ -43,7 +43,11 @@ public class TrendingDetailFragment extends SherlockFragment
     private FragmentTabHost mTabHost;
     private TextView mHeaderText;
 
+    /**
+     * It is passed as part of the creation
+     */
     private SecurityCompactDTO securityCompactDTO;
+
     private String mYahooQuotesString = "";
     private List<String> mYahooQuoteValues;
     private boolean isRequestCompleted = false;
@@ -119,7 +123,6 @@ public class TrendingDetailFragment extends SherlockFragment
             }
         });
     }
-
 
     private LinkedHashMap<String, String> mapYahooQuoteResposeWithItsValues(List<String> csvList)
     {
