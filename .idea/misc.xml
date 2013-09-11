@@ -3,6 +3,9 @@
   <component name="EntryPointsManager">
     <entry_points version="2.0" />
   </component>
+  <component name="FrameworkDetectionExcludesConfiguration">
+    <file type="android" url="file://$PROJECT_DIR$/Android-PullToRefresh/library" />
+  </component>
   <component name="IdProvider" IDEtalkID="628593F540B384ACF0C145CD8A380DE6" />
   <component name="MavenProjectsManager">
     <option name="originalFiles">
@@ -11,7 +14,14 @@
         <option value="$PROJECT_DIR$/TradeHero/TH_ANDROID/pom.xml" />
         <option value="$PROJECT_DIR$/picasso/picasso/pom.xml" />
         <option value="$PROJECT_DIR$/prettytime/core/pom.xml" />
+        <option value="$PROJECT_DIR$/Android-PullToRefresh/library/pom.xml" />
       </list>
+    </option>
+    <option name="ignoredFiles">
+      <set>
+        <option value="$PROJECT_DIR$/Android-PullToRefresh/library/pom.xml" />
+        <option value="$PROJECT_DIR$/prettytime/core/pom.xml" />
+      </set>
     </option>
   </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_1_7" assert-keyword="true" jdk-15="true" project-jdk-name="Android 4.2.2 Platform" project-jdk-type="Android SDK">
