@@ -1,13 +1,16 @@
 package com.tradehero.th.fragments;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
+import android.widget.ListAdapter;
 import com.actionbarsherlock.app.SherlockFragment;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.tradehero.th.R;
-import com.tradehero.th.adapters.UserTimelineAdapter;
+import com.tradehero.th.adapters.TimelineAdapter;
 import com.tradehero.th.api.timeline.TimelineDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.THUser;
@@ -50,9 +53,41 @@ public class HomeScreenFragment extends SherlockFragment
 
         userTimelineItemList = (PullToRefreshListView) view.findViewById(R.id.pull_refresh_list);
         userTimelineItemList.getRefreshableView().addHeaderView(profileView);
+        registerForContextMenu(userTimelineItemList);
+        //createTimelineAutoFocus();
 
         getSherlockActivity().getSupportActionBar().setTitle(profile.displayName);
 
+    }
+
+    private void createTimelineAutoFocus()
+    {
+        userTimelineItemList.setOnScrollListener(new AbsListView.OnScrollListener()
+        {
+            private View lastVisibleView = null;
+            @Override public void onScrollStateChanged(AbsListView absListView, int state)
+            {
+                //To change body of implemented methods use File | Settings | File Templates.
+            }
+
+            @Override public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount)
+            {
+                View middleView = view.getChildAt(firstVisibleItem+visibleItemCount/2);
+                if (middleView == lastVisibleView)
+                {
+                    return;
+                }
+                if (middleView != null)
+                {
+                    middleView.setBackgroundColor(Color.RED);
+                    if (lastVisibleView != null)
+                    {
+                        lastVisibleView.setBackgroundColor(getResources().getColor(R.color.home_screen_list_item_background));
+                    }
+                    lastVisibleView = middleView;
+                }
+            }
+        });
     }
 
     private void createTimelineRequest()
@@ -74,6 +109,11 @@ public class HomeScreenFragment extends SherlockFragment
 
     private void refreshTimeline(TimelineDTO timelineDTO)
     {
-        userTimelineItemList.setAdapter(new UserTimelineAdapter(getActivity(), timelineDTO));
+        userTimelineItemList.setAdapter(createTimelineAdapter(timelineDTO));
+    }
+
+    private ListAdapter createTimelineAdapter(TimelineDTO timelineDTO)
+    {
+        return new TimelineAdapter(getActivity(), getActivity().getLayoutInflater(), timelineDTO);
     }
 }

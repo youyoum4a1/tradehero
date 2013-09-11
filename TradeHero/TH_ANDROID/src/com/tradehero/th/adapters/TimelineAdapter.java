@@ -21,36 +21,15 @@ import com.tradehero.th.base.THUser;
 import com.tradehero.th.widget.timeline.TimelineItemView;
 import java.util.List;
 
-public class UserTimelineAdapter extends BaseAdapter
+public class TimelineAdapter extends DTOAdapter<TimelineItem>
 {
-    private final List<TimelineItem> timelineItems;
-    private final Context context;
-
-    public UserTimelineAdapter(Context context, TimelineDTO timelineDTO)
+    public TimelineAdapter(Context context, LayoutInflater inflater, TimelineDTO timelineDTO)
     {
-        this.context = context;
+        super(context, inflater);
 
         TimelineItemBuilder timelineBuilder = new TimelineItemBuilder(timelineDTO);
         timelineBuilder.buildFrom(timelineDTO);
-        timelineItems = timelineBuilder.getItems();
-    }
-
-    @Override
-    public int getCount()
-    {
-        return timelineItems.size();
-    }
-
-    @Override
-    public Object getItem(int position)
-    {
-        return timelineItems.get(position);
-    }
-
-    @Override
-    public long getItemId(int position)
-    {
-        return position;
+        update(timelineBuilder.getItems());
     }
 
     @Override
@@ -58,7 +37,6 @@ public class UserTimelineAdapter extends BaseAdapter
     {
         if (convertView == null)
         {
-            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = inflater.inflate(R.layout.user_profile_timeline_item, null);
         }
         TimelineItemView itemView = (TimelineItemView) convertView;
