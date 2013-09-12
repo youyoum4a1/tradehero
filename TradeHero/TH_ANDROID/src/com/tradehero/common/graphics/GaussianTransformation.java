@@ -27,6 +27,6 @@ public class GaussianTransformation implements com.squareup.picasso.Transformati
 
     @Override public String key()
     {
-        return "gaussian()";
+        return "gaussian";
     }
 }

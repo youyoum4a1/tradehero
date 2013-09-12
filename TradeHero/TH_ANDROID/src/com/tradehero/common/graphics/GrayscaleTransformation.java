@@ -16,7 +16,7 @@ public class GrayscaleTransformation implements com.squareup.picasso.Transformat
                     1f, 1f, 1f, 0, 0,
                     1f, 1f, 1f, 0, 0,
                     1f, 1f, 1f, 0, 0,
-                    0,    0,    0,    1, 0
+                    0,    0,    0, 1, 0
             });
         cm.setSaturation(0);
         return cm;
@@ -52,6 +52,6 @@ public class GrayscaleTransformation implements com.squareup.picasso.Transformat
 
     @Override public String key()
     {
-        return "toGrayscale()";
+        return "toGrayscale";
     }
 }

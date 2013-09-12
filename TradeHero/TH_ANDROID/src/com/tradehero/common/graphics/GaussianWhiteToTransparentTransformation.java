@@ -15,6 +15,6 @@ public class GaussianWhiteToTransparentTransformation implements com.squareup.pi
 
     @Override public String key()
     {
-        return "toGaussianGrayscale()";
+        return "toGaussianGrayscale";
     }
 }

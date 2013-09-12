@@ -30,6 +30,6 @@ public class RoundedCornerGrayscaleTransformation implements com.squareup.picass
 
     @Override public String key()
     {
-        return "toRoundedCornerGrayscale()";
+        return "toRoundedCornerGrayscale";
     }
 }

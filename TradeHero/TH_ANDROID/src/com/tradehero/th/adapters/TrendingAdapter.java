@@ -17,16 +17,10 @@ import java.util.List;
 public class TrendingAdapter extends ArrayAdapter<SecurityCompactDTO>
 {
     private final static String TAG = TrendingAdapter.class.getSimpleName();
-    static public ImageLoader mImageLoader;
 
     public TrendingAdapter(final Context context, final List<SecurityCompactDTO> trendList)
     {
         super(context, 0, trendList);
-        if (mImageLoader == null)
-        {
-            mImageLoader = new ImageLoader(context, new WhiteToTransparentTransformation(), 3, R.drawable.default_image);
-            //mImageLoader = new com.fedorvlasov.lazylist.ImageLoader(context);
-        }
     }
 
     @SuppressWarnings("deprecation")
@@ -41,23 +35,5 @@ public class TrendingAdapter extends ArrayAdapter<SecurityCompactDTO>
         trendingSecurityView.display(getItem(position));
 
         return convertView;
-    }
-
-    private ImageLoader.ImageLoadingListener createLoadingListener (final View trendingView, final ImageView stockLogo, final ImageView stockBgLogo)
-    {
-        return new ImageLoader.ImageLoadingListener()
-        {
-            public void onLoadingComplete(final String url, final Bitmap b)
-            {
-                //final Bitmap bCleaned =
-                //        ImageUtils.convertToMutableAndRemoveBackground(loadedImage);
-                if (b != null)
-                {
-                    stockLogo.setImageBitmap(b);
-                    stockBgLogo.setImageBitmap(b);
-                    trendingView.invalidate();
-                }
-            }
-        };
     }
 }

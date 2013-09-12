@@ -4,11 +4,14 @@
     <mapping directory="" vcs="" />
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/ActionBarSherlock" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/Android-PullToRefresh" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/android-hero-validator" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/facebook-android-sdk" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/java-code-styles" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/lazyList" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/picasso" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/prettytime" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/retrofit" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/robolectric" vcs="Git" />
   </component>
 </project>
 

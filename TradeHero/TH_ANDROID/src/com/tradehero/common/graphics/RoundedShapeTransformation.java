@@ -47,6 +47,6 @@ public class RoundedShapeTransformation implements com.squareup.picasso.Transfor
 
     @Override public String key()
     {
-        return "rounded()";
+        return "rounded";
     }
 }

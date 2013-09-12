@@ -39,6 +39,6 @@ public class GradientTransformation implements Transformation
 
     @Override public String key()
     {
-        return "gradient()";
+        return "gradient";
     }
 }
