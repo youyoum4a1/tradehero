@@ -13,12 +13,15 @@ import com.tradehero.th.utils.TwitterUtils;
 /** Created with IntelliJ IDEA. User: tho Date: 8/15/13 Time: 3:33 PM Copyright (c) TradeHero */
 public class Application extends PApplication
 {
+    public static final String TAG = Application.class.getSimpleName();
+
     @Override protected void init()
     {
         super.init();
 
         // Supposedly get the count of cores
         CPUExecutorService.setThreadCount(Runtime.getRuntime().availableProcessors());
+        THLog.d(TAG, "Available Processors Count: " + CPUExecutorService.getThreadCount());
 
         NetworkEngine.initialize();
         THUser.initialize();

@@ -30,6 +30,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
+import com.squareup.picasso.Picasso;
+import com.tradehero.common.cache.KnownCaches;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.DashboardActivity;
@@ -107,6 +109,10 @@ public class TrendingFragment extends SherlockFragment
         mSearchTypeSpinner.setAdapter(adapter);
 
         mSearchField.addTextChangedListener(new SearchFieldWatcher());
+
+        // HACK
+        KnownCaches.getTransparentBg().clear();
+        KnownCaches.getGreyGaussian().clear();
     }
 
     @Override

@@ -7,7 +7,7 @@
     android:background="@drawable/trending_grid_item_bg"
     >
 
-    <ImageView
+    <com.tradehero.common.widget.ImageUrlView
         android:id="@+id/stock_bg_logo"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -35,7 +35,7 @@
             android:text=""
             android:textStyle="bold" />
 
-        <ImageView
+        <com.tradehero.common.widget.ImageUrlView
             android:id="@+id/stock_logo"
             android:layout_width="wrap_content"
             android:layout_height="45dp"

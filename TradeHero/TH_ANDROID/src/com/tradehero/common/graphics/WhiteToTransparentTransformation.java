@@ -102,6 +102,6 @@ public class WhiteToTransparentTransformation implements com.squareup.picasso.Tr
 
     @Override public String key()
     {
-        return "whiteToTransparent()";
+        return "whiteToTransparent";
     }
 }
