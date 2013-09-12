@@ -10,6 +10,7 @@
     <mapping directory="$PROJECT_DIR$/java-code-styles" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/lazyList" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/picasso" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/prettytime" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/retrofit" vcs="Git" />
   </component>
 </project>

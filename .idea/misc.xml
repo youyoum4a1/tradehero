@@ -20,7 +20,6 @@
     <option name="ignoredFiles">
       <set>
         <option value="$PROJECT_DIR$/Android-PullToRefresh/library/pom.xml" />
-        <option value="$PROJECT_DIR$/prettytime/core/pom.xml" />
       </set>
     </option>
   </component>
