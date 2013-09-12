@@ -27,7 +27,6 @@ public abstract class ItemListLoader<D> extends AsyncTaskLoader<D>
         return itemPerPage;
     }
 
-
     @Override protected void onStartLoading()
     {
         // if we have result available currently, deliver it
