@@ -31,21 +31,27 @@ public class TimelineItemBuilder
 
     private void buildItems()
     {
-        for (TimelineItemDTOEnhanced itemDTO: source.enhancedItems)
+        if (source != null)
         {
-            TimelineItem item = new TimelineItem(itemDTO);
-            item.setUser(userForUserId(itemDTO.userId));
-            items.add(item);
+            for (TimelineItemDTOEnhanced itemDTO: source.enhancedItems)
+            {
+                TimelineItem item = new TimelineItem(itemDTO);
+                item.setUser(userForUserId(itemDTO.userId));
+                items.add(item);
+            }
         }
     }
 
     private UserProfileCompactDTO userForUserId(int userId)
     {
         // TODO create a hashmap mapping userId & user object
-        for (UserProfileCompactDTO user: source.users)
+        if (source != null)
         {
-            if (user.id == userId) {
-                return user;
+            for (UserProfileCompactDTO user: source.users)
+            {
+                if (user.id == userId) {
+                    return user;
+                }
             }
         }
         return null;

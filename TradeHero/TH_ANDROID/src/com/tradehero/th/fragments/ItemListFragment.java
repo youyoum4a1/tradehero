@@ -3,12 +3,29 @@ package com.tradehero.th.fragments;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
+import android.widget.BaseAdapter;
+import android.widget.HeaderViewListAdapter;
+import android.widget.ListAdapter;
+import android.widget.ListView;
 import com.actionbarsherlock.app.SherlockFragment;
+import com.tradehero.th.adapters.DTOAdapter;
+import com.tradehero.th.api.DTOView;
+import com.tradehero.th.loaders.ItemListLoader;
 import java.util.List;
 
 /** Created with IntelliJ IDEA. User: tho Date: 9/11/13 Time: 1:08 PM Copyright (c) TradeHero */
-public class ItemListFragment<T> extends SherlockFragment implements LoaderManager.LoaderCallbacks<List<T>>
+public abstract class ItemListFragment<T> extends SherlockFragment
+        implements LoaderManager.LoaderCallbacks<List<T>>
 {
+    protected ListView listView;
+
+    @Override public void onDestroyView()
+    {
+        super.onDestroyView();
+
+        listView = null;
+    }
+
     @Override public void onActivityCreated(Bundle savedInstanceState)
     {
         super.onActivityCreated(savedInstanceState);
@@ -16,18 +33,31 @@ public class ItemListFragment<T> extends SherlockFragment implements LoaderManag
         getLoaderManager().initLoader(0, null, this);
     }
 
-    @Override public Loader<List<T>> onCreateLoader(int i, Bundle bundle)
+    @SuppressWarnings("unchecked")
+    public DTOAdapter<T, ? extends DTOView<T>> getListAdapter()
     {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        if (listView != null)
+        {
+            return (DTOAdapter<T, ? extends DTOView<T>>) ((HeaderViewListAdapter) listView.getAdapter()).getWrappedAdapter();
+        }
+
+        return null;
     }
 
-    @Override public void onLoadFinished(Loader<List<T>> listLoader, List<T> ts)
+    public void setListView(ListView listView)
     {
-        //To change body of implemented methods use File | Settings | File Templates.
+        this.listView = listView;
+    }
+
+    //<editor-fold desc="LoaderManager callback methods">
+    @Override public void onLoadFinished(Loader<List<T>> listLoader, List<T> items)
+    {
+        getListAdapter().setItems(items);
     }
 
     @Override public void onLoaderReset(Loader<List<T>> listLoader)
     {
-        // intentionally left blank.
+        getListAdapter().setItems(null);
     }
+    //</editor-fold>
 }

@@ -1,8 +1,10 @@
 package com.tradehero.th.fragments;
 
 import android.app.LoaderManager;
+import android.content.CursorLoader;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v4.content.Loader;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +21,8 @@ import com.tradehero.th.api.local.TimelineItem;
 import com.tradehero.th.api.timeline.TimelineDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.THUser;
+import com.tradehero.th.loaders.ItemListLoader;
+import com.tradehero.th.loaders.TimelineItemListLoader;
 import com.tradehero.th.misc.callback.THCallback;
 import com.tradehero.th.misc.callback.THResponse;
 import com.tradehero.th.misc.exception.THException;
@@ -52,7 +56,7 @@ public class HomeScreenFragment extends ItemListFragment<TimelineItem>
 
     private void _initView(View view)
     {
-        createTimelineRequest();
+        //createTimelineRequest();
 
         ProfileView profileView = (ProfileView) getActivity().getLayoutInflater().inflate(R.layout.profile_screen_user_detail, null);
         profileView.display(profile);
@@ -72,6 +76,10 @@ public class HomeScreenFragment extends ItemListFragment<TimelineItem>
                 }
             }
         });
+        setListView(userTimelineItemList.getRefreshableView());
+
+        refreshTimeline();
+
         registerForContextMenu(userTimelineItemList);
         //createTimelineAutoFocus();
 
@@ -110,30 +118,24 @@ public class HomeScreenFragment extends ItemListFragment<TimelineItem>
         });
     }
 
-    private void createTimelineRequest()
+    private void refreshTimeline()
     {
-        NetworkEngine.createService(UserTimelineService.class)
-            .getTimeline(profile.id, 42, new THCallback<TimelineDTO>()
-            {
-                @Override protected void success(TimelineDTO timelineDTO, THResponse thResponse)
-                {
-                    refreshTimeline(timelineDTO);
-                }
-
-                @Override protected void failure(THException ex)
-                {
-                    THToast.show(ex);
-                }
-            });
+        userTimelineItemList.setAdapter(createTimelineAdapter());
     }
 
-    private void refreshTimeline(TimelineDTO timelineDTO)
+    private ListAdapter createTimelineAdapter()
     {
-        userTimelineItemList.setAdapter(createTimelineAdapter(timelineDTO));
+        return new TimelineAdapter(getActivity(), getActivity().getLayoutInflater(), R.layout.user_profile_timeline_item);
     }
 
-    private ListAdapter createTimelineAdapter(TimelineDTO timelineDTO)
+    //<editor-fold desc="Loaders methods">
+    @Override public Loader<List<TimelineItem>> onCreateLoader(int id, Bundle bundle)
     {
-        return new TimelineAdapter(getActivity(), getActivity().getLayoutInflater(), R.layout.user_profile_timeline_item, timelineDTO);
+        TimelineItemListLoader timelineLoader = new TimelineItemListLoader(getActivity());
+        timelineLoader.setOwnerId(profile.id);
+        timelineLoader.setItemPerPage(42);
+
+        return timelineLoader;
     }
+    //</editor-fold>
 }

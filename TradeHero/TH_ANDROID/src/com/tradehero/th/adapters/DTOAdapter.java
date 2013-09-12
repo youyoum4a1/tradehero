@@ -38,12 +38,12 @@ public abstract class DTOAdapter<T, V extends DTOView<T>> extends BaseAdapter
 
     @Override public int getCount()
     {
-        return items.size();
+        return items != null ? items.size() : 0;
     }
 
     @Override public Object getItem(int i)
     {
-        return items.get(i);
+        return items != null ? items.get(i) : null;
     }
 
     @Override public long getItemId(int i)
@@ -51,13 +51,24 @@ public abstract class DTOAdapter<T, V extends DTOView<T>> extends BaseAdapter
         return i;
     }
 
+    @SuppressWarnings("unchecked")
     @Override public View getView(int position, View convertView, ViewGroup viewGroup)
     {
         if (convertView == null)
         {
             convertView = inflater.inflate(layoutResourceId, null);
         }
-        return getView(position, (V)convertView);
+
+        try
+        {
+            V view = (V) convertView;
+            view.display((T) getItem(position));
+            return getView(position, view);
+        }
+        catch (Exception ex)
+        {
+            throw new IllegalArgumentException("layoutResourceId is not match with class: " + convertView.getClass().getSimpleName());
+        }
     }
 
     protected abstract View getView(int position, V convertView);
