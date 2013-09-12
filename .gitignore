@@ -52,6 +52,8 @@ out/
 .idea/libraries/
 .idea/codeStyleSettings.xml
 .idea/workspace.xml
+.idea/encodings.xml
+.idea/compiler.xml
 
 # Ant build file
 th_android.xml
