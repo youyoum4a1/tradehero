@@ -4,7 +4,7 @@
  *
  * Created by @author Siddesh Bingi on Jul 24, 2013
  */
-package com.tradehero.th.fragments;
+package com.tradehero.th.fragments.trending;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -23,12 +23,12 @@ import android.widget.TextView;
 import com.tradehero.th.R;
 import com.tradehero.th.application.App;
 import com.tradehero.th.cache.ImageLoader;
+import com.tradehero.th.fragments.BuyFragment;
 import com.tradehero.th.models.Trend;
 import com.tradehero.th.utills.DateUtils;
 import com.tradehero.th.utills.Logger;
 import com.tradehero.th.utills.Logger.LogLevel;
 import com.tradehero.th.utills.YUtils;
-import java.util.HashMap;
 
 public class TradeFragment extends Fragment
 {

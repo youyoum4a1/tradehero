@@ -7,9 +7,7 @@
 package com.tradehero.th.fragments;
 
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.app.FragmentTabHost;
-import android.text.TextUtils;
 import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,15 +20,12 @@ import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.security.SecurityCompactDTO;
-import com.tradehero.th.application.App;
 import com.tradehero.th.application.Config;
 import com.tradehero.th.base.THUser;
+import com.tradehero.th.fragments.trending.TradeFragment;
 import com.tradehero.th.utills.Constants;
 import com.tradehero.th.utills.Logger;
 import com.tradehero.th.utills.Logger.LogLevel;
-import com.tradehero.th.utills.YUtils;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 

@@ -1,7 +1,7 @@
 package com.tradehero.th.base;
 
 import com.tradehero.common.application.PApplication;
-import com.tradehero.common.thread.CPUExecutorService;
+import com.tradehero.common.thread.KnownExecutorServices;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
 import com.tradehero.th.network.NetworkEngine;
@@ -20,8 +20,8 @@ public class Application extends PApplication
         super.init();
 
         // Supposedly get the count of cores
-        CPUExecutorService.setThreadCount(Runtime.getRuntime().availableProcessors());
-        THLog.d(TAG, "Available Processors Count: " + CPUExecutorService.getThreadCount());
+        KnownExecutorServices.setCpuThreadCount(Runtime.getRuntime().availableProcessors());
+        THLog.d(TAG, "Available Processors Count: " + KnownExecutorServices.getCpuThreadCount());
 
         NetworkEngine.initialize();
         THUser.initialize();
