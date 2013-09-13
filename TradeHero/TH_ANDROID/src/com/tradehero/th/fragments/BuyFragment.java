@@ -6,6 +6,7 @@
  */
 package com.tradehero.th.fragments;
 
+import com.tradehero.th.fragments.trending.TradeFragment;
 import java.util.LinkedHashMap;
 
 import org.apache.http.entity.StringEntity;

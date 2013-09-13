@@ -58,7 +58,7 @@ public class HomeScreenFragment extends ItemListFragment<TimelineItem>
         registerForContextMenu(userTimelineItemList);
         //createTimelineAutoFocus();
 
-        getSherlockActivity().getSupportActionBar().setTitle(profile.displayName);
+        //getSherlockActivity().getSupportActionBar().setTitle(profile.displayName);
 
     }
 

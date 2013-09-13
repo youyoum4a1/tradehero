@@ -1,5 +1,6 @@
 package com.tradehero.th.fragments;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -23,7 +24,10 @@ import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockFragment;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -32,6 +36,7 @@ import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.squareup.picasso.Picasso;
 import com.tradehero.common.cache.KnownCaches;
+import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.DashboardActivity;
@@ -50,6 +55,7 @@ import com.tradehero.th.network.service.SecurityService;
 import com.tradehero.th.utills.Constants;
 import com.tradehero.th.utills.Logger;
 import com.tradehero.th.utills.Logger.LogLevel;
+import com.tradehero.th.widget.trending.TrendingGridView;
 import java.io.IOException;
 import java.util.List;
 import retrofit.RetrofitError;
@@ -60,7 +66,7 @@ public class TrendingFragment extends SherlockFragment
     private final static String TAG = TrendingFragment.class.getSimpleName();
     private final static String[] SEARCH_TYPE = {"Stocks", "People"};
 
-    private GridView mTrendingGridView;
+    private TrendingGridView mTrendingGridView;
     private ListView mSearchListView;
     private ProgressBar mProgressSpinner;
 
@@ -76,6 +82,19 @@ public class TrendingFragment extends SherlockFragment
     private ImageButton mSearchBtn;
     private ImageView mBullIcon;
     private RelativeLayout header;
+    private TrendingAdapter trendingAdapter;
+
+    @Override public void onAttach(Activity activity)
+    {
+        THLog.i(TAG, "Attached to activity");
+        super.onAttach(activity);
+    }
+
+    @Override public void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -87,28 +106,28 @@ public class TrendingFragment extends SherlockFragment
 
     private void initViews(View v)
     {
-        mTrendingGridView = (GridView) v.findViewById(R.id.trending_gridview);
+        mTrendingGridView = (TrendingGridView) v.findViewById(R.id.trending_gridview);
         mSearchListView = (ListView) v.findViewById(R.id.trending_listview);
         mProgressSpinner = (ProgressBar) v.findViewById(R.id.progress_spinner);
-        mSearchTypeSpinner = (Spinner) v.findViewById(R.id.spinner);
-        mHeaderText = (TextView) v.findViewById(R.id.header_txt);
-        mSearchField = (EditText) v.findViewById(R.id.searh_field);
+        //mSearchTypeSpinner = (Spinner) v.findViewById(R.id.spinner);
+        //mHeaderText = (TextView) v.findViewById(R.id.header_txt);
+        //mSearchField = (EditText) v.findViewById(R.id.searh_field);
         mBullIcon = (ImageView) v.findViewById(R.id.logo_img);
-        mSearchBtn = (ImageButton) v.findViewById(R.id.btn_search);
-        mSearchBtn.setVisibility(View.VISIBLE);
-        mBackBtn = (ImageButton) v.findViewById(R.id.btn_back);
+        //mSearchBtn = (ImageButton) v.findViewById(R.id.btn_search);
+        //mSearchBtn.setVisibility(View.VISIBLE);
+        //mBackBtn = (ImageButton) v.findViewById(R.id.btn_back);
         mSearchContainer = (RelativeLayout) v.findViewById(R.id.search_container);
 
         // TODO header bar
         //header = (RelativeLayout) getActivity().findViewById(R.id.top_tabactivity);
         //header.setVisibility(View.GONE);
-        mHeaderText.setText(R.string.header_trending);
+        //mHeaderText.setText(R.string.header_trending);
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, SEARCH_TYPE);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        mSearchTypeSpinner.setAdapter(adapter);
+        //mSearchTypeSpinner.setAdapter(adapter);
 
-        mSearchField.addTextChangedListener(new SearchFieldWatcher());
+        //mSearchField.addTextChangedListener(new SearchFieldWatcher());
 
         // HACK
         KnownCaches.getTransparentBg().clear();
@@ -122,24 +141,24 @@ public class TrendingFragment extends SherlockFragment
 
         // TODO sliding menu
         //((TradeHeroTabActivity) getActivity()).showSlidingMenue(true);
-        mBackBtn.setOnClickListener(new OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                showSearchView(false);
-                showSearchList(false);
-            }
-        });
+        //mBackBtn.setOnClickListener(new OnClickListener()
+        //{
+        //    @Override
+        //    public void onClick(View v)
+        //    {
+        //        showSearchView(false);
+        //        showSearchList(false);
+        //    }
+        //});
 
-        mSearchBtn.setOnClickListener(new OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                showSearchView(true);
-            }
-        });
+        //mSearchBtn.setOnClickListener(new OnClickListener()
+        //{
+        //    @Override
+        //    public void onClick(View v)
+        //    {
+        //        showSearchView(true);
+        //    }
+        //});
 
         if (trendList != null && trendList.size() > 0)
         {
@@ -150,21 +169,21 @@ public class TrendingFragment extends SherlockFragment
         //	mTrendingGridView.setAdapter(new TrendingAdapter(getActivity(), trendList));
         //}
 
-        mSearchTypeSpinner.setOnItemSelectedListener(new OnItemSelectedListener()
-        {
-            @Override
-            public void onItemSelected(AdapterView<?> arg0, View arg1,
-                    int arg2, long arg3)
-            {
-                mSearchField.setText("");
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> arg0)
-            {
-
-            }
-        });
+        //mSearchTypeSpinner.setOnItemSelectedListener(new OnItemSelectedListener()
+        //{
+        //    @Override
+        //    public void onItemSelected(AdapterView<?> arg0, View arg1,
+        //            int arg2, long arg3)
+        //    {
+        //        mSearchField.setText("");
+        //    }
+        //
+        //    @Override
+        //    public void onNothingSelected(AdapterView<?> arg0)
+        //    {
+        //
+        //    }
+        //});
 
         mTrendingGridView.setOnItemClickListener(new OnItemClickListener()
         {
@@ -172,9 +191,12 @@ public class TrendingFragment extends SherlockFragment
             public void onItemClick(AdapterView<?> parent, View view, int position,
                     long id)
             {
-
                 SecurityCompactDTO securityCompactDTO = (SecurityCompactDTO) parent.getItemAtPosition(position);
-                ((DashboardActivity)getActivity()).pushTrendingDetailFragment(securityCompactDTO);
+
+                THToast.show("Disabled for now");
+
+                // TODO put back in
+                //((DashboardActivity)getActivity()).pushTrendingDetailFragment(securityCompactDTO);
             }
         });
 
@@ -206,9 +228,31 @@ public class TrendingFragment extends SherlockFragment
         requestToGetTrendingInfo();
     }
 
-   private void setDataAdapterToGridView(List<SecurityCompactDTO> trendList)
+    @Override public void onDetach()
     {
-        mTrendingGridView.setAdapter(new TrendingAdapter(getActivity(), trendList));
+        THLog.i(TAG, "Detached from activity");
+        super.onDetach();
+    }
+
+    @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
+    {
+        THLog.i(TAG, "onCreateOptionsMenu");
+        getSherlockActivity().getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+        getSherlockActivity().getSupportActionBar().setCustomView(R.layout.trending_topbar);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    private void setDataAdapterToGridView(List<SecurityCompactDTO> trendList)
+    {
+        if (trendingAdapter == null)
+        {
+            trendingAdapter = new TrendingAdapter(getActivity(), trendList);
+        }
+        else
+        {
+            // TODO implement loader pattern
+        }
+        mTrendingGridView.setAdapter(trendingAdapter);
         showProgressSpinner(false);
     }
 
@@ -219,6 +263,7 @@ public class TrendingFragment extends SherlockFragment
 
     private void setDataAdapterToSearchListView(List<Trend> trendList)
     {
+
         mSearchListView.setAdapter(new SearchStockAdapter(getActivity(), trendList));
     }
 
@@ -323,38 +368,38 @@ public class TrendingFragment extends SherlockFragment
                     public void onSuccess(String response)
                     {
 
-                        try
-                        {
-                            Logger.log(TAG, "Search Response: ---\n" + response, LogLevel.LOGGING_LEVEL_INFO);
-
-                            if (((String) mSearchTypeSpinner.getSelectedItem()).equalsIgnoreCase(SEARCH_TYPE[0]))
-                            {
-                                ObjectMapper objectMapper = new ObjectMapper();
-                                searchStockList = objectMapper.readValue(response,
-                                        TypeFactory.defaultInstance().constructCollectionType(List.class, Trend.class));
-                                mSearchListView.setAdapter(new SearchStockAdapter(getActivity(), searchStockList));
-                                setDataAdapterToSearchListView(searchStockList);
-                            }
-                            else
-                            {
-                                ObjectMapper objectMapper = new ObjectMapper();
-                                searchPeopleList = objectMapper.readValue(response,
-                                        TypeFactory.defaultInstance().constructCollectionType(List.class, User.class));
-                                mSearchListView.setAdapter(new SearchPeopleAdapter(getActivity(), searchPeopleList));
-                            }
-                        } catch (JsonParseException e)
-                        {
-                            e.printStackTrace();
-                        } catch (JsonMappingException e)
-                        {
-                            e.printStackTrace();
-                        } catch (IOException e)
-                        {
-                            e.printStackTrace();
-                        } catch (Exception e)
-                        {
-                            e.printStackTrace();
-                        }
+                        //try
+                        //{
+                        //    Logger.log(TAG, "Search Response: ---\n" + response, LogLevel.LOGGING_LEVEL_INFO);
+                        //
+                        //    if (((String) mSearchTypeSpinner.getSelectedItem()).equalsIgnoreCase(SEARCH_TYPE[0]))
+                        //    {
+                        //        ObjectMapper objectMapper = new ObjectMapper();
+                        //        searchStockList = objectMapper.readValue(response,
+                        //                TypeFactory.defaultInstance().constructCollectionType(List.class, Trend.class));
+                        //        mSearchListView.setAdapter(new SearchStockAdapter(getActivity(), searchStockList));
+                        //        setDataAdapterToSearchListView(searchStockList);
+                        //    }
+                        //    else
+                        //    {
+                        //        ObjectMapper objectMapper = new ObjectMapper();
+                        //        searchPeopleList = objectMapper.readValue(response,
+                        //                TypeFactory.defaultInstance().constructCollectionType(List.class, User.class));
+                        //        mSearchListView.setAdapter(new SearchPeopleAdapter(getActivity(), searchPeopleList));
+                        //    }
+                        //} catch (JsonParseException e)
+                        //{
+                        //    e.printStackTrace();
+                        //} catch (JsonMappingException e)
+                        //{
+                        //    e.printStackTrace();
+                        //} catch (IOException e)
+                        //{
+                        //    e.printStackTrace();
+                        //} catch (Exception e)
+                        //{
+                        //    e.printStackTrace();
+                        //}
 
                         showProgressSpinner(false);
                     }
@@ -381,10 +426,10 @@ public class TrendingFragment extends SherlockFragment
                 showSearchList(true);
 
                 String searchType = "securities";
-                if (((String) mSearchTypeSpinner.getSelectedItem()).equalsIgnoreCase(SEARCH_TYPE[1]))
-                {
-                    searchType = "users";
-                }
+                //if (((String) mSearchTypeSpinner.getSelectedItem()).equalsIgnoreCase(SEARCH_TYPE[1]))
+                //{
+                //    searchType = "users";
+                //}
 
                 requestToGetSearchQuery(s.toString(), searchType, "1");
             }
@@ -415,10 +460,10 @@ public class TrendingFragment extends SherlockFragment
 
     private void showSearchView(boolean flag)
     {
-        mHeaderText.setVisibility(getVisibility(!flag));
+        //mHeaderText.setVisibility(getVisibility(!flag));
         mBullIcon.setVisibility(getVisibility(!flag));
         mSearchContainer.setVisibility(getVisibility(flag));
-        mSearchField.setText("");
+        //mSearchField.setText("");
     }
 
     private void showProgressSpinner(boolean flag)

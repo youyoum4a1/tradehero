@@ -3,16 +3,19 @@ package com.tradehero.common.cache;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Build;
 import android.util.Base64;
 import android.util.Log;
 import com.jakewharton.disklrucache.DiskLruCache;
 import com.squareup.picasso.LruCache;
+import com.tradehero.common.utils.FileUtils;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.application.App;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -24,11 +27,18 @@ public class LruMemFileCache extends LruCache
 {
     public static final String TAG = LruMemFileCache.class.getSimpleName();
     public static final String DEFAULT_DIR_NAME = LruMemFileCache.class.getPackage().getName();
-    public static final int DEFAULT_MAX_FILE_SIZE = 200;
+    public static final int DEFAULT_BASE_64_PARAM = Base64.NO_PADDING | Base64.NO_WRAP;
+
+    // Here we use only 1 index value per key on the disk cache
+    public static final int DEFAULT_INDEX = 0;
 
     private DiskLruCache diskLruCache;
 
     private static MessageDigest md5;
+    private Object dirLock = new Object();
+    private Object setLock = new Object();
+    private Object getLock = new Object();
+
     private static MessageDigest getMd5()
     {
         if (md5 == null)
@@ -48,44 +58,40 @@ public class LruMemFileCache extends LruCache
     private Context context;
     private String dirName;
     private File cacheDir;
-    private int maxFileSize;
-    private int size = 0;
-    private Object dirLock = new Object();
-    /**
-     * Key is the path, value is the cache key
-     */
-    final LinkedHashMap<String, String> map;
+    private long maxFileSize;
 
     //<editor-fold desc="Constructors">
     public LruMemFileCache(Context context)
     {
-        super(context);
-        this.maxFileSize = DEFAULT_MAX_FILE_SIZE;
-        this.map = new LinkedHashMap<String, String>(0, 0.75f, true);
-        initDir(context, DEFAULT_DIR_NAME);
+        this(context, DEFAULT_DIR_NAME);
     }
 
-    public LruMemFileCache(int maxMemSize, int maxFilesize)
+    public LruMemFileCache(Context context, String dirName)
+    {
+        super(context);
+        initDir(context, getDefaultFolderSizeToUse(getPreferredCacheParentDirectory(context)), dirName);
+    }
+
+    public LruMemFileCache(int maxMemSize, long maxFileSize)
+    {
+        this(maxMemSize, maxFileSize, DEFAULT_DIR_NAME);
+    }
+
+    public LruMemFileCache(int maxMemSize, long maxFileSize, String dirName)
     {
         super(maxMemSize);
-        this.maxFileSize = maxFileSize;
-        this.map = new LinkedHashMap<String, String>(0, 0.75f, true);
-        initDir(App.context(), DEFAULT_DIR_NAME);
+        initDir(App.context(), maxFileSize, dirName);
     }
     //</editor-fold>
 
-    private void initDir(Context context, String dirName)
+    private void initDir(Context context, long maxFileSize, String dirName)
     {
         this.context = context;
+        this.maxFileSize = maxFileSize;
         this.dirName = dirName;
 
         //Find the dir to save cached images
-        File primaryDir = context.getCacheDir();
-        if (android.os.Environment.getExternalStorageState().equals(android.os.Environment.MEDIA_MOUNTED))
-        {
-            primaryDir = android.os.Environment.getExternalStorageDirectory();
-        }
-        cacheDir = new File(primaryDir, dirName);
+        cacheDir = new File(getPreferredCacheParentDirectory(this.context), this.dirName);
 
         if (!cacheDir.exists())
         {
@@ -106,30 +112,71 @@ public class LruMemFileCache extends LruCache
             Log.d(TAG, "Dirs exist " + cacheDir.getPath());
         }
 
-        collectExistingFiles();
+        try
+        {
+            this.diskLruCache = DiskLruCache.open(cacheDir, 0, 1, this.maxFileSize);
+        }
+        catch (IOException e)
+        {
+            THLog.e(TAG, "Failed to open a DiskLruCache", e);
+            this.diskLruCache = null;
+        }
+    }
+
+    public File getPreferredCacheParentDirectory(Context context)
+    {
+        File primaryDir = context.getCacheDir();
+        if (android.os.Environment.getExternalStorageState().equals(android.os.Environment.MEDIA_MOUNTED))
+        {
+            if (android.os.Environment.getExternalStorageDirectory().canWrite())
+            {
+                primaryDir = android.os.Environment.getExternalStorageDirectory();
+            }
+        }
+        return primaryDir;
+    }
+
+    public long getDefaultFolderSizeToUse(File folder)
+    {
+        long total = folder.getTotalSpace();
+        return total / 10;
+        //long free = folder.getFreeSpace();
+        //long used = FileUtils.getFolderSize(folder);
+        //return (free + used) / 2;
     }
 
     @Override public void set(String key, Bitmap bitmap)
     {
         super.set(key, bitmap);
-        synchronized (dirLock)
+        if (diskLruCache != null)
         {
-            File file = getFile(key);
             try
             {
-                OutputStream os = new FileOutputStream(file);
-                bitmap.compress(Bitmap.CompressFormat.PNG, 100, os);
-                os.flush();
-                os.close();
-                THLog.i(TAG, "Set key " + key + " to " + file.getPath() + " succeeded ");
+                DiskLruCache.Editor entryEdit = null;
+                synchronized (setLock)
+                {
+                    try
+                    {
+                        entryEdit = diskLruCache.edit(hashKey(key));
+                        OutputStream os = entryEdit.newOutputStream(DEFAULT_INDEX);
+                        bitmap.compress(Bitmap.CompressFormat.PNG, 100, os);
+                        os.flush();
+                        os.close();
+                        entryEdit.commit();
+                    }
+                    catch (IOException e)
+                    {
+                        THLog.e(TAG, "Failed to save entry " + key, e);
+                        if (entryEdit != null)
+                        {
+                            entryEdit.abortUnlessCommitted();
+                        }
+                    }
+                }
             }
-            catch (FileNotFoundException e)
+            catch (Exception e)
             {
-                initDir(context, dirName); // Perhaps the external storage was removed.
-            }
-            catch (IOException e)
-            {
-                THLog.e(TAG, "Set key " + key + " to " + file.getPath() + " failed ", e);
+                THLog.e(TAG, "Failed to save entry " + key, e);
             }
         }
     }
@@ -138,62 +185,81 @@ public class LruMemFileCache extends LruCache
     {
         Bitmap bitmap = super.get(key);
 
-        if (bitmap == null)
+        if (bitmap == null && diskLruCache != null)
         {
-            if (!cacheDir.exists())
+            synchronized (setLock)
             {
-                initDir(context, dirName);
-            }
+                try
+                {
+                    DiskLruCache.Snapshot retrieved = null;
+                    try
+                    {
+                        retrieved = diskLruCache.get(hashKey(key));
+                        if (retrieved != null)
+                        {
+                            InputStream is = retrieved.getInputStream(DEFAULT_INDEX);
+                            bitmap = BitmapFactory.decodeStream(is);
+                            is.close();
+                            if (bitmap != null)
+                            {
+                                super.set(key, bitmap);
+                                THLog.i(TAG, "Got bitmap from disk " + key);
+                            }
+                            else
+                            {
+                                THLog.i(TAG, "Did not get bitmap from disk in the end " + key);
+                            }
+                        }
+                        else
+                        {
+                            THLog.i(TAG, "Retrieved was null for " + key);
+                        }
+                    }
+                    catch (IOException e)
+                    {
+                        THLog.e(TAG, "Failed to get entry " + key, e);
+                    }
 
-            synchronized (dirLock)
-            {
-
-                bitmap = BitmapFactory.decodeFile(getFile(key).getPath());
-            }
-
-            // Put back in the memory if it was missing
-            if (bitmap != null)
-            {
-                super.set(key, bitmap);
-                THLog.i(TAG, "Got key from disk " + key);
-                THLog.i(TAG, "Mem cache size " + size());
+                    if (retrieved != null)
+                    {
+                        retrieved.close();
+                    }
+                }
+                catch (Exception e)
+                {
+                    THLog.e(TAG, "Failed to get entry " + key, e);
+                }
             }
         }
         else
         {
-            THLog.i(TAG, "Got key from memory " + key);
+            THLog.i(TAG, "Got bitmap from ram " + key);
         }
 
         return bitmap;
     }
 
-    public File getFile(String key)
-    {
-        return new File(cacheDir, hashKey(key));
-    }
-
     public String hashKey (String key)
     {
-        return Base64.encodeToString(getMd5().digest(key.getBytes()), Base64.NO_WRAP).replace('=', '-').replace('/', '-');
+        return Base64.encodeToString(getMd5().digest(key.getBytes()), DEFAULT_BASE_64_PARAM).replace('/', 'b').replace('+', 'c').toLowerCase();
     }
 
     public void clearDir()
     {
         super.clear();
-        for (File file: cacheDir.listFiles())
-        {
-            file.delete();
-        }
-    }
-
-    private void collectExistingFiles()
-    {
         synchronized (dirLock)
         {
-            for (File file: cacheDir.listFiles())
+            if (diskLruCache != null)
             {
-                String previous = map.put(file.getPath(), null);
-                size++;
+                try
+                {
+                    diskLruCache.flush();
+                    //diskLruCache.delete();
+                }
+                catch (IOException e)
+                {
+                    THLog.e(TAG, "Failed to flush", e);
+                }
             }
         }
     }

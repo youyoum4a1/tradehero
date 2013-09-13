@@ -1,39 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res/com.tradehero.th"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bg" >
+    android:background="@android:color/transparent" >
 
-    <include
+    <!--include
         android:id="@+id/header"
-        layout="@layout/topbar" />
+        layout="@layout/trending_topbar" /-->
 
-    <GridView
-        android:layout_below="@id/header"
+    <com.tradehero.th.widget.trending.TrendingGridView
         android:id="@+id/trending_gridview"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:drawSelectorOnTop="false"
         android:gravity="center"
-        android:horizontalSpacing="15dp"
-        android:verticalSpacing="9dp"
+        android:horizontalSpacing="@dimen/dashboard_padding"
+        android:verticalSpacing="@dimen/dashboard_padding"
         android:listSelector="@android:color/transparent"
         android:numColumns="2"
-        android:paddingRight="9dp"
-        android:paddingLeft="9dp"
-        android:paddingTop="9dp"
+        android:paddingRight="0dp"
+        android:paddingLeft="0dp"
+        android:paddingTop="@dimen/dashboard_padding"
+        android:paddingBottom="55dp"
+        android:clipToPadding="false"
         >
-    </GridView>
-
-  <ImageView
-      android:layout_below="@id/trending_gridview"
-      android:layout_width="match_parent"
-      android:layout_height="55dp"
-      android:background="@drawable/accounts_glyph_transparent_default"
-      />
+    </com.tradehero.th.widget.trending.TrendingGridView>
 
     <ListView
-        android:layout_below="@id/header"
         android:id="@+id/trending_listview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

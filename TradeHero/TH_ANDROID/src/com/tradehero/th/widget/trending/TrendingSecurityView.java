@@ -6,17 +6,15 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
+import com.squareup.picasso.Cache;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 import com.squareup.picasso.UrlConnectionDownloader;
-import com.tradehero.common.cache.LruFileCache;
-import com.tradehero.common.graphics.ColorMatrixFactory;
+import com.tradehero.common.cache.LruMemFileCache;
 import com.tradehero.common.graphics.GaussianGrayscaleTransformation;
-import com.tradehero.common.graphics.GaussianTransformation;
-import com.tradehero.common.graphics.GaussianWhiteToTransparentTransformation;
-import com.tradehero.common.graphics.GrayscaleTransformation;
 import com.tradehero.common.graphics.WhiteToTransparentTransformation;
+import com.tradehero.common.thread.KnownExecutorServices;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.common.widget.ImageUrlView;
 import com.tradehero.th.R;
@@ -24,6 +22,7 @@ import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.utills.TrendUtils;
 import com.tradehero.th.utills.YUtils;
+import java.util.concurrent.Future;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 9/5/13 Time: 5:19 PM To change this template use File | Settings | File Templates. */
 public class TrendingSecurityView extends FrameLayout implements DTOView<SecurityCompactDTO>
@@ -45,6 +44,7 @@ public class TrendingSecurityView extends FrameLayout implements DTOView<Securit
 
     private SecurityCompactDTO securityCompactDTO;
     private boolean mAttachedToWindow;
+    private int mVisibility;
 
     //<editor-fold desc="Constructors">
     public TrendingSecurityView(Context context)
@@ -76,8 +76,15 @@ public class TrendingSecurityView extends FrameLayout implements DTOView<Securit
 
         if (mPicasso == null)
         {
-            LruFileCache lruFileCache = new LruFileCache(getContext());
-            //lruFileCache.clearDir();
+            Cache lruFileCache = null;
+            try
+            {
+                lruFileCache = new LruMemFileCache(getContext());
+            }
+            catch (Exception e)
+            {
+                THLog.e(TAG, "Failed to create LRU", e);
+            }
 
             mPicasso = new Picasso.Builder(getContext())
                     .downloader(new UrlConnectionDownloader(getContext()))
@@ -93,37 +100,38 @@ public class TrendingSecurityView extends FrameLayout implements DTOView<Securit
         lastPrice = (TextView) findViewById(R.id.last_price);
         //marketCloseIcon = (ImageView) findViewById(R.id.ic_market_close);
         stockLogo = (ImageUrlView) findViewById(R.id.stock_logo);
+        stockLogo.softId = "logo";
         stockBgLogo = (ImageUrlView) findViewById(R.id.stock_bg_logo);
+        stockBgLogo.softId = "logoBg";
+        conditionalLoadImages();
     }
 
     @Override protected void onFinishInflate()
     {
+        THLog.i(TAG, "OnFinishInflate");
         super.onFinishInflate();
         init();
     }
 
     @Override protected void onAttachedToWindow()
     {
+        THLog.i(TAG, "Attached to Window");
         super.onAttachedToWindow();
         mAttachedToWindow = true;
-        post(new Runnable()
-        {
-            @Override public void run()
-            {
-                loadImages();
-            }
-        });
-        invalidate(); // To ensure processing of the queue
+        conditionalLoadImages();
     }
 
     @Override protected void onWindowVisibilityChanged(int visibility)
     {
+        THLog.i(TAG, "Visibility changed " + visibility);
         super.onWindowVisibilityChanged(visibility);
-        invalidate();
+        this.mVisibility = visibility;
+        conditionalLoadImages();
     }
 
     @Override protected void onDetachedFromWindow()
     {
+        THLog.i(TAG, "Detached from Window");
         mAttachedToWindow = false;
         stockLogo.setImageResource(R.drawable.default_image);
         stockBgLogo.setImageResource(R.drawable.default_image);
@@ -199,6 +207,19 @@ public class TrendingSecurityView extends FrameLayout implements DTOView<Securit
         }
     }
 
+    public boolean canDisplayImages()
+    {
+        return mVisibility == VISIBLE && mAttachedToWindow;
+    }
+
+    public void conditionalLoadImages()
+    {
+        if (canDisplayImages())
+        {
+            loadImages();
+        }
+    }
+
     public void loadImages ()
     {
         stockLogo.setUrl(this.securityCompactDTO.imageBlobUrl);
@@ -207,7 +228,7 @@ public class TrendingSecurityView extends FrameLayout implements DTOView<Securit
         if (isMyUrlOk())
         {
 
-            Callback loadIntoBg = createLogoReadyCallback();
+            final Callback loadIntoBg = createLogoReadyCallback();
 
             // This line forces Picasso to clear the downloads running on the bg
             mPicasso.load((String) null)
@@ -216,11 +237,27 @@ public class TrendingSecurityView extends FrameLayout implements DTOView<Securit
                 .into(stockBgLogo);
 
             // This sequence gives the opportunity to android to cache the original http image if its cache headers instruct it to.
-            mPicasso.load(stockLogo.getUrl())
-                .placeholder(R.drawable.default_image)
-                .error(R.drawable.default_image)
-                .transform(foregroundTransformation)
-                .into(stockLogo, loadIntoBg);
+            Future<?> submitted = KnownExecutorServices.getCacheExecutor().submit(new Runnable()
+            {
+                @Override public void run()
+                {
+                    THLog.i(TAG, "Loading Fore for " + stockLogo.getUrl());
+                    mPicasso.load(stockLogo.getUrl())
+                        .placeholder(R.drawable.default_image)
+                        .error(R.drawable.default_image)
+                        .transform(foregroundTransformation)
+                        .into(stockLogo, loadIntoBg);
+                }
+            });
+
+            if (submitted == null)
+            {
+                THLog.i(TAG, "Future submission was null");
+            }
+            else
+            {
+                THLog.i(TAG, "Future submission was ok");
+            }
         }
         else
         {
@@ -252,6 +289,7 @@ public class TrendingSecurityView extends FrameLayout implements DTOView<Securit
 
             public void loadBg ()
             {
+                THLog.i(TAG, "Loading Bg for " + stockBgLogo.getUrl());
                 mPicasso.load(stockBgLogo.getUrl())
                     .placeholder(R.drawable.default_image)
                     .error(R.drawable.default_image)

@@ -6,7 +6,7 @@
 
     <include
         android:id="@+id/header"
-        layout="@layout/topbar" />
+        layout="@layout/trending_topbar" />
 
     <android.support.v4.app.FragmentTabHost
         android:id="@android:id/tabhost"

@@ -23,7 +23,6 @@ public class TrendingAdapter extends ArrayAdapter<SecurityCompactDTO>
         super(context, 0, trendList);
     }
 
-    @SuppressWarnings("deprecation")
     public View getView(final int position, View convertView, final ViewGroup parent)
     {
         if (convertView == null)
