@@ -9,7 +9,7 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.form.UserFormFactory;
 import com.tradehero.th.auth.EmailAuthenticationProvider;
-import com.tradehero.th.networkstatus.NetworkStatus;
+import com.tradehero.th.utils.NetworkUtils;
 import com.tradehero.th.utills.Util;
 import com.tradehero.th.widget.ValidationListener;
 import com.tradehero.th.widget.ValidationMessage;
@@ -52,7 +52,7 @@ abstract public class EmailSignInOrUpFragment extends AuthenticationFragment imp
 
         try
         {
-            if (!NetworkStatus.getInstance().isConnected(getActivity()))
+            if (!NetworkUtils.isConnected(getActivity()))
             {
                 Util.show_toast(getActivity(), getResources().getString(R.string.network_error));
             }

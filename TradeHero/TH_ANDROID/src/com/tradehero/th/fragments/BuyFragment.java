@@ -6,6 +6,7 @@
  */
 package com.tradehero.th.fragments;
 
+import com.tradehero.th.utils.NetworkUtils;
 import java.util.LinkedHashMap;
 
 import org.apache.http.entity.StringEntity;
@@ -20,7 +21,6 @@ import com.tradehero.th.R;
 import com.tradehero.th.application.App;
 import com.tradehero.th.application.Config;
 import com.tradehero.th.http.THAsyncClientFactory;
-import com.tradehero.th.networkstatus.NetworkStatus;
 import com.tradehero.th.utills.Constants;
 import com.tradehero.th.utills.Logger;
 import com.tradehero.th.utills.Logger.LogLevel;
@@ -111,7 +111,7 @@ public class BuyFragment extends Fragment
             public void onClick(View v)
             {
 
-                if (NetworkStatus.getInstance().isConnected(getActivity()))
+                if (NetworkUtils.isConnected(getActivity()))
                 {
                     requestToGetBuyQuotes();
                 }

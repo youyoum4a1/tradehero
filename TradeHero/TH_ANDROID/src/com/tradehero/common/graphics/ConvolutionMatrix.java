@@ -1,4 +1,4 @@
-package com.tradehero.th.application;
+package com.tradehero.common.graphics;
 
 import android.graphics.Bitmap;
 import android.graphics.Color;
