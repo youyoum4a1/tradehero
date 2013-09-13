@@ -1,28 +1,27 @@
 package com.tradehero.th.fragments;
 
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.content.Loader;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
 import android.widget.ListAdapter;
-import com.handmark.pulltorefresh.library.PullToRefreshListView;
+import com.tradehero.th.api.local.TimelineItem;
+import com.tradehero.th.loaders.ItemWithComparableId;
+import com.tradehero.th.loaders.TimelinePagedItemListLoader;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.TimelineAdapter;
-import com.tradehero.th.api.local.TimelineItem;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.THUser;
-import com.tradehero.th.loaders.TimelineItemListLoader;
+import com.tradehero.th.widget.timeline.TimelineListView;
 import com.tradehero.th.widget.user.ProfileView;
 import java.util.List;
 
 public class HomeScreenFragment extends ItemListFragment<TimelineItem>
 {
-    private PullToRefreshListView userTimelineItemList;
     private UserProfileDTO profile;
-    private TimelineItemListLoader timelineLoader;
+    private TimelineAdapter timelineAdapter;
+    private TimelineListView timelineListView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -32,7 +31,7 @@ public class HomeScreenFragment extends ItemListFragment<TimelineItem>
         profile = THUser.getCurrentUser();
         if (profile != null)
         {
-            _initView(view);
+            initView(view);
         }
         return view;
     }
@@ -42,70 +41,49 @@ public class HomeScreenFragment extends ItemListFragment<TimelineItem>
         super.onViewCreated(view, savedInstanceState);
     }
 
-    private void _initView(View view)
+    private void initView(View view)
     {
-        //createTimelineRequest();
-
         ProfileView profileView = (ProfileView) getActivity().getLayoutInflater().inflate(R.layout.profile_screen_user_detail, null);
         profileView.display(profile);
 
-        userTimelineItemList = (PullToRefreshListView) view.findViewById(R.id.pull_refresh_list);
-        userTimelineItemList.getRefreshableView().addHeaderView(profileView);
-        userTimelineItemList.setOnRefreshListener(timelineLoader);
-        userTimelineItemList.setAdapter(createTimelineAdapter());
-        setListView(userTimelineItemList.getRefreshableView());
+        timelineListView = (TimelineListView) view.findViewById(R.id.pull_refresh_list);
+        timelineListView.addHeaderView(profileView);
+        TimelineAdapter timelineAdapter = createTimelineAdapter();
+        timelineListView.setAdapter(timelineAdapter);
+        timelineListView.setOnRefreshListener(timelineAdapter);
+        timelineListView.setOnScrollListener(timelineAdapter);
 
-        registerForContextMenu(userTimelineItemList);
-        //createTimelineAutoFocus();
+        setListView(timelineListView.getRefreshableView());
+        registerForContextMenu(timelineListView);
 
         getSherlockActivity().getSupportActionBar().setTitle(profile.displayName);
-
     }
 
-    private void createTimelineAutoFocus()
+    private TimelineAdapter createTimelineAdapter()
     {
-        userTimelineItemList.setOnScrollListener(new AbsListView.OnScrollListener()
-        {
-            private View lastVisibleView = null;
-
-            @Override public void onScrollStateChanged(AbsListView absListView, int state)
-            {
-                //To change body of implemented methods use File | Settings | File Templates.
-            }
-
-            @Override public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount)
-            {
-                View middleView = view.getChildAt(firstVisibleItem+visibleItemCount/2);
-                if (middleView == lastVisibleView)
-                {
-                    return;
-                }
-                if (middleView != null)
-                {
-                    middleView.setBackgroundColor(Color.RED);
-                    if (lastVisibleView != null)
-                    {
-                        lastVisibleView.setBackgroundColor(getResources().getColor(R.color.home_screen_list_item_background));
-                    }
-                    lastVisibleView = middleView;
-                }
-            }
-        });
+        timelineAdapter = new TimelineAdapter(getActivity(), getActivity().getLayoutInflater(), R.layout.user_profile_timeline_item);
+        timelineAdapter.setLoader(createTimelineLoader());
+        return timelineAdapter;
     }
 
-    private ListAdapter createTimelineAdapter()
+    private TimelinePagedItemListLoader createTimelineLoader()
     {
-        return new TimelineAdapter(getActivity(), getActivity().getLayoutInflater(), R.layout.user_profile_timeline_item);
+        TimelinePagedItemListLoader timelineLoader = new TimelinePagedItemListLoader(getActivity());
+        timelineLoader.setOwnerId(profile.id);
+        return timelineLoader;
     }
 
     //<editor-fold desc="Loaders methods">
+
+    @Override public void onLoadFinished(Loader<List<TimelineItem>> listLoader, List<TimelineItem> items)
+    {
+        super.onLoadFinished(listLoader, items);
+        timelineListView.onRefreshComplete();
+    }
+
     @Override public Loader<List<TimelineItem>> onCreateLoader(int id, Bundle bundle)
     {
-        timelineLoader = new TimelineItemListLoader(getActivity());
-        timelineLoader.setOwnerId(profile.id);
-        timelineLoader.setItemPerPage(42);
-
-        return timelineLoader;
+        return timelineAdapter == null ? null : timelineAdapter.getLoader();
     }
     //</editor-fold>
 }

@@ -3,14 +3,14 @@ package com.tradehero.th.api.local;
 import com.tradehero.th.api.misc.MediaDTO;
 import com.tradehero.th.api.timeline.TimelineItemDTOEnhanced;
 import com.tradehero.th.api.users.UserProfileCompactDTO;
-import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.loaders.ItemWithComparableId;
 import java.util.Date;
 import java.util.List;
 
 /** Created with IntelliJ IDEA. User: tho Date: 9/10/13 Time: 11:31 AM Copyright (c) TradeHero */
-public class TimelineItem
+public class TimelineItem extends ItemWithComparableId<Integer>
 {
-    private final int timelineItemId;
+    private int timelineItemId;
     private UserProfileCompactDTO user;
     private final Date date;
     private final String text;
@@ -58,5 +58,15 @@ public class TimelineItem
     public Date getDate()
     {
         return date;
+    }
+
+    @Override public Integer getId()
+    {
+        return timelineItemId;
+    }
+
+    @Override public void setId(Integer id)
+    {
+        timelineItemId = id;
     }
 }

@@ -3,18 +3,16 @@ package com.tradehero.th.fragments;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
-import android.widget.BaseAdapter;
 import android.widget.HeaderViewListAdapter;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import com.actionbarsherlock.app.SherlockFragment;
 import com.tradehero.th.adapters.DTOAdapter;
 import com.tradehero.th.api.DTOView;
-import com.tradehero.th.loaders.ItemListLoader;
+import com.tradehero.th.loaders.ItemWithComparableId;
 import java.util.List;
 
 /** Created with IntelliJ IDEA. User: tho Date: 9/11/13 Time: 1:08 PM Copyright (c) TradeHero */
-public abstract class ItemListFragment<T> extends SherlockFragment
+public abstract class ItemListFragment<T extends ItemWithComparableId> extends SherlockFragment
         implements LoaderManager.LoaderCallbacks<List<T>>
 {
     protected ListView listView;
@@ -52,7 +50,7 @@ public abstract class ItemListFragment<T> extends SherlockFragment
     //<editor-fold desc="LoaderManager callback methods">
     @Override public void onLoadFinished(Loader<List<T>> listLoader, List<T> items)
     {
-        getListAdapter().setItems(items);
+        getListAdapter().appendItems(items);
     }
 
     @Override public void onLoaderReset(Loader<List<T>> listLoader)

@@ -28,9 +28,14 @@ public abstract class DTOAdapter<T, V extends DTOView<T>> extends BaseAdapter
 
     public void setItems(List<T> items)
     {
+        this.items = items;
+    }
+
+    public void appendItems(List<T> items)
+    {
         if (this.items == null)
         {
-            this.items = new LinkedList<>();
+            return;
         }
         this.items.addAll(items);
         notifyDataSetChanged();

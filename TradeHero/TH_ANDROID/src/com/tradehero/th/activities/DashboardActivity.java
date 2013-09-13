@@ -4,7 +4,9 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTabHost;
 import android.support.v4.app.FragmentTransaction;
+import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
+import com.actionbarsherlock.view.Menu;
 import com.tradehero.th.R;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.fragments.CommunityScreenFragment;
@@ -33,6 +35,8 @@ public class DashboardActivity extends SherlockFragmentActivity
     {
         super.onBackPressed();
     }
+
+
 
     private void initiateViews()
     {
@@ -65,6 +69,7 @@ public class DashboardActivity extends SherlockFragmentActivity
             mTabHost.getTabWidget().setVisibility(value ? View.VISIBLE : View.GONE);
         }
     }
+
 
     public void pushTrendingDetailFragment(SecurityCompactDTO securityCompactDTO)
     {
