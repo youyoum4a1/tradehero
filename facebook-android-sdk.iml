@@ -10,6 +10,7 @@
         <option name="ASSETS_FOLDER_RELATIVE_PATH" value="/facebook-android-sdk/facebook/assets" />
         <option name="LIBS_FOLDER_RELATIVE_PATH" value="/facebook-android-sdk/facebook/libs" />
         <option name="LIBRARY_PROJECT" value="true" />
+        <option name="UPDATE_PROPERTY_FILES" value="false" />
         <resOverlayFolders>
           <path>/facebook-android-sdk/facebook/res-overlay</path>
         </resOverlayFolders>

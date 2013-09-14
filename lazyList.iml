@@ -10,6 +10,7 @@
         <option name="ASSETS_FOLDER_RELATIVE_PATH" value="/lazyList/assets" />
         <option name="LIBS_FOLDER_RELATIVE_PATH" value="/lazyList/libs" />
         <option name="LIBRARY_PROJECT" value="true" />
+        <option name="UPDATE_PROPERTY_FILES" value="false" />
         <resOverlayFolders>
           <path>/lazyList/res-overlay</path>
         </resOverlayFolders>

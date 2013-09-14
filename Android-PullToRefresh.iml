@@ -10,6 +10,7 @@
         <option name="ASSETS_FOLDER_RELATIVE_PATH" value="/Android-PullToRefresh/library/assets" />
         <option name="LIBS_FOLDER_RELATIVE_PATH" value="/Android-PullToRefresh/library/libs" />
         <option name="LIBRARY_PROJECT" value="true" />
+        <option name="UPDATE_PROPERTY_FILES" value="false" />
         <resOverlayFolders>
           <path>/Android-PullToRefresh/library/res-overlay</path>
         </resOverlayFolders>
