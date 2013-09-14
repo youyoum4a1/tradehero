@@ -8,9 +8,11 @@ git checkout origin/develop --track
 ```
 
 #### Setting up workspace
+- Install Java Development Kit (JDK) 7 or later.
 - Install IntelliJ IDE (all Android and maven plugins are required)
 - Enable Maven auto import when you are asked to do that or go to Settings -> search for maven ->  "Import Maven ..."
 - Get android sdk latest version from Google
+- If there is any compilation error regarding java 1.7, go to File > Setting > Java Compiler and remove all in "Per module bytecode version"
 
 #### Useful tip
 - Disable unnecessary logcat error output by going to Setting - Apps - All and disable exchange service
