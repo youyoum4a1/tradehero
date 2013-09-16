@@ -50,12 +50,16 @@ public abstract class ItemListFragment<T extends ItemWithComparableId> extends S
     //<editor-fold desc="LoaderManager callback methods">
     @Override public void onLoadFinished(Loader<List<T>> listLoader, List<T> items)
     {
-        getListAdapter().appendItems(items);
+        getListAdapter().notifyDataSetChanged();
     }
 
     @Override public void onLoaderReset(Loader<List<T>> listLoader)
     {
-        getListAdapter().setItems(null);
+        // TODO more investigation
+        if (getListAdapter() != null)
+        {
+            getListAdapter().setItems(null);
+        }
     }
     //</editor-fold>
 }

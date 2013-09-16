@@ -13,7 +13,8 @@ public abstract class PagedItemListLoader<D extends ItemWithComparableId> extend
     protected int itemsPerPage = DEFAULT_ITEM_PER_PAGE;
     private D lastVisibleItem;
     private D firstVisibleItem;
-    protected List<D> items;
+    protected LinkedList<D> items;
+    private LoadMode currentLoadMode = LoadMode.IDLE;
 
     public PagedItemListLoader(Context context)
     {
@@ -40,12 +41,49 @@ public abstract class PagedItemListLoader<D extends ItemWithComparableId> extend
 
     public void loadNextPage()
     {
+        if (currentLoadMode != LoadMode.IDLE) {
+            onBusy();
+            return;
+        }
+        currentLoadMode = LoadMode.NEXT;
+
         if (getFirstVisibleItem().compareTo(getFirstItem()) < 0)
         {
             // do nothing if next page is already loaded
             return;
         }
-        onLoadNextPage(getLastVisibleItem());
+        onLoadNextPage(getFirstVisibleItem());
+    }
+
+    protected void onBusy()
+    {
+        // do nothing intentionally
+    }
+
+    protected abstract void onLoadNextPage(D lastItemId);
+
+    public void loadPreviousPage()
+    {
+        if (currentLoadMode != LoadMode.IDLE) {
+            onBusy();
+            return;
+        }
+        currentLoadMode = LoadMode.PREVIOUS;
+
+        if (getLastVisibleItem().compareTo(getLastItem()) > 0)
+        {
+            // do nothing if next page is already loaded
+            return;
+        }
+
+        onLoadPreviousPage(getLastVisibleItem());
+    }
+
+    protected abstract void onLoadPreviousPage(D startItemId);
+
+    private boolean isEmpty()
+    {
+        return items == null || items.isEmpty();
     }
 
     private Object getFirstItem()
@@ -57,8 +95,6 @@ public abstract class PagedItemListLoader<D extends ItemWithComparableId> extend
         return items.get(0);
     }
 
-    protected abstract void onLoadNextPage(D lastItemId);
-
     private D getLastItem()
     {
         if (isEmpty())
@@ -67,23 +103,6 @@ public abstract class PagedItemListLoader<D extends ItemWithComparableId> extend
         }
         return items.get(items.size() - 1);
     }
-
-    private boolean isEmpty()
-    {
-        return items == null || items.isEmpty();
-    }
-
-    public void loadPreviousPage()
-    {
-        if (getLastVisibleItem().compareTo(getLastItem()) > 0)
-        {
-            // do nothing if next page is already loaded
-            return;
-        }
-        onLoadPreviousPage(getFirstVisibleItem());
-    }
-
-    protected abstract void onLoadPreviousPage(D startItemId);
 
     @Override protected void onStartLoading()
     {
@@ -119,7 +138,18 @@ public abstract class PagedItemListLoader<D extends ItemWithComparableId> extend
 
         if (isStarted())
         {
+            switch (currentLoadMode)
+            {
+                case IDLE:
+                case NEXT:
+                    items.addAll(0, data);
+                    break;
+                case PREVIOUS:
+                    items.addAll(data);
+                    break;
+            }
             super.deliverResult(data);
+            currentLoadMode = LoadMode.IDLE;
         }
     }
 
@@ -156,5 +186,10 @@ public abstract class PagedItemListLoader<D extends ItemWithComparableId> extend
     public void setFirstVisibleItem(D firstVisibleItem)
     {
         this.firstVisibleItem = firstVisibleItem;
+    }
+
+    private enum LoadMode
+    {
+        IDLE, PREVIOUS, NEXT
     }
 }

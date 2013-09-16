@@ -20,6 +20,8 @@ import java.util.List;
 public class TimelinePagedItemListLoader extends PagedItemListLoader<TimelineItem>
 {
     private int ownerId;
+    private Integer maxItemId;
+    private Integer minItemId;
 
     public TimelinePagedItemListLoader(Context context)
     {
@@ -28,8 +30,7 @@ public class TimelinePagedItemListLoader extends PagedItemListLoader<TimelineIte
 
     @Override public List<TimelineItem> loadInBackground()
     {
-        int maxItemId = getLastVisibleItem() == null ? 0 : getLastVisibleItem().getId();
-        TimelineDTO timelineDTO = NetworkEngine.createService(UserTimelineService.class).getTimeline(ownerId, maxItemId, 10);
+        TimelineDTO timelineDTO = NetworkEngine.createService(UserTimelineService.class).getTimeline(ownerId, maxItemId, minItemId, 2);
 
         TimelineItemBuilder timelineBuilder = new TimelineItemBuilder(timelineDTO);
         return timelineBuilder.getItems();
@@ -42,11 +43,15 @@ public class TimelinePagedItemListLoader extends PagedItemListLoader<TimelineIte
 
     @Override protected void onLoadNextPage(TimelineItem lastItemId)
     {
+        maxItemId = null;
+        minItemId = getFirstVisibleItem() == null ? lastItemId.getId() : getFirstVisibleItem().getId();
         forceLoad();
     }
 
-    @Override protected void onLoadPreviousPage(TimelineItem startItemId)
+    @Override protected void onLoadPreviousPage(TimelineItem firstItemId)
     {
+        minItemId = null;
+        maxItemId = getLastVisibleItem() == null ? firstItemId.getId() : getLastVisibleItem().getId();
         forceLoad();
     }
 

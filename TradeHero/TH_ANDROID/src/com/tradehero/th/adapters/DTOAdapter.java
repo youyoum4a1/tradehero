@@ -31,16 +31,6 @@ public abstract class DTOAdapter<T, V extends DTOView<T>> extends BaseAdapter
         this.items = items;
     }
 
-    public void appendItems(List<T> items)
-    {
-        if (this.items == null)
-        {
-            return;
-        }
-        this.items.addAll(items);
-        notifyDataSetChanged();
-    }
-
     @Override public int getCount()
     {
         return items != null ? items.size() : 0;

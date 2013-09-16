@@ -36,8 +36,6 @@ public class DashboardActivity extends SherlockFragmentActivity
         super.onBackPressed();
     }
 
-
-
     private void initiateViews()
     {
         mTabHost = (FragmentTabHost) findViewById(android.R.id.tabhost);

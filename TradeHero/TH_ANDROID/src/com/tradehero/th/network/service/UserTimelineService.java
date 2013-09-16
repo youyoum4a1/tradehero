@@ -14,7 +14,7 @@ public interface UserTimelineService
     void getTimeline(@Path("userId") int userId, @Query("maxCount") int maxCount, Callback<TimelineDTO> callback);
 
     @GET("/users/{userId}/timeline")
-    TimelineDTO getTimeline(@Path("userId") int userId, @Query("maxId") Comparable maxId, @Query("maxCount") int maxCount);
+    TimelineDTO getTimeline(@Path("userId") int userId, @Query("maxId") Comparable maxId, @Query("minId") Comparable minId, @Query("maxCount") int maxCount);
 
     @GET("/users/{userId}/timeline/{timelineItemId}")
     TimelineItemDTO getTimelineItem(@Path("userId") int userId, @Path("timelineItemId") int timelineItemId);
