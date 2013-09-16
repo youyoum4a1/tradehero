@@ -1,4 +1,4 @@
-package com.tradehero.th.widget.trending;
+package com.tradehero.th.api.security;
 
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
