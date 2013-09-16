@@ -19,9 +19,7 @@ import com.tradehero.common.utils.THLog;
 import com.tradehero.common.widget.ImageUrlView;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
-import com.tradehero.th.api.security.Exchange;
 import com.tradehero.th.api.security.SecurityCompactDTO;
-import com.tradehero.th.api.security.SecurityType;
 import com.tradehero.th.utills.DateUtils;
 import com.tradehero.th.utills.TrendUtils;
 import com.tradehero.th.utills.YUtils;
@@ -218,7 +216,7 @@ public class TrendingSecurityView extends FrameLayout implements DTOView<Securit
 
         if (securityType != null && securityCompactDTO.securityType != null)
         {
-            securityType.setText(trend.getSecurityTypeResourceId());
+            securityType.setText(trend.getSecurityTypeStringResourceId());
         }
 
         if (stockLogo != null)

@@ -66,7 +66,7 @@ public class SecurityCompactDTO
         return Exchange.getLogoId(exchange);
     }
 
-    public int getSecurityTypeResourceId()
+    public int getSecurityTypeStringResourceId()
     {
         return SecurityType.getStringResourceId(securityType);
     }
