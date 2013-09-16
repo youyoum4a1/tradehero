@@ -1,4 +1,4 @@
-package com.tradehero.th.api.security;
+    package com.tradehero.th.api.security;
 
 import java.util.Date;
 
@@ -6,8 +6,8 @@ import java.util.Date;
 public class SecurityCompactDTO
 {
     public Integer id;
-    public SecurityType securityType;
     public String symbol;
+    public SecurityType securityType;
     public String name;
     public String exchange;
     public String yahooSymbol;
