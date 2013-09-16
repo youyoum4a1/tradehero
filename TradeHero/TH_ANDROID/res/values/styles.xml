@@ -75,8 +75,6 @@
 
   <style name="TradeHero.Dashboard" parent="TradeHero">
     <item name="android:windowActionBarOverlay">false</item>
-    <item name="android:windowActionBar">false</item>
-    <item name="android:windowNoTitle">true</item>
   </style>
 
   <style name="TradeHero.Dashboard.HomeScreen" parent="TradeHero.Dashboard">
