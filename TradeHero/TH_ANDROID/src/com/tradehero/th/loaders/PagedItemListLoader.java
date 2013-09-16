@@ -47,7 +47,7 @@ public abstract class PagedItemListLoader<D extends ItemWithComparableId> extend
         }
         currentLoadMode = LoadMode.NEXT;
 
-        if (getFirstVisibleItem().compareTo(getFirstItem()) < 0)
+        if (getFirstVisibleItem() == null || getFirstVisibleItem().compareTo(getFirstItem()) < 0)
         {
             // do nothing if next page is already loaded
             return;
@@ -70,7 +70,7 @@ public abstract class PagedItemListLoader<D extends ItemWithComparableId> extend
         }
         currentLoadMode = LoadMode.PREVIOUS;
 
-        if (getLastVisibleItem().compareTo(getLastItem()) > 0)
+        if (getLastVisibleItem() == null || getLastVisibleItem().compareTo(getLastItem()) > 0)
         {
             // do nothing if next page is already loaded
             return;
