@@ -66,7 +66,7 @@ public class TimelineAdapter extends DTOAdapter<TimelineItem, TimelineItemView>
 
     @Override public void onScroll(AbsListView absListView, int firstVisibleItem, int visibleItemCount, int totalItemCount)
     {
-        if (getCount() > 0)
+        if (getCount() > 0 && loader != null)
         {
             loader.setFirstVisibleItem((TimelineItem) getItem(firstVisibleItem));
 
