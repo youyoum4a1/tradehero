@@ -98,14 +98,18 @@ public enum Exchange
 
     public static int getLogoId(Exchange exchange)
     {
+        return getLogoId(exchange.name());
+    }
 
+    public static int getLogoId(String exchange)
+    {
         try
         {
-            return Exchange.class.getField(exchange.name()).getAnnotation(ExchangeInfo.class).logoId();
+            return Exchange.class.getField(exchange).getAnnotation(ExchangeInfo.class).logoId();
         }
         catch (NoSuchFieldException e)
         {
-            THLog.e(TAG, "Unavailable exchange name " + exchange.name(), e);
+            THLog.e(TAG, "Unavailable exchange name " + exchange, e);
             return 0;
         }
     }
