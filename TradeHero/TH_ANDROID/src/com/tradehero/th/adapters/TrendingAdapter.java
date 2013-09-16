@@ -18,9 +18,26 @@ public class TrendingAdapter extends ArrayAdapter<SecurityCompactDTO>
 {
     private final static String TAG = TrendingAdapter.class.getSimpleName();
 
+    /**
+     * The layout for the trending view
+     */
+    public static final int SECURITY_TRENDING_CELL_LAYOUT = R.layout.trending_grid_item;
+    /**
+     * The layout for the searching view
+     */
+    public static final int SECURITY_SEARCH_CELL_LAYOUT = R.layout.search_stock_item;
+
+    private int layoutResourceId;
+
     public TrendingAdapter(final Context context, final List<SecurityCompactDTO> trendList)
     {
+        this(context, trendList, SECURITY_TRENDING_CELL_LAYOUT);
+    }
+
+    public TrendingAdapter(final Context context, final List<SecurityCompactDTO> trendList, int layoutResourceId)
+    {
         super(context, 0, trendList);
+        this.layoutResourceId = layoutResourceId;
     }
 
     public View getView(final int position, View convertView, final ViewGroup parent)
