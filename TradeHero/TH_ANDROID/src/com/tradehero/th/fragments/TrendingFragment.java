@@ -2,20 +2,15 @@ package com.tradehero.th.fragments;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -34,17 +29,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
-import com.squareup.picasso.Picasso;
 import com.tradehero.common.cache.KnownCaches;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.DashboardActivity;
-import com.tradehero.th.adapters.SearchPeopleAdapter;
-import com.tradehero.th.adapters.SearchStockAdapter;
 import com.tradehero.th.adapters.TrendingAdapter;
 import com.tradehero.th.api.security.SecurityCompactDTO;
-import com.tradehero.th.application.App;
 import com.tradehero.th.application.Config;
 import com.tradehero.th.http.THAsyncClientFactory;
 import com.tradehero.th.models.Trend;
@@ -261,10 +252,10 @@ public class TrendingFragment extends SherlockFragment
     //		mTrendingGridView.setAdapter(new TrendingAdapter(getActivity(), trendList));
     //	}
 
-    private void setDataAdapterToSearchListView(List<Trend> trendList)
+    private void setDataAdapterToSearchListView(List<SecurityCompactDTO> trendList)
     {
 
-        mSearchListView.setAdapter(new SearchStockAdapter(getActivity(), trendList));
+        mSearchListView.setAdapter(new TrendingAdapter(getActivity(), trendList, TrendingAdapter.SECURITY_SEARCH_CELL_LAYOUT));
     }
 
     private void requestToGetTrendingInfo()
