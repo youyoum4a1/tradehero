@@ -16,28 +16,4 @@ import java.util.LinkedHashMap;
 
 public class App extends Application
 {
-    private Token token;
-
-    private ArrayList<TradeOfWeek> tradeOfWeek;
-    private LinkedHashMap<String, String> yahooQuotesMap;
-
-    public ArrayList<TradeOfWeek> getTradeOfWeek()
-    {
-        return tradeOfWeek;
-    }
-
-    public void setTradeOfWeek(TradeOfWeek tradeOfWeek)
-    {
-        this.tradeOfWeek.add(tradeOfWeek);
-    }
-
-    public UserProfileDTO getProfileDTO()
-    {
-        return THUser.getCurrentUser();
-    }
-
-    public void setYahooQuotesMap(LinkedHashMap<String, String> yahooQuotesMap)
-    {
-        this.yahooQuotesMap = yahooQuotesMap;
-    }
 }

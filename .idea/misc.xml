@@ -15,6 +15,8 @@
         <option value="$PROJECT_DIR$/picasso/picasso/pom.xml" />
         <option value="$PROJECT_DIR$/prettytime/core/pom.xml" />
         <option value="$PROJECT_DIR$/Android-PullToRefresh/library/pom.xml" />
+        <option value="$PROJECT_DIR$/dagger/compiler/pom.xml" />
+        <option value="$PROJECT_DIR$/dagger/core/pom.xml" />
       </list>
     </option>
     <option name="ignoredFiles">
@@ -23,7 +25,7 @@
       </set>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_7" assert-keyword="true" jdk-15="true" project-jdk-name="Android 4.2.2 Platform" project-jdk-type="Android SDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_7" assert-keyword="true" jdk-15="true" project-jdk-name="Android 4.2.2 Google APIs" project-jdk-type="Android SDK">
     <output url="file://$PROJECT_DIR$/out" />
   </component>
 </project>

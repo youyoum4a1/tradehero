@@ -59,3 +59,6 @@ out/
 th_android.xml
 build.xml
 th_android.properties
+
+# output folder
+**/target/*

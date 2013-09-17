@@ -22,6 +22,7 @@ import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 import com.tradehero.th.R;
 import com.tradehero.th.application.App;
+import com.tradehero.th.base.THUser;
 import com.tradehero.th.cache.ImageLoader;
 import com.tradehero.th.fragments.BuyFragment;
 import com.tradehero.th.models.Trend;
@@ -316,7 +317,7 @@ public class TradeFragment extends Fragment
         //((TrendingDetailFragment) getActivity().getSupportFragmentManager()
         //        .findFragmentByTag("trending_detail")).setYahooQuoteUpdateListener(this);
 
-        mCashAvailable = ((App) getActivity().getApplication()).getProfileDTO().portfolio.cashBalance;
+        mCashAvailable = THUser.getCurrentUser().portfolio.cashBalance;
 
         tvCashAvailable.setText(String.format("US$ %,d", mCashAvailable));
 

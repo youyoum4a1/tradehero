@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module org.jetbrains.idea.maven.project.MavenProjectsManager.isMavenModule="true" type="JAVA_MODULE" version="4">
+  <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_6" inherit-compiler-output="false">
+    <output url="file://$MODULE_DIR$/dagger/compiler/target/classes" />
+    <output-test url="file://$MODULE_DIR$/dagger/compiler/target/test-classes" />
+    <exclude-output />
+    <content url="file://$MODULE_DIR$/dagger/compiler">
+      <sourceFolder url="file://$MODULE_DIR$/dagger/compiler/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/dagger/compiler/src/main/resources" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/dagger/compiler/src/test/java" isTestSource="true" />
+      <excludeFolder url="file://$MODULE_DIR$/dagger/compiler/target" />
+    </content>
+    <orderEntry type="jdk" jdkName="1.7" jdkType="JavaSDK" />
+    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="module" module-name="dagger" />
+    <orderEntry type="library" name="Maven: javax.inject:javax.inject:1" level="project" />
+    <orderEntry type="library" name="Maven: com.squareup:javawriter:2.1.1" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: junit:junit:4.10" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.hamcrest:hamcrest-core:1.1" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.easytesting:fest-assert:1.4" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.easytesting:fest-util:1.1.6" level="project" />
+    <orderEntry type="module" module-name="dagger" scope="TEST" production-on-test="" />
+    <orderEntry type="library" scope="TEST" name="Maven: com.squareup.dagger:dagger:tests:1.1.1-SNAPSHOT" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: com.google.testing.compile:compile-testing:0.1" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.truth0:truth:0.13" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: com.google.guava:guava:15.0-rc1" level="project" />
+    <orderEntry type="library" name="Maven: com.sun:tools:1.7.0_10" level="project" />
+  </component>
+</module>
+

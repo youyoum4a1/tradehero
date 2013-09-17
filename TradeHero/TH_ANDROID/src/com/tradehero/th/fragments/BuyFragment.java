@@ -6,6 +6,7 @@
  */
 package com.tradehero.th.fragments;
 
+import com.tradehero.th.base.THUser;
 import com.tradehero.th.utils.NetworkUtils;
 import com.tradehero.th.fragments.trending.TradeFragment;
 import java.util.LinkedHashMap;
@@ -168,7 +169,7 @@ public class BuyFragment extends Fragment
         LinkedHashMap<String, Object> postParams = new LinkedHashMap<String, Object>();
 
         postParams.put(BP_QUANTITY, Integer.valueOf(quantity));
-        postParams.put(BP_PORTFOLIO, Integer.valueOf(((App) getActivity().getApplication()).getProfileDTO().portfolio.id));
+        postParams.put(BP_PORTFOLIO, Integer.valueOf(THUser.getCurrentUser().portfolio.id));
         postParams.put(BP_SIGNED_QUOTE_DTO, getQuotes().toString());
         postParams.put(BP_GEO_ALT, null);
         postParams.put(BP_GEO_LAT, null);

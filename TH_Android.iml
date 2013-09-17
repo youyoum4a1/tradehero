@@ -9,6 +9,7 @@
         <option name="RES_FOLDER_RELATIVE_PATH" value="/TradeHero/TH_ANDROID/res" />
         <option name="ASSETS_FOLDER_RELATIVE_PATH" value="/TradeHero/TH_ANDROID/assets" />
         <option name="LIBS_FOLDER_RELATIVE_PATH" value="/TradeHero/TH_ANDROID/libs" />
+        <option name="UPDATE_PROPERTY_FILES" value="false" />
         <resOverlayFolders>
           <path>/TradeHero/TH_ANDROID/res-overlay</path>
         </resOverlayFolders>
@@ -111,6 +112,10 @@
     <orderEntry type="module" module-name="Android-PullToRefresh" />
     <orderEntry type="module" module-name="lazyList" />
     <orderEntry type="module" module-name="Android-PullToRefresh" />
+    <orderEntry type="library" name="Maven: javax.inject:javax.inject:1" level="project" />
+    <orderEntry type="module" module-name="dagger" />
+    <orderEntry type="module" module-name="dagger-compiler" />
+    <orderEntry type="library" name="Maven: com.squareup:javawriter:2.1.1" level="project" />
     <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-databind:2.2.2" level="project" />
     <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-annotations:2.2.2" level="project" />
     <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-core:2.2.2" level="project" />

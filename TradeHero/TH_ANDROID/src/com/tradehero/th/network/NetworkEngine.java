@@ -5,15 +5,15 @@ package com.tradehero.th.network;
  * File | Settings | File Templates.
  */
 
-import com.tradehero.common.utils.THJsonAdapter;
-import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.application.App;
 import com.tradehero.th.base.THUser;
+import javax.inject.Inject;
 import retrofit.ErrorHandler;
 import retrofit.RequestInterceptor;
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;
+import retrofit.converter.Converter;
 
 public class NetworkEngine
 {
@@ -28,11 +28,14 @@ public class NetworkEngine
         }
     };
 
+    @Inject
+    static Converter converter;
+
     public static void initialize()
     {
         restAdapter = new RestAdapter.Builder()
                 .setServer(API_URL)
-                .setConverter(THJsonAdapter.getInstance())
+                .setConverter(converter)
                 .setRequestInterceptor(new RequestInterceptor()
                 {
                     @Override

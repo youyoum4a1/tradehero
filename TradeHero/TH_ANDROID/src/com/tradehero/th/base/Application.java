@@ -5,6 +5,7 @@ import com.tradehero.common.thread.KnownExecutorServices;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
 import com.tradehero.th.network.NetworkEngine;
+import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.EmailSignUtils;
 import com.tradehero.th.utils.FacebookUtils;
 import com.tradehero.th.utils.LinkedInUtils;
@@ -22,6 +23,8 @@ public class Application extends PApplication
         // Supposedly get the count of cores
         KnownExecutorServices.setCpuThreadCount(Runtime.getRuntime().availableProcessors());
         THLog.d(TAG, "Available Processors Count: " + KnownExecutorServices.getCpuThreadCount());
+
+        DaggerUtils.initialize();
 
         NetworkEngine.initialize();
         THUser.initialize();

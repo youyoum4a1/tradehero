@@ -25,3 +25,6 @@
 [submodule "prettytime"]
 	path = prettytime
 	url = git@github.com:nguyentruongtho/prettytime.git
+[submodule "dagger"]
+	path = dagger
+	url = git@github.com:nguyentruongtho/dagger.git
