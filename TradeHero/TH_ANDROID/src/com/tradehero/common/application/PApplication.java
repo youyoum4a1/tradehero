@@ -5,7 +5,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
-import com.tradehero.common.utils.TConstants;
 
 /**
  * Created with IntelliJ IDEA. User: nguyentruongtho.sg@gmail.com Date: 6/29/13 Time: 9:10 PM
@@ -37,7 +36,6 @@ public class PApplication extends Application
 
     protected void init()
     {
-        TConstants.init();
     }
 
     public static SharedPreferences getPreferences()
