@@ -4,7 +4,8 @@
     xmlns:app="http://schemas.android.com/apk/res/com.tradehero.th"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/transparent" >
+    android:background="@android:color/transparent"
+    >
 
     <!--include
         android:id="@+id/header"
@@ -27,15 +28,6 @@
         android:clipToPadding="false"
         >
     </com.tradehero.th.widget.trending.TrendingGridView>
-
-    <ListView
-        android:id="@+id/trending_listview"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:cacheColorHint="@android:color/transparent"
-        android:divider="@null"
-        android:visibility="gone" >
-    </ListView>
 
     <ProgressBar
         android:id="@+id/progress_spinner"

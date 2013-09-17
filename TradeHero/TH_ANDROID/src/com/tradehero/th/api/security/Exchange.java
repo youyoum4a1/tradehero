@@ -2,6 +2,7 @@ package com.tradehero.th.api.security;
 
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
+import java.lang.annotation.RetentionPolicy;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 9/16/13 Time: 11:52 AM To change this template use File | Settings | File Templates. */
 public enum Exchange

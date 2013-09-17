@@ -91,7 +91,9 @@ public class BuyFragment extends Fragment
                 getArguments().getString(TradeFragment.SYMBOL)));
 
         //mCommentsET = (EditText) v.findViewById(R.id.comments);
-        mBtnConform = (Button) v.findViewById(R.id.right_button);
+
+        // Commented because of removal of right button.
+        //mBtnConform = (Button) v.findViewById(R.id.right_button);
         mBtnConform.setText(R.string.btn_buy);
         mBtnConform.setVisibility(View.VISIBLE);
 

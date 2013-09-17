@@ -13,9 +13,9 @@ public interface SecurityService
     void getTrendingSecurities(Callback<List<SecurityCompactDTO>> callback);
 
     @GET("/securities/search")
-    void getSearchSecurities(
-        @Query("q") String searchString,
-        @Query("page") int page,
-        @Query("perPage") int perPage,
-        Callback<List<SecurityCompactDTO>> callback);
+    void searchSecurities(
+            @Query("q") String searchString,
+            @Query("page") int page,
+            @Query("perPage") int perPage,
+            Callback<List<SecurityCompactDTO>> callback);
 }

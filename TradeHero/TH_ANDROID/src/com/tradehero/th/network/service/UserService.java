@@ -2,10 +2,13 @@ package com.tradehero.th.network.service;
 
 import com.tradehero.th.api.form.ForgotPasswordFormDTO;
 import com.tradehero.th.api.form.UserFormDTO;
+import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.users.ForgotPasswordDTO;
 import com.tradehero.th.api.users.UserAvailabilityDTO;
 import com.tradehero.th.api.users.UserLoginDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.api.users.UserSearchResultDTO;
+import java.util.List;
 import org.json.JSONObject;
 import retrofit.Callback;
 import retrofit.client.Response;
@@ -32,4 +35,12 @@ public interface UserService
 
     @POST("/forgotPassword")
     void forgotPassword(@Body ForgotPasswordFormDTO forgotPasswordFormDTO, Callback<ForgotPasswordDTO> callback);
+
+    @GET("/users/search")
+    void searchUsers(
+            @Query("q") String searchString,
+            @Query("page") int page,
+            @Query("perPage") int perPage,
+            Callback<List<UserSearchResultDTO>> callback);
+
 }

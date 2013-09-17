@@ -20,7 +20,6 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/trending_grid_item_bg"
         android:padding="2dp" >
 
         <TextView
