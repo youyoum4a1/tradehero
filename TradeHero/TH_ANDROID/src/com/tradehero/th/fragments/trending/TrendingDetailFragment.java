@@ -4,7 +4,7 @@
  *
  * Created by @author Siddesh Bingi on Jul 24, 2013
  */
-package com.tradehero.th.fragments;
+package com.tradehero.th.fragments.trending;
 
 import android.os.Bundle;
 import android.support.v4.app.FragmentTabHost;
@@ -22,7 +22,8 @@ import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.application.Config;
 import com.tradehero.th.base.THUser;
-import com.tradehero.th.fragments.trending.TradeFragment;
+import com.tradehero.th.fragments.NewsFragment;
+import com.tradehero.th.fragments.StockInfoFragment;
 import com.tradehero.th.utills.Constants;
 import com.tradehero.th.utills.Logger;
 import com.tradehero.th.utills.Logger.LogLevel;

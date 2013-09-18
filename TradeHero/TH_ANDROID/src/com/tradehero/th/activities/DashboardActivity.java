@@ -3,24 +3,26 @@ package com.tradehero.th.activities;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTabHost;
-import android.support.v4.app.FragmentTransaction;
-import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
-import com.actionbarsherlock.view.Menu;
 import com.tradehero.th.R;
 import com.tradehero.th.api.security.SecurityCompactDTO;
+import com.tradehero.th.application.App;
 import com.tradehero.th.fragments.CommunityScreenFragment;
 import com.tradehero.th.fragments.HomeScreenFragment;
 import com.tradehero.th.fragments.PortfolioScreenFragment;
 import com.tradehero.th.fragments.StoreScreenFragment;
-import com.tradehero.th.fragments.TrendingDetailFragment;
-import com.tradehero.th.fragments.TrendingFragment;
+import com.tradehero.th.fragments.trending.TrendingDetailFragment;
+import com.tradehero.th.fragments.trending.TrendingFragment;
 import android.view.View;
+import java.util.HashMap;
+import java.util.Map;
 
 public class DashboardActivity extends SherlockFragmentActivity
 {
     private static final String BUNDLE_KEY = "key";
     private FragmentTabHost mTabHost;
+    private Fragment currentFragment;
+    private Class<?> currentFragmentClass;
 
     public void onCreate(Bundle savedInstanceState)
     {
@@ -68,22 +70,51 @@ public class DashboardActivity extends SherlockFragmentActivity
         }
     }
 
-
-    public void pushTrendingDetailFragment(SecurityCompactDTO securityCompactDTO)
+    @Override public void onAttachFragment(Fragment fragment)
     {
-        TrendingDetailFragment newFragment = (TrendingDetailFragment) Fragment.instantiate(this, TrendingDetailFragment.class.getName(), null);
-        newFragment.setSecurityCompactDTO(securityCompactDTO);
-        // Add the fragment to the activity, pushing this transaction
-        // on to the back stack.
-        getSupportFragmentManager()
-                .beginTransaction()
+        super.onAttachFragment(fragment);
+        currentFragmentClass = fragment.getClass();
+        currentFragment = fragment;
+    }
+
+    public void conditionalSetCurrentFragmentByClass(Class<?> fragmentClass)
+    {
+        if (!currentFragmentClass.equals(fragmentClass))
+        {
+            setCurrentFragmentByClass(fragmentClass);
+        }
+    }
+
+    private void setCurrentFragmentByClass(Class<?> fragmentClass)
+    {
+        currentFragment = FragmentFactory.getInstance(fragmentClass);
+        getSupportFragmentManager().beginTransaction()
                 .setCustomAnimations(
                         R.anim.slide_right_in, R.anim.slide_left_out,
                         R.anim.slide_left_in, R.anim.slide_right_out)
-                .replace(R.id.realtabcontent, newFragment, "trending_detail")
-                .addToBackStack("trending_detail")
+                .replace(R.id.realtabcontent, currentFragment)
+                .addToBackStack(null)
                 .commit();
     }
 
+    public Fragment getCurrentFragment()
+    {
+        return currentFragment;
+    }
 
+    private static class FragmentFactory
+    {
+        private static Map<Class<?>, Fragment> instances = new HashMap<>();
+
+        public static Fragment getInstance(Class<?> clss)
+        {
+            Fragment fragment = instances.get(clss);
+            if (fragment == null)
+            {
+                fragment = Fragment.instantiate(App.context(), clss.getName(), null);
+                instances.put(clss, fragment);
+            }
+            return fragment;
+        }
+    }
 }

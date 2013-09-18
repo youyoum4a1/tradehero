@@ -39,11 +39,13 @@
   <string name="Heroes">Heroes</string>
   <string name="Trades">Trades</string>
   <string name="Exchanges">Exchanges</string>
+
   <!-- What's Trending -->
   <string name="header_trending">Trending</string>
   <string name="positive_prefix">▲</string>
   <string name="negative_prefix">▼</string>
   <string name="zero_prefix"></string>
+  <string name="search_stock_hint">Select to search &gt;</string>
 
   <!-- What's Trending Details -->
   <string name="tab_trade">TRADE</string>
