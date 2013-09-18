@@ -7,6 +7,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 import com.tradehero.common.graphics.RoundedShapeTransformation;
+import com.tradehero.common.graphics.WhiteToTransparentTransformation;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.local.TimelineItem;
@@ -78,6 +79,7 @@ public class TimelineItemView extends RelativeLayout implements DTOView<Timeline
         {
             Picasso.with(getContext())
                     .load(firstMediaWithLogo.url)
+                    .transform(new WhiteToTransparentTransformation())
                     .into(vendorImage);
         }
     }
