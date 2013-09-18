@@ -7,13 +7,14 @@
 package com.tradehero.th.application;
 
 import com.tradehero.th.R;
+import com.tradehero.th.base.Application;
 
 public class Config
 {
 
     protected static String localValueForKey(int key)
     {
-        return App.context().getResources().getString(key);
+        return Application.context().getResources().getString(key);
     }
 
     public static String getTrendingFeed()

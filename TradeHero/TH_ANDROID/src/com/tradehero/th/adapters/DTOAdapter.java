@@ -62,7 +62,7 @@ public abstract class DTOAdapter<T, V extends DTOView<T>> extends BaseAdapter
         }
         catch (Exception ex)
         {
-            throw new IllegalArgumentException("layoutResourceId is not match with class: " + convertView.getClass().getSimpleName());
+            throw new IllegalArgumentException("layoutResourceId is not match with class: " + convertView.getClass().getSimpleName() + ":" + ex.getMessage());
         }
     }
 

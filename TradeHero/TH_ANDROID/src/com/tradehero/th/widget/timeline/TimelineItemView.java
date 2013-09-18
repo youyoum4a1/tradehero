@@ -12,6 +12,7 @@ import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.local.TimelineItem;
 import com.tradehero.th.api.misc.MediaDTO;
 import com.tradehero.th.api.users.UserProfileCompactDTO;
+import com.tradehero.th.widget.MarkdownTextView;
 import java.util.Date;
 import org.ocpsoft.prettytime.PrettyTime;
 
@@ -19,7 +20,7 @@ import org.ocpsoft.prettytime.PrettyTime;
 public class TimelineItemView extends RelativeLayout implements DTOView<TimelineItem>
 {
     private TextView username;
-    private TextView content;
+    private MarkdownTextView content;
     private ImageView avatar;
     private ImageView vendorImage;
     private TextView time;
@@ -27,14 +28,12 @@ public class TimelineItemView extends RelativeLayout implements DTOView<Timeline
     //<editor-fold desc="Constructors">
     public TimelineItemView(Context context)
     {
-        super(context);
-        init();
+        super(context, null);
     }
 
     public TimelineItemView(Context context, AttributeSet attrs)
     {
-        super(context, attrs);
-        init();
+        super(context, attrs, 0);
     }
 
     public TimelineItemView(Context context, AttributeSet attrs, int defStyle)
@@ -48,7 +47,7 @@ public class TimelineItemView extends RelativeLayout implements DTOView<Timeline
     {
         username = (TextView) findViewById(R.id.timeline_user_profile_name);
         avatar = (ImageView) findViewById(R.id.timeline_user_profile_picture);
-        content = (TextView) findViewById(R.id.timeline_item_content);
+        content = (MarkdownTextView) findViewById(R.id.timeline_item_content);
         time = (TextView) findViewById(R.id.timeline_time);
         vendorImage = (ImageView) findViewById(R.id.timeline_vendor_picture);
     }

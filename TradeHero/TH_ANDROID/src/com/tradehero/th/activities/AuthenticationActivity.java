@@ -13,7 +13,6 @@ import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.users.UserBaseDTO;
-import com.tradehero.th.application.App;
 import com.tradehero.th.auth.AuthenticationMode;
 import com.tradehero.th.auth.EmailAuthenticationProvider;
 import com.tradehero.th.base.Application;
@@ -323,7 +322,7 @@ public class AuthenticationActivity extends SherlockFragmentActivity
             }
             else if (ex.getCause() instanceof RetrofitError && ((RetrofitError) ex.getCause()).getResponse().getStatus() == 403) // Forbidden
             {
-                THToast.show(App.getResourceString(R.string.not_registered));
+                THToast.show(R.string.not_registered);
             }
             else
             {
@@ -372,7 +371,8 @@ public class AuthenticationActivity extends SherlockFragmentActivity
             Fragment fragment = instances.get(clss);
             if (fragment == null)
             {
-                fragment = Fragment.instantiate(App.context(), clss.getName(), null);
+                // TODO should we use Application context to create fragment?
+                fragment = Fragment.instantiate(Application.context(), clss.getName(), null);
                 instances.put(clss, fragment);
             }
             return fragment;

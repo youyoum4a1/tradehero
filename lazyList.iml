@@ -23,7 +23,7 @@
       <sourceFolder url="file://$MODULE_DIR$/lazyList/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/lazyList/gen" isTestSource="false" />
     </content>
-    <orderEntry type="inheritedJdk" />
+    <orderEntry type="jdk" jdkName="Android 4.2.2 Google APIs" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
 </module>

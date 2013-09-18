@@ -24,7 +24,7 @@
       <sourceFolder url="file://$MODULE_DIR$/TradeHero/TH_ANDROID/gen" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/TradeHero/TH_ANDROID/target" />
     </content>
-    <orderEntry type="inheritedJdk" />
+    <orderEntry type="jdk" jdkName="Android 4.2.2 Google APIs" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="facebook-android-sdk" />
     <orderEntry type="module" module-name="ActionBarSherlock" />

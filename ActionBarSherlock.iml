@@ -23,7 +23,7 @@
       <sourceFolder url="file://$MODULE_DIR$/ActionBarSherlock/actionbarsherlock/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/ActionBarSherlock/actionbarsherlock/gen" isTestSource="false" />
     </content>
-    <orderEntry type="inheritedJdk" />
+    <orderEntry type="jdk" jdkName="Android 4.2.2 Google APIs" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module-library">
       <library>

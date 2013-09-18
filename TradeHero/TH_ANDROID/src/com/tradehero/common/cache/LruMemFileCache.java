@@ -3,24 +3,18 @@ package com.tradehero.common.cache;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.os.Build;
 import android.util.Base64;
 import android.util.Log;
 import com.jakewharton.disklrucache.DiskLruCache;
 import com.squareup.picasso.LruCache;
-import com.tradehero.common.utils.FileUtils;
 import com.tradehero.common.utils.THLog;
-import com.tradehero.th.application.App;
+import com.tradehero.th.base.Application;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 9/11/13 Time: 7:38 PM To change this template use File | Settings | File Templates. */
 public class LruMemFileCache extends LruCache
@@ -80,7 +74,7 @@ public class LruMemFileCache extends LruCache
     public LruMemFileCache(int maxMemSize, long maxFileSize, String dirName)
     {
         super(maxMemSize);
-        initDir(App.context(), maxFileSize, dirName);
+        initDir(Application.context(), maxFileSize, dirName);
     }
     //</editor-fold>
 

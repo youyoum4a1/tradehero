@@ -5,7 +5,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.Signature;
 import android.util.Base64;
 import android.util.Log;
-import com.tradehero.th.application.App;
+import com.tradehero.th.base.Application;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
@@ -37,7 +37,7 @@ public class THLog
     {
         try
         {
-            PackageInfo info = App.context()
+            PackageInfo info = Application.context()
                     .getPackageManager()
                     .getPackageInfo("com.tradehero.th", PackageManager.GET_SIGNATURES);
             for (Signature signature : info.signatures)

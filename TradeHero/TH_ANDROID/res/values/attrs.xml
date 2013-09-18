@@ -23,5 +23,4 @@
   <declare-styleable name="ServerValidatedText">
     <attr name="progressIndicator" format="reference"/>
   </declare-styleable>
-
 </resources>

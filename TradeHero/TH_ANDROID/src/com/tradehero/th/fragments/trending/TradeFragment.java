@@ -21,7 +21,6 @@ import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 import com.tradehero.th.R;
-import com.tradehero.th.application.App;
 import com.tradehero.th.base.THUser;
 import com.tradehero.th.cache.ImageLoader;
 import com.tradehero.th.fragments.BuyFragment;

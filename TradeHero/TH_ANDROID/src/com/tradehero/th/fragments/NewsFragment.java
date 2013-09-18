@@ -18,7 +18,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.ListFragment;
 import com.tradehero.th.R;
-import com.tradehero.th.application.App;
 import com.tradehero.th.application.Config;
 import com.tradehero.th.models.Trend;
 import com.tradehero.th.rss.RssFeed;

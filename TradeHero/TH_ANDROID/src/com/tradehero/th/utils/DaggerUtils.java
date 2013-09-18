@@ -1,8 +1,8 @@
 package com.tradehero.th.utils;
 
-import com.tradehero.th.network.NetworkEngine;
 import com.tradehero.th.utils.dagger.ConverterModule;
 import com.tradehero.th.utils.dagger.NetworkModule;
+import com.tradehero.th.utils.dagger.TextProcessorModule;
 import dagger.ObjectGraph;
 import java.util.Arrays;
 import java.util.List;
@@ -22,6 +22,7 @@ public class DaggerUtils
     {
         return Arrays.asList(
                 new ConverterModule(),
+                new TextProcessorModule(),
                 new NetworkModule()
         );
     }

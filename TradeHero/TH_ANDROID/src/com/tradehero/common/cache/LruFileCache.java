@@ -7,7 +7,7 @@ import android.util.Base64;
 import android.util.Log;
 import com.squareup.picasso.LruCache;
 import com.tradehero.common.utils.THLog;
-import com.tradehero.th.application.App;
+import com.tradehero.th.base.Application;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -16,7 +16,6 @@ import java.io.OutputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.LinkedHashMap;
-import java.util.Map;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 9/11/13 Time: 7:38 PM To change this template use File | Settings | File Templates. */
 public class LruFileCache extends LruCache
@@ -66,7 +65,7 @@ public class LruFileCache extends LruCache
         super(maxMemSize);
         this.maxFileSize = maxFileSize;
         this.map = new LinkedHashMap<String, String>(0, 0.75f, true);
-        initDir(App.context(), DEFAULT_DIR_NAME);
+        initDir(Application.context(), DEFAULT_DIR_NAME);
     }
     //</editor-fold>
 

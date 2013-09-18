@@ -6,7 +6,7 @@ package com.tradehero.th.network;
  */
 
 import com.tradehero.th.R;
-import com.tradehero.th.application.App;
+import com.tradehero.th.base.Application;
 import com.tradehero.th.base.THUser;
 import javax.inject.Inject;
 import retrofit.ErrorHandler;
@@ -17,7 +17,7 @@ import retrofit.converter.Converter;
 
 public class NetworkEngine
 {
-    private static final String API_URL = App.getResourceString(R.string.API_URL);
+    private static final String API_URL = Application.getResourceString(R.string.API_URL);
 
     private static RestAdapter restAdapter;
     private static ErrorHandler retrofitErrorHandler = new ErrorHandler()

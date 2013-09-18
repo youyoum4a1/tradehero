@@ -4,14 +4,14 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import com.tradehero.th.R;
-import com.tradehero.th.application.App;
+import com.tradehero.th.base.Application;
 
 /** Created with IntelliJ IDEA. User: tho Date: 8/14/13 Time: 6:28 PM Copyright (c) TradeHero */
 public class ActivityHelper
 {
     public static void doStart(Context activity)
     {
-        Intent localIntent = new Intent(App.context(), AuthenticationActivity.class);
+        Intent localIntent = new Intent(Application.context(), AuthenticationActivity.class);
         localIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         activity.startActivity(localIntent);
     }

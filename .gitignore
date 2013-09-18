@@ -50,6 +50,7 @@ lib/
 out/
 .DS_Store
 .idea/libraries/
+.idea/dictionaries/
 .idea/codeStyleSettings.xml
 .idea/workspace.xml
 .idea/encodings.xml

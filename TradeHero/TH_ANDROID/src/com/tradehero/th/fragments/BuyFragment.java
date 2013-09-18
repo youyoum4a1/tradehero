@@ -20,7 +20,6 @@ import org.json.JSONObject;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import com.tradehero.th.R;
-import com.tradehero.th.application.App;
 import com.tradehero.th.application.Config;
 import com.tradehero.th.http.THAsyncClientFactory;
 import com.tradehero.th.utills.Constants;
