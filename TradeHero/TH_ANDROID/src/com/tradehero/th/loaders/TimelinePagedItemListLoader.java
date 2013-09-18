@@ -30,6 +30,12 @@ public class TimelinePagedItemListLoader extends PagedItemListLoader<TimelineIte
 
     @Override public List<TimelineItem> loadInBackground()
     {
+        if (minItemId != null) {
+            ++minItemId;
+        }
+        if (maxItemId != null) {
+            --maxItemId;
+        }
         TimelineDTO timelineDTO = NetworkEngine.createService(UserTimelineService.class).getTimeline(ownerId, maxItemId, minItemId, 2);
 
         TimelineItemBuilder timelineBuilder = new TimelineItemBuilder(timelineDTO);
