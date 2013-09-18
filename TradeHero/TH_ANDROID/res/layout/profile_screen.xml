@@ -17,6 +17,7 @@
       android:footerDividersEnabled="false"
       android:headerDividersEnabled="true"
       android:smoothScrollbar="true"
+      android:clipToPadding="false"
       ptr:ptrAnimationStyle="flip"
       ptr:ptrMode="both"
       />

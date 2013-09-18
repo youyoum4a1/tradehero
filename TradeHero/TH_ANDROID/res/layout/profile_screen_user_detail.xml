@@ -4,9 +4,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/user_profile_rounded_background"
-    android:paddingTop="10dip"
-    android:paddingBottom="10dip">
+    android:background="@drawable/user_profile_rounded_background">
 
   <!-- layout_marginBottom: dirty trick to reserve background rounded corner radius-->
   <ImageView
