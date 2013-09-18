@@ -3,17 +3,15 @@ package com.tradehero.th.activities;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTabHost;
+import android.view.View;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.tradehero.th.R;
-import com.tradehero.th.api.security.SecurityCompactDTO;
-import com.tradehero.th.application.App;
+import com.tradehero.th.base.Application;
 import com.tradehero.th.fragments.CommunityScreenFragment;
 import com.tradehero.th.fragments.HomeScreenFragment;
 import com.tradehero.th.fragments.PortfolioScreenFragment;
 import com.tradehero.th.fragments.StoreScreenFragment;
-import com.tradehero.th.fragments.trending.TrendingDetailFragment;
 import com.tradehero.th.fragments.trending.TrendingFragment;
-import android.view.View;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -111,7 +109,7 @@ public class DashboardActivity extends SherlockFragmentActivity
             Fragment fragment = instances.get(clss);
             if (fragment == null)
             {
-                fragment = Fragment.instantiate(App.context(), clss.getName(), null);
+                fragment = Fragment.instantiate(Application.context(), clss.getName(), null);
                 instances.put(clss, fragment);
             }
             return fragment;
