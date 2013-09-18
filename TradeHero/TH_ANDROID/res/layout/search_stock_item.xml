@@ -3,20 +3,22 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="90dp"
-    android:padding="5dp">
+    android:background="@drawable/trending_grid_item_bg"
+    >
 
     <com.tradehero.common.widget.ImageUrlView
         android:id="@+id/stock_bg_logo"
         android:layout_width="match_parent"
-        android:layout_height="80dp"
+        android:layout_height="90dp"
         android:scaleType="centerCrop"
         android:contentDescription="background logo"
-        android:src="@drawable/default_image"/>
+        android:src="@drawable/default_image"
+        android:alpha="0.2"
+        />
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/trending_grid_item_bg"
         android:padding="4dp" >
 
         <com.tradehero.common.widget.ImageUrlView

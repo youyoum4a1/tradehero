@@ -7,7 +7,7 @@
 
     <include
         android:id="@+id/header"
-        layout="@layout/trending_topbar" />
+        layout="@layout/trending_search_topbar" />
 
     <EditText
         android:id="@+id/comments"

@@ -11,6 +11,8 @@ import com.tradehero.th.fragments.CommunityScreenFragment;
 import com.tradehero.th.fragments.HomeScreenFragment;
 import com.tradehero.th.fragments.PortfolioScreenFragment;
 import com.tradehero.th.fragments.StoreScreenFragment;
+import com.tradehero.th.fragments.trending.TrendingContainerFragment;
+import com.tradehero.th.fragments.trending.TrendingDetailFragment;
 import com.tradehero.th.fragments.trending.TrendingFragment;
 import java.util.HashMap;
 import java.util.Map;
@@ -41,7 +43,7 @@ public class DashboardActivity extends SherlockFragmentActivity
         mTabHost = (FragmentTabHost) findViewById(android.R.id.tabhost);
         mTabHost.setup(this, getSupportFragmentManager(), R.id.realtabcontent);
 
-        addNewTab(getString(R.string.trending), R.drawable.trending_selector, TrendingFragment.class);
+        addNewTab(getString(R.string.trending), R.drawable.trending_selector, TrendingContainerFragment.class);
         addNewTab(getString(R.string.community), R.drawable.community_selector, CommunityScreenFragment.class);
         addNewTab(getString(R.string.home), R.drawable.home_selector, HomeScreenFragment.class);
         addNewTab(getString(R.string.portfolio), R.drawable.pofilio_selector, PortfolioScreenFragment.class);
@@ -86,7 +88,8 @@ public class DashboardActivity extends SherlockFragmentActivity
     private void setCurrentFragmentByClass(Class<?> fragmentClass)
     {
         currentFragment = FragmentFactory.getInstance(fragmentClass);
-        getSupportFragmentManager().beginTransaction()
+        getSupportFragmentManager()
+                .beginTransaction()
                 .setCustomAnimations(
                         R.anim.slide_right_in, R.anim.slide_left_out,
                         R.anim.slide_left_in, R.anim.slide_right_out)

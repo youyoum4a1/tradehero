@@ -2,15 +2,16 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/dashboard_background_xml">
+    android:background="@drawable/dashboard_background_xml"
+    >
 
     <FrameLayout
         android:id="@+id/realtabcontent"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@android:id/tabhost"
-        android:paddingLeft="@dimen/dashboard_padding"
-        android:paddingRight="@dimen/dashboard_padding">
+        android:paddingLeft="0dp"
+        android:paddingRight="0dp">
     </FrameLayout>
 
     <android.support.v4.app.FragmentTabHost

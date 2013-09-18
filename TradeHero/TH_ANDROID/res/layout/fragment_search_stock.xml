@@ -4,26 +4,52 @@
     xmlns:app="http://schemas.android.com/apk/res/com.tradehero.th"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/transparent" >
+    android:background="@drawable/dashboard_background_xml"
+    android:paddingLeft="@dimen/dashboard_padding"
+    android:paddingRight="@dimen/dashboard_padding"
+    >
 
-    <!--include
-        android:id="@+id/header"
-        layout="@layout/trending_topbar" /-->
+   <ListView
+       android:id="@+id/trending_listview"
+       android:layout_width="match_parent"
+       android:layout_height="match_parent"
+       android:cacheColorHint="@android:color/transparent"
+       android:divider="@null"
+       android:dividerHeight="5dp"
+       android:paddingTop="@dimen/dashboard_padding"
+       android:clipToPadding="false"
+       >
+   </ListView>
 
-    <ListView
-        android:id="@+id/trending_listview"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:cacheColorHint="@android:color/transparent"
-        android:divider="@null"
-        >
-    </ListView>
+  <ListView
+      android:id="@+id/people_listview"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:cacheColorHint="@android:color/transparent"
+      android:divider="@null"
+      android:dividerHeight="5dp"
+      android:paddingTop="@dimen/dashboard_padding"
+      android:clipToPadding="false"
+      >
+  </ListView>
+
+  <TextView
+        android:id="@+id/search_stock_nothing_yet_view"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:text="@string/search_stock_nothing_yet"
+        android:textAlignment="center"
+        android:textSize="30sp"
+        />
 
     <ProgressBar
         android:id="@+id/progress_spinner"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:visibility="gone" />
+        android:visibility="gone"
+        />
 
 </RelativeLayout>

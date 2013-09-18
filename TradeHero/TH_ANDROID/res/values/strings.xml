@@ -41,11 +41,12 @@
   <string name="Exchanges">Exchanges</string>
 
   <!-- What's Trending -->
-  <string name="header_trending">Trending</string>
+  <string name="header_trending">What\'s Trending</string>
   <string name="positive_prefix">▲</string>
   <string name="negative_prefix">▼</string>
   <string name="zero_prefix"></string>
   <string name="search_stock_hint">Select to search &gt;</string>
+  <string name="search_stock_nothing_yet">Nothing to show.\nType in the search field</string>
 
   <!-- What's Trending Details -->
   <string name="tab_trade">TRADE</string>

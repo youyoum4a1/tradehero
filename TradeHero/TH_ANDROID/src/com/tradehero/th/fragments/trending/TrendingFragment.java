@@ -1,115 +1,83 @@
 package com.tradehero.th.fragments.trending;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ArrayAdapter;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
-import com.loopj.android.http.AsyncHttpClient;
-import com.loopj.android.http.AsyncHttpResponseHandler;
-import com.tradehero.common.cache.KnownCaches;
+import com.actionbarsherlock.app.ActionBar;
+import com.actionbarsherlock.app.SherlockFragment;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.TrendingAdapter;
 import com.tradehero.th.api.security.SecurityCompactDTO;
-import com.tradehero.th.application.Config;
-import com.tradehero.th.http.THAsyncClientFactory;
-import com.tradehero.th.models.User;
 import com.tradehero.th.network.CallbackWithSpecificNotifiers;
 import com.tradehero.th.network.NetworkEngine;
 import com.tradehero.th.network.service.SecurityService;
-import com.tradehero.th.utills.Constants;
 import com.tradehero.th.widget.trending.TrendingGridView;
 import java.util.List;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
-public class TrendingFragment extends AbstractTrendingFragment
+public class TrendingFragment extends SherlockFragment
 {
     private final static String TAG = TrendingFragment.class.getSimpleName();
-    private final static String[] SEARCH_TYPE = { "Stocks", "People"};
 
+    private View actionBar;
+    private ImageView mBullIcon;
+    private TextView mHeaderText;
+    private ImageButton mSearchBtn;
+    private SearchRequestedListener searchRequestedListener;
+
+    private ProgressBar mProgressSpinner;
     private TrendingGridView mTrendingGridView;
 
-    private List<SecurityCompactDTO> securityCompactDTOs;
-    private List<User> searchPeopleList;
-
-    private TextView mHeaderText;
-    private EditText mSearchField;
-    private View mSearchContainer;
-    private ImageButton mBackBtn;
-    private ImageButton mSearchBtn;
-    private ImageView mBullIcon;
-    private RelativeLayout header;
     private SecurityService securityService;
-
-    @Override protected String getLogTag()
-    {
-        return TAG;
-    }
-
-    @Override protected int getLayoutResourceId()
-    {
-        return R.layout.fragment_trending;
-    }
+    private List<SecurityCompactDTO> securityCompactDTOs;
+    protected TrendingAdapter trendingAdapter;
 
     @Override public void onAttach(Activity activity)
     {
+        THLog.i(TAG, "onAttach");
         super.onAttach(activity);
-        setHasOptionsMenu(true);
     }
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
+        THLog.i(TAG, "onCreate");
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        return super.onCreateView(inflater, container, savedInstanceState);
+        THLog.i(TAG, "onCreateView");
+        View view = inflater.inflate(R.layout.fragment_trending, container, false);
+        initViews(view);
+        return view;
     }
 
-    @Override protected void initViews(View view)
+    protected void initViews(View view)
     {
-        super.initViews(view);
         mTrendingGridView = (TrendingGridView) view.findViewById(R.id.trending_gridview);
-
-        //mSearchTypeSpinner = (Spinner) view.findViewById(R.id.spinner);
-        //mHeaderText = (TextView) view.findViewById(R.id.header_txt);
-        //mSearchField = (EditText) view.findViewById(R.id.searh_field);
+        mProgressSpinner = (ProgressBar) view.findViewById(R.id.progress_spinner);
         mBullIcon = (ImageView) view.findViewById(R.id.logo_img);
-        //mSearchBtn = (ImageButton) view.findViewById(R.id.btn_search);
-        //mSearchBtn.setVisibility(View.VISIBLE);
-        //mBackBtn = (ImageButton) view.findViewById(R.id.btn_back);
-        mSearchContainer = (RelativeLayout) view.findViewById(R.id.search_container);
-
-        // TODO header bar
-        //header = (RelativeLayout) getActivity().findViewById(R.id.top_tabactivity);
-        //header.setVisibility(View.GONE);
-        //mHeaderText.setText(R.string.header_trending);
-
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, SEARCH_TYPE);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        //mSearchTypeSpinner.setAdapter(adapter);
-
-        //mSearchField.addTextChangedListener(new SearchFieldWatcher());
-
-        // HACK
-        KnownCaches.getTransparentBg().clear();
-        KnownCaches.getGreyGaussian().clear();
     }
 
     @Override public void onActivityCreated(Bundle savedInstanceState)
     {
+        THLog.i(TAG, "onActivityCreated");
         super.onActivityCreated(savedInstanceState);
 
         // TODO sliding menu
@@ -137,26 +105,10 @@ public class TrendingFragment extends AbstractTrendingFragment
         {
             setDataAdapterToGridView(securityCompactDTOs);
         }
-        //else {
-        //	securityCompactDTOs = new ArrayList<Trend>();
-        //	mTrendingGridView.setAdapter(new TrendingAdapter(getActivity(), securityCompactDTOs));
-        //}
-
-        //mSearchTypeSpinner.setOnItemSelectedListener(new OnItemSelectedListener()
-        //{
-        //    @Override
-        //    public void onItemSelected(AdapterView<?> arg0, View arg1,
-        //            int arg2, long arg3)
-        //    {
-        //        mSearchField.setText("");
-        //    }
-        //
-        //    @Override
-        //    public void onNothingSelected(AdapterView<?> arg0)
-        //    {
-        //
-        //    }
-        //});
+        else
+        {
+            refreshGridView();
+        }
 
         mTrendingGridView.setOnItemClickListener(new OnItemClickListener()
         {
@@ -166,9 +118,6 @@ public class TrendingFragment extends AbstractTrendingFragment
                 SecurityCompactDTO securityCompactDTO = (SecurityCompactDTO) parent.getItemAtPosition(position);
 
                 THToast.show("Disabled for now");
-
-                // TODO put back in
-                //((DashboardActivity)getActivity()).pushTrendingDetailFragment(securityCompactDTO);
             }
         });
 
@@ -176,17 +125,37 @@ public class TrendingFragment extends AbstractTrendingFragment
         {
             showProgressSpinner(true);
         }
+    }
 
-        refreshGridView();
+    @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
+    {
+        THLog.i(TAG, "onCreateOptionsMenu");
+        super.onCreateOptionsMenu(menu, inflater);
+        createHeaderActionBar(menu, inflater);
+    }
+
+    private void createHeaderActionBar(Menu menu, MenuInflater inflater)
+    {
+        getSherlockActivity().getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+        getSherlockActivity().getSupportActionBar().setCustomView(R.layout.trending_topbar);
+
+        actionBar = getSherlockActivity().getSupportActionBar().getCustomView();
+        ((TextView) actionBar.findViewById(R.id.header_txt)).setText(R.string.header_trending);
+
+        mSearchBtn = (ImageButton) actionBar.findViewById(R.id.btn_search);
+        mSearchBtn.setOnClickListener(new View.OnClickListener()
+        {
+            @Override public void onClick(View view)
+            {
+                notifySearchRequested();
+            }
+        });
     }
 
     @Override public void onResume()
     {
         THLog.i(TAG, "onResume");
         super.onResume();
-        // TODO move to somewhere else
-        //((TradeHeroTabActivity) getActivity()).showTabs(true);
-        //((App) getActivity().getApplication()).setTrend(null);
     }
 
     @Override public void onPause()
@@ -197,7 +166,7 @@ public class TrendingFragment extends AbstractTrendingFragment
 
     @Override public void onDetach()
     {
-        THLog.i(TAG, "Detached from activity");
+        THLog.i(TAG, "onDetach");
         super.onDetach();
     }
 
@@ -216,7 +185,7 @@ public class TrendingFragment extends AbstractTrendingFragment
         showProgressSpinner(false);
     }
 
-    @Override protected void refreshGridView()
+    protected void refreshGridView()
     {
         if (securityService == null)
         {
@@ -246,8 +215,36 @@ public class TrendingFragment extends AbstractTrendingFragment
         };
     }
 
-    @Override public boolean isRequiredToAct()
+    public boolean isRequiredToAct()
     {
-        return getActionBarStatus() == null || getActionBarStatus().searchType == null || getActionBarStatus().searchText == null;
+        return true;
+    }
+
+    protected void showProgressSpinner(boolean flag)
+    {
+        mProgressSpinner.setVisibility(getVisibility(flag));
+    }
+
+    protected int getVisibility(boolean flag)
+    {
+        return flag ? View.VISIBLE : View.INVISIBLE;
+    }
+
+    public void setSearchRequestedListener(SearchRequestedListener searchRequestedListener)
+    {
+        this.searchRequestedListener = searchRequestedListener;
+    }
+
+    private void notifySearchRequested()
+    {
+        if (this.searchRequestedListener != null)
+        {
+            this.searchRequestedListener.onSearchRequested();
+        }
+    }
+
+    public interface SearchRequestedListener
+    {
+        void onSearchRequested();
     }
 }

@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <item name="shrink_inflate_ratio_back" format="float" type="dimen">0.9</item>
+  <item name="shrink_inflate_ratio_front" format="float" type="dimen">1.2</item>
+</resources>

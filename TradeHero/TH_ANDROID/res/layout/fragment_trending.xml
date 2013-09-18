@@ -4,12 +4,14 @@
     xmlns:app="http://schemas.android.com/apk/res/com.tradehero.th"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/transparent"
+    android:background="@drawable/dashboard_background_xml"
+    android:paddingLeft="@dimen/dashboard_padding"
+    android:paddingRight="@dimen/dashboard_padding"
     >
 
     <!--include
         android:id="@+id/header"
-        layout="@layout/trending_topbar" /-->
+        layout="@layout/trending_search_topbar" /-->
 
     <com.tradehero.th.widget.trending.TrendingGridView
         android:id="@+id/trending_gridview"

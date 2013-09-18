@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<set android:duration="@integer/duration_shrink_inflate"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+  <scale android:interpolator="@android:anim/decelerate_interpolator"
+      android:duration="@integer/duration_shrink_inflate"
+      android:pivotX="50.0%"
+      android:pivotY="50.0%"
+      android:fromXScale="@dimen/shrink_inflate_ratio_front"
+      android:toXScale="1.0"
+      android:fromYScale="@dimen/shrink_inflate_ratio_front"
+      android:toYScale="1.0"
+      />
+  <alpha android:interpolator="@android:anim/accelerate_interpolator"
+      android:duration="@integer/duration_shrink_inflate"
+      android:fromAlpha="0.0"
+      android:toAlpha="1.0"/>
+</set>
