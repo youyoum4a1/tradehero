@@ -12,8 +12,10 @@ import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 import com.squareup.picasso.UrlConnectionDownloader;
 import com.tradehero.common.cache.LruMemFileCache;
-import com.tradehero.common.graphics.GaussianGrayscaleTransformation;
-import com.tradehero.common.graphics.RoundedGaussianGrayscaleTransformation;
+import com.tradehero.common.graphics.AbstractSequentialTransformation;
+import com.tradehero.common.graphics.GaussianTransformation;
+import com.tradehero.common.graphics.GrayscaleTransformation;
+import com.tradehero.common.graphics.RoundedCornerTransformation;
 import com.tradehero.common.graphics.WhiteToTransparentTransformation;
 import com.tradehero.common.thread.KnownExecutorServices;
 import com.tradehero.common.utils.THLog;
@@ -24,6 +26,7 @@ import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.utills.DateUtils;
 import com.tradehero.th.utills.TrendUtils;
 import com.tradehero.th.utills.YUtils;
+import java.util.ArrayList;
 import java.util.concurrent.Future;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 9/5/13 Time: 5:19 PM To change this template use File | Settings | File Templates. */
@@ -83,7 +86,23 @@ public class TrendingSecurityView extends FrameLayout implements DTOView<Securit
         }
         if (backgroundTransformation == null)
         {
-            backgroundTransformation = new RoundedGaussianGrayscaleTransformation(25, R.color.gray_2);
+            backgroundTransformation = new AbstractSequentialTransformation
+            (
+                new ArrayList<Transformation>()
+                {
+                    {
+                        add(new GrayscaleTransformation());
+                        add(new GaussianTransformation());
+                        add(new RoundedCornerTransformation(25, R.color.gray_2));
+                    }
+                }
+            )
+            {
+                @Override public String key()
+                {
+                    return "toRoundedGaussianGrayscale";
+                }
+            };
         }
 
         if (mPicasso == null)
