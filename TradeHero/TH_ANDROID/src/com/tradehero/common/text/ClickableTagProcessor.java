@@ -1,5 +1,6 @@
 package com.tradehero.common.text;
 
+import android.text.TextPaint;
 import android.text.style.ClickableSpan;
 import android.view.View;
 import com.tradehero.common.utils.THLog;
@@ -14,6 +15,12 @@ public abstract class ClickableTagProcessor extends RichSpanTextProcessor
             @Override public void onClick(View view)
             {
                 THLog.d("working", view.getId() + " is clicked");
+            }
+
+            @Override public void updateDrawState(TextPaint ds)
+            {
+                super.updateDrawState(ds);
+                ds.setUnderlineText(false);
             }
         };
     }

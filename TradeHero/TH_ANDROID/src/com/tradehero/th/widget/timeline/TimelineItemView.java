@@ -13,6 +13,7 @@ import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.local.TimelineItem;
 import com.tradehero.th.api.misc.MediaDTO;
 import com.tradehero.th.api.users.UserProfileCompactDTO;
+import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.widget.MarkdownTextView;
 import java.util.Date;
 import org.ocpsoft.prettytime.PrettyTime;
@@ -49,6 +50,7 @@ public class TimelineItemView extends RelativeLayout implements DTOView<Timeline
         username = (TextView) findViewById(R.id.timeline_user_profile_name);
         avatar = (ImageView) findViewById(R.id.timeline_user_profile_picture);
         content = (MarkdownTextView) findViewById(R.id.timeline_item_content);
+        DaggerUtils.inject(content);
         time = (TextView) findViewById(R.id.timeline_time);
         vendorImage = (ImageView) findViewById(R.id.timeline_vendor_picture);
     }

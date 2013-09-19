@@ -14,21 +14,19 @@ public class RichTextCreator
     private String originalText;
     private SpannableStringBuilder richText;
     private List<RichTextProcessor> processors;
+    private boolean useBuiltInTextProcessors;
 
     //<editor-fold desc="Constructors">
     public RichTextCreator()
     {
+        this(true);
     }
 
-    public RichTextCreator(String text)
+    public RichTextCreator(boolean useBuiltInTextProcessors)
     {
-        this(text, false);
-    }
+        this.useBuiltInTextProcessors = useBuiltInTextProcessors;
 
-    public RichTextCreator(String text, boolean withBuiltInTextProcessors)
-    {
-        this.originalText = text;
-        if (withBuiltInTextProcessors)
+        if (useBuiltInTextProcessors)
         {
             RichTextProcessor[] builtInProcessors = getBuildInProcessors();
             for (RichTextProcessor processor: builtInProcessors)
@@ -36,8 +34,8 @@ public class RichTextCreator
                 register(processor);
             }
         }
-        richText = new SpannableStringBuilder(text);
     }
+    //</editor-fold>
 
     private RichTextProcessor[] getBuildInProcessors()
     {
@@ -64,16 +62,22 @@ public class RichTextCreator
         }
         processors.add(processor);
     }
-    //</editor-fold>
 
-    public static RichTextCreator load(CharSequence text)
+    public RichTextCreator load(CharSequence text)
     {
-        return new RichTextCreator(text.toString(), true);
+        return load(text.toString());
     }
 
-    public static RichTextCreator load(String text)
+    public RichTextCreator load(String text)
     {
-        return new RichTextCreator(text, true);
+        setText(text);
+        return this;
+    }
+
+    private void setText(String text)
+    {
+        this.originalText = text;
+        richText = new SpannableStringBuilder(text);
     }
 
     public Spanned create()
@@ -89,7 +93,6 @@ public class RichTextCreator
     public void apply(TextView textView)
     {
         Spanned richText= create();
-        textView.setLinkTextColor(Color.BLUE);
         textView.setText(richText);
     }
 }

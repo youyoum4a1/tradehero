@@ -12,7 +12,6 @@ import javax.inject.Inject;
 public class MarkdownTextView extends TextView
 {
     @Inject RichTextCreator parser;
-    private boolean processed;
 
     //<editor-fold desc="Constructors">
     public MarkdownTextView(Context context)
@@ -28,24 +27,15 @@ public class MarkdownTextView extends TextView
     public MarkdownTextView(Context context, AttributeSet attrs, int defStyle)
     {
         super(context, attrs, defStyle);
-        init();
     }
     //</editor-fold>
 
-    public void init()
-    {
-        DaggerUtils.inject(this);
-    }
-
-    @Override protected void onFinishInflate()
-    {
-        init();
-        super.onFinishInflate();
-    }
-
     @Override public void setText(CharSequence text, BufferType type)
     {
-        text = RichTextCreator.load(text).create();
+        if (parser != null)
+        {
+            text = parser.load(text).create();
+        }
         super.setText(text, type);
     }
 }

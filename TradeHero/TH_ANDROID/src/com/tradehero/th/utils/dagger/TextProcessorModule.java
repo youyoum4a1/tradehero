@@ -12,7 +12,7 @@ import javax.inject.Singleton;
 )
 public class TextProcessorModule
 {
-    @Provides @Singleton RichTextCreator provideMarkdownParser()
+    @Provides RichTextCreator provideMarkdownParser()
     {
         return new RichTextCreator();
     }
