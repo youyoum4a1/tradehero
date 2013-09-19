@@ -13,6 +13,7 @@ import com.squareup.picasso.Transformation;
 import com.squareup.picasso.UrlConnectionDownloader;
 import com.tradehero.common.cache.LruMemFileCache;
 import com.tradehero.common.graphics.GaussianGrayscaleTransformation;
+import com.tradehero.common.graphics.RoundedGaussianGrayscaleTransformation;
 import com.tradehero.common.graphics.WhiteToTransparentTransformation;
 import com.tradehero.common.thread.KnownExecutorServices;
 import com.tradehero.common.utils.THLog;
@@ -67,6 +68,13 @@ public class TrendingSecurityView extends FrameLayout implements DTOView<Securit
     }
     //</editor-fold>
 
+    @Override protected void onFinishInflate()
+    {
+        THLog.i(TAG, "OnFinishInflate");
+        super.onFinishInflate();
+        init();
+    }
+
     protected void init ()
     {
         if (foregroundTransformation == null)
@@ -75,7 +83,7 @@ public class TrendingSecurityView extends FrameLayout implements DTOView<Securit
         }
         if (backgroundTransformation == null)
         {
-            backgroundTransformation = new GaussianGrayscaleTransformation();
+            backgroundTransformation = new RoundedGaussianGrayscaleTransformation(25, R.color.gray_2);
         }
 
         if (mPicasso == null)
@@ -111,13 +119,6 @@ public class TrendingSecurityView extends FrameLayout implements DTOView<Securit
         date = (TextView) findViewById(R.id.date);
         securityType = (TextView) findViewById(R.id.sec_type);
         conditionalLoadImages();
-    }
-
-    @Override protected void onFinishInflate()
-    {
-        THLog.i(TAG, "OnFinishInflate");
-        super.onFinishInflate();
-        init();
     }
 
     @Override protected void onAttachedToWindow()

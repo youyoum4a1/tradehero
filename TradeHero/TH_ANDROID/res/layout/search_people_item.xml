@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.tradehero.th.fragments.trending.TrendingUserView
+<com.tradehero.th.widget.trending.TrendingUserView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="90dp"
     android:padding="5dp" >
 
-    <com.loopj.android.image.SmartImageView
+    <com.tradehero.common.widget.ImageUrlView
         android:id="@+id/people_bg_image"
         android:layout_width="match_parent"
-        android:layout_height="80dp"
+        android:layout_height="90dp"
         android:contentDescription="@null"
         android:scaleType="fitCenter"
         android:src="@drawable/default_image" />
@@ -19,7 +19,7 @@
         android:background="@drawable/trending_grid_item_bg"
         android:padding="4dp" >
 
-        <com.loopj.android.image.SmartImageView
+        <ImageView
             android:id="@+id/people_logo"
             android:layout_width="30dp"
             android:layout_height="30dp"
@@ -29,9 +29,9 @@
             android:adjustViewBounds="true"
             android:contentDescription="@null"
             android:scaleType="centerInside"
-            android:src="@drawable/default_image" />
+            android:src="@drawable/toggle_users" />
 
-        <com.tradehero.application.CircularImageView
+        <com.tradehero.th.application.CircularImageView
             android:id="@+id/user_image"
             android:layout_width="60dp"
             android:layout_height="60dp"
@@ -109,4 +109,4 @@
         </LinearLayout>
     </RelativeLayout>
 
-</com.tradehero.th.fragments.trending.TrendingUserView>
+</com.tradehero.th.widget.trending.TrendingUserView>

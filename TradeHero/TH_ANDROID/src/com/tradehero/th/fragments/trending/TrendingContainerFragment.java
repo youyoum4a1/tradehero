@@ -11,7 +11,7 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
-import com.tradehero.th.application.App;
+import com.tradehero.th.base.Application;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -143,7 +143,7 @@ public class TrendingContainerFragment extends SherlockFragment
             Fragment fragment = instances.get(clss);
             if (fragment == null)
             {
-                fragment = Fragment.instantiate(App.context(), clss.getName(), null);
+                fragment = Fragment.instantiate(Application.context(), clss.getName(), null);
                 TrendingContainerFragment.this.setListenerOnChildFragment(fragment);
                 instances.put(clss, fragment);
             }

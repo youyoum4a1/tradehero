@@ -6,6 +6,7 @@
     <mapping directory="$PROJECT_DIR$/ActionBarSherlock" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/Android-PullToRefresh" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/android-hero-validator" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/dagger" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/facebook-android-sdk" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/java-code-styles" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/lazyList" vcs="Git" />

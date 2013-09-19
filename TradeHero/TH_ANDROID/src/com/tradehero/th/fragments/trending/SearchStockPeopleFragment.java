@@ -327,10 +327,6 @@ public class SearchStockPeopleFragment extends SherlockFragment implements Adapt
             {
                 searchPeopleAdapter.addAll(users);
             }
-            else
-            {
-
-            }
             // TODO implement loader pattern
         }
         mSearchPeopleListView.setAdapter(searchPeopleAdapter);

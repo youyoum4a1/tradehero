@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.trending;
+package com.tradehero.th.widget.trending;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -11,18 +11,13 @@ import com.squareup.picasso.Cache;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.UrlConnectionDownloader;
 import com.tradehero.common.cache.LruMemFileCache;
-import com.tradehero.common.graphics.GaussianGrayscaleTransformation;
-import com.tradehero.common.graphics.WhiteToTransparentTransformation;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.common.widget.ImageUrlView;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
-import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.users.UserSearchResultDTO;
 import com.tradehero.th.application.CircularImageView;
-import com.tradehero.th.models.User;
 import com.tradehero.th.utills.DateUtils;
-import com.tradehero.th.utills.YUtils;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 9/17/13 Time: 3:39 PM To change this template use File | Settings | File Templates. */
 public class TrendingUserView extends FrameLayout implements DTOView<UserSearchResultDTO>
@@ -34,8 +29,8 @@ public class TrendingUserView extends FrameLayout implements DTOView<UserSearchR
     private TextView profitIndicator;
     private TextView stockPercentage;
     private TextView date;
-    private CircularImageView userImage;
-    private SmartImageView peopleBgImage;
+    //private CircularImageView userImage;
+    private ImageUrlView peopleBgImage;
 
 
     //<editor-fold desc="Constructors">
@@ -54,6 +49,13 @@ public class TrendingUserView extends FrameLayout implements DTOView<UserSearchR
         super(context, attrs, defStyle);
     }
     //</editor-fold>
+
+    @Override protected void onFinishInflate()
+    {
+        THLog.i(TAG, "onFinishInflate");
+        super.onFinishInflate();
+        init();
+    }
 
     protected void init ()
     {
@@ -80,15 +82,8 @@ public class TrendingUserView extends FrameLayout implements DTOView<UserSearchR
         profitIndicator = (TextView) findViewById(R.id.profit_indicator);
         stockPercentage = (TextView) findViewById(R.id.stock_percentage);
         date = (TextView) findViewById(R.id.date);
-        userImage = (CircularImageView) findViewById(R.id.user_image);
-        peopleBgImage = (SmartImageView) findViewById(R.id.people_bg_image);
-    }
-
-    @Override protected void onFinishInflate()
-    {
-        THLog.i(TAG, "OnFinishInflate");
-        super.onFinishInflate();
-        init();
+        //userImage = (CircularImageView) findViewById(R.id.user_image);
+        peopleBgImage = (ImageUrlView) findViewById(R.id.people_bg_image);
     }
 
     @Override public void display(UserSearchResultDTO user)
