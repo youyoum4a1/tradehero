@@ -41,10 +41,11 @@
     <ImageView
         android:id="@+id/timeline_vendor_picture"
         android:layout_width="wrap_content"
-        android:layout_height="30dip"
+        android:layout_height="20dp"
+        android:scaleType="fitEnd"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
-        android:layout_marginRight="0dp"
+        android:layout_marginRight="5dp"
         android:layout_marginTop="5dp"
         android:src="@null"
         android:contentDescription="@null"/>
@@ -53,7 +54,7 @@
         android:id="@+id/timeline_item_content"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/timeline_vendor_picture"
+        android:layout_below="@id/timeline_time"
         android:layout_marginLeft="10dip"
         android:layout_marginTop="10dip"
         android:layout_toRightOf="@+id/timeline_user_profile_picture"

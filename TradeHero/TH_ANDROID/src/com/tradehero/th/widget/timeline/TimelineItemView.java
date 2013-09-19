@@ -21,6 +21,7 @@ import org.ocpsoft.prettytime.PrettyTime;
 /** Created with IntelliJ IDEA. User: tho Date: 9/9/13 Time: 4:24 PM Copyright (c) TradeHero */
 public class TimelineItemView extends RelativeLayout implements DTOView<TimelineItem>
 {
+    private static Picasso picasso = null;
     private TextView username;
     private MarkdownTextView content;
     private ImageView avatar;
@@ -53,6 +54,12 @@ public class TimelineItemView extends RelativeLayout implements DTOView<Timeline
         DaggerUtils.inject(content);
         time = (TextView) findViewById(R.id.timeline_time);
         vendorImage = (ImageView) findViewById(R.id.timeline_vendor_picture);
+
+        if (picasso == null)
+        {
+            picasso = Picasso.with(getContext());
+            picasso.setDebugging(true);
+        }
     }
 
     @Override protected void onFinishInflate()
@@ -66,7 +73,7 @@ public class TimelineItemView extends RelativeLayout implements DTOView<Timeline
         if (user != null)
         {
             username.setText(user.displayName);
-            Picasso.with(getContext())
+            picasso
                     .load(user.picture)
                     .transform(new RoundedShapeTransformation())
                     .into(avatar);
@@ -79,7 +86,7 @@ public class TimelineItemView extends RelativeLayout implements DTOView<Timeline
         MediaDTO firstMediaWithLogo = item.firstMediaWithLogo();
         if (firstMediaWithLogo != null)
         {
-            Picasso.with(getContext())
+            picasso
                     .load(firstMediaWithLogo.url)
                     .transform(new WhiteToTransparentTransformation())
                     .into(vendorImage);
