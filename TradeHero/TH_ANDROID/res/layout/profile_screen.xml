@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingLeft="@dimen/dashboard_padding"
+    android:paddingRight="@dimen/dashboard_padding"
     >
   <com.tradehero.th.widget.timeline.TimelineListView
       xmlns:ptr="http://schemas.android.com/apk/res-auto"
@@ -21,6 +22,5 @@
       android:clipToPadding="false"
       ptr:ptrAnimationStyle="flip"
       ptr:ptrMode="both"
-      android:scrollbarStyle="outsideInset"
       />
 </FrameLayout>
