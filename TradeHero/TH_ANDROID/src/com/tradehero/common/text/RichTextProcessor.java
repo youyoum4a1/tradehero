@@ -8,5 +8,7 @@ public interface RichTextProcessor
 {
     SpannableStringBuilder process(SpannableStringBuilder source);
 
+    String getExtractionPattern();
+
     String key();
 }

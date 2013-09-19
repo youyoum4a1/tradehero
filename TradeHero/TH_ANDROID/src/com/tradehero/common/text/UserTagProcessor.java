@@ -13,6 +13,11 @@ public class UserTagProcessor extends ClickableTagProcessor
         return Pattern.compile(THMarkdownURegexUser);
     }
 
+    @Override public String getExtractionPattern()
+    {
+        return "@$1";
+    }
+
     @Override public String key()
     {
         return "user";

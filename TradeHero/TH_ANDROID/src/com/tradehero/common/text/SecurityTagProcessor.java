@@ -13,6 +13,11 @@ public class SecurityTagProcessor extends ClickableTagProcessor
         return Pattern.compile(THMarkdownURegexSecurity);
     }
 
+    @Override public String getExtractionPattern()
+    {
+        return "#$1:$2";
+    }
+
     @Override public String key()
     {
         return "security";

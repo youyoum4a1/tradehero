@@ -3,7 +3,6 @@ package com.tradehero.common.text;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.util.Pair;
-import com.tradehero.common.utils.THLog;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -17,17 +16,23 @@ public abstract class RichSpanTextProcessor implements RichTextProcessor
         Map<Object, Pair<Integer, Integer>> textMarkers = new HashMap<>();
         Pattern pattern = getPattern();
         Matcher match = pattern.matcher(source);
+        // TODO should use only one matcher to process the string, this is a hacky way
+        Matcher match2 = pattern.matcher(source.toString());
 
         int currentPosition = 0;
         int spanned = 0;
         int originalLength = source.length();
-        while (match.find())
+        StringBuffer sb = new StringBuffer();
+        while (match.find() && match2.find())
         {
-            String replacement = match.group(1);
-            int newMatchingStart = match.start() - spanned;
-            int newMatchingEnd = match.end() - spanned;
-            source.replace(newMatchingStart, newMatchingEnd, replacement);
-            currentPosition = newMatchingStart + replacement.length();
+            int realMatchingStart = match.start() - spanned;
+            int realMatchingEnd = match.end() - spanned;
+
+            match2.appendReplacement(sb, getExtractionPattern());
+            String replacement = sb.substring(realMatchingStart);
+
+            source.replace(realMatchingStart, realMatchingEnd, replacement);
+            currentPosition = realMatchingStart + replacement.length();
 
             textMarkers.put(getSpanElement(replacement), new Pair<>(currentPosition - replacement.length(), currentPosition));
             spanned = originalLength - source.length();
@@ -38,6 +43,11 @@ public abstract class RichSpanTextProcessor implements RichTextProcessor
             source.setSpan(marker.getKey(), marker.getValue().first, marker.getValue().second, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
         return source;
+    }
+
+    @Override public String getExtractionPattern()
+    {
+        return "$1";
     }
 
     protected abstract Object getSpanElement(String replacement);
