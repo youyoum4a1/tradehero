@@ -23,7 +23,7 @@ public class TimelineItemView extends RelativeLayout implements DTOView<Timeline
 {
     private static Picasso picasso = null;
     private TextView username;
-    private MarkdownTextView content;
+    private TextView content;
     private ImageView avatar;
     private ImageView vendorImage;
     private TextView time;
@@ -50,7 +50,7 @@ public class TimelineItemView extends RelativeLayout implements DTOView<Timeline
     {
         username = (TextView) findViewById(R.id.timeline_user_profile_name);
         avatar = (ImageView) findViewById(R.id.timeline_user_profile_picture);
-        content = (MarkdownTextView) findViewById(R.id.timeline_item_content);
+        content = (TextView) findViewById(R.id.timeline_item_content);
         DaggerUtils.inject(content);
         time = (TextView) findViewById(R.id.timeline_time);
         vendorImage = (ImageView) findViewById(R.id.timeline_vendor_picture);

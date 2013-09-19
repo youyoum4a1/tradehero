@@ -48,7 +48,8 @@ public class RichTextCreator
                 new ItalicTagProcessor(),
                 new SecurityTagProcessor(),
                 new LinkTagProcessor(),
-                new ColorTagProcessor()
+                new ColorTagProcessor(),
+                new SpecialCharacterProcessor()
         };
     }
 
@@ -85,6 +86,11 @@ public class RichTextCreator
 
     public Spanned create()
     {
+        if (!needProcess())
+        {
+            return richText;
+        }
+
         String cachedKey = getCachedText();
         Spanned cachedText = cachedTexts.get(cachedKey);
 
@@ -100,6 +106,11 @@ public class RichTextCreator
 
         cachedTexts.put(cachedKey, richText);
         return richText;
+    }
+
+    private boolean needProcess()
+    {
+        return processors != null && !processors.isEmpty();
     }
 
     private String getCachedText()

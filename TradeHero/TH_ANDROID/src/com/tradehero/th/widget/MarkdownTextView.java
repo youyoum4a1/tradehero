@@ -5,6 +5,7 @@ import android.graphics.Canvas;
 import android.util.AttributeSet;
 import android.widget.TextView;
 import com.tradehero.common.text.RichTextCreator;
+import com.tradehero.common.utils.THLog;
 import com.tradehero.th.utils.DaggerUtils;
 import javax.inject.Inject;
 
@@ -16,12 +17,12 @@ public class MarkdownTextView extends TextView
     //<editor-fold desc="Constructors">
     public MarkdownTextView(Context context)
     {
-        super(context, null);
+        super(context);
     }
 
     public MarkdownTextView(Context context, AttributeSet attrs)
     {
-        super(context, attrs, 0);
+        super(context, attrs);
     }
 
     public MarkdownTextView(Context context, AttributeSet attrs, int defStyle)

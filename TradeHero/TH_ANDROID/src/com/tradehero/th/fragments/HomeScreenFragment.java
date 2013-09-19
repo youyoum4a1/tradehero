@@ -52,6 +52,7 @@ public class HomeScreenFragment extends ItemListFragment<TimelineItem>
         timelineListView.setAdapter(timelineAdapter);
         timelineListView.setOnRefreshListener(timelineAdapter);
         timelineListView.setOnScrollListener(timelineAdapter);
+        timelineListView.setOnLastItemVisibleListener(timelineAdapter);
 
         setListView(timelineListView.getRefreshableView());
         registerForContextMenu(timelineListView);
@@ -69,6 +70,7 @@ public class HomeScreenFragment extends ItemListFragment<TimelineItem>
     private TimelinePagedItemListLoader createTimelineLoader()
     {
         TimelinePagedItemListLoader timelineLoader = new TimelinePagedItemListLoader(getActivity());
+        timelineLoader.setItemsPerPage(42);
         timelineLoader.setOwnerId(profile.id);
         return timelineLoader;
     }

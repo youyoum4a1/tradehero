@@ -36,7 +36,7 @@ public class TimelinePagedItemListLoader extends PagedItemListLoader<TimelineIte
         if (maxItemId != null) {
             --maxItemId;
         }
-        TimelineDTO timelineDTO = NetworkEngine.createService(UserTimelineService.class).getTimeline(ownerId, maxItemId, minItemId, 2);
+        TimelineDTO timelineDTO = NetworkEngine.createService(UserTimelineService.class).getTimeline(ownerId, maxItemId, minItemId, itemsPerPage);
 
         TimelineItemBuilder timelineBuilder = new TimelineItemBuilder(timelineDTO);
         return timelineBuilder.getItems();

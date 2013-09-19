@@ -21,9 +21,10 @@ import com.tradehero.th.widget.timeline.TimelineItemView;
 import java.util.List;
 
 public class TimelineAdapter extends DTOAdapter<TimelineItem, TimelineItemView>
-        implements PullToRefreshListView.OnRefreshListener<ListView>, AbsListView.OnScrollListener
+        implements PullToRefreshListView.OnRefreshListener<ListView>, AbsListView.OnScrollListener, PullToRefreshBase.OnLastItemVisibleListener
 {
     private TimelinePagedItemListLoader loader;
+    private int currentScrollState;
 
     public TimelineAdapter(Context context, LayoutInflater inflater, int layoutResourceId)
     {
@@ -61,17 +62,22 @@ public class TimelineAdapter extends DTOAdapter<TimelineItem, TimelineItemView>
 
     @Override public void onScrollStateChanged(AbsListView absListView, int scrollState)
     {
-        // do nothing fow now
+        currentScrollState = scrollState;
     }
 
     @Override public void onScroll(AbsListView absListView, int firstVisibleItem, int visibleItemCount, int totalItemCount)
     {
         if (getCount() > 0 && loader != null)
         {
-            loader.setFirstVisibleItem((TimelineItem) getItem(firstVisibleItem));
-
             int lastItemId = firstVisibleItem + visibleItemCount > getCount() ? getCount() - 1 : firstVisibleItem + visibleItemCount - 1;
+            loader.setFirstVisibleItem((TimelineItem) getItem(firstVisibleItem));
             loader.setLastVisibleItem((TimelineItem) getItem(lastItemId));
         }
+    }
+
+    @Override public void onLastItemVisible()
+    {
+        // TODO not to refresh too frequent
+        loader.loadPreviousPage();
     }
 }
