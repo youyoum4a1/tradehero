@@ -5,12 +5,15 @@ import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.widget.TextView;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 /** Created with IntelliJ IDEA. User: tho Date: 9/17/13 Time: 11:30 AM Copyright (c) TradeHero */
 public class RichTextCreator
 {
+    private static Map<String, Spanned> cachedTexts = new HashMap<>();
     private String originalText;
     private SpannableStringBuilder richText;
     private List<RichTextProcessor> processors;
@@ -82,12 +85,32 @@ public class RichTextCreator
 
     public Spanned create()
     {
+        String cachedKey = getCachedText();
+        Spanned cachedText = cachedTexts.get(cachedKey);
+
+        if (cachedText != null)
+        {
+            return cachedText;
+        }
+
         for (RichTextProcessor processor: processors)
         {
             richText = processor.process(richText);
         }
 
+        cachedTexts.put(cachedKey, richText);
         return richText;
+    }
+
+    private String getCachedText()
+    {
+        StringBuilder cachedKey = new StringBuilder();
+        cachedKey.append(richText);
+        for (RichTextProcessor processor: processors)
+        {
+            cachedKey.append('_').append(processor.key());
+        }
+        return cachedKey.toString();
     }
 
     public void apply(TextView textView)
