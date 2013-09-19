@@ -86,23 +86,18 @@ public class TrendingSecurityView extends FrameLayout implements DTOView<Securit
         }
         if (backgroundTransformation == null)
         {
-            backgroundTransformation = new AbstractSequentialTransformation
-            (
-                new ArrayList<Transformation>()
-                {
-                    {
-                        add(new GrayscaleTransformation());
-                        add(new GaussianTransformation());
-                        add(new RoundedCornerTransformation(25, R.color.gray_2));
-                    }
-                }
-            )
+            backgroundTransformation = new AbstractSequentialTransformation()
             {
                 @Override public String key()
                 {
-                    return "toRoundedGaussianGrayscale";
+                    return "toRoundedGaussianGrayscale11";
                 }
             };
+            ((AbstractSequentialTransformation) backgroundTransformation).add(new GrayscaleTransformation());
+            ((AbstractSequentialTransformation) backgroundTransformation).add(new GaussianTransformation());
+            ((AbstractSequentialTransformation) backgroundTransformation).add(new RoundedCornerTransformation(
+                            getResources().getDimensionPixelSize(R.dimen.trending_grid_item_corner_radius),
+                            getResources().getColor(R.color.black)));
         }
 
         if (mPicasso == null)
@@ -289,7 +284,6 @@ public class TrendingSecurityView extends FrameLayout implements DTOView<Securit
 
         if (isMyUrlOk())
         {
-
             final Callback loadIntoBg = createLogoReadyCallback();
 
             // This line forces Picasso to clear the downloads running on the bg

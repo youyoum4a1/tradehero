@@ -11,7 +11,7 @@
 
    <ImageButton
        android:id="@+id/btn_back"
-       android:layout_width="30dp"
+       android:layout_width="38dp"
        android:layout_height="match_parent"
        android:layout_alignParentLeft="true"
        android:layout_centerVertical="true"
@@ -20,14 +20,24 @@
        android:paddingLeft="5dp"
        android:paddingRight="5dp"
        android:scaleType="fitCenter"
-       android:src="@drawable/ic_indicator" />
+       android:src="@drawable/chevron_back" />
 
-   <EditText
+  <Spinner
+      android:id="@+id/spinner"
+      android:layout_height="match_parent"
+      android:layout_width="62dp"
+      android:layout_alignParentRight="true"
+      android:layout_centerVertical="true"
+      android:padding="0dp"
+      />
+
+  <EditText
         android:id="@+id/search_field"
         style="@style/TradeHero"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_toRightOf="@id/btn_back"
+        android:layout_toLeftOf="@id/spinner"
         android:background="@drawable/edit_text_holo_light"
         android:imeOptions="actionSearch"
         android:inputType="text"
@@ -38,17 +48,5 @@
         android:textColorHint="@color/light_grey"
         />
 
-   <Spinner
-        android:id="@+id/spinner"
-        android:layout_height="match_parent"
-        android:layout_width="70dp"
-        android:layout_alignParentRight="true"
-        android:layout_marginBottom="2dp"
-        android:layout_marginLeft="2dp"
-        android:layout_toRightOf="@id/search_field"
-        android:paddingRight="0dp"
-        android:padding="0dp"
-        android:minHeight="50dp"
-        />
 
 </RelativeLayout>

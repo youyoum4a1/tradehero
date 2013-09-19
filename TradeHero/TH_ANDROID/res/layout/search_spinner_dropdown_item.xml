@@ -3,30 +3,33 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_width="wrap_content"
+    android:layout_height="300dp"
     android:background="@color/actionbar_gradient2"
-
+    android:padding="10dp"
     >
-
-  <ImageView
-      android:id="@+id/search_spinner_item_icon"
-      android:layout_height="58dp"
-      android:layout_width="72dp"
-      android:layout_alignParentLeft="true"
-      android:layout_alignParentTop="true"
-      android:src="@drawable/toggle_stocks"
-      android:contentDescription="Icon hint of the text"
-      />
 
   <TextView
       android:id="@+id/search_spinner_item_label"
       android:layout_height="wrap_content"
       android:layout_width="wrap_content"
       android:layout_alignParentRight="true"
-      android:layout_alignBaseline="@id/search_spinner_item_icon"
-      android:layout_toRightOf="@id/search_spinner_item_icon"
-      android:textSize="30dp"
+      android:layout_alignParentBottom="true"
+      android:layout_marginLeft="10dp"
+      android:textSize="20dp"
       android:textColor="@color/white"
       />
+
+  <ImageView
+      android:id="@+id/search_spinner_item_icon"
+      android:layout_height="match_parent"
+      android:layout_width="wrap_content"
+      android:layout_alignParentLeft="true"
+      android:layout_alignParentTop="true"
+      android:layout_toLeftOf="@id/search_spinner_item_label"
+      android:layout_alignBottom="@id/search_spinner_item_label"
+      android:src="@drawable/toggle_stocks"
+      android:contentDescription="Icon hint of the text"
+      />
+
 </RelativeLayout>

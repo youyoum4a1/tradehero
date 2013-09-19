@@ -60,6 +60,7 @@ public class SearchStockPeopleFragment extends SherlockFragment implements Adapt
 
     private CharSequence[] dropDownTexts;
     private Drawable[] dropDownIcons;
+    private Drawable[] spinnerIcons;
     private View actionBar;
     private ImageButton mBackBtn;
     private BackRequestedListener backRequestedListener;
@@ -93,10 +94,12 @@ public class SearchStockPeopleFragment extends SherlockFragment implements Adapt
         {
             dropDownTexts = new CharSequence[TrendingSearchType.values().length];
             dropDownIcons = new Drawable[TrendingSearchType.values().length];
+            spinnerIcons = new Drawable[TrendingSearchType.values().length];
             for(TrendingSearchType searchType: TrendingSearchType.values())
             {
                 dropDownTexts[searchType.getValue()] = activity.getResources().getString(TrendingSearchType.getStringResourceId(searchType));
-                dropDownIcons[searchType.getValue()] = activity.getResources().getDrawable(TrendingSearchType.getDrawableResourceId(searchType));
+                dropDownIcons[searchType.getValue()] = activity.getResources().getDrawable(TrendingSearchType.getDropDownDrawableResourceId(searchType));
+                spinnerIcons[searchType.getValue()] = activity.getResources().getDrawable(TrendingSearchType.getDrawableResourceId(searchType));
             }
         }
 
@@ -180,7 +183,9 @@ public class SearchStockPeopleFragment extends SherlockFragment implements Adapt
                     R.layout.search_spinner_item,
                     R.id.search_spinner_item_label,
                     R.id.search_spinner_item_icon,
+                    R.id.search_spinner_item_icon,
                     dropDownTexts,
+                    spinnerIcons,
                     dropDownIcons);
         }
         mSearchTypeSpinnerAdapter.setDropDownViewResource(R.layout.search_spinner_dropdown_item);

@@ -12,4 +12,8 @@
   <dimen name="dashboard_padding">8dip</dimen>
   <dimen name="home_screen_list_item_padding">5dip</dimen>
 
+  <!-- Trending screen -->
+  <dimen name="trending_grid_item_corner_radius">8dp</dimen>
+  <dimen name="trending_people_search_image_size">60dp</dimen>
+
 </resources>
