@@ -88,7 +88,7 @@ public class TrendingUserView extends FrameLayout implements DTOView<UserSearchR
 
             mPicasso = new Picasso.Builder(getContext())
                     .downloader(new UrlConnectionDownloader(getContext()))
-                    //.memoryCache(lruFileCache)
+                    .memoryCache(lruFileCache)
                     .build();
             mPicasso.setDebugging(true);
         }
@@ -103,7 +103,7 @@ public class TrendingUserView extends FrameLayout implements DTOView<UserSearchR
             {
                 @Override public String key()
                 {
-                    return "toRoundedGaussianGrayscale1";
+                    return "toRoundedGaussianGrayscale2";
                 }
             };
             ((AbstractSequentialTransformation) backgroundTransformation).add(new GrayscaleTransformation());
