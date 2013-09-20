@@ -8,7 +8,7 @@ import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.tradehero.th.R;
 import com.tradehero.th.base.Application;
 import com.tradehero.th.fragments.CommunityScreenFragment;
-import com.tradehero.th.fragments.ProfileFragment;
+import com.tradehero.th.fragments.MeTimelineFragment;
 import com.tradehero.th.fragments.PortfolioScreenFragment;
 import com.tradehero.th.fragments.StoreScreenFragment;
 import com.tradehero.th.fragments.trending.TrendingContainerFragment;
@@ -43,7 +43,7 @@ public class DashboardActivity extends SherlockFragmentActivity
 
         addNewTab(getString(R.string.trending), R.drawable.trending_selector, TrendingContainerFragment.class);
         addNewTab(getString(R.string.community), R.drawable.community_selector, CommunityScreenFragment.class);
-        addNewTab(getString(R.string.home), R.drawable.home_selector, ProfileFragment.class);
+        addNewTab(getString(R.string.home), R.drawable.home_selector, MeTimelineFragment.class);
         addNewTab(getString(R.string.portfolio), R.drawable.pofilio_selector, PortfolioScreenFragment.class);
         addNewTab(getString(R.string.store), R.drawable.store_selector, StoreScreenFragment.class);
 
