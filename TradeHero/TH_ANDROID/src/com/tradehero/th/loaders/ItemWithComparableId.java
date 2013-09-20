@@ -1,18 +1,9 @@
 package com.tradehero.th.loaders;
 
-/** Created with IntelliJ IDEA. User: tho Date: 9/13/13 Time: 3:19 PM Copyright (c) TradeHero */
-public abstract class ItemWithComparableId<T extends Comparable<T>> implements Comparable<ItemWithComparableId<T>>
+/** Created with IntelliJ IDEA. User: xavier Date: 9/20/13 Time: 1:01 PM To change this template use File | Settings | File Templates. */
+public interface ItemWithComparableId<T extends Comparable<T>> extends Comparable<ItemWithComparableId<T>>
 {
-    public abstract T getId();
-
-    public abstract void setId(T id);
-
-    @Override public int compareTo(ItemWithComparableId<T> o)
-    {
-        if (getId() == null)
-        {
-            throw new IllegalArgumentException("Item id is not set");
-        }
-        return getId().compareTo(o.getId());
-    }
+    T getId();
+    void setId(T id);
+    int compareTo(ItemWithComparableId<T> o);
 }

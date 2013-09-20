@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.AbsListView;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.tradehero.th.R;
+import com.tradehero.th.loaders.AbstractItemWithComparableId;
 import com.tradehero.th.loaders.ItemWithComparableId;
 import java.util.List;
 

@@ -1,24 +1,15 @@
 package com.tradehero.th.adapters;
 
 import android.content.Context;
-import android.support.v4.content.Loader;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AbsListView;
-import android.widget.HeaderViewListAdapter;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
-import com.tradehero.common.utils.THLog;
-import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.local.TimelineItem;
-import com.tradehero.th.api.local.TimelineItemBuilder;
-import com.tradehero.th.api.timeline.TimelineDTO;
-import com.tradehero.th.loaders.ItemWithComparableId;
 import com.tradehero.th.loaders.TimelinePagedItemListLoader;
 import com.tradehero.th.widget.timeline.TimelineItemView;
-import java.util.List;
 
 public class TimelineAdapter extends DTOAdapter<TimelineItem, TimelineItemView>
         implements PullToRefreshListView.OnRefreshListener<ListView>, AbsListView.OnScrollListener, PullToRefreshBase.OnLastItemVisibleListener

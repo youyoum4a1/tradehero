@@ -8,6 +8,7 @@ import android.widget.ListView;
 import com.actionbarsherlock.app.SherlockFragment;
 import com.tradehero.th.adapters.DTOAdapter;
 import com.tradehero.th.api.DTOView;
+import com.tradehero.th.loaders.AbstractItemWithComparableId;
 import com.tradehero.th.loaders.ItemWithComparableId;
 import java.util.List;
 

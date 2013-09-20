@@ -3,12 +3,12 @@ package com.tradehero.th.api.local;
 import com.tradehero.th.api.misc.MediaDTO;
 import com.tradehero.th.api.timeline.TimelineItemDTOEnhanced;
 import com.tradehero.th.api.users.UserProfileCompactDTO;
-import com.tradehero.th.loaders.ItemWithComparableId;
+import com.tradehero.th.loaders.AbstractItemWithComparableId;
 import java.util.Date;
 import java.util.List;
 
 /** Created with IntelliJ IDEA. User: tho Date: 9/10/13 Time: 11:31 AM Copyright (c) TradeHero */
-public class TimelineItem extends ItemWithComparableId<Integer>
+public class TimelineItem extends AbstractItemWithComparableId<Integer>
 {
     private int timelineItemId;
     private UserProfileCompactDTO user;
