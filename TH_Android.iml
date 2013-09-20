@@ -20,8 +20,9 @@
     <output url="file://$MODULE_DIR$/TradeHero/TH_ANDROID/target/classes" />
     <output-test url="file://$MODULE_DIR$/TradeHero/TH_ANDROID/target/test-classes" />
     <content url="file://$MODULE_DIR$/TradeHero/TH_ANDROID">
-      <sourceFolder url="file://$MODULE_DIR$/TradeHero/TH_ANDROID/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/TradeHero/TH_ANDROID/gen" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/TradeHero/TH_ANDROID/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/TradeHero/TH_ANDROID/src/test/java" isTestSource="true" />
       <excludeFolder url="file://$MODULE_DIR$/TradeHero/TH_ANDROID/target" />
     </content>
     <orderEntry type="jdk" jdkName="Android 4.2.2 Google APIs" jdkType="Android SDK" />
