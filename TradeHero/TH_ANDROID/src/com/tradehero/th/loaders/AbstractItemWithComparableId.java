@@ -7,12 +7,12 @@ public abstract class AbstractItemWithComparableId<T extends Comparable<T>> impl
 
     public abstract void setId(T id);
 
-    @Override public int compareTo(ItemWithComparableId<T> o)
+    @Override public int compareTo(ItemWithComparableId<T> other)
     {
         if (getId() == null)
         {
             throw new IllegalArgumentException("Item id is not set");
         }
-        return getId().compareTo(o.getId());
+        return getId().compareTo(other.getId());
     }
 }

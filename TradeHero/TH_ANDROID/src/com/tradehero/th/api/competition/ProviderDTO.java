@@ -40,6 +40,9 @@ public class ProviderDTO
     public Date tradeRestrictionEndHourUtc;
     public String appiTunesUrl;
     public String iosAppSecurityPageUrlTemplate;
+    public String helpVideoText;
+    public String ruleText;
+    public boolean hasHelpVideo;
 
     public PortfolioCompactDTO associatedPortfolio;
 }

@@ -1,9 +1,10 @@
     package com.tradehero.th.api.security;
 
+import com.tradehero.th.loaders.ItemWithComparableId;
 import java.util.Date;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 9/4/13 Time: 5:30 PM To change this template use File | Settings | File Templates. */
-public class SecurityCompactDTO
+public class SecurityCompactDTO implements ItemWithComparableId<Integer>
 {
     public static final String EXCHANGE_SYMBOL_FOMAT = "%s:%s";
 
@@ -54,6 +55,25 @@ public class SecurityCompactDTO
 
     public SecurityCompactDTO()
     {
+    }
+
+    @Override public Integer getId()
+    {
+        return id;
+    }
+
+    @Override public void setId(Integer id)
+    {
+        this.id = id;
+    }
+
+    @Override public int compareTo(ItemWithComparableId<Integer> other)
+    {
+        if (getId() == null)
+        {
+            throw new IllegalArgumentException("Item id is not set");
+        }
+        return getId().compareTo(other.getId());
     }
 
     public String getExchangeSymbol()

@@ -5,5 +5,5 @@ public interface ItemWithComparableId<T extends Comparable<T>> extends Comparabl
 {
     T getId();
     void setId(T id);
-    int compareTo(ItemWithComparableId<T> o);
+    int compareTo(ItemWithComparableId<T> other);
 }
