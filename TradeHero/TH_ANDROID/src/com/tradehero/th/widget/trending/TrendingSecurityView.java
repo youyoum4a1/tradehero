@@ -32,7 +32,6 @@ import java.util.concurrent.Future;
 /** Created with IntelliJ IDEA. User: xavier Date: 9/5/13 Time: 5:19 PM To change this template use File | Settings | File Templates. */
 public class TrendingSecurityView extends FrameLayout implements DTOView<SecurityCompactDTO>
 {
-    public static final int DEFAULT_CONCURRENT_DOWNLOAD = 3;
     private static final String TAG = TrendingSecurityView.class.getSimpleName();
     private static Transformation foregroundTransformation;
     private static Transformation backgroundTransformation;
@@ -124,7 +123,7 @@ public class TrendingSecurityView extends FrameLayout implements DTOView<Securit
         profitIndicator = (TextView) findViewById(R.id.profit_indicator);
         currencyDisplay = (TextView) findViewById(R.id.currency_display);
         lastPrice = (TextView) findViewById(R.id.last_price);
-        //marketCloseIcon = (ImageView) findViewById(R.id.ic_market_close);
+        marketCloseIcon = (ImageView) findViewById(R.id.ic_market_close);
         stockLogo = (ImageUrlView) findViewById(R.id.stock_logo);
         stockLogo.softId = "logo";
         stockBgLogo = (ImageUrlView) findViewById(R.id.stock_bg_logo);
@@ -163,9 +162,12 @@ public class TrendingSecurityView extends FrameLayout implements DTOView<Securit
 
     public boolean isMyUrlOk()
     {
-        return (securityCompactDTO != null) &&
-                (securityCompactDTO.imageBlobUrl != null) && // Yes, some urls can be null
-                (securityCompactDTO.imageBlobUrl.length() > 0);
+        return (securityCompactDTO != null) && isUrlOk(securityCompactDTO.imageBlobUrl);
+    }
+
+    public static boolean isUrlOk(String url)
+    {
+        return (url != null) && (url.length() > 0);
     }
 
     public void display (final SecurityCompactDTO trend)
@@ -208,20 +210,25 @@ public class TrendingSecurityView extends FrameLayout implements DTOView<Securit
         }
 
         profitIndicator.setTextColor(TrendUtils.colorForPercentage(trend.pc50DMA));
+        exchangeSymbol.setTextColor(getResources().getColor(R.color.exchange_symbol));
 
         if(trend.marketOpen)
         {
-            //marketCloseIcon.setVisibility(View.GONE);
-            exchangeSymbol.setTextColor(getContext().getResources().getColor(R.color.exchange_symbol));
-            currencyDisplay.setTextColor(getContext().getResources().getColor(R.color.exchange_symbol));
-            lastPrice.setTextColor(getContext().getResources().getColor(R.color.exchange_symbol));
+            if (marketCloseIcon != null)
+            {
+                marketCloseIcon.setVisibility(View.GONE);
+            }
+            currencyDisplay.setTextColor(getResources().getColor(R.color.exchange_symbol));
+            lastPrice.setTextColor(getResources().getColor(R.color.exchange_symbol));
         }
         else
         {
-            //marketCloseIcon.setVisibility(View.VISIBLE);
-            exchangeSymbol.setTextColor(getContext().getResources().getColor(android.R.color.darker_gray));
-            currencyDisplay.setTextColor(getContext().getResources().getColor(android.R.color.darker_gray));
-            lastPrice.setTextColor(getContext().getResources().getColor(android.R.color.darker_gray));
+            if (marketCloseIcon != null)
+            {
+                marketCloseIcon.setVisibility(View.VISIBLE);
+            }
+            currencyDisplay.setTextColor(getResources().getColor(android.R.color.darker_gray));
+            lastPrice.setTextColor(getResources().getColor(android.R.color.darker_gray));
         }
 
         if (date != null)
@@ -250,7 +257,6 @@ public class TrendingSecurityView extends FrameLayout implements DTOView<Securit
         }
 
         //stockBgLogo.setAlpha(26); //15% opaque
-        final View finalisedConvertView = this;
 
         if (mAttachedToWindow)
         {
@@ -282,9 +288,10 @@ public class TrendingSecurityView extends FrameLayout implements DTOView<Securit
             stockBgLogo.setUrl(this.securityCompactDTO.imageBlobUrl);
         }
 
+        final Callback loadIntoBg = createLogoReadyCallback();
+
         if (isMyUrlOk())
         {
-            final Callback loadIntoBg = createLogoReadyCallback();
 
             // This line forces Picasso to clear the downloads running on the bg
             mPicasso.load((String) null)
@@ -321,14 +328,25 @@ public class TrendingSecurityView extends FrameLayout implements DTOView<Securit
         else
         {
             // These ensure that views with a missing image do not receive images from elsewhere
-            mPicasso.load((String) null)
-                .placeholder(R.drawable.default_image)
-                .error(R.drawable.default_image)
-                .into(stockBgLogo);
-            mPicasso.load((String) null)
-                .placeholder(R.drawable.default_image)
-                .error(R.drawable.default_image)
-                .into(stockLogo);
+            if (stockLogo != null && countryLogo == null && this.securityCompactDTO != null)
+            {
+                stockLogo.setImageResource(this.securityCompactDTO.getExchangeLogoId());
+            }
+            else if (stockLogo != null)
+            {
+                mPicasso.load((String) null)
+                        .placeholder(R.drawable.default_image)
+                        .error(R.drawable.default_image)
+                        .into(stockLogo);
+            }
+
+            post(new Runnable()
+            {
+                @Override public void run()
+                {
+                    loadIntoBg.onSuccess();
+                }
+            });
         }
     }
 
@@ -348,12 +366,20 @@ public class TrendingSecurityView extends FrameLayout implements DTOView<Securit
 
             public void loadBg ()
             {
-                if (stockBgLogo != null)
+                if (stockBgLogo != null && TrendingSecurityView.isUrlOk(stockBgLogo.getUrl()))
                 {
                     THLog.i(TAG, "Loading Bg for " + stockBgLogo.getUrl());
                     mPicasso.load(stockBgLogo.getUrl())
                             .placeholder(R.drawable.default_image)
                             .error(R.drawable.default_image)
+                            .resize(getWidth(), getHeight())
+                            .centerCrop()
+                            .transform(backgroundTransformation)
+                            .into(stockBgLogo);
+                }
+                else if (stockBgLogo != null && securityCompactDTO != null)
+                {
+                    mPicasso.load(securityCompactDTO.getExchangeLogoId())
                             .resize(getWidth(), getHeight())
                             .centerCrop()
                             .transform(backgroundTransformation)
