@@ -112,6 +112,29 @@
       <artifactId>disklrucache</artifactId>
       <version>2.0.2</version>
     </dependency>
+
+    <dependency>
+      <groupId>com.google.android</groupId>
+      <artifactId>android</artifactId>
+      <!--version>2.2.1</version-->
+      <version>4.1.1.4</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <!-- Make sure this is below the android dependencies -->
+    <dependency>
+      <groupId>org.robolectric</groupId>
+      <artifactId>robolectric</artifactId>
+      <version>2.1.1</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.8.2</version>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <build>
@@ -151,6 +174,20 @@
         <configuration>
           <autoVersionSubmodules>true</autoVersionSubmodules>
         </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>com.jayway.maven.plugins.android.generation2</groupId>
+        <artifactId>android-maven-plugin</artifactId>
+        <version>3.5.0</version>
+        <configuration>
+          <sdk>
+            <!-- platform or api level (api level 16 = platform 4.1)-->
+            <platform>16</platform>
+          </sdk>
+          <undeployBeforeDeploy>true</undeployBeforeDeploy>
+        </configuration>
+        <extensions>true</extensions>
       </plugin>
     </plugins>
   </build>
