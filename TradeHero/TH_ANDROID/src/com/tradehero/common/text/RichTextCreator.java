@@ -126,7 +126,7 @@ public class RichTextCreator
 
     public void apply(TextView textView)
     {
-        Spanned richText= create();
+        Spanned richText = create();
         textView.setText(richText);
     }
 }

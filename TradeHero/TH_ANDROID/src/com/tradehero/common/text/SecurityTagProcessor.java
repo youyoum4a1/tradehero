@@ -15,7 +15,7 @@ public class SecurityTagProcessor extends ClickableTagProcessor
 
     @Override public String getExtractionPattern()
     {
-        return "#$1:$2";
+        return "$1:$2";
     }
 
     @Override public String key()

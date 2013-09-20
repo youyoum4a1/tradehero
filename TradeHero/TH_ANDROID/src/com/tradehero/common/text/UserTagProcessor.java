@@ -15,7 +15,7 @@ public class UserTagProcessor extends ClickableTagProcessor
 
     @Override public String getExtractionPattern()
     {
-        return "@$1";
+        return "$1";
     }
 
     @Override public String key()

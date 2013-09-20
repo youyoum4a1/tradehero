@@ -3,18 +3,19 @@ package com.tradehero.common.text;
 import android.text.TextPaint;
 import android.text.style.ClickableSpan;
 import android.view.View;
-import com.tradehero.common.utils.THLog;
 
 /** Created with IntelliJ IDEA. User: tho Date: 9/18/13 Time: 11:44 AM Copyright (c) TradeHero */
 public abstract class ClickableTagProcessor extends RichSpanTextProcessor
 {
-    @Override protected Object getSpanElement(String replacement)
+    @Override protected Object getSpanElement(final String replacement)
     {
-        return new ClickableSpan()
+        ClickableSpan spanElement = new ClickableSpan()
         {
             @Override public void onClick(View view)
             {
-                THLog.d("working", view.getId() + " is clicked");
+                if (view instanceof OnElementClickListener) {
+                    ((OnElementClickListener) view).onClick(view, replacement, key());
+                }
             }
 
             @Override public void updateDrawState(TextPaint ds)
@@ -23,5 +24,6 @@ public abstract class ClickableTagProcessor extends RichSpanTextProcessor
                 ds.setUnderlineText(false);
             }
         };
+        return spanElement;
     }
 }
