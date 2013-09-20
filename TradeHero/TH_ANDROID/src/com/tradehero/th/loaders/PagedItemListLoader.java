@@ -41,7 +41,8 @@ public abstract class PagedItemListLoader<D extends ItemWithComparableId> extend
 
     public void loadNextPage()
     {
-        if (currentLoadMode != LoadMode.IDLE) {
+        if (currentLoadMode != LoadMode.IDLE)
+        {
             onBusy();
             return;
         }
@@ -64,7 +65,8 @@ public abstract class PagedItemListLoader<D extends ItemWithComparableId> extend
 
     public void loadPreviousPage()
     {
-        if (currentLoadMode != LoadMode.IDLE) {
+        if (currentLoadMode != LoadMode.IDLE)
+        {
             onBusy();
             return;
         }
@@ -72,7 +74,7 @@ public abstract class PagedItemListLoader<D extends ItemWithComparableId> extend
 
         if (getLastVisibleItem() == null || getLastVisibleItem().compareTo(getLastItem()) > 0)
         {
-            // do nothing if next page is already loaded
+            // do nothing if previous page is already loaded
             return;
         }
 
@@ -86,7 +88,7 @@ public abstract class PagedItemListLoader<D extends ItemWithComparableId> extend
         return items == null || items.isEmpty();
     }
 
-    private Object getFirstItem()
+    private D getFirstItem()
     {
         if (isEmpty())
         {
@@ -165,7 +167,6 @@ public abstract class PagedItemListLoader<D extends ItemWithComparableId> extend
     {
         onStopLoading();
         releaseResources(items);
-        items = null;
     }
 
     public D getLastVisibleItem()
