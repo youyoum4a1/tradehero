@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.tradehero.th.widget.trending.TrendingSecurityView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res/com.tradehero.th"
     android:layout_width="match_parent"
     android:layout_height="90dp"
     android:background="@drawable/trending_grid_item_bg"
@@ -10,8 +11,8 @@
         android:id="@+id/stock_bg_logo"
         android:layout_width="match_parent"
         android:layout_height="90dp"
-        android:scaleType="centerCrop"
         android:contentDescription="background logo"
+        android:scaleType="centerCrop"
         android:src="@drawable/default_image"
         android:alpha="0.2"
         />
@@ -23,8 +24,8 @@
 
         <com.tradehero.common.widget.ImageUrlView
             android:id="@+id/country_logo"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:layout_centerVertical="true"
             android:layout_marginRight="10dp"
             android:adjustViewBounds="true"
@@ -94,7 +95,18 @@
                 android:gravity="right"
                 android:orientation="horizontal" >
 
-                <TextView
+              <ImageView
+                  android:id="@+id/ic_market_close"
+                  android:layout_width="12dp"
+                  android:layout_height="12dp"
+                  android:layout_marginLeft="5dp"
+                  android:layout_marginRight="5dp"
+                  android:contentDescription="@null"
+                  android:scaleType="centerInside"
+                  android:src="@drawable/market_sleep_small"
+                  />
+
+              <TextView
                     android:id="@+id/profit_indicator"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

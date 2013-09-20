@@ -60,6 +60,7 @@ public class SearchStockPeopleFragment extends SherlockFragment implements Adapt
 
     private CharSequence[] dropDownTexts;
     private Drawable[] dropDownIcons;
+    private Drawable[] spinnerIcons;
     private View actionBar;
     private ImageButton mBackBtn;
     private BackRequestedListener backRequestedListener;
@@ -93,10 +94,12 @@ public class SearchStockPeopleFragment extends SherlockFragment implements Adapt
         {
             dropDownTexts = new CharSequence[TrendingSearchType.values().length];
             dropDownIcons = new Drawable[TrendingSearchType.values().length];
+            spinnerIcons = new Drawable[TrendingSearchType.values().length];
             for(TrendingSearchType searchType: TrendingSearchType.values())
             {
                 dropDownTexts[searchType.getValue()] = activity.getResources().getString(TrendingSearchType.getStringResourceId(searchType));
-                dropDownIcons[searchType.getValue()] = activity.getResources().getDrawable(TrendingSearchType.getDrawableResourceId(searchType));
+                dropDownIcons[searchType.getValue()] = activity.getResources().getDrawable(TrendingSearchType.getDropDownDrawableResourceId(searchType));
+                spinnerIcons[searchType.getValue()] = activity.getResources().getDrawable(TrendingSearchType.getDrawableResourceId(searchType));
             }
         }
 
@@ -108,6 +111,7 @@ public class SearchStockPeopleFragment extends SherlockFragment implements Adapt
         THLog.i(TAG, "onCreateView");
         if (savedInstanceState != null)
         {
+            THLog.i(TAG, "onCreateView restoring savedInstance");
             mSearchType = TrendingSearchType.fromInt(savedInstanceState.getInt(KEY_SAVE_SEARCH_TYPE, 0));
             mSearchText = savedInstanceState.getString(KEY_SAVE_SEARCH_STRING);
             page = savedInstanceState.getInt(KEY_SAVE_PAGE, DEFAULT_PAGE);
@@ -159,7 +163,7 @@ public class SearchStockPeopleFragment extends SherlockFragment implements Adapt
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
-        THLog.i(TAG, "onCreateOptionsMenu");
+        THLog.i(TAG, "onCreateOptionsMenu mSearchType " + mSearchType + ", mSearchText " + mSearchText);
         super.onCreateOptionsMenu(menu, inflater);
         createSearchActionBar(menu, inflater);
         initialPopulateOnCreate();
@@ -180,7 +184,9 @@ public class SearchStockPeopleFragment extends SherlockFragment implements Adapt
                     R.layout.search_spinner_item,
                     R.id.search_spinner_item_label,
                     R.id.search_spinner_item_icon,
+                    R.id.search_spinner_item_icon,
                     dropDownTexts,
+                    spinnerIcons,
                     dropDownIcons);
         }
         mSearchTypeSpinnerAdapter.setDropDownViewResource(R.layout.search_spinner_dropdown_item);
@@ -213,6 +219,7 @@ public class SearchStockPeopleFragment extends SherlockFragment implements Adapt
 
     private void initialPopulateOnCreate()
     {
+        THLog.i(TAG, "initialPopulateOnCreate populatedOnCreate " + (populatedOnCreate ? "true" : "false"));
         if (populatedOnCreate)
         {
             return;
@@ -246,6 +253,7 @@ public class SearchStockPeopleFragment extends SherlockFragment implements Adapt
 
     protected void refreshListView()
     {
+        THLog.i(TAG, "refreshListView");
         if (mSearchType == null)
         {
             // Do nothing
@@ -285,11 +293,13 @@ public class SearchStockPeopleFragment extends SherlockFragment implements Adapt
 
     private void setDataAdapterToStockListView(List<SecurityCompactDTO> securityCompactDTOs)
     {
+        THLog.i(TAG, "setDataAdapterToStockListView");
         this.securityList = securityCompactDTOs;
 
         if (trendingAdapter == null && securityCompactDTOs != null)
         {
-            trendingAdapter = new TrendingAdapter(getActivity(), securityCompactDTOs, TrendingAdapter.SECURITY_SEARCH_CELL_LAYOUT);
+            // The new ArrayList ensures that we can clear the adapter without clearing this.securityList
+            trendingAdapter = new TrendingAdapter(getActivity(), new ArrayList<>(securityCompactDTOs), TrendingAdapter.SECURITY_SEARCH_CELL_LAYOUT);
         }
         else if (trendingAdapter == null && securityCompactDTOs == null)
         {
@@ -348,6 +358,7 @@ public class SearchStockPeopleFragment extends SherlockFragment implements Adapt
 
     private void updateVisibilities()
     {
+        THLog.i(TAG, "updateVisibilities");
         mProgressSpinner.setVisibility(isQuerying ? View.VISIBLE : View.INVISIBLE);
 
         if (mSearchText == null || mSearchText.length() == 0 || mSearchType == null)

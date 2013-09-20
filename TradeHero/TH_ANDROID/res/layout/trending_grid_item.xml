@@ -104,6 +104,19 @@
                 android:textStyle="bold"
                 />
         </LinearLayout>
+
+        <ImageView
+            android:id="@+id/ic_market_close"
+            android:layout_width="12dp"
+            android:layout_height="12dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginBottom="5dp"
+            android:layout_marginRight="5dp"
+            android:contentDescription="@null"
+            android:scaleType="centerInside"
+            android:src="@drawable/market_sleep_small"
+            />
     </RelativeLayout>
 
 </com.tradehero.th.widget.trending.TrendingSecurityView>

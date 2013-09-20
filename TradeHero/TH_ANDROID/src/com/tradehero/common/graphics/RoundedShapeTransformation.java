@@ -13,8 +13,10 @@ public class RoundedShapeTransformation implements com.squareup.picasso.Transfor
 {
     @Override public Bitmap transform(Bitmap scaleBitmapImage)
     {
-        int targetWidth = scaleBitmapImage.getWidth();
-        int targetHeight = scaleBitmapImage.getHeight();
+        int targetWidth = Math.min(scaleBitmapImage.getWidth(), scaleBitmapImage.getHeight());
+        int targetHeight = targetWidth;
+        //int targetWidth = scaleBitmapImage.getWidth();
+        //int targetHeight = scaleBitmapImage.getHeight();
 
         Bitmap targetBitmap = Bitmap.createBitmap(targetWidth, targetHeight,
                 Bitmap.Config.ARGB_8888);
@@ -39,7 +41,9 @@ public class RoundedShapeTransformation implements com.squareup.picasso.Transfor
         canvas.drawBitmap(scaleBitmapImage, new Rect(0, 0, scaleBitmapImage.getWidth(),
                 scaleBitmapImage.getHeight()), new RectF(0, 0, targetWidth,
                 targetHeight), paint);
-        if (targetBitmap != scaleBitmapImage) {
+
+        if (targetBitmap != scaleBitmapImage)
+        {
             scaleBitmapImage.recycle();
         }
         return targetBitmap;

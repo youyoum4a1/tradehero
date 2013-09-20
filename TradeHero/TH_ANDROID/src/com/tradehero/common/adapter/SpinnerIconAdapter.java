@@ -17,60 +17,77 @@ public class SpinnerIconAdapter extends ArrayAdapter<CharSequence>
 {
     private int textViewResourceId;
     private int iconViewResourceId;
+    private int iconDropDownResourceId;
     private Drawable[] icons;
+    private Drawable[] dropDownIcons;
 
     //<editor-fold desc="Constructors">
-    public SpinnerIconAdapter(Context context, int resource, int textViewResourceId, int iconViewResourceId)
+    public SpinnerIconAdapter(Context context, int resource, int textViewResourceId, int iconViewResourceId, int iconDropDownResourceId)
     {
         super(context, resource, textViewResourceId);
         this.textViewResourceId = textViewResourceId;
         this.iconViewResourceId = iconViewResourceId;
+        this.iconDropDownResourceId = iconDropDownResourceId;
     }
 
-    public SpinnerIconAdapter(Context context, int resource, int textViewResourceId, int iconViewResourceId, List<CharSequence> objects,
+    public SpinnerIconAdapter(Context context, int resource, int textViewResourceId, int iconViewResourceId, int iconDropDownResourceId, List<CharSequence> objects,
             Drawable[] icons)
     {
         super(context, resource, textViewResourceId, objects);
         this.textViewResourceId = textViewResourceId;
         this.iconViewResourceId = iconViewResourceId;
+        this.iconDropDownResourceId = iconDropDownResourceId;
         this.icons = icons;
+        this.dropDownIcons = dropDownIcons;
     }
 
-    public SpinnerIconAdapter(Context context, int resource, int textViewResourceId, int iconViewResourceId, CharSequence[] objects, Drawable[] icons)
+    public SpinnerIconAdapter(Context context, int resource, int textViewResourceId, int iconViewResourceId, int iconDropDownResourceId, CharSequence[] objects, Drawable[] icons, Drawable[] dropDownIcons)
     {
         super(context, resource, textViewResourceId, objects);
         this.textViewResourceId = textViewResourceId;
         this.iconViewResourceId = iconViewResourceId;
+        this.iconDropDownResourceId = iconDropDownResourceId;
         this.icons = icons;
+        this.dropDownIcons = dropDownIcons;
     }
 
-    public SpinnerIconAdapter(Context context, int textViewResourceId, int iconViewResourceId)
+    public SpinnerIconAdapter(Context context, int textViewResourceId, int iconViewResourceId, int iconDropDownResourceId)
     {
         super(context, textViewResourceId);
         this.textViewResourceId = textViewResourceId;
         this.iconViewResourceId = iconViewResourceId;
+        this.iconDropDownResourceId = iconDropDownResourceId;
     }
 
-    public SpinnerIconAdapter(Context context, int textViewResourceId, int iconViewResourceId, List<CharSequence> objects, Drawable[] icons)
+    public SpinnerIconAdapter(Context context, int textViewResourceId, int iconViewResourceId, int iconDropDownResourceId, List<CharSequence> objects, Drawable[] icons, Drawable[] dropDownIcons)
     {
         super(context, textViewResourceId, objects);
         this.textViewResourceId = textViewResourceId;
         this.iconViewResourceId = iconViewResourceId;
+        this.iconDropDownResourceId = iconDropDownResourceId;
         this.icons = icons;
+        this.dropDownIcons = dropDownIcons;
     }
 
-    public SpinnerIconAdapter(Context context, int textViewResourceId, int iconViewResourceId, CharSequence[] objects, Drawable[] icons)
+    public SpinnerIconAdapter(Context context, int textViewResourceId, int iconViewResourceId, int iconDropDownResourceId, CharSequence[] objects, Drawable[] icons, Drawable[] dropDownIcons)
     {
         super(context, textViewResourceId, objects);
         this.textViewResourceId = textViewResourceId;
         this.iconViewResourceId = iconViewResourceId;
+        this.iconDropDownResourceId = iconDropDownResourceId;
         this.icons = icons;
+        this.dropDownIcons = dropDownIcons;
     }
     //</editor-fold>
 
     public Drawable getIcon(int position)
     {
         return icons[position];
+    }
+
+    public Drawable getDropDownIcon(int position)
+    {
+        return dropDownIcons[position];
     }
 
     @Override public View getView(int position, View convertView, ViewGroup parent)
@@ -94,7 +111,7 @@ public class SpinnerIconAdapter extends ArrayAdapter<CharSequence>
         }
 
         updateText(convertView, position);
-        updateIcon(convertView, position);
+        updateDropDownIcon(convertView, position);
 
         return convertView;
     }
@@ -116,6 +133,18 @@ public class SpinnerIconAdapter extends ArrayAdapter<CharSequence>
             if (imageView != null)
             {
                 ((ImageView) imageView).setImageDrawable(getIcon(position));
+            }
+        }
+    }
+
+    private void updateDropDownIcon(View container, int position)
+    {
+        if (icons != null)
+        {
+            View imageView = container.findViewById(iconDropDownResourceId);
+            if (imageView != null)
+            {
+                ((ImageView) imageView).setImageDrawable(getDropDownIcon(position));
             }
         }
     }

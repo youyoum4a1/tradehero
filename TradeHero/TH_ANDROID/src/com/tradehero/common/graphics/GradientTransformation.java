@@ -30,6 +30,7 @@ public class GradientTransformation implements Transformation
         Bitmap targetBitmap = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), bitmap.getConfig());
         Canvas c = new Canvas(targetBitmap);
         c.drawBitmap(bitmap, new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight()), new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight()), paint);
+
         if (targetBitmap != bitmap)
         {
             bitmap.recycle();

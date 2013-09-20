@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal"
-    android:layout_width="match_parent"
+    android:layout_width="wrap_content"
     android:layout_height="match_parent">
 
   <ImageView
@@ -11,6 +11,7 @@
       android:layout_height="48dp"
       android:layout_width="62dp"
       android:src="@drawable/toggle_stocks"
+      android:layout_centerVertical="true"
       />
 
   <TextView
@@ -18,4 +19,4 @@
       android:layout_height="30dp"
       android:layout_width="wrap_content"
       android:visibility="gone"/>
-</LinearLayout>
+</RelativeLayout>

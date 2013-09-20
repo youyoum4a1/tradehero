@@ -1,57 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.tradehero.th.widget.trending.TrendingUserView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res/com.tradehero.th"
     android:layout_width="match_parent"
     android:layout_height="90dp"
-    android:padding="5dp" >
+    android:background="@drawable/trending_grid_item_bg"
+    >
 
     <com.tradehero.common.widget.ImageUrlView
         android:id="@+id/people_bg_image"
         android:layout_width="match_parent"
         android:layout_height="90dp"
-        android:contentDescription="@null"
-        android:scaleType="fitCenter"
-        android:src="@drawable/default_image" />
+        android:contentDescription="background person image"
+        android:scaleType="centerCrop"
+        android:src="@drawable/default_image"
+        android:alpha="0.2"
+        />
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/trending_grid_item_bg"
-        android:padding="4dp" >
+        android:padding="4dp">
 
         <ImageView
             android:id="@+id/people_logo"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="33dp"
+            android:layout_height="33dp"
             android:layout_centerVertical="true"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:adjustViewBounds="true"
             android:contentDescription="@null"
             android:scaleType="centerInside"
-            android:src="@drawable/toggle_users" />
+            android:src="@drawable/sort_community" />
 
-        <com.tradehero.th.application.CircularImageView
-            android:id="@+id/user_image"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
-            android:layout_toRightOf="@+id/people_logo"
-            android:adjustViewBounds="true"
-            android:contentDescription="@null"
-            android:scaleType="fitXY"
-            android:src="@drawable/default_image" />
+      <com.tradehero.common.widget.ImageUrlView
+          android:id="@+id/user_photo"
+          android:layout_width="@dimen/trending_people_search_image_size"
+          android:layout_height="@dimen/trending_people_search_image_size"
+          android:layout_centerVertical="true"
+          android:layout_marginLeft="5dp"
+          android:layout_marginRight="5dp"
+          android:layout_toRightOf="@id/people_logo"
+          android:adjustViewBounds="true"
+          android:contentDescription="@null"
+          android:scaleType="fitXY"
+          android:src="@drawable/avatar"/>
 
-        <LinearLayout
+      <LinearLayout
             android:id="@+id/user_details"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_alignParentRight="true"
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
-            android:layout_toRightOf="@+id/user_image"
+            android:layout_toRightOf="@id/user_photo"
             android:orientation="vertical" >
 
             <TextView

@@ -8,4 +8,5 @@ public @interface TrendingSearchTypeInfo
 {
     int stringResourceId();
     int drawableResourceId();
+    int dropDownDrawableResourceId();
 }

@@ -17,6 +17,7 @@ public class GaussianTransformation implements com.squareup.picasso.Transformati
         convMatrix.Factor = 27;
         convMatrix.Offset = 0;
         Bitmap returnBitmap = ConvolutionMatrix.computeConvolution3x3(bitmap, convMatrix);
+
         if (returnBitmap != bitmap)
         {
             bitmap.recycle();
