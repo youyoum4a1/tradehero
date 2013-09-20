@@ -4,7 +4,7 @@ import com.tradehero.th.loaders.ItemWithComparableId;
 import java.util.Date;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 9/4/13 Time: 5:30 PM To change this template use File | Settings | File Templates. */
-public class SecurityCompactDTO implements ItemWithComparableId<Integer>
+public class SecurityCompactDTO
 {
     public static final String EXCHANGE_SYMBOL_FOMAT = "%s:%s";
 
@@ -55,25 +55,44 @@ public class SecurityCompactDTO implements ItemWithComparableId<Integer>
 
     public SecurityCompactDTO()
     {
+        super();
     }
 
-    @Override public Integer getId()
+    public SecurityCompactDTO(SecurityCompactDTO other)
     {
-        return id;
-    }
-
-    @Override public void setId(Integer id)
-    {
-        this.id = id;
-    }
-
-    @Override public int compareTo(ItemWithComparableId<Integer> other)
-    {
-        if (getId() == null)
-        {
-            throw new IllegalArgumentException("Item id is not set");
-        }
-        return getId().compareTo(other.getId());
+        this.active = other.active;
+        this.askPrice = other.askPrice;
+        this.averageDailyVolume = other.averageDailyVolume;
+        this.bidPrice = other.bidPrice;
+        this.currencyDisplay = other.currencyDisplay;
+        this.currencyISO = other.currencyISO;
+        this.eps = other.eps;
+        this.exchange = other.exchange;
+        this.exchangeClosingTimeLocal = other.exchangeClosingTimeLocal;
+        this.exchangeOpeningTimeLocal = other.exchangeOpeningTimeLocal;
+        this.exchangeTimezoneMsftName = other.exchangeTimezoneMsftName;
+        this.high = other.high;
+        this.id = other.id;
+        this.imageBlobUrl = other.imageBlobUrl;
+        this.lastPrice = other.lastPrice;
+        this.lastPriceDateAndTimeUtc = other.lastPriceDateAndTimeUtc;
+        this.lastPriceDateEST = other.lastPriceDateEST;
+        this.low = other.low;
+        this.marketCap = other.marketCap;
+        this.marketOpen = other.marketOpen;
+        this.name = other.name;
+        this.open = other.open;
+        this.pc200DMA = other.pc200DMA;
+        this.pc50DMA = other.pc50DMA;
+        this.pe = other.pe;
+        this.previousClose = other.previousClose;
+        this.secTypeDesc = other.secTypeDesc;
+        this.securityType = other.securityType;
+        this.symbol = other.symbol;
+        this.toUSDRate = other.toUSDRate;
+        this.toUSDRateDate = other.toUSDRateDate;
+        this.volume = other.volume;
+        this.yahooSymbol = other.yahooSymbol;
     }
 
     public String getExchangeSymbol()
