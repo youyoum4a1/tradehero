@@ -1,0 +1,62 @@
+package com.tradehero.th.loaders;
+
+import android.content.Context;
+import com.tradehero.th.api.security.SecurityCompactDTO;
+import com.tradehero.th.network.NetworkEngine;
+import com.tradehero.th.network.service.SecurityService;
+import java.util.List;
+
+/** Created with IntelliJ IDEA. User: xavier Date: 9/20/13 Time: 1:12 PM To change this template use File | Settings | File Templates. */
+public class SearchStockPageItemListLoader extends PagedItemListLoader<ListedSecurityCompact>
+{
+    private SecurityService securityService;
+    private String searchText;
+    /**
+     * Starts at 0
+     */
+    private int page;
+
+    public SearchStockPageItemListLoader(Context context)
+    {
+        super(context);
+    }
+
+    @Override protected void onLoadPreviousPage(ListedSecurityCompact startItem)
+    {
+        page = getPageOfItem(startItem) - 1;
+        forceLoad();
+    }
+
+    @Override protected void onLoadNextPage(ListedSecurityCompact lastItem)
+    {
+        page = getPageOfItem(lastItem) + 1;
+        forceLoad();
+    }
+
+    /**
+     *
+     * @param item
+     * @return page value from 0
+     */
+    private int getPageOfItem(ListedSecurityCompact item)
+    {
+        return item.getId() / itemsPerPage;
+    }
+
+    @Override protected boolean shouldReload()
+    {
+        return true;
+        // TODO be cleverer
+    }
+
+    @Override public List<ListedSecurityCompact> loadInBackground()
+    {
+        if (securityService == null)
+        {
+            securityService = NetworkEngine.createService(SecurityService.class);
+        }
+        return ListedSecurityCompactFactory.createList(
+                securityService.searchSecurities(searchText, page, itemsPerPage),
+                page * itemsPerPage);
+    }
+}
