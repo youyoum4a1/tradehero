@@ -17,7 +17,7 @@ import com.tradehero.th.widget.timeline.TimelineListView;
 import com.tradehero.th.widget.user.ProfileView;
 import java.util.List;
 
-public class HomeScreenFragment extends ItemListFragment<TimelineItem>
+public class ProfileFragment extends ItemListFragment<TimelineItem>
 {
     private UserProfileDTO profile;
     private TimelineAdapter timelineAdapter;
