@@ -95,6 +95,11 @@ public class SecurityCompactDTO
         this.yahooSymbol = other.yahooSymbol;
     }
 
+    public int getSecurityTypeStringResourceId()
+    {
+        return SecurityType.getStringResourceId(securityType);
+    }
+
     public String getExchangeSymbol()
     {
         return String.format(EXCHANGE_SYMBOL_FOMAT, exchange, symbol);
@@ -105,8 +110,8 @@ public class SecurityCompactDTO
         return Exchange.getLogoId(exchange);
     }
 
-    public int getSecurityTypeStringResourceId()
+    public boolean isLastPriceNotNullOrZero()
     {
-        return SecurityType.getStringResourceId(securityType);
+        return !Double.isNaN(lastPrice) && !(Double.compare(lastPrice, 0.0) == 0);
     }
 }

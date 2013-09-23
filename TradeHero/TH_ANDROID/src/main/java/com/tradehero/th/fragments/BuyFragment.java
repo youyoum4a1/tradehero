@@ -6,6 +6,7 @@
  */
 package com.tradehero.th.fragments;
 
+import com.actionbarsherlock.app.SherlockFragment;
 import com.tradehero.th.base.THUser;
 import com.tradehero.th.utils.NetworkUtils;
 import com.tradehero.th.fragments.trending.TradeFragment;
@@ -38,9 +39,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 
-public class BuyFragment extends Fragment
+public class BuyFragment extends SherlockFragment
 {
-
     private final static String TAG = BuyFragment.class.getSimpleName();
 
     private final static String BP_GEO_ALT = "geo_alt";

@@ -105,6 +105,7 @@ public class TrendingSecurityView extends FrameLayout implements DTOView<Securit
             try
             {
                 lruFileCache = new LruMemFileCache(getContext());
+                THLog.i(TAG, "Memory cache size " + lruFileCache.maxSize());
             }
             catch (Exception e)
             {
@@ -112,10 +113,10 @@ public class TrendingSecurityView extends FrameLayout implements DTOView<Securit
             }
 
             mPicasso = new Picasso.Builder(getContext())
-                    .downloader(new UrlConnectionDownloader(getContext()))
+                    //.downloader(new UrlConnectionDownloader(getContext()))
                     .memoryCache(lruFileCache)
                     .build();
-            mPicasso.setDebugging(true);
+            //mPicasso.setDebugging(true);
         }
 
         stockName = (TextView) findViewById(R.id.stock_name);

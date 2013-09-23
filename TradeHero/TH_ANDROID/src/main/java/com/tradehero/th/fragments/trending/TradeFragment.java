@@ -16,25 +16,35 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
-import android.widget.TextView;
+import com.actionbarsherlock.app.SherlockFragment;
+import com.squareup.picasso.Cache;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Transformation;
+import com.squareup.picasso.UrlConnectionDownloader;
+import com.tradehero.common.cache.LruMemFileCache;
+import com.tradehero.common.graphics.WhiteToTransparentTransformation;
+import com.tradehero.common.thread.KnownExecutorServices;
+import com.tradehero.common.utils.THLog;
+import com.tradehero.common.widget.ImageUrlView;
 import com.tradehero.th.R;
-import com.tradehero.th.base.THUser;
+import com.tradehero.th.api.DTOView;
+import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.cache.ImageLoader;
 import com.tradehero.th.fragments.BuyFragment;
 import com.tradehero.th.models.Trend;
-import com.tradehero.th.utills.DateUtils;
 import com.tradehero.th.utills.Logger;
 import com.tradehero.th.utills.Logger.LogLevel;
-import com.tradehero.th.utills.YUtils;
+import com.tradehero.th.widget.trade.PricingBidAskView;
+import com.tradehero.th.widget.trade.QuickPriceButtonSet;
+import com.tradehero.th.widget.trade.TradeQuantityView;
+import java.util.concurrent.Future;
 
-public class TradeFragment extends Fragment
+public class TradeFragment extends SherlockFragment implements DTOView<SecurityCompactDTO>
 {
-
     private final static String TAG = TradeFragment.class.getSimpleName();
-
     public final static int TRANSACTION_COST = 10;
 
     public final static String BUY_DETAIL_STR = "buy_detail_str";
@@ -43,30 +53,19 @@ public class TradeFragment extends Fragment
     public final static String SYMBOL = "symbol";
     public final static String EXCHANGE = "exchange";
 
-    private ImageView mStockBgLogo;
-    private ImageView mStockLogo;
+    private ImageUrlView mStockBgLogo;
+    private ImageUrlView mStockLogo;
     private ImageView mStockChart;
 
-    private TextView tvLastPrice;
-    private TextView tvBidPrice;
-    private TextView tvAskPrice;
-    private TextView tvPriceAsOf;
-    private TextView tvCashAvailable;
-    private TextView tvQuantity;
-    private TextView tvTradeValue;
+    private PricingBidAskView mPricingBidAskView;
+    private TradeQuantityView mTradeQuantityView;
+    private QuickPriceButtonSet mQuickPriceButtonSet;
 
-    private Button mBtn5k;
-    private Button mBtn10k;
-    private Button mBtn25k;
-    private Button mBtn50k;
     private Button mBuyBtn;
-
-    private ProgressBar mProgressBar;
 
     private SeekBar mSlider;
 
-    private Trend trend;
-    private ImageLoader mImageLoader;
+    private SecurityCompactDTO securityCompactDTO;
 
     double lastPrice;
     int sliderIncrement = 0;
@@ -80,6 +79,9 @@ public class TradeFragment extends Fragment
     private double mCashAvailable = 0;
     private boolean isTransactionTypeBuy = true;
 
+    private Picasso mPicasso;
+    private Transformation foregroundTransformation;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -89,248 +91,68 @@ public class TradeFragment extends Fragment
         return view;
     }
 
-    private void initViews(View v)
+    private void initViews(View view)
     {
-        mImageLoader = new ImageLoader(getActivity());
+        mStockBgLogo = (ImageUrlView) view.findViewById(R.id.stock_bg_logo);
+        mStockLogo = (ImageUrlView) view.findViewById(R.id.stock_logo);
+        mStockChart = (ImageView) view.findViewById(R.id.stock_chart);
 
-        mStockBgLogo = (ImageView) v.findViewById(R.id.stock_bg_logo);
-        mStockLogo = (ImageView) v.findViewById(R.id.stock_logo);
-        mStockChart = (ImageView) v.findViewById(R.id.stock_chart);
+        mPricingBidAskView = (PricingBidAskView) view.findViewById(R.id.pricing_bid_ask_view);
+        mTradeQuantityView = (TradeQuantityView) view.findViewById(R.id.trade_quantity_view);
 
-        tvLastPrice = (TextView) v.findViewById(R.id.last_price);
-        tvBidPrice = (TextView) v.findViewById(R.id.bid_price);
-        tvAskPrice = (TextView) v.findViewById(R.id.ask_price);
-        tvPriceAsOf = (TextView) v.findViewById(R.id.vprice_as_of);
-        tvCashAvailable = (TextView) v.findViewById(R.id.vcash_available);
-        tvQuantity = (TextView) v.findViewById(R.id.vquantity);
-        tvTradeValue = (TextView) v.findViewById(R.id.vtrade_value);
-        mProgressBar = (ProgressBar) v.findViewById(R.id.progress);
+        mQuickPriceButtonSet = (QuickPriceButtonSet) view.findViewById(R.id.quick_price_button_set);
+        mQuickPriceButtonSet.setListener(createQuickButtonSetListener());
+        mQuickPriceButtonSet.addButton(R.id.toggle5k);
+        mQuickPriceButtonSet.addButton(R.id.toggle10k);
+        mQuickPriceButtonSet.addButton(R.id.toggle25k);
+        mQuickPriceButtonSet.addButton(R.id.toggle50k);
 
-        mBtn5k = (Button) v.findViewById(R.id.toggle5k);
-        mBtn10k = (Button) v.findViewById(R.id.toggle10k);
-        mBtn25k = (Button) v.findViewById(R.id.toggle25k);
-        mBtn50k = (Button) v.findViewById(R.id.toggle50k);
-        mBtn5k.setOnClickListener(onClickListener);
-        mBtn10k.setOnClickListener(onClickListener);
-        mBtn25k.setOnClickListener(onClickListener);
-        mBtn50k.setOnClickListener(onClickListener);
+        mSlider = (SeekBar) view.findViewById(R.id.seekBar);
+        mSlider.setOnSeekBarChangeListener(createSeekBarListener());
 
-        mSlider = (SeekBar) v.findViewById(R.id.seekBar);
-        mSlider.setOnSeekBarChangeListener(new OnSeekBarChangeListener()
+        mBuyBtn = (Button) view.findViewById(R.id.btn_buy);
+        mBuyBtn.setOnClickListener(createBuyButtonListener());
+
+        if (foregroundTransformation == null)
         {
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar)
-            {
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar)
-            {
-            }
-
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress,
-                    boolean fromUser)
-            {
-
-                //int q = progress;
-
-                if (fromUser)
-                {
-                    int q = 0;
-
-                    if (progress < seekBar.getMax())
-                    {
-                        q = progress * sliderIncrement;
-                    }
-                    else
-                    {
-                        q = mQuantity;
-                    }
-
-                    Logger.log(TAG, "Progress: " + progress, LogLevel.LOGGING_LEVEL_INFO);
-                    Logger.log(TAG, "SeeBar Max: " + seekBar.getMax(), LogLevel.LOGGING_LEVEL_INFO);
-                    Logger.log(TAG, "Qty: " + q, LogLevel.LOGGING_LEVEL_INFO);
-                    Logger.log(TAG, "sliderIncrement: " + sliderIncrement, LogLevel.LOGGING_LEVEL_INFO);
-                    //Logger.log(TAG, "SeeBar Max: "+seekBar.getMax(), LogLevel.LOGGING_LEVEL_INFO);
-
-                    updateQuantityAndTradeValue(q);
-                }
-
-                Logger.log(TAG, "Progress: " + progress, LogLevel.LOGGING_LEVEL_INFO);
-            }
-        });
-
-        //trend = ((App) getActivity().getApplication()).getTrend();
-
-        mBuyBtn = (Button) v.findViewById(R.id.btn_buy);
-        mBuyBtn.setOnClickListener(new OnClickListener()
+            foregroundTransformation = new WhiteToTransparentTransformation();
+        }
+        if (mPicasso == null)
         {
-            @Override
-            public void onClick(View v)
+            Cache lruFileCache = null;
+            try
             {
-
-                String buyDetail = String.format("Buy %s %s:%s @ %s %f\nTransaction fee: virtual US$ 10\nTotal cost: US$ %.2f",
-                        tvQuantity.getText(), trend.getExchange(), trend.getSymbol(), trend.getCurrencyDisplay(),
-                        lastPrice, getTotalCostForBuy());
-
-                Bundle b = new Bundle();
-
-                b.putString(BUY_DETAIL_STR, buyDetail);
-                b.putString(LAST_PRICE, String.valueOf(lastPrice));
-                b.putString(QUANTITY, tvQuantity.getText().toString().replace(",", ""));
-                b.putString(SYMBOL, trend.getSymbol());
-                b.putString(EXCHANGE, trend.getExchange());
-
-                Fragment newFragment = Fragment.instantiate(getActivity(), BuyFragment.class.getName(), b);
-
-                // Add the fragment to the activity, pushing this transaction
-                // on to the back stack.
-                FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-                ft.replace(R.id.realtabcontent, newFragment, "trend_buy");
-                ft.addToBackStack("trend_buy");
-                ft.commit();
+                lruFileCache = new LruMemFileCache(getActivity());
             }
-        });
+            catch (Exception e)
+            {
+                THLog.e(TAG, "Failed to create LRU", e);
+            }
 
-        if (!TextUtils.isEmpty(trend.getImageBlobUrl()))
-        {
-            //mImageLoader.getBitmapImage(trend.getImageBlobUrl(), new ImageLoadingListener()
-            //{
-            //    public void onLoadingComplete(Bitmap loadedImage)
-            //    {
-            //        final Bitmap b = ImageUtils.convertToMutableAndRemoveBackground(loadedImage, 5);
-            //        mStockLogo.setImageBitmap(b);
-            //        mStockBgLogo.setImageBitmap(b);
-            //    }
-            //});
+            mPicasso = new Picasso.Builder(getActivity())
+                    .downloader(new UrlConnectionDownloader(getActivity()))
+                    .memoryCache(lruFileCache)
+                    .build();
+            //mPicasso.setDebugging(true);
         }
 
         //mCashAvailableValue
 
-        if (!TextUtils.isEmpty(trend.getYahooSymbol()))
-        {
-            //mImageLoader.DisplayImage(String.format(Config.getTrendingChartUrl(), trend.getYahooSymbol()),
-            //        mStockChart);
-        }
-
-        lastPrice = YUtils.parseQuoteValue(trend.getLastPrice());
-        if (!Double.isNaN(lastPrice))
-        {
-            tvLastPrice.setText(String.format("%s%.2f", trend.getCurrencyDisplay(), lastPrice));
-        }
-        else
-        {
-            Logger.log(TAG, "TH: Unable to parse Last Price", LogLevel.LOGGING_LEVEL_ERROR);
-        }
-
-        double askPrice = YUtils.parseQuoteValue(trend.getAskPrice());
-        double bidPrice = YUtils.parseQuoteValue(trend.getBidPrice());
-
-        // only update ask & bid if both are present.
-        if (!Double.isNaN(askPrice) && !Double.isNaN(bidPrice))
-        {
-            tvAskPrice.setText(String.format("%.2f%s", askPrice, getString(R.string.ask_with_bracket)));
-            tvBidPrice.setText(String.format(" x %.2f%s", bidPrice, getString(R.string.bid_with_bracket)));
-            lastPrice = askPrice;
-        }
-        else
-        {
-            Logger.log(TAG, "TH: Unable to parse Ask & Bid Price", LogLevel.LOGGING_LEVEL_ERROR);
-        }
-
-        //tvQuantity.setText(String.valueOf(qty));
-
-        tvPriceAsOf.setText(DateUtils.getFormatedTrendDate(trend.getLastPriceDateAndTimeUtc()));
-
-        if (trend.getAverageDailyVolume() != null)
-        {
-            avgDailyVolume = (int) Math.ceil(Double.parseDouble(trend.getAverageDailyVolume()));
-        }
-
-        if (trend.getVolume() != null)
-        {
-            volume = (int) Math.ceil(Double.parseDouble(trend.getVolume()));
-        }
-
         enableFields(false);
+        display();
     }
 
-    private OnClickListener onClickListener = new OnClickListener()
-    {
-        @Override
-        public void onClick(View v)
-        {
-            int id = v.getId();
-
-            switch (id)
-            {
-                case R.id.toggle5k:
-                    mBtn5k.setTextColor(getResources().getColor(R.color.black));
-                    mBtn10k.setTextColor(getResources().getColor(R.color.price_bar_text_default));
-                    mBtn25k.setTextColor(getResources().getColor(R.color.price_bar_text_default));
-                    mBtn50k.setTextColor(getResources().getColor(R.color.price_bar_text_default));
-                    //UpdateValues(5000, true);
-                    segmentedUpdate(5000);
-                    break;
-
-                case R.id.toggle10k:
-                    mBtn5k.setTextColor(getResources().getColor(R.color.price_bar_text_default));
-                    mBtn10k.setTextColor(getResources().getColor(R.color.black));
-                    mBtn25k.setTextColor(getResources().getColor(R.color.price_bar_text_default));
-                    mBtn50k.setTextColor(getResources().getColor(R.color.price_bar_text_default));
-                    //UpdateValues(10000, true);
-                    segmentedUpdate(10000);
-                    break;
-
-                case R.id.toggle25k:
-                    mBtn5k.setTextColor(getResources().getColor(R.color.price_bar_text_default));
-                    mBtn10k.setTextColor(getResources().getColor(R.color.price_bar_text_default));
-                    mBtn25k.setTextColor(getResources().getColor(R.color.black));
-                    mBtn50k.setTextColor(getResources().getColor(R.color.price_bar_text_default));
-                    //UpdateValues(25000, true);
-                    segmentedUpdate(25000);
-                    break;
-
-                case R.id.toggle50k:
-                    mBtn5k.setTextColor(getResources().getColor(R.color.price_bar_text_default));
-                    mBtn10k.setTextColor(getResources().getColor(R.color.price_bar_text_default));
-                    mBtn25k.setTextColor(getResources().getColor(R.color.price_bar_text_default));
-                    mBtn50k.setTextColor(getResources().getColor(R.color.black));
-                    //UpdateValues(50000, true);
-                    segmentedUpdate(50000);
-                    break;
-
-                default:
-                    break;
-            }
-        }
-    };
-
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState)
+    @Override public void onActivityCreated(Bundle savedInstanceState)
     {
         super.onActivityCreated(savedInstanceState);
 
         //((TrendingDetailFragment) getActivity().getSupportFragmentManager()
         //        .findFragmentByTag("trending_detail")).setYahooQuoteUpdateListener(this);
-
-        mCashAvailable = THUser.getCurrentUser().portfolio.cashBalance;
-
-        tvCashAvailable.setText(String.format("US$ %,d", mCashAvailable));
-
-        int qty = (int) Math.ceil(mCashAvailable / lastPrice);
-
-        updateQuantityAndTradeValue(qty);
     }
 
     private void enableFields(boolean flag)
     {
-        mBtn5k.setEnabled(flag);
-        mBtn10k.setEnabled(flag);
-        mBtn25k.setEnabled(flag);
-        mBtn50k.setEnabled(flag);
+        mQuickPriceButtonSet.setEnabled(flag);
         mBuyBtn.setEnabled(flag);
     }
 
@@ -421,6 +243,40 @@ public class TradeFragment extends Fragment
     //    UpdateValues(mCashAvailable, false);
     //}
 
+    public void display(SecurityCompactDTO securityCompactDTO)
+    {
+        this.securityCompactDTO = securityCompactDTO;
+        display();
+    }
+
+    public void display()
+    {
+        if (mPricingBidAskView != null)
+        {
+            mPricingBidAskView.display(securityCompactDTO);
+        }
+        if (mTradeQuantityView != null)
+        {
+            mTradeQuantityView.display(securityCompactDTO);
+        }
+
+        if (securityCompactDTO != null && !TextUtils.isEmpty(securityCompactDTO.yahooSymbol))
+        {
+            //mImageLoader.DisplayImage(String.format(Config.getTrendingChartUrl(), trend.getYahooSymbol()),
+            //        mStockChart);
+        }
+
+        if (securityCompactDTO != null)
+        {
+            avgDailyVolume = (int) Math.ceil(securityCompactDTO.averageDailyVolume);
+        }
+
+        if (securityCompactDTO != null)
+        {
+            volume = (int) Math.ceil(securityCompactDTO.volume);
+        }
+    }
+
     private void UpdateValues(double cash, boolean isPriceSlot)
     {
 
@@ -461,7 +317,6 @@ public class TradeFragment extends Fragment
         }
 
         Logger.log(TAG, "defaultQuantity: " + defaultQuantity, LogLevel.LOGGING_LEVEL_INFO);
-        updateQuantityAndTradeValue(defaultQuantity);
 
         if (isPriceSlot)
         {
@@ -512,9 +367,133 @@ public class TradeFragment extends Fragment
         //}
     }
 
+    public boolean isMyUrlOk()
+    {
+        return (securityCompactDTO != null) && isUrlOk(securityCompactDTO.imageBlobUrl);
+    }
+
+    public static boolean isUrlOk(String url)
+    {
+        return (url != null) && (url.length() > 0);
+    }
+
+    public void loadImages ()
+    {
+        if (mStockLogo != null)
+        {
+            mStockLogo.setUrl(this.securityCompactDTO.imageBlobUrl);
+        }
+        if (mStockBgLogo != null)
+        {
+            mStockBgLogo.setUrl(this.securityCompactDTO.imageBlobUrl);
+        }
+
+        final Callback loadIntoBg = createLogoReadyCallback();
+
+        if (isMyUrlOk())
+        {
+
+            // This line forces Picasso to clear the downloads running on the bg
+            mPicasso.load((String) null)
+                    .placeholder(R.drawable.default_image)
+                    .error(R.drawable.default_image)
+                    .into(mStockBgLogo);
+
+            // This sequence gives the opportunity to android to cache the original http image if its cache headers instruct it to.
+            Future<?> submitted = KnownExecutorServices.getCacheExecutor().submit(new Runnable()
+            {
+                @Override public void run()
+                {
+                    if (mStockLogo != null)
+                    {
+                        THLog.i(TAG, "Loading Fore for " + mStockLogo.getUrl());
+                        mPicasso.load(mStockLogo.getUrl())
+                                .placeholder(R.drawable.default_image)
+                                .error(R.drawable.default_image)
+                                .transform(foregroundTransformation)
+                                .into(mStockLogo, loadIntoBg);
+                    }
+                }
+            });
+
+            if (submitted == null)
+            {
+                THLog.i(TAG, "Future submission was null");
+            }
+            else
+            {
+                THLog.i(TAG, "Future submission was ok");
+            }
+        }
+        else
+        {
+            // These ensure that views with a missing image do not receive images from elsewhere
+            if (mStockLogo != null && this.securityCompactDTO != null)
+            {
+                mStockLogo.setImageResource(this.securityCompactDTO.getExchangeLogoId());
+            }
+            else if (mStockLogo != null)
+            {
+                mPicasso.load((String) null)
+                        .placeholder(R.drawable.default_image)
+                        .error(R.drawable.default_image)
+                        .into(mStockLogo);
+            }
+
+            if (mStockBgLogo != null)
+            {
+                mStockBgLogo.post(new Runnable()
+                {
+                    @Override public void run()
+                    {
+                        loadIntoBg.onSuccess();
+                    }
+                });
+            }
+        }
+    }
+
+    private Callback createLogoReadyCallback()
+    {
+        return new Callback()
+        {
+            @Override public void onError()
+            {
+                loadBg();
+            }
+
+            @Override public void onSuccess()
+            {
+                loadBg();
+            }
+
+            public void loadBg ()
+            {
+                if (mStockBgLogo != null && TradeFragment.isUrlOk(mStockBgLogo.getUrl()))
+                {
+                    THLog.i(TAG, "Loading Bg for " + mStockBgLogo.getUrl());
+                    mPicasso.load(mStockBgLogo.getUrl())
+                            .placeholder(R.drawable.default_image)
+                            .error(R.drawable.default_image)
+                            .resize(mStockBgLogo.getWidth(), mStockBgLogo.getHeight())
+                            .centerInside()
+                            .transform(foregroundTransformation)
+                            .into(mStockBgLogo);
+                }
+                else if (mStockBgLogo != null && securityCompactDTO != null)
+                {
+                    mPicasso.load(securityCompactDTO.getExchangeLogoId())
+                            .resize(mStockBgLogo.getWidth(), mStockBgLogo.getHeight())
+                            .centerCrop()
+                            .transform(foregroundTransformation)
+                            .into(mStockBgLogo);
+                }
+            }
+        };
+    }
+
     private void segmentedUpdate(int cash)
     {
-
         int totalCashAvailable = cash - TRANSACTION_COST;
 
         int mQuantity = (int) Math.floor(totalCashAvailable / lastPrice);
@@ -538,33 +517,105 @@ public class TradeFragment extends Fragment
 
         int sValue = mQuantity / sliderIncrement;
         mSlider.setProgress(sValue);
-        updateQuantityAndTradeValue(mQuantity);
-    }
-
-    private void updateQuantityAndTradeValue(int qty)
-    {
-
-        tvQuantity.setText(String.format("%,d", qty));
-
-        if (!Double.isNaN(lastPrice) && !(Double.compare(lastPrice, 0.0) == 0))
-        {
-            tvTradeValue.setText(String.format("%,d", (int) Math.floor((qty * lastPrice))));
-        }
     }
 
     private double getTotalCostForBuy()
     {
-        double q = Double.parseDouble(tvQuantity.getText().toString().replace(",", ""));
-        double totalCost = q * (lastPrice + TRANSACTION_COST);
-
-        return totalCost;
+        double q = Double.parseDouble(/*tvQuantity.getText().toString().replace(",", "")*/ "12");
+        return q * (lastPrice + TRANSACTION_COST);
     }
 
-    @Override
-    public void onDestroy()
+    @Override public void onDestroy()
     {
         //((TrendingDetailFragment) getActivity().getSupportFragmentManager()
         //        .findFragmentByTag("trending_detail")).setYahooQuoteUpdateListener(null);
         super.onDestroy();
+    }
+
+    private OnSeekBarChangeListener createSeekBarListener()
+    {
+        return new OnSeekBarChangeListener()
+        {
+            @Override public void onStopTrackingTouch(SeekBar seekBar)
+            {
+            }
+
+            @Override public void onStartTrackingTouch(SeekBar seekBar)
+            {
+            }
+
+            @Override public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser)
+            {
+                //int q = progress;
+
+                if (fromUser)
+                {
+                    int q = 0;
+
+                    if (progress < seekBar.getMax())
+                    {
+                        q = progress * sliderIncrement;
+                    }
+                    else
+                    {
+                        q = mQuantity;
+                    }
+
+                    THLog.i(TAG, "Progress: " + progress);
+                    THLog.i(TAG, "SeekBar Max: " + seekBar.getMax());
+                    THLog.i(TAG, "Qty: " + q);
+                    THLog.i(TAG, "sliderIncrement: " + sliderIncrement);
+
+                    if (mTradeQuantityView != null)
+                    {
+                        mTradeQuantityView.setShareQuantity(q);
+                    }
+                }
+
+                THLog.i(TAG, "Progress: " + progress);
+            }
+        };
+    }
+
+    private OnClickListener createBuyButtonListener()
+    {
+        return new OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                String buyDetail = String.format("Buy %s %s:%s @ %s %f\nTransaction fee: virtual US$ 10\nTotal cost: US$ %.2f",
+                        /*tvQuantity.getText()*/ "quantity", securityCompactDTO.exchange, securityCompactDTO.symbol, securityCompactDTO.currencyDisplay,
+                        lastPrice, getTotalCostForBuy());
+
+                Bundle b = new Bundle();
+
+                b.putString(BUY_DETAIL_STR, buyDetail);
+                b.putString(LAST_PRICE, String.valueOf(lastPrice));
+                b.putString(QUANTITY, /*tvQuantity.getText().toString().replace(",", "")*/ "quantity");
+                b.putString(SYMBOL, securityCompactDTO.symbol);
+                b.putString(EXCHANGE, securityCompactDTO.exchange);
+
+                Fragment newFragment = Fragment.instantiate(getActivity(), BuyFragment.class.getName(), b);
+
+                // Add the fragment to the activity, pushing this transaction
+                // on to the back stack.
+                FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+                ft.replace(R.id.realtabcontent, newFragment, "trend_buy");
+                ft.addToBackStack("trend_buy");
+                ft.commit();
+            }
+        };
+    }
+
+    private QuickPriceButtonSet.OnQuickPriceButtonSelectedListener createQuickButtonSetListener()
+    {
+        return new QuickPriceButtonSet.OnQuickPriceButtonSelectedListener()
+        {
+            @Override public void onQuickPriceButtonSelected(double priceSelected)
+            {
+                segmentedUpdate((int) priceSelected);
+            }
+        };
     }
 }

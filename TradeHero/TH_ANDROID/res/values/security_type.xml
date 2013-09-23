@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+  <string name="security_type_label_short">Type</string>
+
   <string name="security_type_equity">Equity</string>
   <string name="security_type_fund">Fund</string>
   <string name="security_type_warrant">Warrant</string>

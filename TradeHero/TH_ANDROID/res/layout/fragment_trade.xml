@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="com.tradehero.th"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/trending_detail_bg"
@@ -11,7 +13,7 @@
         android:layout_height="match_parent"
         android:layout_weight="1" >
 
-        <ImageView
+        <com.tradehero.common.widget.ImageUrlView
             android:id="@+id/stock_bg_logo"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -23,7 +25,7 @@
             android:layout_height="match_parent"
             android:background="@color/trending_grid_item_bg" />
 
-        <ImageView
+        <com.tradehero.common.widget.ImageUrlView
             android:id="@+id/stock_logo"
             android:layout_width="84dp"
             android:layout_height="42dp"
@@ -34,171 +36,31 @@
             android:contentDescription="@null"
             android:scaleType="fitXY" />
 
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="top|right"
-            android:layout_marginRight="20dp"
-            android:layout_marginTop="20dp"
-            android:orientation="vertical" >
+        <com.tradehero.th.widget.trade.PricingBidAskView
+          android:id="@+id/pricing_bid_ask_view"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_gravity="top|right"
+          android:layout_marginRight="20dp"
+          android:layout_marginTop="20dp"
+          android:orientation="vertical" >
 
-            <TextView
-                android:id="@+id/last_price"
-                style="@style/TH.Value"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignLeft="@+id/ask_price"
-                android:text="stock"
-                android:textSize="18sp"
-                android:textStyle="bold" />
+          <include layout="@layout/trade_pricing_bid_ask_view" />
 
-            <TextView
-                android:id="@+id/ask_price"
-                style="@style/TH.Value"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/last_price"
-                android:text="ask"
-                android:textSize="13sp" />
+        </com.tradehero.th.widget.trade.PricingBidAskView>
 
-            <TextView
-                android:id="@+id/bid_price"
-                style="@style/TH.Title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/last_price"
-                android:layout_toRightOf="@id/ask_price"
-                android:text="bid"
-                android:textSize="13sp" />
-
-            <ProgressBar
-                android:id="@+id/progress"
-                android:layout_below="@id/bid_price"
-                android:layout_alignWithParentIfMissing="true"
-                style="?android:attr/progressBarStyleSmall"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-        </RelativeLayout>
-
-        <TableLayout
+        <com.tradehero.th.widget.trade.TradeQuantityView
+            android:id="@+id/trade_quantity_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
             android:layout_marginBottom="20dp"
             android:stretchColumns="1" >
 
-            <TableRow
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1" >
+            <include layout="@layout/trade_quantity_view" />
 
-                <TextView
-                    style="@style/TH.Title"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="right"
-                    android:paddingRight="10dp"
-                    android:text="@string/price_as_of"
-                    android:textSize="16sp" />
+        </com.tradehero.th.widget.trade.TradeQuantityView>
 
-                <TextView
-                    android:id="@+id/vprice_as_of"
-                    style="@style/TH.Value"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="left"
-                    android:paddingLeft="10dp"
-                    android:text=""
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
-            </TableRow>
-
-            <TableRow
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1" >
-
-                <TextView
-                    style="@style/TH.Title"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="right"
-                    android:paddingRight="10dp"
-                    android:text="@string/cash_available"
-                    android:textSize="16sp" />
-
-                <TextView
-                    android:id="@+id/vcash_available"
-                    style="@style/TH.Value"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="left"
-                    android:paddingLeft="10dp"
-                    android:text=""
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
-            </TableRow>
-
-            <TableRow
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1" >
-
-                <TextView
-                    style="@style/TH.Title"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="right"
-                    android:paddingRight="10dp"
-                    android:text="@string/quantity"
-                    android:textSize="16sp" />
-
-                <TextView
-                    android:id="@+id/vquantity"
-                    style="@style/TH.Value"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="left"
-                    android:paddingLeft="10dp"
-                    android:text=""
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
-            </TableRow>
-
-            <TableRow
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1" >
-
-                <TextView
-                    style="@style/TH.Title"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="right"
-                    android:paddingRight="10dp"
-                    android:text="@string/trade_value"
-                    android:textSize="16sp" />
-
-                <TextView
-                    android:id="@+id/vtrade_value"
-                    style="@style/TH.Value"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="left"
-                    android:paddingLeft="10dp"
-                    android:text=""
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
-            </TableRow>
-        </TableLayout>
     </FrameLayout>
 
     <LinearLayout
@@ -217,47 +79,52 @@
             android:paddingRight="18dp"
             android:paddingTop="4dp" />
 
-        <LinearLayout
+        <com.tradehero.th.widget.trade.QuickPriceButtonSet
+            android:id="@+id/quick_price_button_set"
             android:layout_width="match_parent"
             android:layout_height="45dp"
             android:layout_margin="10dp"
             android:background="@drawable/trend_price_bar"
             android:orientation="horizontal" >
 
-            <Button
+            <com.tradehero.th.widget.trade.QuickPriceButton
                 android:id="@+id/toggle5k"
                 style="@style/TH.Btn_Price_Bar"
-                android:text="@string/p5k" />
+                android:text="@string/p5k"/>
+                <!--app:price="5000"/-->
 
             <View style="@style/TH.Btn_Price_Bar_Separator" />
 
-            <Button
+            <com.tradehero.th.widget.trade.QuickPriceButton
                 android:id="@+id/toggle10k"
                 style="@style/TH.Btn_Price_Bar"
-                android:text="@string/p10k" />
+                android:text="@string/p10k"/>
+          <!-- app:price="10000" -->
 
             <View style="@style/TH.Btn_Price_Bar_Separator" />
 
-            <Button
+            <com.tradehero.th.widget.trade.QuickPriceButton
                 android:id="@+id/toggle25k"
                 style="@style/TH.Btn_Price_Bar"
-                android:text="@string/p25k" />
+                android:text="@string/p25k"/>
+          <!-- app:price="25000" -->
 
             <View style="@style/TH.Btn_Price_Bar_Separator" />
 
-            <Button
+            <com.tradehero.th.widget.trade.QuickPriceButton
                 android:id="@+id/toggle50k"
                 style="@style/TH.Btn_Price_Bar"
-                android:text="@string/p50k" />
+                android:text="@string/p50k"/>
+          <!-- app:price="50000" -->
 
-            <Button
+          <Button
                 android:id="@+id/btn_buy"
                 style="@style/TH.Btn_Price_Bar"
                 android:layout_weight="5"
                 android:background="@drawable/btn_buy"
                 android:text="@string/buy"
                 android:textColor="@color/white" />
-        </LinearLayout>
+        </com.tradehero.th.widget.trade.QuickPriceButtonSet>
 
         <ImageView
             android:id="@+id/stock_chart"

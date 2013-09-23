@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android">
+
+  <TextView
+      android:id="@+id/last_price"
+      style="@style/TH.Value"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_alignLeft="@+id/ask_price"
+      android:text="stock"
+      android:textSize="18sp"
+      android:textStyle="bold" />
+
+  <TextView
+      android:id="@+id/ask_price"
+      style="@style/TH.Value"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_below="@id/last_price"
+      android:text="ask"
+      android:textSize="13sp" />
+
+  <TextView
+      android:id="@+id/bid_price"
+      style="@style/TH.Title"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_below="@id/last_price"
+      android:layout_toRightOf="@id/ask_price"
+      android:text="bid"
+      android:textSize="13sp" />
+
+  <ProgressBar
+      android:id="@+id/progress"
+      android:layout_below="@id/bid_price"
+      android:layout_alignWithParentIfMissing="true"
+      style="?android:attr/progressBarStyleSmall"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content" />
+</merge>

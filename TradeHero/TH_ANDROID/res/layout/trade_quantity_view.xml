@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android">
+  <TableRow
+      android:layout_width="fill_parent"
+      android:layout_height="wrap_content"
+      android:layout_weight="1" >
+
+    <TextView
+        style="@style/TH.Title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="right"
+        android:paddingRight="10dp"
+        android:text="@string/security_type_label_short"
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/sec_type"
+        style="@style/TH.Value"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="left"
+        android:paddingLeft="10dp"
+        android:text=""
+        android:textSize="16sp"
+        android:textStyle="bold" />
+  </TableRow>
+
+  <TableRow
+      android:layout_width="fill_parent"
+      android:layout_height="wrap_content"
+      android:layout_weight="1" >
+
+    <TextView
+        style="@style/TH.Title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="right"
+        android:paddingRight="10dp"
+        android:text="@string/price_as_of"
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/vprice_as_of"
+        style="@style/TH.Value"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="left"
+        android:paddingLeft="10dp"
+        android:text=""
+        android:textSize="16sp"
+        android:textStyle="bold" />
+  </TableRow>
+
+  <TableRow
+      android:layout_width="fill_parent"
+      android:layout_height="wrap_content"
+      android:layout_weight="1" >
+
+    <TextView
+        style="@style/TH.Title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="right"
+        android:paddingRight="10dp"
+        android:text="@string/cash_available"
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/vcash_available"
+        style="@style/TH.Value"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="left"
+        android:paddingLeft="10dp"
+        android:text=""
+        android:textSize="16sp"
+        android:textStyle="bold" />
+  </TableRow>
+
+  <TableRow
+      android:layout_width="fill_parent"
+      android:layout_height="wrap_content"
+      android:layout_weight="1" >
+
+    <TextView
+        style="@style/TH.Title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="right"
+        android:paddingRight="10dp"
+        android:text="@string/share_available"
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/vshare_available"
+        style="@style/TH.Value"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="left"
+        android:paddingLeft="10dp"
+        android:text=""
+        android:textSize="16sp"
+        android:textStyle="bold" />
+  </TableRow>
+
+  <TableRow
+      android:layout_width="fill_parent"
+      android:layout_height="wrap_content"
+      android:layout_weight="1" >
+
+    <TextView
+        style="@style/TH.Title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="right"
+        android:paddingRight="10dp"
+        android:text="@string/quantity"
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/vquantity"
+        style="@style/TH.Value"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="left"
+        android:paddingLeft="10dp"
+        android:text=""
+        android:textSize="16sp"
+        android:textStyle="bold" />
+  </TableRow>
+
+  <TableRow
+      android:layout_width="fill_parent"
+      android:layout_height="wrap_content"
+      android:layout_weight="1" >
+
+    <TextView
+        style="@style/TH.Title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="right"
+        android:paddingRight="10dp"
+        android:text="@string/trade_value"
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/vtrade_value"
+        style="@style/TH.Value"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="left"
+        android:paddingLeft="10dp"
+        android:text=""
+        android:textSize="16sp"
+        android:textStyle="bold" />
+  </TableRow>
+</merge>

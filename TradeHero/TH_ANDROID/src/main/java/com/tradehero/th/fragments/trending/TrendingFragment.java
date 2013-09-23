@@ -37,6 +37,7 @@ public class TrendingFragment extends SherlockFragment
     private TextView mHeaderText;
     private ImageButton mSearchBtn;
     private SearchRequestedListener searchRequestedListener;
+    private OnTradeRequestedListener tradeRequestedListener;
 
     private ProgressBar mProgressSpinner;
     private TrendingGridView mTrendingGridView;
@@ -115,7 +116,9 @@ public class TrendingFragment extends SherlockFragment
             {
                 SecurityCompactDTO securityCompactDTO = (SecurityCompactDTO) parent.getItemAtPosition(position);
 
-                THToast.show("Disabled for now");
+                //THToast.show("Disabled for now");
+
+                notifyTradeRequested(securityCompactDTO);
             }
         });
 
@@ -233,6 +236,11 @@ public class TrendingFragment extends SherlockFragment
         this.searchRequestedListener = searchRequestedListener;
     }
 
+    public void setTradeRequestedListener(OnTradeRequestedListener tradeRequestedListener)
+    {
+        this.tradeRequestedListener = tradeRequestedListener;
+    }
+
     private void notifySearchRequested()
     {
         if (this.searchRequestedListener != null)
@@ -241,8 +249,21 @@ public class TrendingFragment extends SherlockFragment
         }
     }
 
+    private void notifyTradeRequested(SecurityCompactDTO securityCompactDTO)
+    {
+        if (this.tradeRequestedListener != null)
+        {
+            this.tradeRequestedListener.onTradeRequested(securityCompactDTO);
+        }
+    }
+
     public interface SearchRequestedListener
     {
         void onSearchRequested();
+    }
+
+    public interface OnTradeRequestedListener
+    {
+        void onTradeRequested(SecurityCompactDTO securityCompactDTO);
     }
 }

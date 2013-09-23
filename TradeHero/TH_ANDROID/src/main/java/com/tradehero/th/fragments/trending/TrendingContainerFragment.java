@@ -11,6 +11,7 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
+import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.base.Application;
 import java.util.HashMap;
 import java.util.Map;
@@ -83,6 +84,13 @@ public class TrendingContainerFragment extends SherlockFragment
                     pushSearchIn();
                 }
             });
+            ((TrendingFragment) childFragment).setTradeRequestedListener(new TrendingFragment.OnTradeRequestedListener()
+            {
+                @Override public void onTradeRequested(SecurityCompactDTO securityCompactDTO)
+                {
+                    pushTradeIn(securityCompactDTO);
+                }
+            });
         }
         else if (childFragment instanceof SearchStockPeopleFragment)
         {
@@ -117,10 +125,10 @@ public class TrendingContainerFragment extends SherlockFragment
         Fragment searchFragment = fragmentFactory.getInstance(SearchStockPeopleFragment.class);
         getChildFragmentManager().beginTransaction()
                 .setCustomAnimations(
-                    R.anim.slide_right_in, R.anim.slide_left_out,
-                    R.anim.slide_left_in, R.anim.slide_right_out
-                    //R.anim.shrink_from_front, R.anim.shrink_to_back,
-                    //R.anim.inflate_from_back, R.anim.inflate_to_front
+                        R.anim.slide_right_in, R.anim.slide_left_out,
+                        R.anim.slide_left_in, R.anim.slide_right_out
+                        //R.anim.shrink_from_front, R.anim.shrink_to_back,
+                        //R.anim.inflate_from_back, R.anim.inflate_to_front
                 )
                 .replace(fragmentContentId, searchFragment)
                 //.show(searchFragment)
@@ -132,6 +140,24 @@ public class TrendingContainerFragment extends SherlockFragment
     {
         THLog.i(TAG, "popTrendingBackIn");
         getChildFragmentManager().popBackStack();
+    }
+
+    private void pushTradeIn(SecurityCompactDTO securityCompactDTO)
+    {
+        THLog.i(TAG, "pushTradeIn");
+        TradeFragment tradeFragment = (TradeFragment) fragmentFactory.getInstance(TradeFragment.class);
+        getChildFragmentManager().beginTransaction()
+                .setCustomAnimations(
+                        R.anim.slide_right_in, R.anim.slide_left_out,
+                        R.anim.slide_left_in, R.anim.slide_right_out
+                        //R.anim.shrink_from_front, R.anim.shrink_to_back,
+                        //R.anim.inflate_from_back, R.anim.inflate_to_front
+                )
+                .replace(fragmentContentId, tradeFragment)
+                        //.show(searchFragment)
+                .addToBackStack(null)
+                .commit();
+        tradeFragment.display(securityCompactDTO);
     }
 
     private class FragmentFactory

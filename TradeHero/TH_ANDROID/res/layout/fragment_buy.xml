@@ -5,9 +5,9 @@
     android:background="#90000000"
     android:orientation="vertical" >
 
-    <include
+    <!--include
         android:id="@+id/header"
-        layout="@layout/trending_search_topbar" />
+        layout="@layout/trending_search_topbar" /-->
 
     <EditText
         android:id="@+id/comments"

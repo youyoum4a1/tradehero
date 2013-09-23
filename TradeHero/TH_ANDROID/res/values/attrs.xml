@@ -23,4 +23,8 @@
   <declare-styleable name="ServerValidatedText">
     <attr name="progressIndicator" format="reference"/>
   </declare-styleable>
+
+  <declare-styleable name="QuickPriceButton">
+    <attr name="price" format="integer"/>
+  </declare-styleable>
 </resources>
