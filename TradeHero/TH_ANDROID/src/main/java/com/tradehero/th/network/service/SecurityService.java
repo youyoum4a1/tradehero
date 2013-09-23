@@ -4,6 +4,7 @@ import com.tradehero.th.api.position.SecurityPositionDetailDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import java.util.List;
 import retrofit.Callback;
+import retrofit.RetrofitError;
 import retrofit.http.GET;
 import retrofit.http.Path;
 import retrofit.http.Query;
@@ -15,7 +16,8 @@ public interface SecurityService
     void getTrendingSecurities(Callback<List<SecurityCompactDTO>> callback);
 
     @GET("/securities/trending/")
-    List<SecurityCompactDTO> getTrendingSecurities();
+    List<SecurityCompactDTO> getTrendingSecurities()
+            throws RetrofitError;
 
     @GET("/securities/search")
     void searchSecurities(
@@ -28,12 +30,8 @@ public interface SecurityService
     List<SecurityCompactDTO> searchSecurities(
             @Query("q") String searchString,
             @Query("page") int page,
-            @Query("perPage") int perPage);
-
-    @GET("/securities/{exchange}/{securitySymbol}")
-    SecurityPositionDetailDTO getSecurity(
-            @Path("exchange") String exchange,
-            @Path("securitySymbol") String securitySymbol);
+            @Query("perPage") int perPage)
+            throws RetrofitError;
 
     @GET("/securities/{exchange}/{securitySymbol}")
     void getSecurity(
@@ -41,4 +39,9 @@ public interface SecurityService
             @Path("securitySymbol") String securitySymbol,
             Callback<SecurityPositionDetailDTO> callback);
 
+    @GET("/securities/{exchange}/{securitySymbol}")
+    SecurityPositionDetailDTO getSecurity(
+            @Path("exchange") String exchange,
+            @Path("securitySymbol") String securitySymbol)
+            throws RetrofitError;
 }

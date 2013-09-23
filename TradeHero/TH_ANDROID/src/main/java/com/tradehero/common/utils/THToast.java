@@ -1,6 +1,7 @@
 package com.tradehero.common.utils;
 
 import android.view.Gravity;
+import android.view.View;
 import android.widget.Toast;
 import com.tradehero.th.base.Application;
 import com.tradehero.th.misc.exception.THException;
@@ -26,5 +27,34 @@ public class THToast
     public static void show(THException ex)
     {
         show(ex.getMessage());
+    }
+
+    /**
+     * Helps work around the fact that we may want to toast from other threads.
+     * @param view
+     * @param message
+     */
+    public static void post(View view, final String message)
+    {
+        if (view != null)
+        {
+            view.post(new Runnable()
+            {
+                @Override public void run()
+                {
+                    THToast.show(message);
+                }
+            });
+        }
+    }
+
+    public static void post(View view, final int resourceId)
+    {
+        post(view, Application.getResourceString(resourceId));
+    }
+
+    public static void post(View view, final THException ex)
+    {
+        post(view, ex.getMessage());
     }
 }

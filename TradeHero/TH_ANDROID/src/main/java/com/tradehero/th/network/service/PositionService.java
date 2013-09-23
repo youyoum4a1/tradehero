@@ -2,6 +2,7 @@ package com.tradehero.th.network.service;
 
 import com.tradehero.th.api.position.GetPositionsDTO;
 import retrofit.Callback;
+import retrofit.RetrofitError;
 import retrofit.http.GET;
 import retrofit.http.Path;
 import retrofit.http.Query;
@@ -10,11 +11,6 @@ import retrofit.http.Query;
 public interface PositionService
 {
     @GET("/users{userId}/portfolios/{portfolioId}/positions")
-    GetPositionsDTO getPositions(
-            @Path("userId") int userId,
-            @Path("portfolioId")int portfolioId);
-
-    @GET("/users{userId}/portfolios/{portfolioId}/positions")
     void getPositions(
             @Path("userId") int userId,
             @Path("portfolioId")int portfolioId,
@@ -23,8 +19,8 @@ public interface PositionService
     @GET("/users{userId}/portfolios/{portfolioId}/positions")
     GetPositionsDTO getPositions(
             @Path("userId") int userId,
-            @Path("portfolioId")int portfolioId,
-            @Query("pageNumber") Integer pageNumber);
+            @Path("portfolioId")int portfolioId)
+            throws RetrofitError;
 
     @GET("/users{userId}/portfolios/{portfolioId}/positions")
     void getPositions(
@@ -37,8 +33,8 @@ public interface PositionService
     GetPositionsDTO getPositions(
             @Path("userId") int userId,
             @Path("portfolioId")int portfolioId,
-            @Query("pageNumber") Integer pageNumber,
-            @Query("perPage") Integer perPage);
+            @Query("pageNumber") Integer pageNumber)
+            throws RetrofitError;
 
     @GET("/users{userId}/portfolios/{portfolioId}/positions")
     void getPositions(
@@ -47,4 +43,12 @@ public interface PositionService
             @Query("pageNumber") Integer pageNumber,
             @Query("perPage") Integer perPage,
             Callback<GetPositionsDTO> callback);
+
+    @GET("/users{userId}/portfolios/{portfolioId}/positions")
+    GetPositionsDTO getPositions(
+            @Path("userId") int userId,
+            @Path("portfolioId")int portfolioId,
+            @Query("pageNumber") Integer pageNumber,
+            @Query("perPage") Integer perPage)
+            throws RetrofitError;
 }

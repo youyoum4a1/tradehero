@@ -1,10 +1,14 @@
 package com.tradehero.th.loaders;
 
 import android.content.Context;
+import com.tradehero.common.utils.THToast;
+import com.tradehero.th.R;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.network.NetworkEngine;
 import com.tradehero.th.network.service.SecurityService;
+import java.util.ArrayList;
 import java.util.List;
+import retrofit.RetrofitError;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 9/20/13 Time: 1:12 PM To change this template use File | Settings | File Templates. */
 public class SearchStockPageItemListLoader extends PagedItemListLoader<ListedSecurityCompact>
@@ -55,8 +59,19 @@ public class SearchStockPageItemListLoader extends PagedItemListLoader<ListedSec
         {
             securityService = NetworkEngine.createService(SecurityService.class);
         }
-        return ListedSecurityCompactFactory.createList(
-                securityService.searchSecurities(searchText, page, itemsPerPage),
-                page * itemsPerPage);
+        List<ListedSecurityCompact> listed = null;
+        try
+        {
+            listed = ListedSecurityCompactFactory.createList(
+                    securityService.searchSecurities(searchText, page, itemsPerPage),
+                    page * itemsPerPage);
+        }
+        catch (RetrofitError retrofitError)
+        {
+            THToast.show(R.string.network_error);
+            listed = new ArrayList<>();
+            retrofitError.printStackTrace();
+        }
+        return listed;
     }
 }
