@@ -120,6 +120,7 @@ public abstract class PagedItemListLoader<D extends ItemWithComparableId> extend
             // Fix: do not start deliver old data anymore
             // TODO mark it as old items and deliver it
             //deliverResult(items);
+            deliverResult(null);
         }
     }
 
@@ -145,15 +146,18 @@ public abstract class PagedItemListLoader<D extends ItemWithComparableId> extend
 
         if (isStarted())
         {
-            switch (currentLoadMode)
+            if (data != null)
             {
-                case IDLE:
-                case NEXT:
-                    items.addAll(0, data);
-                    break;
-                case PREVIOUS:
-                    items.addAll(data);
-                    break;
+                switch (currentLoadMode)
+                {
+                    case IDLE:
+                    case NEXT:
+                        items.addAll(0, data);
+                        break;
+                    case PREVIOUS:
+                        items.addAll(data);
+                        break;
+                }
             }
             super.deliverResult(data);
             currentLoadMode = LoadMode.IDLE;
