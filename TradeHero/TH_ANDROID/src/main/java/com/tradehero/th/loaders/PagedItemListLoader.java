@@ -13,7 +13,7 @@ public abstract class PagedItemListLoader<D extends ItemWithComparableId> extend
     protected int itemsPerPage = DEFAULT_ITEM_PER_PAGE;
     private D lastVisibleItem;
     private D firstVisibleItem;
-    protected LinkedList<D> items;
+    protected List<D> items;
     private LoadMode currentLoadMode = LoadMode.IDLE;
 
     public PagedItemListLoader(Context context)
@@ -37,7 +37,10 @@ public abstract class PagedItemListLoader<D extends ItemWithComparableId> extend
         return items;
     }
 
-    protected abstract boolean shouldReload();
+    protected boolean shouldReload()
+    {
+        return items == null || items.isEmpty();
+    }
 
     public void loadNextPage()
     {
@@ -108,13 +111,15 @@ public abstract class PagedItemListLoader<D extends ItemWithComparableId> extend
 
     @Override protected void onStartLoading()
     {
-        if (items == null || shouldReload())
+        if (shouldReload())
         {
             forceLoad();
         }
         else
         {
-            deliverResult(items);
+            // Fix: do not start deliver old data anymore
+            // TODO mark it as old items and deliver it
+            //deliverResult(items);
         }
     }
 

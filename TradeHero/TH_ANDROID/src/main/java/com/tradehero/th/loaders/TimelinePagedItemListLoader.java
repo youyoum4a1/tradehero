@@ -47,6 +47,7 @@ public class TimelinePagedItemListLoader extends PagedItemListLoader<TimelineIte
         TimelineDTO timelineDTO = null;
         try
         {
+            THLog.d(TAG, "Start loading timeline with maxItemId=" + maxItemId + "/ minItemId=" + minItemId);
             timelineDTO = NetworkEngine.createService(UserTimelineService.class).getTimeline(ownerId, maxItemId, minItemId, itemsPerPage);
         }
         catch (RetrofitError e)
@@ -57,11 +58,6 @@ public class TimelinePagedItemListLoader extends PagedItemListLoader<TimelineIte
 
         TimelineItemBuilder timelineBuilder = new TimelineItemBuilder(timelineDTO);
         return timelineBuilder.getItems();
-    }
-
-    @Override protected boolean shouldReload()
-    {
-        return true;
     }
 
     @Override protected void onLoadNextPage(TimelineItem lastItemId)

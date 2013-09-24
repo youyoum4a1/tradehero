@@ -18,9 +18,10 @@ import java.util.List;
 public class TimelineFragment extends ItemListFragment<TimelineItem>
 {
     private static final String USER_ID = "userId";
+    private TimelineAdapter timelineAdapter;
+
     protected UserProfileDTO profile;
     protected int profileId;
-    private TimelineAdapter timelineAdapter;
     private TimelineListView timelineListView;
 
     @Override
@@ -51,7 +52,6 @@ public class TimelineFragment extends ItemListFragment<TimelineItem>
     @Override public void onStop()
     {
         super.onStop();
-        timelineAdapter.notifyDataSetInvalidated();
     }
 
     protected void initView(View view)
@@ -61,7 +61,9 @@ public class TimelineFragment extends ItemListFragment<TimelineItem>
 
         timelineListView = (TimelineListView) view.findViewById(R.id.pull_refresh_list);
         timelineListView.addHeaderView(profileView);
-        TimelineAdapter timelineAdapter = createTimelineAdapter();
+        if (timelineAdapter == null) {
+            timelineAdapter = createTimelineAdapter();
+        }
         timelineListView.setAdapter(timelineAdapter);
         timelineListView.setOnRefreshListener(timelineAdapter);
         timelineListView.setOnScrollListener(timelineAdapter);
