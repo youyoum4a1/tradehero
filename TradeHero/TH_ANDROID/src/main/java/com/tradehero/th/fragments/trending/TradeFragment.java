@@ -15,9 +15,11 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
+import android.widget.TextView;
 import com.actionbarsherlock.app.SherlockFragment;
 import com.squareup.picasso.Cache;
 import com.squareup.picasso.Callback;
@@ -32,6 +34,7 @@ import com.tradehero.common.widget.ImageUrlView;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.security.SecurityCompactDTO;
+import com.tradehero.th.base.THUser;
 import com.tradehero.th.fragments.BuyFragment;
 import com.tradehero.th.utills.Logger;
 import com.tradehero.th.utills.Logger.LogLevel;
@@ -54,6 +57,9 @@ public class TradeFragment extends SherlockFragment implements DTOView<SecurityC
     private ImageUrlView mStockBgLogo;
     private ImageUrlView mStockLogo;
     private ImageView mStockChart;
+
+    private TextView mStockName;
+    private ImageButton mStockChartButton;
 
     private PricingBidAskView mPricingBidAskView;
     private TradeQuantityView mTradeQuantityView;
@@ -94,6 +100,10 @@ public class TradeFragment extends SherlockFragment implements DTOView<SecurityC
         mStockBgLogo = (ImageUrlView) view.findViewById(R.id.stock_bg_logo);
         mStockLogo = (ImageUrlView) view.findViewById(R.id.stock_logo);
         mStockChart = (ImageView) view.findViewById(R.id.stock_chart);
+
+        mStockName = (TextView) view.findViewById(R.id.stock_name);
+        mStockChartButton = (ImageButton) view.findViewById(R.id.stock_chart_button);
+        mStockChartButton.setOnClickListener(createStockChartButtonClickListener());
 
         mPricingBidAskView = (PricingBidAskView) view.findViewById(R.id.pricing_bid_ask_view);
         mTradeQuantityView = (TradeQuantityView) view.findViewById(R.id.trade_quantity_view);
@@ -238,7 +248,7 @@ public class TradeFragment extends SherlockFragment implements DTOView<SecurityC
     //        avgDailyVolume = (int) Math.ceil(vol);
     //    }
     //
-    //    UpdateValues(mCashAvailable, false);
+    //    updateValues(mCashAvailable, false);
     //}
 
     public void display(SecurityCompactDTO securityCompactDTO)
@@ -258,24 +268,51 @@ public class TradeFragment extends SherlockFragment implements DTOView<SecurityC
             mTradeQuantityView.display(securityCompactDTO);
         }
 
+        if (mStockName != null)
+        {
+            if (securityCompactDTO != null)
+            {
+                mStockName.setText(securityCompactDTO.name);
+            }
+            else
+            {
+                mStockName.setText("");
+            }
+        }
+
         if (securityCompactDTO != null && !TextUtils.isEmpty(securityCompactDTO.yahooSymbol))
         {
             //mImageLoader.DisplayImage(String.format(Config.getTrendingChartUrl(), trend.getYahooSymbol()),
             //        mStockChart);
         }
 
-        if (securityCompactDTO != null)
+        if (securityCompactDTO == null || securityCompactDTO.averageDailyVolume == null)
+        {
+            avgDailyVolume = 0;
+        }
+        else
         {
             avgDailyVolume = (int) Math.ceil(securityCompactDTO.averageDailyVolume);
         }
 
-        if (securityCompactDTO != null)
+        if (securityCompactDTO == null || securityCompactDTO.volume == null)
+        {
+            volume = 0;
+        }
+        else
         {
             volume = (int) Math.ceil(securityCompactDTO.volume);
         }
+
+        if (mSlider != null)
+        {
+            int maxShares = (int) getMaxPurchasableShares();
+            mSlider.setMax(maxShares);
+            mSlider.setEnabled(maxShares > 0);
+        }
     }
 
-    private void UpdateValues(double cash, boolean isPriceSlot)
+    private void updateValues(double cash, boolean isPriceSlot)
     {
 
         Logger.log(TAG, "Cash: " + cash, LogLevel.LOGGING_LEVEL_INFO);
@@ -373,6 +410,15 @@ public class TradeFragment extends SherlockFragment implements DTOView<SecurityC
     public static boolean isUrlOk(String url)
     {
         return (url != null) && (url.length() > 0);
+    }
+
+    public double getMaxPurchasableShares()
+    {
+        if (securityCompactDTO == null || securityCompactDTO.askPrice == null || securityCompactDTO.askPrice == 0)
+        {
+            return 0;
+        }
+        return Math.floor(THUser.getCurrentUser().portfolio.cashBalance / securityCompactDTO.askPrice);
     }
 
     public void loadImages ()
@@ -536,41 +582,31 @@ public class TradeFragment extends SherlockFragment implements DTOView<SecurityC
         {
             @Override public void onStopTrackingTouch(SeekBar seekBar)
             {
+                if (mTradeQuantityView != null)
+                {
+                    mTradeQuantityView.setHighlightQuantity(false);
+                }
             }
 
             @Override public void onStartTrackingTouch(SeekBar seekBar)
             {
+                if (mTradeQuantityView != null)
+                {
+                    mTradeQuantityView.setHighlightQuantity(true);
+                }
             }
 
             @Override public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser)
             {
-                //int q = progress;
-
                 if (fromUser)
                 {
-                    int q = 0;
-
-                    if (progress < seekBar.getMax())
-                    {
-                        q = progress * sliderIncrement;
-                    }
-                    else
-                    {
-                        q = mQuantity;
-                    }
-
-                    THLog.i(TAG, "Progress: " + progress);
-                    THLog.i(TAG, "SeekBar Max: " + seekBar.getMax());
-                    THLog.i(TAG, "Qty: " + q);
-                    THLog.i(TAG, "sliderIncrement: " + sliderIncrement);
+                    mQuantity = progress;
 
                     if (mTradeQuantityView != null)
                     {
-                        mTradeQuantityView.setShareQuantity(q);
+                        mTradeQuantityView.setShareQuantity(mQuantity);
                     }
                 }
-
-                THLog.i(TAG, "Progress: " + progress);
             }
         };
     }
@@ -616,4 +652,17 @@ public class TradeFragment extends SherlockFragment implements DTOView<SecurityC
             }
         };
     }
+
+    private OnClickListener createStockChartButtonClickListener()
+    {
+        return new OnClickListener()
+        {
+            @Override public void onClick(View view)
+            {
+                // TODO call chart fragment in
+            }
+        };
+    }
+
+
 }

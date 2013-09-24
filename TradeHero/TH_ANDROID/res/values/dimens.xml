@@ -16,4 +16,7 @@
   <dimen name="trending_grid_item_corner_radius">8dp</dimen>
   <dimen name="trending_people_search_image_size">60dp</dimen>
 
+  <!-- Trade screen -->
+  <dimen name="trade_screen_info_title_padding_right">5dp</dimen>
+
 </resources>

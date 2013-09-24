@@ -3,6 +3,7 @@ package com.tradehero.th.widget.trade;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
@@ -23,9 +24,16 @@ public class TradeQuantityView extends TableLayout implements DTOView<SecurityCo
     private TextView mQuantity;
     private TextView mTradeValue;
 
+    private TableRow mCashAvailableRow;
+    private TableRow mShareAvailableRow;
+    private TableRow mQuantityRow;
+
     private SecurityCompactDTO securityCompactDTO;
-    private boolean buy;
+    private boolean buy = true;
     private double shareQuantity;
+    private boolean mHighlightQuantity = false;
+    private int mNormalQuantityColor;
+    private int mHighlightQuantityColor;
 
     //<editor-fold desc="Constructors">
     public TradeQuantityView(Context context)
@@ -62,6 +70,17 @@ public class TradeQuantityView extends TableLayout implements DTOView<SecurityCo
         updateShareQuantity();
         updateTradeValue();
     }
+
+    public boolean isHighlightQuantity()
+    {
+        return mHighlightQuantity;
+    }
+
+    public void setHighlightQuantity(boolean highlightQuantity)
+    {
+        this.mHighlightQuantity = highlightQuantity;
+        updateQuantityHighlight();
+    }
     //</editor-fold>
 
     @Override protected void onFinishInflate()
@@ -78,6 +97,11 @@ public class TradeQuantityView extends TableLayout implements DTOView<SecurityCo
         mShareAvailable = (TextView) findViewById(R.id.vshare_available);
         mQuantity = (TextView) findViewById(R.id.vquantity);
         mTradeValue = (TextView) findViewById(R.id.vtrade_value);
+        mCashAvailableRow = (TableRow) findViewById(R.id.cash_available_row);
+        mShareAvailableRow = (TableRow) findViewById(R.id.share_available_row);
+        mQuantityRow = (TableRow) findViewById(R.id.quantity_row);
+        mNormalQuantityColor = getResources().getColor(android.R.color.transparent);
+        mHighlightQuantityColor = getResources().getColor(R.color.trade_highlight_share_quantity);
         updateVisibilities();
         display();
     }
@@ -92,7 +116,7 @@ public class TradeQuantityView extends TableLayout implements DTOView<SecurityCo
     {
         if (mSecurityType != null && securityCompactDTO != null)
         {
-            mSecurityType.setText(SecurityType.getStringResourceId(securityCompactDTO.securityType));
+            mSecurityType.setText(SecurityType.getStringResourceId(securityCompactDTO.getSecurityType()));
         }
         else if (mSecurityType != null)
         {
@@ -111,7 +135,14 @@ public class TradeQuantityView extends TableLayout implements DTOView<SecurityCo
         double cashAvailable = THUser.getCurrentUser().portfolio.cashBalance;
         if (mCashAvailable != null)
         {
-            mCashAvailable.setText(String.format("US$ %,f", cashAvailable));
+            if (cashAvailable == (int) cashAvailable)
+            {
+                mCashAvailable.setText(String.format("US$ %,d", (int) cashAvailable));
+            }
+            else
+            {
+                mCashAvailable.setText(String.format("US$ %,.2f", cashAvailable));
+            }
         }
 
         // TODO populate shareAvailable
@@ -122,13 +153,13 @@ public class TradeQuantityView extends TableLayout implements DTOView<SecurityCo
 
     public void updateVisibilities()
     {
-        if (mCashAvailable != null)
+        if (mCashAvailableRow != null)
         {
-            mCashAvailable.setVisibility(buy ? VISIBLE : GONE);
+            mCashAvailableRow.setVisibility(buy ? VISIBLE : GONE);
         }
-        if (mShareAvailable != null)
+        if (mShareAvailableRow != null)
         {
-            mShareAvailable.setVisibility(buy ? GONE : VISIBLE);
+            mShareAvailableRow.setVisibility(buy ? GONE : VISIBLE);
         }
     }
 
@@ -136,7 +167,22 @@ public class TradeQuantityView extends TableLayout implements DTOView<SecurityCo
     {
         if (mQuantity != null)
         {
-            mQuantity.setText(String.format("%,f", shareQuantity));
+            if (shareQuantity == (int) shareQuantity)
+            {
+                mQuantity.setText(String.format("%,d", (int) shareQuantity));
+            }
+            else
+            {
+                mQuantity.setText(String.format("%,.2f", shareQuantity));
+            }
+        }
+    }
+
+    private void updateQuantityHighlight()
+    {
+        if (mQuantityRow != null)
+        {
+            mQuantityRow.setBackgroundColor(mHighlightQuantity ? mHighlightQuantityColor : mNormalQuantityColor);
         }
     }
 
@@ -144,13 +190,17 @@ public class TradeQuantityView extends TableLayout implements DTOView<SecurityCo
     {
         if (mTradeValue != null)
         {
-            if (securityCompactDTO != null && securityCompactDTO.isLastPriceNotNullOrZero())
+            if (securityCompactDTO == null)
             {
-                mTradeValue.setText(String.format("%,d", (int) Math.floor((shareQuantity * securityCompactDTO.lastPrice))));
+                mTradeValue.setText(String.format("%s", "-"));
+            }
+            else if (buy)
+            {
+                mTradeValue.setText(String.format("%,.2f", shareQuantity * securityCompactDTO.askPrice));
             }
             else
             {
-                mTradeValue.setText(String.format("%s", "-"));
+                mTradeValue.setText(String.format("%,.2f", shareQuantity * securityCompactDTO.bidPrice));
             }
         }
     }

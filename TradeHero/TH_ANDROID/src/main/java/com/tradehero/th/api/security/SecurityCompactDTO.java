@@ -10,7 +10,7 @@ public class SecurityCompactDTO
 
     public Integer id;
     public String symbol;
-    public SecurityType securityType;
+    public int securityType;
     public String name;
     public String exchange;
     public String yahooSymbol;
@@ -29,18 +29,18 @@ public class SecurityCompactDTO
 
     public boolean active;
 
-    public double askPrice;
-    public double bidPrice;
-    public double volume;
-    public double averageDailyVolume;
-    public double previousClose;
-    public double open;
-    public double high;
-    public double low;
-    public double pe;
-    public double eps;
+    public Double askPrice;
+    public Double bidPrice;
+    public Double volume;
+    public Double averageDailyVolume;
+    public Double previousClose;
+    public Double open;
+    public Double high;
+    public Double low;
+    public Double pe;
+    public Double eps;
 
-    public  Boolean marketOpen;
+    public Boolean marketOpen;
 
     public Integer pc50DMA;
     public Integer pc200DMA;
@@ -95,9 +95,14 @@ public class SecurityCompactDTO
         this.yahooSymbol = other.yahooSymbol;
     }
 
+    public SecurityType getSecurityType()
+    {
+        return SecurityType.getByValue(securityType);
+    }
+
     public int getSecurityTypeStringResourceId()
     {
-        return SecurityType.getStringResourceId(securityType);
+        return SecurityType.getStringResourceId(getSecurityType());
     }
 
     public String getExchangeSymbol()

@@ -25,41 +25,93 @@
             android:layout_height="match_parent"
             android:background="@color/trending_grid_item_bg" />
 
-        <com.tradehero.common.widget.ImageUrlView
-            android:id="@+id/stock_logo"
-            android:layout_width="84dp"
-            android:layout_height="42dp"
-            android:layout_gravity="top|left"
-            android:layout_marginLeft="20dp"
-            android:layout_marginTop="20dp"
-            android:adjustViewBounds="true"
-            android:contentDescription="@null"
-            android:scaleType="fitXY" />
-
-        <com.tradehero.th.widget.trade.PricingBidAskView
-          android:id="@+id/pricing_bid_ask_view"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_gravity="top|right"
-          android:layout_marginRight="20dp"
-          android:layout_marginTop="20dp"
-          android:orientation="vertical" >
-
-          <include layout="@layout/trade_pricing_bid_ask_view" />
-
-        </com.tradehero.th.widget.trade.PricingBidAskView>
-
-        <com.tradehero.th.widget.trade.TradeQuantityView
-            android:id="@+id/trade_quantity_view"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:layout_marginBottom="20dp"
-            android:stretchColumns="1" >
+            android:baselineAligned="false"
+            android:orientation="horizontal"
+            android:background="#eeeeff">
 
-            <include layout="@layout/trade_quantity_view" />
+          <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="#eeffee">
 
-        </com.tradehero.th.widget.trade.TradeQuantityView>
+            <com.tradehero.common.widget.ImageUrlView
+                android:id="@+id/stock_logo"
+                android:layout_width="84dp"
+                android:layout_height="42dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="20dp"
+                android:adjustViewBounds="true"
+                android:contentDescription="@null"
+                android:scaleType="fitXY"
+                android:visibility="gone"/>
+
+            <com.tradehero.th.widget.trade.PricingBidAskView
+              android:id="@+id/pricing_bid_ask_view"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_marginRight="20dp"
+              android:layout_marginTop="20dp"
+              android:orientation="vertical" >
+
+              <include layout="@layout/trade_pricing_bid_ask_view"/>
+
+            </com.tradehero.th.widget.trade.PricingBidAskView>
+
+          </LinearLayout>
+
+          <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="#ffeeee">
+
+            <!-- TODO Add stock name and chart icon -->
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#ffaaaa"
+                android:padding="8dp"
+                >
+
+              <ImageButton
+                  android:id="@+id/stock_chart_button"
+                  android:layout_width="32dp"
+                  android:layout_height="32dp"
+                  android:layout_alignParentRight="true"
+                  android:src="@drawable/sort_chart"
+                  android:contentDescription="Button to access chart"
+                  />
+
+              <TextView
+                  android:id="@+id/stock_name"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:layout_toLeftOf="@id/stock_chart_button"
+                  android:textSize="24sp"
+                  android:textAlignment="center"
+                  />
+
+            </RelativeLayout>
+
+            <com.tradehero.th.widget.trade.TradeQuantityView
+                android:id="@+id/trade_quantity_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                >
+
+                <include layout="@layout/trade_quantity_view" />
+
+            </com.tradehero.th.widget.trade.TradeQuantityView>
+
+          </LinearLayout>
+
+        </LinearLayout>
 
     </FrameLayout>
 

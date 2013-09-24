@@ -42,4 +42,8 @@
 	<color name="tab_scroll_color">#217ac8</color>
   <color name="authentication_welcome_bg">#f2f2f2</color>
   <color name="authentication_background_color">#f2f2f2</color>
+
+  <!-- Trade Fragment -->
+  <color name="trade_highlight_share_quantity">#ffdddd</color>
+
 </resources>
