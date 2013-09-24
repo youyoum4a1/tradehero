@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments;
+package com.tradehero.th.fragments.base;
 
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;

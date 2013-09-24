@@ -8,7 +8,7 @@ import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.tradehero.th.R;
 import com.tradehero.th.base.Application;
 import com.tradehero.th.fragments.CommunityScreenFragment;
-import com.tradehero.th.fragments.MeTimelineFragment;
+import com.tradehero.th.fragments.timeline.MeTimelineFragment;
 import com.tradehero.th.fragments.PortfolioScreenFragment;
 import com.tradehero.th.fragments.StoreScreenFragment;
 import com.tradehero.th.fragments.trending.TrendingContainerFragment;

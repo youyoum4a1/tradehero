@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments;
+package com.tradehero.th.fragments.timeline;
 
 import android.os.Bundle;
 import android.support.v4.content.Loader;
@@ -9,6 +9,7 @@ import com.tradehero.th.R;
 import com.tradehero.th.adapters.TimelineAdapter;
 import com.tradehero.th.api.local.TimelineItem;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.fragments.base.ItemListFragment;
 import com.tradehero.th.loaders.TimelinePagedItemListLoader;
 import com.tradehero.th.widget.timeline.TimelineListView;
 import com.tradehero.th.widget.user.ProfileView;
@@ -45,6 +46,12 @@ public class TimelineFragment extends ItemListFragment<TimelineItem>
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
+    }
+
+    @Override public void onStop()
+    {
+        super.onStop();
+        timelineAdapter.notifyDataSetInvalidated();
     }
 
     protected void initView(View view)
