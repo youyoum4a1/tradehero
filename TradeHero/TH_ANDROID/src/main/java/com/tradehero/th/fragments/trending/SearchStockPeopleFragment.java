@@ -299,19 +299,20 @@ public class SearchStockPeopleFragment extends SherlockFragment implements Adapt
         if (trendingAdapter == null && securityCompactDTOs != null)
         {
             // The new ArrayList ensures that we can clear the adapter without clearing this.securityList
-            trendingAdapter = new TrendingAdapter(getActivity(), new ArrayList<>(securityCompactDTOs), TrendingAdapter.SECURITY_SEARCH_CELL_LAYOUT);
+            // new ArrayList<>(securityCompactDTOs)
+            trendingAdapter = new TrendingAdapter(getActivity(), getActivity().getLayoutInflater(), TrendingAdapter.SECURITY_SEARCH_CELL_LAYOUT);
         }
         else if (trendingAdapter == null && securityCompactDTOs == null)
         {
-            trendingAdapter = new TrendingAdapter(getActivity(), new ArrayList<SecurityCompactDTO>(), TrendingAdapter.SECURITY_SEARCH_CELL_LAYOUT);
+            trendingAdapter = new TrendingAdapter(getActivity(), getActivity().getLayoutInflater(), TrendingAdapter.SECURITY_SEARCH_CELL_LAYOUT);
         }
         else
         {
-            trendingAdapter.clear();
-            if (securityCompactDTOs != null)
-            {
-                trendingAdapter.addAll(securityCompactDTOs);
-            }
+            //trendingAdapter.clear();
+            //if (securityCompactDTOs != null)
+            //{
+            //    trendingAdapter.addAll(securityCompactDTOs);
+            //}
             // TODO implement loader pattern
         }
         mSearchStockListView.setAdapter(trendingAdapter);

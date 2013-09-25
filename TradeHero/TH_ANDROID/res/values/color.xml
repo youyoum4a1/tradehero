@@ -28,6 +28,7 @@
     
     <!-- What's Trending -->
 	<color name="trending_grid_item_bg">#FFFFFFFF</color>
+  <color name="trending_gray_border">#A0787878</color>
 	<color name="title">#ffb0b0b0</color>
 	<color name="sec_type">#ff5791bd</color>
 	

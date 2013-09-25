@@ -10,7 +10,6 @@ import com.squareup.picasso.Cache;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
-import com.squareup.picasso.UrlConnectionDownloader;
 import com.tradehero.common.cache.LruMemFileCache;
 import com.tradehero.common.graphics.AbstractSequentialTransformation;
 import com.tradehero.common.graphics.GaussianTransformation;
@@ -26,7 +25,6 @@ import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.utills.DateUtils;
 import com.tradehero.th.utills.TrendUtils;
 import com.tradehero.th.utills.YUtils;
-import java.util.ArrayList;
 import java.util.concurrent.Future;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 9/5/13 Time: 5:19 PM To change this template use File | Settings | File Templates. */
@@ -50,8 +48,6 @@ public class TrendingSecurityView extends FrameLayout implements DTOView<Securit
     private TextView securityType;
 
     private SecurityCompactDTO securityCompactDTO;
-    private boolean mAttachedToWindow;
-    private int mVisibility;
 
     //<editor-fold desc="Constructors">
     public TrendingSecurityView(Context context)
@@ -116,7 +112,7 @@ public class TrendingSecurityView extends FrameLayout implements DTOView<Securit
                     //.downloader(new UrlConnectionDownloader(getContext()))
                     .memoryCache(lruFileCache)
                     .build();
-            //mPicasso.setDebugging(true);
+            mPicasso.setDebugging(true);
         }
 
         stockName = (TextView) findViewById(R.id.stock_name);
@@ -132,33 +128,7 @@ public class TrendingSecurityView extends FrameLayout implements DTOView<Securit
         countryLogo = (ImageUrlView) findViewById(R.id.country_logo);
         date = (TextView) findViewById(R.id.date);
         securityType = (TextView) findViewById(R.id.sec_type);
-        conditionalLoadImages();
-    }
 
-    @Override protected void onAttachedToWindow()
-    {
-        THLog.i(TAG, "Attached to Window");
-        super.onAttachedToWindow();
-        mAttachedToWindow = true;
-        conditionalLoadImages();
-    }
-
-    @Override protected void onWindowVisibilityChanged(int visibility)
-    {
-        THLog.i(TAG, "Visibility changed " + visibility);
-        super.onWindowVisibilityChanged(visibility);
-        this.mVisibility = visibility;
-        conditionalLoadImages();
-    }
-
-    @Override protected void onDetachedFromWindow()
-    {
-        THLog.i(TAG, "Detached from Window");
-        mAttachedToWindow = false;
-        stockLogo.setImageResource(R.drawable.default_image);
-        stockBgLogo.setImageResource(R.drawable.default_image);
-        this.securityCompactDTO = null;
-        super.onDetachedFromWindow();
     }
 
     public boolean isMyUrlOk()
@@ -169,6 +139,20 @@ public class TrendingSecurityView extends FrameLayout implements DTOView<Securit
     public static boolean isUrlOk(String url)
     {
         return (url != null) && (url.length() > 0);
+    }
+
+    @Override protected void onDetachedFromWindow()
+    {
+        stockLogo.setImageResource(R.drawable.default_image);
+        stockBgLogo.setImageResource(R.drawable.default_image);
+
+        // This line forces Picasso to clear the downloads running on the bg
+        mPicasso.load((String) null)
+                .placeholder(R.drawable.default_image)
+                .error(R.drawable.default_image)
+                .into(stockBgLogo);
+
+        super.onDetachedFromWindow();
     }
 
     public void display (final SecurityCompactDTO trend)
@@ -258,24 +242,6 @@ public class TrendingSecurityView extends FrameLayout implements DTOView<Securit
         }
 
         //stockBgLogo.setAlpha(26); //15% opaque
-
-        if (mAttachedToWindow)
-        {
-            loadImages();
-        }
-    }
-
-    public boolean canDisplayImages()
-    {
-        return (mVisibility == VISIBLE) && mAttachedToWindow;
-    }
-
-    public void conditionalLoadImages()
-    {
-        if (canDisplayImages())
-        {
-            loadImages();
-        }
     }
 
     public void loadImages ()
@@ -293,13 +259,6 @@ public class TrendingSecurityView extends FrameLayout implements DTOView<Securit
 
         if (isMyUrlOk())
         {
-
-            // This line forces Picasso to clear the downloads running on the bg
-            mPicasso.load((String) null)
-                .placeholder(R.drawable.default_image)
-                .error(R.drawable.default_image)
-                .into(stockBgLogo);
-
             // This sequence gives the opportunity to android to cache the original http image if its cache headers instruct it to.
             Future<?> submitted = KnownExecutorServices.getCacheExecutor().submit(new Runnable()
             {
@@ -316,15 +275,6 @@ public class TrendingSecurityView extends FrameLayout implements DTOView<Securit
                     }
                 }
             });
-
-            if (submitted == null)
-            {
-                THLog.i(TAG, "Future submission was null");
-            }
-            else
-            {
-                THLog.i(TAG, "Future submission was ok");
-            }
         }
         else
         {
@@ -349,7 +299,17 @@ public class TrendingSecurityView extends FrameLayout implements DTOView<Securit
                 }
             });
         }
+
+/*        THLog.i(TAG, "Picasso Stats:"
+                + "\naverageOriginalBitmapSize:" + mPicasso.getSnapshot().averageOriginalBitmapSize
+                + "\naverageTransformedBitmapSize:" + mPicasso.getSnapshot().averageTransformedBitmapSize
+                + "\ntotalOriginalBitmapSize:" + mPicasso.getSnapshot().totalOriginalBitmapSize
+                + "\ntotalTransformedBitmapSize:" + mPicasso.getSnapshot().totalTransformedBitmapSize
+        );*/
+        mPicasso.getSnapshot().dump();
     }
+
+
 
     private Callback createLogoReadyCallback()
     {

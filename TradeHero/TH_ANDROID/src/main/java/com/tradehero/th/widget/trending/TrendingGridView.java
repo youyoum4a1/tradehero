@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.GridView;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
+import com.tradehero.th.adapters.TrendingAdapter;
 import java.util.regex.Pattern;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 9/13/13 Time: 4:36 PM To change this template use File | Settings | File Templates. */
@@ -32,7 +33,16 @@ public class TrendingGridView extends GridView
     }
     //</editor-fold>
 
+    @Override protected void onFinishInflate()
+    {
+        super.onFinishInflate();
+        init();
+    }
+
     protected void init ()
     {
+        // TODO less hacky
+        if (getAdapter() instanceof OnScrollListener)
+        setOnScrollListener((OnScrollListener) getAdapter());
     }
 }

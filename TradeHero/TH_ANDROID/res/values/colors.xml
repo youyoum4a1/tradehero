@@ -7,4 +7,5 @@
   <color name="home_screen_list_item_background">#f2f2f2</color>
   <color name="timeline_item">#000000</color>
   <color name="timeline_item_link">#364667</color>
+  <color name="trending_grid_item_stock_name">#384152</color>
 </resources>

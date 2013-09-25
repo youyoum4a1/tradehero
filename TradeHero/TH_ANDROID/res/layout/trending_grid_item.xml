@@ -5,6 +5,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:background="@drawable/trending_grid_item_bg"
+
     >
 
     <com.tradehero.common.widget.ImageUrlView
@@ -31,7 +32,7 @@
             android:layout_centerHorizontal="true"
             android:ellipsize="end"
             android:lines="1"
-            android:textColor="@color/black"
+            android:textColor="@color/trending_grid_item_stock_name"
             android:text=""
             android:textStyle="bold" />
 
@@ -58,7 +59,7 @@
             android:layout_centerHorizontal="true"
             android:ellipsize="end"
             android:lines="1"
-            android:textColor="@color/black"
+            android:textColor="@color/trending_grid_item_stock_name"
             android:text="" />
 
         <LinearLayout

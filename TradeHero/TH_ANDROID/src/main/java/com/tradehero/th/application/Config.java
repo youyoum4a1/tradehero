@@ -17,19 +17,9 @@ public class Config
         return Application.context().getResources().getString(key);
     }
 
-    public static String getTrendingFeed()
-    {
-        return localValueForKey(R.string.trending_feed);
-    }
-
     public static String getTrendingChartUrl()
     {
         return localValueForKey(R.string.trending_chart);
-    }
-
-    public static String getYahooQuotes()
-    {
-        return localValueForKey(R.string.yahoo_quotes);
     }
 
     public static String getTrendRssFeed()
@@ -45,10 +35,5 @@ public class Config
     public static String getTrendNewBuyQuotes()
     {
         return localValueForKey(R.string.trend_new_buy_quotes);
-    }
-
-    public static String getTrendSearch()
-    {
-        return localValueForKey(R.string.trend_search);
     }
 }

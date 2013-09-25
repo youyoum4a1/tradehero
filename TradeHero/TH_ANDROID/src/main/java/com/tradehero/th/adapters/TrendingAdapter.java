@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import com.fedorvlasov.lazylist.ImageLoader;
@@ -14,7 +15,8 @@ import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.widget.trending.TrendingSecurityView;
 import java.util.List;
 
-public class TrendingAdapter extends ArrayAdapter<SecurityCompactDTO>
+public class TrendingAdapter extends DTOAdapter<SecurityCompactDTO, TrendingSecurityView>
+    implements AbsListView.OnScrollListener
 {
     private final static String TAG = TrendingAdapter.class.getSimpleName();
 
@@ -28,28 +30,35 @@ public class TrendingAdapter extends ArrayAdapter<SecurityCompactDTO>
     public static final int SECURITY_SEARCH_CELL_LAYOUT = R.layout.search_stock_item;
 
     private int layoutResourceId;
+    private int scrollState;
 
-    public TrendingAdapter(final Context context, final List<SecurityCompactDTO> trendList)
+    public TrendingAdapter(Context context, LayoutInflater inflater, int layoutResourceId)
     {
-        this(context, trendList, SECURITY_TRENDING_CELL_LAYOUT);
+        super(context, inflater, layoutResourceId);
     }
 
-    public TrendingAdapter(final Context context, final List<SecurityCompactDTO> trendList, int layoutResourceId)
+    @Override protected View getView(int position, final TrendingSecurityView convertView)
     {
-        super(context, 0, trendList);
-        this.layoutResourceId = layoutResourceId;
-    }
-
-    public View getView(final int position, View convertView, final ViewGroup parent)
-    {
-        if (convertView == null)
+        if (scrollState != SCROLL_STATE_FLING)
         {
-            convertView = LayoutInflater.from(getContext()).inflate(layoutResourceId, null);
+            convertView.post(new Runnable()
+            {
+                @Override public void run()
+                {
+                    convertView.loadImages();
+                }
+            });
         }
-
-        final TrendingSecurityView trendingSecurityView = ((TrendingSecurityView) convertView);
-        trendingSecurityView.display(getItem(position));
-
         return convertView;
+    }
+
+    @Override public void onScrollStateChanged(AbsListView absListView, int state)
+    {
+        scrollState = state;
+    }
+
+    @Override public void onScroll(AbsListView absListView, int i, int i2, int i3)
+    {
+        //To change body of implemented methods use File | Settings | File Templates.
     }
 }

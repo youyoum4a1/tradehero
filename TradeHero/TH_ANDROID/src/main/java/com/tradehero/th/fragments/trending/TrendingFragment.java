@@ -176,7 +176,9 @@ public class TrendingFragment extends SherlockFragment
         this.securityCompactDTOs = trendList;
         if (trendingAdapter == null)
         {
-            trendingAdapter = new TrendingAdapter(getActivity(), trendList);
+            // trendList
+            trendingAdapter = new TrendingAdapter(getActivity(), getActivity().getLayoutInflater(), TrendingAdapter.SECURITY_TRENDING_CELL_LAYOUT);
+            trendingAdapter.setItems(trendList);
         }
         else
         {
