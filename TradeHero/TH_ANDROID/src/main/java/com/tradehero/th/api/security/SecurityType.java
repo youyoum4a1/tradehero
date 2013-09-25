@@ -3,6 +3,8 @@ package com.tradehero.th.api.security;
 import com.tradehero.common.localisation.Translatable;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
+import java.util.HashMap;
+import java.util.Map;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 9/4/13 Time: 5:31 PM To change this template use File | Settings | File Templates. */
 public enum SecurityType
@@ -41,6 +43,7 @@ public enum SecurityType
     STAPLED_SEC (11);
 
     private static final String TAG = SecurityType.class.getSimpleName();
+    private static Map<Integer, SecurityType> valuesMap;
 
     private final int value;
     private SecurityType(int value)
@@ -51,6 +54,24 @@ public enum SecurityType
     public int getValue()
     {
         return value;
+    }
+
+    private static Map<Integer, SecurityType> getValuesMap()
+    {
+        if (valuesMap == null)
+        {
+            valuesMap = new HashMap<>();
+            for(SecurityType securityType:SecurityType.values())
+            {
+                valuesMap.put(securityType.value, securityType);
+            }
+        }
+        return valuesMap;
+    }
+
+    public static SecurityType getByValue(int value)
+    {
+        return getValuesMap().get(value);
     }
 
     public static int getStringResourceId(SecurityType securityType)

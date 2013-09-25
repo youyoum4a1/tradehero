@@ -1,9 +1,12 @@
 package com.tradehero.th.widget.trade;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.util.AttributeSet;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.TableLayout;
 import android.widget.TextView;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
@@ -12,32 +15,59 @@ import com.tradehero.th.utills.Logger;
 import com.tradehero.th.utills.YUtils;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 9/23/13 Time: 2:55 PM To change this template use File | Settings | File Templates. */
-public class PricingBidAskView extends RelativeLayout implements DTOView<SecurityCompactDTO>
+public class PricingBidAskView extends LinearLayout implements DTOView<SecurityCompactDTO>
 {
     private static final String TAG = PricingBidAskView.class.getSimpleName();
     private TextView mLastPrice;
     private TextView mAskPrice;
     private TextView mBidPrice;
+    private TextView mAskPriceHint;
+    private TextView mBidPriceHint;
     private ProgressBar mProgressBar;
+    private int activeColor;
+    private int inactiveColor;
 
     private SecurityCompactDTO securityCompactDTO;
+    private boolean buy = true;
 
     //<editor-fold desc="Constructors">
     public PricingBidAskView(Context context)
     {
-        super(context);    //To change body of overridden methods use File | Settings | File Templates.
+        super(context);
+        init();
     }
 
     public PricingBidAskView(Context context, AttributeSet attrs)
     {
-        super(context, attrs);    //To change body of overridden methods use File | Settings | File Templates.
+        super(context, attrs);
+        init();
     }
 
     public PricingBidAskView(Context context, AttributeSet attrs, int defStyle)
     {
-        super(context, attrs, defStyle);    //To change body of overridden methods use File | Settings | File Templates.
+        super(context, attrs, defStyle);
+        init();
     }
     //</editor-fold>
+
+    //<editor-fold desc="Accessors">
+    public boolean isBuy()
+    {
+        return buy;
+    }
+
+    public void setBuy(boolean buy)
+    {
+        this.buy = buy;
+        updateVisibilities();
+    }
+    //</editor-fold>
+
+    private void init()
+    {
+        activeColor = getResources().getColor(R.color.black);
+        inactiveColor = getResources().getColor(R.color.title);
+    }
 
     @Override protected void onFinishInflate()
     {
@@ -50,6 +80,8 @@ public class PricingBidAskView extends RelativeLayout implements DTOView<Securit
         mLastPrice = (TextView) findViewById(R.id.last_price);
         mAskPrice = (TextView) findViewById(R.id.ask_price);
         mBidPrice = (TextView) findViewById(R.id.bid_price);
+        mAskPriceHint = (TextView) findViewById(R.id.ask_price_hint);
+        mBidPriceHint = (TextView) findViewById(R.id.bid_price_hint);
         mProgressBar = (ProgressBar) findViewById(R.id.progress);
         display();
     }
@@ -79,7 +111,7 @@ public class PricingBidAskView extends RelativeLayout implements DTOView<Securit
         }
         else
         {
-            if (securityCompactDTO.lastPrice == null && mLastPrice != null)
+            if (mLastPrice != null && securityCompactDTO.lastPrice == null)
             {
                 mLastPrice.setText(String.format("%s-", securityCompactDTO.currencyDisplay));
             }
@@ -88,15 +120,44 @@ public class PricingBidAskView extends RelativeLayout implements DTOView<Securit
                 mLastPrice.setText(String.format("%s%.2f", securityCompactDTO.currencyDisplay, securityCompactDTO.lastPrice));
             }
 
-            if (mAskPrice != null)
+            if (mAskPrice != null && securityCompactDTO.askPrice == null)
             {
-                mAskPrice.setText(String.format("%.2f%s", securityCompactDTO.askPrice, getResources().getString(R.string.ask_with_bracket)));
+                mAskPrice.setText("N/A");
+            }
+            else
+            {
+                mAskPrice.setText(String.format("%.2f", securityCompactDTO.askPrice));
             }
 
-            if (mBidPrice != null)
+            if (mBidPrice != null && securityCompactDTO.bidPrice == null)
             {
-                mBidPrice.setText(String.format(" x %.2f%s", securityCompactDTO.bidPrice, getResources().getString(R.string.bid_with_bracket)));
+                mBidPrice.setText("N/A");
             }
+            else
+            {
+                mBidPrice.setText(String.format(" %.2f", securityCompactDTO.bidPrice));
+            }
+        }
+        updateVisibilities();
+    }
+
+    private void updateVisibilities()
+    {
+        if (mAskPriceHint != null)
+        {
+            mAskPriceHint.setTextColor(buy ? inactiveColor : activeColor);
+        }
+        if (mAskPrice != null)
+        {
+            mAskPrice.setTextColor(buy ? inactiveColor : activeColor);
+        }
+        if (mBidPriceHint != null)
+        {
+            mBidPriceHint.setTextColor(buy ? activeColor : inactiveColor);
+        }
+        if (mBidPrice != null)
+        {
+            mBidPrice.setTextColor(buy ? activeColor : inactiveColor);
         }
     }
 }

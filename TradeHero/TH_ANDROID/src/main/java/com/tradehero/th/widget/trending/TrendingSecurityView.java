@@ -12,7 +12,7 @@ import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 import com.tradehero.common.cache.LruMemFileCache;
 import com.tradehero.common.graphics.AbstractSequentialTransformation;
-import com.tradehero.common.graphics.GaussianTransformation;
+import com.tradehero.common.graphics.FastBlurTransformation;
 import com.tradehero.common.graphics.GrayscaleTransformation;
 import com.tradehero.common.graphics.RoundedCornerTransformation;
 import com.tradehero.common.graphics.WhiteToTransparentTransformation;
@@ -89,7 +89,7 @@ public class TrendingSecurityView extends FrameLayout implements DTOView<Securit
                 }
             };
             ((AbstractSequentialTransformation) backgroundTransformation).add(new GrayscaleTransformation());
-            ((AbstractSequentialTransformation) backgroundTransformation).add(new GaussianTransformation());
+            ((AbstractSequentialTransformation) backgroundTransformation).add(new FastBlurTransformation(10));
             ((AbstractSequentialTransformation) backgroundTransformation).add(new RoundedCornerTransformation(
                             getResources().getDimensionPixelSize(R.dimen.trending_grid_item_corner_radius),
                             getResources().getColor(R.color.black)));
@@ -221,7 +221,7 @@ public class TrendingSecurityView extends FrameLayout implements DTOView<Securit
             // TODO
         }
 
-        if (securityType != null && securityCompactDTO.securityType != null)
+        if (securityType != null && securityCompactDTO.getSecurityType() != null)
         {
             securityType.setText(trend.getSecurityTypeStringResourceId());
         }
@@ -271,6 +271,7 @@ public class TrendingSecurityView extends FrameLayout implements DTOView<Securit
                                 .placeholder(R.drawable.default_image)
                                 .error(R.drawable.default_image)
                                 .transform(foregroundTransformation)
+                                    .noFade()
                                 .into(stockLogo, loadIntoBg);
                     }
                 }
@@ -288,6 +289,7 @@ public class TrendingSecurityView extends FrameLayout implements DTOView<Securit
                 mPicasso.load((String) null)
                         .placeholder(R.drawable.default_image)
                         .error(R.drawable.default_image)
+                        .noFade()
                         .into(stockLogo);
             }
 
@@ -336,6 +338,7 @@ public class TrendingSecurityView extends FrameLayout implements DTOView<Securit
                             .resize(getWidth(), getHeight())
                             .centerCrop()
                             .transform(backgroundTransformation)
+                            .noFade()
                             .into(stockBgLogo);
                 }
                 else if (stockBgLogo != null && securityCompactDTO != null)
@@ -344,6 +347,7 @@ public class TrendingSecurityView extends FrameLayout implements DTOView<Securit
                             .resize(getWidth(), getHeight())
                             .centerCrop()
                             .transform(backgroundTransformation)
+                            .noFade()
                             .into(stockBgLogo);
                 }
             }

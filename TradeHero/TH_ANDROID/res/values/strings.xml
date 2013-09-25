@@ -52,9 +52,9 @@
   <string name="tab_trade">TRADE</string>
   <string name="tab_stock_info">STOCK INFO</string>
   <string name="tab_news">NEWS</string>
-  <string name="price_as_of">Price as of</string>
-  <string name="cash_available">Cash Available</string>
-  <string name="share_available">Shares Available</string>
+  <string name="price_as_of">As of</string>
+  <string name="cash_available">Cash Avail.</string>
+  <string name="share_available">Shares Avail.</string>
   <string name="quantity">Quantity</string>
   <string name="trade_value">Trade Value</string>
   <string name="loading_loading">Loading...</string>

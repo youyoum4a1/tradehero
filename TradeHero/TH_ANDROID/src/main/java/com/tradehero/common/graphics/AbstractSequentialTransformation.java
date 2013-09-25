@@ -33,7 +33,10 @@ abstract public class AbstractSequentialTransformation implements Transformation
         {
             previous = converted;
             converted = transformation.transform(previous);
-            previous.recycle();
+            if (previous != converted)
+            {
+                previous.recycle();
+            }
         }
 
         if (original != converted)
