@@ -84,7 +84,7 @@ public class TimelineFragment extends ItemListFragment<TimelineItem>
 
     private TimelinePagedItemListLoader createTimelineLoader()
     {
-        TimelinePagedItemListLoader timelineLoader = new TimelinePagedItemListLoader(getActivity(), timelineListView);
+        TimelinePagedItemListLoader timelineLoader = new TimelinePagedItemListLoader(getActivity());
         timelineLoader.setItemsPerPage(42);
         timelineLoader.setOwnerId(profileId);
         return timelineLoader;
