@@ -6,10 +6,7 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
-import com.squareup.picasso.Cache;
-import com.squareup.picasso.Callback;
-import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Transformation;
+import com.squareup.picasso.*;
 import com.tradehero.common.cache.LruMemFileCache;
 import com.tradehero.common.graphics.AbstractSequentialTransformation;
 import com.tradehero.common.graphics.FastBlurTransformation;
@@ -67,66 +64,78 @@ public class TrendingSecurityView extends FrameLayout implements DTOView<Securit
 
     @Override protected void onFinishInflate()
     {
-        THLog.i(TAG, "OnFinishInflate");
         super.onFinishInflate();
         init();
     }
 
     protected void init ()
     {
-        if (foregroundTransformation == null)
-        {
-            foregroundTransformation = new WhiteToTransparentTransformation();
-        }
-        if (backgroundTransformation == null)
-        {
-            backgroundTransformation = new AbstractSequentialTransformation()
-            {
-                @Override public String key()
-                {
-                    return "toRoundedGaussianGrayscale11";
-                }
-            };
-            ((AbstractSequentialTransformation) backgroundTransformation).add(new GrayscaleTransformation());
-            ((AbstractSequentialTransformation) backgroundTransformation).add(new FastBlurTransformation(10));
-            ((AbstractSequentialTransformation) backgroundTransformation).add(new RoundedCornerTransformation(
-                            getResources().getDimensionPixelSize(R.dimen.trending_grid_item_corner_radius),
-                            getResources().getColor(R.color.black)));
-        }
-
-        if (mPicasso == null)
-        {
-            Cache lruFileCache = null;
-            try
-            {
-                lruFileCache = new LruMemFileCache(getContext());
-                THLog.i(TAG, "Memory cache size " + lruFileCache.maxSize());
-            }
-            catch (Exception e)
-            {
-                THLog.e(TAG, "Failed to create LRU", e);
-            }
-
-            mPicasso = new Picasso.Builder(getContext())
-                    //.downloader(new UrlConnectionDownloader(getContext()))
-                    .memoryCache(lruFileCache)
-                    .build();
-            mPicasso.setDebugging(true);
-        }
-
-        stockName = (TextView) findViewById(R.id.stock_name);
-        exchangeSymbol = (TextView) findViewById(R.id.exchange_symbol);
-        profitIndicator = (TextView) findViewById(R.id.profit_indicator);
-        currencyDisplay = (TextView) findViewById(R.id.currency_display);
-        lastPrice = (TextView) findViewById(R.id.last_price);
-        marketCloseIcon = (ImageView) findViewById(R.id.ic_market_close);
-        stockLogo = (ImageView) findViewById(R.id.stock_logo);
-        stockBgLogo = (ImageView) findViewById(R.id.stock_bg_logo);
-        countryLogo = (ImageView) findViewById(R.id.country_logo);
-        date = (TextView) findViewById(R.id.date);
-        securityType = (TextView) findViewById(R.id.sec_type);
+        createTransformations();
+        createPicasso();
+        fetchViews();
 
     }
+
+        private void createTransformations()
+        {
+            if (foregroundTransformation == null)
+            {
+                foregroundTransformation = new WhiteToTransparentTransformation();
+            }
+            if (backgroundTransformation == null)
+            {
+                backgroundTransformation = new AbstractSequentialTransformation()
+                {
+                    @Override public String key()
+                    {
+                        return "toRoundedGaussianGrayscale11";
+                    }
+                };
+                ((AbstractSequentialTransformation) backgroundTransformation).add(new GrayscaleTransformation());
+                ((AbstractSequentialTransformation) backgroundTransformation).add(new FastBlurTransformation(10));
+                ((AbstractSequentialTransformation) backgroundTransformation).add(new RoundedCornerTransformation(
+                                getResources().getDimensionPixelSize(R.dimen.trending_grid_item_corner_radius),
+                                getResources().getColor(R.color.black)));
+            }
+        }
+
+        private void createPicasso()
+        {
+            if (mPicasso == null)
+            {
+                Cache lruFileCache = null;
+                try
+                {
+                    lruFileCache = new LruMemFileCache(getContext());
+                    THLog.i(TAG, "Memory cache size " + lruFileCache.maxSize());
+                }
+                catch (Exception e)
+                {
+                    THLog.e(TAG, "Failed to create LRU", e);
+                }
+
+                mPicasso = new Picasso.Builder(getContext())
+                        //.downloader(new UrlConnectionDownloader(getContext()))
+                        .memoryCache(lruFileCache)
+                        .build();
+                mPicasso.setDebugging(true);
+            }
+        }
+
+        private void fetchViews()
+        {
+            stockName = (TextView) findViewById(R.id.stock_name);
+            exchangeSymbol = (TextView) findViewById(R.id.exchange_symbol);
+            profitIndicator = (TextView) findViewById(R.id.profit_indicator);
+            currencyDisplay = (TextView) findViewById(R.id.currency_display);
+            lastPrice = (TextView) findViewById(R.id.last_price);
+            marketCloseIcon = (ImageView) findViewById(R.id.ic_market_close);
+            stockLogo = (ImageView) findViewById(R.id.stock_logo);
+            stockBgLogo = (ImageView) findViewById(R.id.stock_bg_logo);
+            countryLogo = (ImageView) findViewById(R.id.country_logo);
+            date = (TextView) findViewById(R.id.date);
+            securityType = (TextView) findViewById(R.id.sec_type);
+        }
 
     public boolean isMyUrlOk()
     {
@@ -140,23 +149,39 @@ public class TrendingSecurityView extends FrameLayout implements DTOView<Securit
 
     @Override protected void onDetachedFromWindow()
     {
-        // This line forces Picasso to clear the downloads running on the bg
-        mPicasso.load((String) null)
-                .placeholder(R.drawable.default_image)
-                .error(R.drawable.default_image)
-                .into(stockBgLogo);
+        clearImageViewUrls();
+        clearRunningOperations();
 
         super.onDetachedFromWindow();
     }
 
-    public void display (final SecurityCompactDTO trend)
+        private void clearImageViewUrls()
+        {
+            stockLogo.setTag(R.string.image_url, null);
+            stockBgLogo.setTag(R.string.image_url, null);
+        }
+
+        private void clearRunningOperations()
+        {
+            mPicasso.load((String) null)
+                    .placeholder(R.drawable.default_image)
+                    .error(R.drawable.default_image)
+                    .into(stockLogo);
+
+            mPicasso.load((String) null)
+                    .placeholder(R.drawable.default_image)
+                    .error(R.drawable.default_image)
+                    .into(stockBgLogo);
+        }
+
+    @Override public void display (final SecurityCompactDTO trend)
     {
         if (this.securityCompactDTO != null && trend.name.equals(this.securityCompactDTO.name))
         {
-            //THLog.d(TAG, "Same securityCompactDTO again " + securityCompactDTO.name);
             return;
             // Note that this prevents updating values inside the securityCompactDTO
         }
+
         this.securityCompactDTO = trend;
         stockName.setText(trend.name);
         exchangeSymbol.setText(trend.getExchangeSymbol());
@@ -235,105 +260,69 @@ public class TrendingSecurityView extends FrameLayout implements DTOView<Securit
             countryLogo.setImageResource(trend.getExchangeLogoId());
         }
 
-        //stockBgLogo.setAlpha(26); //15% opaque
+        storeImageUrlInImageViews();
+
     }
+
+        private void storeImageUrlInImageViews()
+        {
+            if (stockLogo != null)
+            {
+                stockLogo.setTag(R.string.image_url, this.securityCompactDTO.imageBlobUrl);
+            }
+
+            if (stockBgLogo != null)
+            {
+                stockBgLogo.setTag(R.string.image_url, this.securityCompactDTO.imageBlobUrl);
+            }
+        }
+
 
     public void loadImages ()
     {
-        if (stockLogo != null)
-        {
-            stockLogo.setTag(R.string.image_url, this.securityCompactDTO.imageBlobUrl);
-        }
-        if (stockBgLogo != null)
-        {
-            stockBgLogo.setTag(R.string.image_url, this.securityCompactDTO.imageBlobUrl);
-        }
-
-        final Callback loadIntoBg = createLogoReadyCallback();
-
         if (isMyUrlOk())
         {
-            // This sequence gives the opportunity to android to cache the original http image if its cache headers instruct it to.
-            Future<?> submitted = KnownExecutorServices.getCacheExecutor().submit(new Runnable()
+            loadImageInTarget(stockLogo, foregroundTransformation);
+            loadImageInTarget(stockBgLogo, backgroundTransformation, getMeasuredWidth(), getMeasuredHeight());
+        }
+        else
+        {
+            THLog.i(TAG, "no url");
+            mPicasso.load(securityCompactDTO.getExchangeLogoId())
+                    .placeholder(R.drawable.default_image)
+                    .error(R.drawable.default_image)
+                    .into(stockLogo);
+        }
+    }
+
+        private void loadImageInTarget(final ImageView target, final Transformation t)
+        {
+            loadImageInTarget(target, t, 0, 0);
+        }
+
+        private void loadImageInTarget(final ImageView target, final Transformation t, final int resizeToWidth, final int resizeToHeight)
+        {
+            KnownExecutorServices.getCacheExecutor().submit(new Runnable()
             {
                 @Override public void run()
                 {
-                    if (stockLogo != null && stockLogo.getTag(R.string.image_url) != null)
+                    if (target != null && target.getTag(R.string.image_url) != null)
                     {
-                        THLog.i(TAG, "Loading Fore for " + stockLogo.getTag(R.string.image_url));
-                        mPicasso.load(stockLogo.getTag(R.string.image_url).toString())
-                                .placeholder(R.drawable.default_image)
-                                .error(R.drawable.default_image)
-                                .transform(foregroundTransformation)
-                                .into(stockLogo, loadIntoBg);
+                        RequestCreator requestCreator = mPicasso.load(target.getTag(R.string.image_url).toString())
+                                                                .placeholder(R.drawable.default_image)
+                                                                .error(R.drawable.default_image);
+
+                        if (resizeToWidth > 0 && resizeToHeight > 0)
+                        {
+                            requestCreator = requestCreator.resize(resizeToWidth, resizeToHeight).centerCrop();
+                        }
+
+                        requestCreator.transform(t)
+                        .into(target);
                     }
                 }
             });
         }
-        else
-        {
-            // These ensure that views with a missing image do not receive images from elsewhere
-            if (stockLogo != null && countryLogo == null && this.securityCompactDTO != null)
-            {
-                stockLogo.setImageResource(this.securityCompactDTO.getExchangeLogoId());
-            }
-            else if (stockLogo != null)
-            {
-                mPicasso.load((String) null)
-                        .placeholder(R.drawable.default_image)
-                        .error(R.drawable.default_image)
-                        .into(stockLogo);
-            }
-
-            post(new Runnable()
-            {
-                @Override public void run()
-                {
-                    loadIntoBg.onSuccess();
-                }
-            });
-        }
-        mPicasso.getSnapshot().dump();
-    }
 
 
-
-    private Callback createLogoReadyCallback()
-    {
-        return new Callback()
-        {
-            @Override public void onError()
-            {
-                loadBg();
-            }
-
-            @Override public void onSuccess()
-            {
-                loadBg();
-            }
-
-            public void loadBg ()
-            {
-                if (stockBgLogo != null && stockBgLogo.getTag(R.string.image_url) != null && TrendingSecurityView.isUrlOk(stockBgLogo.getTag(R.string.image_url).toString()))
-                {
-                    THLog.i(TAG, "Loading Bg for " + stockBgLogo.getTag(R.string.image_url));
-                    mPicasso.load(stockBgLogo.getTag(R.string.image_url).toString())
-                            .placeholder(R.drawable.default_image)
-                            .error(R.drawable.default_image)
-                            .resize(getWidth(), getHeight())
-                            .centerCrop()
-                            .transform(backgroundTransformation)
-                            .into(stockBgLogo);
-                }
-                else if (stockBgLogo != null && securityCompactDTO != null)
-                {
-                    mPicasso.load(securityCompactDTO.getExchangeLogoId())
-                            .resize(getWidth(), getHeight())
-                            .centerCrop()
-                            .transform(backgroundTransformation)
-                            .into(stockBgLogo);
-                }
-            }
-        };
-    }
 }

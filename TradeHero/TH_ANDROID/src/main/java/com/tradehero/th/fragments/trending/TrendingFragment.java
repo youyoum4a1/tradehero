@@ -16,6 +16,7 @@ import com.actionbarsherlock.app.SherlockFragment;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.common.utils.THLog;
+import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.TrendingAdapter;
 import com.tradehero.th.api.security.SecurityCompactDTO;
@@ -115,9 +116,9 @@ public class TrendingFragment extends SherlockFragment
             {
                 SecurityCompactDTO securityCompactDTO = (SecurityCompactDTO) parent.getItemAtPosition(position);
 
-                //THToast.show("Disabled for now");
+                THToast.show("Disabled for now");
 
-                notifyTradeRequested(securityCompactDTO);
+                //notifyTradeRequested(securityCompactDTO);
             }
         });
 
