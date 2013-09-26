@@ -1,17 +1,15 @@
 package com.tradehero.th.loaders;
 
 import android.content.Context;
-import android.view.View;
 import com.tradehero.common.utils.THLog;
-import com.tradehero.common.utils.THToast;
-import com.tradehero.th.R;
 import com.tradehero.th.api.local.TimelineItem;
-import com.tradehero.th.api.local.TimelineItemBuilder;
-import com.tradehero.th.api.timeline.TimelineDTO;
-import com.tradehero.th.network.NetworkEngine;
-import com.tradehero.th.network.service.UserTimelineService;
+import com.tradehero.th.persistence.TimelineManager;
+import com.tradehero.th.persistence.TimelineStore.TimelineFilter;
+import com.tradehero.th.utils.DaggerUtils;
+import dagger.Lazy;
+import java.io.IOException;
 import java.util.List;
-import retrofit.RetrofitError;
+import javax.inject.Inject;
 
 /** Created with IntelliJ IDEA. User: tho Date: 9/12/13 Time: 11:37 AM Copyright (c) TradeHero */
 public class TimelinePagedItemListLoader extends PagedItemListLoader<TimelineItem>
@@ -22,9 +20,12 @@ public class TimelinePagedItemListLoader extends PagedItemListLoader<TimelineIte
     private Integer maxItemId;
     private Integer minItemId;
 
+    @Inject TimelineManager timelineManager;
+
     public TimelinePagedItemListLoader(Context context)
     {
         super(context);
+        DaggerUtils.inject(this);
     }
 
     @Override public List<TimelineItem> loadInBackground()
@@ -38,10 +39,18 @@ public class TimelinePagedItemListLoader extends PagedItemListLoader<TimelineIte
             --maxItemId;
         }
         THLog.d(TAG, "Start loading timeline with maxItemId=" + maxItemId + "/ minItemId=" + minItemId);
-        TimelineDTO timelineDTO = NetworkEngine.createService(UserTimelineService.class).getTimeline(ownerId, maxItemId, minItemId, itemsPerPage);
 
-        TimelineItemBuilder timelineBuilder = new TimelineItemBuilder(timelineDTO);
-        return timelineBuilder.getItems();
+        TimelineFilter filter = new TimelineFilter(ownerId, maxItemId, minItemId, itemsPerPage);
+
+        try
+        {
+            return timelineManager.getTimeline(filter, true);
+        }
+        catch (IOException e)
+        {
+            // TODO Exception come from loading timelines from database
+            return null;
+        }
     }
 
     @Override protected void onLoadNextPage(TimelineItem lastItemId)

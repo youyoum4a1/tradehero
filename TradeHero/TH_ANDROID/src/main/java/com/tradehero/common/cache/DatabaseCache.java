@@ -22,8 +22,8 @@ public class DatabaseCache
 {
     private static final String TAG = "DatabaseCache";
 
-    //@Inject
-    private Lazy<CacheHelper> helperProvider;
+    @Inject
+    Lazy<CacheHelper> helperProvider;
 
     /**
      * Get writable database

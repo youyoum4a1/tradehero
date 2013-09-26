@@ -4,13 +4,17 @@ import android.content.Context;
 import android.database.DatabaseErrorHandler;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import com.tradehero.th.base.Application;
 
 /** Created with IntelliJ IDEA. User: tho Date: 9/26/13 Time: 3:45 PM Copyright (c) TradeHero */
 public class CacheHelper extends SQLiteOpenHelper
 {
-    public CacheHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version)
+    private static final String name = "cache.db";
+    private static final int version = 8;
+
+    public CacheHelper()
     {
-        super(context, name, factory, version);
+        super(Application.context(), name, null, version);
     }
 
     @Override public void onCreate(SQLiteDatabase db)

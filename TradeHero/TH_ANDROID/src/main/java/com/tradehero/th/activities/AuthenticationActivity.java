@@ -337,7 +337,7 @@ public class AuthenticationActivity extends SherlockFragmentActivity
             if (!isSigningUp())
             {
                 // HACK
-                if (providerName != "Email")
+                if (!"Email".equals(providerName))
                 {
                     progressDialog.setMessage(String.format(getString(R.string.connecting_tradehero), providerName));
                 }
