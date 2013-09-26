@@ -21,17 +21,10 @@ public class TimelinePagedItemListLoader extends PagedItemListLoader<TimelineIte
     private int ownerId;
     private Integer maxItemId;
     private Integer minItemId;
-    private View postableView;
 
     public TimelinePagedItemListLoader(Context context)
     {
         super(context);
-    }
-
-    public TimelinePagedItemListLoader(Context context, View postableView)
-    {
-        super(context);
-        this.postableView = postableView;
     }
 
     @Override public List<TimelineItem> loadInBackground()
@@ -44,17 +37,8 @@ public class TimelinePagedItemListLoader extends PagedItemListLoader<TimelineIte
         {
             --maxItemId;
         }
-        TimelineDTO timelineDTO = null;
-        try
-        {
-            THLog.d(TAG, "Start loading timeline with maxItemId=" + maxItemId + "/ minItemId=" + minItemId);
-            timelineDTO = NetworkEngine.createService(UserTimelineService.class).getTimeline(ownerId, maxItemId, minItemId, itemsPerPage);
-        }
-        catch (RetrofitError e)
-        {
-            THToast.post(postableView, R.string.network_error);
-            THLog.e(TAG, "Could not load timeline items", e);
-        }
+        THLog.d(TAG, "Start loading timeline with maxItemId=" + maxItemId + "/ minItemId=" + minItemId);
+        TimelineDTO timelineDTO = NetworkEngine.createService(UserTimelineService.class).getTimeline(ownerId, maxItemId, minItemId, itemsPerPage);
 
         TimelineItemBuilder timelineBuilder = new TimelineItemBuilder(timelineDTO);
         return timelineBuilder.getItems();
