@@ -44,7 +44,7 @@ public class ImageUrlView extends ImageView
     {
         this.url = url;
     }
-
+/*
     @Override public void setImageBitmap(final Bitmap bm)
     {
         THLog.i(TAG, "Setting ImageBitmap " + softId);
@@ -107,7 +107,7 @@ public class ImageUrlView extends ImageView
                 }
             });
         }
-    }
+    }*/
 
     @Override protected void onAttachedToWindow()
     {

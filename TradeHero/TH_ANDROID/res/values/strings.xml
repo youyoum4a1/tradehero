@@ -120,5 +120,7 @@
   <string name="home">Home</string>
   <string name="portfolio">Portfolio</string>
   <string name="store">Store</string>
+  <string name="logo">logo</string>
+  <string name="image_url">image_url</string>
 
 </resources>

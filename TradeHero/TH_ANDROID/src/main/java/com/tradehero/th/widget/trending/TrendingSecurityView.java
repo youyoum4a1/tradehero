@@ -18,7 +18,6 @@ import com.tradehero.common.graphics.RoundedCornerTransformation;
 import com.tradehero.common.graphics.WhiteToTransparentTransformation;
 import com.tradehero.common.thread.KnownExecutorServices;
 import com.tradehero.common.utils.THLog;
-import com.tradehero.common.widget.ImageUrlView;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.security.SecurityCompactDTO;
@@ -35,9 +34,9 @@ public class TrendingSecurityView extends FrameLayout implements DTOView<Securit
     private static Transformation backgroundTransformation;
     private static Picasso mPicasso;
 
-    private ImageUrlView stockBgLogo;
-    private ImageUrlView stockLogo;
-    private ImageUrlView countryLogo;
+    private ImageView stockBgLogo;
+    private ImageView stockLogo;
+    private ImageView countryLogo;
     private ImageView marketCloseIcon;
     private TextView stockName;
     private TextView exchangeSymbol;
@@ -121,11 +120,9 @@ public class TrendingSecurityView extends FrameLayout implements DTOView<Securit
         currencyDisplay = (TextView) findViewById(R.id.currency_display);
         lastPrice = (TextView) findViewById(R.id.last_price);
         marketCloseIcon = (ImageView) findViewById(R.id.ic_market_close);
-        stockLogo = (ImageUrlView) findViewById(R.id.stock_logo);
-        stockLogo.softId = "logo";
-        stockBgLogo = (ImageUrlView) findViewById(R.id.stock_bg_logo);
-        stockBgLogo.softId = "logoBg";
-        countryLogo = (ImageUrlView) findViewById(R.id.country_logo);
+        stockLogo = (ImageView) findViewById(R.id.stock_logo);
+        stockBgLogo = (ImageView) findViewById(R.id.stock_bg_logo);
+        countryLogo = (ImageView) findViewById(R.id.country_logo);
         date = (TextView) findViewById(R.id.date);
         securityType = (TextView) findViewById(R.id.sec_type);
 
@@ -138,14 +135,11 @@ public class TrendingSecurityView extends FrameLayout implements DTOView<Securit
 
     public static boolean isUrlOk(String url)
     {
-        return (url != null) && (url.length() > 0);
+        return (url != null) && (!url.isEmpty());
     }
 
     @Override protected void onDetachedFromWindow()
     {
-        stockLogo.setImageResource(R.drawable.default_image);
-        stockBgLogo.setImageResource(R.drawable.default_image);
-
         // This line forces Picasso to clear the downloads running on the bg
         mPicasso.load((String) null)
                 .placeholder(R.drawable.default_image)
@@ -164,7 +158,7 @@ public class TrendingSecurityView extends FrameLayout implements DTOView<Securit
             // Note that this prevents updating values inside the securityCompactDTO
         }
         this.securityCompactDTO = trend;
-        stockName.setText(trend.name.trim());
+        stockName.setText(trend.name);
         exchangeSymbol.setText(trend.getExchangeSymbol());
         currencyDisplay.setText(trend.currencyDisplay);
 
@@ -248,11 +242,11 @@ public class TrendingSecurityView extends FrameLayout implements DTOView<Securit
     {
         if (stockLogo != null)
         {
-            stockLogo.setUrl(this.securityCompactDTO.imageBlobUrl);
+            stockLogo.setTag(R.string.image_url, this.securityCompactDTO.imageBlobUrl);
         }
         if (stockBgLogo != null)
         {
-            stockBgLogo.setUrl(this.securityCompactDTO.imageBlobUrl);
+            stockBgLogo.setTag(R.string.image_url, this.securityCompactDTO.imageBlobUrl);
         }
 
         final Callback loadIntoBg = createLogoReadyCallback();
@@ -264,14 +258,13 @@ public class TrendingSecurityView extends FrameLayout implements DTOView<Securit
             {
                 @Override public void run()
                 {
-                    if (stockLogo != null)
+                    if (stockLogo != null && stockLogo.getTag(R.string.image_url) != null)
                     {
-                        THLog.i(TAG, "Loading Fore for " + stockLogo.getUrl());
-                        mPicasso.load(stockLogo.getUrl())
+                        THLog.i(TAG, "Loading Fore for " + stockLogo.getTag(R.string.image_url));
+                        mPicasso.load(stockLogo.getTag(R.string.image_url).toString())
                                 .placeholder(R.drawable.default_image)
                                 .error(R.drawable.default_image)
                                 .transform(foregroundTransformation)
-                                    .noFade()
                                 .into(stockLogo, loadIntoBg);
                     }
                 }
@@ -289,7 +282,6 @@ public class TrendingSecurityView extends FrameLayout implements DTOView<Securit
                 mPicasso.load((String) null)
                         .placeholder(R.drawable.default_image)
                         .error(R.drawable.default_image)
-                        .noFade()
                         .into(stockLogo);
             }
 
@@ -301,13 +293,6 @@ public class TrendingSecurityView extends FrameLayout implements DTOView<Securit
                 }
             });
         }
-
-/*        THLog.i(TAG, "Picasso Stats:"
-                + "\naverageOriginalBitmapSize:" + mPicasso.getSnapshot().averageOriginalBitmapSize
-                + "\naverageTransformedBitmapSize:" + mPicasso.getSnapshot().averageTransformedBitmapSize
-                + "\ntotalOriginalBitmapSize:" + mPicasso.getSnapshot().totalOriginalBitmapSize
-                + "\ntotalTransformedBitmapSize:" + mPicasso.getSnapshot().totalTransformedBitmapSize
-        );*/
         mPicasso.getSnapshot().dump();
     }
 
@@ -329,16 +314,15 @@ public class TrendingSecurityView extends FrameLayout implements DTOView<Securit
 
             public void loadBg ()
             {
-                if (stockBgLogo != null && TrendingSecurityView.isUrlOk(stockBgLogo.getUrl()))
+                if (stockBgLogo != null && stockBgLogo.getTag(R.string.image_url) != null && TrendingSecurityView.isUrlOk(stockBgLogo.getTag(R.string.image_url).toString()))
                 {
-                    THLog.i(TAG, "Loading Bg for " + stockBgLogo.getUrl());
-                    mPicasso.load(stockBgLogo.getUrl())
+                    THLog.i(TAG, "Loading Bg for " + stockBgLogo.getTag(R.string.image_url));
+                    mPicasso.load(stockBgLogo.getTag(R.string.image_url).toString())
                             .placeholder(R.drawable.default_image)
                             .error(R.drawable.default_image)
                             .resize(getWidth(), getHeight())
                             .centerCrop()
                             .transform(backgroundTransformation)
-                            .noFade()
                             .into(stockBgLogo);
                 }
                 else if (stockBgLogo != null && securityCompactDTO != null)
@@ -347,7 +331,6 @@ public class TrendingSecurityView extends FrameLayout implements DTOView<Securit
                             .resize(getWidth(), getHeight())
                             .centerCrop()
                             .transform(backgroundTransformation)
-                            .noFade()
                             .into(stockBgLogo);
                 }
             }

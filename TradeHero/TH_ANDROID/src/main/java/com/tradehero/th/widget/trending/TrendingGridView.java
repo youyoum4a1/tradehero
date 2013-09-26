@@ -3,6 +3,7 @@ package com.tradehero.th.widget.trending;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.GridView;
+import com.tradehero.common.utils.THLog;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 9/13/13 Time: 4:36 PM To change this template use File | Settings | File Templates. */
 public class TrendingGridView extends GridView
@@ -32,10 +33,13 @@ public class TrendingGridView extends GridView
         init();
     }
 
+    @Override protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec)
+    {
+        THLog.i(TAG, String.format("width: %d, height: %d", widthMeasureSpec, heightMeasureSpec));
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+    }
+
     protected void init ()
     {
-        // TODO less hacky
-        if (getAdapter() instanceof OnScrollListener)
-        setOnScrollListener((OnScrollListener) getAdapter());
     }
 }
