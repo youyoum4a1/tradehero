@@ -15,7 +15,12 @@ public class ColorTagProcessor extends RichSpanTextProcessor
         return "color";
     }
 
-    @Override protected Object getSpanElement(String replacement)
+    @Override public String getExtractionPattern()
+    {
+        return "$1";
+    }
+
+    @Override protected Object getSpanElement(String replacement, String ... matchStrings)
     {
         // TODO use input color
         return new ForegroundColorSpan(Color.RED);

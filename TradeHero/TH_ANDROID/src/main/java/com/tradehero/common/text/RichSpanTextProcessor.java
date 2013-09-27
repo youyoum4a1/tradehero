@@ -29,12 +29,20 @@ public abstract class RichSpanTextProcessor implements RichTextProcessor
             int realMatchingEnd = match.end() - spanned;
 
             match2.appendReplacement(sb, getExtractionPattern());
+
+            String[] matchStrings = new String[match2.groupCount()+1];
+            for (int i=0; i<=match2.groupCount(); ++i)
+            {
+                matchStrings[i] = match2.group(i);
+            }
+
             String replacement = sb.substring(realMatchingStart);
 
             source.replace(realMatchingStart, realMatchingEnd, replacement);
             currentPosition = realMatchingStart + replacement.length();
 
-            textMarkers.put(getSpanElement(replacement), new Pair<>(currentPosition - replacement.length(), currentPosition));
+            Object spanElement = getSpanElement(replacement, matchStrings);
+            textMarkers.put(spanElement, new Pair<>(currentPosition - replacement.length(), currentPosition));
             spanned = originalLength - source.length();
         }
 
@@ -45,12 +53,9 @@ public abstract class RichSpanTextProcessor implements RichTextProcessor
         return source;
     }
 
-    @Override public String getExtractionPattern()
-    {
-        return "$1";
-    }
+    @Override public abstract String getExtractionPattern();
 
-    protected abstract Object getSpanElement(String replacement);
+    protected abstract Object getSpanElement(String replacement, String ... args);
 
     protected abstract Pattern getPattern();
 }

@@ -9,7 +9,12 @@ public class BoldTagProcessor extends RichSpanTextProcessor
     /* "**xxx**" = xxx in bold */
     private static final String THMarkdownURegexBold = "\\*\\*(.+?)\\*\\*";
 
-    @Override protected Object getSpanElement(String replacement)
+    @Override public String getExtractionPattern()
+    {
+        return "$1";
+    }
+
+    @Override protected Object getSpanElement(String replacement, String ... matchStrings)
     {
         return new StyleSpan(android.graphics.Typeface.BOLD);
     }

@@ -12,6 +12,11 @@ public class LinkTagProcessor extends ClickableTagProcessor
         return "link";
     }
 
+    @Override public String getExtractionPattern()
+    {
+        return "$1";
+    }
+
     @Override protected Pattern getPattern()
     {
         return Pattern.compile(THMarkdownRegexLink);

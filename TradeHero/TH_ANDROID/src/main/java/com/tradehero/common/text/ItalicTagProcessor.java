@@ -10,7 +10,12 @@ public class ItalicTagProcessor extends RichSpanTextProcessor
     /* "_xxx_" = xxx in italics */
     private static final String THMarkdownURegexItalic = "\\*(.+?)\\*";
 
-    @Override protected Object getSpanElement(String replacement)
+    @Override public String getExtractionPattern()
+    {
+        return "$1";
+    }
+
+    @Override protected Object getSpanElement(String replacement, String ... matchStrings)
     {
         return new StyleSpan(Typeface.ITALIC);
     }

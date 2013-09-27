@@ -7,7 +7,7 @@ import android.view.View;
 /** Created with IntelliJ IDEA. User: tho Date: 9/18/13 Time: 11:44 AM Copyright (c) TradeHero */
 public abstract class ClickableTagProcessor extends RichSpanTextProcessor
 {
-    @Override protected Object getSpanElement(final String replacement)
+    @Override protected Object getSpanElement(final String replacement, String ... matchStrings)
     {
         ClickableSpan spanElement = new ClickableSpan()
         {
