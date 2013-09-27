@@ -33,12 +33,6 @@ public class TrendingGridView extends GridView
         init();
     }
 
-    @Override protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec)
-    {
-        THLog.i(TAG, String.format("width: %d, height: %d", widthMeasureSpec, heightMeasureSpec));
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-    }
-
     protected void init ()
     {
     }

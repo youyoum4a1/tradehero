@@ -14,7 +14,7 @@ public class UserManager
     @Inject DatabaseCache dbCache;
     @Inject PersistableResource<UserProfileDTO> userStore;
 
-    public UserProfileDTO getUser(int userId, boolean forceReload) throws  IOException
+    public UserProfileDTO getUser(int userId, boolean forceReload) throws IOException
     {
         Query query = new Query();
         query.setId(userId);

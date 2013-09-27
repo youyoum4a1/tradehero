@@ -10,9 +10,6 @@ import com.tradehero.common.utils.JacksonConverter;
 import com.tradehero.th.R;
 import com.tradehero.th.base.Application;
 import com.tradehero.th.base.THUser;
-import javax.inject.Inject;
-
-import com.tradehero.th.utils.DaggerUtils;
 import retrofit.ErrorHandler;
 import retrofit.RequestInterceptor;
 import retrofit.RestAdapter;
@@ -31,7 +28,6 @@ public class NetworkEngine
             return cause;
         }
     };
-    private Converter converter;
 
     private static NetworkEngine instance = new NetworkEngine();
 
@@ -42,7 +38,7 @@ public class NetworkEngine
 
     public void initialize()
     {
-        converter = new JacksonConverter(new ObjectMapper());
+        Converter converter = new JacksonConverter(new ObjectMapper());
         restAdapter = new RestAdapter.Builder()
                 .setServer(API_URL)
                 .setConverter(converter)
@@ -62,7 +58,7 @@ public class NetworkEngine
                 .build();
     }
 
-    private static void buildAuthorizationHeader(RequestInterceptor.RequestFacade request)
+    private void buildAuthorizationHeader(RequestInterceptor.RequestFacade request)
     {
         request.addHeader("TH-Client-Version", "1.5.3.3016");
         request.addHeader("Authorization", THUser.getAuthHeader());

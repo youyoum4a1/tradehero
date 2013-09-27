@@ -45,17 +45,10 @@ public class TrendingFragment extends BaseFragment
     private ProgressBar mProgressSpinner;
     private TrendingGridView mTrendingGridView;
 
-
     @Inject SecurityService securityService;
 
     private List<SecurityCompactDTO> securityCompactDTOs;
     protected TrendingAdapter trendingAdapter;
-
-    @Override public void onAttach(Activity activity)
-    {
-        THLog.i(TAG, "onAttach");
-        super.onAttach(activity);
-    }
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -127,7 +120,7 @@ public class TrendingFragment extends BaseFragment
             }
         });
 
-        if (mTrendingGridView != null && mTrendingGridView.getCount() == 0)
+        if (mTrendingGridView.getCount() == 0)
         {
             showProgressSpinner(true);
         }
@@ -156,24 +149,6 @@ public class TrendingFragment extends BaseFragment
                 notifySearchRequested();
             }
         });
-    }
-
-    @Override public void onResume()
-    {
-        THLog.i(TAG, "onResume");
-        super.onResume();
-    }
-
-    @Override public void onPause()
-    {
-        THLog.i(TAG, "onPause");
-        super.onPause();
-    }
-
-    @Override public void onDetach()
-    {
-        THLog.i(TAG, "onDetach");
-        super.onDetach();
     }
 
     private void setDataAdapterToGridView(List<SecurityCompactDTO> trendList)

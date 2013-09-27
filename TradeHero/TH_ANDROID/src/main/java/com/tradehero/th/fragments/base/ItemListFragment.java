@@ -13,7 +13,7 @@ import com.tradehero.th.loaders.ItemWithComparableId;
 import java.util.List;
 
 /** Created with IntelliJ IDEA. User: tho Date: 9/11/13 Time: 1:08 PM Copyright (c) TradeHero */
-public abstract class ItemListFragment<T extends ItemWithComparableId> extends SherlockFragment
+public abstract class ItemListFragment<T extends ItemWithComparableId> extends BaseFragment
         implements LoaderManager.LoaderCallbacks<List<T>>
 {
     protected ListView listView;

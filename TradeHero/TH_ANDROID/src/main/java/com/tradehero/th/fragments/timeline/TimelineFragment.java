@@ -5,15 +5,21 @@ import android.support.v4.content.Loader;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.TimelineAdapter;
 import com.tradehero.th.api.local.TimelineItem;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.base.ItemListFragment;
 import com.tradehero.th.loaders.TimelinePagedItemListLoader;
+import com.tradehero.th.misc.exception.THException;
+import com.tradehero.th.persistence.UserManager;
+import com.tradehero.th.persistence.UserStore;
 import com.tradehero.th.widget.timeline.TimelineListView;
 import com.tradehero.th.widget.user.ProfileView;
+import java.io.IOException;
 import java.util.List;
+import javax.inject.Inject;
 
 public class TimelineFragment extends ItemListFragment<TimelineItem>
 {
@@ -24,34 +30,28 @@ public class TimelineFragment extends ItemListFragment<TimelineItem>
     protected int profileId;
     private TimelineListView timelineListView;
 
+    @Inject UserManager userManager;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.profile_screen, container, false);
         profileId = getArguments().getInt(USER_ID);
         if (profileId>0) {
-            profile = getUserProfileById(profileId);
-            if (profile != null)
+            try
             {
-                initView(view);
+                profile = userManager.getUser(profileId, true);
+                if (profile != null)
+                {
+                    initView(view);
+                }
+            }
+            catch (IOException ex)
+            {
+                THToast.show(new THException(ex));
             }
         }
         return view;
-    }
-
-    private UserProfileDTO getUserProfileById(int userId)
-    {
-        return null;// DatabaseCache.loadOrRequest(userId);
-    }
-
-    @Override public void onViewCreated(View view, Bundle savedInstanceState)
-    {
-        super.onViewCreated(view, savedInstanceState);
-    }
-
-    @Override public void onStop()
-    {
-        super.onStop();
     }
 
     protected void initView(View view)

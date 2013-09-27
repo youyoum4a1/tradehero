@@ -9,6 +9,8 @@ import com.tradehero.th.api.form.UserAvailabilityRequester;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.THUser;
 import com.tradehero.th.fragments.authentication.EmailSignInFragment;
+import com.tradehero.th.fragments.timeline.MeTimelineFragment;
+import com.tradehero.th.fragments.timeline.TimelineFragment;
 import com.tradehero.th.fragments.trending.SearchStockPeopleFragment;
 import com.tradehero.th.fragments.trending.TrendingFragment;
 import com.tradehero.th.loaders.SearchStockPageItemListLoader;
@@ -30,20 +32,26 @@ import javax.inject.Singleton;
 /** Created with IntelliJ IDEA. User: tho Date: 9/16/13 Time: 5:36 PM Copyright (c) TradeHero */
 @Module(
         injects = {
+                TrendingFragment.class,
+                SearchStockPeopleFragment.class,
+                EmailSignInFragment.class,
+                TimelineFragment.class,
+                MeTimelineFragment.class,
+                MarkdownTextView.class,
+
+                UserAvailabilityRequester.class,
+                SearchStockPageItemListLoader.class,
+                TimelinePagedItemListLoader.class,
+
+                UserManager.class,
+                TimelineManager.class,
+
                 UserStore.class,
                 TimelineStore.class,
                 TimelineStore.Factory.class,
-                TrendingFragment.class,
-                UserAvailabilityRequester.class,
-                SearchStockPeopleFragment.class,
-                SearchStockPageItemListLoader.class,
-                TimelinePagedItemListLoader.class,
-                EmailSignInFragment.class,
-                UserManager.class,
-                TimelineManager.class,
+
                 DatabaseCache.class,
-                CacheHelper.class,
-                MarkdownTextView.class
+                CacheHelper.class
         },
         staticInjections = {
                 THUser.class
