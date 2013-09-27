@@ -43,4 +43,8 @@ public interface UserService
             @Query("perPage") int perPage,
             Callback<List<UserSearchResultDTO>> callback);
 
+
+    @GET("/users/GetUser/{userId}")
+    UserProfileDTO getUser(int userId);
+
 }

@@ -16,7 +16,7 @@ public class UserManager
     @Inject
     PersistableResource<UserProfileDTO> userStore;
 
-    public List<UserProfileDTO> getUsers(boolean forceReload) throws IOException
+    public List<UserProfileDTO> getUsers(UserStore.UserFilter filter, boolean forceReload) throws IOException
     {
         return forceReload ? dbCache.requestAndStore(userStore) : dbCache.loadOrRequest(userStore);
     }
