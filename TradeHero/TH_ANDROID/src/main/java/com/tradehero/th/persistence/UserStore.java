@@ -9,7 +9,7 @@ import java.util.List;
 /** Created with IntelliJ IDEA. User: tho Date: 9/26/13 Time: 5:43 PM Copyright (c) TradeHero */
 public class UserStore implements PersistableResource<UserProfileDTO>
 {
-    @Override public <E> List<E> request()
+    @Override public List<UserProfileDTO> request()
     {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }

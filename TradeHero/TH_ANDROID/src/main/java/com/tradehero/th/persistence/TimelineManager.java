@@ -22,7 +22,10 @@ public class TimelineManager
 
     public List<TimelineItem> getTimeline(TimelineStore.TimelineFilter filter, boolean forceReload) throws IOException
     {
+        // TODO scope locking for current timeline of user
         TimelineStore timelineStore = allTimelineStores.get().under(filter.getOwnerId());
+        timelineStore.setFilter(filter);
         return forceReload ? dbCache.requestAndStore(timelineStore) : dbCache.loadOrRequest(timelineStore);
+        // and unlock the scope
     }
 }

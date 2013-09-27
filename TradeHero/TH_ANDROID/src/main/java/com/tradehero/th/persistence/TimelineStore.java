@@ -18,12 +18,19 @@ import javax.inject.Provider;
 /** Created with IntelliJ IDEA. User: tho Date: 9/26/13 Time: 6:10 PM Copyright (c) TradeHero */
 public class TimelineStore implements PersistableResource<TimelineItem>
 {
+    private TimelineFilter filter;
+
     @Override public List<TimelineItem> request()
     {
-        //TimelineDTO timelineDTO = NetworkEngine.createService(UserTimelineService.class).getTimeline(ownerId, maxItemId, minItemId, itemsPerPage);
-        //
-        //TimelineItemBuilder timelineBuilder = new TimelineItemBuilder(timelineDTO);
-        //return timelineBuilder.getItems();
+        if (filter != null)
+        {
+            TimelineDTO timelineDTO = NetworkEngine.createService(UserTimelineService.class)
+                    .getTimeline(filter.getOwnerId(), filter.getMaxId(), filter.getMinId(), filter.getPerPage());
+
+            TimelineItemBuilder timelineBuilder = new TimelineItemBuilder(timelineDTO);
+            return timelineBuilder.getItems();
+        }
+
         return null;
     }
 
@@ -42,6 +49,10 @@ public class TimelineStore implements PersistableResource<TimelineItem>
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
+    public void setFilter(TimelineFilter filter)
+    {
+        this.filter = filter;
+    }
 
     // TODO guice has very nice feature that inject a factory using annotation @Factory
     // need to change this into interface when dagger has similar feature, for now, it's hack :v
