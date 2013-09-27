@@ -23,16 +23,21 @@ import com.tradehero.th.network.service.UserService;
 import com.tradehero.th.widget.SelfValidatedText;
 import com.tradehero.th.widget.ServerValidatedEmailText;
 import com.tradehero.th.widget.ValidatedPasswordText;
+
+import javax.inject.Inject;
 import java.util.Map;
 
 public class EmailSignInFragment extends EmailSignInOrUpFragment
 {
     private final static String TAG = EmailSignInFragment.class.getName();
+
     private SelfValidatedText email;
     private ValidatedPasswordText password;
     private TextView forgotPasswordLink;
     private ProgressDialog mProgressDialog;
     private View forgotDialogView;
+
+    @Inject UserService userService;
 
     @Override public int getDefaultViewId ()
     {
@@ -148,8 +153,7 @@ public class EmailSignInFragment extends EmailSignInOrUpFragment
                 Application.getResourceString(R.string.connecting_tradehero_only),
                 true);
 
-        NetworkEngine.createService(UserService.class)
-                .forgotPassword(forgotPasswordFormDTO, createForgotPasswordCallback());
+        userService.forgotPassword(forgotPasswordFormDTO, createForgotPasswordCallback());
     }
 
     private THCallback<ForgotPasswordDTO> createForgotPasswordCallback()

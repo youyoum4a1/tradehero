@@ -2,40 +2,53 @@ package com.tradehero.th.persistence;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import com.tradehero.common.persistence.Filter;
+import com.tradehero.common.persistence.Query;
 import com.tradehero.common.persistence.PersistableResource;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.network.NetworkEngine;
 import com.tradehero.th.network.service.UserService;
+import com.tradehero.th.utils.DaggerUtils;
+
+import javax.inject.Inject;
+import java.util.Arrays;
 import java.util.List;
 
 /** Created with IntelliJ IDEA. User: tho Date: 9/26/13 Time: 5:43 PM Copyright (c) TradeHero */
 public class UserStore implements PersistableResource<UserProfileDTO>
 {
-    private Filter filter;
+    private Query query;
+
+    @Inject UserService userService;
+
+    public UserStore()
+    {
+    }
+
 
     @Override public List<UserProfileDTO> request()
     {
-        return null;
+        if (query == null)
+            throw new IllegalArgumentException();
+
+        UserProfileDTO user = userService.getUser(query.getId());
+        return Arrays.asList(user);
     }
 
     @Override public void store(SQLiteDatabase db, List<UserProfileDTO> items)
     {
-        //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override public Cursor getCursor(SQLiteDatabase db)
     {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return null;
     }
 
     @Override public UserProfileDTO loadFrom(Cursor cursor)
     {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return null;
     }
 
-    public static class UserFilter
+    @Override public void setQuery(Query query)
     {
-        private int userId;
+        this.query = query;
     }
 }

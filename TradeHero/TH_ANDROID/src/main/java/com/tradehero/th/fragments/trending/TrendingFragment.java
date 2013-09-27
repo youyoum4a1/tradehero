@@ -28,6 +28,8 @@ import java.util.List;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
+import javax.inject.Inject;
+
 public class TrendingFragment extends SherlockFragment
 {
     private final static String TAG = TrendingFragment.class.getSimpleName();
@@ -42,7 +44,9 @@ public class TrendingFragment extends SherlockFragment
     private ProgressBar mProgressSpinner;
     private TrendingGridView mTrendingGridView;
 
-    private SecurityService securityService;
+
+    @Inject SecurityService securityService;
+
     private List<SecurityCompactDTO> securityCompactDTOs;
     protected TrendingAdapter trendingAdapter;
 
@@ -190,10 +194,6 @@ public class TrendingFragment extends SherlockFragment
 
     protected void refreshGridView()
     {
-        if (securityService == null)
-        {
-            securityService = NetworkEngine.createService(SecurityService.class);
-        }
         securityService.getTrendingSecurities(createCallbackForTrending());
     }
 

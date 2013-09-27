@@ -3,6 +3,7 @@ package com.tradehero.th.persistence;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import com.tradehero.common.persistence.PersistableResource;
+import com.tradehero.common.persistence.Query;
 import com.tradehero.th.api.local.TimelineItem;
 import com.tradehero.th.api.local.TimelineItemBuilder;
 import com.tradehero.th.api.timeline.TimelineDTO;
@@ -18,14 +19,20 @@ import javax.inject.Provider;
 /** Created with IntelliJ IDEA. User: tho Date: 9/26/13 Time: 6:10 PM Copyright (c) TradeHero */
 public class TimelineStore implements PersistableResource<TimelineItem>
 {
-    private TimelineFilter filter;
+    private Query query;
+
+    @Inject UserTimelineService timelineService;
+
+    public TimelineStore()
+    {
+    }
+
 
     @Override public List<TimelineItem> request()
     {
-        if (filter != null)
+        if (query != null)
         {
-            TimelineDTO timelineDTO = NetworkEngine.createService(UserTimelineService.class)
-                    .getTimeline(filter.getOwnerId(), filter.getMaxId(), filter.getMinId(), filter.getPerPage());
+            TimelineDTO timelineDTO = timelineService.getTimeline(query.getId(), query.getUpper(), query.getLower(), (Integer)query.getProperty("perPage"));
 
             TimelineItemBuilder timelineBuilder = new TimelineItemBuilder(timelineDTO);
             return timelineBuilder.getItems();
@@ -49,9 +56,10 @@ public class TimelineStore implements PersistableResource<TimelineItem>
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    public void setFilter(TimelineFilter filter)
+    @Override
+    public void setQuery(Query query)
     {
-        this.filter = filter;
+        this.query = query;
     }
 
     // TODO guice has very nice feature that inject a factory using annotation @Factory
@@ -65,7 +73,6 @@ public class TimelineStore implements PersistableResource<TimelineItem>
         public Factory()
         {
             stores = new WeakHashMap<>();
-            DaggerUtils.inject(this);
         }
 
         public TimelineStore under(int userId)

@@ -1,6 +1,7 @@
 package com.tradehero.th.persistence;
 
 import com.tradehero.common.cache.DatabaseCache;
+import com.tradehero.common.persistence.Query;
 import com.tradehero.th.api.local.TimelineItem;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
@@ -16,15 +17,13 @@ public class TimelineManager
     @Inject Lazy<TimelineStore.Factory> allTimelineStores;
 
     public TimelineManager()
-    {
-        DaggerUtils.inject(this);
-    }
+    {}
 
-    public List<TimelineItem> getTimeline(TimelineStore.TimelineFilter filter, boolean forceReload) throws IOException
+    public List<TimelineItem> getTimeline(Query query, boolean forceReload) throws IOException
     {
         // TODO scope locking for current timeline of user
-        TimelineStore timelineStore = allTimelineStores.get().under(filter.getOwnerId());
-        timelineStore.setFilter(filter);
+        TimelineStore timelineStore = allTimelineStores.get().under(query.getId());
+        timelineStore.setQuery(query);
         return forceReload ? dbCache.requestAndStore(timelineStore) : dbCache.loadOrRequest(timelineStore);
         // and unlock the scope
     }

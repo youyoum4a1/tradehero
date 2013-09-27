@@ -26,6 +26,8 @@ import java.util.Set;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import javax.inject.Inject;
+
 /** Created with IntelliJ IDEA. User: tho Date: 8/14/13 Time: 6:15 PM */
 public class THUser
 {
@@ -41,6 +43,8 @@ public class THUser
     private static Map<String, THAuthenticationProvider> authenticationProviders = new HashMap<>();
     private static String currentSessionToken;
     private static String currentAuthenticationType;
+
+    @Inject static UserService userService;
 
     public static void initialize()
     {
@@ -133,7 +137,6 @@ public class THUser
             return;
         }
 
-        UserService userService = NetworkEngine.createService(UserService.class);
         switch (authenticationMode)
         {
             case SignUp:

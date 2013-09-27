@@ -8,6 +8,8 @@ import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
+import javax.inject.Inject;
+
 /** Created with IntelliJ IDEA. User: tho Date: 8/28/13 Time: 4:24 PM Copyright (c) TradeHero */
 public abstract class UserAvailabilityRequester extends CallbackWithSpecificNotifiers<UserAvailabilityDTO>
 {
@@ -15,6 +17,8 @@ public abstract class UserAvailabilityRequester extends CallbackWithSpecificNoti
     private boolean available;
     private boolean queried = false;
     private boolean received = false;
+
+    @Inject UserService userService;
 
     public UserAvailabilityRequester(String displayName)
     {
@@ -51,7 +55,7 @@ public abstract class UserAvailabilityRequester extends CallbackWithSpecificNoti
         if (needsToAskAgain())
         {
             notifyIsQuerying(true);
-            NetworkEngine.createService(UserService.class).checkDisplayNameAvailable(displayName, this);
+            userService.checkDisplayNameAvailable(displayName, this);
             queried = true;
         }
     }

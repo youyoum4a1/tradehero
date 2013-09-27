@@ -10,10 +10,13 @@ import java.util.ArrayList;
 import java.util.List;
 import retrofit.RetrofitError;
 
+import javax.inject.Inject;
+
 /** Created with IntelliJ IDEA. User: xavier Date: 9/20/13 Time: 1:12 PM To change this template use File | Settings | File Templates. */
 public class SearchStockPageItemListLoader extends PagedItemListLoader<ListedSecurityCompact>
 {
-    private SecurityService securityService;
+    @Inject SecurityService securityService;
+
     private String searchText;
     /**
      * Starts at 0
@@ -55,10 +58,6 @@ public class SearchStockPageItemListLoader extends PagedItemListLoader<ListedSec
 
     @Override public List<ListedSecurityCompact> loadInBackground()
     {
-        if (securityService == null)
-        {
-            securityService = NetworkEngine.createService(SecurityService.class);
-        }
         List<ListedSecurityCompact> listed = null;
         try
         {

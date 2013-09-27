@@ -23,13 +23,10 @@ public class DatabaseCache
 {
     private static final String TAG = "DatabaseCache";
 
-    public DatabaseCache()
-    {
-        DaggerUtils.inject(this);
-    }
+    @Inject Lazy<CacheHelper> helperProvider;
 
-    @Inject
-    Lazy<CacheHelper> helperProvider;
+    public DatabaseCache()
+    {}
 
     /**
      * Get writable database

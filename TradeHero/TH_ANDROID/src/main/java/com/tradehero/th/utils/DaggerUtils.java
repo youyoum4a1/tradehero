@@ -1,12 +1,15 @@
 package com.tradehero.th.utils;
 
 import com.tradehero.th.base.Application;
-import com.tradehero.th.utils.dagger.ConverterModule;
+import com.tradehero.th.network.NetworkEngine;
 import com.tradehero.th.utils.dagger.ManagerModule;
 import com.tradehero.th.utils.dagger.NetworkModule;
 import com.tradehero.th.utils.dagger.PersistenceModule;
 import com.tradehero.th.utils.dagger.TextProcessorModule;
+import com.tradehero.th.utils.dagger.TradeHeroModule;
+import dagger.Module;
 import dagger.ObjectGraph;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -21,15 +24,13 @@ public class DaggerUtils
         objectGraph.injectStatics();
     }
 
-    public static List<Object> getModules()
+    private static List<Object> getModules()
     {
         return Arrays.asList(
-                new PersistenceModule(Application.context()),
                 new ManagerModule(),
-                new ConverterModule(),
-                new TextProcessorModule(),
-                new NetworkModule()
-        );
+                new NetworkModule(NetworkEngine.getInstance()),
+                new PersistenceModule(Application.context()),
+                new TextProcessorModule());
     }
 
     public static void inject(Object object)

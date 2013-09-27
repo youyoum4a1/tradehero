@@ -1,6 +1,7 @@
 package com.tradehero.th.loaders;
 
 import android.content.Context;
+import com.tradehero.common.persistence.Query;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.api.local.TimelineItem;
 import com.tradehero.th.persistence.TimelineManager;
@@ -15,6 +16,7 @@ import javax.inject.Inject;
 public class TimelinePagedItemListLoader extends PagedItemListLoader<TimelineItem>
 {
     private static final String TAG = TimelinePagedItemListLoader.class.getSimpleName();
+    private static final String PER_PAGE = "perpage";
 
     private int ownerId;
     private Integer maxItemId;
@@ -40,11 +42,15 @@ public class TimelinePagedItemListLoader extends PagedItemListLoader<TimelineIte
         }
         THLog.d(TAG, "Start loading timeline with maxItemId=" + maxItemId + "/ minItemId=" + minItemId);
 
-        TimelineFilter filter = new TimelineFilter(ownerId, maxItemId, minItemId, itemsPerPage);
+        Query query = new Query();
+        query.setId(ownerId);
+        query.setLower(minItemId);
+        query.setLower(maxItemId);
+        query.setProperty(PER_PAGE, itemsPerPage);
 
         try
         {
-            return timelineManager.getTimeline(filter, true);
+            return timelineManager.getTimeline(query, true);
         }
         catch (IOException e)
         {

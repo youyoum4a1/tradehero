@@ -41,6 +41,8 @@ import java.util.ListIterator;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
+import javax.inject.Inject;
+
 /** Created with IntelliJ IDEA. User: xavier Date: 9/18/13 Time: 12:09 PM To change this template use File | Settings | File Templates. */
 public class SearchStockPeopleFragment extends SherlockFragment implements AdapterView.OnItemSelectedListener, TextWatcher
 {
@@ -72,12 +74,15 @@ public class SearchStockPeopleFragment extends SherlockFragment implements Adapt
     private boolean populatedOnCreate = false;
 
     private boolean isQuerying;
-    private SecurityService securityService;
+
+    @Inject SecurityService securityService;
+    @Inject UserService userService;
+
     private CallbackWithSpecificNotifiers<List<SecurityCompactDTO>> securityCallback;
     private List<SecurityCompactDTO> securityList;
+
     protected TrendingAdapter trendingAdapter;
 
-    private UserService userService;
     private CallbackWithSpecificNotifiers<List<UserSearchResultDTO>> peopleCallback;
     private List<UserSearchResultDTO> userDTOList;
     private SearchPeopleAdapter searchPeopleAdapter;
@@ -260,10 +265,6 @@ public class SearchStockPeopleFragment extends SherlockFragment implements Adapt
         }
         else if (mSearchType == TrendingSearchType.STOCKS)
         {
-            if (securityService == null)
-            {
-                securityService = NetworkEngine.createService(SecurityService.class);
-            }
             if (securityCallback == null)
             {
                 securityCallback = createCallbackForStock();
@@ -273,10 +274,6 @@ public class SearchStockPeopleFragment extends SherlockFragment implements Adapt
         }
         else if (mSearchType == TrendingSearchType.PEOPLE)
         {
-            if (userService == null)
-            {
-                userService = NetworkEngine.createService(UserService.class);
-            }
             if (peopleCallback == null)
             {
                 peopleCallback = createCallbackForPeople();

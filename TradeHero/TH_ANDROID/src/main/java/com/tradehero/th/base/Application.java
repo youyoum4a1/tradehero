@@ -26,7 +26,6 @@ public class Application extends PApplication
 
         DaggerUtils.initialize();
 
-        NetworkEngine.initialize();
         THUser.initialize();
         EmailSignUtils.initialize();
         FacebookUtils.initialize(Application.getResourceString(R.string.FACEBOOK_APP_ID));

@@ -5,10 +5,14 @@ package com.tradehero.th.network;
  * File | Settings | File Templates.
  */
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.tradehero.common.utils.JacksonConverter;
 import com.tradehero.th.R;
 import com.tradehero.th.base.Application;
 import com.tradehero.th.base.THUser;
 import javax.inject.Inject;
+
+import com.tradehero.th.utils.DaggerUtils;
 import retrofit.ErrorHandler;
 import retrofit.RequestInterceptor;
 import retrofit.RestAdapter;
@@ -17,22 +21,28 @@ import retrofit.converter.Converter;
 
 public class NetworkEngine
 {
-    private static final String API_URL = Application.getResourceString(R.string.API_URL);
+    private final String API_URL = Application.getResourceString(R.string.API_URL);
 
-    private static RestAdapter restAdapter;
-    private static ErrorHandler retrofitErrorHandler = new ErrorHandler()
+    private RestAdapter restAdapter;
+    private ErrorHandler retrofitErrorHandler = new ErrorHandler()
     {
         @Override public Throwable handleError(RetrofitError cause)
         {
             return cause;
         }
     };
+    private Converter converter;
 
-    @Inject
-    static Converter converter;
+    private static NetworkEngine instance = new NetworkEngine();
 
-    public static void initialize()
+    public NetworkEngine()
     {
+        initialize();
+    }
+
+    public void initialize()
+    {
+        converter = new JacksonConverter(new ObjectMapper());
         restAdapter = new RestAdapter.Builder()
                 .setServer(API_URL)
                 .setConverter(converter)
@@ -58,8 +68,13 @@ public class NetworkEngine
         request.addHeader("Authorization", THUser.getAuthHeader());
     }
 
-    public static <T> T createService(Class<T> service)
+    public <T> T createService(Class<T> service)
     {
         return restAdapter.create(service);
+    }
+
+    public static NetworkEngine getInstance()
+    {
+        return instance;
     }
 }
