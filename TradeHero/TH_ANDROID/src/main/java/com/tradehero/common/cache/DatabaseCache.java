@@ -11,6 +11,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 import com.tradehero.common.persistence.CacheHelper;
 import com.tradehero.common.persistence.PersistableResource;
+import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -21,6 +22,11 @@ import javax.inject.Inject;
 public class DatabaseCache
 {
     private static final String TAG = "DatabaseCache";
+
+    public DatabaseCache()
+    {
+        DaggerUtils.inject(this);
+    }
 
     @Inject
     Lazy<CacheHelper> helperProvider;

@@ -4,6 +4,10 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import com.tradehero.common.persistence.PersistableResource;
 import com.tradehero.th.api.local.TimelineItem;
+import com.tradehero.th.api.local.TimelineItemBuilder;
+import com.tradehero.th.api.timeline.TimelineDTO;
+import com.tradehero.th.network.NetworkEngine;
+import com.tradehero.th.network.service.UserTimelineService;
 import com.tradehero.th.utils.DaggerUtils;
 import java.util.List;
 import java.util.Map;
@@ -14,8 +18,7 @@ import javax.inject.Provider;
 /** Created with IntelliJ IDEA. User: tho Date: 9/26/13 Time: 6:10 PM Copyright (c) TradeHero */
 public class TimelineStore implements PersistableResource<TimelineItem>
 {
-
-    @Override public <E> List<E> request()
+    @Override public List<TimelineItem> request()
     {
         //TimelineDTO timelineDTO = NetworkEngine.createService(UserTimelineService.class).getTimeline(ownerId, maxItemId, minItemId, itemsPerPage);
         //

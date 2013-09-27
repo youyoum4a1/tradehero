@@ -1,5 +1,6 @@
 package com.tradehero.th.utils;
 
+import com.tradehero.th.base.Application;
 import com.tradehero.th.utils.dagger.ConverterModule;
 import com.tradehero.th.utils.dagger.ManagerModule;
 import com.tradehero.th.utils.dagger.NetworkModule;
@@ -23,7 +24,7 @@ public class DaggerUtils
     public static List<Object> getModules()
     {
         return Arrays.asList(
-                new PersistenceModule(),
+                new PersistenceModule(Application.context()),
                 new ManagerModule(),
                 new ConverterModule(),
                 new TextProcessorModule(),

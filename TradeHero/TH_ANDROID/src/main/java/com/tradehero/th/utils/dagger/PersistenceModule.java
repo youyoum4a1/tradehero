@@ -1,5 +1,6 @@
 package com.tradehero.th.utils.dagger;
 
+import android.app.Application;
 import com.tradehero.common.cache.DatabaseCache;
 import com.tradehero.common.persistence.CacheHelper;
 import com.tradehero.common.persistence.PersistableResource;
@@ -24,6 +25,12 @@ import javax.inject.Singleton;
 )
 public class PersistenceModule
 {
+    private final Application application;
+
+    public PersistenceModule(Application application) {
+        this.application = application;
+    }
+
     @Provides @Singleton PersistableResource<UserProfileDTO> provideUserStore()
     {
         return new UserStore();
@@ -36,7 +43,7 @@ public class PersistenceModule
 
     @Provides @Singleton CacheHelper provideCacheHelper()
     {
-        return new CacheHelper();
+        return new CacheHelper(application);
     }
 
     @Provides @Singleton TimelineStore.Factory provideTimelineStoreFactory()

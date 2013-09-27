@@ -12,9 +12,9 @@ public class CacheHelper extends SQLiteOpenHelper
     private static final String name = "cache.db";
     private static final int version = 8;
 
-    public CacheHelper()
+    public CacheHelper(Context context)
     {
-        super(Application.context(), name, null, version);
+        super(context, name, null, version);
     }
 
     @Override public void onCreate(SQLiteDatabase db)
