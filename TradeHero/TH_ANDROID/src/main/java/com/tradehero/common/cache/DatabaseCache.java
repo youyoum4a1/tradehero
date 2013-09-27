@@ -17,16 +17,14 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
 /** Given a PersistableResource, this class will take support loading/storing it's data or requesting fresh data, as appropriate. */
-public class DatabaseCache
+@Singleton public class DatabaseCache
 {
     private static final String TAG = "DatabaseCache";
 
     @Inject Lazy<CacheHelper> helperProvider;
-
-    public DatabaseCache()
-    {}
 
     /**
      * Get writable database

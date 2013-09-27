@@ -11,11 +11,8 @@ import javax.inject.Inject;
 /** Created with IntelliJ IDEA. User: tho Date: 9/26/13 Time: 5:36 PM Copyright (c) TradeHero */
 public class UserManager
 {
-    @Inject
-    DatabaseCache dbCache;
-
-    @Inject
-    PersistableResource<UserProfileDTO> userStore;
+    @Inject DatabaseCache dbCache;
+    @Inject PersistableResource<UserProfileDTO> userStore;
 
     public UserProfileDTO getUser(int userId, boolean forceReload) throws  IOException
     {

@@ -5,6 +5,7 @@ import com.tradehero.common.persistence.Query;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.api.local.TimelineItem;
 import com.tradehero.th.persistence.TimelineManager;
+import com.tradehero.th.persistence.TimelineStore;
 import com.tradehero.th.persistence.TimelineStore.TimelineFilter;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
@@ -16,7 +17,6 @@ import javax.inject.Inject;
 public class TimelinePagedItemListLoader extends PagedItemListLoader<TimelineItem>
 {
     private static final String TAG = TimelinePagedItemListLoader.class.getSimpleName();
-    private static final String PER_PAGE = "perpage";
 
     private int ownerId;
     private Integer maxItemId;
@@ -46,7 +46,7 @@ public class TimelinePagedItemListLoader extends PagedItemListLoader<TimelineIte
         query.setId(ownerId);
         query.setLower(minItemId);
         query.setLower(maxItemId);
-        query.setProperty(PER_PAGE, itemsPerPage);
+        query.setProperty(TimelineStore.PER_PAGE, itemsPerPage);
 
         try
         {

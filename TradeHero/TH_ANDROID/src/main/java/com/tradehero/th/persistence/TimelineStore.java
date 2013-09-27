@@ -19,20 +19,16 @@ import javax.inject.Provider;
 /** Created with IntelliJ IDEA. User: tho Date: 9/26/13 Time: 6:10 PM Copyright (c) TradeHero */
 public class TimelineStore implements PersistableResource<TimelineItem>
 {
+    public static final String PER_PAGE = "perpage";
     private Query query;
-
     @Inject UserTimelineService timelineService;
-
-    public TimelineStore()
-    {
-    }
-
 
     @Override public List<TimelineItem> request()
     {
         if (query != null)
         {
-            TimelineDTO timelineDTO = timelineService.getTimeline(query.getId(), query.getUpper(), query.getLower(), (Integer)query.getProperty("perPage"));
+            TimelineDTO timelineDTO = timelineService.getTimeline(query.getId(), query.getUpper(), query.getLower(),
+                    (Integer) query.getProperty(PER_PAGE));
 
             TimelineItemBuilder timelineBuilder = new TimelineItemBuilder(timelineDTO);
             return timelineBuilder.getItems();

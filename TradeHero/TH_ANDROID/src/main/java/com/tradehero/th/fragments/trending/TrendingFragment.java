@@ -20,6 +20,7 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.TrendingAdapter;
 import com.tradehero.th.api.security.SecurityCompactDTO;
+import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.network.CallbackWithSpecificNotifiers;
 import com.tradehero.th.network.NetworkEngine;
 import com.tradehero.th.network.service.SecurityService;
@@ -30,7 +31,7 @@ import retrofit.client.Response;
 
 import javax.inject.Inject;
 
-public class TrendingFragment extends SherlockFragment
+public class TrendingFragment extends BaseFragment
 {
     private final static String TAG = TrendingFragment.class.getSimpleName();
 

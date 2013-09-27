@@ -13,11 +13,7 @@ import javax.inject.Inject;
 public class TimelineManager
 {
     @Inject DatabaseCache dbCache;
-
     @Inject Lazy<TimelineStore.Factory> allTimelineStores;
-
-    public TimelineManager()
-    {}
 
     public List<TimelineItem> getTimeline(Query query, boolean forceReload) throws IOException
     {

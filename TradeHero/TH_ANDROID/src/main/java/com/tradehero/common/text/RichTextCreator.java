@@ -1,7 +1,5 @@
 package com.tradehero.common.text;
 
-import android.graphics.Color;
-import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.widget.TextView;
@@ -9,6 +7,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import javax.inject.Inject;
 
 /** Created with IntelliJ IDEA. User: tho Date: 9/17/13 Time: 11:30 AM Copyright (c) TradeHero */
 public class RichTextCreator
@@ -20,7 +19,7 @@ public class RichTextCreator
     private boolean useBuiltInTextProcessors;
 
     //<editor-fold desc="Constructors">
-    public RichTextCreator()
+    @Inject public RichTextCreator()
     {
         this(true);
     }

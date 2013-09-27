@@ -16,13 +16,7 @@ import java.util.List;
 public class UserStore implements PersistableResource<UserProfileDTO>
 {
     private Query query;
-
     @Inject UserService userService;
-
-    public UserStore()
-    {
-    }
-
 
     @Override public List<UserProfileDTO> request()
     {
