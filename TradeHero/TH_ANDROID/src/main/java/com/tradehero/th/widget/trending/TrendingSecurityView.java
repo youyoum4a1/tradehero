@@ -76,66 +76,66 @@ public class TrendingSecurityView extends FrameLayout implements DTOView<Securit
 
     }
 
-        private void createTransformations()
+    private void createTransformations()
+    {
+        if (foregroundTransformation == null)
         {
-            if (foregroundTransformation == null)
-            {
-                foregroundTransformation = new WhiteToTransparentTransformation();
-            }
-            if (backgroundTransformation == null)
-            {
-                backgroundTransformation = new AbstractSequentialTransformation()
-                {
-                    @Override public String key()
-                    {
-                        return "toRoundedGaussianGrayscale11";
-                    }
-                };
-                ((AbstractSequentialTransformation) backgroundTransformation).add(new GrayscaleTransformation());
-                ((AbstractSequentialTransformation) backgroundTransformation).add(new FastBlurTransformation(10));
-                ((AbstractSequentialTransformation) backgroundTransformation).add(new RoundedCornerTransformation(
-                                getResources().getDimensionPixelSize(R.dimen.trending_grid_item_corner_radius),
-                                getResources().getColor(R.color.black)));
-            }
+            foregroundTransformation = new WhiteToTransparentTransformation();
         }
-
-        private void createPicasso()
+        if (backgroundTransformation == null)
         {
-            if (mPicasso == null)
+            backgroundTransformation = new AbstractSequentialTransformation()
             {
-                Cache lruFileCache = null;
-                try
+                @Override public String key()
                 {
-                    lruFileCache = new LruMemFileCache(getContext());
-                    THLog.i(TAG, "Memory cache size " + lruFileCache.maxSize());
+                    return "toRoundedGaussianGrayscale11";
                 }
-                catch (Exception e)
-                {
-                    THLog.e(TAG, "Failed to create LRU", e);
-                }
-
-                mPicasso = new Picasso.Builder(getContext())
-                        //.downloader(new UrlConnectionDownloader(getContext()))
-                        .memoryCache(lruFileCache)
-                        .build();
-                mPicasso.setDebugging(true);
-            }
+            };
+            ((AbstractSequentialTransformation) backgroundTransformation).add(new GrayscaleTransformation());
+            ((AbstractSequentialTransformation) backgroundTransformation).add(new FastBlurTransformation(10));
+            ((AbstractSequentialTransformation) backgroundTransformation).add(new RoundedCornerTransformation(
+                            getResources().getDimensionPixelSize(R.dimen.trending_grid_item_corner_radius),
+                            getResources().getColor(R.color.black)));
         }
+    }
 
-        private void fetchViews()
+    private void createPicasso()
+    {
+        if (mPicasso == null)
         {
-            stockName = (TextView) findViewById(R.id.stock_name);
-            exchangeSymbol = (TextView) findViewById(R.id.exchange_symbol);
-            profitIndicator = (TextView) findViewById(R.id.profit_indicator);
-            currencyDisplay = (TextView) findViewById(R.id.currency_display);
-            lastPrice = (TextView) findViewById(R.id.last_price);
-            marketCloseIcon = (ImageView) findViewById(R.id.ic_market_close);
-            stockLogo = (ImageView) findViewById(R.id.stock_logo);
-            stockBgLogo = (ImageView) findViewById(R.id.stock_bg_logo);
-            countryLogo = (ImageView) findViewById(R.id.country_logo);
-            date = (TextView) findViewById(R.id.date);
-            securityType = (TextView) findViewById(R.id.sec_type);
+            Cache lruFileCache = null;
+            try
+            {
+                lruFileCache = new LruMemFileCache(getContext());
+                THLog.i(TAG, "Memory cache size " + lruFileCache.maxSize());
+            }
+            catch (Exception e)
+            {
+                THLog.e(TAG, "Failed to create LRU", e);
+            }
+
+            mPicasso = new Picasso.Builder(getContext())
+                    //.downloader(new UrlConnectionDownloader(getContext()))
+                    .memoryCache(lruFileCache)
+                    .build();
+            mPicasso.setDebugging(true);
         }
+    }
+
+    private void fetchViews()
+    {
+        stockName = (TextView) findViewById(R.id.stock_name);
+        exchangeSymbol = (TextView) findViewById(R.id.exchange_symbol);
+        profitIndicator = (TextView) findViewById(R.id.profit_indicator);
+        currencyDisplay = (TextView) findViewById(R.id.currency_display);
+        lastPrice = (TextView) findViewById(R.id.last_price);
+        marketCloseIcon = (ImageView) findViewById(R.id.ic_market_close);
+        stockLogo = (ImageView) findViewById(R.id.stock_logo);
+        stockBgLogo = (ImageView) findViewById(R.id.stock_bg_logo);
+        countryLogo = (ImageView) findViewById(R.id.country_logo);
+        date = (TextView) findViewById(R.id.date);
+        securityType = (TextView) findViewById(R.id.sec_type);
+    }
 
     public boolean isMyUrlOk()
     {
@@ -155,24 +155,24 @@ public class TrendingSecurityView extends FrameLayout implements DTOView<Securit
         super.onDetachedFromWindow();
     }
 
-        private void clearImageViewUrls()
-        {
-            stockLogo.setTag(R.string.image_url, null);
-            stockBgLogo.setTag(R.string.image_url, null);
-        }
+    private void clearImageViewUrls()
+    {
+        stockLogo.setTag(R.string.image_url, null);
+        stockBgLogo.setTag(R.string.image_url, null);
+    }
 
-        private void clearRunningOperations()
-        {
-            mPicasso.load((String) null)
-                    .placeholder(R.drawable.default_image)
-                    .error(R.drawable.default_image)
-                    .into(stockLogo);
+    private void clearRunningOperations()
+    {
+        mPicasso.load((String) null)
+                .placeholder(R.drawable.default_image)
+                .error(R.drawable.default_image)
+                .into(stockLogo);
 
-            mPicasso.load((String) null)
-                    .placeholder(R.drawable.default_image)
-                    .error(R.drawable.default_image)
-                    .into(stockBgLogo);
-        }
+        mPicasso.load((String) null)
+                .placeholder(R.drawable.default_image)
+                .error(R.drawable.default_image)
+                .into(stockBgLogo);
+    }
 
     @Override public void display (final SecurityCompactDTO trend)
     {
@@ -261,28 +261,27 @@ public class TrendingSecurityView extends FrameLayout implements DTOView<Securit
         }
 
         storeImageUrlInImageViews();
-
     }
 
-        private void storeImageUrlInImageViews()
+    private void storeImageUrlInImageViews()
+    {
+        if (stockLogo != null)
         {
-            if (stockLogo != null)
-            {
-                stockLogo.setTag(R.string.image_url, this.securityCompactDTO.imageBlobUrl);
-            }
-
-            if (stockBgLogo != null)
-            {
-                stockBgLogo.setTag(R.string.image_url, this.securityCompactDTO.imageBlobUrl);
-            }
+            stockLogo.setTag(R.string.image_url, this.securityCompactDTO.imageBlobUrl);
         }
 
+        if (stockBgLogo != null)
+        {
+            stockBgLogo.setTag(R.string.image_url, this.securityCompactDTO.imageBlobUrl);
+        }
+    }
 
     public void loadImages ()
     {
         if (isMyUrlOk())
         {
             loadImageInTarget(stockLogo, foregroundTransformation);
+            // Launching the bg like this will result in double downloading the file.
             loadImageInTarget(stockBgLogo, backgroundTransformation, getMeasuredWidth(), getMeasuredHeight());
         }
         else
@@ -295,34 +294,34 @@ public class TrendingSecurityView extends FrameLayout implements DTOView<Securit
         }
     }
 
-        private void loadImageInTarget(final ImageView target, final Transformation t)
-        {
-            loadImageInTarget(target, t, 0, 0);
-        }
+    private void loadImageInTarget(final ImageView target, final Transformation t)
+    {
+        loadImageInTarget(target, t, 0, 0);
+    }
 
-        private void loadImageInTarget(final ImageView target, final Transformation t, final int resizeToWidth, final int resizeToHeight)
+    private void loadImageInTarget(final ImageView target, final Transformation t, final int resizeToWidth, final int resizeToHeight)
+    {
+        KnownExecutorServices.getCacheExecutor().submit(new Runnable()
         {
-            KnownExecutorServices.getCacheExecutor().submit(new Runnable()
+            @Override public void run()
             {
-                @Override public void run()
+                if (target != null && target.getTag(R.string.image_url) != null)
                 {
-                    if (target != null && target.getTag(R.string.image_url) != null)
+                    RequestCreator requestCreator = mPicasso.load(target.getTag(R.string.image_url).toString())
+                                                            .placeholder(R.drawable.default_image)
+                                                            .error(R.drawable.default_image);
+
+                    if (resizeToWidth > 0 && resizeToHeight > 0)
                     {
-                        RequestCreator requestCreator = mPicasso.load(target.getTag(R.string.image_url).toString())
-                                                                .placeholder(R.drawable.default_image)
-                                                                .error(R.drawable.default_image);
-
-                        if (resizeToWidth > 0 && resizeToHeight > 0)
-                        {
-                            requestCreator = requestCreator.resize(resizeToWidth, resizeToHeight).centerCrop();
-                        }
-
-                        requestCreator.transform(t)
-                        .into(target);
+                        requestCreator = requestCreator.resize(resizeToWidth, resizeToHeight).centerCrop();
                     }
+
+                    requestCreator.transform(t)
+                    .into(target);
                 }
-            });
-        }
+            }
+        });
+    }
 
 
 }
