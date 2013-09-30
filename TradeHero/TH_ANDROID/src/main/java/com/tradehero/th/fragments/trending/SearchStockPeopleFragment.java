@@ -266,21 +266,27 @@ public class SearchStockPeopleFragment extends BaseFragment implements AdapterVi
         }
         else if (mSearchType == TrendingSearchType.STOCKS)
         {
-            if (securityCallback == null)
+            if (mSearchText != null && !mSearchText.isEmpty())
             {
-                securityCallback = createCallbackForStock();
+                if (securityCallback == null)
+                {
+                    securityCallback = createCallbackForStock();
+                }
+                isQuerying = true;
+                securityService.searchSecurities(mSearchText, getPage(), getPerPage(), securityCallback);
             }
-            isQuerying = true;
-            securityService.searchSecurities(mSearchText, getPage(), getPerPage(), securityCallback);
         }
         else if (mSearchType == TrendingSearchType.PEOPLE)
         {
-            if (peopleCallback == null)
+            if (mSearchText != null && !mSearchText.isEmpty())
             {
-                peopleCallback = createCallbackForPeople();
+                if (peopleCallback == null)
+                {
+                    peopleCallback = createCallbackForPeople();
+                }
+                isQuerying = true;
+                userService.searchUsers(mSearchText, getPage(), getPerPage(), peopleCallback);
             }
-            isQuerying = true;
-            userService.searchUsers(mSearchText, getPage(), getPerPage(), peopleCallback);
         }
         else
         {
@@ -294,25 +300,11 @@ public class SearchStockPeopleFragment extends BaseFragment implements AdapterVi
         THLog.i(TAG, "setDataAdapterToStockListView");
         this.securityList = securityCompactDTOs;
 
-        if (trendingAdapter == null && securityCompactDTOs != null)
-        {
-            // The new ArrayList ensures that we can clear the adapter without clearing this.securityList
-            // new ArrayList<>(securityCompactDTOs)
-            trendingAdapter = new TrendingAdapter(getActivity(), getActivity().getLayoutInflater(), TrendingAdapter.SECURITY_SEARCH_CELL_LAYOUT);
-        }
-        else if (trendingAdapter == null && securityCompactDTOs == null)
+        if (trendingAdapter == null)
         {
             trendingAdapter = new TrendingAdapter(getActivity(), getActivity().getLayoutInflater(), TrendingAdapter.SECURITY_SEARCH_CELL_LAYOUT);
         }
-        else
-        {
-            //trendingAdapter.clear();
-            //if (securityCompactDTOs != null)
-            //{
-            //    trendingAdapter.addAll(securityCompactDTOs);
-            //}
-            // TODO implement loader pattern
-        }
+        trendingAdapter.setItems(securityCompactDTOs);
         mSearchStockListView.setAdapter(trendingAdapter);
         updateVisibilities();
     }

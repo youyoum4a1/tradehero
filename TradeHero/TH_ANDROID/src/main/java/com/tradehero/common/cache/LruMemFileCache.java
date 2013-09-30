@@ -29,9 +29,9 @@ public class LruMemFileCache extends LruCache
     private DiskLruCache diskLruCache;
 
     private static MessageDigest md5;
-    private Object dirLock = new Object();
-    private Object setLock = new Object();
-    private Object getLock = new Object();
+    final private Object dirLock = new Object();
+    final private Object setLock = new Object();
+    final private Object getLock = new Object();
 
     private static MessageDigest getMd5()
     {
@@ -197,16 +197,16 @@ public class LruMemFileCache extends LruCache
                             if (bitmap != null)
                             {
                                 super.set(key, bitmap);
-                                THLog.i(TAG, "Got bitmap from disk " + key);
+                                //THLog.i(TAG, "Got bitmap from disk " + key);
                             }
                             else
                             {
-                                THLog.i(TAG, "Did not get bitmap from disk in the end " + key);
+                                //THLog.i(TAG, "Did not get bitmap from disk in the end " + key);
                             }
                         }
                         else
                         {
-                            THLog.i(TAG, "Retrieved was null for " + key);
+                            //THLog.i(TAG, "Retrieved was null for " + key);
                         }
                     }
                     catch (IOException e)
@@ -227,7 +227,7 @@ public class LruMemFileCache extends LruCache
         }
         else
         {
-            THLog.i(TAG, "Got bitmap from ram " + key);
+            //THLog.i(TAG, "Got bitmap from ram " + key);
         }
 
         return bitmap;
