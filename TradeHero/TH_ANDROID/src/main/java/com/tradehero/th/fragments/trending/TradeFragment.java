@@ -36,6 +36,7 @@ import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.base.THUser;
 import com.tradehero.th.fragments.BuyFragment;
+import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.utills.Logger;
 import com.tradehero.th.utills.Logger.LogLevel;
 import com.tradehero.th.widget.trade.PricingBidAskView;
@@ -43,7 +44,7 @@ import com.tradehero.th.widget.trade.QuickPriceButtonSet;
 import com.tradehero.th.widget.trade.TradeQuantityView;
 import java.util.concurrent.Future;
 
-public class TradeFragment extends SherlockFragment implements DTOView<SecurityCompactDTO>
+public class TradeFragment extends DashboardFragment implements DTOView<SecurityCompactDTO>
 {
     private final static String TAG = TradeFragment.class.getSimpleName();
     public final static int TRANSACTION_COST = 10;
@@ -251,6 +252,7 @@ public class TradeFragment extends SherlockFragment implements DTOView<SecurityC
     //    updateValues(mCashAvailable, false);
     //}
 
+    @Override
     public void display(SecurityCompactDTO securityCompactDTO)
     {
         this.securityCompactDTO = securityCompactDTO;

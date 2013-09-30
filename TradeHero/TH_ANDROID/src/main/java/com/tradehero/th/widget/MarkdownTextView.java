@@ -44,9 +44,9 @@ public class MarkdownTextView extends TextView implements OnElementClickListener
         super.setText(text, type);
     }
 
-    @Override public void onClick(View textView, String data, String key)
+    @Override public void onClick(View textView, String data, String key, String[] matchStrings)
     {
-        onElementClickListener.onClick(textView, data, key);
+        onElementClickListener.onClick(textView, data, key, matchStrings);
     }
 
     public void setOnElementClickListener(OnElementClickListener listener)

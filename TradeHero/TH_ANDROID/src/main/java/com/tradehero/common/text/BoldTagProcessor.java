@@ -14,7 +14,7 @@ public class BoldTagProcessor extends RichSpanTextProcessor
         return "$1";
     }
 
-    @Override protected Object getSpanElement(String replacement, String ... matchStrings)
+    @Override protected Object getSpanElement(String replacement, String[] matchStrings)
     {
         return new StyleSpan(android.graphics.Typeface.BOLD);
     }

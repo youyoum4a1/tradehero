@@ -55,7 +55,7 @@ public abstract class RichSpanTextProcessor implements RichTextProcessor
 
     @Override public abstract String getExtractionPattern();
 
-    protected abstract Object getSpanElement(String replacement, String ... args);
+    protected abstract Object getSpanElement(String replacement, String[] matchStrings);
 
     protected abstract Pattern getPattern();
 }

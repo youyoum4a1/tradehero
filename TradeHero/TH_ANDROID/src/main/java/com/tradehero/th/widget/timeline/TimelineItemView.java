@@ -13,6 +13,7 @@ import com.tradehero.common.graphics.WhiteToTransparentTransformation;
 import com.tradehero.common.text.OnElementClickListener;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
+import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.local.TimelineItem;
 import com.tradehero.th.api.misc.MediaDTO;
@@ -99,17 +100,17 @@ public class TimelineItemView extends RelativeLayout implements DTOView<Timeline
         }
     }
 
-    @Override public void onClick(View textView, String data, String key)
+    @Override public void onClick(View textView, String data, String key, String[] matchStrings)
     {
         switch (key)
         {
             case "user":
+                int userId = Integer.parseInt(matchStrings[2]);
                 THToast.show("Link clicked " + data);
                 break;
             case "security":
                 THToast.show("Link clicked " + data);
                 break;
-
         }
     }
 }

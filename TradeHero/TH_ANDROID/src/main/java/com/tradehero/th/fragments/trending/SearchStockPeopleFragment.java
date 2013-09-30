@@ -30,6 +30,7 @@ import com.tradehero.th.adapters.TrendingAdapter;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.users.UserSearchResultDTO;
 import com.tradehero.th.fragments.base.BaseFragment;
+import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.network.CallbackWithSpecificNotifiers;
 import com.tradehero.th.network.NetworkEngine;
 import com.tradehero.th.network.service.SecurityService;
@@ -45,7 +46,7 @@ import retrofit.client.Response;
 import javax.inject.Inject;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 9/18/13 Time: 12:09 PM To change this template use File | Settings | File Templates. */
-public class SearchStockPeopleFragment extends BaseFragment implements AdapterView.OnItemSelectedListener, TextWatcher
+public class SearchStockPeopleFragment extends DashboardFragment implements AdapterView.OnItemSelectedListener, TextWatcher
 {
     public final static String KEY_SAVE_SEARCH_STRING = "searchString";
     public final static String KEY_SAVE_SEARCH_TYPE = "searchType";

@@ -29,7 +29,7 @@ public class JacksonConverter implements Converter
 
   public JacksonConverter(ObjectMapper objectMapper) {
     this.objectMapper = objectMapper;
-    objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+      objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
   }
 
   @Override public Object fromBody(TypedInput body, final Type type) throws ConversionException {

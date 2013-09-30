@@ -45,7 +45,7 @@ public class TimelinePagedItemListLoader extends PagedItemListLoader<TimelineIte
         Query query = new Query();
         query.setId(ownerId);
         query.setLower(minItemId);
-        query.setLower(maxItemId);
+        query.setUpper(maxItemId);
         query.setProperty(TimelineStore.PER_PAGE, itemsPerPage);
 
         try

@@ -1,6 +1,5 @@
 package com.tradehero.th.fragments.trending;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,7 +11,6 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import com.actionbarsherlock.app.ActionBar;
-import com.actionbarsherlock.app.SherlockFragment;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.common.utils.THLog;
@@ -20,18 +18,16 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.TrendingAdapter;
 import com.tradehero.th.api.security.SecurityCompactDTO;
-import com.tradehero.th.fragments.base.BaseFragment;
+import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.network.CallbackWithSpecificNotifiers;
-import com.tradehero.th.network.NetworkEngine;
 import com.tradehero.th.network.service.SecurityService;
 import com.tradehero.th.widget.trending.TrendingGridView;
 import java.util.List;
+import javax.inject.Inject;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
-import javax.inject.Inject;
-
-public class TrendingFragment extends BaseFragment
+public class TrendingFragment extends DashboardFragment
 {
     private final static String TAG = TrendingFragment.class.getSimpleName();
 
@@ -70,33 +66,9 @@ public class TrendingFragment extends BaseFragment
         mTrendingGridView = (TrendingGridView) view.findViewById(R.id.trending_gridview);
         mProgressSpinner = (ProgressBar) view.findViewById(R.id.progress_spinner);
         mBullIcon = (ImageView) view.findViewById(R.id.logo_img);
-    }
 
-    @Override public void onActivityCreated(Bundle savedInstanceState)
-    {
+
         THLog.i(TAG, "onActivityCreated");
-        super.onActivityCreated(savedInstanceState);
-
-        // TODO sliding menu
-        //((TradeHeroTabActivity) getActivity()).showSlidingMenue(true);
-        //mBackBtn.setOnClickListener(new OnClickListener()
-        //{
-        //    @Override
-        //    public void onClick(View v)
-        //    {
-        //        showSearchView(false);
-        //        showSearchList(false);
-        //    }
-        //});
-
-        //mSearchBtn.setOnClickListener(new OnClickListener()
-        //{
-        //    @Override
-        //    public void onClick(View v)
-        //    {
-        //        showSearchView(true);
-        //    }
-        //});
 
         if (securityCompactDTOs != null && securityCompactDTOs.size() > 0)
         {
@@ -113,10 +85,7 @@ public class TrendingFragment extends BaseFragment
                     long id)
             {
                 SecurityCompactDTO securityCompactDTO = (SecurityCompactDTO) parent.getItemAtPosition(position);
-
                 THToast.show("Disabled for now");
-
-                //notifyTradeRequested(securityCompactDTO);
             }
         });
 

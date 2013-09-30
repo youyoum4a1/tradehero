@@ -24,13 +24,14 @@ import com.tradehero.th.application.Config;
 import com.tradehero.th.base.THUser;
 import com.tradehero.th.fragments.NewsFragment;
 import com.tradehero.th.fragments.StockInfoFragment;
+import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.utills.Constants;
 import com.tradehero.th.utills.Logger;
 import com.tradehero.th.utills.Logger.LogLevel;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-public class TrendingDetailFragment extends SherlockFragment
+public class TrendingDetailFragment extends DashboardFragment
 {
     private final static String TAG = TrendingDetailFragment.class.getSimpleName();
 
@@ -71,16 +72,6 @@ public class TrendingDetailFragment extends SherlockFragment
         mHeaderText.setText(String.format("%s:%s", securityCompactDTO.exchange, securityCompactDTO.symbol));
 
         return view;
-    }
-
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState)
-    {
-        super.onActivityCreated(savedInstanceState);
-        ((DashboardActivity) getActivity()).showTabs(false);
-
-        header = (RelativeLayout) getActivity().findViewById(R.id.top_tabactivity);
-        header.setVisibility(View.GONE);
     }
 
     //<editor-fold desc="Accessors">
