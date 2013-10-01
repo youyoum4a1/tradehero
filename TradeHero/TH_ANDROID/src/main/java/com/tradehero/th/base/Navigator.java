@@ -98,6 +98,10 @@ public class Navigator
                 fragment = Fragment.instantiate(fragmentActivity, clss.getName(), args);
                 instances.put(clss, fragment);
             }
+            else
+            {
+                fragment.setArguments(args);
+            }
             return fragment;
         }
     }
