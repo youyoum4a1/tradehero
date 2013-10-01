@@ -1,6 +1,7 @@
 package com.tradehero.th.widget.timeline;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.text.method.LinkMovementMethod;
 import android.util.AttributeSet;
 import android.view.View;
@@ -18,6 +19,9 @@ import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.local.TimelineItem;
 import com.tradehero.th.api.misc.MediaDTO;
 import com.tradehero.th.api.users.UserProfileCompactDTO;
+import com.tradehero.th.base.Navigator;
+import com.tradehero.th.base.NavigatorActivity;
+import com.tradehero.th.fragments.timeline.TimelineFragment;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.widget.MarkdownTextView;
 import java.util.Date;
@@ -106,7 +110,11 @@ public class TimelineItemView extends RelativeLayout implements DTOView<Timeline
         {
             case "user":
                 int userId = Integer.parseInt(matchStrings[2]);
-                THToast.show("Link clicked " + data);
+                Bundle b = new Bundle();
+                b.putInt(TimelineFragment.USER_ID, userId);
+
+                // TODO
+//                ((NavigatorActivity)getContext()).getNavigator().pushFragment(TimelineFragment.class, b);
                 break;
             case "security":
                 THToast.show("Link clicked " + data);

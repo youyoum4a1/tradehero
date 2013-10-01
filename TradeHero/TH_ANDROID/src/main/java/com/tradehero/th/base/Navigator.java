@@ -1,5 +1,6 @@
 package com.tradehero.th.base;
 
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
@@ -9,16 +10,16 @@ import java.util.HashMap;
 import java.util.Map;
 
 /** Created with IntelliJ IDEA. User: tho Date: 9/30/13 Time: 5:59 PM Copyright (c) TradeHero */
-public class NavigationController
+public class Navigator
 {
-    private static final String TAG = NavigationController.class.getName();
+    private static final String TAG = Navigator.class.getName();
     private final FragmentActivity fragmentActivity;
     private final FragmentFactory fragmentFactory;
     private final int[] animation;
     private int fragmentContentId;
     private boolean animationInitiated;
 
-    public NavigationController(FragmentActivity fragmentActivity, int fragmentContentId)
+    public Navigator(FragmentActivity fragmentActivity, int fragmentContentId)
     {
         this.animation = new int[4];
         this.fragmentActivity = fragmentActivity;
@@ -26,7 +27,7 @@ public class NavigationController
         this.fragmentFactory = new FragmentFactory();
     }
 
-    public NavigationController(FragmentActivity fragmentActivity)
+    public Navigator(FragmentActivity fragmentActivity)
     {
         this(fragmentActivity, 0);
 
@@ -55,9 +56,9 @@ public class NavigationController
         return animation;
     }
 
-    public void pushFragment(Class<? extends Fragment> fragmentClass, boolean withAnimation)
+    public void pushFragment(Class<? extends Fragment> fragmentClass, Bundle args, boolean withAnimation)
     {
-        Fragment fragment = fragmentFactory.getInstance(fragmentClass);
+        Fragment fragment = fragmentFactory.getInstance(fragmentClass, args);
         FragmentTransaction transaction = fragmentActivity.getSupportFragmentManager().beginTransaction();
         if (withAnimation)
         {
@@ -71,7 +72,12 @@ public class NavigationController
 
     public void pushFragment(Class<? extends Fragment> fragmentClass)
     {
-        pushFragment(fragmentClass, true);
+        pushFragment(fragmentClass, null, true);
+    }
+
+    public void pushFragment(Class<? extends Fragment> fragmentClass, Bundle args)
+    {
+        pushFragment(fragmentClass, args, true);
     }
 
 
@@ -84,12 +90,12 @@ public class NavigationController
     {
         private Map<Class<?>, Fragment> instances = new HashMap<>();
 
-        public Fragment getInstance(Class<?> clss)
+        public Fragment getInstance(Class<?> clss, Bundle args)
         {
             Fragment fragment = instances.get(clss);
             if (fragment == null)
             {
-                fragment = Fragment.instantiate(fragmentActivity, clss.getName(), null);
+                fragment = Fragment.instantiate(fragmentActivity, clss.getName(), args);
                 instances.put(clss, fragment);
             }
             return fragment;

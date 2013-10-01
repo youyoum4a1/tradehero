@@ -23,7 +23,7 @@ import javax.inject.Inject;
 
 public class TimelineFragment extends ItemListFragment<TimelineItem>
 {
-    private static final String USER_ID = "userId";
+    public static final String USER_ID = "userId";
     private TimelineAdapter timelineAdapter;
 
     protected UserProfileDTO profile;

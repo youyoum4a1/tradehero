@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentTabHost;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.tradehero.th.R;
+import com.tradehero.th.base.Navigator;
+import com.tradehero.th.base.NavigatorActivity;
 import com.tradehero.th.fragments.CommunityScreenFragment;
 import com.tradehero.th.fragments.PortfolioScreenFragment;
 import com.tradehero.th.fragments.StoreScreenFragment;
@@ -11,9 +13,11 @@ import com.tradehero.th.fragments.timeline.MeTimelineFragment;
 import com.tradehero.th.fragments.trending.TrendingFragment;
 
 public class DashboardActivity extends SherlockFragmentActivity
+    implements NavigatorActivity
 {
     private static final String BUNDLE_KEY = "key";
     private FragmentTabHost mTabHost;
+    private Navigator navigator;
 
     public void onCreate(Bundle savedInstanceState)
     {
@@ -45,5 +49,14 @@ public class DashboardActivity extends SherlockFragmentActivity
                 .newTabSpec(tabTag)
                 .setIndicator("", getResources().getDrawable(tabIndicatorDrawableId)),
                 fragmentClass, b);
+    }
+
+    @Override public Navigator getNavigator()
+    {
+        if (navigator == null) {
+            navigator = new Navigator(this);
+            navigator.setFragmentContentId(R.id.realtabcontent);
+        }
+        return navigator;
     }
 }
