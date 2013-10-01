@@ -119,4 +119,9 @@ public class SecurityCompactDTO
     {
         return !Double.isNaN(lastPrice) && !(Double.compare(lastPrice, 0.0) == 0);
     }
+
+    public SecurityId getSecurityId()
+    {
+        return new SecurityId(exchange, symbol);
+    }
 }
