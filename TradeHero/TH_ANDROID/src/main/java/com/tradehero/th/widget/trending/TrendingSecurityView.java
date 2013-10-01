@@ -73,7 +73,6 @@ public class TrendingSecurityView extends FrameLayout implements DTOView<Securit
         createTransformations();
         createPicasso();
         fetchViews();
-
     }
 
     private void createTransformations()

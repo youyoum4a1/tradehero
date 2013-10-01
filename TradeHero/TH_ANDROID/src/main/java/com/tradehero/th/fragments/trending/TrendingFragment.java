@@ -35,8 +35,6 @@ public class TrendingFragment extends DashboardFragment
     private ImageView mBullIcon;
     private TextView mHeaderText;
     private ImageButton mSearchBtn;
-    private SearchRequestedListener searchRequestedListener;
-    private OnTradeRequestedListener tradeRequestedListener;
 
     private ProgressBar mProgressSpinner;
     private TrendingGridView mTrendingGridView;
@@ -50,7 +48,6 @@ public class TrendingFragment extends DashboardFragment
     {
         THLog.i(TAG, "onCreate");
         super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -115,7 +112,7 @@ public class TrendingFragment extends DashboardFragment
         {
             @Override public void onClick(View view)
             {
-                notifySearchRequested();
+                handleSearchRequested();
             }
         });
     }
@@ -178,30 +175,21 @@ public class TrendingFragment extends DashboardFragment
         return flag ? View.VISIBLE : View.INVISIBLE;
     }
 
-    public void setSearchRequestedListener(SearchRequestedListener searchRequestedListener)
-    {
-        this.searchRequestedListener = searchRequestedListener;
-    }
-
     public void setTradeRequestedListener(OnTradeRequestedListener tradeRequestedListener)
     {
-        this.tradeRequestedListener = tradeRequestedListener;
+        Bundle args = new Bundle();
+        // TODO put stock id
+        navigator.pushFragment(TradeFragment.class);
     }
 
-    private void notifySearchRequested()
+    private void handleSearchRequested()
     {
-        if (this.searchRequestedListener != null)
-        {
-            this.searchRequestedListener.onSearchRequested();
-        }
+        navigator.pushFragment(SearchStockPeopleFragment.class);
     }
 
     private void notifyTradeRequested(SecurityCompactDTO securityCompactDTO)
     {
-        if (this.tradeRequestedListener != null)
-        {
-            this.tradeRequestedListener.onTradeRequested(securityCompactDTO);
-        }
+        // TODO
     }
 
     public interface SearchRequestedListener

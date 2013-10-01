@@ -1,4 +1,4 @@
-package com.tradehero.th.persistence;
+package com.tradehero.th.persistence.user;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;

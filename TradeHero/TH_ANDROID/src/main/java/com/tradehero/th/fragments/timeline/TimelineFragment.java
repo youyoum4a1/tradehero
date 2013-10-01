@@ -13,8 +13,7 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.base.ItemListFragment;
 import com.tradehero.th.loaders.TimelinePagedItemListLoader;
 import com.tradehero.th.misc.exception.THException;
-import com.tradehero.th.persistence.UserManager;
-import com.tradehero.th.persistence.UserStore;
+import com.tradehero.th.persistence.user.UserManager;
 import com.tradehero.th.widget.timeline.TimelineListView;
 import com.tradehero.th.widget.user.ProfileView;
 import java.io.IOException;
@@ -37,7 +36,8 @@ public class TimelineFragment extends ItemListFragment<TimelineItem>
     {
         View view = inflater.inflate(R.layout.profile_screen, container, false);
         profileId = getArguments().getInt(USER_ID);
-        if (profileId>0) {
+        if (profileId > 0)
+        {
             try
             {
                 profile = userManager.getUser(profileId, true);
@@ -61,7 +61,8 @@ public class TimelineFragment extends ItemListFragment<TimelineItem>
 
         timelineListView = (TimelineListView) view.findViewById(R.id.pull_refresh_list);
         timelineListView.addHeaderView(profileView);
-        if (timelineAdapter == null) {
+        if (timelineAdapter == null)
+        {
             timelineAdapter = createTimelineAdapter();
         }
         timelineListView.setAdapter(timelineAdapter);

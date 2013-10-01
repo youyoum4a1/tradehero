@@ -1,4 +1,4 @@
-package com.tradehero.th.persistence;
+package com.tradehero.th.persistence.user;
 
 import com.tradehero.common.cache.DatabaseCache;
 import com.tradehero.common.persistence.PersistableResource;

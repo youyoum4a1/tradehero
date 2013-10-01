@@ -11,6 +11,7 @@ import com.tradehero.th.api.users.UserSearchResultDTO;
 import java.util.List;
 import org.json.JSONObject;
 import retrofit.Callback;
+import retrofit.RetrofitError;
 import retrofit.client.Response;
 import retrofit.http.GET;
 import retrofit.http.Header;
@@ -45,6 +46,6 @@ public interface UserService
 
 
     @GET("/users/GetUser/{userId}")
-    UserProfileDTO getUser(int userId);
+    UserProfileDTO getUser(int userId) throws RetrofitError;
 
 }
