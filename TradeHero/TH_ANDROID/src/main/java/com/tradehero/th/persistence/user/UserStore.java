@@ -13,7 +13,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /** Created with IntelliJ IDEA. User: tho Date: 9/26/13 Time: 5:43 PM Copyright (c) TradeHero */
-public class UserStore implements PersistableResource<UserProfileDTO>
+public class UserStore extends AbstractUserStore
 {
     private Query query;
     @Inject UserService userService;
@@ -23,7 +23,7 @@ public class UserStore implements PersistableResource<UserProfileDTO>
         if (query == null)
             throw new IllegalArgumentException();
 
-        UserProfileDTO user = userService.getUser(query.getId());
+        UserProfileDTO user = userService.getUser((Integer) query.getId());
         return Arrays.asList(user);
     }
 

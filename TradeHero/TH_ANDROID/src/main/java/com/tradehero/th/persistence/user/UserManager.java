@@ -1,18 +1,19 @@
 package com.tradehero.th.persistence.user;
 
 import com.tradehero.common.cache.DatabaseCache;
-import com.tradehero.common.persistence.PersistableResource;
 import com.tradehero.common.persistence.Query;
 import com.tradehero.th.api.users.UserProfileDTO;
 import java.io.IOException;
 import java.util.List;
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
 /** Created with IntelliJ IDEA. User: tho Date: 9/26/13 Time: 5:36 PM Copyright (c) TradeHero */
+@Singleton
 public class UserManager
 {
     @Inject DatabaseCache dbCache;
-    @Inject PersistableResource<UserProfileDTO> userStore;
+    @Inject AbstractUserStore userStore;
 
     public UserProfileDTO getUser(int userId, boolean forceReload) throws IOException
     {

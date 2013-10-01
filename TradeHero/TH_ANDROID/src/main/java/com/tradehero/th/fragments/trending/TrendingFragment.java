@@ -1,5 +1,6 @@
 package com.tradehero.th.fragments.trending;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,7 +22,9 @@ import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.network.CallbackWithSpecificNotifiers;
 import com.tradehero.th.network.service.SecurityService;
+import com.tradehero.th.persistence.security.SecurityStoreManager;
 import com.tradehero.th.widget.trending.TrendingGridView;
+import java.io.IOException;
 import java.util.List;
 import javax.inject.Inject;
 import retrofit.RetrofitError;
@@ -39,7 +42,7 @@ public class TrendingFragment extends DashboardFragment
     private ProgressBar mProgressSpinner;
     private TrendingGridView mTrendingGridView;
 
-    @Inject SecurityService securityService;
+    @Inject SecurityStoreManager securityManager;
 
     private List<SecurityCompactDTO> securityCompactDTOs;
     protected TrendingAdapter trendingAdapter;
@@ -136,7 +139,39 @@ public class TrendingFragment extends DashboardFragment
 
     protected void refreshGridView()
     {
-        securityService.getTrendingSecurities(createCallbackForTrending());
+        AsyncTask<Void, Void, List<SecurityCompactDTO>> refreshTask = createAsyncTaskForTrending();
+        refreshTask.execute();
+    }
+
+    private AsyncTask<Void, Void, List<SecurityCompactDTO>> createAsyncTaskForTrending()
+    {
+        return new AsyncTask<Void, Void, List<SecurityCompactDTO>>()
+        {
+            @Override protected List<SecurityCompactDTO> doInBackground(Void... voids)
+            {
+                try
+                {
+                    return securityManager.getTrending(true);
+                }
+                catch (IOException e)
+                {
+                    THToast.show(R.string.error_unknown);
+                    THLog.e(TAG, "Error when refreshing grid", e);
+                }
+                catch (RetrofitError e)
+                {
+                    THToast.show(R.string.error_network_connection);
+                    THLog.e(TAG, "Error when refreshing grid", e);
+                }
+                return null;
+            }
+
+            @Override protected void onPostExecute(List<SecurityCompactDTO> securityCompactDTOs)
+            {
+                super.onPostExecute(securityCompactDTOs);
+                setDataAdapterToGridView(securityCompactDTOs);
+            }
+        };
     }
 
     private CallbackWithSpecificNotifiers<List<SecurityCompactDTO>> createCallbackForTrending ()

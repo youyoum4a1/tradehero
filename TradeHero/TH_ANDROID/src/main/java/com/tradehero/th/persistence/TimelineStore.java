@@ -27,7 +27,7 @@ public class TimelineStore implements PersistableResource<TimelineItem>
     {
         if (query != null)
         {
-            TimelineDTO timelineDTO = timelineService.getTimeline(query.getId(), query.getUpper(), query.getLower(),
+            TimelineDTO timelineDTO = timelineService.getTimeline((Integer) query.getId(), query.getUpper(), query.getLower(),
                     (Integer) query.getProperty(PER_PAGE));
 
             TimelineItemBuilder timelineBuilder = new TimelineItemBuilder(timelineDTO);

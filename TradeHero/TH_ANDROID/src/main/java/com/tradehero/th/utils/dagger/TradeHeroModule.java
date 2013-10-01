@@ -6,6 +6,8 @@ import com.tradehero.common.cache.DatabaseCache;
 import com.tradehero.common.persistence.CacheHelper;
 import com.tradehero.common.persistence.PersistableResource;
 import com.tradehero.th.api.form.UserAvailabilityRequester;
+import com.tradehero.th.api.position.SecurityPositionDetailDTO;
+import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.THUser;
 import com.tradehero.th.fragments.authentication.EmailSignInFragment;
@@ -21,23 +23,32 @@ import com.tradehero.th.network.service.UserService;
 import com.tradehero.th.network.service.UserTimelineService;
 import com.tradehero.th.persistence.TimelineManager;
 import com.tradehero.th.persistence.TimelineStore;
+import com.tradehero.th.persistence.position.AbstractSecurityPositionDetailStore;
+import com.tradehero.th.persistence.security.AbstractSecurityCompactStore;
+import com.tradehero.th.persistence.security.SecurityCompactStore;
+import com.tradehero.th.persistence.position.SecurityPositionDetailStore;
+import com.tradehero.th.persistence.security.SecurityStoreManager;
+import com.tradehero.th.persistence.user.AbstractUserStore;
 import com.tradehero.th.persistence.user.UserManager;
 import com.tradehero.th.persistence.user.UserStore;
 import com.tradehero.th.widget.MarkdownTextView;
 import dagger.Module;
 import dagger.Provides;
-
+import javax.inject.Named;
 import javax.inject.Singleton;
 
 /** Created with IntelliJ IDEA. User: tho Date: 9/16/13 Time: 5:36 PM Copyright (c) TradeHero */
 @Module(
-        injects = {
+        injects =
+        {
                 TrendingFragment.class,
                 SearchStockPeopleFragment.class,
                 EmailSignInFragment.class,
                 TimelineFragment.class,
                 MeTimelineFragment.class,
                 MarkdownTextView.class,
+
+                TrendingFragment.class,
 
                 UserAvailabilityRequester.class,
                 SearchStockPageItemListLoader.class,
@@ -49,11 +60,14 @@ import javax.inject.Singleton;
                 UserStore.class,
                 TimelineStore.class,
                 TimelineStore.Factory.class,
+                //SecurityCompactStore.class,
+                //SecurityPositionDetailStore.class,
 
                 DatabaseCache.class,
                 CacheHelper.class
         },
-        staticInjections = {
+        staticInjections =
+        {
                 THUser.class
         }
 )
@@ -83,7 +97,17 @@ public class TradeHeroModule
         return engine.createService(UserTimelineService.class);
     }
 
-    @Provides @Singleton PersistableResource<UserProfileDTO> provideUserStore(UserStore store)
+    @Provides @Singleton AbstractUserStore provideUserStore(UserStore store)
+    {
+        return store;
+    }
+
+    @Provides @Singleton AbstractSecurityPositionDetailStore providePositionDetailStore(SecurityPositionDetailStore store)
+    {
+        return store;
+    }
+
+    @Provides @Singleton AbstractSecurityCompactStore provideCompactStore(SecurityCompactStore store)
     {
         return store;
     }

@@ -6,18 +6,18 @@ import java.util.Map;
 /** Created with IntelliJ IDEA. User: tho Date: 9/27/13 Time: 11:34 AM Copyright (c) TradeHero */
 public class Query
 {
-    private static final String idKey = "id";
-    private static final String upperKey = "upper";
-    private static final String lowerKey = "lower";
+    private static final String idKey = Query.class.getName() + ".id";
+    private static final String upperKey = Query.class.getName() + ".upper";
+    private static final String lowerKey = Query.class.getName() + ".lower";
 
     private Map<String, Object> properties = new HashMap<>();
 
-    public Integer getId()
+    public Comparable getId()
     {
-        return (Integer)getProperty(idKey);
+        return (Comparable)getProperty(idKey);
     }
 
-    public void setId(Integer id)
+    public void setId(Comparable id)
     {
         setProperty(idKey, id);
     }

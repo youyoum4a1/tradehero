@@ -18,7 +18,7 @@ public class TimelineManager
     public List<TimelineItem> getTimeline(Query query, boolean forceReload) throws IOException
     {
         // TODO scope locking for current timeline of user
-        TimelineStore timelineStore = allTimelineStores.get().under(query.getId());
+        TimelineStore timelineStore = allTimelineStores.get().under((Integer) query.getId());
         timelineStore.setQuery(query);
         return forceReload ? dbCache.requestAndStore(timelineStore) : dbCache.loadOrRequest(timelineStore);
         // and unlock the scope
