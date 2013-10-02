@@ -22,16 +22,8 @@ public abstract class CallbackWithSpecificNotifiers<T> implements Callback<T>
     @Override public void failure(RetrofitError retrofitError)
     {
         notifyIsQuerying(false);
-        if (retrofitError.isNetworkError())
-        {
-            notifyNetworkError(retrofitError);
-        }
+        BasicRetrofitErrorHandler.handle(retrofitError);
     }
 
     public abstract void notifyIsQuerying(boolean isQuerying);
-
-    public void notifyNetworkError(RetrofitError retrofitError)
-    {
-        THToast.show(R.string.network_error);
-    }
 }

@@ -85,10 +85,13 @@ public class ServerValidatedUsernameText extends ServerValidatedText
                 handleServerRequest(isQuerying);
             }
 
-            @Override public void notifyNetworkError(RetrofitError retrofitError)
+            @Override public void failure(RetrofitError retrofitError)
             {
-                super.notifyNetworkError(retrofitError);
-                handleNetworkError(retrofitError);
+                super.failure(retrofitError);
+                if (retrofitError.isNetworkError())
+                {
+                    handleNetworkError(retrofitError);
+                }
             }
         };
     }

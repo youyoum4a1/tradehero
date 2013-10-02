@@ -4,9 +4,11 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import com.tradehero.common.persistence.Query;
 import com.tradehero.th.api.security.SecurityCompactDTO;
+import com.tradehero.th.network.BasicRetrofitErrorHandler;
 import com.tradehero.th.network.service.SecurityService;
 import java.util.List;
 import javax.inject.Inject;
+import retrofit.RetrofitError;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/1/13 Time: 12:19 PM To change this template use File | Settings | File Templates. */
 public class SecurityCompactStore extends AbstractSecurityCompactStore
@@ -46,12 +48,28 @@ public class SecurityCompactStore extends AbstractSecurityCompactStore
 
     private List<SecurityCompactDTO> requestTrending()
     {
-        return securityService.getTrendingSecurities();
+        try
+        {
+            return securityService.getTrendingSecurities();
+        }
+        catch (RetrofitError error)
+        {
+            BasicRetrofitErrorHandler.handle(error);
+        }
+        return null;
     }
 
     private List<SecurityCompactDTO> requestSearch(SecuritySearchQuery securitySearchQuery)
     {
-        return securityService.searchSecurities(securitySearchQuery.getSearchString(), securitySearchQuery.getPage(), securitySearchQuery.getPerPage());
+        try
+        {
+            return securityService.searchSecurities(securitySearchQuery.getSearchString(), securitySearchQuery.getPage(), securitySearchQuery.getPerPage());
+        }
+        catch (RetrofitError error)
+        {
+            BasicRetrofitErrorHandler.handle(error);
+        }
+        return null;
     }
 
     @Override public void setQuery(Query query)

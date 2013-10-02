@@ -5,10 +5,12 @@ import android.database.sqlite.SQLiteDatabase;
 import com.tradehero.common.persistence.Query;
 import com.tradehero.th.api.position.SecurityPositionDetailDTO;
 import com.tradehero.th.api.security.SecurityId;
+import com.tradehero.th.network.BasicRetrofitErrorHandler;
 import com.tradehero.th.network.service.SecurityService;
 import java.util.Arrays;
 import java.util.List;
 import javax.inject.Inject;
+import retrofit.RetrofitError;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/1/13 Time: 12:19 PM To change this template use File | Settings | File Templates. */
 public class SecurityPositionDetailStore extends AbstractSecurityPositionDetailStore
@@ -38,8 +40,17 @@ public class SecurityPositionDetailStore extends AbstractSecurityPositionDetailS
         {
             throw new IllegalArgumentException("SecurityId cannot be null");
         }
-        SecurityPositionDetailDTO securityPositionDetailDTO = securityService.getSecurity(securityId.exchange, securityId.securitySymbol);
-        return Arrays.asList(securityPositionDetailDTO);
+
+        try
+        {
+            return Arrays.asList(securityService.getSecurity(securityId.exchange, securityId.securitySymbol));
+        }
+        catch (RetrofitError e)
+        {
+            BasicRetrofitErrorHandler.handle(e);
+        }
+
+        return null;
     }
 
     @Override public void setQuery(Query query)

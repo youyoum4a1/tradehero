@@ -313,6 +313,12 @@ public class TradeFragment extends DashboardFragment implements DTOView<Security
         super.onDestroyView();
     }
 
+    @Override public void onDetach()
+    {
+        THLog.d(TAG, "onDetach");
+        super.onDetach();
+    }
+
     //@Override
     //public void onYahooQuoteUpdateStarted()
     //{
