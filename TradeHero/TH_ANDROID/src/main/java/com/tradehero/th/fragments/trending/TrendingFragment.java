@@ -219,32 +219,6 @@ public class TrendingFragment extends DashboardFragment
         };
     }
 
-    private CallbackWithSpecificNotifiers<List<SecurityCompactDTO>> createCallbackForTrending ()
-    {
-        return new CallbackWithSpecificNotifiers<List<SecurityCompactDTO>>()
-        {
-            @Override public void notifyIsQuerying(boolean isQuerying)
-            {
-            }
-
-            @Override public void success(List<SecurityCompactDTO> returned, Response response)
-            {
-                super.success(returned, response);
-                setDataAdapterToGridView(returned);
-            }
-
-            @Override public void failure(RetrofitError retrofitError)
-            {
-                super.failure(retrofitError);
-            }
-        };
-    }
-
-    public boolean isRequiredToAct()
-    {
-        return true;
-    }
-
     protected void showProgressSpinner(boolean flag)
     {
         mProgressSpinner.setVisibility(getVisibility(flag));
@@ -253,27 +227,5 @@ public class TrendingFragment extends DashboardFragment
     protected int getVisibility(boolean flag)
     {
         return flag ? View.VISIBLE : View.INVISIBLE;
-    }
-
-    public void setTradeRequestedListener(OnTradeRequestedListener tradeRequestedListener)
-    {
-        Bundle args = new Bundle();
-        // TODO put stock id
-        navigator.pushFragment(TradeFragment.class);
-    }
-
-    private void notifyTradeRequested(SecurityCompactDTO securityCompactDTO)
-    {
-        // TODO
-    }
-
-    public interface SearchRequestedListener
-    {
-        void onSearchRequested();
-    }
-
-    public interface OnTradeRequestedListener
-    {
-        void onTradeRequested(SecurityCompactDTO securityCompactDTO);
     }
 }
