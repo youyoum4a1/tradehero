@@ -1,7 +1,6 @@
 package com.tradehero.th.fragments.trending;
 
 import android.app.Activity;
-import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.Editable;
@@ -9,7 +8,6 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -18,7 +16,6 @@ import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import com.actionbarsherlock.app.ActionBar;
-import com.actionbarsherlock.app.SherlockFragment;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.common.adapter.SpinnerIconAdapter;
@@ -29,17 +26,12 @@ import com.tradehero.th.adapters.SearchPeopleAdapter;
 import com.tradehero.th.adapters.TrendingAdapter;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.users.UserSearchResultDTO;
-import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.network.CallbackWithSpecificNotifiers;
-import com.tradehero.th.network.NetworkEngine;
 import com.tradehero.th.network.service.SecurityService;
 import com.tradehero.th.network.service.UserService;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
@@ -48,10 +40,10 @@ import javax.inject.Inject;
 /** Created with IntelliJ IDEA. User: xavier Date: 9/18/13 Time: 12:09 PM To change this template use File | Settings | File Templates. */
 public class SearchStockPeopleFragment extends DashboardFragment implements AdapterView.OnItemSelectedListener, TextWatcher
 {
-    public final static String KEY_SAVE_SEARCH_STRING = "searchString";
-    public final static String KEY_SAVE_SEARCH_TYPE = "searchType";
-    public final static String KEY_SAVE_PAGE = "page";
-    public final static String KEY_SAVE_PER_PAGE = "perPage";
+    public final static String BUNDLE_KEY_SEARCH_STRING = SearchStockPeopleFragment.class.getName() + ".searchString";
+    public final static String BUNDLE_KEY_SEARCH_TYPE = SearchStockPeopleFragment.class.getName() + ".searchType";
+    public final static String BUNDLE_KEY_PAGE = SearchStockPeopleFragment.class.getName() + ".page";
+    public final static String BUNDLE_KEY_PER_PAGE = SearchStockPeopleFragment.class.getName() + ".perPage";
     private final static String TAG = SearchStockPeopleFragment.class.getSimpleName();
 
     public final static int DEFAULT_PAGE = 1;
@@ -67,7 +59,6 @@ public class SearchStockPeopleFragment extends DashboardFragment implements Adap
     private Drawable[] spinnerIcons;
     private View actionBar;
     private ImageButton mBackBtn;
-    private BackRequestedListener backRequestedListener;
     private SpinnerIconAdapter mSearchTypeSpinnerAdapter;
     private Spinner mSearchTypeSpinner;
     private TrendingSearchType mSearchType;
@@ -113,17 +104,16 @@ public class SearchStockPeopleFragment extends DashboardFragment implements Adap
         setHasOptionsMenu(true);
     }
 
+    @Override public void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        getStatus(getArguments());
+    }
+
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         THLog.i(TAG, "onCreateView");
-        if (savedInstanceState != null)
-        {
-            THLog.i(TAG, "onCreateView restoring savedInstance");
-            mSearchType = TrendingSearchType.fromInt(savedInstanceState.getInt(KEY_SAVE_SEARCH_TYPE, 0));
-            mSearchText = savedInstanceState.getString(KEY_SAVE_SEARCH_STRING);
-            page = savedInstanceState.getInt(KEY_SAVE_PAGE, DEFAULT_PAGE);
-            perPage = savedInstanceState.getInt(KEY_SAVE_PER_PAGE, DEFAULT_PER_PAGE);
-        }
+        getStatus(savedInstanceState);
         View view = inflater.inflate(R.layout.fragment_search_stock, container, false);
         initViews(view);
         populatedOnCreate = false;
@@ -135,6 +125,10 @@ public class SearchStockPeopleFragment extends DashboardFragment implements Adap
         mNothingYet = (TextView) view.findViewById(R.id.search_stock_nothing_yet_view);
         mProgressSpinner = (ProgressBar) view.findViewById(R.id.progress_spinner);
         mSearchStockListView = (ListView) view.findViewById(R.id.trending_listview);
+
+        trendingAdapter = new TrendingAdapter(getActivity(), getActivity().getLayoutInflater(), TrendingAdapter.SECURITY_SEARCH_CELL_LAYOUT);
+        mSearchStockListView.setAdapter(trendingAdapter);
+
         mSearchStockListView.setOnItemClickListener(new AdapterView.OnItemClickListener()
         {
             @Override
@@ -142,8 +136,10 @@ public class SearchStockPeopleFragment extends DashboardFragment implements Adap
             {
                 SecurityCompactDTO securityCompactDTO = (SecurityCompactDTO) parent.getItemAtPosition(position);
 
-                THToast.show("Disabled for now");
-                // TODO put back in
+                //THToast.show("Disabled for now");
+                Bundle args = new Bundle();
+                TradeFragment.putParameters(args, securityCompactDTO.getSecurityId());
+                navigator.pushFragment(TradeFragment.class, args);
             }
         });
         mSearchPeopleListView = (ListView) view.findViewById(R.id.people_listview);
@@ -207,7 +203,7 @@ public class SearchStockPeopleFragment extends DashboardFragment implements Adap
         {
             @Override public void onClick(View view)
             {
-                notifyBackRequested();
+                navigator.popFragment();
             }
         });
 
@@ -258,6 +254,12 @@ public class SearchStockPeopleFragment extends DashboardFragment implements Adap
         }
     }
 
+    @Override public void onResume()
+    {
+        super.onResume();
+        trendingAdapter.notifyDataSetChanged();
+    }
+
     protected void refreshListView()
     {
         THLog.i(TAG, "refreshListView");
@@ -301,12 +303,8 @@ public class SearchStockPeopleFragment extends DashboardFragment implements Adap
         THLog.i(TAG, "setDataAdapterToStockListView");
         this.securityList = securityCompactDTOs;
 
-        if (trendingAdapter == null)
-        {
-            trendingAdapter = new TrendingAdapter(getActivity(), getActivity().getLayoutInflater(), TrendingAdapter.SECURITY_SEARCH_CELL_LAYOUT);
-        }
         trendingAdapter.setItems(securityCompactDTOs);
-        mSearchStockListView.setAdapter(trendingAdapter);
+        trendingAdapter.notifyDataSetChanged();
         updateVisibilities();
     }
 
@@ -338,14 +336,42 @@ public class SearchStockPeopleFragment extends DashboardFragment implements Adap
     @Override public void onSaveInstanceState(Bundle outState)
     {
         THLog.i(TAG, "onSaveInstanceState");
-        if (outState != null)
-        {
-            outState.putInt(KEY_SAVE_SEARCH_TYPE, mSearchType.getValue());
-            outState.putString(KEY_SAVE_SEARCH_STRING, mSearchText);
-            outState.putInt(KEY_SAVE_PAGE, page);
-            outState.putInt(KEY_SAVE_PER_PAGE, perPage);
-        }
+        putStatus(outState);
         super.onSaveInstanceState(outState);
+    }
+
+    @Override public void onDestroyOptionsMenu()
+    {
+        THLog.d(TAG, "onDestroyOptionsMenu");
+        if (mSearchTypeSpinner != null)
+        {
+            mSearchTypeSpinner.setAdapter(null);
+        }
+        if (mBackBtn != null)
+        {
+            mBackBtn.setOnClickListener(null);
+        }
+        if (mSearchTextField != null)
+        {
+            mSearchTextField.removeTextChangedListener(this);
+        }
+        super.onDestroyOptionsMenu();
+    }
+
+    @Override public void onDestroyView()
+    {
+        THLog.d(TAG, "onDestroyView");
+        if (mSearchStockListView != null)
+        {
+            mSearchStockListView.setOnItemClickListener(null);
+            mSearchStockListView.setAdapter(null);
+        }
+        if (mSearchPeopleListView != null)
+        {
+            mSearchPeopleListView.setOnItemClickListener(null);
+            mSearchPeopleListView.setAdapter(null);
+        }
+        super.onDestroyView();
     }
 
     private void updateVisibilities()
@@ -396,6 +422,28 @@ public class SearchStockPeopleFragment extends DashboardFragment implements Adap
         else
         {
             throw new IllegalArgumentException("Unhandled TrendingSearchType." + mSearchType);
+        }
+    }
+
+    protected void putStatus(Bundle args)
+    {
+        if (args != null)
+        {
+            args.putInt(BUNDLE_KEY_SEARCH_TYPE, mSearchType.getValue());
+            args.putString(BUNDLE_KEY_SEARCH_STRING, mSearchText);
+            args.putInt(BUNDLE_KEY_PAGE, page);
+            args.putInt(BUNDLE_KEY_PER_PAGE, perPage);
+        }
+    }
+
+    protected void getStatus(Bundle args)
+    {
+        if (args != null)
+        {
+            mSearchType = TrendingSearchType.fromInt(args.getInt(BUNDLE_KEY_SEARCH_TYPE, 0));
+            mSearchText = args.getString(BUNDLE_KEY_SEARCH_STRING);
+            page = args.getInt(BUNDLE_KEY_PAGE, DEFAULT_PAGE);
+            perPage = args.getInt(BUNDLE_KEY_PER_PAGE, DEFAULT_PER_PAGE);
         }
     }
 
@@ -457,19 +505,6 @@ public class SearchStockPeopleFragment extends DashboardFragment implements Adap
         };
     }
 
-    public void setBackRequestedListener(BackRequestedListener backRequestedListener)
-    {
-        this.backRequestedListener = backRequestedListener;
-    }
-
-    private void notifyBackRequested()
-    {
-        if (this.backRequestedListener != null)
-        {
-            this.backRequestedListener.onBackRequested();
-        }
-    }
-
     //<editor-fold desc="TextWatcher">
     @Override public void afterTextChanged(Editable editable)
     {
@@ -515,10 +550,4 @@ public class SearchStockPeopleFragment extends DashboardFragment implements Adap
         updateVisibilities();
     }
     //</editor-fold>
-
-    public interface BackRequestedListener
-    {
-        void onBackRequested();
-    }
-
 }

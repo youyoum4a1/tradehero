@@ -78,24 +78,24 @@ public class ImageViewThreadSafe extends ImageView
         //THLog.i(TAG, "Setting ImageDrawable " + softId + " w" + getWidth() + " h" + getHeight() + " url " + getUrl());
         if (Looper.getMainLooper().getThread() == Thread.currentThread())
         {
-            THLog.i(TAG, "Setting own.ImageDrawable "
-                    + softId
-                    + " w"
-                    + getWidth()
-                    + " h"
-                    + getHeight()
-                    + " mw"
-                    + getMeasuredWidth()
-                    + " mh"
-                    + getMeasuredHeight()
-                    + " url "
-                    + getTag(R.string.image_url));
+            //THLog.i(TAG, "Setting own.ImageDrawable "
+            //        + softId
+            //        + " w"
+            //        + getWidth()
+            //        + " h"
+            //        + getHeight()
+            //        + " mw"
+            //        + getMeasuredWidth()
+            //        + " mh"
+            //        + getMeasuredHeight()
+            //        + " url "
+            //        + getTag(R.string.image_url));
             super.setImageDrawable(drawable);
             requestLayout();
         }
         else
         {
-            THLog.i(TAG, "Posting this.ImageDrawable " + softId + " w" + getWidth() + " h" + getHeight() + " mw" + getMeasuredWidth() + " mh" + getMeasuredHeight() + " url " + getTag(R.string.image_url));
+            //THLog.i(TAG, "Posting this.ImageDrawable " + softId + " w" + getWidth() + " h" + getHeight() + " mw" + getMeasuredWidth() + " mh" + getMeasuredHeight() + " url " + getTag(R.string.image_url));
             post(new Runnable()
             {
 

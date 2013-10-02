@@ -51,4 +51,9 @@ public class SecurityId implements Comparable
     {
         return exchange != null && !exchange.isEmpty() && securitySymbol != null && !securitySymbol.isEmpty();
     }
+
+    @Override public String toString()
+    {
+        return String.format("[exchange=%s; securitySymbol=%s]", exchange, securitySymbol);
+    }
 }

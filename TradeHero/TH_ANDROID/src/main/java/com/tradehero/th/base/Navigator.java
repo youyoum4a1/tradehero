@@ -5,6 +5,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.view.ViewGroup;
+import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
 import java.util.HashMap;
 import java.util.Map;
@@ -58,6 +59,7 @@ public class Navigator
 
     public void pushFragment(Class<? extends Fragment> fragmentClass, Bundle args, boolean withAnimation)
     {
+        THLog.d(TAG, "Pushing fragment " + fragmentClass.getSimpleName());
         Fragment fragment = fragmentFactory.getInstance(fragmentClass, args);
         FragmentTransaction transaction = fragmentActivity.getSupportFragmentManager().beginTransaction();
         if (withAnimation)
@@ -80,9 +82,9 @@ public class Navigator
         pushFragment(fragmentClass, args, true);
     }
 
-
-    private void popFragment()
+    public void popFragment()
     {
+        THLog.d(TAG, "Popping fragment, count: " + fragmentActivity.getSupportFragmentManager().getBackStackEntryCount());
         fragmentActivity.getSupportFragmentManager().popBackStack();
     }
 
@@ -105,35 +107,4 @@ public class Navigator
             return fragment;
         }
     }
-
-    /*
-    private void pushTrendingIn()
-    {
-        THLog.i(TAG, "pushTrendingIn");
-
-    }
-
-    private void pushSearchIn()
-    {
-        THLog.i(TAG, "pushSearchIn");
-        Fragment searchFragment = fragmentFactory.getInstance();
-    }
-
-    private void pushTradeIn(SecurityCompactDTO securityCompactDTO)
-    {
-        THLog.i(TAG, "pushTradeIn");
-        TradeFragment tradeFragment = (TradeFragment) fragmentFactory.getInstance(TradeFragment.class);
-        fragmentActivity.getSupportFragmentManager().beginTransaction()
-                .setCustomAnimations(
-                        R.anim.slide_right_in, R.anim.slide_left_out,
-                        R.anim.slide_left_in, R.anim.slide_right_out
-                )
-                .replace(fragmentActivity.get, tradeFragment)
-                        //.show(searchFragment)
-                .addToBackStack(null)
-                .commit();
-        tradeFragment.display(securityCompactDTO);
-    }
-    */
-
 }

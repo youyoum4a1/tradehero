@@ -6,6 +6,7 @@
  */
 package com.tradehero.th.fragments.trending;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -15,12 +16,16 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
+import android.widget.Switch;
 import android.widget.TextView;
-import com.actionbarsherlock.app.SherlockFragment;
+import com.actionbarsherlock.app.ActionBar;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
 import com.squareup.picasso.Cache;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
@@ -33,19 +38,23 @@ import com.tradehero.common.utils.THLog;
 import com.tradehero.common.widget.ImageUrlView;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
+import com.tradehero.th.api.position.SecurityPositionDetailDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.base.THUser;
 import com.tradehero.th.fragments.BuyFragment;
 import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.persistence.security.SecurityStoreManager;
 import com.tradehero.th.utills.Logger;
 import com.tradehero.th.utills.Logger.LogLevel;
 import com.tradehero.th.widget.trade.PricingBidAskView;
 import com.tradehero.th.widget.trade.QuickPriceButtonSet;
 import com.tradehero.th.widget.trade.TradeQuantityView;
+import java.io.IOException;
 import java.util.concurrent.Future;
+import javax.inject.Inject;
 
-public class TradeFragment extends DashboardFragment implements DTOView<SecurityCompactDTO>
+public class TradeFragment extends DashboardFragment implements DTOView<SecurityPositionDetailDTO>
 {
     private final static String TAG = TradeFragment.class.getSimpleName();
     public final static int TRANSACTION_COST = 10;
@@ -57,6 +66,12 @@ public class TradeFragment extends DashboardFragment implements DTOView<Security
     public final static String QUANTITY = "quantity";
     public final static String SYMBOL = "symbol";
     public final static String EXCHANGE = "exchange";
+
+    private View actionBar;
+    private ImageButton mBackBtn;
+    private Switch mBuySellSwitch;
+    private TextView mExchangeSymbol;
+    private ImageView mMarketClose;
 
     private ImageUrlView mStockBgLogo;
     private ImageUrlView mStockLogo;
@@ -70,11 +85,11 @@ public class TradeFragment extends DashboardFragment implements DTOView<Security
     private QuickPriceButtonSet mQuickPriceButtonSet;
 
     private Button mBuyBtn;
-
     private SeekBar mSlider;
 
+    @Inject protected SecurityStoreManager securityStoreManager;
     private SecurityId securityId;
-    private SecurityCompactDTO securityCompactDTO;
+    private SecurityPositionDetailDTO securityPositionDetailDTO;
 
     double lastPrice;
     int sliderIncrement = 0;
@@ -105,14 +120,7 @@ public class TradeFragment extends DashboardFragment implements DTOView<Security
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        if (savedInstanceState != null)
-        {
-            securityId = getSecurityId(savedInstanceState);
-            if (securityId.isValid())
-            {
-                // TODO
-            }
-        }
+        THLog.d(TAG, "onCreateView");
         View view = null;
         view = inflater.inflate(R.layout.fragment_trade, container, false);
         initViews(view);
@@ -127,23 +135,35 @@ public class TradeFragment extends DashboardFragment implements DTOView<Security
 
         mStockName = (TextView) view.findViewById(R.id.stock_name);
         mStockChartButton = (ImageButton) view.findViewById(R.id.stock_chart_button);
-        mStockChartButton.setOnClickListener(createStockChartButtonClickListener());
+        if (mStockChartButton != null)
+        {
+            mStockChartButton.setOnClickListener(createStockChartButtonClickListener());
+        }
 
         mPricingBidAskView = (PricingBidAskView) view.findViewById(R.id.pricing_bid_ask_view);
         mTradeQuantityView = (TradeQuantityView) view.findViewById(R.id.trade_quantity_view);
 
         mQuickPriceButtonSet = (QuickPriceButtonSet) view.findViewById(R.id.quick_price_button_set);
-        mQuickPriceButtonSet.setListener(createQuickButtonSetListener());
-        mQuickPriceButtonSet.addButton(R.id.toggle5k);
-        mQuickPriceButtonSet.addButton(R.id.toggle10k);
-        mQuickPriceButtonSet.addButton(R.id.toggle25k);
-        mQuickPriceButtonSet.addButton(R.id.toggle50k);
+        if (mQuickPriceButtonSet != null)
+        {
+            mQuickPriceButtonSet.setListener(createQuickButtonSetListener());
+            mQuickPriceButtonSet.addButton(R.id.toggle5k);
+            mQuickPriceButtonSet.addButton(R.id.toggle10k);
+            mQuickPriceButtonSet.addButton(R.id.toggle25k);
+            mQuickPriceButtonSet.addButton(R.id.toggle50k);
+        }
 
         mSlider = (SeekBar) view.findViewById(R.id.seekBar);
-        mSlider.setOnSeekBarChangeListener(createSeekBarListener());
+        if (mSlider != null)
+        {
+            mSlider.setOnSeekBarChangeListener(createSeekBarListener());
+        }
 
         mBuyBtn = (Button) view.findViewById(R.id.btn_buy);
-        mBuyBtn.setOnClickListener(createBuyButtonListener());
+        if (mBuyBtn != null)
+        {
+            mBuyBtn.setOnClickListener(createBuyButtonListener());
+        }
 
         if (foregroundTransformation == null)
         {
@@ -174,6 +194,12 @@ public class TradeFragment extends DashboardFragment implements DTOView<Security
         display();
     }
 
+    private void enableFields(boolean flag)
+    {
+        mQuickPriceButtonSet.setEnabled(flag);
+        mBuyBtn.setEnabled(flag);
+    }
+
     @Override public void onActivityCreated(Bundle savedInstanceState)
     {
         super.onActivityCreated(savedInstanceState);
@@ -182,16 +208,109 @@ public class TradeFragment extends DashboardFragment implements DTOView<Security
         //        .findFragmentByTag("trending_detail")).setYahooQuoteUpdateListener(this);
     }
 
+    @Override public void onViewStateRestored(Bundle savedInstanceState)
+    {
+        super.onViewStateRestored(savedInstanceState);
+        if (savedInstanceState != null)
+        {
+            securityId = getSecurityId(savedInstanceState);
+            THLog.d(TAG, securityId.toString());
+        }
+        else
+        {
+            THLog.d(TAG, "SavedInstanceState null");
+        }
+    }
+
+    @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
+    {
+        THLog.d(TAG, "onCreateOptionsMenu");
+        super.onCreateOptionsMenu(menu, inflater);
+        createTradeActionBar(menu, inflater);
+    }
+
+    private void createTradeActionBar(Menu menu, MenuInflater inflater)
+    {
+        getSherlockActivity().getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+        getSherlockActivity().getSupportActionBar().setCustomView(R.layout.trade_topbar);
+
+        actionBar = getSherlockActivity().getSupportActionBar().getCustomView();
+
+        mBackBtn = (ImageButton) actionBar.findViewById(R.id.btn_back);
+        if (mBackBtn != null)
+        {
+            mBackBtn.setOnClickListener(new OnClickListener()
+            {
+                @Override public void onClick(View view)
+                {
+                    navigator.popFragment();
+                }
+            });
+        }
+
+        mMarketClose = (ImageView) actionBar.findViewById(R.id.ic_market_close);
+
+        mExchangeSymbol = (TextView) actionBar.findViewById(R.id.header_txt);
+
+        mBuySellSwitch = (Switch) actionBar.findViewById(R.id.switch_buy_sell);
+        if (mBuySellSwitch != null)
+        {
+            mBuySellSwitch.setChecked(isTransactionTypeBuy);
+            mBuySellSwitch.setOnCheckedChangeListener(createBuySellListener());
+        }
+    }
+
     @Override public void onResume()
     {
         super.onResume();
+
+        Bundle args = getArguments();
+        if (args != null)
+        {
+            this.securityId = getSecurityId(args);
+            if (this.securityId != null)
+            {
+                createAsyncRequestPositionDetail(this.securityId).execute();
+            }
+        }
+
         display();
     }
 
-    private void enableFields(boolean flag)
+    @Override public void onDestroyOptionsMenu()
     {
-        mQuickPriceButtonSet.setEnabled(flag);
-        mBuyBtn.setEnabled(flag);
+        THLog.d(TAG, "onDestroyOptionsMenu");
+        if (mBuySellSwitch != null)
+        {
+            mBuySellSwitch.setOnCheckedChangeListener(null);
+        }
+        if (mBackBtn != null)
+        {
+            mBackBtn.setOnClickListener(null);
+        }
+        super.onDestroyOptionsMenu();
+    }
+
+    @Override public void onDestroyView()
+    {
+        THLog.d(TAG, "onDestroyView");
+        if (mStockChartButton != null)
+        {
+            mStockChartButton.setOnClickListener(null);
+        }
+        if (mQuickPriceButtonSet != null)
+        {
+            mQuickPriceButtonSet.setListener(null);
+        }
+        if (mSlider != null)
+        {
+            mSlider.setOnSeekBarChangeListener(null);
+        }
+        if (mBuyBtn != null)
+        {
+            mBuyBtn.setOnClickListener(null);
+        }
+        super.onDestroyView();
     }
 
     //@Override
@@ -281,29 +400,59 @@ public class TradeFragment extends DashboardFragment implements DTOView<Security
     //    updateValues(mCashAvailable, false);
     //}
 
-    @Override
-    public void display(SecurityCompactDTO securityCompactDTO)
+    private AsyncTask<Void, Void, SecurityPositionDetailDTO> createAsyncRequestPositionDetail(final SecurityId securityId)
     {
-        this.securityCompactDTO = securityCompactDTO;
+        return new AsyncTask<Void, Void, SecurityPositionDetailDTO>()
+        {
+            @Override protected SecurityPositionDetailDTO doInBackground(Void... voids)
+            {
+                try
+                {
+                    return TradeFragment.this.securityStoreManager.getPositionDetail(securityId, false);
+                }
+                catch (IOException e)
+                {
+                    THLog.e(TAG, "Failed to get position detail", e);
+                }
+                return null;
+            }
+
+            @Override protected void onPostExecute(SecurityPositionDetailDTO securityPositionDetailDTO)
+            {
+                super.onPostExecute(securityPositionDetailDTO);
+                TradeFragment.this.display(securityPositionDetailDTO);
+            }
+        };
+    }
+
+    @Override
+    public void display(SecurityPositionDetailDTO securityPositionDetailDTO)
+    {
+        this.securityPositionDetailDTO = securityPositionDetailDTO;
         display();
     }
 
     public void display()
     {
-        if (mPricingBidAskView != null)
+        if (mExchangeSymbol != null && securityPositionDetailDTO != null && securityPositionDetailDTO.security != null)
         {
-            mPricingBidAskView.display(securityCompactDTO);
+            mExchangeSymbol.setText(String.format("%s:%s", securityPositionDetailDTO.security.exchange, securityPositionDetailDTO.security.symbol));
         }
-        if (mTradeQuantityView != null)
+
+        if (mPricingBidAskView != null && securityPositionDetailDTO != null)
         {
-            mTradeQuantityView.display(securityCompactDTO);
+            mPricingBidAskView.display(securityPositionDetailDTO.security);
+        }
+        if (mTradeQuantityView != null && securityPositionDetailDTO != null)
+        {
+            mTradeQuantityView.display(securityPositionDetailDTO.security);
         }
 
         if (mStockName != null)
         {
-            if (securityCompactDTO != null)
+            if (securityPositionDetailDTO != null && securityPositionDetailDTO.security != null)
             {
-                mStockName.setText(securityCompactDTO.name);
+                mStockName.setText(securityPositionDetailDTO.security.name);
             }
             else
             {
@@ -311,28 +460,31 @@ public class TradeFragment extends DashboardFragment implements DTOView<Security
             }
         }
 
-        if (securityCompactDTO != null && !TextUtils.isEmpty(securityCompactDTO.yahooSymbol))
+        if (securityPositionDetailDTO != null && securityPositionDetailDTO.security != null &&
+                !TextUtils.isEmpty(securityPositionDetailDTO.security.yahooSymbol))
         {
             //mImageLoader.DisplayImage(String.format(Config.getTrendingChartUrl(), trend.getYahooSymbol()),
             //        mStockChart);
         }
 
-        if (securityCompactDTO == null || securityCompactDTO.averageDailyVolume == null)
+        if (securityPositionDetailDTO == null || securityPositionDetailDTO.security == null ||
+                securityPositionDetailDTO.security.averageDailyVolume == null)
         {
             avgDailyVolume = 0;
         }
         else
         {
-            avgDailyVolume = (int) Math.ceil(securityCompactDTO.averageDailyVolume);
+            avgDailyVolume = (int) Math.ceil(securityPositionDetailDTO.security.averageDailyVolume);
         }
 
-        if (securityCompactDTO == null || securityCompactDTO.volume == null)
+        if (securityPositionDetailDTO == null || securityPositionDetailDTO.security == null ||
+                securityPositionDetailDTO.security.volume == null)
         {
             volume = 0;
         }
         else
         {
-            volume = (int) Math.ceil(securityCompactDTO.volume);
+            volume = (int) Math.ceil(securityPositionDetailDTO.security.volume);
         }
 
         if (mSlider != null)
@@ -435,7 +587,8 @@ public class TradeFragment extends DashboardFragment implements DTOView<Security
 
     public boolean isMyUrlOk()
     {
-        return (securityCompactDTO != null) && isUrlOk(securityCompactDTO.imageBlobUrl);
+        return (securityPositionDetailDTO != null) && securityPositionDetailDTO.security != null &&
+                isUrlOk(securityPositionDetailDTO.security.imageBlobUrl);
     }
 
     public static boolean isUrlOk(String url)
@@ -445,22 +598,37 @@ public class TradeFragment extends DashboardFragment implements DTOView<Security
 
     public double getMaxPurchasableShares()
     {
-        if (securityCompactDTO == null || securityCompactDTO.askPrice == null || securityCompactDTO.askPrice == 0)
+        if (securityPositionDetailDTO == null || securityPositionDetailDTO.security == null ||
+                securityPositionDetailDTO.security.askPrice == null || securityPositionDetailDTO.security.askPrice == 0)
         {
             return 0;
         }
-        return Math.floor(THUser.getCurrentUser().portfolio.cashBalance / securityCompactDTO.askPrice);
+        return Math.floor(THUser.getCurrentUser().portfolio.cashBalance / securityPositionDetailDTO.security.askPrice);
+    }
+
+    public void setTransactionTypeBuy(boolean transactionTypeBuy)
+    {
+        this.isTransactionTypeBuy = transactionTypeBuy;
+        if (mTradeQuantityView != null)
+        {
+            mTradeQuantityView.setBuy(transactionTypeBuy);
+        }
+        if (mPricingBidAskView != null)
+        {
+            mPricingBidAskView.setBuy(transactionTypeBuy);
+        }
+        // TODO more views to update?
     }
 
     public void loadImages ()
     {
-        if (mStockLogo != null)
+        if (mStockLogo != null && securityPositionDetailDTO != null && securityPositionDetailDTO.security != null)
         {
-            mStockLogo.setUrl(this.securityCompactDTO.imageBlobUrl);
+            mStockLogo.setUrl(this.securityPositionDetailDTO.security.imageBlobUrl);
         }
-        if (mStockBgLogo != null)
+        if (mStockBgLogo != null && securityPositionDetailDTO != null && securityPositionDetailDTO.security != null)
         {
-            mStockBgLogo.setUrl(this.securityCompactDTO.imageBlobUrl);
+            mStockBgLogo.setUrl(this.securityPositionDetailDTO.security.imageBlobUrl);
         }
 
         final Callback loadIntoBg = createLogoReadyCallback();
@@ -503,9 +671,9 @@ public class TradeFragment extends DashboardFragment implements DTOView<Security
         else
         {
             // These ensure that views with a missing image do not receive images from elsewhere
-            if (mStockLogo != null && this.securityCompactDTO != null)
+            if (mStockLogo != null && this.securityPositionDetailDTO != null && this.securityPositionDetailDTO.security != null)
             {
-                mStockLogo.setImageResource(this.securityCompactDTO.getExchangeLogoId());
+                mStockLogo.setImageResource(this.securityPositionDetailDTO.security.getExchangeLogoId());
             }
             else if (mStockLogo != null)
             {
@@ -555,9 +723,9 @@ public class TradeFragment extends DashboardFragment implements DTOView<Security
                             .transform(foregroundTransformation)
                             .into(mStockBgLogo);
                 }
-                else if (mStockBgLogo != null && securityCompactDTO != null)
+                else if (mStockBgLogo != null && securityPositionDetailDTO != null && securityPositionDetailDTO.security != null)
                 {
-                    mPicasso.load(securityCompactDTO.getExchangeLogoId())
+                    mPicasso.load(securityPositionDetailDTO.security.getExchangeLogoId())
                             .resize(mStockBgLogo.getWidth(), mStockBgLogo.getHeight())
                             .centerCrop()
                             .transform(foregroundTransformation)
@@ -650,7 +818,7 @@ public class TradeFragment extends DashboardFragment implements DTOView<Security
             public void onClick(View v)
             {
                 String buyDetail = String.format("Buy %s %s:%s @ %s %f\nTransaction fee: virtual US$ 10\nTotal cost: US$ %.2f",
-                        /*tvQuantity.getText()*/ "quantity", securityCompactDTO.exchange, securityCompactDTO.symbol, securityCompactDTO.currencyDisplay,
+                        /*tvQuantity.getText()*/ "quantity", securityPositionDetailDTO.security.exchange, securityPositionDetailDTO.security.symbol, securityPositionDetailDTO.security.currencyDisplay,
                         lastPrice, getTotalCostForBuy());
 
                 Bundle b = new Bundle();
@@ -658,8 +826,8 @@ public class TradeFragment extends DashboardFragment implements DTOView<Security
                 b.putString(BUY_DETAIL_STR, buyDetail);
                 b.putString(LAST_PRICE, String.valueOf(lastPrice));
                 b.putString(QUANTITY, /*tvQuantity.getText().toString().replace(",", "")*/ "quantity");
-                b.putString(SYMBOL, securityCompactDTO.symbol);
-                b.putString(EXCHANGE, securityCompactDTO.exchange);
+                b.putString(SYMBOL, securityPositionDetailDTO.security.symbol);
+                b.putString(EXCHANGE, securityPositionDetailDTO.security.exchange);
 
                 Fragment newFragment = Fragment.instantiate(getActivity(), BuyFragment.class.getName(), b);
 
@@ -695,5 +863,14 @@ public class TradeFragment extends DashboardFragment implements DTOView<Security
         };
     }
 
-
+    private CompoundButton.OnCheckedChangeListener createBuySellListener()
+    {
+        return new CompoundButton.OnCheckedChangeListener()
+        {
+            @Override public void onCheckedChanged(CompoundButton compoundButton, boolean checked)
+            {
+                setTransactionTypeBuy(checked);
+            }
+        };
+    }
 }

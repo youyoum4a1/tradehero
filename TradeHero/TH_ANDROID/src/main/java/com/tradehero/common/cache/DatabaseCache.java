@@ -160,7 +160,7 @@ import javax.inject.Singleton;
         Cursor cursor = persistableResource.getCursor(db);
         try
         {
-            if (!cursor.moveToFirst())
+            if (cursor == null || !cursor.moveToFirst())
             {
                 return null;
             }
@@ -175,7 +175,10 @@ import javax.inject.Singleton;
         }
         finally
         {
-            cursor.close();
+            if (cursor != null)
+            {
+                cursor.close();
+            }
         }
     }
 }

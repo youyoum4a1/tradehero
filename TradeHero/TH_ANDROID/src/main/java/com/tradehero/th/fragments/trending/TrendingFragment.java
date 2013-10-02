@@ -71,7 +71,6 @@ public class TrendingFragment extends DashboardFragment
         mProgressSpinner = (ProgressBar) view.findViewById(R.id.progress_spinner);
         mBullIcon = (ImageView) view.findViewById(R.id.logo_img);
 
-
         THLog.i(TAG, "onActivityCreated");
 
         if (securityCompactDTOs != null && securityCompactDTOs.size() > 0)
@@ -89,7 +88,6 @@ public class TrendingFragment extends DashboardFragment
                     long id)
             {
                 SecurityCompactDTO securityCompactDTO = (SecurityCompactDTO) parent.getItemAtPosition(position);
-                //THToast.show("Disabled for now");
                 Bundle args = new Bundle();
                 TradeFragment.putParameters(args, securityCompactDTO.getSecurityId());
                 navigator.pushFragment(TradeFragment.class, args);
@@ -118,19 +116,43 @@ public class TrendingFragment extends DashboardFragment
         ((TextView) actionBar.findViewById(R.id.header_txt)).setText(R.string.header_trending);
 
         mSearchBtn = (ImageButton) actionBar.findViewById(R.id.btn_search);
-        mSearchBtn.setOnClickListener(new View.OnClickListener()
+        if (mSearchBtn != null)
         {
-            @Override public void onClick(View view)
+            mSearchBtn.setOnClickListener(new View.OnClickListener()
             {
-                handleSearchRequested();
-            }
-        });
+                @Override public void onClick(View view)
+                {
+                    navigator.pushFragment(SearchStockPeopleFragment.class);
+                }
+            });
+        }
     }
 
     @Override public void onResume()
     {
         super.onResume();
         trendingAdapter.notifyDataSetChanged();
+    }
+
+    @Override public void onDestroyOptionsMenu()
+    {
+        THLog.d(TAG, "onDestroyOptionsMenu");
+        if (mSearchBtn != null)
+        {
+            mSearchBtn.setOnClickListener(null);
+        }
+        super.onDestroyOptionsMenu();
+    }
+
+    @Override public void onDestroyView()
+    {
+        THLog.d(TAG, "onDestroyView");
+        if (mTrendingGridView != null)
+        {
+            mTrendingGridView.setAdapter(null);
+            mTrendingGridView.setOnItemClickListener(null);
+        }
+        super.onDestroyView();
     }
 
     private void setDataAdapterToGridView(List<SecurityCompactDTO> trendList)
@@ -219,11 +241,6 @@ public class TrendingFragment extends DashboardFragment
         Bundle args = new Bundle();
         // TODO put stock id
         navigator.pushFragment(TradeFragment.class);
-    }
-
-    private void handleSearchRequested()
-    {
-        navigator.pushFragment(SearchStockPeopleFragment.class);
     }
 
     private void notifyTradeRequested(SecurityCompactDTO securityCompactDTO)

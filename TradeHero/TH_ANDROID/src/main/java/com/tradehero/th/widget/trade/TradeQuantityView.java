@@ -194,11 +194,11 @@ public class TradeQuantityView extends TableLayout implements DTOView<SecurityCo
             {
                 mTradeValue.setText(String.format("%s", "-"));
             }
-            else if (buy)
+            else if (buy && securityCompactDTO != null && securityCompactDTO.askPrice != null)
             {
                 mTradeValue.setText(String.format("%,.2f", shareQuantity * securityCompactDTO.askPrice));
             }
-            else
+            else if (!buy && securityCompactDTO != null && securityCompactDTO.bidPrice != null)
             {
                 mTradeValue.setText(String.format("%,.2f", shareQuantity * securityCompactDTO.bidPrice));
             }
