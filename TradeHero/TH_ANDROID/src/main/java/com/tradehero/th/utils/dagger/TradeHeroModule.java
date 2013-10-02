@@ -14,6 +14,7 @@ import com.tradehero.th.fragments.authentication.EmailSignInFragment;
 import com.tradehero.th.fragments.timeline.MeTimelineFragment;
 import com.tradehero.th.fragments.timeline.TimelineFragment;
 import com.tradehero.th.fragments.trending.SearchStockPeopleFragment;
+import com.tradehero.th.fragments.trending.TradeFragment;
 import com.tradehero.th.fragments.trending.TrendingFragment;
 import com.tradehero.th.loaders.SearchStockPageItemListLoader;
 import com.tradehero.th.loaders.TimelinePagedItemListLoader;
@@ -41,9 +42,10 @@ import javax.inject.Singleton;
 @Module(
         injects =
         {
+                EmailSignInFragment.class,
                 TrendingFragment.class,
                 SearchStockPeopleFragment.class,
-                EmailSignInFragment.class,
+                TradeFragment.class,
                 TimelineFragment.class,
                 MeTimelineFragment.class,
                 MarkdownTextView.class,

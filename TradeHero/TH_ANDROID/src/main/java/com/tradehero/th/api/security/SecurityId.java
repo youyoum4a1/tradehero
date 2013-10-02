@@ -46,4 +46,9 @@ public class SecurityId implements Comparable
 
         return securitySymbol.compareTo(other.securitySymbol);
     }
+
+    public boolean isValid()
+    {
+        return exchange != null && !exchange.isEmpty() && securitySymbol != null && !securitySymbol.isEmpty();
+    }
 }

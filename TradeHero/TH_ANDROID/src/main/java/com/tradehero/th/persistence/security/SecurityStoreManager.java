@@ -28,7 +28,7 @@ public class SecurityStoreManager
         positionDetailLock.lock();
         try
         {
-            return getPositionDetailsInternal(new SecurityPositionDetailQuery(securityId), forceReload);
+            return getPositionDetailInternal(new SecurityPositionDetailQuery(securityId), forceReload);
         }
         finally
         {
@@ -36,7 +36,7 @@ public class SecurityStoreManager
         }
     }
 
-    private SecurityPositionDetailDTO getPositionDetailsInternal(SecurityPositionDetailQuery query, boolean forceReload) throws IOException
+    private SecurityPositionDetailDTO getPositionDetailInternal(SecurityPositionDetailQuery query, boolean forceReload) throws IOException
     {
         securityPositionDetailStore.setQuery(query);
         return (forceReload ? dbCache.requestAndStore(securityPositionDetailStore) : dbCache.loadOrRequest(securityPositionDetailStore)).get(0);

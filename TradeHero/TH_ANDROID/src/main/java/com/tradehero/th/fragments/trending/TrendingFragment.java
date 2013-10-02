@@ -64,6 +64,10 @@ public class TrendingFragment extends DashboardFragment
     protected void initViews(View view)
     {
         mTrendingGridView = (TrendingGridView) view.findViewById(R.id.trending_gridview);
+
+        trendingAdapter = new TrendingAdapter(getActivity(), getActivity().getLayoutInflater(), TrendingAdapter.SECURITY_TRENDING_CELL_LAYOUT);
+        mTrendingGridView.setAdapter(trendingAdapter);
+
         mProgressSpinner = (ProgressBar) view.findViewById(R.id.progress_spinner);
         mBullIcon = (ImageView) view.findViewById(R.id.logo_img);
 
@@ -85,7 +89,10 @@ public class TrendingFragment extends DashboardFragment
                     long id)
             {
                 SecurityCompactDTO securityCompactDTO = (SecurityCompactDTO) parent.getItemAtPosition(position);
-                THToast.show("Disabled for now");
+                //THToast.show("Disabled for now");
+                Bundle args = new Bundle();
+                TradeFragment.putParameters(args, securityCompactDTO.getSecurityId());
+                navigator.pushFragment(TradeFragment.class, args);
             }
         });
 
@@ -120,20 +127,17 @@ public class TrendingFragment extends DashboardFragment
         });
     }
 
+    @Override public void onResume()
+    {
+        super.onResume();
+        trendingAdapter.notifyDataSetChanged();
+    }
+
     private void setDataAdapterToGridView(List<SecurityCompactDTO> trendList)
     {
         this.securityCompactDTOs = trendList;
-        if (trendingAdapter == null)
-        {
-            // trendList
-            trendingAdapter = new TrendingAdapter(getActivity(), getActivity().getLayoutInflater(), TrendingAdapter.SECURITY_TRENDING_CELL_LAYOUT);
-            trendingAdapter.setItems(trendList);
-        }
-        else
-        {
-            // TODO implement loader pattern
-        }
-        mTrendingGridView.setAdapter(trendingAdapter);
+        trendingAdapter.setItems(trendList);
+        trendingAdapter.notifyDataSetChanged();
         showProgressSpinner(false);
     }
 

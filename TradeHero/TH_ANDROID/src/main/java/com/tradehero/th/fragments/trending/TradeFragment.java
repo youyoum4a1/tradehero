@@ -34,6 +34,7 @@ import com.tradehero.common.widget.ImageUrlView;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.security.SecurityCompactDTO;
+import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.base.THUser;
 import com.tradehero.th.fragments.BuyFragment;
 import com.tradehero.th.fragments.base.DashboardFragment;
@@ -48,6 +49,8 @@ public class TradeFragment extends DashboardFragment implements DTOView<Security
 {
     private final static String TAG = TradeFragment.class.getSimpleName();
     public final static int TRANSACTION_COST = 10;
+    public final static String BUNDLE_KEY_EXCHANGE = TradeFragment.class.getName() + ".exchange";
+    public final static String BUNDLE_KEY_SYMBOL = TradeFragment.class.getName() + ".symbol";
 
     public final static String BUY_DETAIL_STR = "buy_detail_str";
     public final static String LAST_PRICE = "last_price";
@@ -70,6 +73,7 @@ public class TradeFragment extends DashboardFragment implements DTOView<Security
 
     private SeekBar mSlider;
 
+    private SecurityId securityId;
     private SecurityCompactDTO securityCompactDTO;
 
     double lastPrice;
@@ -87,9 +91,28 @@ public class TradeFragment extends DashboardFragment implements DTOView<Security
     private Picasso mPicasso;
     private Transformation foregroundTransformation;
 
+    public static void putParameters(Bundle args, SecurityId securityId)
+    {
+        args.putString(BUNDLE_KEY_EXCHANGE, securityId.exchange);
+        args.putString(BUNDLE_KEY_SYMBOL, securityId.securitySymbol);
+    }
+
+    public static SecurityId getSecurityId(Bundle args)
+    {
+        return new SecurityId(args.getString(BUNDLE_KEY_EXCHANGE), args.getString(BUNDLE_KEY_SYMBOL));
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
+        if (savedInstanceState != null)
+        {
+            securityId = getSecurityId(savedInstanceState);
+            if (securityId.isValid())
+            {
+                // TODO
+            }
+        }
         View view = null;
         view = inflater.inflate(R.layout.fragment_trade, container, false);
         initViews(view);
@@ -157,6 +180,12 @@ public class TradeFragment extends DashboardFragment implements DTOView<Security
 
         //((TrendingDetailFragment) getActivity().getSupportFragmentManager()
         //        .findFragmentByTag("trending_detail")).setYahooQuoteUpdateListener(this);
+    }
+
+    @Override public void onResume()
+    {
+        super.onResume();
+        display();
     }
 
     private void enableFields(boolean flag)
