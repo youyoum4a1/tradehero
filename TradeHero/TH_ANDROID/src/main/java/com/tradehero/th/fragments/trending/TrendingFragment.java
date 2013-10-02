@@ -21,7 +21,6 @@ import com.tradehero.th.adapters.TrendingAdapter;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.network.CallbackWithSpecificNotifiers;
-import com.tradehero.th.network.service.SecurityService;
 import com.tradehero.th.persistence.security.SecurityStoreManager;
 import com.tradehero.th.widget.trending.TrendingGridView;
 import java.io.IOException;
@@ -42,8 +41,9 @@ public class TrendingFragment extends DashboardFragment
     private ProgressBar mProgressSpinner;
     private TrendingGridView mTrendingGridView;
 
-    @Inject SecurityStoreManager securityManager;
-
+    private boolean isQuerying;
+    @Inject SecurityStoreManager securityStoreManager;
+    private  AsyncTask<Void, Void, List<SecurityCompactDTO>> trendingTask;
     private List<SecurityCompactDTO> securityCompactDTOs;
     protected TrendingAdapter trendingAdapter;
 
@@ -141,6 +141,7 @@ public class TrendingFragment extends DashboardFragment
         {
             mSearchBtn.setOnClickListener(null);
         }
+        mSearchBtn = null;
         super.onDestroyOptionsMenu();
     }
 
@@ -149,9 +150,14 @@ public class TrendingFragment extends DashboardFragment
         THLog.d(TAG, "onDestroyView");
         if (mTrendingGridView != null)
         {
-            mTrendingGridView.setAdapter(null);
             mTrendingGridView.setOnItemClickListener(null);
         }
+        mTrendingGridView = null;
+        if (trendingTask != null)
+        {
+            trendingTask.cancel(false);
+        }
+        trendingTask = null;
         super.onDestroyView();
     }
 
@@ -165,8 +171,14 @@ public class TrendingFragment extends DashboardFragment
 
     protected void refreshGridView()
     {
-        AsyncTask<Void, Void, List<SecurityCompactDTO>> refreshTask = createAsyncTaskForTrending();
-        refreshTask.execute();
+        if (trendingTask != null)
+        {
+            trendingTask.cancel(false);
+            trendingTask = null;
+        }
+        isQuerying = true;
+        trendingTask = createAsyncTaskForTrending();
+        trendingTask.execute();
     }
 
     private AsyncTask<Void, Void, List<SecurityCompactDTO>> createAsyncTaskForTrending()
@@ -177,7 +189,7 @@ public class TrendingFragment extends DashboardFragment
             {
                 try
                 {
-                    return securityManager.getTrending(true);
+                    return securityStoreManager.getTrending(true);
                 }
                 catch (IOException e)
                 {
@@ -188,6 +200,13 @@ public class TrendingFragment extends DashboardFragment
                 {
                     THToast.show(R.string.error_network_connection);
                     THLog.e(TAG, "Error when refreshing grid", e);
+                }
+                finally
+                {
+                    if (!isCancelled())
+                    {
+                        isQuerying = false;
+                    }
                 }
                 return null;
             }

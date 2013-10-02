@@ -112,36 +112,36 @@ public class ImageUrlView extends ImageView
     @Override protected void onAttachedToWindow()
     {
         super.onAttachedToWindow();
-        THLog.i(TAG, "Attached to window " + softId + " w" + getWidth() + " h" + getHeight() + " mw" + getMeasuredWidth() + " mh" + getMeasuredHeight() + " url " + getUrl());
+        //THLog.i(TAG, "Attached to window " + softId + " w" + getWidth() + " h" + getHeight() + " mw" + getMeasuredWidth() + " mh" + getMeasuredHeight() + " url " + getUrl());
     }
 
     @Override protected void onVisibilityChanged(View changedView, int visibility)
     {
         super.onVisibilityChanged(changedView, visibility);
-        THLog.i(TAG, "Visibility changed " + softId + " w" + getWidth() + " h" + getHeight() + " mw" + getMeasuredWidth() + " mh" + getMeasuredHeight() + " url " + getUrl());
+        //THLog.i(TAG, "Visibility changed " + softId + " w" + getWidth() + " h" + getHeight() + " mw" + getMeasuredWidth() + " mh" + getMeasuredHeight() + " url " + getUrl());
     }
 
     @Override protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec)
     {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        THLog.i(TAG, "On Measure " + softId + " w" + getWidth() + " h" + getHeight() + " mw" + getMeasuredWidth() + " mh" + getMeasuredHeight() + " url " + getUrl());
+        //THLog.i(TAG, "On Measure " + softId + " w" + getWidth() + " h" + getHeight() + " mw" + getMeasuredWidth() + " mh" + getMeasuredHeight() + " url " + getUrl());
     }
 
     @Override protected void onDraw(Canvas canvas)
     {
         super.onDraw(canvas);
-        THLog.i(TAG, "On Draw " + softId + " w" + getWidth() + " h" + getHeight() + " mw" + getMeasuredWidth() + " mh" + getMeasuredHeight() + " url " + getUrl());
+        //THLog.i(TAG, "On Draw " + softId + " w" + getWidth() + " h" + getHeight() + " mw" + getMeasuredWidth() + " mh" + getMeasuredHeight() + " url " + getUrl());
     }
 
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
-        THLog.i(TAG, "On FinishInflate " + softId + " w" + getWidth() + " h" + getHeight() + " mw" + getMeasuredWidth() + " mh" + getMeasuredHeight() + " url " + getUrl());
+        //THLog.i(TAG, "On FinishInflate " + softId + " w" + getWidth() + " h" + getHeight() + " mw" + getMeasuredWidth() + " mh" + getMeasuredHeight() + " url " + getUrl());
     }
 
     @Override protected void onSizeChanged(int w, int h, int oldw, int oldh)
     {
         super.onSizeChanged(w, h, oldw, oldh);
-        THLog.i(TAG, "On Size Changed " + softId + " w" + getWidth() + " h" + getHeight() + " oldw" + oldw + " oldh" + oldh + " mw" + getMeasuredWidth() + " mh" + getMeasuredHeight() + " url " + getUrl());
+        //THLog.i(TAG, "On Size Changed " + softId + " w" + getWidth() + " h" + getHeight() + " oldw" + oldw + " oldh" + oldh + " mw" + getMeasuredWidth() + " mh" + getMeasuredHeight() + " url " + getUrl());
     }
 }

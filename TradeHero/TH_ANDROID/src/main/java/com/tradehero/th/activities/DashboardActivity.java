@@ -51,12 +51,15 @@ public class DashboardActivity extends SherlockFragmentActivity
                 fragmentClass, b);
     }
 
+    //<editor-fold desc="NavigatorActivity">
     @Override public Navigator getNavigator()
     {
-        if (navigator == null) {
+        if (navigator == null)
+        {
             navigator = new Navigator(this);
             navigator.setFragmentContentId(R.id.realtabcontent);
         }
         return navigator;
     }
+    //</editor-fold>
 }

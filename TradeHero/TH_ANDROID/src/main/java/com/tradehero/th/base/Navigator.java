@@ -13,7 +13,7 @@ import java.util.Map;
 /** Created with IntelliJ IDEA. User: tho Date: 9/30/13 Time: 5:59 PM Copyright (c) TradeHero */
 public class Navigator
 {
-    private static final String TAG = Navigator.class.getName();
+    private static final String TAG = Navigator.class.getSimpleName();
     private final FragmentActivity fragmentActivity;
     private final FragmentFactory fragmentFactory;
     private final int[] animation;

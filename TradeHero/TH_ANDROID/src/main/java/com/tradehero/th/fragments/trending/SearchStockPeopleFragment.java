@@ -2,6 +2,7 @@ package com.tradehero.th.fragments.trending;
 
 import android.app.Activity;
 import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -30,6 +31,9 @@ import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.network.CallbackWithSpecificNotifiers;
 import com.tradehero.th.network.service.SecurityService;
 import com.tradehero.th.network.service.UserService;
+import com.tradehero.th.persistence.security.SecuritySearchQuery;
+import com.tradehero.th.persistence.security.SecurityStoreManager;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import retrofit.RetrofitError;
@@ -68,14 +72,12 @@ public class SearchStockPeopleFragment extends DashboardFragment implements Adap
 
     private boolean isQuerying;
 
-    @Inject SecurityService securityService;
-    @Inject UserService userService;
-
-    private CallbackWithSpecificNotifiers<List<SecurityCompactDTO>> securityCallback;
+    @Inject SecurityStoreManager securityStoreManager;
+    private AsyncTask<Void, Void, List<SecurityCompactDTO>> securitySearchTask;
     private List<SecurityCompactDTO> securityList;
+    private TrendingAdapter trendingAdapter;
 
-    protected TrendingAdapter trendingAdapter;
-
+    @Inject UserService userService;
     private CallbackWithSpecificNotifiers<List<UserSearchResultDTO>> peopleCallback;
     private List<UserSearchResultDTO> userDTOList;
     private SearchPeopleAdapter searchPeopleAdapter;
@@ -127,33 +129,37 @@ public class SearchStockPeopleFragment extends DashboardFragment implements Adap
         mSearchStockListView = (ListView) view.findViewById(R.id.trending_listview);
 
         trendingAdapter = new TrendingAdapter(getActivity(), getActivity().getLayoutInflater(), TrendingAdapter.SECURITY_SEARCH_CELL_LAYOUT);
-        mSearchStockListView.setAdapter(trendingAdapter);
-
-        mSearchStockListView.setOnItemClickListener(new AdapterView.OnItemClickListener()
+        if (mSearchStockListView != null)
         {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id)
+            mSearchStockListView.setAdapter(trendingAdapter);
+            mSearchStockListView.setOnItemClickListener(new AdapterView.OnItemClickListener()
             {
-                SecurityCompactDTO securityCompactDTO = (SecurityCompactDTO) parent.getItemAtPosition(position);
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id)
+                {
+                    SecurityCompactDTO securityCompactDTO = (SecurityCompactDTO) parent.getItemAtPosition(position);
+                    Bundle args = new Bundle();
+                    TradeFragment.putParameters(args, securityCompactDTO.getSecurityId());
+                    navigator.pushFragment(TradeFragment.class, args);
+                }
+            });
+        }
 
-                //THToast.show("Disabled for now");
-                Bundle args = new Bundle();
-                TradeFragment.putParameters(args, securityCompactDTO.getSecurityId());
-                navigator.pushFragment(TradeFragment.class, args);
-            }
-        });
         mSearchPeopleListView = (ListView) view.findViewById(R.id.people_listview);
-        mSearchPeopleListView.setOnItemClickListener(new AdapterView.OnItemClickListener()
+        if (mSearchPeopleListView != null)
         {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id)
+            mSearchPeopleListView.setOnItemClickListener(new AdapterView.OnItemClickListener()
             {
-                UserSearchResultDTO userSearchResultDTO = (UserSearchResultDTO) parent.getItemAtPosition(position);
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id)
+                {
+                    UserSearchResultDTO userSearchResultDTO = (UserSearchResultDTO) parent.getItemAtPosition(position);
 
-                THToast.show("Disabled for now");
-                // TODO put back in
-            }
-        });
+                    THToast.show("Disabled for now");
+                    // TODO put back in
+                }
+            });
+        }
     }
 
     @Override public void onActivityCreated(Bundle savedInstanceState)
@@ -271,12 +277,14 @@ public class SearchStockPeopleFragment extends DashboardFragment implements Adap
         {
             if (mSearchText != null && !mSearchText.isEmpty())
             {
-                if (securityCallback == null)
+                if (securitySearchTask != null)
                 {
-                    securityCallback = createCallbackForStock();
+                    securitySearchTask.cancel(false);
+                    securitySearchTask = null;
                 }
                 isQuerying = true;
-                securityService.searchSecurities(mSearchText, getPage(), getPerPage(), securityCallback);
+                securitySearchTask = createAsyncTaskSearchSecurity(getSecuritySearchQuery());
+                securitySearchTask.execute();
             }
         }
         else if (mSearchType == TrendingSearchType.PEOPLE)
@@ -296,6 +304,44 @@ public class SearchStockPeopleFragment extends DashboardFragment implements Adap
             throw new IllegalArgumentException("Unhandled SearchType." + mSearchType);
         }
         updateVisibilities();
+    }
+
+    private AsyncTask<Void, Void, List<SecurityCompactDTO>> createAsyncTaskSearchSecurity(final SecuritySearchQuery securitySearchQuery)
+    {
+        return new AsyncTask<Void, Void, List<SecurityCompactDTO>>()
+        {
+            @Override protected List<SecurityCompactDTO> doInBackground(Void... voids)
+            {
+                try
+                {
+                    return securityStoreManager.searchCompacts(securitySearchQuery, true);
+                }
+                catch (IOException e)
+                {
+                    THToast.show(R.string.error_unknown);
+                    THLog.e(TAG, "Error when searching", e);
+                }
+                catch (RetrofitError e)
+                {
+                    THToast.show(R.string.error_network_connection);
+                    THLog.e(TAG, "Error when searching", e);
+                }
+                finally
+                {
+                    if (!isCancelled())
+                    {
+                        isQuerying = false;
+                    }
+                }
+                return null;
+            }
+
+            @Override protected void onPostExecute(List<SecurityCompactDTO> securityCompactDTOs)
+            {
+                super.onPostExecute(securityCompactDTOs);
+                setDataAdapterToStockListView(securityCompactDTOs);
+            }
+        };
     }
 
     private void setDataAdapterToStockListView(List<SecurityCompactDTO> securityCompactDTOs)
@@ -364,31 +410,54 @@ public class SearchStockPeopleFragment extends DashboardFragment implements Adap
         if (mSearchStockListView != null)
         {
             mSearchStockListView.setOnItemClickListener(null);
-            mSearchStockListView.setAdapter(null);
         }
         if (mSearchPeopleListView != null)
         {
             mSearchPeopleListView.setOnItemClickListener(null);
-            mSearchPeopleListView.setAdapter(null);
         }
+        if (securitySearchTask != null)
+        {
+            securitySearchTask.cancel(false);
+        }
+        securitySearchTask = null;
+        mSearchStockListView = null; // To break the cycle link with the adapter
+        mSearchPeopleListView = null;
         super.onDestroyView();
     }
 
     private void updateVisibilities()
     {
         THLog.i(TAG, "updateVisibilities");
-        mProgressSpinner.setVisibility(isQuerying ? View.VISIBLE : View.INVISIBLE);
+        if (mProgressSpinner != null)
+        {
+            mProgressSpinner.setVisibility(isQuerying ? View.VISIBLE : View.INVISIBLE);
+        }
 
         if (mSearchText == null || mSearchText.length() == 0 || mSearchType == null)
         {
-            mNothingYet.setVisibility(View.VISIBLE);
-            mSearchStockListView.setVisibility(View.INVISIBLE);
-            mSearchPeopleListView.setVisibility(View.INVISIBLE);
+            if (mNothingYet != null)
+            {
+                mNothingYet.setVisibility(View.VISIBLE);
+            }
+            if (mSearchStockListView != null)
+            {
+                mSearchStockListView.setVisibility(View.INVISIBLE);
+            }
+            if (mSearchPeopleListView != null)
+            {
+                mSearchPeopleListView.setVisibility(View.INVISIBLE);
+            }
         }
         else if (mSearchType == TrendingSearchType.STOCKS)
         {
-            mSearchStockListView.setVisibility(View.VISIBLE);
-            mSearchPeopleListView.setVisibility(View.INVISIBLE);
+            if (mSearchStockListView != null)
+            {
+                mSearchStockListView.setVisibility(View.VISIBLE);
+            }
+            if (mSearchPeopleListView != null)
+            {
+                mSearchPeopleListView.setVisibility(View.INVISIBLE);
+            }
             if (securityList == null || securityList.size() == 0)
             {
                 mNothingYet.setVisibility(View.VISIBLE);
@@ -404,8 +473,14 @@ public class SearchStockPeopleFragment extends DashboardFragment implements Adap
         }
         else if (mSearchType == TrendingSearchType.PEOPLE)
         {
-            mSearchStockListView.setVisibility(View.INVISIBLE);
-            mSearchPeopleListView.setVisibility(View.VISIBLE);
+            if (mSearchStockListView != null)
+            {
+                mSearchStockListView.setVisibility(View.INVISIBLE);
+            }
+            if (mSearchPeopleListView != null)
+            {
+                mSearchPeopleListView.setVisibility(View.VISIBLE);
+            }
             if (userDTOList == null || userDTOList.size() == 0)
             {
                 mNothingYet.setVisibility(View.VISIBLE);
@@ -456,6 +531,11 @@ public class SearchStockPeopleFragment extends DashboardFragment implements Adap
     public int getPerPage()
     {
         return perPage;
+    }
+
+    public SecuritySearchQuery getSecuritySearchQuery()
+    {
+        return new SecuritySearchQuery(mSearchText, page, perPage);
     }
     //</editor-fold>
 
