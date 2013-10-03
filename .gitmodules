@@ -28,3 +28,6 @@
 [submodule "dagger"]
 	path = dagger
 	url = git@github.com:nguyentruongtho/dagger.git
+[submodule "viewpagerindicator"]
+	path = viewpagerindicator
+	url = https://github.com/JakeWharton/Android-ViewPagerIndicator.git

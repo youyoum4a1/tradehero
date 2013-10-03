@@ -13,6 +13,7 @@
     <mapping directory="$PROJECT_DIR$/picasso" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/prettytime" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/retrofit" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/viewpagerindicator" vcs="Git" />
   </component>
 </project>
 
