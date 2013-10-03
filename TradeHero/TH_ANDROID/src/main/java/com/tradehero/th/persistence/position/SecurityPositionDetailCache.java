@@ -90,7 +90,8 @@ public class SecurityPositionDetailCache implements DTOCache<String, SecurityId,
         return previous;
     }
 
-    public class SecurityPositionDetailCutDTO
+    // The purpose of this class is to save on memory usage by cutting out the SecurityCompactDTO that already enjoys its own cache.
+    private class SecurityPositionDetailCutDTO
     {
         public List<PositionDTOCompact> positions;
         public PositionDTOCompact position;
