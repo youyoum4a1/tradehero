@@ -7,6 +7,7 @@ import com.tradehero.common.persistence.Query;
 import com.tradehero.th.api.local.TimelineItem;
 import com.tradehero.th.api.local.TimelineItemBuilder;
 import com.tradehero.th.api.timeline.TimelineDTO;
+import com.tradehero.th.network.BasicRetrofitErrorHandler;
 import com.tradehero.th.network.NetworkEngine;
 import com.tradehero.th.network.service.UserTimelineService;
 import com.tradehero.th.utils.DaggerUtils;
@@ -15,6 +16,7 @@ import java.util.Map;
 import java.util.WeakHashMap;
 import javax.inject.Inject;
 import javax.inject.Provider;
+import retrofit.RetrofitError;
 
 /** Created with IntelliJ IDEA. User: tho Date: 9/26/13 Time: 6:10 PM Copyright (c) TradeHero */
 public class TimelineStore implements PersistableResource<TimelineItem>
@@ -27,11 +29,22 @@ public class TimelineStore implements PersistableResource<TimelineItem>
     {
         if (query != null)
         {
-            TimelineDTO timelineDTO = timelineService.getTimeline((Integer) query.getId(), query.getUpper(), query.getLower(),
-                    (Integer) query.getProperty(PER_PAGE));
+            TimelineDTO timelineDTO = null;
+            try
+            {
+                timelineDTO = timelineService.getTimeline((Integer) query.getId(), query.getUpper(), query.getLower(),
+                        (Integer) query.getProperty(PER_PAGE));
+            }
+            catch (RetrofitError retrofitError)
+            {
+                BasicRetrofitErrorHandler.handle(retrofitError);
+            }
 
-            TimelineItemBuilder timelineBuilder = new TimelineItemBuilder(timelineDTO);
-            return timelineBuilder.getItems();
+            if (timelineDTO != null)
+            {
+                TimelineItemBuilder timelineBuilder = new TimelineItemBuilder(timelineDTO);
+                return timelineBuilder.getItems();
+            }
         }
 
         return null;

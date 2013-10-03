@@ -6,6 +6,7 @@
  */
 package com.tradehero.th.fragments;
 
+import com.tradehero.th.fragments.WebViewFragment;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.List;
@@ -35,7 +36,6 @@ import com.loopj.android.http.AsyncHttpResponseHandler;
 
 public class NewsFragment extends ListFragment
 {
-
     public final static String HEADER = "header";
     public final static String URL = "url";
 
@@ -75,7 +75,6 @@ public class NewsFragment extends ListFragment
 
     private void requestToGetTrendRssNewsFeed()
     {
-
         AsyncHttpClient client = new AsyncHttpClient();
         client.get(String.format(Config.getTrendRssFeed(), trend.getYahooSymbol()), new AsyncHttpResponseHandler()
         {
@@ -94,13 +93,16 @@ public class NewsFragment extends ListFragment
                     {
                         setListAdapter(new TrendRssNewsFeedAdapter(getActivity(), mRssFeed.getRssItems()));
                     }
-                } catch (MalformedURLException e)
+                }
+                catch (MalformedURLException e)
                 {
                     e.printStackTrace();
-                } catch (SAXException e)
+                }
+                catch (SAXException e)
                 {
                     e.printStackTrace();
-                } catch (IOException e)
+                }
+                catch (IOException e)
                 {
                     e.printStackTrace();
                 }

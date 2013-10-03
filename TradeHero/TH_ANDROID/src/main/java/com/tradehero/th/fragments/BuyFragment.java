@@ -9,7 +9,7 @@ package com.tradehero.th.fragments;
 import com.actionbarsherlock.app.SherlockFragment;
 import com.tradehero.th.base.THUser;
 import com.tradehero.th.utils.NetworkUtils;
-import com.tradehero.th.fragments.trending.TradeFragment;
+import com.tradehero.th.fragments.trade.TradeFragment;
 import java.util.LinkedHashMap;
 
 import org.apache.http.entity.StringEntity;
@@ -19,7 +19,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import com.tradehero.th.R;
 import com.tradehero.th.application.Config;
 import com.tradehero.th.http.THAsyncClientFactory;

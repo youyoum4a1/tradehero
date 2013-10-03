@@ -20,14 +20,13 @@ import com.tradehero.th.R;
 import com.tradehero.th.adapters.TrendingAdapter;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.fragments.base.DashboardFragment;
-import com.tradehero.th.network.CallbackWithSpecificNotifiers;
+import com.tradehero.th.fragments.trade.TradeFragment;
 import com.tradehero.th.persistence.security.SecurityStoreManager;
 import com.tradehero.th.widget.trending.TrendingGridView;
 import java.io.IOException;
 import java.util.List;
 import javax.inject.Inject;
 import retrofit.RetrofitError;
-import retrofit.client.Response;
 
 public class TrendingFragment extends DashboardFragment
 {
@@ -88,9 +87,7 @@ public class TrendingFragment extends DashboardFragment
                     long id)
             {
                 SecurityCompactDTO securityCompactDTO = (SecurityCompactDTO) parent.getItemAtPosition(position);
-                Bundle args = new Bundle();
-                TradeFragment.putParameters(args, securityCompactDTO.getSecurityId());
-                navigator.pushFragment(TradeFragment.class, args);
+                navigator.pushFragment(TradeFragment.class, securityCompactDTO.getSecurityId().getArgs());
             }
         });
 

@@ -4,7 +4,7 @@
  *
  * Created by @author Siddesh Bingi on Jul 24, 2013
  */
-package com.tradehero.th.fragments.trending;
+package com.tradehero.th.fragments.trade;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -39,7 +39,6 @@ import com.tradehero.common.widget.ImageUrlView;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.position.SecurityPositionDetailDTO;
-import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.base.THUser;
 import com.tradehero.th.fragments.BuyFragment;
@@ -47,9 +46,12 @@ import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.persistence.security.SecurityStoreManager;
 import com.tradehero.th.utills.Logger;
 import com.tradehero.th.utills.Logger.LogLevel;
+import com.tradehero.th.widget.trade.BottomViewPager;
 import com.tradehero.th.widget.trade.PricingBidAskView;
 import com.tradehero.th.widget.trade.QuickPriceButtonSet;
 import com.tradehero.th.widget.trade.TradeQuantityView;
+import com.viewpagerindicator.LinePageIndicator;
+import com.viewpagerindicator.TitlePageIndicator;
 import java.io.IOException;
 import java.util.concurrent.Future;
 import javax.inject.Inject;
@@ -58,8 +60,6 @@ public class TradeFragment extends DashboardFragment implements DTOView<Security
 {
     private final static String TAG = TradeFragment.class.getSimpleName();
     public final static int TRANSACTION_COST = 10;
-    public final static String BUNDLE_KEY_EXCHANGE = TradeFragment.class.getName() + ".exchange";
-    public final static String BUNDLE_KEY_SYMBOL = TradeFragment.class.getName() + ".symbol";
 
     public final static String BUY_DETAIL_STR = "buy_detail_str";
     public final static String LAST_PRICE = "last_price";
@@ -83,6 +83,8 @@ public class TradeFragment extends DashboardFragment implements DTOView<Security
     private PricingBidAskView mPricingBidAskView;
     private TradeQuantityView mTradeQuantityView;
     private QuickPriceButtonSet mQuickPriceButtonSet;
+    private BottomViewPager mBottomViewPager;
+    private LinePageIndicator mBottomPagerIndicator;
 
     private Button mBuyBtn;
     private SeekBar mSlider;
@@ -106,17 +108,6 @@ public class TradeFragment extends DashboardFragment implements DTOView<Security
     private Picasso mPicasso;
     private Transformation foregroundTransformation;
 
-    public static void putParameters(Bundle args, SecurityId securityId)
-    {
-        args.putString(BUNDLE_KEY_EXCHANGE, securityId.exchange);
-        args.putString(BUNDLE_KEY_SYMBOL, securityId.securitySymbol);
-    }
-
-    public static SecurityId getSecurityId(Bundle args)
-    {
-        return new SecurityId(args.getString(BUNDLE_KEY_EXCHANGE), args.getString(BUNDLE_KEY_SYMBOL));
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -131,7 +122,7 @@ public class TradeFragment extends DashboardFragment implements DTOView<Security
     {
         mStockBgLogo = (ImageUrlView) view.findViewById(R.id.stock_bg_logo);
         mStockLogo = (ImageUrlView) view.findViewById(R.id.stock_logo);
-        mStockChart = (ImageView) view.findViewById(R.id.stock_chart);
+        //mStockChart = (ImageView) view.findViewById(R.id.stock_chart);
 
         mStockName = (TextView) view.findViewById(R.id.stock_name);
         mStockChartButton = (ImageButton) view.findViewById(R.id.stock_chart_button);
@@ -163,6 +154,18 @@ public class TradeFragment extends DashboardFragment implements DTOView<Security
         if (mBuyBtn != null)
         {
             mBuyBtn.setOnClickListener(createBuyButtonListener());
+        }
+
+        mBottomViewPager = (BottomViewPager) view.findViewById(R.id.trade_bottom_pager);
+        if (mBottomViewPager != null)
+        {
+            mBottomViewPager.setFragmentManager(getActivity().getSupportFragmentManager());
+        }
+
+        mBottomPagerIndicator = (LinePageIndicator) view.findViewById(R.id.trade_bottom_pager_indicator);
+        if (mBottomPagerIndicator != null)
+        {
+            mBottomPagerIndicator.setViewPager(mBottomViewPager, 0);
         }
 
         if (foregroundTransformation == null)
@@ -213,7 +216,7 @@ public class TradeFragment extends DashboardFragment implements DTOView<Security
         super.onViewStateRestored(savedInstanceState);
         if (savedInstanceState != null)
         {
-            securityId = getSecurityId(savedInstanceState);
+            securityId = new SecurityId(savedInstanceState);
             THLog.d(TAG, securityId.toString());
         }
         else
@@ -267,7 +270,7 @@ public class TradeFragment extends DashboardFragment implements DTOView<Security
         Bundle args = getArguments();
         if (args != null)
         {
-            this.securityId = getSecurityId(args);
+            this.securityId = new SecurityId(args);
             if (this.securityId != null)
             {
                 createAsyncRequestPositionDetail(this.securityId).execute();
@@ -288,6 +291,8 @@ public class TradeFragment extends DashboardFragment implements DTOView<Security
         {
             mBackBtn.setOnClickListener(null);
         }
+        mBuySellSwitch = null;
+        mBackBtn = null;
         super.onDestroyOptionsMenu();
     }
 
@@ -310,6 +315,10 @@ public class TradeFragment extends DashboardFragment implements DTOView<Security
         {
             mBuyBtn.setOnClickListener(null);
         }
+        mStockChartButton = null;
+        mQuickPriceButtonSet = null;
+        mSlider = null;
+        mBuyBtn = null;
         super.onDestroyView();
     }
 
@@ -452,6 +461,10 @@ public class TradeFragment extends DashboardFragment implements DTOView<Security
         if (mTradeQuantityView != null && securityPositionDetailDTO != null)
         {
             mTradeQuantityView.display(securityPositionDetailDTO.security);
+        }
+        if (mBottomViewPager != null)
+        {
+            mBottomViewPager.display(securityPositionDetailDTO);
         }
 
         if (mStockName != null)

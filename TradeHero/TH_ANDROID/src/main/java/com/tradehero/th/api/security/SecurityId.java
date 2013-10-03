@@ -1,8 +1,13 @@
 package com.tradehero.th.api.security;
 
+import android.os.Bundle;
+
 /** Created with IntelliJ IDEA. User: xavier Date: 10/1/13 Time: 12:29 PM To change this template use File | Settings | File Templates. */
 public class SecurityId implements Comparable
 {
+    public final static String BUNDLE_KEY_EXCHANGE = SecurityId.class.getName() + ".exchange";
+    public final static String BUNDLE_KEY_SYMBOL = SecurityId.class.getName() + ".symbol";
+
     public final String exchange;
     public final String securitySymbol;
 
@@ -10,6 +15,12 @@ public class SecurityId implements Comparable
     {
         this.exchange = exchange;
         this.securitySymbol = securitySymbol;
+    }
+
+    public SecurityId(Bundle args)
+    {
+        this.exchange = args.getString(BUNDLE_KEY_EXCHANGE);
+        this.securitySymbol = args.getString(BUNDLE_KEY_SYMBOL);
     }
 
     @Override public int compareTo(Object o)
@@ -50,6 +61,19 @@ public class SecurityId implements Comparable
     public boolean isValid()
     {
         return exchange != null && !exchange.isEmpty() && securitySymbol != null && !securitySymbol.isEmpty();
+    }
+
+    public void putParameters(Bundle args)
+    {
+        args.putString(BUNDLE_KEY_EXCHANGE, exchange);
+        args.putString(BUNDLE_KEY_SYMBOL, securitySymbol);
+    }
+
+    public Bundle getArgs()
+    {
+        Bundle args = new Bundle();
+        putParameters(args);
+        return args;
     }
 
     @Override public String toString()

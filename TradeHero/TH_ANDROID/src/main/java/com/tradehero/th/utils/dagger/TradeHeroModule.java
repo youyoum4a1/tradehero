@@ -4,17 +4,13 @@ import android.app.Application;
 import android.content.Context;
 import com.tradehero.common.cache.DatabaseCache;
 import com.tradehero.common.persistence.CacheHelper;
-import com.tradehero.common.persistence.PersistableResource;
 import com.tradehero.th.api.form.UserAvailabilityRequester;
-import com.tradehero.th.api.position.SecurityPositionDetailDTO;
-import com.tradehero.th.api.security.SecurityCompactDTO;
-import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.THUser;
 import com.tradehero.th.fragments.authentication.EmailSignInFragment;
 import com.tradehero.th.fragments.timeline.MeTimelineFragment;
 import com.tradehero.th.fragments.timeline.TimelineFragment;
 import com.tradehero.th.fragments.trending.SearchStockPeopleFragment;
-import com.tradehero.th.fragments.trending.TradeFragment;
+import com.tradehero.th.fragments.trade.TradeFragment;
 import com.tradehero.th.fragments.trending.TrendingFragment;
 import com.tradehero.th.loaders.SearchStockPageItemListLoader;
 import com.tradehero.th.loaders.TimelinePagedItemListLoader;
@@ -28,14 +24,12 @@ import com.tradehero.th.persistence.position.AbstractSecurityPositionDetailStore
 import com.tradehero.th.persistence.security.AbstractSecurityCompactStore;
 import com.tradehero.th.persistence.security.SecurityCompactStore;
 import com.tradehero.th.persistence.position.SecurityPositionDetailStore;
-import com.tradehero.th.persistence.security.SecurityStoreManager;
 import com.tradehero.th.persistence.user.AbstractUserStore;
 import com.tradehero.th.persistence.user.UserManager;
 import com.tradehero.th.persistence.user.UserStore;
 import com.tradehero.th.widget.MarkdownTextView;
 import dagger.Module;
 import dagger.Provides;
-import javax.inject.Named;
 import javax.inject.Singleton;
 
 /** Created with IntelliJ IDEA. User: tho Date: 9/16/13 Time: 5:36 PM Copyright (c) TradeHero */

@@ -28,8 +28,8 @@ import com.tradehero.th.adapters.TrendingAdapter;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.users.UserSearchResultDTO;
 import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.fragments.trade.TradeFragment;
 import com.tradehero.th.network.CallbackWithSpecificNotifiers;
-import com.tradehero.th.network.service.SecurityService;
 import com.tradehero.th.network.service.UserService;
 import com.tradehero.th.persistence.security.SecuritySearchQuery;
 import com.tradehero.th.persistence.security.SecurityStoreManager;
@@ -138,9 +138,7 @@ public class SearchStockPeopleFragment extends DashboardFragment implements Adap
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id)
                 {
                     SecurityCompactDTO securityCompactDTO = (SecurityCompactDTO) parent.getItemAtPosition(position);
-                    Bundle args = new Bundle();
-                    TradeFragment.putParameters(args, securityCompactDTO.getSecurityId());
-                    navigator.pushFragment(TradeFragment.class, args);
+                    navigator.pushFragment(TradeFragment.class, securityCompactDTO.getSecurityId().getArgs());
                 }
             });
         }
