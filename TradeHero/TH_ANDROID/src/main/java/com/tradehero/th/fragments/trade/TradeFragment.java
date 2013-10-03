@@ -39,10 +39,13 @@ import com.tradehero.common.widget.ImageUrlView;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.position.SecurityPositionDetailDTO;
+import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.base.THUser;
 import com.tradehero.th.fragments.BuyFragment;
 import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.persistence.position.SecurityPositionDetailCache;
+import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.persistence.security.SecurityStoreManager;
 import com.tradehero.th.utills.Logger;
 import com.tradehero.th.utills.Logger.LogLevel;
@@ -52,11 +55,13 @@ import com.tradehero.th.widget.trade.QuickPriceButtonSet;
 import com.tradehero.th.widget.trade.TradeQuantityView;
 import com.viewpagerindicator.LinePageIndicator;
 import com.viewpagerindicator.TitlePageIndicator;
+import dagger.Lazy;
 import java.io.IOException;
 import java.util.concurrent.Future;
 import javax.inject.Inject;
 
-public class TradeFragment extends DashboardFragment implements DTOView<SecurityPositionDetailDTO>
+public class TradeFragment extends DashboardFragment
+        implements DTOView<SecurityPositionDetailDTO>
 {
     private final static String TAG = TradeFragment.class.getSimpleName();
     public final static int TRANSACTION_COST = 10;
@@ -89,13 +94,17 @@ public class TradeFragment extends DashboardFragment implements DTOView<Security
     private Button mBuyBtn;
     private SeekBar mSlider;
 
-    @Inject protected SecurityStoreManager securityStoreManager;
+    @Inject protected Lazy<SecurityCompactCache> securityCompactCache;
+    @Inject protected Lazy<SecurityPositionDetailCache> securityPositionDetailCache;
     private SecurityId securityId;
+    private SecurityCompactDTO securityCompactDTO;
     private SecurityPositionDetailDTO securityPositionDetailDTO;
+    private boolean querying = false;
+    private AsyncTask<Void, Void, SecurityPositionDetailDTO> fetchPositionDetailTask;
 
     double lastPrice;
     int sliderIncrement = 0;
-    //int maxQuantity = 0;
+    int maxQuantity = 0;
     int mQuantity = 0;
     int sliderMaxValue = 0;
 
@@ -108,8 +117,7 @@ public class TradeFragment extends DashboardFragment implements DTOView<Security
     private Picasso mPicasso;
     private Transformation foregroundTransformation;
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         THLog.d(TAG, "onCreateView");
         View view = null;
@@ -261,6 +269,9 @@ public class TradeFragment extends DashboardFragment implements DTOView<Security
             mBuySellSwitch.setChecked(isTransactionTypeBuy);
             mBuySellSwitch.setOnCheckedChangeListener(createBuySellListener());
         }
+
+        // We display here as onCreateOptionsMenu may be called after onResume
+        display();
     }
 
     @Override public void onResume()
@@ -273,7 +284,16 @@ public class TradeFragment extends DashboardFragment implements DTOView<Security
             this.securityId = new SecurityId(args);
             if (this.securityId != null)
             {
-                createAsyncRequestPositionDetail(this.securityId).execute();
+                // Quick display if available
+                display(securityCompactCache.get().get(this.securityId));
+
+                // Proper fetch
+                if (fetchPositionDetailTask != null)
+                {
+                    fetchPositionDetailTask.cancel(false);
+                }
+                fetchPositionDetailTask = createAsyncRequestPositionDetail(this.securityId);
+                fetchPositionDetailTask.execute();
             }
         }
 
@@ -421,15 +441,18 @@ public class TradeFragment extends DashboardFragment implements DTOView<Security
         {
             @Override protected SecurityPositionDetailDTO doInBackground(Void... voids)
             {
+                querying = true;
                 try
                 {
-                    return TradeFragment.this.securityStoreManager.getPositionDetail(securityId, false);
+                    return securityPositionDetailCache.get().getOrFetch(securityId, false);
                 }
-                catch (IOException e)
+                finally
                 {
-                    THLog.e(TAG, "Failed to get position detail", e);
+                    if (!isCancelled())
+                    {
+                        querying = false;
+                    }
                 }
-                return null;
             }
 
             @Override protected void onPostExecute(SecurityPositionDetailDTO securityPositionDetailDTO)
@@ -440,27 +463,64 @@ public class TradeFragment extends DashboardFragment implements DTOView<Security
         };
     }
 
-    @Override
-    public void display(SecurityPositionDetailDTO securityPositionDetailDTO)
+    /**
+     * To be used while waiting for the position detail DTO
+     * @param securityCompactDTO
+     */
+    public void display(final SecurityCompactDTO securityCompactDTO)
+    {
+        this.securityCompactDTO = securityCompactDTO;
+        THLog.d(TAG, "Display compact isNull: " + (securityCompactDTO == null ? "true" : "false"));
+        display();
+    }
+
+    @Override public void display(final SecurityPositionDetailDTO securityPositionDetailDTO)
     {
         this.securityPositionDetailDTO = securityPositionDetailDTO;
+        if (securityPositionDetailDTO != null)
+        {
+            this.securityCompactDTO = securityPositionDetailDTO.security;
+        }
+        else
+        {
+            this.securityCompactDTO = null;
+        }
         display();
     }
 
     public void display()
     {
-        if (mExchangeSymbol != null && securityPositionDetailDTO != null && securityPositionDetailDTO.security != null)
+        if (mExchangeSymbol != null)
         {
-            mExchangeSymbol.setText(String.format("%s:%s", securityPositionDetailDTO.security.exchange, securityPositionDetailDTO.security.symbol));
+            if (securityCompactDTO != null)
+            {
+                mExchangeSymbol.setText(String.format("%s:%s", securityCompactDTO.exchange, securityCompactDTO.symbol));
+            }
+            else
+            {
+                mExchangeSymbol.setText("");
+            }
         }
 
-        if (mPricingBidAskView != null && securityPositionDetailDTO != null)
+        if (mMarketClose != null)
         {
-            mPricingBidAskView.display(securityPositionDetailDTO.security);
+            if (securityCompactDTO != null)
+            {
+                mMarketClose.setVisibility(securityCompactDTO.marketOpen ? View.GONE : View.VISIBLE);
+            }
+            else
+            {
+                mMarketClose.setVisibility(View.GONE);
+            }
         }
-        if (mTradeQuantityView != null && securityPositionDetailDTO != null)
+
+        if (mPricingBidAskView != null)
         {
-            mTradeQuantityView.display(securityPositionDetailDTO.security);
+            mPricingBidAskView.display(securityCompactDTO);
+        }
+        if (mTradeQuantityView != null)
+        {
+            mTradeQuantityView.display(securityCompactDTO);
         }
         if (mBottomViewPager != null)
         {
@@ -469,9 +529,9 @@ public class TradeFragment extends DashboardFragment implements DTOView<Security
 
         if (mStockName != null)
         {
-            if (securityPositionDetailDTO != null && securityPositionDetailDTO.security != null)
+            if (securityCompactDTO != null)
             {
-                mStockName.setText(securityPositionDetailDTO.security.name);
+                mStockName.setText(securityCompactDTO.name);
             }
             else
             {
@@ -479,31 +539,28 @@ public class TradeFragment extends DashboardFragment implements DTOView<Security
             }
         }
 
-        if (securityPositionDetailDTO != null && securityPositionDetailDTO.security != null &&
-                !TextUtils.isEmpty(securityPositionDetailDTO.security.yahooSymbol))
+        if (securityCompactDTO != null && !TextUtils.isEmpty(securityCompactDTO.yahooSymbol))
         {
             //mImageLoader.DisplayImage(String.format(Config.getTrendingChartUrl(), trend.getYahooSymbol()),
             //        mStockChart);
         }
 
-        if (securityPositionDetailDTO == null || securityPositionDetailDTO.security == null ||
-                securityPositionDetailDTO.security.averageDailyVolume == null)
+        if (securityCompactDTO == null || securityCompactDTO.averageDailyVolume == null)
         {
             avgDailyVolume = 0;
         }
         else
         {
-            avgDailyVolume = (int) Math.ceil(securityPositionDetailDTO.security.averageDailyVolume);
+            avgDailyVolume = (int) Math.ceil(securityCompactDTO.averageDailyVolume);
         }
 
-        if (securityPositionDetailDTO == null || securityPositionDetailDTO.security == null ||
-                securityPositionDetailDTO.security.volume == null)
+        if (securityCompactDTO == null || securityCompactDTO.volume == null)
         {
             volume = 0;
         }
         else
         {
-            volume = (int) Math.ceil(securityPositionDetailDTO.security.volume);
+            volume = (int) Math.ceil(securityCompactDTO.volume);
         }
 
         if (mSlider != null)
@@ -512,6 +569,8 @@ public class TradeFragment extends DashboardFragment implements DTOView<Security
             mSlider.setMax(maxShares);
             mSlider.setEnabled(maxShares > 0);
         }
+
+        loadImages();
     }
 
     private void updateValues(double cash, boolean isPriceSlot)
@@ -641,13 +700,13 @@ public class TradeFragment extends DashboardFragment implements DTOView<Security
 
     public void loadImages ()
     {
-        if (mStockLogo != null && securityPositionDetailDTO != null && securityPositionDetailDTO.security != null)
+        if (mStockLogo != null && securityCompactDTO != null)
         {
-            mStockLogo.setUrl(this.securityPositionDetailDTO.security.imageBlobUrl);
+            mStockLogo.setUrl(this.securityCompactDTO.imageBlobUrl);
         }
-        if (mStockBgLogo != null && securityPositionDetailDTO != null && securityPositionDetailDTO.security != null)
+        if (mStockBgLogo != null && securityCompactDTO!= null)
         {
-            mStockBgLogo.setUrl(this.securityPositionDetailDTO.security.imageBlobUrl);
+            mStockBgLogo.setUrl(this.securityCompactDTO.imageBlobUrl);
         }
 
         final Callback loadIntoBg = createLogoReadyCallback();
@@ -690,9 +749,9 @@ public class TradeFragment extends DashboardFragment implements DTOView<Security
         else
         {
             // These ensure that views with a missing image do not receive images from elsewhere
-            if (mStockLogo != null && this.securityPositionDetailDTO != null && this.securityPositionDetailDTO.security != null)
+            if (mStockLogo != null && this.securityCompactDTO != null)
             {
-                mStockLogo.setImageResource(this.securityPositionDetailDTO.security.getExchangeLogoId());
+                mStockLogo.setImageResource(this.securityCompactDTO.getExchangeLogoId());
             }
             else if (mStockLogo != null)
             {

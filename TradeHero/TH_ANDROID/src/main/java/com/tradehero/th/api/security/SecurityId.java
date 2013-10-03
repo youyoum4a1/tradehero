@@ -1,9 +1,11 @@
 package com.tradehero.th.api.security;
 
 import android.os.Bundle;
+import com.tradehero.th.api.DTOKey;
+import java.util.Arrays;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/1/13 Time: 12:29 PM To change this template use File | Settings | File Templates. */
-public class SecurityId implements Comparable
+public class SecurityId implements Comparable, DTOKey<String>
 {
     public final static String BUNDLE_KEY_EXCHANGE = SecurityId.class.getName() + ".exchange";
     public final static String BUNDLE_KEY_SYMBOL = SecurityId.class.getName() + ".symbol";
@@ -21,6 +23,11 @@ public class SecurityId implements Comparable
     {
         this.exchange = args.getString(BUNDLE_KEY_EXCHANGE);
         this.securitySymbol = args.getString(BUNDLE_KEY_SYMBOL);
+    }
+
+    @Override public int hashCode()
+    {
+        return exchange.hashCode() ^ securitySymbol.hashCode();
     }
 
     @Override public int compareTo(Object o)
@@ -79,5 +86,10 @@ public class SecurityId implements Comparable
     @Override public String toString()
     {
         return String.format("[exchange=%s; securitySymbol=%s]", exchange, securitySymbol);
+    }
+
+    @Override public String makeKey()
+    {
+        return String.format("%s:%s", exchange, securitySymbol);
     }
 }

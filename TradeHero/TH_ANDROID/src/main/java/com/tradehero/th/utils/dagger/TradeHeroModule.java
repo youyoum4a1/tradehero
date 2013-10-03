@@ -21,7 +21,10 @@ import com.tradehero.th.network.service.UserTimelineService;
 import com.tradehero.th.persistence.TimelineManager;
 import com.tradehero.th.persistence.TimelineStore;
 import com.tradehero.th.persistence.position.AbstractSecurityPositionDetailStore;
+import com.tradehero.th.persistence.position.SecurityPositionDetailCache;
 import com.tradehero.th.persistence.security.AbstractSecurityCompactStore;
+import com.tradehero.th.persistence.security.SecurityCompactCache;
+import com.tradehero.th.persistence.security.SecurityCompactListCache;
 import com.tradehero.th.persistence.security.SecurityCompactStore;
 import com.tradehero.th.persistence.position.SecurityPositionDetailStore;
 import com.tradehero.th.persistence.user.AbstractUserStore;
@@ -58,6 +61,9 @@ import javax.inject.Singleton;
                 TimelineStore.Factory.class,
                 //SecurityCompactStore.class,
                 //SecurityPositionDetailStore.class,
+                SecurityCompactCache.class,
+                SecurityCompactListCache.class,
+                SecurityPositionDetailCache.class,
 
                 DatabaseCache.class,
                 CacheHelper.class

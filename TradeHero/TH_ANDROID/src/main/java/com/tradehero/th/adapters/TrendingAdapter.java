@@ -12,6 +12,7 @@ import com.fedorvlasov.lazylist.ImageLoader;
 import com.tradehero.common.graphics.WhiteToTransparentTransformation;
 import com.tradehero.th.R;
 import com.tradehero.th.api.security.SecurityCompactDTO;
+import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.widget.trending.TrendingSecurityView;
 import java.util.List;
 

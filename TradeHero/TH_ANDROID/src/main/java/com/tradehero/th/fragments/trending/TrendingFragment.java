@@ -15,18 +15,21 @@ import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.common.utils.THLog;
-import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.TrendingAdapter;
 import com.tradehero.th.api.security.SecurityCompactDTO;
+import com.tradehero.th.api.security.SecurityId;
+import com.tradehero.th.api.security.TrendingSecurityListType;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.trade.TradeFragment;
+import com.tradehero.th.persistence.security.SecurityCompactCache;
+import com.tradehero.th.persistence.security.SecurityCompactListCache;
 import com.tradehero.th.persistence.security.SecurityStoreManager;
 import com.tradehero.th.widget.trending.TrendingGridView;
-import java.io.IOException;
+import dagger.Lazy;
+import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
-import retrofit.RetrofitError;
 
 public class TrendingFragment extends DashboardFragment
 {
@@ -42,7 +45,9 @@ public class TrendingFragment extends DashboardFragment
 
     private boolean isQuerying;
     @Inject SecurityStoreManager securityStoreManager;
-    private  AsyncTask<Void, Void, List<SecurityCompactDTO>> trendingTask;
+    @Inject Lazy<SecurityCompactListCache> securityCompactListCache;
+    @Inject Lazy<SecurityCompactCache> securityCompactCache;
+    private  AsyncTask<Void, Void, List<SecurityId>> trendingTask;
     private List<SecurityCompactDTO> securityCompactDTOs;
     protected TrendingAdapter trendingAdapter;
 
@@ -158,10 +163,20 @@ public class TrendingFragment extends DashboardFragment
         super.onDestroyView();
     }
 
-    private void setDataAdapterToGridView(List<SecurityCompactDTO> trendList)
+    private List<SecurityCompactDTO> fleshOut(List<SecurityId> securityIds)
     {
-        this.securityCompactDTOs = trendList;
-        trendingAdapter.setItems(trendList);
+        List<SecurityCompactDTO> securityCompactDTOList = new ArrayList<>();
+        for(SecurityId securityId: securityIds)
+        {
+            securityCompactDTOList.add(securityCompactCache.get().getOrFetch(securityId, false));
+        }
+        return securityCompactDTOList;
+    }
+
+    private void setDataAdapterToGridView(List<SecurityCompactDTO> securityCompactDTOs)
+    {
+        this.securityCompactDTOs = securityCompactDTOs;
+        trendingAdapter.setItems(securityCompactDTOs);
         trendingAdapter.notifyDataSetChanged();
         showProgressSpinner(false);
     }
@@ -178,25 +193,15 @@ public class TrendingFragment extends DashboardFragment
         trendingTask.execute();
     }
 
-    private AsyncTask<Void, Void, List<SecurityCompactDTO>> createAsyncTaskForTrending()
+    private AsyncTask<Void, Void, List<SecurityId>> createAsyncTaskForTrending()
     {
-        return new AsyncTask<Void, Void, List<SecurityCompactDTO>>()
+        return new AsyncTask<Void, Void, List<SecurityId>>()
         {
-            @Override protected List<SecurityCompactDTO> doInBackground(Void... voids)
+            @Override protected List<SecurityId> doInBackground(Void... voids)
             {
                 try
                 {
-                    return securityStoreManager.getTrending(true);
-                }
-                catch (IOException e)
-                {
-                    THToast.show(R.string.error_unknown);
-                    THLog.e(TAG, "Error when refreshing grid", e);
-                }
-                catch (RetrofitError e)
-                {
-                    THToast.show(R.string.error_network_connection);
-                    THLog.e(TAG, "Error when refreshing grid", e);
+                    return securityCompactListCache.get().getOrFetch(new TrendingSecurityListType(), false);
                 }
                 finally
                 {
@@ -205,13 +210,12 @@ public class TrendingFragment extends DashboardFragment
                         isQuerying = false;
                     }
                 }
-                return null;
             }
 
-            @Override protected void onPostExecute(List<SecurityCompactDTO> securityCompactDTOs)
+            @Override protected void onPostExecute(List<SecurityId> securityIds)
             {
-                super.onPostExecute(securityCompactDTOs);
-                setDataAdapterToGridView(securityCompactDTOs);
+                super.onPostExecute(securityIds);
+                setDataAdapterToGridView(fleshOut(securityIds));
             }
         };
     }

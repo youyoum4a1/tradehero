@@ -16,6 +16,21 @@ public class SecurityPositionDetailDTO
     public List<ProviderDTO> providers;
     public int firstTradeAllTime;
 
+    public SecurityPositionDetailDTO()
+    {
+    }
+
+    public SecurityPositionDetailDTO(SecurityCompactDTO security, List<PositionDTOCompact> positions, PositionDTOCompact position,
+            PortfolioDTO portfolio, List<ProviderDTO> providers, int firstTradeAllTime)
+    {
+        this.security = security;
+        this.positions = positions;
+        this.position = position;
+        this.portfolio = portfolio;
+        this.providers = providers;
+        this.firstTradeAllTime = firstTradeAllTime;
+    }
+
     public SecurityId getSecurityId()
     {
         if (security == null)
