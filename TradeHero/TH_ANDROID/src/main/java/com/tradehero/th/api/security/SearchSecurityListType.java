@@ -3,6 +3,8 @@ package com.tradehero.th.api.security;
 /** Created with IntelliJ IDEA. User: xavier Date: 10/3/13 Time: 5:12 PM To change this template use File | Settings | File Templates. */
 public class SearchSecurityListType extends SecurityListType
 {
+    public static final String TAG = SearchSecurityListType.class.getSimpleName();
+
     //<editor-fold desc="Fields">
     private final String searchString;
     private final int page;
@@ -66,5 +68,10 @@ public class SearchSecurityListType extends SecurityListType
     @Override public String makeKey()
     {
         return String.format("%s:%d:%d", searchString, page, perPage);
+    }
+
+    @Override public String toString()
+    {
+        return String.format("[%s: searchString=%s; page=%d; perPage=%d]", TAG, searchString, page, perPage);
     }
 }

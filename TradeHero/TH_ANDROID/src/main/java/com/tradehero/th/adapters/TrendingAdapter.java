@@ -34,6 +34,12 @@ public class TrendingAdapter extends DTOAdapter<SecurityCompactDTO, TrendingSecu
         super(context, inflater, layoutResourceId);
     }
 
+    @Override public boolean hasStableIds()
+    {
+        // TODO ensure this helps have a smoother experience
+        return true;
+    }
+
     @Override protected View getView(int position, final TrendingSecurityView convertView)
     {
         convertView.post(new Runnable()

@@ -51,7 +51,7 @@ public abstract class DTOAdapter<T, V extends DTOView<T>> extends BaseAdapter
     {
         if (convertView == null)
         {
-            convertView = inflater.inflate(layoutResourceId, null);
+            convertView = inflater.inflate(layoutResourceId, viewGroup, false);
         }
 
         try

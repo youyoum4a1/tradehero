@@ -36,55 +36,68 @@ public class SecurityCompactListCache extends StraightDTOCache<String, SecurityL
     }
     //</editor-fold>
 
-    @Override protected List<SecurityId> fetch(SecurityListType securityListType)
+    @Override protected List<SecurityId> fetch(SecurityListType key)
     {
+        THLog.d(TAG, "fetch " + key);
         try
         {
-            if (securityListType instanceof TrendingSecurityListType)
+            if (key instanceof TrendingSecurityListType)
             {
-                return putInternal(securityListType, fetch((TrendingSecurityListType) securityListType));
+                return putInternal(key, fetch((TrendingSecurityListType) key));
             }
-            if (securityListType instanceof SearchSecurityListType)
+            if (key instanceof SearchSecurityListType)
             {
-                return putInternal(securityListType, fetch((SearchSecurityListType) securityListType));
+                return putInternal(key, fetch((SearchSecurityListType) key));
             }
-            throw new IllegalArgumentException("Unhandled type " + securityListType.getClass().getName());
+            throw new IllegalArgumentException("Unhandled type " + key.getClass().getName());
         }
         catch (RetrofitError retrofitError)
         {
             BasicRetrofitErrorHandler.handle(retrofitError);
-            THLog.e(TAG, "Error requesting key " + securityListType.toString(), retrofitError);
+            THLog.e(TAG, "Error requesting key " + key.toString(), retrofitError);
         }
         return null;
     }
 
-    protected List<SecurityCompactDTO> fetch(TrendingSecurityListType trendingSecurityListType) throws RetrofitError
+    @Override public List<SecurityId> getOrFetch(SecurityListType key, boolean force)
+    {
+        THLog.d(TAG, "getOrFetch " + key);
+        return super.getOrFetch(key, force);
+    }
+
+    @Override public List<SecurityId> get(SecurityListType key)
+    {
+        THLog.d(TAG, "get " + key);
+        return super.get(key);
+    }
+
+    protected List<SecurityCompactDTO> fetch(TrendingSecurityListType key) throws RetrofitError
     {
         return securityService.get().getTrendingSecurities();
     }
 
-    protected List<SecurityCompactDTO> fetch(SearchSecurityListType searchSecurityListType) throws RetrofitError
+    protected List<SecurityCompactDTO> fetch(SearchSecurityListType key) throws RetrofitError
     {
         return securityService.get().searchSecurities(
-                searchSecurityListType.getSearchString(),
-                searchSecurityListType.getPage(),
-                searchSecurityListType.getPerPage());
+                key.getSearchString(),
+                key.getPage(),
+                key.getPerPage());
     }
 
-    protected List<SecurityId> putInternal(SecurityListType securityListType, List<SecurityCompactDTO> securityCompactDTOs)
+    protected List<SecurityId> putInternal(SecurityListType key, List<SecurityCompactDTO> fleshedValues)
     {
         List<SecurityId> securityIds = null;
-        if (securityCompactDTOs != null)
+        if (fleshedValues != null)
         {
             securityIds = new ArrayList<>();
             SecurityId securityId;
-            for(SecurityCompactDTO securityCompactDTO: securityCompactDTOs)
+            for(SecurityCompactDTO securityCompactDTO: fleshedValues)
             {
                 securityId = securityCompactDTO.getSecurityId();
                 securityIds.add(securityId);
                 securityCompactCache.get().put(securityId, securityCompactDTO);
             }
-            put(securityListType, securityIds);
+            put(key, securityIds);
         }
         return securityIds;
     }

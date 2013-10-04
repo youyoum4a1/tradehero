@@ -32,23 +32,23 @@ public class SecurityCompactCache extends StraightDTOCache<String, SecurityId, S
     }
     //</editor-fold>
 
-    @Override protected SecurityCompactDTO fetch(SecurityId securityId)
+    @Override protected SecurityCompactDTO fetch(SecurityId key)
     {
         SecurityCompactDTO securityCompactDTO = null;
         SecurityPositionDetailDTO securityPositionDetailDTO = null;
         try
         {
-            securityPositionDetailDTO = securityService.get().getSecurity(securityId.exchange, securityId.securitySymbol);
+            securityPositionDetailDTO = securityService.get().getSecurity(key.exchange, key.securitySymbol);
         }
         catch (RetrofitError retrofitError)
         {
             BasicRetrofitErrorHandler.handle(retrofitError);
-            THLog.e(TAG, "Error requesting key " + securityId.toString(), retrofitError);
+            THLog.e(TAG, "Error requesting key " + key.toString(), retrofitError);
         }
 
         if (securityPositionDetailDTO != null)
         {
-            securityPositionDetailCache.get().put(securityId, securityPositionDetailDTO);
+            securityPositionDetailCache.get().put(key, securityPositionDetailDTO);
             securityCompactDTO = securityPositionDetailDTO.security;
         }
 

@@ -166,9 +166,12 @@ public class TrendingFragment extends DashboardFragment
     private List<SecurityCompactDTO> fleshOut(List<SecurityId> securityIds)
     {
         List<SecurityCompactDTO> securityCompactDTOList = new ArrayList<>();
-        for(SecurityId securityId: securityIds)
+        if (securityIds != null)
         {
-            securityCompactDTOList.add(securityCompactCache.get().getOrFetch(securityId, false));
+            for(SecurityId securityId: securityIds)
+            {
+                securityCompactDTOList.add(securityCompactCache.get().getOrFetch(securityId, false));
+            }
         }
         return securityCompactDTOList;
     }

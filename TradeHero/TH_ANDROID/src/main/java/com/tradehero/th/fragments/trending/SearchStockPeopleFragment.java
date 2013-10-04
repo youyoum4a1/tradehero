@@ -25,14 +25,19 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.SearchPeopleAdapter;
 import com.tradehero.th.adapters.TrendingAdapter;
+import com.tradehero.th.api.security.SearchSecurityListType;
 import com.tradehero.th.api.security.SecurityCompactDTO;
+import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.users.UserSearchResultDTO;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.trade.TradeFragment;
 import com.tradehero.th.network.CallbackWithSpecificNotifiers;
 import com.tradehero.th.network.service.UserService;
+import com.tradehero.th.persistence.security.SecurityCompactCache;
+import com.tradehero.th.persistence.security.SecurityCompactListCache;
 import com.tradehero.th.persistence.security.SecuritySearchQuery;
 import com.tradehero.th.persistence.security.SecurityStoreManager;
+import dagger.Lazy;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -72,7 +77,9 @@ public class SearchStockPeopleFragment extends DashboardFragment implements Adap
 
     private boolean isQuerying;
 
-    @Inject SecurityStoreManager securityStoreManager;
+    @Inject Lazy<SecurityStoreManager> securityStoreManager;
+    @Inject Lazy<SecurityCompactListCache> securityCompactListCache;
+    @Inject Lazy<SecurityCompactCache> securityCompactCache;
     private AsyncTask<Void, Void, List<SecurityCompactDTO>> securitySearchTask;
     private List<SecurityCompactDTO> securityList;
     private TrendingAdapter trendingAdapter;
@@ -281,7 +288,7 @@ public class SearchStockPeopleFragment extends DashboardFragment implements Adap
                     securitySearchTask = null;
                 }
                 isQuerying = true;
-                securitySearchTask = createAsyncTaskSearchSecurity(getSecuritySearchQuery());
+                securitySearchTask = createAsyncTaskSearchSecurity(makeSearchSecurityListType());
                 securitySearchTask.execute();
             }
         }
@@ -312,7 +319,7 @@ public class SearchStockPeopleFragment extends DashboardFragment implements Adap
             {
                 try
                 {
-                    return securityStoreManager.searchCompacts(securitySearchQuery, true);
+                    return securityStoreManager.get().searchCompacts(securitySearchQuery, true);
                 }
                 catch (IOException e)
                 {
@@ -340,6 +347,46 @@ public class SearchStockPeopleFragment extends DashboardFragment implements Adap
                 setDataAdapterToStockListView(securityCompactDTOs);
             }
         };
+    }
+
+    private AsyncTask<Void, Void, List<SecurityCompactDTO>> createAsyncTaskSearchSecurity(final SearchSecurityListType securitySearchListType)
+    {
+        return new AsyncTask<Void, Void, List<SecurityCompactDTO>>()
+        {
+            @Override protected List<SecurityCompactDTO> doInBackground(Void... voids)
+            {
+                try
+                {
+                    return fleshOut(securityCompactListCache.get().getOrFetch(securitySearchListType, false));
+                }
+                finally
+                {
+                    if (!isCancelled())
+                    {
+                        isQuerying = false;
+                    }
+                }
+            }
+
+            @Override protected void onPostExecute(List<SecurityCompactDTO> securityCompactDTOs)
+            {
+                super.onPostExecute(securityCompactDTOs);
+                setDataAdapterToStockListView(securityCompactDTOs);
+            }
+        };
+    }
+
+    private List<SecurityCompactDTO> fleshOut(List<SecurityId> securityIds)
+    {
+        List<SecurityCompactDTO> securityCompactDTOList = new ArrayList<>();
+        if (securityIds != null)
+        {
+            for(SecurityId securityId: securityIds)
+            {
+                securityCompactDTOList.add(securityCompactCache.get().getOrFetch(securityId, false));
+            }
+        }
+        return securityCompactDTOList;
     }
 
     private void setDataAdapterToStockListView(List<SecurityCompactDTO> securityCompactDTOs)
@@ -534,6 +581,11 @@ public class SearchStockPeopleFragment extends DashboardFragment implements Adap
     public SecuritySearchQuery getSecuritySearchQuery()
     {
         return new SecuritySearchQuery(mSearchText, page, perPage);
+    }
+
+    public SearchSecurityListType makeSearchSecurityListType()
+    {
+        return new SearchSecurityListType(mSearchText, page, perPage);
     }
     //</editor-fold>
 
