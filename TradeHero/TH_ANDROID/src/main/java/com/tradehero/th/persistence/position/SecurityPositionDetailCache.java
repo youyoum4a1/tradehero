@@ -42,6 +42,21 @@ public class SecurityPositionDetailCache implements DTOCache<String, SecurityId,
     }
     //</editor-fold>
 
+    protected SecurityPositionDetailDTO fetch(SecurityId key)
+    {
+        SecurityPositionDetailDTO securityPositionDetailDTO = null;
+        try
+        {
+            securityPositionDetailDTO = securityService.get().getSecurity(key.exchange, key.securitySymbol);
+        }
+        catch (RetrofitError retrofitError)
+        {
+            BasicRetrofitErrorHandler.handle(retrofitError);
+            THLog.e(TAG, "Error requesting key " + key.toString(), retrofitError);
+        }
+        return securityPositionDetailDTO;
+    }
+
     @Override public SecurityPositionDetailDTO getOrFetch(SecurityId key, boolean force)
     {
         SecurityPositionDetailCutDTO securityPositionDetailCutDTO = lruCache.get(key.makeKey());
@@ -50,15 +65,7 @@ public class SecurityPositionDetailCache implements DTOCache<String, SecurityId,
 
         if (force || securityPositionDetailCutDTO == null || securityCompactDTO == null)
         {
-            try
-            {
-                securityPositionDetailDTO = securityService.get().getSecurity(key.exchange, key.securitySymbol);
-            }
-            catch (RetrofitError retrofitError)
-            {
-                BasicRetrofitErrorHandler.handle(retrofitError);
-                THLog.e(TAG, "Error requesting key " + key.toString(), retrofitError);
-            }
+            securityPositionDetailDTO = fetch(key);
             put(key, securityPositionDetailDTO);
         }
         return securityPositionDetailDTO;
