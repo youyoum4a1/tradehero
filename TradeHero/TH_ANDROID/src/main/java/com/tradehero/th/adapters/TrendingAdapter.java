@@ -35,6 +35,17 @@ public class TrendingAdapter extends DTOAdapter<SecurityCompactDTO, TrendingSecu
         super(context, inflater, layoutResourceId);
     }
 
+    @Override public boolean hasStableIds()
+    {
+        return true;
+    }
+
+    @Override public long getItemId(int i)
+    {
+        long itemId = ((SecurityCompactDTO) getItem(i)).getSecurityId().hashCode();
+        THLog.d(TAG, "getItemId " + i + " - " + itemId);
+        return itemId;
+    }
 
     @Override protected View getView(int position, final TrendingSecurityView convertView)
     {
@@ -56,6 +67,5 @@ public class TrendingAdapter extends DTOAdapter<SecurityCompactDTO, TrendingSecu
 
     @Override public void onScroll(AbsListView absListView, int i, int i2, int i3)
     {
-        //To change body of implemented methods use File | Settings | File Templates.
     }
 }

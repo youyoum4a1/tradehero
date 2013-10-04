@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Looper;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -325,8 +326,12 @@ public class SearchStockPeopleFragment extends DashboardFragment
 
         trendingAdapter.setItems(securityCompactDTOs);
         trendingAdapter.notifyDataSetChanged();
-        mSearchPeopleListView.postInvalidate();
+        //getView().forceLayout();
+        mSearchStockListView.invalidate();
+        //freshDrawableState();
+        //getView().invalidate();
         updateVisibilities();
+        //THLog.d(TAG, "Is ui thread " + (Looper.getMainLooper().getThread() == Thread.currentThread() ? "true" : "false"));
     }
 
     private void setDataAdapterToPeopleListView(List<UserSearchResultDTO> users)
