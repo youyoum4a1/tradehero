@@ -1,16 +1,16 @@
 package com.tradehero.th.persistence.security;
 
-import android.support.v4.util.LruCache;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.api.position.SecurityPositionDetailDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.network.BasicRetrofitErrorHandler;
 import com.tradehero.th.network.service.SecurityService;
-import com.tradehero.th.persistence.DTOCache;
-import com.tradehero.th.persistence.StraightDTOCache;
+import com.tradehero.common.persistence.StraightDTOCache;
 import com.tradehero.th.persistence.position.SecurityPositionDetailCache;
 import dagger.Lazy;
+import java.util.ArrayList;
+import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import retrofit.RetrofitError;
@@ -53,5 +53,23 @@ public class SecurityCompactCache extends StraightDTOCache<String, SecurityId, S
         }
 
         return securityCompactDTO;
+    }
+
+    public List<SecurityCompactDTO> getOrFetch(List<SecurityId> securityIds)
+    {
+        if (securityIds == null)
+        {
+            return null;
+        }
+
+        List<SecurityCompactDTO> securityCompactDTOList = new ArrayList<>();
+        if (securityIds != null)
+        {
+            for(SecurityId securityId: securityIds)
+            {
+                securityCompactDTOList.add(getOrFetch(securityId, false));
+            }
+        }
+        return securityCompactDTOList;
     }
 }

@@ -1,8 +1,6 @@
 package com.tradehero.th.persistence.security;
 
-import android.support.v4.util.LruCache;
 import com.tradehero.common.utils.THLog;
-import com.tradehero.th.api.position.SecurityPositionDetailDTO;
 import com.tradehero.th.api.security.SearchSecurityListType;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
@@ -10,8 +8,7 @@ import com.tradehero.th.api.security.SecurityListType;
 import com.tradehero.th.api.security.TrendingSecurityListType;
 import com.tradehero.th.network.BasicRetrofitErrorHandler;
 import com.tradehero.th.network.service.SecurityService;
-import com.tradehero.th.persistence.DTOCache;
-import com.tradehero.th.persistence.StraightDTOCache;
+import com.tradehero.common.persistence.StraightDTOCache;
 import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.List;

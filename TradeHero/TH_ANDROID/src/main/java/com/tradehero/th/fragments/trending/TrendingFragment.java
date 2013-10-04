@@ -19,19 +19,19 @@ import com.tradehero.th.R;
 import com.tradehero.th.adapters.TrendingAdapter;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
+import com.tradehero.th.api.security.SecurityListType;
 import com.tradehero.th.api.security.TrendingSecurityListType;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.trade.TradeFragment;
+import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.persistence.security.SecurityCompactListCache;
-import com.tradehero.th.persistence.security.SecurityStoreManager;
 import com.tradehero.th.widget.trending.TrendingGridView;
 import dagger.Lazy;
-import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
 
-public class TrendingFragment extends DashboardFragment
+public class TrendingFragment extends DashboardFragment implements DTOCache.Listener<SecurityListType, List<SecurityId>>
 {
     private final static String TAG = TrendingFragment.class.getSimpleName();
 
@@ -44,7 +44,6 @@ public class TrendingFragment extends DashboardFragment
     private TrendingGridView mTrendingGridView;
 
     private boolean isQuerying;
-    @Inject SecurityStoreManager securityStoreManager;
     @Inject Lazy<SecurityCompactListCache> securityCompactListCache;
     @Inject Lazy<SecurityCompactCache> securityCompactCache;
     private  AsyncTask<Void, Void, List<SecurityId>> trendingTask;
@@ -163,19 +162,6 @@ public class TrendingFragment extends DashboardFragment
         super.onDestroyView();
     }
 
-    private List<SecurityCompactDTO> fleshOut(List<SecurityId> securityIds)
-    {
-        List<SecurityCompactDTO> securityCompactDTOList = new ArrayList<>();
-        if (securityIds != null)
-        {
-            for(SecurityId securityId: securityIds)
-            {
-                securityCompactDTOList.add(securityCompactCache.get().getOrFetch(securityId, false));
-            }
-        }
-        return securityCompactDTOList;
-    }
-
     private void setDataAdapterToGridView(List<SecurityCompactDTO> securityCompactDTOs)
     {
         this.securityCompactDTOs = securityCompactDTOs;
@@ -192,35 +178,13 @@ public class TrendingFragment extends DashboardFragment
             trendingTask = null;
         }
         isQuerying = true;
-        trendingTask = createAsyncTaskForTrending();
+        trendingTask = securityCompactListCache.get().getOrFetch(new TrendingSecurityListType(), false, this);
         trendingTask.execute();
     }
 
-    private AsyncTask<Void, Void, List<SecurityId>> createAsyncTaskForTrending()
+    @Override public void onDTOReceived(SecurityListType key, List<SecurityId> value)
     {
-        return new AsyncTask<Void, Void, List<SecurityId>>()
-        {
-            @Override protected List<SecurityId> doInBackground(Void... voids)
-            {
-                try
-                {
-                    return securityCompactListCache.get().getOrFetch(new TrendingSecurityListType(), false);
-                }
-                finally
-                {
-                    if (!isCancelled())
-                    {
-                        isQuerying = false;
-                    }
-                }
-            }
-
-            @Override protected void onPostExecute(List<SecurityId> securityIds)
-            {
-                super.onPostExecute(securityIds);
-                setDataAdapterToGridView(fleshOut(securityIds));
-            }
-        };
+        setDataAdapterToGridView(securityCompactCache.get().getOrFetch(value));
     }
 
     protected void showProgressSpinner(boolean flag)

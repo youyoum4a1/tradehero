@@ -33,6 +33,7 @@ import com.squareup.picasso.Transformation;
 import com.squareup.picasso.UrlConnectionDownloader;
 import com.tradehero.common.cache.LruMemFileCache;
 import com.tradehero.common.graphics.WhiteToTransparentTransformation;
+import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.thread.KnownExecutorServices;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.common.widget.ImageUrlView;
@@ -61,7 +62,7 @@ import java.util.concurrent.Future;
 import javax.inject.Inject;
 
 public class TradeFragment extends DashboardFragment
-        implements DTOView<SecurityPositionDetailDTO>
+        implements DTOView<SecurityPositionDetailDTO>, DTOCache.Listener<SecurityId, SecurityPositionDetailDTO>
 {
     private final static String TAG = TradeFragment.class.getSimpleName();
     public final static int TRANSACTION_COST = 10;
@@ -282,19 +283,7 @@ public class TradeFragment extends DashboardFragment
         if (args != null)
         {
             this.securityId = new SecurityId(args);
-            if (this.securityId != null)
-            {
-                // Quick display if available
-                display(securityCompactCache.get().get(this.securityId));
-
-                // Proper fetch
-                if (fetchPositionDetailTask != null)
-                {
-                    fetchPositionDetailTask.cancel(false);
-                }
-                fetchPositionDetailTask = createAsyncRequestPositionDetail(this.securityId);
-                fetchPositionDetailTask.execute();
-            }
+            refreshLook();
         }
 
         display();
@@ -335,11 +324,23 @@ public class TradeFragment extends DashboardFragment
         {
             mBuyBtn.setOnClickListener(null);
         }
+        if (fetchPositionDetailTask != null)
+        {
+            fetchPositionDetailTask.cancel(false);
+        }
+        fetchPositionDetailTask = null;
         mStockChartButton = null;
         mQuickPriceButtonSet = null;
         mSlider = null;
         mBuyBtn = null;
         super.onDestroyView();
+    }
+
+    @Override public void onDestroy()
+    {
+        //((TrendingDetailFragment) getActivity().getSupportFragmentManager()
+        //        .findFragmentByTag("trending_detail")).setYahooQuoteUpdateListener(null);
+        super.onDestroy();
     }
 
     @Override public void onDetach()
@@ -435,32 +436,26 @@ public class TradeFragment extends DashboardFragment
     //    updateValues(mCashAvailable, false);
     //}
 
-    private AsyncTask<Void, Void, SecurityPositionDetailDTO> createAsyncRequestPositionDetail(final SecurityId securityId)
+    private void refreshLook()
     {
-        return new AsyncTask<Void, Void, SecurityPositionDetailDTO>()
+        if (this.securityId != null)
         {
-            @Override protected SecurityPositionDetailDTO doInBackground(Void... voids)
-            {
-                querying = true;
-                try
-                {
-                    return securityPositionDetailCache.get().getOrFetch(securityId, false);
-                }
-                finally
-                {
-                    if (!isCancelled())
-                    {
-                        querying = false;
-                    }
-                }
-            }
+            // Quick display if available
+            display(securityCompactCache.get().get(this.securityId));
 
-            @Override protected void onPostExecute(SecurityPositionDetailDTO securityPositionDetailDTO)
+            // Proper fetch
+            if (fetchPositionDetailTask != null)
             {
-                super.onPostExecute(securityPositionDetailDTO);
-                TradeFragment.this.display(securityPositionDetailDTO);
+                fetchPositionDetailTask.cancel(false);
             }
-        };
+            fetchPositionDetailTask = securityPositionDetailCache.get().getOrFetch(this.securityId, false, this);
+            fetchPositionDetailTask.execute();
+        }
+    }
+
+    @Override public void onDTOReceived(SecurityId key, SecurityPositionDetailDTO value)
+    {
+        TradeFragment.this.display(value);
     }
 
     /**
@@ -844,13 +839,6 @@ public class TradeFragment extends DashboardFragment
     {
         double q = Double.parseDouble(/*tvQuantity.getText().toString().replace(",", "")*/ "12");
         return q * (lastPrice + TRANSACTION_COST);
-    }
-
-    @Override public void onDestroy()
-    {
-        //((TrendingDetailFragment) getActivity().getSupportFragmentManager()
-        //        .findFragmentByTag("trending_detail")).setYahooQuoteUpdateListener(null);
-        super.onDestroy();
     }
 
     private OnSeekBarChangeListener createSeekBarListener()

@@ -28,17 +28,17 @@ import com.tradehero.th.adapters.TrendingAdapter;
 import com.tradehero.th.api.security.SearchSecurityListType;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
+import com.tradehero.th.api.security.SecurityListType;
 import com.tradehero.th.api.users.UserSearchResultDTO;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.trade.TradeFragment;
 import com.tradehero.th.network.CallbackWithSpecificNotifiers;
 import com.tradehero.th.network.service.UserService;
+import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.persistence.security.SecurityCompactListCache;
 import com.tradehero.th.persistence.security.SecuritySearchQuery;
-import com.tradehero.th.persistence.security.SecurityStoreManager;
 import dagger.Lazy;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import retrofit.RetrofitError;
@@ -47,7 +47,8 @@ import retrofit.client.Response;
 import javax.inject.Inject;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 9/18/13 Time: 12:09 PM To change this template use File | Settings | File Templates. */
-public class SearchStockPeopleFragment extends DashboardFragment implements AdapterView.OnItemSelectedListener, TextWatcher
+public class SearchStockPeopleFragment extends DashboardFragment
+        implements AdapterView.OnItemSelectedListener, TextWatcher, DTOCache.Listener<SecurityListType, List<SecurityId>>
 {
     public final static String BUNDLE_KEY_SEARCH_STRING = SearchStockPeopleFragment.class.getName() + ".searchString";
     public final static String BUNDLE_KEY_SEARCH_TYPE = SearchStockPeopleFragment.class.getName() + ".searchType";
@@ -77,10 +78,9 @@ public class SearchStockPeopleFragment extends DashboardFragment implements Adap
 
     private boolean isQuerying;
 
-    @Inject Lazy<SecurityStoreManager> securityStoreManager;
     @Inject Lazy<SecurityCompactListCache> securityCompactListCache;
     @Inject Lazy<SecurityCompactCache> securityCompactCache;
-    private AsyncTask<Void, Void, List<SecurityCompactDTO>> securitySearchTask;
+    private AsyncTask<Void, Void, List<SecurityId>> securitySearchTask;
     private List<SecurityCompactDTO> securityList;
     private TrendingAdapter trendingAdapter;
 
@@ -288,7 +288,7 @@ public class SearchStockPeopleFragment extends DashboardFragment implements Adap
                     securitySearchTask = null;
                 }
                 isQuerying = true;
-                securitySearchTask = createAsyncTaskSearchSecurity(makeSearchSecurityListType());
+                securitySearchTask = securityCompactListCache.get().getOrFetch(makeSearchSecurityListType(), false, this);
                 securitySearchTask.execute();
             }
         }
@@ -311,82 +311,11 @@ public class SearchStockPeopleFragment extends DashboardFragment implements Adap
         updateVisibilities();
     }
 
-    private AsyncTask<Void, Void, List<SecurityCompactDTO>> createAsyncTaskSearchSecurity(final SecuritySearchQuery securitySearchQuery)
+    @Override public void onDTOReceived(SecurityListType key, List<SecurityId> value)
     {
-        return new AsyncTask<Void, Void, List<SecurityCompactDTO>>()
-        {
-            @Override protected List<SecurityCompactDTO> doInBackground(Void... voids)
-            {
-                try
-                {
-                    return securityStoreManager.get().searchCompacts(securitySearchQuery, true);
-                }
-                catch (IOException e)
-                {
-                    THToast.show(R.string.error_unknown);
-                    THLog.e(TAG, "Error when searching", e);
-                }
-                catch (RetrofitError e)
-                {
-                    THToast.show(R.string.error_network_connection);
-                    THLog.e(TAG, "Error when searching", e);
-                }
-                finally
-                {
-                    if (!isCancelled())
-                    {
-                        isQuerying = false;
-                    }
-                }
-                return null;
-            }
-
-            @Override protected void onPostExecute(List<SecurityCompactDTO> securityCompactDTOs)
-            {
-                super.onPostExecute(securityCompactDTOs);
-                setDataAdapterToStockListView(securityCompactDTOs);
-            }
-        };
-    }
-
-    private AsyncTask<Void, Void, List<SecurityCompactDTO>> createAsyncTaskSearchSecurity(final SearchSecurityListType securitySearchListType)
-    {
-        return new AsyncTask<Void, Void, List<SecurityCompactDTO>>()
-        {
-            @Override protected List<SecurityCompactDTO> doInBackground(Void... voids)
-            {
-                try
-                {
-                    return fleshOut(securityCompactListCache.get().getOrFetch(securitySearchListType, false));
-                }
-                finally
-                {
-                    if (!isCancelled())
-                    {
-                        isQuerying = false;
-                    }
-                }
-            }
-
-            @Override protected void onPostExecute(List<SecurityCompactDTO> securityCompactDTOs)
-            {
-                super.onPostExecute(securityCompactDTOs);
-                setDataAdapterToStockListView(securityCompactDTOs);
-            }
-        };
-    }
-
-    private List<SecurityCompactDTO> fleshOut(List<SecurityId> securityIds)
-    {
-        List<SecurityCompactDTO> securityCompactDTOList = new ArrayList<>();
-        if (securityIds != null)
-        {
-            for(SecurityId securityId: securityIds)
-            {
-                securityCompactDTOList.add(securityCompactCache.get().getOrFetch(securityId, false));
-            }
-        }
-        return securityCompactDTOList;
+        THLog.i(TAG, "onDTOReceived");
+        isQuerying = false;
+        setDataAdapterToStockListView(securityCompactCache.get().getOrFetch(value));
     }
 
     private void setDataAdapterToStockListView(List<SecurityCompactDTO> securityCompactDTOs)
@@ -396,6 +325,7 @@ public class SearchStockPeopleFragment extends DashboardFragment implements Adap
 
         trendingAdapter.setItems(securityCompactDTOs);
         trendingAdapter.notifyDataSetChanged();
+        mSearchPeopleListView.postInvalidate();
         updateVisibilities();
     }
 
@@ -588,29 +518,6 @@ public class SearchStockPeopleFragment extends DashboardFragment implements Adap
         return new SearchSecurityListType(mSearchText, page, perPage);
     }
     //</editor-fold>
-
-    private CallbackWithSpecificNotifiers<List<SecurityCompactDTO>> createCallbackForStock()
-    {
-        return new CallbackWithSpecificNotifiers<List<SecurityCompactDTO>>()
-        {
-            @Override public void notifyIsQuerying(boolean isQuerying)
-            {
-                SearchStockPeopleFragment.this.isQuerying = isQuerying;
-            }
-
-            @Override public void success(List<SecurityCompactDTO> returned, Response response)
-            {
-                super.success(returned, response);
-                setDataAdapterToStockListView(returned);
-            }
-
-            @Override public void failure(RetrofitError retrofitError)
-            {
-                super.failure(retrofitError);
-                updateVisibilities();
-            }
-        };
-    }
 
     private CallbackWithSpecificNotifiers<List<UserSearchResultDTO>> createCallbackForPeople ()
     {

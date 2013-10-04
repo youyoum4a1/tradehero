@@ -10,6 +10,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import com.fedorvlasov.lazylist.ImageLoader;
 import com.tradehero.common.graphics.WhiteToTransparentTransformation;
+import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
@@ -34,14 +35,10 @@ public class TrendingAdapter extends DTOAdapter<SecurityCompactDTO, TrendingSecu
         super(context, inflater, layoutResourceId);
     }
 
-    @Override public boolean hasStableIds()
-    {
-        // TODO ensure this helps have a smoother experience
-        return true;
-    }
 
     @Override protected View getView(int position, final TrendingSecurityView convertView)
     {
+        THLog.d(TAG, "getView position:" + position);
         convertView.post(new Runnable()
         {
             @Override public void run()

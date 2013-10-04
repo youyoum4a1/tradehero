@@ -1,5 +1,6 @@
 package com.tradehero.th.persistence.position;
 
+import android.os.AsyncTask;
 import android.support.v4.util.LruCache;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.api.competition.ProviderDTO;
@@ -10,7 +11,7 @@ import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.network.BasicRetrofitErrorHandler;
 import com.tradehero.th.network.service.SecurityService;
-import com.tradehero.th.persistence.DTOCache;
+import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import dagger.Lazy;
 import java.util.List;
@@ -71,6 +72,26 @@ public class SecurityPositionDetailCache implements DTOCache<String, SecurityId,
         return securityPositionDetailDTO;
     }
 
+    public AsyncTask<Void, Void, SecurityPositionDetailDTO> getOrFetch(final SecurityId key, final boolean force, final Listener<SecurityId, SecurityPositionDetailDTO> callback)
+    {
+        return new AsyncTask<Void, Void, SecurityPositionDetailDTO>()
+        {
+            @Override protected SecurityPositionDetailDTO doInBackground(Void... voids)
+            {
+                return getOrFetch(key, force);
+            }
+
+            @Override protected void onPostExecute(SecurityPositionDetailDTO value)
+            {
+                super.onPostExecute(value);
+                if (!isCancelled() && callback != null)
+                {
+                    callback.onDTOReceived(key, value);
+                }
+            }
+        };
+    }
+    
     @Override public SecurityPositionDetailDTO get(SecurityId key)
     {
         SecurityPositionDetailCutDTO securityPositionDetailCutDTO = this.lruCache.get(key.makeKey());

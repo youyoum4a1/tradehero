@@ -1,7 +1,7 @@
-package com.tradehero.th.persistence;
+package com.tradehero.common.persistence;
 
+import android.os.AsyncTask;
 import android.support.v4.util.LruCache;
-import com.tradehero.th.api.DTOKey;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/4/13 Time: 11:01 AM To change this template use File | Settings | File Templates. */
 abstract public class StraightDTOCache<BaseKeyType, DTOKeyType extends DTOKey<BaseKeyType>, DTOType> implements DTOCache<BaseKeyType, DTOKeyType, DTOType>
@@ -41,5 +41,25 @@ abstract public class StraightDTOCache<BaseKeyType, DTOKeyType extends DTOKey<Ba
         }
 
         return value;
+    }
+
+    public AsyncTask<Void, Void, DTOType> getOrFetch(final DTOKeyType key, final boolean force, final Listener<DTOKeyType, DTOType> callback)
+    {
+        return new AsyncTask<Void, Void, DTOType>()
+        {
+            @Override protected DTOType doInBackground(Void... voids)
+            {
+                return getOrFetch(key, force);
+            }
+
+            @Override protected void onPostExecute(DTOType value)
+            {
+                super.onPostExecute(value);
+                if (!isCancelled() && callback != null)
+                {
+                    callback.onDTOReceived(key, value);
+                }
+            }
+        };
     }
 }

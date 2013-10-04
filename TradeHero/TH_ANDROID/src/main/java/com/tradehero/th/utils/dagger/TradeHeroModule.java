@@ -104,15 +104,15 @@ public class TradeHeroModule
         return store;
     }
 
-    @Provides @Singleton AbstractSecurityPositionDetailStore providePositionDetailStore(SecurityPositionDetailStore store)
-    {
-        return store;
-    }
+    //@Provides @Singleton AbstractSecurityPositionDetailStore providePositionDetailStore(SecurityPositionDetailStore store)
+    //{
+    //    return store;
+    //}
 
-    @Provides @Singleton AbstractSecurityCompactStore provideCompactStore(SecurityCompactStore store)
-    {
-        return store;
-    }
+    //@Provides @Singleton AbstractSecurityCompactStore provideCompactStore(SecurityCompactStore store)
+    //{
+    //    return store;
+    //}
 
     @Provides Context provideContext()
     {
