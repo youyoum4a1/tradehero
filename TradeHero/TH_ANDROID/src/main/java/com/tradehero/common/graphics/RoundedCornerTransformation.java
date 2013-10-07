@@ -2,16 +2,14 @@ package com.tradehero.common.graphics;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import com.tradehero.th.R;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 9/6/13 Time: 6:30 PM To change this template use File | Settings | File Templates. */
-public class RoundedCornerTransformation  implements com.squareup.picasso.Transformation, com.fedorvlasov.lazylist.ImageLoader.Transformation
+public class RoundedCornerTransformation  implements com.squareup.picasso.Transformation
 {
     public static final int DEFAULT_PIXEL_RADIUS = 10;
     public static final int DEFAULT_COLOR = 0xff424242;

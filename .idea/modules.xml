@@ -8,7 +8,6 @@
       <module fileurl="file://$PROJECT_DIR$/dagger.iml" filepath="$PROJECT_DIR$/dagger.iml" />
       <module fileurl="file://$PROJECT_DIR$/dagger-compiler.iml" filepath="$PROJECT_DIR$/dagger-compiler.iml" />
       <module fileurl="file://$PROJECT_DIR$/facebook-android-sdk.iml" filepath="$PROJECT_DIR$/facebook-android-sdk.iml" />
-      <module fileurl="file://$PROJECT_DIR$/lazyList.iml" filepath="$PROJECT_DIR$/lazyList.iml" />
       <module fileurl="file://$PROJECT_DIR$/picasso.iml" filepath="$PROJECT_DIR$/picasso.iml" />
       <module fileurl="file://$PROJECT_DIR$/prettytime.iml" filepath="$PROJECT_DIR$/prettytime.iml" />
       <module fileurl="file://$PROJECT_DIR$/retrofit.iml" filepath="$PROJECT_DIR$/retrofit.iml" />

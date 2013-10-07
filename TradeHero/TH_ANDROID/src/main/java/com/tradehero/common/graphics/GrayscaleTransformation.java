@@ -5,10 +5,9 @@ import android.graphics.Canvas;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Paint;
-import com.tradehero.common.utils.THLog;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 9/6/13 Time: 12:33 PM To change this template use File | Settings | File Templates. */
-public class GrayscaleTransformation implements com.squareup.picasso.Transformation, com.fedorvlasov.lazylist.ImageLoader.Transformation
+public class GrayscaleTransformation implements com.squareup.picasso.Transformation
 {
     public static final String TAG = GrayscaleTransformation.class.getSimpleName();
 

@@ -3,7 +3,7 @@ package com.tradehero.common.graphics;
 import android.graphics.Bitmap;
 
 /** Created with IntelliJ IDEA. User: tho Date: 9/5/13 Time: 2:26 PM Copyright (c) TradeHero */
-public class GaussianTransformation implements com.squareup.picasso.Transformation, com.fedorvlasov.lazylist.ImageLoader.Transformation
+public class GaussianTransformation implements com.squareup.picasso.Transformation
 {
     @Override public Bitmap transform(Bitmap bitmap)
     {

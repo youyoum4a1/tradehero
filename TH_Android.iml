@@ -113,7 +113,6 @@
       </library>
     </orderEntry>
     <orderEntry type="module" module-name="Android-PullToRefresh" />
-    <orderEntry type="module" module-name="lazyList" />
     <orderEntry type="module" module-name="Android-PullToRefresh" />
     <orderEntry type="module" module-name="viewpagerindicator" />
     <orderEntry type="library" name="Maven: javax.inject:javax.inject:1" level="project" />

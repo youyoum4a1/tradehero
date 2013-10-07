@@ -9,7 +9,7 @@ import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 9/6/13 Time: 12:38 PM To change this template use File | Settings | File Templates. */
-public class WhiteToTransparentTransformation implements com.squareup.picasso.Transformation, com.fedorvlasov.lazylist.ImageLoader.Transformation
+public class WhiteToTransparentTransformation implements com.squareup.picasso.Transformation
 {
     public static final int DEFAULT_TOLERANCE = 5;
     public int tolerance;

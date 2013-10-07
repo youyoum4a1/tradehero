@@ -9,7 +9,7 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 
 /** Created with IntelliJ IDEA. User: tho Date: 9/5/13 Time: 1:12 PM Copyright (c) TradeHero */
-public class RoundedShapeTransformation implements com.squareup.picasso.Transformation, com.fedorvlasov.lazylist.ImageLoader.Transformation
+public class RoundedShapeTransformation implements com.squareup.picasso.Transformation
 {
     @Override public Bitmap transform(Bitmap scaleBitmapImage)
     {
