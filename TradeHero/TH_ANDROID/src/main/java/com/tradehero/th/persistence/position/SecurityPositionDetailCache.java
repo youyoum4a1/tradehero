@@ -69,6 +69,10 @@ public class SecurityPositionDetailCache implements DTOCache<String, SecurityId,
             securityPositionDetailDTO = fetch(key);
             put(key, securityPositionDetailDTO);
         }
+        else
+        {
+            securityPositionDetailDTO = securityPositionDetailCutDTO.create(securityCompactDTO);
+        }
         return securityPositionDetailDTO;
     }
 
@@ -130,7 +134,6 @@ public class SecurityPositionDetailCache implements DTOCache<String, SecurityId,
 
         public SecurityPositionDetailCutDTO(SecurityPositionDetailDTO securityPositionDetailDTO)
         {
-            this.position = securityPositionDetailDTO.position;
             this.positions = securityPositionDetailDTO.positions;
             this.portfolio = securityPositionDetailDTO.portfolio;
             this.providers = securityPositionDetailDTO.providers;
@@ -142,7 +145,6 @@ public class SecurityPositionDetailCache implements DTOCache<String, SecurityId,
             return new SecurityPositionDetailDTO(
                     securityCompactDTO,
                     positions,
-                    position,
                     portfolio,
                     providers,
                     firstTradeAllTime
