@@ -87,8 +87,7 @@ public class TrendingFragment extends DashboardFragment implements DTOCache.List
 
         mTrendingGridView.setOnItemClickListener(new OnItemClickListener()
         {
-            @Override public void onItemClick(AdapterView<?> parent, View view, int position,
-                    long id)
+            @Override public void onItemClick(AdapterView<?> parent, View view, int position, long id)
             {
                 SecurityCompactDTO securityCompactDTO = (SecurityCompactDTO) parent.getItemAtPosition(position);
                 navigator.pushFragment(TradeFragment.class, securityCompactDTO.getSecurityId().getArgs());

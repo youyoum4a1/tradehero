@@ -10,9 +10,8 @@ import android.widget.TableLayout;
 import android.widget.TextView;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
+import com.tradehero.th.api.position.SecurityPositionDetailDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
-import com.tradehero.th.utills.Logger;
-import com.tradehero.th.utills.YUtils;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 9/23/13 Time: 2:55 PM To change this template use File | Settings | File Templates. */
 public class PricingBidAskView extends LinearLayout implements DTOView<SecurityCompactDTO>
@@ -28,6 +27,7 @@ public class PricingBidAskView extends LinearLayout implements DTOView<SecurityC
     private int inactiveColor;
 
     private SecurityCompactDTO securityCompactDTO;
+    private SecurityPositionDetailDTO securityPositionDetailDTO;
     private boolean buy = true;
 
     //<editor-fold desc="Constructors">
@@ -89,6 +89,16 @@ public class PricingBidAskView extends LinearLayout implements DTOView<SecurityC
     @Override public void display(SecurityCompactDTO securityCompactDTO)
     {
         this.securityCompactDTO = securityCompactDTO;
+        display();
+    }
+
+    public void display(SecurityPositionDetailDTO securityPositionDetailDTO)
+    {
+        this.securityPositionDetailDTO = securityPositionDetailDTO;
+        if (securityPositionDetailDTO != null)
+        {
+            this.securityCompactDTO = securityPositionDetailDTO.security;
+        }
         display();
     }
 

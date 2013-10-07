@@ -3,169 +3,181 @@
 
   <TableRow
       android:id="@+id/sec_type_row"
-      android:layout_width="fill_parent"
-      android:layout_height="wrap_content"
+      android:layout_gravity="center|top"
       >
 
     <TextView
         style="@style/TH.SmallTitle"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:gravity="right"
         android:paddingRight="@dimen/trade_screen_info_title_padding_right"
         android:text="@string/security_type_label_short"
+        android:background="#8000aaaa"
         />
 
     <TextView
         android:id="@+id/sec_type"
         style="@style/TH.SmallValue"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:gravity="left"
         android:text=""
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:background="#8000aaaa"
+        />
 
   </TableRow>
 
   <TableRow
       android:id="@+id/price_as_of_row"
-      android:layout_width="fill_parent"
-      android:layout_height="wrap_content"
+      android:layout_gravity="center|top"
       >
 
     <TextView
         style="@style/TH.SmallTitle"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:gravity="right"
         android:paddingRight="@dimen/trade_screen_info_title_padding_right"
         android:text="@string/price_as_of"
+        android:background="#8000aaaa"
         />
 
     <TextView
         android:id="@+id/vprice_as_of"
         style="@style/TH.SmallValue"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:gravity="left"
         android:text=""
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:background="#8000aaaa"
+        />
 
   </TableRow>
 
   <TableRow
       android:id="@+id/cash_available_row"
-      android:layout_width="fill_parent"
-      android:layout_height="wrap_content"
+      android:layout_gravity="center|top"
       >
 
     <TextView
         style="@style/TH.SmallTitle"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:gravity="right"
         android:paddingRight="@dimen/trade_screen_info_title_padding_right"
         android:text="@string/cash_available"
+        android:background="#8000aaaa"
         />
 
     <TextView
         android:id="@+id/vcash_available"
         style="@style/TH.SmallValue"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:gravity="left"
         android:text=""
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:background="#8000aaaa"
+        />
 
   </TableRow>
 
   <TableRow
       android:id="@+id/share_available_row"
-      android:layout_width="fill_parent"
-      android:layout_height="wrap_content"
+      android:layout_gravity="center|top"
       >
 
     <TextView
         style="@style/TH.SmallTitle"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:gravity="right"
         android:paddingRight="@dimen/trade_screen_info_title_padding_right"
         android:text="@string/share_available"
+        android:background="#8000aaaa"
         />
 
     <TextView
         android:id="@+id/vshare_available"
         style="@style/TH.SmallValue"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:gravity="left"
         android:text=""
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:background="#8000aaaa"
+        />
 
   </TableRow>
 
   <TableRow
       android:id="@+id/quantity_row"
-      android:layout_width="fill_parent"
-      android:layout_height="wrap_content"
+      android:layout_gravity="center|top"
       >
 
     <TextView
         style="@style/TH.SmallTitle"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:gravity="right"
         android:paddingRight="@dimen/trade_screen_info_title_padding_right"
         android:text="@string/quantity"
+        android:background="#8000aaaa"
         />
 
     <TextView
         android:id="@+id/vquantity"
         style="@style/TH.SmallValue"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:gravity="left"
         android:text=""
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:background="#8000aaaa"
+        />
 
   </TableRow>
 
   <TableRow
       android:id="@+id/trade_value_row"
-      android:layout_width="fill_parent"
-      android:layout_height="wrap_content"
+      android:layout_gravity="center|top"
       >
 
     <TextView
         style="@style/TH.SmallTitle"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:gravity="right"
         android:paddingRight="@dimen/trade_screen_info_title_padding_right"
         android:text="@string/trade_value"
+        android:background="#8000aaaa"
         />
 
     <TextView
         android:id="@+id/vtrade_value"
         style="@style/TH.SmallValue"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:gravity="left"
         android:text=""
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:background="#8000aaaa"
+        />
 
   </TableRow>
 

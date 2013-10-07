@@ -4,11 +4,14 @@
   <TextView
       android:id="@+id/last_price"
       style="@style/TH.Value"
-      android:layout_width="wrap_content"
+      android:layout_width="match_parent"
       android:layout_height="wrap_content"
+      android:gravity="center_horizontal"
       android:text="stock"
       android:textSize="18sp"
-      android:textStyle="bold" />
+      android:textStyle="bold"
+      android:background="#4023fe9a"
+      />
 
   <TextView
       android:id="@+id/bid_price_usd"
@@ -16,19 +19,20 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:text="= US$"
-      android:textAlignment="center"
-      android:textSize="13sp" />
+      android:gravity="center_horizontal"
+      android:textSize="13sp"
+      android:background="#43fe239a"
+      />
 
   <TableLayout
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:background="#aabbcc"
+      android:background="#80aabbcc"
       >
 
     <TableRow
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#ef33ef"
+        android:layout_gravity="center|top"
+        android:background="#80ef33ef"
         >
 
       <TextView
@@ -37,15 +41,19 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_weight="1"
-          android:layout_gravity="right"
           android:text="4.5"
-          android:textAlignment="textEnd"
-          android:textSize="13sp" />
+          android:gravity="right"
+          android:textSize="13sp"
+          android:singleLine="true"
+          />
 
       <TextView
           android:text=" x "
           android:textAlignment="center"
-          android:textSize="13sp" />
+          android:textSize="13sp"
+          android:padding="4dp"
+          android:singleLine="true"
+          />
 
       <TextView
           android:id="@+id/ask_price"
@@ -53,16 +61,16 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_weight="1"
-          android:layout_gravity="left"
           android:text="4.6"
-          android:textAlignment="textStart"
-          android:textSize="13sp" />
+          android:gravity="left"
+          android:textSize="13sp"
+          android:singleLine="true"
+          />
 
     </TableRow>
 
     <TableRow
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_gravity="center|top"
         >
 
       <TextView
@@ -71,15 +79,20 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_weight="1"
-          android:layout_gravity="right"
+          android:gravity="right"
           android:text="@string/bid_with_bracket"
           android:textSize="13sp"
-          android:background="#eeeeff"/>
+          android:background="#eeeeff"
+          android:singleLine="true"
+          />
 
       <TextView
           android:text=" "
           android:textAlignment="center"
-          android:textSize="13sp" />
+          android:textSize="13sp"
+          android:padding="4dp"
+          android:singleLine="true"
+          />
 
       <TextView
           android:id="@+id/ask_price_hint"
@@ -87,10 +100,12 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_weight="1"
-          android:layout_gravity="left"
+          android:gravity="left"
           android:text="@string/ask_with_bracket"
           android:textSize="13sp"
-          android:background="#eeeeff"/>
+          android:background="#eeeeff"
+          android:singleLine="true"
+          />
 
     </TableRow>
 

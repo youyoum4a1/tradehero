@@ -7,6 +7,7 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
+import com.tradehero.th.api.position.SecurityPositionDetailDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityType;
 import com.tradehero.th.base.THUser;
@@ -29,6 +30,7 @@ public class TradeQuantityView extends TableLayout implements DTOView<SecurityCo
     private TableRow mQuantityRow;
 
     private SecurityCompactDTO securityCompactDTO;
+    private SecurityPositionDetailDTO securityPositionDetailDTO;
     private boolean buy = true;
     private double shareQuantity;
     private boolean mHighlightQuantity = false;
@@ -112,6 +114,16 @@ public class TradeQuantityView extends TableLayout implements DTOView<SecurityCo
         display();
     }
 
+    public void display(SecurityPositionDetailDTO securityPositionDetailDTO)
+    {
+        this.securityPositionDetailDTO = securityPositionDetailDTO;
+        if (securityPositionDetailDTO != null)
+        {
+            securityCompactDTO = securityPositionDetailDTO.security;
+        }
+        display();
+    }
+
     public void display()
     {
         if (mSecurityType != null && securityCompactDTO != null)
@@ -145,7 +157,26 @@ public class TradeQuantityView extends TableLayout implements DTOView<SecurityCo
             }
         }
 
-        // TODO populate shareAvailable
+        if (securityPositionDetailDTO == null || securityPositionDetailDTO.positions == null || securityPositionDetailDTO.positions.size() == 0)
+        {
+            if (mShareAvailable != null)
+            {
+                mShareAvailable.setText("0");
+            }
+        }
+        else if (mShareAvailable != null)
+        {
+            // TODO handle the case when we have move than 1 position
+            Integer sharesAvailable = securityPositionDetailDTO.positions.get(0).shares;
+            if (sharesAvailable == null || sharesAvailable.intValue() == 0)
+            {
+                mShareAvailable.setText("0");
+            }
+            else
+            {
+                mShareAvailable.setText(String.format("%,d", sharesAvailable));
+            }
+        }
 
         updateShareQuantity();
         updateTradeValue();
@@ -194,11 +225,11 @@ public class TradeQuantityView extends TableLayout implements DTOView<SecurityCo
             {
                 mTradeValue.setText(String.format("%s", "-"));
             }
-            else if (buy && securityCompactDTO != null && securityCompactDTO.askPrice != null)
+            else if (buy && securityCompactDTO.askPrice != null)
             {
                 mTradeValue.setText(String.format("%,.2f", shareQuantity * securityCompactDTO.askPrice));
             }
-            else if (!buy && securityCompactDTO != null && securityCompactDTO.bidPrice != null)
+            else if (!buy && securityCompactDTO.bidPrice != null)
             {
                 mTradeValue.setText(String.format("%,.2f", shareQuantity * securityCompactDTO.bidPrice));
             }

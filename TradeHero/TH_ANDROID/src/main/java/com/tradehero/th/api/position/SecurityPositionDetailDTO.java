@@ -11,7 +11,7 @@ public class SecurityPositionDetailDTO
 {
     public SecurityCompactDTO security;
     public List<PositionDTOCompact> positions;
-    public PositionDTOCompact position;
+    //public PositionDTOCompact position; // This is a backward compatible element. Do not add back
     public PortfolioDTO portfolio;
     public List<ProviderDTO> providers;
     public int firstTradeAllTime;
@@ -20,12 +20,11 @@ public class SecurityPositionDetailDTO
     {
     }
 
-    public SecurityPositionDetailDTO(SecurityCompactDTO security, List<PositionDTOCompact> positions, PositionDTOCompact position,
+    public SecurityPositionDetailDTO(SecurityCompactDTO security, List<PositionDTOCompact> positions,
             PortfolioDTO portfolio, List<ProviderDTO> providers, int firstTradeAllTime)
     {
         this.security = security;
         this.positions = positions;
-        this.position = position;
         this.portfolio = portfolio;
         this.providers = providers;
         this.firstTradeAllTime = firstTradeAllTime;

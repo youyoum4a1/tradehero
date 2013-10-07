@@ -17,6 +17,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.SeekBar;
@@ -29,14 +30,19 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.squareup.picasso.Cache;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.RequestCreator;
 import com.squareup.picasso.Transformation;
 import com.squareup.picasso.UrlConnectionDownloader;
 import com.tradehero.common.cache.LruMemFileCache;
+import com.tradehero.common.graphics.AbstractSequentialTransformation;
+import com.tradehero.common.graphics.FastBlurTransformation;
+import com.tradehero.common.graphics.GrayscaleTransformation;
+import com.tradehero.common.graphics.RoundedCornerTransformation;
 import com.tradehero.common.graphics.WhiteToTransparentTransformation;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.thread.KnownExecutorServices;
 import com.tradehero.common.utils.THLog;
-import com.tradehero.common.widget.ImageUrlView;
+import com.tradehero.common.widget.ImageViewThreadSafe;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.position.SecurityPositionDetailDTO;
@@ -47,7 +53,6 @@ import com.tradehero.th.fragments.BuyFragment;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.persistence.position.SecurityPositionDetailCache;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
-import com.tradehero.th.persistence.security.SecurityStoreManager;
 import com.tradehero.th.utills.Logger;
 import com.tradehero.th.utills.Logger.LogLevel;
 import com.tradehero.th.widget.trade.BottomViewPager;
@@ -55,10 +60,7 @@ import com.tradehero.th.widget.trade.PricingBidAskView;
 import com.tradehero.th.widget.trade.QuickPriceButtonSet;
 import com.tradehero.th.widget.trade.TradeQuantityView;
 import com.viewpagerindicator.LinePageIndicator;
-import com.viewpagerindicator.TitlePageIndicator;
 import dagger.Lazy;
-import java.io.IOException;
-import java.util.concurrent.Future;
 import javax.inject.Inject;
 
 public class TradeFragment extends DashboardFragment
@@ -79,13 +81,14 @@ public class TradeFragment extends DashboardFragment
     private TextView mExchangeSymbol;
     private ImageView mMarketClose;
 
-    private ImageUrlView mStockBgLogo;
-    private ImageUrlView mStockLogo;
+    private ImageViewThreadSafe mStockBgLogo;
+    private ImageViewThreadSafe mStockLogo;
     private ImageView mStockChart;
 
     private TextView mStockName;
     private ImageButton mStockChartButton;
 
+    private FrameLayout mInfoFrame;
     private PricingBidAskView mPricingBidAskView;
     private TradeQuantityView mTradeQuantityView;
     private QuickPriceButtonSet mQuickPriceButtonSet;
@@ -117,10 +120,14 @@ public class TradeFragment extends DashboardFragment
 
     private Picasso mPicasso;
     private Transformation foregroundTransformation;
+    private Transformation backgroundTransformation;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
-    {
+     {
         THLog.d(TAG, "onCreateView");
+        // Prevent reuse of previous values when changing securities
+        securityCompactDTO = null;
+        securityPositionDetailDTO = null;
         View view = null;
         view = inflater.inflate(R.layout.fragment_trade, container, false);
         initViews(view);
@@ -129,8 +136,8 @@ public class TradeFragment extends DashboardFragment
 
     private void initViews(View view)
     {
-        mStockBgLogo = (ImageUrlView) view.findViewById(R.id.stock_bg_logo);
-        mStockLogo = (ImageUrlView) view.findViewById(R.id.stock_logo);
+        mStockBgLogo = (ImageViewThreadSafe) view.findViewById(R.id.stock_bg_logo);
+        mStockLogo = (ImageViewThreadSafe) view.findViewById(R.id.stock_logo);
         //mStockChart = (ImageView) view.findViewById(R.id.stock_chart);
 
         mStockName = (TextView) view.findViewById(R.id.stock_name);
@@ -140,6 +147,7 @@ public class TradeFragment extends DashboardFragment
             mStockChartButton.setOnClickListener(createStockChartButtonClickListener());
         }
 
+        mInfoFrame = (FrameLayout) view.findViewById(R.id.chart_frame);
         mPricingBidAskView = (PricingBidAskView) view.findViewById(R.id.pricing_bid_ask_view);
         mTradeQuantityView = (TradeQuantityView) view.findViewById(R.id.trade_quantity_view);
 
@@ -180,6 +188,21 @@ public class TradeFragment extends DashboardFragment
         if (foregroundTransformation == null)
         {
             foregroundTransformation = new WhiteToTransparentTransformation();
+        }
+        if (backgroundTransformation == null)
+        {
+            backgroundTransformation = new AbstractSequentialTransformation()
+            {
+                @Override public String key()
+                {
+                    return "toRoundedGaussianGrayscale11";
+                }
+            };
+            ((AbstractSequentialTransformation) backgroundTransformation).add(new GrayscaleTransformation());
+            ((AbstractSequentialTransformation) backgroundTransformation).add(new FastBlurTransformation(10));
+            ((AbstractSequentialTransformation) backgroundTransformation).add(new RoundedCornerTransformation(
+                    getResources().getDimensionPixelSize(R.dimen.trending_grid_item_corner_radius),
+                    getResources().getColor(R.color.black)));
         }
         if (mPicasso == null)
         {
@@ -269,6 +292,7 @@ public class TradeFragment extends DashboardFragment
         {
             mBuySellSwitch.setChecked(isTransactionTypeBuy);
             mBuySellSwitch.setOnCheckedChangeListener(createBuySellListener());
+            mBuySellSwitch.setEnabled(false);
         }
 
         // We display here as onCreateOptionsMenu may be called after onResume
@@ -277,6 +301,7 @@ public class TradeFragment extends DashboardFragment
 
     @Override public void onResume()
     {
+        THLog.d(TAG, "onResume");
         super.onResume();
 
         Bundle args = getArguments();
@@ -511,11 +536,25 @@ public class TradeFragment extends DashboardFragment
 
         if (mPricingBidAskView != null)
         {
-            mPricingBidAskView.display(securityCompactDTO);
+            if (securityPositionDetailDTO != null)
+            {
+                mPricingBidAskView.display(securityPositionDetailDTO);
+            }
+            else
+            {
+                mPricingBidAskView.display(securityCompactDTO);
+            }
         }
         if (mTradeQuantityView != null)
         {
-            mTradeQuantityView.display(securityCompactDTO);
+            if (securityPositionDetailDTO != null)
+            {
+                mTradeQuantityView.display(securityPositionDetailDTO);
+            }
+            else
+            {
+                mTradeQuantityView.display(securityCompactDTO);
+            }
         }
         if (mBottomViewPager != null)
         {
@@ -565,7 +604,21 @@ public class TradeFragment extends DashboardFragment
             mSlider.setEnabled(maxShares > 0);
         }
 
+        storeImageUrlInImageViews();
         loadImages();
+        updateVisibilities();
+    }
+
+    private void storeImageUrlInImageViews()
+    {
+        if (mStockLogo != null && securityCompactDTO != null)
+        {
+            mStockLogo.setTag(R.string.image_url, this.securityCompactDTO.imageBlobUrl);
+        }
+        if (mStockBgLogo != null && securityCompactDTO!= null)
+        {
+            mStockBgLogo.setTag(R.string.image_url, this.securityCompactDTO.imageBlobUrl);
+        }
     }
 
     private void updateValues(double cash, boolean isPriceSlot)
@@ -658,6 +711,31 @@ public class TradeFragment extends DashboardFragment
         //}
     }
 
+    private void updateVisibilities()
+    {
+        if (securityPositionDetailDTO == null || securityPositionDetailDTO.positions == null || securityPositionDetailDTO.positions.size() == 0)
+        {
+            if (mBuySellSwitch != null)
+            {
+                mBuySellSwitch.setVisibility(View.GONE);
+            }
+        }
+        else if (mBuySellSwitch != null)
+        {
+            // TODO handle the case when we have move than 1 position
+            Integer shareCount = securityPositionDetailDTO.positions.get(0).shares;
+            if (shareCount == null || shareCount.intValue() == 0)
+            {
+                mBuySellSwitch.setVisibility(View.GONE);
+            }
+            else
+            {
+                mBuySellSwitch.setVisibility(View.VISIBLE);
+                mBuySellSwitch.setEnabled(true);
+            }
+        }
+    }
+
     public boolean isMyUrlOk()
     {
         return (securityPositionDetailDTO != null) && securityPositionDetailDTO.security != null &&
@@ -695,50 +773,15 @@ public class TradeFragment extends DashboardFragment
 
     public void loadImages ()
     {
-        if (mStockLogo != null && securityCompactDTO != null)
-        {
-            mStockLogo.setUrl(this.securityCompactDTO.imageBlobUrl);
-        }
-        if (mStockBgLogo != null && securityCompactDTO!= null)
-        {
-            mStockBgLogo.setUrl(this.securityCompactDTO.imageBlobUrl);
-        }
-
         final Callback loadIntoBg = createLogoReadyCallback();
 
         if (isMyUrlOk())
         {
-
-            // This line forces Picasso to clear the downloads running on the bg
-            mPicasso.load((String) null)
-                    .placeholder(R.drawable.default_image)
-                    .error(R.drawable.default_image)
-                    .into(mStockBgLogo);
-
-            // This sequence gives the opportunity to android to cache the original http image if its cache headers instruct it to.
-            Future<?> submitted = KnownExecutorServices.getCacheExecutor().submit(new Runnable()
+            loadImageInTarget(mStockLogo, foregroundTransformation);
+            // Launching the bg like this will result in double downloading the file.
+            if (mInfoFrame != null)
             {
-                @Override public void run()
-                {
-                    if (mStockLogo != null)
-                    {
-                        THLog.i(TAG, "Loading Fore for " + mStockLogo.getUrl());
-                        mPicasso.load(mStockLogo.getUrl())
-                                .placeholder(R.drawable.default_image)
-                                .error(R.drawable.default_image)
-                                .transform(foregroundTransformation)
-                                .into(mStockLogo, loadIntoBg);
-                    }
-                }
-            });
-
-            if (submitted == null)
-            {
-                THLog.i(TAG, "Future submission was null");
-            }
-            else
-            {
-                THLog.i(TAG, "Future submission was ok");
+                loadImageInTarget(mStockBgLogo, backgroundTransformation, mInfoFrame.getMeasuredWidth(), mInfoFrame.getMeasuredHeight());
             }
         }
         else
@@ -756,17 +799,43 @@ public class TradeFragment extends DashboardFragment
                         .into(mStockLogo);
             }
 
-            if (mStockBgLogo != null)
+            if (mStockLogo != null)
             {
-                mStockBgLogo.post(new Runnable()
-                {
-                    @Override public void run()
-                    {
-                        loadIntoBg.onSuccess();
-                    }
-                });
+                mPicasso.load((String) null)
+                        .placeholder(R.drawable.default_image)
+                        .error(R.drawable.default_image)
+                        .into(mStockLogo);
             }
         }
+    }
+
+    private void loadImageInTarget(final ImageView target, final Transformation t)
+    {
+        loadImageInTarget(target, t, 0, 0);
+    }
+
+    private void loadImageInTarget(final ImageView target, final Transformation t, final int resizeToWidth, final int resizeToHeight)
+    {
+        KnownExecutorServices.getCacheExecutor().submit(new Runnable()
+        {
+            @Override public void run()
+            {
+                if (target != null && target.getTag(R.string.image_url) != null)
+                {
+                    RequestCreator requestCreator = mPicasso.load(target.getTag(R.string.image_url).toString())
+                            .placeholder(R.drawable.default_image)
+                            .error(R.drawable.default_image);
+
+                    if (resizeToWidth > 0 && resizeToHeight > 0)
+                    {
+                        requestCreator = requestCreator.resize(resizeToWidth, resizeToHeight).centerCrop();
+                    }
+
+                    requestCreator.transform(t)
+                            .into(target);
+                }
+            }
+        });
     }
 
     private Callback createLogoReadyCallback()
@@ -785,10 +854,10 @@ public class TradeFragment extends DashboardFragment
 
             public void loadBg ()
             {
-                if (mStockBgLogo != null && TradeFragment.isUrlOk(mStockBgLogo.getUrl()))
+                if (mStockBgLogo != null && TradeFragment.isUrlOk((String) mStockBgLogo.getTag(R.string.image_url)))
                 {
-                    THLog.i(TAG, "Loading Bg for " + mStockBgLogo.getUrl());
-                    mPicasso.load(mStockBgLogo.getUrl())
+                    THLog.i(TAG, "Loading Bg for " + mStockBgLogo.getTag(R.string.image_url));
+                    mPicasso.load((String) mStockBgLogo.getTag(R.string.image_url))
                             .placeholder(R.drawable.default_image)
                             .error(R.drawable.default_image)
                             .resize(mStockBgLogo.getWidth(), mStockBgLogo.getHeight())
