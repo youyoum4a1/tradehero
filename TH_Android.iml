@@ -27,7 +27,7 @@
       <excludeFolder url="file://$MODULE_DIR$/TradeHero/TH_ANDROID/target/classes" />
       <excludeFolder url="file://$MODULE_DIR$/TradeHero/TH_ANDROID/target/test-classes" />
     </content>
-    <orderEntry type="jdk" jdkName="Android 4.2.2 Platform" jdkType="Android SDK" />
+    <orderEntry type="jdk" jdkName="Android 4.2.2 Google APIs" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="facebook-android-sdk" />
     <orderEntry type="module" module-name="ActionBarSherlock" />
@@ -115,6 +115,7 @@
     <orderEntry type="module" module-name="Android-PullToRefresh" />
     <orderEntry type="module" module-name="lazyList" />
     <orderEntry type="module" module-name="Android-PullToRefresh" />
+    <orderEntry type="module" module-name="viewpagerindicator" />
     <orderEntry type="library" name="Maven: javax.inject:javax.inject:1" level="project" />
     <orderEntry type="module" module-name="dagger" />
     <orderEntry type="module" module-name="dagger-compiler" />
@@ -178,6 +179,7 @@
     <orderEntry type="library" scope="TEST" name="Maven: org.apache.maven.wagon:wagon-http-shared:1.0-beta-6" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: nekohtml:xercesMinimal:1.9.6.2" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: nekohtml:nekohtml:1.9.6.2" level="project" />
+    <orderEntry type="library" name="Maven: commons-io:commons-io:1.3.2" level="project" />
   </component>
 </module>
 
