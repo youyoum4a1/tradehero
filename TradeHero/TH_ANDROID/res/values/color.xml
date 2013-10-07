@@ -45,6 +45,6 @@
   <color name="authentication_background_color">#f2f2f2</color>
 
   <!-- Trade Fragment -->
-  <color name="trade_highlight_share_quantity">#ffdddd</color>
+  <color name="trade_highlight_share_quantity">#40929CBA</color>
 
 </resources>

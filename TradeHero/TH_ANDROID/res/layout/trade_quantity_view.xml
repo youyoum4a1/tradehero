@@ -14,7 +14,6 @@
         android:gravity="right"
         android:paddingRight="@dimen/trade_screen_info_title_padding_right"
         android:text="@string/security_type_label_short"
-        android:background="#8000aaaa"
         />
 
     <TextView
@@ -26,7 +25,6 @@
         android:gravity="left"
         android:text=""
         android:textStyle="bold"
-        android:background="#8000aaaa"
         />
 
   </TableRow>
@@ -44,7 +42,6 @@
         android:gravity="right"
         android:paddingRight="@dimen/trade_screen_info_title_padding_right"
         android:text="@string/price_as_of"
-        android:background="#8000aaaa"
         />
 
     <TextView
@@ -56,7 +53,6 @@
         android:gravity="left"
         android:text=""
         android:textStyle="bold"
-        android:background="#8000aaaa"
         />
 
   </TableRow>
@@ -74,7 +70,6 @@
         android:gravity="right"
         android:paddingRight="@dimen/trade_screen_info_title_padding_right"
         android:text="@string/cash_available"
-        android:background="#8000aaaa"
         />
 
     <TextView
@@ -86,7 +81,6 @@
         android:gravity="left"
         android:text=""
         android:textStyle="bold"
-        android:background="#8000aaaa"
         />
 
   </TableRow>
@@ -104,7 +98,6 @@
         android:gravity="right"
         android:paddingRight="@dimen/trade_screen_info_title_padding_right"
         android:text="@string/share_available"
-        android:background="#8000aaaa"
         />
 
     <TextView
@@ -116,7 +109,6 @@
         android:gravity="left"
         android:text=""
         android:textStyle="bold"
-        android:background="#8000aaaa"
         />
 
   </TableRow>
@@ -134,7 +126,6 @@
         android:gravity="right"
         android:paddingRight="@dimen/trade_screen_info_title_padding_right"
         android:text="@string/quantity"
-        android:background="#8000aaaa"
         />
 
     <TextView
@@ -146,7 +137,6 @@
         android:gravity="left"
         android:text=""
         android:textStyle="bold"
-        android:background="#8000aaaa"
         />
 
   </TableRow>
@@ -164,7 +154,6 @@
         android:gravity="right"
         android:paddingRight="@dimen/trade_screen_info_title_padding_right"
         android:text="@string/trade_value"
-        android:background="#8000aaaa"
         />
 
     <TextView
@@ -176,7 +165,6 @@
         android:gravity="left"
         android:text=""
         android:textStyle="bold"
-        android:background="#8000aaaa"
         />
 
   </TableRow>

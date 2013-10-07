@@ -10,7 +10,6 @@
       android:text="stock"
       android:textSize="18sp"
       android:textStyle="bold"
-      android:background="#4023fe9a"
       />
 
   <TextView
@@ -21,18 +20,16 @@
       android:text="@string/usd_price_unit_left"
       android:gravity="center_horizontal"
       android:textSize="13sp"
-      android:background="#43fe239a"
       />
 
   <TableLayout
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:background="#80aabbcc"
       >
 
     <TableRow
+        android:id="@+id/row_bid_ask_price"
         android:layout_gravity="center|top"
-        android:background="#80ef33ef"
         >
 
       <TextView
@@ -70,6 +67,7 @@
     </TableRow>
 
     <TableRow
+        android:id="@+id/row_bid_ask_hint"
         android:layout_gravity="center|top"
         >
 
@@ -82,7 +80,6 @@
           android:gravity="right"
           android:text="@string/bid_with_bracket"
           android:textSize="13sp"
-          android:background="#eeeeff"
           android:singleLine="true"
           />
 
@@ -103,20 +100,11 @@
           android:gravity="left"
           android:text="@string/ask_with_bracket"
           android:textSize="13sp"
-          android:background="#eeeeff"
           android:singleLine="true"
           />
 
     </TableRow>
 
   </TableLayout>
-
-  <ProgressBar
-      android:id="@+id/progress"
-      android:layout_below="@id/bid_price"
-      android:layout_alignWithParentIfMissing="true"
-      style="?android:attr/progressBarStyleSmall"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content" />
 
 </merge>

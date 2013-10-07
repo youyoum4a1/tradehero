@@ -8,6 +8,7 @@ package com.tradehero.th.fragments.trade;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
@@ -20,6 +21,7 @@ import android.widget.CompoundButton;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.Switch;
@@ -27,8 +29,6 @@ import android.widget.TextView;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
-import com.fasterxml.jackson.core.io.UTF8Writer;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.squareup.picasso.Cache;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
@@ -85,6 +85,9 @@ public class TradeFragment extends DashboardFragment
     public final static String SYMBOL = "symbol";
     public final static String EXCHANGE = "exchange";
 
+    public final static long MILLISEC_QUOTE_REFRESH = 30000;
+    public final static long MILLISEC_QUOTE_COUNTDOWN_PRECISION = 50;
+
     private View actionBar;
     private ImageButton mBackBtn;
     private Switch mBuySellSwitch;
@@ -98,6 +101,7 @@ public class TradeFragment extends DashboardFragment
     private TextView mStockName;
     private ImageButton mStockChartButton;
 
+    private ProgressBar mQuoteRefreshProgressBar;
     private FrameLayout mInfoFrame;
     private PricingBidAskView mPricingBidAskView;
     private TradeQuantityView mTradeQuantityView;
@@ -118,12 +122,16 @@ public class TradeFragment extends DashboardFragment
 
     @Inject protected Lazy<QuoteService> quoteService;
     private SignatureContainer<QuoteDTO> signedQuoteDTO;
+    private CountDownTimer nextQuoteCountDownTimer;
+    private boolean refreshingQuote = false;
 
     double lastPrice;
     int sliderIncrement = 0;
     int maxQuantity = 0;
     int mQuantity = 0;
     int sliderMaxValue = 0;
+    int mSliderBuyQuantity;
+    int mSliderSellQuantity;
 
     int volume = 0;
     int avgDailyVolume = 0;
@@ -149,6 +157,12 @@ public class TradeFragment extends DashboardFragment
 
     private void initViews(View view)
     {
+        mQuoteRefreshProgressBar = (ProgressBar) view.findViewById(R.id.quote_refresh_countdown);
+        if (mQuoteRefreshProgressBar != null)
+        {
+            mQuoteRefreshProgressBar.setMax((int) (MILLISEC_QUOTE_REFRESH / MILLISEC_QUOTE_COUNTDOWN_PRECISION));
+        }
+
         mStockBgLogo = (ImageViewThreadSafe) view.findViewById(R.id.stock_bg_logo);
         mStockLogo = (ImageViewThreadSafe) view.findViewById(R.id.stock_logo);
         //mStockChart = (ImageView) view.findViewById(R.id.stock_chart);
@@ -367,6 +381,11 @@ public class TradeFragment extends DashboardFragment
         {
             fetchPositionDetailTask.cancel(false);
         }
+        if (nextQuoteCountDownTimer != null)
+        {
+            nextQuoteCountDownTimer.cancel();
+        }
+        nextQuoteCountDownTimer = null;
         fetchPositionDetailTask = null;
         mStockChartButton = null;
         mQuickPriceButtonSet = null;
@@ -506,12 +525,14 @@ public class TradeFragment extends DashboardFragment
             {
                 @Override public void success(SignatureContainer<QuoteDTO> signedQuoteDTO, Response response)
                 {
+                    setRefreshingQuote(false);
                     handleReceivedQuote(signedQuoteDTO, response);
                 }
 
                 @Override public void failure(RetrofitError error)
                 {
                     THLog.e(TAG, "Failed to get quote", error);
+                    setRefreshingQuote(false);
                 }
             });
         }
@@ -533,8 +554,34 @@ public class TradeFragment extends DashboardFragment
                 THLog.e(TAG, "Failed to get signature", e);
             }
         }
-        this.signedQuoteDTO = signedQuoteDTO;
-        display();
+        display(signedQuoteDTO);
+        scheduleNextQuoteRequest();
+    }
+
+    private void scheduleNextQuoteRequest()
+    {
+        if (nextQuoteCountDownTimer != null)
+        {
+            nextQuoteCountDownTimer.cancel();
+        }
+        nextQuoteCountDownTimer = new CountDownTimer(MILLISEC_QUOTE_REFRESH, MILLISEC_QUOTE_COUNTDOWN_PRECISION)
+        {
+            @Override public void onTick(long millisUntilFinished)
+            {
+                if (mQuoteRefreshProgressBar != null)
+                {
+                    mQuoteRefreshProgressBar.setProgress((int) (millisUntilFinished / MILLISEC_QUOTE_COUNTDOWN_PRECISION));
+                }
+            }
+
+            @Override public void onFinish()
+            {
+                THLog.d(TAG, "Refreshing quote now");
+                refreshQuote();
+            }
+        };
+        setRefreshingQuote(true);
+        nextQuoteCountDownTimer.start();
     }
 
     /**
@@ -559,6 +606,12 @@ public class TradeFragment extends DashboardFragment
         {
             this.securityCompactDTO = null;
         }
+        display();
+    }
+
+    public void display(SignatureContainer<QuoteDTO> signedQuoteDTO)
+    {
+        this.signedQuoteDTO = signedQuoteDTO;
         display();
     }
 
@@ -598,6 +651,7 @@ public class TradeFragment extends DashboardFragment
             {
                 mPricingBidAskView.display(securityCompactDTO);
             }
+
             if (signedQuoteDTO != null)
             {
                 mPricingBidAskView.display(signedQuoteDTO.signedObject);
@@ -613,9 +667,19 @@ public class TradeFragment extends DashboardFragment
             {
                 mTradeQuantityView.display(securityCompactDTO);
             }
+
             if (signedQuoteDTO != null)
             {
                 mTradeQuantityView.display(signedQuoteDTO.signedObject);
+            }
+
+            if (isTransactionTypeBuy)
+            {
+                mTradeQuantityView.setShareQuantity(mSliderBuyQuantity);
+            }
+            else
+            {
+                mTradeQuantityView.setShareQuantity(mSliderSellQuantity);
             }
         }
         if (mBottomViewPager != null)
@@ -661,9 +725,20 @@ public class TradeFragment extends DashboardFragment
 
         if (mSlider != null)
         {
-            int maxShares = (int) getMaxPurchasableShares();
-            mSlider.setMax(maxShares);
-            mSlider.setEnabled(maxShares > 0);
+            if (isTransactionTypeBuy)
+            {
+                int maxShares = getMaxPurchasableShares();
+                mSlider.setMax(maxShares);
+                mSlider.setEnabled(maxShares > 0);
+                mSlider.setProgress(mSliderBuyQuantity);
+            }
+            else
+            {
+                int maxShares = getMaxSellableShares();
+                mSlider.setMax(maxShares);
+                mSlider.setEnabled(maxShares > 0);
+                mSlider.setProgress(mSliderSellQuantity);
+            }
         }
 
         storeImageUrlInImageViews();
@@ -809,14 +884,27 @@ public class TradeFragment extends DashboardFragment
         return (url != null) && (url.length() > 0);
     }
 
-    public double getMaxPurchasableShares()
+    public int getMaxPurchasableShares()
     {
-        if (securityPositionDetailDTO == null || securityPositionDetailDTO.security == null ||
-                securityPositionDetailDTO.security.askPrice == null || securityPositionDetailDTO.security.askPrice == 0)
+        if (signedQuoteDTO == null || signedQuoteDTO.signedObject == null ||
+                signedQuoteDTO.signedObject.ask == null || signedQuoteDTO.signedObject.ask == 0 ||
+                signedQuoteDTO.signedObject.toUSDRate == null || signedQuoteDTO.signedObject.toUSDRate == 0)
         {
             return 0;
         }
-        return Math.floor(THUser.getCurrentUser().portfolio.cashBalance / securityPositionDetailDTO.security.askPrice);
+        return (int) Math.floor(THUser.getCurrentUser().portfolio.cashBalance / (signedQuoteDTO.signedObject.ask * signedQuoteDTO.signedObject.toUSDRate));
+    }
+
+    public int getMaxSellableShares()
+    {
+        if (securityPositionDetailDTO == null || securityPositionDetailDTO.positions == null ||
+                securityPositionDetailDTO.positions.size() == 0 || securityPositionDetailDTO.positions.get(0) == null ||
+                securityPositionDetailDTO.positions.get(0).shares == null || securityPositionDetailDTO.positions.get(0).shares == 0)
+        {
+            return 0;
+        }
+        // TODO handle more portfolios
+        return securityPositionDetailDTO.positions.get(0).shares;
     }
 
     public void setTransactionTypeBuy(boolean transactionTypeBuy)
@@ -830,7 +918,21 @@ public class TradeFragment extends DashboardFragment
         {
             mPricingBidAskView.setBuy(transactionTypeBuy);
         }
+        display();
         // TODO more views to update?
+    }
+
+    private void setRefreshingQuote(boolean refreshingQuote)
+    {
+        this.refreshingQuote = refreshingQuote;
+        if (mPricingBidAskView != null)
+        {
+            mPricingBidAskView.setRefreshingQuote(refreshingQuote);
+        }
+        if (mTradeQuantityView != null)
+        {
+            mTradeQuantityView.setRefreshingQuote(refreshingQuote);
+        }
     }
 
     public void loadImages ()
@@ -1001,6 +1103,15 @@ public class TradeFragment extends DashboardFragment
                     if (mTradeQuantityView != null)
                     {
                         mTradeQuantityView.setShareQuantity(mQuantity);
+                    }
+
+                    if (isTransactionTypeBuy)
+                    {
+                        mSliderBuyQuantity = progress;
+                    }
+                    else
+                    {
+                        mSliderSellQuantity = progress;
                     }
                 }
             }

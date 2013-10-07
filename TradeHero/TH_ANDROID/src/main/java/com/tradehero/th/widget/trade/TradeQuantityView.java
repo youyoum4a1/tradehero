@@ -2,6 +2,7 @@ package com.tradehero.th.widget.trade;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.view.animation.AnimationUtils;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -29,11 +30,13 @@ public class TradeQuantityView extends TableLayout implements DTOView<SecurityCo
     private TableRow mCashAvailableRow;
     private TableRow mShareAvailableRow;
     private TableRow mQuantityRow;
+    private TableRow mTradeValueRow;
 
     private SecurityCompactDTO securityCompactDTO;
     private SecurityPositionDetailDTO securityPositionDetailDTO;
     private QuoteDTO quoteDTO;
     private boolean buy = true;
+    private boolean refreshingQuote = false;
     private double shareQuantity;
     private boolean mHighlightQuantity = false;
     private int mNormalQuantityColor;
@@ -61,6 +64,21 @@ public class TradeQuantityView extends TableLayout implements DTOView<SecurityCo
     {
         this.buy = buy;
         updateVisibilities();
+    }
+
+    public boolean isRefreshingQuote()
+    {
+        return refreshingQuote;
+    }
+
+    public void setRefreshingQuote(boolean refreshingQuote)
+    {
+        this.refreshingQuote = refreshingQuote;
+        if (mTradeValueRow != null && refreshingQuote)
+        {
+            mTradeValueRow.startAnimation(AnimationUtils.loadAnimation(getContext(), R.anim.alpha_out));
+        }
+        display();
     }
 
     public double getShareQuantity()
@@ -104,6 +122,7 @@ public class TradeQuantityView extends TableLayout implements DTOView<SecurityCo
         mCashAvailableRow = (TableRow) findViewById(R.id.cash_available_row);
         mShareAvailableRow = (TableRow) findViewById(R.id.share_available_row);
         mQuantityRow = (TableRow) findViewById(R.id.quantity_row);
+        mTradeValueRow = (TableRow) findViewById(R.id.trade_value_row);
         mNormalQuantityColor = getResources().getColor(android.R.color.transparent);
         mHighlightQuantityColor = getResources().getColor(R.color.trade_highlight_share_quantity);
         updateVisibilities();
@@ -209,6 +228,15 @@ public class TradeQuantityView extends TableLayout implements DTOView<SecurityCo
         if (mShareAvailableRow != null)
         {
             mShareAvailableRow.setVisibility(buy ? GONE : VISIBLE);
+        }
+
+        if (mTradeValueRow != null)
+        {
+            if (!refreshingQuote)
+            {
+                mTradeValueRow.clearAnimation();
+                mTradeValueRow.setAlpha(1);
+            }
         }
     }
 

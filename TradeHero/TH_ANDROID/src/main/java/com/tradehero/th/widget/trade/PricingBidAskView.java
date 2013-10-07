@@ -1,12 +1,11 @@
 package com.tradehero.th.widget.trade;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.util.AttributeSet;
+import android.view.animation.AnimationUtils;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
-import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
@@ -20,8 +19,10 @@ public class PricingBidAskView extends LinearLayout implements DTOView<SecurityC
     private static final String TAG = PricingBidAskView.class.getSimpleName();
     private TextView mLastPrice;
     private TextView mLastPriceUSD;
+    private TableRow mRowBidAskPrice;
     private TextView mAskPrice;
     private TextView mBidPrice;
+    private TableRow mRowBidAskHint;
     private TextView mAskPriceHint;
     private TextView mBidPriceHint;
     private ProgressBar mProgressBar;
@@ -32,6 +33,7 @@ public class PricingBidAskView extends LinearLayout implements DTOView<SecurityC
     private SecurityPositionDetailDTO securityPositionDetailDTO;
     private QuoteDTO quoteDTO;
     private boolean buy = true;
+    private boolean refreshingQuote = false;
 
     //<editor-fold desc="Constructors">
     public PricingBidAskView(Context context)
@@ -64,6 +66,25 @@ public class PricingBidAskView extends LinearLayout implements DTOView<SecurityC
         this.buy = buy;
         updateVisibilities();
     }
+
+    public boolean isRefreshingQuote()
+    {
+        return refreshingQuote;
+    }
+
+    public void setRefreshingQuote(boolean refreshingQuote)
+    {
+        this.refreshingQuote = refreshingQuote;
+        if (mRowBidAskHint != null && refreshingQuote)
+        {
+            mRowBidAskHint.startAnimation(AnimationUtils.loadAnimation(getContext(), R.anim.alpha_out));
+        }
+        if (mRowBidAskPrice != null && refreshingQuote)
+        {
+            mRowBidAskPrice.startAnimation(AnimationUtils.loadAnimation(getContext(), R.anim.alpha_out));
+        }
+        display();
+    }
     //</editor-fold>
 
     private void init()
@@ -82,8 +103,10 @@ public class PricingBidAskView extends LinearLayout implements DTOView<SecurityC
     {
         mLastPrice = (TextView) findViewById(R.id.last_price);
         mLastPriceUSD = (TextView) findViewById(R.id.bid_price_usd);
+        mRowBidAskPrice = (TableRow) findViewById(R.id.row_bid_ask_price);
         mAskPrice = (TextView) findViewById(R.id.ask_price);
         mBidPrice = (TextView) findViewById(R.id.bid_price);
+        mRowBidAskHint = (TableRow) findViewById(R.id.row_bid_ask_hint);
         mAskPriceHint = (TextView) findViewById(R.id.ask_price_hint);
         mBidPriceHint = (TextView) findViewById(R.id.bid_price_hint);
         mProgressBar = (ProgressBar) findViewById(R.id.progress);
@@ -182,6 +205,24 @@ public class PricingBidAskView extends LinearLayout implements DTOView<SecurityC
 
     private void updateVisibilities()
     {
+        if (mRowBidAskPrice != null)
+        {
+            if (!refreshingQuote)
+            {
+                mRowBidAskPrice.clearAnimation();
+                mRowBidAskPrice.setAlpha(1);
+            }
+        }
+
+        if (mRowBidAskHint != null)
+        {
+            if (!refreshingQuote)
+            {
+                mRowBidAskHint.clearAnimation();
+                mRowBidAskHint.setAlpha(1);
+            }
+        }
+
         if (mAskPriceHint != null)
         {
             mAskPriceHint.setTextColor(buy ? inactiveColor : activeColor);
