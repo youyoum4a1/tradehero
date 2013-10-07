@@ -83,6 +83,7 @@
   <string name="public_str">Public</string>
   <string name="switch_buy">Buy</string>
   <string name="switch_sell">Sell</string>
+  <string name="usd_price_unit_left">= US$</string>
 
   <!-- alert message -->
   <string name="ask_for_email">Please enter your email address:</string>

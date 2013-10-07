@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.position.SecurityPositionDetailDTO;
+import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 9/23/13 Time: 2:55 PM To change this template use File | Settings | File Templates. */
@@ -18,6 +19,7 @@ public class PricingBidAskView extends LinearLayout implements DTOView<SecurityC
 {
     private static final String TAG = PricingBidAskView.class.getSimpleName();
     private TextView mLastPrice;
+    private TextView mLastPriceUSD;
     private TextView mAskPrice;
     private TextView mBidPrice;
     private TextView mAskPriceHint;
@@ -28,6 +30,7 @@ public class PricingBidAskView extends LinearLayout implements DTOView<SecurityC
 
     private SecurityCompactDTO securityCompactDTO;
     private SecurityPositionDetailDTO securityPositionDetailDTO;
+    private QuoteDTO quoteDTO;
     private boolean buy = true;
 
     //<editor-fold desc="Constructors">
@@ -78,6 +81,7 @@ public class PricingBidAskView extends LinearLayout implements DTOView<SecurityC
     private void initView()
     {
         mLastPrice = (TextView) findViewById(R.id.last_price);
+        mLastPriceUSD = (TextView) findViewById(R.id.bid_price_usd);
         mAskPrice = (TextView) findViewById(R.id.ask_price);
         mBidPrice = (TextView) findViewById(R.id.bid_price);
         mAskPriceHint = (TextView) findViewById(R.id.ask_price_hint);
@@ -102,52 +106,77 @@ public class PricingBidAskView extends LinearLayout implements DTOView<SecurityC
         display();
     }
 
+    public void display(QuoteDTO quoteDTO)
+    {
+        this.quoteDTO = quoteDTO;
+        display();
+    }
+
     public void display()
     {
-        if (securityCompactDTO == null)
+        if (mLastPrice != null)
         {
-            if (mLastPrice != null)
+            if (securityCompactDTO == null)
             {
                 mLastPrice.setText("");
             }
-            if (mAskPrice != null)
-            {
-                mAskPrice.setText("");
-            }
-            if (mBidPrice != null)
-            {
-                mBidPrice.setText("");
-            }
-        }
-        else
-        {
-            if (mLastPrice != null && securityCompactDTO.lastPrice == null)
+            else if (securityCompactDTO.lastPrice == null)
             {
                 mLastPrice.setText(String.format("%s-", securityCompactDTO.currencyDisplay));
             }
-            else if (mLastPrice != null)
+            else
             {
                 mLastPrice.setText(String.format("%s%.2f", securityCompactDTO.currencyDisplay, securityCompactDTO.lastPrice));
             }
+        }
 
-            if (mAskPrice != null && securityCompactDTO.askPrice == null)
+        if (mAskPrice != null)
+        {
+            if (quoteDTO == null)
+            {
+                mAskPrice.setText("-");
+            }
+            else if (quoteDTO.ask == null)
             {
                 mAskPrice.setText("N/A");
             }
             else
             {
-                mAskPrice.setText(String.format("%.2f", securityCompactDTO.askPrice));
+                mAskPrice.setText(String.format("%.2f", quoteDTO.ask));
             }
+        }
 
-            if (mBidPrice != null && securityCompactDTO.bidPrice == null)
+        if (mBidPrice != null)
+        {
+            if (quoteDTO == null)
+            {
+                mBidPrice.setText("-");
+            }
+            else if (quoteDTO.bid == null)
             {
                 mBidPrice.setText("N/A");
             }
             else
             {
-                mBidPrice.setText(String.format(" %.2f", securityCompactDTO.bidPrice));
+                mBidPrice.setText(String.format(" %.2f", quoteDTO.bid));
             }
         }
+
+        if (mLastPriceUSD != null)
+        {
+            if (securityCompactDTO != null && !securityCompactDTO.lastPrice.isNaN() &&
+                    quoteDTO != null && !quoteDTO.toUSDRate.isNaN())
+            {
+                mLastPriceUSD.setText(String.format("%s %.2f",
+                        getResources().getString(R.string.usd_price_unit_left),
+                        securityCompactDTO.lastPrice * quoteDTO.toUSDRate));
+            }
+            else
+            {
+                mLastPriceUSD.setText(R.string.usd_price_unit_left);
+            }
+        }
+
         updateVisibilities();
     }
 

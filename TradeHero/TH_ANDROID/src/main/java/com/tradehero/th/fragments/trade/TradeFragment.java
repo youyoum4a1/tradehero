@@ -27,6 +27,8 @@ import android.widget.TextView;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
+import com.fasterxml.jackson.core.io.UTF8Writer;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.squareup.picasso.Cache;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
@@ -46,11 +48,14 @@ import com.tradehero.common.widget.ImageViewThreadSafe;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.position.SecurityPositionDetailDTO;
+import com.tradehero.th.api.quote.QuoteDTO;
+import com.tradehero.th.api.SignatureContainer;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.base.THUser;
 import com.tradehero.th.fragments.BuyFragment;
 import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.network.service.QuoteService;
 import com.tradehero.th.persistence.position.SecurityPositionDetailCache;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.utills.Logger;
@@ -61,7 +66,12 @@ import com.tradehero.th.widget.trade.QuickPriceButtonSet;
 import com.tradehero.th.widget.trade.TradeQuantityView;
 import com.viewpagerindicator.LinePageIndicator;
 import dagger.Lazy;
+import java.io.IOException;
+import java.io.StringWriter;
 import javax.inject.Inject;
+import org.apache.commons.io.IOUtils;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 public class TradeFragment extends DashboardFragment
         implements DTOView<SecurityPositionDetailDTO>, DTOCache.Listener<SecurityId, SecurityPositionDetailDTO>
@@ -105,6 +115,9 @@ public class TradeFragment extends DashboardFragment
     private SecurityPositionDetailDTO securityPositionDetailDTO;
     private boolean querying = false;
     private AsyncTask<Void, Void, SecurityPositionDetailDTO> fetchPositionDetailTask;
+
+    @Inject protected Lazy<QuoteService> quoteService;
+    private SignatureContainer<QuoteDTO> signedQuoteDTO;
 
     double lastPrice;
     int sliderIncrement = 0;
@@ -309,6 +322,7 @@ public class TradeFragment extends DashboardFragment
         {
             this.securityId = new SecurityId(args);
             refreshLook();
+            refreshQuote(); // TODO have a timer
         }
 
         display();
@@ -483,6 +497,46 @@ public class TradeFragment extends DashboardFragment
         TradeFragment.this.display(value);
     }
 
+    private void refreshQuote()
+    {
+        THLog.d(TAG, "refreshQuote");
+        if (this.securityId != null)
+        {
+            quoteService.get().getPositions(securityId.exchange, securityId.securitySymbol, new retrofit.Callback<SignatureContainer<QuoteDTO>>()
+            {
+                @Override public void success(SignatureContainer<QuoteDTO> signedQuoteDTO, Response response)
+                {
+                    handleReceivedQuote(signedQuoteDTO, response);
+                }
+
+                @Override public void failure(RetrofitError error)
+                {
+                    THLog.e(TAG, "Failed to get quote", error);
+                }
+            });
+        }
+    }
+
+    private void handleReceivedQuote(SignatureContainer<QuoteDTO> signedQuoteDTO, Response response)
+    {
+        THLog.d(TAG, "handleReceivedQuote");
+        if (signedQuoteDTO != null && signedQuoteDTO.signedObject != null)
+        {
+            try
+            {
+                StringWriter writer = new StringWriter();
+                IOUtils.copy(response.getBody().in(), writer, "UTF-8");
+                signedQuoteDTO.signedObject.rawResponse = writer.toString();
+            }
+            catch (IOException e)
+            {
+                THLog.e(TAG, "Failed to get signature", e);
+            }
+        }
+        this.signedQuoteDTO = signedQuoteDTO;
+        display();
+    }
+
     /**
      * To be used while waiting for the position detail DTO
      * @param securityCompactDTO
@@ -544,6 +598,10 @@ public class TradeFragment extends DashboardFragment
             {
                 mPricingBidAskView.display(securityCompactDTO);
             }
+            if (signedQuoteDTO != null)
+            {
+                mPricingBidAskView.display(signedQuoteDTO.signedObject);
+            }
         }
         if (mTradeQuantityView != null)
         {
@@ -554,6 +612,10 @@ public class TradeFragment extends DashboardFragment
             else
             {
                 mTradeQuantityView.display(securityCompactDTO);
+            }
+            if (signedQuoteDTO != null)
+            {
+                mTradeQuantityView.display(signedQuoteDTO.signedObject);
             }
         }
         if (mBottomViewPager != null)

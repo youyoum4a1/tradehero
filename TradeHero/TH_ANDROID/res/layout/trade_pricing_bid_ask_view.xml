@@ -18,7 +18,7 @@
       style="@style/TH.Title"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:text="= US$"
+      android:text="@string/usd_price_unit_left"
       android:gravity="center_horizontal"
       android:textSize="13sp"
       android:background="#43fe239a"

@@ -2,6 +2,7 @@ package com.tradehero.th.utils.dagger;
 
 import android.app.Application;
 import android.content.Context;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tradehero.common.cache.DatabaseCache;
 import com.tradehero.common.persistence.CacheHelper;
 import com.tradehero.th.api.form.UserAvailabilityRequester;
@@ -15,6 +16,7 @@ import com.tradehero.th.fragments.trending.TrendingFragment;
 import com.tradehero.th.loaders.SearchStockPageItemListLoader;
 import com.tradehero.th.loaders.TimelinePagedItemListLoader;
 import com.tradehero.th.network.NetworkEngine;
+import com.tradehero.th.network.service.QuoteService;
 import com.tradehero.th.network.service.SecurityService;
 import com.tradehero.th.network.service.UserService;
 import com.tradehero.th.network.service.UserTimelineService;
@@ -97,6 +99,11 @@ public class TradeHeroModule
     @Provides @Singleton UserTimelineService provideUserTimelineService()
     {
         return engine.createService(UserTimelineService.class);
+    }
+
+    @Provides @Singleton QuoteService provideQuoteService()
+    {
+        return engine.createService(QuoteService.class);
     }
 
     @Provides @Singleton AbstractUserStore provideUserStore(UserStore store)
