@@ -14,6 +14,7 @@ import com.tradehero.th.network.service.SecurityService;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import dagger.Lazy;
+import java.lang.ref.WeakReference;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -78,6 +79,8 @@ public class SecurityPositionDetailCache implements DTOCache<String, SecurityId,
 
     public AsyncTask<Void, Void, SecurityPositionDetailDTO> getOrFetch(final SecurityId key, final boolean force, final Listener<SecurityId, SecurityPositionDetailDTO> callback)
     {
+        final WeakReference<Listener<SecurityId, SecurityPositionDetailDTO>> weakCallback = new WeakReference<Listener<SecurityId, SecurityPositionDetailDTO>>(callback);
+
         return new AsyncTask<Void, Void, SecurityPositionDetailDTO>()
         {
             @Override protected SecurityPositionDetailDTO doInBackground(Void... voids)
@@ -88,9 +91,11 @@ public class SecurityPositionDetailCache implements DTOCache<String, SecurityId,
             @Override protected void onPostExecute(SecurityPositionDetailDTO value)
             {
                 super.onPostExecute(value);
-                if (!isCancelled() && callback != null)
+                Listener<SecurityId, SecurityPositionDetailDTO> retrievedCallback = weakCallback.get();
+                // We retrieve the callback right away to avoid having it vanish between the 2 get() calls.
+                if (!isCancelled() && retrievedCallback != null)
                 {
-                    callback.onDTOReceived(key, value);
+                    retrievedCallback.onDTOReceived(key, value);
                 }
             }
         };

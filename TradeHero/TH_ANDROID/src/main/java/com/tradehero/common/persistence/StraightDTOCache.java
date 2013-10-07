@@ -2,6 +2,7 @@ package com.tradehero.common.persistence;
 
 import android.os.AsyncTask;
 import android.support.v4.util.LruCache;
+import java.lang.ref.WeakReference;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/4/13 Time: 11:01 AM To change this template use File | Settings | File Templates. */
 abstract public class StraightDTOCache<BaseKeyType, DTOKeyType extends DTOKey<BaseKeyType>, DTOType> implements DTOCache<BaseKeyType, DTOKeyType, DTOType>
@@ -45,6 +46,8 @@ abstract public class StraightDTOCache<BaseKeyType, DTOKeyType extends DTOKey<Ba
 
     public AsyncTask<Void, Void, DTOType> getOrFetch(final DTOKeyType key, final boolean force, final Listener<DTOKeyType, DTOType> callback)
     {
+        final WeakReference<Listener<DTOKeyType, DTOType>> weakCallback = new WeakReference<Listener<DTOKeyType, DTOType>>(callback);
+
         return new AsyncTask<Void, Void, DTOType>()
         {
             @Override protected DTOType doInBackground(Void... voids)
@@ -55,9 +58,11 @@ abstract public class StraightDTOCache<BaseKeyType, DTOKeyType extends DTOKey<Ba
             @Override protected void onPostExecute(DTOType value)
             {
                 super.onPostExecute(value);
-                if (!isCancelled() && callback != null)
+                Listener<DTOKeyType, DTOType> retrievedCallback = weakCallback.get();
+                // We retrieve the callback right away to avoid having it vanish between the 2 get() calls.
+                if (!isCancelled() && retrievedCallback != null)
                 {
-                    callback.onDTOReceived(key, value);
+                    retrievedCallback.onDTOReceived(key, value);
                 }
             }
         };
