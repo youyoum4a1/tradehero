@@ -5,7 +5,10 @@ import com.tradehero.th.api.security.SearchSecurityListType;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.SecurityListType;
+import com.tradehero.th.api.security.TrendingBasicSecurityListType;
+import com.tradehero.th.api.security.TrendingPriceSecurityListType;
 import com.tradehero.th.api.security.TrendingSecurityListType;
+import com.tradehero.th.api.security.TrendingVolumeSecurityListType;
 import com.tradehero.th.network.BasicRetrofitErrorHandler;
 import com.tradehero.th.network.service.SecurityService;
 import com.tradehero.common.persistence.StraightDTOCache;
@@ -38,9 +41,17 @@ public class SecurityCompactListCache extends StraightDTOCache<String, SecurityL
         THLog.d(TAG, "fetch " + key);
         try
         {
-            if (key instanceof TrendingSecurityListType)
+            if (key instanceof TrendingBasicSecurityListType)
             {
-                return putInternal(key, fetch((TrendingSecurityListType) key));
+                return putInternal(key, fetch((TrendingBasicSecurityListType) key));
+            }
+            if (key instanceof TrendingPriceSecurityListType)
+            {
+                return putInternal(key, fetch((TrendingPriceSecurityListType) key));
+            }
+            if (key instanceof TrendingVolumeSecurityListType)
+            {
+                return putInternal(key, fetch((TrendingVolumeSecurityListType) key));
             }
             if (key instanceof SearchSecurityListType)
             {
@@ -68,9 +79,40 @@ public class SecurityCompactListCache extends StraightDTOCache<String, SecurityL
         return super.get(key);
     }
 
-    protected List<SecurityCompactDTO> fetch(TrendingSecurityListType key) throws RetrofitError
+    protected List<SecurityCompactDTO> fetch(TrendingBasicSecurityListType key) throws RetrofitError
     {
-        return securityService.get().getTrendingSecurities();
+        if (key.getExchange() == TrendingSecurityListType.ALL_EXCHANGES)
+        {
+            return securityService.get().getTrendingSecurities();
+        }
+        else
+        {
+            return securityService.get().getTrendingSecuritiesByPrice(key.getExchange());
+        }
+    }
+
+    protected List<SecurityCompactDTO> fetch(TrendingPriceSecurityListType key) throws RetrofitError
+    {
+        if (key.getExchange() == TrendingSecurityListType.ALL_EXCHANGES)
+        {
+            return securityService.get().getTrendingSecuritiesByPrice();
+        }
+        else
+        {
+            return securityService.get().getTrendingSecuritiesByPrice(key.getExchange());
+        }
+    }
+
+    protected List<SecurityCompactDTO> fetch(TrendingVolumeSecurityListType key) throws RetrofitError
+    {
+        if (key.getExchange() == TrendingSecurityListType.ALL_EXCHANGES)
+        {
+            return securityService.get().getTrendingSecuritiesByVolume();
+        }
+        else
+        {
+            return securityService.get().getTrendingSecuritiesByVolume(key.getExchange());
+        }
     }
 
     protected List<SecurityCompactDTO> fetch(SearchSecurityListType key) throws RetrofitError

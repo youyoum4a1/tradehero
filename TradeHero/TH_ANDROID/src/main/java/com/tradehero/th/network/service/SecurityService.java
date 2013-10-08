@@ -14,12 +14,33 @@ import retrofit.http.Query;
 /** Created with IntelliJ IDEA. User: xavier Date: 9/4/13 Time: 5:50 PM To change this template use File | Settings | File Templates. */
 public interface SecurityService
 {
+    //<editor-fold desc="Basic Trending">
     @GET("/securities/trending/")
     void getTrendingSecurities(
             Callback<List<SecurityCompactDTO>> callback);
 
     @GET("/securities/trending/")
     List<SecurityCompactDTO> getTrendingSecurities()
+            throws RetrofitError;
+
+    @GET("/securities/trending/")
+    void getTrendingSecurities(
+            @Query("exchange") String exchange,
+            Callback<List<SecurityCompactDTO>> callback);
+
+    @GET("/securities/trending/")
+    List<SecurityCompactDTO> getTrendingSecurities(
+            @Query("exchange") String exchange)
+            throws RetrofitError;
+    //</editor-fold>
+
+    //<editor-fold desc="Trending By Volume">
+    @GET("/securities/trendingVol/")
+    void getTrendingSecuritiesByVolume(
+            Callback<List<SecurityCompactDTO>> callback);
+
+    @GET("/securities/trendingVol/")
+    List<SecurityCompactDTO> getTrendingSecuritiesByVolume()
             throws RetrofitError;
 
     @GET("/securities/trendingVol/")
@@ -31,6 +52,16 @@ public interface SecurityService
     List<SecurityCompactDTO> getTrendingSecuritiesByVolume(
             @Query("exchange") String exchange)
             throws RetrofitError;
+    //</editor-fold>
+
+    //<editor-fold desc="Trending By Price">
+    @GET("/securities/trendingPrice/")
+    void getTrendingSecuritiesByPrice(
+            Callback<List<SecurityCompactDTO>> callback);
+
+    @GET("/securities/trendingPrice/")
+    List<SecurityCompactDTO> getTrendingSecuritiesByPrice()
+            throws RetrofitError;
 
     @GET("/securities/trendingPrice/")
     void getTrendingSecuritiesByPrice(
@@ -41,7 +72,9 @@ public interface SecurityService
     List<SecurityCompactDTO> getTrendingSecuritiesByPrice(
             @Query("exchange") String exchange)
             throws RetrofitError;
+    //</editor-fold>
 
+    //<editor-fold desc="Search">
     @GET("/securities/search")
     void searchSecurities(
             @Query("q") String searchString,
@@ -55,7 +88,9 @@ public interface SecurityService
             @Query("page") int page,
             @Query("perPage") int perPage)
             throws RetrofitError;
+    //</editor-fold>
 
+    //<editor-fold desc="Get Security">
     @GET("/securities/{exchange}/{securitySymbol}")
     void getSecurity(
             @Path("exchange") String exchange,
@@ -67,7 +102,9 @@ public interface SecurityService
             @Path("exchange") String exchange,
             @Path("securitySymbol") String securitySymbol)
             throws RetrofitError;
+    //</editor-fold>
 
+    //<editor-fold desc="Buy">
     @POST("/securities/{exchange}/{securitySymbol}/newbuy")
     void buy(
             @Path("exchange") String exchange,
@@ -80,7 +117,9 @@ public interface SecurityService
             @Path("exchange") String exchange,
             @Path("securitySymbol") String securitySymbol,
             @Query("tradeDto") TransactionFormDTO transactionFormDTO);
+    //</editor-fold>
 
+    //<editor-fold desc="Sell">
     @POST("/securities/{exchange}/{securitySymbol}/newsell")
     void sell(
             @Path("exchange") String exchange,
@@ -93,4 +132,5 @@ public interface SecurityService
             @Path("exchange") String exchange,
             @Path("securitySymbol") String securitySymbol,
             @Query("tradeDto") TransactionFormDTO transactionFormDTO);
+    //</editor-fold>
 }

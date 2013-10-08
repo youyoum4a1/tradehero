@@ -5,15 +5,52 @@ public class TrendingSecurityListType extends SecurityListType
 {
     public static final String TAG = TrendingSecurityListType.class.getSimpleName();
 
+    public static final String ALL_EXCHANGES = "allExchanges";
+
+    private final String exchange;
+
+    //<editor-fold desc="Constructor">
+    public TrendingSecurityListType()
+    {
+        this.exchange = ALL_EXCHANGES;
+    }
+
+    public TrendingSecurityListType(String exchange)
+    {
+        if (exchange == null)
+        {
+            throw new NullPointerException("Null is not a valid Exchange");
+        }
+        this.exchange = exchange;
+    }
+    //</editor-fold>
+
+    //<editor-fold desc="Accessors">
+    public String getExchange()
+    {
+        return exchange;
+    }
+    //</editor-fold>
+
     @Override public int compareTo(SecurityListType securityListType)
     {
+        if (securityListType == null)
+        {
+            return 1;
+        }
+
         if (securityListType instanceof TrendingSecurityListType)
         {
-            return 0;
+            return compareTo((TrendingSecurityListType) securityListType);
         }
 
         // TODO is it very expensive?
         return TrendingSecurityListType.class.getName().compareTo(securityListType.getClass().getName());
+    }
+
+    public int compareTo(TrendingSecurityListType trendingSecurityListType)
+    {
+        return exchange.compareTo(trendingSecurityListType.exchange);
     }
 
     @Override public String makeKey()

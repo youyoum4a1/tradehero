@@ -20,7 +20,7 @@ import com.tradehero.th.adapters.TrendingAdapter;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.SecurityListType;
-import com.tradehero.th.api.security.TrendingSecurityListType;
+import com.tradehero.th.api.security.TrendingBasicSecurityListType;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.trade.TradeFragment;
 import com.tradehero.common.persistence.DTOCache;
@@ -177,7 +177,7 @@ public class TrendingFragment extends DashboardFragment implements DTOCache.List
             trendingTask = null;
         }
         isQuerying = true;
-        trendingTask = securityCompactListCache.get().getOrFetch(new TrendingSecurityListType(), false, this);
+        trendingTask = securityCompactListCache.get().getOrFetch(new TrendingBasicSecurityListType(), false, this);
         trendingTask.execute();
     }
 
