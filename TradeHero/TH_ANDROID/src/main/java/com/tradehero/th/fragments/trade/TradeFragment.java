@@ -66,7 +66,8 @@ import dagger.Lazy;
 import javax.inject.Inject;
 
 public class TradeFragment extends DashboardFragment
-        implements DTOView<SecurityPositionDetailDTO>, DTOCache.Listener<SecurityId, SecurityPositionDetailDTO>
+        implements DTOView<SecurityPositionDetailDTO>, DTOCache.Listener<SecurityId, SecurityPositionDetailDTO>,
+            FreshQuoteHolder.FreshQuoteListener
 {
     private final static String TAG = TradeFragment.class.getSimpleName();
     public final static int TRANSACTION_COST = 10;
@@ -321,7 +322,7 @@ public class TradeFragment extends DashboardFragment
             this.securityId = new SecurityId(args);
             refreshLook();
             freshQuoteHolder = new FreshQuoteHolder(this.securityId, MILLISEC_QUOTE_REFRESH, MILLISEC_QUOTE_COUNTDOWN_PRECISION);
-            freshQuoteHolder.registerListener(createFreshQuoteListener());
+            freshQuoteHolder.registerListener(this);
             freshQuoteHolder.start();
         }
 
@@ -1071,31 +1072,27 @@ public class TradeFragment extends DashboardFragment
         }
     }
 
-    //<editor-fold desc="Interface Creators">
-    private FreshQuoteHolder.FreshQuoteListener createFreshQuoteListener()
+    //<editor-fold desc="FreshQuoteHolder.FreshQuoteListener">
+    @Override public void onMilliSecToRefreshQuote(long milliSecToRefresh)
     {
-        return new FreshQuoteHolder.FreshQuoteListener()
+        if (mQuoteRefreshProgressBar != null)
         {
-            @Override public void onMilliSecToRefreshQuote(long milliSecToRefresh)
-            {
-                if (mQuoteRefreshProgressBar != null)
-                {
-                    mQuoteRefreshProgressBar.setProgress((int) (milliSecToRefresh / MILLISEC_QUOTE_COUNTDOWN_PRECISION));
-                }
-            }
-
-            @Override public void onIsRefreshing(boolean refreshing)
-            {
-                setRefreshingQuote(refreshing);
-            }
-
-            @Override public void onFreshQuote(QuoteDTO quoteDTO)
-            {
-                display(quoteDTO);
-            }
-        };
+            mQuoteRefreshProgressBar.setProgress((int) (milliSecToRefresh / MILLISEC_QUOTE_COUNTDOWN_PRECISION));
+        }
     }
 
+    @Override public void onIsRefreshing(boolean refreshing)
+    {
+        setRefreshingQuote(refreshing);
+    }
+
+    @Override public void onFreshQuote(QuoteDTO quoteDTO)
+    {
+        display(quoteDTO);
+    }
+    //</editor-fold>
+
+    //<editor-fold desc="Interface Creators">
     private Callback createLogoReadyCallback()
     {
         return new Callback()

@@ -10,6 +10,7 @@ import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
@@ -29,7 +30,7 @@ public class FreshQuoteHolder
     private final SecurityId securityId;
     private final long milliSecQuoteRefresh;
     private final long millisecQuoteCountdownPrecision;
-    private final List<FreshQuoteListener> listeners; // TODO weak references?
+    private final List<WeakReference<FreshQuoteListener>> listeners; // TODO weak references?
     private CountDownTimer nextQuoteCountDownTimer;
     private boolean refreshing = false;
 
@@ -78,36 +79,58 @@ public class FreshQuoteHolder
     {
         if (listener != null && !listeners.contains(listener))
         {
-            listeners.add(listener);
+            listeners.add(new WeakReference<>(listener));
         }
     }
 
     public void unRegisterListener(FreshQuoteListener listener)
     {
-        listeners.remove(listener);
+        for (WeakReference<FreshQuoteListener> weakListener: listeners)
+        {
+            if (weakListener.get() == listener)
+            {
+                listeners.remove(weakListener);
+                break; // To avoid async
+            }
+        }
     }
 
     private void notifyListenersCountDown(long milliSecToRefresh)
     {
-        for(FreshQuoteListener listener: listeners)
+        FreshQuoteListener listener;
+        for(WeakReference<FreshQuoteListener> weakListener: listeners)
         {
-            listener.onMilliSecToRefreshQuote(milliSecToRefresh);
+            listener = weakListener.get();
+            if (listener != null)
+            {
+                listener.onMilliSecToRefreshQuote(milliSecToRefresh);
+            }
         }
     }
 
     private void notifyListenersRefreshing()
     {
-        for(FreshQuoteListener listener: listeners)
+        FreshQuoteListener listener;
+        for(WeakReference<FreshQuoteListener> weakListener: listeners)
         {
-            listener.onIsRefreshing(refreshing);
+            listener = weakListener.get();
+            if (listener != null)
+            {
+                listener.onIsRefreshing(refreshing);
+            }
         }
     }
 
     private void notifyListenersOnFreshQuote(QuoteDTO quoteDTO)
     {
-        for(FreshQuoteListener listener: listeners)
+        FreshQuoteListener listener;
+        for(WeakReference<FreshQuoteListener> weakListener: listeners)
         {
-            listener.onFreshQuote(quoteDTO);
+            listener = weakListener.get();
+            if (listener != null)
+            {
+                listener.onFreshQuote(quoteDTO);
+            }
         }
     }
     //</editor-fold>
@@ -204,6 +227,9 @@ public class FreshQuoteHolder
         listeners.clear();
     }
 
+    /**
+     * Implementers should be strongly referenced elsewhere because the FreshQuoteHolder only keeps weak references.
+     */
     public static interface FreshQuoteListener
     {
         void onMilliSecToRefreshQuote(long milliSecToRefresh);

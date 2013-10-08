@@ -31,7 +31,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class BuyFragment extends DashboardFragment
+public class BuyFragment extends DashboardFragment implements FreshQuoteHolder.FreshQuoteListener
 {
     private final static String TAG = BuyFragment.class.getSimpleName();
 
@@ -134,7 +134,7 @@ public class BuyFragment extends DashboardFragment
         {
             securityId = new SecurityId(args);
             freshQuoteHolder = new FreshQuoteHolder(securityId, MILLISEC_QUOTE_REFRESH, MILLISEC_QUOTE_COUNTDOWN_PRECISION);
-            freshQuoteHolder.registerListener(createFreshQuoteListener());
+            freshQuoteHolder.registerListener(this);
             freshQuoteHolder.start();
         }
 
@@ -287,24 +287,20 @@ public class BuyFragment extends DashboardFragment
     //		return generatedSignature;
     //	}
 
-    private FreshQuoteHolder.FreshQuoteListener createFreshQuoteListener()
+    //<editor-fold desc="FreshQuoteHolder.FreshQuoteListener">
+    @Override public void onMilliSecToRefreshQuote(long milliSecToRefresh)
     {
-        return new FreshQuoteHolder.FreshQuoteListener()
-        {
-            @Override public void onMilliSecToRefreshQuote(long milliSecToRefresh)
-            {
-                // TODO
-            }
-
-            @Override public void onIsRefreshing(boolean refreshing)
-            {
-                // TODO
-            }
-
-            @Override public void onFreshQuote(QuoteDTO quoteDTO)
-            {
-                display(quoteDTO);
-            }
-        };
+        // TODO
     }
+
+    @Override public void onIsRefreshing(boolean refreshing)
+    {
+        // TODO
+    }
+
+    @Override public void onFreshQuote(QuoteDTO quoteDTO)
+    {
+        display(quoteDTO);
+    }
+    //</editor-fold>
 }
