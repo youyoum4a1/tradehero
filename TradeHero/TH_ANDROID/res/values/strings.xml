@@ -64,7 +64,10 @@
   <string name="p10k">$10K</string>
   <string name="p25k">$25K</string>
   <string name="p50k">$50K</string>
-  <string name="buy">BUY</string>
+  <string name="button_buy">BUY</string>
+  <string name="button_sell">SELL</string>
+  <string name="button_cannot_buy">-</string>
+  <string name="button_cannot_sell">-</string>
 
   <!-- What's Trending Details - StockInfo -->
   <string name="previous_close">Previous Close</string>
@@ -126,5 +129,6 @@
   <string name="store">Store</string>
   <string name="logo">logo</string>
   <string name="image_url">image_url</string>
+  <string name="key_price">price</string>
 
 </resources>

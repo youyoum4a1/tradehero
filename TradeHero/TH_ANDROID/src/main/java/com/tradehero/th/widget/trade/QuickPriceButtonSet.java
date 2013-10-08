@@ -5,6 +5,7 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,8 +13,12 @@ import java.util.List;
 /** Created with IntelliJ IDEA. User: xavier Date: 9/23/13 Time: 5:38 PM To change this template use File | Settings | File Templates. */
 public class QuickPriceButtonSet extends LinearLayout
 {
+    public static final String TAG = QuickPriceButtonSet.class.getSimpleName();
+
     private List<QuickPriceButton> buttons;
     private OnQuickPriceButtonSelectedListener listener;
+    private boolean enabled = false;
+    private double maxPrice = Double.MAX_VALUE;
 
     //<editor-fold desc="Constructors">
     public QuickPriceButtonSet(Context context)
@@ -32,6 +37,31 @@ public class QuickPriceButtonSet extends LinearLayout
     {
         super(context, attrs, defStyle);
         buttons = new ArrayList<>();
+    }
+    //</editor-fold>
+
+    //<editor-fold desc="Accessors">
+    public boolean isEnabled()
+    {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled)
+    {
+        this.enabled = enabled;
+        display();
+    }
+
+    public double getMaxPrice()
+    {
+        return maxPrice;
+    }
+
+    public void setMaxPrice(double maxPrice)
+    {
+        this.maxPrice = maxPrice;
+        THLog.d(TAG, "MaxPrice: " + maxPrice);
+        display();
     }
     //</editor-fold>
 
@@ -80,11 +110,11 @@ public class QuickPriceButtonSet extends LinearLayout
         }
     }
 
-    public void setEnabled(boolean enabled)
+    public void display()
     {
         for(QuickPriceButton button: buttons)
         {
-            button.setEnabled(enabled);
+            button.setEnabled(enabled && (button.getPrice() <= maxPrice));
         }
     }
 

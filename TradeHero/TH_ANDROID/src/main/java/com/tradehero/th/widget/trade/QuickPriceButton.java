@@ -4,12 +4,14 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
 import android.widget.Button;
+import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 9/23/13 Time: 5:40 PM To change this template use File | Settings | File Templates. */
 public class QuickPriceButton extends Button
 {
-    private double price;
+    public static final String TAG = QuickPriceButton.class.getSimpleName();
+    public static final float ALPHA_DISABLED = 0.5f;
 
     //<editor-fold desc="Constructors">
     public QuickPriceButton(Context context)
@@ -32,20 +34,31 @@ public class QuickPriceButton extends Button
 
     protected void init(Context context, AttributeSet attrs)
     {
-        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.ValidatedText);
-        price = a.getInt(R.styleable.QuickPriceButton_price, 0);
+        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.QuickPriceButton);
+        setPrice(a.getInt(R.styleable.QuickPriceButton_price, 0));
         a.recycle();
     }
 
     //<editor-fold desc="Accessors">
     public double getPrice()
     {
-        return price;
+        Double price = (Double) getTag(R.string.key_price);
+        if (price == null)
+        {
+            return 0;
+        }
+        return price.doubleValue();
     }
 
     public void setPrice(double price)
     {
-        this.price = price;
+        setTag(R.string.key_price, price);
+    }
+
+    @Override public void setEnabled(boolean enabled)
+    {
+        super.setEnabled(enabled);
+        setAlpha(enabled ? 1 : ALPHA_DISABLED);
     }
     //</editor-fold>
 
