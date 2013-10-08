@@ -2,10 +2,12 @@ package com.tradehero.th.network.service;
 
 import com.tradehero.th.api.position.SecurityPositionDetailDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
+import com.tradehero.th.api.security.TransactionFormDTO;
 import java.util.List;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.http.GET;
+import retrofit.http.POST;
 import retrofit.http.Path;
 import retrofit.http.Query;
 
@@ -13,10 +15,31 @@ import retrofit.http.Query;
 public interface SecurityService
 {
     @GET("/securities/trending/")
-    void getTrendingSecurities(Callback<List<SecurityCompactDTO>> callback);
+    void getTrendingSecurities(
+            Callback<List<SecurityCompactDTO>> callback);
 
     @GET("/securities/trending/")
     List<SecurityCompactDTO> getTrendingSecurities()
+            throws RetrofitError;
+
+    @GET("/securities/trendingVol/")
+    void getTrendingSecuritiesByVolume(
+            @Query("exchange") String exchange,
+            Callback<List<SecurityCompactDTO>> callback);
+
+    @GET("/securities/trendingVol/")
+    List<SecurityCompactDTO> getTrendingSecuritiesByVolume(
+            @Query("exchange") String exchange)
+            throws RetrofitError;
+
+    @GET("/securities/trendingPrice/")
+    void getTrendingSecuritiesByPrice(
+            @Query("exchange") String exchange,
+            Callback<List<SecurityCompactDTO>> callback);
+
+    @GET("/securities/trendingPrice/")
+    List<SecurityCompactDTO> getTrendingSecuritiesByPrice(
+            @Query("exchange") String exchange)
             throws RetrofitError;
 
     @GET("/securities/search")
@@ -44,4 +67,30 @@ public interface SecurityService
             @Path("exchange") String exchange,
             @Path("securitySymbol") String securitySymbol)
             throws RetrofitError;
+
+    @POST("/securities/{exchange}/{securitySymbol}/newbuy")
+    void buy(
+            @Path("exchange") String exchange,
+            @Path("securitySymbol") String securitySymbol,
+            @Query("tradeDto") TransactionFormDTO transactionFormDTO,
+            Callback<SecurityPositionDetailDTO> callback);
+
+    @POST("/securities/{exchange}/{securitySymbol}/newbuy")
+    SecurityPositionDetailDTO buy(
+            @Path("exchange") String exchange,
+            @Path("securitySymbol") String securitySymbol,
+            @Query("tradeDto") TransactionFormDTO transactionFormDTO);
+
+    @POST("/securities/{exchange}/{securitySymbol}/newsell")
+    void sell(
+            @Path("exchange") String exchange,
+            @Path("securitySymbol") String securitySymbol,
+            @Query("tradeDto") TransactionFormDTO transactionFormDTO,
+            Callback<SecurityPositionDetailDTO> callback);
+
+    @POST("/securities/{exchange}/{securitySymbol}/newsell")
+    SecurityPositionDetailDTO sell(
+            @Path("exchange") String exchange,
+            @Path("securitySymbol") String securitySymbol,
+            @Query("tradeDto") TransactionFormDTO transactionFormDTO);
 }
