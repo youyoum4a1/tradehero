@@ -19,6 +19,7 @@ public class QuickPriceButtonSet extends LinearLayout
     private OnQuickPriceButtonSelectedListener listener;
     private boolean enabled = false;
     private double maxPrice = Double.MAX_VALUE;
+    private QuickPriceButton currentSelected;
 
     //<editor-fold desc="Constructors">
     public QuickPriceButtonSet(Context context)
@@ -116,25 +117,9 @@ public class QuickPriceButtonSet extends LinearLayout
         {
             button.setEnabled(enabled && (button.getPrice() <= maxPrice));
         }
-    }
-
-    private OnClickListener createButtonOnClickListener()
-    {
-        return new OnClickListener()
-        {
-            @Override public void onClick(View view)
-            {
-                updateLookSelectors(view);
-                notifyListener(((QuickPriceButton) view).getPrice());
-            }
-        };
-    }
-
-    private void updateLookSelectors(View selected)
-    {
         for (Button button: buttons)
         {
-            if (button == selected)
+            if (button == this.currentSelected && button.isEnabled())
             {
                 button.setTextColor(getResources().getColor(R.color.black));
             }
@@ -143,6 +128,19 @@ public class QuickPriceButtonSet extends LinearLayout
                 button.setTextColor(getResources().getColor(R.color.price_bar_text_default));
             }
         }
+    }
+
+    private OnClickListener createButtonOnClickListener()
+    {
+        return new OnClickListener()
+        {
+            @Override public void onClick(View view)
+            {
+                QuickPriceButtonSet.this.currentSelected = (QuickPriceButton) view;
+                display();
+                notifyListener(((QuickPriceButton) view).getPrice());
+            }
+        };
     }
 
     public interface OnQuickPriceButtonSelectedListener

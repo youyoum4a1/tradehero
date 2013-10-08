@@ -10,6 +10,7 @@ import com.tradehero.th.base.THUser;
 import com.tradehero.th.fragments.authentication.EmailSignInFragment;
 import com.tradehero.th.fragments.timeline.MeTimelineFragment;
 import com.tradehero.th.fragments.timeline.TimelineFragment;
+import com.tradehero.th.fragments.trade.FreshQuoteHolder;
 import com.tradehero.th.fragments.trending.SearchStockPeopleFragment;
 import com.tradehero.th.fragments.trade.TradeFragment;
 import com.tradehero.th.fragments.trending.TrendingFragment;
@@ -50,6 +51,7 @@ import javax.inject.Singleton;
                 MarkdownTextView.class,
 
                 TrendingFragment.class,
+                FreshQuoteHolder.class,
 
                 UserAvailabilityRequester.class,
                 SearchStockPageItemListLoader.class,

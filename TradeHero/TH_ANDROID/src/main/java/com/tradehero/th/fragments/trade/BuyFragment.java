@@ -4,20 +4,17 @@
  *
  * Created by @author Siddesh Bingi on Aug 3, 2013
  */
-package com.tradehero.th.fragments;
+package com.tradehero.th.fragments.trade;
 
-import com.actionbarsherlock.app.SherlockFragment;
 import com.tradehero.th.base.THUser;
+import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.utils.NetworkUtils;
-import com.tradehero.th.fragments.trade.TradeFragment;
 import java.util.LinkedHashMap;
-
 import org.apache.http.entity.StringEntity;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.protocol.HTTP;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import android.os.Bundle;
 import com.tradehero.th.R;
 import com.tradehero.th.application.Config;
@@ -33,14 +30,19 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 
-public class BuyFragment extends SherlockFragment
+public class BuyFragment extends DashboardFragment
 {
     private final static String TAG = BuyFragment.class.getSimpleName();
+
+    public final static String BUNDLE_KEY_BUY_DETAIL_STR = BuyFragment.class.getName() + ".buyDetailStr";
+    public final static String BUNDLE_KEY_LAST_PRICE = BuyFragment.class.getName() + ".lastPrice";
+    public final static String BUNDLE_KEY_QUANTITY = BuyFragment.class.getName() + ".quantity";
+    public final static String BUNDLE_KEY_SYMBOL = BuyFragment.class.getName() + ".symbol";
+    public final static String BUNDLE_KEY_EXCHANGE = BuyFragment.class.getName() + ".exchange";
 
     private final static String BP_GEO_ALT = "geo_alt";
     private final static String BP_GEO_LAT = "geo_lat";
@@ -81,13 +83,7 @@ public class BuyFragment extends SherlockFragment
 
     private void initViews(View v)
     {
-
-        //lastPrice = getArguments().getString(TradeFragment.LAST_PRICE);
-        quantity = getArguments().getString(TradeFragment.QUANTITY);
-
         mHeaderText = (TextView) v.findViewById(R.id.header_txt);
-        mHeaderText.setText(String.format("%s:%s", getArguments().getString(TradeFragment.EXCHANGE),
-                getArguments().getString(TradeFragment.SYMBOL)));
 
         //mCommentsET = (EditText) v.findViewById(R.id.comments);
 
@@ -97,9 +93,6 @@ public class BuyFragment extends SherlockFragment
         mBtnConform.setVisibility(View.VISIBLE);
 
         mBuyDetails = (TextView) v.findViewById(R.id.buy_info);
-        mBuyDetails.setText(getArguments().getString(TradeFragment.BUY_DETAIL_STR));
-        //lastPrice = getArguments().getString(TradeFragment.LAST_PRICE);
-
     }
 
     @Override
@@ -125,13 +118,33 @@ public class BuyFragment extends SherlockFragment
         });
     }
 
+    @Override public void onResume()
+    {
+        super.onResume();
+
+        //lastPrice = getArguments().getString(TradeFragment.LAST_PRICE);
+        quantity = getArguments().getString(BUNDLE_KEY_QUANTITY);
+
+        if (mHeaderText != null)
+        {
+            mHeaderText.setText(String.format("%s:%s", getArguments().getString(BUNDLE_KEY_EXCHANGE),
+                    getArguments().getString(BUNDLE_KEY_SYMBOL)));
+        }
+
+        if (mBuyDetails != null)
+        {
+            mBuyDetails.setText(getArguments().getString(BUNDLE_KEY_BUY_DETAIL_STR));
+        }
+        //lastPrice = getArguments().getString(TradeFragment.LAST_PRICE);
+    }
+
     private void requestToGetBuyQuotes()
     {
         AsyncHttpClient client = THAsyncClientFactory.getInstance(Constants.TH_EMAIL_PREFIX);
 
         client.get(String.format(Config.getTrendNewBuyQuotes(),
-                getArguments().getString(TradeFragment.EXCHANGE),
-                getArguments().getString(TradeFragment.SYMBOL)),
+                getArguments().getString(BUNDLE_KEY_EXCHANGE),
+                getArguments().getString(BUNDLE_KEY_SYMBOL)),
                 new AsyncHttpResponseHandler()
                 {
 
@@ -203,8 +216,8 @@ public class BuyFragment extends SherlockFragment
 
         String url = String.format(
                 Config.getBuyNewTrend(),
-                getArguments().getString(TradeFragment.EXCHANGE),
-                getArguments().getString(TradeFragment.SYMBOL));
+                getArguments().getString(BUNDLE_KEY_EXCHANGE),
+                getArguments().getString(BUNDLE_KEY_SYMBOL));
 
         Logger.log(TAG, url, LogLevel.LOGGING_LEVEL_INFO);
 

@@ -8,9 +8,6 @@ package com.tradehero.th.fragments.trade;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.CountDownTimer;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -52,10 +49,9 @@ import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.SignatureContainer;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
+import com.tradehero.th.api.security.TransactionFormDTO;
 import com.tradehero.th.base.THUser;
-import com.tradehero.th.fragments.BuyFragment;
 import com.tradehero.th.fragments.base.DashboardFragment;
-import com.tradehero.th.network.service.QuoteService;
 import com.tradehero.th.network.service.SecurityService;
 import com.tradehero.th.persistence.position.SecurityPositionDetailCache;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
@@ -67,24 +63,13 @@ import com.tradehero.th.widget.trade.QuickPriceButtonSet;
 import com.tradehero.th.widget.trade.TradeQuantityView;
 import com.viewpagerindicator.LinePageIndicator;
 import dagger.Lazy;
-import java.io.IOException;
-import java.io.StringWriter;
 import javax.inject.Inject;
-import org.apache.commons.io.IOUtils;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
 
 public class TradeFragment extends DashboardFragment
         implements DTOView<SecurityPositionDetailDTO>, DTOCache.Listener<SecurityId, SecurityPositionDetailDTO>
 {
     private final static String TAG = TradeFragment.class.getSimpleName();
     public final static int TRANSACTION_COST = 10;
-
-    public final static String BUY_DETAIL_STR = "buy_detail_str";
-    public final static String LAST_PRICE = "last_price";
-    public final static String QUANTITY = "quantity";
-    public final static String SYMBOL = "symbol";
-    public final static String EXCHANGE = "exchange";
 
     public final static long MILLISEC_QUOTE_REFRESH = 30000;
     public final static long MILLISEC_QUOTE_COUNTDOWN_PRECISION = 50;
@@ -123,9 +108,8 @@ public class TradeFragment extends DashboardFragment
     private boolean querying = false;
     private AsyncTask<Void, Void, SecurityPositionDetailDTO> fetchPositionDetailTask;
 
-    @Inject protected Lazy<QuoteService> quoteService;
-    private SignatureContainer<QuoteDTO> signedQuoteDTO;
-    private CountDownTimer nextQuoteCountDownTimer;
+    private FreshQuoteHolder freshQuoteHolder;
+    private QuoteDTO quoteDTO;
     private boolean refreshingQuote = false;
 
     @Inject protected Lazy<SecurityService> securityService;
@@ -154,7 +138,7 @@ public class TradeFragment extends DashboardFragment
         // Prevent reuse of previous values when changing securities
         securityCompactDTO = null;
         securityPositionDetailDTO = null;
-        signedQuoteDTO = null;
+        quoteDTO = null;
         isTransactionTypeBuy = true;
         View view = null;
         view = inflater.inflate(R.layout.fragment_trade, container, false);
@@ -336,10 +320,23 @@ public class TradeFragment extends DashboardFragment
         {
             this.securityId = new SecurityId(args);
             refreshLook();
-            refreshQuote(); // TODO have a timer
+            freshQuoteHolder = new FreshQuoteHolder(this.securityId, MILLISEC_QUOTE_REFRESH, MILLISEC_QUOTE_COUNTDOWN_PRECISION);
+            freshQuoteHolder.registerListener(createFreshQuoteListener());
+            freshQuoteHolder.start();
         }
 
         display();
+    }
+
+    @Override public void onPause()
+    {
+        if (freshQuoteHolder != null)
+        {
+            freshQuoteHolder.cancel();
+        }
+        freshQuoteHolder = null;
+
+        super.onPause();
     }
 
     @Override public void onDestroyOptionsMenu()
@@ -381,12 +378,6 @@ public class TradeFragment extends DashboardFragment
         {
             fetchPositionDetailTask.cancel(false);
         }
-        if (nextQuoteCountDownTimer != null)
-        {
-            nextQuoteCountDownTimer.cancel();
-        }
-        nextQuoteCountDownTimer = null;
-        refreshingQuote = false;
         fetchPositionDetailTask = null;
         querying = false;
         mStockChartButton = null;
@@ -519,75 +510,10 @@ public class TradeFragment extends DashboardFragment
 
     @Override public void onDTOReceived(SecurityId key, SecurityPositionDetailDTO value)
     {
-        TradeFragment.this.display(value);
-    }
-
-    private void refreshQuote()
-    {
-        THLog.d(TAG, "refreshQuote");
-        if (this.securityId != null)
+        if (key.compareTo(this.securityId) == 0)
         {
-            quoteService.get().getPositions(securityId.exchange, securityId.securitySymbol, new retrofit.Callback<SignatureContainer<QuoteDTO>>()
-            {
-                @Override public void success(SignatureContainer<QuoteDTO> signedQuoteDTO, Response response)
-                {
-                    setRefreshingQuote(false);
-                    handleReceivedQuote(signedQuoteDTO, response);
-                }
-
-                @Override public void failure(RetrofitError error)
-                {
-                    THLog.e(TAG, "Failed to get quote", error);
-                    setRefreshingQuote(false);
-                }
-            });
+            display(value);
         }
-    }
-
-    private void handleReceivedQuote(SignatureContainer<QuoteDTO> signedQuoteDTO, Response response)
-    {
-        THLog.d(TAG, "handleReceivedQuote");
-        if (signedQuoteDTO != null && signedQuoteDTO.signedObject != null)
-        {
-            try
-            {
-                StringWriter writer = new StringWriter();
-                IOUtils.copy(response.getBody().in(), writer, "UTF-8");
-                signedQuoteDTO.signedObject.rawResponse = writer.toString();
-            }
-            catch (IOException e)
-            {
-                THLog.e(TAG, "Failed to get signature", e);
-            }
-        }
-        display(signedQuoteDTO);
-        scheduleNextQuoteRequest();
-    }
-
-    private void scheduleNextQuoteRequest()
-    {
-        if (nextQuoteCountDownTimer != null)
-        {
-            nextQuoteCountDownTimer.cancel();
-        }
-        nextQuoteCountDownTimer = new CountDownTimer(MILLISEC_QUOTE_REFRESH, MILLISEC_QUOTE_COUNTDOWN_PRECISION)
-        {
-            @Override public void onTick(long millisUntilFinished)
-            {
-                if (mQuoteRefreshProgressBar != null)
-                {
-                    mQuoteRefreshProgressBar.setProgress((int) (millisUntilFinished / MILLISEC_QUOTE_COUNTDOWN_PRECISION));
-                }
-            }
-
-            @Override public void onFinish()
-            {
-                THLog.d(TAG, "Refreshing quote now");
-                refreshQuote();
-            }
-        };
-        setRefreshingQuote(true);
-        nextQuoteCountDownTimer.start();
     }
 
     //<editor-fold desc="Display methods">
@@ -604,7 +530,14 @@ public class TradeFragment extends DashboardFragment
 
     @Override public void display(final SecurityPositionDetailDTO securityPositionDetailDTO)
     {
+        if (this.securityPositionDetailDTO == null)
+        {
+            // This is the first update
+            mSliderSellQuantity = getMaxSellableShares(securityPositionDetailDTO);
+        }
+
         this.securityPositionDetailDTO = securityPositionDetailDTO;
+
         if (securityPositionDetailDTO != null)
         {
             this.securityCompactDTO = securityPositionDetailDTO.security;
@@ -616,9 +549,9 @@ public class TradeFragment extends DashboardFragment
         display();
     }
 
-    public void display(SignatureContainer<QuoteDTO> signedQuoteDTO)
+    public void display(QuoteDTO quoteDTO)
     {
-        this.signedQuoteDTO = signedQuoteDTO;
+        this.quoteDTO = quoteDTO;
         display();
     }
 
@@ -705,10 +638,7 @@ public class TradeFragment extends DashboardFragment
                 mPricingBidAskView.display(securityCompactDTO);
             }
 
-            if (signedQuoteDTO != null)
-            {
-                mPricingBidAskView.display(signedQuoteDTO.signedObject);
-            }
+            mPricingBidAskView.display(quoteDTO);
         }
     }
 
@@ -725,10 +655,7 @@ public class TradeFragment extends DashboardFragment
                 mTradeQuantityView.display(securityCompactDTO);
             }
 
-            if (signedQuoteDTO != null)
-            {
-                mTradeQuantityView.display(signedQuoteDTO.signedObject);
-            }
+            mTradeQuantityView.display(quoteDTO);
 
             if (isTransactionTypeBuy)
             {
@@ -786,11 +713,11 @@ public class TradeFragment extends DashboardFragment
     {
         if (mQuickPriceButtonSet != null)
         {
-            if (signedQuoteDTO == null || signedQuoteDTO.signedObject == null)
+            if (quoteDTO == null)
             {
                 mQuickPriceButtonSet.setEnabled(false);
             }
-            else if (isTransactionTypeBuy && signedQuoteDTO.signedObject.ask == null)
+            else if (isTransactionTypeBuy && quoteDTO.ask == null)
             {
                 mQuickPriceButtonSet.setEnabled(false);
             }
@@ -799,14 +726,14 @@ public class TradeFragment extends DashboardFragment
                 mQuickPriceButtonSet.setEnabled(true);
                 mQuickPriceButtonSet.setMaxPrice(THUser.getCurrentUser().portfolio.cashBalance);
             }
-            else if (!isTransactionTypeBuy && (signedQuoteDTO.signedObject.bid == null || signedQuoteDTO.signedObject.toUSDRate == null))
+            else if (!isTransactionTypeBuy && (quoteDTO.bid == null || quoteDTO.toUSDRate == null))
             {
                 mQuickPriceButtonSet.setEnabled(false);
             }
             else if (!isTransactionTypeBuy)
             {
                 mQuickPriceButtonSet.setEnabled(true);
-                mQuickPriceButtonSet.setMaxPrice(getMaxSellableShares() * signedQuoteDTO.signedObject.ask * signedQuoteDTO.signedObject.toUSDRate);
+                mQuickPriceButtonSet.setMaxPrice(getMaxSellableShares() * quoteDTO.ask * quoteDTO.toUSDRate);
             }
         }
     }
@@ -1040,16 +967,24 @@ public class TradeFragment extends DashboardFragment
 
     public int getMaxPurchasableShares()
     {
-        if (signedQuoteDTO == null || signedQuoteDTO.signedObject == null ||
-                signedQuoteDTO.signedObject.ask == null || signedQuoteDTO.signedObject.ask == 0 ||
-                signedQuoteDTO.signedObject.toUSDRate == null || signedQuoteDTO.signedObject.toUSDRate == 0)
+        return getMaxPurchasableShares(this.quoteDTO);
+    }
+
+    public static int getMaxPurchasableShares(QuoteDTO quoteDTO)
+    {
+        if (quoteDTO == null || quoteDTO.ask == null || quoteDTO.ask == 0 || quoteDTO.toUSDRate == null || quoteDTO.toUSDRate == 0)
         {
             return 0;
         }
-        return (int) Math.floor(THUser.getCurrentUser().portfolio.cashBalance / (signedQuoteDTO.signedObject.ask * signedQuoteDTO.signedObject.toUSDRate));
+        return (int) Math.floor(THUser.getCurrentUser().portfolio.cashBalance / (quoteDTO.ask * quoteDTO.toUSDRate));
     }
 
     public int getMaxSellableShares()
+    {
+        return getMaxSellableShares(this.securityPositionDetailDTO);
+    }
+
+    public static int getMaxSellableShares(SecurityPositionDetailDTO securityPositionDetailDTO)
     {
         if (securityPositionDetailDTO == null || securityPositionDetailDTO.positions == null ||
                 securityPositionDetailDTO.positions.size() == 0 || securityPositionDetailDTO.positions.get(0) == null ||
@@ -1097,7 +1032,71 @@ public class TradeFragment extends DashboardFragment
         return q * (lastPrice + TRANSACTION_COST);
     }
 
+    private void pushBuyFragmentIn()
+    {
+        String buyDetail = String.format("Buy %s %s:%s @ %s %f\nTransaction fee: virtual US$ 10\nTotal cost: US$ %.2f",
+                        /*tvQuantity.getText()*/ "quantity", securityPositionDetailDTO.security.exchange, securityPositionDetailDTO.security.symbol, securityPositionDetailDTO.security.currencyDisplay,
+                lastPrice, getTotalCostForBuy());
+
+        Bundle b = new Bundle();
+
+        b.putString(BuyFragment.BUNDLE_KEY_BUY_DETAIL_STR, buyDetail);
+        b.putString(BuyFragment.BUNDLE_KEY_LAST_PRICE, String.valueOf(lastPrice));
+        b.putString(BuyFragment.BUNDLE_KEY_QUANTITY, /*tvQuantity.getText().toString().replace(",", "")*/ "quantity");
+        b.putString(BuyFragment.BUNDLE_KEY_SYMBOL, securityPositionDetailDTO.security.symbol);
+        b.putString(BuyFragment.BUNDLE_KEY_EXCHANGE, securityPositionDetailDTO.security.exchange);
+
+        navigator.pushFragment(BuyFragment.class);
+    }
+
+    private void buy()
+    {
+        if (quoteDTO == null)
+        {
+            THLog.e(TAG, "No signed Quote", new IllegalArgumentException());
+        }
+
+        TransactionFormDTO transactionFormDTO = new TransactionFormDTO();
+        transactionFormDTO.signedQuoteDto = quoteDTO.rawResponse;
+        transactionFormDTO.quantity = isTransactionTypeBuy ? mSliderBuyQuantity : mSliderSellQuantity;
+        // TODO what portfolio
+        transactionFormDTO.portfolio = 0;
+
+        if (isTransactionTypeBuy)
+        {
+            securityService.get().buy(securityId.exchange, securityId.securitySymbol, transactionFormDTO);
+        }
+        else
+        {
+            securityService.get().sell(securityId.exchange, securityId.securitySymbol, transactionFormDTO);
+        }
+    }
+
     //<editor-fold desc="Interface Creators">
+    private FreshQuoteHolder.FreshQuoteListener createFreshQuoteListener()
+    {
+        return new FreshQuoteHolder.FreshQuoteListener()
+        {
+            @Override public void onMilliSecToRefreshQuote(long milliSecToRefresh)
+            {
+                if (mQuoteRefreshProgressBar != null)
+                {
+                    mQuoteRefreshProgressBar.setProgress((int) (milliSecToRefresh / MILLISEC_QUOTE_COUNTDOWN_PRECISION));
+                }
+            }
+
+            @Override public void onIsRefreshing(boolean refreshing)
+            {
+                setRefreshingQuote(refreshing);
+            }
+
+            @Override public void onFreshQuote(QuoteDTO quoteDTO)
+            {
+                display(quoteDTO);
+            }
+        };
+    }
+
     private Callback createLogoReadyCallback()
     {
         return new Callback()
@@ -1189,26 +1188,27 @@ public class TradeFragment extends DashboardFragment
             @Override
             public void onClick(View v)
             {
-                String buyDetail = String.format("Buy %s %s:%s @ %s %f\nTransaction fee: virtual US$ 10\nTotal cost: US$ %.2f",
-                        /*tvQuantity.getText()*/ "quantity", securityPositionDetailDTO.security.exchange, securityPositionDetailDTO.security.symbol, securityPositionDetailDTO.security.currencyDisplay,
-                        lastPrice, getTotalCostForBuy());
-
-                Bundle b = new Bundle();
-
-                b.putString(BUY_DETAIL_STR, buyDetail);
-                b.putString(LAST_PRICE, String.valueOf(lastPrice));
-                b.putString(QUANTITY, /*tvQuantity.getText().toString().replace(",", "")*/ "quantity");
-                b.putString(SYMBOL, securityPositionDetailDTO.security.symbol);
-                b.putString(EXCHANGE, securityPositionDetailDTO.security.exchange);
-
-                Fragment newFragment = Fragment.instantiate(getActivity(), BuyFragment.class.getName(), b);
-
-                // Add the fragment to the activity, pushing this transaction
-                // on to the back stack.
-                FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-                ft.replace(R.id.realtabcontent, newFragment, "trend_buy");
-                ft.addToBackStack("trend_buy");
-                ft.commit();
+                return;
+                //String buyDetail = String.format("Buy %s %s:%s @ %s %f\nTransaction fee: virtual US$ 10\nTotal cost: US$ %.2f",
+                //        /*tvQuantity.getText()*/ "quantity", securityPositionDetailDTO.security.exchange, securityPositionDetailDTO.security.symbol, securityPositionDetailDTO.security.currencyDisplay,
+                //        lastPrice, getTotalCostForBuy());
+                //
+                //Bundle b = new Bundle();
+                //
+                //b.putString(BuyFragment.BUNDLE_KEY_BUY_DETAIL_STR, buyDetail);
+                //b.putString(BuyFragment.BUNDLE_KEY_LAST_PRICE, String.valueOf(lastPrice));
+                //b.putString(BuyFragment.BUNDLE_KEY_QUANTITY, /*tvQuantity.getText().toString().replace(",", "")*/ "quantity");
+                //b.putString(BuyFragment.BUNDLE_KEY_SYMBOL, securityPositionDetailDTO.security.symbol);
+                //b.putString(BuyFragment.BUNDLE_KEY_EXCHANGE, securityPositionDetailDTO.security.exchange);
+                //
+                //Fragment newFragment = Fragment.instantiate(getActivity(), BuyFragment.class.getName(), b);
+                //
+                //// Add the fragment to the activity, pushing this transaction
+                //// on to the back stack.
+                //FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+                //ft.replace(R.id.realtabcontent, newFragment, "trend_buy");
+                //ft.addToBackStack("trend_buy");
+                //ft.commit();
             }
         };
     }
@@ -1219,17 +1219,17 @@ public class TradeFragment extends DashboardFragment
         {
             @Override public void onQuickPriceButtonSelected(double priceSelected)
             {
-                if (signedQuoteDTO == null || signedQuoteDTO.signedObject == null)
+                if (quoteDTO == null)
                 {
                     // Nothing to do
                 }
-                else if (isTransactionTypeBuy && signedQuoteDTO.signedObject.ask != null)
+                else if (isTransactionTypeBuy && quoteDTO.ask != null)
                 {
-                    mSliderBuyQuantity = (int) Math.floor(priceSelected / signedQuoteDTO.signedObject.ask);
+                    mSliderBuyQuantity = (int) Math.floor(priceSelected / quoteDTO.ask);
                 }
-                else if (!isTransactionTypeBuy && signedQuoteDTO.signedObject.bid != null)
+                else if (!isTransactionTypeBuy && quoteDTO.bid != null)
                 {
-                    mSliderSellQuantity = (int) Math.floor(priceSelected / signedQuoteDTO.signedObject.bid);
+                    mSliderSellQuantity = (int) Math.floor(priceSelected / quoteDTO.bid);
                 }
                 else
                 {
