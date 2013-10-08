@@ -5,14 +5,15 @@ public class PositionDTO extends PositionDTOCompact
 {
     public int userId;
     public int securityId;
-    public Double averagePriceRefCcy;
     public Double realizedPLRefCcy;
     public Double unrealizedPLRefCcy;
     public double marketValueRefCcy;
     public String earliestTradeUtc;
-    public String latestTradeUtcj;
+    public String latestTradeUtc;
 
     public Double sumInvestedAmountRefCcy;
+
+    public double totalTransactionCostRefCcy;
 
     // if >1, then the values above relate to a collection of positions, not a single position -- see: MaskOpenPositions()
     public int aggregateCount;

@@ -57,6 +57,7 @@
   <string name="share_available">Shares Avail.</string>
   <string name="quantity">Quantity</string>
   <string name="trade_value">Trade Value</string>
+  <string name="projected_p_and_l_value">Projected P&amp;L</string>
   <string name="loading_loading">Loading...</string>
   <string name="bid_with_bracket">(bid)</string>
   <string name="ask_with_bracket">(ask)</string>

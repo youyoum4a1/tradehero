@@ -6,6 +6,10 @@
  */
 package com.tradehero.th.fragments.trade;
 
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
+import com.tradehero.th.api.quote.QuoteDTO;
+import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.base.THUser;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.utils.NetworkUtils;
@@ -13,12 +17,8 @@ import java.util.LinkedHashMap;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.protocol.HTTP;
-import org.json.JSONException;
-import org.json.JSONObject;
 import android.os.Bundle;
 import com.tradehero.th.R;
-import com.tradehero.th.application.Config;
-import com.tradehero.th.http.THAsyncClientFactory;
 import com.tradehero.th.utills.Constants;
 import com.tradehero.th.utills.Logger;
 import com.tradehero.th.utills.Logger.LogLevel;
@@ -29,20 +29,18 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.loopj.android.http.AsyncHttpClient;
-import com.loopj.android.http.AsyncHttpResponseHandler;
 
 public class BuyFragment extends DashboardFragment
 {
     private final static String TAG = BuyFragment.class.getSimpleName();
 
+    public final static long MILLISEC_QUOTE_REFRESH = 30000;
+    public final static long MILLISEC_QUOTE_COUNTDOWN_PRECISION = 50;
+
     public final static String BUNDLE_KEY_BUY_DETAIL_STR = BuyFragment.class.getName() + ".buyDetailStr";
     public final static String BUNDLE_KEY_LAST_PRICE = BuyFragment.class.getName() + ".lastPrice";
     public final static String BUNDLE_KEY_QUANTITY = BuyFragment.class.getName() + ".quantity";
-    public final static String BUNDLE_KEY_SYMBOL = BuyFragment.class.getName() + ".symbol";
-    public final static String BUNDLE_KEY_EXCHANGE = BuyFragment.class.getName() + ".exchange";
 
     private final static String BP_GEO_ALT = "geo_alt";
     private final static String BP_GEO_LAT = "geo_lat";
@@ -61,7 +59,7 @@ public class BuyFragment extends DashboardFragment
     private final static String BP_SIGNED_QUOTE_DTO = "signedQuoteDto";
 
     //private EditText mCommentsET;
-    private Button mBtnConform;
+    private Button mBtnConfirm;
     private TextView mBuyDetails;
     private TextView mHeaderText;
 
@@ -70,7 +68,10 @@ public class BuyFragment extends DashboardFragment
 
     //private String yahooQuoteStr;
     //private Quote mQuote;
-    private Object quotes;
+
+    private SecurityId securityId;
+    private FreshQuoteHolder freshQuoteHolder;
+    private QuoteDTO quoteDTO;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -88,9 +89,9 @@ public class BuyFragment extends DashboardFragment
         //mCommentsET = (EditText) v.findViewById(R.id.comments);
 
         // Commented because of removal of right button.
-        //mBtnConform = (Button) v.findViewById(R.id.right_button);
-        mBtnConform.setText(R.string.btn_buy);
-        mBtnConform.setVisibility(View.VISIBLE);
+        //mBtnConfirm = (Button) v.findViewById(R.id.right_button);
+        mBtnConfirm.setText(R.string.btn_buy);
+        mBtnConfirm.setVisibility(View.VISIBLE);
 
         mBuyDetails = (TextView) v.findViewById(R.id.buy_info);
     }
@@ -100,7 +101,7 @@ public class BuyFragment extends DashboardFragment
     {
         super.onActivityCreated(savedInstanceState);
 
-        mBtnConform.setOnClickListener(new OnClickListener()
+        mBtnConfirm.setOnClickListener(new OnClickListener()
         {
             @Override
             public void onClick(View v)
@@ -108,7 +109,7 @@ public class BuyFragment extends DashboardFragment
 
                 if (NetworkUtils.isConnected(getActivity()))
                 {
-                    requestToGetBuyQuotes();
+                    // TODO buy
                 }
                 else
                 {
@@ -118,18 +119,28 @@ public class BuyFragment extends DashboardFragment
         });
     }
 
+    @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
+    {
+        super.onCreateOptionsMenu(menu, inflater);
+
+    }
+
     @Override public void onResume()
     {
         super.onResume();
 
+        Bundle args = getArguments();
+        if (args != null)
+        {
+            securityId = new SecurityId(args);
+            freshQuoteHolder = new FreshQuoteHolder(securityId, MILLISEC_QUOTE_REFRESH, MILLISEC_QUOTE_COUNTDOWN_PRECISION);
+            freshQuoteHolder.registerListener(createFreshQuoteListener());
+            freshQuoteHolder.start();
+        }
+
+
         //lastPrice = getArguments().getString(TradeFragment.LAST_PRICE);
         quantity = getArguments().getString(BUNDLE_KEY_QUANTITY);
-
-        if (mHeaderText != null)
-        {
-            mHeaderText.setText(String.format("%s:%s", getArguments().getString(BUNDLE_KEY_EXCHANGE),
-                    getArguments().getString(BUNDLE_KEY_SYMBOL)));
-        }
 
         if (mBuyDetails != null)
         {
@@ -138,43 +149,30 @@ public class BuyFragment extends DashboardFragment
         //lastPrice = getArguments().getString(TradeFragment.LAST_PRICE);
     }
 
-    private void requestToGetBuyQuotes()
+    public void display(QuoteDTO quoteDTO)
     {
-        AsyncHttpClient client = THAsyncClientFactory.getInstance(Constants.TH_EMAIL_PREFIX);
+        this.quoteDTO = quoteDTO;
+        display();
+    }
 
-        client.get(String.format(Config.getTrendNewBuyQuotes(),
-                getArguments().getString(BUNDLE_KEY_EXCHANGE),
-                getArguments().getString(BUNDLE_KEY_SYMBOL)),
-                new AsyncHttpResponseHandler()
-                {
+    public void display()
+    {
+        displayHeaderText();
+    }
 
-                    @Override
-                    public void onSuccess(int arg0, String response)
-                    {
-
-                        if (response.length() > 0)
-                        {
-
-                            Logger.log(TAG, "Buy Quote Response:\n" + response, LogLevel.LOGGING_LEVEL_INFO);
-
-                            //Object rawStr = (Object)JSONObject.quote(response);
-
-                            setQuotes(response);
-
-                            requestToBuyTransaction();
-                        }
-                        else
-                        {
-                            Logger.log(TAG, "TH Quote response is blank", LogLevel.LOGGING_LEVEL_ERROR);
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Throwable arg0, String response)
-                    {
-                        Logger.log(TAG, "Unable to get TH Quotes:\n" + response, LogLevel.LOGGING_LEVEL_ERROR);
-                    }
-                });
+    public void displayHeaderText()
+    {
+        if (mHeaderText != null)
+        {
+            if (securityId != null)
+            {
+                mHeaderText.setText(String.format("%s:%s", securityId.exchange, securityId.securitySymbol));
+            }
+            else
+            {
+                mHeaderText.setText("-:-");
+            }
+        }
     }
 
     private void requestToBuyTransaction()
@@ -183,7 +181,7 @@ public class BuyFragment extends DashboardFragment
 
         postParams.put(BP_QUANTITY, Integer.valueOf(quantity));
         postParams.put(BP_PORTFOLIO, Integer.valueOf(THUser.getCurrentUser().portfolio.id));
-        postParams.put(BP_SIGNED_QUOTE_DTO, getQuotes().toString());
+        //postParams.put(BP_SIGNED_QUOTE_DTO, getQuotes().toString());
         postParams.put(BP_GEO_ALT, null);
         postParams.put(BP_GEO_LAT, null);
         postParams.put(BP_GEO_LONG, null);
@@ -211,52 +209,6 @@ public class BuyFragment extends DashboardFragment
         {
             e.printStackTrace();
         }
-
-        AsyncHttpClient client = THAsyncClientFactory.getInstance(Constants.TH_EMAIL_PREFIX);
-
-        String url = String.format(
-                Config.getBuyNewTrend(),
-                getArguments().getString(BUNDLE_KEY_EXCHANGE),
-                getArguments().getString(BUNDLE_KEY_SYMBOL));
-
-        Logger.log(TAG, url, LogLevel.LOGGING_LEVEL_INFO);
-
-        client.post(getActivity(), url, entity, "application/json", new AsyncHttpResponseHandler()
-        {
-
-            @Override
-            public void onSuccess(int arg0, String response)
-            {
-
-                Logger.log(TAG, "Buy Transaction Response:\n" + response, LogLevel.LOGGING_LEVEL_INFO);
-
-                try
-                {
-                    JSONObject jsonObj = new JSONObject(response);
-                    Toast.makeText(getActivity(), jsonObj.optString("Message"), Toast.LENGTH_SHORT).show();
-                } catch (JSONException e)
-                {
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void onFailure(Throwable arg0, String response)
-            {
-                super.onFailure(arg0, response);
-
-                Logger.log(TAG, "Buy Transaction Response:\n" + response, LogLevel.LOGGING_LEVEL_ERROR);
-
-                try
-                {
-                    JSONObject jsonObj = new JSONObject(response);
-                    Toast.makeText(getActivity(), response, Toast.LENGTH_SHORT).show();
-                } catch (JSONException e)
-                {
-                    e.printStackTrace();
-                }
-            }
-        });
     }
 
     //	public class PostData implements Serializable {
@@ -273,16 +225,6 @@ public class BuyFragment extends DashboardFragment
     //			this.aquotes = quotes;
     //		}
     //	}
-
-    public Object getQuotes()
-    {
-        return quotes;
-    }
-
-    public void setQuotes(Object quotes)
-    {
-        this.quotes = quotes;
-    }
 
     //	StringEntity entity = null;
     //	try {
@@ -344,4 +286,25 @@ public class BuyFragment extends DashboardFragment
     //
     //		return generatedSignature;
     //	}
+
+    private FreshQuoteHolder.FreshQuoteListener createFreshQuoteListener()
+    {
+        return new FreshQuoteHolder.FreshQuoteListener()
+        {
+            @Override public void onMilliSecToRefreshQuote(long milliSecToRefresh)
+            {
+                // TODO
+            }
+
+            @Override public void onIsRefreshing(boolean refreshing)
+            {
+                // TODO
+            }
+
+            @Override public void onFreshQuote(QuoteDTO quoteDTO)
+            {
+                display(quoteDTO);
+            }
+        };
+    }
 }

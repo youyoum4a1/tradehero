@@ -169,4 +169,32 @@
 
   </TableRow>
 
+  <TableRow
+      android:id="@+id/p_and_l_value_row"
+      android:layout_gravity="center|top"
+      >
+
+    <TextView
+        style="@style/TH.SmallTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="right"
+        android:paddingRight="@dimen/trade_screen_info_title_padding_right"
+        android:text="@string/projected_p_and_l_value"
+        />
+
+    <TextView
+        android:id="@+id/p_and_l_value"
+        style="@style/TH.SmallValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="left"
+        android:text=""
+        android:textStyle="bold"
+        />
+
+  </TableRow>
+
 </merge>

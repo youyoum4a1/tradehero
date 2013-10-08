@@ -1043,8 +1043,7 @@ public class TradeFragment extends DashboardFragment
         b.putString(BuyFragment.BUNDLE_KEY_BUY_DETAIL_STR, buyDetail);
         b.putString(BuyFragment.BUNDLE_KEY_LAST_PRICE, String.valueOf(lastPrice));
         b.putString(BuyFragment.BUNDLE_KEY_QUANTITY, /*tvQuantity.getText().toString().replace(",", "")*/ "quantity");
-        b.putString(BuyFragment.BUNDLE_KEY_SYMBOL, securityPositionDetailDTO.security.symbol);
-        b.putString(BuyFragment.BUNDLE_KEY_EXCHANGE, securityPositionDetailDTO.security.exchange);
+        securityId.putParameters(b);
 
         navigator.pushFragment(BuyFragment.class);
     }

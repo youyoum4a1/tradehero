@@ -6,4 +6,7 @@ public class PositionDTOCompact
     public int id;
     public Integer shares;
     public int portfolioId;
+
+    // This price is always is USD
+    public Double averagePriceRefCcy;
 }

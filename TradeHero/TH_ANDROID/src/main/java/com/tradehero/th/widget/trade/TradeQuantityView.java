@@ -2,6 +2,7 @@ package com.tradehero.th.widget.trade;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.view.View;
 import android.view.animation.AnimationUtils;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -20,17 +21,23 @@ public class TradeQuantityView extends TableLayout implements DTOView<SecurityCo
 {
     private static final String TAG = TradeQuantityView.class.getSimpleName();
 
+    public static final int COLOR_ID_PL_NEUTRAL = R.color.black;
+    public static final int COLOR_ID_PL_GAIN = R.color.projected_pl_gain;
+    public static final int COLOR_ID_PL_LOSS = R.color.projected_pl_loss;
+
     private TextView mSecurityType;
     private TextView mPriceAsOf;
     private TextView mCashAvailable;
     private TextView mShareAvailable;
     private TextView mQuantity;
     private TextView mTradeValue;
+    private TextView mProjectedPLValue;
 
     private TableRow mCashAvailableRow;
     private TableRow mShareAvailableRow;
     private TableRow mQuantityRow;
     private TableRow mTradeValueRow;
+    private TableRow mProjectedPLRow;
 
     private SecurityCompactDTO securityCompactDTO;
     private SecurityPositionDetailDTO securityPositionDetailDTO;
@@ -41,16 +48,28 @@ public class TradeQuantityView extends TableLayout implements DTOView<SecurityCo
     private boolean mHighlightQuantity = false;
     private int mNormalQuantityColor;
     private int mHighlightQuantityColor;
+    private int colorPlNeutral;
+    private int colorPlGain;
+    private int colorPlLoss;
 
     //<editor-fold desc="Constructors">
     public TradeQuantityView(Context context)
     {
-        super(context);    //To change body of overridden methods use File | Settings | File Templates.
+        super(context);
+        init();
     }
 
     public TradeQuantityView(Context context, AttributeSet attrs)
     {
-        super(context, attrs);    //To change body of overridden methods use File | Settings | File Templates.
+        super(context, attrs);
+        init();
+    }
+
+    private void init()
+    {
+        colorPlNeutral = getResources().getColor(COLOR_ID_PL_NEUTRAL);
+        colorPlGain = getResources().getColor(COLOR_ID_PL_GAIN);
+        colorPlLoss = getResources().getColor(COLOR_ID_PL_LOSS);
     }
     //</editor-fold>
 
@@ -63,7 +82,7 @@ public class TradeQuantityView extends TableLayout implements DTOView<SecurityCo
     public void setBuy(boolean buy)
     {
         this.buy = buy;
-        updateVisibilities();
+        display();
     }
 
     public boolean isRefreshingQuote()
@@ -89,8 +108,9 @@ public class TradeQuantityView extends TableLayout implements DTOView<SecurityCo
     public void setShareQuantity(double shareQuantity)
     {
         this.shareQuantity = shareQuantity;
-        updateShareQuantity();
-        updateTradeValue();
+        displayShareQuantity();
+        displayTradeValue();
+        displayProjectedPL();
     }
 
     public boolean isHighlightQuantity()
@@ -101,7 +121,7 @@ public class TradeQuantityView extends TableLayout implements DTOView<SecurityCo
     public void setHighlightQuantity(boolean highlightQuantity)
     {
         this.mHighlightQuantity = highlightQuantity;
-        updateQuantityHighlight();
+        displayShareQuantityRow();
     }
     //</editor-fold>
 
@@ -119,13 +139,14 @@ public class TradeQuantityView extends TableLayout implements DTOView<SecurityCo
         mShareAvailable = (TextView) findViewById(R.id.vshare_available);
         mQuantity = (TextView) findViewById(R.id.vquantity);
         mTradeValue = (TextView) findViewById(R.id.vtrade_value);
+        mProjectedPLValue = (TextView) findViewById(R.id.p_and_l_value);
         mCashAvailableRow = (TableRow) findViewById(R.id.cash_available_row);
         mShareAvailableRow = (TableRow) findViewById(R.id.share_available_row);
         mQuantityRow = (TableRow) findViewById(R.id.quantity_row);
         mTradeValueRow = (TableRow) findViewById(R.id.trade_value_row);
+        mProjectedPLRow = (TableRow) findViewById(R.id.p_and_l_value_row);
         mNormalQuantityColor = getResources().getColor(android.R.color.transparent);
         mHighlightQuantityColor = getResources().getColor(R.color.trade_highlight_share_quantity);
-        updateVisibilities();
         display();
     }
 
@@ -151,7 +172,23 @@ public class TradeQuantityView extends TableLayout implements DTOView<SecurityCo
         display();
     }
 
+    //<editor-fold desc="Display Methods">
     public void display()
+    {
+        displaySecurityType();
+        displayPriceAsOf();
+        displayCashAvailable();
+        displayCashAvailableRow();
+        displayShareAvailable();
+        displayShareQuantity();
+        displayShareAvailableRow();
+        displayTradeValue();
+        displayTradeValueRow();
+        displayProjectedPL();
+        displayProjectedPLRow();
+    }
+
+    public void displaySecurityType()
     {
         if (mSecurityType != null)
         {
@@ -164,7 +201,10 @@ public class TradeQuantityView extends TableLayout implements DTOView<SecurityCo
                 mSecurityType.setText("");
             }
         }
+    }
 
+    public void displayPriceAsOf()
+    {
         if (mPriceAsOf != null)
         {
             if (quoteDTO != null)
@@ -180,7 +220,10 @@ public class TradeQuantityView extends TableLayout implements DTOView<SecurityCo
                 mPriceAsOf.setText("");
             }
         }
+    }
 
+    public void displayCashAvailable()
+    {
         double cashAvailable = THUser.getCurrentUser().portfolio.cashBalance;
         if (mCashAvailable != null)
         {
@@ -193,7 +236,18 @@ public class TradeQuantityView extends TableLayout implements DTOView<SecurityCo
                 mCashAvailable.setText(String.format("US$ %,.2f", cashAvailable));
             }
         }
+    }
 
+    public void displayCashAvailableRow()
+    {
+        if (mCashAvailableRow != null)
+        {
+            mCashAvailableRow.setVisibility(buy ? VISIBLE : GONE);
+        }
+    }
+
+    public void displayShareAvailable()
+    {
         if (mShareAvailable != null)
         {
             if (securityPositionDetailDTO == null || securityPositionDetailDTO.positions == null || securityPositionDetailDTO.positions.size() == 0)
@@ -214,33 +268,17 @@ public class TradeQuantityView extends TableLayout implements DTOView<SecurityCo
                 }
             }
         }
-
-        updateShareQuantity();
-        updateTradeValue();
     }
 
-    public void updateVisibilities()
+    private void displayShareAvailableRow()
     {
-        if (mCashAvailableRow != null)
-        {
-            mCashAvailableRow.setVisibility(buy ? VISIBLE : GONE);
-        }
         if (mShareAvailableRow != null)
         {
             mShareAvailableRow.setVisibility(buy ? GONE : VISIBLE);
         }
-
-        if (mTradeValueRow != null)
-        {
-            if (!refreshingQuote)
-            {
-                mTradeValueRow.clearAnimation();
-                mTradeValueRow.setAlpha(1);
-            }
-        }
     }
 
-    private void updateShareQuantity()
+    private void displayShareQuantity()
     {
         if (mQuantity != null)
         {
@@ -255,7 +293,7 @@ public class TradeQuantityView extends TableLayout implements DTOView<SecurityCo
         }
     }
 
-    private void updateQuantityHighlight()
+    private void displayShareQuantityRow()
     {
         if (mQuantityRow != null)
         {
@@ -263,7 +301,7 @@ public class TradeQuantityView extends TableLayout implements DTOView<SecurityCo
         }
     }
 
-    private void updateTradeValue()
+    private void displayTradeValue()
     {
         if (mTradeValue != null)
         {
@@ -281,4 +319,47 @@ public class TradeQuantityView extends TableLayout implements DTOView<SecurityCo
             }
         }
     }
+
+    private void displayTradeValueRow()
+    {
+        if (mTradeValueRow != null)
+        {
+            if (!refreshingQuote)
+            {
+                mTradeValueRow.clearAnimation();
+                mTradeValueRow.setAlpha(1);
+            }
+        }
+    }
+
+    private void displayProjectedPL()
+    {
+        if (mProjectedPLValue != null)
+        {
+            if (securityPositionDetailDTO != null && securityPositionDetailDTO.positions != null &&
+                    securityPositionDetailDTO.positions.get(0).averagePriceRefCcy != null &&
+                    quoteDTO != null && quoteDTO.bid != null && quoteDTO.toUSDRate != null)
+            {
+                double buyPrice = shareQuantity * securityPositionDetailDTO.positions.get(0).averagePriceRefCcy;
+                double sellPrice = shareQuantity * quoteDTO.bid * quoteDTO.toUSDRate;
+                // TODO handle transaction fee
+                double plValue = sellPrice - buyPrice;
+                mProjectedPLValue.setText(String.format("US$ %,.2f", plValue));
+                mProjectedPLValue.setTextColor(plValue == 0 ? colorPlNeutral : plValue > 0 ? colorPlGain : colorPlLoss);
+            }
+            else
+            {
+                mProjectedPLValue.setText("-");
+            }
+        }
+    }
+
+    private void displayProjectedPLRow()
+    {
+        if (mProjectedPLRow != null)
+        {
+            mProjectedPLRow.setVisibility(buy ? View.INVISIBLE : View.VISIBLE);
+        }
+    }
+    //</editor-fold>
 }

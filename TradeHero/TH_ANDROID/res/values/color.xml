@@ -46,5 +46,7 @@
 
   <!-- Trade Fragment -->
   <color name="trade_highlight_share_quantity">#40929CBA</color>
+  <color name="projected_pl_gain">#ff00cc00</color>
+  <color name="projected_pl_loss">#ffee0000</color>
 
 </resources>
