@@ -21,7 +21,7 @@ import javax.inject.Inject;
 public class TradeBottomStockPagerAdapter extends FragmentPagerAdapter implements DTOView<SecurityPositionDetailDTO>
 {
     public static final String TAG = TradeBottomStockPagerAdapter.class.getSimpleName();
-    public static Class classes[] = new Class[]{ ChartFragment.class, StockInfoFragment.class };
+    public static Class classes[] = new Class[]{ ChartFragment.class, StockInfoFragment.class, StockInfoFragment.class };
 
     private SecurityPositionDetailDTO securityPositionDetailDTO;
 
@@ -46,7 +46,7 @@ public class TradeBottomStockPagerAdapter extends FragmentPagerAdapter implement
     {
         if (securityPositionDetailDTO != null)
         {
-            ((DTOView<SecurityCompactDTO>)object).display(securityPositionDetailDTO.security);
+            ((DTOView<SecurityCompactDTO>) object).display(securityPositionDetailDTO.security);
         }
         return POSITION_UNCHANGED;
     }
@@ -67,16 +67,23 @@ public class TradeBottomStockPagerAdapter extends FragmentPagerAdapter implement
         Fragment fragment = null;
         try
         {
-            fragment = (Fragment)classes[i].newInstance();
-        } catch (InstantiationException e)
+            fragment = (Fragment) classes[i].newInstance();
+        }
+        catch (InstantiationException|IllegalAccessException e)
         {
-        } catch (IllegalAccessException e)
-        {
+            THLog.e(TAG, "Failed to instantiate", e);
         }
 
         if (securityPositionDetailDTO != null)
         {
-            ((DTOView<SecurityCompactDTO>) fragment).display(securityPositionDetailDTO.security);
+            try
+            {
+                ((DTOView<SecurityCompactDTO>) fragment).display(securityPositionDetailDTO.security);
+            }
+            catch (NullPointerException e)
+            {
+                THLog.e(TAG, "Fragment needs to be a DTOView SecurityCompact", e);
+            }
         }
         return fragment;
     }
