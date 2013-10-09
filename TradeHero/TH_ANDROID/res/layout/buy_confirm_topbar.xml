@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="50dp"
+    android:background="@drawable/topbarrectangle"
+    android:orientation="horizontal"
+    android:paddingLeft="4dp"
+    android:paddingRight="4dp"
+    >
+
+  <ImageButton
+      android:id="@+id/btn_back"
+      android:layout_width="38dp"
+      android:layout_height="match_parent"
+      android:layout_alignParentLeft="true"
+      android:layout_centerVertical="true"
+      android:background="@null"
+      android:contentDescription="@null"
+      android:paddingLeft="5dp"
+      android:paddingRight="5dp"
+      android:scaleType="fitCenter"
+      android:src="@drawable/chevron_back" />
+
+  <ImageView
+      android:id="@+id/ic_market_close"
+      android:layout_width="24dp"
+      android:layout_height="24dp"
+      android:layout_toRightOf="@id/btn_back"
+      android:layout_centerInParent="true"
+      android:contentDescription="@null"
+      android:scaleType="centerInside"
+      android:src="@drawable/market_sleep_small"
+      />
+
+  <TextView
+        android:id="@+id/header_txt"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_toRightOf="@id/ic_market_close"
+        android:layout_toLeftOf="@+id/btn_confirm"
+        android:paddingLeft="10dp"
+        android:singleLine="true"
+        android:text=""
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        android:textAlignment="center"
+    />
+
+  <Button
+      android:id="@+id/btn_confirm"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_alignParentRight="true"
+      android:layout_centerInParent="true"
+      android:text="@string/btn_buy"
+      />
+
+</RelativeLayout>

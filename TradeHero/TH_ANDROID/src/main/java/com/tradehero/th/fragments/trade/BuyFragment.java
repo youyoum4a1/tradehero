@@ -6,14 +6,24 @@
  */
 package com.tradehero.th.fragments.trade;
 
+import android.os.AsyncTask;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
+import com.tradehero.common.utils.THLog;
+import com.tradehero.th.api.position.SecurityPositionDetailDTO;
 import com.tradehero.th.api.quote.QuoteDTO;
+import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.base.THUser;
-import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.persistence.position.SecurityPositionDetailCache;
+import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.utils.NetworkUtils;
+import dagger.Lazy;
 import java.util.LinkedHashMap;
+import javax.inject.Inject;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.protocol.HTTP;
@@ -31,12 +41,9 @@ import android.widget.Button;
 import android.widget.TextView;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class BuyFragment extends DashboardFragment implements FreshQuoteHolder.FreshQuoteListener
+public class BuyFragment extends AbstractTradeFragment
 {
     private final static String TAG = BuyFragment.class.getSimpleName();
-
-    public final static long MILLISEC_QUOTE_REFRESH = 30000;
-    public final static long MILLISEC_QUOTE_COUNTDOWN_PRECISION = 50;
 
     public final static String BUNDLE_KEY_BUY_DETAIL_STR = BuyFragment.class.getName() + ".buyDetailStr";
     public final static String BUNDLE_KEY_LAST_PRICE = BuyFragment.class.getName() + ".lastPrice";
@@ -58,8 +65,13 @@ public class BuyFragment extends DashboardFragment implements FreshQuoteHolder.F
     //private final static String BP_TRADE_COMMENT = "tradeComment";
     private final static String BP_SIGNED_QUOTE_DTO = "signedQuoteDto";
 
-    //private EditText mCommentsET;
+    private View actionBar;
+    private ImageButton mBackBtn;
+    private ImageView mMarketClose;
+    private TextView mExchangeSymbol;
     private Button mBtnConfirm;
+
+    //private EditText mCommentsET;
     private TextView mBuyDetails;
     private TextView mHeaderText;
 
@@ -69,22 +81,20 @@ public class BuyFragment extends DashboardFragment implements FreshQuoteHolder.F
     //private String yahooQuoteStr;
     //private Quote mQuote;
 
-    private SecurityId securityId;
-    private FreshQuoteHolder freshQuoteHolder;
-    private QuoteDTO quoteDTO;
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
+        THLog.d(TAG, "onCreateView");
         View view = null;
         view = inflater.inflate(R.layout.fragment_buy, container, false);
         initViews(view);
         return view;
     }
 
-    private void initViews(View v)
+    @Override protected void initViews(View view)
     {
-        mHeaderText = (TextView) v.findViewById(R.id.header_txt);
+        super.initViews(view);
+        mHeaderText = (TextView) view.findViewById(R.id.header_txt);
 
         //mCommentsET = (EditText) v.findViewById(R.id.comments);
 
@@ -93,7 +103,7 @@ public class BuyFragment extends DashboardFragment implements FreshQuoteHolder.F
         mBtnConfirm.setText(R.string.btn_buy);
         mBtnConfirm.setVisibility(View.VISIBLE);
 
-        mBuyDetails = (TextView) v.findViewById(R.id.buy_info);
+        mBuyDetails = (TextView) view.findViewById(R.id.buy_info);
     }
 
     @Override
@@ -122,7 +132,46 @@ public class BuyFragment extends DashboardFragment implements FreshQuoteHolder.F
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         super.onCreateOptionsMenu(menu, inflater);
+        createBuyConfirmActionBar(menu, inflater);
+    }
 
+    private void createBuyConfirmActionBar(Menu menu, MenuInflater inflater)
+    {
+        getSherlockActivity().getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+        getSherlockActivity().getSupportActionBar().setCustomView(R.layout.trade_topbar);
+
+        actionBar = getSherlockActivity().getSupportActionBar().getCustomView();
+
+        mBackBtn = (ImageButton) actionBar.findViewById(R.id.btn_back);
+        if (mBackBtn != null)
+        {
+            mBackBtn.setOnClickListener(new OnClickListener()
+            {
+                @Override public void onClick(View view)
+                {
+                    navigator.popFragment();
+                }
+            });
+        }
+
+        mMarketClose = (ImageView) actionBar.findViewById(R.id.ic_market_close);
+
+        mExchangeSymbol = (TextView) actionBar.findViewById(R.id.header_txt);
+
+        mBtnConfirm = (Button) actionBar.findViewById(R.id.btn_confirm);
+        if (mBtnConfirm != null)
+        {
+            mBtnConfirm.setOnClickListener(new OnClickListener()
+            {
+                @Override public void onClick(View view)
+                {
+                    buy();
+                }
+            });
+        }
+
+        // We display here as onCreateOptionsMenu may be called after onResume
+        display();
     }
 
     @Override public void onResume()
@@ -132,12 +181,8 @@ public class BuyFragment extends DashboardFragment implements FreshQuoteHolder.F
         Bundle args = getArguments();
         if (args != null)
         {
-            securityId = new SecurityId(args);
-            freshQuoteHolder = new FreshQuoteHolder(securityId, MILLISEC_QUOTE_REFRESH, MILLISEC_QUOTE_COUNTDOWN_PRECISION);
-            freshQuoteHolder.registerListener(this);
-            freshQuoteHolder.start();
+            linkWith(new SecurityId(args), true);
         }
-
 
         //lastPrice = getArguments().getString(TradeFragment.LAST_PRICE);
         quantity = getArguments().getString(BUNDLE_KEY_QUANTITY);
@@ -149,10 +194,20 @@ public class BuyFragment extends DashboardFragment implements FreshQuoteHolder.F
         //lastPrice = getArguments().getString(TradeFragment.LAST_PRICE);
     }
 
-    public void display(QuoteDTO quoteDTO)
+    @Override public void onDestroyOptionsMenu()
     {
-        this.quoteDTO = quoteDTO;
-        display();
+        if (mBackBtn != null)
+        {
+            mBackBtn.setOnClickListener(null);
+        }
+        mBackBtn = null;
+        if (mBtnConfirm != null)
+        {
+            mBtnConfirm.setOnClickListener(null);
+        }
+        mBtnConfirm = null;
+        actionBar = null;
+        super.onDestroyOptionsMenu();
     }
 
     public void display()
@@ -292,15 +347,10 @@ public class BuyFragment extends DashboardFragment implements FreshQuoteHolder.F
     {
         // TODO
     }
+    //</editor-fold>
 
-    @Override public void onIsRefreshing(boolean refreshing)
+    private void buy()
     {
         // TODO
     }
-
-    @Override public void onFreshQuote(QuoteDTO quoteDTO)
-    {
-        display(quoteDTO);
-    }
-    //</editor-fold>
 }
