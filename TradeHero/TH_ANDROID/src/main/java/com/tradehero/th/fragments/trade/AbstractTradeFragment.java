@@ -2,11 +2,10 @@ package com.tradehero.th.fragments.trade;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THLog;
+import com.tradehero.th.R;
 import com.tradehero.th.api.position.SecurityPositionDetailDTO;
 import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
@@ -25,6 +24,10 @@ abstract public class AbstractTradeFragment extends DashboardFragment
 {
     private final static String TAG = AbstractTradeFragment.class.getSimpleName();
 
+    public final static String BUNDLE_KEY_IS_BUY = BuyFragment.class.getName() + ".isBuy";
+    public final static String BUNDLE_KEY_QUANTITY_BUY = BuyFragment.class.getName() + ".quantityBuy";
+    public final static String BUNDLE_KEY_QUANTITY_SELL = BuyFragment.class.getName() + ".quantitySell";
+
     public final static long MILLISEC_QUOTE_REFRESH = 30000;
     public final static long MILLISEC_QUOTE_COUNTDOWN_PRECISION = 50;
 
@@ -41,6 +44,8 @@ abstract public class AbstractTradeFragment extends DashboardFragment
     protected QuoteDTO quoteDTO;
     protected boolean refreshingQuote = false;
 
+    protected int mBuyQuantity;
+    protected int mSellQuantity;
     protected boolean isTransactionTypeBuy = true;
 
     protected void initViews(View view)
@@ -60,6 +65,9 @@ abstract public class AbstractTradeFragment extends DashboardFragment
         if (args != null)
         {
             linkWith(new SecurityId(args), true);
+            isTransactionTypeBuy = args.getBoolean(BUNDLE_KEY_IS_BUY, true);
+            mBuyQuantity = args.getInt(BUNDLE_KEY_QUANTITY_BUY, 0);
+            mSellQuantity = args.getInt(BUNDLE_KEY_QUANTITY_SELL, 0);
         }
 
         display();
@@ -67,6 +75,7 @@ abstract public class AbstractTradeFragment extends DashboardFragment
 
     @Override public void onPause()
     {
+        THLog.d(TAG, "onPause");
         if (freshQuoteHolder != null)
         {
             freshQuoteHolder.cancel();
@@ -127,6 +136,74 @@ abstract public class AbstractTradeFragment extends DashboardFragment
         }
         // TODO handle more portfolios
         return securityPositionDetailDTO.positions.get(0).shares;
+    }
+
+    protected boolean hasValidInfoForBuy()
+    {
+        return securityId != null && securityCompactDTO != null && quoteDTO != null && quoteDTO.ask != null;
+    }
+
+    protected boolean hasValidInfoForSell()
+    {
+        return securityId != null && securityCompactDTO != null && quoteDTO != null && quoteDTO.bid != null;
+    }
+
+    protected Double getTotalCostForBuy()
+    {
+        if (quoteDTO.toUSDRate == null)
+        {
+            return mBuyQuantity * quoteDTO.ask;
+        }
+        return mBuyQuantity * quoteDTO.ask * quoteDTO.toUSDRate;
+    }
+
+    protected Double getTotalCostForSell()
+    {
+        if (quoteDTO.toUSDRate == null)
+        {
+            return mSellQuantity * quoteDTO.bid;
+        }
+        return mSellQuantity * quoteDTO.bid * quoteDTO.toUSDRate;
+    }
+
+    public String getBuyDetails()
+    {
+        if (!hasValidInfoForBuy())
+        {
+            return getResources().getString(R.string.buy_details_unavailable);
+        }
+
+        return String.format(
+                getResources().getString(R.string.buy_details),
+                mBuyQuantity,
+                securityId.exchange,
+                securityId.securitySymbol,
+                securityCompactDTO.currencyDisplay,
+                quoteDTO.ask,
+                "US$", // TODO Have this currency taken from somewhere
+                10, // TODO Have this value taken from somewhere
+                "US$", // TODO Have this currency taken from somewhere
+                getTotalCostForBuy());
+    }
+
+    public String getSellDetails()
+    {
+        if (!hasValidInfoForSell())
+        {
+            return getResources().getString(R.string.sell_details_unavailable);
+        }
+
+        return String.format(
+                getResources().getString(R.string.sell_details),
+                mSellQuantity,
+                securityId.exchange,
+                securityId.securitySymbol,
+                securityCompactDTO.currencyDisplay,
+                quoteDTO.bid,
+                "US$", // TODO Have this currency taken from somewhere
+                10, // TODO Have this value taken from somewhere
+                "US$", // TODO Have this currency taken from somewhere
+                getTotalCostForSell());
     }
 
     public void linkWith(SecurityId securityId, boolean andDisplay)
@@ -218,6 +295,11 @@ abstract public class AbstractTradeFragment extends DashboardFragment
 
     protected void prepareFreshQuoteHolder()
     {
+        if (freshQuoteHolder != null)
+        {
+            THLog.e(TAG, "We should not have been cancelling here " + freshQuoteHolder.identifier, new IllegalStateException());
+            freshQuoteHolder.cancel();
+        }
         freshQuoteHolder = new FreshQuoteHolder(securityId, MILLISEC_QUOTE_REFRESH, MILLISEC_QUOTE_COUNTDOWN_PRECISION);
         freshQuoteHolder.registerListener(this);
         freshQuoteHolder.start();
@@ -247,5 +329,4 @@ abstract public class AbstractTradeFragment extends DashboardFragment
         linkWith(quoteDTO, true);
     }
     //</editor-fold>
-
 }

@@ -69,6 +69,12 @@
   <string name="button_sell">SELL</string>
   <string name="button_cannot_buy">-</string>
   <string name="button_cannot_sell">-</string>
+  <string name="buy_details_unavailable">Preparing information...</string>
+  <string name="buy_details">Buy %1$,d %2$s:%3$s @ %4$s %5$,.2f\nTransaction fee: virtual %6$s %7$,d\nTotal cost: %8$s %9$,.2f</string>
+  <string name="sell_details_unavailable">Preparing information...</string>
+  <string name="sell_details">Sell %1$,d %2$s:%3$s @ %4$s %5$,.2f\nTransaction fee: virtual %6$s %7$,d\nNet proceeds: %8$s %9$,.2f</string>
+  <string name="share_public">Public</string>
+  <string name="share_private">Private</string>
 
   <!-- What's Trending Details - StockInfo -->
   <string name="previous_close">Previous Close</string>

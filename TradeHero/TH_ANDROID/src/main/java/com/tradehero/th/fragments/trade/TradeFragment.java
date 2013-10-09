@@ -6,7 +6,6 @@
  */
 package com.tradehero.th.fragments.trade;
 
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -21,8 +20,8 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
-import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
@@ -38,23 +37,16 @@ import com.tradehero.common.graphics.FastBlurTransformation;
 import com.tradehero.common.graphics.GrayscaleTransformation;
 import com.tradehero.common.graphics.RoundedCornerTransformation;
 import com.tradehero.common.graphics.WhiteToTransparentTransformation;
-import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.thread.KnownExecutorServices;
 import com.tradehero.common.utils.THLog;
+import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.ImageViewThreadSafe;
 import com.tradehero.th.R;
-import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.position.SecurityPositionDetailDTO;
-import com.tradehero.th.api.quote.QuoteDTO;
-import com.tradehero.th.api.SignatureContainer;
-import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.TransactionFormDTO;
 import com.tradehero.th.base.THUser;
-import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.network.service.SecurityService;
-import com.tradehero.th.persistence.position.SecurityPositionDetailCache;
-import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.utills.Logger;
 import com.tradehero.th.utills.Logger.LogLevel;
 import com.tradehero.th.widget.trade.BottomViewPager;
@@ -74,7 +66,7 @@ public class TradeFragment extends AbstractTradeFragment
 
     private View actionBar;
     private ImageButton mBackBtn;
-    private Switch mBuySellSwitch;
+    private ToggleButton mBuySellSwitch;
     private TextView mExchangeSymbol;
     private ImageView mMarketClose;
 
@@ -95,7 +87,8 @@ public class TradeFragment extends AbstractTradeFragment
 
     private Button mBuyBtn;
     private SeekBar mSlider;
-
+    private ImageButton mBtnAddCash;
+    private ImageButton mBtnAddTrigger;
 
     @Inject protected Lazy<SecurityService> securityService;
     private boolean buySellRequesting = false;
@@ -105,8 +98,6 @@ public class TradeFragment extends AbstractTradeFragment
     int maxQuantity = 0;
     int mQuantity = 0;
     int sliderMaxValue = 0;
-    int mSliderBuyQuantity;
-    int mSliderSellQuantity;
 
     int volume = 0;
     int avgDailyVolume = 0;
@@ -132,6 +123,7 @@ public class TradeFragment extends AbstractTradeFragment
         if (mQuoteRefreshProgressBar != null)
         {
             mQuoteRefreshProgressBar.setMax((int) (MILLISEC_QUOTE_REFRESH / MILLISEC_QUOTE_COUNTDOWN_PRECISION));
+            mQuoteRefreshProgressBar.setProgress(mQuoteRefreshProgressBar.getMax());
         }
 
         mStockBgLogo = (ImageViewThreadSafe) view.findViewById(R.id.stock_bg_logo);
@@ -163,6 +155,30 @@ public class TradeFragment extends AbstractTradeFragment
         if (mSlider != null)
         {
             mSlider.setOnSeekBarChangeListener(createSeekBarListener());
+        }
+
+        mBtnAddCash = (ImageButton) view.findViewById(R.id.btn_add_cash);
+        if (mBtnAddCash != null)
+        {
+            mBtnAddCash.setOnClickListener(new OnClickListener()
+            {
+                @Override public void onClick(View view)
+                {
+                    THToast.show("Nothing yet");
+                }
+            });
+        }
+
+        mBtnAddTrigger = (ImageButton) view.findViewById(R.id.btn_add_trigger);
+        if (mBtnAddTrigger != null)
+        {
+            mBtnAddTrigger.setOnClickListener(new OnClickListener()
+            {
+                @Override public void onClick(View view)
+                {
+                    THToast.show("Nothing yet");
+                }
+            });
         }
 
         mBuyBtn = (Button) view.findViewById(R.id.btn_buy);
@@ -278,7 +294,7 @@ public class TradeFragment extends AbstractTradeFragment
 
         mExchangeSymbol = (TextView) actionBar.findViewById(R.id.header_txt);
 
-        mBuySellSwitch = (Switch) actionBar.findViewById(R.id.switch_buy_sell);
+        mBuySellSwitch = (ToggleButton) actionBar.findViewById(R.id.switch_buy_sell);
         if (mBuySellSwitch != null)
         {
             mBuySellSwitch.setChecked(isTransactionTypeBuy);
@@ -313,27 +329,47 @@ public class TradeFragment extends AbstractTradeFragment
         {
             mStockChartButton.setOnClickListener(null);
         }
+        mStockChartButton = null;
+
         if (mQuickPriceButtonSet != null)
         {
             mQuickPriceButtonSet.setListener(null);
         }
+        mQuickPriceButtonSet = null;
+
         if (mSlider != null)
         {
             mSlider.setOnSeekBarChangeListener(null);
         }
+        mSlider = null;
+
+        if (mBtnAddCash != null)
+        {
+            mBtnAddCash.setOnClickListener(null);
+        }
+        mBtnAddCash = null;
+
+        if (mBtnAddTrigger != null)
+        {
+            mBtnAddTrigger.setOnClickListener(null);
+        }
+        mBtnAddTrigger = null;
+
         if (mBuyBtn != null)
         {
             mBuyBtn.setOnClickListener(null);
         }
-        mStockChartButton = null;
-        mQuickPriceButtonSet = null;
-        mSlider = null;
         mBuyBtn = null;
+
         mBottomPagerIndicator = null;
         mBottomViewPager = null;
-        mSliderBuyQuantity = 0;
-        mSliderSellQuantity = 0;
         super.onDestroyView();
+    }
+
+    @Override public void onSaveInstanceState(Bundle outState)
+    {
+        THLog.d(TAG, "onSaveInstanceState");
+        super.onSaveInstanceState(outState);
     }
 
     @Override public void onDestroy()
@@ -445,12 +481,13 @@ public class TradeFragment extends AbstractTradeFragment
         if (this.securityPositionDetailDTO == null)
         {
             // This is the first update
-            mSliderSellQuantity = getMaxSellableShares(securityPositionDetailDTO);
+            mSellQuantity = getMaxSellableShares(securityPositionDetailDTO);
         }
 
         super.linkWith(securityPositionDetailDTO, andDisplay);
     }
 
+    //<editor-fold desc="Display">
     public void display()
     {
         displayExchangeSymbol();
@@ -555,11 +592,11 @@ public class TradeFragment extends AbstractTradeFragment
 
             if (isTransactionTypeBuy)
             {
-                mTradeQuantityView.setShareQuantity(mSliderBuyQuantity);
+                mTradeQuantityView.setShareQuantity(mBuyQuantity);
             }
             else
             {
-                mTradeQuantityView.setShareQuantity(mSliderSellQuantity);
+                mTradeQuantityView.setShareQuantity(mSellQuantity);
             }
         }
     }
@@ -570,13 +607,13 @@ public class TradeFragment extends AbstractTradeFragment
         {
             if (isTransactionTypeBuy)
             {
-                mBuyBtn.setEnabled(mSliderBuyQuantity > 0);
-                mBuyBtn.setText(mSliderBuyQuantity > 0 ? R.string.button_buy : R.string.button_cannot_buy);
+                mBuyBtn.setEnabled(mBuyQuantity > 0);
+                mBuyBtn.setText(mBuyQuantity > 0 ? R.string.button_buy : R.string.button_cannot_buy);
             }
             else
             {
-                mBuyBtn.setEnabled(mSliderSellQuantity > 0);
-                mBuyBtn.setText(mSliderSellQuantity > 0 ? R.string.button_sell : R.string.button_cannot_sell);
+                mBuyBtn.setEnabled(mSellQuantity > 0);
+                mBuyBtn.setText(mSellQuantity > 0 ? R.string.button_sell : R.string.button_cannot_sell);
             }
             mBuyBtn.setAlpha(mBuyBtn.isEnabled() ? 1 : BUY_BUTTON_DISABLED_ALPHA);
         }
@@ -643,14 +680,14 @@ public class TradeFragment extends AbstractTradeFragment
                 int maxShares = getMaxPurchasableShares();
                 mSlider.setMax(maxShares);
                 mSlider.setEnabled(maxShares > 0);
-                mSlider.setProgress(mSliderBuyQuantity);
+                mSlider.setProgress(mBuyQuantity);
             }
             else
             {
                 int maxShares = getMaxSellableShares();
                 mSlider.setMax(maxShares);
                 mSlider.setEnabled(maxShares > 0);
-                mSlider.setProgress(mSliderSellQuantity);
+                mSlider.setProgress(mSellQuantity);
             }
         }
     }
@@ -891,26 +928,36 @@ public class TradeFragment extends AbstractTradeFragment
         }
     }
 
-    private double getTotalCostForBuy()
+    @Override protected void prepareFreshQuoteHolder()
     {
-        double q = Double.parseDouble(/*tvQuantity.getText().toString().replace(",", "")*/ "12");
-        return q * (lastPrice + TRANSACTION_COST);
+        super.prepareFreshQuoteHolder();
+        freshQuoteHolder.identifier = "TradeFragment";
     }
 
     private void pushBuyFragmentIn()
     {
-        String buyDetail = String.format("Buy %s %s:%s @ %s %f\nTransaction fee: virtual US$ 10\nTotal cost: US$ %.2f",
-                        /*tvQuantity.getText()*/ "quantity", securityPositionDetailDTO.security.exchange, securityPositionDetailDTO.security.symbol, securityPositionDetailDTO.security.currencyDisplay,
-                lastPrice, getTotalCostForBuy());
+        // save own state for when popped
+        Bundle own = getArguments();
+        if (own == null && securityId != null)
+        {
+            own = securityId.getArgs();
+        }
+        else if (own == null)
+        {
+            own = new Bundle();
+        }
+        own.putBoolean(BUNDLE_KEY_IS_BUY, isTransactionTypeBuy);
+        own.putInt(BUNDLE_KEY_QUANTITY_BUY, mBuyQuantity);
+        own.putInt(BUNDLE_KEY_QUANTITY_SELL, mSellQuantity);
+        //setArguments(own); // Cannot do it
 
         Bundle b = new Bundle();
-
-        b.putString(BuyFragment.BUNDLE_KEY_BUY_DETAIL_STR, buyDetail);
-        b.putString(BuyFragment.BUNDLE_KEY_LAST_PRICE, String.valueOf(lastPrice));
-        b.putString(BuyFragment.BUNDLE_KEY_QUANTITY, /*tvQuantity.getText().toString().replace(",", "")*/ "quantity");
+        b.putBoolean(BuyFragment.BUNDLE_KEY_IS_BUY, isTransactionTypeBuy);
+        b.putInt(BuyFragment.BUNDLE_KEY_QUANTITY_BUY, mBuyQuantity);
+        b.putInt(BuyFragment.BUNDLE_KEY_QUANTITY_SELL, mSellQuantity);
         securityId.putParameters(b);
 
-        navigator.pushFragment(BuyFragment.class);
+        navigator.pushFragment(BuyFragment.class, b);
     }
 
     private void buy()
@@ -922,7 +969,7 @@ public class TradeFragment extends AbstractTradeFragment
 
         TransactionFormDTO transactionFormDTO = new TransactionFormDTO();
         transactionFormDTO.signedQuoteDto = quoteDTO.rawResponse;
-        transactionFormDTO.quantity = isTransactionTypeBuy ? mSliderBuyQuantity : mSliderSellQuantity;
+        transactionFormDTO.quantity = isTransactionTypeBuy ? mBuyQuantity : mSellQuantity;
         // TODO what portfolio
         transactionFormDTO.portfolio = 0;
 
@@ -1019,11 +1066,11 @@ public class TradeFragment extends AbstractTradeFragment
 
                     if (isTransactionTypeBuy)
                     {
-                        mSliderBuyQuantity = progress;
+                        mBuyQuantity = progress;
                     }
                     else
                     {
-                        mSliderSellQuantity = progress;
+                        mSellQuantity = progress;
                     }
                 }
                 displayBuyButton();
@@ -1038,6 +1085,7 @@ public class TradeFragment extends AbstractTradeFragment
             @Override
             public void onClick(View v)
             {
+                pushBuyFragmentIn();
                 return;
                 //String buyDetail = String.format("Buy %s %s:%s @ %s %f\nTransaction fee: virtual US$ 10\nTotal cost: US$ %.2f",
                 //        /*tvQuantity.getText()*/ "quantity", securityPositionDetailDTO.security.exchange, securityPositionDetailDTO.security.symbol, securityPositionDetailDTO.security.currencyDisplay,
@@ -1047,7 +1095,7 @@ public class TradeFragment extends AbstractTradeFragment
                 //
                 //b.putString(BuyFragment.BUNDLE_KEY_BUY_DETAIL_STR, buyDetail);
                 //b.putString(BuyFragment.BUNDLE_KEY_LAST_PRICE, String.valueOf(lastPrice));
-                //b.putString(BuyFragment.BUNDLE_KEY_QUANTITY, /*tvQuantity.getText().toString().replace(",", "")*/ "quantity");
+                //b.putString(BuyFragment.BUNDLE_KEY_QUANTITY_BUY, /*tvQuantity.getText().toString().replace(",", "")*/ "quantity");
                 //b.putString(BuyFragment.BUNDLE_KEY_SYMBOL, securityPositionDetailDTO.security.symbol);
                 //b.putString(BuyFragment.BUNDLE_KEY_EXCHANGE, securityPositionDetailDTO.security.exchange);
                 //
@@ -1075,11 +1123,11 @@ public class TradeFragment extends AbstractTradeFragment
                 }
                 else if (isTransactionTypeBuy && quoteDTO.ask != null)
                 {
-                    mSliderBuyQuantity = (int) Math.floor(priceSelected / quoteDTO.ask);
+                    mBuyQuantity = (int) Math.floor(priceSelected / quoteDTO.ask);
                 }
                 else if (!isTransactionTypeBuy && quoteDTO.bid != null)
                 {
-                    mSliderSellQuantity = (int) Math.floor(priceSelected / quoteDTO.bid);
+                    mSellQuantity = (int) Math.floor(priceSelected / quoteDTO.bid);
                 }
                 else
                 {

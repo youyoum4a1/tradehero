@@ -48,13 +48,13 @@
         android:textAlignment="center"
     />
 
-  <Switch
+  <ToggleButton
       android:id="@+id/switch_buy_sell"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:switchMinWidth="50sp"
       android:layout_alignParentRight="true"
       android:layout_centerInParent="true"
+      android:textSize="16sp"
       android:textOn="@string/switch_buy"
       android:textOff="@string/switch_sell"
       />

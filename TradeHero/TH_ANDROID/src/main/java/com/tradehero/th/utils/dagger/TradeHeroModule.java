@@ -2,7 +2,6 @@ package com.tradehero.th.utils.dagger;
 
 import android.app.Application;
 import android.content.Context;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tradehero.common.cache.DatabaseCache;
 import com.tradehero.common.persistence.CacheHelper;
 import com.tradehero.th.api.form.UserAvailabilityRequester;
@@ -10,6 +9,7 @@ import com.tradehero.th.base.THUser;
 import com.tradehero.th.fragments.authentication.EmailSignInFragment;
 import com.tradehero.th.fragments.timeline.MeTimelineFragment;
 import com.tradehero.th.fragments.timeline.TimelineFragment;
+import com.tradehero.th.fragments.trade.BuyFragment;
 import com.tradehero.th.fragments.trade.FreshQuoteHolder;
 import com.tradehero.th.fragments.trending.SearchStockPeopleFragment;
 import com.tradehero.th.fragments.trade.TradeFragment;
@@ -23,13 +23,9 @@ import com.tradehero.th.network.service.UserService;
 import com.tradehero.th.network.service.UserTimelineService;
 import com.tradehero.th.persistence.TimelineManager;
 import com.tradehero.th.persistence.TimelineStore;
-import com.tradehero.th.persistence.position.AbstractSecurityPositionDetailStore;
 import com.tradehero.th.persistence.position.SecurityPositionDetailCache;
-import com.tradehero.th.persistence.security.AbstractSecurityCompactStore;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.persistence.security.SecurityCompactListCache;
-import com.tradehero.th.persistence.security.SecurityCompactStore;
-import com.tradehero.th.persistence.position.SecurityPositionDetailStore;
 import com.tradehero.th.persistence.user.AbstractUserStore;
 import com.tradehero.th.persistence.user.UserManager;
 import com.tradehero.th.persistence.user.UserStore;
@@ -52,6 +48,7 @@ import javax.inject.Singleton;
 
                 TrendingFragment.class,
                 FreshQuoteHolder.class,
+                BuyFragment.class,
 
                 UserAvailabilityRequester.class,
                 SearchStockPageItemListLoader.class,

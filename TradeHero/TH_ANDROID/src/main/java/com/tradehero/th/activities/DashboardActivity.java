@@ -3,6 +3,7 @@ package com.tradehero.th.activities;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTabHost;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
+import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.base.NavigatorActivity;
@@ -15,12 +16,15 @@ import com.tradehero.th.fragments.trending.TrendingFragment;
 public class DashboardActivity extends SherlockFragmentActivity
     implements NavigatorActivity
 {
+    public static final String TAG = DashboardActivity.class.getSimpleName();
+
     private static final String BUNDLE_KEY = "key";
     private FragmentTabHost mTabHost;
     private Navigator navigator;
 
     public void onCreate(Bundle savedInstanceState)
     {
+        THLog.d(TAG, "onCreate");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.dashboard_with_bottom_bar);
 

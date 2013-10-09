@@ -33,6 +33,7 @@ public class FreshQuoteHolder
     private final List<WeakReference<FreshQuoteListener>> listeners; // TODO weak references?
     private CountDownTimer nextQuoteCountDownTimer;
     private boolean refreshing = false;
+    public String identifier = "noId";
 
     @Inject protected Lazy<QuoteService> quoteService;
 
@@ -176,7 +177,6 @@ public class FreshQuoteHolder
 
     private void handleReceivedQuote(SignatureContainer<QuoteDTO> signedQuoteDTO, Response response)
     {
-        THLog.d(TAG, "handleReceivedQuote");
         QuoteDTO quoteDTO = null;
         if (signedQuoteDTO != null && signedQuoteDTO.signedObject != null)
         {
