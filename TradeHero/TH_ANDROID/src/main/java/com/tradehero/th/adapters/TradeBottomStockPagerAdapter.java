@@ -10,6 +10,7 @@ import com.tradehero.common.utils.THLog;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.position.SecurityPositionDetailDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
+import com.tradehero.th.fragments.trade.ChartFragment;
 import com.tradehero.th.fragments.trade.StockInfoFragment;
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
@@ -20,16 +21,14 @@ import javax.inject.Inject;
 public class TradeBottomStockPagerAdapter extends FragmentPagerAdapter implements DTOView<SecurityPositionDetailDTO>
 {
     public static final String TAG = TradeBottomStockPagerAdapter.class.getSimpleName();
+    public static Class classes[] = new Class[]{ ChartFragment.class, StockInfoFragment.class };
 
     private SecurityPositionDetailDTO securityPositionDetailDTO;
-
-    // This feels like a HACK
-    private Map<Integer, WeakReference<Fragment>> fragments = new HashMap<>();
 
     //<editor-fold desc="Constructors">
     public TradeBottomStockPagerAdapter(FragmentManager fm)
     {
-        super(fm);
+        this(fm, null);
         THLog.d(TAG, "constructor");
     }
 
@@ -41,70 +40,44 @@ public class TradeBottomStockPagerAdapter extends FragmentPagerAdapter implement
     }
     //</editor-fold>
 
-    @Override public void destroyItem(ViewGroup container, int position, Object object)
+
+    @Override
+    public int getItemPosition(Object object)
     {
-        fragments.remove(position);
-        super.destroyItem(container, position, object);
+        if (securityPositionDetailDTO != null)
+        {
+            ((DTOView<SecurityCompactDTO>)object).display(securityPositionDetailDTO.security);
+        }
+        return POSITION_UNCHANGED;
     }
 
     public void display(SecurityPositionDetailDTO securityPositionDetailDTO)
     {
         this.securityPositionDetailDTO = securityPositionDetailDTO;
-        if (securityPositionDetailDTO != null)
-        {
-            for(WeakReference<Fragment> fragment: fragments.values())
-            {
-                if (fragment != null && fragment.get() != null)
-                {
-                    ((DTOView<SecurityCompactDTO>) fragment.get()).display(securityPositionDetailDTO.security);
-                }
-            }
-        }
         notifyDataSetChanged();
     }
 
     @Override public int getCount()
     {
-        return 3;
+        return classes.length;
     }
 
     @Override public Fragment getItem(int i)
     {
-        THLog.d(TAG, "getItem " + i);
         Fragment fragment = null;
-        if (fragments.containsKey(i) && fragments.get(i) != null && fragments.get(i).get() != null)
+        try
         {
-            THLog.d(TAG, "has item " + i);
-            fragment = fragments.get(i).get();
-        }
-        else
+            fragment = (Fragment)classes[i].newInstance();
+        } catch (InstantiationException e)
         {
-            THLog.d(TAG, "create item " + i);
-            switch(i)
-            {
-                case 0:
-                    // graph view
-                    // TEMP
-                    fragment = new StockInfoFragment();
-                    break;
-                case 1:
-                    fragment = new StockInfoFragment();
-                    break;
-                case 2:
-                    // news view
-                    // TEMP
-                    fragment = new StockInfoFragment();
-                    break;
-                default:
-                    throw new IllegalArgumentException("Cannot handle i=" + i);
-            }
-            if (securityPositionDetailDTO != null)
-            {
-                ((DTOView<SecurityCompactDTO>) fragment).display(securityPositionDetailDTO.security);
-            }
-            fragments.put(i, new WeakReference<>(fragment));
+        } catch (IllegalAccessException e)
+        {
         }
 
+        if (securityPositionDetailDTO != null)
+        {
+            ((DTOView<SecurityCompactDTO>) fragment).display(securityPositionDetailDTO.security);
+        }
         return fragment;
     }
 
