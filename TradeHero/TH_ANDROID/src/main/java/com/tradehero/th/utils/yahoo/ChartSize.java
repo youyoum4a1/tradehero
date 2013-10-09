@@ -12,15 +12,18 @@ public enum ChartSize
 
     private final String code;
 
-    private ChartSize(String c) {
+    private ChartSize(String c)
+    {
         code = c;
     }
 
-    public boolean equalsCode(String otherCode){
-        return (otherCode == null)? false:code.equals(otherCode);
+    public boolean equalsCode(String otherCode)
+    {
+        return (otherCode != null) && otherCode.equals(code);
     }
 
-    public String toString(){
+    public String toString()
+    {
         return code;
     }
 }

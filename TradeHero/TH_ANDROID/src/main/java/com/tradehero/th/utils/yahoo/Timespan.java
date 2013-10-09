@@ -16,15 +16,18 @@ public enum Timespan
 
     private final String code;
 
-    private Timespan(String c) {
+    private Timespan(String c)
+    {
         code = c;
     }
 
-    public boolean equalsCode(String otherCode){
-        return (otherCode == null)? false:code.equals(otherCode);
+    public boolean equalsCode(String otherCode)
+    {
+        return (otherCode != null) && otherCode.equals(code);
     }
 
-    public String toString(){
+    public String toString()
+    {
         return code;
     }
 }
