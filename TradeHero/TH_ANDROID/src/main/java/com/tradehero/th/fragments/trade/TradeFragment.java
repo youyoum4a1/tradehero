@@ -239,7 +239,7 @@ public class TradeFragment extends AbstractTradeFragment
 
         //mCashAvailableValue
 
-        display();
+        displayPageElements();
     }
 
     @Override public void onActivityCreated(Bundle savedInstanceState)
@@ -303,7 +303,7 @@ public class TradeFragment extends AbstractTradeFragment
         }
 
         // We display here as onCreateOptionsMenu may be called after onResume
-        display();
+        displayActionBarElements();
     }
 
     @Override public void onDestroyOptionsMenu()
@@ -490,18 +490,8 @@ public class TradeFragment extends AbstractTradeFragment
     //<editor-fold desc="Display">
     public void display()
     {
-        displayExchangeSymbol();
-        displayMarketClose();
-        displayPricingBidAskView();
-        displayTradeQuantityView();
-        displayBuyButton();
-        displayBottomViewPager();
-        displayStockName();
-        displayQuickPriceButtonSet();
-        displaySlider();
-        displayBuySellSwitch();
-        storeImageUrlInImageViews();
-        loadImages();
+        displayActionBarElements();
+        displayPageElements();
 
         if (securityCompactDTO != null && !TextUtils.isEmpty(securityCompactDTO.yahooSymbol))
         {
@@ -526,6 +516,26 @@ public class TradeFragment extends AbstractTradeFragment
         {
             volume = (int) Math.ceil(securityCompactDTO.volume);
         }
+    }
+
+    public void displayActionBarElements()
+    {
+        displayExchangeSymbol();
+        displayMarketClose();
+        displayBuySellSwitch();
+    }
+
+    public void displayPageElements()
+    {
+        displayPricingBidAskView();
+        displayTradeQuantityView();
+        displayBuyButton();
+        displayBottomViewPager();
+        displayStockName();
+        displayQuickPriceButtonSet();
+        displaySlider();
+        storeImageUrlInImageViews();
+        loadImages();
     }
 
     public void displayExchangeSymbol()

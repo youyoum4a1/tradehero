@@ -69,8 +69,6 @@ abstract public class AbstractTradeFragment extends DashboardFragment
             mBuyQuantity = args.getInt(BUNDLE_KEY_QUANTITY_BUY, 0);
             mSellQuantity = args.getInt(BUNDLE_KEY_QUANTITY_SELL, 0);
         }
-
-        display();
     }
 
     @Override public void onPause()
