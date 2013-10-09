@@ -5,6 +5,7 @@
   </component>
   <component name="FrameworkDetectionExcludesConfiguration">
     <file type="android" url="file://$PROJECT_DIR$/Android-PullToRefresh/library" />
+    <file type="android" url="file://$PROJECT_DIR$/viewpagerindicator/library" />
   </component>
   <component name="IdProvider" IDEtalkID="628593F540B384ACF0C145CD8A380DE6" />
   <component name="MavenProjectsManager">
@@ -17,6 +18,7 @@
         <option value="$PROJECT_DIR$/Android-PullToRefresh/library/pom.xml" />
         <option value="$PROJECT_DIR$/dagger/compiler/pom.xml" />
         <option value="$PROJECT_DIR$/dagger/core/pom.xml" />
+        <option value="$PROJECT_DIR$/viewpagerindicator/library/pom.xml" />
       </list>
     </option>
     <option name="ignoredFiles">

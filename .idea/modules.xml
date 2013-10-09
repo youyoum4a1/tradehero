@@ -11,6 +11,7 @@
       <module fileurl="file://$PROJECT_DIR$/picasso.iml" filepath="$PROJECT_DIR$/picasso.iml" />
       <module fileurl="file://$PROJECT_DIR$/prettytime.iml" filepath="$PROJECT_DIR$/prettytime.iml" />
       <module fileurl="file://$PROJECT_DIR$/retrofit.iml" filepath="$PROJECT_DIR$/retrofit.iml" />
+      <module fileurl="file://$PROJECT_DIR$/viewpagerIndicator.iml" filepath="$PROJECT_DIR$/viewpagerIndicator.iml" />
       <module fileurl="file://$PROJECT_DIR$/viewpagerindicator/library/viewpagerindicator.iml" filepath="$PROJECT_DIR$/viewpagerindicator/library/viewpagerindicator.iml" />
     </modules>
   </component>
