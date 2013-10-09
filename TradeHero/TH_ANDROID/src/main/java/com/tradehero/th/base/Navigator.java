@@ -7,6 +7,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.view.ViewGroup;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
+import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -90,15 +91,21 @@ public class Navigator
 
     private class FragmentFactory
     {
-        private Map<Class<?>, Fragment> instances = new HashMap<>();
+        private Map<Class<?>, WeakReference<Fragment>> instances = new HashMap<>();
 
         public Fragment getInstance(Class<?> clss, Bundle args)
         {
-            Fragment fragment = instances.get(clss);
+            Fragment fragment = null;
+            WeakReference<Fragment> weakFragment = instances.get(clss);
+            if (weakFragment != null)
+            {
+                fragment = weakFragment.get();
+            }
+
             if (fragment == null)
             {
                 fragment = Fragment.instantiate(fragmentActivity, clss.getName(), args);
-                instances.put(clss, fragment);
+                instances.put(clss, new WeakReference<>(fragment));
             }
             else
             {
