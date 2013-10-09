@@ -17,18 +17,41 @@ import javax.inject.Inject;
 /**
  * Created by julien on 9/10/13
  */
-public class ChartFragment  extends SherlockFragment implements DTOView<SecurityCompactDTO>
+public class ChartFragment extends SherlockFragment implements DTOView<SecurityCompactDTO>
 {
     private final static String TAG = ChartFragment.class.getSimpleName();
+    public final static String BUNDLE_KEY_YAHOO_SYMBOL = ChartFragment.class.getName() + ".yahooSymbol";
 
     private ImageView stockBgLogo;
+    private String yahooSymbol;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.fragment_chart, container, false);
         stockBgLogo = (ImageView)view.findViewById(R.id.chart_imageView);
+
+        if (savedInstanceState != null)
+        {
+            yahooSymbol = savedInstanceState.getString(BUNDLE_KEY_YAHOO_SYMBOL, null);
+        }
+
         return view;
+    }
+
+    @Override public void onResume()
+    {
+        super.onResume();
+        loadImage();
+    }
+
+    @Override public void onSaveInstanceState(Bundle outState)
+    {
+        super.onSaveInstanceState(outState);
+        if (yahooSymbol != null)
+        {
+            outState.putString(BUNDLE_KEY_YAHOO_SYMBOL, yahooSymbol);
+        }
     }
 
     @Override
@@ -36,7 +59,16 @@ public class ChartFragment  extends SherlockFragment implements DTOView<Security
     {
         if (dto.yahooSymbol != null)
         {
-            String imageURL = Utils.getChartURL(dto.yahooSymbol, ChartSize.large, Timespan.months3);
+            yahooSymbol = dto.yahooSymbol;
+            loadImage();
+        }
+    }
+
+    private void loadImage()
+    {
+        if (yahooSymbol != null)
+        {
+            String imageURL = Utils.getChartURL(yahooSymbol, ChartSize.large, Timespan.months3);
             Picasso.with(getActivity()).load(imageURL).into(stockBgLogo);
         }
     }
