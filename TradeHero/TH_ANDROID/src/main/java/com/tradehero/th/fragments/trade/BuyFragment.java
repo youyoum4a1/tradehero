@@ -20,8 +20,11 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.api.position.SecurityPositionDetailDTO;
 import com.tradehero.th.api.security.TransactionFormDTO;
+import com.tradehero.th.api.users.UserBaseKey;
+import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.THUser;
 import com.tradehero.th.network.service.SecurityService;
+import com.tradehero.th.persistence.user.UserProfileCache;
 import dagger.Lazy;
 import java.util.LinkedHashMap;
 import javax.inject.Inject;
@@ -86,6 +89,7 @@ public class BuyFragment extends AbstractTradeFragment
 
 
     @Inject protected Lazy<SecurityService> securityService;
+    @Inject protected Lazy<UserProfileCache> userProfileCache;
     private boolean isBuying = false;
     private boolean isSelling = false;
     private AsyncTask<Void, Void, SecurityPositionDetailDTO> buySellTask;
@@ -546,6 +550,17 @@ public class BuyFragment extends AbstractTradeFragment
                 if (returned != null)
                 {
                     securityPositionDetailCache.get().put(securityId, returned);
+
+                    if (returned.portfolio != null)
+                    {
+                        UserBaseKey userBaseKey = THUser.getCurrentUserBase().getBaseKey();
+                        UserProfileDTO userProfileDTO = userProfileCache.get().get(userBaseKey);
+                        if (userProfileDTO != null && (userProfileDTO.portfolio == null || userProfileDTO.portfolio.id == returned.portfolio.id))
+                        {
+                            userProfileDTO.portfolio = returned.portfolio;
+                            userProfileCache.get().put(userBaseKey, userProfileDTO);
+                        }
+                    }
                 }
                 return returned;
             }

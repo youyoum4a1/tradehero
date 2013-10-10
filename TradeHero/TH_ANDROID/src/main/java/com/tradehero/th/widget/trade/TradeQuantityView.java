@@ -13,7 +13,7 @@ import com.tradehero.th.api.position.SecurityPositionDetailDTO;
 import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityType;
-import com.tradehero.th.base.THUser;
+import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.utills.DateUtils;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 9/23/13 Time: 3:44 PM To change this template use File | Settings | File Templates. */
@@ -41,6 +41,7 @@ public class TradeQuantityView extends TableLayout implements DTOView<SecurityCo
 
     private SecurityCompactDTO securityCompactDTO;
     private SecurityPositionDetailDTO securityPositionDetailDTO;
+    private UserProfileDTO userProfileDTO;
     private QuoteDTO quoteDTO;
     private boolean buy = true;
     private boolean refreshingQuote = false;
@@ -82,7 +83,11 @@ public class TradeQuantityView extends TableLayout implements DTOView<SecurityCo
     public void setBuy(boolean buy)
     {
         this.buy = buy;
-        display();
+        displayCashAvailableRow();
+        displayShareAvailableRow();
+        displayTradeValue();
+        displayProjectedPL();
+        displayProjectedPLRow();
     }
 
     public boolean isRefreshingQuote()
@@ -97,7 +102,7 @@ public class TradeQuantityView extends TableLayout implements DTOView<SecurityCo
         {
             mTradeValueRow.startAnimation(AnimationUtils.loadAnimation(getContext(), R.anim.alpha_out));
         }
-        display();
+        displayTradeValueRow();
     }
 
     public double getShareQuantity()
@@ -153,7 +158,8 @@ public class TradeQuantityView extends TableLayout implements DTOView<SecurityCo
     @Override public void display(SecurityCompactDTO securityCompactDTO)
     {
         this.securityCompactDTO = securityCompactDTO;
-        display();
+        displaySecurityType();
+        displayPriceAsOf();
     }
 
     public void display(SecurityPositionDetailDTO securityPositionDetailDTO)
@@ -161,15 +167,24 @@ public class TradeQuantityView extends TableLayout implements DTOView<SecurityCo
         this.securityPositionDetailDTO = securityPositionDetailDTO;
         if (securityPositionDetailDTO != null)
         {
-            securityCompactDTO = securityPositionDetailDTO.security;
+            display(securityPositionDetailDTO.security);
         }
-        display();
+        displayShareAvailable();
+        displayProjectedPL();
+    }
+
+    public void display(UserProfileDTO userProfileDTO)
+    {
+        this.userProfileDTO = userProfileDTO;
+        displayCashAvailable();
     }
 
     public void display(QuoteDTO quoteDTO)
     {
         this.quoteDTO = quoteDTO;
-        display();
+        displayPriceAsOf();
+        displayTradeValue();
+        displayProjectedPL();
     }
 
     //<editor-fold desc="Display Methods">
@@ -224,9 +239,9 @@ public class TradeQuantityView extends TableLayout implements DTOView<SecurityCo
 
     public void displayCashAvailable()
     {
-        double cashAvailable = THUser.getCurrentUser().portfolio.cashBalance;
-        if (mCashAvailable != null)
+        if (mCashAvailable != null && userProfileDTO != null && userProfileDTO.portfolio != null)
         {
+            double cashAvailable = userProfileDTO.portfolio.cashBalance;
             if (cashAvailable == (int) cashAvailable)
             {
                 mCashAvailable.setText(String.format("US$ %,d", (int) cashAvailable));

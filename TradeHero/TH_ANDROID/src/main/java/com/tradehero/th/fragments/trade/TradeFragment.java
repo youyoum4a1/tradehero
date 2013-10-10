@@ -44,7 +44,7 @@ import com.tradehero.common.widget.ImageViewThreadSafe;
 import com.tradehero.th.R;
 import com.tradehero.th.api.position.SecurityPositionDetailDTO;
 import com.tradehero.th.api.security.SecurityId;
-import com.tradehero.th.base.THUser;
+import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.network.service.SecurityService;
 import com.tradehero.th.utills.Logger;
 import com.tradehero.th.utills.Logger.LogLevel;
@@ -90,7 +90,6 @@ public class TradeFragment extends AbstractTradeFragment
     private ImageButton mBtnAddTrigger;
 
     @Inject protected Lazy<SecurityService> securityService;
-    private boolean buySellRequesting = false;
 
     double lastPrice;
     int sliderIncrement = 0;
@@ -497,6 +496,17 @@ public class TradeFragment extends AbstractTradeFragment
         }
     }
 
+    @Override public void linkWith(UserProfileDTO userProfileDTO, boolean andDisplay)
+    {
+        super.linkWith(userProfileDTO, andDisplay);
+        if (andDisplay)
+        {
+            displayTradeQuantityView();
+            displayQuickPriceButtonSet();
+            displaySlider();
+        }
+    }
+
     //<editor-fold desc="Display Methods">
     public void display()
     {
@@ -609,6 +619,7 @@ public class TradeFragment extends AbstractTradeFragment
             }
 
             mTradeQuantityView.display(quoteDTO);
+            mTradeQuantityView.display(userProfileDTO);
 
             if (isTransactionTypeBuy)
             {
@@ -677,7 +688,14 @@ public class TradeFragment extends AbstractTradeFragment
             else if (isTransactionTypeBuy)
             {
                 mQuickPriceButtonSet.setEnabled(true);
-                mQuickPriceButtonSet.setMaxPrice(THUser.getCurrentUser().portfolio.cashBalance);
+                if (this.userProfileDTO == null)
+                {
+                    requestUserProfile();
+                }
+                else if (userProfileDTO.portfolio != null)
+                {
+                    mQuickPriceButtonSet.setMaxPrice(userProfileDTO.portfolio.cashBalance);
+                }
             }
             else if (!isTransactionTypeBuy && (quoteDTO.bid == null || quoteDTO.toUSDRate == null))
             {

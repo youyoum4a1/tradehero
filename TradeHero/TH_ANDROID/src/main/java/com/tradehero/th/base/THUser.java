@@ -17,6 +17,8 @@ import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.misc.exception.THException.ExceptionCode;
 import com.tradehero.th.network.NetworkEngine;
 import com.tradehero.th.network.service.UserService;
+import com.tradehero.th.persistence.user.UserProfileCache;
+import dagger.Lazy;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
@@ -45,6 +47,7 @@ public class THUser
     private static String currentAuthenticationType;
 
     @Inject static UserService userService;
+    @Inject static protected Lazy<UserProfileCache> userProfileCache;
 
     public static void initialize()
     {
@@ -203,6 +206,20 @@ public class THUser
         }
     }
 
+    public static UserBaseDTO getCurrentUserBase()
+    {
+        String serializedUser = Application.getPreferences().getString(PREF_MY_USER, null);
+        if (serializedUser != null)
+        {
+            UserBaseDTO user = (UserBaseDTO) THJsonAdapter.getInstance()
+                    .fromBody(serializedUser, UserBaseDTO.class);
+            return user;
+        }
+        return null;
+    }
+
+    // Use getCurrentUserBase instead and then query UserProfileCache
+    @Deprecated
     public static UserProfileDTO getCurrentUser()
     {
         String serializedUser = Application.getPreferences().getString(PREF_MY_USER, null);

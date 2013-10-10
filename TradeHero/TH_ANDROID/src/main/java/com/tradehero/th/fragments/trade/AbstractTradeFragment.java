@@ -10,10 +10,14 @@ import com.tradehero.th.api.position.SecurityPositionDetailDTO;
 import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
+import com.tradehero.th.api.users.UserBaseDTO;
+import com.tradehero.th.api.users.UserBaseKey;
+import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.THUser;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.persistence.position.SecurityPositionDetailCache;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
+import com.tradehero.th.persistence.user.UserProfileCache;
 import dagger.Lazy;
 import javax.inject.Inject;
 
@@ -36,12 +40,16 @@ abstract public class AbstractTradeFragment extends DashboardFragment
 
     @Inject protected Lazy<SecurityCompactCache> securityCompactCache;
     @Inject protected Lazy<SecurityPositionDetailCache> securityPositionDetailCache;
-
     protected SecurityId securityId;
     protected SecurityCompactDTO securityCompactDTO;
     protected SecurityPositionDetailDTO securityPositionDetailDTO;
     protected boolean querying = false;
     protected AsyncTask<Void, Void, SecurityPositionDetailDTO> fetchPositionDetailTask;
+
+    @Inject protected Lazy<UserProfileCache> userProfileCache;
+    protected UserProfileDTO userProfileDTO;
+    protected DTOCache.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
+    protected AsyncTask<Void, Void, UserProfileDTO> fetchUserProfileTask;
 
     protected FreshQuoteHolder freshQuoteHolder;
     protected QuoteDTO quoteDTO;
@@ -115,6 +123,14 @@ abstract public class AbstractTradeFragment extends DashboardFragment
             fetchPositionDetailTask.cancel(false);
         }
         fetchPositionDetailTask = null;
+
+        if (fetchUserProfileTask != null)
+        {
+            fetchUserProfileTask.cancel(false);
+        }
+        fetchUserProfileTask = null;
+        userProfileCacheListener = null;
+
         querying = false;
 
         super.onDestroyView();
@@ -132,16 +148,24 @@ abstract public class AbstractTradeFragment extends DashboardFragment
 
     public int getMaxPurchasableShares()
     {
-        return getMaxPurchasableShares(this.quoteDTO);
+        UserBaseDTO userBase = THUser.getCurrentUserBase();
+        UserProfileDTO userProfileDTO = userProfileCache.get().get(userBase.getBaseKey());
+        if (userProfileDTO == null)
+        {
+            requestUserProfile();
+
+        }
+        return getMaxPurchasableShares(this.quoteDTO, userProfileDTO);
     }
 
-    public static int getMaxPurchasableShares(QuoteDTO quoteDTO)
+    public static int getMaxPurchasableShares(QuoteDTO quoteDTO, UserProfileDTO userProfileDTO)
     {
-        if (quoteDTO == null || quoteDTO.ask == null || quoteDTO.ask == 0 || quoteDTO.toUSDRate == null || quoteDTO.toUSDRate == 0)
+        if (quoteDTO == null || quoteDTO.ask == null || quoteDTO.ask == 0 || quoteDTO.toUSDRate == null || quoteDTO.toUSDRate == 0 ||
+                userProfileDTO == null || userProfileDTO.portfolio == null)
         {
             return 0;
         }
-        return (int) Math.floor(THUser.getCurrentUser().portfolio.cashBalance / (quoteDTO.ask * quoteDTO.toUSDRate));
+        return (int) Math.floor(userProfileDTO.portfolio.cashBalance / (quoteDTO.ask * quoteDTO.toUSDRate));
     }
 
     public int getMaxSellableShares()
@@ -159,6 +183,18 @@ abstract public class AbstractTradeFragment extends DashboardFragment
             return 0;
         }
         return securityPositionDetailDTO.positions.get(positionIndex).shares;
+    }
+
+    protected void requestUserProfile()
+    {
+        if (fetchUserProfileTask != null)
+        {
+            fetchUserProfileTask.cancel(false);
+        }
+        UserBaseKey baseKey = THUser.getCurrentUserBase().getBaseKey();
+        userProfileCacheListener = createUserProfileListener(baseKey); // We need to keep a strong reference because the cache does not
+        fetchUserProfileTask = userProfileCache.get().getOrFetch(baseKey, false, userProfileCacheListener);
+        fetchUserProfileTask.execute();
     }
 
     protected boolean hasValidInfoForBuy()
@@ -307,6 +343,15 @@ abstract public class AbstractTradeFragment extends DashboardFragment
         }
     }
 
+    public void linkWith(final UserProfileDTO userProfileDTO, boolean andDisplay)
+    {
+        this.userProfileDTO = userProfileDTO;
+        if (andDisplay)
+        {
+            // Nothing to do really in this class
+        }
+    }
+
     protected void linkWith(QuoteDTO quoteDTO, boolean andDisplay)
     {
         this.quoteDTO = quoteDTO;
@@ -338,6 +383,19 @@ abstract public class AbstractTradeFragment extends DashboardFragment
         }
     }
 
+    private DTOCache.Listener<UserBaseKey, UserProfileDTO> createUserProfileListener(final UserBaseKey userBaseKey)
+    {
+        return new DTOCache.Listener<UserBaseKey, UserProfileDTO>()
+        {
+            @Override public void onDTOReceived(UserBaseKey key, UserProfileDTO value)
+            {
+                if (key.equals(userBaseKey))
+                {
+                    linkWith(value, true);
+                }
+            }
+        };
+    }
 
     //<editor-fold desc="FreshQuoteHolder.FreshQuoteListener">
     @Override abstract public void onMilliSecToRefreshQuote(long milliSecToRefresh);
