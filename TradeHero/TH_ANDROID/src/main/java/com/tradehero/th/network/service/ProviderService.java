@@ -1,7 +1,10 @@
 package com.tradehero.th.network.service;
 
+import com.tradehero.th.api.competition.CompetitionFormDTO;
+import com.tradehero.th.api.competition.HelpVideoDTO;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
+import com.tradehero.th.api.users.UserProfileDTO;
 import java.util.List;
 import java.util.Map;
 import retrofit.Callback;
@@ -152,5 +155,17 @@ public interface ProviderService
             @Query("page") int page,
             @Query("perPage") int perPage,
             Callback<Map<String, Object>> callback);
+    //</editor-fold>
+
+    //<editor-fold desc="Get Help Videos">
+    @GET("/providers/{providerId}/helpVideos")
+    List<HelpVideoDTO> getHelpVideos(
+            @Path("providerId") int providerId)
+            throws RetrofitError;
+
+    @GET("/providers/{providerId}/helpVideos")
+    void getHelpVideos(
+            @Path("providerId") int providerId,
+            Callback<List<HelpVideoDTO>> callback);
     //</editor-fold>
 }
