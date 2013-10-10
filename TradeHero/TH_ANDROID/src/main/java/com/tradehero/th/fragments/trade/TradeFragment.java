@@ -43,6 +43,8 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.ImageViewThreadSafe;
 import com.tradehero.th.R;
 import com.tradehero.th.api.position.SecurityPositionDetailDTO;
+import com.tradehero.th.api.quote.QuoteDTO;
+import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.network.service.SecurityService;
@@ -480,19 +482,56 @@ public class TradeFragment extends AbstractTradeFragment
 
     //<editor-fold desc="Display methods">
 
+    @Override public void linkWith(SecurityId securityId, boolean andDisplay)
+    {
+        super.linkWith(securityId, andDisplay);
+        if (andDisplay)
+        {
+            displayExchangeSymbol();
+        }
+    }
+
+    @Override public void linkWith(SecurityCompactDTO securityCompactDTO, boolean andDisplay)
+    {
+        super.linkWith(securityCompactDTO, andDisplay);
+        if (andDisplay)
+        {
+            displayMarketClose();
+            displayPricingBidAskView();
+            displayTradeQuantityView();
+            displayStockName();
+            storeImageUrlInImageViews();
+            loadImages();
+        }
+    }
+
     @Override public void linkWith(final SecurityPositionDetailDTO securityPositionDetailDTO, boolean andDisplay)
     {
-        if (this.securityPositionDetailDTO == null)
+        Integer maxSellableShares = getMaxSellableShares(securityPositionDetailDTO, mPositionIndex); // TODO use other position indices
+        if (this.securityPositionDetailDTO == null) // This is the first update
         {
-            // This is the first update
-            mSellQuantity = getMaxSellableShares(securityPositionDetailDTO, mPositionIndex);
+            if (maxSellableShares != null)
+            {
+                mSellQuantity = maxSellableShares;
+            }
         }
 
         super.linkWith(securityPositionDetailDTO, andDisplay);
 
-        if (this.securityPositionDetailDTO != null && getMaxSellableShares() == 0)
+        if (this.securityPositionDetailDTO != null && maxSellableShares != null && maxSellableShares.intValue() == 0)
         {
+            // Nothing to sell
             setTransactionTypeBuy(true);
+        }
+
+        if (andDisplay)
+        {
+            displayPricingBidAskView();
+            displayTradeQuantityView();
+            displayBottomViewPager();
+            displayQuickPriceButtonSet();
+            displaySlider();
+            displayBuySellSwitch();
         }
     }
 
@@ -501,6 +540,18 @@ public class TradeFragment extends AbstractTradeFragment
         super.linkWith(userProfileDTO, andDisplay);
         if (andDisplay)
         {
+            displayTradeQuantityView();
+            displayQuickPriceButtonSet();
+            displaySlider();
+        }
+    }
+
+    @Override protected void linkWith(QuoteDTO quoteDTO, boolean andDisplay)
+    {
+        super.linkWith(quoteDTO, andDisplay);
+        if (andDisplay)
+        {
+            displayPricingBidAskView();
             displayTradeQuantityView();
             displayQuickPriceButtonSet();
             displaySlider();
@@ -562,9 +613,9 @@ public class TradeFragment extends AbstractTradeFragment
     {
         if (mExchangeSymbol != null)
         {
-            if (securityCompactDTO != null)
+            if (securityId != null)
             {
-                mExchangeSymbol.setText(String.format("%s:%s", securityCompactDTO.exchange, securityCompactDTO.symbol));
+                mExchangeSymbol.setText(String.format("%s:%s", securityId.exchange, securityId.securitySymbol));
             }
             else
             {
@@ -688,11 +739,7 @@ public class TradeFragment extends AbstractTradeFragment
             else if (isTransactionTypeBuy)
             {
                 mQuickPriceButtonSet.setEnabled(true);
-                if (this.userProfileDTO == null)
-                {
-                    requestUserProfile();
-                }
-                else if (userProfileDTO.portfolio != null)
+                if (this.userProfileDTO != null && userProfileDTO.portfolio != null)
                 {
                     mQuickPriceButtonSet.setMaxPrice(userProfileDTO.portfolio.cashBalance);
                 }
@@ -704,7 +751,11 @@ public class TradeFragment extends AbstractTradeFragment
             else if (!isTransactionTypeBuy)
             {
                 mQuickPriceButtonSet.setEnabled(true);
-                mQuickPriceButtonSet.setMaxPrice(getMaxSellableShares() * quoteDTO.ask * quoteDTO.toUSDRate);
+                Integer maxSellableShares = getMaxSellableShares();
+                if (maxSellableShares != null)
+                {
+                    mQuickPriceButtonSet.setMaxPrice(maxSellableShares * quoteDTO.ask * quoteDTO.toUSDRate);
+                }
             }
         }
     }
@@ -715,17 +766,23 @@ public class TradeFragment extends AbstractTradeFragment
         {
             if (isTransactionTypeBuy)
             {
-                int maxShares = getMaxPurchasableShares();
-                mSlider.setMax(maxShares);
-                mSlider.setEnabled(maxShares > 0);
-                mSlider.setProgress(mBuyQuantity);
+                Integer maxPurchasableShares = getMaxPurchasableShares();
+                if (maxPurchasableShares != null)
+                {
+                    mSlider.setMax(maxPurchasableShares);
+                    mSlider.setEnabled(maxPurchasableShares > 0);
+                    mSlider.setProgress(mBuyQuantity);
+                }
             }
             else
             {
-                int maxShares = getMaxSellableShares();
-                mSlider.setMax(maxShares);
-                mSlider.setEnabled(maxShares > 0);
-                mSlider.setProgress(mSellQuantity);
+                Integer maxSellableShares = getMaxSellableShares();
+                if (maxSellableShares != null)
+                {
+                    mSlider.setMax(maxSellableShares);
+                    mSlider.setEnabled(maxSellableShares > 0);
+                    mSlider.setProgress(mSellQuantity);
+                }
             }
         }
     }

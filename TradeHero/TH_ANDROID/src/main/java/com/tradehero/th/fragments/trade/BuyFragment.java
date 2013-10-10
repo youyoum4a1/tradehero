@@ -19,6 +19,9 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.api.position.SecurityPositionDetailDTO;
+import com.tradehero.th.api.quote.QuoteDTO;
+import com.tradehero.th.api.security.SecurityCompactDTO;
+import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.TransactionFormDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
@@ -238,6 +241,77 @@ public class BuyFragment extends AbstractTradeFragment
     {
         THLog.d(TAG, "onSaveInstanceState");
         super.onSaveInstanceState(outState);
+    }
+
+    @Override public void linkWith(SecurityId securityId, boolean andDisplay)
+    {
+        super.linkWith(securityId, andDisplay);
+        if (andDisplay)
+        {
+            displayExchangeSymbol();
+            displayBuySellDetails();
+        }
+    }
+
+    @Override public void linkWith(SecurityCompactDTO securityCompactDTO, boolean andDisplay)
+    {
+        super.linkWith(securityCompactDTO, andDisplay);
+        if (andDisplay)
+        {
+            displayMarketClose();
+            displayBuySellDetails();
+        }
+    }
+
+    @Override public void linkWith(SecurityPositionDetailDTO securityPositionDetailDTO, boolean andDisplay)
+    {
+        super.linkWith(securityPositionDetailDTO, andDisplay);
+        if (andDisplay)
+        {
+            displayBuySellDetails();
+        }
+    }
+
+    @Override public void linkWith(UserProfileDTO userProfileDTO, boolean andDisplay)
+    {
+        if (isTransactionTypeBuy)
+        {
+            Integer maxPurchasableShares = getMaxPurchasableShares();
+            if (maxPurchasableShares != null)
+            {
+                mBuyQuantity = Math.min(maxPurchasableShares.intValue(), mBuyQuantity);
+            }
+        }
+        super.linkWith(userProfileDTO, andDisplay);
+        if (andDisplay)
+        {
+            displayBuySellDetails();
+        }
+    }
+
+    @Override protected void linkWith(QuoteDTO quoteDTO, boolean andDisplay)
+    {
+        if (isTransactionTypeBuy)
+        {
+            Integer maxPurchasableShares = getMaxPurchasableShares();
+            if (maxPurchasableShares != null)
+            {
+                mBuyQuantity = Math.min(maxPurchasableShares.intValue(), mBuyQuantity);
+            }
+        }
+        else
+        {
+            Integer maxSellableShares = getMaxSellableShares();
+            if (maxSellableShares != null)
+            {
+                mSellQuantity = Math.min(maxSellableShares.intValue(), mSellQuantity);
+            }
+        }
+        super.linkWith(quoteDTO, andDisplay);
+        if (andDisplay)
+        {
+            displayBuySellDetails();
+        }
     }
 
     //<editor-fold desc="Display Methods">

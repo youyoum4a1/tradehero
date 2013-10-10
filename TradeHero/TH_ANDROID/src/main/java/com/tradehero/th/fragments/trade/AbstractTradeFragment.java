@@ -93,6 +93,16 @@ abstract public class AbstractTradeFragment extends DashboardFragment
             mSellQuantity = args.getInt(BUNDLE_KEY_QUANTITY_SELL, mSellQuantity);
             mPositionIndex = args.getInt(BUNDLE_KEY_POSITION_INDEX, mPositionIndex);
         }
+
+        UserProfileDTO profileDTO = userProfileCache.get().get(THUser.getCurrentUserBase().getBaseKey());
+        if (profileDTO != null)
+        {
+            linkWith(profileDTO, true);
+        }
+        else
+        {
+            requestUserProfile();
+        }
     }
 
     @Override public void onPause()
@@ -146,41 +156,34 @@ abstract public class AbstractTradeFragment extends DashboardFragment
         this.refreshingQuote = refreshingQuote;
     }
 
-    public int getMaxPurchasableShares()
+    public Integer getMaxPurchasableShares()
     {
-        UserBaseDTO userBase = THUser.getCurrentUserBase();
-        UserProfileDTO userProfileDTO = userProfileCache.get().get(userBase.getBaseKey());
-        if (userProfileDTO == null)
-        {
-            requestUserProfile();
-
-        }
         return getMaxPurchasableShares(this.quoteDTO, userProfileDTO);
     }
 
-    public static int getMaxPurchasableShares(QuoteDTO quoteDTO, UserProfileDTO userProfileDTO)
+    public static Integer getMaxPurchasableShares(QuoteDTO quoteDTO, UserProfileDTO userProfileDTO)
     {
         if (quoteDTO == null || quoteDTO.ask == null || quoteDTO.ask == 0 || quoteDTO.toUSDRate == null || quoteDTO.toUSDRate == 0 ||
                 userProfileDTO == null || userProfileDTO.portfolio == null)
         {
-            return 0;
+            return null;
         }
         return (int) Math.floor(userProfileDTO.portfolio.cashBalance / (quoteDTO.ask * quoteDTO.toUSDRate));
     }
 
-    public int getMaxSellableShares()
+    public Integer getMaxSellableShares()
     {
         // TODO handle more portfolios
         return getMaxSellableShares(this.securityPositionDetailDTO, mPositionIndex);
     }
 
-    public static int getMaxSellableShares(SecurityPositionDetailDTO securityPositionDetailDTO, int positionIndex)
+    public static Integer getMaxSellableShares(SecurityPositionDetailDTO securityPositionDetailDTO, int positionIndex)
     {
         if (securityPositionDetailDTO == null || securityPositionDetailDTO.positions == null ||
                 securityPositionDetailDTO.positions.size() == 0 || securityPositionDetailDTO.positions.get(positionIndex) == null ||
                 securityPositionDetailDTO.positions.get(positionIndex).shares == null || securityPositionDetailDTO.positions.get(positionIndex).shares == 0)
         {
-            return 0;
+            return null;
         }
         return securityPositionDetailDTO.positions.get(positionIndex).shares;
     }
@@ -281,14 +284,14 @@ abstract public class AbstractTradeFragment extends DashboardFragment
         SecurityPositionDetailDTO detailDTO = securityPositionDetailCache.get().get(this.securityId);
         if (detailDTO != null)
         {
-            linkWith(detailDTO, false);
+            linkWith(detailDTO, andDisplay);
         }
         else
         {
             SecurityCompactDTO compactDTO = securityCompactCache.get().get(this.securityId);
             if (compactDTO != null)
             {
-                linkWith(compactDTO, false);
+                linkWith(compactDTO, andDisplay);
             }
 
             if (fetchPositionDetailTask != null)
@@ -301,7 +304,7 @@ abstract public class AbstractTradeFragment extends DashboardFragment
 
         if (andDisplay)
         {
-            display();
+            // Nothing to do in this class
         }
     }
 
@@ -315,7 +318,7 @@ abstract public class AbstractTradeFragment extends DashboardFragment
         THLog.d(TAG, "Display compact isNull: " + (securityCompactDTO == null ? "true" : "false"));
         if (andDisplay)
         {
-            display();
+            // Nothing to do in this class
         }
     }
 
@@ -330,16 +333,16 @@ abstract public class AbstractTradeFragment extends DashboardFragment
 
         if (securityPositionDetailDTO != null)
         {
-            this.securityCompactDTO = securityPositionDetailDTO.security;
+            linkWith(securityPositionDetailDTO.security, andDisplay);
         }
         else
         {
-            this.securityCompactDTO = null;
+            linkWith((SecurityCompactDTO) null, andDisplay);
         }
 
         if (andDisplay)
         {
-            display();
+            // Nothing to do in this class
         }
     }
 
@@ -357,7 +360,7 @@ abstract public class AbstractTradeFragment extends DashboardFragment
         this.quoteDTO = quoteDTO;
         if (andDisplay)
         {
-            display();
+            // Nothing to do in this class
         }
     }
 
