@@ -45,4 +45,9 @@ public class ProviderDTO
     public boolean hasHelpVideo;
 
     public PortfolioCompactDTO associatedPortfolio;
+
+    public ProviderKey getKey()
+    {
+        return new ProviderKey(id);
+    }
 }
