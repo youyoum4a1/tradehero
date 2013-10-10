@@ -15,4 +15,9 @@ public class UserBaseDTO
     public UserBaseDTO()
     {
     }
+
+    public UserBaseKey getBaseKey()
+    {
+        return new UserBaseKey(id);
+    }
 }
