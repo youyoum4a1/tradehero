@@ -248,11 +248,7 @@ public class TradeFragment extends AbstractTradeFragment
 
         //((TrendingDetailFragment) getActivity().getSupportFragmentManager()
         //        .findFragmentByTag("trending_detail")).setYahooQuoteUpdateListener(this);
-    }
 
-    @Override public void onViewStateRestored(Bundle savedInstanceState)
-    {
-        super.onViewStateRestored(savedInstanceState);
         if (savedInstanceState != null)
         {
             securityId = new SecurityId(savedInstanceState);
@@ -263,6 +259,21 @@ public class TradeFragment extends AbstractTradeFragment
             THLog.d(TAG, "SavedInstanceState null");
         }
     }
+
+    //@Override public void onViewStateRestored(Bundle savedInstanceState)
+    //{
+    //    super.onViewStateRestored(savedInstanceState);
+    //
+    //    if (savedInstanceState != null)
+    //    {
+    //        securityId = new SecurityId(savedInstanceState);
+    //        THLog.d(TAG, securityId.toString());
+    //    }
+    //    else
+    //    {
+    //        THLog.d(TAG, "SavedInstanceState null");
+    //    }
+    //}
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {

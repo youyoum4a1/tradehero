@@ -8,7 +8,7 @@
       <sourceFolder url="file://$MODULE_DIR$/picasso/picasso/src/test/java" isTestSource="true" />
       <excludeFolder url="file://$MODULE_DIR$/picasso/picasso/target" />
     </content>
-    <orderEntry type="inheritedJdk" />
+    <orderEntry type="jdk" jdkName="1.7" jdkType="JavaSDK" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="Maven: com.squareup.okhttp:okhttp:1.2.1" level="project" />
     <orderEntry type="library" name="Maven: com.squareup.okhttp:okhttp-protocols:1.2.1" level="project" />
