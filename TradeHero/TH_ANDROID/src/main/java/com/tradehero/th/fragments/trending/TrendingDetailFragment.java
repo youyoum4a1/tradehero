@@ -20,7 +20,6 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.application.Config;
 import com.tradehero.th.base.THUser;
-import com.tradehero.th.fragments.NewsFragment;
 import com.tradehero.th.fragments.trade.StockInfoFragment;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.trade.TradeFragment;
@@ -65,8 +64,6 @@ public class TrendingDetailFragment extends DashboardFragment
         //        TradeFragment.class, null);
         //mTabHost.addTab(mTabHost.newTabSpec(getString(R.string.tab_stock_info)).setIndicator(getString(R.string.tab_stock_info)),
         //        StockInfoFragment.class, null);
-        //mTabHost.addTab(mTabHost.newTabSpec(getString(R.string.tab_news)).setIndicator(getString(R.string.tab_news)),
-        //        NewsFragment.class, null);
 
         mHeaderText = (TextView) view.findViewById(R.id.header_txt);
         mHeaderText.setText(String.format("%s:%s", securityCompactDTO.exchange, securityCompactDTO.symbol));

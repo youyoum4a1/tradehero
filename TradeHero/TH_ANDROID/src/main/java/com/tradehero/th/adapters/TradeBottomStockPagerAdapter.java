@@ -13,13 +13,17 @@ import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.fragments.trade.ChartFragment;
 import com.tradehero.th.fragments.trade.StockInfoFragment;
+import com.tradehero.th.fragments.trade.YahooNewsFragment;
+
+import java.lang.ref.WeakReference;
+import java.util.HashMap;
+import java.util.Map;
+import javax.inject.Inject;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/3/13 Time: 12:42 PM To change this template use File | Settings | File Templates. */
 public class TradeBottomStockPagerAdapter extends FragmentStatePagerAdapter
 {
     public static final String TAG = TradeBottomStockPagerAdapter.class.getSimpleName();
-    private final Class subViewClasses[] = new Class[] {ChartFragment.class, StockInfoFragment.class, StockInfoFragment.class};
-    public final int fragmentCount = subViewClasses.length;
 
     private final Context context;
 
@@ -45,12 +49,27 @@ public class TradeBottomStockPagerAdapter extends FragmentStatePagerAdapter
 
     @Override public int getCount()
     {
-        return fragmentCount;
+        return 3;
     }
 
     @Override public Fragment getItem(int position)
     {
-        Fragment fragment = Fragment.instantiate(context, subViewClasses[position].getName(), null);
+        Fragment fragment = null;
+        switch(position)
+        {
+            case 0:
+                fragment = new ChartFragment();
+                break;
+            case 1:
+                fragment = new StockInfoFragment();
+                break;
+            case 2:
+                fragment = new YahooNewsFragment();
+
+            default:
+                THLog.i(TAG, "Not supported index " + position);
+        }
+
         if (securityId != null)
         {
             fragment.setArguments(securityId.getArgs());

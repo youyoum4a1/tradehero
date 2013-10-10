@@ -116,7 +116,7 @@ public class TimelineItemView extends RelativeLayout implements DTOView<Timeline
 
                 if (THUser.getCurrentUserBase().id != userId)
                 {
-                    ((NavigatorActivity)getContext()).getNavigator().pushFragment(TimelineFragment.class, b, "" + userId);
+                    ((NavigatorActivity)getContext()).getNavigator().pushFragment(TimelineFragment.class, b, true);
                 }
                 break;
             case "security":

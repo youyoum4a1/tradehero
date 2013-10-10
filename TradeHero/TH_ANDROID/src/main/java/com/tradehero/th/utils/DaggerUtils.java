@@ -2,6 +2,7 @@ package com.tradehero.th.utils;
 
 import com.tradehero.th.base.Application;
 import com.tradehero.th.network.NetworkEngine;
+import com.tradehero.th.network.YahooEngine;
 import com.tradehero.th.utils.dagger.TradeHeroModule;
 import dagger.ObjectGraph;
 import java.util.Arrays;
@@ -14,7 +15,7 @@ public class DaggerUtils
 
     public static void initialize()
     {
-        objectGraph = ObjectGraph.create(new TradeHeroModule(NetworkEngine.getInstance(),
+        objectGraph = ObjectGraph.create(new TradeHeroModule(NetworkEngine.getInstance(),  YahooEngine.getInstance(),
                 Application.context()));
         objectGraph.injectStatics();
     }

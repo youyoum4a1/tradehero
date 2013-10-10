@@ -12,6 +12,7 @@ import com.tradehero.th.fragments.timeline.TimelineFragment;
 import com.tradehero.th.fragments.trade.BuyFragment;
 import com.tradehero.th.fragments.trade.ChartFragment;
 import com.tradehero.th.fragments.trade.FreshQuoteHolder;
+import com.tradehero.th.fragments.trade.YahooNewsFragment;
 import com.tradehero.th.fragments.trade.StockInfoFragment;
 import com.tradehero.th.fragments.trending.SearchStockPeopleFragment;
 import com.tradehero.th.fragments.trade.TradeFragment;
@@ -19,10 +20,8 @@ import com.tradehero.th.fragments.trending.TrendingFragment;
 import com.tradehero.th.loaders.SearchStockPageItemListLoader;
 import com.tradehero.th.loaders.TimelinePagedItemListLoader;
 import com.tradehero.th.network.NetworkEngine;
-import com.tradehero.th.network.service.QuoteService;
-import com.tradehero.th.network.service.SecurityService;
-import com.tradehero.th.network.service.UserService;
-import com.tradehero.th.network.service.UserTimelineService;
+import com.tradehero.th.network.YahooEngine;
+import com.tradehero.th.network.service.*;
 import com.tradehero.th.persistence.TimelineManager;
 import com.tradehero.th.persistence.TimelineStore;
 import com.tradehero.th.persistence.position.SecurityPositionDetailCache;
@@ -51,6 +50,7 @@ import javax.inject.Singleton;
                 TrendingFragment.class,
                 FreshQuoteHolder.class,
                 BuyFragment.class,
+                YahooNewsFragment.class,
                 ChartFragment.class,
                 StockInfoFragment.class,
 
@@ -64,8 +64,6 @@ import javax.inject.Singleton;
                 UserStore.class,
                 TimelineStore.class,
                 TimelineStore.Factory.class,
-                //SecurityCompactStore.class,
-                //SecurityPositionDetailStore.class,
                 SecurityCompactCache.class,
                 SecurityCompactListCache.class,
                 SecurityPositionDetailCache.class,
@@ -84,11 +82,13 @@ public class TradeHeroModule
 {
     private final Application application;
     private final NetworkEngine engine;
+    private final YahooEngine yahooEngine;
 
-    public TradeHeroModule(NetworkEngine engine, Application application)
+    public TradeHeroModule(NetworkEngine engine, YahooEngine yahooEngine, Application application)
     {
         this.application = application;
         this.engine = engine;
+        this.yahooEngine = yahooEngine;
     }
 
     @Provides @Singleton UserService provideUserService()
@@ -110,6 +110,12 @@ public class TradeHeroModule
     {
         return engine.createService(QuoteService.class);
     }
+
+    @Provides @Singleton YahooNewsService provideYahooNewsService()
+    {
+        return yahooEngine.createService(YahooNewsService.class);
+    }
+
 
     @Provides @Singleton AbstractUserStore provideUserStore(UserStore store)
     {

@@ -52,9 +52,9 @@ public class DashboardNavigator extends Navigator
                 fragmentClass, b);
     }
 
-    @Override public void pushFragment(Class<? extends Fragment> fragmentClass, Bundle args, String tag, boolean withAnimation)
+    @Override public void pushFragment(Class<? extends Fragment> fragmentClass, Bundle args, boolean withAnimation)
     {
-        super.pushFragment(fragmentClass, args, tag, withAnimation);
+        super.pushFragment(fragmentClass, args, withAnimation);
         manager.executePendingTransactions();
         updateTabBarOnNavigate();
     }

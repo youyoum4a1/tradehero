@@ -116,8 +116,8 @@ public class WebViewFragment extends Fragment
     {
         super.onActivityCreated(savedInstanceState);
 
-        mHeaderText.setText(getArguments().getString(NewsFragment.HEADER));
-
-        mWebView.loadUrl(getArguments().getString(NewsFragment.URL));
+//        mHeaderText.setText(getArguments().getString(NewsFragment.HEADER));
+//
+//        mWebView.loadUrl(getArguments().getString(NewsFragment.URL));
     }
 }
