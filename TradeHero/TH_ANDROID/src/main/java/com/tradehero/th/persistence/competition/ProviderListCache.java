@@ -37,7 +37,7 @@ public class ProviderListCache extends StraightDTOCache<Integer, ProviderListKey
         try
         {
 
-            if (key.getKey() == ProviderListKey.ALL_PROVIDERS)
+            if (key.makeKey() == ProviderListKey.ALL_PROVIDERS)
             {
                 return  putInternal(key, providerService.get().getProviders());
             }

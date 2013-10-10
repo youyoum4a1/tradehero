@@ -37,15 +37,32 @@ public interface UserService
     @POST("/forgotPassword")
     void forgotPassword(@Body ForgotPasswordFormDTO forgotPasswordFormDTO, Callback<ForgotPasswordDTO> callback);
 
+    //<editor-fold desc="Search Users">
+    @GET("/users/search")
+    List<UserSearchResultDTO> searchUsers(
+            @Query("q") String searchString,
+            @Query("page") int page,
+            @Query("perPage") int perPage)
+            throws RetrofitError;
+
     @GET("/users/search")
     void searchUsers(
             @Query("q") String searchString,
             @Query("page") int page,
             @Query("perPage") int perPage,
             Callback<List<UserSearchResultDTO>> callback);
+    //</editor-fold>
 
+    //<editor-fold desc="Get User">
+    @GET("/users/{userId}")
+    UserProfileDTO getUser(
+            @Path("userId") int userId)
+            throws RetrofitError;
 
-    @GET("/users/GetUser/{userId}")
-    UserProfileDTO getUser(int userId) throws RetrofitError;
-
+    @GET("/users/{userId}")
+    void getUser(
+            @Path("userId") int userId,
+            Callback<UserProfileDTO> callback)
+            throws RetrofitError;
+    //</editor-fold>
 }
