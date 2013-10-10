@@ -58,15 +58,15 @@ public class TrendingDetailFragment extends DashboardFragment
         View view = inflater.inflate(R.layout.fragment_trending_detail, container, false);
 
         mTabHost = (FragmentTabHost) view.findViewById(android.R.id.tabhost);
-        //mTabHost.setBackgroundColor(getResources().getColor(R.color.trending_detail_bg));
-        mTabHost.setup(getActivity(), getActivity().getSupportFragmentManager(), R.id.realtabcontent1);
-
-        mTabHost.addTab(mTabHost.newTabSpec(getString(R.string.tab_trade)).setIndicator(getString(R.string.tab_trade)),
-                TradeFragment.class, null);
-        mTabHost.addTab(mTabHost.newTabSpec(getString(R.string.tab_stock_info)).setIndicator(getString(R.string.tab_stock_info)),
-                StockInfoFragment.class, null);
-        mTabHost.addTab(mTabHost.newTabSpec(getString(R.string.tab_news)).setIndicator(getString(R.string.tab_news)),
-                NewsFragment.class, null);
+        ////mTabHost.setBackgroundColor(getResources().getColor(R.color.trending_detail_bg));
+        //mTabHost.setup(getActivity(), getActivity().getSupportFragmentManager(), R.id.realtabcontent1);
+        //
+        //mTabHost.addTab(mTabHost.newTabSpec(getString(R.string.tab_trade)).setIndicator(getString(R.string.tab_trade)),
+        //        TradeFragment.class, null);
+        //mTabHost.addTab(mTabHost.newTabSpec(getString(R.string.tab_stock_info)).setIndicator(getString(R.string.tab_stock_info)),
+        //        StockInfoFragment.class, null);
+        //mTabHost.addTab(mTabHost.newTabSpec(getString(R.string.tab_news)).setIndicator(getString(R.string.tab_news)),
+        //        NewsFragment.class, null);
 
         mHeaderText = (TextView) view.findViewById(R.id.header_txt);
         mHeaderText.setText(String.format("%s:%s", securityCompactDTO.exchange, securityCompactDTO.symbol));
