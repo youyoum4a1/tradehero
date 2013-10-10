@@ -611,15 +611,15 @@ public class TradeFragment extends AbstractTradeFragment
         {
             if (securityPositionDetailDTO != null)
             {
-                mTradeQuantityView.display(securityPositionDetailDTO);
+                mTradeQuantityView.linkWith(securityPositionDetailDTO, true);
             }
             else
             {
-                mTradeQuantityView.display(securityCompactDTO);
+                mTradeQuantityView.linkWith(securityCompactDTO, true);
             }
 
-            mTradeQuantityView.display(quoteDTO);
-            mTradeQuantityView.display(userProfileDTO);
+            mTradeQuantityView.linkWith(quoteDTO, true);
+            mTradeQuantityView.linkWith(userProfileDTO, true);
 
             if (isTransactionTypeBuy)
             {

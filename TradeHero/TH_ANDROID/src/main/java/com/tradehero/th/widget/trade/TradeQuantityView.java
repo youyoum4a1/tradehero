@@ -17,7 +17,7 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.utills.DateUtils;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 9/23/13 Time: 3:44 PM To change this template use File | Settings | File Templates. */
-public class TradeQuantityView extends TableLayout implements DTOView<SecurityCompactDTO>
+public class TradeQuantityView extends TableLayout
 {
     private static final String TAG = TradeQuantityView.class.getSimpleName();
 
@@ -155,36 +155,48 @@ public class TradeQuantityView extends TableLayout implements DTOView<SecurityCo
         display();
     }
 
-    @Override public void display(SecurityCompactDTO securityCompactDTO)
+    public void linkWith(SecurityCompactDTO securityCompactDTO, boolean andDisplay)
     {
         this.securityCompactDTO = securityCompactDTO;
-        displaySecurityType();
-        displayPriceAsOf();
+        if (andDisplay)
+        {
+            displaySecurityType();
+            displayPriceAsOf();
+        }
     }
 
-    public void display(SecurityPositionDetailDTO securityPositionDetailDTO)
+    public void linkWith(SecurityPositionDetailDTO securityPositionDetailDTO, boolean andDisplay)
     {
         this.securityPositionDetailDTO = securityPositionDetailDTO;
         if (securityPositionDetailDTO != null)
         {
-            display(securityPositionDetailDTO.security);
+            linkWith(securityPositionDetailDTO.security, andDisplay);
         }
-        displayShareAvailable();
-        displayProjectedPL();
+        if (andDisplay)
+        {
+            displayShareAvailable();
+            displayProjectedPL();
+        }
     }
 
-    public void display(UserProfileDTO userProfileDTO)
+    public void linkWith(UserProfileDTO userProfileDTO, boolean andDisplay)
     {
         this.userProfileDTO = userProfileDTO;
-        displayCashAvailable();
+        if (andDisplay)
+        {
+            displayCashAvailable();
+        }
     }
 
-    public void display(QuoteDTO quoteDTO)
+    public void linkWith(QuoteDTO quoteDTO, boolean andDisplay)
     {
         this.quoteDTO = quoteDTO;
-        displayPriceAsOf();
-        displayTradeValue();
-        displayProjectedPL();
+        if (andDisplay)
+        {
+            displayPriceAsOf();
+            displayTradeValue();
+            displayProjectedPL();
+        }
     }
 
     //<editor-fold desc="Display Methods">
