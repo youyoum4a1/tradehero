@@ -11,7 +11,6 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.utils.yahoo.*;
-
 import javax.inject.Inject;
 
 /**
@@ -66,7 +65,7 @@ public class ChartFragment extends SherlockFragment implements DTOView<SecurityC
 
     private void loadImage()
     {
-        if (yahooSymbol != null)
+        if (yahooSymbol != null && stockBgLogo != null)
         {
             String imageURL = Utils.getChartURL(yahooSymbol, ChartSize.large, Timespan.months3);
             Picasso.with(getActivity()).load(imageURL).into(stockBgLogo);

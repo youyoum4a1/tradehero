@@ -22,6 +22,7 @@ import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.SecurityListType;
 import com.tradehero.th.api.security.TrendingBasicSecurityListType;
 import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.fragments.trade.AbstractTradeFragment;
 import com.tradehero.th.fragments.trade.TradeFragment;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
@@ -90,7 +91,10 @@ public class TrendingFragment extends DashboardFragment implements DTOCache.List
             @Override public void onItemClick(AdapterView<?> parent, View view, int position, long id)
             {
                 SecurityCompactDTO securityCompactDTO = (SecurityCompactDTO) parent.getItemAtPosition(position);
-                navigator.pushFragment(TradeFragment.class, securityCompactDTO.getSecurityId().getArgs());
+                Bundle args = securityCompactDTO.getSecurityId().getArgs();
+                // TODO use other positions
+                args.putInt(AbstractTradeFragment.BUNDLE_KEY_POSITION_INDEX, AbstractTradeFragment.DEFAULT_POSITION_INDEX);
+                navigator.pushFragment(TradeFragment.class, args);
             }
         });
 

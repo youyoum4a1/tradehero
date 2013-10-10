@@ -55,6 +55,7 @@
       android:layout_alignParentRight="true"
       android:layout_centerInParent="true"
       android:textSize="16sp"
+      android:textColor="@color/white"
       android:textOn="@string/switch_buy"
       android:textOff="@string/switch_sell"
       />

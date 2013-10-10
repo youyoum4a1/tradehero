@@ -20,6 +20,7 @@ import retrofit.mime.TypedOutput;
 public class JacksonConverter implements Converter
 {
     private static final String MIME_TYPE = "application/json; charset=UTF-8";
+    public static final String TAG = JacksonConverter.class.getSimpleName();
 
     private final ObjectMapper objectMapper;
 

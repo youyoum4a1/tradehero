@@ -6,7 +6,10 @@
  */
 package com.tradehero.th.fragments.trade;
 
+import android.os.AsyncTask;
 import android.view.animation.AnimationUtils;
+import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -15,8 +18,13 @@ import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.common.utils.THLog;
+import com.tradehero.th.api.position.SecurityPositionDetailDTO;
+import com.tradehero.th.api.security.TransactionFormDTO;
 import com.tradehero.th.base.THUser;
+import com.tradehero.th.network.service.SecurityService;
+import dagger.Lazy;
 import java.util.LinkedHashMap;
+import javax.inject.Inject;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.protocol.HTTP;
@@ -32,6 +40,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import retrofit.RetrofitError;
 
 public class BuyFragment extends AbstractTradeFragment
 {
@@ -61,14 +70,25 @@ public class BuyFragment extends AbstractTradeFragment
     private Button mBtnConfirm;
 
     private ProgressBar mQuoteRefreshProgressBar;
-    //private EditText mCommentsET;
+    private EditText mCommentsET;
     private ImageButton mBtnLocation;
+    private ToggleButton mBtnSharePublic;
     private TextView mBuyDetails;
 
     //private String lastPrice;
+    private boolean publishToFb;
+    private boolean publishToTw;
+    private boolean publishToLi;
     private int quantity;
     private String buyDetails;
     private boolean shareLocation;
+    private boolean sharePublic;
+
+
+    @Inject protected Lazy<SecurityService> securityService;
+    private boolean isBuying = false;
+    private boolean isSelling = false;
+    private AsyncTask<Void, Void, SecurityPositionDetailDTO> buySellTask;
 
     //private String yahooQuoteStr;
     //private Quote mQuote;
@@ -93,7 +113,7 @@ public class BuyFragment extends AbstractTradeFragment
             mQuoteRefreshProgressBar.setMax((int) (MILLISEC_QUOTE_REFRESH / MILLISEC_QUOTE_COUNTDOWN_PRECISION));
             mQuoteRefreshProgressBar.setProgress(mQuoteRefreshProgressBar.getMax());
         }
-        //mCommentsET = (EditText) v.findViewById(R.id.comments);
+        mCommentsET = (EditText) view.findViewById(R.id.comments);
 
         // Commented because of removal of right button.
         //mBtnConfirm = (Button) v.findViewById(R.id.right_button);
@@ -112,7 +132,20 @@ public class BuyFragment extends AbstractTradeFragment
             });
         }
 
+        mBtnSharePublic = (ToggleButton) view.findViewById(R.id.switch_share_public);
+        if (mBtnSharePublic != null)
+        {
+            mBtnSharePublic.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
+            {
+                @Override public void onCheckedChanged(CompoundButton compoundButton, boolean b)
+                {
+                    sharePublic = b;
+                }
+            });
+        }
+
         mBuyDetails = (TextView) view.findViewById(R.id.buy_info);
+        displayPageElements();
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
@@ -151,13 +184,13 @@ public class BuyFragment extends AbstractTradeFragment
             {
                 @Override public void onClick(View view)
                 {
-                    buy();
+                    launchBuySell();
                 }
             });
         }
 
         // We display here as onCreateOptionsMenu may be called after onResume
-        display();
+        displayActionBarElements();
     }
 
     @Override public void onDestroyOptionsMenu()
@@ -179,6 +212,21 @@ public class BuyFragment extends AbstractTradeFragment
     @Override public void onDestroyView()
     {
         THLog.d(TAG, "onDestroyView");
+        if (buySellTask != null)
+        {
+            buySellTask.cancel(false);
+        }
+        buySellTask = null;
+        if (mBtnLocation != null)
+        {
+            mBtnLocation.setOnClickListener(null);
+        }
+        mBtnLocation = null;
+        if (mBtnSharePublic != null)
+        {
+            mBtnSharePublic.setOnCheckedChangeListener(null);
+        }
+        mBtnSharePublic = null;
         super.onDestroyView();
     }
 
@@ -188,10 +236,21 @@ public class BuyFragment extends AbstractTradeFragment
         super.onSaveInstanceState(outState);
     }
 
+    //<editor-fold desc="Display Methods">
     public void display()
+    {
+        displayActionBarElements();
+        displayPageElements();
+    }
+
+    public void displayActionBarElements()
     {
         displayExchangeSymbol();
         displayMarketClose();
+    }
+
+    public void displayPageElements()
+    {
         displayBuySellDetails();
         displayButtonConfirm();
         displayShareLocation();
@@ -250,7 +309,9 @@ public class BuyFragment extends AbstractTradeFragment
     {
         if (mBtnConfirm != null)
         {
-            mBtnConfirm.setEnabled((isTransactionTypeBuy && hasValidInfoForBuy()) || (!isTransactionTypeBuy && hasValidInfoForSell()));
+            mBtnConfirm.setEnabled(
+                    (!isBuying && isTransactionTypeBuy && hasValidInfoForBuy()) ||
+                    (!isSelling &&!isTransactionTypeBuy && hasValidInfoForSell()));
             mBtnConfirm.setAlpha(mBtnConfirm.isEnabled() ? 1 : 0.5f);
         }
     }
@@ -262,6 +323,7 @@ public class BuyFragment extends AbstractTradeFragment
             mBtnLocation.setAlpha(shareLocation ? 1 : 0.5f);
         }
     }
+    //</editor-fold>
 
     @Override protected void prepareFreshQuoteHolder()
     {
@@ -276,6 +338,20 @@ public class BuyFragment extends AbstractTradeFragment
         {
             mBuyDetails.startAnimation(AnimationUtils.loadAnimation(getActivity(), R.anim.alpha_out));
         }
+    }
+
+    private void setBuying(boolean isBuying)
+    {
+        this.isBuying = isBuying;
+        displayButtonConfirm();
+        // TODO visual cue
+    }
+
+    private void setSelling(boolean isSelling)
+    {
+        this.isSelling = isSelling;
+        displayButtonConfirm();
+        // TODO visual cue
     }
 
     private void requestToBuyTransaction()
@@ -400,8 +476,106 @@ public class BuyFragment extends AbstractTradeFragment
     }
     //</editor-fold>
 
-    private void buy()
+    private TransactionFormDTO getBuySellOrder(boolean isBuy)
     {
-        // TODO
+        if (quoteDTO == null)
+        {
+            return null;
+        }
+        if (securityPositionDetailDTO == null || securityPositionDetailDTO.positions == null || securityPositionDetailDTO.positions.size() == 0 ||
+                securityPositionDetailDTO.positions.get(mPositionIndex) == null)
+        {
+            return null;
+        }
+        return new TransactionFormDTO(
+                publishToFb,
+                publishToTw,
+                publishToLi,
+                shareLocation ? null : null,
+                shareLocation ? null : null,
+                shareLocation ? null : null,
+                sharePublic,
+                mCommentsET == null ? null : mCommentsET.getText().toString(),
+                quoteDTO.rawResponse,
+                isBuy ? mBuyQuantity : mSellQuantity,
+                securityPositionDetailDTO.positions.get(mPositionIndex).portfolioId
+        );
     }
+
+    private void launchBuySell()
+    {
+        buySellTask = createBuySellTask(isTransactionTypeBuy);
+        if (isTransactionTypeBuy)
+        {
+            setBuying(true);
+        }
+        else
+        {
+            setSelling(true);
+        }
+        buySellTask.execute();
+    }
+
+    private AsyncTask<Void, Void, SecurityPositionDetailDTO> createBuySellTask(final boolean isBuy)
+    {
+        return new AsyncTask<Void, Void, SecurityPositionDetailDTO>()
+        {
+            @Override protected SecurityPositionDetailDTO doInBackground(Void... voids)
+            {
+                TransactionFormDTO buySellOrder = getBuySellOrder(isBuy);
+                if (buySellOrder == null)
+                {
+                    return null;
+                }
+                SecurityPositionDetailDTO returned = null;
+                try
+                {
+                    if (isBuy)
+                    {
+                        returned = securityService.get().buy(securityId.exchange, securityId.securitySymbol, buySellOrder);
+                    }
+                    else
+                    {
+                        returned = securityService.get().sell(securityId.exchange, securityId.securitySymbol, buySellOrder);
+                    }
+                }
+                catch (RetrofitError e)
+                {
+                    THLog.e(TAG, "Failed to buy-sell", e);
+                }
+                if (returned != null)
+                {
+                    securityPositionDetailCache.get().put(securityId, returned);
+                }
+                return returned;
+            }
+
+            @Override protected void onPostExecute(SecurityPositionDetailDTO securityPositionDetailDTO)
+            {
+                super.onPostExecute(securityPositionDetailDTO);
+                if (isCancelled())
+                {
+                    return;
+                }
+
+                if (securityPositionDetailDTO != null && isBuy)
+                {
+                    setBuying(false);
+                }
+                else if (securityPositionDetailDTO != null)
+                {
+                    setSelling(false);
+                }
+                displayButtonConfirm();
+                // TODO post to social network?
+                returnToTradeFragment();
+            }
+        };
+    }
+
+    private void returnToTradeFragment()
+    {
+        navigator.popFragment();
+    }
+
 }

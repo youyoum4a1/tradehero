@@ -6,6 +6,7 @@ import com.tradehero.th.api.security.TransactionFormDTO;
 import java.util.List;
 import retrofit.Callback;
 import retrofit.RetrofitError;
+import retrofit.http.Body;
 import retrofit.http.GET;
 import retrofit.http.POST;
 import retrofit.http.Path;
@@ -109,14 +110,14 @@ public interface SecurityService
     void buy(
             @Path("exchange") String exchange,
             @Path("securitySymbol") String securitySymbol,
-            @Query("tradeDto") TransactionFormDTO transactionFormDTO,
+            @Body() TransactionFormDTO transactionFormDTO,
             Callback<SecurityPositionDetailDTO> callback);
 
     @POST("/securities/{exchange}/{securitySymbol}/newbuy")
     SecurityPositionDetailDTO buy(
             @Path("exchange") String exchange,
             @Path("securitySymbol") String securitySymbol,
-            @Query("tradeDto") TransactionFormDTO transactionFormDTO);
+            @Body() TransactionFormDTO transactionFormDTO);
     //</editor-fold>
 
     //<editor-fold desc="Sell">
@@ -124,13 +125,13 @@ public interface SecurityService
     void sell(
             @Path("exchange") String exchange,
             @Path("securitySymbol") String securitySymbol,
-            @Query("tradeDto") TransactionFormDTO transactionFormDTO,
+            @Body() TransactionFormDTO transactionFormDTO,
             Callback<SecurityPositionDetailDTO> callback);
 
     @POST("/securities/{exchange}/{securitySymbol}/newsell")
     SecurityPositionDetailDTO sell(
             @Path("exchange") String exchange,
             @Path("securitySymbol") String securitySymbol,
-            @Query("tradeDto") TransactionFormDTO transactionFormDTO);
+            @Body() TransactionFormDTO transactionFormDTO);
     //</editor-fold>
 }

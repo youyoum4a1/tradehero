@@ -44,7 +44,6 @@ import com.tradehero.common.widget.ImageViewThreadSafe;
 import com.tradehero.th.R;
 import com.tradehero.th.api.position.SecurityPositionDetailDTO;
 import com.tradehero.th.api.security.SecurityId;
-import com.tradehero.th.api.security.TransactionFormDTO;
 import com.tradehero.th.base.THUser;
 import com.tradehero.th.network.service.SecurityService;
 import com.tradehero.th.utills.Logger;
@@ -139,7 +138,15 @@ public class TradeFragment extends AbstractTradeFragment
 
         mInfoFrame = (FrameLayout) view.findViewById(R.id.chart_frame);
         mPricingBidAskView = (PricingBidAskView) view.findViewById(R.id.pricing_bid_ask_view);
+        if (mPricingBidAskView != null)
+        {
+            mPricingBidAskView.setBuy(isTransactionTypeBuy);
+        }
         mTradeQuantityView = (TradeQuantityView) view.findViewById(R.id.trade_quantity_view);
+        if (mTradeQuantityView != null)
+        {
+            mTradeQuantityView.setBuy(isTransactionTypeBuy);
+        }
 
         mQuickPriceButtonSet = (QuickPriceButtonSet) view.findViewById(R.id.quick_price_button_set);
         if (mQuickPriceButtonSet != null)
@@ -297,9 +304,7 @@ public class TradeFragment extends AbstractTradeFragment
         mBuySellSwitch = (ToggleButton) actionBar.findViewById(R.id.switch_buy_sell);
         if (mBuySellSwitch != null)
         {
-            mBuySellSwitch.setChecked(isTransactionTypeBuy);
             mBuySellSwitch.setOnCheckedChangeListener(createBuySellListener());
-            mBuySellSwitch.setEnabled(false);
         }
 
         // We display here as onCreateOptionsMenu may be called after onResume
@@ -481,13 +486,18 @@ public class TradeFragment extends AbstractTradeFragment
         if (this.securityPositionDetailDTO == null)
         {
             // This is the first update
-            mSellQuantity = getMaxSellableShares(securityPositionDetailDTO);
+            mSellQuantity = getMaxSellableShares(securityPositionDetailDTO, mPositionIndex);
         }
 
         super.linkWith(securityPositionDetailDTO, andDisplay);
+
+        if (this.securityPositionDetailDTO != null && getMaxSellableShares() == 0)
+        {
+            setTransactionTypeBuy(true);
+        }
     }
 
-    //<editor-fold desc="Display">
+    //<editor-fold desc="Display Methods">
     public void display()
     {
         displayActionBarElements();
@@ -708,7 +718,7 @@ public class TradeFragment extends AbstractTradeFragment
         {
             if (securityPositionDetailDTO == null || securityPositionDetailDTO.positions == null || securityPositionDetailDTO.positions.size() == 0)
             {
-                mBuySellSwitch.setVisibility(View.GONE);
+                mBuySellSwitch.setEnabled(false);
             }
             else
             {
@@ -716,14 +726,15 @@ public class TradeFragment extends AbstractTradeFragment
                 Integer shareCount = securityPositionDetailDTO.positions.get(0).shares;
                 if (shareCount == null || shareCount.intValue() == 0)
                 {
-                    mBuySellSwitch.setVisibility(View.GONE);
+                    mBuySellSwitch.setEnabled(false);
                 }
                 else
                 {
-                    mBuySellSwitch.setVisibility(View.VISIBLE);
                     mBuySellSwitch.setEnabled(true);
                 }
             }
+            mBuySellSwitch.setChecked(isTransactionTypeBuy);
+            mBuySellSwitch.setAlpha(mBuySellSwitch.isEnabled() ? 1 : 0.5f);
         }
     }
 
@@ -923,6 +934,7 @@ public class TradeFragment extends AbstractTradeFragment
         displaySlider();
         displayBuyButton();
         displayQuickPriceButtonSet();
+        displayBuySellSwitch();
     }
 
     @Override protected void setRefreshingQuote(boolean refreshingQuote)
@@ -968,29 +980,6 @@ public class TradeFragment extends AbstractTradeFragment
         securityId.putParameters(b);
 
         navigator.pushFragment(BuyFragment.class, b);
-    }
-
-    private void buy()
-    {
-        if (quoteDTO == null)
-        {
-            THLog.e(TAG, "No signed Quote", new IllegalArgumentException());
-        }
-
-        TransactionFormDTO transactionFormDTO = new TransactionFormDTO();
-        transactionFormDTO.signedQuoteDto = quoteDTO.rawResponse;
-        transactionFormDTO.quantity = isTransactionTypeBuy ? mBuyQuantity : mSellQuantity;
-        // TODO what portfolio
-        transactionFormDTO.portfolio = 0;
-
-        if (isTransactionTypeBuy)
-        {
-            securityService.get().buy(securityId.exchange, securityId.securitySymbol, transactionFormDTO);
-        }
-        else
-        {
-            securityService.get().sell(securityId.exchange, securityId.securitySymbol, transactionFormDTO);
-        }
     }
 
     //<editor-fold desc="FreshQuoteHolder.FreshQuoteListener">

@@ -12,5 +12,6 @@ public class PortfolioCompactDTO
     public double totalExtraCashGiven;
 
     public PortfolioCompactDTO()
-    {}
+    {
+    }
 }

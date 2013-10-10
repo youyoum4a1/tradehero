@@ -25,8 +25,11 @@ abstract public class AbstractTradeFragment extends DashboardFragment
     private final static String TAG = AbstractTradeFragment.class.getSimpleName();
 
     public final static String BUNDLE_KEY_IS_BUY = BuyFragment.class.getName() + ".isBuy";
+    public final static String BUNDLE_KEY_POSITION_INDEX = BuyFragment.class.getName() + ".positionIndex";
     public final static String BUNDLE_KEY_QUANTITY_BUY = BuyFragment.class.getName() + ".quantityBuy";
     public final static String BUNDLE_KEY_QUANTITY_SELL = BuyFragment.class.getName() + ".quantitySell";
+
+    public final static int DEFAULT_POSITION_INDEX = 0;
 
     public final static long MILLISEC_QUOTE_REFRESH = 30000;
     public final static long MILLISEC_QUOTE_COUNTDOWN_PRECISION = 50;
@@ -44,9 +47,22 @@ abstract public class AbstractTradeFragment extends DashboardFragment
     protected QuoteDTO quoteDTO;
     protected boolean refreshingQuote = false;
 
+    protected boolean isTransactionTypeBuy = true;
     protected int mBuyQuantity;
     protected int mSellQuantity;
-    protected boolean isTransactionTypeBuy = true;
+    protected int mPositionIndex = DEFAULT_POSITION_INDEX;
+
+    @Override public void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        if (savedInstanceState != null)
+        {
+            isTransactionTypeBuy = savedInstanceState.getBoolean(BUNDLE_KEY_IS_BUY, isTransactionTypeBuy);
+            mBuyQuantity = savedInstanceState.getInt(BUNDLE_KEY_QUANTITY_BUY, mBuyQuantity);
+            mSellQuantity = savedInstanceState.getInt(BUNDLE_KEY_QUANTITY_SELL, mSellQuantity);
+            mPositionIndex = savedInstanceState.getInt(BUNDLE_KEY_POSITION_INDEX, mPositionIndex);
+        }
+    }
 
     protected void initViews(View view)
     {
@@ -54,7 +70,6 @@ abstract public class AbstractTradeFragment extends DashboardFragment
         securityCompactDTO = null;
         securityPositionDetailDTO = null;
         quoteDTO = null;
-        isTransactionTypeBuy = true;
     }
 
     @Override public void onResume()
@@ -65,9 +80,10 @@ abstract public class AbstractTradeFragment extends DashboardFragment
         if (args != null)
         {
             linkWith(new SecurityId(args), true);
-            isTransactionTypeBuy = args.getBoolean(BUNDLE_KEY_IS_BUY, true);
-            mBuyQuantity = args.getInt(BUNDLE_KEY_QUANTITY_BUY, 0);
-            mSellQuantity = args.getInt(BUNDLE_KEY_QUANTITY_SELL, 0);
+            isTransactionTypeBuy = args.getBoolean(BUNDLE_KEY_IS_BUY, isTransactionTypeBuy);
+            mBuyQuantity = args.getInt(BUNDLE_KEY_QUANTITY_BUY, mBuyQuantity);
+            mSellQuantity = args.getInt(BUNDLE_KEY_QUANTITY_SELL, mSellQuantity);
+            mPositionIndex = args.getInt(BUNDLE_KEY_POSITION_INDEX, mPositionIndex);
         }
     }
 
@@ -81,6 +97,15 @@ abstract public class AbstractTradeFragment extends DashboardFragment
         freshQuoteHolder = null;
 
         super.onPause();
+    }
+
+    @Override public void onSaveInstanceState(Bundle outState)
+    {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean(BUNDLE_KEY_IS_BUY, isTransactionTypeBuy);
+        outState.putInt(BUNDLE_KEY_QUANTITY_BUY, mBuyQuantity);
+        outState.putInt(BUNDLE_KEY_QUANTITY_SELL, mSellQuantity);
+        outState.putInt(BUNDLE_KEY_POSITION_INDEX, mPositionIndex);
     }
 
     @Override public void onDestroyView()
@@ -121,19 +146,19 @@ abstract public class AbstractTradeFragment extends DashboardFragment
 
     public int getMaxSellableShares()
     {
-        return getMaxSellableShares(this.securityPositionDetailDTO);
+        // TODO handle more portfolios
+        return getMaxSellableShares(this.securityPositionDetailDTO, mPositionIndex);
     }
 
-    public static int getMaxSellableShares(SecurityPositionDetailDTO securityPositionDetailDTO)
+    public static int getMaxSellableShares(SecurityPositionDetailDTO securityPositionDetailDTO, int positionIndex)
     {
         if (securityPositionDetailDTO == null || securityPositionDetailDTO.positions == null ||
-                securityPositionDetailDTO.positions.size() == 0 || securityPositionDetailDTO.positions.get(0) == null ||
-                securityPositionDetailDTO.positions.get(0).shares == null || securityPositionDetailDTO.positions.get(0).shares == 0)
+                securityPositionDetailDTO.positions.size() == 0 || securityPositionDetailDTO.positions.get(positionIndex) == null ||
+                securityPositionDetailDTO.positions.get(positionIndex).shares == null || securityPositionDetailDTO.positions.get(positionIndex).shares == 0)
         {
             return 0;
         }
-        // TODO handle more portfolios
-        return securityPositionDetailDTO.positions.get(0).shares;
+        return securityPositionDetailDTO.positions.get(positionIndex).shares;
     }
 
     protected boolean hasValidInfoForBuy()
