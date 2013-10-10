@@ -8,8 +8,9 @@
         <option name="MANIFEST_FILE_RELATIVE_PATH" value="/TradeHero/TH_ANDROID/AndroidManifest.xml" />
         <option name="RES_FOLDER_RELATIVE_PATH" value="/TradeHero/TH_ANDROID/res" />
         <option name="ASSETS_FOLDER_RELATIVE_PATH" value="/TradeHero/TH_ANDROID/assets" />
-        <option name="LIBS_FOLDER_RELATIVE_PATH" value="/TradeHero/TH_ANDROID/libs" />
+        <option name="LIBS_FOLDER_RELATIVE_PATH" value="/TradeHero/TH_ANDROID/ignored" />
         <option name="UPDATE_PROPERTY_FILES" value="false" />
+        <option name="COMPILE_CUSTOM_GENERATED_SOURCES" value="false" />
         <resOverlayFolders>
           <path>/TradeHero/TH_ANDROID/res-overlay</path>
         </resOverlayFolders>
@@ -21,13 +22,15 @@
     <output-test url="file://$MODULE_DIR$/TradeHero/TH_ANDROID/target/test-classes" />
     <content url="file://$MODULE_DIR$/TradeHero/TH_ANDROID">
       <sourceFolder url="file://$MODULE_DIR$/TradeHero/TH_ANDROID/gen" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/TradeHero/TH_ANDROID/target/generated-sources/annotations" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/TradeHero/TH_ANDROID/src/main/java" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/TradeHero/TH_ANDROID/src/test/java" isTestSource="true" />
       <excludeFolder url="file://$MODULE_DIR$/TradeHero/TH_ANDROID/target/classes" />
+      <excludeFolder url="file://$MODULE_DIR$/TradeHero/TH_ANDROID/target/generated-sources/combined-assets" />
+      <excludeFolder url="file://$MODULE_DIR$/TradeHero/TH_ANDROID/target/generated-sources/combined-resources" />
+      <excludeFolder url="file://$MODULE_DIR$/TradeHero/TH_ANDROID/target/generated-sources/extracted-dependencies" />
       <excludeFolder url="file://$MODULE_DIR$/TradeHero/TH_ANDROID/target/test-classes" />
     </content>
-    <orderEntry type="inheritedJdk" />
+    <orderEntry type="jdk" jdkName="Maven Android 4.0 Platform" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="facebook-android-sdk" />
     <orderEntry type="module-library">

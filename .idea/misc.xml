@@ -6,6 +6,7 @@
   <component name="FrameworkDetectionExcludesConfiguration">
     <file type="android" url="file://$PROJECT_DIR$/ActionBarSherlock/actionbarsherlock" />
     <file type="android" url="file://$PROJECT_DIR$/Android-PullToRefresh/library" />
+    <file type="android" url="file://$PROJECT_DIR$/TradeHero/TH_ANDROID" />
     <file type="android" url="file://$PROJECT_DIR$/viewpagerindicator/library" />
   </component>
   <component name="IdProvider" IDEtalkID="628593F540B384ACF0C145CD8A380DE6" />
@@ -24,7 +25,7 @@
       </list>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_7" assert-keyword="true" jdk-15="true" project-jdk-name="Android 4.2.2 Google APIs" project-jdk-type="Android SDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_7" assert-keyword="true" jdk-15="true" project-jdk-name="1.7" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/out" />
   </component>
 </project>
