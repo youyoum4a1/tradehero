@@ -3,8 +3,6 @@ package com.tradehero.th.loaders;
 import android.content.Context;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
-import com.tradehero.th.api.security.SecurityCompactDTO;
-import com.tradehero.th.network.NetworkEngine;
 import com.tradehero.th.network.service.SecurityService;
 import java.util.ArrayList;
 import java.util.List;

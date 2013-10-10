@@ -491,7 +491,7 @@ public class BuyFragment extends AbstractTradeFragment
                 publishToFb,
                 publishToTw,
                 publishToLi,
-                shareLocation ? null : null,
+                shareLocation ? null : null, // TODO implement location
                 shareLocation ? null : null,
                 shareLocation ? null : null,
                 sharePublic,
@@ -577,5 +577,4 @@ public class BuyFragment extends AbstractTradeFragment
     {
         navigator.popFragment();
     }
-
 }
