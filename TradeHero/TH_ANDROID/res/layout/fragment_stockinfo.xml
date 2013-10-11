@@ -3,20 +3,22 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="horizontal"
-    android:paddingLeft="6dp"
-    android:paddingRight="6dp"
-    android:paddingTop="20dp" 
-    android:background="@color/stock_info_bg">
+    android:paddingLeft="4dp"
+    android:paddingRight="4dp"
+    android:paddingTop="4dp"
+    android:background="@color/stock_info_bg"
+    android:baselineAligned="false"
+    >
 
     <TableLayout
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="1" >
 
         <TableRow
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp">
+            android:layout_marginBottom="8dp">
 
             <TextView
                 style="@style/TH.Title"
@@ -24,7 +26,9 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/previous_close"
-                android:textSize="13sp" />
+                android:textSize="13sp"
+                android:gravity="right"
+                />
 
             <TextView
                 android:id="@+id/vprevious_close"
@@ -32,7 +36,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:gravity="right"
+                android:gravity="left"
                 android:text=""
                 android:textSize="13sp" />
         </TableRow>
@@ -40,7 +44,7 @@
         <TableRow
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp">
+            android:layout_marginBottom="8dp">
 
             <TextView
                 style="@style/TH.Title"
@@ -48,7 +52,9 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/open"
-                android:textSize="13sp" />
+                android:textSize="13sp"
+                android:gravity="right"
+                />
 
             <TextView
                 android:id="@+id/vopen"
@@ -56,7 +62,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:gravity="right"
+                android:gravity="left"
                 android:text=""
                 android:textSize="13sp" />
         </TableRow>
@@ -64,7 +70,7 @@
         <TableRow
             android:layout_width="fill_parent"
             android:layout_height="wrap_content" 
-            android:layout_marginBottom="10dp">
+            android:layout_marginBottom="8dp">
 
             <TextView
                 style="@style/TH.Title"
@@ -72,7 +78,9 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/days_high"
-                android:textSize="13sp" />
+                android:textSize="13sp"
+                android:gravity="right"
+                />
 
             <TextView
                 android:id="@+id/vdays_high"
@@ -80,7 +88,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:gravity="right"
+                android:gravity="left"
                 android:text=""
                 android:textSize="13sp" />
         </TableRow>
@@ -88,7 +96,7 @@
         <TableRow
             android:layout_width="fill_parent"
             android:layout_height="wrap_content" 
-            android:layout_marginBottom="10dp">
+            android:layout_marginBottom="8dp">
 
             <TextView
                 style="@style/TH.Title"
@@ -96,7 +104,9 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/days_low"
-                android:textSize="13sp" />
+                android:textSize="13sp"
+                android:gravity="right"
+                />
 
             <TextView
                 android:id="@+id/vdays_low"
@@ -104,7 +114,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:gravity="right"
+                android:gravity="left"
                 android:text=""
                 android:textSize="13sp" />
         </TableRow>
@@ -112,7 +122,7 @@
          <TableRow
             android:layout_width="fill_parent"
             android:layout_height="wrap_content" 
-            android:layout_marginBottom="10dp">
+            android:layout_marginBottom="8dp">
 
             <TextView
                 style="@style/TH.Title"
@@ -120,7 +130,9 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/market_cap"
-                android:textSize="13sp" />
+                android:textSize="13sp"
+                android:gravity="right"
+                />
 
             <TextView
                 android:id="@+id/vmarket_cap"
@@ -128,25 +140,22 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:gravity="right"
+                android:gravity="left"
                 android:text=""
                 android:textSize="13sp" />
         </TableRow>
     </TableLayout>
 
-    <View
-        android:layout_width="25dp"
-        android:layout_height="match_parent" />
-
     <TableLayout
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="1.2" >
+        android:layout_weight="1"
+        >
 
         <TableRow
             android:layout_width="fill_parent"
             android:layout_height="wrap_content" 
-            android:layout_marginBottom="10dp">
+            android:layout_marginBottom="8dp">
 
             <TextView
                 style="@style/TH.Title"
@@ -154,7 +163,9 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/pe_ratio"
-                android:textSize="13sp" />
+                android:textSize="13sp"
+                android:gravity="right"
+                />
 
             <TextView
                 android:id="@+id/vpe_ratio"
@@ -162,7 +173,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:gravity="right"
+                android:gravity="left"
                 android:text=""
                 android:textSize="13sp" />
         </TableRow>
@@ -170,7 +181,7 @@
         <TableRow
             android:layout_width="fill_parent"
             android:layout_height="wrap_content" 
-            android:layout_marginBottom="10dp">
+            android:layout_marginBottom="8dp">
 
             <TextView
                 style="@style/TH.Title"
@@ -178,7 +189,9 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/eps"
-                android:textSize="13sp" />
+                android:textSize="13sp"
+                android:gravity="right"
+                />
 
             <TextView
                 android:id="@+id/veps"
@@ -186,15 +199,16 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:gravity="right"
+                android:gravity="left"
                 android:text=""
-                android:textSize="13sp" />
+                android:textSize="13sp"
+                />
         </TableRow>
         
         <TableRow
             android:layout_width="fill_parent"
             android:layout_height="wrap_content" 
-            android:layout_marginBottom="10dp">
+            android:layout_marginBottom="8dp">
 
             <TextView
                 style="@style/TH.Title"
@@ -202,7 +216,9 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/volume"
-                android:textSize="13sp" />
+                android:textSize="13sp"
+                android:gravity="right"
+                />
 
             <TextView
                 android:id="@+id/vvolume"
@@ -210,15 +226,16 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:gravity="right"
+                android:gravity="left"
                 android:text="@string/na"
-                android:textSize="13sp" />
+                android:textSize="13sp"
+                />
         </TableRow>
         
         <TableRow
             android:layout_width="fill_parent"
             android:layout_height="wrap_content" 
-            android:layout_marginBottom="10dp">
+            android:layout_marginBottom="8dp">
 
             <TextView
                 style="@style/TH.Title"
@@ -226,7 +243,9 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/avg_volume"
-                android:textSize="13sp" />
+                android:textSize="13sp"
+                android:gravity="right"
+                />
 
             <TextView
                 android:id="@+id/vavg_volume"
@@ -234,9 +253,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:gravity="right"
+                android:gravity="left"
                 android:text="@string/na"
-                android:textSize="13sp" />
+                android:textSize="13sp"
+                />
         </TableRow>
         
     </TableLayout>
