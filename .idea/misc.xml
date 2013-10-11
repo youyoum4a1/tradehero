@@ -4,7 +4,9 @@
     <entry_points version="2.0" />
   </component>
   <component name="FrameworkDetectionExcludesConfiguration">
+    <file type="android" url="file://$PROJECT_DIR$/ActionBarSherlock/actionbarsherlock" />
     <file type="android" url="file://$PROJECT_DIR$/Android-PullToRefresh/library" />
+    <file type="android" url="file://$PROJECT_DIR$/TradeHero/TH_ANDROID" />
     <file type="android" url="file://$PROJECT_DIR$/viewpagerindicator/library" />
   </component>
   <component name="IdProvider" IDEtalkID="628593F540B384ACF0C145CD8A380DE6" />
@@ -19,12 +21,8 @@
         <option value="$PROJECT_DIR$/dagger/compiler/pom.xml" />
         <option value="$PROJECT_DIR$/dagger/core/pom.xml" />
         <option value="$PROJECT_DIR$/viewpagerindicator/library/pom.xml" />
+        <option value="$PROJECT_DIR$/ActionBarSherlock/actionbarsherlock/pom.xml" />
       </list>
-    </option>
-    <option name="ignoredFiles">
-      <set>
-        <option value="$PROJECT_DIR$/Android-PullToRefresh/library/pom.xml" />
-      </set>
     </option>
   </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_1_7" assert-keyword="true" jdk-15="true" project-jdk-name="1.7" project-jdk-type="JavaSDK">

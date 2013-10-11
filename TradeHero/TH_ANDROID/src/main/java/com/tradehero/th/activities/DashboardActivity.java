@@ -1,7 +1,7 @@
 package com.tradehero.th.activities;
 
 import android.os.Bundle;
-import android.support.v4.app.FragmentTabHost;
+import android.support.v4.r11.app.FragmentTabHost;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
@@ -60,7 +60,7 @@ public class DashboardActivity extends SherlockFragmentActivity
     {
         if (navigator == null)
         {
-            navigator = new Navigator(this);
+            navigator = new Navigator(this, getSupportFragmentManager());
             navigator.setFragmentContentId(R.id.realtabcontent);
         }
         return navigator;

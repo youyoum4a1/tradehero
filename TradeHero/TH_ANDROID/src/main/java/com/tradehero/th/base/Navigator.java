@@ -1,8 +1,10 @@
 package com.tradehero.th.base;
 
+import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.view.ViewGroup;
 import com.tradehero.common.utils.THLog;
@@ -15,26 +17,31 @@ import java.util.Map;
 public class Navigator
 {
     private static final String TAG = Navigator.class.getSimpleName();
-    private final FragmentActivity fragmentActivity;
+
+    private final Context context;
     private final FragmentFactory fragmentFactory;
     private final int[] animation;
+    private final FragmentManager manager;
+
     private int fragmentContentId;
     private boolean animationInitiated;
 
-    public Navigator(FragmentActivity fragmentActivity, int fragmentContentId)
+    //<editor-fold desc="Constructors">
+    public Navigator(Context context, FragmentManager manager, int fragmentContentId)
     {
         this.animation = new int[4];
-        this.fragmentActivity = fragmentActivity;
+        this.context = context;
+        this.manager = manager;
         this.fragmentContentId = fragmentContentId;
         this.fragmentFactory = new FragmentFactory();
     }
 
-    public Navigator(FragmentActivity fragmentActivity)
+    public Navigator(Activity activity, FragmentManager manager)
     {
-        this(fragmentActivity, 0);
-
-        setFragmentContentId(((ViewGroup) fragmentActivity.findViewById(android.R.id.content)).getChildAt(0).getId());
+        this(activity, manager, 0);
+        setFragmentContentId(((ViewGroup) activity.findViewById(android.R.id.content)).getChildAt(0).getId());
     }
+    //</editor-fold>
 
     public void setAnimation(int enter, int exit, int popEnter, int popExit)
     {
@@ -58,11 +65,11 @@ public class Navigator
         return animation;
     }
 
-    public void pushFragment(Class<? extends Fragment> fragmentClass, Bundle args, boolean withAnimation)
+    public void pushFragment(Class<? extends Fragment> fragmentClass, Bundle args, String tag, boolean withAnimation)
     {
         THLog.d(TAG, "Pushing fragment " + fragmentClass.getSimpleName());
-        Fragment fragment = fragmentFactory.getInstance(fragmentClass, args);
-        FragmentTransaction transaction = fragmentActivity.getSupportFragmentManager().beginTransaction();
+        Fragment fragment = fragmentFactory.getInstance(fragmentClass, args, tag);
+        FragmentTransaction transaction = manager.beginTransaction();
         if (withAnimation)
         {
             int[] anim = getSafeAnimation();
@@ -75,28 +82,44 @@ public class Navigator
 
     public void pushFragment(Class<? extends Fragment> fragmentClass)
     {
-        pushFragment(fragmentClass, null, true);
+        pushFragment(fragmentClass, null, null);
     }
 
     public void pushFragment(Class<? extends Fragment> fragmentClass, Bundle args)
     {
-        pushFragment(fragmentClass, args, true);
+        pushFragment(fragmentClass, args, null);
+    }
+
+    public void pushFragment(Class<? extends Fragment> fragmentClass, String tag)
+    {
+        pushFragment(fragmentClass, null, tag);
+    }
+
+    public void pushFragment(Class<? extends Fragment> fragmentClass, Bundle args, String tag)
+    {
+        pushFragment(fragmentClass, args, tag, true);
     }
 
     public void popFragment()
     {
-        THLog.d(TAG, "Popping fragment, count: " + fragmentActivity.getSupportFragmentManager().getBackStackEntryCount());
-        fragmentActivity.getSupportFragmentManager().popBackStack();
+        THLog.d(TAG, "Popping fragment, count: " + manager.getBackStackEntryCount());
+        manager.popBackStack();
     }
 
     private class FragmentFactory
     {
-        private Map<Class<?>, WeakReference<Fragment>> instances = new HashMap<>();
+        private Map<String, WeakReference<Fragment>> instances = new HashMap<>();
 
-        public Fragment getInstance(Class<?> clss, Bundle args)
+        public Fragment getInstance(Class<? extends Fragment> clss, Bundle args)
+        {
+            return getInstance(clss, args, null);
+        }
+
+        public Fragment getInstance(Class<? extends Fragment> clss, Bundle args, String tag)
         {
             Fragment fragment = null;
-            WeakReference<Fragment> weakFragment = instances.get(clss);
+            String cacheKey = tag == null ? clss.getName() : clss.getName() + "_" + tag;
+            WeakReference<Fragment> weakFragment = instances.get(cacheKey);
             if (weakFragment != null)
             {
                 fragment = weakFragment.get();
@@ -104,8 +127,8 @@ public class Navigator
 
             if (fragment == null)
             {
-                fragment = Fragment.instantiate(fragmentActivity, clss.getName(), args);
-                instances.put(clss, new WeakReference<>(fragment));
+                fragment = Fragment.instantiate(context, clss.getName(), args);
+                instances.put(cacheKey, new WeakReference<>(fragment));
             }
             else
             {

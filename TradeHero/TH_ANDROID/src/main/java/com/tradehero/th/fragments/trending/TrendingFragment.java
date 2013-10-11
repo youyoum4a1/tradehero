@@ -94,7 +94,7 @@ public class TrendingFragment extends DashboardFragment implements DTOCache.List
                 Bundle args = securityCompactDTO.getSecurityId().getArgs();
                 // TODO use other positions
                 args.putInt(AbstractTradeFragment.BUNDLE_KEY_POSITION_INDEX, AbstractTradeFragment.DEFAULT_POSITION_INDEX);
-                navigator.pushFragment(TradeFragment.class, args);
+                navigator.pushFragment(TradeFragment.class, securityCompactDTO.getSecurityId().getArgs(), securityCompactDTO.name);
             }
         });
 

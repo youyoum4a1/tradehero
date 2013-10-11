@@ -7,6 +7,7 @@
 package com.tradehero.th.fragments.trade;
 
 import android.os.Bundle;
+import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -42,6 +43,7 @@ import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.ImageViewThreadSafe;
 import com.tradehero.th.R;
+import com.tradehero.th.adapters.TradeBottomStockPagerAdapter;
 import com.tradehero.th.api.position.SecurityPositionDetailDTO;
 import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
@@ -50,7 +52,6 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.network.service.SecurityService;
 import com.tradehero.th.utills.Logger;
 import com.tradehero.th.utills.Logger.LogLevel;
-import com.tradehero.th.widget.trade.BottomViewPager;
 import com.tradehero.th.widget.trade.PricingBidAskView;
 import com.tradehero.th.widget.trade.QuickPriceButtonSet;
 import com.tradehero.th.widget.trade.TradeQuantityView;
@@ -84,7 +85,7 @@ public class TradeFragment extends AbstractTradeFragment
     private TradeQuantityView mTradeQuantityView;
     private QuickPriceButtonSet mQuickPriceButtonSet;
     private LinePageIndicator mBottomPagerIndicator;
-    private BottomViewPager mBottomViewPager;
+    private ViewPager mBottomViewPager;
 
     private Button mBuyBtn;
     private SeekBar mSlider;
@@ -105,6 +106,7 @@ public class TradeFragment extends AbstractTradeFragment
     private Picasso mPicasso;
     private Transformation foregroundTransformation;
     private Transformation backgroundTransformation;
+    private TradeBottomStockPagerAdapter bottomViewPagerAdapter;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -195,11 +197,10 @@ public class TradeFragment extends AbstractTradeFragment
             mBuyBtn.setOnClickListener(createBuyButtonListener());
         }
 
-        mBottomViewPager = (BottomViewPager) view.findViewById(R.id.trade_bottom_pager);
-        if (mBottomViewPager != null)
-        {
-            mBottomViewPager.setFragmentManager(getActivity().getSupportFragmentManager());
-        }
+
+        mBottomViewPager = (ViewPager) view.findViewById(R.id.trade_bottom_pager);
+        bottomViewPagerAdapter = new TradeBottomStockPagerAdapter(getActivity(), getFragmentManager());
+        mBottomViewPager.setAdapter(bottomViewPagerAdapter);
 
         mBottomPagerIndicator = (LinePageIndicator) view.findViewById(R.id.trade_bottom_pager_indicator);
         if (mBottomPagerIndicator != null)
@@ -256,11 +257,7 @@ public class TradeFragment extends AbstractTradeFragment
 
         //((TrendingDetailFragment) getActivity().getSupportFragmentManager()
         //        .findFragmentByTag("trending_detail")).setYahooQuoteUpdateListener(this);
-    }
 
-    @Override public void onViewStateRestored(Bundle savedInstanceState)
-    {
-        super.onViewStateRestored(savedInstanceState);
         if (savedInstanceState != null)
         {
             securityId = new SecurityId(savedInstanceState);
@@ -271,6 +268,21 @@ public class TradeFragment extends AbstractTradeFragment
             THLog.d(TAG, "SavedInstanceState null");
         }
     }
+
+    //@Override public void onViewStateRestored(Bundle savedInstanceState)
+    //{
+    //    super.onViewStateRestored(savedInstanceState);
+    //
+    //    if (savedInstanceState != null)
+    //    {
+    //        securityId = new SecurityId(savedInstanceState);
+    //        THLog.d(TAG, securityId.toString());
+    //    }
+    //    else
+    //    {
+    //        THLog.d(TAG, "SavedInstanceState null");
+    //    }
+    //}
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
@@ -703,9 +715,10 @@ public class TradeFragment extends AbstractTradeFragment
 
     public void displayBottomViewPager()
     {
-        if (mBottomViewPager != null)
+        if (securityPositionDetailDTO != null)
         {
-            mBottomViewPager.display(securityPositionDetailDTO);
+            bottomViewPagerAdapter.display(securityPositionDetailDTO.security);
+            bottomViewPagerAdapter.notifyDataSetChanged();
         }
     }
 

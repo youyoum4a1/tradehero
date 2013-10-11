@@ -40,7 +40,7 @@
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
         android:text="@string/search_stock_nothing_yet"
-        android:textAlignment="center"
+        android:gravity="center"
         android:textSize="30sp"
         />
 

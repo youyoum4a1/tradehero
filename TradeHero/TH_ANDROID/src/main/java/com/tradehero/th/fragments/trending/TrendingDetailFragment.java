@@ -7,7 +7,6 @@
 package com.tradehero.th.fragments.trending;
 
 import android.os.Bundle;
-import android.support.v4.app.FragmentTabHost;
 import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +15,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
+import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.application.Config;
@@ -29,6 +29,7 @@ import com.tradehero.th.utills.Logger;
 import com.tradehero.th.utills.Logger.LogLevel;
 import java.util.LinkedHashMap;
 import java.util.List;
+import android.support.v4.r11.app.FragmentTabHost;
 
 public class TrendingDetailFragment extends DashboardFragment
 {
@@ -57,15 +58,15 @@ public class TrendingDetailFragment extends DashboardFragment
         View view = inflater.inflate(R.layout.fragment_trending_detail, container, false);
 
         mTabHost = (FragmentTabHost) view.findViewById(android.R.id.tabhost);
-        //mTabHost.setBackgroundColor(getResources().getColor(R.color.trending_detail_bg));
-        mTabHost.setup(getActivity(), getChildFragmentManager(), R.id.realtabcontent1);
-
-        mTabHost.addTab(mTabHost.newTabSpec(getString(R.string.tab_trade)).setIndicator(getString(R.string.tab_trade)),
-                TradeFragment.class, null);
-        mTabHost.addTab(mTabHost.newTabSpec(getString(R.string.tab_stock_info)).setIndicator(getString(R.string.tab_stock_info)),
-                StockInfoFragment.class, null);
-        mTabHost.addTab(mTabHost.newTabSpec(getString(R.string.tab_news)).setIndicator(getString(R.string.tab_news)),
-                NewsFragment.class, null);
+        ////mTabHost.setBackgroundColor(getResources().getColor(R.color.trending_detail_bg));
+        //mTabHost.setup(getActivity(), getActivity().getSupportFragmentManager(), R.id.realtabcontent1);
+        //
+        //mTabHost.addTab(mTabHost.newTabSpec(getString(R.string.tab_trade)).setIndicator(getString(R.string.tab_trade)),
+        //        TradeFragment.class, null);
+        //mTabHost.addTab(mTabHost.newTabSpec(getString(R.string.tab_stock_info)).setIndicator(getString(R.string.tab_stock_info)),
+        //        StockInfoFragment.class, null);
+        //mTabHost.addTab(mTabHost.newTabSpec(getString(R.string.tab_news)).setIndicator(getString(R.string.tab_news)),
+        //        NewsFragment.class, null);
 
         mHeaderText = (TextView) view.findViewById(R.id.header_txt);
         mHeaderText.setText(String.format("%s:%s", securityCompactDTO.exchange, securityCompactDTO.symbol));
@@ -118,7 +119,7 @@ public class TrendingDetailFragment extends DashboardFragment
         {
             map.put(mYahooQuoteValues.get(i), csvList.get(i));
         }
-        Logger.log(TAG, "YahooQuote Map:\n" + map.toString(), LogLevel.LOGGING_LEVEL_DEBUG);
+        THLog.d(TAG, "YahooQuote Map:\n" + map.toString());
         return map;
     }
 
