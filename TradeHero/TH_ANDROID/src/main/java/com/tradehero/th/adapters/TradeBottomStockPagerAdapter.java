@@ -51,9 +51,10 @@ public class TradeBottomStockPagerAdapter extends FragmentStatePagerAdapter impl
         {
             subViews = new Fragment[subViewClasses.length];
         }
-        for (int i=0; i<subViews.length;++i)
+        for (int i = 0; i < subViews.length; ++i)
         {
-            if (subViews[i] == null) {
+            if (subViews[i] == null)
+            {
                 subViews[i] = Fragment.instantiate(context, subViewClasses[i].getName(), null);
             }
             if (subViews[i] != null && securityCompactDTO != null)

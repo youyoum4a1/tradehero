@@ -85,161 +85,171 @@ public class StockInfoFragment extends SherlockFragment implements DTOView<Secur
         display();
     }
 
-    public void display(SecurityCompactDTO securityCompactDTO)
+    @Override public void display(SecurityCompactDTO dto)
+    {
+        linkWith(dto, true);
+    }
+
+    public void linkWith(SecurityCompactDTO securityCompactDTO, boolean andDisplay)
     {
         this.securityCompactDTO = securityCompactDTO;
-        display();
+        if (andDisplay)
+        {
+            display();
+        }
     }
 
     public void display()
     {
-        if (securityCompactDTO != null)
+        displayPreviousClose();
+        displayOpen();
+        displayDaysHigh();
+        displayDaysLow();
+        displayMarketCap();
+        displayPERatio();
+        displayEps();
+        displayVolume();
+        displayAvgVolume();
+    }
+
+    public void displayPreviousClose()
+    {
+        if (mPreviousClose != null)
         {
-            Double prevClose = securityCompactDTO.previousClose;
-            if (!Double.isNaN(prevClose))
+            if (securityCompactDTO == null || securityCompactDTO.previousClose == null)
             {
-                if (mPreviousClose != null)
-                {
-                    mPreviousClose.setText(String.format("%.3f", prevClose));
-                }
+                mPreviousClose.setText(R.string.na);
             }
             else
             {
-                THLog.d(TAG, "Unable to parse Previous Close");
+                mPreviousClose.setText(String.format("%,.3f", securityCompactDTO.previousClose.doubleValue()));
             }
-
-            Double avgVolume = securityCompactDTO.averageDailyVolume;
-            if (!Double.isNaN(avgVolume))
-            {
-                if (mAvgVolume != null)
-                {
-                    mAvgVolume.setText(String.format("%,d", (int) (double) avgVolume));
-                }
-            }
-            else
-            {
-                THLog.d(TAG, "TH: Unable to parse Avg. Volume");
-            }
-
-            Double volume = securityCompactDTO.volume;
-            if (!Double.isNaN(volume))
-            {
-                if (mVolume != null)
-                {
-                    mVolume.setText(String.format("%,d", (int) (double) volume));
-                }
-            }
-            else
-            {
-                THLog.d(TAG, "TH: Unable to parse Volume");
-            }
-
-            //if (!TextUtils.isEmpty(securityCompactDTO.marketCap))
-            //{
-            //    mMarketCap.setText(YUtils.largeNumberFormat(securityCompactDTO.getMarketCap()));
-            //}
-            //else
-            //{
-            //    Logger.log(TAG, "Unable to parse Market Cap", LogLevel.LOGGING_LEVEL_ERROR);
-            //}
-
-            Double eps = securityCompactDTO.eps;
-            if (!Double.isNaN(eps))
-            {
-                if (mEps != null)
-                {
-                    mEps.setText(String.format("%.3f", eps));
-                }
-            }
-            else
-            {
-                THLog.d(TAG, "Unable to parse EPS");
-            }
-        }
-        else
-        {
-            // TODO
         }
     }
 
-    public void onYahooQuoteUpdateListener(HashMap<String, String> yQuotes)
+    public void displayOpen()
     {
-        //mPreviousClose
-
-        //double previousClose = YUtils.parseQuoteValue(yQuotes.get(""));
-        double daysHigh = YUtils.parseQuoteValue(yQuotes.get("Day's High"));
-        if (!Double.isNaN(daysHigh))
+        if (mOpen != null)
         {
-            mDaysHigh.setText(String.format("%.2f", daysHigh));
-        }
-        else
-        {
-            THLog.d(TAG, "Unable to parse Day\'s High");
-        }
-
-        double daysLow = YUtils.parseQuoteValue(yQuotes.get("Day's Low"));
-        if (!Double.isNaN(daysLow))
-        {
-            mDaysLow.setText(String.format("%.2f", daysLow));
-        }
-        else
-        {
-            THLog.d(TAG, "Unable to parse Day\'s Low");
-        }
-
-        double peRatio = YUtils.parseQuoteValue(yQuotes.get("P/E Ratio"));
-        if (!Double.isNaN(peRatio))
-        {
-            mPERatio.setText(String.format("%.2f", peRatio));
-        }
-        else
-        {
-            THLog.d(TAG, "Unable to parse P/E Ratio");
-        }
-
-        double open = YUtils.parseQuoteValue(yQuotes.get("Open"));
-        if (!Double.isNaN(open))
-        {
-            mOpen.setText(String.format("%.2f", open));
-        }
-        else
-        {
-            THLog.d(TAG, "Unable to parse Open");
-        }
-
-        // NOTE: only update the price from Yahoo when the market is open
-        if (securityCompactDTO.marketOpen)
-        {
-
-            double avgVolume = YUtils.parseQuoteValue(yQuotes.get("Average Daily Volume"));
-            if (!Double.isNaN(avgVolume))
+            if (securityCompactDTO == null || securityCompactDTO.open == null)
             {
-                mAvgVolume.setText(String.format("%,d", (int) avgVolume));
+                mOpen.setText(R.string.na);
             }
             else
             {
-                THLog.d(TAG, "Y: Unable to parse Avg. Volume");
+                mOpen.setText(String.format("%,.2f", securityCompactDTO.open.doubleValue()));
             }
+        }
+        //double open = YUtils.parseQuoteValue(yQuotes.get("Open"));
+    }
 
-            double volume = YUtils.parseQuoteValue(yQuotes.get("Volume"));
-            //if(!Double.isNaN(volume)){
-            if (!Double.isNaN(volume))
+    public void displayDaysHigh()
+    {
+        if (mDaysHigh != null)
+        {
+            if (securityCompactDTO == null || securityCompactDTO.high == null)
             {
-                mVolume.setText(String.format("%,d", (int) volume));
+                mDaysHigh.setText(R.string.na);
             }
             else
             {
-                THLog.d(TAG, "Y: Unable to parse Volume");
+                mDaysHigh.setText(String.format("%,.2f", securityCompactDTO.high.doubleValue()));
             }
-            //}
+        }
+        //double daysHigh = YUtils.parseQuoteValue(yQuotes.get("Day's High"));
+    }
+
+    public void displayDaysLow()
+    {
+        if (mDaysLow != null)
+        {
+            if (securityCompactDTO == null || securityCompactDTO.low == null)
+            {
+                mDaysLow.setText(R.string.na);
+            }
+            else
+            {
+                mDaysLow.setText(String.format("%,.2f", securityCompactDTO.low.doubleValue()));
+            }
+        }
+        //double daysLow = YUtils.parseQuoteValue(yQuotes.get("Day's Low"));
+    }
+
+    public void displayMarketCap()
+    {
+        if (mMarketCap != null)
+        {
+            if (securityCompactDTO == null || securityCompactDTO.marketCap == null)
+            {
+                mMarketCap.setText(R.string.na);
+            }
+            else
+            {
+                mMarketCap.setText(String.format("%,.2f", securityCompactDTO.marketCap.doubleValue()));
+            }
         }
     }
 
-    @Override
-    public void onDestroy()
+    public void displayPERatio()
     {
-        //((TrendingDetailFragment) getActivity().getSupportFragmentManager()
-        //        .findFragmentByTag("trending_detail")).setYahooQuoteUpdateListener(null);
-        super.onDestroy();
+        if (mPERatio != null)
+        {
+            if (securityCompactDTO == null || securityCompactDTO.pe == null)
+            {
+                mPERatio.setText(R.string.na);
+            }
+            else
+            {
+                mPERatio.setText(String.format("%,.2f", securityCompactDTO.pe.doubleValue()));
+            }
+        }
+        //double peRatio = YUtils.parseQuoteValue(yQuotes.get("P/E Ratio"));
+    }
+
+    public void displayEps()
+    {
+        if (mEps != null)
+        {
+            if (securityCompactDTO == null || securityCompactDTO.eps == null)
+            {
+                mEps.setText(R.string.na);
+            }
+            else
+            {
+                mEps.setText(String.format("%,.3f", securityCompactDTO.eps.doubleValue()));
+            }
+        }
+    }
+
+    public void displayVolume()
+    {
+        if (mVolume != null)
+        {
+            if (securityCompactDTO == null || securityCompactDTO.volume == null)
+            {
+                mVolume.setText(R.string.na);
+            }
+            else
+            {
+                mVolume.setText(String.format("%,.0f", securityCompactDTO.volume.doubleValue()));
+            }
+        }
+        //double volume = YUtils.parseQuoteValue(yQuotes.get("Volume"));
+    }
+
+    public void displayAvgVolume()
+    {
+        if (mAvgVolume != null)
+        {
+            if (securityCompactDTO == null || securityCompactDTO.averageDailyVolume == null)
+            {
+                mAvgVolume.setText(R.string.na);
+            }
+            else
+            {
+                mAvgVolume.setText(String.format("%,.0f", securityCompactDTO.averageDailyVolume.doubleValue()));
+            }
+        }
+        //double avgVolume = YUtils.parseQuoteValue(yQuotes.get("Average Daily Volume"));
     }
 }

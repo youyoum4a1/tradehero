@@ -77,7 +77,7 @@
   <string name="share_private">Private</string>
 
   <!-- What's Trending Details - StockInfo -->
-  <string name="previous_close">Previous Close</string>
+  <string name="previous_close">Prev. Close</string>
   <string name="open">Open</string>
   <string name="days_high">Day\'s High</string>
   <string name="days_low">Day\'s Low</string>
@@ -85,7 +85,7 @@
   <string name="pe_ratio">P/E Ratio</string>
   <string name="eps">EPS</string>
   <string name="volume">Volume</string>
-  <string name="avg_volume">Avg Volume</string>
+  <string name="avg_volume">Avg. Volume</string>
   <string name="na">N/A</string>
   <string name="hint_buy_comment">Post comments to attract followers...(optional)</string>
   <string name="btn_buy">Confirm</string>

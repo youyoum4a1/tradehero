@@ -24,13 +24,13 @@
 
   <ImageView
       android:id="@+id/ic_market_close"
-      android:layout_width="24dp"
-      android:layout_height="24dp"
+      android:layout_width="48dp"
+      android:layout_height="48dp"
       android:layout_toRightOf="@id/btn_back"
       android:layout_centerInParent="true"
       android:contentDescription="@null"
       android:scaleType="centerInside"
-      android:src="@drawable/market_sleep_small"
+      android:src="@drawable/market_sleep_white"
       />
 
   <TextView

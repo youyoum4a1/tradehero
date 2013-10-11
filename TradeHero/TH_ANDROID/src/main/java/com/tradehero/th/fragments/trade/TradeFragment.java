@@ -81,6 +81,7 @@ public class TradeFragment extends AbstractTradeFragment
 
     private ProgressBar mQuoteRefreshProgressBar;
     private FrameLayout mInfoFrame;
+    private ImageView mInfoButton;
     private PricingBidAskView mPricingBidAskView;
     private TradeQuantityView mTradeQuantityView;
     private QuickPriceButtonSet mQuickPriceButtonSet;
@@ -141,6 +142,19 @@ public class TradeFragment extends AbstractTradeFragment
         }
 
         mInfoFrame = (FrameLayout) view.findViewById(R.id.chart_frame);
+
+        mInfoButton = (ImageView) view.findViewById(R.id.btn_trade_info);
+        if (mInfoButton != null)
+        {
+            mInfoButton.setOnClickListener(new OnClickListener()
+            {
+                @Override public void onClick(View view)
+                {
+                    showInfoDialog();
+                }
+            });
+        }
+
         mPricingBidAskView = (PricingBidAskView) view.findViewById(R.id.pricing_bid_ask_view);
         if (mPricingBidAskView != null)
         {
@@ -1069,6 +1083,12 @@ public class TradeFragment extends AbstractTradeFragment
         securityId.putParameters(b);
 
         navigator.pushFragment(BuyFragment.class, b);
+    }
+
+    private void showInfoDialog()
+    {
+        THToast.show("Nothing for now");
+        // TODO
     }
 
     //<editor-fold desc="FreshQuoteHolder.FreshQuoteListener">

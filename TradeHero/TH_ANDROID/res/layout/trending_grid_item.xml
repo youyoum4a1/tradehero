@@ -116,7 +116,7 @@
             android:layout_marginRight="5dp"
             android:contentDescription="@null"
             android:scaleType="centerInside"
-            android:src="@drawable/market_sleep_small"
+            android:src="@drawable/market_sleep_grey"
             />
     </RelativeLayout>
 
