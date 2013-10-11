@@ -3,90 +3,69 @@ package com.tradehero.th.adapters;
 import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
-import android.view.ViewGroup;
-import com.tradehero.common.utils.THLog;
 import com.tradehero.th.api.DTOView;
-import com.tradehero.th.api.position.SecurityPositionDetailDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.fragments.trade.ChartFragment;
 import com.tradehero.th.fragments.trade.StockInfoFragment;
-import java.lang.ref.WeakReference;
-import java.util.HashMap;
-import java.util.Map;
-import javax.inject.Inject;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/3/13 Time: 12:42 PM To change this template use File | Settings | File Templates. */
-public class TradeBottomStockPagerAdapter extends FragmentPagerAdapter implements DTOView<SecurityPositionDetailDTO>
+public class TradeBottomStockPagerAdapter extends FragmentStatePagerAdapter implements DTOView<SecurityCompactDTO>
 {
     public static final String TAG = TradeBottomStockPagerAdapter.class.getSimpleName();
-    public static Class classes[] = new Class[]{ ChartFragment.class, StockInfoFragment.class, StockInfoFragment.class };
+    public final Class subViewClasses[] = new Class[] {ChartFragment.class, StockInfoFragment.class, StockInfoFragment.class};
 
-    private SecurityPositionDetailDTO securityPositionDetailDTO;
+    private Fragment[] subViews;
+    private final Context context;
+
+    private SecurityCompactDTO securityCompactDTO;
 
     //<editor-fold desc="Constructors">
-    public TradeBottomStockPagerAdapter(FragmentManager fm)
-    {
-        this(fm, null);
-        THLog.d(TAG, "constructor");
-    }
 
-    public TradeBottomStockPagerAdapter(FragmentManager fm, SecurityPositionDetailDTO securityPositionDetailDTO)
+    public TradeBottomStockPagerAdapter(Context context, FragmentManager fragmentManager)
     {
-        super(fm);
-        THLog.d(TAG, "constructor with dto");
-        this.securityPositionDetailDTO = securityPositionDetailDTO;
+        super(fragmentManager);
+        this.context = context;
     }
     //</editor-fold>
 
-
-    @Override
-    public int getItemPosition(Object object)
+    @Override public void display(SecurityCompactDTO securityCompactDTO)
     {
-        if (securityPositionDetailDTO != null)
-        {
-            ((DTOView<SecurityCompactDTO>) object).display(securityPositionDetailDTO.security);
-        }
-        return POSITION_UNCHANGED;
-    }
-
-    public void display(SecurityPositionDetailDTO securityPositionDetailDTO)
-    {
-        this.securityPositionDetailDTO = securityPositionDetailDTO;
-        notifyDataSetChanged();
+        this.securityCompactDTO = securityCompactDTO;
     }
 
     @Override public int getCount()
     {
-        return classes.length;
+        return subViewClasses.length;
     }
 
-    @Override public Fragment getItem(int i)
+    @Override public void notifyDataSetChanged()
     {
-        Fragment fragment = null;
-        try
-        {
-            fragment = (Fragment) classes[i].newInstance();
-        }
-        catch (InstantiationException|IllegalAccessException e)
-        {
-            THLog.e(TAG, "Failed to instantiate", e);
-        }
-
-        if (securityPositionDetailDTO != null)
-        {
-            try
-            {
-                ((DTOView<SecurityCompactDTO>) fragment).display(securityPositionDetailDTO.security);
-            }
-            catch (NullPointerException e)
-            {
-                THLog.e(TAG, "Fragment needs to be a DTOView SecurityCompact", e);
-            }
-        }
-        return fragment;
+        initFragments();
+        super.notifyDataSetChanged();
     }
 
+    private void initFragments()
+    {
+        if (subViews == null)
+        {
+            subViews = new Fragment[subViewClasses.length];
+        }
+        for (int i=0; i<subViews.length;++i)
+        {
+            if (subViews[i] == null) {
+                subViews[i] = Fragment.instantiate(context, subViewClasses[i].getName(), null);
+            }
+            if (subViews[i] != null && securityCompactDTO != null)
+            {
+                ((DTOView<SecurityCompactDTO>) subViews[i]).display(securityCompactDTO);
+            }
+        }
+    }
 
+    @Override public Fragment getItem(int position)
+    {
+        initFragments();
+        return subViews[position];
+    }
 }

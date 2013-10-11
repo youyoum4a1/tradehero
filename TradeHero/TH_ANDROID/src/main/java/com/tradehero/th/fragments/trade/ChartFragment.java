@@ -25,6 +25,7 @@ public class ChartFragment extends SherlockFragment implements DTOView<SecurityC
     private ImageView stockBgLogo;
     private String yahooSymbol;
 
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -60,6 +61,8 @@ public class ChartFragment extends SherlockFragment implements DTOView<SecurityC
         if (dto.yahooSymbol != null)
         {
             yahooSymbol = dto.yahooSymbol;
+
+            // display should be named bind
             loadImage();
         }
     }
@@ -69,7 +72,10 @@ public class ChartFragment extends SherlockFragment implements DTOView<SecurityC
         if (yahooSymbol != null)
         {
             String imageURL = Utils.getChartURL(yahooSymbol, ChartSize.large, Timespan.months3);
-            Picasso.with(getActivity()).load(imageURL).into(stockBgLogo);
+            if (stockBgLogo!=null)
+            {
+                Picasso.with(getActivity()).load(imageURL).into(stockBgLogo);
+            }
         }
     }
 }

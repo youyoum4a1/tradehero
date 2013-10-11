@@ -60,7 +60,7 @@ public class DashboardActivity extends SherlockFragmentActivity
     {
         if (navigator == null)
         {
-            navigator = new Navigator(this);
+            navigator = new Navigator(this, getSupportFragmentManager());
             navigator.setFragmentContentId(R.id.realtabcontent);
         }
         return navigator;

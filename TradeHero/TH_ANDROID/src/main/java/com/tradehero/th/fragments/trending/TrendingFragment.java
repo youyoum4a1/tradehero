@@ -90,7 +90,7 @@ public class TrendingFragment extends DashboardFragment implements DTOCache.List
             @Override public void onItemClick(AdapterView<?> parent, View view, int position, long id)
             {
                 SecurityCompactDTO securityCompactDTO = (SecurityCompactDTO) parent.getItemAtPosition(position);
-                navigator.pushFragment(TradeFragment.class, securityCompactDTO.getSecurityId().getArgs());
+                navigator.pushFragment(TradeFragment.class, securityCompactDTO.getSecurityId().getArgs(), securityCompactDTO.name);
             }
         });
 
