@@ -2,7 +2,9 @@ package com.tradehero.th.fragments.trade;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
@@ -10,7 +12,6 @@ import com.tradehero.th.api.position.SecurityPositionDetailDTO;
 import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
-import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.THUser;
@@ -18,13 +19,12 @@ import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.persistence.position.SecurityPositionDetailCache;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.utils.SecurityUtils;
 import dagger.Lazy;
 import javax.inject.Inject;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/9/13 Time: 11:14 AM To change this template use File | Settings | File Templates. */
-abstract public class AbstractTradeFragment extends DashboardFragment
-        implements DTOCache.Listener<SecurityId, SecurityPositionDetailDTO>,
-        FreshQuoteHolder.FreshQuoteListener
+abstract public class AbstractTradeFragment extends DashboardFragment implements FreshQuoteHolder.FreshQuoteListener
 {
     private final static String TAG = AbstractTradeFragment.class.getSimpleName();
 
@@ -44,6 +44,7 @@ abstract public class AbstractTradeFragment extends DashboardFragment
     protected SecurityCompactDTO securityCompactDTO;
     protected SecurityPositionDetailDTO securityPositionDetailDTO;
     protected boolean querying = false;
+    protected DTOCache.Listener<SecurityId, SecurityPositionDetailDTO> securityPositionDetailCacheListener;
     protected AsyncTask<Void, Void, SecurityPositionDetailDTO> fetchPositionDetailTask;
 
     @Inject protected Lazy<UserProfileCache> userProfileCache;
@@ -63,12 +64,23 @@ abstract public class AbstractTradeFragment extends DashboardFragment
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        if (savedInstanceState != null)
+        collectFromParameters(savedInstanceState);
+    }
+
+    @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    {
+        collectFromParameters(savedInstanceState);
+        return super.onCreateView(inflater, container, savedInstanceState);
+    }
+
+    protected void collectFromParameters(Bundle args)
+    {
+        if (args != null)
         {
-            isTransactionTypeBuy = savedInstanceState.getBoolean(BUNDLE_KEY_IS_BUY, isTransactionTypeBuy);
-            mBuyQuantity = savedInstanceState.getInt(BUNDLE_KEY_QUANTITY_BUY, mBuyQuantity);
-            mSellQuantity = savedInstanceState.getInt(BUNDLE_KEY_QUANTITY_SELL, mSellQuantity);
-            mPositionIndex = savedInstanceState.getInt(BUNDLE_KEY_POSITION_INDEX, mPositionIndex);
+            isTransactionTypeBuy = args.getBoolean(BUNDLE_KEY_IS_BUY, isTransactionTypeBuy);
+            mBuyQuantity = args.getInt(BUNDLE_KEY_QUANTITY_BUY, mBuyQuantity);
+            mSellQuantity = args.getInt(BUNDLE_KEY_QUANTITY_SELL, mSellQuantity);
+            mPositionIndex = args.getInt(BUNDLE_KEY_POSITION_INDEX, mPositionIndex);
         }
     }
 
@@ -133,6 +145,7 @@ abstract public class AbstractTradeFragment extends DashboardFragment
             fetchPositionDetailTask.cancel(false);
         }
         fetchPositionDetailTask = null;
+        securityPositionDetailCacheListener = null;
 
         if (fetchUserProfileTask != null)
         {
@@ -186,6 +199,17 @@ abstract public class AbstractTradeFragment extends DashboardFragment
             return null;
         }
         return securityPositionDetailDTO.positions.get(positionIndex).shares;
+    }
+
+    protected void requestPositionDetail()
+    {
+        if (fetchPositionDetailTask != null)
+        {
+            fetchPositionDetailTask.cancel(false);
+        }
+        securityPositionDetailCacheListener = createSecurityPositionDetailListener(this.securityId); // We need to keep a strong reference because the cache does not
+        fetchPositionDetailTask = securityPositionDetailCache.get().getOrFetch(this.securityId, false, securityPositionDetailCacheListener);
+        fetchPositionDetailTask.execute();
     }
 
     protected void requestUserProfile()
@@ -242,9 +266,9 @@ abstract public class AbstractTradeFragment extends DashboardFragment
                 securityId.securitySymbol,
                 securityCompactDTO.currencyDisplay,
                 quoteDTO.ask,
-                "US$", // TODO Have this currency taken from somewhere
-                10, // TODO Have this value taken from somewhere
-                "US$", // TODO Have this currency taken from somewhere
+                SecurityUtils.DEFAULT_TRANSACTION_CURRENCY_DISPLAY, // TODO Have this currency taken from somewhere else
+                SecurityUtils.DEFAULT_TRANSACTION_COST, // TODO Have this value taken from somewhere else
+                SecurityUtils.DEFAULT_VIRTUAL_CASH_CURRENCY_DISPLAY, // TODO Have this currency taken from somewhere else
                 getTotalCostForBuy());
     }
 
@@ -294,12 +318,7 @@ abstract public class AbstractTradeFragment extends DashboardFragment
                 linkWith(compactDTO, andDisplay);
             }
 
-            if (fetchPositionDetailTask != null)
-            {
-                fetchPositionDetailTask.cancel(false);
-            }
-            fetchPositionDetailTask = securityPositionDetailCache.get().getOrFetch(this.securityId, false, this);
-            fetchPositionDetailTask.execute();
+            requestPositionDetail();
         }
 
         if (andDisplay)
@@ -378,14 +397,6 @@ abstract public class AbstractTradeFragment extends DashboardFragment
 
     abstract public void display();
 
-    @Override public void onDTOReceived(SecurityId key, SecurityPositionDetailDTO value)
-    {
-        if (key.equals(this.securityId))
-        {
-            linkWith(value, true);
-        }
-    }
-
     private DTOCache.Listener<UserBaseKey, UserProfileDTO> createUserProfileListener(final UserBaseKey userBaseKey)
     {
         return new DTOCache.Listener<UserBaseKey, UserProfileDTO>()
@@ -393,6 +404,20 @@ abstract public class AbstractTradeFragment extends DashboardFragment
             @Override public void onDTOReceived(UserBaseKey key, UserProfileDTO value)
             {
                 if (key.equals(userBaseKey))
+                {
+                    linkWith(value, true);
+                }
+            }
+        };
+    }
+
+    private DTOCache.Listener<SecurityId, SecurityPositionDetailDTO> createSecurityPositionDetailListener(final SecurityId securityId)
+    {
+        return new DTOCache.Listener<SecurityId, SecurityPositionDetailDTO>()
+        {
+            @Override public void onDTOReceived(SecurityId key, SecurityPositionDetailDTO value)
+            {
+                if (key.equals(securityId))
                 {
                     linkWith(value, true);
                 }

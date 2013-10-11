@@ -111,6 +111,7 @@ public class TradeFragment extends AbstractTradeFragment
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         THLog.d(TAG, "onCreateView");
+        super.onCreateView(inflater, container, savedInstanceState);
         View view = null;
         view = inflater.inflate(R.layout.fragment_trade, container, false);
         initViews(view);
