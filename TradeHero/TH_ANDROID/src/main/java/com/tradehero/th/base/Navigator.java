@@ -21,7 +21,7 @@ public class Navigator
     private final Context context;
     private final FragmentFactory fragmentFactory;
     private final int[] animation;
-    private final FragmentManager manager;
+    protected final FragmentManager manager;
 
     private int fragmentContentId;
     private boolean animationInitiated;
