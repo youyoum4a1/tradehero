@@ -67,7 +67,9 @@ import javax.inject.Singleton;
                 SecurityPositionDetailCache.class,
 
                 DatabaseCache.class,
-                CacheHelper.class
+                CacheHelper.class,
+
+                TimelineFragment.class
         },
         staticInjections =
         {

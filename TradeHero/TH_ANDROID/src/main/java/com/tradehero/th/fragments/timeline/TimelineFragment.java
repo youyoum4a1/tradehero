@@ -5,22 +5,23 @@ import android.support.v4.content.Loader;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import com.tradehero.common.utils.THToast;
+import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.TimelineAdapter;
 import com.tradehero.th.api.local.TimelineItem;
+import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.base.ItemListFragment;
 import com.tradehero.th.loaders.TimelinePagedItemListLoader;
-import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.persistence.user.UserManager;
+import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.widget.timeline.TimelineListView;
 import com.tradehero.th.widget.user.ProfileView;
-import java.io.IOException;
+import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
 
-public class TimelineFragment extends ItemListFragment<TimelineItem>
+public class TimelineFragment extends ItemListFragment<TimelineItem> implements DTOCache.Listener<UserBaseKey,UserProfileDTO>
 {
     public static final String USER_ID = "userId";
     private TimelineAdapter timelineAdapter;
@@ -30,37 +31,26 @@ public class TimelineFragment extends ItemListFragment<TimelineItem>
     private TimelineListView timelineListView;
 
     @Inject UserManager userManager;
+    @Inject protected Lazy<UserProfileCache> userProfileCache;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        View view = inflater.inflate(R.layout.profile_screen, container, false);
+        final View view = inflater.inflate(R.layout.profile_screen, container, false);
         profileId = getArguments().getInt(USER_ID);
-        if (profileId > 0)
-        {
-            try
-            {
-                profile = userManager.getUser(profileId, true);
-                if (profile != null)
-                {
-                    initView(view);
-                }
-            }
-            catch (IOException ex)
-            {
-                THToast.show(new THException(ex));
-            }
+
+        if (profileId != 0) {
+            UserBaseKey baseKey = new UserBaseKey(profileId);
+            userProfileCache.get()
+                    .getOrFetch(baseKey, false, this).execute();
         }
+        initView(view);
         return view;
     }
 
-    protected void initView(View view)
+    private void initView(View view)
     {
-        ProfileView profileView = (ProfileView) getActivity().getLayoutInflater().inflate(R.layout.profile_screen_user_detail, null);
-        profileView.display(profile);
-
         timelineListView = (TimelineListView) view.findViewById(R.id.pull_refresh_list);
-        timelineListView.addHeaderView(profileView);
         if (timelineAdapter == null)
         {
             timelineAdapter = createTimelineAdapter();
@@ -72,6 +62,14 @@ public class TimelineFragment extends ItemListFragment<TimelineItem>
 
         setListView(timelineListView.getRefreshableView());
         registerForContextMenu(timelineListView);
+    }
+
+    protected void updateView()
+    {
+        ProfileView profileView = (ProfileView) getActivity().getLayoutInflater().inflate(R.layout.profile_screen_user_detail, null);
+        profileView.display(profile);
+        timelineListView.addHeaderView(profileView);
+
 
         getSherlockActivity().getSupportActionBar().setTitle(profile.displayName);
     }
@@ -102,6 +100,12 @@ public class TimelineFragment extends ItemListFragment<TimelineItem>
     @Override public Loader<List<TimelineItem>> onCreateLoader(int id, Bundle bundle)
     {
         return timelineAdapter == null ? null : timelineAdapter.getLoader();
+    }
+
+    @Override public void onDTOReceived(UserBaseKey key, UserProfileDTO value)
+    {
+        profile = value;
+        updateView();
     }
     //</editor-fold>
 }

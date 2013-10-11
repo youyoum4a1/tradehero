@@ -21,6 +21,7 @@ import com.tradehero.th.api.misc.MediaDTO;
 import com.tradehero.th.api.users.UserProfileCompactDTO;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.base.NavigatorActivity;
+import com.tradehero.th.base.THUser;
 import com.tradehero.th.fragments.timeline.TimelineFragment;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.widget.MarkdownTextView;
@@ -113,8 +114,10 @@ public class TimelineItemView extends RelativeLayout implements DTOView<Timeline
                 Bundle b = new Bundle();
                 b.putInt(TimelineFragment.USER_ID, userId);
 
-                // TODO
-//                ((NavigatorActivity)getContext()).getNavigator().pushFragment(TimelineFragment.class, b);
+                if (THUser.getCurrentUserBase().id != userId)
+                {
+                    ((NavigatorActivity)getContext()).getNavigator().pushFragment(TimelineFragment.class, b, "" + userId);
+                }
                 break;
             case "security":
                 THToast.show("Link clicked " + data);

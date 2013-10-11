@@ -719,7 +719,7 @@ public class TradeFragment extends AbstractTradeFragment
         if (securityPositionDetailDTO != null)
         {
             bottomViewPagerAdapter.display(securityPositionDetailDTO.security);
-            bottomViewPagerAdapter.notifyDataSetChanged();
+//            bottomViewPagerAdapter.notifyDataSetChanged();
         }
     }
 
