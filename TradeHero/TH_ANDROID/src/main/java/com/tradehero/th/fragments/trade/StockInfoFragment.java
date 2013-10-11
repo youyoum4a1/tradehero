@@ -13,18 +13,24 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import com.actionbarsherlock.app.SherlockFragment;
+import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.models.Trend;
+import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.utills.Logger;
 import com.tradehero.th.utills.Logger.LogLevel;
 import com.tradehero.th.utills.YUtils;
+import com.tradehero.th.utils.DaggerUtils;
+import dagger.Lazy;
 import java.util.HashMap;
+import javax.inject.Inject;
 
-public class StockInfoFragment extends SherlockFragment implements DTOView<SecurityCompactDTO>
+public class StockInfoFragment extends SherlockFragment
+        implements DTOCache.Listener<SecurityId, SecurityCompactDTO>
 {
     private final static String TAG = StockInfoFragment.class.getSimpleName();
 
@@ -37,7 +43,16 @@ public class StockInfoFragment extends SherlockFragment implements DTOView<Secur
     private TextView mEps;
     private TextView mVolume;
     private TextView mAvgVolume;
+
+    private SecurityId securityId;
     private SecurityCompactDTO securityCompactDTO;
+    @Inject protected Lazy<SecurityCompactCache> securityCompactCache;
+
+    @Override public void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        DaggerUtils.inject(this);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -61,33 +76,45 @@ public class StockInfoFragment extends SherlockFragment implements DTOView<Secur
         mAvgVolume = (TextView) v.findViewById(R.id.vavg_volume);
     }
 
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState)
-    {
-        super.onActivityCreated(savedInstanceState);
-        THLog.d(TAG, "onActivityCreated()");
-
-        //((TrendingDetailFragment) getActivity().getSupportFragmentManager()
-        //        .findFragmentByTag("trending_detail")).setYahooQuoteUpdateListener(this);
-
-        display();
-    }
-
     @Override public void onResume()
     {
         super.onResume();
         Bundle args = getArguments();
         if (args != null)
         {
-            new SecurityId(args);
-            // TODO make use of it to query the cache
+            linkWith(new SecurityId(args), true);
         }
-        display();
+        else
+        {
+            display();
+        }
     }
 
-    @Override public void display(SecurityCompactDTO dto)
+    @Override public void onPause()
     {
-        linkWith(dto, true);
+        if (securityId != null)
+        {
+            securityCompactCache.get().unRegisterListener(this);
+        }
+        super.onPause();
+    }
+
+    public void linkWith(SecurityId securityId, boolean andDisplay)
+    {
+        this.securityId = securityId;
+        if (this.securityId != null)
+        {
+            securityCompactCache.get().registerListener(this);
+            linkWith(securityCompactCache.get().get(this.securityId), andDisplay);
+        }
+    }
+
+    @Override public void onDTOReceived(SecurityId key, SecurityCompactDTO value)
+    {
+        if (key.equals(securityId))
+        {
+            linkWith(value, true);
+        }
     }
 
     public void linkWith(SecurityCompactDTO securityCompactDTO, boolean andDisplay)
@@ -99,6 +126,7 @@ public class StockInfoFragment extends SherlockFragment implements DTOView<Secur
         }
     }
 
+    //<editor-fold desc="Display Methods">
     public void display()
     {
         displayPreviousClose();
@@ -252,4 +280,5 @@ public class StockInfoFragment extends SherlockFragment implements DTOView<Secur
         }
         //double avgVolume = YUtils.parseQuoteValue(yQuotes.get("Average Daily Volume"));
     }
+    //</editor-fold>
 }

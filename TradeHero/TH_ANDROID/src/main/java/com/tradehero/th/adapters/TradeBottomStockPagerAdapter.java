@@ -1,27 +1,31 @@
 package com.tradehero.th.adapters;
 
 import android.content.Context;
+import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
-import com.tradehero.th.api.DTOView;
+import android.view.View;
+import android.view.ViewGroup;
+import com.tradehero.common.utils.THLog;
 import com.tradehero.th.api.security.SecurityCompactDTO;
+import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.fragments.trade.ChartFragment;
 import com.tradehero.th.fragments.trade.StockInfoFragment;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/3/13 Time: 12:42 PM To change this template use File | Settings | File Templates. */
-public class TradeBottomStockPagerAdapter extends FragmentStatePagerAdapter implements DTOView<SecurityCompactDTO>
+public class TradeBottomStockPagerAdapter extends FragmentStatePagerAdapter
 {
     public static final String TAG = TradeBottomStockPagerAdapter.class.getSimpleName();
-    public final Class subViewClasses[] = new Class[] {ChartFragment.class, StockInfoFragment.class, StockInfoFragment.class};
+    private final Class subViewClasses[] = new Class[] {ChartFragment.class, StockInfoFragment.class, StockInfoFragment.class};
+    public final int fragmentCount = subViewClasses.length;
 
-    private Fragment[] subViews;
     private final Context context;
 
-    private SecurityCompactDTO securityCompactDTO;
+    private SecurityId securityId;
 
     //<editor-fold desc="Constructors">
-
     public TradeBottomStockPagerAdapter(Context context, FragmentManager fragmentManager)
     {
         super(fragmentManager);
@@ -29,44 +33,34 @@ public class TradeBottomStockPagerAdapter extends FragmentStatePagerAdapter impl
     }
     //</editor-fold>
 
-    @Override public void display(SecurityCompactDTO securityCompactDTO)
+    public void linkWith(SecurityId securityId)
     {
-        this.securityCompactDTO = securityCompactDTO;
+        this.securityId = securityId;
+    }
+
+    public SecurityId getSecurityId()
+    {
+        return securityId;
     }
 
     @Override public int getCount()
     {
-        return subViewClasses.length;
-    }
-
-    @Override public void notifyDataSetChanged()
-    {
-        initFragments();
-        super.notifyDataSetChanged();
-    }
-
-    private void initFragments()
-    {
-        if (subViews == null)
-        {
-            subViews = new Fragment[subViewClasses.length];
-        }
-        for (int i = 0; i < subViews.length; ++i)
-        {
-            if (subViews[i] == null)
-            {
-                subViews[i] = Fragment.instantiate(context, subViewClasses[i].getName(), null);
-            }
-            if (subViews[i] != null && securityCompactDTO != null)
-            {
-                ((DTOView<SecurityCompactDTO>) subViews[i]).display(securityCompactDTO);
-            }
-        }
+        return fragmentCount;
     }
 
     @Override public Fragment getItem(int position)
     {
-        initFragments();
-        return subViews[position];
+        Fragment fragment = Fragment.instantiate(context, subViewClasses[position].getName(), null);
+        if (securityId != null)
+        {
+            fragment.setArguments(securityId.getArgs());
+        }
+        fragment.setRetainInstance(false);
+        return fragment;
+    }
+
+    @Override public int getItemPosition(Object object)
+    {
+        return POSITION_NONE;
     }
 }

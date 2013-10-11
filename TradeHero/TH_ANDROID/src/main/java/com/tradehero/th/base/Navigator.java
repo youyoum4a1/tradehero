@@ -65,10 +65,10 @@ public class Navigator
         return animation;
     }
 
-    public void pushFragment(Class<? extends Fragment> fragmentClass, Bundle args, String tag, boolean withAnimation)
+    public void pushFragment(Class<? extends Fragment> fragmentClass, Bundle args, boolean withAnimation)
     {
         THLog.d(TAG, "Pushing fragment " + fragmentClass.getSimpleName());
-        Fragment fragment = fragmentFactory.getInstance(fragmentClass, args, tag);
+        Fragment fragment = fragmentFactory.getInstance(fragmentClass, args);
         FragmentTransaction transaction = manager.beginTransaction();
         if (withAnimation)
         {
@@ -82,22 +82,12 @@ public class Navigator
 
     public void pushFragment(Class<? extends Fragment> fragmentClass)
     {
-        pushFragment(fragmentClass, null, null);
+        pushFragment(fragmentClass, null);
     }
 
     public void pushFragment(Class<? extends Fragment> fragmentClass, Bundle args)
     {
-        pushFragment(fragmentClass, args, null);
-    }
-
-    public void pushFragment(Class<? extends Fragment> fragmentClass, String tag)
-    {
-        pushFragment(fragmentClass, null, tag);
-    }
-
-    public void pushFragment(Class<? extends Fragment> fragmentClass, Bundle args, String tag)
-    {
-        pushFragment(fragmentClass, args, tag, true);
+        pushFragment(fragmentClass, args, true);
     }
 
     public void popFragment()
@@ -108,18 +98,12 @@ public class Navigator
 
     private class FragmentFactory
     {
-        private Map<String, WeakReference<Fragment>> instances = new HashMap<>();
+        private Map<Class<?>, WeakReference<Fragment>> instances = new HashMap<>();
 
         public Fragment getInstance(Class<? extends Fragment> clss, Bundle args)
         {
-            return getInstance(clss, args, null);
-        }
-
-        public Fragment getInstance(Class<? extends Fragment> clss, Bundle args, String tag)
-        {
             Fragment fragment = null;
-            String cacheKey = tag == null ? clss.getName() : clss.getName() + "_" + tag;
-            WeakReference<Fragment> weakFragment = instances.get(cacheKey);
+            WeakReference<Fragment> weakFragment = instances.get(clss);
             if (weakFragment != null)
             {
                 fragment = weakFragment.get();
@@ -128,7 +112,7 @@ public class Navigator
             if (fragment == null)
             {
                 fragment = Fragment.instantiate(context, clss.getName(), args);
-                instances.put(cacheKey, new WeakReference<>(fragment));
+                instances.put(clss, new WeakReference<>(fragment));
             }
             else
             {

@@ -7,72 +7,107 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import com.actionbarsherlock.app.SherlockFragment;
 import com.squareup.picasso.Picasso;
+import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.security.SecurityCompactDTO;
+import com.tradehero.th.api.security.SecurityId;
+import com.tradehero.th.persistence.security.SecurityCompactCache;
+import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.yahoo.*;
+import dagger.Lazy;
 import javax.inject.Inject;
 
 /**
  * Created by julien on 9/10/13
  */
-public class ChartFragment extends SherlockFragment implements DTOView<SecurityCompactDTO>
+public class ChartFragment extends SherlockFragment
+    implements DTOCache.Listener<SecurityId, SecurityCompactDTO>
 {
     private final static String TAG = ChartFragment.class.getSimpleName();
-    public final static String BUNDLE_KEY_YAHOO_SYMBOL = ChartFragment.class.getName() + ".yahooSymbol";
 
     private ImageView stockBgLogo;
-    private String yahooSymbol;
 
+    private SecurityId securityId;
+    private SecurityCompactDTO securityCompactDTO;
+    @Inject protected Lazy<SecurityCompactCache> securityCompactCache;
+
+    @Override public void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        DaggerUtils.inject(this);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.fragment_chart, container, false);
         stockBgLogo = (ImageView)view.findViewById(R.id.chart_imageView);
-
-        if (savedInstanceState != null)
-        {
-            yahooSymbol = savedInstanceState.getString(BUNDLE_KEY_YAHOO_SYMBOL, null);
-        }
-
         return view;
     }
 
     @Override public void onResume()
     {
         super.onResume();
-        loadImage();
-    }
-
-    @Override public void onSaveInstanceState(Bundle outState)
-    {
-        super.onSaveInstanceState(outState);
-        if (yahooSymbol != null)
+        Bundle args = getArguments();
+        if (args != null)
         {
-            outState.putString(BUNDLE_KEY_YAHOO_SYMBOL, yahooSymbol);
+            linkWith(new SecurityId(args), true);
+        }
+        else
+        {
+            display();
         }
     }
 
-    @Override
-    public void display(SecurityCompactDTO dto)
+    @Override public void onPause()
     {
-        if (dto.yahooSymbol != null)
+        if (securityId != null)
         {
-            yahooSymbol = dto.yahooSymbol;
+            securityCompactCache.get().unRegisterListener(this);
+        }
+        super.onPause();
+    }
 
-            // display should be named bind
-            loadImage();
+    public void linkWith(SecurityId securityId, boolean andDisplay)
+    {
+        this.securityId = securityId;
+        if (this.securityId != null)
+        {
+            securityCompactCache.get().registerListener(this);
+            linkWith(securityCompactCache.get().get(this.securityId), andDisplay);
         }
     }
 
-    private void loadImage()
+    @Override public void onDTOReceived(SecurityId key, SecurityCompactDTO value)
     {
-        if (yahooSymbol != null && stockBgLogo != null)
+        if (key.equals(securityId))
         {
-            String imageURL = Utils.getChartURL(yahooSymbol, ChartSize.large, Timespan.months3);
-            if (stockBgLogo!=null)
+            linkWith(value, true);
+        }
+    }
+
+    public void linkWith(SecurityCompactDTO securityCompactDTO, boolean andDisplay)
+    {
+        this.securityCompactDTO = securityCompactDTO;
+        if (andDisplay)
+        {
+            display();
+        }
+    }
+
+    public void display()
+    {
+        displayBgLogo();
+    }
+
+    public void displayBgLogo()
+    {
+        if (stockBgLogo != null)
+        {
+            if (securityCompactDTO != null && securityCompactDTO.yahooSymbol != null)
             {
+                String imageURL = Utils.getChartURL(securityCompactDTO.yahooSymbol, ChartSize.large, Timespan.months3);
                 Picasso.with(getActivity()).load(imageURL).into(stockBgLogo);
             }
         }

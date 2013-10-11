@@ -56,6 +56,7 @@ import com.tradehero.th.widget.trade.PricingBidAskView;
 import com.tradehero.th.widget.trade.QuickPriceButtonSet;
 import com.tradehero.th.widget.trade.TradeQuantityView;
 import com.viewpagerindicator.LinePageIndicator;
+import com.viewpagerindicator.PageIndicator;
 import dagger.Lazy;
 import javax.inject.Inject;
 
@@ -85,7 +86,7 @@ public class TradeFragment extends AbstractTradeFragment
     private PricingBidAskView mPricingBidAskView;
     private TradeQuantityView mTradeQuantityView;
     private QuickPriceButtonSet mQuickPriceButtonSet;
-    private LinePageIndicator mBottomPagerIndicator;
+    private PageIndicator mBottomPagerIndicator;
     private ViewPager mBottomViewPager;
 
     private Button mBuyBtn;
@@ -214,11 +215,17 @@ public class TradeFragment extends AbstractTradeFragment
 
 
         mBottomViewPager = (ViewPager) view.findViewById(R.id.trade_bottom_pager);
-        bottomViewPagerAdapter = new TradeBottomStockPagerAdapter(getActivity(), getFragmentManager());
-        mBottomViewPager.setAdapter(bottomViewPagerAdapter);
+        if (bottomViewPagerAdapter == null)
+        {
+            bottomViewPagerAdapter = new TradeBottomStockPagerAdapter(getActivity(), getFragmentManager());
+        }
+        if (mBottomViewPager != null)
+        {
+            mBottomViewPager.setAdapter(bottomViewPagerAdapter);
+        }
 
-        mBottomPagerIndicator = (LinePageIndicator) view.findViewById(R.id.trade_bottom_pager_indicator);
-        if (mBottomPagerIndicator != null)
+        mBottomPagerIndicator = (PageIndicator) view.findViewById(R.id.trade_bottom_pager_indicator);
+        if (mBottomPagerIndicator != null && mBottomViewPager != null)
         {
             mBottomPagerIndicator.setViewPager(mBottomViewPager, 0);
         }
@@ -394,6 +401,9 @@ public class TradeFragment extends AbstractTradeFragment
         }
         mBuyBtn = null;
 
+        bottomViewPagerAdapter = null;
+        mBottomViewPager = null;
+
         mBottomPagerIndicator = null;
         mBottomViewPager = null;
         super.onDestroyView();
@@ -515,6 +525,7 @@ public class TradeFragment extends AbstractTradeFragment
         if (andDisplay)
         {
             displayExchangeSymbol();
+            displayBottomViewPager();
         }
     }
 
@@ -555,7 +566,6 @@ public class TradeFragment extends AbstractTradeFragment
         {
             displayPricingBidAskView();
             displayTradeQuantityView();
-            displayBottomViewPager();
             displayQuickPriceButtonSet();
             displaySlider();
             displayBuySellSwitch();
@@ -730,10 +740,24 @@ public class TradeFragment extends AbstractTradeFragment
 
     public void displayBottomViewPager()
     {
-        if (securityPositionDetailDTO != null)
+        if (bottomViewPagerAdapter != null)
         {
-            bottomViewPagerAdapter.display(securityPositionDetailDTO.security);
-//            bottomViewPagerAdapter.notifyDataSetChanged();
+            if (securityId != null && !securityId.equals(bottomViewPagerAdapter.getSecurityId()))
+            {
+                bottomViewPagerAdapter.linkWith(securityId);
+
+                if (mBottomViewPager != null)
+                {
+                    mBottomViewPager.post(new Runnable()
+                    {
+                        @Override public void run()
+                        {
+                            // We need to do it in a later frame otherwise the pager adapter crashes with IllegalStateException
+                            bottomViewPagerAdapter.notifyDataSetChanged();
+                        }
+                    });
+                }
+            }
         }
     }
 
@@ -1253,6 +1277,7 @@ public class TradeFragment extends AbstractTradeFragment
         {
             @Override public void onClick(View view)
             {
+                THToast.show("Nothing for now");
                 // TODO call chart fragment in
             }
         };

@@ -274,14 +274,21 @@
             android:padding="10dp"
             android:scaleType="fitXY" /-->
 
-      <com.viewpagerindicator.LinePageIndicator
+      <com.viewpagerindicator.CirclePageIndicator
           android:id="@+id/trade_bottom_pager_indicator"
           android:layout_height="wrap_content"
           android:layout_width="fill_parent"
-          android_auto:strokeWidth="4dp"
+          android_auto:strokeWidth="1dp"
           android_auto:lineWidth="30dp"
           android_auto:unselectedColor="#FFbbbbbb"
           android_auto:selectedColor="@color/btn_new_user_color_light"
+
+          android:paddingTop="2dp"
+          android:background="@android:color/transparent"
+          android_auto:radius="4dp"
+          android_auto:fillColor="@color/btn_new_user_color_light"
+          android_auto:pageColor="@android:color/transparent"
+          android_auto:strokeColor="@color/btn_new_user_color_light"
           />
 
       <android.support.v4.view.ViewPager
