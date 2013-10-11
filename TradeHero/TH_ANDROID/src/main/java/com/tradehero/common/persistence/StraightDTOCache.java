@@ -3,16 +3,23 @@ package com.tradehero.common.persistence;
 import android.os.AsyncTask;
 import android.support.v4.util.LruCache;
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.List;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 10/4/13 Time: 11:01 AM To change this template use File | Settings | File Templates. */
-abstract public class StraightDTOCache<BaseKeyType, DTOKeyType extends DTOKey<BaseKeyType>, DTOType> implements DTOCache<BaseKeyType, DTOKeyType, DTOType>
+/** Created with IntelliJ IDEA. User: xavier Date: 10/4/13 Time: 11:01 AM To change this template use File | Settings | File Templates.
+ * The registered listeners are kept as weak references. So they should be strongly referenced elsewhere.
+ *  */
+abstract public class StraightDTOCache<BaseKeyType, DTOKeyType extends DTOKey<BaseKeyType>, DTOType>
+        implements LiveDTOCache<BaseKeyType, DTOKeyType, DTOType>
 {
     private LruCache<BaseKeyType, DTOType> lruCache;
+    private List<WeakReference<Listener<DTOKeyType, DTOType>>> listeners;
 
     public StraightDTOCache(int maxSize)
     {
         super();
         this.lruCache = new LruCache<>(maxSize);
+        this.listeners = new ArrayList<>();
     }
     
     abstract protected DTOType fetch(DTOKeyType key);
@@ -60,11 +67,96 @@ abstract public class StraightDTOCache<BaseKeyType, DTOKeyType extends DTOKey<Ba
                 super.onPostExecute(value);
                 Listener<DTOKeyType, DTOType> retrievedCallback = weakCallback.get();
                 // We retrieve the callback right away to avoid having it vanish between the 2 get() calls.
-                if (!isCancelled() && retrievedCallback != null)
+                if (!isCancelled())
                 {
-                    retrievedCallback.onDTOReceived(key, value);
+                    if (retrievedCallback != null)
+                    {
+                        retrievedCallback.onDTOReceived(key, value);
+                    }
+                    pushToListeners(key);
                 }
             }
         };
+    }
+
+    @Override public boolean isListenerRegistered(Listener<DTOKeyType, DTOType> listener)
+    {
+        List<WeakReference<Listener<DTOKeyType, DTOType>>> lostListeners = new ArrayList<>();
+        boolean alreadyIn = false;
+
+        for (WeakReference<Listener<DTOKeyType, DTOType>> weakListener: listeners)
+        {
+            Listener<DTOKeyType, DTOType> knownListener = weakListener.get();
+            if (knownListener == null)
+            {
+                lostListeners.add(weakListener);
+            }
+            else if (knownListener == listener)
+            {
+                alreadyIn = true;
+                break;
+            }
+        }
+
+        removeListeners(lostListeners);
+
+        return alreadyIn;
+    }
+
+    @Override public void registerListener(Listener<DTOKeyType, DTOType> listener)
+    {
+        if (!isListenerRegistered(listener))
+        {
+            listeners.add(new WeakReference<>(listener));
+        }
+    }
+
+    @Override public void unRegisterListener(Listener<DTOKeyType, DTOType> listener)
+    {
+        List<WeakReference<Listener<DTOKeyType, DTOType>>> lostListeners = new ArrayList<>();
+
+        for (WeakReference<Listener<DTOKeyType, DTOType>> weakListener: listeners)
+        {
+            Listener<DTOKeyType, DTOType> knownListener = weakListener.get();
+            if (knownListener == null)
+            {
+                lostListeners.add(weakListener);
+            }
+            else if (knownListener == listener)
+            {
+                listeners.remove(listener);
+                break;
+            }
+        }
+
+        removeListeners(lostListeners);
+    }
+
+    @Override public void pushToListeners(DTOKeyType key)
+    {
+        List<WeakReference<Listener<DTOKeyType, DTOType>>> lostListeners = new ArrayList<>();
+
+        for (WeakReference<Listener<DTOKeyType, DTOType>> weakListener: listeners)
+        {
+            Listener<DTOKeyType, DTOType> knownListener = weakListener.get();
+            if (knownListener == null)
+            {
+                lostListeners.add(weakListener);
+            }
+            else
+            {
+                knownListener.onDTOReceived(key, get(key));
+            }
+        }
+
+        removeListeners(lostListeners);
+    }
+
+    private void removeListeners(List<WeakReference<Listener<DTOKeyType, DTOType>>> lostListeners)
+    {
+        for (WeakReference<Listener<DTOKeyType, DTOType>> lostListener: lostListeners)
+        {
+            listeners.remove(lostListener);
+        }
     }
 }
