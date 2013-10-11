@@ -44,45 +44,57 @@
           android:text="@string/share_on"
           android:textColor="@color/gray_2" />
 
-      <ImageButton
-          android:id="@+id/btn_fb"
+      <ToggleButton
+          android:id="@+id/btn_share_fb"
           android:layout_width="32dp"
           android:layout_height="32dp"
           android:layout_marginRight="8dp"
-          android:background="@null"
           android:contentDescription="@null"
           android:scaleType="fitCenter"
-          android:src="@drawable/facebook" />
+          android:background="@drawable/ic_share_fb"
+          android:checked="false"
+          android:textOff=""
+          android:textOn=""
+          />
 
-      <ImageButton
-          android:id="@+id/btn_tw"
+      <ToggleButton
+          android:id="@+id/btn_share_tw"
           android:layout_width="32dp"
           android:layout_height="32dp"
           android:layout_marginRight="8dp"
-          android:background="@null"
           android:contentDescription="@null"
           android:scaleType="fitCenter"
-          android:src="@drawable/twitter" />
+          android:background="@drawable/ic_share_tw"
+          android:checked="false"
+          android:textOff=""
+          android:textOn=""
+          />
 
-      <ImageButton
-          android:id="@+id/btn_li"
+      <ToggleButton
+          android:id="@+id/btn_share_li"
           android:layout_width="30dp"
           android:layout_height="32dp"
           android:layout_marginRight="8dp"
-          android:background="@null"
           android:contentDescription="@null"
           android:scaleType="fitCenter"
-          android:src="@drawable/linkedin" />
+          android:background="@drawable/ic_share_li"
+          android:checked="false"
+          android:textOff=""
+          android:textOn=""
+          />
 
-      <ImageButton
+      <ToggleButton
           android:id="@+id/btn_location"
           android:layout_width="32dp"
           android:layout_height="32dp"
           android:layout_marginRight="20dp"
-          android:background="@null"
           android:contentDescription="@null"
           android:scaleType="fitCenter"
-          android:src="@drawable/ic_location" />
+          android:background="@drawable/ic_location"
+          android:checked="false"
+          android:textOff=""
+          android:textOn=""
+          />
 
       <View
           android:layout_width="wrap_content"

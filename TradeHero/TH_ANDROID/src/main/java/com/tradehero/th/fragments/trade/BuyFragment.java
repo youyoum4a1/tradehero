@@ -77,19 +77,21 @@ public class BuyFragment extends AbstractTradeFragment
 
     private ProgressBar mQuoteRefreshProgressBar;
     private EditText mCommentsET;
-    private ImageButton mBtnLocation;
+    private ToggleButton mBtnShareFacebook;
+    private ToggleButton mBtnShareTwitter;
+    private ToggleButton mBtnShareLinkedIn;
+    private ToggleButton mBtnLocation;
     private ToggleButton mBtnSharePublic;
     private TextView mBuyDetails;
 
     //private String lastPrice;
-    private boolean publishToFb;
-    private boolean publishToTw;
-    private boolean publishToLi;
+    private boolean publishToFb = false;
+    private boolean publishToTw = false;
+    private boolean publishToLi = false;
     private int quantity;
     private String buyDetails;
-    private boolean shareLocation;
-    private boolean sharePublic;
-
+    private boolean shareLocation = false;
+    private boolean sharePublic = false;
 
     @Inject protected Lazy<SecurityService> securityService;
     @Inject protected Lazy<UserProfileCache> userProfileCache;
@@ -120,12 +122,49 @@ public class BuyFragment extends AbstractTradeFragment
             mQuoteRefreshProgressBar.setMax((int) (MILLISEC_QUOTE_REFRESH / MILLISEC_QUOTE_COUNTDOWN_PRECISION));
             mQuoteRefreshProgressBar.setProgress(mQuoteRefreshProgressBar.getMax());
         }
+
         mCommentsET = (EditText) view.findViewById(R.id.comments);
 
         // Commented because of removal of right button.
         //mBtnConfirm = (Button) v.findViewById(R.id.right_button);
 
-        mBtnLocation = (ImageButton) view.findViewById(R.id.btn_location);
+        mBtnShareFacebook = (ToggleButton) view.findViewById(R.id.btn_share_fb);
+        if (mBtnShareFacebook != null)
+        {
+            mBtnShareFacebook.setOnClickListener(new OnClickListener()
+            {
+                @Override public void onClick(View view)
+                {
+                    toggleShareFacebook();
+                }
+            });
+        }
+
+        mBtnShareTwitter = (ToggleButton) view.findViewById(R.id.btn_share_tw);
+        if (mBtnShareTwitter != null)
+        {
+            mBtnShareTwitter.setOnClickListener(new OnClickListener()
+            {
+                @Override public void onClick(View view)
+                {
+                    toggleShareTwitter();
+                }
+            });
+        }
+
+        mBtnShareLinkedIn = (ToggleButton) view.findViewById(R.id.btn_share_li);
+        if (mBtnShareLinkedIn != null)
+        {
+            mBtnShareLinkedIn.setOnClickListener(new OnClickListener()
+            {
+                @Override public void onClick(View view)
+                {
+                    toggleShareLinkedIn();
+                }
+            });
+        }
+
+        mBtnLocation = (ToggleButton) view.findViewById(R.id.btn_location);
         if (mBtnLocation != null)
         {
             mBtnLocation.setOnClickListener(new OnClickListener()
@@ -133,8 +172,7 @@ public class BuyFragment extends AbstractTradeFragment
                 @Override public void onClick(View view)
                 {
                     THLog.d(TAG, "onClick Location");
-                    shareLocation = !shareLocation;
-                    displayShareLocation();
+                    toggleShareLocation();
                 }
             });
         }
@@ -224,11 +262,31 @@ public class BuyFragment extends AbstractTradeFragment
             buySellTask.cancel(false);
         }
         buySellTask = null;
+
+        if (mBtnShareFacebook != null)
+        {
+            mBtnShareFacebook.setOnClickListener(null);
+        }
+        mBtnShareFacebook = null;
+
+        if (mBtnShareTwitter != null)
+        {
+            mBtnShareTwitter.setOnClickListener(null);
+        }
+        mBtnShareTwitter = null;
+
+        if (mBtnShareLinkedIn != null)
+        {
+            mBtnShareLinkedIn.setOnClickListener(null);
+        }
+        mBtnShareLinkedIn = null;
+
         if (mBtnLocation != null)
         {
             mBtnLocation.setOnClickListener(null);
         }
         mBtnLocation = null;
+
         if (mBtnSharePublic != null)
         {
             mBtnSharePublic.setOnCheckedChangeListener(null);
@@ -314,6 +372,30 @@ public class BuyFragment extends AbstractTradeFragment
         }
     }
 
+    public void toggleShareFacebook()
+    {
+        publishToFb = !publishToFb;
+        displayPublishToFb();
+    }
+
+    public void toggleShareTwitter()
+    {
+        publishToTw = !publishToTw;
+        displayPublishToTw();
+    }
+
+    public void toggleShareLinkedIn()
+    {
+        publishToLi = !publishToLi;
+        displayPublishToLi();
+    }
+
+    public void toggleShareLocation()
+    {
+        shareLocation = !shareLocation;
+        displayShareLocation();
+    }
+
     //<editor-fold desc="Display Methods">
     public void display()
     {
@@ -331,6 +413,9 @@ public class BuyFragment extends AbstractTradeFragment
     {
         displayBuySellDetails();
         displayButtonConfirm();
+        displayPublishToFb();
+        displayPublishToTw();
+        displayPublishToLi();
         displayShareLocation();
     }
 
@@ -394,13 +479,46 @@ public class BuyFragment extends AbstractTradeFragment
         }
     }
 
+    public void displayPublishToFb()
+    {
+        if (mBtnShareFacebook != null)
+        {
+            displayToggleButton(mBtnShareFacebook, publishToFb);
+        }
+    }
+
+    public void displayPublishToTw()
+    {
+        if (mBtnShareTwitter != null)
+        {
+            displayToggleButton(mBtnShareTwitter, publishToTw);
+        }
+    }
+
+    public void displayPublishToLi()
+    {
+        if (mBtnShareLinkedIn != null)
+        {
+            displayToggleButton(mBtnShareLinkedIn, publishToLi);
+        }
+    }
+
     public void displayShareLocation()
     {
         if (mBtnLocation != null)
         {
-            mBtnLocation.setAlpha(shareLocation ? 1 : 0.5f);
+            displayToggleButton(mBtnLocation, shareLocation);
         }
     }
+
+    private void displayToggleButton(ToggleButton button, boolean expectedStatus)
+    {
+        if (button != null && button.isChecked() != expectedStatus)
+        {
+            button.setChecked(expectedStatus);
+        }
+    }
+
     //</editor-fold>
 
     @Override protected void prepareFreshQuoteHolder()

@@ -167,7 +167,8 @@
                android:layout_marginRight="8dp"
                android:contentDescription="@null"
                android:background="@null"
-               android:src="@drawable/market_sleep_small"
+               android:src="@drawable/buy_thd_big"
+               android:scaleType="fitCenter"
                />
 
            <ImageButton
@@ -175,10 +176,11 @@
                android:layout_height="32dp"
                android:layout_width="32dp"
                android:layout_alignParentRight="true"
-               android:layout_marginRight="4dp"
+               android:layout_marginRight="8dp"
                android:contentDescription="@null"
                android:background="@null"
-               android:src="@drawable/market_sleep_small"
+               android:src="@drawable/add_alert_big"
+               android:scaleType="fitCenter"
                />
         </RelativeLayout>
 
