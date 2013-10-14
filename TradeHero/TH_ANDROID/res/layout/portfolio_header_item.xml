@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<com.tradehero.th.widget.portfolio.PortfolioHeaderItemView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res/com.tradehero.th"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+  <ImageView
+      android:id="@+id/user_icon"
+      android:layout_width="48dp"
+      android:layout_height="48dp"
+      android:layout_alignParentLeft="true"
+      android:src="@drawable/superman_facebook"
+      android:contentDescription="@null"
+    />
+
+  <LinearLayout
+      android:orientation="vertical"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_toRightOf="@id/user_icon"
+      android:layout_toLeftOf="@+id/hint_open_portfolio"
+    >
+
+      <TextView
+          android:id="@+id/portfolio_title"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_gravity="left"
+          android:maxLines="1"
+          android:textStyle="bold"
+        />
+
+      <TextView
+          android:id="@+id/portfolio_description"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_gravity="left"
+          android:maxLines="1"
+        />
+
+  </LinearLayout>
+
+  <ImageView
+      android:id="@+id/hint_open_portfolio"
+      android:layout_width="48dp"
+      android:layout_height="48dp"
+      android:layout_alignParentRight="true"
+      android:src="@drawable/chevron_forward"
+      android:contentDescription="@null"
+    />
+
+</com.tradehero.th.widget.portfolio.PortfolioHeaderItemView>
