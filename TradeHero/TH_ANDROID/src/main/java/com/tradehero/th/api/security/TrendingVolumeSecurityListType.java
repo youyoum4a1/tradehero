@@ -28,4 +28,9 @@ public class TrendingVolumeSecurityListType extends TrendingSecurityListType
         }
         return TrendingVolumeSecurityListType.class.getName().compareTo(securityListType.getClass().getName());
     }
+
+    @Override public String makeKey()
+    {
+        return String.format("%s:%s", TrendingVolumeSecurityListType.class.getName(), getExchange());
+    }
 }

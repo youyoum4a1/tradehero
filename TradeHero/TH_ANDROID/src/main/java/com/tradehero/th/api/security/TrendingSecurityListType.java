@@ -55,7 +55,7 @@ public class TrendingSecurityListType extends SecurityListType
 
     @Override public String makeKey()
     {
-        return TrendingSecurityListType.class.getName();
+        return String.format("%s:%s", TrendingSecurityListType.class.getName(), getExchange());
     }
 
     @Override public String toString()
