@@ -13,6 +13,11 @@ public abstract class AbstractItemWithComparableId<T extends Comparable<T>> impl
         {
             throw new IllegalArgumentException("Item id is not set");
         }
+        // Take null as the smallest of all ItemWithComparableId
+        if (other == null)
+        {
+            return -1;
+        }
         return getId().compareTo(other.getId());
     }
 }
