@@ -73,6 +73,12 @@ public class TimelinePagedItemListLoader extends PagedItemListLoader<TimelineIte
         forceLoad();
     }
 
+    public void resetQuery()
+    {
+        maxItemId = null;
+        minItemId = null;
+    }
+
     public void setOwnerId(int ownerId)
     {
         this.ownerId = ownerId;

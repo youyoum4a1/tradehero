@@ -11,9 +11,9 @@ import com.tradehero.th.adapters.TimelineAdapter;
 import com.tradehero.th.api.local.TimelineItem;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.fragments.base.ItemListFragment;
 import com.tradehero.th.loaders.TimelinePagedItemListLoader;
-import com.tradehero.th.persistence.user.UserManager;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.widget.timeline.TimelineListView;
 import com.tradehero.th.widget.user.ProfileView;
@@ -21,7 +21,8 @@ import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
 
-public class TimelineFragment extends ItemListFragment<TimelineItem> implements DTOCache.Listener<UserBaseKey,UserProfileDTO>
+public class TimelineFragment extends ItemListFragment<TimelineItem>
+        implements DTOCache.Listener<UserBaseKey,UserProfileDTO>, BaseFragment.ArgumentsChangeListener
 {
     public static final String USER_ID = "userId";
     private TimelineAdapter timelineAdapter;
@@ -30,22 +31,28 @@ public class TimelineFragment extends ItemListFragment<TimelineItem> implements 
     protected int profileId;
     private TimelineListView timelineListView;
 
-    @Inject UserManager userManager;
     @Inject protected Lazy<UserProfileCache> userProfileCache;
+
+    private View view;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        final View view = inflater.inflate(R.layout.profile_screen, container, false);
+        view = inflater.inflate(R.layout.profile_screen, container, false);
         profileId = getArguments().getInt(USER_ID);
 
+        setProfileId(profileId);
+        return view;
+    }
+
+    private void setProfileId(int profileId)
+    {
         if (profileId != 0) {
             UserBaseKey baseKey = new UserBaseKey(profileId);
             userProfileCache.get()
                     .getOrFetch(baseKey, false, this).execute();
         }
         initView(view);
-        return view;
     }
 
     private void initView(View view)
@@ -68,8 +75,10 @@ public class TimelineFragment extends ItemListFragment<TimelineItem> implements 
     {
         ProfileView profileView = (ProfileView) getActivity().getLayoutInflater().inflate(R.layout.profile_screen_user_detail, null);
         profileView.display(profile);
-        timelineListView.addHeaderView(profileView);
 
+        if (timelineListView.getRefreshableView().getHeaderViewsCount() == 1) {
+            timelineListView.addHeaderView(profileView);
+        }
 
         getSherlockActivity().getSupportActionBar().setTitle(profile.displayName);
     }
@@ -106,6 +115,15 @@ public class TimelineFragment extends ItemListFragment<TimelineItem> implements 
     {
         profile = value;
         updateView();
+    }
+
+    @Override public void onArgumentsChanged(Bundle args)
+    {
+        profileId = args.getInt(USER_ID);
+
+        timelineAdapter.getLoader().resetQuery();
+        timelineAdapter.getLoader().setOwnerId(profileId);
+        setProfileId(profileId);
     }
     //</editor-fold>
 }

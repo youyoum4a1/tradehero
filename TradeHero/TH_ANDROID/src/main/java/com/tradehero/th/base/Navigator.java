@@ -9,6 +9,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.view.ViewGroup;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
+import com.tradehero.th.fragments.base.BaseFragment;
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Map;
@@ -114,9 +115,9 @@ public class Navigator
                 fragment = Fragment.instantiate(context, clss.getName(), args);
                 instances.put(clss, new WeakReference<>(fragment));
             }
-            else
+            else if (fragment instanceof BaseFragment.ArgumentsChangeListener)
             {
-                fragment.setArguments(args);
+                ((BaseFragment.ArgumentsChangeListener) fragment).onArgumentsChanged(args);
             }
             return fragment;
         }
