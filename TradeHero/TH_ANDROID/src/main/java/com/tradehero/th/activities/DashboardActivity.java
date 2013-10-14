@@ -1,18 +1,12 @@
 package com.tradehero.th.activities;
 
 import android.os.Bundle;
-import android.support.v4.r11.app.FragmentTabHost;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
-import com.tradehero.common.utils.THLog;
+import com.actionbarsherlock.view.MenuItem;
 import com.tradehero.th.R;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.base.NavigatorActivity;
-import com.tradehero.th.fragments.CommunityScreenFragment;
 import com.tradehero.th.fragments.DashboardNavigator;
-import com.tradehero.th.fragments.PortfolioScreenFragment;
-import com.tradehero.th.fragments.StoreScreenFragment;
-import com.tradehero.th.fragments.timeline.MeTimelineFragment;
-import com.tradehero.th.fragments.trending.TrendingFragment;
 
 public class DashboardActivity extends SherlockFragmentActivity
     implements NavigatorActivity
@@ -33,6 +27,12 @@ public class DashboardActivity extends SherlockFragmentActivity
     {
         //super.onBackPressed();
         navigator.popFragment();
+    }
+
+    @Override public boolean onOptionsItemSelected(MenuItem item)
+    {
+        // required for fragment onOptionItemSelected to be called
+        return super.onOptionsItemSelected(item);
     }
 
     //<editor-fold desc="NavigatorActivity">
