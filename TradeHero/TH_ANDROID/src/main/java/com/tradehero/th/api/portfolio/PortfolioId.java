@@ -1,20 +1,34 @@
 package com.tradehero.th.api.portfolio;
 
+import android.os.Bundle;
+import com.tradehero.common.persistence.AbstractIntegerDTOKey;
 import com.tradehero.common.persistence.DTOKey;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/14/13 Time: 2:38 PM To change this template use File | Settings | File Templates. */
-public class PortfolioId implements DTOKey<Integer>
+public class PortfolioId extends AbstractIntegerDTOKey
 {
-    public final Integer id;
+    public final static String TAG = PortfolioId.class.getSimpleName();
+    public static final String BUNDLE_KEY_KEY = PortfolioId.class.getName() + ".key";
 
-    public PortfolioId(Integer id)
+    //<editor-fold desc="Constructors">
+    public PortfolioId(Bundle args)
     {
-        super();
-        this.id = id;
+        super(args);
     }
 
-    @Override public Integer makeKey()
+    public PortfolioId(Integer key)
     {
-        return id;
+        super(key);
+    }
+    //</editor-fold>
+
+    @Override public String getBundleKey()
+    {
+        return BUNDLE_KEY_KEY;
+    }
+
+    @Override public String toString()
+    {
+        return String.format("[%s key=%d]", TAG, key);
     }
 }

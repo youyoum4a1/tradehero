@@ -3,6 +3,7 @@ package com.tradehero.th.api.portfolio;
 import android.os.Bundle;
 import com.tradehero.common.persistence.DTOKey;
 import com.tradehero.th.api.users.UserBaseDTO;
+import com.tradehero.th.api.users.UserBaseKey;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/14/13 Time: 12:19 PM To change this template use File | Settings | File Templates. */
 public class OwnedPortfolioId  implements Comparable, DTOKey<String>
@@ -108,6 +109,16 @@ public class OwnedPortfolioId  implements Comparable, DTOKey<String>
         Bundle args = new Bundle();
         putParameters(args);
         return args;
+    }
+
+    public UserBaseKey getUserBaseKey()
+    {
+        return new UserBaseKey(userId);
+    }
+
+    public PortfolioId getPortfolioId()
+    {
+        return new PortfolioId(portfolioId);
     }
 
     @Override public String toString()

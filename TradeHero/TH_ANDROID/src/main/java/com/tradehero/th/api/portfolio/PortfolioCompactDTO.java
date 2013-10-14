@@ -14,4 +14,9 @@ public class PortfolioCompactDTO
     public PortfolioCompactDTO()
     {
     }
+
+    public PortfolioId getPortfolioId()
+    {
+        return new PortfolioId(id);
+    }
 }

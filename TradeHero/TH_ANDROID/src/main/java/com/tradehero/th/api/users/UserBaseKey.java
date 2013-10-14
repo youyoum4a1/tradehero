@@ -7,7 +7,7 @@ import com.tradehero.common.persistence.AbstractIntegerDTOKey;
 public class UserBaseKey extends AbstractIntegerDTOKey
 {
     public final static String TAG = UserBaseKey.class.getSimpleName();
-    public static final String BUNDLE_KEY_KEY = UserBaseKey.class.getSimpleName() + ".key";
+    public static final String BUNDLE_KEY_KEY = UserBaseKey.class.getName() + ".key";
 
     //<editor-fold desc="Constructors">
     public UserBaseKey(Integer key)
