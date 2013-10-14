@@ -7,6 +7,7 @@ import android.widget.TextView;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.yahoo.News;
+import org.ocpsoft.prettytime.PrettyTime;
 
 /**
  * Created by julien on 11/10/13
@@ -62,7 +63,11 @@ public class YahooNewsView extends LinearLayout implements DTOView<News>
             if (titleTextView != null)
                 titleTextView.setText(news.getTitle());
 
-            if (dateTextView != null)
-                dateTextView.setText(news.getDate().toString());
+            if (dateTextView != null && news.getDate() != null)
+            {
+                PrettyTime prettyTime = new PrettyTime();
+                dateTextView.setText(prettyTime.format(news.getDate()));
+            }
+
         }
 }

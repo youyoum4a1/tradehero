@@ -1,5 +1,6 @@
 package com.tradehero.th.fragments.trade;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -7,40 +8,30 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 import com.actionbarsherlock.app.SherlockFragment;
 import com.tradehero.common.persistence.DTOCache;
-import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.YahooNewsAdapter;
-import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.yahoo.News;
-import com.tradehero.th.network.service.YahooNewsService;
-import com.tradehero.th.persistence.security.SecurityCompactCache;
+import com.tradehero.th.persistence.yahoo.NewsCache;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
 
 import javax.inject.Inject;
-import javax.xml.xpath.*;
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by julien on 10/10/13
  */
-public class YahooNewsFragment extends SherlockFragment implements DTOCache.Listener<SecurityId, SecurityCompactDTO>
+public class YahooNewsFragment extends SherlockFragment implements DTOCache.Listener<SecurityId, List<News>>
 {
     private final static String TAG = YahooNewsFragment.class.getSimpleName();
 
     private SecurityId securityId;
-    private SecurityCompactDTO securityCompactDTO;
-    @Inject protected Lazy<SecurityCompactCache> securityCompactCache;
-    @Inject protected Lazy<YahooNewsService> yahooNewsService;
+    private AsyncTask<Void, Void, List<News>> fetchTask;
+    private List<News> news;
+
+
+    @Inject protected Lazy<NewsCache> yahooNewsCache;
 
     private ListView listView;
     private YahooNewsAdapter adapter;
@@ -80,7 +71,7 @@ public class YahooNewsFragment extends SherlockFragment implements DTOCache.List
         }
         else
         {
-            display();
+            updateAdapter();
         }
     }
 
@@ -88,7 +79,13 @@ public class YahooNewsFragment extends SherlockFragment implements DTOCache.List
     {
         if (securityId != null)
         {
-            securityCompactCache.get().unRegisterListener(this);
+            yahooNewsCache.get().unRegisterListener(this);
+        }
+
+        if (fetchTask != null)
+        {
+            fetchTask.cancel(false);
+            fetchTask = null;
         }
         super.onPause();
     }
@@ -97,14 +94,25 @@ public class YahooNewsFragment extends SherlockFragment implements DTOCache.List
     public void linkWith(SecurityId securityId, boolean andDisplay)
     {
         this.securityId = securityId;
-        if (this.securityId != null)
+        if (this.securityId!= null)
         {
-            securityCompactCache.get().registerListener(this);
-            linkWith(securityCompactCache.get().get(this.securityId), andDisplay);
+            yahooNewsCache.get().registerListener(this);
+            List<News> news = yahooNewsCache.get().get(this.securityId);
+            if (news == null)
+            {
+                this.fetchTask = yahooNewsCache.get().getOrFetch(this.securityId, true, this);//force fetch - we know the value is not in cache
+                this.fetchTask.execute();
+            }
+            else
+            {
+                linkWith(news, andDisplay);
+            }
+
+
         }
     }
 
-    @Override public void onDTOReceived(SecurityId key, SecurityCompactDTO value)
+    @Override public void onDTOReceived(SecurityId key, List<News> value)
     {
         if (key.equals(securityId))
         {
@@ -112,90 +120,16 @@ public class YahooNewsFragment extends SherlockFragment implements DTOCache.List
         }
     }
 
-    public void linkWith(SecurityCompactDTO securityCompactDTO, boolean andDisplay)
+    public void linkWith(List<News> news, boolean andDisplay)
     {
-        this.securityCompactDTO = securityCompactDTO;
+        this.news = news;
         if (andDisplay)
         {
-            display();
+            updateAdapter();
         }
     }
 
-    public void display()
-    {
-        loadNews();
-    }
-
-    private void loadNews()
-    {
-        if (this.securityCompactDTO != null && this.securityCompactDTO.yahooSymbol != null)
-        {
-            yahooNewsService.get().getNews(this.securityCompactDTO.yahooSymbol, getCallBack());
-        }
-    }
-
-    private Callback<Response> getCallBack()
-    {
-        return new Callback<Response>()
-        {
-            @Override
-            public void success(Response response, Response r)
-            {
-                handleResponse(response);
-            }
-
-            @Override
-            public void failure(RetrofitError error)
-            {
-                THLog.e(TAG, "fail to get news from yahoo", error);
-            }
-        };
-    }
-
-    private void handleResponse(Response response)
-    {
-        try
-        {
-            List<News> news = tryGettingNewsList(response);
-            updateAdapter(news);
-
-        } catch (XPathExpressionException e)
-        {
-            THLog.e(TAG, "Failed to compile XPath", e);
-        }
-        catch (IOException e)
-        {
-            THLog.e(TAG, "Failed to get response body", e);
-        }
-    }
-
-        private List<News> tryGettingNewsList(Response response) throws XPathExpressionException, IOException
-        {
-            XPathExpression xpathItems = getxPathExpression();
-            InputSource input = new InputSource(response.getBody().in());
-            NodeList nodes = (NodeList)xpathItems.evaluate(input, XPathConstants.NODESET);
-            List<News> result = processItems(nodes);
-            return result;
-        }
-
-            private XPathExpression getxPathExpression() throws XPathExpressionException
-            {
-                XPathFactory factory=XPathFactory.newInstance();
-                XPath xPath=factory.newXPath();
-                return xPath.compile("//item");
-            }
-
-            private List<News> processItems(NodeList nodes)
-            {
-                List<News> result = new ArrayList<>();
-                for (int i = 0; i < nodes.getLength(); i++) {
-                    Node node = nodes.item(i);
-                    result.add(new News(node));
-                }
-                return result;
-            }
-
-    private void updateAdapter(List<News> news)
+    private void updateAdapter()
     {
         adapter.setItems(news);
         adapter.notifyDataSetChanged();

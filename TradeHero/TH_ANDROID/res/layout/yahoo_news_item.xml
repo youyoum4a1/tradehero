@@ -8,11 +8,9 @@
     <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Apple is doing something really awesome"
             android:id="@+id/title_yahooNews"/>
     <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="10 hrs ago"
             android:id="@+id/date_yahooNews"/>
 </com.tradehero.th.widget.trade.YahooNewsView>

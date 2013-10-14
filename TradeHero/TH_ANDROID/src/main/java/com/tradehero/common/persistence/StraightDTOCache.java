@@ -34,7 +34,12 @@ abstract public class StraightDTOCache<BaseKeyType, DTOKeyType extends DTOKey<Ba
         return this.lruCache.put(key.makeKey(), value);
     }
 
-    public DTOType getOrFetch(DTOKeyType key, boolean force)
+    public DTOType getOrFetch(DTOKeyType key)
+    {
+        return getOrFetch(key, false);
+    }
+
+    @Override public DTOType getOrFetch(DTOKeyType key, boolean force)
     {
         DTOType value = get(key);
 
@@ -51,7 +56,12 @@ abstract public class StraightDTOCache<BaseKeyType, DTOKeyType extends DTOKey<Ba
         return value;
     }
 
-    public AsyncTask<Void, Void, DTOType> getOrFetch(final DTOKeyType key, final boolean force, final Listener<DTOKeyType, DTOType> callback)
+    public AsyncTask<Void, Void, DTOType> getOrFetch(final DTOKeyType key, final Listener<DTOKeyType, DTOType> callback)
+    {
+       return getOrFetch(key, false, callback);
+    }
+
+    @Override public AsyncTask<Void, Void, DTOType> getOrFetch(final DTOKeyType key, final boolean force, final Listener<DTOKeyType, DTOType> callback)
     {
         final WeakReference<Listener<DTOKeyType, DTOType>> weakCallback = new WeakReference<Listener<DTOKeyType, DTOType>>(callback);
 
