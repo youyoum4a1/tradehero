@@ -119,6 +119,10 @@ public class Navigator
             {
                 ((BaseFragment.ArgumentsChangeListener) fragment).onArgumentsChanged(args);
             }
+            else
+            {
+                THLog.d(TAG, "Args could not be passed to existing instance of " + fragment.getClass().getSimpleName());
+            }
             return fragment;
         }
     }

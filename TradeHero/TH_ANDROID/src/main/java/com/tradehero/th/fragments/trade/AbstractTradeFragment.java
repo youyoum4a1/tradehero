@@ -15,6 +15,7 @@ import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.THUser;
+import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.persistence.position.SecurityPositionDetailCache;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
@@ -24,7 +25,8 @@ import dagger.Lazy;
 import javax.inject.Inject;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/9/13 Time: 11:14 AM To change this template use File | Settings | File Templates. */
-abstract public class AbstractTradeFragment extends DashboardFragment implements FreshQuoteHolder.FreshQuoteListener
+abstract public class AbstractTradeFragment extends DashboardFragment
+        implements FreshQuoteHolder.FreshQuoteListener, BaseFragment.ArgumentsChangeListener
 {
     private final static String TAG = AbstractTradeFragment.class.getSimpleName();
 
@@ -38,6 +40,7 @@ abstract public class AbstractTradeFragment extends DashboardFragment implements
     public final static long MILLISEC_QUOTE_REFRESH = 30000;
     public final static long MILLISEC_QUOTE_COUNTDOWN_PRECISION = 50;
 
+    private Bundle desiredArguments;
     @Inject protected Lazy<SecurityCompactCache> securityCompactCache;
     @Inject protected Lazy<SecurityPositionDetailCache> securityPositionDetailCache;
     protected SecurityId securityId;
@@ -96,14 +99,18 @@ abstract public class AbstractTradeFragment extends DashboardFragment implements
     {
         THLog.d(TAG, "onResume");
         super.onResume();
-        Bundle args = getArguments();
-        if (args != null)
+        if (desiredArguments == null)
         {
-            linkWith(new SecurityId(args), true);
-            isTransactionTypeBuy = args.getBoolean(BUNDLE_KEY_IS_BUY, isTransactionTypeBuy);
-            mBuyQuantity = args.getInt(BUNDLE_KEY_QUANTITY_BUY, mBuyQuantity);
-            mSellQuantity = args.getInt(BUNDLE_KEY_QUANTITY_SELL, mSellQuantity);
-            mPositionIndex = args.getInt(BUNDLE_KEY_POSITION_INDEX, mPositionIndex);
+            desiredArguments = getArguments();
+        }
+
+        if (desiredArguments != null)
+        {
+            linkWith(new SecurityId(desiredArguments), true);
+            isTransactionTypeBuy = desiredArguments.getBoolean(BUNDLE_KEY_IS_BUY, isTransactionTypeBuy);
+            mBuyQuantity = desiredArguments.getInt(BUNDLE_KEY_QUANTITY_BUY, mBuyQuantity);
+            mSellQuantity = desiredArguments.getInt(BUNDLE_KEY_QUANTITY_SELL, mSellQuantity);
+            mPositionIndex = desiredArguments.getInt(BUNDLE_KEY_POSITION_INDEX, mPositionIndex);
         }
 
         UserProfileDTO profileDTO = userProfileCache.get().get(THUser.getCurrentUserBase().getBaseKey());
@@ -436,6 +443,13 @@ abstract public class AbstractTradeFragment extends DashboardFragment implements
     @Override public void onFreshQuote(QuoteDTO quoteDTO)
     {
         linkWith(quoteDTO, true);
+    }
+    //</editor-fold>
+
+    //<editor-fold desc="BaseFragment.ArgumentsChangeListener">
+    @Override public void onArgumentsChanged(Bundle args)
+    {
+        desiredArguments = args;
     }
     //</editor-fold>
 }
