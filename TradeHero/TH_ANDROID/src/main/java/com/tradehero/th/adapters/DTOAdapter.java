@@ -61,16 +61,16 @@ public abstract class DTOAdapter<T, V extends DTOView<T>> extends BaseAdapter
             convertView = inflater.inflate(layoutResourceId, viewGroup, false);
         }
 
-        try
-        {
+        //try
+        //{
             V view = (V) convertView;
             view.display((T) getItem(position));
             return getView(position, view);
-        }
-        catch (Exception ex)
-        {
-            throw new IllegalArgumentException("layoutResourceId is not match with class: " + convertView.getClass().getSimpleName() + ":" + ex.getMessage());
-        }
+        //}
+        //catch (Exception ex)
+        //{
+        //    throw new IllegalArgumentException("layoutResourceId is not match with class: " + convertView.getClass().getSimpleName() + ":" + ex.getMessage());
+        //}
     }
 
     protected abstract View getView(int position, V convertView);

@@ -7,6 +7,7 @@ import com.tradehero.common.persistence.CacheHelper;
 import com.tradehero.th.api.form.UserAvailabilityRequester;
 import com.tradehero.th.base.THUser;
 import com.tradehero.th.fragments.authentication.EmailSignInFragment;
+import com.tradehero.th.fragments.portfolio.PortfolioListFragment;
 import com.tradehero.th.fragments.timeline.MeTimelineFragment;
 import com.tradehero.th.fragments.timeline.TimelineFragment;
 import com.tradehero.th.fragments.trade.BuyFragment;
@@ -31,6 +32,7 @@ import com.tradehero.th.persistence.user.AbstractUserStore;
 import com.tradehero.th.persistence.user.UserManager;
 import com.tradehero.th.persistence.user.UserStore;
 import com.tradehero.th.widget.MarkdownTextView;
+import com.tradehero.th.widget.portfolio.PortfolioHeaderItemView;
 import dagger.Module;
 import dagger.Provides;
 import javax.inject.Singleton;
@@ -53,6 +55,8 @@ import javax.inject.Singleton;
                 YahooNewsFragment.class,
                 ChartFragment.class,
                 StockInfoFragment.class,
+                PortfolioListFragment.class,
+                PortfolioHeaderItemView.class,
 
                 UserAvailabilityRequester.class,
                 SearchStockPageItemListLoader.class,
@@ -111,11 +115,15 @@ public class TradeHeroModule
         return engine.createService(QuoteService.class);
     }
 
+    @Provides @Singleton PortfolioService providePortfolioService()
+    {
+        return engine.createService(PortfolioService.class);
+    }
+
     @Provides @Singleton YahooNewsService provideYahooNewsService()
     {
         return yahooEngine.createService(YahooNewsService.class);
     }
-
 
     @Provides @Singleton AbstractUserStore provideUserStore(UserStore store)
     {

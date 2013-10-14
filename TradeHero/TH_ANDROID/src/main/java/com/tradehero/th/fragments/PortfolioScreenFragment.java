@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import com.actionbarsherlock.app.SherlockFragment;
 
+@Deprecated
 public class PortfolioScreenFragment extends SherlockFragment
 {
 

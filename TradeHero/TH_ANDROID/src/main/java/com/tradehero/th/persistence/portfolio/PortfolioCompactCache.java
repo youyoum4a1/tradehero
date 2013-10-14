@@ -6,7 +6,9 @@ import com.tradehero.th.api.portfolio.PortfolioId;
 import com.tradehero.th.network.service.PortfolioService;
 import dagger.Lazy;
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
+@Singleton
 public class PortfolioCompactCache extends StraightDTOCache<Integer, PortfolioId, PortfolioCompactDTO>
 {
     public static final String TAG = PortfolioCompactCache.class.getName();
