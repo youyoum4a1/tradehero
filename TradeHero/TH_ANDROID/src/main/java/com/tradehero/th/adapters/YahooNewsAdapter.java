@@ -8,6 +8,8 @@ import com.tradehero.th.widget.trade.YahooNewsView;
 
 /**
  * Created by julien on 11/10/13
+ *
+ * Map a Yahoo News object to a YahooNewsView.
  */
 public class YahooNewsAdapter  extends DTOAdapter<News, YahooNewsView>
 {

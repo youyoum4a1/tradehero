@@ -5,7 +5,6 @@ import com.tradehero.common.utils.THLog;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.yahoo.News;
-import com.tradehero.th.api.yahoo.YahooKey;
 import com.tradehero.th.network.BasicRetrofitErrorHandler;
 import com.tradehero.th.network.service.YahooNewsService;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
@@ -23,6 +22,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Cache for Yahoo News - uses SecurityId as a key and store List<News> as values.
+ * This class uses internally the SecurityCompactCache (see the fetch method implementation)
+ */
 @Singleton public class NewsCache extends StraightDTOCache<String, SecurityId, List<News>>
 {
 
@@ -37,14 +40,20 @@ import java.util.List;
         super(DEFAULT_MAX_SIZE);
     }
 
+    /**
+     *  the fetch operation works as follow:
+     *  - use the SecurityCompactCache to get a SecurityCompactDTO for the given SecurityId
+     *  - get the yahooSymbol for the DTO
+     *  - use YahooNewsService to fetch the news for the given yahooSymbol
+     *  - parse the xml feed
+     */
     @Override protected List<News> fetch(SecurityId key)
     {
         String yahooSymbol = getYahooSymbol(key);
         Response rawResponse = null;
         if (yahooSymbol != null)
         {
-            YahooKey yahooKey = new YahooKey(yahooSymbol);
-            return fetchYahooNews(yahooKey, rawResponse);
+            return fetchYahooNews(yahooSymbol, rawResponse);
         }
         return null;
     }
@@ -66,16 +75,16 @@ import java.util.List;
             return yahooSymbol;
         }
 
-        private List<News> fetchYahooNews(YahooKey key, Response rawResponse)
+        private List<News> fetchYahooNews(String yahooSymbol, Response rawResponse)
         {
             try
             {
-                rawResponse = yahooService.get().getNews(key.makeKey());
+                rawResponse = yahooService.get().getNews(yahooSymbol);
             }
             catch (RetrofitError retrofitError)
             {
                 BasicRetrofitErrorHandler.handle(retrofitError);
-                THLog.e(TAG, "Error requesting key " + key.toString(), retrofitError);
+                THLog.e(TAG, "Error requesting yahoo symbol " + yahooSymbol, retrofitError);
             }
 
             if (rawResponse == null) return null;

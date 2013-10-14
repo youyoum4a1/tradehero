@@ -187,58 +187,6 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment
         return AuthenticationMode.SignUp;
     }
 
-	/*@Override
-    public boolean onTouch(View v, MotionEvent event) {
-		switch (event.getAction()) {
-		case MotionEvent.ACTION_DOWN:
-
-			switch (v.getId()) {
-			case R.id.btn_register:
-				//signupButton.setBackgroundResource(R.drawable.rectangle_login);
-
-				break;
-			case R.id.image_optional:
-
-				mOptionalImage.setBackgroundResource(R.drawable.optional_imageselector);
-
-				break;
-
-			default:
-				break;
-			}
-
-			break;
-
-		case MotionEvent.ACTION_UP:
-
-
-			switch (v.getId()) {
-			case R.id.btn_register:
-				//signupButton.setBackgroundResource(R.drawable.authentication_sign_in_button_normal);
-
-				break;
-			case R.id.image_optional:
-
-				mOptionalImage.setBackgroundResource(R.drawable.layout_oval);
-
-				break;
-
-			default:
-				break;
-			}
-
-			break;
-
-		default:
-			break;
-		}
-
-
-		return false;
-	}
-
-	 */
-
     class Imageupload extends AsyncTask<String, Void, String>
     {
 
@@ -277,7 +225,6 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment
         @Override
         protected void onPostExecute(String result)
         {
-            // TODO Auto-generated method stub
             super.onPostExecute(result);
             Util.show_toast(getActivity(), result);
             System.out.println("response for image upload----------" + result);

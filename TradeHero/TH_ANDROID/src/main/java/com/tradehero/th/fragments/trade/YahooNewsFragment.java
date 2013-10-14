@@ -21,6 +21,9 @@ import java.util.List;
 
 /**
  * Created by julien on 10/10/13
+ * Display a ListView of Yahoo News object for a given SecurityId - It uses the NewsCache to get or fetch the Yahoo news
+ * as needed. In case the news are not in the cache, the download is done in the background using the `fetchTask` AsyncTask.
+ * The task is cancelled when the fragment is paused.
  */
 public class YahooNewsFragment extends SherlockFragment implements DTOCache.Listener<SecurityId, List<News>>
 {
