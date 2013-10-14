@@ -7,6 +7,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import com.squareup.picasso.Picasso;
+import com.tradehero.common.graphics.RoundedShapeTransformation;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
@@ -163,6 +164,7 @@ public class PortfolioHeaderItemView extends RelativeLayout
             {
                 Picasso.with(getContext())
                         .load(userBaseDTO.picture)
+                        .transform(new RoundedShapeTransformation())
                         .into(userIcon);
             }
         }
