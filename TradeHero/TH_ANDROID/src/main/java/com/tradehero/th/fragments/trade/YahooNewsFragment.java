@@ -6,14 +6,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
-import com.actionbarsherlock.app.SherlockFragment;
-import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.YahooNewsAdapter;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.yahoo.News;
 import com.tradehero.th.persistence.yahoo.NewsCache;
-import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
 
 import javax.inject.Inject;
@@ -25,29 +22,18 @@ import java.util.List;
  * as needed. In case the news are not in the cache, the download is done in the background using the `fetchTask` AsyncTask.
  * The task is cancelled when the fragment is paused.
  */
-public class YahooNewsFragment extends SherlockFragment implements DTOCache.Listener<SecurityId, List<News>>
+public class YahooNewsFragment extends AbstractSecurityInfoFragment<List<News>>
 {
     private final static String TAG = YahooNewsFragment.class.getSimpleName();
 
-    private SecurityId securityId;
     private AsyncTask<Void, Void, List<News>> fetchTask;
-    private List<News> news;
-
 
     @Inject protected Lazy<NewsCache> yahooNewsCache;
 
     private ListView listView;
     private YahooNewsAdapter adapter;
 
-
-    @Override public void onCreate(Bundle savedInstanceState)
-    {
-        super.onCreate(savedInstanceState);
-        DaggerUtils.inject(this);
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.fragment_yahoo_news, container, false);
         loadViews(view);
@@ -64,20 +50,6 @@ public class YahooNewsFragment extends SherlockFragment implements DTOCache.List
         }
     }
 
-    @Override public void onResume()
-    {
-        super.onResume();
-        Bundle args = getArguments();
-        if (args != null)
-        {
-            linkWith(new SecurityId(args), true);
-        }
-        else
-        {
-            updateAdapter();
-        }
-    }
-
     @Override public void onPause()
     {
         if (securityId != null)
@@ -88,15 +60,15 @@ public class YahooNewsFragment extends SherlockFragment implements DTOCache.List
         if (fetchTask != null)
         {
             fetchTask.cancel(false);
-            fetchTask = null;
         }
+        fetchTask = null;
         super.onPause();
     }
 
 
     public void linkWith(SecurityId securityId, boolean andDisplay)
     {
-        this.securityId = securityId;
+        super.linkWith(securityId, andDisplay);
         if (this.securityId!= null)
         {
             yahooNewsCache.get().registerListener(this);
@@ -110,31 +82,17 @@ public class YahooNewsFragment extends SherlockFragment implements DTOCache.List
             {
                 linkWith(news, andDisplay);
             }
-
-
         }
     }
 
-    @Override public void onDTOReceived(SecurityId key, List<News> value)
+    @Override public void display()
     {
-        if (key.equals(securityId))
-        {
-            linkWith(value, true);
-        }
-    }
-
-    public void linkWith(List<News> news, boolean andDisplay)
-    {
-        this.news = news;
-        if (andDisplay)
-        {
-            updateAdapter();
-        }
-    }
-
-    private void updateAdapter()
-    {
-        adapter.setItems(news);
-        adapter.notifyDataSetChanged();
+        adapter.setItems(value);
+        getView().post(new Runnable(){
+            @Override public void run()
+            {
+                adapter.notifyDataSetChanged();
+            }
+        });
     }
 }

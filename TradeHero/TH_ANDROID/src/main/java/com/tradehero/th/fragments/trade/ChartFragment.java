@@ -21,22 +21,13 @@ import javax.inject.Inject;
 /**
  * Created by julien on 9/10/13
  */
-public class ChartFragment extends SherlockFragment
-    implements DTOCache.Listener<SecurityId, SecurityCompactDTO>
+public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactDTO>
 {
     private final static String TAG = ChartFragment.class.getSimpleName();
 
     private ImageView stockBgLogo;
 
-    private SecurityId securityId;
-    private SecurityCompactDTO securityCompactDTO;
     @Inject protected Lazy<SecurityCompactCache> securityCompactCache;
-
-    @Override public void onCreate(Bundle savedInstanceState)
-    {
-        super.onCreate(savedInstanceState);
-        DaggerUtils.inject(this);
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -44,20 +35,6 @@ public class ChartFragment extends SherlockFragment
         View view = inflater.inflate(R.layout.fragment_chart, container, false);
         stockBgLogo = (ImageView)view.findViewById(R.id.chart_imageView);
         return view;
-    }
-
-    @Override public void onResume()
-    {
-        super.onResume();
-        Bundle args = getArguments();
-        if (args != null)
-        {
-            linkWith(new SecurityId(args), true);
-        }
-        else
-        {
-            display();
-        }
     }
 
     @Override public void onPause()
@@ -69,9 +46,9 @@ public class ChartFragment extends SherlockFragment
         super.onPause();
     }
 
-    public void linkWith(SecurityId securityId, boolean andDisplay)
+    @Override public void linkWith(SecurityId securityId, boolean andDisplay)
     {
-        this.securityId = securityId;
+        super.linkWith(securityId, andDisplay);
         if (this.securityId != null)
         {
             securityCompactCache.get().registerListener(this);
@@ -79,24 +56,7 @@ public class ChartFragment extends SherlockFragment
         }
     }
 
-    @Override public void onDTOReceived(SecurityId key, SecurityCompactDTO value)
-    {
-        if (key.equals(securityId))
-        {
-            linkWith(value, true);
-        }
-    }
-
-    public void linkWith(SecurityCompactDTO securityCompactDTO, boolean andDisplay)
-    {
-        this.securityCompactDTO = securityCompactDTO;
-        if (andDisplay)
-        {
-            display();
-        }
-    }
-
-    public void display()
+    @Override public void display()
     {
         displayBgLogo();
     }
@@ -105,9 +65,9 @@ public class ChartFragment extends SherlockFragment
     {
         if (stockBgLogo != null)
         {
-            if (securityCompactDTO != null && securityCompactDTO.yahooSymbol != null)
+            if (value != null && value.yahooSymbol != null)
             {
-                String imageURL = Utils.getChartURL(securityCompactDTO.yahooSymbol, ChartSize.large, Timespan.months3);
+                String imageURL = Utils.getChartURL(value.yahooSymbol, ChartSize.large, Timespan.months3);
                 Picasso.with(getActivity()).load(imageURL).into(stockBgLogo);
             }
         }

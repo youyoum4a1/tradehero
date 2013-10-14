@@ -7,30 +7,19 @@
 package com.tradehero.th.fragments.trade;
 
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import com.actionbarsherlock.app.SherlockFragment;
-import com.tradehero.common.persistence.DTOCache;
-import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
-import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
-import com.tradehero.th.models.Trend;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
-import com.tradehero.th.utills.Logger;
-import com.tradehero.th.utills.Logger.LogLevel;
-import com.tradehero.th.utills.YUtils;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
-import java.util.HashMap;
 import javax.inject.Inject;
 
-public class StockInfoFragment extends SherlockFragment
-        implements DTOCache.Listener<SecurityId, SecurityCompactDTO>
+public class StockInfoFragment extends AbstractSecurityInfoFragment<SecurityCompactDTO>
 {
     private final static String TAG = StockInfoFragment.class.getSimpleName();
 
@@ -44,18 +33,9 @@ public class StockInfoFragment extends SherlockFragment
     private TextView mVolume;
     private TextView mAvgVolume;
 
-    private SecurityId securityId;
-    private SecurityCompactDTO securityCompactDTO;
     @Inject protected Lazy<SecurityCompactCache> securityCompactCache;
 
-    @Override public void onCreate(Bundle savedInstanceState)
-    {
-        super.onCreate(savedInstanceState);
-        DaggerUtils.inject(this);
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         View view = null;
         view = inflater.inflate(R.layout.fragment_stockinfo, container, false);
@@ -76,20 +56,6 @@ public class StockInfoFragment extends SherlockFragment
         mAvgVolume = (TextView) v.findViewById(R.id.vavg_volume);
     }
 
-    @Override public void onResume()
-    {
-        super.onResume();
-        Bundle args = getArguments();
-        if (args != null)
-        {
-            linkWith(new SecurityId(args), true);
-        }
-        else
-        {
-            display();
-        }
-    }
-
     @Override public void onPause()
     {
         if (securityId != null)
@@ -99,30 +65,13 @@ public class StockInfoFragment extends SherlockFragment
         super.onPause();
     }
 
-    public void linkWith(SecurityId securityId, boolean andDisplay)
+    @Override public void linkWith(SecurityId securityId, boolean andDisplay)
     {
-        this.securityId = securityId;
+        super.linkWith(securityId, andDisplay);
         if (this.securityId != null)
         {
             securityCompactCache.get().registerListener(this);
             linkWith(securityCompactCache.get().get(this.securityId), andDisplay);
-        }
-    }
-
-    @Override public void onDTOReceived(SecurityId key, SecurityCompactDTO value)
-    {
-        if (key.equals(securityId))
-        {
-            linkWith(value, true);
-        }
-    }
-
-    public void linkWith(SecurityCompactDTO securityCompactDTO, boolean andDisplay)
-    {
-        this.securityCompactDTO = securityCompactDTO;
-        if (andDisplay)
-        {
-            display();
         }
     }
 
@@ -144,13 +93,13 @@ public class StockInfoFragment extends SherlockFragment
     {
         if (mPreviousClose != null)
         {
-            if (securityCompactDTO == null || securityCompactDTO.previousClose == null)
+            if (value == null || value.previousClose == null)
             {
                 mPreviousClose.setText(R.string.na);
             }
             else
             {
-                mPreviousClose.setText(String.format("%,.3f", securityCompactDTO.previousClose.doubleValue()));
+                mPreviousClose.setText(String.format("%,.3f", value.previousClose.doubleValue()));
             }
         }
     }
@@ -159,13 +108,13 @@ public class StockInfoFragment extends SherlockFragment
     {
         if (mOpen != null)
         {
-            if (securityCompactDTO == null || securityCompactDTO.open == null)
+            if (value == null || value.open == null)
             {
                 mOpen.setText(R.string.na);
             }
             else
             {
-                mOpen.setText(String.format("%,.2f", securityCompactDTO.open.doubleValue()));
+                mOpen.setText(String.format("%,.2f", value.open.doubleValue()));
             }
         }
         //double open = YUtils.parseQuoteValue(yQuotes.get("Open"));
@@ -175,13 +124,13 @@ public class StockInfoFragment extends SherlockFragment
     {
         if (mDaysHigh != null)
         {
-            if (securityCompactDTO == null || securityCompactDTO.high == null)
+            if (value == null || value.high == null)
             {
                 mDaysHigh.setText(R.string.na);
             }
             else
             {
-                mDaysHigh.setText(String.format("%,.2f", securityCompactDTO.high.doubleValue()));
+                mDaysHigh.setText(String.format("%,.2f", value.high.doubleValue()));
             }
         }
         //double daysHigh = YUtils.parseQuoteValue(yQuotes.get("Day's High"));
@@ -191,13 +140,13 @@ public class StockInfoFragment extends SherlockFragment
     {
         if (mDaysLow != null)
         {
-            if (securityCompactDTO == null || securityCompactDTO.low == null)
+            if (value == null || value.low == null)
             {
                 mDaysLow.setText(R.string.na);
             }
             else
             {
-                mDaysLow.setText(String.format("%,.2f", securityCompactDTO.low.doubleValue()));
+                mDaysLow.setText(String.format("%,.2f", value.low.doubleValue()));
             }
         }
         //double daysLow = YUtils.parseQuoteValue(yQuotes.get("Day's Low"));
@@ -207,13 +156,13 @@ public class StockInfoFragment extends SherlockFragment
     {
         if (mMarketCap != null)
         {
-            if (securityCompactDTO == null || securityCompactDTO.marketCap == null)
+            if (value == null || value.marketCap == null)
             {
                 mMarketCap.setText(R.string.na);
             }
             else
             {
-                mMarketCap.setText(String.format("%,.2f", securityCompactDTO.marketCap.doubleValue()));
+                mMarketCap.setText(String.format("%,.2f", value.marketCap.doubleValue()));
             }
         }
     }
@@ -222,13 +171,13 @@ public class StockInfoFragment extends SherlockFragment
     {
         if (mPERatio != null)
         {
-            if (securityCompactDTO == null || securityCompactDTO.pe == null)
+            if (value == null || value.pe == null)
             {
                 mPERatio.setText(R.string.na);
             }
             else
             {
-                mPERatio.setText(String.format("%,.2f", securityCompactDTO.pe.doubleValue()));
+                mPERatio.setText(String.format("%,.2f", value.pe.doubleValue()));
             }
         }
         //double peRatio = YUtils.parseQuoteValue(yQuotes.get("P/E Ratio"));
@@ -238,13 +187,13 @@ public class StockInfoFragment extends SherlockFragment
     {
         if (mEps != null)
         {
-            if (securityCompactDTO == null || securityCompactDTO.eps == null)
+            if (value == null || value.eps == null)
             {
                 mEps.setText(R.string.na);
             }
             else
             {
-                mEps.setText(String.format("%,.3f", securityCompactDTO.eps.doubleValue()));
+                mEps.setText(String.format("%,.3f", value.eps.doubleValue()));
             }
         }
     }
@@ -253,13 +202,13 @@ public class StockInfoFragment extends SherlockFragment
     {
         if (mVolume != null)
         {
-            if (securityCompactDTO == null || securityCompactDTO.volume == null)
+            if (value == null || value.volume == null)
             {
                 mVolume.setText(R.string.na);
             }
             else
             {
-                mVolume.setText(String.format("%,.0f", securityCompactDTO.volume.doubleValue()));
+                mVolume.setText(String.format("%,.0f", value.volume.doubleValue()));
             }
         }
         //double volume = YUtils.parseQuoteValue(yQuotes.get("Volume"));
@@ -269,13 +218,13 @@ public class StockInfoFragment extends SherlockFragment
     {
         if (mAvgVolume != null)
         {
-            if (securityCompactDTO == null || securityCompactDTO.averageDailyVolume == null)
+            if (value == null || value.averageDailyVolume == null)
             {
                 mAvgVolume.setText(R.string.na);
             }
             else
             {
-                mAvgVolume.setText(String.format("%,.0f", securityCompactDTO.averageDailyVolume.doubleValue()));
+                mAvgVolume.setText(String.format("%,.0f", value.averageDailyVolume.doubleValue()));
             }
         }
         //double avgVolume = YUtils.parseQuoteValue(yQuotes.get("Average Daily Volume"));
