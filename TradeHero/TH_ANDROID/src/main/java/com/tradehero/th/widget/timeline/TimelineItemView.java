@@ -14,29 +14,29 @@ import com.tradehero.common.graphics.WhiteToTransparentTransformation;
 import com.tradehero.common.text.OnElementClickListener;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
-import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.local.TimelineItem;
 import com.tradehero.th.api.misc.MediaDTO;
 import com.tradehero.th.api.users.UserProfileCompactDTO;
-import com.tradehero.th.base.Navigator;
 import com.tradehero.th.base.NavigatorActivity;
 import com.tradehero.th.base.THUser;
 import com.tradehero.th.fragments.timeline.TimelineFragment;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.widget.MarkdownTextView;
 import java.util.Date;
+import javax.inject.Inject;
 import org.ocpsoft.prettytime.PrettyTime;
 
 /** Created with IntelliJ IDEA. User: tho Date: 9/9/13 Time: 4:24 PM Copyright (c) TradeHero */
 public class TimelineItemView extends RelativeLayout implements DTOView<TimelineItem>, OnElementClickListener
 {
-    private static Picasso picasso = null;
     private TextView username;
     private MarkdownTextView content;
     private ImageView avatar;
     private ImageView vendorImage;
     private TextView time;
+
+    @Inject protected Picasso picasso;
 
     //<editor-fold desc="Constructors">
     public TimelineItemView(Context context)
@@ -63,15 +63,12 @@ public class TimelineItemView extends RelativeLayout implements DTOView<Timeline
         content = (MarkdownTextView) findViewById(R.id.timeline_item_content);
         content.setMovementMethod(LinkMovementMethod.getInstance());
         content.setOnElementClickListener(this);
-        DaggerUtils.inject(content);
+
         time = (TextView) findViewById(R.id.timeline_time);
         vendorImage = (ImageView) findViewById(R.id.timeline_vendor_picture);
 
-        if (picasso == null)
-        {
-            picasso = Picasso.with(getContext());
-            picasso.setDebugging(true);
-        }
+        DaggerUtils.inject(content);
+        DaggerUtils.inject(this);
     }
 
     @Override protected void onFinishInflate()

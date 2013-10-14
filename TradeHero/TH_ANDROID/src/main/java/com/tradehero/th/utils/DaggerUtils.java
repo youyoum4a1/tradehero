@@ -28,6 +28,9 @@ public class DaggerUtils
 
     public static void inject(Object object)
     {
-        objectGraph.inject(object);
+        if (objectGraph != null && object != null)
+        {
+            objectGraph.inject(object);
+        }
     }
 }

@@ -19,7 +19,8 @@ public class RichTextCreator
     private boolean useBuiltInTextProcessors;
 
     //<editor-fold desc="Constructors">
-    @Inject public RichTextCreator()
+    @Inject
+    public RichTextCreator()
     {
         this(true);
     }

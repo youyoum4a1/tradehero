@@ -16,6 +16,7 @@ import javax.inject.Inject;
 public class MarkdownTextView extends TextView implements OnElementClickListener
 {
     @Inject RichTextCreator parser;
+
     private OnElementClickListener onElementClickListener;
 
     //<editor-fold desc="Constructors">
