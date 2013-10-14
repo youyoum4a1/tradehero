@@ -100,7 +100,7 @@ public class AuthenticationActivity extends SherlockFragmentActivity
     @Override public boolean onCreateOptionsMenu(Menu menu)
     {
         getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
-        getSupportActionBar().setCustomView(R.layout.authentication_actionbar);
+        getSupportActionBar().setCustomView(R.layout.topbar_authentication);
         return super.onCreateOptionsMenu(menu);
     }
 

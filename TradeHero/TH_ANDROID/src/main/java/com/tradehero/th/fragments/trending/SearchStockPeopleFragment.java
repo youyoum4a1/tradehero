@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Looper;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -187,7 +186,7 @@ public class SearchStockPeopleFragment extends DashboardFragment
     private void createSearchActionBar(Menu menu, MenuInflater inflater)
     {
         getSherlockActivity().getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
-        getSherlockActivity().getSupportActionBar().setCustomView(R.layout.trending_search_topbar);
+        getSherlockActivity().getSupportActionBar().setCustomView(R.layout.topbar_trending_search);
 
         actionBar = getSherlockActivity().getSupportActionBar().getCustomView();
         mBackBtn = (ImageButton) actionBar.findViewById(R.id.btn_back);

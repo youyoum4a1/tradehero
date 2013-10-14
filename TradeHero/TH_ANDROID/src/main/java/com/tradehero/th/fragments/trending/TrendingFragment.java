@@ -114,7 +114,7 @@ public class TrendingFragment extends DashboardFragment implements DTOCache.List
     private void createHeaderActionBar(Menu menu, MenuInflater inflater)
     {
         getSherlockActivity().getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
-        getSherlockActivity().getSupportActionBar().setCustomView(R.layout.trending_topbar);
+        getSherlockActivity().getSupportActionBar().setCustomView(R.layout.topbar_trending);
 
         actionBar = getSherlockActivity().getSupportActionBar().getCustomView();
         ((TextView) actionBar.findViewById(R.id.header_txt)).setText(R.string.header_trending);

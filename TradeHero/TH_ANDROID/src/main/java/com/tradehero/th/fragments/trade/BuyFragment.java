@@ -29,23 +29,15 @@ import com.tradehero.th.base.THUser;
 import com.tradehero.th.network.service.SecurityService;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import dagger.Lazy;
-import java.util.LinkedHashMap;
 import javax.inject.Inject;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.message.BasicHeader;
-import org.apache.http.protocol.HTTP;
 import android.os.Bundle;
 import com.tradehero.th.R;
-import com.tradehero.th.utills.Constants;
-import com.tradehero.th.utills.Logger;
-import com.tradehero.th.utills.Logger.LogLevel;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import retrofit.RetrofitError;
 
 public class BuyFragment extends AbstractTradeFragment
@@ -202,7 +194,7 @@ public class BuyFragment extends AbstractTradeFragment
     private void createBuyConfirmActionBar(Menu menu, MenuInflater inflater)
     {
         getSherlockActivity().getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
-        getSherlockActivity().getSupportActionBar().setCustomView(R.layout.buy_confirm_topbar);
+        getSherlockActivity().getSupportActionBar().setCustomView(R.layout.topbar_buy_confirm);
 
         actionBar = getSherlockActivity().getSupportActionBar().getCustomView();
 

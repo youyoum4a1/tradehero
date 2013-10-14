@@ -55,7 +55,6 @@ import com.tradehero.th.utills.Logger.LogLevel;
 import com.tradehero.th.widget.trade.PricingBidAskView;
 import com.tradehero.th.widget.trade.QuickPriceButtonSet;
 import com.tradehero.th.widget.trade.TradeQuantityView;
-import com.viewpagerindicator.LinePageIndicator;
 import com.viewpagerindicator.PageIndicator;
 import dagger.Lazy;
 import javax.inject.Inject;
@@ -316,7 +315,7 @@ public class TradeFragment extends AbstractTradeFragment
     private void createTradeActionBar(Menu menu, MenuInflater inflater)
     {
         getSherlockActivity().getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
-        getSherlockActivity().getSupportActionBar().setCustomView(R.layout.trade_topbar);
+        getSherlockActivity().getSupportActionBar().setCustomView(R.layout.topbar_trade);
 
         actionBar = getSherlockActivity().getSupportActionBar().getCustomView();
 

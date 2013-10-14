@@ -6,7 +6,7 @@
 
     <include
         android:id="@+id/header"
-        layout="@layout/trending_search_topbar" />
+        layout="@layout/topbar_trending_search" />
 
     <WebView
         android:id="@+id/webview"
