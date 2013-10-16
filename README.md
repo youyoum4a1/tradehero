@@ -12,7 +12,7 @@ git checkout origin/develop --track
 - Install IntelliJ IDE (all Android and maven plugins are required)
 - Enable Maven auto import when you are asked to do that or go to Settings -> search for maven ->  "Import Maven ..."
 - Get android sdk latest version from Google
-- If there is any compilation error regarding java 1.7, go to File > Setting > Java Compiler and remove all in "Per module bytecode version"
+- With each maven module which referencing an outside module (you should see something like ```<relativePath>../pom.xml</relativePath>``` in pom.xml of that project), go to referenced project and mark it as a maven project as well.
 
 #### Useful tip
 - Disable unnecessary logcat error output by going to Setting - Apps - All and disable exchange service
