@@ -11,6 +11,7 @@ import android.view.animation.AnimationUtils;
 import com.tradehero.th.R;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.fragments.portfolio.PortfolioListFragment;
+import com.tradehero.th.fragments.leaderboard.LeaderboardFragment;
 import com.tradehero.th.fragments.timeline.MeTimelineFragment;
 import com.tradehero.th.fragments.trending.TrendingFragment;
 
@@ -35,7 +36,7 @@ public class DashboardNavigator extends Navigator
         mTabHost.setup(activity, activity.getSupportFragmentManager(), R.id.realtabcontent);
 
         addNewTab(activity.getString(R.string.trending), R.drawable.trending_selector, TrendingFragment.class);
-        addNewTab(activity.getString(R.string.community), R.drawable.community_selector, CommunityScreenFragment.class);
+        addNewTab(activity.getString(R.string.community), R.drawable.community_selector, LeaderboardFragment.class);
         addNewTab(activity.getString(R.string.home), R.drawable.home_selector, MeTimelineFragment.class);
         addNewTab(activity.getString(R.string.portfolio), R.drawable.portfolio_selector, PortfolioListFragment.class);
         addNewTab(activity.getString(R.string.store), R.drawable.store_selector, StoreScreenFragment.class);

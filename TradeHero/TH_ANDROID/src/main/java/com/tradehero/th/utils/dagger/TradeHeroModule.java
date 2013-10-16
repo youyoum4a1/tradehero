@@ -2,10 +2,12 @@ package com.tradehero.th.utils.dagger;
 
 import android.app.Application;
 import android.content.Context;
+import com.squareup.picasso.Picasso;
 import com.tradehero.common.cache.DatabaseCache;
 import com.tradehero.common.persistence.CacheHelper;
 import com.tradehero.th.api.form.UserAvailabilityRequester;
 import com.tradehero.th.base.THUser;
+import com.tradehero.th.fragments.leaderboard.LeaderboardFragment;
 import com.tradehero.th.fragments.authentication.EmailSignInFragment;
 import com.tradehero.th.fragments.portfolio.PortfolioListFragment;
 import com.tradehero.th.fragments.timeline.MeTimelineFragment;
@@ -25,6 +27,8 @@ import com.tradehero.th.network.YahooEngine;
 import com.tradehero.th.network.service.*;
 import com.tradehero.th.persistence.TimelineManager;
 import com.tradehero.th.persistence.TimelineStore;
+import com.tradehero.th.persistence.leaderboard.LeaderboardDefCache;
+import com.tradehero.th.persistence.leaderboard.LeaderboardDefListCache;
 import com.tradehero.th.persistence.position.SecurityPositionDetailCache;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.persistence.security.SecurityCompactListCache;
@@ -33,6 +37,7 @@ import com.tradehero.th.persistence.user.UserManager;
 import com.tradehero.th.persistence.user.UserStore;
 import com.tradehero.th.widget.MarkdownTextView;
 import com.tradehero.th.widget.portfolio.PortfolioHeaderItemView;
+import com.tradehero.th.widget.timeline.TimelineItemView;
 import dagger.Module;
 import dagger.Provides;
 import javax.inject.Singleton;
@@ -75,7 +80,12 @@ import javax.inject.Singleton;
                 DatabaseCache.class,
                 CacheHelper.class,
 
-                TimelineFragment.class
+                TimelineFragment.class,
+                TimelineItemView.class,
+
+                LeaderboardFragment.class,
+                LeaderboardDefListCache.class,
+                LeaderboardDefCache.class,
         },
         staticInjections =
         {
@@ -120,6 +130,16 @@ public class TradeHeroModule
         return engine.createService(PortfolioService.class);
     }
 
+    @Provides @Singleton LeaderboardService provideLeaderboardService()
+    {
+        return engine.createService(LeaderboardService.class);
+    }
+
+    @Provides @Singleton ProviderService provideProviderService()
+    {
+        return engine.createService(ProviderService.class);
+    }
+
     @Provides @Singleton YahooNewsService provideYahooNewsService()
     {
         return yahooEngine.createService(YahooNewsService.class);
@@ -130,15 +150,11 @@ public class TradeHeroModule
         return store;
     }
 
-    //@Provides @Singleton AbstractSecurityPositionDetailStore providePositionDetailStore(SecurityPositionDetailStore store)
-    //{
-    //    return store;
-    //}
+    @Provides @Singleton Picasso providePicasso()
+    {
+        return Picasso.with(application);
+    }
 
-    //@Provides @Singleton AbstractSecurityCompactStore provideCompactStore(SecurityCompactStore store)
-    //{
-    //    return store;
-    //}
 
     @Provides Context provideContext()
     {

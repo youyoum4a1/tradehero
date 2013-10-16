@@ -26,6 +26,10 @@ abstract public class StraightDTOCache<BaseKeyType, DTOKeyType extends DTOKey<Ba
 
     @Override public DTOType get(DTOKeyType key)
     {
+        if (key == null)
+        {
+            return null;
+        }
         return this.lruCache.get(key.makeKey());
     }
 

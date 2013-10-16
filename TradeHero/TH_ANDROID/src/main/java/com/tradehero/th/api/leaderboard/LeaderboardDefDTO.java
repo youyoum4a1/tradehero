@@ -12,22 +12,22 @@ public class LeaderboardDefDTO extends AbstractItemWithComparableId<Integer>
     public String name;
 
     // LB with no restrictions here is global king of kings LB
-    public boolean      sectorRestrictions;
-    public boolean      exchangeRestrictions;
-    public Date fromUtcRestricted ;
-    public Date toUtcRestricted   ;
-    public Integer      toDateDays        ;
+    public boolean sectorRestrictions;
+    public boolean exchangeRestrictions;
+    public Date fromUtcRestricted;
+    public Date toUtcRestricted;
+    public Integer toDateDays;
 
     // count of # of users in most recent LB mark; zero here means client should not display the empty LB
-    public int countLeaderboardEntries ;
+    public int countLeaderboardEntries;
 
     // description String
-    public String desc                 ;
+    public String desc;
 
     // sort & cap fields
-    public List<LeaderboardSortTypeDTO> sortTypes      ;
-    public Integer                         defaultSortTypeId;
-    public Integer                         capAt          ;
+    public List<LeaderboardSortTypeDTO> sortTypes;
+    public Integer defaultSortTypeId;
+    public Integer capAt;
 
     @Override public Integer getId()
     {
@@ -36,8 +36,35 @@ public class LeaderboardDefDTO extends AbstractItemWithComparableId<Integer>
 
     @Override public void setId(Integer id)
     {
-        this.id = (int) id;
+        this.id = id;
     }
+
+    public boolean isTimeRestrictedLeaderboard()
+    {
+        return (this.fromUtcRestricted != null && this.toUtcRestricted != null) || (this.toDateDays > 0);
+    }
+
+    public boolean isUnrestrictedLeaderboard()
+    {
+        return !this.exchangeRestrictions &&
+                !this.sectorRestrictions &&
+                (this.fromUtcRestricted == null) &&
+                (this.toUtcRestricted == null) &&
+                (this.toDateDays == 0);
+    }
+
+    public LeaderboardSortTypeDTO defaultSortType()
+    {
+        for (LeaderboardSortTypeDTO sortTypeDTO: sortTypes)
+        {
+            if (sortTypeDTO.sortTypeId == defaultSortTypeId)
+            {
+                return sortTypeDTO;
+            }
+        }
+        return null;
+    }
+
 }
 
 

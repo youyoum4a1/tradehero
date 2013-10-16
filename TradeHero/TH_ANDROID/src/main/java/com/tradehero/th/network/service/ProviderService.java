@@ -1,10 +1,8 @@
 package com.tradehero.th.network.service;
 
-import com.tradehero.th.api.competition.CompetitionFormDTO;
 import com.tradehero.th.api.competition.HelpVideoDTO;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
-import com.tradehero.th.api.users.UserProfileDTO;
 import java.util.List;
 import java.util.Map;
 import retrofit.Callback;
