@@ -2,7 +2,7 @@ package com.tradehero.th.persistence.competition;
 
 import com.tradehero.common.persistence.StraightDTOCache;
 import com.tradehero.th.api.competition.ProviderDTO;
-import com.tradehero.th.api.competition.ProviderKey;
+import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.competition.ProviderListKey;
 import dagger.Lazy;
 import java.util.ArrayList;
@@ -11,7 +11,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/3/13 Time: 4:40 PM To change this template use File | Settings | File Templates. */
-@Singleton public class ProviderCache extends StraightDTOCache<Integer, ProviderKey, ProviderDTO>
+@Singleton public class ProviderCache extends StraightDTOCache<Integer, ProviderId, ProviderDTO>
 {
     public static final String TAG = ProviderCache.class.getSimpleName();
     public static final int DEFAULT_MAX_SIZE = 1000;
@@ -25,7 +25,7 @@ import javax.inject.Singleton;
     }
     //</editor-fold>
 
-    @Override protected ProviderDTO fetch(ProviderKey key)
+    @Override protected ProviderDTO fetch(ProviderId key)
     {
         // Just have the list cache download them all
         providerListCache.get().fetch(new ProviderListKey(ProviderListKey.ALL_PROVIDERS));
@@ -33,18 +33,52 @@ import javax.inject.Singleton;
         return get(key);
     }
 
-    public List<ProviderDTO> getOrFetch(List<ProviderKey> providerKeys)
+    public List<ProviderDTO> getOrFetch(List<ProviderId> providerIds)
     {
-        if (providerKeys == null)
+        if (providerIds == null)
         {
             return null;
         }
 
         List<ProviderDTO> providerDTOList = new ArrayList<>();
-        for (ProviderKey providerKey: providerKeys)
+        for (ProviderId providerId : providerIds)
         {
-            providerDTOList.add(getOrFetch(providerKey, false));
+            providerDTOList.add(getOrFetch(providerId, false));
         }
         return providerDTOList;
+    }
+
+    public List<ProviderDTO> get(List<ProviderId> providerIds)
+    {
+        if (providerIds == null)
+        {
+            return null;
+        }
+
+        List<ProviderDTO> fleshedValues = new ArrayList<>();
+
+        for (ProviderId providerId: providerIds)
+        {
+            fleshedValues.add(get(providerId));
+        }
+
+        return fleshedValues;
+    }
+
+    public List<ProviderDTO> put(List<ProviderDTO> values)
+    {
+        if (values == null)
+        {
+            return null;
+        }
+
+        List<ProviderDTO> previousValues = new ArrayList<>();
+
+        for (ProviderDTO providerDTO: values)
+        {
+            previousValues.add(put(providerDTO.getProviderId(), providerDTO));
+        }
+
+        return previousValues;
     }
 }

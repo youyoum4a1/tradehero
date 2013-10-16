@@ -1,6 +1,7 @@
 package com.tradehero.th.api.competition;
 
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -46,8 +47,25 @@ public class ProviderDTO
 
     public PortfolioCompactDTO associatedPortfolio;
 
-    public ProviderKey getKey()
+    public ProviderId getProviderId()
     {
-        return new ProviderKey(id);
+        return new ProviderId(id);
+    }
+
+    public static List<ProviderId> getProviderIds(List<ProviderDTO> providerDTOs)
+    {
+        if (providerDTOs == null)
+        {
+            return null;
+        }
+
+        List<ProviderId> providerIds = new ArrayList<>();
+
+        for (ProviderDTO providerDTO: providerDTOs)
+        {
+            providerIds.add(providerDTO.getProviderId());
+        }
+
+        return providerIds;
     }
 }

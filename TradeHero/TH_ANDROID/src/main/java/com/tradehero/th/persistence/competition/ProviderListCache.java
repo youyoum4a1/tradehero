@@ -3,7 +3,7 @@ package com.tradehero.th.persistence.competition;
 import com.tradehero.common.persistence.StraightDTOCache;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.api.competition.ProviderDTO;
-import com.tradehero.th.api.competition.ProviderKey;
+import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.competition.ProviderListKey;
 import com.tradehero.th.network.BasicRetrofitErrorHandler;
 import com.tradehero.th.network.service.ProviderService;
@@ -15,7 +15,7 @@ import javax.inject.Singleton;
 import retrofit.RetrofitError;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/3/13 Time: 5:04 PM To change this template use File | Settings | File Templates. */
-@Singleton public class ProviderListCache extends StraightDTOCache<Integer, ProviderListKey, List<ProviderKey>>
+@Singleton public class ProviderListCache extends StraightDTOCache<Integer, ProviderListKey, List<ProviderId>>
 {
     public static final String TAG = ProviderListCache.class.getSimpleName();
     public static final int DEFAULT_MAX_SIZE = 50;
@@ -30,7 +30,7 @@ import retrofit.RetrofitError;
     }
     //</editor-fold>
 
-    @Override protected List<ProviderKey> fetch(ProviderListKey key)
+    @Override protected List<ProviderId> fetch(ProviderListKey key)
     {
         THLog.d(TAG, "fetch " + key);
         try
@@ -51,33 +51,33 @@ import retrofit.RetrofitError;
         return null;
     }
 
-    @Override public List<ProviderKey> getOrFetch(ProviderListKey key, boolean force)
+    @Override public List<ProviderId> getOrFetch(ProviderListKey key, boolean force)
     {
         THLog.d(TAG, "getOrFetch " + key);
         return super.getOrFetch(key, force);
     }
 
-    @Override public List<ProviderKey> get(ProviderListKey key)
+    @Override public List<ProviderId> get(ProviderListKey key)
     {
         THLog.d(TAG, "get " + key);
         return super.get(key);
     }
 
-    protected List<ProviderKey> putInternal(ProviderListKey key, List<ProviderDTO> fleshedValues)
+    protected List<ProviderId> putInternal(ProviderListKey key, List<ProviderDTO> fleshedValues)
     {
-        List<ProviderKey> providerKeys = null;
+        List<ProviderId> providerIds = null;
         if (fleshedValues != null)
         {
-            providerKeys = new ArrayList<>();
-            ProviderKey providerKey;
+            providerIds = new ArrayList<>();
+            ProviderId providerId;
             for(ProviderDTO providerDTO: fleshedValues)
             {
-                providerKey = providerDTO.getKey();
-                providerKeys.add(providerKey);
-                providerCache.get().put(providerKey, providerDTO);
+                providerId = providerDTO.getProviderId();
+                providerIds.add(providerId);
+                providerCache.get().put(providerId, providerDTO);
             }
-            put(key, providerKeys);
+            put(key, providerIds);
         }
-        return providerKeys;
+        return providerIds;
     }
 }

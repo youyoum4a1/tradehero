@@ -4,17 +4,26 @@ import android.os.AsyncTask;
 import android.support.v4.util.LruCache;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.api.competition.ProviderDTO;
+import com.tradehero.th.api.competition.ProviderId;
+import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PortfolioDTO;
+import com.tradehero.th.api.portfolio.PortfolioId;
+import com.tradehero.th.api.position.PositionCompactId;
 import com.tradehero.th.api.position.PositionDTOCompact;
 import com.tradehero.th.api.position.SecurityPositionDetailDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
+import com.tradehero.th.base.THUser;
 import com.tradehero.th.network.BasicRetrofitErrorHandler;
 import com.tradehero.th.network.service.SecurityService;
 import com.tradehero.common.persistence.DTOCache;
+import com.tradehero.th.persistence.competition.ProviderCache;
+import com.tradehero.th.persistence.portfolio.PortfolioCache;
+import com.tradehero.th.persistence.portfolio.PortfolioCompactCache;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import dagger.Lazy;
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -30,6 +39,9 @@ import retrofit.RetrofitError;
     private LruCache<String, SecurityPositionDetailCache.SecurityPositionDetailCutDTO> lruCache;
     @Inject protected Lazy<SecurityService> securityService;
     @Inject protected Lazy<SecurityCompactCache> securityCompactCache;
+    @Inject protected Lazy<PositionCompactCache> positionCompactCache;
+    @Inject protected Lazy<PortfolioCache> portfolioCache;
+    @Inject protected Lazy<ProviderCache> providerCache;
 
     //<editor-fold desc="Constructors">
     @Inject public SecurityPositionDetailCache()
@@ -71,7 +83,7 @@ import retrofit.RetrofitError;
         }
         else
         {
-            securityPositionDetailDTO = securityPositionDetailCutDTO.create(securityCompactDTO);
+            securityPositionDetailDTO = securityPositionDetailCutDTO.create(securityCompactCache.get(), portfolioCache.get(), positionCompactCache.get(), providerCache.get());
         }
         return securityPositionDetailDTO;
     }
@@ -108,7 +120,7 @@ import retrofit.RetrofitError;
         {
             return null;
         }
-        return securityPositionDetailCutDTO.create(securityCompactDTO);
+        return securityPositionDetailCutDTO.create(securityCompactCache.get(), portfolioCache.get(), positionCompactCache.get(), providerCache.get());
     }
 
     @Override public SecurityPositionDetailDTO put(SecurityId key, SecurityPositionDetailDTO value)
@@ -116,41 +128,96 @@ import retrofit.RetrofitError;
         SecurityPositionDetailDTO previous = null;
 
         securityCompactCache.get().put(key, value.security);
-        SecurityPositionDetailCutDTO previousCut = lruCache.put(key.makeKey(), new SecurityPositionDetailCutDTO(value));
+        SecurityPositionDetailCutDTO previousCut = lruCache.put(
+                key.makeKey(),
+                new SecurityPositionDetailCutDTO(
+                        value,
+                        securityCompactCache.get(),
+                        portfolioCache.get(),
+                        positionCompactCache.get(),
+                        providerCache.get()));
+
+        if (value.positions != null)
+        {
+            for (PositionDTOCompact positionDTOCompact: value.positions)
+            {
+                positionCompactCache.get().put(positionDTOCompact.getPositionCompactId(), positionDTOCompact);
+            }
+        }
 
         if (previousCut != null)
         {
-            previous = previousCut.create(value.security);
+            previous = previousCut.create(securityCompactCache.get(), portfolioCache.get(), positionCompactCache.get(), providerCache.get());
         }
 
         return previous;
     }
 
-    // The purpose of this class is to save on memory usage by cutting out the SecurityCompactDTO that already enjoys its own cache.
+    // The purpose of this class is to save on memory usage by cutting out the elements that already enjoy their own cache.
     // It is static so as not to keep a link back to the cache instance.
     private static class SecurityPositionDetailCutDTO
     {
-        public List<PositionDTOCompact> positions;
-        public PositionDTOCompact position;
-        public PortfolioDTO portfolio;
-        public List<ProviderDTO> providers;
+        public SecurityId securityId;
+        public List<PositionCompactId> positionIds;
+        public PortfolioId portfolioId;
+        public List<ProviderId> providerIds;
         public int firstTradeAllTime;
 
-        public SecurityPositionDetailCutDTO(SecurityPositionDetailDTO securityPositionDetailDTO)
+        public SecurityPositionDetailCutDTO(
+                SecurityPositionDetailDTO securityPositionDetailDTO,
+                SecurityCompactCache securityCompactCache,
+                PortfolioCache portfolioCache,
+                PositionCompactCache positionCompactCache,
+                ProviderCache providerCache)
         {
-            this.positions = securityPositionDetailDTO.positions;
-            this.portfolio = securityPositionDetailDTO.portfolio;
-            this.providers = securityPositionDetailDTO.providers;
+            if (securityPositionDetailDTO.security != null)
+            {
+                securityCompactCache.put(securityPositionDetailDTO.getSecurityId(), securityPositionDetailDTO.security);
+                this.securityId = securityPositionDetailDTO.getSecurityId();
+            }
+            else
+            {
+                this.securityId = null;
+            }
+
+            positionCompactCache.put(securityPositionDetailDTO.positions);
+            this.positionIds = PositionDTOCompact.getPositionCompactIds(securityPositionDetailDTO.positions);
+
+            if (securityPositionDetailDTO.portfolio != null)
+            {
+                portfolioCache.put(
+                        new OwnedPortfolioId(
+                                THUser.getCurrentUserBase().getBaseKey(),
+                                securityPositionDetailDTO.portfolio.getPortfolioId()),
+                        securityPositionDetailDTO.portfolio);
+                this.portfolioId = securityPositionDetailDTO.portfolio.getPortfolioId();
+            }
+            else
+            {
+                this.portfolioId = null;
+            }
+
+            providerCache.put(securityPositionDetailDTO.providers);
+            this.providerIds = ProviderDTO.getProviderIds(securityPositionDetailDTO.providers);
+
             this.firstTradeAllTime = securityPositionDetailDTO.firstTradeAllTime;
         }
 
-        public SecurityPositionDetailDTO create(SecurityCompactDTO securityCompactDTO)
+        public SecurityPositionDetailDTO create(
+                SecurityCompactCache securityCompactCache,
+                PortfolioCache portfolioCache,
+                PositionCompactCache positionCompactCache,
+                ProviderCache providerCache)
         {
             return new SecurityPositionDetailDTO(
-                    securityCompactDTO,
-                    positions,
-                    portfolio,
-                    providers,
+                    securityId != null ? securityCompactCache.get(securityId) : null,
+                    positionCompactCache.get(positionIds),
+                    this.portfolioId != null ?
+                            portfolioCache.get(new OwnedPortfolioId(
+                                THUser.getCurrentUserBase().getBaseKey(),
+                                portfolioId))
+                            : null,
+                    providerCache.get(providerIds),
                     firstTradeAllTime
             );
         }

@@ -4,18 +4,18 @@ import android.os.Bundle;
 import com.tradehero.common.persistence.AbstractIntegerDTOKey;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/10/13 Time: 5:13 PM To change this template use File | Settings | File Templates. */
-public class ProviderKey extends AbstractIntegerDTOKey
+public class ProviderId extends AbstractIntegerDTOKey
 {
-    public final static String TAG = ProviderKey.class.getSimpleName();
-    public final static String BUNDLE_KEY_KEY = ProviderKey.class.getName() + ".key";
+    public final static String TAG = ProviderId.class.getSimpleName();
+    public final static String BUNDLE_KEY_KEY = ProviderId.class.getName() + ".key";
 
     //<editor-fold desc="Constructors">
-    public ProviderKey(Integer key)
+    public ProviderId(Integer key)
     {
         super(key);
     }
 
-    public ProviderKey(Bundle args)
+    public ProviderId(Bundle args)
     {
         super(args);
     }
@@ -28,7 +28,7 @@ public class ProviderKey extends AbstractIntegerDTOKey
 
     @Override public boolean equals(Object obj)
     {
-        if (!(obj instanceof ProviderKey))
+        if (!(obj instanceof ProviderId))
         {
             return false;
         }
