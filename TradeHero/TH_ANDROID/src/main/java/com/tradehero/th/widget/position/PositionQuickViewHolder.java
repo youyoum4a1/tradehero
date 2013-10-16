@@ -11,9 +11,9 @@ public class PositionQuickViewHolder extends PositionQuickInnerViewHolder
     private ImageView positionProfitIndicatorLeft;
     private ImageView moreInfoIndicator;
 
-    public PositionQuickViewHolder(Context context)
+    public PositionQuickViewHolder()
     {
-        super(context);
+        super();
     }
 
     @Override public void initViews(View view)

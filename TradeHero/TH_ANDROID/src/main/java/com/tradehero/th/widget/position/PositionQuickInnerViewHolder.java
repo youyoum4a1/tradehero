@@ -1,16 +1,19 @@
 package com.tradehero.th.widget.position;
 
 import android.content.Context;
+import android.os.AsyncTask;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 import com.tradehero.common.graphics.WhiteToTransparentTransformation;
+import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.th.R;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
+import com.tradehero.th.utills.TrendUtils;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
 import javax.inject.Inject;
@@ -18,7 +21,7 @@ import javax.inject.Inject;
 /** Created with IntelliJ IDEA. User: xavier Date: 10/16/13 Time: 11:53 AM To change this template use File | Settings | File Templates. */
 public class PositionQuickInnerViewHolder
 {
-    private Context context;
+    @Inject protected Context context;
     private ImageView stockLogo;
     private TextView stockSymbol;
     private TextView companyName;
@@ -35,11 +38,12 @@ public class PositionQuickInnerViewHolder
     protected SecurityCompactDTO securityCompactDTO;
 
     @Inject Lazy<SecurityCompactCache> securityCompactCache;
+    private SecurityCompactCache.Listener<SecurityId, SecurityCompactDTO> securityCompactCacheListener;
+    private AsyncTask<Void, Void, SecurityCompactDTO> securityCompactCacheFetchTask;
 
-    public PositionQuickInnerViewHolder(Context context)
+    public PositionQuickInnerViewHolder()
     {
         super();
-        this.context = context;
         DaggerUtils.inject(this);
     }
 
@@ -78,6 +82,12 @@ public class PositionQuickInnerViewHolder
         {
             tradeHistoryButton.setOnClickListener(null);
         }
+        securityCompactCacheListener = null;
+        if (securityCompactCacheFetchTask != null)
+        {
+            securityCompactCacheFetchTask.cancel(false);
+        }
+        securityCompactCacheFetchTask = null;
     }
 
     public void linkWith(SecurityId securityId, boolean andDisplay)
@@ -87,6 +97,15 @@ public class PositionQuickInnerViewHolder
         SecurityCompactDTO cachedSecurityCompactDTO = securityCompactCache.get().get(securityId);
         if (cachedSecurityCompactDTO == null)
         {
+            if (securityCompactCacheListener == null)
+            {
+                securityCompactCacheListener = createSecurityCompactCacheListener();
+            }
+            if (securityCompactCacheFetchTask != null)
+            {
+                securityCompactCacheFetchTask.cancel(false);
+            }
+            securityCompactCacheFetchTask = securityCompactCache.get().getOrFetch(securityId, securityCompactCacheListener);
             // TODO query cache for security position detail DTO
         }
         else
@@ -107,6 +126,10 @@ public class PositionQuickInnerViewHolder
         {
             displayStockLogo();
             displayCompanyName();
+            displayStockMovementIndicator();
+            displayCurrencyDisplay();
+            displayStockLastPrice();
+            displayMarketClose();
             // TODO more
         }
     }
@@ -116,6 +139,10 @@ public class PositionQuickInnerViewHolder
         displayStockLogo();
         displayStockSymbol();
         displayCompanyName();
+        displayStockMovementIndicator();
+        displayCurrencyDisplay();
+        displayStockLastPrice();
+        displayMarketClose();
         // TODO more
     }
 
@@ -167,8 +194,99 @@ public class PositionQuickInnerViewHolder
         }
     }
 
+    public void displayStockMovementIndicator()
+    {
+        if (stockMovementIndicator != null)
+        {
+            if (securityCompactDTO != null)
+            {
+                if(securityCompactDTO.pc50DMA > 0)
+                {
+                    stockMovementIndicator.setText(R.string.positive_prefix);
+                }
+                else if(securityCompactDTO.pc50DMA < 0)
+                {
+                    stockMovementIndicator.setText(R.string.negative_prefix);
+                }
+                stockMovementIndicator.setTextColor(TrendUtils.colorForPercentage(securityCompactDTO.pc50DMA));
+            }
+        }
+
+    }
+
+    public void displayCurrencyDisplay()
+    {
+        if (currencyDisplay != null)
+        {
+            if (securityCompactDTO != null)
+            {
+                currencyDisplay.setText(securityCompactDTO.currencyDisplay);
+                if(securityCompactDTO.marketOpen)
+                {
+                    currencyDisplay.setTextColor(context.getResources().getColor(R.color.exchange_symbol));
+                }
+                else
+                {
+                    currencyDisplay.setTextColor(context.getResources().getColor(android.R.color.darker_gray));
+                }
+            }
+        }
+    }
+
+    public void displayStockLastPrice()
+    {
+        if (stockLastPrice != null)
+        {
+            if (securityCompactDTO != null)
+            {
+                if (securityCompactDTO.lastPrice != null)
+                {
+                    stockLastPrice.setText(String.format("%.2f", securityCompactDTO.lastPrice.doubleValue()));
+                }
+                else
+                {
+                    stockLastPrice.setText(R.string.na);
+                }
+
+                if(securityCompactDTO.marketOpen)
+                {
+                    stockLastPrice.setTextColor(context.getResources().getColor(R.color.exchange_symbol));
+                }
+                else
+                {
+                    stockLastPrice.setTextColor(context.getResources().getColor(android.R.color.darker_gray));
+                }
+            }
+        }
+    }
+
+    public void displayMarketClose()
+    {
+        if (marketClose != null)
+        {
+            if (securityCompactDTO != null)
+            {
+                marketClose.setVisibility(securityCompactDTO.marketOpen ? View.INVISIBLE : View.VISIBLE);
+            }
+        }
+    }
+
     protected void handleTradeHistoryButtonClicked(View view)
     {
         // TODO
+    }
+
+    private SecurityCompactCache.Listener<SecurityId, SecurityCompactDTO> createSecurityCompactCacheListener()
+    {
+        return new SecurityCompactCache.Listener<SecurityId, SecurityCompactDTO>()
+        {
+            @Override public void onDTOReceived(SecurityId key, SecurityCompactDTO value)
+            {
+                if (key.equals(securityId))
+                {
+                    linkWith(value, true);
+                }
+            }
+        };
     }
 }
