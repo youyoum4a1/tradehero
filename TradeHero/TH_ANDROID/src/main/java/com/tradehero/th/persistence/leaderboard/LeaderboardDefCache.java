@@ -3,7 +3,6 @@ package com.tradehero.th.persistence.leaderboard;
 import com.tradehero.common.persistence.StraightDTOCache;
 import com.tradehero.th.api.leaderboard.LeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardDefKey;
-import com.tradehero.th.api.leaderboard.LeaderboardDefListKey;
 import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +15,7 @@ public class LeaderboardDefCache extends StraightDTOCache<Integer, LeaderboardDe
 {
     private static final int DEFAULT_MAX_SIZE = 1000;
 
-    @Inject protected Lazy<LeaderboardDefListCache> leaderboardDefListCache;
+    @Inject protected Lazy<LeaderboardDefCache> leaderboardDefListCache;
 
     public LeaderboardDefCache()
     {
@@ -25,7 +24,8 @@ public class LeaderboardDefCache extends StraightDTOCache<Integer, LeaderboardDe
 
     @Override protected LeaderboardDefDTO fetch(LeaderboardDefKey key)
     {
-        leaderboardDefListCache.get().fetch(new LeaderboardDefListKey(LeaderboardDefListKey.ALL_LEADERBOARD_DEF));
+        // if leaderboardDef is not in the cache, request for all lbdef again to refresh the cache
+        leaderboardDefListCache.get().fetch(key);
         return get(key);
     }
 
@@ -41,5 +41,10 @@ public class LeaderboardDefCache extends StraightDTOCache<Integer, LeaderboardDe
             ret.add(getOrFetch(key, false));
         }
         return ret;
+    }
+
+    @Override public LeaderboardDefDTO put(LeaderboardDefKey key, LeaderboardDefDTO value)
+    {
+        return super.put(key, value);
     }
 }

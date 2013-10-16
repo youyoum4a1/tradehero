@@ -2,27 +2,32 @@ package com.tradehero.th.api.leaderboard;
 
 import android.os.Bundle;
 import com.tradehero.common.persistence.AbstractIntegerDTOKey;
+import com.tradehero.common.persistence.AbstractStringDTOKey;
+import com.tradehero.common.persistence.DTOKey;
 
 /** Created with IntelliJ IDEA. User: tho Date: 10/16/13 Time: 10:33 AM Copyright (c) TradeHero */
-public class LeaderboardDefListKey extends AbstractIntegerDTOKey
+public abstract class LeaderboardDefListKey extends AbstractStringDTOKey
 {
-    public static final String BUNDLE_KEY = LeaderboardDefListKey.class.getName();
-    public static final Integer ALL_LEADERBOARD_DEF = 0;
 
+    private static final String BUNDLE_KEY = LeaderboardDefKey.class.getName() + ".key";
+    private static final String ALL_LEADERBOARD_DEF = "ALL_LEADERBOARD_DEF";
+
+    //<editor-fold desc="Constructors">
     public LeaderboardDefListKey()
     {
         super(ALL_LEADERBOARD_DEF);
+    }
+
+    public LeaderboardDefListKey(String key)
+    {
+        super(key);
     }
 
     public LeaderboardDefListKey(Bundle args)
     {
         super(args);
     }
-
-    public LeaderboardDefListKey(Integer key)
-    {
-        super(key);
-    }
+    //</editor-fold>
 
     @Override public String getBundleKey()
     {

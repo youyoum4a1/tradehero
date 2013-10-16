@@ -20,6 +20,8 @@ public abstract class AbstractPrimitiveDTOKey<T extends Comparable> implements C
     public AbstractPrimitiveDTOKey(Bundle args)
     {
         super();
+
+        // TODO typo?
         if (args.containsKey(getBundleKey()));
         {
             this.key = (T)args.get(getBundleKey());

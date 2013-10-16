@@ -8,6 +8,9 @@ import java.util.List;
 
 public class LeaderboardDefDTO extends AbstractItemWithComparableId<Integer>
 {
+    // TODO HARDCODED
+    public static final int LEADERBOARD_DEF_MOST_SKILLED_ID = 49;
+
     public int id;
     public String name;
 
@@ -41,7 +44,7 @@ public class LeaderboardDefDTO extends AbstractItemWithComparableId<Integer>
 
     public boolean isTimeRestrictedLeaderboard()
     {
-        return (this.fromUtcRestricted != null && this.toUtcRestricted != null) || (this.toDateDays > 0);
+        return (this.fromUtcRestricted != null && this.toUtcRestricted != null) || (this.toDateDays != null && this.toDateDays > 0);
     }
 
     public boolean isUnrestrictedLeaderboard()
