@@ -134,6 +134,6 @@ public class OwnedPortfolioId  implements Comparable, DTOKey<String>
 
     @Override public String makeKey()
     {
-        return String.format("%d:%d", userId, portfolioId);
+        return String.format("%s:%d:%d", OwnedPortfolioId.class.getName(), userId, portfolioId);
     }
 }

@@ -72,6 +72,6 @@ public class SearchSecurityListType extends SecurityListType
 
     @Override public String toString()
     {
-        return String.format("[%s: searchString=%s; page=%d; perPage=%d]", TAG, searchString, page, perPage);
+        return String.format("[%s: searchString=%s; page=%d; perPage=%d]", SearchSecurityListType.class.getName(), searchString, page, perPage);
     }
 }
