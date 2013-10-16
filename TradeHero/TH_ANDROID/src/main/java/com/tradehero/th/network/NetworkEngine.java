@@ -18,7 +18,7 @@ import retrofit.converter.Converter;
 
 public class NetworkEngine
 {
-    private final String API_URL = Application.getResourceString(R.string.API_URL);
+    private static final String API_URL = "https://www.tradehero.mobi/api";
 
     private RestAdapter restAdapter;
     private ErrorHandler retrofitErrorHandler = new ErrorHandler()

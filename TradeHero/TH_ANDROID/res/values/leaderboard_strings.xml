@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="leaderboard_6months">Last 6 Months</string>
+  <string name="leaderboard_by_exchange">By Exchange</string>
+  <string name="leaderboard_by_sector">By Sector</string>
+  <string name="last_30days">Last 30 Days</string>
+  <string name="last_90days">Last 90 Days</string>
+  <string name="leaderboard_most_skilled">Most Skilled</string>
+  <string name="leaderboard_friends">Friends</string>
+  <string name="leaderboard_sort_by_hero_quotient">Sort by Hero Quotient</string>
+  <string name="leaderboard_sort_by_roi">Sort by ROI</string>
+  <string name="leaderboards">Leaderboards</string>
+</resources>
