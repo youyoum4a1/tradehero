@@ -9,12 +9,19 @@ import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 import com.tradehero.common.graphics.WhiteToTransparentTransformation;
 import com.tradehero.common.persistence.DTOCache;
+import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
+import com.tradehero.th.api.DTOView;
+import com.tradehero.th.api.position.FiledPositionId;
+import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
+import com.tradehero.th.persistence.position.FiledPositionCache;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
+import com.tradehero.th.persistence.security.SecurityIdCache;
 import com.tradehero.th.utills.TrendUtils;
 import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th.utils.SecurityUtils;
 import dagger.Lazy;
 import javax.inject.Inject;
 
@@ -22,24 +29,28 @@ import javax.inject.Inject;
 public class PositionQuickInnerViewHolder
 {
     @Inject protected Context context;
+
     private ImageView stockLogo;
     private TextView stockSymbol;
     private TextView companyName;
     private TextView stockMovementIndicator;
-    private TextView currencyDisplay;
     private TextView stockLastPrice;
     private ImageView marketClose;
     private TextView positionProfitIndicator;
-    private TextView positionCurrencyDisplay;
+    private TextView positionPercent;
     private TextView positionLastAmount;
     private ImageButton tradeHistoryButton;
 
     protected SecurityId securityId;
     protected SecurityCompactDTO securityCompactDTO;
-
+    @Inject Lazy<SecurityIdCache> securityIdCache;
     @Inject Lazy<SecurityCompactCache> securityCompactCache;
     private SecurityCompactCache.Listener<SecurityId, SecurityCompactDTO> securityCompactCacheListener;
     private AsyncTask<Void, Void, SecurityCompactDTO> securityCompactCacheFetchTask;
+
+    protected FiledPositionId filedPositionId;
+    protected PositionDTO positionDTO;
+    @Inject Lazy<FiledPositionCache> filedPositionCache;
 
     public PositionQuickInnerViewHolder()
     {
@@ -55,11 +66,10 @@ public class PositionQuickInnerViewHolder
             stockSymbol = (TextView) view.findViewById(R.id.stock_symbol);
             companyName = (TextView) view.findViewById(R.id.company_name);
             stockMovementIndicator = (TextView) view.findViewById(R.id.stock_movement_indicator);
-            currencyDisplay = (TextView) view.findViewById(R.id.currency_display);
             stockLastPrice = (TextView) view.findViewById(R.id.stock_last_price);
             marketClose = (ImageView) view.findViewById(R.id.ic_market_close);
             positionProfitIndicator = (TextView) view.findViewById(R.id.position_profit_indicator);
-            positionCurrencyDisplay = (TextView) view.findViewById(R.id.position_currency_display);
+            positionPercent = (TextView) view.findViewById(R.id.position_percentage);
             positionLastAmount = (TextView) view.findViewById(R.id.position_last_amount);
 
             tradeHistoryButton = (ImageButton) view.findViewById(R.id.btn_trade_history);
@@ -106,7 +116,7 @@ public class PositionQuickInnerViewHolder
                 securityCompactCacheFetchTask.cancel(false);
             }
             securityCompactCacheFetchTask = securityCompactCache.get().getOrFetch(securityId, securityCompactCacheListener);
-            // TODO query cache for security position detail DTO
+            securityCompactCacheFetchTask.execute();
         }
         else
         {
@@ -127,10 +137,32 @@ public class PositionQuickInnerViewHolder
             displayStockLogo();
             displayCompanyName();
             displayStockMovementIndicator();
-            displayCurrencyDisplay();
             displayStockLastPrice();
             displayMarketClose();
             // TODO more
+        }
+    }
+
+    public void linkWith(FiledPositionId filedPositionId, boolean andDisplay)
+    {
+        this.filedPositionId = filedPositionId;
+
+        linkWith(filedPositionCache.get().get(this.filedPositionId), andDisplay);
+
+        if (andDisplay)
+        {
+            //TODO
+        }
+    }
+
+    public void linkWith(PositionDTO positionDTO, boolean andDisplay)
+    {
+        this.positionDTO = positionDTO;
+        if (andDisplay)
+        {
+            displayPositionProfitIndicator();
+            displayPositionPercent();
+            displayPositionLastAmount();
         }
     }
 
@@ -140,10 +172,12 @@ public class PositionQuickInnerViewHolder
         displayStockSymbol();
         displayCompanyName();
         displayStockMovementIndicator();
-        displayCurrencyDisplay();
         displayStockLastPrice();
         displayMarketClose();
-        // TODO more
+
+        displayPositionProfitIndicator();
+        displayPositionPercent();
+        displayPositionLastAmount();
     }
 
     public void displayStockLogo()
@@ -211,26 +245,6 @@ public class PositionQuickInnerViewHolder
                 stockMovementIndicator.setTextColor(TrendUtils.colorForPercentage(securityCompactDTO.pc50DMA));
             }
         }
-
-    }
-
-    public void displayCurrencyDisplay()
-    {
-        if (currencyDisplay != null)
-        {
-            if (securityCompactDTO != null)
-            {
-                currencyDisplay.setText(securityCompactDTO.currencyDisplay);
-                if(securityCompactDTO.marketOpen)
-                {
-                    currencyDisplay.setTextColor(context.getResources().getColor(R.color.exchange_symbol));
-                }
-                else
-                {
-                    currencyDisplay.setTextColor(context.getResources().getColor(android.R.color.darker_gray));
-                }
-            }
-        }
     }
 
     public void displayStockLastPrice()
@@ -241,14 +255,14 @@ public class PositionQuickInnerViewHolder
             {
                 if (securityCompactDTO.lastPrice != null)
                 {
-                    stockLastPrice.setText(String.format("%.2f", securityCompactDTO.lastPrice.doubleValue()));
+                    stockLastPrice.setText(String.format("%s %.2f", securityCompactDTO.currencyDisplay, securityCompactDTO.lastPrice));
                 }
                 else
                 {
                     stockLastPrice.setText(R.string.na);
                 }
 
-                if(securityCompactDTO.marketOpen)
+                if (securityCompactDTO.marketOpen)
                 {
                     stockLastPrice.setTextColor(context.getResources().getColor(R.color.exchange_symbol));
                 }
@@ -271,8 +285,64 @@ public class PositionQuickInnerViewHolder
         }
     }
 
+    public void displayPositionProfitIndicator()
+    {
+        if (positionProfitIndicator != null)
+        {
+            if (positionDTO != null)
+            {
+                Double positionPLPercent = positionDTO.getUnrealizedPLRefCcyPercent();
+                if (positionPLPercent == null || positionPLPercent == 0)
+                {
+                    positionProfitIndicator.setText(R.string.na);
+                }
+                else if (positionPLPercent > 0)
+                {
+                    positionProfitIndicator.setText(R.string.positive_prefix);
+                }
+                else
+                {
+                    positionProfitIndicator.setText(R.string.negative_prefix);
+                }
+                positionProfitIndicator.setTextColor(TrendUtils.colorForPercentage((int) (100 * positionPLPercent)));
+            }
+        }
+    }
+
+    public void displayPositionPercent()
+    {
+        if (positionPercent != null)
+        {
+            if (positionDTO != null)
+            {
+                Double positionPLPercent = positionDTO.getUnrealizedPLRefCcyPercent();
+                if (positionPLPercent == null)
+                {
+                    positionPercent.setText(R.string.na);
+                }
+                else
+                {
+                    positionPercent.setText(String.format("%0.2f%%", positionPLPercent));
+                }
+                positionPercent.setTextColor(TrendUtils.colorForPercentage((int) (100 * positionPLPercent)));
+            }
+        }
+    }
+
+    public void displayPositionLastAmount()
+    {
+        if (positionLastAmount != null)
+        {
+            if (positionDTO != null)
+            {
+                positionLastAmount.setText(String.format("%s %.2f", SecurityUtils.DEFAULT_VIRTUAL_CASH_CURRENCY_DISPLAY, positionDTO.marketValueRefCcy));
+            }
+        }
+    }
+
     protected void handleTradeHistoryButtonClicked(View view)
     {
+        THToast.show("Nothing for now");
         // TODO
     }
 

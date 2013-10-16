@@ -65,4 +65,18 @@ public class PositionDTO extends PositionDTOCompact
         return positionIds;
     }
 
+    public Double getUnrealizedPLRefCcyPercent()
+    {
+        if (unrealizedPLRefCcy == null)
+        {
+            return null;
+        }
+
+        if (marketValueRefCcy == unrealizedPLRefCcy)
+        {
+            return null;
+        }
+
+        return marketValueRefCcy / (marketValueRefCcy - unrealizedPLRefCcy);
+    }
 }

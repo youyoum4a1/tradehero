@@ -10,6 +10,7 @@ import com.tradehero.th.base.THUser;
 import com.tradehero.th.fragments.leaderboard.LeaderboardFragment;
 import com.tradehero.th.fragments.authentication.EmailSignInFragment;
 import com.tradehero.th.fragments.portfolio.PortfolioListFragment;
+import com.tradehero.th.fragments.position.PositionListFragment;
 import com.tradehero.th.fragments.timeline.MeTimelineFragment;
 import com.tradehero.th.fragments.timeline.TimelineFragment;
 import com.tradehero.th.fragments.trade.BuyFragment;
@@ -67,7 +68,7 @@ import javax.inject.Singleton;
                 PortfolioListFragment.class,
                 PortfolioHeaderItemView.class,
 
-                PositionQuickInnerViewHolder.class,
+                PositionListFragment.class,
 
                 UserAvailabilityRequester.class,
                 SearchStockPageItemListLoader.class,
@@ -136,6 +137,11 @@ public class TradeHeroModule
     @Provides @Singleton PortfolioService providePortfolioService()
     {
         return engine.createService(PortfolioService.class);
+    }
+
+    @Provides @Singleton PositionService providePositionService()
+    {
+        return engine.createService(PositionService.class);
     }
 
     @Provides @Singleton LeaderboardService provideLeaderboardService()

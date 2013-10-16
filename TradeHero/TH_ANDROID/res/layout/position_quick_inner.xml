@@ -59,28 +59,36 @@
             android:textSize="35sp"
           />
 
-        <TextView
-            android:id="@+id/currency_display"
+        <LinearLayout
+            android:orientation="horizontal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:lines="1"
-          />
+          >
 
-        <TextView
-            android:id="@+id/stock_last_price"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:lines="1"
-          />
+          <TextView
+              android:id="@+id/currency_display"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:lines="1"
+            />
 
-        <ImageView
-            android:id="@+id/ic_market_close"
-            android:layout_width="12dp"
-            android:layout_height="12dp"
-            android:contentDescription="@null"
-            android:scaleType="fitCenter"
-            android:src="@drawable/market_sleep_grey"
-          />
+          <TextView
+              android:id="@+id/stock_last_price"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:lines="1"
+            />
+
+          <ImageView
+              android:id="@+id/ic_market_close"
+              android:layout_width="12dp"
+              android:layout_height="12dp"
+              android:contentDescription="@null"
+              android:scaleType="fitCenter"
+              android:src="@drawable/market_sleep_grey"
+            />
+
+        </LinearLayout>
 
       </LinearLayout>
 
@@ -94,20 +102,28 @@
         android:layout_toRightOf="@id/stock_quick_info"
       >
 
-      <TextView
-          android:id="@+id/position_profit_indicator"
+      <LinearLayout
+          android:orientation="horizontal"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:lines="1"
-          android:textSize="35sp"
-        />
+        >
 
-      <TextView
-          android:id="@+id/position_currency_display"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:lines="1"
-        />
+        <TextView
+            android:id="@+id/position_profit_indicator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:lines="1"
+            android:textSize="35sp"
+          />
+
+        <TextView
+            android:id="@+id/position_percentage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+          />
+
+      </LinearLayout>
 
       <TextView
           android:id="@+id/position_last_amount"

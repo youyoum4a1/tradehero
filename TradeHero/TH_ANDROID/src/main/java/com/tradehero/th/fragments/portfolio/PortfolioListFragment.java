@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
@@ -15,6 +16,7 @@ import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.base.THUser;
 import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.fragments.position.PositionListFragment;
 import com.tradehero.th.network.service.PortfolioService;
 import com.tradehero.th.persistence.portfolio.PortfolioCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
@@ -26,7 +28,7 @@ import javax.inject.Inject;
 /** Created with IntelliJ IDEA. User: xavier Date: 10/14/13 Time: 11:47 AM To change this template use File | Settings | File Templates. */
 public class PortfolioListFragment extends DashboardFragment
 {
-    public static final String TAG = PortfolioListFragment.class.getName();
+    public static final String TAG = PortfolioListFragment.class.getSimpleName();
 
     private PortfolioListView ownPortfolios;
     private PortfolioListView otherPortfolios;
@@ -59,6 +61,16 @@ public class PortfolioListFragment extends DashboardFragment
         if (view != null)
         {
             ownPortfolios = (PortfolioListView) view.findViewById(R.id.own_portfolios_list);
+            if (ownPortfolios != null)
+            {
+                ownPortfolios.setOnItemClickListener(new AdapterView.OnItemClickListener()
+                {
+                    @Override public void onItemClick(AdapterView<?> parent, View view, int position, long id)
+                    {
+                        handleOwnItemClicked(view, position, id);
+                    }
+                });
+            }
             otherPortfolios = (PortfolioListView) view.findViewById(R.id.other_portfolios_list);
         }
     }
@@ -91,6 +103,19 @@ public class PortfolioListFragment extends DashboardFragment
         }
         fetchOwnPortfoliosTask = null;
         super.onPause();
+    }
+
+    @Override public void onDestroyView()
+    {
+        if (ownPortfolios != null)
+        {
+            ownPortfolios.setOnItemClickListener(null);
+        }
+        if (otherPortfolios != null)
+        {
+            otherPortfolios.setOnItemClickListener(null);
+        }
+        super.onDestroyView();
     }
 
     private void fetchOwn()
@@ -189,6 +214,16 @@ public class PortfolioListFragment extends DashboardFragment
                 otherPortfolios.setAdapter(otherPortfolioAdapter);
             }
         }
+    }
+
+    private void handleOwnItemClicked(View view, int position, long id)
+    {
+        navigator.pushFragment(PositionListFragment.class, ownedPortfolioIds.get(position).getArgs());
+    }
+
+    private void handleOtherItemClicked(View view, int position, long id)
+    {
+        navigator.pushFragment(PositionListFragment.class, otherOwnedPortfolioIds.get(position).getArgs());
     }
 
     private PortfolioCompactListCache.Listener<UserBaseKey, List<OwnedPortfolioId>> createOwnPortfolioListener()
