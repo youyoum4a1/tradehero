@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <color name="edittext_border">#ff1c1c1b</color>
+  <color name="leaderboard_buttonlist_gradient_start_color">#e6e6e6</color>
+  <color name="leaderboard_buttonlist_gradient_end_color">#c4c4c4</color>
+</resources>

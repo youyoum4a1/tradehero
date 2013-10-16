@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+  <item android:id="@+id/leaderboard_sort_by_hero_quotient"
+      android:icon="@drawable/icon_menu"
+      android:title="@string/leaderboard_sort_by_hero_quotient"/>
+  <item android:id="@+id/leaderboard_sort_by_roi"
+      android:icon="@drawable/icon_menu"
+      android:title="@string/leaderboard_sort_by_roi" />
+</menu>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+  <item android:bottom="-1dp">
+    <shape android:shape="rectangle">
+      <stroke android:width="1dp" android:color="@color/edittext_border"/>
+      <gradient android:startColor="@color/leaderboard_buttonlist_gradient_start_color"
+          android:endColor="@color/leaderboard_buttonlist_gradient_end_color"
+          android:angle="270"/>
+      <padding android:top="@dimen/leaderboard_button_border_padding"
+          android:right="@dimen/leaderboard_button_border_padding"
+          android:left="@dimen/leaderboard_button_border_padding"
+          android:bottom="@dimen/leaderboard_button_border_padding"/>
+    </shape>
+  </item>
+</layer-list>

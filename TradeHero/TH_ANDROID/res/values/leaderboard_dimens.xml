@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <dimen name="leaderboard_buttonlist_radius">5dp</dimen>
+  <dimen name="leaderboard_button_border_padding">4dp</dimen>
+</resources>
