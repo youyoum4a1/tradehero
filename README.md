@@ -13,11 +13,13 @@ git checkout origin/develop --track
 - Enable Maven auto import when you are asked to do that or go to Settings -> search for maven ->  "Import Maven ..."
 - Get android sdk latest version from Google
 - With each maven module which referencing an outside module (you should see something like ```<relativePath>../pom.xml</relativePath>``` in pom.xml of that project), go to referenced project and mark it as a maven project as well.
+- To make it easier working with Dagger (dependency injection module), install this plugin: https://github.com/square/dagger-intellij-plugin
 
 #### Useful tip
 - Disable unnecessary logcat error output by going to Setting - Apps - All and disable exchange service
 - android-support-v4 is required by facebook module, it can be found under android sdk, inside folder named "extras".
 - Enable break point for uncatched exception: Run > View Breakpoints > Check on Uncatched Exceptions
+- Use this simulator: http://www.genymotion.com/ instead of the built-in.
 
 Development is conducted on the develop branch and the master is only used for release version.
 We are following the guidelines described here: http://nvie.com/posts/a-successful-git-branching-model/
