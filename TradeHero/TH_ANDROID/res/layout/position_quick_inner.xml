@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+  >
+
+  <ImageView
+      android:id="@+id/stock_logo"
+      android:layout_width="72dp"
+      android:layout_height="48dp"
+      android:layout_alignParentLeft="true"
+      android:scaleType="fitCenter"
+      android:contentDescription="@null"
+    />
+
+  <RelativeLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_toRightOf="@+id/stock_logo"
+      android:layout_toLeftOf="@+id/btn_trade_history"
+    >
+
+    <LinearLayout
+        android:id="@+id/stock_quick_info"
+        android:orientation="vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+      >
+
+      <TextView
+          android:id="@+id/stock_symbol"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:textStyle="bold"
+          android:maxLines="1"
+        />
+
+      <TextView
+          android:id="@+id/company_name"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:maxLines="1"
+        />
+
+      <LinearLayout
+          android:orientation="horizontal"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+        >
+
+        <TextView
+            android:id="@+id/stock_movement_indicator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:lines="1"
+            android:textSize="35sp"
+          />
+
+        <TextView
+            android:id="@+id/currency_display"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:lines="1"
+          />
+
+        <TextView
+            android:id="@+id/stock_last_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:lines="1"
+          />
+
+        <ImageView
+            android:id="@+id/ic_market_close"
+            android:layout_width="12dp"
+            android:layout_height="12dp"
+            android:contentDescription="@null"
+            android:scaleType="fitCenter"
+            android:src="@drawable/market_sleep_grey"
+          />
+
+      </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_toRightOf="@id/stock_quick_info"
+      >
+
+      <TextView
+          android:id="@+id/position_profit_indicator"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:lines="1"
+          android:textSize="35sp"
+        />
+
+      <TextView
+          android:id="@+id/position_currency_display"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:lines="1"
+        />
+
+      <TextView
+          android:id="@+id/position_last_amount"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:lines="1"
+        />
+
+    </LinearLayout>
+
+  </RelativeLayout>
+
+  <ImageButton
+      android:id="@+id/btn_trade_history"
+      android:layout_width="48dp"
+      android:layout_height="48dp"
+      android:layout_alignParentRight="true"
+      android:src="@drawable/ic_info"
+      android:contentDescription="@null"
+    />
+
+</RelativeLayout>
