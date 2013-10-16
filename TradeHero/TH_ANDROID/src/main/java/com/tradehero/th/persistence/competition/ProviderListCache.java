@@ -15,8 +15,7 @@ import javax.inject.Singleton;
 import retrofit.RetrofitError;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/3/13 Time: 5:04 PM To change this template use File | Settings | File Templates. */
-@Singleton
-public class ProviderListCache extends StraightDTOCache<Integer, ProviderListKey, List<ProviderKey>>
+@Singleton public class ProviderListCache extends StraightDTOCache<Integer, ProviderListKey, List<ProviderKey>>
 {
     public static final String TAG = ProviderListCache.class.getSimpleName();
     public static final int DEFAULT_MAX_SIZE = 50;
@@ -25,7 +24,7 @@ public class ProviderListCache extends StraightDTOCache<Integer, ProviderListKey
     @Inject protected Lazy<ProviderCache> providerCache;
 
     //<editor-fold desc="Constructors">
-    public ProviderListCache()
+    @Inject public ProviderListCache()
     {
         super(DEFAULT_MAX_SIZE);
     }

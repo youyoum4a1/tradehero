@@ -29,15 +29,19 @@ import com.tradehero.th.persistence.TimelineManager;
 import com.tradehero.th.persistence.TimelineStore;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefCache;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefListCache;
+import com.tradehero.th.persistence.position.FiledPositionCache;
+import com.tradehero.th.persistence.position.PositionCompactIdCache;
 import com.tradehero.th.persistence.position.SecurityPositionDetailCache;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.persistence.security.SecurityCompactListCache;
+import com.tradehero.th.persistence.security.SecurityIdCache;
 import com.tradehero.th.persistence.user.AbstractUserStore;
 import com.tradehero.th.persistence.user.UserManager;
 import com.tradehero.th.persistence.user.UserStore;
 import com.tradehero.th.widget.MarkdownTextView;
 import com.tradehero.th.widget.portfolio.PortfolioHeaderItemView;
 import com.tradehero.th.widget.timeline.TimelineItemView;
+import com.tradehero.th.widget.position.PositionQuickInnerViewHolder;
 import dagger.Module;
 import dagger.Provides;
 import javax.inject.Singleton;
@@ -63,6 +67,8 @@ import javax.inject.Singleton;
                 PortfolioListFragment.class,
                 PortfolioHeaderItemView.class,
 
+                PositionQuickInnerViewHolder.class,
+
                 UserAvailabilityRequester.class,
                 SearchStockPageItemListLoader.class,
                 TimelinePagedItemListLoader.class,
@@ -73,9 +79,11 @@ import javax.inject.Singleton;
                 UserStore.class,
                 TimelineStore.class,
                 TimelineStore.Factory.class,
-                SecurityCompactCache.class,
+                //SecurityCompactCache.class,
                 SecurityCompactListCache.class,
                 SecurityPositionDetailCache.class,
+                //PositionCompactIdCache.class,
+                //FiledPositionCache.class,
 
                 DatabaseCache.class,
                 CacheHelper.class,

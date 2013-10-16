@@ -35,7 +35,7 @@ import java.util.List;
     @Inject protected Lazy<SecurityCompactCache> securityCache;
     @Inject protected Lazy<YahooNewsService> yahooService;
 
-    public NewsCache()
+    @Inject public NewsCache()
     {
         super(DEFAULT_MAX_SIZE);
     }

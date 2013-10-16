@@ -19,8 +19,7 @@ import org.apache.commons.io.IOUtils;
 import retrofit.RetrofitError;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/14/13 Time: 3:28 PM To change this template use File | Settings | File Templates. */
-@Singleton
-public class PortfolioCache extends StraightDTOCache<String, OwnedPortfolioId, PortfolioDTO>
+@Singleton public class PortfolioCache extends StraightDTOCache<String, OwnedPortfolioId, PortfolioDTO>
 {
     public static final String TAG = PortfolioCache.class.getName();
     public static final int DEFAULT_MAX_SIZE = 200;
@@ -31,7 +30,7 @@ public class PortfolioCache extends StraightDTOCache<String, OwnedPortfolioId, P
     private Map<String, OwnedPortfolioId> allOtherUserKeys;
 
     //<editor-fold desc="Constructors">
-    public PortfolioCache()
+    @Inject public PortfolioCache()
     {
         super(DEFAULT_MAX_SIZE);
         allOtherUserKeys = new HashMap<>();

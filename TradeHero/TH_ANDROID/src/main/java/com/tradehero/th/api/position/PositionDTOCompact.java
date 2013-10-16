@@ -9,4 +9,9 @@ public class PositionDTOCompact
 
     // This price is always is USD
     public Double averagePriceRefCcy;
+
+    public PositionCompactId getPositionCompactId()
+    {
+        return new PositionCompactId(id);
+    }
 }

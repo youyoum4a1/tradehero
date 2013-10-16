@@ -8,4 +8,6 @@ public class GetPositionsDTO
 {
     public List<PositionDTO> positions ;
     public List<SecurityCompactDTO> securities;
+    public int openPositionsCount;
+    public int closedPositionsCount;
 }

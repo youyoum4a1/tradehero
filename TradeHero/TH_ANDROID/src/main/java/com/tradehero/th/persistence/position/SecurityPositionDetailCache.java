@@ -21,8 +21,7 @@ import javax.inject.Singleton;
 import retrofit.RetrofitError;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/3/13 Time: 4:47 PM To change this template use File | Settings | File Templates. */
-@Singleton
-public class SecurityPositionDetailCache implements DTOCache<String, SecurityId, SecurityPositionDetailDTO>
+@Singleton public class SecurityPositionDetailCache implements DTOCache<String, SecurityId, SecurityPositionDetailDTO>
 {
     public static final String TAG = SecurityPositionDetailCache.class.getSimpleName();
     public static final int DEFAULT_MAX_SIZE = 1000;
@@ -33,7 +32,7 @@ public class SecurityPositionDetailCache implements DTOCache<String, SecurityId,
     @Inject protected Lazy<SecurityCompactCache> securityCompactCache;
 
     //<editor-fold desc="Constructors">
-    public SecurityPositionDetailCache()
+    @Inject public SecurityPositionDetailCache()
     {
         this(DEFAULT_MAX_SIZE);
     }

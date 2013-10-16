@@ -23,9 +23,10 @@ import retrofit.RetrofitError;
 
     @Inject protected Lazy<SecurityService> securityService;
     @Inject protected Lazy<SecurityPositionDetailCache> securityPositionDetailCache;
+    @Inject protected Lazy<SecurityIdCache> securityIdCache;
 
     //<editor-fold desc="Constructors">
-    public SecurityCompactCache()
+    @Inject public SecurityCompactCache()
     {
         super(DEFAULT_MAX_SIZE);
     }
@@ -70,5 +71,13 @@ import retrofit.RetrofitError;
             }
         }
         return securityCompactDTOList;
+    }
+
+    @Override public SecurityCompactDTO put(SecurityId key, SecurityCompactDTO value)
+    {
+        // We save the correspondence between int id and exchange/symbol for future reference
+        securityIdCache.get().put(value.getSecurityIntegerId(), key);
+
+        return super.put(key, value);
     }
 }

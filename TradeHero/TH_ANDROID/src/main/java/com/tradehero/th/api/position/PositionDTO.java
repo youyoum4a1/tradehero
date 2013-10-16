@@ -17,4 +17,9 @@ public class PositionDTO extends PositionDTOCompact
 
     // if >1, then the values above relate to a collection of positions, not a single position -- see: MaskOpenPositions()
     public int aggregateCount;
+
+    public OwnedPositionId getOwnedPositionId()
+    {
+        return new OwnedPositionId(userId, securityId);
+    }
 }
