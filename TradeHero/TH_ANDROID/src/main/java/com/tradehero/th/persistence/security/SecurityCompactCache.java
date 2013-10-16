@@ -80,4 +80,38 @@ import retrofit.RetrofitError;
 
         return super.put(key, value);
     }
+
+    public List<SecurityCompactDTO> put(List<SecurityCompactDTO> values)
+    {
+        if (values == null)
+        {
+            return null;
+        }
+
+        List<SecurityCompactDTO> previousValues = new ArrayList<>();
+
+        for (SecurityCompactDTO securityCompactDTO: values)
+        {
+            previousValues.add(put(securityCompactDTO.getSecurityId(), securityCompactDTO));
+        }
+
+        return previousValues;
+    }
+
+    public List<SecurityCompactDTO> get(List<SecurityId> keys)
+    {
+        if (keys == null)
+        {
+            return null;
+        }
+
+        List<SecurityCompactDTO> values = new ArrayList<>();
+
+        for (SecurityId securityId: keys)
+        {
+            values.add(get(securityId));
+        }
+
+        return values;
+    }
 }

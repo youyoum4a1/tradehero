@@ -1,9 +1,11 @@
     package com.tradehero.th.api.security;
 
 import com.tradehero.th.loaders.ItemWithComparableId;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 9/4/13 Time: 5:30 PM To change this template use File | Settings | File Templates. */
+    /** Created with IntelliJ IDEA. User: xavier Date: 9/4/13 Time: 5:30 PM To change this template use File | Settings | File Templates. */
 public class SecurityCompactDTO
 {
     public static final String EXCHANGE_SYMBOL_FOMAT = "%s:%s";
@@ -128,5 +130,20 @@ public class SecurityCompactDTO
     public SecurityId getSecurityId()
     {
         return new SecurityId(exchange, symbol);
+    }
+
+    public static List<SecurityId> getSecurityIds(List<SecurityCompactDTO> values)
+    {
+        if (values == null)
+        {
+            return null;
+        }
+
+        List<SecurityId> securityIds = new ArrayList<>();
+        for (SecurityCompactDTO value: values)
+        {
+            securityIds.add(value.getSecurityId());
+        }
+        return securityIds;
     }
 }

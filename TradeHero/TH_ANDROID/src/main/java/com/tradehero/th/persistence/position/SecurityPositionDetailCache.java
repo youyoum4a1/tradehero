@@ -73,10 +73,9 @@ import retrofit.RetrofitError;
     @Override public SecurityPositionDetailDTO getOrFetch(SecurityId key, boolean force)
     {
         SecurityPositionDetailCutDTO securityPositionDetailCutDTO = lruCache.get(key.makeKey());
-        SecurityCompactDTO securityCompactDTO = securityCompactCache.get().get(key);
         SecurityPositionDetailDTO securityPositionDetailDTO = null;
 
-        if (force || securityPositionDetailCutDTO == null || securityCompactDTO == null)
+        if (force || securityPositionDetailCutDTO == null)
         {
             securityPositionDetailDTO = fetch(key);
             put(key, securityPositionDetailDTO);
@@ -127,7 +126,6 @@ import retrofit.RetrofitError;
     {
         SecurityPositionDetailDTO previous = null;
 
-        securityCompactCache.get().put(key, value.security);
         SecurityPositionDetailCutDTO previousCut = lruCache.put(
                 key.makeKey(),
                 new SecurityPositionDetailCutDTO(
@@ -136,14 +134,6 @@ import retrofit.RetrofitError;
                         portfolioCache.get(),
                         positionCompactCache.get(),
                         providerCache.get()));
-
-        if (value.positions != null)
-        {
-            for (PositionDTOCompact positionDTOCompact: value.positions)
-            {
-                positionCompactCache.get().put(positionDTOCompact.getPositionCompactId(), positionDTOCompact);
-            }
-        }
 
         if (previousCut != null)
         {
