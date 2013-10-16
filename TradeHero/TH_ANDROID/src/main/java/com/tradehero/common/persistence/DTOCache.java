@@ -6,7 +6,9 @@ import android.os.AsyncTask;
 public interface DTOCache<BaseKeyType, DTOKeyType extends DTOKey<BaseKeyType>, DTOType>
 {
     DTOType get(DTOKeyType key);
+    DTOType getOrFetch(DTOKeyType key);
     DTOType getOrFetch(DTOKeyType key, boolean force);
+    AsyncTask<Void, Void, DTOType> getOrFetch(DTOKeyType key, Listener<DTOKeyType, DTOType> callback);
     AsyncTask<Void, Void, DTOType> getOrFetch(DTOKeyType key, boolean force, Listener<DTOKeyType, DTOType> callback);
     DTOType put(DTOKeyType key, DTOType value);
 

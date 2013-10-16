@@ -82,6 +82,11 @@ import retrofit.RetrofitError;
         return positionService.get().getPositions(key.userId, key.portfolioId);
     }
 
+    @Override public GetPositionsDTO getOrFetch(OwnedPortfolioId key)
+    {
+        return getOrFetch(key, false);
+    }
+
     @Override public GetPositionsDTO getOrFetch(OwnedPortfolioId key, boolean force)
     {
         GetPositionsCutDTO getPositionsCutDTO = lruCache.get(key.makeKey());
@@ -97,6 +102,11 @@ import retrofit.RetrofitError;
             getPositionsDTO = getPositionsCutDTO.create(key.portfolioId, securityCompactCache.get(), filedPositionCache.get());
         }
         return getPositionsDTO;
+    }
+
+    @Override public AsyncTask<Void, Void, GetPositionsDTO> getOrFetch(OwnedPortfolioId key, Listener<OwnedPortfolioId, GetPositionsDTO> callback)
+    {
+        return getOrFetch(key, false, callback);
     }
 
     public AsyncTask<Void, Void, GetPositionsDTO> getOrFetch(final OwnedPortfolioId key, final boolean force, final Listener<OwnedPortfolioId, GetPositionsDTO> callback)

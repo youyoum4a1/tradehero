@@ -70,6 +70,11 @@ import retrofit.RetrofitError;
         return securityPositionDetailDTO;
     }
 
+    @Override public SecurityPositionDetailDTO getOrFetch(SecurityId key)
+    {
+        return getOrFetch(key, false);
+    }
+
     @Override public SecurityPositionDetailDTO getOrFetch(SecurityId key, boolean force)
     {
         SecurityPositionDetailCutDTO securityPositionDetailCutDTO = lruCache.get(key.makeKey());
@@ -85,6 +90,11 @@ import retrofit.RetrofitError;
             securityPositionDetailDTO = securityPositionDetailCutDTO.create(securityCompactCache.get(), portfolioCache.get(), positionCompactCache.get(), providerCache.get());
         }
         return securityPositionDetailDTO;
+    }
+
+    @Override public AsyncTask<Void, Void, SecurityPositionDetailDTO> getOrFetch(SecurityId key, Listener<SecurityId, SecurityPositionDetailDTO> callback)
+    {
+        return getOrFetch(key, false, callback);
     }
 
     public AsyncTask<Void, Void, SecurityPositionDetailDTO> getOrFetch(final SecurityId key, final boolean force, final Listener<SecurityId, SecurityPositionDetailDTO> callback)
