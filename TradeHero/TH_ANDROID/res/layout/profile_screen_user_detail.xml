@@ -77,7 +77,12 @@
               android:layout_marginLeft="5dp"
               android:textColor="@color/font_roi"
               android:textSize="18sp"
-              android:textStyle="bold"/>
+              android:textStyle="bold"
+              android:shadowColor="@color/white"
+              android:shadowDx="1"
+              android:shadowDy="1"
+              android:shadowRadius="2"
+              />
 
           <TextView
               android:layout_width="wrap_content"
@@ -112,7 +117,8 @@
               android:text="@string/Trade_Profit"
               android:textColor="@color/gray_3"
               android:textSize="18sp"
-              android:textStyle="normal"/>
+              android:textStyle="normal"
+              />
 
           <TextView
               android:id="@+id/txt_profile_tradeprofit"
@@ -121,7 +127,12 @@
               android:layout_marginLeft="3dp"
               android:textColor="@color/white"
               android:textSize="18sp"
-              android:textStyle="bold"/>
+              android:textStyle="bold"
+              android:shadowColor="@color/white"
+              android:shadowDx="1"
+              android:shadowDy="1"
+              android:shadowRadius="2"
+              />
         </LinearLayout>
       </LinearLayout>
     </RelativeLayout>

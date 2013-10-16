@@ -34,11 +34,12 @@
   <string name="email_validation_string">Enter a valid email address.</string>
   <string name="Roi">ROI:</string>
   <string name="Hq">HQ:</string>
-  <string name="Trade_Profit">Trade Profit: US$</string>
+  <string name="Trade_Profit">Trade Profit:</string>
   <string name="Followers">Followers</string>
   <string name="Heroes">Heroes</string>
   <string name="Trades">Trades</string>
   <string name="Exchanges">Exchanges</string>
+  <string name="ref_currency">US$</string>
 
   <!-- What's Trending -->
   <string name="header_trending">What\'s Trending</string>
