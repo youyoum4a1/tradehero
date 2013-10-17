@@ -54,10 +54,10 @@ public class ProfileCompactView extends RelativeLayout implements DTOView<UserPr
     {
         avatar = (ImageView) findViewById(R.id.user_profile_compact_avatar);
 
-        roiSinceInception = (TextView) findViewById(R.id.txt_roi);
+        roiSinceInception = (TextView) findViewById(R.id.user_profile_compact_roi);
 
-        followersCount = (TextView) findViewById(R.id.user_profile_followers_count);
-        heroesCount = (TextView) findViewById(R.id.user_profile_heroes_count);
+        followersCount = (TextView) findViewById(R.id.user_profile_compact_followers_count);
+        heroesCount = (TextView) findViewById(R.id.user_profile_compact_heroes_count);
 
         DaggerUtils.inject(this);
     }

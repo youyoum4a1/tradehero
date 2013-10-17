@@ -3,7 +3,9 @@
 <com.tradehero.th.widget.user.ProfileCompactView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    >
 
   <!-- layout_marginBottom: dirty trick to reserve background rounded corner radius-->
 
@@ -20,7 +22,7 @@
       android:contentDescription="@string/empty"/>
 
   <TextView
-      android:id="@+id/txt_roi"
+      android:id="@+id/user_profile_compact_roi"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_marginLeft="5dp"
@@ -35,17 +37,16 @@
 
     <!--Followers-->
     <LinearLayout
-        android:id="@+id/user_profile_followers_count_wrapper"
+        android:id="@+id/user_profile_compact_followers_count_wrapper"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:layout_alignParentRight="true"
-        android:layout_weight="1"
         android:gravity="center_horizontal"
         >
 
       <TextView
-          android:id="@+id/user_profile_followers_count"
+          android:id="@+id/user_profile_compact_followers_count"
           android:layout_width="fill_parent"
           android:layout_height="wrap_content"
           android:gravity="center"
@@ -71,13 +72,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_weight="1"
         android:gravity="center_horizontal"
         android:layout_alignParentRight="true"
-        android:layout_toLeftOf="@id/user_profile_followers_count_wrapper">
+        android:layout_toLeftOf="@id/user_profile_compact_followers_count_wrapper">
 
       <TextView
-          android:id="@+id/user_profile_heroes_count"
+          android:id="@+id/user_profile_compact_heroes_count"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:gravity="center"

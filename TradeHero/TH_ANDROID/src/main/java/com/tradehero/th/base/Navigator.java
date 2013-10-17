@@ -52,12 +52,6 @@ public class Navigator
         this.animation[3] = popExit;
         this.animationInitiated = true;
     }
-
-    public void setFragmentContentId(int fragmentContentId)
-    {
-        this.fragmentContentId = fragmentContentId;
-    }
-
     private int[] getSafeAnimation()
     {
         if (animationInitiated) return this.animation;
@@ -65,6 +59,12 @@ public class Navigator
                 R.anim.slide_left_in, R.anim.slide_right_out);
         return animation;
     }
+
+    public void setFragmentContentId(int fragmentContentId)
+    {
+        this.fragmentContentId = fragmentContentId;
+    }
+
 
     public void pushFragment(Class<? extends Fragment> fragmentClass, Bundle args, boolean withAnimation)
     {

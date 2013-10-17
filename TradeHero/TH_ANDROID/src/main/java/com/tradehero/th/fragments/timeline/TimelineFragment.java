@@ -5,6 +5,10 @@ import android.support.v4.content.Loader;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import com.actionbarsherlock.app.ActionBar;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.TimelineAdapter;
@@ -15,14 +19,16 @@ import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.fragments.base.ItemListFragment;
 import com.tradehero.th.loaders.TimelinePagedItemListLoader;
 import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.widget.StepView;
 import com.tradehero.th.widget.timeline.TimelineListView;
+import com.tradehero.th.widget.user.ProfileCompactView;
 import com.tradehero.th.widget.user.ProfileView;
 import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
 
 public class TimelineFragment extends ItemListFragment<TimelineItem>
-        implements DTOCache.Listener<UserBaseKey,UserProfileDTO>, BaseFragment.ArgumentsChangeListener
+        implements DTOCache.Listener<UserBaseKey,UserProfileDTO>, BaseFragment.ArgumentsChangeListener, StepView.OnStepListener
 {
     public static final String USER_ID = "userId";
     private TimelineAdapter timelineAdapter;
@@ -44,6 +50,30 @@ public class TimelineFragment extends ItemListFragment<TimelineItem>
         setProfileId(profileId);
         return view;
     }
+
+    //<editor-fold desc="ActionBar">
+    @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
+    {
+        inflater.inflate(R.menu.timeline_menu, menu);
+
+        getSherlockActivity().getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME);
+        if (profile != null)
+        {
+            getSherlockActivity().getSupportActionBar().setTitle(profile.displayName);
+        }
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override public boolean onOptionsItemSelected(MenuItem item)
+    {
+        // TODO switch sorting type for leaderboard
+        switch (item.getItemId())
+        {
+        }
+        return super.onOptionsItemSelected(item);
+    }
+    //</editor-fold>
+
 
     private void setProfileId(int profileId)
     {
@@ -73,11 +103,11 @@ public class TimelineFragment extends ItemListFragment<TimelineItem>
 
     protected void updateView()
     {
-        ProfileView profileView = (ProfileView) getActivity().getLayoutInflater().inflate(R.layout.profile_screen_user_detail, null);
-        profileView.display(profile);
+        StepView stepView = new StepView(getActivity(), getActivity().getLayoutInflater());
+        stepView.setStepProvider(this);
 
         if (timelineListView.getRefreshableView().getHeaderViewsCount() == 1) {
-            timelineListView.addHeaderView(profileView);
+            timelineListView.addHeaderView(stepView);
         }
 
         getSherlockActivity().getSupportActionBar().setTitle(profile.displayName);
@@ -124,6 +154,22 @@ public class TimelineFragment extends ItemListFragment<TimelineItem>
         timelineAdapter.getLoader().resetQuery();
         timelineAdapter.getLoader().setOwnerId(profileId);
         setProfileId(profileId);
+    }
+
+    @Override public View onStep(int step)
+    {
+        switch (step)
+        {
+            case 0:
+                ProfileView profileView = (ProfileView) getActivity().getLayoutInflater().inflate(R.layout.profile_screen_user_detail, null);
+                profileView.display(profile);
+                return profileView;
+            case 1:
+                ProfileCompactView profileCompactView = (ProfileCompactView) getActivity().getLayoutInflater().inflate(R.layout.profile_screen_user_compact, null);
+                profileCompactView.display(profile);
+                return profileCompactView;
+        }
+        return null;
     }
     //</editor-fold>
 }

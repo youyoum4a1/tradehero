@@ -126,6 +126,12 @@ public class TimelineItemView extends RelativeLayout implements DTOView<Timeline
                 SecurityId securityId = new SecurityId(matchStrings[1], matchStrings[2]);
                 navigator.pushFragment(TradeFragment.class, securityId.getArgs());
                 break;
+
+            case "link":
+                if (matchStrings.length < 3) break;
+                String link = matchStrings[2];
+
+                break;
         }
     }
 }
