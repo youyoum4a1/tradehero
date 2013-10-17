@@ -41,4 +41,36 @@ public class GetPositionsDTO
 
         return filedPositionIds;
     }
+
+    public List<PositionDTO> getOpenPositions()
+    {
+        return getOpenPositions(true);
+    }
+
+    public List<PositionDTO> getClosedPositions()
+    {
+        return getOpenPositions(false);
+    }
+
+    public List<PositionDTO> getPositionsWithUnknownOpenStatus()
+    {
+        return getOpenPositions(null);
+    }
+
+    public List<PositionDTO> getOpenPositions(Boolean open)
+    {
+        if (positions == null)
+        {
+            return null;
+        }
+        List<PositionDTO> openPositions = new ArrayList<>();
+        for (PositionDTO positionDTO: positions)
+        {
+            if (positionDTO.isOpen() == open)
+            {
+                openPositions.add(positionDTO);
+            }
+        }
+        return openPositions;
+    }
 }

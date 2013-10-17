@@ -58,7 +58,11 @@ public class PositionListFragment extends DashboardFragment
         {
             if (positionItemAdapter == null)
             {
-                positionItemAdapter = new PositionItemAdapter(getActivity(), getActivity().getLayoutInflater());
+                positionItemAdapter = new PositionItemAdapter(
+                        getActivity(),
+                        getActivity().getLayoutInflater(),
+                        R.layout.position_item_header,
+                        R.layout.position_quick);
             }
 
             openPositions = (ListView) view.findViewById(R.id.position_list);
@@ -139,7 +143,7 @@ public class PositionListFragment extends DashboardFragment
         this.getPositionsDTO = getPositionsDTO;
         if (this.getPositionsDTO != null && ownedPortfolioId != null)
         {
-            positionItemAdapter.setItems(getPositionsDTO.getFiledPositionIds(ownedPortfolioId.getPortfolioId()));
+            positionItemAdapter.setPositions(getPositionsDTO.positions, ownedPortfolioId.getPortfolioId());
             getView().post(
                     new Runnable()
                     {

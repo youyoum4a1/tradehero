@@ -24,12 +24,6 @@ public class NumberDisplayUtilsTest
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void formatWithRelevantDigits_shouldRejectFraction()
-    {
-        NumberDisplayUtils.formatWithRelevantDigits(0.1f, 1);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
     public void formatWithRelevantDigits_shouldRejectTooBig()
     {
         NumberDisplayUtils.formatWithRelevantDigits(1000000000000000d, 1);

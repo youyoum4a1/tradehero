@@ -17,6 +17,7 @@ public class NumberDisplayUtils
         R.string.number_presentation_trillion_suffix
     };
 
+    // These suffixes are used in tests...
     private static final String[] FALLBACK_SUFFIXES = {"", "k", "M", "B", "Tr"};
 
     @Inject static public Context context;
@@ -24,10 +25,6 @@ public class NumberDisplayUtils
     public static String formatWithRelevantDigits(double number, int relevantDigits)
     {
         double absVal = Math.abs(number);
-        if (absVal < 1 && absVal > 0)
-        {
-            throw new IllegalArgumentException("We do not accept number between 0 and 1");
-        }
         if (absVal > 999999999999999d)
         {
             throw new IllegalArgumentException("We do not accept number larger than 999 trillions");
@@ -40,7 +37,7 @@ public class NumberDisplayUtils
 
         // Pick suffix
         int tensCategory = (int) Math.floor(Math.log10(absVal));
-        int suffixIndex = (int) Math.floor(((float) tensCategory) / 3);
+        int suffixIndex = Math.max(0, (int) Math.floor(((float) tensCategory) / 3));
         String suffix;
         try
         {
@@ -54,9 +51,14 @@ public class NumberDisplayUtils
         // Get number reduced by suffix
         double reducedNumber = number / Math.pow(10, suffixIndex * 3);
 
-        // Number of desired decimals after the decimal separator
-        int reducedDigitCount = 1 + tensCategory - suffixIndex * 3;
-        int desiredDecimal = Math.max(0, relevantDigits - reducedDigitCount);
+        int desiredDecimal = 2;
+
+        if (absVal >= 1)
+        {
+            // Number of desired decimals after the decimal separator
+            int reducedDigitCount = 1 + tensCategory - suffixIndex * 3;
+            desiredDecimal = Math.max(0, relevantDigits - reducedDigitCount);
+        }
 
         return String.format("%,." + desiredDecimal + "f%s", reducedNumber, suffix);
     }
