@@ -11,6 +11,7 @@ import com.tradehero.th.fragments.authentication.EmailSignInFragment;
 import com.tradehero.th.fragments.leaderboard.LeaderboardFragment;
 import com.tradehero.th.fragments.portfolio.PortfolioListFragment;
 import com.tradehero.th.fragments.position.PositionListFragment;
+import com.tradehero.th.fragments.settings.SettingsFragment;
 import com.tradehero.th.fragments.timeline.MeTimelineFragment;
 import com.tradehero.th.fragments.timeline.TimelineFragment;
 import com.tradehero.th.fragments.trade.BuyFragment;
@@ -43,6 +44,7 @@ import com.tradehero.th.persistence.security.SecurityCompactListCache;
 import com.tradehero.th.persistence.user.AbstractUserStore;
 import com.tradehero.th.persistence.user.UserManager;
 import com.tradehero.th.persistence.user.UserStore;
+import com.tradehero.th.utils.NumberDisplayUtils;
 import com.tradehero.th.widget.MarkdownTextView;
 import com.tradehero.th.widget.portfolio.PortfolioHeaderItemView;
 import com.tradehero.th.widget.position.PositionQuickViewHolder;
@@ -57,6 +59,7 @@ import javax.inject.Singleton;
 @Module(
         injects =
         {
+                SettingsFragment.class,
                 EmailSignInFragment.class,
                 TrendingFragment.class,
                 SearchStockPeopleFragment.class,
@@ -107,7 +110,8 @@ import javax.inject.Singleton;
         },
         staticInjections =
         {
-                THUser.class
+                THUser.class,
+                NumberDisplayUtils.class,
         }
 )
 public class TradeHeroModule

@@ -19,6 +19,7 @@ import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.persistence.security.SecurityIdCache;
 import com.tradehero.th.utils.ColorUtils;
 import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th.utils.NumberDisplayUtils;
 import com.tradehero.th.utils.SecurityUtils;
 import dagger.Lazy;
 import javax.inject.Inject;
@@ -343,7 +344,9 @@ public class PositionQuickInnerViewHolder
         {
             if (positionDTO != null)
             {
-                positionLastAmount.setText(String.format("%s %,.2f", SecurityUtils.DEFAULT_VIRTUAL_CASH_CURRENCY_DISPLAY, positionDTO.marketValueRefCcy));
+                positionLastAmount.setText(String.format("%s %s",
+                        SecurityUtils.DEFAULT_VIRTUAL_CASH_CURRENCY_DISPLAY,
+                        NumberDisplayUtils.formatWithRelevantDigits(positionDTO.marketValueRefCcy, 3)));
             }
         }
     }

@@ -147,4 +147,36 @@
 
   <!-- Portfolio detail -->
 
+  <!-- Number presentation -->
+  <string name="number_presentation_unit_suffix"></string>
+  <string name="number_presentation_thousand_suffix">k</string>
+  <string name="number_presentation_million_suffix">M</string>
+  <string name="number_presentation_billion_suffix">B</string>
+  <string name="number_presentation_trillion_suffix">Tr</string>
+
+  <!-- Settings -->
+  <string-array name="settings_primary_list">
+    <item>Send Love!</item>
+    <item>Send Feedback</item>
+    <item>FAQ</item>
+    <item>Profile</item>
+    <item>PayPal</item>
+    <item>Transaction History</item>
+  </string-array>
+  <string-array name="settings_notifications_list">
+    <item>Email Notifications</item>
+    <item>Push Notifications</item>
+  </string-array>
+  <string-array name="settings_misc_list">
+    <item>Reset Help Screens</item>
+    <item>Clear Cache</item>
+    <item>Sign Out</item>
+    <item>About</item>
+  </string-array>
+
+  <!-- TradeHero URLs -->
+  <string name="th_faq_url">http://www.tradehero.mobi/faq</string>
+  <string name="th_help_url">http://www.tradehero.mobi/about</string>
+  <string name="th_terms_url">http://www.tradehero.mobi/terms</string>
+  <string name="th_privacy_terms_url">http://www.tradehero.mobi/privacy</string>
 </resources>
