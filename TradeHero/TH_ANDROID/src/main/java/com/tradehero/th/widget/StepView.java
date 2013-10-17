@@ -88,6 +88,7 @@ public class StepView extends FrameLayout
                 if (nextView != null)
                 {
                     views.add(nextView);
+                    nextView.setVisibility(View.INVISIBLE);
                     addView(nextView);
                 }
             }
@@ -110,12 +111,12 @@ public class StepView extends FrameLayout
         if (oldStep != null)
         {
             oldStep.setVisibility(View.GONE);
-            oldStep.startAnimation(AnimationUtils.loadAnimation(getContext(), animation[0]));
+            oldStep.startAnimation(AnimationUtils.loadAnimation(getContext(), animation[1]));
         }
         if (newStep != null)
         {
+            newStep.startAnimation(AnimationUtils.loadAnimation(getContext(), animation[0]));
             newStep.setVisibility(View.VISIBLE);
-            newStep.startAnimation(AnimationUtils.loadAnimation(getContext(), animation[1]));
         }
     }
 
