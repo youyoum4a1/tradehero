@@ -72,7 +72,7 @@ public class THSignedNumber {
 
         return String.format(numberFormat,
                 sign,
-                number) + "%";
+                Math.abs(number)) + "%";
     }
 
     private String signedFormattedMoney() {
@@ -84,7 +84,7 @@ public class THSignedNumber {
         return String.format(numberFormat,
                 sign,
                 currency,
-                number);
+                Math.abs(number));
     }
 
     private String upDownSignFromNumber() {
