@@ -16,7 +16,7 @@ public class StepView extends FrameLayout
     private final LayoutInflater layoutInflater;
 
     private final List<View> views;
-    private WeakReference<OnStepListener> provider;
+    private WeakReference<StepProvider> provider;
     private int currentStep = -1;
     private boolean autoStart = true;
     private boolean circular = true;
@@ -81,10 +81,10 @@ public class StepView extends FrameLayout
         // if this is a new step or the view for current step is not set, ask provider
         if (currentStep >= views.size() || views.get(currentStep) == null)
         {
-            OnStepListener stepper = provider.get();
+            StepProvider stepper = provider.get();
             if (stepper != null)
             {
-                View nextView = stepper.onStep(currentStep);
+                View nextView = stepper.provideView(currentStep);
                 if (nextView != null)
                 {
                     views.add(nextView);
@@ -128,13 +128,13 @@ public class StepView extends FrameLayout
         views.clear();
     }
 
-    public void setStepProvider(OnStepListener listener)
+    public void setStepProvider(StepProvider listener)
     {
         this.provider = new WeakReference<>(listener);
     }
 
-    public static interface OnStepListener
+    public static interface StepProvider
     {
-        public View onStep(int step);
+        public View provideView(int step);
     }
 }
