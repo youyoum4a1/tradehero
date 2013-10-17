@@ -34,6 +34,14 @@ public abstract class DTOAdapter<T, V extends DTOView<T>> extends BaseAdapter
         this.items = items;
     }
 
+    public void addItem(T item)
+    {
+        if (this.items != null)
+        {
+            this.items.add(item);
+        }
+    }
+
     @Override public int getCount()
     {
         THLog.d(TAG, "getCount");

@@ -11,6 +11,8 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.th.R;
+import com.tradehero.th.api.leaderboard.LeaderboardDefDTO;
+import com.tradehero.th.api.leaderboard.LeaderboardDefExchangeListKey;
 import com.tradehero.th.api.leaderboard.LeaderboardDefKey;
 import com.tradehero.th.api.leaderboard.LeaderboardDefListKey;
 import com.tradehero.th.api.leaderboard.LeaderboardDefMostSkilledListKey;
@@ -20,6 +22,9 @@ import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.persistence.competition.ProviderListCache;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefCache;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefListCache;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import javax.inject.Inject;
 
@@ -32,9 +37,6 @@ public class LeaderboardFragment extends DashboardFragment implements DTOCache.L
     @Inject protected ProviderListCache providerCache;
 
     private View view;
-    private ListAdapter mostSkilledListAdapter;
-    private ListAdapter timePeriodListAdapter;
-    private ListAdapter sectorListViewAdapter;
     private boolean fetched = false;
 
     @Override
@@ -102,24 +104,63 @@ public class LeaderboardFragment extends DashboardFragment implements DTOCache.L
             fetched = true;
             leaderboardDefListCache.getOrFetch(new LeaderboardDefTimePeriodListKey(), false, this).execute();
             leaderboardDefListCache.getOrFetch(new LeaderboardDefSectorListKey(), false, this).execute();
+            leaderboardDefListCache.getOrFetch(new LeaderboardDefExchangeListKey(), false, this).execute();
         }
-
-        if (key instanceof LeaderboardDefMostSkilledListKey)
+        if (value != null)
         {
-            ListView mostSkilledListView = (ListView) view.findViewById(R.id.leaderboard_most_skilled);
-            mostSkilledListView.setAdapter(createMostSkilledListAdapter(value));
-        }
-        else if (key instanceof LeaderboardDefTimePeriodListKey)
-        {
-            ListView timePeriodListView = (ListView) view.findViewById(R.id.leaderboard_time_period);
-            timePeriodListView.setAdapter(createTimePeriodListAdapter(value));
-        }
-        else if (key instanceof LeaderboardDefSectorListKey)
-        {
-            ListView sectorListView = (ListView) view.findViewById(R.id.leaderboard_sector);
-            sectorListView.setAdapter(createTimeSectorAdapter(value));
+            if (key instanceof LeaderboardDefMostSkilledListKey)
+            {
+                ListView mostSkilledListView = (ListView) view.findViewById(R.id.leaderboard_most_skilled);
+                mostSkilledListView.setAdapter(createMostSkilledListAdapter(value));
+            }
+            else if (key instanceof LeaderboardDefTimePeriodListKey)
+            {
+                ListView timePeriodListView = (ListView) view.findViewById(R.id.leaderboard_time_period);
+                timePeriodListView.setAdapter(createTimePeriodListAdapter(value));
+            }
+            else if (key instanceof LeaderboardDefSectorListKey && (value.size() > 0))
+            {
+                LeaderboardDefDTO sectorDto = initDefaultLeaderboardDefDTOForSector();
+                addItemToSectorSection(sectorDto);
+            }
+            else if (key instanceof LeaderboardDefExchangeListKey)
+            {
+                LeaderboardDefDTO sectorDto = initDefaultLeaderboardDefDTOForExchange();
+                addItemToSectorSection(sectorDto);
+            }
         }
     }
+
+    //<editor-fold desc="Init Defaults">
+    private LeaderboardDefDTO initDefaultLeaderboardDefDTOForExchange()
+    {
+        LeaderboardDefDTO dto = new LeaderboardDefDTO();
+        dto.name = getString(R.string.leaderboard_by_exchange);
+        return dto;
+    }
+
+    private LeaderboardDefDTO initDefaultLeaderboardDefDTOForSector()
+    {
+        LeaderboardDefDTO dto = new LeaderboardDefDTO();
+        dto.name = getString(R.string.leaderboard_by_sector);
+        return dto;
+    }
+    //</editor-fold>
+
+    private void addItemToSectorSection(LeaderboardDefDTO dto)
+    {
+        ListView sectorListView = (ListView) view.findViewById(R.id.leaderboard_sector);
+        if (sectorListView.getAdapter() == null)
+        {
+            List<LeaderboardDefDTO> sectorDefDTOs = new ArrayList<>();
+            sectorListView.setAdapter(
+                    new LeaderboardDefListAdapter(getActivity(), getActivity().getLayoutInflater(), sectorDefDTOs, R.layout.leaderboard_def_item));
+        }
+        LeaderboardDefListAdapter sectorListViewAdapter = (LeaderboardDefListAdapter) sectorListView.getAdapter();
+        sectorListViewAdapter.addItem(dto);
+        sectorListViewAdapter.notifyDataSetChanged();
+    }
+
 
     private ListAdapter createTimeSectorAdapter(List<LeaderboardDefKey> keys)
     {
@@ -129,8 +170,19 @@ public class LeaderboardFragment extends DashboardFragment implements DTOCache.L
 
     private ListAdapter createTimePeriodListAdapter(List<LeaderboardDefKey> keys)
     {
+        List<LeaderboardDefDTO> timePeriodItems = leaderboardDefCache.getOrFetch(keys);
+        Collections.sort(timePeriodItems, new Comparator<LeaderboardDefDTO>()
+        {
+            @Override public int compare(LeaderboardDefDTO lhs, LeaderboardDefDTO rhs)
+            {
+                if (lhs == rhs) return 0;
+                else if (lhs == null) return -1;
+                else if (rhs == null) return 1;
+                else return lhs.toDateDays.compareTo(rhs.toDateDays);
+            }
+        });
         return new LeaderboardDefTimePeriodListAdapter(
-                getActivity(), getActivity().getLayoutInflater(), leaderboardDefCache.getOrFetch(keys), R.layout.leaderboard_def_item);
+                getActivity(), getActivity().getLayoutInflater(), timePeriodItems, R.layout.leaderboard_def_item);
     }
 
     private ListAdapter createMostSkilledListAdapter(List<LeaderboardDefKey> keys)
