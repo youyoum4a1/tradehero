@@ -6,13 +6,9 @@
  */
 package com.tradehero.th.fragments;
 
-import android.annotation.SuppressLint;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import com.tradehero.th.R;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
@@ -20,68 +16,76 @@ import android.webkit.WebSettings.PluginState;
 import android.webkit.WebSettings.RenderPriority;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.ImageView;
-import android.widget.ProgressBar;
-import android.widget.TextView;
+import com.actionbarsherlock.app.ActionBar;
+import com.actionbarsherlock.app.SherlockFragment;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
+import com.tradehero.th.R;
+import com.tradehero.th.api.yahoo.News;
 
-public class WebViewFragment extends Fragment
+public class WebViewFragment extends SherlockFragment
 {
-
-    private WebView mWebView;
-    private ProgressBar mProgressSpinner;
-    private ImageView mStopRelodBtn;
-    private TextView mHeaderText;
-    private boolean isLoading = false;
+    private WebView webView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        View view = null;
-        view = inflater.inflate(R.layout.fragment_webview, container, false);
+        View view = inflater.inflate(R.layout.fragment_webview, container, false);
+        setHasOptionsMenu(true);
         initViews(view);
         return view;
     }
 
-    @SuppressLint("SetJavaScriptEnabled")
+    //<editor-fold desc="ActionBar">
+    @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
+    {
+        inflater.inflate(R.menu.webview_menu, menu);
+        getSherlockActivity().getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+    //</editor-fold>
+
+    @Override public void onActivityCreated(Bundle savedInstanceState)
+    {
+        super.onActivityCreated(savedInstanceState);
+
+        String url = getArguments().getString(News.URL);
+        if (url != null)
+        {
+            webView.loadUrl(url);
+        }
+    }
+
     private void initViews(View v)
     {
+        webView = (WebView) v.findViewById(R.id.webview);
+        webView.getSettings().setBuiltInZoomControls(true);
+        webView.getSettings().setJavaScriptEnabled(true);
+        webView.getSettings().setDomStorageEnabled(true);
+        webView.getSettings().setPluginState(PluginState.ON);
+        webView.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
+        webView.getSettings().setRenderPriority(RenderPriority.HIGH);
+        webView.getSettings().setUseWideViewPort(true);
+        webView.getSettings().setLoadWithOverviewMode(true);
 
-        mHeaderText = (TextView) v.findViewById(R.id.header_txt);
-        mWebView = (WebView) v.findViewById(R.id.webview);
-        ;
-        mWebView.getSettings().setBuiltInZoomControls(true);
-        mWebView.getSettings().setJavaScriptEnabled(true);
-        mWebView.getSettings().setDomStorageEnabled(true);
-        mWebView.getSettings().setPluginState(PluginState.ON);
-        mWebView.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
-        mWebView.getSettings().setRenderPriority(RenderPriority.HIGH);
-        mWebView.getSettings().setUseWideViewPort(true);
-        mWebView.getSettings().setLoadWithOverviewMode(true);
-
-        mWebView.setWebChromeClient(new WebChromeClient()
+        webView.setWebChromeClient(new WebChromeClient()
         {
 
             @Override
             public void onProgressChanged(WebView view, int newProgress)
             {
                 super.onProgressChanged(view, newProgress);
+            }
 
-                if (newProgress == 100)
-                {
-                    mProgressSpinner.setVisibility(View.GONE);
-                    mStopRelodBtn.setImageResource(android.R.drawable.ic_menu_rotate);
-                    isLoading = false;
-                }
-                else if (newProgress < 100)
-                {
-                    mProgressSpinner.setVisibility(View.VISIBLE);
-                    mStopRelodBtn.setImageResource(android.R.drawable.ic_menu_close_clear_cancel);
-                    isLoading = true;
-                }
+            @Override public void onReceivedTitle(WebView view, String title)
+            {
+                super.onReceivedTitle(view, title);
+
+                getSherlockActivity().getSupportActionBar().setTitle(view.getTitle());
             }
         });
 
-        mWebView.setWebViewClient(new WebViewClient()
+        webView.setWebViewClient(new WebViewClient()
         {
 
             @Override
@@ -91,33 +95,5 @@ public class WebViewFragment extends Fragment
                 return false;
             }
         });
-
-        mProgressSpinner = (ProgressBar) v.findViewById(R.id.progress);
-        mStopRelodBtn = (ImageView) v.findViewById(R.id.btn_stop_refresh);
-        mStopRelodBtn.setOnClickListener(new OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                if (isLoading)
-                {
-                    mWebView.stopLoading();
-                }
-                else
-                {
-                    mWebView.reload();
-                }
-            }
-        });
-    }
-
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState)
-    {
-        super.onActivityCreated(savedInstanceState);
-
-//        mHeaderText.setText(getArguments().getString(NewsFragment.HEADER));
-//
-//        mWebView.loadUrl(getArguments().getString(NewsFragment.URL));
     }
 }

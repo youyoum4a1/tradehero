@@ -142,6 +142,8 @@
 
   <!-- Portfolios list -->
   <string name="topbar_portfolios_title">Portfolios</string>
+  <string name="webview_back">Back</string>
+  <string name="webview_forward">Forward</string>
 
   <!-- Portfolio detail -->
 

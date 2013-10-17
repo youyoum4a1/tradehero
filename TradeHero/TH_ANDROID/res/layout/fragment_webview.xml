@@ -4,15 +4,10 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
-    <include
-        android:id="@+id/header"
-        layout="@layout/topbar_trending_search" />
-
     <WebView
         android:id="@+id/webview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/bottom_bar"
         android:layout_below="@id/header"
         android:fadeScrollbars="true"
         android:scrollbarStyle="insideOverlay" />
@@ -24,22 +19,4 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true" />
-
-    <FrameLayout
-        android:id="@+id/bottom_bar"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:background="@drawable/topbarrectangle" >
-
-        <ImageView
-            android:id="@+id/btn_stop_refresh"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="right"
-            android:contentDescription="@null"
-            android:src="@android:drawable/ic_menu_close_clear_cancel" />
-    </FrameLayout>
-
 </RelativeLayout>

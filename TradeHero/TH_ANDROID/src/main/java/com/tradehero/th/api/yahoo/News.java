@@ -19,6 +19,7 @@ public class News
     private final static String TAG = News.class.getSimpleName();
 
     private final static DateFormat dateFormat = getDateFormat();
+    public static final String URL = "url";
     private String title;
     private String url;
     private Date date;

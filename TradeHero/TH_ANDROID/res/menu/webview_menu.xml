@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+  <item android:id="@+id/webview_back"
+      android:title="@string/webview_back"/>
+  <item android:id="@+id/webview_forward"
+      android:title="@string/webview_forward"/>
+</menu>
