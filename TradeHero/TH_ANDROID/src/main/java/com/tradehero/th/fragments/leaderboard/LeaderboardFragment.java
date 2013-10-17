@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
@@ -79,6 +80,7 @@ public class LeaderboardFragment extends DashboardFragment implements DTOCache.L
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         inflater.inflate(R.menu.leaderboard_menu, menu);
+        getSherlockActivity().getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME);
         getSherlockActivity().getSupportActionBar().setTitle(getString(R.string.leaderboards));
         super.onCreateOptionsMenu(menu, inflater);
     }
@@ -106,6 +108,7 @@ public class LeaderboardFragment extends DashboardFragment implements DTOCache.L
             leaderboardDefListCache.getOrFetch(new LeaderboardDefSectorListKey(), false, this).execute();
             leaderboardDefListCache.getOrFetch(new LeaderboardDefExchangeListKey(), false, this).execute();
         }
+
         if (value != null)
         {
             if (key instanceof LeaderboardDefMostSkilledListKey)
