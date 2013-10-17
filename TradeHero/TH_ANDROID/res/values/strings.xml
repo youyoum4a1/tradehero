@@ -173,4 +173,10 @@
     <item>Sign Out</item>
     <item>About</item>
   </string-array>
+
+  <!-- TradeHero URLs -->
+  <string name="th_faq_url">http://www.tradehero.mobi/faq</string>
+  <string name="th_help_url">http://www.tradehero.mobi/about</string>
+  <string name="th_terms_url">http://www.tradehero.mobi/terms</string>
+  <string name="th_privacy_terms_url">http://www.tradehero.mobi/privacy</string>
 </resources>

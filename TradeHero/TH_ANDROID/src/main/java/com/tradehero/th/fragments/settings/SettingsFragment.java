@@ -5,9 +5,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.th.R;
+import com.tradehero.th.api.yahoo.News;
+import com.tradehero.th.base.Navigator;
+import com.tradehero.th.base.NavigatorActivity;
+import com.tradehero.th.fragments.WebViewFragment;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import android.widget.ListView;
 
@@ -24,6 +29,8 @@ import java.util.Arrays;
 public class SettingsFragment extends DashboardFragment
 {
     public static final String TAG = SettingsFragment.class.getSimpleName();
+    private static final int ITEM_FAQ = 2;
+
     private View view;
     private ListView primaryListView;
     private SettingsListAdapter primaryListViewAdapter;
@@ -43,6 +50,15 @@ public class SettingsFragment extends DashboardFragment
         return view;
     }
 
+    //<editor-fold desc="ActionBar">
+    @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
+    {
+        getSherlockActivity().getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME);
+        getSherlockActivity().getSupportActionBar().setTitle("Settings");
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+    //</editor-fold>
+
     private void setupPrimaryListView()
     {
         primaryListViewAdapter = new SettingsListAdapter(getActivity(), getActivity().getLayoutInflater(), R.layout.settings_list_item);
@@ -52,6 +68,16 @@ public class SettingsFragment extends DashboardFragment
         primaryListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                switch (i)
+                {
+                    case ITEM_FAQ:
+                        String faqUrl = getResources().getString(R.string.th_faq_url);
+                        Navigator navigator = ((NavigatorActivity) getActivity()).getNavigator();
+                        Bundle bundle = new Bundle();
+                        bundle.putString(News.URL, faqUrl);
+                        navigator.pushFragment(WebViewFragment.class, bundle);
+                        break;
+                }
             }
         });
         primaryListView.setAdapter(primaryListViewAdapter);
@@ -83,11 +109,6 @@ public class SettingsFragment extends DashboardFragment
             }
         });
         miscListView.setAdapter(miscListViewAdapter);
-    }
-
-    @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
-    {
-        super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override public void onResume()
