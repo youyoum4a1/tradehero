@@ -4,7 +4,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white"
+    android:padding="5dp"
+    android:background="@color/gray_1"
     >
 
   <!-- layout_marginBottom: dirty trick to reserve background rounded corner radius-->
@@ -22,11 +23,25 @@
       android:contentDescription="@string/empty"/>
 
   <TextView
+      android:id="@+id/user_profile_compact_display_name"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginLeft="5dp"
+      android:layout_toRightOf="@id/user_profile_compact_avatar"
+      android:textSize="20sp"
+      android:textStyle="bold"
+      android:shadowColor="@color/black"
+      android:shadowDy="1"
+      android:shadowRadius="3"
+      />
+
+  <TextView
       android:id="@+id/user_profile_compact_roi"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_marginLeft="5dp"
       android:layout_toRightOf="@id/user_profile_compact_avatar"
+      android:layout_below="@id/user_profile_compact_display_name"
       android:textColor="@color/font_roi"
       android:textSize="18sp"
       android:textStyle="bold"
@@ -35,66 +50,45 @@
       android:shadowRadius="3"
       />
 
-    <!--Followers-->
-    <LinearLayout
-        android:id="@+id/user_profile_compact_followers_count_wrapper"
+
+  <!--Heroes-->
+  <LinearLayout
+      android:id="@+id/user_profile_compact_heroes_count_wrapper"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:orientation="vertical"
+      android:gravity="center_horizontal"
+      android:layout_alignParentRight="true">
+
+    <TextView
+        android:id="@+id/user_profile_compact_heroes_count"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_alignParentRight="true"
-        android:gravity="center_horizontal"
-        >
-
-      <TextView
-          android:id="@+id/user_profile_compact_followers_count"
-          android:layout_width="fill_parent"
-          android:layout_height="wrap_content"
-          android:gravity="center"
-          android:textColor="@color/white"
-          android:text="8"
-          android:textSize="20sp"
-          android:textStyle="bold"
-          android:drawableTop="@drawable/icn_followers"/>
-
-      <TextView
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:gravity="center_vertical"
-          android:layout_marginTop="-5dip"
-          android:text="@string/Followers"
-          android:textColor="@color/white"
-          android:textSize="12sp"
-          android:textStyle="normal"/>
+        android:gravity="center"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:drawableTop="@drawable/icn_heroes"/>
     </LinearLayout>
+  <!--Followers-->
+  <LinearLayout
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:orientation="vertical"
+      android:gravity="center_horizontal"
+      android:layout_toLeftOf="@id/user_profile_compact_heroes_count_wrapper"
+      android:layout_marginRight="5dp"
+      >
 
-    <!--Heroes-->
-    <LinearLayout
-        android:layout_width="wrap_content"
+    <TextView
+        android:id="@+id/user_profile_compact_followers_count"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:gravity="center_horizontal"
-        android:layout_alignParentRight="true"
-        android:layout_toLeftOf="@id/user_profile_compact_followers_count_wrapper">
+        android:gravity="center"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:drawableTop="@drawable/icn_followers"/>
 
-      <TextView
-          android:id="@+id/user_profile_compact_heroes_count"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:gravity="center"
-          android:textColor="@color/white"
-          android:textSize="20sp"
-          android:textStyle="bold"
-          android:text="8"
-          android:drawableTop="@drawable/icn_heroes"/>
-
-      <TextView
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_marginTop="-5dip"
-          android:gravity="center_vertical"
-          android:text="@string/Heroes"
-          android:textColor="@color/white"
-          android:textSize="12sp"
-          android:textStyle="normal"/>
-    </LinearLayout>
+  </LinearLayout>
 </com.tradehero.th.widget.user.ProfileCompactView>

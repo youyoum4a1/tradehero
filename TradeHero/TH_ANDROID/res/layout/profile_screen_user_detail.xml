@@ -171,7 +171,7 @@
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
             android:layout_marginTop="-5dip"
-            android:text="@string/Followers"
+            android:text="@string/followers"
             android:textColor="@color/white"
             android:textSize="12sp"
             android:textStyle="normal"/>

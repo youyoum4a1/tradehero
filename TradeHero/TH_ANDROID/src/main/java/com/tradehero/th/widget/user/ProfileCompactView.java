@@ -23,6 +23,7 @@ public class ProfileCompactView extends RelativeLayout implements DTOView<UserPr
 
     private TextView followersCount;
     private TextView heroesCount;
+    private TextView username;
 
     @Inject protected Picasso picasso;
 
@@ -53,7 +54,7 @@ public class ProfileCompactView extends RelativeLayout implements DTOView<UserPr
     private void init()
     {
         avatar = (ImageView) findViewById(R.id.user_profile_compact_avatar);
-
+        username = (TextView) findViewById(R.id.user_profile_compact_display_name);
         roiSinceInception = (TextView) findViewById(R.id.user_profile_compact_roi);
 
         followersCount = (TextView) findViewById(R.id.user_profile_compact_followers_count);
@@ -78,5 +79,6 @@ public class ProfileCompactView extends RelativeLayout implements DTOView<UserPr
 
         followersCount.setText(Integer.toString(dto.followerCount));
         heroesCount.setText(Integer.toString(dto.heroIds.size()));
+        username.setText(dto.displayName);
     }
 }
