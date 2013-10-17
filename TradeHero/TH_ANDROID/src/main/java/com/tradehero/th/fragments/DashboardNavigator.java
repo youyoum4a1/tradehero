@@ -14,6 +14,7 @@ import com.tradehero.th.fragments.portfolio.PortfolioListFragment;
 import com.tradehero.th.fragments.leaderboard.LeaderboardFragment;
 import com.tradehero.th.fragments.timeline.MeTimelineFragment;
 import com.tradehero.th.fragments.trending.TrendingFragment;
+import com.tradehero.th.fragments.settings.SettingsFragment;
 
 /** Created with IntelliJ IDEA. User: tho Date: 10/11/13 Time: 4:24 PM Copyright (c) TradeHero */
 public class DashboardNavigator extends Navigator
@@ -35,6 +36,8 @@ public class DashboardNavigator extends Navigator
         mTabHost = (FragmentTabHost) activity.findViewById(android.R.id.tabhost);
         mTabHost.setup(activity, activity.getSupportFragmentManager(), R.id.realtabcontent);
 
+        // TODO: change setting icon
+        addNewTab(activity.getString(R.string.action_settings), R.drawable.store_selector, SettingsFragment.class);
         addNewTab(activity.getString(R.string.trending), R.drawable.trending_selector, TrendingFragment.class);
         addNewTab(activity.getString(R.string.community), R.drawable.community_selector, LeaderboardFragment.class);
         addNewTab(activity.getString(R.string.home), R.drawable.home_selector, MeTimelineFragment.class);
