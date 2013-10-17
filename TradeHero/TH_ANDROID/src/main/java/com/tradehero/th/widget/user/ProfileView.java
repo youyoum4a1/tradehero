@@ -83,11 +83,19 @@ public class ProfileView extends FrameLayout implements DTOView<UserProfileDTO>
                 .into(background);
         }
 
-        THSignedNumber thRoiSinceInception = new THSignedNumber(THSignedNumber.TYPE_PERCENTAGE, dto.portfolio.roiSinceInception*100);
+        Double roi = dto.portfolio.roiSinceInception;
+        if (roi == null) {
+            roi = new Double(0);
+        }
+        THSignedNumber thRoiSinceInception = new THSignedNumber(THSignedNumber.TYPE_PERCENTAGE, roi*100);
         roiSinceInception.setText(thRoiSinceInception.toString());
         roiSinceInception.setTextColor(getResources().getColor(thRoiSinceInception.getColor()));
 
-        THSignedNumber thPlSinceInception = new THSignedNumber(THSignedNumber.TYPE_MONEY, dto.portfolio.plSinceInception);
+        Double pl = dto.portfolio.plSinceInception;
+        if (pl == null) {
+            pl = new Double(0);
+        }
+        THSignedNumber thPlSinceInception = new THSignedNumber(THSignedNumber.TYPE_MONEY, pl);
         plSinceInception.setText(thPlSinceInception.toString());
         plSinceInception.setTextColor(getResources().getColor(thPlSinceInception.getColor()));
 
