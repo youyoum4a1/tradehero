@@ -188,7 +188,7 @@ public class PricingBidAskView extends LinearLayout implements DTOView<SecurityC
         if (mLastPriceUSD != null)
         {
             if (securityCompactDTO != null && !securityCompactDTO.lastPrice.isNaN() &&
-                    quoteDTO != null && !quoteDTO.toUSDRate.isNaN())
+                    quoteDTO != null && quoteDTO.toUSDRate != null && !quoteDTO.toUSDRate.isNaN())
             {
                 mLastPriceUSD.setText(String.format("%s %.2f",
                         getResources().getString(R.string.usd_price_unit_left),
