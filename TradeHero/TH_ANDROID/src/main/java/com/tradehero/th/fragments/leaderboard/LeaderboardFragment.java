@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import com.actionbarsherlock.app.ActionBar;
@@ -164,6 +165,25 @@ public class LeaderboardFragment extends DashboardFragment implements DTOCache.L
         LeaderboardDefListAdapter sectorListViewAdapter = (LeaderboardDefListAdapter) sectorListView.getAdapter();
         sectorListViewAdapter.addItem(dto);
         sectorListViewAdapter.notifyDataSetChanged();
+        sectorListView.setOnItemClickListener(new AdapterView.OnItemClickListener()
+        {
+            @Override public void onItemClick(AdapterView<?> adapterView, View view, int position, long id)
+            {
+                LeaderboardDefDTO dto = (LeaderboardDefDTO) adapterView.getItemAtPosition(position);
+                if (dto != null)
+                {
+                    switch (dto.getId())
+                    {
+                        case LeaderboardDefDTO.LEADERBOARD_DEF_SECTOR_ID:
+                            navigator.pushFragment(LeaderboardDefListViewFragment.class, new LeaderboardDefSectorListKey().getArgs());
+                            break;
+                        case LeaderboardDefDTO.LEADERBOARD_DEF_EXCHANGE_ID:
+                            navigator.pushFragment(LeaderboardDefListViewFragment.class, new LeaderboardDefExchangeListKey().getArgs());
+                            break;
+                    }
+                }
+            }
+        });
     }
 
     private ListAdapter createTimePeriodListAdapter(List<LeaderboardDefKey> keys)
