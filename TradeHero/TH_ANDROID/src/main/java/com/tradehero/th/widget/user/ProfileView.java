@@ -12,6 +12,8 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.models.THSignedNumber;
+import com.tradehero.th.utils.DaggerUtils;
+import javax.inject.Inject;
 
 /** Created with IntelliJ IDEA. User: tho Date: 9/10/13 Time: 6:34 PM Copyright (c) TradeHero */
 public class ProfileView extends FrameLayout implements DTOView<UserProfileDTO>
@@ -28,17 +30,17 @@ public class ProfileView extends FrameLayout implements DTOView<UserProfileDTO>
     private TextView tradesCount;
     private TextView exchangesCount;
 
+    @Inject protected Picasso picasso;
+
     //<editor-fold desc="Constructors">
     public ProfileView(Context context)
     {
-        super(context);
-        init();
+        this(context, null);
     }
 
     public ProfileView(Context context, AttributeSet attrs)
     {
-        super(context, attrs);
-        init();
+        this(context, attrs, 0);
     }
 
     public ProfileView(Context context, AttributeSet attrs, int defStyle)
@@ -59,25 +61,27 @@ public class ProfileView extends FrameLayout implements DTOView<UserProfileDTO>
         avatar = (ImageView) findViewById(R.id.user_profile_avatar);
         background = (ImageView) findViewById(R.id.user_profile_background_by_sketched_avatar);
 
-        roiSinceInception = (TextView) findViewById(R.id.txt_ROI);
+        roiSinceInception = (TextView) findViewById(R.id.txt_roi);
         plSinceInception = (TextView) findViewById(R.id.txt_profile_tradeprofit);
 
         followersCount = (TextView) findViewById(R.id.user_profile_followers_count);
         heroesCount = (TextView) findViewById(R.id.user_profile_heroes_count);
         tradesCount = (TextView) findViewById(R.id.user_profile_trade_count);
         exchangesCount = (TextView) findViewById(R.id.user_profile_exchanges_count);
+
+        DaggerUtils.inject(this);
     }
 
     @Override public void display(UserProfileDTO dto)
     {
         if (dto.picture != null)
         {
-            Picasso.with(getContext())
+            picasso
                 .load(dto.picture)
                 .transform(new RoundedShapeTransformation())
                 .into(avatar);
 
-            Picasso.with(getContext())
+            picasso
                 .load(dto.picture)
                 .transform(new GradientTransformation())
                 .into(background);

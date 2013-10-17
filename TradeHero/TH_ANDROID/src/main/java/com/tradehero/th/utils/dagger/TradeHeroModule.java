@@ -7,8 +7,8 @@ import com.tradehero.common.cache.DatabaseCache;
 import com.tradehero.common.persistence.CacheHelper;
 import com.tradehero.th.api.form.UserAvailabilityRequester;
 import com.tradehero.th.base.THUser;
-import com.tradehero.th.fragments.leaderboard.LeaderboardFragment;
 import com.tradehero.th.fragments.authentication.EmailSignInFragment;
+import com.tradehero.th.fragments.leaderboard.LeaderboardFragment;
 import com.tradehero.th.fragments.portfolio.PortfolioListFragment;
 import com.tradehero.th.fragments.position.PositionListFragment;
 import com.tradehero.th.fragments.timeline.MeTimelineFragment;
@@ -16,33 +16,38 @@ import com.tradehero.th.fragments.timeline.TimelineFragment;
 import com.tradehero.th.fragments.trade.BuyFragment;
 import com.tradehero.th.fragments.trade.ChartFragment;
 import com.tradehero.th.fragments.trade.FreshQuoteHolder;
-import com.tradehero.th.fragments.trade.YahooNewsFragment;
 import com.tradehero.th.fragments.trade.StockInfoFragment;
-import com.tradehero.th.fragments.trending.SearchStockPeopleFragment;
 import com.tradehero.th.fragments.trade.TradeFragment;
+import com.tradehero.th.fragments.trade.YahooNewsFragment;
+import com.tradehero.th.fragments.trending.SearchStockPeopleFragment;
 import com.tradehero.th.fragments.trending.TrendingFragment;
 import com.tradehero.th.loaders.SearchStockPageItemListLoader;
 import com.tradehero.th.loaders.TimelinePagedItemListLoader;
 import com.tradehero.th.network.NetworkEngine;
 import com.tradehero.th.network.YahooEngine;
-import com.tradehero.th.network.service.*;
+import com.tradehero.th.network.service.LeaderboardService;
+import com.tradehero.th.network.service.PortfolioService;
+import com.tradehero.th.network.service.PositionService;
+import com.tradehero.th.network.service.ProviderService;
+import com.tradehero.th.network.service.QuoteService;
+import com.tradehero.th.network.service.SecurityService;
+import com.tradehero.th.network.service.UserService;
+import com.tradehero.th.network.service.UserTimelineService;
+import com.tradehero.th.network.service.YahooNewsService;
 import com.tradehero.th.persistence.TimelineManager;
 import com.tradehero.th.persistence.TimelineStore;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefCache;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefListCache;
-import com.tradehero.th.persistence.position.FiledPositionCache;
-import com.tradehero.th.persistence.position.PositionCompactIdCache;
 import com.tradehero.th.persistence.position.SecurityPositionDetailCache;
-import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.persistence.security.SecurityCompactListCache;
-import com.tradehero.th.persistence.security.SecurityIdCache;
 import com.tradehero.th.persistence.user.AbstractUserStore;
 import com.tradehero.th.persistence.user.UserManager;
 import com.tradehero.th.persistence.user.UserStore;
 import com.tradehero.th.widget.MarkdownTextView;
 import com.tradehero.th.widget.portfolio.PortfolioHeaderItemView;
 import com.tradehero.th.widget.timeline.TimelineItemView;
-import com.tradehero.th.widget.position.PositionQuickInnerViewHolder;
+import com.tradehero.th.widget.user.ProfileCompactView;
+import com.tradehero.th.widget.user.ProfileView;
 import dagger.Module;
 import dagger.Provides;
 import javax.inject.Singleton;
@@ -91,6 +96,8 @@ import javax.inject.Singleton;
 
                 TimelineFragment.class,
                 TimelineItemView.class,
+                ProfileView.class,
+                ProfileCompactView.class,
 
                 LeaderboardFragment.class,
                 LeaderboardDefListCache.class,
