@@ -243,7 +243,7 @@ public class PositionQuickInnerViewHolder
                 {
                     stockMovementIndicator.setText(R.string.negative_prefix);
                 }
-                stockMovementIndicator.setTextColor(ColorUtils.colorForPercentage(securityCompactDTO.pc50DMA / 5));
+                stockMovementIndicator.setTextColor(ColorUtils.getColorForPercentage(securityCompactDTO.pc50DMA / 5));
             }
         }
     }
@@ -309,7 +309,7 @@ public class PositionQuickInnerViewHolder
                         positionProfitIndicator.setText(R.string.negative_prefix);
                     }
                     positionProfitIndicator.setTextColor(
-                            ColorUtils.colorForPercentage((float) roiSinceInception.doubleValue() * PERCENT_STRETCHING_FOR_COLOR));
+                            ColorUtils.getColorForPercentage((float) roiSinceInception.doubleValue() * PERCENT_STRETCHING_FOR_COLOR));
                 }
             }
         }
@@ -331,7 +331,7 @@ public class PositionQuickInnerViewHolder
                 {
                     positionPercent.setText(String.format("%,.2f%%", Math.abs(100 * roiSinceInception)));
                     positionPercent.setTextColor(
-                            ColorUtils.colorForPercentage((float) roiSinceInception.doubleValue() * PERCENT_STRETCHING_FOR_COLOR ));
+                            ColorUtils.getColorForPercentage((float) roiSinceInception.doubleValue() * PERCENT_STRETCHING_FOR_COLOR));
                 }
             }
         }

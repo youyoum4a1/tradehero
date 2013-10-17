@@ -13,7 +13,7 @@ public class ColorUtils
      * @param percentage, a value from -1 to 1
      * @return
      */
-    public static int colorForPercentage(float percentage)
+    public static int getColorForPercentage(float percentage)
     {
         return Color.rgb(
                 (int) (MAX_RED_VALUE * Math.abs(MathUtils.clamp(percentage, -1, 0))),

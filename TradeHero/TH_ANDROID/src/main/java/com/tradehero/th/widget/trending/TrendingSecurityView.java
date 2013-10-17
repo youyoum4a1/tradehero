@@ -211,7 +211,7 @@ public class TrendingSecurityView extends FrameLayout implements DTOView<Securit
             profitIndicator.setText(R.string.negative_prefix);
         }
 
-        profitIndicator.setTextColor(ColorUtils.colorForPercentage(((float) securityCompactDTO.pc50DMA) / 5f));
+        profitIndicator.setTextColor(ColorUtils.getColorForPercentage(((float) securityCompactDTO.pc50DMA) / 5f));
         exchangeSymbol.setTextColor(getResources().getColor(R.color.exchange_symbol));
 
         if(securityCompactDTO.marketOpen)

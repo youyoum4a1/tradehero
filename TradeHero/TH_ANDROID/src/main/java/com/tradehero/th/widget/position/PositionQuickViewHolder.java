@@ -71,7 +71,7 @@ public class PositionQuickViewHolder extends PositionQuickInnerViewHolder
                 else
                 {
                     positionProfitIndicatorLeft.setBackgroundColor(
-                            ColorUtils.colorForPercentage((float) roiSinceInception.doubleValue() * PERCENT_STRETCHING_FOR_COLOR));
+                            ColorUtils.getColorForPercentage((float) roiSinceInception.doubleValue() * PERCENT_STRETCHING_FOR_COLOR));
                 }
             }
         }
