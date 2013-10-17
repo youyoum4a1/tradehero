@@ -2,7 +2,7 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
   <item>
     <shape>
-      <stroke android:width="1dp" android:color="@color/edittext_border"/>
+      <stroke android:width="@dimen/leaderboard_border_width" android:color="@color/edittext_border"/>
       <corners android:bottomLeftRadius="@dimen/leaderboard_buttonlist_radius"
           android:bottomRightRadius="@dimen/leaderboard_buttonlist_radius"/>
       <gradient android:startColor="@color/leaderboard_buttonlist_gradient_start_color"
@@ -10,7 +10,7 @@
           android:angle="270"/>
     </shape>
   </item>
-  <item android:bottom="1dp" android:left="1dp" android:right="1dp">
+  <item android:bottom="@dimen/leaderboard_border_width" android:left="@dimen/leaderboard_border_width" android:right="@dimen/leaderboard_border_width">
     <shape>
       <solid android:color="@android:color/transparent"/>
       <padding android:top="@dimen/leaderboard_button_border_padding"

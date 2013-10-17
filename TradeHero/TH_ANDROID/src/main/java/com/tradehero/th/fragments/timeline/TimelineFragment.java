@@ -28,7 +28,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 public class TimelineFragment extends ItemListFragment<TimelineItem>
-        implements DTOCache.Listener<UserBaseKey,UserProfileDTO>, BaseFragment.ArgumentsChangeListener, StepView.OnStepListener
+        implements DTOCache.Listener<UserBaseKey, UserProfileDTO>, BaseFragment.ArgumentsChangeListener, StepView.StepProvider
 {
     public static final String USER_ID = "userId";
     private TimelineAdapter timelineAdapter;
@@ -40,6 +40,7 @@ public class TimelineFragment extends ItemListFragment<TimelineItem>
     @Inject protected Lazy<UserProfileCache> userProfileCache;
 
     private View view;
+    private StepView stepView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -74,10 +75,10 @@ public class TimelineFragment extends ItemListFragment<TimelineItem>
     }
     //</editor-fold>
 
-
     private void setProfileId(int profileId)
     {
-        if (profileId != 0) {
+        if (profileId != 0)
+        {
             UserBaseKey baseKey = new UserBaseKey(profileId);
             userProfileCache.get()
                     .getOrFetch(baseKey, false, this).execute();
@@ -103,10 +104,12 @@ public class TimelineFragment extends ItemListFragment<TimelineItem>
 
     protected void updateView()
     {
+        // TODO retain state for stepView
         StepView stepView = new StepView(getActivity(), getActivity().getLayoutInflater());
         stepView.setStepProvider(this);
 
-        if (timelineListView.getRefreshableView().getHeaderViewsCount() == 1) {
+        if (timelineListView.getRefreshableView().getHeaderViewsCount() == 1)
+        {
             timelineListView.addHeaderView(stepView);
         }
 
@@ -156,7 +159,7 @@ public class TimelineFragment extends ItemListFragment<TimelineItem>
         setProfileId(profileId);
     }
 
-    @Override public View onStep(int step)
+    @Override public View provideView(int step)
     {
         switch (step)
         {
@@ -165,7 +168,8 @@ public class TimelineFragment extends ItemListFragment<TimelineItem>
                 profileView.display(profile);
                 return profileView;
             case 1:
-                ProfileCompactView profileCompactView = (ProfileCompactView) getActivity().getLayoutInflater().inflate(R.layout.profile_screen_user_compact, null);
+                ProfileCompactView profileCompactView =
+                        (ProfileCompactView) getActivity().getLayoutInflater().inflate(R.layout.profile_screen_user_compact, null);
                 profileCompactView.display(profile);
                 return profileCompactView;
         }

@@ -2,7 +2,7 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
   <item>
     <shape android:shape="rectangle">
-      <stroke android:width="1dp" android:color="@color/edittext_border"/>
+      <stroke android:width="@dimen/leaderboard_border_width" android:color="@color/edittext_border"/>
       <gradient android:startColor="@color/leaderboard_buttonlist_gradient_start_color"
           android:endColor="@color/leaderboard_buttonlist_gradient_end_color"
           android:angle="270"/>

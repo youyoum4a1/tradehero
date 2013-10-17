@@ -138,6 +138,7 @@ public class LeaderboardFragment extends DashboardFragment implements DTOCache.L
     private LeaderboardDefDTO initDefaultLeaderboardDefDTOForExchange()
     {
         LeaderboardDefDTO dto = new LeaderboardDefDTO();
+        dto.id = LeaderboardDefDTO.LEADERBOARD_DEF_EXCHANGE_ID;
         dto.name = getString(R.string.leaderboard_by_exchange);
         return dto;
     }
@@ -145,6 +146,7 @@ public class LeaderboardFragment extends DashboardFragment implements DTOCache.L
     private LeaderboardDefDTO initDefaultLeaderboardDefDTOForSector()
     {
         LeaderboardDefDTO dto = new LeaderboardDefDTO();
+        dto.id = LeaderboardDefDTO.LEADERBOARD_DEF_SECTOR_ID;
         dto.name = getString(R.string.leaderboard_by_sector);
         return dto;
     }
@@ -164,15 +166,9 @@ public class LeaderboardFragment extends DashboardFragment implements DTOCache.L
         sectorListViewAdapter.notifyDataSetChanged();
     }
 
-
-    private ListAdapter createTimeSectorAdapter(List<LeaderboardDefKey> keys)
-    {
-        return new LeaderboardDefListAdapter(
-            getActivity(), getActivity().getLayoutInflater(), leaderboardDefCache.getOrFetch(keys), R.layout.leaderboard_def_item);
-    }
-
     private ListAdapter createTimePeriodListAdapter(List<LeaderboardDefKey> keys)
     {
+        // sort time period items by number of days
         List<LeaderboardDefDTO> timePeriodItems = leaderboardDefCache.getOrFetch(keys);
         Collections.sort(timePeriodItems, new Comparator<LeaderboardDefDTO>()
         {
