@@ -8,10 +8,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 import com.tradehero.common.graphics.WhiteToTransparentTransformation;
-import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
-import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.position.FiledPositionId;
 import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
@@ -19,7 +17,7 @@ import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.persistence.position.FiledPositionCache;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.persistence.security.SecurityIdCache;
-import com.tradehero.th.utills.TrendUtils;
+import com.tradehero.th.utils.ColorUtils;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.SecurityUtils;
 import dagger.Lazy;
@@ -28,6 +26,8 @@ import javax.inject.Inject;
 /** Created with IntelliJ IDEA. User: xavier Date: 10/16/13 Time: 11:53 AM To change this template use File | Settings | File Templates. */
 public class PositionQuickInnerViewHolder
 {
+    protected static final int PERCENT_STRETCHING_FOR_COLOR = 20;
+
     @Inject protected Context context;
 
     private ImageView stockLogo;
@@ -148,6 +148,7 @@ public class PositionQuickInnerViewHolder
         this.filedPositionId = filedPositionId;
 
         linkWith(filedPositionCache.get().get(this.filedPositionId), andDisplay);
+        linkWith(securityIdCache.get().get(this.filedPositionId.getSecurityIntegerId()), andDisplay);
 
         if (andDisplay)
         {
@@ -242,7 +243,7 @@ public class PositionQuickInnerViewHolder
                 {
                     stockMovementIndicator.setText(R.string.negative_prefix);
                 }
-                stockMovementIndicator.setTextColor(TrendUtils.colorForPercentage(securityCompactDTO.pc50DMA));
+                stockMovementIndicator.setTextColor(ColorUtils.colorForPercentage(securityCompactDTO.pc50DMA / 5));
             }
         }
     }
@@ -291,20 +292,25 @@ public class PositionQuickInnerViewHolder
         {
             if (positionDTO != null)
             {
-                Double positionPLPercent = positionDTO.getUnrealizedPLRefCcyPercent();
-                if (positionPLPercent == null || positionPLPercent == 0)
+                Double roiSinceInception = positionDTO.getROISinceInception();
+                if (roiSinceInception == null || roiSinceInception == 0)
                 {
                     positionProfitIndicator.setText(R.string.na);
-                }
-                else if (positionPLPercent > 0)
-                {
-                    positionProfitIndicator.setText(R.string.positive_prefix);
+                    positionProfitIndicator.setTextColor(context.getResources().getColor(R.color.black));
                 }
                 else
                 {
-                    positionProfitIndicator.setText(R.string.negative_prefix);
+                    if (roiSinceInception > 0)
+                    {
+                        positionProfitIndicator.setText(R.string.positive_prefix);
+                    }
+                    else
+                    {
+                        positionProfitIndicator.setText(R.string.negative_prefix);
+                    }
+                    positionProfitIndicator.setTextColor(
+                            ColorUtils.colorForPercentage((float) roiSinceInception.doubleValue() * PERCENT_STRETCHING_FOR_COLOR));
                 }
-                positionProfitIndicator.setTextColor(TrendUtils.colorForPercentage((int) (100 * positionPLPercent)));
             }
         }
     }
@@ -315,16 +321,18 @@ public class PositionQuickInnerViewHolder
         {
             if (positionDTO != null)
             {
-                Double positionPLPercent = positionDTO.getUnrealizedPLRefCcyPercent();
-                if (positionPLPercent == null)
+                Double roiSinceInception = positionDTO.getROISinceInception();
+                if (roiSinceInception == null)
                 {
                     positionPercent.setText(R.string.na);
+                    positionPercent.setTextColor(context.getResources().getColor(R.color.black));
                 }
                 else
                 {
-                    positionPercent.setText(String.format("%0.2f%%", positionPLPercent));
+                    positionPercent.setText(String.format("%,.2f%%", Math.abs(100 * roiSinceInception)));
+                    positionPercent.setTextColor(
+                            ColorUtils.colorForPercentage((float) roiSinceInception.doubleValue() * PERCENT_STRETCHING_FOR_COLOR ));
                 }
-                positionPercent.setTextColor(TrendUtils.colorForPercentage((int) (100 * positionPLPercent)));
             }
         }
     }
@@ -335,14 +343,14 @@ public class PositionQuickInnerViewHolder
         {
             if (positionDTO != null)
             {
-                positionLastAmount.setText(String.format("%s %.2f", SecurityUtils.DEFAULT_VIRTUAL_CASH_CURRENCY_DISPLAY, positionDTO.marketValueRefCcy));
+                positionLastAmount.setText(String.format("%s %,.2f", SecurityUtils.DEFAULT_VIRTUAL_CASH_CURRENCY_DISPLAY, positionDTO.marketValueRefCcy));
             }
         }
     }
 
     protected void handleTradeHistoryButtonClicked(View view)
     {
-        THToast.show("Nothing for now");
+        THToast.show("No Trade History for now");
         // TODO
     }
 

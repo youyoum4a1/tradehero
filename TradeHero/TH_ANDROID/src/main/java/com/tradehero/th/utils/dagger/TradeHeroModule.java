@@ -45,6 +45,7 @@ import com.tradehero.th.persistence.user.UserManager;
 import com.tradehero.th.persistence.user.UserStore;
 import com.tradehero.th.widget.MarkdownTextView;
 import com.tradehero.th.widget.portfolio.PortfolioHeaderItemView;
+import com.tradehero.th.widget.position.PositionQuickViewHolder;
 import com.tradehero.th.widget.timeline.TimelineItemView;
 import com.tradehero.th.widget.user.ProfileCompactView;
 import com.tradehero.th.widget.user.ProfileView;
@@ -74,6 +75,7 @@ import javax.inject.Singleton;
                 PortfolioHeaderItemView.class,
 
                 PositionListFragment.class,
+                PositionQuickViewHolder.class,
 
                 UserAvailabilityRequester.class,
                 SearchStockPageItemListLoader.class,

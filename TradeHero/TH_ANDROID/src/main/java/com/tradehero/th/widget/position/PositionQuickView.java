@@ -7,7 +7,8 @@ import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.position.FiledPositionId;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/16/13 Time: 6:49 PM To change this template use File | Settings | File Templates. */
-public class PositionQuickView extends RelativeLayout implements DTOView<FiledPositionId>
+public class PositionQuickView extends RelativeLayout
+        implements DTOView<FiledPositionId>
 {
     private PositionQuickViewHolder positionQuickViewHolder;
 

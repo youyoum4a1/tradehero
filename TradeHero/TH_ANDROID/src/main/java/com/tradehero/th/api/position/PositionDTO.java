@@ -65,6 +65,31 @@ public class PositionDTO extends PositionDTOCompact
         return positionIds;
     }
 
+    public Double getROISinceInception()
+    {
+        if (shares == null || realizedPLRefCcy == null || unrealizedPLRefCcy == null)
+        {
+            return null;
+        }
+
+        double numberToDisplay = realizedPLRefCcy;
+        if (isOpen())
+        {
+            numberToDisplay += unrealizedPLRefCcy;
+        }
+
+        // divide by cost basis, if possible
+        if (sumInvestedAmountRefCcy == null || sumInvestedAmountRefCcy == 0)
+        {
+            return null;
+        }
+        else
+        {
+            numberToDisplay /= sumInvestedAmountRefCcy ;
+        }
+        return numberToDisplay;
+    }
+
     public Double getUnrealizedPLRefCcyPercent()
     {
         if (unrealizedPLRefCcy == null)

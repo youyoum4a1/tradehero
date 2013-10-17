@@ -1,11 +1,12 @@
 package com.tradehero.th.widget.position;
 
-import android.content.Context;
 import android.view.View;
 import android.widget.ImageView;
+import com.squareup.picasso.Picasso;
+import com.tradehero.common.graphics.FlipAlphaTransformation;
 import com.tradehero.th.R;
 import com.tradehero.th.api.position.PositionDTO;
-import com.tradehero.th.utills.TrendUtils;
+import com.tradehero.th.utils.ColorUtils;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/16/13 Time: 12:05 PM To change this template use File | Settings | File Templates. */
 public class PositionQuickViewHolder extends PositionQuickInnerViewHolder
@@ -25,6 +26,14 @@ public class PositionQuickViewHolder extends PositionQuickInnerViewHolder
         if (view != null)
         {
             positionProfitIndicatorLeft = (ImageView) view.findViewById(R.id.ic_position_profit_indicator_left);
+            if (positionProfitIndicatorLeft != null)
+            {
+                Picasso.with(context)
+                        .load(R.drawable.edit_button_bg)
+                        .transform(new FlipAlphaTransformation())
+                        .into(positionProfitIndicatorLeft);
+            }
+
             moreInfoIndicator = (ImageView) view.findViewById(R.id.ic_more_info);
         }
 
@@ -54,13 +63,15 @@ public class PositionQuickViewHolder extends PositionQuickInnerViewHolder
             // TODO
             if (positionDTO != null)
             {
-                if (positionDTO.unrealizedPLRefCcy == null)
+                Double roiSinceInception = positionDTO.getROISinceInception();
+                if (roiSinceInception == null)
                 {
                     positionProfitIndicatorLeft.setBackgroundColor(context.getResources().getColor(R.color.gray_2));
                 }
                 else
                 {
-                    positionProfitIndicatorLeft.setBackgroundColor(TrendUtils.colorForPercentage((int) positionDTO.unrealizedPLRefCcy.doubleValue()));
+                    positionProfitIndicatorLeft.setBackgroundColor(
+                            ColorUtils.colorForPercentage((float) roiSinceInception.doubleValue() * PERCENT_STRETCHING_FOR_COLOR));
                 }
             }
         }

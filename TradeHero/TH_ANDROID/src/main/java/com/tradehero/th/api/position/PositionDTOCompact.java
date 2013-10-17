@@ -13,6 +13,24 @@ public class PositionDTOCompact
     // This price is always is USD
     public Double averagePriceRefCcy;
 
+    public Boolean isClosed()
+    {
+        if (shares == null)
+        {
+            return null;
+        }
+        return shares == 0;
+    }
+
+    public Boolean isOpen()
+    {
+        if (shares == null)
+        {
+            return null;
+        }
+        return shares != 0;
+    }
+
     public PositionCompactId getPositionCompactId()
     {
         return new PositionCompactId(id);

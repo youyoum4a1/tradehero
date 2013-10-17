@@ -13,6 +13,10 @@ public class GetPositionsDTO
     public int openPositionsCount;
     public int closedPositionsCount;
 
+    public GetPositionsDTO()
+    {
+    }
+
     public GetPositionsDTO(List<PositionDTO> positions, List<SecurityCompactDTO> securities, int openPositionsCount, int closedPositionsCount)
     {
         this.positions = positions;

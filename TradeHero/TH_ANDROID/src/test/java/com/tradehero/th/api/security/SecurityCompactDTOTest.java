@@ -14,7 +14,8 @@ import static org.junit.Assert.assertThat;
 public class SecurityCompactDTOTest
 {
     @Test
-    public void shouldHaveHappySmiles() throws Exception {
+    public void shouldHaveHappySmiles() throws Exception
+    {
         //String appName = new DashboardActivity().getResources().getString(R.string.app_name);
         //assertThat(appName, equalTo("TradeHero"));
         assertThat(1, equalTo(1));

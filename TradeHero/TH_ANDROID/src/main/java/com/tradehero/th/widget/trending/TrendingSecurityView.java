@@ -19,9 +19,8 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.utills.DateUtils;
-import com.tradehero.th.utills.TrendUtils;
 import com.tradehero.th.utills.YUtils;
-import java.util.concurrent.Future;
+import com.tradehero.th.utils.ColorUtils;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 9/5/13 Time: 5:19 PM To change this template use File | Settings | File Templates. */
 public class TrendingSecurityView extends FrameLayout implements DTOView<SecurityCompactDTO>
@@ -173,25 +172,25 @@ public class TrendingSecurityView extends FrameLayout implements DTOView<Securit
                 .into(stockBgLogo);
     }
 
-    @Override public void display (final SecurityCompactDTO trend)
+    @Override public void display (final SecurityCompactDTO securityCompactDTO)
     {
-        if (this.securityCompactDTO != null && trend.name.equals(this.securityCompactDTO.name))
+        if (this.securityCompactDTO != null && securityCompactDTO.name.equals(this.securityCompactDTO.name))
         {
             return;
             // Note that this prevents updating values inside the securityCompactDTO
         }
 
-        this.securityCompactDTO = trend;
-        stockName.setText(trend.name);
-        exchangeSymbol.setText(trend.getExchangeSymbol());
-        currencyDisplay.setText(trend.currencyDisplay);
+        this.securityCompactDTO = securityCompactDTO;
+        stockName.setText(securityCompactDTO.name);
+        exchangeSymbol.setText(securityCompactDTO.getExchangeSymbol());
+        currencyDisplay.setText(securityCompactDTO.currencyDisplay);
 
         if (date != null)
         {
-            date.setText(DateUtils.getFormatedTrendDate(securityCompactDTO.lastPriceDateAndTimeUtc));
+            date.setText(DateUtils.getFormatedTrendDate(this.securityCompactDTO.lastPriceDateAndTimeUtc));
         }
 
-        double dLastPrice = YUtils.parseQuoteValue(trend.lastPrice.toString());
+        double dLastPrice = YUtils.parseQuoteValue(securityCompactDTO.lastPrice.toString());
         if(!Double.isNaN(dLastPrice))
         {
             lastPrice.setText(String.format("%.2f", dLastPrice));
@@ -201,21 +200,21 @@ public class TrendingSecurityView extends FrameLayout implements DTOView<Securit
             THLog.d(TAG, "TH: Unable to parse Last Price");
         }
 
-        if(trend.pc50DMA > 0)
+        if(securityCompactDTO.pc50DMA > 0)
         {
             //profitIndicator.setText(getContext().getString(R.string.positive_prefix));
             profitIndicator.setText(R.string.positive_prefix);
         }
-        else if(trend.pc50DMA < 0)
+        else if(securityCompactDTO.pc50DMA < 0)
         {
             //profitIndicator.setText(getContext().getString(R.string.negative_prefix));
             profitIndicator.setText(R.string.negative_prefix);
         }
 
-        profitIndicator.setTextColor(TrendUtils.colorForPercentage(trend.pc50DMA));
+        profitIndicator.setTextColor(ColorUtils.colorForPercentage(((float) securityCompactDTO.pc50DMA) / 5f));
         exchangeSymbol.setTextColor(getResources().getColor(R.color.exchange_symbol));
 
-        if(trend.marketOpen)
+        if(securityCompactDTO.marketOpen)
         {
             if (marketCloseIcon != null)
             {
@@ -239,9 +238,9 @@ public class TrendingSecurityView extends FrameLayout implements DTOView<Securit
             // TODO
         }
 
-        if (securityType != null && securityCompactDTO.getSecurityType() != null)
+        if (securityType != null && this.securityCompactDTO.getSecurityType() != null)
         {
-            securityType.setText(trend.getSecurityTypeStringResourceId());
+            securityType.setText(securityCompactDTO.getSecurityTypeStringResourceId());
         }
 
         if (stockLogo != null)
@@ -256,7 +255,7 @@ public class TrendingSecurityView extends FrameLayout implements DTOView<Securit
 
         if (countryLogo != null)
         {
-            countryLogo.setImageResource(trend.getExchangeLogoId());
+            countryLogo.setImageResource(securityCompactDTO.getExchangeLogoId());
         }
 
         storeImageUrlInImageViews();
