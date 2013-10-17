@@ -41,6 +41,14 @@ public class PositionQuickView extends RelativeLayout
         positionQuickViewHolder.initViews(getRootView());
     }
 
+    @Override protected void onAttachedToWindow()
+    {
+        super.onAttachedToWindow();
+        if (positionQuickViewHolder != null)
+        {
+            positionQuickViewHolder.displayTradeHistoryButton();
+        }
+    }
 
     @Override public void display(FiledPositionId dto)
     {

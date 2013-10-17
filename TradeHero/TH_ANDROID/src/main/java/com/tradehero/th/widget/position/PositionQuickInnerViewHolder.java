@@ -351,6 +351,14 @@ public class PositionQuickInnerViewHolder
         }
     }
 
+    public void displayTradeHistoryButton()
+    {
+        if (tradeHistoryButton != null)
+        {
+            tradeHistoryButton.setFocusable(false);
+        }
+    }
+
     protected void handleTradeHistoryButtonClicked(View view)
     {
         THToast.show("No Trade History for now");
