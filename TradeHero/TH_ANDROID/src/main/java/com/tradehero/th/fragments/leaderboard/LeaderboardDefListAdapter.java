@@ -21,18 +21,24 @@ public class LeaderboardDefListAdapter extends DTOAdapter<LeaderboardDefDTO, Lea
 
     @Override protected View getView(int position, LeaderboardDefView convertView)
     {
-        convertView.setBackgroundResource(R.drawable.leaderboard_button_border_full);
         if (getCount() >= 2)
         {
             if (position == 0)
             {
                 convertView.setBackgroundResource(R.drawable.leaderboard_button_border_top);
             }
-
-            if (position == getCount() - 1)
+            else if (position == getCount() - 1)
             {
                 convertView.setBackgroundResource(R.drawable.leaderboard_button_border_bottom);
             }
+            else
+            {
+                convertView.setBackgroundResource(R.drawable.leaderboard_button_border_middle);
+            }
+        }
+        else
+        {
+            convertView.setBackgroundResource(R.drawable.leaderboard_button_border_full);
         }
 
         return convertView;
