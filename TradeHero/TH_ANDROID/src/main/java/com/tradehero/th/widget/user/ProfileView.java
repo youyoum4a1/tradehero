@@ -31,6 +31,7 @@ public class ProfileView extends FrameLayout implements DTOView<UserProfileDTO>
     private TextView exchangesCount;
 
     @Inject protected Picasso picasso;
+    private boolean initiated;
 
     //<editor-fold desc="Constructors">
     public ProfileView(Context context)
@@ -46,7 +47,6 @@ public class ProfileView extends FrameLayout implements DTOView<UserProfileDTO>
     public ProfileView(Context context, AttributeSet attrs, int defStyle)
     {
         super(context, attrs, defStyle);
-        init();
     }
     //</editor-fold>
 
@@ -58,6 +58,9 @@ public class ProfileView extends FrameLayout implements DTOView<UserProfileDTO>
 
     private void init()
     {
+        if (initiated) return;
+        initiated = true;
+
         avatar = (ImageView) findViewById(R.id.user_profile_avatar);
         background = (ImageView) findViewById(R.id.user_profile_background_by_sketched_avatar);
 
@@ -89,7 +92,7 @@ public class ProfileView extends FrameLayout implements DTOView<UserProfileDTO>
 
         Double roi = dto.portfolio.roiSinceInception;
         if (roi == null) {
-            roi = new Double(0);
+            roi = 0.0;
         }
         THSignedNumber thRoiSinceInception = new THSignedNumber(THSignedNumber.TYPE_PERCENTAGE, roi*100);
         roiSinceInception.setText(thRoiSinceInception.toString());
@@ -97,7 +100,7 @@ public class ProfileView extends FrameLayout implements DTOView<UserProfileDTO>
 
         Double pl = dto.portfolio.plSinceInception;
         if (pl == null) {
-            pl = new Double(0);
+            pl = 0.0;
         }
         THSignedNumber thPlSinceInception = new THSignedNumber(THSignedNumber.TYPE_MONEY, pl);
         plSinceInception.setText(thPlSinceInception.toString());
