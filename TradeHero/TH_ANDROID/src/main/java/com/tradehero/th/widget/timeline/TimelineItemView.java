@@ -17,10 +17,14 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.local.TimelineItem;
 import com.tradehero.th.api.misc.MediaDTO;
+import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.users.UserProfileCompactDTO;
+import com.tradehero.th.base.Navigator;
 import com.tradehero.th.base.NavigatorActivity;
 import com.tradehero.th.base.THUser;
 import com.tradehero.th.fragments.timeline.TimelineFragment;
+import com.tradehero.th.fragments.trade.AbstractTradeFragment;
+import com.tradehero.th.fragments.trade.TradeFragment;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.widget.MarkdownTextView;
 import java.util.Date;
@@ -104,6 +108,7 @@ public class TimelineItemView extends RelativeLayout implements DTOView<Timeline
 
     @Override public void onClick(View textView, String data, String key, String[] matchStrings)
     {
+        Navigator navigator = ((NavigatorActivity) getContext()).getNavigator();
         switch (key)
         {
             case "user":
@@ -113,10 +118,13 @@ public class TimelineItemView extends RelativeLayout implements DTOView<Timeline
 
                 if (THUser.getCurrentUserBase().id != userId)
                 {
-                    ((NavigatorActivity)getContext()).getNavigator().pushFragment(TimelineFragment.class, b, true);
+                    navigator.pushFragment(TimelineFragment.class, b, true);
                 }
                 break;
             case "security":
+                if (matchStrings.length < 3) break;
+                SecurityId securityId = new SecurityId(matchStrings[1], matchStrings[2]);
+                navigator.pushFragment(TradeFragment.class, securityId.getArgs());
                 THToast.show("Link clicked " + data);
                 break;
         }
