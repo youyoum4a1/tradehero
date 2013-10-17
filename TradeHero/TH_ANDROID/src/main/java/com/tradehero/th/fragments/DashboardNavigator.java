@@ -64,8 +64,11 @@ public class DashboardNavigator extends Navigator
     @Override public void popFragment()
     {
         super.popFragment();
-        manager.executePendingTransactions();
-        updateTabBarOnNavigate();
+        if (manager.getBackStackEntryCount() > 0)
+        {
+            manager.executePendingTransactions();
+            updateTabBarOnNavigate();
+        }
     }
 
     private void updateTabBarOnNavigate()
