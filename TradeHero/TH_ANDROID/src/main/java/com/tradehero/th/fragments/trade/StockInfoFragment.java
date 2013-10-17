@@ -16,8 +16,11 @@ import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th.utils.NumberDisplayUtils;
+import com.tradehero.th.utils.SecurityUtils;
 import dagger.Lazy;
 import javax.inject.Inject;
+import sun.security.util.SecurityConstants;
 
 public class StockInfoFragment extends AbstractSecurityInfoFragment<SecurityCompactDTO>
 {
@@ -99,7 +102,7 @@ public class StockInfoFragment extends AbstractSecurityInfoFragment<SecurityComp
             }
             else
             {
-                mPreviousClose.setText(String.format("%,.3f", value.previousClose.doubleValue()));
+                mPreviousClose.setText(String.format("%s %,.3f", value.currencyDisplay, value.previousClose.doubleValue()));
             }
         }
     }
@@ -114,7 +117,7 @@ public class StockInfoFragment extends AbstractSecurityInfoFragment<SecurityComp
             }
             else
             {
-                mOpen.setText(String.format("%,.2f", value.open.doubleValue()));
+                mOpen.setText(String.format("%s %,.2f", value.currencyDisplay, value.open.doubleValue()));
             }
         }
         //double open = YUtils.parseQuoteValue(yQuotes.get("Open"));
@@ -130,7 +133,7 @@ public class StockInfoFragment extends AbstractSecurityInfoFragment<SecurityComp
             }
             else
             {
-                mDaysHigh.setText(String.format("%,.2f", value.high.doubleValue()));
+                mDaysHigh.setText(String.format("%s %,.2f", value.currencyDisplay, value.high.doubleValue()));
             }
         }
         //double daysHigh = YUtils.parseQuoteValue(yQuotes.get("Day's High"));
@@ -146,7 +149,7 @@ public class StockInfoFragment extends AbstractSecurityInfoFragment<SecurityComp
             }
             else
             {
-                mDaysLow.setText(String.format("%,.2f", value.low.doubleValue()));
+                mDaysLow.setText(String.format("%s %,.2f", value.currencyDisplay, value.low.doubleValue()));
             }
         }
         //double daysLow = YUtils.parseQuoteValue(yQuotes.get("Day's Low"));
@@ -162,7 +165,7 @@ public class StockInfoFragment extends AbstractSecurityInfoFragment<SecurityComp
             }
             else
             {
-                mMarketCap.setText(String.format("%,.2f", value.marketCap.doubleValue()));
+                mMarketCap.setText(String.format("%s %s", SecurityUtils.DEFAULT_VIRTUAL_CASH_CURRENCY_DISPLAY, NumberDisplayUtils.formatWithRelevantDigits(value.marketCap.doubleValue(), 4)));
             }
         }
     }

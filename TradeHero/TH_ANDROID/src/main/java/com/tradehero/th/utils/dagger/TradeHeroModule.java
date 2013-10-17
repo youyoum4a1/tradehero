@@ -43,6 +43,7 @@ import com.tradehero.th.persistence.security.SecurityCompactListCache;
 import com.tradehero.th.persistence.user.AbstractUserStore;
 import com.tradehero.th.persistence.user.UserManager;
 import com.tradehero.th.persistence.user.UserStore;
+import com.tradehero.th.utils.NumberDisplayUtils;
 import com.tradehero.th.widget.MarkdownTextView;
 import com.tradehero.th.widget.portfolio.PortfolioHeaderItemView;
 import com.tradehero.th.widget.position.PositionQuickViewHolder;
@@ -107,7 +108,8 @@ import javax.inject.Singleton;
         },
         staticInjections =
         {
-                THUser.class
+                THUser.class,
+                NumberDisplayUtils.class,
         }
 )
 public class TradeHeroModule

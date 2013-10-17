@@ -147,4 +147,11 @@
 
   <!-- Portfolio detail -->
 
+  <!-- Number presentation -->
+  <string name="number_presentation_unit_suffix"></string>
+  <string name="number_presentation_thousand_suffix">k</string>
+  <string name="number_presentation_million_suffix">M</string>
+  <string name="number_presentation_billion_suffix">B</string>
+  <string name="number_presentation_trillion_suffix">Tr</string>
+
 </resources>
