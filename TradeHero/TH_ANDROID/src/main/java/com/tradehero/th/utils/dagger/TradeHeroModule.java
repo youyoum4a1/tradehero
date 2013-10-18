@@ -5,7 +5,7 @@ import android.content.Context;
 import com.squareup.picasso.Picasso;
 import com.tradehero.common.cache.DatabaseCache;
 import com.tradehero.common.persistence.CacheHelper;
-import com.tradehero.th.api.form.UserAvailabilityRequester;
+import com.tradehero.th.api.form.AbstractUserAvailabilityRequester;
 import com.tradehero.th.base.THUser;
 import com.tradehero.th.fragments.authentication.EmailSignInFragment;
 import com.tradehero.th.fragments.leaderboard.LeaderboardFragment;
@@ -46,6 +46,7 @@ import com.tradehero.th.persistence.user.UserManager;
 import com.tradehero.th.persistence.user.UserStore;
 import com.tradehero.th.utils.NumberDisplayUtils;
 import com.tradehero.th.widget.MarkdownTextView;
+import com.tradehero.th.widget.ServerValidatedUsernameText;
 import com.tradehero.th.widget.portfolio.PortfolioHeaderItemView;
 import com.tradehero.th.widget.position.PositionQuickViewHolder;
 import com.tradehero.th.widget.timeline.TimelineItemView;
@@ -61,6 +62,8 @@ import javax.inject.Singleton;
         {
                 SettingsFragment.class,
                 EmailSignInFragment.class,
+                ServerValidatedUsernameText.UserAvailabilityRequester.class,
+                ServerValidatedUsernameText.class,
                 TrendingFragment.class,
                 SearchStockPeopleFragment.class,
                 TradeFragment.class,
@@ -80,7 +83,7 @@ import javax.inject.Singleton;
                 PositionListFragment.class,
                 PositionQuickViewHolder.class,
 
-                UserAvailabilityRequester.class,
+                AbstractUserAvailabilityRequester.class,
                 SearchStockPageItemListLoader.class,
                 TimelinePagedItemListLoader.class,
 
@@ -106,7 +109,7 @@ import javax.inject.Singleton;
 
                 LeaderboardFragment.class,
                 LeaderboardDefListCache.class,
-                LeaderboardDefCache.class,
+                LeaderboardDefCache.class
         },
         staticInjections =
         {

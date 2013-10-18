@@ -2,31 +2,33 @@ package com.tradehero.th.api.form;
 
 import com.tradehero.th.api.users.UserAvailabilityDTO;
 import com.tradehero.th.network.CallbackWithSpecificNotifiers;
-import com.tradehero.th.network.NetworkEngine;
 import com.tradehero.th.network.service.UserService;
-import retrofit.Callback;
+import com.tradehero.th.utils.DaggerUtils;
+import dagger.Lazy;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
 import javax.inject.Inject;
 
 /** Created with IntelliJ IDEA. User: tho Date: 8/28/13 Time: 4:24 PM Copyright (c) TradeHero */
-public abstract class UserAvailabilityRequester extends CallbackWithSpecificNotifiers<UserAvailabilityDTO>
+public abstract class AbstractUserAvailabilityRequester extends CallbackWithSpecificNotifiers<UserAvailabilityDTO>
 {
-    private String displayName;
+    protected String displayName;
     private boolean available;
     private boolean queried = false;
     private boolean received = false;
 
-    @Inject UserService userService;
+    @Inject protected Lazy<UserService> userService;
 
-    public UserAvailabilityRequester(String displayName)
+    public AbstractUserAvailabilityRequester(String displayName)
     {
+        this();
         this.displayName = displayName;
     }
 
-    public UserAvailabilityRequester()
+    public AbstractUserAvailabilityRequester()
     {
+        DaggerUtils.inject(this);
     }
 
     public boolean isAvailable()
@@ -55,7 +57,7 @@ public abstract class UserAvailabilityRequester extends CallbackWithSpecificNoti
         if (needsToAskAgain())
         {
             notifyIsQuerying(true);
-            userService.checkDisplayNameAvailable(displayName, this);
+            userService.get().checkDisplayNameAvailable(displayName, this);
             queried = true;
         }
     }
