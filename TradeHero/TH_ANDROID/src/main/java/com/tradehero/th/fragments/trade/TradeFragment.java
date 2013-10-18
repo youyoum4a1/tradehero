@@ -1124,6 +1124,13 @@ public class TradeFragment extends AbstractTradeFragment
     }
     //</editor-fold>
 
+    //<editor-fold desc="BaseFragment.TabBarVisibilityInformer">
+    @Override public boolean isTabBarVisible()
+    {
+        return false;
+    }
+    //</editor-fold>
+
     //<editor-fold desc="Interface Creators">
     private Callback createLogoReadyCallback()
     {

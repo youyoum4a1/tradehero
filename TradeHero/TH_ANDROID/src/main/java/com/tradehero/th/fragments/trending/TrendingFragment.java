@@ -317,4 +317,11 @@ public class TrendingFragment extends DashboardFragment implements DTOCache.List
             }
         }
     }
+
+    //<editor-fold desc="BaseFragment.TabBarVisibilityInformer">
+    @Override public boolean isTabBarVisible()
+    {
+        return true;
+    }
+    //</editor-fold>
 }

@@ -209,4 +209,11 @@ public class LeaderboardFragment extends DashboardFragment implements DTOCache.L
         return new LeaderboardDefMostSkilledListAdapter(
                 getActivity(), getActivity().getLayoutInflater(), leaderboardDefCache.getOrFetch(keys), R.layout.leaderboard_def_item);
     }
+
+    //<editor-fold desc="BaseFragment.TabBarVisibilityInformer">
+    @Override public boolean isTabBarVisible()
+    {
+        return true;
+    }
+    //</editor-fold>
 }

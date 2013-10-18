@@ -28,21 +28,23 @@ public class PositionItemAdapter extends BaseAdapter
     public static final String TAG = PositionItemAdapter.class.getName();
 
     private List<PositionDTO> receivedPositions;
-    private List<FiledPositionId> openPositions;
+    private List<FiledPositionId> openPositions; // If nothing, it will show the positionNothingId layout
     private List<FiledPositionId> closedPositions;
 
     protected final Context context;
     protected final LayoutInflater inflater;
     private final int headerLayoutId;
     private final int positionLayoutId;
+    private final int positionNothingId;
 
-    public PositionItemAdapter(Context context, LayoutInflater inflater, int headerLayoutId, int positionLayoutId)
+    public PositionItemAdapter(Context context, LayoutInflater inflater, int headerLayoutId, int positionLayoutId, int positionNothingId)
     {
         super();
         this.context = context;
         this.inflater = inflater;
         this.headerLayoutId = headerLayoutId;
         this.positionLayoutId = positionLayoutId;
+        this.positionNothingId = positionNothingId;
     }
 
     @Override public boolean hasStableIds()
@@ -53,6 +55,12 @@ public class PositionItemAdapter extends BaseAdapter
     public int getOpenPositionsCount()
     {
         return openPositions == null ? 0 : openPositions.size();
+    }
+
+    public int getVisibleOpenPositionsCount()
+    {
+        // If the list is empty, it will still show "tap to trade"
+        return openPositions == null ? 0 : Math.max(1, openPositions.size());
     }
 
     public int getClosedPositionsCount()
@@ -67,7 +75,7 @@ public class PositionItemAdapter extends BaseAdapter
 
     public int getClosedPositionIndex(int position)
     {
-        return position - 2 - getOpenPositionsCount();
+        return position - 2 - getVisibleOpenPositionsCount();
     }
 
     public boolean isPositionHeaderOpen(int position)
@@ -77,17 +85,17 @@ public class PositionItemAdapter extends BaseAdapter
 
     public boolean isOpenPosition(int position)
     {
-        return position >= 1 && position <= getOpenPositionsCount();
+        return position >= 1 && position <= getVisibleOpenPositionsCount();
     }
 
     public boolean isPositionHeaderClosed(int position)
     {
-        return position == (getOpenPositionsCount() + 1);
+        return position == (getVisibleOpenPositionsCount() + 1);
     }
 
     public boolean isClosedPosition(int position)
     {
-        return position >= (getOpenPositionsCount() + 2);
+        return position >= (getVisibleOpenPositionsCount() + 2);
     }
 
     @Override public long getItemId(int position)
@@ -99,7 +107,14 @@ public class PositionItemAdapter extends BaseAdapter
         }
         else if (isOpenPosition(position))
         {
-            itemId = openPositions.get(position - 1).hashCode();
+            if (getOpenPositionsCount() == 0)
+            {
+                itemId = "tapToTrade".hashCode();
+            }
+            else
+            {
+                itemId = openPositions.get(position - 1).hashCode();
+            }
         }
         else if (isPositionHeaderClosed(position))
         {
@@ -107,19 +122,19 @@ public class PositionItemAdapter extends BaseAdapter
         }
         else
         {
-            itemId = closedPositions.get(position - 2 - getOpenPositionsCount()).hashCode();
+            itemId = closedPositions.get(position - 2 - getVisibleOpenPositionsCount()).hashCode();
         }
         return itemId;
     }
 
     @Override public int getCount()
     {
-        return 2 + getOpenPositionsCount() + getClosedPositionsCount();
+        return 2 + getVisibleOpenPositionsCount() + getClosedPositionsCount();
     }
 
     @Override public Object getItem(int position)
     {
-        if (isOpenPosition(position))
+        if (isOpenPosition(position) && getOpenPositionsCount() > 0)
         {
             return openPositions.get(getOpenPositionIndex(position));
         }
@@ -155,7 +170,11 @@ public class PositionItemAdapter extends BaseAdapter
             view = inflater.inflate(headerLayoutId, parent, false);
             ((PositionHeaderItemView) view).setHeaderTextContent(getHeaderText(true));
         }
-        else if (isOpenPosition(position))
+        else if (isOpenPosition(position) && getOpenPositionsCount() == 0)
+        {
+            view = inflater.inflate(positionNothingId, parent, false);
+        }
+        else if (isOpenPosition(position) && getOpenPositionsCount() > 0)
         {
             view = inflater.inflate(positionLayoutId, parent, false);
             ((PositionQuickView) view).display((FiledPositionId) getItem(position));

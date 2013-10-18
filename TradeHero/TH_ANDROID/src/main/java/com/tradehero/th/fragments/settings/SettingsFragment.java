@@ -67,7 +67,8 @@ public class SettingsFragment extends DashboardFragment
         primaryListView = (ListView) view.findViewById(R.id.settings_primary);
         primaryListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l)
+            {
                 switch (i)
                 {
                     case ITEM_FAQ:
@@ -91,7 +92,8 @@ public class SettingsFragment extends DashboardFragment
         notificationsListView = (ListView) view.findViewById(R.id.settings_notification);
         notificationsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l)
+            {
             }
         });
         notificationsListView.setAdapter(notificationsListViewAdapter);
@@ -105,7 +107,8 @@ public class SettingsFragment extends DashboardFragment
         miscListView = (ListView) view.findViewById(R.id.settings_misc);
         miscListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l)
+            {
             }
         });
         miscListView.setAdapter(miscListViewAdapter);
@@ -125,4 +128,11 @@ public class SettingsFragment extends DashboardFragment
     {
         super.onDestroyView();
     }
+
+    //<editor-fold desc="BaseFragment.TabBarVisibilityInformer">
+    @Override public boolean isTabBarVisible()
+    {
+        return true;
+    }
+    //</editor-fold>
 }

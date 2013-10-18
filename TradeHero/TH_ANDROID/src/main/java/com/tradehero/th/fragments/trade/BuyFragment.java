@@ -673,4 +673,11 @@ public class BuyFragment extends AbstractTradeFragment
     {
         navigator.popFragment();
     }
+
+    //<editor-fold desc="BaseFragment.TabBarVisibilityInformer">
+    @Override public boolean isTabBarVisible()
+    {
+        return false;
+    }
+    //</editor-fold>
 }

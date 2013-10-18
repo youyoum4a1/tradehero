@@ -4,16 +4,16 @@ import android.os.Bundle;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.MenuItem;
 import com.tradehero.th.R;
+import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.base.Navigator;
-import com.tradehero.th.base.NavigatorActivity;
 import com.tradehero.th.fragments.DashboardNavigator;
 
 public class DashboardActivity extends SherlockFragmentActivity
-    implements NavigatorActivity
+    implements DashboardNavigatorActivity
 {
     public static final String TAG = DashboardActivity.class.getSimpleName();
 
-    private Navigator navigator;
+    private DashboardNavigator navigator;
 
     public void onCreate(Bundle savedInstanceState)
     {
@@ -35,8 +35,13 @@ public class DashboardActivity extends SherlockFragmentActivity
         return super.onOptionsItemSelected(item);
     }
 
-    //<editor-fold desc="NavigatorActivity">
+    //<editor-fold desc="DashboardNavigatorActivity">
     @Override public Navigator getNavigator()
+    {
+        return navigator;
+    }
+
+    @Override public DashboardNavigator getDashboardNavigator()
     {
         return navigator;
     }

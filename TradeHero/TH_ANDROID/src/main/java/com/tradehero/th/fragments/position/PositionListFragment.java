@@ -1,6 +1,5 @@
 package com.tradehero.th.fragments.position;
 
-import android.app.Activity;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -13,26 +12,23 @@ import android.widget.TextView;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
-import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.position.PositionItemAdapter;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
-import com.tradehero.th.api.portfolio.PortfolioId;
 import com.tradehero.th.api.position.GetPositionsDTO;
-import com.tradehero.th.api.position.OwnedPositionId;
-import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.fragments.base.DashboardFragment;
-import com.tradehero.th.persistence.position.FiledPositionCache;
+import com.tradehero.th.fragments.dashboard.DashboardTabType;
 import com.tradehero.th.persistence.position.GetPositionsCache;
+import com.tradehero.th.widget.position.PositionQuickNothingView;
 import dagger.Lazy;
 import javax.inject.Inject;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/16/13 Time: 5:56 PM To change this template use File | Settings | File Templates. */
 public class PositionListFragment extends DashboardFragment
-    implements BaseFragment.ArgumentsChangeListener
+    implements BaseFragment.ArgumentsChangeListener, BaseFragment.TabBarVisibilityInformer
 {
     public static final String TAG = PositionListFragment.class.getSimpleName();
 
@@ -71,7 +67,8 @@ public class PositionListFragment extends DashboardFragment
                         getActivity(),
                         getActivity().getLayoutInflater(),
                         R.layout.position_item_header,
-                        R.layout.position_quick);
+                        R.layout.position_quick,
+                        R.layout.position_quick_nothing);
             }
 
             openPositions = (ListView) view.findViewById(R.id.position_list);
@@ -91,7 +88,14 @@ public class PositionListFragment extends DashboardFragment
 
     private void handlePositionItemClicked(AdapterView<?> parent, View view, int position, long id)
     {
-        THToast.show("No item handler for now");
+        if (view instanceof PositionQuickNothingView)
+        {
+            navigator.goToTab(DashboardTabType.TRENDING);
+        }
+        else
+        {
+            THToast.show("No item handler for now");
+        }
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
@@ -278,6 +282,13 @@ public class PositionListFragment extends DashboardFragment
     @Override public void onArgumentsChanged(Bundle args)
     {
         desiredArguments = args;
+    }
+    //</editor-fold>
+
+    //<editor-fold desc="BaseFragment.TabBarVisibilityInformer">
+    @Override public boolean isTabBarVisible()
+    {
+        return true;
     }
     //</editor-fold>
 }

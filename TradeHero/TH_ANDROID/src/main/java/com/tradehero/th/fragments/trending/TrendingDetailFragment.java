@@ -131,4 +131,11 @@ public class TrendingDetailFragment extends DashboardFragment
     {
         super.onStop();
     }
+
+    //<editor-fold desc="BaseFragment.TabBarVisibilityInformer">
+    @Override public boolean isTabBarVisible()
+    {
+        return true;
+    }
+    //</editor-fold>
 }

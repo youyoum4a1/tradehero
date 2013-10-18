@@ -1,23 +1,24 @@
 package com.tradehero.th.fragments.base;
 
 import android.os.Bundle;
-import com.tradehero.th.base.Navigator;
-import com.tradehero.th.base.NavigatorActivity;
+import com.tradehero.th.base.DashboardNavigatorActivity;
+import com.tradehero.th.fragments.DashboardNavigator;
 
 /** Created with IntelliJ IDEA. User: tho Date: 9/30/13 Time: 6:56 PM Copyright (c) TradeHero */
-public class DashboardFragment extends BaseFragment
+abstract public class DashboardFragment extends BaseFragment
+    implements BaseFragment.TabBarVisibilityInformer
 {
-    protected Navigator navigator;
+    protected DashboardNavigator navigator;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
 
-        if (!(getActivity() instanceof NavigatorActivity))
+        if (!(getActivity() instanceof DashboardNavigatorActivity))
         {
-            throw new IllegalArgumentException("DashboardActivity need to implement Navigator");
+            throw new IllegalArgumentException("DashboardActivity needs to implement DashboardNavigator");
         }
 
-        navigator = ((NavigatorActivity)getActivity()).getNavigator();
+        navigator = ((DashboardNavigatorActivity) getActivity()).getDashboardNavigator();
     }
 }

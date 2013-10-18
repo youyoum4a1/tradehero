@@ -8,17 +8,17 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.r11.app.FragmentTabHost;
 import android.view.View;
 import android.view.animation.AnimationUtils;
+import android.widget.TabHost;
+import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
 import com.tradehero.th.base.Navigator;
-import com.tradehero.th.fragments.portfolio.PortfolioListFragment;
-import com.tradehero.th.fragments.leaderboard.LeaderboardFragment;
-import com.tradehero.th.fragments.timeline.MeTimelineFragment;
-import com.tradehero.th.fragments.trending.TrendingFragment;
-import com.tradehero.th.fragments.settings.SettingsFragment;
+import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.fragments.dashboard.DashboardTabType;
 
 /** Created with IntelliJ IDEA. User: tho Date: 10/11/13 Time: 4:24 PM Copyright (c) TradeHero */
 public class DashboardNavigator extends Navigator
 {
+    public final static String TAG = DashboardNavigator.class.getSimpleName();
     private final FragmentActivity activity;
 
     private static final String BUNDLE_KEY = "key";
@@ -37,31 +37,50 @@ public class DashboardNavigator extends Navigator
         mTabHost.setup(activity, activity.getSupportFragmentManager(), R.id.realtabcontent);
 
         // TODO: change setting icon
-        addNewTab(activity.getString(R.string.action_settings), R.drawable.store_selector, SettingsFragment.class);
-        addNewTab(activity.getString(R.string.trending), R.drawable.trending_selector, TrendingFragment.class);
-        addNewTab(activity.getString(R.string.community), R.drawable.community_selector, LeaderboardFragment.class);
-        addNewTab(activity.getString(R.string.home), R.drawable.home_selector, MeTimelineFragment.class);
-        addNewTab(activity.getString(R.string.portfolio), R.drawable.portfolio_selector, PortfolioListFragment.class);
-        addNewTab(activity.getString(R.string.store), R.drawable.store_selector, StoreScreenFragment.class);
+        for (DashboardTabType tabType: DashboardTabType.values())
+        {
+            addNewTab(tabType);
+        }
 
         mTabHost.setCurrentTabByTag(activity.getString(R.string.home));
     }
 
-    private void addNewTab(String tabTag, int tabIndicatorDrawableId, Class<?> fragmentClass)
+    private TabHost.TabSpec makeTabSpec(DashboardTabType tabType)
     {
-        Bundle b = new Bundle();
-        b.putString(BUNDLE_KEY, tabTag);
-        mTabHost.addTab(mTabHost
-                .newTabSpec(tabTag)
-                .setIndicator("", activity.getResources().getDrawable(tabIndicatorDrawableId)),
-                fragmentClass, b);
+        return mTabHost.newTabSpec(activity.getString(tabType.stringResId));
     }
 
-    @Override public void pushFragment(Class<? extends Fragment> fragmentClass, Bundle args, boolean withAnimation)
+    private void addNewTab(DashboardTabType tabType)
     {
-        super.pushFragment(fragmentClass, args, withAnimation);
+        Bundle b = new Bundle();
+        b.putString(BUNDLE_KEY, activity.getString(tabType.stringResId));
+        mTabHost.addTab(
+            makeTabSpec(tabType)
+                .setIndicator(
+                        "",
+                        activity.getResources().getDrawable(tabType.drawableResId)
+                ),
+            tabType.fragmentClass,
+            b);
+    }
+
+    public void goToTab(DashboardTabType tabType)
+    {
+        mTabHost.onTabChanged(makeTabSpec(tabType).getTag());
+    }
+
+    //public void clearBackStack()
+    //{
+    //    int rootFragment = manager.getBackStackEntryAt(0).getId();
+    //    manager.popBackStack(rootFragment, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+    //}
+
+    @Override public Fragment pushFragment(Class<? extends Fragment> fragmentClass, Bundle args, boolean withAnimation)
+    {
+        Fragment fragment = super.pushFragment(fragmentClass, args, withAnimation);
         manager.executePendingTransactions();
         updateTabBarOnNavigate();
+        return fragment;
     }
 
     @Override public void popFragment()
@@ -72,6 +91,7 @@ public class DashboardNavigator extends Navigator
             manager.executePendingTransactions();
             updateTabBarOnNavigate();
         }
+        THLog.d(TAG, "BackstackCount " + manager.getBackStackEntryCount());
     }
 
     private void updateTabBarOnNavigate()
