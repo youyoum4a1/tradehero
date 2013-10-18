@@ -29,7 +29,7 @@
         android:numColumns="2"
         android:paddingRight="@dimen/dashboard_padding"
         android:paddingLeft="@dimen/dashboard_padding"
-        android:paddingTop="65dp"
+        android:paddingTop="90dp"
         android:paddingBottom="55dp"
         android:clipToPadding="false"
       >
@@ -38,7 +38,7 @@
   <android.support.v4.view.ViewPager
       android:id="@+id/trending_filter_pager"
       android:layout_width="match_parent"
-      android:layout_height="60dp"
+      android:layout_height="80dp"
       android:layout_alignParentTop="true"
     />
 

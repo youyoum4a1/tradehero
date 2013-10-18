@@ -32,6 +32,24 @@ public class TrendingSecurityListType extends SecurityListType
     }
     //</editor-fold>
 
+    @Override public boolean equals(SecurityListType other)
+    {
+        if (!(other instanceof TrendingSecurityListType))
+        {
+            return false;
+        }
+        return equals((TrendingSecurityListType) other);
+    }
+
+    public boolean equals(TrendingSecurityListType other)
+    {
+        if (other == null)
+        {
+            return false;
+        }
+        return exchange == null ? other.exchange == null : exchange.equals(other.exchange);
+    }
+
     @Override public int compareTo(SecurityListType securityListType)
     {
         if (securityListType == null)

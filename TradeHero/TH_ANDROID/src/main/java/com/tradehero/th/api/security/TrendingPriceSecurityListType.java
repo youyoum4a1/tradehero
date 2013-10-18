@@ -15,6 +15,20 @@ public class TrendingPriceSecurityListType extends TrendingSecurityListType
     }
     //</editor-fold>
 
+    @Override public boolean equals(TrendingSecurityListType other)
+    {
+        if (!(other instanceof TrendingPriceSecurityListType))
+        {
+            return false;
+        }
+        return equals((TrendingPriceSecurityListType) other);
+    }
+
+    public boolean equals(TrendingPriceSecurityListType other)
+    {
+        return super.equals(other);
+    }
+
     @Override public int compareTo(SecurityListType securityListType)
     {
         if (securityListType == null)

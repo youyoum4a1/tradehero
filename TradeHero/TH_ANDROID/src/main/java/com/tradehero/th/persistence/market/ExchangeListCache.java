@@ -4,45 +4,47 @@ import com.tradehero.common.persistence.StraightDTOCache;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.api.market.ExchangeDTO;
 import com.tradehero.th.api.market.ExchangeIntegerId;
+import com.tradehero.th.api.market.ExchangeListType;
 import com.tradehero.th.network.service.MarketService;
 import dagger.Lazy;
+import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import retrofit.RetrofitError;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 10/18/13 Time: 6:28 PM To change this template use File | Settings | File Templates. */
-@Singleton public class ExchangeCache extends StraightDTOCache<Integer, ExchangeIntegerId, ExchangeDTO>
+/** Created with IntelliJ IDEA. User: xavier Date: 10/18/13 Time: 7:20 PM To change this template use File | Settings | File Templates. */
+@Singleton public class ExchangeListCache extends StraightDTOCache<String, ExchangeListType, List<ExchangeDTO>>
 {
     public static final String TAG = ExchangeCache.class.getSimpleName();
-    public static final int DEFAULT_MAX_SIZE = 1000;
+    public static final int DEFAULT_MAX_SIZE = 1; // Be careful to increase when necessary
 
     @Inject Lazy<MarketService> marketService;
     @Inject Lazy<ExchangeIdCache> exchangeIdCache;
 
     //<editor-fold desc="Constructors">
-    @Inject public ExchangeCache()
+    @Inject public ExchangeListCache()
     {
         super(DEFAULT_MAX_SIZE);
     }
     //</editor-fold>
 
-    @Override protected ExchangeDTO fetch(ExchangeIntegerId key)
+    @Override protected List<ExchangeDTO> fetch(ExchangeListType key)
     {
-        ExchangeDTO exchangeDTO = null;
+        List<ExchangeDTO> exchangeDTOs = null;
         try
         {
-            exchangeDTO = marketService.get().getExchange(key.key);
+            exchangeDTOs = marketService.get().getExchanges();
         }
         catch (RetrofitError e)
         {
             THLog.e(TAG, "Failed to fetch key " + key.key, e);
         }
-        return exchangeDTO;
+        return exchangeDTOs;
     }
 
-    @Override public ExchangeDTO put(ExchangeIntegerId key, ExchangeDTO value)
+    @Override public List<ExchangeDTO> put(ExchangeListType key, List<ExchangeDTO> value)
     {
-        exchangeIdCache.get().put(value.getExchangeStringId(), key);
+        exchangeIdCache.get().put(value);
         return super.put(key, value);
     }
 }

@@ -20,6 +20,7 @@ import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.trending.TrendingAdapter;
 import com.tradehero.th.adapters.trending.TrendingFilterPagerAdapter;
+import com.tradehero.th.api.market.ExchangeStringId;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.SecurityListType;
@@ -38,9 +39,13 @@ import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
 
-public class TrendingFragment extends DashboardFragment implements DTOCache.Listener<SecurityListType, List<SecurityId>>
+public class TrendingFragment extends DashboardFragment
+        implements DTOCache.Listener<SecurityListType, List<SecurityId>>, TrendingFilterPagerAdapter.OnPositionedExchangeSelectionChangedListener
 {
     private final static String TAG = TrendingFragment.class.getSimpleName();
+
+    public final static String BUNDLE_KEY_FILTER_PAGE = TrendingFragment.class.getName() + ".filterPage";
+    public final static String BUNDLE_KEY_SELECTED_EXCHANGE_NAMES = TrendingFragment.class.getName() + ".selectedExchangeNames";
 
     private View actionBar;
     private ImageView mBullIcon;
@@ -54,12 +59,14 @@ public class TrendingFragment extends DashboardFragment implements DTOCache.List
     private TrendingGridView mTrendingGridView;
 
     private int filterPageSelected = 0;
+    private ExchangeStringId[] selectedExchangeStringIds = new ExchangeStringId[TrendingFilterPagerAdapter.FRAGMENT_COUNT];
     private boolean isQuerying;
     @Inject Lazy<SecurityCompactListCache> securityCompactListCache;
     @Inject Lazy<SecurityCompactCache> securityCompactCache;
     private  AsyncTask<Void, Void, List<SecurityId>> trendingTask;
     private List<SecurityCompactDTO> securityCompactDTOs;
     protected TrendingAdapter trendingAdapter;
+    protected TrendingFilterSelectorFragment.OnResumedListener trendingFilterSelectorResumedListener;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -70,6 +77,16 @@ public class TrendingFragment extends DashboardFragment implements DTOCache.List
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         THLog.i(TAG, "onCreateView");
+        if (savedInstanceState != null)
+        {
+            filterPageSelected = savedInstanceState.getInt(BUNDLE_KEY_FILTER_PAGE, filterPageSelected);
+            String[] exchangeNames = savedInstanceState.getStringArray(BUNDLE_KEY_SELECTED_EXCHANGE_NAMES);
+            for (int i = 0; i < selectedExchangeStringIds.length; i++)
+            {
+                selectedExchangeStringIds[i] = new ExchangeStringId(exchangeNames[i] == null ? "" : exchangeNames[i]);
+            }
+        }
+
         View view = inflater.inflate(R.layout.fragment_trending, container, false);
         initViews(view);
         return view;
@@ -99,7 +116,7 @@ public class TrendingFragment extends DashboardFragment implements DTOCache.List
         if (mTrendingFilterPagerAdapter == null)
         {
             mTrendingFilterPagerAdapter = new TrendingFilterPagerAdapter(getActivity(), getFragmentManager());
-            mTrendingFilterPagerAdapter.setOnResumedListener(new TrendingFilterSelectorFragment.OnResumedListener()
+            trendingFilterSelectorResumedListener = new TrendingFilterSelectorFragment.OnResumedListener()
             {
                 @Override public void onResumed(final Fragment fragment)
                 {
@@ -111,7 +128,9 @@ public class TrendingFragment extends DashboardFragment implements DTOCache.List
                         }
                     });
                 }
-            });
+            };
+            mTrendingFilterPagerAdapter.setOnResumedListener(trendingFilterSelectorResumedListener);
+            mTrendingFilterPagerAdapter.setOnPositionedExchangeSelectionChangedListener(this);
         }
         mFilterViewPager = (ViewPager) view.findViewById(R.id.trending_filter_pager);
 
@@ -175,6 +194,19 @@ public class TrendingFragment extends DashboardFragment implements DTOCache.List
         displayFilterPager();
     }
 
+    @Override public void onSaveInstanceState(Bundle outState)
+    {
+        super.onSaveInstanceState(outState);
+        outState.putInt(BUNDLE_KEY_FILTER_PAGE, filterPageSelected);
+        String[] exchangeNames = new String[selectedExchangeStringIds.length];
+        int index = 0;
+        for (ExchangeStringId exchangeStringId: selectedExchangeStringIds)
+        {
+            exchangeNames[index++] = exchangeStringId.key;
+        }
+        outState.putStringArray(BUNDLE_KEY_SELECTED_EXCHANGE_NAMES, exchangeNames);
+    }
+
     @Override public void onDestroyOptionsMenu()
     {
         THLog.d(TAG, "onDestroyOptionsMenu");
@@ -204,6 +236,7 @@ public class TrendingFragment extends DashboardFragment implements DTOCache.List
         if (mTrendingFilterPagerAdapter != null)
         {
             mTrendingFilterPagerAdapter.setOnResumedListener(null);
+            mTrendingFilterPagerAdapter.setOnPositionedExchangeSelectionChangedListener(null);
         }
         mTrendingFilterPagerAdapter = null;
 
@@ -248,19 +281,37 @@ public class TrendingFragment extends DashboardFragment implements DTOCache.List
     public TrendingSecurityListType getSecurityListType()
     {
         TrendingSecurityListType securityListType = null;
+
+        String usableExchangeName = null;
+        if (selectedExchangeStringIds[filterPageSelected] != null)
+        {
+            usableExchangeName = selectedExchangeStringIds[filterPageSelected].key;
+            if (usableExchangeName.isEmpty())
+            {
+                usableExchangeName = null;
+            }
+        }
+
         switch (filterPageSelected)
         {
             case TrendingFilterSelectorBasicFragment.POSITION_IN_PAGER:
-                securityListType = new TrendingBasicSecurityListType();
+                securityListType = usableExchangeName == null ?
+                        new TrendingBasicSecurityListType() :
+                        new TrendingBasicSecurityListType(usableExchangeName);
                 break;
             case TrendingFilterSelectorVolumeFragment.POSITION_IN_PAGER:
-                securityListType = new TrendingVolumeSecurityListType();
+                securityListType = usableExchangeName == null ?
+                        new TrendingVolumeSecurityListType() :
+                        new TrendingVolumeSecurityListType(usableExchangeName);
                 break;
             case TrendingFilterSelectorPriceFragment.POSITION_IN_PAGER:
-                securityListType = new TrendingPriceSecurityListType();
+                securityListType = usableExchangeName == null ?
+                        new TrendingPriceSecurityListType() :
+                        new TrendingPriceSecurityListType(usableExchangeName);
                 break;
             default:
                 THLog.d(TAG, "getSecurityListType: Unhandled filterPageSelector: " + filterPageSelected);
+                securityListType = new TrendingBasicSecurityListType();
         }
 
         // TODO set exchange selection
@@ -268,10 +319,16 @@ public class TrendingFragment extends DashboardFragment implements DTOCache.List
         return securityListType;
     }
 
+    //<editor-fold desc="DTOCache.Listener<SecurityListType, List<SecurityId>>">
     @Override public void onDTOReceived(SecurityListType key, List<SecurityId> value)
     {
-        setDataAdapterToGridView(securityCompactCache.get().getOrFetch(value));
+        // To make sure we do not update to some old stuff
+        if (key.equals(getSecurityListType()))
+        {
+            setDataAdapterToGridView(securityCompactCache.get().getOrFetch(value));
+        }
     }
+    //</editor-fold>
 
     protected void showProgressSpinner(boolean flag)
     {
@@ -317,6 +374,14 @@ public class TrendingFragment extends DashboardFragment implements DTOCache.List
             }
         }
     }
+
+    //<editor-fold desc="TrendingFilterPagerAdapter.OnPositionedExchangeSelectionChangedListener">
+    @Override public void onExchangeSelectionChanged(int fragmentPosition, ExchangeStringId exchangeId)
+    {
+        selectedExchangeStringIds[fragmentPosition] = exchangeId;
+        refreshGridView();
+    }
+    //</editor-fold>
 
     //<editor-fold desc="BaseFragment.TabBarVisibilityInformer">
     @Override public boolean isTabBarVisible()

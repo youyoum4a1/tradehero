@@ -92,28 +92,22 @@ public class SpinnerIconAdapter extends ArrayAdapter<CharSequence>
 
     @Override public View getView(int position, View convertView, ViewGroup parent)
     {
-        if (convertView == null)
-        {
-            convertView = LayoutInflater.from(getContext()).inflate(R.layout.search_spinner_item, null);
-        }
+        View parentView = super.getView(position, convertView, parent);
 
-        updateText(convertView, position);
-        updateIcon(convertView, position);
+        updateText(parentView, position);
+        updateIcon(parentView, position);
 
-        return convertView;
+        return parentView;
     }
 
     @Override public View getDropDownView(int position, View convertView, ViewGroup parent)
     {
-        if (convertView == null)
-        {
-            convertView = LayoutInflater.from(getContext()).inflate(R.layout.search_spinner_dropdown_item, null);
-        }
+        View parentView = super.getDropDownView(position, convertView, parent);
 
-        updateText(convertView, position);
-        updateDropDownIcon(convertView, position);
+        updateText(parentView, position);
+        updateDropDownIcon(parentView, position);
 
-        return convertView;
+        return parentView;
     }
 
     private void updateText(View container, int position)

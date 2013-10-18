@@ -44,26 +44,26 @@ public abstract class DTOAdapter<T, V extends DTOView<T>> extends BaseAdapter
 
     @Override public int getCount()
     {
-        THLog.d(TAG, "getCount");
+        //THLog.d(TAG, "getCount");
         return items != null ? items.size() : 0;
     }
 
     @Override public Object getItem(int i)
     {
-        THLog.d(TAG, "getItem " + i);
+        //THLog.d(TAG, "getItem " + i);
         return items != null ? items.get(i) : null;
     }
 
     @Override public long getItemId(int i)
     {
-        THLog.d(TAG, "getItemId " + i);
+        //THLog.d(TAG, "getItemId " + i);
         return i;
     }
 
     @SuppressWarnings("unchecked")
     @Override public View getView(int position, View convertView, ViewGroup viewGroup)
     {
-        THLog.d(TAG, "getView " + position);
+        //THLog.d(TAG, "getView " + position);
         if (convertView == null)
         {
             convertView = inflater.inflate(layoutResourceId, viewGroup, false);
@@ -85,7 +85,7 @@ public abstract class DTOAdapter<T, V extends DTOView<T>> extends BaseAdapter
 
     @Override public void notifyDataSetChanged()
     {
-        THLog.d(TAG, "notifyDataSetChanged");
+        //THLog.d(TAG, "notifyDataSetChanged");
         super.notifyDataSetChanged();
     }
 }

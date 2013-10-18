@@ -264,7 +264,7 @@ public class TrendingSecurityView extends FrameLayout implements DTOView<Securit
         }
         else
         {
-            THLog.i(TAG, "no url");
+            //THLog.i(TAG, "no url");
             mPicasso.load(securityCompactDTO.getExchangeLogoId())
                     .placeholder(R.drawable.default_image)
                     .error(R.drawable.default_image)

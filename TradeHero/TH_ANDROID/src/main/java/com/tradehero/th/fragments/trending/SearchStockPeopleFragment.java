@@ -20,6 +20,7 @@ import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.common.adapter.SpinnerIconAdapter;
+import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
@@ -34,17 +35,15 @@ import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.trade.TradeFragment;
 import com.tradehero.th.network.CallbackWithSpecificNotifiers;
 import com.tradehero.th.network.service.UserService;
-import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.persistence.security.SecurityCompactListCache;
 import com.tradehero.th.persistence.security.SecuritySearchQuery;
 import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.List;
+import javax.inject.Inject;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
-
-import javax.inject.Inject;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 9/18/13 Time: 12:09 PM To change this template use File | Settings | File Templates. */
 public class SearchStockPeopleFragment extends DashboardFragment

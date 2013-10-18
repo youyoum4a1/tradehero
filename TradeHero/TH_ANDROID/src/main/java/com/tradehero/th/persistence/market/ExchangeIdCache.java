@@ -1,8 +1,10 @@
 package com.tradehero.th.persistence.market;
 
 import com.tradehero.common.persistence.StraightDTOCache;
+import com.tradehero.th.api.market.ExchangeDTO;
 import com.tradehero.th.api.market.ExchangeIntegerId;
 import com.tradehero.th.api.market.ExchangeStringId;
+import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
@@ -22,5 +24,18 @@ import javax.inject.Singleton;
     @Override protected ExchangeIntegerId fetch(ExchangeStringId key)
     {
         throw new IllegalArgumentException("Cannot fetch here");
+    }
+
+    public void put(List<ExchangeDTO> exchangeDTOs)
+    {
+        if (exchangeDTOs == null)
+        {
+            return;
+        }
+
+        for (ExchangeDTO exchangeDTO: exchangeDTOs)
+        {
+            put(exchangeDTO.getExchangeStringId(), exchangeDTO.getExchangeIntegerId());
+        }
     }
 }

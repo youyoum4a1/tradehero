@@ -36,13 +36,13 @@ public class TrendingAdapter extends DTOAdapter<SecurityCompactDTO, TrendingSecu
     @Override public long getItemId(int i)
     {
         long itemId = ((SecurityCompactDTO) getItem(i)).getSecurityId().hashCode();
-        THLog.d(TAG, "getItemId " + i + " - " + itemId);
+        //THLog.d(TAG, "getItemId " + i + " - " + itemId);
         return itemId;
     }
 
     @Override protected View getView(int position, final TrendingSecurityView convertView)
     {
-        THLog.d(TAG, "getView position:" + position);
+        //THLog.d(TAG, "getView position:" + position);
         convertView.post(new Runnable()
         {
             @Override public void run()

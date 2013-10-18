@@ -7,8 +7,8 @@ import com.squareup.picasso.Picasso;
 import com.tradehero.common.cache.DatabaseCache;
 import com.tradehero.common.cache.LruMemFileCache;
 import com.tradehero.common.persistence.CacheHelper;
-import com.tradehero.th.api.form.AbstractUserAvailabilityRequester;
 import com.tradehero.common.utils.THLog;
+import com.tradehero.th.api.form.AbstractUserAvailabilityRequester;
 import com.tradehero.th.base.THUser;
 import com.tradehero.th.fragments.authentication.EmailSignInFragment;
 import com.tradehero.th.fragments.leaderboard.LeaderboardDefListViewFragment;
@@ -25,6 +25,9 @@ import com.tradehero.th.fragments.trade.StockInfoFragment;
 import com.tradehero.th.fragments.trade.TradeFragment;
 import com.tradehero.th.fragments.trade.YahooNewsFragment;
 import com.tradehero.th.fragments.trending.SearchStockPeopleFragment;
+import com.tradehero.th.fragments.trending.TrendingFilterSelectorBasicFragment;
+import com.tradehero.th.fragments.trending.TrendingFilterSelectorPriceFragment;
+import com.tradehero.th.fragments.trending.TrendingFilterSelectorVolumeFragment;
 import com.tradehero.th.fragments.trending.TrendingFragment;
 import com.tradehero.th.loaders.SearchStockPageItemListLoader;
 import com.tradehero.th.loaders.TimelinePagedItemListLoader;
@@ -42,12 +45,6 @@ import com.tradehero.th.network.service.UserTimelineService;
 import com.tradehero.th.network.service.YahooNewsService;
 import com.tradehero.th.persistence.TimelineManager;
 import com.tradehero.th.persistence.TimelineStore;
-import com.tradehero.th.persistence.leaderboard.LeaderboardDefCache;
-import com.tradehero.th.persistence.leaderboard.LeaderboardDefListCache;
-import com.tradehero.th.persistence.market.ExchangeCache;
-import com.tradehero.th.persistence.market.ExchangeIdCache;
-import com.tradehero.th.persistence.position.SecurityPositionDetailCache;
-import com.tradehero.th.persistence.security.SecurityCompactListCache;
 import com.tradehero.th.persistence.user.AbstractUserStore;
 import com.tradehero.th.persistence.user.UserManager;
 import com.tradehero.th.persistence.user.UserStore;
@@ -73,6 +70,9 @@ import javax.inject.Singleton;
                 ServerValidatedUsernameText.UserAvailabilityRequester.class,
                 ServerValidatedUsernameText.class,
                 TrendingFragment.class,
+                TrendingFilterSelectorBasicFragment.class,
+                TrendingFilterSelectorVolumeFragment.class,
+                TrendingFilterSelectorPriceFragment.class,
                 TrendingSecurityView.class,
                 SearchStockPeopleFragment.class,
                 TradeFragment.class,
