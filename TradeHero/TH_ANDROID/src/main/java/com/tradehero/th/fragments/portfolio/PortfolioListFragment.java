@@ -30,8 +30,8 @@ public class PortfolioListFragment extends DashboardFragment
 {
     public static final String TAG = PortfolioListFragment.class.getSimpleName();
 
-    private PortfolioListView ownPortfolios;
-    private PortfolioListView otherPortfolios;
+    private PortfolioListView ownPortfoliosView;
+    private PortfolioListView otherPortfoliosView;
 
     private PortfolioItemHeaderAdapter ownPortfolioAdapter;
     private PortfolioItemHeaderAdapter otherPortfolioAdapter;
@@ -60,18 +60,41 @@ public class PortfolioListFragment extends DashboardFragment
     {
         if (view != null)
         {
-            ownPortfolios = (PortfolioListView) view.findViewById(R.id.own_portfolios_list);
-            if (ownPortfolios != null)
+            if (ownPortfolioAdapter == null)
             {
-                ownPortfolios.setOnItemClickListener(new AdapterView.OnItemClickListener()
+                ownPortfolioAdapter = new PortfolioItemHeaderAdapter(getActivity(), getActivity().getLayoutInflater(), R.layout.portfolio_header_item);
+            }
+
+            ownPortfoliosView = (PortfolioListView) view.findViewById(R.id.own_portfolios_list);
+            if (ownPortfoliosView != null)
+            {
+                ownPortfoliosView.setOnItemClickListener(new AdapterView.OnItemClickListener()
                 {
                     @Override public void onItemClick(AdapterView<?> parent, View view, int position, long id)
                     {
                         handleOwnItemClicked(view, position, id);
                     }
                 });
+                ownPortfoliosView.setAdapter(ownPortfolioAdapter);
             }
-            otherPortfolios = (PortfolioListView) view.findViewById(R.id.other_portfolios_list);
+
+            if (otherPortfolioAdapter == null)
+            {
+                otherPortfolioAdapter = new PortfolioItemHeaderAdapter(getActivity(), getActivity().getLayoutInflater(), R.layout.portfolio_header_item);
+            }
+
+            otherPortfoliosView = (PortfolioListView) view.findViewById(R.id.other_portfolios_list);
+            if (otherPortfoliosView != null)
+            {
+                otherPortfoliosView.setOnItemClickListener(new AdapterView.OnItemClickListener()
+                {
+                    @Override public void onItemClick(AdapterView<?> parent, View view, int position, long id)
+                    {
+                        handleOtherItemClicked(view, position, id);
+                    }
+                });
+                otherPortfoliosView.setAdapter(otherPortfolioAdapter);
+            }
         }
     }
 
@@ -91,7 +114,7 @@ public class PortfolioListFragment extends DashboardFragment
     {
         super.onResume();
         fetchOwn();
-        linkWithOther(portfolioCache.get().getAllOtherUserKeys(), true);
+        fetchOther();
     }
 
     @Override public void onPause()
@@ -107,41 +130,40 @@ public class PortfolioListFragment extends DashboardFragment
 
     @Override public void onDestroyView()
     {
-        if (ownPortfolios != null)
+        if (ownPortfoliosView != null)
         {
-            ownPortfolios.setOnItemClickListener(null);
+            ownPortfoliosView.setOnItemClickListener(null);
         }
-        if (otherPortfolios != null)
+        ownPortfoliosView = null;
+
+        if (otherPortfoliosView != null)
         {
-            otherPortfolios.setOnItemClickListener(null);
+            otherPortfoliosView.setOnItemClickListener(null);
         }
+        otherPortfoliosView = null;
+
         super.onDestroyView();
     }
 
     private void fetchOwn()
     {
         ownPortfolioListener = createOwnPortfolioListener();
+        if (fetchOwnPortfoliosTask != null)
+        {
+            fetchOwnPortfoliosTask.cancel(false);
+        }
         fetchOwnPortfoliosTask = portfolioListCache.get().getOrFetch(THUser.getCurrentUserBase().getBaseKey(), false, ownPortfolioListener);
         fetchOwnPortfoliosTask.execute();
+    }
+
+    private void fetchOther()
+    {
+        linkWithOther(portfolioCache.get().getAllOtherUserKeys(), true);
     }
 
     public void linkWithOther(List<OwnedPortfolioId> otherOwnedPortfolioIds, boolean andDisplay)
     {
         this.otherOwnedPortfolioIds = otherOwnedPortfolioIds;
-        if (otherPortfolioAdapter != null)
-        {
-            otherPortfolioAdapter.setItems(this.otherOwnedPortfolioIds);
-            getView().post(new Runnable()
-            {
-                @Override public void run()
-                {
-                    if (otherPortfolioAdapter != null)
-                    {
-                        otherPortfolioAdapter.notifyDataSetChanged();
-                    }
-                }
-            });
-        }
 
         if (andDisplay)
         {
@@ -152,21 +174,6 @@ public class PortfolioListFragment extends DashboardFragment
     public void linkWithOwn(List<OwnedPortfolioId> ownedPortfolioIds, boolean andDisplay)
     {
         this.ownedPortfolioIds = ownedPortfolioIds;
-        if (ownPortfolioAdapter != null)
-        {
-            ownPortfolioAdapter.setItems(this.ownedPortfolioIds);
-            getView().post(new Runnable()
-            {
-                @Override public void run()
-                {
-                    if (ownPortfolioAdapter != null)
-                    {
-                        ownPortfolioAdapter.notifyDataSetChanged();
-                    }
-                }
-            });
-        }
-
 
         if (andDisplay)
         {
@@ -182,37 +189,37 @@ public class PortfolioListFragment extends DashboardFragment
 
     public void displayOwnPortfolios()
     {
-        if (ownPortfolios != null)
+        if (ownPortfolioAdapter != null && ownedPortfolioIds != null)
         {
-            if (ownPortfolioAdapter == null)
+            ownPortfolioAdapter.setItems(ownedPortfolioIds);
+            getView().post(new Runnable()
             {
-                ownPortfolioAdapter = new PortfolioItemHeaderAdapter(getActivity(), getActivity().getLayoutInflater(), R.layout.portfolio_header_item);
-                if (ownedPortfolioIds != null)
+                @Override public void run()
                 {
-                    ownPortfolioAdapter.setItems(ownedPortfolioIds);
+                    if (ownPortfolioAdapter != null)
+                    {
+                        ownPortfolioAdapter.notifyDataSetChanged();
+                    }
                 }
-                ownPortfolios.setAdapter(ownPortfolioAdapter);
-            }
+            });
         }
     }
 
     public void displayOtherPortfolios()
     {
-        if (otherPortfolios != null)
+        if (otherPortfoliosView != null && otherOwnedPortfolioIds != null)
         {
-            if (otherPortfolioAdapter == null)
+            otherPortfolioAdapter.setItems(otherOwnedPortfolioIds);
+            getView().post(new Runnable()
             {
-                otherPortfolioAdapter = new PortfolioItemHeaderAdapter(getActivity(), getActivity().getLayoutInflater(), R.layout.portfolio_header_item);
-                if (otherOwnedPortfolioIds != null)
+                @Override public void run()
                 {
-                    otherPortfolioAdapter.setItems(otherOwnedPortfolioIds);
+                    if (otherPortfolioAdapter != null)
+                    {
+                        otherPortfolioAdapter.notifyDataSetChanged();
+                    }
                 }
-                else
-                {
-
-                }
-                otherPortfolios.setAdapter(otherPortfolioAdapter);
-            }
+            });
         }
     }
 
