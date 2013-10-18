@@ -27,7 +27,7 @@
       <sourceFolder url="file://$MODULE_DIR$/ActionBarSherlock/actionbarsherlock/test" isTestSource="true" />
       <excludeFolder url="file://$MODULE_DIR$/ActionBarSherlock/actionbarsherlock/target" />
     </content>
-    <orderEntry type="jdk" jdkName="Maven Android 4.1.2 Platform" jdkType="Android SDK" />
+    <orderEntry type="jdk" jdkName="Android 4.1.2 Platform" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: com.google.android:android:4.0.1.2" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.robolectric:robolectric:2.0" level="project" />

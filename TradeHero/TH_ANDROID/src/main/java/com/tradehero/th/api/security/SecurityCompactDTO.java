@@ -1,6 +1,6 @@
     package com.tradehero.th.api.security;
 
-import com.tradehero.th.loaders.ItemWithComparableId;
+import com.tradehero.th.api.market.Exchange;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;

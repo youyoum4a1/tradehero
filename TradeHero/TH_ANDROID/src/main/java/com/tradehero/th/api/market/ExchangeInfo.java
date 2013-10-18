@@ -1,4 +1,4 @@
-package com.tradehero.th.api.security;
+package com.tradehero.th.api.market;
 
 import java.lang.annotation.RetentionPolicy;
 

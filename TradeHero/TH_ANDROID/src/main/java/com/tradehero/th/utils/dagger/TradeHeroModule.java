@@ -30,6 +30,7 @@ import com.tradehero.th.loaders.TimelinePagedItemListLoader;
 import com.tradehero.th.network.NetworkEngine;
 import com.tradehero.th.network.YahooEngine;
 import com.tradehero.th.network.service.LeaderboardService;
+import com.tradehero.th.network.service.MarketService;
 import com.tradehero.th.network.service.PortfolioService;
 import com.tradehero.th.network.service.PositionService;
 import com.tradehero.th.network.service.ProviderService;
@@ -120,7 +121,8 @@ import javax.inject.Singleton;
         {
                 THUser.class,
                 NumberDisplayUtils.class,
-        }
+        },
+        library = true // TEMP while there is no MarketService user
 )
 public class TradeHeroModule
 {
@@ -175,6 +177,11 @@ public class TradeHeroModule
     @Provides @Singleton ProviderService provideProviderService()
     {
         return engine.createService(ProviderService.class);
+    }
+
+    @Provides @Singleton MarketService provideMarketService()
+    {
+        return engine.createService(MarketService.class);
     }
 
     @Provides @Singleton YahooNewsService provideYahooNewsService()
