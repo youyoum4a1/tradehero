@@ -31,6 +31,9 @@ public interface UserService
     @POST("/login")
     void signIn(@Header("Authorization") String authorization, @Body UserFormDTO user, Callback<UserLoginDTO> cb);
 
+    @POST("/logout")
+    void signOut(@Header("Authorization") String authorization, Callback<Object> cb);
+
     @GET("/checkDisplayNameAvailable")
     void checkDisplayNameAvailable(@Query("displayName") String username, Callback<UserAvailabilityDTO> callback);
 

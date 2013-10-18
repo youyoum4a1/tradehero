@@ -273,6 +273,16 @@ public class THUser
         prefEditor.commit();
     }
 
+    public static void clearCurrentUser()
+    {
+        SharedPreferences.Editor prefEditor = Application.getPreferences().edit();
+        prefEditor.remove(PREF_MY_USER);
+        prefEditor.remove(PREF_MY_TOKEN);
+        prefEditor.remove(CURRENT_SESSION_TOKEN);
+        prefEditor.remove(CURRENT_AUTHENTICATION_TYPE);
+        prefEditor.commit();
+    }
+
     private static void loadCredentialsToUserDefaults()
     {
         Set<String> savedTokens = Application.getPreferences().getStringSet(PREF_MY_TOKEN, new HashSet<String>());

@@ -1,23 +1,35 @@
 package com.tradehero.th.fragments.settings;
 
+import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ListView;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.th.R;
+import com.tradehero.th.activities.ActivityHelper;
+import com.tradehero.th.activities.AuthenticationActivity;
 import com.tradehero.th.api.yahoo.News;
+import com.tradehero.th.base.Application;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.base.NavigatorActivity;
+import com.tradehero.th.base.THUser;
 import com.tradehero.th.fragments.WebViewFragment;
 import com.tradehero.th.fragments.base.DashboardFragment;
-import android.widget.ListView;
+import com.tradehero.th.misc.callback.THCallback;
+import com.tradehero.th.misc.callback.THResponse;
+import com.tradehero.th.misc.exception.THException;
+import com.tradehero.th.network.service.UserService;
 
-import java.util.ArrayList;
+import javax.inject.Inject;
 import java.util.Arrays;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Created with IntelliJ IDEA.
@@ -30,6 +42,12 @@ public class SettingsFragment extends DashboardFragment
 {
     public static final String TAG = SettingsFragment.class.getSimpleName();
     private static final int ITEM_FAQ = 2;
+    private static final int ITEM_SIGN_OUT = 2;
+
+    @Inject UserService userService;
+
+    private ProgressDialog progressDialog;
+    private Timer signOutTimer;
 
     private View view;
     private ListView primaryListView;
@@ -109,6 +127,42 @@ public class SettingsFragment extends DashboardFragment
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l)
             {
+                switch (i)
+                {
+                    case ITEM_SIGN_OUT:
+                        progressDialog = ProgressDialog.show(
+                                getActivity(),
+                                Application.getResourceString(R.string.please_wait),
+                                Application.getResourceString(R.string.connecting_tradehero_only),
+                                true);
+                        userService.signOut(THUser.getAuthHeader(), new THCallback<Object>()
+                        {
+                            @Override
+                            public void success(Object o, THResponse response)
+                            {
+                                THUser.clearCurrentUser();
+                                ActivityHelper.presentFromActivity(getActivity(), AuthenticationActivity.class, Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                progressDialog.hide();
+                            }
+
+                            @Override public void failure(THException error)
+                            {
+                                progressDialog.setTitle("Failed to Sign Out");
+                                progressDialog.setMessage("");
+                                signOutTimer = new Timer();
+                                signOutTimer.schedule(new TimerTask()
+                                {
+                                    public void run()
+                                    {
+                                        signOutTimer.cancel();
+                                        progressDialog.hide();
+                                        finish();
+                                    }
+                                }, 3000);
+                            }
+                        });
+                        break;
+                }
             }
         });
         miscListView.setAdapter(miscListViewAdapter);

@@ -18,9 +18,14 @@ public class ActivityHelper
 
     public static void goRoot(Activity activity)
     {
-        Intent localIntent = new Intent(activity.getApplicationContext(), DashboardActivity.class);
-        localIntent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-        activity.startActivity(localIntent);
-        activity.overridePendingTransition(R.anim.alpha_in, R.anim.alpha_out);
+        presentFromActivity(activity, DashboardActivity.class, Intent.FLAG_ACTIVITY_NO_HISTORY);
+    }
+
+    public static void presentFromActivity(Activity fromActivity, Class toActivityClass, int flags)
+    {
+        Intent localIntent = new Intent(fromActivity.getApplicationContext(), toActivityClass);
+        localIntent.addFlags(flags);
+        fromActivity.startActivity(localIntent);
+        fromActivity.overridePendingTransition(R.anim.alpha_in, R.anim.alpha_out);
     }
 }

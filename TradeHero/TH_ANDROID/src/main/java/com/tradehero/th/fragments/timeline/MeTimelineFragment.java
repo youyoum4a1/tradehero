@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.th.R;
+import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.THUser;
@@ -18,7 +19,11 @@ public class MeTimelineFragment extends TimelineFragment
 {
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        getArguments().putInt(USER_ID, THUser.getCurrentUserBase().id);
+        UserBaseDTO u = THUser.getCurrentUserBase();
+        if (u != null)
+        {
+            getArguments().putInt(USER_ID, u.id);
+        }
         return super.onCreateView(inflater, container, savedInstanceState);
     }
 }
