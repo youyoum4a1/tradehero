@@ -1,4 +1,4 @@
-package com.tradehero.th.adapters;
+package com.tradehero.th.adapters.trending;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.AbsListView;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
+import com.tradehero.th.adapters.DTOAdapter;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.widget.trending.TrendingSecurityView;
 

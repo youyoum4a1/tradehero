@@ -2,6 +2,8 @@ package com.tradehero.th.fragments.trending;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,11 +18,15 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
-import com.tradehero.th.adapters.TrendingAdapter;
+import com.tradehero.th.adapters.trending.TrendingAdapter;
+import com.tradehero.th.adapters.trending.TrendingFilterPagerAdapter;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.SecurityListType;
 import com.tradehero.th.api.security.TrendingBasicSecurityListType;
+import com.tradehero.th.api.security.TrendingPriceSecurityListType;
+import com.tradehero.th.api.security.TrendingSecurityListType;
+import com.tradehero.th.api.security.TrendingVolumeSecurityListType;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.trade.AbstractTradeFragment;
 import com.tradehero.th.fragments.trade.TradeFragment;
@@ -41,9 +47,13 @@ public class TrendingFragment extends DashboardFragment implements DTOCache.List
     private TextView mHeaderText;
     private ImageButton mSearchBtn;
 
+    private ViewPager mFilterViewPager;
+    private TrendingFilterPagerAdapter mTrendingFilterPagerAdapter;
+
     private ProgressBar mProgressSpinner;
     private TrendingGridView mTrendingGridView;
 
+    private int filterPageSelected = 0;
     private boolean isQuerying;
     @Inject Lazy<SecurityCompactListCache> securityCompactListCache;
     @Inject Lazy<SecurityCompactCache> securityCompactCache;
@@ -84,6 +94,32 @@ public class TrendingFragment extends DashboardFragment implements DTOCache.List
         else
         {
             refreshGridView();
+        }
+
+        if (mTrendingFilterPagerAdapter == null)
+        {
+            mTrendingFilterPagerAdapter = new TrendingFilterPagerAdapter(getActivity(), getFragmentManager());
+            mTrendingFilterPagerAdapter.setOnResumedListener(new TrendingFilterSelectorFragment.OnResumedListener()
+            {
+                @Override public void onResumed(final Fragment fragment)
+                {
+                    getView().post(new Runnable()
+                    {
+                        @Override public void run()
+                        {
+                            resizeViewPager(fragment);
+                        }
+                    });
+                }
+            });
+        }
+        mFilterViewPager = (ViewPager) view.findViewById(R.id.trending_filter_pager);
+
+        if (mFilterViewPager != null)
+        {
+            mFilterViewPager.setAdapter(mTrendingFilterPagerAdapter);
+            // TODO listen to view pager changes
+            mFilterViewPager.setOnPageChangeListener(createFilterPageChangeListener());
         }
 
         mTrendingGridView.setOnItemClickListener(new OnItemClickListener()
@@ -136,6 +172,7 @@ public class TrendingFragment extends DashboardFragment implements DTOCache.List
     {
         super.onResume();
         trendingAdapter.notifyDataSetChanged();
+        displayFilterPager();
     }
 
     @Override public void onDestroyOptionsMenu()
@@ -157,11 +194,20 @@ public class TrendingFragment extends DashboardFragment implements DTOCache.List
             mTrendingGridView.setOnItemClickListener(null);
         }
         mTrendingGridView = null;
+
         if (trendingTask != null)
         {
             trendingTask.cancel(false);
         }
         trendingTask = null;
+
+        if (mTrendingFilterPagerAdapter != null)
+        {
+            mTrendingFilterPagerAdapter.setOnResumedListener(null);
+        }
+        mTrendingFilterPagerAdapter = null;
+
+        mFilterViewPager = null;
         super.onDestroyView();
     }
 
@@ -181,8 +227,45 @@ public class TrendingFragment extends DashboardFragment implements DTOCache.List
             trendingTask = null;
         }
         isQuerying = true;
-        trendingTask = securityCompactListCache.get().getOrFetch(new TrendingBasicSecurityListType(), false, this);
+        trendingTask = securityCompactListCache.get().getOrFetch(getSecurityListType(), false, this);
         trendingTask.execute();
+    }
+
+    public void displayFilterPager()
+    {
+        if (mTrendingFilterPagerAdapter != null)
+        {
+            getView().post(new Runnable()
+            {
+                @Override public void run()
+                {
+                    mTrendingFilterPagerAdapter.notifyDataSetChanged();
+                }
+            });
+        }
+    }
+
+    public TrendingSecurityListType getSecurityListType()
+    {
+        TrendingSecurityListType securityListType = null;
+        switch (filterPageSelected)
+        {
+            case TrendingFilterSelectorBasicFragment.POSITION_IN_PAGER:
+                securityListType = new TrendingBasicSecurityListType();
+                break;
+            case TrendingFilterSelectorVolumeFragment.POSITION_IN_PAGER:
+                securityListType = new TrendingVolumeSecurityListType();
+                break;
+            case TrendingFilterSelectorPriceFragment.POSITION_IN_PAGER:
+                securityListType = new TrendingPriceSecurityListType();
+                break;
+            default:
+                THLog.d(TAG, "getSecurityListType: Unhandled filterPageSelector: " + filterPageSelected);
+        }
+
+        // TODO set exchange selection
+
+        return securityListType;
     }
 
     @Override public void onDTOReceived(SecurityListType key, List<SecurityId> value)
@@ -198,5 +281,40 @@ public class TrendingFragment extends DashboardFragment implements DTOCache.List
     protected int getVisibility(boolean flag)
     {
         return flag ? View.VISIBLE : View.INVISIBLE;
+    }
+
+    private ViewPager.OnPageChangeListener createFilterPageChangeListener()
+    {
+        return new ViewPager.OnPageChangeListener()
+        {
+            @Override public void onPageScrolled(int i, float v, int i2)
+            {
+                // TODO
+            }
+
+            @Override public void onPageSelected(int i)
+            {
+                filterPageSelected = i;
+                refreshGridView();
+            }
+
+            @Override public void onPageScrollStateChanged(int i)
+            {
+                // TODO
+            }
+        };
+    }
+
+    private void resizeViewPager(Fragment fragment)
+    {
+        if (mFilterViewPager != null && fragment != null && fragment.getView() != null)
+        {
+            ViewGroup.LayoutParams pagerParams = mFilterViewPager.getLayoutParams();
+            if (pagerParams != null)
+            {
+                pagerParams.height = fragment.getView().getHeight();
+                mFilterViewPager.setLayoutParams(pagerParams);
+            }
+        }
     }
 }

@@ -49,6 +49,14 @@
   <string name="search_stock_hint">Select to search &gt;</string>
   <string name="search_stock_nothing_yet">Nothing to show.\nType in the search field</string>
 
+  <!-- What's Trending filters -->
+  <string name="trending_filter_basic_title">Trending Securities</string>
+  <string name="trending_filter_basic_description">what people are buying and selling on TradeHero</string>
+  <string name="trending_filter_volume_title">Unusual Volumes</string>
+  <string name="trending_filter_volume_description">previous day volume &gt; average daily volume</string>
+  <string name="trending_filter_price_title">Price Action</string>
+  <string name="trending_filter_price_description">previous day close &gt; 50 day moving average</string>
+
   <!-- What's Trending Details -->
   <string name="tab_trade">TRADE</string>
   <string name="tab_stock_info">STOCK INFO</string>

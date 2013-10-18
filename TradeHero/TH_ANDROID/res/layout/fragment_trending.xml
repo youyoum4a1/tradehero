@@ -5,37 +5,41 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/dashboard_background_xml"
-    android:paddingLeft="@dimen/dashboard_padding"
-    android:paddingRight="@dimen/dashboard_padding"
-    >
+    android:paddingLeft="0dp"
+    android:paddingRight="0dp"
+  >
 
-    <!--include
-        android:id="@+id/header"
-        layout="@layout/topbar_trending_search" /-->
+  <ProgressBar
+      android:id="@+id/progress_spinner"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_centerInParent="true"
+      android:visibility="gone" />
 
-    <com.tradehero.th.widget.trending.TrendingGridView
+  <com.tradehero.th.widget.trending.TrendingGridView
         android:id="@+id/trending_gridview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
         android:drawSelectorOnTop="false"
         android:gravity="center"
         android:horizontalSpacing="@dimen/dashboard_padding"
         android:verticalSpacing="@dimen/dashboard_padding"
         android:listSelector="@android:color/transparent"
         android:numColumns="2"
-        android:paddingRight="0dp"
-        android:paddingLeft="0dp"
-        android:paddingTop="@dimen/dashboard_padding"
+        android:paddingRight="@dimen/dashboard_padding"
+        android:paddingLeft="@dimen/dashboard_padding"
+        android:paddingTop="65dp"
         android:paddingBottom="55dp"
         android:clipToPadding="false"
-        >
-    </com.tradehero.th.widget.trending.TrendingGridView>
+      >
+  </com.tradehero.th.widget.trending.TrendingGridView>
 
-    <ProgressBar
-        android:id="@+id/progress_spinner"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:visibility="gone" />
+  <android.support.v4.view.ViewPager
+      android:id="@+id/trending_filter_pager"
+      android:layout_width="match_parent"
+      android:layout_height="60dp"
+      android:layout_alignParentTop="true"
+    />
 
 </RelativeLayout>

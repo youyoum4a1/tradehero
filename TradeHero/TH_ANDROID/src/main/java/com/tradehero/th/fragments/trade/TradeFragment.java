@@ -43,7 +43,7 @@ import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.ImageViewThreadSafe;
 import com.tradehero.th.R;
-import com.tradehero.th.adapters.TradeBottomStockPagerAdapter;
+import com.tradehero.th.adapters.trade.TradeBottomStockPagerAdapter;
 import com.tradehero.th.api.position.SecurityPositionDetailDTO;
 import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;

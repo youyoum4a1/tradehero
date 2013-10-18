@@ -24,7 +24,7 @@ import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.SearchPeopleAdapter;
-import com.tradehero.th.adapters.TrendingAdapter;
+import com.tradehero.th.adapters.trending.TrendingAdapter;
 import com.tradehero.th.api.security.SearchSecurityListType;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
