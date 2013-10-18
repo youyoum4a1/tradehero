@@ -114,7 +114,7 @@ public class SecurityCompactDTO
 
     public int getExchangeLogoId()
     {
-        return Exchange.getLogoId(exchange);
+        return Exchange.valueOf(exchange).logoId;
     }
 
     public boolean isLastPriceNotNullOrZero()

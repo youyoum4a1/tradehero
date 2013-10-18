@@ -7,110 +7,74 @@ import com.tradehero.th.R;
 public enum Exchange
 {
     // United Kingdom
-    @ExchangeInfo(logoId = R.drawable.united_kingdom)
-    LSE,
+    LSE(R.drawable.united_kingdom),
 
     // United States of America
-    @ExchangeInfo(logoId = R.drawable.united_states)
-    NASDAQ,
-    @ExchangeInfo(logoId = R.drawable.united_states)
-    NYSE,
-    @ExchangeInfo(logoId = R.drawable.united_states)
-    OTCBB,
-    @ExchangeInfo(logoId = R.drawable.united_states)
-    AMEX,
+    NASDAQ(R.drawable.united_states),
+    NYSE(R.drawable.united_states),
+    OTCBB(R.drawable.united_states),
+    AMEX(R.drawable.united_states),
 
     // singapore
-    @ExchangeInfo(logoId = R.drawable.singapore)
-    SGX,
+    SGX(R.drawable.singapore),
 
     // Australia
-    @ExchangeInfo(logoId = R.drawable.australia)
-    ASX,
+    ASX(R.drawable.australia),
 
     // Canada
-    @ExchangeInfo(logoId = R.drawable.canada)
-    TSX,
-    @ExchangeInfo(logoId = R.drawable.canada)
-    TSXV,
+    TSX(R.drawable.canada),
+    TSXV(R.drawable.canada),
 
     // Hong Kong
-    @ExchangeInfo(logoId = R.drawable.hong_kong)
-    HKEX,
+    HKEX(R.drawable.hong_kong),
 
     // france
-    @ExchangeInfo(logoId = R.drawable.france)
-    PAR,
+    PAR(R.drawable.france),
 
     // netherlands
-    @ExchangeInfo(logoId = R.drawable.netherlands)
-    AMS,
+    AMS(R.drawable.netherlands),
 
     // Belgium
-    @ExchangeInfo(logoId = R.drawable.belgium)
-    BRU,
+    BRU(R.drawable.belgium),
 
     // portugal
-    @ExchangeInfo(logoId = R.drawable.portugal)
-    LIS,
+    LIS(R.drawable.portugal),
 
     // italy
-    @ExchangeInfo(logoId = R.drawable.italy)
-    MLSE,
+    MLSE(R.drawable.italy),
 
     // New Zealand
-    @ExchangeInfo(logoId = R.drawable.new_zealand)
-    NZX,
+    NZX(R.drawable.new_zealand),
 
     // china
-    @ExchangeInfo(logoId = R.drawable.china)
-    SHA,
-    @ExchangeInfo(logoId = R.drawable.china)
-    SHE,
+    SHA(R.drawable.china),
+    SHE(R.drawable.china),
 
     // indonesia
-    @ExchangeInfo(logoId = R.drawable.indonesia)
-    JKT,
+    JKT(R.drawable.indonesia),
 
     // South Korea
-    @ExchangeInfo(logoId = R.drawable.korea_south)
-    KDQ,
-    @ExchangeInfo(logoId = R.drawable.korea_south)
-    KRX,
+    KDQ(R.drawable.korea_south),
+    KRX(R.drawable.korea_south),
 
     // taiwan
-    @ExchangeInfo(logoId = R.drawable.taiwan)
-    TPE,
+    TPE(R.drawable.taiwan),
 
     // thailand
-    @ExchangeInfo(logoId = R.drawable.thailand)
-    SET,
+    SET(R.drawable.thailand),
 
     // philippines
-    @ExchangeInfo(logoId = R.drawable.philippines)
-    PSE,
+    PSE(R.drawable.philippines),
 
     // malaysia
-    @ExchangeInfo(logoId = R.drawable.malaysia)
-    MYX;
+    MYX(R.drawable.malaysia);
 
     private static final String TAG = Exchange.class.getSimpleName();
 
-    public static int getLogoId(Exchange exchange)
-    {
-        return getLogoId(exchange.name());
-    }
+    public final int logoId;
 
-    public static int getLogoId(String exchange)
+    private Exchange(int logoId)
     {
-        try
-        {
-            return Exchange.class.getField(exchange).getAnnotation(ExchangeInfo.class).logoId();
-        }
-        catch (NoSuchFieldException e)
-        {
-            THLog.e(TAG, "Unavailable exchange name " + exchange, e);
-            return 0;
-        }
+        this.logoId = logoId;
     }
 }
