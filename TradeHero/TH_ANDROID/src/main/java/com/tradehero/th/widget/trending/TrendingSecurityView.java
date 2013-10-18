@@ -21,6 +21,8 @@ import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.utills.DateUtils;
 import com.tradehero.th.utills.YUtils;
 import com.tradehero.th.utils.ColorUtils;
+import com.tradehero.th.utils.DaggerUtils;
+import javax.inject.Inject;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 9/5/13 Time: 5:19 PM To change this template use File | Settings | File Templates. */
 public class TrendingSecurityView extends FrameLayout implements DTOView<SecurityCompactDTO>
@@ -28,7 +30,8 @@ public class TrendingSecurityView extends FrameLayout implements DTOView<Securit
     private static final String TAG = TrendingSecurityView.class.getSimpleName();
     private static Transformation foregroundTransformation;
     private static Transformation backgroundTransformation;
-    private static Picasso mPicasso;
+
+    @Inject protected Picasso mPicasso;
 
     private ImageView stockBgLogo;
     private ImageView stockLogo;
@@ -69,8 +72,8 @@ public class TrendingSecurityView extends FrameLayout implements DTOView<Securit
 
     protected void init ()
     {
+        DaggerUtils.inject(this);
         createTransformations();
-        createPicasso();
         fetchViews();
     }
 
@@ -94,29 +97,6 @@ public class TrendingSecurityView extends FrameLayout implements DTOView<Securit
             ((AbstractSequentialTransformation) backgroundTransformation).add(new RoundedCornerTransformation(
                             getResources().getDimensionPixelSize(R.dimen.trending_grid_item_corner_radius),
                             getResources().getColor(R.color.black)));
-        }
-    }
-
-    private void createPicasso()
-    {
-        if (mPicasso == null)
-        {
-            Cache lruFileCache = null;
-            try
-            {
-                lruFileCache = new LruMemFileCache(getContext());
-                THLog.i(TAG, "Memory cache size " + lruFileCache.maxSize());
-            }
-            catch (Exception e)
-            {
-                THLog.e(TAG, "Failed to create LRU", e);
-            }
-
-            mPicasso = new Picasso.Builder(getContext())
-                    //.downloader(new UrlConnectionDownloader(getContext()))
-                    .memoryCache(lruFileCache)
-                    .build();
-            mPicasso.setDebugging(true);
         }
     }
 

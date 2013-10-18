@@ -145,7 +145,13 @@
   <string name="webview_back">Back</string>
   <string name="webview_forward">Forward</string>
 
-  <!-- Portfolio detail -->
+  <!-- Portfolio detail / Positions -->
+  <string name="position_list_action_bar_header">%d Positions</string>
+  <string name="position_list_action_bar_header_unknown">Loading Positions</string>
+  <string name="position_list_header_open">Open Positions (%d)</string>
+  <string name="position_list_header_open_unsure">Open Positions (N/A)</string>
+  <string name="position_list_header_closed">Closed Positions (%d)</string>
+  <string name="position_list_header_closed_unsure">Closed Positions (N/A)</string>
 
   <!-- Number presentation -->
   <string name="number_presentation_unit_suffix"></string>

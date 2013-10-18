@@ -1,16 +1,21 @@
 package com.tradehero.th.fragments.position;
 
+import android.app.Activity;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.TextView;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THLog;
+import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.position.PositionItemAdapter;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
@@ -33,6 +38,10 @@ public class PositionListFragment extends DashboardFragment
 
     private ListView openPositions;
     private PositionItemAdapter positionItemAdapter;
+
+    private ImageButton btnActionBarBack;
+    private TextView actionBarHeader;
+    private ImageButton btnActionBarInfo;
 
     private Bundle desiredArguments;
 
@@ -58,15 +67,31 @@ public class PositionListFragment extends DashboardFragment
         {
             if (positionItemAdapter == null)
             {
-                positionItemAdapter = new PositionItemAdapter(getActivity(), getActivity().getLayoutInflater());
+                positionItemAdapter = new PositionItemAdapter(
+                        getActivity(),
+                        getActivity().getLayoutInflater(),
+                        R.layout.position_item_header,
+                        R.layout.position_quick);
             }
 
             openPositions = (ListView) view.findViewById(R.id.position_list);
             if (openPositions != null)
             {
                 openPositions.setAdapter(positionItemAdapter);
+                openPositions.setOnItemClickListener(new AdapterView.OnItemClickListener()
+                {
+                    @Override public void onItemClick(AdapterView<?> parent, View view, int position, long id)
+                    {
+                        handlePositionItemClicked(parent, view, position, id);
+                    }
+                });
             }
         }
+    }
+
+    private void handlePositionItemClicked(AdapterView<?> parent, View view, int position, long id)
+    {
+        THToast.show("No item handler for now");
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
@@ -77,8 +102,38 @@ public class PositionListFragment extends DashboardFragment
 
     private void createOptionsMenu()
     {
-        getSherlockActivity().getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
-        getSherlockActivity().getSupportActionBar().setCustomView(R.layout.topbar_positions_list);
+        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
+        actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+        actionBar.setCustomView(R.layout.topbar_positions_list);
+
+        btnActionBarBack = (ImageButton) actionBar.getCustomView().findViewById(R.id.btn_back);
+        if (btnActionBarBack != null)
+        {
+            btnActionBarBack.setOnClickListener(new View.OnClickListener()
+            {
+                @Override public void onClick(View view)
+                {
+                    handleBackButtonPressed(view);
+                }
+            });
+        }
+
+        actionBarHeader = (TextView) actionBar.getCustomView().findViewById(R.id.header_text);
+
+        btnActionBarInfo = (ImageButton) actionBar.getCustomView().findViewById(R.id.btn_info);
+        if (btnActionBarInfo != null)
+        {
+            btnActionBarInfo.setOnClickListener(new View.OnClickListener()
+            {
+                @Override public void onClick(View view)
+                {
+                    handleInfoButtonPressed(view);
+                }
+            });
+        }
+
+        displayHeaderText();
+        // TODO add handlers
     }
 
     @Override public void onResume()
@@ -104,6 +159,19 @@ public class PositionListFragment extends DashboardFragment
         }
         fetchGetPositionsDTOTask = null;
         super.onPause();
+    }
+
+    @Override public void onDestroyView()
+    {
+        if (btnActionBarBack != null)
+        {
+            btnActionBarBack.setOnClickListener(null);
+        }
+        if (btnActionBarInfo != null)
+        {
+            btnActionBarInfo.setOnClickListener(null);
+        }
+        super.onDestroyView();
     }
 
     public void linkWith(OwnedPortfolioId ownedPortfolioId, boolean andDisplay)
@@ -139,7 +207,7 @@ public class PositionListFragment extends DashboardFragment
         this.getPositionsDTO = getPositionsDTO;
         if (this.getPositionsDTO != null && ownedPortfolioId != null)
         {
-            positionItemAdapter.setItems(getPositionsDTO.getFiledPositionIds(ownedPortfolioId.getPortfolioId()));
+            positionItemAdapter.setPositions(getPositionsDTO.positions, ownedPortfolioId.getPortfolioId());
             getView().post(
                     new Runnable()
                     {
@@ -150,8 +218,10 @@ public class PositionListFragment extends DashboardFragment
                     }
             );
         }
+
         if (andDisplay)
         {
+            displayHeaderText();
             // TODO finer grained
             display();
         }
@@ -159,7 +229,35 @@ public class PositionListFragment extends DashboardFragment
 
     public void display()
     {
+        displayHeaderText();
         // TODO
+    }
+
+    public void displayHeaderText()
+    {
+        if (actionBarHeader != null)
+        {
+            if (getPositionsDTO != null && getPositionsDTO.positions != null)
+            {
+                actionBarHeader.setText(String.format(
+                        getResources().getString(R.string.position_list_action_bar_header),
+                        getPositionsDTO.positions.size()));
+            }
+            else
+            {
+                actionBarHeader.setText(R.string.position_list_action_bar_header_unknown);
+            }
+        }
+    }
+
+    private void handleBackButtonPressed(View view)
+    {
+        navigator.popFragment();
+    }
+
+    private void handleInfoButtonPressed(View view)
+    {
+        THToast.show("No info for now");
     }
 
     private GetPositionsCache.Listener<OwnedPortfolioId, GetPositionsDTO> createGetPositionsCacheListener()

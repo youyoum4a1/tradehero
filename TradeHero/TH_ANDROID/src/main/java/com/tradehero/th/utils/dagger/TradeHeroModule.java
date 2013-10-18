@@ -2,10 +2,13 @@ package com.tradehero.th.utils.dagger;
 
 import android.app.Application;
 import android.content.Context;
+import com.squareup.picasso.Cache;
 import com.squareup.picasso.Picasso;
 import com.tradehero.common.cache.DatabaseCache;
+import com.tradehero.common.cache.LruMemFileCache;
 import com.tradehero.common.persistence.CacheHelper;
 import com.tradehero.th.api.form.AbstractUserAvailabilityRequester;
+import com.tradehero.common.utils.THLog;
 import com.tradehero.th.base.THUser;
 import com.tradehero.th.fragments.authentication.EmailSignInFragment;
 import com.tradehero.th.fragments.leaderboard.LeaderboardFragment;
@@ -50,6 +53,7 @@ import com.tradehero.th.widget.ServerValidatedUsernameText;
 import com.tradehero.th.widget.portfolio.PortfolioHeaderItemView;
 import com.tradehero.th.widget.position.PositionQuickViewHolder;
 import com.tradehero.th.widget.timeline.TimelineItemView;
+import com.tradehero.th.widget.trending.TrendingSecurityView;
 import com.tradehero.th.widget.user.ProfileCompactView;
 import com.tradehero.th.widget.user.ProfileView;
 import dagger.Module;
@@ -65,6 +69,7 @@ import javax.inject.Singleton;
                 ServerValidatedUsernameText.UserAvailabilityRequester.class,
                 ServerValidatedUsernameText.class,
                 TrendingFragment.class,
+                TrendingSecurityView.class,
                 SearchStockPeopleFragment.class,
                 TradeFragment.class,
                 TimelineFragment.class,
@@ -119,6 +124,8 @@ import javax.inject.Singleton;
 )
 public class TradeHeroModule
 {
+    public static final String TAG = TradeHeroModule.class.getSimpleName();
+
     private final Application application;
     private final NetworkEngine engine;
     private final YahooEngine yahooEngine;
@@ -182,9 +189,24 @@ public class TradeHeroModule
 
     @Provides @Singleton Picasso providePicasso()
     {
-        return Picasso.with(application);
-    }
+        Cache lruFileCache = null;
+        try
+        {
+            lruFileCache = new LruMemFileCache(application);
+            THLog.i(TAG, "Memory cache size " + lruFileCache.maxSize());
+        }
+        catch (Exception e)
+        {
+            THLog.e(TAG, "Failed to create LRU", e);
+        }
 
+        Picasso mPicasso = new Picasso.Builder(application)
+                //.downloader(new UrlConnectionDownloader(getContext()))
+                .memoryCache(lruFileCache)
+                .build();
+        mPicasso.setDebugging(true);
+        return mPicasso;
+    }
 
     @Provides Context provideContext()
     {
