@@ -90,6 +90,7 @@ public class PositionListFragment extends DashboardFragment
     {
         if (view instanceof PositionQuickNothingView)
         {
+            navigator.popFragment(); // Feels HACKy
             navigator.goToTab(DashboardTabType.TRENDING);
         }
         else
@@ -288,7 +289,7 @@ public class PositionListFragment extends DashboardFragment
     //<editor-fold desc="BaseFragment.TabBarVisibilityInformer">
     @Override public boolean isTabBarVisible()
     {
-        return true;
+        return false;
     }
     //</editor-fold>
 }

@@ -65,7 +65,7 @@ public class Navigator
         this.fragmentContentId = fragmentContentId;
     }
 
-    protected Fragment getCurrentFragment()
+    protected Fragment getFragmentAtTopStack()
     {
         if (manager.getBackStackEntryCount() == 0)
         {

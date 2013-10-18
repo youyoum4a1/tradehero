@@ -12,6 +12,7 @@ import android.widget.TabHost;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
 import com.tradehero.th.base.Navigator;
+import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.dashboard.DashboardTabType;
 
@@ -35,6 +36,13 @@ public class DashboardNavigator extends Navigator
     {
         mTabHost = (FragmentTabHost) activity.findViewById(android.R.id.tabhost);
         mTabHost.setup(activity, activity.getSupportFragmentManager(), R.id.realtabcontent);
+        mTabHost.setOnTabChangedListener(new TabHost.OnTabChangeListener()
+        {
+            @Override public void onTabChanged(String tabId)
+            {
+                updateTabBarOnTabChanged(tabId);
+            }
+        });
 
         for (DashboardTabType tabType: DashboardTabType.values())
         {
@@ -42,6 +50,18 @@ public class DashboardNavigator extends Navigator
         }
 
         mTabHost.setCurrentTabByTag(activity.getString(R.string.home));
+    }
+
+    /**
+     * To be called when we want it to be GC'ed
+     */
+    public void onDestroy()
+    {
+        if (mTabHost != null)
+        {
+            mTabHost.setOnTabChangedListener(null);
+        }
+        mTabHost = null;
     }
 
     private TabHost.TabSpec makeTabSpec(DashboardTabType tabType)
@@ -65,7 +85,7 @@ public class DashboardNavigator extends Navigator
 
     public void goToTab(DashboardTabType tabType)
     {
-        mTabHost.onTabChanged(makeTabSpec(tabType).getTag());
+        mTabHost.setCurrentTabByTag(makeTabSpec(tabType).getTag());
     }
 
     //public void clearBackStack()
@@ -78,7 +98,7 @@ public class DashboardNavigator extends Navigator
     {
         Fragment fragment = super.pushFragment(fragmentClass, args, withAnimation);
         manager.executePendingTransactions();
-        updateTabBarOnNavigate();
+        updateTabBarOnNavigate(fragment);
         return fragment;
     }
 
@@ -88,14 +108,18 @@ public class DashboardNavigator extends Navigator
         if (manager.getBackStackEntryCount() > 0)
         {
             manager.executePendingTransactions();
-            updateTabBarOnNavigate();
+            updateTabBarOnNavigate(null);
         }
         THLog.d(TAG, "BackstackCount " + manager.getBackStackEntryCount());
     }
 
-    private void updateTabBarOnNavigate()
+    private void updateTabBarOnNavigate(Fragment currentFragment)
     {
         boolean shouldHideTabBar = manager.getBackStackEntryCount() >= 1;
+        if (currentFragment instanceof BaseFragment.TabBarVisibilityInformer)
+        {
+            shouldHideTabBar = !((BaseFragment.TabBarVisibilityInformer) currentFragment).isTabBarVisible();
+        }
 
         if (shouldHideTabBar)
         {
@@ -105,6 +129,11 @@ public class DashboardNavigator extends Navigator
         {
             showTabBar();
         }
+    }
+
+    private void updateTabBarOnTabChanged(String tag)
+    {
+        THLog.d(TAG, "tabBarChanged to " + tag + ", backstack " + manager.getBackStackEntryCount());
     }
 
     private void showTabBar()
