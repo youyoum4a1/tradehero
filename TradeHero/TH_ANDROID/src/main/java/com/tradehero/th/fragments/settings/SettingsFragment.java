@@ -2,6 +2,9 @@ package com.tradehero.th.fragments.settings;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -41,7 +44,12 @@ import java.util.TimerTask;
 public class SettingsFragment extends DashboardFragment
 {
     public static final String TAG = SettingsFragment.class.getSimpleName();
+    public static final String APP_VERSION = "1.5.2";
+
+    private static final int ITEM_SEND_LOVE = 0;
+    private static final int ITEM_SEND_FEEDBACK = 1;
     private static final int ITEM_FAQ = 2;
+
     private static final int ITEM_SIGN_OUT = 2;
 
     @Inject UserService userService;
@@ -89,6 +97,29 @@ public class SettingsFragment extends DashboardFragment
             {
                 switch (i)
                 {
+                    case ITEM_SEND_FEEDBACK:
+                        String appVersion = "";
+                        try
+                        {
+                            PackageInfo pInfo = getSherlockActivity().getPackageManager().getPackageInfo(getSherlockActivity().getPackageName(), 0);
+                            appVersion = pInfo.versionName;
+                        }
+                        catch (PackageManager.NameNotFoundException e)
+                        {
+                            appVersion = APP_VERSION;
+                        }
+
+                        String deviceDetails = "\n\n-----\nTradeHero " + appVersion +
+                                "\n" + getDeviceName() + "" +
+                                "\nAndroid Ver. " + android.os.Build.VERSION.SDK_INT +
+                                "-----\n";
+                        Intent intent = new Intent(Intent.ACTION_SEND);
+                        intent.setType("plain/text");
+                        intent.putExtra(Intent.EXTRA_EMAIL, new String[] { "support@tradehero.mobi" });
+                        intent.putExtra(Intent.EXTRA_SUBJECT, "Support");
+                        intent.putExtra(Intent.EXTRA_TEXT, deviceDetails);
+                        startActivity(Intent.createChooser(intent, ""));
+                        break;
                     case ITEM_FAQ:
                         String faqUrl = getResources().getString(R.string.th_faq_url);
                         Navigator navigator = ((NavigatorActivity) getActivity()).getNavigator();
@@ -166,6 +197,29 @@ public class SettingsFragment extends DashboardFragment
             }
         });
         miscListView.setAdapter(miscListViewAdapter);
+    }
+
+    public String getDeviceName() {
+        String manufacturer = Build.MANUFACTURER;
+        String model = Build.MODEL;
+        if (model.startsWith(manufacturer)) {
+            return capitalize(model);
+        } else {
+            return capitalize(manufacturer) + " " + model;
+        }
+    }
+
+
+    private String capitalize(String s) {
+        if (s == null || s.length() == 0) {
+            return "";
+        }
+        char first = s.charAt(0);
+        if (Character.isUpperCase(first)) {
+            return s;
+        } else {
+            return Character.toUpperCase(first) + s.substring(1);
+        }
     }
 
     @Override public void onResume()
