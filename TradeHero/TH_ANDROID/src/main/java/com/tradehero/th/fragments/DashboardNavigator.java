@@ -36,7 +36,6 @@ public class DashboardNavigator extends Navigator
         mTabHost = (FragmentTabHost) activity.findViewById(android.R.id.tabhost);
         mTabHost.setup(activity, activity.getSupportFragmentManager(), R.id.realtabcontent);
 
-        // TODO: change setting icon
         for (DashboardTabType tabType: DashboardTabType.values())
         {
             addNewTab(tabType);

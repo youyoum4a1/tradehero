@@ -15,8 +15,11 @@ import com.tradehero.th.adapters.TimelineAdapter;
 import com.tradehero.th.api.local.TimelineItem;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.base.Navigator;
+import com.tradehero.th.base.NavigatorActivity;
 import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.fragments.base.ItemListFragment;
+import com.tradehero.th.fragments.settings.SettingsFragment;
 import com.tradehero.th.loaders.TimelinePagedItemListLoader;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.widget.StepView;
@@ -67,9 +70,12 @@ public class TimelineFragment extends ItemListFragment<TimelineItem>
 
     @Override public boolean onOptionsItemSelected(MenuItem item)
     {
-        // TODO switch sorting type for leaderboard
         switch (item.getItemId())
         {
+            case R.id.menu_settings:
+                Navigator navigator = ((NavigatorActivity) getActivity()).getNavigator();
+                Bundle bundle = new Bundle();
+                navigator.pushFragment(SettingsFragment.class, bundle);
         }
         return super.onOptionsItemSelected(item);
     }
