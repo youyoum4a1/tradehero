@@ -18,38 +18,61 @@ import java.util.List;
 public class LeaderboardRankingAdapter extends DTOAdapter<LeaderboardDefDTO, RankingItemView>
         implements PullToRefreshListView.OnRefreshListener<ListView>, AbsListView.OnScrollListener, PullToRefreshBase.OnLastItemVisibleListener
 {
+    private LeaderboardDefPagedItemListLoader loader;
+    private int currentScrollState;
+
     public LeaderboardRankingAdapter(Context context, LayoutInflater inflater, int layoutResourceId)
     {
         super(context, inflater, layoutResourceId);
     }
 
+    public void setLoader(LeaderboardDefPagedItemListLoader loader)
+    {
+        this.loader = loader;
+        setItems(loader.getItems());
+    }
+
     public Loader<List<LeaderboardDefDTO>> getLoader()
     {
-        return null;  //To change body of created methods use File | Settings | File Templates.
+        return loader;
     }
 
     @Override protected View getView(int position, RankingItemView convertView)
     {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return convertView;
     }
 
     @Override public void onLastItemVisible()
     {
-        //To change body of implemented methods use File | Settings | File Templates.
+        // TODO not to refresh too frequent
+        loader.loadPreviousPage();
     }
 
     @Override public void onRefresh(PullToRefreshBase<ListView> refreshView)
     {
-        //To change body of implemented methods use File | Settings | File Templates.
+        switch (refreshView.getCurrentMode())
+        {
+            case PULL_FROM_START:
+                loader.loadNextPage();
+                break;
+            case PULL_FROM_END:
+                loader.loadPreviousPage();
+                break;
+        }
     }
 
-    @Override public void onScrollStateChanged(AbsListView absListView, int i)
+    @Override public void onScrollStateChanged(AbsListView absListView, int scrollState)
     {
-        //To change body of implemented methods use File | Settings | File Templates.
+        currentScrollState = scrollState;
     }
 
-    @Override public void onScroll(AbsListView absListView, int i, int i2, int i3)
+    @Override public void onScroll(AbsListView absListView, int firstVisibleItem, int visibleItemCount, int totalItemCount)
     {
-        //To change body of implemented methods use File | Settings | File Templates.
+        if (getCount() > 0 && loader != null)
+        {
+            int lastItemId = firstVisibleItem + visibleItemCount > getCount() ? getCount() - 1 : firstVisibleItem + visibleItemCount - 1;
+            loader.setFirstVisibleItem((LeaderboardDefDTO) getItem(firstVisibleItem));
+            loader.setLastVisibleItem((LeaderboardDefDTO) getItem(lastItemId));
+        }
     }
 }

@@ -11,6 +11,7 @@ import com.tradehero.th.api.form.AbstractUserAvailabilityRequester;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.base.THUser;
 import com.tradehero.th.fragments.authentication.EmailSignInFragment;
+import com.tradehero.th.fragments.leaderboard.LeaderboardDefListViewFragment;
 import com.tradehero.th.fragments.leaderboard.LeaderboardFragment;
 import com.tradehero.th.fragments.portfolio.PortfolioListFragment;
 import com.tradehero.th.fragments.position.PositionListFragment;
@@ -115,7 +116,8 @@ import javax.inject.Singleton;
 
                 LeaderboardFragment.class,
                 LeaderboardDefListCache.class,
-                LeaderboardDefCache.class
+                LeaderboardDefCache.class,
+                LeaderboardDefListViewFragment.class,
         },
         staticInjections =
         {

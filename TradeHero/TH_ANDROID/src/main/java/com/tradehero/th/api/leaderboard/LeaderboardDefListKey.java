@@ -6,7 +6,7 @@ import com.tradehero.common.persistence.AbstractStringDTOKey;
 import com.tradehero.common.persistence.DTOKey;
 
 /** Created with IntelliJ IDEA. User: tho Date: 10/16/13 Time: 10:33 AM Copyright (c) TradeHero */
-public abstract class LeaderboardDefListKey extends AbstractStringDTOKey
+public class LeaderboardDefListKey extends AbstractStringDTOKey
 {
 
     private static final String BUNDLE_KEY = LeaderboardDefKey.class.getName() + ".key";

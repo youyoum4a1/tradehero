@@ -21,6 +21,6 @@ public abstract class AbstractStringDTOKey extends AbstractPrimitiveDTOKey<Strin
 
     public void putParameters(Bundle args)
     {
-        args.putString(getBundleKey(), key);
+        args.putString(getBundleKey(), makeKey());
     }
 }
