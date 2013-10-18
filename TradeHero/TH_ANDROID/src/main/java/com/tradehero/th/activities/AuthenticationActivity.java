@@ -192,13 +192,15 @@ public class AuthenticationActivity extends SherlockFragmentActivity
         return new SocialAuthenticationCallback("Email")
         {
             private boolean signingUp = isSigningUp;
+
             @Override public boolean isSigningUp()
             {
                 return signingUp;
             }
+
             @Override public boolean onSocialAuthDone(JSONObject json)
             {
-                return !isSigningUp();
+                return true;
             }
         };
     }

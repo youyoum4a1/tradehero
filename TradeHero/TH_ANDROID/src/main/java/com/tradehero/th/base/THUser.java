@@ -15,7 +15,6 @@ import com.tradehero.th.misc.callback.THCallback;
 import com.tradehero.th.misc.callback.THResponse;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.misc.exception.THException.ExceptionCode;
-import com.tradehero.th.network.NetworkEngine;
 import com.tradehero.th.network.service.UserService;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import dagger.Lazy;
@@ -142,6 +141,24 @@ public class THUser
 
         switch (authenticationMode)
         {
+            case SignUpWithEmail:
+                // TODO I love this smell of hacking :v
+                userService.signUpWithEmail(authenticator.getAuthHeader(),
+                        userFormDTO.biography,
+                        userFormDTO.deviceToken,
+                        userFormDTO.displayName,
+                        userFormDTO.email,
+                        userFormDTO.emailNotificationsEnabled,
+                        userFormDTO.firstName,
+                        userFormDTO.lastName,
+                        userFormDTO.location,
+                        userFormDTO.password,
+                        userFormDTO.passwordConfirmation,
+                        userFormDTO.pushNotificationsEnabled,
+                        userFormDTO.username,
+                        userFormDTO.website,
+                        createCallbackForSignUpAsyncWithJson(json, callback));
+                break;
             case SignUp:
                 userService.signUp(authenticator.getAuthHeader(), userFormDTO, createCallbackForSignUpAsyncWithJson(json, callback));
                 break;

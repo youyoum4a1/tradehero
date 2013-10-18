@@ -8,15 +8,19 @@ import com.tradehero.th.api.users.UserAvailabilityDTO;
 import com.tradehero.th.api.users.UserLoginDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.api.users.UserSearchResultDTO;
+import java.util.HashMap;
 import java.util.List;
 import org.json.JSONObject;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+import retrofit.http.Field;
+import retrofit.http.FormUrlEncoded;
 import retrofit.http.GET;
 import retrofit.http.Header;
 import retrofit.http.Body;
 import retrofit.http.HEAD;
+import retrofit.http.Multipart;
 import retrofit.http.POST;
 import retrofit.http.Path;
 import retrofit.http.Query;
@@ -25,6 +29,45 @@ import retrofit.http.Query;
 
 public interface UserService
 {
+
+    // TODO @retrofit does not accept to pass a Map as multiple fields
+    //{
+    //    "biography": null,
+    //        "deviceToken": null,
+    //        "displayName": "Hello moto23",
+    //        "email": "testttt1@ttt.com",
+    //        "emailNotificationsEnabled": null,
+    //        "firstName": "",
+    //        "lastName": "",
+    //        "location": null,
+    //        "password": "asd123",
+    //        "passwordConfirmation": "asd123",
+    //        "pushNotificationsEnabled": null,
+    //        "username": null,
+    //        "website": null
+    //}
+    @FormUrlEncoded
+    @POST("/SignupWithEmail")
+    void signUpWithEmail(@Header("Authorization") String authorization,
+            @Field("biography") String biography,
+            @Field("deviceToken") String deviceToken,
+            @Field("displayName") String displayName,
+            @Field("email") String email,
+            @Field("emailNotificationsEnabled") Boolean emailNotificationsEnabled,
+            @Field("firstName") String firstName,
+            @Field("lastName") String lastName,
+            @Field("location") String location,
+            @Field("password") String password,
+            @Field("passwordConfirmation") String passwordConfirmation,
+            @Field("pushNotificationsEnabled") Boolean pushNotificationsEnabled,
+            @Field("username") String username,
+            @Field("website") String website,
+            Callback<UserProfileDTO> cb);
+
+    @Multipart
+    @POST("/SignupWithEmail")
+    void signUpWithEmailWithProfilePicture();
+
     @POST("/users")
     void signUp(@Header("Authorization") String authorization, @Body UserFormDTO user, Callback<UserProfileDTO> cb);
 

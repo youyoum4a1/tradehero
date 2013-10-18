@@ -184,7 +184,7 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment
     @Override
     public AuthenticationMode getAuthenticationMode()
     {
-        return AuthenticationMode.SignUp;
+        return AuthenticationMode.SignUpWithEmail;
     }
 
     class Imageupload extends AsyncTask<String, Void, String>
