@@ -10,14 +10,13 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 /** Created with IntelliJ IDEA. User: tho Date: 10/16/13 Time: 12:52 PM Copyright (c) TradeHero */
-@Singleton
-public class LeaderboardDefCache extends StraightDTOCache<Integer, LeaderboardDefKey, LeaderboardDefDTO>
+@Singleton public class LeaderboardDefCache extends StraightDTOCache<Integer, LeaderboardDefKey, LeaderboardDefDTO>
 {
     private static final int DEFAULT_MAX_SIZE = 1000;
 
     @Inject protected Lazy<LeaderboardDefCache> leaderboardDefListCache;
 
-    public LeaderboardDefCache()
+    @Inject public LeaderboardDefCache()
     {
         super(DEFAULT_MAX_SIZE);
     }

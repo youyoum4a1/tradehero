@@ -44,6 +44,8 @@ import com.tradehero.th.persistence.TimelineManager;
 import com.tradehero.th.persistence.TimelineStore;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefCache;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefListCache;
+import com.tradehero.th.persistence.market.ExchangeCache;
+import com.tradehero.th.persistence.market.ExchangeIdCache;
 import com.tradehero.th.persistence.position.SecurityPositionDetailCache;
 import com.tradehero.th.persistence.security.SecurityCompactListCache;
 import com.tradehero.th.persistence.user.AbstractUserStore;
@@ -100,11 +102,6 @@ import javax.inject.Singleton;
                 UserStore.class,
                 TimelineStore.class,
                 TimelineStore.Factory.class,
-                //SecurityCompactCache.class,
-                SecurityCompactListCache.class,
-                SecurityPositionDetailCache.class,
-                //PositionCompactIdCache.class,
-                //FiledPositionCache.class,
 
                 DatabaseCache.class,
                 CacheHelper.class,
@@ -115,8 +112,6 @@ import javax.inject.Singleton;
                 ProfileCompactView.class,
 
                 LeaderboardFragment.class,
-                LeaderboardDefListCache.class,
-                LeaderboardDefCache.class,
                 LeaderboardDefListViewFragment.class,
         },
         staticInjections =

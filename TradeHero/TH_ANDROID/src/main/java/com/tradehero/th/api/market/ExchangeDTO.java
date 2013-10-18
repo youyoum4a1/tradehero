@@ -14,4 +14,14 @@ public class ExchangeDTO
     public String desc;
     public boolean isInternal;
     public boolean isIncludedInTrending;
+
+    public ExchangeIntegerId getExchangeIntegerId()
+    {
+        return new ExchangeIntegerId(id);
+    }
+
+    public ExchangeStringId getExchangeStringId()
+    {
+        return new ExchangeStringId(name);
+    }
 }
