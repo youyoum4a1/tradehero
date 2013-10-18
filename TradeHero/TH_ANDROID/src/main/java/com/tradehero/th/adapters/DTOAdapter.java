@@ -17,7 +17,7 @@ public abstract class DTOAdapter<T, V extends DTOView<T>> extends BaseAdapter
 
     protected final LayoutInflater inflater;
     protected final Context context;
-    private final int layoutResourceId;
+    protected final int layoutResourceId;
 
     private List<T> items;
 

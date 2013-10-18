@@ -50,7 +50,7 @@ import com.tradehero.th.persistence.user.UserStore;
 import com.tradehero.th.utils.NumberDisplayUtils;
 import com.tradehero.th.widget.MarkdownTextView;
 import com.tradehero.th.widget.ServerValidatedUsernameText;
-import com.tradehero.th.widget.portfolio.PortfolioHeaderItemView;
+import com.tradehero.th.widget.portfolio.PortfolioListItemView;
 import com.tradehero.th.widget.position.PositionQuickViewHolder;
 import com.tradehero.th.widget.timeline.TimelineItemView;
 import com.tradehero.th.widget.trending.TrendingSecurityView;
@@ -83,7 +83,7 @@ import javax.inject.Singleton;
                 ChartFragment.class,
                 StockInfoFragment.class,
                 PortfolioListFragment.class,
-                PortfolioHeaderItemView.class,
+                PortfolioListItemView.class,
 
                 PositionListFragment.class,
                 PositionQuickViewHolder.class,

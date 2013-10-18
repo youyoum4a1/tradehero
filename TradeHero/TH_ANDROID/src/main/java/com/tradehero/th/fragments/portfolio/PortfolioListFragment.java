@@ -11,7 +11,7 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
-import com.tradehero.th.adapters.portfolio.PortfolioItemHeaderAdapter;
+import com.tradehero.th.adapters.portfolio.PortfolioListItemAdapter;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.base.THUser;
@@ -20,8 +20,10 @@ import com.tradehero.th.fragments.position.PositionListFragment;
 import com.tradehero.th.network.service.PortfolioService;
 import com.tradehero.th.persistence.portfolio.PortfolioCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
+import com.tradehero.th.widget.portfolio.PortfolioListItemView;
 import com.tradehero.th.widget.portfolio.PortfolioListView;
 import dagger.Lazy;
+import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
 
@@ -30,11 +32,9 @@ public class PortfolioListFragment extends DashboardFragment
 {
     public static final String TAG = PortfolioListFragment.class.getSimpleName();
 
-    private PortfolioListView ownPortfoliosView;
-    private PortfolioListView otherPortfoliosView;
+    private PortfolioListView portfolioListView;
 
-    private PortfolioItemHeaderAdapter ownPortfolioAdapter;
-    private PortfolioItemHeaderAdapter otherPortfolioAdapter;
+    private PortfolioListItemAdapter portfolioListAdapter;
 
     private List<OwnedPortfolioId> otherOwnedPortfolioIds;
     private List<OwnedPortfolioId> ownedPortfolioIds;
@@ -60,40 +60,22 @@ public class PortfolioListFragment extends DashboardFragment
     {
         if (view != null)
         {
-            if (ownPortfolioAdapter == null)
+            if (portfolioListAdapter == null)
             {
-                ownPortfolioAdapter = new PortfolioItemHeaderAdapter(getActivity(), getActivity().getLayoutInflater(), R.layout.portfolio_header_item);
+                portfolioListAdapter = new PortfolioListItemAdapter(getActivity(), getActivity().getLayoutInflater(), R.layout.portfolio_list_item, R.layout.portfolio_list_header);
             }
 
-            ownPortfoliosView = (PortfolioListView) view.findViewById(R.id.own_portfolios_list);
-            if (ownPortfoliosView != null)
+            portfolioListView = (PortfolioListView) view.findViewById(R.id.own_portfolios_list);
+            if (portfolioListView != null)
             {
-                ownPortfoliosView.setOnItemClickListener(new AdapterView.OnItemClickListener()
+                portfolioListView.setOnItemClickListener(new AdapterView.OnItemClickListener()
                 {
                     @Override public void onItemClick(AdapterView<?> parent, View view, int position, long id)
                     {
-                        handleOwnItemClicked(view, position, id);
+                        handlePortfolioItemClicked(view, position, id);
                     }
                 });
-                ownPortfoliosView.setAdapter(ownPortfolioAdapter);
-            }
-
-            if (otherPortfolioAdapter == null)
-            {
-                otherPortfolioAdapter = new PortfolioItemHeaderAdapter(getActivity(), getActivity().getLayoutInflater(), R.layout.portfolio_header_item);
-            }
-
-            otherPortfoliosView = (PortfolioListView) view.findViewById(R.id.other_portfolios_list);
-            if (otherPortfoliosView != null)
-            {
-                otherPortfoliosView.setOnItemClickListener(new AdapterView.OnItemClickListener()
-                {
-                    @Override public void onItemClick(AdapterView<?> parent, View view, int position, long id)
-                    {
-                        handleOtherItemClicked(view, position, id);
-                    }
-                });
-                otherPortfoliosView.setAdapter(otherPortfolioAdapter);
+                portfolioListView.setAdapter(portfolioListAdapter);
             }
         }
     }
@@ -130,17 +112,11 @@ public class PortfolioListFragment extends DashboardFragment
 
     @Override public void onDestroyView()
     {
-        if (ownPortfoliosView != null)
+        if (portfolioListView != null)
         {
-            ownPortfoliosView.setOnItemClickListener(null);
+            portfolioListView.setOnItemClickListener(null);
         }
-        ownPortfoliosView = null;
-
-        if (otherPortfoliosView != null)
-        {
-            otherPortfoliosView.setOnItemClickListener(null);
-        }
-        otherPortfoliosView = null;
+        portfolioListView = null;
 
         super.onDestroyView();
     }
@@ -161,13 +137,31 @@ public class PortfolioListFragment extends DashboardFragment
         linkWithOther(portfolioCache.get().getAllOtherUserKeys(), true);
     }
 
+    private List<OwnedPortfolioId> getAllPortfolioIds()
+    {
+        if (ownedPortfolioIds == null && otherOwnedPortfolioIds == null)
+        {
+            return null;
+        }
+        List<OwnedPortfolioId> all = new ArrayList<>();
+        if (ownedPortfolioIds != null)
+        {
+            all.addAll(ownedPortfolioIds);
+        }
+        if (otherOwnedPortfolioIds != null)
+        {
+            all.addAll(otherOwnedPortfolioIds);
+        }
+        return all;
+    }
+
     public void linkWithOther(List<OwnedPortfolioId> otherOwnedPortfolioIds, boolean andDisplay)
     {
         this.otherOwnedPortfolioIds = otherOwnedPortfolioIds;
 
         if (andDisplay)
         {
-            displayOtherPortfolios();
+            displayPortfolios();
         }
     }
 
@@ -177,60 +171,44 @@ public class PortfolioListFragment extends DashboardFragment
 
         if (andDisplay)
         {
-            displayOwnPortfolios();
+            displayPortfolios();
         }
     }
 
     public void display()
     {
-        displayOwnPortfolios();
-        displayOtherPortfolios();
+        displayPortfolios();
     }
 
-    public void displayOwnPortfolios()
+    public void displayPortfolios()
     {
-        if (ownPortfolioAdapter != null && ownedPortfolioIds != null)
+        if (portfolioListAdapter != null)
         {
-            ownPortfolioAdapter.setItems(ownedPortfolioIds);
+            portfolioListAdapter.setItems(getAllPortfolioIds());
             getView().post(new Runnable()
             {
                 @Override public void run()
                 {
-                    if (ownPortfolioAdapter != null)
+                    PortfolioListItemAdapter adapter = portfolioListAdapter;
+                    if (adapter != null)
                     {
-                        ownPortfolioAdapter.notifyDataSetChanged();
+                        adapter.notifyDataSetChanged();
                     }
                 }
             });
         }
     }
 
-    public void displayOtherPortfolios()
+    private void handlePortfolioItemClicked(View view, int position, long id)
     {
-        if (otherPortfoliosView != null && otherOwnedPortfolioIds != null)
+        if (view instanceof PortfolioListItemView)
         {
-            otherPortfolioAdapter.setItems(otherOwnedPortfolioIds);
-            getView().post(new Runnable()
-            {
-                @Override public void run()
-                {
-                    if (otherPortfolioAdapter != null)
-                    {
-                        otherPortfolioAdapter.notifyDataSetChanged();
-                    }
-                }
-            });
+            navigator.pushFragment(PositionListFragment.class, ((PortfolioListItemView) view).getOwnedPortfolioId().getArgs());
         }
-    }
-
-    private void handleOwnItemClicked(View view, int position, long id)
-    {
-        navigator.pushFragment(PositionListFragment.class, ownedPortfolioIds.get(position).getArgs());
-    }
-
-    private void handleOtherItemClicked(View view, int position, long id)
-    {
-        navigator.pushFragment(PositionListFragment.class, otherOwnedPortfolioIds.get(position).getArgs());
+        else
+        {
+            THLog.d(TAG, "Not handling portfolioItemClicked " + view.getClass().getName());
+        }
     }
 
     private PortfolioCompactListCache.Listener<UserBaseKey, List<OwnedPortfolioId>> createOwnPortfolioListener()

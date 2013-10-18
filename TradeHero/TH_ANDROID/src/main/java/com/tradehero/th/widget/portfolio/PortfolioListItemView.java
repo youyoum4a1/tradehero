@@ -24,10 +24,10 @@ import dagger.Lazy;
 import javax.inject.Inject;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/14/13 Time: 12:28 PM To change this template use File | Settings | File Templates. */
-public class PortfolioHeaderItemView extends RelativeLayout
+public class PortfolioListItemView extends RelativeLayout
     implements DTOView<OwnedPortfolioId>
 {
-    public static final String TAG = PortfolioHeaderItemView.class.getName();
+    public static final String TAG = PortfolioListItemView.class.getName();
 
     private ImageView userIcon;
     private TextView title;
@@ -48,17 +48,17 @@ public class PortfolioHeaderItemView extends RelativeLayout
     private AsyncTask<Void, Void, UserProfileDTO> fetchUserProfileTask;
 
     //<editor-fold desc="Constructors">
-    public PortfolioHeaderItemView(Context context)
+    public PortfolioListItemView(Context context)
     {
         super(context);
     }
 
-    public PortfolioHeaderItemView(Context context, AttributeSet attrs)
+    public PortfolioListItemView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
     }
 
-    public PortfolioHeaderItemView(Context context, AttributeSet attrs, int defStyle)
+    public PortfolioListItemView(Context context, AttributeSet attrs, int defStyle)
     {
         super(context, attrs, defStyle);
     }
@@ -93,6 +93,11 @@ public class PortfolioHeaderItemView extends RelativeLayout
         }
         fetchUserProfileTask = null;
         super.onDetachedFromWindow();
+    }
+
+    public OwnedPortfolioId getOwnedPortfolioId()
+    {
+        return ownedPortfolioId;
     }
 
     public void display(OwnedPortfolioId ownedPortfolioId)

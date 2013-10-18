@@ -152,6 +152,7 @@
   <string name="topbar_portfolios_title">Portfolios</string>
   <string name="webview_back">Back</string>
   <string name="webview_forward">Forward</string>
+  <string name="portfolio_recently_viewed">Recently Viewed Users</string>
 
   <!-- Portfolio detail / Positions -->
   <string name="position_nothing_description">No open positions. Tap to Trade!</string>
