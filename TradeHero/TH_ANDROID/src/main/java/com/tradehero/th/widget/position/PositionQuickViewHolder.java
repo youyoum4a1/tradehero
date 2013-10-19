@@ -28,7 +28,7 @@ public class PositionQuickViewHolder extends PositionQuickInnerViewHolder
             positionProfitIndicatorLeft = (ImageView) view.findViewById(R.id.ic_position_profit_indicator_left);
             if (positionProfitIndicatorLeft != null)
             {
-                Picasso.with(context)
+                picasso.get()
                         .load(R.drawable.edit_button_bg)
                         .transform(new FlipAlphaTransformation())
                         .into(positionProfitIndicatorLeft);

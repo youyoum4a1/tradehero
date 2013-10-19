@@ -24,6 +24,11 @@ public class NumberDisplayUtils
 
     public static String formatWithRelevantDigits(double number, int relevantDigits)
     {
+        return formatWithRelevantDigits(number, relevantDigits, null);
+    }
+
+    public static String formatWithRelevantDigits(double number, int relevantDigits, String prefix)
+    {
         double absVal = Math.abs(number);
         if (absVal > 999999999999999d)
         {
@@ -60,6 +65,6 @@ public class NumberDisplayUtils
             desiredDecimal = Math.max(0, relevantDigits - reducedDigitCount);
         }
 
-        return String.format("%,." + desiredDecimal + "f%s", reducedNumber, suffix);
+        return String.format("%s%,." + desiredDecimal + "f%s", prefix, reducedNumber, suffix);
     }
 }

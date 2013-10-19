@@ -120,13 +120,17 @@ public class TrendingFragment extends DashboardFragment
             {
                 @Override public void onResumed(final Fragment fragment)
                 {
-                    getView().post(new Runnable()
+                    View viewOnResume = getView();
+                    if (viewOnResume != null) // It may be null after coming out of sleep
                     {
-                        @Override public void run()
+                        viewOnResume.post(new Runnable()
                         {
-                            resizeViewPager(fragment);
-                        }
-                    });
+                            @Override public void run()
+                            {
+                                resizeViewPager(fragment);
+                            }
+                        });
+                    }
                 }
             };
             mTrendingFilterPagerAdapter.setOnResumedListener(trendingFilterSelectorResumedListener);

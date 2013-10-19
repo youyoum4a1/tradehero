@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<com.tradehero.th.widget.position.PositionQuickView
+<com.tradehero.th.widget.position.PositionLongView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/white"
     android:focusable="true"
+    android:descendantFocusability="afterDescendants"
   >
 
   <ImageView
@@ -20,7 +21,7 @@
     />
 
   <include
-      layout="@layout/position_quick_inner"
+      layout="@layout/position_long_inner"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_toLeftOf="@+id/ic_more_info"
@@ -35,6 +36,7 @@
       android:layout_centerVertical="true"
       android:src="@drawable/chevron_forward"
       android:contentDescription="@null"
+      android:visibility="gone"
     />
 
-</com.tradehero.th.widget.position.PositionQuickView>
+</com.tradehero.th.widget.position.PositionLongView>

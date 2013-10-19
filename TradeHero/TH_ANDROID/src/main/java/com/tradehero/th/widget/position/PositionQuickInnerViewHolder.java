@@ -27,6 +27,8 @@ import javax.inject.Inject;
 /** Created with IntelliJ IDEA. User: xavier Date: 10/16/13 Time: 11:53 AM To change this template use File | Settings | File Templates. */
 public class PositionQuickInnerViewHolder
 {
+    public static final String TAG = PositionQuickInnerViewHolder.class.getSimpleName();
+
     protected static final int PERCENT_STRETCHING_FOR_COLOR = 20;
 
     @Inject protected Context context;
@@ -52,6 +54,8 @@ public class PositionQuickInnerViewHolder
     protected FiledPositionId filedPositionId;
     protected PositionDTO positionDTO;
     @Inject Lazy<FiledPositionCache> filedPositionCache;
+
+    @Inject protected Lazy<Picasso> picasso;
 
     public PositionQuickInnerViewHolder()
     {
@@ -188,7 +192,7 @@ public class PositionQuickInnerViewHolder
         {
             if (securityCompactDTO != null)
             {
-                Picasso.with(context)
+                picasso.get()
                         .load(securityCompactDTO.imageBlobUrl)
                         .transform(new WhiteToTransparentTransformation())
                         .into(stockLogo);

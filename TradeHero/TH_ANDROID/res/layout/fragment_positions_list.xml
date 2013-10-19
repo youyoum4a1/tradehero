@@ -13,7 +13,7 @@
       android:layout_alignParentTop="true"
       android:paddingTop="50dp"
       android:clipToPadding="false"
-      />
+    />
 
   <LinearLayout
       android:orientation="horizontal"
@@ -22,7 +22,7 @@
       android:layout_alignParentTop="true"
       android:background="#88888888"
       android:padding="4dp"
-      >
+    >
 
     <TextView
         android:layout_width="wrap_content"

@@ -163,6 +163,12 @@
   <string name="position_list_header_open_unsure">Open Positions (N/A)</string>
   <string name="position_list_header_closed">Closed Positions (%d)</string>
   <string name="position_list_header_closed_unsure">Closed Positions (N/A)</string>
+  <string name="position_unrealised_pl_header">Unrealized P&amp;L</string>
+  <string name="position_realised_pl_header">Realized P&amp;L</string>
+  <string name="position_total_invested_header">Total Invested</string>
+  <string name="position_market_value_header">Market Value</string>
+  <string name="position_quantity_header">Quantity</string>
+  <string name="position_average_price_header">Avg. Price</string>
 
   <!-- Number presentation -->
   <string name="number_presentation_unit_suffix"></string>
