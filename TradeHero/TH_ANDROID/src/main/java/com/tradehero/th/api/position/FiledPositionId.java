@@ -38,6 +38,12 @@ public class FiledPositionId extends OwnedPositionId
         super(args);
         this.portfolioId = args.containsKey(BUNDLE_KEY_PORTFOLIO_ID) ? args.getInt(BUNDLE_KEY_PORTFOLIO_ID) : null;
     }
+
+    public FiledPositionId(FiledPositionId filedPositionId)
+    {
+        super(filedPositionId);
+        this.portfolioId = filedPositionId.portfolioId;
+    }
     //</editor-fold>
 
     @Override public int hashCode()

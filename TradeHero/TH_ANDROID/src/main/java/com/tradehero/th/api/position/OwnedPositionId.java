@@ -42,6 +42,12 @@ public class OwnedPositionId implements Comparable, DTOKey<String>
         this.userId = args.containsKey(BUNDLE_KEY_USER_ID) ? args.getInt(BUNDLE_KEY_USER_ID) : null;
         this.securityId = args.containsKey(BUNDLE_KEY_SECURITY_ID) ? args.getInt(BUNDLE_KEY_SECURITY_ID) : null;
     }
+
+    public OwnedPositionId(OwnedPositionId ownedPositionId)
+    {
+        this.userId = ownedPositionId.userId;
+        this.securityId = ownedPositionId.securityId;
+    }
     //</editor-fold>
 
 
