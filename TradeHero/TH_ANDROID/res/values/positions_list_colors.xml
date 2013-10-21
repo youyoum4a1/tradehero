@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="portfolio_header_text_color">#4E6084</color>
+    <color name="portfolio_header_background_color">#DD888888</color>
+</resources>

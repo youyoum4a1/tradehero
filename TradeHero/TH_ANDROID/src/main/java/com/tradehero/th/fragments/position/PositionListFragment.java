@@ -21,9 +21,12 @@ import com.tradehero.th.api.position.GetPositionsDTO;
 import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.dashboard.DashboardTabType;
+import com.tradehero.th.persistence.portfolio.PortfolioCompactCache;
 import com.tradehero.th.persistence.position.GetPositionsCache;
+import com.tradehero.th.widget.portfolio.header.PortfolioHeaderView;
 import com.tradehero.th.widget.position.PositionQuickNothingView;
 import dagger.Lazy;
+
 import javax.inject.Inject;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/16/13 Time: 5:56 PM To change this template use File | Settings | File Templates. */
@@ -32,6 +35,7 @@ public class PositionListFragment extends DashboardFragment
 {
     public static final String TAG = PositionListFragment.class.getSimpleName();
 
+    private PortfolioHeaderView portfolioHeaderView;
     private ListView openPositions;
     private PositionItemAdapter positionItemAdapter;
 
@@ -44,6 +48,7 @@ public class PositionListFragment extends DashboardFragment
     private OwnedPortfolioId ownedPortfolioId;
     private GetPositionsDTO getPositionsDTO;
     @Inject Lazy<GetPositionsCache> getPositionsCache;
+    @Inject Lazy<PortfolioCompactCache> portfolioCompactCache;
     private GetPositionsCache.Listener<OwnedPortfolioId, GetPositionsDTO> getPositionsCacheListener;
     private AsyncTask<Void, Void, GetPositionsDTO> fetchGetPositionsDTOTask;
 
@@ -53,6 +58,8 @@ public class PositionListFragment extends DashboardFragment
         super.onCreateView(inflater, container, savedInstanceState);
         View view = null;
         view = inflater.inflate(R.layout.fragment_positions_list, container, false);
+
+
         initViews(view);
         return view;
     }
@@ -83,6 +90,8 @@ public class PositionListFragment extends DashboardFragment
                     }
                 });
             }
+
+            portfolioHeaderView = (PortfolioHeaderView)view.findViewById(R.id.position_list_portfolio_header);
         }
     }
 
@@ -182,6 +191,11 @@ public class PositionListFragment extends DashboardFragment
     public void linkWith(OwnedPortfolioId ownedPortfolioId, boolean andDisplay)
     {
         this.ownedPortfolioId = ownedPortfolioId;
+        if (this.portfolioHeaderView != null)
+        {
+            this.portfolioHeaderView.bindOwnedPortfolioId(this.ownedPortfolioId);
+        }
+
         fetchSimplePage();
         if (andDisplay)
         {
@@ -235,7 +249,6 @@ public class PositionListFragment extends DashboardFragment
     public void display()
     {
         displayHeaderText();
-        // TODO
     }
 
     public void displayHeaderText()

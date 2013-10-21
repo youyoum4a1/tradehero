@@ -42,4 +42,9 @@ public class UserProfileDTO extends UserProfileCompactDTO
 
     public List<UserAlertPlanDTO> userAlertPlans;
     public List<ProviderDTO> enrolledProviders;
+
+    public boolean isFollowingUser(int userId)
+    {
+        return this.heroIds.contains(userId);
+    }
 }

@@ -32,7 +32,7 @@
       <excludeFolder url="file://$MODULE_DIR$/TradeHero/TH_ANDROID/target/generated-sources/extracted-dependencies" />
       <excludeFolder url="file://$MODULE_DIR$/TradeHero/TH_ANDROID/target/test-classes" />
     </content>
-    <orderEntry type="jdk" jdkName="Android 4.1.2 Platform" jdkType="Android SDK" />
+    <orderEntry type="jdk" jdkName="Maven Android 4.1.2 Platform" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="facebook-android-sdk" />
     <orderEntry type="module-library">

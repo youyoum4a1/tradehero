@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<com.tradehero.th.widget.portfolio.header.OtherUserPortfolioHeaderView xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:background="@color/portfolio_header_background_color"
+              android:paddingLeft="8dp" android:paddingRight="8dp" android:paddingTop="4dp" android:paddingBottom="4dp">
+    <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            >
+        <ImageView
+            android:id="@+id/portfolio_header_avatar"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:background="@drawable/layout_oval"
+            android:src="@drawable/th_logo"
+            android:contentDescription="@null"/>
+        <TextView
+                android:id="@+id/header_portfolio_username"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:textColor="@color/portfolio_header_text_color"
+                android:textStyle="bold"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp"
+                android:text="Julien" android:gravity="center_vertical"/>
+    </LinearLayout>
+    <RelativeLayout
+            android:layout_width="121dp"
+            android:layout_height="34dp"
+            android:gravity="right"
+            android:layout_alignParentRight="true">
+        <ImageView
+                android:id="@+id/header_portfolio_following_image"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:contentDescription="@null"
+                android:scaleType="centerInside"
+                android:src="@drawable/following_stamp"
+                android:visibility="gone"
+                />
+        <ImageButton
+                android:id="@+id/header_portfolio_follow_button"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/follow_button"
+                android:scaleType="fitCenter"
+                android:background="@null"/>
+    </RelativeLayout>
+</com.tradehero.th.widget.portfolio.header.OtherUserPortfolioHeaderView>

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="portfolio_header_total_value">Total Value</string>
+    <string name="portfolio_header_cash_value">Cash Value</string>
+    <string name="portfolio_header_username">Username</string>
+</resources>
