@@ -14,12 +14,10 @@ public abstract class AuthenticationFragment extends SherlockFragment
     {
         super.onAttach(activity);
 
-        if (!(activity instanceof View.OnClickListener))
+        if (activity instanceof View.OnClickListener)
         {
-            throw new IllegalArgumentException(
-                    "Authentication activity should implement View.OnClickListener");
+            onClickListener = (View.OnClickListener) activity;
         }
-        onClickListener = (View.OnClickListener) activity;
     }
 
     public abstract AuthenticationMode getAuthenticationMode();

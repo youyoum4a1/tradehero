@@ -9,31 +9,48 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.provider.MediaStore;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.form.UserFormFactory;
+import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.auth.AuthenticationMode;
+import com.tradehero.th.auth.EmailAuthenticationProvider;
+import com.tradehero.th.base.Application;
+import com.tradehero.th.base.THUser;
+import com.tradehero.th.misc.callback.LogInCallback;
+import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.utills.PostData;
 import com.tradehero.th.utills.Util;
+import com.tradehero.th.utils.NetworkUtils;
 import com.tradehero.th.widget.MatchingPasswordText;
 import com.tradehero.th.widget.ServerValidatedEmailText;
 import com.tradehero.th.widget.ServerValidatedUsernameText;
 import com.tradehero.th.widget.ValidatedPasswordText;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.HashMap;
 import java.util.Map;
 
-public class EmailSignUpFragment extends EmailSignInOrUpFragment
+public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View.OnClickListener
 {
     private ServerValidatedEmailText email;
     private ValidatedPasswordText password;
     private MatchingPasswordText confirmPassword;
     private ServerValidatedUsernameText displayName;
     private EditText firstName, lastName;
+    private ProgressDialog progressDialog;
 
-    private ProgressDialog mProgressDialog;
+    private boolean editCurrentUser;
+
     private int mWhichEdittext = 0;
     private CharSequence mText;
     private ImageView mOptionalImage;
@@ -76,12 +93,35 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment
     }
 
     @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    {
+        Bundle args = getArguments();
+        editCurrentUser = args != null && args.getBoolean("editCurrentUser");
+
+        View view = super.onCreateView(inflater, container, savedInstanceState);
+
+        if (editCurrentUser)
+        {
+            this.populateCurrentUser();
+            onClickListener = this;
+        }
+        return view;
+    }
+
+    @Override
     public void onClick(View view)
     {
         switch (view.getId())
         {
             case R.id.authentication_sign_up_button:
-                handleSignInOrUpButtonClicked(view);
+                if (editCurrentUser)
+                {
+                    updateProfile(view);
+                }
+                else
+                {
+                    handleSignInOrUpButtonClicked(view);
+                }
                 break;
             case R.id.image_optional:
                 Intent intent = new Intent(Intent.ACTION_PICK);
@@ -168,6 +208,65 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment
                     e.printStackTrace();
                 }
             }
+        }
+    }
+
+    private void populateCurrentUser()
+    {
+        UserBaseDTO currentUserBase = THUser.getCurrentUserBase();
+
+        this.signButton.setText(getResources().getString(R.string.settings_update_profile));
+        this.firstName.setText(currentUserBase.firstName);
+        this.lastName.setText(currentUserBase.lastName);
+        this.displayName.setText(currentUserBase.displayName);
+        this.displayName.setOriginalUsernameValue(currentUserBase.displayName);
+
+        JSONObject credentials = THUser.currentCredentials();
+        String emailValue = null, passwordValue = null;
+        try {
+            emailValue = credentials.getString("email");
+            passwordValue = credentials.getString("password");
+        }
+        catch (JSONException e)
+        {
+        }
+        this.email.setText(emailValue);
+        this.password.setText(passwordValue);
+        this.confirmPassword.setText(passwordValue);
+    }
+
+    private void updateProfile (View view)
+    {
+        Util.dismissKeyBoard(getActivity(), view);
+        forceValidateFields();
+
+        if (!NetworkUtils.isConnected(getActivity()))
+        {
+            Util.show_toast(getActivity(), getResources().getString(R.string.network_error));
+        }
+        else if (!areFieldsValid ())
+        {
+            THToast.show(R.string.validation_please_correct);
+        }
+        else
+        {
+            progressDialog = ProgressDialog.show(
+                    getSherlockActivity(),
+                    Application.getResourceString(R.string.please_wait),
+                    Application.getResourceString(R.string.connecting_tradehero_only),
+                    true);
+            EmailAuthenticationProvider.setCredentials(this.getUserFormJSON());
+            THUser.updateProfile(getUserFormJSON(), new LogInCallback() {
+                @Override
+                public void done(UserBaseDTO user, THException ex) {
+                    progressDialog.hide();
+                }
+
+                @Override
+                public void onStart() {
+
+                }
+            });
         }
     }
 

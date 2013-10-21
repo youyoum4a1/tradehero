@@ -324,8 +324,40 @@ public class THUser
         THUser.authenticationMode = authenticationMode;
     }
 
+    public static JSONObject currentCredentials()
+    {
+        return credentials.get(currentAuthenticationType);
+    }
+
     public static String getAuthHeader()
     {
         return currentAuthenticationType + " " + currentSessionToken;
+    }
+
+    public static void updateProfile(JSONObject userFormJSON, final LogInCallback callback)
+    {
+        UserFormDTO userFormDTO = null;
+        try
+        {
+            userFormDTO = UserFormFactory.create(userFormJSON);
+        }
+        catch (JSONException je)
+        {
+        }
+        userService.updateProfile(getAuthHeader(),
+                userFormDTO.biography,
+                userFormDTO.deviceToken,
+                userFormDTO.displayName,
+                userFormDTO.email,
+                userFormDTO.emailNotificationsEnabled,
+                userFormDTO.firstName,
+                userFormDTO.lastName,
+                userFormDTO.location,
+                userFormDTO.password,
+                userFormDTO.passwordConfirmation,
+                userFormDTO.pushNotificationsEnabled,
+                userFormDTO.username,
+                userFormDTO.website,
+                createCallbackForSignUpAsyncWithJson(userFormJSON, callback));
     }
 }

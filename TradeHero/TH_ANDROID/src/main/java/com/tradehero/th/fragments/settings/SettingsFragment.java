@@ -29,6 +29,7 @@ import com.tradehero.th.misc.callback.THCallback;
 import com.tradehero.th.misc.callback.THResponse;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.service.UserService;
+import com.tradehero.th.fragments.authentication.EmailSignUpFragment;
 
 import javax.inject.Inject;
 import java.util.Arrays;
@@ -50,6 +51,7 @@ public class SettingsFragment extends DashboardFragment
     private static final int ITEM_SEND_LOVE = 0;
     private static final int ITEM_SEND_FEEDBACK = 1;
     private static final int ITEM_FAQ = 2;
+    private static final int ITEM_UPDATE_PROFILE = 3;
 
     private static final int ITEM_SIGN_OUT = 2;
     private static final int ITEM_ABOUT = 3;
@@ -97,6 +99,9 @@ public class SettingsFragment extends DashboardFragment
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l)
             {
+                Navigator navigator = ((NavigatorActivity) getActivity()).getNavigator();
+                Bundle bundle;
+
                 switch (i)
                 {
                     case ITEM_SEND_LOVE: // TODO: use real TradeHero Android market URL
@@ -132,10 +137,14 @@ public class SettingsFragment extends DashboardFragment
                         break;
                     case ITEM_FAQ:
                         String faqUrl = getResources().getString(R.string.th_faq_url);
-                        Navigator navigator = ((NavigatorActivity) getActivity()).getNavigator();
-                        Bundle bundle = new Bundle();
+                        bundle = new Bundle();
                         bundle.putString(News.URL, faqUrl);
                         navigator.pushFragment(WebViewFragment.class, bundle);
+                        break;
+                    case ITEM_UPDATE_PROFILE:
+                        bundle = new Bundle();
+                        bundle.putBoolean("editCurrentUser", true);
+                        navigator.pushFragment(EmailSignUpFragment.class, bundle);
                         break;
                 }
             }

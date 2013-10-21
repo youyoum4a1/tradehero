@@ -15,6 +15,16 @@ import java.util.Map;
 public class ServerValidatedUsernameText extends ServerValidatedText
 {
     private boolean isValidInServer = true;
+
+    public String getOriginalUsernameValue() {
+        return originalUsernameValue;
+    }
+
+    public void setOriginalUsernameValue(String originalUsernameValue) {
+        this.originalUsernameValue = originalUsernameValue;
+    }
+
+    private String originalUsernameValue;
     private Map<String, AbstractUserAvailabilityRequester> alreadyRequested = new HashMap<>();
 
     //<editor-fold desc="Constructors">
@@ -47,6 +57,12 @@ public class ServerValidatedUsernameText extends ServerValidatedText
         }
 
         String displayName = getText().toString();
+        boolean sameDisplayName = (this.originalUsernameValue != null && this.originalUsernameValue.equalsIgnoreCase(displayName));
+        if (sameDisplayName)
+        {
+            isValidInServer = true;
+            return true;
+        }
 
         if (alreadyRequested.containsKey(displayName))
         {

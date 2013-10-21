@@ -196,6 +196,7 @@
     <item>Sign Out</item>
     <item>About</item>
   </string-array>
+  <string name="settings_update_profile">Update Profile</string>
   <string name="settings_privacy">Privacy Policy</string>
   <string name="settings_terms">Terms and Conditions</string>
   <string name="settings_about">Any use of trademarks or copyright images is for the fair and reasonable uses of research, study, description and/or identification. Such trademarks or images remain the sole property of their respective owners.</string>

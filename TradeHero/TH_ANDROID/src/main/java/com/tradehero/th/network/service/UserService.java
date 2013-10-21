@@ -64,6 +64,24 @@ public interface UserService
             @Field("website") String website,
             Callback<UserProfileDTO> cb);
 
+    @FormUrlEncoded
+    @POST("/users/{userId}/updateUser")
+    void updateProfile(@Header("Authorization") String authorization,
+                       @Field("biography") String biography,
+                       @Field("deviceToken") String deviceToken,
+                       @Field("displayName") String displayName,
+                       @Field("email") String email,
+                       @Field("emailNotificationsEnabled") Boolean emailNotificationsEnabled,
+                       @Field("firstName") String firstName,
+                       @Field("lastName") String lastName,
+                       @Field("location") String location,
+                       @Field("password") String password,
+                       @Field("passwordConfirmation") String passwordConfirmation,
+                       @Field("pushNotificationsEnabled") Boolean pushNotificationsEnabled,
+                       @Field("username") String username,
+                       @Field("website") String website,
+                       Callback<UserProfileDTO> cb);
+
     @Multipart
     @POST("/SignupWithEmail")
     void signUpWithEmailWithProfilePicture();
