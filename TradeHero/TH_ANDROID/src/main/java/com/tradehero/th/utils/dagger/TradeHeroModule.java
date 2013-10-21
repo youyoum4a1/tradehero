@@ -15,6 +15,7 @@ import com.tradehero.th.fragments.leaderboard.LeaderboardDefListViewFragment;
 import com.tradehero.th.fragments.leaderboard.LeaderboardFragment;
 import com.tradehero.th.fragments.portfolio.PortfolioListFragment;
 import com.tradehero.th.fragments.position.PositionListFragment;
+import com.tradehero.th.fragments.settings.AboutFragment;
 import com.tradehero.th.fragments.settings.SettingsFragment;
 import com.tradehero.th.fragments.timeline.MeTimelineFragment;
 import com.tradehero.th.fragments.timeline.TimelineFragment;
@@ -66,6 +67,7 @@ import javax.inject.Singleton;
         injects =
         {
                 SettingsFragment.class,
+                AboutFragment.class,
                 EmailSignInFragment.class,
                 ServerValidatedUsernameText.UserAvailabilityRequester.class,
                 ServerValidatedUsernameText.class,

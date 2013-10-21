@@ -51,6 +51,7 @@ public class SettingsFragment extends DashboardFragment
     private static final int ITEM_FAQ = 2;
 
     private static final int ITEM_SIGN_OUT = 2;
+    private static final int ITEM_ABOUT = 3;
 
     @Inject UserService userService;
 
@@ -192,6 +193,11 @@ public class SettingsFragment extends DashboardFragment
                                 }, 3000);
                             }
                         });
+                        break;
+                    case ITEM_ABOUT:
+                        Navigator navigator = ((NavigatorActivity) getActivity()).getNavigator();
+                        Bundle bundle = new Bundle();
+                        navigator.pushFragment(AboutFragment.class, bundle);
                         break;
                 }
             }
