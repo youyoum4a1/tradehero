@@ -61,7 +61,9 @@ public class TimelineAdapter extends DTOAdapter<TimelineItem, TimelineItemView>
         if (getCount() > 0 && loader != null)
         {
             int lastItemId = firstVisibleItem + visibleItemCount > getCount() ? getCount() - 1 : firstVisibleItem + visibleItemCount - 1;
-            loader.setFirstVisibleItem((TimelineItem) getItem(firstVisibleItem));
+            // strange behavior of onScroll, sometime firstVisibleItem >= getCount(), which is logically wrong, that's why I have to do this check
+            int firstItemId = Math.min(firstVisibleItem, getCount() - 1);
+            loader.setFirstVisibleItem((TimelineItem) getItem(firstItemId));
             loader.setLastVisibleItem((TimelineItem) getItem(lastItemId));
         }
     }
