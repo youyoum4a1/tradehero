@@ -38,7 +38,8 @@ public class THException extends Exception
                 ErrorMessageDTO dto = (ErrorMessageDTO) THJsonAdapter.getInstance()
                         .fromBody(error.getResponse().getBody(), ErrorMessageDTO.class);
                 this.code = ExceptionCode.UnknownError;
-                return super.initCause(new Exception(dto.Message));
+                String errorMessage = dto != null ? dto.Message : Application.getResourceString(R.string.error_unknown);
+                return super.initCause(new Exception(errorMessage));
             }
         }
         else if (throwable instanceof FacebookOperationCanceledException)
