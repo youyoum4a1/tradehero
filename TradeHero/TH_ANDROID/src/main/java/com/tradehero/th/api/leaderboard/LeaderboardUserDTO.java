@@ -1,12 +1,13 @@
 package com.tradehero.th.api.leaderboard;
 
 import com.tradehero.th.api.users.UserBaseDTO;
+import com.tradehero.th.loaders.ItemWithComparableId;
 import java.util.Date;
 import java.util.List;
 
 /** Created with IntelliJ IDEA. User: tho Date: 10/14/13 Time: 2:09 PM Copyright (c) TradeHero */
 
-public class LeaderboardUserDTO extends UserBaseDTO
+public class LeaderboardUserDTO extends UserBaseDTO implements ItemWithComparableId<Integer>
 {
     public int lbmuId;    // leaderboardMarkUser.id ...
     public int portfolioId;    // ...OR portfolioId --> messy
@@ -40,5 +41,20 @@ public class LeaderboardUserDTO extends UserBaseDTO
     public Integer followerCountFree;
     public Integer followerCountPaid;
     public Integer commentCount;
+
+    @Override public Integer getId()
+    {
+        return lbmuId;
+    }
+
+    @Override public void setId(Integer id)
+    {
+        lbmuId = id;
+    }
+
+    @Override public int compareTo(ItemWithComparableId<Integer> other)
+    {
+        return other.getId().compareTo(lbmuId);
+    }
 }
 

@@ -13,6 +13,7 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.th.R;
+import com.tradehero.th.api.leaderboard.LeaderboardDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardDefExchangeListKey;
 import com.tradehero.th.api.leaderboard.LeaderboardDefKey;
@@ -116,11 +117,13 @@ public class LeaderboardFragment extends DashboardFragment implements DTOCache.L
             {
                 ListView mostSkilledListView = (ListView) view.findViewById(R.id.leaderboard_most_skilled);
                 mostSkilledListView.setAdapter(createMostSkilledListAdapter(value));
+                mostSkilledListView.setOnItemClickListener(createLeaderboardItemClickListener());
             }
             else if (key instanceof LeaderboardDefTimePeriodListKey)
             {
                 ListView timePeriodListView = (ListView) view.findViewById(R.id.leaderboard_time_period);
                 timePeriodListView.setAdapter(createTimePeriodListAdapter(value));
+                timePeriodListView.setOnItemClickListener(createLeaderboardItemClickListener());
             }
             else if (key instanceof LeaderboardDefSectorListKey && (value.size() > 0))
             {
@@ -133,6 +136,21 @@ public class LeaderboardFragment extends DashboardFragment implements DTOCache.L
                 addItemToSectorSection(sectorDto);
             }
         }
+    }
+
+    private AdapterView.OnItemClickListener createLeaderboardItemClickListener()
+    {
+        return new AdapterView.OnItemClickListener()
+        {
+            @Override public void onItemClick(AdapterView<?> adapterView, View view, int position, long id)
+            {
+                LeaderboardDefDTO dto = (LeaderboardDefDTO) adapterView.getAdapter().getItem(position);
+
+                Bundle bundle = new Bundle();
+                bundle.putInt(LeaderboardDTO.LEADERBOARD_ID, dto.getId());
+                navigator.pushFragment(LeaderboardListViewFragment.class, bundle);
+            }
+        };
     }
 
     //<editor-fold desc="Init Defaults">

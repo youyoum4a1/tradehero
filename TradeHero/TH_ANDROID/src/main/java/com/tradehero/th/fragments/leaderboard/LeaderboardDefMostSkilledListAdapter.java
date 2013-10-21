@@ -1,10 +1,8 @@
 package com.tradehero.th.fragments.leaderboard;
 
 import android.content.Context;
-import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.ListAdapter;
 import com.tradehero.th.R;
 import com.tradehero.th.api.leaderboard.LeaderboardDefDTO;
 import java.util.List;
@@ -35,6 +33,7 @@ public class LeaderboardDefMostSkilledListAdapter extends LeaderboardDefListAdap
 
     @Override protected View getView(int position, LeaderboardDefView convertView)
     {
+
         convertView.setBackgroundResource(R.drawable.leaderboard_button_border_full);
 
         if (getCount() >= 2)

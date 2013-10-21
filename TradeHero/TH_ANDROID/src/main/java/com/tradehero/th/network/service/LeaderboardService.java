@@ -11,7 +11,7 @@ import retrofit.http.Query;
 public interface LeaderboardService
 {
     @GET("/leaderboards/{lbId}")
-    LeaderboardDTO getLeaderboards(@Path("lbId") int lbId, @Query("path") int page, int perPage, @Query("sortType") int sortType);
+    LeaderboardDTO getLeaderboards(@Path("lbId") Integer lbId, @Query("path") Integer page, @Query("perPage") Integer perPage, @Query("sortType") Integer sortType);
 
     @GET("/leaderboards") List<LeaderboardDefDTO> getLeaderboardDefinitions();
 }

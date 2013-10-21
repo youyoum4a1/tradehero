@@ -13,6 +13,8 @@ import com.tradehero.th.base.THUser;
 import com.tradehero.th.fragments.authentication.EmailSignInFragment;
 import com.tradehero.th.fragments.leaderboard.LeaderboardDefListViewFragment;
 import com.tradehero.th.fragments.leaderboard.LeaderboardFragment;
+import com.tradehero.th.fragments.leaderboard.LeaderboardListViewFragment;
+import com.tradehero.th.fragments.leaderboard.LeaderboardLoader;
 import com.tradehero.th.fragments.portfolio.PortfolioListFragment;
 import com.tradehero.th.fragments.position.PositionListFragment;
 import com.tradehero.th.fragments.settings.AboutFragment;
@@ -46,6 +48,8 @@ import com.tradehero.th.network.service.UserTimelineService;
 import com.tradehero.th.network.service.YahooNewsService;
 import com.tradehero.th.persistence.TimelineManager;
 import com.tradehero.th.persistence.TimelineStore;
+import com.tradehero.th.persistence.leaderboard.LeaderboardManager;
+import com.tradehero.th.persistence.leaderboard.LeaderboardStore;
 import com.tradehero.th.persistence.user.AbstractUserStore;
 import com.tradehero.th.persistence.user.UserManager;
 import com.tradehero.th.persistence.user.UserStore;
@@ -119,6 +123,10 @@ import javax.inject.Singleton;
 
                 LeaderboardFragment.class,
                 LeaderboardDefListViewFragment.class,
+
+                LeaderboardManager.class,
+                LeaderboardLoader.class,
+                LeaderboardListViewFragment.class,
         },
         staticInjections =
         {

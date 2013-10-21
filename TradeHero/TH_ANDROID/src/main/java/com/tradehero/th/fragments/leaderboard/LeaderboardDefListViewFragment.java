@@ -1,11 +1,11 @@
 package com.tradehero.th.fragments.leaderboard;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import com.tradehero.common.persistence.DTOCache;
-import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
 import com.tradehero.th.api.leaderboard.LeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardDefKey;
@@ -29,23 +29,38 @@ public class LeaderboardDefListViewFragment extends BaseListFragment
     @Inject protected Lazy<LeaderboardDefListCache> leaderboardDefListCache;
     @Inject protected Lazy<LeaderboardDefCache> leaderboardDefCache;
 
-    @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    @Override public void onAttach(Activity activity)
     {
-        updateLeaderboardDefListKey();
-        leaderboardDefListAdapter = new LeaderboardDefListAdapter(getActivity(), getActivity().getLayoutInflater(), null, R.layout.leaderboard_def_item);
-        setListAdapter(leaderboardDefListAdapter);
-        return super.onCreateView(inflater, container, savedInstanceState);
+        super.onAttach(activity);    //To change body of overridden methods use File | Settings | File Templates.
     }
 
-    private void updateLeaderboardDefListKey()
+    @Override public void onCreate(Bundle savedInstanceState)
     {
-        LeaderboardDefListKey key = new LeaderboardDefListKey(getArguments());
+        super.onCreate(savedInstanceState);
+
+        updateLeaderboardDefListKey(getArguments());
+        leaderboardDefListAdapter = new LeaderboardDefListAdapter(getActivity(), getActivity().getLayoutInflater(), null, R.layout.leaderboard_def_item);
+        setListAdapter(leaderboardDefListAdapter);
+    }
+
+    //@Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    //{
+    //    updateLeaderboardDefListKey(getArguments());
+    //    leaderboardDefListAdapter = new LeaderboardDefListAdapter(getActivity(), getActivity().getLayoutInflater(), null, R.layout.leaderboard_def_item);
+    //    setListAdapter(leaderboardDefListAdapter);
+    //    return super.onCreateView(inflater, container, savedInstanceState);
+    //}
+
+    private void updateLeaderboardDefListKey(Bundle bundle)
+    {
+        LeaderboardDefListKey key = new LeaderboardDefListKey(bundle);
         leaderboardDefListCache.get().getOrFetch(key, false, this).execute();
     }
 
     @Override public void onArgumentsChanged(Bundle args)
     {
-        updateLeaderboardDefListKey();
+        updateLeaderboardDefListKey(args);
+        setArguments(args);
     }
 
     @Override public void onDTOReceived(LeaderboardDefListKey key, List<LeaderboardDefKey> value)
