@@ -1,5 +1,6 @@
 package com.tradehero.th.fragments.settings;
 
+import android.net.Uri;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
@@ -98,6 +99,14 @@ public class SettingsFragment extends DashboardFragment
             {
                 switch (i)
                 {
+                    case ITEM_SEND_LOVE: // TODO: use real TradeHero Android market URL
+                        final String appName = "TradeHero";
+                        try {
+                            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id="+appName)));
+                        } catch (android.content.ActivityNotFoundException anfe) {
+                            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://play.google.com/store/apps/details?id="+appName)));
+                        }
+                        break;
                     case ITEM_SEND_FEEDBACK:
                         String appVersion = "";
                         try
