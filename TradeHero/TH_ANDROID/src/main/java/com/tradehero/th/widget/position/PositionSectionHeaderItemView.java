@@ -8,22 +8,22 @@ import android.widget.TextView;
 import com.tradehero.th.R;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/17/13 Time: 7:09 PM To change this template use File | Settings | File Templates. */
-public class PositionHeaderItemView extends RelativeLayout
+public class PositionSectionHeaderItemView extends RelativeLayout
 {
     private TextView headerText;
 
     //<editor-fold desc="Constructors">
-    public PositionHeaderItemView(Context context)
+    public PositionSectionHeaderItemView(Context context)
     {
         super(context);
     }
 
-    public PositionHeaderItemView(Context context, AttributeSet attrs)
+    public PositionSectionHeaderItemView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
     }
 
-    public PositionHeaderItemView(Context context, AttributeSet attrs, int defStyle)
+    public PositionSectionHeaderItemView(Context context, AttributeSet attrs, int defStyle)
     {
         super(context, attrs, defStyle);
     }

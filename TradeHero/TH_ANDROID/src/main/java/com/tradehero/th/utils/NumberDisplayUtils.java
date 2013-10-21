@@ -42,16 +42,13 @@ public class NumberDisplayUtils
 
         // Pick suffix
         int tensCategory = (int) Math.floor(Math.log10(absVal));
-        int suffixIndex = Math.max(0, (int) Math.floor(((float) tensCategory) / 3));
-        String suffix;
-        try
+        int redressDigits = 0;
+        if (relevantDigits > 3 && tensCategory >= 3)
         {
-            suffix = context.getResources().getString(SUFFIX_IDS[suffixIndex]);
+            // To change something like 2.592k into 2,592 or something like 2.592M into 2,592k
+            redressDigits = relevantDigits - (relevantDigits % 3);
         }
-        catch (Resources.NotFoundException e)
-        {
-            suffix = FALLBACK_SUFFIXES[suffixIndex];
-        }
+        int suffixIndex = Math.max(0, (int) Math.floor(((float) (tensCategory - redressDigits)) / 3));
 
         // Get number reduced by suffix
         double reducedNumber = number / Math.pow(10, suffixIndex * 3);
@@ -65,6 +62,23 @@ public class NumberDisplayUtils
             desiredDecimal = Math.max(0, relevantDigits - reducedDigitCount);
         }
 
-        return String.format("%s%,." + desiredDecimal + "f%s", prefix, reducedNumber, suffix);
+        String suffix;
+        try
+        {
+            suffix = context.getResources().getString(SUFFIX_IDS[suffixIndex]);
+        }
+        catch (Resources.NotFoundException e)
+        {
+            suffix = FALLBACK_SUFFIXES[suffixIndex];
+        }
+
+        if (prefix != null)
+        {
+            return String.format("%s%,." + desiredDecimal + "f%s", prefix, reducedNumber, suffix);
+        }
+        else
+        {
+            return String.format("%,." + desiredDecimal + "f%s", reducedNumber, suffix);
+        }
     }
 }
