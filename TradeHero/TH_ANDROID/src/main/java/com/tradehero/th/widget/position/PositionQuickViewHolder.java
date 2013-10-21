@@ -1,23 +1,28 @@
 package com.tradehero.th.widget.position;
 
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ImageView;
-import com.squareup.picasso.Picasso;
 import com.tradehero.common.graphics.FlipAlphaTransformation;
 import com.tradehero.th.R;
+import com.tradehero.th.api.position.FiledPositionId;
 import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.utils.ColorUtils;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/16/13 Time: 12:05 PM To change this template use File | Settings | File Templates. */
-public class PositionQuickViewHolder extends PositionQuickInnerViewHolder
+public class PositionQuickViewHolder extends PositionQuickInnerViewHolder<PositionQuickInnerViewHolder.OnPositionQuickInnerClickedListener>
 {
+    public static final String TAG = PositionQuickViewHolder.class.getSimpleName();
+
     private ImageView positionProfitIndicatorLeft;
     private ImageView moreInfoIndicator;
 
+    //<editor-fold desc="Constructors">
     public PositionQuickViewHolder()
     {
         super();
     }
+    //</editor-fold>
 
     @Override public void initViews(View view)
     {
@@ -40,6 +45,7 @@ public class PositionQuickViewHolder extends PositionQuickInnerViewHolder
         displayMoreInfoIndicator();
     }
 
+    //<editor-fold desc="DTO Methods">
     @Override public void linkWith(PositionDTO positionDTO, boolean andDisplay)
     {
         super.linkWith(positionDTO, andDisplay);
@@ -48,7 +54,9 @@ public class PositionQuickViewHolder extends PositionQuickInnerViewHolder
             displayPositionProfitIndicatorLeft();
         }
     }
+    //</editor-fold>
 
+    //<editor-fold desc="Display Methods">
     @Override public void display()
     {
         super.display();
@@ -76,12 +84,23 @@ public class PositionQuickViewHolder extends PositionQuickInnerViewHolder
             }
         }
     }
+    //</editor-fold>
 
     public void displayMoreInfoIndicator()
     {
         if (moreInfoIndicator != null)
         {
             moreInfoIndicator.setVisibility(View.VISIBLE);
+        }
+    }
+
+    @Override protected void notifyViewClicked(View clickedView)
+    {
+        super.notifyViewClicked(clickedView);
+
+        if (clickedView == moreInfoIndicator)
+        {
+            notifyMoreInfoClicked();
         }
     }
 }

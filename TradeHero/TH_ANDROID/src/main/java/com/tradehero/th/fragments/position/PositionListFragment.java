@@ -75,6 +75,7 @@ public class PositionListFragment extends DashboardFragment
                         getActivity().getLayoutInflater(),
                         R.layout.position_item_header,
                         R.layout.position_quick,
+                        R.layout.position_long,
                         R.layout.position_quick_nothing);
             }
 
@@ -82,13 +83,13 @@ public class PositionListFragment extends DashboardFragment
             if (openPositions != null)
             {
                 openPositions.setAdapter(positionItemAdapter);
-                openPositions.setOnItemClickListener(new AdapterView.OnItemClickListener()
-                {
-                    @Override public void onItemClick(AdapterView<?> parent, View view, int position, long id)
-                    {
-                        handlePositionItemClicked(parent, view, position, id);
-                    }
-                });
+                //openPositions.setOnItemClickListener(new AdapterView.OnItemClickListener()
+                //{
+                //    @Override public void onItemClick(AdapterView<?> parent, View view, int position, long id)
+                //    {
+                //        handlePositionItemClicked(parent, view, position, id);
+                //    }
+                //});
             }
 
             portfolioHeaderView = (PortfolioHeaderView)view.findViewById(R.id.position_list_portfolio_header);

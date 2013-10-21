@@ -1,15 +1,19 @@
 package com.tradehero.th.widget.position;
 
+import android.view.MotionEvent;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.TableRow;
 import android.widget.TextView;
 import com.tradehero.th.R;
+import com.tradehero.th.api.position.FiledPositionId;
 import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.utils.NumberDisplayUtils;
 import com.tradehero.th.utils.SecurityUtils;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/19/13 Time: 11:43 AM To change this template use File | Settings | File Templates. */
-public class PositionLongInnerViewHolder extends PositionQuickInnerViewHolder
+public class PositionLongInnerViewHolder<OnClickedListenerType extends PositionLongInnerViewHolder.OnPositionLongInnerClickedListener>
+        extends PositionQuickInnerViewHolder<OnClickedListenerType>
 {
     public static final String TAG = PositionLongInnerViewHolder.class.getSimpleName();
 
@@ -31,6 +35,10 @@ public class PositionLongInnerViewHolder extends PositionQuickInnerViewHolder
     private TableRow averagePriceRow;
     private TextView averagePriceHeader;
     private TextView averagePriceValue;
+    private ImageButton btnBuy;
+    private ImageButton btnSell;
+    private ImageButton btnAddAlert;
+    private ImageButton btnStockInfo;
 
     //<editor-fold desc="Constructors">
     public PositionLongInnerViewHolder()
@@ -68,9 +76,58 @@ public class PositionLongInnerViewHolder extends PositionQuickInnerViewHolder
             averagePriceRow = (TableRow) view.findViewById(R.id.average_price_value_row);
             averagePriceHeader = (TextView) view.findViewById(R.id.average_price_header);
             averagePriceValue = (TextView) view.findViewById(R.id.average_price_value);
+
+            btnBuy = (ImageButton) view.findViewById(R.id.btn_buy_now);
+            if (btnBuy != null)
+            {
+                btnBuy.setOnTouchListener(new View.OnTouchListener()
+                {
+                    @Override public boolean onTouch(View view, MotionEvent motionEvent)
+                    {
+                        return onViewTouched(view, motionEvent);
+                    }
+                });
+            }
+
+            btnSell = (ImageButton) view.findViewById(R.id.btn_sell_now);
+            if (btnSell != null)
+            {
+                btnSell.setOnTouchListener(new View.OnTouchListener()
+                {
+                    @Override public boolean onTouch(View view, MotionEvent motionEvent)
+                    {
+                        return onViewTouched(view, motionEvent);
+                    }
+                });
+            }
+
+            btnAddAlert = (ImageButton) view.findViewById(R.id.btn_add_alert);
+            if (btnAddAlert != null)
+            {
+                btnAddAlert.setOnTouchListener(new View.OnTouchListener()
+                {
+                    @Override public boolean onTouch(View view, MotionEvent motionEvent)
+                    {
+                        return onViewTouched(view, motionEvent);
+                    }
+                });
+            }
+
+            btnStockInfo = (ImageButton) view.findViewById(R.id.btn_stock_info);
+            if (btnStockInfo != null)
+            {
+                btnStockInfo.setOnTouchListener(new View.OnTouchListener()
+                {
+                    @Override public boolean onTouch(View view, MotionEvent motionEvent)
+                    {
+                        return onViewTouched(view, motionEvent);
+                    }
+                });
+            }
         }
     }
 
+    //<editor-fold desc="DTO Methods">
     @Override public void linkWith(PositionDTO positionDTO, boolean andDisplay)
     {
         super.linkWith(positionDTO, andDisplay);
@@ -86,7 +143,9 @@ public class PositionLongInnerViewHolder extends PositionQuickInnerViewHolder
             displayAveragePriceValue();
         }
     }
+    //</editor-fold>
 
+    //<editor-fold desc="Display Methods">
     @Override public void display()
     {
         super.display();
@@ -213,5 +272,74 @@ public class PositionLongInnerViewHolder extends PositionQuickInnerViewHolder
                 averagePriceValue.setText(R.string.na);
             }
         }
+    }
+    //</editor-fold>
+
+    //<editor-fold desc="Notify Methods">
+    @Override protected void notifyViewClicked(View clickedView)
+    {
+        super.notifyViewClicked(clickedView);
+
+        if (clickedView == btnBuy)
+        {
+            notifyBuyClicked();
+        }
+        else if (clickedView == btnSell)
+        {
+            notifySellClicked();
+        }
+        else if (clickedView == btnAddAlert)
+        {
+            notifyAddAlertClicked();
+        }
+        else if (clickedView == btnStockInfo)
+        {
+            notifyStockInfoClicked();
+        }
+    }
+
+    protected void notifyBuyClicked()
+    {
+        OnClickedListenerType listener = positionClickedListener.get();
+        if (listener != null)
+        {
+            listener.onBuyClicked(filedPositionId);
+        }
+    }
+
+    protected void notifySellClicked()
+    {
+        OnClickedListenerType listener = positionClickedListener.get();
+        if (listener != null)
+        {
+            listener.onSellClicked(filedPositionId);
+        }
+    }
+
+    protected void notifyAddAlertClicked()
+    {
+        OnClickedListenerType listener = positionClickedListener.get();
+        if (listener != null)
+        {
+            listener.onAddAlertClicked(filedPositionId);
+        }
+    }
+
+    protected void notifyStockInfoClicked()
+    {
+        OnClickedListenerType listener = positionClickedListener.get();
+        if (listener != null)
+        {
+            listener.onStockInfoClicked(filedPositionId);
+        }
+    }
+    //</editor-fold>
+
+    public static interface OnPositionLongInnerClickedListener extends OnPositionQuickInnerClickedListener
+    {
+        void onBuyClicked(FiledPositionId clickedFiledPositionId);
+        void onSellClicked(FiledPositionId clickedFiledPositionId);
+        void onAddAlertClicked(FiledPositionId clickedFiledPositionId);
+        void onStockInfoClicked(FiledPositionId clickedFiledPositionId);
     }
 }

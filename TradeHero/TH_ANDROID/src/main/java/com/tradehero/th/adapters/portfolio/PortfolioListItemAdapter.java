@@ -11,7 +11,6 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.base.THUser;
 import com.tradehero.th.widget.portfolio.PortfolioListHeaderView;
 import com.tradehero.th.widget.portfolio.PortfolioListItemView;
-import com.tradehero.th.widget.position.PositionHeaderItemView;
 import java.util.ArrayList;
 import java.util.List;
 

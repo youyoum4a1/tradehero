@@ -179,25 +179,25 @@
     >
 
     <ImageButton
-        android:id="@+id/btn_sell_now"
+        android:id="@+id/btn_buy_now"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_alignParentLeft="true"
-        android:src="@drawable/sell_stock"
+        android:src="@drawable/buy_stock"
         android:contentDescription="@null"
         android:scaleType="centerInside"
       />
 
     <ImageButton
-        android:id="@+id/btn_buy_now"
+        android:id="@+id/btn_sell_now"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_toRightOf="@id/btn_sell_now"
         android:layout_marginLeft="8dp"
-        android:src="@drawable/buy_stock"
+        android:layout_toRightOf="@id/btn_buy_now"
+        android:src="@drawable/sell_stock"
         android:contentDescription="@null"
         android:scaleType="centerInside"
-      />
+        />
 
     <ImageButton
         android:id="@+id/btn_add_alert"

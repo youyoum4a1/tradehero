@@ -5,12 +5,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.PortfolioId;
 import com.tradehero.th.api.position.FiledPositionId;
 import com.tradehero.th.api.position.PositionDTO;
-import com.tradehero.th.widget.position.PositionHeaderItemView;
-import com.tradehero.th.widget.position.PositionQuickView;
+import com.tradehero.th.widget.position.PositionLongView;
+import com.tradehero.th.widget.position.PositionSectionHeaderItemView;
+import com.tradehero.th.widget.position.PositionView;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,16 +30,55 @@ public class PositionItemAdapter extends BaseAdapter
     protected final LayoutInflater inflater;
     private final int headerLayoutId;
     private final int positionLayoutId;
+    private final int positionLayoutExpandedId;
     private final int positionNothingId;
 
-    public PositionItemAdapter(Context context, LayoutInflater inflater, int headerLayoutId, int positionLayoutId, int positionNothingId)
+    private WeakReference<View> latestView;
+
+    private PositionLongView.OnListedPositionInnerLongClickedListener moreInfoRequestedListener;
+    private int moreInfoPositionClicked = Integer.MIN_VALUE;
+
+    public PositionItemAdapter(Context context, LayoutInflater inflater, int headerLayoutId, int positionLayoutId, int positionLayoutExpandedId, int positionNothingId)
     {
         super();
         this.context = context;
         this.inflater = inflater;
         this.headerLayoutId = headerLayoutId;
         this.positionLayoutId = positionLayoutId;
+        this.positionLayoutExpandedId = positionLayoutExpandedId;
         this.positionNothingId = positionNothingId;
+        this.moreInfoRequestedListener = new PositionLongView.OnListedPositionInnerLongClickedListener()
+        {
+            @Override public void onAddAlertClicked(int position, FiledPositionId clickedFiledPositionId)
+            {
+                THToast.show("Add Alert at position " + position);
+            }
+
+            @Override public void onBuyClicked(int position, FiledPositionId clickedFiledPositionId)
+            {
+                THToast.show("Buy at position " + position);
+            }
+
+            @Override public void onSellClicked(int position, FiledPositionId clickedFiledPositionId)
+            {
+                THToast.show("Sell at position " + position);
+            }
+
+            @Override public void onStockInfoClicked(int position, FiledPositionId clickedFiledPositionId)
+            {
+                THToast.show("Stock Info at position " + position);
+            }
+
+            @Override public void onMoreInfoClicked(int position, FiledPositionId clickedFiledPositionId)
+            {
+                handleMoreInfoRequested(position);
+            }
+
+            @Override public void onTradeHistoryClicked(int position, FiledPositionId clickedFiledPositionId)
+            {
+                THToast.show("Trade History at position " + position);
+            }
+        };
     }
 
     @Override public boolean hasStableIds()
@@ -160,7 +202,7 @@ public class PositionItemAdapter extends BaseAdapter
         if (isPositionHeaderOpen(position))
         {
             view = inflater.inflate(headerLayoutId, parent, false);
-            ((PositionHeaderItemView) view).setHeaderTextContent(getHeaderText(true));
+            ((PositionSectionHeaderItemView) view).setHeaderTextContent(getHeaderText(true));
         }
         else if (isOpenPosition(position) && getOpenPositionsCount() == 0)
         {
@@ -168,19 +210,26 @@ public class PositionItemAdapter extends BaseAdapter
         }
         else if (isOpenPosition(position) && getOpenPositionsCount() > 0)
         {
-            view = inflater.inflate(positionLayoutId, parent, false);
-            ((PositionQuickView) view).display((FiledPositionId) getItem(position));
+            view = inflater.inflate(position == moreInfoPositionClicked ? positionLayoutExpandedId : positionLayoutId, parent, false);
+            ((PositionView) view).display((FiledPositionId) getItem(position));
+            //((PositionQuickView) view).setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
+            ((PositionView) view).setPosition(position);
+            ((PositionView) view).setPositionClickedListener(moreInfoRequestedListener);
         }
         else if (isPositionHeaderClosed(position))
         {
             view = inflater.inflate(headerLayoutId, parent, false);
-            ((PositionHeaderItemView) view).setHeaderTextContent(getHeaderText(false));
+            ((PositionSectionHeaderItemView) view).setHeaderTextContent(getHeaderText(false));
         }
         else
         {
-            view = inflater.inflate(positionLayoutId, parent, false);
-            ((PositionQuickView) view).display((FiledPositionId) getItem(position));
+            view = inflater.inflate(position == moreInfoPositionClicked ? positionLayoutExpandedId : positionLayoutId, parent, false);
+            ((PositionView) view).display((FiledPositionId) getItem(position));
+            //((PositionQuickView) view).setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
+            ((PositionView) view).setPosition(position);
+            ((PositionView) view).setPositionClickedListener(moreInfoRequestedListener);
         }
+        latestView = new WeakReference<>(view);
         return view;
     }
 
@@ -213,6 +262,35 @@ public class PositionItemAdapter extends BaseAdapter
                     closedPositions.add(positionDTO.getFiledPositionId(portfolioId.key));
                 }
             }
+        }
+    }
+
+    private void handleMoreInfoRequested(int position)
+    {
+        THToast.show("More info clicked " + position);
+        updatePositionClicked(position);
+        View anyView = this.latestView.get();
+        if (anyView != null)
+        {
+            anyView.post(new Runnable()
+            {
+                @Override public void run()
+                {
+                    notifyDataSetChanged();
+                }
+            });
+        }
+    }
+
+    private void updatePositionClicked(int newPosition)
+    {
+        if (this.moreInfoPositionClicked == newPosition)
+        {
+            this.moreInfoPositionClicked = Integer.MIN_VALUE;
+        }
+        else
+        {
+            this.moreInfoPositionClicked = newPosition;
         }
     }
 }

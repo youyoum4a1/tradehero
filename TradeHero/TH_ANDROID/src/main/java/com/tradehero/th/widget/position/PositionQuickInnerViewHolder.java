@@ -2,13 +2,14 @@ package com.tradehero.th.widget.position;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.support.v4.view.MotionEventCompat;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 import com.tradehero.common.graphics.WhiteToTransparentTransformation;
-import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.position.FiledPositionId;
 import com.tradehero.th.api.position.PositionDTO;
@@ -22,10 +23,11 @@ import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.NumberDisplayUtils;
 import com.tradehero.th.utils.SecurityUtils;
 import dagger.Lazy;
+import java.lang.ref.WeakReference;
 import javax.inject.Inject;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/16/13 Time: 11:53 AM To change this template use File | Settings | File Templates. */
-public class PositionQuickInnerViewHolder
+public class PositionQuickInnerViewHolder<OnClickedListenerType extends PositionQuickInnerViewHolder.OnPositionQuickInnerClickedListener>
 {
     public static final String TAG = PositionQuickInnerViewHolder.class.getSimpleName();
 
@@ -43,6 +45,9 @@ public class PositionQuickInnerViewHolder
     private TextView positionPercent;
     private TextView positionLastAmount;
     private ImageButton tradeHistoryButton;
+
+    // We use this intermediate listener to avoid memory leaks
+    protected WeakReference<OnClickedListenerType> positionClickedListener = new WeakReference<>(null);
 
     protected SecurityId securityId;
     protected SecurityCompactDTO securityCompactDTO;
@@ -80,11 +85,11 @@ public class PositionQuickInnerViewHolder
             tradeHistoryButton = (ImageButton) view.findViewById(R.id.btn_trade_history);
             if (tradeHistoryButton != null)
             {
-                tradeHistoryButton.setOnClickListener(new View.OnClickListener()
+                tradeHistoryButton.setOnTouchListener(new View.OnTouchListener()
                 {
-                    @Override public void onClick(View clickedView)
+                    @Override public boolean onTouch(View view, MotionEvent motionEvent)
                     {
-                        handleTradeHistoryButtonClicked(clickedView);
+                        return onViewTouched(view, motionEvent);
                     }
                 });
             }
@@ -95,7 +100,7 @@ public class PositionQuickInnerViewHolder
     {
         if (tradeHistoryButton != null)
         {
-            tradeHistoryButton.setOnClickListener(null);
+            tradeHistoryButton.setOnTouchListener(null);
         }
         securityCompactCacheListener = null;
         if (securityCompactCacheFetchTask != null)
@@ -105,6 +110,7 @@ public class PositionQuickInnerViewHolder
         securityCompactCacheFetchTask = null;
     }
 
+    //<editor-fold desc="DTO Methods">
     public void linkWith(SecurityId securityId, boolean andDisplay)
     {
         this.securityId = securityId;
@@ -171,7 +177,9 @@ public class PositionQuickInnerViewHolder
             displayPositionLastAmount();
         }
     }
+    //</editor-fold>
 
+    //<editor-fold desc="Display Methods">
     public void display()
     {
         displayStockLogo();
@@ -362,11 +370,59 @@ public class PositionQuickInnerViewHolder
             tradeHistoryButton.setFocusable(false);
         }
     }
+    //</editor-fold>
 
-    protected void handleTradeHistoryButtonClicked(View view)
+    protected boolean onViewTouched(View view, MotionEvent motionEvent)
     {
-        THToast.show("No Trade History for now");
-        // TODO
+        int action = MotionEventCompat.getActionMasked(motionEvent);
+        if (action == MotionEvent.ACTION_DOWN)
+        {
+            view.setTag(MotionEvent.ACTION_DOWN);
+            return true;
+        }
+        int previousAction = (int) view.getTag();
+        if (action == MotionEvent.ACTION_UP && previousAction == MotionEvent.ACTION_DOWN)
+        {
+            notifyViewClicked(view);
+            return true;
+        }
+
+        return false;
+    }
+
+    protected void notifyViewClicked(View clickedView)
+    {
+        if (clickedView == tradeHistoryButton)
+        {
+            notifyTradeHistoryClicked();
+        }
+    }
+
+    /**
+     * The listener should be strongly referenced elsewhere
+     * @param positionClickedListener
+     */
+    public void setPositionClickedListener(OnClickedListenerType positionClickedListener)
+    {
+        this.positionClickedListener = new WeakReference<>(positionClickedListener);
+    }
+
+    protected void notifyMoreInfoClicked()
+    {
+        PositionQuickInnerViewHolder.OnPositionQuickInnerClickedListener listener = positionClickedListener.get();
+        if (listener != null)
+        {
+            listener.onMoreInfoClicked(filedPositionId);
+        }
+    }
+
+    protected void notifyTradeHistoryClicked()
+    {
+        OnClickedListenerType listener = positionClickedListener.get();
+        if (listener != null)
+        {
+            listener.onTradeHistoryClicked(filedPositionId);
+        }
     }
 
     private SecurityCompactCache.Listener<SecurityId, SecurityCompactDTO> createSecurityCompactCacheListener()
@@ -381,5 +437,11 @@ public class PositionQuickInnerViewHolder
                 }
             }
         };
+    }
+
+    public static interface OnPositionQuickInnerClickedListener
+    {
+        void onMoreInfoClicked(FiledPositionId clickedFiledPositionId);
+        void onTradeHistoryClicked(FiledPositionId clickedFiledPositionId);
     }
 }

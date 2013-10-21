@@ -126,7 +126,7 @@
 
   </LinearLayout>
 
-  <!--ImageButton
+  <ImageButton
       android:id="@+id/btn_trade_history"
       android:layout_width="48dp"
       android:layout_height="48dp"
@@ -136,7 +136,7 @@
       android:layout_centerVertical="true"
       android:src="@drawable/ic_info"
       android:contentDescription="@null"
-      android:focusable="false"
-    /-->
+      android:focusable="true"
+    />
 
 </RelativeLayout>

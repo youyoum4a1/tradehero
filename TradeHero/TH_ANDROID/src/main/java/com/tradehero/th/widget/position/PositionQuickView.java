@@ -2,16 +2,14 @@ package com.tradehero.th.widget.position;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.widget.RelativeLayout;
-import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.position.FiledPositionId;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/16/13 Time: 6:49 PM To change this template use File | Settings | File Templates. */
-public class PositionQuickView extends RelativeLayout
-        implements DTOView<FiledPositionId>
+public class PositionQuickView extends PositionView<
+        PositionView.OnListedPositionInnerQuickClickedListener,
+        PositionQuickInnerViewHolder.OnPositionQuickInnerClickedListener,
+        PositionQuickViewHolder>
 {
-    private PositionQuickViewHolder positionQuickViewHolder;
-
     //<editor-fold desc="Constructors">
     public PositionQuickView(Context context)
     {
@@ -29,29 +27,42 @@ public class PositionQuickView extends RelativeLayout
     }
     //</editor-fold>
 
-    @Override protected void onFinishInflate()
+    @Override protected void init ()
     {
-        super.onFinishInflate();
-        init();
-    }
+        viewHolder = new PositionQuickViewHolder();
+        super.init();
 
-    protected void init ()
-    {
-        positionQuickViewHolder = new PositionQuickViewHolder();
-        positionQuickViewHolder.initViews(getRootView());
     }
 
     @Override protected void onAttachedToWindow()
     {
         super.onAttachedToWindow();
-        if (positionQuickViewHolder != null)
+        if (viewHolder != null)
         {
-            positionQuickViewHolder.displayTradeHistoryButton();
+            viewHolder.displayTradeHistoryButton();
         }
     }
 
-    @Override public void display(FiledPositionId dto)
+    public void onDestroy()
     {
-        positionQuickViewHolder.linkWith(dto, true);
+        if (viewHolder != null)
+        {
+        }
+    }
+
+    @Override protected PositionQuickInnerViewHolder.OnPositionQuickInnerClickedListener createDefaultPositionClickedListener()
+    {
+        return new PositionQuickInnerViewHolder.OnPositionQuickInnerClickedListener()
+        {
+            @Override public void onMoreInfoClicked(FiledPositionId clickedFiledPositionId)
+            {
+                notifyMoreInfoRequested();
+            }
+
+            @Override public void onTradeHistoryClicked(FiledPositionId clickedFiledPositionId)
+            {
+                notifyTradeHistoryRequested();
+            }
+        };
     }
 }
