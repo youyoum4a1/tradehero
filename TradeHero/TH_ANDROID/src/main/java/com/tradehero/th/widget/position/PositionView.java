@@ -5,7 +5,8 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.RelativeLayout;
 import com.tradehero.th.api.DTOView;
-import com.tradehero.th.api.position.FiledPositionId;
+import com.tradehero.th.api.position.OwnedPositionId;
+
 import java.lang.ref.WeakReference;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/21/13 Time: 11:11 AM To change this template use File | Settings | File Templates. */
@@ -15,14 +16,14 @@ abstract public class PositionView<
             HolderViewType extends PositionQuickInnerViewHolder<OnClickedListenerType>
         >
         extends RelativeLayout
-        implements DTOView<FiledPositionId>
+        implements DTOView<OwnedPositionId>
 {
     public static final String TAG = PositionView.class.getSimpleName();
 
     protected HolderViewType viewHolder;
     protected int position;
     protected WeakReference<ParentOnClickedListenerType> parentPositionClickedListener = new WeakReference<>(null);
-    protected FiledPositionId filedPositionId;
+    protected OwnedPositionId ownedPositionId;
 
     protected OnClickedListenerType onPositionClickedListener;
 
@@ -56,18 +57,19 @@ abstract public class PositionView<
         viewHolder.initViews(getRootView());
         getRootView().setOnClickListener(new OnClickListener()
         {
-            @Override public void onClick(View view)
+            @Override
+            public void onClick(View view)
             {
-                notifyMoreInfoRequested(filedPositionId);
+                notifyMoreInfoRequested(ownedPositionId);
             }
         });
     }
 
     abstract protected OnClickedListenerType createDefaultPositionClickedListener();
 
-    @Override public void display(FiledPositionId dto)
+    @Override public void display(OwnedPositionId dto)
     {
-        this.filedPositionId = dto;
+        this.ownedPositionId = dto;
         viewHolder.linkWith(dto, true);
     }
 
@@ -86,27 +88,27 @@ abstract public class PositionView<
         this.parentPositionClickedListener = new WeakReference<>(parentPositionClickedListener);
     }
 
-    protected void notifyMoreInfoRequested(FiledPositionId clickedFiledPositionId)
+    protected void notifyMoreInfoRequested(OwnedPositionId clickedOwnedPositionId)
     {
         ParentOnClickedListenerType listener = parentPositionClickedListener.get();
         if (listener != null)
         {
-            listener.onMoreInfoClicked(position, clickedFiledPositionId);
+            listener.onMoreInfoClicked(position, clickedOwnedPositionId);
         }
     }
 
-    protected void notifyTradeHistoryRequested(FiledPositionId clickedFiledPositionId)
+    protected void notifyTradeHistoryRequested(OwnedPositionId clickedOwnedPositionId)
     {
         ParentOnClickedListenerType listener = parentPositionClickedListener.get();
         if (listener != null)
         {
-            listener.onTradeHistoryClicked(position, clickedFiledPositionId);
+            listener.onTradeHistoryClicked(position, clickedOwnedPositionId);
         }
     }
 
     public static interface OnListedPositionInnerQuickClickedListener
     {
-        void onMoreInfoClicked(int position, FiledPositionId clickedFiledPositionId);
-        void onTradeHistoryClicked(int position, FiledPositionId clickedFiledPositionId);
+        void onMoreInfoClicked(int position, OwnedPositionId clickedOwnedPositionId);
+        void onTradeHistoryClicked(int position, OwnedPositionId clickedOwnedPositionId);
     }
 }

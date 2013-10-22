@@ -7,7 +7,7 @@ import com.tradehero.common.utils.THLog;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PagedOwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PerPagedOwnedPortfolioId;
-import com.tradehero.th.api.position.FiledPositionId;
+import com.tradehero.th.api.position.OwnedPositionId;
 import com.tradehero.th.api.position.GetPositionsDTO;
 import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
@@ -157,7 +157,7 @@ import retrofit.RetrofitError;
 
     private static class GetPositionsCutDTO
     {
-        public List<FiledPositionId> filedPositionIds ;
+        public List<OwnedPositionId> ownedPositionIds;
         public List<SecurityId> securityIds;
         public int openPositionsCount;
         public int closedPositionsCount;
@@ -169,7 +169,7 @@ import retrofit.RetrofitError;
                 FiledPositionCache filedPositionCache)
         {
             filedPositionCache.put(portfolioId, getPositionsDTO.positions);
-            this.filedPositionIds = PositionDTO.getFiledPositionIds(portfolioId, getPositionsDTO.positions);
+            this.ownedPositionIds = PositionDTO.getFiledPositionIds(portfolioId, getPositionsDTO.positions);
 
             securityCompactCache.put(getPositionsDTO.securities);
             this.securityIds = SecurityCompactDTO.getSecurityIds(getPositionsDTO.securities);
@@ -184,7 +184,7 @@ import retrofit.RetrofitError;
                 FiledPositionCache filedPositionCache)
         {
             return new GetPositionsDTO(
-                    filedPositionCache.get(filedPositionIds),
+                    filedPositionCache.get(ownedPositionIds),
                     securityCompactCache.get(securityIds),
                     openPositionsCount,
                     closedPositionsCount

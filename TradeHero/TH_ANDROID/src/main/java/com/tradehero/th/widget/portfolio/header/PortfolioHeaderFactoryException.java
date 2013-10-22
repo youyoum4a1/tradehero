@@ -25,10 +25,6 @@ public class PortfolioHeaderFactoryException extends RuntimeException
     {
         super(throwable);
     }
-
-    public PortfolioHeaderFactoryException(String s, Throwable throwable, boolean b, boolean b1)
-    {
-        super(s, throwable/*, b, b1*/);
-    }
     //</editor-fold>
+
 }

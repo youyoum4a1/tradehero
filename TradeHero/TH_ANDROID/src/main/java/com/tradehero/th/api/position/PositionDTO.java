@@ -23,7 +23,7 @@ public class PositionDTO extends PositionDTOCompact
 
     public OwnedPositionId getOwnedPositionId()
     {
-        return new OwnedPositionId(userId, securityId);
+        return new OwnedPositionId(userId, portfolioId, id, securityId);
     }
 
     public static List<OwnedPositionId> getOwnedPositionIds(List<PositionDTO> positionDTOs)
@@ -43,26 +43,26 @@ public class PositionDTO extends PositionDTOCompact
         return positionIds;
     }
 
-    public FiledPositionId getFiledPositionId(Integer portfolioId)
+    public OwnedPositionId getFiledPositionId(Integer portfolioId)
     {
-        return new FiledPositionId(userId, securityId, portfolioId);
+        return new OwnedPositionId(userId, portfolioId, id, securityId);
     }
 
-    public static List<FiledPositionId> getFiledPositionIds(Integer portfolioId, List<PositionDTO> positionDTOs)
+    public static List<OwnedPositionId> getFiledPositionIds(Integer portfolioId, List<PositionDTO> positionDTOs)
     {
         if (positionDTOs == null)
         {
             return null;
         }
 
-        List<FiledPositionId> positionIds = new ArrayList<>();
+        List<OwnedPositionId> ownedPositionIds = new ArrayList<>();
 
         for (PositionDTO positionDTO: positionDTOs)
         {
-            positionIds.add(positionDTO.getFiledPositionId(portfolioId));
+            ownedPositionIds.add(positionDTO.getFiledPositionId(portfolioId));
         }
 
-        return positionIds;
+        return ownedPositionIds;
     }
 
     public Double getROISinceInception()

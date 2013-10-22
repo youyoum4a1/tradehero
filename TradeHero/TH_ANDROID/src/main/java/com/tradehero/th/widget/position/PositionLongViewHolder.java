@@ -4,7 +4,6 @@ import android.view.View;
 import android.widget.ImageView;
 import com.tradehero.common.graphics.FlipAlphaTransformation;
 import com.tradehero.th.R;
-import com.tradehero.th.api.position.FiledPositionId;
 import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.utils.ColorUtils;
 

@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.PortfolioId;
-import com.tradehero.th.api.position.FiledPositionId;
+import com.tradehero.th.api.position.OwnedPositionId;
 import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.widget.position.PositionLongView;
 import com.tradehero.th.widget.position.PositionSectionHeaderItemView;
@@ -22,8 +22,8 @@ public class PositionItemAdapter extends BaseAdapter
     public static final String TAG = PositionItemAdapter.class.getName();
 
     private List<PositionDTO> receivedPositions;
-    private List<FiledPositionId> openPositions; // If nothing, it will show the positionNothingId layout
-    private List<FiledPositionId> closedPositions;
+    private List<OwnedPositionId> openPositions; // If nothing, it will show the positionNothingId layout
+    private List<OwnedPositionId> closedPositions;
 
     protected final Context context;
     protected final LayoutInflater inflater;
@@ -49,57 +49,57 @@ public class PositionItemAdapter extends BaseAdapter
         this.positionNothingId = positionNothingId;
         this.moreInfoRequestedListener = new PositionLongView.OnListedPositionInnerLongClickedListener()
         {
-            @Override public void onAddAlertClicked(int position, FiledPositionId clickedFiledPositionId)
+            @Override public void onAddAlertClicked(int position, OwnedPositionId clickedOwnedPositionId)
             {
                 PositionLongView.OnListedPositionInnerLongClickedListener listener = parentMoreInfoRequestedListener.get();
                 if (listener != null)
                 {
-                    listener.onAddAlertClicked(position, clickedFiledPositionId);
+                    listener.onAddAlertClicked(position, clickedOwnedPositionId);
                 }
             }
 
-            @Override public void onBuyClicked(int position, FiledPositionId clickedFiledPositionId)
+            @Override public void onBuyClicked(int position, OwnedPositionId clickedOwnedPositionId)
             {
                 PositionLongView.OnListedPositionInnerLongClickedListener listener = parentMoreInfoRequestedListener.get();
                 if (listener != null)
                 {
-                    listener.onBuyClicked(position, clickedFiledPositionId);
+                    listener.onBuyClicked(position, clickedOwnedPositionId);
                 }
             }
 
-            @Override public void onSellClicked(int position, FiledPositionId clickedFiledPositionId)
+            @Override public void onSellClicked(int position, OwnedPositionId clickedOwnedPositionId)
             {
                 PositionLongView.OnListedPositionInnerLongClickedListener listener = parentMoreInfoRequestedListener.get();
                 if (listener != null)
                 {
-                    listener.onSellClicked(position, clickedFiledPositionId);
+                    listener.onSellClicked(position, clickedOwnedPositionId);
                 }
             }
 
-            @Override public void onStockInfoClicked(int position, FiledPositionId clickedFiledPositionId)
+            @Override public void onStockInfoClicked(int position, OwnedPositionId clickedOwnedPositionId)
             {
                 PositionLongView.OnListedPositionInnerLongClickedListener listener = parentMoreInfoRequestedListener.get();
                 if (listener != null)
                 {
-                    listener.onStockInfoClicked(position, clickedFiledPositionId);
+                    listener.onStockInfoClicked(position, clickedOwnedPositionId);
                 }
             }
 
-            @Override public void onMoreInfoClicked(int position, FiledPositionId clickedFiledPositionId)
+            @Override public void onMoreInfoClicked(int position, OwnedPositionId clickedOwnedPositionId)
             {
                 PositionLongView.OnListedPositionInnerLongClickedListener listener = parentMoreInfoRequestedListener.get();
                 if (listener != null)
                 {
-                    listener.onMoreInfoClicked(position, clickedFiledPositionId);
+                    listener.onMoreInfoClicked(position, clickedOwnedPositionId);
                 }
             }
 
-            @Override public void onTradeHistoryClicked(int position, FiledPositionId clickedFiledPositionId)
+            @Override public void onTradeHistoryClicked(int position, OwnedPositionId clickedOwnedPositionId)
             {
                 PositionLongView.OnListedPositionInnerLongClickedListener listener = parentMoreInfoRequestedListener.get();
                 if (listener != null)
                 {
-                    listener.onTradeHistoryClicked(position, clickedFiledPositionId);
+                    listener.onTradeHistoryClicked(position, clickedOwnedPositionId);
                 }
             }
         };
@@ -239,7 +239,7 @@ public class PositionItemAdapter extends BaseAdapter
         else if (isOpenPosition(position) && getOpenPositionsCount() > 0)
         {
             view = inflater.inflate(position == moreInfoPositionClicked ? positionLayoutExpandedId : positionLayoutId, parent, false);
-            ((PositionView) view).display((FiledPositionId) getItem(position));
+            ((PositionView) view).display((OwnedPositionId) getItem(position));
             //((PositionQuickView) view).setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
             ((PositionView) view).setPosition(position);
             ((PositionView) view).setPositionClickedListener(moreInfoRequestedListener);
@@ -252,7 +252,7 @@ public class PositionItemAdapter extends BaseAdapter
         else
         {
             view = inflater.inflate(position == moreInfoPositionClicked ? positionLayoutExpandedId : positionLayoutId, parent, false);
-            ((PositionView) view).display((FiledPositionId) getItem(position));
+            ((PositionView) view).display((OwnedPositionId) getItem(position));
             //((PositionQuickView) view).setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
             ((PositionView) view).setPosition(position);
             ((PositionView) view).setPositionClickedListener(moreInfoRequestedListener);

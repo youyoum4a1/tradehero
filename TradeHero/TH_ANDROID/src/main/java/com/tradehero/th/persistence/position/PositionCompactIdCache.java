@@ -1,13 +1,14 @@
 package com.tradehero.th.persistence.position;
 
 import com.tradehero.common.persistence.StraightDTOCache;
-import com.tradehero.th.api.position.FiledPositionId;
+import com.tradehero.th.api.position.OwnedPositionId;
 import com.tradehero.th.api.position.PositionCompactId;
+
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/16/13 Time: 1:03 PM To change this template use File | Settings | File Templates. */
-@Singleton public class PositionCompactIdCache extends StraightDTOCache<Integer, PositionCompactId, FiledPositionId>
+@Singleton public class PositionCompactIdCache extends StraightDTOCache<Integer, PositionCompactId, OwnedPositionId>
 {
     public static final int DEFAULT_MAX_SIZE = 2000;
 
@@ -18,8 +19,8 @@ import javax.inject.Singleton;
     }
     //</editor-fold>
 
-    @Override protected FiledPositionId fetch(PositionCompactId key)
+    @Override protected OwnedPositionId fetch(PositionCompactId key)
     {
-        throw new IllegalStateException("You should not fetch for FiledPositionId");
+        throw new IllegalStateException("You should not fetch for OwnedPositionId");
     }
 }

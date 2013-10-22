@@ -12,7 +12,7 @@ import com.squareup.picasso.Picasso;
 import com.tradehero.common.graphics.WhiteToTransparentTransformation;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
-import com.tradehero.th.api.position.FiledPositionId;
+import com.tradehero.th.api.position.OwnedPositionId;
 import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
@@ -57,7 +57,7 @@ public class PositionQuickInnerViewHolder<OnClickedListenerType extends Position
     private SecurityCompactCache.Listener<SecurityId, SecurityCompactDTO> securityCompactCacheListener;
     private AsyncTask<Void, Void, SecurityCompactDTO> securityCompactCacheFetchTask;
 
-    protected FiledPositionId filedPositionId;
+    protected OwnedPositionId ownedPositionId;
     protected PositionDTO positionDTO;
     @Inject Lazy<FiledPositionCache> filedPositionCache;
 
@@ -156,12 +156,12 @@ public class PositionQuickInnerViewHolder<OnClickedListenerType extends Position
         }
     }
 
-    public void linkWith(FiledPositionId filedPositionId, boolean andDisplay)
+    public void linkWith(OwnedPositionId ownedPositionId, boolean andDisplay)
     {
-        this.filedPositionId = filedPositionId;
+        this.ownedPositionId = ownedPositionId;
 
-        linkWith(filedPositionCache.get().get(this.filedPositionId), andDisplay);
-        linkWith(securityIdCache.get().get(this.filedPositionId.getSecurityIntegerId()), andDisplay);
+        linkWith(filedPositionCache.get().get(this.ownedPositionId), andDisplay);
+        linkWith(securityIdCache.get().get(this.ownedPositionId.getSecurityIntegerId()), andDisplay);
 
         if (andDisplay)
         {
@@ -414,7 +414,7 @@ public class PositionQuickInnerViewHolder<OnClickedListenerType extends Position
         PositionQuickInnerViewHolder.OnPositionQuickInnerClickedListener listener = positionClickedListener.get();
         if (listener != null)
         {
-            listener.onMoreInfoClicked(filedPositionId);
+            listener.onMoreInfoClicked(ownedPositionId);
         }
     }
 
@@ -423,7 +423,7 @@ public class PositionQuickInnerViewHolder<OnClickedListenerType extends Position
         OnClickedListenerType listener = positionClickedListener.get();
         if (listener != null)
         {
-            listener.onTradeHistoryClicked(filedPositionId);
+            listener.onTradeHistoryClicked(ownedPositionId);
         }
     }
 
@@ -443,7 +443,7 @@ public class PositionQuickInnerViewHolder<OnClickedListenerType extends Position
 
     public static interface OnPositionQuickInnerClickedListener
     {
-        void onMoreInfoClicked(FiledPositionId clickedFiledPositionId);
-        void onTradeHistoryClicked(FiledPositionId clickedFiledPositionId);
+        void onMoreInfoClicked(OwnedPositionId clickedOwnedPositionId);
+        void onTradeHistoryClicked(OwnedPositionId clickedOwnedPositionId);
     }
 }

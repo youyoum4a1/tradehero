@@ -6,7 +6,7 @@ import android.widget.ImageButton;
 import android.widget.TableRow;
 import android.widget.TextView;
 import com.tradehero.th.R;
-import com.tradehero.th.api.position.FiledPositionId;
+import com.tradehero.th.api.position.OwnedPositionId;
 import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.utils.NumberDisplayUtils;
 import com.tradehero.th.utils.SecurityUtils;
@@ -303,7 +303,7 @@ public class PositionLongInnerViewHolder<OnClickedListenerType extends PositionL
         OnClickedListenerType listener = positionClickedListener.get();
         if (listener != null)
         {
-            listener.onBuyClicked(filedPositionId);
+            listener.onBuyClicked(ownedPositionId);
         }
     }
 
@@ -312,7 +312,7 @@ public class PositionLongInnerViewHolder<OnClickedListenerType extends PositionL
         OnClickedListenerType listener = positionClickedListener.get();
         if (listener != null)
         {
-            listener.onSellClicked(filedPositionId);
+            listener.onSellClicked(ownedPositionId);
         }
     }
 
@@ -321,7 +321,7 @@ public class PositionLongInnerViewHolder<OnClickedListenerType extends PositionL
         OnClickedListenerType listener = positionClickedListener.get();
         if (listener != null)
         {
-            listener.onAddAlertClicked(filedPositionId);
+            listener.onAddAlertClicked(ownedPositionId);
         }
     }
 
@@ -330,16 +330,16 @@ public class PositionLongInnerViewHolder<OnClickedListenerType extends PositionL
         OnClickedListenerType listener = positionClickedListener.get();
         if (listener != null)
         {
-            listener.onStockInfoClicked(filedPositionId);
+            listener.onStockInfoClicked(ownedPositionId);
         }
     }
     //</editor-fold>
 
     public static interface OnPositionLongInnerClickedListener extends OnPositionQuickInnerClickedListener
     {
-        void onBuyClicked(FiledPositionId clickedFiledPositionId);
-        void onSellClicked(FiledPositionId clickedFiledPositionId);
-        void onAddAlertClicked(FiledPositionId clickedFiledPositionId);
-        void onStockInfoClicked(FiledPositionId clickedFiledPositionId);
+        void onBuyClicked(OwnedPositionId clickedOwnedPositionId);
+        void onSellClicked(OwnedPositionId clickedOwnedPositionId);
+        void onAddAlertClicked(OwnedPositionId clickedOwnedPositionId);
+        void onStockInfoClicked(OwnedPositionId clickedOwnedPositionId);
     }
 }

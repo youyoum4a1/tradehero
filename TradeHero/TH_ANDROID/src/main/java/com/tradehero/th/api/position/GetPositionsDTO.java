@@ -25,21 +25,21 @@ public class GetPositionsDTO
         this.closedPositionsCount = closedPositionsCount;
     }
 
-    public List<FiledPositionId> getFiledPositionIds(PortfolioId portfolioId)
+    public List<OwnedPositionId> getFiledPositionIds(PortfolioId portfolioId)
     {
         if (positions == null)
         {
             return null;
         }
 
-        List<FiledPositionId> filedPositionIds = new ArrayList<>();
+        List<OwnedPositionId> ownedPositionIds = new ArrayList<>();
 
         for (PositionDTO positionDTO: positions)
         {
-            filedPositionIds.add(new FiledPositionId(positionDTO.userId, positionDTO.securityId, portfolioId.key));
+            ownedPositionIds.add(new OwnedPositionId(positionDTO.userId, portfolioId.key, positionDTO.id, positionDTO.securityId));
         }
 
-        return filedPositionIds;
+        return ownedPositionIds;
     }
 
     public List<PositionDTO> getOpenPositions()

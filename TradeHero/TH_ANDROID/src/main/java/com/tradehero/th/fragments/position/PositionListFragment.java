@@ -22,8 +22,8 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.position.PositionItemAdapter;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
-import com.tradehero.th.api.position.FiledPositionId;
 import com.tradehero.th.api.position.GetPositionsDTO;
+import com.tradehero.th.api.position.OwnedPositionId;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.SecurityIntegerId;
 import com.tradehero.th.fragments.base.BaseFragment;
@@ -389,36 +389,36 @@ public class PositionListFragment extends DashboardFragment
     //</editor-fold>
 
     //<editor-fold desc="PositionLongView.OnListedPositionInnerLongClickedListener">
-    @Override public void onAddAlertClicked(int position, FiledPositionId clickedFiledPositionId)
+    @Override public void onAddAlertClicked(int position, OwnedPositionId clickedOwnedPositionId)
     {
         THToast.show("Add Alert at position " + position);
     }
 
-    @Override public void onBuyClicked(int position, FiledPositionId clickedFiledPositionId)
+    @Override public void onBuyClicked(int position, OwnedPositionId clickedOwnedPositionId)
     {
         THToast.show("Buy at position " + position);
-        pushTradeFragment(clickedFiledPositionId.getSecurityIntegerId(), true);
+        pushTradeFragment(clickedOwnedPositionId.getSecurityIntegerId(), true);
     }
 
-    @Override public void onSellClicked(int position, FiledPositionId clickedFiledPositionId)
+    @Override public void onSellClicked(int position, OwnedPositionId clickedOwnedPositionId)
     {
         THToast.show("Sell at position " + position);
-        pushTradeFragment(clickedFiledPositionId.getSecurityIntegerId(), false);
+        pushTradeFragment(clickedOwnedPositionId.getSecurityIntegerId(), false);
     }
 
-    @Override public void onStockInfoClicked(int position, FiledPositionId clickedFiledPositionId)
+    @Override public void onStockInfoClicked(int position, OwnedPositionId clickedOwnedPositionId)
     {
         THToast.show("Stock Info at position " + position);
     }
 
-    @Override public void onMoreInfoClicked(int position, FiledPositionId clickedFiledPositionId)
+    @Override public void onMoreInfoClicked(int position, OwnedPositionId clickedOwnedPositionId)
     {
         // Final decision will be made on touch up of the list view.
         positionForMoreInfo = position;
         togglePositionMoreInfo();
     }
 
-    @Override public void onTradeHistoryClicked(int position, FiledPositionId clickedFiledPositionId)
+    @Override public void onTradeHistoryClicked(int position, OwnedPositionId clickedOwnedPositionId)
     {
         THToast.show("Trade History at position " + position);
     }

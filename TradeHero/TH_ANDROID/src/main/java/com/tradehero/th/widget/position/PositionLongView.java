@@ -2,7 +2,7 @@ package com.tradehero.th.widget.position;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import com.tradehero.th.api.position.FiledPositionId;
+import com.tradehero.th.api.position.OwnedPositionId;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/16/13 Time: 6:49 PM To change this template use File | Settings | File Templates. */
 public class PositionLongView extends PositionView<
@@ -46,81 +46,81 @@ public class PositionLongView extends PositionView<
     {
         return new PositionLongInnerViewHolder.OnPositionLongInnerClickedListener()
         {
-            @Override public void onMoreInfoClicked(FiledPositionId clickedFiledPositionId)
+            @Override public void onMoreInfoClicked(OwnedPositionId clickedOwnedPositionId)
             {
-                notifyMoreInfoRequested(clickedFiledPositionId);
+                notifyMoreInfoRequested(clickedOwnedPositionId);
             }
 
-            @Override public void onTradeHistoryClicked(FiledPositionId clickedFiledPositionId)
+            @Override public void onTradeHistoryClicked(OwnedPositionId clickedOwnedPositionId)
             {
-                notifyTradeHistoryRequested(clickedFiledPositionId);
+                notifyTradeHistoryRequested(clickedOwnedPositionId);
             }
 
-            @Override public void onBuyClicked(FiledPositionId clickedFiledPositionId)
+            @Override public void onBuyClicked(OwnedPositionId clickedOwnedPositionId)
             {
-                notifyBuyRequested(clickedFiledPositionId);
+                notifyBuyRequested(clickedOwnedPositionId);
             }
 
-            @Override public void onSellClicked(FiledPositionId clickedFiledPositionId)
+            @Override public void onSellClicked(OwnedPositionId clickedOwnedPositionId)
             {
-                notifySellRequested(clickedFiledPositionId);
+                notifySellRequested(clickedOwnedPositionId);
             }
 
-            @Override public void onAddAlertClicked(FiledPositionId clickedFiledPositionId)
+            @Override public void onAddAlertClicked(OwnedPositionId clickedOwnedPositionId)
             {
-                notifyAddAlertRequested(clickedFiledPositionId);
+                notifyAddAlertRequested(clickedOwnedPositionId);
             }
 
-            @Override public void onStockInfoClicked(FiledPositionId clickedFiledPositionId)
+            @Override public void onStockInfoClicked(OwnedPositionId clickedOwnedPositionId)
             {
-                notifyStockInfoRequested(clickedFiledPositionId);
+                notifyStockInfoRequested(clickedOwnedPositionId);
             }
         };
     }
 
     //<editor-fold desc="Notify Methods">
-    protected void notifyBuyRequested(FiledPositionId clickedFiledPositionId)
+    protected void notifyBuyRequested(OwnedPositionId clickedOwnedPositionId)
     {
         OnListedPositionInnerLongClickedListener listener = parentPositionClickedListener.get();
         if (listener != null)
         {
-            listener.onBuyClicked(position, clickedFiledPositionId);
+            listener.onBuyClicked(position, clickedOwnedPositionId);
         }
     }
 
-    protected void notifySellRequested(FiledPositionId clickedFiledPositionId)
+    protected void notifySellRequested(OwnedPositionId clickedOwnedPositionId)
     {
         OnListedPositionInnerLongClickedListener listener = parentPositionClickedListener.get();
         if (listener != null)
         {
-            listener.onSellClicked(position, clickedFiledPositionId);
+            listener.onSellClicked(position, clickedOwnedPositionId);
         }
     }
 
-    protected void notifyAddAlertRequested(FiledPositionId clickedFiledPositionId)
+    protected void notifyAddAlertRequested(OwnedPositionId clickedOwnedPositionId)
     {
         OnListedPositionInnerLongClickedListener listener = parentPositionClickedListener.get();
         if (listener != null)
         {
-            listener.onAddAlertClicked(position, clickedFiledPositionId);
+            listener.onAddAlertClicked(position, clickedOwnedPositionId);
         }
     }
 
-    protected void notifyStockInfoRequested(FiledPositionId clickedFiledPositionId)
+    protected void notifyStockInfoRequested(OwnedPositionId clickedOwnedPositionId)
     {
         OnListedPositionInnerLongClickedListener listener = parentPositionClickedListener.get();
         if (listener != null)
         {
-            listener.onStockInfoClicked(position, clickedFiledPositionId);
+            listener.onStockInfoClicked(position, clickedOwnedPositionId);
         }
     }
     //</editor-fold>
 
     public static interface OnListedPositionInnerLongClickedListener extends PositionView.OnListedPositionInnerQuickClickedListener
     {
-        void onBuyClicked(int position, FiledPositionId clickedFiledPositionId);
-        void onSellClicked(int position, FiledPositionId clickedFiledPositionId);
-        void onAddAlertClicked(int position, FiledPositionId clickedFiledPositionId);
-        void onStockInfoClicked(int position, FiledPositionId clickedFiledPositionId);
+        void onBuyClicked(int position, OwnedPositionId clickedOwnedPositionId);
+        void onSellClicked(int position, OwnedPositionId clickedOwnedPositionId);
+        void onAddAlertClicked(int position, OwnedPositionId clickedOwnedPositionId);
+        void onStockInfoClicked(int position, OwnedPositionId clickedOwnedPositionId);
     }
 }

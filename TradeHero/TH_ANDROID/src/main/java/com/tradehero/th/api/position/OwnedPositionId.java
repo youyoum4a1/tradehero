@@ -1,59 +1,53 @@
 package com.tradehero.th.api.position;
 
 import android.os.Bundle;
-import com.tradehero.common.persistence.DTOKey;
-import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
+import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PortfolioId;
-import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityIntegerId;
-import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 10/16/13 Time: 12:31 PM To change this template use File | Settings | File Templates. */
-public class OwnedPositionId implements Comparable, DTOKey<String>
+/** Created with IntelliJ IDEA. User: xavier Date: 10/16/13 Time: 12:50 PM To change this template use File | Settings | File Templates. */
+public class OwnedPositionId extends OwnedPortfolioId
 {
-    public final static String BUNDLE_KEY_USER_ID = OwnedPositionId.class.getName() + ".userId";
+    public final static String BUNDLE_KEY_POSITION_ID = OwnedPositionId.class.getName() + ".portfolioId";
     public final static String BUNDLE_KEY_SECURITY_ID = OwnedPositionId.class.getName() + ".securityId";
 
-    public final Integer userId;
+    public final Integer positionId;
     public final Integer securityId;
 
     //<editor-fold desc="Constructors">
-    public OwnedPositionId(final Integer userId, final Integer securityId)
+    public OwnedPositionId(Integer userId, Integer portfolioId, Integer positionId, Integer securityId)
     {
-        this.userId = userId;
+        super(userId, portfolioId);
+        this.positionId = positionId;
         this.securityId = securityId;
     }
 
-    public OwnedPositionId(UserBaseKey userBaseKey, SecurityIntegerId securityIntegerId)
+    public OwnedPositionId(UserBaseKey userBaseKey, PortfolioId portfolioId, Integer positionId, Integer securityId)
     {
-        this.userId = userBaseKey.key;
-        this.securityId = securityIntegerId.key;
-    }
-
-    public OwnedPositionId(UserBaseDTO userBaseDTO, SecurityCompactDTO securityCompactDTO)
-    {
-        this.userId = userBaseDTO.id;
-        this.securityId = securityCompactDTO.id;
+        super(userBaseKey, portfolioId);
+        this.positionId = positionId;
+        this.securityId = securityId;
     }
 
     public OwnedPositionId(Bundle args)
     {
-        this.userId = args.containsKey(BUNDLE_KEY_USER_ID) ? args.getInt(BUNDLE_KEY_USER_ID) : null;
+        super(args);
+        this.positionId = args.containsKey(BUNDLE_KEY_POSITION_ID) ? args.getInt(BUNDLE_KEY_POSITION_ID) : null;
         this.securityId = args.containsKey(BUNDLE_KEY_SECURITY_ID) ? args.getInt(BUNDLE_KEY_SECURITY_ID) : null;
     }
 
     public OwnedPositionId(OwnedPositionId ownedPositionId)
     {
-        this.userId = ownedPositionId.userId;
+        super(ownedPositionId.getUserBaseKey(), ownedPositionId.getPortfolioId());
+        this.positionId = ownedPositionId.positionId;
         this.securityId = ownedPositionId.securityId;
     }
     //</editor-fold>
 
-
     @Override public int hashCode()
     {
-        return userId.hashCode() ^ securityId.hashCode();
+        return super.hashCode() ^ portfolioId.hashCode() ^ securityId.hashCode();
     }
 
     @Override public boolean equals(Object other)
@@ -66,13 +60,13 @@ public class OwnedPositionId implements Comparable, DTOKey<String>
     }
 
     public boolean equals(OwnedPositionId other)
-{
-    if (other == null)
     {
-        return false;
+        if (other == null)
+        {
+            return false;
+        }
+        return super.equals((OwnedPortfolioId) other) && positionId.equals(other.positionId) && securityId.equals(other.securityId);
     }
-    return userId.equals(other.userId) && securityId.equals(other.securityId);
-}
 
     @Override public int compareTo(Object o)
     {
@@ -100,36 +94,32 @@ public class OwnedPositionId implements Comparable, DTOKey<String>
             return 1;
         }
 
-        int exchangeComp = userId.compareTo(other.userId);
-        if (exchangeComp != 0)
+        int parentComp = super.compareTo(other);
+        if (parentComp != 0)
         {
-            return exchangeComp;
+            return parentComp;
         }
 
-        return securityId.compareTo(other.securityId);
+        return positionId.compareTo(other.positionId);
     }
 
-    public boolean isValid()
+    @Override public boolean isValid()
     {
-        return userId != null && securityId != null;
+        return super.isValid() && this.positionId != null && this.securityId != null;
     }
 
-    public void putParameters(Bundle args)
+    @Override public void putParameters(Bundle args)
     {
-        args.putInt(BUNDLE_KEY_USER_ID, userId);
+        super.putParameters(args);
+        args.putInt(BUNDLE_KEY_POSITION_ID, positionId);
         args.putInt(BUNDLE_KEY_SECURITY_ID, securityId);
     }
 
-    public Bundle getArgs()
+    @Override public Bundle getArgs()
     {
         Bundle args = new Bundle();
         putParameters(args);
         return args;
-    }
-
-    public UserBaseKey getUserBaseKey()
-    {
-        return new UserBaseKey(userId);
     }
 
     public SecurityIntegerId getSecurityIntegerId()
@@ -139,11 +129,11 @@ public class OwnedPositionId implements Comparable, DTOKey<String>
 
     @Override public String toString()
     {
-        return String.format("[userId=%d; securityId=%d]", userId, securityId);
+        return String.format("[userId=%d; portfolioId=%d; ownedPositionId=%d; securityId=%d]", userId, portfolioId, positionId, securityId);
     }
 
     @Override public String makeKey()
     {
-        return String.format("%d:%d", userId, securityId);
+        return String.format("%d:%d:%d:%d", userId, portfolioId, positionId, securityId);
     }
 }
