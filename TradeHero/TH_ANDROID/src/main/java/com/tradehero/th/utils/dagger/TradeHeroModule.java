@@ -35,16 +35,7 @@ import com.tradehero.th.loaders.SearchStockPageItemListLoader;
 import com.tradehero.th.loaders.TimelinePagedItemListLoader;
 import com.tradehero.th.network.NetworkEngine;
 import com.tradehero.th.network.YahooEngine;
-import com.tradehero.th.network.service.LeaderboardService;
-import com.tradehero.th.network.service.MarketService;
-import com.tradehero.th.network.service.PortfolioService;
-import com.tradehero.th.network.service.PositionService;
-import com.tradehero.th.network.service.ProviderService;
-import com.tradehero.th.network.service.QuoteService;
-import com.tradehero.th.network.service.SecurityService;
-import com.tradehero.th.network.service.UserService;
-import com.tradehero.th.network.service.UserTimelineService;
-import com.tradehero.th.network.service.YahooNewsService;
+import com.tradehero.th.network.service.*;
 import com.tradehero.th.persistence.TimelineManager;
 import com.tradehero.th.persistence.TimelineStore;
 import com.tradehero.th.persistence.leaderboard.LeaderboardManager;
@@ -181,6 +172,11 @@ public class TradeHeroModule
     @Provides @Singleton PositionService providePositionService()
     {
         return engine.createService(PositionService.class);
+    }
+
+    @Provides @Singleton TradeService provideTradeService()
+    {
+        return engine.createService(TradeService.class);
     }
 
     @Provides @Singleton LeaderboardService provideLeaderboardService()

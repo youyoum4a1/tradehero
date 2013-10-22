@@ -2,18 +2,11 @@ package com.tradehero.th.fragments.position;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.view.MotionEventCompat;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewStub;
 import android.widget.*;
-import android.widget.AbsListView;
-import android.widget.AdapterView;
-import android.widget.ImageButton;
-import android.widget.ListView;
-import android.widget.TextView;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
@@ -26,16 +19,15 @@ import com.tradehero.th.api.position.GetPositionsDTO;
 import com.tradehero.th.api.position.OwnedPositionId;
 import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.api.security.SecurityId;
-import com.tradehero.th.api.security.SecurityIntegerId;
 import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.dashboard.DashboardTabType;
 import com.tradehero.th.fragments.trade.TradeFragment;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactCache;
-import com.tradehero.th.persistence.position.FiledPositionCache;
 import com.tradehero.th.persistence.position.GetPositionsCache;
-import com.tradehero.th.widget.portfolio.header.PortfolioHeaderFactory;
+import com.tradehero.th.persistence.position.PositionCache;
 import com.tradehero.th.persistence.security.SecurityIdCache;
+import com.tradehero.th.widget.portfolio.header.PortfolioHeaderFactory;
 import com.tradehero.th.widget.portfolio.header.PortfolioHeaderView;
 import com.tradehero.th.widget.position.PositionLongView;
 import com.tradehero.th.widget.position.PositionQuickNothingView;
@@ -67,7 +59,7 @@ public class PositionListFragment extends DashboardFragment
     @Inject Lazy<GetPositionsCache> getPositionsCache;
     @Inject Lazy<PortfolioCompactCache> portfolioCompactCache;
     @Inject Lazy<SecurityIdCache> securityIdCache;
-    @Inject Lazy<FiledPositionCache> filedPositionCache;
+    @Inject Lazy<PositionCache> positionCache;
     private GetPositionsCache.Listener<OwnedPortfolioId, GetPositionsDTO> getPositionsCacheListener;
     private AsyncTask<Void, Void, GetPositionsDTO> fetchGetPositionsDTOTask;
 
@@ -366,7 +358,7 @@ public class PositionListFragment extends DashboardFragment
     {
         if (clickedOwnedPositionId != null)
         {
-            PositionDTO positionDTO = filedPositionCache.get().get(clickedOwnedPositionId);
+            PositionDTO positionDTO = positionCache.get().get(clickedOwnedPositionId);
             if (positionDTO == null)
             {
                 THToast.show("We have lost track of this trading position");
