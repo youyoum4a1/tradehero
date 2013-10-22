@@ -32,15 +32,20 @@ public class RoundedImageView extends ImageView
 
     @Override public void setImageDrawable(Drawable drawable)
     {
-        RoundedShapeTransformation transformation = new RoundedShapeTransformation();
-        Bitmap bitmapDrawable = drawableToBitmap(drawable);
-        drawable = new BitmapDrawable(getResources(), transformation.transform(bitmapDrawable.copy(Bitmap.Config.ARGB_8888, true)));
+        if (drawable != null)
+        {
+            RoundedShapeTransformation transformation = new RoundedShapeTransformation();
+            Bitmap bitmapDrawable = drawableToBitmap(drawable);
+            drawable = new BitmapDrawable(getResources(), transformation.transform(bitmapDrawable.copy(Bitmap.Config.ARGB_8888, true)));
+        }
         super.setImageDrawable(drawable);
     }
 
-    public static Bitmap drawableToBitmap (Drawable drawable) {
-        if (drawable instanceof BitmapDrawable) {
-            return ((BitmapDrawable)drawable).getBitmap();
+    public static Bitmap drawableToBitmap(Drawable drawable)
+    {
+        if (drawable instanceof BitmapDrawable)
+        {
+            return ((BitmapDrawable) drawable).getBitmap();
         }
 
         int width = drawable.getIntrinsicWidth();
