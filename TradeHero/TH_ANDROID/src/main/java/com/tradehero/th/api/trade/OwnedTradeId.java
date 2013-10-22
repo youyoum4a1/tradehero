@@ -118,10 +118,4 @@ public class OwnedTradeId extends OwnedPositionId
     {
         return String.format("[userId=%d; portfolioId=%d; positionId=%d; tradeId=%d]", userId, portfolioId, positionId, tradeId);
     }
-
-    @Override public String makeKey()
-    {
-        return String.format("%d:%d:%d:%d", userId, portfolioId, positionId, tradeId);
-    }
-
 }

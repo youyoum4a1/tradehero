@@ -7,9 +7,4 @@ public class LeaderboardDefMostSkilledListKey extends LeaderboardDefListKey
     {
         return (other instanceof LeaderboardDefMostSkilledListKey) && equals((LeaderboardDefMostSkilledListKey) other);
     }
-
-    @Override public String makeKey()
-    {
-        return LeaderboardDefMostSkilledListKey.class.getName() + ':' + super.makeKey();
-    }
 }

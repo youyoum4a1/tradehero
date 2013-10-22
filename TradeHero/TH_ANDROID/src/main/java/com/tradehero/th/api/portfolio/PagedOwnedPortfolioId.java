@@ -104,9 +104,4 @@ public class PagedOwnedPortfolioId extends OwnedPortfolioId
     {
         return String.format("[userId=%d; portfolioId=%d; page=%d]", userId, portfolioId, page);
     }
-
-    @Override public String makeKey()
-    {
-        return String.format("%s:%d:%d:%d", PagedOwnedPortfolioId.class.getName(), userId, portfolioId, page);
-    }
 }

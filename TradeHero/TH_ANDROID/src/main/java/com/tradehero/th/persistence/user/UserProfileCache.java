@@ -17,7 +17,7 @@ import javax.inject.Singleton;
 import retrofit.RetrofitError;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/3/13 Time: 4:40 PM To change this template use File | Settings | File Templates. */
-@Singleton public class UserProfileCache extends StraightDTOCache<Integer, UserBaseKey, UserProfileDTO>
+@Singleton public class UserProfileCache extends StraightDTOCache<UserBaseKey, UserProfileDTO>
 {
     public static final String TAG = UserProfileCache.class.getSimpleName();
     public static final int DEFAULT_MAX_SIZE = 1000;
@@ -35,7 +35,7 @@ import retrofit.RetrofitError;
     {
         try
         {
-            return userService.get().getUser(key.makeKey());
+            return userService.get().getUser(key.key);
         }
         catch (RetrofitError retrofitError)
         {

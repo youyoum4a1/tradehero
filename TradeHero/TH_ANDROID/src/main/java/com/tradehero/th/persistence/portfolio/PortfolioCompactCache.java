@@ -8,7 +8,7 @@ import dagger.Lazy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-@Singleton public class PortfolioCompactCache extends StraightDTOCache<Integer, PortfolioId, PortfolioCompactDTO>
+@Singleton public class PortfolioCompactCache extends StraightDTOCache<PortfolioId, PortfolioCompactDTO>
 {
     public static final String TAG = PortfolioCompactCache.class.getName();
     public static final int DEFAULT_MAX_SIZE = 200;

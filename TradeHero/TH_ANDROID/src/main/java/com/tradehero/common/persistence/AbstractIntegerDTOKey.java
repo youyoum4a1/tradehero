@@ -28,8 +28,19 @@ abstract public class AbstractIntegerDTOKey extends AbstractPrimitiveDTOKey<Inte
         return super.equals((AbstractIntegerDTOKey) other);
     }
 
+    /**
+     * If the key is null, it removes it from the bundle
+     * @param args
+     */
     public void putParameters(Bundle args)
     {
-        args.putInt(getBundleKey(), key);
+        if (key == null)
+        {
+            args.remove(getBundleKey());
+        }
+        else
+        {
+            args.putInt(getBundleKey(), key);
+        }
     }
 }

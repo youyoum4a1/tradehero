@@ -113,9 +113,4 @@ public class OwnedPositionId extends OwnedPortfolioId
     {
         return String.format("[userId=%d; portfolioId=%d; ownedPositionId=%d]", userId, portfolioId, positionId);
     }
-
-    @Override public String makeKey()
-    {
-        return String.format("%d:%d:%d", userId, portfolioId, positionId);
-    }
 }

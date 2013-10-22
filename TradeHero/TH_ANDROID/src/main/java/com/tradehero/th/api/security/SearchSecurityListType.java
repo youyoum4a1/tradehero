@@ -90,11 +90,6 @@ public class SearchSecurityListType extends SecurityListType
     }
     //</editor-fold>
 
-    @Override public String makeKey()
-    {
-        return String.format("%s:%d:%d", searchString, page, perPage);
-    }
-
     @Override public String toString()
     {
         return String.format("[%s: searchString=%s; page=%d; perPage=%d]", SearchSecurityListType.class.getName(), searchString, page, perPage);

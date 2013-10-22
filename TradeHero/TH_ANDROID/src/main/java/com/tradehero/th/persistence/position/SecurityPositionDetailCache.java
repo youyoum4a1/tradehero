@@ -30,13 +30,13 @@ import javax.inject.Singleton;
 import retrofit.RetrofitError;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/3/13 Time: 4:47 PM To change this template use File | Settings | File Templates. */
-@Singleton public class SecurityPositionDetailCache implements DTOCache<String, SecurityId, SecurityPositionDetailDTO>
+@Singleton public class SecurityPositionDetailCache implements DTOCache<SecurityId, SecurityPositionDetailDTO>
 {
     public static final String TAG = SecurityPositionDetailCache.class.getSimpleName();
     public static final int DEFAULT_MAX_SIZE = 1000;
 
     // We need to compose here, instead of inheritance, otherwise we get a compile error regarding erasure on put and put.
-    private LruCache<String, SecurityPositionDetailCache.SecurityPositionDetailCutDTO> lruCache;
+    private LruCache<SecurityId, SecurityPositionDetailCache.SecurityPositionDetailCutDTO> lruCache;
     @Inject protected Lazy<SecurityService> securityService;
     @Inject protected Lazy<SecurityCompactCache> securityCompactCache;
     @Inject protected Lazy<PositionCompactCache> positionCompactCache;
@@ -77,7 +77,7 @@ import retrofit.RetrofitError;
 
     @Override public SecurityPositionDetailDTO getOrFetch(SecurityId key, boolean force)
     {
-        SecurityPositionDetailCutDTO securityPositionDetailCutDTO = lruCache.get(key.makeKey());
+        SecurityPositionDetailCutDTO securityPositionDetailCutDTO = lruCache.get(key);
         SecurityPositionDetailDTO securityPositionDetailDTO = null;
 
         if (force || securityPositionDetailCutDTO == null)
@@ -123,7 +123,7 @@ import retrofit.RetrofitError;
     
     @Override public SecurityPositionDetailDTO get(SecurityId key)
     {
-        SecurityPositionDetailCutDTO securityPositionDetailCutDTO = this.lruCache.get(key.makeKey());
+        SecurityPositionDetailCutDTO securityPositionDetailCutDTO = this.lruCache.get(key);
         SecurityCompactDTO securityCompactDTO = securityCompactCache.get().get(key);
         if (securityPositionDetailCutDTO == null || securityCompactDTO == null)
         {
@@ -137,7 +137,7 @@ import retrofit.RetrofitError;
         SecurityPositionDetailDTO previous = null;
 
         SecurityPositionDetailCutDTO previousCut = lruCache.put(
-                key.makeKey(),
+                key,
                 new SecurityPositionDetailCutDTO(
                         value,
                         securityCompactCache.get(),

@@ -3,7 +3,7 @@ package com.tradehero.common.persistence;
 import android.os.AsyncTask;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/3/13 Time: 4:48 PM To change this template use File | Settings | File Templates. */
-public interface DTOCache<BaseKeyType, DTOKeyType extends DTOKey<BaseKeyType>, DTOType>
+public interface DTOCache<DTOKeyType extends DTOKey, DTOType>
 {
     DTOType get(DTOKeyType key);
     DTOType getOrFetch(DTOKeyType key);

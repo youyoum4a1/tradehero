@@ -4,7 +4,7 @@ import android.os.Bundle;
 import com.tradehero.common.persistence.DTOKey;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/1/13 Time: 12:29 PM To change this template use File | Settings | File Templates. */
-public class SecurityId implements Comparable, DTOKey<String>
+public class SecurityId implements Comparable, DTOKey
 {
     public final static String BUNDLE_KEY_EXCHANGE = SecurityId.class.getName() + ".exchange";
     public final static String BUNDLE_KEY_SYMBOL = SecurityId.class.getName() + ".symbol";
@@ -110,10 +110,5 @@ public class SecurityId implements Comparable, DTOKey<String>
     @Override public String toString()
     {
         return String.format("[exchange=%s; securitySymbol=%s]", exchange, securitySymbol);
-    }
-
-    @Override public String makeKey()
-    {
-        return String.format("%s:%s", exchange, securitySymbol);
     }
 }

@@ -23,13 +23,13 @@ import javax.inject.Singleton;
 import retrofit.RetrofitError;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/16/13 Time: 3:44 PM To change this template use File | Settings | File Templates. */
-@Singleton public class GetPositionsCache implements DTOCache<String, OwnedPortfolioId, GetPositionsDTO>
+@Singleton public class GetPositionsCache implements DTOCache<OwnedPortfolioId, GetPositionsDTO>
 {
     public static final String TAG = GetPositionsCache.class.getSimpleName();
     public static final int DEFAULT_MAX_SIZE = 1000;
 
     // We need to compose here, instead of inheritance, otherwise we get a compile error regarding erasure on put and put.
-    private LruCache<String, GetPositionsCache.GetPositionsCutDTO> lruCache;
+    private LruCache<OwnedPortfolioId, GetPositionsCache.GetPositionsCutDTO> lruCache;
     @Inject protected Lazy<PositionService> positionService;
     @Inject protected Lazy<SecurityCompactCache> securityCompactCache;
     @Inject protected Lazy<PositionCache> filedPositionCache;
@@ -81,7 +81,7 @@ import retrofit.RetrofitError;
 
     @Override public GetPositionsDTO getOrFetch(OwnedPortfolioId key, boolean force)
     {
-        GetPositionsCutDTO getPositionsCutDTO = lruCache.get(key.makeKey());
+        GetPositionsCutDTO getPositionsCutDTO = lruCache.get(key);
         GetPositionsDTO getPositionsDTO = null;
 
         if (force || getPositionsCutDTO == null)
@@ -127,7 +127,7 @@ import retrofit.RetrofitError;
 
     @Override public GetPositionsDTO get(OwnedPortfolioId key)
     {
-        GetPositionsCutDTO getPositionsCutDTO = this.lruCache.get(key.makeKey());
+        GetPositionsCutDTO getPositionsCutDTO = this.lruCache.get(key);
         if (getPositionsCutDTO == null)
         {
             return null;
@@ -140,7 +140,7 @@ import retrofit.RetrofitError;
         GetPositionsDTO previous = null;
 
         GetPositionsCutDTO previousCut = lruCache.put(
-                key.makeKey(),
+                key,
                 new GetPositionsCutDTO(
                         value,
                         key.portfolioId,

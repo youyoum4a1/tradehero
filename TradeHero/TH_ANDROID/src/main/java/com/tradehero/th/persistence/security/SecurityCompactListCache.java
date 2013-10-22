@@ -20,7 +20,7 @@ import javax.inject.Singleton;
 import retrofit.RetrofitError;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/3/13 Time: 5:04 PM To change this template use File | Settings | File Templates. */
-@Singleton public class SecurityCompactListCache extends StraightDTOCache<String, SecurityListType, List<SecurityId>>
+@Singleton public class SecurityCompactListCache extends StraightDTOCache<SecurityListType, List<SecurityId>>
 {
     public static final String TAG = SecurityCompactListCache.class.getSimpleName();
     public static final int DEFAULT_MAX_SIZE = 50;

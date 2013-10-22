@@ -17,7 +17,7 @@ import java.util.List;
 /**
  * Created by julien on 22/10/13
  */
-public class TradeListCache extends StraightDTOCache<String, OwnedPositionId, List<OwnedTradeId>>
+public class TradeListCache extends StraightDTOCache<OwnedPositionId, List<OwnedTradeId>>
 {
     public static final String TAG = TradeListCache.class.getSimpleName();
     public static final int DEFAULT_MAX_SIZE = 100;

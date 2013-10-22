@@ -9,7 +9,7 @@ import javax.inject.Inject;
 /**
  * Created by julien on 22/10/13
  */
-public class TradeCache extends StraightDTOCache <Integer, TradeId, TradeDTO>
+public class TradeCache extends StraightDTOCache <TradeId, TradeDTO>
 {
     public static final String TAG = TradeCache.class.getSimpleName();
     private static final int DEFAULT_MAX_SIZE = 500;

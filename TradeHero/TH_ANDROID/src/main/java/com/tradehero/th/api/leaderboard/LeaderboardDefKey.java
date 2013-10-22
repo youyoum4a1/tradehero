@@ -33,6 +33,6 @@ public class LeaderboardDefKey extends AbstractIntegerDTOKey
 
     @Override public String toString()
     {
-        return String.format("%s %s", TAG, makeKey());
+        return String.format("%s %d", TAG, key);
     }
 }

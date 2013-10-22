@@ -9,9 +9,4 @@ public class LeaderboardDefTimePeriodListKey extends LeaderboardDefListKey
     {
         return (other instanceof LeaderboardDefTimePeriodListKey) && equals((LeaderboardDefTimePeriodListKey) other);
     }
-
-    @Override public String makeKey()
-    {
-        return LeaderboardDefTimePeriodListKey.class.getName() + ':' + super.makeKey();
-    }
 }

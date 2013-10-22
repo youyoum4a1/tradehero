@@ -6,7 +6,7 @@ import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/14/13 Time: 12:19 PM To change this template use File | Settings | File Templates. */
-public class OwnedPortfolioId  implements Comparable, DTOKey<String>
+public class OwnedPortfolioId  implements Comparable, DTOKey
 {
     public final static String BUNDLE_KEY_USER_ID = OwnedPortfolioId.class.getName() + ".userId";
     public final static String BUNDLE_KEY_PORTFOLIO_ID = OwnedPortfolioId.class.getName() + ".portfolioId";
@@ -125,10 +125,5 @@ public class OwnedPortfolioId  implements Comparable, DTOKey<String>
     @Override public String toString()
     {
         return String.format("[userId=%d; portfolioId=%d]", userId, portfolioId);
-    }
-
-    @Override public String makeKey()
-    {
-        return String.format("%s:%d:%d", OwnedPortfolioId.class.getName(), userId, portfolioId);
     }
 }

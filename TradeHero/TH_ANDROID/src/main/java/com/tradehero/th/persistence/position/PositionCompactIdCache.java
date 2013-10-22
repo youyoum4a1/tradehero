@@ -8,7 +8,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/16/13 Time: 1:03 PM To change this template use File | Settings | File Templates. */
-@Singleton public class PositionCompactIdCache extends StraightDTOCache<Integer, PositionCompactId, OwnedPositionId>
+@Singleton public class PositionCompactIdCache extends StraightDTOCache<PositionCompactId, OwnedPositionId>
 {
     public static final int DEFAULT_MAX_SIZE = 2000;
 

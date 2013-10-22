@@ -11,7 +11,7 @@ import javax.inject.Singleton;
 import retrofit.RetrofitError;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/18/13 Time: 6:28 PM To change this template use File | Settings | File Templates. */
-@Singleton public class ExchangeCache extends StraightDTOCache<Integer, ExchangeIntegerId, ExchangeDTO>
+@Singleton public class ExchangeCache extends StraightDTOCache<ExchangeIntegerId, ExchangeDTO>
 {
     public static final String TAG = ExchangeCache.class.getSimpleName();
     public static final int DEFAULT_MAX_SIZE = 1000;

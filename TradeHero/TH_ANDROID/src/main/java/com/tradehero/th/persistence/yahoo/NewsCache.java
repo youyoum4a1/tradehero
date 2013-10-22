@@ -26,7 +26,7 @@ import java.util.List;
  * Cache for Yahoo News - uses SecurityId as a key and store List<News> as values.
  * This class uses internally the SecurityCompactCache (see the fetch method implementation)
  */
-@Singleton public class NewsCache extends StraightDTOCache<String, SecurityId, List<News>>
+@Singleton public class NewsCache extends StraightDTOCache<SecurityId, List<News>>
 {
 
     public static final String TAG = NewsCache.class.getSimpleName();

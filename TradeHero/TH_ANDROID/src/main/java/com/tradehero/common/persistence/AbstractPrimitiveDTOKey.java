@@ -5,7 +5,7 @@ import android.os.Bundle;
 /**
  * Created by julien on 14/10/13
  */
-public abstract class AbstractPrimitiveDTOKey<T extends Comparable> implements Comparable, DTOKey<T>
+public abstract class AbstractPrimitiveDTOKey<T extends Comparable> implements Comparable, DTOKey
 {
     public final T key;
 
@@ -39,11 +39,6 @@ public abstract class AbstractPrimitiveDTOKey<T extends Comparable> implements C
     }
 
     abstract public String getBundleKey();
-
-    @Override public T makeKey()
-    {
-        return this.key;
-    }
 
     @Override public int hashCode()
     {

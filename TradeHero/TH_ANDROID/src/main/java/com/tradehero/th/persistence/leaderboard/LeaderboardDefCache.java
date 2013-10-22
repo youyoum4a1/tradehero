@@ -10,7 +10,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 /** Created with IntelliJ IDEA. User: tho Date: 10/16/13 Time: 12:52 PM Copyright (c) TradeHero */
-@Singleton public class LeaderboardDefCache extends StraightDTOCache<Integer, LeaderboardDefKey, LeaderboardDefDTO>
+@Singleton public class LeaderboardDefCache extends StraightDTOCache<LeaderboardDefKey, LeaderboardDefDTO>
 {
     private static final int DEFAULT_MAX_SIZE = 1000;
 
@@ -30,7 +30,8 @@ import javax.inject.Singleton;
 
     public List<LeaderboardDefDTO> getOrFetch(List<LeaderboardDefKey> keys)
     {
-        if (keys == null) {
+        if (keys == null)
+        {
             return null;
         }
 

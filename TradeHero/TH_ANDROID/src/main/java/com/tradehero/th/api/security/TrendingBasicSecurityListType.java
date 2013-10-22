@@ -43,9 +43,4 @@ public class TrendingBasicSecurityListType extends TrendingSecurityListType
         }
         return TrendingBasicSecurityListType.class.getName().compareTo(securityListType.getClass().getName());
     }
-
-    @Override public String makeKey()
-    {
-        return String.format("%s:%s", TrendingBasicSecurityListType.class.getName(), getExchange());
-    }
 }

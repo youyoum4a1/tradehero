@@ -74,11 +74,6 @@ public class TrendingSecurityListType extends SecurityListType
         return exchange.compareTo(trendingSecurityListType.exchange);
     }
 
-    @Override public String makeKey()
-    {
-        return String.format("%s:%s", TrendingSecurityListType.class.getName(), getExchange());
-    }
-
     @Override public String toString()
     {
         return String.format("[%s]", TAG);

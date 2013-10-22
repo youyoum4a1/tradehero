@@ -21,9 +21,4 @@ public class LeaderboardDefSectorListKey extends LeaderboardDefListKey
     {
         return (other instanceof LeaderboardDefSectorListKey) && equals((LeaderboardDefSectorListKey) other);
     }
-
-    @Override public String makeKey()
-    {
-        return LeaderboardDefSectorListKey.class.getName() + ':' + super.makeKey();
-    }
 }

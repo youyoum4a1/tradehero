@@ -9,10 +9,10 @@ import java.util.List;
 /** Created with IntelliJ IDEA. User: xavier Date: 10/4/13 Time: 11:01 AM To change this template use File | Settings | File Templates.
  * The registered listeners are kept as weak references. So they should be strongly referenced elsewhere.
  *  */
-abstract public class StraightDTOCache<BaseKeyType, DTOKeyType extends DTOKey<BaseKeyType>, DTOType>
-        implements LiveDTOCache<BaseKeyType, DTOKeyType, DTOType>
+abstract public class StraightDTOCache<DTOKeyType extends DTOKey, DTOType>
+        implements LiveDTOCache<DTOKeyType, DTOType>
 {
-    private LruCache<BaseKeyType, DTOType> lruCache;
+    private LruCache<DTOKeyType, DTOType> lruCache;
     private List<WeakReference<Listener<DTOKeyType, DTOType>>> listeners;
 
     public StraightDTOCache(int maxSize)
@@ -30,12 +30,12 @@ abstract public class StraightDTOCache<BaseKeyType, DTOKeyType extends DTOKey<Ba
         {
             return null;
         }
-        return this.lruCache.get(key.makeKey());
+        return this.lruCache.get(key);
     }
 
     @Override public DTOType put(DTOKeyType key, DTOType value)
     {
-        return this.lruCache.put(key.makeKey(), value);
+        return this.lruCache.put(key, value);
     }
 
     public DTOType getOrFetch(DTOKeyType key)
