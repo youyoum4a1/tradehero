@@ -32,8 +32,10 @@ public class TimelineStore implements PersistableResource<TimelineItem>
             TimelineDTO timelineDTO = null;
             try
             {
-                timelineDTO = timelineService.getTimeline((Integer) query.getId(), query.getUpper(), query.getLower(),
-                        (Integer) query.getProperty(PER_PAGE));
+                timelineDTO = timelineService.getTimeline((Integer) query.getId(),
+                        (Integer) query.getProperty(PER_PAGE),
+                        query.getUpper(),
+                        query.getLower());
             }
             catch (RetrofitError retrofitError)
             {
