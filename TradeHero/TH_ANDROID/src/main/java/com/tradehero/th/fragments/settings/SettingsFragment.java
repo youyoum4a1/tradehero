@@ -53,6 +53,7 @@ public class SettingsFragment extends DashboardFragment
     private static final int ITEM_FAQ = 2;
     private static final int ITEM_UPDATE_PROFILE = 3;
     private static final int ITEM_UPDATE_PAYPAL = 4;
+    private static final int ITEM_UPDATE_TRANSACTION_HISTORY = 5;
 
     private static final int ITEM_SIGN_OUT = 2;
     private static final int ITEM_ABOUT = 3;
@@ -150,6 +151,10 @@ public class SettingsFragment extends DashboardFragment
                     case ITEM_UPDATE_PAYPAL:
                         bundle = new Bundle();
                         navigator.pushFragment(SettingsPayPalFragment.class, bundle);
+                        break;
+                    case ITEM_UPDATE_TRANSACTION_HISTORY:
+                        bundle = new Bundle();
+                        navigator.pushFragment(SettingsTransactionHistoryFragment.class, bundle);
                         break;
                 }
             }

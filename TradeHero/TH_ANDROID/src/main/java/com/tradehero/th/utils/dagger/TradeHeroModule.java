@@ -72,6 +72,7 @@ import javax.inject.Singleton;
 @Module(
         injects =
         {
+                SettingsTransactionHistoryFragment.class,
                 SettingsPayPalFragment.class,
                 SettingsFragment.class,
                 AboutFragment.class,

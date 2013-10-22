@@ -2,24 +2,17 @@ package com.tradehero.th.network.service;
 
 import com.tradehero.th.api.form.ForgotPasswordFormDTO;
 import com.tradehero.th.api.form.UserFormDTO;
-import com.tradehero.th.api.security.SecurityCompactDTO;
-import com.tradehero.th.api.users.ForgotPasswordDTO;
-import com.tradehero.th.api.users.UserAvailabilityDTO;
-import com.tradehero.th.api.users.UserLoginDTO;
-import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.api.users.UserSearchResultDTO;
-import java.util.HashMap;
+import com.tradehero.th.api.users.*;
+
 import java.util.List;
-import org.json.JSONObject;
+
 import retrofit.Callback;
 import retrofit.RetrofitError;
-import retrofit.client.Response;
 import retrofit.http.Field;
 import retrofit.http.FormUrlEncoded;
 import retrofit.http.GET;
 import retrofit.http.Header;
 import retrofit.http.Body;
-import retrofit.http.HEAD;
 import retrofit.http.Multipart;
 import retrofit.http.POST;
 import retrofit.http.Path;
@@ -129,4 +122,10 @@ public interface UserService
             Callback<UserProfileDTO> callback)
             throws RetrofitError;
     //</editor-fold>
+
+    @GET("/users/{userId}/transactionHistory")
+    void getUserTransactions(
+            @Path("userId") int userId,
+            Callback<List<UserTransactionHistoryDTO>> callback)
+            throws RetrofitError;
 }
