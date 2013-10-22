@@ -136,7 +136,6 @@
       android:layout_centerVertical="true"
       android:src="@drawable/ic_info"
       android:contentDescription="@null"
-      android:focusable="true"
     />
 
 </RelativeLayout>

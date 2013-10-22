@@ -42,13 +42,6 @@ public class PositionLongView extends PositionView<
         }
     }
 
-    public void onDestroy()
-    {
-        if (viewHolder != null)
-        {
-        }
-    }
-
     @Override protected PositionLongInnerViewHolder.OnPositionLongInnerClickedListener createDefaultPositionClickedListener()
     {
         return new PositionLongInnerViewHolder.OnPositionLongInnerClickedListener()

@@ -1,11 +1,9 @@
 package com.tradehero.th.widget.position;
 
 import android.content.Context;
-import android.support.v4.view.MotionEventCompat;
 import android.util.AttributeSet;
-import android.view.MotionEvent;
+import android.view.View;
 import android.widget.RelativeLayout;
-import com.tradehero.common.utils.THLog;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.position.FiledPositionId;
 import java.lang.ref.WeakReference;
@@ -24,8 +22,6 @@ abstract public class PositionView<
     protected HolderViewType viewHolder;
     protected int position;
     protected WeakReference<ParentOnClickedListenerType> parentPositionClickedListener = new WeakReference<>(null);
-    private boolean downed = false;
-    private boolean clicked = false;
     protected FiledPositionId filedPositionId;
 
     protected OnClickedListenerType onPositionClickedListener;
@@ -55,17 +51,16 @@ abstract public class PositionView<
 
     protected void init ()
     {
-        //moreInfoRequestedListener = new PositionQuickInnerViewHolder.OnMoreInfoRequestedListener()
-        //{
-        //    @Override public void onMoreInfoRequested()
-        //    {
-        //        notifyPositionClicked();
-        //    }
-        //};
-        //viewHolder.setMoreInfoRequestedListener(moreInfoRequestedListener);
         onPositionClickedListener = createDefaultPositionClickedListener();
         viewHolder.setPositionClickedListener(onPositionClickedListener);
         viewHolder.initViews(getRootView());
+        getRootView().setOnClickListener(new OnClickListener()
+        {
+            @Override public void onClick(View view)
+            {
+                notifyMoreInfoRequested(filedPositionId);
+            }
+        });
     }
 
     abstract protected OnClickedListenerType createDefaultPositionClickedListener();
@@ -74,44 +69,6 @@ abstract public class PositionView<
     {
         this.filedPositionId = dto;
         viewHolder.linkWith(dto, true);
-    }
-
-    @Override public boolean onInterceptTouchEvent(MotionEvent ev)
-    {
-        //clicked = false;
-        final int action = MotionEventCompat.getActionMasked(ev);
-
-        THLog.d(TAG, "onInterceptTouchEvent, MotionEvent " + action);
-
-        //if (action == MotionEvent.ACTION_CANCEL || action == MotionEvent.ACTION_MOVE)
-        //{
-        //    return false;
-        //}
-
-        boolean intercepted = super.onInterceptTouchEvent(ev);
-
-        THLog.d(TAG, "onInterceptTouchEvent, intercepted: " + intercepted);
-
-        //if (!intercepted && action == MotionEvent.ACTION_DOWN)
-        //{
-        //    clicked = true;
-        //    intercepted = false; // If it is set to true, the buttons don't get notified
-        //}
-        return intercepted;
-    }
-
-    @Override public boolean onTouchEvent(MotionEvent event)
-    {
-        final int action = MotionEventCompat.getActionMasked(event);
-        THLog.d(TAG, "onTouchEvent, MotionEvent " + action);
-        if (event.getAction() == MotionEvent.ACTION_DOWN)
-        {
-            notifyMoreInfoRequested(filedPositionId);
-            clicked = false;
-        }
-        boolean intercepted = super.onTouchEvent(event);
-        THLog.d(TAG, "onTouchEvent, intercepted: " + intercepted);
-        return intercepted;
     }
 
     public int getPosition()

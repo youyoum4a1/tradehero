@@ -106,34 +106,6 @@ public class PositionListFragment extends DashboardFragment
             if (openPositions != null)
             {
                 openPositions.setAdapter(positionItemAdapter);
-                openPositions.setOnTouchListener(new View.OnTouchListener()
-                {
-                    @Override public boolean onTouch(View view, MotionEvent motionEvent)
-                    {
-                        int action = motionEvent.getAction();
-                        if (action == MotionEvent.ACTION_UP)
-                        {
-                            togglePositionMoreInfo();
-                        }
-                        return false; // If we do not return false, onScrollStateChanged will never be notified
-                    }
-                });
-                openPositions.setOnScrollListener(new AbsListView.OnScrollListener()
-                {
-                    @Override public void onScrollStateChanged(AbsListView absListView, int scrollState)
-                    {
-                        // When it starts scrolling, it should cancel the more info request
-                        if (scrollState != SCROLL_STATE_IDLE)
-                        {
-                            // Cancel more info request
-                            positionForMoreInfo = null;
-                        }
-                    }
-
-                    @Override public void onScroll(AbsListView absListView, int i, int i2, int i3)
-                    {
-                    }
-                });
             }
 
             if (desiredArguments != null)
@@ -443,6 +415,7 @@ public class PositionListFragment extends DashboardFragment
     {
         // Final decision will be made on touch up of the list view.
         positionForMoreInfo = position;
+        togglePositionMoreInfo();
     }
 
     @Override public void onTradeHistoryClicked(int position, FiledPositionId clickedFiledPositionId)

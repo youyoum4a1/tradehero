@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 import com.tradehero.common.graphics.WhiteToTransparentTransformation;
+import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.position.FiledPositionId;
 import com.tradehero.th.api.position.PositionDTO;
@@ -85,11 +86,12 @@ public class PositionQuickInnerViewHolder<OnClickedListenerType extends Position
             tradeHistoryButton = (ImageButton) view.findViewById(R.id.btn_trade_history);
             if (tradeHistoryButton != null)
             {
-                tradeHistoryButton.setOnTouchListener(new View.OnTouchListener()
+                tradeHistoryButton.setOnClickListener(new View.OnClickListener()
                 {
-                    @Override public boolean onTouch(View view, MotionEvent motionEvent)
+                    @Override public void onClick(View view)
                     {
-                        return onViewTouched(view, motionEvent);
+                        notifyTradeHistoryClicked();
+                        THToast.show("Trade History Clicked");
                     }
                 });
             }
