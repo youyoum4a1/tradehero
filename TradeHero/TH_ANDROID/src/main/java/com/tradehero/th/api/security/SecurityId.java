@@ -12,6 +12,7 @@ public class SecurityId implements Comparable, DTOKey<String>
     public final String exchange;
     public final String securitySymbol;
 
+    //<editor-fold desc="Constructors">
     public SecurityId(final String exchange, final String securitySymbol)
     {
         this.exchange = exchange;
@@ -23,6 +24,7 @@ public class SecurityId implements Comparable, DTOKey<String>
         this.exchange = args.getString(BUNDLE_KEY_EXCHANGE);
         this.securitySymbol = args.getString(BUNDLE_KEY_SYMBOL);
     }
+    //</editor-fold>
 
     @Override public int hashCode()
     {
@@ -85,6 +87,16 @@ public class SecurityId implements Comparable, DTOKey<String>
     public boolean isValid()
     {
         return exchange != null && !exchange.isEmpty() && securitySymbol != null && !securitySymbol.isEmpty();
+    }
+
+    public static boolean isValid(Bundle args)
+    {
+        return args != null &&
+                args.containsKey(BUNDLE_KEY_EXCHANGE) &&
+                args.getString(BUNDLE_KEY_EXCHANGE) != null &&
+                !args.getString(BUNDLE_KEY_EXCHANGE).isEmpty() &&
+                args.getString(BUNDLE_KEY_SYMBOL) != null &&
+                !args.getString(BUNDLE_KEY_SYMBOL).isEmpty();
     }
 
     public void putParameters(Bundle args)

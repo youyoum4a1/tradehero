@@ -139,7 +139,7 @@ public class PositionListFragment extends DashboardFragment
             if (desiredArguments != null)
             {
                 ViewStub stub = (ViewStub) view.findViewById(R.id.position_list_header_stub);
-                int layout = headerFactory.get().layoutIdForArguements(desiredArguments);
+                int layout = headerFactory.get().layoutIdForArguments(desiredArguments);
                 stub.setLayoutResource(layout);
                 this.portfolioHeaderView = (PortfolioHeaderView)stub.inflate();
             }

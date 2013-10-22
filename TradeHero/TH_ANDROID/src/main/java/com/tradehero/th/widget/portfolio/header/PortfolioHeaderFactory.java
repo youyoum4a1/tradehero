@@ -22,7 +22,7 @@ import javax.inject.Singleton;
 {
     @Inject Lazy<UserProfileCache> userCache;
 
-    public int layoutIdForArguements(Bundle args)
+    public int layoutIdForArguments(Bundle args)
     {
         OwnedPortfolioId id = new OwnedPortfolioId(args);
         if (id == null)
