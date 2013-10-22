@@ -4,8 +4,12 @@ import android.content.Context;
 import android.os.Bundle;
 import android.text.method.LinkMovementMethod;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.animation.AnimationUtils;
+import android.widget.Checkable;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import com.squareup.picasso.Picasso;
@@ -32,15 +36,21 @@ import javax.inject.Inject;
 import org.ocpsoft.prettytime.PrettyTime;
 
 /** Created with IntelliJ IDEA. User: tho Date: 9/9/13 Time: 4:24 PM Copyright (c) TradeHero */
-public class TimelineItemView extends RelativeLayout implements DTOView<TimelineItem>, OnElementClickListener
+public class TimelineItemView extends RelativeLayout implements
+        DTOView<TimelineItem>, OnElementClickListener, Checkable
 {
+    private static final int[] CHECKED_STATE_SET = {
+            android.R.attr.state_checked
+    };
     private TextView username;
     private MarkdownTextView content;
     private ImageView avatar;
     private ImageView vendorImage;
     private TextView time;
 
+
     @Inject protected Picasso picasso;
+    private boolean checked;
 
     //<editor-fold desc="Constructors">
     public TimelineItemView(Context context)
@@ -70,6 +80,33 @@ public class TimelineItemView extends RelativeLayout implements DTOView<Timeline
 
         time = (TextView) findViewById(R.id.timeline_time);
         vendorImage = (ImageView) findViewById(R.id.timeline_vendor_picture);
+
+        setOnFocusChangeListener(new OnFocusChangeListener()
+        {
+            @Override public void onFocusChange(View view, boolean focused)
+            {
+                View buttons = view.findViewById(R.id.timeline_share_buttons);
+                if (focused)
+                {
+                    //buttons.startAnimation(AnimationUtils.loadAnimation(getContext(), R.anim.slide_in_from_bottom));
+                    buttons.setVisibility(View.VISIBLE);
+                }
+                else
+                {
+                    //buttons.startAnimation(AnimationUtils.loadAnimation(getContext(), R.anim.slide_out_to_bottom));
+                    buttons.setVisibility(View.GONE);
+                }
+            }
+        });
+
+        View fbShareButton = findViewById(R.id.timeline_share_facebook);
+        if (fbShareButton!=null) fbShareButton.setOnClickListener(new OnClickListener()
+        {
+            @Override public void onClick(View view)
+            {
+                THToast.show("Fb share button clicked");
+            }
+        });
 
         DaggerUtils.inject(content);
         DaggerUtils.inject(this);
@@ -134,4 +171,37 @@ public class TimelineItemView extends RelativeLayout implements DTOView<Timeline
                 break;
         }
     }
+
+    //<editor-fold desc="android.View.ViewGroup">
+    @Override protected int[] onCreateDrawableState(int extraSpace)
+    {
+        final int[] drawableState = super.onCreateDrawableState(extraSpace + 1);
+        if (isChecked())
+        {
+            mergeDrawableStates(drawableState, CHECKED_STATE_SET);
+        }
+        return drawableState;
+    }
+    //</editor-fold>
+
+    //<editor-fold desc="android.widget.Checkable">
+    @Override public void setChecked(boolean checked)
+    {
+        if (this.checked != checked)
+        {
+            this.checked = checked;
+            refreshDrawableState();
+        }
+    }
+
+    @Override public boolean isChecked()
+    {
+        return checked;
+    }
+
+    @Override public void toggle()
+    {
+        setChecked(!checked);
+    }
+    //</editor-fold>
 }

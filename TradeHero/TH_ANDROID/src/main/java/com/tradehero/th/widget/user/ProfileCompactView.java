@@ -2,11 +2,13 @@ package com.tradehero.th.widget.user;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 import com.tradehero.common.graphics.RoundedShapeTransformation;
+import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.users.UserProfileDTO;
@@ -58,6 +60,17 @@ public class ProfileCompactView extends RelativeLayout implements DTOView<UserPr
         roiSinceInception = (TextView) findViewById(R.id.user_profile_compact_roi);
 
         followersCount = (TextView) findViewById(R.id.user_profile_compact_followers_count);
+        if (followersCount != null)
+        {
+            followersCount.setOnClickListener(new OnClickListener()
+            {
+                @Override public void onClick(View view)
+                {
+                    THToast.show("Hello");
+                }
+            });
+        }
+
         heroesCount = (TextView) findViewById(R.id.user_profile_compact_heroes_count);
 
         DaggerUtils.inject(this);

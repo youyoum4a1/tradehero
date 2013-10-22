@@ -185,6 +185,7 @@
         android:src="@drawable/buy_stock"
         android:contentDescription="@null"
         android:scaleType="centerInside"
+        android:duplicateParentState="true"
       />
 
     <ImageButton

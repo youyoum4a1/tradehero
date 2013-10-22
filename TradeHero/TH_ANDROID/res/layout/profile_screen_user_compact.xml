@@ -80,7 +80,7 @@
       android:layout_marginRight="5dp"
       >
 
-    <TextView
+    <Button
         android:id="@+id/user_profile_compact_followers_count"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"

@@ -1,9 +1,11 @@
 package com.tradehero.th.adapters;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AbsListView;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
@@ -65,6 +67,13 @@ public class TimelineAdapter extends DTOAdapter<TimelineItem, TimelineItemView>
             int firstItemId = Math.min(firstVisibleItem, getCount() - 1);
             loader.setFirstVisibleItem((TimelineItem) getItem(firstItemId));
             loader.setLastVisibleItem((TimelineItem) getItem(lastItemId));
+        }
+
+        int middleItemId = (visibleItemCount-1)/2;
+        View middleItem = (middleItemId>0) ? absListView.getChildAt(middleItemId) : null;
+        if (middleItem != null)
+        {
+            middleItem.requestFocus();
         }
     }
 

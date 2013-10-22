@@ -2,8 +2,14 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/home_screen_list_item_background"
+    android:background="@drawable/timeline_list_item_background"
     android:padding="@dimen/home_screen_list_item_padding"
+    android:focusableInTouchMode="true"
+    android:focusable="true"
+    >
+  <RelativeLayout android:id="@+id/main_content_wrapper"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     >
     <ImageView
         android:id="@+id/timeline_user_profile_picture"
@@ -25,7 +31,7 @@
         android:text="@null"
         android:textColor="@color/black"
         android:textSize="15sp"
-        android:textStyle="normal" />
+        android:textStyle="normal"/>
 
     <TextView
         android:id="@+id/timeline_time"
@@ -36,7 +42,7 @@
         android:layout_marginLeft="10dp"
         android:text="@null"
         android:textColor="@color/text_gray_normal"
-        android:textSize="10sp" />
+        android:textSize="10sp"/>
 
     <ImageView
         android:id="@+id/timeline_vendor_picture"
@@ -62,5 +68,38 @@
         android:textColorLink="@color/timeline_item_link"
         android:textColor="@color/timeline_item"
         android:textSize="12sp"
-        android:textStyle="normal" />
+        android:textStyle="normal"/>
+    </RelativeLayout>
+
+  <RelativeLayout
+      android:id="@+id/timeline_share_buttons"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_below="@id/main_content_wrapper"
+      >
+    <ImageView
+        android:id="@+id/timeline_share_linked_in"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:contentDescription="@null"
+        android:layout_alignParentRight="true"
+        android:src="@drawable/icon_share_linked_in"
+        />
+    <ImageView
+        android:id="@+id/timeline_share_twitter"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:contentDescription="@null"
+        android:src="@drawable/icon_share_tw"
+        android:layout_toLeftOf="@id/timeline_share_linked_in"
+        />
+    <ImageView
+        android:id="@+id/timeline_share_facebook"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:contentDescription="@null"
+        android:src="@drawable/icon_share_fb"
+        android:layout_toLeftOf="@id/timeline_share_twitter"
+        />
+  </RelativeLayout>
 </com.tradehero.th.widget.timeline.TimelineItemView>

@@ -8,7 +8,6 @@ import android.view.View;
 import android.widget.AbsListView;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.tradehero.th.R;
-import com.tradehero.th.loaders.AbstractItemWithComparableId;
 import com.tradehero.th.loaders.ItemWithComparableId;
 import java.util.List;
 
@@ -60,7 +59,7 @@ public class PullToUpdateFromLoaderListView extends PullToRefreshListView
                     middleView.setBackgroundColor(Color.RED);
                     if (lastVisibleView != null)
                     {
-                        lastVisibleView.setBackgroundColor(getResources().getColor(R.color.home_screen_list_item_background));
+                        lastVisibleView.setBackgroundColor(getResources().getColor(R.color.timeline_list_item_background));
                     }
                     lastVisibleView = middleView;
                 }
