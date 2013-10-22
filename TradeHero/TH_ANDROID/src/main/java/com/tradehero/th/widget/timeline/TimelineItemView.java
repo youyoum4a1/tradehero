@@ -31,6 +31,7 @@ import com.tradehero.th.fragments.trade.AbstractTradeFragment;
 import com.tradehero.th.fragments.trade.TradeFragment;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.widget.MarkdownTextView;
+import com.tradehero.th.widget.RoundedImageView;
 import java.util.Date;
 import javax.inject.Inject;
 import org.ocpsoft.prettytime.PrettyTime;
@@ -44,7 +45,7 @@ public class TimelineItemView extends RelativeLayout implements
     };
     private TextView username;
     private MarkdownTextView content;
-    private ImageView avatar;
+    private RoundedImageView avatar;
     private ImageView vendorImage;
     private TextView time;
 
@@ -81,7 +82,7 @@ public class TimelineItemView extends RelativeLayout implements
             username.setOnClickListener(this);
         }
 
-        avatar = (ImageView) findViewById(R.id.timeline_user_profile_picture);
+        avatar = (RoundedImageView) findViewById(R.id.timeline_user_profile_picture);
         if (avatar != null)
         {
             avatar.setOnClickListener(this);
@@ -137,11 +138,13 @@ public class TimelineItemView extends RelativeLayout implements
         {
             userId = user.id;
             username.setText(user.displayName);
-            picasso
-                    .load(user.picture)
-                    .transform(new RoundedShapeTransformation())
+        }
+        if (user.picture != null)
+        {
+            picasso.load(user.picture)
                     .into(avatar);
         }
+
         content.setText(item.getText());
 
         PrettyTime prettyTime = new PrettyTime(new Date());
