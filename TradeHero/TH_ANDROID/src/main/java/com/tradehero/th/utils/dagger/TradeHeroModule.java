@@ -17,8 +17,7 @@ import com.tradehero.th.fragments.leaderboard.LeaderboardListViewFragment;
 import com.tradehero.th.fragments.leaderboard.LeaderboardLoader;
 import com.tradehero.th.fragments.portfolio.PortfolioListFragment;
 import com.tradehero.th.fragments.position.PositionListFragment;
-import com.tradehero.th.fragments.settings.AboutFragment;
-import com.tradehero.th.fragments.settings.SettingsFragment;
+import com.tradehero.th.fragments.settings.*;
 import com.tradehero.th.fragments.timeline.MeTimelineFragment;
 import com.tradehero.th.fragments.timeline.TimelineFragment;
 import com.tradehero.th.fragments.trade.BuyFragment;
@@ -73,6 +72,7 @@ import javax.inject.Singleton;
 @Module(
         injects =
         {
+                SettingsPayPalFragment.class,
                 SettingsFragment.class,
                 AboutFragment.class,
                 EmailSignInFragment.class,

@@ -52,6 +52,7 @@ public class SettingsFragment extends DashboardFragment
     private static final int ITEM_SEND_FEEDBACK = 1;
     private static final int ITEM_FAQ = 2;
     private static final int ITEM_UPDATE_PROFILE = 3;
+    private static final int ITEM_UPDATE_PAYPAL = 4;
 
     private static final int ITEM_SIGN_OUT = 2;
     private static final int ITEM_ABOUT = 3;
@@ -145,6 +146,10 @@ public class SettingsFragment extends DashboardFragment
                         bundle = new Bundle();
                         bundle.putBoolean("editCurrentUser", true);
                         navigator.pushFragment(EmailSignUpFragment.class, bundle);
+                        break;
+                    case ITEM_UPDATE_PAYPAL:
+                        bundle = new Bundle();
+                        navigator.pushFragment(SettingsPayPalFragment.class, bundle);
                         break;
                 }
             }
