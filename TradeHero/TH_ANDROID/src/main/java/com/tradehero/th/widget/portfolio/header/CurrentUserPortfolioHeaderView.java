@@ -64,7 +64,7 @@ public class CurrentUserPortfolioHeaderView extends RelativeLayout implements Po
         {
             if (totalValueTextView != null)
             {
-                String valueString = String.format("US$ %.0f", portfolio.totalValue);
+                String valueString = String.format("US$ %,.0f", portfolio.totalValue);
                 totalValueTextView.setText(valueString);
             }
 
