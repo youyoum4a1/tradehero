@@ -104,6 +104,8 @@ public class TradeFragment extends AbstractTradeFragment
     int volume = 0;
     int avgDailyVolume = 0;
 
+    private Bundle desiredArguments;
+
     private Picasso mPicasso;
     private Transformation foregroundTransformation;
     private Transformation backgroundTransformation;
@@ -113,6 +115,12 @@ public class TradeFragment extends AbstractTradeFragment
     {
         THLog.d(TAG, "onCreateView");
         super.onCreateView(inflater, container, savedInstanceState);
+
+        if (desiredArguments == null)
+        {
+            desiredArguments = getArguments();
+        }
+
         View view = null;
         view = inflater.inflate(R.layout.fragment_trade, container, false);
         initViews(view);
@@ -156,15 +164,7 @@ public class TradeFragment extends AbstractTradeFragment
         }
 
         mPricingBidAskView = (PricingBidAskView) view.findViewById(R.id.pricing_bid_ask_view);
-        if (mPricingBidAskView != null)
-        {
-            mPricingBidAskView.setBuy(isTransactionTypeBuy);
-        }
         mTradeQuantityView = (TradeQuantityView) view.findViewById(R.id.trade_quantity_view);
-        if (mTradeQuantityView != null)
-        {
-            mTradeQuantityView.setBuy(isTransactionTypeBuy);
-        }
 
         mQuickPriceButtonSet = (QuickPriceButtonSet) view.findViewById(R.id.quick_price_button_set);
         if (mQuickPriceButtonSet != null)
@@ -211,7 +211,6 @@ public class TradeFragment extends AbstractTradeFragment
         {
             mBuyBtn.setOnClickListener(createBuyButtonListener());
         }
-
 
         mBottomViewPager = (ViewPager) view.findViewById(R.id.trade_bottom_pager);
         if (bottomViewPagerAdapter == null)
@@ -343,6 +342,23 @@ public class TradeFragment extends AbstractTradeFragment
 
         // We display here as onCreateOptionsMenu may be called after onResume
         displayActionBarElements();
+    }
+
+    @Override public void onResume()
+    {
+        super.onResume();
+
+        if (mPricingBidAskView != null)
+        {
+            mPricingBidAskView.setBuy(isTransactionTypeBuy);
+        }
+
+        if (mTradeQuantityView != null)
+        {
+            mTradeQuantityView.setBuy(isTransactionTypeBuy);
+        }
+
+        display();
     }
 
     @Override public void onDestroyOptionsMenu()

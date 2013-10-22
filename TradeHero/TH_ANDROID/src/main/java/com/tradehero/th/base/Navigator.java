@@ -127,18 +127,21 @@ public class Navigator
                 fragment = Fragment.instantiate(context, clss.getName(), args);
                 instances.put(clss, new WeakReference<>(fragment));
             }
-            // TODO I'm not sure this is a correct way to check whether the fragment is active
-            else if (!fragment.isVisible())
-            {
-                fragment.setArguments(args);
-            }
-            else if (fragment instanceof BaseFragment.ArgumentsChangeListener)
-            {
-                ((BaseFragment.ArgumentsChangeListener) fragment).onArgumentsChanged(args);
-            }
             else
             {
-                THLog.d(TAG, "Args could not be passed to existing instance of " + fragment.getClass().getSimpleName());
+                // TODO I'm not sure this is a correct way to check whether the fragment is active
+                if (!fragment.isVisible())
+                {
+                    fragment.setArguments(args);
+                }
+                if (fragment instanceof BaseFragment.ArgumentsChangeListener)
+                {
+                    ((BaseFragment.ArgumentsChangeListener) fragment).onArgumentsChanged(args);
+                }
+                else
+                {
+                    THLog.d(TAG, "Args could not be passed to existing instance of " + fragment.getClass().getSimpleName());
+                }
             }
             return fragment;
         }
