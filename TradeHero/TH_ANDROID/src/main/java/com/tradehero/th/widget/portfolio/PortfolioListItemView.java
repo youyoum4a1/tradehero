@@ -41,6 +41,7 @@ public class PortfolioListItemView extends RelativeLayout
     @Inject Lazy<PortfolioCompactCache> portfolioCompactCache;
     @Inject Lazy<PortfolioCache> portfolioCache;
     @Inject Lazy<UserProfileCache> userProfileCache;
+    @Inject Lazy<Picasso> picasso;
 
     private PortfolioCache.Listener<OwnedPortfolioId, PortfolioDTO> portfolioListener;
     private AsyncTask<Void, Void, PortfolioDTO> fetchPortfolioTask;
@@ -69,6 +70,9 @@ public class PortfolioListItemView extends RelativeLayout
         super.onFinishInflate();
         initViews();
         DaggerUtils.inject(this);
+        picasso.get().load(R.drawable.superman_facebook)
+                .transform(new RoundedShapeTransformation())
+                .into(userIcon);
     }
 
     private void initViews()
@@ -167,10 +171,9 @@ public class PortfolioListItemView extends RelativeLayout
         {
             if (userBaseDTO != null)
             {
-                Picasso.with(getContext())
-                        .load(userBaseDTO.picture)
-                        .transform(new RoundedShapeTransformation())
-                        .into(userIcon);
+                picasso.get().load(userBaseDTO.picture)
+                             .transform(new RoundedShapeTransformation())
+                             .into(userIcon);
             }
         }
     }
