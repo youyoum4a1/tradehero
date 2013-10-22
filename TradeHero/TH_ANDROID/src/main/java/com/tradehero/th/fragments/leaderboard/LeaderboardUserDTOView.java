@@ -5,15 +5,21 @@ import android.util.AttributeSet;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import com.squareup.picasso.Picasso;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
+import com.tradehero.th.utils.DaggerUtils;
+import javax.inject.Inject;
 
 /** Created with IntelliJ IDEA. User: tho Date: 10/21/13 Time: 4:14 PM Copyright (c) TradeHero */
 public class LeaderboardUserDTOView extends RelativeLayout implements DTOView<LeaderboardUserDTO>
 {
     private TextView lbmuDisplayName;
     private ImageView lbmuProfilePicture;
+    private TextView lbmuId;
+
+    @Inject protected Picasso picasso;
 
     //<editor-fold desc="Constructors">
     public LeaderboardUserDTOView(Context context)
@@ -39,12 +45,25 @@ public class LeaderboardUserDTOView extends RelativeLayout implements DTOView<Le
 
     private void init()
     {
+        lbmuId = (TextView) findViewById(R.id.leaderboard_user_item_id);
         lbmuDisplayName = (TextView) findViewById(R.id.leaderboard_user_item_display_name);
         lbmuProfilePicture = (ImageView) findViewById(R.id.leaderboard_user_item_profile_picture);
+
+        DaggerUtils.inject(this);
     }
 
     @Override public void display(LeaderboardUserDTO dto)
     {
+        if (dto == null)
+        {
+            return;
+        }
+        lbmuId.setText(""+dto.lbmuId);
         lbmuDisplayName.setText(dto.displayName);
+
+        if (dto.picture != null)
+        {
+            picasso.load(dto.picture).into(lbmuProfilePicture);
+        }
     }
 }

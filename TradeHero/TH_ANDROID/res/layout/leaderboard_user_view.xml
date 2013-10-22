@@ -4,34 +4,35 @@
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center_horizontal">
+    android:gravity="center_vertical"
+    >
   <TextView
-    android:id="@+id/leaderboard_user_item_id"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    />
+      android:id="@+id/leaderboard_user_item_id"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      />
+
+  <com.tradehero.th.widget.RoundedImageView
+      android:id="@+id/leaderboard_user_item_profile_picture"
+      android:layout_height="@dimen/leaderboard_user_view_profile_width"
+      android:layout_width="@dimen/leaderboard_user_view_profile_width"
+      android:contentDescription="@null"
+      android:layout_toRightOf="@id/leaderboard_user_item_id"
+      />
+
+  <TextView
+      android:id="@+id/leaderboard_user_item_display_name"
+      android:layout_toRightOf="@id/leaderboard_user_item_profile_picture"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      />
 
   <ImageView
-    android:id="@+id/leaderboard_user_item_profile_picture"
+      android:id="@+id/leaderboard_user_item_hq"
       android:layout_height="wrap_content"
       android:layout_width="wrap_content"
       android:contentDescription="@null"
-      android:layout_toRightOf="@id/leaderboard_user_item_id"
-    />
-
-  <TextView
-    android:id="@+id/leaderboard_user_item_display_name"
-    android:layout_toRightOf="@id/leaderboard_user_item_profile_picture"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    />
-
-  <ImageView
-    android:id="@+id/leaderboard_user_item_hq"
-    android:layout_height="wrap_content"
-    android:layout_width="wrap_content"
-    android:contentDescription="@null"
-    />
+      />
 
 
 </com.tradehero.th.fragments.leaderboard.LeaderboardUserDTOView>

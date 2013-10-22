@@ -4,16 +4,12 @@ import android.content.Context;
 import android.os.Bundle;
 import android.text.method.LinkMovementMethod;
 import android.util.AttributeSet;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.animation.AnimationUtils;
 import android.widget.Checkable;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import com.squareup.picasso.Picasso;
-import com.tradehero.common.graphics.RoundedShapeTransformation;
 import com.tradehero.common.graphics.WhiteToTransparentTransformation;
 import com.tradehero.common.text.OnElementClickListener;
 import com.tradehero.common.utils.THToast;
@@ -27,11 +23,9 @@ import com.tradehero.th.base.Navigator;
 import com.tradehero.th.base.NavigatorActivity;
 import com.tradehero.th.base.THUser;
 import com.tradehero.th.fragments.timeline.TimelineFragment;
-import com.tradehero.th.fragments.trade.AbstractTradeFragment;
 import com.tradehero.th.fragments.trade.TradeFragment;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.widget.MarkdownTextView;
-import com.tradehero.th.widget.RoundedImageView;
 import java.util.Date;
 import javax.inject.Inject;
 import org.ocpsoft.prettytime.PrettyTime;
@@ -45,7 +39,7 @@ public class TimelineItemView extends RelativeLayout implements
     };
     private TextView username;
     private MarkdownTextView content;
-    private RoundedImageView avatar;
+    private ImageView avatar;
     private ImageView vendorImage;
     private TextView time;
 
@@ -82,7 +76,7 @@ public class TimelineItemView extends RelativeLayout implements
             username.setOnClickListener(this);
         }
 
-        avatar = (RoundedImageView) findViewById(R.id.timeline_user_profile_picture);
+        avatar = (ImageView) findViewById(R.id.timeline_user_profile_picture);
         if (avatar != null)
         {
             avatar.setOnClickListener(this);
@@ -134,14 +128,18 @@ public class TimelineItemView extends RelativeLayout implements
     @Override public void display(TimelineItem item)
     {
         UserProfileCompactDTO user = item.getUser();
-        if (user != null)
+        if (user == null)
         {
-            userId = user.id;
-            username.setText(user.displayName);
+            return;
         }
+
+        userId = user.id;
+        username.setText(user.displayName);
+
         if (user.picture != null)
         {
             picasso.load(user.picture)
+                    .placeholder(R.drawable.superman_facebook)
                     .into(avatar);
         }
 
