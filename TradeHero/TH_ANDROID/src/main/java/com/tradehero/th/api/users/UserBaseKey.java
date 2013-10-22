@@ -28,11 +28,7 @@ public class UserBaseKey extends AbstractIntegerDTOKey
 
     @Override public boolean equals(Object other)
     {
-        if (!(other instanceof UserBaseKey))
-        {
-            return false;
-        }
-        return super.equals(other);
+        return (other instanceof UserBaseKey) && equals((UserBaseKey) other);
     }
 
     @Override public String toString()

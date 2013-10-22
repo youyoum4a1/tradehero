@@ -20,22 +20,27 @@ public class SearchSecurityListType extends SecurityListType
     }
     //</editor-fold>
 
+    @Override public int hashCode()
+    {
+        return (searchString == null ? 0 : searchString.hashCode()) ^
+                new Integer(page).hashCode() ^
+                new Integer(perPage).hashCode();
+    }
+
+    @Override public boolean equals(Object other)
+    {
+        return (other instanceof SearchSecurityListType) && equals((SearchSecurityListType) other);
+    }
+
     @Override public boolean equals(SecurityListType other)
     {
-        if (!(other instanceof SearchSecurityListType))
-        {
-            return false;
-        }
-        return equals((SearchSecurityListType) other);
+        return (other instanceof SearchSecurityListType) && equals((SearchSecurityListType) other);
     }
 
     public boolean equals(SearchSecurityListType other)
     {
-        if (other == null)
-        {
-            return false;
-        }
-        return (searchString == null ? other.searchString == null : searchString.equals(other.searchString)) &&
+        return (other != null) &&
+                (searchString == null ? other.searchString == null : searchString.equals(other.searchString)) &&
                 page == other.page &&
                 perPage == other.perPage;
     }

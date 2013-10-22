@@ -28,25 +28,20 @@ public class SecurityId implements Comparable, DTOKey<String>
 
     @Override public int hashCode()
     {
-        return exchange.hashCode() ^ securitySymbol.hashCode();
+        return (exchange == null ? 0 : exchange.hashCode()) ^
+                (securitySymbol == null ? 0 : securitySymbol.hashCode());
     }
 
     @Override public boolean equals(Object other)
     {
-        if (other == null || !(other instanceof SecurityId))
-        {
-            return false;
-        }
-        return equals((SecurityId) other);
+        return (other instanceof SecurityId) && equals((SecurityId) other);
     }
 
     public boolean equals(SecurityId other)
     {
-        if (other == null)
-        {
-            return false;
-        }
-        return exchange.equals(other.exchange) && securitySymbol.equals(other.securitySymbol);
+        return (other != null) &&
+                (exchange == null ? other.exchange == null : exchange.equals(other.exchange)) &&
+                (securitySymbol == null ? other.securitySymbol == null : securitySymbol.equals(other.securitySymbol));
     }
 
     @Override public int compareTo(Object o)

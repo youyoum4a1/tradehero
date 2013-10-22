@@ -20,6 +20,11 @@ public class SecurityIntegerId extends AbstractIntegerDTOKey
     }
     //</editor-fold>
 
+    @Override public boolean equals(Object other)
+    {
+        return (other instanceof SecurityIntegerId) && equals((SecurityIntegerId) other);
+    }
+
     @Override public String getBundleKey()
     {
         return BUNDLE_KEY_KEY;

@@ -29,11 +29,7 @@ public class PortfolioId extends AbstractIntegerDTOKey
 
     @Override public boolean equals(Object other)
     {
-        if (!(other instanceof PortfolioId))
-        {
-            return false;
-        }
-        return super.equals(other);
+        return (other instanceof PortfolioId) && super.equals((PortfolioId) other);
     }
 
     @Override public String toString()

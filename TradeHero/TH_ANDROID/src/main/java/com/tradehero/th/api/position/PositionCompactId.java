@@ -20,6 +20,11 @@ public class PositionCompactId extends AbstractIntegerDTOKey
     }
     //</editor-fold>
 
+    @Override public boolean equals(Object other)
+    {
+        return (other instanceof PositionCompactId) && equals((PositionCompactId) other);
+    }
+
     @Override public String getBundleKey()
     {
         return BUNDLE_KEY_KEY;

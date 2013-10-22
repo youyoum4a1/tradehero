@@ -28,7 +28,7 @@ public class ProviderId extends AbstractIntegerDTOKey
 
     @Override public boolean equals(Object other)
     {
-        return (other instanceof ProviderId) && super.equals((ProviderId) other);
+        return (other instanceof ProviderId) && equals((ProviderId) other);
     }
 
     @Override public String toString()

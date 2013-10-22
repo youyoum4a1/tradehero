@@ -28,7 +28,7 @@ public class ProviderListKey extends AbstractIntegerDTOKey
 
     @Override public boolean equals(Object other)
     {
-        return (other instanceof ProviderListKey) && super.equals((ProviderListKey) other);
+        return (other instanceof ProviderListKey) && equals((ProviderListKey) other);
     }
 
     @Override public String toString()

@@ -15,18 +15,19 @@ public class TrendingBasicSecurityListType extends TrendingSecurityListType
     }
     //</editor-fold>
 
-    @Override public boolean equals(TrendingSecurityListType other)
+    @Override public boolean equals(Object other)
     {
-        if (!(other instanceof TrendingBasicSecurityListType))
-        {
-            return false;
-        }
-        return equals((TrendingBasicSecurityListType) other);
+        return (other instanceof TrendingBasicSecurityListType) && equals((TrendingBasicSecurityListType) other);
     }
 
-    public boolean equals(TrendingBasicSecurityListType other)
+    @Override public boolean equals(SecurityListType other)
     {
-        return super.equals(other);
+        return (other instanceof TrendingBasicSecurityListType) && equals((TrendingBasicSecurityListType) other);
+    }
+
+    @Override public boolean equals(TrendingSecurityListType other)
+    {
+        return (other instanceof TrendingBasicSecurityListType) && super.equals(other);
     }
 
     @Override public int compareTo(SecurityListType securityListType)

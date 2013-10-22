@@ -31,7 +31,7 @@ public class LeaderboardDefListKey extends AbstractStringDTOKey
 
     @Override public boolean equals(Object other)
     {
-        return (other instanceof LeaderboardDefListKey) && super.equals((LeaderboardDefListKey) other);
+        return (other instanceof LeaderboardDefListKey) && equals((LeaderboardDefListKey) other);
     }
 
     @Override public String getBundleKey()

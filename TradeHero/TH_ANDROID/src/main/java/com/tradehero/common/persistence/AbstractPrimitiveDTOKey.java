@@ -50,23 +50,20 @@ public abstract class AbstractPrimitiveDTOKey<T extends Comparable> implements C
         return key == null ? 0 : key.hashCode();
     }
 
-    @Override public boolean equals(Object other)
-    {
-        if (other == null || !(other instanceof AbstractPrimitiveDTOKey))
-        {
-            return false;
-        }
-        return equals((AbstractPrimitiveDTOKey) other);
-    }
+    //@Override public boolean equals(Object other)
+    //{
+    //    if (other == null || !(other instanceof AbstractPrimitiveDTOKey))
+    //    {
+    //        return false;
+    //    }
+    //    return equals((AbstractPrimitiveDTOKey) other);
+    //}
+
+    @Override abstract public boolean equals(Object other);
 
     public boolean equals(AbstractPrimitiveDTOKey other)
     {
-        if (other == null)
-        {
-            return false;
-        }
-
-        return key == null ? other.key == null : key.equals(other.key);
+        return (other != null) && (key == null ? other.key == null : key.equals(other.key));
     }
 
     @Override public int compareTo(Object o)

@@ -23,7 +23,7 @@ public class ExchangeIntegerId extends AbstractIntegerDTOKey
 
     @Override public boolean equals(Object other)
     {
-        return (other instanceof ExchangeIntegerId) && super.equals((ExchangeIntegerId) other);
+        return (other instanceof ExchangeIntegerId) && equals((ExchangeIntegerId) other);
     }
 
     @Override public String getBundleKey()

@@ -1,5 +1,6 @@
 package com.tradehero.th.api.position;
 
+import com.tradehero.th.api.security.SecurityIntegerId;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,7 +24,7 @@ public class PositionDTO extends PositionDTOCompact
 
     public OwnedPositionId getOwnedPositionId()
     {
-        return new OwnedPositionId(userId, portfolioId, id, securityId);
+        return new OwnedPositionId(userId, portfolioId, id);
     }
 
     public static List<OwnedPositionId> getOwnedPositionIds(List<PositionDTO> positionDTOs)
@@ -45,7 +46,12 @@ public class PositionDTO extends PositionDTOCompact
 
     public OwnedPositionId getFiledPositionId(Integer portfolioId)
     {
-        return new OwnedPositionId(userId, portfolioId, id, securityId);
+        return new OwnedPositionId(userId, portfolioId, id);
+    }
+
+    public SecurityIntegerId getSecurityIntegerId()
+    {
+        return new SecurityIntegerId(securityId);
     }
 
     public static List<OwnedPositionId> getFiledPositionIds(Integer portfolioId, List<PositionDTO> positionDTOs)

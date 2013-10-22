@@ -39,25 +39,19 @@ public class PagedOwnedPortfolioId extends OwnedPortfolioId
 
     @Override public int hashCode()
     {
-        return super.hashCode() ^ page.hashCode();
+        return super.hashCode() ^ (page == null ? 0: page.hashCode());
     }
 
     @Override public boolean equals(Object other)
     {
-        if (other == null || !(other instanceof PagedOwnedPortfolioId))
-        {
-            return false;
-        }
-        return equals((PagedOwnedPortfolioId) other);
+        return (other instanceof PagedOwnedPortfolioId) && equals((PagedOwnedPortfolioId) other);
     }
 
     public boolean equals(PagedOwnedPortfolioId other)
     {
-        if (other == null)
-        {
-            return false;
-        }
-        return super.equals(other) && page.equals(other.page);
+        return other != null &&
+                super.equals(other) &&
+                (page == null ? other.page == null : page.equals(other.page));
     }
 
     @Override public int compareTo(Object o)

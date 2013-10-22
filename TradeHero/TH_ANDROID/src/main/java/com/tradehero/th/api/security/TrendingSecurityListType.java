@@ -32,22 +32,25 @@ public class TrendingSecurityListType extends SecurityListType
     }
     //</editor-fold>
 
+    @Override public int hashCode()
+    {
+        return exchange == null ? 0 : exchange.hashCode();
+    }
+
+    @Override public boolean equals(Object other)
+    {
+        return (other instanceof TrendingSecurityListType) && equals((TrendingSecurityListType) other);
+    }
+
     @Override public boolean equals(SecurityListType other)
     {
-        if (!(other instanceof TrendingSecurityListType))
-        {
-            return false;
-        }
-        return equals((TrendingSecurityListType) other);
+        return (other instanceof TrendingSecurityListType) && equals((TrendingSecurityListType) other);
     }
 
     public boolean equals(TrendingSecurityListType other)
     {
-        if (other == null)
-        {
-            return false;
-        }
-        return exchange == null ? other.exchange == null : exchange.equals(other.exchange);
+        return (other != null) &&
+                (exchange == null ? other.exchange == null : exchange.equals(other.exchange));
     }
 
     @Override public int compareTo(SecurityListType securityListType)

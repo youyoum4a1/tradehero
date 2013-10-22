@@ -43,25 +43,20 @@ public class OwnedPortfolioId  implements Comparable, DTOKey<String>
 
     @Override public int hashCode()
     {
-        return userId.hashCode() ^ portfolioId.hashCode();
+        return (userId == null ? 0 : userId.hashCode()) ^
+                (portfolioId == null ? 0 : portfolioId.hashCode());
     }
 
     @Override public boolean equals(Object other)
     {
-        if (other == null || !(other instanceof OwnedPortfolioId))
-        {
-            return false;
-        }
-        return equals((OwnedPortfolioId) other);
+        return (other instanceof OwnedPortfolioId) && equals((OwnedPortfolioId) other);
     }
 
     public boolean equals(OwnedPortfolioId other)
     {
-        if (other == null)
-        {
-            return false;
-        }
-        return userId.equals(other.userId) && portfolioId.equals(other.portfolioId);
+        return (other != null) &&
+                (userId == null ? other.userId == null : userId.equals(other.userId)) &&
+                (portfolioId == null ? other.portfolioId == null : portfolioId.equals(other.portfolioId));
     }
 
     @Override public int compareTo(Object o)

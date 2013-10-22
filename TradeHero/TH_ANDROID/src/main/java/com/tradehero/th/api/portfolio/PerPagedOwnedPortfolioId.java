@@ -39,25 +39,19 @@ public class PerPagedOwnedPortfolioId extends PagedOwnedPortfolioId
 
     @Override public int hashCode()
     {
-        return super.hashCode() ^ perPage.hashCode();
+        return super.hashCode() ^ (perPage == null ? 0 : perPage.hashCode());
     }
 
     @Override public boolean equals(Object other)
     {
-        if (other == null || !(other instanceof PerPagedOwnedPortfolioId))
-        {
-            return false;
-        }
-        return equals((PerPagedOwnedPortfolioId) other);
+        return (other instanceof PerPagedOwnedPortfolioId) && equals((PerPagedOwnedPortfolioId) other);
     }
 
     public boolean equals(PerPagedOwnedPortfolioId other)
     {
-        if (other == null)
-        {
-            return false;
-        }
-        return super.equals(other) && perPage.equals(other.perPage);
+        return other != null &&
+                super.equals(other) &&
+                (perPage == null ? other.perPage == null : perPage.equals(other.perPage));
     }
 
     @Override public int compareTo(Object o)

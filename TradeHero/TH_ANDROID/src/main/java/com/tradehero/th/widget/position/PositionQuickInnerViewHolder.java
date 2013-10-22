@@ -114,6 +114,33 @@ public class PositionQuickInnerViewHolder<OnClickedListenerType extends Position
     }
 
     //<editor-fold desc="DTO Methods">
+    public void linkWith(OwnedPositionId ownedPositionId, boolean andDisplay)
+    {
+        this.ownedPositionId = ownedPositionId;
+
+        linkWith(filedPositionCache.get().get(this.ownedPositionId), andDisplay);
+
+        if (andDisplay)
+        {
+            //TODO
+        }
+    }
+
+    public void linkWith(PositionDTO positionDTO, boolean andDisplay)
+    {
+        this.positionDTO = positionDTO;
+        if (andDisplay)
+        {
+            displayPositionProfitIndicator();
+            displayPositionPercent();
+            displayPositionLastAmount();
+        }
+        if (positionDTO != null)
+        {
+            linkWith(securityIdCache.get().get(positionDTO.getSecurityIntegerId()), andDisplay);
+        }
+    }
+
     public void linkWith(SecurityId securityId, boolean andDisplay)
     {
         this.securityId = securityId;
@@ -154,30 +181,6 @@ public class PositionQuickInnerViewHolder<OnClickedListenerType extends Position
             displayStockLastPrice();
             displayMarketClose();
             // TODO more
-        }
-    }
-
-    public void linkWith(OwnedPositionId ownedPositionId, boolean andDisplay)
-    {
-        this.ownedPositionId = ownedPositionId;
-
-        linkWith(filedPositionCache.get().get(this.ownedPositionId), andDisplay);
-        linkWith(securityIdCache.get().get(this.ownedPositionId.getSecurityIntegerId()), andDisplay);
-
-        if (andDisplay)
-        {
-            //TODO
-        }
-    }
-
-    public void linkWith(PositionDTO positionDTO, boolean andDisplay)
-    {
-        this.positionDTO = positionDTO;
-        if (andDisplay)
-        {
-            displayPositionProfitIndicator();
-            displayPositionPercent();
-            displayPositionLastAmount();
         }
     }
     //</editor-fold>

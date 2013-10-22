@@ -36,7 +36,7 @@ public class GetPositionsDTO
 
         for (PositionDTO positionDTO: positions)
         {
-            ownedPositionIds.add(new OwnedPositionId(positionDTO.userId, portfolioId.key, positionDTO.id, positionDTO.securityId));
+            ownedPositionIds.add(new OwnedPositionId(positionDTO.userId, portfolioId.key, positionDTO.id));
         }
 
         return ownedPositionIds;

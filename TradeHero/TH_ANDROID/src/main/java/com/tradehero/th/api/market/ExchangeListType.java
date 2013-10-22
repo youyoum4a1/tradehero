@@ -29,7 +29,7 @@ public class ExchangeListType extends AbstractStringDTOKey
 
     @Override public boolean equals(Object other)
     {
-        return (other instanceof ExchangeListType) && super.equals((ExchangeListType) other);
+        return (other instanceof ExchangeListType) && equals((ExchangeListType) other);
     }
 
     @Override public String getBundleKey()

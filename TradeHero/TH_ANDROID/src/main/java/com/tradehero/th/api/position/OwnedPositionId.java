@@ -10,62 +10,50 @@ import com.tradehero.th.api.users.UserBaseKey;
 public class OwnedPositionId extends OwnedPortfolioId
 {
     public final static String BUNDLE_KEY_POSITION_ID = OwnedPositionId.class.getName() + ".portfolioId";
-    public final static String BUNDLE_KEY_SECURITY_ID = OwnedPositionId.class.getName() + ".securityId";
 
     public final Integer positionId;
-    public final Integer securityId;
 
     //<editor-fold desc="Constructors">
-    public OwnedPositionId(Integer userId, Integer portfolioId, Integer positionId, Integer securityId)
+    public OwnedPositionId(Integer userId, Integer portfolioId, Integer positionId)
     {
         super(userId, portfolioId);
         this.positionId = positionId;
-        this.securityId = securityId;
     }
 
-    public OwnedPositionId(UserBaseKey userBaseKey, PortfolioId portfolioId, Integer positionId, Integer securityId)
+    public OwnedPositionId(UserBaseKey userBaseKey, PortfolioId portfolioId, Integer positionId)
     {
         super(userBaseKey, portfolioId);
         this.positionId = positionId;
-        this.securityId = securityId;
     }
 
     public OwnedPositionId(Bundle args)
     {
         super(args);
         this.positionId = args.containsKey(BUNDLE_KEY_POSITION_ID) ? args.getInt(BUNDLE_KEY_POSITION_ID) : null;
-        this.securityId = args.containsKey(BUNDLE_KEY_SECURITY_ID) ? args.getInt(BUNDLE_KEY_SECURITY_ID) : null;
     }
 
     public OwnedPositionId(OwnedPositionId ownedPositionId)
     {
         super(ownedPositionId.getUserBaseKey(), ownedPositionId.getPortfolioId());
         this.positionId = ownedPositionId.positionId;
-        this.securityId = ownedPositionId.securityId;
     }
     //</editor-fold>
 
     @Override public int hashCode()
     {
-        return super.hashCode() ^ portfolioId.hashCode() ^ securityId.hashCode();
+        return super.hashCode() ^ (positionId == null ? 0 : positionId.hashCode());
     }
 
     @Override public boolean equals(Object other)
     {
-        if (other == null || !(other instanceof OwnedPositionId))
-        {
-            return false;
-        }
-        return equals((OwnedPositionId) other);
+        return (other instanceof OwnedPositionId) && equals((OwnedPositionId) other);
     }
 
     public boolean equals(OwnedPositionId other)
     {
-        if (other == null)
-        {
-            return false;
-        }
-        return super.equals((OwnedPortfolioId) other) && positionId.equals(other.positionId) && securityId.equals(other.securityId);
+        return (other != null) &&
+                super.equals(other) &&
+                (positionId == null ? other.positionId == null : positionId.equals(other.positionId));
     }
 
     @Override public int compareTo(Object o)
@@ -105,14 +93,13 @@ public class OwnedPositionId extends OwnedPortfolioId
 
     @Override public boolean isValid()
     {
-        return super.isValid() && this.positionId != null && this.securityId != null;
+        return super.isValid() && this.positionId != null;
     }
 
     @Override public void putParameters(Bundle args)
     {
         super.putParameters(args);
         args.putInt(BUNDLE_KEY_POSITION_ID, positionId);
-        args.putInt(BUNDLE_KEY_SECURITY_ID, securityId);
     }
 
     @Override public Bundle getArgs()
@@ -122,18 +109,13 @@ public class OwnedPositionId extends OwnedPortfolioId
         return args;
     }
 
-    public SecurityIntegerId getSecurityIntegerId()
-    {
-        return new SecurityIntegerId(securityId);
-    }
-
     @Override public String toString()
     {
-        return String.format("[userId=%d; portfolioId=%d; ownedPositionId=%d; securityId=%d]", userId, portfolioId, positionId, securityId);
+        return String.format("[userId=%d; portfolioId=%d; ownedPositionId=%d]", userId, portfolioId, positionId);
     }
 
     @Override public String makeKey()
     {
-        return String.format("%d:%d:%d:%d", userId, portfolioId, positionId, securityId);
+        return String.format("%d:%d:%d", userId, portfolioId, positionId);
     }
 }

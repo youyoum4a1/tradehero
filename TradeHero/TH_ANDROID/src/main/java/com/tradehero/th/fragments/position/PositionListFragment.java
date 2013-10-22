@@ -24,6 +24,7 @@ import com.tradehero.th.adapters.position.PositionItemAdapter;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.position.GetPositionsDTO;
 import com.tradehero.th.api.position.OwnedPositionId;
+import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.SecurityIntegerId;
 import com.tradehero.th.fragments.base.BaseFragment;
@@ -31,6 +32,7 @@ import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.dashboard.DashboardTabType;
 import com.tradehero.th.fragments.trade.TradeFragment;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactCache;
+import com.tradehero.th.persistence.position.FiledPositionCache;
 import com.tradehero.th.persistence.position.GetPositionsCache;
 import com.tradehero.th.widget.portfolio.header.PortfolioHeaderFactory;
 import com.tradehero.th.persistence.security.SecurityIdCache;
@@ -65,6 +67,7 @@ public class PositionListFragment extends DashboardFragment
     @Inject Lazy<GetPositionsCache> getPositionsCache;
     @Inject Lazy<PortfolioCompactCache> portfolioCompactCache;
     @Inject Lazy<SecurityIdCache> securityIdCache;
+    @Inject Lazy<FiledPositionCache> filedPositionCache;
     private GetPositionsCache.Listener<OwnedPortfolioId, GetPositionsDTO> getPositionsCacheListener;
     private AsyncTask<Void, Void, GetPositionsDTO> fetchGetPositionsDTOTask;
 
@@ -359,18 +362,33 @@ public class PositionListFragment extends DashboardFragment
         };
     }
 
-    private void pushTradeFragment(SecurityIntegerId securityIntegerId, boolean isBuy)
+    private void pushTradeFragment(OwnedPositionId clickedOwnedPositionId, boolean isBuy)
     {
-        SecurityId securityId = securityIdCache.get().get(securityIntegerId);
-        if (securityId == null)
+        if (clickedOwnedPositionId != null)
         {
-            THToast.show("Could not find this security");
+            PositionDTO positionDTO = filedPositionCache.get().get(clickedOwnedPositionId);
+            if (positionDTO == null)
+            {
+                THToast.show("We have lost track of this trading position");
+            }
+            else
+            {
+                SecurityId securityId = securityIdCache.get().get(positionDTO.getSecurityIntegerId());
+                if (securityId == null)
+                {
+                    THToast.show("Could not find this security");
+                }
+                else
+                {
+                    Bundle args = securityId.getArgs();
+                    args.putBoolean(TradeFragment.BUNDLE_KEY_IS_BUY, isBuy);
+                    navigator.pushFragment(TradeFragment.class, args);
+                }
+            }
         }
         else
         {
-            Bundle args = securityId.getArgs();
-            args.putBoolean(TradeFragment.BUNDLE_KEY_IS_BUY, isBuy);
-            navigator.pushFragment(TradeFragment.class, args);
+            THLog.e(TAG, "Was passed a null clickedOwnedPositionId", new IllegalArgumentException());
         }
     }
 
@@ -397,13 +415,13 @@ public class PositionListFragment extends DashboardFragment
     @Override public void onBuyClicked(int position, OwnedPositionId clickedOwnedPositionId)
     {
         THToast.show("Buy at position " + position);
-        pushTradeFragment(clickedOwnedPositionId.getSecurityIntegerId(), true);
+        pushTradeFragment(clickedOwnedPositionId, true);
     }
 
     @Override public void onSellClicked(int position, OwnedPositionId clickedOwnedPositionId)
     {
         THToast.show("Sell at position " + position);
-        pushTradeFragment(clickedOwnedPositionId.getSecurityIntegerId(), false);
+        pushTradeFragment(clickedOwnedPositionId, false);
     }
 
     @Override public void onStockInfoClicked(int position, OwnedPositionId clickedOwnedPositionId)

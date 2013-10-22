@@ -22,7 +22,7 @@ public class LeaderboardKey extends AbstractIntegerDTOKey
 
     @Override public boolean equals(Object other)
     {
-        return (other instanceof LeaderboardKey) && super.equals((LeaderboardKey) other);
+        return (other instanceof LeaderboardKey) && equals((LeaderboardKey) other);
     }
 
     @Override public String getBundleKey()

@@ -23,7 +23,7 @@ public class ExchangeStringId extends AbstractStringDTOKey
 
     @Override public boolean equals(Object other)
     {
-        return (other instanceof ExchangeStringId) && super.equals((ExchangeStringId) other);
+        return (other instanceof ExchangeStringId) && equals((ExchangeStringId) other);
     }
 
     @Override public String getBundleKey()

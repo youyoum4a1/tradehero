@@ -5,7 +5,7 @@ public class LeaderboardDefMostSkilledListKey extends LeaderboardDefListKey
 {
     @Override public boolean equals(Object other)
     {
-        return (other instanceof LeaderboardDefMostSkilledListKey) && super.equals((LeaderboardDefMostSkilledListKey) other);
+        return (other instanceof LeaderboardDefMostSkilledListKey) && equals((LeaderboardDefMostSkilledListKey) other);
     }
 
     @Override public String makeKey()

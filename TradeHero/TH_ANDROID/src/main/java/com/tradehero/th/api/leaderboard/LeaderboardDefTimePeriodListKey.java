@@ -7,7 +7,7 @@ public class LeaderboardDefTimePeriodListKey extends LeaderboardDefListKey
 {
     @Override public boolean equals(Object other)
     {
-        return (other instanceof LeaderboardDefTimePeriodListKey) && super.equals((LeaderboardDefTimePeriodListKey) other);
+        return (other instanceof LeaderboardDefTimePeriodListKey) && equals((LeaderboardDefTimePeriodListKey) other);
     }
 
     @Override public String makeKey()

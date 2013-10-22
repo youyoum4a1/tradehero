@@ -19,7 +19,7 @@ public class LeaderboardDefSectorListKey extends LeaderboardDefListKey
 
     @Override public boolean equals(Object other)
     {
-        return (other instanceof LeaderboardDefSectorListKey) && super.equals((LeaderboardDefSectorListKey) other);
+        return (other instanceof LeaderboardDefSectorListKey) && equals((LeaderboardDefSectorListKey) other);
     }
 
     @Override public String makeKey()
