@@ -37,7 +37,7 @@ import org.ocpsoft.prettytime.PrettyTime;
 
 /** Created with IntelliJ IDEA. User: tho Date: 9/9/13 Time: 4:24 PM Copyright (c) TradeHero */
 public class TimelineItemView extends RelativeLayout implements
-        DTOView<TimelineItem>, OnElementClickListener, Checkable
+        DTOView<TimelineItem>, OnElementClickListener, Checkable, View.OnClickListener
 {
     private static final int[] CHECKED_STATE_SET = {
             android.R.attr.state_checked
@@ -51,6 +51,8 @@ public class TimelineItemView extends RelativeLayout implements
 
     @Inject protected Picasso picasso;
     private boolean checked;
+    private Navigator navigator;
+    private int userId;
 
     //<editor-fold desc="Constructors">
     public TimelineItemView(Context context)
@@ -72,8 +74,19 @@ public class TimelineItemView extends RelativeLayout implements
 
     private void init()
     {
+        navigator = ((NavigatorActivity) getContext()).getNavigator();
         username = (TextView) findViewById(R.id.timeline_user_profile_name);
+        if (username != null)
+        {
+            username.setOnClickListener(this);
+        }
+
         avatar = (ImageView) findViewById(R.id.timeline_user_profile_picture);
+        if (avatar != null)
+        {
+            avatar.setOnClickListener(this);
+        }
+
         content = (MarkdownTextView) findViewById(R.id.timeline_item_content);
         content.setMovementMethod(LinkMovementMethod.getInstance());
         content.setOnElementClickListener(this);
@@ -122,6 +135,7 @@ public class TimelineItemView extends RelativeLayout implements
         UserProfileCompactDTO user = item.getUser();
         if (user != null)
         {
+            userId = user.id;
             username.setText(user.displayName);
             picasso
                     .load(user.picture)
@@ -145,18 +159,11 @@ public class TimelineItemView extends RelativeLayout implements
 
     @Override public void onClick(View textView, String data, String key, String[] matchStrings)
     {
-        Navigator navigator = ((NavigatorActivity) getContext()).getNavigator();
         switch (key)
         {
             case "user":
                 int userId = Integer.parseInt(matchStrings[2]);
-                Bundle b = new Bundle();
-                b.putInt(TimelineFragment.USER_ID, userId);
-
-                if (THUser.getCurrentUserBase().id != userId)
-                {
-                    navigator.pushFragment(TimelineFragment.class, b, true);
-                }
+                openUserProfile(userId);
                 break;
             case "security":
                 if (matchStrings.length < 3) break;
@@ -169,6 +176,17 @@ public class TimelineItemView extends RelativeLayout implements
                 String link = matchStrings[2];
 
                 break;
+        }
+    }
+
+    private void openUserProfile(int userId)
+    {
+        Bundle b = new Bundle();
+        b.putInt(TimelineFragment.USER_ID, userId);
+
+        if (THUser.getCurrentUserBase().id != userId)
+        {
+            navigator.pushFragment(TimelineFragment.class, b, true);
         }
     }
 
@@ -202,6 +220,11 @@ public class TimelineItemView extends RelativeLayout implements
     @Override public void toggle()
     {
         setChecked(!checked);
+    }
+
+    @Override public void onClick(View view)
+    {
+        openUserProfile(userId);
     }
     //</editor-fold>
 }
