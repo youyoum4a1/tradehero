@@ -27,7 +27,6 @@ public class RoundedImageView extends ImageView
     {
         super(context, attrs, defStyle);
     }
-
     //</editor-fold>
 
     @Override public void setImageDrawable(Drawable drawable)

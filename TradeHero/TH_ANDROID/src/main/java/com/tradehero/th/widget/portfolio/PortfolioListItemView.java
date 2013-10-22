@@ -70,9 +70,12 @@ public class PortfolioListItemView extends RelativeLayout
         super.onFinishInflate();
         initViews();
         DaggerUtils.inject(this);
-        picasso.get().load(R.drawable.superman_facebook)
-                .transform(new RoundedShapeTransformation())
-                .into(userIcon);
+        if (userIcon != null)
+        {
+            picasso.get().load(R.drawable.superman_facebook)
+                    .transform(new RoundedShapeTransformation())
+                    .into(userIcon);
+        }
     }
 
     private void initViews()
