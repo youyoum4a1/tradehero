@@ -5,6 +5,7 @@ import android.support.v4.view.MotionEventCompat;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.widget.RelativeLayout;
+import com.tradehero.common.utils.THLog;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.position.FiledPositionId;
 import java.lang.ref.WeakReference;
@@ -18,9 +19,12 @@ abstract public class PositionView<
         extends RelativeLayout
         implements DTOView<FiledPositionId>
 {
+    public static final String TAG = PositionView.class.getSimpleName();
+
     protected HolderViewType viewHolder;
     protected int position;
     protected WeakReference<ParentOnClickedListenerType> parentPositionClickedListener = new WeakReference<>(null);
+    private boolean downed = false;
     private boolean clicked = false;
     protected FiledPositionId filedPositionId;
 
@@ -68,37 +72,46 @@ abstract public class PositionView<
 
     @Override public void display(FiledPositionId dto)
     {
+        this.filedPositionId = dto;
         viewHolder.linkWith(dto, true);
     }
 
     @Override public boolean onInterceptTouchEvent(MotionEvent ev)
     {
-        clicked = false;
+        //clicked = false;
         final int action = MotionEventCompat.getActionMasked(ev);
 
-        if (action == MotionEvent.ACTION_CANCEL || action == MotionEvent.ACTION_MOVE)
-        {
-            return false;
-        }
+        THLog.d(TAG, "onInterceptTouchEvent, MotionEvent " + action);
+
+        //if (action == MotionEvent.ACTION_CANCEL || action == MotionEvent.ACTION_MOVE)
+        //{
+        //    return false;
+        //}
 
         boolean intercepted = super.onInterceptTouchEvent(ev);
 
-        if (!intercepted && action == MotionEvent.ACTION_DOWN)
-        {
-            clicked = true;
-            intercepted = false; // If it is set to true, the buttons don't get notified
-        }
+        THLog.d(TAG, "onInterceptTouchEvent, intercepted: " + intercepted);
+
+        //if (!intercepted && action == MotionEvent.ACTION_DOWN)
+        //{
+        //    clicked = true;
+        //    intercepted = false; // If it is set to true, the buttons don't get notified
+        //}
         return intercepted;
     }
 
     @Override public boolean onTouchEvent(MotionEvent event)
     {
-        if (clicked)
+        final int action = MotionEventCompat.getActionMasked(event);
+        THLog.d(TAG, "onTouchEvent, MotionEvent " + action);
+        if (event.getAction() == MotionEvent.ACTION_DOWN)
         {
-            notifyMoreInfoRequested();
+            notifyMoreInfoRequested(filedPositionId);
             clicked = false;
         }
-        return super.onTouchEvent(event);
+        boolean intercepted = super.onTouchEvent(event);
+        THLog.d(TAG, "onTouchEvent, intercepted: " + intercepted);
+        return intercepted;
     }
 
     public int getPosition()
@@ -116,21 +129,21 @@ abstract public class PositionView<
         this.parentPositionClickedListener = new WeakReference<>(parentPositionClickedListener);
     }
 
-    protected void notifyMoreInfoRequested()
+    protected void notifyMoreInfoRequested(FiledPositionId clickedFiledPositionId)
     {
         ParentOnClickedListenerType listener = parentPositionClickedListener.get();
         if (listener != null)
         {
-            listener.onMoreInfoClicked(position, filedPositionId);
+            listener.onMoreInfoClicked(position, clickedFiledPositionId);
         }
     }
 
-    protected void notifyTradeHistoryRequested()
+    protected void notifyTradeHistoryRequested(FiledPositionId clickedFiledPositionId)
     {
         ParentOnClickedListenerType listener = parentPositionClickedListener.get();
         if (listener != null)
         {
-            listener.onTradeHistoryClicked(position, filedPositionId);
+            listener.onTradeHistoryClicked(position, clickedFiledPositionId);
         }
     }
 

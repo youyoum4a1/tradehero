@@ -5,7 +5,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.PortfolioId;
 import com.tradehero.th.api.position.FiledPositionId;
@@ -33,8 +32,9 @@ public class PositionItemAdapter extends BaseAdapter
     private final int positionLayoutExpandedId;
     private final int positionNothingId;
 
-    private WeakReference<View> latestView;
+    private WeakReference<View> latestView = new WeakReference<>(null);
 
+    private WeakReference<PositionLongView.OnListedPositionInnerLongClickedListener> parentMoreInfoRequestedListener = new WeakReference<>(null);
     private PositionLongView.OnListedPositionInnerLongClickedListener moreInfoRequestedListener;
     private int moreInfoPositionClicked = Integer.MIN_VALUE;
 
@@ -51,32 +51,56 @@ public class PositionItemAdapter extends BaseAdapter
         {
             @Override public void onAddAlertClicked(int position, FiledPositionId clickedFiledPositionId)
             {
-                THToast.show("Add Alert at position " + position);
+                PositionLongView.OnListedPositionInnerLongClickedListener listener = parentMoreInfoRequestedListener.get();
+                if (listener != null)
+                {
+                    listener.onAddAlertClicked(position, clickedFiledPositionId);
+                }
             }
 
             @Override public void onBuyClicked(int position, FiledPositionId clickedFiledPositionId)
             {
-                THToast.show("Buy at position " + position);
+                PositionLongView.OnListedPositionInnerLongClickedListener listener = parentMoreInfoRequestedListener.get();
+                if (listener != null)
+                {
+                    listener.onBuyClicked(position, clickedFiledPositionId);
+                }
             }
 
             @Override public void onSellClicked(int position, FiledPositionId clickedFiledPositionId)
             {
-                THToast.show("Sell at position " + position);
+                PositionLongView.OnListedPositionInnerLongClickedListener listener = parentMoreInfoRequestedListener.get();
+                if (listener != null)
+                {
+                    listener.onSellClicked(position, clickedFiledPositionId);
+                }
             }
 
             @Override public void onStockInfoClicked(int position, FiledPositionId clickedFiledPositionId)
             {
-                THToast.show("Stock Info at position " + position);
+                PositionLongView.OnListedPositionInnerLongClickedListener listener = parentMoreInfoRequestedListener.get();
+                if (listener != null)
+                {
+                    listener.onStockInfoClicked(position, clickedFiledPositionId);
+                }
             }
 
             @Override public void onMoreInfoClicked(int position, FiledPositionId clickedFiledPositionId)
             {
-                handleMoreInfoRequested(position);
+                PositionLongView.OnListedPositionInnerLongClickedListener listener = parentMoreInfoRequestedListener.get();
+                if (listener != null)
+                {
+                    listener.onMoreInfoClicked(position, clickedFiledPositionId);
+                }
             }
 
             @Override public void onTradeHistoryClicked(int position, FiledPositionId clickedFiledPositionId)
             {
-                THToast.show("Trade History at position " + position);
+                PositionLongView.OnListedPositionInnerLongClickedListener listener = parentMoreInfoRequestedListener.get();
+                if (listener != null)
+                {
+                    listener.onTradeHistoryClicked(position, clickedFiledPositionId);
+                }
             }
         };
     }
@@ -86,6 +110,7 @@ public class PositionItemAdapter extends BaseAdapter
         return true;
     }
 
+    //<editor-fold desc="Counting Methods">
     public int getOpenPositionsCount()
     {
         return openPositions == null ? 0 : openPositions.size();
@@ -101,7 +126,9 @@ public class PositionItemAdapter extends BaseAdapter
     {
         return closedPositions == null ? 0 : closedPositions.size();
     }
+    //</editor-fold>
 
+    //<editor-fold desc="Index Methods">
     public int getOpenPositionIndex(int position)
     {
         return position - 1;
@@ -131,6 +158,7 @@ public class PositionItemAdapter extends BaseAdapter
     {
         return position >= (getVisibleOpenPositionsCount() + 2);
     }
+    //</editor-fold>
 
     @Override public long getItemId(int position)
     {
@@ -233,6 +261,15 @@ public class PositionItemAdapter extends BaseAdapter
         return view;
     }
 
+    /**
+     * The listener needs to be strongly referenced elsewhere
+     * @param parentMoreInfoRequestedListener
+     */
+    public void setParentMoreInfoRequestedListener(PositionLongView.OnListedPositionInnerLongClickedListener parentMoreInfoRequestedListener)
+    {
+        this.parentMoreInfoRequestedListener = new WeakReference<>(parentMoreInfoRequestedListener);
+    }
+
     public void setPositions(List<PositionDTO> positions, PortfolioId portfolioId)
     {
         this.receivedPositions = positions;
@@ -265,10 +302,19 @@ public class PositionItemAdapter extends BaseAdapter
         }
     }
 
-    private void handleMoreInfoRequested(int position)
+    public void togglePositionClicked(int newPosition)
     {
-        THToast.show("More info clicked " + position);
-        updatePositionClicked(position);
+        setMoreInfoPositionClicked(this.moreInfoPositionClicked == newPosition ? Integer.MIN_VALUE : newPosition);
+    }
+
+    public void setMoreInfoPositionClicked(Integer moreInfoPositionClicked)
+    {
+        this.moreInfoPositionClicked = moreInfoPositionClicked == null ? Integer.MIN_VALUE : moreInfoPositionClicked;
+        postDataSetChanged();
+    }
+
+    public void postDataSetChanged()
+    {
         View anyView = this.latestView.get();
         if (anyView != null)
         {
@@ -279,18 +325,6 @@ public class PositionItemAdapter extends BaseAdapter
                     notifyDataSetChanged();
                 }
             });
-        }
-    }
-
-    private void updatePositionClicked(int newPosition)
-    {
-        if (this.moreInfoPositionClicked == newPosition)
-        {
-            this.moreInfoPositionClicked = Integer.MIN_VALUE;
-        }
-        else
-        {
-            this.moreInfoPositionClicked = newPosition;
         }
     }
 }

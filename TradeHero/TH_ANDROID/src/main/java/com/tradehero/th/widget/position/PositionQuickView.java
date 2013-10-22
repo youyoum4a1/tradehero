@@ -56,12 +56,12 @@ public class PositionQuickView extends PositionView<
         {
             @Override public void onMoreInfoClicked(FiledPositionId clickedFiledPositionId)
             {
-                notifyMoreInfoRequested();
+                notifyMoreInfoRequested(clickedFiledPositionId);
             }
 
             @Override public void onTradeHistoryClicked(FiledPositionId clickedFiledPositionId)
             {
-                notifyTradeHistoryRequested();
+                notifyTradeHistoryRequested(clickedFiledPositionId);
             }
         };
     }

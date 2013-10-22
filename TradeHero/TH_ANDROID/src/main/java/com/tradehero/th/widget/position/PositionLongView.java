@@ -55,70 +55,70 @@ public class PositionLongView extends PositionView<
         {
             @Override public void onMoreInfoClicked(FiledPositionId clickedFiledPositionId)
             {
-                notifyMoreInfoRequested();
+                notifyMoreInfoRequested(clickedFiledPositionId);
             }
 
             @Override public void onTradeHistoryClicked(FiledPositionId clickedFiledPositionId)
             {
-                notifyTradeHistoryRequested();
+                notifyTradeHistoryRequested(clickedFiledPositionId);
             }
 
             @Override public void onBuyClicked(FiledPositionId clickedFiledPositionId)
             {
-                notifyBuyRequested();
+                notifyBuyRequested(clickedFiledPositionId);
             }
 
             @Override public void onSellClicked(FiledPositionId clickedFiledPositionId)
             {
-                notifySellRequested();
+                notifySellRequested(clickedFiledPositionId);
             }
 
             @Override public void onAddAlertClicked(FiledPositionId clickedFiledPositionId)
             {
-                notifyAddAlertRequested();
+                notifyAddAlertRequested(clickedFiledPositionId);
             }
 
             @Override public void onStockInfoClicked(FiledPositionId clickedFiledPositionId)
             {
-                notifyStockInfoRequested();
+                notifyStockInfoRequested(clickedFiledPositionId);
             }
         };
     }
 
     //<editor-fold desc="Notify Methods">
-    protected void notifyBuyRequested()
+    protected void notifyBuyRequested(FiledPositionId clickedFiledPositionId)
     {
         OnListedPositionInnerLongClickedListener listener = parentPositionClickedListener.get();
         if (listener != null)
         {
-            listener.onBuyClicked(position, filedPositionId);
+            listener.onBuyClicked(position, clickedFiledPositionId);
         }
     }
 
-    protected void notifySellRequested()
+    protected void notifySellRequested(FiledPositionId clickedFiledPositionId)
     {
         OnListedPositionInnerLongClickedListener listener = parentPositionClickedListener.get();
         if (listener != null)
         {
-            listener.onSellClicked(position, filedPositionId);
+            listener.onSellClicked(position, clickedFiledPositionId);
         }
     }
 
-    protected void notifyAddAlertRequested()
+    protected void notifyAddAlertRequested(FiledPositionId clickedFiledPositionId)
     {
         OnListedPositionInnerLongClickedListener listener = parentPositionClickedListener.get();
         if (listener != null)
         {
-            listener.onAddAlertClicked(position, filedPositionId);
+            listener.onAddAlertClicked(position, clickedFiledPositionId);
         }
     }
 
-    protected void notifyStockInfoRequested()
+    protected void notifyStockInfoRequested(FiledPositionId clickedFiledPositionId)
     {
         OnListedPositionInnerLongClickedListener listener = parentPositionClickedListener.get();
         if (listener != null)
         {
-            listener.onStockInfoClicked(position, filedPositionId);
+            listener.onStockInfoClicked(position, clickedFiledPositionId);
         }
     }
     //</editor-fold>
