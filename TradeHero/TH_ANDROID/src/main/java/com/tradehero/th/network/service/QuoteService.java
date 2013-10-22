@@ -11,15 +11,17 @@ import retrofit.http.Path;
 /** Created with IntelliJ IDEA. User: xavier Date: 10/7/13 Time: 4:28 PM To change this template use File | Settings | File Templates. */
 public interface QuoteService
 {
+    //<editor-fold desc="Get Quote">
     @GET("/securities/{exchange}/{securitySymbol}/quote")
-    void getPositions(
+    void getQuote(
             @Path("exchange") String exchange,
             @Path("securitySymbol") String securitySymbol,
             Callback<SignatureContainer<QuoteDTO>> callback);
 
     @GET("/securities/{exchange}/{securitySymbol}/quote")
-    SignatureContainer<QuoteDTO> getPositions(
+    SignatureContainer<QuoteDTO> getQuote(
             @Path("exchange") String exchange,
             @Path("securitySymbol") String securitySymbol)
             throws RetrofitError;
+    //</editor-fold>
 }

@@ -42,6 +42,11 @@ public class LeaderboardUserDTO extends UserBaseDTO implements ItemWithComparabl
     public Integer followerCountPaid;
     public Integer commentCount;
 
+    public LeaderboardUserDTO()
+    {
+        super();
+    }
+
     @Override public Integer getId()
     {
         return lbmuId;

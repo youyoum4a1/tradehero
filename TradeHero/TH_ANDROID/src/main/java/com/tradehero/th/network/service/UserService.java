@@ -1,13 +1,19 @@
 package com.tradehero.th.network.service;
 
-import com.tradehero.th.api.form.ForgotPasswordFormDTO;
+import com.tradehero.th.api.social.InviteFormDTO;
+import com.tradehero.th.api.social.UserFriendsDTO;
+import com.tradehero.th.api.users.password.ForgotPasswordFormDTO;
 import com.tradehero.th.api.form.UserFormDTO;
 import com.tradehero.th.api.users.*;
 
+import com.tradehero.th.api.users.password.ForgotPasswordDTO;
+import com.tradehero.th.api.users.payment.UpdatePayPalEmailDTO;
+import com.tradehero.th.api.users.payment.UpdatePayPalEmailFormDTO;
 import java.util.List;
 
 import retrofit.Callback;
 import retrofit.RetrofitError;
+import retrofit.http.DELETE;
 import retrofit.http.Field;
 import retrofit.http.FormUrlEncoded;
 import retrofit.http.GET;
@@ -79,22 +85,129 @@ public interface UserService
     @POST("/SignupWithEmail")
     void signUpWithEmailWithProfilePicture();
 
+    //<editor-fold desc="Signup">
     @POST("/users")
-    void signUp(@Header("Authorization") String authorization, @Body UserFormDTO user, Callback<UserProfileDTO> cb);
+    UserProfileDTO signUp(
+            @Header("Authorization") String authorization,
+            @Body UserFormDTO user)
+        throws RetrofitError;
+
+    @POST("/users")
+    void signUp(
+            @Header("Authorization") String authorization,
+            @Body UserFormDTO user,
+            Callback<UserProfileDTO> callback);
+    //</editor-fold>
+
+    //<editor-fold desc="Signin">
+    @POST("users/signin")
+    Object signIn(
+            @Body WebSignInFormDTO webSignInFormDTO)
+        throws RetrofitError;
+
+    @POST("users/signin")
+    void signIn(
+            @Body WebSignInFormDTO webSignInFormDTO,
+            Callback<Object> callback);
+    //</editor-fold>
+
+    //<editor-fold desc="Login">
+    @POST("/login")
+    UserLoginDTO signIn(
+            @Header("Authorization") String authorization,
+            @Body UserFormDTO user)
+        throws RetrofitError;
 
     @POST("/login")
-    void signIn(@Header("Authorization") String authorization, @Body UserFormDTO user, Callback<UserLoginDTO> cb);
+    void signIn(
+            @Header("Authorization") String authorization,
+            @Body UserFormDTO user,
+            Callback<UserLoginDTO> callback);
+    //</editor-fold>
+
+    //<editor-fold desc="Update Authorization Tokens">
+    @POST("/updateAuthorizationTokens")
+    Object updateAuthorizationTokens(
+            @Body UserFormDTO userFormDTO)
+        throws RetrofitError;
+
+    @POST("/updateAuthorizationTokens")
+    void updateAuthorizationTokens(
+            @Body UserFormDTO userFormDTO,
+            Callback<Object> callback)
+        throws RetrofitError;
+    //</editor-fold>
+
+    //<editor-fold desc="Update Device">
+    @POST("/updateDevice")
+    UserProfileDTO updateDevice()
+        throws RetrofitError;
+
+    @POST("/updateDevice")
+    void updateDevice(
+            Callback<UserProfileDTO> callback)
+        throws RetrofitError;
+    //</editor-fold>
+
+    //<editor-fold desc="Logout">
+    @POST("/logout")
+    Object signOut(
+            @Header("Authorization") String authorization)
+        throws RetrofitError;
 
     @POST("/logout")
-    void signOut(@Header("Authorization") String authorization, Callback<Object> cb);
+    void signOut(
+            @Header("Authorization") String authorization,
+            Callback<Object> callback);
+    //</editor-fold>
+
+    //<editor-fold desc="Check Display Name Available">
+    @GET("/checkDisplayNameAvailable")
+    UserAvailabilityDTO checkDisplayNameAvailable(
+            @Query("displayName") String username)
+        throws RetrofitError;
 
     @GET("/checkDisplayNameAvailable")
-    void checkDisplayNameAvailable(@Query("displayName") String username, Callback<UserAvailabilityDTO> callback);
+    void checkDisplayNameAvailable(
+            @Query("displayName") String username,
+            Callback<UserAvailabilityDTO> callback);
+    //</editor-fold>
+
+    //<editor-fold desc="Forgot Password">
+    @POST("/forgotPassword")
+    ForgotPasswordDTO forgotPassword(
+            @Body ForgotPasswordFormDTO forgotPasswordFormDTO)
+        throws RetrofitError;
 
     @POST("/forgotPassword")
-    void forgotPassword(@Body ForgotPasswordFormDTO forgotPasswordFormDTO, Callback<ForgotPasswordDTO> callback);
+    void forgotPassword(
+            @Body ForgotPasswordFormDTO forgotPasswordFormDTO,
+            Callback<ForgotPasswordDTO> callback);
+    //</editor-fold>
 
     //<editor-fold desc="Search Users">
+    @GET("/users/search")
+    List<UserSearchResultDTO> searchUsers(
+            @Query("q") String searchString)
+            throws RetrofitError;
+
+    @GET("/users/search")
+    void searchUsers(
+            @Query("q") String searchString,
+            Callback<List<UserSearchResultDTO>> callback);
+
+    @GET("/users/search")
+    List<UserSearchResultDTO> searchUsers(
+            @Query("q") String searchString,
+            @Query("page") int page)
+            throws RetrofitError;
+
+    @GET("/users/search")
+    void searchUsers(
+            @Query("q") String searchString,
+            @Query("page") int page,
+            Callback<List<UserSearchResultDTO>> callback);
+
     @GET("/users/search")
     List<UserSearchResultDTO> searchUsers(
             @Query("q") String searchString,
@@ -123,9 +236,65 @@ public interface UserService
             throws RetrofitError;
     //</editor-fold>
 
+    //<editor-fold desc="Get User Transactions History">
+    @GET("/users/{userId}/transactionHistory")
+    List<UserTransactionHistoryDTO> getUserTransactions(
+            @Path("userId") int userId)
+            throws RetrofitError;
+
     @GET("/users/{userId}/transactionHistory")
     void getUserTransactions(
             @Path("userId") int userId,
-            Callback<List<UserTransactionHistoryDTO>> callback)
-            throws RetrofitError;
+            Callback<List<UserTransactionHistoryDTO>> callback);
+    //</editor-fold>
+
+    //<editor-fold desc="Update PayPal Email">
+    @POST("/users/{userId}/updatePayPalEmail")
+    UpdatePayPalEmailDTO updatePayPalEmail(
+            @Path("userId") int userId,
+            @Body UpdatePayPalEmailFormDTO updatePayPalEmailFormDTO)
+        throws RetrofitError;
+
+    @POST("/users/{userId}/updatePayPalEmail")
+    void updatePayPalEmail(
+            @Path("userId") int userId,
+            @Body UpdatePayPalEmailFormDTO updatePayPalEmailFormDTO,
+            Callback<UpdatePayPalEmailDTO> callback);
+    //</editor-fold>
+
+    //<editor-fold desc="Delete User">
+    @DELETE("/users/{userId}")
+    Object deleteUser(
+            @Path("userId") int userId)
+        throws RetrofitError;
+
+    @DELETE("/users/{userId}")
+    void deleteUser(
+            @Path("userId") int userId,
+            Callback<Object> callback);
+    //</editor-fold>
+
+    //<editor-fold desc="Get Friends">
+    @GET("/users/{userId}/getFriends")
+    List<UserFriendsDTO> getFriends(
+            @Path("userId") int userId)
+        throws RetrofitError;
+
+    @GET("/users/{userId}/getFriends")
+    void getFriends(
+            @Path("userId") int userId,
+            Callback<List<UserFriendsDTO>> callback);
+    //</editor-fold>
+
+    //<editor-fold desc="Invite Friends">
+    @POST("/users/{userId}/inviteFriends")
+    Object inviteFriends(@Path("userId") int userId,
+            @Body InviteFormDTO inviteFormDTO)
+        throws RetrofitError;
+
+    @POST("/users/{userId}/inviteFriends")
+    void inviteFriends(@Path("userId") int userId,
+            @Body InviteFormDTO inviteFormDTO,
+            Callback<Object> callback);
+    //</editor-fold>
 }

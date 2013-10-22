@@ -38,6 +38,11 @@ public class LeaderboardDefDTO extends AbstractItemWithComparableId<Integer>
     public Integer defaultSortTypeId;
     public Integer capAt;
 
+    public LeaderboardDefDTO()
+    {
+        super();
+    }
+
     @Override public Integer getId()
     {
         return id;

@@ -5,8 +5,6 @@ import android.database.sqlite.SQLiteDatabase;
 import com.tradehero.common.persistence.PersistableResource;
 import com.tradehero.common.persistence.Query;
 import com.tradehero.th.api.leaderboard.LeaderboardDTO;
-import com.tradehero.th.api.local.TimelineItemBuilder;
-import com.tradehero.th.api.timeline.TimelineDTO;
 import com.tradehero.th.network.BasicRetrofitErrorHandler;
 import com.tradehero.th.network.service.LeaderboardService;
 import com.tradehero.th.persistence.PaginationFilter;
@@ -33,7 +31,7 @@ public class LeaderboardStore implements PersistableResource<LeaderboardDTO>
             LeaderboardDTO leaderboardDTO = null;
             try
             {
-                leaderboardDTO = leaderboardService.get().getLeaderboards((Integer) query.getId(), null, null, null);
+                leaderboardDTO = leaderboardService.get().getLeaderboard((Integer) query.getId());
             }
             catch (RetrofitError retrofitError)
             {

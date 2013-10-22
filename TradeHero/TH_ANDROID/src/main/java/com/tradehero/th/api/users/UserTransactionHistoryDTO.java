@@ -9,10 +9,18 @@ import java.util.Date;
  * Time: 2:50 PM
  * To change this template use File | Settings | File Templates.
  */
-public class UserTransactionHistoryDTO {
+public class UserTransactionHistoryDTO
+{
+    public static final String TAG = UserTransactionHistoryDTO.class.getSimpleName();
+
     public int id;
     public Date createdAtUtc;
     public Double balance;
     public Double value;
     public String comment;
+
+    public UserTransactionHistoryDTO()
+    {
+        super();
+    }
 }

@@ -52,16 +52,19 @@ public class SettingsTransactionHistoryFragment extends DashboardFragment
                 Application.getResourceString(R.string.please_wait),
                 Application.getResourceString(R.string.connecting_tradehero_only),
                 true);
-        userService.getUserTransactions(userBase.id, new Callback<List<UserTransactionHistoryDTO>>() {
+        userService.getUserTransactions(userBase.id, new Callback<List<UserTransactionHistoryDTO>>()
+        {
             @Override
-            public void success(List<UserTransactionHistoryDTO> dtos, Response response) {
+            public void success(List<UserTransactionHistoryDTO> dtos, Response response)
+            {
                 transactionListViewAdapter.setItems(dtos);
                 transactionListViewAdapter.notifyDataSetChanged();
                 progressDialog.hide();
             }
 
             @Override
-            public void failure(RetrofitError error) {
+            public void failure(RetrofitError error)
+            {
                 THToast.show("Unable to fetch transaction history. Please try again later.");
                 progressDialog.hide();
             }

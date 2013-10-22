@@ -10,4 +10,9 @@ public class LeaderboardSecurityTypeDTO
     public List<Integer> restrictedBySectorIds;
     public Date fromUtc;
     public Date toUtc;
+
+    public LeaderboardSecurityTypeDTO()
+    {
+        super();
+    }
 }

@@ -15,6 +15,11 @@ public class LeaderboardDTO extends AbstractItemWithComparableId<Integer>
     public int userIsAtPositionZeroBased;
     public Date markUtc;
 
+    public LeaderboardDTO()
+    {
+        super();
+    }
+
     @Override public Integer getId()
     {
         return id;

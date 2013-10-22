@@ -2,6 +2,7 @@ package com.tradehero.th.api.users;
 
 import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.api.competition.ProviderDTO;
+import com.tradehero.th.api.leaderboard.UserLeaderboardRankingDTO;
 import com.tradehero.th.api.portfolio.PortfolioDTO;
 import java.util.List;
 
@@ -27,9 +28,9 @@ public class UserProfileDTO extends UserProfileCompactDTO implements DTO
     public boolean pushNotificationsEnabled;
     public boolean emailNotificationsEnabled;
 
-    public List<UserLeaderboardRanking> leaderboardRankings;
+    public List<UserLeaderboardRankingDTO> leaderboardRankings;
             // *** DELETE ME -- once all clients are on >= 1.2.3
-    public List<UserLeaderboardRanking> rank;
+    public List<UserLeaderboardRankingDTO> rank;
             // // user's top-traders ranking across all LBs
 
     public boolean firstFollowAllTime;

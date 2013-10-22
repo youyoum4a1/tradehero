@@ -147,7 +147,7 @@ public class FreshQuoteHolder
         {
             refreshing = true;
             notifyListenersRefreshing();
-            quoteService.get().getPositions(securityId.exchange, securityId.securitySymbol, createCallback());
+            quoteService.get().getQuote(securityId.exchange, securityId.securitySymbol, createCallback());
         }
     }
 

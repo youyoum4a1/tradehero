@@ -10,6 +10,7 @@ import retrofit.http.Query;
 /** Created with IntelliJ IDEA. User: xavier Date: 9/20/13 Time: 3:46 PM To change this template use File | Settings | File Templates. */
 public interface PositionService
 {
+    //<editor-fold desc="Get One User Portfolio Positions List">
     @GET("/users/{userId}/portfolios/{portfolioId}/positions")
     void getPositions(
             @Path("userId") int userId,
@@ -51,4 +52,5 @@ public interface PositionService
             @Query("pageNumber") Integer pageNumber,
             @Query("perPage") Integer perPage)
             throws RetrofitError;
+    //</editor-fold>
 }
