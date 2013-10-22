@@ -70,7 +70,7 @@ public class CurrentUserPortfolioHeaderView extends RelativeLayout implements Po
 
             if (cashValueTextView != null)
             {
-                String cashString = String.format("US$ %.0f", portfolio.cashBalance);
+                String cashString = String.format("US$ %,.0f", portfolio.cashBalance);
                 cashValueTextView.setText(cashString);
             }
         }

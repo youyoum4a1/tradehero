@@ -5,10 +5,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ImageButton;
-import android.widget.ListView;
-import android.widget.TextView;
+import android.view.ViewStub;
+import android.widget.*;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
@@ -23,6 +21,7 @@ import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.dashboard.DashboardTabType;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactCache;
 import com.tradehero.th.persistence.position.GetPositionsCache;
+import com.tradehero.th.widget.portfolio.header.PortfolioHeaderFactory;
 import com.tradehero.th.widget.portfolio.header.PortfolioHeaderView;
 import com.tradehero.th.widget.position.PositionQuickNothingView;
 import dagger.Lazy;
@@ -35,6 +34,7 @@ public class PositionListFragment extends DashboardFragment
 {
     public static final String TAG = PositionListFragment.class.getSimpleName();
 
+    @Inject Lazy<PortfolioHeaderFactory> headerFactory;
     private PortfolioHeaderView portfolioHeaderView;
     private ListView openPositions;
     private PositionItemAdapter positionItemAdapter;
@@ -56,9 +56,13 @@ public class PositionListFragment extends DashboardFragment
     {
         THLog.d(TAG, "onCreateView");
         super.onCreateView(inflater, container, savedInstanceState);
-        View view = null;
-        view = inflater.inflate(R.layout.fragment_positions_list, container, false);
+        RelativeLayout view = null;
+        view = (RelativeLayout)inflater.inflate(R.layout.fragment_positions_list, container, false);
 
+        if (desiredArguments == null)
+        {
+            desiredArguments = getArguments();
+        }
 
         initViews(view);
         return view;
@@ -92,7 +96,13 @@ public class PositionListFragment extends DashboardFragment
                 //});
             }
 
-            portfolioHeaderView = (PortfolioHeaderView)view.findViewById(R.id.position_list_portfolio_header);
+            if (desiredArguments != null)
+            {
+                ViewStub stub = (ViewStub) view.findViewById(R.id.position_list_header_stub);
+                int layout = headerFactory.get().layoutIdForArguements(desiredArguments);
+                stub.setLayoutResource(layout);
+                this.portfolioHeaderView = (PortfolioHeaderView)stub.inflate();
+            }
         }
     }
 
@@ -154,11 +164,6 @@ public class PositionListFragment extends DashboardFragment
     @Override public void onResume()
     {
         super.onResume();
-        if (desiredArguments == null)
-        {
-            desiredArguments = getArguments();
-        }
-
         if (desiredArguments != null)
         {
             linkWith(new OwnedPortfolioId(desiredArguments), true);
@@ -192,11 +197,6 @@ public class PositionListFragment extends DashboardFragment
     public void linkWith(OwnedPortfolioId ownedPortfolioId, boolean andDisplay)
     {
         this.ownedPortfolioId = ownedPortfolioId;
-        if (this.portfolioHeaderView != null)
-        {
-            this.portfolioHeaderView.bindOwnedPortfolioId(this.ownedPortfolioId);
-        }
-
         fetchSimplePage();
         if (andDisplay)
         {
@@ -249,6 +249,10 @@ public class PositionListFragment extends DashboardFragment
 
     public void display()
     {
+        if (this.portfolioHeaderView != null)
+        {
+            this.portfolioHeaderView.bindOwnedPortfolioId(this.ownedPortfolioId);
+        }
         displayHeaderText();
     }
 
