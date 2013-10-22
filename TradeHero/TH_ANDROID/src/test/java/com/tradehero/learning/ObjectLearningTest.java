@@ -1,5 +1,6 @@
 package com.tradehero.learning;
 
+import android.support.v4.util.LruCache;
 import java.util.HashMap;
 import java.util.Map;
 import junit.framework.Assert;
@@ -82,6 +83,7 @@ public class ObjectLearningTest
     }
 
     private Map<Object, Object> mapForTest;
+    private LruCache<Object, Object> lruCacheForTest;
     MappedKeyWithHashCode hKeyA = new MappedKeyWithHashCode(1);
     MappedKeyWithHashCode hKeyB = new MappedKeyWithHashCode(1);
     MappedKeyWithHashCode hKeyC = new MappedKeyWithHashCode(2);
@@ -95,6 +97,7 @@ public class ObjectLearningTest
     @Before public void setUp()
     {
         mapForTest = new HashMap<>();
+        lruCacheForTest = new LruCache<>(20);
     }
 
     @Test public void hashCode_shouldBeAsAsked() throws Exception
@@ -135,6 +138,14 @@ public class ObjectLearningTest
         assertFalse(mapForTest.containsKey(hKeyC));
     }
 
+    @Test public void lruCacheHashCode_shouldNotBeEnough() throws Exception
+    {
+        lruCacheForTest.put(hKeyA, new Object());
+        assertTrue(lruCacheForTest.get(hKeyA) != null);
+        assertTrue(lruCacheForTest.get(hKeyB) == null);
+        assertTrue(lruCacheForTest.get(hKeyC) == null);
+    }
+
     @Test public void mapEquals_shouldNotBeEnough() throws Exception
     {
         mapForTest.put(eKeyA, new Object());
@@ -143,11 +154,27 @@ public class ObjectLearningTest
         assertFalse(mapForTest.containsKey(eKeyC));
     }
 
+    @Test public void lruCacheEquals_shouldNotBeEnough() throws Exception
+    {
+        lruCacheForTest.put(eKeyA, new Object());
+        assertTrue(lruCacheForTest.get(eKeyA) != null);
+        assertTrue(lruCacheForTest.get(eKeyB) == null);
+        assertTrue(lruCacheForTest.get(eKeyC) == null);
+    }
+
     @Test public void mapEqualsAndHashCode_shouldBeEnough() throws Exception
     {
         mapForTest.put(aKeyA, new Object());
         assertTrue(mapForTest.containsKey(aKeyA));
         assertTrue(mapForTest.containsKey(aKeyB));
         assertFalse(mapForTest.containsKey(aKeyC));
+    }
+
+    @Test public void lruCacheEqualsAndHashCode_shouldBeEnough() throws Exception
+    {
+        lruCacheForTest.put(aKeyA, new Object());
+        assertTrue(lruCacheForTest.get(aKeyA) != null);
+        assertTrue(lruCacheForTest.get(aKeyB) != null);
+        assertTrue(lruCacheForTest.get(aKeyC) == null);
     }
 }
