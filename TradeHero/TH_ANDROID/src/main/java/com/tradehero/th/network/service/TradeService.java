@@ -14,18 +14,37 @@ import java.util.List;
  */
 public interface TradeService
 {
-    @GET("/users/{userId}/portfolios/{portfolioId}/positions/{positionId}/trades")
-    void getTrades(
-            @Path("userId") int userId,
-            @Path("portfolioId")int portfolioId,
-            @Path("positionId")int positionId,
-            Callback<List<TradeDTO>> callback);
-
+    //<editor-fold desc="Get One Position Trades List">
     @GET("/users/{userId}/portfolios/{portfolioId}/positions/{positionId}/trades")
     List<TradeDTO> getTrades(
             @Path("userId") int userId,
-            @Path("portfolioId")int portfolioId,
-            @Path("positionId")int positionId)
-            throws RetrofitError;
+            @Path("portfolioId") int portfolioId,
+            @Path("positionId") int positionId)
+        throws RetrofitError;
 
+    @GET("/users/{userId}/portfolios/{portfolioId}/positions/{positionId}/trades")
+    void getTrades(
+            @Path("userId") int userId,
+            @Path("portfolioId") int portfolioId,
+            @Path("positionId" )int positionId,
+            Callback<List<TradeDTO>> callback);
+    //</editor-fold>
+
+    //<editor-fold desc="Get Single Trade">
+    @GET("/users/{userId}/portfolios/{portfolioId}/positions/{positionId}/trades/{tradeId}")
+    TradeDTO getTrade(
+            @Path("userId") int userId,
+            @Path("portfolioId") int portfolioId,
+            @Path("positionId") int positionId,
+            @Path("tradeId") int tradeId)
+        throws RetrofitError;
+
+    @GET("/users/{userId}/portfolios/{portfolioId}/positions/{positionId}/trades/{tradeId}")
+    void getTrade(
+            @Path("userId") int userId,
+            @Path("portfolioId") int portfolioId,
+            @Path("positionId") int positionId,
+            @Path("tradeId") int tradeId,
+            Callback<TradeDTO> callback);
+    //</editor-fold>
 }
