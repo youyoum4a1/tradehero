@@ -16,6 +16,7 @@ import android.widget.ListView;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
+import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.ActivityHelper;
 import com.tradehero.th.activities.AuthenticationActivity;
@@ -265,13 +266,66 @@ public class SettingsFragment extends DashboardFragment
 
     @Override public void onDestroyView()
     {
+        if (progressDialog != null)
+        {
+            progressDialog.hide();
+            progressDialog = null;
+        }
+        if (signOutTimer != null)
+        {
+            signOutTimer.cancel();
+            signOutTimer = null;
+        }
+
+        if (primaryListViewAdapter != null)
+        {
+            primaryListViewAdapter.setItems(null);
+            primaryListViewAdapter = null;
+        }
+        if (primaryListView != null)
+        {
+            primaryListView.setAdapter(null);
+            primaryListView.setOnItemClickListener(null);
+            primaryListView = null;
+        }
+
+        if (notificationsListViewAdapter != null)
+        {
+            notificationsListViewAdapter.setItems(null);
+            notificationsListViewAdapter = null;
+        }
+        if (notificationsListView != null)
+        {
+            notificationsListView.setAdapter(null);
+            notificationsListView.setOnItemClickListener(null);
+            notificationsListView = null;
+        }
+
+        if (miscListViewAdapter != null)
+        {
+            miscListViewAdapter.setItems(null);
+            miscListViewAdapter = null;
+        }
+        if (miscListView != null)
+        {
+            miscListView.setAdapter(null);
+            miscListView.setOnItemClickListener(null);
+            miscListView = null;
+        }
+
+
         super.onDestroyView();
+    }
+
+    @Override public void onDestroyOptionsMenu()
+    {
+        super.onDestroyOptionsMenu();
     }
 
     //<editor-fold desc="BaseFragment.TabBarVisibilityInformer">
     @Override public boolean isTabBarVisible()
     {
-        return true;
+        return false;
     }
     //</editor-fold>
 }
