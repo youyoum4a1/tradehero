@@ -47,7 +47,7 @@ public abstract class AbstractPrimitiveDTOKey<T extends Comparable> implements C
 
     @Override public int hashCode()
     {
-        return key.hashCode();
+        return key == null ? 0 : key.hashCode();
     }
 
     @Override public boolean equals(Object other)
@@ -65,7 +65,8 @@ public abstract class AbstractPrimitiveDTOKey<T extends Comparable> implements C
         {
             return false;
         }
-        return key.equals(other.key);
+
+        return key == null ? other.key == null : key.equals(other.key);
     }
 
     @Override public int compareTo(Object o)

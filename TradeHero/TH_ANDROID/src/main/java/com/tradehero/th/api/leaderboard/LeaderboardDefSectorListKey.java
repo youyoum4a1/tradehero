@@ -17,6 +17,11 @@ public class LeaderboardDefSectorListKey extends LeaderboardDefListKey
     }
     //</editor-fold>
 
+    @Override public boolean equals(Object other)
+    {
+        return (other instanceof LeaderboardDefSectorListKey) && super.equals((LeaderboardDefSectorListKey) other);
+    }
+
     @Override public String makeKey()
     {
         return LeaderboardDefSectorListKey.class.getName() + ':' + super.makeKey();

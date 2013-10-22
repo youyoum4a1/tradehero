@@ -26,13 +26,13 @@ public class UserBaseKey extends AbstractIntegerDTOKey
         return BUNDLE_KEY_KEY;
     }
 
-    @Override public boolean equals(Object obj)
+    @Override public boolean equals(Object other)
     {
-        if (!(obj instanceof UserBaseKey))
+        if (!(other instanceof UserBaseKey))
         {
             return false;
         }
-        return super.equals(obj);
+        return super.equals(other);
     }
 
     @Override public String toString()

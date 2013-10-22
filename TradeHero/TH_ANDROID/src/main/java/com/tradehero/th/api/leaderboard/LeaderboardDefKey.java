@@ -26,6 +26,11 @@ public class LeaderboardDefKey extends AbstractIntegerDTOKey
         return BUNDLE_KEY;
     }
 
+    @Override public boolean equals(Object other)
+    {
+        return (other instanceof LeaderboardDefKey) && super.equals((LeaderboardDefKey) other);
+    }
+
     @Override public String toString()
     {
         return String.format("%s %s", TAG, makeKey());

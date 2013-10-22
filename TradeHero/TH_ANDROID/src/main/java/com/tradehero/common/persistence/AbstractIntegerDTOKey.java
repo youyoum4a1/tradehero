@@ -19,14 +19,13 @@ abstract public class AbstractIntegerDTOKey extends AbstractPrimitiveDTOKey<Inte
 
     abstract public String getBundleKey();
 
-
-    @Override public boolean equals(Object obj)
+    @Override public boolean equals(Object other)
     {
-        if (!(obj instanceof AbstractIntegerDTOKey))
+        if (!(other instanceof AbstractIntegerDTOKey))
         {
             return false;
         }
-        return key.equals(((AbstractIntegerDTOKey) obj).key);
+        return super.equals((AbstractIntegerDTOKey) other);
     }
 
     public void putParameters(Bundle args)

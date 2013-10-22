@@ -26,13 +26,9 @@ public class ProviderListKey extends AbstractIntegerDTOKey
         return BUNDLE_KEY_KEY;
     }
 
-    @Override public boolean equals(Object obj)
+    @Override public boolean equals(Object other)
     {
-        if (!(obj instanceof ProviderListKey))
-        {
-            return false;
-        }
-        return super.equals(obj);
+        return (other instanceof ProviderListKey) && super.equals((ProviderListKey) other);
     }
 
     @Override public String toString()
