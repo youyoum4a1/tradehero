@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.CheckBox;
 import android.widget.ListView;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
@@ -54,6 +55,8 @@ public class SettingsFragment extends DashboardFragment
     private static final int ITEM_UPDATE_PROFILE = 3;
     private static final int ITEM_UPDATE_PAYPAL = 4;
     private static final int ITEM_UPDATE_TRANSACTION_HISTORY = 5;
+
+    private static final int ITEM_EMAIL_NOTIFICATION = 0;
 
     private static final int ITEM_SIGN_OUT = 2;
     private static final int ITEM_ABOUT = 3;
@@ -164,16 +167,10 @@ public class SettingsFragment extends DashboardFragment
 
     private void setupNotificationsListView()
     {
-        notificationsListViewAdapter = new SettingsListAdapter(getActivity(), getActivity().getLayoutInflater(), R.layout.settings_list_item);
+        notificationsListViewAdapter = new SettingsListAdapter(getActivity(), getActivity().getLayoutInflater(), R.layout.settings_list_item_toggle);
         notificationsListViewAdapter.setItems(Arrays.asList(getResources().getStringArray(R.array.settings_notifications_list)));
 
         notificationsListView = (ListView) view.findViewById(R.id.settings_notification);
-        notificationsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l)
-            {
-            }
-        });
         notificationsListView.setAdapter(notificationsListViewAdapter);
     }
 

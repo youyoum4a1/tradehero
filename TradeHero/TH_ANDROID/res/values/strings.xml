@@ -167,7 +167,6 @@
   </string-array>
   <string-array name="settings_notifications_list">
     <item>Email Notifications</item>
-    <item>Push Notifications</item>
   </string-array>
   <string-array name="settings_misc_list">
     <item>Reset Help Screens</item>
