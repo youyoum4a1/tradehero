@@ -4,6 +4,7 @@ import com.tradehero.common.persistence.StraightDTOCache;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.api.position.OwnedPositionId;
 import com.tradehero.th.api.trade.OwnedTradeId;
+import com.tradehero.th.api.trade.OwnedTradeIdList;
 import com.tradehero.th.api.trade.TradeDTO;
 import com.tradehero.th.network.BasicRetrofitErrorHandler;
 import com.tradehero.th.network.service.TradeService;
@@ -17,7 +18,7 @@ import java.util.List;
 /**
  * Created by julien on 22/10/13
  */
-public class TradeListCache extends StraightDTOCache<OwnedPositionId, List<OwnedTradeId>>
+public class TradeListCache extends StraightDTOCache<OwnedPositionId, OwnedTradeIdList>
 {
     public static final String TAG = TradeListCache.class.getSimpleName();
     public static final int DEFAULT_MAX_SIZE = 100;
@@ -31,7 +32,7 @@ public class TradeListCache extends StraightDTOCache<OwnedPositionId, List<Owned
         super(DEFAULT_MAX_SIZE);
     }
 
-    @Override protected List<OwnedTradeId> fetch(OwnedPositionId key)
+    @Override protected OwnedTradeIdList fetch(OwnedPositionId key)
     {
         THLog.d(TAG, "fetch " + key);
         try
@@ -46,12 +47,12 @@ public class TradeListCache extends StraightDTOCache<OwnedPositionId, List<Owned
         return null;
     }
 
-    protected List<OwnedTradeId> putInternal(OwnedPositionId key, List<TradeDTO> fleshedValues)
+    protected OwnedTradeIdList putInternal(OwnedPositionId key, List<TradeDTO> fleshedValues)
     {
-        List<OwnedTradeId> tradeIds = null;
+        OwnedTradeIdList tradeIds = null;
         if (fleshedValues != null)
         {
-            tradeIds = new ArrayList<>();
+            tradeIds = new OwnedTradeIdList();
             OwnedTradeId tradeId;
             for(TradeDTO trade: fleshedValues)
             {

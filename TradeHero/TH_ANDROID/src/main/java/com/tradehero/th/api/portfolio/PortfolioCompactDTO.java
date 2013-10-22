@@ -1,7 +1,9 @@
 package com.tradehero.th.api.portfolio;
 
+import com.tradehero.common.persistence.DTO;
+
 /** Created with IntelliJ IDEA. User: tho Date: 8/15/13 Time: 7:05 PM Copyright (c) TradeHero */
-public class PortfolioCompactDTO
+public class PortfolioCompactDTO implements DTO
 {
     public int id;
     public Integer providerId;

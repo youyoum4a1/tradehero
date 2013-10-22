@@ -1,6 +1,8 @@
 package com.tradehero.th.api.yahoo;
 
+import com.tradehero.common.persistence.DTO;
 import com.tradehero.common.utils.THLog;
+import com.tradehero.th.api.security.SecurityId;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -14,7 +16,7 @@ import java.util.TimeZone;
 /**
  * Created by julien on 10/10/13
  */
-public class News
+public class News implements DTO
 {
     private final static String TAG = News.class.getSimpleName();
 
@@ -25,12 +27,13 @@ public class News
     private Date date;
 
     public News()
-    {}
+    {
+    }
 
     public News(Node xmlNode)
     {
         NodeList elements = xmlNode.getChildNodes();
-        for(int i = 0; i < elements.getLength(); ++i)
+        for (int i = 0; i < elements.getLength(); ++i)
         {
             Node n = elements.item(i);
             if (n.getNodeName().equals("title"))
@@ -54,7 +57,8 @@ public class News
         try
         {
             return dateFormat.parse(n.getFirstChild().getNodeValue());
-        } catch (ParseException e)
+        }
+        catch (ParseException e)
         {
             THLog.e(TAG, "Failed to parse date", e);
         }

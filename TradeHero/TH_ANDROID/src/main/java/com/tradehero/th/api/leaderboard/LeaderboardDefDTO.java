@@ -2,11 +2,13 @@ package com.tradehero.th.api.leaderboard;
 
 /** Created with IntelliJ IDEA. User: tho Date: 10/14/13 Time: 2:05 PM Copyright (c) TradeHero */
 
+import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.loaders.AbstractItemWithComparableId;
 import java.util.Date;
 import java.util.List;
 
 public class LeaderboardDefDTO extends AbstractItemWithComparableId<Integer>
+    implements DTO
 {
     // TODO HARDCODED
     public static final int LEADERBOARD_DEF_MOST_SKILLED_ID = 49;

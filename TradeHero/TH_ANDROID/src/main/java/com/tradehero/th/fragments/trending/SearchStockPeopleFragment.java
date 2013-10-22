@@ -29,6 +29,7 @@ import com.tradehero.th.adapters.trending.TrendingAdapter;
 import com.tradehero.th.api.security.SearchSecurityListType;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
+import com.tradehero.th.api.security.SecurityIdList;
 import com.tradehero.th.api.security.SecurityListType;
 import com.tradehero.th.api.users.UserSearchResultDTO;
 import com.tradehero.th.fragments.base.DashboardFragment;
@@ -47,7 +48,7 @@ import retrofit.client.Response;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 9/18/13 Time: 12:09 PM To change this template use File | Settings | File Templates. */
 public class SearchStockPeopleFragment extends DashboardFragment
-        implements AdapterView.OnItemSelectedListener, TextWatcher, DTOCache.Listener<SecurityListType, List<SecurityId>>
+        implements AdapterView.OnItemSelectedListener, TextWatcher, DTOCache.Listener<SecurityListType, SecurityIdList>
 {
     public final static String BUNDLE_KEY_SEARCH_STRING = SearchStockPeopleFragment.class.getName() + ".searchString";
     public final static String BUNDLE_KEY_SEARCH_TYPE = SearchStockPeopleFragment.class.getName() + ".searchType";
@@ -79,7 +80,7 @@ public class SearchStockPeopleFragment extends DashboardFragment
 
     @Inject Lazy<SecurityCompactListCache> securityCompactListCache;
     @Inject Lazy<SecurityCompactCache> securityCompactCache;
-    private AsyncTask<Void, Void, List<SecurityId>> securitySearchTask;
+    private AsyncTask<Void, Void, SecurityIdList> securitySearchTask;
     private List<SecurityCompactDTO> securityList;
     private TrendingAdapter trendingAdapter;
 
@@ -310,7 +311,7 @@ public class SearchStockPeopleFragment extends DashboardFragment
         updateVisibilities();
     }
 
-    @Override public void onDTOReceived(SecurityListType key, List<SecurityId> value)
+    @Override public void onDTOReceived(SecurityListType key, SecurityIdList value)
     {
         THLog.i(TAG, "onDTOReceived");
         isQuerying = false;

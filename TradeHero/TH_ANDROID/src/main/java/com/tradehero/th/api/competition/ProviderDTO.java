@@ -1,12 +1,13 @@
 package com.tradehero.th.api.competition;
 
+import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 /** Created with IntelliJ IDEA. User: tho Date: 8/15/13 Time: 7:12 PM Copyright (c) TradeHero */
-public class ProviderDTO
+public class ProviderDTO implements DTO
 {
     public int id;
     public String name;

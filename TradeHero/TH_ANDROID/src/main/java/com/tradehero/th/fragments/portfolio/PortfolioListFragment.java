@@ -14,6 +14,7 @@ import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.portfolio.PortfolioListItemAdapter;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
+import com.tradehero.th.api.portfolio.OwnedPortfolioIdList;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.base.THUser;
 import com.tradehero.th.fragments.base.DashboardFragment;
@@ -44,8 +45,8 @@ public class PortfolioListFragment extends DashboardFragment
     @Inject Lazy<PortfolioCompactListCache> portfolioListCache;
     @Inject Lazy<PortfolioCache> portfolioCache;
 
-    private PortfolioCompactListCache.Listener<UserBaseKey, List<OwnedPortfolioId>> ownPortfolioListener;
-    private AsyncTask<Void, Void, List<OwnedPortfolioId>> fetchOwnPortfoliosTask;
+    private PortfolioCompactListCache.Listener<UserBaseKey, OwnedPortfolioIdList> ownPortfolioListener;
+    private AsyncTask<Void, Void, OwnedPortfolioIdList> fetchOwnPortfoliosTask;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -212,11 +213,11 @@ public class PortfolioListFragment extends DashboardFragment
         }
     }
 
-    private PortfolioCompactListCache.Listener<UserBaseKey, List<OwnedPortfolioId>> createOwnPortfolioListener()
+    private PortfolioCompactListCache.Listener<UserBaseKey, OwnedPortfolioIdList> createOwnPortfolioListener()
     {
-        return new PortfolioCompactListCache.Listener<UserBaseKey, List<OwnedPortfolioId>>()
+        return new PortfolioCompactListCache.Listener<UserBaseKey, OwnedPortfolioIdList>()
         {
-            @Override public void onDTOReceived(UserBaseKey key, List<OwnedPortfolioId> value)
+            @Override public void onDTOReceived(UserBaseKey key, OwnedPortfolioIdList value)
             {
                 if (key.equals(THUser.getCurrentUserBase().getBaseKey()))
                 {

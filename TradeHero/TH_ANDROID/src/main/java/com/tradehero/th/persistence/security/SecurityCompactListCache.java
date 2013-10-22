@@ -4,6 +4,7 @@ import com.tradehero.common.utils.THLog;
 import com.tradehero.th.api.security.SearchSecurityListType;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
+import com.tradehero.th.api.security.SecurityIdList;
 import com.tradehero.th.api.security.SecurityListType;
 import com.tradehero.th.api.security.TrendingBasicSecurityListType;
 import com.tradehero.th.api.security.TrendingPriceSecurityListType;
@@ -20,7 +21,7 @@ import javax.inject.Singleton;
 import retrofit.RetrofitError;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/3/13 Time: 5:04 PM To change this template use File | Settings | File Templates. */
-@Singleton public class SecurityCompactListCache extends StraightDTOCache<SecurityListType, List<SecurityId>>
+@Singleton public class SecurityCompactListCache extends StraightDTOCache<SecurityListType, SecurityIdList>
 {
     public static final String TAG = SecurityCompactListCache.class.getSimpleName();
     public static final int DEFAULT_MAX_SIZE = 50;
@@ -35,7 +36,7 @@ import retrofit.RetrofitError;
     }
     //</editor-fold>
 
-    @Override protected List<SecurityId> fetch(SecurityListType key)
+    @Override protected SecurityIdList fetch(SecurityListType key)
     {
         THLog.d(TAG, "fetch " + key);
         try
@@ -66,13 +67,13 @@ import retrofit.RetrofitError;
         return null;
     }
 
-    @Override public List<SecurityId> getOrFetch(SecurityListType key, boolean force)
+    @Override public SecurityIdList getOrFetch(SecurityListType key, boolean force)
     {
         THLog.d(TAG, "getOrFetch " + key);
         return super.getOrFetch(key, force);
     }
 
-    @Override public List<SecurityId> get(SecurityListType key)
+    @Override public SecurityIdList get(SecurityListType key)
     {
         THLog.d(TAG, "get " + key);
         return super.get(key);
@@ -122,14 +123,14 @@ import retrofit.RetrofitError;
                 key.getPerPage());
     }
 
-    protected List<SecurityId> putInternal(SecurityListType key, List<SecurityCompactDTO> fleshedValues)
+    protected SecurityIdList putInternal(SecurityListType key, List<SecurityCompactDTO> fleshedValues)
     {
-        List<SecurityId> securityIds = null;
+        SecurityIdList securityIds = null;
         if (fleshedValues != null)
         {
-            securityIds = new ArrayList<>();
+            securityIds = new SecurityIdList();
             SecurityId securityId;
-            for(SecurityCompactDTO securityCompactDTO: fleshedValues)
+            for (SecurityCompactDTO securityCompactDTO: fleshedValues)
             {
                 securityId = securityCompactDTO.getSecurityId();
                 securityIds.add(securityId);

@@ -3,6 +3,7 @@ package com.tradehero.th.persistence.market;
 import com.tradehero.common.persistence.StraightDTOCache;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.api.market.ExchangeDTO;
+import com.tradehero.th.api.market.ExchangeDTOList;
 import com.tradehero.th.api.market.ExchangeIntegerId;
 import com.tradehero.th.api.market.ExchangeListType;
 import com.tradehero.th.network.service.MarketService;
@@ -13,7 +14,7 @@ import javax.inject.Singleton;
 import retrofit.RetrofitError;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/18/13 Time: 7:20 PM To change this template use File | Settings | File Templates. */
-@Singleton public class ExchangeListCache extends StraightDTOCache<ExchangeListType, List<ExchangeDTO>>
+@Singleton public class ExchangeListCache extends StraightDTOCache<ExchangeListType, ExchangeDTOList>
 {
     public static final String TAG = ExchangeCache.class.getSimpleName();
     public static final int DEFAULT_MAX_SIZE = 1; // Be careful to increase when necessary
@@ -28,12 +29,12 @@ import retrofit.RetrofitError;
     }
     //</editor-fold>
 
-    @Override protected List<ExchangeDTO> fetch(ExchangeListType key)
+    @Override protected ExchangeDTOList fetch(ExchangeListType key)
     {
-        List<ExchangeDTO> exchangeDTOs = null;
+        ExchangeDTOList exchangeDTOs = null;
         try
         {
-            exchangeDTOs = marketService.get().getExchanges();
+            exchangeDTOs = new ExchangeDTOList(marketService.get().getExchanges());
         }
         catch (RetrofitError e)
         {
@@ -42,7 +43,7 @@ import retrofit.RetrofitError;
         return exchangeDTOs;
     }
 
-    @Override public List<ExchangeDTO> put(ExchangeListType key, List<ExchangeDTO> value)
+    @Override public ExchangeDTOList put(ExchangeListType key, ExchangeDTOList value)
     {
         exchangeIdCache.get().put(value);
         return super.put(key, value);

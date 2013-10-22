@@ -1,12 +1,14 @@
 package com.tradehero.th.api.position;
 
+import com.tradehero.common.persistence.DTO;
+import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PortfolioId;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import java.util.ArrayList;
 import java.util.List;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 9/20/13 Time: 3:35 PM To change this template use File | Settings | File Templates. */
-public class GetPositionsDTO
+public class GetPositionsDTO implements DTO
 {
     public List<PositionDTO> positions;
     public List<SecurityCompactDTO> securities;

@@ -1,11 +1,12 @@
 package com.tradehero.th.api.position;
 
+import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.api.security.SecurityIntegerId;
 import java.util.ArrayList;
 import java.util.List;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 9/20/13 Time: 3:28 PM To change this template use File | Settings | File Templates. */
-public class PositionDTO extends PositionDTOCompact
+public class PositionDTO extends PositionDTOCompact implements DTO
 {
     public int userId;
     public int securityId;

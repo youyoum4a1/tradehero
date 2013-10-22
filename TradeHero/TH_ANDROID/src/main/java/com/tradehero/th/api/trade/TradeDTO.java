@@ -1,11 +1,12 @@
 package com.tradehero.th.api.trade;
 
+import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.api.portfolio.PortfolioId;
 
 import java.util.Date;
 
 /** Created with IntelliJ IDEA. User: tho Date: 9/3/13 Time: 12:53 PM Copyright (c) TradeHero */
-public class TradeDTO
+public class TradeDTO implements DTO
 {
     public int id;
     public double unit_price;

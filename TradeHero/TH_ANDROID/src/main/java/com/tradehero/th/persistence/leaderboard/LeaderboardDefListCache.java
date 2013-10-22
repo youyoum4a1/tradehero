@@ -4,6 +4,7 @@ import com.tradehero.common.persistence.StraightDTOCache;
 import com.tradehero.th.api.leaderboard.LeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardDefExchangeListKey;
 import com.tradehero.th.api.leaderboard.LeaderboardDefKey;
+import com.tradehero.th.api.leaderboard.LeaderboardDefKeyList;
 import com.tradehero.th.api.leaderboard.LeaderboardDefListKey;
 import com.tradehero.th.api.leaderboard.LeaderboardDefMostSkilledListKey;
 import com.tradehero.th.api.leaderboard.LeaderboardDefSectorListKey;
@@ -16,7 +17,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 /** Created with IntelliJ IDEA. User: tho Date: 10/16/13 Time: 10:32 AM Copyright (c) TradeHero */
-@Singleton public class LeaderboardDefListCache extends StraightDTOCache<LeaderboardDefListKey, List<LeaderboardDefKey>>
+@Singleton public class LeaderboardDefListCache extends StraightDTOCache<LeaderboardDefListKey, LeaderboardDefKeyList>
 {
     private static final int DEFAULT_MAX_SIZE = 1000;
 
@@ -28,18 +29,18 @@ import javax.inject.Singleton;
         super(DEFAULT_MAX_SIZE);
     }
 
-    @Override protected List<LeaderboardDefKey> fetch(LeaderboardDefListKey listKey)
+    @Override protected LeaderboardDefKeyList fetch(LeaderboardDefListKey listKey)
     {
         return putInternal(listKey, leaderboardService.get().getLeaderboardDefinitions());
     }
 
-    private List<LeaderboardDefKey> putInternal(LeaderboardDefListKey listKey, List<LeaderboardDefDTO> allLeaderboardDefinitions)
+    private LeaderboardDefKeyList putInternal(LeaderboardDefListKey listKey, List<LeaderboardDefDTO> allLeaderboardDefinitions)
     {
-        List<LeaderboardDefKey>
-                sectorKeys = new ArrayList<>(),
-                exchangeKeys = new ArrayList<>(),
-                timePeriodKeys = new ArrayList<>(),
-                mostSkilledKeys = new ArrayList<>();
+        LeaderboardDefKeyList
+                sectorKeys = new LeaderboardDefKeyList(),
+                exchangeKeys = new LeaderboardDefKeyList(),
+                timePeriodKeys = new LeaderboardDefKeyList(),
+                mostSkilledKeys = new LeaderboardDefKeyList();
 
         for (LeaderboardDefDTO leaderboardDefDTO: allLeaderboardDefinitions)
         {

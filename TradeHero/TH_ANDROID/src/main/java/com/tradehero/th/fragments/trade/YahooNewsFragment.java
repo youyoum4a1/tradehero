@@ -10,6 +10,7 @@ import com.tradehero.th.R;
 import com.tradehero.th.adapters.YahooNewsAdapter;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.yahoo.News;
+import com.tradehero.th.api.yahoo.NewsList;
 import com.tradehero.th.persistence.yahoo.NewsCache;
 import dagger.Lazy;
 
@@ -22,11 +23,11 @@ import java.util.List;
  * as needed. In case the news are not in the cache, the download is done in the background using the `fetchTask` AsyncTask.
  * The task is cancelled when the fragment is paused.
  */
-public class YahooNewsFragment extends AbstractSecurityInfoFragment<List<News>>
+public class YahooNewsFragment extends AbstractSecurityInfoFragment<NewsList>
 {
     private final static String TAG = YahooNewsFragment.class.getSimpleName();
 
-    private AsyncTask<Void, Void, List<News>> fetchTask;
+    private AsyncTask<Void, Void, NewsList> fetchTask;
 
     @Inject protected Lazy<NewsCache> yahooNewsCache;
 
@@ -42,7 +43,7 @@ public class YahooNewsFragment extends AbstractSecurityInfoFragment<List<News>>
 
     private void loadViews(View view)
     {
-        listView = (ListView)view.findViewById(R.id.list_yahooNews);
+        listView = (ListView) view.findViewById(R.id.list_yahooNews);
         if (listView != null)
         {
             adapter = new YahooNewsAdapter(getActivity(), getActivity().getLayoutInflater(), R.layout.yahoo_news_item);
@@ -69,13 +70,13 @@ public class YahooNewsFragment extends AbstractSecurityInfoFragment<List<News>>
     public void linkWith(SecurityId securityId, boolean andDisplay)
     {
         super.linkWith(securityId, andDisplay);
-        if (this.securityId!= null)
+        if (this.securityId != null)
         {
             yahooNewsCache.get().registerListener(this);
-            List<News> news = yahooNewsCache.get().get(this.securityId);
+            NewsList news = yahooNewsCache.get().get(this.securityId);
             if (news == null)
             {
-                this.fetchTask = yahooNewsCache.get().getOrFetch(this.securityId, true, this);//force fetch - we know the value is not in cache
+                this.fetchTask = yahooNewsCache.get().getOrFetch(this.securityId, true, this); //force fetch - we know the value is not in cache
                 this.fetchTask.execute();
             }
             else
@@ -88,7 +89,8 @@ public class YahooNewsFragment extends AbstractSecurityInfoFragment<List<News>>
     @Override public void display()
     {
         adapter.setItems(value);
-        getView().post(new Runnable(){
+        getView().post(new Runnable()
+        {
             @Override public void run()
             {
                 adapter.notifyDataSetChanged();

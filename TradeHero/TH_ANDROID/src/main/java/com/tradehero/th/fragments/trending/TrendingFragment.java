@@ -23,6 +23,7 @@ import com.tradehero.th.adapters.trending.TrendingFilterPagerAdapter;
 import com.tradehero.th.api.market.ExchangeStringId;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
+import com.tradehero.th.api.security.SecurityIdList;
 import com.tradehero.th.api.security.SecurityListType;
 import com.tradehero.th.api.security.TrendingBasicSecurityListType;
 import com.tradehero.th.api.security.TrendingPriceSecurityListType;
@@ -40,7 +41,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 public class TrendingFragment extends DashboardFragment
-        implements DTOCache.Listener<SecurityListType, List<SecurityId>>, TrendingFilterPagerAdapter.OnPositionedExchangeSelectionChangedListener
+        implements DTOCache.Listener<SecurityListType, SecurityIdList>, TrendingFilterPagerAdapter.OnPositionedExchangeSelectionChangedListener
 {
     private final static String TAG = TrendingFragment.class.getSimpleName();
 
@@ -63,7 +64,7 @@ public class TrendingFragment extends DashboardFragment
     private boolean isQuerying;
     @Inject Lazy<SecurityCompactListCache> securityCompactListCache;
     @Inject Lazy<SecurityCompactCache> securityCompactCache;
-    private  AsyncTask<Void, Void, List<SecurityId>> trendingTask;
+    private  AsyncTask<Void, Void, SecurityIdList> trendingTask;
     private List<SecurityCompactDTO> securityCompactDTOs;
     protected TrendingAdapter trendingAdapter;
     protected TrendingFilterSelectorFragment.OnResumedListener trendingFilterSelectorResumedListener;
@@ -323,8 +324,8 @@ public class TrendingFragment extends DashboardFragment
         return securityListType;
     }
 
-    //<editor-fold desc="DTOCache.Listener<SecurityListType, List<SecurityId>>">
-    @Override public void onDTOReceived(SecurityListType key, List<SecurityId> value)
+    //<editor-fold desc="DTOCache.Listener<SecurityListType, SecurityIdList>">
+    @Override public void onDTOReceived(SecurityListType key, SecurityIdList value)
     {
         // To make sure we do not update to some old stuff
         if (key.equals(getSecurityListType()))

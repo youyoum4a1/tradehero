@@ -20,6 +20,7 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.market.Exchange;
 import com.tradehero.th.api.market.ExchangeDTO;
+import com.tradehero.th.api.market.ExchangeDTOList;
 import com.tradehero.th.api.market.ExchangeListType;
 import com.tradehero.th.api.market.ExchangeStringId;
 import com.tradehero.th.persistence.market.ExchangeListCache;
@@ -51,8 +52,8 @@ abstract public class TrendingFilterSelectorFragment extends SherlockFragment
     private List<ExchangeDTO> exchangeDTOs;
     private List<CharSequence> dropDownTexts;
     private List<Drawable> dropDownIcons;
-    private DTOCache.Listener<ExchangeListType, List<ExchangeDTO>> exchangeListTypeCacheListener;
-    private AsyncTask<Void, Void, List<ExchangeDTO>> exchangeListCacheFetchTask;
+    private DTOCache.Listener<ExchangeListType, ExchangeDTOList> exchangeListTypeCacheListener;
+    private AsyncTask<Void, Void, ExchangeDTOList> exchangeListCacheFetchTask;
     private int selectedExchangeIndex;
 
     @Override public void onCreate(Bundle savedInstanceState)
@@ -230,18 +231,18 @@ abstract public class TrendingFilterSelectorFragment extends SherlockFragment
         exchangeListCacheFetchTask.execute();
     }
 
-    private DTOCache.Listener<ExchangeListType, List<ExchangeDTO>> createExchangeListCacheListener()
+    private DTOCache.Listener<ExchangeListType, ExchangeDTOList> createExchangeListCacheListener()
     {
-        return new DTOCache.Listener<ExchangeListType, List<ExchangeDTO>>()
+        return new DTOCache.Listener<ExchangeListType, ExchangeDTOList>()
         {
-            @Override public void onDTOReceived(ExchangeListType key, List<ExchangeDTO> value)
+            @Override public void onDTOReceived(ExchangeListType key, ExchangeDTOList value)
             {
                 linkWith(value, true);
             }
         };
     }
 
-    private void linkWith(List<ExchangeDTO> exchangeDTOs, boolean andDisplay)
+    private void linkWith(ExchangeDTOList exchangeDTOs, boolean andDisplay)
     {
         if (exchangeDTOs == null)
         {

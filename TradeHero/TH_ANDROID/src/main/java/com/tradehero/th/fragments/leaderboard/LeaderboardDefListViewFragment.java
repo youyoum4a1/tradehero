@@ -9,6 +9,7 @@ import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.th.R;
 import com.tradehero.th.api.leaderboard.LeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardDefKey;
+import com.tradehero.th.api.leaderboard.LeaderboardDefKeyList;
 import com.tradehero.th.api.leaderboard.LeaderboardDefListKey;
 import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.fragments.base.BaseListFragment;
@@ -20,7 +21,7 @@ import javax.inject.Inject;
 
 /** Created with IntelliJ IDEA. User: tho Date: 10/17/13 Time: 7:21 PM Copyright (c) TradeHero */
 public class LeaderboardDefListViewFragment extends BaseListFragment
-    implements BaseFragment.ArgumentsChangeListener, DTOCache.Listener<LeaderboardDefListKey,List<LeaderboardDefKey>>
+    implements BaseFragment.ArgumentsChangeListener, DTOCache.Listener<LeaderboardDefListKey, LeaderboardDefKeyList>
 {
     private static final String TAG = LeaderboardDefListViewFragment.class.getName();
 
@@ -63,7 +64,7 @@ public class LeaderboardDefListViewFragment extends BaseListFragment
         setArguments(args);
     }
 
-    @Override public void onDTOReceived(LeaderboardDefListKey key, List<LeaderboardDefKey> value)
+    @Override public void onDTOReceived(LeaderboardDefListKey key, LeaderboardDefKeyList value)
     {
         List<LeaderboardDefDTO> leaderboardDefItems = leaderboardDefCache.get().getOrFetch(value);
         leaderboardDefListAdapter.setItems(leaderboardDefItems);

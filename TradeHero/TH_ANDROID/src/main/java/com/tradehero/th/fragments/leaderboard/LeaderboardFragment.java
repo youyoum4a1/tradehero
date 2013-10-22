@@ -17,6 +17,7 @@ import com.tradehero.th.api.leaderboard.LeaderboardDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardDefExchangeListKey;
 import com.tradehero.th.api.leaderboard.LeaderboardDefKey;
+import com.tradehero.th.api.leaderboard.LeaderboardDefKeyList;
 import com.tradehero.th.api.leaderboard.LeaderboardDefListKey;
 import com.tradehero.th.api.leaderboard.LeaderboardDefMostSkilledListKey;
 import com.tradehero.th.api.leaderboard.LeaderboardDefSectorListKey;
@@ -31,7 +32,7 @@ import java.util.Comparator;
 import java.util.List;
 import javax.inject.Inject;
 
-public class LeaderboardFragment extends DashboardFragment implements DTOCache.Listener<LeaderboardDefListKey, List<LeaderboardDefKey>>
+public class LeaderboardFragment extends DashboardFragment implements DTOCache.Listener<LeaderboardDefListKey, LeaderboardDefKeyList>
 {
     private static final String TAG = LeaderboardFragment.class.getName();
 
@@ -101,7 +102,7 @@ public class LeaderboardFragment extends DashboardFragment implements DTOCache.L
     }
     //</editor-fold>
 
-    @Override public void onDTOReceived(LeaderboardDefListKey key, List<LeaderboardDefKey> value)
+    @Override public void onDTOReceived(LeaderboardDefListKey key, LeaderboardDefKeyList value)
     {
         if (!fetched)
         {

@@ -4,6 +4,7 @@ import com.tradehero.common.persistence.StraightDTOCache;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderId;
+import com.tradehero.th.api.competition.ProviderIdList;
 import com.tradehero.th.api.competition.ProviderListKey;
 import com.tradehero.th.network.BasicRetrofitErrorHandler;
 import com.tradehero.th.network.service.ProviderService;
@@ -15,7 +16,7 @@ import javax.inject.Singleton;
 import retrofit.RetrofitError;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/3/13 Time: 5:04 PM To change this template use File | Settings | File Templates. */
-@Singleton public class ProviderListCache extends StraightDTOCache<ProviderListKey, List<ProviderId>>
+@Singleton public class ProviderListCache extends StraightDTOCache<ProviderListKey, ProviderIdList>
 {
     public static final String TAG = ProviderListCache.class.getSimpleName();
     public static final int DEFAULT_MAX_SIZE = 50;
@@ -30,7 +31,7 @@ import retrofit.RetrofitError;
     }
     //</editor-fold>
 
-    @Override protected List<ProviderId> fetch(ProviderListKey key)
+    @Override protected ProviderIdList fetch(ProviderListKey key)
     {
         THLog.d(TAG, "fetch " + key);
         try
@@ -38,7 +39,7 @@ import retrofit.RetrofitError;
 
             if (key.key == ProviderListKey.ALL_PROVIDERS)
             {
-                return  putInternal(key, providerService.get().getProviders());
+                return putInternal(key, providerService.get().getProviders());
             }
 
             throw new IllegalArgumentException("Unknown ProviderListKey " + key);
@@ -51,24 +52,12 @@ import retrofit.RetrofitError;
         return null;
     }
 
-    @Override public List<ProviderId> getOrFetch(ProviderListKey key, boolean force)
+    protected ProviderIdList putInternal(ProviderListKey key, List<ProviderDTO> fleshedValues)
     {
-        THLog.d(TAG, "getOrFetch " + key);
-        return super.getOrFetch(key, force);
-    }
-
-    @Override public List<ProviderId> get(ProviderListKey key)
-    {
-        THLog.d(TAG, "get " + key);
-        return super.get(key);
-    }
-
-    protected List<ProviderId> putInternal(ProviderListKey key, List<ProviderDTO> fleshedValues)
-    {
-        List<ProviderId> providerIds = null;
+        ProviderIdList providerIds = null;
         if (fleshedValues != null)
         {
-            providerIds = new ArrayList<>();
+            providerIds = new ProviderIdList();
             ProviderId providerId;
             for(ProviderDTO providerDTO: fleshedValues)
             {

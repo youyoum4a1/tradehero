@@ -3,6 +3,7 @@ package com.tradehero.th.persistence.portfolio;
 import com.tradehero.common.persistence.StraightDTOCache;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
+import com.tradehero.th.api.portfolio.OwnedPortfolioIdList;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.network.BasicRetrofitErrorHandler;
@@ -15,7 +16,7 @@ import javax.inject.Singleton;
 import retrofit.RetrofitError;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/3/13 Time: 5:04 PM To change this template use File | Settings | File Templates. */
-@Singleton public class PortfolioCompactListCache extends StraightDTOCache<UserBaseKey, List<OwnedPortfolioId>>
+@Singleton public class PortfolioCompactListCache extends StraightDTOCache<UserBaseKey, OwnedPortfolioIdList>
 {
     public static final String TAG = PortfolioCompactListCache.class.getSimpleName();
     public static final int DEFAULT_MAX_SIZE = 100;
@@ -30,7 +31,7 @@ import retrofit.RetrofitError;
     }
     //</editor-fold>
 
-    @Override protected List<OwnedPortfolioId> fetch(UserBaseKey key)
+    @Override protected OwnedPortfolioIdList fetch(UserBaseKey key)
     {
         THLog.d(TAG, "fetch " + key);
         try
@@ -45,12 +46,12 @@ import retrofit.RetrofitError;
         return null;
     }
 
-    protected List<OwnedPortfolioId> putInternal(UserBaseKey key, List<PortfolioCompactDTO> fleshedValues)
+    protected OwnedPortfolioIdList putInternal(UserBaseKey key, List<PortfolioCompactDTO> fleshedValues)
     {
-        List<OwnedPortfolioId> ownedPortfolioIds = null;
+        OwnedPortfolioIdList ownedPortfolioIds = null;
         if (fleshedValues != null)
         {
-            ownedPortfolioIds = new ArrayList<>();
+            ownedPortfolioIds = new OwnedPortfolioIdList();
             OwnedPortfolioId ownedPortfolioId;
             for(PortfolioCompactDTO portfolioCompactDTO: fleshedValues)
             {

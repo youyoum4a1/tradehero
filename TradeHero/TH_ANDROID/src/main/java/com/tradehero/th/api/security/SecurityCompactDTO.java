@@ -1,12 +1,13 @@
     package com.tradehero.th.api.security;
 
+import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.api.market.Exchange;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
     /** Created with IntelliJ IDEA. User: xavier Date: 9/4/13 Time: 5:30 PM To change this template use File | Settings | File Templates. */
-public class SecurityCompactDTO
+public class SecurityCompactDTO implements DTO
 {
     public static final String EXCHANGE_SYMBOL_FOMAT = "%s:%s";
 
