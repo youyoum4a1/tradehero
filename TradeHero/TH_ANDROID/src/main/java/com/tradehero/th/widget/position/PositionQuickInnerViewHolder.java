@@ -16,7 +16,7 @@ import com.tradehero.th.api.position.OwnedPositionId;
 import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
-import com.tradehero.th.persistence.position.FiledPositionCache;
+import com.tradehero.th.persistence.position.PositionCache;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.persistence.security.SecurityIdCache;
 import com.tradehero.th.utils.ColorUtils;
@@ -59,7 +59,7 @@ public class PositionQuickInnerViewHolder<OnClickedListenerType extends Position
 
     protected OwnedPositionId ownedPositionId;
     protected PositionDTO positionDTO;
-    @Inject Lazy<FiledPositionCache> filedPositionCache;
+    @Inject Lazy<PositionCache> filedPositionCache;
 
     @Inject protected Lazy<Picasso> picasso;
 
@@ -88,7 +88,8 @@ public class PositionQuickInnerViewHolder<OnClickedListenerType extends Position
             {
                 tradeHistoryButton.setOnClickListener(new View.OnClickListener()
                 {
-                    @Override public void onClick(View view)
+                    @Override
+                    public void onClick(View view)
                     {
                         notifyTradeHistoryClicked();
                         THToast.show("Trade History Clicked");

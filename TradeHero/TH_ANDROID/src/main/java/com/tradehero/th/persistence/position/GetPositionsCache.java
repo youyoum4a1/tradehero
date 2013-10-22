@@ -32,7 +32,7 @@ import retrofit.RetrofitError;
     private LruCache<String, GetPositionsCache.GetPositionsCutDTO> lruCache;
     @Inject protected Lazy<PositionService> positionService;
     @Inject protected Lazy<SecurityCompactCache> securityCompactCache;
-    @Inject protected Lazy<FiledPositionCache> filedPositionCache;
+    @Inject protected Lazy<PositionCache> filedPositionCache;
 
     //<editor-fold desc="Constructors">
     @Inject public GetPositionsCache()
@@ -166,9 +166,9 @@ import retrofit.RetrofitError;
                 GetPositionsDTO getPositionsDTO,
                 Integer portfolioId,
                 SecurityCompactCache securityCompactCache,
-                FiledPositionCache filedPositionCache)
+                PositionCache positionCache)
         {
-            filedPositionCache.put(portfolioId, getPositionsDTO.positions);
+            positionCache.put(portfolioId, getPositionsDTO.positions);
             this.ownedPositionIds = PositionDTO.getFiledPositionIds(portfolioId, getPositionsDTO.positions);
 
             securityCompactCache.put(getPositionsDTO.securities);
@@ -181,10 +181,10 @@ import retrofit.RetrofitError;
         public GetPositionsDTO create(
                 Integer portfolioId,
                 SecurityCompactCache securityCompactCache,
-                FiledPositionCache filedPositionCache)
+                PositionCache positionCache)
         {
             return new GetPositionsDTO(
-                    filedPositionCache.get(ownedPositionIds),
+                    positionCache.get(ownedPositionIds),
                     securityCompactCache.get(securityIds),
                     openPositionsCount,
                     closedPositionsCount

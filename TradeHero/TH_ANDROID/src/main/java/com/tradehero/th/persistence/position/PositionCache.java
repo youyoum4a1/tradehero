@@ -10,14 +10,14 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/16/13 Time: 1:05 PM To change this template use File | Settings | File Templates. */
-@Singleton public class FiledPositionCache extends StraightDTOCache<String, OwnedPositionId, PositionDTO>
+@Singleton public class PositionCache extends StraightDTOCache<String, OwnedPositionId, PositionDTO>
 {
     private static final int DEFAULT_MAX_SIZE = 5000;
 
     @Inject Lazy<PositionCompactIdCache> positionCompactIdCache;
 
     //<editor-fold desc="Constructors">
-    @Inject public FiledPositionCache()
+    @Inject public PositionCache()
     {
         super(DEFAULT_MAX_SIZE);
     }
