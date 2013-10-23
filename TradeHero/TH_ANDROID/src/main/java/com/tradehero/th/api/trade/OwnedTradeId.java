@@ -11,10 +11,10 @@ import com.tradehero.th.api.users.UserBaseKey;
  */
 public class OwnedTradeId extends OwnedPositionId
 {
-
     public final static String BUNDLE_KEY_TRADE_ID = OwnedTradeId.class.getName() + ".tradeId";
     public final Integer tradeId;
 
+    //<editor-fold desc="Constructors">
     public OwnedTradeId(Integer userId, Integer portfolioId, Integer positionId, Integer tradeId)
     {
         super(userId, portfolioId, positionId);
@@ -44,28 +44,23 @@ public class OwnedTradeId extends OwnedPositionId
         super(ownedPositionId);
         this.tradeId = ownedPositionId.tradeId;
     }
+    //</editor-fold>
 
     @Override public int hashCode()
     {
-        return super.hashCode() ^ tradeId.hashCode();
+        return super.hashCode() ^ (tradeId == null ? 0 : tradeId.hashCode());
     }
 
     @Override public boolean equals(Object other)
     {
-        if (other == null || !(other instanceof OwnedTradeId))
-        {
-            return false;
-        }
-        return equals((OwnedTradeId) other);
+        return (other instanceof OwnedTradeId) && equals((OwnedTradeId) other);
     }
 
     public boolean equals(OwnedTradeId other)
     {
-        if (other == null)
-        {
-            return false;
-        }
-        return super.equals((OwnedTradeId)other) && tradeId.equals(other.tradeId);
+        return (other != null) &&
+                super.equals(other) &&
+                (tradeId == null ? other.tradeId == null : tradeId.equals(other.tradeId));
     }
 
     @Override public int compareTo(Object o)

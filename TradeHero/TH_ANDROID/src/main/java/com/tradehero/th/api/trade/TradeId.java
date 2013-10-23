@@ -30,11 +30,7 @@ public class TradeId extends AbstractIntegerDTOKey
 
     @Override public boolean equals(Object other)
     {
-        if (!(other instanceof TradeId))
-        {
-            return false;
-        }
-        return super.equals(other);
+        return (other instanceof TradeId) && equals((TradeId) other);
     }
 
     @Override public String toString()

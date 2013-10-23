@@ -25,6 +25,4 @@ public class OwnedTradeIdList extends DTOKeyIdList<OwnedTradeId>
         super(collection);
     }
     //</editor-fold>
-
-
 }

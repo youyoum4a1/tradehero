@@ -21,11 +21,7 @@ abstract public class AbstractIntegerDTOKey extends AbstractPrimitiveDTOKey<Inte
 
     @Override public boolean equals(Object other)
     {
-        if (!(other instanceof AbstractIntegerDTOKey))
-        {
-            return false;
-        }
-        return super.equals((AbstractIntegerDTOKey) other);
+        return (other instanceof AbstractIntegerDTOKey) && equals((AbstractIntegerDTOKey) other);
     }
 
     /**
