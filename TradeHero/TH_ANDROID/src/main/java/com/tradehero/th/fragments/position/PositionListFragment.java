@@ -101,6 +101,13 @@ public class PositionListFragment extends DashboardFragment
             if (openPositions != null)
             {
                 openPositions.setAdapter(positionItemAdapter);
+                openPositions.setOnItemClickListener(new AdapterView.OnItemClickListener()
+                {
+                    @Override public void onItemClick(AdapterView<?> adapterView, View view, int i, long l)
+                    {
+                        handlePositionItemClicked(adapterView, view, i, l);
+                    }
+                });
             }
 
             if (desiredArguments != null)
@@ -122,7 +129,7 @@ public class PositionListFragment extends DashboardFragment
         }
         else
         {
-            THToast.show("No item handler for now");
+            //THToast.show("No item handler for now");
         }
     }
 
