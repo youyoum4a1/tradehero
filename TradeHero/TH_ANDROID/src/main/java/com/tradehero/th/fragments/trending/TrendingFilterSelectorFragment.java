@@ -45,8 +45,9 @@ abstract public class TrendingFilterSelectorFragment extends SherlockFragment
     private TextView mDescription;
     private Spinner mExchangeSelection;
     private SpinnerIconAdapter mExchangeSelectionAdapter;
-    private WeakReference<OnResumedListener> onResumedListener;
-    private WeakReference<OnExchangeSelectionChangedListener> onExchangeSelectionChangedListener;
+    private WeakReference<OnPreviousNextListener> onPreviousNextListener = new WeakReference<>(null);
+    private WeakReference<OnResumedListener> onResumedListener = new WeakReference<>(null);
+    private WeakReference<OnExchangeSelectionChangedListener> onExchangeSelectionChangedListener = new WeakReference<>(null);
 
     @Inject protected Lazy<ExchangeListCache> exchangeListCache;
     private List<ExchangeDTO> exchangeDTOs;
@@ -79,7 +80,27 @@ abstract public class TrendingFilterSelectorFragment extends SherlockFragment
         if (view != null)
         {
             mPrevious = (ImageButton) view.findViewById(R.id.previous_filter);
+            if (mPrevious != null)
+            {
+                mPrevious.setOnClickListener(new View.OnClickListener()
+                {
+                    @Override public void onClick(View view)
+                    {
+                        handlePreviousClicked();
+                    }
+                });
+            }
             mNext = (ImageButton) view.findViewById(R.id.next_filter);
+            if (mNext != null)
+            {
+                mNext.setOnClickListener(new View.OnClickListener()
+                {
+                    @Override public void onClick(View view)
+                    {
+                        handleNextClicked();
+                    }
+                });
+            }
             mTitle = (TextView) view.findViewById(R.id.title);
             mTitleIcon = (ImageView) view.findViewById(R.id.trending_filter_title_icon);
             mDescription = (TextView) view.findViewById(R.id.description);
@@ -211,12 +232,12 @@ abstract public class TrendingFilterSelectorFragment extends SherlockFragment
 
     private void handlePreviousClicked()
     {
-        THToast.show("Nothing for now");
+        notifyPreviousRequested();
     }
 
     private void handleNextClicked()
     {
-        THToast.show("Nothing for now");
+        notifyNextRequested();
     }
 
     private void fetchExchangeList()
@@ -347,6 +368,15 @@ abstract public class TrendingFilterSelectorFragment extends SherlockFragment
 
     /**
      * The listener should be strongly referenced elsewhere
+     * @param onPreviousNextListener
+     */
+    public void setOnPreviousNextListener(OnPreviousNextListener onPreviousNextListener)
+    {
+        this.onPreviousNextListener = new WeakReference<>(onPreviousNextListener);
+    }
+
+    /**
+     * The listener should be strongly referenced elsewhere
      * @param onResumedListener
      */
     public void setOnResumedListener(OnResumedListener onResumedListener)
@@ -361,6 +391,24 @@ abstract public class TrendingFilterSelectorFragment extends SherlockFragment
     public void setOnExchangeSelectionChangedListener(OnExchangeSelectionChangedListener onExchangeSelectionChangedListener)
     {
         this.onExchangeSelectionChangedListener = new WeakReference<>(onExchangeSelectionChangedListener);
+    }
+
+    private void notifyPreviousRequested()
+    {
+        OnPreviousNextListener listener = onPreviousNextListener.get();
+        if (listener != null)
+        {
+            listener.onPreviousRequested();
+        }
+    }
+
+    private void notifyNextRequested()
+    {
+        OnPreviousNextListener listener = onPreviousNextListener.get();
+        if (listener != null)
+        {
+            listener.onNextRequested();
+        }
     }
 
     private void notifyOnResumedListener()
@@ -379,6 +427,12 @@ abstract public class TrendingFilterSelectorFragment extends SherlockFragment
         {
             selectionChangedListener.onExchangeSelectionChanged(new ExchangeStringId(getSelectedExchangeName()));
         }
+    }
+
+    public interface OnPreviousNextListener
+    {
+        void onPreviousRequested();
+        void onNextRequested();
     }
 
     public interface OnResumedListener

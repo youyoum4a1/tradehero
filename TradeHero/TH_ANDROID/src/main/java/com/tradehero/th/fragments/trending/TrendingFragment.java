@@ -22,7 +22,6 @@ import com.tradehero.th.adapters.trending.TrendingAdapter;
 import com.tradehero.th.adapters.trending.TrendingFilterPagerAdapter;
 import com.tradehero.th.api.market.ExchangeStringId;
 import com.tradehero.th.api.security.SecurityCompactDTO;
-import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.SecurityIdList;
 import com.tradehero.th.api.security.SecurityListType;
 import com.tradehero.th.api.security.TrendingBasicSecurityListType;
@@ -41,7 +40,9 @@ import java.util.List;
 import javax.inject.Inject;
 
 public class TrendingFragment extends DashboardFragment
-        implements DTOCache.Listener<SecurityListType, SecurityIdList>, TrendingFilterPagerAdapter.OnPositionedExchangeSelectionChangedListener
+        implements DTOCache.Listener<SecurityListType, SecurityIdList>,
+        TrendingFilterPagerAdapter.OnPositionedExchangeSelectionChangedListener,
+        TrendingFilterSelectorFragment.OnPreviousNextListener
 {
     private final static String TAG = TrendingFragment.class.getSimpleName();
 
@@ -135,6 +136,7 @@ public class TrendingFragment extends DashboardFragment
                 }
             };
             mTrendingFilterPagerAdapter.setOnResumedListener(trendingFilterSelectorResumedListener);
+            mTrendingFilterPagerAdapter.setOnPreviousNextListener(this);
             mTrendingFilterPagerAdapter.setOnPositionedExchangeSelectionChangedListener(this);
         }
         mFilterViewPager = (ViewPager) view.findViewById(R.id.trending_filter_pager);
@@ -240,6 +242,7 @@ public class TrendingFragment extends DashboardFragment
 
         if (mTrendingFilterPagerAdapter != null)
         {
+            mTrendingFilterPagerAdapter.setOnPreviousNextListener(null);
             mTrendingFilterPagerAdapter.setOnResumedListener(null);
             mTrendingFilterPagerAdapter.setOnPositionedExchangeSelectionChangedListener(null);
         }
@@ -379,6 +382,24 @@ public class TrendingFragment extends DashboardFragment
             }
         }
     }
+
+    //<editor-fold desc="TrendingFilterSelectorFragment.OnPreviousNextListener">
+    @Override public void onNextRequested()
+    {
+        if (mFilterViewPager != null)
+        {
+            mFilterViewPager.setCurrentItem((mFilterViewPager.getCurrentItem() + 1) % mFilterViewPager.getChildCount());
+        }
+    }
+
+    @Override public void onPreviousRequested()
+    {
+        if (mFilterViewPager != null)
+        {
+            mFilterViewPager.setCurrentItem((mFilterViewPager.getCurrentItem() - 1) % mFilterViewPager.getChildCount());
+        }
+    }
+    //</editor-fold>
 
     //<editor-fold desc="TrendingFilterPagerAdapter.OnPositionedExchangeSelectionChangedListener">
     @Override public void onExchangeSelectionChanged(int fragmentPosition, ExchangeStringId exchangeId)

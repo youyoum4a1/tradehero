@@ -5,6 +5,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import com.tradehero.common.utils.THLog;
+import com.tradehero.common.utils.THToast;
 import com.tradehero.th.api.market.ExchangeStringId;
 import com.tradehero.th.fragments.trending.TrendingFilterSelectorBasicFragment;
 import com.tradehero.th.fragments.trending.TrendingFilterSelectorFragment;
@@ -19,8 +20,9 @@ public class TrendingFilterPagerAdapter extends FragmentStatePagerAdapter
     public static final int FRAGMENT_COUNT = 3;
 
     private final Context context;
-    private WeakReference<TrendingFilterSelectorFragment.OnResumedListener> onResumedListener;
-    private WeakReference<OnPositionedExchangeSelectionChangedListener> onPositionedExchangeSelectionChangedListener;
+    private WeakReference<TrendingFilterSelectorFragment.OnPreviousNextListener> parentOnPreviousNextListener = new WeakReference<>(null);
+    private WeakReference<TrendingFilterSelectorFragment.OnResumedListener> onResumedListener = new WeakReference<>(null);
+    private WeakReference<OnPositionedExchangeSelectionChangedListener> onPositionedExchangeSelectionChangedListener = new WeakReference<>(null);
 
     private TrendingFilterSelectorFragment.OnExchangeSelectionChangedListener onExchangeSelectionChangedListenerBasic;
     private TrendingFilterSelectorFragment.OnExchangeSelectionChangedListener onExchangeSelectionChangedListenerVolume;
@@ -86,6 +88,7 @@ public class TrendingFilterPagerAdapter extends FragmentStatePagerAdapter
                 break;
         }
 
+        fragment.setOnPreviousNextListener(parentOnPreviousNextListener.get());
         fragment.setOnResumedListener(onResumedListener.get());
 
         // TODO listen to spinner
@@ -101,6 +104,15 @@ public class TrendingFilterPagerAdapter extends FragmentStatePagerAdapter
 
     /**
      * The listener should be strongly referenced elsewhere
+     * @param parentOnPreviousNextListener
+     */
+    public void setOnPreviousNextListener(TrendingFilterSelectorFragment.OnPreviousNextListener parentOnPreviousNextListener)
+    {
+        this.parentOnPreviousNextListener = new WeakReference<>(parentOnPreviousNextListener);
+    }
+
+    /**
+     * The listener should be strongly referenced elsewhere
      * @param onResumedListener
      */
     public void setOnResumedListener(TrendingFilterSelectorFragment.OnResumedListener onResumedListener)
@@ -108,6 +120,10 @@ public class TrendingFilterPagerAdapter extends FragmentStatePagerAdapter
         this.onResumedListener = new WeakReference<>(onResumedListener);
     }
 
+    /**
+     * The listener should be strongly referenced elsewhere
+     * @param onPositionedExchangeSelectionChangedListener
+     */
     public void setOnPositionedExchangeSelectionChangedListener(OnPositionedExchangeSelectionChangedListener onPositionedExchangeSelectionChangedListener)
     {
         this.onPositionedExchangeSelectionChangedListener = new WeakReference<>(onPositionedExchangeSelectionChangedListener);
