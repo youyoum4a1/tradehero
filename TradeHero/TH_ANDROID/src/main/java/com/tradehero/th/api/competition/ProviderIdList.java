@@ -4,7 +4,7 @@ import com.tradehero.common.persistence.DTOKeyIdList;
 import java.util.Collection;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/22/13 Time: 6:55 PM To change this template use File | Settings | File Templates. */
-public class ProviderIdList extends DTOKeyIdList<ProviderListKey, ProviderId>
+public class ProviderIdList extends DTOKeyIdList<ProviderId>
 {
     public static final String TAG = ProviderIdList.class.getSimpleName();
 

@@ -10,7 +10,7 @@ import java.util.Collection;
  * Instead of storing a list of DTOs, whose individual elements may be found in other lists, we store a list of ids, which in turn
  * point to DTOs found in another cache.
  */
-public class DTOKeyIdList<CacheDTOKeyType extends DTOKey, ListedDTOKeyType extends DTOKey>
+public class DTOKeyIdList<ListedDTOKeyType extends DTOKey>
         extends ArrayList<ListedDTOKeyType>
         implements DTO
 {
