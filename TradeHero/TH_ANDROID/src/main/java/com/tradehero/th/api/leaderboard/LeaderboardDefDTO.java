@@ -1,12 +1,11 @@
 package com.tradehero.th.api.leaderboard;
 
-/** Created with IntelliJ IDEA. User: tho Date: 10/14/13 Time: 2:05 PM Copyright (c) TradeHero */
-
 import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.loaders.AbstractItemWithComparableId;
 import java.util.Date;
 import java.util.List;
 
+/** Created with IntelliJ IDEA. User: tho Date: 10/14/13 Time: 2:05 PM Copyright (c) TradeHero */
 public class LeaderboardDefDTO extends AbstractItemWithComparableId<Integer>
     implements DTO
 {
@@ -43,6 +42,7 @@ public class LeaderboardDefDTO extends AbstractItemWithComparableId<Integer>
         super();
     }
 
+    //<editor-fold desc="AbstractItemWithComparableId">
     @Override public Integer getId()
     {
         return id;
@@ -52,6 +52,7 @@ public class LeaderboardDefDTO extends AbstractItemWithComparableId<Integer>
     {
         this.id = id;
     }
+    //</editor-fold>
 
     public boolean isTimeRestrictedLeaderboard()
     {

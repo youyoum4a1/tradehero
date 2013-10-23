@@ -37,6 +37,7 @@ import javax.inject.Singleton;
     private LeaderboardDefKeyList putInternal(LeaderboardDefListKey listKey, List<LeaderboardDefDTO> allLeaderboardDefinitions)
     {
         LeaderboardDefKeyList
+                allKeys = new LeaderboardDefKeyList(),
                 sectorKeys = new LeaderboardDefKeyList(),
                 exchangeKeys = new LeaderboardDefKeyList(),
                 timePeriodKeys = new LeaderboardDefKeyList(),
@@ -45,9 +46,9 @@ import javax.inject.Singleton;
         for (LeaderboardDefDTO leaderboardDefDTO: allLeaderboardDefinitions)
         {
             LeaderboardDefKey key = new LeaderboardDefKey(leaderboardDefDTO.id);
-            leaderboardDefCache.get().put(new LeaderboardDefKey(leaderboardDefDTO.id), leaderboardDefDTO);
+            leaderboardDefCache.get().put(key, leaderboardDefDTO);
 
-
+            allKeys.add(key);
             if (leaderboardDefDTO.exchangeRestrictions)
             {
                 exchangeKeys.add(key);
@@ -71,6 +72,7 @@ import javax.inject.Singleton;
         put(new LeaderboardDefSectorListKey(), sectorKeys);
         put(new LeaderboardDefTimePeriodListKey(), timePeriodKeys);
 
-        return get(listKey);
+        put(listKey, allKeys);
+        return allKeys;
     }
 }
