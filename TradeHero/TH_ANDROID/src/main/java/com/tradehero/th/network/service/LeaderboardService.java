@@ -87,8 +87,7 @@ public interface LeaderboardService
     void getUserOnLeaderboard(
             @Path("leaderboardId") int leaderboardId,
             @Path("userId") int userId,
-            Callback<LeaderboardDTO> callback)
-        throws RetrofitError;
+            Callback<LeaderboardDTO> callback);
 
     @GET("/leaderboards/{leaderboardId}/users/{userId}")
     LeaderboardDTO getUserOnLeaderboard(
@@ -102,8 +101,7 @@ public interface LeaderboardService
             @Path("leaderboardId") int leaderboardId,
             @Path("userId") int userId,
             @Query("sortType") int sortType,
-            Callback<LeaderboardDTO> callback)
-        throws RetrofitError;
+            Callback<LeaderboardDTO> callback);
     //</editor-fold>
 
     //<editor-fold desc="Get Positions For Leaderboard Mark User">

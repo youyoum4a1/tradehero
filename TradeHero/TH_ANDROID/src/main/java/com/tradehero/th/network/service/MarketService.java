@@ -18,7 +18,8 @@ public interface MarketService
 
     // returns basic exchange DTOs, un-enriched
     @GET("/exchanges")
-    void getExchanges(Callback<List<ExchangeDTO>> callback);
+    void getExchanges(
+            Callback<List<ExchangeDTO>> callback);
     //</editor-fold>
 
     //<editor-fold desc="GetExchange">
@@ -32,7 +33,6 @@ public interface MarketService
     @GET("/exchanges/{exchangeId}")
     void getExchange(
             @Path("exchangeId") int exchangeId,
-            Callback<ExchangeDTO> callback)
-        throws RetrofitError;
+            Callback<ExchangeDTO> callback);
     //</editor-fold>
 }

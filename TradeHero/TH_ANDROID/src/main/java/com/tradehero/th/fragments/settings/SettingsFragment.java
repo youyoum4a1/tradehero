@@ -37,6 +37,7 @@ import javax.inject.Inject;
 import java.util.Arrays;
 import java.util.Timer;
 import java.util.TimerTask;
+import retrofit.client.Response;
 
 /**
  * Created with IntelliJ IDEA.
@@ -193,10 +194,10 @@ public class SettingsFragment extends DashboardFragment
                                 Application.getResourceString(R.string.please_wait),
                                 Application.getResourceString(R.string.connecting_tradehero_only),
                                 true);
-                        userService.signOut(THUser.getAuthHeader(), new THCallback<Object>()
+                        userService.signOut(THUser.getAuthHeader(), new THCallback<Response>()
                         {
                             @Override
-                            public void success(Object o, THResponse response)
+                            public void success(Response o, THResponse response)
                             {
                                 THUser.clearCurrentUser();
                                 ActivityHelper.presentFromActivity(getActivity(), AuthenticationActivity.class, Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -231,12 +232,16 @@ public class SettingsFragment extends DashboardFragment
         miscListView.setAdapter(miscListViewAdapter);
     }
 
-    public String getDeviceName() {
+    public String getDeviceName()
+    {
         String manufacturer = Build.MANUFACTURER;
         String model = Build.MODEL;
-        if (model.startsWith(manufacturer)) {
+        if (model.startsWith(manufacturer))
+        {
             return capitalize(model);
-        } else {
+        }
+        else
+        {
             return capitalize(manufacturer) + " " + model;
         }
     }

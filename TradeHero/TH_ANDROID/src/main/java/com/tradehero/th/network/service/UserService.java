@@ -13,6 +13,7 @@ import java.util.List;
 
 import retrofit.Callback;
 import retrofit.RetrofitError;
+import retrofit.client.Response;
 import retrofit.http.DELETE;
 import retrofit.http.Field;
 import retrofit.http.FormUrlEncoded;
@@ -101,14 +102,14 @@ public interface UserService
 
     //<editor-fold desc="Signin">
     @POST("users/signin")
-    Object signIn(
+    Response signIn(
             @Body WebSignInFormDTO webSignInFormDTO)
         throws RetrofitError;
 
     @POST("users/signin")
     void signIn(
             @Body WebSignInFormDTO webSignInFormDTO,
-            Callback<Object> callback);
+            Callback<Response> callback);
     //</editor-fold>
 
     //<editor-fold desc="Login">
@@ -127,14 +128,14 @@ public interface UserService
 
     //<editor-fold desc="Update Authorization Tokens">
     @POST("/updateAuthorizationTokens")
-    Object updateAuthorizationTokens(
+    Response updateAuthorizationTokens(
             @Body UserFormDTO userFormDTO)
         throws RetrofitError;
 
     @POST("/updateAuthorizationTokens")
     void updateAuthorizationTokens(
             @Body UserFormDTO userFormDTO,
-            Callback<Object> callback)
+            Callback<Response> callback)
         throws RetrofitError;
     //</editor-fold>
 
@@ -145,20 +146,19 @@ public interface UserService
 
     @POST("/updateDevice")
     void updateDevice(
-            Callback<UserProfileDTO> callback)
-        throws RetrofitError;
+            Callback<UserProfileDTO> callback);
     //</editor-fold>
 
     //<editor-fold desc="Logout">
     @POST("/logout")
-    Object signOut(
+    Response signOut(
             @Header("Authorization") String authorization)
         throws RetrofitError;
 
     @POST("/logout")
     void signOut(
             @Header("Authorization") String authorization,
-            Callback<Object> callback);
+            Callback<Response> callback);
     //</editor-fold>
 
     //<editor-fold desc="Check Display Name Available">
@@ -189,7 +189,7 @@ public interface UserService
     @GET("/users/search")
     List<UserSearchResultDTO> searchUsers(
             @Query("q") String searchString)
-            throws RetrofitError;
+        throws RetrofitError;
 
     @GET("/users/search")
     void searchUsers(
@@ -200,7 +200,7 @@ public interface UserService
     List<UserSearchResultDTO> searchUsers(
             @Query("q") String searchString,
             @Query("page") int page)
-            throws RetrofitError;
+        throws RetrofitError;
 
     @GET("/users/search")
     void searchUsers(
@@ -213,7 +213,7 @@ public interface UserService
             @Query("q") String searchString,
             @Query("page") int page,
             @Query("perPage") int perPage)
-            throws RetrofitError;
+        throws RetrofitError;
 
     @GET("/users/search")
     void searchUsers(
@@ -227,20 +227,19 @@ public interface UserService
     @GET("/users/{userId}")
     UserProfileDTO getUser(
             @Path("userId") int userId)
-            throws RetrofitError;
+        throws RetrofitError;
 
     @GET("/users/{userId}")
     void getUser(
             @Path("userId") int userId,
-            Callback<UserProfileDTO> callback)
-            throws RetrofitError;
+            Callback<UserProfileDTO> callback);
     //</editor-fold>
 
     //<editor-fold desc="Get User Transactions History">
     @GET("/users/{userId}/transactionHistory")
     List<UserTransactionHistoryDTO> getUserTransactions(
             @Path("userId") int userId)
-            throws RetrofitError;
+        throws RetrofitError;
 
     @GET("/users/{userId}/transactionHistory")
     void getUserTransactions(
@@ -264,14 +263,14 @@ public interface UserService
 
     //<editor-fold desc="Delete User">
     @DELETE("/users/{userId}")
-    Object deleteUser(
+    Response deleteUser(
             @Path("userId") int userId)
         throws RetrofitError;
 
     @DELETE("/users/{userId}")
     void deleteUser(
             @Path("userId") int userId,
-            Callback<Object> callback);
+            Callback<Response> callback);
     //</editor-fold>
 
     //<editor-fold desc="Get Friends">
@@ -288,13 +287,13 @@ public interface UserService
 
     //<editor-fold desc="Invite Friends">
     @POST("/users/{userId}/inviteFriends")
-    Object inviteFriends(@Path("userId") int userId,
+    Response inviteFriends(@Path("userId") int userId,
             @Body InviteFormDTO inviteFormDTO)
         throws RetrofitError;
 
     @POST("/users/{userId}/inviteFriends")
     void inviteFriends(@Path("userId") int userId,
             @Body InviteFormDTO inviteFormDTO,
-            Callback<Object> callback);
+            Callback<Response> callback);
     //</editor-fold>
 }

@@ -133,6 +133,7 @@ abstract public class TrendingFilterSelectorFragment extends SherlockFragment
     abstract int getTitleLeftDrawableResId();
     abstract int getDescriptionResId();
 
+    //<editor-fold desc="Display Methods">
     public void display()
     {
         displayPreviousButton();
@@ -206,6 +207,7 @@ abstract public class TrendingFilterSelectorFragment extends SherlockFragment
             mExchangeSelection.setOnItemSelectedListener(this);
         }
     }
+    //</editor-fold>
 
     private void handlePreviousClicked()
     {

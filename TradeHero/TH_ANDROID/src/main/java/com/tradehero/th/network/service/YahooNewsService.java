@@ -21,5 +21,5 @@ public interface YahooNewsService
     @GET("/rss/headline")
     Response getNews(
             @Query("s") String yahooSymbol)
-            throws RetrofitError;
+        throws RetrofitError;
 }

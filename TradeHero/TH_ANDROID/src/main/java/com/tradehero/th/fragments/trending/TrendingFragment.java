@@ -207,7 +207,7 @@ public class TrendingFragment extends DashboardFragment
         int index = 0;
         for (ExchangeStringId exchangeStringId: selectedExchangeStringIds)
         {
-            exchangeNames[index++] = exchangeStringId.key;
+            exchangeNames[index++] = exchangeStringId == null ? null : exchangeStringId.key;
         }
         outState.putStringArray(BUNDLE_KEY_SELECTED_EXCHANGE_NAMES, exchangeNames);
     }

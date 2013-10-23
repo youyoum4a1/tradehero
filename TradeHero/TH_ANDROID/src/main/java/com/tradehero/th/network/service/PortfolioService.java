@@ -54,8 +54,7 @@ public interface PortfolioService
             @Path("userId") int userId,
             @Path("portfolioId") int portfolioId,
             @Body PurchaseDTO purchaseDTO,
-            Callback<UserProfileDTO> callback)
-        throws RetrofitError;
+            Callback<UserProfileDTO> callback);
     //</editor-fold>
 
     //<editor-fold desc="Add Cash">
@@ -71,8 +70,7 @@ public interface PortfolioService
             @Path("userId") int userId,
             @Path("portfolioId") int portfolioId,
             @Body PurchaseDTO purchaseDTO,
-            Callback<UserProfileDTO> callback)
-        throws RetrofitError;
+            Callback<UserProfileDTO> callback);
     //</editor-fold>
 
     //<editor-fold desc="Mark One User Portfolio">
@@ -86,7 +84,6 @@ public interface PortfolioService
     void markPortfolio(
             @Path("userId") int userId,
             @Path("portfolioId") int portfolioId,
-            Callback<PortfolioDTO> callback)
-        throws RetrofitError;
+            Callback<PortfolioDTO> callback);
     //</editor-fold>
 }

@@ -23,8 +23,7 @@ public interface SocialService
     void connect(
             @Path("userId") int userId,
             @Body UserFormDTO userFormDTO,
-            Callback<UserProfileDTO> callback)
-        throws RetrofitError;
+            Callback<UserProfileDTO> callback);
     //</editor-fold>
 
     //<editor-fold desc="Disconnect User">
@@ -38,7 +37,6 @@ public interface SocialService
     void disconnect(
             @Path("userId") int userId,
             @Body SocialNetworkFormDTO socialNetworkFormDTO,
-            Callback<UserProfileDTO> callback)
-        throws RetrofitError;
+            Callback<UserProfileDTO> callback);
     //</editor-fold>
 }

@@ -17,7 +17,7 @@ public interface ProviderService
     //<editor-fold desc="Get Providers">
     @GET("/providers")
     List<ProviderDTO> getProviders()
-            throws RetrofitError;
+        throws RetrofitError;
 
     @GET("/providers")
     void getProviders(Callback<List<ProviderDTO>> callback);
@@ -27,7 +27,7 @@ public interface ProviderService
     @GET("/providers/{providerId}/securities")
     List<SecurityCompactDTO> getSecurities(
             @Path("providerId") int providerId)
-            throws RetrofitError;
+        throws RetrofitError;
 
     @GET("/providers/{providerId}/securities")
     void getSecurities(
@@ -38,7 +38,7 @@ public interface ProviderService
     List<SecurityCompactDTO> getSecurities(
             @Path("providerId") int providerId,
             @Query("page") int page)
-            throws RetrofitError;
+        throws RetrofitError;
 
     @GET("/providers/{providerId}/securities")
     void getSecurities(
@@ -51,7 +51,7 @@ public interface ProviderService
             @Path("providerId") int providerId,
             @Query("page") int page,
             @Query("perPage") int perPage)
-            throws RetrofitError;
+        throws RetrofitError;
 
     @GET("/providers/{providerId}/securities")
     void getSecurities(
@@ -65,7 +65,7 @@ public interface ProviderService
     @GET("/providers/{providerId}/warrantUnderlyers")
     List<SecurityCompactDTO> getWarrantUnderlyers(
             @Path("providerId") int providerId)
-            throws RetrofitError;
+        throws RetrofitError;
 
     @GET("/providers/{providerId}/warrantUnderlyers")
     void getWarrantUnderlyers(
@@ -76,7 +76,7 @@ public interface ProviderService
     List<SecurityCompactDTO> getWarrantUnderlyers(
             @Path("providerId") int providerId,
             @Query("page") int page)
-            throws RetrofitError;
+        throws RetrofitError;
 
     @GET("/providers/{providerId}/warrantUnderlyers")
     void getWarrantUnderlyers(
@@ -89,7 +89,7 @@ public interface ProviderService
             @Path("providerId") int providerId,
             @Query("page") int page,
             @Query("perPage") int perPage)
-            throws RetrofitError;
+        throws RetrofitError;
 
     @GET("/providers/{providerId}/warrantUnderlyers")
     void getWarrantUnderlyers(
@@ -106,7 +106,7 @@ public interface ProviderService
             @Query("underlyingSecurityId") int underlyingSecurityId,
             @Query("price") double price,
             @Query("date") String date)
-            throws RetrofitError;
+        throws RetrofitError;
 
     @GET("/providers/{providerId}/suggestedWarrant")
     void getSuggestedWarrant(
@@ -123,7 +123,7 @@ public interface ProviderService
             @Query("price") double price,
             @Query("date") String date,
             @Query("page") int page)
-            throws RetrofitError;
+        throws RetrofitError;
 
     @GET("/providers/{providerId}/suggestedWarrant")
     void getSuggestedWarrant(
@@ -142,7 +142,7 @@ public interface ProviderService
             @Query("date") String date,
             @Query("page") int page,
             @Query("perPage") int perPage)
-            throws RetrofitError;
+        throws RetrofitError;
 
     @GET("/providers/{providerId}/suggestedWarrant")
     void getSuggestedWarrant(
@@ -159,7 +159,7 @@ public interface ProviderService
     @GET("/providers/{providerId}/helpVideos")
     List<HelpVideoDTO> getHelpVideos(
             @Path("providerId") int providerId)
-            throws RetrofitError;
+        throws RetrofitError;
 
     @GET("/providers/{providerId}/helpVideos")
     void getHelpVideos(

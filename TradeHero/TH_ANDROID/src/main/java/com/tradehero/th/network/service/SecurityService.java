@@ -22,7 +22,7 @@ public interface SecurityService
 
     @GET("/securities/trending/")
     List<SecurityCompactDTO> getTrendingSecurities()
-            throws RetrofitError;
+        throws RetrofitError;
 
     @GET("/securities/trending/")
     void getTrendingSecurities(
@@ -32,7 +32,7 @@ public interface SecurityService
     @GET("/securities/trending/")
     List<SecurityCompactDTO> getTrendingSecurities(
             @Query("exchange") String exchange)
-            throws RetrofitError;
+        throws RetrofitError;
     //</editor-fold>
 
     //<editor-fold desc="Get Trending By Volume">
@@ -42,7 +42,7 @@ public interface SecurityService
 
     @GET("/securities/trendingVol/")
     List<SecurityCompactDTO> getTrendingSecuritiesByVolume()
-            throws RetrofitError;
+        throws RetrofitError;
 
     @GET("/securities/trendingVol/")
     void getTrendingSecuritiesByVolume(
@@ -52,7 +52,7 @@ public interface SecurityService
     @GET("/securities/trendingVol/")
     List<SecurityCompactDTO> getTrendingSecuritiesByVolume(
             @Query("exchange") String exchange)
-            throws RetrofitError;
+        throws RetrofitError;
     //</editor-fold>
 
     //<editor-fold desc="Get Trending By Price">
@@ -62,7 +62,7 @@ public interface SecurityService
 
     @GET("/securities/trendingPrice/")
     List<SecurityCompactDTO> getTrendingSecuritiesByPrice()
-            throws RetrofitError;
+        throws RetrofitError;
 
     @GET("/securities/trendingPrice/")
     void getTrendingSecuritiesByPrice(
@@ -72,7 +72,7 @@ public interface SecurityService
     @GET("/securities/trendingPrice/")
     List<SecurityCompactDTO> getTrendingSecuritiesByPrice(
             @Query("exchange") String exchange)
-            throws RetrofitError;
+        throws RetrofitError;
     //</editor-fold>
 
     //<editor-fold desc="Search Securities">
@@ -84,7 +84,7 @@ public interface SecurityService
     @GET("/securities/search")
     List<SecurityCompactDTO> searchSecurities(
             @Query("q") String searchString)
-            throws RetrofitError;
+        throws RetrofitError;
 
     @GET("/securities/search")
     void searchSecurities(
@@ -96,7 +96,7 @@ public interface SecurityService
     List<SecurityCompactDTO> searchSecurities(
             @Query("q") String searchString,
             @Query("page") int page)
-            throws RetrofitError;
+        throws RetrofitError;
 
     @GET("/securities/search")
     void searchSecurities(
@@ -110,7 +110,7 @@ public interface SecurityService
             @Query("q") String searchString,
             @Query("page") int page,
             @Query("perPage") int perPage)
-            throws RetrofitError;
+        throws RetrofitError;
     //</editor-fold>
 
     //<editor-fold desc="Get Security">
@@ -124,7 +124,7 @@ public interface SecurityService
     SecurityPositionDetailDTO getSecurity(
             @Path("exchange") String exchange,
             @Path("securitySymbol") String securitySymbol)
-            throws RetrofitError;
+        throws RetrofitError;
     //</editor-fold>
 
     //<editor-fold desc="Buy Security">
@@ -139,7 +139,8 @@ public interface SecurityService
     SecurityPositionDetailDTO buy(
             @Path("exchange") String exchange,
             @Path("securitySymbol") String securitySymbol,
-            @Body() TransactionFormDTO transactionFormDTO);
+            @Body() TransactionFormDTO transactionFormDTO)
+        throws RetrofitError;
     //</editor-fold>
 
     //<editor-fold desc="Sell Security">
@@ -154,6 +155,7 @@ public interface SecurityService
     SecurityPositionDetailDTO sell(
             @Path("exchange") String exchange,
             @Path("securitySymbol") String securitySymbol,
-            @Body() TransactionFormDTO transactionFormDTO);
+            @Body() TransactionFormDTO transactionFormDTO)
+        throws RetrofitError;
     //</editor-fold>
 }

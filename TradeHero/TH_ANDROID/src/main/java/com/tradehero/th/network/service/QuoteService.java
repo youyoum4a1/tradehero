@@ -22,6 +22,6 @@ public interface QuoteService
     SignatureContainer<QuoteDTO> getQuote(
             @Path("exchange") String exchange,
             @Path("securitySymbol") String securitySymbol)
-            throws RetrofitError;
+        throws RetrofitError;
     //</editor-fold>
 }

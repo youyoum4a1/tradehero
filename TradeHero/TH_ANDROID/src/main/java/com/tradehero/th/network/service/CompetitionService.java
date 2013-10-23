@@ -10,7 +10,8 @@ import retrofit.http.GET;
 public interface CompetitionService
 {
     //<editor-fold desc="Enroll">
-    @GET("/providers/enroll") UserProfileDTO enroll(
+    @GET("/providers/enroll")
+    UserProfileDTO enroll(
             CompetitionFormDTO form)
             throws RetrofitError;
 

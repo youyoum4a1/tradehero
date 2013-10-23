@@ -21,7 +21,7 @@ public interface PositionService
     GetPositionsDTO getPositions(
             @Path("userId") int userId,
             @Path("portfolioId")int portfolioId)
-            throws RetrofitError;
+        throws RetrofitError;
 
     @GET("/users/{userId}/portfolios/{portfolioId}/positions")
     void getPositions(
@@ -35,7 +35,7 @@ public interface PositionService
             @Path("userId") int userId,
             @Path("portfolioId")int portfolioId,
             @Query("pageNumber") Integer pageNumber)
-            throws RetrofitError;
+        throws RetrofitError;
 
     @GET("/users/{userId}/portfolios/{portfolioId}/positions")
     void getPositions(
@@ -51,6 +51,6 @@ public interface PositionService
             @Path("portfolioId")int portfolioId,
             @Query("pageNumber") Integer pageNumber,
             @Query("perPage") Integer perPage)
-            throws RetrofitError;
+        throws RetrofitError;
     //</editor-fold>
 }
