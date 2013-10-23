@@ -1,6 +1,6 @@
 package com.tradehero.th.api.portfolio;
 
-import com.tradehero.th.api.DTOKeyIdList;
+import com.tradehero.common.persistence.DTOKeyIdList;
 import com.tradehero.th.api.users.UserBaseKey;
 import java.util.Collection;
 

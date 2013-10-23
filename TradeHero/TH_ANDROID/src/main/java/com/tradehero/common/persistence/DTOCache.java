@@ -2,7 +2,11 @@ package com.tradehero.common.persistence;
 
 import android.os.AsyncTask;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 10/3/13 Time: 4:48 PM To change this template use File | Settings | File Templates. */
+/**
+ * Created with IntelliJ IDEA. User: xavier Date: 10/3/13 Time: 4:48 PM To change this template use File | Settings | File Templates.
+ *
+ * See DTOKeyIdList to avoid duplicating data in caches.
+ */
 public interface DTOCache<DTOKeyType extends DTOKey, DTOType extends DTO>
 {
     DTOType get(DTOKeyType key);

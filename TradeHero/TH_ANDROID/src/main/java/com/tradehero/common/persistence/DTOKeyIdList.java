@@ -1,15 +1,15 @@
-package com.tradehero.th.api;
+package com.tradehero.common.persistence;
 
-import com.tradehero.common.persistence.DTO;
-import com.tradehero.common.persistence.DTOKey;
-import com.tradehero.th.api.competition.ProviderDTO;
-import com.tradehero.th.api.competition.ProviderId;
-import com.tradehero.th.api.competition.ProviderListKey;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 10/22/13 Time: 6:55 PM To change this template use File | Settings | File Templates. */
+/**
+ * Created with IntelliJ IDEA. User: xavier Date: 10/22/13 Time: 6:55 PM To change this template use File | Settings | File Templates.
+ *
+ * The purpose of this class is to avoid duplicating DTO information in different parts of the same cache.
+ * Instead of storing a list of DTOs, whose individual elements may be found in other lists, we store a list of ids, which in turn
+ * point to DTOs found in another cache.
+ */
 public class DTOKeyIdList<CacheDTOKeyType extends DTOKey, ListedDTOKeyType extends DTOKey>
         extends ArrayList<ListedDTOKeyType>
         implements DTO
