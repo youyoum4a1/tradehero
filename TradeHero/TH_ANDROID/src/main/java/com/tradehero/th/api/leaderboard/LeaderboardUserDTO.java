@@ -41,6 +41,7 @@ public class LeaderboardUserDTO extends UserBaseDTO implements ItemWithComparabl
     public Integer followerCountFree;
     public Integer followerCountPaid;
     public Integer commentCount;
+    public Integer rank;
 
     public LeaderboardUserDTO()
     {
@@ -60,6 +61,11 @@ public class LeaderboardUserDTO extends UserBaseDTO implements ItemWithComparabl
     @Override public int compareTo(ItemWithComparableId<Integer> other)
     {
         return other.getId().compareTo(lbmuId);
+    }
+
+    public void setRank(int rank)
+    {
+        this.rank = rank;
     }
 }
 

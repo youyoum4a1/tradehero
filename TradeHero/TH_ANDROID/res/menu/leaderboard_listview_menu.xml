@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+  <item id="@+id/leaderboard_listview_sort"
+    android:icon="@drawable/sort_hq"
+    android:title="@string/leaderboard_listview_sort"
+    android:showAsAction="ifRoom"
+    />
+  <item id="@+id/leaderboard_listview_help"
+    android:icon="@drawable/info_default"
+    android:title="@string/leaderboard_listview_help"
+    android:showAsAction="ifRoom"
+    />
+</menu>

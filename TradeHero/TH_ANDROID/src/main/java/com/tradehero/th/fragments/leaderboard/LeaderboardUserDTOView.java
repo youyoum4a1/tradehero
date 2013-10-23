@@ -15,11 +15,11 @@ import javax.inject.Inject;
 /** Created with IntelliJ IDEA. User: tho Date: 10/21/13 Time: 4:14 PM Copyright (c) TradeHero */
 public class LeaderboardUserDTOView extends RelativeLayout implements DTOView<LeaderboardUserDTO>
 {
+    @Inject protected Picasso picasso;
     private TextView lbmuDisplayName;
     private ImageView lbmuProfilePicture;
     private TextView lbmuId;
-
-    @Inject protected Picasso picasso;
+    private TextView lbmuHeroQuotient;
 
     //<editor-fold desc="Constructors">
     public LeaderboardUserDTOView(Context context)
@@ -48,6 +48,7 @@ public class LeaderboardUserDTOView extends RelativeLayout implements DTOView<Le
         lbmuId = (TextView) findViewById(R.id.leaderboard_user_item_id);
         lbmuDisplayName = (TextView) findViewById(R.id.leaderboard_user_item_display_name);
         lbmuProfilePicture = (ImageView) findViewById(R.id.leaderboard_user_item_profile_picture);
+        lbmuHeroQuotient = (TextView) findViewById(R.id.leaderboard_user_item_hq);
 
         DaggerUtils.inject(this);
     }
@@ -58,12 +59,15 @@ public class LeaderboardUserDTOView extends RelativeLayout implements DTOView<Le
         {
             return;
         }
-        lbmuId.setText(""+dto.lbmuId);
+
+        lbmuId.setText("" + dto.rank);
         lbmuDisplayName.setText(dto.displayName);
+        lbmuHeroQuotient.setText("" + dto.heroQuotient);
 
         if (dto.picture != null)
         {
             picasso.load(dto.picture).into(lbmuProfilePicture);
         }
+
     }
 }

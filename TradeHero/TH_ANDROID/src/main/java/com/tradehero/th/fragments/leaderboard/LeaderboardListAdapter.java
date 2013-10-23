@@ -3,7 +3,6 @@ package com.tradehero.th.fragments.leaderboard;
 import android.content.Context;
 import android.view.LayoutInflater;
 import com.tradehero.th.adapters.DTOAdapter;
-import com.tradehero.th.api.leaderboard.LeaderboardDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import java.util.List;
 
@@ -14,6 +13,13 @@ public class LeaderboardListAdapter extends DTOAdapter<LeaderboardUserDTO, Leade
     {
         super(context, layoutInflater, layoutResourceId);
         setItems(items);
+    }
+
+    @Override public Object getItem(int i)
+    {
+        LeaderboardUserDTO dto = (LeaderboardUserDTO) super.getItem(i);
+        dto.setRank(i);
+        return dto;
     }
 
     @Override protected LeaderboardUserDTOView getView(int position, LeaderboardUserDTOView convertView)

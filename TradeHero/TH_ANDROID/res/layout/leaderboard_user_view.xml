@@ -5,11 +5,24 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center_vertical"
+    android:paddingLeft="10dp"
+    android:paddingRight="10dp"
+    android:paddingTop="3dp"
+    android:paddingBottom="3dp"
+    android:background="@android:color/white"
     >
   <TextView
       android:id="@+id/leaderboard_user_item_id"
-      android:layout_width="wrap_content"
+      android:layout_width="20dp"
       android:layout_height="wrap_content"
+      android:textSize="@dimen/leaderboard_title_text_size"
+      android:textStyle="bold"
+      android:shadowColor="@color/light_grey"
+      android:shadowDy="1"
+      android:shadowRadius="1"
+      android:layout_centerVertical="true"
+      android:paddingLeft="5dp"
+      android:paddingRight="5dp"
       />
 
   <com.tradehero.th.widget.RoundedImageView
@@ -17,7 +30,10 @@
       android:layout_height="@dimen/leaderboard_user_view_profile_width"
       android:layout_width="@dimen/leaderboard_user_view_profile_width"
       android:contentDescription="@null"
+      android:src="@drawable/superman_facebook"
       android:layout_toRightOf="@id/leaderboard_user_item_id"
+      android:layout_centerVertical="true"
+      android:layout_marginRight="5dp"
       />
 
   <TextView
@@ -25,14 +41,33 @@
       android:layout_toRightOf="@id/leaderboard_user_item_profile_picture"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
+      android:layout_centerVertical="true"
+      android:ellipsize="end"
+      android:textStyle="bold"
+      android:shadowColor="@color/light_grey"
+      android:shadowDy="1"
+      android:shadowRadius="1"
       />
 
-  <ImageView
+  <TextView
       android:id="@+id/leaderboard_user_item_hq"
       android:layout_height="wrap_content"
       android:layout_width="wrap_content"
       android:contentDescription="@null"
+      android:layout_centerVertical="true"
+      android:background="@drawable/hero_quotient_colour"
+      android:layout_alignParentRight="true"
+      android:maxHeight="40dp"
+      android:paddingRight="5dp"
       />
 
-
+  <ImageView
+      android:id="@+id/leaderboard_user_item_expand"
+      android:layout_height="wrap_content"
+      android:layout_width="wrap_content"
+      android:contentDescription="@null"
+      android:layout_centerVertical="true"
+      android:src="@drawable/expand"
+      android:layout_toRightOf="@id/leaderboard_user_item_hq"
+      />
 </com.tradehero.th.fragments.leaderboard.LeaderboardUserDTOView>
