@@ -25,16 +25,18 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.users.UserSearchResultDTO;
 import com.tradehero.th.utills.DateUtils;
+import com.tradehero.th.utils.DaggerUtils;
 import java.util.concurrent.Future;
+import javax.inject.Inject;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 9/17/13 Time: 3:39 PM To change this template use File | Settings | File Templates. */
 public class TrendingUserView extends FrameLayout implements DTOView<UserSearchResultDTO>
 {
     private static final String TAG = TrendingUserView.class.getSimpleName();
-    private static Picasso mPicasso;
     private static Transformation roundedShapeTransformation;
     private static Transformation backgroundTransformation;
 
+    @Inject protected Picasso mPicasso;
     private TextView userName;
     private TextView profitIndicator;
     private TextView stockPercentage;
@@ -69,30 +71,12 @@ public class TrendingUserView extends FrameLayout implements DTOView<UserSearchR
     {
         THLog.i(TAG, "onFinishInflate");
         super.onFinishInflate();
+        DaggerUtils.inject(this);
         init();
     }
 
     protected void init ()
     {
-        if (mPicasso == null)
-        {
-            Cache lruFileCache = null;
-            try
-            {
-                lruFileCache = new LruMemFileCache(getContext());
-            }
-            catch (Exception e)
-            {
-                THLog.e(TAG, "Failed to create LRU", e);
-            }
-
-            mPicasso = new Picasso.Builder(getContext())
-                    .downloader(new UrlConnectionDownloader(getContext()))
-                    .memoryCache(lruFileCache)
-                    .build();
-            mPicasso.setDebugging(true);
-        }
-
         if (roundedShapeTransformation == null)
         {
             roundedShapeTransformation = new RoundedShapeTransformation();
