@@ -22,6 +22,7 @@ import retrofit.http.Header;
 import retrofit.http.Body;
 import retrofit.http.Multipart;
 import retrofit.http.POST;
+import retrofit.http.PUT;
 import retrofit.http.Path;
 import retrofit.http.Query;
 
@@ -65,21 +66,24 @@ public interface UserService
             Callback<UserProfileDTO> cb);
 
     @FormUrlEncoded
-    @POST("/users/{userId}/updateUser")
+    @PUT("/users/{userId}/updateUser")
     void updateProfile(@Header("Authorization") String authorization,
-                       @Field("biography") String biography,
+                       @Path("userId") int userId,
                        @Field("deviceToken") String deviceToken,
                        @Field("displayName") String displayName,
                        @Field("email") String email,
-                       @Field("emailNotificationsEnabled") Boolean emailNotificationsEnabled,
                        @Field("firstName") String firstName,
                        @Field("lastName") String lastName,
-                       @Field("location") String location,
                        @Field("password") String password,
                        @Field("passwordConfirmation") String passwordConfirmation,
-                       @Field("pushNotificationsEnabled") Boolean pushNotificationsEnabled,
                        @Field("username") String username,
-                       @Field("website") String website,
+                       Callback<UserProfileDTO> cb);
+
+    @FormUrlEncoded
+    @PUT("/users/{userId}/updateUser")
+    void updateProfile(@Header("Authorization") String authorization,
+                       @Path("userId") int userId,
+                       @Field("emailNotificationsEnabled") Boolean emailNotificationsEnabled,
                        Callback<UserProfileDTO> cb);
 
     @Multipart

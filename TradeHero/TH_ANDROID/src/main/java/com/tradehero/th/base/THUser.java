@@ -345,19 +345,15 @@ public class THUser
         {
         }
         userService.updateProfile(getAuthHeader(),
-                userFormDTO.biography,
+                getCurrentUserBase().id,
                 userFormDTO.deviceToken,
                 userFormDTO.displayName,
                 userFormDTO.email,
-                userFormDTO.emailNotificationsEnabled,
                 userFormDTO.firstName,
                 userFormDTO.lastName,
-                userFormDTO.location,
                 userFormDTO.password,
                 userFormDTO.passwordConfirmation,
-                userFormDTO.pushNotificationsEnabled,
                 userFormDTO.username,
-                userFormDTO.website,
                 createCallbackForSignUpAsyncWithJson(userFormJSON, callback));
     }
 }

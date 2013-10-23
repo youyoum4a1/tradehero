@@ -1,16 +1,25 @@
 package com.tradehero.th.fragments.settings;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.DTOAdapter;
 import com.tradehero.th.api.leaderboard.LeaderboardDefDTO;
+import com.tradehero.th.api.users.UserBaseDTO;
+import com.tradehero.th.auth.EmailAuthenticationProvider;
+import com.tradehero.th.base.Application;
+import com.tradehero.th.base.THUser;
 import com.tradehero.th.fragments.leaderboard.LeaderboardDefView;
+import com.tradehero.th.misc.callback.LogInCallback;
+import com.tradehero.th.misc.exception.THException;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -28,8 +37,19 @@ public class SettingsListAdapter extends BaseAdapter {
     protected final LayoutInflater inflater;
     protected final Context context;
     private final int layoutResourceId;
+    public CompoundButton.OnCheckedChangeListener checkboxCheckedListener;
 
     private List<String> items;
+
+    public List<Boolean> getItemsChecked() {
+        return itemsChecked;
+    }
+
+    public void setItemsChecked(List<Boolean> itemsChecked) {
+        this.itemsChecked = itemsChecked;
+    }
+
+    private List<Boolean> itemsChecked;
 
     public SettingsListAdapter(Context context, LayoutInflater inflater, int layoutResourceId)
     {
@@ -82,6 +102,13 @@ public class SettingsListAdapter extends BaseAdapter {
 
         SettingsItemView view = (SettingsItemView) convertView;
         view.display((String) getItem(position));
+
+        CheckBox checkBox = (CheckBox) view.findViewById(R.id.settingsItem_toggle);
+        if (checkBox != null && itemsChecked != null)
+        {
+            checkBox.setChecked((boolean)itemsChecked.get(position));
+            checkBox.setOnCheckedChangeListener(checkboxCheckedListener);
+        }
         return view;
     }
 

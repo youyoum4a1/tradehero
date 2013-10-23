@@ -17,6 +17,8 @@ public class UserFormFactory
     public static final String KEY_DISPLAY_NAME = "displayName";
     public static final String KEY_FIRST_NAME = "firstName";
     public static final String KEY_LAST_NAME = "lastName";
+    public static final String KEY_EMAIL_NOTIFICATION_ENABLED = "emailNotificationsEnabled";
+    public static final String KEY_PUSH_NOTIFICATION_ENABLED = "pushNotificationsEnabled";
 
     public static UserFormDTO create (JSONObject json) throws JSONException
     {

@@ -12,32 +12,44 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ListView;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
+import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.ActivityHelper;
 import com.tradehero.th.activities.AuthenticationActivity;
+import com.tradehero.th.api.form.UserFormFactory;
+import com.tradehero.th.api.users.UserBaseDTO;
+import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.api.yahoo.News;
+import com.tradehero.th.auth.EmailAuthenticationProvider;
 import com.tradehero.th.base.Application;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.base.NavigatorActivity;
 import com.tradehero.th.base.THUser;
 import com.tradehero.th.fragments.WebViewFragment;
 import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.misc.callback.LogInCallback;
 import com.tradehero.th.misc.callback.THCallback;
 import com.tradehero.th.misc.callback.THResponse;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.service.UserService;
 import com.tradehero.th.fragments.authentication.EmailSignUpFragment;
+import com.tradehero.th.persistence.user.UserProfileCache;
+import dagger.Lazy;
+import com.tradehero.th.api.users.UserBaseKey;
+import org.json.JSONObject;
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 import javax.inject.Inject;
-import java.util.Arrays;
-import java.util.Timer;
-import java.util.TimerTask;
 import retrofit.client.Response;
+import java.util.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -64,6 +76,7 @@ public class SettingsFragment extends DashboardFragment
     private static final int ITEM_ABOUT = 3;
 
     @Inject UserService userService;
+    @Inject protected Lazy<UserProfileCache> userProfileCache;
 
     private ProgressDialog progressDialog;
     private Timer signOutTimer;
@@ -169,8 +182,42 @@ public class SettingsFragment extends DashboardFragment
 
     private void setupNotificationsListView()
     {
+        UserBaseDTO dto = THUser.getCurrentUserBase();
         notificationsListViewAdapter = new SettingsListAdapter(getActivity(), getActivity().getLayoutInflater(), R.layout.settings_list_item_toggle);
         notificationsListViewAdapter.setItems(Arrays.asList(getResources().getStringArray(R.array.settings_notifications_list)));
+        notificationsListViewAdapter.checkboxCheckedListener = new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                progressDialog = ProgressDialog.show(
+                        getSherlockActivity(),
+                        Application.getResourceString(R.string.please_wait),
+                        Application.getResourceString(R.string.connecting_tradehero_only),
+                        true);
+                Map<String, Object> map = new HashMap<>();
+                map.put(UserFormFactory.KEY_EMAIL_NOTIFICATION_ENABLED, b);
+
+                userService.updateProfile(THUser.getAuthHeader(), THUser.getCurrentUserBase().id, b, new Callback<UserProfileDTO>() {
+                    @Override
+                    public void success(UserProfileDTO userProfileDTO, Response response) {
+                        progressDialog.hide();
+                    }
+
+                    @Override
+                    public void failure(RetrofitError error) {
+                        progressDialog.hide();
+                    }
+                });
+            }
+        };
+        UserBaseKey baseKey = new UserBaseKey(dto.id);
+        userProfileCache.get()
+                .getOrFetch(baseKey, false, new DTOCache.Listener<UserBaseKey, UserProfileDTO>() {
+                    @Override
+                    public void onDTOReceived(UserBaseKey key, UserProfileDTO value) {
+                        notificationsListViewAdapter.setItemsChecked(Arrays.asList(new Boolean[] { value.emailNotificationsEnabled }));
+                        notificationsListViewAdapter.notifyDataSetChanged();
+                    }
+                }).execute();
 
         notificationsListView = (ListView) view.findViewById(R.id.settings_notification);
         notificationsListView.setAdapter(notificationsListViewAdapter);
