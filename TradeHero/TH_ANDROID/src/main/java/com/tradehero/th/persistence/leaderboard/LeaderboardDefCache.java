@@ -14,7 +14,7 @@ import javax.inject.Singleton;
 {
     private static final int DEFAULT_MAX_SIZE = 1000;
 
-    @Inject protected Lazy<LeaderboardDefCache> leaderboardDefListCache;
+    @Inject protected Lazy<LeaderboardDefListCache> leaderboardDefListCache;
 
     @Inject public LeaderboardDefCache()
     {
@@ -24,7 +24,7 @@ import javax.inject.Singleton;
     @Override protected LeaderboardDefDTO fetch(LeaderboardDefKey key)
     {
         // if leaderboardDef is not in the cache, request for all lbdef again to refresh the cache
-        leaderboardDefListCache.get().fetch(key);
+        // TODO leaderboardDefListCache.get().fetch(key);
         return get(key);
     }
 
