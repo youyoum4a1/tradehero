@@ -1,5 +1,6 @@
 package com.tradehero.th.fragments.timeline;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.content.Loader;
 import android.view.LayoutInflater;
@@ -31,13 +32,17 @@ import java.util.List;
 import javax.inject.Inject;
 
 public class TimelineFragment extends ItemListFragment<TimelineItem>
-        implements DTOCache.Listener<UserBaseKey, UserProfileDTO>, BaseFragment.ArgumentsChangeListener, StepView.StepProvider
+        implements BaseFragment.ArgumentsChangeListener,
+            StepView.StepProvider
 {
-    public static final String USER_ID = "userId";
+    public static final String BUNDLE_KEY_USER_ID = TimelineFragment.class.getName() + ".userId";
     private TimelineAdapter timelineAdapter;
 
+    private Bundle desiredArguments;
+    protected UserBaseKey userBaseKey;
     protected UserProfileDTO profile;
-    protected int profileId;
+    protected DTOCache.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
+    protected AsyncTask<Void, Void, UserProfileDTO> userProfileCacheTask;
     private TimelineListView timelineListView;
 
     @Inject protected Lazy<UserProfileCache> userProfileCache;
@@ -49,10 +54,24 @@ public class TimelineFragment extends ItemListFragment<TimelineItem>
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         view = inflater.inflate(R.layout.profile_screen, container, false);
-        profileId = getArguments().getInt(USER_ID);
-
-        setProfileId(profileId);
+        initView(view);
         return view;
+    }
+
+    private void initView(View view)
+    {
+        timelineListView = (TimelineListView) view.findViewById(R.id.pull_refresh_list);
+        if (timelineAdapter == null)
+        {
+            timelineAdapter = createTimelineAdapter();
+        }
+        timelineListView.setAdapter(timelineAdapter);
+        timelineListView.setOnRefreshListener(timelineAdapter);
+        timelineListView.setOnScrollListener(timelineAdapter);
+        timelineListView.setOnLastItemVisibleListener(timelineAdapter);
+
+        setListView(timelineListView.getRefreshableView());
+        registerForContextMenu(timelineListView);
     }
 
     //<editor-fold desc="ActionBar">
@@ -81,31 +100,72 @@ public class TimelineFragment extends ItemListFragment<TimelineItem>
     }
     //</editor-fold>
 
-    private void setProfileId(int profileId)
+    @Override public void onResume()
     {
-        if (profileId != 0)
+        super.onResume();
+        if (desiredArguments == null)
         {
-            UserBaseKey baseKey = new UserBaseKey(profileId);
-            userProfileCache.get()
-                    .getOrFetch(baseKey, false, this).execute();
+            desiredArguments = getArguments();
         }
-        initView(view);
+
+        linkWith(new UserBaseKey(desiredArguments.getInt(BUNDLE_KEY_USER_ID)), true);
     }
 
-    private void initView(View view)
+    @Override public void onDestroyView()
     {
-        timelineListView = (TimelineListView) view.findViewById(R.id.pull_refresh_list);
-        if (timelineAdapter == null)
+        userProfileCacheListener = null;
+        if (userProfileCacheTask != null)
         {
-            timelineAdapter = createTimelineAdapter();
+            userProfileCacheTask.cancel(false);
         }
-        timelineListView.setAdapter(timelineAdapter);
-        timelineListView.setOnRefreshListener(timelineAdapter);
-        timelineListView.setOnScrollListener(timelineAdapter);
-        timelineListView.setOnLastItemVisibleListener(timelineAdapter);
+        userProfileCacheTask = null;
+        super.onDestroyView();
+    }
 
-        setListView(timelineListView.getRefreshableView());
-        registerForContextMenu(timelineListView);
+    protected void linkWith(UserBaseKey userBaseKey, final boolean andDisplay)
+    {
+        this.userBaseKey = userBaseKey;
+        if (userBaseKey != null)
+        {
+            timelineAdapter.getLoader().resetQuery();
+            timelineAdapter.getLoader().setOwnerId(userBaseKey.key);
+
+            UserProfileDTO cachedUserProfile = userProfileCache.get().get(userBaseKey);
+            if (cachedUserProfile != null) // Testing with the cache like this is presumably faster
+            {
+                linkWith(cachedUserProfile, andDisplay);
+            }
+            else
+            {
+                userProfileCacheListener = new DTOCache.Listener<UserBaseKey, UserProfileDTO>()
+                {
+                    @Override public void onDTOReceived(UserBaseKey key, UserProfileDTO value)
+                    {
+                        linkWith(value, andDisplay);
+                    }
+                };
+                if (userProfileCacheTask != null)
+                {
+                    userProfileCacheTask.cancel(false);
+                }
+                userProfileCacheTask = userProfileCache.get().getOrFetch(userBaseKey, false, userProfileCacheListener);
+                userProfileCacheTask.execute();
+            }
+        }
+
+        if (andDisplay)
+        {
+            // TODO
+        }
+    }
+
+    protected void linkWith(UserProfileDTO userProfileDTO, boolean andDisplay)
+    {
+        this.profile = userProfileDTO;
+        if (andDisplay)
+        {
+            updateView();
+        }
     }
 
     protected void updateView()
@@ -133,12 +193,11 @@ public class TimelineFragment extends ItemListFragment<TimelineItem>
     {
         TimelinePagedItemListLoader timelineLoader = new TimelinePagedItemListLoader(getActivity());
         timelineLoader.setItemsPerPage(42);
-        timelineLoader.setOwnerId(profileId);
+        //timelineLoader.setOwnerId(profileId); // It is set at resume
         return timelineLoader;
     }
 
     //<editor-fold desc="Loaders methods">
-
     @Override public void onLoadFinished(Loader<List<TimelineItem>> listLoader, List<TimelineItem> items)
     {
         super.onLoadFinished(listLoader, items);
@@ -150,19 +209,9 @@ public class TimelineFragment extends ItemListFragment<TimelineItem>
         return timelineAdapter == null ? null : timelineAdapter.getLoader();
     }
 
-    @Override public void onDTOReceived(UserBaseKey key, UserProfileDTO value)
-    {
-        profile = value;
-        updateView();
-    }
-
     @Override public void onArgumentsChanged(Bundle args)
     {
-        profileId = args.getInt(USER_ID);
-
-        timelineAdapter.getLoader().resetQuery();
-        timelineAdapter.getLoader().setOwnerId(profileId);
-        setProfileId(profileId);
+        desiredArguments = args;
     }
 
     @Override public View provideView(int step)

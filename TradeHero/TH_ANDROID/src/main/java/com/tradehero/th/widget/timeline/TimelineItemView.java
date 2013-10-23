@@ -183,7 +183,7 @@ public class TimelineItemView extends RelativeLayout implements
     private void openUserProfile(int userId)
     {
         Bundle b = new Bundle();
-        b.putInt(TimelineFragment.USER_ID, userId);
+        b.putInt(TimelineFragment.BUNDLE_KEY_USER_ID, userId);
 
         if (THUser.getCurrentUserBase().id != userId)
         {

@@ -22,11 +22,13 @@
       android:src="@drawable/user_profile_gradient_filter_xml"
       android:contentDescription="@null"
       />
+
   <LinearLayout
       android:layout_width="fill_parent"
       android:layout_height="fill_parent"
       android:orientation="vertical"
       >
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -93,13 +95,14 @@
               android:textStyle="normal"/>
 
           <TextView
-              android:id="@+id/txt_HQ"
+              android:id="@+id/txt_hero_quotient"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
               android:layout_marginLeft="5dp"
               android:textColor="@color/white"
               android:textSize="18sp"
               android:textStyle="bold"/>
+
         </LinearLayout>
 
         <LinearLayout
@@ -107,7 +110,7 @@
             android:layout_height="wrap_content"
             android:background="@android:color/transparent"
             android:orientation="horizontal"
-            android:paddingTop="15dp">
+            android:paddingTop="5dp">
 
           <TextView
               android:id="@+id/txt_profile_tradeprofitprefix_text"
@@ -131,9 +134,134 @@
               android:shadowDy="1"
               android:shadowRadius="3"
               />
+
         </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:orientation="horizontal"
+            android:paddingTop="5dp"
+            >
+
+          <TextView
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_marginRight="3sp"
+              android:textColor="@color/white"
+              android:textSize="12sp"
+              android:shadowColor="@color/black"
+              android:shadowDy="1"
+              android:shadowRadius="2"
+              android:text="@string/member_since"
+            />
+
+          <TextView
+              android:id="@+id/txt_member_since"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:textColor="@color/white"
+              android:textSize="12sp"
+              android:textStyle="bold"
+              android:shadowColor="@color/black"
+              android:shadowDy="1"
+              android:shadowRadius="2"
+            />
+
+        </LinearLayout>
+
       </LinearLayout>
+
     </RelativeLayout>
+
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+      >
+
+      <TableRow>
+
+        <TextView
+            style="@style/TH.SmallTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="right"
+            android:paddingRight="@dimen/trade_screen_info_title_padding_right"
+            android:textColor="@color/white"
+            android:text="@string/total_wealth"
+            />
+
+        <TextView
+            android:id="@+id/txt_total_wealth"
+            style="@style/TH.SmallValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="left"
+            android:textColor="@color/white"
+            android:text=""
+            android:textStyle="bold"
+            />
+
+      </TableRow>
+
+      <TableRow>
+
+        <TextView
+            style="@style/TH.SmallTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="right"
+            android:paddingRight="@dimen/trade_screen_info_title_padding_right"
+            android:textColor="@color/white"
+            android:text="@string/additional_cash"
+            />
+
+        <TextView
+            android:id="@+id/txt_additional_cash"
+            style="@style/TH.SmallValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="left"
+            android:textColor="@color/white"
+            android:text=""
+            android:textStyle="bold"
+            />
+
+      </TableRow>
+
+      <TableRow>
+
+        <TextView
+            style="@style/TH.SmallTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="right"
+            android:paddingRight="@dimen/trade_screen_info_title_padding_right"
+            android:textColor="@color/white"
+            android:text="@string/cash_on_hand"
+            />
+
+        <TextView
+            android:id="@+id/txt_cash_on_hand"
+            style="@style/TH.SmallValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="left"
+            android:textColor="@color/white"
+            android:text=""
+            android:textStyle="bold"
+            />
+
+      </TableRow>
+
+    </TableLayout>
 
     <!-- followers bar layout -->
     <LinearLayout

@@ -11,6 +11,7 @@
       android:id="@+id/pull_refresh_list"
       android:layout_width="fill_parent"
       android:layout_height="fill_parent"
+      android:paddingBottom="56dp"
       android:cacheColorHint="#00000000"
       android:divider="#00000000"
       android:dividerHeight="10dip"

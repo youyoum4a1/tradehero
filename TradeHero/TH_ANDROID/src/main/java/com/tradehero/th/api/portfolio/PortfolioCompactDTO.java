@@ -13,6 +13,7 @@ public class PortfolioCompactDTO implements DTO
     public double totalExtraCashPurchased;
     public double totalExtraCashGiven;
 
+    //<editor-fold desc="Constructors">
     public PortfolioCompactDTO()
     {
     }
@@ -20,5 +21,11 @@ public class PortfolioCompactDTO implements DTO
     public PortfolioId getPortfolioId()
     {
         return new PortfolioId(id);
+    }
+    //</editor-fold>
+
+    public double getTotalExtraCash()
+    {
+        return totalExtraCashGiven + totalExtraCashPurchased;
     }
 }
