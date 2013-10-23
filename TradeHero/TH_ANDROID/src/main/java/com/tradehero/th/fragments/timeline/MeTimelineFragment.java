@@ -4,15 +4,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import com.tradehero.common.persistence.DTOCache;
-import com.tradehero.th.R;
 import com.tradehero.th.api.users.UserBaseDTO;
-import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.THUser;
-import com.tradehero.th.persistence.user.UserProfileCache;
-import dagger.Lazy;
-import javax.inject.Inject;
 
 /** Created with IntelliJ IDEA. User: tho Date: 9/20/13 Time: 3:35 PM Copyright (c) TradeHero */
 public class MeTimelineFragment extends TimelineFragment
@@ -22,7 +15,7 @@ public class MeTimelineFragment extends TimelineFragment
         UserBaseDTO u = THUser.getCurrentUserBase();
         if (u != null)
         {
-            getArguments().putInt(USER_ID, u.id);
+            getArguments().putInt(BUNDLE_KEY_USER_ID, u.id);
         }
         return super.onCreateView(inflater, container, savedInstanceState);
     }

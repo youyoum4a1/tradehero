@@ -9,7 +9,14 @@ import android.os.AsyncTask;
  */
 public interface DTOCache<DTOKeyType extends DTOKey, DTOType extends DTO>
 {
+    /**
+     * This method should be implemented so that it is very fast. Indeed this method is sometimes used before deciding
+     * whether to getOrFetch
+     * @param key
+     * @return
+     */
     DTOType get(DTOKeyType key);
+
     DTOType getOrFetch(DTOKeyType key);
     DTOType getOrFetch(DTOKeyType key, boolean force);
     AsyncTask<Void, Void, DTOType> getOrFetch(DTOKeyType key, Listener<DTOKeyType, DTOType> callback);

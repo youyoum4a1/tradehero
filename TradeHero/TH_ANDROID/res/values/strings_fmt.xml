@@ -6,7 +6,6 @@
   <string name="email_alert">You must provide an Email id.</string>
   <string name="Wealth_Profit">Total Wealth US$</string>
   <string name="Additional_Cash">Additional Cash US$</string>
-  <string name="Cash_on_Hand">Cash on Hand US$</string>
   <string name="facebook_app_id">431745923529834</string>
 
 </resources>

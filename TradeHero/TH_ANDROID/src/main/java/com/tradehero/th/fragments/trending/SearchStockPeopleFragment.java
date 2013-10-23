@@ -33,6 +33,7 @@ import com.tradehero.th.api.security.SecurityIdList;
 import com.tradehero.th.api.security.SecurityListType;
 import com.tradehero.th.api.users.UserSearchResultDTO;
 import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.fragments.trade.TradeFragment;
 import com.tradehero.th.network.CallbackWithSpecificNotifiers;
 import com.tradehero.th.network.service.UserService;
@@ -85,6 +86,7 @@ public class SearchStockPeopleFragment extends DashboardFragment
     private TrendingAdapter trendingAdapter;
 
     @Inject UserService userService;
+
     private CallbackWithSpecificNotifiers<List<UserSearchResultDTO>> peopleCallback;
     private List<UserSearchResultDTO> userDTOList;
     private SearchPeopleAdapter searchPeopleAdapter;
@@ -158,10 +160,7 @@ public class SearchStockPeopleFragment extends DashboardFragment
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id)
                 {
-                    UserSearchResultDTO userSearchResultDTO = (UserSearchResultDTO) parent.getItemAtPosition(position);
-
-                    THToast.show("Disabled for now");
-                    // TODO put back in
+                    pushUserFragmentIn((UserSearchResultDTO) parent.getItemAtPosition(position));
                 }
             });
         }
@@ -499,6 +498,23 @@ public class SearchStockPeopleFragment extends DashboardFragment
             page = args.getInt(BUNDLE_KEY_PAGE, DEFAULT_PAGE);
             perPage = args.getInt(BUNDLE_KEY_PER_PAGE, DEFAULT_PER_PAGE);
         }
+    }
+
+    protected void pushUserFragmentIn(UserSearchResultDTO userSearchResultDTO)
+    {
+        if (userSearchResultDTO == null || userSearchResultDTO.userId == null)
+        {
+            THLog.e(TAG, "Cannot handle null " + userSearchResultDTO, new IllegalArgumentException());
+            return;
+        }
+
+        THToast.show("Disabled for now");
+        // TODO put back in
+
+        Bundle args = new Bundle();
+        args.putInt(PushableTimelineFragment.BUNDLE_KEY_USER_ID, userSearchResultDTO.userId);
+
+        //navigator.pushFragment(PushableTimelineFragment.class, args);
     }
 
     //<editor-fold desc="Accessors">
