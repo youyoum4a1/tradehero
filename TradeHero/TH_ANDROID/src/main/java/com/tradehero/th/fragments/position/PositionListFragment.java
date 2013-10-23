@@ -23,6 +23,7 @@ import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.dashboard.DashboardTabType;
 import com.tradehero.th.fragments.trade.TradeFragment;
+import com.tradehero.th.fragments.trade.TradeListFragment;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactCache;
 import com.tradehero.th.persistence.position.GetPositionsCache;
 import com.tradehero.th.persistence.position.PositionCache;
@@ -438,7 +439,7 @@ public class PositionListFragment extends DashboardFragment
 
     @Override public void onTradeHistoryClicked(int position, OwnedPositionId clickedOwnedPositionId)
     {
-        THToast.show("Trade History at position " + position);
+        navigator.pushFragment(TradeListFragment.class, clickedOwnedPositionId.getArgs());
     }
     //</editor-fold>
 }

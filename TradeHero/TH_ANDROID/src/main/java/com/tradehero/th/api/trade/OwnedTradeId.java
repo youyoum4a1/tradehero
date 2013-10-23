@@ -1,6 +1,7 @@
 package com.tradehero.th.api.trade;
 
 import android.os.Bundle;
+import com.tradehero.common.persistence.DTOKey;
 import com.tradehero.th.api.portfolio.PortfolioId;
 import com.tradehero.th.api.position.OwnedPositionId;
 import com.tradehero.th.api.users.UserBaseKey;
@@ -9,7 +10,7 @@ import com.tradehero.th.api.users.UserBaseKey;
  * Created by julien on 22/10/13
  * Key identifying a Trade and all its parent objects.
  */
-public class OwnedTradeId extends OwnedPositionId
+public class OwnedTradeId extends OwnedPositionId implements DTOKey
 {
     public final static String BUNDLE_KEY_TRADE_ID = OwnedTradeId.class.getName() + ".tradeId";
     public final Integer tradeId;
@@ -113,4 +114,10 @@ public class OwnedTradeId extends OwnedPositionId
     {
         return String.format("[userId=%d; portfolioId=%d; positionId=%d; tradeId=%d]", userId, portfolioId, positionId, tradeId);
     }
+
+    public TradeId getTradeId()
+    {
+        return new TradeId(this.tradeId);
+    }
+
 }

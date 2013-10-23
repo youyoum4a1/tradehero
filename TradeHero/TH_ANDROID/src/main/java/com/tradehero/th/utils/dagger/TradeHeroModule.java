@@ -22,12 +22,7 @@ import com.tradehero.th.fragments.settings.*;
 import com.tradehero.th.fragments.timeline.MeTimelineFragment;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.fragments.timeline.TimelineFragment;
-import com.tradehero.th.fragments.trade.BuyFragment;
-import com.tradehero.th.fragments.trade.ChartFragment;
-import com.tradehero.th.fragments.trade.FreshQuoteHolder;
-import com.tradehero.th.fragments.trade.StockInfoFragment;
-import com.tradehero.th.fragments.trade.TradeFragment;
-import com.tradehero.th.fragments.trade.YahooNewsFragment;
+import com.tradehero.th.fragments.trade.*;
 import com.tradehero.th.fragments.trending.SearchStockPeopleFragment;
 import com.tradehero.th.fragments.trending.TrendingFilterSelectorBasicFragment;
 import com.tradehero.th.fragments.trending.TrendingFilterSelectorPriceFragment;
@@ -54,6 +49,7 @@ import com.tradehero.th.widget.portfolio.header.OtherUserPortfolioHeaderView;
 import com.tradehero.th.widget.position.PositionLongViewHolder;
 import com.tradehero.th.widget.position.PositionQuickViewHolder;
 import com.tradehero.th.widget.timeline.TimelineItemView;
+import com.tradehero.th.widget.trade.TradeListItemView;
 import com.tradehero.th.widget.trending.TrendingSecurityView;
 import com.tradehero.th.widget.trending.TrendingUserView;
 import com.tradehero.th.widget.user.ProfileCompactView;
@@ -100,6 +96,9 @@ import javax.inject.Singleton;
                 OtherUserPortfolioHeaderView.class,
                 PositionQuickViewHolder.class,
                 PositionLongViewHolder.class,
+
+                TradeListFragment.class,
+                TradeListItemView.class,
 
                 AbstractUserAvailabilityRequester.class,
                 SearchStockPageItemListLoader.class,
