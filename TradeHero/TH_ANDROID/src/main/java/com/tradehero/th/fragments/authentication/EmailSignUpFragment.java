@@ -25,6 +25,7 @@ import com.tradehero.th.auth.AuthenticationMode;
 import com.tradehero.th.auth.EmailAuthenticationProvider;
 import com.tradehero.th.base.Application;
 import com.tradehero.th.base.THUser;
+import com.tradehero.th.fragments.settings.FocusableOnTouchListener;
 import com.tradehero.th.misc.callback.LogInCallback;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.utills.PostData;
@@ -68,20 +69,28 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
 
     @Override protected void initSetup(View view)
     {
+        FocusableOnTouchListener touchListener = new FocusableOnTouchListener();
+
         email = (ServerValidatedEmailText) view.findViewById(R.id.authentication_sign_up_email);
         email.addListener(this);
+        email.setOnTouchListener(touchListener); // HACK: force this to focus instead of the TabHost stealing focus..
 
         password = (ValidatedPasswordText) view.findViewById(R.id.authentication_sign_up_password);
         password.addListener(this);
+        password.setOnTouchListener(touchListener); // HACK: force this to focus instead of the TabHost stealing focus..
 
         confirmPassword = (MatchingPasswordText) view.findViewById(R.id.authentication_sign_up_confirm_password);
         confirmPassword.addListener(this);
+        confirmPassword.setOnTouchListener(touchListener); // HACK: force this to focus instead of the TabHost stealing focus..
 
         displayName = (ServerValidatedUsernameText) view.findViewById(R.id.authentication_sign_up_username);
         displayName.addListener(this);
+        displayName.setOnTouchListener(touchListener); // HACK: force this to focus instead of the TabHost stealing focus..
 
         firstName = (EditText) view.findViewById(R.id.et_firstname);
+        firstName.setOnTouchListener(touchListener); // HACK: force this to focus instead of the TabHost stealing focus..
         lastName = (EditText) view.findViewById(R.id.et_lastname);
+        lastName.setOnTouchListener(touchListener); // HACK: force this to focus instead of the TabHost stealing focus..
 
         signButton = (Button) view.findViewById(R.id.authentication_sign_up_button);
         signButton.setOnClickListener(this);
@@ -155,6 +164,45 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
         map.put(UserFormFactory.KEY_LAST_NAME, lastName.getText());
         // TODO add profile picture
         return map;
+    }
+
+    @Override
+    public void onDestroyView() {
+        if (email != null)
+        {
+            email.removeAllListeners();
+            email.setOnTouchListener(null);
+            email = null;
+        }
+        if (password != null)
+        {
+            password.removeAllListeners();
+            password.setOnTouchListener(null);
+            password = null;
+        }
+        if (confirmPassword != null)
+        {
+            confirmPassword.removeAllListeners();
+            confirmPassword.setOnTouchListener(null);
+            confirmPassword = null;
+        }
+        if (displayName != null)
+        {
+            displayName.removeAllListeners();
+            displayName.setOnTouchListener(null);
+            displayName = null;
+        }
+        if (firstName != null)
+        {
+            firstName.setOnTouchListener(null);
+            firstName = null;
+        }
+        if (lastName != null)
+        {
+            lastName.setOnTouchListener(null);
+            lastName = null;
+        }
+        super.onDestroyView();
     }
 
     @Override
