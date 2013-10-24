@@ -36,7 +36,6 @@ import com.tradehero.th.network.service.*;
 import com.tradehero.th.persistence.TimelineManager;
 import com.tradehero.th.persistence.TimelineStore;
 import com.tradehero.th.persistence.leaderboard.LeaderboardManager;
-import com.tradehero.th.persistence.leaderboard.LeaderboardStore;
 import com.tradehero.th.persistence.user.AbstractUserStore;
 import com.tradehero.th.persistence.user.UserManager;
 import com.tradehero.th.persistence.user.UserStore;
@@ -51,7 +50,7 @@ import com.tradehero.th.widget.position.PositionQuickViewHolder;
 import com.tradehero.th.widget.timeline.TimelineItemView;
 import com.tradehero.th.widget.trade.TradeListItemView;
 import com.tradehero.th.widget.trending.TrendingSecurityView;
-import com.tradehero.th.widget.trending.TrendingUserView;
+import com.tradehero.th.widget.trending.SearchPeopleItemView;
 import com.tradehero.th.widget.user.ProfileCompactView;
 import com.tradehero.th.widget.user.ProfileView;
 import dagger.Module;
@@ -75,7 +74,7 @@ import javax.inject.Singleton;
                 TrendingFilterSelectorPriceFragment.class,
                 TrendingSecurityView.class,
                 SearchStockPeopleFragment.class,
-                TrendingUserView.class,
+                SearchPeopleItemView.class,
                 TradeFragment.class,
                 TimelineFragment.class,
                 MeTimelineFragment.class,

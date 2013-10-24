@@ -5,9 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import com.tradehero.common.utils.THLog;
 import com.tradehero.th.api.DTOView;
-import java.util.LinkedList;
 import java.util.List;
 
 /** Created with IntelliJ IDEA. User: tho Date: 9/11/13 Time: 11:28 AM Copyright (c) TradeHero */
@@ -69,12 +67,14 @@ public abstract class DTOAdapter<T, V extends DTOView<T>> extends BaseAdapter
             convertView = inflater.inflate(layoutResourceId, viewGroup, false);
         }
 
-        V view = (V) convertView;
-        view.display((T) getItem(position));
-        return getView(position, view);
+        V dtoView = (V) convertView;
+        T dto = (T) getItem(position);
+        dtoView.display(dto);
+        fineTune(position, dto, dtoView);
+        return convertView;
     }
 
-    protected abstract View getView(int position, V convertView);
+    protected abstract void fineTune(int position, T dto, V dtoView);
 
     @Override public void notifyDataSetChanged()
     {

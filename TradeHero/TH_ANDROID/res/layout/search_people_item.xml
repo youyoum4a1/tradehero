@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.tradehero.th.widget.trending.TrendingUserView
+<com.tradehero.th.widget.trending.SearchPeopleItemView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res/com.tradehero.th"
     android:layout_width="match_parent"
@@ -112,4 +112,4 @@
         </LinearLayout>
     </RelativeLayout>
 
-</com.tradehero.th.widget.trending.TrendingUserView>
+</com.tradehero.th.widget.trending.SearchPeopleItemView>

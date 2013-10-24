@@ -169,8 +169,8 @@ public class PortfolioListItemAdapter extends DTOAdapter<OwnedPortfolioId, Portf
         return view;
     }
 
-    @Override protected View getView(int position, PortfolioListItemView convertView)
+    @Override protected void fineTune(int position, OwnedPortfolioId dto, PortfolioListItemView dtoView)
     {
-        return convertView;
+        // Nothing to do
     }
 }

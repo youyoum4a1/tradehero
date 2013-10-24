@@ -22,8 +22,8 @@ public class LeaderboardListAdapter extends DTOAdapter<LeaderboardUserDTO, Leade
         return dto;
     }
 
-    @Override protected LeaderboardUserDTOView getView(int position, LeaderboardUserDTOView convertView)
+    @Override protected void fineTune(int position, LeaderboardUserDTO dto, LeaderboardUserDTOView dtoView)
     {
-        return convertView;
+        // Nothing to do
     }
 }

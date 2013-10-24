@@ -31,22 +31,21 @@ public class LeaderboardDefMostSkilledListAdapter extends LeaderboardDefListAdap
         super.setItems(items);
     }
 
-    @Override protected View getView(int position, LeaderboardDefView convertView)
+    @Override protected void fineTune(int position,LeaderboardDefDTO dto, LeaderboardDefView dtoView)
     {
 
-        convertView.setBackgroundResource(R.drawable.leaderboard_button_border_full);
+        dtoView.setBackgroundResource(R.drawable.leaderboard_button_border_full);
 
         if (getCount() >= 2)
         {
             if (position == 0)
             {
-                convertView.setBackgroundResource(R.drawable.leaderboard_button_border_top);
+                dtoView.setBackgroundResource(R.drawable.leaderboard_button_border_top);
             }
             else if (position == getCount() - 1)
             {
-                convertView.setBackgroundResource(R.drawable.leaderboard_button_border_bottom);
+                dtoView.setBackgroundResource(R.drawable.leaderboard_button_border_bottom);
             }
         }
-        return convertView;
     }
 }

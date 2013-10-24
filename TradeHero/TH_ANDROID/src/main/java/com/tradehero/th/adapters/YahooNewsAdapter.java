@@ -24,9 +24,9 @@ public class YahooNewsAdapter extends DTOAdapter<News, YahooNewsView>
         super(context, inflater, layoutResourceId);
     }
 
-    @Override protected View getView(final int position, final YahooNewsView convertView)
+    @Override protected void fineTune(final int position, News dto, final YahooNewsView dtoView)
     {
-        convertView.setOnClickListener(new View.OnClickListener()
+        dtoView.setOnClickListener(new View.OnClickListener()
         {
             @Override public void onClick(View view)
             {
@@ -40,6 +40,5 @@ public class YahooNewsAdapter extends DTOAdapter<News, YahooNewsView>
                 }
             }
         });
-        return convertView;
     }
 }

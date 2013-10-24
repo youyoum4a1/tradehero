@@ -12,6 +12,7 @@
       android:layout_width="62dp"
       android:src="@drawable/toggle_stocks"
       android:layout_centerVertical="true"
+      android:contentDescription="@null"
       />
 
   <TextView

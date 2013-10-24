@@ -6,13 +6,10 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
-import com.squareup.picasso.Cache;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
 import com.squareup.picasso.Transformation;
-import com.squareup.picasso.UrlConnectionDownloader;
-import com.tradehero.common.cache.LruMemFileCache;
 import com.tradehero.common.graphics.AbstractSequentialTransformation;
 import com.tradehero.common.graphics.GaussianTransformation;
 import com.tradehero.common.graphics.GrayscaleTransformation;
@@ -30,9 +27,9 @@ import java.util.concurrent.Future;
 import javax.inject.Inject;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 9/17/13 Time: 3:39 PM To change this template use File | Settings | File Templates. */
-public class TrendingUserView extends FrameLayout implements DTOView<UserSearchResultDTO>
+public class SearchPeopleItemView extends FrameLayout implements DTOView<UserSearchResultDTO>
 {
-    private static final String TAG = TrendingUserView.class.getSimpleName();
+    private static final String TAG = SearchPeopleItemView.class.getSimpleName();
     private static Transformation roundedShapeTransformation;
     private static Transformation backgroundTransformation;
 
@@ -51,17 +48,17 @@ public class TrendingUserView extends FrameLayout implements DTOView<UserSearchR
     private int mVisibility;
 
     //<editor-fold desc="Constructors">
-    public TrendingUserView(Context context)
+    public SearchPeopleItemView(Context context)
     {
         super(context);    
     }
 
-    public TrendingUserView(Context context, AttributeSet attrs)
+    public SearchPeopleItemView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
     }
 
-    public TrendingUserView(Context context, AttributeSet attrs, int defStyle)
+    public SearchPeopleItemView(Context context, AttributeSet attrs, int defStyle)
     {
         super(context, attrs, defStyle);
     }

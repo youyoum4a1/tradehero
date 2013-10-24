@@ -35,9 +35,9 @@ public class TimelineAdapter extends DTOAdapter<TimelineItem, TimelineItemView>
         return loader;
     }
 
-    @Override protected View getView(int position, TimelineItemView convertView)
+    @Override protected void fineTune(int position, TimelineItem dto, TimelineItemView dtoView)
     {
-        return convertView;
+        // Nothing to do
     }
 
     @Override public void onRefresh(PullToRefreshBase<ListView> refreshView)

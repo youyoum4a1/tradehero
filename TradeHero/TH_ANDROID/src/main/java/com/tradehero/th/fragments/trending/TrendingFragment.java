@@ -18,7 +18,7 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
-import com.tradehero.th.adapters.trending.TrendingAdapter;
+import com.tradehero.th.adapters.trending.SecurityItemViewAdapter;
 import com.tradehero.th.adapters.trending.TrendingFilterPagerAdapter;
 import com.tradehero.th.api.market.ExchangeStringId;
 import com.tradehero.th.api.security.SecurityCompactDTO;
@@ -67,7 +67,7 @@ public class TrendingFragment extends DashboardFragment
     @Inject Lazy<SecurityCompactCache> securityCompactCache;
     private  AsyncTask<Void, Void, SecurityIdList> trendingTask;
     private List<SecurityCompactDTO> securityCompactDTOs;
-    protected TrendingAdapter trendingAdapter;
+    protected SecurityItemViewAdapter securityItemViewAdapter;
     protected TrendingFilterSelectorFragment.OnResumedListener trendingFilterSelectorResumedListener;
 
     @Override public void onCreate(Bundle savedInstanceState)
@@ -98,8 +98,8 @@ public class TrendingFragment extends DashboardFragment
     {
         mTrendingGridView = (TrendingGridView) view.findViewById(R.id.trending_gridview);
 
-        trendingAdapter = new TrendingAdapter(getActivity(), getActivity().getLayoutInflater(), TrendingAdapter.SECURITY_TRENDING_CELL_LAYOUT);
-        mTrendingGridView.setAdapter(trendingAdapter);
+        securityItemViewAdapter = new SecurityItemViewAdapter(getActivity(), getActivity().getLayoutInflater(), R.layout.trending_grid_item);
+        mTrendingGridView.setAdapter(securityItemViewAdapter);
 
         mProgressSpinner = (ProgressBar) view.findViewById(R.id.progress_spinner);
         mBullIcon = (ImageView) view.findViewById(R.id.logo_img);
@@ -197,7 +197,7 @@ public class TrendingFragment extends DashboardFragment
     @Override public void onResume()
     {
         super.onResume();
-        trendingAdapter.notifyDataSetChanged();
+        securityItemViewAdapter.notifyDataSetChanged();
         displayFilterPager();
     }
 
@@ -255,8 +255,8 @@ public class TrendingFragment extends DashboardFragment
     private void setDataAdapterToGridView(List<SecurityCompactDTO> securityCompactDTOs)
     {
         this.securityCompactDTOs = securityCompactDTOs;
-        trendingAdapter.setItems(securityCompactDTOs);
-        trendingAdapter.notifyDataSetChanged();
+        securityItemViewAdapter.setItems(securityCompactDTOs);
+        securityItemViewAdapter.notifyDataSetChanged();
         showProgressSpinner(false);
     }
 

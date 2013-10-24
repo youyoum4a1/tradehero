@@ -57,6 +57,11 @@ import retrofit.RetrofitError;
 
     public List<SecurityCompactDTO> getOrFetch(List<SecurityId> securityIds)
     {
+        return getOrFetch(securityIds, false);
+    }
+
+    public List<SecurityCompactDTO> getOrFetch(List<SecurityId> securityIds, boolean force)
+    {
         if (securityIds == null)
         {
             return null;
@@ -67,7 +72,7 @@ import retrofit.RetrofitError;
         {
             for(SecurityId securityId: securityIds)
             {
-                securityCompactDTOList.add(getOrFetch(securityId, false));
+                securityCompactDTOList.add(getOrFetch(securityId, force));
             }
         }
         return securityCompactDTOList;
