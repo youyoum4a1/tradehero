@@ -19,12 +19,45 @@ public interface DTOCache<DTOKeyType extends DTOKey, DTOType extends DTO>
 
     DTOType getOrFetch(DTOKeyType key);
     DTOType getOrFetch(DTOKeyType key, boolean force);
-    AsyncTask<Void, Void, DTOType> getOrFetch(DTOKeyType key, Listener<DTOKeyType, DTOType> callback);
-    AsyncTask<Void, Void, DTOType> getOrFetch(DTOKeyType key, boolean force, Listener<DTOKeyType, DTOType> callback);
+    GetOrFetchTask<DTOType> getOrFetch(DTOKeyType key, Listener<DTOKeyType, DTOType> callback);
+    GetOrFetchTask<DTOType> getOrFetch(DTOKeyType key, boolean force, Listener<DTOKeyType, DTOType> callback);
     DTOType put(DTOKeyType key, DTOType value);
 
     public static interface Listener<DTOKeyType, DTOType>
     {
         void onDTOReceived(DTOKeyType key, DTOType value);
+    }
+
+    /**
+     * Indicates whether a task should forget its listener
+     */
+    public static interface ForgettableListenerTask
+    {
+        void forgetListener(boolean forgetListener);
+    }
+
+    /**
+     * The advantage of this class over simply a cancellable AsyncTask is that implementations can let the fetch run its course,
+     * which includes caching, but stop just before calling the listener.
+     * @param <DTOType>
+     */
+    abstract public static class GetOrFetchTask<DTOType> extends AsyncTask<Void, Void, DTOType> implements ForgettableListenerTask
+    {
+        private boolean forgetListener;
+
+        public GetOrFetchTask()
+        {
+            super();
+        }
+
+        public boolean hasForgottenListener()
+        {
+            return forgetListener;
+        }
+
+        @Override public void forgetListener(boolean forgetListener)
+        {
+            this.forgetListener = forgetListener;
+        }
     }
 }

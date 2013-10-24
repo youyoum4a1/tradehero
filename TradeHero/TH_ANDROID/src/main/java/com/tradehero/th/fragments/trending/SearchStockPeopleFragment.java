@@ -83,14 +83,14 @@ public class SearchStockPeopleFragment extends DashboardFragment
     @Inject Lazy<SecurityCompactListCache> securityCompactListCache;
     @Inject Lazy<SecurityCompactCache> securityCompactCache;
     private DTOCache.Listener<SecurityListType, SecurityIdList> securitySearchListener;
-    private AsyncTask<Void, Void, SecurityIdList> securitySearchTask;
+    private DTOCache.GetOrFetchTask<SecurityIdList> securitySearchTask;
     private List<SecurityCompactDTO> securityList;
     private SecurityItemViewAdapter securityItemViewAdapter;
 
     @Inject Lazy<UserBaseKeyListCache> userBaseKeyListCache;
     @Inject Lazy<UserSearchResultCache> userSearchResultCache;
     private DTOCache.Listener<UserListType, UserBaseKeyList>  peopleSearchListener;
-    private AsyncTask<Void, Void, UserBaseKeyList> peopleSearchTask;
+    private DTOCache.GetOrFetchTask<UserBaseKeyList> peopleSearchTask;
     private List<UserSearchResultDTO> userDTOList;
     private PeopleItemViewAdapter peopleItemViewAdapter;
 
@@ -406,13 +406,13 @@ public class SearchStockPeopleFragment extends DashboardFragment
     {
         if (securitySearchTask != null)
         {
-            securitySearchTask.cancel(false);
+            securitySearchTask.forgetListener(true);
         }
         securitySearchTask = null;
 
         if (peopleSearchTask != null)
         {
-            peopleSearchTask.cancel(false);
+            peopleSearchTask.forgetListener(true);
         }
         peopleSearchTask = null;
         isQuerying = false;
