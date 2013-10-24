@@ -10,6 +10,7 @@ import android.widget.*;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
@@ -22,6 +23,8 @@ import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.dashboard.DashboardTabType;
+import com.tradehero.th.fragments.leaderboard.LeaderboardSortType;
+import com.tradehero.th.fragments.leaderboard.LeaderboardSortTypeSelectorDialog;
 import com.tradehero.th.fragments.trade.TradeFragment;
 import com.tradehero.th.fragments.trade.TradeListFragment;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactCache;
@@ -48,10 +51,6 @@ public class PositionListFragment extends DashboardFragment
     private PortfolioHeaderView portfolioHeaderView;
     private ListView openPositions;
     private PositionItemAdapter positionItemAdapter;
-
-    private ImageButton btnActionBarBack;
-    private TextView actionBarHeader;
-    private ImageButton btnActionBarInfo;
 
     private Bundle desiredArguments;
 
@@ -136,45 +135,27 @@ public class PositionListFragment extends DashboardFragment
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
+        inflater.inflate(R.menu.position_list_menu, menu);
+        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
+        actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_SHOW_TITLE);
+        actionBar.setDisplayHomeAsUpEnabled(true);
         super.onCreateOptionsMenu(menu, inflater);
-        createOptionsMenu();
+        displayActionBarTitle();
     }
 
-    private void createOptionsMenu()
+    @Override public boolean onOptionsItemSelected(MenuItem item)
     {
-        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-        actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
-        actionBar.setCustomView(R.layout.topbar_positions_list);
-
-        //
-        //btnActionBarBack = (ImageButton) actionBar.getCustomView().findViewById(R.id.btn_back);
-        //if (btnActionBarBack != null)
-        //{
-        //    btnActionBarBack.setOnClickListener(new View.OnClickListener()
-        //    {
-        //        @Override public void onClick(View view)
-        //        {
-        //            handleBackButtonPressed(view);
-        //        }
-        //    });
-        //}
-
-        actionBarHeader = (TextView) actionBar.getCustomView().findViewById(R.id.header_text);
-
-        btnActionBarInfo = (ImageButton) actionBar.getCustomView().findViewById(R.id.btn_info);
-        if (btnActionBarInfo != null)
+        switch (item.getItemId())
         {
-            btnActionBarInfo.setOnClickListener(new View.OnClickListener()
-            {
-                @Override public void onClick(View view)
-                {
-                    handleInfoButtonPressed(view);
-                }
-            });
-        }
+            case R.id.position_list_info:
+                handleInfoButtonPressed(item);
+                break;
 
-        displayHeaderText();
-        // TODO add handlers
+            case android.R.id.home:
+                navigator.popFragment();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override public void onResume()
@@ -241,14 +222,6 @@ public class PositionListFragment extends DashboardFragment
             positionItemAdapter.setParentMoreInfoRequestedListener(null);
         }
         positionItemAdapter = null;
-        if (btnActionBarBack != null)
-        {
-            btnActionBarBack.setOnClickListener(null);
-        }
-        if (btnActionBarInfo != null)
-        {
-            btnActionBarInfo.setOnClickListener(null);
-        }
         super.onDestroyView();
     }
 
@@ -299,7 +272,7 @@ public class PositionListFragment extends DashboardFragment
 
         if (andDisplay)
         {
-            displayHeaderText();
+            displayActionBarTitle();
             // TODO finer grained
             display();
         }
@@ -311,32 +284,25 @@ public class PositionListFragment extends DashboardFragment
         {
             this.portfolioHeaderView.bindOwnedPortfolioId(this.ownedPortfolioId);
         }
-        displayHeaderText();
+        displayActionBarTitle();
     }
 
-    public void displayHeaderText()
+    public void displayActionBarTitle()
     {
-        if (actionBarHeader != null)
+        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
+        if (getPositionsDTO != null && getPositionsDTO.positions != null)
         {
-            if (getPositionsDTO != null && getPositionsDTO.positions != null)
-            {
-                actionBarHeader.setText(String.format(
-                        getResources().getString(R.string.position_list_action_bar_header),
-                        getPositionsDTO.positions.size()));
-            }
-            else
-            {
-                actionBarHeader.setText(R.string.position_list_action_bar_header_unknown);
-            }
+            String title = String.format(getResources().getString(R.string.position_list_action_bar_header),
+                                         getPositionsDTO.positions.size());
+            actionBar.setTitle(title);
+        }
+        else
+        {
+            actionBar.setTitle(R.string.position_list_action_bar_header_unknown);
         }
     }
 
-    private void handleBackButtonPressed(View view)
-    {
-        navigator.popFragment();
-    }
-
-    private void handleInfoButtonPressed(View view)
+    private void handleInfoButtonPressed(MenuItem item)
     {
         THToast.show("No info for now");
     }

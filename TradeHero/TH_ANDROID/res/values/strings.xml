@@ -196,6 +196,6 @@
   <string name="th_terms_url">http://www.tradehero.mobi/terms</string>
   <string name="th_privacy_terms_url">http://www.tradehero.mobi/privacy</string>
   <string name="done">Done</string>
-  <string name="leaderboard_listview_help">Help</string>
+  <string name="action_bar_help">Help</string>
   <item name="done" type="id">Done</item>
 </resources>

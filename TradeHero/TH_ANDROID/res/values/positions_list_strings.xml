@@ -10,7 +10,7 @@
   <!-- Portfolio detail / Positions -->
   <string name="position_nothing_description">No open positions. Tap to Trade!</string>
   <string name="position_list_action_bar_header">%d Positions</string>
-  <string name="position_list_action_bar_header_unknown">Loading Positions</string>
+  <string name="position_list_action_bar_header_unknown">Positions</string>
   <string name="position_list_header_open">Open Positions (%d)</string>
   <string name="position_list_header_open_unsure">Open Positions (N/A)</string>
   <string name="position_list_header_closed">Closed Positions (%d)</string>
@@ -25,5 +25,10 @@
   <string name="portfolio_header_total_value">Total Value</string>
   <string name="portfolio_header_cash_value">Cash Value</string>
   <string name="portfolio_header_username">Username</string>
+
+
+    <!-- Trade History -->
+    <string name="trade_list_title">Trade History</string>
+
 
 </resources>
