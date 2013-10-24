@@ -6,5 +6,7 @@
       android:title="@string/leaderboard_sort_by_hero_quotient"/>
   <item android:id="@+id/leaderboard_sort_by_roi"
       android:icon="@drawable/icon_menu"
-      android:title="@string/leaderboard_sort_by_roi" />
+      android:title="@string/leaderboard_sort_by_roi"
+      android:showAsAction="ifRoom"
+      />
 </menu>

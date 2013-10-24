@@ -83,8 +83,9 @@ public class LeaderboardFragment extends DashboardFragment implements DTOCache.L
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         inflater.inflate(R.menu.leaderboard_menu, menu);
-        getSherlockActivity().getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME);
-        getSherlockActivity().getSupportActionBar().setTitle(getString(R.string.leaderboards));
+        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
+        actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME);
+        actionBar.setTitle(getString(R.string.leaderboards));
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -216,7 +217,10 @@ public class LeaderboardFragment extends DashboardFragment implements DTOCache.L
                 if (lhs == rhs) return 0;
                 else if (lhs == null) return -1;
                 else if (rhs == null) return 1;
-                else return lhs.toDateDays.compareTo(rhs.toDateDays);
+                else if (lhs.toDateDays == null) return -1;
+                else if (rhs.toDateDays == null) return 1;
+                else if (lhs.toDateDays.equals(rhs.toDateDays)) return 0;
+                else return (lhs.toDateDays > rhs.toDateDays) ? 1 : -1;
             }
         });
         return new LeaderboardDefTimePeriodListAdapter(

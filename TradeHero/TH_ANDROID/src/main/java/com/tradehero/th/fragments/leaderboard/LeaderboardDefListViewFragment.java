@@ -1,14 +1,9 @@
 package com.tradehero.th.fragments.leaderboard;
 
-import android.app.Activity;
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.th.R;
 import com.tradehero.th.api.leaderboard.LeaderboardDefDTO;
-import com.tradehero.th.api.leaderboard.LeaderboardDefKey;
 import com.tradehero.th.api.leaderboard.LeaderboardDefKeyList;
 import com.tradehero.th.api.leaderboard.LeaderboardDefListKey;
 import com.tradehero.th.fragments.base.BaseFragment;
@@ -30,11 +25,6 @@ public class LeaderboardDefListViewFragment extends BaseListFragment
     @Inject protected Lazy<LeaderboardDefListCache> leaderboardDefListCache;
     @Inject protected Lazy<LeaderboardDefCache> leaderboardDefCache;
 
-    @Override public void onAttach(Activity activity)
-    {
-        super.onAttach(activity);    //To change body of overridden methods use File | Settings | File Templates.
-    }
-
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
@@ -43,14 +33,6 @@ public class LeaderboardDefListViewFragment extends BaseListFragment
         leaderboardDefListAdapter = new LeaderboardDefListAdapter(getActivity(), getActivity().getLayoutInflater(), null, R.layout.leaderboard_def_item);
         setListAdapter(leaderboardDefListAdapter);
     }
-
-    //@Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
-    //{
-    //    updateLeaderboardDefListKey(getArguments());
-    //    leaderboardDefListAdapter = new LeaderboardDefListAdapter(getActivity(), getActivity().getLayoutInflater(), null, R.layout.leaderboard_def_item);
-    //    setListAdapter(leaderboardDefListAdapter);
-    //    return super.onCreateView(inflater, container, savedInstanceState);
-    //}
 
     private void updateLeaderboardDefListKey(Bundle bundle)
     {

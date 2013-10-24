@@ -1,14 +1,14 @@
 package com.tradehero.th.api.leaderboard;
 
-import android.os.Bundle;
-
 /** Created with IntelliJ IDEA. User: tho Date: 10/16/13 Time: 3:17 PM Copyright (c) TradeHero */
 public class LeaderboardDefMostSkilledListKey extends LeaderboardDefListKey
 {
+    private static final String ALL_LEADERBOARD_DEF_MOST_SKILLED = "ALL_LEADERBOARD_DEF_MOST_SKILLED";
+
     //<editor-fold desc="Constructors">
     public LeaderboardDefMostSkilledListKey()
     {
-        super();
+        super(ALL_LEADERBOARD_DEF_MOST_SKILLED);
     }
     //</editor-fold>
 

@@ -71,8 +71,8 @@ import javax.inject.Singleton;
         put(new LeaderboardDefExchangeListKey(), exchangeKeys);
         put(new LeaderboardDefSectorListKey(), sectorKeys);
         put(new LeaderboardDefTimePeriodListKey(), timePeriodKeys);
+        put(new LeaderboardDefListKey(), allKeys);
 
-        put(listKey, allKeys);
-        return allKeys;
+        return get(listKey);
     }
 }

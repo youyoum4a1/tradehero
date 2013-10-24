@@ -145,17 +145,18 @@ public class PositionListFragment extends DashboardFragment
         actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
         actionBar.setCustomView(R.layout.topbar_positions_list);
 
-        btnActionBarBack = (ImageButton) actionBar.getCustomView().findViewById(R.id.btn_back);
-        if (btnActionBarBack != null)
-        {
-            btnActionBarBack.setOnClickListener(new View.OnClickListener()
-            {
-                @Override public void onClick(View view)
-                {
-                    handleBackButtonPressed(view);
-                }
-            });
-        }
+        //
+        //btnActionBarBack = (ImageButton) actionBar.getCustomView().findViewById(R.id.btn_back);
+        //if (btnActionBarBack != null)
+        //{
+        //    btnActionBarBack.setOnClickListener(new View.OnClickListener()
+        //    {
+        //        @Override public void onClick(View view)
+        //        {
+        //            handleBackButtonPressed(view);
+        //        }
+        //    });
+        //}
 
         actionBarHeader = (TextView) actionBar.getCustomView().findViewById(R.id.header_text);
 

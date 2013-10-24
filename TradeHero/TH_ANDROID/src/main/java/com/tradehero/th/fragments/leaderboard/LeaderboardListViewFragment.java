@@ -13,10 +13,11 @@ import com.tradehero.th.api.leaderboard.LeaderboardDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.fragments.base.BaseListFragment;
+import com.tradehero.th.fragments.base.DashboardListFragment;
 import java.util.List;
 
 /** Created with IntelliJ IDEA. User: tho Date: 10/14/13 Time: 12:34 PM Copyright (c) TradeHero */
-public class LeaderboardListViewFragment extends BaseListFragment
+public class LeaderboardListViewFragment extends DashboardListFragment
         implements BaseFragment.ArgumentsChangeListener,
         LoaderManager.LoaderCallbacks<List<LeaderboardUserDTO>>
 {
@@ -38,8 +39,10 @@ public class LeaderboardListViewFragment extends BaseListFragment
     {
         inflater.inflate(R.menu.leaderboard_listview_menu, menu);
 
-        getSherlockActivity().getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME);
-        getSherlockActivity().getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
+        actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME);
+        actionBar.setDisplayHomeAsUpEnabled(true);
+
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -61,6 +64,10 @@ public class LeaderboardListViewFragment extends BaseListFragment
 
             case R.id.leaderboard_listview_help:
                 THToast.show("Not yet implemented");
+                break;
+
+            case android.R.id.home:
+                getNavigator().popFragment();
                 break;
         }
         return super.onOptionsItemSelected(item);
