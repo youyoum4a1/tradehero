@@ -20,9 +20,8 @@ public class TradeListItemAdapter extends DTOAdapter<OwnedTradeId, TradeListItem
         super(context, inflater, R.layout.trade_list_item);
     }
 
-    @Override
-    protected View getView(int position, TradeListItemView convertView)
+    @Override protected void fineTune(int position, OwnedTradeId dto, TradeListItemView convertView)
     {
-        return convertView;
+        // Nothing to do
     }
 }
