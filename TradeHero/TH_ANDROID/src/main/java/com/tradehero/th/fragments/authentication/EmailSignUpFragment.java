@@ -24,6 +24,8 @@ import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.auth.AuthenticationMode;
 import com.tradehero.th.auth.EmailAuthenticationProvider;
 import com.tradehero.th.base.Application;
+import com.tradehero.th.base.Navigator;
+import com.tradehero.th.base.NavigatorActivity;
 import com.tradehero.th.base.THUser;
 import com.tradehero.th.fragments.settings.FocusableOnTouchListener;
 import com.tradehero.th.misc.callback.LogInCallback;
@@ -307,6 +309,16 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
             THUser.updateProfile(getUserFormJSON(), new LogInCallback() {
                 @Override
                 public void done(UserBaseDTO user, THException ex) {
+                    if (ex == null)
+                    {
+                        THToast.show(R.string.settings_update_profile_successful);
+                        Navigator navigator = ((NavigatorActivity) getActivity()).getNavigator();
+                        navigator.popFragment();
+                    }
+                    else
+                    {
+                        THToast.show(ex.getMessage());
+                    }
                     progressDialog.hide();
                 }
 
