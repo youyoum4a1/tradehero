@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent">
+             xmlns:app="http://schemas.android.com/apk/res/com.tradehero.th"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             android:background="@color/white">
 
     <LinearLayout
         android:layout_marginTop="50dp"
@@ -18,15 +20,40 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="left" />
-        <EditText
+
+        <com.tradehero.th.widget.ServerValidatedEmailText
             android:id="@+id/settings_paypal_email_text"
             android:hint="@string/settings_paypal_hint"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_margin="2dip"
+            android:layout_gravity="left|bottom"
+            android:inputType="textEmailAddress"
+            android:imeOptions="actionNext"
+            style="@style/TradeHero.Authentication.EditText"
+
+            android:drawableLeft="@drawable/accounts_glyph_email_default"
+            app:invalidDrawable="@drawable/accounts_glyph_email_error"
+            app:validDrawable="@drawable/accounts_glyph_email_ok"
+            android:drawableRight="@drawable/accounts_glyph_transparent_default"
+            app:invalidDrawableRight="@drawable/warning_red"
+            app:validDrawableRight="@drawable/tick_green"
+
+            app:minSize="1"
+            app:validatePattern="@string/regex_email_validator"
+            app:invalidPatternMessage="@string/validation_incorrect_pattern_email"
+            app:delayValidationByMilliSec="500" />
+
         <Button
             android:id="@+id/settings_paypal_update_button"
             android:text="@string/settings_paypal_update"
             android:layout_width="match_parent"
+            android:layout_marginTop="30dp"
+            android:background="@drawable/authentication_button_xml"
+            android:padding="10dp"
+            android:textColor="@color/white"
+            android:textSize="25sp"
+            android:textStyle="bold"
             android:layout_height="wrap_content" />
 
     </LinearLayout>

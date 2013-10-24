@@ -1,12 +1,35 @@
 package com.tradehero.th.fragments.settings;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
+import com.tradehero.common.persistence.DTOCache;
+import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
+import com.tradehero.th.api.users.UserBaseDTO;
+import com.tradehero.th.api.users.UserBaseKey;
+import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.api.users.payment.UpdatePayPalEmailDTO;
+import com.tradehero.th.api.users.payment.UpdatePayPalEmailFormDTO;
+import com.tradehero.th.base.Application;
+import com.tradehero.th.base.Navigator;
+import com.tradehero.th.base.NavigatorActivity;
+import com.tradehero.th.base.THUser;
 import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.misc.callback.THCallback;
+import com.tradehero.th.misc.callback.THResponse;
+import com.tradehero.th.misc.exception.THException;
+import com.tradehero.th.network.service.UserService;
+import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.widget.ServerValidatedEmailText;
+import dagger.Lazy;
+
+import javax.inject.Inject;
+import java.util.Arrays;
 
 /**
  * Created with IntelliJ IDEA.
@@ -19,17 +42,70 @@ public class SettingsPayPalFragment extends DashboardFragment
 {
 
     private View view;
-    private EditText paypalEmailText;
+    private ServerValidatedEmailText paypalEmailText;
+    private ProgressDialog progressDialog;
+    private Button submitButton;
+
+    @Inject UserService userService;
+    @Inject protected Lazy<UserProfileCache> userProfileCache;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         super.onCreateView(inflater, container, savedInstanceState);
         view = inflater.inflate(R.layout.fragment_settings_paypal, container, false);
 
-        paypalEmailText = (EditText) view.findViewById(R.id.settings_paypal_email_text);
+        setupSubmitButton();
+        setupPaypalEmailText();
+        return view;
+    }
+
+    private void setupSubmitButton()
+    {
+        submitButton = (Button)view.findViewById(R.id.settings_paypal_update_button);
+        submitButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                progressDialog = ProgressDialog.show(
+                        getSherlockActivity(),
+                        Application.getResourceString(R.string.please_wait),
+                        Application.getResourceString(R.string.connecting_tradehero_only),
+                        true);
+                UpdatePayPalEmailFormDTO emailDTO = new UpdatePayPalEmailFormDTO();
+                emailDTO.newPayPalEmailAddress = paypalEmailText.getText().toString();
+                userService.updatePayPalEmail(THUser.getCurrentUserBase().id, emailDTO, new THCallback<UpdatePayPalEmailDTO>() {
+                    @Override
+                    protected void success(UpdatePayPalEmailDTO updatePayPalEmailDTO, THResponse thResponse) {
+                        THToast.show(getResources().getString(R.string.settings_paypal_successful_update));
+                        progressDialog.hide();
+                        Navigator navigator = ((NavigatorActivity) getActivity()).getNavigator();
+                        navigator.popFragment();
+                    }
+
+                    @Override
+                    protected void failure(THException ex) {
+                        THToast.show(ex.getMessage());
+                        progressDialog.hide();
+                    }
+                });
+            }
+        });
+    }
+
+    private void setupPaypalEmailText()
+    {
+        paypalEmailText = (ServerValidatedEmailText) view.findViewById(R.id.settings_paypal_email_text);
         // HACK: force this email to focus instead of the TabHost stealing focus..
         paypalEmailText.setOnTouchListener(new FocusableOnTouchListener());
-        return view;
+
+        UserBaseDTO dto = THUser.getCurrentUserBase();
+        UserBaseKey baseKey = new UserBaseKey(dto.id);
+        userProfileCache.get()
+                .getOrFetch(baseKey, false, new DTOCache.Listener<UserBaseKey, UserProfileDTO>() {
+                    @Override
+                    public void onDTOReceived(UserBaseKey key, UserProfileDTO value) {
+                        paypalEmailText.setText(value.paypalEmailAddress);
+                    }
+                }).execute();
     }
 
     @Override
@@ -38,6 +114,11 @@ public class SettingsPayPalFragment extends DashboardFragment
         {
             paypalEmailText.setOnTouchListener(null);
             paypalEmailText = null;
+        }
+        if (submitButton != null)
+        {
+            submitButton.setOnClickListener(null);
+            submitButton = null;
         }
         super.onDestroyView();
     }
