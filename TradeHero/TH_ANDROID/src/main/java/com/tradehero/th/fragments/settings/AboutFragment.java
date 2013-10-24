@@ -4,6 +4,9 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import com.actionbarsherlock.app.ActionBar;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.th.R;
 import com.tradehero.th.api.yahoo.News;
 import com.tradehero.th.base.Navigator;
@@ -25,6 +28,15 @@ public class AboutFragment extends DashboardFragment
     private View view;
     private Button privacyButton;
     private Button termsButton;
+
+    //<editor-fold desc="ActionBar">
+    @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
+    {
+        getSherlockActivity().getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME);
+        getSherlockActivity().getSupportActionBar().setTitle(getResources().getString(R.string.settings_about_header));
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+    //</editor-fold>
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {

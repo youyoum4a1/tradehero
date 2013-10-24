@@ -7,6 +7,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import com.actionbarsherlock.app.ActionBar;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
@@ -58,6 +61,15 @@ public class SettingsPayPalFragment extends DashboardFragment
         setupPaypalEmailText();
         return view;
     }
+
+    //<editor-fold desc="ActionBar">
+    @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
+    {
+        getSherlockActivity().getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME);
+        getSherlockActivity().getSupportActionBar().setTitle(getResources().getString(R.string.settings_paypal_header));
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+    //</editor-fold>
 
     private void setupSubmitButton()
     {

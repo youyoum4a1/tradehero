@@ -104,7 +104,7 @@ public class SettingsFragment extends DashboardFragment
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         getSherlockActivity().getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME);
-        getSherlockActivity().getSupportActionBar().setTitle("Settings");
+        getSherlockActivity().getSupportActionBar().setTitle(getResources().getString(R.string.action_settings));
         super.onCreateOptionsMenu(menu, inflater);
     }
     //</editor-fold>

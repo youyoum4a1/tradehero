@@ -7,6 +7,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import com.actionbarsherlock.app.ActionBar;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.users.UserBaseDTO;
@@ -37,6 +40,15 @@ public class SettingsTransactionHistoryFragment extends DashboardFragment
     private SettingsTransactionHistoryAdapter transactionListViewAdapter;
     private ProgressDialog progressDialog;
     @Inject UserService userService;
+
+    //<editor-fold desc="ActionBar">
+    @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
+    {
+        getSherlockActivity().getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME);
+        getSherlockActivity().getSupportActionBar().setTitle(getResources().getString(R.string.settings_transaction_header));
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+    //</editor-fold>
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
