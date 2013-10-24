@@ -5,7 +5,7 @@
 
   <item
       android:id="@+id/btn_follow_this_user"
-      android:icon="@drawable/info_default"
+      android:icon="@drawable/follow_button"
       android:title="@string/action_bar_follow"
       android:showAsAction="ifRoom"
     />

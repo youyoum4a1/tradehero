@@ -1,6 +1,5 @@
 package com.tradehero.th.fragments.timeline;
 
-import android.os.Bundle;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
@@ -10,7 +9,6 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.base.NavigatorActivity;
-import com.tradehero.th.fragments.settings.SettingsFragment;
 
 /**
  * Created with IntelliJ IDEA. User: xavier Date: 10/23/13 Time: 5:41 PM To change this template use File | Settings | File Templates.
@@ -59,7 +57,7 @@ public class PushableTimelineFragment extends TimelineFragment
         return super.onOptionsItemSelected(item);
     }
 
-    private void handleHomeButtonPressed(MenuItem item)
+    private void handleHomeButtonPressed(MenuItem menuItem)
     {
         Navigator navigator = ((NavigatorActivity) getActivity()).getNavigator();
         navigator.popFragment();
