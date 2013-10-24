@@ -2,15 +2,9 @@
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
   <item
-      android:id="@+id/leaderboard_listview_sort"
-    android:icon="@drawable/sort_hq"
-    android:title="@string/leaderboard_listview_sort"
-    android:showAsAction="ifRoom"
-    />
-  <item
       android:id="@+id/leaderboard_listview_help"
     android:icon="@drawable/info_default"
     android:title="@string/action_bar_help"
     android:showAsAction="ifRoom"
-    />
+      />
 </menu>

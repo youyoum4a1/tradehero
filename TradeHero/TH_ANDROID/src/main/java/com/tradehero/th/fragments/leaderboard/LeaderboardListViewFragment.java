@@ -26,12 +26,15 @@ public class LeaderboardListViewFragment extends DashboardListFragment
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        getLoaderManager().initLoader(0, getArguments(), this);
+    }
 
-        leaderboardListAdapter =
-                new LeaderboardListAdapter(getActivity(), getActivity().getLayoutInflater(), null, R.layout.leaderboard_user_view);
+    @Override public void onResume()
+    {
+        leaderboardListAdapter = new LeaderboardListAdapter(getActivity(), getActivity().getLayoutInflater(), null, R.layout.leaderboard_user_view);
         setListAdapter(leaderboardListAdapter);
 
-        getLoaderManager().initLoader(0, getArguments(), this);
+        super.onResume();
     }
 
     //<editor-fold desc="ActionBar">
@@ -50,17 +53,17 @@ public class LeaderboardListViewFragment extends DashboardListFragment
     {
         switch (item.getItemId())
         {
-            case R.id.leaderboard_listview_sort:
-                LeaderboardSortTypeSelectorDialog sortTypeDialog = new LeaderboardSortTypeSelectorDialog(getActivity(),
-                        new LeaderboardSortTypeSelectorDialog.OnSortTypeChangedListener()
-                        {
-                            @Override public void onSortTypeChanged(LeaderboardSortType newSortType)
-                            {
-
-                            }
-                        });
-                sortTypeDialog.show();
-                break;
+            //case R.id.leaderboard_listview_sort:
+            //    LeaderboardSortTypeSelectorDialog sortTypeDialog = new LeaderboardSortTypeSelectorDialog(getActivity(),
+            //            new LeaderboardSortTypeSelectorDialog.OnSortTypeChangedListener()
+            //            {
+            //                @Override public void onSortTypeChanged(LeaderboardSortType newSortType)
+            //                {
+            //
+            //                }
+            //            });
+            //    sortTypeDialog.show();
+            //    break;
 
             case R.id.leaderboard_listview_help:
                 THToast.show("Not yet implemented");
