@@ -58,6 +58,14 @@ public class PortfolioDTOComparableTest
         return otherUser;
     }
 
+    private PortfolioDTO getNullUserPortfolio()
+    {
+        PortfolioDTO portfolioDTO = new PortfolioDTO();
+        portfolioDTO.setOwnerDTO(null);
+        portfolioDTO.title = "userNull";
+        return portfolioDTO;
+    }
+
     private PortfolioDTO getCurrentUserDefaultPortfolio()
     {
         PortfolioDTO portfolioDTO = new PortfolioDTO();
@@ -66,11 +74,20 @@ public class PortfolioDTOComparableTest
         return portfolioDTO;
     }
 
+    private PortfolioDTO getCurrentUserNullCreationPortfolio()
+    {
+        PortfolioDTO portfolioDTO = new PortfolioDTO();
+        portfolioDTO.setOwnerDTO(getCurrentUser());
+        portfolioDTO.title = "currentUser NullCreation";
+        portfolioDTO.creationDate = null;
+        return portfolioDTO;
+    }
+
     private PortfolioDTO getCurrentUserOlderPortfolio()
     {
         PortfolioDTO portfolioDTO = new PortfolioDTO();
         portfolioDTO.setOwnerDTO(getCurrentUser());
-        portfolioDTO.title = "somewhatolder";
+        portfolioDTO.title = "CurrentUser Older";
         portfolioDTO.creationDate = new Date(2013, 1, 1);
         return portfolioDTO;
     }
@@ -79,7 +96,7 @@ public class PortfolioDTOComparableTest
     {
         PortfolioDTO portfolioDTO = new PortfolioDTO();
         portfolioDTO.setOwnerDTO(getCurrentUser());
-        portfolioDTO.title = "somewhatyounger";
+        portfolioDTO.title = "CurrentUser Younger";
         portfolioDTO.creationDate = new Date(2013, 1, 2);
         return portfolioDTO;
     }
@@ -88,7 +105,7 @@ public class PortfolioDTOComparableTest
     {
         PortfolioDTO portfolioDTO = new PortfolioDTO();
         portfolioDTO.setOwnerDTO(getOtherUser1());
-        portfolioDTO.title = "nullDate";
+        portfolioDTO.title = "User1 NullCreation";
         return portfolioDTO;
     }
 
@@ -96,7 +113,7 @@ public class PortfolioDTOComparableTest
     {
         PortfolioDTO portfolioDTO = new PortfolioDTO();
         portfolioDTO.setOwnerDTO(getOtherUser1());
-        portfolioDTO.title = "somewhatolder";
+        portfolioDTO.title = "User1 Older";
         portfolioDTO.creationDate = new Date(2013, 1, 1);
         return portfolioDTO;
     }
@@ -105,7 +122,7 @@ public class PortfolioDTOComparableTest
     {
         PortfolioDTO portfolioDTO = new PortfolioDTO();
         portfolioDTO.setOwnerDTO(getOtherUser1());
-        portfolioDTO.title = "somewhatyounger";
+        portfolioDTO.title = "User1 Younger";
         portfolioDTO.creationDate = new Date(2013, 1, 5);
         return portfolioDTO;
     }
@@ -114,7 +131,7 @@ public class PortfolioDTOComparableTest
     {
         PortfolioDTO portfolioDTO = new PortfolioDTO();
         portfolioDTO.setOwnerDTO(getOtherUser2());
-        portfolioDTO.title = "nullDate";
+        portfolioDTO.title = "User2 NullCreation";
         return portfolioDTO;
     }
 
@@ -122,7 +139,7 @@ public class PortfolioDTOComparableTest
     {
         PortfolioDTO portfolioDTO = new PortfolioDTO();
         portfolioDTO.setOwnerDTO(getOtherUser2());
-        portfolioDTO.title = "somewhatolder";
+        portfolioDTO.title = "User2 Older";
         portfolioDTO.creationDate = new Date(2013, 1, 1);
         return portfolioDTO;
     }
@@ -131,7 +148,7 @@ public class PortfolioDTOComparableTest
     {
         PortfolioDTO portfolioDTO = new PortfolioDTO();
         portfolioDTO.setOwnerDTO(getOtherUser2());
-        portfolioDTO.title = "somewhatyounger";
+        portfolioDTO.title = "User2 Younger";
         portfolioDTO.creationDate = new Date(2013, 1, 5);
         return portfolioDTO;
     }
@@ -147,22 +164,221 @@ public class PortfolioDTOComparableTest
         assertFalse(getCurrentUser().equals(getOtherUser2()));
     }
 
+    @Test public void compareShouldReturnZeroOnSame()
+    {
+        assertThat(getNullUserPortfolio().compareTo(getNullUserPortfolio()), equalTo(0));
+        assertThat(getCurrentUserDefaultPortfolio().compareTo(getCurrentUserDefaultPortfolio()), equalTo(0));
+        assertThat(getCurrentUserNullCreationPortfolio().compareTo(getCurrentUserNullCreationPortfolio()), equalTo(0));
+        assertThat(getCurrentUserOlderPortfolio().compareTo(getCurrentUserOlderPortfolio()), equalTo(0));
+        assertThat(getCurrentUserYoungerPortfolio().compareTo(getCurrentUserYoungerPortfolio()), equalTo(0));
+        assertThat(getUser1NullDatePortfolio().compareTo(getUser1NullDatePortfolio()), equalTo(0));
+        assertThat(getUser1OlderPortfolio().compareTo(getUser1OlderPortfolio()), equalTo(0));
+        assertThat(getUser1YoungerPortfolio().compareTo(getUser1YoungerPortfolio()), equalTo(0));
+        assertThat(getUser2NullDatePortfolio().compareTo(getUser2NullDatePortfolio()), equalTo(0));
+        assertThat(getUser2OlderPortfolio().compareTo(getUser2OlderPortfolio()), equalTo(0));
+        assertThat(getUser2YoungerPortfolio().compareTo(getUser2YoungerPortfolio()), equalTo(0));
+    }
+
+    @Test public void compareNullUserToOthers()
+    {
+        assertThat(getNullUserPortfolio().compareTo(getNullUserPortfolio()), equalTo(0));
+        assertThat(getNullUserPortfolio().compareTo(getCurrentUserDefaultPortfolio()), equalTo(-1));
+        assertThat(getNullUserPortfolio().compareTo(getCurrentUserNullCreationPortfolio()), equalTo(-1));
+        assertThat(getNullUserPortfolio().compareTo(getCurrentUserOlderPortfolio()), equalTo(-1));
+        assertThat(getNullUserPortfolio().compareTo(getCurrentUserYoungerPortfolio()), equalTo(-1));
+        assertThat(getNullUserPortfolio().compareTo(getUser1NullDatePortfolio()), equalTo(-1));
+        assertThat(getNullUserPortfolio().compareTo(getUser1OlderPortfolio()), equalTo(-1));
+        assertThat(getNullUserPortfolio().compareTo(getUser1YoungerPortfolio()), equalTo(-1));
+        assertThat(getNullUserPortfolio().compareTo(getUser2NullDatePortfolio()), equalTo(-1));
+        assertThat(getNullUserPortfolio().compareTo(getUser2OlderPortfolio()), equalTo(-1));
+        assertThat(getNullUserPortfolio().compareTo(getUser2YoungerPortfolio()), equalTo(-1));
+    }
+
+    @Test public void compareCurrentUserDefaultToOthers()
+    {
+        assertThat(getCurrentUserDefaultPortfolio().compareTo(getNullUserPortfolio()), equalTo(1));
+        assertThat(getCurrentUserDefaultPortfolio().compareTo(getCurrentUserDefaultPortfolio()), equalTo(0));
+        assertThat(getCurrentUserDefaultPortfolio().compareTo(getCurrentUserNullCreationPortfolio()), equalTo(-1));
+        assertThat(getCurrentUserDefaultPortfolio().compareTo(getCurrentUserOlderPortfolio()), equalTo(-1));
+        assertThat(getCurrentUserDefaultPortfolio().compareTo(getCurrentUserYoungerPortfolio()), equalTo(-1));
+        assertThat(getCurrentUserDefaultPortfolio().compareTo(getUser1NullDatePortfolio()), equalTo(-1));
+        assertThat(getCurrentUserDefaultPortfolio().compareTo(getUser1OlderPortfolio()), equalTo(-1));
+        assertThat(getCurrentUserDefaultPortfolio().compareTo(getUser1YoungerPortfolio()), equalTo(-1));
+        assertThat(getCurrentUserDefaultPortfolio().compareTo(getUser2NullDatePortfolio()), equalTo(-1));
+        assertThat(getCurrentUserDefaultPortfolio().compareTo(getUser2OlderPortfolio()), equalTo(-1));
+        assertThat(getCurrentUserDefaultPortfolio().compareTo(getUser2YoungerPortfolio()), equalTo(-1));
+    }
+
+    @Test public void compareCurrentUserNullCreationToOthers()
+    {
+        assertThat(getCurrentUserNullCreationPortfolio().compareTo(getNullUserPortfolio()), equalTo(1));
+        assertThat(getCurrentUserNullCreationPortfolio().compareTo(getCurrentUserDefaultPortfolio()), equalTo(1));
+        assertThat(getCurrentUserNullCreationPortfolio().compareTo(getCurrentUserNullCreationPortfolio()), equalTo(0));
+        assertThat(getCurrentUserNullCreationPortfolio().compareTo(getCurrentUserOlderPortfolio()), equalTo(-1));
+        assertThat(getCurrentUserNullCreationPortfolio().compareTo(getCurrentUserYoungerPortfolio()), equalTo(-1));
+        assertThat(getCurrentUserNullCreationPortfolio().compareTo(getUser1NullDatePortfolio()), equalTo(-1));
+        assertThat(getCurrentUserNullCreationPortfolio().compareTo(getUser1OlderPortfolio()), equalTo(-1));
+        assertThat(getCurrentUserNullCreationPortfolio().compareTo(getUser1YoungerPortfolio()), equalTo(-1));
+        assertThat(getCurrentUserNullCreationPortfolio().compareTo(getUser2NullDatePortfolio()), equalTo(-1));
+        assertThat(getCurrentUserNullCreationPortfolio().compareTo(getUser2OlderPortfolio()), equalTo(-1));
+        assertThat(getCurrentUserNullCreationPortfolio().compareTo(getUser2YoungerPortfolio()), equalTo(-1));
+    }
+
+    @Test public void compareCurrentUserOlderToOthers()
+    {
+        assertThat(getCurrentUserOlderPortfolio().compareTo(getNullUserPortfolio()), equalTo(1));
+        assertThat(getCurrentUserOlderPortfolio().compareTo(getCurrentUserDefaultPortfolio()), equalTo(1));
+        assertThat(getCurrentUserOlderPortfolio().compareTo(getCurrentUserNullCreationPortfolio()), equalTo(1));
+        assertThat(getCurrentUserOlderPortfolio().compareTo(getCurrentUserOlderPortfolio()), equalTo(0));
+        assertThat(getCurrentUserOlderPortfolio().compareTo(getCurrentUserYoungerPortfolio()), equalTo(-1));
+        assertThat(getCurrentUserOlderPortfolio().compareTo(getUser1NullDatePortfolio()), equalTo(-1));
+        assertThat(getCurrentUserOlderPortfolio().compareTo(getUser1OlderPortfolio()), equalTo(-1));
+        assertThat(getCurrentUserOlderPortfolio().compareTo(getUser1YoungerPortfolio()), equalTo(-1));
+        assertThat(getCurrentUserOlderPortfolio().compareTo(getUser2NullDatePortfolio()), equalTo(-1));
+        assertThat(getCurrentUserOlderPortfolio().compareTo(getUser2OlderPortfolio()), equalTo(-1));
+        assertThat(getCurrentUserOlderPortfolio().compareTo(getUser2YoungerPortfolio()), equalTo(-1));
+    }
+
+    @Test public void compareCurrentUserYoungerToOthers()
+    {
+        assertThat(getCurrentUserYoungerPortfolio().compareTo(getNullUserPortfolio()), equalTo(1));
+        assertThat(getCurrentUserYoungerPortfolio().compareTo(getCurrentUserDefaultPortfolio()), equalTo(1));
+        assertThat(getCurrentUserYoungerPortfolio().compareTo(getCurrentUserNullCreationPortfolio()), equalTo(1));
+        assertThat(getCurrentUserYoungerPortfolio().compareTo(getCurrentUserOlderPortfolio()), equalTo(1));
+        assertThat(getCurrentUserYoungerPortfolio().compareTo(getCurrentUserYoungerPortfolio()), equalTo(0));
+        assertThat(getCurrentUserYoungerPortfolio().compareTo(getUser1NullDatePortfolio()), equalTo(-1));
+        assertThat(getCurrentUserYoungerPortfolio().compareTo(getUser1OlderPortfolio()), equalTo(-1));
+        assertThat(getCurrentUserYoungerPortfolio().compareTo(getUser1YoungerPortfolio()), equalTo(-1));
+        assertThat(getCurrentUserYoungerPortfolio().compareTo(getUser2NullDatePortfolio()), equalTo(-1));
+        assertThat(getCurrentUserYoungerPortfolio().compareTo(getUser2OlderPortfolio()), equalTo(-1));
+        assertThat(getCurrentUserYoungerPortfolio().compareTo(getUser2YoungerPortfolio()), equalTo(-1));
+    }
+
+    @Test public void compareUser1NullDateToOthers()
+    {
+        assertThat(getUser1NullDatePortfolio().compareTo(getNullUserPortfolio()), equalTo(1));
+        assertThat(getUser1NullDatePortfolio().compareTo(getCurrentUserDefaultPortfolio()), equalTo(1));
+        assertThat(getUser1NullDatePortfolio().compareTo(getCurrentUserNullCreationPortfolio()), equalTo(1));
+        assertThat(getUser1NullDatePortfolio().compareTo(getCurrentUserOlderPortfolio()), equalTo(1));
+        assertThat(getUser1NullDatePortfolio().compareTo(getCurrentUserYoungerPortfolio()), equalTo(1));
+        assertThat(getUser1NullDatePortfolio().compareTo(getUser1NullDatePortfolio()), equalTo(0));
+        assertThat(getUser1NullDatePortfolio().compareTo(getUser1OlderPortfolio()), equalTo(-1));
+        assertThat(getUser1NullDatePortfolio().compareTo(getUser1YoungerPortfolio()), equalTo(-1));
+        assertThat(getUser1NullDatePortfolio().compareTo(getUser2NullDatePortfolio()), equalTo(-1));
+        assertThat(getUser1NullDatePortfolio().compareTo(getUser2OlderPortfolio()), equalTo(-1));
+        assertThat(getUser1NullDatePortfolio().compareTo(getUser2YoungerPortfolio()), equalTo(-1));
+    }
+
+    @Test public void compareUser1OlderToOthers()
+    {
+        assertThat(getUser1OlderPortfolio().compareTo(getNullUserPortfolio()), equalTo(1));
+        assertThat(getUser1OlderPortfolio().compareTo(getCurrentUserDefaultPortfolio()), equalTo(1));
+        assertThat(getUser1OlderPortfolio().compareTo(getCurrentUserNullCreationPortfolio()), equalTo(1));
+        assertThat(getUser1OlderPortfolio().compareTo(getCurrentUserOlderPortfolio()), equalTo(1));
+        assertThat(getUser1OlderPortfolio().compareTo(getCurrentUserYoungerPortfolio()), equalTo(1));
+        assertThat(getUser1OlderPortfolio().compareTo(getUser1NullDatePortfolio()), equalTo(1));
+        assertThat(getUser1OlderPortfolio().compareTo(getUser1OlderPortfolio()), equalTo(0));
+        assertThat(getUser1OlderPortfolio().compareTo(getUser1YoungerPortfolio()), equalTo(-1));
+        assertThat(getUser1OlderPortfolio().compareTo(getUser2NullDatePortfolio()), equalTo(-1));
+        assertThat(getUser1OlderPortfolio().compareTo(getUser2OlderPortfolio()), equalTo(-1));
+        assertThat(getUser1OlderPortfolio().compareTo(getUser2YoungerPortfolio()), equalTo(-1));
+    }
+
+    @Test public void compareUser1YoungerToOthers()
+    {
+        assertThat(getUser1YoungerPortfolio().compareTo(getNullUserPortfolio()), equalTo(1));
+        assertThat(getUser1YoungerPortfolio().compareTo(getCurrentUserDefaultPortfolio()), equalTo(1));
+        assertThat(getUser1YoungerPortfolio().compareTo(getCurrentUserNullCreationPortfolio()), equalTo(1));
+        assertThat(getUser1YoungerPortfolio().compareTo(getCurrentUserOlderPortfolio()), equalTo(1));
+        assertThat(getUser1YoungerPortfolio().compareTo(getCurrentUserYoungerPortfolio()), equalTo(1));
+        assertThat(getUser1YoungerPortfolio().compareTo(getUser1NullDatePortfolio()), equalTo(1));
+        assertThat(getUser1YoungerPortfolio().compareTo(getUser1OlderPortfolio()), equalTo(1));
+        assertThat(getUser1YoungerPortfolio().compareTo(getUser1YoungerPortfolio()), equalTo(0));
+        assertThat(getUser1YoungerPortfolio().compareTo(getUser2NullDatePortfolio()), equalTo(-1));
+        assertThat(getUser1YoungerPortfolio().compareTo(getUser2OlderPortfolio()), equalTo(-1));
+        assertThat(getUser1YoungerPortfolio().compareTo(getUser2YoungerPortfolio()), equalTo(-1));
+    }
+
+    @Test public void compareUser2NullDateToOthers()
+    {
+        assertThat(getUser2NullDatePortfolio().compareTo(getNullUserPortfolio()), equalTo(1));
+        assertThat(getUser2NullDatePortfolio().compareTo(getCurrentUserDefaultPortfolio()), equalTo(1));
+        assertThat(getUser2NullDatePortfolio().compareTo(getCurrentUserNullCreationPortfolio()), equalTo(1));
+        assertThat(getUser2NullDatePortfolio().compareTo(getCurrentUserOlderPortfolio()), equalTo(1));
+        assertThat(getUser2NullDatePortfolio().compareTo(getCurrentUserYoungerPortfolio()), equalTo(1));
+        assertThat(getUser2NullDatePortfolio().compareTo(getUser1NullDatePortfolio()), equalTo(1));
+        assertThat(getUser2NullDatePortfolio().compareTo(getUser1OlderPortfolio()), equalTo(1));
+        assertThat(getUser2NullDatePortfolio().compareTo(getUser1YoungerPortfolio()), equalTo(1));
+        assertThat(getUser2NullDatePortfolio().compareTo(getUser2NullDatePortfolio()), equalTo(0));
+        assertThat(getUser2NullDatePortfolio().compareTo(getUser2OlderPortfolio()), equalTo(-1));
+        assertThat(getUser2NullDatePortfolio().compareTo(getUser2YoungerPortfolio()), equalTo(-1));
+    }
+
+    @Test public void compareUser2OlderToOthers()
+    {
+        assertThat(getUser2OlderPortfolio().compareTo(getNullUserPortfolio()), equalTo(1));
+        assertThat(getUser2OlderPortfolio().compareTo(getCurrentUserDefaultPortfolio()), equalTo(1));
+        assertThat(getUser2OlderPortfolio().compareTo(getCurrentUserNullCreationPortfolio()), equalTo(1));
+        assertThat(getUser2OlderPortfolio().compareTo(getCurrentUserOlderPortfolio()), equalTo(1));
+        assertThat(getUser2OlderPortfolio().compareTo(getCurrentUserYoungerPortfolio()), equalTo(1));
+        assertThat(getUser2OlderPortfolio().compareTo(getUser1NullDatePortfolio()), equalTo(1));
+        assertThat(getUser2OlderPortfolio().compareTo(getUser1OlderPortfolio()), equalTo(1));
+        assertThat(getUser2OlderPortfolio().compareTo(getUser1YoungerPortfolio()), equalTo(1));
+        assertThat(getUser2OlderPortfolio().compareTo(getUser2NullDatePortfolio()), equalTo(1));
+        assertThat(getUser2OlderPortfolio().compareTo(getUser2OlderPortfolio()), equalTo(0));
+        assertThat(getUser2OlderPortfolio().compareTo(getUser2YoungerPortfolio()), equalTo(-1));
+    }
+
+    @Test public void compareUser2YoungerToOthers()
+    {
+        assertThat(getUser2YoungerPortfolio().compareTo(getNullUserPortfolio()), equalTo(1));
+        assertThat(getUser2YoungerPortfolio().compareTo(getCurrentUserDefaultPortfolio()), equalTo(1));
+        assertThat(getUser2YoungerPortfolio().compareTo(getCurrentUserNullCreationPortfolio()), equalTo(1));
+        assertThat(getUser2YoungerPortfolio().compareTo(getCurrentUserOlderPortfolio()), equalTo(1));
+        assertThat(getUser2YoungerPortfolio().compareTo(getCurrentUserYoungerPortfolio()), equalTo(1));
+        assertThat(getUser2YoungerPortfolio().compareTo(getUser1NullDatePortfolio()), equalTo(1));
+        assertThat(getUser2YoungerPortfolio().compareTo(getUser1OlderPortfolio()), equalTo(1));
+        assertThat(getUser2YoungerPortfolio().compareTo(getUser1YoungerPortfolio()), equalTo(1));
+        assertThat(getUser2YoungerPortfolio().compareTo(getUser2NullDatePortfolio()), equalTo(1));
+        assertThat(getUser2YoungerPortfolio().compareTo(getUser2OlderPortfolio()), equalTo(1));
+        assertThat(getUser2YoungerPortfolio().compareTo(getUser2YoungerPortfolio()), equalTo(0));
+    }
+
+    @Test public void shouldOrderOldYoung()
+    {
+        Set<PortfolioDTO> treeSet = new TreeSet<>();
+        treeSet.add(getCurrentUserOlderPortfolio());
+        treeSet.add(getCurrentUserYoungerPortfolio());
+
+        assertThat(treeSet.size(), equalTo(2));
+
+        Iterator<PortfolioDTO> iterator = treeSet.iterator();
+        assertThat(iterator.next().compareTo(getCurrentUserOlderPortfolio()), equalTo(0));
+        assertThat(iterator.next().compareTo(getCurrentUserYoungerPortfolio()), equalTo(0));
+    }
+
     @Test public void shouldOrderAsExpected()
     {
         Set<PortfolioDTO> treeSet = new TreeSet<>();
 
-        treeSet.add(getCurrentUserOlderPortfolio());
         treeSet.add(getUser1YoungerPortfolio());
         treeSet.add(getUser2YoungerPortfolio());
         treeSet.add(getUser1NullDatePortfolio());
+        treeSet.add(getNullUserPortfolio());
+        treeSet.add(getCurrentUserNullCreationPortfolio());
         treeSet.add(getUser2NullDatePortfolio());
         treeSet.add(getCurrentUserYoungerPortfolio());
         treeSet.add(getCurrentUserDefaultPortfolio());
         treeSet.add(getUser1OlderPortfolio());
         treeSet.add(getUser2OlderPortfolio());
+        treeSet.add(getCurrentUserOlderPortfolio());
+
+        assertThat(treeSet.size(), equalTo(11));
 
         Iterator<PortfolioDTO> iterator = treeSet.iterator();
+        assertThat(iterator.next().compareTo(getNullUserPortfolio()), equalTo(0));
         assertThat(iterator.next().compareTo(getCurrentUserDefaultPortfolio()), equalTo(0));
+        assertThat(iterator.next().compareTo(getCurrentUserNullCreationPortfolio()), equalTo(0));
         assertThat(iterator.next().compareTo(getCurrentUserOlderPortfolio()), equalTo(0));
         assertThat(iterator.next().compareTo(getCurrentUserYoungerPortfolio()), equalTo(0));
         assertThat(iterator.next().compareTo(getUser1NullDatePortfolio()), equalTo(0));

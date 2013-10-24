@@ -112,9 +112,9 @@ public class PortfolioCompactDTO implements Comparable, DTO
             return 1; // c-
         }
 
-        if (ownerDTO.getBaseKey().equals(currentUserBase))
+        if (ownerDTO.equals(currentUserBase))
         {
-            if (!other.ownerDTO.getBaseKey().equals(currentUserBase))
+            if (!other.ownerDTO.equals(currentUserBase))
             {
                 return -1; // d-
             }
@@ -122,15 +122,11 @@ public class PortfolioCompactDTO implements Comparable, DTO
             {
                 return other.isDefault() ? 0 : -1; // da-
             }
-            if (other.isDefault())
-            {
-                return 1; // da-
-            }
-            return 0;
+            return other.isDefault() ? 1 : 0;
         }
-        else if (other.ownerDTO.getBaseKey().equals(currentUserBase))
+        else if (other.ownerDTO.equals(currentUserBase))
         {
-            return -1; // d-
+            return 1; // d-
         }
         else
         {

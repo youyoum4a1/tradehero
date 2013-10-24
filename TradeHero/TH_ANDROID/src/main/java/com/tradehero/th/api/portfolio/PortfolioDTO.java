@@ -72,34 +72,27 @@ public class PortfolioDTO extends PortfolioCompactDTO implements Comparable, DTO
 
     public int compareTo(PortfolioDTO other)
     {
+        int parentComp = super.compareTo(other);
+
+        if (parentComp != 0)
+        {
+            return parentComp;
+        }
+
         if (other == null)
         {
             return 1; // a-
         }
 
-        if (ownerDTO == null)
+        // We take shortcuts because we have already super.compared
+        if (ownerDTO == null && other.ownerDTO == null)
         {
-            return other.ownerDTO == null ? 0 : -1; // b-
+            return 0; // b-
         }
 
-        if (other.ownerDTO == null)
+        if (ownerDTO.equals(currentUserBase))
         {
-            return 1; // b-
-        }
-
-        if (ownerDTO.getBaseKey() == null)
-        {
-            return other.ownerDTO == null ? 1 : other.ownerDTO.getBaseKey() == null ? 0 : -1; // c-
-        }
-
-        if (other.ownerDTO.getBaseKey() == null)
-        {
-            return 1; // c-
-        }
-
-        if (ownerDTO.getBaseKey().equals(currentUserBase))
-        {
-            if (!other.ownerDTO.getBaseKey().equals(currentUserBase))
+            if (!other.ownerDTO.equals(currentUserBase))
             {
                 return -1; // d-
             }
@@ -115,9 +108,13 @@ public class PortfolioDTO extends PortfolioCompactDTO implements Comparable, DTO
             {
                 return other.creationDate == null ? 0 : -1; // dba-
             }
+            if (other.creationDate == null)
+            {
+                return 1;
+            }
             return creationDate.compareTo(other.creationDate); // dbb- dbc-
         }
-        else if (other.ownerDTO.getBaseKey().equals(currentUserBase))
+        else if (other.ownerDTO.equals(currentUserBase))
         {
             return -1; // d-
         }
