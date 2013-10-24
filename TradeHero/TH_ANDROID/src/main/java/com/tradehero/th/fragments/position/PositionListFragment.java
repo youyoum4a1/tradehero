@@ -1,12 +1,13 @@
 package com.tradehero.th.fragments.position;
 
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewStub;
-import android.widget.*;
+import android.widget.AdapterView;
+import android.widget.ListView;
+import android.widget.RelativeLayout;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
@@ -24,8 +25,6 @@ import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.dashboard.DashboardTabType;
-import com.tradehero.th.fragments.leaderboard.LeaderboardSortType;
-import com.tradehero.th.fragments.leaderboard.LeaderboardSortTypeSelectorDialog;
 import com.tradehero.th.fragments.trade.TradeFragment;
 import com.tradehero.th.fragments.trade.TradeListFragment;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactCache;
@@ -37,7 +36,6 @@ import com.tradehero.th.widget.portfolio.header.PortfolioHeaderView;
 import com.tradehero.th.widget.position.PositionLongView;
 import com.tradehero.th.widget.position.PositionQuickNothingView;
 import dagger.Lazy;
-
 import javax.inject.Inject;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/16/13 Time: 5:56 PM To change this template use File | Settings | File Templates. */
