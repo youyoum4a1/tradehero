@@ -78,17 +78,22 @@ public class ProfileCompactView extends RelativeLayout implements DTOView<UserPr
 
     @Override public void display(UserProfileDTO dto)
     {
-        if (dto.picture != null)
+        if (dto.picture == null)
         {
-            picasso
-                    .load(dto.picture)
-                    .transform(new RoundedShapeTransformation())
-                    .into(avatar);
+            return;
         }
 
-        THSignedNumber thRoiSinceInception = new THSignedNumber(THSignedNumber.TYPE_PERCENTAGE, dto.portfolio.roiSinceInception*100);
-        roiSinceInception.setText(thRoiSinceInception.toString());
-        roiSinceInception.setTextColor(getResources().getColor(thRoiSinceInception.getColor()));
+        picasso
+            .load(dto.picture)
+            .transform(new RoundedShapeTransformation())
+            .into(avatar);
+
+        if (dto.portfolio != null && dto.portfolio.roiSinceInception != null)
+        {
+            THSignedNumber thRoiSinceInception = new THSignedNumber(THSignedNumber.TYPE_PERCENTAGE, dto.portfolio.roiSinceInception*100);
+            roiSinceInception.setText(thRoiSinceInception.toString());
+            roiSinceInception.setTextColor(getResources().getColor(thRoiSinceInception.getColor()));
+        }
 
         followersCount.setText(Integer.toString(dto.followerCount));
         heroesCount.setText(Integer.toString(dto.heroIds.size()));
