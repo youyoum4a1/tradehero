@@ -7,37 +7,38 @@
 package com.tradehero.th.fragments.trade;
 
 import android.os.AsyncTask;
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.ToggleButton;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.common.utils.THLog;
+import com.tradehero.th.R;
 import com.tradehero.th.api.position.SecurityPositionDetailDTO;
 import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.TransactionFormDTO;
+import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.base.THUser;
 import com.tradehero.th.network.service.SecurityService;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import dagger.Lazy;
 import javax.inject.Inject;
-import android.os.Bundle;
-import com.tradehero.th.R;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.TextView;
+import javax.inject.Named;
 import retrofit.RetrofitError;
 
 public class BuyFragment extends AbstractTradeFragment
@@ -71,6 +72,7 @@ public class BuyFragment extends AbstractTradeFragment
     private boolean shareLocation = false;
     private boolean sharePublic = false;
 
+    @Inject @Named("CurrentUser") protected UserBaseDTO currentUserBase;
     @Inject protected Lazy<SecurityService> securityService;
     @Inject protected Lazy<UserProfileCache> userProfileCache;
     private boolean isBuying = false;
@@ -634,7 +636,7 @@ public class BuyFragment extends AbstractTradeFragment
 
                     if (returned.portfolio != null)
                     {
-                        UserBaseKey userBaseKey = THUser.getCurrentUserBase().getBaseKey();
+                        UserBaseKey userBaseKey = currentUserBase.getBaseKey();
                         UserProfileDTO userProfileDTO = userProfileCache.get().get(userBaseKey);
                         if (userProfileDTO != null && (userProfileDTO.portfolio == null || userProfileDTO.portfolio.id == returned.portfolio.id))
                         {

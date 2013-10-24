@@ -9,6 +9,7 @@ import com.tradehero.common.graphics.RoundedShapeTransformation;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
+import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.THUser;
 import com.tradehero.th.persistence.user.UserProfileCache;
@@ -16,6 +17,7 @@ import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 /**
  * Created by julien on 21/10/13
@@ -27,8 +29,9 @@ public class OtherUserPortfolioHeaderView extends RelativeLayout implements Port
     private ImageView followingImageView;
     private ImageButton followButton;
 
+    @Inject @Named("CurrentUser") protected UserBaseDTO currentUserBase;
     @Inject Lazy<UserProfileCache> userCache;
-    @Inject Picasso picasso;
+    @Inject Lazy<Picasso> picasso;
 
     //<editor-fold desc="Description">
     public OtherUserPortfolioHeaderView(Context context)
@@ -78,33 +81,33 @@ public class OtherUserPortfolioHeaderView extends RelativeLayout implements Port
         configureFollowItemsVisibility(user);
     }
 
-        private void configureUserViews(UserProfileDTO user)
+    private void configureUserViews(UserProfileDTO user)
+    {
+        if (this.usernameTextView != null)
         {
-            if (this.usernameTextView != null)
-            {
-                this.usernameTextView.setText(user.displayName);
-            }
-
-            if (this.userImageView != null)
-            {
-                picasso.load(user.picture)
-                        .transform(new RoundedShapeTransformation())
-                        .into(this.userImageView);
-            }
+            this.usernameTextView.setText(user.displayName);
         }
 
-        private void configureFollowItemsVisibility(UserProfileDTO user)
+        if (this.userImageView != null)
         {
-            UserProfileDTO currentUser = this.userCache.get().get(THUser.getCurrentUserBase().getBaseKey());
-            if (currentUser.isFollowingUser(user.id))
-            {
-                this.followingImageView.setVisibility(VISIBLE);
-                this.followButton.setVisibility(GONE);
-            }
-            else
-            {
-                this.followingImageView.setVisibility(GONE);
-                this.followButton.setVisibility(VISIBLE);
-            }
+            picasso.get().load(user.picture)
+                    .transform(new RoundedShapeTransformation())
+                    .into(this.userImageView);
         }
+    }
+
+    private void configureFollowItemsVisibility(UserProfileDTO user)
+    {
+        UserProfileDTO currentUser = this.userCache.get().get(currentUserBase.getBaseKey());
+        if (currentUser.isFollowingUser(user.id))
+        {
+            this.followingImageView.setVisibility(VISIBLE);
+            this.followButton.setVisibility(GONE);
+        }
+        else
+        {
+            this.followingImageView.setVisibility(GONE);
+            this.followButton.setVisibility(VISIBLE);
+        }
+    }
 }

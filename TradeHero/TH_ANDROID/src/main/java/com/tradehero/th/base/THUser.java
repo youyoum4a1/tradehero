@@ -45,7 +45,7 @@ public class THUser
     private static String currentSessionToken;
     private static String currentAuthenticationType;
 
-    @Inject static UserService userService;
+    @Inject static Lazy<UserService> userService;
     @Inject static protected Lazy<UserProfileCache> userProfileCache;
 
     public static void initialize()
@@ -143,7 +143,7 @@ public class THUser
         {
             case SignUpWithEmail:
                 // TODO I love this smell of hacking :v
-                userService.signUpWithEmail(authenticator.getAuthHeader(),
+                userService.get().signUpWithEmail(authenticator.getAuthHeader(),
                         userFormDTO.biography,
                         userFormDTO.deviceToken,
                         userFormDTO.displayName,
@@ -160,10 +160,10 @@ public class THUser
                         createCallbackForSignUpAsyncWithJson(json, callback));
                 break;
             case SignUp:
-                userService.signUp(authenticator.getAuthHeader(), userFormDTO, createCallbackForSignUpAsyncWithJson(json, callback));
+                userService.get().signUp(authenticator.getAuthHeader(), userFormDTO, createCallbackForSignUpAsyncWithJson(json, callback));
                 break;
             case SignIn:
-                userService.signIn(authenticator.getAuthHeader(), userFormDTO, createCallbackForSignInAsyncWithJson(json, callback));
+                userService.get().signIn(authenticator.getAuthHeader(), userFormDTO, createCallbackForSignInAsyncWithJson(json, callback));
                 break;
         }
     }
@@ -344,7 +344,7 @@ public class THUser
         catch (JSONException je)
         {
         }
-        userService.updateProfile(getAuthHeader(),
+        userService.get().updateProfile(getAuthHeader(),
                 getCurrentUserBase().id,
                 userFormDTO.deviceToken,
                 userFormDTO.displayName,

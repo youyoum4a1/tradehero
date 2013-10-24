@@ -5,12 +5,14 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
+import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.THUser;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import dagger.Lazy;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.inject.Singleton;
 
 /**
@@ -20,6 +22,7 @@ import javax.inject.Singleton;
 
 @Singleton public class PortfolioHeaderFactory
 {
+    @Inject @Named("CurrentUser") protected UserBaseDTO currentUserBase;
     @Inject Lazy<UserProfileCache> userCache;
 
     public int layoutIdForArguments(Bundle args)
@@ -28,7 +31,7 @@ import javax.inject.Singleton;
         if (id == null)
             throw new PortfolioHeaderFactoryException("Unable to build arguments from Bundle " + args.toString());
 
-        UserProfileDTO currentUser = userCache.get().get(THUser.getCurrentUserBase().getBaseKey());
+        UserProfileDTO currentUser = userCache.get().get(currentUserBase.getBaseKey());
 
         int userId = id.getUserBaseKey().key;
         if (userId == currentUser.id)

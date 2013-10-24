@@ -18,6 +18,7 @@ import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.local.TimelineItem;
 import com.tradehero.th.api.misc.MediaDTO;
 import com.tradehero.th.api.security.SecurityId;
+import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.api.users.UserProfileCompactDTO;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.base.NavigatorActivity;
@@ -26,8 +27,10 @@ import com.tradehero.th.fragments.timeline.TimelineFragment;
 import com.tradehero.th.fragments.trade.TradeFragment;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.widget.MarkdownTextView;
+import dagger.Lazy;
 import java.util.Date;
 import javax.inject.Inject;
+import javax.inject.Named;
 import org.ocpsoft.prettytime.PrettyTime;
 
 /** Created with IntelliJ IDEA. User: tho Date: 9/9/13 Time: 4:24 PM Copyright (c) TradeHero */
@@ -43,8 +46,8 @@ public class TimelineItemView extends RelativeLayout implements
     private ImageView vendorImage;
     private TextView time;
 
-
-    @Inject protected Picasso picasso;
+    @Inject @Named("CurrentUser") protected UserBaseDTO currentUserBase;
+    @Inject protected Lazy<Picasso> picasso;
     private boolean checked;
     private Navigator navigator;
     private int userId;
@@ -138,7 +141,7 @@ public class TimelineItemView extends RelativeLayout implements
 
         if (user.picture != null)
         {
-            picasso.load(user.picture)
+            picasso.get().load(user.picture)
                     .placeholder(R.drawable.superman_facebook)
                     .into(avatar);
         }
@@ -151,7 +154,7 @@ public class TimelineItemView extends RelativeLayout implements
         MediaDTO firstMediaWithLogo = item.firstMediaWithLogo();
         if (firstMediaWithLogo != null)
         {
-            picasso
+            picasso.get()
                     .load(firstMediaWithLogo.url)
                     .transform(new WhiteToTransparentTransformation())
                     .into(vendorImage);
@@ -185,7 +188,7 @@ public class TimelineItemView extends RelativeLayout implements
         Bundle b = new Bundle();
         b.putInt(TimelineFragment.BUNDLE_KEY_USER_ID, userId);
 
-        if (THUser.getCurrentUserBase().id != userId)
+        if (currentUserBase.id != userId)
         {
             navigator.pushFragment(TimelineFragment.class, b, true);
         }
