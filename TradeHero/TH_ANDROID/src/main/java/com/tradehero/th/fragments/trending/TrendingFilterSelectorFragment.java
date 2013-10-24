@@ -54,7 +54,7 @@ abstract public class TrendingFilterSelectorFragment extends SherlockFragment
     private List<CharSequence> dropDownTexts;
     private List<Drawable> dropDownIcons;
     private DTOCache.Listener<ExchangeListType, ExchangeDTOList> exchangeListTypeCacheListener;
-    private AsyncTask<Void, Void, ExchangeDTOList> exchangeListCacheFetchTask;
+    private DTOCache.GetOrFetchTask<ExchangeDTOList> exchangeListCacheFetchTask;
     private int selectedExchangeIndex;
 
     @Override public void onCreate(Bundle savedInstanceState)
@@ -130,7 +130,7 @@ abstract public class TrendingFilterSelectorFragment extends SherlockFragment
         }
         if (exchangeListCacheFetchTask != null)
         {
-            exchangeListCacheFetchTask.cancel(false);
+            exchangeListCacheFetchTask.forgetListener(true);
         }
         exchangeListCacheFetchTask = null;
         exchangeListTypeCacheListener = null;
@@ -244,7 +244,7 @@ abstract public class TrendingFilterSelectorFragment extends SherlockFragment
     {
         if (exchangeListCacheFetchTask != null)
         {
-            exchangeListCacheFetchTask.cancel(false);
+            exchangeListCacheFetchTask.forgetListener(true);
         }
         if (exchangeListTypeCacheListener == null)
         {

@@ -40,7 +40,7 @@ public class TradeListFragment extends DashboardFragment
     private TradeListItemAdapter adapter;
     private Bundle desiredArguments;
 
-    private AsyncTask<Void, Void, OwnedTradeIdList> fetchTradesTask;
+    private DTOCache.GetOrFetchTask<OwnedTradeIdList> fetchTradesTask;
     private TradeListCache.Listener<OwnedPositionId, OwnedTradeIdList> getTradesListener;
 
     @Override
@@ -113,6 +113,18 @@ public class TradeListFragment extends DashboardFragment
         }
     }
 
+    @Override public void onDestroyView()
+    {
+        if (fetchTradesTask != null)
+        {
+            fetchTradesTask.forgetListener(true);
+        }
+        fetchTradesTask = null;
+        getTradesListener = null;
+        adapter = null;
+        super.onDestroyView();
+    }
+
     public void linkWith(OwnedPositionId ownedPositionId, boolean andDisplay)
     {
         this.ownedPositionId = ownedPositionId;
@@ -133,7 +145,7 @@ public class TradeListFragment extends DashboardFragment
             }
             if (fetchTradesTask != null)
             {
-                fetchTradesTask.cancel(false);
+                fetchTradesTask.forgetListener(true);
             }
             fetchTradesTask = tradeListCache.get().getOrFetch(ownedPositionId, getTradesListener);
             fetchTradesTask.execute();

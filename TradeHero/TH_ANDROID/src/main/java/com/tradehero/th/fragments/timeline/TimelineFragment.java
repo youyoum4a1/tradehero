@@ -32,8 +32,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 public class TimelineFragment extends ItemListFragment<TimelineItem>
-        implements BaseFragment.ArgumentsChangeListener,
-            StepView.StepProvider
+        implements BaseFragment.ArgumentsChangeListener, StepView.StepProvider
 {
     public static final String BUNDLE_KEY_USER_ID = TimelineFragment.class.getName() + ".userId";
     private TimelineAdapter timelineAdapter;
@@ -42,7 +41,7 @@ public class TimelineFragment extends ItemListFragment<TimelineItem>
     protected UserBaseKey userBaseKey;
     protected UserProfileDTO profile;
     protected DTOCache.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
-    protected AsyncTask<Void, Void, UserProfileDTO> userProfileCacheTask;
+    protected DTOCache.GetOrFetchTask<UserProfileDTO> userProfileCacheTask;
     private TimelineListView timelineListView;
 
     @Inject protected Lazy<UserProfileCache> userProfileCache;
@@ -116,7 +115,7 @@ public class TimelineFragment extends ItemListFragment<TimelineItem>
         userProfileCacheListener = null;
         if (userProfileCacheTask != null)
         {
-            userProfileCacheTask.cancel(false);
+            userProfileCacheTask.forgetListener(true);
         }
         userProfileCacheTask = null;
         super.onDestroyView();
@@ -146,7 +145,7 @@ public class TimelineFragment extends ItemListFragment<TimelineItem>
                 };
                 if (userProfileCacheTask != null)
                 {
-                    userProfileCacheTask.cancel(false);
+                    userProfileCacheTask.forgetListener(true);
                 }
                 userProfileCacheTask = userProfileCache.get().getOrFetch(userBaseKey, false, userProfileCacheListener);
                 userProfileCacheTask.execute();

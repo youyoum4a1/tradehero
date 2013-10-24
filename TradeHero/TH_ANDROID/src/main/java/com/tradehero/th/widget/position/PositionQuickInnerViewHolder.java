@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 import com.tradehero.common.graphics.WhiteToTransparentTransformation;
+import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.position.OwnedPositionId;
@@ -55,7 +56,7 @@ public class PositionQuickInnerViewHolder<OnClickedListenerType extends Position
     @Inject Lazy<SecurityIdCache> securityIdCache;
     @Inject Lazy<SecurityCompactCache> securityCompactCache;
     private SecurityCompactCache.Listener<SecurityId, SecurityCompactDTO> securityCompactCacheListener;
-    private AsyncTask<Void, Void, SecurityCompactDTO> securityCompactCacheFetchTask;
+    private DTOCache.GetOrFetchTask<SecurityCompactDTO> securityCompactCacheFetchTask;
 
     protected OwnedPositionId ownedPositionId;
     protected PositionDTO positionDTO;
@@ -108,7 +109,7 @@ public class PositionQuickInnerViewHolder<OnClickedListenerType extends Position
         securityCompactCacheListener = null;
         if (securityCompactCacheFetchTask != null)
         {
-            securityCompactCacheFetchTask.cancel(false);
+            securityCompactCacheFetchTask.forgetListener(true);
         }
         securityCompactCacheFetchTask = null;
     }
@@ -154,7 +155,7 @@ public class PositionQuickInnerViewHolder<OnClickedListenerType extends Position
             }
             if (securityCompactCacheFetchTask != null)
             {
-                securityCompactCacheFetchTask.cancel(false);
+                securityCompactCacheFetchTask.forgetListener(true);
             }
             securityCompactCacheFetchTask = securityCompactCache.get().getOrFetch(securityId, securityCompactCacheListener);
             securityCompactCacheFetchTask.execute();

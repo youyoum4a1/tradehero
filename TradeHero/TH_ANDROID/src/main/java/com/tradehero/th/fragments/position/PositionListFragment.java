@@ -11,6 +11,7 @@ import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
+import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
@@ -61,7 +62,7 @@ public class PositionListFragment extends DashboardFragment
     @Inject Lazy<SecurityIdCache> securityIdCache;
     @Inject Lazy<PositionCache> positionCache;
     private GetPositionsCache.Listener<OwnedPortfolioId, GetPositionsDTO> getPositionsCacheListener;
-    private AsyncTask<Void, Void, GetPositionsDTO> fetchGetPositionsDTOTask;
+    private DTOCache.GetOrFetchTask<GetPositionsDTO> fetchGetPositionsDTOTask;
 
     private Integer positionForMoreInfo;
 
@@ -185,7 +186,7 @@ public class PositionListFragment extends DashboardFragment
         getPositionsCacheListener = null;
         if (fetchGetPositionsDTOTask != null)
         {
-            fetchGetPositionsDTOTask.cancel(false);
+            fetchGetPositionsDTOTask.forgetListener(true);
         }
         fetchGetPositionsDTOTask = null;
 
@@ -246,7 +247,7 @@ public class PositionListFragment extends DashboardFragment
             }
             if (fetchGetPositionsDTOTask != null)
             {
-                fetchGetPositionsDTOTask.cancel(false);
+                fetchGetPositionsDTOTask.forgetListener(true);
             }
             fetchGetPositionsDTOTask = getPositionsCache.get().getOrFetch(ownedPortfolioId, getPositionsCacheListener);
             fetchGetPositionsDTOTask.execute();
