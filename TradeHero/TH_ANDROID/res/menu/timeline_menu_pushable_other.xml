@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<menu
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+  <item
+      android:id="@+id/btn_follow_this_user"
+      android:icon="@drawable/info_default"
+      android:title="@string/action_bar_follow"
+      android:showAsAction="ifRoom"
+    />
+
+</menu>
