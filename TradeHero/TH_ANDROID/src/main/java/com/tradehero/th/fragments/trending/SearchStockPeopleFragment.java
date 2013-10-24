@@ -42,6 +42,7 @@ import com.tradehero.th.persistence.security.SecurityCompactListCache;
 import com.tradehero.th.persistence.user.UserBaseKeyListCache;
 import com.tradehero.th.persistence.user.UserSearchResultCache;
 import dagger.Lazy;
+import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
 
@@ -82,14 +83,14 @@ public class SearchStockPeopleFragment extends DashboardFragment
     @Inject Lazy<SecurityCompactListCache> securityCompactListCache;
     @Inject Lazy<SecurityCompactCache> securityCompactCache;
     private DTOCache.Listener<SecurityListType, SecurityIdList> securitySearchListener;
-    private AsyncTask<Void, Void, SecurityIdList> securitySearchTask;
+    private DTOCache.GetOrFetchTask<SecurityIdList> securitySearchTask;
     private List<SecurityCompactDTO> securityList;
     private SecurityItemViewAdapter securityItemViewAdapter;
 
     @Inject Lazy<UserBaseKeyListCache> userBaseKeyListCache;
     @Inject Lazy<UserSearchResultCache> userSearchResultCache;
     private DTOCache.Listener<UserListType, UserBaseKeyList>  peopleSearchListener;
-    private AsyncTask<Void, Void, UserBaseKeyList> peopleSearchTask;
+    private DTOCache.GetOrFetchTask<UserBaseKeyList> peopleSearchTask;
     private List<UserSearchResultDTO> userDTOList;
     private PeopleItemViewAdapter peopleItemViewAdapter;
 
@@ -115,8 +116,6 @@ public class SearchStockPeopleFragment extends DashboardFragment
                 spinnerIcons[searchType.getValue()] = activity.getResources().getDrawable(TrendingSearchType.getDrawableResourceId(searchType));
             }
         }
-
-        setHasOptionsMenu(true);
     }
 
     @Override public void onCreate(Bundle savedInstanceState)
@@ -346,7 +345,6 @@ public class SearchStockPeopleFragment extends DashboardFragment
         {
             throw new IllegalArgumentException("Unhandled SearchType." + mSearchType);
         }
-        updateVisibilities();
     }
 
     private void requestSecurities()
@@ -360,13 +358,13 @@ public class SearchStockPeopleFragment extends DashboardFragment
                     @Override public void onDTOReceived(SecurityListType key, SecurityIdList value)
                     {
                         THLog.i(TAG, "onDTOReceived SecurityIdList");
-                        isQuerying = false;
+                        setQuerying(false);
                         linkWith(securityCompactCache.get().getOrFetch(value), true, (SecurityCompactDTO) null);
                     }
                 };
             }
             cancelSearchTasks();
-            isQuerying = true;
+            setQuerying(true);
             securitySearchTask = securityCompactListCache.get().getOrFetch(makeSearchSecurityListType(), securitySearchListener);
             securitySearchTask.execute();
         }
@@ -376,22 +374,31 @@ public class SearchStockPeopleFragment extends DashboardFragment
     {
         if (mSearchText != null && !mSearchText.isEmpty())
         {
-            if (peopleSearchListener == null)
+            UserListType searchUserListType = makeSearchUserListType();
+            UserBaseKeyList userBaseKeys = userBaseKeyListCache.get().get(searchUserListType);
+            if (userBaseKeys != null)
             {
-                peopleSearchListener = new DTOCache.Listener<UserListType, UserBaseKeyList>()
-                {
-                    @Override public void onDTOReceived(UserListType key, UserBaseKeyList value)
-                    {
-                        THLog.i(TAG, "onDTOReceived UserBaseKeyList");
-                        isQuerying = false;
-                        linkWith(userSearchResultCache.get().get(value), true, (UserSearchResultDTO) null);
-                    }
-                };
+                linkWith(userSearchResultCache.get().get(userBaseKeys), true, (UserSearchResultDTO) null);
             }
-            cancelSearchTasks();
-            isQuerying = true;
-            peopleSearchTask = userBaseKeyListCache.get().getOrFetch(makeSearchUserListType(), peopleSearchListener);
-            peopleSearchTask.execute();
+            else
+            {
+                if (peopleSearchListener == null)
+                {
+                    peopleSearchListener = new DTOCache.Listener<UserListType, UserBaseKeyList>()
+                    {
+                        @Override public void onDTOReceived(UserListType key, UserBaseKeyList value)
+                        {
+                            THLog.i(TAG, "onDTOReceived UserBaseKeyList");
+                            setQuerying(false);
+                            linkWith(userSearchResultCache.get().get(value), true, (UserSearchResultDTO) null);
+                        }
+                    };
+                }
+                cancelSearchTasks();
+                setQuerying(true);
+                peopleSearchTask = userBaseKeyListCache.get().getOrFetch(makeSearchUserListType(), peopleSearchListener);
+                peopleSearchTask.execute();
+            }
         }
     }
 
@@ -399,13 +406,13 @@ public class SearchStockPeopleFragment extends DashboardFragment
     {
         if (securitySearchTask != null)
         {
-            securitySearchTask.cancel(false);
+            securitySearchTask.forgetListener(true);
         }
         securitySearchTask = null;
 
         if (peopleSearchTask != null)
         {
-            peopleSearchTask.cancel(false);
+            peopleSearchTask.forgetListener(true);
         }
         peopleSearchTask = null;
         isQuerying = false;
@@ -432,7 +439,7 @@ public class SearchStockPeopleFragment extends DashboardFragment
         //mSearchStockListView.invalidate();
     }
 
-    private void linkWith(List<UserSearchResultDTO> users, boolean andDisplay, UserSearchResultDTO typeQualifier)
+    private void linkWith(final List<UserSearchResultDTO> users, boolean andDisplay, UserSearchResultDTO typeQualifier)
     {
         this.userDTOList = users;
 
@@ -444,10 +451,22 @@ public class SearchStockPeopleFragment extends DashboardFragment
                 @Override public void run()
                 {
                     peopleItemViewAdapter.notifyDataSetChanged();
+
+                    // All these damn HACKs are not enough to have the list update itself!
+                    mSearchPeopleListView.invalidateViews();
+                    mSearchPeopleListView.scrollBy(0, 0);
+                    mSearchPeopleListView.refreshDrawableState();
+
                     updateVisibilities();
                 }
             });
         }
+    }
+
+    public void setQuerying(boolean querying)
+    {
+        isQuerying = querying;
+        updateVisibilities();
     }
 
     private void updateVisibilities()
@@ -599,10 +618,12 @@ public class SearchStockPeopleFragment extends DashboardFragment
     //<editor-fold desc="TextWatcher">
     @Override public void afterTextChanged(Editable editable)
     {
+        getClass();
     }
 
     @Override public void beforeTextChanged(CharSequence charSequence, int start, int count, int after)
     {
+        getClass();
     }
 
     @Override public void onTextChanged(CharSequence charSequence, int start, int before, int count)
