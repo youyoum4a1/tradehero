@@ -358,13 +358,13 @@ public class SearchStockPeopleFragment extends DashboardFragment
                     @Override public void onDTOReceived(SecurityListType key, SecurityIdList value)
                     {
                         THLog.i(TAG, "onDTOReceived SecurityIdList");
-                        isQuerying = false;
+                        setQuerying(false);
                         linkWith(securityCompactCache.get().getOrFetch(value), true, (SecurityCompactDTO) null);
                     }
                 };
             }
             cancelSearchTasks();
-            isQuerying = true;
+            setQuerying(true);
             securitySearchTask = securityCompactListCache.get().getOrFetch(makeSearchSecurityListType(), securitySearchListener);
             securitySearchTask.execute();
         }
@@ -389,13 +389,13 @@ public class SearchStockPeopleFragment extends DashboardFragment
                         @Override public void onDTOReceived(UserListType key, UserBaseKeyList value)
                         {
                             THLog.i(TAG, "onDTOReceived UserBaseKeyList");
-                            isQuerying = false;
+                            setQuerying(false);
                             linkWith(userSearchResultCache.get().get(value), true, (UserSearchResultDTO) null);
                         }
                     };
                 }
                 cancelSearchTasks();
-                isQuerying = true;
+                setQuerying(true);
                 peopleSearchTask = userBaseKeyListCache.get().getOrFetch(makeSearchUserListType(), peopleSearchListener);
                 peopleSearchTask.execute();
             }
@@ -461,6 +461,12 @@ public class SearchStockPeopleFragment extends DashboardFragment
                 }
             });
         }
+    }
+
+    public void setQuerying(boolean querying)
+    {
+        isQuerying = querying;
+        updateVisibilities();
     }
 
     private void updateVisibilities()
