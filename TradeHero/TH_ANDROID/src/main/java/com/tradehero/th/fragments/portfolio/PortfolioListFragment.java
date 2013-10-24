@@ -28,6 +28,8 @@ import com.tradehero.th.widget.portfolio.PortfolioListView;
 import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -42,7 +44,7 @@ public class PortfolioListFragment extends DashboardFragment
 
     @Inject @Named("CurrentUser") protected UserBaseDTO currentUserBase;
     private List<OwnedPortfolioId> otherOwnedPortfolioIds;
-    private List<OwnedPortfolioId> ownedPortfolioIds;
+    private Set<OwnedPortfolioId> ownedPortfolioIds;
 
     @Inject Lazy<PortfolioService> portfolioService;
     @Inject Lazy<PortfolioCompactListCache> portfolioListCache;
@@ -168,7 +170,7 @@ public class PortfolioListFragment extends DashboardFragment
 
     public void linkWithOwn(List<OwnedPortfolioId> ownedPortfolioIds, boolean andDisplay)
     {
-        this.ownedPortfolioIds = ownedPortfolioIds;
+        this.ownedPortfolioIds = new TreeSet<>(ownedPortfolioIds);
 
         if (andDisplay)
         {

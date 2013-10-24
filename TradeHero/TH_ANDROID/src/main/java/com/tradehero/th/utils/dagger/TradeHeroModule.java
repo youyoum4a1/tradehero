@@ -9,6 +9,7 @@ import com.tradehero.common.cache.LruMemFileCache;
 import com.tradehero.common.persistence.CacheHelper;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.api.form.AbstractUserAvailabilityRequester;
+import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.base.THUser;
@@ -133,6 +134,7 @@ import javax.inject.Singleton;
         {
                 THUser.class,
                 NumberDisplayUtils.class,
+                PortfolioCompactDTO.class,
         },
         library = true // TEMP while there is no MarketService user
 )
@@ -235,6 +237,11 @@ public class TradeHeroModule
     @Provides Context provideContext()
     {
         return application.getApplicationContext();
+    }
+
+    @Provides /*@Named("CurrentUser")*/ UserBaseDTO provideSomeUserBaseDTO()
+    {
+        return THUser.getCurrentUserBase();
     }
 
     @Provides @Named("CurrentUser") UserBaseDTO provideCurrentUserBaseDTO()

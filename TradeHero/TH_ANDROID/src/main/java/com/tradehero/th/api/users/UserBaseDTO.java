@@ -20,4 +20,14 @@ public class UserBaseDTO
     {
         return new UserBaseKey(id);
     }
+
+    @Override public int hashCode()
+    {
+        return new Integer(id).hashCode();
+    }
+
+    @Override public boolean equals(Object other)
+    {
+        return (other instanceof UserBaseDTO) && (new Integer(id)).equals(((UserBaseDTO) other).id);
+    }
 }
