@@ -15,6 +15,7 @@ import com.tradehero.th.R;
 import com.tradehero.th.adapters.portfolio.PortfolioListItemAdapter;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.OwnedPortfolioIdList;
+import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.base.THUser;
 import com.tradehero.th.fragments.base.DashboardFragment;
@@ -28,6 +29,7 @@ import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
+import javax.inject.Named;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/14/13 Time: 11:47 AM To change this template use File | Settings | File Templates. */
 public class PortfolioListFragment extends DashboardFragment
@@ -38,6 +40,7 @@ public class PortfolioListFragment extends DashboardFragment
 
     private PortfolioListItemAdapter portfolioListAdapter;
 
+    @Inject @Named("CurrentUser") protected UserBaseDTO currentUserBase;
     private List<OwnedPortfolioId> otherOwnedPortfolioIds;
     private List<OwnedPortfolioId> ownedPortfolioIds;
 
@@ -126,7 +129,7 @@ public class PortfolioListFragment extends DashboardFragment
         {
             fetchOwnPortfoliosTask.cancel(false);
         }
-        fetchOwnPortfoliosTask = portfolioListCache.get().getOrFetch(THUser.getCurrentUserBase().getBaseKey(), false, ownPortfolioListener);
+        fetchOwnPortfoliosTask = portfolioListCache.get().getOrFetch(currentUserBase.getBaseKey(), false, ownPortfolioListener);
         fetchOwnPortfoliosTask.execute();
     }
 
@@ -215,7 +218,7 @@ public class PortfolioListFragment extends DashboardFragment
         {
             @Override public void onDTOReceived(UserBaseKey key, OwnedPortfolioIdList value)
             {
-                if (key.equals(THUser.getCurrentUserBase().getBaseKey()))
+                if (key.equals(currentUserBase.getBaseKey()))
                 {
                     linkWithOwn(value, true);
                 }

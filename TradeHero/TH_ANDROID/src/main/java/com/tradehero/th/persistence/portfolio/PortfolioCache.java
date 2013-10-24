@@ -4,6 +4,7 @@ import com.tradehero.common.persistence.StraightDTOCache;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PortfolioDTO;
+import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.base.THUser;
 import com.tradehero.th.network.service.PortfolioService;
 import dagger.Lazy;
@@ -14,6 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.inject.Singleton;
 import org.apache.commons.io.IOUtils;
 import retrofit.RetrofitError;
@@ -24,6 +26,7 @@ import retrofit.RetrofitError;
     public static final String TAG = PortfolioCache.class.getName();
     public static final int DEFAULT_MAX_SIZE = 200;
 
+    @Inject @Named("CurrentUser") protected UserBaseDTO currentUserBase;
     @Inject Lazy<PortfolioService> portfolioService;
     @Inject Lazy<PortfolioCompactCache> portfolioCompactCache;
 
@@ -75,7 +78,7 @@ import retrofit.RetrofitError;
 
     private void addOtherUserKey(OwnedPortfolioId key)
     {
-        if (!allOtherUserKeys.containsKey(key) && !key.getUserBaseKey().equals(THUser.getCurrentUserBase().getBaseKey()))
+        if (!allOtherUserKeys.containsKey(key) && !key.getUserBaseKey().equals(currentUserBase.getBaseKey()))
         {
             allOtherUserKeys.put(key, true);
         }

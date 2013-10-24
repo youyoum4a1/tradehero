@@ -13,6 +13,7 @@ import com.tradehero.th.api.position.PositionDTOCompact;
 import com.tradehero.th.api.position.SecurityPositionDetailDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
+import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.base.THUser;
 import com.tradehero.th.network.BasicRetrofitErrorHandler;
 import com.tradehero.th.network.service.SecurityService;
@@ -23,6 +24,7 @@ import dagger.Lazy;
 import java.lang.ref.WeakReference;
 import java.util.List;
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.inject.Singleton;
 import retrofit.RetrofitError;
 
@@ -32,6 +34,7 @@ import retrofit.RetrofitError;
     public static final String TAG = SecurityPositionDetailCache.class.getSimpleName();
     public static final int DEFAULT_MAX_SIZE = 1000;
 
+    @Inject @Named("CurrentUser") protected UserBaseDTO currentUserBase;
     // We need to compose here, instead of inheritance, otherwise we get a compile error regarding erasure on put and put.
     private LruCache<SecurityId, SecurityPositionDetailCache.SecurityPositionDetailCutDTO> lruCache;
     @Inject protected Lazy<SecurityService> securityService;
@@ -76,7 +79,7 @@ import retrofit.RetrofitError;
         {
             return null;
         }
-        return securityPositionDetailCutDTO.create(securityCompactCache.get(), portfolioCache.get(), positionCompactCache.get(), providerCache.get());
+        return securityPositionDetailCutDTO.create(securityCompactCache.get(), portfolioCache.get(), positionCompactCache.get(), providerCache.get(), currentUserBase);
     }
 
     @Override public SecurityPositionDetailDTO put(SecurityId key, SecurityPositionDetailDTO value)
@@ -90,11 +93,12 @@ import retrofit.RetrofitError;
                         securityCompactCache.get(),
                         portfolioCache.get(),
                         positionCompactCache.get(),
-                        providerCache.get()));
+                        providerCache.get(),
+                        currentUserBase));
 
         if (previousCut != null)
         {
-            previous = previousCut.create(securityCompactCache.get(), portfolioCache.get(), positionCompactCache.get(), providerCache.get());
+            previous = previousCut.create(securityCompactCache.get(), portfolioCache.get(), positionCompactCache.get(), providerCache.get(), currentUserBase);
         }
 
         return previous;
@@ -115,7 +119,8 @@ import retrofit.RetrofitError;
                 SecurityCompactCache securityCompactCache,
                 PortfolioCache portfolioCache,
                 PositionCompactCache positionCompactCache,
-                ProviderCache providerCache)
+                ProviderCache providerCache,
+                UserBaseDTO currentUserBase)
         {
             if (securityPositionDetailDTO.security != null)
             {
@@ -134,7 +139,7 @@ import retrofit.RetrofitError;
             {
                 portfolioCache.put(
                         new OwnedPortfolioId(
-                                THUser.getCurrentUserBase().getBaseKey(),
+                                currentUserBase.getBaseKey(),
                                 securityPositionDetailDTO.portfolio.getPortfolioId()),
                         securityPositionDetailDTO.portfolio);
                 this.portfolioId = securityPositionDetailDTO.portfolio.getPortfolioId();
@@ -154,14 +159,15 @@ import retrofit.RetrofitError;
                 SecurityCompactCache securityCompactCache,
                 PortfolioCache portfolioCache,
                 PositionCompactCache positionCompactCache,
-                ProviderCache providerCache)
+                ProviderCache providerCache,
+                UserBaseDTO currentUserBase)
         {
             return new SecurityPositionDetailDTO(
                     securityId != null ? securityCompactCache.get(securityId) : null,
                     positionCompactCache.get(positionIds),
                     this.portfolioId != null ?
                             portfolioCache.get(new OwnedPortfolioId(
-                                THUser.getCurrentUserBase().getBaseKey(),
+                                currentUserBase.getBaseKey(),
                                 portfolioId))
                             : null,
                     providerCache.get(providerIds),

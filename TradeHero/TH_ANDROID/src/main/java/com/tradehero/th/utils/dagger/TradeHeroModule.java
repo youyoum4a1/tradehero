@@ -9,6 +9,8 @@ import com.tradehero.common.cache.LruMemFileCache;
 import com.tradehero.common.persistence.CacheHelper;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.api.form.AbstractUserAvailabilityRequester;
+import com.tradehero.th.api.users.UserBaseDTO;
+import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.base.THUser;
 import com.tradehero.th.fragments.authentication.EmailSignInFragment;
 import com.tradehero.th.fragments.leaderboard.LeaderboardCommunityFragment;
@@ -55,6 +57,7 @@ import com.tradehero.th.widget.user.ProfileCompactView;
 import com.tradehero.th.widget.user.ProfileView;
 import dagger.Module;
 import dagger.Provides;
+import javax.inject.Named;
 import javax.inject.Singleton;
 
 /** Created with IntelliJ IDEA. User: tho Date: 9/16/13 Time: 5:36 PM Copyright (c) TradeHero */
@@ -232,5 +235,10 @@ public class TradeHeroModule
     @Provides Context provideContext()
     {
         return application.getApplicationContext();
+    }
+
+    @Provides @Named("CurrentUser") UserBaseDTO provideCurrentUserBaseDTO()
+    {
+        return THUser.getCurrentUserBase();
     }
 }
