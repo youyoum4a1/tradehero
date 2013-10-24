@@ -11,6 +11,7 @@ import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
+import com.actionbarsherlock.view.SubMenu;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.th.R;
 import com.tradehero.th.api.leaderboard.LeaderboardDTO;
@@ -32,9 +33,9 @@ import java.util.Comparator;
 import java.util.List;
 import javax.inject.Inject;
 
-public class LeaderboardFragment extends DashboardFragment implements DTOCache.Listener<LeaderboardDefListKey, LeaderboardDefKeyList>
+public class LeaderboardCommunityFragment extends DashboardFragment implements DTOCache.Listener<LeaderboardDefListKey, LeaderboardDefKeyList>
 {
-    private static final String TAG = LeaderboardFragment.class.getName();
+    private static final String TAG = LeaderboardCommunityFragment.class.getName();
 
     @Inject protected LeaderboardDefListCache leaderboardDefListCache;
     @Inject protected LeaderboardDefCache leaderboardDefCache;
@@ -94,9 +95,11 @@ public class LeaderboardFragment extends DashboardFragment implements DTOCache.L
         // TODO switch sorting type for leaderboard
         switch (item.getItemId())
         {
-            case R.id.leaderboard_sort_by_hero_quotient:
-                break;
-            case R.id.leaderboard_sort_by_roi:
+            case R.id.leaderboard_sort:
+                //PopupMenu popupMenu = new PopupMenu(getActivity(), getSherlockActivity().findViewById(R.menu.leaderboard_listview_menu));
+                //MenuInflater inflater = popupMenu.getMenuInflater();
+                //inflater.inflate(R.menu.other_menu, popupMenu.getMenu());
+                //menu.show();
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -195,11 +198,18 @@ public class LeaderboardFragment extends DashboardFragment implements DTOCache.L
                     switch (dto.getId())
                     {
                         case LeaderboardDefDTO.LEADERBOARD_DEF_SECTOR_ID:
-                            navigator.pushFragment(LeaderboardDefListViewFragment.class, new LeaderboardDefSectorListKey().getArgs());
-                            break;
+                        {
+                            Bundle bundle = new LeaderboardDefSectorListKey().getArgs();
+                            bundle.putString(LeaderboardDefListViewFragment.TITLE, getString(R.string.leaderboard_sector));
+                            bundle.putInt(LeaderboardSortType.BUNDLE_FLAG, LeaderboardSortType.SORT_ROI | LeaderboardSortType.SORT_HERO_QUOTIENT);
+                            navigator.pushFragment(LeaderboardDefListViewFragment.class, bundle);
+                        } break;
                         case LeaderboardDefDTO.LEADERBOARD_DEF_EXCHANGE_ID:
-                            navigator.pushFragment(LeaderboardDefListViewFragment.class, new LeaderboardDefExchangeListKey().getArgs());
-                            break;
+                        {
+                            Bundle bundle = new LeaderboardDefExchangeListKey().getArgs();
+                            bundle.putString(LeaderboardDefListViewFragment.TITLE, getString(R.string.leaderboard_exchange));
+                            navigator.pushFragment(LeaderboardDefListViewFragment.class, bundle);
+                        } break;
                     }
                 }
             }

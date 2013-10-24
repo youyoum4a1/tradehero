@@ -39,10 +39,6 @@
   <string name="total_wealth">Total Wealth</string>
   <string name="additional_cash">Additional Cash</string>
   <string name="cash_on_hand">Cash on Hand</string>
-  <string name="followers">Followers</string>
-  <string name="Heroes">Heroes</string>
-  <string name="Trades">Trades</string>
-  <string name="Exchanges">Exchanges</string>
   <string name="ref_currency">US$</string>
 
   <!-- What's Trending -->

@@ -225,7 +225,7 @@ public class BuyFragment extends AbstractTradeFragment
                 }
             });
         }
-
+        getSherlockActivity().getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         // We display here as onCreateOptionsMenu may be called after onResume
         displayActionBarElements();
     }

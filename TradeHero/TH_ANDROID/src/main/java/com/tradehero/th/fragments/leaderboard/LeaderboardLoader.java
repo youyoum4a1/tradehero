@@ -64,7 +64,7 @@ public class LeaderboardLoader extends PagedItemListLoader<LeaderboardUserDTO>
         try
         {
             LeaderboardDTO dto = leaderboardManager.getLeaderboard(leaderboardId, true);
-            return dto.users;
+            return dto == null ? null : dto.users;
         }
         catch (IOException e)
         {

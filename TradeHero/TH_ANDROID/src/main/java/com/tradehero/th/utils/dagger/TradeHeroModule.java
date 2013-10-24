@@ -11,8 +11,8 @@ import com.tradehero.common.utils.THLog;
 import com.tradehero.th.api.form.AbstractUserAvailabilityRequester;
 import com.tradehero.th.base.THUser;
 import com.tradehero.th.fragments.authentication.EmailSignInFragment;
+import com.tradehero.th.fragments.leaderboard.LeaderboardCommunityFragment;
 import com.tradehero.th.fragments.leaderboard.LeaderboardDefListViewFragment;
-import com.tradehero.th.fragments.leaderboard.LeaderboardFragment;
 import com.tradehero.th.fragments.leaderboard.LeaderboardListViewFragment;
 import com.tradehero.th.fragments.leaderboard.LeaderboardLoader;
 import com.tradehero.th.fragments.leaderboard.LeaderboardUserDTOView;
@@ -118,7 +118,7 @@ import javax.inject.Singleton;
                 ProfileView.class,
                 ProfileCompactView.class,
 
-                LeaderboardFragment.class,
+                LeaderboardCommunityFragment.class,
                 LeaderboardDefListViewFragment.class,
 
                 LeaderboardManager.class,

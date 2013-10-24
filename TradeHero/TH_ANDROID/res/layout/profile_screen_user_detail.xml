@@ -329,7 +329,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="-5dip"
             android:gravity="center_vertical"
-            android:text="@string/Heroes"
+            android:text="@string/heroes"
             android:textColor="@color/white"
             android:textSize="12sp"
             android:textStyle="normal"/>
@@ -359,7 +359,7 @@
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
             android:layout_marginTop="-5dip"
-            android:text="@string/Trades"
+            android:text="@string/trades"
             android:textColor="@color/white"
             android:textSize="12sp"
             android:textStyle="normal"/>
@@ -389,7 +389,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="-5dip"
             android:gravity="center_vertical"
-            android:text="@string/Exchanges"
+            android:text="@string/exchanges"
             android:textColor="@color/white"
             android:textSize="12sp"
             android:textStyle="normal"/>

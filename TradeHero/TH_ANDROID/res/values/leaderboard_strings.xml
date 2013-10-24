@@ -11,4 +11,14 @@
   <string name="leaderboard_sort_by_roi">Sort by ROI</string>
   <string name="leaderboards">Leaderboards</string>
   <string name="leaderboard_listview_sort">Sort</string>
+  <string name="leaderboard_exchange">Sector</string>
+  <string name="leaderboard_sector">Sector</string>
+  <string name="roi">ROI</string>
+  <string name="hero_quotient">Hero Quotient</string>
+  <string name="followers">Followers</string>
+  <string name="heroes">Heroes</string>
+  <string name="trades">Trades</string>
+  <string name="exchanges">Exchanges</string>
+  <string name="comments">Comments</string>
+  <string name="sharpe_ratio">Sharpe Ratio</string>
 </resources>

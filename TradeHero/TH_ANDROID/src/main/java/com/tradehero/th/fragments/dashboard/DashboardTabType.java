@@ -2,7 +2,7 @@ package com.tradehero.th.fragments.dashboard;
 
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.StoreScreenFragment;
-import com.tradehero.th.fragments.leaderboard.LeaderboardFragment;
+import com.tradehero.th.fragments.leaderboard.LeaderboardCommunityFragment;
 import com.tradehero.th.fragments.portfolio.PortfolioListFragment;
 import com.tradehero.th.fragments.timeline.MeTimelineFragment;
 import com.tradehero.th.fragments.trending.TrendingFragment;
@@ -11,7 +11,7 @@ import com.tradehero.th.fragments.trending.TrendingFragment;
 public enum DashboardTabType
 {
     TRENDING(R.string.trending, R.drawable.trending_selector, TrendingFragment.class),
-    COMMUNITY(R.string.community, R.drawable.community_selector, LeaderboardFragment.class),
+    COMMUNITY(R.string.community, R.drawable.community_selector, LeaderboardCommunityFragment.class),
     TIMELINE(R.string.home, R.drawable.home_selector, MeTimelineFragment.class),
     PORTFOLIO(R.string.portfolio, R.drawable.portfolio_selector, PortfolioListFragment.class),
     STORE(R.string.store, R.drawable.store_selector, StoreScreenFragment.class);

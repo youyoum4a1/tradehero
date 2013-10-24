@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-  <item android:id="@+id/leaderboard_sort"
-      android:title="@string/leaderboard_sort_by_roi"
+  <item
+      android:id="@+id/leaderboard_def_listview"
       android:icon="@drawable/sort_hq_white"
+      android:title="@string/sort"
       android:showAsAction="ifRoom"
       />
 </menu>
