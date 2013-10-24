@@ -42,6 +42,7 @@ import com.tradehero.th.persistence.security.SecurityCompactListCache;
 import com.tradehero.th.persistence.user.UserBaseKeyListCache;
 import com.tradehero.th.persistence.user.UserSearchResultCache;
 import dagger.Lazy;
+import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
 
@@ -115,8 +116,6 @@ public class SearchStockPeopleFragment extends DashboardFragment
                 spinnerIcons[searchType.getValue()] = activity.getResources().getDrawable(TrendingSearchType.getDrawableResourceId(searchType));
             }
         }
-
-        setHasOptionsMenu(true);
     }
 
     @Override public void onCreate(Bundle savedInstanceState)
@@ -346,7 +345,6 @@ public class SearchStockPeopleFragment extends DashboardFragment
         {
             throw new IllegalArgumentException("Unhandled SearchType." + mSearchType);
         }
-        updateVisibilities();
     }
 
     private void requestSecurities()
@@ -376,22 +374,31 @@ public class SearchStockPeopleFragment extends DashboardFragment
     {
         if (mSearchText != null && !mSearchText.isEmpty())
         {
-            if (peopleSearchListener == null)
+            UserListType searchUserListType = makeSearchUserListType();
+            UserBaseKeyList userBaseKeys = userBaseKeyListCache.get().get(searchUserListType);
+            if (userBaseKeys != null)
             {
-                peopleSearchListener = new DTOCache.Listener<UserListType, UserBaseKeyList>()
-                {
-                    @Override public void onDTOReceived(UserListType key, UserBaseKeyList value)
-                    {
-                        THLog.i(TAG, "onDTOReceived UserBaseKeyList");
-                        isQuerying = false;
-                        linkWith(userSearchResultCache.get().get(value), true, (UserSearchResultDTO) null);
-                    }
-                };
+                linkWith(userSearchResultCache.get().get(userBaseKeys), true, (UserSearchResultDTO) null);
             }
-            cancelSearchTasks();
-            isQuerying = true;
-            peopleSearchTask = userBaseKeyListCache.get().getOrFetch(makeSearchUserListType(), peopleSearchListener);
-            peopleSearchTask.execute();
+            else
+            {
+                if (peopleSearchListener == null)
+                {
+                    peopleSearchListener = new DTOCache.Listener<UserListType, UserBaseKeyList>()
+                    {
+                        @Override public void onDTOReceived(UserListType key, UserBaseKeyList value)
+                        {
+                            THLog.i(TAG, "onDTOReceived UserBaseKeyList");
+                            isQuerying = false;
+                            linkWith(userSearchResultCache.get().get(value), true, (UserSearchResultDTO) null);
+                        }
+                    };
+                }
+                cancelSearchTasks();
+                isQuerying = true;
+                peopleSearchTask = userBaseKeyListCache.get().getOrFetch(makeSearchUserListType(), peopleSearchListener);
+                peopleSearchTask.execute();
+            }
         }
     }
 
@@ -432,7 +439,7 @@ public class SearchStockPeopleFragment extends DashboardFragment
         //mSearchStockListView.invalidate();
     }
 
-    private void linkWith(List<UserSearchResultDTO> users, boolean andDisplay, UserSearchResultDTO typeQualifier)
+    private void linkWith(final List<UserSearchResultDTO> users, boolean andDisplay, UserSearchResultDTO typeQualifier)
     {
         this.userDTOList = users;
 
@@ -444,6 +451,12 @@ public class SearchStockPeopleFragment extends DashboardFragment
                 @Override public void run()
                 {
                     peopleItemViewAdapter.notifyDataSetChanged();
+
+                    // All these damn HACKs are not enough to have the list update itself!
+                    mSearchPeopleListView.invalidateViews();
+                    mSearchPeopleListView.scrollBy(0, 0);
+                    mSearchPeopleListView.refreshDrawableState();
+
                     updateVisibilities();
                 }
             });
@@ -599,10 +612,12 @@ public class SearchStockPeopleFragment extends DashboardFragment
     //<editor-fold desc="TextWatcher">
     @Override public void afterTextChanged(Editable editable)
     {
+        getClass();
     }
 
     @Override public void beforeTextChanged(CharSequence charSequence, int start, int count, int after)
     {
+        getClass();
     }
 
     @Override public void onTextChanged(CharSequence charSequence, int start, int before, int count)
