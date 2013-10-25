@@ -72,7 +72,6 @@ import retrofit.RetrofitError;
         if (value != null)
         {
             portfolioCompactCache.get().put(key.getPortfolioId(), value);
-            value.setOwnerDTO(userProfileCache.get().get(key.getUserBaseKey()));
         }
 
         addOtherUserKey(key);

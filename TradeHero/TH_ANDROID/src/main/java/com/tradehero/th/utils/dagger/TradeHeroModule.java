@@ -137,7 +137,6 @@ import javax.inject.Singleton;
         {
                 THUser.class,
                 NumberDisplayUtils.class,
-                PortfolioCompactDTO.class,
                 DisplayablePortfolioDTO.class,
         },
         library = true // TEMP while there is no MarketService user
