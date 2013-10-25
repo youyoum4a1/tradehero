@@ -19,6 +19,7 @@ import com.tradehero.th.api.local.TimelineItem;
 import com.tradehero.th.api.misc.MediaDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.users.UserBaseDTO;
+import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileCompactDTO;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.base.NavigatorActivity;
@@ -186,7 +187,8 @@ public class TimelineItemView extends RelativeLayout implements
     private void openUserProfile(int userId)
     {
         Bundle b = new Bundle();
-        b.putInt(TimelineFragment.BUNDLE_KEY_USER_ID, userId);
+        b.putInt(UserBaseKey.BUNDLE_KEY_KEY, userId);
+        b.putBoolean(Navigator.NAVIGATE_FRAGMENT_NO_CACHE, true);
 
         if (currentUserBase.id != userId)
         {

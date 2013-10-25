@@ -3,6 +3,10 @@ package com.tradehero.common.persistence;
 import android.os.Bundle;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/10/13 Time: 5:13 PM To change this template use File | Settings | File Templates. */
+
+/**
+ * Use single integer as an identity
+ */
 abstract public class AbstractIntegerDTOKey extends AbstractPrimitiveDTOKey<Integer>
 {
     //<editor-fold desc="Constructors">

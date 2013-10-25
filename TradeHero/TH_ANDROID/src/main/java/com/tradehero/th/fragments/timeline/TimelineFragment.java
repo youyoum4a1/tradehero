@@ -1,7 +1,7 @@
 package com.tradehero.th.fragments.timeline;
 
-import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,7 +19,6 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.base.NavigatorActivity;
 import com.tradehero.th.fragments.base.BaseFragment;
-import com.tradehero.th.fragments.base.ItemListFragment;
 import com.tradehero.th.fragments.settings.SettingsFragment;
 import com.tradehero.th.loaders.TimelinePagedItemListLoader;
 import com.tradehero.th.persistence.user.UserProfileCache;
@@ -31,10 +30,9 @@ import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
 
-public class TimelineFragment extends ItemListFragment<TimelineItem>
+public class TimelineFragment extends BaseFragment
         implements BaseFragment.ArgumentsChangeListener, StepView.StepProvider
 {
-    public static final String BUNDLE_KEY_USER_ID = TimelineFragment.class.getName() + ".userId";
     private TimelineAdapter timelineAdapter;
 
     private Bundle desiredArguments;
@@ -47,7 +45,6 @@ public class TimelineFragment extends ItemListFragment<TimelineItem>
     @Inject protected Lazy<UserProfileCache> userProfileCache;
 
     private View view;
-    private StepView stepView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -68,8 +65,6 @@ public class TimelineFragment extends ItemListFragment<TimelineItem>
         timelineListView.setOnRefreshListener(timelineAdapter);
         timelineListView.setOnScrollListener(timelineAdapter);
         timelineListView.setOnLastItemVisibleListener(timelineAdapter);
-
-        setListView(timelineListView.getRefreshableView());
         registerForContextMenu(timelineListView);
     }
 
@@ -107,9 +102,15 @@ public class TimelineFragment extends ItemListFragment<TimelineItem>
             desiredArguments = getArguments();
         }
 
-        linkWith(new UserBaseKey(desiredArguments.getInt(BUNDLE_KEY_USER_ID)), true);
+        UserBaseKey newUserBaseKey = new UserBaseKey(desiredArguments.getInt(UserBaseKey.BUNDLE_KEY_KEY));
+        linkWith(newUserBaseKey, true);
+
+        Bundle loaderBundle = new Bundle(newUserBaseKey.getArgs());
+        //loaderBundle.putInt();
+        getLoaderManager().initLoader(0, loaderBundle, loaderCallback);
     }
 
+    //<editor-fold desc="Display methods">
     @Override public void onDestroyView()
     {
         userProfileCacheListener = null;
@@ -180,7 +181,9 @@ public class TimelineFragment extends ItemListFragment<TimelineItem>
 
         getSherlockActivity().getSupportActionBar().setTitle(profile.displayName);
     }
+    //</editor-fold>
 
+    //<editor-fold desc="Initial methods">
     private TimelineAdapter createTimelineAdapter()
     {
         timelineAdapter = new TimelineAdapter(getActivity(), getActivity().getLayoutInflater(), R.layout.user_profile_timeline_item);
@@ -192,21 +195,9 @@ public class TimelineFragment extends ItemListFragment<TimelineItem>
     {
         TimelinePagedItemListLoader timelineLoader = new TimelinePagedItemListLoader(getActivity());
         timelineLoader.setItemsPerPage(42);
-        //timelineLoader.setOwnerId(profileId); // It is set at resume
         return timelineLoader;
     }
-
-    //<editor-fold desc="Loaders methods">
-    @Override public void onLoadFinished(Loader<List<TimelineItem>> listLoader, List<TimelineItem> items)
-    {
-        super.onLoadFinished(listLoader, items);
-        timelineListView.onRefreshComplete();
-    }
-
-    @Override public Loader<List<TimelineItem>> onCreateLoader(int id, Bundle bundle)
-    {
-        return timelineAdapter == null ? null : timelineAdapter.getLoader();
-    }
+    //</editor-fold>
 
     @Override public void onArgumentsChanged(Bundle args)
     {
@@ -229,5 +220,30 @@ public class TimelineFragment extends ItemListFragment<TimelineItem>
         }
         return null;
     }
-    //</editor-fold>
+
+    private LoaderManager.LoaderCallbacks<List<TimelineItem>> loaderCallback = new LoaderManager.LoaderCallbacks<List<TimelineItem>>()
+    {
+
+        @Override public void onLoaderReset(Loader<List<TimelineItem>> listLoader)
+        {
+            // TODO more investigation
+            if (timelineAdapter != null)
+            {
+                timelineAdapter.setItems(null);
+            }
+        }
+
+        @Override public void onLoadFinished(Loader<List<TimelineItem>> listLoader, List<TimelineItem> items)
+        {
+            timelineAdapter.notifyDataSetChanged();
+            timelineListView.onRefreshComplete();
+        }
+
+        @Override public Loader<List<TimelineItem>> onCreateLoader(int id, Bundle bundle)
+        {
+            return timelineAdapter == null ? null : timelineAdapter.getLoader();
+        }
+
+    };
+
 }

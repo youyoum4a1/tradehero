@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import com.tradehero.th.api.users.UserBaseDTO;
+import com.tradehero.th.api.users.UserBaseKey;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -17,7 +18,7 @@ public class MeTimelineFragment extends TimelineFragment
     {
         if (currentUserBase != null)
         {
-            getArguments().putInt(BUNDLE_KEY_USER_ID, currentUserBase.id);
+            getArguments().putInt(UserBaseKey.BUNDLE_KEY_KEY, currentUserBase.id);
         }
         return super.onCreateView(inflater, container, savedInstanceState);
     }

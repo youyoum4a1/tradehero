@@ -18,6 +18,7 @@ import java.util.Map;
 public class Navigator
 {
     private static final String TAG = Navigator.class.getSimpleName();
+    public static final String NAVIGATE_FRAGMENT_NO_CACHE = Navigator.class.getName();
 
     private final Context context;
     private final FragmentFactory fragmentFactory;
@@ -116,32 +117,32 @@ public class Navigator
         public Fragment getInstance(Class<? extends Fragment> clss, Bundle args)
         {
             Fragment fragment = null;
+
             WeakReference<Fragment> weakFragment = instances.get(clss);
             if (weakFragment != null)
             {
                 fragment = weakFragment.get();
             }
 
-            if (fragment == null)
+            boolean forceCreateNewFragment = args.getBoolean(NAVIGATE_FRAGMENT_NO_CACHE);
+            if (forceCreateNewFragment || fragment == null)
             {
                 fragment = Fragment.instantiate(context, clss.getName(), args);
                 instances.put(clss, new WeakReference<>(fragment));
             }
+
+            // TODO I'm not sure this is a correct way to check whether the fragment is active
+            if (!fragment.isVisible())
+            {
+                fragment.setArguments(args);
+            }
+            if (fragment instanceof BaseFragment.ArgumentsChangeListener)
+            {
+                ((BaseFragment.ArgumentsChangeListener) fragment).onArgumentsChanged(args);
+            }
             else
             {
-                // TODO I'm not sure this is a correct way to check whether the fragment is active
-                if (!fragment.isVisible())
-                {
-                    fragment.setArguments(args);
-                }
-                if (fragment instanceof BaseFragment.ArgumentsChangeListener)
-                {
-                    ((BaseFragment.ArgumentsChangeListener) fragment).onArgumentsChanged(args);
-                }
-                else
-                {
-                    THLog.d(TAG, "Args could not be passed to existing instance of " + fragment.getClass().getSimpleName());
-                }
+                THLog.d(TAG, "Args could not be passed to existing instance of " + fragment.getClass().getSimpleName());
             }
             return fragment;
         }

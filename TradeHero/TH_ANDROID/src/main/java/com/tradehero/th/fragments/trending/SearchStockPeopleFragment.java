@@ -30,6 +30,7 @@ import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityIdList;
 import com.tradehero.th.api.security.SecurityListType;
 import com.tradehero.th.api.users.SearchUserListType;
+import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserBaseKeyList;
 import com.tradehero.th.api.users.UserListType;
 import com.tradehero.th.api.users.UserSearchResultDTO;
@@ -588,7 +589,7 @@ public class SearchStockPeopleFragment extends DashboardFragment
         // TODO put back in
 
         Bundle args = new Bundle();
-        args.putInt(PushableTimelineFragment.BUNDLE_KEY_USER_ID, userSearchResultDTO.userId);
+        args.putInt(UserBaseKey.BUNDLE_KEY_KEY, userSearchResultDTO.userId);
 
         navigator.pushFragment(PushableTimelineFragment.class, args);
     }

@@ -73,6 +73,11 @@ public class TimelinePagedItemListLoader extends PagedItemListLoader<TimelineIte
         forceLoad();
     }
 
+    @Override protected void onReset()
+    {
+        super.onReset();
+    }
+
     public void resetQuery()
     {
         maxItemId = null;
