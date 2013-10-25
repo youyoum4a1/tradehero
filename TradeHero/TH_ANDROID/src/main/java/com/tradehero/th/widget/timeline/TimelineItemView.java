@@ -5,13 +5,15 @@ import android.os.Bundle;
 import android.text.method.LinkMovementMethod;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.animation.AnimationUtils;
 import android.widget.Checkable;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 import com.tradehero.common.graphics.WhiteToTransparentTransformation;
 import com.tradehero.common.text.OnElementClickListener;
+import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
@@ -23,7 +25,6 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileCompactDTO;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.base.NavigatorActivity;
-import com.tradehero.th.base.THUser;
 import com.tradehero.th.fragments.timeline.TimelineFragment;
 import com.tradehero.th.fragments.trade.TradeFragment;
 import com.tradehero.th.utils.DaggerUtils;
@@ -35,12 +36,10 @@ import javax.inject.Named;
 import org.ocpsoft.prettytime.PrettyTime;
 
 /** Created with IntelliJ IDEA. User: tho Date: 9/9/13 Time: 4:24 PM Copyright (c) TradeHero */
-public class TimelineItemView extends RelativeLayout implements
+public class TimelineItemView extends LinearLayout implements
         DTOView<TimelineItem>, OnElementClickListener, Checkable, View.OnClickListener
 {
-    private static final int[] CHECKED_STATE_SET = {
-            android.R.attr.state_checked
-    };
+    private static final String TAG = TimelineItemView.class.getName();
     private TextView username;
     private MarkdownTextView content;
     private ImageView avatar;
@@ -93,24 +92,6 @@ public class TimelineItemView extends RelativeLayout implements
         time = (TextView) findViewById(R.id.timeline_time);
         vendorImage = (ImageView) findViewById(R.id.timeline_vendor_picture);
 
-        setOnFocusChangeListener(new OnFocusChangeListener()
-        {
-            @Override public void onFocusChange(View view, boolean focused)
-            {
-                View buttons = view.findViewById(R.id.timeline_share_buttons);
-                if (focused)
-                {
-                    //buttons.startAnimation(AnimationUtils.loadAnimation(getContext(), R.anim.slide_in_from_bottom));
-                    buttons.setVisibility(View.VISIBLE);
-                }
-                else
-                {
-                    //buttons.startAnimation(AnimationUtils.loadAnimation(getContext(), R.anim.slide_out_to_bottom));
-                    buttons.setVisibility(View.GONE);
-                }
-            }
-        });
-
         View fbShareButton = findViewById(R.id.timeline_share_facebook);
         if (fbShareButton!=null) fbShareButton.setOnClickListener(new OnClickListener()
         {
@@ -142,9 +123,7 @@ public class TimelineItemView extends RelativeLayout implements
 
         if (user.picture != null)
         {
-            picasso.get().load(user.picture)
-                    .placeholder(R.drawable.superman_facebook)
-                    .into(avatar);
+            picasso.get().load(user.picture).into(avatar);
         }
 
         content.setText(item.getText());
@@ -159,6 +138,18 @@ public class TimelineItemView extends RelativeLayout implements
                     .load(firstMediaWithLogo.url)
                     .transform(new WhiteToTransparentTransformation())
                     .into(vendorImage);
+        }
+
+        View buttons = findViewById(R.id.timeline_share_buttons);
+        if (checked)
+        {
+            //buttons.startAnimation(AnimationUtils.loadAnimation(getContext(), R.anim.slide_in_from_top));
+            buttons.setVisibility(View.VISIBLE);
+        }
+        else
+        {
+            buttons.setVisibility(View.GONE);
+            //buttons.startAnimation(AnimationUtils.loadAnimation(getContext(), R.anim.slide_out_to_bottom));
         }
     }
 
@@ -202,7 +193,7 @@ public class TimelineItemView extends RelativeLayout implements
         final int[] drawableState = super.onCreateDrawableState(extraSpace + 1);
         if (isChecked())
         {
-            mergeDrawableStates(drawableState, CHECKED_STATE_SET);
+            mergeDrawableStates(drawableState, new int[] { android.R.attr.state_checked });
         }
         return drawableState;
     }
@@ -228,9 +219,11 @@ public class TimelineItemView extends RelativeLayout implements
         setChecked(!checked);
     }
 
+    //</editor-fold>
     @Override public void onClick(View view)
     {
         openUserProfile(userId);
     }
-    //</editor-fold>
+
+
 }

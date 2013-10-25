@@ -6,6 +6,7 @@ import android.support.v4.content.Loader;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
@@ -44,12 +45,10 @@ public class TimelineFragment extends BaseFragment
 
     @Inject protected Lazy<UserProfileCache> userProfileCache;
 
-    private View view;
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        view = inflater.inflate(R.layout.profile_screen, container, false);
+        View view = inflater.inflate(R.layout.profile_screen, container, false);
         initView(view);
         return view;
     }
@@ -57,6 +56,7 @@ public class TimelineFragment extends BaseFragment
     private void initView(View view)
     {
         timelineListView = (TimelineListView) view.findViewById(R.id.pull_refresh_list);
+        timelineListView.getRefreshableView().setChoiceMode(AbsListView.CHOICE_MODE_SINGLE);
         if (timelineAdapter == null)
         {
             timelineAdapter = createTimelineAdapter();
@@ -97,6 +97,7 @@ public class TimelineFragment extends BaseFragment
     @Override public void onResume()
     {
         super.onResume();
+
         if (desiredArguments == null)
         {
             desiredArguments = getArguments();
@@ -106,7 +107,6 @@ public class TimelineFragment extends BaseFragment
         linkWith(newUserBaseKey, true);
 
         Bundle loaderBundle = new Bundle(newUserBaseKey.getArgs());
-        //loaderBundle.putInt();
         getLoaderManager().initLoader(0, loaderBundle, loaderCallback);
     }
 
