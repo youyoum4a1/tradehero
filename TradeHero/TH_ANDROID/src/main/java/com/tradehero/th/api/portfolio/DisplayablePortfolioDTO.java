@@ -174,6 +174,14 @@ public class DisplayablePortfolioDTO implements Comparable
             {
                 return firstNameComp; // ea-
             }
+            if (portfolioDTO.isDefault())
+            {
+                return other.portfolioDTO.isDefault() ? 0 : -1; // da-
+            }
+            if (other.portfolioDTO.isDefault())
+            {
+                return 1; // da-
+            }
             if (portfolioDTO.creationDate == null)
             {
                 return other.portfolioDTO.creationDate == null ? 0 : -1; // eaa-
