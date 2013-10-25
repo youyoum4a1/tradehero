@@ -135,8 +135,14 @@ public class TrendingSecurityView extends FrameLayout implements DTOView<Securit
 
     private void clearImageViewUrls()
     {
-        stockLogo.setTag(R.string.image_url, null);
-        stockBgLogo.setTag(R.string.image_url, null);
+        if (stockLogo != null)
+        {
+            stockLogo.setTag(R.string.image_url, null);
+        }
+        if (stockBgLogo != null)
+        {
+            stockBgLogo.setTag(R.string.image_url, null);
+        }
     }
 
     private void clearRunningOperations()
