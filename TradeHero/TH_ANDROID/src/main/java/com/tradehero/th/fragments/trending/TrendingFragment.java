@@ -69,6 +69,8 @@ public class TrendingFragment extends DashboardFragment
     protected SecurityItemViewAdapter securityItemViewAdapter;
     protected TrendingFilterSelectorFragment.OnResumedListener trendingFilterSelectorResumedListener;
 
+    private View mTrendingFilterReminder;
+
     @Override public void onCreate(Bundle savedInstanceState)
     {
         THLog.i(TAG, "onCreate");
@@ -95,12 +97,49 @@ public class TrendingFragment extends DashboardFragment
 
     protected void initViews(View view)
     {
-        mTrendingGridView = (AbsListView) view.findViewById(R.id.trending_gridview);
+        mProgressSpinner = (ProgressBar) view.findViewById(R.id.progress_spinner);
 
         securityItemViewAdapter = new SecurityItemViewAdapter(getActivity(), getActivity().getLayoutInflater(), R.layout.trending_grid_item);
-        mTrendingGridView.setAdapter(securityItemViewAdapter);
 
-        mProgressSpinner = (ProgressBar) view.findViewById(R.id.progress_spinner);
+        mTrendingGridView = (AbsListView) view.findViewById(R.id.trending_gridview);
+        if (mTrendingGridView != null)
+        {
+            mTrendingGridView.setAdapter(securityItemViewAdapter);
+
+            mTrendingGridView.setOnItemClickListener(new OnItemClickListener()
+            {
+                @Override public void onItemClick(AdapterView<?> parent, View view, int position, long id)
+                {
+                    SecurityCompactDTO securityCompactDTO = (SecurityCompactDTO) parent.getItemAtPosition(position);
+                    Bundle args = securityCompactDTO.getSecurityId().getArgs();
+                    // TODO use other positions
+                    args.putInt(AbstractTradeFragment.BUNDLE_KEY_POSITION_INDEX, AbstractTradeFragment.DEFAULT_POSITION_INDEX);
+                    navigator.pushFragment(TradeFragment.class, securityCompactDTO.getSecurityId().getArgs());
+                }
+            });
+
+            mTrendingGridView.setOnScrollListener(new AbsListView.OnScrollListener()
+            {
+                @Override public void onScrollStateChanged(AbsListView absListView, int i)
+                {
+                    if (i != SCROLL_STATE_IDLE)
+                    {
+                        hideFilterPager();
+                    }
+                }
+
+                @Override public void onScroll(AbsListView absListView, int i, int i2, int i3)
+                {
+                    // Nothing to do
+                }
+            });
+
+            if (mTrendingGridView.getCount() == 0)
+            {
+                showProgressSpinner(true);
+            }
+        }
+
         mBullIcon = (ImageView) view.findViewById(R.id.logo_img);
 
         THLog.i(TAG, "onActivityCreated");
@@ -144,25 +183,19 @@ public class TrendingFragment extends DashboardFragment
         if (mFilterViewPager != null)
         {
             mFilterViewPager.setAdapter(mTrendingFilterPagerAdapter);
-            // TODO listen to view pager changes
             mFilterViewPager.setOnPageChangeListener(createFilterPageChangeListener());
         }
 
-        mTrendingGridView.setOnItemClickListener(new OnItemClickListener()
+        mTrendingFilterReminder = view.findViewById(R.id.trending_filter_placeholder);
+        if (mTrendingFilterReminder != null)
         {
-            @Override public void onItemClick(AdapterView<?> parent, View view, int position, long id)
+            mTrendingFilterReminder.setOnClickListener(new View.OnClickListener()
             {
-                SecurityCompactDTO securityCompactDTO = (SecurityCompactDTO) parent.getItemAtPosition(position);
-                Bundle args = securityCompactDTO.getSecurityId().getArgs();
-                // TODO use other positions
-                args.putInt(AbstractTradeFragment.BUNDLE_KEY_POSITION_INDEX, AbstractTradeFragment.DEFAULT_POSITION_INDEX);
-                navigator.pushFragment(TradeFragment.class, securityCompactDTO.getSecurityId().getArgs());
-            }
-        });
-
-        if (mTrendingGridView.getCount() == 0)
-        {
-            showProgressSpinner(true);
+                @Override public void onClick(View view)
+                {
+                    showFilterPager();
+                }
+            });
         }
     }
 
@@ -247,6 +280,11 @@ public class TrendingFragment extends DashboardFragment
             mTrendingFilterPagerAdapter.setOnPositionedExchangeSelectionChangedListener(null);
         }
         mTrendingFilterPagerAdapter = null;
+
+        if (mTrendingFilterReminder != null)
+        {
+            mTrendingFilterReminder.setOnClickListener(null);
+        }
 
         mFilterViewPager = null;
         super.onDestroyView();
@@ -340,7 +378,10 @@ public class TrendingFragment extends DashboardFragment
 
     protected void showProgressSpinner(boolean flag)
     {
-        mProgressSpinner.setVisibility(getVisibility(flag));
+        if (mProgressSpinner != null)
+        {
+            mProgressSpinner.setVisibility(getVisibility(flag));
+        }
     }
 
     protected int getVisibility(boolean flag)
@@ -380,6 +421,60 @@ public class TrendingFragment extends DashboardFragment
                 pagerParams.height = fragment.getView().getHeight();
                 mFilterViewPager.setLayoutParams(pagerParams);
             }
+        }
+    }
+
+    private void showFilterPager()
+    {
+        if (mFilterViewPager != null && mTrendingFilterReminder != null)
+        {
+            mFilterViewPager.setVisibility(View.VISIBLE);
+            mTrendingFilterReminder.setVisibility(View.GONE);
+            postAdjustPaddingTop();
+        }
+    }
+
+    private void hideFilterPager()
+    {
+        if (mFilterViewPager != null && mTrendingFilterReminder != null)
+        {
+            mFilterViewPager.setVisibility(View.GONE);
+            mTrendingFilterReminder.setVisibility(View.VISIBLE);
+            postAdjustPaddingTop();
+        }
+    }
+
+    private void postAdjustPaddingTop()
+    {
+        getView().post(new Runnable()
+        {
+            @Override public void run()
+            {
+                adjustPaddingTop();
+            }
+        });
+    }
+
+    private void adjustPaddingTop()
+    {
+        if (mTrendingGridView == null)
+        {
+            return;
+        }
+        int currentPaddingTop = mTrendingGridView.getPaddingTop();
+        int nextPaddingTop = currentPaddingTop;
+        if (mFilterViewPager != null && mFilterViewPager.getVisibility() == View.VISIBLE)
+        {
+            nextPaddingTop = mFilterViewPager.getHeight();
+        }
+        else if (mTrendingFilterReminder != null && mTrendingFilterReminder.getVisibility() == View.VISIBLE)
+        {
+            nextPaddingTop = mTrendingFilterReminder.getHeight();
+        }
+        mTrendingGridView.setPadding(mTrendingGridView.getPaddingLeft(), nextPaddingTop + 8, mTrendingGridView.getPaddingRight(), mTrendingGridView.getPaddingBottom()); // HACK on the 8
+        if (currentPaddingTop < nextPaddingTop)
+        {
+            mTrendingGridView.scrollBy(0, currentPaddingTop - nextPaddingTop);
         }
     }
 

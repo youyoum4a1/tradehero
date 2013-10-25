@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res/com.tradehero.th"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/dashboard_background_xml"
+    android:background="@null"
     android:paddingLeft="0dp"
     android:paddingRight="0dp"
   >
@@ -35,11 +35,44 @@
       >
   </com.tradehero.th.widget.trending.TrendingGridView>
 
+  <LinearLayout
+      android:id="@+id/trending_filter_placeholder"
+      android:orientation="horizontal"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:padding="8dp"
+      android:background="@color/white"
+      android:visibility="gone"
+      >
+
+    <ImageView
+        android:id="@+id/trending_filter_title_icon"
+        android:layout_width="16sp"
+        android:layout_height="16sp"
+        android:src="@null"
+        android:scaleType="centerInside"
+        android:baselineAlignBottom="true"
+        android:contentDescription="@null"
+        />
+
+    <TextView
+        android:id="@+id/title_reminder"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:textSize="16sp"
+        android:drawableLeft="@null"
+        android:text="Placeholder for now"
+        />
+
+  </LinearLayout>
+
   <android.support.v4.view.ViewPager
       android:id="@+id/trending_filter_pager"
       android:layout_width="match_parent"
       android:layout_height="80dp"
       android:layout_alignParentTop="true"
+      android:visibility="visible"
     />
 
 </RelativeLayout>

@@ -14,7 +14,7 @@
         android:layout_height="match_parent"
         android:scaleType="centerCrop"
         android:contentDescription="background logo"
-        android:src="@drawable/default_image"
+        android:src="@null"
         android:alpha="0.2"
         />
 
