@@ -7,14 +7,15 @@
     android:background="@drawable/user_profile_rounded_background">
 
   <!-- layout_marginBottom: dirty trick to reserve background rounded corner radius-->
+
   <ImageView
       android:id="@+id/user_profile_background_by_sketched_avatar"
       android:layout_height="match_parent"
       android:layout_width="match_parent"
-      android:scaleType="centerCrop"
       android:contentDescription="@null"
-      android:layout_marginBottom="@dimen/user_profile_corner_radius"
+      android:scaleType="fitXY"
       />
+  <!--android:layout_marginBottom="@dimen/user_profile_corner_radius"-->
 
   <ImageView
       android:layout_height="match_parent"
@@ -37,7 +38,7 @@
         android:background="@android:color/transparent"
         >
 
-      <ImageView
+      <com.tradehero.th.widget.RoundedImageView
           android:id="@+id/user_profile_avatar"
           android:layout_width="70dp"
           android:layout_height="70dp"

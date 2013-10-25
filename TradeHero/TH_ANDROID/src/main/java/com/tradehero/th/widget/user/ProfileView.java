@@ -115,7 +115,6 @@ public class ProfileView extends FrameLayout implements DTOView<UserProfileDTO>
         {
             picasso
                 .load(dto.picture)
-                .transform(new RoundedShapeTransformation())
                 .into(avatar);
 
             picasso

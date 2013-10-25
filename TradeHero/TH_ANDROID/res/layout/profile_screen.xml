@@ -3,9 +3,10 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingLeft="@dimen/dashboard_padding"
-    android:paddingRight="@dimen/dashboard_padding"
     >
+  <!--android:paddingLeft="@dimen/dashboard_padding"-->
+  <!--android:paddingRight="@dimen/dashboard_padding"-->
+
   <com.tradehero.th.widget.timeline.TimelineListView
       xmlns:ptr="http://schemas.android.com/apk/res-auto"
       android:id="@+id/pull_refresh_list"
@@ -14,7 +15,7 @@
       android:paddingBottom="56dp"
       android:cacheColorHint="#00000000"
       android:divider="#00000000"
-      android:dividerHeight="10dip"
+      android:dividerHeight="1dip"
       android:fadingEdge="none"
       android:fastScrollEnabled="false"
       android:footerDividersEnabled="false"
