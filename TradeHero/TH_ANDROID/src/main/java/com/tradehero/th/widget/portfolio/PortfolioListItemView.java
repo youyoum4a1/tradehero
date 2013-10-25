@@ -11,6 +11,7 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.portfolio.DisplayablePortfolioDTO;
 import com.tradehero.th.api.portfolio.PortfolioDTO;
+import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
 import javax.inject.Inject;
@@ -26,6 +27,7 @@ public class PortfolioListItemView extends RelativeLayout implements DTOView<Dis
 
     private DisplayablePortfolioDTO displayablePortfolioDTO;
     @Inject Lazy<Picasso> picasso;
+    @Inject Lazy<UserBaseDTO> currentUserBase;
 
     //<editor-fold desc="Constructors">
     public PortfolioListItemView(Context context)
@@ -110,9 +112,22 @@ public class PortfolioListItemView extends RelativeLayout implements DTOView<Dis
     {
         if (title != null)
         {
-            if (displayablePortfolioDTO != null && displayablePortfolioDTO.portfolioDTO != null)
+            if (displayablePortfolioDTO != null &&
+                    displayablePortfolioDTO.userBaseDTO != null &&
+                    !currentUserBase.get().equals(displayablePortfolioDTO.userBaseDTO))
+            {
+                title.setText(String.format(
+                        getContext().getString(R.string.first_last_name_display),
+                        displayablePortfolioDTO.userBaseDTO.firstName,
+                        displayablePortfolioDTO.userBaseDTO.lastName));
+            }
+            else if (displayablePortfolioDTO != null && displayablePortfolioDTO.portfolioDTO != null)
             {
                 title.setText(displayablePortfolioDTO.portfolioDTO.title);
+            }
+            else
+            {
+                title.setText(R.string.na);
             }
         }
     }

@@ -34,7 +34,7 @@ public class PushableTimelineFragment extends TimelineFragment
         ActionBar actionBar = getSherlockActivity().getSupportActionBar();
         if (profile != null)
         {
-            actionBar.setTitle(String.format("%s %s", profile.firstName, profile.lastName));
+            actionBar.setTitle(String.format(getString(R.string.first_last_name_display), profile.firstName, profile.lastName));
         }
         else
         {

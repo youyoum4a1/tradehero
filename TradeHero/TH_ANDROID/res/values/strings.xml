@@ -40,6 +40,7 @@
   <string name="additional_cash">Additional Cash</string>
   <string name="cash_on_hand">Cash on Hand</string>
   <string name="ref_currency">US$</string>
+  <string name="first_last_name_display">%1$s %2$s</string> <!-- It is good to have it here as other localistations may swap those -->
 
   <!-- What's Trending -->
   <string name="header_trending">What\'s Trending</string>

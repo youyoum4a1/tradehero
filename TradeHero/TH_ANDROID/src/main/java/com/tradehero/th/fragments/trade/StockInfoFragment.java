@@ -20,7 +20,6 @@ import com.tradehero.th.utils.NumberDisplayUtils;
 import com.tradehero.th.utils.SecurityUtils;
 import dagger.Lazy;
 import javax.inject.Inject;
-import sun.security.util.SecurityConstants;
 
 public class StockInfoFragment extends AbstractSecurityInfoFragment<SecurityCompactDTO>
 {
