@@ -98,8 +98,6 @@ public class SearchStockPeopleFragment extends DashboardFragment
     private int page = DEFAULT_PAGE;
     private int perPage = DEFAULT_PER_PAGE;
 
-
-
     @Override public void onAttach(Activity activity)
     {
         THLog.i(TAG, "onAttach");

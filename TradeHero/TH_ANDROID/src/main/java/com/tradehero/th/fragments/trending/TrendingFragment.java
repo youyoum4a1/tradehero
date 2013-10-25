@@ -1,12 +1,12 @@
 package com.tradehero.th.fragments.trending;
 
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ImageButton;
@@ -16,6 +16,7 @@ import android.widget.TextView;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
+import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.trending.SecurityItemViewAdapter;
@@ -31,10 +32,8 @@ import com.tradehero.th.api.security.TrendingVolumeSecurityListType;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.trade.AbstractTradeFragment;
 import com.tradehero.th.fragments.trade.TradeFragment;
-import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.persistence.security.SecurityCompactListCache;
-import com.tradehero.th.widget.trending.TrendingGridView;
 import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
@@ -58,14 +57,14 @@ public class TrendingFragment extends DashboardFragment
     private TrendingFilterPagerAdapter mTrendingFilterPagerAdapter;
 
     private ProgressBar mProgressSpinner;
-    private TrendingGridView mTrendingGridView;
+    private AbsListView mTrendingGridView;
 
     private int filterPageSelected = 0;
     private ExchangeStringId[] selectedExchangeStringIds = new ExchangeStringId[TrendingFilterPagerAdapter.FRAGMENT_COUNT];
     private boolean isQuerying;
     @Inject Lazy<SecurityCompactListCache> securityCompactListCache;
     @Inject Lazy<SecurityCompactCache> securityCompactCache;
-    private  AsyncTask<Void, Void, SecurityIdList> trendingTask;
+    private DTOCache.GetOrFetchTask<SecurityIdList> trendingTask;
     private List<SecurityCompactDTO> securityCompactDTOs;
     protected SecurityItemViewAdapter securityItemViewAdapter;
     protected TrendingFilterSelectorFragment.OnResumedListener trendingFilterSelectorResumedListener;
@@ -96,7 +95,7 @@ public class TrendingFragment extends DashboardFragment
 
     protected void initViews(View view)
     {
-        mTrendingGridView = (TrendingGridView) view.findViewById(R.id.trending_gridview);
+        mTrendingGridView = (AbsListView) view.findViewById(R.id.trending_gridview);
 
         securityItemViewAdapter = new SecurityItemViewAdapter(getActivity(), getActivity().getLayoutInflater(), R.layout.trending_grid_item);
         mTrendingGridView.setAdapter(securityItemViewAdapter);
@@ -140,6 +139,7 @@ public class TrendingFragment extends DashboardFragment
             mTrendingFilterPagerAdapter.setOnPositionedExchangeSelectionChangedListener(this);
         }
         mFilterViewPager = (ViewPager) view.findViewById(R.id.trending_filter_pager);
+        THLog.d(TAG, "Found viewPager " + (mFilterViewPager != null));
 
         if (mFilterViewPager != null)
         {
