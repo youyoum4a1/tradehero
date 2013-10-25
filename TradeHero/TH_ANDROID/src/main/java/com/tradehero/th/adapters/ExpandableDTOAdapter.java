@@ -32,9 +32,12 @@ public abstract class ExpandableDTOAdapter<T, E extends ExpandableListItem<T>, V
         View expandingLayout = convertView.findViewById(R.id.expanding_layout);
         if (expandingLayout != null)
         {
-            if (!expandableWrapper.isExpanded()) {
+            if (!expandableWrapper.isExpanded())
+            {
                 expandingLayout.setVisibility(View.GONE);
-            } else {
+            }
+            else
+            {
                 expandingLayout.setVisibility(View.VISIBLE);
             }
         }

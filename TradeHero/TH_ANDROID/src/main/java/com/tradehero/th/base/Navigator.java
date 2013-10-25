@@ -124,7 +124,7 @@ public class Navigator
                 fragment = weakFragment.get();
             }
 
-            boolean forceCreateNewFragment = args.getBoolean(NAVIGATE_FRAGMENT_NO_CACHE);
+            boolean forceCreateNewFragment = args != null && args.getBoolean(NAVIGATE_FRAGMENT_NO_CACHE);
             if (forceCreateNewFragment || fragment == null)
             {
                 fragment = Fragment.instantiate(context, clss.getName(), args);
