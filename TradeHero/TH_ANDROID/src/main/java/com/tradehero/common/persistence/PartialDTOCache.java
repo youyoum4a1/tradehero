@@ -50,15 +50,22 @@ abstract public class PartialDTOCache<DTOKeyType extends DTOKey, DTOType extends
         return getOrFetch(key, false, callback);
     }
 
+    /**
+     * The listener should be strongly referenced elsewhere
+     * @param key
+     * @param force
+     * @param callback
+     * @return
+     */
     @Override public GetOrFetchTask<DTOType> getOrFetch(final DTOKeyType key, final boolean force, final Listener<DTOKeyType, DTOType> callback)
     {
-        final WeakReference<Listener<DTOKeyType, DTOType>> weakCallback = new WeakReference<Listener<DTOKeyType, DTOType>>(callback);
+        final WeakReference<Listener<DTOKeyType, DTOType>> weakCallback = new WeakReference<>(callback);
 
         return new GetOrFetchTask<DTOType>()
         {
             @Override protected DTOType doInBackground(Void... voids)
             {
-                return getOrFetch(key, force);
+                return getOrFetch(key, force); // TODO do something about RetrofitError exception
             }
 
             @Override protected void onPostExecute(DTOType value)

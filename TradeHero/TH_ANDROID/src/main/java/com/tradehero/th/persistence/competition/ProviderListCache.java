@@ -36,7 +36,6 @@ import retrofit.RetrofitError;
         THLog.d(TAG, "fetch " + key);
         try
         {
-
             if (key.key == ProviderListKey.ALL_PROVIDERS)
             {
                 return putInternal(key, providerService.get().getProviders());

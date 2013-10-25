@@ -9,6 +9,7 @@ import com.tradehero.common.cache.LruMemFileCache;
 import com.tradehero.common.persistence.CacheHelper;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.api.form.AbstractUserAvailabilityRequester;
+import com.tradehero.th.api.portfolio.DisplayablePortfolioDTO;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.api.users.UserBaseKey;
@@ -135,6 +136,7 @@ import javax.inject.Singleton;
                 THUser.class,
                 NumberDisplayUtils.class,
                 PortfolioCompactDTO.class,
+                DisplayablePortfolioDTO.class,
         },
         library = true // TEMP while there is no MarketService user
 )

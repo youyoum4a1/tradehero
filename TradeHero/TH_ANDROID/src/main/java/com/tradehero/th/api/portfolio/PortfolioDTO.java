@@ -116,7 +116,7 @@ public class PortfolioDTO extends PortfolioCompactDTO implements Comparable, DTO
         }
         else if (other.ownerDTO.equals(currentUserBase))
         {
-            return -1; // d-
+            return 1; // d-
         }
         else
         {

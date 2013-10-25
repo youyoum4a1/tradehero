@@ -18,9 +18,14 @@ public class PortfolioCompactDTO implements Comparable, DTO
     public double totalExtraCashPurchased;
     public double totalExtraCashGiven;
 
+    // TODO remove
     @Inject /*@Named("CurrentUser")*/ public static UserBaseDTO currentUserBase;
 
-    protected UserBaseDTO ownerDTO;
+    /**
+     * This parameter is not returned from the server. It is the responsibility of the client
+     * to be careful in its usage.
+     */
+    protected UserBaseDTO ownerDTO; // TODO remove
 
     //<editor-fold desc="Constructors">
     public PortfolioCompactDTO()
@@ -43,6 +48,11 @@ public class PortfolioCompactDTO implements Comparable, DTO
         this.ownerDTO = ownerDTO;
     }
 
+    public UserBaseDTO getOwnerDTO()
+    {
+        return ownerDTO;
+    }
+
     public boolean isOwnerCurrentUser()
     {
         return currentUserBase.equals(ownerDTO);
@@ -51,6 +61,25 @@ public class PortfolioCompactDTO implements Comparable, DTO
     public double getTotalExtraCash()
     {
         return totalExtraCashGiven + totalExtraCashPurchased;
+    }
+
+    @Override public int hashCode()
+    {
+        return new Integer(id).hashCode();
+    }
+
+    @Override public boolean equals(Object other)
+    {
+        return (other instanceof PortfolioCompactDTO) && equals((PortfolioCompactDTO) other);
+    }
+
+    public boolean equals(PortfolioCompactDTO other)
+    {
+        if (other == null)
+        {
+            return false;
+        }
+        return new Integer(id).equals(other.id);
     }
 
     /**

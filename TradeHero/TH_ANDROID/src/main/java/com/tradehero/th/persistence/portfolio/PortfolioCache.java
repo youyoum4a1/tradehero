@@ -7,9 +7,11 @@ import com.tradehero.th.api.portfolio.PortfolioDTO;
 import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.base.THUser;
 import com.tradehero.th.network.service.PortfolioService;
+import com.tradehero.th.persistence.user.UserProfileCache;
 import dagger.Lazy;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -29,6 +31,7 @@ import retrofit.RetrofitError;
     @Inject @Named("CurrentUser") protected UserBaseDTO currentUserBase;
     @Inject Lazy<PortfolioService> portfolioService;
     @Inject Lazy<PortfolioCompactCache> portfolioCompactCache;
+    @Inject Lazy<UserProfileCache> userProfileCache;
 
     private Map<OwnedPortfolioId, Boolean> allOtherUserKeys;
 
@@ -69,6 +72,7 @@ import retrofit.RetrofitError;
         if (value != null)
         {
             portfolioCompactCache.get().put(key.getPortfolioId(), value);
+            value.setOwnerDTO(userProfileCache.get().get(key.getUserBaseKey()));
         }
 
         addOtherUserKey(key);
@@ -87,5 +91,85 @@ import retrofit.RetrofitError;
     public List<OwnedPortfolioId> getAllOtherUserKeys()
     {
         return new ArrayList<>(allOtherUserKeys.keySet());
+    }
+
+    public List<PortfolioDTO> get(List<? extends OwnedPortfolioId> keys)
+    {
+        if (keys == null)
+        {
+            return null;
+        }
+        List<PortfolioDTO> values = new ArrayList<>();
+        for (OwnedPortfolioId key: keys)
+        {
+            values.add(get(key));
+        }
+        return values;
+    }
+
+    public List<PortfolioDTO> getOrFetch(List<? extends OwnedPortfolioId> keys)
+    {
+        if (keys == null)
+        {
+            return null;
+        }
+        List<PortfolioDTO> values = new ArrayList<>();
+        for (OwnedPortfolioId key: keys)
+        {
+            values.add(getOrFetch(key));
+        }
+        return values;
+    }
+
+    public GetOrFetchTask<List<PortfolioDTO>> getOrFetchTask(
+            final List<? extends OwnedPortfolioId> keys,
+            Listener<List<? extends OwnedPortfolioId>, List<? extends PortfolioDTO>> callback)
+    {
+        return getOrFetchTask(keys, false, callback);
+    }
+
+    public GetOrFetchTask<List<PortfolioDTO>> getOrFetchTask(
+            final List<? extends OwnedPortfolioId> keys,
+            final boolean force,
+            Listener<List<? extends OwnedPortfolioId>, List<? extends PortfolioDTO>> callback)
+    {
+        final WeakReference<Listener<List<? extends OwnedPortfolioId>, List<? extends PortfolioDTO>>> weakCallback = new WeakReference<>(callback);
+
+        return new GetOrFetchTask<List<PortfolioDTO>>()
+        {
+            @Override protected List<PortfolioDTO> doInBackground(Void... voids)
+            {
+                if (keys == null)
+                {
+                    return null;
+                }
+                List<PortfolioDTO> values = new ArrayList<>();
+                for (OwnedPortfolioId key: keys)
+                {
+                    values.add(getOrFetch(key, force));
+                }
+                return values;
+            }
+
+            @Override protected void onPostExecute(List<PortfolioDTO> values)
+            {
+                super.onPostExecute(values);
+                if (!hasForgottenListener() && !isCancelled())
+                {
+                    Listener<List<? extends OwnedPortfolioId>, List<? extends PortfolioDTO>> retrievedCallback = weakCallback.get();
+                    if (retrievedCallback != null)
+                    {
+                        retrievedCallback.onDTOReceived(keys, values);
+                    }
+                    if (keys != null)
+                    {
+                        for (OwnedPortfolioId key: keys)
+                        {
+                            pushToListeners(key);
+                        }
+                    }
+                }
+            }
+        };
     }
 }

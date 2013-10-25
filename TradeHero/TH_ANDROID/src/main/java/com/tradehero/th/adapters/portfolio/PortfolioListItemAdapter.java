@@ -6,21 +6,23 @@ import android.view.View;
 import android.view.ViewGroup;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.DTOAdapter;
+import com.tradehero.th.api.portfolio.DisplayablePortfolioDTO;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
-import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.base.THUser;
+import com.tradehero.th.api.portfolio.PortfolioDTO;
 import com.tradehero.th.widget.portfolio.PortfolioListHeaderView;
 import com.tradehero.th.widget.portfolio.PortfolioListItemView;
-import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/14/13 Time: 4:12 PM To change this template use File | Settings | File Templates. */
-public class PortfolioListItemAdapter extends DTOAdapter<OwnedPortfolioId, PortfolioListItemView>
+public class PortfolioListItemAdapter extends DTOAdapter<DisplayablePortfolioDTO, PortfolioListItemView>
 {
     public static final String TAG = PortfolioListItemAdapter.class.getName();
 
-    private List<OwnedPortfolioId> ownPortfolioIds;
-    private List<OwnedPortfolioId> otherPortfolioIds;
+    private Set<DisplayablePortfolioDTO> ownPortfolios;
+    private Set<DisplayablePortfolioDTO> otherPortfolios;
 
     private final int otherHeaderResId;
 
@@ -35,56 +37,59 @@ public class PortfolioListItemAdapter extends DTOAdapter<OwnedPortfolioId, Portf
         return true;
     }
 
-    @Override public void setItems(List<OwnedPortfolioId> items)
+    @Override public void setItems(List<DisplayablePortfolioDTO> items)
     {
         super.setItems(items);
 
         if (items == null)
         {
-            ownPortfolioIds = null;
-            otherPortfolioIds = null;
+            ownPortfolios = null;
+            otherPortfolios = null;
         }
         else
         {
-            ownPortfolioIds = new ArrayList<>();
-            otherPortfolioIds = new ArrayList<>();
-            UserBaseKey ownUserKey = THUser.getCurrentUserBase().getBaseKey();
+            ownPortfolios = new TreeSet<>();
+            otherPortfolios = new TreeSet<>();
 
-            for (OwnedPortfolioId ownedPortfolioId: items)
+            for (DisplayablePortfolioDTO displayablePortfolioDTO: items)
             {
-                if (ownedPortfolioId.getUserBaseKey().equals(ownUserKey))
+                if (displayablePortfolioDTO == null)
                 {
-                    ownPortfolioIds.add(ownedPortfolioId);
+                    // Do nothing
+                }
+                else if (displayablePortfolioDTO.isUserCurrentUser())
+                {
+                    ownPortfolios.add(displayablePortfolioDTO);
                 }
                 else
                 {
-                    otherPortfolioIds.add(ownedPortfolioId);
+                    otherPortfolios.add(displayablePortfolioDTO);
                 }
             }
         }
     }
 
-    public int getOwnPortfolioIdCount()
+    public int getOwnPortfolioCount()
     {
-        if (ownPortfolioIds == null)
+        if (ownPortfolios == null)
         {
             return 0;
         }
-        return ownPortfolioIds.size();
+        return ownPortfolios.size();
     }
 
-    public int getOtherPortfolioIdCount()
+    public int getOtherPortfolioCount()
     {
-        if (otherPortfolioIds == null)
+        if (otherPortfolios == null)
         {
             return 0;
         }
-        return otherPortfolioIds.size();
+        return otherPortfolios.size();
     }
 
     public boolean hasOtherPortfolioHeader()
     {
-        return getOtherPortfolioIdCount() > 0;
+        return getOtherPortfolioCount() > 0;
     }
 
     public int getOtherPortfolioHeaderCount()
@@ -92,60 +97,60 @@ public class PortfolioListItemAdapter extends DTOAdapter<OwnedPortfolioId, Portf
         return hasOtherPortfolioHeader() ? 1 : 0;
     }
 
-    public int getOtherPortfolioIdIndex(int position)
+    public int getOtherPortfolioIndex(int position)
     {
-        return position - getOtherPortfolioHeaderCount() - getOwnPortfolioIdCount();
+        return position - getOtherPortfolioHeaderCount() - getOwnPortfolioCount();
     }
 
     @Override public int getCount()
     {
-        return getOwnPortfolioIdCount() + getOtherPortfolioHeaderCount() + getOtherPortfolioIdCount();
+        return getOwnPortfolioCount() + getOtherPortfolioHeaderCount() + getOtherPortfolioCount();
     }
 
     public boolean isOwnPortfolio(int position)
     {
-        return position < getOwnPortfolioIdCount();
+        return position < getOwnPortfolioCount();
     }
 
     public boolean isOtherPortfolioHeader(int position)
     {
-        return hasOtherPortfolioHeader() && position == getOwnPortfolioIdCount();
+        return hasOtherPortfolioHeader() && position == getOwnPortfolioCount();
     }
 
     public boolean isOtherPortfolio(int position)
     {
-        return position >= getOwnPortfolioIdCount() + getOtherPortfolioHeaderCount();
+        return position >= getOwnPortfolioCount() + getOtherPortfolioHeaderCount();
     }
 
     @Override public long getItemId(int position)
     {
-        long itemId;
-        if (isOwnPortfolio(position))
-        {
-            itemId = ownPortfolioIds.get(position).hashCode();
-        }
-        else if (isOtherPortfolioHeader(position))
-        {
-            itemId = "otherPortfolioHeader".hashCode();
-        }
-        else
-        {
-            itemId = otherPortfolioIds.get(getOtherPortfolioIdIndex(position)).hashCode();
-        }
-        return itemId;
+        return getItem(position).hashCode();
     }
 
     @Override public Object getItem(int position)
     {
+        Iterator<DisplayablePortfolioDTO> iterator = null;
+        int index = 0;
         if (isOwnPortfolio(position))
         {
-            return ownPortfolioIds.get(position);
+            iterator = ownPortfolios.iterator();
+            while (index++ < position)
+            {
+                iterator.next();
+            }
+            return iterator.next();
         }
         else if (isOtherPortfolio(position))
         {
-            return otherPortfolioIds.get(getOtherPortfolioIdIndex(position));
+            iterator = otherPortfolios.iterator();
+            int desiredIndex = getOtherPortfolioIndex(position);
+            while (index++ < desiredIndex)
+            {
+                iterator.next();
+            }
+            return iterator.next();
         }
-        return null;
+        return "otherPortfolioHeader";
     }
 
     @Override public View getView(int position, View convertView, ViewGroup parent)
@@ -154,7 +159,7 @@ public class PortfolioListItemAdapter extends DTOAdapter<OwnedPortfolioId, Portf
         if (isOwnPortfolio(position))
         {
             view = inflater.inflate(layoutResourceId, parent, false);
-            ((PortfolioListItemView) view).display((OwnedPortfolioId) getItem(position));
+            ((PortfolioListItemView) view).display((DisplayablePortfolioDTO) getItem(position));
         }
         else if (isOtherPortfolioHeader(position))
         {
@@ -164,12 +169,12 @@ public class PortfolioListItemAdapter extends DTOAdapter<OwnedPortfolioId, Portf
         else
         {
             view = inflater.inflate(layoutResourceId, parent, false);
-            ((PortfolioListItemView) view).display((OwnedPortfolioId) getItem(position));
+            ((PortfolioListItemView) view).display((DisplayablePortfolioDTO) getItem(position));
         }
         return view;
     }
 
-    @Override protected void fineTune(int position, OwnedPortfolioId dto, PortfolioListItemView dtoView)
+    @Override protected void fineTune(int position, DisplayablePortfolioDTO dto, PortfolioListItemView dtoView)
     {
         // Nothing to do
     }
