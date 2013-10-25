@@ -13,6 +13,7 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.th.R;
+import com.tradehero.th.adapters.ExpandableListItem;
 import com.tradehero.th.adapters.trade.TradeListItemAdapter;
 import com.tradehero.th.api.position.OwnedPositionId;
 import com.tradehero.th.api.trade.OwnedTradeId;
@@ -23,6 +24,7 @@ import com.tradehero.th.persistence.trade.TradeListCache;
 import dagger.Lazy;
 
 import javax.inject.Inject;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -172,7 +174,12 @@ public class TradeListFragment extends DashboardFragment
     {
         if (ownedTradeIds!= null)
         {
-            adapter.setItems(ownedTradeIds);
+            List<ExpandableListItem<OwnedTradeId>> items = new ArrayList<>(ownedTradeIds.size());
+            for(OwnedTradeId id : ownedTradeIds)
+            {
+                items.add(new ExpandableListItem<OwnedTradeId>(id));
+            }
+            adapter.setItems(items);
             getView().post(
                     new Runnable()
                     {

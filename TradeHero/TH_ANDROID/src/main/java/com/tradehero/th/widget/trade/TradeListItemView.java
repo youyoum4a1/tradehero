@@ -2,8 +2,10 @@ package com.tradehero.th.widget.trade;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import com.squareup.picasso.Picasso;
+import com.tradehero.th.adapters.ExpandableListItem;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.trade.OwnedTradeId;
 import com.tradehero.th.api.trade.TradeDTO;
@@ -16,7 +18,7 @@ import javax.inject.Inject;
 /**
  * Created by julien on 23/10/13
  */
-public class TradeListItemView extends RelativeLayout implements DTOView<OwnedTradeId>
+public class TradeListItemView extends LinearLayout implements DTOView<ExpandableListItem<OwnedTradeId>>
 {
     public static final String TAG = TradeListItemView.class.getName();
 
@@ -54,9 +56,9 @@ public class TradeListItemView extends RelativeLayout implements DTOView<OwnedTr
     {
     }
 
-    @Override public void display(OwnedTradeId ownedTradeId)
+    @Override public void display(ExpandableListItem<OwnedTradeId> expandableItem)
     {
-        linkWith(ownedTradeId, true);
+        linkWith(expandableItem.getModel(), true);
     }
 
     public void linkWith(OwnedTradeId ownedTradeId, boolean andDisplay)
