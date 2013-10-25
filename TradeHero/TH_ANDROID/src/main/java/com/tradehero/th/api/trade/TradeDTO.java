@@ -17,6 +17,9 @@ public class TradeDTO implements DTO
     public int quantity_after_trade;
     public double average_price_after_trade;
     public double realized_pl_after_trade;
+    public String commentText;
+
+    public boolean isLastTrade;
 
     public TradeDTO() { }
 

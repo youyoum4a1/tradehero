@@ -12,13 +12,14 @@ import dagger.Lazy;
 import retrofit.RetrofitError;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by julien on 22/10/13
  */
-public class TradeListCache extends StraightDTOCache<OwnedPositionId, OwnedTradeIdList>
+@Singleton public class TradeListCache extends StraightDTOCache<OwnedPositionId, OwnedTradeIdList>
 {
     public static final String TAG = TradeListCache.class.getSimpleName();
     public static final int DEFAULT_MAX_SIZE = 100;
@@ -54,6 +55,7 @@ public class TradeListCache extends StraightDTOCache<OwnedPositionId, OwnedTrade
         {
             tradeIds = new OwnedTradeIdList();
             OwnedTradeId tradeId;
+            int i = 0;
             for(TradeDTO trade: fleshedValues)
             {
                 tradeId = new OwnedTradeId(key, trade.id);

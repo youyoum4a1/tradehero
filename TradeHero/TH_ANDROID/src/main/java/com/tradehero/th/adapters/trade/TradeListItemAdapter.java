@@ -13,7 +13,7 @@ import com.tradehero.th.widget.trade.TradeListItemView;
 /**
  * Created by julien on 23/10/13
  */
-public class TradeListItemAdapter extends ExpandableDTOAdapter<OwnedTradeId, ExpandableListItem<OwnedTradeId>, TradeListItemView>
+public class TradeListItemAdapter extends ExpandableDTOAdapter<OwnedTradeId, TradeListItemAdapter.ExpandableTradeItem, TradeListItemView>
 {
     public static final String TAG = TradeListItemAdapter.class.getName();
 
@@ -22,8 +22,23 @@ public class TradeListItemAdapter extends ExpandableDTOAdapter<OwnedTradeId, Exp
         super(context, inflater, R.layout.trade_list_item);
     }
 
-    @Override protected void fineTune(int position, ExpandableListItem<OwnedTradeId> dto, TradeListItemView convertView)
+    @Override protected void fineTune(int position, ExpandableTradeItem dto, TradeListItemView convertView)
     {
-        // Nothing to do
+    }
+
+    public static class ExpandableTradeItem extends ExpandableListItem<OwnedTradeId>
+    {
+        private boolean isLastTrade;
+        public ExpandableTradeItem(OwnedTradeId model, boolean isLastTrade)
+        {
+            super(model);
+            this.isLastTrade = isLastTrade;
+        }
+
+        public boolean isLastTrade()
+        {
+            return isLastTrade;
+        }
+
     }
 }

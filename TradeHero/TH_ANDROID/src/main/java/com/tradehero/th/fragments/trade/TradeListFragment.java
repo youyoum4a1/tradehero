@@ -18,6 +18,7 @@ import com.tradehero.th.adapters.trade.TradeListItemAdapter;
 import com.tradehero.th.api.position.OwnedPositionId;
 import com.tradehero.th.api.trade.OwnedTradeId;
 import com.tradehero.th.api.trade.OwnedTradeIdList;
+import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.persistence.position.PositionCache;
 import com.tradehero.th.persistence.trade.TradeListCache;
@@ -30,7 +31,7 @@ import java.util.List;
 /**
  * Created by julien on 23/10/13
  */
-public class TradeListFragment extends DashboardFragment
+public class TradeListFragment extends DashboardFragment implements BaseFragment.ArgumentsChangeListener
 {
     public static final String TAG = TradeListFragment.class.getSimpleName();
 
@@ -174,10 +175,14 @@ public class TradeListFragment extends DashboardFragment
     {
         if (ownedTradeIds!= null)
         {
-            List<ExpandableListItem<OwnedTradeId>> items = new ArrayList<>(ownedTradeIds.size());
+            List<TradeListItemAdapter.ExpandableTradeItem> items = new ArrayList<>(ownedTradeIds.size());
+            int i = 0;
             for(OwnedTradeId id : ownedTradeIds)
             {
-                items.add(new ExpandableListItem<OwnedTradeId>(id));
+                TradeListItemAdapter.ExpandableTradeItem item = new TradeListItemAdapter.ExpandableTradeItem(id, i == 0);
+                item.setExpanded(i == 0);
+                items.add(item);
+                ++i;
             }
             adapter.setItems(items);
             getView().post(
@@ -200,9 +205,12 @@ public class TradeListFragment extends DashboardFragment
 
     public void display()
     {
-        // TODO: update header
-
     }
 
 
+    @Override
+    public void onArgumentsChanged(Bundle args)
+    {
+        desiredArguments = args;
+    }
 }

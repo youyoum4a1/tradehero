@@ -28,8 +28,5 @@
   <string name="portfolio_header_username">Username</string>
 
 
-    <!-- Trade History -->
-    <string name="trade_list_title">Trade History</string>
-
 
 </resources>
