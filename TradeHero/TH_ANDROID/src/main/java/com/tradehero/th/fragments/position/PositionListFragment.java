@@ -27,7 +27,6 @@ import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.dashboard.DashboardTabType;
 import com.tradehero.th.fragments.trade.TradeFragment;
 import com.tradehero.th.fragments.trade.TradeListFragment;
-import com.tradehero.th.persistence.portfolio.PortfolioCompactCache;
 import com.tradehero.th.persistence.position.GetPositionsCache;
 import com.tradehero.th.persistence.position.PositionCache;
 import com.tradehero.th.persistence.security.SecurityIdCache;
@@ -54,13 +53,14 @@ public class PositionListFragment extends DashboardFragment
     private Bundle desiredArguments;
 
     private OwnedPortfolioId ownedPortfolioId;
+
     private GetPositionsDTO getPositionsDTO;
     @Inject Lazy<GetPositionsCache> getPositionsCache;
-    @Inject Lazy<PortfolioCompactCache> portfolioCompactCache;
-    @Inject Lazy<SecurityIdCache> securityIdCache;
-    @Inject Lazy<PositionCache> positionCache;
     private GetPositionsCache.Listener<OwnedPortfolioId, GetPositionsDTO> getPositionsCacheListener;
     private DTOCache.GetOrFetchTask<GetPositionsDTO> fetchGetPositionsDTOTask;
+
+    @Inject Lazy<SecurityIdCache> securityIdCache;
+    @Inject Lazy<PositionCache> positionCache;
 
     private Integer positionForMoreInfo;
 

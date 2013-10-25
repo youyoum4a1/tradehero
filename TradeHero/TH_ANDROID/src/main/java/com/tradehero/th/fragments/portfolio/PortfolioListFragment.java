@@ -99,8 +99,14 @@ public class PortfolioListFragment extends DashboardFragment
     {
         ActionBar actionBar = getSherlockActivity().getSupportActionBar();
         actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME);
+        actionBar.setDisplayHomeAsUpEnabled(isDisplayHomeAsUpEnabled());
         displayActionBarTitle();
         super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    public boolean isDisplayHomeAsUpEnabled()
+    {
+        return false;
     }
 
     @Override public void onResume()

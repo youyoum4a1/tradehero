@@ -1,5 +1,6 @@
 package com.tradehero.common.persistence;
 
+import android.support.v4.util.LruCache;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,8 +13,10 @@ abstract public class PartialDTOCache<DTOKeyType extends DTOKey, DTOType extends
         implements LiveDTOCache<DTOKeyType, DTOType>
 {
     public static final String TAG = PartialDTOCache.class.getSimpleName();
+    public static final int DEFAULT_AUTO_FETCH_TASK_MAX_SIZE = 50;
 
     private List<WeakReference<Listener<DTOKeyType, DTOType>>> listeners;
+    private LruCache<DTOKeyType, GetOrFetchTask<DTOType>> autoFetchTasks = new LruCache<>(DEFAULT_AUTO_FETCH_TASK_MAX_SIZE);
 
     public PartialDTOCache()
     {
@@ -163,6 +166,38 @@ abstract public class PartialDTOCache<DTOKeyType extends DTOKey, DTOType extends
         for (WeakReference<Listener<DTOKeyType, DTOType>> lostListener: lostListeners)
         {
             listeners.remove(lostListener);
+        }
+    }
+
+    /**
+     * This helps you prefetch stuff you don't want to wait to fetch later on.
+     * @param key
+     */
+    public void autoFetch(DTOKeyType key)
+    {
+        if (key == null || get(key) != null)
+        {
+            return;
+        }
+
+        GetOrFetchTask<DTOType> fetchTask = getOrFetch(key, null);
+        autoFetchTasks.put(key, fetchTask);
+        fetchTask.execute();
+    }
+
+    /**
+     * Beware that if you submit more keys than the DEFAULT limit, then only the last ones will get in.
+     * @param keys
+     */
+    public void autoFetch(List<? extends DTOKeyType> keys, DTOKeyType typeQualifier)
+    {
+        if (keys == null)
+        {
+            return;
+        }
+        for (DTOKeyType key: keys)
+        {
+            autoFetch(key);
         }
     }
 }

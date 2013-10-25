@@ -15,6 +15,7 @@ import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.network.BasicRetrofitErrorHandler;
 import com.tradehero.th.network.service.PositionService;
+import com.tradehero.th.persistence.portfolio.PortfolioCache;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import dagger.Lazy;
 import java.lang.ref.WeakReference;
@@ -33,6 +34,7 @@ import retrofit.RetrofitError;
     private LruCache<OwnedPortfolioId, GetPositionsCache.GetPositionsCutDTO> lruCache;
     @Inject protected Lazy<PositionService> positionService;
     @Inject protected Lazy<SecurityCompactCache> securityCompactCache;
+    @Inject protected Lazy<PortfolioCache> portfolioCache;
     @Inject protected Lazy<PositionCache> filedPositionCache;
 
     //<editor-fold desc="Constructors">
@@ -101,6 +103,11 @@ import retrofit.RetrofitError;
         if (previousCut != null)
         {
             previous = previousCut.create(key.portfolioId, securityCompactCache.get(), filedPositionCache.get());
+        }
+
+        if (key != null)
+        {
+            portfolioCache.get().autoFetch(key);
         }
 
         return previous;

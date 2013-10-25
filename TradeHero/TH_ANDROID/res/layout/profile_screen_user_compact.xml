@@ -51,36 +51,17 @@
       />
 
 
-  <!--Heroes-->
-  <LinearLayout
-      android:id="@+id/user_profile_compact_heroes_count_wrapper"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:orientation="vertical"
-      android:gravity="center_horizontal"
-      android:layout_alignParentRight="true">
-
-    <TextView
-        android:id="@+id/user_profile_compact_heroes_count"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:textColor="@color/white"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        android:drawableTop="@drawable/icn_heroes"/>
-    </LinearLayout>
   <!--Followers-->
   <LinearLayout
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:orientation="vertical"
       android:gravity="center_horizontal"
-      android:layout_toLeftOf="@id/user_profile_compact_heroes_count_wrapper"
+      android:layout_toLeftOf="@+id/user_profile_compact_heroes_count_wrapper"
       android:layout_marginRight="5dp"
       >
 
-    <TextView
+    <Button
         android:id="@+id/user_profile_compact_followers_count"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
@@ -91,4 +72,49 @@
         android:drawableTop="@drawable/icn_followers"/>
 
   </LinearLayout>
+
+  <!--Heroes-->
+  <LinearLayout
+      android:id="@+id/user_profile_compact_heroes_count_wrapper"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:orientation="vertical"
+      android:gravity="center_horizontal"
+      android:layout_toLeftOf="@+id/user_profile_default_portfolio_wrapper"
+      >
+
+    <TextView
+        android:id="@+id/user_profile_compact_heroes_count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:drawableTop="@drawable/icn_heroes"/>
+
+    </LinearLayout>
+
+    <!--Default Portfolio-->
+  <LinearLayout
+      android:id="@+id/user_profile_default_portfolio_wrapper"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:orientation="vertical"
+      android:gravity="center_horizontal"
+      android:layout_alignParentRight="true"
+      android:layout_marginRight="5dp"
+      >
+
+    <ImageButton
+        android:id="@+id/btn_user_profile_default_portfolio"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:gravity="center"
+        android:src="@drawable/ic_info"
+        android:contentDescription="@null"
+        />
+
+  </LinearLayout>
+
 </com.tradehero.th.widget.user.ProfileCompactView>

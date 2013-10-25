@@ -2,7 +2,9 @@ package com.tradehero.th.widget.user;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.squareup.picasso.Picasso;
@@ -15,6 +17,8 @@ import com.tradehero.th.models.THSignedNumber;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.NumberDisplayUtils;
 import com.tradehero.th.utils.SecurityUtils;
+import com.tradehero.th.widget.portfolio.PortfolioRequestListener;
+import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
 import javax.inject.Inject;
 
@@ -36,9 +40,11 @@ public class ProfileView extends FrameLayout implements DTOView<UserProfileDTO>
     private TextView heroesCount;
     private TextView tradesCount;
     private TextView exchangesCount;
+    private ImageButton btnDefaultPortfolio;
 
     @Inject protected Picasso picasso;
     private boolean initiated;
+    private WeakReference<PortfolioRequestListener> portfolioRequestListener = new WeakReference<>(null);
 
     //<editor-fold desc="Constructors">
     public ProfileView(Context context)
@@ -83,6 +89,17 @@ public class ProfileView extends FrameLayout implements DTOView<UserProfileDTO>
         heroesCount = (TextView) findViewById(R.id.user_profile_heroes_count);
         tradesCount = (TextView) findViewById(R.id.user_profile_trade_count);
         exchangesCount = (TextView) findViewById(R.id.user_profile_exchanges_count);
+        btnDefaultPortfolio = (ImageButton) findViewById(R.id.btn_user_profile_default_portfolio);
+        if (btnDefaultPortfolio != null)
+        {
+            btnDefaultPortfolio.setOnClickListener(new OnClickListener()
+            {
+                @Override public void onClick(View view)
+                {
+                    pushDefaultPortfolio();
+                }
+            });
+        }
 
         DaggerUtils.inject(this);
     }
@@ -180,4 +197,24 @@ public class ProfileView extends FrameLayout implements DTOView<UserProfileDTO>
             heroesCount.setText(Integer.toString(dto.heroIds == null ? 0 : dto.heroIds.size()));
         }
     }
+
+    /**
+     * Listeners should be strongly referenced elsewhere
+     * @param portfolioRequestListener
+     */
+    public void setPortfolioRequestListener(PortfolioRequestListener portfolioRequestListener)
+    {
+        this.portfolioRequestListener = new WeakReference<>(portfolioRequestListener);
+    }
+
+    private void pushDefaultPortfolio()
+    {
+        PortfolioRequestListener listener = portfolioRequestListener.get();
+        if (listener != null)
+        {
+            listener.onDefaultPortfolioRequested();
+        }
+    }
+
+
 }

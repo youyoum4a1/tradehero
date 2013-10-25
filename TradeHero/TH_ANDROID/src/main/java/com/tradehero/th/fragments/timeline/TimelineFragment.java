@@ -12,18 +12,25 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.tradehero.common.persistence.DTOCache;
+import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.TimelineAdapter;
 import com.tradehero.th.api.local.TimelineItem;
+import com.tradehero.th.api.portfolio.OwnedPortfolioId;
+import com.tradehero.th.api.portfolio.OwnedPortfolioIdList;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.base.NavigatorActivity;
 import com.tradehero.th.fragments.base.BaseFragment;
+import com.tradehero.th.fragments.position.PositionListFragment;
 import com.tradehero.th.fragments.settings.SettingsFragment;
 import com.tradehero.th.loaders.TimelinePagedItemListLoader;
+import com.tradehero.th.persistence.portfolio.PortfolioCache;
+import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.widget.StepView;
+import com.tradehero.th.widget.portfolio.PortfolioRequestListener;
 import com.tradehero.th.widget.timeline.TimelineListView;
 import com.tradehero.th.widget.user.ProfileCompactView;
 import com.tradehero.th.widget.user.ProfileView;
@@ -32,18 +39,26 @@ import java.util.List;
 import javax.inject.Inject;
 
 public class TimelineFragment extends BaseFragment
-        implements BaseFragment.ArgumentsChangeListener, StepView.StepProvider
+        implements BaseFragment.ArgumentsChangeListener, StepView.StepProvider, PortfolioRequestListener
 {
     private TimelineAdapter timelineAdapter;
 
     private Bundle desiredArguments;
     protected UserBaseKey userBaseKey;
     protected UserProfileDTO profile;
-    protected DTOCache.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
-    protected DTOCache.GetOrFetchTask<UserProfileDTO> userProfileCacheTask;
+    protected OwnedPortfolioIdList portfolioIdList;
     private TimelineListView timelineListView;
 
+    protected DTOCache.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
+    protected DTOCache.GetOrFetchTask<UserProfileDTO> userProfileCacheTask;
     @Inject protected Lazy<UserProfileCache> userProfileCache;
+
+    protected DTOCache.Listener<UserBaseKey, OwnedPortfolioIdList> portfolioCompactListCacheListener;
+    protected DTOCache.GetOrFetchTask<OwnedPortfolioIdList> portfolioCompactListCacheTask;
+    @Inject protected Lazy<PortfolioCompactListCache> portfolioCompactListCache;
+    @Inject protected Lazy<PortfolioCache> portfolioCache;
+
+    private View view;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -119,6 +134,13 @@ public class TimelineFragment extends BaseFragment
             userProfileCacheTask.forgetListener(true);
         }
         userProfileCacheTask = null;
+
+        portfolioCompactListCacheListener = null;
+        if (portfolioCompactListCacheTask != null)
+        {
+            portfolioCompactListCacheTask.forgetListener(true);
+        }
+        portfolioCompactListCacheTask = null;
         super.onDestroyView();
     }
 
@@ -151,6 +173,28 @@ public class TimelineFragment extends BaseFragment
                 userProfileCacheTask = userProfileCache.get().getOrFetch(userBaseKey, false, userProfileCacheListener);
                 userProfileCacheTask.execute();
             }
+
+            OwnedPortfolioIdList cachedOwnedPortfolioIdList = portfolioCompactListCache.get().get(userBaseKey);
+            if (cachedOwnedPortfolioIdList != null)
+            {
+                linkWith(cachedOwnedPortfolioIdList, andDisplay);
+            }
+            else
+            {
+                portfolioCompactListCacheListener = new DTOCache.Listener<UserBaseKey, OwnedPortfolioIdList>()
+                {
+                    @Override public void onDTOReceived(UserBaseKey key, OwnedPortfolioIdList value)
+                    {
+                        linkWith(value, andDisplay);
+                    }
+                };
+                if (portfolioCompactListCacheTask != null)
+                {
+                    portfolioCompactListCacheTask.forgetListener(true);
+                }
+                portfolioCompactListCacheTask = portfolioCompactListCache.get().getOrFetch(userBaseKey, false, portfolioCompactListCacheListener);
+                portfolioCompactListCacheTask.execute();
+            }
         }
 
         if (andDisplay)
@@ -165,6 +209,17 @@ public class TimelineFragment extends BaseFragment
         if (andDisplay)
         {
             updateView();
+        }
+    }
+
+    private void linkWith(OwnedPortfolioIdList ownedPortfolioIdList, boolean andDisplay)
+    {
+        this.portfolioIdList = ownedPortfolioIdList;
+        portfolioCache.get().autoFetch(ownedPortfolioIdList, (OwnedPortfolioId) null);
+
+        if (andDisplay)
+        {
+            // Nothing to do
         }
     }
 
@@ -211,11 +266,13 @@ public class TimelineFragment extends BaseFragment
             case 0:
                 ProfileView profileView = (ProfileView) getActivity().getLayoutInflater().inflate(R.layout.profile_screen_user_detail, null);
                 profileView.display(profile);
+                profileView.setPortfolioRequestListener(this);
                 return profileView;
             case 1:
                 ProfileCompactView profileCompactView =
                         (ProfileCompactView) getActivity().getLayoutInflater().inflate(R.layout.profile_screen_user_compact, null);
                 profileCompactView.display(profile);
+                profileCompactView.setPortfolioRequestListener(this);
                 return profileCompactView;
         }
         return null;
@@ -246,4 +303,29 @@ public class TimelineFragment extends BaseFragment
 
     };
 
+    //<editor-fold desc="PortfolioRequestListener">
+    @Override public void onPortfolioRequested(OwnedPortfolioId ownedPortfolioId)
+    {
+        pushPositionListFragment(ownedPortfolioId);
+    }
+
+    @Override public void onDefaultPortfolioRequested()
+    {
+        if (portfolioIdList == null || portfolioIdList.size() < 1 || portfolioIdList.get(0) == null)
+        {
+            // HACK, instead we should test for Default title on PortfolioDTO
+            THToast.show("Not enough data, try again");
+        }
+        else
+        {
+            pushPositionListFragment(portfolioIdList.get(0));
+        }
+    }
+    //</editor-fold>
+
+    private void pushPositionListFragment(OwnedPortfolioId ownedPortfolioId)
+    {
+        Navigator navigator = ((NavigatorActivity) getActivity()).getNavigator();
+        navigator.pushFragment(PositionListFragment.class, ownedPortfolioId.getArgs());
+    }
 }

@@ -21,6 +21,7 @@ import com.tradehero.th.fragments.leaderboard.LeaderboardListViewFragment;
 import com.tradehero.th.fragments.leaderboard.LeaderboardLoader;
 import com.tradehero.th.fragments.leaderboard.LeaderboardUserDTOView;
 import com.tradehero.th.fragments.portfolio.PortfolioListFragment;
+import com.tradehero.th.fragments.portfolio.PushablePortfolioListFragment;
 import com.tradehero.th.fragments.position.PositionListFragment;
 import com.tradehero.th.fragments.settings.*;
 import com.tradehero.th.fragments.timeline.MeTimelineFragment;
@@ -93,6 +94,7 @@ import javax.inject.Singleton;
                 ChartFragment.class,
                 StockInfoFragment.class,
                 PortfolioListFragment.class,
+                PushablePortfolioListFragment.class,
                 PortfolioListItemView.class,
 
                 PositionListFragment.class,

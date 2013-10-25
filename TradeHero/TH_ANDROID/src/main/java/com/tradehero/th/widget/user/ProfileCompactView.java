@@ -3,6 +3,7 @@ package com.tradehero.th.widget.user;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -14,6 +15,8 @@ import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.models.THSignedNumber;
 import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th.widget.portfolio.PortfolioRequestListener;
+import java.lang.ref.WeakReference;
 import javax.inject.Inject;
 
 /** Created with IntelliJ IDEA. User: tho Date: 10/17/13 Time: 12:51 PM Copyright (c) TradeHero */
@@ -26,8 +29,10 @@ public class ProfileCompactView extends RelativeLayout implements DTOView<UserPr
     private TextView followersCount;
     private TextView heroesCount;
     private TextView username;
+    private ImageButton btnDefaultPortfolio;
 
     @Inject protected Picasso picasso;
+    private WeakReference<PortfolioRequestListener> portfolioRequestListener = new WeakReference<>(null);
 
     //<editor-fold desc="Constructors">
     public ProfileCompactView(Context context)
@@ -72,6 +77,17 @@ public class ProfileCompactView extends RelativeLayout implements DTOView<UserPr
         }
 
         heroesCount = (TextView) findViewById(R.id.user_profile_compact_heroes_count);
+        btnDefaultPortfolio = (ImageButton) findViewById(R.id.btn_user_profile_default_portfolio);
+        if (btnDefaultPortfolio != null)
+        {
+            btnDefaultPortfolio.setOnClickListener(new OnClickListener()
+            {
+                @Override public void onClick(View view)
+                {
+                    pushDefaultPortfolio();
+                }
+            });
+        }
 
         DaggerUtils.inject(this);
     }
@@ -98,5 +114,23 @@ public class ProfileCompactView extends RelativeLayout implements DTOView<UserPr
         followersCount.setText(Integer.toString(dto.followerCount));
         heroesCount.setText(Integer.toString(dto.heroIds.size()));
         username.setText(dto.displayName);
+    }
+
+    /**
+     * Listeners should be strongly referenced elsewhere
+     * @param portfolioRequestListener
+     */
+    public void setPortfolioRequestListener(PortfolioRequestListener portfolioRequestListener)
+    {
+        this.portfolioRequestListener = new WeakReference<>(portfolioRequestListener);
+    }
+
+    private void pushDefaultPortfolio()
+    {
+        PortfolioRequestListener listener = portfolioRequestListener.get();
+        if (listener != null)
+        {
+            listener.onDefaultPortfolioRequested();
+        }
     }
 }
