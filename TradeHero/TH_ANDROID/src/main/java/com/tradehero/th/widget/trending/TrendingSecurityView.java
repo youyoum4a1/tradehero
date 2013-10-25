@@ -147,15 +147,21 @@ public class TrendingSecurityView extends FrameLayout implements DTOView<Securit
 
     private void clearRunningOperations()
     {
-        mPicasso.load((String) null)
-                .placeholder(R.drawable.default_image)
-                .error(R.drawable.default_image)
-                .into(stockLogo);
+        if (stockLogo != null)
+        {
+            mPicasso.load((String) null)
+                    .placeholder(R.drawable.default_image)
+                    .error(R.drawable.default_image)
+                    .into(stockLogo);
+        }
 
-        mPicasso.load((String) null)
-                .placeholder(R.drawable.default_image)
-                .error(R.drawable.default_image)
-                .into(stockBgLogo);
+        if (stockBgLogo != null)
+        {
+            mPicasso.load((String) null)
+                    .placeholder(R.drawable.default_image)
+                    .error(R.drawable.default_image)
+                    .into(stockBgLogo);
+        }
     }
 
     @Override public void display (final SecurityCompactDTO securityCompactDTO)
