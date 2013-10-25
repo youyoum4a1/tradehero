@@ -36,6 +36,7 @@ import java.util.Map;
 import org.json.JSONException;
 import org.json.JSONObject;
 import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 /** Created with IntelliJ IDEA. User: tho Date: 8/14/13 Time: 6:28 PM Copyright (c) TradeHero */
 public class AuthenticationActivity extends SherlockFragmentActivity
@@ -318,11 +319,14 @@ public class AuthenticationActivity extends SherlockFragmentActivity
 
         @Override public void done(UserBaseDTO user, THException ex)
         {
+            Throwable cause;
+            Response response;
             if (user != null)
             {
                 ActivityHelper.goRoot(AuthenticationActivity.this);
             }
-            else if (ex.getCause() instanceof RetrofitError && ((RetrofitError) ex.getCause()).getResponse().getStatus() == 403) // Forbidden
+            else if ((cause = ex.getCause()) != null && cause instanceof RetrofitError &&
+                    (response = ((RetrofitError)cause).getResponse()) != null && response.getStatus() == 403) // Forbidden
             {
                 THToast.show(R.string.not_registered);
             }

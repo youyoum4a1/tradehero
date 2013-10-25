@@ -292,6 +292,7 @@ public class THUser
 
     public static void clearCurrentUser()
     {
+        credentials.clear();
         SharedPreferences.Editor prefEditor = Application.getPreferences().edit();
         prefEditor.remove(PREF_MY_USER);
         prefEditor.remove(PREF_MY_TOKEN);
