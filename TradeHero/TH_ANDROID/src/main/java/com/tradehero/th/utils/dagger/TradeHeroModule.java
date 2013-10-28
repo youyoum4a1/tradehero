@@ -233,7 +233,7 @@ public class TradeHeroModule
                 //.downloader(new UrlConnectionDownloader(getContext()))
                 .memoryCache(lruFileCache)
                 .build();
-        mPicasso.setDebugging(true);
+        //mPicasso.setDebugging(true);
         return mPicasso;
     }
 

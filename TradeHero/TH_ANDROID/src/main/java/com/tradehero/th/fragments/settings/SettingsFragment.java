@@ -19,6 +19,7 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THLog;
+import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.ActivityHelper;
 import com.tradehero.th.activities.AuthenticationActivity;
@@ -126,10 +127,13 @@ public class SettingsFragment extends DashboardFragment
                 {
                     case ITEM_SEND_LOVE: // TODO: use real TradeHero Android market URL
                         final String appName = "TradeHero";
-                        try {
-                            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id="+appName)));
-                        } catch (android.content.ActivityNotFoundException anfe) {
-                            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://play.google.com/store/apps/details?id="+appName)));
+                        try
+                        {
+                            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appName)));
+                        }
+                        catch (android.content.ActivityNotFoundException anfe)
+                        {
+                            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://play.google.com/store/apps/details?id=" + appName)));
                         }
                         break;
                     case ITEM_SEND_FEEDBACK:
@@ -187,7 +191,8 @@ public class SettingsFragment extends DashboardFragment
         notificationsListViewAdapter.setItems(Arrays.asList(getResources().getStringArray(R.array.settings_notifications_list)));
         notificationsListViewAdapter.checkboxCheckedListener = new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b)
+            {
                 progressDialog = ProgressDialog.show(
                         getSherlockActivity(),
                         Application.getResourceString(R.string.please_wait),
@@ -196,14 +201,17 @@ public class SettingsFragment extends DashboardFragment
                 Map<String, Object> map = new HashMap<>();
                 map.put(UserFormFactory.KEY_EMAIL_NOTIFICATION_ENABLED, b);
 
-                userService.updateProfile(THUser.getAuthHeader(), THUser.getCurrentUserBase().id, b, new Callback<UserProfileDTO>() {
+                userService.updateProfile(THUser.getAuthHeader(), THUser.getCurrentUserBase().id, b, new Callback<UserProfileDTO>()
+                {
                     @Override
-                    public void success(UserProfileDTO userProfileDTO, Response response) {
+                    public void success(UserProfileDTO userProfileDTO, Response response)
+                    {
                         progressDialog.hide();
                     }
 
                     @Override
-                    public void failure(RetrofitError error) {
+                    public void failure(RetrofitError error)
+                    {
                         progressDialog.hide();
                     }
                 });
@@ -211,11 +219,19 @@ public class SettingsFragment extends DashboardFragment
         };
         UserBaseKey baseKey = new UserBaseKey(dto.id);
         userProfileCache.get()
-                .getOrFetch(baseKey, false, new DTOCache.Listener<UserBaseKey, UserProfileDTO>() {
+                .getOrFetch(baseKey, false, new DTOCache.Listener<UserBaseKey, UserProfileDTO>()
+                {
                     @Override
-                    public void onDTOReceived(UserBaseKey key, UserProfileDTO value) {
-                        notificationsListViewAdapter.setItemsChecked(Arrays.asList(new Boolean[] { value.emailNotificationsEnabled }));
+                    public void onDTOReceived(UserBaseKey key, UserProfileDTO value)
+                    {
+                        notificationsListViewAdapter.setItemsChecked(Arrays.asList(value.emailNotificationsEnabled));
                         notificationsListViewAdapter.notifyDataSetChanged();
+                    }
+
+                    @Override public void onErrorThrown(UserBaseKey key, Throwable error)
+                    {
+                        THToast.show("There was an error when fetching your profile information");
+                        THLog.e(TAG, "Error fetching the user profile " + key, error);
                     }
                 }).execute();
 

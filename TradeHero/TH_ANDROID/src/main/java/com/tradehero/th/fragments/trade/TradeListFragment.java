@@ -12,6 +12,8 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.tradehero.common.persistence.DTOCache;
+import com.tradehero.common.utils.THLog;
+import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.ExpandableListItem;
 import com.tradehero.th.adapters.trade.TradeListItemAdapter;
@@ -166,6 +168,12 @@ public class TradeListFragment extends DashboardFragment implements BaseFragment
                 {
                     linkWith(ownedTradeIds, true);
                 }
+            }
+
+            @Override public void onErrorThrown(OwnedPositionId key, Throwable error)
+            {
+                THToast.show("There was an error when fetching the list of trades");
+                THLog.e(TAG, "Error fetching the list of trades " + key, error);
             }
         };
     }

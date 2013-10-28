@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THLog;
+import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.position.SecurityPositionDetailDTO;
 import com.tradehero.th.api.quote.QuoteDTO;
@@ -417,6 +418,12 @@ abstract public class AbstractTradeFragment extends DashboardFragment
                     linkWith(value, true);
                 }
             }
+
+            @Override public void onErrorThrown(UserBaseKey key, Throwable error)
+            {
+                THToast.show("There was an error when fetching your profile information");
+                THLog.e(TAG, "Error fetching the user profile " + key, error);
+            }
         };
     }
 
@@ -430,6 +437,12 @@ abstract public class AbstractTradeFragment extends DashboardFragment
                 {
                     linkWith(value, true);
                 }
+            }
+
+            @Override public void onErrorThrown(SecurityId key, Throwable error)
+            {
+                THToast.show("There was an error when fetching the detailed security information");
+                THLog.e(TAG, "Error fetching the security position detail " + key, error);
             }
         };
     }

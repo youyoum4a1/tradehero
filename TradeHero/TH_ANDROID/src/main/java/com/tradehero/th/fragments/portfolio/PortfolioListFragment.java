@@ -10,6 +10,7 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THLog;
+import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.portfolio.PortfolioListItemAdapter;
 import com.tradehero.th.api.portfolio.DisplayablePortfolioDTO;
@@ -272,6 +273,12 @@ public class PortfolioListFragment extends DashboardFragment
                     linkWithOwn(value, true, (OwnedPortfolioId) null);
                 }
             }
+
+            @Override public void onErrorThrown(UserBaseKey key, Throwable error)
+            {
+                THToast.show("There was an error when fetching the list of portfolios");
+                THLog.e(TAG, "Error fetching the portfolio id list " + key, error);
+            }
         };
     }
 
@@ -399,6 +406,12 @@ public class PortfolioListFragment extends DashboardFragment
                     displayablePortfolioDTO.userBaseDTO = value;
                     conditionalDisplayPortfolios();
                 }
+
+                @Override public void onErrorThrown(UserBaseKey key, Throwable error)
+                {
+                    THToast.show("There was an error when fetching your profile information");
+                    THLog.e(TAG, "Error fetching the user profile " + key, error);
+                }
             };
             userProfileDTOListeners.put(displayablePortfolioDTO.ownedPortfolioId, fetchListener);
         }
@@ -429,6 +442,12 @@ public class PortfolioListFragment extends DashboardFragment
                 {
                     displayablePortfolioDTO.portfolioDTO = value;
                     conditionalDisplayPortfolios();
+                }
+
+                @Override public void onErrorThrown(OwnedPortfolioId key, Throwable error)
+                {
+                    THToast.show("There was an error when fetching the portfolio information");
+                    THLog.e(TAG, "Error fetching the portfolio " + key, error);
                 }
             };
             portfolioDTOListeners.put(displayablePortfolioDTO.ownedPortfolioId, fetchListener);

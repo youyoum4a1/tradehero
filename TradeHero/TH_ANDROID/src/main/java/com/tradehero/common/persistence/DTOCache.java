@@ -27,6 +27,7 @@ public interface DTOCache<DTOKeyType extends DTOKey, DTOType extends DTO>
     public static interface Listener<DTOKeyType, DTOType>
     {
         void onDTOReceived(DTOKeyType key, DTOType value);
+        void onErrorThrown(DTOKeyType key, Throwable error);
     }
 
     /**

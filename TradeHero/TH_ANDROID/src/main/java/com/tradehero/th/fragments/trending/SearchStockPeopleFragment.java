@@ -22,6 +22,7 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.common.adapter.SpinnerIconAdapter;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THLog;
+import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.PeopleItemViewAdapter;
 import com.tradehero.th.adapters.trending.SecurityItemViewAdapter;
@@ -360,6 +361,12 @@ public class SearchStockPeopleFragment extends DashboardFragment
                         setQuerying(false);
                         linkWith(securityCompactCache.get().getOrFetch(value), true, (SecurityCompactDTO) null);
                     }
+
+                    @Override public void onErrorThrown(SecurityListType key, Throwable error)
+                    {
+                        THToast.show("There was an error when fetching the list of securities");
+                        THLog.e(TAG, "Error fetching the list of securities " + key, error);
+                    }
                 };
             }
             cancelSearchTasks();
@@ -390,6 +397,12 @@ public class SearchStockPeopleFragment extends DashboardFragment
                             THLog.i(TAG, "onDTOReceived UserBaseKeyList");
                             setQuerying(false);
                             linkWith(userSearchResultCache.get().get(value), true, (UserSearchResultDTO) null);
+                        }
+
+                        @Override public void onErrorThrown(UserListType key, Throwable error)
+                        {
+                            THToast.show("There was an error when fetching the list of people");
+                            THLog.e(TAG, "Error fetching the list of people " + key, error);
                         }
                     };
                 }

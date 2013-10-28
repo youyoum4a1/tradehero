@@ -11,6 +11,7 @@ import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.common.persistence.DTOCache;
+import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.users.UserBaseDTO;
@@ -43,6 +44,7 @@ import java.util.Arrays;
  */
 public class SettingsPayPalFragment extends DashboardFragment
 {
+    public static final String TAG = SettingsPayPalFragment.class.getSimpleName();
 
     private View view;
     private ServerValidatedEmailText paypalEmailText;
@@ -74,9 +76,11 @@ public class SettingsPayPalFragment extends DashboardFragment
     private void setupSubmitButton()
     {
         submitButton = (Button)view.findViewById(R.id.settings_paypal_update_button);
-        submitButton.setOnClickListener(new View.OnClickListener() {
+        submitButton.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View view) {
+            public void onClick(View view)
+            {
                 progressDialog = ProgressDialog.show(
                         getSherlockActivity(),
                         Application.getResourceString(R.string.please_wait),
@@ -84,9 +88,11 @@ public class SettingsPayPalFragment extends DashboardFragment
                         true);
                 UpdatePayPalEmailFormDTO emailDTO = new UpdatePayPalEmailFormDTO();
                 emailDTO.newPayPalEmailAddress = paypalEmailText.getText().toString();
-                userService.updatePayPalEmail(THUser.getCurrentUserBase().id, emailDTO, new THCallback<UpdatePayPalEmailDTO>() {
+                userService.updatePayPalEmail(THUser.getCurrentUserBase().id, emailDTO, new THCallback<UpdatePayPalEmailDTO>()
+                {
                     @Override
-                    protected void success(UpdatePayPalEmailDTO updatePayPalEmailDTO, THResponse thResponse) {
+                    protected void success(UpdatePayPalEmailDTO updatePayPalEmailDTO, THResponse thResponse)
+                    {
                         THToast.show(getResources().getString(R.string.settings_paypal_successful_update));
                         progressDialog.hide();
                         Navigator navigator = ((NavigatorActivity) getActivity()).getNavigator();
@@ -94,7 +100,8 @@ public class SettingsPayPalFragment extends DashboardFragment
                     }
 
                     @Override
-                    protected void failure(THException ex) {
+                    protected void failure(THException ex)
+                    {
                         THToast.show(ex.getMessage());
                         progressDialog.hide();
                     }
@@ -112,16 +119,25 @@ public class SettingsPayPalFragment extends DashboardFragment
         UserBaseDTO dto = THUser.getCurrentUserBase();
         UserBaseKey baseKey = new UserBaseKey(dto.id);
         userProfileCache.get()
-                .getOrFetch(baseKey, false, new DTOCache.Listener<UserBaseKey, UserProfileDTO>() {
+                .getOrFetch(baseKey, false, new DTOCache.Listener<UserBaseKey, UserProfileDTO>()
+                {
                     @Override
-                    public void onDTOReceived(UserBaseKey key, UserProfileDTO value) {
+                    public void onDTOReceived(UserBaseKey key, UserProfileDTO value)
+                    {
                         paypalEmailText.setText(value.paypalEmailAddress);
+                    }
+
+                    @Override public void onErrorThrown(UserBaseKey key, Throwable error)
+                    {
+                        THToast.show("There was an error when fetching your profile information");
+                        THLog.e(TAG, "Error fetching the user profile " + key, error);
                     }
                 }).execute();
     }
 
     @Override
-    public void onDestroyView() {
+    public void onDestroyView()
+    {
         if (paypalEmailText != null)
         {
             paypalEmailText.setOnTouchListener(null);

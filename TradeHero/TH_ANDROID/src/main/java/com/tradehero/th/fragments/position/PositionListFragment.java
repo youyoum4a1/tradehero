@@ -325,6 +325,12 @@ public class PositionListFragment extends DashboardFragment
                     linkWith(value, true);
                 }
             }
+
+            @Override public void onErrorThrown(OwnedPortfolioId key, Throwable error)
+            {
+                THToast.show("There was an error when fetching the list of positions");
+                THLog.e(TAG, "Error fetching the getPositions " + key, error);
+            }
         };
     }
 

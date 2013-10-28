@@ -12,6 +12,8 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.tradehero.common.persistence.DTOCache;
+import com.tradehero.common.utils.THLog;
+import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.leaderboard.LeaderboardDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardDefDTO;
@@ -144,6 +146,12 @@ public class LeaderboardCommunityFragment extends DashboardFragment
                 addItemToSectorSection(sectorDto);
             }
         }
+    }
+
+    @Override public void onErrorThrown(LeaderboardDefListKey key, Throwable error)
+    {
+        THToast.show("There was an error when fetching the definition list of leaderboards");
+        THLog.e(TAG, "Error fetching the leaderboard def key list " + key, error);
     }
 
     private AdapterView.OnItemClickListener createLeaderboardItemClickListener()

@@ -7,6 +7,8 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.actionbarsherlock.view.SubMenu;
 import com.tradehero.common.persistence.DTOCache;
+import com.tradehero.common.utils.THLog;
+import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.leaderboard.LeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardDefKeyList;
@@ -133,6 +135,12 @@ public class LeaderboardDefListViewFragment extends DashboardListFragment
         List<LeaderboardDefDTO> leaderboardDefItems = leaderboardDefCache.get().getOrFetch(value);
         leaderboardDefListAdapter.setItems(leaderboardDefItems);
         leaderboardDefListAdapter.notifyDataSetChanged();
+    }
+
+    @Override public void onErrorThrown(LeaderboardDefListKey key, Throwable error)
+    {
+        THToast.show("There was an error when fetching the definition list of leaderboards");
+        THLog.e(TAG, "Error fetching the leaderboard def key list " + key, error);
     }
 
     public void setSortTypeChangeListener(SortTypeChangedListener sortTypeChangeListener)

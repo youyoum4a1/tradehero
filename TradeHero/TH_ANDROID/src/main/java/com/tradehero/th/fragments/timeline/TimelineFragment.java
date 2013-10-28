@@ -12,6 +12,7 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.tradehero.common.persistence.DTOCache;
+import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.TimelineAdapter;
@@ -41,6 +42,8 @@ import javax.inject.Inject;
 public class TimelineFragment extends BaseFragment
         implements BaseFragment.ArgumentsChangeListener, StepView.StepProvider, PortfolioRequestListener
 {
+    public static final String TAG = TimelineFragment.class.getSimpleName();
+
     private TimelineAdapter timelineAdapter;
 
     private Bundle desiredArguments;
@@ -164,6 +167,12 @@ public class TimelineFragment extends BaseFragment
                     {
                         linkWith(value, andDisplay);
                     }
+
+                    @Override public void onErrorThrown(UserBaseKey key, Throwable error)
+                    {
+                        THToast.show("There was an error when fetching the user profile information");
+                        THLog.e(TAG, "Error fetching the user profile " + key, error);
+                    }
                 };
                 if (userProfileCacheTask != null)
                 {
@@ -185,6 +194,12 @@ public class TimelineFragment extends BaseFragment
                     @Override public void onDTOReceived(UserBaseKey key, OwnedPortfolioIdList value)
                     {
                         linkWith(value, andDisplay);
+                    }
+
+                    @Override public void onErrorThrown(UserBaseKey key, Throwable error)
+                    {
+                        // We do not need to inform the player here
+                        THLog.e(TAG, "Error fetching the list of portfolio " + key, error);
                     }
                 };
                 if (portfolioCompactListCacheTask != null)

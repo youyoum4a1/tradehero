@@ -3,6 +3,8 @@ package com.tradehero.th.fragments.trade;
 import android.os.Bundle;
 import com.actionbarsherlock.app.SherlockFragment;
 import com.tradehero.common.persistence.DTOCache;
+import com.tradehero.common.utils.THLog;
+import com.tradehero.common.utils.THToast;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.fragments.base.BaseFragment;
@@ -53,6 +55,12 @@ abstract public class AbstractSecurityInfoFragment<InfoType> extends SherlockFra
         {
             linkWith(value, true);
         }
+    }
+
+    @Override public void onErrorThrown(SecurityId key, Throwable error)
+    {
+        THToast.show("There was an error when fetching the security information");
+        THLog.e(TAG, "Error fetching the security " + key, error);
     }
 
     public void linkWith(InfoType value, boolean andDisplay)

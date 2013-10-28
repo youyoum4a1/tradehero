@@ -262,6 +262,12 @@ abstract public class TrendingFilterSelectorFragment extends SherlockFragment
             {
                 linkWith(value, true);
             }
+
+            @Override public void onErrorThrown(ExchangeListType key, Throwable error)
+            {
+                THToast.show("There was an error when fetching the list of exchanges");
+                THLog.e(TAG, "Error fetching the list of exchanges " + key, error);
+            }
         };
     }
 

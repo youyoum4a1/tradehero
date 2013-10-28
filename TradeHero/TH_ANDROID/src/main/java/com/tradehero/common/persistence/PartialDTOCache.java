@@ -66,23 +66,46 @@ abstract public class PartialDTOCache<DTOKeyType extends DTOKey, DTOType extends
 
         return new GetOrFetchTask<DTOType>()
         {
+            private Throwable error = null;
+
             @Override protected DTOType doInBackground(Void... voids)
             {
-                return getOrFetch(key, force); // TODO do something about RetrofitError exception
+                DTOType gotOrFetched = null;
+                try
+                {
+                    gotOrFetched = getOrFetch(key, force);
+                }
+                catch (Throwable e)
+                {
+                    error = e;
+                }
+                return gotOrFetched;
             }
 
             @Override protected void onPostExecute(DTOType value)
             {
                 super.onPostExecute(value);
-                // We retrieve the callback right away to avoid having it vanish between the 2 get() calls.
+
                 if (!hasForgottenListener() && !isCancelled())
                 {
+                    // We retrieve the callback right away to avoid having it vanish between the 2 get() calls.
                     Listener<DTOKeyType, DTOType> retrievedCallback = weakCallback.get();
                     if (retrievedCallback != null)
                     {
-                        retrievedCallback.onDTOReceived(key, value);
+                        if (error != null)
+                        {
+                            retrievedCallback.onErrorThrown(key, error);
+                        }
+                        else
+                        {
+                            retrievedCallback.onDTOReceived(key, value);
+                        }
                     }
-                    pushToListeners(key);
+
+                    if (error == null)
+                    {
+                        pushToListeners(key);
+                    }
                 }
             }
         };

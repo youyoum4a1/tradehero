@@ -20,7 +20,9 @@ import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.common.persistence.DTOCache;
+import com.tradehero.common.persistence.DTOKey;
 import com.tradehero.common.utils.THLog;
+import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.trending.SecurityItemViewAdapter;
 import com.tradehero.th.adapters.trending.TrendingFilterPagerAdapter;
@@ -404,6 +406,13 @@ public class TrendingFragment extends DashboardFragment
             setDataAdapterToGridView(securityCompactCache.get().getOrFetch(value));
         }
     }
+
+    @Override public void onErrorThrown(SecurityListType key, Throwable error)
+    {
+        THToast.show("There was an error when fetching the list");
+        THLog.e(TAG, "Error fetching the list " + key, error);
+    }
+
     //</editor-fold>
 
     protected void showProgressSpinner(boolean flag)

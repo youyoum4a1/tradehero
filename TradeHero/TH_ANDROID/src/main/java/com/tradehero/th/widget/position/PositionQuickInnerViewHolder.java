@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 import com.tradehero.common.graphics.WhiteToTransparentTransformation;
 import com.tradehero.common.persistence.DTOCache;
+import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.position.OwnedPositionId;
@@ -442,6 +443,12 @@ public class PositionQuickInnerViewHolder<OnClickedListenerType extends Position
                 {
                     linkWith(value, true);
                 }
+            }
+
+            @Override public void onErrorThrown(SecurityId key, Throwable error)
+            {
+                THToast.show("There was an error when fetching the security information");
+                THLog.e(TAG, "Error fetching the security " + key, error);
             }
         };
     }
