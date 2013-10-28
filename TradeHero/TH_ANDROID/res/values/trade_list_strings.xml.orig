@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+<<<<<<< HEAD
+  <string name="trade_list_title">Trade History</string>
+  <string name="trade_list_avg_price">Avg. Price</string>
+  <string name="trade_list_realized_pl">Realized P&amp;L</string>
+  <string name="trade_list_unrealized_pl">Unrealized P&amp;L</string>
+  <string name="trade_list_quantity">Position Quantity</string>
+  <string name="trade_list_comment">Comment</string>
+  <string name="error_fetch_trade_list_info">There was an error when fetching the list of trades</string>
+
+=======
+    <string name="trade_list_title">Trade History</string>
+    <string name="trade_list_avg_price">Avg. Price</string>
+    <string name="trade_list_realized_pl">Realized P&amp;L</string>
+    <string name="trade_list_unrealized_pl">Unrealized P&amp;L</string>
+    <string name="trade_list_quantity">Position Quantity</string>
+    <string name="trade_list_comment">Comment</string>
+    <string name="trade_list_header_security_symbol">Stock Symbol</string>
+>>>>>>> [#59550444] Add Header View to Trade List.
+</resources>

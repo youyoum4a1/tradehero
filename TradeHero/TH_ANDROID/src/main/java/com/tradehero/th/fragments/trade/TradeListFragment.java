@@ -1,6 +1,5 @@
 package com.tradehero.th.fragments.trade;
 
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,18 +14,28 @@ import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
-import com.tradehero.th.adapters.ExpandableListItem;
 import com.tradehero.th.adapters.trade.TradeListItemAdapter;
 import com.tradehero.th.api.position.OwnedPositionId;
+import com.tradehero.th.api.position.PositionDTO;
+import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.trade.OwnedTradeId;
 import com.tradehero.th.api.trade.OwnedTradeIdList;
+import com.tradehero.th.api.users.UserBaseDTO;
+import com.tradehero.th.api.users.UserBaseKey;
+import com.tradehero.th.base.Navigator;
+import com.tradehero.th.base.THUser;
 import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.fragments.timeline.TimelineFragment;
 import com.tradehero.th.persistence.position.PositionCache;
+import com.tradehero.th.persistence.security.SecurityIdCache;
 import com.tradehero.th.persistence.trade.TradeListCache;
+import com.tradehero.th.widget.trade.TradeListHeaderView;
+import com.tradehero.th.widget.trade.TradeListOverlayHeaderView;
 import dagger.Lazy;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,8 +49,13 @@ public class TradeListFragment extends DashboardFragment implements BaseFragment
     private OwnedPositionId ownedPositionId;
     @Inject Lazy<PositionCache> positionCache;
     @Inject Lazy<TradeListCache> tradeListCache;
+    @Inject Lazy<SecurityIdCache> securityIdCache;
+    @Inject UserBaseDTO currentUserBase;
 
+    private TradeListOverlayHeaderView header;
+    private TradeListHeaderView tableHeader;
     private ListView tradeListView;
+
     private TradeListItemAdapter adapter;
     private Bundle desiredArguments;
 
@@ -60,14 +74,15 @@ public class TradeListFragment extends DashboardFragment implements BaseFragment
             desiredArguments = getArguments();
         }
 
-        initViews(view);
+        initViews(view, inflater);
         return view;
     }
 
-    private void initViews(View view)
+    private void initViews(View view, LayoutInflater inflater)
     {
         if (view != null)
         {
+
             if (adapter == null)
             {
                 adapter = new TradeListItemAdapter(
@@ -76,10 +91,94 @@ public class TradeListFragment extends DashboardFragment implements BaseFragment
             }
 
             tradeListView = (ListView) view.findViewById(R.id.trade_list);
+
             if (tradeListView != null)
             {
+                tableHeader = (TradeListHeaderView)inflater.inflate(R.layout.trade_list_header, null);
+                registerTableHeaderListener();
+                tradeListView.addHeaderView(tableHeader);
                 tradeListView.setAdapter(adapter);
             }
+
+            header = (TradeListOverlayHeaderView)view.findViewById(R.id.trade_list_header);
+            registerOverlayHeaderListener();
+        }
+    }
+
+    private void registerTableHeaderListener()
+    {
+        if (this.tableHeader == null) return;
+
+        this.tableHeader.setListener(new TradeListHeaderView.TradeListHeaderClickListener()
+        {
+            @Override public void onBuyButtonClicked(TradeListHeaderView tradeListHeaderView, OwnedPositionId ownedPositionId)
+            {
+                pushTradeFragment(ownedPositionId, true);
+            }
+
+            @Override public void onSellButtonClicked(TradeListHeaderView tradeListHeaderView, OwnedPositionId ownedPositionId)
+            {
+                pushTradeFragment(ownedPositionId, false);
+            }
+        });
+    }
+
+    private void registerOverlayHeaderListener()
+    {
+        if (this.header == null) return;
+
+        this.header.setListener(new TradeListOverlayHeaderView.Listener()
+        {
+            @Override public void onSecurityClicked(TradeListOverlayHeaderView headerView, OwnedPositionId ownedPositionId) {
+                pushTradeFragment(ownedPositionId, true);
+            }
+
+            @Override
+            public void onUserClicked(TradeListOverlayHeaderView headerView, UserBaseKey userId) {
+                openUserProfile(userId);
+            }
+        });
+    }
+
+    private void pushTradeFragment(OwnedPositionId clickedOwnedPositionId, boolean isBuy)
+    {
+        if (clickedOwnedPositionId != null)
+        {
+            PositionDTO positionDTO = positionCache.get().get(clickedOwnedPositionId);
+            if (positionDTO == null)
+            {
+                THToast.show("We have lost track of this trading position");
+            }
+            else
+            {
+                SecurityId securityId = securityIdCache.get().get(positionDTO.getSecurityIntegerId());
+                if (securityId == null)
+                {
+                    THToast.show("Could not find this security");
+                }
+                else
+                {
+                    Bundle args = securityId.getArgs();
+                    args.putBoolean(TradeFragment.BUNDLE_KEY_IS_BUY, isBuy);
+                    navigator.pushFragment(TradeFragment.class, args);
+                }
+            }
+        }
+        else
+        {
+            THLog.e(TAG, "Was passed a null clickedOwnedPositionId", new IllegalArgumentException());
+        }
+    }
+
+    private void openUserProfile(UserBaseKey userId)
+    {
+        Bundle b = new Bundle();
+        b.putInt(UserBaseKey.BUNDLE_KEY_KEY, userId.key);
+        b.putBoolean(Navigator.NAVIGATE_FRAGMENT_NO_CACHE, true);
+
+        if (currentUserBase.id != userId.key)
+        {
+            navigator.pushFragment(TimelineFragment.class, b, true);
         }
     }
 
@@ -96,7 +195,6 @@ public class TradeListFragment extends DashboardFragment implements BaseFragment
     {
         switch (item.getItemId())
         {
-
             case android.R.id.home:
                 navigator.popFragment();
                 break;
@@ -133,6 +231,16 @@ public class TradeListFragment extends DashboardFragment implements BaseFragment
     public void linkWith(OwnedPositionId ownedPositionId, boolean andDisplay)
     {
         this.ownedPositionId = ownedPositionId;
+        if (!ownedPositionId.getUserBaseKey().equals(currentUserBase.getBaseKey()))
+        {
+            this.tradeListView.removeHeaderView(this.tableHeader);
+        }
+        else
+        {
+            if (this.tableHeader.getParent() == null)
+                this.tradeListView.addHeaderView(this.tableHeader);
+        }
+
         fetchTrades();
         if (andDisplay)
         {
@@ -213,11 +321,16 @@ public class TradeListFragment extends DashboardFragment implements BaseFragment
 
     public void display()
     {
+        if (this.ownedPositionId != null) {
+            if (this.header != null)
+                header.bindOwnedPositionId(this.ownedPositionId);
+
+            if (this.tableHeader != null)
+                tableHeader.bindOwnedPositionId(this.ownedPositionId);
+        }
     }
 
-
-    @Override
-    public void onArgumentsChanged(Bundle args)
+    @Override public void onArgumentsChanged(Bundle args)
     {
         desiredArguments = args;
     }

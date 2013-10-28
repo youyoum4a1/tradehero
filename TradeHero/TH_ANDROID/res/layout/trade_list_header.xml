@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<com.tradehero.th.widget.trade.TradeListHeaderView xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:paddingLeft="8dp"
+              android:paddingRight="8dp">
+    <LinearLayout  android:orientation="horizontal"
+                   android:layout_width="match_parent"
+                   android:layout_height="wrap_content">
+        <Button android:id="@+id/trade_list_header_buy"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="30dp"
+                android:background="@drawable/trade_list_header_button_bg"
+                android:layout_margin="5dp"
+                android:textColor="@color/white"
+                android:text="@string/button_buy"/>
+        <Button  android:id="@+id/trade_list_header_sell"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="30dp"
+                android:layout_margin="5dp"
+                android:background="@drawable/trade_list_header_button_bg"
+                android:textColor="@color/white"
+                android:text="@string/button_sell"/>
+                   </LinearLayout>
+    <TextView android:id="@+id/trade_list_header_security_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="GOOGLE INC."
+            android:textColor="@color/actionbar_gradient1"
+            android:paddingTop="4dp"/>
+
+</com.tradehero.th.widget.trade.TradeListHeaderView>

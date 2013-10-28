@@ -10,9 +10,7 @@ import com.tradehero.common.persistence.CacheHelper;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.api.form.AbstractUserAvailabilityRequester;
 import com.tradehero.th.api.portfolio.DisplayablePortfolioDTO;
-import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.users.UserBaseDTO;
-import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.base.THUser;
 import com.tradehero.th.fragments.authentication.EmailSignInFragment;
 import com.tradehero.th.fragments.leaderboard.LeaderboardCommunityFragment;
@@ -53,6 +51,8 @@ import com.tradehero.th.widget.portfolio.header.OtherUserPortfolioHeaderView;
 import com.tradehero.th.widget.position.PositionLongViewHolder;
 import com.tradehero.th.widget.position.PositionQuickViewHolder;
 import com.tradehero.th.widget.timeline.TimelineItemView;
+import com.tradehero.th.widget.trade.TradeListHeaderView;
+import com.tradehero.th.widget.trade.TradeListOverlayHeaderView;
 import com.tradehero.th.widget.trade.TradeListItemView;
 import com.tradehero.th.widget.trending.TrendingSecurityView;
 import com.tradehero.th.widget.trending.SearchPeopleItemView;
@@ -105,6 +105,8 @@ import javax.inject.Singleton;
 
                 TradeListFragment.class,
                 TradeListItemView.class,
+                TradeListOverlayHeaderView.class,
+                TradeListHeaderView.class,
 
                 AbstractUserAvailabilityRequester.class,
                 SearchStockPageItemListLoader.class,
