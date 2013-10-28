@@ -13,6 +13,7 @@ import com.squareup.picasso.Picasso;
 import com.tradehero.common.graphics.RoundedShapeTransformation;
 import com.tradehero.common.graphics.WhiteToTransparentTransformation;
 import com.tradehero.common.text.OnElementClickListener;
+import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
@@ -104,14 +105,6 @@ public class TimelineItemView extends LinearLayout implements
             }
         });
 
-        setOnClickListener(new OnClickListener()
-        {
-            @Override public void onClick(View v)
-            {
-                toggle();
-            }
-        });
-
         DaggerUtils.inject(content);
         DaggerUtils.inject(this);
     }
@@ -156,18 +149,6 @@ public class TimelineItemView extends LinearLayout implements
                     .load(firstMediaWithLogo.url)
                     .transform(new WhiteToTransparentTransformation())
                     .into(vendorImage);
-        }
-
-        View buttons = findViewById(R.id.timeline_share_buttons);
-        if (checked)
-        {
-            //buttons.startAnimation(AnimationUtils.loadAnimation(getContext(), R.anim.slide_in_from_top));
-            buttons.setVisibility(View.VISIBLE);
-        }
-        else
-        {
-            buttons.setVisibility(View.GONE);
-            //buttons.startAnimation(AnimationUtils.loadAnimation(getContext(), R.anim.slide_out_to_bottom));
         }
     }
 
@@ -230,8 +211,29 @@ public class TimelineItemView extends LinearLayout implements
         if (this.checked != checked)
         {
             this.checked = checked;
+
+            refreshButtonBarVisibility(checked);
+
             refreshDrawableState();
         }
+    }
+
+    private void refreshButtonBarVisibility(boolean checked)
+    {
+        View buttons = findViewById(R.id.timeline_share_buttons);
+        if (checked)
+        {
+            //buttons.startAnimation(AnimationUtils.loadAnimation(getContext(), R.anim.slide_in_from_top));
+            buttons.setVisibility(View.VISIBLE);
+        }
+        else
+        {
+            buttons.setVisibility(View.GONE);
+            //buttons.startAnimation(AnimationUtils.loadAnimation(getContext(), R.anim.slide_out_to_bottom));
+        }
+        // use postInvalidate coz there are more than one item on the listview, each item has its own bottom bar, queue the update
+        buttons.postInvalidate();
+        THLog.d(TAG, "post invalidation for buttons is submitted");
     }
 
     @Override public boolean isChecked()

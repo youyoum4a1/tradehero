@@ -7,6 +7,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
+import android.widget.AdapterView;
+import android.widget.ListView;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
@@ -73,12 +75,21 @@ public class TimelineFragment extends BaseFragment
     {
         timelineListView = (TimelineListView) view.findViewById(R.id.pull_refresh_list);
         timelineListView.setEmptyView(view.findViewById(android.R.id.empty));
-        timelineListView.getRefreshableView().setChoiceMode(AbsListView.CHOICE_MODE_SINGLE);
+        final ListView refreshableListView = timelineListView.getRefreshableView();
+        refreshableListView.setChoiceMode(AbsListView.CHOICE_MODE_SINGLE);
         if (timelineAdapter == null)
         {
             timelineAdapter = createTimelineAdapter();
         }
-        timelineListView.setAdapter(timelineAdapter);
+        refreshableListView.setOnItemClickListener(new AdapterView.OnItemClickListener()
+        {
+            @Override public void onItemClick(AdapterView<?> parent, View view, int position, long id)
+            {
+                refreshableListView.setItemChecked(position, true);
+            }
+        });
+
+                timelineListView.setAdapter(timelineAdapter);
         timelineListView.setOnRefreshListener(timelineAdapter);
         timelineListView.setOnScrollListener(timelineAdapter);
         timelineListView.setOnLastItemVisibleListener(timelineAdapter);

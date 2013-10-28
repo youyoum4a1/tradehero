@@ -6,6 +6,7 @@
     android:padding="@dimen/home_screen_list_item_padding"
     android:orientation="vertical"
     android:duplicateParentState="true"
+    android:descendantFocusability="blocksDescendants"
     >
   <RelativeLayout android:id="@+id/main_content_wrapper"
     android:layout_width="match_parent"
