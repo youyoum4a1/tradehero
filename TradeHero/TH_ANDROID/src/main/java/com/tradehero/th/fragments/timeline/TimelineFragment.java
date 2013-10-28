@@ -234,7 +234,10 @@ public class TimelineFragment extends BaseFragment
             timelineListView.addHeaderView(stepView);
         }
 
-        getSherlockActivity().getSupportActionBar().setTitle(profile.displayName);
+        if (profile != null)
+        {
+            getSherlockActivity().getSupportActionBar().setTitle(profile.displayName);
+        }
     }
     //</editor-fold>
 
@@ -300,7 +303,6 @@ public class TimelineFragment extends BaseFragment
         {
             return timelineAdapter == null ? null : timelineAdapter.getLoader();
         }
-
     };
 
     //<editor-fold desc="PortfolioRequestListener">
