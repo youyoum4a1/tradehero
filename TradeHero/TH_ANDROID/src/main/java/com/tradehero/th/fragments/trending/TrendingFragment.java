@@ -3,7 +3,9 @@ package com.tradehero.th.fragments.trending;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
@@ -12,6 +14,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
@@ -55,9 +58,14 @@ public class TrendingFragment extends DashboardFragment
 
     private ViewPager mFilterViewPager;
     private TrendingFilterPagerAdapter mTrendingFilterPagerAdapter;
+    private int filterPagerEndHeight = 80;
+    private RelativeLayout.LayoutParams filterLayoutParams;
 
     private ProgressBar mProgressSpinner;
     private AbsListView mTrendingGridView;
+    private float gridCumulativeScrollY = 0;
+    private float awayBy = 0;
+    private GestureDetector gridViewGesture;
 
     private int filterPageSelected = 0;
     private ExchangeStringId[] selectedExchangeStringIds = new ExchangeStringId[TrendingFilterPagerAdapter.FRAGMENT_COUNT];
@@ -68,8 +76,6 @@ public class TrendingFragment extends DashboardFragment
     private List<SecurityCompactDTO> securityCompactDTOs;
     protected SecurityItemViewAdapter securityItemViewAdapter;
     protected TrendingFilterSelectorFragment.OnResumedListener trendingFilterSelectorResumedListener;
-
-    private View mTrendingFilterReminder;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -100,45 +106,8 @@ public class TrendingFragment extends DashboardFragment
         mProgressSpinner = (ProgressBar) view.findViewById(R.id.progress_spinner);
 
         securityItemViewAdapter = new SecurityItemViewAdapter(getActivity(), getActivity().getLayoutInflater(), R.layout.trending_grid_item);
-
         mTrendingGridView = (AbsListView) view.findViewById(R.id.trending_gridview);
-        if (mTrendingGridView != null)
-        {
-            mTrendingGridView.setAdapter(securityItemViewAdapter);
-
-            mTrendingGridView.setOnItemClickListener(new OnItemClickListener()
-            {
-                @Override public void onItemClick(AdapterView<?> parent, View view, int position, long id)
-                {
-                    SecurityCompactDTO securityCompactDTO = (SecurityCompactDTO) parent.getItemAtPosition(position);
-                    Bundle args = securityCompactDTO.getSecurityId().getArgs();
-                    // TODO use other positions
-                    args.putInt(AbstractTradeFragment.BUNDLE_KEY_POSITION_INDEX, AbstractTradeFragment.DEFAULT_POSITION_INDEX);
-                    navigator.pushFragment(TradeFragment.class, securityCompactDTO.getSecurityId().getArgs());
-                }
-            });
-
-            mTrendingGridView.setOnScrollListener(new AbsListView.OnScrollListener()
-            {
-                @Override public void onScrollStateChanged(AbsListView absListView, int i)
-                {
-                    if (i != SCROLL_STATE_IDLE)
-                    {
-                        hideFilterPager();
-                    }
-                }
-
-                @Override public void onScroll(AbsListView absListView, int i, int i2, int i3)
-                {
-                    // Nothing to do
-                }
-            });
-
-            if (mTrendingGridView.getCount() == 0)
-            {
-                showProgressSpinner(true);
-            }
-        }
+        initTrendingGidView();
 
         mBullIcon = (ImageView) view.findViewById(R.id.logo_img);
 
@@ -185,17 +154,76 @@ public class TrendingFragment extends DashboardFragment
             mFilterViewPager.setAdapter(mTrendingFilterPagerAdapter);
             mFilterViewPager.setOnPageChangeListener(createFilterPageChangeListener());
         }
+    }
 
-        mTrendingFilterReminder = view.findViewById(R.id.trending_filter_placeholder);
-        if (mTrendingFilterReminder != null)
+    private void initTrendingGidView()
+    {
+        if (mTrendingGridView != null)
         {
-            mTrendingFilterReminder.setOnClickListener(new View.OnClickListener()
+            mTrendingGridView.setAdapter(securityItemViewAdapter);
+
+            mTrendingGridView.setOnItemClickListener(new OnItemClickListener()
             {
-                @Override public void onClick(View view)
+                @Override public void onItemClick(AdapterView<?> parent, View view, int position, long id)
                 {
-                    showFilterPager();
+                    SecurityCompactDTO securityCompactDTO = (SecurityCompactDTO) parent.getItemAtPosition(position);
+                    Bundle args = securityCompactDTO.getSecurityId().getArgs();
+                    // TODO use other positions
+                    args.putInt(AbstractTradeFragment.BUNDLE_KEY_POSITION_INDEX, AbstractTradeFragment.DEFAULT_POSITION_INDEX);
+                    navigator.pushFragment(TradeFragment.class, securityCompactDTO.getSecurityId().getArgs());
                 }
             });
+
+            gridViewGesture = new GestureDetector(getActivity(), new GestureDetector.SimpleOnGestureListener()
+            {
+                @Override public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY)
+                {
+                    if ((gridCumulativeScrollY < filterPagerEndHeight && distanceY > 0) || // In an attempt to bypass useless updates
+                            (gridCumulativeScrollY > 0 && distanceY < 0))
+                    {
+                        addTouchScrollY(distanceY);
+                    }
+                    return super.onScroll(e1, e2, distanceX, distanceY);
+                }
+
+                @Override public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY)
+                {
+                    if (velocityY < 0)
+                    {
+                        setAwayBy(filterPagerEndHeight);
+                    }
+                    else if (velocityY > 0)
+                    {
+                        setAwayBy(0);
+                    }
+                    return super.onFling(e1, e2, velocityX, velocityY);
+                }
+            });
+
+            mTrendingGridView.setOnTouchListener(new View.OnTouchListener()
+            {
+                @Override public boolean onTouch(View view, MotionEvent motionEvent)
+                {
+                    return gridViewGesture.onTouchEvent(motionEvent);
+                }
+            });
+
+            mTrendingGridView.setOnScrollListener(new AbsListView.OnScrollListener()
+            {
+                @Override public void onScrollStateChanged(AbsListView absListView, int i)
+                {
+                    setGridViewScrollState(i);
+                }
+
+                @Override public void onScroll(AbsListView absListView, int firstVisibleItem, int visibleItemCount, int totalItemCount)
+                {
+                }
+            });
+
+            if (mTrendingGridView.getCount() == 0)
+            {
+                showProgressSpinner(true);
+            }
         }
     }
 
@@ -232,6 +260,13 @@ public class TrendingFragment extends DashboardFragment
         super.onResume();
         securityItemViewAdapter.notifyDataSetChanged();
         displayFilterPager();
+        filterPagerEndHeight =(int) getResources().getDimension(R.dimen.trending_filter_view_pager_height);
+        if (mFilterViewPager != null)
+        {
+            filterLayoutParams = (RelativeLayout.LayoutParams) mFilterViewPager.getLayoutParams();
+            filterLayoutParams.setMargins(0, 0, 0, 0);
+            mFilterViewPager.setLayoutParams(filterLayoutParams);
+        }
     }
 
     @Override public void onSaveInstanceState(Bundle outState)
@@ -280,11 +315,6 @@ public class TrendingFragment extends DashboardFragment
             mTrendingFilterPagerAdapter.setOnPositionedExchangeSelectionChangedListener(null);
         }
         mTrendingFilterPagerAdapter = null;
-
-        if (mTrendingFilterReminder != null)
-        {
-            mTrendingFilterReminder.setOnClickListener(null);
-        }
 
         mFilterViewPager = null;
         super.onDestroyView();
@@ -380,13 +410,8 @@ public class TrendingFragment extends DashboardFragment
     {
         if (mProgressSpinner != null)
         {
-            mProgressSpinner.setVisibility(getVisibility(flag));
+            mProgressSpinner.setVisibility(flag ? View.VISIBLE : View.INVISIBLE);
         }
-    }
-
-    protected int getVisibility(boolean flag)
-    {
-        return flag ? View.VISIBLE : View.INVISIBLE;
     }
 
     private ViewPager.OnPageChangeListener createFilterPageChangeListener()
@@ -424,60 +449,6 @@ public class TrendingFragment extends DashboardFragment
         }
     }
 
-    private void showFilterPager()
-    {
-        if (mFilterViewPager != null && mTrendingFilterReminder != null)
-        {
-            mFilterViewPager.setVisibility(View.VISIBLE);
-            mTrendingFilterReminder.setVisibility(View.GONE);
-            postAdjustPaddingTop();
-        }
-    }
-
-    private void hideFilterPager()
-    {
-        if (mFilterViewPager != null && mTrendingFilterReminder != null)
-        {
-            mFilterViewPager.setVisibility(View.GONE);
-            mTrendingFilterReminder.setVisibility(View.VISIBLE);
-            postAdjustPaddingTop();
-        }
-    }
-
-    private void postAdjustPaddingTop()
-    {
-        getView().post(new Runnable()
-        {
-            @Override public void run()
-            {
-                adjustPaddingTop();
-            }
-        });
-    }
-
-    private void adjustPaddingTop()
-    {
-        if (mTrendingGridView == null)
-        {
-            return;
-        }
-        int currentPaddingTop = mTrendingGridView.getPaddingTop();
-        int nextPaddingTop = currentPaddingTop;
-        if (mFilterViewPager != null && mFilterViewPager.getVisibility() == View.VISIBLE)
-        {
-            nextPaddingTop = mFilterViewPager.getHeight();
-        }
-        else if (mTrendingFilterReminder != null && mTrendingFilterReminder.getVisibility() == View.VISIBLE)
-        {
-            nextPaddingTop = mTrendingFilterReminder.getHeight();
-        }
-        mTrendingGridView.setPadding(mTrendingGridView.getPaddingLeft(), nextPaddingTop + 8, mTrendingGridView.getPaddingRight(), mTrendingGridView.getPaddingBottom()); // HACK on the 8
-        if (currentPaddingTop < nextPaddingTop)
-        {
-            mTrendingGridView.scrollBy(0, currentPaddingTop - nextPaddingTop);
-        }
-    }
-
     //<editor-fold desc="TrendingFilterSelectorFragment.OnPreviousNextListener">
     @Override public void onNextRequested()
     {
@@ -510,4 +481,52 @@ public class TrendingFragment extends DashboardFragment
         return true;
     }
     //</editor-fold>
+
+    // Filter pager visible state control
+
+    private void setGridViewScrollState(int gridViewScrollState)
+    {
+        if (gridViewScrollState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL)
+        {
+            // Just started scrolling with touch
+            this.gridCumulativeScrollY = awayBy; // So that it starts at this position
+        }
+        else if (gridViewScrollState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE)
+        {
+            if (awayBy >= filterPagerEndHeight)
+            {
+                // Stopped scrolling as the filter pager is fully out of view
+                // Leave away
+                setAwayBy(filterPagerEndHeight);
+            }
+            else
+            {
+                // Stopped scrolling as the filter pager is fully or partially visible
+                // Restore to fully visible
+                setAwayBy(0);
+            }
+        }
+    }
+
+    private void addTouchScrollY(float touchScrollY)
+    {
+        this.gridCumulativeScrollY += touchScrollY;
+        this.gridCumulativeScrollY = Math.max(0, Math.min(filterPagerEndHeight, this.gridCumulativeScrollY));
+        setAwayBy(this.gridCumulativeScrollY);
+    }
+
+    private void setAwayBy(float awayBy)
+    {
+        this.awayBy = awayBy;
+        setFilterPagerAway();
+    }
+
+    private void setFilterPagerAway()
+    {
+        if (mFilterViewPager != null)
+        {
+            filterLayoutParams.setMargins(0, (int) -awayBy, 0, 0);
+            mFilterViewPager.setLayoutParams(filterLayoutParams);
+        }
+    }
 }
