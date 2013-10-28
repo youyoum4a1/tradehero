@@ -169,27 +169,37 @@ abstract public class PartialDTOCache<DTOKeyType extends DTOKey, DTOType extends
         }
     }
 
+    public void autoFetch(DTOKeyType key)
+    {
+        autoFetch(key, false);
+    }
+
     /**
      * This helps you prefetch stuff you don't want to wait to fetch later on.
      * @param key
      */
-    public void autoFetch(DTOKeyType key)
+    public void autoFetch(DTOKeyType key, boolean force)
     {
-        if (key == null || get(key) != null)
+        if (!force && (key == null || get(key) != null))
         {
             return;
         }
 
-        GetOrFetchTask<DTOType> fetchTask = getOrFetch(key, null);
+        GetOrFetchTask<DTOType> fetchTask = getOrFetch(key, force, null);
         autoFetchTasks.put(key, fetchTask);
         fetchTask.execute();
+    }
+
+    public void autoFetch(List<? extends DTOKeyType> keys, DTOKeyType typeQualifier)
+    {
+        autoFetch(keys, false, typeQualifier);
     }
 
     /**
      * Beware that if you submit more keys than the DEFAULT limit, then only the last ones will get in.
      * @param keys
      */
-    public void autoFetch(List<? extends DTOKeyType> keys, DTOKeyType typeQualifier)
+    public void autoFetch(List<? extends DTOKeyType> keys, boolean force, DTOKeyType typeQualifier)
     {
         if (keys == null)
         {
@@ -197,7 +207,7 @@ abstract public class PartialDTOCache<DTOKeyType extends DTOKey, DTOType extends
         }
         for (DTOKeyType key: keys)
         {
-            autoFetch(key);
+            autoFetch(key, force);
         }
     }
 }

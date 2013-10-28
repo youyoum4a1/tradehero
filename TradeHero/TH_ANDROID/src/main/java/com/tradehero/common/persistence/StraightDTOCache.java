@@ -32,4 +32,9 @@ abstract public class StraightDTOCache<DTOKeyType extends DTOKey, DTOType extend
     {
         return this.lruCache.put(key, value);
     }
+
+    @Override public void invalidate(DTOKeyType key)
+    {
+        lruCache.remove(key);
+    }
 }
