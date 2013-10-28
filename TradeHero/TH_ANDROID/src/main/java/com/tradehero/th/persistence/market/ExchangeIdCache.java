@@ -21,7 +21,7 @@ import javax.inject.Singleton;
     }
     //</editor-fold>
 
-    @Override protected ExchangeIntegerId fetch(ExchangeStringId key)
+    @Override protected ExchangeIntegerId fetch(ExchangeStringId key) throws Throwable
     {
         throw new IllegalArgumentException("Cannot fetch here");
     }

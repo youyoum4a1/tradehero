@@ -31,21 +31,12 @@ import retrofit.RetrofitError;
     }
     //</editor-fold>
 
-    @Override protected UserProfileDTO fetch(UserBaseKey key)
+    @Override protected UserProfileDTO fetch(UserBaseKey key) throws Throwable
     {
-        try
-        {
-            return userService.get().getUser(key.key);
-        }
-        catch (RetrofitError retrofitError)
-        {
-            BasicRetrofitErrorHandler.handle(retrofitError);
-            THLog.e(TAG, "Error requesting key " + key.toString(), retrofitError);
-        }
-        return null;
+        return userService.get().getUser(key.key);
     }
 
-    public List<UserProfileDTO> getOrFetch(List<UserBaseKey> baseKeys)
+    public List<UserProfileDTO> getOrFetch(List<UserBaseKey> baseKeys) throws Throwable
     {
         if (baseKeys == null)
         {

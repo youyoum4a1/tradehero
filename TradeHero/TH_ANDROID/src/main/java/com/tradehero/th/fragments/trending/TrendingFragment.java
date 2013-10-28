@@ -403,7 +403,14 @@ public class TrendingFragment extends DashboardFragment
         // To make sure we do not update to some old stuff
         if (key.equals(getSecurityListType()))
         {
-            setDataAdapterToGridView(securityCompactCache.get().getOrFetch(value));
+            try
+            {
+                setDataAdapterToGridView(securityCompactCache.get().getOrFetch(value));
+            }
+            catch (Throwable throwable)
+            {
+                onErrorThrown(key, throwable);
+            }
         }
     }
 

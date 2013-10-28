@@ -31,17 +31,9 @@ import javax.inject.Singleton;
         super(DEFAULT_MAX_SIZE);
     }
 
-    @Override protected LeaderboardDefKeyList fetch(LeaderboardDefListKey listKey)
+    @Override protected LeaderboardDefKeyList fetch(LeaderboardDefListKey listKey) throws Throwable
     {
-        List<LeaderboardDefDTO> leaderboardDefinitions = null;
-        try
-        {
-            leaderboardDefinitions = leaderboardService.get().getLeaderboardDefinitions();
-        }
-        catch (Exception ex)
-        {
-            THToast.show(new THException(ex));
-        }
+        List<LeaderboardDefDTO> leaderboardDefinitions = leaderboardService.get().getLeaderboardDefinitions();
         if (leaderboardDefinitions != null)
         {
             return putInternal(listKey, leaderboardDefinitions);

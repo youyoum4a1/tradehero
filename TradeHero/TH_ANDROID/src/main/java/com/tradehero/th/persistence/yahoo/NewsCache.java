@@ -48,7 +48,7 @@ import java.util.List;
      *  - use YahooNewsService to fetch the news for the given yahooSymbol
      *  - parse the xml feed
      */
-    @Override protected NewsList fetch(SecurityId key)
+    @Override protected NewsList fetch(SecurityId key) throws Throwable
     {
         String yahooSymbol = getYahooSymbol(key);
         Response rawResponse = null;
@@ -59,86 +59,70 @@ import java.util.List;
         return null;
     }
 
-        private String getYahooSymbol(SecurityId key)
+    private String getYahooSymbol(SecurityId key) throws Throwable
+    {
+        String yahooSymbol = null;
+        SecurityCompactDTO security = securityCache.get().get(key);
+        if (security != null)
         {
-            String yahooSymbol = null;
-            try
-            {
-               SecurityCompactDTO security = securityCache.get().get(key);
-                if (security != null)
-                {
-                    yahooSymbol = security.yahooSymbol;
-                }
-            }
-            catch (RetrofitError retrofitError)
-            {
-                BasicRetrofitErrorHandler.handle(retrofitError);
-                THLog.e(TAG, "Error requesting key " + key.toString(), retrofitError);
-            }
-            return yahooSymbol;
+            yahooSymbol = security.yahooSymbol;
         }
+        return yahooSymbol;
+    }
 
-        private NewsList fetchYahooNews(String yahooSymbol, Response rawResponse)
+    private NewsList fetchYahooNews(String yahooSymbol, Response rawResponse) throws Throwable
+    {
+        rawResponse = yahooService.get().getNews(yahooSymbol);
+
+        if (rawResponse == null)
         {
-            try
-            {
-                rawResponse = yahooService.get().getNews(yahooSymbol);
-            }
-            catch (RetrofitError retrofitError)
-            {
-                BasicRetrofitErrorHandler.handle(retrofitError);
-                THLog.e(TAG, "Error requesting yahoo symbol " + yahooSymbol, retrofitError);
-            }
-
-            if (rawResponse == null)
-            {
-                return null;
-            }
-
-            return new NewsList(tryParseResponse(rawResponse));
-        }
-
-        private List<News> tryParseResponse(Response response)
-        {
-            try
-            {
-                return parseResponse(response);
-            }
-            catch (XPathExpressionException e)
-            {
-                THLog.e(TAG, "Failed to compile XPath", e);
-            }
-            catch (IOException e)
-            {
-                THLog.e(TAG, "Failed to get response body", e);
-            }
             return null;
         }
 
-        private List<News> parseResponse(Response response) throws XPathExpressionException, IOException
-        {
-            XPathExpression xpathItems = getxPathExpression();
-            InputSource input = new InputSource(response.getBody().in());
-            NodeList nodes = (NodeList) xpathItems.evaluate(input, XPathConstants.NODESET);
-            return processItems(nodes);
-        }
+        return new NewsList(tryParseResponse(rawResponse));
+    }
 
-        private XPathExpression getxPathExpression() throws XPathExpressionException
+    private List<News> tryParseResponse(Response response)
+    {
+        try
         {
-            XPathFactory factory = XPathFactory.newInstance();
-            XPath xPath = factory.newXPath();
-            return xPath.compile("//item");
+            return parseResponse(response);
         }
+        catch (XPathExpressionException e)
+        {
+            THLog.e(TAG, "Failed to compile XPath", e);
+        }
+        catch (IOException e)
+        {
+            THLog.e(TAG, "Failed to get response body", e);
+        }
+        return null;
+    }
 
-        private List<News> processItems(NodeList nodes)
+    private List<News> parseResponse(Response response) throws XPathExpressionException, IOException
+    {
+        XPathExpression xpathItems = getxPathExpression();
+        InputSource input = new InputSource(response.getBody().in());
+        NodeList nodes = (NodeList) xpathItems.evaluate(input, XPathConstants.NODESET);
+        return processItems(nodes);
+    }
+
+    private XPathExpression getxPathExpression() throws XPathExpressionException
+    {
+        XPathFactory factory = XPathFactory.newInstance();
+        XPath xPath = factory.newXPath();
+        return xPath.compile("//item");
+    }
+
+    private List<News> processItems(NodeList nodes)
+    {
+        List<News> result = new ArrayList<>();
+        for (int i = 0; i < nodes.getLength(); i++)
         {
-            List<News> result = new ArrayList<>();
-            for (int i = 0; i < nodes.getLength(); i++)
-            {
-                Node node = nodes.item(i);
-                result.add(new News(node));
-            }
-            return result;
+            Node node = nodes.item(i);
+            result.add(new News(node));
         }
+        return result;
+    }
 }
 

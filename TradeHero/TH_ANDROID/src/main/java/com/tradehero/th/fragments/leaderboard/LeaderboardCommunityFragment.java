@@ -127,12 +127,27 @@ public class LeaderboardCommunityFragment extends DashboardFragment
         {
             if (key instanceof LeaderboardDefMostSkilledListKey)
             {
-                mostSkilledListView.setAdapter(createMostSkilledListAdapter(value));
+                try
+                {
+                    mostSkilledListView.setAdapter(createMostSkilledListAdapter(leaderboardDefCache.getOrFetch(value)));
+                }
+                catch (Throwable throwable)
+                {
+                    onErrorThrown(key, throwable);
+                }
                 mostSkilledListView.setOnItemClickListener(createLeaderboardItemClickListener());
             }
             else if (key instanceof LeaderboardDefTimePeriodListKey)
             {
-                timePeriodListView.setAdapter(createTimePeriodListAdapter(value));
+
+                try
+                {
+                    timePeriodListView.setAdapter(createTimePeriodListAdapter(leaderboardDefCache.getOrFetch(value)));
+                }
+                catch (Throwable throwable)
+                {
+                    onErrorThrown(key, throwable);
+                }
                 timePeriodListView.setOnItemClickListener(createLeaderboardItemClickListener());
             }
             else if (key instanceof LeaderboardDefSectorListKey && (value.size() > 0))
@@ -226,10 +241,9 @@ public class LeaderboardCommunityFragment extends DashboardFragment
         });
     }
 
-    private ListAdapter createTimePeriodListAdapter(List<LeaderboardDefKey> keys)
+    private ListAdapter createTimePeriodListAdapter(List<LeaderboardDefDTO> timePeriodItems)
     {
         // sort time period items by number of days
-        List<LeaderboardDefDTO> timePeriodItems = leaderboardDefCache.getOrFetch(keys);
         Collections.sort(timePeriodItems, new Comparator<LeaderboardDefDTO>()
         {
             @Override public int compare(LeaderboardDefDTO lhs, LeaderboardDefDTO rhs)
@@ -247,10 +261,10 @@ public class LeaderboardCommunityFragment extends DashboardFragment
                 getActivity(), getActivity().getLayoutInflater(), timePeriodItems, R.layout.leaderboard_def_item);
     }
 
-    private ListAdapter createMostSkilledListAdapter(List<LeaderboardDefKey> keys)
+    private ListAdapter createMostSkilledListAdapter(List<LeaderboardDefDTO> values)
     {
         return new LeaderboardDefMostSkilledListAdapter(
-                getActivity(), getActivity().getLayoutInflater(), leaderboardDefCache.getOrFetch(keys), R.layout.leaderboard_def_item);
+                getActivity(), getActivity().getLayoutInflater(), values, R.layout.leaderboard_def_item);
     }
 
     //<editor-fold desc="BaseFragment.TabBarVisibilityInformer">

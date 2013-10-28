@@ -31,19 +31,9 @@ import retrofit.RetrofitError;
     }
     //</editor-fold>
 
-    @Override protected OwnedPortfolioIdList fetch(UserBaseKey key)
+    @Override protected OwnedPortfolioIdList fetch(UserBaseKey key) throws Throwable
     {
-        THLog.d(TAG, "fetch " + key);
-        try
-        {
-            return putInternal(key, portfolioService.get().getPortfolios(key.key));
-        }
-        catch (RetrofitError retrofitError)
-        {
-            BasicRetrofitErrorHandler.handle(retrofitError);
-            THLog.e(TAG, "Error requesting key " + key.toString(), retrofitError);
-        }
-        return null;
+        return putInternal(key, portfolioService.get().getPortfolios(key.key));
     }
 
     protected OwnedPortfolioIdList putInternal(UserBaseKey key, List<PortfolioCompactDTO> fleshedValues)

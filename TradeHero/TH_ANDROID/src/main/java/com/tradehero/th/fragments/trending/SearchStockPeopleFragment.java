@@ -359,7 +359,14 @@ public class SearchStockPeopleFragment extends DashboardFragment
                     {
                         THLog.i(TAG, "onDTOReceived SecurityIdList");
                         setQuerying(false);
-                        linkWith(securityCompactCache.get().getOrFetch(value), true, (SecurityCompactDTO) null);
+                        try
+                        {
+                            linkWith(securityCompactCache.get().getOrFetch(value), true, (SecurityCompactDTO) null);
+                        }
+                        catch (Throwable error)
+                        {
+                            onErrorThrown(key, error);
+                        }
                     }
 
                     @Override public void onErrorThrown(SecurityListType key, Throwable error)

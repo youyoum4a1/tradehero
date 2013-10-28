@@ -26,18 +26,9 @@ import retrofit.RetrofitError;
     }
     //</editor-fold>
 
-    @Override protected ExchangeDTO fetch(ExchangeIntegerId key)
+    @Override protected ExchangeDTO fetch(ExchangeIntegerId key) throws Throwable
     {
-        ExchangeDTO exchangeDTO = null;
-        try
-        {
-            exchangeDTO = marketService.get().getExchange(key.key);
-        }
-        catch (RetrofitError e)
-        {
-            THLog.e(TAG, "Failed to fetch key " + key.key, e);
-        }
-        return exchangeDTO;
+        return marketService.get().getExchange(key.key);
     }
 
     @Override public ExchangeDTO put(ExchangeIntegerId key, ExchangeDTO value)

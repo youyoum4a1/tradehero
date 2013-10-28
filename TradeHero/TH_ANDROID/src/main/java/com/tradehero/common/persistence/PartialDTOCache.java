@@ -24,14 +24,14 @@ abstract public class PartialDTOCache<DTOKeyType extends DTOKey, DTOType extends
         this.listeners = new ArrayList<>();
     }
 
-    abstract protected DTOType fetch(DTOKeyType key);
+    abstract protected DTOType fetch(DTOKeyType key) throws Throwable;
 
-    @Override public DTOType getOrFetch(DTOKeyType key)
+    @Override public DTOType getOrFetch(DTOKeyType key) throws Throwable
     {
         return getOrFetch(key, false);
     }
 
-    @Override public DTOType getOrFetch(DTOKeyType key, boolean force)
+    @Override public DTOType getOrFetch(DTOKeyType key, boolean force) throws Throwable
     {
         DTOType value = get(key);
 

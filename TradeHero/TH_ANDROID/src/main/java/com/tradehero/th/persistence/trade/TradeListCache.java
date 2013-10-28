@@ -33,19 +33,9 @@ import java.util.List;
         super(DEFAULT_MAX_SIZE);
     }
 
-    @Override protected OwnedTradeIdList fetch(OwnedPositionId key)
+    @Override protected OwnedTradeIdList fetch(OwnedPositionId key) throws Throwable
     {
-        THLog.d(TAG, "fetch " + key);
-        try
-        {
-            return putInternal(key, tradeService.get().getTrades(key.userId, key.portfolioId, key.positionId));
-        }
-        catch (RetrofitError retrofitError)
-        {
-            BasicRetrofitErrorHandler.handle(retrofitError);
-            THLog.e(TAG, "Error requesting key " + key.toString(), retrofitError);
-        }
-        return null;
+        return putInternal(key, tradeService.get().getTrades(key.userId, key.portfolioId, key.positionId));
     }
 
     protected OwnedTradeIdList putInternal(OwnedPositionId key, List<TradeDTO> fleshedValues)

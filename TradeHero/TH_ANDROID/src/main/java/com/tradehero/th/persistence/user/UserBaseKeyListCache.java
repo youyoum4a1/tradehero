@@ -31,23 +31,13 @@ import retrofit.RetrofitError;
     }
     //</editor-fold>
 
-    @Override protected UserBaseKeyList fetch(UserListType key)
+    @Override protected UserBaseKeyList fetch(UserListType key) throws Throwable
     {
-        THLog.d(TAG, "fetch " + key);
-        try
+        if (key instanceof SearchUserListType)
         {
-            if (key instanceof SearchUserListType)
-            {
-                return putInternal(key, fetch((SearchUserListType) key));
-            }
-            throw new IllegalArgumentException("Unhandled type " + key.getClass().getName());
+            return putInternal(key, fetch((SearchUserListType) key));
         }
-        catch (RetrofitError retrofitError)
-        {
-            BasicRetrofitErrorHandler.handle(retrofitError);
-            THLog.e(TAG, "Error requesting key " + key.toString(), retrofitError);
-        }
-        return null;
+        throw new IllegalArgumentException("Unhandled type " + key.getClass().getName());
     }
 
     protected List<UserSearchResultDTO> fetch(SearchUserListType key) throws RetrofitError

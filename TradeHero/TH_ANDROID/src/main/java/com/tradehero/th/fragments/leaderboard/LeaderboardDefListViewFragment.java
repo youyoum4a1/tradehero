@@ -132,7 +132,15 @@ public class LeaderboardDefListViewFragment extends DashboardListFragment
 
     @Override public void onDTOReceived(LeaderboardDefListKey key, LeaderboardDefKeyList value)
     {
-        List<LeaderboardDefDTO> leaderboardDefItems = leaderboardDefCache.get().getOrFetch(value);
+        List<LeaderboardDefDTO> leaderboardDefItems = null;
+        try
+        {
+            leaderboardDefItems = leaderboardDefCache.get().getOrFetch(value);
+        }
+        catch (Throwable error)
+        {
+            onErrorThrown(key, error);
+        }
         leaderboardDefListAdapter.setItems(leaderboardDefItems);
         leaderboardDefListAdapter.notifyDataSetChanged();
     }

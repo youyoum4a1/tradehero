@@ -25,7 +25,7 @@ import javax.inject.Singleton;
     }
     //</editor-fold>
 
-    @Override protected ProviderDTO fetch(ProviderId key)
+    @Override protected ProviderDTO fetch(ProviderId key) throws Throwable
     {
         // Just have the list cache download them all
         providerListCache.get().fetch(new ProviderListKey(ProviderListKey.ALL_PROVIDERS));
@@ -33,7 +33,7 @@ import javax.inject.Singleton;
         return get(key);
     }
 
-    public List<ProviderDTO> getOrFetch(List<ProviderId> providerIds)
+    public List<ProviderDTO> getOrFetch(List<ProviderId> providerIds) throws Throwable
     {
         if (providerIds == null)
         {

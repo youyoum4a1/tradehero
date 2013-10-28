@@ -22,7 +22,7 @@ import javax.inject.Singleton;
     }
     //</editor-fold>
 
-    protected PortfolioCompactDTO fetch(PortfolioId key)
+    protected PortfolioCompactDTO fetch(PortfolioId key) throws Throwable
     {
         throw new IllegalStateException("You cannot fetch an individual PortfolioCompactDTO");
     }

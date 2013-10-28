@@ -31,24 +31,15 @@ import retrofit.RetrofitError;
     }
     //</editor-fold>
 
-    @Override protected ProviderIdList fetch(ProviderListKey key)
+    @Override protected ProviderIdList fetch(ProviderListKey key) throws Throwable
     {
         THLog.d(TAG, "fetch " + key);
-        try
+        if (key.key == ProviderListKey.ALL_PROVIDERS)
         {
-            if (key.key == ProviderListKey.ALL_PROVIDERS)
-            {
-                return putInternal(key, providerService.get().getProviders());
-            }
+            return putInternal(key, providerService.get().getProviders());
+        }
 
-            throw new IllegalArgumentException("Unknown ProviderListKey " + key);
-        }
-        catch (RetrofitError retrofitError)
-        {
-            BasicRetrofitErrorHandler.handle(retrofitError);
-            THLog.e(TAG, "Error requesting key " + key.toString(), retrofitError);
-        }
-        return null;
+        throw new IllegalArgumentException("Unknown ProviderListKey " + key);
     }
 
     protected ProviderIdList putInternal(ProviderListKey key, List<ProviderDTO> fleshedValues)

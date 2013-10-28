@@ -94,7 +94,6 @@ public class PositionQuickInnerViewHolder<OnClickedListenerType extends Position
                     public void onClick(View view)
                     {
                         notifyTradeHistoryClicked();
-                        THToast.show("Trade History Clicked");
                     }
                 });
             }

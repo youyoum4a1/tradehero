@@ -45,28 +45,9 @@ import retrofit.RetrofitError;
     }
     //</editor-fold>
 
-    @Override protected PortfolioDTO fetch(OwnedPortfolioId key)
+    @Override protected PortfolioDTO fetch(OwnedPortfolioId key) throws Throwable
     {
-        PortfolioDTO fetched = null;
-        try
-        {
-            fetched = portfolioService.get().getPortfolio(key.userId, key.portfolioId);
-        }
-        catch (RetrofitError e)
-        {
-            THLog.e(TAG, "Failed to fetch key " + key, e);
-            try
-            {
-                StringWriter writer = new StringWriter();
-                IOUtils.copy(e.getResponse().getBody().in(), writer, "UTF-8");
-                THLog.d(TAG, e.getUrl() + " -> " + writer.toString());
-            }
-            catch (IOException e2)
-            {
-
-            }
-        }
-        return fetched;
+        return portfolioService.get().getPortfolio(key.userId, key.portfolioId);
     }
 
     @Override public PortfolioDTO put(OwnedPortfolioId key, PortfolioDTO value)
@@ -109,7 +90,7 @@ import retrofit.RetrofitError;
         return values;
     }
 
-    public List<PortfolioDTO> getOrFetch(List<? extends OwnedPortfolioId> keys)
+    public List<PortfolioDTO> getOrFetch(List<? extends OwnedPortfolioId> keys) throws Throwable
     {
         if (keys == null)
         {
@@ -139,6 +120,8 @@ import retrofit.RetrofitError;
 
         return new GetOrFetchTask<List<PortfolioDTO>>()
         {
+            Throwable error = null;
+
             @Override protected List<PortfolioDTO> doInBackground(Void... voids)
             {
                 if (keys == null)
@@ -146,9 +129,16 @@ import retrofit.RetrofitError;
                     return null;
                 }
                 List<PortfolioDTO> values = new ArrayList<>();
-                for (OwnedPortfolioId key: keys)
+                try
                 {
-                    values.add(getOrFetch(key, force));
+                    for (OwnedPortfolioId key: keys)
+                    {
+                        values.add(getOrFetch(key, force));
+                    }
+                }
+                catch (Throwable throwable)
+                {
+                    error = throwable;
                 }
                 return values;
             }
@@ -161,9 +151,16 @@ import retrofit.RetrofitError;
                     Listener<List<? extends OwnedPortfolioId>, List<? extends PortfolioDTO>> retrievedCallback = weakCallback.get();
                     if (retrievedCallback != null)
                     {
-                        retrievedCallback.onDTOReceived(keys, values);
+                        if (error != null)
+                        {
+                            retrievedCallback.onDTOReceived(keys, values);
+                        }
+                        else
+                        {
+                            retrievedCallback.onErrorThrown(keys, error);
+                        }
                     }
-                    if (keys != null)
+                    if (error == null && keys != null)
                     {
                         for (OwnedPortfolioId key: keys)
                         {

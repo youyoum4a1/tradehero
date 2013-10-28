@@ -21,14 +21,14 @@ import javax.inject.Singleton;
         super(DEFAULT_MAX_SIZE);
     }
 
-    @Override protected LeaderboardDefDTO fetch(LeaderboardDefKey key)
+    @Override protected LeaderboardDefDTO fetch(LeaderboardDefKey key) throws Throwable
     {
         // if leaderboardDef is not in the cache, request for all lbdef again to refresh the cache
         // TODO leaderboardDefListCache.get().fetch(key);
         return get(key);
     }
 
-    public List<LeaderboardDefDTO> getOrFetch(List<LeaderboardDefKey> keys)
+    public List<LeaderboardDefDTO> getOrFetch(List<LeaderboardDefKey> keys) throws Throwable
     {
         if (keys == null)
         {

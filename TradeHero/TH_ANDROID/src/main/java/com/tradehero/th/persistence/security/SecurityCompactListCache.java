@@ -36,41 +36,26 @@ import retrofit.RetrofitError;
     }
     //</editor-fold>
 
-    @Override protected SecurityIdList fetch(SecurityListType key)
+    @Override protected SecurityIdList fetch(SecurityListType key) throws Throwable
     {
         THLog.d(TAG, "fetch " + key);
-        try
+        if (key instanceof TrendingBasicSecurityListType)
         {
-            if (key instanceof TrendingBasicSecurityListType)
-            {
-                return putInternal(key, fetch((TrendingBasicSecurityListType) key));
-            }
-            if (key instanceof TrendingPriceSecurityListType)
-            {
-                return putInternal(key, fetch((TrendingPriceSecurityListType) key));
-            }
-            if (key instanceof TrendingVolumeSecurityListType)
-            {
-                return putInternal(key, fetch((TrendingVolumeSecurityListType) key));
-            }
-            if (key instanceof SearchSecurityListType)
-            {
-                return putInternal(key, fetch((SearchSecurityListType) key));
-            }
-            throw new IllegalArgumentException("Unhandled type " + key.getClass().getName());
+            return putInternal(key, fetch((TrendingBasicSecurityListType) key));
         }
-        catch (RetrofitError retrofitError)
+        if (key instanceof TrendingPriceSecurityListType)
         {
-            BasicRetrofitErrorHandler.handle(retrofitError);
-            THLog.e(TAG, "Error requesting key " + key.toString(), retrofitError);
+            return putInternal(key, fetch((TrendingPriceSecurityListType) key));
         }
-        return null;
-    }
-
-    @Override public SecurityIdList getOrFetch(SecurityListType key, boolean force)
-    {
-        THLog.d(TAG, "getOrFetch " + key);
-        return super.getOrFetch(key, force);
+        if (key instanceof TrendingVolumeSecurityListType)
+        {
+            return putInternal(key, fetch((TrendingVolumeSecurityListType) key));
+        }
+        if (key instanceof SearchSecurityListType)
+        {
+            return putInternal(key, fetch((SearchSecurityListType) key));
+        }
+        throw new IllegalArgumentException("Unhandled type " + key.getClass().getName());
     }
 
     @Override public SecurityIdList get(SecurityListType key)

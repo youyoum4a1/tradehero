@@ -17,8 +17,8 @@ public interface DTOCache<DTOKeyType extends DTOKey, DTOType extends DTO>
      */
     DTOType get(DTOKeyType key);
 
-    DTOType getOrFetch(DTOKeyType key);
-    DTOType getOrFetch(DTOKeyType key, boolean force);
+    DTOType getOrFetch(DTOKeyType key)  throws Throwable;
+    DTOType getOrFetch(DTOKeyType key, boolean force)  throws Throwable;
     GetOrFetchTask<DTOType> getOrFetch(DTOKeyType key, Listener<DTOKeyType, DTOType> callback);
     GetOrFetchTask<DTOType> getOrFetch(DTOKeyType key, boolean force, Listener<DTOKeyType, DTOType> callback);
     DTOType put(DTOKeyType key, DTOType value);

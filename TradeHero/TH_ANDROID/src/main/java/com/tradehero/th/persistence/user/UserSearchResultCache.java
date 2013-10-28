@@ -24,7 +24,7 @@ import javax.inject.Singleton;
     }
     //</editor-fold>
 
-    @Override protected UserSearchResultDTO fetch(UserBaseKey key)
+    @Override protected UserSearchResultDTO fetch(UserBaseKey key) throws Throwable
     {
         throw new IllegalStateException("There is no fetch mechanism on this cache");
     }

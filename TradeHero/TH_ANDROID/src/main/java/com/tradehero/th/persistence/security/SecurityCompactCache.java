@@ -32,19 +32,10 @@ import retrofit.RetrofitError;
     }
     //</editor-fold>
 
-    @Override protected SecurityCompactDTO fetch(SecurityId key)
+    @Override protected SecurityCompactDTO fetch(SecurityId key) throws Throwable
     {
         SecurityCompactDTO securityCompactDTO = null;
-        SecurityPositionDetailDTO securityPositionDetailDTO = null;
-        try
-        {
-            securityPositionDetailDTO = securityService.get().getSecurity(key.exchange, key.securitySymbol);
-        }
-        catch (RetrofitError retrofitError)
-        {
-            BasicRetrofitErrorHandler.handle(retrofitError);
-            THLog.e(TAG, "Error requesting key " + key.toString(), retrofitError);
-        }
+        SecurityPositionDetailDTO securityPositionDetailDTO = securityService.get().getSecurity(key.exchange, key.securitySymbol);
 
         if (securityPositionDetailDTO != null)
         {
@@ -55,12 +46,12 @@ import retrofit.RetrofitError;
         return securityCompactDTO;
     }
 
-    public List<SecurityCompactDTO> getOrFetch(List<SecurityId> securityIds)
+    public List<SecurityCompactDTO> getOrFetch(List<SecurityId> securityIds) throws Throwable
     {
         return getOrFetch(securityIds, false);
     }
 
-    public List<SecurityCompactDTO> getOrFetch(List<SecurityId> securityIds, boolean force)
+    public List<SecurityCompactDTO> getOrFetch(List<SecurityId> securityIds, boolean force) throws Throwable
     {
         if (securityIds == null)
         {

@@ -16,7 +16,7 @@ import javax.inject.Singleton;
         super(DEFAULT_MAX_SIZE);
     }
 
-    @Override protected SecurityId fetch(SecurityIntegerId key)
+    @Override protected SecurityId fetch(SecurityIntegerId key) throws Throwable
     {
         throw new IllegalStateException("You should never fetch a SecurityId this way");
     }

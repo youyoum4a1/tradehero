@@ -20,7 +20,7 @@ import javax.inject.Singleton;
         super(DEFAULT_MAX_SIZE);
     }
 
-    @Override protected TradeDTO fetch(TradeId key)
+    @Override protected TradeDTO fetch(TradeId key) throws Throwable
     {
         throw new IllegalStateException("You are not supposed to fetch an individual TradeDTO");
     }

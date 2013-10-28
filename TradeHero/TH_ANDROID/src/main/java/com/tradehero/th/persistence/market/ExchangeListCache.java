@@ -29,18 +29,9 @@ import retrofit.RetrofitError;
     }
     //</editor-fold>
 
-    @Override protected ExchangeDTOList fetch(ExchangeListType key)
+    @Override protected ExchangeDTOList fetch(ExchangeListType key) throws Throwable
     {
-        ExchangeDTOList exchangeDTOs = null;
-        try
-        {
-            exchangeDTOs = new ExchangeDTOList(marketService.get().getExchanges());
-        }
-        catch (RetrofitError e)
-        {
-            THLog.e(TAG, "Failed to fetch key " + key.key, e);
-        }
-        return exchangeDTOs;
+        return new ExchangeDTOList(marketService.get().getExchanges());
     }
 
     @Override public ExchangeDTOList put(ExchangeListType key, ExchangeDTOList value)
