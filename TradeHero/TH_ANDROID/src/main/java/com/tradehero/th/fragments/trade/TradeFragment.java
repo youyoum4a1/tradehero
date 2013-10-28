@@ -566,6 +566,10 @@ public class TradeFragment extends AbstractTradeFragment
             if (maxSellableShares != null)
             {
                 mSellQuantity = maxSellableShares;
+                if (maxSellableShares == 0)
+                {
+                    setTransactionTypeBuy(true);
+                }
             }
         }
 

@@ -312,6 +312,4 @@ public class TrendingSecurityView extends FrameLayout implements DTOView<Securit
             }
         });
     }
-
-
 }

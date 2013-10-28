@@ -202,8 +202,15 @@ abstract public class AbstractTradeFragment extends DashboardFragment
 
     public static Integer getMaxSellableShares(SecurityPositionDetailDTO securityPositionDetailDTO, int positionIndex)
     {
-        if (securityPositionDetailDTO == null || securityPositionDetailDTO.positions == null ||
-                securityPositionDetailDTO.positions.size() == 0 || securityPositionDetailDTO.positions.get(positionIndex) == null ||
+        if (securityPositionDetailDTO == null)
+        {
+            return null;
+        }
+        if (securityPositionDetailDTO.positions == null || securityPositionDetailDTO.positions.size() == 0)
+        {
+            return 0;
+        }
+        if (securityPositionDetailDTO.positions.get(positionIndex) == null ||
                 securityPositionDetailDTO.positions.get(positionIndex).shares == null || securityPositionDetailDTO.positions.get(positionIndex).shares == 0)
         {
             return null;
