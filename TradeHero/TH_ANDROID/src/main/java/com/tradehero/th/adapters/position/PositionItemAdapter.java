@@ -292,11 +292,11 @@ public class PositionItemAdapter extends BaseAdapter
                 }
                 else if (positionDTO.isOpen())
                 {
-                    openPositions.add(positionDTO.getFiledPositionId(portfolioId.key));
+                    openPositions.add(positionDTO.getOwnedPositionId(portfolioId.key));
                 }
                 else
                 {
-                    closedPositions.add(positionDTO.getFiledPositionId(portfolioId.key));
+                    closedPositions.add(positionDTO.getOwnedPositionId(portfolioId.key));
                 }
             }
         }

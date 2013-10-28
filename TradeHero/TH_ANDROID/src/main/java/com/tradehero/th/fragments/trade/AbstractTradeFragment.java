@@ -296,7 +296,7 @@ abstract public class AbstractTradeFragment extends DashboardFragment
                 securityCompactDTO.currencyDisplay,
                 quoteDTO.bid,
                 "US$", // TODO Have this currency taken from somewhere
-                10, // TODO Have this value taken from somewhere
+                10f, // TODO Have this value taken from somewhere
                 "US$", // TODO Have this currency taken from somewhere
                 getTotalCostForSell());
     }

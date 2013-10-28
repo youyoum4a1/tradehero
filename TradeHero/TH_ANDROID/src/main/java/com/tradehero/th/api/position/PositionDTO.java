@@ -45,7 +45,7 @@ public class PositionDTO extends PositionDTOCompact implements DTO
         return positionIds;
     }
 
-    public OwnedPositionId getFiledPositionId(Integer portfolioId)
+    public OwnedPositionId getOwnedPositionId(Integer portfolioId)
     {
         return new OwnedPositionId(userId, portfolioId, id);
     }
@@ -66,7 +66,7 @@ public class PositionDTO extends PositionDTOCompact implements DTO
 
         for (PositionDTO positionDTO: positionDTOs)
         {
-            ownedPositionIds.add(positionDTO.getFiledPositionId(portfolioId));
+            ownedPositionIds.add(positionDTO.getOwnedPositionId(portfolioId));
         }
 
         return ownedPositionIds;

@@ -104,6 +104,11 @@ import retrofit.RetrofitError;
         return previous;
     }
 
+    @Override public void invalidate(SecurityId key)
+    {
+        lruCache.remove(key);
+    }
+
     // The purpose of this class is to save on memory usage by cutting out the elements that already enjoy their own cache.
     // It is static so as not to keep a link back to the cache instance.
     private static class SecurityPositionDetailCutDTO

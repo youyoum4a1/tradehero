@@ -7,6 +7,7 @@ import com.tradehero.th.api.portfolio.PortfolioDTO;
 import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.base.THUser;
 import com.tradehero.th.network.service.PortfolioService;
+import com.tradehero.th.persistence.position.GetPositionsCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import dagger.Lazy;
 import java.io.IOException;
@@ -32,6 +33,7 @@ import retrofit.RetrofitError;
     @Inject Lazy<PortfolioService> portfolioService;
     @Inject Lazy<PortfolioCompactCache> portfolioCompactCache;
     @Inject Lazy<UserProfileCache> userProfileCache;
+    @Inject Lazy<GetPositionsCache> getPositionsCache;
 
     private Map<OwnedPortfolioId, Boolean> allOtherUserKeys;
 
@@ -72,6 +74,7 @@ import retrofit.RetrofitError;
         if (value != null)
         {
             portfolioCompactCache.get().put(key.getPortfolioId(), value);
+            getPositionsCache.get().invalidate(key);
         }
 
         addOtherUserKey(key);

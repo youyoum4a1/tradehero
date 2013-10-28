@@ -90,6 +90,9 @@ import retrofit.RetrofitError;
 
     @Override public GetPositionsDTO put(OwnedPortfolioId key, GetPositionsDTO value)
     {
+        // We invalidate the previous list of positions before it get updated
+        invalidateMatchingPositionCache(get(key));
+
         GetPositionsDTO previous = null;
 
         GetPositionsCutDTO previousCut = lruCache.put(
@@ -111,6 +114,23 @@ import retrofit.RetrofitError;
         }
 
         return previous;
+    }
+
+    @Override public void invalidate(OwnedPortfolioId key)
+    {
+        invalidateMatchingPositionCache(get(key));
+        lruCache.remove(key);
+    }
+
+    protected void invalidateMatchingPositionCache(GetPositionsDTO value)
+    {
+        if (value != null && value.positions != null)
+        {
+            for (PositionDTO positionDTO: value.positions)
+            {
+                filedPositionCache.get().invalidate(positionDTO.getOwnedPositionId());
+            }
+        }
     }
 
     private static class GetPositionsCutDTO

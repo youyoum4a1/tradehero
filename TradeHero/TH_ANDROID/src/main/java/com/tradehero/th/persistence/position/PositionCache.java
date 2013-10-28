@@ -3,6 +3,7 @@ package com.tradehero.th.persistence.position;
 import com.tradehero.common.persistence.StraightDTOCache;
 import com.tradehero.th.api.position.OwnedPositionId;
 import com.tradehero.th.api.position.PositionDTO;
+import com.tradehero.th.persistence.trade.TradeListCache;
 import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,6 +16,7 @@ import javax.inject.Singleton;
     private static final int DEFAULT_MAX_SIZE = 5000;
 
     @Inject Lazy<PositionCompactIdCache> positionCompactIdCache;
+    @Inject protected Lazy<TradeListCache> tradeListCache;
 
     //<editor-fold desc="Constructors">
     @Inject public PositionCache()
@@ -32,8 +34,20 @@ import javax.inject.Singleton;
     {
         // Save the correspondence between integer id and compound key.
         positionCompactIdCache.get().put(value.getPositionCompactId(), key);
+        invalidateMatchingTrades(key);
 
         return super.put(key, value);
+    }
+
+    @Override public void invalidate(OwnedPositionId key)
+    {
+        invalidateMatchingTrades(key);
+        super.invalidate(key);
+    }
+
+    protected void invalidateMatchingTrades(OwnedPositionId key)
+    {
+        tradeListCache.get().invalidate(key);
     }
 
     public List<PositionDTO> put(Integer portfolioId, List<PositionDTO> values)
@@ -47,7 +61,7 @@ import javax.inject.Singleton;
 
         for (PositionDTO positionDTO: values)
         {
-            previousValues.add(put(positionDTO.getFiledPositionId(portfolioId), positionDTO));
+            previousValues.add(put(positionDTO.getOwnedPositionId(portfolioId), positionDTO));
         }
 
         return previousValues;
