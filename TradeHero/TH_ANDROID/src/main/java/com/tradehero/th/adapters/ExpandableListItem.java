@@ -13,12 +13,10 @@ public class ExpandableListItem<T> implements OnSizeChangedListener
         this.model = model;
     }
 
-
     public T getModel()
     {
         return model;
     }
-
 
     @Override public void onSizeChanged(int newHeight)
     {

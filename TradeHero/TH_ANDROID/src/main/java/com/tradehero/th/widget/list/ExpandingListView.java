@@ -9,11 +9,13 @@ import com.tradehero.th.adapters.ExpandableListItem;
 import com.tradehero.th.R;
 
 /**
+ * Listens for item clicks and expands or collapses the selected view depending on
+ * its current state.
  * Created by julien on 24/10/13
  */
 public class ExpandingListView extends ListView
 {
-
+    //<editor-fold desc="Constructors">
     public ExpandingListView(Context context)
     {
         super(context);
@@ -31,33 +33,36 @@ public class ExpandingListView extends ListView
         super(context, attrs, defStyle);
         init();
     }
+    //</editor-fold>
 
-    private void init() {
-        setOnItemClickListener(mItemClickListener);
+    private void init()
+    {
+        super.setOnItemClickListener(new AdapterView.OnItemClickListener()
+        {
+            @Override
+            public void onItemClick (AdapterView<?> parent, View view, int position, long id)
+            {
+                ExpandableListItem viewObject = (ExpandableListItem) getItemAtPosition(getPositionForView(view));
+                if (!viewObject.isExpanded())
+                {
+                    expandView(view);
+                }
+                else
+                {
+                    collapseView(view);
+                }
+            }
+        });
     }
 
-    /**
-     * Listens for item clicks and expands or collapses the selected view depending on
-     * its current state.
-     */
-    private AdapterView.OnItemClickListener mItemClickListener = new AdapterView.OnItemClickListener() {
-        @Override
-        public void onItemClick (AdapterView<?> parent, View view, int position, long id) {
-            ExpandableListItem viewObject = (ExpandableListItem)getItemAtPosition(getPositionForView
-                    (view));
-            if (!viewObject.isExpanded()) {
-                expandView(view);
-            } else {
-                collapseView(view);
-            }
-        }
-
-    };
+    @Override public void setOnItemClickListener(OnItemClickListener listener)
+    {
+        throw new IllegalArgumentException("You are trying to override the default listener");
+    }
 
     private void expandView(View view)
     {
-        ExpandableListItem viewObject = (ExpandableListItem)getItemAtPosition(getPositionForView
-                (view));
+        ExpandableListItem viewObject = (ExpandableListItem) getItemAtPosition(getPositionForView(view));
 
         final View expandingLayout = view.findViewById(R.id.expanding_layout);
         expandingLayout.setVisibility(View.VISIBLE);
@@ -66,8 +71,7 @@ public class ExpandingListView extends ListView
 
     private void collapseView(View view)
     {
-        ExpandableListItem viewObject = (ExpandableListItem)getItemAtPosition(getPositionForView
-                (view));
+        ExpandableListItem viewObject = (ExpandableListItem) getItemAtPosition(getPositionForView(view));
 
         final View expandingLayout = view.findViewById(R.id.expanding_layout);
         expandingLayout.setVisibility(View.GONE);
