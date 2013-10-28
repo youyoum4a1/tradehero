@@ -1,6 +1,6 @@
 package com.tradehero.th.api.timeline;
 
-import com.tradehero.th.api.misc.MediaDTO;
+import com.tradehero.th.api.security.SecurityMediaDTO;
 import java.util.Date;
 import java.util.List;
 
@@ -13,6 +13,6 @@ public class TimelineItemDTOEnhanced
     public String text;
     public int type;
     public Date userViewedAtUtc;
-    public List<MediaDTO> medias;
+    public List<SecurityMediaDTO> medias;
     public Integer pushTypeId;
 }

@@ -21,6 +21,10 @@ public class THToast
             toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 100);
             toast.show();
         }
+        else
+        {
+            THLog.e(TAG, "Problem: Toast is called from background thread", new Exception("Toast message: " + message));
+        }
     }
 
     public static void show(int resourceId)

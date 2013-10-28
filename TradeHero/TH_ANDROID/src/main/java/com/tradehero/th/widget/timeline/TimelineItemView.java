@@ -5,21 +5,20 @@ import android.os.Bundle;
 import android.text.method.LinkMovementMethod;
 import android.util.AttributeSet;
 import android.view.View;
-import android.view.animation.AnimationUtils;
 import android.widget.Checkable;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.squareup.picasso.Picasso;
+import com.tradehero.common.graphics.RoundedShapeTransformation;
 import com.tradehero.common.graphics.WhiteToTransparentTransformation;
 import com.tradehero.common.text.OnElementClickListener;
-import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.local.TimelineItem;
-import com.tradehero.th.api.misc.MediaDTO;
 import com.tradehero.th.api.security.SecurityId;
+import com.tradehero.th.api.security.SecurityMediaDTO;
 import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileCompactDTO;
@@ -50,7 +49,7 @@ public class TimelineItemView extends LinearLayout implements
     @Inject protected Lazy<Picasso> picasso;
     private boolean checked;
     private Navigator navigator;
-    private int userId;
+    private TimelineItem currentTimelineItem;
 
     //<editor-fold desc="Constructors">
     public TimelineItemView(Context context)
@@ -91,6 +90,10 @@ public class TimelineItemView extends LinearLayout implements
 
         time = (TextView) findViewById(R.id.timeline_time);
         vendorImage = (ImageView) findViewById(R.id.timeline_vendor_picture);
+        if (vendorImage != null)
+        {
+            vendorImage.setOnClickListener(this);
+        }
 
         View fbShareButton = findViewById(R.id.timeline_share_facebook);
         if (fbShareButton!=null) fbShareButton.setOnClickListener(new OnClickListener()
@@ -125,13 +128,16 @@ public class TimelineItemView extends LinearLayout implements
         {
             return;
         }
+        currentTimelineItem = item;
 
-        userId = user.id;
         username.setText(user.displayName);
 
         if (user.picture != null)
         {
-            picasso.get().load(user.picture).into(avatar);
+            picasso.get()
+                    .load(user.picture)
+                    .transform(new RoundedShapeTransformation())
+                    .into(avatar);
         }
 
         content.setText(item.getText());
@@ -139,9 +145,13 @@ public class TimelineItemView extends LinearLayout implements
         PrettyTime prettyTime = new PrettyTime(new Date());
         time.setText(prettyTime.format(item.getDate()));
 
-        MediaDTO firstMediaWithLogo = item.firstMediaWithLogo();
+        SecurityMediaDTO firstMediaWithLogo = item.getFirstMediaWithLogo();
         if (firstMediaWithLogo != null)
         {
+            if (vendorImage != null && firstMediaWithLogo.securityId != 0)
+            {
+                vendorImage.setContentDescription(String.format("%s:%s", firstMediaWithLogo.exchange, firstMediaWithLogo.symbol));
+            }
             picasso.get()
                     .load(firstMediaWithLogo.url)
                     .transform(new WhiteToTransparentTransformation())
@@ -171,8 +181,9 @@ public class TimelineItemView extends LinearLayout implements
                 break;
             case "security":
                 if (matchStrings.length < 3) break;
-                SecurityId securityId = new SecurityId(matchStrings[1], matchStrings[2]);
-                navigator.pushFragment(TradeFragment.class, securityId.getArgs());
+                String exchange = matchStrings[1];
+                String symbol = matchStrings[2];
+                openSecurityProfile(exchange, symbol);
                 break;
 
             case "link":
@@ -181,6 +192,12 @@ public class TimelineItemView extends LinearLayout implements
 
                 break;
         }
+    }
+
+    private void openSecurityProfile(String exchange, String symbol)
+    {
+        SecurityId securityId = new SecurityId(exchange, symbol);
+        navigator.pushFragment(TradeFragment.class, securityId.getArgs());
     }
 
     private void openUserProfile(int userId)
@@ -230,8 +247,30 @@ public class TimelineItemView extends LinearLayout implements
     //</editor-fold>
     @Override public void onClick(View view)
     {
-        openUserProfile(userId);
+
+        switch (view.getId())
+        {
+            case R.id.timeline_user_profile_picture:
+            case R.id.timeline_user_profile_name:
+                if (currentTimelineItem != null)
+                {
+                    UserProfileCompactDTO user = currentTimelineItem.getUser();
+                    if (user != null)
+                    {
+                        openUserProfile(user.id);
+                    }
+                }
+                break;
+            case R.id.timeline_vendor_picture:
+                if (currentTimelineItem != null)
+                {
+                    SecurityMediaDTO firstMediaWithLogo = currentTimelineItem.getFirstMediaWithLogo();
+                    if (firstMediaWithLogo != null && firstMediaWithLogo.securityId != 0)
+                    {
+                        openSecurityProfile(firstMediaWithLogo.exchange, firstMediaWithLogo.symbol);
+                    }
+                }
+                break;
+        }
     }
-
-
 }

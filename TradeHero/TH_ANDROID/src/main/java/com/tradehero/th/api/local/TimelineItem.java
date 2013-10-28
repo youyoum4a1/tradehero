@@ -1,6 +1,7 @@
 package com.tradehero.th.api.local;
 
 import com.tradehero.th.api.misc.MediaDTO;
+import com.tradehero.th.api.security.SecurityMediaDTO;
 import com.tradehero.th.api.timeline.TimelineItemDTOEnhanced;
 import com.tradehero.th.api.users.UserProfileCompactDTO;
 import com.tradehero.th.loaders.AbstractItemWithComparableId;
@@ -14,7 +15,7 @@ public class TimelineItem extends AbstractItemWithComparableId<Integer>
     private UserProfileCompactDTO user;
     private final Date date;
     private final String text;
-    private final List<MediaDTO> medias;
+    private final List<SecurityMediaDTO> medias;
     private final boolean read;
     private boolean selected;
 
@@ -28,9 +29,9 @@ public class TimelineItem extends AbstractItemWithComparableId<Integer>
         this.selected = false;
     }
 
-    public MediaDTO firstMediaWithLogo()
+    public SecurityMediaDTO getFirstMediaWithLogo()
     {
-        for (MediaDTO m: medias)
+        for (SecurityMediaDTO m: medias)
         {
             if (m.url != null)
             {

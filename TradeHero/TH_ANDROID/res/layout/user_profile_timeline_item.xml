@@ -10,7 +10,7 @@
   <RelativeLayout android:id="@+id/main_content_wrapper"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
-    <com.tradehero.th.widget.RoundedImageView
+    <ImageView
         android:id="@+id/timeline_user_profile_picture"
         android:layout_width="60dp"
         android:layout_height="60dp"
