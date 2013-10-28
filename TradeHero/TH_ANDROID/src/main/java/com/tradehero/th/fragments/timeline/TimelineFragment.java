@@ -58,12 +58,10 @@ public class TimelineFragment extends BaseFragment
     @Inject protected Lazy<PortfolioCompactListCache> portfolioCompactListCache;
     @Inject protected Lazy<PortfolioCache> portfolioCache;
 
-    private View view;
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        View view = inflater.inflate(R.layout.profile_screen, container, false);
+        View view = inflater.inflate(R.layout.timeline_screen, container, false);
         initView(view);
         return view;
     }
@@ -71,6 +69,7 @@ public class TimelineFragment extends BaseFragment
     private void initView(View view)
     {
         timelineListView = (TimelineListView) view.findViewById(R.id.pull_refresh_list);
+        timelineListView.setEmptyView(view.findViewById(android.R.id.empty));
         timelineListView.getRefreshableView().setChoiceMode(AbsListView.CHOICE_MODE_SINGLE);
         if (timelineAdapter == null)
         {
@@ -286,7 +285,6 @@ public class TimelineFragment extends BaseFragment
 
         @Override public void onLoaderReset(Loader<List<TimelineItem>> listLoader)
         {
-            // TODO more investigation
             if (timelineAdapter != null)
             {
                 timelineAdapter.setItems(null);

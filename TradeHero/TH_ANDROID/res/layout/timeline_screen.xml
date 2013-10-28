@@ -7,6 +7,11 @@
   <!--android:paddingLeft="@dimen/dashboard_padding"-->
   <!--android:paddingRight="@dimen/dashboard_padding"-->
 
+  <ProgressBar android:id="@android:id/empty"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:gravity="center_horizontal"/>
+
   <com.tradehero.th.widget.timeline.TimelineListView
       xmlns:ptr="http://schemas.android.com/apk/res-auto"
       android:id="@+id/pull_refresh_list"

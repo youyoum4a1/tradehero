@@ -3,6 +3,9 @@ package com.tradehero.th.fragments.leaderboard;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
@@ -29,11 +32,18 @@ public class LeaderboardListViewFragment extends DashboardListFragment
         getLoaderManager().initLoader(0, getArguments(), this);
     }
 
+    @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    {
+        View view = inflater.inflate(R.layout.leaderboard_listview, container, false);
+        return view;
+    }
+
     @Override public void onResume()
     {
         leaderboardListAdapter = new LeaderboardListAdapter(getActivity(), getActivity().getLayoutInflater(), null, R.layout.leaderboard_user_view);
         setListAdapter(leaderboardListAdapter);
 
+        getListView().setEmptyView(getView().findViewById(android.R.id.empty));
         super.onResume();
     }
 

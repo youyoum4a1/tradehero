@@ -11,7 +11,6 @@ import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
-import com.actionbarsherlock.view.SubMenu;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.th.R;
 import com.tradehero.th.api.leaderboard.LeaderboardDTO;
@@ -33,7 +32,8 @@ import java.util.Comparator;
 import java.util.List;
 import javax.inject.Inject;
 
-public class LeaderboardCommunityFragment extends DashboardFragment implements DTOCache.Listener<LeaderboardDefListKey, LeaderboardDefKeyList>
+public class LeaderboardCommunityFragment extends DashboardFragment
+        implements DTOCache.Listener<LeaderboardDefListKey, LeaderboardDefKeyList>
 {
     private static final String TAG = LeaderboardCommunityFragment.class.getName();
 
@@ -43,15 +43,18 @@ public class LeaderboardCommunityFragment extends DashboardFragment implements D
 
     private View view;
     private boolean fetched = false;
+    private ListView mostSkilledListView;
+    private ListView timePeriodListView;
+    private ListView sectorListView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        view = inflater.inflate(R.layout.leaderboard_screen, container, false);
+        view = inflater.inflate(R.layout.leaderboard_community_screen, container, false);
+
+        initViews(view);
 
         prepareAdapters();
-
-        initViews();
 
         return view;
     }
@@ -61,17 +64,17 @@ public class LeaderboardCommunityFragment extends DashboardFragment implements D
         leaderboardDefListCache.getOrFetch(new LeaderboardDefMostSkilledListKey(), false, this).execute();
     }
 
-    private void initViews()
+    private void initViews(View view)
     {
-        // section for Most Skilled
-        //
-        //mostSkilledListView.setAdapter();
-        //
-        //// section for ranking by time period
-        //
-        //// section for ranking by exchange, sector
-        //ListView roiListView = (ListView) view.findViewById(R.id.leaderboard_roi);
-        //roiListView.setAdapter(createMostSkilledListViewAdapter());
+        mostSkilledListView = (ListView) view.findViewById(R.id.leaderboard_most_skilled);
+        timePeriodListView = (ListView) view.findViewById(R.id.leaderboard_time_period);
+        sectorListView = (ListView) view.findViewById(R.id.leaderboard_sector);
+
+        ListView[] listViews = new ListView[] { mostSkilledListView, timePeriodListView, sectorListView };
+        for (ListView listView: listViews)
+        {
+            listView.setEmptyView(view.findViewById(android.R.id.empty));
+        }
     }
 
     @Override public void onStop()
@@ -87,6 +90,7 @@ public class LeaderboardCommunityFragment extends DashboardFragment implements D
         ActionBar actionBar = getSherlockActivity().getSupportActionBar();
         actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME);
         actionBar.setTitle(getString(R.string.leaderboards));
+
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -108,6 +112,7 @@ public class LeaderboardCommunityFragment extends DashboardFragment implements D
 
     @Override public void onDTOReceived(LeaderboardDefListKey key, LeaderboardDefKeyList value)
     {
+        // hide loading
         if (!fetched)
         {
             fetched = true;
@@ -120,13 +125,11 @@ public class LeaderboardCommunityFragment extends DashboardFragment implements D
         {
             if (key instanceof LeaderboardDefMostSkilledListKey)
             {
-                ListView mostSkilledListView = (ListView) view.findViewById(R.id.leaderboard_most_skilled);
                 mostSkilledListView.setAdapter(createMostSkilledListAdapter(value));
                 mostSkilledListView.setOnItemClickListener(createLeaderboardItemClickListener());
             }
             else if (key instanceof LeaderboardDefTimePeriodListKey)
             {
-                ListView timePeriodListView = (ListView) view.findViewById(R.id.leaderboard_time_period);
                 timePeriodListView.setAdapter(createTimePeriodListAdapter(value));
                 timePeriodListView.setOnItemClickListener(createLeaderboardItemClickListener());
             }
@@ -178,7 +181,6 @@ public class LeaderboardCommunityFragment extends DashboardFragment implements D
 
     private void addItemToSectorSection(LeaderboardDefDTO dto)
     {
-        ListView sectorListView = (ListView) view.findViewById(R.id.leaderboard_sector);
         if (sectorListView.getAdapter() == null)
         {
             List<LeaderboardDefDTO> sectorDefDTOs = new ArrayList<>();
