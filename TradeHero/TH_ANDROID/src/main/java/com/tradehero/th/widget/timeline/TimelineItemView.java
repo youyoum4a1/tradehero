@@ -101,6 +101,14 @@ public class TimelineItemView extends LinearLayout implements
             }
         });
 
+        setOnClickListener(new OnClickListener()
+        {
+            @Override public void onClick(View v)
+            {
+                toggle();
+            }
+        });
+
         DaggerUtils.inject(content);
         DaggerUtils.inject(this);
     }
