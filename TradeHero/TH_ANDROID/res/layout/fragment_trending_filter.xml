@@ -17,6 +17,7 @@
       android:layout_centerVertical="true"
       android:src="@drawable/chevron_back"
       android:contentDescription="@null"
+      android:background="@android:color/transparent"
       />
 
   <LinearLayout
@@ -81,6 +82,7 @@
       android:layout_centerVertical="true"
       android:src="@drawable/chevron_forward"
       android:contentDescription="@null"
+      android:background="@android:color/transparent"
     />
 
 </RelativeLayout>

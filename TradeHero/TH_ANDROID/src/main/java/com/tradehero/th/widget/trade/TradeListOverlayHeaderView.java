@@ -46,8 +46,9 @@ public class TradeListOverlayHeaderView extends LinearLayout
     private UserBaseDTO user;
     private String qualifiedSymbol;
 
-    private WeakReference<Listener> listener;
+    private WeakReference<Listener> listener = new WeakReference<>(null);
 
+    //<editor-fold desc="Constructors">
     public TradeListOverlayHeaderView(Context context)
     {
         super(context);
@@ -62,6 +63,7 @@ public class TradeListOverlayHeaderView extends LinearLayout
     {
         super(context, attrs, defStyle);
     }
+    //</editor-fold>
 
     @Override protected void onFinishInflate()
     {
@@ -72,10 +74,10 @@ public class TradeListOverlayHeaderView extends LinearLayout
 
     private void initViews()
     {
-        usernameTextView= (TextView)findViewById(R.id.trade_history_header_username);
-        imageProfile = (ImageView)findViewById(R.id.trade_history_header_image);
-        qualifiedSecuritySymbol = (TextView)findViewById(R.id.trade_history_header_security_symbol);
-        righSection = (LinearLayout)findViewById(R.id.trade_history_header_right_section);
+        usernameTextView= (TextView) findViewById(R.id.trade_history_header_username);
+        imageProfile = (ImageView) findViewById(R.id.trade_history_header_image);
+        qualifiedSecuritySymbol = (TextView) findViewById(R.id.trade_history_header_security_symbol);
+        righSection = (LinearLayout) findViewById(R.id.trade_history_header_right_section);
         attachListeners();
     }
 
@@ -85,30 +87,47 @@ public class TradeListOverlayHeaderView extends LinearLayout
         {
             @Override public void onClick(View v)
             {
-                if (listener == null) return;
+                if (listener == null)
+                {
+                    return;
+                }
 
                 Listener l = listener.get();
-                if (l == null) return;
+                if (l == null)
+                {
+                    return;
+                }
 
                 l.onUserClicked(TradeListOverlayHeaderView.this, ownedPositionId.getUserBaseKey());
             }
         };
 
         if (this.usernameTextView != null)
+        {
             this.usernameTextView.setOnClickListener(usernameListener);
+        }
 
         if (this.imageProfile != null)
+        {
             this.imageProfile.setOnClickListener(usernameListener);
+        }
 
-        if (this.righSection != null) {
+        if (this.righSection != null)
+        {
             this.righSection.setOnClickListener(new OnClickListener()
             {
                 @Override public void onClick(View v)
                 {
-                    if (listener == null) return;
+                    if (listener == null)
+                    {
+                        return;
+                    }
 
                     Listener l = listener.get();
-                    if (l == null) return;
+                    if (l == null)
+                    {
+                        return;
+                    }
 
                     l.onSecurityClicked(TradeListOverlayHeaderView.this, ownedPositionId);
                 }
@@ -124,7 +143,8 @@ public class TradeListOverlayHeaderView extends LinearLayout
         this.position = positionCache.get().get(ownedPositionId);
         SecurityIntegerId securityIntegerId = this.position.getSecurityIntegerId();
         this.securityId = this.securityIdCache.get().get(securityIntegerId);
-        if (this.securityId != null) {
+        if (this.securityId != null)
+        {
             this.qualifiedSymbol = String.format("%s:%s", securityId.exchange.toUpperCase(), securityId.securitySymbol.toUpperCase());
         }
         display();
@@ -153,13 +173,6 @@ public class TradeListOverlayHeaderView extends LinearLayout
         }
     }
 
-    public Listener getListener()
-    {
-        if (listener == null) return null;
-
-        return listener.get();
-    }
-
     public void setListener(Listener listener)
     {
         this.listener = new WeakReference<>(listener);
@@ -170,5 +183,4 @@ public class TradeListOverlayHeaderView extends LinearLayout
         public void onSecurityClicked(TradeListOverlayHeaderView headerView, OwnedPositionId ownedPositionId);
         public void onUserClicked(TradeListOverlayHeaderView headerView, UserBaseKey userId);
     }
-
 }

@@ -47,7 +47,7 @@ public class PositionListFragment extends DashboardFragment
 
     @Inject Lazy<PortfolioHeaderFactory> headerFactory;
     private PortfolioHeaderView portfolioHeaderView;
-    private ListView openPositions;
+    private ListView positionsListView;
     private PositionItemAdapter positionItemAdapter;
 
     private Bundle desiredArguments;
@@ -96,11 +96,11 @@ public class PositionListFragment extends DashboardFragment
                 positionItemAdapter.setParentMoreInfoRequestedListener(this);
             }
 
-            openPositions = (ListView) view.findViewById(R.id.position_list);
-            if (openPositions != null)
+            positionsListView = (ListView) view.findViewById(R.id.position_list);
+            if (positionsListView != null)
             {
-                openPositions.setAdapter(positionItemAdapter);
-                openPositions.setOnItemClickListener(new AdapterView.OnItemClickListener()
+                positionsListView.setAdapter(positionItemAdapter);
+                positionsListView.setOnItemClickListener(new AdapterView.OnItemClickListener()
                 {
                     @Override public void onItemClick(AdapterView<?> adapterView, View view, int i, long l)
                     {
@@ -210,10 +210,10 @@ public class PositionListFragment extends DashboardFragment
 
     @Override public void onDestroyView()
     {
-        if (openPositions != null)
+        if (positionsListView != null)
         {
-            openPositions.setOnScrollListener(null);
-            openPositions.setOnTouchListener(null);
+            positionsListView.setOnScrollListener(null);
+            positionsListView.setOnTouchListener(null);
         }
         if (positionItemAdapter != null)
         {
