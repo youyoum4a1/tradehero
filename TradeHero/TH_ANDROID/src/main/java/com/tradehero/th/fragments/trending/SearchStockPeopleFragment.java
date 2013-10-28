@@ -364,7 +364,7 @@ public class SearchStockPeopleFragment extends DashboardFragment
 
                     @Override public void onErrorThrown(SecurityListType key, Throwable error)
                     {
-                        THToast.show("There was an error when fetching the list of securities");
+                        THToast.show(getString(R.string.error_fetch_security_list_info));
                         THLog.e(TAG, "Error fetching the list of securities " + key, error);
                     }
                 };
@@ -401,7 +401,7 @@ public class SearchStockPeopleFragment extends DashboardFragment
 
                         @Override public void onErrorThrown(UserListType key, Throwable error)
                         {
-                            THToast.show("There was an error when fetching the list of people");
+                            THToast.show(getString(R.string.error_fetch_people_list_info));
                             THLog.e(TAG, "Error fetching the list of people " + key, error);
                         }
                     };

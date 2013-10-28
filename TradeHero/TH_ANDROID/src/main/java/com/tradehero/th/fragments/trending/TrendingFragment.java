@@ -409,7 +409,7 @@ public class TrendingFragment extends DashboardFragment
 
     @Override public void onErrorThrown(SecurityListType key, Throwable error)
     {
-        THToast.show("There was an error when fetching the list");
+        THToast.show(getString(R.string.error_fetch_security_list_info));
         THLog.e(TAG, "Error fetching the list " + key, error);
     }
 

@@ -139,7 +139,7 @@ public class LeaderboardDefListViewFragment extends DashboardListFragment
 
     @Override public void onErrorThrown(LeaderboardDefListKey key, Throwable error)
     {
-        THToast.show("There was an error when fetching the definition list of leaderboards");
+        THToast.show(getString(R.string.error_fetch_leaderboard_def_list_key));
         THLog.e(TAG, "Error fetching the leaderboard def key list " + key, error);
     }
 

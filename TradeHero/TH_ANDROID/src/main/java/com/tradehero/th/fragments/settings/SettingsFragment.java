@@ -230,7 +230,7 @@ public class SettingsFragment extends DashboardFragment
 
                     @Override public void onErrorThrown(UserBaseKey key, Throwable error)
                     {
-                        THToast.show("There was an error when fetching your profile information");
+                        THToast.show(getString(R.string.error_fetch_your_user_profile));
                         THLog.e(TAG, "Error fetching the user profile " + key, error);
                     }
                 }).execute();

@@ -5,6 +5,7 @@ import com.actionbarsherlock.app.SherlockFragment;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
+import com.tradehero.th.R;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.fragments.base.BaseFragment;
@@ -59,7 +60,7 @@ abstract public class AbstractSecurityInfoFragment<InfoType> extends SherlockFra
 
     @Override public void onErrorThrown(SecurityId key, Throwable error)
     {
-        THToast.show("There was an error when fetching the security information");
+        THToast.show(getString(R.string.error_fetch_security_info));
         THLog.e(TAG, "Error fetching the security " + key, error);
     }
 

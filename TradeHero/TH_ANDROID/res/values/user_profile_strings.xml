@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="error_fetch_user_profile">There was an error when fetching the user profile information</string>
+  <string name="error_fetch_your_user_profile">There was an error when fetching your profile information</string>
+  <string name="error_fetch_people_list_info">There was an error when fetching the list of people</string>
+</resources>

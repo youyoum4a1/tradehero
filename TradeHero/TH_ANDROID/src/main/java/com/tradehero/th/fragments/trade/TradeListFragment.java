@@ -172,7 +172,7 @@ public class TradeListFragment extends DashboardFragment implements BaseFragment
 
             @Override public void onErrorThrown(OwnedPositionId key, Throwable error)
             {
-                THToast.show("There was an error when fetching the list of trades");
+                THToast.show(getString(R.string.error_fetch_trade_list_info));
                 THLog.e(TAG, "Error fetching the list of trades " + key, error);
             }
         };

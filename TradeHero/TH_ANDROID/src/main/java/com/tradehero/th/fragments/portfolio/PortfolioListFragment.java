@@ -276,7 +276,7 @@ public class PortfolioListFragment extends DashboardFragment
 
             @Override public void onErrorThrown(UserBaseKey key, Throwable error)
             {
-                THToast.show("There was an error when fetching the list of portfolios");
+                THToast.show(getString(R.string.error_fetch_portfolio_list_info));
                 THLog.e(TAG, "Error fetching the portfolio id list " + key, error);
             }
         };
@@ -409,7 +409,7 @@ public class PortfolioListFragment extends DashboardFragment
 
                 @Override public void onErrorThrown(UserBaseKey key, Throwable error)
                 {
-                    THToast.show("There was an error when fetching your profile information");
+                    THToast.show(getString(R.string.error_fetch_user_profile));
                     THLog.e(TAG, "Error fetching the user profile " + key, error);
                 }
             };
@@ -446,7 +446,7 @@ public class PortfolioListFragment extends DashboardFragment
 
                 @Override public void onErrorThrown(OwnedPortfolioId key, Throwable error)
                 {
-                    THToast.show("There was an error when fetching the portfolio information");
+                    THToast.show(getString(R.string.error_fetch_portfolio_info));
                     THLog.e(TAG, "Error fetching the portfolio " + key, error);
                 }
             };

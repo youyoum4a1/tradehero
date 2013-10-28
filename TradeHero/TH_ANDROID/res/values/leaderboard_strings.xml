@@ -21,4 +21,5 @@
   <string name="exchanges">Exchanges</string>
   <string name="comments">Comments</string>
   <string name="sharpe_ratio">Sharpe Ratio</string>
+  <string name="error_fetch_leaderboard_def_list_key">There was an error when fetching the definition list of leaderboards</string>
 </resources>

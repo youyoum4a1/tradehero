@@ -328,7 +328,7 @@ public class PositionListFragment extends DashboardFragment
 
             @Override public void onErrorThrown(OwnedPortfolioId key, Throwable error)
             {
-                THToast.show("There was an error when fetching the list of positions");
+                THToast.show(getString(R.string.error_fetch_position_list_info));
                 THLog.e(TAG, "Error fetching the getPositions " + key, error);
             }
         };
@@ -341,14 +341,14 @@ public class PositionListFragment extends DashboardFragment
             PositionDTO positionDTO = positionCache.get().get(clickedOwnedPositionId);
             if (positionDTO == null)
             {
-                THToast.show("We have lost track of this trading position");
+                THToast.show(getString(R.string.error_lost_position_in_cache));
             }
             else
             {
                 SecurityId securityId = securityIdCache.get().get(positionDTO.getSecurityIntegerId());
                 if (securityId == null)
                 {
-                    THToast.show("Could not find this security");
+                    THToast.show(getString(R.string.error_find_security_id_to_int));
                 }
                 else
                 {
@@ -386,13 +386,11 @@ public class PositionListFragment extends DashboardFragment
 
     @Override public void onBuyClicked(int position, OwnedPositionId clickedOwnedPositionId)
     {
-        THToast.show("Buy at position " + position);
         pushTradeFragment(clickedOwnedPositionId, true);
     }
 
     @Override public void onSellClicked(int position, OwnedPositionId clickedOwnedPositionId)
     {
-        THToast.show("Sell at position " + position);
         pushTradeFragment(clickedOwnedPositionId, false);
     }
 

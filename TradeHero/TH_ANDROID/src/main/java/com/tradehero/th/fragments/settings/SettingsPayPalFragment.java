@@ -93,7 +93,7 @@ public class SettingsPayPalFragment extends DashboardFragment
                     @Override
                     protected void success(UpdatePayPalEmailDTO updatePayPalEmailDTO, THResponse thResponse)
                     {
-                        THToast.show(getResources().getString(R.string.settings_paypal_successful_update));
+                        THToast.show(getString(R.string.settings_paypal_successful_update));
                         progressDialog.hide();
                         Navigator navigator = ((NavigatorActivity) getActivity()).getNavigator();
                         navigator.popFragment();
@@ -129,7 +129,7 @@ public class SettingsPayPalFragment extends DashboardFragment
 
                     @Override public void onErrorThrown(UserBaseKey key, Throwable error)
                     {
-                        THToast.show("There was an error when fetching your profile information");
+                        THToast.show(getString(R.string.error_fetch_your_user_profile));
                         THLog.e(TAG, "Error fetching the user profile " + key, error);
                     }
                 }).execute();
