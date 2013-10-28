@@ -1,5 +1,6 @@
 package com.tradehero.common.utils;
 
+import android.os.Looper;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Toast;
@@ -14,14 +15,17 @@ public class THToast
 
     public static void show(String message)
     {
-        Toast toast = Toast.makeText(Application.context(), message, Toast.LENGTH_SHORT);
-        toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 100);
-        toast.show();
+        if (Looper.myLooper() == Looper.getMainLooper())
+        {
+            Toast toast = Toast.makeText(Application.context(), message, Toast.LENGTH_SHORT);
+            toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 100);
+            toast.show();
+        }
     }
 
     public static void show(int resourceId)
     {
-        show(Application.getResourceString(resourceId));
+            show(Application.getResourceString(resourceId));
     }
 
     public static void show(THException ex)
