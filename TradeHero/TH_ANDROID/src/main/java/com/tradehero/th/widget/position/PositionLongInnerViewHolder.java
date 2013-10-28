@@ -141,6 +141,7 @@ public class PositionLongInnerViewHolder<OnClickedListenerType extends PositionL
             displayMarketValueValue();
             displayQuantityValue();
             displayAveragePriceValue();
+            displayButtonSell();
         }
     }
     //</editor-fold>
@@ -156,6 +157,7 @@ public class PositionLongInnerViewHolder<OnClickedListenerType extends PositionL
         displayMarketValueValue();
         displayQuantityValue();
         displayAveragePriceValue();
+        displayButtonSell();
     }
 
     public void displayUnrealisedPLRow()
@@ -272,6 +274,18 @@ public class PositionLongInnerViewHolder<OnClickedListenerType extends PositionL
                 averagePriceValue.setText(R.string.na);
             }
         }
+    }
+
+    public void displayButtonSell()
+    {
+        if (btnSell != null)
+        {
+            if (positionDTO != null)
+            {
+                btnSell.setVisibility(positionDTO.isClosed() == null || positionDTO.isClosed() ? View.INVISIBLE : View.VISIBLE);
+            }
+        }
+
     }
     //</editor-fold>
 
