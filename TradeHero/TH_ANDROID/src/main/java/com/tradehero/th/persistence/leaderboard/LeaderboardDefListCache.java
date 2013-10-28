@@ -1,6 +1,7 @@
 package com.tradehero.th.persistence.leaderboard;
 
 import com.tradehero.common.persistence.StraightDTOCache;
+import com.tradehero.common.utils.THToast;
 import com.tradehero.th.api.leaderboard.LeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardDefExchangeListKey;
 import com.tradehero.th.api.leaderboard.LeaderboardDefKey;
@@ -9,6 +10,7 @@ import com.tradehero.th.api.leaderboard.LeaderboardDefListKey;
 import com.tradehero.th.api.leaderboard.LeaderboardDefMostSkilledListKey;
 import com.tradehero.th.api.leaderboard.LeaderboardDefSectorListKey;
 import com.tradehero.th.api.leaderboard.LeaderboardDefTimePeriodListKey;
+import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.service.LeaderboardService;
 import dagger.Lazy;
 import java.util.ArrayList;
@@ -31,7 +33,23 @@ import javax.inject.Singleton;
 
     @Override protected LeaderboardDefKeyList fetch(LeaderboardDefListKey listKey)
     {
-        return putInternal(listKey, leaderboardService.get().getLeaderboardDefinitions());
+        List<LeaderboardDefDTO> leaderboardDefinitions = null;
+        try
+        {
+            leaderboardDefinitions = leaderboardService.get().getLeaderboardDefinitions();
+        }
+        catch (Exception ex)
+        {
+            THToast.show(new THException(ex));
+        }
+        if (leaderboardDefinitions != null)
+        {
+            return putInternal(listKey, leaderboardDefinitions);
+        }
+        else
+        {
+            return null;
+        }
     }
 
     private LeaderboardDefKeyList putInternal(LeaderboardDefListKey listKey, List<LeaderboardDefDTO> allLeaderboardDefinitions)
