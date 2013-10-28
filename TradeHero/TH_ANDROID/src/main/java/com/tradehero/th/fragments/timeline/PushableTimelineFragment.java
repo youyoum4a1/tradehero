@@ -23,8 +23,7 @@ public class PushableTimelineFragment extends TimelineFragment
     {
         inflater.inflate(R.menu.timeline_menu_pushable_other, menu);
         ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-        actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_SHOW_TITLE);
-        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_SHOW_TITLE);
         //super.onCreateOptionsMenu(menu, inflater);
         displayActionBarTitle();
     }

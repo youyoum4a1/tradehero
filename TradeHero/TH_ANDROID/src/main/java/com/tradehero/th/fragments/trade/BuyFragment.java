@@ -13,17 +13,15 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
-import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
-import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
 import com.tradehero.th.api.position.SecurityPositionDetailDTO;
@@ -50,12 +48,6 @@ public class BuyFragment extends AbstractTradeFragment
     public final static String BUNDLE_KEY_SHARE_LINKEDIN = BuyFragment.class.getName() + ".shareLinkedIn";
     public final static String BUNDLE_KEY_SHARE_LOCATION = BuyFragment.class.getName() + ".shareLocation";
     public final static String BUNDLE_KEY_SHARE_PUBLIC = BuyFragment.class.getName() + ".sharePublic";
-
-    private View actionBar;
-    private ImageButton mBackBtn;
-    private ImageView mMarketClose;
-    private TextView mExchangeSymbol;
-    private Button mBtnConfirm;
 
     private ProgressBar mQuoteRefreshProgressBar;
     private EditText mCommentsET;
@@ -187,6 +179,7 @@ public class BuyFragment extends AbstractTradeFragment
         displayPageElements();
     }
 
+    //<editor-fold desc="ActionBar">
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         super.onCreateOptionsMenu(menu, inflater);
@@ -195,58 +188,34 @@ public class BuyFragment extends AbstractTradeFragment
 
     private void createBuyConfirmActionBar(Menu menu, MenuInflater inflater)
     {
-        getSherlockActivity().getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
-        getSherlockActivity().getSupportActionBar().setCustomView(R.layout.topbar_buy_confirm);
+        inflater.inflate(R.menu.buy_sell_menu, menu);
 
-        actionBar = getSherlockActivity().getSupportActionBar().getCustomView();
+        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
+        actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME);
 
-        mBackBtn = (ImageButton) actionBar.findViewById(R.id.btn_back);
-        if (mBackBtn != null)
-        {
-            mBackBtn.setOnClickListener(new OnClickListener()
-            {
-                @Override public void onClick(View view)
-                {
-                    navigator.popFragment();
-                }
-            });
-        }
-
-        mMarketClose = (ImageView) actionBar.findViewById(R.id.ic_market_close);
-
-        mExchangeSymbol = (TextView) actionBar.findViewById(R.id.header_txt);
-
-        mBtnConfirm = (Button) actionBar.findViewById(R.id.btn_confirm);
-        if (mBtnConfirm != null)
-        {
-            mBtnConfirm.setOnClickListener(new OnClickListener()
-            {
-                @Override public void onClick(View view)
-                {
-                    launchBuySell();
-                }
-            });
-        }
-        getSherlockActivity().getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        // We display here as onCreateOptionsMenu may be called after onResume
-        displayActionBarElements();
+        MenuItem buySellConfirmItem = menu.findItem(R.id.buy_sell_menu_confirm);
+        displayConfirmMenuItem(buySellConfirmItem);
+        displayActionBarElements(actionBar);
+        displayMarketClose(actionBar);
+        super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override public void onDestroyOptionsMenu()
     {
-        if (mBackBtn != null)
-        {
-            mBackBtn.setOnClickListener(null);
-        }
-        mBackBtn = null;
-        if (mBtnConfirm != null)
-        {
-            mBtnConfirm.setOnClickListener(null);
-        }
-        mBtnConfirm = null;
-        actionBar = null;
         super.onDestroyOptionsMenu();
     }
+
+    @Override public boolean onOptionsItemSelected(MenuItem item)
+    {
+        switch (item.getItemId())
+        {
+            case R.id.buy_sell_menu_confirm:
+                launchBuySell();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+    //</editor-fold>
 
     @Override public void onDestroyView()
     {
@@ -305,7 +274,7 @@ public class BuyFragment extends AbstractTradeFragment
         super.linkWith(securityId, andDisplay);
         if (andDisplay)
         {
-            displayExchangeSymbol();
+            //displayExchangeSymbol();
             displayBuySellDetails();
         }
     }
@@ -315,7 +284,7 @@ public class BuyFragment extends AbstractTradeFragment
         super.linkWith(securityCompactDTO, andDisplay);
         if (andDisplay)
         {
-            displayMarketClose();
+            //displayMarketClose(actionBar);
             displayBuySellDetails();
         }
     }
@@ -398,53 +367,37 @@ public class BuyFragment extends AbstractTradeFragment
     //<editor-fold desc="Display Methods">
     public void display()
     {
-        displayActionBarElements();
+        //displayActionBarElements();
         displayPageElements();
     }
 
-    public void displayActionBarElements()
+    public void displayActionBarElements(ActionBar actionBar)
     {
-        displayExchangeSymbol();
-        displayMarketClose();
+        displayExchangeSymbol(actionBar);
+        displayMarketClose(actionBar);
     }
 
     public void displayPageElements()
     {
         displayBuySellDetails();
-        displayButtonConfirm();
+        //displayConfirmMenuItem(buySellConfirmItem);
         displayPublishToFb();
         displayPublishToTw();
         displayPublishToLi();
         displayShareLocation();
     }
 
-    public void displayExchangeSymbol()
+    public void displayExchangeSymbol(ActionBar actionBar)
     {
-        if (mExchangeSymbol != null)
-        {
-            if (securityId != null)
-            {
-                mExchangeSymbol.setText(String.format("%s:%s", securityId.exchange, securityId.securitySymbol));
-            }
-            else
-            {
-                mExchangeSymbol.setText("-:-");
-            }
-        }
+        actionBar.setTitle(
+                securityId == null ? "-:-": String.format("%s:%s", securityId.exchange, securityId.securitySymbol));
     }
 
-    public void displayMarketClose()
+    public void displayMarketClose(ActionBar actionBar)
     {
-        if (mMarketClose != null)
+        if (securityCompactDTO == null || !securityCompactDTO.marketOpen)
         {
-            if (securityCompactDTO != null)
-            {
-                mMarketClose.setVisibility(securityCompactDTO.marketOpen ? View.GONE : View.VISIBLE);
-            }
-            else
-            {
-                mMarketClose.setVisibility(View.GONE);
-            }
+            actionBar.setIcon(R.drawable.market_sleep_white);
         }
     }
 
@@ -467,14 +420,14 @@ public class BuyFragment extends AbstractTradeFragment
         }
     }
 
-    public void displayButtonConfirm()
+    public void displayConfirmMenuItem(MenuItem buySellConfirmItem)
     {
-        if (mBtnConfirm != null)
+        if (buySellConfirmItem != null)
         {
-            mBtnConfirm.setEnabled(
-                    (!isBuying && isTransactionTypeBuy && hasValidInfoForBuy()) ||
-                    (!isSelling &&!isTransactionTypeBuy && hasValidInfoForSell()));
-            mBtnConfirm.setAlpha(mBtnConfirm.isEnabled() ? 1 : 0.5f);
+            boolean buttonEnabled = (!isBuying && isTransactionTypeBuy && hasValidInfoForBuy()) ||
+                    (!isSelling &&!isTransactionTypeBuy && hasValidInfoForSell());
+            buySellConfirmItem.setEnabled(buttonEnabled);
+            //buySellConfirmItem.setAlpha(buttonEnabled ? 1 : 0.5f);
         }
     }
 
@@ -538,14 +491,14 @@ public class BuyFragment extends AbstractTradeFragment
     private void setBuying(boolean isBuying)
     {
         this.isBuying = isBuying;
-        displayButtonConfirm();
+        //displayConfirmMenuItem(buySellConfirmItem);
         // TODO visual cue
     }
 
     private void setSelling(boolean isSelling)
     {
         this.isSelling = isSelling;
-        displayButtonConfirm();
+        //displayConfirmMenuItem(buySellConfirmItem);
         // TODO other visual cue
     }
 
@@ -664,7 +617,7 @@ public class BuyFragment extends AbstractTradeFragment
                 {
                     setSelling(false);
                 }
-                displayButtonConfirm();
+                //displayConfirmMenuItem(buySellConfirmItem);
                 // TODO post to social network?
                 returnToTradeFragment();
             }

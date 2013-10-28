@@ -89,7 +89,7 @@ public class TimelineFragment extends BaseFragment
             }
         });
 
-                timelineListView.setAdapter(timelineAdapter);
+        timelineListView.setAdapter(timelineAdapter);
         timelineListView.setOnRefreshListener(timelineAdapter);
         timelineListView.setOnScrollListener(timelineAdapter);
         timelineListView.setOnLastItemVisibleListener(timelineAdapter);

@@ -49,7 +49,7 @@
         <activity
             android:name=".activities.DashboardActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/TradeHero.Dashboard.HomeScreen"
+            android:theme="@style/TradeHero.Dashboard"
             android:windowSoftInputMode="adjustResize"
             />
         <activity

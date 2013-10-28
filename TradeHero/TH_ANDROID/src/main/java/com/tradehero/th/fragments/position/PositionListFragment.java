@@ -136,8 +136,7 @@ public class PositionListFragment extends DashboardFragment
     {
         inflater.inflate(R.menu.position_list_menu, menu);
         ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-        actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_SHOW_TITLE);
-        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_SHOW_TITLE);
         super.onCreateOptionsMenu(menu, inflater);
         displayActionBarTitle();
     }

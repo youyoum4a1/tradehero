@@ -15,7 +15,6 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.leaderboard.LeaderboardDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import com.tradehero.th.fragments.base.BaseFragment;
-import com.tradehero.th.fragments.base.BaseListFragment;
 import com.tradehero.th.fragments.base.DashboardListFragment;
 import java.util.List;
 
@@ -53,8 +52,7 @@ public class LeaderboardListViewFragment extends DashboardListFragment
         inflater.inflate(R.menu.leaderboard_listview_menu, menu);
 
         ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-        actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME);
-        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_HOME_AS_UP);
 
         super.onCreateOptionsMenu(menu, inflater);
     }
@@ -75,12 +73,8 @@ public class LeaderboardListViewFragment extends DashboardListFragment
             //    sortTypeDialog.show();
             //    break;
 
-            case R.id.leaderboard_listview_help:
+            case R.id.leaderboard_listview_menu_help:
                 THToast.show("Not yet implemented");
-                break;
-
-            case android.R.id.home:
-                getNavigator().popFragment();
                 break;
         }
         return super.onOptionsItemSelected(item);

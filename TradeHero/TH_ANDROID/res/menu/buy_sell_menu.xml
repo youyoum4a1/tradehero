@@ -2,9 +2,8 @@
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
   <item
-      android:id="@+id/leaderboard_listview_menu_help"
-      android:icon="@drawable/info_default"
-      android:title="@string/action_bar_help"
+      android:id="@+id/buy_sell_menu_confirm"
+      android:title="@string/confirm"
       android:showAsAction="ifRoom"
       />
 </menu>
