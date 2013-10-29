@@ -371,12 +371,6 @@ public class BuyFragment extends AbstractTradeFragment
         displayPageElements();
     }
 
-    public void displayActionBarElements(ActionBar actionBar)
-    {
-        displayExchangeSymbol(actionBar);
-        displayMarketClose(actionBar);
-    }
-
     public void displayPageElements()
     {
         displayBuySellDetails();
@@ -385,20 +379,6 @@ public class BuyFragment extends AbstractTradeFragment
         displayPublishToTw();
         displayPublishToLi();
         displayShareLocation();
-    }
-
-    public void displayExchangeSymbol(ActionBar actionBar)
-    {
-        actionBar.setTitle(
-                securityId == null ? "-:-": String.format("%s:%s", securityId.exchange, securityId.securitySymbol));
-    }
-
-    public void displayMarketClose(ActionBar actionBar)
-    {
-        if (securityCompactDTO == null || !securityCompactDTO.marketOpen)
-        {
-            actionBar.setIcon(R.drawable.market_sleep_white);
-        }
     }
 
     public void displayBuySellDetails()

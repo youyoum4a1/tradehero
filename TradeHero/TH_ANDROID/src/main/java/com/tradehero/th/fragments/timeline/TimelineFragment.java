@@ -306,6 +306,7 @@ public class TimelineFragment extends BaseFragment
         return null;
     }
 
+    //<editor-fold desc="Loader Callback">
     private LoaderManager.LoaderCallbacks<List<TimelineItem>> loaderCallback = new LoaderManager.LoaderCallbacks<List<TimelineItem>>()
     {
 
@@ -328,6 +329,7 @@ public class TimelineFragment extends BaseFragment
             return timelineAdapter == null ? null : timelineAdapter.getLoader();
         }
     };
+    //</editor-fold>
 
     //<editor-fold desc="PortfolioRequestListener">
     @Override public void onPortfolioRequested(OwnedPortfolioId ownedPortfolioId)

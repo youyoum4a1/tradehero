@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import com.actionbarsherlock.app.ActionBar;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
@@ -138,6 +139,30 @@ abstract public class AbstractTradeFragment extends DashboardFragment
 
         super.onPause();
     }
+
+
+    //<editor-fold desc="ActionBar">
+    protected void displayMarketClose(ActionBar actionBar)
+    {
+        if (securityCompactDTO == null || !securityCompactDTO.marketOpen)
+        {
+            actionBar.setIcon(R.drawable.market_sleep_white);
+        }
+    }
+
+    public void displayExchangeSymbol(ActionBar actionBar)
+    {
+        actionBar.setTitle(
+                securityId == null ? "-:-": String.format("%s:%s", securityId.exchange, securityId.securitySymbol));
+    }
+
+    protected void displayActionBarElements(ActionBar actionBar)
+    {
+        displayExchangeSymbol(actionBar);
+        displayMarketClose(actionBar);
+    }
+
+    //</editor-fold>
 
     @Override public void onSaveInstanceState(Bundle outState)
     {

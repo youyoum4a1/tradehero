@@ -20,16 +20,16 @@ import java.util.List;
 
 /** Created with IntelliJ IDEA. User: tho Date: 10/14/13 Time: 12:34 PM Copyright (c) TradeHero */
 public class LeaderboardListViewFragment extends DashboardListFragment
-        implements BaseFragment.ArgumentsChangeListener,
-        LoaderManager.LoaderCallbacks<List<LeaderboardUserDTO>>
+        implements BaseFragment.ArgumentsChangeListener
 {
     private LeaderboardListAdapter leaderboardListAdapter;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        getLoaderManager().initLoader(0, getArguments(), this);
     }
+
+
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -43,6 +43,10 @@ public class LeaderboardListViewFragment extends DashboardListFragment
         setListAdapter(leaderboardListAdapter);
 
         getListView().setEmptyView(getView().findViewById(android.R.id.empty));
+
+        Bundle loaderBundle = new Bundle();
+        getLoaderManager().initLoader(0, loaderBundle, loaderCallback);
+
         super.onResume();
     }
 
@@ -61,18 +65,6 @@ public class LeaderboardListViewFragment extends DashboardListFragment
     {
         switch (item.getItemId())
         {
-            //case R.id.leaderboard_listview_sort:
-            //    LeaderboardSortTypeSelectorDialog sortTypeDialog = new LeaderboardSortTypeSelectorDialog(getActivity(),
-            //            new LeaderboardSortTypeSelectorDialog.OnSortTypeChangedListener()
-            //            {
-            //                @Override public void onSortTypeChanged(LeaderboardSortType newSortType)
-            //                {
-            //
-            //                }
-            //            });
-            //    sortTypeDialog.show();
-            //    break;
-
             case R.id.leaderboard_listview_menu_help:
                 THToast.show("Not yet implemented");
                 break;
@@ -81,22 +73,26 @@ public class LeaderboardListViewFragment extends DashboardListFragment
     }
     //</editor-fold>
 
-
-    @Override public Loader<List<LeaderboardUserDTO>> onCreateLoader(int id, Bundle bundle)
+    //<editor-fold desc="Loader callback">
+    private LoaderManager.LoaderCallbacks<List<LeaderboardUserDTO>> loaderCallback = new LoaderManager.LoaderCallbacks<List<LeaderboardUserDTO>>()
     {
-        int leaderboardId = getArguments().getInt(LeaderboardDTO.LEADERBOARD_ID);
-        return new LeaderboardLoader(getActivity(), leaderboardId);
-    }
+        @Override public Loader<List<LeaderboardUserDTO>> onCreateLoader(int id, Bundle bundle)
+        {
+            int leaderboardId = getArguments().getInt(LeaderboardDTO.LEADERBOARD_ID);
+            return new LeaderboardLoader(getActivity(), leaderboardId);
+        }
 
-    @Override public void onLoadFinished(Loader<List<LeaderboardUserDTO>> loader, List<LeaderboardUserDTO> items)
-    {
-        leaderboardListAdapter.setItems(items);
-        leaderboardListAdapter.notifyDataSetChanged();
-    }
+        @Override public void onLoadFinished(Loader<List<LeaderboardUserDTO>> loader, List<LeaderboardUserDTO> items)
+        {
+            leaderboardListAdapter.setItems(items);
+            leaderboardListAdapter.notifyDataSetChanged();
+        }
 
-    @Override public void onLoaderReset(Loader<List<LeaderboardUserDTO>> loader)
-    {
-    }
+        @Override public void onLoaderReset(Loader<List<LeaderboardUserDTO>> loader)
+        {
+        }
+    };
+    //</editor-fold>
 
     @Override public void onArgumentsChanged(Bundle args)
     {

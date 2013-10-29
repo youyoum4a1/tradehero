@@ -2,7 +2,6 @@ package com.tradehero.th.fragments.leaderboard;
 
 import android.content.Context;
 import android.view.LayoutInflater;
-import android.view.View;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.DTOAdapter;
 import com.tradehero.th.api.leaderboard.LeaderboardDefDTO;

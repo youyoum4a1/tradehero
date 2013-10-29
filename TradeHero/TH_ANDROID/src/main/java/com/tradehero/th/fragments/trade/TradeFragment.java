@@ -66,11 +66,7 @@ public class TradeFragment extends AbstractTradeFragment
 
     public final static float BUY_BUTTON_DISABLED_ALPHA = 0.5f;
 
-    private View actionBar;
-    private ImageButton mBackBtn;
     private ToggleButton mBuySellSwitch;
-    private TextView mExchangeSymbol;
-    private ImageView mMarketClose;
 
     private ImageViewThreadSafe mStockBgLogo;
     private ImageViewThreadSafe mStockLogo;
@@ -304,45 +300,25 @@ public class TradeFragment extends AbstractTradeFragment
     //    }
     //}
 
+    //<editor-fold desc="ActionBar">
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
-        THLog.d(TAG, "onCreateOptionsMenu");
+        inflater.inflate(R.menu.trade_menu, menu);
+        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
+        actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_SHOW_TITLE);
+
+        displayActionBarElements(actionBar);
+
+        mBuySellSwitch = (ToggleButton) menu.findItem(R.id.trade_menu_toggle_mode).getActionView();
+        // TODO do styling in styles.xml
+        mBuySellSwitch.setTextOn(getString(R.string.switch_buy));
+        mBuySellSwitch.setTextOff(getString(R.string.switch_sell));
+        mBuySellSwitch.setTextColor(getResources().getColor(R.color.white));
+
+        mBuySellSwitch.setOnCheckedChangeListener(createBuySellListener());
         super.onCreateOptionsMenu(menu, inflater);
-        createTradeActionBar(menu, inflater);
     }
-
-    private void createTradeActionBar(Menu menu, MenuInflater inflater)
-    {
-        getSherlockActivity().getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
-        getSherlockActivity().getSupportActionBar().setCustomView(R.layout.topbar_trade);
-
-        actionBar = getSherlockActivity().getSupportActionBar().getCustomView();
-
-        mBackBtn = (ImageButton) actionBar.findViewById(R.id.btn_back);
-        if (mBackBtn != null)
-        {
-            mBackBtn.setOnClickListener(new OnClickListener()
-            {
-                @Override public void onClick(View view)
-                {
-                    navigator.popFragment();
-                }
-            });
-        }
-
-        mMarketClose = (ImageView) actionBar.findViewById(R.id.ic_market_close);
-
-        mExchangeSymbol = (TextView) actionBar.findViewById(R.id.header_txt);
-
-        mBuySellSwitch = (ToggleButton) actionBar.findViewById(R.id.switch_buy_sell);
-        if (mBuySellSwitch != null)
-        {
-            mBuySellSwitch.setOnCheckedChangeListener(createBuySellListener());
-        }
-
-        // We display here as onCreateOptionsMenu may be called after onResume
-        displayActionBarElements();
-    }
+    //</editor-fold>
 
     @Override public void onResume()
     {
@@ -368,12 +344,7 @@ public class TradeFragment extends AbstractTradeFragment
         {
             mBuySellSwitch.setOnCheckedChangeListener(null);
         }
-        if (mBackBtn != null)
-        {
-            mBackBtn.setOnClickListener(null);
-        }
         mBuySellSwitch = null;
-        mBackBtn = null;
         super.onDestroyOptionsMenu();
     }
 
@@ -539,7 +510,7 @@ public class TradeFragment extends AbstractTradeFragment
         super.linkWith(securityId, andDisplay);
         if (andDisplay)
         {
-            displayExchangeSymbol();
+            //displayExchangeSymbol();
             displayBottomViewPager();
         }
     }
@@ -549,7 +520,7 @@ public class TradeFragment extends AbstractTradeFragment
         super.linkWith(securityCompactDTO, andDisplay);
         if (andDisplay)
         {
-            displayMarketClose();
+            //displayMarketClose();
             displayPricingBidAskView();
             displayTradeQuantityView();
             displayStockName();
@@ -617,7 +588,7 @@ public class TradeFragment extends AbstractTradeFragment
     //<editor-fold desc="Display Methods">
     public void display()
     {
-        displayActionBarElements();
+        //displayActionBarElements();
         displayPageElements();
 
         if (securityCompactDTO != null && !TextUtils.isEmpty(securityCompactDTO.yahooSymbol))
@@ -645,10 +616,10 @@ public class TradeFragment extends AbstractTradeFragment
         }
     }
 
-    public void displayActionBarElements()
+    @Override protected void displayActionBarElements(ActionBar actionBar)
     {
-        displayExchangeSymbol();
-        displayMarketClose();
+        super.displayActionBarElements(actionBar);
+
         displayBuySellSwitch();
     }
 
@@ -663,36 +634,6 @@ public class TradeFragment extends AbstractTradeFragment
         displaySlider();
         storeImageUrlInImageViews();
         loadImages();
-    }
-
-    public void displayExchangeSymbol()
-    {
-        if (mExchangeSymbol != null)
-        {
-            if (securityId != null)
-            {
-                mExchangeSymbol.setText(String.format("%s:%s", securityId.exchange, securityId.securitySymbol));
-            }
-            else
-            {
-                mExchangeSymbol.setText("");
-            }
-        }
-    }
-
-    public void displayMarketClose()
-    {
-        if (mMarketClose != null)
-        {
-            if (securityCompactDTO != null)
-            {
-                mMarketClose.setVisibility(securityCompactDTO.marketOpen ? View.GONE : View.VISIBLE);
-            }
-            else
-            {
-                mMarketClose.setVisibility(View.GONE);
-            }
-        }
     }
 
     public void displayPricingBidAskView()
