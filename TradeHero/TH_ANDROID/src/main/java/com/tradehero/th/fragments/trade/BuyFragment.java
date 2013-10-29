@@ -182,12 +182,6 @@ public class BuyFragment extends AbstractTradeFragment
     //<editor-fold desc="ActionBar">
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
-        super.onCreateOptionsMenu(menu, inflater);
-        createBuyConfirmActionBar(menu, inflater);
-    }
-
-    private void createBuyConfirmActionBar(Menu menu, MenuInflater inflater)
-    {
         inflater.inflate(R.menu.buy_sell_menu, menu);
 
         ActionBar actionBar = getSherlockActivity().getSupportActionBar();
@@ -195,8 +189,7 @@ public class BuyFragment extends AbstractTradeFragment
 
         MenuItem buySellConfirmItem = menu.findItem(R.id.buy_sell_menu_confirm);
         displayConfirmMenuItem(buySellConfirmItem);
-        displayActionBarElements(actionBar);
-        displayMarketClose(actionBar);
+        displayMarketClose(menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
 

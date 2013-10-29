@@ -6,6 +6,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import com.actionbarsherlock.app.ActionBar;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
@@ -142,11 +144,15 @@ abstract public class AbstractTradeFragment extends DashboardFragment
 
 
     //<editor-fold desc="ActionBar">
-    protected void displayMarketClose(ActionBar actionBar)
+    protected void displayMarketClose(Menu menu)
     {
         if (securityCompactDTO == null || !securityCompactDTO.marketOpen)
         {
-            actionBar.setIcon(R.drawable.market_sleep_white);
+            MenuItem menuItem = menu.findItem(R.id.market_status);
+            if (menuItem != null)
+            {
+                menuItem.setVisible(true);
+            }
         }
     }
 
@@ -154,12 +160,6 @@ abstract public class AbstractTradeFragment extends DashboardFragment
     {
         actionBar.setTitle(
                 securityId == null ? "-:-": String.format("%s:%s", securityId.exchange, securityId.securitySymbol));
-    }
-
-    protected void displayActionBarElements(ActionBar actionBar)
-    {
-        displayExchangeSymbol(actionBar);
-        displayMarketClose(actionBar);
     }
 
     //</editor-fold>

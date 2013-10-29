@@ -307,15 +307,16 @@ public class TradeFragment extends AbstractTradeFragment
         ActionBar actionBar = getSherlockActivity().getSupportActionBar();
         actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_SHOW_TITLE);
 
-        displayActionBarElements(actionBar);
+        displayExchangeSymbol(actionBar);
+        displayMarketClose(menu);
 
         mBuySellSwitch = (ToggleButton) menu.findItem(R.id.trade_menu_toggle_mode).getActionView();
         // TODO do styling in styles.xml
         mBuySellSwitch.setTextOn(getString(R.string.switch_buy));
         mBuySellSwitch.setTextOff(getString(R.string.switch_sell));
         mBuySellSwitch.setTextColor(getResources().getColor(R.color.white));
-
         mBuySellSwitch.setOnCheckedChangeListener(createBuySellListener());
+        displayBuySellSwitch();
         super.onCreateOptionsMenu(menu, inflater);
     }
     //</editor-fold>
@@ -614,13 +615,6 @@ public class TradeFragment extends AbstractTradeFragment
         {
             volume = (int) Math.ceil(securityCompactDTO.volume);
         }
-    }
-
-    @Override protected void displayActionBarElements(ActionBar actionBar)
-    {
-        super.displayActionBarElements(actionBar);
-
-        displayBuySellSwitch();
     }
 
     public void displayPageElements()
