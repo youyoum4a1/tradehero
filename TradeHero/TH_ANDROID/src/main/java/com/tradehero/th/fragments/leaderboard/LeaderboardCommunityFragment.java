@@ -18,7 +18,6 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.leaderboard.LeaderboardDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardDefExchangeListKey;
-import com.tradehero.th.api.leaderboard.LeaderboardDefKey;
 import com.tradehero.th.api.leaderboard.LeaderboardDefKeyList;
 import com.tradehero.th.api.leaderboard.LeaderboardDefListKey;
 import com.tradehero.th.api.leaderboard.LeaderboardDefMostSkilledListKey;
@@ -28,6 +27,7 @@ import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.persistence.competition.ProviderListCache;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefCache;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefListCache;
+import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -39,11 +39,10 @@ public class LeaderboardCommunityFragment extends DashboardFragment
 {
     private static final String TAG = LeaderboardCommunityFragment.class.getName();
 
-    @Inject protected LeaderboardDefListCache leaderboardDefListCache;
-    @Inject protected LeaderboardDefCache leaderboardDefCache;
-    @Inject protected ProviderListCache providerCache;
+    @Inject protected Lazy<LeaderboardDefListCache> leaderboardDefListCache;
+    @Inject protected Lazy<LeaderboardDefCache> leaderboardDefCache;
+    @Inject protected Lazy<ProviderListCache> providerCache;
 
-    private View view;
     private boolean fetched = false;
     private ListView mostSkilledListView;
     private ListView timePeriodListView;
@@ -52,7 +51,7 @@ public class LeaderboardCommunityFragment extends DashboardFragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        view = inflater.inflate(R.layout.leaderboard_community_screen, container, false);
+        View view = inflater.inflate(R.layout.leaderboard_community_screen, container, false);
 
         initViews(view);
 
@@ -63,7 +62,7 @@ public class LeaderboardCommunityFragment extends DashboardFragment
 
     private void prepareAdapters()
     {
-        leaderboardDefListCache.getOrFetch(new LeaderboardDefMostSkilledListKey(), false, this).execute();
+        leaderboardDefListCache.get().getOrFetch(new LeaderboardDefMostSkilledListKey(), false, this).execute();
     }
 
     private void initViews(View view)
@@ -118,37 +117,20 @@ public class LeaderboardCommunityFragment extends DashboardFragment
         if (!fetched)
         {
             fetched = true;
-            leaderboardDefListCache.getOrFetch(new LeaderboardDefTimePeriodListKey(), false, this).execute();
-            leaderboardDefListCache.getOrFetch(new LeaderboardDefSectorListKey(), false, this).execute();
-            leaderboardDefListCache.getOrFetch(new LeaderboardDefExchangeListKey(), false, this).execute();
+            leaderboardDefListCache.get().getOrFetch(new LeaderboardDefTimePeriodListKey(), false, this).execute();
+            leaderboardDefListCache.get().getOrFetch(new LeaderboardDefSectorListKey(), false, this).execute();
+            leaderboardDefListCache.get().getOrFetch(new LeaderboardDefExchangeListKey(), false, this).execute();
         }
 
         if (value != null)
         {
             if (key instanceof LeaderboardDefMostSkilledListKey)
             {
-                try
-                {
-                    mostSkilledListView.setAdapter(createMostSkilledListAdapter(leaderboardDefCache.getOrFetch(value)));
-                }
-                catch (Throwable throwable)
-                {
-                    onErrorThrown(key, throwable);
-                }
-                mostSkilledListView.setOnItemClickListener(createLeaderboardItemClickListener());
+                initMostSkilledListView(key, value);
             }
             else if (key instanceof LeaderboardDefTimePeriodListKey)
             {
-
-                try
-                {
-                    timePeriodListView.setAdapter(createTimePeriodListAdapter(leaderboardDefCache.getOrFetch(value)));
-                }
-                catch (Throwable throwable)
-                {
-                    onErrorThrown(key, throwable);
-                }
-                timePeriodListView.setOnItemClickListener(createLeaderboardItemClickListener());
+                initTimePeriodListView(key, value);
             }
             else if (key instanceof LeaderboardDefSectorListKey && (value.size() > 0))
             {
@@ -161,6 +143,32 @@ public class LeaderboardCommunityFragment extends DashboardFragment
                 addItemToSectorSection(sectorDto);
             }
         }
+    }
+
+    private void initMostSkilledListView(LeaderboardDefListKey key, LeaderboardDefKeyList value)
+    {
+        try
+        {
+            mostSkilledListView.setAdapter(createMostSkilledListAdapter(leaderboardDefCache.get().getOrFetch(value)));
+        }
+        catch (Throwable throwable)
+        {
+            onErrorThrown(key, throwable);
+        }
+        mostSkilledListView.setOnItemClickListener(createLeaderboardItemClickListener());
+    }
+
+    private void initTimePeriodListView(LeaderboardDefListKey key, LeaderboardDefKeyList value)
+    {
+        try
+        {
+            timePeriodListView.setAdapter(createTimePeriodListAdapter(leaderboardDefCache.get().getOrFetch(value)));
+        }
+        catch (Throwable throwable)
+        {
+            onErrorThrown(key, throwable);
+        }
+        timePeriodListView.setOnItemClickListener(createLeaderboardItemClickListener());
     }
 
     @Override public void onErrorThrown(LeaderboardDefListKey key, Throwable error)
@@ -177,7 +185,7 @@ public class LeaderboardCommunityFragment extends DashboardFragment
             {
                 LeaderboardDefDTO dto = (LeaderboardDefDTO) adapterView.getAdapter().getItem(position);
 
-                Bundle bundle = new Bundle();
+                Bundle bundle = new Bundle(getArguments());
                 bundle.putInt(LeaderboardDTO.LEADERBOARD_ID, dto.getId());
                 navigator.pushFragment(LeaderboardListViewFragment.class, bundle);
             }
