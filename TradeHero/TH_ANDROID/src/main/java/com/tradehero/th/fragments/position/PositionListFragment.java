@@ -148,10 +148,6 @@ public class PositionListFragment extends DashboardFragment
             case R.id.position_list_info:
                 handleInfoButtonPressed(item);
                 break;
-
-            case android.R.id.home:
-                navigator.popFragment();
-                break;
         }
         return super.onOptionsItemSelected(item);
     }

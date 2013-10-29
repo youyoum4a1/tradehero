@@ -194,9 +194,6 @@ public class TradeListFragment extends DashboardFragment implements BaseFragment
     {
         switch (item.getItemId())
         {
-            case android.R.id.home:
-                navigator.popFragment();
-                break;
         }
         return super.onOptionsItemSelected(item);
     }
