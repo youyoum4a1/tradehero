@@ -40,7 +40,7 @@ public class MarkdownTextView extends TextView implements OnElementClickListener
     {
         if (parser != null)
         {
-            text = parser.load(text).create();
+            text = parser.load(text.toString().trim()).create();
         }
         super.setText(text, type);
     }

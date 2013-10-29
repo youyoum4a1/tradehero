@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.text.method.LinkMovementMethod;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.animation.AnimationUtils;
 import android.widget.Checkable;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -223,13 +224,13 @@ public class TimelineItemView extends LinearLayout implements
         View buttons = findViewById(R.id.timeline_share_buttons);
         if (checked)
         {
-            //buttons.startAnimation(AnimationUtils.loadAnimation(getContext(), R.anim.slide_in_from_top));
+            //buttons.startAnimation(AnimationUtils.loadAnimation(getContext(), R.anim.reveal_from_top));
             buttons.setVisibility(View.VISIBLE);
         }
         else
         {
             buttons.setVisibility(View.GONE);
-            //buttons.startAnimation(AnimationUtils.loadAnimation(getContext(), R.anim.slide_out_to_bottom));
+            //buttons.startAnimation(AnimationUtils.loadAnimation(getContext(), R.anim.slide_in_from_top));
         }
         // use postInvalidate coz there are more than one item on the listview, each item has its own bottom bar, queue the update
         buttons.postInvalidate();
