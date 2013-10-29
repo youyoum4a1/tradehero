@@ -3,11 +3,10 @@ package com.tradehero.th.widget.trending;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import com.squareup.picasso.*;
-import com.tradehero.common.cache.LruMemFileCache;
 import com.tradehero.common.graphics.AbstractSequentialTransformation;
 import com.tradehero.common.graphics.FastBlurTransformation;
 import com.tradehero.common.graphics.GrayscaleTransformation;
@@ -25,7 +24,7 @@ import com.tradehero.th.utils.DaggerUtils;
 import javax.inject.Inject;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 9/5/13 Time: 5:19 PM To change this template use File | Settings | File Templates. */
-public class TrendingSecurityView extends FrameLayout implements DTOView<SecurityCompactDTO>
+public class TrendingSecurityView extends RelativeLayout implements DTOView<SecurityCompactDTO>
 {
     private static final String TAG = TrendingSecurityView.class.getSimpleName();
     private static Transformation foregroundTransformation;
@@ -46,6 +45,15 @@ public class TrendingSecurityView extends FrameLayout implements DTOView<Securit
     private TextView securityType;
 
     private SecurityCompactDTO securityCompactDTO;
+
+    private Runnable loadBgLogoRunnable = new Runnable()
+    {
+        @Override public void run()
+        {
+            // Posting it so the view has properly sized
+            loadImageInTarget(stockBgLogo, backgroundTransformation, getMeasuredWidth(), getMeasuredHeight());
+        }
+    };
 
     //<editor-fold desc="Constructors">
     public TrendingSecurityView(Context context)
@@ -183,7 +191,7 @@ public class TrendingSecurityView extends FrameLayout implements DTOView<Securit
         }
 
         double dLastPrice = YUtils.parseQuoteValue(securityCompactDTO.lastPrice.toString());
-        if(!Double.isNaN(dLastPrice))
+        if (!Double.isNaN(dLastPrice))
         {
             lastPrice.setText(String.format("%.2f", dLastPrice));
         }
@@ -192,12 +200,12 @@ public class TrendingSecurityView extends FrameLayout implements DTOView<Securit
             THLog.d(TAG, "TH: Unable to parse Last Price");
         }
 
-        if(securityCompactDTO.pc50DMA > 0)
+        if (securityCompactDTO.pc50DMA > 0)
         {
             //profitIndicator.setText(getContext().getString(R.string.positive_prefix));
             profitIndicator.setText(R.string.positive_prefix);
         }
-        else if(securityCompactDTO.pc50DMA < 0)
+        else if (securityCompactDTO.pc50DMA < 0)
         {
             //profitIndicator.setText(getContext().getString(R.string.negative_prefix));
             profitIndicator.setText(R.string.negative_prefix);
@@ -206,7 +214,7 @@ public class TrendingSecurityView extends FrameLayout implements DTOView<Securit
         profitIndicator.setTextColor(ColorUtils.getColorForPercentage(((float) securityCompactDTO.pc50DMA) / 5f));
         exchangeSymbol.setTextColor(getResources().getColor(R.color.exchange_symbol));
 
-        if(securityCompactDTO.marketOpen)
+        if (securityCompactDTO.marketOpen)
         {
             if (marketCloseIcon != null)
             {
@@ -251,6 +259,8 @@ public class TrendingSecurityView extends FrameLayout implements DTOView<Securit
         }
 
         storeImageUrlInImageViews();
+
+        loadImages();
     }
 
     private void storeImageUrlInImageViews()
@@ -272,7 +282,8 @@ public class TrendingSecurityView extends FrameLayout implements DTOView<Securit
         {
             loadImageInTarget(stockLogo, foregroundTransformation);
             // Launching the bg like this will result in double downloading the file.
-            loadImageInTarget(stockBgLogo, backgroundTransformation, getMeasuredWidth(), getMeasuredHeight());
+            removeCallbacks(loadBgLogoRunnable); // In order to further delay the background
+            postDelayed(loadBgLogoRunnable, 200);
         }
         else
         {

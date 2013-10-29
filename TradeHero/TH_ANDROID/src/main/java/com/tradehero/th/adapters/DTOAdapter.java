@@ -75,10 +75,4 @@ public abstract class DTOAdapter<T, V extends DTOView<T>> extends BaseAdapter
     }
 
     protected abstract void fineTune(int position, T dto, V dtoView);
-
-    @Override public void notifyDataSetChanged()
-    {
-        //THLog.d(TAG, "notifyDataSetChanged");
-        super.notifyDataSetChanged();
-    }
 }

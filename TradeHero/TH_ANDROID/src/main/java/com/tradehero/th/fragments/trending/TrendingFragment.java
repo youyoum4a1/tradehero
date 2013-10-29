@@ -20,7 +20,6 @@ import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.common.persistence.DTOCache;
-import com.tradehero.common.persistence.DTOKey;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
@@ -53,6 +52,8 @@ public class TrendingFragment extends DashboardFragment
     public final static String BUNDLE_KEY_FILTER_PAGE = TrendingFragment.class.getName() + ".filterPage";
     public final static String BUNDLE_KEY_SELECTED_EXCHANGE_NAMES = TrendingFragment.class.getName() + ".selectedExchangeNames";
 
+    public final static float MIN_FLING_VELOCITY_Y_FOR_HIDE_FILTER = 1000f;
+
     private View actionBar;
     private ImageView mBullIcon;
     private TextView mHeaderText;
@@ -67,6 +68,7 @@ public class TrendingFragment extends DashboardFragment
     private AbsListView mTrendingGridView;
     private float gridCumulativeScrollY = 0;
     private float awayBy = 0;
+    private boolean filterVisibleBeforeFling = true;
     private GestureDetector gridViewGesture;
 
     private int filterPageSelected = 0;
@@ -149,7 +151,6 @@ public class TrendingFragment extends DashboardFragment
             mTrendingFilterPagerAdapter.setOnPositionedExchangeSelectionChangedListener(this);
         }
         mFilterViewPager = (ViewPager) view.findViewById(R.id.trending_filter_pager);
-        THLog.d(TAG, "Found viewPager " + (mFilterViewPager != null));
 
         if (mFilterViewPager != null)
         {
@@ -183,6 +184,7 @@ public class TrendingFragment extends DashboardFragment
                     if ((gridCumulativeScrollY < filterPagerEndHeight && distanceY > 0) || // In an attempt to bypass useless updates
                             (gridCumulativeScrollY > 0 && distanceY < 0))
                     {
+                        //THLog.d(TAG, "Scroll " + distanceY);
                         addTouchScrollY(distanceY);
                     }
                     return super.onScroll(e1, e2, distanceX, distanceY);
@@ -190,14 +192,16 @@ public class TrendingFragment extends DashboardFragment
 
                 @Override public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY)
                 {
-                    if (velocityY < 0)
+                    if (velocityY < 0 || velocityY > MIN_FLING_VELOCITY_Y_FOR_HIDE_FILTER)
                     {
+                        filterVisibleBeforeFling = (awayBy < filterPagerEndHeight);
                         setAwayBy(filterPagerEndHeight);
                     }
                     else if (velocityY > 0)
                     {
                         setAwayBy(0);
                     }
+                    //THLog.d(TAG, "VelocityY " + velocityY);
                     return super.onFling(e1, e2, velocityX, velocityY);
                 }
             });
@@ -266,9 +270,14 @@ public class TrendingFragment extends DashboardFragment
         if (mFilterViewPager != null)
         {
             filterLayoutParams = (RelativeLayout.LayoutParams) mFilterViewPager.getLayoutParams();
-            filterLayoutParams.setMargins(0, 0, 0, 0);
-            mFilterViewPager.setLayoutParams(filterLayoutParams);
+            setAwayBy(0);
         }
+    }
+
+    @Override public void onPause()
+    {
+        setAwayBy(0);
+        super.onPause();
     }
 
     @Override public void onSaveInstanceState(Bundle outState)
@@ -498,6 +507,13 @@ public class TrendingFragment extends DashboardFragment
     }
     //</editor-fold>
 
+    private boolean trendingListIsAtTop()
+    {
+        return mTrendingGridView == null ||
+                mTrendingGridView.getChildCount() == 0 ||
+                mTrendingGridView.getChildAt(0).getTop() == 0;
+    }
+
     // Filter pager visible state control
 
     private void setGridViewScrollState(int gridViewScrollState)
@@ -509,17 +525,17 @@ public class TrendingFragment extends DashboardFragment
         }
         else if (gridViewScrollState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE)
         {
-            if (awayBy >= filterPagerEndHeight)
-            {
-                // Stopped scrolling as the filter pager is fully out of view
-                // Leave away
-                setAwayBy(filterPagerEndHeight);
-            }
-            else
+            if (awayBy < filterPagerEndHeight || filterVisibleBeforeFling || trendingListIsAtTop())
             {
                 // Stopped scrolling as the filter pager is fully or partially visible
                 // Restore to fully visible
                 setAwayBy(0);
+            }
+            else
+            {
+                // Stopped scrolling as the filter pager is fully out of view
+                // Leave away
+                setAwayBy(filterPagerEndHeight);
             }
         }
     }
@@ -543,6 +559,9 @@ public class TrendingFragment extends DashboardFragment
         {
             filterLayoutParams.setMargins(0, (int) -awayBy, 0, 0);
             mFilterViewPager.setLayoutParams(filterLayoutParams);
+
+            // TODO Test before changing visibility, could be more efficient
+            mFilterViewPager.setVisibility(awayBy == filterPagerEndHeight ? View.GONE : View.VISIBLE);
         }
     }
 }

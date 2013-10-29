@@ -27,9 +27,17 @@ public class THLog
         Log.i(PREFIX + tag, msg);
     }
 
-    public static void e(String tag, String message, Throwable ex)
+    public static void e(String tag, String msg, Throwable ex)
     {
-        Log.e(PREFIX + tag, message, ex);
+        Log.e(PREFIX + tag, msg, ex);
+    }
+
+    public static void d(String tag, String msg, long startNanoTime)
+    {
+        long finish = System.nanoTime();
+        float seconds = (finish - startNanoTime) / 1000000f; //for milliseconds
+
+        d(tag, String.format("%,.3f milliseconds for %s", seconds, msg));
     }
 
     /** Display KeyHash which is required by Facebook Application */

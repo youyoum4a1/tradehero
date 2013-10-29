@@ -38,7 +38,7 @@ import retrofit.RetrofitError;
 
     @Override protected SecurityIdList fetch(SecurityListType key) throws Throwable
     {
-        THLog.d(TAG, "fetch " + key);
+        //THLog.d(TAG, "fetch " + key);
         if (key instanceof TrendingBasicSecurityListType)
         {
             return putInternal(key, fetch((TrendingBasicSecurityListType) key));
@@ -60,7 +60,7 @@ import retrofit.RetrofitError;
 
     @Override public SecurityIdList get(SecurityListType key)
     {
-        THLog.d(TAG, "get " + key);
+        //THLog.d(TAG, "get " + key);
         return super.get(key);
     }
 

@@ -15,27 +15,8 @@ public class SecurityItemViewAdapter extends DTOAdapter<SecurityCompactDTO, Tren
         super(context, inflater, layoutResourceId);
     }
 
-    @Override public boolean hasStableIds()
-    {
-        return true;
-    }
-
-    @Override public long getItemId(int i)
-    {
-        long itemId = ((SecurityCompactDTO) getItem(i)).getSecurityId().hashCode();
-        //THLog.d(TAG, "getItemId " + i + " - " + itemId);
-        return itemId;
-    }
-
     @Override protected void fineTune(int position, SecurityCompactDTO securityCompactDTO, final TrendingSecurityView dtoView)
     {
-        //THLog.d(TAG, "fineTune position:" + position);
-        dtoView.post(new Runnable()
-        {
-            @Override public void run()
-            {
-                dtoView.loadImages();
-            }
-        });
+        // Nothing to do
     }
 }
