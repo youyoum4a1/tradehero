@@ -56,19 +56,9 @@ import retrofit.RetrofitError;
     }
     //</editor-fold>
 
-    protected SecurityPositionDetailDTO fetch(SecurityId key)
+    protected SecurityPositionDetailDTO fetch(SecurityId key) throws Throwable
     {
-        SecurityPositionDetailDTO securityPositionDetailDTO = null;
-        try
-        {
-            securityPositionDetailDTO = securityService.get().getSecurity(key.exchange, key.securitySymbol);
-        }
-        catch (RetrofitError retrofitError)
-        {
-            BasicRetrofitErrorHandler.handle(retrofitError);
-            THLog.e(TAG, "Error requesting key " + key.toString(), retrofitError);
-        }
-        return securityPositionDetailDTO;
+        return securityService.get().getSecurity(key.exchange, key.securitySymbol);
     }
 
     @Override public SecurityPositionDetailDTO get(SecurityId key)
