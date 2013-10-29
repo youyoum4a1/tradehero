@@ -116,10 +116,20 @@ public class PortfolioListItemView extends RelativeLayout implements DTOView<Dis
                     displayablePortfolioDTO.userBaseDTO != null &&
                     !currentUserBase.get().equals(displayablePortfolioDTO.userBaseDTO))
             {
-                title.setText(String.format(
-                        getContext().getString(R.string.first_last_name_display),
-                        displayablePortfolioDTO.userBaseDTO.firstName,
-                        displayablePortfolioDTO.userBaseDTO.lastName));
+                if (displayablePortfolioDTO.userBaseDTO.firstName != null &&
+                        !displayablePortfolioDTO.userBaseDTO.firstName.isEmpty() &&
+                        displayablePortfolioDTO.userBaseDTO.lastName != null &&
+                        !displayablePortfolioDTO.userBaseDTO.lastName.isEmpty())
+                {
+                    title.setText(String.format(
+                            getContext().getString(R.string.first_last_name_display),
+                            displayablePortfolioDTO.userBaseDTO.firstName,
+                            displayablePortfolioDTO.userBaseDTO.lastName));
+                }
+                else
+                {
+                    title.setText(displayablePortfolioDTO.userBaseDTO.displayName);
+                }
             }
             else if (displayablePortfolioDTO != null && displayablePortfolioDTO.portfolioDTO != null)
             {
