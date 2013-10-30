@@ -131,8 +131,7 @@ public class Navigator
                 instances.put(clss, new WeakReference<>(fragment));
             }
 
-            // TODO I'm not sure this is a correct way to check whether the fragment is active
-            if (!fragment.isVisible())
+            if (fragment.isDetached())
             {
                 fragment.setArguments(args);
             }
