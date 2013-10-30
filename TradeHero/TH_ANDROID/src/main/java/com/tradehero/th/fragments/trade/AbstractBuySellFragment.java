@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
@@ -67,6 +69,8 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
     protected int mBuyQuantity;
     protected int mSellQuantity;
     protected int mPositionIndex = DEFAULT_POSITION_INDEX;
+
+    protected ImageView marketCloseIcon;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -137,24 +141,24 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
         super.onPause();
     }
 
-
     //<editor-fold desc="ActionBar">
-    protected void displayMarketClose(Menu menu)
+    protected void displayMarketClose()
     {
-        if (securityCompactDTO == null || !securityCompactDTO.marketOpen)
+        if (marketCloseIcon != null)
         {
-            MenuItem menuItem = menu.findItem(R.id.market_status);
-            if (menuItem != null)
-            {
-                menuItem.setVisible(true);
-            }
+            marketCloseIcon.setVisibility(securityCompactDTO == null ||
+                    securityCompactDTO.marketOpen == null ||
+                    securityCompactDTO.marketOpen ? View.GONE : View.VISIBLE);
         }
     }
 
     public void displayExchangeSymbol(ActionBar actionBar)
     {
-        actionBar.setTitle(
-                securityId == null ? "-:-": String.format("%s:%s", securityId.exchange, securityId.securitySymbol));
+        if (actionBar != null)
+        {
+            actionBar.setTitle(
+                    securityId == null ? "-:-": String.format("%s:%s", securityId.exchange, securityId.securitySymbol));
+        }
     }
 
     //</editor-fold>
@@ -374,7 +378,7 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
         THLog.d(TAG, "Display compact isNull: " + (securityCompactDTO == null ? "true" : "false"));
         if (andDisplay)
         {
-            // Nothing to do in this class
+            displayMarketClose();
         }
     }
 

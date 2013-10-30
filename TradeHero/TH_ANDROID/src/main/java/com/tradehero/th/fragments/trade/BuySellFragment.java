@@ -26,6 +26,7 @@ import android.widget.ToggleButton;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
 import com.squareup.picasso.Cache;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
@@ -306,18 +307,44 @@ public class BuySellFragment extends AbstractBuySellFragment
         inflater.inflate(R.menu.buy_sell_menu, menu);
         ActionBar actionBar = getSherlockActivity().getSupportActionBar();
         actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_SHOW_TITLE);
-
         displayExchangeSymbol(actionBar);
-        displayMarketClose(menu);
+        //displayMarketClose(menu);
 
-        mBuySellSwitch = (ToggleButton) menu.findItem(R.id.trade_menu_toggle_mode).getActionView();
+        //mBuySellSwitch = (ToggleButton) menu.findItem(R.id.trade_menu_toggle_mode).getActionView();
         // TODO do styling in styles.xml
-        mBuySellSwitch.setTextOn(getString(R.string.switch_buy));
-        mBuySellSwitch.setTextOff(getString(R.string.switch_sell));
-        mBuySellSwitch.setTextColor(getResources().getColor(R.color.white));
-        mBuySellSwitch.setOnCheckedChangeListener(createBuySellListener());
-        displayBuySellSwitch();
+        //mBuySellSwitch.setTextOn(getString(R.string.switch_buy));
+        //mBuySellSwitch.setTextOff(getString(R.string.switch_sell));
+        //mBuySellSwitch.setTextColor(getResources().getColor(R.color.white));
+        //mBuySellSwitch.setOnCheckedChangeListener(createBuySellListener());
+        //displayBuySellSwitch();
         super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override public void onPrepareOptionsMenu(Menu menu)
+    {
+        super.onPrepareOptionsMenu(menu);
+
+        MenuItem menuElements = menu.findItem(R.id.menu_elements_buy_sell);
+
+        marketCloseIcon = (ImageView) menuElements.getActionView().findViewById(R.id.market_status);
+
+        mBuySellSwitch = (ToggleButton) menuElements.getActionView().findViewById(R.id.trade_menu_toggle_mode);
+        if (mBuySellSwitch != null)
+        {
+            mBuySellSwitch.setOnCheckedChangeListener(createBuySellListener());
+        }
+        displayActionBarElements();
+    }
+
+    @Override public void onDestroyOptionsMenu()
+    {
+        THLog.d(TAG, "onDestroyOptionsMenu");
+        if (mBuySellSwitch != null)
+        {
+            mBuySellSwitch.setOnCheckedChangeListener(null);
+        }
+        mBuySellSwitch = null;
+        super.onDestroyOptionsMenu();
     }
     //</editor-fold>
 
@@ -336,17 +363,6 @@ public class BuySellFragment extends AbstractBuySellFragment
         }
 
         display();
-    }
-
-    @Override public void onDestroyOptionsMenu()
-    {
-        THLog.d(TAG, "onDestroyOptionsMenu");
-        if (mBuySellSwitch != null)
-        {
-            mBuySellSwitch.setOnCheckedChangeListener(null);
-        }
-        mBuySellSwitch = null;
-        super.onDestroyOptionsMenu();
     }
 
     @Override public void onDestroyView()
@@ -521,7 +537,7 @@ public class BuySellFragment extends AbstractBuySellFragment
         super.linkWith(securityCompactDTO, andDisplay);
         if (andDisplay)
         {
-            //displayMarketClose();
+            displayMarketClose();
             displayPricingBidAskView();
             displayTradeQuantityView();
             displayStockName();
@@ -589,7 +605,7 @@ public class BuySellFragment extends AbstractBuySellFragment
     //<editor-fold desc="Display Methods">
     public void display()
     {
-        //displayActionBarElements();
+        displayActionBarElements();
         displayPageElements();
 
         if (securityCompactDTO != null && !TextUtils.isEmpty(securityCompactDTO.yahooSymbol))
@@ -791,6 +807,12 @@ public class BuySellFragment extends AbstractBuySellFragment
                 }
             }
         }
+    }
+
+    public void displayActionBarElements()
+    {
+        displayMarketClose();
+        displayBuySellSwitch();
     }
 
     public void displayBuySellSwitch()

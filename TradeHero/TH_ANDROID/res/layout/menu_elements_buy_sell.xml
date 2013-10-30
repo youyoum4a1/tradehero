@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+  <ImageView
+      android:id="@+id/market_status"
+      android:layout_width="wrap_content"
+      android:layout_height="match_parent"
+      android:scaleType="fitCenter"
+      android:visible="false"
+      android:src="@drawable/market_sleep_white"
+      android:contentDescription="@null"
+      android:padding="4dp"
+    />
+
+  <ToggleButton
+      android:id="@+id/trade_menu_toggle_mode"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:textOn="@string/switch_buy"
+      android:textOff="@string/switch_sell"
+      android:actionViewClass="android.widget.ToggleButton"
+      android:visible="true"
+      android:textColor="@color/white"
+      />
+
+</LinearLayout>

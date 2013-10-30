@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.ToggleButton;
@@ -57,6 +58,7 @@ public class BuySellConfirmFragment extends AbstractBuySellFragment
     private ToggleButton mBtnLocation;
     private ToggleButton mBtnSharePublic;
     private TextView mBuyDetails;
+    private MenuItem buySellConfirmItem;
 
     private boolean publishToFb = false;
     private boolean publishToTw = false;
@@ -187,10 +189,23 @@ public class BuySellConfirmFragment extends AbstractBuySellFragment
         ActionBar actionBar = getSherlockActivity().getSupportActionBar();
         actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME);
 
-        MenuItem buySellConfirmItem = menu.findItem(R.id.buy_sell_menu_confirm);
-        displayConfirmMenuItem(buySellConfirmItem);
-        displayMarketClose(menu);
+        displayExchangeSymbol(actionBar);
+
         super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override public void onPrepareOptionsMenu(Menu menu)
+    {
+        super.onPrepareOptionsMenu(menu);
+
+        buySellConfirmItem = menu.findItem(R.id.buy_sell_menu_confirm);
+        displayConfirmMenuItem();
+
+        MenuItem menuElements = menu.findItem(R.id.menu_elements_buy_sell_confirm);
+
+        marketCloseIcon = (ImageView) menuElements.getActionView().findViewById(R.id.market_status);
+
+        displayMarketClose();
     }
 
     @Override public void onDestroyOptionsMenu()
@@ -277,7 +292,6 @@ public class BuySellConfirmFragment extends AbstractBuySellFragment
         super.linkWith(securityCompactDTO, andDisplay);
         if (andDisplay)
         {
-            //displayMarketClose(actionBar);
             displayBuySellDetails();
         }
     }
@@ -287,6 +301,7 @@ public class BuySellConfirmFragment extends AbstractBuySellFragment
         super.linkWith(securityPositionDetailDTO, andDisplay);
         if (andDisplay)
         {
+            displayConfirmMenuItem();
             displayBuySellDetails();
         }
     }
@@ -304,6 +319,7 @@ public class BuySellConfirmFragment extends AbstractBuySellFragment
         super.linkWith(userProfileDTO, andDisplay);
         if (andDisplay)
         {
+            displayConfirmMenuItem();
             displayBuySellDetails();
         }
     }
@@ -329,6 +345,7 @@ public class BuySellConfirmFragment extends AbstractBuySellFragment
         super.linkWith(quoteDTO, andDisplay);
         if (andDisplay)
         {
+            displayConfirmMenuItem();
             displayBuySellDetails();
         }
     }
@@ -360,18 +377,23 @@ public class BuySellConfirmFragment extends AbstractBuySellFragment
     //<editor-fold desc="Display Methods">
     public void display()
     {
-        //displayActionBarElements();
+        displayActionBarElements();
         displayPageElements();
     }
 
     public void displayPageElements()
     {
         displayBuySellDetails();
-        //displayConfirmMenuItem(buySellConfirmItem);
         displayPublishToFb();
         displayPublishToTw();
         displayPublishToLi();
         displayShareLocation();
+    }
+
+    public void displayActionBarElements()
+    {
+        displayMarketClose();
+        displayConfirmMenuItem();
     }
 
     public void displayBuySellDetails()
@@ -393,14 +415,14 @@ public class BuySellConfirmFragment extends AbstractBuySellFragment
         }
     }
 
-    public void displayConfirmMenuItem(MenuItem buySellConfirmItem)
+    public void displayConfirmMenuItem()
     {
         if (buySellConfirmItem != null)
         {
             boolean buttonEnabled = (!isBuying && isTransactionTypeBuy && hasValidInfoForBuy()) ||
                     (!isSelling &&!isTransactionTypeBuy && hasValidInfoForSell());
             buySellConfirmItem.setEnabled(buttonEnabled);
-            //buySellConfirmItem.setAlpha(buttonEnabled ? 1 : 0.5f);
+            //buySellConfirmItem.getActionView().setAlpha(buttonEnabled ? 1 : 0.5f);
         }
     }
 
@@ -443,7 +465,6 @@ public class BuySellConfirmFragment extends AbstractBuySellFragment
             button.setChecked(expectedStatus);
         }
     }
-
     //</editor-fold>
 
     @Override protected void prepareFreshQuoteHolder()

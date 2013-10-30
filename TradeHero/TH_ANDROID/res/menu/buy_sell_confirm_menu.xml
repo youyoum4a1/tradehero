@@ -3,16 +3,17 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
   <item
-      android:id="@+id/market_status"
+      android:id="@+id/menu_elements_buy_sell_confirm"
+      android:actionLayout="@layout/menu_elements_buy_sell_confirm"
+      android:visible="true"
       android:showAsAction="always"
-      android:visible="false"
-      android:icon="@drawable/market_sleep_white"
       />
 
   <item
       android:id="@+id/buy_sell_menu_confirm"
       android:title="@string/confirm"
       android:showAsAction="ifRoom"
+      android:enabled="true"
       />
 
 </menu>

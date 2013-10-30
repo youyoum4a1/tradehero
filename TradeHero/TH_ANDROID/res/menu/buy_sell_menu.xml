@@ -1,17 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-  <item
-      android:id="@+id/market_status"
-      android:showAsAction="always"
-      android:visible="false"
-      android:icon="@drawable/market_sleep_white"
-      />
 
   <item
-      android:id="@+id/trade_menu_toggle_mode"
+      android:id="@+id/menu_elements_buy_sell"
+      android:actionLayout="@layout/menu_elements_buy_sell"
+      android:visible="true"
       android:showAsAction="always"
-      android:actionViewClass="android.widget.ToggleButton"
-      />
+    />
 
 </menu>
