@@ -39,7 +39,7 @@ import javax.inject.Inject;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/16/13 Time: 5:56 PM To change this template use File | Settings | File Templates. */
 public class PositionListFragment extends DashboardFragment
-    implements BaseFragment.ArgumentsChangeListener, BaseFragment.TabBarVisibilityInformer,
+    implements BaseFragment.TabBarVisibilityInformer,
         PositionLongView.OnListedPositionInnerLongClickedListener
 {
     public static final String TAG = PositionListFragment.class.getSimpleName();
@@ -49,8 +49,6 @@ public class PositionListFragment extends DashboardFragment
     private PortfolioHeaderView portfolioHeaderView;
     private ListView positionsListView;
     private PositionItemAdapter positionItemAdapter;
-
-    private Bundle desiredArguments;
 
     private OwnedPortfolioId ownedPortfolioId;
 
@@ -67,14 +65,22 @@ public class PositionListFragment extends DashboardFragment
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         //THLog.d(TAG, "onCreateView");
+
+        if (savedInstanceState != null)
+        {
+            if (savedInstanceState.containsKey(BUNDLE_KEY_POSITION_EXPANDED))
+            {
+                positionForMoreInfo = savedInstanceState.getInt(BUNDLE_KEY_POSITION_EXPANDED);
+            }
+            else
+            {
+                positionForMoreInfo = null;
+            }
+        }
+
         super.onCreateView(inflater, container, savedInstanceState);
         RelativeLayout view = null;
         view = (RelativeLayout)inflater.inflate(R.layout.fragment_positions_list, container, false);
-
-        if (desiredArguments == null)
-        {
-            desiredArguments = getArguments();
-        }
 
         initViews(view);
         return view;
@@ -94,6 +100,7 @@ public class PositionListFragment extends DashboardFragment
                         R.layout.position_long,
                         R.layout.position_quick_nothing);
                 positionItemAdapter.setParentMoreInfoRequestedListener(this);
+                positionItemAdapter.setMoreInfoPositionClicked(positionForMoreInfo);
             }
 
             positionsListView = (ListView) view.findViewById(R.id.position_list);
@@ -109,10 +116,11 @@ public class PositionListFragment extends DashboardFragment
                 });
             }
 
-            if (desiredArguments != null)
+            Bundle args = getArguments();
+            if (args != null)
             {
                 ViewStub stub = (ViewStub) view.findViewById(R.id.position_list_header_stub);
-                int layout = headerFactory.get().layoutIdForArguments(desiredArguments);
+                int layout = headerFactory.get().layoutIdForArguments(args);
                 stub.setLayoutResource(layout);
                 this.portfolioHeaderView = (PortfolioHeaderView)stub.inflate();
             }
@@ -155,21 +163,10 @@ public class PositionListFragment extends DashboardFragment
     @Override public void onResume()
     {
         super.onResume();
-        if (desiredArguments != null)
+        Bundle args = getArguments();
+        if (args != null)
         {
-            if (desiredArguments.containsKey(BUNDLE_KEY_POSITION_EXPANDED))
-            {
-                positionForMoreInfo = desiredArguments.getInt(BUNDLE_KEY_POSITION_EXPANDED);
-            }
-            else
-            {
-                positionForMoreInfo = null;
-            }
-            if (positionItemAdapter != null)
-            {
-                positionItemAdapter.setMoreInfoPositionClicked(positionForMoreInfo);
-            }
-            linkWith(new OwnedPortfolioId(desiredArguments), true);
+            linkWith(new OwnedPortfolioId(args), true);
         }
     }
 
@@ -183,18 +180,6 @@ public class PositionListFragment extends DashboardFragment
         }
         fetchGetPositionsDTOTask = null;
 
-        if (desiredArguments == null)
-        {
-            desiredArguments = new Bundle();
-        }
-        if (positionForMoreInfo != null)
-        {
-            desiredArguments.putInt(BUNDLE_KEY_POSITION_EXPANDED, positionForMoreInfo);
-        }
-        else
-        {
-            desiredArguments.remove(BUNDLE_KEY_POSITION_EXPANDED);
-        }
         super.onPause();
     }
 
@@ -202,6 +187,14 @@ public class PositionListFragment extends DashboardFragment
     {
         THLog.d(TAG, "onSaveInstanceState");
         super.onSaveInstanceState(outState);
+        if (positionForMoreInfo != null)
+        {
+            outState.putInt(BUNDLE_KEY_POSITION_EXPANDED, positionForMoreInfo);
+        }
+        else
+        {
+            outState.remove(BUNDLE_KEY_POSITION_EXPANDED);
+        }
     }
 
     @Override public void onDestroyView()
@@ -358,13 +351,6 @@ public class PositionListFragment extends DashboardFragment
             THLog.e(TAG, "Was passed a null clickedOwnedPositionId", new IllegalArgumentException());
         }
     }
-
-    //<editor-fold desc="BaseFragment.ArgumentsChangeListener">
-    @Override public void onArgumentsChanged(Bundle args)
-    {
-        desiredArguments = args;
-    }
-    //</editor-fold>
 
     //<editor-fold desc="BaseFragment.TabBarVisibilityInformer">
     @Override public boolean isTabBarVisible()

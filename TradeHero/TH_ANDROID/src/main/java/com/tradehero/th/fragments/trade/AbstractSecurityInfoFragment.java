@@ -13,11 +13,10 @@ import com.tradehero.th.utils.DaggerUtils;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/14/13 Time: 7:04 PM To change this template use File | Settings | File Templates. */
 abstract public class AbstractSecurityInfoFragment<InfoType> extends SherlockFragment
-        implements DTOCache.Listener<SecurityId, InfoType>, BaseFragment.ArgumentsChangeListener
+        implements DTOCache.Listener<SecurityId, InfoType>
 {
     public final static String TAG = AbstractSecurityInfoFragment.class.getSimpleName();
 
-    protected Bundle desiredArguments;
     protected SecurityId securityId;
     protected InfoType value;
 
@@ -31,13 +30,10 @@ abstract public class AbstractSecurityInfoFragment<InfoType> extends SherlockFra
     {
         super.onResume();
 
-        if (desiredArguments == null)
+        Bundle args = getArguments();
+        if (args != null)
         {
-            desiredArguments = getArguments();
-        }
-        if (desiredArguments != null)
-        {
-            linkWith(new SecurityId(desiredArguments), true);
+            linkWith(new SecurityId(args), true);
         }
         else
         {
@@ -74,11 +70,4 @@ abstract public class AbstractSecurityInfoFragment<InfoType> extends SherlockFra
     }
 
     abstract void display();
-
-    //<editor-fold desc="BaseFragment.ArgumentsChangeListener">
-    @Override public void onArgumentsChanged(Bundle args)
-    {
-        desiredArguments = args;
-    }
-    //</editor-fold>
 }

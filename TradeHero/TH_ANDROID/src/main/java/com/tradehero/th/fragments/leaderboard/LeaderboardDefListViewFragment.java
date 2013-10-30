@@ -24,7 +24,6 @@ import javax.inject.Inject;
 /** Created with IntelliJ IDEA. User: tho Date: 10/17/13 Time: 7:21 PM Copyright (c) TradeHero */
 public class LeaderboardDefListViewFragment extends DashboardListFragment
     implements
-        BaseFragment.ArgumentsChangeListener,
         DTOCache.Listener<LeaderboardDefListKey, LeaderboardDefKeyList>
 {
     private static final String TAG = LeaderboardDefListViewFragment.class.getName();
@@ -36,7 +35,6 @@ public class LeaderboardDefListViewFragment extends DashboardListFragment
     @Inject protected Lazy<LeaderboardDefCache> leaderboardDefCache;
     @Inject protected LeaderboardSortHelper leaderboardSortHelper;
 
-    private Bundle desiredArguments;
     private int flags;
     private LeaderboardSortType currentSortType;
     private SortTypeChangedListener sortTypeChangeListener;
@@ -49,13 +47,10 @@ public class LeaderboardDefListViewFragment extends DashboardListFragment
 
     @Override public void onResume()
     {
-        if (desiredArguments == null)
-        {
-            desiredArguments = getArguments();
-        }
+        Bundle args = getArguments();
 
-        updateLeaderboardDefListKey(desiredArguments);
-        updateSortSubMenu(desiredArguments);
+        updateLeaderboardDefListKey(args);
+        updateSortSubMenu(args);
 
         leaderboardDefListAdapter = new LeaderboardDefListAdapter(getActivity(), getActivity().getLayoutInflater(), null, R.layout.leaderboard_def_item);
         setListAdapter(leaderboardDefListAdapter);
@@ -76,9 +71,10 @@ public class LeaderboardDefListViewFragment extends DashboardListFragment
         ActionBar actionBar = getSherlockActivity().getSupportActionBar();
         actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME);
 
-        if (desiredArguments != null)
+        Bundle args = getArguments();
+        if (args != null)
         {
-            String title = desiredArguments.getString(TITLE);
+            String title = args.getString(TITLE);
             actionBar.setTitle(title == null ? "" : title);
         }
 
@@ -122,11 +118,6 @@ public class LeaderboardDefListViewFragment extends DashboardListFragment
     {
         LeaderboardDefListKey key = new LeaderboardDefListKey(bundle);
         leaderboardDefListCache.get().getOrFetch(key, false, this).execute();
-    }
-
-    @Override public void onArgumentsChanged(Bundle args)
-    {
-        desiredArguments = args;
     }
 
     @Override public void onDTOReceived(LeaderboardDefListKey key, LeaderboardDefKeyList value)

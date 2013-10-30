@@ -14,13 +14,11 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.leaderboard.LeaderboardDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
-import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.fragments.base.DashboardListFragment;
 import java.util.List;
 
 /** Created with IntelliJ IDEA. User: tho Date: 10/14/13 Time: 12:34 PM Copyright (c) TradeHero */
 public class LeaderboardListViewFragment extends DashboardListFragment
-        implements BaseFragment.ArgumentsChangeListener
 {
     private LeaderboardListAdapter leaderboardListAdapter;
 
@@ -28,8 +26,6 @@ public class LeaderboardListViewFragment extends DashboardListFragment
     {
         super.onCreate(savedInstanceState);
     }
-
-
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -93,9 +89,4 @@ public class LeaderboardListViewFragment extends DashboardListFragment
         }
     };
     //</editor-fold>
-
-    @Override public void onArgumentsChanged(Bundle args)
-    {
-        //getLoaderManager().initLoader(0, args, this);
-    }
 }

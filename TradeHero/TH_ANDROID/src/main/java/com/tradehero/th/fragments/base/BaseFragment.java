@@ -22,11 +22,6 @@ public class BaseFragment extends SherlockFragment
         DaggerUtils.inject(this);
     }
 
-    public interface ArgumentsChangeListener
-    {
-        void onArgumentsChanged(Bundle args);
-    }
-
     public interface TabBarVisibilityInformer
     {
         boolean isTabBarVisible();

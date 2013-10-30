@@ -31,7 +31,7 @@ import javax.inject.Named;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/9/13 Time: 11:14 AM To change this template use File | Settings | File Templates. */
 abstract public class AbstractTradeFragment extends DashboardFragment
-        implements FreshQuoteHolder.FreshQuoteListener, BaseFragment.ArgumentsChangeListener
+        implements FreshQuoteHolder.FreshQuoteListener
 {
     private final static String TAG = AbstractTradeFragment.class.getSimpleName();
 
@@ -46,7 +46,6 @@ abstract public class AbstractTradeFragment extends DashboardFragment
     public final static long MILLISEC_QUOTE_COUNTDOWN_PRECISION = 50;
 
     @Inject @Named("CurrentUser") protected UserBaseDTO currentUserBase;
-    private Bundle desiredArguments;
     @Inject protected Lazy<SecurityCompactCache> securityCompactCache;
     @Inject protected Lazy<SecurityPositionDetailCache> securityPositionDetailCache;
     protected SecurityId securityId;
@@ -105,18 +104,15 @@ abstract public class AbstractTradeFragment extends DashboardFragment
     {
         THLog.d(TAG, "onResume");
         super.onResume();
-        if (desiredArguments == null)
-        {
-            desiredArguments = getArguments();
-        }
 
-        if (desiredArguments != null)
+        Bundle args = getArguments();
+        if (args != null)
         {
-            linkWith(new SecurityId(desiredArguments), true);
-            isTransactionTypeBuy = desiredArguments.getBoolean(BUNDLE_KEY_IS_BUY, isTransactionTypeBuy);
-            mBuyQuantity = desiredArguments.getInt(BUNDLE_KEY_QUANTITY_BUY, mBuyQuantity);
-            mSellQuantity = desiredArguments.getInt(BUNDLE_KEY_QUANTITY_SELL, mSellQuantity);
-            mPositionIndex = desiredArguments.getInt(BUNDLE_KEY_POSITION_INDEX, mPositionIndex);
+            linkWith(new SecurityId(args), true);
+            isTransactionTypeBuy = args.getBoolean(BUNDLE_KEY_IS_BUY, isTransactionTypeBuy);
+            mBuyQuantity = args.getInt(BUNDLE_KEY_QUANTITY_BUY, mBuyQuantity);
+            mSellQuantity = args.getInt(BUNDLE_KEY_QUANTITY_SELL, mSellQuantity);
+            mPositionIndex = args.getInt(BUNDLE_KEY_POSITION_INDEX, mPositionIndex);
         }
 
         UserProfileDTO profileDTO = userProfileCache.get().get(currentUserBase.getBaseKey());
@@ -490,13 +486,6 @@ abstract public class AbstractTradeFragment extends DashboardFragment
     @Override public void onFreshQuote(QuoteDTO quoteDTO)
     {
         linkWith(quoteDTO, true);
-    }
-    //</editor-fold>
-
-    //<editor-fold desc="BaseFragment.ArgumentsChangeListener">
-    @Override public void onArgumentsChanged(Bundle args)
-    {
-        desiredArguments = args;
     }
     //</editor-fold>
 }

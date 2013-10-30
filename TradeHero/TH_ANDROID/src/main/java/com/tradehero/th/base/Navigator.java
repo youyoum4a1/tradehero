@@ -21,7 +21,6 @@ public class Navigator
     public static final String NAVIGATE_FRAGMENT_NO_CACHE = Navigator.class.getName();
 
     private final Context context;
-    private final FragmentFactory fragmentFactory;
     private final int[] animation;
     protected final FragmentManager manager;
 
@@ -35,7 +34,6 @@ public class Navigator
         this.context = context;
         this.manager = manager;
         this.fragmentContentId = fragmentContentId;
-        this.fragmentFactory = new FragmentFactory();
     }
 
     public Navigator(Activity activity, FragmentManager manager)
@@ -80,7 +78,8 @@ public class Navigator
     public Fragment pushFragment(Class<? extends Fragment> fragmentClass, Bundle args, boolean withAnimation)
     {
         THLog.d(TAG, "Pushing fragment " + fragmentClass.getSimpleName());
-        Fragment fragment = fragmentFactory.getInstance(fragmentClass, args);
+        Fragment fragment = Fragment.instantiate(context, fragmentClass.getName(), args);
+        fragment.setArguments(args);
         FragmentTransaction transaction = manager.beginTransaction();
         if (withAnimation)
         {
@@ -108,42 +107,5 @@ public class Navigator
     {
         THLog.d(TAG, "Popping fragment, count: " + manager.getBackStackEntryCount());
         manager.popBackStack();
-    }
-
-    private class FragmentFactory
-    {
-        private Map<Class<?>, WeakReference<Fragment>> instances = new HashMap<>();
-
-        public Fragment getInstance(Class<? extends Fragment> clss, Bundle args)
-        {
-            Fragment fragment = null;
-
-            WeakReference<Fragment> weakFragment = instances.get(clss);
-            if (weakFragment != null)
-            {
-                fragment = weakFragment.get();
-            }
-
-            boolean forceCreateNewFragment = args != null && args.getBoolean(NAVIGATE_FRAGMENT_NO_CACHE);
-            if (forceCreateNewFragment || fragment == null)
-            {
-                fragment = Fragment.instantiate(context, clss.getName(), args);
-                instances.put(clss, new WeakReference<>(fragment));
-            }
-
-            if (fragment.isDetached())
-            {
-                fragment.setArguments(args);
-            }
-            if (fragment instanceof BaseFragment.ArgumentsChangeListener)
-            {
-                ((BaseFragment.ArgumentsChangeListener) fragment).onArgumentsChanged(args);
-            }
-            else
-            {
-                THLog.d(TAG, "Args could not be passed to existing instance of " + fragment.getClass().getSimpleName());
-            }
-            return fragment;
-        }
     }
 }

@@ -42,7 +42,7 @@ import java.util.List;
 /**
  * Created by julien on 23/10/13
  */
-public class TradeListFragment extends DashboardFragment implements BaseFragment.ArgumentsChangeListener
+public class TradeListFragment extends DashboardFragment
 {
     public static final String TAG = TradeListFragment.class.getSimpleName();
 
@@ -57,7 +57,6 @@ public class TradeListFragment extends DashboardFragment implements BaseFragment
     private ListView tradeListView;
 
     private TradeListItemAdapter adapter;
-    private Bundle desiredArguments;
 
     private DTOCache.GetOrFetchTask<OwnedTradeIdList> fetchTradesTask;
     private TradeListCache.Listener<OwnedPositionId, OwnedTradeIdList> getTradesListener;
@@ -68,11 +67,6 @@ public class TradeListFragment extends DashboardFragment implements BaseFragment
         super.onCreateView(inflater, container, savedInstanceState);
         RelativeLayout view = null;
         view = (RelativeLayout)inflater.inflate(R.layout.fragment_trade_list, container, false);
-
-        if (desiredArguments == null)
-        {
-            desiredArguments = getArguments();
-        }
 
         initViews(view, inflater);
         return view;
@@ -206,9 +200,10 @@ public class TradeListFragment extends DashboardFragment implements BaseFragment
     @Override public void onResume()
     {
         super.onResume();
-        if (desiredArguments != null)
+        Bundle args = getArguments();
+        if (args != null)
         {
-            linkWith(new OwnedPositionId(desiredArguments), true);
+            linkWith(new OwnedPositionId(args), true);
         }
     }
 
@@ -324,10 +319,5 @@ public class TradeListFragment extends DashboardFragment implements BaseFragment
             if (this.tableHeader != null)
                 tableHeader.bindOwnedPositionId(this.ownedPositionId);
         }
-    }
-
-    @Override public void onArgumentsChanged(Bundle args)
-    {
-        desiredArguments = args;
     }
 }

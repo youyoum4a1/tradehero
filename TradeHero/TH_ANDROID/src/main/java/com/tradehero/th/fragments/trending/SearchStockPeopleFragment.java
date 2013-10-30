@@ -49,8 +49,7 @@ import javax.inject.Inject;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 9/18/13 Time: 12:09 PM To change this template use File | Settings | File Templates. */
 public class SearchStockPeopleFragment extends DashboardFragment
-        implements AdapterView.OnItemSelectedListener, TextWatcher,
-        BaseFragment.ArgumentsChangeListener
+        implements AdapterView.OnItemSelectedListener, TextWatcher
 {
     public final static String BUNDLE_KEY_SEARCH_STRING = SearchStockPeopleFragment.class.getName() + ".searchString";
     public final static String BUNDLE_KEY_SEARCH_TYPE = SearchStockPeopleFragment.class.getName() + ".searchType";
@@ -77,7 +76,6 @@ public class SearchStockPeopleFragment extends DashboardFragment
     private EditText mSearchTextField;
     private String mSearchText;
 
-    private Bundle desiredArguments;
     private boolean isQuerying;
 
     @Inject Lazy<SecurityCompactListCache> securityCompactListCache;
@@ -679,13 +677,6 @@ public class SearchStockPeopleFragment extends DashboardFragment
     @Override public boolean isTabBarVisible()
     {
         return true;
-    }
-    //</editor-fold>
-
-    //<editor-fold desc="BaseFragment.ArgumentsChangeListener">
-    @Override public void onArgumentsChanged(Bundle args)
-    {
-        desiredArguments = args;
     }
     //</editor-fold>
 }

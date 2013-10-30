@@ -42,13 +42,12 @@ import java.util.List;
 import javax.inject.Inject;
 
 public class TimelineFragment extends BaseFragment
-        implements BaseFragment.ArgumentsChangeListener, StepView.StepProvider, PortfolioRequestListener
+        implements StepView.StepProvider, PortfolioRequestListener
 {
     public static final String TAG = TimelineFragment.class.getSimpleName();
 
     private TimelineAdapter timelineAdapter;
 
-    private Bundle desiredArguments;
     protected UserBaseKey userBaseKey;
     protected UserProfileDTO profile;
     protected OwnedPortfolioIdList portfolioIdList;
@@ -127,12 +126,7 @@ public class TimelineFragment extends BaseFragment
     {
         super.onResume();
 
-        if (desiredArguments == null)
-        {
-            desiredArguments = getArguments();
-        }
-
-        UserBaseKey newUserBaseKey = new UserBaseKey(desiredArguments.getInt(UserBaseKey.BUNDLE_KEY_KEY));
+        UserBaseKey newUserBaseKey = new UserBaseKey(getArguments().getInt(UserBaseKey.BUNDLE_KEY_KEY));
         linkWith(newUserBaseKey, true);
 
         Bundle loaderBundle = new Bundle(newUserBaseKey.getArgs());
@@ -282,11 +276,6 @@ public class TimelineFragment extends BaseFragment
         return timelineLoader;
     }
     //</editor-fold>
-
-    @Override public void onArgumentsChanged(Bundle args)
-    {
-        desiredArguments = args;
-    }
 
     @Override public View provideView(int step)
     {
