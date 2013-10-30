@@ -1,5 +1,5 @@
 /**
- * TradeFragment.java 
+ * BuySellFragment.java
  * TradeHero
  *
  * Created by @author Siddesh Bingi on Jul 24, 2013
@@ -59,9 +59,9 @@ import com.viewpagerindicator.PageIndicator;
 import dagger.Lazy;
 import javax.inject.Inject;
 
-public class TradeFragment extends AbstractTradeFragment
+public class BuySellFragment extends AbstractBuySellFragment
 {
-    private final static String TAG = TradeFragment.class.getSimpleName();
+    private final static String TAG = BuySellFragment.class.getSimpleName();
     public final static int TRANSACTION_COST = 10;
 
     public final static float BUY_BUTTON_DISABLED_ALPHA = 0.5f;
@@ -118,7 +118,7 @@ public class TradeFragment extends AbstractTradeFragment
         }
 
         View view = null;
-        view = inflater.inflate(R.layout.fragment_trade, container, false);
+        view = inflater.inflate(R.layout.fragment_buy_sell, container, false);
         initViews(view);
         return view;
     }
@@ -303,7 +303,7 @@ public class TradeFragment extends AbstractTradeFragment
     //<editor-fold desc="ActionBar">
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
-        inflater.inflate(R.menu.trade_menu, menu);
+        inflater.inflate(R.menu.buy_sell_menu, menu);
         ActionBar actionBar = getSherlockActivity().getSupportActionBar();
         actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_SHOW_TITLE);
 
@@ -1034,7 +1034,7 @@ public class TradeFragment extends AbstractTradeFragment
     @Override protected void prepareFreshQuoteHolder()
     {
         super.prepareFreshQuoteHolder();
-        freshQuoteHolder.identifier = "TradeFragment";
+        freshQuoteHolder.identifier = "BuySellFragment";
     }
 
     private void pushBuyFragmentIn()
@@ -1055,12 +1055,12 @@ public class TradeFragment extends AbstractTradeFragment
         //setArguments(own); // Cannot do it
 
         Bundle b = new Bundle();
-        b.putBoolean(BuyFragment.BUNDLE_KEY_IS_BUY, isTransactionTypeBuy);
-        b.putInt(BuyFragment.BUNDLE_KEY_QUANTITY_BUY, mBuyQuantity);
-        b.putInt(BuyFragment.BUNDLE_KEY_QUANTITY_SELL, mSellQuantity);
+        b.putBoolean(BuySellConfirmFragment.BUNDLE_KEY_IS_BUY, isTransactionTypeBuy);
+        b.putInt(BuySellConfirmFragment.BUNDLE_KEY_QUANTITY_BUY, mBuyQuantity);
+        b.putInt(BuySellConfirmFragment.BUNDLE_KEY_QUANTITY_SELL, mSellQuantity);
         securityId.putParameters(b);
 
-        navigator.pushFragment(BuyFragment.class, b);
+        navigator.pushFragment(BuySellConfirmFragment.class, b);
     }
 
     private void showInfoDialog()
@@ -1103,7 +1103,7 @@ public class TradeFragment extends AbstractTradeFragment
 
             public void loadBg ()
             {
-                if (mStockBgLogo != null && TradeFragment.isUrlOk((String) mStockBgLogo.getTag(R.string.image_url)))
+                if (mStockBgLogo != null && BuySellFragment.isUrlOk((String) mStockBgLogo.getTag(R.string.image_url)))
                 {
                     THLog.i(TAG, "Loading Bg for " + mStockBgLogo.getTag(R.string.image_url));
                     mPicasso.load((String) mStockBgLogo.getTag(R.string.image_url))
@@ -1186,13 +1186,13 @@ public class TradeFragment extends AbstractTradeFragment
                 //
                 //Bundle b = new Bundle();
                 //
-                //b.putString(BuyFragment.BUNDLE_KEY_BUY_DETAIL_STR, buyDetail);
-                //b.putString(BuyFragment.BUNDLE_KEY_LAST_PRICE, String.valueOf(lastPrice));
-                //b.putString(BuyFragment.BUNDLE_KEY_QUANTITY_BUY, /*tvQuantity.getText().toString().replace(",", "")*/ "quantity");
-                //b.putString(BuyFragment.BUNDLE_KEY_SYMBOL, securityPositionDetailDTO.security.symbol);
-                //b.putString(BuyFragment.BUNDLE_KEY_EXCHANGE, securityPositionDetailDTO.security.exchange);
+                //b.putString(BuySellConfirmFragment.BUNDLE_KEY_BUY_DETAIL_STR, buyDetail);
+                //b.putString(BuySellConfirmFragment.BUNDLE_KEY_LAST_PRICE, String.valueOf(lastPrice));
+                //b.putString(BuySellConfirmFragment.BUNDLE_KEY_QUANTITY_BUY, /*tvQuantity.getText().toString().replace(",", "")*/ "quantity");
+                //b.putString(BuySellConfirmFragment.BUNDLE_KEY_SYMBOL, securityPositionDetailDTO.security.symbol);
+                //b.putString(BuySellConfirmFragment.BUNDLE_KEY_EXCHANGE, securityPositionDetailDTO.security.exchange);
                 //
-                //Fragment newFragment = Fragment.instantiate(getActivity(), BuyFragment.class.getName(), b);
+                //Fragment newFragment = Fragment.instantiate(getActivity(), BuySellConfirmFragment.class.getName(), b);
                 //
                 //// Add the fragment to the activity, pushing this transaction
                 //// on to the back stack.

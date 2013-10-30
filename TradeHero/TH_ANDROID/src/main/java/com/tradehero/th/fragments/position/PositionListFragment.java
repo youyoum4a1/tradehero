@@ -25,7 +25,7 @@ import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.dashboard.DashboardTabType;
-import com.tradehero.th.fragments.trade.TradeFragment;
+import com.tradehero.th.fragments.trade.BuySellFragment;
 import com.tradehero.th.fragments.trade.TradeListFragment;
 import com.tradehero.th.persistence.position.GetPositionsCache;
 import com.tradehero.th.persistence.position.PositionCache;
@@ -341,8 +341,8 @@ public class PositionListFragment extends DashboardFragment
                 else
                 {
                     Bundle args = securityId.getArgs();
-                    args.putBoolean(TradeFragment.BUNDLE_KEY_IS_BUY, isBuy);
-                    navigator.pushFragment(TradeFragment.class, args);
+                    args.putBoolean(BuySellFragment.BUNDLE_KEY_IS_BUY, isBuy);
+                    navigator.pushFragment(BuySellFragment.class, args);
                 }
             }
         }

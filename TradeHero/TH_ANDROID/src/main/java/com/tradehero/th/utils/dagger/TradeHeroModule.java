@@ -81,7 +81,7 @@ import javax.inject.Singleton;
                 SecurityItemView.class,
                 SearchStockPeopleFragment.class,
                 SearchPeopleItemView.class,
-                TradeFragment.class,
+                BuySellFragment.class,
                 TimelineFragment.class,
                 MeTimelineFragment.class,
                 PushableTimelineFragment.class,
@@ -89,7 +89,7 @@ import javax.inject.Singleton;
 
                 TrendingFragment.class,
                 FreshQuoteHolder.class,
-                BuyFragment.class,
+                BuySellConfirmFragment.class,
                 YahooNewsFragment.class,
                 ChartFragment.class,
                 StockInfoFragment.class,

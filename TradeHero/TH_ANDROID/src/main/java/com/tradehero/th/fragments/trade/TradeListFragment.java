@@ -23,8 +23,6 @@ import com.tradehero.th.api.trade.OwnedTradeIdList;
 import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.base.Navigator;
-import com.tradehero.th.base.THUser;
-import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.timeline.TimelineFragment;
 import com.tradehero.th.persistence.position.PositionCache;
@@ -35,7 +33,6 @@ import com.tradehero.th.widget.trade.TradeListOverlayHeaderView;
 import dagger.Lazy;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -153,8 +150,8 @@ public class TradeListFragment extends DashboardFragment
                 else
                 {
                     Bundle args = securityId.getArgs();
-                    args.putBoolean(TradeFragment.BUNDLE_KEY_IS_BUY, isBuy);
-                    navigator.pushFragment(TradeFragment.class, args);
+                    args.putBoolean(BuySellFragment.BUNDLE_KEY_IS_BUY, isBuy);
+                    navigator.pushFragment(BuySellFragment.class, args);
                 }
             }
         }

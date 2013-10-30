@@ -19,7 +19,6 @@ import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.persistence.position.SecurityPositionDetailCache;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
@@ -30,15 +29,15 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/9/13 Time: 11:14 AM To change this template use File | Settings | File Templates. */
-abstract public class AbstractTradeFragment extends DashboardFragment
+abstract public class AbstractBuySellFragment extends DashboardFragment
         implements FreshQuoteHolder.FreshQuoteListener
 {
-    private final static String TAG = AbstractTradeFragment.class.getSimpleName();
+    private final static String TAG = AbstractBuySellFragment.class.getSimpleName();
 
-    public final static String BUNDLE_KEY_IS_BUY = BuyFragment.class.getName() + ".isBuy";
-    public final static String BUNDLE_KEY_POSITION_INDEX = BuyFragment.class.getName() + ".positionIndex";
-    public final static String BUNDLE_KEY_QUANTITY_BUY = BuyFragment.class.getName() + ".quantityBuy";
-    public final static String BUNDLE_KEY_QUANTITY_SELL = BuyFragment.class.getName() + ".quantitySell";
+    public final static String BUNDLE_KEY_IS_BUY = BuySellConfirmFragment.class.getName() + ".isBuy";
+    public final static String BUNDLE_KEY_POSITION_INDEX = BuySellConfirmFragment.class.getName() + ".positionIndex";
+    public final static String BUNDLE_KEY_QUANTITY_BUY = BuySellConfirmFragment.class.getName() + ".quantityBuy";
+    public final static String BUNDLE_KEY_QUANTITY_SELL = BuySellConfirmFragment.class.getName() + ".quantitySell";
 
     public final static int DEFAULT_POSITION_INDEX = 0;
 

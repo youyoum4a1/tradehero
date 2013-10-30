@@ -32,8 +32,8 @@ import com.tradehero.th.api.security.TrendingPriceSecurityListType;
 import com.tradehero.th.api.security.TrendingSecurityListType;
 import com.tradehero.th.api.security.TrendingVolumeSecurityListType;
 import com.tradehero.th.fragments.base.DashboardFragment;
-import com.tradehero.th.fragments.trade.AbstractTradeFragment;
-import com.tradehero.th.fragments.trade.TradeFragment;
+import com.tradehero.th.fragments.trade.AbstractBuySellFragment;
+import com.tradehero.th.fragments.trade.BuySellFragment;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.persistence.security.SecurityCompactListCache;
 import dagger.Lazy;
@@ -155,8 +155,8 @@ public class TrendingFragment extends DashboardFragment
                     SecurityCompactDTO securityCompactDTO = (SecurityCompactDTO) parent.getItemAtPosition(position);
                     Bundle args = securityCompactDTO.getSecurityId().getArgs();
                     // TODO use other positions
-                    args.putInt(AbstractTradeFragment.BUNDLE_KEY_POSITION_INDEX, AbstractTradeFragment.DEFAULT_POSITION_INDEX);
-                    navigator.pushFragment(TradeFragment.class, securityCompactDTO.getSecurityId().getArgs());
+                    args.putInt(AbstractBuySellFragment.BUNDLE_KEY_POSITION_INDEX, AbstractBuySellFragment.DEFAULT_POSITION_INDEX);
+                    navigator.pushFragment(BuySellFragment.class, securityCompactDTO.getSecurityId().getArgs());
                 }
             });
 

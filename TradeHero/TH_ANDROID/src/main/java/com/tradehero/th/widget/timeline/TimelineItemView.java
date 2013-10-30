@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.text.method.LinkMovementMethod;
 import android.util.AttributeSet;
 import android.view.View;
-import android.view.animation.AnimationUtils;
 import android.widget.Checkable;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -27,7 +26,7 @@ import com.tradehero.th.api.users.UserProfileCompactDTO;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.base.NavigatorActivity;
 import com.tradehero.th.fragments.timeline.TimelineFragment;
-import com.tradehero.th.fragments.trade.TradeFragment;
+import com.tradehero.th.fragments.trade.BuySellFragment;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.widget.MarkdownTextView;
 import dagger.Lazy;
@@ -179,7 +178,7 @@ public class TimelineItemView extends LinearLayout implements
     private void openSecurityProfile(String exchange, String symbol)
     {
         SecurityId securityId = new SecurityId(exchange, symbol);
-        navigator.pushFragment(TradeFragment.class, securityId.getArgs());
+        navigator.pushFragment(BuySellFragment.class, securityId.getArgs());
     }
 
     private void openUserProfile(int userId)

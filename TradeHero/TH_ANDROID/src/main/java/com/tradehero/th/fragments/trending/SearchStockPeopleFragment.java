@@ -35,10 +35,9 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserBaseKeyList;
 import com.tradehero.th.api.users.UserListType;
 import com.tradehero.th.api.users.UserSearchResultDTO;
-import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
-import com.tradehero.th.fragments.trade.TradeFragment;
+import com.tradehero.th.fragments.trade.BuySellFragment;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.persistence.security.SecurityCompactListCache;
 import com.tradehero.th.persistence.user.UserBaseKeyListCache;
@@ -585,7 +584,7 @@ public class SearchStockPeopleFragment extends DashboardFragment
             THLog.e(TAG, "Cannot handle null " + securityCompactDTO, new IllegalArgumentException());
             return;
         }
-        navigator.pushFragment(TradeFragment.class, securityCompactDTO.getSecurityId().getArgs());
+        navigator.pushFragment(BuySellFragment.class, securityCompactDTO.getSecurityId().getArgs());
     }
 
     protected void pushUserFragmentIn(UserSearchResultDTO userSearchResultDTO)

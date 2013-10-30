@@ -1,5 +1,5 @@
 /**
- * BuyFragment.java 
+ * BuySellConfirmFragment.java
  * TradeHero
  *
  * Created by @author Siddesh Bingi on Aug 3, 2013
@@ -39,15 +39,15 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import retrofit.RetrofitError;
 
-public class BuyFragment extends AbstractTradeFragment
+public class BuySellConfirmFragment extends AbstractBuySellFragment
 {
-    private final static String TAG = BuyFragment.class.getSimpleName();
+    private final static String TAG = BuySellConfirmFragment.class.getSimpleName();
 
-    public final static String BUNDLE_KEY_SHARE_FACEBOOK = BuyFragment.class.getName() + ".shareFacebook";
-    public final static String BUNDLE_KEY_SHARE_TWITTER = BuyFragment.class.getName() + ".shareTwitter";
-    public final static String BUNDLE_KEY_SHARE_LINKEDIN = BuyFragment.class.getName() + ".shareLinkedIn";
-    public final static String BUNDLE_KEY_SHARE_LOCATION = BuyFragment.class.getName() + ".shareLocation";
-    public final static String BUNDLE_KEY_SHARE_PUBLIC = BuyFragment.class.getName() + ".sharePublic";
+    public final static String BUNDLE_KEY_SHARE_FACEBOOK = BuySellConfirmFragment.class.getName() + ".shareFacebook";
+    public final static String BUNDLE_KEY_SHARE_TWITTER = BuySellConfirmFragment.class.getName() + ".shareTwitter";
+    public final static String BUNDLE_KEY_SHARE_LINKEDIN = BuySellConfirmFragment.class.getName() + ".shareLinkedIn";
+    public final static String BUNDLE_KEY_SHARE_LOCATION = BuySellConfirmFragment.class.getName() + ".shareLocation";
+    public final static String BUNDLE_KEY_SHARE_PUBLIC = BuySellConfirmFragment.class.getName() + ".sharePublic";
 
     private ProgressBar mQuoteRefreshProgressBar;
     private EditText mCommentsET;
@@ -80,7 +80,7 @@ public class BuyFragment extends AbstractTradeFragment
         THLog.d(TAG, "onCreateView");
         super.onCreateView(inflater, container, savedInstanceState);
         View view = null;
-        view = inflater.inflate(R.layout.fragment_buy, container, false);
+        view = inflater.inflate(R.layout.fragment_buy_sell_confirm, container, false);
         initViews(view);
         return view;
     }
@@ -182,7 +182,7 @@ public class BuyFragment extends AbstractTradeFragment
     //<editor-fold desc="ActionBar">
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
-        inflater.inflate(R.menu.buy_sell_menu, menu);
+        inflater.inflate(R.menu.buy_sell_confirm_menu, menu);
 
         ActionBar actionBar = getSherlockActivity().getSupportActionBar();
         actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME);
@@ -449,7 +449,7 @@ public class BuyFragment extends AbstractTradeFragment
     @Override protected void prepareFreshQuoteHolder()
     {
         super.prepareFreshQuoteHolder();
-        freshQuoteHolder.identifier = "BuyFragment";
+        freshQuoteHolder.identifier = "BuySellConfirmFragment";
     }
 
     @Override protected void setRefreshingQuote(boolean refreshingQuote)
