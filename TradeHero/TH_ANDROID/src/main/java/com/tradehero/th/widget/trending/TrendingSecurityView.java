@@ -50,6 +50,7 @@ public class TrendingSecurityView extends RelativeLayout implements DTOView<Secu
     {
         @Override public void run()
         {
+            loadImageInTarget(stockLogo, foregroundTransformation);
             // Posting it so the view has properly sized
             loadImageInTarget(stockBgLogo, backgroundTransformation, getMeasuredWidth(), getMeasuredHeight());
         }

@@ -156,6 +156,7 @@ public class TrendingFragment extends DashboardFragment
         {
             mFilterViewPager.setAdapter(mTrendingFilterPagerAdapter);
             mFilterViewPager.setOnPageChangeListener(createFilterPageChangeListener());
+            mFilterViewPager.setCurrentItem(TrendingFilterSelectorBasicFragment.POSITION_IN_PAGER);
         }
     }
 
@@ -448,13 +449,13 @@ public class TrendingFragment extends DashboardFragment
                 // TODO
             }
 
-            @Override public void onPageSelected(int i)
+            @Override public void onPageSelected(int position)
             {
-                filterPageSelected = i;
+                filterPageSelected = position;
                 refreshGridView();
             }
 
-            @Override public void onPageScrollStateChanged(int i)
+            @Override public void onPageScrollStateChanged(int state)
             {
                 // TODO
             }
