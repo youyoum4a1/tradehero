@@ -117,6 +117,7 @@ public class TimelineFragment extends BaseFragment
                 Navigator navigator = ((NavigatorActivity) getActivity()).getNavigator();
                 Bundle bundle = new Bundle();
                 navigator.pushFragment(SettingsFragment.class, bundle);
+                return true;
         }
         return super.onOptionsItemSelected(item);
     }

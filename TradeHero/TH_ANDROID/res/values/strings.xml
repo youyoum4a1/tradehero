@@ -3,6 +3,7 @@
 
   <string name="app_name">TradeHero</string>
   <string name="action_settings">Settings</string>
+  <string name="action_search">Search</string>
   <string name="hello_world">Hello world!</string>
   <string name="authentication_welcome_new_user">New User</string>
   <string name="sign_in">Sign In</string>

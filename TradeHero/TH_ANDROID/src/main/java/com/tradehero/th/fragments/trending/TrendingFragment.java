@@ -11,14 +11,12 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
@@ -54,11 +52,6 @@ public class TrendingFragment extends DashboardFragment
 
     public final static float MIN_FLING_VELOCITY_Y_FOR_HIDE_FILTER = 1000f;
 
-    private View actionBar;
-    private ImageView mBullIcon;
-    private TextView mHeaderText;
-    private ImageButton mSearchBtn;
-
     private ViewPager mFilterViewPager;
     private TrendingFilterPagerAdapter mTrendingFilterPagerAdapter;
     private int filterPagerEndHeight = 80;
@@ -81,15 +74,8 @@ public class TrendingFragment extends DashboardFragment
     protected SecurityItemViewAdapter securityItemViewAdapter;
     protected TrendingFilterSelectorFragment.OnResumedListener trendingFilterSelectorResumedListener;
 
-    @Override public void onCreate(Bundle savedInstanceState)
-    {
-        THLog.i(TAG, "onCreate");
-        super.onCreate(savedInstanceState);
-    }
-
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        THLog.i(TAG, "onCreateView");
         if (savedInstanceState != null)
         {
             filterPageSelected = savedInstanceState.getInt(BUNDLE_KEY_FILTER_PAGE, filterPageSelected);
@@ -112,10 +98,6 @@ public class TrendingFragment extends DashboardFragment
         securityItemViewAdapter = new SecurityItemViewAdapter(getActivity(), getActivity().getLayoutInflater(), R.layout.trending_grid_item);
         mTrendingGridView = (AbsListView) view.findViewById(R.id.trending_gridview);
         initTrendingGidView();
-
-        mBullIcon = (ImageView) view.findViewById(R.id.logo_img);
-
-        THLog.i(TAG, "onActivityCreated");
 
         if (securityCompactDTOs != null && securityCompactDTOs.size() > 0)
         {
@@ -238,28 +220,11 @@ public class TrendingFragment extends DashboardFragment
     {
         THLog.i(TAG, "onCreateOptionsMenu");
         super.onCreateOptionsMenu(menu, inflater);
-        createHeaderActionBar(menu, inflater);
-    }
+        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
+        actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME);
+        actionBar.setTitle(R.string.header_trending);
 
-    private void createHeaderActionBar(Menu menu, MenuInflater inflater)
-    {
-        getSherlockActivity().getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
-        getSherlockActivity().getSupportActionBar().setCustomView(R.layout.topbar_trending);
-
-        actionBar = getSherlockActivity().getSupportActionBar().getCustomView();
-        ((TextView) actionBar.findViewById(R.id.header_txt)).setText(R.string.header_trending);
-
-        mSearchBtn = (ImageButton) actionBar.findViewById(R.id.btn_search);
-        if (mSearchBtn != null)
-        {
-            mSearchBtn.setOnClickListener(new View.OnClickListener()
-            {
-                @Override public void onClick(View view)
-                {
-                    navigator.pushFragment(SearchStockPeopleFragment.class);
-                }
-            });
-        }
+        inflater.inflate(R.menu.trending_menu, menu);
     }
 
     @Override public void onResume()
@@ -273,6 +238,17 @@ public class TrendingFragment extends DashboardFragment
             filterLayoutParams = (RelativeLayout.LayoutParams) mFilterViewPager.getLayoutParams();
             setAwayBy(0);
         }
+    }
+
+    @Override public boolean onOptionsItemSelected(MenuItem item)
+    {
+        switch (item.getItemId())
+        {
+            case R.id.btn_search:
+                pushSearchIn();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override public void onPause()
@@ -292,17 +268,6 @@ public class TrendingFragment extends DashboardFragment
             exchangeNames[index++] = exchangeStringId == null ? null : exchangeStringId.key;
         }
         outState.putStringArray(BUNDLE_KEY_SELECTED_EXCHANGE_NAMES, exchangeNames);
-    }
-
-    @Override public void onDestroyOptionsMenu()
-    {
-        THLog.d(TAG, "onDestroyOptionsMenu");
-        if (mSearchBtn != null)
-        {
-            mSearchBtn.setOnClickListener(null);
-        }
-        mSearchBtn = null;
-        super.onDestroyOptionsMenu();
     }
 
     @Override public void onDestroyView()
@@ -438,6 +403,11 @@ public class TrendingFragment extends DashboardFragment
         {
             mProgressSpinner.setVisibility(flag ? View.VISIBLE : View.INVISIBLE);
         }
+    }
+
+    public void pushSearchIn()
+    {
+        navigator.pushFragment(SearchStockPeopleFragment.class);
     }
 
     private ViewPager.OnPageChangeListener createFilterPageChangeListener()

@@ -18,6 +18,7 @@ import android.widget.TextView;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
 import com.tradehero.common.adapter.SpinnerIconAdapter;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THLog;
@@ -179,20 +180,18 @@ public class SearchStockPeopleFragment extends DashboardFragment
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         super.onCreateOptionsMenu(menu, inflater);
-        createSearchActionBar(menu, inflater);
+        inflater.inflate(R.menu.search_stock_people_menu, menu);
+        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
+        actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_SHOW_CUSTOM);
     }
 
-    private void createSearchActionBar(Menu menu, MenuInflater inflater)
+    @Override public void onPrepareOptionsMenu(Menu menu)
     {
-        getSherlockActivity().getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
-        getSherlockActivity().getSupportActionBar().setCustomView(R.layout.topbar_trending_search);
+        super.onPrepareOptionsMenu(menu);
 
-        actionBar = getSherlockActivity().getSupportActionBar().getCustomView();
-        if (actionBar == null)
-        {
-            THLog.e(TAG, "No action bar", new IllegalStateException());
-            return;
-        }
+        MenuItem securitySearchElements = menu.findItem(R.id.security_search_menu_elements);
+
+        mSearchTypeSpinner = (Spinner) securitySearchElements.getActionView().findViewById(R.id.spinner);
 
         if (mSearchTypeSpinnerAdapter == null)
         {
@@ -208,30 +207,19 @@ public class SearchStockPeopleFragment extends DashboardFragment
         }
         mSearchTypeSpinnerAdapter.setDropDownViewResource(R.layout.search_spinner_dropdown_item);
 
-        mSearchTypeSpinner = (Spinner) actionBar.findViewById(R.id.spinner);
         if (mSearchTypeSpinner != null)
         {
+            mSearchTypeSpinner.setVisibility(View.VISIBLE);
             mSearchTypeSpinner.setAdapter(mSearchTypeSpinnerAdapter);
             mSearchTypeSpinner.setOnItemSelectedListener(this);
         }
 
-        mBackBtn = (ImageButton) actionBar.findViewById(R.id.btn_back);
-        if (mBackBtn != null)
-        {
-            mBackBtn.setOnClickListener(new View.OnClickListener()
-            {
-                @Override public void onClick(View view)
-                {
-                    navigator.popFragment();
-                }
-            });
-        }
-
-        mSearchTextField = (EditText) actionBar.findViewById(R.id.search_field);
+        mSearchTextField = (EditText) securitySearchElements.getActionView().findViewById(R.id.search_field);
         if (mSearchTextField != null)
         {
             mSearchTextField.addTextChangedListener(this);
         }
+
         populateSearchActionBar();
     }
 
@@ -651,7 +639,7 @@ public class SearchStockPeopleFragment extends DashboardFragment
     }
 
     @Override public void onTextChanged(CharSequence charSequence, int start, int before, int count)
-    {
+ {
         mSearchText = charSequence.toString();
         if (mSearchText == null || mSearchText.isEmpty())
         {
