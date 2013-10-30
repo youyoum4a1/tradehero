@@ -24,9 +24,9 @@ import com.tradehero.th.utils.DaggerUtils;
 import javax.inject.Inject;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 9/5/13 Time: 5:19 PM To change this template use File | Settings | File Templates. */
-public class TrendingSecurityView extends RelativeLayout implements DTOView<SecurityCompactDTO>
+public class SecurityItemView extends RelativeLayout implements DTOView<SecurityCompactDTO>
 {
-    private static final String TAG = TrendingSecurityView.class.getSimpleName();
+    private static final String TAG = SecurityItemView.class.getSimpleName();
     private static Transformation foregroundTransformation;
     private static Transformation backgroundTransformation;
 
@@ -57,17 +57,17 @@ public class TrendingSecurityView extends RelativeLayout implements DTOView<Secu
     };
 
     //<editor-fold desc="Constructors">
-    public TrendingSecurityView(Context context)
+    public SecurityItemView(Context context)
     {
         this(context, null);
     }
 
-    public TrendingSecurityView(Context context, AttributeSet attrs)
+    public SecurityItemView(Context context, AttributeSet attrs)
     {
         this(context, attrs, 0);
     }
 
-    public TrendingSecurityView(Context context, AttributeSet attrs, int defStyle)
+    public SecurityItemView(Context context, AttributeSet attrs, int defStyle)
     {
         super(context, attrs, defStyle);
     }

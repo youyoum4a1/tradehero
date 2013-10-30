@@ -54,7 +54,7 @@ import com.tradehero.th.widget.timeline.TimelineItemView;
 import com.tradehero.th.widget.trade.TradeListHeaderView;
 import com.tradehero.th.widget.trade.TradeListOverlayHeaderView;
 import com.tradehero.th.widget.trade.TradeListItemView;
-import com.tradehero.th.widget.trending.TrendingSecurityView;
+import com.tradehero.th.widget.trending.SecurityItemView;
 import com.tradehero.th.widget.trending.SearchPeopleItemView;
 import com.tradehero.th.widget.user.ProfileCompactView;
 import com.tradehero.th.widget.user.ProfileView;
@@ -78,7 +78,7 @@ import javax.inject.Singleton;
                 TrendingFilterSelectorBasicFragment.class,
                 TrendingFilterSelectorVolumeFragment.class,
                 TrendingFilterSelectorPriceFragment.class,
-                TrendingSecurityView.class,
+                SecurityItemView.class,
                 SearchStockPeopleFragment.class,
                 SearchPeopleItemView.class,
                 TradeFragment.class,
