@@ -363,9 +363,18 @@ public class PositionQuickInnerViewHolder<OnClickedListenerType extends Position
         {
             if (positionDTO != null)
             {
-                positionLastAmount.setText(String.format("%s %s",
-                        SecurityUtils.DEFAULT_VIRTUAL_CASH_CURRENCY_DISPLAY,
-                        NumberDisplayUtils.formatWithRelevantDigits(positionDTO.marketValueRefCcy, 3)));
+                if (positionDTO.isClosed())
+                {
+                    positionLastAmount.setText(String.format("P&L %s",
+                            NumberDisplayUtils.formatWithRelevantDigits(positionDTO.realizedPLRefCcy, 3)));
+                }
+                else
+                {
+                    positionLastAmount.setText(String.format("%s %s",
+                            SecurityUtils.DEFAULT_VIRTUAL_CASH_CURRENCY_DISPLAY,
+                            NumberDisplayUtils.formatWithRelevantDigits(positionDTO.marketValueRefCcy, 3)));
+                }
+
             }
         }
     }
