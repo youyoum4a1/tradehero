@@ -71,6 +71,7 @@
             android:id="@+id/profit_indicator"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="-12sp"
             android:layout_marginLeft="2dp"
             android:lines="1"
             android:text=""

@@ -3,14 +3,14 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res/com.tradehero.th"
     android:layout_width="match_parent"
-    android:layout_height="90dp"
+    android:layout_height="wrap_content"
     android:background="@drawable/trending_grid_item_bg"
     >
 
     <com.tradehero.common.widget.ImageViewThreadSafe
         android:id="@+id/stock_bg_logo"
         android:layout_width="match_parent"
-        android:layout_height="90dp"
+        android:layout_height="match_parent"
         android:contentDescription="background logo"
         android:scaleType="centerCrop"
         android:src="@drawable/default_image"
@@ -19,8 +19,8 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="4dp" >
+        android:layout_height="wrap_content"
+        android:padding="8dp" >
 
         <com.tradehero.common.widget.ImageViewThreadSafe
             android:id="@+id/country_logo"
@@ -69,7 +69,7 @@
         <LinearLayout
             android:id="@+id/stock_details"
             android:layout_width="100dp"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_marginLeft="5dp"
             android:layout_marginRight="2dp"
@@ -84,14 +84,15 @@
                 android:lines="1"
                 android:text=""
                 android:textColor="@color/black"
-                android:textSize="12sp"
+                android:textSize="16sp"
                 android:textStyle="bold" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
+                android:layout_marginTop="-4dp"
                 android:layout_marginRight="2dp"
+                android:layout_marginBottom="-4dp"
                 android:gravity="right"
                 android:orientation="horizontal" >
 
@@ -101,40 +102,42 @@
                   android:layout_height="12dp"
                   android:layout_marginLeft="5dp"
                   android:layout_marginRight="5dp"
+                  android:baselineAlignBottom="true"
                   android:contentDescription="@null"
                   android:scaleType="centerInside"
                   android:src="@drawable/market_sleep_grey"
                   />
 
               <TextView
-                    android:id="@+id/profit_indicator"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:lines="1"
-                    android:text=""
-                    android:textColor="@color/black"
-                    android:textSize="14sp" />
+                  android:id="@+id/profit_indicator"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:layout_marginBottom="0sp"
+                  android:lines="1"
+                  android:text=""
+                  android:textColor="@color/black"
+                  android:textSize="24sp" />
 
-                <TextView
-                    android:id="@+id/currency_display"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="2dp"
-                    android:layout_marginRight="2dp"
-                    android:lines="1"
-                    android:text=""
-                    android:textColor="@color/text_gray_normal"
-                    android:textSize="13sp" />
+              <TextView
+                  android:id="@+id/currency_display"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:layout_marginLeft="2dp"
+                  android:layout_marginRight="2dp"
+                  android:lines="1"
+                  android:text=""
+                  android:textColor="@color/text_gray_normal"
+                  android:textSize="13sp" />
 
-                <TextView
-                    android:id="@+id/last_price"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:lines="1"
-                    android:text=""
-                    android:textColor="@color/text_gray_normal"
-                    
-                    android:textSize="13sp" />
+              <TextView
+                  android:id="@+id/last_price"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:lines="1"
+                  android:text=""
+                  android:textColor="@color/text_gray_normal"
+                  android:textSize="13sp" />
+
             </LinearLayout>
 
             <TextView
@@ -159,6 +162,7 @@
                 android:textColor="@color/sec_type"
                 android:textSize="14sp" />
         </LinearLayout>
+
     </RelativeLayout>
 
 </com.tradehero.th.widget.trending.TrendingSecurityView>

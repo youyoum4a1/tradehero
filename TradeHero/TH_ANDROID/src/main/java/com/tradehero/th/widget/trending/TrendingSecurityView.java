@@ -189,6 +189,7 @@ public class TrendingSecurityView extends RelativeLayout implements DTOView<Secu
         if (date != null)
         {
             date.setText(DateUtils.getFormatedTrendDate(this.securityCompactDTO.lastPriceDateAndTimeUtc));
+            date.setTextColor(getResources().getColor(securityCompactDTO.marketOpen ? R.color.black : R.color.text_gray_normal));
         }
 
         double dLastPrice = YUtils.parseQuoteValue(securityCompactDTO.lastPrice.toString());
@@ -232,11 +233,6 @@ public class TrendingSecurityView extends RelativeLayout implements DTOView<Secu
             }
             currencyDisplay.setTextColor(getResources().getColor(android.R.color.darker_gray));
             lastPrice.setTextColor(getResources().getColor(android.R.color.darker_gray));
-        }
-
-        if (date != null)
-        {
-            // TODO
         }
 
         if (securityType != null && this.securityCompactDTO.getSecurityType() != null)
