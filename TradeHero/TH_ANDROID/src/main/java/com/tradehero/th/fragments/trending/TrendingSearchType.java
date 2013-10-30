@@ -8,32 +8,43 @@ import java.util.Map;
 /** Created with IntelliJ IDEA. User: xavier Date: 9/17/13 Time: 11:45 AM To change this template use File | Settings | File Templates. */
 public enum TrendingSearchType
 {
-    @TrendingSearchTypeInfo(
-            stringResourceId = R.string.search_stock_spinner_stock,
-            dropDownDrawableResourceId = R.drawable.sort_chart,
-            drawableResourceId = R.drawable.toggle_stocks
-    )
-    STOCKS(0),
+    STOCKS(0, R.string.search_stock_spinner_stock, R.drawable.sort_chart, R.drawable.toggle_stocks),
 
-    @TrendingSearchTypeInfo(
-            stringResourceId = R.string.search_stock_spinner_people,
-            dropDownDrawableResourceId = R.drawable.sort_community,
-            drawableResourceId = R.drawable.toggle_users
-    )
-    PEOPLE(1);
+    PEOPLE(1, R.string.search_stock_spinner_people, R.drawable.sort_community, R.drawable.toggle_users);
 
     public final static String TAG = TrendingSearchType.class.getSimpleName();
     private static final Map<Integer, TrendingSearchType> intToTypeMap = new HashMap<Integer, TrendingSearchType>();
 
     private final int value;
-    private TrendingSearchType(int value)
+    private final int searchStringResId;
+    private final int searchDropDownDrawableResId;
+    private final int searchDrawableResId;
+    private TrendingSearchType(int value, int searchStringResId, int searchDropDownDrawableResId, int searchDrawableResId)
     {
         this.value = value;
+        this.searchStringResId = searchStringResId;
+        this.searchDropDownDrawableResId = searchDropDownDrawableResId;
+        this.searchDrawableResId = searchDrawableResId;
     }
 
     public int getValue()
     {
         return value;
+    }
+
+    public int getSearchStringResId()
+    {
+        return searchStringResId;
+    }
+
+    public int getSearchDropDownDrawableResId()
+    {
+        return searchDropDownDrawableResId;
+    }
+
+    public int getSearchDrawableResId()
+    {
+        return searchDrawableResId;
     }
 
     static
@@ -52,59 +63,5 @@ public enum TrendingSearchType
             return TrendingSearchType.STOCKS;
         }
         return type;
-    }
-
-    public static int getStringResourceId(TrendingSearchType searchType)
-    {
-        return getStringResourceId(searchType.name());
-    }
-
-    public static int getStringResourceId(String searchType)
-    {
-        try
-        {
-            return TrendingSearchType.class.getField(searchType).getAnnotation(TrendingSearchTypeInfo.class).stringResourceId();
-        }
-        catch (NoSuchFieldException e)
-        {
-            THLog.e(TAG, "Unavailable searchType name " + searchType, e);
-            return 0;
-        }
-    }
-
-    public static int getDrawableResourceId(TrendingSearchType searchType)
-    {
-        return getDrawableResourceId(searchType.name());
-    }
-
-    public static int getDrawableResourceId(String searchType)
-    {
-        try
-        {
-            return TrendingSearchType.class.getField(searchType).getAnnotation(TrendingSearchTypeInfo.class).drawableResourceId();
-        }
-        catch (NoSuchFieldException e)
-        {
-            THLog.e(TAG, "Unavailable searchType name " + searchType, e);
-            return 0;
-        }
-    }
-
-    public static int getDropDownDrawableResourceId(TrendingSearchType searchType)
-    {
-        return getDropDownDrawableResourceId(searchType.name());
-    }
-
-    public static int getDropDownDrawableResourceId(String searchType)
-    {
-        try
-        {
-            return TrendingSearchType.class.getField(searchType).getAnnotation(TrendingSearchTypeInfo.class).dropDownDrawableResourceId();
-        }
-        catch (NoSuchFieldException e)
-        {
-            THLog.e(TAG, "Unavailable searchType name " + searchType, e);
-            return 0;
-        }
     }
 }
