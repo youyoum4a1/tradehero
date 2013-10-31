@@ -3,6 +3,7 @@ package com.tradehero.th.widget;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
 import com.tradehero.common.text.OnElementClickListener;
@@ -54,4 +55,12 @@ public class MarkdownTextView extends TextView implements OnElementClickListener
     {
         this.onElementClickListener = listener;
     }
+
+    @Override public boolean onTouchEvent(MotionEvent event)
+    {
+        super.onTouchEvent(event);
+        return false;
+    }
+
+
 }
