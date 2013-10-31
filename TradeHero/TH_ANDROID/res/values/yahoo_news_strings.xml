@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="error_fetch_news_list">There was an error when fetching the list of news</string>
+</resources>

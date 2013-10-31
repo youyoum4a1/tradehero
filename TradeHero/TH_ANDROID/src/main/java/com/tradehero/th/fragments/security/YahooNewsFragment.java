@@ -5,12 +5,13 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
+import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.YahooNewsAdapter;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.yahoo.NewsList;
 import com.tradehero.th.persistence.yahoo.NewsCache;
+import com.tradehero.th.widget.news.YahooNewsListView;
 import dagger.Lazy;
 import javax.inject.Inject;
 
@@ -24,12 +25,9 @@ public class YahooNewsFragment extends AbstractSecurityInfoFragment<NewsList>
 {
     private final static String TAG = YahooNewsFragment.class.getSimpleName();
 
-    private AsyncTask<Void, Void, NewsList> fetchTask;
-
+    private DTOCache.GetOrFetchTask<NewsList> fetchTask;
     @Inject protected Lazy<NewsCache> yahooNewsCache;
-
-    private ListView listView;
-    private YahooNewsAdapter adapter;
+    private YahooNewsListView listView;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -40,11 +38,10 @@ public class YahooNewsFragment extends AbstractSecurityInfoFragment<NewsList>
 
     private void loadViews(View view)
     {
-        listView = (ListView) view.findViewById(R.id.list_yahooNews);
+        listView = (YahooNewsListView) view.findViewById(R.id.list_yahooNews);
         if (listView != null)
         {
-            adapter = new YahooNewsAdapter(getActivity(), getActivity().getLayoutInflater(), R.layout.yahoo_news_item);
-            listView.setAdapter(adapter);
+            listView.setAdapter(getActivity(), getActivity().getLayoutInflater(), R.layout.yahoo_news_item);
         }
     }
 
@@ -85,13 +82,14 @@ public class YahooNewsFragment extends AbstractSecurityInfoFragment<NewsList>
 
     @Override public void display()
     {
-        adapter.setItems(value);
-        getView().post(new Runnable()
+        displayYahooNewsListView();
+    }
+
+    public void displayYahooNewsListView()
+    {
+        if (listView != null)
         {
-            @Override public void run()
-            {
-                adapter.notifyDataSetChanged();
-            }
-        });
+            listView.display(value);
+        }
     }
 }

@@ -22,9 +22,11 @@ import com.tradehero.th.api.position.GetPositionsDTO;
 import com.tradehero.th.api.position.OwnedPositionId;
 import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.api.security.SecurityId;
+import com.tradehero.th.api.security.SecurityIntegerId;
 import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.dashboard.DashboardTabType;
+import com.tradehero.th.fragments.security.StockInfoFragment;
 import com.tradehero.th.fragments.trade.BuySellFragment;
 import com.tradehero.th.fragments.trade.TradeListFragment;
 import com.tradehero.th.persistence.position.GetPositionsCache;
@@ -377,7 +379,25 @@ public class PositionListFragment extends DashboardFragment
 
     @Override public void onStockInfoClicked(int position, OwnedPositionId clickedOwnedPositionId)
     {
-        THToast.show("Stock Info at position " + position);
+        PositionDTO positionDTO = positionCache.get().get(clickedOwnedPositionId);
+        if (positionDTO == null)
+        {
+            THToast.show(R.string.error_lost_position_in_cache);
+            THLog.e(TAG, "PositionDTO is not found", new IllegalStateException());
+        }
+        else
+        {
+            SecurityId securityId = securityIdCache.get().get(positionDTO.getSecurityIntegerId());
+            if (securityId == null)
+            {
+                THToast.show(R.string.error_find_security_id_to_int);
+                THLog.e(TAG, "SecurityId is null", new IllegalStateException());
+            }
+            else
+            {
+                navigator.pushFragment(StockInfoFragment.class, securityId.getArgs());
+            }
+        }
     }
 
     @Override public void onMoreInfoClicked(int position, OwnedPositionId clickedOwnedPositionId)

@@ -1,234 +1,262 @@
 package com.tradehero.th.fragments.security;
 
 import android.os.Bundle;
+import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
+import android.widget.ImageView;
+import com.actionbarsherlock.app.ActionBar;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
+import com.tradehero.common.persistence.DTOCache;
+import com.tradehero.common.utils.THLog;
+import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
+import com.tradehero.th.api.yahoo.NewsList;
+import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
-import com.tradehero.th.utils.NumberDisplayUtils;
-import com.tradehero.th.utils.SecurityUtils;
+import com.tradehero.th.persistence.yahoo.NewsCache;
+import com.tradehero.th.widget.news.YahooNewsListView;
 import dagger.Lazy;
 import javax.inject.Inject;
 
-/**
- * StockInfoFragment.java
- * TradeHero
- *
- * Created by @author Siddesh Bingi on Jul 26, 2013
- */
-public class StockInfoFragment extends AbstractSecurityInfoFragment<SecurityCompactDTO>
+/** Created with IntelliJ IDEA. User: xavier Date: 10/31/13 Time: 10:46 AM To change this template use File | Settings | File Templates. */
+public class StockInfoFragment extends DashboardFragment
 {
-    private final static String TAG = StockInfoFragment.class.getSimpleName();
+    public static final String TAG = StockInfoFragment.class.getSimpleName();
 
-    private TextView mPreviousClose;
-    private TextView mOpen;
-    private TextView mDaysHigh;
-    private TextView mDaysLow;
-    private TextView mMarketCap;
-    private TextView mPERatio;
-    private TextView mEps;
-    private TextView mVolume;
-    private TextView mAvgVolume;
+    protected SecurityId securityId;
 
-    @Inject protected Lazy<SecurityCompactCache> securityCompactCache;
+    protected SecurityCompactDTO securityCompactDTO;
+    @Inject Lazy<SecurityCompactCache> securityCompactCache;
+    private DTOCache.Listener<SecurityId, SecurityCompactDTO> compactCacheListener;
+    private DTOCache.GetOrFetchTask<SecurityCompactDTO> compactCacheFetchTask;
+
+    protected NewsList yahooNewsList;
+    @Inject Lazy<NewsCache> yahooNewsCache;
+    private DTOCache.Listener<SecurityId, NewsList> yahooNewsCacheListener;
+    private DTOCache.GetOrFetchTask<NewsList> yahooNewsCacheFetchTask;
+
+    private ActionBar actionBar;
+    private ImageView marketCloseIcon;
+
+    private ViewPager topPager;
+    private YahooNewsListView yahooNewsListView;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        View view = null;
-        view = inflater.inflate(R.layout.fragment_stockinfo, container, false);
+        View view = inflater.inflate(R.layout.fragment_stock_info, container, false);
         initViews(view);
         return view;
     }
 
-    private void initViews(View v)
+    private void initViews(View view)
     {
-        mPreviousClose = (TextView) v.findViewById(R.id.vprevious_close);
-        mOpen = (TextView) v.findViewById(R.id.vopen);
-        mDaysHigh = (TextView) v.findViewById(R.id.vdays_high);
-        mDaysLow = (TextView) v.findViewById(R.id.vdays_low);
-        mMarketCap = (TextView) v.findViewById(R.id.vmarket_cap);
-        mPERatio = (TextView) v.findViewById(R.id.vpe_ratio);
-        mEps = (TextView) v.findViewById(R.id.veps);
-        mVolume = (TextView) v.findViewById(R.id.vvolume);
-        mAvgVolume = (TextView) v.findViewById(R.id.vavg_volume);
+        yahooNewsListView = (YahooNewsListView) view.findViewById(R.id.list_yahooNews);
+        if (yahooNewsListView != null)
+        {
+            yahooNewsListView.setAdapter(getActivity(), getActivity().getLayoutInflater());
+        }
+
+        topPager = (ViewPager) view.findViewById(R.id.top_pager);
+        if (topPager != null)
+        {
+            // TODO
+        }
+    }
+
+    @Override public void onResume()
+    {
+        super.onResume();
+
+        Bundle args = getArguments();
+        if (args != null)
+        {
+            linkWith(new SecurityId(args), true);
+        }
+    }
+
+    @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
+    {
+        inflater.inflate(R.menu.stock_info_menu, menu);
+        actionBar = getSherlockActivity().getSupportActionBar();
+        actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME);
+        displayExchangeSymbol();
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override public void onPrepareOptionsMenu(Menu menu)
+    {
+        super.onPrepareOptionsMenu(menu);
+        MenuItem menuElements = menu.findItem(R.id.menu_elements_stock_info);
+        marketCloseIcon = (ImageView) menuElements.getActionView().findViewById(R.id.market_status);
+        displayMarketClose();
     }
 
     @Override public void onPause()
     {
-        if (securityId != null)
+        if (compactCacheFetchTask != null)
         {
-            securityCompactCache.get().unRegisterListener(this);
+            compactCacheFetchTask.forgetListener(true);
+            compactCacheFetchTask.cancel(false);
         }
+        compactCacheFetchTask = null;
+
+        if (yahooNewsCacheFetchTask != null)
+        {
+            yahooNewsCacheFetchTask.forgetListener(true);
+            yahooNewsCacheFetchTask.cancel(false);
+        }
+        yahooNewsCacheFetchTask = null;
         super.onPause();
     }
 
-    @Override public void linkWith(SecurityId securityId, boolean andDisplay)
+    private void linkWith(final SecurityId securityId, final boolean andDisplay)
     {
-        super.linkWith(securityId, andDisplay);
-        if (this.securityId != null)
+        this.securityId = securityId;
+
+        if (securityId != null)
         {
-            securityCompactCache.get().registerListener(this);
-            linkWith(securityCompactCache.get().get(this.securityId), andDisplay);
+            queryCompactCache(securityId, andDisplay);
+            queryNewsCache(securityId, andDisplay);
+        }
+
+        if (andDisplay)
+        {
+            displayExchangeSymbol();
         }
     }
 
-    //<editor-fold desc="Display Methods">
-    public void display()
+    private void queryCompactCache(final SecurityId securityId, final boolean andDisplay)
     {
-        displayPreviousClose();
-        displayOpen();
-        displayDaysHigh();
-        displayDaysLow();
-        displayMarketCap();
-        displayPERatio();
-        displayEps();
-        displayVolume();
-        displayAvgVolume();
+        SecurityCompactDTO securityCompactDTO = securityCompactCache.get().get(securityId);
+        if (securityCompactDTO != null)
+        {
+            linkWith(securityCompactDTO, andDisplay);
+        }
+        else
+        {
+            compactCacheListener = new DTOCache.Listener<SecurityId, SecurityCompactDTO>()
+            {
+                @Override public void onDTOReceived(SecurityId key, SecurityCompactDTO value)
+                {
+                    linkWith(value, andDisplay);
+                }
+
+                @Override public void onErrorThrown(SecurityId key, Throwable error)
+                {
+                    THToast.show(R.string.error_fetch_security_info);
+                    THLog.e(TAG, "Failed to fetch SecurityCompact for " + securityId, error);
+                }
+            };
+
+            if (compactCacheFetchTask != null)
+            {
+                compactCacheFetchTask.cancel(true);
+            }
+            compactCacheFetchTask = securityCompactCache.get().getOrFetch(securityId, compactCacheListener);
+            compactCacheFetchTask.execute();
+        }
     }
 
-    public void displayPreviousClose()
+    private void queryNewsCache(final SecurityId securityId, final boolean andDisplay)
     {
-        if (mPreviousClose != null)
+        NewsList newsList = yahooNewsCache.get().get(securityId);
+        if (newsList != null)
         {
-            if (value == null || value.previousClose == null)
+            linkWith(newsList, andDisplay);
+        }
+        else
+        {
+            yahooNewsCacheListener = new DTOCache.Listener<SecurityId, NewsList>()
             {
-                mPreviousClose.setText(R.string.na);
+                @Override public void onDTOReceived(SecurityId key, NewsList value)
+                {
+                    linkWith(value, andDisplay);
+                }
+
+                @Override public void onErrorThrown(SecurityId key, Throwable error)
+                {
+                    THToast.show(R.string.error_fetch_news_list);
+                    THLog.e(TAG, "Failed to fetch NewsList for " + securityId, error);
+                }
+            };
+
+            if (yahooNewsCacheFetchTask != null)
+            {
+                yahooNewsCacheFetchTask.cancel(true);
+            }
+            yahooNewsCacheFetchTask = yahooNewsCache.get().getOrFetch(securityId, yahooNewsCacheListener);
+            yahooNewsCacheFetchTask.execute();
+        }
+    }
+
+    private void linkWith(SecurityCompactDTO securityCompactDTO, boolean andDisplay)
+    {
+        this.securityCompactDTO = securityCompactDTO;
+
+        if (andDisplay)
+        {
+            displayMarketClose();
+        }
+    }
+
+    private void linkWith(NewsList newsList, boolean andDisplay)
+    {
+        this.yahooNewsList = newsList;
+
+        if (andDisplay)
+        {
+            displayYahooNewsList();
+        }
+    }
+
+    private void display()
+    {
+        displayExchangeSymbol();
+        displayMarketClose();
+        displayYahooNewsList();
+    }
+
+    private void displayExchangeSymbol()
+    {
+        if (actionBar != null)
+        {
+            if (securityId != null)
+            {
+                actionBar.setTitle(String.format("%s:%s", securityId.exchange, securityId.securitySymbol));
             }
             else
             {
-                mPreviousClose.setText(String.format("%s %,.3f", value.currencyDisplay, value.previousClose.doubleValue()));
+                actionBar.setTitle("-:-");
             }
         }
     }
 
-    public void displayOpen()
+    private void displayMarketClose()
     {
-        if (mOpen != null)
+        if (marketCloseIcon != null)
         {
-            if (value == null || value.open == null)
-            {
-                mOpen.setText(R.string.na);
-            }
-            else
-            {
-                mOpen.setText(String.format("%s %,.2f", value.currencyDisplay, value.open.doubleValue()));
-            }
-        }
-        //double open = YUtils.parseQuoteValue(yQuotes.get("Open"));
-    }
-
-    public void displayDaysHigh()
-    {
-        if (mDaysHigh != null)
-        {
-            if (value == null || value.high == null)
-            {
-                mDaysHigh.setText(R.string.na);
-            }
-            else
-            {
-                mDaysHigh.setText(String.format("%s %,.2f", value.currencyDisplay, value.high.doubleValue()));
-            }
-        }
-        //double daysHigh = YUtils.parseQuoteValue(yQuotes.get("Day's High"));
-    }
-
-    public void displayDaysLow()
-    {
-        if (mDaysLow != null)
-        {
-            if (value == null || value.low == null)
-            {
-                mDaysLow.setText(R.string.na);
-            }
-            else
-            {
-                mDaysLow.setText(String.format("%s %,.2f", value.currencyDisplay, value.low.doubleValue()));
-            }
-        }
-        //double daysLow = YUtils.parseQuoteValue(yQuotes.get("Day's Low"));
-    }
-
-    public void displayMarketCap()
-    {
-        if (mMarketCap != null)
-        {
-            if (value == null || value.marketCap == null)
-            {
-                mMarketCap.setText(R.string.na);
-            }
-            else
-            {
-                mMarketCap.setText(String.format("%s %s", SecurityUtils.DEFAULT_VIRTUAL_CASH_CURRENCY_DISPLAY, NumberDisplayUtils.formatWithRelevantDigits(value.marketCap.doubleValue(), 4)));
-            }
+            marketCloseIcon.setVisibility(securityCompactDTO == null || securityCompactDTO.marketOpen ? View.GONE : View.VISIBLE);
         }
     }
 
-    public void displayPERatio()
+    private void displayYahooNewsList()
     {
-        if (mPERatio != null)
+        if (yahooNewsListView != null)
         {
-            if (value == null || value.pe == null)
-            {
-                mPERatio.setText(R.string.na);
-            }
-            else
-            {
-                mPERatio.setText(String.format("%,.2f", value.pe.doubleValue()));
-            }
-        }
-        //double peRatio = YUtils.parseQuoteValue(yQuotes.get("P/E Ratio"));
-    }
-
-    public void displayEps()
-    {
-        if (mEps != null)
-        {
-            if (value == null || value.eps == null)
-            {
-                mEps.setText(R.string.na);
-            }
-            else
-            {
-                mEps.setText(String.format("%,.3f", value.eps.doubleValue()));
-            }
+            yahooNewsListView.display(yahooNewsList);
         }
     }
 
-    public void displayVolume()
+    //<editor-fold desc="BaseFragment.TabBarVisibilityInformer">
+    @Override public boolean isTabBarVisible()
     {
-        if (mVolume != null)
-        {
-            if (value == null || value.volume == null)
-            {
-                mVolume.setText(R.string.na);
-            }
-            else
-            {
-                mVolume.setText(String.format("%,.0f", value.volume.doubleValue()));
-            }
-        }
-        //double volume = YUtils.parseQuoteValue(yQuotes.get("Volume"));
-    }
-
-    public void displayAvgVolume()
-    {
-        if (mAvgVolume != null)
-        {
-            if (value == null || value.averageDailyVolume == null)
-            {
-                mAvgVolume.setText(R.string.na);
-            }
-            else
-            {
-                mAvgVolume.setText(String.format("%,.0f", value.averageDailyVolume.doubleValue()));
-            }
-        }
-        //double avgVolume = YUtils.parseQuoteValue(yQuotes.get("Average Daily Volume"));
+        return false;
     }
     //</editor-fold>
 }

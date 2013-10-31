@@ -1,4 +1,4 @@
-package com.tradehero.th.widget.trade;
+package com.tradehero.th.widget.news;
 
 import android.content.Context;
 import android.util.AttributeSet;

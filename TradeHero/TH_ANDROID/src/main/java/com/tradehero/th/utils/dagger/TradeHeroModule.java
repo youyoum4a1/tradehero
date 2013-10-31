@@ -23,6 +23,7 @@ import com.tradehero.th.fragments.portfolio.PushablePortfolioListFragment;
 import com.tradehero.th.fragments.position.PositionListFragment;
 import com.tradehero.th.fragments.security.ChartFragment;
 import com.tradehero.th.fragments.security.StockInfoFragment;
+import com.tradehero.th.fragments.security.StockInfoValueFragment;
 import com.tradehero.th.fragments.security.YahooNewsFragment;
 import com.tradehero.th.fragments.settings.*;
 import com.tradehero.th.fragments.timeline.MeTimelineFragment;
@@ -95,6 +96,7 @@ import javax.inject.Singleton;
                 BuySellConfirmFragment.class,
                 YahooNewsFragment.class,
                 ChartFragment.class,
+                StockInfoValueFragment.class,
                 StockInfoFragment.class,
                 PortfolioListFragment.class,
                 PushablePortfolioListFragment.class,
