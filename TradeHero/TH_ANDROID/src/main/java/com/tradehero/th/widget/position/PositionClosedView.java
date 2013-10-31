@@ -31,7 +31,7 @@ public class PositionClosedView extends AbstractPositionView
     @Override protected void initViews()
     {
         super.initViews();
-        bottomView = (PositionPartialBottomClosedView)findViewById(R.id.expanding_layout);
+        bottomView = (PositionPartialBottomClosedView) findViewById(R.id.expanding_layout);
 
     }
 

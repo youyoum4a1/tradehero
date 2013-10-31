@@ -1,55 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                                                               android:id="@+id/position_shortcuts"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/position_value_table"
-        android:padding="8dp"
-        >
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/position_shortcuts"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_below="@id/position_value_table"
+    android:padding="8dp"
+  >
 
     <ImageButton
-            android:id="@+id/btn_buy_now"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_alignParentLeft="true"
-            android:src="@drawable/buy_stock"
-            android:contentDescription="@null"
-            android:scaleType="centerInside"
-            android:duplicateParentState="true"
-            />
+        android:id="@+id/btn_buy_now"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_alignParentLeft="true"
+        android:src="@drawable/buy_stock"
+        android:contentDescription="@null"
+        android:scaleType="centerInside"
+        android:background="@android:color/transparent"
+      />
 
     <ImageButton
-            android:id="@+id/btn_sell_now"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_marginLeft="8dp"
-            android:layout_toRightOf="@id/btn_buy_now"
-            android:src="@drawable/sell_stock"
-            android:contentDescription="@null"
-            android:scaleType="centerInside"
-            />
+        android:id="@+id/btn_sell_now"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginLeft="8dp"
+        android:layout_toRightOf="@id/btn_buy_now"
+        android:src="@drawable/sell_stock"
+        android:contentDescription="@null"
+        android:scaleType="centerInside"
+        android:background="@android:color/transparent"
+      />
 
     <ImageButton
-            android:id="@+id/btn_add_alert"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_toLeftOf="@+id/btn_stock_info"
-            android:layout_marginLeft="8dp"
-            android:src="@drawable/add_alert_big"
-            android:contentDescription="@null"
-            android:scaleType="centerInside"
-            />
+        android:id="@+id/btn_add_alert"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_toLeftOf="@+id/btn_stock_info"
+        android:layout_marginLeft="8dp"
+        android:src="@drawable/add_alert_big"
+        android:contentDescription="@null"
+        android:scaleType="centerInside"
+        android:background="@android:color/transparent"
+      />
 
     <ImageButton
-            android:id="@+id/btn_stock_info"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_alignParentRight="true"
-            android:layout_marginLeft="8dp"
-            android:src="@drawable/sort_chart"
-            android:contentDescription="@null"
-            android:scaleType="centerInside"
-            />
+        android:id="@+id/btn_stock_info"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_alignParentRight="true"
+        android:layout_marginLeft="8dp"
+        android:src="@drawable/sort_chart"
+        android:contentDescription="@null"
+        android:scaleType="centerInside"
+        android:background="@android:color/transparent"
+      />
+
 </RelativeLayout>
 
