@@ -20,10 +20,7 @@ import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.persistence.position.PositionCache;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.persistence.security.SecurityIdCache;
-import com.tradehero.th.utils.ColorUtils;
-import com.tradehero.th.utils.DaggerUtils;
-import com.tradehero.th.utils.NumberDisplayUtils;
-import com.tradehero.th.utils.SecurityUtils;
+import com.tradehero.th.utils.*;
 import dagger.Lazy;
 
 import javax.inject.Inject;
@@ -35,7 +32,7 @@ public class PositionPartialTopView extends LinearLayout
 {
     public static final String TAG = PositionPartialTopView.class.getSimpleName();
 
-    protected static final int PERCENT_STRETCHING_FOR_COLOR = 20;
+
 
     @Inject protected Context context;
 
@@ -307,21 +304,7 @@ public class PositionPartialTopView extends LinearLayout
     {
         if (positionPercent != null)
         {
-            if (positionDTO != null)
-            {
-                Double roiSinceInception = positionDTO.getROISinceInception();
-                if (roiSinceInception == null)
-                {
-                    positionPercent.setText(R.string.na);
-                    positionPercent.setTextColor(context.getResources().getColor(R.color.black));
-                }
-                else
-                {
-                    positionPercent.setText(String.format("%+,.2f%%", roiSinceInception * 100.0));
-                    positionPercent.setTextColor(
-                            ColorUtils.getColorForPercentage((float) roiSinceInception.doubleValue() * PERCENT_STRETCHING_FOR_COLOR));
-                }
-            }
+            PositionUtils.setROISinceInception(positionPercent, positionDTO);
         }
     }
 

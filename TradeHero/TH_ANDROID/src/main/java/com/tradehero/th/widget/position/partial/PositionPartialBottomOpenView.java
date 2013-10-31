@@ -109,17 +109,7 @@ public class PositionPartialBottomOpenView extends RelativeLayout
     {
         if (unrealisedPLValue != null)
         {
-            if (positionDTO != null && positionDTO.unrealizedPLRefCcy != null)
-            {
-                unrealisedPLValue.setText(NumberDisplayUtils.formatWithRelevantDigits(
-                        positionDTO.unrealizedPLRefCcy,
-                        4,
-                        SecurityUtils.DEFAULT_VIRTUAL_CASH_CURRENCY_DISPLAY));
-            }
-            else
-            {
-                unrealisedPLValue.setText(R.string.na);
-            }
+            unrealisedPLValue.setText(PositionUtils.getUnrealizedPL(getContext(), positionDTO));
         }
     }
 

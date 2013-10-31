@@ -90,6 +90,7 @@ public class PositionListFragment extends DashboardFragment
                         getActivity(),
                         getActivity().getLayoutInflater(),
                         R.layout.position_item_header,
+                        R.layout.position_locked_item,
                         R.layout.position_open_no_period,
                         R.layout.position_closed_no_period,
                         R.layout.position_quick_nothing);

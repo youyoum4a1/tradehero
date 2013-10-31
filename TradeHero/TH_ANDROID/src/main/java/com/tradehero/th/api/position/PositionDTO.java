@@ -97,4 +97,10 @@ public class PositionDTO extends PositionDTOCompact implements DTO
         }
         return numberToDisplay;
     }
+
+    public boolean isLocked()
+    {
+        return this.securityId < 0;
+    }
+
 }

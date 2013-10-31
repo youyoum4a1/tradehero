@@ -40,4 +40,7 @@
 
 
 
+  <string name="position_locked_follow_to_unlock">Follow user to unlock!</string>
+  <string name="position_locked_title">Open Positions</string>
+
 </resources>
