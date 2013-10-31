@@ -56,12 +56,14 @@ public class ExpandingListView extends ListView
                 if (!viewObject.isExpanded())
                 {
                     expandView(view);
+                    viewObject.setExpanded(true);
                     if (expandingListItemListener != null)
                         expandingListItemListener.onItemDidExpand(parent, view, position, id);
                 }
                 else
                 {
                     collapseView(view);
+                    viewObject.setExpanded(false);
                     if (expandingListItemListener != null)
                         expandingListItemListener.onItemDidCollapse(parent, view, position, id);
                 }
@@ -76,25 +78,16 @@ public class ExpandingListView extends ListView
 
     private void expandView(View view)
     {
-        ExpandableListItem viewObject = (ExpandableListItem) getItemAtPosition(getPositionForView(view));
-
         final View expandingLayout = view.findViewById(R.id.expanding_layout);
-        if (expandingLayout != null)
-        {
-            expandingLayout.setVisibility(View.VISIBLE);
-            viewObject.setExpanded(true);
-        }
+        expandingLayout.setVisibility(View.VISIBLE);
     }
 
     private void collapseView(View view)
     {
-        ExpandableListItem viewObject = (ExpandableListItem) getItemAtPosition(getPositionForView(view));
-
         final View expandingLayout = view.findViewById(R.id.expanding_layout);
         if (expandingLayout != null)
         {
             expandingLayout.setVisibility(View.GONE);
-            viewObject.setExpanded(false);
         }
     }
 
