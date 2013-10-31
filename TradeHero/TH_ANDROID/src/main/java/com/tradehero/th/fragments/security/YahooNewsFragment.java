@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.trade;
+package com.tradehero.th.fragments.security;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -9,13 +9,10 @@ import android.widget.ListView;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.YahooNewsAdapter;
 import com.tradehero.th.api.security.SecurityId;
-import com.tradehero.th.api.yahoo.News;
 import com.tradehero.th.api.yahoo.NewsList;
 import com.tradehero.th.persistence.yahoo.NewsCache;
 import dagger.Lazy;
-
 import javax.inject.Inject;
-import java.util.List;
 
 /**
  * Created by julien on 10/10/13

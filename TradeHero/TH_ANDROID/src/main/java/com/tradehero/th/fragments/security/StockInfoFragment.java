@@ -1,10 +1,4 @@
-/**
- * StockInfoFragment.java 
- * TradeHero
- *
- * Created by @author Siddesh Bingi on Jul 26, 2013
- */
-package com.tradehero.th.fragments.trade;
+package com.tradehero.th.fragments.security;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -15,12 +9,17 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
-import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.NumberDisplayUtils;
 import com.tradehero.th.utils.SecurityUtils;
 import dagger.Lazy;
 import javax.inject.Inject;
 
+/**
+ * StockInfoFragment.java
+ * TradeHero
+ *
+ * Created by @author Siddesh Bingi on Jul 26, 2013
+ */
 public class StockInfoFragment extends AbstractSecurityInfoFragment<SecurityCompactDTO>
 {
     private final static String TAG = StockInfoFragment.class.getSimpleName();

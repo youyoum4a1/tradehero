@@ -1,19 +1,15 @@
-package com.tradehero.th.fragments.trade;
+package com.tradehero.th.fragments.security;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import com.actionbarsherlock.app.SherlockFragment;
 import com.squareup.picasso.Picasso;
-import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.th.R;
-import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
-import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.yahoo.*;
 import dagger.Lazy;
 import javax.inject.Inject;

@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.trade;
+package com.tradehero.th.fragments.security;
 
 import android.os.Bundle;
 import com.actionbarsherlock.app.SherlockFragment;
@@ -6,9 +6,7 @@ import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
-import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
-import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.utils.DaggerUtils;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/14/13 Time: 7:04 PM To change this template use File | Settings | File Templates. */
