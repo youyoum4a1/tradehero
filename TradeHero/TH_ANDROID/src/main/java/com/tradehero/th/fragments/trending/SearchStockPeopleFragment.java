@@ -133,7 +133,7 @@ public class SearchStockPeopleFragment extends DashboardFragment
 
         if (securityItemViewAdapter == null)
         {
-            securityItemViewAdapter = new SecurityItemViewAdapter(getActivity(), getActivity().getLayoutInflater(), R.layout.search_stock_item);
+            securityItemViewAdapter = new SecurityItemViewAdapter(getActivity(), getActivity().getLayoutInflater(), R.layout.search_security_item);
         }
         mSearchStockListView = (ListView) view.findViewById(R.id.trending_listview);
         if (mSearchStockListView != null)

@@ -95,7 +95,7 @@ public class TrendingFragment extends DashboardFragment
     {
         mProgressSpinner = (ProgressBar) view.findViewById(R.id.progress_spinner);
 
-        securityItemViewAdapter = new SecurityItemViewAdapter(getActivity(), getActivity().getLayoutInflater(), R.layout.trending_grid_item);
+        securityItemViewAdapter = new SecurityItemViewAdapter(getActivity(), getActivity().getLayoutInflater(), R.layout.trending_security_item);
         mTrendingGridView = (AbsListView) view.findViewById(R.id.trending_gridview);
         initTrendingGidView();
 
