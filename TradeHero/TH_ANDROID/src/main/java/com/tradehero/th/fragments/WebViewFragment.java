@@ -20,15 +20,16 @@ import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockFragment;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
 import com.tradehero.th.R;
 import com.tradehero.th.api.yahoo.News;
+import com.tradehero.th.fragments.base.DashboardFragment;
 
-public class WebViewFragment extends SherlockFragment
+public class WebViewFragment extends DashboardFragment
 {
     private WebView webView;
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.fragment_webview, container, false);
         setHasOptionsMenu(true);
@@ -40,8 +41,27 @@ public class WebViewFragment extends SherlockFragment
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         inflater.inflate(R.menu.webview_menu, menu);
-        getSherlockActivity().getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME);
+        getSherlockActivity().getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_HOME_AS_UP);
         super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override public boolean onOptionsItemSelected(MenuItem item)
+    {
+        switch (item.getItemId())
+        {
+            case R.id.webview_back:
+                // TODO
+                break;
+
+            case R.id.webview_forward:
+                // TODO
+                break;
+
+            case R.id.webview_view_in_browser:
+                // TODO
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
     //</editor-fold>
 
@@ -70,9 +90,7 @@ public class WebViewFragment extends SherlockFragment
 
         webView.setWebChromeClient(new WebChromeClient()
         {
-
-            @Override
-            public void onProgressChanged(WebView view, int newProgress)
+            @Override public void onProgressChanged(WebView view, int newProgress)
             {
                 super.onProgressChanged(view, newProgress);
             }
@@ -80,20 +98,24 @@ public class WebViewFragment extends SherlockFragment
             @Override public void onReceivedTitle(WebView view, String title)
             {
                 super.onReceivedTitle(view, title);
-
                 getSherlockActivity().getSupportActionBar().setTitle(view.getTitle());
             }
         });
 
         webView.setWebViewClient(new WebViewClient()
         {
-
-            @Override
-            public boolean shouldOverrideUrlLoading(WebView view, String url)
+            @Override public boolean shouldOverrideUrlLoading(WebView view, String url)
             {
                 view.loadUrl(url);
                 return false;
             }
         });
     }
+
+    //<editor-fold desc="BaseFragment.TabBarVisibilityInformer">
+    @Override public boolean isTabBarVisible()
+    {
+        return false;
+    }
+    //</editor-fold>
 }

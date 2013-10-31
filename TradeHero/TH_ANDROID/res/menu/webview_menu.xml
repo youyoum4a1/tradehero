@@ -1,8 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-  <item android:id="@+id/webview_back"
-      android:title="@string/webview_back"/>
-  <item android:id="@+id/webview_forward"
-      android:title="@string/webview_forward"/>
+
+  <item
+      android:id="@+id/webview_back"
+      android:title="@string/webview_back"
+      android:showAsAction="always"
+    />
+
+  <item
+      android:showAsAction="always"
+    >
+
+    <menu
+
+      >
+
+      <item
+          android:id="@+id/webview_forward"
+          android:title="@string/webview_forward"
+          android:icon="@null"
+          />
+
+      <item
+          android:id="@+id/webview_view_in_browser"
+          android:showAsAction="always"
+          android:icon="@android:drawable/ic_menu_set_as"
+          />
+
+    </menu>
+
+  </item>
+
 </menu>

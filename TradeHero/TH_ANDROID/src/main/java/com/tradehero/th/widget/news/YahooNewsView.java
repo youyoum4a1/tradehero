@@ -43,31 +43,34 @@ public class YahooNewsView extends LinearLayout implements DTOView<News>
         fetchViews();
     }
 
-        private void fetchViews()
-        {
-            titleTextView = (TextView)findViewById(R.id.title_yahooNews);
-            dateTextView = (TextView)findViewById(R.id.date_yahooNews);
-        }
+    private void fetchViews()
+    {
+        titleTextView = (TextView) findViewById(R.id.title_yahooNews);
+        dateTextView = (TextView) findViewById(R.id.date_yahooNews);
+    }
 
-    @Override
-    public void display(News dto)
+    @Override public void display(News dto)
     {
         this.news = dto;
         displayNews();
     }
 
-        private void displayNews()
+    private void displayNews()
+    {
+        if (news == null)
         {
-            if (news == null) return;
-
-            if (titleTextView != null)
-                titleTextView.setText(news.getTitle());
-
-            if (dateTextView != null && news.getDate() != null)
-            {
-                PrettyTime prettyTime = new PrettyTime();
-                dateTextView.setText(prettyTime.format(news.getDate()));
-            }
-
+            return;
         }
+
+        if (titleTextView != null)
+        {
+            titleTextView.setText(news.getTitle());
+        }
+
+        if (dateTextView != null && news.getDate() != null)
+        {
+            PrettyTime prettyTime = new PrettyTime();
+            dateTextView.setText(prettyTime.format(news.getDate()));
+        }
+    }
 }

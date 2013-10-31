@@ -12,6 +12,7 @@ import com.tradehero.th.api.form.AbstractUserAvailabilityRequester;
 import com.tradehero.th.api.portfolio.DisplayablePortfolioDTO;
 import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.base.THUser;
+import com.tradehero.th.fragments.WebViewFragment;
 import com.tradehero.th.fragments.authentication.EmailSignInFragment;
 import com.tradehero.th.fragments.leaderboard.LeaderboardCommunityFragment;
 import com.tradehero.th.fragments.leaderboard.LeaderboardDefListViewFragment;
@@ -147,6 +148,8 @@ import javax.inject.Singleton;
                 LeaderboardListViewFragment.class,
                 LeaderboardUserRankItemView.class,
                 LeaderboardRankingListView.class,
+
+                WebViewFragment.class,
         },
         staticInjections =
         {
