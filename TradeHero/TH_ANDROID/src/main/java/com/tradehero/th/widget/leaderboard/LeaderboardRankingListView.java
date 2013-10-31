@@ -2,20 +2,17 @@ package com.tradehero.th.widget.leaderboard;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.view.View;
 import android.widget.AdapterView;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
-import com.tradehero.th.R;
-import com.tradehero.th.adapters.ExpandableListItem;
 import com.tradehero.th.utils.DaggerUtils;
-import com.tradehero.th.widget.list.ExpandingListViewListener;
+import com.tradehero.th.widget.list.DefaultExpandingListViewListener;
 import javax.inject.Inject;
 
 /** Created with IntelliJ IDEA. User: tho Date: 10/14/13 Time: 3:09 PM Copyright (c) TradeHero */
 public class LeaderboardRankingListView extends PullToRefreshListView
 {
     @Inject
-    protected ExpandingListViewListener defaultExpandingListViewListener;
+    protected DefaultExpandingListViewListener defaultDefaultExpandingListViewListener;
 
     //<editor-fold desc="Constructors">
     public LeaderboardRankingListView(Context context)
@@ -52,7 +49,7 @@ public class LeaderboardRankingListView extends PullToRefreshListView
     private void init()
     {
         DaggerUtils.inject(this);
-        super.setOnItemClickListener(defaultExpandingListViewListener);
+        super.setOnItemClickListener(defaultDefaultExpandingListViewListener);
     }
 
     @Override public void setOnItemClickListener(AdapterView.OnItemClickListener listener)

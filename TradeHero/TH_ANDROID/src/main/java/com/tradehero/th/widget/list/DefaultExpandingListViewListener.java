@@ -7,9 +7,10 @@ import com.tradehero.th.adapters.ExpandableListItem;
 import javax.inject.Inject;
 
 /** Created with IntelliJ IDEA. User: tho Date: 10/31/13 Time: 4:15 PM Copyright (c) TradeHero */
-public class ExpandingListViewListener implements AdapterView.OnItemClickListener
+public class DefaultExpandingListViewListener implements ExpandingListView.ExpandingListItemListener
 {
-    @Inject public ExpandingListViewListener()
+    @Inject
+    public DefaultExpandingListViewListener()
     {
         super();
     }
@@ -39,5 +40,15 @@ public class ExpandingListViewListener implements AdapterView.OnItemClickListene
             viewObject.setExpanded(false);
             collapseView(view);
         }
+    }
+
+    @Override public void onItemDidExpand(AdapterView<?> parent, View view, int position, long id)
+    {
+        // nothing
+    }
+
+    @Override public void onItemDidCollapse(AdapterView<?> parent, View view, int position, long id)
+    {
+        // nothing
     }
 }

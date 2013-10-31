@@ -23,4 +23,9 @@
   <dimen name="timeline_share_button_padding">5dp</dimen>
   <dimen name="timeline_action_button">30dp</dimen>
 
+  <!-- TODO use wrap_content instead of fixed size for images when proper graphics are available -->
+  <dimen name="temp_leaderboard_user_item_action_buttons_height">40dp</dimen>
+  <dimen name="leaderboard_user_item_action_button_padding">5dp</dimen>
+  <dimen name="leaderboard_user_item_action_button_margin">5dp</dimen>
+
 </resources>

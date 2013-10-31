@@ -109,7 +109,7 @@ public class ExpandingListView extends ListView
         this.expandingListItemListener = expandingListItemListener;
     }
 
-    public static interface ExpandingListItemListener
+    public static interface ExpandingListItemListener extends OnItemClickListener
     {
         public void onItemClick (AdapterView<?> parent, View view, int position, long id);
         public void onItemDidExpand(AdapterView<?> parent, View view, int position, long id);

@@ -204,5 +204,8 @@
   <string name="action_bar_follow">Follow</string>
   <string name="sort">Sort</string>
   <string name="p_n_l"><![CDATA[P&L]]></string>
+  <string name="benchmark_roi">Benchmark ROI</string>
+  <string name="profile">Profile</string>
+  <string name="positions">Positions</string>
   <item name="done" type="id">Done</item>
 </resources>

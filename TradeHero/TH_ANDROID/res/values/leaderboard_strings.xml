@@ -22,4 +22,8 @@
   <string name="comments">Comments</string>
   <string name="sharpe_ratio">Sharpe Ratio</string>
   <string name="error_fetch_leaderboard_def_list_key">There was an error when fetching the definition list of leaderboards</string>
+  <string name="leaderboard_positions_count"># Positions</string>
+  <string name="leaderboard_avg_days_held">Avg. Days Held</string>
+  <string name="leaderboard_followers_count"># Followers</string>
+  <string name="leaderboard_comments_count"># Comments</string>
 </resources>

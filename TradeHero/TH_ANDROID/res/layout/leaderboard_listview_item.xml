@@ -95,9 +95,9 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_below="@id/leaderboard_user_item_basic_info"
-      android:layout_toLeftOf="@id/leaderboard_user_item_info"
       android:orientation="vertical"
-      android:padding="8dp">
+      android:padding="8dp"
+      >
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -141,5 +141,182 @@
           android:layout_height="wrap_content"
           />
     </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingBottom="2dp">
+
+      <TextView
+          android:layout_width="0dp"
+          android:layout_weight="2"
+          android:layout_height="wrap_content"
+          android:text="@string/benchmark_roi"
+          android:gravity="right"
+          android:textColor="@color/light_grey"/>
+      <TextView
+          android:id="@+id/lbmu_benchmark_roi"
+          android:layout_width="0dp"
+          android:layout_weight="3"
+          android:paddingLeft="10dp"
+          android:layout_height="wrap_content"
+          />
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingBottom="2dp">
+
+      <TextView
+          android:layout_width="0dp"
+          android:layout_weight="2"
+          android:layout_height="wrap_content"
+          android:text="@string/sharpe_ratio"
+          android:gravity="right"
+          android:textColor="@color/light_grey"/>
+      <TextView
+          android:id="@+id/lbmu_sharpe_ratio"
+          android:layout_width="0dp"
+          android:layout_weight="3"
+          android:paddingLeft="10dp"
+          android:layout_height="wrap_content"
+          />
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingBottom="2dp">
+
+      <TextView
+          android:layout_width="0dp"
+          android:layout_weight="2"
+          android:layout_height="wrap_content"
+          android:text="@string/leaderboard_positions_count"
+          android:gravity="right"
+          android:textColor="@color/light_grey"/>
+      <TextView
+          android:id="@+id/lbmu_positions_count"
+          android:layout_width="0dp"
+          android:layout_weight="3"
+          android:paddingLeft="10dp"
+          android:layout_height="wrap_content"
+          />
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingBottom="2dp">
+
+      <TextView
+          android:layout_width="0dp"
+          android:layout_weight="2"
+          android:layout_height="wrap_content"
+          android:text="@string/leaderboard_avg_days_held"
+          android:gravity="right"
+          android:textColor="@color/light_grey"/>
+      <TextView
+          android:id="@+id/lbmu_avg_days_held"
+          android:layout_width="0dp"
+          android:layout_weight="3"
+          android:paddingLeft="10dp"
+          android:layout_height="wrap_content"
+          />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingBottom="2dp">
+
+      <TextView
+          android:layout_width="0dp"
+          android:layout_weight="2"
+          android:layout_height="wrap_content"
+          android:text="@string/leaderboard_followers_count"
+          android:gravity="right"
+          android:textColor="@color/light_grey"/>
+      <TextView
+          android:id="@+id/lbmu_followers_count"
+          android:layout_width="0dp"
+          android:layout_weight="3"
+          android:paddingLeft="10dp"
+          android:layout_height="wrap_content"
+          />
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingBottom="2dp">
+
+      <TextView
+          android:layout_width="0dp"
+          android:layout_weight="2"
+          android:layout_height="wrap_content"
+          android:text="@string/leaderboard_comments_count"
+          android:gravity="right"
+          android:textColor="@color/light_grey"/>
+      <TextView
+          android:id="@+id/lbmu_comments_count"
+          android:layout_width="0dp"
+          android:layout_weight="3"
+          android:paddingLeft="10dp"
+          android:layout_height="wrap_content"
+          />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/leaderboard_user_item_action_buttons"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="10dp"
+        >
+      <TextView
+          android:id="@+id/leaderboard_user_item_profile"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="@string/profile"
+          android:background="@drawable/leaderboard_user_item_border_background"
+          android:padding="@dimen/leaderboard_user_item_action_button_padding"
+          android:layout_marginRight="@dimen/leaderboard_user_item_action_button_margin"
+          android:layout_marginLeft="@dimen/leaderboard_user_item_action_button_margin"
+          />
+      <TextView
+          android:id="@+id/leaderboard_user_item_positions"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="@string/positions"
+          android:background="@drawable/leaderboard_user_item_border_background"
+          android:padding="@dimen/leaderboard_user_item_action_button_padding"
+          android:layout_marginRight="@dimen/leaderboard_user_item_action_button_margin"
+          android:layout_marginLeft="@dimen/leaderboard_user_item_action_button_margin"
+          />
+      <ImageView
+          android:id="@+id/leaderboard_user_item_follow"
+          android:layout_width="wrap_content"
+          android:layout_height="@dimen/temp_leaderboard_user_item_action_buttons_height"
+          android:background="@drawable/leaderboard_user_item_follow_action_button"
+          android:contentDescription="@null"
+          android:padding="@dimen/leaderboard_user_item_action_button_padding"
+          android:layout_marginRight="@dimen/leaderboard_user_item_action_button_margin"
+          android:layout_marginLeft="@dimen/leaderboard_user_item_action_button_margin"
+          />
+    </LinearLayout>
   </LinearLayout>
+
 </com.tradehero.th.fragments.leaderboard.LeaderboardUserRankItemView>

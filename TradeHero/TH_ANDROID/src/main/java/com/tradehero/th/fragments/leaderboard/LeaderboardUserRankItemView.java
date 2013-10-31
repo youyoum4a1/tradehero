@@ -23,17 +23,26 @@ public class LeaderboardUserRankItemView extends RelativeLayout
 {
     @Inject protected Picasso picasso;
     @Inject protected Lazy<PositionCache> positionCache;
+    // data
+    private LeaderboardListAdapter.ExpandableLeaderboardUserRankItemWrapper leaderboardItem;
+    private PositionDTO position;
 
+    // top view
     private TextView lbmuDisplayName;
     private ImageView lbmuProfilePicture;
     private TextView lbmuPosition;
     private TextView lbmuHeroQuotient;
     private ImageView lbmuPositionInfo;
-    private PositionDTO position;
 
-    private LeaderboardListAdapter.ExpandableLeaderboardUserRankItemWrapper leaderboardItem;
+    // expanding view
     private TextView lbmuPl;
     private TextView lbmuRoi;
+    private TextView lbmuCommentsCount;
+    private TextView lbmuBenchmarkRoi;
+    private TextView lbmuSharpeRatio;
+    private TextView lbmuPositionsCount;
+    private TextView lbmuAvgDaysHeld;
+    private TextView lbmuFollowersCount;
 
     //<editor-fold desc="Constructors">
     public LeaderboardUserRankItemView(Context context)
@@ -62,6 +71,7 @@ public class LeaderboardUserRankItemView extends RelativeLayout
 
     private void initViews()
     {
+        // top part
         lbmuPosition = (TextView) findViewById(R.id.leaderboard_user_item_position);
         lbmuDisplayName = (TextView) findViewById(R.id.leaderboard_user_item_display_name);
         lbmuProfilePicture = (ImageView) findViewById(R.id.leaderboard_user_item_profile_picture);
@@ -76,6 +86,12 @@ public class LeaderboardUserRankItemView extends RelativeLayout
         // for expanding part
         lbmuPl = (TextView) findViewById(R.id.lbmu_pl);
         lbmuRoi = (TextView) findViewById(R.id.lbmu_roi);
+        lbmuBenchmarkRoi = (TextView) findViewById(R.id.lbmu_benchmark_roi);
+        lbmuSharpeRatio = (TextView) findViewById(R.id.lbmu_sharpe_ratio);
+        lbmuPositionsCount = (TextView) findViewById(R.id.lbmu_positions_count);
+        lbmuAvgDaysHeld = (TextView) findViewById(R.id.lbmu_avg_days_held);
+        lbmuFollowersCount = (TextView) findViewById(R.id.lbmu_followers_count);
+        lbmuCommentsCount = (TextView) findViewById(R.id.lbmu_comments_count);
     }
 
     @Override public void display(LeaderboardListAdapter.ExpandableLeaderboardUserRankItemWrapper expandableItem)
