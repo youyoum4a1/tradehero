@@ -15,9 +15,13 @@
       android:clipToPadding="false"
     />
 
-    <ViewStub android:id="@+id/position_list_header_stub"
-              android:inflatedId="@+id/position_list_portfolio_header"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content" />
+    <ViewStub
+        android:id="@+id/position_list_header_stub"
+        android:inflatedId="@+id/position_list_portfolio_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+      />
+
     <!-- see PortfolioHeaderFactory.java for the different layout that are used -->
+
 </RelativeLayout>

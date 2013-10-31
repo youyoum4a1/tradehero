@@ -36,6 +36,15 @@ public class PositionClosedView extends AbstractPositionView
         bottomView = (PositionPartialBottomClosedView) findViewById(R.id.expanding_layout);
     }
 
+    @Override public void onDestroyView()
+    {
+        if (bottomView != null)
+        {
+            bottomView.onDestroyView();
+        }
+        super.onDestroyView();
+    }
+
     @Override public void linkWith(OwnedPositionId ownedPositionId, boolean andDisplay)
     {
         super.linkWith(ownedPositionId, andDisplay);

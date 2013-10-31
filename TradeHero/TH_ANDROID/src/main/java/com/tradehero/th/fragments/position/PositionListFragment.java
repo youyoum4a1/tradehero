@@ -6,7 +6,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewStub;
 import android.widget.AdapterView;
-import android.widget.RelativeLayout;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
@@ -41,10 +40,11 @@ import javax.inject.Inject;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/16/13 Time: 5:56 PM To change this template use File | Settings | File Templates. */
 public class PositionListFragment extends DashboardFragment
-    implements BaseFragment.TabBarVisibilityInformer,
-               PositionListener
+    implements BaseFragment.TabBarVisibilityInformer, PositionListener
 {
     public static final String TAG = PositionListFragment.class.getSimpleName();
+    public static final String BUNDLE_KEY_FIRST_POSITION_VISIBLE = PositionListFragment.class.getName() + ".firstPositionVisible";
+    public static final String BUNDLE_KEY_EXPANDED_LIST_FLAGS = PositionListFragment.class.getName() + ".expandedListFlags";
 
     @Inject Lazy<PortfolioHeaderFactory> headerFactory;
     private PortfolioHeaderView portfolioHeaderView;
@@ -54,6 +54,8 @@ public class PositionListFragment extends DashboardFragment
     private OwnedPortfolioId ownedPortfolioId;
 
     private GetPositionsDTO getPositionsDTO;
+    private int firstPositionVisible = 0;
+    private boolean[] expandedPositions;
     @Inject Lazy<GetPositionsCache> getPositionsCache;
     private GetPositionsCache.Listener<OwnedPortfolioId, GetPositionsDTO> getPositionsCacheListener;
     private DTOCache.GetOrFetchTask<GetPositionsDTO> fetchGetPositionsDTOTask;
@@ -63,10 +65,16 @@ public class PositionListFragment extends DashboardFragment
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-
+        THLog.d(TAG, "onCreateView");
         super.onCreateView(inflater, container, savedInstanceState);
-        RelativeLayout view = null;
-        view = (RelativeLayout)inflater.inflate(R.layout.fragment_positions_list, container, false);
+
+        if (savedInstanceState != null)
+        {
+            firstPositionVisible = savedInstanceState.getInt(BUNDLE_KEY_FIRST_POSITION_VISIBLE, firstPositionVisible);
+            expandedPositions = savedInstanceState.getBooleanArray(BUNDLE_KEY_EXPANDED_LIST_FLAGS);
+        }
+
+        View view = inflater.inflate(R.layout.fragment_positions_list, container, false);
 
         initViews(view);
         return view;
@@ -98,8 +106,20 @@ public class PositionListFragment extends DashboardFragment
                     {
                         handlePositionItemClicked(adapterView, view, position, id);
                     }
-                    @Override public void onItemDidExpand(AdapterView<?> parent, View view, int position, long id){}
-                    @Override public void onItemDidCollapse(AdapterView<?> parent, View view, int position, long id){}
+                    @Override public void onItemDidExpand(AdapterView<?> parent, View view, int position, long id)
+                    {
+                        if (expandedPositions != null && expandedPositions.length > position)
+                        {
+                            expandedPositions[position] = true;
+                        }
+                    }
+                    @Override public void onItemDidCollapse(AdapterView<?> parent, View view, int position, long id)
+                    {
+                        if (expandedPositions != null && expandedPositions.length > position)
+                        {
+                            expandedPositions[position] = false;
+                        }
+                    }
                 });
             }
 
@@ -107,9 +127,9 @@ public class PositionListFragment extends DashboardFragment
             if (args != null)
             {
                 ViewStub stub = (ViewStub) view.findViewById(R.id.position_list_header_stub);
-                int layout = headerFactory.get().layoutIdForArguments(args);
-                stub.setLayoutResource(layout);
-                this.portfolioHeaderView = (PortfolioHeaderView)stub.inflate();
+                int headerLayoutId = headerFactory.get().layoutIdForArguments(args);
+                stub.setLayoutResource(headerLayoutId);
+                this.portfolioHeaderView = (PortfolioHeaderView) stub.inflate();
             }
         }
     }
@@ -149,6 +169,7 @@ public class PositionListFragment extends DashboardFragment
 
     @Override public void onResume()
     {
+        THLog.d(TAG, "onResume");
         super.onResume();
         Bundle args = getArguments();
         if (args != null)
@@ -167,6 +188,11 @@ public class PositionListFragment extends DashboardFragment
         }
         fetchGetPositionsDTOTask = null;
 
+        if (positionsListView != null)
+        {
+            firstPositionVisible = positionsListView.getFirstVisiblePosition();
+        }
+
         super.onPause();
     }
 
@@ -174,10 +200,13 @@ public class PositionListFragment extends DashboardFragment
     {
         THLog.d(TAG, "onSaveInstanceState");
         super.onSaveInstanceState(outState);
+        outState.putInt(BUNDLE_KEY_FIRST_POSITION_VISIBLE, firstPositionVisible);
+        outState.putBooleanArray(BUNDLE_KEY_EXPANDED_LIST_FLAGS, expandedPositions);
     }
 
     @Override public void onDestroyView()
     {
+        THLog.d(TAG, "onDestroyView");
         if (positionsListView != null)
         {
             positionsListView.setOnScrollListener(null);
@@ -222,17 +251,19 @@ public class PositionListFragment extends DashboardFragment
     public void linkWith(GetPositionsDTO getPositionsDTO, boolean andDisplay)
     {
         this.getPositionsDTO = getPositionsDTO;
+        prepareExpandedPositions();
         if (this.getPositionsDTO != null && ownedPortfolioId != null)
         {
-            positionItemAdapter.setPositions(getPositionsDTO.positions, ownedPortfolioId.getPortfolioId());
+            positionItemAdapter.setPositions(getPositionsDTO.positions, ownedPortfolioId.getPortfolioId(), expandedPositions);
             getView().post(
-                    new Runnable()
+                new Runnable()
+                {
+                    @Override public void run()
                     {
-                        @Override public void run()
-                        {
-                            positionItemAdapter.notifyDataSetChanged();
-                        }
+                        positionItemAdapter.notifyDataSetChanged();
+                        positionsListView.setSelection(firstPositionVisible);
                     }
+                }
             );
         }
 
@@ -241,6 +272,40 @@ public class PositionListFragment extends DashboardFragment
             displayActionBarTitle();
             // TODO finer grained
             display();
+        }
+    }
+
+    private void prepareExpandedPositions()
+    {
+        if (this.getPositionsDTO != null && this.getPositionsDTO.positions != null)
+        {
+            // We add 2 because the positions are reported with the Open / Closed headers
+            boolean[] newExpandedPositions = new boolean[this.getPositionsDTO.positions.size() + 2];
+
+            // Port previous values
+            if (this.expandedPositions == null || this.expandedPositions.length == 0)
+            {
+                this.expandedPositions = newExpandedPositions;
+            }
+            else
+            {
+                for (int index = 0; index < this.expandedPositions.length; index++)
+                {
+                    if (newExpandedPositions.length > index)
+                    {
+                        newExpandedPositions[index] = this.expandedPositions[index];
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+            }
+            this.expandedPositions = newExpandedPositions;
+        }
+        else
+        {
+            this.expandedPositions = null;
         }
     }
 
@@ -293,7 +358,7 @@ public class PositionListFragment extends DashboardFragment
         };
     }
 
-    private void pushTradeFragment(OwnedPositionId clickedOwnedPositionId, boolean isBuy)
+    private void pushBuySellFragment(OwnedPositionId clickedOwnedPositionId, boolean isBuy)
     {
         if (clickedOwnedPositionId != null)
         {
@@ -323,11 +388,14 @@ public class PositionListFragment extends DashboardFragment
         }
     }
 
+    //<editor-fold desc="BaseFragment.TabBarVisibilityInformer">
     @Override public boolean isTabBarVisible()
     {
         return false;
     }
+    //</editor-fold>
 
+    //<editor-fold desc="PositionListener">
     @Override public void onTradeHistoryClicked(OwnedPositionId clickedOwnedPositionId)
     {
         navigator.pushFragment(TradeListFragment.class, clickedOwnedPositionId.getArgs());
@@ -335,12 +403,12 @@ public class PositionListFragment extends DashboardFragment
 
     @Override public void onBuyClicked(OwnedPositionId clickedOwnedPositionId)
     {
-        pushTradeFragment(clickedOwnedPositionId, true);
+        pushBuySellFragment(clickedOwnedPositionId, true);
     }
 
     @Override public void onSellClicked(OwnedPositionId clickedOwnedPositionId)
     {
-        pushTradeFragment(clickedOwnedPositionId, false);
+        pushBuySellFragment(clickedOwnedPositionId, false);
     }
 
     @Override public void onAddAlertClicked(OwnedPositionId clickedOwnedPositionId)
@@ -370,4 +438,5 @@ public class PositionListFragment extends DashboardFragment
             }
         }
     }
+    //</editor-fold>
 }

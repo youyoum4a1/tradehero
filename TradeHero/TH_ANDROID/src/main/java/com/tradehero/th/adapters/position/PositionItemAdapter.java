@@ -12,10 +12,7 @@ import com.tradehero.th.api.position.OwnedPositionId;
 import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.widget.position.AbstractPositionView;
 import com.tradehero.th.widget.position.PositionListener;
-import com.tradehero.th.widget.position.PositionOpenView;
-import com.tradehero.th.widget.position.partial.PositionPartialTopView;
 import com.tradehero.th.widget.position.PositionSectionHeaderItemView;
-
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -40,11 +37,11 @@ public class PositionItemAdapter extends BaseAdapter
     private final int positionNothingId;
 
     private WeakReference<View> latestView = new WeakReference<>(null);
-    private HashMap<Integer,Integer> viewTypeToLayoutId;
+    private HashMap<Integer, Integer> viewTypeToLayoutId;
 
     private WeakReference<PositionListener> cellListener;
-    private PositionListener internalListener;//this listener is used as a bridge between the cell and the listener of the adapter
-
+    // this listener is used as a bridge between the cell and the listener of the adapter
+    private PositionListener internalListener;
 
     public PositionItemAdapter(Context context, LayoutInflater inflater, int headerLayoutId, int openPositionLayoutId, int closedPositionLayoutId, int positionNothingId)
     {
@@ -63,35 +60,45 @@ public class PositionItemAdapter extends BaseAdapter
             {
                 PositionListener listener = cellListener.get();
                 if (listener != null)
+                {
                     listener.onTradeHistoryClicked(clickedOwnedPositionId);
+                }
             }
 
             @Override public void onBuyClicked(OwnedPositionId clickedOwnedPositionId)
             {
                 PositionListener listener = cellListener.get();
                 if (listener != null)
+                {
                     listener.onBuyClicked(clickedOwnedPositionId);
+                }
             }
 
             @Override public void onSellClicked(OwnedPositionId clickedOwnedPositionId)
             {
                 PositionListener listener = cellListener.get();
                 if (listener != null)
+                {
                     listener.onSellClicked(clickedOwnedPositionId);
+                }
             }
 
             @Override public void onAddAlertClicked(OwnedPositionId clickedOwnedPositionId)
             {
                 PositionListener listener = cellListener.get();
                 if (listener != null)
+                {
                     listener.onAddAlertClicked(clickedOwnedPositionId);
+                }
             }
 
             @Override public void onStockInfoClicked(OwnedPositionId clickedOwnedPositionId)
             {
                 PositionListener listener = cellListener.get();
                 if (listener != null)
+                {
                     listener.onStockInfoClicked(clickedOwnedPositionId);
+                }
             }
         };
     }
@@ -125,6 +132,11 @@ public class PositionItemAdapter extends BaseAdapter
     public int getClosedPositionsCount()
     {
         return closedPositions == null ? 0 : closedPositions.size();
+    }
+
+    @Override public int getCount()
+    {
+        return 2 + getVisibleOpenPositionsCount() + getClosedPositionsCount();
     }
     //</editor-fold>
 
@@ -187,11 +199,6 @@ public class PositionItemAdapter extends BaseAdapter
             itemId = closedPositions.get(position - 2 - getVisibleOpenPositionsCount()).hashCode();
         }
         return itemId;
-    }
-
-    @Override public int getCount()
-    {
-        return 2 + getVisibleOpenPositionsCount() + getClosedPositionsCount();
     }
 
     @Override public Object getItem(int position)
@@ -257,7 +264,6 @@ public class PositionItemAdapter extends BaseAdapter
             convertView = inflater.inflate(layoutToInflate, parent, false);
         }
 
-
         if (isPositionHeaderOpen(position))
         {
             ((PositionSectionHeaderItemView) convertView).setHeaderTextContent(getHeaderText(true));
@@ -286,7 +292,7 @@ public class PositionItemAdapter extends BaseAdapter
                 }
             }
 
-            AbstractPositionView cell = (AbstractPositionView)convertView;
+            AbstractPositionView cell = (AbstractPositionView) convertView;
             cell.linkWith(expandableWrapper.getModel(), true);
             cell.setListener(internalListener);
         }
@@ -300,10 +306,15 @@ public class PositionItemAdapter extends BaseAdapter
      */
     public void setCellListener(PositionListener cellListener)
     {
-        this.cellListener= new WeakReference<>(cellListener);
+        this.cellListener = new WeakReference<>(cellListener);
     }
 
     public void setPositions(List<PositionDTO> positions, PortfolioId portfolioId)
+    {
+        setPositions(positions, portfolioId, null);
+    }
+
+    public void setPositions(List<PositionDTO> positions, PortfolioId portfolioId, boolean[] expanded)
     {
         this.receivedPositions = positions;
 
@@ -333,8 +344,22 @@ public class PositionItemAdapter extends BaseAdapter
                     closedPositions.add(item);
                 }
             }
+
+            // change the expanded states
+            if (expanded != null && expanded.length > 0)
+            {
+                for (int position = 0; position < expanded.length; position++)
+                {
+                    if (isOpenPosition(position))
+                    {
+                        openPositions.get(getOpenPositionIndex(position)).setExpanded(expanded[position]);
+                    }
+                    else if (isClosedPosition(position))
+                    {
+                        closedPositions.get(getClosedPositionIndex(position)).setExpanded(expanded[position]);
+                    }
+                }
+            }
         }
     }
-
-
 }

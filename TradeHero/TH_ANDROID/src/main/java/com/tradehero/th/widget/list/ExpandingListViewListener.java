@@ -9,8 +9,7 @@ import javax.inject.Inject;
 /** Created with IntelliJ IDEA. User: tho Date: 10/31/13 Time: 4:15 PM Copyright (c) TradeHero */
 public class ExpandingListViewListener implements AdapterView.OnItemClickListener
 {
-    @Inject
-    public ExpandingListViewListener()
+    @Inject public ExpandingListViewListener()
     {
         super();
     }

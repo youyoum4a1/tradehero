@@ -46,26 +46,34 @@ public class ExpandingListView extends ListView
             public void onItemClick (AdapterView<?> parent, View view, int position, long id)
             {
                 if (expandingListItemListener != null)
+                {
                     expandingListItemListener.onItemClick(parent, view, position, id);
+                }
 
                 Object o = getItemAtPosition(getPositionForView(view));
                 if (o == null || !(o instanceof ExpandableListItem))
+                {
                     return;
+                }
 
-                ExpandableListItem viewObject = (ExpandableListItem)o;
+                ExpandableListItem viewObject = (ExpandableListItem) o;
                 if (!viewObject.isExpanded())
                 {
                     expandView(view);
                     viewObject.setExpanded(true);
                     if (expandingListItemListener != null)
+                    {
                         expandingListItemListener.onItemDidExpand(parent, view, position, id);
+                    }
                 }
                 else
                 {
                     collapseView(view);
                     viewObject.setExpanded(false);
                     if (expandingListItemListener != null)
+                    {
                         expandingListItemListener.onItemDidCollapse(parent, view, position, id);
+                    }
                 }
             }
         });

@@ -33,6 +33,7 @@ public class PositionPartialBottomClosedView extends RelativeLayout
     private TextView closedDate;
     private TextView periodHeld;
 
+    //<editor-fold desc="Constructors">
     public PositionPartialBottomClosedView(Context context)
     {
         super(context);
@@ -47,6 +48,14 @@ public class PositionPartialBottomClosedView extends RelativeLayout
     {
         super(context, attrs, defStyle);
     }
+    //</editor-fold>
+
+    @Override protected void onFinishInflate()
+    {
+        super.onFinishInflate();
+        DaggerUtils.inject(this);
+        initViews();
+    }
 
     protected void initViews()
     {
@@ -57,11 +66,9 @@ public class PositionPartialBottomClosedView extends RelativeLayout
         periodHeld = (TextView) findViewById(R.id.period_value);
     }
 
-    @Override protected void onFinishInflate()
+    public void onDestroyView()
     {
-        super.onFinishInflate();
-        DaggerUtils.inject(this);
-        initViews();
+        // Nothing to do
     }
 
     public void linkWith(OwnedPositionId ownedPositionId, boolean andDisplay)
@@ -79,7 +86,6 @@ public class PositionPartialBottomClosedView extends RelativeLayout
             display();
         }
     }
-
 
     public void display()
     {
@@ -142,6 +148,4 @@ public class PositionPartialBottomClosedView extends RelativeLayout
             }
         }
     }
-
-
 }

@@ -20,7 +20,6 @@ import javax.inject.Inject;
  * Created by julien on 30/10/13
  */
 public class PositionPartialBottomOpenView extends RelativeLayout
-
 {
     public static final String TAG = PositionPartialBottomOpenView.class.getSimpleName();
 
@@ -36,6 +35,7 @@ public class PositionPartialBottomOpenView extends RelativeLayout
     private TextView quantityValue;
     private TextView averagePriceValue;
 
+    //<editor-fold desc="Constructors">
     public PositionPartialBottomOpenView(Context context)
     {
         super(context);
@@ -50,6 +50,14 @@ public class PositionPartialBottomOpenView extends RelativeLayout
     {
         super(context, attrs, defStyle);
     }
+    //</editor-fold>
+
+    @Override protected void onFinishInflate()
+    {
+        super.onFinishInflate();
+        DaggerUtils.inject(this);
+        initViews();
+    }
 
     protected void initViews()
     {
@@ -61,11 +69,9 @@ public class PositionPartialBottomOpenView extends RelativeLayout
         averagePriceValue = (TextView) findViewById(R.id.average_price_value);
     }
 
-    @Override protected void onFinishInflate()
+    public void onDestroyView()
     {
-        super.onFinishInflate();
-        DaggerUtils.inject(this);
-        initViews();
+        // Nothing to do
     }
 
     public void linkWith(OwnedPositionId ownedPositionId, boolean andDisplay)
@@ -88,7 +94,6 @@ public class PositionPartialBottomOpenView extends RelativeLayout
             displayAveragePriceValue();
         }
     }
-
 
     public void display()
     {
