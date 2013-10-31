@@ -150,6 +150,7 @@
   <string name="logo">logo</string>
   <string name="image_url">image_url</string>
   <string name="key_price">price</string>
+  <string name="key_time_span">keyTimeSpan</string>
 
   <!-- Number presentation -->
   <string name="number_presentation_unit_suffix"></string>

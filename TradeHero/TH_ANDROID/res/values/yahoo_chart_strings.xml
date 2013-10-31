@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="yahoo_chart_1d">1d</string>
+  <string name="yahoo_chart_5d">5d</string>
+  <string name="yahoo_chart_3m">3m</string>
+  <string name="yahoo_chart_6m">6m</string>
+  <string name="yahoo_chart_1y">1y</string>
+  <string name="yahoo_chart_2y">2y</string>
+  <string name="yahoo_chart_5y">5y</string>
+  <string name="yahoo_chart_max">my</string>
+</resources>

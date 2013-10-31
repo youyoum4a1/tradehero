@@ -44,7 +44,7 @@ import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.ImageViewThreadSafe;
 import com.tradehero.th.R;
-import com.tradehero.th.adapters.trade.TradeBottomStockPagerAdapter;
+import com.tradehero.th.adapters.security.BuySellBottomStockPagerAdapter;
 import com.tradehero.th.api.position.SecurityPositionDetailDTO;
 import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
@@ -105,7 +105,7 @@ public class BuySellFragment extends AbstractBuySellFragment
     private Picasso mPicasso;
     private Transformation foregroundTransformation;
     private Transformation backgroundTransformation;
-    private TradeBottomStockPagerAdapter bottomViewPagerAdapter;
+    private BuySellBottomStockPagerAdapter bottomViewPagerAdapter;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -211,7 +211,7 @@ public class BuySellFragment extends AbstractBuySellFragment
         mBottomViewPager = (ViewPager) view.findViewById(R.id.trade_bottom_pager);
         if (bottomViewPagerAdapter == null)
         {
-            bottomViewPagerAdapter = new TradeBottomStockPagerAdapter(getActivity(), getFragmentManager());
+            bottomViewPagerAdapter = new BuySellBottomStockPagerAdapter(getActivity(), getFragmentManager());
         }
         if (mBottomViewPager != null)
         {

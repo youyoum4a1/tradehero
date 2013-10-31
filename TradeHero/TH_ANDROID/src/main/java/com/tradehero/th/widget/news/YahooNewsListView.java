@@ -36,6 +36,12 @@ public class YahooNewsListView extends ListView implements DTOView<NewsList>
     }
     //</editor-fold>
 
+    public void onDestroyView()
+    {
+        setAdapter(null);
+        adapter = null;
+    }
+
     //<editor-fold desc="Accessors">
     public int getYahooNewsItemLayoutResId()
     {

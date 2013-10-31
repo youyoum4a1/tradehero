@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
@@ -14,6 +15,8 @@ import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
+import com.tradehero.th.adapters.security.BuySellBottomStockPagerAdapter;
+import com.tradehero.th.adapters.security.InfoTopStockPagerAdapter;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.yahoo.NewsList;
@@ -21,6 +24,7 @@ import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.persistence.yahoo.NewsCache;
 import com.tradehero.th.widget.news.YahooNewsListView;
+import com.viewpagerindicator.PageIndicator;
 import dagger.Lazy;
 import javax.inject.Inject;
 
@@ -45,6 +49,8 @@ public class StockInfoFragment extends DashboardFragment
     private ImageView marketCloseIcon;
 
     private ViewPager topPager;
+    private InfoTopStockPagerAdapter topViewPagerAdapter;
+    private PageIndicator topPagerIndicator;
     private YahooNewsListView yahooNewsListView;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -63,9 +69,19 @@ public class StockInfoFragment extends DashboardFragment
         }
 
         topPager = (ViewPager) view.findViewById(R.id.top_pager);
+        if (topViewPagerAdapter == null)
+        {
+            topViewPagerAdapter = new InfoTopStockPagerAdapter(getActivity(), getFragmentManager());
+        }
         if (topPager != null)
         {
-            // TODO
+            topPager.setAdapter(topViewPagerAdapter);
+        }
+
+        topPagerIndicator = (PageIndicator) view.findViewById(R.id.top_pager_indicator);
+        if (topPagerIndicator != null && topPager != null)
+        {
+            topPagerIndicator.setViewPager(topPager, 0);
         }
     }
 
@@ -77,6 +93,15 @@ public class StockInfoFragment extends DashboardFragment
         if (args != null)
         {
             linkWith(new SecurityId(args), true);
+        }
+
+        // This feels HACKy
+
+        if (topPager != null)
+        {
+            //RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) topPager.getLayoutParams();
+            //layoutParams.height = getView().getWidth();
+            //topPager.setLayoutParams(layoutParams);
         }
     }
 
@@ -115,6 +140,18 @@ public class StockInfoFragment extends DashboardFragment
         super.onPause();
     }
 
+    @Override public void onDestroyView()
+    {
+        if (yahooNewsListView != null)
+        {
+            yahooNewsListView.onDestroyView();
+        }
+        topViewPagerAdapter = null;
+        topPager = null;
+        topPagerIndicator = null;
+        super.onDestroyView();
+    }
+
     private void linkWith(final SecurityId securityId, final boolean andDisplay)
     {
         this.securityId = securityId;
@@ -128,6 +165,7 @@ public class StockInfoFragment extends DashboardFragment
         if (andDisplay)
         {
             displayExchangeSymbol();
+            displayTopViewPager();
         }
     }
 
@@ -219,6 +257,7 @@ public class StockInfoFragment extends DashboardFragment
     {
         displayExchangeSymbol();
         displayMarketClose();
+        displayTopViewPager();
         displayYahooNewsList();
     }
 
@@ -242,6 +281,29 @@ public class StockInfoFragment extends DashboardFragment
         if (marketCloseIcon != null)
         {
             marketCloseIcon.setVisibility(securityCompactDTO == null || securityCompactDTO.marketOpen ? View.GONE : View.VISIBLE);
+        }
+    }
+
+    public void displayTopViewPager()
+    {
+        if (topViewPagerAdapter != null)
+        {
+            if (securityId != null && !securityId.equals(topViewPagerAdapter.getSecurityId()))
+            {
+                topViewPagerAdapter.linkWith(securityId);
+
+                if (topPager != null)
+                {
+                    topPager.post(new Runnable()
+                    {
+                        @Override public void run()
+                        {
+                            // We need to do it in a later frame otherwise the pager adapter crashes with IllegalStateException
+                            topViewPagerAdapter.notifyDataSetChanged();
+                        }
+                    });
+                }
+            }
         }
     }
 

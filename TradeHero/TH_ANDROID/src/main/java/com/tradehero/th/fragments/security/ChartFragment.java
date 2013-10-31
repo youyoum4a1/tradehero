@@ -11,6 +11,7 @@ import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.utils.yahoo.*;
+import com.tradehero.th.widget.news.TimeSpanButtonSet;
 import dagger.Lazy;
 import javax.inject.Inject;
 
@@ -20,17 +21,62 @@ import javax.inject.Inject;
 public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactDTO>
 {
     private final static String TAG = ChartFragment.class.getSimpleName();
+    public final static String BUNDLE_KEY_TIME_SPAN_BUTTON_SET_VISIBILITY = ChartFragment.class.getName() + ".timeSpanButtonSetVisibility";
+    public final static String BUNDLE_KEY_TIME_SPAN_STRING = ChartFragment.class.getName() + ".timeSpanString";
+    public final static String BUNDLE_KEY_CHART_SIZE = ChartFragment.class.getName() + ".chartSize";
 
     private ImageView stockBgLogo;
+    private TimeSpanButtonSet timeSpanButtonSet;
+    private TimeSpanButtonSet.OnTimeSpanButtonSelectedListener timeSpanButtonSetListener;
+    private TimeSpan timeSpan = TimeSpan.day1;
+    private int timeSpanButtonSetVisibility = View.VISIBLE;
+    private ChartSize chartSize = ChartSize.medium;
 
     @Inject protected Lazy<SecurityCompactCache> securityCompactCache;
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.fragment_chart, container, false);
-        stockBgLogo = (ImageView)view.findViewById(R.id.chart_imageView);
+
+        Bundle args = getArguments();
+        if (args != null)
+        {
+            timeSpanButtonSetVisibility = args.getInt(BUNDLE_KEY_TIME_SPAN_BUTTON_SET_VISIBILITY, timeSpanButtonSetVisibility);
+            timeSpan = TimeSpan.valueOf(args.getString(BUNDLE_KEY_TIME_SPAN_STRING, timeSpan.name()));
+            chartSize = ChartSize.valueOf(args.getString(BUNDLE_KEY_CHART_SIZE, chartSize.name()));
+        }
+
+        // Override with saved value if any
+        if (savedInstanceState != null)
+        {
+            timeSpanButtonSetVisibility = savedInstanceState.getInt(BUNDLE_KEY_TIME_SPAN_BUTTON_SET_VISIBILITY, timeSpanButtonSetVisibility);
+            timeSpan = TimeSpan.valueOf(savedInstanceState.getString(BUNDLE_KEY_TIME_SPAN_STRING, timeSpan.name()));
+            chartSize = ChartSize.valueOf(savedInstanceState.getString(BUNDLE_KEY_CHART_SIZE, chartSize.name()));
+        }
+
+        stockBgLogo = (ImageView) view.findViewById(R.id.chart_imageView);
+        timeSpanButtonSet = (TimeSpanButtonSet) view.findViewById(R.id.yahoo_time_span_button_set);
+        if (timeSpanButtonSet != null)
+        {
+            timeSpanButtonSetListener = new TimeSpanButtonSet.OnTimeSpanButtonSelectedListener()
+            {
+                @Override public void onTimeSpanButtonSelected(TimeSpan selected)
+                {
+                    linkWith(selected, true);
+                }
+            };
+
+            timeSpanButtonSet.addAllChildButtons();
+            timeSpanButtonSet.setListener(timeSpanButtonSetListener);
+            timeSpanButtonSet.setActive(TimeSpan.month3);
+        }
         return view;
+    }
+
+    @Override public void onResume()
+    {
+        super.onResume();
+        display();
     }
 
     @Override public void onPause()
@@ -40,6 +86,35 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
             securityCompactCache.get().unRegisterListener(this);
         }
         super.onPause();
+    }
+
+    @Override public void onSaveInstanceState(Bundle outState)
+    {
+        super.onSaveInstanceState(outState);
+        outState.putString(BUNDLE_KEY_TIME_SPAN_STRING, timeSpan.name());
+        outState.putString(BUNDLE_KEY_CHART_SIZE, chartSize.name());
+        outState.putInt(BUNDLE_KEY_TIME_SPAN_BUTTON_SET_VISIBILITY, timeSpanButtonSetVisibility);
+    }
+
+    @Override public void onDestroyView()
+    {
+        if (timeSpanButtonSet != null)
+        {
+            timeSpanButtonSet.setListener(null);
+        }
+        timeSpanButtonSetListener = null;
+        super.onDestroyView();
+    }
+
+    public int getTimeSpanButtonSetVisibility()
+    {
+        return timeSpanButtonSetVisibility;
+    }
+
+    public void setTimeSpanButtonSetVisibility(int timeSpanButtonSetVisibility)
+    {
+        this.timeSpanButtonSetVisibility = timeSpanButtonSetVisibility;
+        displayTimeSpanButtonSet();
     }
 
     @Override public void linkWith(SecurityId securityId, boolean andDisplay)
@@ -52,9 +127,27 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
         }
     }
 
+    public void linkWith(TimeSpan timeSpan, boolean andDisplay)
+    {
+        this.timeSpan = timeSpan;
+        if (andDisplay)
+        {
+            displayBgLogo();
+        }
+    }
+
     @Override public void display()
     {
         displayBgLogo();
+        displayTimeSpanButtonSet();
+    }
+
+    public void displayTimeSpanButtonSet()
+    {
+        if (timeSpanButtonSet != null)
+        {
+            timeSpanButtonSet.setVisibility(timeSpanButtonSetVisibility);
+        }
     }
 
     public void displayBgLogo()
@@ -63,7 +156,7 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
         {
             if (value != null && value.yahooSymbol != null)
             {
-                String imageURL = Utils.getChartURL(value.yahooSymbol, ChartSize.large, Timespan.months3);
+                String imageURL = Utils.getChartURL(value.yahooSymbol, chartSize, timeSpan);
                 Picasso.with(getActivity()).load(imageURL).into(stockBgLogo);
             }
         }

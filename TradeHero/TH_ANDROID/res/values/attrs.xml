@@ -27,4 +27,8 @@
   <declare-styleable name="QuickPriceButton">
     <attr name="price" format="integer"/>
   </declare-styleable>
+
+  <declare-styleable name="TimeSpanButton">
+    <attr name="timeSpan" format="string"/>
+  </declare-styleable>
 </resources>

@@ -2,6 +2,7 @@
 
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:android_auto="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
@@ -10,16 +11,33 @@
   <android.support.v4.view.ViewPager
       android:id="@+id/top_pager"
       android:layout_width="match_parent"
-      android:layout_height="100dp"
+      android:layout_height="wrap_content"
       android:layout_alignParentTop="true"
+      android:layout_above="@+id/top_pager_indicator"
+      />
+
+  <com.viewpagerindicator.CirclePageIndicator
+      android:id="@+id/top_pager_indicator"
+      android:layout_height="wrap_content"
+      android:layout_width="fill_parent"
+      android:layout_above="@+id/list_yahooNews"
+      android_auto:strokeWidth="1dp"
+      android_auto:lineWidth="30dp"
+      android_auto:unselectedColor="#FFbbbbbb"
+      android_auto:selectedColor="@color/btn_new_user_color_light"
+      android:paddingTop="2dp"
+      android:background="@android:color/transparent"
+      android_auto:radius="4dp"
+      android_auto:fillColor="@color/btn_new_user_color_light"
+      android_auto:pageColor="@android:color/transparent"
+      android_auto:strokeColor="@color/btn_new_user_color_light"
     />
 
   <com.tradehero.th.widget.news.YahooNewsListView
       android:id="@+id/list_yahooNews"
       android:layout_width="match_parent"
-      android:layout_height="match_parent"
-      android:layout_below="@id/top_pager"
+      android:layout_height="200dp"
       android:layout_alignParentBottom="true"
-    />
+      />
 
 </RelativeLayout>

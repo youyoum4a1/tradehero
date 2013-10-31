@@ -1,21 +1,102 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res/com.tradehero.th"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+  >
 
-    >
+  <com.tradehero.th.widget.news.TimeSpanButtonSet
+      android:id="@+id/yahoo_time_span_button_set"
+      android:layout_width="match_parent"
+      android:layout_height="48dp"
+      android:layout_alignParentBottom="true"
+      android:orientation="horizontal"
+      android:layout_marginLeft="4dp"
+      android:layout_marginRight="4dp"
+      android:layout_marginBottom="4dp"
+      android:background="@drawable/trend_price_bar"
+      android:visibility="gone"
+      >
 
-    <ImageView
-        android:id="@+id/chart_imageView"
-        android:layout_marginRight="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginBottom="8dp"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:contentDescription="@null"
-        android:scaleType="fitXY"
-        android:adjustViewBounds="true"
+    <com.tradehero.th.widget.news.TimeSpanButton
+        style="@style/TH.Btn_Price_Bar"
+        android:text="@string/yahoo_chart_1d"
+        app:timeSpan="day1"
         />
-</FrameLayout>
+
+    <View style="@style/TH.Btn_Price_Bar_Separator" />
+
+    <com.tradehero.th.widget.news.TimeSpanButton
+        style="@style/TH.Btn_Price_Bar"
+        android:text="@string/yahoo_chart_5d"
+        app:timeSpan="day5"
+        />
+
+    <View style="@style/TH.Btn_Price_Bar_Separator" />
+
+    <com.tradehero.th.widget.news.TimeSpanButton
+        style="@style/TH.Btn_Price_Bar"
+        android:text="@string/yahoo_chart_3m"
+        app:timeSpan="month3"
+        />
+
+    <View style="@style/TH.Btn_Price_Bar_Separator" />
+
+    <com.tradehero.th.widget.news.TimeSpanButton
+        style="@style/TH.Btn_Price_Bar"
+        android:text="@string/yahoo_chart_6m"
+        app:timeSpan="month6"
+        />
+
+    <View style="@style/TH.Btn_Price_Bar_Separator" />
+
+    <com.tradehero.th.widget.news.TimeSpanButton
+        style="@style/TH.Btn_Price_Bar"
+        android:text="@string/yahoo_chart_1y"
+        app:timeSpan="year1"
+        />
+
+    <View style="@style/TH.Btn_Price_Bar_Separator" />
+
+    <com.tradehero.th.widget.news.TimeSpanButton
+        style="@style/TH.Btn_Price_Bar"
+        android:text="@string/yahoo_chart_2y"
+        app:timeSpan="year2"
+        />
+
+    <View style="@style/TH.Btn_Price_Bar_Separator" />
+
+    <com.tradehero.th.widget.news.TimeSpanButton
+        style="@style/TH.Btn_Price_Bar"
+        android:text="@string/yahoo_chart_5y"
+        app:timeSpan="year5"
+        />
+
+    <View style="@style/TH.Btn_Price_Bar_Separator" />
+
+    <com.tradehero.th.widget.news.TimeSpanButton
+        style="@style/TH.Btn_Price_Bar"
+        android:text="@string/yahoo_chart_max"
+        app:timeSpan="yearMax"
+        />
+
+  </com.tradehero.th.widget.news.TimeSpanButtonSet>
+
+  <ImageView
+      android:id="@+id/chart_imageView"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:layout_above="@id/yahoo_time_span_button_set"
+      android:layout_alignParentTop="true"
+      android:layout_marginRight="8dp"
+      android:layout_marginLeft="8dp"
+      android:layout_marginBottom="8dp"
+      android:contentDescription="@null"
+      android:scaleType="fitXY"
+      android:adjustViewBounds="true"
+    />
+
+</RelativeLayout>

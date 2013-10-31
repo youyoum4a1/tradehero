@@ -7,8 +7,8 @@ package com.tradehero.th.utils.yahoo;
 
 public class Utils
 {
-    public static String getChartURL(String yahooSymbol, ChartSize size, Timespan timespan)
+    public static String getChartURL(String yahooSymbol, ChartSize size, TimeSpan timeSpan)
     {
-        return String.format("http://chart.finance.yahoo.com/z?s=%s&t=%s&q=l&z=%s", yahooSymbol, timespan.toString(), size.toString());
+        return String.format("http://chart.finance.yahoo.com/z?s=%s&t=%s&q=l&z=%s", yahooSymbol, timeSpan.code, size.code);
     }
 }

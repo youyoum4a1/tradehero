@@ -10,7 +10,7 @@ public enum ChartSize
     medium("m"),
     large("l");
 
-    private final String code;
+    public final String code;
 
     private ChartSize(String c)
     {
