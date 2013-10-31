@@ -1,12 +1,11 @@
-package com.tradehero.th.widget.position;
+package com.tradehero.th.widget.position.partial;
 
 import android.content.Context;
-import android.os.AsyncTask;
-import android.support.v4.view.MotionEventCompat;
-import android.view.MotionEvent;
+import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 import com.tradehero.common.graphics.WhiteToTransparentTransformation;
@@ -26,13 +25,15 @@ import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.NumberDisplayUtils;
 import com.tradehero.th.utils.SecurityUtils;
 import dagger.Lazy;
-import java.lang.ref.WeakReference;
+
 import javax.inject.Inject;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 10/16/13 Time: 11:53 AM To change this template use File | Settings | File Templates. */
-public class PositionQuickInnerViewHolder<OnClickedListenerType extends PositionQuickInnerViewHolder.OnPositionQuickInnerClickedListener>
+/**
+ * Created by julien on 30/10/13
+ */
+public class PositionPartialTopView extends LinearLayout
 {
-    public static final String TAG = PositionQuickInnerViewHolder.class.getSimpleName();
+    public static final String TAG = PositionPartialTopView.class.getSimpleName();
 
     protected static final int PERCENT_STRETCHING_FOR_COLOR = 20;
 
@@ -44,13 +45,10 @@ public class PositionQuickInnerViewHolder<OnClickedListenerType extends Position
     private TextView stockMovementIndicator;
     private TextView stockLastPrice;
     private ImageView marketClose;
-    private TextView positionProfitIndicator;
     private TextView positionPercent;
     private TextView positionLastAmount;
-    private ImageButton tradeHistoryButton;
 
-    // We use this intermediate listener to avoid memory leaks
-    protected WeakReference<OnClickedListenerType> positionClickedListener = new WeakReference<>(null);
+    private ImageButton tradeHistoryButton;
 
     protected SecurityId securityId;
     protected SecurityCompactDTO securityCompactDTO;
@@ -65,39 +63,40 @@ public class PositionQuickInnerViewHolder<OnClickedListenerType extends Position
 
     @Inject protected Lazy<Picasso> picasso;
 
-    public PositionQuickInnerViewHolder()
+    public PositionPartialTopView(Context context)
     {
-        super();
-        DaggerUtils.inject(this);
+        super(context);
     }
 
-    public void initViews(View view)
+    public PositionPartialTopView(Context context, AttributeSet attrs)
     {
-        if (view != null)
-        {
-            stockLogo = (ImageView) view.findViewById(R.id.stock_logo);
-            stockSymbol = (TextView) view.findViewById(R.id.stock_symbol);
-            companyName = (TextView) view.findViewById(R.id.company_name);
-            stockMovementIndicator = (TextView) view.findViewById(R.id.stock_movement_indicator);
-            stockLastPrice = (TextView) view.findViewById(R.id.stock_last_price);
-            marketClose = (ImageView) view.findViewById(R.id.ic_market_close);
-            positionProfitIndicator = (TextView) view.findViewById(R.id.position_profit_indicator);
-            positionPercent = (TextView) view.findViewById(R.id.position_percentage);
-            positionLastAmount = (TextView) view.findViewById(R.id.position_last_amount);
+        super(context, attrs);
+    }
 
-            tradeHistoryButton = (ImageButton) view.findViewById(R.id.btn_trade_history);
-            if (tradeHistoryButton != null)
-            {
-                tradeHistoryButton.setOnClickListener(new View.OnClickListener()
-                {
-                    @Override
-                    public void onClick(View view)
-                    {
-                        notifyTradeHistoryClicked();
-                    }
-                });
-            }
-        }
+    public PositionPartialTopView(Context context, AttributeSet attrs, int defStyle)
+    {
+        super(context, attrs, defStyle);
+    }
+
+
+    @Override protected void onFinishInflate()
+    {
+        super.onFinishInflate();
+        DaggerUtils.inject(this);
+        initViews();
+    }
+
+    protected void initViews()
+    {
+        stockLogo = (ImageView) findViewById(R.id.stock_logo);
+        stockSymbol = (TextView) findViewById(R.id.stock_symbol);
+        companyName = (TextView) findViewById(R.id.company_name);
+        stockMovementIndicator = (TextView) findViewById(R.id.stock_movement_indicator);
+        stockLastPrice = (TextView) findViewById(R.id.stock_last_price);
+        marketClose = (ImageView) findViewById(R.id.ic_market_close);
+        positionPercent = (TextView) findViewById(R.id.position_percentage);
+        positionLastAmount = (TextView) findViewById(R.id.position_last_amount);
+        tradeHistoryButton = (ImageButton) findViewById(R.id.btn_trade_history);
     }
 
     public void destroyViews()
@@ -114,7 +113,6 @@ public class PositionQuickInnerViewHolder<OnClickedListenerType extends Position
         securityCompactCacheFetchTask = null;
     }
 
-    //<editor-fold desc="DTO Methods">
     public void linkWith(OwnedPositionId ownedPositionId, boolean andDisplay)
     {
         this.ownedPositionId = ownedPositionId;
@@ -127,12 +125,11 @@ public class PositionQuickInnerViewHolder<OnClickedListenerType extends Position
         }
     }
 
-    public void linkWith(PositionDTO positionDTO, boolean andDisplay)
+    protected void linkWith(PositionDTO positionDTO, boolean andDisplay)
     {
         this.positionDTO = positionDTO;
         if (andDisplay)
         {
-            displayPositionProfitIndicator();
             displayPositionPercent();
             displayPositionLastAmount();
         }
@@ -142,7 +139,7 @@ public class PositionQuickInnerViewHolder<OnClickedListenerType extends Position
         }
     }
 
-    public void linkWith(SecurityId securityId, boolean andDisplay)
+    protected void linkWith(SecurityId securityId, boolean andDisplay)
     {
         this.securityId = securityId;
 
@@ -171,7 +168,7 @@ public class PositionQuickInnerViewHolder<OnClickedListenerType extends Position
         }
     }
 
-    public void linkWith(SecurityCompactDTO securityCompactDTO, boolean andDisplay)
+    protected void linkWith(SecurityCompactDTO securityCompactDTO, boolean andDisplay)
     {
         this.securityCompactDTO = securityCompactDTO;
         if (andDisplay)
@@ -184,9 +181,7 @@ public class PositionQuickInnerViewHolder<OnClickedListenerType extends Position
             // TODO more
         }
     }
-    //</editor-fold>
 
-    //<editor-fold desc="Display Methods">
     public void display()
     {
         displayStockLogo();
@@ -196,7 +191,6 @@ public class PositionQuickInnerViewHolder<OnClickedListenerType extends Position
         displayStockLastPrice();
         displayMarketClose();
 
-        displayPositionProfitIndicator();
         displayPositionPercent();
         displayPositionLastAmount();
     }
@@ -306,35 +300,6 @@ public class PositionQuickInnerViewHolder<OnClickedListenerType extends Position
         }
     }
 
-    public void displayPositionProfitIndicator()
-    {
-        if (positionProfitIndicator != null)
-        {
-            if (positionDTO != null)
-            {
-                Double roiSinceInception = positionDTO.getROISinceInception();
-                if (roiSinceInception == null || roiSinceInception == 0)
-                {
-                    positionProfitIndicator.setText(R.string.na);
-                    positionProfitIndicator.setTextColor(context.getResources().getColor(R.color.black));
-                }
-                else
-                {
-                    if (roiSinceInception > 0)
-                    {
-                        positionProfitIndicator.setText(R.string.positive_prefix);
-                    }
-                    else
-                    {
-                        positionProfitIndicator.setText(R.string.negative_prefix);
-                    }
-                    positionProfitIndicator.setTextColor(
-                            ColorUtils.getColorForPercentage((float) roiSinceInception.doubleValue() * PERCENT_STRETCHING_FOR_COLOR));
-                }
-            }
-        }
-    }
-
     public void displayPositionPercent()
     {
         if (positionPercent != null)
@@ -349,7 +314,7 @@ public class PositionQuickInnerViewHolder<OnClickedListenerType extends Position
                 }
                 else
                 {
-                    positionPercent.setText(String.format("%,.2f%%", Math.abs(100 * roiSinceInception)));
+                    positionPercent.setText(String.format("%+,.2f%%", roiSinceInception * 100.0));
                     positionPercent.setTextColor(
                             ColorUtils.getColorForPercentage((float) roiSinceInception.doubleValue() * PERCENT_STRETCHING_FOR_COLOR));
                 }
@@ -379,68 +344,6 @@ public class PositionQuickInnerViewHolder<OnClickedListenerType extends Position
         }
     }
 
-    public void displayTradeHistoryButton()
-    {
-        if (tradeHistoryButton != null)
-        {
-            tradeHistoryButton.setFocusable(false);
-        }
-    }
-    //</editor-fold>
-
-    protected boolean onViewTouched(View view, MotionEvent motionEvent)
-    {
-        int action = MotionEventCompat.getActionMasked(motionEvent);
-        if (action == MotionEvent.ACTION_DOWN)
-        {
-            view.setTag(MotionEvent.ACTION_DOWN);
-            return true;
-        }
-        int previousAction = (int) view.getTag();
-        if (action == MotionEvent.ACTION_UP && previousAction == MotionEvent.ACTION_DOWN)
-        {
-            notifyViewClicked(view);
-            return true;
-        }
-
-        return false;
-    }
-
-    protected void notifyViewClicked(View clickedView)
-    {
-        if (clickedView == tradeHistoryButton)
-        {
-            notifyTradeHistoryClicked();
-        }
-    }
-
-    /**
-     * The listener should be strongly referenced elsewhere
-     * @param positionClickedListener
-     */
-    public void setPositionClickedListener(OnClickedListenerType positionClickedListener)
-    {
-        this.positionClickedListener = new WeakReference<>(positionClickedListener);
-    }
-
-    protected void notifyMoreInfoClicked()
-    {
-        PositionQuickInnerViewHolder.OnPositionQuickInnerClickedListener listener = positionClickedListener.get();
-        if (listener != null)
-        {
-            listener.onMoreInfoClicked(ownedPositionId);
-        }
-    }
-
-    protected void notifyTradeHistoryClicked()
-    {
-        OnClickedListenerType listener = positionClickedListener.get();
-        if (listener != null)
-        {
-            listener.onTradeHistoryClicked(ownedPositionId);
-        }
-    }
-
     private SecurityCompactCache.Listener<SecurityId, SecurityCompactDTO> createSecurityCompactCacheListener()
     {
         return new SecurityCompactCache.Listener<SecurityId, SecurityCompactDTO>()
@@ -461,9 +364,9 @@ public class PositionQuickInnerViewHolder<OnClickedListenerType extends Position
         };
     }
 
-    public static interface OnPositionQuickInnerClickedListener
+
+    public ImageButton getTradeHistoryButton()
     {
-        void onMoreInfoClicked(OwnedPositionId clickedOwnedPositionId);
-        void onTradeHistoryClicked(OwnedPositionId clickedOwnedPositionId);
+        return tradeHistoryButton;
     }
 }

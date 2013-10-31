@@ -6,7 +6,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewStub;
 import android.widget.AdapterView;
-import android.widget.ListView;
 import android.widget.RelativeLayout;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
@@ -22,7 +21,6 @@ import com.tradehero.th.api.position.GetPositionsDTO;
 import com.tradehero.th.api.position.OwnedPositionId;
 import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.api.security.SecurityId;
-import com.tradehero.th.api.security.SecurityIntegerId;
 import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.dashboard.DashboardTabType;
@@ -32,24 +30,25 @@ import com.tradehero.th.fragments.trade.TradeListFragment;
 import com.tradehero.th.persistence.position.GetPositionsCache;
 import com.tradehero.th.persistence.position.PositionCache;
 import com.tradehero.th.persistence.security.SecurityIdCache;
+import com.tradehero.th.widget.list.ExpandingListView;
 import com.tradehero.th.widget.portfolio.header.PortfolioHeaderFactory;
 import com.tradehero.th.widget.portfolio.header.PortfolioHeaderView;
-import com.tradehero.th.widget.position.PositionLongView;
-import com.tradehero.th.widget.position.PositionQuickNothingView;
+import com.tradehero.th.widget.position.PositionListener;
+import com.tradehero.th.widget.position.PositionNothingView;
 import dagger.Lazy;
+
 import javax.inject.Inject;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/16/13 Time: 5:56 PM To change this template use File | Settings | File Templates. */
 public class PositionListFragment extends DashboardFragment
     implements BaseFragment.TabBarVisibilityInformer,
-        PositionLongView.OnListedPositionInnerLongClickedListener
+               PositionListener
 {
     public static final String TAG = PositionListFragment.class.getSimpleName();
-    public static final String BUNDLE_KEY_POSITION_EXPANDED = PositionListFragment.class.getName() + ".positionExpanded";
 
     @Inject Lazy<PortfolioHeaderFactory> headerFactory;
     private PortfolioHeaderView portfolioHeaderView;
-    private ListView positionsListView;
+    private ExpandingListView positionsListView;
     private PositionItemAdapter positionItemAdapter;
 
     private OwnedPortfolioId ownedPortfolioId;
@@ -62,23 +61,8 @@ public class PositionListFragment extends DashboardFragment
     @Inject Lazy<SecurityIdCache> securityIdCache;
     @Inject Lazy<PositionCache> positionCache;
 
-    private Integer positionForMoreInfo;
-
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        //THLog.d(TAG, "onCreateView");
-
-        if (savedInstanceState != null)
-        {
-            if (savedInstanceState.containsKey(BUNDLE_KEY_POSITION_EXPANDED))
-            {
-                positionForMoreInfo = savedInstanceState.getInt(BUNDLE_KEY_POSITION_EXPANDED);
-            }
-            else
-            {
-                positionForMoreInfo = null;
-            }
-        }
 
         super.onCreateView(inflater, container, savedInstanceState);
         RelativeLayout view = null;
@@ -98,23 +82,24 @@ public class PositionListFragment extends DashboardFragment
                         getActivity(),
                         getActivity().getLayoutInflater(),
                         R.layout.position_item_header,
-                        R.layout.position_quick,
-                        R.layout.position_long,
+                        R.layout.position_open_no_period,
+                        R.layout.position_closed_no_period,
                         R.layout.position_quick_nothing);
-                positionItemAdapter.setParentMoreInfoRequestedListener(this);
-                positionItemAdapter.setMoreInfoPositionClicked(positionForMoreInfo);
+                positionItemAdapter.setCellListener(this);
             }
 
-            positionsListView = (ListView) view.findViewById(R.id.position_list);
+            positionsListView = (ExpandingListView) view.findViewById(R.id.position_list);
             if (positionsListView != null)
             {
                 positionsListView.setAdapter(positionItemAdapter);
-                positionsListView.setOnItemClickListener(new AdapterView.OnItemClickListener()
+                positionsListView.setExpandingListItemListener(new ExpandingListView.ExpandingListItemListener()
                 {
-                    @Override public void onItemClick(AdapterView<?> adapterView, View view, int i, long l)
+                    @Override public void onItemClick(AdapterView<?> adapterView, View view, int position, long id)
                     {
-                        handlePositionItemClicked(adapterView, view, i, l);
+                        handlePositionItemClicked(adapterView, view, position, id);
                     }
+                    @Override public void onItemDidExpand(AdapterView<?> parent, View view, int position, long id){}
+                    @Override public void onItemDidCollapse(AdapterView<?> parent, View view, int position, long id){}
                 });
             }
 
@@ -131,7 +116,7 @@ public class PositionListFragment extends DashboardFragment
 
     private void handlePositionItemClicked(AdapterView<?> parent, View view, int position, long id)
     {
-        if (view instanceof PositionQuickNothingView)
+        if (view instanceof PositionNothingView)
         {
             navigator.popFragment(); // Feels HACKy
             navigator.goToTab(DashboardTabType.TRENDING);
@@ -189,14 +174,6 @@ public class PositionListFragment extends DashboardFragment
     {
         THLog.d(TAG, "onSaveInstanceState");
         super.onSaveInstanceState(outState);
-        if (positionForMoreInfo != null)
-        {
-            outState.putInt(BUNDLE_KEY_POSITION_EXPANDED, positionForMoreInfo);
-        }
-        else
-        {
-            outState.remove(BUNDLE_KEY_POSITION_EXPANDED);
-        }
     }
 
     @Override public void onDestroyView()
@@ -208,7 +185,7 @@ public class PositionListFragment extends DashboardFragment
         }
         if (positionItemAdapter != null)
         {
-            positionItemAdapter.setParentMoreInfoRequestedListener(null);
+            positionItemAdapter.setCellListener(null);
         }
         positionItemAdapter = null;
         super.onDestroyView();
@@ -296,14 +273,6 @@ public class PositionListFragment extends DashboardFragment
         THToast.show("No info for now");
     }
 
-    private void togglePositionMoreInfo()
-    {
-        if (positionItemAdapter != null)
-        {
-            positionItemAdapter.togglePositionClicked(positionForMoreInfo);
-        }
-    }
-
     private GetPositionsCache.Listener<OwnedPortfolioId, GetPositionsDTO> createGetPositionsCacheListener()
     {
         return new GetPositionsCache.Listener<OwnedPortfolioId, GetPositionsDTO>()
@@ -354,30 +323,32 @@ public class PositionListFragment extends DashboardFragment
         }
     }
 
-    //<editor-fold desc="BaseFragment.TabBarVisibilityInformer">
     @Override public boolean isTabBarVisible()
     {
         return false;
     }
-    //</editor-fold>
 
-    //<editor-fold desc="PositionLongView.OnListedPositionInnerLongClickedListener">
-    @Override public void onAddAlertClicked(int position, OwnedPositionId clickedOwnedPositionId)
+    @Override public void onTradeHistoryClicked(OwnedPositionId clickedOwnedPositionId)
     {
-        THToast.show("Add Alert at position " + position);
+        navigator.pushFragment(TradeListFragment.class, clickedOwnedPositionId.getArgs());
     }
 
-    @Override public void onBuyClicked(int position, OwnedPositionId clickedOwnedPositionId)
+    @Override public void onBuyClicked(OwnedPositionId clickedOwnedPositionId)
     {
         pushTradeFragment(clickedOwnedPositionId, true);
     }
 
-    @Override public void onSellClicked(int position, OwnedPositionId clickedOwnedPositionId)
+    @Override public void onSellClicked(OwnedPositionId clickedOwnedPositionId)
     {
         pushTradeFragment(clickedOwnedPositionId, false);
     }
 
-    @Override public void onStockInfoClicked(int position, OwnedPositionId clickedOwnedPositionId)
+    @Override public void onAddAlertClicked(OwnedPositionId clickedOwnedPositionId)
+    {
+       THToast.show("Alert");
+    }
+
+    @Override public void onStockInfoClicked(OwnedPositionId clickedOwnedPositionId)
     {
         PositionDTO positionDTO = positionCache.get().get(clickedOwnedPositionId);
         if (positionDTO == null)
@@ -399,17 +370,4 @@ public class PositionListFragment extends DashboardFragment
             }
         }
     }
-
-    @Override public void onMoreInfoClicked(int position, OwnedPositionId clickedOwnedPositionId)
-    {
-        // Final decision will be made on touch up of the list view.
-        positionForMoreInfo = position;
-        togglePositionMoreInfo();
-    }
-
-    @Override public void onTradeHistoryClicked(int position, OwnedPositionId clickedOwnedPositionId)
-    {
-        navigator.pushFragment(TradeListFragment.class, clickedOwnedPositionId.getArgs());
-    }
-    //</editor-fold>
 }

@@ -52,8 +52,11 @@ import com.tradehero.th.widget.ServerValidatedUsernameText;
 import com.tradehero.th.widget.portfolio.PortfolioListItemView;
 import com.tradehero.th.widget.portfolio.header.CurrentUserPortfolioHeaderView;
 import com.tradehero.th.widget.portfolio.header.OtherUserPortfolioHeaderView;
-import com.tradehero.th.widget.position.PositionLongViewHolder;
-import com.tradehero.th.widget.position.PositionQuickViewHolder;
+import com.tradehero.th.widget.position.PositionClosedView;
+import com.tradehero.th.widget.position.PositionOpenView;
+import com.tradehero.th.widget.position.partial.PositionPartialBottomClosedView;
+import com.tradehero.th.widget.position.partial.PositionPartialBottomOpenView;
+import com.tradehero.th.widget.position.partial.PositionPartialTopView;
 import com.tradehero.th.widget.timeline.TimelineItemView;
 import com.tradehero.th.widget.trade.TradeListHeaderView;
 import com.tradehero.th.widget.trade.TradeListOverlayHeaderView;
@@ -105,8 +108,11 @@ import javax.inject.Singleton;
                 PositionListFragment.class,
                 CurrentUserPortfolioHeaderView.class,
                 OtherUserPortfolioHeaderView.class,
-                PositionQuickViewHolder.class,
-                PositionLongViewHolder.class,
+                PositionOpenView.class,
+                PositionClosedView.class,
+                PositionPartialTopView.class,
+                PositionPartialBottomOpenView.class,
+                PositionPartialBottomClosedView.class,
 
                 TradeListFragment.class,
                 TradeListItemView.class,

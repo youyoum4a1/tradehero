@@ -8,26 +8,24 @@ import android.widget.TextView;
 import com.tradehero.th.R;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/18/13 Time: 12:53 PM To change this template use File | Settings | File Templates. */
-public class PositionQuickNothingView extends RelativeLayout
+public class PositionNothingView extends RelativeLayout
 {
     private TextView description;
 
-    //<editor-fold desc="Constructors">
-    public PositionQuickNothingView(Context context, AttributeSet attrs, int defStyle)
+    public PositionNothingView(Context context, AttributeSet attrs, int defStyle)
     {
         super(context, attrs, defStyle);
     }
 
-    public PositionQuickNothingView(Context context, AttributeSet attrs)
+    public PositionNothingView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
     }
 
-    public PositionQuickNothingView(Context context)
+    public PositionNothingView(Context context)
     {
         super(context);
     }
-    //</editor-fold>
 
     @Override protected void onFinishInflate()
     {

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<com.tradehero.th.widget.position.PositionClosedView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:orientation="horizontal"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:descendantFocusability="blocksDescendants"
+        >
+
+    <com.tradehero.common.widget.ColorIndicator
+            android:id="@+id/color_indicator"
+            android:layout_height="match_parent"
+            android:layout_width="10dp"
+            android:background="@color/number_green"
+            android:layout_marginLeft="2dp"
+            android:layout_marginTop="2dp"
+            android:layout_marginBottom="2dp"
+            />
+    <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+        <include layout="@layout/position_partial_top_view"/>
+        <include layout="@layout/position_partial_bottom_closed"/>
+    </LinearLayout>
+
+</com.tradehero.th.widget.position.PositionClosedView>

@@ -9,8 +9,9 @@
       android:id="@+id/header_text"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:layout_centerInParent="true"
-      android:textSize="25sp"
+      android:fontFamily="bold"
+      android:text="Position Header"
+      android:paddingLeft="8dp"
     />
 
 </com.tradehero.th.widget.portfolio.PortfolioListHeaderView>

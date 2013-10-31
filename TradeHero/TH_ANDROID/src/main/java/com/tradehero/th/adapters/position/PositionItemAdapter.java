@@ -6,14 +6,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import com.tradehero.th.R;
+import com.tradehero.th.adapters.ExpandableListItem;
 import com.tradehero.th.api.portfolio.PortfolioId;
 import com.tradehero.th.api.position.OwnedPositionId;
 import com.tradehero.th.api.position.PositionDTO;
-import com.tradehero.th.widget.position.PositionLongView;
+import com.tradehero.th.widget.position.AbstractPositionView;
+import com.tradehero.th.widget.position.PositionListener;
+import com.tradehero.th.widget.position.PositionOpenView;
+import com.tradehero.th.widget.position.partial.PositionPartialTopView;
 import com.tradehero.th.widget.position.PositionSectionHeaderItemView;
-import com.tradehero.th.widget.position.PositionView;
+
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/14/13 Time: 4:12 PM To change this template use File | Settings | File Templates. */
@@ -22,87 +27,82 @@ public class PositionItemAdapter extends BaseAdapter
     public static final String TAG = PositionItemAdapter.class.getName();
 
     private List<PositionDTO> receivedPositions;
-    private List<OwnedPositionId> openPositions; // If nothing, it will show the positionNothingId layout
-    private List<OwnedPositionId> closedPositions;
+    private List<ExpandableListItem<OwnedPositionId>> openPositions; // If nothing, it will show the positionNothingId layout
+    private List<ExpandableListItem<OwnedPositionId>> closedPositions;
+
+    private boolean[] savedState;
 
     protected final Context context;
     protected final LayoutInflater inflater;
     private final int headerLayoutId;
-    private final int positionLayoutId;
-    private final int positionLayoutExpandedId;
+    private final int openPositionLayoutId;
+    private final int closedPositionLayoutId;
     private final int positionNothingId;
 
     private WeakReference<View> latestView = new WeakReference<>(null);
+    private HashMap<Integer,Integer> viewTypeToLayoutId;
 
-    private WeakReference<PositionLongView.OnListedPositionInnerLongClickedListener> parentMoreInfoRequestedListener = new WeakReference<>(null);
-    private PositionLongView.OnListedPositionInnerLongClickedListener moreInfoRequestedListener;
-    private int moreInfoPositionClicked = Integer.MIN_VALUE;
+    private WeakReference<PositionListener> cellListener;
+    private PositionListener internalListener;//this listener is used as a bridge between the cell and the listener of the adapter
 
-    public PositionItemAdapter(Context context, LayoutInflater inflater, int headerLayoutId, int positionLayoutId, int positionLayoutExpandedId, int positionNothingId)
+
+    public PositionItemAdapter(Context context, LayoutInflater inflater, int headerLayoutId, int openPositionLayoutId, int closedPositionLayoutId, int positionNothingId)
     {
         super();
         this.context = context;
         this.inflater = inflater;
         this.headerLayoutId = headerLayoutId;
-        this.positionLayoutId = positionLayoutId;
-        this.positionLayoutExpandedId = positionLayoutExpandedId;
+        this.openPositionLayoutId = openPositionLayoutId;
+        this.closedPositionLayoutId = closedPositionLayoutId;
         this.positionNothingId = positionNothingId;
-        this.moreInfoRequestedListener = new PositionLongView.OnListedPositionInnerLongClickedListener()
+
+        buildViewTypeMap();
+        this.internalListener = new PositionListener()
         {
-            @Override public void onAddAlertClicked(int position, OwnedPositionId clickedOwnedPositionId)
+            @Override public void onTradeHistoryClicked(OwnedPositionId clickedOwnedPositionId)
             {
-                PositionLongView.OnListedPositionInnerLongClickedListener listener = parentMoreInfoRequestedListener.get();
+                PositionListener listener = cellListener.get();
                 if (listener != null)
-                {
-                    listener.onAddAlertClicked(position, clickedOwnedPositionId);
-                }
+                    listener.onTradeHistoryClicked(clickedOwnedPositionId);
             }
 
-            @Override public void onBuyClicked(int position, OwnedPositionId clickedOwnedPositionId)
+            @Override public void onBuyClicked(OwnedPositionId clickedOwnedPositionId)
             {
-                PositionLongView.OnListedPositionInnerLongClickedListener listener = parentMoreInfoRequestedListener.get();
+                PositionListener listener = cellListener.get();
                 if (listener != null)
-                {
-                    listener.onBuyClicked(position, clickedOwnedPositionId);
-                }
+                    listener.onBuyClicked(clickedOwnedPositionId);
             }
 
-            @Override public void onSellClicked(int position, OwnedPositionId clickedOwnedPositionId)
+            @Override public void onSellClicked(OwnedPositionId clickedOwnedPositionId)
             {
-                PositionLongView.OnListedPositionInnerLongClickedListener listener = parentMoreInfoRequestedListener.get();
+                PositionListener listener = cellListener.get();
                 if (listener != null)
-                {
-                    listener.onSellClicked(position, clickedOwnedPositionId);
-                }
+                    listener.onSellClicked(clickedOwnedPositionId);
             }
 
-            @Override public void onStockInfoClicked(int position, OwnedPositionId clickedOwnedPositionId)
+            @Override public void onAddAlertClicked(OwnedPositionId clickedOwnedPositionId)
             {
-                PositionLongView.OnListedPositionInnerLongClickedListener listener = parentMoreInfoRequestedListener.get();
+                PositionListener listener = cellListener.get();
                 if (listener != null)
-                {
-                    listener.onStockInfoClicked(position, clickedOwnedPositionId);
-                }
+                    listener.onAddAlertClicked(clickedOwnedPositionId);
             }
 
-            @Override public void onMoreInfoClicked(int position, OwnedPositionId clickedOwnedPositionId)
+            @Override public void onStockInfoClicked(OwnedPositionId clickedOwnedPositionId)
             {
-                PositionLongView.OnListedPositionInnerLongClickedListener listener = parentMoreInfoRequestedListener.get();
+                PositionListener listener = cellListener.get();
                 if (listener != null)
-                {
-                    listener.onMoreInfoClicked(position, clickedOwnedPositionId);
-                }
-            }
-
-            @Override public void onTradeHistoryClicked(int position, OwnedPositionId clickedOwnedPositionId)
-            {
-                PositionLongView.OnListedPositionInnerLongClickedListener listener = parentMoreInfoRequestedListener.get();
-                if (listener != null)
-                {
-                    listener.onTradeHistoryClicked(position, clickedOwnedPositionId);
-                }
+                    listener.onStockInfoClicked(clickedOwnedPositionId);
             }
         };
+    }
+
+    private void buildViewTypeMap()
+    {
+        viewTypeToLayoutId = new HashMap<>();
+        viewTypeToLayoutId.put(0, this.headerLayoutId);
+        viewTypeToLayoutId.put(1, this.positionNothingId);
+        viewTypeToLayoutId.put(2, this.openPositionLayoutId);
+        viewTypeToLayoutId.put(3, this.closedPositionLayoutId);
     }
 
     @Override public boolean hasStableIds()
@@ -224,50 +224,83 @@ public class PositionItemAdapter extends BaseAdapter
         return String.format(context.getResources().getString(stringResId), count);
     }
 
-    @Override public View getView(int position, View convertView, ViewGroup parent)
+    @Override public int getItemViewType(int position)
     {
-        View view = null;
-        if (isPositionHeaderOpen(position))
+        if (isPositionHeaderOpen(position) || isPositionHeaderClosed(position))
         {
-            view = inflater.inflate(headerLayoutId, parent, false);
-            ((PositionSectionHeaderItemView) view).setHeaderTextContent(getHeaderText(true));
+            return 0;
         }
         else if (isOpenPosition(position) && getOpenPositionsCount() == 0)
         {
-            view = inflater.inflate(positionNothingId, parent, false);
+            return 1;
         }
-        else if (isOpenPosition(position) && getOpenPositionsCount() > 0)
+        else if (isOpenPosition(position))
         {
-            view = inflater.inflate(position == moreInfoPositionClicked ? positionLayoutExpandedId : positionLayoutId, parent, false);
-            ((PositionView) view).display((OwnedPositionId) getItem(position));
-            //((PositionQuickView) view).setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
-            ((PositionView) view).setPosition(position);
-            ((PositionView) view).setPositionClickedListener(moreInfoRequestedListener);
-        }
-        else if (isPositionHeaderClosed(position))
-        {
-            view = inflater.inflate(headerLayoutId, parent, false);
-            ((PositionSectionHeaderItemView) view).setHeaderTextContent(getHeaderText(false));
+            return 2;
         }
         else
         {
-            view = inflater.inflate(position == moreInfoPositionClicked ? positionLayoutExpandedId : positionLayoutId, parent, false);
-            ((PositionView) view).display((OwnedPositionId) getItem(position));
-            //((PositionQuickView) view).setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
-            ((PositionView) view).setPosition(position);
-            ((PositionView) view).setPositionClickedListener(moreInfoRequestedListener);
+            return 3;
         }
-        latestView = new WeakReference<>(view);
-        return view;
+    }
+
+    @Override public int getViewTypeCount()
+    {
+        return 4; //header, nothing and position
+    }
+
+    @Override public View getView(int position, View convertView, ViewGroup parent)
+    {
+        if (convertView == null)
+        {
+            int layoutToInflate = viewTypeToLayoutId.get(getItemViewType(position));
+            convertView = inflater.inflate(layoutToInflate, parent, false);
+        }
+
+
+        if (isPositionHeaderOpen(position))
+        {
+            ((PositionSectionHeaderItemView) convertView).setHeaderTextContent(getHeaderText(true));
+        }
+        else if (isPositionHeaderClosed(position))
+        {
+            ((PositionSectionHeaderItemView) convertView).setHeaderTextContent(getHeaderText(false));
+        }
+        else if (isOpenPosition(position) && getOpenPositionsCount() == 0)
+        {
+            // nothing to do
+        }
+        else
+        {
+            ExpandableListItem<OwnedPositionId> expandableWrapper = (ExpandableListItem<OwnedPositionId>) getItem(position);
+            View expandingLayout = convertView.findViewById(R.id.expanding_layout);
+            if (expandingLayout != null)
+            {
+                if (!expandableWrapper.isExpanded())
+                {
+                    expandingLayout.setVisibility(View.GONE);
+                }
+                else
+                {
+                    expandingLayout.setVisibility(View.VISIBLE);
+                }
+            }
+
+            AbstractPositionView cell = (AbstractPositionView)convertView;
+            cell.linkWith(expandableWrapper.getModel(), true);
+            cell.setListener(internalListener);
+        }
+        latestView = new WeakReference<>(convertView);
+        return convertView;
     }
 
     /**
      * The listener needs to be strongly referenced elsewhere
-     * @param parentMoreInfoRequestedListener
+     * @param cellListener
      */
-    public void setParentMoreInfoRequestedListener(PositionLongView.OnListedPositionInnerLongClickedListener parentMoreInfoRequestedListener)
+    public void setCellListener(PositionListener cellListener)
     {
-        this.parentMoreInfoRequestedListener = new WeakReference<>(parentMoreInfoRequestedListener);
+        this.cellListener= new WeakReference<>(cellListener);
     }
 
     public void setPositions(List<PositionDTO> positions, PortfolioId portfolioId)
@@ -286,45 +319,22 @@ public class PositionItemAdapter extends BaseAdapter
 
             for (PositionDTO positionDTO: positions)
             {
+                ExpandableListItem<OwnedPositionId> item = new ExpandableListItem<>(positionDTO.getOwnedPositionId(portfolioId.key));
                 if (positionDTO.isOpen() == null)
                 {
                     // TODO decide what to do
                 }
                 else if (positionDTO.isOpen())
                 {
-                    openPositions.add(positionDTO.getOwnedPositionId(portfolioId.key));
+                    openPositions.add(item);
                 }
                 else
                 {
-                    closedPositions.add(positionDTO.getOwnedPositionId(portfolioId.key));
+                    closedPositions.add(item);
                 }
             }
         }
     }
 
-    public void togglePositionClicked(int newPosition)
-    {
-        setMoreInfoPositionClicked(this.moreInfoPositionClicked == newPosition ? Integer.MIN_VALUE : newPosition);
-    }
 
-    public void setMoreInfoPositionClicked(Integer moreInfoPositionClicked)
-    {
-        this.moreInfoPositionClicked = moreInfoPositionClicked == null ? Integer.MIN_VALUE : moreInfoPositionClicked;
-        postDataSetChanged();
-    }
-
-    public void postDataSetChanged()
-    {
-        View anyView = this.latestView.get();
-        if (anyView != null)
-        {
-            anyView.post(new Runnable()
-            {
-                @Override public void run()
-                {
-                    notifyDataSetChanged();
-                }
-            });
-        }
-    }
 }
