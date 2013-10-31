@@ -176,10 +176,10 @@ public class SearchStockPeopleFragment extends DashboardFragment
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
-        super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.search_stock_people_menu, menu);
         ActionBar actionBar = getSherlockActivity().getSupportActionBar();
         actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_SHOW_CUSTOM);
+        super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override public void onPrepareOptionsMenu(Menu menu)

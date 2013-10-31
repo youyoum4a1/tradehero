@@ -30,7 +30,7 @@ abstract public class DashboardFragment extends BaseFragment
         {
             case R.id.home:
                 navigator.popFragment();
-                break;
+                return true;
         }
         return super.onOptionsItemSelected(item);
     }

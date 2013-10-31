@@ -562,7 +562,7 @@ public class BuySellFragment extends AbstractBuySellFragment
 
         super.linkWith(securityPositionDetailDTO, andDisplay);
 
-        if (this.securityPositionDetailDTO != null && maxSellableShares != null && maxSellableShares.intValue() == 0)
+        if (this.securityPositionDetailDTO != null && maxSellableShares != null && maxSellableShares == 0)
         {
             // Nothing to sell
             setTransactionTypeBuy(true);
@@ -826,7 +826,7 @@ public class BuySellFragment extends AbstractBuySellFragment
             {
                 // TODO handle the case when we have move than 1 position
                 Integer shareCount = securityPositionDetailDTO.positions.get(0).shares;
-                if (shareCount == null || shareCount.intValue() == 0)
+                if (shareCount == null || shareCount == 0)
                 {
                     mBuySellSwitch.setEnabled(false);
                 }

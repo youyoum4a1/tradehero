@@ -64,17 +64,6 @@ public class Navigator
         this.fragmentContentId = fragmentContentId;
     }
 
-    protected Fragment getFragmentAtTopStack()
-    {
-        if (manager.getBackStackEntryCount() == 0)
-        {
-            return null;
-        }
-        String fragmentTag = manager.getBackStackEntryAt(manager.getBackStackEntryCount() - 1).getName();
-        Fragment currentFragment = manager.findFragmentByTag(fragmentTag);
-        return currentFragment;
-    }
-
     public Fragment pushFragment(Class<? extends Fragment> fragmentClass, Bundle args, boolean withAnimation)
     {
         THLog.d(TAG, "Pushing fragment " + fragmentClass.getSimpleName());
