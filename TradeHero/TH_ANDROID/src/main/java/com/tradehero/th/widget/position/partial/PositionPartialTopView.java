@@ -63,6 +63,7 @@ public class PositionPartialTopView extends LinearLayout
 
     @Inject protected Lazy<Picasso> picasso;
 
+    //<editor-fold desc="Constructors">
     public PositionPartialTopView(Context context)
     {
         super(context);
@@ -77,7 +78,7 @@ public class PositionPartialTopView extends LinearLayout
     {
         super(context, attrs, defStyle);
     }
-
+    //</editor-fold>
 
     @Override protected void onFinishInflate()
     {
@@ -99,18 +100,20 @@ public class PositionPartialTopView extends LinearLayout
         tradeHistoryButton = (ImageButton) findViewById(R.id.btn_trade_history);
     }
 
-    public void destroyViews()
+    public void onDestroyView()
     {
         if (tradeHistoryButton != null)
         {
             tradeHistoryButton.setOnTouchListener(null);
         }
+        tradeHistoryButton = null;
         securityCompactCacheListener = null;
         if (securityCompactCacheFetchTask != null)
         {
             securityCompactCacheFetchTask.forgetListener(true);
         }
         securityCompactCacheFetchTask = null;
+        securityCompactCacheListener = null;
     }
 
     public void linkWith(OwnedPositionId ownedPositionId, boolean andDisplay)

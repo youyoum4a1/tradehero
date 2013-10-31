@@ -37,6 +37,7 @@ public abstract class AbstractPositionView extends LinearLayout
 
     protected WeakReference<PositionListener> listener = new WeakReference<>(null);
 
+    //<editor-fold desc="Constructors">
     public AbstractPositionView(Context context)
     {
         super(context);
@@ -51,6 +52,7 @@ public abstract class AbstractPositionView extends LinearLayout
     {
         super(context, attrs, defStyle);
     }
+    //</editor-fold>
 
     @Override protected void onFinishInflate()
     {
@@ -61,9 +63,33 @@ public abstract class AbstractPositionView extends LinearLayout
 
     protected void initViews()
     {
-        topView = (PositionPartialTopView)findViewById(R.id.position_partial_top);
-        colorIndicator = (ColorIndicator)findViewById(R.id.color_indicator);
+        topView = (PositionPartialTopView) findViewById(R.id.position_partial_top);
+        colorIndicator = (ColorIndicator) findViewById(R.id.color_indicator);
         initShortcutButtons();
+    }
+
+    public void onDestroyView()
+    {
+        if (btnBuy != null)
+        {
+            btnBuy.setOnClickListener(null);
+        }
+        btnBuy = null;
+        if (btnSell != null)
+        {
+            btnSell.setOnClickListener(null);
+        }
+        btnSell = null;
+        if (btnAddAlert != null)
+        {
+            btnAddAlert.setOnClickListener(null);
+        }
+        btnAddAlert = null;
+        if (btnStockInfo != null)
+        {
+            btnStockInfo.setOnClickListener(null);
+        }
+        btnStockInfo = null;
     }
 
     public void linkWith(OwnedPositionId ownedPositionId, boolean andDisplay)
@@ -77,29 +103,39 @@ public abstract class AbstractPositionView extends LinearLayout
     {
         this.positionDTO = positionDTO;
         if (andDisplay)
+        {
             display();
+        }
     }
 
     protected void display()
     {
-        if (colorIndicator != null) {
+        displayColorIndicator();
+    }
+
+    protected void displayColorIndicator()
+    {
+        if (colorIndicator != null)
+        {
             Double roi = positionDTO.getROISinceInception();
             colorIndicator.linkWith(roi);
         }
     }
 
-
     public void initShortcutButtons()
     {
         btnBuy = (ImageButton) findViewById(R.id.btn_buy_now);
-        if (btnBuy != null) {
+        if (btnBuy != null)
+        {
             btnBuy.setOnClickListener(new OnClickListener()
             {
                 @Override public void onClick(View v)
                 {
                     PositionListener l = listener.get();
                     if (l != null)
+                    {
                         l.onBuyClicked(ownedPositionId);
+                    }
                 }
             });
         }
@@ -113,7 +149,9 @@ public abstract class AbstractPositionView extends LinearLayout
                 {
                     PositionListener l = listener.get();
                     if (l != null)
+                    {
                         l.onSellClicked(ownedPositionId);
+                    }
                 }
             });
         }
@@ -127,7 +165,9 @@ public abstract class AbstractPositionView extends LinearLayout
                 {
                     PositionListener l = listener.get();
                     if (l != null)
+                    {
                         l.onAddAlertClicked(ownedPositionId);
+                    }
                 }
             });
         }
@@ -141,7 +181,9 @@ public abstract class AbstractPositionView extends LinearLayout
                 {
                     PositionListener l = listener.get();
                     if (l != null)
+                    {
                         l.onStockInfoClicked(ownedPositionId);
+                    }
                 }
             });
         }
@@ -156,7 +198,9 @@ public abstract class AbstractPositionView extends LinearLayout
                 {
                     PositionListener l = listener.get();
                     if (l != null)
+                    {
                         l.onTradeHistoryClicked(ownedPositionId);
+                    }
                 }
             });
         }

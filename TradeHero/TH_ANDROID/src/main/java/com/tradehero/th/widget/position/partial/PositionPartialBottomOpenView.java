@@ -138,7 +138,7 @@ public class PositionPartialBottomOpenView extends RelativeLayout
     {
         if (marketValueValue != null)
         {
-            marketValueValue.setText(PositionUtils.getMarketValue(getContext(),positionDTO));
+            marketValueValue.setText(PositionUtils.getMarketValue(getContext(), positionDTO));
         }
     }
 

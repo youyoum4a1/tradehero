@@ -12,6 +12,7 @@ public class PositionNothingView extends RelativeLayout
 {
     private TextView description;
 
+    //<editor-fold desc="Constructors">
     public PositionNothingView(Context context, AttributeSet attrs, int defStyle)
     {
         super(context, attrs, defStyle);
@@ -26,6 +27,7 @@ public class PositionNothingView extends RelativeLayout
     {
         super(context);
     }
+    //</editor-fold>
 
     @Override protected void onFinishInflate()
     {

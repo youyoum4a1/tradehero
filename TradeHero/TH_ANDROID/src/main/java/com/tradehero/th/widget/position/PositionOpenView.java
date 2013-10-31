@@ -13,7 +13,7 @@ public class PositionOpenView extends AbstractPositionView
 {
     private PositionPartialBottomOpenView bottomView;
 
-
+    //<editor-fold desc="Constructors">
     public PositionOpenView(Context context)
     {
         super(context);
@@ -28,11 +28,12 @@ public class PositionOpenView extends AbstractPositionView
     {
         super(context, attrs, defStyle);
     }
+    //</editor-fold>
 
     @Override protected void initViews()
     {
         super.initViews();
-        bottomView = (PositionPartialBottomOpenView)findViewById(R.id.expanding_layout);
+        bottomView = (PositionPartialBottomOpenView) findViewById(R.id.expanding_layout);
     }
 
     @Override public void linkWith(OwnedPositionId ownedPositionId, boolean andDisplay)
@@ -40,5 +41,4 @@ public class PositionOpenView extends AbstractPositionView
         super.linkWith(ownedPositionId, andDisplay);
         this.bottomView.linkWith(ownedPositionId, andDisplay);
     }
-
 }
