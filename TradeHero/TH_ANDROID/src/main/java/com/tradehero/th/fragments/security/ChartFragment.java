@@ -159,6 +159,30 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
                 String imageURL = Utils.getChartURL(value.yahooSymbol, chartSize, timeSpan);
                 Picasso.with(getActivity()).load(imageURL).into(stockBgLogo);
             }
+            postChooseOtherSize();
+        }
+    }
+
+    public void postChooseOtherSize()
+    {
+        View view = getView();
+        if (view != null)
+        {
+            view.postDelayed(new Runnable()
+            {
+                @Override public void run()
+                {
+                    if (stockBgLogo != null)
+                    {
+                        ChartSize newChartSize = Utils.getPreferredSize(stockBgLogo.getWidth(), stockBgLogo.getHeight());
+                        if (newChartSize != chartSize)
+                        {
+                            chartSize = newChartSize;
+                            displayBgLogo();
+                        }
+                    }
+                }
+            }, 500);
         }
     }
 }
