@@ -50,6 +50,7 @@ import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.fragments.security.StockInfoFragment;
 import com.tradehero.th.network.service.SecurityService;
 import com.tradehero.th.utills.Logger;
 import com.tradehero.th.utills.Logger.LogLevel;
@@ -142,7 +143,13 @@ public class BuySellFragment extends AbstractBuySellFragment
         mStockChartButton = (ImageButton) view.findViewById(R.id.stock_chart_button);
         if (mStockChartButton != null)
         {
-            mStockChartButton.setOnClickListener(createStockChartButtonClickListener());
+            mStockChartButton.setOnClickListener(new OnClickListener()
+            {
+                @Override public void onClick(View view)
+                {
+                    pushStockInfoFragmentIn();
+                }
+            });
         }
 
         mInfoFrame = (FrameLayout) view.findViewById(R.id.chart_frame);
@@ -527,6 +534,7 @@ public class BuySellFragment extends AbstractBuySellFragment
         if (andDisplay)
         {
             //displayExchangeSymbol();
+            displayStockChartButton();
             displayBottomViewPager();
         }
     }
@@ -634,6 +642,7 @@ public class BuySellFragment extends AbstractBuySellFragment
 
     public void displayPageElements()
     {
+        displayStockChartButton();
         displayPricingBidAskView();
         displayTradeQuantityView();
         displayBuyButton();
@@ -643,6 +652,15 @@ public class BuySellFragment extends AbstractBuySellFragment
         displaySlider();
         storeImageUrlInImageViews();
         loadImages();
+    }
+
+    public void displayStockChartButton()
+    {
+        if (mStockChartButton != null)
+        {
+            mStockChartButton.setEnabled(this.securityId != null);
+            mStockChartButton.setAlpha(this.securityId != null ? 1 : 0.5f);
+        }
     }
 
     public void displayPricingBidAskView()
@@ -1253,16 +1271,9 @@ public class BuySellFragment extends AbstractBuySellFragment
         };
     }
 
-    private OnClickListener createStockChartButtonClickListener()
+    private void pushStockInfoFragmentIn()
     {
-        return new OnClickListener()
-        {
-            @Override public void onClick(View view)
-            {
-                THToast.show("Nothing for now");
-                // TODO call chart fragment in
-            }
-        };
+        navigator.pushFragment(StockInfoFragment.class, this.securityId.getArgs());
     }
 
     private CompoundButton.OnCheckedChangeListener createBuySellListener()
