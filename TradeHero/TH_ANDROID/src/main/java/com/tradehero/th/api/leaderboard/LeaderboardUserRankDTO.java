@@ -44,7 +44,6 @@ public class LeaderboardUserRankDTO extends UserBaseDTO
     public Integer followerCountFree;
     public Integer followerCountPaid;
     public Integer commentCount;
-    public Integer rank;
 
     public LeaderboardUserRankDTO()
     {
@@ -64,11 +63,6 @@ public class LeaderboardUserRankDTO extends UserBaseDTO
     @Override public int compareTo(ItemWithComparableId<Integer> other)
     {
         return other.getId().compareTo(lbmuId);
-    }
-
-    public void setRank(int rank)
-    {
-        this.rank = rank;
     }
 
     public String getHeroQuotientFormatted()

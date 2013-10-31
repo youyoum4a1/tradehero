@@ -39,9 +39,8 @@ public class LeaderboardListViewFragment extends DashboardFragment
 
     @Override public void onResume()
     {
-        leaderboardListAdapter = new LeaderboardListAdapter(getActivity(), getActivity().getLayoutInflater(), null, R.layout.leaderboard_user_view);
+        leaderboardListAdapter = new LeaderboardListAdapter(getActivity(), getActivity().getLayoutInflater(), null, R.layout.leaderboard_listview_item);
         rankingListView.setAdapter(leaderboardListAdapter);
-
         rankingListView.setEmptyView(getView().findViewById(android.R.id.empty));
 
         Bundle loaderBundle = new Bundle();
@@ -84,9 +83,9 @@ public class LeaderboardListViewFragment extends DashboardFragment
 
         @Override public void onLoadFinished(Loader<List<LeaderboardUserRankDTO>> loader, List<LeaderboardUserRankDTO> items)
         {
-            List<LeaderboardListAdapter.ExpandableLeaderboardUserRankItem> expandableItems = new LinkedList<>();
-            //expandableItems = ExpandableListItem
-            //leaderboardListAdapter.setItems(items);
+            List<LeaderboardListAdapter.ExpandableLeaderboardUserRankItemWrapper> expandableItems = new LinkedList<>();
+
+            leaderboardListAdapter.wrapAndSetItems(items);
             leaderboardListAdapter.notifyDataSetChanged();
         }
 

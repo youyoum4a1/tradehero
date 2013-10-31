@@ -49,6 +49,7 @@ import com.tradehero.th.persistence.user.UserStore;
 import com.tradehero.th.utils.NumberDisplayUtils;
 import com.tradehero.th.widget.MarkdownTextView;
 import com.tradehero.th.widget.ServerValidatedUsernameText;
+import com.tradehero.th.widget.leaderboard.LeaderboardRankingListView;
 import com.tradehero.th.widget.portfolio.PortfolioListItemView;
 import com.tradehero.th.widget.portfolio.header.CurrentUserPortfolioHeaderView;
 import com.tradehero.th.widget.portfolio.header.OtherUserPortfolioHeaderView;
@@ -145,6 +146,7 @@ import javax.inject.Singleton;
                 LeaderboardLoader.class,
                 LeaderboardListViewFragment.class,
                 LeaderboardUserRankItemView.class,
+                LeaderboardRankingListView.class,
         },
         staticInjections =
         {
