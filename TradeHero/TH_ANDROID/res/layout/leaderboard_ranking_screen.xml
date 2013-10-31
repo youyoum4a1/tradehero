@@ -10,8 +10,8 @@
   <com.tradehero.th.widget.leaderboard.LeaderboardRankingListView
       xmlns:ptr="http://schemas.android.com/apk/res-auto"
       android:id="@+id/pull_refresh_list"
-      android:layout_width="fill_parent"
-      android:layout_height="fill_parent"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
       android:cacheColorHint="#00000000"
       android:divider="#00000000"
       android:dividerHeight="10dip"
@@ -22,6 +22,6 @@
       android:smoothScrollbar="true"
       android:clipToPadding="false"
       ptr:ptrAnimationStyle="flip"
-      ptr:ptrMode="both"
+      ptr:ptrMode="pullUpFromBottom"
       />
 </FrameLayout>

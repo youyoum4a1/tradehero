@@ -80,7 +80,7 @@ public class TimelineFragment extends BaseFragment
         {
             timelineAdapter = createTimelineAdapter();
         }
-        refreshableListView.setOnItemClickListener(new AdapterView.OnItemClickListener()
+        timelineListView.setOnItemClickListener(new AdapterView.OnItemClickListener()
         {
             @Override public void onItemClick(AdapterView<?> parent, View view, int position, long id)
             {

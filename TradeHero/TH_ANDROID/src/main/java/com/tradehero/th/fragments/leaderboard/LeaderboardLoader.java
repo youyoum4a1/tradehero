@@ -1,13 +1,11 @@
 package com.tradehero.th.fragments.leaderboard;
 
 import android.content.Context;
-import android.support.v4.content.Loader;
 import com.tradehero.common.persistence.Query;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.api.leaderboard.LeaderboardDTO;
-import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
+import com.tradehero.th.api.leaderboard.LeaderboardUserRankDTO;
 import com.tradehero.th.loaders.PagedItemListLoader;
-import com.tradehero.th.persistence.TimelineManager;
 import com.tradehero.th.persistence.TimelineStore;
 import com.tradehero.th.persistence.leaderboard.LeaderboardManager;
 import com.tradehero.th.utils.DaggerUtils;
@@ -16,7 +14,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 /** Created with IntelliJ IDEA. User: tho Date: 10/21/13 Time: 4:28 PM Copyright (c) TradeHero */
-public class LeaderboardLoader extends PagedItemListLoader<LeaderboardUserDTO>
+public class LeaderboardLoader extends PagedItemListLoader<LeaderboardUserRankDTO>
 {
     private static final String TAG = LeaderboardLoader.class.getName();
     private Integer minItemId;
@@ -33,17 +31,17 @@ public class LeaderboardLoader extends PagedItemListLoader<LeaderboardUserDTO>
         DaggerUtils.inject(this);
     }
 
-    @Override protected void onLoadNextPage(LeaderboardUserDTO lastItemId)
+    @Override protected void onLoadNextPage(LeaderboardUserRankDTO lastItemId)
     {
         //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    @Override protected void onLoadPreviousPage(LeaderboardUserDTO startItemId)
+    @Override protected void onLoadPreviousPage(LeaderboardUserRankDTO startItemId)
     {
         //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    @Override public List<LeaderboardUserDTO> loadInBackground()
+    @Override public List<LeaderboardUserRankDTO> loadInBackground()
     {
         if (minItemId != null)
         {

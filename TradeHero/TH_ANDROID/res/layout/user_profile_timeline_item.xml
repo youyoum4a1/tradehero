@@ -5,7 +5,6 @@
     android:background="@drawable/timeline_list_item_background"
     android:padding="@dimen/home_screen_list_item_padding"
     android:orientation="vertical"
-    android:duplicateParentState="true"
     android:descendantFocusability="blocksDescendants"
     >
   <RelativeLayout android:id="@+id/main_content_wrapper"
@@ -59,7 +58,7 @@
     <com.tradehero.th.widget.MarkdownTextView
         android:id="@+id/timeline_item_content"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="80dp"
         android:layout_below="@id/timeline_time"
         android:layout_marginLeft="10dip"
         android:layout_marginTop="10dip"

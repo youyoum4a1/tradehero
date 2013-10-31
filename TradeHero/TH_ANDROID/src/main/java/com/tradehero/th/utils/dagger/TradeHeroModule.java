@@ -17,7 +17,7 @@ import com.tradehero.th.fragments.leaderboard.LeaderboardCommunityFragment;
 import com.tradehero.th.fragments.leaderboard.LeaderboardDefListViewFragment;
 import com.tradehero.th.fragments.leaderboard.LeaderboardListViewFragment;
 import com.tradehero.th.fragments.leaderboard.LeaderboardLoader;
-import com.tradehero.th.fragments.leaderboard.LeaderboardUserDTOView;
+import com.tradehero.th.fragments.leaderboard.LeaderboardUserRankItemView;
 import com.tradehero.th.fragments.portfolio.PortfolioListFragment;
 import com.tradehero.th.fragments.portfolio.PushablePortfolioListFragment;
 import com.tradehero.th.fragments.position.PositionListFragment;
@@ -136,7 +136,7 @@ import javax.inject.Singleton;
                 LeaderboardManager.class,
                 LeaderboardLoader.class,
                 LeaderboardListViewFragment.class,
-                LeaderboardUserDTOView.class,
+                LeaderboardUserRankItemView.class,
         },
         staticInjections =
         {

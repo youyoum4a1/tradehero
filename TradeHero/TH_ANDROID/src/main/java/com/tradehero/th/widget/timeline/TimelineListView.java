@@ -3,10 +3,10 @@ package com.tradehero.th.widget.timeline;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
-import com.tradehero.th.widget.PullToUpdateFromLoaderListView;
+import com.handmark.pulltorefresh.library.PullToRefreshListView;
 
 /** Created with IntelliJ IDEA. User: tho Date: 9/13/13 Time: 11:35 AM Copyright (c) TradeHero */
-public class TimelineListView extends PullToUpdateFromLoaderListView
+public class TimelineListView extends PullToRefreshListView
 {
     //<editor-fold desc="Constructors">
     public TimelineListView(Context context)

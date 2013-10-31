@@ -1,7 +1,6 @@
 package com.tradehero.th.api.leaderboard;
 
 import com.tradehero.th.loaders.AbstractItemWithComparableId;
-import com.tradehero.th.loaders.ItemWithComparableId;
 import java.util.Date;
 import java.util.List;
 
@@ -11,7 +10,7 @@ public class LeaderboardDTO extends AbstractItemWithComparableId<Integer>
     public static final String LEADERBOARD_ID = "LEADERBOARD_ID";
     public int id;
     public String name;
-    public List<LeaderboardUserDTO> users;
+    public List<LeaderboardUserRankDTO> users;
     public int userIsAtPositionZeroBased;
     public Date markUtc;
 

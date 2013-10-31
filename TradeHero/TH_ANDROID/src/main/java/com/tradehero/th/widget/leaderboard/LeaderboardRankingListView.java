@@ -2,10 +2,10 @@ package com.tradehero.th.widget.leaderboard;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import com.tradehero.th.widget.PullToUpdateFromLoaderListView;
+import com.handmark.pulltorefresh.library.PullToRefreshListView;
 
 /** Created with IntelliJ IDEA. User: tho Date: 10/14/13 Time: 3:09 PM Copyright (c) TradeHero */
-public class LeaderboardRankingListView extends PullToUpdateFromLoaderListView
+public class LeaderboardRankingListView extends PullToRefreshListView
 {
     public LeaderboardRankingListView(Context context)
     {

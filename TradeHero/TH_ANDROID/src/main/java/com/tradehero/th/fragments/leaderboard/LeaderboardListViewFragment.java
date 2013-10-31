@@ -13,14 +13,17 @@ import com.actionbarsherlock.view.MenuItem;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.leaderboard.LeaderboardDTO;
-import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
-import com.tradehero.th.fragments.base.DashboardListFragment;
+import com.tradehero.th.api.leaderboard.LeaderboardUserRankDTO;
+import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.widget.leaderboard.LeaderboardRankingListView;
+import java.util.LinkedList;
 import java.util.List;
 
 /** Created with IntelliJ IDEA. User: tho Date: 10/14/13 Time: 12:34 PM Copyright (c) TradeHero */
-public class LeaderboardListViewFragment extends DashboardListFragment
+public class LeaderboardListViewFragment extends DashboardFragment
 {
     private LeaderboardListAdapter leaderboardListAdapter;
+    private LeaderboardRankingListView rankingListView;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -30,15 +33,16 @@ public class LeaderboardListViewFragment extends DashboardListFragment
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.leaderboard_listview, container, false);
+        rankingListView = (LeaderboardRankingListView) view.findViewById(android.R.id.list);
         return view;
     }
 
     @Override public void onResume()
     {
         leaderboardListAdapter = new LeaderboardListAdapter(getActivity(), getActivity().getLayoutInflater(), null, R.layout.leaderboard_user_view);
-        setListAdapter(leaderboardListAdapter);
+        rankingListView.setAdapter(leaderboardListAdapter);
 
-        getListView().setEmptyView(getView().findViewById(android.R.id.empty));
+        rankingListView.setEmptyView(getView().findViewById(android.R.id.empty));
 
         Bundle loaderBundle = new Bundle();
         getLoaderManager().initLoader(0, loaderBundle, loaderCallback);
@@ -70,23 +74,30 @@ public class LeaderboardListViewFragment extends DashboardListFragment
     //</editor-fold>
 
     //<editor-fold desc="Loader callback">
-    private LoaderManager.LoaderCallbacks<List<LeaderboardUserDTO>> loaderCallback = new LoaderManager.LoaderCallbacks<List<LeaderboardUserDTO>>()
+    private LoaderManager.LoaderCallbacks<List<LeaderboardUserRankDTO>> loaderCallback = new LoaderManager.LoaderCallbacks<List<LeaderboardUserRankDTO>>()
     {
-        @Override public Loader<List<LeaderboardUserDTO>> onCreateLoader(int id, Bundle bundle)
+        @Override public Loader<List<LeaderboardUserRankDTO>> onCreateLoader(int id, Bundle bundle)
         {
             int leaderboardId = getArguments().getInt(LeaderboardDTO.LEADERBOARD_ID);
             return new LeaderboardLoader(getActivity(), leaderboardId);
         }
 
-        @Override public void onLoadFinished(Loader<List<LeaderboardUserDTO>> loader, List<LeaderboardUserDTO> items)
+        @Override public void onLoadFinished(Loader<List<LeaderboardUserRankDTO>> loader, List<LeaderboardUserRankDTO> items)
         {
-            leaderboardListAdapter.setItems(items);
+            List<LeaderboardListAdapter.ExpandableLeaderboardUserRankItem> expandableItems = new LinkedList<>();
+            //expandableItems = ExpandableListItem
+            //leaderboardListAdapter.setItems(items);
             leaderboardListAdapter.notifyDataSetChanged();
         }
 
-        @Override public void onLoaderReset(Loader<List<LeaderboardUserDTO>> loader)
+        @Override public void onLoaderReset(Loader<List<LeaderboardUserRankDTO>> loader)
         {
         }
     };
     //</editor-fold>
+
+    @Override public boolean isTabBarVisible()
+    {
+        return false;
+    }
 }

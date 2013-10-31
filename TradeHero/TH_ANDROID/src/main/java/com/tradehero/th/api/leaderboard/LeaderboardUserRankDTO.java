@@ -2,12 +2,15 @@ package com.tradehero.th.api.leaderboard;
 
 import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.loaders.ItemWithComparableId;
+import com.tradehero.th.utils.NumberDisplayUtils;
+import java.text.DecimalFormat;
 import java.util.Date;
 import java.util.List;
 
 /** Created with IntelliJ IDEA. User: tho Date: 10/14/13 Time: 2:09 PM Copyright (c) TradeHero */
 
-public class LeaderboardUserDTO extends UserBaseDTO implements ItemWithComparableId<Integer>
+public class LeaderboardUserRankDTO extends UserBaseDTO
+        implements ItemWithComparableId<Integer>
 {
     public int lbmuId;    // leaderboardMarkUser.id ...
     public int portfolioId;    // ...OR portfolioId --> messy
@@ -43,7 +46,7 @@ public class LeaderboardUserDTO extends UserBaseDTO implements ItemWithComparabl
     public Integer commentCount;
     public Integer rank;
 
-    public LeaderboardUserDTO()
+    public LeaderboardUserRankDTO()
     {
         super();
     }
@@ -66,6 +69,16 @@ public class LeaderboardUserDTO extends UserBaseDTO implements ItemWithComparabl
     public void setRank(int rank)
     {
         this.rank = rank;
+    }
+
+    public String getHeroQuotientFormatted()
+    {
+        if (starRating == null)
+        {
+            return "0";
+        }
+
+        return NumberDisplayUtils.formatWithRelevantDigits(starRating, 0);
     }
 }
 
