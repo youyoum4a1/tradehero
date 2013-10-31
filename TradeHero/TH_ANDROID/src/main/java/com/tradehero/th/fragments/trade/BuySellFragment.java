@@ -78,7 +78,6 @@ public class BuySellFragment extends AbstractBuySellFragment
 
     private ProgressBar mQuoteRefreshProgressBar;
     private FrameLayout mInfoFrame;
-    private ImageView mInfoButton;
     private PricingBidAskView mPricingBidAskView;
     private TradeQuantityView mTradeQuantityView;
     private QuickPriceButtonSet mQuickPriceButtonSet;
@@ -148,7 +147,7 @@ public class BuySellFragment extends AbstractBuySellFragment
 
         mInfoFrame = (FrameLayout) view.findViewById(R.id.chart_frame);
 
-        mInfoButton = (ImageView) view.findViewById(R.id.btn_trade_info);
+        ImageView mInfoButton = (ImageView) view.findViewById(R.id.btn_trade_info);
         if (mInfoButton != null)
         {
             mInfoButton.setOnClickListener(new OnClickListener()

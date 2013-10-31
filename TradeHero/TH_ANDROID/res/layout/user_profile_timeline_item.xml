@@ -8,8 +8,8 @@
     android:descendantFocusability="blocksDescendants"
     >
   <RelativeLayout android:id="@+id/main_content_wrapper"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content">
     <ImageView
         android:id="@+id/timeline_user_profile_picture"
         android:layout_width="60dp"
@@ -58,7 +58,7 @@
     <com.tradehero.th.widget.MarkdownTextView
         android:id="@+id/timeline_item_content"
         android:layout_width="wrap_content"
-        android:layout_height="80dp"
+        android:layout_height="wrap_content"
         android:layout_below="@id/timeline_time"
         android:layout_marginLeft="10dip"
         android:layout_marginTop="10dip"
@@ -68,7 +68,7 @@
         android:textColor="@color/timeline_item"
         android:textSize="12sp"
         android:textStyle="normal"/>
-    </RelativeLayout>
+  </RelativeLayout>
 
   <RelativeLayout
       android:id="@+id/timeline_share_buttons"
@@ -80,8 +80,8 @@
       >
     <ImageView
         android:id="@+id/timeline_share_linked_in"
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
+        android:layout_height="@dimen/timeline_action_button"
+        android:layout_width="@dimen/timeline_action_button"
         android:contentDescription="@null"
         android:layout_alignParentRight="true"
         android:src="@drawable/icon_share_linked_in"
@@ -90,8 +90,8 @@
         />
     <ImageView
         android:id="@+id/timeline_share_twitter"
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
+        android:layout_height="@dimen/timeline_action_button"
+        android:layout_width="@dimen/timeline_action_button"
         android:contentDescription="@null"
         android:src="@drawable/icon_share_tw"
         android:layout_toLeftOf="@id/timeline_share_linked_in"
@@ -100,13 +100,46 @@
         />
     <ImageView
         android:id="@+id/timeline_share_facebook"
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
+        android:layout_height="@dimen/timeline_action_button"
+        android:layout_width="@dimen/timeline_action_button"
         android:contentDescription="@null"
         android:src="@drawable/icon_share_fb"
         android:layout_toLeftOf="@id/timeline_share_twitter"
         android:paddingLeft="@dimen/timeline_share_button_padding"
         android:paddingRight="@dimen/timeline_share_button_padding"
+        />
+
+    <ImageView
+        android:id="@+id/timeline_add_alert"
+        android:layout_height="@dimen/timeline_action_button"
+        android:layout_width="@dimen/timeline_action_button"
+        android:contentDescription="@null"
+        android:layout_toLeftOf="@id/timeline_share_facebook"
+        android:paddingLeft="@dimen/timeline_share_button_padding"
+        android:paddingRight="@dimen/timeline_share_button_padding"
+        android:src="@drawable/icon_alarm"
+        />
+    <ImageView
+        android:id="@+id/timeline_buy_stock"
+        android:layout_height="@dimen/timeline_action_button"
+        android:layout_width="@dimen/timeline_action_button"
+        android:contentDescription="@null"
+        android:layout_toLeftOf="@id/timeline_add_alert"
+        android:paddingLeft="@dimen/timeline_share_button_padding"
+        android:paddingRight="@dimen/timeline_share_button_padding"
+        android:src="@drawable/buy_stock"
+        android:visibility="invisible"
+        />
+    <ImageView
+        android:id="@+id/timeline_sell_stock"
+        android:layout_height="@dimen/timeline_action_button"
+        android:layout_width="@dimen/timeline_action_button"
+        android:contentDescription="@null"
+        android:layout_toLeftOf="@id/timeline_buy_stock"
+        android:paddingLeft="@dimen/timeline_share_button_padding"
+        android:paddingRight="@dimen/timeline_share_button_padding"
+        android:src="@drawable/sell_stock"
+        android:visibility="invisible"
         />
   </RelativeLayout>
 </com.tradehero.th.widget.timeline.TimelineItemView>

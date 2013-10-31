@@ -5,6 +5,7 @@ import com.tradehero.th.api.security.SecurityMediaDTO;
 import com.tradehero.th.api.timeline.TimelineItemDTOEnhanced;
 import com.tradehero.th.api.users.UserProfileCompactDTO;
 import com.tradehero.th.loaders.AbstractItemWithComparableId;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -59,6 +60,11 @@ public class TimelineItem extends AbstractItemWithComparableId<Integer>
     public Date getDate()
     {
         return date;
+    }
+
+    public List<SecurityMediaDTO> getMedias()
+    {
+        return Collections.unmodifiableList(medias);
     }
 
     @Override public Integer getId()

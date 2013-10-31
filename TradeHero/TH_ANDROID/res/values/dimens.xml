@@ -21,5 +21,6 @@
   <dimen name="trade_screen_info_title_padding_right">5dp</dimen>
   <dimen name="leaderboard_border_width">0dp</dimen>
   <dimen name="timeline_share_button_padding">5dp</dimen>
+  <dimen name="timeline_action_button">30dp</dimen>
 
 </resources>

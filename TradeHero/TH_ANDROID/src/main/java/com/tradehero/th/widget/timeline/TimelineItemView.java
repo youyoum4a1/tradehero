@@ -5,7 +5,9 @@ import android.os.Bundle;
 import android.text.method.LinkMovementMethod;
 import android.util.AttributeSet;
 import android.view.View;
+import android.widget.Button;
 import android.widget.Checkable;
+import android.widget.ImageView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -14,7 +16,6 @@ import com.tradehero.common.graphics.RoundedShapeTransformation;
 import com.tradehero.common.graphics.WhiteToTransparentTransformation;
 import com.tradehero.common.text.OnElementClickListener;
 import com.tradehero.common.utils.THLog;
-import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.local.TimelineItem;
@@ -31,6 +32,7 @@ import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.widget.MarkdownTextView;
 import dagger.Lazy;
 import java.util.Date;
+import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.ocpsoft.prettytime.PrettyTime;
@@ -52,15 +54,22 @@ public class TimelineItemView extends LinearLayout implements
     private Navigator navigator;
     private TimelineItem currentTimelineItem;
 
+    private ImageView twShare;
+    private ImageView sellStock;
+    private ImageView buyStock;
+    private ImageView addAlert;
+    private ImageView linkedInShare;
+    private ImageView fbShare;
+
     //<editor-fold desc="Constructors">
     public TimelineItemView(Context context)
     {
-        super(context, null);
+        super(context);
     }
 
     public TimelineItemView(Context context, AttributeSet attrs)
     {
-        super(context, attrs, 0);
+        super(context, attrs);
     }
 
     public TimelineItemView(Context context, AttributeSet attrs, int defStyle)
@@ -73,6 +82,7 @@ public class TimelineItemView extends LinearLayout implements
     private void init()
     {
         navigator = ((NavigatorActivity) getContext()).getNavigator();
+
         username = (TextView) findViewById(R.id.timeline_user_profile_name);
         if (username != null)
         {
@@ -90,23 +100,48 @@ public class TimelineItemView extends LinearLayout implements
         content.setOnElementClickListener(this);
 
         time = (TextView) findViewById(R.id.timeline_time);
+
         vendorImage = (ImageView) findViewById(R.id.timeline_vendor_picture);
         if (vendorImage != null)
         {
             vendorImage.setOnClickListener(this);
         }
 
-        View fbShareButton = findViewById(R.id.timeline_share_facebook);
-        if (fbShareButton!=null) fbShareButton.setOnClickListener(new OnClickListener()
-        {
-            @Override public void onClick(View view)
-            {
-                THToast.show("Fb share button clicked");
-            }
-        });
+        initActionButtons();
 
         DaggerUtils.inject(content);
         DaggerUtils.inject(this);
+    }
+
+    private void initActionButtons()
+    {
+        fbShare = (ImageView) findViewById(R.id.timeline_share_facebook);
+        twShare = (ImageView) findViewById(R.id.timeline_share_twitter);
+        linkedInShare = (ImageView) findViewById(R.id.timeline_share_linked_in);
+        addAlert = (ImageView) findViewById(R.id.timeline_add_alert);
+        buyStock = (ImageView) findViewById(R.id.timeline_buy_stock);
+        sellStock = (ImageView) findViewById(R.id.timeline_sell_stock);
+
+        View[] actionButtons = new View[]
+                { fbShare, twShare, linkedInShare, addAlert, buyStock, sellStock };
+        for (View actionButton: actionButtons)
+        {
+            if (actionButton!=null)
+            {
+                actionButton.setOnClickListener(this);
+            }
+        }
+    }
+
+    public void refreshOptionalButtons()
+    {
+        // hide/show optional action buttons
+        List<SecurityMediaDTO> medias = currentTimelineItem.getMedias();
+        int visibility = medias != null && medias.size() > 0 ? VISIBLE : INVISIBLE;
+
+        sellStock.setVisibility(visibility);
+        buyStock.setVisibility(visibility);
+        addAlert.setVisibility(visibility);
     }
 
     @Override protected void onFinishInflate()
@@ -123,8 +158,10 @@ public class TimelineItemView extends LinearLayout implements
         }
         currentTimelineItem = item;
 
+        // username
         username.setText(user.displayName);
 
+        // user profile picture
         if (user.picture != null)
         {
             picasso.get()
@@ -133,11 +170,14 @@ public class TimelineItemView extends LinearLayout implements
                     .into(avatar);
         }
 
+        // markup text
         content.setText(item.getText());
 
+        // timeline time
         PrettyTime prettyTime = new PrettyTime(new Date());
         time.setText(prettyTime.format(item.getDate()));
 
+        // vendor logo
         SecurityMediaDTO firstMediaWithLogo = item.getFirstMediaWithLogo();
         if (firstMediaWithLogo != null)
         {
@@ -150,6 +190,8 @@ public class TimelineItemView extends LinearLayout implements
                     .transform(new WhiteToTransparentTransformation())
                     .into(vendorImage);
         }
+
+        refreshOptionalButtons();
     }
 
     @Override public void onClick(View textView, String data, String key, String[] matchStrings)
@@ -249,7 +291,6 @@ public class TimelineItemView extends LinearLayout implements
     //</editor-fold>
     @Override public void onClick(View view)
     {
-
         switch (view.getId())
         {
             case R.id.timeline_user_profile_picture:
@@ -264,6 +305,10 @@ public class TimelineItemView extends LinearLayout implements
                 }
                 break;
             case R.id.timeline_vendor_picture:
+
+            // TODO pass parameter in bundle to switch mode between buy/sell
+            case R.id.timeline_buy_stock:
+            case R.id.timeline_sell_stock:
                 if (currentTimelineItem != null)
                 {
                     SecurityMediaDTO firstMediaWithLogo = currentTimelineItem.getFirstMediaWithLogo();
