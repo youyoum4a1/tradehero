@@ -11,9 +11,9 @@ import com.tradehero.th.adapters.ExpandableListReporter;
 import com.tradehero.th.api.portfolio.PortfolioId;
 import com.tradehero.th.api.position.OwnedPositionId;
 import com.tradehero.th.api.position.PositionDTO;
-import com.tradehero.th.widget.position.AbstractPositionView;
-import com.tradehero.th.widget.position.PositionListener;
-import com.tradehero.th.widget.position.PositionSectionHeaderItemView;
+import com.tradehero.th.widget.position.*;
+import com.tradehero.th.widget.position.partial.PositionPartialTopView;
+
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -32,6 +32,7 @@ public class PositionItemAdapter extends BaseAdapter implements ExpandableListRe
     protected final LayoutInflater inflater;
     private final int headerLayoutId;
     private final int openPositionLayoutId;
+    private final int lockedPositionLayoutId;
     private final int closedPositionLayoutId;
     private final int positionNothingId;
 
@@ -42,12 +43,13 @@ public class PositionItemAdapter extends BaseAdapter implements ExpandableListRe
     // this listener is used as a bridge between the cell and the listener of the adapter
     private PositionListener internalListener;
 
-    public PositionItemAdapter(Context context, LayoutInflater inflater, int headerLayoutId, int openPositionLayoutId, int closedPositionLayoutId, int positionNothingId)
+    public PositionItemAdapter(Context context, LayoutInflater inflater, int headerLayoutId, int lockedPositionLayoutId, int openPositionLayoutId, int closedPositionLayoutId, int positionNothingId)
     {
         super();
         this.context = context;
         this.inflater = inflater;
         this.headerLayoutId = headerLayoutId;
+        this.lockedPositionLayoutId = lockedPositionLayoutId;
         this.openPositionLayoutId = openPositionLayoutId;
         this.closedPositionLayoutId = closedPositionLayoutId;
         this.positionNothingId = positionNothingId;
@@ -105,10 +107,11 @@ public class PositionItemAdapter extends BaseAdapter implements ExpandableListRe
     private void buildViewTypeMap()
     {
         viewTypeToLayoutId = new HashMap<>();
-        viewTypeToLayoutId.put(0, this.headerLayoutId);
-        viewTypeToLayoutId.put(1, this.positionNothingId);
-        viewTypeToLayoutId.put(2, this.openPositionLayoutId);
-        viewTypeToLayoutId.put(3, this.closedPositionLayoutId);
+        viewTypeToLayoutId.put(PositionItemType.Header.value, this.headerLayoutId);
+        viewTypeToLayoutId.put(PositionItemType.Placeholder.value, this.positionNothingId);
+        viewTypeToLayoutId.put(PositionItemType.Locked.value, this.lockedPositionLayoutId);
+        viewTypeToLayoutId.put(PositionItemType.Open.value, this.openPositionLayoutId);
+        viewTypeToLayoutId.put(PositionItemType.Closed.value, this.closedPositionLayoutId);
     }
 
     @Override public boolean hasStableIds()
@@ -234,25 +237,30 @@ public class PositionItemAdapter extends BaseAdapter implements ExpandableListRe
     {
         if (isPositionHeaderOpen(position) || isPositionHeaderClosed(position))
         {
-            return 0;
+            return PositionItemType.Header.value;
         }
         else if (isOpenPosition(position) && getOpenPositionsCount() == 0)
         {
-            return 1;
+            return PositionItemType.Placeholder.value;
         }
         else if (isOpenPosition(position))
         {
-            return 2;
+            ExpandableListItem<OwnedPositionId> id = (ExpandableListItem<OwnedPositionId>)getItem(position);
+            if (id.getModel().isLocked()) {
+                return PositionItemType.Locked.value;
+            } else {
+                return PositionItemType.Open.value;
+            }
         }
         else
         {
-            return 3;
+            return PositionItemType.Closed.value;
         }
     }
 
     @Override public int getViewTypeCount()
     {
-        return 4; //header, nothing and position
+        return PositionItemType.values().length;
     }
 
     @Override public View getView(int position, View convertView, ViewGroup parent)
@@ -273,27 +281,35 @@ public class PositionItemAdapter extends BaseAdapter implements ExpandableListRe
         }
         else if (isOpenPosition(position) && getOpenPositionsCount() == 0)
         {
-            // nothing to do
+            // placeholder, nothing to configure
         }
         else
         {
             ExpandableListItem<OwnedPositionId> expandableWrapper = (ExpandableListItem<OwnedPositionId>) getItem(position);
-            View expandingLayout = convertView.findViewById(R.id.expanding_layout);
-            if (expandingLayout != null)
+            if (expandableWrapper.getModel().isLocked())
             {
-                if (!expandableWrapper.isExpanded())
-                {
-                    expandingLayout.setVisibility(View.GONE);
-                }
-                else
-                {
-                    expandingLayout.setVisibility(View.VISIBLE);
-                }
+                LockedPositionItem cell = (LockedPositionItem)convertView;
+                cell.linkWith(expandableWrapper.getModel(), true);
             }
+            else
+            {
+                View expandingLayout = convertView.findViewById(R.id.expanding_layout);
+                if (expandingLayout != null)
+                {
+                    if (!expandableWrapper.isExpanded())
+                    {
+                        expandingLayout.setVisibility(View.GONE);
+                    }
+                    else
+                    {
+                        expandingLayout.setVisibility(View.VISIBLE);
+                    }
+                }
 
-            AbstractPositionView cell = (AbstractPositionView) convertView;
-            cell.linkWith(expandableWrapper.getModel(), true);
-            cell.setListener(internalListener);
+                AbstractPositionView cell = (AbstractPositionView)convertView;
+                cell.linkWith(expandableWrapper.getModel(), true);
+                cell.setListener(internalListener);
+            }
         }
         latestView = new WeakReference<>(convertView);
         return convertView;

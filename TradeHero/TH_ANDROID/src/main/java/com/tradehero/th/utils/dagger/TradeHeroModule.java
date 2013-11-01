@@ -54,6 +54,7 @@ import com.tradehero.th.widget.leaderboard.LeaderboardRankingListView;
 import com.tradehero.th.widget.portfolio.PortfolioListItemView;
 import com.tradehero.th.widget.portfolio.header.CurrentUserPortfolioHeaderView;
 import com.tradehero.th.widget.portfolio.header.OtherUserPortfolioHeaderView;
+import com.tradehero.th.widget.position.LockedPositionItem;
 import com.tradehero.th.widget.position.PositionClosedView;
 import com.tradehero.th.widget.position.PositionOpenView;
 import com.tradehero.th.widget.position.partial.PositionPartialBottomClosedView;
@@ -115,6 +116,7 @@ import javax.inject.Singleton;
                 PositionPartialTopView.class,
                 PositionPartialBottomOpenView.class,
                 PositionPartialBottomClosedView.class,
+                LockedPositionItem.class,
 
                 TradeListFragment.class,
                 TradeListItemView.class,

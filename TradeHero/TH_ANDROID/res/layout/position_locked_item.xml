@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<com.tradehero.th.widget.position.LockedPositionItem
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white">
+
+    <com.tradehero.common.widget.ColorIndicator
+            android:id="@+id/color_indicator"
+            android:layout_height="match_parent"
+            android:layout_width="10dp"
+            android:background="@color/number_green"
+            android:layout_marginLeft="2dp"
+            android:layout_marginTop="2dp"
+            android:layout_marginBottom="2dp"
+            />
+    <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:orientation="horizontal">
+            <ImageView
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="match_parent"
+                    android:layout_margin="2dp"
+                    android:contentDescription="@null"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/lock"
+                    />
+
+            <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="3"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+                <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textStyle="bold"
+                        android:maxLines="1"
+                        android:layout_alignParentTop="true"
+                        android:text="@string/position_locked_title"
+                        />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="bold"
+                    android:text="@string/position_locked_follow_to_unlock"
+                    />
+            </LinearLayout>
+
+            <TextView
+                    android:id="@+id/position_percentage"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:maxLines="1"
+                    android:textSize="10sp"
+                    android:layout_alignParentTop="true"
+                    android:text="+3.15%"
+                    />
+        </LinearLayout>
+        <TableLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="left"
+                >
+            <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    >
+
+                <TextView
+                        style="@style/TH.SmallTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="right"
+                        android:text="@string/trade_list_unrealized_pl"
+                        />
+
+                <TextView
+                        android:id="@+id/unrealised_pl_value"
+                        style="@style/TH.SmallValue"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        />
+
+            </TableRow>
+
+            <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    >
+
+                <TextView
+                        style="@style/TH.SmallTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="right"
+                        android:text="@string/trade_list_realized_pl"
+                        />
+
+                <TextView
+                        android:id="@+id/realised_pl_value"
+                        style="@style/TH.SmallValue"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        />
+
+            </TableRow>
+
+            <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    >
+
+                <TextView
+                        style="@style/TH.SmallTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="right"
+                        android:text="@string/position_total_invested_header"
+                        />
+
+                <TextView
+                        android:id="@+id/total_invested_value"
+                        style="@style/TH.SmallValue"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        />
+
+            </TableRow>
+        </TableLayout>
+
+    </LinearLayout>
+</com.tradehero.th.widget.position.LockedPositionItem>

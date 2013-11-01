@@ -114,4 +114,10 @@ public class OwnedPositionId extends OwnedPortfolioId implements DTO
     {
         return String.format("[userId=%d; portfolioId=%d; ownedPositionId=%d]", userId, portfolioId, positionId);
     }
+
+    public boolean isLocked()
+    {
+        return this.positionId < 0;
+    }
+
 }

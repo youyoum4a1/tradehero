@@ -32,6 +32,7 @@ import com.tradehero.th.persistence.security.SecurityIdCache;
 import com.tradehero.th.widget.list.ExpandingListView;
 import com.tradehero.th.widget.portfolio.header.PortfolioHeaderFactory;
 import com.tradehero.th.widget.portfolio.header.PortfolioHeaderView;
+import com.tradehero.th.widget.position.LockedPositionItem;
 import com.tradehero.th.widget.position.PositionListener;
 import com.tradehero.th.widget.position.PositionNothingView;
 import dagger.Lazy;
@@ -90,6 +91,7 @@ public class PositionListFragment extends DashboardFragment
                         getActivity(),
                         getActivity().getLayoutInflater(),
                         R.layout.position_item_header,
+                        R.layout.position_locked_item,
                         R.layout.position_open_no_period,
                         R.layout.position_closed_no_period,
                         R.layout.position_quick_nothing);
@@ -133,9 +135,9 @@ public class PositionListFragment extends DashboardFragment
             navigator.popFragment(); // Feels HACKy
             navigator.goToTab(DashboardTabType.TRENDING);
         }
-        else
+        else if (view instanceof LockedPositionItem)
         {
-            //THToast.show("No item handler for now");
+            THToast.show("show prompt to follow user");
         }
     }
 

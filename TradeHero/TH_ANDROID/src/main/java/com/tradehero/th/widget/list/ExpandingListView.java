@@ -87,7 +87,10 @@ public class ExpandingListView extends ListView
     private void expandView(View view)
     {
         final View expandingLayout = view.findViewById(R.id.expanding_layout);
-        expandingLayout.setVisibility(View.VISIBLE);
+        if (expandingLayout != null)
+        {
+            expandingLayout.setVisibility(View.VISIBLE);
+        }
     }
 
     private void collapseView(View view)
