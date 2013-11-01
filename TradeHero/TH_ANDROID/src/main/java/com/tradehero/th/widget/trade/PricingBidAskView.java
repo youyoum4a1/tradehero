@@ -225,19 +225,19 @@ public class PricingBidAskView extends LinearLayout implements DTOView<SecurityC
 
         if (mAskPriceHint != null)
         {
-            mAskPriceHint.setTextColor(buy ? inactiveColor : activeColor);
+            mAskPriceHint.setTextColor(buy ? activeColor : inactiveColor);
         }
         if (mAskPrice != null)
         {
-            mAskPrice.setTextColor(buy ? inactiveColor : activeColor);
+            mAskPrice.setTextColor(buy ? activeColor : inactiveColor);
         }
         if (mBidPriceHint != null)
         {
-            mBidPriceHint.setTextColor(buy ? activeColor : inactiveColor);
+            mBidPriceHint.setTextColor(buy ? inactiveColor : activeColor);
         }
         if (mBidPrice != null)
         {
-            mBidPrice.setTextColor(buy ? activeColor : inactiveColor);
+            mBidPrice.setTextColor(buy ? inactiveColor : activeColor);
         }
     }
 }
