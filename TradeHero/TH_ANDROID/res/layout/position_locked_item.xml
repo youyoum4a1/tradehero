@@ -17,7 +17,7 @@
             android:layout_marginBottom="2dp"
             />
     <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical">
         <LinearLayout
@@ -34,16 +34,26 @@
                     android:src="@drawable/lock"
                     />
 
-
-            <TextView
+            <LinearLayout
                     android:layout_width="0dp"
-                    android:layout_weight="2"
+                    android:layout_weight="3"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+                <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textStyle="bold"
+                        android:maxLines="1"
+                        android:layout_alignParentTop="true"
+                        android:text="@string/position_locked_title"
+                        />
+                <TextView
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textStyle="bold"
-                    android:maxLines="1"
-                    android:layout_alignParentTop="true"
-                    android:text="@string/position_locked_title"
+                    android:fontFamily="bold"
+                    android:text="@string/position_locked_follow_to_unlock"
                     />
+            </LinearLayout>
 
             <TextView
                     android:id="@+id/position_percentage"
@@ -126,14 +136,6 @@
                         />
 
             </TableRow>
-
-            <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="bold"
-                    android:gravity="center"
-                    android:text="@string/position_locked_follow_to_unlock"
-                    />
         </TableLayout>
 
     </LinearLayout>

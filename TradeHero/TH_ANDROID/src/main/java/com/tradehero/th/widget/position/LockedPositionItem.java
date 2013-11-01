@@ -3,6 +3,7 @@ package com.tradehero.th.widget.position;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import com.tradehero.common.widget.ColorIndicator;
@@ -20,7 +21,7 @@ import javax.inject.Inject;
 /**
  * Created by julien on 31/10/13
  */
-public class LockedPositionItem extends RelativeLayout
+public class LockedPositionItem extends LinearLayout
 {
     private ColorIndicator colorIndicator;
     private TextView positionPercent;
