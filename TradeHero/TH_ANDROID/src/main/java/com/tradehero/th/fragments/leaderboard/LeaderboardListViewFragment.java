@@ -18,14 +18,14 @@ import com.tradehero.th.api.leaderboard.LeaderboardDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardUserRankDTO;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.widget.leaderboard.LeaderboardRankingListView;
-import java.util.LinkedList;
 import java.util.List;
 
 /** Created with IntelliJ IDEA. User: tho Date: 10/14/13 Time: 12:34 PM Copyright (c) TradeHero */
 public class LeaderboardListViewFragment extends DashboardFragment
 {
+    public static final String TITLE = LeaderboardListViewFragment.class.getName() + ".title";
     private LeaderboardListAdapter leaderboardListAdapter;
-    private LeaderboardRankingListView rankingListView;
+    private LeaderboardRankingListView leaderboardRankingListView;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -35,21 +35,21 @@ public class LeaderboardListViewFragment extends DashboardFragment
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.leaderboard_listview, container, false);
-        rankingListView = (LeaderboardRankingListView) view.findViewById(android.R.id.list);
+        leaderboardRankingListView = (LeaderboardRankingListView) view.findViewById(android.R.id.list);
+
+        leaderboardListAdapter = new LeaderboardListAdapter(getActivity(), getActivity().getLayoutInflater(), null, R.layout.leaderboard_listview_item);
+        leaderboardRankingListView.setAdapter(leaderboardListAdapter);
+        leaderboardRankingListView.setEmptyView(view.findViewById(android.R.id.empty));
+        leaderboardRankingListView.setOnRefreshListener(createOnRefreshListener());
         return view;
     }
 
-    @Override public void onResume()
+    @Override public void onActivityCreated(Bundle savedInstanceState)
     {
-        leaderboardListAdapter = new LeaderboardListAdapter(getActivity(), getActivity().getLayoutInflater(), null, R.layout.leaderboard_listview_item);
-        rankingListView.setAdapter(leaderboardListAdapter);
-        rankingListView.setEmptyView(getView().findViewById(android.R.id.empty));
-        rankingListView.setOnRefreshListener(createOnRefreshListener());
+        super.onActivityCreated(savedInstanceState);
 
         Bundle loaderBundle = new Bundle();
         getLoaderManager().initLoader(LeaderboardLoader.UNIQUE_LOADER_ID, loaderBundle, loaderCallback);
-
-        super.onResume();
     }
 
     private PullToRefreshBase.OnRefreshListener<ListView> createOnRefreshListener()
@@ -74,6 +74,13 @@ public class LeaderboardListViewFragment extends DashboardFragment
 
         ActionBar actionBar = getSherlockActivity().getSupportActionBar();
         actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_HOME_AS_UP);
+
+        Bundle argument = getArguments();
+        if (argument != null)
+        {
+            String title = argument.getString(TITLE);
+            actionBar.setTitle(title == null ? "" : title);
+        }
 
         super.onCreateOptionsMenu(menu, inflater);
     }
@@ -108,7 +115,7 @@ public class LeaderboardListViewFragment extends DashboardFragment
                 leaderboardListAdapter.setUnderlyingItems(items);
             }
             leaderboardListAdapter.notifyDataSetChanged();
-            rankingListView.onRefreshComplete();
+            leaderboardRankingListView.onRefreshComplete();
         }
 
         @Override public void onLoaderReset(Loader<List<LeaderboardUserRankDTO>> loader)

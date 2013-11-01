@@ -6,6 +6,7 @@ import com.tradehero.common.persistence.LeaderboardQuery;
 import com.tradehero.common.persistence.PersistableResource;
 import com.tradehero.common.persistence.Query;
 import com.tradehero.th.api.leaderboard.LeaderboardDTO;
+import com.tradehero.th.api.leaderboard.LeaderboardDefDTO;
 import com.tradehero.th.network.BasicRetrofitErrorHandler;
 import com.tradehero.th.network.service.LeaderboardService;
 import dagger.Lazy;
@@ -32,7 +33,18 @@ public class LeaderboardStore implements PersistableResource<LeaderboardDTO>
             LeaderboardDTO leaderboardDTO = null;
             try
             {
-                leaderboardDTO = leaderboardService.get().getLeaderboard((Integer) query.getId(), query.getPage());
+                Integer leaderboardId = (Integer) query.getId();
+                if (leaderboardId != null)
+                {
+                    switch (leaderboardId)
+                    {
+                        case LeaderboardDefDTO.LEADERBOARD_FRIEND_ID:
+                            leaderboardDTO = leaderboardService.get().getFriendsLeaderboard(query.getPage(), 2, false);
+                            break;
+                        default:
+                            leaderboardDTO = leaderboardService.get().getLeaderboard(leaderboardId, query.getPage());
+                    }
+                }
             }
             catch (RetrofitError retrofitError)
             {

@@ -50,7 +50,7 @@ public class LeaderboardLoader extends PagedItemListLoader<LeaderboardUserRankDT
 
     @Override public List<LeaderboardUserRankDTO> loadInBackground()
     {
-        THLog.d(TAG, "Start loading leaderboard, page=" + currentPage);
+        THLog.d(TAG, String.format("Start loading leaderboard %d, page=%d", leaderboardId, currentPage));
 
         LeaderboardQuery query = new LeaderboardQuery();
         query.setId(leaderboardId);

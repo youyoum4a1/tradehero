@@ -63,7 +63,7 @@
                     android:layout_height="wrap_content"
                     android:lines="1"
                     android:textSize="10sp"
-                    android:text="US $145.34"
+                    android:text="@null"
                     />
 
             <ImageView

@@ -185,9 +185,13 @@ public class LeaderboardCommunityFragment extends DashboardFragment
             {
                 LeaderboardDefDTO dto = (LeaderboardDefDTO) adapterView.getAdapter().getItem(position);
 
-                Bundle bundle = new Bundle(getArguments());
-                bundle.putInt(LeaderboardDTO.LEADERBOARD_ID, dto.getId());
-                navigator.pushFragment(LeaderboardListViewFragment.class, bundle);
+                if (dto != null)
+                {
+                    Bundle bundle = new Bundle(getArguments());
+                    bundle.putInt(LeaderboardDTO.LEADERBOARD_ID, dto.getId());
+                    bundle.putString(LeaderboardListViewFragment.TITLE, dto.name);
+                    navigator.pushFragment(LeaderboardListViewFragment.class, bundle);
+                }
             }
         };
     }

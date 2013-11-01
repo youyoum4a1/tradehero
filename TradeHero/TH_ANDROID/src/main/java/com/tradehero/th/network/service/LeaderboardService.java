@@ -141,4 +141,19 @@ public interface LeaderboardService
             @Query("perPage") int perPage,
             Callback<GetPositionsDTO> callback);
     //</editor-fold>
+
+    /**
+     *
+     * @param page pagination parameter
+     * @param sortType sort by HQ/ROI...
+     * @param includeFoF whether to include second level friends to the leaderboard
+     * @return
+     * @throws RetrofitError
+     */
+    @GET("/leaderboards/friends")
+    LeaderboardDTO getFriendsLeaderboard(
+            @Query("page") Integer page,
+            @Query("sortType") Integer sortType,
+            @Query("includeFoF") Boolean includeFoF)
+            throws RetrofitError;
 }

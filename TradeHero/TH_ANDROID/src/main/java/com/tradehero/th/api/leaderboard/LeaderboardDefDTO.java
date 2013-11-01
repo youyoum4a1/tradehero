@@ -15,6 +15,7 @@ public class LeaderboardDefDTO extends AbstractItemWithComparableId<Integer>
     // For fake leaderboard definition, hardcoded on client side
     public static final int LEADERBOARD_DEF_SECTOR_ID = -1;
     public static final int LEADERBOARD_DEF_EXCHANGE_ID = -2;
+    public static final int LEADERBOARD_FRIEND_ID = -1;
 
     public int id;
     public String name;

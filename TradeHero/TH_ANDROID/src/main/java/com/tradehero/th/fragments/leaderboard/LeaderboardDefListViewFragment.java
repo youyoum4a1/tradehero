@@ -29,13 +29,12 @@ public class LeaderboardDefListViewFragment extends DashboardListFragment
     private static final String TAG = LeaderboardDefListViewFragment.class.getName();
     public static final String TITLE = "LEADERBOARD_DEF_TITLE";
 
-    private LeaderboardDefListAdapter leaderboardDefListAdapter;
-
     @Inject protected Lazy<LeaderboardDefListCache> leaderboardDefListCache;
     @Inject protected Lazy<LeaderboardDefCache> leaderboardDefCache;
     @Inject protected LeaderboardSortHelper leaderboardSortHelper;
 
     private int flags;
+    private LeaderboardDefListAdapter leaderboardDefListAdapter;
     private LeaderboardSortType currentSortType;
     private SortTypeChangedListener sortTypeChangeListener;
     private SubMenu sortSubMenu;

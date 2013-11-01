@@ -16,7 +16,6 @@ public class LeaderboardListAdapter extends
         ExpandableDTOAdapter<LeaderboardUserRankDTO, LeaderboardListAdapter.ExpandableLeaderboardUserRankItemWrapper, LeaderboardUserRankItemView>
 {
     private LeaderboardLoader loader;
-    private List<LeaderboardUserRankDTO> underlyingItems;
 
     public LeaderboardListAdapter(Context context, LayoutInflater layoutInflater, List<LeaderboardUserRankDTO> items, int layoutResourceId)
     {
