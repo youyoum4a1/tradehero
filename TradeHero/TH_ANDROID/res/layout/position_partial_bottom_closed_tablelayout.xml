@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<TableLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/position_value_table"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="left">
+
+    <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            >
+
+        <TextView
+                style="@style/TH.SmallTitle"
+                android:gravity="right"
+                android:text="@string/position_expanded_close_pl_header"
+                />
+
+        <TextView
+                android:id="@+id/position_realized_pl_value"
+                style="@style/TH.SmallValue"
+                />
+
+    </TableRow>
+
+    <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            >
+
+        <TextView
+                style="@style/TH.SmallTitle"
+                android:gravity="right"
+                android:text="@string/position_total_invested_header"
+                />
+
+        <TextView
+                android:id="@+id/total_invested_value"
+                style="@style/TH.SmallValue"
+                />
+
+    </TableRow>
+
+    <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            >
+
+        <TextView
+                style="@style/TH.SmallTitle"
+                android:gravity="right"
+                android:text="@string/position_expanded_close_opened_date_header"
+                />
+
+        <TextView
+                android:id="@+id/opened_date"
+                style="@style/TH.SmallValue"
+                />
+
+    </TableRow>
+
+    <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            >
+
+        <TextView
+                style="@style/TH.SmallTitle"
+                android:gravity="right"
+                android:text="@string/position_expanded_close_closed_date_header"
+                />
+
+        <TextView
+                android:id="@+id/closed_date"
+                style="@style/TH.SmallValue"
+                />
+
+    </TableRow>
+
+    <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            >
+
+        <TextView
+                style="@style/TH.SmallTitle"
+                android:gravity="right"
+                android:text="@string/position_expanded_close_period_header"
+                />
+
+        <TextView
+                android:id="@+id/period_value"
+                style="@style/TH.SmallValue"
+                />
+    </TableRow>
+</TableLayout>

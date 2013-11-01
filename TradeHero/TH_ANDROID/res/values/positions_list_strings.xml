@@ -1,46 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-  <!-- Portfolios list -->
-  <string name="topbar_portfolios_title">Portfolios</string>
-  <string name="webview_back">Back</string>
-  <string name="webview_forward">Forward</string>
-  <string name="portfolio_recently_viewed">Recently Viewed Users</string>
-  <string name="portfolio_loading_count">Loading %1$,d/%2$,d Portfolios...</string>
-  <string name="error_fetch_portfolio_list_info">There was an error when fetching the list of portfolios</string>
-  <string name="error_fetch_portfolio_info">There was an error when fetching the portfolio information</string>
+    <!-- Portfolios list -->
+    <string name="topbar_portfolios_title">Portfolios</string>
+    <string name="webview_back">Back</string>
+    <string name="webview_forward">Forward</string>
+    <string name="portfolio_recently_viewed">Recently Viewed Users</string>
+    <string name="portfolio_loading_count">Loading %1$,d/%2$,d Portfolios...</string>
+    <string name="error_fetch_portfolio_list_info">There was an error when fetching the list of portfolios</string>
+    <string name="error_fetch_portfolio_info">There was an error when fetching the portfolio information</string>
 
-  <!-- Portfolio detail / Positions -->
-  <string name="position_nothing_description">No open positions. Tap to Trade!</string>
-  <string name="position_list_action_bar_header">%d Positions</string>
-  <string name="position_list_action_bar_header_unknown">Positions</string>
-  <string name="position_list_header_open">Open Positions (%d)</string>
-  <string name="position_list_header_open_unsure">Open Positions (N/A)</string>
-  <string name="position_list_header_closed">Closed Positions (%d)</string>
-  <string name="position_list_header_closed_unsure">Closed Positions (N/A)</string>
-  <string name="position_unrealised_pl_header">Unrealized P&amp;L</string>
-  <string name="position_realised_pl_header">Realized P&amp;L</string>
-  <string name="position_total_invested_header">Total Invested</string>
-  <string name="position_market_value_header">Market Value</string>
-  <string name="position_quantity_header">Quantity</string>
-  <string name="position_average_price_header">Avg. Price</string>
-  <string name="error_fetch_position_list_info">There was an error when fetching the list of positions</string>
-  <string name="error_lost_position_in_cache">We have lost track of this trading position</string>
+    <!-- Portfolio detail / Positions -->
+    <string name="position_nothing_description">No open positions. Tap to Trade!</string>
+    <string name="position_list_action_bar_header">%d Positions</string>
+    <string name="position_list_action_bar_header_unknown">Positions</string>
+    <string name="position_list_header_open">Open Positions (%d)</string>
+    <string name="position_list_header_open_unsure">Open Positions (N/A)</string>
+    <string name="position_list_header_closed">Closed Positions (%d)</string>
+    <string name="position_list_header_closed_unsure">Closed Positions (N/A)</string>
+    <string name="position_unrealised_pl_header">Unrealized P&amp;L</string>
+    <string name="position_realised_pl_header">Realized P&amp;L</string>
+    <string name="position_total_invested_header">Total Invested</string>
+    <string name="position_market_value_header">Market Value</string>
+    <string name="position_quantity_header">Quantity</string>
+    <string name="position_average_price_header">Avg. Price</string>
+    <string name="error_fetch_position_list_info">There was an error when fetching the list of positions</string>
+    <string name="error_lost_position_in_cache">We have lost track of this trading position</string>
 
-  <string name="portfolio_header_total_value">Total Value</string>
-  <string name="portfolio_header_cash_value">Cash Value</string>
-  <string name="portfolio_header_username">Username</string>
+    <string name="portfolio_header_total_value">Total Value</string>
+    <string name="portfolio_header_cash_value">Cash Value</string>
+    <string name="portfolio_header_username">Username</string>
 
-  <string name="position_expanded_close_pl_header">P&amp;L</string>
-  <string name="position_expanded_close_opened_date_header">Opened</string>
-  <string name="position_expanded_close_closed_date_header">Closed</string>
-  <string name="position_expanded_close_period_header">Period</string>
-  <string name="position_period_held_day_singular">%d day</string>
-  <string name="position_period_held_day_plural">%d days</string>
+    <string name="position_expanded_close_pl_header">P&amp;L</string>
+    <string name="position_expanded_close_opened_date_header">Opened</string>
+    <string name="position_expanded_close_closed_date_header">Closed</string>
+    <string name="position_expanded_close_period_header">Period</string>
+    <string name="position_period_held_day_singular">%d day</string>
+    <string name="position_period_held_day_plural">%d days</string>
 
 
 
-  <string name="position_locked_follow_to_unlock">Follow user to unlock!</string>
-  <string name="position_locked_title">Open Positions</string>
+    <string name="position_locked_follow_to_unlock">Follow user to unlock!</string>
+    <string name="position_locked_title">Open Positions</string>
+
+    <string name="position_in_period_overall_header">Overall</string>
+    <string name="position_in_period_pl">Period P&amp;L</string>
+    <string name="position_in_period_addtitional_invested">Addl. Invested</string>
+    <string name="position_in_period_start_value">Value at Start</string>
 
 </resources>
