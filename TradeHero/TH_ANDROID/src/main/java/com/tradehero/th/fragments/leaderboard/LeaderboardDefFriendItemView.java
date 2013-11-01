@@ -9,6 +9,5 @@ public class LeaderboardDefFriendItemView extends LeaderboardDefView
     public LeaderboardDefFriendItemView(Context context, LayoutInflater inflater, int layoutResourceId)
     {
         super(context);
-
     }
 }
