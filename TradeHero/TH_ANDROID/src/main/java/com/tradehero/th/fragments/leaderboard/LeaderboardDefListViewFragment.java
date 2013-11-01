@@ -1,23 +1,18 @@
 package com.tradehero.th.fragments.leaderboard;
 
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
-import com.actionbarsherlock.app.ActionBar;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
-import com.actionbarsherlock.view.SubMenu;
+import android.widget.ListView;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
-import com.tradehero.th.api.leaderboard.LeaderboardDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardDefKeyList;
 import com.tradehero.th.api.leaderboard.LeaderboardDefListKey;
-import com.tradehero.th.fragments.base.BaseFragment;
-import com.tradehero.th.fragments.base.DashboardListFragment;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefCache;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefListCache;
 import dagger.Lazy;
@@ -25,26 +20,23 @@ import java.util.List;
 import javax.inject.Inject;
 
 /** Created with IntelliJ IDEA. User: tho Date: 10/17/13 Time: 7:21 PM Copyright (c) TradeHero */
-public class LeaderboardDefListViewFragment extends DashboardListFragment
+public class LeaderboardDefListViewFragment extends AbstractLeaderboardFragment
     implements
         DTOCache.Listener<LeaderboardDefListKey, LeaderboardDefKeyList>
 {
     private static final String TAG = LeaderboardDefListViewFragment.class.getName();
-    public static final String TITLE = "LEADERBOARD_DEF_TITLE";
 
     @Inject protected Lazy<LeaderboardDefListCache> leaderboardDefListCache;
     @Inject protected Lazy<LeaderboardDefCache> leaderboardDefCache;
-    @Inject protected LeaderboardSortHelper leaderboardSortHelper;
 
-    private int flags;
     private LeaderboardDefListAdapter leaderboardDefListAdapter;
-    private LeaderboardSortType currentSortType;
-    private SortTypeChangedListener sortTypeChangeListener;
-    private SubMenu sortSubMenu;
+    private ListView contentListView;
 
-    @Override public void onCreate(Bundle savedInstanceState)
+    @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        super.onCreate(savedInstanceState);
+        View view = inflater.inflate(R.layout.leaderboard_def_listview, container, false);
+        contentListView = (ListView) view.findViewById(android.R.id.list);
+        return view;
     }
 
     @Override public void onResume()
@@ -52,22 +44,17 @@ public class LeaderboardDefListViewFragment extends DashboardListFragment
         Bundle args = getArguments();
 
         updateLeaderboardDefListKey(args);
-        updateSortSubMenu(args);
 
         leaderboardDefListAdapter = new LeaderboardDefListAdapter(getActivity(), getActivity().getLayoutInflater(), null, R.layout.leaderboard_def_item);
-        setListAdapter(leaderboardDefListAdapter);
-        getListView().setOnItemClickListener(new AdapterView.OnItemClickListener()
+        contentListView.setAdapter(leaderboardDefListAdapter);
+        contentListView.setOnItemClickListener(new AdapterView.OnItemClickListener()
         {
             @Override public void onItemClick(AdapterView<?> parent, View view, int position, long id)
             {
                 LeaderboardDefDTO dto = (LeaderboardDefDTO) leaderboardDefListAdapter.getItem(position);
                 if (dto != null)
                 {
-                    Bundle bundle = new Bundle(getArguments());
-                    bundle.putInt(LeaderboardDTO.LEADERBOARD_ID, dto.getId());
-                    bundle.putString(LeaderboardListViewFragment.TITLE, dto.name);
-
-                    getNavigator().pushFragment(LeaderboardListViewFragment.class, bundle);
+                    pushLeaderboardListViewFragment(dto);
                 }
             }
         });
@@ -75,61 +62,6 @@ public class LeaderboardDefListViewFragment extends DashboardListFragment
         super.onResume();
     }
 
-    private void updateSortSubMenu(Bundle bundle)
-    {
-        flags = bundle.getInt(LeaderboardSortType.BUNDLE_FLAG);
-    }
-
-    //<editor-fold desc="ActionBar">
-    @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
-    {
-        createSortSubMenu(menu);
-
-        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-        actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME);
-
-        Bundle args = getArguments();
-        if (args != null)
-        {
-            String title = args.getString(TITLE);
-            actionBar.setTitle(title == null ? "" : title);
-        }
-
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-
-    private void createSortSubMenu(Menu menu)
-    {
-        LeaderboardSortType sortType = getCurrentSortType();
-        sortSubMenu = menu.addSubMenu("").setIcon(sortType.getSelectedResourceIcon());
-        leaderboardSortHelper.addSortMenu(sortSubMenu, flags);
-    }
-
-    @Override public boolean onOptionsItemSelected(MenuItem item)
-    {
-        LeaderboardSortType selectedSortType = LeaderboardSortType.byFlag(item.getItemId());
-        if (selectedSortType != null && selectedSortType != currentSortType)
-        {
-            setCurrentSortType(selectedSortType);
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    private void setCurrentSortType(LeaderboardSortType selectedSortType)
-    {
-        currentSortType = selectedSortType;
-        sortSubMenu.setIcon(currentSortType.getSelectedResourceIcon());
-        if (sortTypeChangeListener != null)
-        {
-            sortTypeChangeListener.onSortTypeChange(currentSortType);
-        }
-    }
-
-    private LeaderboardSortType getCurrentSortType()
-    {
-        return currentSortType != null ? currentSortType : LeaderboardSortType.DefaultSortType;
-    }
-    //</editor-fold>
 
     private void updateLeaderboardDefListKey(Bundle bundle)
     {
@@ -158,8 +90,4 @@ public class LeaderboardDefListViewFragment extends DashboardListFragment
         THLog.e(TAG, "Error fetching the leaderboard def key list " + key, error);
     }
 
-    public void setSortTypeChangeListener(SortTypeChangedListener sortTypeChangeListener)
-    {
-        this.sortTypeChangeListener = sortTypeChangeListener;
-    }
 }

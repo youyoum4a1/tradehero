@@ -21,7 +21,7 @@ import com.tradehero.th.widget.leaderboard.LeaderboardRankingListView;
 import java.util.List;
 
 /** Created with IntelliJ IDEA. User: tho Date: 10/14/13 Time: 12:34 PM Copyright (c) TradeHero */
-public class LeaderboardListViewFragment extends DashboardFragment
+public class LeaderboardListViewFragment extends AbstractLeaderboardFragment
 {
     public static final String TITLE = LeaderboardListViewFragment.class.getName() + ".title";
     private LeaderboardListAdapter leaderboardListAdapter;
@@ -70,6 +70,7 @@ public class LeaderboardListViewFragment extends DashboardFragment
     //<editor-fold desc="ActionBar">
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
+        super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.leaderboard_listview_menu, menu);
 
         ActionBar actionBar = getSherlockActivity().getSupportActionBar();
@@ -81,8 +82,6 @@ public class LeaderboardListViewFragment extends DashboardFragment
             String title = argument.getString(TITLE);
             actionBar.setTitle(title == null ? "" : title);
         }
-
-        super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override public boolean onOptionsItemSelected(MenuItem item)
@@ -104,6 +103,7 @@ public class LeaderboardListViewFragment extends DashboardFragment
         {
             int leaderboardId = getArguments().getInt(LeaderboardDTO.LEADERBOARD_ID);
             LeaderboardLoader leaderboardLoader = new LeaderboardLoader(getActivity(), leaderboardId);
+            LeaderboardListViewFragment.this.setSortTypeChangeListener(leaderboardLoader);
             leaderboardListAdapter.setLoader(leaderboardLoader);
             return leaderboardLoader;
         }
@@ -120,6 +120,7 @@ public class LeaderboardListViewFragment extends DashboardFragment
 
         @Override public void onLoaderReset(Loader<List<LeaderboardUserRankDTO>> loader)
         {
+            // TODO what should do when loader is reset
         }
     };
     //</editor-fold>

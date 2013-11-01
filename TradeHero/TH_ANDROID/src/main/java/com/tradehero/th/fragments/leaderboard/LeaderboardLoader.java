@@ -74,6 +74,16 @@ public class LeaderboardLoader extends PagedItemListLoader<LeaderboardUserRankDT
     @Override public void onSortTypeChange(LeaderboardSortType sortType)
     {
         this.sortType = sortType;
+        resetQuery();
         forceLoad();
+    }
+
+    private void resetQuery()
+    {
+        currentPage = 1;
+        if (items != null)
+        {
+            items.clear();
+        }
     }
 }

@@ -15,7 +15,6 @@ import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
-import com.tradehero.th.api.leaderboard.LeaderboardDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardDefExchangeListKey;
 import com.tradehero.th.api.leaderboard.LeaderboardDefKeyList;
@@ -23,7 +22,6 @@ import com.tradehero.th.api.leaderboard.LeaderboardDefListKey;
 import com.tradehero.th.api.leaderboard.LeaderboardDefMostSkilledListKey;
 import com.tradehero.th.api.leaderboard.LeaderboardDefSectorListKey;
 import com.tradehero.th.api.leaderboard.LeaderboardDefTimePeriodListKey;
-import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.persistence.competition.ProviderListCache;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefCache;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefListCache;
@@ -34,7 +32,7 @@ import java.util.Comparator;
 import java.util.List;
 import javax.inject.Inject;
 
-public class LeaderboardCommunityFragment extends DashboardFragment
+public class LeaderboardCommunityFragment extends AbstractLeaderboardFragment
         implements DTOCache.Listener<LeaderboardDefListKey, LeaderboardDefKeyList>
 {
     private static final String TAG = LeaderboardCommunityFragment.class.getName();
@@ -58,6 +56,13 @@ public class LeaderboardCommunityFragment extends DashboardFragment
         prepareAdapters();
 
         return view;
+    }
+
+    @Override public void onResume()
+    {
+        int defaultSortFlags = LeaderboardSortType.SORT_HERO_QUOTIENT | LeaderboardSortType.SORT_ROI;
+        getArguments().putInt(LeaderboardSortType.BUNDLE_FLAG, defaultSortFlags);
+        super.onResume();
     }
 
     private void prepareAdapters()
@@ -88,11 +93,11 @@ public class LeaderboardCommunityFragment extends DashboardFragment
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         inflater.inflate(R.menu.leaderboard_menu, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+
         ActionBar actionBar = getSherlockActivity().getSupportActionBar();
         actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME);
         actionBar.setTitle(getString(R.string.leaderboards));
-
-        super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override public boolean onOptionsItemSelected(MenuItem item)
@@ -100,12 +105,6 @@ public class LeaderboardCommunityFragment extends DashboardFragment
         // TODO switch sorting type for leaderboard
         switch (item.getItemId())
         {
-            case R.id.leaderboard_sort:
-                //PopupMenu popupMenu = new PopupMenu(getActivity(), getSherlockActivity().findViewById(R.menu.leaderboard_listview_menu));
-                //MenuInflater inflater = popupMenu.getMenuInflater();
-                //inflater.inflate(R.menu.other_menu, popupMenu.getMenu());
-                //menu.show();
-                break;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -163,10 +162,7 @@ public class LeaderboardCommunityFragment extends DashboardFragment
 
                 if (dto != null)
                 {
-                    Bundle bundle = new Bundle(getArguments());
-                    bundle.putInt(LeaderboardDTO.LEADERBOARD_ID, dto.getId());
-                    bundle.putString(LeaderboardListViewFragment.TITLE, dto.name);
-                    navigator.pushFragment(LeaderboardListViewFragment.class, bundle);
+                    pushLeaderboardListViewFragment(dto);
                 }
             }
         };
@@ -213,16 +209,19 @@ public class LeaderboardCommunityFragment extends DashboardFragment
                     {
                         case LeaderboardDefDTO.LEADERBOARD_DEF_SECTOR_ID:
                         {
-                            Bundle bundle = new LeaderboardDefSectorListKey().getArgs();
+                            Bundle bundle = new Bundle(getArguments());
+                            (new LeaderboardDefSectorListKey()).putParameters(bundle);
                             bundle.putString(LeaderboardDefListViewFragment.TITLE, getString(R.string.leaderboard_sector));
                             bundle.putInt(LeaderboardSortType.BUNDLE_FLAG, LeaderboardSortType.SORT_ROI | LeaderboardSortType.SORT_HERO_QUOTIENT);
-                            navigator.pushFragment(LeaderboardDefListViewFragment.class, bundle);
+                            bundle.putInt(AbstractLeaderboardFragment.CURRENT_SORT_TYPE, getCurrentSortType().getFlag());
+                            getNavigator().pushFragment(LeaderboardDefListViewFragment.class, bundle);
                         } break;
                         case LeaderboardDefDTO.LEADERBOARD_DEF_EXCHANGE_ID:
                         {
                             Bundle bundle = new LeaderboardDefExchangeListKey().getArgs();
                             bundle.putString(LeaderboardDefListViewFragment.TITLE, getString(R.string.leaderboard_exchange));
-                            navigator.pushFragment(LeaderboardDefListViewFragment.class, bundle);
+                            bundle.putInt(AbstractLeaderboardFragment.CURRENT_SORT_TYPE, getCurrentSortType().getFlag());
+                            getNavigator().pushFragment(LeaderboardDefListViewFragment.class, bundle);
                         } break;
                     }
                 }
@@ -284,6 +283,11 @@ public class LeaderboardCommunityFragment extends DashboardFragment
         timePeriodListView.setOnItemClickListener(createLeaderboardItemClickListener());
     }
     //</editor-fold>
+
+    @Override protected void updateCurrentSortType(Bundle bundle)
+    {
+        // I'm the leaderboard master screen, one can change my sort type :))
+    }
 
     //<editor-fold desc="BaseFragment.TabBarVisibilityInformer">
     @Override public boolean isTabBarVisible()

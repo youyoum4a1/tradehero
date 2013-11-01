@@ -14,6 +14,7 @@ import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.base.THUser;
 import com.tradehero.th.fragments.WebViewFragment;
 import com.tradehero.th.fragments.authentication.EmailSignInFragment;
+import com.tradehero.th.fragments.leaderboard.AbstractLeaderboardFragment;
 import com.tradehero.th.fragments.leaderboard.LeaderboardCommunityFragment;
 import com.tradehero.th.fragments.leaderboard.LeaderboardDefListViewFragment;
 import com.tradehero.th.fragments.leaderboard.LeaderboardListViewFragment;
@@ -148,6 +149,7 @@ import javax.inject.Singleton;
                 LeaderboardManager.class,
                 LeaderboardLoader.class,
                 LeaderboardListViewFragment.class,
+                AbstractLeaderboardFragment.class,
                 LeaderboardUserRankItemView.class,
                 LeaderboardRankingListView.class,
 
