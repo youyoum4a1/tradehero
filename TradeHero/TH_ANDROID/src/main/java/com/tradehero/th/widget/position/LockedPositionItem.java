@@ -60,7 +60,7 @@ public class LockedPositionItem extends RelativeLayout
         positionPercent = (TextView)findViewById(R.id.position_percentage);
         colorIndicator = (ColorIndicator)findViewById(R.id.color_indicator);
         unrealisedPLValue = (TextView) findViewById(R.id.unrealised_pl_value);
-        realisedPLValue = (TextView)findViewById(R.id.position_realized_pl_value);
+        realisedPLValue = (TextView)findViewById(R.id.realised_pl_value);
         totalInvestedValue = (TextView) findViewById(R.id.total_invested_value);
     }
 
@@ -86,6 +86,7 @@ public class LockedPositionItem extends RelativeLayout
         displayRealisedPLValue();
         displayUnrealisedPLValue();
         displayPositionPercent();
+        displayTotalInvested();
     }
 
     public void displayUnrealisedPLValue()
