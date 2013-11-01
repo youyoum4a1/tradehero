@@ -7,6 +7,7 @@ import com.tradehero.common.persistence.PersistableResource;
 import com.tradehero.common.persistence.Query;
 import com.tradehero.th.api.leaderboard.LeaderboardDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardDefDTO;
+import com.tradehero.th.fragments.leaderboard.LeaderboardSortType;
 import com.tradehero.th.network.BasicRetrofitErrorHandler;
 import com.tradehero.th.network.service.LeaderboardService;
 import dagger.Lazy;
@@ -21,9 +22,12 @@ import retrofit.RetrofitError;
 /** Created with IntelliJ IDEA. User: tho Date: 10/21/13 Time: 4:41 PM Copyright (c) TradeHero */
 public class LeaderboardStore implements PersistableResource<LeaderboardDTO>
 {
+    public static final String SORT_TYPE = "sortType";
+    public static final String PER_PAGE = "perPage";
+    private static final Integer DEFAULT_PER_PAGE = 42;
+
     @Inject protected Lazy<LeaderboardService> leaderboardService;
 
-    public static final String PER_PAGE = "perpage";;
     private LeaderboardQuery query;
 
     @Override public List<LeaderboardDTO> request()
@@ -34,15 +38,21 @@ public class LeaderboardStore implements PersistableResource<LeaderboardDTO>
             try
             {
                 Integer leaderboardId = (Integer) query.getId();
+                Integer perPage = (Integer) query.getProperty(PER_PAGE);
+                if (perPage == null)
+                {
+                    perPage = DEFAULT_PER_PAGE;
+                }
+
                 if (leaderboardId != null)
                 {
                     switch (leaderboardId)
                     {
                         case LeaderboardDefDTO.LEADERBOARD_FRIEND_ID:
-                            leaderboardDTO = leaderboardService.get().getFriendsLeaderboard(query.getPage(), 2, false);
+                            leaderboardDTO = leaderboardService.get().getFriendsLeaderboard(query.getPage(), perPage, false, query.getSortType());
                             break;
                         default:
-                            leaderboardDTO = leaderboardService.get().getLeaderboard(leaderboardId, query.getPage());
+                            leaderboardDTO = leaderboardService.get().getLeaderboard(leaderboardId, query.getPage(), perPage, query.getSortType());
                     }
                 }
             }

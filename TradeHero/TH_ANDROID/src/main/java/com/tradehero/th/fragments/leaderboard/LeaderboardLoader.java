@@ -16,12 +16,14 @@ import javax.inject.Inject;
 
 /** Created with IntelliJ IDEA. User: tho Date: 10/21/13 Time: 4:28 PM Copyright (c) TradeHero */
 public class LeaderboardLoader extends PagedItemListLoader<LeaderboardUserRankDTO>
+    implements SortTypeChangedListener
 {
     private static final String TAG = LeaderboardLoader.class.getName();
     public static final int UNIQUE_LOADER_ID = R.string.loaderboard_loader_id;
 
     private Integer currentPage;
     private Integer leaderboardId;
+    private LeaderboardSortType sortType = LeaderboardSortType.DefaultSortType;
 
     @Inject
     protected LeaderboardManager leaderboardManager;
@@ -55,6 +57,7 @@ public class LeaderboardLoader extends PagedItemListLoader<LeaderboardUserRankDT
         LeaderboardQuery query = new LeaderboardQuery();
         query.setId(leaderboardId);
         query.setPage(currentPage);
+        query.setSortType(sortType.getFlag());
         query.setProperty(LeaderboardStore.PER_PAGE, getItemsPerPage());
 
         try
@@ -66,5 +69,11 @@ public class LeaderboardLoader extends PagedItemListLoader<LeaderboardUserRankDT
         {
             return null;
         }
+    }
+
+    @Override public void onSortTypeChange(LeaderboardSortType sortType)
+    {
+        this.sortType = sortType;
+        forceLoad();
     }
 }

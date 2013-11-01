@@ -153,7 +153,8 @@ public interface LeaderboardService
     @GET("/leaderboards/friends")
     LeaderboardDTO getFriendsLeaderboard(
             @Query("page") Integer page,
-            @Query("sortType") Integer sortType,
-            @Query("includeFoF") Boolean includeFoF)
-            throws RetrofitError;
+            @Query("perPage") Integer perPage,
+            @Query("includeFoF") Boolean includeFoF,
+            @Query("sortType") Integer sortType
+    ) throws RetrofitError;
 }

@@ -111,6 +111,7 @@ public class LeaderboardCommunityFragment extends DashboardFragment
     }
     //</editor-fold>
 
+    //<editor-fold desc="DTOCache Listeners">
     @Override public void onDTOReceived(LeaderboardDefListKey key, LeaderboardDefKeyList value)
     {
         // hide loading
@@ -145,37 +146,12 @@ public class LeaderboardCommunityFragment extends DashboardFragment
         }
     }
 
-    private void initMostSkilledListView(LeaderboardDefListKey key, LeaderboardDefKeyList value)
-    {
-        try
-        {
-            mostSkilledListView.setAdapter(createMostSkilledListAdapter(leaderboardDefCache.get().getOrFetch(value)));
-        }
-        catch (Throwable throwable)
-        {
-            onErrorThrown(key, throwable);
-        }
-        mostSkilledListView.setOnItemClickListener(createLeaderboardItemClickListener());
-    }
-
-    private void initTimePeriodListView(LeaderboardDefListKey key, LeaderboardDefKeyList value)
-    {
-        try
-        {
-            timePeriodListView.setAdapter(createTimePeriodListAdapter(leaderboardDefCache.get().getOrFetch(value)));
-        }
-        catch (Throwable throwable)
-        {
-            onErrorThrown(key, throwable);
-        }
-        timePeriodListView.setOnItemClickListener(createLeaderboardItemClickListener());
-    }
-
     @Override public void onErrorThrown(LeaderboardDefListKey key, Throwable error)
     {
         THToast.show(getString(R.string.error_fetch_leaderboard_def_list_key));
         THLog.e(TAG, "Error fetching the leaderboard def key list " + key, error);
     }
+    //</editor-fold>
 
     private AdapterView.OnItemClickListener createLeaderboardItemClickListener()
     {
@@ -196,7 +172,7 @@ public class LeaderboardCommunityFragment extends DashboardFragment
         };
     }
 
-    //<editor-fold desc="Init Defaults">
+    //<editor-fold desc="Init some default LeaderboardDefDTOs - Hardcoded">
     private LeaderboardDefDTO initDefaultLeaderboardDefDTOForExchange()
     {
         LeaderboardDefDTO dto = new LeaderboardDefDTO();
@@ -214,6 +190,7 @@ public class LeaderboardCommunityFragment extends DashboardFragment
     }
     //</editor-fold>
 
+    //<editor-fold desc="ListView adapters creation">
     private void addItemToSectorSection(LeaderboardDefDTO dto)
     {
         if (sectorListView.getAdapter() == null)
@@ -278,6 +255,35 @@ public class LeaderboardCommunityFragment extends DashboardFragment
         return new LeaderboardDefMostSkilledListAdapter(
                 getActivity(), getActivity().getLayoutInflater(), values, R.layout.leaderboard_def_item);
     }
+    //</editor-fold>
+
+    //<editor-fold desc="ListViews creation">
+    private void initMostSkilledListView(LeaderboardDefListKey key, LeaderboardDefKeyList value)
+    {
+        try
+        {
+            mostSkilledListView.setAdapter(createMostSkilledListAdapter(leaderboardDefCache.get().getOrFetch(value)));
+        }
+        catch (Throwable throwable)
+        {
+            onErrorThrown(key, throwable);
+        }
+        mostSkilledListView.setOnItemClickListener(createLeaderboardItemClickListener());
+    }
+
+    private void initTimePeriodListView(LeaderboardDefListKey key, LeaderboardDefKeyList value)
+    {
+        try
+        {
+            timePeriodListView.setAdapter(createTimePeriodListAdapter(leaderboardDefCache.get().getOrFetch(value)));
+        }
+        catch (Throwable throwable)
+        {
+            onErrorThrown(key, throwable);
+        }
+        timePeriodListView.setOnItemClickListener(createLeaderboardItemClickListener());
+    }
+    //</editor-fold>
 
     //<editor-fold desc="BaseFragment.TabBarVisibilityInformer">
     @Override public boolean isTabBarVisible()
