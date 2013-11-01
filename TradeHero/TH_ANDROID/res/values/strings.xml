@@ -207,5 +207,6 @@
   <string name="benchmark_roi">Benchmark ROI</string>
   <string name="profile">Profile</string>
   <string name="positions">Positions</string>
+  <string name="loaderboard_loader_id">UNIQUE_LEADERBOARD_LOADER_ID</string>
   <item name="done" type="id">Done</item>
 </resources>

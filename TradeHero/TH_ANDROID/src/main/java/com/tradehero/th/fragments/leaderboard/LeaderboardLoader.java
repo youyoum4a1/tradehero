@@ -1,13 +1,14 @@
 package com.tradehero.th.fragments.leaderboard;
 
 import android.content.Context;
-import com.tradehero.common.persistence.Query;
+import com.tradehero.common.persistence.LeaderboardQuery;
 import com.tradehero.common.utils.THLog;
+import com.tradehero.th.R;
 import com.tradehero.th.api.leaderboard.LeaderboardDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardUserRankDTO;
 import com.tradehero.th.loaders.PagedItemListLoader;
-import com.tradehero.th.persistence.TimelineStore;
 import com.tradehero.th.persistence.leaderboard.LeaderboardManager;
+import com.tradehero.th.persistence.leaderboard.LeaderboardStore;
 import com.tradehero.th.utils.DaggerUtils;
 import java.io.IOException;
 import java.util.List;
@@ -17,8 +18,9 @@ import javax.inject.Inject;
 public class LeaderboardLoader extends PagedItemListLoader<LeaderboardUserRankDTO>
 {
     private static final String TAG = LeaderboardLoader.class.getName();
-    private Integer minItemId;
-    private Integer maxItemId;
+    public static final int UNIQUE_LOADER_ID = R.string.loaderboard_loader_id;
+
+    private Integer currentPage;
     private Integer leaderboardId;
 
     @Inject
@@ -31,37 +33,33 @@ public class LeaderboardLoader extends PagedItemListLoader<LeaderboardUserRankDT
         DaggerUtils.inject(this);
     }
 
-    @Override protected void onLoadNextPage(LeaderboardUserRankDTO lastItemId)
+    @Override protected void onLoadNextPage(LeaderboardUserRankDTO firstVisibleItem)
     {
-        //To change body of implemented methods use File | Settings | File Templates.
+        // do nothing
     }
 
-    @Override protected void onLoadPreviousPage(LeaderboardUserRankDTO startItemId)
+    @Override protected void onLoadPreviousPage(LeaderboardUserRankDTO lastVisibleItem)
     {
-        //To change body of implemented methods use File | Settings | File Templates.
+        if (currentPage == null)
+        {
+            currentPage = 1;
+        }
+        ++currentPage;
+        forceLoad();
     }
 
     @Override public List<LeaderboardUserRankDTO> loadInBackground()
     {
-        if (minItemId != null)
-        {
-            ++minItemId;
-        }
-        if (maxItemId != null)
-        {
-            --maxItemId;
-        }
-        THLog.d(TAG, "Start loading leaderboard with maxItemId=" + maxItemId + "/ minItemId=" + minItemId);
+        THLog.d(TAG, "Start loading leaderboard, page=" + currentPage);
 
-        Query query = new Query();
+        LeaderboardQuery query = new LeaderboardQuery();
         query.setId(leaderboardId);
-        query.setLower(minItemId);
-        query.setUpper(maxItemId);
-        query.setProperty(TimelineStore.PER_PAGE, itemsPerPage);
+        query.setPage(currentPage);
+        query.setProperty(LeaderboardStore.PER_PAGE, getItemsPerPage());
 
         try
         {
-            LeaderboardDTO dto = leaderboardManager.getLeaderboard(leaderboardId, true);
+            LeaderboardDTO dto = leaderboardManager.firstOrDefault(query, true);
             return dto == null ? null : dto.users;
         }
         catch (IOException e)

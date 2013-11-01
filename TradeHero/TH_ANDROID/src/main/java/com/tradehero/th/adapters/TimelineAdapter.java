@@ -89,7 +89,7 @@ public class TimelineAdapter extends DTOAdapter<TimelineItem, TimelineItemView>
             loader.setLastVisibleItem((TimelineItem) getItem(lastItemId));
         }
 
-        onScreenMiddleItemPosition = firstVisibleItem+(visibleItemCount-1)/2;
+        onScreenMiddleItemPosition = firstVisibleItem + (visibleItemCount-1) / 2;
 
         // TODO when scrolling speed is low, display button bar
         //if (currentScrollState == SCROLL_STATE_TOUCH_SCROLL)
@@ -108,6 +108,4 @@ public class TimelineAdapter extends DTOAdapter<TimelineItem, TimelineItemView>
     {
         loader.loadPreviousPage();
     }
-
-
 }

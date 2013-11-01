@@ -6,12 +6,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
+import java.util.List;
 
 /**
  * Created by julien on 24/10/13
  */
 public abstract class ExpandableDTOAdapter<T, E extends ExpandableListItem<T>, V extends DTOView<E>> extends DTOAdapter<E, V>
 {
+    private List<T> underlyingItems;
 
     public ExpandableDTOAdapter(Context context, LayoutInflater inflater, int layoutResourceId)
     {
@@ -47,4 +49,46 @@ public abstract class ExpandableDTOAdapter<T, E extends ExpandableListItem<T>, V
         return convertView;
     }
 
+
+    public void setUnderlyingItems(List<T> underlyingItems)
+    {
+        this.underlyingItems = underlyingItems;
+    }
+
+    public void addUnderlyingItem(T item)
+    {
+        if (this.underlyingItems != null)
+        {
+            this.underlyingItems.add(item);
+        }
+    }
+
+    @Override public int getCount()
+    {
+        return underlyingItems != null ? underlyingItems.size() : 0;
+    }
+
+    @Override public Object getItem(int i)
+    {
+        Object wrappedItem = super.getItem(i);
+        if (wrappedItem == null)
+        {
+            T underlyingItem = underlyingItems != null ? underlyingItems.get(i) : null;
+            if (underlyingItem == null)
+            {
+                return null;
+            }
+            wrappedItem = wrap(underlyingItem);
+            if (items != null)
+            {
+                items.set(i, (E) wrappedItem);
+            }
+        }
+        return wrappedItem;
+    }
+
+    protected E wrap(T underlyingItem)
+    {
+        throw new RuntimeException("wrap method is not implemented");
+    }
 }

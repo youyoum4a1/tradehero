@@ -16,8 +16,7 @@ public abstract class DTOAdapter<T, V extends DTOView<T>> extends BaseAdapter
     protected final LayoutInflater inflater;
     protected final Context context;
     protected final int layoutResourceId;
-
-    private List<T> items;
+    protected List<T> items;
 
     public DTOAdapter(Context context, LayoutInflater inflater, int layoutResourceId)
     {
@@ -42,19 +41,16 @@ public abstract class DTOAdapter<T, V extends DTOView<T>> extends BaseAdapter
 
     @Override public int getCount()
     {
-        //THLog.d(TAG, "getCount");
         return items != null ? items.size() : 0;
     }
 
     @Override public Object getItem(int i)
     {
-        //THLog.d(TAG, "getItem " + i);
         return items != null ? items.get(i) : null;
     }
 
     @Override public long getItemId(int i)
     {
-        //THLog.d(TAG, "getItemId " + i);
         return i;
     }
 

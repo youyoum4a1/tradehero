@@ -16,10 +16,8 @@ public class LeaderboardManager
     @Inject protected DatabaseCache dbCache;
     @Inject protected LeaderboardStore leaderboardStore;
 
-    public LeaderboardDTO getLeaderboard(int leaderboardId, boolean forceReload) throws IOException
+    public LeaderboardDTO firstOrDefault(Query query, boolean forceReload) throws IOException
     {
-        Query query = new Query();
-        query.setId(leaderboardId);
         List<LeaderboardDTO> dtos = getLeaderboards(query, forceReload);
         return (dtos != null && dtos.size()>0) ? dtos.get(0) : null;
     }

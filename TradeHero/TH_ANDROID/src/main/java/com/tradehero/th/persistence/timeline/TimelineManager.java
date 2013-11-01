@@ -1,9 +1,8 @@
-package com.tradehero.th.persistence;
+package com.tradehero.th.persistence.timeline;
 
 import com.tradehero.common.cache.DatabaseCache;
 import com.tradehero.common.persistence.Query;
 import com.tradehero.th.api.local.TimelineItem;
-import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
 import java.io.IOException;
 import java.util.List;

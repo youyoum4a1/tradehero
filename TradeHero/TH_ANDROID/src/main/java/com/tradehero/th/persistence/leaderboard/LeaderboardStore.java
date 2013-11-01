@@ -2,12 +2,12 @@ package com.tradehero.th.persistence.leaderboard;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import com.tradehero.common.persistence.LeaderboardQuery;
 import com.tradehero.common.persistence.PersistableResource;
 import com.tradehero.common.persistence.Query;
 import com.tradehero.th.api.leaderboard.LeaderboardDTO;
 import com.tradehero.th.network.BasicRetrofitErrorHandler;
 import com.tradehero.th.network.service.LeaderboardService;
-import com.tradehero.th.persistence.PaginationFilter;
 import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,9 +20,10 @@ import retrofit.RetrofitError;
 /** Created with IntelliJ IDEA. User: tho Date: 10/21/13 Time: 4:41 PM Copyright (c) TradeHero */
 public class LeaderboardStore implements PersistableResource<LeaderboardDTO>
 {
-    private static final String PER_PAGE = "perpage";
     @Inject protected Lazy<LeaderboardService> leaderboardService;
-    private Query query;
+
+    public static final String PER_PAGE = "perpage";;
+    private LeaderboardQuery query;
 
     @Override public List<LeaderboardDTO> request()
     {
@@ -31,7 +32,7 @@ public class LeaderboardStore implements PersistableResource<LeaderboardDTO>
             LeaderboardDTO leaderboardDTO = null;
             try
             {
-                leaderboardDTO = leaderboardService.get().getLeaderboard((Integer) query.getId());
+                leaderboardDTO = leaderboardService.get().getLeaderboard((Integer) query.getId(), query.getPage());
             }
             catch (RetrofitError retrofitError)
             {
@@ -66,7 +67,14 @@ public class LeaderboardStore implements PersistableResource<LeaderboardDTO>
 
     @Override public void setQuery(Query query)
     {
-        this.query = query;
+        if (query instanceof LeaderboardQuery)
+        {
+            this.query = (LeaderboardQuery) query;
+        }
+        else
+        {
+            throw new IllegalArgumentException("Query is not an instance of Leaderboard Query");
+        }
     }
 
     // TODO guice has very nice feature that inject a factory using annotation @Factory
@@ -89,27 +97,6 @@ public class LeaderboardStore implements PersistableResource<LeaderboardDTO>
                 stores.put(lbId, leaderboardStoreProviders.get());
             }
             return stores.get(lbId);
-        }
-    }
-
-    public static class LeaderboardFilter extends PaginationFilter
-    {
-        private int leaderboardId;
-
-        public LeaderboardFilter(int leaderboardId, Comparable maxItemId, Comparable minItemId, int itemsPerPage)
-        {
-            super(maxItemId, minItemId, itemsPerPage);
-            this.leaderboardId = leaderboardId;
-        }
-
-        public int getLeaderboardId()
-        {
-            return leaderboardId;
-        }
-
-        public void setLeaderboardId(int leaderboardId)
-        {
-            this.leaderboardId = leaderboardId;
         }
     }
 }

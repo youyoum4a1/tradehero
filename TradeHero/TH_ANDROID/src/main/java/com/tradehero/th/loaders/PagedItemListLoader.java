@@ -10,7 +10,7 @@ public abstract class PagedItemListLoader<D extends ItemWithComparableId> extend
 {
     private static final int DEFAULT_ITEM_PER_PAGE = 10;
 
-    protected int itemsPerPage = DEFAULT_ITEM_PER_PAGE;
+    private int itemsPerPage = DEFAULT_ITEM_PER_PAGE;
     private D lastVisibleItem;
     private D firstVisibleItem;
     protected List<D> items;
@@ -50,12 +50,6 @@ public abstract class PagedItemListLoader<D extends ItemWithComparableId> extend
             return;
         }
         currentLoadMode = LoadMode.NEXT;
-
-        if (getFirstVisibleItem() == null || getFirstVisibleItem().compareTo(getFirstItem()) < 0)
-        {
-            // do nothing if next page is already loaded
-            return;
-        }
         onLoadNextPage(getFirstVisibleItem());
     }
 
@@ -74,13 +68,6 @@ public abstract class PagedItemListLoader<D extends ItemWithComparableId> extend
             return;
         }
         currentLoadMode = LoadMode.PREVIOUS;
-
-        if (getLastVisibleItem() == null || getLastVisibleItem().compareTo(getLastItem()) > 0)
-        {
-            // do nothing if previous page is already loaded
-            return;
-        }
-
         onLoadPreviousPage(getLastVisibleItem());
     }
 

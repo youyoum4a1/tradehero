@@ -15,6 +15,9 @@ public class LeaderboardListAdapter extends
         //DTOAdapter<LeaderboardUserRankDTO, LeaderboardUserRankItemView>
         ExpandableDTOAdapter<LeaderboardUserRankDTO, LeaderboardListAdapter.ExpandableLeaderboardUserRankItemWrapper, LeaderboardUserRankItemView>
 {
+    private LeaderboardLoader loader;
+    private List<LeaderboardUserRankDTO> underlyingItems;
+
     public LeaderboardListAdapter(Context context, LayoutInflater layoutInflater, List<LeaderboardUserRankDTO> items, int layoutResourceId)
     {
         super(context, layoutInflater, layoutResourceId);
@@ -39,9 +42,18 @@ public class LeaderboardListAdapter extends
 
     }
 
-    public void wrapAndSetItems(List<LeaderboardUserRankDTO> items)
+    public void setLoader(LeaderboardLoader loader)
     {
-        setItems(ExpandableLeaderboardUserRankItemWrapper.wrap(items));
+        this.loader = loader;
+        if (loader != null)
+        {
+            setUnderlyingItems(loader.getItems());
+        }
+    }
+
+    @Override protected ExpandableLeaderboardUserRankItemWrapper wrap(LeaderboardUserRankDTO underlyingItem)
+    {
+        return new ExpandableLeaderboardUserRankItemWrapper(underlyingItem);
     }
 
     /**

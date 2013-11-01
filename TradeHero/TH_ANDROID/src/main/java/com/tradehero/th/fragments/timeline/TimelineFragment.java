@@ -46,21 +46,21 @@ public class TimelineFragment extends BaseFragment
 {
     public static final String TAG = TimelineFragment.class.getSimpleName();
 
+    @Inject protected Lazy<PortfolioCache> portfolioCache;
+    @Inject protected Lazy<UserProfileCache> userProfileCache;
+    @Inject protected Lazy<PortfolioCompactListCache> portfolioCompactListCache;
+
     private TimelineAdapter timelineAdapter;
+    private TimelineListView timelineListView;
 
     protected UserBaseKey userBaseKey;
     protected UserProfileDTO profile;
     protected OwnedPortfolioIdList portfolioIdList;
-    private TimelineListView timelineListView;
 
     protected DTOCache.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
     protected DTOCache.GetOrFetchTask<UserProfileDTO> userProfileCacheTask;
-    @Inject protected Lazy<UserProfileCache> userProfileCache;
-
     protected DTOCache.Listener<UserBaseKey, OwnedPortfolioIdList> portfolioCompactListCacheListener;
     protected DTOCache.GetOrFetchTask<OwnedPortfolioIdList> portfolioCompactListCacheTask;
-    @Inject protected Lazy<PortfolioCompactListCache> portfolioCompactListCache;
-    @Inject protected Lazy<PortfolioCache> portfolioCache;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)

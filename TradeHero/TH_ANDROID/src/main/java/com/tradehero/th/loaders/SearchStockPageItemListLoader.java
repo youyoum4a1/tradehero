@@ -45,7 +45,7 @@ public class SearchStockPageItemListLoader extends PagedItemListLoader<ListedSec
      */
     private int getPageOfItem(ListedSecurityCompact item)
     {
-        return item.getId() / itemsPerPage;
+        return item.getId() / getItemsPerPage();
     }
 
     @Override protected boolean shouldReload()
@@ -60,8 +60,8 @@ public class SearchStockPageItemListLoader extends PagedItemListLoader<ListedSec
         try
         {
             listed = ListedSecurityCompactFactory.createList(
-                    securityService.searchSecurities(searchText, page, itemsPerPage),
-                    page * itemsPerPage);
+                    securityService.searchSecurities(searchText, page, getItemsPerPage()),
+                    page * getItemsPerPage());
         }
         catch (RetrofitError retrofitError)
         {

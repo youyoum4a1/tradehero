@@ -1,4 +1,4 @@
-package com.tradehero.th.persistence;
+package com.tradehero.th.persistence.timeline;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -8,9 +8,7 @@ import com.tradehero.th.api.local.TimelineItem;
 import com.tradehero.th.api.local.TimelineItemBuilder;
 import com.tradehero.th.api.timeline.TimelineDTO;
 import com.tradehero.th.network.BasicRetrofitErrorHandler;
-import com.tradehero.th.network.NetworkEngine;
 import com.tradehero.th.network.service.UserTimelineService;
-import com.tradehero.th.utils.DaggerUtils;
 import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
@@ -93,27 +91,6 @@ public class TimelineStore implements PersistableResource<TimelineItem>
                 stores.put(userId, timelineStoreProviders.get());
             }
             return stores.get(userId);
-        }
-    }
-
-    public static class TimelineFilter extends PaginationFilter
-    {
-        private int ownerId;
-
-        public TimelineFilter(int ownerId, Comparable maxItemId, Comparable minItemId, int itemsPerPage)
-        {
-            super(maxItemId, minItemId, itemsPerPage);
-            this.ownerId = ownerId;
-        }
-
-        public int getOwnerId()
-        {
-            return ownerId;
-        }
-
-        public void setOwnerId(int ownerId)
-        {
-            this.ownerId = ownerId;
         }
     }
 }

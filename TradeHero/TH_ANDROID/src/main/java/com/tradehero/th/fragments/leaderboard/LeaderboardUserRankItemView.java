@@ -128,7 +128,7 @@ public class LeaderboardUserRankItemView extends RelativeLayout
     {
         LeaderboardUserRankDTO dto = leaderboardItem.getModel();
 
-        lbmuPosition.setText("" + leaderboardItem.getPosition());
+        lbmuPosition.setText("" + (leaderboardItem.getPosition() + 1));
         lbmuDisplayName.setText(dto.displayName);
         lbmuHeroQuotient.setText(dto.getHeroQuotientFormatted());
 

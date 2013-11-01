@@ -36,33 +36,33 @@ public interface LeaderboardService
     @GET("/leaderboards/{leaderboardId}")
     LeaderboardDTO getLeaderboard(
             @Path("leaderboardId") Integer lbId,
-            @Query("path") Integer page)
+            @Query("page") Integer page)
         throws RetrofitError;
 
     @GET("/leaderboards/{leaderboardId}")
     void getLeaderboard(
             @Path("leaderboardId") Integer lbId,
-            @Query("path") Integer page,
+            @Query("page") Integer page,
             Callback<LeaderboardDTO> callback);
 
     @GET("/leaderboards/{leaderboardId}")
     LeaderboardDTO getLeaderboard(
             @Path("leaderboardId") Integer lbId,
-            @Query("path") Integer page,
+            @Query("page") Integer page,
             @Query("perPage") Integer perPage)
         throws RetrofitError;
 
     @GET("/leaderboards/{leaderboardId}")
     void getLeaderboard(
             @Path("leaderboardId") Integer lbId,
-            @Query("path") Integer page,
+            @Query("page") Integer page,
             @Query("perPage") Integer perPage,
             Callback<LeaderboardDTO> callback);
 
     @GET("/leaderboards/{leaderboardId}")
     LeaderboardDTO getLeaderboard(
             @Path("leaderboardId") Integer lbId,
-            @Query("path") Integer page,
+            @Query("page") Integer page,
             @Query("perPage") Integer perPage,
             @Query("sortType") Integer sortType)
         throws RetrofitError;
@@ -70,7 +70,7 @@ public interface LeaderboardService
     @GET("/leaderboards/{leaderboardId}")
     void getLeaderboard(
             @Path("leaderboardId") Integer lbId,
-            @Query("path") Integer page,
+            @Query("page") Integer page,
             @Query("perPage") Integer perPage,
             @Query("sortType") Integer sortType,
             Callback<LeaderboardDTO> callback);

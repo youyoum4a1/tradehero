@@ -4,11 +4,9 @@ import android.content.Context;
 import com.tradehero.common.persistence.Query;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.api.local.TimelineItem;
-import com.tradehero.th.persistence.TimelineManager;
-import com.tradehero.th.persistence.TimelineStore;
-import com.tradehero.th.persistence.TimelineStore.TimelineFilter;
+import com.tradehero.th.persistence.timeline.TimelineManager;
+import com.tradehero.th.persistence.timeline.TimelineStore;
 import com.tradehero.th.utils.DaggerUtils;
-import dagger.Lazy;
 import java.io.IOException;
 import java.util.List;
 import javax.inject.Inject;
@@ -46,7 +44,7 @@ public class TimelinePagedItemListLoader extends PagedItemListLoader<TimelineIte
         query.setId(ownerId);
         query.setLower(minItemId);
         query.setUpper(maxItemId);
-        query.setProperty(TimelineStore.PER_PAGE, itemsPerPage);
+        query.setProperty(TimelineStore.PER_PAGE, getItemsPerPage());
 
         try
         {
@@ -59,17 +57,27 @@ public class TimelinePagedItemListLoader extends PagedItemListLoader<TimelineIte
         }
     }
 
-    @Override protected void onLoadNextPage(TimelineItem lastItemId)
+    @Override protected void onLoadNextPage(TimelineItem firstVisibleItem)
     {
+        if (firstVisibleItem == null)
+        {
+            return;
+        }
+
         maxItemId = null;
-        minItemId = getFirstVisibleItem() == null ? lastItemId.getId() : getFirstVisibleItem().getId();
+        minItemId = firstVisibleItem.getId();
         forceLoad();
     }
 
-    @Override protected void onLoadPreviousPage(TimelineItem firstItemId)
+    @Override protected void onLoadPreviousPage(TimelineItem lastVisibleItem)
     {
+        if (lastVisibleItem == null)
+        {
+            return;
+        }
+
         minItemId = null;
-        maxItemId = getLastVisibleItem() == null ? firstItemId.getId() : getLastVisibleItem().getId();
+        maxItemId = lastVisibleItem.getId();
         forceLoad();
     }
 
