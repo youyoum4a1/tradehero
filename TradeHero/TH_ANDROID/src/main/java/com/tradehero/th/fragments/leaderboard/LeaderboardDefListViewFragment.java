@@ -1,6 +1,8 @@
 package com.tradehero.th.fragments.leaderboard;
 
 import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
@@ -10,6 +12,7 @@ import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
+import com.tradehero.th.api.leaderboard.LeaderboardDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardDefKeyList;
 import com.tradehero.th.api.leaderboard.LeaderboardDefListKey;
@@ -53,6 +56,21 @@ public class LeaderboardDefListViewFragment extends DashboardListFragment
 
         leaderboardDefListAdapter = new LeaderboardDefListAdapter(getActivity(), getActivity().getLayoutInflater(), null, R.layout.leaderboard_def_item);
         setListAdapter(leaderboardDefListAdapter);
+        getListView().setOnItemClickListener(new AdapterView.OnItemClickListener()
+        {
+            @Override public void onItemClick(AdapterView<?> parent, View view, int position, long id)
+            {
+                LeaderboardDefDTO dto = (LeaderboardDefDTO) leaderboardDefListAdapter.getItem(position);
+                if (dto != null)
+                {
+                    Bundle bundle = new Bundle(getArguments());
+                    bundle.putInt(LeaderboardDTO.LEADERBOARD_ID, dto.getId());
+                    bundle.putString(LeaderboardListViewFragment.TITLE, dto.name);
+
+                    getNavigator().pushFragment(LeaderboardListViewFragment.class, bundle);
+                }
+            }
+        });
 
         super.onResume();
     }
