@@ -7,6 +7,8 @@
     <color name="actionbar_gradient2">#929CBA</color>
     <color name="btn_new_user_color_light">#A04E6DAE</color>
     <color name="btn_new_user_color_dark">#2B4170</color>
+    <color name="round_rectangle1">#4E6DAE</color>
+    <color name="round_rectangle2">#2B4170</color>
     <color name="round_rectangle3">#00CCED</color>
     <color name="round_rectangle4">#0087CE</color>
     <color name="round_rectangle5">#009CDA</color>
@@ -24,17 +26,26 @@
     <color name="btn_linkedin_color_dark">#0274b4</color>
     <color name="gray_2">#A0AFAFAF</color>
     <color name="text_gray_normal">#aaaaaa</color>
+    <color name="gray_1">#C0C0C0</color>
     <color name="gray_3">#F3F3F3</color>
     <color name="gray_4">#F6F6F6</color>
     <color name="font_roi">#00CC00</color>
-    
-    <!-- What's Trending -->
+
+    <color name="fbook_color1">#4E6DAE</color>
+    <color name="fbook_color2">#2B4170</color>
+    <color name="twit_color1">#00CCED</color>
+    <color name="twit_color2">#0087CE</color>
+    <color name="linkd_color1">#009CDA</color>
+    <color name="linkd_color2">#0167A3</color>
+
+  <!-- What's Trending -->
 	<color name="trending_grid_item_bg">#FFFFFFFF</color>
   <color name="trending_gray_border">#A0787878</color>
 	<color name="title">#ffb0b0b0</color>
 	<color name="sec_type">#ff5791bd</color>
-	
-	<!-- Trending detail -->
+  <color name="exchange_symbol">#556380</color>
+
+  <!-- Trending detail -->
 	<color name="trending_detail_bg">#ffebebeb</color>
 	<color name="price_bar_bg">#ffbfbdbd</color>
 	<color name="price_bar_text_default">#ff636363</color>

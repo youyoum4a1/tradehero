@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="@drawable/splash_background_xml"
+    android:background="@drawable/splash_background_gradient"
     android:paddingTop="20dip"
     android:paddingBottom="20dip"
     android:paddingLeft="20dip"
