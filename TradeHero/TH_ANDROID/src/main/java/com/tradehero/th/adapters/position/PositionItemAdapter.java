@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.ExpandableListItem;
+import com.tradehero.th.adapters.ExpandableListReporter;
 import com.tradehero.th.api.portfolio.PortfolioId;
 import com.tradehero.th.api.position.OwnedPositionId;
 import com.tradehero.th.api.position.PositionDTO;
@@ -19,15 +20,13 @@ import java.util.HashMap;
 import java.util.List;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/14/13 Time: 4:12 PM To change this template use File | Settings | File Templates. */
-public class PositionItemAdapter extends BaseAdapter
+public class PositionItemAdapter extends BaseAdapter implements ExpandableListReporter
 {
     public static final String TAG = PositionItemAdapter.class.getName();
 
     private List<PositionDTO> receivedPositions;
     private List<ExpandableListItem<OwnedPositionId>> openPositions; // If nothing, it will show the positionNothingId layout
     private List<ExpandableListItem<OwnedPositionId>> closedPositions;
-
-    private boolean[] savedState;
 
     protected final Context context;
     protected final LayoutInflater inflater;
@@ -311,11 +310,6 @@ public class PositionItemAdapter extends BaseAdapter
 
     public void setPositions(List<PositionDTO> positions, PortfolioId portfolioId)
     {
-        setPositions(positions, portfolioId, null);
-    }
-
-    public void setPositions(List<PositionDTO> positions, PortfolioId portfolioId, boolean[] expanded)
-    {
         this.receivedPositions = positions;
 
         if (positions == null)
@@ -344,22 +338,64 @@ public class PositionItemAdapter extends BaseAdapter
                     closedPositions.add(item);
                 }
             }
-
-            // change the expanded states
-            if (expanded != null && expanded.length > 0)
-            {
-                for (int position = 0; position < expanded.length; position++)
-                {
-                    if (isOpenPosition(position))
-                    {
-                        openPositions.get(getOpenPositionIndex(position)).setExpanded(expanded[position]);
-                    }
-                    else if (isClosedPosition(position))
-                    {
-                        closedPositions.get(getClosedPositionIndex(position)).setExpanded(expanded[position]);
-                    }
-                }
-            }
         }
     }
+
+    //<editor-fold desc="ExpandableListReporter">
+    @Override public List<Boolean> getExpandedStatesPerPosition()
+    {
+        List<Boolean> expandedStates = new ArrayList<>();
+
+        int position = 0;
+        Object itemAtPosition = null;
+        while (position < getCount())
+        {
+            itemAtPosition = getItem(position);
+            if (itemAtPosition instanceof ExpandableListItem)
+            {
+                expandedStates.add(((ExpandableListItem) itemAtPosition).isExpanded());
+            }
+            else
+            {
+                expandedStates.add(false);
+            }
+            position++;
+        }
+
+        return expandedStates;
+    }
+
+    @Override public void setExpandedStatesPerPosition(boolean[] expandedStatesPerPosition)
+    {
+        if (expandedStatesPerPosition == null)
+        {
+            return;
+        }
+        List<Boolean> expandedStates = new ArrayList<>();
+        for (boolean state: expandedStatesPerPosition)
+        {
+            expandedStates.add(state);
+        }
+        setExpandedStatesPerPosition(expandedStates);
+    }
+
+    @Override public void setExpandedStatesPerPosition(List<Boolean> expandedStatesPerPosition)
+    {
+        if (expandedStatesPerPosition == null)
+        {
+            return;
+        }
+
+        int position = 0;
+        while (position < getCount() && position < expandedStatesPerPosition.size())
+        {
+            Object itemAtPosition = getItem(position);
+            if (itemAtPosition instanceof ExpandableListItem)
+            {
+                ((ExpandableListItem) itemAtPosition).setExpanded(expandedStatesPerPosition.get(position));
+            }
+            position++;
+        }
+    }
+    //</editor-fold>
 }

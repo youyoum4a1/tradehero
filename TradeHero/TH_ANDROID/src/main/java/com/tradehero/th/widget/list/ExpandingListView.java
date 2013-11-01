@@ -99,11 +99,6 @@ public class ExpandingListView extends ListView
         }
     }
 
-    public ExpandingListItemListener getExpandingListItemListener()
-    {
-        return expandingListItemListener;
-    }
-
     public void setExpandingListItemListener(ExpandingListItemListener expandingListItemListener)
     {
         this.expandingListItemListener = expandingListItemListener;

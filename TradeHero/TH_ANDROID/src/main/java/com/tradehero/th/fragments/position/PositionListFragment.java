@@ -35,7 +35,7 @@ import com.tradehero.th.widget.portfolio.header.PortfolioHeaderView;
 import com.tradehero.th.widget.position.PositionListener;
 import com.tradehero.th.widget.position.PositionNothingView;
 import dagger.Lazy;
-
+import java.util.List;
 import javax.inject.Inject;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/16/13 Time: 5:56 PM To change this template use File | Settings | File Templates. */
@@ -108,17 +108,9 @@ public class PositionListFragment extends DashboardFragment
                     }
                     @Override public void onItemDidExpand(AdapterView<?> parent, View view, int position, long id)
                     {
-                        if (expandedPositions != null && expandedPositions.length > position)
-                        {
-                            expandedPositions[position] = true;
-                        }
                     }
                     @Override public void onItemDidCollapse(AdapterView<?> parent, View view, int position, long id)
                     {
-                        if (expandedPositions != null && expandedPositions.length > position)
-                        {
-                            expandedPositions[position] = false;
-                        }
                     }
                 });
             }
@@ -193,6 +185,23 @@ public class PositionListFragment extends DashboardFragment
             firstPositionVisible = positionsListView.getFirstVisiblePosition();
         }
 
+        if (positionItemAdapter != null)
+        {
+            List<Boolean> expandedStates = positionItemAdapter.getExpandedStatesPerPosition();
+            if (expandedStates == null)
+            {
+                expandedPositions = null;
+            }
+            else
+            {
+                expandedPositions = new boolean[expandedStates.size()];
+                int position = 0;
+                for (Boolean state: expandedStates)
+                {
+                    expandedPositions[position++] = state;
+                }
+            }
+        }
         super.onPause();
     }
 
@@ -251,10 +260,10 @@ public class PositionListFragment extends DashboardFragment
     public void linkWith(GetPositionsDTO getPositionsDTO, boolean andDisplay)
     {
         this.getPositionsDTO = getPositionsDTO;
-        prepareExpandedPositions();
         if (this.getPositionsDTO != null && ownedPortfolioId != null)
         {
-            positionItemAdapter.setPositions(getPositionsDTO.positions, ownedPortfolioId.getPortfolioId(), expandedPositions);
+            positionItemAdapter.setPositions(getPositionsDTO.positions, ownedPortfolioId.getPortfolioId());
+            positionItemAdapter.setExpandedStatesPerPosition(expandedPositions);
             getView().post(
                 new Runnable()
                 {
@@ -272,40 +281,6 @@ public class PositionListFragment extends DashboardFragment
             displayActionBarTitle();
             // TODO finer grained
             display();
-        }
-    }
-
-    private void prepareExpandedPositions()
-    {
-        if (this.getPositionsDTO != null && this.getPositionsDTO.positions != null)
-        {
-            // We add 2 because the positions are reported with the Open / Closed headers
-            boolean[] newExpandedPositions = new boolean[this.getPositionsDTO.positions.size() + 2];
-
-            // Port previous values
-            if (this.expandedPositions == null || this.expandedPositions.length == 0)
-            {
-                this.expandedPositions = newExpandedPositions;
-            }
-            else
-            {
-                for (int index = 0; index < this.expandedPositions.length; index++)
-                {
-                    if (newExpandedPositions.length > index)
-                    {
-                        newExpandedPositions[index] = this.expandedPositions[index];
-                    }
-                    else
-                    {
-                        break;
-                    }
-                }
-            }
-            this.expandedPositions = newExpandedPositions;
-        }
-        else
-        {
-            this.expandedPositions = null;
         }
     }
 

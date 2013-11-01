@@ -113,8 +113,10 @@
                   android:layout_margin="8dp"
                   android:layout_alignParentRight="true"
                   android:layout_centerVertical="true"
+                  android:padding="8dp"
                   android:src="@drawable/sort_chart"
-                  android:contentDescription="Button to access chart"
+                  android:background="@null"
+                  android:contentDescription="@null"
                   />
 
             </RelativeLayout>
@@ -171,17 +173,17 @@
                 android:scaleType="fitCenter"
                 />
 
-            <ImageButton
-                 android:id="@+id/btn_add_cash"
-                 android:layout_height="32dp"
-                 android:layout_width="32dp"
-                 android:layout_toLeftOf="@+id/btn_add_trigger"
-                 android:layout_marginRight="4dp"
-                 android:contentDescription="@null"
-                 android:background="@null"
-                 android:src="@drawable/buy_thd_big"
-                 android:scaleType="fitCenter"
-                 />
+                      <ImageButton
+              android:id="@+id/btn_add_cash"
+              android:layout_height="32dp"
+              android:layout_width="32dp"
+              android:layout_toLeftOf="@+id/btn_add_trigger"
+              android:layout_marginRight="4dp"
+              android:contentDescription="@null"
+              android:background="@null"
+              android:src="@drawable/buy_thd_big"
+              android:scaleType="fitCenter"
+              />
 
              <ImageButton
                  android:id="@+id/btn_add_trigger"
