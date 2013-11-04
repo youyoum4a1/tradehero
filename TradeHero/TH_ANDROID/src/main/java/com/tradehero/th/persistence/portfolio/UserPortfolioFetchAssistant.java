@@ -6,7 +6,7 @@ import com.tradehero.common.persistence.FetchAssistant;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.persistence.user.UserProfileAssistant;
+import com.tradehero.th.persistence.user.UserProfileFetchAssistant;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,29 +17,27 @@ public class UserPortfolioFetchAssistant extends BasicFetchAssistant<UserBaseKey
 {
     public static final String TAG = UserPortfolioFetchAssistant.class.getSimpleName();
 
-    private final UserProfileAssistant userProfileAssistant;
-    private final Map<UserBaseKey, OwnedPortfolioId> userPortfolios;
+    private final UserProfileFetchAssistant userProfileFetchAssistant;
 
     public UserPortfolioFetchAssistant(Context context, List<UserBaseKey> keysToFetch)
     {
         super(keysToFetch);
-        this.userProfileAssistant = new UserProfileAssistant(context, keysToFetch);
-        userPortfolios = new HashMap<>();
-        if (keysToFetch != null)
-        {
-            for (UserBaseKey key: keysToFetch)
-            {
-                if (key != null)
-                {
-                    userPortfolios.put(key, null);
-                }
-            }
-        }
+        this.userProfileFetchAssistant = new UserProfileFetchAssistant(context, keysToFetch);
+        this.userProfileFetchAssistant.setListener(this);
     }
 
     @Override public void execute(boolean force)
     {
-        this.userProfileAssistant.execute(force);
+        this.userProfileFetchAssistant.execute(force);
+    }
+
+    @Override public void clear()
+    {
+        super.clear();
+        if (this.userProfileFetchAssistant != null)
+        {
+            this.userProfileFetchAssistant.setListener(null);
+        }
     }
 
     @Override public void onInfoFetched(Map<UserBaseKey, UserProfileDTO> fetched, boolean isDataComplete)
@@ -48,11 +46,11 @@ public class UserPortfolioFetchAssistant extends BasicFetchAssistant<UserBaseKey
         {
             for (Map.Entry<UserBaseKey, UserProfileDTO> entry: fetched.entrySet())
             {
-                if (userPortfolios.containsKey(entry.getKey()) &&
+                if (this.fetched.containsKey(entry.getKey()) &&
                         entry.getValue() != null &&
                         entry.getValue().portfolio != null)
                 {
-                    userPortfolios.put(entry.getKey(), new OwnedPortfolioId(entry.getKey(), entry.getValue().portfolio));
+                    this.fetched.put(entry.getKey(), new OwnedPortfolioId(entry.getKey(), entry.getValue().portfolio));
                 }
             }
             notifyListener();

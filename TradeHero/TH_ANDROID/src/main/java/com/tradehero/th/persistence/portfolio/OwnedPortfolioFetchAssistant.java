@@ -7,6 +7,7 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PortfolioDTO;
+import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
@@ -23,6 +24,7 @@ public class OwnedPortfolioFetchAssistant extends DTOFetchAssistant<OwnedPortfol
     {
         super(keysToFetch);
         this.context = context;
+        DaggerUtils.inject(this);
     }
 
     @Override public void onErrorThrown(OwnedPortfolioId key, Throwable error)

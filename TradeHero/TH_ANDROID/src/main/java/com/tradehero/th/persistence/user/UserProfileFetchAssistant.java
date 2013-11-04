@@ -7,6 +7,7 @@ import com.tradehero.th.R;
 import com.tradehero.common.persistence.DTOFetchAssistant;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
@@ -23,6 +24,7 @@ public class UserProfileFetchAssistant extends DTOFetchAssistant<UserBaseKey, Us
     {
         super(keysToFetch);
         this.context = context;
+        DaggerUtils.inject(this);
     }
 
     //<editor-fold desc="DTOCache.Listener<UserBaseKey, UserProfileDTO>">

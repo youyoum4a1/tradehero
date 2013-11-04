@@ -11,6 +11,9 @@ import com.tradehero.common.utils.THLog;
 import com.tradehero.th.api.form.AbstractUserAvailabilityRequester;
 import com.tradehero.th.api.portfolio.DisplayablePortfolioDTO;
 import com.tradehero.th.api.users.UserBaseDTO;
+import com.tradehero.th.persistence.portfolio.OwnedPortfolioFetchAssistant;
+import com.tradehero.th.persistence.portfolio.UserPortfolioFetchAssistant;
+import com.tradehero.th.persistence.user.UserProfileFetchAssistant;
 import com.tradehero.th.base.THUser;
 import com.tradehero.th.fragments.WebViewFragment;
 import com.tradehero.th.fragments.authentication.EmailSignInFragment;
@@ -78,6 +81,9 @@ import javax.inject.Singleton;
 @Module(
         injects =
         {
+                UserProfileFetchAssistant.class,
+                OwnedPortfolioFetchAssistant.class,
+
                 SettingsTransactionHistoryFragment.class,
                 SettingsPayPalFragment.class,
                 SettingsFragment.class,
