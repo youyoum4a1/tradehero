@@ -1,6 +1,7 @@
 package com.tradehero.th.api.leaderboard;
 
 import com.tradehero.common.persistence.DTO;
+import com.tradehero.th.fragments.leaderboard.LeaderboardSortType;
 import com.tradehero.th.loaders.AbstractItemWithComparableId;
 import java.util.Date;
 import java.util.List;
@@ -81,6 +82,10 @@ public class LeaderboardDefDTO extends AbstractItemWithComparableId<Integer>
         return null;
     }
 
+    public int getDefaultSortType()
+    {
+        return defaultSortTypeId != null ? defaultSortTypeId : LeaderboardSortType.DefaultSortType.getFlag();
+    }
 }
 
 
