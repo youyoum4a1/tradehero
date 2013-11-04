@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.leaderboard;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
@@ -12,10 +13,16 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.leaderboard.LeaderboardUserRankDTO;
 import com.tradehero.th.api.position.PositionDTO;
+import com.tradehero.th.api.users.UserBaseDTO;
+import com.tradehero.th.api.users.UserBaseKey;
+import com.tradehero.th.base.Navigator;
+import com.tradehero.th.base.NavigatorActivity;
+import com.tradehero.th.fragments.timeline.TimelineFragment;
 import com.tradehero.th.persistence.position.PositionCache;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
 import javax.inject.Inject;
+import javax.inject.Named;
 
 /** Created with IntelliJ IDEA. User: tho Date: 10/21/13 Time: 4:14 PM Copyright (c) TradeHero */
 public class LeaderboardUserRankItemView extends RelativeLayout
@@ -23,6 +30,8 @@ public class LeaderboardUserRankItemView extends RelativeLayout
 {
     @Inject protected Picasso picasso;
     @Inject protected Lazy<PositionCache> positionCache;
+    @Inject @Named("CurrentUser") protected UserBaseDTO currentUserBase;
+
     // data
     private LeaderboardListAdapter.ExpandableLeaderboardUserRankItemWrapper leaderboardItem;
     private PositionDTO position;
@@ -43,6 +52,8 @@ public class LeaderboardUserRankItemView extends RelativeLayout
     private TextView lbmuPositionsCount;
     private TextView lbmuAvgDaysHeld;
     private TextView lbmuFollowersCount;
+    private TextView lbmuGotoProfile;
+    private Navigator navigator;
 
     //<editor-fold desc="Constructors">
     public LeaderboardUserRankItemView(Context context)
@@ -71,6 +82,8 @@ public class LeaderboardUserRankItemView extends RelativeLayout
 
     private void initViews()
     {
+        navigator = ((NavigatorActivity) getContext()).getNavigator();
+
         // top part
         lbmuPosition = (TextView) findViewById(R.id.leaderboard_user_item_position);
         lbmuDisplayName = (TextView) findViewById(R.id.leaderboard_user_item_display_name);
@@ -92,6 +105,13 @@ public class LeaderboardUserRankItemView extends RelativeLayout
         lbmuAvgDaysHeld = (TextView) findViewById(R.id.lbmu_avg_days_held);
         lbmuFollowersCount = (TextView) findViewById(R.id.lbmu_followers_count);
         lbmuCommentsCount = (TextView) findViewById(R.id.lbmu_comments_count);
+
+        // action buttons
+        lbmuGotoProfile = (TextView) findViewById(R.id.leaderboard_user_item_goto_profile);
+        if (lbmuGotoProfile != null)
+        {
+            lbmuGotoProfile.setOnClickListener(this);
+        }
     }
 
     @Override public void display(LeaderboardListAdapter.ExpandableLeaderboardUserRankItemWrapper expandableItem)
@@ -151,6 +171,16 @@ public class LeaderboardUserRankItemView extends RelativeLayout
         switch (view.getId())
         {
             case R.id.leaderboard_user_item_info:
+                break;
+            case R.id.leaderboard_user_item_goto_profile:
+                int userId = leaderboardItem.getModel().lbmuId;
+                Bundle b = new Bundle();
+                b.putInt(UserBaseKey.BUNDLE_KEY_KEY, userId);
+
+                if (currentUserBase.id != userId)
+                {
+                    navigator.pushFragment(TimelineFragment.class, b, true);
+                }
                 break;
         }
     }

@@ -35,7 +35,7 @@ public class LeaderboardListViewFragment extends AbstractLeaderboardFragment
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.leaderboard_listview, container, false);
-        leaderboardRankingListView = (LeaderboardRankingListView) view.findViewById(android.R.id.list);
+        leaderboardRankingListView = (LeaderboardRankingListView) view.findViewById(R.id.leaderboard_listview);
 
         leaderboardListAdapter = new LeaderboardListAdapter(getActivity(), getActivity().getLayoutInflater(), null, R.layout.leaderboard_listview_item);
         leaderboardRankingListView.setAdapter(leaderboardListAdapter);

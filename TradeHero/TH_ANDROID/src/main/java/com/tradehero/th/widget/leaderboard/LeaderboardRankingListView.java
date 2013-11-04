@@ -12,7 +12,7 @@ import javax.inject.Inject;
 public class LeaderboardRankingListView extends PullToRefreshListView
 {
     @Inject
-    protected DefaultExpandingListViewListener defaultDefaultExpandingListViewListener;
+    protected DefaultExpandingListViewListener defaultExpandingListViewListener;
 
     //<editor-fold desc="Constructors">
     public LeaderboardRankingListView(Context context)
@@ -49,7 +49,7 @@ public class LeaderboardRankingListView extends PullToRefreshListView
     private void init()
     {
         DaggerUtils.inject(this);
-        super.setOnItemClickListener(defaultDefaultExpandingListViewListener);
+        super.setOnItemClickListener(defaultExpandingListViewListener);
     }
 
     @Override public void setOnItemClickListener(AdapterView.OnItemClickListener listener)
