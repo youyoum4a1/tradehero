@@ -1,6 +1,12 @@
 package com.tradehero.th.api.portfolio;
 
+import android.content.SharedPreferences;
+import com.tradehero.common.utils.THJsonAdapter;
 import com.tradehero.th.api.users.UserBaseDTO;
+import com.tradehero.th.base.Application;
+import com.tradehero.th.base.THUser;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.sql.Date;
 import java.util.Iterator;
 import java.util.Set;
@@ -26,12 +32,22 @@ public class DisplayablePortfolioDTOComparableTest
 
     @Before public void setUp()
     {
-        DisplayablePortfolioDTO.currentUserBase = getCurrentUser();
+        try
+        {
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            THJsonAdapter.getInstance().toBody(getCurrentUser()).writeTo(byteArrayOutputStream);
+            SharedPreferences.Editor pref = Application.getPreferences().edit();
+            pref.putString(THUser.PREF_MY_USER, byteArrayOutputStream.toString("UTF-8"));
+            pref.commit();
+        } catch (IOException e)
+        {
+            e.printStackTrace();
+        }
     }
 
     @After public void tearDown()
     {
-        DisplayablePortfolioDTO.currentUserBase = null;
+        // Clear THUser?
     }
 
     /**

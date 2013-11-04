@@ -33,7 +33,7 @@ import javax.inject.Inject;
 public class THUser
 {
     private static final String TAG = THUser.class.getName();
-    private static final String PREF_MY_USER = THUser.class.getName() + ".PREF_MY_USER";
+    public static final String PREF_MY_USER = THUser.class.getName() + ".PREF_MY_USER";
     private static final String PREF_MY_TOKEN = THUser.class.getName() + ".PREF_MY_TOKEN";
     private static final String CURRENT_SESSION_TOKEN = THUser.class.getName() +  ".PREF_CURRENT_SESSION_TOKEN";
     private static final String CURRENT_AUTHENTICATION_TYPE = THUser.class.getName() + ".PREF_AUTHENTICATION_TYPE";

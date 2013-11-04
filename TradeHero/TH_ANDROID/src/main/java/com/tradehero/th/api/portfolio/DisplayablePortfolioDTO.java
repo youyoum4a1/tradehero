@@ -1,6 +1,7 @@
 package com.tradehero.th.api.portfolio;
 
 import com.tradehero.th.api.users.UserBaseDTO;
+import com.tradehero.th.base.THUser;
 import com.tradehero.th.persistence.portfolio.PortfolioCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import javax.inject.Inject;
@@ -13,8 +14,6 @@ import javax.inject.Inject;
 public class DisplayablePortfolioDTO implements Comparable
 {
     public static final String TAG = DisplayablePortfolioDTO.class.getSimpleName();
-
-    @Inject /*@Named("CurrentUser")*/ public static UserBaseDTO currentUserBase;
 
     public OwnedPortfolioId ownedPortfolioId;
     public UserBaseDTO userBaseDTO;
@@ -69,7 +68,7 @@ public class DisplayablePortfolioDTO implements Comparable
 
     public boolean isUserCurrentUser()
     {
-        return currentUserBase.equals(userBaseDTO);
+        return THUser.getCurrentUserBase().equals(userBaseDTO);
     }
 
     @Override public boolean equals(Object other)
