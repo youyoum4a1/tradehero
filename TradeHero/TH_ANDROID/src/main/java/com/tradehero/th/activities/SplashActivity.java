@@ -14,8 +14,7 @@ public class SplashActivity extends SherlockActivity
     public static final String LOGGEDIN = SplashActivity.class.getName();
     private Timer timerToShiftActivity;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState)
+    @Override protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
 

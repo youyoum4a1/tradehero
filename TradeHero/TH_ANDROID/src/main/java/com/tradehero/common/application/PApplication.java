@@ -18,8 +18,7 @@ public class PApplication extends Application
     private static Context context;
     private static Resources res;
 
-    @Override
-    public void onCreate()
+    @Override public void onCreate()
     {
         super.onCreate();
         Context applicationContext = getApplicationContext();
@@ -28,8 +27,7 @@ public class PApplication extends Application
         init();
     }
 
-    @Override
-    public void unregisterReceiver(BroadcastReceiver broadcastReceiver)
+    @Override public void unregisterReceiver(BroadcastReceiver broadcastReceiver)
     {
         super.unregisterReceiver(broadcastReceiver);
     }
