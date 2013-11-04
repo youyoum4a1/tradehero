@@ -9,34 +9,36 @@ import com.tradehero.common.persistence.DTOKey;
  */
 public class OwnedLbPositionId implements Comparable, DTOKey, DTO
 {
-    public final static String BUNDLE_KEY_LBMUP_ID = OwnedLbPositionId.class.getName() + ".lbmupId";
-    public final static String BUNDLE_KEY_LBMU_ID = OwnedLbPositionId.class.getName() + ".lbmuId";
+    public final static String BUNDLE_KEY_LEADERBOARD_MARK_USER_ID = OwnedLbPositionId.class.getName() + ".leaderboardMarkUserId";
+    public final static String BUNDLE_KEY_LEADERBOARD_MARK_USER_POSITION_ID = OwnedLbPositionId.class.getName() + ".leaderboardMarkUserPositionId";
 
-    public final Integer lbmuId;
-    public final Integer lbmupId;
+    public final Integer leaderboardMarkUserId;
+    public final Integer leaderboardMarkUserPositionId;
 
-    public OwnedLbPositionId(Integer lbmuId, Integer lbmupId)
+    //<editor-fold desc="Constructors">
+    public OwnedLbPositionId(Integer leaderboardMarkUserId, Integer leaderboardMarkUserPositionId)
     {
-        this.lbmuId = lbmuId;
-        this.lbmupId = lbmupId;
+        this.leaderboardMarkUserId = leaderboardMarkUserId;
+        this.leaderboardMarkUserPositionId = leaderboardMarkUserPositionId;
     }
 
-    public OwnedLbPositionId(LbUserId lbmuId, Integer lbmupId)
+    public OwnedLbPositionId(LeaderboardMarkUserId leaderboardMarkUserId, Integer leaderboardMarkUserPositionId)
     {
-        this(lbmuId.key, lbmupId);
+        this(leaderboardMarkUserId.key, leaderboardMarkUserPositionId);
     }
-
 
     public OwnedLbPositionId(Bundle args)
     {
-        this.lbmuId= args.containsKey(BUNDLE_KEY_LBMU_ID) ? args.getInt(BUNDLE_KEY_LBMU_ID) : null;
-        this.lbmupId= args.containsKey(BUNDLE_KEY_LBMUP_ID) ? args.getInt(BUNDLE_KEY_LBMUP_ID) : null;
+        this.leaderboardMarkUserId = args.containsKey(BUNDLE_KEY_LEADERBOARD_MARK_USER_ID) ? args.getInt(BUNDLE_KEY_LEADERBOARD_MARK_USER_ID) : null;
+        this.leaderboardMarkUserPositionId = args.containsKey(BUNDLE_KEY_LEADERBOARD_MARK_USER_POSITION_ID) ? args.getInt(
+                BUNDLE_KEY_LEADERBOARD_MARK_USER_POSITION_ID) : null;
     }
+    //</editor-fold>
 
     @Override public int hashCode()
     {
-        return (this.lbmuId == null ? 0 : lbmuId.hashCode()) ^
-                (lbmupId == null ? 0 : lbmupId .hashCode());
+        return (this.leaderboardMarkUserId == null ? 0 : leaderboardMarkUserId.hashCode()) ^
+                (leaderboardMarkUserPositionId == null ? 0 : leaderboardMarkUserPositionId.hashCode());
     }
 
     @Override public boolean equals(Object other)
@@ -47,8 +49,9 @@ public class OwnedLbPositionId implements Comparable, DTOKey, DTO
     public boolean equals(OwnedLbPositionId other)
     {
         return (other != null) &&
-                (lbmuId == null ? other.lbmuId == null : lbmuId.equals(other.lbmuId)) &&
-                (lbmupId == null ? other.lbmupId == null : lbmupId.equals(other.lbmupId));
+                (leaderboardMarkUserId == null ? other.leaderboardMarkUserId == null : leaderboardMarkUserId.equals(other.leaderboardMarkUserId)) &&
+                (leaderboardMarkUserPositionId == null ? other.leaderboardMarkUserPositionId
+                        == null : leaderboardMarkUserPositionId.equals(other.leaderboardMarkUserPositionId));
     }
 
     @Override public int compareTo(Object o)
@@ -77,33 +80,33 @@ public class OwnedLbPositionId implements Comparable, DTOKey, DTO
             return 1;
         }
 
-        int lbmuComp = lbmuId.compareTo(other.lbmuId);
+        int lbmuComp = leaderboardMarkUserId.compareTo(other.leaderboardMarkUserId);
         if (lbmuComp != 0)
         {
             return lbmuComp;
         }
 
-        return lbmupId.compareTo(other.lbmupId);
+        return leaderboardMarkUserPositionId.compareTo(other.leaderboardMarkUserPositionId);
     }
 
     public boolean isValid()
     {
-        return lbmuId != null && lbmupId!= null;
+        return leaderboardMarkUserId != null && leaderboardMarkUserPositionId != null;
     }
 
     public void putParameters(Bundle args)
     {
-        args.putInt(BUNDLE_KEY_LBMU_ID, lbmuId);
-        args.putInt(BUNDLE_KEY_LBMUP_ID, lbmupId);
+        args.putInt(BUNDLE_KEY_LEADERBOARD_MARK_USER_ID, leaderboardMarkUserId);
+        args.putInt(BUNDLE_KEY_LEADERBOARD_MARK_USER_POSITION_ID, leaderboardMarkUserPositionId);
     }
 
-    public LbUserId getLeaderboardMarkUserKey()
+    public LeaderboardMarkUserId getLeaderboardMarkUserKey()
     {
-        return new LbUserId(lbmuId);
+        return new LeaderboardMarkUserId(leaderboardMarkUserId);
     }
 
     @Override public String toString()
     {
-        return String.format("[lbmuId=%d; lbmupId=%d]", lbmuId, lbmupId);
+        return String.format("[leaderboardMarkUserId=%d; leaderboardMarkUserPositionId=%d]", leaderboardMarkUserId, leaderboardMarkUserPositionId);
     }
 }

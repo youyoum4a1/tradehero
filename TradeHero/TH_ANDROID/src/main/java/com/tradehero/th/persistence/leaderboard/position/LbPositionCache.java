@@ -51,7 +51,7 @@ import java.util.List;
         //tradeListCache.get().invalidate(key);
     }
 
-    public List<PositionInPeriodDTO> put(Integer portfolioId, List<PositionInPeriodDTO> values)
+    public List<PositionInPeriodDTO> put(List<PositionInPeriodDTO> values)
     {
         if (values == null)
         {
@@ -62,7 +62,7 @@ import java.util.List;
 
         for (PositionInPeriodDTO positionDTO: values)
         {
-            previousValues.add(put(positionDTO.getLbOwnedPositionId(portfolioId), positionDTO));
+            previousValues.add(put(positionDTO.getLbOwnedPositionId(), positionDTO));
         }
 
         return previousValues;

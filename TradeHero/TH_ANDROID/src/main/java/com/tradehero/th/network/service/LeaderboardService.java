@@ -2,6 +2,7 @@ package com.tradehero.th.network.service;
 
 import com.tradehero.th.api.leaderboard.LeaderboardDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardDefDTO;
+import com.tradehero.th.api.leaderboard.position.GetLeaderboardPositionsDTO;
 import com.tradehero.th.api.position.GetPositionsDTO;
 import java.util.List;
 import retrofit.Callback;
@@ -106,17 +107,17 @@ public interface LeaderboardService
 
     //<editor-fold desc="Get Positions For Leaderboard Mark User">
     @GET("/leaderboardMarkUser/{leaderboardbMarkUserId}/positions")
-    GetPositionsDTO getPositionsForLeaderboardMarkUser(
+    GetLeaderboardPositionsDTO getPositionsForLeaderboardMarkUser(
             @Path("leaderboardbMarkUserId") int leaderboardbMarkUserId)
         throws RetrofitError;
 
     @GET("/leaderboardMarkUser/{leaderboardbMarkUserId}/positions")
     void getPositionsForLeaderboardMarkUser(
             @Path("leaderboardbMarkUserId") int leaderboardbMarkUserId,
-            Callback<GetPositionsDTO> callback);
+            Callback<GetLeaderboardPositionsDTO> callback);
 
     @GET("/leaderboardMarkUser/{leaderboardbMarkUserId}/positions")
-    GetPositionsDTO getPositionsForLeaderboardMarkUser(
+    GetLeaderboardPositionsDTO getPositionsForLeaderboardMarkUser(
             @Path("leaderboardbMarkUserId") int leaderboardbMarkUserId,
             @Query("pageNumber") int pageNumber)
         throws RetrofitError;
@@ -125,10 +126,10 @@ public interface LeaderboardService
     void getPositionsForLeaderboardMarkUser(
             @Path("leaderboardbMarkUserId") int leaderboardbMarkUserId,
             @Query("pageNumber") int pageNumber,
-            Callback<GetPositionsDTO> callback);
+            Callback<GetLeaderboardPositionsDTO> callback);
 
     @GET("/leaderboardMarkUser/{leaderboardbMarkUserId}/positions")
-    GetPositionsDTO getPositionsForLeaderboardMarkUser(
+    GetLeaderboardPositionsDTO getPositionsForLeaderboardMarkUser(
             @Path("leaderboardbMarkUserId") int leaderboardbMarkUserId,
             @Query("pageNumber") int pageNumber,
             @Query("perPage") int perPage)
@@ -139,7 +140,7 @@ public interface LeaderboardService
             @Path("leaderboardbMarkUserId") int leaderboardbMarkUserId,
             @Query("pageNumber") int pageNumber,
             @Query("perPage") int perPage,
-            Callback<GetPositionsDTO> callback);
+            Callback<GetLeaderboardPositionsDTO> callback);
     //</editor-fold>
 
     /**

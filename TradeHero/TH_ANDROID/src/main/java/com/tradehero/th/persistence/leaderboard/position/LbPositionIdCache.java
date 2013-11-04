@@ -1,10 +1,8 @@
 package com.tradehero.th.persistence.leaderboard.position;
 
 import com.tradehero.common.persistence.StraightDTOCache;
-import com.tradehero.th.api.leaderboard.position.LbPositionId;
+import com.tradehero.th.api.leaderboard.position.LeaderbordMarkUserPositionId;
 import com.tradehero.th.api.leaderboard.position.OwnedLbPositionId;
-import com.tradehero.th.api.position.OwnedPositionId;
-import com.tradehero.th.api.position.PositionCompactId;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -14,7 +12,7 @@ import javax.inject.Singleton;
  */
 
 @Singleton
-public class LbPositionIdCache extends StraightDTOCache<LbPositionId, OwnedLbPositionId>
+public class LbPositionIdCache extends StraightDTOCache<LeaderbordMarkUserPositionId, OwnedLbPositionId>
 {
 
     public static final int DEFAULT_MAX_SIZE = 2000;
@@ -24,8 +22,8 @@ public class LbPositionIdCache extends StraightDTOCache<LbPositionId, OwnedLbPos
         super(DEFAULT_MAX_SIZE);
     }
 
-    @Override protected OwnedLbPositionId fetch(LbPositionId key)
+    @Override protected OwnedLbPositionId fetch(LeaderbordMarkUserPositionId key)
     {
-        throw new IllegalStateException("You should not fetch for OwnedPositionId");
+        throw new IllegalStateException("You should not fetch for OwnedLbPositionId");
     }
 }

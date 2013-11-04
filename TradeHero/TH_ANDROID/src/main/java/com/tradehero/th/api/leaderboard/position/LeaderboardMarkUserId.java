@@ -7,16 +7,16 @@ import com.tradehero.th.api.leaderboard.LeaderboardKey;
 /**
  * Created by julien on 1/11/13
  */
-public class LbUserId extends AbstractIntegerDTOKey
+public class LeaderboardMarkUserId extends AbstractIntegerDTOKey
 {
-    private static final String BUNDLE_KEY = LbUserId.class.getName() + ".key";
+    private static final String BUNDLE_KEY = LeaderboardMarkUserId.class.getName() + ".key";
 
-    public LbUserId(Integer key)
+    public LeaderboardMarkUserId(Integer key)
     {
         super(key);
     }
 
-    public LbUserId(Bundle args)
+    public LeaderboardMarkUserId(Bundle args)
     {
         super(args);
     }
