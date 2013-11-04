@@ -9,6 +9,7 @@ import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.common.persistence.DTOCache;
+import com.tradehero.common.persistence.FetchAssistant;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
@@ -24,6 +25,8 @@ import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.position.PositionListFragment;
 import com.tradehero.th.persistence.portfolio.PortfolioCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
+import com.tradehero.th.persistence.portfolio.UserPortfolioFetchAssistant;
+import com.tradehero.th.persistence.social.VisitedFriendListPrefs;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.widget.portfolio.PortfolioListItemView;
 import com.tradehero.th.widget.portfolio.PortfolioListView;
@@ -37,6 +40,7 @@ import javax.inject.Named;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/14/13 Time: 11:47 AM To change this template use File | Settings | File Templates. */
 public class PortfolioListFragment extends DashboardFragment
+    implements FetchAssistant.OnInfoFetchedListener<UserBaseKey, OwnedPortfolioId>
 {
     public static final String TAG = PortfolioListFragment.class.getSimpleName();
 
@@ -46,8 +50,10 @@ public class PortfolioListFragment extends DashboardFragment
 
     @Inject @Named("CurrentUser") protected UserBaseDTO currentUserBase;
     // We need to populate the PortfolioDTOs in order to sort them appropriately
-    private Map<OwnedPortfolioId, DisplayablePortfolioDTO> ownedPortfolios;
-    private Map<OwnedPortfolioId, DisplayablePortfolioDTO> otherPortfolios;
+    private Map<OwnedPortfolioId, DisplayablePortfolioDTO> displayablePortfolios;
+    private List<UserBaseKey> otherUserBaseKeys;
+    private UserPortfolioFetchAssistant otherPortfolioFetchAssistant;
+    private boolean areOthersComplete = false;
 
     @Inject Lazy<PortfolioCompactListCache> portfolioListCache;
     @Inject Lazy<PortfolioCache> portfolioCache;
@@ -64,10 +70,8 @@ public class PortfolioListFragment extends DashboardFragment
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        THLog.d(TAG, "onCreateView");
         super.onCreateView(inflater, container, savedInstanceState);
-        View view = null;
-        view = inflater.inflate(R.layout.fragment_portfolios_list, container, false);
+        View view = inflater.inflate(R.layout.fragment_portfolios_list, container, false);
         initViews(view);
         return view;
     }
@@ -113,6 +117,7 @@ public class PortfolioListFragment extends DashboardFragment
     @Override public void onResume()
     {
         super.onResume();
+        displayablePortfolios = new HashMap<>();
         fetchListOwn();
         fetchListOther();
     }
@@ -125,6 +130,12 @@ public class PortfolioListFragment extends DashboardFragment
             fetchOwnPortfolioListFetchTask.cancel(false);
         }
         fetchOwnPortfolioListFetchTask = null;
+
+        if (otherPortfolioFetchAssistant != null)
+        {
+            otherPortfolioFetchAssistant.clear();
+        }
+        otherPortfolioFetchAssistant = null;
         super.onPause();
     }
 
@@ -178,57 +189,14 @@ public class PortfolioListFragment extends DashboardFragment
         super.onDestroyView();
     }
 
-    //<editor-fold desc="DTO Testing Methods">
-    public boolean arePortfoliosValid()
+    public int getDisplayablePortfoliosCount()
     {
-        return isOwnedPortfoliosValid() && isOtherPortfoliosValid();
+        return displayablePortfolios == null ? 0 : displayablePortfolios.size();
     }
 
-    public boolean isOwnedPortfoliosValid()
+    public int getDisplayablePortfoliosValidCount()
     {
-        return isMapValid(ownedPortfolios);
-    }
-
-    public boolean isOtherPortfoliosValid()
-    {
-        return isMapValid(otherPortfolios);
-    }
-
-    private boolean isMapValid(Map<OwnedPortfolioId, DisplayablePortfolioDTO> dtos)
-    {
-        if (dtos == null)
-        {
-            return true;
-        }
-        for (DisplayablePortfolioDTO dto:dtos.values())
-        {
-            if (dto == null || !dto.isValid())
-            {
-                return false;
-            }
-        }
-        return true;
-    }
-    //</editor-fold>
-
-    public int getOwnedPortfoliosCount()
-    {
-        return ownedPortfolios == null ? 0 : ownedPortfolios.size();
-    }
-
-    public int getOtherPortfoliosCount()
-    {
-        return otherPortfolios == null ? 0 : otherPortfolios.size();
-    }
-
-    public int getOwnedPortfoliosValidCount()
-    {
-        return getValidPortfoliosCount(ownedPortfolios);
-    }
-
-    public int getOtherPortfoliosValidCount()
-    {
-        return getValidPortfoliosCount(otherPortfolios);
+        return getValidPortfoliosCount(displayablePortfolios);
     }
 
     private int getValidPortfoliosCount(Map<OwnedPortfolioId, DisplayablePortfolioDTO> dtos)
@@ -282,64 +250,93 @@ public class PortfolioListFragment extends DashboardFragment
         };
     }
 
-    public void linkWithOwn(List<OwnedPortfolioId> ownedPortfolioIds, boolean andDisplay, OwnedPortfolioId typeQualifier)
+    protected void linkWithOwn(List<OwnedPortfolioId> ownedPortfolioIds, boolean andDisplay, OwnedPortfolioId typeQualifier)
     {
-
-        if (ownedPortfolioIds == null)
+        if (displayablePortfolios == null)
         {
-            this.ownedPortfolios = null;
+            displayablePortfolios = new HashMap<>();
         }
-        else
+        if (ownedPortfolioIds != null)
         {
-            ownedPortfolios = new HashMap<>();
             DisplayablePortfolioDTO displayablePortfolioDTO;
             for (OwnedPortfolioId ownedPortfolioId: ownedPortfolioIds)
             {
                 displayablePortfolioDTO = new DisplayablePortfolioDTO(ownedPortfolioId);
                 populatePortfolio(displayablePortfolioDTO, false);
-                ownedPortfolios.put(ownedPortfolioId, displayablePortfolioDTO);
+                displayablePortfolios.put(ownedPortfolioId, displayablePortfolioDTO);
             }
         }
 
         if (andDisplay)
         {
-            conditionalDisplayPortfolios();
+            displayPortfolios();
         }
     }
 
     private void fetchListOther()
     {
-        linkWithOther(portfolioCache.get().getAllOtherUserKeys(), true, (OwnedPortfolioId) null);
+        linkWithOther(VisitedFriendListPrefs.getVisitedIdList(), true, (UserBaseKey) null);
     }
 
-    public void linkWithOther(List<OwnedPortfolioId> otherPortfolioIds, boolean andDisplay, OwnedPortfolioId typeQualifier)
+    public void linkWithOther(List<UserBaseKey> otherPeopleUserBaseKeys, boolean andDisplay, UserBaseKey typeQualifier)
     {
-        if (otherPortfolioIds == null)
+        otherUserBaseKeys = otherPeopleUserBaseKeys;
+
+        if (otherPortfolioFetchAssistant != null)
         {
-            otherPortfolios = null;
+            otherPortfolioFetchAssistant.clear();
         }
-        else
+
+        otherPortfolioFetchAssistant = new UserPortfolioFetchAssistant(getActivity(), otherPeopleUserBaseKeys);
+        otherPortfolioFetchAssistant.setListener(this);
+        otherPortfolioFetchAssistant.execute();
+    }
+
+    //<editor-fold desc="FetchAssistant.OnInfoFetchedListener<UserBaseKey, OwnedPortfolioId>">
+    @Override public void onInfoFetched(Map<UserBaseKey, OwnedPortfolioId> fetched, boolean isDataComplete)
+    {
+        List<OwnedPortfolioId> ownedPortfolioIds = new ArrayList<>();
+        if (fetched != null)
         {
-            otherPortfolios = new HashMap<>();
+            for (OwnedPortfolioId ownedPortfolioId: fetched.values())
+            {
+                if (ownedPortfolioId != null)
+                {
+                    ownedPortfolioIds.add(ownedPortfolioId);
+                }
+            }
+        }
+        areOthersComplete = isDataComplete;
+        linkWithOther(ownedPortfolioIds, true, (OwnedPortfolioId) null);
+    }
+    //</editor-fold>
+
+    protected void linkWithOther(List<OwnedPortfolioId> otherPortfolioIds, boolean andDisplay, OwnedPortfolioId typeQualifier)
+    {
+        if (displayablePortfolios == null)
+        {
+            displayablePortfolios = new HashMap<>();
+        }
+        if (otherPortfolioIds != null)
+        {
             DisplayablePortfolioDTO displayablePortfolioDTO;
             for (OwnedPortfolioId otherPortfolioId: otherPortfolioIds)
             {
                 displayablePortfolioDTO = new DisplayablePortfolioDTO(otherPortfolioId);
                 populatePortfolio(displayablePortfolioDTO, false);
-                otherPortfolios.put(otherPortfolioId, displayablePortfolioDTO);
+                displayablePortfolios.put(otherPortfolioId, displayablePortfolioDTO);
             }
         }
 
         if (andDisplay)
         {
-            conditionalDisplayPortfolios();
+            displayPortfolios();
         }
     }
 
     public void populatePortfolios(boolean andDisplay)
     {
-        populatePortfolios(ownedPortfolios, false);
-        populatePortfolios(otherPortfolios, andDisplay);
+        populatePortfolios(displayablePortfolios, false);
     }
 
     public void populatePortfolios(Map<OwnedPortfolioId, DisplayablePortfolioDTO> dtos, boolean andDisplay)
@@ -357,7 +354,7 @@ public class PortfolioListFragment extends DashboardFragment
         }
         if (andDisplay)
         {
-            conditionalDisplayPortfolios();
+            displayPortfolios();
         }
     }
 
@@ -381,7 +378,7 @@ public class PortfolioListFragment extends DashboardFragment
 
         if (andDisplay)
         {
-            conditionalDisplayPortfolios();
+            displayPortfolios();
         }
     }
 
@@ -404,7 +401,7 @@ public class PortfolioListFragment extends DashboardFragment
                 @Override public void onDTOReceived(UserBaseKey key, UserProfileDTO value)
                 {
                     displayablePortfolioDTO.userBaseDTO = value;
-                    conditionalDisplayPortfolios();
+                    displayPortfolios();
                 }
 
                 @Override public void onErrorThrown(UserBaseKey key, Throwable error)
@@ -441,7 +438,7 @@ public class PortfolioListFragment extends DashboardFragment
                 @Override public void onDTOReceived(OwnedPortfolioId key, PortfolioDTO value)
                 {
                     displayablePortfolioDTO.portfolioDTO = value;
-                    conditionalDisplayPortfolios();
+                    displayPortfolios();
                 }
 
                 @Override public void onErrorThrown(OwnedPortfolioId key, Throwable error)
@@ -465,18 +462,10 @@ public class PortfolioListFragment extends DashboardFragment
         displayPortfolios();
     }
 
-    public void conditionalDisplayPortfolios()
-    {
-        displayActionBarTitle();
-        if (arePortfoliosValid())
-        {
-            displayPortfolios();
-        }
-    }
-
     public void displayPortfolios()
     {
-        if (portfolioListAdapter != null)
+        displayActionBarTitle();
+        if (displayablePortfolios != null && portfolioListAdapter != null)
         {
             portfolioListAdapter.setItems(getAllPortfolios());
             getView().post(new Runnable()
@@ -497,7 +486,7 @@ public class PortfolioListFragment extends DashboardFragment
     public void displayActionBarTitle()
     {
         ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-        if (arePortfoliosValid())
+        if (displayablePortfolios == null || areOthersComplete)
         {
             actionBar.setTitle(getString(R.string.topbar_portfolios_title));
         }
@@ -505,21 +494,17 @@ public class PortfolioListFragment extends DashboardFragment
         {
             actionBar.setTitle(String.format(
                     getString(R.string.portfolio_loading_count),
-                    getOwnedPortfoliosValidCount() + getOtherPortfoliosValidCount(),
-                    getOwnedPortfoliosCount() + getOtherPortfoliosCount()));
+                    getDisplayablePortfoliosValidCount(),
+                    getDisplayablePortfoliosCount()));
         }
     }
 
     private List<DisplayablePortfolioDTO> getAllPortfolios()
     {
         List<DisplayablePortfolioDTO> allPortfolios = new ArrayList<>();
-        if (ownedPortfolios != null)
+        if (displayablePortfolios != null)
         {
-            allPortfolios.addAll(ownedPortfolios.values());
-        }
-        if (otherPortfolios != null)
-        {
-            allPortfolios.addAll(otherPortfolios.values());
+            allPortfolios.addAll(displayablePortfolios.values());
         }
         return allPortfolios;
     }
