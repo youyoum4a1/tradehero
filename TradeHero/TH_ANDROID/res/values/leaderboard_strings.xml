@@ -26,4 +26,5 @@
   <string name="leaderboard_avg_days_held">Avg. Days Held</string>
   <string name="leaderboard_followers_count"># Followers</string>
   <string name="leaderboard_comments_count"># Comments</string>
+  <string name="leaderboard_roi_annualized"><![CDATA[(annualized: <b>%s</b>)]]></string>
 </resources>

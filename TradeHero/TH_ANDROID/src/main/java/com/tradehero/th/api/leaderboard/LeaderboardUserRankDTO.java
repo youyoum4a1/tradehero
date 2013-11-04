@@ -34,7 +34,7 @@ public class LeaderboardUserRankDTO extends UserBaseDTO
     public Date periodStartUtc;
     public Date periodEndUtc;
     public Double stddev_positionRoiInPeriod;
-    public Double sharpeRatioInPeriod_vsSP500;
+    private Double sharpeRatioInPeriod_vsSP500;
     public Double benchmarkRoiInPeriod;
     public Double avg_positionRoiInPeriod;
     public Double winRatio;
@@ -43,7 +43,7 @@ public class LeaderboardUserRankDTO extends UserBaseDTO
     public Double ordinalPositionNormalized;
     public Integer followerCountFree;
     public Integer followerCountPaid;
-    public Integer commentCount;
+    private Integer commentCount;
 
     public LeaderboardUserRankDTO()
     {
@@ -73,6 +73,38 @@ public class LeaderboardUserRankDTO extends UserBaseDTO
         }
 
         return NumberDisplayUtils.formatWithRelevantDigits(starRating, 0);
+    }
+
+    public double getSharpeRatioInPeriod()
+    {
+        return sharpeRatioInPeriod_vsSP500 == null ? 0 : sharpeRatioInPeriod_vsSP500;
+    }
+
+    public int getCommentsCount()
+    {
+        return commentCount == null ? 0 : commentCount;
+    }
+
+    public int getTotalFollowersCount()
+    {
+        return (followerCountFree != null ? followerCountFree : 0) + (followerCountPaid != null ? followerCountPaid : 0);
+    }
+
+    public double getWinRatio()
+    {
+        return winRatio != null ? winRatio : 0;
+    }
+
+    public int getPositions()
+    {
+        // TODO calculation
+        return 0;
+    }
+
+    public String getFormattedPL()
+    {
+        DecimalFormat df = new DecimalFormat("000,000.00");
+        return df.format(PLinPeriodRefCcy);
     }
 }
 

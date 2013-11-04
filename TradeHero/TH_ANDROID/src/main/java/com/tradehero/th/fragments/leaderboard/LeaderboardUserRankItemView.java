@@ -2,6 +2,7 @@ package com.tradehero.th.fragments.leaderboard;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.text.Html;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
@@ -18,8 +19,10 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.base.NavigatorActivity;
 import com.tradehero.th.fragments.timeline.TimelineFragment;
+import com.tradehero.th.models.THSignedNumber;
 import com.tradehero.th.persistence.position.PositionCache;
 import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th.utils.NumberDisplayUtils;
 import dagger.Lazy;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -54,6 +57,8 @@ public class LeaderboardUserRankItemView extends RelativeLayout
     private TextView lbmuFollowersCount;
     private TextView lbmuGotoProfile;
     private Navigator navigator;
+    private TextView lbmuRoiAnnualized;
+    private TextView lbmuWinRatio;
 
     //<editor-fold desc="Constructors">
     public LeaderboardUserRankItemView(Context context)
@@ -99,19 +104,20 @@ public class LeaderboardUserRankItemView extends RelativeLayout
         // for expanding part
         lbmuPl = (TextView) findViewById(R.id.lbmu_pl);
         lbmuRoi = (TextView) findViewById(R.id.lbmu_roi);
+        lbmuRoiAnnualized = (TextView) findViewById(R.id.lbmu_roi_annualized);
         lbmuBenchmarkRoi = (TextView) findViewById(R.id.lbmu_benchmark_roi);
         lbmuSharpeRatio = (TextView) findViewById(R.id.lbmu_sharpe_ratio);
         lbmuPositionsCount = (TextView) findViewById(R.id.lbmu_positions_count);
         lbmuAvgDaysHeld = (TextView) findViewById(R.id.lbmu_avg_days_held);
         lbmuFollowersCount = (TextView) findViewById(R.id.lbmu_followers_count);
         lbmuCommentsCount = (TextView) findViewById(R.id.lbmu_comments_count);
-
         // action buttons
         lbmuGotoProfile = (TextView) findViewById(R.id.leaderboard_user_item_goto_profile);
         if (lbmuGotoProfile != null)
         {
             lbmuGotoProfile.setOnClickListener(this);
         }
+        lbmuWinRatio = (TextView) findViewById(R.id.lbmu_win_ratio);
     }
 
     @Override public void display(LeaderboardListAdapter.ExpandableLeaderboardUserRankItemWrapper expandableItem)
@@ -163,7 +169,33 @@ public class LeaderboardUserRankItemView extends RelativeLayout
     private void displayExpandableSection()
     {
         LeaderboardUserRankDTO dto = leaderboardItem.getModel();
-        //lbmuPl.setText(dto.ge);
+
+        lbmuPl.setText(dto.getFormattedPL() + getContext().getString(R.string.ref_currency));
+
+        THSignedNumber roi = new THSignedNumber(THSignedNumber.TYPE_PERCENTAGE, dto.roiInPeriod * 100);
+        lbmuRoi.setText(roi.toString());
+        lbmuRoi.setTextColor(getResources().getColor(roi.getColor()));
+
+        THSignedNumber roiAnnualizedVal = new THSignedNumber(THSignedNumber.TYPE_PERCENTAGE, dto.roiAnnualizedInPeriod * 100);
+        String roiAnnualizedFormat = getContext().getString(R.string.leaderboard_roi_annualized);
+        String roiAnnualized = String.format(roiAnnualizedFormat, roiAnnualizedVal.toString());
+        lbmuRoiAnnualized.setText(Html.fromHtml(roiAnnualized));
+
+        THSignedNumber benchmarkRoiInPeriod = new THSignedNumber(THSignedNumber.TYPE_PERCENTAGE, dto.benchmarkRoiInPeriod * 100);
+        lbmuBenchmarkRoi.setText(benchmarkRoiInPeriod.toString());
+
+        lbmuSharpeRatio.setText(NumberDisplayUtils.formatWithRelevantDigits(dto.getSharpeRatioInPeriod(), 4));
+
+        lbmuPositionsCount.setText("" + dto.avg_positionRoiInPeriod);
+
+        lbmuAvgDaysHeld.setText(NumberDisplayUtils.formatWithRelevantDigits((double) dto.avgHoldingPeriodMins / (60*24), 3));
+        String winRatioFormat = getContext().getString(R.string.leaderboard_win_ratio);
+        String winRatio = String.format(winRatioFormat, NumberDisplayUtils.formatWithRelevantDigits(dto.getWinRatio() * 100, 3));
+        lbmuWinRatio.setText(winRatio);
+
+        lbmuFollowersCount.setText("" + dto.getTotalFollowersCount());
+
+        lbmuCommentsCount.setText("" + dto.getCommentsCount());
     }
 
     @Override public void onClick(View view)

@@ -106,7 +106,7 @@
 
       <TextView
           android:layout_width="0dp"
-          android:layout_weight="2"
+          android:layout_weight="1"
           android:layout_height="wrap_content"
           android:text="@string/p_n_l"
           android:gravity="right"
@@ -114,7 +114,7 @@
       <TextView
           android:id="@+id/lbmu_pl"
           android:layout_width="0dp"
-          android:layout_weight="3"
+          android:layout_weight="2"
           android:paddingLeft="10dp"
           android:layout_height="wrap_content"
           />
@@ -128,20 +128,32 @@
 
       <TextView
           android:layout_width="0dp"
-          android:layout_weight="2"
+          android:layout_weight="1"
           android:layout_height="wrap_content"
           android:text="@string/roi"
           android:gravity="right"
           android:textColor="@color/light_grey"/>
-      <TextView
-          android:id="@+id/lbmu_roi"
+      <LinearLayout
           android:layout_width="0dp"
-          android:layout_weight="3"
+          android:layout_weight="2"
           android:paddingLeft="10dp"
           android:layout_height="wrap_content"
+        >
+        <TextView
+            android:id="@+id/lbmu_roi"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            />
+        <TextView
+            android:id="@+id/lbmu_roi_annualized"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="5dp"
+            android:textColor="@color/gray_1"
           />
-    </LinearLayout>
+      </LinearLayout>
 
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -151,7 +163,7 @@
 
       <TextView
           android:layout_width="0dp"
-          android:layout_weight="2"
+          android:layout_weight="1"
           android:layout_height="wrap_content"
           android:text="@string/benchmark_roi"
           android:gravity="right"
@@ -159,7 +171,7 @@
       <TextView
           android:id="@+id/lbmu_benchmark_roi"
           android:layout_width="0dp"
-          android:layout_weight="3"
+          android:layout_weight="2"
           android:paddingLeft="10dp"
           android:layout_height="wrap_content"
           />
@@ -174,7 +186,7 @@
 
       <TextView
           android:layout_width="0dp"
-          android:layout_weight="2"
+          android:layout_weight="1"
           android:layout_height="wrap_content"
           android:text="@string/sharpe_ratio"
           android:gravity="right"
@@ -182,7 +194,7 @@
       <TextView
           android:id="@+id/lbmu_sharpe_ratio"
           android:layout_width="0dp"
-          android:layout_weight="3"
+          android:layout_weight="2"
           android:paddingLeft="10dp"
           android:layout_height="wrap_content"
           />
@@ -197,7 +209,7 @@
 
       <TextView
           android:layout_width="0dp"
-          android:layout_weight="2"
+          android:layout_weight="1"
           android:layout_height="wrap_content"
           android:text="@string/leaderboard_positions_count"
           android:gravity="right"
@@ -205,7 +217,7 @@
       <TextView
           android:id="@+id/lbmu_positions_count"
           android:layout_width="0dp"
-          android:layout_weight="3"
+          android:layout_weight="2"
           android:paddingLeft="10dp"
           android:layout_height="wrap_content"
           />
@@ -220,18 +232,32 @@
 
       <TextView
           android:layout_width="0dp"
-          android:layout_weight="2"
+          android:layout_weight="1"
           android:layout_height="wrap_content"
           android:text="@string/leaderboard_avg_days_held"
           android:gravity="right"
           android:textColor="@color/light_grey"/>
-      <TextView
-          android:id="@+id/lbmu_avg_days_held"
+      <LinearLayout
           android:layout_width="0dp"
-          android:layout_weight="3"
+          android:layout_weight="2"
           android:paddingLeft="10dp"
           android:layout_height="wrap_content"
-          />
+          >
+        <TextView
+            android:id="@+id/lbmu_avg_days_held"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            />
+        <TextView
+            android:id="@+id/lbmu_win_ratio"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="5dp"
+            android:textColor="@color/gray_1"
+            />
+      </LinearLayout>
+
+
     </LinearLayout>
 
     <LinearLayout
@@ -242,7 +268,7 @@
 
       <TextView
           android:layout_width="0dp"
-          android:layout_weight="2"
+          android:layout_weight="1"
           android:layout_height="wrap_content"
           android:text="@string/leaderboard_followers_count"
           android:gravity="right"
@@ -250,7 +276,7 @@
       <TextView
           android:id="@+id/lbmu_followers_count"
           android:layout_width="0dp"
-          android:layout_weight="3"
+          android:layout_weight="2"
           android:paddingLeft="10dp"
           android:layout_height="wrap_content"
           />
@@ -265,7 +291,7 @@
 
       <TextView
           android:layout_width="0dp"
-          android:layout_weight="2"
+          android:layout_weight="1"
           android:layout_height="wrap_content"
           android:text="@string/leaderboard_comments_count"
           android:gravity="right"
@@ -273,7 +299,7 @@
       <TextView
           android:id="@+id/lbmu_comments_count"
           android:layout_width="0dp"
-          android:layout_weight="3"
+          android:layout_weight="2"
           android:paddingLeft="10dp"
           android:layout_height="wrap_content"
           />
