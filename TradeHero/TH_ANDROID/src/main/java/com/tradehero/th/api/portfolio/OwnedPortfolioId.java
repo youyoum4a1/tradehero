@@ -27,6 +27,12 @@ public class OwnedPortfolioId  implements Comparable, DTOKey
         this.portfolioId = portfolioId.key;
     }
 
+    public OwnedPortfolioId(UserBaseKey userBaseKey, PortfolioCompactDTO portfolioCompactDTO)
+    {
+        this.userId = userBaseKey.key;
+        this.portfolioId = portfolioCompactDTO.id;
+    }
+
     public OwnedPortfolioId(UserBaseDTO userBaseDTO, PortfolioCompactDTO portfolioCompactDTO)
     {
         this.userId = userBaseDTO.id;

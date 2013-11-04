@@ -7,8 +7,6 @@ import android.view.ViewGroup;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.DTOAdapter;
 import com.tradehero.th.api.portfolio.DisplayablePortfolioDTO;
-import com.tradehero.th.api.portfolio.OwnedPortfolioId;
-import com.tradehero.th.api.portfolio.PortfolioDTO;
 import com.tradehero.th.widget.portfolio.PortfolioListHeaderView;
 import com.tradehero.th.widget.portfolio.PortfolioListItemView;
 import java.util.Iterator;

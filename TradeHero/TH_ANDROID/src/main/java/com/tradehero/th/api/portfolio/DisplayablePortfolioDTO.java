@@ -72,6 +72,22 @@ public class DisplayablePortfolioDTO implements Comparable
         return currentUserBase.equals(userBaseDTO);
     }
 
+    @Override public boolean equals(Object other)
+    {
+        return (other instanceof DisplayablePortfolioDTO) && equals((DisplayablePortfolioDTO) other);
+    }
+
+    public boolean equals(DisplayablePortfolioDTO other)
+    {
+        return (other != null) &&
+                (ownedPortfolioId == null ? other.ownedPortfolioId == null : ownedPortfolioId.equals(other.ownedPortfolioId));
+    }
+
+    @Override public int hashCode()
+    {
+        return ownedPortfolioId == null ? 0 : ownedPortfolioId.hashCode();
+    }
+
     /**
      * In this implementation, the natural order is:
      * a- null first
@@ -121,6 +137,9 @@ public class DisplayablePortfolioDTO implements Comparable
             return 1;
         }
 
+        return ownedPortfolioId.compareTo(other.ownedPortfolioId);
+
+        /*
         if (userBaseDTO == null)
         {
             return other.userBaseDTO == null ? 0 : -1;
@@ -169,7 +188,9 @@ public class DisplayablePortfolioDTO implements Comparable
         }
         else
         {
-            int firstNameComp = userBaseDTO.firstName == null ? (other.userBaseDTO.firstName == null ? 0 : -1) : userBaseDTO.firstName.compareTo(other.userBaseDTO.firstName);
+            int firstNameComp = userBaseDTO.firstName == null ?
+                    (other.userBaseDTO.firstName == null ? 0 : -1) :
+                    userBaseDTO.firstName.compareTo(other.userBaseDTO.firstName);
             if (firstNameComp != 0)
             {
                 return firstNameComp; // ea-
@@ -192,5 +213,6 @@ public class DisplayablePortfolioDTO implements Comparable
             }
             return portfolioDTO.creationDate.compareTo(other.portfolioDTO.creationDate); // eaa-
         }
+        */
     }
 }
