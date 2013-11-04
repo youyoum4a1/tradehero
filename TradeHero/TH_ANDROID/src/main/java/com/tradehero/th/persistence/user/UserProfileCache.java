@@ -9,6 +9,7 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.network.BasicRetrofitErrorHandler;
 import com.tradehero.th.network.service.UserService;
+import com.tradehero.th.persistence.social.VisitedFriendListPrefs;
 import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +34,7 @@ import retrofit.RetrofitError;
 
     @Override protected UserProfileDTO fetch(UserBaseKey key) throws Throwable
     {
+        VisitedFriendListPrefs.addVisitedId(key);
         return userService.get().getUser(key.key);
     }
 

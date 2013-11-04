@@ -35,13 +35,10 @@ import retrofit.RetrofitError;
     @Inject Lazy<UserProfileCache> userProfileCache;
     @Inject Lazy<GetPositionsCache> getPositionsCache;
 
-    private Map<OwnedPortfolioId, Boolean> allOtherUserKeys;
-
     //<editor-fold desc="Constructors">
     @Inject public PortfolioCache()
     {
         super(DEFAULT_MAX_SIZE);
-        allOtherUserKeys = new HashMap<>();
     }
     //</editor-fold>
 
@@ -58,22 +55,7 @@ import retrofit.RetrofitError;
             getPositionsCache.get().invalidate(key);
         }
 
-        addOtherUserKey(key);
-
         return super.put(key, value);
-    }
-
-    private void addOtherUserKey(OwnedPortfolioId key)
-    {
-        if (!allOtherUserKeys.containsKey(key) && !key.getUserBaseKey().equals(currentUserBase.getBaseKey()))
-        {
-            allOtherUserKeys.put(key, true);
-        }
-    }
-
-    public List<OwnedPortfolioId> getAllOtherUserKeys()
-    {
-        return new ArrayList<>(allOtherUserKeys.keySet());
     }
 
     public List<PortfolioDTO> get(List<? extends OwnedPortfolioId> keys)
