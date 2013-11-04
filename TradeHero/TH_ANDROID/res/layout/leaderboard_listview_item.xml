@@ -20,6 +20,7 @@
         android:gravity="center_horizontal"
         android:textSize="@dimen/leaderboard_position_text_size"
         android:textStyle="bold"
+        android:textColor="@color/leaderboard_ranking_position"
         android:shadowColor="@color/light_grey"
         android:shadowDy="1"
         android:shadowRadius="1"
@@ -130,6 +131,28 @@
           android:layout_width="0dp"
           android:layout_weight="1"
           android:layout_height="wrap_content"
+          android:text="@string/period"
+          android:gravity="right"
+          android:textColor="@color/light_grey"/>
+      <TextView
+          android:id="@+id/lbmu_period"
+          android:layout_width="0dp"
+          android:layout_weight="2"
+          android:paddingLeft="10dp"
+          android:layout_height="wrap_content"
+          />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingBottom="2dp">
+
+      <TextView
+          android:layout_width="0dp"
+          android:layout_weight="1"
+          android:layout_height="wrap_content"
           android:text="@string/roi"
           android:gravity="right"
           android:textColor="@color/light_grey"/>
@@ -138,7 +161,7 @@
           android:layout_weight="2"
           android:paddingLeft="10dp"
           android:layout_height="wrap_content"
-        >
+          >
         <TextView
             android:id="@+id/lbmu_roi"
             android:layout_width="wrap_content"
@@ -150,7 +173,7 @@
             android:layout_height="wrap_content"
             android:paddingLeft="5dp"
             android:textColor="@color/gray_1"
-          />
+            />
       </LinearLayout>
 
     </LinearLayout>
@@ -174,6 +197,7 @@
           android:layout_weight="2"
           android:paddingLeft="10dp"
           android:layout_height="wrap_content"
+          android:textColor="@color/gray_1"
           />
     </LinearLayout>
 
@@ -191,13 +215,26 @@
           android:text="@string/sharpe_ratio"
           android:gravity="right"
           android:textColor="@color/light_grey"/>
-      <TextView
-          android:id="@+id/lbmu_sharpe_ratio"
+      <LinearLayout
           android:layout_width="0dp"
           android:layout_weight="2"
           android:paddingLeft="10dp"
           android:layout_height="wrap_content"
-          />
+          >
+        <TextView
+            android:id="@+id/lbmu_sharpe_ratio"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            />
+        <TextView
+            android:id="@+id/lbmu_volatility"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="10dp"
+            android:textColor="@color/gray_1"
+            />
+      </LinearLayout>
     </LinearLayout>
 
 
@@ -214,13 +251,26 @@
           android:text="@string/leaderboard_positions_count"
           android:gravity="right"
           android:textColor="@color/light_grey"/>
-      <TextView
-          android:id="@+id/lbmu_positions_count"
+      <LinearLayout
           android:layout_width="0dp"
           android:layout_weight="2"
           android:paddingLeft="10dp"
           android:layout_height="wrap_content"
-          />
+          >
+        <TextView
+            android:id="@+id/lbmu_positions_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            />
+        <TextView
+            android:id="@+id/lbmu_number_of_trades"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="10dp"
+            android:textColor="@color/gray_1"
+            />
+      </LinearLayout>
     </LinearLayout>
 
 
@@ -247,6 +297,7 @@
             android:id="@+id/lbmu_avg_days_held"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textStyle="bold"
             />
         <TextView
             android:id="@+id/lbmu_win_ratio"
@@ -279,6 +330,7 @@
           android:layout_weight="2"
           android:paddingLeft="10dp"
           android:layout_height="wrap_content"
+          android:textStyle="bold"
           />
     </LinearLayout>
 
@@ -302,6 +354,7 @@
           android:layout_weight="2"
           android:paddingLeft="10dp"
           android:layout_height="wrap_content"
+          android:textStyle="bold"
           />
     </LinearLayout>
 

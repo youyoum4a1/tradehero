@@ -4,6 +4,7 @@ import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.loaders.ItemWithComparableId;
 import com.tradehero.th.utils.NumberDisplayUtils;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -12,7 +13,7 @@ import java.util.List;
 public class LeaderboardUserRankDTO extends UserBaseDTO
         implements ItemWithComparableId<Integer>
 {
-    public int lbmuId;    // leaderboardMarkUser.id ...
+    public long lbmuId;    // leaderboardMarkUser.id ...
     public int portfolioId;    // ...OR portfolioId --> messy
 
     public List<Integer> friendOf_UserIds;    // client expects userIds here to be present in LeaderboardDTO.users collection!
@@ -34,7 +35,7 @@ public class LeaderboardUserRankDTO extends UserBaseDTO
     public Date periodStartUtc;
     public Date periodEndUtc;
     public Double stddev_positionRoiInPeriod;
-    private Double sharpeRatioInPeriod_vsSP500;
+    public Double sharpeRatioInPeriod_vsSP500;
     public Double benchmarkRoiInPeriod;
     public Double avg_positionRoiInPeriod;
     public Double winRatio;
@@ -52,17 +53,17 @@ public class LeaderboardUserRankDTO extends UserBaseDTO
 
     @Override public Integer getId()
     {
-        return lbmuId;
+        return id;
     }
 
     @Override public void setId(Integer id)
     {
-        lbmuId = id;
+        this.id = id;
     }
 
     @Override public int compareTo(ItemWithComparableId<Integer> other)
     {
-        return other.getId().compareTo(lbmuId);
+        return other.getId().compareTo(id);
     }
 
     public String getHeroQuotientFormatted()
@@ -73,11 +74,6 @@ public class LeaderboardUserRankDTO extends UserBaseDTO
         }
 
         return NumberDisplayUtils.formatWithRelevantDigits(starRating, 0);
-    }
-
-    public double getSharpeRatioInPeriod()
-    {
-        return sharpeRatioInPeriod_vsSP500 == null ? 0 : sharpeRatioInPeriod_vsSP500;
     }
 
     public int getCommentsCount()
@@ -105,6 +101,26 @@ public class LeaderboardUserRankDTO extends UserBaseDTO
     {
         DecimalFormat df = new DecimalFormat("000,000.00");
         return df.format(PLinPeriodRefCcy);
+    }
+
+    public String getFormattedSharpeRatio()
+    {
+        if (sharpeRatioInPeriod_vsSP500 != null)
+        {
+            DecimalFormat df = new DecimalFormat("###,##0.0000");
+            return df.format(sharpeRatioInPeriod_vsSP500);
+        }
+        return "0";
+    }
+
+    public Double getVolatility()
+    {
+        return stddev_positionRoiInPeriod;
+    }
+
+    public int getNumberOfTrades()
+    {
+        return numberOfTradesInPeriod;
     }
 }
 

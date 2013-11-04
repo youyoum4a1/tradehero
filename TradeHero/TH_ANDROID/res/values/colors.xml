@@ -8,4 +8,5 @@
   <color name="timeline_item">#000000</color>
   <color name="timeline_item_link">#364667</color>
   <color name="trending_grid_item_stock_name">#384152</color>
+  <color name="leaderboard_ranking_position">#4d6d9d</color>
 </resources>

@@ -24,6 +24,7 @@ import com.tradehero.th.persistence.position.PositionCache;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.NumberDisplayUtils;
 import dagger.Lazy;
+import java.text.SimpleDateFormat;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -59,6 +60,9 @@ public class LeaderboardUserRankItemView extends RelativeLayout
     private Navigator navigator;
     private TextView lbmuRoiAnnualized;
     private TextView lbmuWinRatio;
+    private TextView lbmuVolatility;
+    private TextView lbmuNumberOfTrades;
+    private TextView lbmuPeriod;
 
     //<editor-fold desc="Constructors">
     public LeaderboardUserRankItemView(Context context)
@@ -103,10 +107,12 @@ public class LeaderboardUserRankItemView extends RelativeLayout
 
         // for expanding part
         lbmuPl = (TextView) findViewById(R.id.lbmu_pl);
+        lbmuPeriod = (TextView) findViewById(R.id.lbmu_period);
         lbmuRoi = (TextView) findViewById(R.id.lbmu_roi);
         lbmuRoiAnnualized = (TextView) findViewById(R.id.lbmu_roi_annualized);
         lbmuBenchmarkRoi = (TextView) findViewById(R.id.lbmu_benchmark_roi);
         lbmuSharpeRatio = (TextView) findViewById(R.id.lbmu_sharpe_ratio);
+        lbmuVolatility = (TextView) findViewById(R.id.lbmu_volatility);
         lbmuPositionsCount = (TextView) findViewById(R.id.lbmu_positions_count);
         lbmuAvgDaysHeld = (TextView) findViewById(R.id.lbmu_avg_days_held);
         lbmuFollowersCount = (TextView) findViewById(R.id.lbmu_followers_count);
@@ -118,6 +124,7 @@ public class LeaderboardUserRankItemView extends RelativeLayout
             lbmuGotoProfile.setOnClickListener(this);
         }
         lbmuWinRatio = (TextView) findViewById(R.id.lbmu_win_ratio);
+        lbmuNumberOfTrades = (TextView) findViewById(R.id.lbmu_number_of_trades);
     }
 
     @Override public void display(LeaderboardListAdapter.ExpandableLeaderboardUserRankItemWrapper expandableItem)
@@ -170,7 +177,14 @@ public class LeaderboardUserRankItemView extends RelativeLayout
     {
         LeaderboardUserRankDTO dto = leaderboardItem.getModel();
 
-        lbmuPl.setText(dto.getFormattedPL() + getContext().getString(R.string.ref_currency));
+        lbmuPl.setText(dto.getFormattedPL() + " " + getContext().getString(R.string.ref_currency));
+        String periodFormat = getContext().getString(R.string.leaderboard_ranking_period);
+
+        SimpleDateFormat sdf = new SimpleDateFormat(getContext().getString(R.string.leaderboard_datetime_format));
+        String formattedStartPeriodUtc = sdf.format(dto.periodStartUtc);
+        String formattedEndPeriodUtc = sdf.format(dto.periodEndUtc);
+        String period = String.format(periodFormat, formattedStartPeriodUtc, formattedEndPeriodUtc);
+        lbmuPeriod.setText(period);
 
         THSignedNumber roi = new THSignedNumber(THSignedNumber.TYPE_PERCENTAGE, dto.roiInPeriod * 100);
         lbmuRoi.setText(roi.toString());
@@ -181,12 +195,24 @@ public class LeaderboardUserRankItemView extends RelativeLayout
         String roiAnnualized = String.format(roiAnnualizedFormat, roiAnnualizedVal.toString());
         lbmuRoiAnnualized.setText(Html.fromHtml(roiAnnualized));
 
-        THSignedNumber benchmarkRoiInPeriod = new THSignedNumber(THSignedNumber.TYPE_PERCENTAGE, dto.benchmarkRoiInPeriod * 100);
-        lbmuBenchmarkRoi.setText(benchmarkRoiInPeriod.toString());
+        THSignedNumber benchmarkRoiInPeriodVal = new THSignedNumber(THSignedNumber.TYPE_PERCENTAGE, dto.benchmarkRoiInPeriod * 100);
+        String benchmarkRoiInPeriodFormat = getContext().getString(R.string.leaderboard_benchmark_roi_format);
+        String benchmarkRoiInPeriod = String.format(benchmarkRoiInPeriodFormat, benchmarkRoiInPeriodVal.toString());
+        lbmuBenchmarkRoi.setText(Html.fromHtml(benchmarkRoiInPeriod));
 
-        lbmuSharpeRatio.setText(NumberDisplayUtils.formatWithRelevantDigits(dto.getSharpeRatioInPeriod(), 4));
+        lbmuSharpeRatio.setText(dto.getFormattedSharpeRatio());
 
-        lbmuPositionsCount.setText("" + dto.avg_positionRoiInPeriod);
+        String volatilityFormat = getContext().getString(R.string.leaderboard_volatility);
+        String volatility = String.format(volatilityFormat, dto.getVolatility());
+        lbmuVolatility.setText(Html.fromHtml(volatility));
+
+        lbmuPositionsCount.setText("" + dto.numberOfPositionsInPeriod);
+
+        String numberOfTradeFormat = getContext().getString(
+                dto.getNumberOfTrades() > 1 ? R.string.leaderboard_number_of_trades_plural : R.string.leaderboard_number_of_trade);
+        String numberOfTrades = String.format(numberOfTradeFormat, dto.getNumberOfTrades());
+        lbmuNumberOfTrades.setText(Html.fromHtml(numberOfTrades));
+
 
         lbmuAvgDaysHeld.setText(NumberDisplayUtils.formatWithRelevantDigits((double) dto.avgHoldingPeriodMins / (60*24), 3));
         String winRatioFormat = getContext().getString(R.string.leaderboard_win_ratio);
@@ -194,7 +220,6 @@ public class LeaderboardUserRankItemView extends RelativeLayout
         lbmuWinRatio.setText(winRatio);
 
         lbmuFollowersCount.setText("" + dto.getTotalFollowersCount());
-
         lbmuCommentsCount.setText("" + dto.getCommentsCount());
     }
 
@@ -205,11 +230,11 @@ public class LeaderboardUserRankItemView extends RelativeLayout
             case R.id.leaderboard_user_item_info:
                 break;
             case R.id.leaderboard_user_item_goto_profile:
-                int userId = leaderboardItem.getModel().lbmuId;
+                int userId = leaderboardItem.getModel().getId();
                 Bundle b = new Bundle();
                 b.putInt(UserBaseKey.BUNDLE_KEY_KEY, userId);
 
-                if (currentUserBase.id != userId)
+                if (currentUserBase != null && currentUserBase.id != userId)
                 {
                     navigator.pushFragment(TimelineFragment.class, b, true);
                 }
