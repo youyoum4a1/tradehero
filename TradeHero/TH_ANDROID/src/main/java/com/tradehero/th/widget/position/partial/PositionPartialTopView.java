@@ -282,7 +282,7 @@ public class PositionPartialTopView extends LinearLayout
                     stockLastPrice.setText(R.string.na);
                 }
 
-                if (securityCompactDTO.marketOpen)
+                if (securityCompactDTO.marketOpen == null || securityCompactDTO.marketOpen)
                 {
                     stockLastPrice.setTextColor(context.getResources().getColor(R.color.exchange_symbol));
                 }
@@ -300,7 +300,7 @@ public class PositionPartialTopView extends LinearLayout
         {
             if (securityCompactDTO != null)
             {
-                marketClose.setVisibility(securityCompactDTO.marketOpen ? View.INVISIBLE : View.VISIBLE);
+                marketClose.setVisibility(securityCompactDTO.marketOpen == null || securityCompactDTO.marketOpen ? View.INVISIBLE : View.VISIBLE);
             }
         }
     }

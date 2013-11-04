@@ -6,7 +6,6 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.base.Application;
 import com.tradehero.th.base.THUser;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
