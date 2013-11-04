@@ -99,7 +99,7 @@ public class LeaderboardUserRankDTO extends UserBaseDTO
 
     public String getFormattedPL()
     {
-        DecimalFormat df = new DecimalFormat("000,000.00");
+        DecimalFormat df = new DecimalFormat("###,##0.00");
         return df.format(PLinPeriodRefCcy);
     }
 
@@ -121,6 +121,11 @@ public class LeaderboardUserRankDTO extends UserBaseDTO
     public int getNumberOfTrades()
     {
         return numberOfTradesInPeriod;
+    }
+
+    public double getBenchmarkRoiInPeriod()
+    {
+        return benchmarkRoiInPeriod != null ? benchmarkRoiInPeriod : 0;
     }
 }
 

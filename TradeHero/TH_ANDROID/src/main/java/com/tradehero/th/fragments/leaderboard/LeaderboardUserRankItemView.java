@@ -195,7 +195,7 @@ public class LeaderboardUserRankItemView extends RelativeLayout
         String roiAnnualized = String.format(roiAnnualizedFormat, roiAnnualizedVal.toString());
         lbmuRoiAnnualized.setText(Html.fromHtml(roiAnnualized));
 
-        THSignedNumber benchmarkRoiInPeriodVal = new THSignedNumber(THSignedNumber.TYPE_PERCENTAGE, dto.benchmarkRoiInPeriod * 100);
+        THSignedNumber benchmarkRoiInPeriodVal = new THSignedNumber(THSignedNumber.TYPE_PERCENTAGE, dto.getBenchmarkRoiInPeriod() * 100);
         String benchmarkRoiInPeriodFormat = getContext().getString(R.string.leaderboard_benchmark_roi_format);
         String benchmarkRoiInPeriod = String.format(benchmarkRoiInPeriodFormat, benchmarkRoiInPeriodVal.toString());
         lbmuBenchmarkRoi.setText(Html.fromHtml(benchmarkRoiInPeriod));
