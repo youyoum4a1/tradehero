@@ -13,4 +13,19 @@ public class SKU implements ProductIdentifier
     {
         identifier = id;
     }
+
+    @Override public boolean equals(Object other)
+    {
+        return (other != null) && (other instanceof SKU) && equals((SKU) other);
+    }
+
+    public boolean equals(SKU other)
+    {
+        return other != null && (identifier == null ? other.identifier == null : identifier.equals(other.identifier));
+    }
+
+    @Override public int hashCode()
+    {
+        return identifier == null ? 0 : identifier.hashCode();
+    }
 }
