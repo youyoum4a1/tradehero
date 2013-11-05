@@ -24,7 +24,7 @@ import org.json.JSONObject;
 /**
  * Represents an in-app billing purchase.
  */
-public class Purchase implements ProductPurchase
+public class GooglePurchase implements ProductPurchase<GoogleOrderId, SKU>
 {
     public static final String JSON_KEY_ORDER_ID = "orderId";
     public static final String JSON_KEY_PACKAGE_NAME = "packageName";
@@ -46,7 +46,7 @@ public class Purchase implements ProductPurchase
     public final String originalJson;
     public final String signature;
 
-    public Purchase(String itemType, String jsonPurchaseInfo, String signature) throws JSONException
+    public GooglePurchase(String itemType, String jsonPurchaseInfo, String signature) throws JSONException
     {
         this.itemType = itemType;
         originalJson = jsonPurchaseInfo;
@@ -63,12 +63,12 @@ public class Purchase implements ProductPurchase
         this.signature = signature;
     }
 
-    @Override public OrderId getOrderId()
+    @Override public GoogleOrderId getOrderId()
     {
         return orderId;
     }
 
-    @Override public ProductIdentifier getProductIdentifier()
+    @Override public SKU getProductIdentifier()
     {
         return sku;
     }

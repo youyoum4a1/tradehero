@@ -8,7 +8,7 @@ import org.json.JSONObject;
 /**
  * Created by julien on 4/11/13
  */
-public class SKUDetails implements ProductDetails
+public class SKUDetails implements ProductDetails<SKU>
 {
     public static final String JSON_KEY_PRODUCT_ID = "productId";
     public static final String JSON_KEY_TYPE = "type";
@@ -47,7 +47,7 @@ public class SKUDetails implements ProductDetails
         return "SkuDetails:" + json;
     }
 
-    @Override public ProductIdentifier getProductIdentifier()
+    @Override public SKU getProductIdentifier()
     {
         return this.sku;
     }

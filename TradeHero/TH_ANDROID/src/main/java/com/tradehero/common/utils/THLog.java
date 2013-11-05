@@ -27,6 +27,11 @@ public class THLog
         Log.i(PREFIX + tag, msg);
     }
 
+    public static void w(String tag, String msg)
+    {
+        Log.w(PREFIX + tag, msg);
+    }
+
     public static void e(String tag, String msg, Throwable ex)
     {
         Log.e(PREFIX + tag, msg, ex);
