@@ -19,8 +19,8 @@ public class SplashActivity extends SherlockActivity
     {
         super.onCreate(savedInstanceState);
 
-        //IABServiceConnector connector = new IABServiceConnector(this);
-        //connector.startConnectionSetup();
+        IABServiceConnector connector = new IABServiceConnector(this);
+        connector.startConnectionSetup();
         setContentView(R.layout.splash_screen);
         timerToShiftActivity = new Timer();
         timerToShiftActivity.schedule(new TimerTask()
