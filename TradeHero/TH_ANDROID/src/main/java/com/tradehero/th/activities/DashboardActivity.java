@@ -8,9 +8,11 @@ import com.tradehero.common.billing.googleplay.GooglePurchase;
 import com.tradehero.common.billing.googleplay.InventoryFetcher;
 import com.tradehero.common.billing.googleplay.SKUDetails;
 import com.tradehero.common.billing.googleplay.exceptions.IABBadResponseException;
+import com.tradehero.common.billing.googleplay.exceptions.IABBillingUnavailableException;
 import com.tradehero.common.billing.googleplay.exceptions.IABException;
 import com.tradehero.common.billing.googleplay.IABResponse;
 import com.tradehero.common.billing.googleplay.IABServiceConnector;
+import com.tradehero.common.billing.googleplay.exceptions.IABRemoteException;
 import com.tradehero.common.billing.googleplay.exceptions.IABVerificationFailedException;
 import com.tradehero.common.billing.googleplay.PurchaseFetcher;
 import com.tradehero.common.billing.googleplay.SKU;
@@ -121,18 +123,7 @@ public class DashboardActivity extends SherlockFragmentActivity
     //<editor-fold desc="PurchaseFetcher.PublicFetcherListener">
     @Override public void onFetchPurchasesFailed(PurchaseFetcher fetcher, IABException exception)
     {
-        if (exception instanceof IABVerificationFailedException)
-        {
-            THToast.show("The communication with Google Play may have been tampered with");
-        }
-        else if (exception instanceof IABBadResponseException)
-        {
-            THToast.show("Google Play returned unexpected information");
-        }
-        else
-        {
-            THToast.show("There was some error communicating with Google Play");
-        }
+        handleException(exception);
     }
 
     @Override public void onFetchedPurchases(PurchaseFetcher fetcher, Map<SKU, GooglePurchase> purchases)
@@ -140,6 +131,10 @@ public class DashboardActivity extends SherlockFragmentActivity
         if (purchases != null && purchases.size() > 0)
         {
             THToast.show("There are some purchases to be consumed");
+        }
+        else
+        {
+            THToast.show("There is no purchase waiting to be consumed");
         }
     }
     //</editor-fold>
@@ -152,7 +147,31 @@ public class DashboardActivity extends SherlockFragmentActivity
 
     @Override public void onInventoryFetchFail(InventoryFetcher fetcher, IABException exception)
     {
-        THToast.show("There was an error fetching the sku details");
+        handleException(exception);
     }
     //</editor-fold>
+
+    protected void handleException(IABException exception)
+    {
+        if (exception instanceof IABBillingUnavailableException)
+        {
+            THToast.show("User has no account or did not allow billing");
+        }
+        else if (exception instanceof IABVerificationFailedException)
+        {
+            THToast.show("The communication with Google Play may have been tampered with");
+        }
+        else if (exception instanceof IABBadResponseException)
+        {
+            THToast.show("Google Play returned unexpected information");
+        }
+        else if (exception instanceof IABRemoteException)
+        {
+            THToast.show("Problem when accessing a remote service");
+        }
+        else
+        {
+            THToast.show("There was some error communicating with Google Play");
+        }
+    }
 }

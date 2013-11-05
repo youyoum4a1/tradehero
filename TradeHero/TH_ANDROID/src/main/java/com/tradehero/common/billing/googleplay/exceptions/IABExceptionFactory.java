@@ -24,7 +24,10 @@ import javax.inject.Singleton;
         switch (responseStatus)
         {
             case Constants.BILLING_RESPONSE_RESULT_OK:
-                throw new IllegalArgumentException("Constants.BILLING_RESPONSE_RESULT_OK does not map to an exception");
+                throw new IllegalArgumentException(responseStatus + " does not map to an exception");
+
+            case Constants.BILLING_RESPONSE_RESULT_BILLING_UNAVAILABLE:
+                return new IABBillingUnavailableException(message);
 
             case Constants.IABHELPER_BAD_RESPONSE:
                 return new IABBadResponseException(message);
