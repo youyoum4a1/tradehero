@@ -60,9 +60,7 @@ abstract public class IABServiceConnector
         else
         {
             // no service available to handle that Intent
-            IABException exception = new IABException(Constants.BILLING_RESPONSE_RESULT_BILLING_UNAVAILABLE, "Billing service unavailable on device.");
-            handleSetupFailed(exception);
-            notifyListenerSetupFailed(exception);
+            handleSetupFailedInternal(new IABException(Constants.BILLING_RESPONSE_RESULT_BILLING_UNAVAILABLE, "Billing service unavailable on device."));
         }
     }
 
@@ -122,9 +120,7 @@ abstract public class IABServiceConnector
                 billingService = IInAppBillingService.Stub.asInterface(binderService);
                 checkInAppBillingV3Support();
 
-                IABResponse response = new IABResponse(Constants.BILLING_RESPONSE_RESULT_OK, "Setup successful.");
-                handleSetupFinished(response);
-                notifyListenerSetupFinished(response);
+                handleSetupFinishedInternal(new IABResponse(Constants.BILLING_RESPONSE_RESULT_OK, "Setup successful."));
             }
         };
         return serviceConnection;
@@ -141,9 +137,7 @@ abstract public class IABServiceConnector
             int responseStatus = purchaseTypeSupportStatus(Constants.ITEM_TYPE_INAPP);
             if (responseStatus != Constants.BILLING_RESPONSE_RESULT_OK)
             {
-                IABException exception = new IABException(responseStatus, "Error checking for billing v3 support.");
-                handleSetupFailed(exception);
-                notifyListenerSetupFailed(exception);
+                handleSetupFailedInternal(new IABException(responseStatus, "Error checking for billing v3 support."));
 
                 // if in-app purchases aren't supported, neither are subscriptions.
                 subscriptionSupported = false;
@@ -167,10 +161,8 @@ abstract public class IABServiceConnector
         }
         catch (RemoteException e)
         {
-            IABException exception = new IABException(Constants.IABHELPER_REMOTE_EXCEPTION, "RemoteException while setting up in-app billing.");
             e.printStackTrace();
-            handleSetupFailed(exception);
-            notifyListenerSetupFailed(exception);
+            handleSetupFailedInternal(new IABException(Constants.IABHELPER_REMOTE_EXCEPTION, "RemoteException while setting up in-app billing."));
         }
     }
 
@@ -222,6 +214,18 @@ abstract public class IABServiceConnector
         this.listener = listener;
     }
     //</editor-fold>
+
+    private void handleSetupFinishedInternal(IABResponse response)
+    {
+        handleSetupFinished(response);
+        notifyListenerSetupFinished(response);
+    }
+
+    private void handleSetupFailedInternal(IABException exception)
+    {
+        handleSetupFailed(exception);
+        notifyListenerSetupFailed(exception);
+    }
 
     abstract protected void handleSetupFinished(IABResponse response);
 
