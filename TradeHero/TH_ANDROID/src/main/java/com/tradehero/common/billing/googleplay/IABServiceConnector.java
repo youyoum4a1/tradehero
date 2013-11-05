@@ -12,9 +12,7 @@ import com.tradehero.common.utils.THLog;
 import java.util.Collections;
 import java.util.Map;
 
-/**
- * Created by julien on 5/11/13
- */
+/** Created by julien on 5/11/13 */
 public class IABServiceConnector
 {
     public static final String TAG = IABServiceConnector.class.getSimpleName();
@@ -28,6 +26,7 @@ public class IABServiceConnector
     boolean disposed = false;
 
     protected ConnectorListener listener;
+
     public static interface ConnectorListener
     {
         void onSetupFinished(IABServiceConnector connector, IABResponse response);
@@ -37,7 +36,6 @@ public class IABServiceConnector
     {
         this.context = ctx;
     }
-
 
     public void startConnectionSetup()
     {
@@ -50,13 +48,16 @@ public class IABServiceConnector
         Intent serviceIntent = new Intent("com.android.vending.billing.InAppBillingService.BIND");
         serviceIntent.setPackage("com.android.vending");
 
-        if (!context.getPackageManager().queryIntentServices(serviceIntent, 0).isEmpty()) {
+        if (!context.getPackageManager().queryIntentServices(serviceIntent, 0).isEmpty())
+        {
             // service available to handle that Intent
             context.bindService(serviceIntent, serviceConnection, Context.BIND_AUTO_CREATE);
         }
-        else {
+        else
+        {
             // no service available to handle that Intent
-            if (listener != null) {
+            if (listener != null)
+            {
                 listener.onSetupFinished(this,
                         new IABResponse(Constants.BILLING_RESPONSE_RESULT_BILLING_UNAVAILABLE, "Billing service unavailable on device."));
             }
@@ -64,17 +65,20 @@ public class IABServiceConnector
     }
 
     /**
-     * Dispose of object, releasing resources. It's very important to call this
-     * method when you are done with this object. It will release any resources
-     * used by it such as service connections. Naturally, once the object is
-     * disposed of, it can't be used again.
+     * Dispose of object, releasing resources. It's very important to call this method when you are done with this object. It will release any
+     * resources used by it such as service connections. Naturally, once the object is disposed of, it can't be used again.
      */
-    public void dispose() {
+    public void dispose()
+    {
         THLog.d(TAG, "Disposing.");
         setupDone = false;
-        if (serviceConnection != null) {
+        if (serviceConnection != null)
+        {
             THLog.d(TAG, "Unbinding from service.");
-            if (context != null) context.unbindService(serviceConnection);
+            if (context != null)
+            {
+                context.unbindService(serviceConnection);
+            }
         }
         disposed = true;
         context = null;
@@ -83,31 +87,38 @@ public class IABServiceConnector
         listener = null;
     }
 
-
     private ServiceConnection setupServiceConnection()
     {
         if (serviceConnection != null)
+        {
             return serviceConnection;
+        }
 
-        serviceConnection = new ServiceConnection() {
-            @Override public void onServiceDisconnected(ComponentName name) {
+        serviceConnection = new ServiceConnection()
+        {
+            @Override public void onServiceDisconnected(ComponentName name)
+            {
                 THLog.d(TAG, "Billing service disconnected.");
                 service = null;
             }
 
-            @Override public void onServiceConnected(ComponentName name, IBinder binderService) {
+            @Override public void onServiceConnected(ComponentName name, IBinder binderService)
+            {
                 THLog.d(TAG, "Billing service connected.");
                 service = IInAppBillingService.Stub.asInterface(binderService);
                 String packageName = context.getPackageName();
-                try {
+                try
+                {
                     THLog.d(TAG, "Checking for in-app billing 3 support.");
 
                     // check for in-app billing v3 support
                     int responseStatus = service.isBillingSupported(3, packageName, Constants.ITEM_TYPE_INAPP);
-                    if (responseStatus != Constants.BILLING_RESPONSE_RESULT_OK) {
+                    if (responseStatus != Constants.BILLING_RESPONSE_RESULT_OK)
+                    {
                         if (listener != null)
                         {
-                            listener.onSetupFinished(IABServiceConnector.this, new IABResponse(responseStatus, "Error checking for billing v3 support."));
+                            listener.onSetupFinished(IABServiceConnector.this,
+                                    new IABResponse(responseStatus, "Error checking for billing v3 support."));
                         }
 
                         // if in-app purchases aren't supported, neither are subscriptions.
@@ -118,18 +129,22 @@ public class IABServiceConnector
 
                     // check for v3 subscriptions support
                     responseStatus = service.isBillingSupported(3, packageName, Constants.ITEM_TYPE_SUBS);
-                    if (responseStatus == Constants.BILLING_RESPONSE_RESULT_OK) {
+                    if (responseStatus == Constants.BILLING_RESPONSE_RESULT_OK)
+                    {
                         THLog.d(TAG, "Subscriptions AVAILABLE.");
                         subscriptionSupported = true;
                     }
-                    else {
+                    else
+                    {
                         THLog.d(TAG, "Subscriptions NOT AVAILABLE. Response: " + responseStatus);
                     }
 
                     setupDone = true;
                 }
-                catch (RemoteException e) {
-                    if (listener != null) {
+                catch (RemoteException e)
+                {
+                    if (listener != null)
+                    {
                         listener.onSetupFinished(IABServiceConnector.this, new IABResponse(Constants.IABHELPER_REMOTE_EXCEPTION,
                                 "RemoteException while setting up in-app billing."));
                     }
@@ -137,7 +152,8 @@ public class IABServiceConnector
                     return;
                 }
 
-                if (listener != null) {
+                if (listener != null)
+                {
                     listener.onSetupFinished(IABServiceConnector.this, new IABResponse(Constants.BILLING_RESPONSE_RESULT_OK, "Setup successful."));
                 }
             }
@@ -145,8 +161,12 @@ public class IABServiceConnector
         return serviceConnection;
     }
 
-    private void checkNotDisposed() {
-        if (disposed) throw new IllegalStateException("IabHelper was disposed of, so it cannot be used.");
+    private void checkNotDisposed()
+    {
+        if (disposed)
+        {
+            throw new IllegalStateException("IabHelper was disposed of, so it cannot be used.");
+        }
     }
 
     public boolean areSubscriptionsSupported()

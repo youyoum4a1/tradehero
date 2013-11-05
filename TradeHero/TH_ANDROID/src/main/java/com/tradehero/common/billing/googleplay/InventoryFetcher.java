@@ -23,7 +23,6 @@ public class InventoryFetcher extends IABServiceConnector
        this.skus = skus;
     }
 
-
     public Map<SKU, SKUDetails> getInventory()
     {
         return Collections.unmodifiableMap(inventory);
