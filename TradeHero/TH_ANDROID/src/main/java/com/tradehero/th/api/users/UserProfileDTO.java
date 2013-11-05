@@ -28,8 +28,6 @@ public class UserProfileDTO extends UserProfileCompactDTO implements DTO
     public boolean pushNotificationsEnabled;
     public boolean emailNotificationsEnabled;
 
-    public List<UserLeaderboardRankingDTO> leaderboardRankings;
-            // *** DELETE ME -- once all clients are on >= 1.2.3
     public List<UserLeaderboardRankingDTO> rank;
             // // user's top-traders ranking across all LBs
 
@@ -48,5 +46,18 @@ public class UserProfileDTO extends UserProfileCompactDTO implements DTO
     public boolean isFollowingUser(int userId)
     {
         return this.heroIds.contains(userId);
+    }
+
+    public int getLeaderboardRanking(int leaderboardId)
+    {
+        for (UserLeaderboardRankingDTO userLeaderboardRankingDTO: rank)
+        {
+            if (userLeaderboardRankingDTO.leaderboardId == leaderboardId)
+            {
+                // 1st-base ranking
+                return (userLeaderboardRankingDTO.ordinalPosition + 1);
+            }
+        }
+        return 0;
     }
 }

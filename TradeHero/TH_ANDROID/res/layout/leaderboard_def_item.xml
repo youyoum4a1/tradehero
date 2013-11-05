@@ -22,12 +22,17 @@
       android:layout_width="wrap_content"
       android:textSize="@dimen/leaderboard_title_text_size"
       android:paddingTop="@dimen/leaderboard_title_text_padding"
-      android:paddingBottom="@dimen/leaderboard_title_text_padding"
       android:paddingLeft="@dimen/leaderboard_title_text_padding"
       android:textStyle="bold"
       android:shadowColor="@color/black"
       android:shadowDy="1"
       android:shadowRadius="1"
+      />
+  <TextView android:id="@+id/leaderboard_def_item_desc"
+      android:layout_below="@id/leaderboard_def_item_name"
+      android:layout_height="wrap_content"
+      android:layout_width="wrap_content"
+      android:paddingLeft="@dimen/leaderboard_title_text_padding"
       />
 
   <ImageView android:id="@+id/leaderboard_def_item_action_icon"
@@ -41,30 +46,12 @@
       android:paddingLeft="15dp"
       />
 
-  <FrameLayout android:id="@+id/leaderboard_user_rank"
+  <TextView
+      android:id="@+id/leaderboard_def_item_user_rank"
       android:layout_toLeftOf="@id/leaderboard_def_item_action_icon"
       android:layout_width="wrap_content"
       android:layout_height="match_parent"
       android:layout_centerVertical="true"
-      >
-
-    <TextView android:id="@+id/leaderboard_def_item_ranking_status"
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        />
-
-    <ImageView android:id="@+id/leaderboard_def_item_ranking_background"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:contentDescription="@null"
-        />
-
-    <TextView
-        android:id="@+id/leaderboard_def_item_user_count"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
-        />
-  </FrameLayout>
-
+      android:gravity="center_vertical"
+      />
 </com.tradehero.th.fragments.leaderboard.LeaderboardDefView>

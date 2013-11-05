@@ -86,6 +86,16 @@ public class LeaderboardDefDTO extends AbstractItemWithComparableId<Integer>
     {
         return defaultSortTypeId != null ? defaultSortTypeId : LeaderboardSortType.DefaultSortType.getFlag();
     }
+
+    public boolean isSectorRestricted()
+    {
+        return sectorRestrictions;
+    }
+
+    public boolean isExchangeRestricted()
+    {
+        return exchangeRestrictions;
+    }
 }
 
 
