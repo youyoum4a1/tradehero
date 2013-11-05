@@ -4,6 +4,8 @@ import android.app.Application;
 import android.content.Context;
 import com.squareup.picasso.Cache;
 import com.squareup.picasso.Picasso;
+import com.tradehero.common.billing.googleplay.IABServiceConnector;
+import com.tradehero.common.billing.googleplay.InventoryFetcher;
 import com.tradehero.common.cache.DatabaseCache;
 import com.tradehero.common.cache.LruMemFileCache;
 import com.tradehero.common.persistence.CacheHelper;
@@ -190,6 +192,9 @@ import org.ocpsoft.prettytime.PrettyTime;
                 LeaderboardMarkUserListView.class,
 
                 WebViewFragment.class,
+
+                IABServiceConnector.class,
+                InventoryFetcher.class,
         },
         staticInjections =
         {
