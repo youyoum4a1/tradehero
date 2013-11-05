@@ -9,7 +9,8 @@ public class SKU implements ProductIdentifier
 {
     public final String identifier;
 
-    public SKU(String id) {
+    public SKU(String id)
+    {
         identifier = id;
     }
 }
