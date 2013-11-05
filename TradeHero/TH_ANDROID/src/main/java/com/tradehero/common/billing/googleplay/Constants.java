@@ -1,5 +1,6 @@
 package com.tradehero.common.billing.googleplay;
 
+import android.content.Intent;
 import android.os.Bundle;
 import com.tradehero.common.utils.THLog;
 
@@ -123,6 +124,31 @@ public class Constants
             THLog.w(TAG, "Unexpected type for bundle response code.");
             THLog.w(TAG, o.getClass().getName());
             throw new RuntimeException("Unexpected type for bundle response code: " + o.getClass().getName());
+        }
+    }
+
+    // Workaround to bug where sometimes response codes come as Long instead of Integer
+    public static int getResponseCodeFromIntent(Intent i)
+    {
+        Object o = i.getExtras().get(Constants.RESPONSE_CODE);
+        if (o == null)
+        {
+            THLog.d(TAG, "Intent with no response code, assuming OK (known issue)");
+            return Constants.BILLING_RESPONSE_RESULT_OK;
+        }
+        else if (o instanceof Integer)
+        {
+            return ((Integer) o).intValue();
+        }
+        else if (o instanceof Long)
+        {
+            return (int) ((Long) o).longValue();
+        }
+        else
+        {
+            THLog.d(TAG, "Unexpected type for intent response code.");
+            THLog.d(TAG, o.getClass().getName());
+            throw new RuntimeException("Unexpected type for intent response code: " + o.getClass().getName());
         }
     }
 }
