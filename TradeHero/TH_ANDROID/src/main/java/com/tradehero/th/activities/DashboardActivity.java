@@ -3,6 +3,7 @@ package com.tradehero.th.activities;
 import android.os.Bundle;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.MenuItem;
+import com.tradehero.common.billing.googleplay.Constants;
 import com.tradehero.common.billing.googleplay.GooglePurchase;
 import com.tradehero.common.billing.googleplay.IABBadResponseException;
 import com.tradehero.common.billing.googleplay.IABException;
@@ -11,16 +12,19 @@ import com.tradehero.common.billing.googleplay.IABServiceConnector;
 import com.tradehero.common.billing.googleplay.IABVerificationFailedException;
 import com.tradehero.common.billing.googleplay.PurchaseFetcher;
 import com.tradehero.common.billing.googleplay.SKU;
-import com.tradehero.common.billing.googleplay.SKUFetcher;
+import com.tradehero.th.billing.googleplay.SKUFetcher;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.fragments.DashboardNavigator;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class DashboardActivity extends SherlockFragmentActivity
-    implements DashboardNavigatorActivity, PurchaseFetcher.PublicFetcherListener, IABServiceConnector.ConnectorListener
+    implements DashboardNavigatorActivity, SKUFetcher.SKUFetcherListener,
+        PurchaseFetcher.PublicFetcherListener, IABServiceConnector.ConnectorListener
 {
     public static final String TAG = DashboardActivity.class.getSimpleName();
 
@@ -36,13 +40,8 @@ public class DashboardActivity extends SherlockFragmentActivity
         navigator = new DashboardNavigator(this, getSupportFragmentManager(), R.id.realtabcontent);
 
         skuFetcher = new SKUFetcher();
+        skuFetcher.setListener(this);
         skuFetcher.fetchSkus();
-
-        purchaseFetcher = new PurchaseFetcher(this, skuFetcher.getAvailableInAppSkus());
-        purchaseFetcher.setFetchListener(this);
-        purchaseFetcher.startConnectionSetup();
-
-
     }
 
     @Override public void onBackPressed()
@@ -57,6 +56,24 @@ public class DashboardActivity extends SherlockFragmentActivity
         return super.onOptionsItemSelected(item);
     }
 
+    @Override protected void onDestroy()
+    {
+        if (skuFetcher != null)
+        {
+            skuFetcher.setListener(null);
+            skuFetcher.dispose();
+        }
+        skuFetcher = null;
+
+        if (purchaseFetcher != null)
+        {
+            purchaseFetcher.setFetchListener(null);
+            purchaseFetcher.dispose();
+        }
+        purchaseFetcher = null;
+        super.onDestroy();
+    }
+
     //<editor-fold desc="DashboardNavigatorActivity">
     @Override public Navigator getNavigator()
     {
@@ -66,6 +83,25 @@ public class DashboardActivity extends SherlockFragmentActivity
     @Override public DashboardNavigator getDashboardNavigator()
     {
         return navigator;
+    }
+    //</editor-fold>
+
+    //<editor-fold desc="SKUFetcher.SKUFetcherListener">
+    @Override public void onFetchSKUsFailed(SKUFetcher fetcher, Exception exception)
+    {
+        THToast.show("There was an error fetching the list of SKUs");
+    }
+
+    @Override public void onFetchedSKUs(SKUFetcher fetcher, Map<String, List<SKU>> availableSkus)
+    {
+        List<SKU> mixedSKUs = availableSkus.get(Constants.ITEM_TYPE_INAPP);
+        if (availableSkus.containsKey(Constants.ITEM_TYPE_SUBS))
+        {
+            mixedSKUs.addAll(availableSkus.get(Constants.ITEM_TYPE_SUBS));
+        }
+        purchaseFetcher = new PurchaseFetcher(this, mixedSKUs);
+        purchaseFetcher.setFetchListener(this);
+        purchaseFetcher.startConnectionSetup();
     }
     //</editor-fold>
 
