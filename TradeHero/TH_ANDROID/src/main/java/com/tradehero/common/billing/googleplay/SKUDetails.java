@@ -10,6 +10,12 @@ import org.json.JSONObject;
  */
 public class SKUDetails implements ProductDetails
 {
+    public static final String JSON_KEY_PRODUCT_ID = "productId";
+    public static final String JSON_KEY_TYPE = "type";
+    public static final String JSON_KEY_PRICE = "price";
+    public static final String JSON_KEY_TITLE = "title";
+    public static final String JSON_KEY_DESCRIPTION = "description";
+
     public final String itemType;
     protected SKU sku;
     public final String type;
@@ -23,19 +29,21 @@ public class SKUDetails implements ProductDetails
         this(Constants.ITEM_TYPE_INAPP, jsonSkuDetails);
     }
 
-    public SKUDetails(String itemType, String jsonSkuDetails) throws JSONException {
+    public SKUDetails(String itemType, String jsonSkuDetails) throws JSONException
+    {
         this.itemType = itemType;
         this.json = jsonSkuDetails;
         JSONObject o = new JSONObject(json);
-        String skuString = o.optString("productId");
+        String skuString = o.optString(JSON_KEY_PRODUCT_ID);
         this.sku =  new SKU(skuString);
-        this.type = o.optString("type");
-        this.price = o.optString("price");
-        this.title = o.optString("title");
-        this.description = o.optString("description");
+        this.type = o.optString(JSON_KEY_TYPE);
+        this.price = o.optString(JSON_KEY_PRICE);
+        this.title = o.optString(JSON_KEY_TITLE);
+        this.description = o.optString(JSON_KEY_DESCRIPTION);
     }
 
-    @Override public String toString() {
+    @Override public String toString()
+    {
         return "SkuDetails:" + json;
     }
 
