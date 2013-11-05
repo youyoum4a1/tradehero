@@ -8,6 +8,7 @@ import android.os.IBinder;
 import android.os.RemoteException;
 import com.android.vending.billing.IInAppBillingService;
 import com.tradehero.common.utils.THLog;
+import java.lang.ref.WeakReference;
 
 /** Created by julien on 5/11/13 */
 public class IABServiceConnector
@@ -26,7 +27,7 @@ public class IABServiceConnector
     private boolean setupDone = false;
     boolean disposed = false;
 
-    protected ConnectorListener listener;
+    protected WeakReference<ConnectorListener> listener = new WeakReference<>(null);
 
     public IABServiceConnector(Context ctx)
     {
@@ -207,12 +208,12 @@ public class IABServiceConnector
 
     public ConnectorListener getListener()
     {
-        return listener;
+        return listener.get();
     }
 
     public void setListener(ConnectorListener listener)
     {
-        this.listener = listener;
+        this.listener = new WeakReference<>(listener);
     }
     //</editor-fold>
 
@@ -240,7 +241,7 @@ public class IABServiceConnector
 
     protected void notifyListenerSetupFinished(IABResponse response)
     {
-        ConnectorListener listenerCopy = listener;
+        ConnectorListener listenerCopy = getListener();
         if (listenerCopy != null)
         {
             listenerCopy.onSetupFinished(this, response);
@@ -249,7 +250,7 @@ public class IABServiceConnector
 
     protected void notifyListenerSetupFailed(IABException exception)
     {
-        ConnectorListener listenerCopy = listener;
+        ConnectorListener listenerCopy = getListener();
         if (listenerCopy != null)
         {
             listenerCopy.onSetupFailed(this, exception);

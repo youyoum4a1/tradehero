@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.os.RemoteException;
 import android.text.TextUtils;
 import com.tradehero.common.utils.THLog;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -18,6 +19,8 @@ public class PurchaseFetcher extends IABServiceConnector
 
     private Map<SKU, GooglePurchase> purchases;
     private List<SKU> skus;
+
+    protected WeakReference<PublicFetcherListener> fetchListener = new WeakReference<>(null);
 
     public PurchaseFetcher(Context ctx, List<SKU> skus)
     {
@@ -35,15 +38,33 @@ public class PurchaseFetcher extends IABServiceConnector
     @Override protected void handleSetupFinished(IABResponse response)
     {
         super.handleSetupFinished(response);
-        // TODO
+        try
+        {
+            queryPurchases(Constants.ITEM_TYPE_INAPP);
+            if (areSubscriptionsSupported())
+            {
+                queryPurchases(Constants.ITEM_TYPE_SUBS);
+            }
+        }
+        catch (JSONException e)
+        {
+            e.printStackTrace();
+        }
+        catch (RemoteException e)
+        {
+            e.printStackTrace();
+        }
+        catch (IABException e)
+        {
+            e.printStackTrace();
+        }
     }
 
-    int queryPurchases(String itemType) throws JSONException, RemoteException
+    protected void queryPurchases(String itemType) throws JSONException, RemoteException, IABException
     {
         // Query purchases
         THLog.d(TAG, "Querying owned items, item type: " + itemType);
         THLog.d(TAG, "Package name: " + context.getPackageName());
-        boolean verificationFailed = false;
         String continueToken = null;
 
         do
@@ -54,23 +75,18 @@ public class PurchaseFetcher extends IABServiceConnector
             THLog.d(TAG, "Owned items response: " + String.valueOf(response));
             if (response != Constants.BILLING_RESPONSE_RESULT_OK)
             {
-                THLog.d(TAG, "getPurchases() failed: " + Constants.getStatusCodeDescription(response));
-                return response;
+                throw new IABException(response, "getPurchases() failed: " + Constants.getStatusCodeDescription(response));
             }
             if (!ownedItems.containsKey(Constants.RESPONSE_INAPP_ITEM_LIST)
                     || !ownedItems.containsKey(Constants.RESPONSE_INAPP_PURCHASE_DATA_LIST)
                     || !ownedItems.containsKey(Constants.RESPONSE_INAPP_SIGNATURE_LIST))
             {
-                THLog.w(TAG, "Bundle returned from getPurchases() doesn't contain required fields.");
-                return Constants.IABHELPER_BAD_RESPONSE;
+                throw new IABBadResponseException("Bundle returned from getPurchases() doesn't contain required fields.");
             }
 
-            ArrayList<String> ownedSkus = ownedItems.getStringArrayList(
-                    Constants.RESPONSE_INAPP_ITEM_LIST);
-            ArrayList<String> purchaseDataList = ownedItems.getStringArrayList(
-                    Constants.RESPONSE_INAPP_PURCHASE_DATA_LIST);
-            ArrayList<String> signatureList = ownedItems.getStringArrayList(
-                    Constants.RESPONSE_INAPP_SIGNATURE_LIST);
+            ArrayList<String> ownedSkus = ownedItems.getStringArrayList(Constants.RESPONSE_INAPP_ITEM_LIST);
+            ArrayList<String> purchaseDataList = ownedItems.getStringArrayList(Constants.RESPONSE_INAPP_PURCHASE_DATA_LIST);
+            ArrayList<String> signatureList = ownedItems.getStringArrayList(Constants.RESPONSE_INAPP_SIGNATURE_LIST);
 
             for (int i = 0; i < purchaseDataList.size(); ++i)
             {
@@ -93,24 +109,53 @@ public class PurchaseFetcher extends IABServiceConnector
                 }
                 else
                 {
-                    THLog.w(TAG, "Purchase signature verification **FAILED**. Not adding item.");
-                    THLog.d(TAG, "   Purchase data: " + purchaseData);
-                    THLog.d(TAG, "   Signature: " + signature);
-                    verificationFailed = true;
+                    throw new IABVerificationFailedException("Purchase signature verification **FAILED**. Not adding item. Purchase data: " + purchaseData + "   Signature: " + signature);
                 }
             }
 
             continueToken = ownedItems.getString(Constants.INAPP_CONTINUATION_TOKEN);
             THLog.d(TAG, "Continuation token: " + continueToken);
-        } while (!TextUtils.isEmpty(continueToken));
-
-        return verificationFailed ? Constants.IABHELPER_VERIFICATION_FAILED : Constants.BILLING_RESPONSE_RESULT_OK;
+        }
+        while (!TextUtils.isEmpty(continueToken));
     }
 
     protected Bundle getPurchases(String itemType, String continueToken) throws RemoteException
     {
         THLog.d(TAG, "Calling getPurchases with continuation token: " + continueToken);
-        return billingService.getPurchases(TARGET_BILLING_API_VERSION3, context.getPackageName(),
-                itemType, continueToken);
+        return billingService.getPurchases(TARGET_BILLING_API_VERSION3, context.getPackageName(), itemType, continueToken);
+    }
+
+    public PublicFetcherListener getFetchListener()
+    {
+        return fetchListener.get();
+    }
+
+    public void setFetchListener(PublicFetcherListener fetchListener)
+    {
+        this.fetchListener = new WeakReference<PublicFetcherListener>(fetchListener);
+    }
+
+    protected void notifyListenerFetched()
+    {
+        PublicFetcherListener listenerCopy = getFetchListener();
+        if (listenerCopy != null)
+        {
+            listenerCopy.onFetchedPurchases(this, this.purchases);
+        }
+    }
+
+    protected void notifyListenerFetchFailed(IABException exception)
+    {
+        PublicFetcherListener listenerCopy = getFetchListener();
+        if (listenerCopy != null)
+        {
+            listenerCopy.onFetchPurchasesFailed(this, exception);
+        }
+    }
+
+    public static interface PublicFetcherListener
+    {
+        void onFetchedPurchases(PurchaseFetcher fetcher, Map<SKU, GooglePurchase> purchases);
+        void onFetchPurchasesFailed(PurchaseFetcher fetcher, IABException exception);
     }
 }
