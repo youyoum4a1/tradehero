@@ -13,9 +13,12 @@ import java.util.Collections;
 import java.util.Map;
 
 /** Created by julien on 5/11/13 */
-public class IABServiceConnector
+abstract public class IABServiceConnector
 {
     public static final String TAG = IABServiceConnector.class.getSimpleName();
+    public final static String INTENT_VENDING_PACKAGE = "com.android.vending";
+    public final static String INTENT_VENDING_SERVICE_BIND = "com.android.vending.billing.InAppBillingService.BIND";
+
     protected Context context;
 
     protected IInAppBillingService service;
@@ -27,28 +30,31 @@ public class IABServiceConnector
 
     protected ConnectorListener listener;
 
-    public static interface ConnectorListener
-    {
-        void onSetupFinished(IABServiceConnector connector, IABResponse response);
-    }
-
     public IABServiceConnector(Context ctx)
     {
         this.context = ctx;
+        if (this.context == null)
+        {
+            throw new NullPointerException("Context cannot be null");
+        }
     }
 
     public void startConnectionSetup()
     {
         checkNotDisposed();
-        if (setupDone) throw new IllegalStateException("IAB helper is already set up.");
+        checkNotSetup();
 
         THLog.d(TAG, "Starting in-app billing setup.");
 
         setupServiceConnection();
-        Intent serviceIntent = new Intent("com.android.vending.billing.InAppBillingService.BIND");
-        serviceIntent.setPackage("com.android.vending");
+        bindBillingServiceIfAvailable();
+    }
 
-        if (!context.getPackageManager().queryIntentServices(serviceIntent, 0).isEmpty())
+    protected void bindBillingServiceIfAvailable()
+    {
+        Intent serviceIntent = getBillingBindIntent();
+
+        if (isServiceAvailable(serviceIntent))
         {
             // service available to handle that Intent
             context.bindService(serviceIntent, serviceConnection, Context.BIND_AUTO_CREATE);
@@ -56,12 +62,22 @@ public class IABServiceConnector
         else
         {
             // no service available to handle that Intent
-            if (listener != null)
-            {
-                listener.onSetupFinished(this,
-                        new IABResponse(Constants.BILLING_RESPONSE_RESULT_BILLING_UNAVAILABLE, "Billing service unavailable on device."));
-            }
+            IABException exception = new IABException(Constants.BILLING_RESPONSE_RESULT_BILLING_UNAVAILABLE, "Billing service unavailable on device.");
+            handleSetupFailed(exception);
+            notifyListenerSetupFailed(exception);
         }
+    }
+
+    public Intent getBillingBindIntent()
+    {
+        Intent serviceIntent = new Intent(INTENT_VENDING_SERVICE_BIND);
+        serviceIntent.setPackage(INTENT_VENDING_PACKAGE);
+        return serviceIntent;
+    }
+
+    protected boolean isServiceAvailable(Intent serviceIntent)
+    {
+        return !context.getPackageManager().queryIntentServices(serviceIntent, 0).isEmpty();
     }
 
     /**
@@ -169,6 +185,15 @@ public class IABServiceConnector
         }
     }
 
+    private void checkNotSetup()
+    {
+        if (setupDone)
+        {
+            throw new IllegalStateException("IAB helper is already set up.");
+        }
+    }
+
+    //<editor-fold desc="Accessors">
     public boolean areSubscriptionsSupported()
     {
         return this.subscriptionSupported;
@@ -187,5 +212,34 @@ public class IABServiceConnector
     public void setListener(ConnectorListener listener)
     {
         this.listener = listener;
+    }
+    //</editor-fold>
+
+    abstract protected void handleSetupFinished(IABResponse response);
+
+    abstract protected void handleSetupFailed(IABException exception);
+
+    protected void notifyListenerSetupFinished(IABResponse response)
+    {
+        ConnectorListener listenerCopy = listener;
+        if (listenerCopy != null)
+        {
+            listenerCopy.onSetupFinished(this, response);
+        }
+    }
+
+    protected void notifyListenerSetupFailed(IABException exception)
+    {
+        ConnectorListener listenerCopy = listener;
+        if (listenerCopy != null)
+        {
+            listenerCopy.onSetupFailed(this, exception);
+        }
+    }
+
+    public static interface ConnectorListener
+    {
+        void onSetupFinished(IABServiceConnector connector, IABResponse response);
+        void onSetupFailed(IABServiceConnector connector, IABException exception);
     }
 }
