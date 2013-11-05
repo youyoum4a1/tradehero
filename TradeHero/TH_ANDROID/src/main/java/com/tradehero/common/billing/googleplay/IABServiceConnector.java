@@ -10,7 +10,7 @@ import com.android.vending.billing.IInAppBillingService;
 import com.tradehero.common.utils.THLog;
 
 /** Created by julien on 5/11/13 */
-abstract public class IABServiceConnector
+public class IABServiceConnector
 {
     public static final String TAG = IABServiceConnector.class.getSimpleName();
     public final static String INTENT_VENDING_PACKAGE = "com.android.vending";
@@ -228,9 +228,15 @@ abstract public class IABServiceConnector
         notifyListenerSetupFailed(exception);
     }
 
-    abstract protected void handleSetupFinished(IABResponse response);
+    protected void handleSetupFinished(IABResponse response)
+    {
+        // Just for children classes
+    }
 
-    abstract protected void handleSetupFailed(IABException exception);
+    protected void handleSetupFailed(IABException exception)
+    {
+        // Just for children classes
+    }
 
     protected void notifyListenerSetupFinished(IABResponse response)
     {
