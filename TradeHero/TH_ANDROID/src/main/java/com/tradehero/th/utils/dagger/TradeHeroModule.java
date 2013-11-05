@@ -6,6 +6,7 @@ import com.squareup.picasso.Cache;
 import com.squareup.picasso.Picasso;
 import com.tradehero.common.billing.googleplay.IABServiceConnector;
 import com.tradehero.common.billing.googleplay.InventoryFetcher;
+import com.tradehero.common.billing.googleplay.PurchaseFetcher;
 import com.tradehero.common.cache.DatabaseCache;
 import com.tradehero.common.cache.LruMemFileCache;
 import com.tradehero.common.persistence.CacheHelper;
@@ -165,6 +166,7 @@ import javax.inject.Singleton;
 
                 IABServiceConnector.class,
                 InventoryFetcher.class,
+                PurchaseFetcher.class,
         },
         staticInjections =
         {

@@ -30,9 +30,9 @@ public class InventoryFetcher extends IABServiceConnector
 
     public InventoryFetcher(Context ctx, List<SKU> skus)
     {
-       super(ctx);
-       this.skus = skus;
-       this.inventory = new HashMap<>(skus != null ? skus.size() : 10);
+        super(ctx);
+        this.skus = skus;
+        this.inventory = new HashMap<>(skus != null ? skus.size() : 10);
         DaggerUtils.inject(this);
     }
 
@@ -44,7 +44,7 @@ public class InventoryFetcher extends IABServiceConnector
     @Override protected void handleSetupFailed(IABException exception)
     {
         dispose();
-        handleInventoryFetchFailure(exception); // TODO consider removing this as this doubles up on the parent's listener
+        handleInventoryFetchFailure(exception);
     }
 
     @Override protected void handleSetupFinished(IABResponse response)
@@ -54,7 +54,7 @@ public class InventoryFetcher extends IABServiceConnector
 
     private void fetchInventoryAsync()
     {
-        //TODO: do it in a backgorund thread
+        //TODO: do it in a background thread
         try
         {
             internalFetchInventory();

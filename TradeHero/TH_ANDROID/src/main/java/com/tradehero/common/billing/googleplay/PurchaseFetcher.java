@@ -47,6 +47,7 @@ public class PurchaseFetcher extends IABServiceConnector
             {
                 queryPurchases(Constants.ITEM_TYPE_SUBS);
             }
+            notifyListenerFetched();
         }
         catch (JSONException|RemoteException|IABException exception)
         {
