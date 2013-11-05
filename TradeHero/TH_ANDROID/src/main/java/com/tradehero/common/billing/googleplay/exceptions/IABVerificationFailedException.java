@@ -1,4 +1,7 @@
-package com.tradehero.common.billing.googleplay;
+package com.tradehero.common.billing.googleplay.exceptions;
+
+import com.tradehero.common.billing.googleplay.Constants;
+import com.tradehero.common.billing.googleplay.IABResult;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/5/13 Time: 4:15 PM To change this template use File | Settings | File Templates. */
 public class IABVerificationFailedException extends IABOneResponseValueException
