@@ -5,6 +5,8 @@ import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.MenuItem;
 import com.tradehero.common.billing.googleplay.Constants;
 import com.tradehero.common.billing.googleplay.GooglePurchase;
+import com.tradehero.common.billing.googleplay.InventoryFetcher;
+import com.tradehero.common.billing.googleplay.SKUDetails;
 import com.tradehero.common.billing.googleplay.exceptions.IABBadResponseException;
 import com.tradehero.common.billing.googleplay.exceptions.IABException;
 import com.tradehero.common.billing.googleplay.IABResponse;
@@ -23,13 +25,14 @@ import java.util.Map;
 
 public class DashboardActivity extends SherlockFragmentActivity
     implements DashboardNavigatorActivity, SKUFetcher.SKUFetcherListener,
-        PurchaseFetcher.PublicFetcherListener, IABServiceConnector.ConnectorListener
+        PurchaseFetcher.PublicFetcherListener, InventoryFetcher.InventoryListener
 {
     public static final String TAG = DashboardActivity.class.getSimpleName();
 
     private DashboardNavigator navigator;
     private SKUFetcher skuFetcher;
     private PurchaseFetcher purchaseFetcher;
+    private InventoryFetcher inventoryFetcher;
 
     public void onCreate(Bundle savedInstanceState)
     {
@@ -41,6 +44,10 @@ public class DashboardActivity extends SherlockFragmentActivity
         skuFetcher = new SKUFetcher();
         skuFetcher.setListener(this);
         skuFetcher.fetchSkus();
+
+        purchaseFetcher = new PurchaseFetcher(this);
+        purchaseFetcher.setFetchListener(this);
+        purchaseFetcher.startConnectionSetup();
     }
 
     @Override public void onBackPressed()
@@ -70,6 +77,13 @@ public class DashboardActivity extends SherlockFragmentActivity
             purchaseFetcher.dispose();
         }
         purchaseFetcher = null;
+
+        if (inventoryFetcher != null)
+        {
+            inventoryFetcher.setInventoryListener(null);
+            inventoryFetcher.dispose();
+        }
+        inventoryFetcher = null;
         super.onDestroy();
     }
 
@@ -98,21 +112,9 @@ public class DashboardActivity extends SherlockFragmentActivity
         {
             mixedSKUs.addAll(availableSkus.get(Constants.ITEM_TYPE_SUBS));
         }
-        purchaseFetcher = new PurchaseFetcher(this, mixedSKUs);
-        purchaseFetcher.setFetchListener(this);
-        purchaseFetcher.startConnectionSetup();
-    }
-    //</editor-fold>
-
-    //<editor-fold desc="IABServiceConnector.ConnectorListener">
-    @Override public void onSetupFinished(IABServiceConnector connector, IABResponse response)
-    {
-        // TODO
-    }
-
-    @Override public void onSetupFailed(IABServiceConnector connector, IABException exception)
-    {
-        // TODO
+        inventoryFetcher = new InventoryFetcher(this, mixedSKUs);
+        inventoryFetcher.setInventoryListener(this);
+        inventoryFetcher.startConnectionSetup();
     }
     //</editor-fold>
 
@@ -139,6 +141,18 @@ public class DashboardActivity extends SherlockFragmentActivity
         {
             THToast.show("There are some purchases to be consumed");
         }
+    }
+    //</editor-fold>
+
+    //<editor-fold desc="InventoryFetcher.InventoryListener">
+    @Override public void onInventoryFetchSuccess(InventoryFetcher fetcher, Map<SKU, SKUDetails> inventory)
+    {
+        THToast.show("Inventory successfully fetched");
+    }
+
+    @Override public void onInventoryFetchFail(InventoryFetcher fetcher, IABException exception)
+    {
+        THToast.show("There was an error fetching the sku details");
     }
     //</editor-fold>
 }
