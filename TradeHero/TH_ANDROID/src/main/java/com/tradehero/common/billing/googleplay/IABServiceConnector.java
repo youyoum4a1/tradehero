@@ -9,19 +9,17 @@ import android.os.RemoteException;
 import com.android.vending.billing.IInAppBillingService;
 import com.tradehero.common.utils.THLog;
 
-import java.util.Collections;
-import java.util.Map;
-
 /** Created by julien on 5/11/13 */
 abstract public class IABServiceConnector
 {
     public static final String TAG = IABServiceConnector.class.getSimpleName();
     public final static String INTENT_VENDING_PACKAGE = "com.android.vending";
     public final static String INTENT_VENDING_SERVICE_BIND = "com.android.vending.billing.InAppBillingService.BIND";
+    public final static int TARGET_BILLING_API_VERSION3 = 3;
 
     protected Context context;
 
-    protected IInAppBillingService service;
+    protected IInAppBillingService billingService;
     protected ServiceConnection serviceConnection;
 
     private boolean subscriptionSupported;
@@ -99,7 +97,7 @@ abstract public class IABServiceConnector
         disposed = true;
         context = null;
         serviceConnection = null;
-        service = null;
+        billingService = null;
         listener = null;
     }
 
@@ -115,58 +113,14 @@ abstract public class IABServiceConnector
             @Override public void onServiceDisconnected(ComponentName name)
             {
                 THLog.d(TAG, "Billing service disconnected.");
-                service = null;
+                billingService = null;
             }
 
             @Override public void onServiceConnected(ComponentName name, IBinder binderService)
             {
                 THLog.d(TAG, "Billing service connected.");
-                service = IInAppBillingService.Stub.asInterface(binderService);
-                String packageName = context.getPackageName();
-                try
-                {
-                    THLog.d(TAG, "Checking for in-app billing 3 support.");
-
-                    // check for in-app billing v3 support
-                    int responseStatus = service.isBillingSupported(3, packageName, Constants.ITEM_TYPE_INAPP);
-                    if (responseStatus != Constants.BILLING_RESPONSE_RESULT_OK)
-                    {
-                        if (listener != null)
-                        {
-                            listener.onSetupFinished(IABServiceConnector.this,
-                                    new IABResponse(responseStatus, "Error checking for billing v3 support."));
-                        }
-
-                        // if in-app purchases aren't supported, neither are subscriptions.
-                        subscriptionSupported = false;
-                        return;
-                    }
-                    THLog.d(TAG, "In-app billing version 3 supported for " + packageName);
-
-                    // check for v3 subscriptions support
-                    responseStatus = service.isBillingSupported(3, packageName, Constants.ITEM_TYPE_SUBS);
-                    if (responseStatus == Constants.BILLING_RESPONSE_RESULT_OK)
-                    {
-                        THLog.d(TAG, "Subscriptions AVAILABLE.");
-                        subscriptionSupported = true;
-                    }
-                    else
-                    {
-                        THLog.d(TAG, "Subscriptions NOT AVAILABLE. Response: " + responseStatus);
-                    }
-
-                    setupDone = true;
-                }
-                catch (RemoteException e)
-                {
-                    if (listener != null)
-                    {
-                        listener.onSetupFinished(IABServiceConnector.this, new IABResponse(Constants.IABHELPER_REMOTE_EXCEPTION,
-                                "RemoteException while setting up in-app billing."));
-                    }
-                    e.printStackTrace();
-                    return;
-                }
+                billingService = IInAppBillingService.Stub.asInterface(binderService);
+                checkInAppBillingV3Support();
 
                 if (listener != null)
                 {
@@ -175,6 +129,61 @@ abstract public class IABServiceConnector
             }
         };
         return serviceConnection;
+    }
+
+    protected void checkInAppBillingV3Support()
+    {
+        String packageName = context.getPackageName();
+        try
+        {
+            THLog.d(TAG, "Checking for in-app billing 3 support.");
+
+            // check for in-app billing v3 support
+            int responseStatus = purchaseTypeSupportStatus(Constants.ITEM_TYPE_INAPP);
+            if (responseStatus != Constants.BILLING_RESPONSE_RESULT_OK)
+            {
+                IABException exception = new IABException(responseStatus, "Error checking for billing v3 support.");
+                handleSetupFailed(exception);
+                notifyListenerSetupFailed(exception);
+
+                // if in-app purchases aren't supported, neither are subscriptions.
+                subscriptionSupported = false;
+                return;
+            }
+            THLog.d(TAG, "In-app billing version 3 supported for " + packageName);
+
+            // check for v3 subscriptions support
+            responseStatus = purchaseTypeSupportStatus(Constants.ITEM_TYPE_SUBS);
+            if (responseStatus == Constants.BILLING_RESPONSE_RESULT_OK)
+            {
+                THLog.d(TAG, "Subscriptions AVAILABLE.");
+                subscriptionSupported = true;
+            }
+            else
+            {
+                THLog.d(TAG, "Subscriptions NOT AVAILABLE. Response: " + responseStatus);
+            }
+
+            setupDone = true;
+        }
+        catch (RemoteException e)
+        {
+            IABException exception = new IABException(Constants.IABHELPER_REMOTE_EXCEPTION, "RemoteException while setting up in-app billing.");
+            e.printStackTrace();
+            handleSetupFailed(exception);
+            notifyListenerSetupFailed(exception);
+        }
+    }
+
+    /**
+     *
+     * @param itemType is Constants.ITEM_TYPE_INAPP or Constants.ITEM_TYPE_SUBS
+     * @return
+     * @throws RemoteException
+     */
+    protected int purchaseTypeSupportStatus(String itemType) throws RemoteException
+    {
+        return billingService.isBillingSupported(TARGET_BILLING_API_VERSION3, context.getPackageName(), itemType);
     }
 
     private void checkNotDisposed()

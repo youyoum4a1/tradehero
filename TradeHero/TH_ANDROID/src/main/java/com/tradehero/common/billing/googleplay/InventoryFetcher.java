@@ -28,5 +28,13 @@ public class InventoryFetcher extends IABServiceConnector
         return Collections.unmodifiableMap(inventory);
     }
 
+    @Override protected void handleSetupFailed(IABException exception)
+    {
+        // TODO
+    }
 
+    @Override protected void handleSetupFinished(IABResponse response)
+    {
+        // TODO
+    }
 }
