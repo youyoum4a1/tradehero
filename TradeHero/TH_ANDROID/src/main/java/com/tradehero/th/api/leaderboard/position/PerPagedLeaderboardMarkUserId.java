@@ -3,26 +3,20 @@ package com.tradehero.th.api.leaderboard.position;
 import android.os.Bundle;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/16/13 Time: 3:30 PM To change this template use File | Settings | File Templates. */
-public class PerPagedOwnedLbPositionId extends PagedOwnedLbPositionId
+public class PerPagedLeaderboardMarkUserId extends PagedLeaderboardMarkUserId
 {
-    public final static String BUNDLE_KEY_PER_PAGE = PerPagedOwnedLbPositionId.class.getName() + ".perPage";
+    public final static String BUNDLE_KEY_PER_PAGE = PerPagedLeaderboardMarkUserId.class.getName() + ".perPage";
 
     public final Integer perPage;
 
     //<editor-fold desc="Constructors">
-    public PerPagedOwnedLbPositionId(Integer lbmuId, Integer lbmupId, int page, int perPage)
+    public PerPagedLeaderboardMarkUserId(Integer lbmuId, int page, int perPage)
     {
-        super(lbmuId, lbmupId, page);
+        super(lbmuId, page);
         this.perPage = perPage;
     }
 
-    public PerPagedOwnedLbPositionId(LeaderboardMarkUserId lbmuId, Integer lbmupId, int page, int perPage)
-    {
-        super(lbmuId, lbmupId, page);
-        this.perPage = perPage;
-    }
-
-    public PerPagedOwnedLbPositionId(Bundle args)
+    public PerPagedLeaderboardMarkUserId(Bundle args)
     {
         super(args);
         this.perPage = args.containsKey(BUNDLE_KEY_PER_PAGE) ? args.getInt(BUNDLE_KEY_PER_PAGE) : null;
@@ -36,10 +30,10 @@ public class PerPagedOwnedLbPositionId extends PagedOwnedLbPositionId
 
     @Override public boolean equals(Object other)
     {
-        return (other instanceof PerPagedOwnedLbPositionId) && equals((PerPagedOwnedLbPositionId) other);
+        return (other instanceof PerPagedLeaderboardMarkUserId) && equals((PerPagedLeaderboardMarkUserId) other);
     }
 
-    public boolean equals(PerPagedOwnedLbPositionId other)
+    public boolean equals(PerPagedLeaderboardMarkUserId other)
     {
         return other != null &&
                 super.equals(other) &&
@@ -53,14 +47,14 @@ public class PerPagedOwnedLbPositionId extends PagedOwnedLbPositionId
             return 1;
         }
 
-        if (o.getClass() == PerPagedOwnedLbPositionId.class)
+        if (o.getClass() == PerPagedLeaderboardMarkUserId.class)
         {
-            return compareTo((PerPagedOwnedLbPositionId) o);
+            return compareTo((PerPagedLeaderboardMarkUserId) o);
         }
-        return o.getClass().getName().compareTo(PerPagedOwnedLbPositionId.class.getName());
+        return o.getClass().getName().compareTo(PerPagedLeaderboardMarkUserId.class.getName());
     }
 
-    public int compareTo(PerPagedOwnedLbPositionId other)
+    public int compareTo(PerPagedLeaderboardMarkUserId other)
     {
         if (this == other)
         {
@@ -94,6 +88,6 @@ public class PerPagedOwnedLbPositionId extends PagedOwnedLbPositionId
 
     @Override public String toString()
     {
-        return String.format("[leaderboardMarkUserId=%d; leaderboardMarkUserPositionId=%d; page=%d; perPage=%d]", leaderboardMarkUserId, leaderboardMarkUserPositionId, page, perPage);
+        return String.format("[key=%d; page=%d; perPage=%d]", key, page, perPage);
     }
 }
