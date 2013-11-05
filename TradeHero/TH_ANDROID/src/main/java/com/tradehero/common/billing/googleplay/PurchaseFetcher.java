@@ -46,17 +46,10 @@ public class PurchaseFetcher extends IABServiceConnector
                 queryPurchases(Constants.ITEM_TYPE_SUBS);
             }
         }
-        catch (JSONException e)
+        catch (JSONException|RemoteException|IABException exception)
         {
-            e.printStackTrace();
-        }
-        catch (RemoteException e)
-        {
-            e.printStackTrace();
-        }
-        catch (IABException e)
-        {
-            e.printStackTrace();
+            THLog.e(TAG, "Failed querying purchases", exception);
+            exception.printStackTrace();
         }
     }
 
