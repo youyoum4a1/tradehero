@@ -21,21 +21,20 @@ public class PurchaseFetcher extends IABServiceConnector
     public static final String TAG = PurchaseFetcher.class.getSimpleName();
 
     private Map<SKU, GooglePurchase> purchases;
-    private List<SKU> skus;
 
     protected WeakReference<PublicFetcherListener> fetchListener = new WeakReference<>(null);
 
-    public PurchaseFetcher(Context ctx, List<SKU> skus)
+    public PurchaseFetcher(Context ctx)
     {
         super(ctx);
-        this.skus = skus;
         purchases = new HashMap<>();
     }
 
     @Override protected void handleSetupFailed(IABException exception)
     {
         super.handleSetupFailed(exception);
-        // TODO
+        dispose();
+        notifyListenerFetchFailed(exception);
     }
 
     @Override protected void handleSetupFinished(IABResponse response)
