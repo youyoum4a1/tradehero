@@ -5,7 +5,12 @@ import android.os.Bundle;
 import android.os.RemoteException;
 import com.tradehero.common.billing.googleplay.exceptions.IABBadResponseException;
 import com.tradehero.common.billing.googleplay.exceptions.IABException;
+import com.tradehero.common.billing.googleplay.exceptions.IABExceptionFactory;
+import com.tradehero.common.billing.googleplay.exceptions.IABRemoteException;
 import com.tradehero.common.utils.THLog;
+import com.tradehero.th.utils.DaggerUtils;
+import dagger.Lazy;
+import javax.inject.Inject;
 import org.json.JSONException;
 
 import java.util.*;
@@ -21,12 +26,14 @@ public class InventoryFetcher extends IABServiceConnector
     private List<SKU> skus;
 
     private InventoryListener inventoryListener;
+    @Inject protected Lazy<IABExceptionFactory> iabExceptionFactory;
 
     public InventoryFetcher(Context ctx, List<SKU> skus)
     {
        super(ctx);
        this.skus = skus;
        this.inventory = new HashMap<>(skus != null ? skus.size() : 10);
+        DaggerUtils.inject(this);
     }
 
     public void fetchInventory()
@@ -60,12 +67,12 @@ public class InventoryFetcher extends IABServiceConnector
         catch (RemoteException e)
         {
             THLog.e(TAG, "Remote Exception while fetching inventory.", e);
-            handleInventoryFetchFailure(new IABException(Constants.IABHELPER_REMOTE_EXCEPTION, "RemoteException while fetching IAB", e));
+            handleInventoryFetchFailure(new IABRemoteException("RemoteException while fetching IAB", e));
         }
         catch (JSONException e)
         {
             THLog.e(TAG, "Error parsing json.", e);
-            handleInventoryFetchFailure(new IABException(Constants.IABHELPER_BAD_RESPONSE, "Unable to parse JSON", e));
+            handleInventoryFetchFailure(new IABBadResponseException("Unable to parse JSON", e));
         }
         catch (IABException e)
         {
@@ -120,7 +127,7 @@ public class InventoryFetcher extends IABServiceConnector
             if (statusCode != Constants.BILLING_RESPONSE_RESULT_OK)
             {
                 THLog.d(TAG, "getSkuDetails() failed: " + Constants.getStatusCodeDescription(statusCode));
-                throw new IABException(statusCode, Constants.getStatusCodeDescription(statusCode));
+                throw iabExceptionFactory.get().create(statusCode);
             }
             else
             {

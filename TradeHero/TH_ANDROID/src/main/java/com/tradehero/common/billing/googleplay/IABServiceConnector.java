@@ -9,8 +9,12 @@ import android.os.IBinder;
 import android.os.RemoteException;
 import com.android.vending.billing.IInAppBillingService;
 import com.tradehero.common.billing.googleplay.exceptions.IABException;
+import com.tradehero.common.billing.googleplay.exceptions.IABExceptionFactory;
 import com.tradehero.common.utils.THLog;
+import com.tradehero.th.utils.DaggerUtils;
+import dagger.Lazy;
 import java.lang.ref.WeakReference;
+import javax.inject.Inject;
 
 /** Created by julien on 5/11/13 */
 public class IABServiceConnector
@@ -30,6 +34,7 @@ public class IABServiceConnector
     boolean disposed = false;
 
     protected WeakReference<ConnectorListener> listener = new WeakReference<>(null);
+    @Inject protected Lazy<IABExceptionFactory> iabExceptionFactory;
 
     public IABServiceConnector(Context ctx)
     {
@@ -38,6 +43,7 @@ public class IABServiceConnector
         {
             throw new NullPointerException("Context cannot be null");
         }
+        DaggerUtils.inject(this);
     }
 
     public void startConnectionSetup()
@@ -45,7 +51,7 @@ public class IABServiceConnector
         checkNotDisposed();
         checkNotSetup();
 
-        THLog.d(TAG, "Starting in-app billing setup.");
+        THLog.d(TAG, "Starting in-app billing setup for this " + getClass().getSimpleName());
 
         setupServiceConnection();
         bindBillingServiceIfAvailable();
@@ -86,7 +92,7 @@ public class IABServiceConnector
      */
     public void dispose()
     {
-        THLog.d(TAG, "Disposing.");
+        THLog.d(TAG, "Disposing this " + getClass().getSimpleName());
         setupDone = false;
         if (serviceConnection != null)
         {
@@ -127,11 +133,14 @@ public class IABServiceConnector
                     catch (RemoteException e)
                     {
                         e.printStackTrace();
-                        handleSetupFailedInternal(new IABException(Constants.IABHELPER_REMOTE_EXCEPTION, "RemoteException while setting up in-app billing."));
+                        THLog.e(TAG, "RemoteException while setting up in-app billing.", e);
+                        handleSetupFailedInternal(
+                                new IABException(Constants.IABHELPER_REMOTE_EXCEPTION, "RemoteException while setting up in-app billing."));
                     }
                     catch (IABException e)
                     {
                         e.printStackTrace();
+                        THLog.e(TAG, "IABException while setting up in-app billing.", e);
                         handleSetupFailedInternal(e);
                     }
                 }
@@ -150,7 +159,7 @@ public class IABServiceConnector
         {
             // if in-app purchases aren't supported, neither are subscriptions.
             subscriptionSupported = false;
-            throw new IABException(responseStatus, "Error checking for billing v3 support.");
+            throw iabExceptionFactory.get().create(responseStatus, "Error checking for billing v3 support.");
         }
         THLog.d(TAG, "In-app billing version 3 supported for " + context.getPackageName());
 
