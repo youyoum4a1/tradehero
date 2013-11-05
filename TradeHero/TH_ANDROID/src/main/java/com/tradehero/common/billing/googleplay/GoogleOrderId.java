@@ -11,7 +11,6 @@ public class GoogleOrderId implements OrderId
 
     public GoogleOrderId(String orderId)
     {
-        super();
         this.orderId = orderId;
     }
 
