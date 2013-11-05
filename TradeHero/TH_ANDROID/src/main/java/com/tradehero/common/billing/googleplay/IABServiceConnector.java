@@ -122,10 +122,9 @@ abstract public class IABServiceConnector
                 billingService = IInAppBillingService.Stub.asInterface(binderService);
                 checkInAppBillingV3Support();
 
-                if (listener != null)
-                {
-                    listener.onSetupFinished(IABServiceConnector.this, new IABResponse(Constants.BILLING_RESPONSE_RESULT_OK, "Setup successful."));
-                }
+                IABResponse response = new IABResponse(Constants.BILLING_RESPONSE_RESULT_OK, "Setup successful.");
+                handleSetupFinished(response);
+                notifyListenerSetupFinished(response);
             }
         };
         return serviceConnection;
