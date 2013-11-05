@@ -1,6 +1,7 @@
 package com.tradehero.th.activities;
 
 import com.actionbarsherlock.app.SherlockActivity;
+import com.tradehero.common.billing.googleplay.IABServiceConnector;
 import com.tradehero.th.R;
 import com.tradehero.th.base.THUser;
 import java.util.Timer;
@@ -18,6 +19,8 @@ public class SplashActivity extends SherlockActivity
     {
         super.onCreate(savedInstanceState);
 
+        IABServiceConnector connector = new IABServiceConnector(this);
+        connector.startConnectionSetup();
         setContentView(R.layout.splash_screen);
         timerToShiftActivity = new Timer();
         timerToShiftActivity.schedule(new TimerTask()
