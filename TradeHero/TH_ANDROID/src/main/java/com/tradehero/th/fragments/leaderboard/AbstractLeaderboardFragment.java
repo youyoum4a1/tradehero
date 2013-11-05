@@ -27,12 +27,6 @@ public class AbstractLeaderboardFragment extends DashboardFragment
     private SubMenu sortSubMenu;
     private int flags;
 
-    @Override public void onResume()
-    {
-        updateSortSubMenu(getArguments());
-        super.onResume();
-    }
-
     protected void pushLeaderboardListViewFragment(LeaderboardDefDTO dto)
     {
         Bundle bundle = new Bundle(getArguments());
@@ -46,6 +40,7 @@ public class AbstractLeaderboardFragment extends DashboardFragment
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         createSortSubMenu(menu);
+        updateSortSubMenu(getArguments());
 
         ActionBar actionBar = getSherlockActivity().getSupportActionBar();
         actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME);
