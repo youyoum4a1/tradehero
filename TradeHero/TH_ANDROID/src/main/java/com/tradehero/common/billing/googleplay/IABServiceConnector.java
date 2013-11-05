@@ -60,7 +60,8 @@ abstract public class IABServiceConnector
         else
         {
             // no service available to handle that Intent
-            handleSetupFailedInternal(new IABException(Constants.BILLING_RESPONSE_RESULT_BILLING_UNAVAILABLE, "Billing service unavailable on device."));
+            handleSetupFailedInternal(
+                    new IABException(Constants.BILLING_RESPONSE_RESULT_BILLING_UNAVAILABLE, "Billing service unavailable on device."));
         }
     }
 
@@ -101,69 +102,69 @@ abstract public class IABServiceConnector
 
     private ServiceConnection setupServiceConnection()
     {
-        if (serviceConnection != null)
+        if (serviceConnection == null)
         {
-            return serviceConnection;
+            serviceConnection = new ServiceConnection()
+            {
+                @Override public void onServiceDisconnected(ComponentName name)
+                {
+                    THLog.d(TAG, "Billing service disconnected.");
+                    billingService = null;
+                }
+
+                @Override public void onServiceConnected(ComponentName name, IBinder binderService)
+                {
+                    THLog.d(TAG, "Billing service connected.");
+                    billingService = IInAppBillingService.Stub.asInterface(binderService);
+                    try
+                    {
+                        checkInAppBillingV3Support();
+                        handleSetupFinishedInternal(new IABResponse(Constants.BILLING_RESPONSE_RESULT_OK, "Setup successful."));
+                    }
+                    catch (RemoteException e)
+                    {
+                        e.printStackTrace();
+                        handleSetupFailedInternal(new IABException(Constants.IABHELPER_REMOTE_EXCEPTION, "RemoteException while setting up in-app billing."));
+                    }
+                    catch (IABException e)
+                    {
+                        e.printStackTrace();
+                        handleSetupFailedInternal(e);
+                    }
+                }
+            };
         }
-
-        serviceConnection = new ServiceConnection()
-        {
-            @Override public void onServiceDisconnected(ComponentName name)
-            {
-                THLog.d(TAG, "Billing service disconnected.");
-                billingService = null;
-            }
-
-            @Override public void onServiceConnected(ComponentName name, IBinder binderService)
-            {
-                THLog.d(TAG, "Billing service connected.");
-                billingService = IInAppBillingService.Stub.asInterface(binderService);
-                checkInAppBillingV3Support();
-
-                handleSetupFinishedInternal(new IABResponse(Constants.BILLING_RESPONSE_RESULT_OK, "Setup successful."));
-            }
-        };
         return serviceConnection;
     }
 
-    protected void checkInAppBillingV3Support()
+    protected void checkInAppBillingV3Support() throws RemoteException, IABException
     {
-        String packageName = context.getPackageName();
-        try
+        THLog.d(TAG, "Checking for in-app billing 3 support.");
+
+        // check for in-app billing v3 support
+        int responseStatus = purchaseTypeSupportStatus(Constants.ITEM_TYPE_INAPP);
+        if (responseStatus != Constants.BILLING_RESPONSE_RESULT_OK)
         {
-            THLog.d(TAG, "Checking for in-app billing 3 support.");
-
-            // check for in-app billing v3 support
-            int responseStatus = purchaseTypeSupportStatus(Constants.ITEM_TYPE_INAPP);
-            if (responseStatus != Constants.BILLING_RESPONSE_RESULT_OK)
-            {
-                handleSetupFailedInternal(new IABException(responseStatus, "Error checking for billing v3 support."));
-
-                // if in-app purchases aren't supported, neither are subscriptions.
-                subscriptionSupported = false;
-                return;
-            }
-            THLog.d(TAG, "In-app billing version 3 supported for " + packageName);
-
-            // check for v3 subscriptions support
-            responseStatus = purchaseTypeSupportStatus(Constants.ITEM_TYPE_SUBS);
-            if (responseStatus == Constants.BILLING_RESPONSE_RESULT_OK)
-            {
-                THLog.d(TAG, "Subscriptions AVAILABLE.");
-                subscriptionSupported = true;
-            }
-            else
-            {
-                THLog.d(TAG, "Subscriptions NOT AVAILABLE. Response: " + responseStatus);
-            }
-
-            setupDone = true;
+            // if in-app purchases aren't supported, neither are subscriptions.
+            subscriptionSupported = false;
+            throw new IABException(responseStatus, "Error checking for billing v3 support.");
         }
-        catch (RemoteException e)
+        THLog.d(TAG, "In-app billing version 3 supported for " + context.getPackageName());
+
+        // check for v3 subscriptions support
+        responseStatus = purchaseTypeSupportStatus(Constants.ITEM_TYPE_SUBS);
+        if (responseStatus == Constants.BILLING_RESPONSE_RESULT_OK)
         {
-            e.printStackTrace();
-            handleSetupFailedInternal(new IABException(Constants.IABHELPER_REMOTE_EXCEPTION, "RemoteException while setting up in-app billing."));
+            THLog.d(TAG, "Subscriptions AVAILABLE.");
+            subscriptionSupported = true;
         }
+        else
+        {
+            // We can proceed if subscriptions are not available
+            THLog.d(TAG, "Subscriptions NOT AVAILABLE. Response: " + responseStatus);
+        }
+
+        setupDone = true;
     }
 
     /**
