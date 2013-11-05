@@ -1,5 +1,8 @@
-package com.tradehero.common.billing.googleplay;
+package com.tradehero.th.billing.googleplay;
 
+import com.tradehero.common.billing.googleplay.Constants;
+import com.tradehero.common.billing.googleplay.SKU;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -12,6 +15,7 @@ public class SKUFetcher
     public static final String TAG = SKUFetcher.class.getSimpleName();
 
     private Map<String, List<SKU>> availableSkus;
+    private WeakReference<SKUFetcherListener> listener = new WeakReference<>(null);
 
     public SKUFetcher()
     {
@@ -28,9 +32,14 @@ public class SKUFetcher
         availableSkus.put(Constants.ITEM_TYPE_SUBS, new ArrayList<SKU>());
     }
 
+    public void dispose()
+    {
+        listener = null;
+    }
+
     public void fetchSkus()
     {
-        // TODO whenever it should come from the server
+        notifyListenerFetched();
     }
 
     public Map<String, List<SKU>> getAvailableSkus()
@@ -52,5 +61,39 @@ public class SKUFetcher
     private List<SKU> getAvailableSkusOfType(String itemType)
     {
         return Collections.unmodifiableList(availableSkus.get(itemType));
+    }
+
+    public SKUFetcherListener getListener()
+    {
+        return listener.get();
+    }
+
+    public void setListener(SKUFetcherListener listener)
+    {
+        this.listener = new WeakReference<>(listener);
+    }
+
+    protected void notifyListenerFetched()
+    {
+        SKUFetcherListener listenerCopy = getListener();
+        if (listenerCopy != null)
+        {
+            listenerCopy.onFetchedSKUs(this, Collections.unmodifiableMap(availableSkus));
+        }
+    }
+
+    protected void notifyListenerFetchFailed(Exception exception)
+    {
+        SKUFetcherListener listenerCopy = getListener();
+        if (listenerCopy != null)
+        {
+            listenerCopy.onFetchSKUsFailed(this, exception);
+        }
+    }
+
+    public static interface SKUFetcherListener
+    {
+        void onFetchedSKUs(SKUFetcher fetcher, Map<String, List<SKU>> availableSkus);
+        void onFetchSKUsFailed(SKUFetcher fetcher, Exception exception); // TODO decide if we create specific Exception
     }
 }
