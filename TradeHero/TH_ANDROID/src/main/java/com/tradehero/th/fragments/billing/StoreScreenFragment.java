@@ -115,7 +115,7 @@ public class StoreScreenFragment extends DashboardFragment
 
     private void popBuyFollowCredits()
     {
-        popBuyDialog(THSKUDetails.DOMAIN_FOLLOW_CREDITS, R.string.store_buy_virtual_dollar_window_title);
+        popBuyDialog(THSKUDetails.DOMAIN_FOLLOW_CREDITS, R.string.store_buy_follow_credits_window_message);
     }
 
     private void popBuyStockAlerts()
