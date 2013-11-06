@@ -14,6 +14,7 @@ import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
+import com.tradehero.th.adapters.position.AbstractPositionItemAdapter;
 import com.tradehero.th.adapters.position.PositionItemAdapter;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.position.GetPositionsDTO;
@@ -55,10 +56,10 @@ public class PositionListFragment extends DashboardFragment
     private PortfolioHeaderView portfolioHeaderView;
     private ExpandingListView positionsListView;
 
-    private OwnedPortfolioId ownedPortfolioId;
+    protected OwnedPortfolioId ownedPortfolioId;
     private GetPositionsDTO getPositionsDTO;
 
-    protected PositionItemAdapter positionItemAdapter;
+    protected AbstractPositionItemAdapter positionItemAdapter;
 
     private int firstPositionVisible = 0;
     private boolean[] expandedPositions;
@@ -276,8 +277,20 @@ public class PositionListFragment extends DashboardFragment
         if (this.getPositionsDTO != null && ownedPortfolioId != null)
         {
             positionItemAdapter.setPositions(getPositionsDTO.positions, ownedPortfolioId.getPortfolioId());
-            positionItemAdapter.setExpandedStatesPerPosition(expandedPositions);
-            getView().post(
+            restoreExpandingStates();
+        }
+
+        if (andDisplay)
+        {
+            // TODO finer grained
+            display();
+        }
+    }
+
+    protected void restoreExpandingStates()
+    {
+        positionItemAdapter.setExpandedStatesPerPosition(expandedPositions);
+        getView().post(
                 new Runnable()
                 {
                     @Override public void run()
@@ -286,15 +299,7 @@ public class PositionListFragment extends DashboardFragment
                         positionsListView.setSelection(firstPositionVisible);
                     }
                 }
-            );
-        }
-
-        if (andDisplay)
-        {
-            displayActionBarTitle();
-            // TODO finer grained
-            display();
-        }
+        );
     }
 
     public void display()

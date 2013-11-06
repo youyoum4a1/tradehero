@@ -115,7 +115,7 @@ public abstract class AbstractPositionView extends LinearLayout
 
     protected void displayColorIndicator()
     {
-        if (colorIndicator != null)
+        if (colorIndicator != null && positionDTO != null)
         {
             Double roi = positionDTO.getROISinceInception();
             colorIndicator.linkWith(roi);

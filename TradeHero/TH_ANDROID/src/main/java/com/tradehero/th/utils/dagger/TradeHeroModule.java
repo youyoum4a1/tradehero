@@ -76,8 +76,12 @@ import com.tradehero.th.widget.portfolio.header.CurrentUserPortfolioHeaderView;
 import com.tradehero.th.widget.portfolio.header.OtherUserPortfolioHeaderView;
 import com.tradehero.th.widget.position.LockedPositionItem;
 import com.tradehero.th.widget.position.PositionClosedView;
+import com.tradehero.th.widget.position.PositionInPeriodClosedView;
+import com.tradehero.th.widget.position.PositionInPeriodOpenView;
 import com.tradehero.th.widget.position.PositionOpenView;
 import com.tradehero.th.widget.position.partial.PositionPartialBottomClosedView;
+import com.tradehero.th.widget.position.partial.PositionPartialBottomInPeriodClosedView;
+import com.tradehero.th.widget.position.partial.PositionPartialBottomInPeriodOpenView;
 import com.tradehero.th.widget.position.partial.PositionPartialBottomOpenView;
 import com.tradehero.th.widget.position.partial.PositionPartialTopView;
 import com.tradehero.th.widget.timeline.TimelineItemView;
@@ -135,11 +139,17 @@ import javax.inject.Singleton;
                 InPeriodPositionListFragment.class,
                 CurrentUserPortfolioHeaderView.class,
                 OtherUserPortfolioHeaderView.class,
+
                 PositionOpenView.class,
+                PositionInPeriodOpenView.class,
+
                 PositionClosedView.class,
+                PositionInPeriodClosedView.class,
                 PositionPartialTopView.class,
                 PositionPartialBottomOpenView.class,
+                PositionPartialBottomInPeriodOpenView.class,
                 PositionPartialBottomClosedView.class,
+                PositionPartialBottomInPeriodClosedView.class,
                 LockedPositionItem.class,
 
                 TradeListFragment.class,

@@ -1,7 +1,8 @@
 package com.tradehero.th.api.leaderboard.position;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tradehero.th.api.position.AbstractGetPositionsDTO;
-import com.tradehero.th.api.position.PositionInPeriodDTO;
+import com.tradehero.th.api.position.InPeriodPositionDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import java.util.ArrayList;
 import java.util.List;
@@ -9,14 +10,14 @@ import java.util.List;
 /**
  * Created by julien on 1/11/13
  */
-public class GetLeaderboardPositionsDTO extends AbstractGetPositionsDTO<PositionInPeriodDTO>
+public class GetLeaderboardPositionsDTO extends AbstractGetPositionsDTO<InPeriodPositionDTO>
 {
     public GetLeaderboardPositionsDTO()
     {
         super();
     }
 
-    public GetLeaderboardPositionsDTO(List<PositionInPeriodDTO> positions, List<SecurityCompactDTO> securities, int openPositionsCount, int closedPositionsCount)
+    public GetLeaderboardPositionsDTO(List<InPeriodPositionDTO> positions, List<SecurityCompactDTO> securities, int openPositionsCount, int closedPositionsCount)
     {
         super(positions, securities, openPositionsCount, closedPositionsCount);
     }
@@ -30,31 +31,31 @@ public class GetLeaderboardPositionsDTO extends AbstractGetPositionsDTO<Position
 
         List<OwnedLeaderboardPositionId> ownedLeaderboardPositionIds = new ArrayList<>();
 
-        for (PositionInPeriodDTO positionInPeriodDTO: positions)
+        for (InPeriodPositionDTO inPeriodPositionDTO : positions)
         {
-            ownedLeaderboardPositionIds.add(positionInPeriodDTO.getLbOwnedPositionId());
+            ownedLeaderboardPositionIds.add(inPeriodPositionDTO.getLbOwnedPositionId());
         }
 
         return ownedLeaderboardPositionIds;
     }
 
-    public void setLeaderboardMarkUserId(LeaderboardMarkUserId leaderboardMarkUserId)
+    @JsonIgnore public void setLeaderboardMarkUserId(LeaderboardMarkUserId leaderboardMarkUserId)
     {
         setLeaderboardMarkUserId(leaderboardMarkUserId.key);
     }
 
-    public void setLeaderboardMarkUserId(Integer leaderboardMarkUserId)
+    @JsonIgnore public void setLeaderboardMarkUserId(Integer leaderboardMarkUserId)
     {
         if (positions == null)
         {
             return;
         }
 
-        for (PositionInPeriodDTO positionInPeriodDTO: positions)
+        for (InPeriodPositionDTO inPeriodPositionDTO : positions)
         {
-            if (positionInPeriodDTO != null)
+            if (inPeriodPositionDTO != null)
             {
-                positionInPeriodDTO.setLeaderboardMarkUserId(leaderboardMarkUserId);
+                inPeriodPositionDTO.setLeaderboardMarkUserId(leaderboardMarkUserId);
             }
         }
     }

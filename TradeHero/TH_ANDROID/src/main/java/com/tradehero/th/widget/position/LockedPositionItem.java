@@ -80,7 +80,7 @@ public class LockedPositionItem extends LinearLayout
 
     protected void display()
     {
-        if (colorIndicator != null) {
+        if (colorIndicator != null && positionDTO != null) {
             Double roi = positionDTO.getROISinceInception();
             colorIndicator.linkWith(roi);
         }
