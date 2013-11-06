@@ -12,10 +12,9 @@ import com.tradehero.common.cache.LruMemFileCache;
 import com.tradehero.common.persistence.CacheHelper;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.api.form.AbstractUserAvailabilityRequester;
-import com.tradehero.th.api.portfolio.DisplayablePortfolioDTO;
 import com.tradehero.th.api.users.UserBaseDTO;
+import com.tradehero.th.fragments.billing.StoreScreenFragment;
 import com.tradehero.th.persistence.portfolio.OwnedPortfolioFetchAssistant;
-import com.tradehero.th.persistence.portfolio.UserPortfolioFetchAssistant;
 import com.tradehero.th.persistence.user.UserProfileFetchAssistant;
 import com.tradehero.th.base.THUser;
 import com.tradehero.th.fragments.WebViewFragment;
@@ -132,6 +131,8 @@ import javax.inject.Singleton;
                 TradeListItemView.class,
                 TradeListOverlayHeaderView.class,
                 TradeListHeaderView.class,
+
+                StoreScreenFragment.class,
 
                 AbstractUserAvailabilityRequester.class,
                 SearchStockPageItemListLoader.class,

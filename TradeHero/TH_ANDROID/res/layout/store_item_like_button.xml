@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<com.tradehero.th.widget.billing.StoreItemLikeButton
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="8dp"
+    android:paddingBottom="8dp"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
+    android:background="@color/white"
+  >
+
+  <ImageView
+      android:id="@+id/icon"
+      android:layout_width="32dp"
+      android:layout_height="32dp"
+      android:layout_alignParentLeft="true"
+      android:layout_marginRight="16dp"
+      android:layout_centerVertical="true"
+      android:scaleType="fitXY"
+      android:contentDescription="@null"
+    />
+
+  <ImageView
+      android:id="@+id/btn_buy_now"
+      android:layout_width="125dp"
+      android:layout_height="48dp"
+      android:layout_alignParentRight="true"
+      android:layout_centerVertical="true"
+      android:paddingTop="8dp"
+      android:paddingBottom="8dp"
+      android:scaleType="fitCenter"
+      android:background="@null"
+      android:contentDescription="@null"
+      />
+
+  <TextView
+      android:id="@+id/title"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_toRightOf="@id/icon"
+      android:layout_toLeftOf="@id/btn_buy_now"
+      android:layout_centerVertical="true"
+      android:textSize="20sp"
+    />
+
+</com.tradehero.th.widget.billing.StoreItemLikeButton>

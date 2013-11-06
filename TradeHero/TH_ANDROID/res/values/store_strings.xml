@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="store_option_menu_title">TradeHero Store</string>
+  <string name="store_header_in_app_purchases">In-App Purchases</string>
+  <string name="store_buy_virtual_dollars">Virtual Dollars</string>
+  <string name="store_buy_follow_credits">Follow Credits</string>
+  <string name="store_buy_stock_alerts">Stock Alers</string>
+  <string name="store_buy_reset_portfolio">Reset Portfolio</string>
+  <string name="store_header_manage_purchases">Manage Purchases</string>
+  <string name="store_manage_heroes">Manage Heroes</string>
+  <string name="store_manage_followers">Manage Followers</string>
+  <string name="store_manage_stock_alerts">Manage Stock Alerts</string>
+</resources>
