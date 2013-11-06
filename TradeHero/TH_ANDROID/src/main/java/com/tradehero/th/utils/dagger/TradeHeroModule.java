@@ -22,6 +22,7 @@ import com.tradehero.th.fragments.leaderboard.LeaderboardLoader;
 import com.tradehero.th.fragments.leaderboard.LeaderboardUserRankItemView;
 import com.tradehero.th.fragments.portfolio.PortfolioListFragment;
 import com.tradehero.th.fragments.portfolio.PushablePortfolioListFragment;
+import com.tradehero.th.fragments.position.InPeriodPositionListFragment;
 import com.tradehero.th.fragments.position.PositionListFragment;
 import com.tradehero.th.fragments.security.ChartFragment;
 import com.tradehero.th.fragments.security.StockInfoFragment;
@@ -131,6 +132,7 @@ import javax.inject.Singleton;
                 PortfolioListItemView.class,
 
                 PositionListFragment.class,
+                InPeriodPositionListFragment.class,
                 CurrentUserPortfolioHeaderView.class,
                 OtherUserPortfolioHeaderView.class,
                 PositionOpenView.class,

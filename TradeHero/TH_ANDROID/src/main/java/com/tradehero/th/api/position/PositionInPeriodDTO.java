@@ -1,7 +1,7 @@
 package com.tradehero.th.api.position;
 
 import com.tradehero.th.api.leaderboard.position.LeaderbordMarkUserPositionId;
-import com.tradehero.th.api.leaderboard.position.OwnedLbPositionId;
+import com.tradehero.th.api.leaderboard.position.OwnedLeaderboardPositionId;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,9 +22,9 @@ public class PositionInPeriodDTO extends PositionDTO
         return new LeaderbordMarkUserPositionId(id);
     }
 
-    public OwnedLbPositionId getLbOwnedPositionId()
+    public OwnedLeaderboardPositionId getLbOwnedPositionId()
     {
-        return new OwnedLbPositionId(leaderboardMarkUserId, id);
+        return new OwnedLeaderboardPositionId(leaderboardMarkUserId, id);
     }
 
     public Integer getLeaderboardMarkUserId()
@@ -37,14 +37,14 @@ public class PositionInPeriodDTO extends PositionDTO
         this.leaderboardMarkUserId = leaderboardMarkUserId;
     }
 
-    public static List<OwnedLbPositionId> getFiledLbPositionIds(List<PositionInPeriodDTO> positionInPeriodDTOs)
+    public static List<OwnedLeaderboardPositionId> getFiledLbPositionIds(List<PositionInPeriodDTO> positionInPeriodDTOs)
     {
         if (positionInPeriodDTOs == null)
         {
             return null;
         }
 
-        List<OwnedLbPositionId> ownedPositionIds = new ArrayList<>();
+        List<OwnedLeaderboardPositionId> ownedPositionIds = new ArrayList<>();
 
         for (PositionInPeriodDTO positionInPeriodDTO: positionInPeriodDTOs)
         {

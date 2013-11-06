@@ -21,21 +21,21 @@ public class GetLeaderboardPositionsDTO extends AbstractGetPositionsDTO<Position
         super(positions, securities, openPositionsCount, closedPositionsCount);
     }
 
-    public List<OwnedLbPositionId> getFiledPositionIds()
+    public List<OwnedLeaderboardPositionId> getFiledPositionIds()
     {
         if (positions == null)
         {
             return null;
         }
 
-        List<OwnedLbPositionId> ownedLbPositionIds = new ArrayList<>();
+        List<OwnedLeaderboardPositionId> ownedLeaderboardPositionIds = new ArrayList<>();
 
         for (PositionInPeriodDTO positionInPeriodDTO: positions)
         {
-            ownedLbPositionIds.add(positionInPeriodDTO.getLbOwnedPositionId());
+            ownedLeaderboardPositionIds.add(positionInPeriodDTO.getLbOwnedPositionId());
         }
 
-        return ownedLbPositionIds;
+        return ownedLeaderboardPositionIds;
     }
 
     public void setLeaderboardMarkUserId(LeaderboardMarkUserId leaderboardMarkUserId)

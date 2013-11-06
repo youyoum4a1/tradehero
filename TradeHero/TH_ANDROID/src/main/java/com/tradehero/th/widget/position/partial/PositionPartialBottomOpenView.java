@@ -86,12 +86,7 @@ public class PositionPartialBottomOpenView extends RelativeLayout
         this.positionDTO = positionDTO;
         if (andDisplay)
         {
-            displayUnrealisedPLValue();
-            displayRealisedPLValue();
-            displayTotalInvested();
-            displayMarketValue();
-            displayQuantityValue();
-            displayAveragePriceValue();
+            display();
         }
     }
 

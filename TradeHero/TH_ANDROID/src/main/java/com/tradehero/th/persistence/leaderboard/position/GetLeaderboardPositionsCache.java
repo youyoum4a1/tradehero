@@ -5,7 +5,7 @@ import com.tradehero.common.persistence.PartialDTOCache;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.api.leaderboard.position.GetLeaderboardPositionsDTO;
 import com.tradehero.th.api.leaderboard.position.LeaderboardMarkUserId;
-import com.tradehero.th.api.leaderboard.position.OwnedLbPositionId;
+import com.tradehero.th.api.leaderboard.position.OwnedLeaderboardPositionId;
 import com.tradehero.th.api.leaderboard.position.PagedLeaderboardMarkUserId;
 import com.tradehero.th.api.leaderboard.position.PerPagedLeaderboardMarkUserId;
 import com.tradehero.th.api.position.PositionInPeriodDTO;
@@ -30,7 +30,7 @@ import retrofit.RetrofitError;
     private LruCache<LeaderboardMarkUserId, GetLeaderboardPositionsCache.GetLeaderboardPositionsCutDTO> lruCache;
     @Inject protected Lazy<LeaderboardService> leaderboardService;
     @Inject protected Lazy<SecurityCompactCache> securityCompactCache;
-    @Inject protected Lazy<LbPositionCache> filedPositionCache;
+    @Inject protected Lazy<LeaderboardPositionCache> filedPositionCache;
 
     //<editor-fold desc="Constructors">
     @Inject public GetLeaderboardPositionsCache()
@@ -134,7 +134,7 @@ import retrofit.RetrofitError;
 
     private static class GetLeaderboardPositionsCutDTO
     {
-        public List<OwnedLbPositionId> ownedLbPositionIds;
+        public List<OwnedLeaderboardPositionId> ownedLeaderboardPositionIds;
         public List<SecurityId> securityIds;
         public int openPositionsCount;
         public int closedPositionsCount;
@@ -142,10 +142,10 @@ import retrofit.RetrofitError;
         public GetLeaderboardPositionsCutDTO(
                 GetLeaderboardPositionsDTO getLeaderboardPositionsDTO,
                 SecurityCompactCache securityCompactCache,
-                LbPositionCache lbPositionCache)
+                LeaderboardPositionCache leaderboardPositionCache)
         {
-            lbPositionCache.put(getLeaderboardPositionsDTO.positions);
-            this.ownedLbPositionIds = PositionInPeriodDTO.getFiledLbPositionIds(getLeaderboardPositionsDTO.positions);
+            leaderboardPositionCache.put(getLeaderboardPositionsDTO.positions);
+            this.ownedLeaderboardPositionIds = PositionInPeriodDTO.getFiledLbPositionIds(getLeaderboardPositionsDTO.positions);
 
             securityCompactCache.put(getLeaderboardPositionsDTO.securities);
             this.securityIds = SecurityCompactDTO.getSecurityIds(getLeaderboardPositionsDTO.securities);
@@ -156,10 +156,10 @@ import retrofit.RetrofitError;
 
         public GetLeaderboardPositionsDTO create(
                 SecurityCompactCache securityCompactCache,
-                LbPositionCache lbPositionCache)
+                LeaderboardPositionCache leaderboardPositionCache)
         {
             return new GetLeaderboardPositionsDTO(
-                    lbPositionCache.get(ownedLbPositionIds),
+                    leaderboardPositionCache.get(ownedLeaderboardPositionIds),
                     securityCompactCache.get(securityIds),
                     openPositionsCount,
                     closedPositionsCount

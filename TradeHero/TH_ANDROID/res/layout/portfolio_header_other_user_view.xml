@@ -27,7 +27,7 @@
                 android:textStyle="bold"
                 android:paddingLeft="8dp"
                 android:paddingRight="8dp"
-                android:text="Julien" android:gravity="center_vertical"/>
+                android:text="@null" android:gravity="center_vertical"/>
     </LinearLayout>
     <RelativeLayout
             android:layout_width="121dp"
