@@ -18,6 +18,8 @@ public class SKUFetcher
     public static final String EXTRA_CASH_T1_KEY = "com.myhero.th.extracash.t1";
     public static final String EXTRA_CASH_T2_KEY = "com.myhero.th.extracash.t2";
 
+    public static final String RESET_PORTFOLIO_0 = "com.myhero.th.resetportfolio.0";
+
     private Map<String, List<SKU>> availableSkus;
     private WeakReference<SKUFetcherListener> listener = new WeakReference<>(null);
 
@@ -31,6 +33,7 @@ public class SKUFetcher
         inAppSkus.add(new SKU(EXTRA_CASH_T0_KEY));
         inAppSkus.add(new SKU(EXTRA_CASH_T1_KEY));
         inAppSkus.add(new SKU(EXTRA_CASH_T2_KEY));
+        inAppSkus.add(new SKU(RESET_PORTFOLIO_0));
         availableSkus.put(Constants.ITEM_TYPE_INAPP, inAppSkus);
 
         availableSkus.put(Constants.ITEM_TYPE_SUBS, new ArrayList<SKU>());

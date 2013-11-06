@@ -34,6 +34,11 @@ public class THSKUDetailsTuner implements ProductDetailsTuner<THSKUDetails>
                 productDetails.iconRibbonResId = R.drawable.ribbon_cash_best;
                 productDetails.domain = THSKUDetails.DOMAIN_VIRTUAL_DOLLAR;
                 break;
+
+            case SKUFetcher.RESET_PORTFOLIO_0:
+                productDetails.iconResId = R.drawable.icn_reset_portfolio;
+                productDetails.domain = THSKUDetails.DOMAIN_RESET_PORTFOLIO;
+
             default:
                 THLog.d(TAG, "Unhandled productDetails key " + productDetails.getProductIdentifier().identifier);
         }

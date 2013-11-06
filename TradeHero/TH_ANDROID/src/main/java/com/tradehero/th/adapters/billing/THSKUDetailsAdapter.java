@@ -18,10 +18,10 @@ public class THSKUDetailsAdapter extends DTOAdapter<THSKUDetails, StoreSKUDetail
 
     private String skuDomain;
 
-    public THSKUDetailsAdapter(Context context, LayoutInflater inflater)
+    public THSKUDetailsAdapter(Context context, LayoutInflater inflater, String skuDomain)
     {
         super(context, inflater, R.layout.store_sku_detail);
-        this.skuDomain = THSKUDetails.DOMAIN_VIRTUAL_DOLLAR;
+        this.skuDomain = skuDomain;
     }
 
     public THSKUDetailsAdapter(Context context, LayoutInflater inflater, int layoutResourceId, String skuDomain)
