@@ -130,9 +130,8 @@ public class StoreScreenFragment extends DashboardFragment
 
     private void popBuyDialog(String skuDomain, int titleResId)
     {
-        final THSKUDetailsAdapter detailsAdapter = new THSKUDetailsAdapter(getActivity(), getActivity().getLayoutInflater());
+        final THSKUDetailsAdapter detailsAdapter = new THSKUDetailsAdapter(getActivity(), getActivity().getLayoutInflater(), skuDomain);
         List<THSKUDetails> desiredSkuDetails = ((DashboardActivity) getActivity()).getDetailsOfDomain(skuDomain);
-        detailsAdapter.setSkuDomain(skuDomain);
         detailsAdapter.setItems(desiredSkuDetails);
 
         popBuyDialog(detailsAdapter, titleResId);
