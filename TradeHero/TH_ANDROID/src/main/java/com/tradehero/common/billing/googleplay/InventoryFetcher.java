@@ -1,6 +1,7 @@
 package com.tradehero.common.billing.googleplay;
 
 import android.content.Context;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.RemoteException;
 import com.tradehero.common.billing.googleplay.exceptions.IABBadResponseException;
@@ -54,32 +55,50 @@ public class InventoryFetcher extends IABServiceConnector
 
     private void fetchInventoryAsync()
     {
-        //TODO: do it in a background thread
-        try
-        {
-            internalFetchInventory();
-            if (inventoryListener != null)
+        AsyncTask<Void, Void, HashMap<SKU, SKUDetails>> backgroundTask =  new AsyncTask<Void, Void, HashMap<SKU, SKUDetails>>() {
+            private IABException exception;
+
+            @Override protected HashMap<SKU, SKUDetails> doInBackground(Void... params)
             {
-                inventoryListener.onInventoryFetchSuccess(this, this.getInventory());
+                try
+                {
+                    return internalFetchCompleteInventory();
+                }
+                catch (RemoteException e)
+                {
+                    THLog.e(TAG, "Remote Exception while fetching inventory.", e);
+                    exception = new IABRemoteException("RemoteException while fetching IAB", e);
+                }
+                catch (JSONException e)
+                {
+                    THLog.e(TAG, "Error parsing json.", e);
+                    exception = new IABBadResponseException("Unable to parse JSON", e);
+                }
+                catch (IABException e)
+                {
+                    THLog.e(TAG, "IAB error.", e);
+                    exception = e;
+                }
+                return null;
             }
-            dispose();
-        }
-        catch (RemoteException e)
-        {
-            THLog.e(TAG, "Remote Exception while fetching inventory.", e);
-            handleInventoryFetchFailure(new IABRemoteException("RemoteException while fetching IAB", e));
-        }
-        catch (JSONException e)
-        {
-            THLog.e(TAG, "Error parsing json.", e);
-            handleInventoryFetchFailure(new IABBadResponseException("Unable to parse JSON", e));
-        }
-        catch (IABException e)
-        {
-            THLog.e(TAG, "IAB error.", e);
-            handleInventoryFetchFailure(e);
-        }
+
+            @Override protected void onPostExecute(HashMap<SKU, SKUDetails> skuskuDetailsMap)
+            {
+                if (exception != null)
+                {
+                    handleInventoryFetchFailure(exception);
+                }
+                else
+                {
+                    inventory = skuskuDetailsMap;
+                    notifyListenerFetched();
+                }
+            }
+        };
+        backgroundTask.execute();
     }
+
+
 
     private void handleInventoryFetchFailure(IABException e)
     {
@@ -89,19 +108,31 @@ public class InventoryFetcher extends IABServiceConnector
         }
     }
 
-    private void internalFetchInventory() throws IABException, RemoteException, JSONException
+
+    protected void notifyListenerFetched()
+    {
+        InventoryListener listenerCopy = getInventoryListener();
+        if (listenerCopy != null)
+        {
+            listenerCopy.onInventoryFetchSuccess(this, this.getInventory());
+        }
+    }
+
+    private HashMap<SKU, SKUDetails> internalFetchCompleteInventory() throws IABException, RemoteException, JSONException
     {
         if (skus == null || skus.isEmpty())
         {
-            return;
+            return new HashMap<>();
         }
 
-        internalFetchSKU(Constants.ITEM_TYPE_INAPP);
+        HashMap<SKU, SKUDetails> map = internalFetchSKUType(Constants.ITEM_TYPE_INAPP);
 
         if (areSubscriptionsSupported())
         {
-            internalFetchSKU(Constants.ITEM_TYPE_SUBS);
+            HashMap<SKU, SKUDetails> subscriptionsMap = internalFetchSKUType(Constants.ITEM_TYPE_SUBS);
+            map.putAll(subscriptionsMap);
         }
+        return map;
     }
 
     private Bundle getQuerySKUBundle()
@@ -116,7 +147,7 @@ public class InventoryFetcher extends IABServiceConnector
         return querySkus;
     }
 
-    private void internalFetchSKU(String itemType) throws IABException, RemoteException, JSONException
+    private HashMap<SKU, SKUDetails> internalFetchSKUType(String itemType) throws IABException, RemoteException, JSONException
     {
         Bundle querySkus = getQuerySKUBundle();
         Bundle skuDetails = this.billingService.getSkuDetails(TARGET_BILLING_API_VERSION3, context.getPackageName(), itemType, querySkus);
@@ -138,12 +169,14 @@ public class InventoryFetcher extends IABServiceConnector
 
         ArrayList<String> responseList = skuDetails.getStringArrayList(Constants.RESPONSE_GET_SKU_DETAILS_LIST);
 
+        HashMap<SKU, SKUDetails> map = new HashMap<>();
         for (String json : responseList)
         {
             SKUDetails d = new SKUDetails(itemType, json);
             THLog.d(TAG, "Got sku details: " + d);
-            this.inventory.put(d.sku, d);
+            map.put(d.sku, d);
         }
+        return map;
     }
 
     public Map<SKU, SKUDetails> getInventory()
