@@ -1,6 +1,7 @@
 package com.tradehero.common.billing.googleplay;
 
 import android.content.Context;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.RemoteException;
 import android.text.TextUtils;
@@ -40,28 +41,53 @@ public class PurchaseFetcher extends IABServiceConnector
     @Override protected void handleSetupFinished(IABResponse response)
     {
         super.handleSetupFinished(response);
-        try
+        AsyncTask<Void, Void, HashMap<SKU, GooglePurchase>> backgroundTask = new AsyncTask<Void, Void, HashMap<SKU, GooglePurchase>>()
         {
-            queryPurchases(Constants.ITEM_TYPE_INAPP);
-            if (areSubscriptionsSupported())
+            private Exception exception;
+            @Override protected HashMap<SKU, GooglePurchase> doInBackground(Void... params)
             {
-                queryPurchases(Constants.ITEM_TYPE_SUBS);
+                try
+                {
+                    HashMap<SKU, GooglePurchase> map = queryPurchases(Constants.ITEM_TYPE_INAPP);
+                    if (areSubscriptionsSupported())
+                    {
+                        HashMap<SKU, GooglePurchase> subscriptionMap = queryPurchases(Constants.ITEM_TYPE_SUBS);
+                        map.putAll(subscriptionMap);
+                    }
+                    return map;
+                }
+                catch (JSONException|RemoteException|IABException exception)
+                {
+                    THLog.e(TAG, "Failed querying purchases", exception);
+                    exception.printStackTrace();
+                }
+                return null;
             }
-            notifyListenerFetched();
-        }
-        catch (JSONException|RemoteException|IABException exception)
-        {
-            THLog.e(TAG, "Failed querying purchases", exception);
-            exception.printStackTrace();
-        }
+
+            @Override protected void onPostExecute(HashMap<SKU, GooglePurchase> skuGooglePurchaseHashMap)
+            {
+                if (exception != null)
+                {
+                    THLog.e(TAG, "Failed querying purchases", exception);
+                    exception.printStackTrace();
+                }
+                else
+                {
+                    purchases = skuGooglePurchaseHashMap;
+                    notifyListenerFetched();
+                }
+            }
+        };
+        backgroundTask.execute();
     }
 
-    protected void queryPurchases(String itemType) throws JSONException, RemoteException, IABException
+    protected HashMap<SKU, GooglePurchase> queryPurchases(String itemType) throws JSONException, RemoteException, IABException
     {
         // Query purchases
         THLog.d(TAG, "Querying owned items, item type: " + itemType);
         THLog.d(TAG, "Package name: " + context.getPackageName());
         String continueToken = null;
+        HashMap<SKU, GooglePurchase> purchasesMap = new HashMap<>();
 
         do
         {
@@ -101,7 +127,7 @@ public class PurchaseFetcher extends IABServiceConnector
                     }
 
                     // Record ownership and token
-                    purchases.put(purchase.getProductIdentifier(), purchase);
+                    purchasesMap.put(purchase.getProductIdentifier(), purchase);
                 }
                 else
                 {
@@ -113,6 +139,7 @@ public class PurchaseFetcher extends IABServiceConnector
             THLog.d(TAG, "Continuation token: " + continueToken);
         }
         while (!TextUtils.isEmpty(continueToken));
+        return purchasesMap;
     }
 
     protected Bundle getPurchases(String itemType, String continueToken) throws RemoteException
