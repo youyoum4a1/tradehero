@@ -4,9 +4,13 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
+import com.tradehero.th.api.portfolio.PortfolioId;
+import com.tradehero.th.api.users.UserBaseKey;
+import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactCache;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
@@ -20,11 +24,12 @@ import javax.inject.Inject;
 public class CurrentUserPortfolioHeaderView extends RelativeLayout implements PortfolioHeaderView
 {
     @Inject Lazy<PortfolioCompactCache> portfolioCache;
-    private OwnedPortfolioId portfolioId;
     private PortfolioCompactDTO portfolio;
 
     private TextView totalValueTextView;
     private TextView cashValueTextView;
+    private DTOCache.Listener<PortfolioId, PortfolioCompactDTO> portfolioCacheListener;
+    private DTOCache.GetOrFetchTask<PortfolioCompactDTO> fetchPortfolioTask;
 
     //<editor-fold desc="Description">
     public CurrentUserPortfolioHeaderView(Context context)
@@ -50,15 +55,32 @@ public class CurrentUserPortfolioHeaderView extends RelativeLayout implements Po
         initViews();
     }
 
-    private void initViews()
+    @Override protected void onAttachedToWindow()
     {
-        totalValueTextView = (TextView) findViewById(R.id.header_portfolio_total_value);
-        cashValueTextView = (TextView) findViewById(R.id.header_portfolio_cash_value);
+        super.onAttachedToWindow();
+
+        portfolioCacheListener = new DTOCache.Listener<PortfolioId, PortfolioCompactDTO>()
+        {
+            @Override public void onDTOReceived(PortfolioId key, PortfolioCompactDTO value)
+            {
+                display(value);
+            }
+
+            @Override public void onErrorThrown(PortfolioId key, Throwable error)
+            {
+                //To change body of implemented methods use File | Settings | File Templates.
+            }
+        };
+
+        if (fetchPortfolioTask != null)
+        {
+            fetchPortfolioTask.forgetListener(true);
+        }
     }
 
-    @Override public void bindOwnedPortfolioId(OwnedPortfolioId id)
+    private void display(PortfolioCompactDTO portfolioCompactDTO)
     {
-        this.portfolio = this.portfolioCache.get().get(id.getPortfolioId());
+        this.portfolio = portfolioCompactDTO;
 
         if (portfolio != null)
         {
@@ -74,5 +96,17 @@ public class CurrentUserPortfolioHeaderView extends RelativeLayout implements Po
                 cashValueTextView.setText(cashString);
             }
         }
+    }
+
+    private void initViews()
+    {
+        totalValueTextView = (TextView) findViewById(R.id.header_portfolio_total_value);
+        cashValueTextView = (TextView) findViewById(R.id.header_portfolio_cash_value);
+    }
+
+    @Override public void bindOwnedPortfolioId(OwnedPortfolioId id)
+    {
+        fetchPortfolioTask = this.portfolioCache.get().getOrFetch(id.getPortfolioId(), false, portfolioCacheListener);
+        fetchPortfolioTask.execute();
     }
 }

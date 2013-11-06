@@ -1,6 +1,6 @@
 package com.tradehero.th.api.position;
 
-import com.tradehero.th.api.leaderboard.position.LeaderbordMarkUserPositionId;
+import com.tradehero.th.api.leaderboard.position.LeaderboardMarkUserPositionId;
 import com.tradehero.th.api.leaderboard.position.OwnedLeaderboardPositionId;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,9 +17,9 @@ public class PositionInPeriodDTO extends PositionDTO
     public Double sum_salesInPeriodRefCcy;
     public Double sum_purchasesInPeriodRefCcy;
 
-    public LeaderbordMarkUserPositionId getLbPositionId()
+    public LeaderboardMarkUserPositionId getLbPositionId()
     {
-        return new LeaderbordMarkUserPositionId(id);
+        return new LeaderboardMarkUserPositionId(id);
     }
 
     public OwnedLeaderboardPositionId getLbOwnedPositionId()

@@ -6,23 +6,23 @@ import com.tradehero.common.persistence.AbstractIntegerDTOKey;
 /**
  * Created by julien on 1/11/13
  */
-public class LeaderbordMarkUserPositionId extends AbstractIntegerDTOKey
+public class LeaderboardMarkUserPositionId extends AbstractIntegerDTOKey
 {
-    private static final String BUNDLE_KEY = LeaderbordMarkUserPositionId.class.getName() + ".key";
+    private static final String BUNDLE_KEY = LeaderboardMarkUserPositionId.class.getName() + ".key";
 
-    public LeaderbordMarkUserPositionId(Integer key)
+    public LeaderboardMarkUserPositionId(Integer key)
     {
         super(key);
     }
 
-    public LeaderbordMarkUserPositionId(Bundle args)
+    public LeaderboardMarkUserPositionId(Bundle args)
     {
         super(args);
     }
 
     @Override public boolean equals(Object other)
     {
-        return (other instanceof LeaderbordMarkUserPositionId) && equals((LeaderbordMarkUserPositionId) other);
+        return (other instanceof LeaderboardMarkUserPositionId) && equals((LeaderboardMarkUserPositionId) other);
     }
 
     @Override public String getBundleKey()
