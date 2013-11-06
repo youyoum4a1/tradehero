@@ -1,7 +1,7 @@
 package com.tradehero.th.fragments.dashboard;
 
 import com.tradehero.th.R;
-import com.tradehero.th.fragments.StoreScreenFragment;
+import com.tradehero.th.fragments.billing.StoreScreenFragment;
 import com.tradehero.th.fragments.leaderboard.LeaderboardCommunityFragment;
 import com.tradehero.th.fragments.portfolio.PortfolioListFragment;
 import com.tradehero.th.fragments.timeline.MeTimelineFragment;

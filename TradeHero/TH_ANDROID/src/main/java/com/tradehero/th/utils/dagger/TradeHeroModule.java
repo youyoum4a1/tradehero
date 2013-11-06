@@ -14,6 +14,9 @@ import com.tradehero.common.utils.THLog;
 import com.tradehero.th.api.form.AbstractUserAvailabilityRequester;
 import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
 import com.tradehero.th.api.users.UserBaseDTO;
+import com.tradehero.th.fragments.billing.StoreScreenFragment;
+import com.tradehero.th.persistence.portfolio.OwnedPortfolioFetchAssistant;
+import com.tradehero.th.persistence.user.UserProfileFetchAssistant;
 import com.tradehero.th.base.THUser;
 import com.tradehero.th.fragments.WebViewFragment;
 import com.tradehero.th.fragments.authentication.EmailSignInFragment;
@@ -161,6 +164,8 @@ import org.ocpsoft.prettytime.PrettyTime;
                 TradeListItemView.class,
                 TradeListOverlayHeaderView.class,
                 TradeListHeaderView.class,
+
+                StoreScreenFragment.class,
 
                 AbstractUserAvailabilityRequester.class,
                 SearchStockPageItemListLoader.class,
