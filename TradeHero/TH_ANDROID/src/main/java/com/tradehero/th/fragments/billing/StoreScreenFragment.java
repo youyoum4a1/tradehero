@@ -2,7 +2,9 @@ package com.tradehero.th.fragments.billing;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -63,6 +65,10 @@ public class StoreScreenFragment extends DashboardFragment
     {
         super.onResume();
         storeItemAdapter.notifyDataSetChanged();
+        if (!isBillingAvailable())
+        {
+            popBillingUnavailable();
+        }
     }
 
     @Override public void onDestroyView()
@@ -82,24 +88,102 @@ public class StoreScreenFragment extends DashboardFragment
         return true;
     }
 
+    private boolean isBillingAvailable()
+    {
+        return ((DashboardActivity) getActivity()).isBillingAvailable();
+    }
+
+    private boolean hadErrorLoadingInventory()
+    {
+        return ((DashboardActivity) getActivity()).hadErrorLoadingInventory();
+    }
+
+    private boolean isInventoryReady()
+    {
+        return ((DashboardActivity) getActivity()).isInventoryReady();
+    }
+
+    private void popBillingUnavailable()
+    {
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
+        alertDialogBuilder
+                .setTitle(R.string.store_billing_unavailable_window_title)
+                .setMessage(R.string.store_billing_unavailable_window_description)
+                .setCancelable(true)
+                .setNegativeButton(R.string.store_billing_unavailable_cancel, new DialogInterface.OnClickListener()
+                {
+                    public void onClick(DialogInterface dialog, int id)
+                    {
+                        dialog.cancel();
+                    }
+                })
+                .setPositiveButton(R.string.store_billing_unavailable_act, new DialogInterface.OnClickListener()
+                {
+                    @Override public void onClick(DialogInterface dialogInterface, int i)
+                    {
+                        Intent addAccountIntent = new Intent(Settings.ACTION_ADD_ACCOUNT);
+                        addAccountIntent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT); // Still cannot get it to go back to TradeHero with back button
+                        startActivity(addAccountIntent);
+                    }
+                });
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.show();
+    }
+
+    private void popErrorWhenLoading()
+    {
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
+        alertDialogBuilder
+                .setTitle(R.string.store_billing_error_loading_window_title)
+                .setMessage(R.string.store_billing_error_loading_window_description)
+                .setCancelable(true)
+                .setPositiveButton(R.string.store_billing_error_loading_act, new DialogInterface.OnClickListener()
+                {
+                    @Override public void onClick(DialogInterface dialogInterface, int i)
+                    {
+                        ((DashboardActivity) getActivity()).launchSkuInventorySequence();
+                    }
+                });
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.show();
+    }
+
+    private void popWaitWhileLoading()
+    {
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
+        alertDialogBuilder
+                .setTitle(R.string.store_billing_loading_window_title)
+                .setMessage(R.string.store_billing_loading_window_description)
+                .setCancelable(true)
+                .setNegativeButton(R.string.store_billing_loading_cancel, new DialogInterface.OnClickListener()
+                {
+                    public void onClick(DialogInterface dialog, int id)
+                    {
+                        dialog.cancel();
+                    }
+                });
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.show();
+    }
+
     private void handlePositionClicked(int position)
     {
         switch (position)
         {
             case StoreItemAdapter.POSITION_BUY_VIRTUAL_DOLLARS:
-                popBuyVirtualDollars();
+                conditionalPopBuyVirtualDollars();
                 break;
 
             case StoreItemAdapter.POSITION_BUY_FOLLOW_CREDITS:
-                popBuyFollowCredits();
+                conditionalPopBuyFollowCredits();
                 break;
 
             case StoreItemAdapter.POSITION_BUY_STOCK_ALERTS:
-                popBuyStockAlerts();
+                conditionalPopBuyStockAlerts();
                 break;
 
             case StoreItemAdapter.POSITION_BUY_RESET_PORTFOLIO:
-                popBuyResetPortfolio();
+                conditionalPopBuyResetPortfolio();
                 break;
 
             default:
@@ -108,9 +192,47 @@ public class StoreScreenFragment extends DashboardFragment
         }
     }
 
+    private boolean popErrorConditional()
+    {
+        if (!isBillingAvailable())
+        {
+            popBillingUnavailable();
+        }
+        else if (hadErrorLoadingInventory())
+        {
+            popErrorWhenLoading();
+        }
+        else if (!isInventoryReady())
+        {
+            popWaitWhileLoading();
+        }
+        else
+        {
+            // All clear
+            return false;
+        }
+        return true;
+    }
+
+    private void conditionalPopBuyVirtualDollars()
+    {
+        if (!popErrorConditional())
+        {
+            popBuyVirtualDollars();
+        }
+    }
+
     private void popBuyVirtualDollars()
     {
         popBuyDialog(THSKUDetails.DOMAIN_VIRTUAL_DOLLAR, R.string.store_buy_virtual_dollar_window_title);
+    }
+
+    private void conditionalPopBuyFollowCredits()
+    {
+        if (!popErrorConditional())
+        {
+            popBuyFollowCredits();
+        }
     }
 
     private void popBuyFollowCredits()
@@ -118,9 +240,25 @@ public class StoreScreenFragment extends DashboardFragment
         popBuyDialog(THSKUDetails.DOMAIN_FOLLOW_CREDITS, R.string.store_buy_follow_credits_window_message);
     }
 
+    private void conditionalPopBuyStockAlerts()
+    {
+        if (!popErrorConditional())
+        {
+            popBuyStockAlerts();
+        }
+    }
+
     private void popBuyStockAlerts()
     {
         popBuyDialog(THSKUDetails.DOMAIN_STOCK_ALERTS, R.string.store_buy_stock_alerts_window_title);
+    }
+
+    private void conditionalPopBuyResetPortfolio()
+    {
+        if (!popErrorConditional())
+        {
+            popBuyResetPortfolio();
+        }
     }
 
     private void popBuyResetPortfolio()

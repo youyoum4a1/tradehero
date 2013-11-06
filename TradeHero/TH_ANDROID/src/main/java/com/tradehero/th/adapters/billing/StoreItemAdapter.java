@@ -141,6 +141,16 @@ public class StoreItemAdapter extends BaseAdapter
         return view;
     }
 
+    @Override public boolean areAllItemsEnabled()
+    {
+        return false;
+    }
+
+    @Override public boolean isEnabled(int position)
+    {
+        return getItemViewType(position) != VIEW_TYPE_HEADER;
+    }
+
     //<editor-fold desc="Fine tune methods">
     private View fineTuneItemHeaderView(int position, View view, ViewGroup viewGroup)
     {

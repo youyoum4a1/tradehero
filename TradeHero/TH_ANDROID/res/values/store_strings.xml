@@ -5,12 +5,25 @@
   <string name="store_header_in_app_purchases">In-App Purchases</string>
   <string name="store_buy_virtual_dollars">Virtual Dollars</string>
   <string name="store_buy_follow_credits">Follow Credits</string>
-  <string name="store_buy_stock_alerts">Stock Alers</string>
+  <string name="store_buy_stock_alerts">Stock Alerts</string>
   <string name="store_buy_reset_portfolio">Reset Portfolio</string>
   <string name="store_header_manage_purchases">Manage Purchases</string>
   <string name="store_manage_heroes">Manage Heroes</string>
   <string name="store_manage_followers">Manage Followers</string>
   <string name="store_manage_stock_alerts">Manage Stock Alerts</string>
+
+  <string name="store_billing_unavailable_window_title">Oh!</string>
+  <string name="store_billing_unavailable_window_description">The TradeHero Store will function properly when you have a Google account set up and you enable the billing function.</string>
+  <string name="store_billing_unavailable_cancel">Got it</string>
+  <string name="store_billing_unavailable_act">Add an account now</string>
+
+  <string name="store_billing_error_loading_window_title">Oh!</string>
+  <string name="store_billing_error_loading_window_description">The TradeHero Store failed to load properly.</string>
+  <string name="store_billing_error_loading_act">Reload Please</string>
+
+  <string name="store_billing_loading_window_title">Loading...</string>
+  <string name="store_billing_loading_window_description">Please give us a moment as we are loading some data</string>
+  <string name="store_billing_loading_cancel">Got it</string>
 
   <string name="store_buy_virtual_dollar_window_title">Extra TradeHero Dollars</string>
   <string name="store_buy_virtual_dollar_window_message">Use dollars to buy and sell stocks</string>
