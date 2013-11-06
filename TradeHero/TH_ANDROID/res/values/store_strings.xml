@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
   <string name="store_option_menu_title">TradeHero Store</string>
   <string name="store_header_in_app_purchases">In-App Purchases</string>
   <string name="store_buy_virtual_dollars">Virtual Dollars</string>
@@ -10,4 +11,17 @@
   <string name="store_manage_heroes">Manage Heroes</string>
   <string name="store_manage_followers">Manage Followers</string>
   <string name="store_manage_stock_alerts">Manage Stock Alerts</string>
+
+  <string name="store_buy_virtual_dollar_window_title">Extra TradeHero Dollars</string>
+  <string name="store_buy_virtual_dollar_window_message">Use dollars to buy and sell stocks</string>
+  <string name="store_buy_follow_credits_window_title">TradeHero Credits</string>
+  <string name="store_buy_follow_credits_window_message">Use credits to follow other users!</string>
+  <string name="store_buy_stock_alerts_window_title">Stock Alerts Subscription</string>
+  <string name="store_buy_stock_alerts_window_message">Get notified when a stock price changes. Charged monthly, cancel anytime.</string>
+  <string name="store_buy_reset_portfolio_window_title">Reset Portfolio</string>
+  <string name="store_buy_reset_portfolio_window_message">Get a fresh start by resetting your portfolio!</string>
+
+  <string name="store_buy_virtual_dollar_window_button_cancel">Later</string>
+  <string name="store_buy_virtual_dollar_window_button_buy">Buy Now!</string>
+
 </resources>

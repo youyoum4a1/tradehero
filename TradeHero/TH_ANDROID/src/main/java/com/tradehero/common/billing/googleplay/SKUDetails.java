@@ -2,6 +2,7 @@ package com.tradehero.common.billing.googleplay;
 
 import com.tradehero.common.billing.ProductDetails;
 import com.tradehero.common.billing.ProductIdentifier;
+import java.util.Comparator;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -13,6 +14,8 @@ public class SKUDetails implements ProductDetails<SKU>
     public static final String JSON_KEY_PRODUCT_ID = "productId";
     public static final String JSON_KEY_TYPE = "type";
     public static final String JSON_KEY_PRICE = "price";
+    public static final String JSON_KEY_PRICE_MICROS = "price_amount_micros";
+    public static final String JSON_KEY_PRICE_CURRENCY_CODE = "price_currency_code";
     public static final String JSON_KEY_TITLE = "title";
     public static final String JSON_KEY_DESCRIPTION = "description";
 
@@ -20,6 +23,8 @@ public class SKUDetails implements ProductDetails<SKU>
     protected SKU sku;
     public final String type;
     public final String price;
+    public final Long priceAmountMicros;
+    public final String priceCurrencyCode;
     public final String title;
     public final String description;
     protected final String json;
@@ -38,6 +43,8 @@ public class SKUDetails implements ProductDetails<SKU>
         this.sku =  new SKU(skuString);
         this.type = o.optString(JSON_KEY_TYPE);
         this.price = o.optString(JSON_KEY_PRICE);
+        this.priceAmountMicros = o.optLong(JSON_KEY_PRICE_MICROS);
+        this.priceCurrencyCode = o.optString(JSON_KEY_PRICE_CURRENCY_CODE);
         this.title = o.optString(JSON_KEY_TITLE);
         this.description = o.optString(JSON_KEY_DESCRIPTION);
     }
@@ -51,4 +58,20 @@ public class SKUDetails implements ProductDetails<SKU>
     {
         return this.sku;
     }
+
+    public static Comparator<SKUDetails> DecreasingPriceComparator = new Comparator<SKUDetails>()
+    {
+        public int compare(SKUDetails skuDetails1, SKUDetails skuDetails2)
+        {
+            if (skuDetails1 == null)
+            {
+                return skuDetails2 == null ? 0 : 1;
+            }
+            if (skuDetails2 == null)
+            {
+                return 1;
+            }
+            return skuDetails2.priceAmountMicros.compareTo(skuDetails1.priceAmountMicros);
+        }
+    };
 }

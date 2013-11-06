@@ -14,6 +14,10 @@ public class SKUFetcher
 {
     public static final String TAG = SKUFetcher.class.getSimpleName();
 
+    public static final String EXTRA_CASH_T0_KEY = "com.myhero.th.extracash.t0";
+    public static final String EXTRA_CASH_T1_KEY = "com.myhero.th.extracash.t1";
+    public static final String EXTRA_CASH_T2_KEY = "com.myhero.th.extracash.t2";
+
     private Map<String, List<SKU>> availableSkus;
     private WeakReference<SKUFetcherListener> listener = new WeakReference<>(null);
 
@@ -24,9 +28,9 @@ public class SKUFetcher
 
         // TODO hard-coded while there is nothing coming from the server.
         List<SKU> inAppSkus = new ArrayList<>();
-        inAppSkus.add(new SKU("com.myhero.th.extracash.t0"));
-        inAppSkus.add(new SKU("com.myhero.th.extracash.t1"));
-        inAppSkus.add(new SKU("com.myhero.th.extracash.t2"));
+        inAppSkus.add(new SKU(EXTRA_CASH_T0_KEY));
+        inAppSkus.add(new SKU(EXTRA_CASH_T1_KEY));
+        inAppSkus.add(new SKU(EXTRA_CASH_T2_KEY));
         availableSkus.put(Constants.ITEM_TYPE_INAPP, inAppSkus);
 
         availableSkus.put(Constants.ITEM_TYPE_SUBS, new ArrayList<SKU>());

@@ -10,31 +10,38 @@ import com.tradehero.common.billing.googleplay.SKUDetails;
 import com.tradehero.common.billing.googleplay.exceptions.IABBadResponseException;
 import com.tradehero.common.billing.googleplay.exceptions.IABBillingUnavailableException;
 import com.tradehero.common.billing.googleplay.exceptions.IABException;
-import com.tradehero.common.billing.googleplay.IABResponse;
-import com.tradehero.common.billing.googleplay.IABServiceConnector;
 import com.tradehero.common.billing.googleplay.exceptions.IABRemoteException;
 import com.tradehero.common.billing.googleplay.exceptions.IABVerificationFailedException;
 import com.tradehero.common.billing.googleplay.PurchaseFetcher;
 import com.tradehero.common.billing.googleplay.SKU;
+import com.tradehero.common.utils.ArrayUtils;
+import com.tradehero.th.billing.googleplay.THInventoryFetcher;
+import com.tradehero.th.billing.googleplay.THSKUDetails;
+import com.tradehero.th.billing.googleplay.THSKUDetailsTuner;
 import com.tradehero.th.billing.googleplay.SKUFetcher;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.fragments.DashboardNavigator;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
 public class DashboardActivity extends SherlockFragmentActivity
     implements DashboardNavigatorActivity, SKUFetcher.SKUFetcherListener,
-        PurchaseFetcher.PublicFetcherListener, InventoryFetcher.InventoryListener
+        PurchaseFetcher.PublicFetcherListener,
+        InventoryFetcher.InventoryListener<THInventoryFetcher, THSKUDetails>
 {
     public static final String TAG = DashboardActivity.class.getSimpleName();
 
     private DashboardNavigator navigator;
     private SKUFetcher skuFetcher;
+    private THSKUDetailsTuner thSKUDetailsTuner;
     private PurchaseFetcher purchaseFetcher;
-    private InventoryFetcher inventoryFetcher;
+    private THInventoryFetcher inventoryFetcher;
 
     public void onCreate(Bundle savedInstanceState)
     {
@@ -42,6 +49,8 @@ public class DashboardActivity extends SherlockFragmentActivity
 
         setContentView(R.layout.dashboard_with_bottom_bar);
         navigator = new DashboardNavigator(this, getSupportFragmentManager(), R.id.realtabcontent);
+
+        thSKUDetailsTuner = new THSKUDetailsTuner();
 
         skuFetcher = new SKUFetcher();
         skuFetcher.setListener(this);
@@ -83,6 +92,7 @@ public class DashboardActivity extends SherlockFragmentActivity
         if (inventoryFetcher != null)
         {
             inventoryFetcher.setInventoryListener(null);
+            inventoryFetcher.setSkuDetailsTuner(null);
             inventoryFetcher.dispose();
         }
         inventoryFetcher = null;
@@ -114,7 +124,8 @@ public class DashboardActivity extends SherlockFragmentActivity
         {
             mixedSKUs.addAll(availableSkus.get(Constants.ITEM_TYPE_SUBS));
         }
-        inventoryFetcher = new InventoryFetcher(this, mixedSKUs);
+        inventoryFetcher = new THInventoryFetcher(this, mixedSKUs);
+        inventoryFetcher.setSkuDetailsTuner(thSKUDetailsTuner);
         inventoryFetcher.setInventoryListener(this);
         inventoryFetcher.startConnectionSetup();
     }
@@ -140,12 +151,12 @@ public class DashboardActivity extends SherlockFragmentActivity
     //</editor-fold>
 
     //<editor-fold desc="InventoryFetcher.InventoryListener">
-    @Override public void onInventoryFetchSuccess(InventoryFetcher fetcher, Map<SKU, SKUDetails> inventory)
+    @Override public void onInventoryFetchSuccess(THInventoryFetcher fetcher, Map<SKU, THSKUDetails> inventory)
     {
         THToast.show("Inventory successfully fetched");
     }
 
-    @Override public void onInventoryFetchFail(InventoryFetcher fetcher, IABException exception)
+    @Override public void onInventoryFetchFail(THInventoryFetcher fetcher, IABException exception)
     {
         handleException(exception);
     }
@@ -173,5 +184,15 @@ public class DashboardActivity extends SherlockFragmentActivity
         {
             THToast.show("There was some error communicating with Google Play");
         }
+    }
+
+    public List<THSKUDetails> getDetailsOfDomain(String domain)
+    {
+        List<THSKUDetails> details = null;
+        if (inventoryFetcher != null && inventoryFetcher.getInventory() != null)
+        {
+            details = ArrayUtils.filter(inventoryFetcher.getInventory().values(), THSKUDetails.getPredicateIsOfCertainDomain(domain));
+        }
+        return details;
     }
 }

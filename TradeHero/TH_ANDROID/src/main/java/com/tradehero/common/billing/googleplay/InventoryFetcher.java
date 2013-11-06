@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.RemoteException;
+import com.tradehero.common.billing.ProductDetailsTuner;
 import com.tradehero.common.billing.googleplay.exceptions.IABBadResponseException;
 import com.tradehero.common.billing.googleplay.exceptions.IABException;
 import com.tradehero.common.billing.googleplay.exceptions.IABExceptionFactory;
@@ -11,6 +12,7 @@ import com.tradehero.common.billing.googleplay.exceptions.IABRemoteException;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
+import java.lang.ref.WeakReference;
 import javax.inject.Inject;
 import org.json.JSONException;
 
@@ -19,14 +21,15 @@ import java.util.*;
 /**
  * Created by julien on 4/11/13
  */
-public class InventoryFetcher extends IABServiceConnector
+abstract public class InventoryFetcher<SKUDetailsType extends SKUDetails> extends IABServiceConnector
 {
     public static final String TAG = InventoryFetcher.class.getSimpleName();
 
-    protected HashMap<SKU, SKUDetails> inventory;
+    protected HashMap<SKU, SKUDetailsType> inventory;
     private List<SKU> skus;
 
-    private InventoryListener inventoryListener;
+    private WeakReference<InventoryListener> inventoryListener = new WeakReference<>(null);
+    private WeakReference<ProductDetailsTuner<SKUDetailsType>> skuDetailsTuner = new WeakReference<>(null);
     @Inject protected Lazy<IABExceptionFactory> iabExceptionFactory;
 
     public InventoryFetcher(Context ctx, List<SKU> skus)
@@ -36,6 +39,8 @@ public class InventoryFetcher extends IABServiceConnector
         this.inventory = new HashMap<>(skus != null ? skus.size() : 10);
         DaggerUtils.inject(this);
     }
+
+    abstract protected SKUDetailsType createSKUDetails(String itemType, String json) throws JSONException;
 
     public void fetchInventory()
     {
@@ -55,10 +60,10 @@ public class InventoryFetcher extends IABServiceConnector
 
     private void fetchInventoryAsync()
     {
-        AsyncTask<Void, Void, HashMap<SKU, SKUDetails>> backgroundTask =  new AsyncTask<Void, Void, HashMap<SKU, SKUDetails>>() {
+        AsyncTask<Void, Void, HashMap<SKU, SKUDetailsType>> backgroundTask =  new AsyncTask<Void, Void, HashMap<SKU, SKUDetailsType>>() {
             private IABException exception;
 
-            @Override protected HashMap<SKU, SKUDetails> doInBackground(Void... params)
+            @Override protected HashMap<SKU, SKUDetailsType> doInBackground(Void... params)
             {
                 try
                 {
@@ -82,7 +87,7 @@ public class InventoryFetcher extends IABServiceConnector
                 return null;
             }
 
-            @Override protected void onPostExecute(HashMap<SKU, SKUDetails> skuskuDetailsMap)
+            @Override protected void onPostExecute(HashMap<SKU, SKUDetailsType> skuskuDetailsMap)
             {
                 if (exception != null)
                 {
@@ -98,16 +103,14 @@ public class InventoryFetcher extends IABServiceConnector
         backgroundTask.execute();
     }
 
-
-
     private void handleInventoryFetchFailure(IABException e)
     {
-        if (this.inventoryListener != null)
+        InventoryListener listenerCopy = getInventoryListener();
+        if (listenerCopy != null)
         {
-            this.inventoryListener.onInventoryFetchFail(this, e);
+            listenerCopy.onInventoryFetchFail(this, e);
         }
     }
-
 
     protected void notifyListenerFetched()
     {
@@ -118,18 +121,18 @@ public class InventoryFetcher extends IABServiceConnector
         }
     }
 
-    private HashMap<SKU, SKUDetails> internalFetchCompleteInventory() throws IABException, RemoteException, JSONException
+    private HashMap<SKU, SKUDetailsType> internalFetchCompleteInventory() throws IABException, RemoteException, JSONException
     {
         if (skus == null || skus.isEmpty())
         {
             return new HashMap<>();
         }
 
-        HashMap<SKU, SKUDetails> map = internalFetchSKUType(Constants.ITEM_TYPE_INAPP);
+        HashMap<SKU, SKUDetailsType> map = internalFetchSKUType(Constants.ITEM_TYPE_INAPP);
 
         if (areSubscriptionsSupported())
         {
-            HashMap<SKU, SKUDetails> subscriptionsMap = internalFetchSKUType(Constants.ITEM_TYPE_SUBS);
+            HashMap<SKU, SKUDetailsType> subscriptionsMap = internalFetchSKUType(Constants.ITEM_TYPE_SUBS);
             map.putAll(subscriptionsMap);
         }
         return map;
@@ -147,7 +150,7 @@ public class InventoryFetcher extends IABServiceConnector
         return querySkus;
     }
 
-    private HashMap<SKU, SKUDetails> internalFetchSKUType(String itemType) throws IABException, RemoteException, JSONException
+    private HashMap<SKU, SKUDetailsType> internalFetchSKUType(String itemType) throws IABException, RemoteException, JSONException
     {
         Bundle querySkus = getQuerySKUBundle();
         Bundle skuDetails = this.billingService.getSkuDetails(TARGET_BILLING_API_VERSION3, context.getPackageName(), itemType, querySkus);
@@ -169,34 +172,54 @@ public class InventoryFetcher extends IABServiceConnector
 
         ArrayList<String> responseList = skuDetails.getStringArrayList(Constants.RESPONSE_GET_SKU_DETAILS_LIST);
 
-        HashMap<SKU, SKUDetails> map = new HashMap<>();
+        HashMap<SKU, SKUDetailsType> map = new HashMap<>();
         for (String json : responseList)
         {
-            SKUDetails d = new SKUDetails(itemType, json);
-            THLog.d(TAG, "Got sku details: " + d);
-            map.put(d.sku, d);
+            SKUDetailsType details = createSKUDetails(itemType, json);
+            fineTune(details);
+            THLog.d(TAG, "Got sku details: " + details);
+            map.put(details.sku, details);
         }
         return map;
     }
 
-    public Map<SKU, SKUDetails> getInventory()
+    public Map<SKU, SKUDetailsType> getInventory()
     {
         return Collections.unmodifiableMap(inventory);
     }
 
     public InventoryListener getInventoryListener()
     {
-        return inventoryListener;
+        return inventoryListener.get();
     }
 
     public void setInventoryListener(InventoryListener inventoryListener)
     {
-        this.inventoryListener = inventoryListener;
+        this.inventoryListener = new WeakReference<>(inventoryListener);
     }
 
-    public static interface InventoryListener
+    public ProductDetailsTuner<SKUDetailsType> getSkuDetailsTuner()
     {
-        void onInventoryFetchSuccess(InventoryFetcher fetcher, Map<SKU, SKUDetails> inventory);
-        void onInventoryFetchFail(InventoryFetcher fetcher, IABException exception);
+        return skuDetailsTuner.get();
+    }
+
+    public void setSkuDetailsTuner(ProductDetailsTuner<SKUDetailsType> skuDetailsTuner)
+    {
+        this.skuDetailsTuner = new WeakReference<>(skuDetailsTuner);
+    }
+
+    private void fineTune(SKUDetailsType skuDetails)
+    {
+        ProductDetailsTuner<SKUDetailsType> tuner = getSkuDetailsTuner();
+        if (tuner != null)
+        {
+            tuner.fineTune(skuDetails);
+        }
+    }
+
+    public static interface InventoryListener<InventoryFetcherType extends InventoryFetcher, SKUDetailsType extends SKUDetails>
+    {
+        void onInventoryFetchSuccess(InventoryFetcherType fetcher, Map<SKU, SKUDetailsType> inventory);
+        void onInventoryFetchFail(InventoryFetcherType fetcher, IABException exception);
     }
 }
