@@ -43,6 +43,10 @@ public class DashboardActivity extends SherlockFragmentActivity
     private PurchaseFetcher purchaseFetcher;
     private THInventoryFetcher inventoryFetcher;
 
+    private Exception latestSkuFetcherException;
+    private Exception latestInventoryFetcherException;
+    private Exception latestPurchaseFetcherException;
+
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
@@ -52,13 +56,8 @@ public class DashboardActivity extends SherlockFragmentActivity
 
         thSKUDetailsTuner = new THSKUDetailsTuner();
 
-        skuFetcher = new SKUFetcher();
-        skuFetcher.setListener(this);
-        skuFetcher.fetchSkus();
-
-        purchaseFetcher = new PurchaseFetcher(this);
-        purchaseFetcher.setFetchListener(this);
-        purchaseFetcher.startConnectionSetup();
+        launchSkuInventorySequence();
+        launchFetchPurchasesSequence();
     }
 
     @Override public void onBackPressed()
@@ -111,9 +110,20 @@ public class DashboardActivity extends SherlockFragmentActivity
     }
     //</editor-fold>
 
+    public void launchSkuInventorySequence()
+    {
+        latestSkuFetcherException = null;
+        latestInventoryFetcherException = null;
+        inventoryFetcher = null;
+        skuFetcher = new SKUFetcher();
+        skuFetcher.setListener(this);
+        skuFetcher.fetchSkus();
+    }
+
     //<editor-fold desc="SKUFetcher.SKUFetcherListener">
     @Override public void onFetchSKUsFailed(SKUFetcher fetcher, Exception exception)
     {
+        latestSkuFetcherException = exception;
         THToast.show("There was an error fetching the list of SKUs");
     }
 
@@ -124,6 +134,7 @@ public class DashboardActivity extends SherlockFragmentActivity
         {
             mixedSKUs.addAll(availableSkus.get(Constants.ITEM_TYPE_SUBS));
         }
+        latestInventoryFetcherException = null;
         inventoryFetcher = new THInventoryFetcher(this, mixedSKUs);
         inventoryFetcher.setSkuDetailsTuner(thSKUDetailsTuner);
         inventoryFetcher.setInventoryListener(this);
@@ -131,9 +142,18 @@ public class DashboardActivity extends SherlockFragmentActivity
     }
     //</editor-fold>
 
+    public void launchFetchPurchasesSequence()
+    {
+        latestPurchaseFetcherException = null;
+        purchaseFetcher = new PurchaseFetcher(this);
+        purchaseFetcher.setFetchListener(this);
+        purchaseFetcher.startConnectionSetup();
+    }
+
     //<editor-fold desc="PurchaseFetcher.PublicFetcherListener">
     @Override public void onFetchPurchasesFailed(PurchaseFetcher fetcher, IABException exception)
     {
+        latestPurchaseFetcherException = exception;
         handleException(exception);
     }
 
@@ -158,9 +178,25 @@ public class DashboardActivity extends SherlockFragmentActivity
 
     @Override public void onInventoryFetchFail(THInventoryFetcher fetcher, IABException exception)
     {
+        latestInventoryFetcherException = exception;
         handleException(exception);
     }
     //</editor-fold>
+
+    public boolean isBillingAvailable()
+    {
+        return latestInventoryFetcherException == null || !(latestInventoryFetcherException instanceof IABBillingUnavailableException);
+    }
+
+    public boolean hadErrorLoadingInventory()
+    {
+        return latestInventoryFetcherException != null && !(latestInventoryFetcherException instanceof IABBillingUnavailableException);
+    }
+
+    public boolean isInventoryReady()
+    {
+        return inventoryFetcher != null && inventoryFetcher.getInventory() != null && inventoryFetcher.getInventory().size() > 0;
+    }
 
     protected void handleException(IABException exception)
     {
@@ -194,5 +230,20 @@ public class DashboardActivity extends SherlockFragmentActivity
             details = ArrayUtils.filter(inventoryFetcher.getInventory().values(), THSKUDetails.getPredicateIsOfCertainDomain(domain));
         }
         return details;
+    }
+
+    public Exception getLatestInventoryFetcherException()
+    {
+        return latestInventoryFetcherException;
+    }
+
+    public Exception getLatestPurchaseFetcherException()
+    {
+        return latestPurchaseFetcherException;
+    }
+
+    public Exception getLatestSkuFetcherException()
+    {
+        return latestSkuFetcherException;
     }
 }

@@ -38,6 +38,9 @@ import javax.inject.Singleton;
             case Constants.IABHELPER_REMOTE_EXCEPTION:
                 return new IABRemoteException(message);
 
+            case Constants.IABHELPER_SEND_INTENT_FAILED:
+                return new IABSendIntentException(message);
+
             default:
                 return new IABException(responseStatus, message);
         }
