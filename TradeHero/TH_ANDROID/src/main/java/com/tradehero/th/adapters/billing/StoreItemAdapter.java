@@ -32,7 +32,7 @@ public class StoreItemAdapter extends BaseAdapter
     public static final int POSITION_BUY_VIRTUAL_DOLLARS = 1;
     public static final int POSITION_BUY_FOLLOW_CREDITS = 2;
     public static final int POSITION_BUY_STOCK_ALERTS = 3;
-    public static final int POSITION_RESET_PORTFOLIO = 4;
+    public static final int POSITION_BUY_RESET_PORTFOLIO = 4;
     public static final int POSITION_MANAGE_PURCHASES = 5;
     public static final int POSITION_MANAGE_HEROES = 6;
     public static final int POSITION_MANAGE_FOLLOWERS = 7;
@@ -97,7 +97,7 @@ public class StoreItemAdapter extends BaseAdapter
             case POSITION_BUY_VIRTUAL_DOLLARS:
             case POSITION_BUY_FOLLOW_CREDITS:
             case POSITION_BUY_STOCK_ALERTS:
-            case POSITION_RESET_PORTFOLIO:
+            case POSITION_BUY_RESET_PORTFOLIO:
                 viewType = VIEW_TYPE_LIKE_BUTTON;
                 break;
             case POSITION_MANAGE_HEROES:
@@ -183,7 +183,7 @@ public class StoreItemAdapter extends BaseAdapter
                 iconResId = R.drawable.icn_stock_alert;
                 buttonIconResId = R.drawable.btn_buy_stock_alerts;
                 break;
-            case POSITION_RESET_PORTFOLIO:
+            case POSITION_BUY_RESET_PORTFOLIO:
                 titleResId = R.string.store_buy_reset_portfolio;
                 iconResId = R.drawable.icn_reset_portfolio;
                 buttonIconResId = R.drawable.btn_buy_reset_large;
