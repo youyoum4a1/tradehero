@@ -109,6 +109,7 @@ public class AuthenticationActivity extends SherlockFragmentActivity
     {
         super.onActivityResult(requestCode, resultCode, data);
         FacebookUtils.finishAuthentication(requestCode, resultCode, data);
+        THLog.d(TAG, "onActivityResult " + requestCode + ", " + resultCode + ", " + data);
     }
 
     @Override public void onClick(View view)
