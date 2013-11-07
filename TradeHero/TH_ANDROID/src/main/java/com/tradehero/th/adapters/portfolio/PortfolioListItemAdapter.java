@@ -172,6 +172,16 @@ public class PortfolioListItemAdapter extends DTOAdapter<DisplayablePortfolioDTO
         return view;
     }
 
+    @Override public boolean areAllItemsEnabled()
+    {
+        return false;
+    }
+
+    @Override public boolean isEnabled(int position)
+    {
+        return !isOtherPortfolioHeader(position);
+    }
+
     @Override protected void fineTune(int position, DisplayablePortfolioDTO dto, PortfolioListItemView dtoView)
     {
         // Nothing to do

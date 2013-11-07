@@ -247,10 +247,13 @@ public abstract class AbstractPositionItemAdapter<T extends PositionDTO> extends
         }
         else if (isOpenPosition(position))
         {
-            ExpandableListItem<OwnedPositionId> id = (ExpandableListItem<OwnedPositionId>)getItem(position);
-            if (id.getModel().isLocked()) {
+            ExpandableListItem<OwnedPositionId> id = (ExpandableListItem<OwnedPositionId>) getItem(position);
+            if (id.getModel().isLocked())
+            {
                 return PositionItemType.Locked.value;
-            } else {
+            }
+            else
+            {
                 return PositionItemType.Open.value;
             }
         }
@@ -315,6 +318,16 @@ public abstract class AbstractPositionItemAdapter<T extends PositionDTO> extends
         }
         latestView = new WeakReference<>(convertView);
         return convertView;
+    }
+
+    @Override public boolean areAllItemsEnabled()
+    {
+        return false;
+    }
+
+    @Override public boolean isEnabled(int position)
+    {
+        return getItemViewType(position) != PositionItemType.Header.value;
     }
 
     /**
