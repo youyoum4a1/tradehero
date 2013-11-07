@@ -318,5 +318,6 @@ public class StoreScreenFragment extends DashboardFragment
     private void dialogItemClicked(DialogInterface dialogInterface, int i, THSKUDetails item)
     {
         THToast.show("Sku clicked " + item.getProductIdentifier().identifier);
+        ((DashboardActivity) getActivity()).launchPurchaseSequence(item, "From store");
     }
 }

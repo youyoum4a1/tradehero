@@ -14,6 +14,7 @@ import com.tradehero.common.utils.THLog;
 import com.tradehero.th.api.form.AbstractUserAvailabilityRequester;
 import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
 import com.tradehero.th.api.users.UserBaseDTO;
+import com.tradehero.th.billing.googleplay.SKUDetailsPurchaser;
 import com.tradehero.th.billing.googleplay.THInventoryFetcher;
 import com.tradehero.th.fragments.billing.StoreScreenFragment;
 import com.tradehero.th.persistence.portfolio.OwnedPortfolioFetchAssistant;
@@ -204,6 +205,7 @@ import org.ocpsoft.prettytime.PrettyTime;
                 InventoryFetcher.class,
                 THInventoryFetcher.class,
                 PurchaseFetcher.class,
+                SKUDetailsPurchaser.class,
         },
         staticInjections =
         {

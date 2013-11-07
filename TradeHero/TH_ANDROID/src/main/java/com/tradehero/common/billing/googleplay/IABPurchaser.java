@@ -110,7 +110,7 @@ public class IABPurchaser<SKUDetailsType extends SKUDetails> extends IABServiceC
         OnIABPurchaseFinishedListener listener = getPurchaseFinishedListener();
         if (listener != null)
         {
-            listener.onIABPurchaseFailed(exception);
+            listener.onIABPurchaseFailed(this, exception);
         }
     }
 
@@ -131,7 +131,7 @@ public class IABPurchaser<SKUDetailsType extends SKUDetails> extends IABServiceC
         OnIABPurchaseFinishedListener listener = getPurchaseFinishedListener();
         if (listener != null)
         {
-            listener.onIABPurchaseFinished(purchase);
+            listener.onIABPurchaseFinished(this, purchase);
         }
     }
 
@@ -146,6 +146,7 @@ public class IABPurchaser<SKUDetailsType extends SKUDetails> extends IABServiceC
         try
         {
             Bundle buyIntentBundle = createBuyIntentBundle();
+            THLog.d(TAG, "BuyIntentBundle " + buyIntentBundle);
 
             PendingIntent pendingIntent = buyIntentBundle.getParcelable(Constants.RESPONSE_BUY_INTENT);
             THLog.d(TAG, "Launching buy intent for " + skuDetails + ". Request code: " + activityRequestCode);
@@ -185,7 +186,7 @@ public class IABPurchaser<SKUDetailsType extends SKUDetails> extends IABServiceC
 
     /**
      * Handles an activity result that's part of the purchase flow in in-app billing. If you
-     * are calling {@link #launchPurchaseFlow}, then you must call this method from your
+     * are calling {@link #startPurchaseActivity()}, then you must call this method from your
      * Activity's {@link android.app.Activity@onActivityResult} method. This method
      * MUST be called from the UI thread of the Activity.
      *
@@ -283,7 +284,7 @@ public class IABPurchaser<SKUDetailsType extends SKUDetails> extends IABServiceC
      * Callback that notifies when a purchase is finished.
      *  Created with IntelliJ IDEA. User: xavier Date: 11/7/13 Time: 11:00 AM To change this template use File | Settings | File Templates.
      *  */
-    public interface OnIABPurchaseFinishedListener
+    public static interface OnIABPurchaseFinishedListener
     {
         /**
          * Called to notify that an in-app purchase finished. If the purchase was successful,
@@ -293,8 +294,8 @@ public class IABPurchaser<SKUDetailsType extends SKUDetails> extends IABServiceC
          *
          * @param info The purchase information (null if purchase failed)
          */
-        void onIABPurchaseFinished(IABPurchase info);
+        void onIABPurchaseFinished(IABPurchaser purchaser, IABPurchase info);
 
-        void onIABPurchaseFailed(IABException exception);
+        void onIABPurchaseFailed(IABPurchaser purchaser, IABException exception);
     }
 }
