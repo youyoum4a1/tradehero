@@ -34,7 +34,6 @@ import com.tradehero.th.base.Navigator;
 import com.tradehero.th.fragments.DashboardNavigator;
 import java.util.List;
 import java.util.Map;
-import org.json.JSONException;
 
 public class DashboardActivity extends SherlockFragmentActivity
     implements DashboardNavigatorActivity, SKUFetcher.SKUFetcherListener,
@@ -237,7 +236,7 @@ public class DashboardActivity extends SherlockFragmentActivity
             }
             else
             {
-                THToast.show("There is no purchase waiting to be consumed");
+                //THToast.show("There is no purchase waiting to be consumed");
             }
         }
         else
@@ -253,7 +252,7 @@ public class DashboardActivity extends SherlockFragmentActivity
     {
         if (fetcher == this.inventoryFetcher)
         {
-            THToast.show("Inventory successfully fetched");
+            //THToast.show("Inventory successfully fetched");
         }
         else
         {
