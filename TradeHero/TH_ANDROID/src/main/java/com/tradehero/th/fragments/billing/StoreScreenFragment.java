@@ -18,6 +18,7 @@ import com.tradehero.th.R;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.adapters.billing.StoreItemAdapter;
 import com.tradehero.th.adapters.billing.THSKUDetailsAdapter;
+import com.tradehero.th.billing.googleplay.IABAlertUtils;
 import com.tradehero.th.billing.googleplay.THSKUDetails;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import java.util.List;
@@ -67,7 +68,7 @@ public class StoreScreenFragment extends DashboardFragment
         storeItemAdapter.notifyDataSetChanged();
         if (!isBillingAvailable())
         {
-            popBillingUnavailable();
+            IABAlertUtils.popBillingUnavailable(getActivity());
         }
     }
 
@@ -103,33 +104,6 @@ public class StoreScreenFragment extends DashboardFragment
         return ((DashboardActivity) getActivity()).isInventoryReady();
     }
 
-    private void popBillingUnavailable()
-    {
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
-        alertDialogBuilder
-                .setTitle(R.string.store_billing_unavailable_window_title)
-                .setMessage(R.string.store_billing_unavailable_window_description)
-                .setCancelable(true)
-                .setNegativeButton(R.string.store_billing_unavailable_cancel, new DialogInterface.OnClickListener()
-                {
-                    public void onClick(DialogInterface dialog, int id)
-                    {
-                        dialog.cancel();
-                    }
-                })
-                .setPositiveButton(R.string.store_billing_unavailable_act, new DialogInterface.OnClickListener()
-                {
-                    @Override public void onClick(DialogInterface dialogInterface, int i)
-                    {
-                        Intent addAccountIntent = new Intent(Settings.ACTION_ADD_ACCOUNT);
-                        addAccountIntent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT); // Still cannot get it to go back to TradeHero with back button
-                        startActivity(addAccountIntent);
-                    }
-                });
-        AlertDialog alertDialog = alertDialogBuilder.create();
-        alertDialog.show();
-    }
-
     private void popErrorWhenLoading()
     {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
@@ -142,24 +116,6 @@ public class StoreScreenFragment extends DashboardFragment
                     @Override public void onClick(DialogInterface dialogInterface, int i)
                     {
                         ((DashboardActivity) getActivity()).launchSkuInventorySequence();
-                    }
-                });
-        AlertDialog alertDialog = alertDialogBuilder.create();
-        alertDialog.show();
-    }
-
-    private void popWaitWhileLoading()
-    {
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
-        alertDialogBuilder
-                .setTitle(R.string.store_billing_loading_window_title)
-                .setMessage(R.string.store_billing_loading_window_description)
-                .setCancelable(true)
-                .setNegativeButton(R.string.store_billing_loading_cancel, new DialogInterface.OnClickListener()
-                {
-                    public void onClick(DialogInterface dialog, int id)
-                    {
-                        dialog.cancel();
                     }
                 });
         AlertDialog alertDialog = alertDialogBuilder.create();
@@ -196,7 +152,7 @@ public class StoreScreenFragment extends DashboardFragment
     {
         if (!isBillingAvailable())
         {
-            popBillingUnavailable();
+            IABAlertUtils.popBillingUnavailable(getActivity());
         }
         else if (hadErrorLoadingInventory())
         {
@@ -204,7 +160,7 @@ public class StoreScreenFragment extends DashboardFragment
         }
         else if (!isInventoryReady())
         {
-            popWaitWhileLoading();
+            IABAlertUtils.popWaitWhileLoading(getActivity());
         }
         else
         {
@@ -286,14 +242,10 @@ public class StoreScreenFragment extends DashboardFragment
                 {
                     @Override public void onClick(DialogInterface dialogInterface, int i)
                     {
-                        if (i > 0)
+                        if (detailsAdapter.getItemViewType(i) > 0)
                         {
                             dialogItemClicked(dialogInterface, i, (THSKUDetails) detailsAdapter.getItem(i));
                             dialogInterface.cancel();
-                        }
-                        else
-                        {
-                            THToast.show("Only the message pressed");
                         }
                     }
                 })
