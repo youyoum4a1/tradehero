@@ -30,4 +30,9 @@ public class LeaderboardMarkUserId extends AbstractIntegerDTOKey
     {
         return BUNDLE_KEY;
     }
+
+    public boolean isValid()
+    {
+        return key != null;
+    }
 }

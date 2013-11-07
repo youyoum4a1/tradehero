@@ -5,17 +5,35 @@ import android.util.AttributeSet;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import com.tradehero.common.persistence.DTOCache;
+import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.leaderboard.LeaderboardDefDTO;
+import com.tradehero.th.api.users.UserBaseDTO;
+import com.tradehero.th.api.users.UserBaseKey;
+import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.utils.DaggerUtils;
+import dagger.Lazy;
+import javax.inject.Inject;
+import javax.inject.Named;
 
 /** Created with IntelliJ IDEA. User: tho Date: 10/16/13 Time: 4:19 PM Copyright (c) TradeHero */
 public class LeaderboardDefView extends RelativeLayout implements DTOView<LeaderboardDefDTO>
 {
+    @Inject @Named("CurrentUser") protected UserBaseDTO userBaseDTO;
+    @Inject protected Lazy<UserProfileCache> userProfileCache;
+
     private TextView leaderboardDefName;
     private ImageView leaderboardDefIcon;
+    private TextView leaderboardDefUserRank;
+    private TextView leaderboardDefDesc;
+
     private LeaderboardDefDTO dto;
-    private TextView leaderboardDefUserCount;
+
+    private DTOCache.Listener<UserBaseKey, UserProfileDTO> userProfileListener;
+    private DTOCache.GetOrFetchTask<UserProfileDTO> userProfileRequestTask;
 
     //<editor-fold desc="Constructors">
     public LeaderboardDefView(Context context)
@@ -41,6 +59,7 @@ public class LeaderboardDefView extends RelativeLayout implements DTOView<Leader
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
+        DaggerUtils.inject(this);
         init();
     }
 
@@ -48,12 +67,42 @@ public class LeaderboardDefView extends RelativeLayout implements DTOView<Leader
     {
         leaderboardDefName = (TextView) findViewById(R.id.leaderboard_def_item_name);
         leaderboardDefIcon = (ImageView) findViewById(R.id.leaderboard_def_item_icon);
-        leaderboardDefUserCount = (TextView) findViewById(R.id.leaderboard_def_item_user_count);
+        leaderboardDefUserRank = (TextView) findViewById(R.id.leaderboard_def_item_user_rank);
+        leaderboardDefDesc = (TextView) findViewById(R.id.leaderboard_def_item_desc);
+
+        userProfileListener = new DTOCache.Listener<UserBaseKey, UserProfileDTO>()
+        {
+            @Override public void onDTOReceived(UserBaseKey key, UserProfileDTO value)
+            {
+                updateLeaderboardOwnRank(value);
+            }
+
+            @Override public void onErrorThrown(UserBaseKey key, Throwable error)
+            {
+                THToast.show("Error getting current user profile");
+            }
+        };
+
+
+        if (userBaseDTO != null)
+        {
+            userProfileRequestTask = userProfileCache.get().getOrFetch(userBaseDTO.getBaseKey(), false, userProfileListener);
+            userProfileRequestTask.execute();
+        }
     }
 
     @Override public void display(LeaderboardDefDTO dto)
     {
         linkWith(dto, true);
+    }
+
+    @Override protected void onDetachedFromWindow()
+    {
+        super.onDetachedFromWindow();
+        if (userProfileRequestTask != null)
+        {
+            userProfileRequestTask.forgetListener(true);
+        }
     }
 
     private void linkWith(LeaderboardDefDTO dto, boolean andDisplay)
@@ -84,10 +133,31 @@ public class LeaderboardDefView extends RelativeLayout implements DTOView<Leader
             leaderboardDefIcon.setVisibility(GONE);
         }
 
-        if (dto.isTimeRestrictedLeaderboard())
+        if (dto.isExchangeRestricted() || dto.isSectorRestricted())
         {
-            // TODO get rank of current user
-            leaderboardDefUserCount.setText("" + 0);
+            leaderboardDefDesc.setText(dto.desc);
+        }
+        else
+        {
+            leaderboardDefDesc.setVisibility(GONE);
+        }
+
+        if (dto.getId() == LeaderboardDefDTO.LEADERBOARD_FRIEND_ID)
+        {
+            // TODO new background image for android
+            //leaderboardDefUserRank.setBackgroundResource(R.drawable.lb_friends_bg);
+        }
+    }
+
+    private void updateLeaderboardOwnRank(UserProfileDTO userProfileDTO)
+    {
+        if (dto != null)
+        {
+            int leaderboardRank = userProfileDTO.getLeaderboardRanking(dto.getId());
+            if (leaderboardRank > 0)
+            {
+                leaderboardDefUserRank.setText("" + leaderboardRank);
+            }
         }
     }
 

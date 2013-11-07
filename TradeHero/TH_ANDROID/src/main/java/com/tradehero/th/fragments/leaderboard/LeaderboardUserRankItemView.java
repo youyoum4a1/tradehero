@@ -13,11 +13,14 @@ import com.tradehero.common.graphics.RoundedShapeTransformation;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.leaderboard.LeaderboardUserRankDTO;
+import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.base.NavigatorActivity;
+import com.tradehero.th.fragments.position.InPeriodPositionListFragment;
+import com.tradehero.th.fragments.position.PositionListFragment;
 import com.tradehero.th.fragments.timeline.TimelineFragment;
 import com.tradehero.th.models.THSignedNumber;
 import com.tradehero.th.persistence.position.PositionCache;
@@ -56,7 +59,6 @@ public class LeaderboardUserRankItemView extends RelativeLayout
     private TextView lbmuPositionsCount;
     private TextView lbmuAvgDaysHeld;
     private TextView lbmuFollowersCount;
-    private TextView lbmuGotoProfile;
     private Navigator navigator;
     private TextView lbmuRoiAnnualized;
     private TextView lbmuWinRatio;
@@ -99,7 +101,6 @@ public class LeaderboardUserRankItemView extends RelativeLayout
         lbmuProfilePicture = (ImageView) findViewById(R.id.leaderboard_user_item_profile_picture);
         lbmuHeroQuotient = (TextView) findViewById(R.id.leaderboard_user_item_hq);
         lbmuPositionInfo = (ImageView) findViewById(R.id.leaderboard_user_item_info);
-
         if (lbmuPositionInfo != null)
         {
             lbmuPositionInfo.setOnClickListener(this);
@@ -117,14 +118,20 @@ public class LeaderboardUserRankItemView extends RelativeLayout
         lbmuAvgDaysHeld = (TextView) findViewById(R.id.lbmu_avg_days_held);
         lbmuFollowersCount = (TextView) findViewById(R.id.lbmu_followers_count);
         lbmuCommentsCount = (TextView) findViewById(R.id.lbmu_comments_count);
-        // action buttons
-        lbmuGotoProfile = (TextView) findViewById(R.id.leaderboard_user_item_goto_profile);
-        if (lbmuGotoProfile != null)
-        {
-            lbmuGotoProfile.setOnClickListener(this);
-        }
         lbmuWinRatio = (TextView) findViewById(R.id.lbmu_win_ratio);
         lbmuNumberOfTrades = (TextView) findViewById(R.id.lbmu_number_of_trades);
+
+        // action buttons
+        TextView lbmuOpenProfile = (TextView) findViewById(R.id.leaderboard_user_item_open_profile);
+        if (lbmuOpenProfile != null)
+        {
+            lbmuOpenProfile.setOnClickListener(this);
+        }
+        TextView lbmuOpenPositionsList = (TextView) findViewById(R.id.leaderboard_user_item_open_positions_list);
+        if (lbmuOpenPositionsList != null)
+        {
+            lbmuOpenPositionsList.setOnClickListener(this);
+        }
     }
 
     @Override public void display(LeaderboardListAdapter.ExpandableLeaderboardUserRankItemWrapper expandableItem)
@@ -177,48 +184,58 @@ public class LeaderboardUserRankItemView extends RelativeLayout
     {
         LeaderboardUserRankDTO dto = leaderboardItem.getModel();
 
+        // display P&L
         lbmuPl.setText(dto.getFormattedPL() + " " + getContext().getString(R.string.ref_currency));
         String periodFormat = getContext().getString(R.string.leaderboard_ranking_period);
 
+        // display period
         SimpleDateFormat sdf = new SimpleDateFormat(getContext().getString(R.string.leaderboard_datetime_format));
         String formattedStartPeriodUtc = sdf.format(dto.periodStartUtc);
         String formattedEndPeriodUtc = sdf.format(dto.periodEndUtc);
         String period = String.format(periodFormat, formattedStartPeriodUtc, formattedEndPeriodUtc);
         lbmuPeriod.setText(period);
 
+        // display Roi
         THSignedNumber roi = new THSignedNumber(THSignedNumber.TYPE_PERCENTAGE, dto.roiInPeriod * 100);
         lbmuRoi.setText(roi.toString());
         lbmuRoi.setTextColor(getResources().getColor(roi.getColor()));
 
+        // display Roi annualized
         THSignedNumber roiAnnualizedVal = new THSignedNumber(THSignedNumber.TYPE_PERCENTAGE, dto.roiAnnualizedInPeriod * 100);
         String roiAnnualizedFormat = getContext().getString(R.string.leaderboard_roi_annualized);
         String roiAnnualized = String.format(roiAnnualizedFormat, roiAnnualizedVal.toString());
         lbmuRoiAnnualized.setText(Html.fromHtml(roiAnnualized));
 
+        // benchmark roi
         THSignedNumber benchmarkRoiInPeriodVal = new THSignedNumber(THSignedNumber.TYPE_PERCENTAGE, dto.getBenchmarkRoiInPeriod() * 100);
         String benchmarkRoiInPeriodFormat = getContext().getString(R.string.leaderboard_benchmark_roi_format);
         String benchmarkRoiInPeriod = String.format(benchmarkRoiInPeriodFormat, benchmarkRoiInPeriodVal.toString());
         lbmuBenchmarkRoi.setText(Html.fromHtml(benchmarkRoiInPeriod));
 
+        // sharpe ratio
         lbmuSharpeRatio.setText(dto.getFormattedSharpeRatio());
 
+        // volatility
         String volatilityFormat = getContext().getString(R.string.leaderboard_volatility);
         String volatility = String.format(volatilityFormat, dto.getVolatility());
         lbmuVolatility.setText(Html.fromHtml(volatility));
 
+        // number of positions holding
         lbmuPositionsCount.setText("" + dto.numberOfPositionsInPeriod);
 
+        // number of trades
         String numberOfTradeFormat = getContext().getString(
                 dto.getNumberOfTrades() > 1 ? R.string.leaderboard_number_of_trades_plural : R.string.leaderboard_number_of_trade);
         String numberOfTrades = String.format(numberOfTradeFormat, dto.getNumberOfTrades());
         lbmuNumberOfTrades.setText(Html.fromHtml(numberOfTrades));
 
-
+        // average days held
         lbmuAvgDaysHeld.setText(NumberDisplayUtils.formatWithRelevantDigits((double) dto.avgHoldingPeriodMins / (60*24), 3));
         String winRatioFormat = getContext().getString(R.string.leaderboard_win_ratio);
         String winRatio = String.format(winRatioFormat, NumberDisplayUtils.formatWithRelevantDigits(dto.getWinRatio() * 100, 3));
         lbmuWinRatio.setText(winRatio);
 
+        // followers & comments count
         lbmuFollowersCount.setText("" + dto.getTotalFollowersCount());
         lbmuCommentsCount.setText("" + dto.getCommentsCount());
     }
@@ -229,16 +246,35 @@ public class LeaderboardUserRankItemView extends RelativeLayout
         {
             case R.id.leaderboard_user_item_info:
                 break;
-            case R.id.leaderboard_user_item_goto_profile:
-                int userId = leaderboardItem.getModel().getId();
-                Bundle b = new Bundle();
-                b.putInt(UserBaseKey.BUNDLE_KEY_KEY, userId);
-
-                if (currentUserBase != null && currentUserBase.id != userId)
-                {
-                    navigator.pushFragment(TimelineFragment.class, b, true);
-                }
+            case R.id.leaderboard_user_item_open_profile:
+                handleOpenProfileButtonClicked();
                 break;
+
+            case R.id.leaderboard_user_item_open_positions_list:
+                handleOpenPositionListClicked();
+                break;
+        }
+    }
+
+    private void handleOpenPositionListClicked()
+    {
+        int userId = leaderboardItem.getModel().getId();
+        int portfolioId = leaderboardItem.getModel().portfolioId;
+        OwnedPortfolioId ownedPortfolioId = new OwnedPortfolioId(userId, portfolioId);
+
+        navigator.pushFragment(InPeriodPositionListFragment.class, ownedPortfolioId.getArgs(), true);
+    }
+
+    private void handleOpenProfileButtonClicked()
+    {
+        int userId = leaderboardItem.getModel().getId();
+
+        Bundle b = new Bundle();
+        b.putInt(UserBaseKey.BUNDLE_KEY_KEY, userId);
+
+        if (currentUserBase != null && currentUserBase.id != userId)
+        {
+            navigator.pushFragment(TimelineFragment.class, b, true);
         }
     }
 }

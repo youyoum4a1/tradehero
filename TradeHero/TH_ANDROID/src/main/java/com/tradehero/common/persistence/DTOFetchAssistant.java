@@ -3,6 +3,7 @@ package com.tradehero.common.persistence;
 import android.os.AsyncTask;
 import com.tradehero.common.utils.THLog;
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,8 +36,9 @@ abstract public class DTOFetchAssistant<DTOKeyType extends DTOKey, DTOType exten
     public void execute(boolean force)
     {
         boolean ready = true;
-        for (DTOKeyType key: fetched.keySet())
+        for (DTOKeyType key: new ArrayList<>(fetched.keySet())) // Make a new list to avoid changes
         {
+            fetched.put(key, getCache().get(key)); // Supposedly makes it faster
             if (force || fetched.get(key) == null)
             {
                 ready = false;

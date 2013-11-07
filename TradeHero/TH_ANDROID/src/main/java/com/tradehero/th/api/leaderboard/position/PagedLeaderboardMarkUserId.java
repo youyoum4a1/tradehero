@@ -3,26 +3,20 @@ package com.tradehero.th.api.leaderboard.position;
 import android.os.Bundle;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/16/13 Time: 3:30 PM To change this template use File | Settings | File Templates. */
-public class PagedOwnedLbPositionId extends OwnedLbPositionId
+public class PagedLeaderboardMarkUserId extends LeaderboardMarkUserId
 {
-    public final static String BUNDLE_KEY_PAGE = PagedOwnedLbPositionId.class.getName() + ".page";
+    public final static String BUNDLE_KEY_PAGE = PagedLeaderboardMarkUserId.class.getName() + ".page";
 
     public final Integer page;
 
     //<editor-fold desc="Constructors">
-    public PagedOwnedLbPositionId(Integer lbmuId, Integer lbmupId, int page)
+    public PagedLeaderboardMarkUserId(Integer lbmuId, int page)
     {
-        super(lbmuId, lbmupId);
+        super(lbmuId);
         this.page = page;
     }
 
-    public PagedOwnedLbPositionId(LeaderboardMarkUserId lbmuId, Integer lbmupId, int page)
-    {
-        super(lbmuId, lbmupId);
-        this.page = page;
-    }
-
-    public PagedOwnedLbPositionId(Bundle args)
+    public PagedLeaderboardMarkUserId(Bundle args)
     {
         super(args);
         this.page = args.containsKey(BUNDLE_KEY_PAGE) ? args.getInt(BUNDLE_KEY_PAGE) : null;
@@ -36,10 +30,10 @@ public class PagedOwnedLbPositionId extends OwnedLbPositionId
 
     @Override public boolean equals(Object other)
     {
-        return (other instanceof PagedOwnedLbPositionId) && equals((PagedOwnedLbPositionId) other);
+        return (other instanceof PagedLeaderboardMarkUserId) && equals((PagedLeaderboardMarkUserId) other);
     }
 
-    public boolean equals(PagedOwnedLbPositionId other)
+    public boolean equals(PagedLeaderboardMarkUserId other)
     {
         return other != null &&
                 super.equals(other) &&
@@ -53,14 +47,14 @@ public class PagedOwnedLbPositionId extends OwnedLbPositionId
             return 1;
         }
 
-        if (o.getClass() == PagedOwnedLbPositionId.class)
+        if (o.getClass() == PagedLeaderboardMarkUserId.class)
         {
-            return compareTo((PagedOwnedLbPositionId) o);
+            return compareTo((PagedLeaderboardMarkUserId) o);
         }
-        return o.getClass().getName().compareTo(PagedOwnedLbPositionId.class.getName());
+        return o.getClass().getName().compareTo(PagedLeaderboardMarkUserId.class.getName());
     }
 
-    public int compareTo(PagedOwnedLbPositionId other)
+    public int compareTo(PagedLeaderboardMarkUserId other)
     {
         if (this == other)
         {
@@ -94,6 +88,6 @@ public class PagedOwnedLbPositionId extends OwnedLbPositionId
 
     @Override public String toString()
     {
-        return String.format("[leaderboardMarkUserId=%d; leaderboardMarkUserPositionId=%d; page=%d]", leaderboardMarkUserId, leaderboardMarkUserPositionId, page);
+        return String.format("[key=%d; page=%d]", key, page);
     }
 }

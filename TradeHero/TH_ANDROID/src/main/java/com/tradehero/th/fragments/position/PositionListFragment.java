@@ -14,6 +14,7 @@ import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
+import com.tradehero.th.adapters.position.AbstractPositionItemAdapter;
 import com.tradehero.th.adapters.position.PositionItemAdapter;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.position.GetPositionsDTO;
@@ -47,22 +48,24 @@ public class PositionListFragment extends DashboardFragment
     public static final String BUNDLE_KEY_FIRST_POSITION_VISIBLE = PositionListFragment.class.getName() + ".firstPositionVisible";
     public static final String BUNDLE_KEY_EXPANDED_LIST_FLAGS = PositionListFragment.class.getName() + ".expandedListFlags";
 
-    @Inject Lazy<PortfolioHeaderFactory> headerFactory;
-    private PortfolioHeaderView portfolioHeaderView;
-    private ExpandingListView positionsListView;
-    private PositionItemAdapter positionItemAdapter;
-
-    private OwnedPortfolioId ownedPortfolioId;
-
-    private GetPositionsDTO getPositionsDTO;
-    private int firstPositionVisible = 0;
-    private boolean[] expandedPositions;
-    @Inject Lazy<GetPositionsCache> getPositionsCache;
-    private GetPositionsCache.Listener<OwnedPortfolioId, GetPositionsDTO> getPositionsCacheListener;
-    private DTOCache.GetOrFetchTask<GetPositionsDTO> fetchGetPositionsDTOTask;
-
     @Inject Lazy<SecurityIdCache> securityIdCache;
     @Inject Lazy<PositionCache> positionCache;
+    @Inject Lazy<PortfolioHeaderFactory> headerFactory;
+    @Inject Lazy<GetPositionsCache> getPositionsCache;
+
+    private PortfolioHeaderView portfolioHeaderView;
+    private ExpandingListView positionsListView;
+
+    protected OwnedPortfolioId ownedPortfolioId;
+    private GetPositionsDTO getPositionsDTO;
+
+    protected AbstractPositionItemAdapter positionItemAdapter;
+
+    private int firstPositionVisible = 0;
+    private boolean[] expandedPositions;
+
+    private DTOCache.GetOrFetchTask<GetPositionsDTO> fetchGetPositionsDTOTask;
+    private GetPositionsCache.Listener<OwnedPortfolioId, GetPositionsDTO> getPositionsCacheListener;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -84,21 +87,16 @@ public class PositionListFragment extends DashboardFragment
     private void initViews(View view)
     {
         if (view != null)
+
         {
+            positionsListView = (ExpandingListView) view.findViewById(R.id.position_list);
+            positionsListView.setEmptyView(view.findViewById(android.R.id.empty));
+
             if (positionItemAdapter == null)
             {
-                positionItemAdapter = new PositionItemAdapter(
-                        getActivity(),
-                        getActivity().getLayoutInflater(),
-                        R.layout.position_item_header,
-                        R.layout.position_locked_item,
-                        R.layout.position_open_no_period,
-                        R.layout.position_closed_no_period,
-                        R.layout.position_quick_nothing);
-                positionItemAdapter.setCellListener(this);
+                createPositionItemAdapter();
             }
-
-            positionsListView = (ExpandingListView) view.findViewById(R.id.position_list);
+            positionItemAdapter.setCellListener(this);
             if (positionsListView != null)
             {
                 positionsListView.setAdapter(positionItemAdapter);
@@ -117,6 +115,7 @@ public class PositionListFragment extends DashboardFragment
                 });
             }
 
+            // portfolio header
             Bundle args = getArguments();
             if (args != null)
             {
@@ -126,6 +125,18 @@ public class PositionListFragment extends DashboardFragment
                 this.portfolioHeaderView = (PortfolioHeaderView) stub.inflate();
             }
         }
+    }
+
+    protected void createPositionItemAdapter()
+    {
+        positionItemAdapter = new PositionItemAdapter(
+                getActivity(),
+                getActivity().getLayoutInflater(),
+                R.layout.position_item_header,
+                R.layout.position_locked_item,
+                R.layout.position_open_no_period,
+                R.layout.position_closed_no_period,
+                R.layout.position_quick_nothing);
     }
 
     private void handlePositionItemClicked(AdapterView<?> parent, View view, int position, long id)
@@ -187,6 +198,7 @@ public class PositionListFragment extends DashboardFragment
             firstPositionVisible = positionsListView.getFirstVisiblePosition();
         }
 
+        // save expanding state
         if (positionItemAdapter != null)
         {
             List<Boolean> expandedStates = positionItemAdapter.getExpandedStatesPerPosition();
@@ -242,7 +254,7 @@ public class PositionListFragment extends DashboardFragment
         }
     }
 
-    private void fetchSimplePage()
+    protected void fetchSimplePage()
     {
         if (ownedPortfolioId != null && ownedPortfolioId.isValid())
         {
@@ -265,8 +277,20 @@ public class PositionListFragment extends DashboardFragment
         if (this.getPositionsDTO != null && ownedPortfolioId != null)
         {
             positionItemAdapter.setPositions(getPositionsDTO.positions, ownedPortfolioId.getPortfolioId());
-            positionItemAdapter.setExpandedStatesPerPosition(expandedPositions);
-            getView().post(
+            restoreExpandingStates();
+        }
+
+        if (andDisplay)
+        {
+            // TODO finer grained
+            display();
+        }
+    }
+
+    protected void restoreExpandingStates()
+    {
+        positionItemAdapter.setExpandedStatesPerPosition(expandedPositions);
+        getView().post(
                 new Runnable()
                 {
                     @Override public void run()
@@ -275,15 +299,7 @@ public class PositionListFragment extends DashboardFragment
                         positionsListView.setSelection(firstPositionVisible);
                     }
                 }
-            );
-        }
-
-        if (andDisplay)
-        {
-            displayActionBarTitle();
-            // TODO finer grained
-            display();
-        }
+        );
     }
 
     public void display()
@@ -330,7 +346,7 @@ public class PositionListFragment extends DashboardFragment
             @Override public void onErrorThrown(OwnedPortfolioId key, Throwable error)
             {
                 THToast.show(getString(R.string.error_fetch_position_list_info));
-                THLog.e(TAG, "Error fetching the getPositions " + key, error);
+                THLog.e(TAG, "Error fetching the getPortfolioId " + key, error);
             }
         };
     }

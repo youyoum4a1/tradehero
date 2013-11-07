@@ -1,12 +1,12 @@
 package com.tradehero.th.api.position;
 
-import com.tradehero.th.api.leaderboard.position.LeaderbordMarkUserPositionId;
-import com.tradehero.th.api.leaderboard.position.OwnedLbPositionId;
+import com.tradehero.th.api.leaderboard.position.LeaderboardMarkUserPositionId;
+import com.tradehero.th.api.leaderboard.position.OwnedLeaderboardPositionId;
 import java.util.ArrayList;
 import java.util.List;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/16/13 Time: 12:11 PM To change this template use File | Settings | File Templates. */
-public class PositionInPeriodDTO extends PositionDTO
+public class InPeriodPositionDTO extends PositionDTO
 {
     // This leaderboard Mark User Id needs to be populated by the service
     private Integer leaderboardMarkUserId;
@@ -17,14 +17,14 @@ public class PositionInPeriodDTO extends PositionDTO
     public Double sum_salesInPeriodRefCcy;
     public Double sum_purchasesInPeriodRefCcy;
 
-    public LeaderbordMarkUserPositionId getLbPositionId()
+    public LeaderboardMarkUserPositionId getLbPositionId()
     {
-        return new LeaderbordMarkUserPositionId(id);
+        return new LeaderboardMarkUserPositionId(id);
     }
 
-    public OwnedLbPositionId getLbOwnedPositionId()
+    public OwnedLeaderboardPositionId getLbOwnedPositionId()
     {
-        return new OwnedLbPositionId(leaderboardMarkUserId, id);
+        return new OwnedLeaderboardPositionId(leaderboardMarkUserId, id);
     }
 
     public Integer getLeaderboardMarkUserId()
@@ -37,18 +37,18 @@ public class PositionInPeriodDTO extends PositionDTO
         this.leaderboardMarkUserId = leaderboardMarkUserId;
     }
 
-    public static List<OwnedLbPositionId> getFiledLbPositionIds(List<PositionInPeriodDTO> positionInPeriodDTOs)
+    public static List<OwnedLeaderboardPositionId> getFiledLbPositionIds(List<InPeriodPositionDTO> inPeriodPositionDTOs)
     {
-        if (positionInPeriodDTOs == null)
+        if (inPeriodPositionDTOs == null)
         {
             return null;
         }
 
-        List<OwnedLbPositionId> ownedPositionIds = new ArrayList<>();
+        List<OwnedLeaderboardPositionId> ownedPositionIds = new ArrayList<>();
 
-        for (PositionInPeriodDTO positionInPeriodDTO: positionInPeriodDTOs)
+        for (InPeriodPositionDTO inPeriodPositionDTO : inPeriodPositionDTOs)
         {
-            ownedPositionIds.add(positionInPeriodDTO.getLbOwnedPositionId());
+            ownedPositionIds.add(inPeriodPositionDTO.getLbOwnedPositionId());
         }
 
         return ownedPositionIds;

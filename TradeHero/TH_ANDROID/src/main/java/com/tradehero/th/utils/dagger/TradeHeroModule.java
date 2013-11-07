@@ -23,21 +23,29 @@ import com.tradehero.th.fragments.authentication.EmailSignInFragment;
 import com.tradehero.th.fragments.leaderboard.AbstractLeaderboardFragment;
 import com.tradehero.th.fragments.leaderboard.LeaderboardCommunityFragment;
 import com.tradehero.th.fragments.leaderboard.LeaderboardDefListViewFragment;
+import com.tradehero.th.fragments.leaderboard.LeaderboardDefView;
 import com.tradehero.th.fragments.leaderboard.LeaderboardListViewFragment;
 import com.tradehero.th.fragments.leaderboard.LeaderboardLoader;
 import com.tradehero.th.fragments.leaderboard.LeaderboardUserRankItemView;
 import com.tradehero.th.fragments.portfolio.PortfolioListFragment;
 import com.tradehero.th.fragments.portfolio.PushablePortfolioListFragment;
+import com.tradehero.th.fragments.position.InPeriodPositionListFragment;
 import com.tradehero.th.fragments.position.PositionListFragment;
 import com.tradehero.th.fragments.security.ChartFragment;
 import com.tradehero.th.fragments.security.StockInfoFragment;
 import com.tradehero.th.fragments.security.StockInfoValueFragment;
 import com.tradehero.th.fragments.security.YahooNewsFragment;
-import com.tradehero.th.fragments.settings.*;
+import com.tradehero.th.fragments.settings.AboutFragment;
+import com.tradehero.th.fragments.settings.SettingsFragment;
+import com.tradehero.th.fragments.settings.SettingsPayPalFragment;
+import com.tradehero.th.fragments.settings.SettingsTransactionHistoryFragment;
 import com.tradehero.th.fragments.timeline.MeTimelineFragment;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.fragments.timeline.TimelineFragment;
-import com.tradehero.th.fragments.trade.*;
+import com.tradehero.th.fragments.trade.BuySellConfirmFragment;
+import com.tradehero.th.fragments.trade.BuySellFragment;
+import com.tradehero.th.fragments.trade.FreshQuoteHolder;
+import com.tradehero.th.fragments.trade.TradeListFragment;
 import com.tradehero.th.fragments.trending.SearchStockPeopleFragment;
 import com.tradehero.th.fragments.trending.TrendingFilterSelectorBasicFragment;
 import com.tradehero.th.fragments.trending.TrendingFilterSelectorPriceFragment;
@@ -47,12 +55,24 @@ import com.tradehero.th.loaders.SearchStockPageItemListLoader;
 import com.tradehero.th.loaders.TimelinePagedItemListLoader;
 import com.tradehero.th.network.NetworkEngine;
 import com.tradehero.th.network.YahooEngine;
-import com.tradehero.th.network.service.*;
+import com.tradehero.th.network.service.LeaderboardService;
+import com.tradehero.th.network.service.MarketService;
+import com.tradehero.th.network.service.PortfolioService;
+import com.tradehero.th.network.service.PositionService;
+import com.tradehero.th.network.service.ProviderService;
+import com.tradehero.th.network.service.QuoteService;
+import com.tradehero.th.network.service.SecurityService;
+import com.tradehero.th.network.service.TradeService;
+import com.tradehero.th.network.service.UserService;
+import com.tradehero.th.network.service.UserTimelineService;
+import com.tradehero.th.network.service.YahooNewsService;
+import com.tradehero.th.persistence.leaderboard.LeaderboardManager;
+import com.tradehero.th.persistence.portfolio.OwnedPortfolioFetchAssistant;
 import com.tradehero.th.persistence.timeline.TimelineManager;
 import com.tradehero.th.persistence.timeline.TimelineStore;
-import com.tradehero.th.persistence.leaderboard.LeaderboardManager;
 import com.tradehero.th.persistence.user.AbstractUserStore;
 import com.tradehero.th.persistence.user.UserManager;
+import com.tradehero.th.persistence.user.UserProfileFetchAssistant;
 import com.tradehero.th.persistence.user.UserStore;
 import com.tradehero.th.utils.NumberDisplayUtils;
 import com.tradehero.th.widget.MarkdownTextView;
@@ -63,16 +83,20 @@ import com.tradehero.th.widget.portfolio.header.CurrentUserPortfolioHeaderView;
 import com.tradehero.th.widget.portfolio.header.OtherUserPortfolioHeaderView;
 import com.tradehero.th.widget.position.LockedPositionItem;
 import com.tradehero.th.widget.position.PositionClosedView;
+import com.tradehero.th.widget.position.PositionInPeriodClosedView;
+import com.tradehero.th.widget.position.PositionInPeriodOpenView;
 import com.tradehero.th.widget.position.PositionOpenView;
 import com.tradehero.th.widget.position.partial.PositionPartialBottomClosedView;
+import com.tradehero.th.widget.position.partial.PositionPartialBottomInPeriodClosedView;
+import com.tradehero.th.widget.position.partial.PositionPartialBottomInPeriodOpenView;
 import com.tradehero.th.widget.position.partial.PositionPartialBottomOpenView;
 import com.tradehero.th.widget.position.partial.PositionPartialTopView;
 import com.tradehero.th.widget.timeline.TimelineItemView;
 import com.tradehero.th.widget.trade.TradeListHeaderView;
-import com.tradehero.th.widget.trade.TradeListOverlayHeaderView;
 import com.tradehero.th.widget.trade.TradeListItemView;
-import com.tradehero.th.widget.trending.SecurityItemView;
+import com.tradehero.th.widget.trade.TradeListOverlayHeaderView;
 import com.tradehero.th.widget.trending.SearchPeopleItemView;
+import com.tradehero.th.widget.trending.SecurityItemView;
 import com.tradehero.th.widget.user.ProfileCompactView;
 import com.tradehero.th.widget.user.ProfileView;
 import dagger.Module;
@@ -119,13 +143,20 @@ import javax.inject.Singleton;
                 PortfolioListItemView.class,
 
                 PositionListFragment.class,
+                InPeriodPositionListFragment.class,
                 CurrentUserPortfolioHeaderView.class,
                 OtherUserPortfolioHeaderView.class,
+
                 PositionOpenView.class,
+                PositionInPeriodOpenView.class,
+
                 PositionClosedView.class,
+                PositionInPeriodClosedView.class,
                 PositionPartialTopView.class,
                 PositionPartialBottomOpenView.class,
+                PositionPartialBottomInPeriodOpenView.class,
                 PositionPartialBottomClosedView.class,
+                PositionPartialBottomInPeriodClosedView.class,
                 LockedPositionItem.class,
 
                 TradeListFragment.class,
@@ -157,6 +188,7 @@ import javax.inject.Singleton;
                 LeaderboardCommunityFragment.class,
                 LeaderboardDefListViewFragment.class,
 
+                LeaderboardDefView.class,
                 LeaderboardManager.class,
                 LeaderboardLoader.class,
                 LeaderboardListViewFragment.class,

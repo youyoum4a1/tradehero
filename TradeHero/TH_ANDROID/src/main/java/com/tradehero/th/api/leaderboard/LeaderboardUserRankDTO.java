@@ -91,12 +91,6 @@ public class LeaderboardUserRankDTO extends UserBaseDTO
         return winRatio != null ? winRatio : 0;
     }
 
-    public int getPositions()
-    {
-        // TODO calculation
-        return 0;
-    }
-
     public String getFormattedPL()
     {
         DecimalFormat df = new DecimalFormat("###,##0.00");

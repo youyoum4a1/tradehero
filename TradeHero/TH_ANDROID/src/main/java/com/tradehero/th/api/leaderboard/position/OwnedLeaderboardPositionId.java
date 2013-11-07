@@ -7,27 +7,27 @@ import com.tradehero.common.persistence.DTOKey;
 /**
  * Created by julien on 1/11/13
  */
-public class OwnedLbPositionId implements Comparable, DTOKey, DTO
+public class OwnedLeaderboardPositionId implements Comparable, DTOKey, DTO
 {
-    public final static String BUNDLE_KEY_LEADERBOARD_MARK_USER_ID = OwnedLbPositionId.class.getName() + ".leaderboardMarkUserId";
-    public final static String BUNDLE_KEY_LEADERBOARD_MARK_USER_POSITION_ID = OwnedLbPositionId.class.getName() + ".leaderboardMarkUserPositionId";
+    public final static String BUNDLE_KEY_LEADERBOARD_MARK_USER_ID = OwnedLeaderboardPositionId.class.getName() + ".leaderboardMarkUserId";
+    public final static String BUNDLE_KEY_LEADERBOARD_MARK_USER_POSITION_ID = OwnedLeaderboardPositionId.class.getName() + ".leaderboardMarkUserPositionId";
 
     public final Integer leaderboardMarkUserId;
     public final Integer leaderboardMarkUserPositionId;
 
     //<editor-fold desc="Constructors">
-    public OwnedLbPositionId(Integer leaderboardMarkUserId, Integer leaderboardMarkUserPositionId)
+    public OwnedLeaderboardPositionId(Integer leaderboardMarkUserId, Integer leaderboardMarkUserPositionId)
     {
         this.leaderboardMarkUserId = leaderboardMarkUserId;
         this.leaderboardMarkUserPositionId = leaderboardMarkUserPositionId;
     }
 
-    public OwnedLbPositionId(LeaderboardMarkUserId leaderboardMarkUserId, Integer leaderboardMarkUserPositionId)
+    public OwnedLeaderboardPositionId(LeaderboardMarkUserId leaderboardMarkUserId, Integer leaderboardMarkUserPositionId)
     {
         this(leaderboardMarkUserId.key, leaderboardMarkUserPositionId);
     }
 
-    public OwnedLbPositionId(Bundle args)
+    public OwnedLeaderboardPositionId(Bundle args)
     {
         this.leaderboardMarkUserId = args.containsKey(BUNDLE_KEY_LEADERBOARD_MARK_USER_ID) ? args.getInt(BUNDLE_KEY_LEADERBOARD_MARK_USER_ID) : null;
         this.leaderboardMarkUserPositionId = args.containsKey(BUNDLE_KEY_LEADERBOARD_MARK_USER_POSITION_ID) ? args.getInt(
@@ -43,10 +43,10 @@ public class OwnedLbPositionId implements Comparable, DTOKey, DTO
 
     @Override public boolean equals(Object other)
     {
-        return (other instanceof OwnedLbPositionId) && equals((OwnedLbPositionId) other);
+        return (other instanceof OwnedLeaderboardPositionId) && equals((OwnedLeaderboardPositionId) other);
     }
 
-    public boolean equals(OwnedLbPositionId other)
+    public boolean equals(OwnedLeaderboardPositionId other)
     {
         return (other != null) &&
                 (leaderboardMarkUserId == null ? other.leaderboardMarkUserId == null : leaderboardMarkUserId.equals(other.leaderboardMarkUserId)) &&
@@ -61,14 +61,14 @@ public class OwnedLbPositionId implements Comparable, DTOKey, DTO
             return 1;
         }
 
-        if (o.getClass() == OwnedLbPositionId.class)
+        if (o.getClass() == OwnedLeaderboardPositionId.class)
         {
-            return compareTo((OwnedLbPositionId) o);
+            return compareTo((OwnedLeaderboardPositionId) o);
         }
-        return o.getClass().getName().compareTo(OwnedLbPositionId.class.getName());
+        return o.getClass().getName().compareTo(OwnedLeaderboardPositionId.class.getName());
     }
 
-    public int compareTo(OwnedLbPositionId other)
+    public int compareTo(OwnedLeaderboardPositionId other)
     {
         if (this == other)
         {

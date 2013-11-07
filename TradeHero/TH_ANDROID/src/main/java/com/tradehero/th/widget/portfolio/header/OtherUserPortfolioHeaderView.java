@@ -6,10 +6,12 @@ import android.view.View;
 import android.widget.*;
 import com.squareup.picasso.Picasso;
 import com.tradehero.common.graphics.RoundedShapeTransformation;
+import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.UserBaseDTO;
+import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.THUser;
 import com.tradehero.th.persistence.user.UserProfileCache;
@@ -32,6 +34,9 @@ public class OtherUserPortfolioHeaderView extends RelativeLayout implements Port
     @Inject @Named("CurrentUser") protected UserBaseDTO currentUserBase;
     @Inject Lazy<UserProfileCache> userCache;
     @Inject Lazy<Picasso> picasso;
+
+    private DTOCache.Listener<UserBaseKey, UserProfileDTO> getUserCacheListener;
+    private DTOCache.GetOrFetchTask<UserProfileDTO> fetchUserProfileTask;
 
     //<editor-fold desc="Description">
     public OtherUserPortfolioHeaderView(Context context)
@@ -73,12 +78,39 @@ public class OtherUserPortfolioHeaderView extends RelativeLayout implements Port
         });
     }
 
+    @Override protected void onAttachedToWindow()
+    {
+        super.onAttachedToWindow();
+
+        getUserCacheListener = new DTOCache.Listener<UserBaseKey, UserProfileDTO>()
+        {
+            @Override public void onDTOReceived(UserBaseKey key, UserProfileDTO value)
+            {
+                display(value);
+            }
+
+            @Override public void onErrorThrown(UserBaseKey key, Throwable error)
+            {
+                //To change body of implemented methods use File | Settings | File Templates.
+            }
+        };
+
+        if (fetchUserProfileTask != null)
+        {
+            fetchUserProfileTask.forgetListener(true);
+        }
+    }
+
+    private void display(UserProfileDTO user)
+    {
+        configureUserViews(user);
+        configureFollowItemsVisibility(user);
+    }
 
     @Override public void bindOwnedPortfolioId(OwnedPortfolioId id)
     {
-        UserProfileDTO user =  this.userCache.get().get(id.getUserBaseKey());
-        configureUserViews(user);
-        configureFollowItemsVisibility(user);
+        fetchUserProfileTask = this.userCache.get().getOrFetch(id.getUserBaseKey(), false, getUserCacheListener);
+        fetchUserProfileTask.execute();
     }
 
     private void configureUserViews(UserProfileDTO user)
