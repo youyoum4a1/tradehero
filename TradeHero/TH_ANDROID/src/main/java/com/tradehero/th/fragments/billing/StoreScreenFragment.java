@@ -13,6 +13,7 @@ import android.widget.ListView;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
+import com.tradehero.common.billing.googleplay.SKUDetails;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.DashboardActivity;
@@ -24,6 +25,7 @@ import com.tradehero.th.fragments.base.DashboardFragment;
 import java.util.List;
 
 public class StoreScreenFragment extends DashboardFragment
+    implements IABAlertUtils.OnDialogSKUDetailsClickListener<THSKUDetails>
 {
     public static final String TAG = StoreScreenFragment.class.getSimpleName();
 
@@ -228,48 +230,14 @@ public class StoreScreenFragment extends DashboardFragment
         List<THSKUDetails> desiredSkuDetails = ((DashboardActivity) getActivity()).getDetailsOfDomain(skuDomain);
         detailsAdapter.setItems(desiredSkuDetails);
 
-        popBuyDialog(detailsAdapter, titleResId);
+        IABAlertUtils.popBuyDialog(getActivity(), detailsAdapter, titleResId, this);
     }
 
-    private void popBuyDialog(final THSKUDetailsAdapter detailsAdapter, int titleResId)
+    //<editor-fold desc="IABAlertUtils.OnDialogSKUDetailsClickListener">
+    @Override public void onDialogSKUDetailsClicked(DialogInterface dialogInterface, int position, THSKUDetails skuDetails)
     {
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
-
-        // set dialog message
-        alertDialogBuilder
-                .setTitle(titleResId)
-                .setSingleChoiceItems(detailsAdapter, 0, new DialogInterface.OnClickListener()
-                {
-                    @Override public void onClick(DialogInterface dialogInterface, int i)
-                    {
-                        if (detailsAdapter.getItemViewType(i) > 0)
-                        {
-                            dialogItemClicked(dialogInterface, i, (THSKUDetails) detailsAdapter.getItem(i));
-                            dialogInterface.cancel();
-                        }
-                    }
-                })
-                .setCancelable(true)
-                .setNegativeButton(R.string.store_buy_virtual_dollar_window_button_cancel, new DialogInterface.OnClickListener()
-                {
-                    public void onClick(DialogInterface dialog, int id)
-                    {
-                        // if this button is clicked, just close
-                        // the dialog box and do nothing
-                        dialog.cancel();
-                    }
-                });
-
-        // create alert dialog
-        AlertDialog alertDialog = alertDialogBuilder.create();
-
-        // show it
-        alertDialog.show();
+        THToast.show("Sku clicked " + skuDetails.getProductIdentifier().identifier);
+        ((DashboardActivity) getActivity()).launchPurchaseSequence(skuDetails, "From store");
     }
-
-    private void dialogItemClicked(DialogInterface dialogInterface, int i, THSKUDetails item)
-    {
-        THToast.show("Sku clicked " + item.getProductIdentifier().identifier);
-        ((DashboardActivity) getActivity()).launchPurchaseSequence(item, "From store");
-    }
+    //</editor-fold>
 }
