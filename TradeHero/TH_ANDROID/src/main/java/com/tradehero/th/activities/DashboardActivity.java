@@ -10,6 +10,7 @@ import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.MenuItem;
 import com.tradehero.common.billing.googleplay.Constants;
 import com.tradehero.common.billing.googleplay.IABPurchase;
+import com.tradehero.common.billing.googleplay.IABPurchaser;
 import com.tradehero.common.billing.googleplay.IABResult;
 import com.tradehero.common.billing.googleplay.InventoryFetcher;
 import com.tradehero.common.billing.googleplay.exceptions.IABBadResponseException;
@@ -20,6 +21,8 @@ import com.tradehero.common.billing.googleplay.exceptions.IABVerificationFailedE
 import com.tradehero.common.billing.googleplay.PurchaseFetcher;
 import com.tradehero.common.billing.googleplay.SKU;
 import com.tradehero.common.utils.ArrayUtils;
+import com.tradehero.common.utils.THLog;
+import com.tradehero.th.billing.googleplay.SKUDetailsPurchaser;
 import com.tradehero.th.billing.googleplay.THInventoryFetcher;
 import com.tradehero.th.billing.googleplay.THSKUDetails;
 import com.tradehero.th.billing.googleplay.THSKUDetailsTuner;
@@ -36,7 +39,8 @@ import org.json.JSONException;
 public class DashboardActivity extends SherlockFragmentActivity
     implements DashboardNavigatorActivity, SKUFetcher.SKUFetcherListener,
         PurchaseFetcher.PublicFetcherListener,
-        InventoryFetcher.InventoryListener<THInventoryFetcher, THSKUDetails>
+        InventoryFetcher.InventoryListener<THInventoryFetcher, THSKUDetails>,
+        IABPurchaser.OnIABPurchaseFinishedListener
 {
     public static final String TAG = DashboardActivity.class.getSimpleName();
 
@@ -45,10 +49,12 @@ public class DashboardActivity extends SherlockFragmentActivity
     private THSKUDetailsTuner thSKUDetailsTuner;
     private PurchaseFetcher purchaseFetcher;
     private THInventoryFetcher inventoryFetcher;
+    private SKUDetailsPurchaser skuDetailsPurchaser;
 
     private Exception latestSkuFetcherException;
     private Exception latestInventoryFetcherException;
     private Exception latestPurchaseFetcherException;
+    private Exception latestPurchaserException;
 
     public void onCreate(Bundle savedInstanceState)
     {
@@ -75,8 +81,21 @@ public class DashboardActivity extends SherlockFragmentActivity
         return super.onOptionsItemSelected(item);
     }
 
+    @Override protected void onResume()
+    {
+        THLog.d(TAG, "onResume");
+        super.onResume();
+    }
+
+    @Override protected void onPause()
+    {
+        THLog.d(TAG, "onPause");
+        super.onPause();
+    }
+
     @Override protected void onDestroy()
     {
+        THLog.d(TAG, "onDestroy");
         if (skuFetcher != null)
         {
             skuFetcher.setListener(null);
@@ -86,6 +105,7 @@ public class DashboardActivity extends SherlockFragmentActivity
 
         if (purchaseFetcher != null)
         {
+            purchaseFetcher.setListener(null);
             purchaseFetcher.setFetchListener(null);
             purchaseFetcher.dispose();
         }
@@ -93,11 +113,21 @@ public class DashboardActivity extends SherlockFragmentActivity
 
         if (inventoryFetcher != null)
         {
+            inventoryFetcher.setListener(null);
             inventoryFetcher.setInventoryListener(null);
             inventoryFetcher.setSkuDetailsTuner(null);
             inventoryFetcher.dispose();
         }
         inventoryFetcher = null;
+
+        if (skuDetailsPurchaser != null)
+        {
+            skuDetailsPurchaser.setListener(null);
+            skuDetailsPurchaser.setPurchaseFinishedListener(null);
+            skuDetailsPurchaser.dispose();
+        }
+        skuDetailsPurchaser = null;
+
         super.onDestroy();
     }
 
@@ -117,7 +147,18 @@ public class DashboardActivity extends SherlockFragmentActivity
     {
         latestSkuFetcherException = null;
         latestInventoryFetcherException = null;
+        if (inventoryFetcher != null)
+        {
+            inventoryFetcher.setListener(null);
+            inventoryFetcher.setInventoryListener(null);
+            inventoryFetcher.setSkuDetailsTuner(null);
+        }
         inventoryFetcher = null;
+
+        if (skuFetcher != null)
+        {
+            skuFetcher.setListener(null);
+        }
         skuFetcher = new SKUFetcher();
         skuFetcher.setListener(this);
         skuFetcher.fetchSkus();
@@ -126,28 +167,47 @@ public class DashboardActivity extends SherlockFragmentActivity
     //<editor-fold desc="SKUFetcher.SKUFetcherListener">
     @Override public void onFetchSKUsFailed(SKUFetcher fetcher, Exception exception)
     {
-        latestSkuFetcherException = exception;
-        THToast.show("There was an error fetching the list of SKUs");
+        if (fetcher == this.skuFetcher)
+        {
+            latestSkuFetcherException = exception;
+            THToast.show("There was an error fetching the list of SKUs");
+        }
+        else
+        {
+            THLog.e(TAG, "We have received a callback from another sku fetcher", exception);
+        }
     }
 
     @Override public void onFetchedSKUs(SKUFetcher fetcher, Map<String, List<SKU>> availableSkus)
     {
-        List<SKU> mixedSKUs = availableSkus.get(Constants.ITEM_TYPE_INAPP);
-        if (availableSkus.containsKey(Constants.ITEM_TYPE_SUBS))
+        if (fetcher == this.skuFetcher)
         {
-            mixedSKUs.addAll(availableSkus.get(Constants.ITEM_TYPE_SUBS));
+            List<SKU> mixedSKUs = availableSkus.get(Constants.ITEM_TYPE_INAPP);
+            if (availableSkus.containsKey(Constants.ITEM_TYPE_SUBS))
+            {
+                mixedSKUs.addAll(availableSkus.get(Constants.ITEM_TYPE_SUBS));
+            }
+            latestInventoryFetcherException = null;
+            inventoryFetcher = new THInventoryFetcher(this, mixedSKUs);
+            inventoryFetcher.setSkuDetailsTuner(thSKUDetailsTuner);
+            inventoryFetcher.setInventoryListener(this);
+            inventoryFetcher.startConnectionSetup();
         }
-        latestInventoryFetcherException = null;
-        inventoryFetcher = new THInventoryFetcher(this, mixedSKUs);
-        inventoryFetcher.setSkuDetailsTuner(thSKUDetailsTuner);
-        inventoryFetcher.setInventoryListener(this);
-        inventoryFetcher.startConnectionSetup();
+        else
+        {
+            THLog.w(TAG, "We have received a callback from another skuFetcher");
+        }
     }
     //</editor-fold>
 
     public void launchFetchPurchasesSequence()
     {
         latestPurchaseFetcherException = null;
+        if (purchaseFetcher != null)
+        {
+            purchaseFetcher.setListener(null);
+            purchaseFetcher.setFetchListener(null);
+        }
         purchaseFetcher = new PurchaseFetcher(this);
         purchaseFetcher.setFetchListener(this);
         purchaseFetcher.startConnectionSetup();
@@ -156,33 +216,92 @@ public class DashboardActivity extends SherlockFragmentActivity
     //<editor-fold desc="PurchaseFetcher.PublicFetcherListener">
     @Override public void onFetchPurchasesFailed(PurchaseFetcher fetcher, IABException exception)
     {
-        latestPurchaseFetcherException = exception;
-        handleException(exception);
+        if (fetcher == this.purchaseFetcher)
+        {
+            latestPurchaseFetcherException = exception;
+            handleException(exception);
+        }
+        else
+        {
+            THLog.e(TAG, "We have received a callback from another purchaseFetcher", exception);
+        }
     }
 
     @Override public void onFetchedPurchases(PurchaseFetcher fetcher, Map<SKU, IABPurchase> purchases)
     {
-        if (purchases != null && purchases.size() > 0)
+        if (fetcher == this.purchaseFetcher)
         {
-            THToast.show("There are some purchases to be consumed");
+            if (purchases != null && purchases.size() > 0)
+            {
+                THToast.show("There are some purchases to be consumed");
+            }
+            else
+            {
+                THToast.show("There is no purchase waiting to be consumed");
+            }
         }
         else
         {
-            THToast.show("There is no purchase waiting to be consumed");
+            THLog.w(TAG, "We have received a callback from another purchaseFetcher");
         }
+
     }
     //</editor-fold>
 
     //<editor-fold desc="InventoryFetcher.InventoryListener">
     @Override public void onInventoryFetchSuccess(THInventoryFetcher fetcher, Map<SKU, THSKUDetails> inventory)
     {
-        THToast.show("Inventory successfully fetched");
+        if (fetcher == this.inventoryFetcher)
+        {
+            THToast.show("Inventory successfully fetched");
+        }
+        else
+        {
+            THLog.w(TAG, "We have received a callback from another inventoryFetcher");
+        }
+
     }
 
     @Override public void onInventoryFetchFail(THInventoryFetcher fetcher, IABException exception)
     {
-        latestInventoryFetcherException = exception;
-        handleException(exception);
+        if (fetcher == inventoryFetcher)
+        {
+            latestInventoryFetcherException = exception;
+            handleException(exception);
+        }
+        else
+        {
+            THLog.e(TAG, "We have received a callback from another inventoryFetcher", exception);
+        }
+    }
+    //</editor-fold>
+
+    //<editor-fold desc="IABPurchaser.OnIABPurchaseFinishedListener">
+    @Override public void onIABPurchaseFinished(IABPurchaser purchaser, IABPurchase info)
+    {
+        // TODO
+        if (purchaser == this.skuDetailsPurchaser)
+        {
+            THToast.show("Purchase went through ok");
+            THLog.d(TAG, "Purchase info " + info);
+        }
+        else
+        {
+            THLog.w(TAG, "We have received a callback from another purchaser");
+        }
+    }
+
+    @Override public void onIABPurchaseFailed(IABPurchaser purchaser, IABException exception)
+    {
+        if (purchaser == this.skuDetailsPurchaser)
+        {
+            latestPurchaserException = exception;
+            handleException(exception);
+        }
+        else
+        {
+            THLog.e(TAG, "We have received a callback from another purchaser", exception);
+        }
     }
     //</editor-fold>
 
@@ -250,5 +369,24 @@ public class DashboardActivity extends SherlockFragmentActivity
         return latestSkuFetcherException;
     }
 
+    public void launchPurchaseSequence(THSKUDetails skuDetails, String extraData)
+    {
+        if (skuDetailsPurchaser != null)
+        {
+            skuDetailsPurchaser.setListener(null);
+            skuDetailsPurchaser.setPurchaseFinishedListener(null);
+        }
+        skuDetailsPurchaser = new SKUDetailsPurchaser(this);
+        skuDetailsPurchaser.setPurchaseFinishedListener(this);
+        skuDetailsPurchaser.purchase(skuDetails, extraData, (int) (Math.random() * Integer.MAX_VALUE));
+    }
 
+    @Override protected void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (this.skuDetailsPurchaser != null)
+        {
+            this.skuDetailsPurchaser.handleActivityResult(requestCode, resultCode, data);
+        }
+    }
 }
