@@ -40,6 +40,7 @@ public class IABResult
             this.message = message + " (response: " + Constants.getStatusCodeDescription(response) + ")";
         }
     }
+
     public boolean isSuccess()
     {
         return response == Constants.BILLING_RESPONSE_RESULT_OK;

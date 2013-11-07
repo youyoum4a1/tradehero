@@ -15,8 +15,6 @@
 
 package com.tradehero.common.billing.googleplay;
 
-import com.tradehero.common.billing.OrderId;
-import com.tradehero.common.billing.ProductIdentifier;
 import com.tradehero.common.billing.ProductPurchase;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -24,7 +22,7 @@ import org.json.JSONObject;
 /**
  * Represents an in-app billing purchase.
  */
-public class GooglePurchase implements ProductPurchase<GoogleOrderId, SKU>
+public class IABPurchase implements ProductPurchase<IABOrderId, SKU>
 {
     public static final String JSON_KEY_ORDER_ID = "orderId";
     public static final String JSON_KEY_PACKAGE_NAME = "packageName";
@@ -36,7 +34,7 @@ public class GooglePurchase implements ProductPurchase<GoogleOrderId, SKU>
     public static final String JSON_KEY_PURCHASE_TOKEN = "purchaseToken";
 
     public final String itemType;  // ITEM_TYPE_INAPP or ITEM_TYPE_SUBS
-    protected final GoogleOrderId orderId;
+    protected final IABOrderId orderId;
     public final String packageName;
     protected final SKU sku;
     public final long purchaseTime;
@@ -46,13 +44,13 @@ public class GooglePurchase implements ProductPurchase<GoogleOrderId, SKU>
     public final String originalJson;
     public final String signature;
 
-    public GooglePurchase(String itemType, String jsonPurchaseInfo, String signature) throws JSONException
+    public IABPurchase(String itemType, String jsonPurchaseInfo, String signature) throws JSONException
     {
         this.itemType = itemType;
         originalJson = jsonPurchaseInfo;
         JSONObject o = new JSONObject(originalJson);
         String orderIdString = o.optString(JSON_KEY_ORDER_ID);
-        orderId = new GoogleOrderId(orderIdString);
+        orderId = new IABOrderId(orderIdString);
         packageName = o.optString(JSON_KEY_PACKAGE_NAME);
         String skuString = o.optString(JSON_KEY_PRODUCT_ID);
         sku = new SKU(skuString);
@@ -63,7 +61,7 @@ public class GooglePurchase implements ProductPurchase<GoogleOrderId, SKU>
         this.signature = signature;
     }
 
-    @Override public GoogleOrderId getOrderId()
+    @Override public IABOrderId getOrderId()
     {
         return orderId;
     }
