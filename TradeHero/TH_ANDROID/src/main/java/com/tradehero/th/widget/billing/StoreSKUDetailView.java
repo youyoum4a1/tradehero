@@ -14,20 +14,13 @@ import com.tradehero.th.api.DTOView;
 import com.tradehero.th.billing.googleplay.THSKUDetails;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/6/13 Time: 2:49 PM To change this template use File | Settings | File Templates. */
-public class StoreSKUDetailView extends RelativeLayout implements DTOView<THSKUDetails>
+public class StoreSKUDetailView extends SKUDetailView<THSKUDetails>
 {
     public static final String TAG = StoreSKUDetailView.class.getSimpleName();
 
-    private RadioButton hintSelected;
-    private ImageView icDeliverable;
-    private View priceAndText;
-    private TextView skuPrice;
-    private TextView deliverableText;
-    private TextView furtherDescription;
-    private ImageView icRibbon;
-
-    private boolean selected;
-    private THSKUDetails skuDetails;
+    protected ImageView icDeliverable;
+    protected TextView furtherDescription;
+    protected ImageView icRibbon;
 
     //<editor-fold desc="Constructors">
     public StoreSKUDetailView(Context context)
@@ -46,67 +39,23 @@ public class StoreSKUDetailView extends RelativeLayout implements DTOView<THSKUD
     }
     //</editor-fold>
 
-    @Override protected void onFinishInflate()
+    @Override protected void initViews()
     {
-        super.onFinishInflate();
-        initViews();
-    }
-
-    private void initViews()
-    {
-        hintSelected = (RadioButton) findViewById(R.id.selected_hint);
+        super.initViews();
         icDeliverable = (ImageView) findViewById(R.id.ic_deliverable);
-        priceAndText = findViewById(R.id.price_and_text);
-        skuPrice = (TextView) findViewById(R.id.sku_price);
-        deliverableText = (TextView) findViewById(R.id.text_deliverable);
         furtherDescription = (TextView) findViewById(R.id.further_description);
         icRibbon = (ImageView) findViewById(R.id.ic_ribbon);
     }
 
-    public boolean isSelected()
+    @Override public void display()
     {
-        return selected;
-    }
-
-    public void setSelected(boolean selected)
-    {
-        this.selected = selected;
-        displayHintSelected();
-    }
-
-    @Override public void display(THSKUDetails skuDetails)
-    {
-        linkWith(skuDetails, true);
-    }
-
-    public void linkWith(THSKUDetails skuDetails, boolean andDisplay)
-    {
-        this.skuDetails = skuDetails;
-        if (andDisplay)
-        {
-            display();
-        }
-    }
-
-    public void display()
-    {
-        displayHintSelected();
+        super.display();
         displayIcDeliverable();
-        displayPrice();
-        displayDeliverableText();
         displayFurtherDescription();
         displayIcRibbon();
     }
 
-    private void displayHintSelected()
-    {
-        if (hintSelected != null)
-        {
-            hintSelected.setChecked(selected);
-        }
-    }
-
-    private void displayIcDeliverable()
+    protected void displayIcDeliverable()
     {
         if (icDeliverable != null)
         {
@@ -117,29 +66,7 @@ public class StoreSKUDetailView extends RelativeLayout implements DTOView<THSKUD
         }
     }
 
-    private void displayPrice()
-    {
-        if (skuPrice != null)
-        {
-            if (skuDetails != null)
-            {
-                skuPrice.setText(skuDetails.price);
-            }
-        }
-    }
-
-    private void displayDeliverableText()
-    {
-        if (deliverableText != null)
-        {
-            if (skuDetails != null)
-            {
-                deliverableText.setText(skuDetails.description);
-            }
-        }
-    }
-
-    private void displayFurtherDescription()
+    protected void displayFurtherDescription()
     {
         if (furtherDescription != null)
         {
@@ -151,7 +78,7 @@ public class StoreSKUDetailView extends RelativeLayout implements DTOView<THSKUD
         }
     }
 
-    private void displayIcRibbon()
+    protected void displayIcRibbon()
     {
         if (icRibbon != null)
         {
