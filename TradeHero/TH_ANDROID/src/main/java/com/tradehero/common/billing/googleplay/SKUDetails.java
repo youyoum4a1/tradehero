@@ -59,6 +59,11 @@ public class SKUDetails implements ProductDetails<SKU>
         return this.sku;
     }
 
+    public boolean isOfType(String type)
+    {
+        return this.type == null ? type == null : this.type.equals(type);
+    }
+
     public static Comparator<SKUDetails> DecreasingPriceComparator = new Comparator<SKUDetails>()
     {
         public int compare(SKUDetails skuDetails1, SKUDetails skuDetails2)

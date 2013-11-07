@@ -190,11 +190,11 @@ public class IABServiceConnector
         return billingService.isBillingSupported(TARGET_BILLING_API_VERSION3, context.getPackageName(), itemType);
     }
 
-    private void checkNotDisposed()
+    protected void checkNotDisposed()
     {
         if (disposed)
         {
-            throw new IllegalStateException("IabHelper was disposed of, so it cannot be used.");
+            throw new IllegalStateException("IabServiceConnector was disposed of, so it cannot be used.");
         }
     }
 
@@ -203,6 +203,15 @@ public class IABServiceConnector
         if (setupDone)
         {
             throw new IllegalStateException("IAB helper is already set up.");
+        }
+    }
+
+    // Checks that setup was done; if not, throws an exception.
+    protected void checkSetupDone(String operation)
+    {
+        if (!setupDone)
+        {
+            throw new IllegalStateException("IAB helper is not set up. Can't perform operation: " + operation);
         }
     }
 

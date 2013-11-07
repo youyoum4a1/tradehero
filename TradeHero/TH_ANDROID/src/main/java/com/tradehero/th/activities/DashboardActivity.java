@@ -1,12 +1,17 @@
 package com.tradehero.th.activities;
 
+import android.app.Activity;
+import android.app.PendingIntent;
+import android.content.Intent;
+import android.content.IntentSender;
 import android.os.Bundle;
+import android.os.RemoteException;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.MenuItem;
 import com.tradehero.common.billing.googleplay.Constants;
-import com.tradehero.common.billing.googleplay.GooglePurchase;
+import com.tradehero.common.billing.googleplay.IABPurchase;
+import com.tradehero.common.billing.googleplay.IABResult;
 import com.tradehero.common.billing.googleplay.InventoryFetcher;
-import com.tradehero.common.billing.googleplay.SKUDetails;
 import com.tradehero.common.billing.googleplay.exceptions.IABBadResponseException;
 import com.tradehero.common.billing.googleplay.exceptions.IABBillingUnavailableException;
 import com.tradehero.common.billing.googleplay.exceptions.IABException;
@@ -24,11 +29,9 @@ import com.tradehero.th.R;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.fragments.DashboardNavigator;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import org.json.JSONException;
 
 public class DashboardActivity extends SherlockFragmentActivity
     implements DashboardNavigatorActivity, SKUFetcher.SKUFetcherListener,
@@ -157,7 +160,7 @@ public class DashboardActivity extends SherlockFragmentActivity
         handleException(exception);
     }
 
-    @Override public void onFetchedPurchases(PurchaseFetcher fetcher, Map<SKU, GooglePurchase> purchases)
+    @Override public void onFetchedPurchases(PurchaseFetcher fetcher, Map<SKU, IABPurchase> purchases)
     {
         if (purchases != null && purchases.size() > 0)
         {
@@ -246,4 +249,6 @@ public class DashboardActivity extends SherlockFragmentActivity
     {
         return latestSkuFetcherException;
     }
+
+
 }

@@ -29,17 +29,29 @@ import javax.inject.Singleton;
             case Constants.BILLING_RESPONSE_RESULT_BILLING_UNAVAILABLE:
                 return new IABBillingUnavailableException(message);
 
+            case Constants.IABHELPER_REMOTE_EXCEPTION:
+                return new IABRemoteException(message);
+
             case Constants.IABHELPER_BAD_RESPONSE:
                 return new IABBadResponseException(message);
 
             case Constants.IABHELPER_VERIFICATION_FAILED:
                 return new IABVerificationFailedException(message);
 
-            case Constants.IABHELPER_REMOTE_EXCEPTION:
-                return new IABRemoteException(message);
-
             case Constants.IABHELPER_SEND_INTENT_FAILED:
                 return new IABSendIntentException(message);
+
+            case Constants.IABHELPER_USER_CANCELLED:
+                return new IABUserCancelledException(message);
+
+            case Constants.IABHELPER_UNKNOWN_PURCHASE_RESPONSE:
+                return new IABUnknownPurchaseResponseException(message);
+
+            case Constants.IABHELPER_UNKNOWN_ERROR:
+                return new IABUnknownErrorException(message);
+
+            case Constants.IABHELPER_SUBSCRIPTIONS_NOT_AVAILABLE:
+                return new IABSubscriptionUnavailableException(message);
 
             default:
                 return new IABException(responseStatus, message);
