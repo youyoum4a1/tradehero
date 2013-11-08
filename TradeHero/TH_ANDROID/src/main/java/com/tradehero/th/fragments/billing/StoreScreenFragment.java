@@ -13,8 +13,12 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.common.billing.googleplay.SKUPurchase;
 import com.tradehero.common.billing.googleplay.exceptions.IABAlreadyOwnedException;
+import com.tradehero.common.billing.googleplay.exceptions.IABBadResponseException;
 import com.tradehero.common.billing.googleplay.exceptions.IABException;
+import com.tradehero.common.billing.googleplay.exceptions.IABRemoteException;
+import com.tradehero.common.billing.googleplay.exceptions.IABSendIntentException;
 import com.tradehero.common.billing.googleplay.exceptions.IABUserCancelledException;
+import com.tradehero.common.billing.googleplay.exceptions.IABVerificationFailedException;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
@@ -280,13 +284,29 @@ public class StoreScreenFragment extends DashboardFragment
         {
             THLog.d(TAG, "handlePurchaseException. Received requestCode " + requestCode + ", when in fact it expects " + this.requestCode);
         }
+        else if (exception instanceof IABVerificationFailedException)
+        {
+            IABAlertUtils.popVerificationFailed(getActivity());
+        }
         else if (exception instanceof IABUserCancelledException)
         {
             IABAlertUtils.popUserCancelled(getActivity());
         }
+        if (exception instanceof IABBadResponseException)
+        {
+            IABAlertUtils.popBadResponse(getActivity());
+        }
+        else if (exception instanceof IABRemoteException)
+        {
+            IABAlertUtils.popRemoteError(getActivity());
+        }
         else if (exception instanceof IABAlreadyOwnedException)
         {
             IABAlertUtils.popSKUAlreadyOwned(getActivity(), skuDetails);
+        }
+        else if (exception instanceof IABSendIntentException)
+        {
+            IABAlertUtils.popSendIntent(getActivity());
         }
         else
         {
