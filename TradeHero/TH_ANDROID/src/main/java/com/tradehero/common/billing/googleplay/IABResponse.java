@@ -17,35 +17,25 @@ package com.tradehero.common.billing.googleplay;
 
 /**
  * Represents the result of an in-app billing operation. A result is composed of a response code (an integer) and possibly a message (String). You can
- * get those by calling {@link #getResponse} and {@link #getMessage()}, respectively. You can also inquire whether a result is a success or a failure
+ * get those by calling {@link #status} and {@link #message}, respectively. You can also inquire whether a result is a success or a failure
  * by calling {@link #isSuccess()} and {@link #isFailure()}.
  */
 public class IABResponse
 {
-    int status;
-    String mMessage;
+    public final int status;
+    public final String message;
 
     public IABResponse(int status, String message)
     {
         this.status = status;
         if (message == null || message.trim().length() == 0)
         {
-            mMessage = Constants.getStatusCodeDescription(status);
+            this.message = Constants.getStatusCodeDescription(status);
         }
         else
         {
-            mMessage = message + " (response: " + Constants.getStatusCodeDescription(status) + ")";
+            this.message = message + " (response: " + Constants.getStatusCodeDescription(status) + ")";
         }
-    }
-
-    public int getResponse()
-    {
-        return status;
-    }
-
-    public String getMessage()
-    {
-        return mMessage;
     }
 
     public boolean isSuccess()
@@ -60,7 +50,7 @@ public class IABResponse
 
     public String toString()
     {
-        return "IABResponse: " + getMessage();
+        return "IABResponse: " + message;
     }
 }
 
