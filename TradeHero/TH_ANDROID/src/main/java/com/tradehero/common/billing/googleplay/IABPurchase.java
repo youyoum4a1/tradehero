@@ -22,7 +22,7 @@ import org.json.JSONObject;
 /**
  * Represents an in-app billing purchase.
  */
-public class IABPurchase implements ProductPurchase<IABOrderId, SKU>
+public class IABPurchase implements ProductPurchase<IABOrderId, IABSKU>
 {
     public static final String JSON_KEY_ORDER_ID = "orderId";
     public static final String JSON_KEY_PACKAGE_NAME = "packageName";
@@ -36,7 +36,7 @@ public class IABPurchase implements ProductPurchase<IABOrderId, SKU>
     public final String itemType;  // ITEM_TYPE_INAPP or ITEM_TYPE_SUBS
     protected final IABOrderId orderId;
     public final String packageName;
-    protected final SKU sku;
+    protected final IABSKU iabSKU;
     public final long purchaseTime;
     public final int purchaseState;
     public final String developerPayload;
@@ -53,7 +53,7 @@ public class IABPurchase implements ProductPurchase<IABOrderId, SKU>
         orderId = new IABOrderId(orderIdString);
         packageName = o.optString(JSON_KEY_PACKAGE_NAME);
         String skuString = o.optString(JSON_KEY_PRODUCT_ID);
-        sku = new SKU(skuString);
+        iabSKU = new IABSKU(skuString);
         purchaseTime = o.optLong(JSON_KEY_PURCHASE_TIME);
         purchaseState = o.optInt(JSON_KEY_PURCHASE_STATE);
         developerPayload = o.optString(JSON_KEY_DEVELOPER_PAY_LOAD);
@@ -66,13 +66,13 @@ public class IABPurchase implements ProductPurchase<IABOrderId, SKU>
         return orderId;
     }
 
-    @Override public SKU getProductIdentifier()
+    @Override public IABSKU getProductIdentifier()
     {
-        return sku;
+        return iabSKU;
     }
 
     @Override public String toString()
     {
-        return "PurchaseInfo(type:" + itemType + "):" + originalJson;
+        return "PurchaseInfo(type:" + itemType + "):" + originalJson + "; signature:" + signature;
     }
 }

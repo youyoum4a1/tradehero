@@ -7,7 +7,7 @@ import com.tradehero.common.billing.googleplay.IABResult;
 public class IABAlreadyOwnedException extends IABOneResponseValueException
 {
     public static final String TAG = IABAlreadyOwnedException.class.getSimpleName();
-    public static final int VALID_RESPONSE = Constants.BILLING_RESPONSE_RESULT_BILLING_UNAVAILABLE;
+    public static final int VALID_RESPONSE = Constants.BILLING_RESPONSE_RESULT_ITEM_ALREADY_OWNED;
 
     public IABAlreadyOwnedException(IABResult r)
     {

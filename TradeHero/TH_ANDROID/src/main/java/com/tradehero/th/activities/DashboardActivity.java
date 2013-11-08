@@ -1,45 +1,19 @@
 package com.tradehero.th.activities;
 
-import android.app.Activity;
-import android.app.PendingIntent;
 import android.content.Intent;
-import android.content.IntentSender;
 import android.os.Bundle;
-import android.os.RemoteException;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.MenuItem;
-import com.tradehero.common.billing.googleplay.Constants;
-import com.tradehero.common.billing.googleplay.IABPurchase;
-import com.tradehero.common.billing.googleplay.IABPurchaser;
-import com.tradehero.common.billing.googleplay.IABResult;
-import com.tradehero.common.billing.googleplay.InventoryFetcher;
-import com.tradehero.common.billing.googleplay.exceptions.IABBadResponseException;
-import com.tradehero.common.billing.googleplay.exceptions.IABBillingUnavailableException;
-import com.tradehero.common.billing.googleplay.exceptions.IABException;
-import com.tradehero.common.billing.googleplay.exceptions.IABRemoteException;
-import com.tradehero.common.billing.googleplay.exceptions.IABUserCancelledException;
-import com.tradehero.common.billing.googleplay.exceptions.IABVerificationFailedException;
-import com.tradehero.common.billing.googleplay.PurchaseFetcher;
-import com.tradehero.common.billing.googleplay.SKU;
-import com.tradehero.common.utils.ArrayUtils;
 import com.tradehero.common.utils.THLog;
-import com.tradehero.th.billing.googleplay.IABAlertUtils;
-import com.tradehero.th.billing.googleplay.SKUDetailsPurchaser;
 import com.tradehero.th.billing.googleplay.THIABActor;
 import com.tradehero.th.billing.googleplay.THIABLogicHolder;
 import com.tradehero.th.billing.googleplay.THIABPurchaseHandler;
-import com.tradehero.th.billing.googleplay.THInventoryFetcher;
 import com.tradehero.th.billing.googleplay.THSKUDetails;
-import com.tradehero.th.billing.googleplay.THSKUDetailsTuner;
-import com.tradehero.th.billing.googleplay.SKUFetcher;
-import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.fragments.DashboardNavigator;
-import java.lang.ref.WeakReference;
 import java.util.List;
-import java.util.Map;
 
 public class DashboardActivity extends SherlockFragmentActivity implements DashboardNavigatorActivity, THIABActor
 {

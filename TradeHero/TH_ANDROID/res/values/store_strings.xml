@@ -30,6 +30,17 @@
   <string name="store_billing_user_cancelled_ok">Sure</string>
   <string name="store_billing_user_cancelled_cancel">No need</string>
 
+  <string name="store_billing_sku_already_owned_window_title">You already own one of this object</string>
+  <string name="store_billing_sku_already_owned_name_window_title">You already own one %s</string>
+  <string name="store_billing_sku_already_owned_window_description">We need to account for it. Restart TradeHero?</string>
+  <string name="store_billing_sku_already_owned_ok">I already restarted</string>
+  <string name="store_billing_sku_already_owned_cancel">No need</string>
+
+  <string name="store_billing_unknown_error_window_title">An unidentified error occured</string>
+  <string name="store_billing_unknown_error_window_description">Care to let us know what happened?</string>
+  <string name="store_billing_unknown_error_ok">Sure</string>
+  <string name="store_billing_unknown_error_cancel">No need</string>
+
   <string name="store_buy_virtual_dollar_window_title">Extra TradeHero Dollars</string>
   <string name="store_buy_virtual_dollar_window_message">Use dollars to buy and sell stocks</string>
   <string name="store_buy_follow_credits_window_title">TradeHero Credits</string>

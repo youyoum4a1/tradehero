@@ -1,8 +1,8 @@
 package com.tradehero.th.billing.googleplay;
 
 import android.content.Context;
+import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.common.billing.googleplay.InventoryFetcher;
-import com.tradehero.common.billing.googleplay.SKU;
 import java.util.List;
 import org.json.JSONException;
 
@@ -11,9 +11,9 @@ public class THInventoryFetcher extends InventoryFetcher<THSKUDetails>
 {
     public static final String TAG = THInventoryFetcher.class.getSimpleName();
 
-    public THInventoryFetcher(Context ctx, List<SKU> skus)
+    public THInventoryFetcher(Context ctx, List<IABSKU> iabSKUs)
     {
-        super(ctx, skus);
+        super(ctx, iabSKUs);
     }
 
     @Override protected THSKUDetails createSKUDetails(String itemType, String json) throws JSONException
