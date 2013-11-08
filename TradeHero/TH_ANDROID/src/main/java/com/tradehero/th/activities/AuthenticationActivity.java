@@ -287,6 +287,7 @@ public class AuthenticationActivity extends SherlockFragmentActivity
                 if (user != null)
                 {
                     ActivityHelper.goRoot(AuthenticationActivity.this);
+                    finish();
                 }
                 else
                 {

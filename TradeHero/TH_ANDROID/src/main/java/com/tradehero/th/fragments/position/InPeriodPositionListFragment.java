@@ -2,11 +2,9 @@ package com.tradehero.th.fragments.position;
 
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.th.R;
-import com.tradehero.th.adapters.position.AbstractPositionItemAdapter;
 import com.tradehero.th.adapters.position.InPeriodPositionItemAdapter;
 import com.tradehero.th.api.leaderboard.position.GetLeaderboardPositionsDTO;
 import com.tradehero.th.api.leaderboard.position.LeaderboardMarkUserId;
-import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.persistence.leaderboard.position.GetLeaderboardPositionsCache;
 import dagger.Lazy;
 import javax.inject.Inject;

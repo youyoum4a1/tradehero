@@ -7,7 +7,7 @@ import android.widget.LinearLayout;
 /**
  * Created by julien on 1/11/13
  */
-public class PositionPartialBottomInPeriodClosedView extends LinearLayout
+public class PositionPartialBottomInPeriodClosedView extends PositionPartialBottomClosedView
 {
     public PositionPartialBottomInPeriodClosedView(Context context)
     {

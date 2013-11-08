@@ -35,6 +35,10 @@ public class PositionPartialTopView extends LinearLayout
 
 
     @Inject protected Context context;
+    @Inject protected Lazy<PositionCache> filedPositionCache;
+    @Inject protected Lazy<Picasso> picasso;
+    @Inject protected Lazy<SecurityIdCache> securityIdCache;
+    @Inject protected Lazy<SecurityCompactCache> securityCompactCache;
 
     private ImageView stockLogo;
     private TextView stockSymbol;
@@ -44,21 +48,15 @@ public class PositionPartialTopView extends LinearLayout
     private ImageView marketClose;
     private TextView positionPercent;
     private TextView positionLastAmount;
-
     private ImageButton tradeHistoryButton;
 
     protected SecurityId securityId;
     protected SecurityCompactDTO securityCompactDTO;
-    @Inject Lazy<SecurityIdCache> securityIdCache;
-    @Inject Lazy<SecurityCompactCache> securityCompactCache;
-    private SecurityCompactCache.Listener<SecurityId, SecurityCompactDTO> securityCompactCacheListener;
-    private DTOCache.GetOrFetchTask<SecurityCompactDTO> securityCompactCacheFetchTask;
-
     protected OwnedPositionId ownedPositionId;
     protected PositionDTO positionDTO;
-    @Inject Lazy<PositionCache> filedPositionCache;
 
-    @Inject protected Lazy<Picasso> picasso;
+    private SecurityCompactCache.Listener<SecurityId, SecurityCompactDTO> securityCompactCacheListener;
+    private DTOCache.GetOrFetchTask<SecurityCompactDTO> securityCompactCacheFetchTask;
 
     //<editor-fold desc="Constructors">
     public PositionPartialTopView(Context context)
