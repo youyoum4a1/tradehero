@@ -6,7 +6,7 @@ import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.MenuItem;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.billing.googleplay.THIABActor;
-import com.tradehero.th.billing.googleplay.THIABLogicHolder;
+import com.tradehero.th.billing.googleplay.THIABLogicHolderExtended;
 import com.tradehero.th.billing.googleplay.THIABPurchaseHandler;
 import com.tradehero.th.billing.googleplay.THSKUDetails;
 import com.tradehero.th.R;
@@ -20,7 +20,7 @@ public class DashboardActivity extends SherlockFragmentActivity implements Dashb
     public static final String TAG = DashboardActivity.class.getSimpleName();
 
     private DashboardNavigator navigator;
-    private THIABLogicHolder thiabLogicHolder;
+    private THIABLogicHolderExtended thiabLogicHolderExtended;
 
     public void onCreate(Bundle savedInstanceState)
     {
@@ -29,9 +29,9 @@ public class DashboardActivity extends SherlockFragmentActivity implements Dashb
         setContentView(R.layout.dashboard_with_bottom_bar);
         navigator = new DashboardNavigator(this, getSupportFragmentManager(), R.id.realtabcontent);
 
-        thiabLogicHolder = new THIABLogicHolder(this);
+        thiabLogicHolderExtended = new THIABLogicHolderExtended(this);
         launchSkuInventorySequence();
-        thiabLogicHolder.launchFetchPurchasesSequence();
+        thiabLogicHolderExtended.launchFetchPurchasesSequence();
     }
 
     @Override public void onBackPressed()
@@ -61,11 +61,11 @@ public class DashboardActivity extends SherlockFragmentActivity implements Dashb
     @Override protected void onDestroy()
     {
         THLog.d(TAG, "onDestroy");
-        if (thiabLogicHolder != null)
+        if (thiabLogicHolderExtended != null)
         {
-            thiabLogicHolder.onDestroy();
+            thiabLogicHolderExtended.onDestroy();
         }
-        thiabLogicHolder = null;
+        thiabLogicHolderExtended = null;
         super.onDestroy();
     }
 
@@ -84,42 +84,42 @@ public class DashboardActivity extends SherlockFragmentActivity implements Dashb
     //<editor-fold desc="THIABActor">
     @Override public void launchSkuInventorySequence()
     {
-        thiabLogicHolder.launchSkuInventorySequence();
+        thiabLogicHolderExtended.launchSkuInventorySequence();
     }
 
     @Override public boolean isBillingAvailable()
     {
-        return thiabLogicHolder.isBillingAvailable();
+        return thiabLogicHolderExtended.isBillingAvailable();
     }
 
     @Override public boolean hadErrorLoadingInventory()
     {
-        return thiabLogicHolder.hadErrorLoadingInventory();
+        return thiabLogicHolderExtended.hadErrorLoadingInventory();
     }
 
     @Override public boolean isInventoryReady()
     {
-        return thiabLogicHolder.isInventoryReady();
+        return thiabLogicHolderExtended.isInventoryReady();
     }
 
     @Override public List<THSKUDetails> getDetailsOfDomain(String domain)
     {
-        return thiabLogicHolder.getDetailsOfDomain(domain);
+        return thiabLogicHolderExtended.getDetailsOfDomain(domain);
     }
 
     @Override public int launchPurchaseSequence(THIABPurchaseHandler purchaseHandler, THSKUDetails skuDetails)
     {
-        return thiabLogicHolder.launchPurchaseSequence(purchaseHandler, skuDetails);
+        return thiabLogicHolderExtended.launchPurchaseSequence(purchaseHandler, skuDetails);
     }
 
     @Override public int launchPurchaseSequence(THIABPurchaseHandler purchaseHandler, THSKUDetails skuDetails, Object extraData)
     {
-        return thiabLogicHolder.launchPurchaseSequence(purchaseHandler, skuDetails, extraData);
+        return thiabLogicHolderExtended.launchPurchaseSequence(purchaseHandler, skuDetails, extraData);
     }
 
     @Override public int launchPurchaseSequence(THIABPurchaseHandler purchaseHandler, THSKUDetails skuDetails, String extraData)
     {
-        return thiabLogicHolder.launchPurchaseSequence(purchaseHandler, skuDetails, extraData);
+        return thiabLogicHolderExtended.launchPurchaseSequence(purchaseHandler, skuDetails, extraData);
     }
     //</editor-fold>
 
@@ -128,6 +128,6 @@ public class DashboardActivity extends SherlockFragmentActivity implements Dashb
         super.onActivityResult(requestCode, resultCode, data);
 
         // Passing it on just in case it is expecting something
-        thiabLogicHolder.onActivityResult(requestCode, resultCode, data);
+        thiabLogicHolderExtended.onActivityResult(requestCode, resultCode, data);
     }
 }

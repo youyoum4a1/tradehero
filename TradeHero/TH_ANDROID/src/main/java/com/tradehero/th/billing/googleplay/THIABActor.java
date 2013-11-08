@@ -17,5 +17,4 @@ public interface THIABActor extends IABActor<
                                 IABException>
 {
     List<THSKUDetails> getDetailsOfDomain(String domain);
-    int launchPurchaseSequence(THIABPurchaseHandler purchaseHandler, THSKUDetails skuDetails, String extraData);
 }
