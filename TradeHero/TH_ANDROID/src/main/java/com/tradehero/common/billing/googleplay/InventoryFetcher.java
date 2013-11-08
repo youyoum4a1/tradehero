@@ -21,7 +21,8 @@ import java.util.*;
 /**
  * Created by julien on 4/11/13
  */
-abstract public class InventoryFetcher<SKUDetailsType extends SKUDetails> extends IABServiceConnector
+abstract public class InventoryFetcher<SKUDetailsType extends SKUDetails>
+        extends IABServiceConnector
 {
     public static final String TAG = InventoryFetcher.class.getSimpleName();
 
