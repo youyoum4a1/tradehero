@@ -19,19 +19,19 @@ import java.util.Map;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/8/13 Time: 12:32 PM To change this template use File | Settings | File Templates. */
 abstract public class BaseIABActor<
-        IABSKUType extends IABSKU,
-        IABProductDetailsType extends IABProductDetails<IABSKUType>,
-        IABOrderIdType extends IABOrderId,
-        IABPurchaseType extends IABPurchase<IABOrderIdType, IABSKUType>,
-        IABPurchaserType extends IABPurchaser<IABSKUType, IABProductDetailsType, IABOrderIdType, IABPurchaseType>,
-        IABPurchaseHandlerType extends IABPurchaseHandler<IABSKUType, IABOrderIdType, IABException, IABPurchaseType>>
+                    IABSKUType extends IABSKU,
+                    IABProductDetailsType extends IABProductDetails<IABSKUType>,
+                    IABOrderIdType extends IABOrderId,
+                    IABPurchaseType extends IABPurchase<IABOrderIdType, IABSKUType>,
+                    IABPurchaserType extends IABPurchaser<IABSKUType, IABProductDetailsType, IABOrderIdType, IABPurchaseType>,
+                    IABPurchaseHandlerType extends IABPurchaseHandler<IABSKUType, IABOrderIdType, IABPurchaseType, IABException>>
     implements IABActor<
-        IABSKUType,
-        IABProductDetailsType,
-        IABOrderIdType,
-        IABException,
-        IABPurchaseType,
-        IABPurchaseHandlerType>
+                    IABSKUType,
+                    IABProductDetailsType,
+                    IABOrderIdType,
+                    IABPurchaseType,
+                    IABPurchaseHandlerType,
+                    IABException>
 {
     public static final String TAG = BaseIABActor.class.getSimpleName();
     public static final int MAX_RANDOM_RETRIES = 50;

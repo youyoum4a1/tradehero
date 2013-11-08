@@ -9,16 +9,20 @@ public interface IABActor<
                         IABSKUType extends IABSKU,
                         ProductDetailsType extends ProductDetails<IABSKUType>,
                         IABOrderIdType extends IABOrderId,
-                        IABExceptionType extends IABException,
                         IABPurchaseType extends IABPurchase<IABOrderIdType, IABSKUType>,
-                        IABPurchaseHandlerType extends IABPurchaseHandler<IABSKUType, IABOrderIdType, IABExceptionType, IABPurchaseType>>
+                        IABPurchaseHandlerType extends IABPurchaseHandler<
+                                                            IABSKUType,
+                                                            IABOrderIdType,
+                                                            IABPurchaseType,
+                                                            IABExceptionType>,
+                        IABExceptionType extends IABException>
     extends BillingActor<
                         IABSKUType,
                         ProductDetailsType,
-                        IABExceptionType,
                         IABOrderIdType,
                         IABPurchaseType,
-                        IABPurchaseHandlerType>
+                        IABPurchaseHandlerType,
+                        IABExceptionType>
 {
     int launchPurchaseSequence(IABPurchaseHandlerType billingPurchaseHandler, ProductDetailsType productDetails, String extraData);
 }
