@@ -53,15 +53,22 @@ public class SKUDetails implements IABProductDetails<IABSKU>
         return "SkuDetails:" + json;
     }
 
+    //<editor-fold desc="IABProductDetails<IABSKU>">
     @Override public IABSKU getProductIdentifier()
     {
         return this.iabSKU;
     }
 
-    public boolean isOfType(String type)
+    @Override public String getType()
+    {
+        return type;
+    }
+
+    @Override public boolean isOfType(String type)
     {
         return this.type == null ? type == null : this.type.equals(type);
     }
+    //</editor-fold>
 
     public static Comparator<SKUDetails> DecreasingPriceComparator = new Comparator<SKUDetails>()
     {

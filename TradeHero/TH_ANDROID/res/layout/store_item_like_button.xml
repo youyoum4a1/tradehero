@@ -42,7 +42,7 @@
       android:layout_toRightOf="@id/icon"
       android:layout_toLeftOf="@id/btn_buy_now"
       android:layout_centerVertical="true"
-      android:textSize="20sp"
+      android:textSize="16sp"
     />
 
 </com.tradehero.th.widget.billing.StoreItemLikeButton>
