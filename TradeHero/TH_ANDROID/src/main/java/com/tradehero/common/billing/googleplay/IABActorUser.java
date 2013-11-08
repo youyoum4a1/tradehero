@@ -10,7 +10,7 @@ public interface IABActorUser<
                         ProductDetailsType extends ProductDetails<IABSKU>,
                         IABExceptionType extends IABException,
                         IABPurchaseType extends IABPurchase<IABOrderId, IABSKU>,
-                        IABPurchaseHandlerType extends IABPurchaseHandler<IABExceptionType, IABPurchaseType>,
+                        IABPurchaseHandlerType extends IABPurchaseHandler<IABSKU, IABOrderId, IABExceptionType, IABPurchaseType>,
                         IABActorType extends BillingActor<
                                                     IABSKU,
                                                     ProductDetailsType,
