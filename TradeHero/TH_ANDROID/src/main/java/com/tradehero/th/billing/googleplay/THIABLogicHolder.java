@@ -3,7 +3,7 @@ package com.tradehero.th.billing.googleplay;
 import android.app.Activity;
 import android.content.Intent;
 import com.tradehero.common.billing.googleplay.Constants;
-import com.tradehero.common.billing.googleplay.IABPurchase;
+import com.tradehero.common.billing.googleplay.SKUPurchase;
 import com.tradehero.common.billing.googleplay.IABPurchaser;
 import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.common.billing.googleplay.InventoryFetcher;
@@ -278,7 +278,7 @@ public class THIABLogicHolder
         }
     }
 
-    @Override public void onFetchedPurchases(PurchaseFetcher fetcher, Map<IABSKU, IABPurchase> purchases)
+    @Override public void onFetchedPurchases(PurchaseFetcher fetcher, Map<IABSKU, SKUPurchase> purchases)
     {
         if (fetcher == this.purchaseFetcher)
         {
@@ -346,7 +346,7 @@ public class THIABLogicHolder
                 return null;
             }
 
-            @Override public void onIABPurchaseFinished(IABPurchaser purchaser, IABPurchase info)
+            @Override public void onIABPurchaseFinished(IABPurchaser purchaser, SKUPurchase info)
             {
                 THToast.show("OnIABPurchaseFinishedListener.onIABPurchaseFinished Purchase went through ok");
                 THLog.d(TAG, "OnIABPurchaseFinishedListener.onIABPurchaseFinished Purchase info " + info);
