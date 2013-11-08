@@ -8,7 +8,7 @@ import org.json.JSONObject;
 /**
  * Created by julien on 4/11/13
  */
-public class SKUDetails implements ProductDetails<IABSKU>
+public class SKUDetails implements IABProductDetails<IABSKU>
 {
     public static final String JSON_KEY_PRODUCT_ID = "productId";
     public static final String JSON_KEY_TYPE = "type";

@@ -11,14 +11,13 @@ import android.widget.ListView;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
-import com.tradehero.common.billing.googleplay.IABPurchase;
+import com.tradehero.common.billing.googleplay.SKUPurchase;
 import com.tradehero.common.billing.googleplay.exceptions.IABAlreadyOwnedException;
 import com.tradehero.common.billing.googleplay.exceptions.IABException;
 import com.tradehero.common.billing.googleplay.exceptions.IABUserCancelledException;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
-import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.adapters.billing.StoreItemAdapter;
 import com.tradehero.th.adapters.billing.THSKUDetailsAdapter;
 import com.tradehero.th.billing.googleplay.IABAlertUtils;
@@ -263,7 +262,7 @@ public class StoreScreenFragment extends DashboardFragment
 
     //<editor-fold desc="THIABPurchaseHandler">
 
-    @Override public void handlePurchaseReceived(int requestCode, IABPurchase purchase)
+    @Override public void handlePurchaseReceived(int requestCode, SKUPurchase purchase)
     {
         if (this.requestCode != requestCode)
         {

@@ -2,14 +2,12 @@ package com.tradehero.common.billing.googleplay;
 
 import android.app.Activity;
 import android.app.PendingIntent;
-import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.os.Bundle;
 import android.os.RemoteException;
 import com.tradehero.common.billing.googleplay.exceptions.IABBadResponseException;
 import com.tradehero.common.billing.googleplay.exceptions.IABException;
-import com.tradehero.common.billing.googleplay.exceptions.IABExceptionFactory;
 import com.tradehero.common.billing.googleplay.exceptions.IABRemoteException;
 import com.tradehero.common.billing.googleplay.exceptions.IABSendIntentException;
 import com.tradehero.common.billing.googleplay.exceptions.IABSubscriptionUnavailableException;
@@ -114,19 +112,19 @@ public class IABPurchaser<SKUDetailsType extends SKUDetails> extends IABServiceC
         }
     }
 
-    private void handlePurchaseFinishedInternal(IABPurchase purchase)
+    private void handlePurchaseFinishedInternal(SKUPurchase purchase)
     {
         purchasing = false;
         handlePurchaseFinished(purchase);
         notifyListenerPurchaseFinished(purchase);
     }
 
-    protected void handlePurchaseFinished(IABPurchase purchase)
+    protected void handlePurchaseFinished(SKUPurchase purchase)
     {
         // Just for children classes
     }
 
-    private void notifyListenerPurchaseFinished(IABPurchase purchase)
+    private void notifyListenerPurchaseFinished(SKUPurchase purchase)
     {
         OnIABPurchaseFinishedListener listener = getPurchaseFinishedListener();
         if (listener != null)
@@ -236,7 +234,7 @@ public class IABPurchaser<SKUDetailsType extends SKUDetails> extends IABServiceC
                 {
                     try
                     {
-                        IABPurchase purchase = new IABPurchase(skuDetails.type, purchaseData, dataSignature);
+                        SKUPurchase purchase = new SKUPurchase(skuDetails.type, purchaseData, dataSignature);
                         String sku = purchase.getProductIdentifier().identifier;
 
                         // Verify signature
@@ -294,7 +292,7 @@ public class IABPurchaser<SKUDetailsType extends SKUDetails> extends IABServiceC
          *
          * @param info The purchase information (null if purchase failed)
          */
-        void onIABPurchaseFinished(IABPurchaser purchaser, IABPurchase info);
+        void onIABPurchaseFinished(IABPurchaser purchaser, SKUPurchase info);
 
         void onIABPurchaseFailed(IABPurchaser purchaser, IABException exception);
     }
