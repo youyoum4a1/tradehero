@@ -25,6 +25,11 @@
   <string name="store_billing_loading_window_description">Please give us a moment as we are loading some data</string>
   <string name="store_billing_loading_cancel">Got it</string>
 
+  <string name="store_billing_verification_failed_window_title">Verification failed</string>
+  <string name="store_billing_verification_failed_window_description">This is embarassing, we could not trust the communication with GooglePlay.</string>
+  <!--string name="store_billing_verification_failed_ok">Sure</string-->
+  <string name="store_billing_verification_failed_cancel">No worry</string>
+
   <string name="store_billing_user_cancelled_window_title">You cancelled the purchase</string>
   <string name="store_billing_user_cancelled_window_description">Anything you want to let us know?</string>
   <string name="store_billing_user_cancelled_ok">Sure</string>
@@ -35,6 +40,21 @@
   <string name="store_billing_sku_already_owned_window_description">We need to account for it. Restart TradeHero?</string>
   <string name="store_billing_sku_already_owned_ok">I already restarted</string>
   <string name="store_billing_sku_already_owned_cancel">No need</string>
+
+  <string name="store_billing_bad_response_window_title">Huh?</string>
+  <string name="store_billing_bad_response_window_description">We received a bad response from GooglePlay.</string>
+  <!--string name="store_billing_bad_response_ok">Sure</string-->
+  <string name="store_billing_bad_response_cancel">Ok</string>
+
+  <string name="store_billing_remote_error_window_title">Huh?</string>
+  <string name="store_billing_remote_error_window_description">We got an error when accessing a remote service.</string>
+  <!--string name="store_billing_remote_error_ok">Sure</string-->
+  <string name="store_billing_remote_error_cancel">Ok</string>
+
+  <string name="store_billing_send_intent_error_window_title">Huh?</string>
+  <string name="store_billing_send_intent_error_window_description">We got an error when launching GooglePlay.</string>
+  <!--string name="store_billing_send_intent_error_ok">Sure</string-->
+  <string name="store_billing_send_intent_error_cancel">Ok</string>
 
   <string name="store_billing_unknown_error_window_title">An unidentified error occured</string>
   <string name="store_billing_unknown_error_window_description">Care to let us know what happened?</string>

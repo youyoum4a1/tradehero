@@ -44,20 +44,16 @@ public class IABAlertUtils
 
     public static void popWaitWhileLoading(final Context context)
     {
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
-        alertDialogBuilder
-                .setTitle(R.string.store_billing_loading_window_title)
-                .setMessage(R.string.store_billing_loading_window_description)
-                .setCancelable(true)
-                .setNegativeButton(R.string.store_billing_loading_cancel, new DialogInterface.OnClickListener()
-                {
-                    public void onClick(DialogInterface dialog, int id)
-                    {
-                        dialog.cancel();
-                    }
-                });
-        AlertDialog alertDialog = alertDialogBuilder.create();
-        alertDialog.show();
+        popWithCancelButton(context, R.string.store_billing_loading_window_title,
+                R.string.store_billing_loading_window_description,
+                R.string.store_billing_loading_cancel);
+    }
+
+    public static void popVerificationFailed(final Context context)
+    {
+        popWithCancelButton(context, R.string.store_billing_verification_failed_window_title,
+                R.string.store_billing_verification_failed_window_description,
+                R.string.store_billing_verification_failed_cancel);
     }
 
     public static void popUserCancelled(final Context context)
@@ -119,6 +115,27 @@ public class IABAlertUtils
         alertDialog.show();
     }
 
+    public static void popBadResponse(final Context context)
+    {
+        popWithCancelButton(context, R.string.store_billing_bad_response_window_title,
+                R.string.store_billing_bad_response_window_description,
+                R.string.store_billing_bad_response_cancel);
+    }
+
+    public static void popRemoteError(final Context context)
+    {
+        popWithCancelButton(context, R.string.store_billing_remote_error_window_title,
+                R.string.store_billing_remote_error_window_description,
+                R.string.store_billing_remote_error_cancel);
+    }
+
+    public static void popSendIntent(final Context context)
+    {
+        popWithCancelButton(context, R.string.store_billing_send_intent_error_window_title,
+                R.string.store_billing_send_intent_error_window_description,
+                R.string.store_billing_send_intent_error_cancel);
+    }
+
     public static void popUnknownError(final Context context)
     {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
@@ -135,6 +152,24 @@ public class IABAlertUtils
                     }
                 })
                 .setNegativeButton(R.string.store_billing_unknown_error_cancel, new DialogInterface.OnClickListener()
+                {
+                    public void onClick(DialogInterface dialog, int id)
+                    {
+                        dialog.cancel();
+                    }
+                });
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.show();
+    }
+
+    public static void popWithCancelButton(final Context context, int titleResId, int descriptionResId, int cancelResId)
+    {
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
+        alertDialogBuilder
+                .setTitle(titleResId)
+                .setMessage(descriptionResId)
+                .setCancelable(true)
+                .setNegativeButton(cancelResId, new DialogInterface.OnClickListener()
                 {
                     public void onClick(DialogInterface dialog, int id)
                     {

@@ -421,32 +421,4 @@ public class THIABLogicHolder
             skuDetailsPurchaser.handleActivityResult(requestCode, resultCode, data);
         }
     }
-
-    protected void handleException(IABException exception) // TODO better
-    {
-        if (exception instanceof IABBillingUnavailableException)
-        {
-            THToast.show("User has no account or did not allow billing");
-        }
-        else if (exception instanceof IABVerificationFailedException)
-        {
-            THToast.show("The communication with Google Play may have been tampered with");
-        }
-        else if (exception instanceof IABBadResponseException)
-        {
-            THToast.show("Google Play returned unexpected information");
-        }
-        else if (exception instanceof IABRemoteException)
-        {
-            THToast.show("Problem when accessing a remote service");
-        }
-        else if (exception instanceof IABUserCancelledException)
-        {
-            IABAlertUtils.popUserCancelled(getActivity());
-        }
-        else
-        {
-            THToast.show("There was some error communicating with Google Play " + exception.getClass().getSimpleName());
-        }
-    }
 }
