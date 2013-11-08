@@ -6,4 +6,6 @@ import com.tradehero.common.billing.ProductDetails;
 public interface IABProductDetails<IABSKUType extends IABSKU>
     extends ProductDetails<IABSKUType>
 {
+    String getType();
+    boolean isOfType(String type);
 }

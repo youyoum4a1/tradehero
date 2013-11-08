@@ -18,12 +18,17 @@ import java.lang.ref.WeakReference;
 import org.json.JSONException;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/7/13 Time: 11:05 AM To change this template use File | Settings | File Templates. */
-public class IABPurchaser<SKUDetailsType extends SKUDetails> extends IABServiceConnector
+abstract public class IABPurchaser<
+                    IABSKUType extends IABSKU,
+                    IABProductDetailsType extends IABProductDetails<IABSKUType>,
+                    IABOrderIdType extends IABOrderId,
+                    IABPurchaseType extends IABPurchase<IABOrderIdType, IABSKUType>>
+        extends IABServiceConnector
 {
     public static final String TAG = IABPurchaser.class.getSimpleName();
 
     private boolean purchasing = false;
-    private SKUDetailsType skuDetails;
+    private IABProductDetailsType skuDetails;
     private String extraData;
     private int activityRequestCode;
     private WeakReference<OnIABPurchaseFinishedListener> purchaseFinishedListener = new WeakReference<>(null);
@@ -32,6 +37,8 @@ public class IABPurchaser<SKUDetailsType extends SKUDetails> extends IABServiceC
     {
         super(activity);
     }
+
+    abstract protected IABPurchaseType createPurchase(String itemType, String purchaseData, String dataSignature) throws JSONException;
 
     protected Activity getActivity()
     {
@@ -61,7 +68,7 @@ public class IABPurchaser<SKUDetailsType extends SKUDetails> extends IABServiceC
         this.purchaseFinishedListener = new WeakReference<>(purchaseFinishedListener);
     }
 
-    public void purchase(SKUDetailsType skuDetails, String extraData, int activityRequestCode)
+    public void purchase(IABProductDetailsType skuDetails, String extraData, int activityRequestCode)
     {
         checkNotPurchasing();
         if (skuDetails == null)
@@ -112,19 +119,19 @@ public class IABPurchaser<SKUDetailsType extends SKUDetails> extends IABServiceC
         }
     }
 
-    private void handlePurchaseFinishedInternal(SKUPurchase purchase)
+    private void handlePurchaseFinishedInternal(IABPurchaseType purchase)
     {
         purchasing = false;
         handlePurchaseFinished(purchase);
         notifyListenerPurchaseFinished(purchase);
     }
 
-    protected void handlePurchaseFinished(SKUPurchase purchase)
+    protected void handlePurchaseFinished(IABPurchaseType purchase)
     {
         // Just for children classes
     }
 
-    private void notifyListenerPurchaseFinished(SKUPurchase purchase)
+    private void notifyListenerPurchaseFinished(IABPurchaseType purchase)
     {
         OnIABPurchaseFinishedListener listener = getPurchaseFinishedListener();
         if (listener != null)
@@ -171,8 +178,8 @@ public class IABPurchaser<SKUDetailsType extends SKUDetails> extends IABServiceC
 
     private Bundle createBuyIntentBundle() throws RemoteException, IABException
     {
-        THLog.d(TAG, "Constructing buy intent for " + skuDetails + ", item type: " + skuDetails.itemType);
-        Bundle buyIntentBundle = billingService.getBuyIntent(TARGET_BILLING_API_VERSION3, context.getPackageName(), skuDetails.getProductIdentifier().identifier, skuDetails.type, extraData);
+        THLog.d(TAG, "Constructing buy intent for " + skuDetails + ", item type: " + skuDetails.getType());
+        Bundle buyIntentBundle = billingService.getBuyIntent(TARGET_BILLING_API_VERSION3, context.getPackageName(), skuDetails.getProductIdentifier().identifier, skuDetails.getType(), extraData);
         int response = Constants.getResponseCodeFromBundle(buyIntentBundle);
         if (response != Constants.BILLING_RESPONSE_RESULT_OK)
         {
@@ -222,7 +229,7 @@ public class IABPurchaser<SKUDetailsType extends SKUDetails> extends IABServiceC
                 THLog.d(TAG, "Purchase data: " + purchaseData);
                 THLog.d(TAG, "Data signature: " + dataSignature);
                 THLog.d(TAG, "Extras: " + data.getExtras());
-                THLog.d(TAG, "Expected item type: " + skuDetails.type);
+                THLog.d(TAG, "Expected item type: " + skuDetails.getType());
 
                 if (purchaseData == null || dataSignature == null)
                 {
@@ -234,7 +241,7 @@ public class IABPurchaser<SKUDetailsType extends SKUDetails> extends IABServiceC
                 {
                     try
                     {
-                        SKUPurchase purchase = new SKUPurchase(skuDetails.type, purchaseData, dataSignature);
+                        IABPurchaseType purchase = createPurchase(skuDetails.getType(), purchaseData, dataSignature);
                         String sku = purchase.getProductIdentifier().identifier;
 
                         // Verify signature
@@ -282,7 +289,9 @@ public class IABPurchaser<SKUDetailsType extends SKUDetails> extends IABServiceC
      * Callback that notifies when a purchase is finished.
      *  Created with IntelliJ IDEA. User: xavier Date: 11/7/13 Time: 11:00 AM To change this template use File | Settings | File Templates.
      *  */
-    public static interface OnIABPurchaseFinishedListener
+    public static interface OnIABPurchaseFinishedListener<
+                                        IABPurchaseType extends IABPurchase,
+                                        IABExceptionType extends IABException>
     {
         /**
          * Called to notify that an in-app purchase finished. If the purchase was successful,
@@ -292,8 +301,8 @@ public class IABPurchaser<SKUDetailsType extends SKUDetails> extends IABServiceC
          *
          * @param info The purchase information (null if purchase failed)
          */
-        void onIABPurchaseFinished(IABPurchaser purchaser, SKUPurchase info);
+        void onIABPurchaseFinished(IABPurchaser purchaser, IABPurchaseType info);
 
-        void onIABPurchaseFailed(IABPurchaser purchaser, IABException exception);
+        void onIABPurchaseFailed(IABPurchaser purchaser, IABExceptionType exception);
     }
 }

@@ -20,4 +20,5 @@ public interface IABActor<
                         IABPurchaseType,
                         IABPurchaseHandlerType>
 {
+    int launchPurchaseSequence(IABPurchaseHandlerType billingPurchaseHandler, ProductDetailsType productDetails, String extraData);
 }
