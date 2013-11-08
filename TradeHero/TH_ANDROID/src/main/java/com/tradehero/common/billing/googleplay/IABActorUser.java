@@ -10,23 +10,23 @@ public interface IABActorUser<
                         IABSKUType extends IABSKU,
                         ProductDetailsType extends ProductDetails<IABSKUType>,
                         IABOrderIdType extends IABOrderId,
-                        IABExceptionType extends IABException,
                         IABPurchaseType extends IABPurchase<IABOrderIdType, IABSKUType>,
-                        IABPurchaseHandlerType extends IABPurchaseHandler<IABSKUType, IABOrderIdType, IABExceptionType, IABPurchaseType>,
+                        IABPurchaseHandlerType extends IABPurchaseHandler<IABSKUType, IABOrderIdType, IABPurchaseType, IABExceptionType>,
                         IABActorType extends BillingActor<
                                                     IABSKUType,
                                                     ProductDetailsType,
-                                                    IABExceptionType,
                                                     IABOrderIdType,
                                                     IABPurchaseType,
-                                                    IABPurchaseHandlerType>>
+                                                    IABPurchaseHandlerType,
+                                                    IABExceptionType>,
+                        IABExceptionType extends IABException>
     extends BillingActorUser<
                         IABSKUType,
                         ProductDetailsType,
-                        IABExceptionType,
                         IABOrderIdType,
                         IABPurchaseType,
                         IABPurchaseHandlerType,
-                        IABActorType>
+                        IABActorType,
+                        IABExceptionType>
 {
 }

@@ -7,11 +7,11 @@ import com.tradehero.common.billing.googleplay.exceptions.IABException;
 public interface IABPurchaseHandler<
                                 IABSKUType extends IABSKU,
                                 IABOrderIdType extends IABOrderId,
-                                IABExceptionType extends IABException,
-                                IABPurchaseType extends IABPurchase<IABOrderIdType, IABSKUType>>
+                                IABPurchaseType extends IABPurchase<IABOrderIdType, IABSKUType>,
+                                IABExceptionType extends IABException>
     extends BillingPurchaseHandler<
-                                IABOrderIdType,
                                 IABSKUType,
+                                IABOrderIdType,
                                 IABPurchaseType,
                                 IABExceptionType>
 {

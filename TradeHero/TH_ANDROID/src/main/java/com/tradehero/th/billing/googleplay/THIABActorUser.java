@@ -11,9 +11,9 @@ public interface THIABActorUser extends IABActorUser<
                                             IABSKU,
                                             THSKUDetails,
                                             IABOrderId,
-                                            IABException,
                                             SKUPurchase,
                                             THIABPurchaseHandler,
-                                            THIABActor>
+                                            THIABActor,
+                                            IABException>
 {
 }
