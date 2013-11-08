@@ -86,6 +86,65 @@ public class IABAlertUtils
         alertDialog.show();
     }
 
+    public static void popSKUAlreadyOwned(final Context context)
+    {
+        popSKUAlreadyOwned(context, null);
+    }
+
+    public static <SKUDetailsType extends SKUDetails>void popSKUAlreadyOwned(final Context context, SKUDetailsType skuDetails)
+    {
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
+        alertDialogBuilder
+                .setTitle(skuDetails == null ?
+                        context.getString(R.string.store_billing_sku_already_owned_window_title) :
+                        String.format(context.getString(R.string.store_billing_sku_already_owned_name_window_title), skuDetails.description))
+                .setMessage(R.string.store_billing_sku_already_owned_window_description)
+                .setCancelable(true)
+                .setPositiveButton(R.string.store_billing_sku_already_owned_ok, new DialogInterface.OnClickListener()
+                {
+                    public void onClick(DialogInterface dialog, int id)
+                    {
+                        // TODO open email
+                        dialog.cancel();
+                    }
+                })
+                .setNegativeButton(R.string.store_billing_sku_already_owned_cancel, new DialogInterface.OnClickListener()
+                {
+                    public void onClick(DialogInterface dialog, int id)
+                    {
+                        dialog.cancel();
+                    }
+                });
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.show();
+    }
+
+    public static void popUnknownError(final Context context)
+    {
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
+        alertDialogBuilder
+                .setTitle(R.string.store_billing_unknown_error_window_title)
+                .setMessage(R.string.store_billing_unknown_error_window_description)
+                .setCancelable(true)
+                .setPositiveButton(R.string.store_billing_unknown_error_ok, new DialogInterface.OnClickListener()
+                {
+                    public void onClick(DialogInterface dialog, int id)
+                    {
+                        // TODO open email
+                        dialog.cancel();
+                    }
+                })
+                .setNegativeButton(R.string.store_billing_unknown_error_cancel, new DialogInterface.OnClickListener()
+                {
+                    public void onClick(DialogInterface dialog, int id)
+                    {
+                        dialog.cancel();
+                    }
+                });
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.show();
+    }
+
     public static <SKUDetailsType extends SKUDetails, SKUDetailViewType extends SKUDetailView<SKUDetailsType>> void popBuyDialog(
         final Context context, final SKUDetailsAdapter<SKUDetailsType, SKUDetailViewType> detailsAdapter,
         int titleResId, final OnDialogSKUDetailsClickListener<SKUDetailsType> clickListener)

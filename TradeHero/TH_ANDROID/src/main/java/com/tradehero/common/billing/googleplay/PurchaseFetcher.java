@@ -20,7 +20,7 @@ public class PurchaseFetcher extends IABServiceConnector
 {
     public static final String TAG = PurchaseFetcher.class.getSimpleName();
 
-    private Map<SKU, IABPurchase> purchases;
+    private Map<IABSKU, IABPurchase> purchases;
 
     protected WeakReference<PublicFetcherListener> fetchListener = new WeakReference<>(null);
 
@@ -40,17 +40,17 @@ public class PurchaseFetcher extends IABServiceConnector
     @Override protected void handleSetupFinished(IABResponse response)
     {
         super.handleSetupFinished(response);
-        AsyncTask<Void, Void, HashMap<SKU, IABPurchase>> backgroundTask = new AsyncTask<Void, Void, HashMap<SKU, IABPurchase>>()
+        AsyncTask<Void, Void, HashMap<IABSKU, IABPurchase>> backgroundTask = new AsyncTask<Void, Void, HashMap<IABSKU, IABPurchase>>()
         {
             private Exception exception;
-            @Override protected HashMap<SKU, IABPurchase> doInBackground(Void... params)
+            @Override protected HashMap<IABSKU, IABPurchase> doInBackground(Void... params)
             {
                 try
                 {
-                    HashMap<SKU, IABPurchase> map = queryPurchases(Constants.ITEM_TYPE_INAPP);
+                    HashMap<IABSKU, IABPurchase> map = queryPurchases(Constants.ITEM_TYPE_INAPP);
                     if (areSubscriptionsSupported())
                     {
-                        HashMap<SKU, IABPurchase> subscriptionMap = queryPurchases(Constants.ITEM_TYPE_SUBS);
+                        HashMap<IABSKU, IABPurchase> subscriptionMap = queryPurchases(Constants.ITEM_TYPE_SUBS);
                         map.putAll(subscriptionMap);
                     }
                     return map;
@@ -63,7 +63,7 @@ public class PurchaseFetcher extends IABServiceConnector
                 return null;
             }
 
-            @Override protected void onPostExecute(HashMap<SKU, IABPurchase> skuGooglePurchaseHashMap)
+            @Override protected void onPostExecute(HashMap<IABSKU, IABPurchase> skuGooglePurchaseHashMap)
             {
                 if (exception != null)
                 {
@@ -80,13 +80,13 @@ public class PurchaseFetcher extends IABServiceConnector
         backgroundTask.execute();
     }
 
-    protected HashMap<SKU, IABPurchase> queryPurchases(String itemType) throws JSONException, RemoteException, IABException
+    protected HashMap<IABSKU, IABPurchase> queryPurchases(String itemType) throws JSONException, RemoteException, IABException
     {
         // Query purchases
         THLog.d(TAG, "Querying owned items, item type: " + itemType);
         THLog.d(TAG, "Package name: " + context.getPackageName());
         String continueToken = null;
-        HashMap<SKU, IABPurchase> purchasesMap = new HashMap<>();
+        HashMap<IABSKU, IABPurchase> purchasesMap = new HashMap<>();
 
         do
         {
@@ -177,7 +177,7 @@ public class PurchaseFetcher extends IABServiceConnector
 
     public static interface PublicFetcherListener
     {
-        void onFetchedPurchases(PurchaseFetcher fetcher, Map<SKU, IABPurchase> purchases);
+        void onFetchedPurchases(PurchaseFetcher fetcher, Map<IABSKU, IABPurchase> purchases);
         void onFetchPurchasesFailed(PurchaseFetcher fetcher, IABException exception);
     }
 }

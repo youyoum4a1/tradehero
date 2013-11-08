@@ -5,9 +5,9 @@ import android.content.Intent;
 import com.tradehero.common.billing.googleplay.Constants;
 import com.tradehero.common.billing.googleplay.IABPurchase;
 import com.tradehero.common.billing.googleplay.IABPurchaser;
+import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.common.billing.googleplay.InventoryFetcher;
 import com.tradehero.common.billing.googleplay.PurchaseFetcher;
-import com.tradehero.common.billing.googleplay.SKU;
 import com.tradehero.common.billing.googleplay.exceptions.IABBadResponseException;
 import com.tradehero.common.billing.googleplay.exceptions.IABBillingUnavailableException;
 import com.tradehero.common.billing.googleplay.exceptions.IABException;
@@ -187,6 +187,32 @@ public class THIABLogicHolder
         }
         return details;
     }
+
+    @Override public int launchPurchaseSequence(THIABPurchaseHandler purchaseHandler, THSKUDetails skuDetails)
+    {
+        return launchPurchaseSequence(purchaseHandler, skuDetails, null);
+    }
+
+    @Override public int launchPurchaseSequence(THIABPurchaseHandler purchaseHandler, THSKUDetails skuDetails, Object extraData)
+    {
+        if (!(extraData instanceof String))
+        {
+            throw new IllegalArgumentException("Extra data needs to be a String");
+        }
+        return launchPurchaseSequence(purchaseHandler, skuDetails, (String) extraData);
+    }
+
+    @Override public int launchPurchaseSequence(THIABPurchaseHandler purchaseHandler, THSKUDetails skuDetails, String extraData)
+    {
+        int requestCode = getUnusedRequestCode();
+        registerPurchaseHandler(requestCode, purchaseHandler);
+        createAndRegisterPurchaseFinishedListener(requestCode);
+
+        SKUDetailsPurchaser skuDetailsPurchaser = createSkuDetailsPurchaser(requestCode);
+        skuDetailsPurchasers.put(requestCode, skuDetailsPurchaser);
+        skuDetailsPurchaser.purchase(skuDetails, extraData, requestCode);
+        return requestCode;
+    }
     //</editor-fold>
 
     //<editor-fold desc="SKUFetcher.SKUFetcherListener">
@@ -203,17 +229,17 @@ public class THIABLogicHolder
         }
     }
 
-    @Override public void onFetchedSKUs(SKUFetcher fetcher, Map<String, List<SKU>> availableSkus)
+    @Override public void onFetchedSKUs(SKUFetcher fetcher, Map<String, List<IABSKU>> availableSkus)
     {
         if (fetcher == this.skuFetcher)
         {
-            List<SKU> mixedSKUs = availableSkus.get(Constants.ITEM_TYPE_INAPP);
+            List<IABSKU> mixedIABSKUs = availableSkus.get(Constants.ITEM_TYPE_INAPP);
             if (availableSkus.containsKey(Constants.ITEM_TYPE_SUBS))
             {
-                mixedSKUs.addAll(availableSkus.get(Constants.ITEM_TYPE_SUBS));
+                mixedIABSKUs.addAll(availableSkus.get(Constants.ITEM_TYPE_SUBS));
             }
             latestInventoryFetcherException = null;
-            inventoryFetcher = new THInventoryFetcher(getActivity(), mixedSKUs);
+            inventoryFetcher = new THInventoryFetcher(getActivity(), mixedIABSKUs);
             inventoryFetcher.setSkuDetailsTuner(thSKUDetailsTuner);
             inventoryFetcher.setInventoryListener(this);
             inventoryFetcher.startConnectionSetup();
@@ -252,7 +278,7 @@ public class THIABLogicHolder
         }
     }
 
-    @Override public void onFetchedPurchases(PurchaseFetcher fetcher, Map<SKU, IABPurchase> purchases)
+    @Override public void onFetchedPurchases(PurchaseFetcher fetcher, Map<IABSKU, IABPurchase> purchases)
     {
         if (fetcher == this.purchaseFetcher)
         {
@@ -274,7 +300,7 @@ public class THIABLogicHolder
     //</editor-fold>
 
     //<editor-fold desc="InventoryFetcher.InventoryListener">
-    @Override public void onInventoryFetchSuccess(THInventoryFetcher fetcher, Map<SKU, THSKUDetails> inventory)
+    @Override public void onInventoryFetchSuccess(THInventoryFetcher fetcher, Map<IABSKU, THSKUDetails> inventory)
     {
         if (fetcher == this.inventoryFetcher)
         {
@@ -322,31 +348,33 @@ public class THIABLogicHolder
 
             @Override public void onIABPurchaseFinished(IABPurchaser purchaser, IABPurchase info)
             {
-                THToast.show("Purchase went through ok");
-                THLog.d(TAG, "Purchase info " + info);
+                THToast.show("OnIABPurchaseFinishedListener.onIABPurchaseFinished Purchase went through ok");
+                THLog.d(TAG, "OnIABPurchaseFinishedListener.onIABPurchaseFinished Purchase info " + info);
                 THIABPurchaseHandler handler = getPurchaseHandler();
                 if (handler != null)
                 {
+                    THLog.d(TAG, "OnIABPurchaseFinishedListener.onIABPurchaseFinished passing on the purchase for requestCode " + requestCode);
                     handler.handlePurchaseReceived(requestCode, info);
                 }
                 else
                 {
-                    THLog.d(TAG, "No THIABPurchaseHandler for requestCode " + requestCode);
+                    THLog.d(TAG, "OnIABPurchaseFinishedListener.onIABPurchaseFinished No THIABPurchaseHandler for requestCode " + requestCode);
                 }
                 finish();
             }
 
             @Override public void onIABPurchaseFailed(IABPurchaser purchaser, IABException exception)
             {
-                THLog.e(TAG, "There was an exception during the purchase", exception);
+                THLog.e(TAG, "OnIABPurchaseFinishedListener.onIABPurchaseFailed There was an exception during the purchase", exception);
                 THIABPurchaseHandler handler = getPurchaseHandler();
                 if (handler != null)
                 {
+                    THLog.d(TAG, "OnIABPurchaseFinishedListener.onIABPurchaseFailed passing on the exception for requestCode " + requestCode);
                     handler.handlePurchaseException(requestCode, exception);
                 }
                 else
                 {
-                    THLog.d(TAG, "No THIABPurchaseHandler for requestCode " + requestCode);
+                    THLog.d(TAG, "OnIABPurchaseFinishedListener.onIABPurchaseFailed No THIABPurchaseHandler for requestCode " + requestCode);
                 }
                 finish();
             }
@@ -383,32 +411,6 @@ public class THIABLogicHolder
     public Exception getLatestPurchaserException()
     {
         return latestPurchaserException;
-    }
-
-    @Override public int launchPurchaseSequence(THIABPurchaseHandler purchaseHandler, THSKUDetails skuDetails)
-    {
-        return launchPurchaseSequence(purchaseHandler, skuDetails, null);
-    }
-
-    @Override public int launchPurchaseSequence(THIABPurchaseHandler purchaseHandler, THSKUDetails skuDetails, Object extraData)
-    {
-        if (!(extraData instanceof String))
-        {
-            throw new IllegalArgumentException("Extra data needs to be a String");
-        }
-        return launchPurchaseSequence(purchaseHandler, skuDetails, (String) extraData);
-    }
-
-    @Override public int launchPurchaseSequence(THIABPurchaseHandler purchaseHandler, THSKUDetails skuDetails, String extraData)
-    {
-        int requestCode = getUnusedRequestCode();
-        registerPurchaseHandler(requestCode, purchaseHandler);
-        createAndRegisterPurchaseFinishedListener(requestCode);
-
-        SKUDetailsPurchaser skuDetailsPurchaser = createSkuDetailsPurchaser(requestCode);
-        skuDetailsPurchasers.put(requestCode, skuDetailsPurchaser);
-        skuDetailsPurchaser.purchase(skuDetails, extraData, requestCode);
-        return requestCode;
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data)

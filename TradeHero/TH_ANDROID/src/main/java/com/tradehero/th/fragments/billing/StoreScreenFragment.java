@@ -12,6 +12,7 @@ import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.common.billing.googleplay.IABPurchase;
+import com.tradehero.common.billing.googleplay.exceptions.IABAlreadyOwnedException;
 import com.tradehero.common.billing.googleplay.exceptions.IABException;
 import com.tradehero.common.billing.googleplay.exceptions.IABUserCancelledException;
 import com.tradehero.common.utils.THLog;
@@ -39,6 +40,7 @@ public class StoreScreenFragment extends DashboardFragment
     private StoreItemAdapter storeItemAdapter;
     private WeakReference<THIABActor> billingActor = new WeakReference<>(null);
     private int requestCode = (int) (Math.random() * Integer.MAX_VALUE);
+    private THSKUDetails skuDetails;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -283,6 +285,14 @@ public class StoreScreenFragment extends DashboardFragment
         {
             IABAlertUtils.popUserCancelled(getActivity());
         }
+        else if (exception instanceof IABAlreadyOwnedException)
+        {
+            IABAlertUtils.popSKUAlreadyOwned(getActivity(), skuDetails);
+        }
+        else
+        {
+            IABAlertUtils.popUnknownError(getActivity());
+        }
     }
     //</editor-fold>
 
@@ -294,6 +304,7 @@ public class StoreScreenFragment extends DashboardFragment
         if (actor != null)
         {
             this.requestCode = actor.launchPurchaseSequence(this, skuDetails, "From store");
+            this.skuDetails = skuDetails;
         }
         else
         {

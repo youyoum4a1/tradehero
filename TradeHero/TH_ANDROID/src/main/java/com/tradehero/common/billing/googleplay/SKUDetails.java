@@ -1,7 +1,6 @@
 package com.tradehero.common.billing.googleplay;
 
 import com.tradehero.common.billing.ProductDetails;
-import com.tradehero.common.billing.ProductIdentifier;
 import java.util.Comparator;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -9,7 +8,7 @@ import org.json.JSONObject;
 /**
  * Created by julien on 4/11/13
  */
-public class SKUDetails implements ProductDetails<SKU>
+public class SKUDetails implements ProductDetails<IABSKU>
 {
     public static final String JSON_KEY_PRODUCT_ID = "productId";
     public static final String JSON_KEY_TYPE = "type";
@@ -20,7 +19,7 @@ public class SKUDetails implements ProductDetails<SKU>
     public static final String JSON_KEY_DESCRIPTION = "description";
 
     public final String itemType;
-    protected SKU sku;
+    protected IABSKU iabSKU;
     public final String type;
     public final String price;
     public final Long priceAmountMicros;
@@ -40,7 +39,7 @@ public class SKUDetails implements ProductDetails<SKU>
         this.json = jsonSkuDetails;
         JSONObject o = new JSONObject(json);
         String skuString = o.optString(JSON_KEY_PRODUCT_ID);
-        this.sku =  new SKU(skuString);
+        this.iabSKU =  new IABSKU(skuString);
         this.type = o.optString(JSON_KEY_TYPE);
         this.price = o.optString(JSON_KEY_PRICE);
         this.priceAmountMicros = o.optLong(JSON_KEY_PRICE_MICROS);
@@ -54,9 +53,9 @@ public class SKUDetails implements ProductDetails<SKU>
         return "SkuDetails:" + json;
     }
 
-    @Override public SKU getProductIdentifier()
+    @Override public IABSKU getProductIdentifier()
     {
-        return this.sku;
+        return this.iabSKU;
     }
 
     public boolean isOfType(String type)

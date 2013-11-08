@@ -1,7 +1,7 @@
 package com.tradehero.th.billing.googleplay;
 
 import com.tradehero.common.billing.googleplay.Constants;
-import com.tradehero.common.billing.googleplay.SKU;
+import com.tradehero.common.billing.googleplay.IABSKU;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -20,7 +20,7 @@ public class SKUFetcher
 
     public static final String RESET_PORTFOLIO_0 = "com.myhero.th.resetportfolio.0";
 
-    private Map<String, List<SKU>> availableSkus;
+    private Map<String, List<IABSKU>> availableSkus;
     private WeakReference<SKUFetcherListener> listener = new WeakReference<>(null);
 
     public SKUFetcher()
@@ -29,14 +29,14 @@ public class SKUFetcher
         availableSkus = new HashMap<>();
 
         // TODO hard-coded while there is nothing coming from the server.
-        List<SKU> inAppSkus = new ArrayList<>();
-        inAppSkus.add(new SKU(EXTRA_CASH_T0_KEY));
-        inAppSkus.add(new SKU(EXTRA_CASH_T1_KEY));
-        inAppSkus.add(new SKU(EXTRA_CASH_T2_KEY));
-        inAppSkus.add(new SKU(RESET_PORTFOLIO_0));
-        availableSkus.put(Constants.ITEM_TYPE_INAPP, inAppSkus);
+        List<IABSKU> inAppIABSKUs = new ArrayList<>();
+        inAppIABSKUs.add(new IABSKU(EXTRA_CASH_T0_KEY));
+        inAppIABSKUs.add(new IABSKU(EXTRA_CASH_T1_KEY));
+        inAppIABSKUs.add(new IABSKU(EXTRA_CASH_T2_KEY));
+        inAppIABSKUs.add(new IABSKU(RESET_PORTFOLIO_0));
+        availableSkus.put(Constants.ITEM_TYPE_INAPP, inAppIABSKUs);
 
-        availableSkus.put(Constants.ITEM_TYPE_SUBS, new ArrayList<SKU>());
+        availableSkus.put(Constants.ITEM_TYPE_SUBS, new ArrayList<IABSKU>());
     }
 
     public void dispose()
@@ -49,23 +49,23 @@ public class SKUFetcher
         notifyListenerFetched();
     }
 
-    public Map<String, List<SKU>> getAvailableSkus()
+    public Map<String, List<IABSKU>> getAvailableSkus()
     {
         // TODO find out whether the lists are modifiable
         return Collections.unmodifiableMap(availableSkus);
     }
 
-    public List<SKU> getAvailableInAppSkus()
+    public List<IABSKU> getAvailableInAppSkus()
     {
         return getAvailableSkusOfType(Constants.ITEM_TYPE_INAPP);
     }
 
-    public List<SKU> getAvailableSubscriptionSkus()
+    public List<IABSKU> getAvailableSubscriptionSkus()
     {
         return getAvailableSkusOfType(Constants.ITEM_TYPE_SUBS);
     }
 
-    private List<SKU> getAvailableSkusOfType(String itemType)
+    private List<IABSKU> getAvailableSkusOfType(String itemType)
     {
         return Collections.unmodifiableList(availableSkus.get(itemType));
     }
@@ -100,7 +100,7 @@ public class SKUFetcher
 
     public static interface SKUFetcherListener
     {
-        void onFetchedSKUs(SKUFetcher fetcher, Map<String, List<SKU>> availableSkus);
+        void onFetchedSKUs(SKUFetcher fetcher, Map<String, List<IABSKU>> availableSkus);
         void onFetchSKUsFailed(SKUFetcher fetcher, Exception exception); // TODO decide if we create specific Exception
     }
 }

@@ -29,6 +29,9 @@ import javax.inject.Singleton;
             case Constants.BILLING_RESPONSE_RESULT_BILLING_UNAVAILABLE:
                 return new IABBillingUnavailableException(message);
 
+            case Constants.BILLING_RESPONSE_RESULT_ITEM_ALREADY_OWNED:
+                return new IABAlreadyOwnedException(message);
+
             case Constants.IABHELPER_REMOTE_EXCEPTION:
                 return new IABRemoteException(message);
 
