@@ -287,7 +287,7 @@ public class AuthenticationActivity extends SherlockFragmentActivity
             {
                 if (user != null)
                 {
-                    ActivityHelper.goRoot(AuthenticationActivity.this);
+                    ActivityHelper.launchDashboard(AuthenticationActivity.this);
                 }
                 else
                 {
@@ -324,7 +324,7 @@ public class AuthenticationActivity extends SherlockFragmentActivity
             Response response;
             if (user != null)
             {
-                ActivityHelper.goRoot(AuthenticationActivity.this);
+                ActivityHelper.launchDashboard(AuthenticationActivity.this);
             }
             else if ((cause = ex.getCause()) != null && cause instanceof RetrofitError &&
                     (response = ((RetrofitError)cause).getResponse()) != null && response.getStatus() == 403) // Forbidden

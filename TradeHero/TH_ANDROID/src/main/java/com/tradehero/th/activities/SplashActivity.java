@@ -20,23 +20,26 @@ public class SplashActivity extends SherlockActivity
     @Override protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.splash_screen);
+    }
 
+    @Override protected void onResume()
+    {
+        super.onResume();
         if (THUser.getSessionToken() != null)
         {
-            ActivityHelper.goRoot(SplashActivity.this);
-            finish();
+            ActivityHelper.launchDashboard(SplashActivity.this);
+            //finish();
         }
         else
         {
-            setContentView(R.layout.splash_screen);
-
             timerToShiftActivity = new Timer();
             timerToShiftActivity.schedule(new TimerTask()
             {
                 public void run()
                 {
                     timerToShiftActivity.cancel();
-                    ActivityHelper.doStart(SplashActivity.this);
+                    ActivityHelper.launchAuthentication(SplashActivity.this);
                     finish();
                 }
             }, 1500);
