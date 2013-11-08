@@ -121,6 +121,8 @@ public class DashboardNavigator extends Navigator
             shouldHideTabBar = !((BaseFragment.TabBarVisibilityInformer) currentFragment).isTabBarVisible();
         }
 
+
+
         if (shouldHideTabBar)
         {
             hideTabBar();

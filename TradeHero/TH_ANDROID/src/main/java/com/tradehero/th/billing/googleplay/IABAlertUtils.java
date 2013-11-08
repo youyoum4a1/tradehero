@@ -60,6 +60,32 @@ public class IABAlertUtils
         alertDialog.show();
     }
 
+    public static void popUserCancelled(final Context context)
+    {
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
+        alertDialogBuilder
+                .setTitle(R.string.store_billing_user_cancelled_window_title)
+                .setMessage(R.string.store_billing_user_cancelled_window_description)
+                .setCancelable(true)
+                .setPositiveButton(R.string.store_billing_user_cancelled_ok, new DialogInterface.OnClickListener()
+                {
+                    public void onClick(DialogInterface dialog, int id)
+                    {
+                        // TODO open email
+                        dialog.cancel();
+                    }
+                })
+                .setNegativeButton(R.string.store_billing_user_cancelled_cancel, new DialogInterface.OnClickListener()
+                {
+                    public void onClick(DialogInterface dialog, int id)
+                    {
+                        dialog.cancel();
+                    }
+                });
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.show();
+    }
+
     public static <SKUDetailsType extends SKUDetails, SKUDetailViewType extends SKUDetailView<SKUDetailsType>> void popBuyDialog(
         final Context context, final SKUDetailsAdapter<SKUDetailsType, SKUDetailViewType> detailsAdapter,
         int titleResId, final OnDialogSKUDetailsClickListener<SKUDetailsType> clickListener)
