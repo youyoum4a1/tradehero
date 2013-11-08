@@ -5,21 +5,21 @@ import com.tradehero.common.billing.ProductIdentifier;
 /**
  * Created by julien on 4/11/13
  */
-public class SKU implements ProductIdentifier
+public class IABSKU implements ProductIdentifier
 {
     public final String identifier;
 
-    public SKU(String id)
+    public IABSKU(String id)
     {
         identifier = id;
     }
 
     @Override public boolean equals(Object other)
     {
-        return (other != null) && (other instanceof SKU) && equals((SKU) other);
+        return (other != null) && (other instanceof IABSKU) && equals((IABSKU) other);
     }
 
-    public boolean equals(SKU other)
+    public boolean equals(IABSKU other)
     {
         return other != null && (identifier == null ? other.identifier == null : identifier.equals(other.identifier));
     }
