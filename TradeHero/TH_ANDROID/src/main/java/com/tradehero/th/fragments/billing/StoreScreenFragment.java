@@ -2,9 +2,7 @@ package com.tradehero.th.fragments.billing;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,24 +11,34 @@ import android.widget.ListView;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
-import com.tradehero.common.billing.googleplay.SKUDetails;
+import com.tradehero.common.billing.googleplay.IABPurchase;
+import com.tradehero.common.billing.googleplay.exceptions.IABException;
+import com.tradehero.common.billing.googleplay.exceptions.IABUserCancelledException;
+import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.adapters.billing.StoreItemAdapter;
 import com.tradehero.th.adapters.billing.THSKUDetailsAdapter;
 import com.tradehero.th.billing.googleplay.IABAlertUtils;
+import com.tradehero.th.billing.googleplay.THIABActor;
+import com.tradehero.th.billing.googleplay.THIABActorUser;
+import com.tradehero.th.billing.googleplay.THIABPurchaseHandler;
 import com.tradehero.th.billing.googleplay.THSKUDetails;
 import com.tradehero.th.fragments.base.DashboardFragment;
+import java.lang.ref.WeakReference;
 import java.util.List;
 
 public class StoreScreenFragment extends DashboardFragment
-    implements IABAlertUtils.OnDialogSKUDetailsClickListener<THSKUDetails>
+    implements IABAlertUtils.OnDialogSKUDetailsClickListener<THSKUDetails>,
+        THIABActorUser, THIABPurchaseHandler
 {
     public static final String TAG = StoreScreenFragment.class.getSimpleName();
 
     private ListView listView;
     private StoreItemAdapter storeItemAdapter;
+    private WeakReference<THIABActor> billingActor = new WeakReference<>(null);
+    private int requestCode = (int) (Math.random() * Integer.MAX_VALUE);
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -54,6 +62,12 @@ public class StoreScreenFragment extends DashboardFragment
                 }
             });
         }
+    }
+
+    @Override public void onActivityCreated(Bundle savedInstanceState)
+    {
+        super.onActivityCreated(savedInstanceState);
+        setBillingActor((THIABActor) getActivity());
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
@@ -93,17 +107,17 @@ public class StoreScreenFragment extends DashboardFragment
 
     private boolean isBillingAvailable()
     {
-        return ((DashboardActivity) getActivity()).isBillingAvailable();
+        return getBillingActor().isBillingAvailable();
     }
 
     private boolean hadErrorLoadingInventory()
     {
-        return ((DashboardActivity) getActivity()).hadErrorLoadingInventory();
+        return getBillingActor().hadErrorLoadingInventory();
     }
 
     private boolean isInventoryReady()
     {
-        return ((DashboardActivity) getActivity()).isInventoryReady();
+        return getBillingActor().isInventoryReady();
     }
 
     private void popErrorWhenLoading()
@@ -117,7 +131,7 @@ public class StoreScreenFragment extends DashboardFragment
                 {
                     @Override public void onClick(DialogInterface dialogInterface, int i)
                     {
-                        ((DashboardActivity) getActivity()).launchSkuInventorySequence();
+                        getBillingActor().launchSkuInventorySequence();
                     }
                 });
         AlertDialog alertDialog = alertDialogBuilder.create();
@@ -227,17 +241,64 @@ public class StoreScreenFragment extends DashboardFragment
     private void popBuyDialog(String skuDomain, int titleResId)
     {
         final THSKUDetailsAdapter detailsAdapter = new THSKUDetailsAdapter(getActivity(), getActivity().getLayoutInflater(), skuDomain);
-        List<THSKUDetails> desiredSkuDetails = ((DashboardActivity) getActivity()).getDetailsOfDomain(skuDomain);
+        List<THSKUDetails> desiredSkuDetails = getBillingActor().getDetailsOfDomain(skuDomain);
         detailsAdapter.setItems(desiredSkuDetails);
 
         IABAlertUtils.popBuyDialog(getActivity(), detailsAdapter, titleResId, this);
     }
 
+    //<editor-fold desc="THIABActorUser">
+    public THIABActor getBillingActor()
+    {
+        return billingActor.get();
+    }
+
+    public void setBillingActor(THIABActor billingActor)
+    {
+        this.billingActor = new WeakReference<>(billingActor);
+    }
+    //</editor-fold>
+
+    //<editor-fold desc="THIABPurchaseHandler">
+
+    @Override public void handlePurchaseReceived(int requestCode, IABPurchase purchase)
+    {
+        if (this.requestCode != requestCode)
+        {
+            THLog.d(TAG, "handlePurchaseReceived. Received requestCode " + requestCode + ", when in fact it expects " + this.requestCode);
+        }
+        else
+        {
+            THLog.d(TAG, "handlePurchaseReceived. Received requestCode " + requestCode + ", purchase " + purchase);
+        }
+    }
+
+    @Override public void handlePurchaseException(int requestCode, IABException exception)
+    {
+        if (this.requestCode != requestCode)
+        {
+            THLog.d(TAG, "handlePurchaseException. Received requestCode " + requestCode + ", when in fact it expects " + this.requestCode);
+        }
+        else if (exception instanceof IABUserCancelledException)
+        {
+            IABAlertUtils.popUserCancelled(getActivity());
+        }
+    }
+    //</editor-fold>
+
     //<editor-fold desc="IABAlertUtils.OnDialogSKUDetailsClickListener">
     @Override public void onDialogSKUDetailsClicked(DialogInterface dialogInterface, int position, THSKUDetails skuDetails)
     {
-        THToast.show("Sku clicked " + skuDetails.getProductIdentifier().identifier);
-        ((DashboardActivity) getActivity()).launchPurchaseSequence(skuDetails, "From store");
+        //THToast.show("Sku clicked " + skuDetails.getProductIdentifier().identifier);
+        THIABActor actor = getBillingActor();
+        if (actor != null)
+        {
+            this.requestCode = actor.launchPurchaseSequence(this, skuDetails, "From store");
+        }
+        else
+        {
+            THLog.d(TAG, "IABActor was null");
+        }
     }
     //</editor-fold>
 }
