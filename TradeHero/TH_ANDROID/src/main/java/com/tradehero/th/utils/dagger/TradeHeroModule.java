@@ -96,6 +96,7 @@ import com.tradehero.th.widget.position.partial.PositionPartialBottomInPeriodClo
 import com.tradehero.th.widget.position.partial.PositionPartialBottomInPeriodOpenView;
 import com.tradehero.th.widget.position.partial.PositionPartialBottomOpenView;
 import com.tradehero.th.widget.position.partial.PositionPartialTopView;
+import com.tradehero.th.widget.social.FollowerListItemView;
 import com.tradehero.th.widget.timeline.TimelineItemView;
 import com.tradehero.th.widget.trade.TradeListHeaderView;
 import com.tradehero.th.widget.trade.TradeListItemView;
@@ -173,6 +174,7 @@ import org.ocpsoft.prettytime.PrettyTime;
                 StoreScreenFragment.class,
                 HeroManagerFragment.class,
                 FollowerManagerFragment.class,
+                FollowerListItemView.class,
 
                 AbstractUserAvailabilityRequester.class,
                 SearchStockPageItemListLoader.class,
