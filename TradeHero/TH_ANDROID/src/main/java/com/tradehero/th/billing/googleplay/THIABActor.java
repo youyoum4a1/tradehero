@@ -14,7 +14,8 @@ public interface THIABActor extends IABActor<
                                 IABOrderId,
                                 SKUPurchase,
                                 THIABPurchaseHandler,
-                                IABException>
+                                IABException>,
+        SKUDomainInformer
 {
     List<THSKUDetails> getDetailsOfDomain(String domain);
 }
