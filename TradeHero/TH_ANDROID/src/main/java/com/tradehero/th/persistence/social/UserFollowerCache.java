@@ -1,11 +1,10 @@
 package com.tradehero.th.persistence.social;
 
 import com.tradehero.common.persistence.StraightDTOCache;
-import com.tradehero.th.api.social.FollowerSummaryDTO;
+import com.tradehero.th.api.social.FollowerId;
+import com.tradehero.th.api.social.UserFollowerDTO;
 import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.network.service.FollowerService;
-import com.tradehero.th.network.service.UserService;
 import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,34 +12,34 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/3/13 Time: 4:40 PM To change this template use File | Settings | File Templates. */
-@Singleton public class FollowerSummaryCache extends StraightDTOCache<UserBaseKey, FollowerSummaryDTO>
+@Singleton public class UserFollowerCache extends StraightDTOCache<FollowerId, UserFollowerDTO>
 {
-    public static final String TAG = FollowerSummaryCache.class.getSimpleName();
+    public static final String TAG = UserFollowerCache.class.getSimpleName();
     public static final int DEFAULT_MAX_SIZE = 100;
 
     @Inject protected Lazy<FollowerService> followerService;
 
     //<editor-fold desc="Constructors">
-    @Inject public FollowerSummaryCache()
+    @Inject public UserFollowerCache()
     {
         super(DEFAULT_MAX_SIZE);
     }
     //</editor-fold>
 
-    @Override protected FollowerSummaryDTO fetch(UserBaseKey key) throws Throwable
+    @Override protected UserFollowerDTO fetch(FollowerId key) throws Throwable
     {
-        return followerService.get().getFollowersSummary(key.key);
+        return followerService.get().getFollowerSubscriptionDetail(key.followedId, key.followerId);
     }
 
-    public List<FollowerSummaryDTO> getOrFetch(List<UserBaseKey> baseKeys) throws Throwable
+    public List<UserFollowerDTO> getOrFetch(List<FollowerId> followerIds) throws Throwable
     {
-        if (baseKeys == null)
+        if (followerIds == null)
         {
             return null;
         }
 
-        List<FollowerSummaryDTO> followerSummaryDTOs = new ArrayList<>();
-        for (UserBaseKey baseKey: baseKeys)
+        List<UserFollowerDTO> followerSummaryDTOs = new ArrayList<>();
+        for (FollowerId baseKey: followerIds)
         {
             followerSummaryDTOs.add(getOrFetch(baseKey, false));
         }

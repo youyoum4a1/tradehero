@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+  >
+
+  <RelativeLayout
+      android:id="@+id/manage_follower_revenue_header"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_alignParentTop="true"
+      android:background="@color/gray_3"
+      >
+
+    <ImageView
+        android:id="@+id/user_icon"
+        android:layout_width="44dp"
+        android:layout_height="44dp"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:src="@drawable/superman_facebook"
+        android:contentDescription="@null"
+        />
+
+    <LinearLayout
+        android:id="@+id/revenue_block"
+        android:orientation="vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        >
+
+      <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:maxLines="1"
+          android:text="@string/manage_followers_total_revenue"
+          />
+
+      <TextView
+          android:id="@+id/follower_revenue"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:maxLines="1"
+          android:text=""
+          />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/follower_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/user_icon"
+        android:layout_toLeftOf="@id/revenue_block"
+        android:textStyle="bold"
+        />
+
+  </RelativeLayout>
+
+  <com.tradehero.th.widget.social.FollowerPaymentListView
+      android:id="@+id/follower_payments_list"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:layout_below="@id/manage_follower_revenue_header"
+      android:background="@null"
+      />
+
+</RelativeLayout>

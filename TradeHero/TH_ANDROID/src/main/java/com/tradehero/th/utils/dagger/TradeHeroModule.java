@@ -18,6 +18,7 @@ import com.tradehero.th.billing.googleplay.SKUDetailsPurchaser;
 import com.tradehero.th.billing.googleplay.THInventoryFetcher;
 import com.tradehero.th.fragments.billing.StoreScreenFragment;
 import com.tradehero.th.fragments.billing.management.FollowerManagerFragment;
+import com.tradehero.th.fragments.billing.management.FollowerPayoutManagerFragment;
 import com.tradehero.th.fragments.billing.management.HeroManagerFragment;
 import com.tradehero.th.network.service.FollowerService;
 import com.tradehero.th.persistence.portfolio.OwnedPortfolioFetchAssistant;
@@ -174,6 +175,7 @@ import org.ocpsoft.prettytime.PrettyTime;
                 StoreScreenFragment.class,
                 HeroManagerFragment.class,
                 FollowerManagerFragment.class,
+                FollowerPayoutManagerFragment.class,
                 FollowerListItemView.class,
 
                 AbstractUserAvailabilityRequester.class,

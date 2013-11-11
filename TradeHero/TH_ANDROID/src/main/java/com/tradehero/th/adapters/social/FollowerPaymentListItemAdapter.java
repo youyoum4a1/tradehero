@@ -6,22 +6,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.DTOAdapter;
-import com.tradehero.th.api.portfolio.DisplayablePortfolioDTO;
-import com.tradehero.th.api.social.FollowerId;
+import com.tradehero.th.api.social.FollowerTransactionDTO;
 import com.tradehero.th.api.social.UserFollowerDTO;
-import com.tradehero.th.widget.portfolio.PortfolioListHeaderView;
-import com.tradehero.th.widget.portfolio.PortfolioListItemView;
 import com.tradehero.th.widget.social.FollowerListHeaderView;
 import com.tradehero.th.widget.social.FollowerListItemView;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
+import com.tradehero.th.widget.social.FollowerPaymentListHeaderView;
+import com.tradehero.th.widget.social.FollowerPaymentListItemView;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/14/13 Time: 4:12 PM To change this template use File | Settings | File Templates. */
-public class FollowerListItemAdapter extends DTOAdapter<UserFollowerDTO, FollowerListItemView>
+public class FollowerPaymentListItemAdapter extends DTOAdapter<FollowerTransactionDTO, FollowerPaymentListItemView>
 {
-    public static final String TAG = FollowerListItemAdapter.class.getName();
+    public static final String TAG = FollowerPaymentListItemAdapter.class.getName();
 
     public static final int VIEW_TYPE_HEADER = 0;
     public static final int VIEW_TYPE_ITEM = 1;
@@ -31,9 +26,9 @@ public class FollowerListItemAdapter extends DTOAdapter<UserFollowerDTO, Followe
 
     private final int headerResId;
 
-    public FollowerListItemAdapter(Context context, LayoutInflater inflater, int followerLayoutResourceId, int headerResId)
+    public FollowerPaymentListItemAdapter(Context context, LayoutInflater inflater, int followerPaymentLayoutResourceId, int headerResId)
     {
-        super(context, inflater, followerLayoutResourceId);
+        super(context, inflater, followerPaymentLayoutResourceId);
         this.headerResId = headerResId;
     }
 
@@ -76,19 +71,19 @@ public class FollowerListItemAdapter extends DTOAdapter<UserFollowerDTO, Followe
     {
         if (getItemViewType(position) == VIEW_TYPE_HEADER)
         {
-            if (!(convertView instanceof FollowerListHeaderView))
+            if (!(convertView instanceof FollowerPaymentListHeaderView))
             {
                 convertView = inflater.inflate(headerResId, parent, false);
             }
-            ((FollowerListHeaderView) convertView).setHeaderTextContent(context.getString(R.string.manage_followers_list_header));
+            ((FollowerPaymentListHeaderView) convertView).setHeaderTextContent(context.getString(R.string.manage_follower_payment_transaction_list_header));
         }
         else
         {
-            if (!(convertView instanceof FollowerListItemView))
+            if (!(convertView instanceof FollowerPaymentListItemView))
             {
                 convertView = inflater.inflate(layoutResourceId, parent, false);
             }
-            ((FollowerListItemView) convertView).display((UserFollowerDTO) getItem(position));
+            ((FollowerPaymentListItemView) convertView).display((FollowerTransactionDTO) getItem(position));
         }
         return convertView;
     }
@@ -103,7 +98,7 @@ public class FollowerListItemAdapter extends DTOAdapter<UserFollowerDTO, Followe
         return getItemViewType(position) != VIEW_TYPE_HEADER;
     }
 
-    @Override protected void fineTune(int position, UserFollowerDTO dto, FollowerListItemView dtoView)
+    @Override protected void fineTune(int position, FollowerTransactionDTO dto, FollowerPaymentListItemView dtoView)
     {
         // Nothing to do
     }

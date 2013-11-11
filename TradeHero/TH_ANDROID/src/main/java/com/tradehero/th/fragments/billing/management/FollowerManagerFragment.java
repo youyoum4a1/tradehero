@@ -13,15 +13,16 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
-import com.tradehero.th.adapters.portfolio.PortfolioListItemAdapter;
+import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.adapters.social.FollowerListItemAdapter;
+import com.tradehero.th.api.social.FollowerId;
 import com.tradehero.th.api.social.FollowerSummaryDTO;
+import com.tradehero.th.api.social.UserFollowerDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.base.THUser;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.persistence.social.FollowerSummaryCache;
 import com.tradehero.th.utils.SecurityUtils;
-import com.tradehero.th.widget.portfolio.PortfolioListView;
 import com.tradehero.th.widget.social.FollowerListView;
 import dagger.Lazy;
 import javax.inject.Inject;
@@ -249,6 +250,15 @@ public class FollowerManagerFragment extends BasePurchaseManagerFragment
 
     private void handleFollowerItemClicked(View view, int position, long id)
     {
-        THToast.show("Position clicked " + position);
+        if (followerListAdapter != null && followerListAdapter.getItemViewType(position) == FollowerListItemAdapter.VIEW_TYPE_ITEM)
+        {
+            UserFollowerDTO followerDTO = (UserFollowerDTO) followerListAdapter.getItem(position);
+            FollowerId followerId = new FollowerId(userBaseKey.key, followerDTO.id);
+            ((DashboardActivity) getActivity()).getDashboardNavigator().pushFragment(FollowerPayoutManagerFragment.class, followerId.getArgs());
+        }
+        else
+        {
+            THToast.show("Position clicked " + position);
+        }
     }
 }

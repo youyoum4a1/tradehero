@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<com.tradehero.th.widget.social.FollowerPaymentListItemView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res/com.tradehero.th"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="5dp"
+    android:background="@color/white"
+    >
+
+  <LinearLayout
+      android:id="@+id/date_block"
+      android:orientation="vertical"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_alignParentLeft="true"
+      android:layout_centerVertical="true"
+    >
+
+      <TextView
+          android:id="@+id/duration_info"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:maxLines="1"
+          android:text=""
+        />
+
+      <TextView
+          android:id="@+id/date_start"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:textStyle="bold"
+          android:maxLines="1"
+          android:text=""
+        />
+
+  </LinearLayout>
+
+  <TextView
+      android:id="@+id/revenue_info"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_alignParentRight="true"
+      android:layout_toRightOf="@id/date_block"
+      android:maxLines="1"
+      android:gravity="right"
+      />
+
+</com.tradehero.th.widget.social.FollowerPaymentListItemView>
