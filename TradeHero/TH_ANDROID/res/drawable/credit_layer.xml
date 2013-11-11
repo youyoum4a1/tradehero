@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layer-list
+    xmlns:android="http://schemas.android.com/apk/res/android"
+  >
+
+  <item
+      android:id="@+id/credit_layer_1"
+      android:drawable="@drawable/credit_1"
+      android:top="0dp"
+      android:right="0dp"
+      android:bottom="0dp"
+      android:left="0dp"
+    />
+
+  <item
+      android:id="@+id/credit_layer_2"
+      android:drawable="@drawable/credit_5"
+      android:top="0dp"
+      android:right="0dp"
+      android:bottom="0dp"
+      android:left="0dp"
+    />
+
+  <item
+      android:id="@+id/credit_layer_3"
+      android:drawable="@drawable/credit_10"
+      android:top="0dp"
+      android:right="0dp"
+      android:bottom="0dp"
+      android:left="0dp"
+    />
+
+</layer-list>

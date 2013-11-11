@@ -3,6 +3,7 @@ package com.tradehero.th.fragments.billing;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +23,7 @@ import com.tradehero.common.billing.googleplay.exceptions.IABVerificationFailedE
 import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
+import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.adapters.billing.StoreItemAdapter;
 import com.tradehero.th.adapters.billing.THSKUDetailsAdapter;
 import com.tradehero.th.billing.googleplay.IABAlertSKUUtils;
@@ -31,6 +33,7 @@ import com.tradehero.th.billing.googleplay.THIABActorUser;
 import com.tradehero.th.billing.googleplay.THIABPurchaseHandler;
 import com.tradehero.th.billing.googleplay.THSKUDetails;
 import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.fragments.billing.management.HeroManagerFragment;
 import java.lang.ref.WeakReference;
 import java.util.List;
 
@@ -88,7 +91,7 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
         if (listView != null)
         {
             listView.setOnItemClickListener(null);
-            listView.setAdapter(null);
+            //listView.setAdapter(null);
         }
         listView = null;
         storeItemAdapter = null;
@@ -120,9 +123,18 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
                 conditionalPopBuyResetPortfolio();
                 break;
 
+            case StoreItemAdapter.POSITION_MANAGE_HEROES:
+                pushFragment(HeroManagerFragment.class);
+                break;
+
             default:
                 THToast.show("Clicked at position " + position);
                 break;
         }
+    }
+
+    private void pushFragment(Class<? extends Fragment> fragmentClass)
+    {
+        ((DashboardActivity) getActivity()).getNavigator().pushFragment(fragmentClass);
     }
 }
