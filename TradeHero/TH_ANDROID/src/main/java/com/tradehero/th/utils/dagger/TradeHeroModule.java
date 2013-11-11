@@ -16,7 +16,9 @@ import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.billing.googleplay.SKUDetailsPurchaser;
 import com.tradehero.th.billing.googleplay.THInventoryFetcher;
 import com.tradehero.th.fragments.billing.StoreScreenFragment;
+import com.tradehero.th.fragments.billing.management.FollowerManagerFragment;
 import com.tradehero.th.fragments.billing.management.HeroManagerFragment;
+import com.tradehero.th.network.service.FollowerService;
 import com.tradehero.th.persistence.portfolio.OwnedPortfolioFetchAssistant;
 import com.tradehero.th.persistence.user.UserProfileFetchAssistant;
 import com.tradehero.th.base.THUser;
@@ -168,6 +170,7 @@ import javax.inject.Singleton;
 
                 StoreScreenFragment.class,
                 HeroManagerFragment.class,
+                FollowerManagerFragment.class,
 
                 AbstractUserAvailabilityRequester.class,
                 SearchStockPageItemListLoader.class,
@@ -277,6 +280,11 @@ public class TradeHeroModule
     @Provides @Singleton MarketService provideMarketService()
     {
         return engine.createService(MarketService.class);
+    }
+
+    @Provides @Singleton FollowerService provideFollowerService()
+    {
+        return engine.createService(FollowerService.class);
     }
 
     @Provides @Singleton YahooNewsService provideYahooNewsService()

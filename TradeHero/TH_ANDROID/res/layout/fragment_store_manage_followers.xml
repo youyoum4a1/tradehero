@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+  >
+
+  <TableLayout
+      android:id="@+id/manage_followers_header"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_alignParentTop="true"
+      android:background="@color/gray_3"
+    >
+
+    <TableRow>
+
+      <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="@string/manage_followers_total_revenue"
+          />
+
+      <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="@string/manage_followers_total_amount_paid"
+          />
+
+      <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="@string/manage_followers_number_followers"
+          />
+
+    </TableRow>
+
+    <TableRow>
+
+        <TextView
+            android:id="@+id/manage_followers_total_revenue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+          />
+
+        <TextView
+            android:id="@+id/manage_followers_total_amount_paid"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+          />
+
+        <TextView
+            android:id="@+id/manage_followers_number_followers"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+          />
+
+    </TableRow>
+
+  </TableLayout>
+
+
+
+</RelativeLayout>

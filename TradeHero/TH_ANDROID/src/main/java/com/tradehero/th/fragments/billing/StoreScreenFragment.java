@@ -33,6 +33,7 @@ import com.tradehero.th.billing.googleplay.THIABActorUser;
 import com.tradehero.th.billing.googleplay.THIABPurchaseHandler;
 import com.tradehero.th.billing.googleplay.THSKUDetails;
 import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.fragments.billing.management.FollowerManagerFragment;
 import com.tradehero.th.fragments.billing.management.HeroManagerFragment;
 import java.lang.ref.WeakReference;
 import java.util.List;
@@ -125,6 +126,10 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
 
             case StoreItemAdapter.POSITION_MANAGE_HEROES:
                 pushFragment(HeroManagerFragment.class);
+                break;
+
+            case StoreItemAdapter.POSITION_MANAGE_FOLLOWERS:
+                pushFragment(FollowerManagerFragment.class);
                 break;
 
             default:
