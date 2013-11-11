@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<com.tradehero.th.widget.social.FollowerListHeaderView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+  <TextView
+      android:id="@+id/header_text"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:fontFamily="bold"
+      android:text="Position Header"
+      android:paddingLeft="8dp"
+    />
+
+</com.tradehero.th.widget.social.FollowerListHeaderView>

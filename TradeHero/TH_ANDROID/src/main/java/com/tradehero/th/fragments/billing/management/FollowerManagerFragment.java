@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ListView;
 import android.widget.TextView;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
@@ -11,12 +13,16 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
+import com.tradehero.th.adapters.portfolio.PortfolioListItemAdapter;
+import com.tradehero.th.adapters.social.FollowerListItemAdapter;
 import com.tradehero.th.api.social.FollowerSummaryDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.base.THUser;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.persistence.social.FollowerSummaryCache;
 import com.tradehero.th.utils.SecurityUtils;
+import com.tradehero.th.widget.portfolio.PortfolioListView;
+import com.tradehero.th.widget.social.FollowerListView;
 import dagger.Lazy;
 import javax.inject.Inject;
 
@@ -29,7 +35,9 @@ public class FollowerManagerFragment extends BasePurchaseManagerFragment
     private TextView totalRevenue;
     private TextView totalAmountPaid;
     private TextView followersCount;
+    private ListView followerList;
 
+    private FollowerListItemAdapter followerListAdapter;
     private UserBaseKey userBaseKey;
     private FollowerSummaryDTO followerSummaryDTO;
 
@@ -56,6 +64,24 @@ public class FollowerManagerFragment extends BasePurchaseManagerFragment
         totalRevenue = (TextView) view.findViewById(R.id.manage_followers_total_revenue);
         totalAmountPaid = (TextView) view.findViewById(R.id.manage_followers_total_amount_paid);
         followersCount = (TextView) view.findViewById(R.id.manage_followers_number_followers);
+        followerList = (FollowerListView) view.findViewById(R.id.followers_list);
+
+        if (followerListAdapter == null)
+        {
+            followerListAdapter = new FollowerListItemAdapter(getActivity(), getActivity().getLayoutInflater(), R.layout.follower_list_item, R.layout.follower_list_header);
+        }
+
+        if (followerList != null)
+        {
+            followerList.setOnItemClickListener(new AdapterView.OnItemClickListener()
+            {
+                @Override public void onItemClick(AdapterView<?> parent, View view, int position, long id)
+                {
+                    handleFollowerItemClicked(view, position, id);
+                }
+            });
+            followerList.setAdapter(followerListAdapter);
+        }
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
@@ -86,6 +112,13 @@ public class FollowerManagerFragment extends BasePurchaseManagerFragment
         }
         followerSummaryFetchTask = null;
         super.onPause();
+    }
+
+    @Override public void onDestroyView()
+    {
+        followerList = null;
+        followerListAdapter = null;
+        super.onDestroyView();
     }
 
     protected void fetchFollowerSummary()
@@ -138,6 +171,7 @@ public class FollowerManagerFragment extends BasePurchaseManagerFragment
             displayTotalRevenue();
             displayTotalAmountPaid();
             displayFollowersCount();
+            displayFollowerList();
         }
     }
 
@@ -146,6 +180,7 @@ public class FollowerManagerFragment extends BasePurchaseManagerFragment
         displayTotalRevenue();
         displayTotalAmountPaid();
         displayFollowersCount();
+        displayFollowerList();
     }
 
     public void displayTotalRevenue()
@@ -199,5 +234,21 @@ public class FollowerManagerFragment extends BasePurchaseManagerFragment
                 followersCount.setText(R.string.na);
             }
         }
+    }
+
+    public void displayFollowerList()
+    {
+        if (followerListAdapter != null)
+        {
+            if (followerSummaryDTO != null)
+            {
+                followerListAdapter.setItems(followerSummaryDTO.userFollowers);
+            }
+        }
+    }
+
+    private void handleFollowerItemClicked(View view, int position, long id)
+    {
+        THToast.show("Position clicked " + position);
     }
 }
