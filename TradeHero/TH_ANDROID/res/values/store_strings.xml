@@ -82,4 +82,10 @@
       Keep ahead of the game: browse the Most Skilled traders now to pick your Heroes!</string>
   <string name="manage_heroes_empty_leaderboard_link">Go to Most Skilled Traders</string>
 
+  <!-- Manage followers -->
+  <string name="manage_followers_title">Followers</string>
+  <string name="manage_followers_total_revenue">Total Revenue</string>
+  <string name="manage_followers_total_amount_paid">Total Amount Paid</string>
+  <string name="manage_followers_number_followers"># Followers</string>
+
 </resources>
