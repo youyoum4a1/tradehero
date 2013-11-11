@@ -58,15 +58,21 @@ public abstract class DTOAdapter<T, V extends DTOView<T>> extends BaseAdapter
     @Override public View getView(int position, View convertView, ViewGroup viewGroup)
     {
         //THLog.d(TAG, "getView " + position);
-        if (convertView == null)
-        {
-            convertView = inflater.inflate(layoutResourceId, viewGroup, false);
-        }
+        convertView = conditionalInflate(convertView, viewGroup);
 
         V dtoView = (V) convertView;
         T dto = (T) getItem(position);
         dtoView.display(dto);
         fineTune(position, dto, dtoView);
+        return convertView;
+    }
+
+    protected View conditionalInflate(View convertView, ViewGroup viewGroup)
+    {
+        if (convertView == null)
+        {
+            convertView = inflater.inflate(layoutResourceId, viewGroup, false);
+        }
         return convertView;
     }
 

@@ -91,4 +91,9 @@
   <string name="manage_followers_list_header">FOLLOWERS</string>
   <string name="manage_followers_revenue_follower">Revenue: %1$s %2$,.2f</string>
 
+  <!-- Manage follower payments -->
+  <string name="manage_follower_payment_transaction_list_header">Transactions</string>
+  <string name="manage_follower_payment_duration">Paid for %d days:</string>
+  <string name="manage_follower_payment_datetime_format">dd MMM yyyy</string>
+
 </resources>
