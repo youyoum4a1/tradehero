@@ -16,6 +16,7 @@ import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.billing.googleplay.SKUDetailsPurchaser;
 import com.tradehero.th.billing.googleplay.THInventoryFetcher;
 import com.tradehero.th.fragments.billing.StoreScreenFragment;
+import com.tradehero.th.fragments.billing.management.HeroManagerFragment;
 import com.tradehero.th.persistence.portfolio.OwnedPortfolioFetchAssistant;
 import com.tradehero.th.persistence.user.UserProfileFetchAssistant;
 import com.tradehero.th.base.THUser;
@@ -166,6 +167,7 @@ import javax.inject.Singleton;
                 TradeListHeaderView.class,
 
                 StoreScreenFragment.class,
+                HeroManagerFragment.class,
 
                 AbstractUserAvailabilityRequester.class,
                 SearchStockPageItemListLoader.class,

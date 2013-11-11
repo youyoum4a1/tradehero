@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+  >
+
+  <RelativeLayout
+      android:id="@+id/manage_heroes_header"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_alignParentTop="true"
+      android:background="@color/gray_3"
+    >
+
+    <ImageButton
+        android:id="@+id/btn_buy_more"
+        android:layout_width="125dp"
+        android:layout_height="48dp"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="8dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/btn_buy_credits_large"
+        android:background="@null"
+        android:contentDescription="@null"
+      />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_toLeftOf="@id/btn_buy_more"
+        android:layout_centerVertical="true"
+        android:orientation="horizontal"
+      >
+
+        <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="@string/manage_heroes_follows"
+          android:layout_centerVertical="true"
+        />
+
+        <TextView
+          android:id="@+id/manage_heroes_follow_count"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="+0"
+          android:layout_centerVertical="true"
+        />
+
+        <ImageView
+          android:id="@+id/icn_credit_quantity"
+          android:layout_width="32dp"
+          android:layout_height="32dp"
+          android:src="@drawable/credit_layer"
+          android:layout_centerVertical="true"
+          android:baselineAlignBottom="true"
+        />
+
+      </LinearLayout>
+
+  </RelativeLayout>
+
+  <RelativeLayout
+      android:id="@+id/empty_follow_placeholder"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:layout_below="@id/manage_heroes_header"
+      android:padding="8dp"
+    >
+
+    <TextView
+        android:id="@+id/empty_follow_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="8dp"
+        android:text="@string/manage_heroes_empty_title"
+      />
+
+    <TextView
+        android:id="@+id/empty_follow_description"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/empty_follow_title"
+        android:layout_marginTop="16dp"
+        android:text="@string/manage_heroes_empty_description"
+      />
+
+    <Button
+        android:id="@+id/btn_leaderboard_most_skilled"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/empty_follow_description"
+        android:layout_marginTop="16dp"
+        android:text="@string/manage_heroes_empty_leaderboard_link"
+      />
+
+  </RelativeLayout>
+
+</RelativeLayout>
