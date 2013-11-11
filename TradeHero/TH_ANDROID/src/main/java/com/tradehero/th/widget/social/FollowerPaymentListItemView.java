@@ -99,7 +99,7 @@ public class FollowerPaymentListItemView extends RelativeLayout implements DTOVi
         {
             if (userFollowerDTO != null)
             {
-                SimpleDateFormat sdf = new SimpleDateFormat(getContext().getString(R.string.leaderboard_datetime_format));
+                SimpleDateFormat sdf = new SimpleDateFormat(getContext().getString(R.string.manage_follower_payment_datetime_format));
                 dateStart.setText(sdf.format(userFollowerDTO.paidAt));
             }
             else

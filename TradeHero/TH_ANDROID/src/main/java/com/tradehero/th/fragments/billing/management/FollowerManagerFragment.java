@@ -14,7 +14,7 @@ import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.DashboardActivity;
-import com.tradehero.th.adapters.social.FollowerListItemAdapter;
+import com.tradehero.th.adapters.social.FollowerAndPayoutListItemAdapter;
 import com.tradehero.th.api.social.FollowerId;
 import com.tradehero.th.api.social.FollowerSummaryDTO;
 import com.tradehero.th.api.social.UserFollowerDTO;
@@ -38,7 +38,7 @@ public class FollowerManagerFragment extends BasePurchaseManagerFragment
     private TextView followersCount;
     private ListView followerList;
 
-    private FollowerListItemAdapter followerListAdapter;
+    private FollowerAndPayoutListItemAdapter followerListAdapter;
     private UserBaseKey userBaseKey;
     private FollowerSummaryDTO followerSummaryDTO;
 
@@ -69,7 +69,13 @@ public class FollowerManagerFragment extends BasePurchaseManagerFragment
 
         if (followerListAdapter == null)
         {
-            followerListAdapter = new FollowerListItemAdapter(getActivity(), getActivity().getLayoutInflater(), R.layout.follower_list_item, R.layout.follower_list_header);
+            followerListAdapter = new FollowerAndPayoutListItemAdapter(getActivity(),
+                    getActivity().getLayoutInflater(),
+                    R.layout.follower_list_header,
+                    R.layout.hero_payout_list_item,
+                    R.layout.follower_list_item
+
+            );
         }
 
         if (followerList != null)
@@ -241,16 +247,13 @@ public class FollowerManagerFragment extends BasePurchaseManagerFragment
     {
         if (followerListAdapter != null)
         {
-            if (followerSummaryDTO != null)
-            {
-                followerListAdapter.setItems(followerSummaryDTO.userFollowers);
-            }
+            followerListAdapter.setFollowerSummaryDTO(followerSummaryDTO);
         }
     }
 
     private void handleFollowerItemClicked(View view, int position, long id)
     {
-        if (followerListAdapter != null && followerListAdapter.getItemViewType(position) == FollowerListItemAdapter.VIEW_TYPE_ITEM)
+        if (followerListAdapter != null && followerListAdapter.getItemViewType(position) == FollowerAndPayoutListItemAdapter.VIEW_TYPE_ITEM_FOLLOWER)
         {
             UserFollowerDTO followerDTO = (UserFollowerDTO) followerListAdapter.getItem(position);
             FollowerId followerId = new FollowerId(userBaseKey.key, followerDTO.id);
