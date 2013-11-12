@@ -8,7 +8,6 @@ import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.th.R;
 import com.tradehero.th.api.position.OwnedPositionId;
 import com.tradehero.th.api.position.PositionDTO;
-import com.tradehero.th.persistence.leaderboard.position.LeaderboardPositionCache;
 import com.tradehero.th.persistence.position.PositionCache;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.DateUtils;
@@ -25,10 +24,11 @@ public class PositionPartialBottomClosedView extends RelativeLayout
     public static final String TAG = PositionPartialBottomClosedView.class.getSimpleName();
 
     private OwnedPositionId ownedPositionId;
-    private PositionDTO positionDTO;
+
+    protected PositionDTO positionDTO;
 
     @Inject protected Lazy<PositionCache> positionCache;
-    @Inject protected Lazy<LeaderboardPositionCache> leaderboardPositionCache;
+    @Inject protected Lazy<PositionCache> leaderboardPositionCache;
 
     private TextView realisedPLValue;
     private TextView totalInvestedValue;
@@ -65,6 +65,7 @@ public class PositionPartialBottomClosedView extends RelativeLayout
 
     protected void initViews()
     {
+        // overall
         realisedPLValue = (TextView) findViewById(R.id.position_realized_pl_value);
         totalInvestedValue = (TextView) findViewById(R.id.total_invested_value);
         openedDate = (TextView) findViewById(R.id.opened_date);

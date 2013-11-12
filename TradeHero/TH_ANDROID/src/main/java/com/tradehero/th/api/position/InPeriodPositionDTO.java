@@ -58,4 +58,14 @@ public class InPeriodPositionDTO extends PositionDTO
     {
         return new OwnedLeaderboardPositionId(userId, id);
     }
+
+    public double getTotalInPeriodPL()
+    {
+        return totalPLInPeriodRefCcy == null ? 0 : totalPLInPeriodRefCcy;
+    }
+
+    public double getValueAtStart()
+    {
+        return marketValueStartPeriodRefCcy == null ? 0 : marketValueStartPeriodRefCcy;
+    }
 }

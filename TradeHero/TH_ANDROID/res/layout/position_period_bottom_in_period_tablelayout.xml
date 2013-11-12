@@ -20,13 +20,13 @@
     <TextView
         android:id="@+id/in_period_pl_value"
         style="@style/TH.SmallValue"
-        android:text="US $13,024"
+        android:text="@null"
         />
 
     <TextView
         android:id="@+id/in_period_roi_value"
         style="@style/TH.SmallValue"
-        android:text="+3.14%"
+        android:text="@null"
         />
 
   </TableRow>

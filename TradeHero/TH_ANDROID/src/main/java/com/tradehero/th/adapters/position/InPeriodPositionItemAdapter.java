@@ -64,13 +64,18 @@ public class InPeriodPositionItemAdapter extends AbstractPositionItemAdapter<InP
                     }
                 }
 
-                AbstractPositionView cell = (AbstractPositionView)convertView;
-                cell.linkWith(expandableWrapper.getModel(), true);
-                cell.setListener(getInternalListener());
+                bindCell(convertView, expandableWrapper.getModel());
             }
         }
         setLatestView(convertView);
         return convertView;
+    }
+
+    private void bindCell(View convertView, OwnedLeaderboardPositionId model)
+    {
+        AbstractPositionView cell = (AbstractPositionView)convertView;
+        cell.linkWith(model, true);
+        cell.setListener(getInternalListener());
     }
 
     @Override protected void setPosition(InPeriodPositionDTO positionDTO)

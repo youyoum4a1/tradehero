@@ -32,6 +32,12 @@ public class InPeriodPositionListFragment extends PositionListFragment
                 R.layout.position_quick_nothing);
     }
 
+    @Override public void onResume()
+    {
+        this.leaderboardMarkUserId = new LeaderboardMarkUserId((int)getArguments().getLong(LeaderboardMarkUserId.BUNDLE_KEY));
+        super.onResume();
+    }
+
     @Override protected void fetchSimplePage()
     {
         if (ownedPortfolioId != null && ownedPortfolioId.isValid())
@@ -44,7 +50,6 @@ public class InPeriodPositionListFragment extends PositionListFragment
             {
                 fetchGetPositionsDTOTask.forgetListener(true);
             }
-            this.leaderboardMarkUserId = new LeaderboardMarkUserId(ownedPortfolioId.userId);
             fetchGetPositionsDTOTask = getLeaderboardPositionsCache.get().getOrFetch(leaderboardMarkUserId, getLeaderboardPositionsCacheListener);
             fetchGetPositionsDTOTask.execute();
         }
@@ -83,12 +88,5 @@ public class InPeriodPositionListFragment extends PositionListFragment
         {
             display();
         }
-    }
-
-    @Override public void display()
-    {
-        super.display();
-
-        // display
     }
 }

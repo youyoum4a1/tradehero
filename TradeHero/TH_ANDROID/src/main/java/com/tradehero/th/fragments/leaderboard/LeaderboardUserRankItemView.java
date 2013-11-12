@@ -13,6 +13,7 @@ import com.tradehero.common.graphics.RoundedShapeTransformation;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.leaderboard.LeaderboardUserRankDTO;
+import com.tradehero.th.api.leaderboard.position.LeaderboardMarkUserId;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.api.users.UserBaseDTO;
@@ -266,11 +267,14 @@ public class LeaderboardUserRankItemView extends RelativeLayout
 
     private void handleOpenPositionListClicked()
     {
-        int userId = leaderboardItem.getModel().getId();
+        LeaderboardUserRankDTO model = leaderboardItem.getModel();
+        int userId = model.getId();
         int portfolioId = leaderboardItem.getModel().portfolioId;
         OwnedPortfolioId ownedPortfolioId = new OwnedPortfolioId(userId, portfolioId);
+        Bundle bundle = ownedPortfolioId.getArgs();
+        bundle.putLong(LeaderboardMarkUserId.BUNDLE_KEY, model.lbmuId);
 
-        navigator.pushFragment(InPeriodPositionListFragment.class, ownedPortfolioId.getArgs(), true);
+        navigator.pushFragment(InPeriodPositionListFragment.class, bundle, true);
     }
 
     private void handleOpenProfileButtonClicked()
