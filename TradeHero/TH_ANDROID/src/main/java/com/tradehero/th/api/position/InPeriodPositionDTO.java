@@ -53,4 +53,9 @@ public class InPeriodPositionDTO extends PositionDTO
 
         return ownedPositionIds;
     }
+
+    public OwnedLeaderboardPositionId getLeaderboardOwnedPositionId()
+    {
+        return new OwnedLeaderboardPositionId(userId, id);
+    }
 }

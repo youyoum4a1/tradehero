@@ -8,8 +8,11 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import com.tradehero.common.widget.ColorIndicator;
 import com.tradehero.th.R;
+import com.tradehero.th.api.leaderboard.position.OwnedLeaderboardPositionId;
+import com.tradehero.th.api.position.InPeriodPositionDTO;
 import com.tradehero.th.api.position.OwnedPositionId;
 import com.tradehero.th.api.position.PositionDTO;
+import com.tradehero.th.persistence.leaderboard.position.LeaderboardPositionCache;
 import com.tradehero.th.persistence.position.PositionCache;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.widget.position.partial.PositionPartialTopView;
@@ -33,9 +36,12 @@ public abstract class AbstractPositionView extends LinearLayout
     protected ImageButton btnStockInfo;
 
     @Inject Lazy<PositionCache> positionCache;
+    @Inject Lazy<LeaderboardPositionCache> leaderboardPositionCache;
+
     protected PositionDTO positionDTO;
 
     protected WeakReference<PositionListener> listener = new WeakReference<>(null);
+    private OwnedLeaderboardPositionId ownedLeaderboardPositionId;
 
     //<editor-fold desc="Constructors">
     public AbstractPositionView(Context context)
@@ -97,6 +103,13 @@ public abstract class AbstractPositionView extends LinearLayout
         this.ownedPositionId = ownedPositionId;
         this.topView.linkWith(ownedPositionId, andDisplay);
         this.linkWith(positionCache.get().get(ownedPositionId), andDisplay);
+    }
+
+    public void linkWith(OwnedLeaderboardPositionId ownedLeaderboardPositionId, boolean andDisplay)
+    {
+        this.ownedLeaderboardPositionId = ownedLeaderboardPositionId;
+        this.topView.linkWith(ownedLeaderboardPositionId, andDisplay);
+        this.linkWith(leaderboardPositionCache.get().get(ownedLeaderboardPositionId), andDisplay);
     }
 
     protected void linkWith(PositionDTO positionDTO, boolean andDisplay)
