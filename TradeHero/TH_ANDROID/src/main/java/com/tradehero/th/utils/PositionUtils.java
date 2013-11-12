@@ -3,6 +3,7 @@ package com.tradehero.th.utils;
 import android.content.Context;
 import android.widget.TextView;
 import com.tradehero.th.R;
+import com.tradehero.th.api.position.InPeriodPositionDTO;
 import com.tradehero.th.api.position.PositionDTO;
 
 import java.text.SimpleDateFormat;
@@ -15,6 +16,7 @@ import java.util.TimeZone;
 public class PositionUtils
 {
     protected static final int PERCENT_STRETCHING_FOR_COLOR = 20;
+
     public static String getSumInvested(Context context, PositionDTO position)
     {
         if (position != null && position.sumInvestedAmountRefCcy != null)
@@ -30,6 +32,21 @@ public class PositionUtils
         }
     }
 
+    public static String getValueAtStart(Context context, InPeriodPositionDTO position)
+    {
+        if (position != null && position.marketValueStartPeriodRefCcy != null)
+        {
+            return NumberDisplayUtils.formatWithRelevantDigits(
+                    position.marketValueStartPeriodRefCcy,
+                    7,
+                    SecurityUtils.DEFAULT_VIRTUAL_CASH_CURRENCY_DISPLAY);
+        }
+        else
+        {
+            return context.getString(R.string.na);
+        }
+    }
+
     public static String getRealizedPL(Context context, PositionDTO position)
     {
         if (position != null && position.realizedPLRefCcy != null)
@@ -37,6 +54,21 @@ public class PositionUtils
             return NumberDisplayUtils.formatWithRelevantDigits(
                     position.realizedPLRefCcy,
                     4,
+                    SecurityUtils.DEFAULT_VIRTUAL_CASH_CURRENCY_DISPLAY);
+        }
+        else
+        {
+            return context.getString(R.string.na);
+        }
+    }
+
+    public static String getInPeriodRealizedPL(Context context, InPeriodPositionDTO position)
+    {
+        if (position != null && position.totalPLInPeriodRefCcy != null)
+        {
+            return NumberDisplayUtils.formatWithRelevantDigits(
+                    position.totalPLInPeriodRefCcy,
+                    7,
                     SecurityUtils.DEFAULT_VIRTUAL_CASH_CURRENCY_DISPLAY);
         }
         else
@@ -94,4 +126,38 @@ public class PositionUtils
         }
     }
 
+    public static void setROIInPeriod(TextView textView, InPeriodPositionDTO inPeriodPositionDTO)
+    {
+
+        if (inPeriodPositionDTO != null)
+        {
+            Double roiInPeriod = inPeriodPositionDTO.getROIInPeriod();
+            if (roiInPeriod == null)
+            {
+                textView.setText(R.string.na);
+                textView.setTextColor(textView.getContext().getResources().getColor(R.color.black));
+            }
+            else
+            {
+                textView.setText(String.format("%+,.2f%%", roiInPeriod * 100.0));
+                textView.setTextColor(
+                        ColorUtils.getColorForPercentage((float) roiInPeriod.doubleValue() * PERCENT_STRETCHING_FOR_COLOR));
+            }
+        }
+    }
+
+    public static String getAdditionalInvested(Context context, InPeriodPositionDTO position)
+    {
+        if (position != null && position.sumInvestedAmountRefCcy != null)
+        {
+            return NumberDisplayUtils.formatWithRelevantDigits(
+                    position.sum_purchasesInPeriodRefCcy,
+                    2,
+                    SecurityUtils.DEFAULT_VIRTUAL_CASH_CURRENCY_DISPLAY);
+        }
+        else
+        {
+            return context.getString(R.string.na);
+        }
+    }
 }

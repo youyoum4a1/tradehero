@@ -111,10 +111,12 @@ public class PositionPartialBottomInPeriodClosedView extends PositionPartialBott
     {
         InPeriodPositionDTO inPeriodPositionDTO = (InPeriodPositionDTO) positionDTO;
 
-        inPeriodPL.setText("" + inPeriodPositionDTO.getTotalInPeriodPL());
-        inPeriodRoiValue.setText("" + inPeriodPositionDTO.getROISinceInception());
-        //inPeriodAdditionalInvested.setText(inPeriodPositionDTO.);
-        inPeriodValueAtStart.setText("" + inPeriodPositionDTO.getValueAtStart());
+        inPeriodPL.setText(PositionUtils.getInPeriodRealizedPL(getContext(), inPeriodPositionDTO));
+        PositionUtils.setROIInPeriod(inPeriodRoiValue, inPeriodPositionDTO);
+        inPeriodAdditionalInvested.setText(PositionUtils.getAdditionalInvested(getContext(), inPeriodPositionDTO));
+        inPeriodValueAtStart.setText(PositionUtils.getValueAtStart(getContext(), inPeriodPositionDTO));
+
+        inPeriodStartValueDate.setText(DateUtils.getDisplayableDate(getContext(), inPeriodPositionDTO.latestTradeUtc));
         //inPeriodStartValueDate.setText(String.format());
     }
 
