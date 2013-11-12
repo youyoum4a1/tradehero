@@ -9,6 +9,7 @@ import com.tradehero.th.adapters.ExpandableListItem;
 import com.tradehero.th.api.leaderboard.position.OwnedLeaderboardPositionId;
 import com.tradehero.th.api.position.InPeriodPositionDTO;
 import com.tradehero.th.widget.position.AbstractPositionView;
+import com.tradehero.th.widget.position.LockedPositionItem;
 import com.tradehero.th.widget.position.PositionSectionHeaderItemView;
 
 /** Created with IntelliJ IDEA. User: tho Date: 11/6/13 Time: 8:11 PM Copyright (c) TradeHero */
@@ -43,12 +44,12 @@ public class InPeriodPositionItemAdapter extends AbstractPositionItemAdapter<InP
         else
         {
             ExpandableListItem<OwnedLeaderboardPositionId> expandableWrapper = (ExpandableListItem<OwnedLeaderboardPositionId>) getItem(position);
-            //if (expandableWrapper.getModel().isLocked())
-            //{
-            //    LockedPositionItem cell = (LockedPositionItem)convertView;
-            //    cell.linkWith(expandableWrapper.getModel(), true);
-            //}
-            //else
+            if (expandableWrapper.getModel().isLocked())
+            {
+                LockedPositionItem cell = (LockedPositionItem)convertView;
+                cell.linkWith(expandableWrapper.getModel(), true);
+            }
+            else
             {
                 View expandingLayout = convertView.findViewById(R.id.expanding_layout);
                 if (expandingLayout != null)
