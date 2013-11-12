@@ -13,44 +13,49 @@ public abstract class RichSpanTextProcessor implements RichTextProcessor
 {
     @Override public SpannableStringBuilder process(SpannableStringBuilder source)
     {
-        Map<Object, Pair<Integer, Integer>> textMarkers = new HashMap<>();
+        Map<Object, Pair<Integer, Integer>> markers = new HashMap<>();
         Pattern pattern = getPattern();
-        Matcher match = pattern.matcher(source);
-        // TODO should use only one matcher to process the string, this is a hacky way
-        Matcher match2 = pattern.matcher(source.toString());
+        Matcher match = pattern.matcher(source.toString());
 
-        int currentPosition = 0;
-        int spanned = 0;
         int originalLength = source.length();
         StringBuffer sb = new StringBuffer();
-        while (match.find() && match2.find())
+
+        while (match.find())
         {
-            int realMatchingStart = match.start() - spanned;
-            int realMatchingEnd = match.end() - spanned;
+            int removedCharacters = originalLength - source.length();
 
-            match2.appendReplacement(sb, getExtractionPattern());
+            // source has changed after every replacement, update matching position
+            int correctedMatchingStart = match.start() - removedCharacters;
+            int correctedMatchingEnd = match.end() - removedCharacters;
 
-            String[] matchStrings = new String[match2.groupCount()+1];
-            for (int i=0; i<=match2.groupCount(); ++i)
-            {
-                matchStrings[i] = match2.group(i);
-            }
+            // extract text element
+            match.appendReplacement(sb, getExtractionPattern());
+            String textElement = sb.substring(correctedMatchingStart);
 
-            String replacement = sb.substring(realMatchingStart);
+            // update span text
+            source.replace(correctedMatchingStart, correctedMatchingEnd, textElement);
 
-            source.replace(realMatchingStart, realMatchingEnd, replacement);
-            currentPosition = realMatchingStart + replacement.length();
-
-            Object spanElement = getSpanElement(replacement, matchStrings);
-            textMarkers.put(spanElement, new Pair<>(currentPosition - replacement.length(), currentPosition));
-            spanned = originalLength - source.length();
+            // mark new span element
+            Object spanElement = getSpanElement(textElement, match);
+            markers.put(spanElement, new Pair<>(correctedMatchingStart, correctedMatchingStart + textElement.length()));
         }
 
-        for (Map.Entry<Object, Pair<Integer, Integer>> marker : textMarkers.entrySet())
+        for (Map.Entry<Object, Pair<Integer, Integer>> marker : markers.entrySet())
         {
             source.setSpan(marker.getKey(), marker.getValue().first, marker.getValue().second, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
+
         return source;
+    }
+
+    private Object getSpanElement(String textElement, Matcher match)
+    {
+        String[] matchStrings = new String[match.groupCount() + 1];
+        for (int i = 0; i <= match.groupCount(); ++i)
+        {
+            matchStrings[i] = match.group(i);
+        }
+        return getSpanElement(textElement, matchStrings);
     }
 
     @Override public abstract String getExtractionPattern();
