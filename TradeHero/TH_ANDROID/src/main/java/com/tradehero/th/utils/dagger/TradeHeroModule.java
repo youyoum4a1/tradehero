@@ -19,6 +19,8 @@ import com.tradehero.th.fragments.billing.StoreScreenFragment;
 import com.tradehero.th.fragments.billing.management.FollowerManagerFragment;
 import com.tradehero.th.fragments.billing.management.FollowerPayoutManagerFragment;
 import com.tradehero.th.fragments.billing.management.HeroManagerFragment;
+import com.tradehero.th.network.service.AlertPlanService;
+import com.tradehero.th.network.service.AlertService;
 import com.tradehero.th.network.service.FollowerService;
 import com.tradehero.th.persistence.portfolio.OwnedPortfolioFetchAssistant;
 import com.tradehero.th.persistence.user.UserProfileFetchAssistant;
@@ -289,6 +291,16 @@ public class TradeHeroModule
     @Provides @Singleton FollowerService provideFollowerService()
     {
         return engine.createService(FollowerService.class);
+    }
+
+     @Provides @Singleton AlertService provideAlertService()
+    {
+        return engine.createService(AlertService.class);
+    }
+
+     @Provides @Singleton AlertPlanService provideAlertPlanService()
+    {
+        return engine.createService(AlertPlanService.class);
     }
 
     @Provides @Singleton YahooNewsService provideYahooNewsService()
