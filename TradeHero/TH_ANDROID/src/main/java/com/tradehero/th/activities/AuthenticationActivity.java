@@ -288,6 +288,7 @@ public class AuthenticationActivity extends SherlockFragmentActivity
                 if (user != null)
                 {
                     ActivityHelper.launchDashboard(AuthenticationActivity.this);
+                    finish();
                 }
                 else
                 {

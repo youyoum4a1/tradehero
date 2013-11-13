@@ -26,11 +26,12 @@ public abstract class AbstractPositionItemAdapter<T extends PositionDTO> extends
     public static final String TAG = AbstractPositionItemAdapter.class.getName();
 
     private List<T> receivedPositions;
-    private List<ExpandableListItem<OwnedPositionId>> openPositions; // If nothing, it will show the positionNothingId layout
-    private List<ExpandableListItem<OwnedPositionId>> closedPositions;
+    private List<ExpandableListItem> openPositions; // If nothing, it will show the positionNothingId layout
+    private List<ExpandableListItem> closedPositions;
 
     protected final Context context;
     protected final LayoutInflater inflater;
+
     private final int headerLayoutId;
     private final int openPositionLayoutId;
     private final int lockedPositionLayoutId;
@@ -57,53 +58,6 @@ public abstract class AbstractPositionItemAdapter<T extends PositionDTO> extends
         this.positionNothingId = positionNothingId;
 
         buildViewTypeMap();
-        this.internalListener = new PositionListener()
-        {
-            @Override public void onTradeHistoryClicked(OwnedPositionId clickedOwnedPositionId)
-            {
-                PositionListener listener = cellListener.get();
-                if (listener != null)
-                {
-                    listener.onTradeHistoryClicked(clickedOwnedPositionId);
-                }
-            }
-
-            @Override public void onBuyClicked(OwnedPositionId clickedOwnedPositionId)
-            {
-                PositionListener listener = cellListener.get();
-                if (listener != null)
-                {
-                    listener.onBuyClicked(clickedOwnedPositionId);
-                }
-            }
-
-            @Override public void onSellClicked(OwnedPositionId clickedOwnedPositionId)
-            {
-                PositionListener listener = cellListener.get();
-                if (listener != null)
-                {
-                    listener.onSellClicked(clickedOwnedPositionId);
-                }
-            }
-
-            @Override public void onAddAlertClicked(OwnedPositionId clickedOwnedPositionId)
-            {
-                PositionListener listener = cellListener.get();
-                if (listener != null)
-                {
-                    listener.onAddAlertClicked(clickedOwnedPositionId);
-                }
-            }
-
-            @Override public void onStockInfoClicked(OwnedPositionId clickedOwnedPositionId)
-            {
-                PositionListener listener = cellListener.get();
-                if (listener != null)
-                {
-                    listener.onStockInfoClicked(clickedOwnedPositionId);
-                }
-            }
-        };
     }
 
     private void buildViewTypeMap()
@@ -272,7 +226,7 @@ public abstract class AbstractPositionItemAdapter<T extends PositionDTO> extends
     {
         if (convertView == null)
         {
-            int layoutToInflate = viewTypeToLayoutId.get(getItemViewType(position));
+            int layoutToInflate = getLayoutForPosition(position);
             convertView = inflater.inflate(layoutToInflate, parent, false);
         }
 
@@ -311,12 +265,10 @@ public abstract class AbstractPositionItemAdapter<T extends PositionDTO> extends
                     }
                 }
 
-                AbstractPositionView cell = (AbstractPositionView)convertView;
-                cell.linkWith(expandableWrapper.getModel(), true);
-                cell.setListener(internalListener);
+                bindCell(convertView, expandableWrapper.getModel());
             }
         }
-        latestView = new WeakReference<>(convertView);
+        setLatestView(convertView);
         return convertView;
     }
 
@@ -355,21 +307,94 @@ public abstract class AbstractPositionItemAdapter<T extends PositionDTO> extends
 
             for (T positionDTO: positions)
             {
-                ExpandableListItem<OwnedPositionId> item = new ExpandableListItem<>(positionDTO.getOwnedPositionId(portfolioId.key));
-                if (positionDTO.isOpen() == null)
-                {
-                    // TODO decide what to do
-                }
-                else if (positionDTO.isOpen())
-                {
-                    openPositions.add(item);
-                }
-                else
-                {
-                    closedPositions.add(item);
-                }
+                setPosition(positionDTO);
             }
         }
+    }
+
+    protected abstract void setPosition(T positionDTO);
+
+
+    private void bindCell(View convertView, OwnedPositionId model)
+    {
+        AbstractPositionView cell = (AbstractPositionView)convertView;
+        cell.linkWith(model, true);
+        cell.setListener(getInternalListener());
+    }
+
+    protected PositionListener getInternalListener()
+    {
+        if (internalListener == null)
+        {
+            internalListener = new PositionListener()
+            {
+                @Override public void onTradeHistoryClicked(OwnedPositionId clickedOwnedPositionId)
+                {
+                    PositionListener listener = cellListener.get();
+                    if (listener != null)
+                    {
+                        listener.onTradeHistoryClicked(clickedOwnedPositionId);
+                    }
+                }
+
+                @Override public void onBuyClicked(OwnedPositionId clickedOwnedPositionId)
+                {
+                    PositionListener listener = cellListener.get();
+                    if (listener != null)
+                    {
+                        listener.onBuyClicked(clickedOwnedPositionId);
+                    }
+                }
+
+                @Override public void onSellClicked(OwnedPositionId clickedOwnedPositionId)
+                {
+                    PositionListener listener = cellListener.get();
+                    if (listener != null)
+                    {
+                        listener.onSellClicked(clickedOwnedPositionId);
+                    }
+                }
+
+                @Override public void onAddAlertClicked(OwnedPositionId clickedOwnedPositionId)
+                {
+                    PositionListener listener = cellListener.get();
+                    if (listener != null)
+                    {
+                        listener.onAddAlertClicked(clickedOwnedPositionId);
+                    }
+                }
+
+                @Override public void onStockInfoClicked(OwnedPositionId clickedOwnedPositionId)
+                {
+                    PositionListener listener = cellListener.get();
+                    if (listener != null)
+                    {
+                        listener.onStockInfoClicked(clickedOwnedPositionId);
+                    }
+                }
+            };
+        }
+        return internalListener;
+    }
+
+    protected void setLatestView(View view)
+    {
+        latestView = new WeakReference<>(view);
+    }
+
+    protected void addOpenPosition(ExpandableListItem item)
+    {
+        openPositions.add(item);
+    }
+
+    protected void addClosedPosition(ExpandableListItem item)
+    {
+        closedPositions.add(item);
+    }
+
+    protected int getLayoutForPosition(int position)
+    {
+        return viewTypeToLayoutId.get(getItemViewType(position));
     }
 
     //<editor-fold desc="ExpandableListReporter">

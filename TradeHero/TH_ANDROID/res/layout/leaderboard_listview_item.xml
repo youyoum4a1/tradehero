@@ -32,7 +32,7 @@
         android:layout_height="@dimen/leaderboard_user_view_profile_width"
         android:layout_width="@dimen/leaderboard_user_view_profile_width"
         android:contentDescription="@null"
-        android:src="@drawable/user_profile_oval"
+        android:src="@null"
         android:layout_toRightOf="@id/leaderboard_user_item_position"
         android:layout_centerVertical="true"
         android:layout_marginRight="5dp"

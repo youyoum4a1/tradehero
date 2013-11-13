@@ -13,10 +13,13 @@ import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
+import com.tradehero.th.api.leaderboard.position.OwnedLeaderboardPositionId;
+import com.tradehero.th.api.position.InPeriodPositionDTO;
 import com.tradehero.th.api.position.OwnedPositionId;
 import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
+import com.tradehero.th.persistence.leaderboard.position.LeaderboardPositionCache;
 import com.tradehero.th.persistence.position.PositionCache;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.persistence.security.SecurityIdCache;
@@ -35,6 +38,11 @@ public class PositionPartialTopView extends LinearLayout
 
 
     @Inject protected Context context;
+    @Inject protected Lazy<PositionCache> filedPositionCache;
+    @Inject protected Lazy<LeaderboardPositionCache> leaderboardPositionCache;
+    @Inject protected Lazy<Picasso> picasso;
+    @Inject protected Lazy<SecurityIdCache> securityIdCache;
+    @Inject protected Lazy<SecurityCompactCache> securityCompactCache;
 
     private ImageView stockLogo;
     private TextView stockSymbol;
@@ -44,21 +52,16 @@ public class PositionPartialTopView extends LinearLayout
     private ImageView marketClose;
     private TextView positionPercent;
     private TextView positionLastAmount;
-
     private ImageButton tradeHistoryButton;
 
     protected SecurityId securityId;
     protected SecurityCompactDTO securityCompactDTO;
-    @Inject Lazy<SecurityIdCache> securityIdCache;
-    @Inject Lazy<SecurityCompactCache> securityCompactCache;
-    private SecurityCompactCache.Listener<SecurityId, SecurityCompactDTO> securityCompactCacheListener;
-    private DTOCache.GetOrFetchTask<SecurityCompactDTO> securityCompactCacheFetchTask;
-
     protected OwnedPositionId ownedPositionId;
     protected PositionDTO positionDTO;
-    @Inject Lazy<PositionCache> filedPositionCache;
 
-    @Inject protected Lazy<Picasso> picasso;
+    private SecurityCompactCache.Listener<SecurityId, SecurityCompactDTO> securityCompactCacheListener;
+    private DTOCache.GetOrFetchTask<SecurityCompactDTO> securityCompactCacheFetchTask;
+    private OwnedLeaderboardPositionId ownedLeaderboardPositionId;
 
     //<editor-fold desc="Constructors">
     public PositionPartialTopView(Context context)
@@ -118,6 +121,18 @@ public class PositionPartialTopView extends LinearLayout
         this.ownedPositionId = ownedPositionId;
 
         linkWith(filedPositionCache.get().get(this.ownedPositionId), andDisplay);
+
+        if (andDisplay)
+        {
+            //TODO
+        }
+    }
+
+    public void linkWith(OwnedLeaderboardPositionId ownedLeaderboardPositionId, boolean andDisplay)
+    {
+        this.ownedLeaderboardPositionId = ownedLeaderboardPositionId;
+
+        linkWith(leaderboardPositionCache.get().get(ownedLeaderboardPositionId), andDisplay);
 
         if (andDisplay)
         {
@@ -309,7 +324,14 @@ public class PositionPartialTopView extends LinearLayout
     {
         if (positionPercent != null)
         {
-            PositionUtils.setROISinceInception(positionPercent, positionDTO);
+            if (positionDTO instanceof InPeriodPositionDTO)
+            {
+                PositionUtils.setROIInPeriod(positionPercent, (InPeriodPositionDTO) positionDTO);
+            }
+            else
+            {
+                PositionUtils.setROISinceInception(positionPercent, positionDTO);
+            }
         }
     }
 
@@ -360,4 +382,5 @@ public class PositionPartialTopView extends LinearLayout
     {
         return tradeHistoryButton;
     }
+
 }

@@ -53,4 +53,48 @@ public class InPeriodPositionDTO extends PositionDTO
 
         return ownedPositionIds;
     }
+
+    public OwnedLeaderboardPositionId getLeaderboardOwnedPositionId()
+    {
+        return new OwnedLeaderboardPositionId(userId, id);
+    }
+
+    public double getTotalInPeriodPL()
+    {
+        return totalPLInPeriodRefCcy == null ? 0 : totalPLInPeriodRefCcy;
+    }
+
+    public double getValueAtStart()
+    {
+        return marketValueStartPeriodRefCcy == null ? 0 : marketValueStartPeriodRefCcy;
+    }
+
+
+    public Double getROIInPeriod()
+    {
+        if (marketValueEndPeriodRefCcy == null || marketValueStartPeriodRefCcy == null)
+        {
+            return null;
+        }
+
+        double plInPeriod = getInPeriodPL();
+        double investedInPeriod = getInvestedInPeriod();
+
+        if (investedInPeriod == 0)
+        {
+            return null;
+        }
+
+        return plInPeriod / investedInPeriod;
+    }
+
+    private double getInvestedInPeriod()
+    {
+        return marketValueStartPeriodRefCcy + sum_purchasesInPeriodRefCcy;
+    }
+
+    private double getInPeriodPL()
+    {
+        return marketValueEndPeriodRefCcy + sum_salesInPeriodRefCcy - getInvestedInPeriod();
+    }
 }

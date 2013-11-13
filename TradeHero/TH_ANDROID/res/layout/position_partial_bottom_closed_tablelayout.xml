@@ -5,94 +5,94 @@
     android:id="@+id/position_value_table"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:gravity="left">
+    android:gravity="left"
+    >
+  <TableRow
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      >
 
-    <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            >
+    <TextView
+        style="@style/TH.SmallTitle"
+        android:gravity="right"
+        android:text="@string/position_expanded_close_pl_header"
+        />
 
-        <TextView
-                style="@style/TH.SmallTitle"
-                android:gravity="right"
-                android:text="@string/position_expanded_close_pl_header"
-                />
+    <TextView
+        android:id="@+id/position_realized_pl_value"
+        style="@style/TH.SmallValue"
+        />
 
-        <TextView
-                android:id="@+id/position_realized_pl_value"
-                style="@style/TH.SmallValue"
-                />
+  </TableRow>
 
-    </TableRow>
+  <TableRow
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      >
 
-    <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            >
+    <TextView
+        style="@style/TH.SmallTitle"
+        android:gravity="right"
+        android:text="@string/position_total_invested_header"
+        />
 
-        <TextView
-                style="@style/TH.SmallTitle"
-                android:gravity="right"
-                android:text="@string/position_total_invested_header"
-                />
+    <TextView
+        android:id="@+id/total_invested_value"
+        style="@style/TH.SmallValue"
+        />
 
-        <TextView
-                android:id="@+id/total_invested_value"
-                style="@style/TH.SmallValue"
-                />
+  </TableRow>
 
-    </TableRow>
+  <TableRow
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      >
 
-    <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            >
+    <TextView
+        style="@style/TH.SmallTitle"
+        android:gravity="right"
+        android:text="@string/position_expanded_close_opened_date_header"
+        />
 
-        <TextView
-                style="@style/TH.SmallTitle"
-                android:gravity="right"
-                android:text="@string/position_expanded_close_opened_date_header"
-                />
+    <TextView
+        android:id="@+id/opened_date"
+        style="@style/TH.SmallValue"
+        />
 
-        <TextView
-                android:id="@+id/opened_date"
-                style="@style/TH.SmallValue"
-                />
+  </TableRow>
 
-    </TableRow>
+  <TableRow
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      >
 
-    <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            >
+    <TextView
+        style="@style/TH.SmallTitle"
+        android:gravity="right"
+        android:text="@string/position_expanded_close_closed_date_header"
+        />
 
-        <TextView
-                style="@style/TH.SmallTitle"
-                android:gravity="right"
-                android:text="@string/position_expanded_close_closed_date_header"
-                />
+    <TextView
+        android:id="@+id/closed_date"
+        style="@style/TH.SmallValue"
+        />
 
-        <TextView
-                android:id="@+id/closed_date"
-                style="@style/TH.SmallValue"
-                />
+  </TableRow>
 
-    </TableRow>
+  <TableRow
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      >
 
-    <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            >
+    <TextView
+        style="@style/TH.SmallTitle"
+        android:gravity="right"
+        android:text="@string/position_expanded_close_period_header"
+        />
 
-        <TextView
-                style="@style/TH.SmallTitle"
-                android:gravity="right"
-                android:text="@string/position_expanded_close_period_header"
-                />
-
-        <TextView
-                android:id="@+id/period_value"
-                style="@style/TH.SmallValue"
-                />
-    </TableRow>
+    <TextView
+        android:id="@+id/period_value"
+        style="@style/TH.SmallValue"
+        />
+  </TableRow>
 </TableLayout>

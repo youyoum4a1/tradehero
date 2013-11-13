@@ -304,11 +304,16 @@ public class PositionListFragment extends DashboardFragment
 
     public void display()
     {
+        displayHeaderView();
+        displayActionBarTitle();
+    }
+
+    private void displayHeaderView()
+    {
         if (this.portfolioHeaderView != null)
         {
             this.portfolioHeaderView.bindOwnedPortfolioId(this.ownedPortfolioId);
         }
-        displayActionBarTitle();
     }
 
     public void displayActionBarTitle()

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.th.R;
 import com.tradehero.th.api.position.OwnedPositionId;
 import com.tradehero.th.api.position.PositionDTO;
@@ -23,15 +24,20 @@ public class PositionPartialBottomClosedView extends RelativeLayout
     public static final String TAG = PositionPartialBottomClosedView.class.getSimpleName();
 
     private OwnedPositionId ownedPositionId;
-    private PositionDTO positionDTO;
 
-    @Inject Lazy<PositionCache> positionCache;
+    protected PositionDTO positionDTO;
+
+    @Inject protected Lazy<PositionCache> positionCache;
+    @Inject protected Lazy<PositionCache> leaderboardPositionCache;
 
     private TextView realisedPLValue;
     private TextView totalInvestedValue;
     private TextView openedDate;
     private TextView closedDate;
     private TextView periodHeld;
+
+    private DTOCache.Listener<OwnedPositionId, PositionDTO> positionCacheListener;
+    private DTOCache.GetOrFetchTask<PositionDTO> fetchPositionTask;
 
     //<editor-fold desc="Constructors">
     public PositionPartialBottomClosedView(Context context)
@@ -59,6 +65,7 @@ public class PositionPartialBottomClosedView extends RelativeLayout
 
     protected void initViews()
     {
+        // overall
         realisedPLValue = (TextView) findViewById(R.id.position_realized_pl_value);
         totalInvestedValue = (TextView) findViewById(R.id.total_invested_value);
         openedDate = (TextView) findViewById(R.id.opened_date);
@@ -75,7 +82,29 @@ public class PositionPartialBottomClosedView extends RelativeLayout
     {
         this.ownedPositionId = ownedPositionId;
 
-        linkWith(positionCache.get().get(this.ownedPositionId), andDisplay);
+        if (positionCacheListener == null)
+        {
+            positionCacheListener = createPositionCacheListener();
+        }
+
+        fetchPositionTask = positionCache.get().getOrFetch(this.ownedPositionId, false, positionCacheListener);
+        fetchPositionTask.execute();
+    }
+
+    private DTOCache.Listener<OwnedPositionId, PositionDTO> createPositionCacheListener()
+    {
+        return new DTOCache.Listener<OwnedPositionId, PositionDTO>()
+        {
+            @Override public void onDTOReceived(OwnedPositionId key, PositionDTO value)
+            {
+                linkWith(value, true);
+            }
+
+            @Override public void onErrorThrown(OwnedPositionId key, Throwable error)
+            {
+                //To change body of implemented methods use File | Settings | File Templates.
+            }
+        };
     }
 
     public void linkWith(PositionDTO positionDTO, boolean andDisplay)
@@ -114,7 +143,7 @@ public class PositionPartialBottomClosedView extends RelativeLayout
 
     private void displayOpenedDate()
     {
-        if (openedDate != null)
+        if (openedDate != null && positionDTO.earliestTradeUtc != null)
         {
             openedDate.setText(DateUtils.getDisplayableDate(getContext(), positionDTO.earliestTradeUtc));
         }

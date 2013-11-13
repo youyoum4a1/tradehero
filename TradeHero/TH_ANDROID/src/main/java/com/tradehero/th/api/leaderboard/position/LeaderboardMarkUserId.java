@@ -9,7 +9,7 @@ import com.tradehero.th.api.leaderboard.LeaderboardKey;
  */
 public class LeaderboardMarkUserId extends AbstractIntegerDTOKey
 {
-    private static final String BUNDLE_KEY = LeaderboardMarkUserId.class.getName() + ".key";
+    public static final String BUNDLE_KEY = LeaderboardMarkUserId.class.getName() + ".key";
 
     public LeaderboardMarkUserId(Integer key)
     {

@@ -13,6 +13,7 @@ import com.tradehero.common.graphics.RoundedShapeTransformation;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.leaderboard.LeaderboardUserRankDTO;
+import com.tradehero.th.api.leaderboard.position.LeaderboardMarkUserId;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.api.users.UserBaseDTO;
@@ -35,7 +36,7 @@ import javax.inject.Named;
 public class LeaderboardUserRankItemView extends RelativeLayout
         implements DTOView<LeaderboardListAdapter.ExpandableLeaderboardUserRankItemWrapper>,View.OnClickListener
 {
-    @Inject protected Picasso picasso;
+    @Inject protected Lazy<Picasso> picasso;
     @Inject protected Lazy<PositionCache> positionCache;
     @Inject @Named("CurrentUser") protected UserBaseDTO currentUserBase;
 
@@ -99,6 +100,14 @@ public class LeaderboardUserRankItemView extends RelativeLayout
         lbmuPosition = (TextView) findViewById(R.id.leaderboard_user_item_position);
         lbmuDisplayName = (TextView) findViewById(R.id.leaderboard_user_item_display_name);
         lbmuProfilePicture = (ImageView) findViewById(R.id.leaderboard_user_item_profile_picture);
+
+        if (lbmuProfilePicture != null)
+        {
+            picasso.get().load(R.drawable.user_profile_oval)
+                    .transform(new RoundedShapeTransformation())
+                    .into(lbmuProfilePicture);
+        }
+
         lbmuHeroQuotient = (TextView) findViewById(R.id.leaderboard_user_item_hq);
         lbmuPositionInfo = (ImageView) findViewById(R.id.leaderboard_user_item_info);
         if (lbmuPositionInfo != null)
@@ -174,7 +183,7 @@ public class LeaderboardUserRankItemView extends RelativeLayout
 
         if (dto.picture != null)
         {
-            picasso.load(dto.picture)
+            picasso.get().load(dto.picture)
                     .transform(new RoundedShapeTransformation())
                     .into(lbmuProfilePicture);
         }
@@ -258,11 +267,14 @@ public class LeaderboardUserRankItemView extends RelativeLayout
 
     private void handleOpenPositionListClicked()
     {
-        int userId = leaderboardItem.getModel().getId();
+        LeaderboardUserRankDTO model = leaderboardItem.getModel();
+        int userId = model.getId();
         int portfolioId = leaderboardItem.getModel().portfolioId;
         OwnedPortfolioId ownedPortfolioId = new OwnedPortfolioId(userId, portfolioId);
+        Bundle bundle = ownedPortfolioId.getArgs();
+        bundle.putLong(LeaderboardMarkUserId.BUNDLE_KEY, model.lbmuId);
 
-        navigator.pushFragment(InPeriodPositionListFragment.class, ownedPortfolioId.getArgs(), true);
+        navigator.pushFragment(InPeriodPositionListFragment.class, bundle, true);
     }
 
     private void handleOpenProfileButtonClicked()

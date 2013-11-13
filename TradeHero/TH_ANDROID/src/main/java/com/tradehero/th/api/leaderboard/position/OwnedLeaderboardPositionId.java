@@ -109,4 +109,9 @@ public class OwnedLeaderboardPositionId implements Comparable, DTOKey, DTO
     {
         return String.format("[leaderboardMarkUserId=%d; leaderboardMarkUserPositionId=%d]", leaderboardMarkUserId, leaderboardMarkUserPositionId);
     }
+
+    public boolean isLocked()
+    {
+        return leaderboardMarkUserPositionId < 0;
+    }
 }

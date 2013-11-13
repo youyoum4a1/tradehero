@@ -214,5 +214,7 @@
   <string name="leaderboard_number_of_trade">(%s trade)</string>
   <string name="leaderboard_number_of_trades_plural">(%s trades)</string>
   <string name="period">Period</string>
+  <string name="in_period">In Period</string>
+  <string name="overall">Overall</string>
   <item name="done" type="id">Done</item>
 </resources>

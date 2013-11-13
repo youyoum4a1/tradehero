@@ -1,86 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<merge xmlns:android="http://schemas.android.com/apk/res/android">
-    <TextView
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:textStyle="bold"
-    android:maxLines="1"
-    android:text="In Period"
-            />
-    <TableLayout
+<TableLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="left"
-    android:stretchColumns="1">
-    <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            >
-
-        <TextView
-                style="@style/TH.SmallTitle"
-                android:gravity="right"
-                android:text="@string/position_in_period_pl"
-                />
-
-        <TextView
-                android:id="@+id/in_period_pl_value"
-                style="@style/TH.SmallValue"
-                android:text="US $13,024"
-                />
-
-        <TextView
-                android:id="@+id/in_period_roi_value"
-                style="@style/TH.SmallValue"
-                android:text="+3.14%"
-                />
-
-    </TableRow>
-
-    <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            >
-
-        <TextView
-                style="@style/TH.SmallTitle"
-                android:gravity="right"
-                android:text="@string/position_in_period_addtitional_invested"
-                />
-
-        <TextView
-                android:id="@+id/in_period_additional_invested"
-                style="@style/TH.SmallValue"
-                />
-    </TableRow>
-    <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            >
-
-        <TextView
-                style="@style/TH.SmallTitle"
-                android:gravity="right"
-                android:text="@string/position_in_period_start_value"
-                />
-        <TextView
-                android:id="@+id/in_period_start_value"
-                style="@style/TH.SmallValue"
-                />
-        <TextView
-                android:id="@+id/in_period_start_value_date"
-                style="@style/TH.SmallTitle"
-                android:text="as of 26 Jul"
-                />
-    </TableRow>
-    </TableLayout>
+    android:stretchColumns="1"
+    >
+  <TableRow
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      >
 
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textStyle="bold"
-        android:maxLines="1"
-        android:text="Overall"
-    />
-</merge>
+        style="@style/TH.SmallTitle"
+        android:gravity="right"
+        android:text="@string/position_in_period_pl"
+        />
+
+    <TextView
+        android:id="@+id/in_period_pl_value"
+        style="@style/TH.SmallValue"
+        android:text="@null"
+        />
+
+    <TextView
+        android:id="@+id/in_period_roi_value"
+        style="@style/TH.SmallValue"
+        android:text="@null"
+        />
+
+  </TableRow>
+
+  <TableRow
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      >
+
+    <TextView
+        style="@style/TH.SmallTitle"
+        android:gravity="right"
+        android:text="@string/position_in_period_addtitional_invested"
+        />
+
+    <TextView
+        android:id="@+id/in_period_additional_invested"
+        style="@style/TH.SmallValue"
+        />
+  </TableRow>
+  <TableRow
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      >
+
+    <TextView
+        style="@style/TH.SmallTitle"
+        android:gravity="right"
+        android:text="@string/position_in_period_start_value"
+        />
+    <TextView
+        android:id="@+id/in_period_start_value"
+        style="@style/TH.SmallValue"
+        />
+    <TextView
+        android:id="@+id/in_period_start_value_date"
+        style="@style/TH.SmallTitle"
+        android:text="as of 26 Jul"
+        />
+  </TableRow>
+</TableLayout>
