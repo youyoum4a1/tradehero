@@ -11,6 +11,7 @@ import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.common.persistence.DTOCache;
+import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.DashboardActivity;
@@ -256,8 +257,15 @@ public class FollowerManagerFragment extends BasePurchaseManagerFragment
         if (followerListAdapter != null && followerListAdapter.getItemViewType(position) == FollowerAndPayoutListItemAdapter.VIEW_TYPE_ITEM_FOLLOWER)
         {
             UserFollowerDTO followerDTO = (UserFollowerDTO) followerListAdapter.getItem(position);
-            FollowerId followerId = new FollowerId(userBaseKey.key, followerDTO.id);
-            ((DashboardActivity) getActivity()).getDashboardNavigator().pushFragment(FollowerPayoutManagerFragment.class, followerId.getArgs());
+            if (followerDTO != null)
+            {
+                FollowerId followerId = new FollowerId(userBaseKey.key, followerDTO.id);
+                ((DashboardActivity) getActivity()).getDashboardNavigator().pushFragment(FollowerPayoutManagerFragment.class, followerId.getArgs());
+            }
+            else
+            {
+                THLog.d(TAG, "handleFollowerItemClicked: FollowerDTO was null");
+            }
         }
         else
         {

@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.DTOAdapter;
 import com.tradehero.th.api.portfolio.DisplayablePortfolioDTO;
-import com.tradehero.th.widget.portfolio.PortfolioListHeaderView;
+import com.tradehero.th.widget.list.BaseListHeaderView;
 import com.tradehero.th.widget.portfolio.PortfolioListItemView;
 import java.util.Iterator;
 import java.util.List;
@@ -162,7 +162,7 @@ public class PortfolioListItemAdapter extends DTOAdapter<DisplayablePortfolioDTO
         else if (isOtherPortfolioHeader(position))
         {
             view = inflater.inflate(otherHeaderResId, parent, false);
-            ((PortfolioListHeaderView) view).setHeaderTextContent(context.getString(R.string.portfolio_recently_viewed));
+            ((BaseListHeaderView) view).setHeaderTextContent(context.getString(R.string.portfolio_recently_viewed));
         }
         else
         {

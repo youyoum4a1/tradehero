@@ -7,10 +7,7 @@ import android.view.ViewGroup;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.DTOAdapter;
 import com.tradehero.th.api.social.FollowerTransactionDTO;
-import com.tradehero.th.api.social.UserFollowerDTO;
-import com.tradehero.th.widget.social.FollowerListHeaderView;
-import com.tradehero.th.widget.social.FollowerListItemView;
-import com.tradehero.th.widget.social.FollowerPaymentListHeaderView;
+import com.tradehero.th.widget.list.BaseListHeaderView;
 import com.tradehero.th.widget.social.FollowerPaymentListItemView;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/14/13 Time: 4:12 PM To change this template use File | Settings | File Templates. */
@@ -71,11 +68,11 @@ public class FollowerPaymentListItemAdapter extends DTOAdapter<FollowerTransacti
     {
         if (getItemViewType(position) == VIEW_TYPE_HEADER)
         {
-            if (!(convertView instanceof FollowerPaymentListHeaderView))
+            if (!(convertView instanceof BaseListHeaderView))
             {
                 convertView = inflater.inflate(headerResId, parent, false);
             }
-            ((FollowerPaymentListHeaderView) convertView).setHeaderTextContent(context.getString(R.string.manage_follower_payment_transaction_list_header));
+            ((BaseListHeaderView) convertView).setHeaderTextContent(context.getString(R.string.manage_follower_payment_transaction_list_header));
         }
         else
         {
