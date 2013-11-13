@@ -49,7 +49,7 @@ public class JacksonConverterTest
 
     @Test public void shouldCreatePortfolioDTO1() throws Exception
     {
-        File jsonFile = getLocalFile("PortfolioDTOBody1.js");
+        File jsonFile = getLocalFile("PortfolioDTOBody1.json");
         TypedInput typedInputFile = new TypedFile("application/json; charset=utf-8", jsonFile);
         Object converted = jacksonConverter.fromBody(typedInputFile, PortfolioDTO.class);
         assertThat(converted, instanceOf(PortfolioDTO.class));

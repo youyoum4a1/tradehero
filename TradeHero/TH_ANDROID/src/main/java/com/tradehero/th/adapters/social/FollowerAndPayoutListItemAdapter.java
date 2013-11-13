@@ -9,7 +9,7 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.social.FollowerSummaryDTO;
 import com.tradehero.th.api.social.HeroPayoutDTO;
 import com.tradehero.th.api.social.UserFollowerDTO;
-import com.tradehero.th.widget.social.FollowerListHeaderView;
+import com.tradehero.th.widget.list.BaseListHeaderView;
 import com.tradehero.th.widget.social.FollowerListItemView;
 import com.tradehero.th.widget.social.HeroPayoutListItemView;
 
@@ -161,14 +161,14 @@ public class FollowerAndPayoutListItemAdapter extends BaseAdapter
                 break;
 
             case VIEW_TYPE_HEADER:
-                if (!(convertView instanceof FollowerListHeaderView))
+                if (!(convertView instanceof BaseListHeaderView))
                 {
                     convertView = inflater.inflate(headerResId, parent, false);
                 }
 
                 int stringId = position == 0 ? R.string.manage_followers_payout_list_header : R.string.manage_followers_list_header;
                 int count = position == 0 ? getPayoutRealCount() : getFollowerRealCount();
-                ((FollowerListHeaderView) convertView).setHeaderTextContent(String.format(context.getString(stringId), count));
+                ((BaseListHeaderView) convertView).setHeaderTextContent(String.format(context.getString(stringId), count));
                 break;
 
             case VIEW_TYPE_ITEM_FOLLOWER:
