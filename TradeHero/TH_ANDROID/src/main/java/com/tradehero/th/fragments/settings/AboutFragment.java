@@ -15,13 +15,7 @@ import com.tradehero.th.fragments.WebViewFragment;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import android.widget.Button;
 
-/**
- * Created with IntelliJ IDEA.
- * User: nia
- * Date: 18/10/13
- * Time: 5:21 PM
- * To change this template use File | Settings | File Templates.
- */
+/** Created with IntelliJ IDEA. User: nia Date: 18/10/13 Time: 5:21 PM To change this template use File | Settings | File Templates. */
 public class AboutFragment extends DashboardFragment
 {
     public static final String TAG = AboutFragment.class.getSimpleName();
@@ -32,7 +26,7 @@ public class AboutFragment extends DashboardFragment
     //<editor-fold desc="ActionBar">
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
-        getSherlockActivity().getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME);
+        getSherlockActivity().getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_HOME_AS_UP);
         getSherlockActivity().getSupportActionBar().setTitle(getResources().getString(R.string.settings_about_header));
         super.onCreateOptionsMenu(menu, inflater);
     }
@@ -44,25 +38,29 @@ public class AboutFragment extends DashboardFragment
         view = inflater.inflate(R.layout.fragment_about, container, false);
 
         privacyButton = (Button) view.findViewById(R.id.settings_privacy);
-        privacyButton.setOnClickListener(new View.OnClickListener() {
+        privacyButton.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View view) {
+            public void onClick(View view)
+            {
                 String url = getResources().getString(R.string.th_privacy_terms_url);
                 Navigator navigator = ((NavigatorActivity) getActivity()).getNavigator();
                 Bundle bundle = new Bundle();
-                bundle.putString(News.URL, url);
+                bundle.putString(WebViewFragment.BUNDLE_KEY_URL, url);
                 navigator.pushFragment(WebViewFragment.class, bundle);
             }
         });
 
         termsButton = (Button) view.findViewById(R.id.settings_terms);
-        termsButton.setOnClickListener(new View.OnClickListener() {
+        termsButton.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View view) {
+            public void onClick(View view)
+            {
                 String url = getResources().getString(R.string.th_terms_url);
                 Navigator navigator = ((NavigatorActivity) getActivity()).getNavigator();
                 Bundle bundle = new Bundle();
-                bundle.putString(News.URL, url);
+                bundle.putString(WebViewFragment.BUNDLE_KEY_URL, url);
                 navigator.pushFragment(WebViewFragment.class, bundle);
             }
         });

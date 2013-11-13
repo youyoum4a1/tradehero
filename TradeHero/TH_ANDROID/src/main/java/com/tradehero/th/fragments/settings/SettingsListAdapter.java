@@ -24,14 +24,9 @@ import com.tradehero.th.misc.exception.THException;
 import java.util.List;
 import java.util.ArrayList;
 
-/**
- * Created with IntelliJ IDEA.
- * User: nia
- * Date: 17/10/13
- * Time: 4:06 PM
- * To change this template use File | Settings | File Templates.
- */
-public class SettingsListAdapter extends BaseAdapter {
+/** Created with IntelliJ IDEA. User: nia Date: 17/10/13 Time: 4:06 PM To change this template use File | Settings | File Templates. */
+public class SettingsListAdapter extends BaseAdapter
+{
     public static final String TAG = SettingsListAdapter.class.getSimpleName();
 
     protected final LayoutInflater inflater;
@@ -41,11 +36,13 @@ public class SettingsListAdapter extends BaseAdapter {
 
     private List<String> items;
 
-    public List<Boolean> getItemsChecked() {
+    public List<Boolean> getItemsChecked()
+    {
         return itemsChecked;
     }
 
-    public void setItemsChecked(List<Boolean> itemsChecked) {
+    public void setItemsChecked(List<Boolean> itemsChecked)
+    {
         this.itemsChecked = itemsChecked;
     }
 
@@ -106,7 +103,7 @@ public class SettingsListAdapter extends BaseAdapter {
         CheckBox checkBox = (CheckBox) view.findViewById(R.id.settingsItem_toggle);
         if (checkBox != null && itemsChecked != null)
         {
-            checkBox.setChecked((boolean)itemsChecked.get(position));
+            checkBox.setChecked((boolean) itemsChecked.get(position));
             checkBox.setOnCheckedChangeListener(checkboxCheckedListener);
         }
         return view;

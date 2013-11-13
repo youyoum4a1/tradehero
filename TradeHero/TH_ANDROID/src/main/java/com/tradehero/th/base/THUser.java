@@ -345,7 +345,7 @@ public class THUser
         catch (JSONException je)
         {
         }
-        userService.get().updateProfile(getAuthHeader(),
+        userService.get().updateProfile(
                 getCurrentUserBase().id,
                 userFormDTO.deviceToken,
                 userFormDTO.displayName,

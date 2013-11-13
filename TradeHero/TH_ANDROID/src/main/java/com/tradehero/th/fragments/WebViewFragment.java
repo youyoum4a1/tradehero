@@ -27,6 +27,8 @@ import com.tradehero.th.fragments.base.DashboardFragment;
 
 public class WebViewFragment extends DashboardFragment
 {
+    public static final String BUNDLE_KEY_URL = WebViewFragment.class.getName() + ".url";
+
     private WebView webView;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -69,7 +71,7 @@ public class WebViewFragment extends DashboardFragment
     {
         super.onActivityCreated(savedInstanceState);
 
-        String url = getArguments().getString(News.URL);
+        String url = getArguments().getString(BUNDLE_KEY_URL);
         if (url != null)
         {
             webView.loadUrl(url);

@@ -67,24 +67,24 @@ public interface UserService
 
     @FormUrlEncoded
     @PUT("/users/{userId}/updateUser")
-    void updateProfile(@Header("Authorization") String authorization,
-                       @Path("userId") int userId,
-                       @Field("deviceToken") String deviceToken,
-                       @Field("displayName") String displayName,
-                       @Field("email") String email,
-                       @Field("firstName") String firstName,
-                       @Field("lastName") String lastName,
-                       @Field("password") String password,
-                       @Field("passwordConfirmation") String passwordConfirmation,
-                       @Field("username") String username,
-                       Callback<UserProfileDTO> cb);
+    void updateProfile(
+           @Path("userId") int userId,
+           @Field("deviceToken") String deviceToken,
+           @Field("displayName") String displayName,
+           @Field("email") String email,
+           @Field("firstName") String firstName,
+           @Field("lastName") String lastName,
+           @Field("password") String password,
+           @Field("passwordConfirmation") String passwordConfirmation,
+           @Field("username") String username,
+           Callback<UserProfileDTO> cb);
 
     @FormUrlEncoded
     @PUT("/users/{userId}/updateUser")
-    void updateProfile(@Header("Authorization") String authorization,
-                       @Path("userId") int userId,
-                       @Field("emailNotificationsEnabled") Boolean emailNotificationsEnabled,
-                       Callback<UserProfileDTO> cb);
+    void updateProfile(
+           @Path("userId") int userId,
+           @Field("emailNotificationsEnabled") Boolean emailNotificationsEnabled,
+           Callback<UserProfileDTO> cb);
 
     @Multipart
     @POST("/SignupWithEmail")
@@ -161,8 +161,7 @@ public interface UserService
 
     @POST("/logout")
     void signOut(
-            @Header("Authorization") String authorization,
-            Callback<Response> callback);
+            Callback<UserProfileDTO> callback);
     //</editor-fold>
 
     //<editor-fold desc="Check Display Name Available">

@@ -17,6 +17,9 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import com.actionbarsherlock.app.ActionBar;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.form.UserFormFactory;
@@ -45,6 +48,10 @@ import java.util.Map;
 
 public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View.OnClickListener
 {
+    public static final String TAG = EmailSignUpFragment.class.getSimpleName();
+    public static final String BUNDLE_KEY_EDIT_CURRENT_USER = EmailSignUpFragment.class.getName() + ".editCurrentUser";
+    public static final String BUNDLE_KEY_SHOW_BUTTON_BACK = EmailSignUpFragment.class.getName() + ".showButtonBack";
+
     private ServerValidatedEmailText email;
     private ValidatedPasswordText password;
     private MatchingPasswordText confirmPassword;
@@ -53,6 +60,7 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
     private ProgressDialog progressDialog;
 
     private boolean editCurrentUser;
+    private boolean showButtonBack;
 
     private int mWhichEdittext = 0;
     private CharSequence mText;
@@ -63,6 +71,12 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
     private int mImagesize = 0;
     private Context mContext;
     private static final int REQUEST_GALLERY = 111;
+
+    @Override public void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+
+    }
 
     @Override public int getDefaultViewId ()
     {
@@ -103,11 +117,11 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
         //mOptionalImage.setOnTouchListener(this);
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         Bundle args = getArguments();
-        editCurrentUser = args != null && args.getBoolean("editCurrentUser");
+        editCurrentUser = args != null && args.containsKey(BUNDLE_KEY_EDIT_CURRENT_USER) && args.getBoolean(BUNDLE_KEY_EDIT_CURRENT_USER);
+        showButtonBack = args != null && args.containsKey(BUNDLE_KEY_SHOW_BUTTON_BACK) && args.getBoolean(BUNDLE_KEY_SHOW_BUTTON_BACK);
 
         View view = super.onCreateView(inflater, container, savedInstanceState);
 
@@ -119,8 +133,22 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
         return view;
     }
 
-    @Override
-    public void onClick(View view)
+    @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
+    {
+        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
+        if (showButtonBack)
+        {
+            actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME);
+        }
+        else
+        {
+            actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE);
+        }
+        actionBar.setDisplayHomeAsUpEnabled(showButtonBack);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override public void onClick(View view)
     {
         switch (view.getId())
         {
@@ -168,8 +196,7 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
         return map;
     }
 
-    @Override
-    public void onDestroyView() {
+    @Override public void onDestroyView() {
         if (email != null)
         {
             email.removeAllListeners();
@@ -207,8 +234,7 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
         super.onDestroyView();
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data)
+    @Override public void onActivityResult(int requestCode, int resultCode, Intent data)
     {
 
         super.onActivityResult(requestCode, resultCode, data);
@@ -340,8 +366,7 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
         return cursor.getString(column_index);
     }
 
-    @Override
-    public AuthenticationMode getAuthenticationMode()
+    @Override public AuthenticationMode getAuthenticationMode()
     {
         return AuthenticationMode.SignUpWithEmail;
     }

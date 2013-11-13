@@ -1,27 +1,275 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="vertical"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:background="#66FFFFFF">
-    <ListView
-            android:id="@+id/settings_primary"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="12dp"
-            />
-    <ListView
-            android:id="@+id/settings_notification"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="12dp"
-            />
-    <ListView
-            android:id="@+id/settings_misc"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="12dp"
-            />
-</LinearLayout>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#66FFFFFF">
+
+  <LinearLayout
+      android:orientation="vertical"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      >
+
+    <RelativeLayout
+        android:id="@+id/send_love_block"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        >
+
+      <ImageView
+          android:id="@+id/send_love_further"
+          android:layout_width="24dp"
+          android:layout_height="24dp"
+          android:layout_alignParentRight="true"
+          android:src="@drawable/chevron_forward"
+          android:contentDescription="@null"
+        />
+
+      <TextView
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_alignParentLeft="true"
+          android:layout_toLeftOf="@id/send_love_further"
+          android:text="@string/settings_primary_send_love"
+        />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/send_feedback_block"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        >
+
+      <ImageView
+          android:id="@+id/send_feedback_further"
+          android:layout_width="24dp"
+          android:layout_height="24dp"
+          android:layout_alignParentRight="true"
+          android:src="@drawable/chevron_forward"
+          android:contentDescription="@null"
+        />
+
+      <TextView
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_alignParentLeft="true"
+          android:layout_toLeftOf="@id/send_feedback_further"
+          android:text="@string/settings_primary_send_feedback"
+        />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/faq_block"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        >
+
+      <ImageView
+          android:id="@+id/faq_further"
+          android:layout_width="24dp"
+          android:layout_height="24dp"
+          android:layout_alignParentRight="true"
+          android:src="@drawable/chevron_forward"
+          android:contentDescription="@null"
+        />
+
+      <TextView
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_alignParentLeft="true"
+          android:layout_toLeftOf="@id/faq_further"
+          android:text="@string/settings_primary_faq"
+        />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/profile_block"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        >
+
+      <ImageView
+          android:id="@+id/profile_further"
+          android:layout_width="24dp"
+          android:layout_height="24dp"
+          android:layout_alignParentRight="true"
+          android:src="@drawable/chevron_forward"
+          android:contentDescription="@null"
+        />
+
+      <TextView
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_alignParentLeft="true"
+          android:layout_toLeftOf="@id/profile_further"
+          android:text="@string/settings_primary_profile"
+        />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/paypal_block"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        >
+
+      <ImageView
+          android:id="@+id/paypal_further"
+          android:layout_width="24dp"
+          android:layout_height="24dp"
+          android:layout_alignParentRight="true"
+          android:src="@drawable/chevron_forward"
+          android:contentDescription="@null"
+        />
+
+      <TextView
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_alignParentLeft="true"
+          android:layout_toLeftOf="@id/paypal_further"
+          android:text="@string/settings_primary_paypal"
+        />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/transaction_history_block"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        >
+
+      <ImageView
+          android:id="@+id/transaction_history_further"
+          android:layout_width="24dp"
+          android:layout_height="24dp"
+          android:layout_alignParentRight="true"
+          android:src="@drawable/chevron_forward"
+          android:contentDescription="@null"
+        />
+
+      <TextView
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_alignParentLeft="true"
+          android:layout_toLeftOf="@id/transaction_history_further"
+          android:text="@string/settings_primary_transaction_history"
+        />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/email_notifications_block"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="0dp"
+        android:descendantFocusability="blocksDescendants"
+        >
+
+      <CheckBox
+          android:id="@+id/email_notifications_checkbox"
+          android:layout_width="48dp"
+          android:layout_height="48dp"
+          android:layout_marginRight="8dp"
+          android:layout_alignParentRight="true"
+          />
+
+      <TextView
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_margin="8dp"
+          android:layout_alignParentLeft="true"
+          android:layout_toLeftOf="@id/email_notifications_checkbox"
+          android:text="@string/settings_notifications_email"
+        />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/reset_help_screens_block"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        >
+
+      <TextView
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_alignParentLeft="true"
+          android:text="@string/settings_misc_reset_help_screens"
+          />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/clear_cache_block"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        >
+
+      <TextView
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_alignParentLeft="true"
+          android:text="@string/settings_misc_clear_cache"
+          />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/sign_out_block"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        >
+
+      <TextView
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_alignParentLeft="true"
+          android:text="@string/settings_misc_sign_out"
+          />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/about_block"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        >
+
+      <ImageView
+          android:id="@+id/about_further"
+          android:layout_width="24dp"
+          android:layout_height="24dp"
+          android:layout_alignParentRight="true"
+          android:src="@drawable/chevron_forward"
+          android:contentDescription="@null"
+          />
+
+      <TextView
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_alignParentLeft="true"
+          android:layout_toLeftOf="@id/about_further"
+          android:text="@string/settings_misc_about"
+          />
+
+    </RelativeLayout>
+
+  </LinearLayout>
+
+</ScrollView>

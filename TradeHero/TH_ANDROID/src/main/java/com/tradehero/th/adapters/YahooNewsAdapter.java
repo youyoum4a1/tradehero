@@ -35,7 +35,7 @@ public class YahooNewsAdapter extends DTOAdapter<News, YahooNewsView>
                 {
                     Navigator navigator = ((NavigatorActivity) context).getNavigator();
                     Bundle bundle = new Bundle();
-                    bundle.putString(News.URL, news.getUrl());
+                    bundle.putString(WebViewFragment.BUNDLE_KEY_URL, news.getUrl());
                     navigator.pushFragment(WebViewFragment.class, bundle);
                 }
             }
