@@ -14,7 +14,7 @@ import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.leaderboard.position.OwnedLeaderboardPositionId;
-import com.tradehero.th.api.position.InPeriodPositionDTO;
+import com.tradehero.th.api.position.PositionInPeriodDTO;
 import com.tradehero.th.api.position.OwnedPositionId;
 import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
@@ -324,9 +324,9 @@ public class PositionPartialTopView extends LinearLayout
     {
         if (positionPercent != null)
         {
-            if (positionDTO instanceof InPeriodPositionDTO)
+            if (positionDTO instanceof PositionInPeriodDTO)
             {
-                PositionUtils.setROIInPeriod(positionPercent, (InPeriodPositionDTO) positionDTO);
+                PositionUtils.setROIInPeriod(positionPercent, (PositionInPeriodDTO) positionDTO);
             }
             else
             {

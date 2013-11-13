@@ -3,12 +3,8 @@ package com.tradehero.th.utils;
 import android.content.Context;
 import android.widget.TextView;
 import com.tradehero.th.R;
-import com.tradehero.th.api.position.InPeriodPositionDTO;
+import com.tradehero.th.api.position.PositionInPeriodDTO;
 import com.tradehero.th.api.position.PositionDTO;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.TimeZone;
 
 /**
  * Created by julien on 31/10/13
@@ -32,7 +28,7 @@ public class PositionUtils
         }
     }
 
-    public static String getValueAtStart(Context context, InPeriodPositionDTO position)
+    public static String getValueAtStart(Context context, PositionInPeriodDTO position)
     {
         if (position != null && position.marketValueStartPeriodRefCcy != null)
         {
@@ -62,7 +58,7 @@ public class PositionUtils
         }
     }
 
-    public static String getInPeriodRealizedPL(Context context, InPeriodPositionDTO position)
+    public static String getInPeriodRealizedPL(Context context, PositionInPeriodDTO position)
     {
         if (position != null && position.totalPLInPeriodRefCcy != null)
         {
@@ -126,12 +122,12 @@ public class PositionUtils
         }
     }
 
-    public static void setROIInPeriod(TextView textView, InPeriodPositionDTO inPeriodPositionDTO)
+    public static void setROIInPeriod(TextView textView, PositionInPeriodDTO positionInPeriodDTO)
     {
 
-        if (inPeriodPositionDTO != null)
+        if (positionInPeriodDTO != null)
         {
-            Double roiInPeriod = inPeriodPositionDTO.getROIInPeriod();
+            Double roiInPeriod = positionInPeriodDTO.getROIInPeriod();
             if (roiInPeriod == null)
             {
                 textView.setText(R.string.na);
@@ -146,9 +142,9 @@ public class PositionUtils
         }
     }
 
-    public static String getAdditionalInvested(Context context, InPeriodPositionDTO position)
+    public static String getAdditionalInvested(Context context, PositionInPeriodDTO position)
     {
-        if (position != null && position.sumInvestedAmountRefCcy != null)
+        if (position != null && position.sum_purchasesInPeriodRefCcy != null)
         {
             return NumberDisplayUtils.formatWithRelevantDigits(
                     position.sum_purchasesInPeriodRefCcy,

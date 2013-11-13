@@ -64,7 +64,7 @@
     <TextView
         android:id="@+id/in_period_start_value_date"
         style="@style/TH.SmallTitle"
-        android:text="as of 26 Jul"
+        android:text="@null"
         />
   </TableRow>
 </TableLayout>

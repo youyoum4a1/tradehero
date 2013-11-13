@@ -4,15 +4,16 @@ import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.loaders.ItemWithComparableId;
 import com.tradehero.th.utils.NumberDisplayUtils;
 import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
 /** Created with IntelliJ IDEA. User: tho Date: 10/14/13 Time: 2:09 PM Copyright (c) TradeHero */
 
-public class LeaderboardUserRankDTO extends UserBaseDTO
+public class LeaderboardUserDTO extends UserBaseDTO
         implements ItemWithComparableId<Integer>
 {
+    public static final String LEADERBOARD_PERIOD_START_STRING = "LEADERBOARD_PERIOD_START_STRING";
+
     public long lbmuId;    // leaderboardMarkUser.id ...
     public int portfolioId;    // ...OR portfolioId --> messy
 
@@ -46,7 +47,7 @@ public class LeaderboardUserRankDTO extends UserBaseDTO
     public Integer followerCountPaid;
     private Integer commentCount;
 
-    public LeaderboardUserRankDTO()
+    public LeaderboardUserDTO()
     {
         super();
     }

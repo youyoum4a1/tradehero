@@ -17,6 +17,7 @@ public class LeaderboardDefDTO extends AbstractItemWithComparableId<Integer>
     public static final int LEADERBOARD_DEF_SECTOR_ID = -2;
     public static final int LEADERBOARD_DEF_EXCHANGE_ID = -3;
     public static final int LEADERBOARD_FRIEND_ID = -1;
+    public static final String LEADERBOARD_DEF_DESC = "LEADERBOARD_DEF_DESC";
 
     public int id;
     public String name;
@@ -95,6 +96,18 @@ public class LeaderboardDefDTO extends AbstractItemWithComparableId<Integer>
     public boolean isExchangeRestricted()
     {
         return exchangeRestrictions;
+    }
+
+    // TODO datetime format
+    public String getPeriodStartString()
+    {
+        return fromUtcRestricted != null ? fromUtcRestricted.toString() : null;
+    }
+
+    // TODO datetime format
+    public String getPeriodEndString()
+    {
+        return toUtcRestricted != null ? toUtcRestricted.toString() : null;
     }
 }
 

@@ -9,31 +9,31 @@ import com.tradehero.th.widget.list.DefaultExpandingListViewListener;
 import javax.inject.Inject;
 
 /** Created with IntelliJ IDEA. User: tho Date: 10/14/13 Time: 3:09 PM Copyright (c) TradeHero */
-public class LeaderboardRankingListView extends PullToRefreshListView
+public class LeaderboardMarkUserListView extends PullToRefreshListView
 {
     @Inject
     protected DefaultExpandingListViewListener defaultExpandingListViewListener;
 
     //<editor-fold desc="Constructors">
-    public LeaderboardRankingListView(Context context)
+    public LeaderboardMarkUserListView(Context context)
     {
         super(context);
         init();
     }
 
-    public LeaderboardRankingListView(Context context, AttributeSet attrs)
+    public LeaderboardMarkUserListView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
         init();
     }
 
-    public LeaderboardRankingListView(Context context, Mode mode)
+    public LeaderboardMarkUserListView(Context context, Mode mode)
     {
         super(context, mode);
         init();
     }
 
-    public LeaderboardRankingListView(Context context, Mode mode, AnimationStyle style)
+    public LeaderboardMarkUserListView(Context context, Mode mode, AnimationStyle style)
     {
         super(context, mode, style);
         init();

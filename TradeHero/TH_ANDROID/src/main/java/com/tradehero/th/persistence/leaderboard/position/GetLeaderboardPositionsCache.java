@@ -8,7 +8,7 @@ import com.tradehero.th.api.leaderboard.position.LeaderboardMarkUserId;
 import com.tradehero.th.api.leaderboard.position.OwnedLeaderboardPositionId;
 import com.tradehero.th.api.leaderboard.position.PagedLeaderboardMarkUserId;
 import com.tradehero.th.api.leaderboard.position.PerPagedLeaderboardMarkUserId;
-import com.tradehero.th.api.position.InPeriodPositionDTO;
+import com.tradehero.th.api.position.PositionInPeriodDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.network.BasicRetrofitErrorHandler;
@@ -125,9 +125,9 @@ import retrofit.RetrofitError;
     {
         if (value != null && value.positions != null)
         {
-            for (InPeriodPositionDTO inPeriodPositionDTO : value.positions)
+            for (PositionInPeriodDTO positionInPeriodDTO : value.positions)
             {
-                filedPositionCache.get().invalidate(inPeriodPositionDTO.getLbOwnedPositionId());
+                filedPositionCache.get().invalidate(positionInPeriodDTO.getLbOwnedPositionId());
             }
         }
     }
@@ -145,7 +145,7 @@ import retrofit.RetrofitError;
                 LeaderboardPositionCache leaderboardPositionCache)
         {
             leaderboardPositionCache.put(getLeaderboardPositionsDTO.positions);
-            this.ownedLeaderboardPositionIds = InPeriodPositionDTO.getFiledLbPositionIds(getLeaderboardPositionsDTO.positions);
+            this.ownedLeaderboardPositionIds = PositionInPeriodDTO.getFiledLbPositionIds(getLeaderboardPositionsDTO.positions);
 
             securityCompactCache.put(getLeaderboardPositionsDTO.securities);
             this.securityIds = SecurityCompactDTO.getSecurityIds(getLeaderboardPositionsDTO.securities);

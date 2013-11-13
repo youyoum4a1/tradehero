@@ -1,8 +1,10 @@
 package com.tradehero.th.fragments.position;
 
 import com.tradehero.common.persistence.DTOCache;
+import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.position.InPeriodPositionItemAdapter;
+import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import com.tradehero.th.api.leaderboard.position.GetLeaderboardPositionsDTO;
 import com.tradehero.th.api.leaderboard.position.LeaderboardMarkUserId;
 import com.tradehero.th.persistence.leaderboard.position.GetLeaderboardPositionsCache;
@@ -18,7 +20,6 @@ public class InPeriodPositionListFragment extends PositionListFragment
     private DTOCache.GetOrFetchTask<GetLeaderboardPositionsDTO> fetchGetPositionsDTOTask;
 
     private LeaderboardMarkUserId leaderboardMarkUserId;
-    private GetLeaderboardPositionsDTO leaderboardPositionsDTO;
 
     @Override protected void createPositionItemAdapter()
     {
@@ -35,6 +36,8 @@ public class InPeriodPositionListFragment extends PositionListFragment
     @Override public void onResume()
     {
         this.leaderboardMarkUserId = new LeaderboardMarkUserId((int)getArguments().getLong(LeaderboardMarkUserId.BUNDLE_KEY));
+        String periodStart = getArguments().getString(LeaderboardUserDTO.LEADERBOARD_PERIOD_START_STRING);
+        THLog.d(TAG, "Period Start: " + periodStart);
         super.onResume();
     }
 
@@ -74,11 +77,10 @@ public class InPeriodPositionListFragment extends PositionListFragment
         };
     }
 
+    @SuppressWarnings("unchecked")
     private void linkWith(GetLeaderboardPositionsDTO leaderboardPositionsDTO, boolean andDisplay)
     {
-
-        this.leaderboardPositionsDTO = leaderboardPositionsDTO;
-        if (this.leaderboardPositionsDTO != null)
+        if (leaderboardPositionsDTO != null)
         {
             positionItemAdapter.setPositions(leaderboardPositionsDTO.positions, ownedPortfolioId.getPortfolioId());
             restoreExpandingStates();

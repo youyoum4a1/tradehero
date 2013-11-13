@@ -18,8 +18,8 @@ import com.tradehero.th.fragments.leaderboard.LeaderboardCommunityFragment;
 import com.tradehero.th.fragments.leaderboard.LeaderboardDefListViewFragment;
 import com.tradehero.th.fragments.leaderboard.LeaderboardDefView;
 import com.tradehero.th.fragments.leaderboard.LeaderboardListViewFragment;
-import com.tradehero.th.fragments.leaderboard.LeaderboardLoader;
-import com.tradehero.th.fragments.leaderboard.LeaderboardUserRankItemView;
+import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserItemView;
+import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserLoader;
 import com.tradehero.th.fragments.portfolio.PortfolioListFragment;
 import com.tradehero.th.fragments.portfolio.PushablePortfolioListFragment;
 import com.tradehero.th.fragments.position.InPeriodPositionListFragment;
@@ -70,7 +70,7 @@ import com.tradehero.th.persistence.user.UserStore;
 import com.tradehero.th.utils.NumberDisplayUtils;
 import com.tradehero.th.widget.MarkdownTextView;
 import com.tradehero.th.widget.ServerValidatedUsernameText;
-import com.tradehero.th.widget.leaderboard.LeaderboardRankingListView;
+import com.tradehero.th.widget.leaderboard.LeaderboardMarkUserListView;
 import com.tradehero.th.widget.portfolio.PortfolioListItemView;
 import com.tradehero.th.widget.portfolio.header.CurrentUserPortfolioHeaderView;
 import com.tradehero.th.widget.portfolio.header.OtherUserPortfolioHeaderView;
@@ -96,6 +96,7 @@ import dagger.Module;
 import dagger.Provides;
 import javax.inject.Named;
 import javax.inject.Singleton;
+import org.ocpsoft.prettytime.PrettyTime;
 
 /** Created with IntelliJ IDEA. User: tho Date: 9/16/13 Time: 5:36 PM Copyright (c) TradeHero */
 @Module(
@@ -181,11 +182,11 @@ import javax.inject.Singleton;
 
                 LeaderboardDefView.class,
                 LeaderboardManager.class,
-                LeaderboardLoader.class,
+                LeaderboardMarkUserLoader.class,
                 LeaderboardListViewFragment.class,
                 AbstractLeaderboardFragment.class,
-                LeaderboardUserRankItemView.class,
-                LeaderboardRankingListView.class,
+                LeaderboardMarkUserItemView.class,
+                LeaderboardMarkUserListView.class,
 
                 WebViewFragment.class,
         },
@@ -305,5 +306,10 @@ public class TradeHeroModule
     @Provides @Named("CurrentUser") UserBaseDTO provideCurrentUserBaseDTO()
     {
         return THUser.getCurrentUserBase();
+    }
+
+    @Provides PrettyTime providePrettyTime()
+    {
+        return new PrettyTime();
     }
 }

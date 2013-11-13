@@ -6,18 +6,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import com.tradehero.th.adapters.ExpandableDTOAdapter;
 import com.tradehero.th.adapters.ExpandableListItem;
-import com.tradehero.th.api.leaderboard.LeaderboardUserRankDTO;
+import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import java.util.LinkedList;
 import java.util.List;
 
 /** Created with IntelliJ IDEA. User: tho Date: 10/21/13 Time: 4:13 PM Copyright (c) TradeHero */
-public class LeaderboardListAdapter extends
-        //DTOAdapter<LeaderboardUserRankDTO, LeaderboardUserRankItemView>
-        ExpandableDTOAdapter<LeaderboardUserRankDTO, LeaderboardListAdapter.ExpandableLeaderboardUserRankItemWrapper, LeaderboardUserRankItemView>
+public class LeaderboardMarkUserListAdapter extends
+        //DTOAdapter<LeaderboardUserDTO, LeaderboardMarkUserItemView>
+        ExpandableDTOAdapter<LeaderboardUserDTO, LeaderboardMarkUserListAdapter.ExpandableLeaderboardUserRankItemWrapper, LeaderboardMarkUserItemView>
 {
-    private LeaderboardLoader loader;
+    private LeaderboardMarkUserLoader loader;
 
-    public LeaderboardListAdapter(Context context, LayoutInflater layoutInflater, List<LeaderboardUserRankDTO> items, int layoutResourceId)
+    public LeaderboardMarkUserListAdapter(Context context, LayoutInflater layoutInflater, List<LeaderboardUserDTO> items, int layoutResourceId)
     {
         super(context, layoutInflater, layoutResourceId);
 
@@ -28,6 +28,8 @@ public class LeaderboardListAdapter extends
     {
         ExpandableLeaderboardUserRankItemWrapper dtoWrapper = (ExpandableLeaderboardUserRankItemWrapper) super.getItem(position);
         dtoWrapper.setPosition(position);
+        dtoWrapper.setLeaderboardId(loader.getLeaderboardId());
+
         return dtoWrapper;
     }
 
@@ -36,12 +38,12 @@ public class LeaderboardListAdapter extends
         return super.getView(position, convertView, viewGroup);
     }
 
-    @Override protected void fineTune(int position, ExpandableLeaderboardUserRankItemWrapper dto, LeaderboardUserRankItemView dtoView)
+    @Override protected void fineTune(int position, ExpandableLeaderboardUserRankItemWrapper dto, LeaderboardMarkUserItemView dtoView)
     {
 
     }
 
-    public void setLoader(LeaderboardLoader loader)
+    public void setLoader(LeaderboardMarkUserLoader loader)
     {
         this.loader = loader;
         if (loader != null)
@@ -50,24 +52,25 @@ public class LeaderboardListAdapter extends
         }
     }
 
-    @Override protected ExpandableLeaderboardUserRankItemWrapper wrap(LeaderboardUserRankDTO underlyingItem)
+    @Override protected ExpandableLeaderboardUserRankItemWrapper wrap(LeaderboardUserDTO underlyingItem)
     {
         return new ExpandableLeaderboardUserRankItemWrapper(underlyingItem);
     }
 
     /**
-     * Wrapper for LeaderboardUserRankDTO, keep expand state & position on the UI Board
+     * Wrapper for LeaderboardUserDTO, keep expand state & position on the UI Board
      */
-    public static class ExpandableLeaderboardUserRankItemWrapper extends ExpandableListItem<LeaderboardUserRankDTO>
+    public static class ExpandableLeaderboardUserRankItemWrapper extends ExpandableListItem<LeaderboardUserDTO>
     {
         private int position;
+        private int leaderboardId;
 
-        public ExpandableLeaderboardUserRankItemWrapper(LeaderboardUserRankDTO model)
+        public ExpandableLeaderboardUserRankItemWrapper(LeaderboardUserDTO model)
         {
             super(model);
         }
 
-        public static List<ExpandableLeaderboardUserRankItemWrapper> wrap(List<LeaderboardUserRankDTO> items)
+        public static List<ExpandableLeaderboardUserRankItemWrapper> wrap(List<LeaderboardUserDTO> items)
         {
             if (items == null)
             {
@@ -75,7 +78,7 @@ public class LeaderboardListAdapter extends
             }
 
             List<ExpandableLeaderboardUserRankItemWrapper> wrappedItems = new LinkedList<>();
-            for (LeaderboardUserRankDTO item: items)
+            for (LeaderboardUserDTO item: items)
             {
                 wrappedItems.add(new ExpandableLeaderboardUserRankItemWrapper(item));
             }
@@ -90,6 +93,16 @@ public class LeaderboardListAdapter extends
         public void setPosition(int position)
         {
             this.position = position;
+        }
+
+        public int getLeaderboardId()
+        {
+            return leaderboardId;
+        }
+
+        public void setLeaderboardId(int leaderboardId)
+        {
+            this.leaderboardId = leaderboardId;
         }
     }
 }

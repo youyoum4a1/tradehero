@@ -2,7 +2,7 @@ package com.tradehero.th.api.leaderboard.position;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tradehero.th.api.position.AbstractGetPositionsDTO;
-import com.tradehero.th.api.position.InPeriodPositionDTO;
+import com.tradehero.th.api.position.PositionInPeriodDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,14 +10,14 @@ import java.util.List;
 /**
  * Created by julien on 1/11/13
  */
-public class GetLeaderboardPositionsDTO extends AbstractGetPositionsDTO<InPeriodPositionDTO>
+public class GetLeaderboardPositionsDTO extends AbstractGetPositionsDTO<PositionInPeriodDTO>
 {
     public GetLeaderboardPositionsDTO()
     {
         super();
     }
 
-    public GetLeaderboardPositionsDTO(List<InPeriodPositionDTO> positions, List<SecurityCompactDTO> securities, int openPositionsCount, int closedPositionsCount)
+    public GetLeaderboardPositionsDTO(List<PositionInPeriodDTO> positions, List<SecurityCompactDTO> securities, int openPositionsCount, int closedPositionsCount)
     {
         super(positions, securities, openPositionsCount, closedPositionsCount);
     }
@@ -31,9 +31,9 @@ public class GetLeaderboardPositionsDTO extends AbstractGetPositionsDTO<InPeriod
 
         List<OwnedLeaderboardPositionId> ownedLeaderboardPositionIds = new ArrayList<>();
 
-        for (InPeriodPositionDTO inPeriodPositionDTO : positions)
+        for (PositionInPeriodDTO positionInPeriodDTO : positions)
         {
-            ownedLeaderboardPositionIds.add(inPeriodPositionDTO.getLbOwnedPositionId());
+            ownedLeaderboardPositionIds.add(positionInPeriodDTO.getLbOwnedPositionId());
         }
 
         return ownedLeaderboardPositionIds;
@@ -51,11 +51,11 @@ public class GetLeaderboardPositionsDTO extends AbstractGetPositionsDTO<InPeriod
             return;
         }
 
-        for (InPeriodPositionDTO inPeriodPositionDTO : positions)
+        for (PositionInPeriodDTO positionInPeriodDTO : positions)
         {
-            if (inPeriodPositionDTO != null)
+            if (positionInPeriodDTO != null)
             {
-                inPeriodPositionDTO.setLeaderboardMarkUserId(leaderboardMarkUserId);
+                positionInPeriodDTO.setLeaderboardMarkUserId(leaderboardMarkUserId);
             }
         }
     }

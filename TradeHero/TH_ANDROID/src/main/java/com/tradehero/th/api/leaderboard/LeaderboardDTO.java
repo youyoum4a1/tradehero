@@ -8,9 +8,10 @@ import java.util.List;
 public class LeaderboardDTO extends AbstractItemWithComparableId<Integer>
 {
     public static final String LEADERBOARD_ID = "LEADERBOARD_ID";
+
     public int id;
     public String name;
-    public List<LeaderboardUserRankDTO> users;
+    public List<LeaderboardUserDTO> users;
     public int userIsAtPositionZeroBased;
     public Date markUtc;
 
