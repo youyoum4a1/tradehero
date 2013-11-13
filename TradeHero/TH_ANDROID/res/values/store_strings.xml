@@ -99,4 +99,8 @@
   <string name="manage_follower_payment_duration">Paid for %d days:</string>
   <string name="manage_follower_payment_datetime_format">dd MMM yyyy</string>
 
+  <!-- Manage Alerts -->
+  <string name="manage_alerts_plan">Plan:</string>
+  <string name="manage_alerts_with_count">%d alerts</string>
+
 </resources>

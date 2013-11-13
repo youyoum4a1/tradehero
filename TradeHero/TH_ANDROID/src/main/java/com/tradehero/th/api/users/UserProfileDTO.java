@@ -1,6 +1,7 @@
 package com.tradehero.th.api.users;
 
 import com.tradehero.common.persistence.DTO;
+import com.tradehero.th.api.alert.UserAlertPlanDTO;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.leaderboard.UserLeaderboardRankingDTO;
 import com.tradehero.th.api.portfolio.PortfolioDTO;
@@ -59,5 +60,21 @@ public class UserProfileDTO extends UserProfileCompactDTO implements DTO
             }
         }
         return 0;
+    }
+
+    public int getUserAlertPlansAlertCount()
+    {
+        int count = 0;
+        if (userAlertPlans != null)
+        {
+            for (UserAlertPlanDTO userAlertPlanDTO: userAlertPlans)
+            {
+                if (userAlertPlanDTO != null && userAlertPlanDTO.alertPlan != null)
+                {
+                    count += userAlertPlanDTO.alertPlan.numberOfAlerts;
+                }
+            }
+        }
+        return count;
     }
 }

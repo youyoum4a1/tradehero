@@ -1,4 +1,4 @@
-package com.tradehero.th.api.users;
+package com.tradehero.th.api.alert;
 
 import java.util.Date;
 
