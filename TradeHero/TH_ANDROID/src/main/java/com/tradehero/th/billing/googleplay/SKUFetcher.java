@@ -18,6 +18,11 @@ public class SKUFetcher
     public static final String EXTRA_CASH_T1_KEY = "com.myhero.th.extracash.t1";
     public static final String EXTRA_CASH_T2_KEY = "com.myhero.th.extracash.t2";
 
+    public static final String CREDIT_1 = "com.myhero.th.1cc";
+    public static final String CREDIT_5 = "com.myhero.th.5cc";
+    public static final String CREDIT_10 = "com.myhero.th.10cc";
+    public static final String CREDIT_20 = "com.myhero.th.20cc";
+
     public static final String RESET_PORTFOLIO_0 = "com.myhero.th.resetportfolio.0";
 
     private Map<String, List<IABSKU>> availableSkus;
@@ -33,6 +38,10 @@ public class SKUFetcher
         inAppIABSKUs.add(new IABSKU(EXTRA_CASH_T0_KEY));
         inAppIABSKUs.add(new IABSKU(EXTRA_CASH_T1_KEY));
         inAppIABSKUs.add(new IABSKU(EXTRA_CASH_T2_KEY));
+        inAppIABSKUs.add(new IABSKU(CREDIT_1));
+        inAppIABSKUs.add(new IABSKU(CREDIT_5));
+        inAppIABSKUs.add(new IABSKU(CREDIT_10));
+        inAppIABSKUs.add(new IABSKU(CREDIT_20));
         inAppIABSKUs.add(new IABSKU(RESET_PORTFOLIO_0));
         availableSkus.put(Constants.ITEM_TYPE_INAPP, inAppIABSKUs);
 

@@ -38,6 +38,27 @@ public class THSKUDetailsTuner implements ProductDetailsTuner<THSKUDetails>
             case SKUFetcher.RESET_PORTFOLIO_0:
                 productDetails.iconResId = R.drawable.icn_reset_portfolio;
                 productDetails.domain = THSKUDetails.DOMAIN_RESET_PORTFOLIO;
+                break;
+
+            case SKUFetcher.CREDIT_1:
+                productDetails.iconResId = R.drawable.credit_1;
+                productDetails.domain = THSKUDetails.DOMAIN_FOLLOW_CREDITS;
+                break;
+
+            case SKUFetcher.CREDIT_5:
+                productDetails.iconResId = R.drawable.credit_5;
+                productDetails.domain = THSKUDetails.DOMAIN_FOLLOW_CREDITS;
+                break;
+
+            case SKUFetcher.CREDIT_10:
+                productDetails.iconResId = R.drawable.credit_5;
+                productDetails.domain = THSKUDetails.DOMAIN_FOLLOW_CREDITS;
+                break;
+
+            case SKUFetcher.CREDIT_20:
+                productDetails.iconResId = R.drawable.credit_10;
+                productDetails.domain = THSKUDetails.DOMAIN_FOLLOW_CREDITS;
+                break;
 
             default:
                 THLog.d(TAG, "Unhandled productDetails key " + productDetails.getProductIdentifier().identifier);
