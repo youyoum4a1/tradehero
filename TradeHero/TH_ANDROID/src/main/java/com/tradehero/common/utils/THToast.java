@@ -15,6 +15,7 @@ public class THToast
 
     public static void show(String message)
     {
+        //THLog.e(TAG, "show " + message, new IllegalArgumentException());
         if (Looper.myLooper() == Looper.getMainLooper())
         {
             Toast toast = Toast.makeText(Application.context(), message, Toast.LENGTH_SHORT);

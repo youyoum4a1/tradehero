@@ -55,7 +55,7 @@ abstract public class EmailSignInOrUpFragment extends AuthenticationFragment imp
         {
             if (!NetworkUtils.isConnected(getActivity()))
             {
-                Util.show_toast(getActivity(), getResources().getString(R.string.network_error));
+                THToast.show(R.string.network_error);
             }
             else if (!areFieldsValid ())
             {

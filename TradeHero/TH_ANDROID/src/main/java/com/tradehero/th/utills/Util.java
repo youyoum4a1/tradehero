@@ -76,7 +76,6 @@ import android.widget.Toast;
  * @author vineet.aggarwal@3pillarglobal.com
  * @author abhinav.maheswari@3pillarglobal.com
  */
-
 @Deprecated public final class Util
 {
 
@@ -85,97 +84,6 @@ import android.widget.Toast;
     public static int UI_YAHOO_SCROLL;
     public static int UI_YAHOO_ALLOW;
     public static int UI_RESOLUTION;
-
-    /**
-     * URL encoding of query parameters of a URL
-     *
-     * @return encoded URL
-     */
-    public static String encodeUrl(Bundle parameters)
-    {
-        if (parameters == null)
-        {
-            return "";
-        }
-
-        StringBuilder sb = new StringBuilder();
-        boolean first = true;
-        for (String key : parameters.keySet())
-        {
-            if (first)
-            {
-                first = false;
-            }
-            else
-            {
-                sb.append("&");
-            }
-            sb.append(URLEncoder.encode(key) + "=" + URLEncoder.encode(parameters.getString(key)));
-        }
-        return sb.toString();
-    }
-
-    /**
-     * URL decoding of query parameters of a URL
-     *
-     * @param s URL to be decoded
-     * @return Map of parameter and values
-     */
-    public static Map<String, String> decodeUrl(String s)
-    {
-        Map<String, String> params = new HashMap<String, String>();
-        if (s != null)
-        {
-            String array[] = s.split("&");
-            for (String parameter : array)
-            {
-                String v[] = parameter.split("=");
-                if (v.length > 1)
-                {
-                    params.put(URLDecoder.decode(v[0]),
-                            v.length > 1 ? URLDecoder.decode(v[1]) : null);
-                }
-            }
-        }
-        return params;
-    }
-
-    /**
-     * Parse a URL query and fragment parameters into a key-value bundle.
-     *
-     * @param url the URL to parse
-     * @return a dictionary bundle of keys and values
-     */
-    public static Map<String, String> parseUrl(String url)
-    {
-        // hack to prevent MalformedURLException
-        url = url.replace("fbconnect", "http");
-        try
-        {
-            URL u = new URL(url);
-            Map<String, String> params = decodeUrl(u.getQuery());
-            params.putAll(decodeUrl(u.getRef()));
-            return params;
-        } catch (MalformedURLException e)
-        {
-            return new HashMap<String, String>();
-        }
-    }
-
-    /**
-     * Display a simple alert dialog with the given text and title.
-     *
-     * @param context Android context in which the dialog should be displayed
-     * @param title Alert dialog title
-     * @param text Alert dialog message
-     */
-    public static void showAlert(Context context, String title, String text)
-    {
-        Builder alertBuilder = new Builder(context);
-        alertBuilder.setTitle(title);
-        alertBuilder.setMessage(text);
-        alertBuilder.create().show();
-    }
 
     /**
      * Function for check the network connectivity
@@ -202,10 +110,8 @@ import android.widget.Toast;
      *
      * @param ctx Activity Context
      */
-
     public static void getDisplayDpi(Context ctx)
     {
-
         DisplayMetrics dm = new DisplayMetrics();
         WindowManager wm = (WindowManager) ctx.getSystemService(Context.WINDOW_SERVICE);
         wm.getDefaultDisplay().getMetrics(dm);
@@ -311,45 +217,11 @@ import android.widget.Toast;
                 default:
                     break;
             }
-        } catch (Exception e)
+        }
+        catch (Exception e)
         {
             // Caught exception here
         }
-    }
-
-    public static void show_toast(Context ctx, String msg)
-    {
-
-        Toast.makeText(ctx, msg, Toast.LENGTH_LONG).show();
-    }
-
-    /** @return String */
-    public static String convertStreamToString(InputStream is)
-    {
-        BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-        StringBuilder sb = new StringBuilder();
-
-        String line = null;
-        try
-        {
-            while ((line = reader.readLine()) != null)
-            {
-                sb.append(line + "\n");
-            }
-        } catch (IOException e)
-        {
-            e.printStackTrace();
-        } finally
-        {
-            try
-            {
-                is.close();
-            } catch (IOException e)
-            {
-                e.printStackTrace();
-            }
-        }
-        return sb.toString();
     }
 
     public static Bitmap getRoundedShape(Bitmap scaleBitmapImage)
@@ -382,29 +254,8 @@ import android.widget.Toast;
         return targetBitmap;
     }
 
-    public static void showDIlog(Context pContext, String mssg)
-    {
-        AlertDialog.Builder dialog = new Builder(pContext);
-        dialog.setMessage(mssg)
-                .setCancelable(false)
-                .setIcon(R.id.logo_img)
-                .setPositiveButton("Ok", new DialogInterface.OnClickListener()
-                {
-
-                    @Override
-                    public void onClick(DialogInterface dialog, int arg1)
-                    {
-
-                        dialog.cancel();
-                    }
-                });
-        AlertDialog alrt = dialog.create();
-        alrt.show();
-    }
-
     public static Bitmap getImagerotation(String path, Bitmap b)
     {
-
         int width = b.getWidth();
         int height = b.getHeight();
         Matrix matrix = new Matrix();
@@ -441,107 +292,8 @@ import android.widget.Toast;
         return Bitmap.createBitmap(b, 0, 0, width, height, matrix, true);
     }
 
-    public static final Pattern email_valid = Pattern.compile(
-            "^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$"
-    );
-
-    public static String httpGetConnection(String url)
-    {
-        String result = null;
-        Log.d("Final URL : ", url);
-        HttpClient httpClient = new DefaultHttpClient();
-
-        // Sending a GET request to the web page that we want
-        // Because of we are sending a GET request, we have to pass the values
-        // through the URL
-        HttpGet httpGet = new HttpGet(url);
-
-        try
-        {
-            // execute(); executes a request using the default context.
-            // Then we assign the execution result to HttpResponse
-            HttpResponse httpResponse = httpClient.execute(httpGet);
-
-            // getEntity() ; obtains the message entity of this response
-            // getContent() ; creates a new InputStream object of the entity.
-            // Now we need a readable source to read the byte stream that comes
-            // as the httpResponse
-            InputStream inputStream = httpResponse.getEntity().getContent();
-
-            // We have a byte stream. Next step is to convert it to a Character
-            // stream
-            InputStreamReader inputStreamReader = new InputStreamReader(
-                    inputStream);
-
-            // Then we have to wraps the existing reader (InputStreamReader) and
-            // buffer the input
-            BufferedReader bufferedReader = new BufferedReader(
-                    inputStreamReader);
-
-            // InputStreamReader contains a buffer of bytes read from the source
-            // stream and converts these into characters as needed.
-            // The buffer size is 8K
-            // Therefore we need a mechanism to append the separately coming
-            // chunks in to one String element
-            // We have to use a class that can handle modifiable sequence of
-            // characters for use in creating String
-            StringBuilder stringBuilder = new StringBuilder();
-
-            String bufferedStrChunk = null;
-
-            // There may be so many buffered chunks. We have to go through each
-            // and every chunk of characters
-            // and assign a each chunk to bufferedStrChunk String variable
-            // and append that value one by one to the stringBuilder
-            while ((bufferedStrChunk = bufferedReader.readLine()) != null)
-            {
-                stringBuilder.append(bufferedStrChunk);
-            }
-
-            Log.d("result:", stringBuilder + "");
-            return stringBuilder.toString();
-        } catch (ClientProtocolException cpe)
-        {
-            System.out.println("Exception generates caz of httpResponse :"
-                    + cpe);
-            cpe.printStackTrace();
-        } catch (IOException ioe)
-        {
-            System.out
-                    .println("Second exception generates caz of httpResponse :"
-                            + ioe);
-            ioe.printStackTrace();
-        }
-
-        return null;
-    }
-
-    public static void CustomToast(Context ctx, String message)
-    {
-        Context context = ctx;
-        String text = "Sorry ! " + message;
-        Toast customizedToast = Toast.makeText(ctx, text, Toast.LENGTH_LONG);
-        customizedToast.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
-        LinearLayout mLayout = new LinearLayout(context);
-        mLayout.setOrientation(LinearLayout.VERTICAL);
-        mLayout.setBackgroundResource(R.color.black);
-        TextView mTV = new TextView(context);
-        mTV.setTextColor(Color.WHITE);
-        mTV.setTextSize(18);
-        //  CustomView cv = new CustomView(context);
-        mTV.setText(text);
-        mTV.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.CENTER_VERTICAL);
-        int width = LinearLayout.LayoutParams.FILL_PARENT;
-        int height = LinearLayout.LayoutParams.WRAP_CONTENT;
-        // mLayout.addView(cv, new LinearLayout.LayoutParams(height, width));
-        mLayout.addView(mTV, new LinearLayout.LayoutParams(width, 100));
-        customizedToast.setView(mLayout);
-        customizedToast.show();
-    }
-
     public static void dismissKeyBoard(Context ctx, View v)
     {
-
         InputMethodManager imm =
                 (InputMethodManager) ctx.getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(v.getWindowToken(), 0);

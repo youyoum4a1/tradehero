@@ -236,7 +236,6 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
 
     @Override public void onActivityResult(int requestCode, int resultCode, Intent data)
     {
-
         super.onActivityResult(requestCode, resultCode, data);
 
         if (resultCode == Activity.RESULT_OK)
@@ -272,7 +271,7 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
                     }
                     else
                     {
-                        Util.show_toast(mContext, "Please chose picture from apropriate path");
+                        THToast.show("Please chose picture from appropriate path");
                     }
 
                     Bitmap circleBitmap = Util.getRoundedShape(imageBmp);
@@ -319,7 +318,7 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
 
         if (!NetworkUtils.isConnected(getActivity()))
         {
-            Util.show_toast(getActivity(), getResources().getString(R.string.network_error));
+            THToast.show(R.string.network_error);
         }
         else if (!areFieldsValid ())
         {
@@ -411,7 +410,7 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
         protected void onPostExecute(String result)
         {
             super.onPostExecute(result);
-            Util.show_toast(getActivity(), result);
+            THToast.show(result);
             System.out.println("response for image upload----------" + result);
             dlg.dismiss();
         }

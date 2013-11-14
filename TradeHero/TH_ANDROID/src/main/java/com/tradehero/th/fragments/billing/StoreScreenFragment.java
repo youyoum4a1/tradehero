@@ -96,7 +96,6 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
         if (listView != null)
         {
             listView.setOnItemClickListener(null);
-            //listView.setAdapter(null);
         }
         listView = null;
         storeItemAdapter = null;

@@ -332,8 +332,8 @@ public class SettingsFragment extends DashboardFragment
     {
         progressDialog = ProgressDialog.show(
                 getSherlockActivity(),
-                Application.getResourceString(R.string.please_wait),
-                Application.getResourceString(R.string.connecting_tradehero_only),
+                Application.getResourceString(R.string.settings_notifications_email_alert_title),
+                Application.getResourceString(R.string.settings_notifications_email_alert_message),
                 true);
 
         userService.updateProfile(THUser.getCurrentUserBase().id, newStatus, createUserProfileCallback());
@@ -397,8 +397,8 @@ public class SettingsFragment extends DashboardFragment
     {
         progressDialog = ProgressDialog.show(
                 getActivity(),
-                Application.getResourceString(R.string.please_wait),
-                Application.getResourceString(R.string.connecting_tradehero_only),
+                Application.getResourceString(R.string.settings_misc_sign_out_alert_title),
+                Application.getResourceString(R.string.settings_misc_sign_out_alert_message),
                 true);
 
         THLog.d(TAG, "Before signout current user base key " + currentUserBaseKeyHolder.getCurrentUserBaseKey().key);
@@ -413,7 +413,8 @@ public class SettingsFragment extends DashboardFragment
             public void success(UserProfileDTO o, Response response)
             {
                 THUser.clearCurrentUser();
-                ActivityHelper.presentFromActivity(getActivity(), AuthenticationActivity.class, Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                ActivityHelper.launchAuthentication(getActivity());
+                getActivity().finish();
                 progressDialog.hide();
                 // TODO clear caches
                 THLog.d(TAG, "After successful signout current user base key " + currentUserBaseKeyHolder.getCurrentUserBaseKey().key);

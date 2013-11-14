@@ -10,14 +10,20 @@
   <string name="settings_primary_transaction_history">Transaction History</string>
 
   <string name="settings_notifications_email">Email Notifications</string>
+  <string name="settings_notifications_email_alert_title">Updating Your Notification Settings</string>
+  <string name="settings_notifications_email_alert_message">Please hold&#8230;</string>
 
   <string name="settings_misc_reset_help_screens">Reset Help Screens Now</string>
   <string name="settings_misc_clear_cache">Clear Cache Now</string>
+
   <string name="settings_misc_sign_out">Sign Out</string>
   <string name="settings_misc_sign_out_are_you_sure">Are you sure you want to sign out?</string>
   <string name="settings_misc_sign_out_no">No</string>
   <string name="settings_misc_sign_out_yes">Yes</string>
+  <string name="settings_misc_sign_out_alert_title">Signing Out</string>
+  <string name="settings_misc_sign_out_alert_message">Please hold&#8230;</string>
   <string name="settings_misc_sign_out_failed">Failed to Sign Out</string>
+
   <string name="settings_misc_about">About</string>
 
 

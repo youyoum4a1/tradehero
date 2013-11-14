@@ -21,6 +21,7 @@ public class IABAlertUtils
         alertDialogBuilder
                 .setTitle(R.string.store_billing_unavailable_window_title)
                 .setMessage(R.string.store_billing_unavailable_window_description)
+                .setIcon(R.drawable.google_play_store)
                 .setCancelable(true)
                 .setNegativeButton(R.string.store_billing_unavailable_cancel, new DialogInterface.OnClickListener()
                 {
@@ -168,6 +169,7 @@ public class IABAlertUtils
         alertDialogBuilder
                 .setTitle(titleResId)
                 .setMessage(descriptionResId)
+                .setIcon(R.drawable.th_app_logo)
                 .setCancelable(true)
                 .setNegativeButton(cancelResId, new DialogInterface.OnClickListener()
                 {
@@ -189,6 +191,7 @@ public class IABAlertUtils
         // set dialog message
         alertDialogBuilder
                 .setTitle(titleResId)
+                .setIcon(R.drawable.th_app_logo)
                 .setSingleChoiceItems(detailsAdapter, 0, new DialogInterface.OnClickListener()
                 {
                     @Override public void onClick(DialogInterface dialogInterface, int i)
