@@ -44,6 +44,7 @@ import com.tradehero.th.misc.callback.THResponse;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.service.UserService;
 import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.utils.VersionUtils;
 import dagger.Lazy;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -113,6 +114,14 @@ public class SettingsFragment extends DashboardFragment
                 @Override public void onClick(View view)
                 {
                     handleSendFeedbackClicked();
+                }
+            });
+            sendFeedbackBlock.setOnLongClickListener(new View.OnLongClickListener()
+            {
+                @Override public boolean onLongClick(View view)
+                {
+                    handleSendFeedbackLongClicked();
+                    return true;
                 }
             });
         }
@@ -271,7 +280,8 @@ public class SettingsFragment extends DashboardFragment
         try
         {
             startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appName)));
-        } catch (android.content.ActivityNotFoundException anfe)
+        }
+        catch (android.content.ActivityNotFoundException anfe)
         {
             startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://play.google.com/store/apps/details?id=" + appName)));
         }
@@ -279,27 +289,12 @@ public class SettingsFragment extends DashboardFragment
 
     private void handleSendFeedbackClicked()
     {
-        THToast.show("Feedback");
-        String appVersion = "";
-        try
-        {
-            PackageInfo pInfo = getSherlockActivity().getPackageManager().getPackageInfo(getSherlockActivity().getPackageName(), 0);
-            appVersion = pInfo.versionName;
-        } catch (PackageManager.NameNotFoundException e)
-        {
-            appVersion = APP_VERSION;
-        }
+        startActivity(Intent.createChooser(VersionUtils.getSupportEmailIntent(getSherlockActivity()), ""));
+    }
 
-        String deviceDetails = "\n\n-----\nTradeHero " + appVersion +
-                "\n" + getDeviceName() + "" +
-                "\nAndroid Ver. " + android.os.Build.VERSION.SDK_INT +
-                "-----\n";
-        Intent intent = new Intent(Intent.ACTION_SEND);
-        intent.setType("plain/text");
-        intent.putExtra(Intent.EXTRA_EMAIL, new String[] {"support@tradehero.mobi"});
-        intent.putExtra(Intent.EXTRA_SUBJECT, "Support");
-        intent.putExtra(Intent.EXTRA_TEXT, deviceDetails);
-        startActivity(Intent.createChooser(intent, ""));
+    private void handleSendFeedbackLongClicked()
+    {
+        startActivity(Intent.createChooser(VersionUtils.getSupportEmailIntent(getSherlockActivity(), true), ""));
     }
 
     private void handleFaqClicked()
@@ -440,37 +435,6 @@ public class SettingsFragment extends DashboardFragment
     private void handleAboutClicked()
     {
         navigator.pushFragment(AboutFragment.class);
-    }
-
-    public String getDeviceName()
-    {
-        String manufacturer = Build.MANUFACTURER;
-        String model = Build.MODEL;
-        if (model.startsWith(manufacturer))
-        {
-            return capitalize(model);
-        }
-        else
-        {
-            return capitalize(manufacturer) + " " + model;
-        }
-    }
-
-    private String capitalize(String s)
-    {
-        if (s == null || s.length() == 0)
-        {
-            return "";
-        }
-        char first = s.charAt(0);
-        if (Character.isUpperCase(first))
-        {
-            return s;
-        }
-        else
-        {
-            return Character.toUpperCase(first) + s.substring(1);
-        }
     }
 
     //<editor-fold desc="BaseFragment.TabBarVisibilityInformer">

@@ -58,7 +58,7 @@ public class JacksonConverterTest
 
     @Test public void shouldCreateGetPositionsDTO1() throws Exception
     {
-        File jsonFile = getLocalFile("GetPositionsDTOBody1.js");
+        File jsonFile = getLocalFile("GetPositionsDTOBody1.json");
         TypedInput typedInputFile = new TypedFile("application/json; charset=utf-8", jsonFile);
         Object converted = jacksonConverter.fromBody(typedInputFile, GetPositionsDTO.class);
         assertThat(converted, instanceOf(GetPositionsDTO.class));
@@ -66,7 +66,7 @@ public class JacksonConverterTest
 
     @Test public void shouldCreateGetPositionsDTO2() throws Exception
     {
-        File jsonFile = getLocalFile("GetPositionsDTOBody2.js");
+        File jsonFile = getLocalFile("GetPositionsDTOBody2.json");
         TypedInput typedInputFile = new TypedFile("application/json; charset=utf-8", jsonFile);
         Object converted = jacksonConverter.fromBody(typedInputFile, GetPositionsDTO.class);
         assertThat(converted, instanceOf(GetPositionsDTO.class));
