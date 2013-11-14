@@ -96,7 +96,7 @@ public class LeaderboardDefDTO extends AbstractItemWithComparableId<Integer>
                         | LeaderboardSortType.SharpeRatio.getFlag();
             default:
                 return LeaderboardSortType.HeroQuotient.getFlag()
-                        | LeaderboardSortType.HeroQuotient.getFlag();
+                        | LeaderboardSortType.Roi.getFlag();
         }
     }
 
