@@ -27,7 +27,7 @@ import com.tradehero.th.fragments.authentication.SignUpFragment;
 import com.tradehero.th.fragments.authentication.WelcomeFragment;
 import com.tradehero.th.misc.callback.LogInCallback;
 import com.tradehero.th.misc.exception.THException;
-import com.tradehero.th.utills.Constants;
+import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.FacebookUtils;
 import com.tradehero.th.utils.LinkedInUtils;
 import com.tradehero.th.utils.TwitterUtils;

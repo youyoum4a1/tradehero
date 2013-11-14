@@ -3,7 +3,7 @@ package com.tradehero.th.http;
 import android.util.Log;
 import com.loopj.android.http.AsyncHttpClient;
 import com.tradehero.th.base.THUser;
-import com.tradehero.th.utills.Constants;
+import com.tradehero.th.utils.Constants;
 import java.util.HashMap;
 import java.util.Map;
 

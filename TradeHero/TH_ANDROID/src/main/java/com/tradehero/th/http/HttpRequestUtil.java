@@ -27,7 +27,7 @@ import org.apache.http.util.EntityUtils;
 import org.json.JSONObject;
 
 import android.content.Context;
-import com.tradehero.th.utills.Constants;
+import com.tradehero.th.utils.Constants;
 import android.util.Base64;
 
 public class HttpRequestUtil

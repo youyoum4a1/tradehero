@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
-import com.tradehero.th.utills.Constants;
 import java.util.ArrayList;
 import java.util.List;
 

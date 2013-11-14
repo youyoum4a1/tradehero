@@ -7,9 +7,8 @@ package com.tradehero.th.network;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tradehero.common.utils.JacksonConverter;
-import com.tradehero.th.R;
-import com.tradehero.th.base.Application;
 import com.tradehero.th.base.THUser;
+import com.tradehero.th.utils.Constants;
 import retrofit.ErrorHandler;
 import retrofit.RequestInterceptor;
 import retrofit.RestAdapter;
@@ -18,8 +17,6 @@ import retrofit.converter.Converter;
 
 public class NetworkEngine
 {
-    private static final String API_URL = "https://www.tradehero.mobi/api";
-
     private RestAdapter restAdapter;
     private ErrorHandler retrofitErrorHandler = new ErrorHandler()
     {
@@ -40,7 +37,7 @@ public class NetworkEngine
     {
         Converter converter = new JacksonConverter(new ObjectMapper());
         restAdapter = new RestAdapter.Builder()
-                .setServer(API_URL)
+                .setServer(Constants.BASE_API_URL)
                 .setConverter(converter)
                 .setRequestInterceptor(new RequestInterceptor()
                 {
@@ -60,8 +57,8 @@ public class NetworkEngine
 
     private void buildAuthorizationHeader(RequestInterceptor.RequestFacade request)
     {
-        request.addHeader("TH-Client-Version", "1.5.3.3016");
-        request.addHeader("Authorization", THUser.getAuthHeader());
+        request.addHeader(Constants.TH_CLIENT_VERSION, Constants.TH_CLIENT_VERSION_VALUE);
+        request.addHeader(Constants.AUTHORIZATION, THUser.getAuthHeader());
     }
 
     public <T> T createService(Class<T> service)
