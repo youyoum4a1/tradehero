@@ -10,15 +10,19 @@ import com.tradehero.th.api.leaderboard.position.OwnedLeaderboardPositionId;
 import com.tradehero.th.api.position.PositionInPeriodDTO;
 import com.tradehero.th.widget.position.AbstractPositionView;
 import com.tradehero.th.widget.position.LockedPositionItem;
+import com.tradehero.th.widget.position.PositionInPeriodClosedView;
 import com.tradehero.th.widget.position.PositionSectionHeaderItemView;
 
 /** Created with IntelliJ IDEA. User: tho Date: 11/6/13 Time: 8:11 PM Copyright (c) TradeHero */
-public class InPeriodPositionItemAdapter extends AbstractPositionItemAdapter<PositionInPeriodDTO>
+public class LeaderboardPositionItemAdapter extends AbstractPositionItemAdapter<PositionInPeriodDTO>
 {
-    public InPeriodPositionItemAdapter(Context context, LayoutInflater inflater, int headerLayoutId,
-            int lockedPositionLayoutId, int openPositionLayoutId, int closedPositionLayoutId, int positionNothingId)
+    private final boolean isTimeRestricted;
+
+    public LeaderboardPositionItemAdapter(Context context, LayoutInflater inflater, int headerLayoutId,
+            int lockedPositionLayoutId, int openPositionLayoutId, int closedPositionLayoutId, int positionNothingId, boolean isTimeRestricted)
     {
         super(context, inflater, headerLayoutId, lockedPositionLayoutId, openPositionLayoutId, closedPositionLayoutId, positionNothingId);
+        this.isTimeRestricted = isTimeRestricted;
     }
 
     @Override public View getView(int position, View convertView, ViewGroup parent)
@@ -43,7 +47,8 @@ public class InPeriodPositionItemAdapter extends AbstractPositionItemAdapter<Pos
         }
         else
         {
-            ExpandableListItem<OwnedLeaderboardPositionId> expandableWrapper = (ExpandableListItem<OwnedLeaderboardPositionId>) getItem(position);
+            ExpandableLeaderboardPositionItem expandableWrapper = (ExpandableLeaderboardPositionItem) getItem(position);
+
             if (expandableWrapper.getModel().isLocked())
             {
                 LockedPositionItem cell = (LockedPositionItem)convertView;
@@ -64,25 +69,32 @@ public class InPeriodPositionItemAdapter extends AbstractPositionItemAdapter<Pos
                     }
                 }
 
-                bindCell(convertView, expandableWrapper.getModel());
+                bindCell(convertView, expandableWrapper);
             }
         }
         setLatestView(convertView);
         return convertView;
     }
 
-    private void bindCell(View convertView, OwnedLeaderboardPositionId model)
+    private void bindCell(View convertView, ExpandableLeaderboardPositionItem item)
     {
         AbstractPositionView cell = (AbstractPositionView)convertView;
-        cell.linkWith(model, true);
+        if (cell instanceof PositionInPeriodClosedView)
+        {
+            ((PositionInPeriodClosedView)cell).linkWith(item, true);
+        }
+        else
+        {
+            cell.linkWith(item.getModel(), true);
+        }
         cell.setListener(getInternalListener());
     }
 
     @Override protected void setPosition(PositionInPeriodDTO positionDTO)
     {
 
-        ExpandableListItem<OwnedLeaderboardPositionId> item = new ExpandableListItem<>(positionDTO.getLbOwnedPositionId());
-
+        ExpandableLeaderboardPositionItem item = new ExpandableLeaderboardPositionItem(positionDTO.getLbOwnedPositionId());
+        item.setTimeRestricted(isTimeRestricted);
 
         if (positionDTO.isOpen() == null)
         {
@@ -123,6 +135,26 @@ public class InPeriodPositionItemAdapter extends AbstractPositionItemAdapter<Pos
         else
         {
             return PositionItemType.Closed.value;
+        }
+    }
+
+    public static class ExpandableLeaderboardPositionItem extends ExpandableListItem<OwnedLeaderboardPositionId>
+    {
+        private boolean timeRestricted;
+
+        public ExpandableLeaderboardPositionItem(OwnedLeaderboardPositionId model)
+        {
+            super(model);
+        }
+
+        public boolean isTimeRestricted()
+        {
+            return timeRestricted;
+        }
+
+        public void setTimeRestricted(boolean timeRestricted)
+        {
+            this.timeRestricted = timeRestricted;
         }
     }
 }

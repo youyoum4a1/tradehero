@@ -21,7 +21,7 @@ import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.base.NavigatorActivity;
-import com.tradehero.th.fragments.position.InPeriodPositionListFragment;
+import com.tradehero.th.fragments.position.LeaderboardPositionListFragment;
 import com.tradehero.th.fragments.timeline.TimelineFragment;
 import com.tradehero.th.models.THSignedNumber;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefCache;
@@ -292,7 +292,7 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         boolean isTimeRestrictedLeaderboard = leaderboardDef != null && leaderboardDef.isTimeRestrictedLeaderboard();
         bundle.putBoolean(LeaderboardDefDTO.LEADERBOARD_DEF_TIME_RESTRICTED, isTimeRestrictedLeaderboard);
 
-        navigator.pushFragment(InPeriodPositionListFragment.class, bundle, true);
+        navigator.pushFragment(LeaderboardPositionListFragment.class, bundle, true);
     }
 
     private void handleOpenProfileButtonClicked()

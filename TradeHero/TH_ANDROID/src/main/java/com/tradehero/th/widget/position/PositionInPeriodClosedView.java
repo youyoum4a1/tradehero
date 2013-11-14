@@ -3,6 +3,7 @@ package com.tradehero.th.widget.position;
 import android.content.Context;
 import android.util.AttributeSet;
 import com.tradehero.th.R;
+import com.tradehero.th.adapters.position.LeaderboardPositionItemAdapter;
 import com.tradehero.th.api.leaderboard.position.OwnedLeaderboardPositionId;
 import com.tradehero.th.api.position.OwnedPositionId;
 import com.tradehero.th.widget.position.partial.PositionPartialBottomClosedView;
@@ -51,5 +52,11 @@ public class PositionInPeriodClosedView extends PositionClosedView
     {
         super.linkWith(ownedPositionId, andDisplay);
         this.bottomView.linkWith(ownedPositionId, andDisplay);
+    }
+
+    public void linkWith(LeaderboardPositionItemAdapter.ExpandableLeaderboardPositionItem item, boolean andDisplay)
+    {
+        super.linkWith(item.getModel(), andDisplay);
+        this.bottomView.linkWith(item, andDisplay);
     }
 }

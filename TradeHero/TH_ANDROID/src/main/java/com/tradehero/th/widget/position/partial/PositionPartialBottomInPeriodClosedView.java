@@ -2,9 +2,11 @@ package com.tradehero.th.widget.position.partial;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.view.View;
 import android.widget.TextView;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.th.R;
+import com.tradehero.th.adapters.position.LeaderboardPositionItemAdapter;
 import com.tradehero.th.api.leaderboard.position.OwnedLeaderboardPositionId;
 import com.tradehero.th.api.position.PositionInPeriodDTO;
 import com.tradehero.th.persistence.leaderboard.position.LeaderboardPositionCache;
@@ -31,6 +33,9 @@ public class PositionPartialBottomInPeriodClosedView extends PositionPartialBott
     private TextView inPeriodValueAtStart;
     private TextView inPeriodStartValueDate;
     private TextView inPeriodRoiValue;
+    private boolean isTimeRestricted;
+    private View inPeriodTitle;
+    private View inPeriodPositionList;
 
     //<editor-fold desc="Constructors">
     public PositionPartialBottomInPeriodClosedView(Context context)
@@ -62,6 +67,9 @@ public class PositionPartialBottomInPeriodClosedView extends PositionPartialBott
         inPeriodValueAtStart = (TextView) findViewById(R.id.in_period_start_value);
         inPeriodStartValueDate = (TextView) findViewById(R.id.in_period_start_value_date);
         inPeriodRoiValue = (TextView) findViewById(R.id.in_period_roi_value);
+
+        inPeriodTitle = findViewById(R.id.position_list_in_period_title);
+        inPeriodPositionList = findViewById(R.id.position_list_bottom_in_period);
 
         super.initViews();
     }
@@ -119,8 +127,28 @@ public class PositionPartialBottomInPeriodClosedView extends PositionPartialBott
 
     public void display()
     {
-        displayInPeriod();
+        if (isTimeRestricted)
+        {
+            displayInPeriod();
+            setInPeriodVisibility(true);
+        }
+        else
+        {
+            setInPeriodVisibility(false);
+        }
 
         super.display();
+    }
+
+    private void setInPeriodVisibility(boolean visibility)
+    {
+        inPeriodPositionList.setVisibility(visibility ? View.VISIBLE : View.GONE);
+        inPeriodTitle.setVisibility(visibility ? View.VISIBLE : View.GONE);
+    }
+
+    public void linkWith(LeaderboardPositionItemAdapter.ExpandableLeaderboardPositionItem item, boolean andDisplay)
+    {
+        isTimeRestricted = item.isTimeRestricted();
+        linkWith(item.getModel(), andDisplay);
     }
 }

@@ -30,13 +30,13 @@ public class AbstractLeaderboardFragment extends DashboardFragment
     {
         Bundle bundle = new Bundle(getArguments());
         bundle.putInt(LeaderboardDTO.LEADERBOARD_ID, dto.getId());
-        bundle.putString(LeaderboardListViewFragment.TITLE, dto.name);
-        bundle.putInt(LeaderboardListViewFragment.CURRENT_SORT_TYPE,
+        bundle.putString(LeaderboardMarkUserListViewFragment.TITLE, dto.name);
+        bundle.putInt(LeaderboardMarkUserListViewFragment.CURRENT_SORT_TYPE,
                 getCurrentSortType() != null ? getCurrentSortType().getFlag() : dto.getDefaultSortType());
         bundle.putString(LeaderboardDefDTO.LEADERBOARD_DEF_DESC, dto.desc);
 
         bundle.putInt(LeaderboardSortType.BUNDLE_FLAG, dto.getSortOptionFlags());
-        getNavigator().pushFragment(LeaderboardListViewFragment.class, bundle);
+        getNavigator().pushFragment(LeaderboardMarkUserListViewFragment.class, bundle);
     }
 
     //<editor-fold desc="ActionBar">

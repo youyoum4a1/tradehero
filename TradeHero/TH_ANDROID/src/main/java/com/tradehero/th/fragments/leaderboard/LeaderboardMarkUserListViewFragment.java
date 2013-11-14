@@ -25,9 +25,9 @@ import javax.inject.Inject;
 import org.ocpsoft.prettytime.PrettyTime;
 
 /** Created with IntelliJ IDEA. User: tho Date: 10/14/13 Time: 12:34 PM Copyright (c) TradeHero */
-public class LeaderboardListViewFragment extends AbstractLeaderboardFragment
+public class LeaderboardMarkUserListViewFragment extends AbstractLeaderboardFragment
 {
-    public static final String TITLE = LeaderboardListViewFragment.class.getName() + ".title";
+    public static final String TITLE = LeaderboardMarkUserListViewFragment.class.getName() + ".title";
 
     @Inject protected PrettyTime prettyTime;
 
@@ -47,7 +47,7 @@ public class LeaderboardListViewFragment extends AbstractLeaderboardFragment
         leaderboardMarkUserListView.setEmptyView(view.findViewById(android.R.id.empty));
 
         View headerView = inflater.inflate(R.layout.leaderboard_listview_header, null);
-        leaderboardMarkUserListView.getRefreshableView().addHeaderView(headerView);
+        leaderboardMarkUserListView.getRefreshableView().addHeaderView(headerView, null, false);
 
         initHeaderView(headerView);
 

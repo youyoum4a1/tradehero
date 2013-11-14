@@ -3,7 +3,7 @@ package com.tradehero.th.fragments.position;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
-import com.tradehero.th.adapters.position.InPeriodPositionItemAdapter;
+import com.tradehero.th.adapters.position.LeaderboardPositionItemAdapter;
 import com.tradehero.th.api.leaderboard.LeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import com.tradehero.th.api.leaderboard.position.GetLeaderboardPositionsDTO;
@@ -13,7 +13,7 @@ import dagger.Lazy;
 import javax.inject.Inject;
 
 /** Created with IntelliJ IDEA. User: tho Date: 11/6/13 Time: 12:57 PM Copyright (c) TradeHero */
-public class InPeriodPositionListFragment extends PositionListFragment
+public class LeaderboardPositionListFragment extends PositionListFragment
 {
     @Inject Lazy<GetLeaderboardPositionsCache> getLeaderboardPositionsCache;
 
@@ -25,14 +25,16 @@ public class InPeriodPositionListFragment extends PositionListFragment
 
     @Override protected void createPositionItemAdapter()
     {
-        positionItemAdapter = new InPeriodPositionItemAdapter(
+        timeRestricted = getArguments().getBoolean(LeaderboardDefDTO.LEADERBOARD_DEF_TIME_RESTRICTED, false);
+        positionItemAdapter = new LeaderboardPositionItemAdapter(
                 getActivity(),
                 getActivity().getLayoutInflater(),
                 R.layout.position_item_header,
                 R.layout.position_locked_item,
                 R.layout.position_open_in_period,
                 R.layout.position_closed_in_period,
-                R.layout.position_quick_nothing);
+                R.layout.position_quick_nothing,
+                timeRestricted);
     }
 
     @Override public void onResume()
@@ -42,7 +44,6 @@ public class InPeriodPositionListFragment extends PositionListFragment
         String periodStart = getArguments().getString(LeaderboardUserDTO.LEADERBOARD_PERIOD_START_STRING);
         THLog.d(TAG, "Period Start: " + periodStart);
 
-        timeRestricted = getArguments().getBoolean(LeaderboardDefDTO.LEADERBOARD_DEF_TIME_RESTRICTED, false);
         super.onResume();
     }
 

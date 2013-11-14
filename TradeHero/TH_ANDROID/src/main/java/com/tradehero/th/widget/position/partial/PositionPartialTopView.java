@@ -35,8 +35,6 @@ public class PositionPartialTopView extends LinearLayout
 {
     public static final String TAG = PositionPartialTopView.class.getSimpleName();
 
-
-
     @Inject protected Context context;
     @Inject protected Lazy<PositionCache> filedPositionCache;
     @Inject protected Lazy<LeaderboardPositionCache> leaderboardPositionCache;
@@ -376,7 +374,6 @@ public class PositionPartialTopView extends LinearLayout
             }
         };
     }
-
 
     public ImageButton getTradeHistoryButton()
     {
