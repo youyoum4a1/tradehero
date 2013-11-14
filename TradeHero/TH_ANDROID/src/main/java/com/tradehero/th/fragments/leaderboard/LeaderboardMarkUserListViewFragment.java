@@ -43,7 +43,7 @@ public class LeaderboardMarkUserListViewFragment extends AbstractLeaderboardFrag
 
         leaderboardMarkUserListView = (LeaderboardMarkUserListView) view.findViewById(R.id.leaderboard_listview);
         leaderboardMarkUserListAdapter = new LeaderboardMarkUserListAdapter(
-                getActivity(), getActivity().getLayoutInflater(), null, R.layout.lbmu_item_hq_mode);
+                getActivity(), getActivity().getLayoutInflater(), null, getCurrentSortType().getLayoutResourceId());
         leaderboardMarkUserListView.setAdapter(leaderboardMarkUserListAdapter);
         leaderboardMarkUserListView.setOnRefreshListener(createOnRefreshListener());
         leaderboardMarkUserListView.setEmptyView(view.findViewById(android.R.id.empty));
@@ -92,9 +92,9 @@ public class LeaderboardMarkUserListViewFragment extends AbstractLeaderboardFrag
 
         // update layoutResourceId
         // http://grepcode.com/file/repository.grepcode.com/java/ext/com.google.android/android/4.0.3_r1/android/widget/ListView.java#443
-        // this crazy way is the only way I found to clear the recycle (reusing item view)
-        leaderboardMarkUserListView.setAdapter(leaderboardMarkUserListAdapter);
+        // this crazy way is the only way I found to clear ListView's recycle (reusing item view)
         leaderboardMarkUserListAdapter.setLayoutResourceId(sortType.getLayoutResourceId());
+        leaderboardMarkUserListView.setAdapter(leaderboardMarkUserListAdapter);
     }
 
     private PullToRefreshBase.OnRefreshListener<ListView> createOnRefreshListener()
@@ -158,8 +158,6 @@ public class LeaderboardMarkUserListViewFragment extends AbstractLeaderboardFrag
             {
                 leaderboardMarkUserListAdapter.setUnderlyingItems(items);
             }
-            leaderboardMarkUserListAdapter.notifyDataSetChanged();
-            leaderboardMarkUserListView.onRefreshComplete();
 
             // display marking time
             LeaderboardMarkUserLoader leaderboardMarkUserLoader = (LeaderboardMarkUserLoader) loader;
@@ -168,6 +166,9 @@ public class LeaderboardMarkUserListViewFragment extends AbstractLeaderboardFrag
             {
                 leaderboardMarkUserMarkingTime.setText(prettyTime.format(markingTime));
             }
+
+            leaderboardMarkUserListAdapter.notifyDataSetChanged();
+            leaderboardMarkUserListView.onRefreshComplete();
         }
 
         @Override public void onLoaderReset(Loader<List<LeaderboardUserDTO>> loader)

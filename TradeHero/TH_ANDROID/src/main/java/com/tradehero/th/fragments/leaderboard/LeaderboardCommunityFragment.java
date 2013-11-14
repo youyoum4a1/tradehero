@@ -50,18 +50,13 @@ public class LeaderboardCommunityFragment extends AbstractLeaderboardFragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.leaderboard_community_screen, container, false);
-
         initViews(view);
-
         prepareAdapters();
-
         return view;
     }
 
     @Override public void onResume()
     {
-        int defaultSortFlags = LeaderboardSortType.HeroQuotient.getFlag() | LeaderboardSortType.Roi.getFlag();
-        getArguments().putInt(LeaderboardSortType.BUNDLE_FLAG, defaultSortFlags);
         super.onResume();
     }
 
@@ -93,6 +88,10 @@ public class LeaderboardCommunityFragment extends AbstractLeaderboardFragment
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         inflater.inflate(R.menu.leaderboard_menu, menu);
+
+        int defaultSortFlags = LeaderboardSortType.HeroQuotient.getFlag() | LeaderboardSortType.Roi.getFlag();
+        getArguments().putInt(LeaderboardSortType.BUNDLE_FLAG, defaultSortFlags);
+
         super.onCreateOptionsMenu(menu, inflater);
 
         ActionBar actionBar = getSherlockActivity().getSupportActionBar();
