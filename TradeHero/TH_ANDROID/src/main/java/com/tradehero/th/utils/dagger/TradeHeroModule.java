@@ -9,6 +9,7 @@ import com.tradehero.common.cache.LruMemFileCache;
 import com.tradehero.common.persistence.CacheHelper;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.api.form.AbstractUserAvailabilityRequester;
+import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
 import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.base.THUser;
 import com.tradehero.th.fragments.WebViewFragment;
@@ -306,6 +307,11 @@ public class TradeHeroModule
     @Provides @Named("CurrentUser") UserBaseDTO provideCurrentUserBaseDTO()
     {
         return THUser.getCurrentUserBase();
+    }
+
+    @Provides @Singleton CurrentUserBaseKeyHolder provideCurrentUserBaseKeyHolder()
+    {
+        return new CurrentUserBaseKeyHolder();
     }
 
     @Provides PrettyTime providePrettyTime()

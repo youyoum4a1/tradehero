@@ -10,8 +10,8 @@ import android.os.Bundle;
 
 public class SplashActivity extends SherlockActivity
 {
-
     public static final String LOGGEDIN = SplashActivity.class.getName();
+
     private Timer timerToShiftActivity;
 
     @Override protected void onCreate(Bundle savedInstanceState)
