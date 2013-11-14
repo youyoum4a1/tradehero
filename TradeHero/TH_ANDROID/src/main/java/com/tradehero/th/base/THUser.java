@@ -17,6 +17,7 @@ import com.tradehero.th.misc.callback.THCallback;
 import com.tradehero.th.misc.callback.THResponse;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.misc.exception.THException.ExceptionCode;
+import com.tradehero.th.network.service.SessionService;
 import com.tradehero.th.network.service.UserService;
 import com.tradehero.th.persistence.social.VisitedFriendListPrefs;
 import com.tradehero.th.persistence.user.UserProfileCache;
@@ -50,6 +51,7 @@ public class THUser
     private static String currentAuthenticationType;
 
     @Inject static Lazy<UserService> userService;
+    @Inject static Lazy<SessionService> sessionService;
     @Inject static protected Lazy<UserProfileCache> userProfileCache;
     @Inject static protected CurrentUserBaseKeyHolder currentUserBaseKeyHolder;
 
@@ -190,7 +192,7 @@ public class THUser
                 userService.get().signUp(authenticator.getAuthHeader(), userFormDTO, createCallbackForSignUpAsyncWithJson(json, callback));
                 break;
             case SignIn:
-                userService.get().signIn(authenticator.getAuthHeader(), userFormDTO, createCallbackForSignInAsyncWithJson(json, callback));
+                sessionService.get().login(authenticator.getAuthHeader(), userFormDTO, createCallbackForSignInAsyncWithJson(json, callback));
                 break;
         }
     }

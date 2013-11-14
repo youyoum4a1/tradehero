@@ -24,6 +24,7 @@ import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserListViewFragmen
 import com.tradehero.th.network.service.AlertPlanService;
 import com.tradehero.th.network.service.AlertService;
 import com.tradehero.th.network.service.FollowerService;
+import com.tradehero.th.network.service.SessionService;
 import com.tradehero.th.persistence.portfolio.OwnedPortfolioFetchAssistant;
 import com.tradehero.th.persistence.user.UserProfileFetchAssistant;
 import com.tradehero.th.base.THUser;
@@ -241,6 +242,11 @@ public class TradeHeroModule
     @Provides @Singleton UserService provideUserService()
     {
         return engine.createService(UserService.class);
+    }
+
+    @Provides @Singleton SessionService provideSessionService()
+    {
+        return engine.createService(SessionService.class);
     }
 
     @Provides @Singleton SecurityService provideSecurityService()

@@ -19,7 +19,7 @@ public class QuoteDTO
     public int quoteType;
 
     public Double toUSDRate;
-    public String toUSDRateDate;
+    public Date toUSDRateDate;
 
     public String timeStamp;
 

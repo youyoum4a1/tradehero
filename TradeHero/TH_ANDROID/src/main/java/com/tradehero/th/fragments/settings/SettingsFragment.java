@@ -42,6 +42,7 @@ import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.misc.callback.THCallback;
 import com.tradehero.th.misc.callback.THResponse;
 import com.tradehero.th.misc.exception.THException;
+import com.tradehero.th.network.service.SessionService;
 import com.tradehero.th.network.service.UserService;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.VersionUtils;
@@ -63,6 +64,7 @@ public class SettingsFragment extends DashboardFragment
     public static final String APP_VERSION = "1.5.2";
 
     @Inject UserService userService;
+    @Inject SessionService sessionService;
     @Inject protected Lazy<UserProfileCache> userProfileCache;
     @Inject protected CurrentUserBaseKeyHolder currentUserBaseKeyHolder;
 
@@ -397,7 +399,7 @@ public class SettingsFragment extends DashboardFragment
                 true);
 
         THLog.d(TAG, "Before signout current user base key " + currentUserBaseKeyHolder.getCurrentUserBaseKey().key);
-        userService.signOut(createSignOutCallback());
+        sessionService.logout(createSignOutCallback());
     }
 
     private Callback<UserProfileDTO> createSignOutCallback()

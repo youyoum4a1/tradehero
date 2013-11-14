@@ -117,6 +117,7 @@ public interface UserTimelineService
             Callback<TimelineDTO> callback);
     //</editor-fold>
 
+    // TODO does it really exist?
     //<editor-fold desc="Get Timeline Item">
     @GET("/users/{userId}/timeline/{timelineItemId}")
     TimelineItemDTO getTimelineItem(
@@ -159,19 +160,5 @@ public interface UserTimelineService
             @Path("userId") int userId,
             @Path("timelineItemId") int timelineItemId,
             Callback<TimelineItemDTO> callback);
-    //</editor-fold>
-
-    //<editor-fold desc="Post Timeline Marker">
-    @POST("/users/{userId}/read")
-    TimelineReadDTO postTimelineMarker(
-            @Path("userId") int userId,
-            @Body TimelineReadDTO lastReadDTO)
-        throws RetrofitError;
-
-    @POST("/users/{userId}/read")
-    void postTimelineMarker(
-            @Path("userId") int userId,
-            @Body TimelineReadDTO lastReadDTO,
-            Callback<TimelineReadDTO> callback);
     //</editor-fold>
 }

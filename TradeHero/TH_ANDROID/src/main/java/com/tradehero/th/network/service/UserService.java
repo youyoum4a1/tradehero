@@ -116,54 +116,6 @@ public interface UserService
             Callback<Response> callback);
     //</editor-fold>
 
-    //<editor-fold desc="Login">
-    @POST("/login")
-    UserLoginDTO signIn(
-            @Header("Authorization") String authorization,
-            @Body UserFormDTO user)
-        throws RetrofitError;
-
-    @POST("/login")
-    void signIn(
-            @Header("Authorization") String authorization,
-            @Body UserFormDTO user,
-            Callback<UserLoginDTO> callback);
-    //</editor-fold>
-
-    //<editor-fold desc="Update Authorization Tokens">
-    @POST("/updateAuthorizationTokens")
-    Response updateAuthorizationTokens(
-            @Body UserFormDTO userFormDTO)
-        throws RetrofitError;
-
-    @POST("/updateAuthorizationTokens")
-    void updateAuthorizationTokens(
-            @Body UserFormDTO userFormDTO,
-            Callback<Response> callback)
-        throws RetrofitError;
-    //</editor-fold>
-
-    //<editor-fold desc="Update Device">
-    @POST("/updateDevice")
-    UserProfileDTO updateDevice()
-        throws RetrofitError;
-
-    @POST("/updateDevice")
-    void updateDevice(
-            Callback<UserProfileDTO> callback);
-    //</editor-fold>
-
-    //<editor-fold desc="Logout">
-    @POST("/logout")
-    Response signOut(
-            @Header("Authorization") String authorization)
-        throws RetrofitError;
-
-    @POST("/logout")
-    void signOut(
-            Callback<UserProfileDTO> callback);
-    //</editor-fold>
-
     //<editor-fold desc="Check Display Name Available">
     @GET("/checkDisplayNameAvailable")
     UserAvailabilityDTO checkDisplayNameAvailable(
@@ -290,12 +242,14 @@ public interface UserService
 
     //<editor-fold desc="Invite Friends">
     @POST("/users/{userId}/inviteFriends")
-    Response inviteFriends(@Path("userId") int userId,
+    Response inviteFriends(
+            @Path("userId") int userId,
             @Body InviteFormDTO inviteFormDTO)
         throws RetrofitError;
 
     @POST("/users/{userId}/inviteFriends")
-    void inviteFriends(@Path("userId") int userId,
+    void inviteFriends(
+            @Path("userId") int userId,
             @Body InviteFormDTO inviteFormDTO,
             Callback<Response> callback);
     //</editor-fold>

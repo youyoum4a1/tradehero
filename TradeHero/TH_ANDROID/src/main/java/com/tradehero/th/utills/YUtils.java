@@ -7,12 +7,9 @@
 package com.tradehero.th.utills;
 
 import android.text.TextUtils;
-import com.tradehero.th.utills.Logger.LogLevel;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 @Deprecated public class YUtils
 {
@@ -143,7 +140,6 @@ import java.util.Map;
 
     public static double parseQuoteValue(String value)
     {
-        Logger.log(TAG, "parseQuoteValue: " + value, LogLevel.LOGGING_LEVEL_DEBUG);
         if (!TextUtils.isEmpty(value))
         {
             try
