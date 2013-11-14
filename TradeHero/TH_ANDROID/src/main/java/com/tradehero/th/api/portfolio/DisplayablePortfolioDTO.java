@@ -1,7 +1,7 @@
 package com.tradehero.th.api.portfolio;
 
+import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
 import com.tradehero.th.api.users.UserBaseDTO;
-import com.tradehero.th.base.THUser;
 import com.tradehero.th.persistence.portfolio.PortfolioCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import javax.inject.Inject;
@@ -14,6 +14,8 @@ import javax.inject.Inject;
 public class DisplayablePortfolioDTO implements Comparable
 {
     public static final String TAG = DisplayablePortfolioDTO.class.getSimpleName();
+
+    @Inject public static CurrentUserBaseKeyHolder currentUserBaseKeyHolder;
 
     public OwnedPortfolioId ownedPortfolioId;
     public UserBaseDTO userBaseDTO;
@@ -68,7 +70,7 @@ public class DisplayablePortfolioDTO implements Comparable
 
     public boolean isUserCurrentUser()
     {
-        return THUser.getCurrentUserBase().equals(userBaseDTO);
+        return currentUserBaseKeyHolder.getCurrentUserBaseKey().equals(userBaseDTO.getBaseKey());
     }
 
     @Override public boolean equals(Object other)
@@ -137,81 +139,5 @@ public class DisplayablePortfolioDTO implements Comparable
         }
 
         return ownedPortfolioId.compareTo(other.ownedPortfolioId);
-
-        /*
-        if (userBaseDTO == null)
-        {
-            return other.userBaseDTO == null ? 0 : -1;
-        }
-        if (other.userBaseDTO == null)
-        {
-            return 1;
-        }
-
-        if (portfolioDTO == null)
-        {
-            return other.portfolioDTO == null ? 0 : -1;
-        }
-        if (other.portfolioDTO == null)
-        {
-            return 1;
-        }
-
-        if (userBaseDTO.equals(currentUserBase))
-        {
-            if (!other.userBaseDTO.equals(currentUserBase))
-            {
-                return -1; // d-
-            }
-            if (portfolioDTO.isDefault())
-            {
-                return other.portfolioDTO.isDefault() ? 0 : -1; // da-
-            }
-            if (other.portfolioDTO.isDefault())
-            {
-                return 1; // da-
-            }
-            if (portfolioDTO.creationDate == null)
-            {
-                return other.portfolioDTO.creationDate == null ? 0 : -1; // dba-
-            }
-            if (other.portfolioDTO.creationDate == null)
-            {
-                return 1;
-            }
-            return portfolioDTO.creationDate.compareTo(other.portfolioDTO.creationDate); // dbb- dbc-
-        }
-        else if (other.userBaseDTO.equals(currentUserBase))
-        {
-            return 1; // d-
-        }
-        else
-        {
-            int firstNameComp = userBaseDTO.firstName == null ?
-                    (other.userBaseDTO.firstName == null ? 0 : -1) :
-                    userBaseDTO.firstName.compareTo(other.userBaseDTO.firstName);
-            if (firstNameComp != 0)
-            {
-                return firstNameComp; // ea-
-            }
-            if (portfolioDTO.isDefault())
-            {
-                return other.portfolioDTO.isDefault() ? 0 : -1; // da-
-            }
-            if (other.portfolioDTO.isDefault())
-            {
-                return 1; // da-
-            }
-            if (portfolioDTO.creationDate == null)
-            {
-                return other.portfolioDTO.creationDate == null ? 0 : -1; // eaa-
-            }
-            if (other.portfolioDTO.creationDate == null)
-            {
-                return 1;
-            }
-            return portfolioDTO.creationDate.compareTo(other.portfolioDTO.creationDate); // eaa-
-        }
-        */
     }
 }

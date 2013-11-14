@@ -18,7 +18,7 @@ import com.tradehero.th.api.portfolio.DisplayablePortfolioDTO;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.OwnedPortfolioIdList;
 import com.tradehero.th.api.portfolio.PortfolioDTO;
-import com.tradehero.th.api.users.UserBaseDTO;
+import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.base.DashboardFragment;
@@ -36,7 +36,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
-import javax.inject.Named;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/14/13 Time: 11:47 AM To change this template use File | Settings | File Templates. */
 public class PortfolioListFragment extends DashboardFragment
@@ -48,10 +47,9 @@ public class PortfolioListFragment extends DashboardFragment
 
     private PortfolioListItemAdapter portfolioListAdapter;
 
-    @Inject @Named("CurrentUser") protected UserBaseDTO currentUserBase;
+    @Inject protected CurrentUserBaseKeyHolder currentUserBaseKeyHolder;
     // We need to populate the PortfolioDTOs in order to sort them appropriately
     private Map<OwnedPortfolioId, DisplayablePortfolioDTO> displayablePortfolios;
-    private List<UserBaseKey> otherUserBaseKeys;
     private UserPortfolioFetchAssistant otherPortfolioFetchAssistant;
     private boolean areOthersComplete = false;
 
@@ -226,7 +224,7 @@ public class PortfolioListFragment extends DashboardFragment
         {
             fetchOwnPortfolioListFetchTask.forgetListener(true);
         }
-        fetchOwnPortfolioListFetchTask = portfolioListCache.get().getOrFetch(currentUserBase.getBaseKey(), ownPortfolioListListener);
+        fetchOwnPortfolioListFetchTask = portfolioListCache.get().getOrFetch(currentUserBaseKeyHolder.getCurrentUserBaseKey(), ownPortfolioListListener);
         fetchOwnPortfolioListFetchTask.execute();
     }
 
@@ -236,7 +234,7 @@ public class PortfolioListFragment extends DashboardFragment
         {
             @Override public void onDTOReceived(UserBaseKey key, OwnedPortfolioIdList value)
             {
-                if (key.equals(currentUserBase.getBaseKey()))
+                if (key.equals(currentUserBaseKeyHolder.getCurrentUserBaseKey()))
                 {
                     linkWithOwn(value, true, (OwnedPortfolioId) null);
                 }
@@ -280,8 +278,6 @@ public class PortfolioListFragment extends DashboardFragment
 
     public void linkWithOther(List<UserBaseKey> otherPeopleUserBaseKeys, boolean andDisplay, UserBaseKey typeQualifier)
     {
-        otherUserBaseKeys = otherPeopleUserBaseKeys;
-
         if (otherPortfolioFetchAssistant != null)
         {
             otherPortfolioFetchAssistant.clear();

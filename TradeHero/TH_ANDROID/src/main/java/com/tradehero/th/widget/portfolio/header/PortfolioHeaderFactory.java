@@ -3,12 +3,11 @@ package com.tradehero.th.widget.portfolio.header;
 import android.os.Bundle;
 import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
-import com.tradehero.th.api.users.UserBaseDTO;
+import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import dagger.Lazy;
 import javax.inject.Inject;
-import javax.inject.Named;
 import javax.inject.Singleton;
 
 /**
@@ -17,7 +16,7 @@ import javax.inject.Singleton;
  */
 @Singleton public class PortfolioHeaderFactory
 {
-    @Inject @Named("CurrentUser") protected UserBaseDTO currentUserBase;
+    @Inject protected CurrentUserBaseKeyHolder currentUserBaseKeyHolder;
     @Inject Lazy<UserProfileCache> userCache;
 
     public int layoutIdForArguments(Bundle args)
@@ -28,7 +27,7 @@ import javax.inject.Singleton;
         }
         OwnedPortfolioId id = new OwnedPortfolioId(args);
 
-        UserProfileDTO currentUser = userCache.get().get(currentUserBase.getBaseKey());
+        UserProfileDTO currentUser = userCache.get().get(currentUserBaseKeyHolder.getCurrentUserBaseKey());
 
         int userId = id.getUserBaseKey().key;
         if (userId == currentUser.id)

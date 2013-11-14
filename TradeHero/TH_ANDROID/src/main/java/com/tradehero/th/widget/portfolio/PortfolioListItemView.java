@@ -10,8 +10,7 @@ import com.tradehero.common.graphics.RoundedShapeTransformation;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.portfolio.DisplayablePortfolioDTO;
-import com.tradehero.th.api.portfolio.PortfolioDTO;
-import com.tradehero.th.api.users.UserBaseDTO;
+import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
 import javax.inject.Inject;
@@ -27,7 +26,7 @@ public class PortfolioListItemView extends RelativeLayout implements DTOView<Dis
 
     private DisplayablePortfolioDTO displayablePortfolioDTO;
     @Inject Lazy<Picasso> picasso;
-    @Inject Lazy<UserBaseDTO> currentUserBase;
+    @Inject Lazy<CurrentUserBaseKeyHolder> currentUserBaseKeyHolder;
 
     //<editor-fold desc="Constructors">
     public PortfolioListItemView(Context context)
@@ -114,7 +113,7 @@ public class PortfolioListItemView extends RelativeLayout implements DTOView<Dis
         {
             if (displayablePortfolioDTO != null &&
                     displayablePortfolioDTO.userBaseDTO != null &&
-                    !currentUserBase.get().equals(displayablePortfolioDTO.userBaseDTO))
+                    !currentUserBaseKeyHolder.get().getCurrentUserBaseKey().equals(displayablePortfolioDTO.userBaseDTO.getBaseKey()))
             {
                 if (displayablePortfolioDTO.userBaseDTO.firstName != null &&
                         !displayablePortfolioDTO.userBaseDTO.firstName.isEmpty() &&

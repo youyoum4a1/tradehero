@@ -30,6 +30,7 @@ import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.TransactionFormDTO;
+import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
 import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
@@ -66,7 +67,6 @@ public class BuySellConfirmFragment extends AbstractBuySellFragment
     private boolean shareLocation = false;
     private boolean sharePublic = false;
 
-    @Inject @Named("CurrentUser") protected UserBaseDTO currentUserBase;
     @Inject protected Lazy<SecurityService> securityService;
     @Inject protected Lazy<UserProfileCache> userProfileCache;
     private boolean isBuying = false;
@@ -583,7 +583,7 @@ public class BuySellConfirmFragment extends AbstractBuySellFragment
 
                     if (returned.portfolio != null)
                     {
-                        UserBaseKey userBaseKey = currentUserBase.getBaseKey();
+                        UserBaseKey userBaseKey = currentUserBaseKeyHolder.getCurrentUserBaseKey();
                         UserProfileDTO userProfileDTO = userProfileCache.get().get(userBaseKey);
                         if (userProfileDTO != null && (userProfileDTO.portfolio == null || userProfileDTO.portfolio.id == returned.portfolio.id))
                         {

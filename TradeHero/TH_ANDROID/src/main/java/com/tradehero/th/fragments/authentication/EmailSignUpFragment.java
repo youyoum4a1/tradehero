@@ -299,7 +299,8 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
 
         JSONObject credentials = THUser.currentCredentials();
         String emailValue = null, passwordValue = null;
-        try {
+        try
+        {
             emailValue = credentials.getString("email");
             passwordValue = credentials.getString("password");
         }

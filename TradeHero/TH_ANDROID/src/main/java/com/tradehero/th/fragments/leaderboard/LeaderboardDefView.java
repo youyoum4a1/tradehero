@@ -10,19 +10,18 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.leaderboard.LeaderboardDefDTO;
-import com.tradehero.th.api.users.UserBaseDTO;
+import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
 import javax.inject.Inject;
-import javax.inject.Named;
 
 /** Created with IntelliJ IDEA. User: tho Date: 10/16/13 Time: 4:19 PM Copyright (c) TradeHero */
 public class LeaderboardDefView extends RelativeLayout implements DTOView<LeaderboardDefDTO>
 {
-    @Inject @Named("CurrentUser") protected UserBaseDTO userBaseDTO;
+    @Inject protected CurrentUserBaseKeyHolder currentUserBaseKeyHolder;
     @Inject protected Lazy<UserProfileCache> userProfileCache;
 
     private TextView leaderboardDefName;
@@ -84,9 +83,9 @@ public class LeaderboardDefView extends RelativeLayout implements DTOView<Leader
         };
 
 
-        if (userBaseDTO != null)
+        if (currentUserBaseKeyHolder != null)
         {
-            userProfileRequestTask = userProfileCache.get().getOrFetch(userBaseDTO.getBaseKey(), false, userProfileListener);
+            userProfileRequestTask = userProfileCache.get().getOrFetch(currentUserBaseKeyHolder.getCurrentUserBaseKey(), false, userProfileListener);
             userProfileRequestTask.execute();
         }
     }

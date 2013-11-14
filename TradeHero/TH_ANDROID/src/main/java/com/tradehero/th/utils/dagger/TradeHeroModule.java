@@ -12,6 +12,7 @@ import com.tradehero.common.cache.LruMemFileCache;
 import com.tradehero.common.persistence.CacheHelper;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.api.form.AbstractUserAvailabilityRequester;
+import com.tradehero.th.api.portfolio.DisplayablePortfolioDTO;
 import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
 import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.billing.googleplay.SKUDetailsPurchaser;
@@ -222,8 +223,9 @@ import org.ocpsoft.prettytime.PrettyTime;
         {
                 THUser.class,
                 NumberDisplayUtils.class,
+                DisplayablePortfolioDTO.class
         },
-        library = true // TEMP while there is no MarketService user
+        library = true // TEMP
 )
 public class TradeHeroModule
 {
@@ -339,16 +341,6 @@ public class TradeHeroModule
     @Provides Context provideContext()
     {
         return application.getApplicationContext();
-    }
-
-    @Provides /*@Named("CurrentUser")*/ UserBaseDTO provideSomeUserBaseDTO()
-    {
-        return THUser.getCurrentUserBase();
-    }
-
-    @Provides @Named("CurrentUser") UserBaseDTO provideCurrentUserBaseDTO()
-    {
-        return THUser.getCurrentUserBase();
     }
 
     @Provides @Singleton CurrentUserBaseKeyHolder provideCurrentUserBaseKeyHolder()

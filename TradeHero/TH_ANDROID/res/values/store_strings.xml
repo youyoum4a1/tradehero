@@ -88,9 +88,11 @@
   <string name="manage_followers_total_amount_paid">Total Amount Paid</string>
   <string name="manage_followers_number_followers"># Followers</string>
 
+  <string name="manage_followers_payout_none">There have been no payout.</string>
   <string name="manage_followers_payout_list_header">%d PAYOUTS</string>
   <string name="manage_followers_payout_hero_datetime_format">dd MMM yyyy kk:mm z</string>
 
+  <string name="manage_followers_follower_none">You have no follower.</string>
   <string name="manage_followers_list_header">%d FOLLOWERS</string>
   <string name="manage_followers_revenue_follower">Revenue: %1$s %2$,.2f</string>
 

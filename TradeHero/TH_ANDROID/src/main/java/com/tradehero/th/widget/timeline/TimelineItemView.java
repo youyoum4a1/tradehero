@@ -5,9 +5,7 @@ import android.os.Bundle;
 import android.text.method.LinkMovementMethod;
 import android.util.AttributeSet;
 import android.view.View;
-import android.widget.Button;
 import android.widget.Checkable;
-import android.widget.ImageView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -21,7 +19,7 @@ import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.local.TimelineItem;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.SecurityMediaDTO;
-import com.tradehero.th.api.users.UserBaseDTO;
+import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileCompactDTO;
 import com.tradehero.th.base.Navigator;
@@ -34,7 +32,6 @@ import dagger.Lazy;
 import java.util.Date;
 import java.util.List;
 import javax.inject.Inject;
-import javax.inject.Named;
 import org.ocpsoft.prettytime.PrettyTime;
 
 /** Created with IntelliJ IDEA. User: tho Date: 9/9/13 Time: 4:24 PM Copyright (c) TradeHero */
@@ -48,7 +45,7 @@ public class TimelineItemView extends LinearLayout implements
     private ImageView vendorImage;
     private TextView time;
 
-    @Inject @Named("CurrentUser") protected UserBaseDTO currentUserBase;
+    @Inject protected CurrentUserBaseKeyHolder currentUserBaseKeyHolder;
     @Inject protected Lazy<Picasso> picasso;
     private boolean checked;
     private Navigator navigator;
@@ -229,7 +226,7 @@ public class TimelineItemView extends LinearLayout implements
         b.putInt(UserBaseKey.BUNDLE_KEY_KEY, userId);
         b.putBoolean(Navigator.NAVIGATE_FRAGMENT_NO_CACHE, true);
 
-        if (currentUserBase.id != userId)
+        if (currentUserBaseKeyHolder.getCurrentUserBaseKey().key != userId)
         {
             navigator.pushFragment(TimelineFragment.class, b, true);
         }

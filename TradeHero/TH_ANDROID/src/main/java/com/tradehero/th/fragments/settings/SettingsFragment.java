@@ -27,6 +27,7 @@ import com.tradehero.th.R;
 import com.tradehero.th.activities.ActivityHelper;
 import com.tradehero.th.activities.AuthenticationActivity;
 import com.tradehero.th.api.form.UserFormFactory;
+import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
 import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
@@ -62,6 +63,7 @@ public class SettingsFragment extends DashboardFragment
 
     @Inject UserService userService;
     @Inject protected Lazy<UserProfileCache> userProfileCache;
+    @Inject protected CurrentUserBaseKeyHolder currentUserBaseKeyHolder;
 
     private ProgressDialog progressDialog;
     private Timer signOutTimer;
@@ -399,6 +401,7 @@ public class SettingsFragment extends DashboardFragment
                 Application.getResourceString(R.string.connecting_tradehero_only),
                 true);
 
+        THLog.d(TAG, "Before signout current user base key " + currentUserBaseKeyHolder.getCurrentUserBaseKey().key);
         userService.signOut(createSignOutCallback());
     }
 
@@ -413,6 +416,7 @@ public class SettingsFragment extends DashboardFragment
                 ActivityHelper.presentFromActivity(getActivity(), AuthenticationActivity.class, Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 progressDialog.hide();
                 // TODO clear caches
+                THLog.d(TAG, "After successful signout current user base key " + currentUserBaseKeyHolder.getCurrentUserBaseKey().key);
             }
 
             @Override public void failure(RetrofitError error)

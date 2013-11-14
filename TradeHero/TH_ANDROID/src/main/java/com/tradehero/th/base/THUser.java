@@ -7,6 +7,7 @@ import com.tradehero.th.api.form.UserFormDTO;
 import com.tradehero.th.api.form.UserFormFactory;
 import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
 import com.tradehero.th.api.users.UserBaseDTO;
+import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserLoginDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.auth.AuthenticationMode;
@@ -17,6 +18,7 @@ import com.tradehero.th.misc.callback.THResponse;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.misc.exception.THException.ExceptionCode;
 import com.tradehero.th.network.service.UserService;
+import com.tradehero.th.persistence.social.VisitedFriendListPrefs;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import dagger.Lazy;
 import java.io.ByteArrayOutputStream;
@@ -34,10 +36,11 @@ import javax.inject.Inject;
 public class THUser
 {
     private static final String TAG = THUser.class.getName();
+    public static final String PREF_CURRENT_USER_KEY = THUser.class.getName() + ".PREF_CURRENT_USER_KEY";
     public static final String PREF_MY_USER = THUser.class.getName() + ".PREF_MY_USER";
     private static final String PREF_MY_TOKEN = THUser.class.getName() + ".PREF_MY_TOKEN";
-    private static final String CURRENT_SESSION_TOKEN = THUser.class.getName() +  ".PREF_CURRENT_SESSION_TOKEN";
-    private static final String CURRENT_AUTHENTICATION_TYPE = THUser.class.getName() + ".PREF_AUTHENTICATION_TYPE";
+    private static final String PREF_CURRENT_SESSION_TOKEN = THUser.class.getName() +  ".PREF_CURRENT_SESSION_TOKEN";
+    private static final String PREF_CURRENT_AUTHENTICATION_TYPE = THUser.class.getName() + ".PREF_AUTHENTICATION_TYPE";
 
     private static AuthenticationMode authenticationMode;
     private static HashMap<String, JSONObject> credentials;
@@ -54,6 +57,28 @@ public class THUser
     {
         credentials = new HashMap<>();
         loadCredentialsToUserDefaults();
+    }
+
+    private static void loadCredentialsToUserDefaults()
+    {
+        currentUserBaseKeyHolder.setCurrentUserBaseKey(new UserBaseKey(Application.getPreferences().getInt(PREF_CURRENT_USER_KEY, 0)));
+        Set<String> savedTokens = Application.getPreferences().getStringSet(PREF_MY_TOKEN, new HashSet<String>());
+        currentSessionToken = Application.getPreferences().getString(PREF_CURRENT_SESSION_TOKEN, null);
+        currentAuthenticationType = Application.getPreferences().getString(PREF_CURRENT_AUTHENTICATION_TYPE, null);
+        for (String token : savedTokens)
+        {
+            try
+            {
+                JSONObject json = new JSONObject(token);
+                credentials.put(json.getString(UserFormFactory.KEY_TYPE), json);
+            }
+            catch (JSONException e)
+            {
+                THLog.e(TAG, String.format("Unable to parse [%s] to JSON", token), e);
+            }
+        }
+        THLog.d(TAG, "loadCredentialsToUserDefaults: CurrentSessionToken: " + currentSessionToken);
+        THLog.d(TAG, "loadCredentialsToUserDefaults: CurrentAuthenticationType: " + currentAuthenticationType);
     }
 
     public static String getSessionToken()
@@ -174,8 +199,7 @@ public class THUser
     {
         return new THCallback<UserProfileDTO>()
         {
-            @Override
-            public void success(UserProfileDTO userDTO, THResponse response)
+            @Override public void success(UserProfileDTO userDTO, THResponse response)
             {
                 saveCurrentUser(userDTO);
                 saveCredentialsToUserDefaults(json);
@@ -193,8 +217,7 @@ public class THUser
     {
         return new THCallback<UserLoginDTO>()
         {
-            @Override
-            public void success(UserLoginDTO userLoginDTO, THResponse response)
+            @Override public void success(UserLoginDTO userLoginDTO, THResponse response)
             {
                 UserProfileDTO userDTO = userLoginDTO.profileDTO;
                 saveCurrentUser(userDTO);
@@ -213,6 +236,8 @@ public class THUser
     {
         try
         {
+            saveCurrentUserBaseKey(userDTO.getBaseKey());
+
             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
             THJsonAdapter.getInstance().toBody(userDTO).writeTo(byteArrayOutputStream);
             SharedPreferences.Editor pref = Application.getPreferences().edit();
@@ -237,18 +262,19 @@ public class THUser
         return null;
     }
 
-    // Use getCurrentUserBase instead and then query UserProfileCache
-    @Deprecated
-    public static UserProfileDTO getCurrentUser()
+    private static void saveCurrentUserBaseKey(UserBaseKey userBaseKey)
     {
-        String serializedUser = Application.getPreferences().getString(PREF_MY_USER, null);
-        if (serializedUser != null)
-        {
-            UserProfileDTO user = (UserProfileDTO) THJsonAdapter.getInstance()
-                    .fromBody(serializedUser, UserProfileDTO.class);
-            return user;
-        }
-        return null;
+        SharedPreferences.Editor pref = Application.getPreferences().edit();
+        pref.putInt(PREF_CURRENT_USER_KEY, userBaseKey.key);
+        pref.commit();
+        currentUserBaseKeyHolder.setCurrentUserBaseKey(userBaseKey);
+    }
+
+    public static void collectCurrentUserBaseKeyFromPref()
+    {
+        int key = Application.getPreferences().getInt(PREF_CURRENT_USER_KEY, 0);
+        UserBaseKey userBaseKey = new UserBaseKey(key);
+        currentUserBaseKeyHolder.setCurrentUserBaseKey(userBaseKey);
     }
 
     public static void registerAuthenticationProvider(THAuthenticationProvider provider)
@@ -260,6 +286,7 @@ public class THUser
     {
         if (credentials == null)
         {
+            THLog.d(TAG, "saveCredentialsToUserDefaults: Credentials were null");
             return;
         }
 
@@ -277,9 +304,9 @@ public class THUser
         }
 
         Set<String> toSave = new HashSet<>();
-        for (Map.Entry<String, JSONObject> entry : credentials.entrySet())
+        for (JSONObject entry : credentials.values())
         {
-            toSave.add(entry.getValue().toString());
+            toSave.add(entry.toString());
         }
 
         THAuthenticationProvider currentProvider = authenticationProviders.get(currentAuthenticationType);
@@ -287,40 +314,23 @@ public class THUser
 
         SharedPreferences.Editor prefEditor = Application.getPreferences().edit();
         prefEditor.putStringSet(PREF_MY_TOKEN, toSave);
-        prefEditor.putString(CURRENT_SESSION_TOKEN, currentSessionToken);
-        prefEditor.putString(CURRENT_AUTHENTICATION_TYPE, currentAuthenticationType);
+        prefEditor.putString(PREF_CURRENT_SESSION_TOKEN, currentSessionToken);
+        prefEditor.putString(PREF_CURRENT_AUTHENTICATION_TYPE, currentAuthenticationType);
         prefEditor.commit();
     }
 
     public static void clearCurrentUser()
     {
         currentSessionToken = null;
+        currentUserBaseKeyHolder.setCurrentUserBaseKey(new UserBaseKey(0));
         credentials.clear();
+        VisitedFriendListPrefs.clearVisitedIdList();
         SharedPreferences.Editor prefEditor = Application.getPreferences().edit();
         prefEditor.remove(PREF_MY_USER);
         prefEditor.remove(PREF_MY_TOKEN);
-        prefEditor.remove(CURRENT_SESSION_TOKEN);
-        prefEditor.remove(CURRENT_AUTHENTICATION_TYPE);
+        prefEditor.remove(PREF_CURRENT_SESSION_TOKEN);
+        prefEditor.remove(PREF_CURRENT_AUTHENTICATION_TYPE);
         prefEditor.commit();
-    }
-
-    private static void loadCredentialsToUserDefaults()
-    {
-        Set<String> savedTokens = Application.getPreferences().getStringSet(PREF_MY_TOKEN, new HashSet<String>());
-        currentSessionToken = Application.getPreferences().getString(CURRENT_SESSION_TOKEN, null);
-        currentAuthenticationType = Application.getPreferences().getString(CURRENT_AUTHENTICATION_TYPE, null);
-        for (String token : savedTokens)
-        {
-            try
-            {
-                JSONObject json = new JSONObject(token);
-                credentials.put(json.getString(UserFormFactory.KEY_TYPE), json);
-            }
-            catch (JSONException e)
-            {
-                THLog.e(TAG, String.format("Unable to parse [%s] to JSON", token), e);
-            }
-        }
     }
 
     public static void setAuthenticationMode(AuthenticationMode authenticationMode)

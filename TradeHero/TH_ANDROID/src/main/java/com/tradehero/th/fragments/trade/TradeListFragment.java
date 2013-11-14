@@ -20,7 +20,7 @@ import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.trade.OwnedTradeId;
 import com.tradehero.th.api.trade.OwnedTradeIdList;
-import com.tradehero.th.api.users.UserBaseDTO;
+import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.fragments.base.DashboardFragment;
@@ -47,7 +47,7 @@ public class TradeListFragment extends DashboardFragment
     @Inject Lazy<PositionCache> positionCache;
     @Inject Lazy<TradeListCache> tradeListCache;
     @Inject Lazy<SecurityIdCache> securityIdCache;
-    @Inject UserBaseDTO currentUserBase;
+    @Inject CurrentUserBaseKeyHolder currentUserBaseKeyHolder;
 
     private TradeListOverlayHeaderView header;
     private TradeListHeaderView tableHeader;
@@ -167,7 +167,7 @@ public class TradeListFragment extends DashboardFragment
         b.putInt(UserBaseKey.BUNDLE_KEY_KEY, userId.key);
         b.putBoolean(Navigator.NAVIGATE_FRAGMENT_NO_CACHE, true);
 
-        if (currentUserBase.id != userId.key)
+        if (currentUserBaseKeyHolder.getCurrentUserBaseKey().key != userId.key)
         {
             navigator.pushFragment(TimelineFragment.class, b, true);
         }
@@ -219,7 +219,7 @@ public class TradeListFragment extends DashboardFragment
     public void linkWith(OwnedPositionId ownedPositionId, boolean andDisplay)
     {
         this.ownedPositionId = ownedPositionId;
-        if (!ownedPositionId.getUserBaseKey().equals(currentUserBase.getBaseKey()))
+        if (!ownedPositionId.getUserBaseKey().equals(currentUserBaseKeyHolder.getCurrentUserBaseKey()))
         {
             this.tradeListView.removeHeaderView(this.tableHeader);
         }

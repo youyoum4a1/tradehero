@@ -1,9 +1,7 @@
 package com.tradehero.th.persistence.position;
 
-import android.os.AsyncTask;
 import android.support.v4.util.LruCache;
 import com.tradehero.common.persistence.PartialDTOCache;
-import com.tradehero.common.utils.THLog;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
@@ -13,20 +11,17 @@ import com.tradehero.th.api.position.PositionDTOCompact;
 import com.tradehero.th.api.position.SecurityPositionDetailDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
+import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
 import com.tradehero.th.api.users.UserBaseDTO;
-import com.tradehero.th.base.THUser;
-import com.tradehero.th.network.BasicRetrofitErrorHandler;
+import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.network.service.SecurityService;
 import com.tradehero.th.persistence.competition.ProviderCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCache;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import dagger.Lazy;
-import java.lang.ref.WeakReference;
 import java.util.List;
 import javax.inject.Inject;
-import javax.inject.Named;
 import javax.inject.Singleton;
-import retrofit.RetrofitError;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/3/13 Time: 4:47 PM To change this template use File | Settings | File Templates. */
 @Singleton public class SecurityPositionDetailCache extends PartialDTOCache<SecurityId, SecurityPositionDetailDTO>
@@ -34,7 +29,7 @@ import retrofit.RetrofitError;
     public static final String TAG = SecurityPositionDetailCache.class.getSimpleName();
     public static final int DEFAULT_MAX_SIZE = 1000;
 
-    @Inject @Named("CurrentUser") protected UserBaseDTO currentUserBase;
+    @Inject protected CurrentUserBaseKeyHolder currentUserBaseKeyHolder;
     // We need to compose here, instead of inheritance, otherwise we get a compile error regarding erasure on put and put.
     private LruCache<SecurityId, SecurityPositionDetailCache.SecurityPositionDetailCutDTO> lruCache;
     @Inject protected Lazy<SecurityService> securityService;
@@ -69,7 +64,8 @@ import retrofit.RetrofitError;
         {
             return null;
         }
-        return securityPositionDetailCutDTO.create(securityCompactCache.get(), portfolioCache.get(), positionCompactCache.get(), providerCache.get(), currentUserBase);
+        return securityPositionDetailCutDTO.create(securityCompactCache.get(), portfolioCache.get(), positionCompactCache.get(), providerCache.get(),
+                currentUserBaseKeyHolder.getCurrentUserBaseKey());
     }
 
     @Override public SecurityPositionDetailDTO put(SecurityId key, SecurityPositionDetailDTO value)
@@ -84,11 +80,12 @@ import retrofit.RetrofitError;
                         portfolioCache.get(),
                         positionCompactCache.get(),
                         providerCache.get(),
-                        currentUserBase));
+                        currentUserBaseKeyHolder.getCurrentUserBaseKey()));
 
         if (previousCut != null)
         {
-            previous = previousCut.create(securityCompactCache.get(), portfolioCache.get(), positionCompactCache.get(), providerCache.get(), currentUserBase);
+            previous = previousCut.create(securityCompactCache.get(), portfolioCache.get(), positionCompactCache.get(), providerCache.get(),
+                    currentUserBaseKeyHolder.getCurrentUserBaseKey());
         }
 
         return previous;
@@ -115,7 +112,7 @@ import retrofit.RetrofitError;
                 PortfolioCache portfolioCache,
                 PositionCompactCache positionCompactCache,
                 ProviderCache providerCache,
-                UserBaseDTO currentUserBase)
+                UserBaseKey userBaseKey)
         {
             if (securityPositionDetailDTO.security != null)
             {
@@ -134,7 +131,7 @@ import retrofit.RetrofitError;
             {
                 portfolioCache.put(
                         new OwnedPortfolioId(
-                                currentUserBase.getBaseKey(),
+                                userBaseKey,
                                 securityPositionDetailDTO.portfolio.getPortfolioId()),
                         securityPositionDetailDTO.portfolio);
                 this.portfolioId = securityPositionDetailDTO.portfolio.getPortfolioId();
@@ -155,14 +152,14 @@ import retrofit.RetrofitError;
                 PortfolioCache portfolioCache,
                 PositionCompactCache positionCompactCache,
                 ProviderCache providerCache,
-                UserBaseDTO currentUserBase)
+                UserBaseKey userBaseKey)
         {
             return new SecurityPositionDetailDTO(
                     securityId != null ? securityCompactCache.get(securityId) : null,
                     positionCompactCache.get(positionIds),
                     this.portfolioId != null ?
                             portfolioCache.get(new OwnedPortfolioId(
-                                currentUserBase.getBaseKey(),
+                                userBaseKey,
                                 portfolioId))
                             : null,
                     providerCache.get(providerIds),

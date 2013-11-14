@@ -61,4 +61,11 @@ public class VisitedFriendListPrefs
         }
         return userBaseKeys;
     }
+
+    public static void clearVisitedIdList()
+    {
+        SharedPreferences.Editor pref = Application.context().getSharedPreferences(KEY_PREFS, Context.MODE_PRIVATE).edit();
+        pref.putStringSet(KEY_VISITED_ID_SET, new TreeSet<String>());
+        pref.commit();
+    }
 }

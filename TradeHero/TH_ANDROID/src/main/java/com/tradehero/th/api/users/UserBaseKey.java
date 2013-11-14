@@ -31,6 +31,11 @@ public class UserBaseKey extends AbstractIntegerDTOKey
         return (other instanceof UserBaseKey) && equals((UserBaseKey) other);
     }
 
+    public boolean isValid()
+    {
+        return key > 0;
+    }
+
     @Override public String toString()
     {
         return String.format("[%s key=%d]", TAG, key);

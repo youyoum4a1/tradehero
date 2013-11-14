@@ -12,13 +12,12 @@ import com.squareup.picasso.Picasso;
 import com.tradehero.common.graphics.RoundedShapeTransformation;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
-import com.tradehero.th.api.leaderboard.LeaderboardDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardDefKey;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import com.tradehero.th.api.leaderboard.position.LeaderboardMarkUserId;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
-import com.tradehero.th.api.users.UserBaseDTO;
+import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.base.NavigatorActivity;
@@ -27,14 +26,11 @@ import com.tradehero.th.fragments.position.PositionListFragment;
 import com.tradehero.th.fragments.timeline.TimelineFragment;
 import com.tradehero.th.models.THSignedNumber;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefCache;
-import com.tradehero.th.persistence.position.PositionCache;
 import com.tradehero.th.utils.DaggerUtils;
-import com.tradehero.th.utils.DateUtils;
 import com.tradehero.th.utils.NumberDisplayUtils;
 import dagger.Lazy;
 import java.text.SimpleDateFormat;
 import javax.inject.Inject;
-import javax.inject.Named;
 
 /** Created with IntelliJ IDEA. User: tho Date: 10/21/13 Time: 4:14 PM Copyright (c) TradeHero */
 public class LeaderboardMarkUserItemView extends RelativeLayout
@@ -42,7 +38,7 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
 {
     @Inject protected Lazy<Picasso> picasso;
     @Inject protected Lazy<LeaderboardDefCache> leaderboardDefCache;
-    @Inject @Named("CurrentUser") protected UserBaseDTO currentUserBase;
+    @Inject protected CurrentUserBaseKeyHolder currentUserBaseKeyHolder;
 
     // data
     private LeaderboardMarkUserListAdapter.ExpandableLeaderboardUserRankItemWrapper leaderboardItem;
@@ -300,7 +296,7 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         Bundle b = new Bundle();
         b.putInt(UserBaseKey.BUNDLE_KEY_KEY, userId);
 
-        if (currentUserBase != null && currentUserBase.id != userId)
+        if (currentUserBaseKeyHolder != null && currentUserBaseKeyHolder.getCurrentUserBaseKey().key != userId)
         {
             navigator.pushFragment(TimelineFragment.class, b, true);
         }

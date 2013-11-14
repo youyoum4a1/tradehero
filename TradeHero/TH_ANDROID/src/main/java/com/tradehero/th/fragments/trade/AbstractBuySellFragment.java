@@ -15,7 +15,7 @@ import com.tradehero.th.api.position.SecurityPositionDetailDTO;
 import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
-import com.tradehero.th.api.users.UserBaseDTO;
+import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.base.DashboardFragment;
@@ -25,7 +25,6 @@ import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.SecurityUtils;
 import dagger.Lazy;
 import javax.inject.Inject;
-import javax.inject.Named;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/9/13 Time: 11:14 AM To change this template use File | Settings | File Templates. */
 abstract public class AbstractBuySellFragment extends DashboardFragment
@@ -43,7 +42,7 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
     public final static long MILLISEC_QUOTE_REFRESH = 30000;
     public final static long MILLISEC_QUOTE_COUNTDOWN_PRECISION = 50;
 
-    @Inject @Named("CurrentUser") protected UserBaseDTO currentUserBase;
+    @Inject protected CurrentUserBaseKeyHolder currentUserBaseKeyHolder;
     @Inject protected Lazy<SecurityCompactCache> securityCompactCache;
     @Inject protected Lazy<SecurityPositionDetailCache> securityPositionDetailCache;
     protected SecurityId securityId;
@@ -115,7 +114,7 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
             mPositionIndex = args.getInt(BUNDLE_KEY_POSITION_INDEX, mPositionIndex);
         }
 
-        UserProfileDTO profileDTO = userProfileCache.get().get(currentUserBase.getBaseKey());
+        UserProfileDTO profileDTO = userProfileCache.get().get(currentUserBaseKeyHolder.getCurrentUserBaseKey());
         if (profileDTO != null)
         {
             linkWith(profileDTO, true);
@@ -256,7 +255,7 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
         {
             fetchUserProfileTask.cancel(false);
         }
-        UserBaseKey baseKey = currentUserBase.getBaseKey();
+        UserBaseKey baseKey = currentUserBaseKeyHolder.getCurrentUserBaseKey();
         userProfileCacheListener = createUserProfileListener(baseKey); // We need to keep a strong reference because the cache does not
         fetchUserProfileTask = userProfileCache.get().getOrFetch(baseKey, false, userProfileCacheListener);
         fetchUserProfileTask.execute();

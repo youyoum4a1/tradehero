@@ -74,8 +74,9 @@ public class FollowerManagerFragment extends BasePurchaseManagerFragment
                     getActivity().getLayoutInflater(),
                     R.layout.follower_list_header,
                     R.layout.hero_payout_list_item,
-                    R.layout.follower_list_item
-
+                    R.layout.hero_payout_none_list_item,
+                    R.layout.follower_list_item,
+                    R.layout.follower_none_list_item
             );
         }
 

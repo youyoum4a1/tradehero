@@ -20,23 +20,29 @@ public class FollowerAndPayoutListItemAdapter extends BaseAdapter
 
     public static final int VIEW_TYPE_HEADER = 0;
     public static final int VIEW_TYPE_ITEM_PAYOUT = 1;
-    public static final int VIEW_TYPE_ITEM_FOLLOWER = 2;
+    public static final int VIEW_TYPE_ITEM_PAYOUT_NONE = 2;
+    public static final int VIEW_TYPE_ITEM_FOLLOWER = 3;
+    public static final int VIEW_TYPE_ITEM_FOLLOWER_NONE = 4;
 
     protected final Context context;
     protected final LayoutInflater inflater;
     protected final int headerResId;
     protected final int payoutResId;
+    protected final int payoutNoneResId;
     protected final int followerResId;
+    protected final int followerNoneResId;
     protected FollowerSummaryDTO followerSummaryDTO;
 
-    public FollowerAndPayoutListItemAdapter(Context context, LayoutInflater inflater, int headerResId, int payoutResId, int followerResId)
+    public FollowerAndPayoutListItemAdapter(Context context, LayoutInflater inflater, int headerResId, int payoutResId, int payoutNoneResId, int followerResId, int followerNoneResId)
     {
         super();
         this.context = context;
         this.inflater = inflater;
         this.headerResId = headerResId;
         this.payoutResId = payoutResId;
+        this.payoutNoneResId = payoutNoneResId;
         this.followerResId = followerResId;
+        this.followerNoneResId = followerNoneResId;
     }
 
     public void setFollowerSummaryDTO(FollowerSummaryDTO followerSummaryDTO)
@@ -51,7 +57,7 @@ public class FollowerAndPayoutListItemAdapter extends BaseAdapter
 
     @Override public int getViewTypeCount()
     {
-        return 3;
+        return 5;
     }
 
     public int getPayoutRealCount()
@@ -86,6 +92,10 @@ public class FollowerAndPayoutListItemAdapter extends BaseAdapter
         }
         else if (position <= getPayoutVisibleCount())
         {
+            if (getPayoutRealCount() == 0)
+            {
+                return VIEW_TYPE_ITEM_PAYOUT_NONE;
+            }
             return VIEW_TYPE_ITEM_PAYOUT;
         }
         else if (position == getPayoutVisibleCount() + 1)
@@ -94,6 +104,10 @@ public class FollowerAndPayoutListItemAdapter extends BaseAdapter
         }
         else
         {
+            if (getFollowerRealCount() == 0)
+            {
+                return VIEW_TYPE_ITEM_FOLLOWER_NONE;
+            }
             return VIEW_TYPE_ITEM_FOLLOWER;
         }
     }
@@ -115,10 +129,15 @@ public class FollowerAndPayoutListItemAdapter extends BaseAdapter
         {
             case VIEW_TYPE_ITEM_PAYOUT:
                 return getPayoutForPosition(position);
+            case VIEW_TYPE_ITEM_PAYOUT_NONE:
+                return null;
             case VIEW_TYPE_ITEM_FOLLOWER:
                 return getFollowerForPosition(position);
+            case VIEW_TYPE_ITEM_FOLLOWER_NONE:
+                return null;
             case VIEW_TYPE_HEADER:
                 return position == 0 ? "payoutHeader" : "followerHeader";
+
             default:
                 throw new IllegalStateException(getItemViewType(position) + " is not a known view type");
         }
@@ -160,11 +179,12 @@ public class FollowerAndPayoutListItemAdapter extends BaseAdapter
                 ((HeroPayoutListItemView) convertView).display((HeroPayoutDTO) getItem(position));
                 break;
 
+            case VIEW_TYPE_ITEM_PAYOUT_NONE:
+                convertView = inflater.inflate(payoutNoneResId, parent, false);
+                break;
+
             case VIEW_TYPE_HEADER:
-                if (!(convertView instanceof BaseListHeaderView))
-                {
-                    convertView = inflater.inflate(headerResId, parent, false);
-                }
+                convertView = inflater.inflate(headerResId, parent, false);
 
                 int stringId = position == 0 ? R.string.manage_followers_payout_list_header : R.string.manage_followers_list_header;
                 int count = position == 0 ? getPayoutRealCount() : getFollowerRealCount();
@@ -177,6 +197,10 @@ public class FollowerAndPayoutListItemAdapter extends BaseAdapter
                     convertView = inflater.inflate(followerResId, parent, false);
                 }
                 ((FollowerListItemView) convertView).display((UserFollowerDTO) getItem(position));
+                break;
+
+            case VIEW_TYPE_ITEM_FOLLOWER_NONE:
+                convertView = inflater.inflate(followerNoneResId, parent, false);
                 break;
 
             default:

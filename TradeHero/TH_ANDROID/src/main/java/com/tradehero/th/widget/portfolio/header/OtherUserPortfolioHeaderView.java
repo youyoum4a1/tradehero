@@ -10,16 +10,14 @@ import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
-import com.tradehero.th.api.users.UserBaseDTO;
+import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.base.THUser;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 /**
  * Created by julien on 21/10/13
@@ -31,7 +29,7 @@ public class OtherUserPortfolioHeaderView extends RelativeLayout implements Port
     private ImageView followingImageView;
     private ImageButton followButton;
 
-    @Inject @Named("CurrentUser") protected UserBaseDTO currentUserBase;
+    @Inject protected CurrentUserBaseKeyHolder currentUserBaseKeyHolder;
     @Inject Lazy<UserProfileCache> userCache;
     @Inject Lazy<Picasso> picasso;
 
@@ -130,7 +128,7 @@ public class OtherUserPortfolioHeaderView extends RelativeLayout implements Port
 
     private void configureFollowItemsVisibility(UserProfileDTO user)
     {
-        UserProfileDTO currentUser = this.userCache.get().get(currentUserBase.getBaseKey());
+        UserProfileDTO currentUser = this.userCache.get().get(currentUserBaseKeyHolder.getCurrentUserBaseKey());
         if (currentUser.isFollowingUser(user.id))
         {
             this.followingImageView.setVisibility(VISIBLE);
