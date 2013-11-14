@@ -8,7 +8,6 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.LayoutInflater;
@@ -20,6 +19,7 @@ import android.widget.ImageView;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
+import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.form.UserFormFactory;
@@ -33,7 +33,6 @@ import com.tradehero.th.base.THUser;
 import com.tradehero.th.fragments.settings.FocusableOnTouchListener;
 import com.tradehero.th.misc.callback.LogInCallback;
 import com.tradehero.th.misc.exception.THException;
-import com.tradehero.th.utills.PostData;
 import com.tradehero.th.utills.Util;
 import com.tradehero.th.utils.NetworkUtils;
 import com.tradehero.th.widget.MatchingPasswordText;
@@ -43,7 +42,6 @@ import com.tradehero.th.widget.ValidatedPasswordText;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.HashMap;
 import java.util.Map;
 
 public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View.OnClickListener
@@ -75,10 +73,9 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-
     }
 
-    @Override public int getDefaultViewId ()
+    @Override public int getDefaultViewId()
     {
         return R.layout.authentication_email_sign_up;
     }
@@ -170,7 +167,7 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
         }
     }
 
-    @Override protected void forceValidateFields ()
+    @Override protected void forceValidateFields()
     {
         email.forceValidate();
         password.forceValidate();
@@ -178,12 +175,12 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
         displayName.forceValidate();
     }
 
-    @Override public boolean areFieldsValid ()
+    @Override public boolean areFieldsValid()
     {
         return email.isValid() && password.isValid() && confirmPassword.isValid() && displayName.isValid();
     }
 
-    @Override protected Map<String, Object> getUserFormMap ()
+    @Override protected Map<String, Object> getUserFormMap()
     {
         Map<String, Object> map = super.getUserFormMap();
         map.put(UserFormFactory.KEY_EMAIL, email.getText());
@@ -196,7 +193,8 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
         return map;
     }
 
-    @Override public void onDestroyView() {
+    @Override public void onDestroyView()
+    {
         if (email != null)
         {
             email.removeAllListeners();
@@ -277,8 +275,7 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
                     Bitmap circleBitmap = Util.getRoundedShape(imageBmp);
                     mOptionalImage.setImageBitmap(
                             Util.getImagerotation(selectedPath, circleBitmap));
-                }
-                catch (Exception e)
+                } catch (Exception e)
                 {
                     e.printStackTrace();
                 }
@@ -302,16 +299,16 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
         {
             emailValue = credentials.getString("email");
             passwordValue = credentials.getString("password");
-        }
-        catch (JSONException e)
+        } catch (JSONException e)
         {
+            THLog.e(TAG, "populateCurrentUser", e);
         }
         this.email.setText(emailValue);
         this.password.setText(passwordValue);
         this.confirmPassword.setText(passwordValue);
     }
 
-    private void updateProfile (View view)
+    private void updateProfile(View view)
     {
         Util.dismissKeyBoard(getActivity(), view);
         forceValidateFields();
@@ -320,7 +317,7 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
         {
             THToast.show(R.string.network_error);
         }
-        else if (!areFieldsValid ())
+        else if (!areFieldsValid())
         {
             THToast.show(R.string.validation_please_correct);
         }
@@ -332,9 +329,10 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
                     Application.getResourceString(R.string.connecting_tradehero_only),
                     true);
             EmailAuthenticationProvider.setCredentials(this.getUserFormJSON());
-            THUser.updateProfile(getUserFormJSON(), new LogInCallback() {
-                @Override
-                public void done(UserBaseDTO user, THException ex) {
+            THUser.updateProfile(getUserFormJSON(), new LogInCallback()
+            {
+                @Override public void done(UserBaseDTO user, THException ex)
+                {
                     if (ex == null)
                     {
                         THToast.show(R.string.settings_update_profile_successful);
@@ -348,9 +346,8 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
                     progressDialog.hide();
                 }
 
-                @Override
-                public void onStart() {
-
+                @Override public void onStart()
+                {
                 }
             });
         }
@@ -369,51 +366,6 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
     @Override public AuthenticationMode getAuthenticationMode()
     {
         return AuthenticationMode.SignUpWithEmail;
-    }
-
-    class Imageupload extends AsyncTask<String, Void, String>
-    {
-
-        ProgressDialog dlg;
-
-        @Override
-        protected void onPreExecute()
-        {
-            // TODO Auto-generated method stub
-            dlg = new ProgressDialog(getActivity());
-            dlg.setMessage("Loading...");
-            dlg.show();
-            super.onPreExecute();
-        }
-
-        @Override
-        protected String doInBackground(String... params)
-        {
-            // TODO Auto-generated method stub
-
-            String lDName = params[0];
-            String lEmail = params[1];
-            String lFName = params[2];
-            String lLName = params[3];
-            String lPassword = params[4];
-            String lConfirmPassword = params[5];
-            Bitmap myimg = imageBmp;
-
-            String response = new PostData(getActivity()).httpMultipartCon(
-                    "https://www.tradehero.mobi/api/SignupWithEmail", lDName, lEmail, lFName,
-                    lLName, lPassword, lConfirmPassword);
-
-            return response;
-        }
-
-        @Override
-        protected void onPostExecute(String result)
-        {
-            super.onPostExecute(result);
-            THToast.show(result);
-            System.out.println("response for image upload----------" + result);
-            dlg.dismiss();
-        }
     }
 }
 

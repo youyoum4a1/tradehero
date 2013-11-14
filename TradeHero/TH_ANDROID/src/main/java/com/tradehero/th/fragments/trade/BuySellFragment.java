@@ -52,8 +52,6 @@ import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.security.StockInfoFragment;
 import com.tradehero.th.network.service.SecurityService;
-import com.tradehero.th.utills.Logger;
-import com.tradehero.th.utills.Logger.LogLevel;
 import com.tradehero.th.widget.trade.PricingBidAskView;
 import com.tradehero.th.widget.trade.QuickPriceButtonSet;
 import com.tradehero.th.widget.trade.TradeQuantityView;
@@ -292,21 +290,6 @@ public class BuySellFragment extends AbstractBuySellFragment
         }
     }
 
-    //@Override public void onViewStateRestored(Bundle savedInstanceState)
-    //{
-    //    super.onViewStateRestored(savedInstanceState);
-    //
-    //    if (savedInstanceState != null)
-    //    {
-    //        securityId = new SecurityId(savedInstanceState);
-    //        THLog.d(TAG, securityId.toString());
-    //    }
-    //    else
-    //    {
-    //        THLog.d(TAG, "SavedInstanceState null");
-    //    }
-    //}
-
     //<editor-fold desc="ActionBar">
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
@@ -436,97 +419,6 @@ public class BuySellFragment extends AbstractBuySellFragment
         THLog.d(TAG, "onDetach");
         super.onDetach();
     }
-
-    //@Override
-    //public void onYahooQuoteUpdateStarted()
-    //{
-    //    mProgressBar.setVisibility(View.VISIBLE);
-    //}
-    //
-    //@Override
-    //public void onYahooQuoteUpdateListener(HashMap<String, String> yQuotes)
-    //{
-    //
-    //    mProgressBar.setVisibility(View.GONE);
-    //    enableFields(true);
-    //
-    //    double LastPrice = YUtils.parseQuoteValue(yQuotes.get("Last Trade (Price Only)"));
-    //    if (!Double.isNaN(LastPrice))
-    //    {
-    //        lastPrice = LastPrice;
-    //        tvLastPrice.setText(String.format("%s%.2f", trend.getCurrencyDisplay(), lastPrice));
-    //    }
-    //    else
-    //    {
-    //        Logger.log(TAG, "Unable to parse Last Trade (Price Only)", LogLevel.LOGGING_LEVEL_ERROR);
-    //    }
-    //
-    //    //TODO Format date
-    //    String lastPriceDatetimeUtc = yQuotes.get("Last Trade Date");
-    //    if (TextUtils.isEmpty(lastPriceDatetimeUtc))
-    //    {
-    //        tvPriceAsOf.setText(lastPriceDatetimeUtc);
-    //    }
-    //
-    //    double askPrice = YUtils.parseQuoteValue(yQuotes.get("Ask"));
-    //    if (Double.isNaN(askPrice))
-    //    {
-    //        Logger.log(TAG, "Unable to parse Ask, will try using real-time data", LogLevel.LOGGING_LEVEL_ERROR);
-    //
-    //        askPrice = YUtils.parseQuoteValue(yQuotes.get("Ask (Real-time)"));
-    //        if (Double.isNaN(askPrice))
-    //        {
-    //            Logger.log(TAG, "Unable to parse Ask (Real-time)", LogLevel.LOGGING_LEVEL_ERROR);
-    //        }
-    //    }
-    //
-    //    if (!Double.isNaN(askPrice))
-    //    {
-    //        lastPrice = askPrice;
-    //    }
-    //
-    //    double bidPrice = YUtils.parseQuoteValue(yQuotes.get("Bid"));
-    //    if (Double.isNaN(bidPrice))
-    //    {
-    //        Logger.log(TAG, "Unable to parse Bid, will try using real-time data", LogLevel.LOGGING_LEVEL_ERROR);
-    //
-    //        bidPrice = YUtils.parseQuoteValue(yQuotes.get("Bid (Real-time)"));
-    //        if (Double.isNaN(bidPrice))
-    //        {
-    //            Logger.log(TAG, "Unable to parse Bid (Real-time)", LogLevel.LOGGING_LEVEL_ERROR);
-    //        }
-    //    }
-    //
-    //    // only update ask & bid if both are present.
-    //    if (!Double.isNaN(askPrice) && (Double.compare(askPrice, 0.0) == 0) && !Double.isNaN(bidPrice)
-    //            && (Double.compare(bidPrice, 0.0) == 0))
-    //    {
-    //        tvAskPrice.setText(String.format("%.2f%s", askPrice, getString(R.string.ask_with_bracket)));
-    //        tvBidPrice.setText(String.format(" x %.2f%s", bidPrice, getString(R.string.bid_with_bracket)));
-    //    }
-    //    else
-    //    {
-    //        Logger.log(TAG, "Unable to parse Ask & Bid Price", LogLevel.LOGGING_LEVEL_ERROR);
-    //    }
-    //
-    //    double avgDailyVol = YUtils.parseQuoteValue(yQuotes.get("Average Daily Volume"));
-    //    if (!Double.isNaN(avgDailyVol))
-    //    {
-    //        avgDailyVolume = (int) Math.ceil(avgDailyVol);
-    //    }
-    //
-    //    double vol = YUtils.parseQuoteValue(yQuotes.get("Volume"));
-    //    if (!Double.isNaN(vol))
-    //    {
-    //        avgDailyVolume = (int) Math.ceil(vol);
-    //    }
-    //
-    //    updateValues(mCashAvailable, false);
-    //}
-
-
-
-    //<editor-fold desc="Display methods">
 
     @Override public void linkWith(SecurityId securityId, boolean andDisplay)
     {
@@ -937,96 +829,6 @@ public class BuySellFragment extends AbstractBuySellFragment
         });
     }
     //</editor-fold>
-
-    private void updateValues(double cash, boolean isPriceSlot)
-    {
-
-        Logger.log(TAG, "Cash: " + cash, LogLevel.LOGGING_LEVEL_INFO);
-
-        mQuantity = 0;
-
-        double totalCashAvailable = cash - TRANSACTION_COST;
-
-        mQuantity = (int) Math.floor(totalCashAvailable / lastPrice);
-
-        int maxQuantity = avgDailyVolume;
-
-        if (volume > avgDailyVolume)
-        {
-            maxQuantity = volume;
-        }
-
-        maxQuantity = (int) Math.floor(maxQuantity * 0.2);
-
-        if (maxQuantity == 0)
-        {
-            maxQuantity = 1;
-        }
-
-        //TODO check is valid maxQuantity
-
-        if (mQuantity > maxQuantity)
-        {
-            mQuantity = maxQuantity;
-        }
-
-        int defaultQuantity = 0;
-
-        if (isTransactionTypeBuy)
-        {
-            defaultQuantity = (int) Math.floor((mQuantity / 3.0));
-        }
-
-        Logger.log(TAG, "defaultQuantity: " + defaultQuantity, LogLevel.LOGGING_LEVEL_INFO);
-
-        if (isPriceSlot)
-        {
-            defaultQuantity = mQuantity;
-
-            //int quantityForSlots = (int)Math.ceil(totalCashAvailable / lastPrice);
-
-            //if the closest quantity is greater than the maximum the user can buy,
-            //we set the quantity to the maximum he can buy
-            //int slidervalue = (defaultQuantity/sliderIncrement);
-
-            ///Math.min(defaultQuantity, sliderMaxValue);
-            //mSlider.setProgress(slidervalue);
-            //mSlider.setMax(sliderMaxValue);
-
-        }
-        //else {
-
-        //Slider
-        int sliderValue = 0; //mQuantity; //155
-
-        //if(!isPriceSlot)
-        sliderIncrement = (mQuantity > 1000) ? 100 : ((mQuantity > 100) ? 10 : 1);
-
-        //Logger.log(TAG, "Slider Increment: "+sliderIncrement, LogLevel.LOGGING_LEVEL_INFO);
-
-        int sliderMaxValue = mQuantity / sliderIncrement;
-
-        //Logger.log(TAG, "Slider MaxVaule: "+sliderMaxValue, LogLevel.LOGGING_LEVEL_INFO);
-
-        int currentAbsoluteValue = mQuantity;
-        if (defaultQuantity >= currentAbsoluteValue)
-        {
-            sliderValue = sliderMaxValue;
-        }
-        else
-        {
-            int value = (int) defaultQuantity / sliderIncrement;
-            sliderValue = value;
-        }
-        //float value2 = absoluteValue / sliderIncrement;
-
-        Logger.log(TAG, "Slider Vaule: " + sliderValue, LogLevel.LOGGING_LEVEL_INFO);
-
-        mSlider.setMax(sliderMaxValue);
-        mSlider.incrementProgressBy(sliderIncrement);
-        mSlider.setProgress(sliderValue);
-        //}
-    }
 
     public boolean isMyUrlOk()
     {

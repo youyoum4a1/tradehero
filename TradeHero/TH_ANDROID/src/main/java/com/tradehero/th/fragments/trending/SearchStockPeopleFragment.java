@@ -675,7 +675,7 @@ public class SearchStockPeopleFragment extends DashboardFragment
     //<editor-fold desc="BaseFragment.TabBarVisibilityInformer">
     @Override public boolean isTabBarVisible()
     {
-        return true;
+        return false;
     }
     //</editor-fold>
 }
