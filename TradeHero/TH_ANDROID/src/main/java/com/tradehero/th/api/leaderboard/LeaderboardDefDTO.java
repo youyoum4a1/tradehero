@@ -84,6 +84,22 @@ public class LeaderboardDefDTO extends AbstractItemWithComparableId<Integer>
         return null;
     }
 
+    public int getSortOptionFlags()
+    {
+        switch (id)
+        {
+            case LEADERBOARD_DEF_MOST_SKILLED_ID:
+                return LeaderboardSortType.HeroQuotient.getFlag()
+                        | LeaderboardSortType.Roi.getFlag()
+                        | LeaderboardSortType.Followers.getFlag()
+                        | LeaderboardSortType.Comments.getFlag()
+                        | LeaderboardSortType.SharpeRatio.getFlag();
+            default:
+                return LeaderboardSortType.HeroQuotient.getFlag()
+                        | LeaderboardSortType.HeroQuotient.getFlag();
+        }
+    }
+
     public int getDefaultSortType()
     {
         return defaultSortTypeId != null ? defaultSortTypeId : LeaderboardSortType.DefaultSortType.getFlag();

@@ -14,12 +14,13 @@ public enum LeaderboardSortType
 
 
     public static final String BUNDLE_FLAG = "LEADERBOARD_SORT_FLAG";
-    public static int SORT_ROI = 0x1;
-    public static int SORT_HERO_QUOTIENT = 0x2;
-    public static int SORT_FOLLOWERS = 0x4;
-    public static int SORT_COMMENTS = 0x8;
-    public static int SORT_SHARPE_RATIO = 0x10;
     public static LeaderboardSortType DefaultSortType = HeroQuotient;
+
+    private static final int SORT_ROI = 0x1;
+    private static final int SORT_HERO_QUOTIENT = 0x2;
+    private static final int SORT_FOLLOWERS = 0x4;
+    private static final int SORT_COMMENTS = 0x8;
+    private static final int SORT_SHARPE_RATIO = 0x10;
 
     private final int resourceIcon;
     private final int title;
@@ -50,6 +51,11 @@ public enum LeaderboardSortType
     public int getFlag()
     {
         return flag;
+    }
+
+    public int getServerFlag()
+    {
+        return 1 + (flag == 0 ? 0 : 32 - Integer.numberOfLeadingZeros(flag - 1));
     }
 
     public int getTitle()

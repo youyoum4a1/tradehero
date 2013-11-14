@@ -60,7 +60,7 @@ public class LeaderboardMarkUserLoader extends PagedItemListLoader<LeaderboardUs
         LeaderboardQuery query = new LeaderboardQuery();
         query.setId(leaderboardId);
         query.setPage(currentPage);
-        query.setSortType(sortType.getFlag());
+        query.setSortType(sortType.getServerFlag());
         query.setProperty(LeaderboardStore.PER_PAGE, getItemsPerPage());
 
         try

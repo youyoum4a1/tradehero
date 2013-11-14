@@ -60,7 +60,7 @@ public class LeaderboardCommunityFragment extends AbstractLeaderboardFragment
 
     @Override public void onResume()
     {
-        int defaultSortFlags = LeaderboardSortType.SORT_HERO_QUOTIENT | LeaderboardSortType.SORT_ROI;
+        int defaultSortFlags = LeaderboardSortType.HeroQuotient.getFlag() | LeaderboardSortType.Roi.getFlag();
         getArguments().putInt(LeaderboardSortType.BUNDLE_FLAG, defaultSortFlags);
         super.onResume();
     }
@@ -212,7 +212,6 @@ public class LeaderboardCommunityFragment extends AbstractLeaderboardFragment
                             Bundle bundle = new Bundle(getArguments());
                             (new LeaderboardDefSectorListKey()).putParameters(bundle);
                             bundle.putString(LeaderboardDefListViewFragment.TITLE, getString(R.string.leaderboard_sector));
-                            bundle.putInt(LeaderboardSortType.BUNDLE_FLAG, LeaderboardSortType.SORT_ROI | LeaderboardSortType.SORT_HERO_QUOTIENT);
                             bundle.putInt(AbstractLeaderboardFragment.CURRENT_SORT_TYPE, getCurrentSortType().getFlag());
                             getNavigator().pushFragment(LeaderboardDefListViewFragment.class, bundle);
                         } break;

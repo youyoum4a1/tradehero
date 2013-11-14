@@ -21,17 +21,17 @@ public class InPeriodPositionListFragment extends PositionListFragment
     private DTOCache.GetOrFetchTask<GetLeaderboardPositionsDTO> fetchGetPositionsDTOTask;
 
     private LeaderboardMarkUserId leaderboardMarkUserId;
+    private boolean timeRestricted;
 
     @Override protected void createPositionItemAdapter()
     {
-        boolean timeRestricted = getArguments().getBoolean(LeaderboardDefDTO.LEADERBOARD_DEF_TIME_RESTRICTED, false);
         positionItemAdapter = new InPeriodPositionItemAdapter(
                 getActivity(),
                 getActivity().getLayoutInflater(),
                 R.layout.position_item_header,
                 R.layout.position_locked_item,
-                timeRestricted ? R.layout.position_open_in_period : R.layout.position_open_no_period,
-                timeRestricted ? R.layout.position_closed_in_period : R.layout.position_closed_no_period,
+                R.layout.position_open_in_period,
+                R.layout.position_closed_in_period,
                 R.layout.position_quick_nothing);
     }
 
@@ -42,6 +42,7 @@ public class InPeriodPositionListFragment extends PositionListFragment
         String periodStart = getArguments().getString(LeaderboardUserDTO.LEADERBOARD_PERIOD_START_STRING);
         THLog.d(TAG, "Period Start: " + periodStart);
 
+        timeRestricted = getArguments().getBoolean(LeaderboardDefDTO.LEADERBOARD_DEF_TIME_RESTRICTED, false);
         super.onResume();
     }
 

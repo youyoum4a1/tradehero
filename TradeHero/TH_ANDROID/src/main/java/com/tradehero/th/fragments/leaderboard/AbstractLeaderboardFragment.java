@@ -17,7 +17,7 @@ public class AbstractLeaderboardFragment extends DashboardFragment
         implements BaseFragment.TabBarVisibilityInformer
 {
     public static final String TITLE = "LEADERBOARD_DEF_TITLE";
-    public static final String CURRENT_SORT_TYPE = LeaderboardListViewFragment.class.getName() + ".currentSortType";
+    public static final String CURRENT_SORT_TYPE = AbstractLeaderboardFragment.class.getName() + ".currentSortType";
 
     @Inject protected LeaderboardSortHelper leaderboardSortHelper;
 
@@ -34,6 +34,8 @@ public class AbstractLeaderboardFragment extends DashboardFragment
         bundle.putInt(LeaderboardListViewFragment.CURRENT_SORT_TYPE,
                 getCurrentSortType() != null ? getCurrentSortType().getFlag() : dto.getDefaultSortType());
         bundle.putString(LeaderboardDefDTO.LEADERBOARD_DEF_DESC, dto.desc);
+
+        bundle.putInt(LeaderboardSortType.BUNDLE_FLAG, dto.getSortOptionFlags());
         getNavigator().pushFragment(LeaderboardListViewFragment.class, bundle);
     }
 
@@ -77,12 +79,12 @@ public class AbstractLeaderboardFragment extends DashboardFragment
 
     private void setCurrentSortType(LeaderboardSortType selectedSortType)
     {
-        currentSortType = selectedSortType;
-        sortSubMenu.setIcon(currentSortType.getSelectedResourceIcon());
-        if (sortTypeChangeListener != null)
+        if (sortTypeChangeListener != null && currentSortType != selectedSortType)
         {
-            sortTypeChangeListener.onSortTypeChange(currentSortType);
+            sortTypeChangeListener.onSortTypeChange(selectedSortType);
         }
+        sortSubMenu.setIcon(selectedSortType.getSelectedResourceIcon());
+        currentSortType = selectedSortType;
     }
 
     protected LeaderboardSortType getCurrentSortType()

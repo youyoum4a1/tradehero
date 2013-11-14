@@ -101,7 +101,7 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
 
         if (lbmuProfilePicture != null)
         {
-            picasso.get().load(R.drawable.user_profile_oval)
+            picasso.get().load(R.drawable.superman_facebook)
                     .transform(new RoundedShapeTransformation())
                     .into(lbmuProfilePicture);
         }
@@ -186,7 +186,7 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         }
         else
         {
-            picasso.get().load(R.drawable.user_profile_oval)
+            picasso.get().load(R.drawable.superman_facebook)
                     .transform(new RoundedShapeTransformation())
                     .into(lbmuProfilePicture);
         }
@@ -287,7 +287,7 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         String formattedStartPeriodUtc = sdf.format(model.periodStartUtc);
         bundle.putString(LeaderboardUserDTO.LEADERBOARD_PERIOD_START_STRING, formattedStartPeriodUtc);
 
-        // get leaderboard definition from cache, supposedly that it exists
+        // get leaderboard definition from cache, supposedly it exists coz this view appears after leaderboard definition list
         LeaderboardDefDTO leaderboardDef = leaderboardDefCache.get().get(new LeaderboardDefKey(leaderboardItem.getLeaderboardId()));
         boolean isTimeRestrictedLeaderboard = leaderboardDef != null && leaderboardDef.isTimeRestrictedLeaderboard();
         bundle.putBoolean(LeaderboardDefDTO.LEADERBOARD_DEF_TIME_RESTRICTED, isTimeRestrictedLeaderboard);

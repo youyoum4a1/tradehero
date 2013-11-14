@@ -8,12 +8,12 @@ import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.th.R;
 import com.tradehero.th.api.position.OwnedPositionId;
 import com.tradehero.th.api.position.PositionDTO;
+import com.tradehero.th.persistence.leaderboard.position.LeaderboardPositionCache;
 import com.tradehero.th.persistence.position.PositionCache;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.DateUtils;
 import com.tradehero.th.utils.PositionUtils;
 import dagger.Lazy;
-
 import javax.inject.Inject;
 
 /**
@@ -28,7 +28,6 @@ public class PositionPartialBottomClosedView extends RelativeLayout
     protected PositionDTO positionDTO;
 
     @Inject protected Lazy<PositionCache> positionCache;
-    @Inject protected Lazy<PositionCache> leaderboardPositionCache;
 
     private TextView realisedPLValue;
     private TextView totalInvestedValue;
