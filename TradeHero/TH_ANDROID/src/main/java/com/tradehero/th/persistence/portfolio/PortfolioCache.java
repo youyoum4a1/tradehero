@@ -29,7 +29,6 @@ import retrofit.RetrofitError;
     public static final String TAG = PortfolioCache.class.getName();
     public static final int DEFAULT_MAX_SIZE = 200;
 
-    @Inject @Named("CurrentUser") protected UserBaseDTO currentUserBase;
     @Inject Lazy<PortfolioService> portfolioService;
     @Inject Lazy<PortfolioCompactCache> portfolioCompactCache;
     @Inject Lazy<UserProfileCache> userProfileCache;

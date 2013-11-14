@@ -5,6 +5,7 @@ import com.tradehero.common.utils.THJsonAdapter;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.api.form.UserFormDTO;
 import com.tradehero.th.api.form.UserFormFactory;
+import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
 import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.api.users.UserLoginDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
@@ -47,6 +48,7 @@ public class THUser
 
     @Inject static Lazy<UserService> userService;
     @Inject static protected Lazy<UserProfileCache> userProfileCache;
+    @Inject static protected CurrentUserBaseKeyHolder currentUserBaseKeyHolder;
 
     public static void initialize()
     {
@@ -292,6 +294,7 @@ public class THUser
 
     public static void clearCurrentUser()
     {
+        currentSessionToken = null;
         credentials.clear();
         SharedPreferences.Editor prefEditor = Application.getPreferences().edit();
         prefEditor.remove(PREF_MY_USER);
@@ -345,7 +348,7 @@ public class THUser
         catch (JSONException je)
         {
         }
-        userService.get().updateProfile(getAuthHeader(),
+        userService.get().updateProfile(
                 getCurrentUserBase().id,
                 userFormDTO.deviceToken,
                 userFormDTO.displayName,

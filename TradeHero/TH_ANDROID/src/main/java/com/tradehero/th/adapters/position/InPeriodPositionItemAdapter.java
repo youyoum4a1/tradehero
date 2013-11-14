@@ -7,13 +7,13 @@ import android.view.ViewGroup;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.ExpandableListItem;
 import com.tradehero.th.api.leaderboard.position.OwnedLeaderboardPositionId;
-import com.tradehero.th.api.position.InPeriodPositionDTO;
+import com.tradehero.th.api.position.PositionInPeriodDTO;
 import com.tradehero.th.widget.position.AbstractPositionView;
 import com.tradehero.th.widget.position.LockedPositionItem;
 import com.tradehero.th.widget.position.PositionSectionHeaderItemView;
 
 /** Created with IntelliJ IDEA. User: tho Date: 11/6/13 Time: 8:11 PM Copyright (c) TradeHero */
-public class InPeriodPositionItemAdapter extends AbstractPositionItemAdapter<InPeriodPositionDTO>
+public class InPeriodPositionItemAdapter extends AbstractPositionItemAdapter<PositionInPeriodDTO>
 {
     public InPeriodPositionItemAdapter(Context context, LayoutInflater inflater, int headerLayoutId,
             int lockedPositionLayoutId, int openPositionLayoutId, int closedPositionLayoutId, int positionNothingId)
@@ -78,7 +78,7 @@ public class InPeriodPositionItemAdapter extends AbstractPositionItemAdapter<InP
         cell.setListener(getInternalListener());
     }
 
-    @Override protected void setPosition(InPeriodPositionDTO positionDTO)
+    @Override protected void setPosition(PositionInPeriodDTO positionDTO)
     {
 
         ExpandableListItem<OwnedLeaderboardPositionId> item = new ExpandableListItem<>(positionDTO.getLbOwnedPositionId());

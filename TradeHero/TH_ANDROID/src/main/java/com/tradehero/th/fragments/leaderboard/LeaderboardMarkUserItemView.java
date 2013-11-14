@@ -12,10 +12,12 @@ import com.squareup.picasso.Picasso;
 import com.tradehero.common.graphics.RoundedShapeTransformation;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
-import com.tradehero.th.api.leaderboard.LeaderboardUserRankDTO;
+import com.tradehero.th.api.leaderboard.LeaderboardDTO;
+import com.tradehero.th.api.leaderboard.LeaderboardDefDTO;
+import com.tradehero.th.api.leaderboard.LeaderboardDefKey;
+import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import com.tradehero.th.api.leaderboard.position.LeaderboardMarkUserId;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
-import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.base.Navigator;
@@ -24,8 +26,10 @@ import com.tradehero.th.fragments.position.InPeriodPositionListFragment;
 import com.tradehero.th.fragments.position.PositionListFragment;
 import com.tradehero.th.fragments.timeline.TimelineFragment;
 import com.tradehero.th.models.THSignedNumber;
+import com.tradehero.th.persistence.leaderboard.LeaderboardDefCache;
 import com.tradehero.th.persistence.position.PositionCache;
 import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th.utils.DateUtils;
 import com.tradehero.th.utils.NumberDisplayUtils;
 import dagger.Lazy;
 import java.text.SimpleDateFormat;
@@ -33,16 +37,15 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 /** Created with IntelliJ IDEA. User: tho Date: 10/21/13 Time: 4:14 PM Copyright (c) TradeHero */
-public class LeaderboardUserRankItemView extends RelativeLayout
-        implements DTOView<LeaderboardListAdapter.ExpandableLeaderboardUserRankItemWrapper>,View.OnClickListener
+public class LeaderboardMarkUserItemView extends RelativeLayout
+        implements DTOView<LeaderboardMarkUserListAdapter.ExpandableLeaderboardUserRankItemWrapper>,View.OnClickListener
 {
     @Inject protected Lazy<Picasso> picasso;
-    @Inject protected Lazy<PositionCache> positionCache;
+    @Inject protected Lazy<LeaderboardDefCache> leaderboardDefCache;
     @Inject @Named("CurrentUser") protected UserBaseDTO currentUserBase;
 
     // data
-    private LeaderboardListAdapter.ExpandableLeaderboardUserRankItemWrapper leaderboardItem;
-    private PositionDTO position;
+    private LeaderboardMarkUserListAdapter.ExpandableLeaderboardUserRankItemWrapper leaderboardItem;
 
     // top view
     private TextView lbmuDisplayName;
@@ -68,17 +71,17 @@ public class LeaderboardUserRankItemView extends RelativeLayout
     private TextView lbmuPeriod;
 
     //<editor-fold desc="Constructors">
-    public LeaderboardUserRankItemView(Context context)
+    public LeaderboardMarkUserItemView(Context context)
     {
         super(context);
     }
 
-    public LeaderboardUserRankItemView(Context context, AttributeSet attrs)
+    public LeaderboardMarkUserItemView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
     }
 
-    public LeaderboardUserRankItemView(Context context, AttributeSet attrs, int defStyle)
+    public LeaderboardMarkUserItemView(Context context, AttributeSet attrs, int defStyle)
     {
         super(context, attrs, defStyle);
     }
@@ -143,17 +146,16 @@ public class LeaderboardUserRankItemView extends RelativeLayout
         }
     }
 
-    @Override public void display(LeaderboardListAdapter.ExpandableLeaderboardUserRankItemWrapper expandableItem)
+    @Override public void display(LeaderboardMarkUserListAdapter.ExpandableLeaderboardUserRankItemWrapper expandableItem)
     {
         linkWith(expandableItem, true);
     }
 
-    private void linkWith(LeaderboardListAdapter.ExpandableLeaderboardUserRankItemWrapper expandableItem, boolean andDisplay)
+    private void linkWith(LeaderboardMarkUserListAdapter.ExpandableLeaderboardUserRankItemWrapper expandableItem, boolean andDisplay)
     {
         this.leaderboardItem = expandableItem;
         if (leaderboardItem != null)
         {
-            //this.position = positionCache.get().get(new OwnedPositionId());
         }
 
         if (andDisplay)
@@ -175,7 +177,7 @@ public class LeaderboardUserRankItemView extends RelativeLayout
 
     private void displayTopSection()
     {
-        LeaderboardUserRankDTO dto = leaderboardItem.getModel();
+        LeaderboardUserDTO dto = leaderboardItem.getModel();
 
         lbmuPosition.setText("" + (leaderboardItem.getPosition() + 1));
         lbmuDisplayName.setText(dto.displayName);
@@ -191,7 +193,7 @@ public class LeaderboardUserRankItemView extends RelativeLayout
 
     private void displayExpandableSection()
     {
-        LeaderboardUserRankDTO dto = leaderboardItem.getModel();
+        LeaderboardUserDTO dto = leaderboardItem.getModel();
 
         // display P&L
         lbmuPl.setText(dto.getFormattedPL() + " " + getContext().getString(R.string.ref_currency));
@@ -267,14 +269,28 @@ public class LeaderboardUserRankItemView extends RelativeLayout
 
     private void handleOpenPositionListClicked()
     {
-        LeaderboardUserRankDTO model = leaderboardItem.getModel();
+        LeaderboardUserDTO model = leaderboardItem.getModel();
+
         int userId = model.getId();
+
+        // portfolio, to display position list
         int portfolioId = leaderboardItem.getModel().portfolioId;
         OwnedPortfolioId ownedPortfolioId = new OwnedPortfolioId(userId, portfolioId);
+
+        // leaderboard mark user id, to get marking user information
         Bundle bundle = ownedPortfolioId.getArgs();
         bundle.putLong(LeaderboardMarkUserId.BUNDLE_KEY, model.lbmuId);
 
-        navigator.pushFragment(InPeriodPositionListFragment.class, bundle, true);
+        // to display time of value on start investment
+        SimpleDateFormat sdf = new SimpleDateFormat(getContext().getString(R.string.leaderboard_datetime_format));
+        String formattedStartPeriodUtc = sdf.format(model.periodStartUtc);
+        bundle.putString(LeaderboardUserDTO.LEADERBOARD_PERIOD_START_STRING, formattedStartPeriodUtc);
+
+        LeaderboardDefDTO leaderboardDef = leaderboardDefCache.get().get(new LeaderboardDefKey(leaderboardItem.getLeaderboardId()));
+
+        navigator.pushFragment(
+                leaderboardDef != null && leaderboardDef.isTimeRestrictedLeaderboard() ?
+                InPeriodPositionListFragment.class : PositionListFragment.class, bundle, true);
     }
 
     private void handleOpenProfileButtonClicked()

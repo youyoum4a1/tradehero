@@ -34,6 +34,7 @@ abstract public class EmailSignInOrUpFragment extends AuthenticationFragment imp
     {
         View view = inflater.inflate(getDefaultViewId(), container, false);
         initSetup(view);
+        setHasOptionsMenu(true);
         return view;
     }
 

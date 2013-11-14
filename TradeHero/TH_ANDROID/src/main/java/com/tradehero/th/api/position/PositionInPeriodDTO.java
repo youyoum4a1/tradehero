@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/16/13 Time: 12:11 PM To change this template use File | Settings | File Templates. */
-public class InPeriodPositionDTO extends PositionDTO
+public class PositionInPeriodDTO extends PositionDTO
 {
     // This leaderboard Mark User Id needs to be populated by the service
     private Integer leaderboardMarkUserId;
@@ -37,18 +37,18 @@ public class InPeriodPositionDTO extends PositionDTO
         this.leaderboardMarkUserId = leaderboardMarkUserId;
     }
 
-    public static List<OwnedLeaderboardPositionId> getFiledLbPositionIds(List<InPeriodPositionDTO> inPeriodPositionDTOs)
+    public static List<OwnedLeaderboardPositionId> getFiledLbPositionIds(List<PositionInPeriodDTO> positionInPeriodDTOs)
     {
-        if (inPeriodPositionDTOs == null)
+        if (positionInPeriodDTOs == null)
         {
             return null;
         }
 
         List<OwnedLeaderboardPositionId> ownedPositionIds = new ArrayList<>();
 
-        for (InPeriodPositionDTO inPeriodPositionDTO : inPeriodPositionDTOs)
+        for (PositionInPeriodDTO positionInPeriodDTO : positionInPeriodDTOs)
         {
-            ownedPositionIds.add(inPeriodPositionDTO.getLbOwnedPositionId());
+            ownedPositionIds.add(positionInPeriodDTO.getLbOwnedPositionId());
         }
 
         return ownedPositionIds;

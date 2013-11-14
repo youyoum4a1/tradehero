@@ -159,41 +159,6 @@
   <string name="number_presentation_billion_suffix">B</string>
   <string name="number_presentation_trillion_suffix">Tr</string>
 
-  <!-- Settings -->
-  <string-array name="settings_primary_list">
-    <item>Send Love!</item>
-    <item>Send Feedback</item>
-    <item>FAQ</item>
-    <item>Profile</item>
-    <item>PayPal</item>
-    <item>Transaction History</item>
-  </string-array>
-  <string-array name="settings_notifications_list">
-    <item>Email Notifications</item>
-  </string-array>
-  <string-array name="settings_misc_list">
-    <item>Reset Help Screens</item>
-    <item>Clear Cache</item>
-    <item>Sign Out</item>
-    <item>About</item>
-  </string-array>
-  <string name="settings_update_profile">Update Profile</string>
-  <string name="settings_update_profile_successful">Profile successfully updated</string>
-  <string name="settings_privacy">Privacy Policy</string>
-  <string name="settings_terms">Terms and Conditions</string>
-  <string name="settings_about_header">About</string>
-  <string name="settings_about">Any use of trademarks or copyright images is for the fair and reasonable uses of research, study, description and/or identification. Such trademarks or images remain the sole property of their respective owners.</string>
-  <string name="settings_paypal_header">PayPal</string>
-  <string name="settings_paypal_label">PayPal Account (email address)</string>
-  <string name="settings_paypal_hint">Your PayPal email address</string>
-  <string name="settings_paypal_update">Update</string>
-  <string name="settings_paypal_description">We use your PayPal account to distribute your share of the income received from your followers...</string>
-  <string name="settings_paypal_successful_update">PayPal account successfully updated</string>
-  <string name="settings_transaction_header">Transaction History</string>
-  <string name="settings_transaction_date">DATE</string>
-  <string name="settings_transaction_balance">BALANCE</string>
-  <string name="settings_transaction_comment">COMMENT</string>
-
   <!-- TradeHero URLs -->
   <string name="th_faq_url">http://www.tradehero.mobi/faq</string>
   <string name="th_help_url">http://www.tradehero.mobi/about</string>

@@ -5,20 +5,21 @@ import com.tradehero.common.persistence.LeaderboardQuery;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
 import com.tradehero.th.api.leaderboard.LeaderboardDTO;
-import com.tradehero.th.api.leaderboard.LeaderboardUserRankDTO;
+import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import com.tradehero.th.loaders.PagedItemListLoader;
 import com.tradehero.th.persistence.leaderboard.LeaderboardManager;
 import com.tradehero.th.persistence.leaderboard.LeaderboardStore;
 import com.tradehero.th.utils.DaggerUtils;
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 import javax.inject.Inject;
 
 /** Created with IntelliJ IDEA. User: tho Date: 10/21/13 Time: 4:28 PM Copyright (c) TradeHero */
-public class LeaderboardLoader extends PagedItemListLoader<LeaderboardUserRankDTO>
+public class LeaderboardMarkUserLoader extends PagedItemListLoader<LeaderboardUserDTO>
     implements SortTypeChangedListener
 {
-    private static final String TAG = LeaderboardLoader.class.getName();
+    private static final String TAG = LeaderboardMarkUserLoader.class.getName();
     public static final int UNIQUE_LOADER_ID = R.string.loaderboard_loader_id;
 
     private Integer currentPage;
@@ -27,20 +28,21 @@ public class LeaderboardLoader extends PagedItemListLoader<LeaderboardUserRankDT
 
     @Inject
     protected LeaderboardManager leaderboardManager;
+    private Date markUtc;
 
-    public LeaderboardLoader(Context context, int leaderboardId)
+    public LeaderboardMarkUserLoader(Context context, int leaderboardId)
     {
         super(context);
         this.leaderboardId = leaderboardId;
         DaggerUtils.inject(this);
     }
 
-    @Override protected void onLoadNextPage(LeaderboardUserRankDTO firstVisibleItem)
+    @Override protected void onLoadNextPage(LeaderboardUserDTO firstVisibleItem)
     {
         // do nothing
     }
 
-    @Override protected void onLoadPreviousPage(LeaderboardUserRankDTO lastVisibleItem)
+    @Override protected void onLoadPreviousPage(LeaderboardUserDTO lastVisibleItem)
     {
         if (currentPage == null)
         {
@@ -50,8 +52,9 @@ public class LeaderboardLoader extends PagedItemListLoader<LeaderboardUserRankDT
         forceLoad();
     }
 
-    @Override public List<LeaderboardUserRankDTO> loadInBackground()
+    @Override public List<LeaderboardUserDTO> loadInBackground()
     {
+        THLog.d(TAG, String.format("Loader with id = " + getId()));
         THLog.d(TAG, String.format("Start loading leaderboard %d, page=%d", leaderboardId, currentPage));
 
         LeaderboardQuery query = new LeaderboardQuery();
@@ -63,10 +66,19 @@ public class LeaderboardLoader extends PagedItemListLoader<LeaderboardUserRankDT
         try
         {
             LeaderboardDTO dto = leaderboardManager.firstOrDefault(query, true);
-            return dto == null ? null : dto.users;
+
+            if (dto == null)
+            {
+                return null;
+            }
+
+            markUtc = dto.markUtc;
+            THLog.d(TAG, "Leaderboard marked at " + dto.markUtc);
+            return dto.users;
         }
         catch (IOException e)
         {
+            THLog.e(TAG, "Error loading Leaderboard ranking", e);
             return null;
         }
     }
@@ -85,5 +97,15 @@ public class LeaderboardLoader extends PagedItemListLoader<LeaderboardUserRankDT
         {
             items.clear();
         }
+    }
+
+    public Date getMarkUtc()
+    {
+        return markUtc;
+    }
+
+    public Integer getLeaderboardId()
+    {
+        return leaderboardId;
     }
 }

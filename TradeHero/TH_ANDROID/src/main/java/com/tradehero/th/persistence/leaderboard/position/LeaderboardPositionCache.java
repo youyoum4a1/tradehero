@@ -2,7 +2,7 @@ package com.tradehero.th.persistence.leaderboard.position;
 
 import com.tradehero.common.persistence.StraightDTOCache;
 import com.tradehero.th.api.leaderboard.position.OwnedLeaderboardPositionId;
-import com.tradehero.th.api.position.InPeriodPositionDTO;
+import com.tradehero.th.api.position.PositionInPeriodDTO;
 import com.tradehero.th.persistence.trade.TradeListCache;
 import dagger.Lazy;
 
@@ -14,7 +14,7 @@ import java.util.List;
 /**
  * Created by julien on 1/11/13
  */
-@Singleton public class LeaderboardPositionCache extends StraightDTOCache<OwnedLeaderboardPositionId, InPeriodPositionDTO>
+@Singleton public class LeaderboardPositionCache extends StraightDTOCache<OwnedLeaderboardPositionId, PositionInPeriodDTO>
 {
     private static final int DEFAULT_MAX_SIZE = 5000;
 
@@ -26,12 +26,12 @@ import java.util.List;
         super(DEFAULT_MAX_SIZE);
     }
 
-    @Override protected InPeriodPositionDTO fetch(OwnedLeaderboardPositionId key)
+    @Override protected PositionInPeriodDTO fetch(OwnedLeaderboardPositionId key)
     {
         throw new IllegalStateException("You should not fetch PositionDTO individually");
     }
 
-    @Override public InPeriodPositionDTO put(OwnedLeaderboardPositionId key, InPeriodPositionDTO value)
+    @Override public PositionInPeriodDTO put(OwnedLeaderboardPositionId key, PositionInPeriodDTO value)
     {
         // Save the correspondence between integer id and compound key.
         positionIdCache.get().put(value.getLbPositionId(), key);
@@ -51,16 +51,16 @@ import java.util.List;
         //tradeListCache.get().invalidate(key);
     }
 
-    public List<InPeriodPositionDTO> put(List<InPeriodPositionDTO> values)
+    public List<PositionInPeriodDTO> put(List<PositionInPeriodDTO> values)
     {
         if (values == null)
         {
             return null;
         }
 
-        List<InPeriodPositionDTO> previousValues = new ArrayList<>();
+        List<PositionInPeriodDTO> previousValues = new ArrayList<>();
 
-        for (InPeriodPositionDTO positionDTO: values)
+        for (PositionInPeriodDTO positionDTO: values)
         {
             previousValues.add(put(positionDTO.getLbOwnedPositionId(), positionDTO));
         }
@@ -68,14 +68,14 @@ import java.util.List;
         return previousValues;
     }
 
-    public List<InPeriodPositionDTO> get(List<OwnedLeaderboardPositionId> keys)
+    public List<PositionInPeriodDTO> get(List<OwnedLeaderboardPositionId> keys)
     {
         if (keys == null)
         {
             return null;
         }
 
-        List<InPeriodPositionDTO> positionDTOs = new ArrayList<>();
+        List<PositionInPeriodDTO> positionDTOs = new ArrayList<>();
 
         for (OwnedLeaderboardPositionId key: keys)
         {

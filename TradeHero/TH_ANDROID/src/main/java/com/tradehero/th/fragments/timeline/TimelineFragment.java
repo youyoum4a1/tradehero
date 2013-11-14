@@ -61,6 +61,7 @@ public class TimelineFragment extends BaseFragment
     protected DTOCache.GetOrFetchTask<UserProfileDTO> userProfileCacheTask;
     protected DTOCache.Listener<UserBaseKey, OwnedPortfolioIdList> portfolioCompactListCacheListener;
     protected DTOCache.GetOrFetchTask<OwnedPortfolioIdList> portfolioCompactListCacheTask;
+    private StepView stepView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -246,7 +247,7 @@ public class TimelineFragment extends BaseFragment
     protected void updateView()
     {
         // TODO retain state for stepView
-        StepView stepView = new StepView(getActivity(), getActivity().getLayoutInflater());
+        stepView = new StepView(getActivity(), getActivity().getLayoutInflater());
         stepView.setStepProvider(this);
 
         if (timelineListView.getRefreshableView().getHeaderViewsCount() == 1)

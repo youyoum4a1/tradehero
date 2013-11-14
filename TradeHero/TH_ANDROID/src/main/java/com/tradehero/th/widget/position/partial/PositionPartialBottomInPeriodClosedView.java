@@ -6,11 +6,8 @@ import android.widget.TextView;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.th.R;
 import com.tradehero.th.api.leaderboard.position.OwnedLeaderboardPositionId;
-import com.tradehero.th.api.position.InPeriodPositionDTO;
-import com.tradehero.th.api.position.OwnedPositionId;
-import com.tradehero.th.api.position.PositionDTO;
+import com.tradehero.th.api.position.PositionInPeriodDTO;
 import com.tradehero.th.persistence.leaderboard.position.LeaderboardPositionCache;
-import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.DateUtils;
 import com.tradehero.th.utils.PositionUtils;
 import dagger.Lazy;
@@ -26,8 +23,8 @@ public class PositionPartialBottomInPeriodClosedView extends PositionPartialBott
 
     @Inject protected Lazy<LeaderboardPositionCache> inPeriodPositionCache;
 
-    private DTOCache.Listener<OwnedLeaderboardPositionId, InPeriodPositionDTO> positionCacheListener;
-    private DTOCache.GetOrFetchTask<InPeriodPositionDTO> fetchPositionTask;
+    private DTOCache.Listener<OwnedLeaderboardPositionId, PositionInPeriodDTO> positionCacheListener;
+    private DTOCache.GetOrFetchTask<PositionInPeriodDTO> fetchPositionTask;
 
     private TextView inPeriodPL;
     private TextView inPeriodAdditionalInvested;
@@ -82,11 +79,11 @@ public class PositionPartialBottomInPeriodClosedView extends PositionPartialBott
         fetchPositionTask.execute();
     }
 
-    private DTOCache.Listener<OwnedLeaderboardPositionId, InPeriodPositionDTO> createPositionCacheListener()
+    private DTOCache.Listener<OwnedLeaderboardPositionId, PositionInPeriodDTO> createPositionCacheListener()
     {
-        return new DTOCache.Listener<OwnedLeaderboardPositionId, InPeriodPositionDTO>()
+        return new DTOCache.Listener<OwnedLeaderboardPositionId, PositionInPeriodDTO>()
         {
-            @Override public void onDTOReceived(OwnedLeaderboardPositionId key, InPeriodPositionDTO value)
+            @Override public void onDTOReceived(OwnedLeaderboardPositionId key, PositionInPeriodDTO value)
             {
                 linkWith(value, true);
             }
@@ -98,7 +95,7 @@ public class PositionPartialBottomInPeriodClosedView extends PositionPartialBott
         };
     }
 
-    public void linkWith(InPeriodPositionDTO positionDTO, boolean andDisplay)
+    public void linkWith(PositionInPeriodDTO positionDTO, boolean andDisplay)
     {
         this.positionDTO = positionDTO;
         if (andDisplay)
@@ -109,14 +106,14 @@ public class PositionPartialBottomInPeriodClosedView extends PositionPartialBott
 
     private void displayInPeriod()
     {
-        InPeriodPositionDTO inPeriodPositionDTO = (InPeriodPositionDTO) positionDTO;
+        PositionInPeriodDTO positionInPeriodDTO = (PositionInPeriodDTO) positionDTO;
 
-        inPeriodPL.setText(PositionUtils.getInPeriodRealizedPL(getContext(), inPeriodPositionDTO));
-        PositionUtils.setROIInPeriod(inPeriodRoiValue, inPeriodPositionDTO);
-        inPeriodAdditionalInvested.setText(PositionUtils.getAdditionalInvested(getContext(), inPeriodPositionDTO));
-        inPeriodValueAtStart.setText(PositionUtils.getValueAtStart(getContext(), inPeriodPositionDTO));
+        inPeriodPL.setText(PositionUtils.getInPeriodRealizedPL(getContext(), positionInPeriodDTO));
+        PositionUtils.setROIInPeriod(inPeriodRoiValue, positionInPeriodDTO);
+        inPeriodAdditionalInvested.setText(PositionUtils.getAdditionalInvested(getContext(), positionInPeriodDTO));
+        inPeriodValueAtStart.setText(PositionUtils.getValueAtStart(getContext(), positionInPeriodDTO));
 
-        inPeriodStartValueDate.setText(DateUtils.getDisplayableDate(getContext(), inPeriodPositionDTO.latestTradeUtc));
+        inPeriodStartValueDate.setText(DateUtils.getDisplayableDate(getContext(), positionInPeriodDTO.latestTradeUtc));
         //inPeriodStartValueDate.setText(String.format());
     }
 

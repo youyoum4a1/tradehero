@@ -8,7 +8,6 @@ import com.actionbarsherlock.view.MenuItem;
 import com.actionbarsherlock.view.SubMenu;
 import com.tradehero.th.api.leaderboard.LeaderboardDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardDefDTO;
-import com.tradehero.th.api.leaderboard.LeaderboardDefListKey;
 import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import javax.inject.Inject;
@@ -32,7 +31,9 @@ public class AbstractLeaderboardFragment extends DashboardFragment
         Bundle bundle = new Bundle(getArguments());
         bundle.putInt(LeaderboardDTO.LEADERBOARD_ID, dto.getId());
         bundle.putString(LeaderboardListViewFragment.TITLE, dto.name);
-        bundle.putInt(LeaderboardListViewFragment.CURRENT_SORT_TYPE, currentSortType != null ? currentSortType.getFlag() : dto.getDefaultSortType());
+        bundle.putInt(LeaderboardListViewFragment.CURRENT_SORT_TYPE,
+                getCurrentSortType() != null ? getCurrentSortType().getFlag() : dto.getDefaultSortType());
+        bundle.putString(LeaderboardDefDTO.LEADERBOARD_DEF_DESC, dto.desc);
         getNavigator().pushFragment(LeaderboardListViewFragment.class, bundle);
     }
 
