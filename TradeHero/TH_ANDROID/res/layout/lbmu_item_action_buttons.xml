@@ -28,15 +28,15 @@
         android:layout_marginRight="@dimen/leaderboard_user_item_action_button_margin"
         android:layout_marginLeft="@dimen/leaderboard_user_item_action_button_margin"
         />
-    <ImageView
+
+    <ImageButton
         android:id="@+id/leaderboard_user_item_follow"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/temp_leaderboard_user_item_action_buttons_height"
-        android:background="@drawable/leaderboard_user_item_follow_action_button"
+        android:src="@drawable/follow_user"
+        android:scaleType="fitCenter"
+        android:background="@null"
         android:contentDescription="@null"
-        android:padding="@dimen/leaderboard_user_item_action_button_padding"
-        android:layout_marginRight="@dimen/leaderboard_user_item_action_button_margin"
-        android:layout_marginLeft="@dimen/leaderboard_user_item_action_button_margin"
         />
   </LinearLayout>
 </merge>

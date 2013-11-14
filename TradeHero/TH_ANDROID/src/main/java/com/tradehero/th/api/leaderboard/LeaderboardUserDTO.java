@@ -45,7 +45,7 @@ public class LeaderboardUserDTO extends UserBaseDTO
     public Double ordinalPositionNormalized;
     public Integer followerCountFree;
     public Integer followerCountPaid;
-    private Integer commentCount;
+    public Integer commentCount;
 
     public LeaderboardUserDTO()
     {
