@@ -9,6 +9,9 @@ import com.tradehero.th.adapters.DTOAdapter;
 import com.tradehero.th.widget.billing.SKUDetailView;
 import com.tradehero.th.widget.billing.SKUQuickDescriptionView;
 import com.tradehero.th.widget.billing.StoreSKUDetailView;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/6/13 Time: 4:14 PM To change this template use File | Settings | File Templates. */
 abstract public class SKUDetailsAdapter<SKUDetailsType extends SKUDetails,
@@ -20,9 +23,30 @@ abstract public class SKUDetailsAdapter<SKUDetailsType extends SKUDetails,
     public static final int ITEM_TYPE_HEADER = 0;
     public static final int ITEM_TYPE_VALUE = 1;
 
+    private Comparator<SKUDetailsType> skuDetailsComparator;
+
     public SKUDetailsAdapter(Context context, LayoutInflater inflater, int layoutResourceId)
     {
         super(context, inflater, layoutResourceId);
+    }
+
+    public Comparator<SKUDetailsType> getSkuDetailsComparator()
+    {
+        return skuDetailsComparator;
+    }
+
+    public void setSkuDetailsComparator(Comparator<SKUDetailsType> skuDetailsComparator)
+    {
+        this.skuDetailsComparator = skuDetailsComparator;
+    }
+
+    @Override public void setItems(List<SKUDetailsType> items)
+    {
+        if (skuDetailsComparator != null)
+        {
+            Collections.sort(items, skuDetailsComparator);
+        }
+        super.setItems(items);
     }
 
     @Override public int getViewTypeCount()

@@ -2,6 +2,7 @@ package com.tradehero.th.billing.googleplay;
 
 import android.app.Activity;
 import com.tradehero.common.billing.googleplay.SKUDetails;
+import com.tradehero.common.billing.googleplay.SKUDetailsDecreasingPriceComparator;
 import com.tradehero.th.adapters.billing.THSKUDetailsAdapter;
 import java.util.List;
 
@@ -17,6 +18,7 @@ public class IABAlertSKUUtils
                                 titleResId)
     {
         final THSKUDetailsAdapter detailsAdapter = new THSKUDetailsAdapter(activity, activity.getLayoutInflater(), skuDomain);
+        detailsAdapter.setSkuDetailsComparator(new SKUDetailsDecreasingPriceComparator<THSKUDetails>());
         List<THSKUDetails> desiredSkuDetails = domainInformer.getDetailsOfDomain(skuDomain);
         detailsAdapter.setItems(desiredSkuDetails);
 

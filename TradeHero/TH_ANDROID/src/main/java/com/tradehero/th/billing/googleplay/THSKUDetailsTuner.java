@@ -52,11 +52,15 @@ public class THSKUDetailsTuner implements ProductDetailsTuner<THSKUDetails>
 
             case SKUFetcher.CREDIT_10:
                 productDetails.iconResId = R.drawable.credit_5;
+                productDetails.hasRibbon = true;
+                productDetails.iconRibbonResId = R.drawable.ribbon_cash_disc5;
                 productDetails.domain = THSKUDetails.DOMAIN_FOLLOW_CREDITS;
                 break;
 
             case SKUFetcher.CREDIT_20:
                 productDetails.iconResId = R.drawable.credit_10;
+                productDetails.hasRibbon = true;
+                productDetails.iconRibbonResId = R.drawable.ribbon_cc_best;
                 productDetails.domain = THSKUDetails.DOMAIN_FOLLOW_CREDITS;
                 break;
 
