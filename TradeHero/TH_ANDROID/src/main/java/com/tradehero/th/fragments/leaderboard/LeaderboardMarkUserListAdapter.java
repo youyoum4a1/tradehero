@@ -12,7 +12,6 @@ import java.util.List;
 
 /** Created with IntelliJ IDEA. User: tho Date: 10/21/13 Time: 4:13 PM Copyright (c) TradeHero */
 public class LeaderboardMarkUserListAdapter extends
-        //DTOAdapter<LeaderboardUserDTO, LeaderboardMarkUserItemView>
         ExpandableDTOAdapter<LeaderboardUserDTO, LeaderboardMarkUserListAdapter.ExpandableLeaderboardUserRankItemWrapper, LeaderboardMarkUserItemView>
 {
     private LeaderboardMarkUserLoader loader;
@@ -40,7 +39,6 @@ public class LeaderboardMarkUserListAdapter extends
 
     @Override protected void fineTune(int position, ExpandableLeaderboardUserRankItemWrapper dto, LeaderboardMarkUserItemView dtoView)
     {
-
     }
 
     public void setLoader(LeaderboardMarkUserLoader loader)
@@ -104,5 +102,10 @@ public class LeaderboardMarkUserListAdapter extends
         {
             this.leaderboardId = leaderboardId;
         }
+    }
+
+    public void setLayoutResourceId(int layoutResourceId)
+    {
+        this.layoutResourceId = layoutResourceId;
     }
 }

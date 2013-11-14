@@ -26,6 +26,7 @@ import org.ocpsoft.prettytime.PrettyTime;
 
 /** Created with IntelliJ IDEA. User: tho Date: 10/14/13 Time: 12:34 PM Copyright (c) TradeHero */
 public class LeaderboardMarkUserListViewFragment extends AbstractLeaderboardFragment
+        implements SortTypeChangedListener
 {
     public static final String TITLE = LeaderboardMarkUserListViewFragment.class.getName() + ".title";
 
@@ -34,6 +35,7 @@ public class LeaderboardMarkUserListViewFragment extends AbstractLeaderboardFrag
     private LeaderboardMarkUserListAdapter leaderboardMarkUserListAdapter;
     private LeaderboardMarkUserListView leaderboardMarkUserListView;
     private TextView leaderboardMarkUserMarkingTime;
+    private LeaderboardMarkUserLoader leaderboardMarkUserLoader;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -41,7 +43,7 @@ public class LeaderboardMarkUserListViewFragment extends AbstractLeaderboardFrag
 
         leaderboardMarkUserListView = (LeaderboardMarkUserListView) view.findViewById(R.id.leaderboard_listview);
         leaderboardMarkUserListAdapter = new LeaderboardMarkUserListAdapter(
-                getActivity(), getActivity().getLayoutInflater(), null, R.layout.leaderboard_listview_item);
+                getActivity(), getActivity().getLayoutInflater(), null, R.layout.lbmu_item_hq_mode);
         leaderboardMarkUserListView.setAdapter(leaderboardMarkUserListAdapter);
         leaderboardMarkUserListView.setOnRefreshListener(createOnRefreshListener());
         leaderboardMarkUserListView.setEmptyView(view.findViewById(android.R.id.empty));
@@ -76,11 +78,23 @@ public class LeaderboardMarkUserListViewFragment extends AbstractLeaderboardFrag
         super.onActivityCreated(savedInstanceState);
 
         Bundle loaderBundle = new Bundle(getArguments());
-        LeaderboardMarkUserLoader loader = (LeaderboardMarkUserLoader) getLoaderManager()
+        leaderboardMarkUserLoader = (LeaderboardMarkUserLoader) getLoaderManager()
                 .initLoader(LeaderboardMarkUserLoader.UNIQUE_LOADER_ID, loaderBundle, loaderCallback);
 
-        setSortTypeChangeListener(loader);
-        leaderboardMarkUserListAdapter.setLoader(loader);
+        setSortTypeChangeListener(this);
+        leaderboardMarkUserListAdapter.setLoader(leaderboardMarkUserLoader);
+    }
+
+    @Override public void onSortTypeChange(LeaderboardSortType sortType)
+    {
+        leaderboardMarkUserLoader.setSortType(sortType);
+        leaderboardMarkUserLoader.reload();
+
+        // update layoutResourceId
+        // http://grepcode.com/file/repository.grepcode.com/java/ext/com.google.android/android/4.0.3_r1/android/widget/ListView.java#443
+        // this crazy way is the only way I found to clear the recycle (reusing item view)
+        leaderboardMarkUserListView.setAdapter(leaderboardMarkUserListAdapter);
+        leaderboardMarkUserListAdapter.setLayoutResourceId(sortType.getLayoutResourceId());
     }
 
     private PullToRefreshBase.OnRefreshListener<ListView> createOnRefreshListener()

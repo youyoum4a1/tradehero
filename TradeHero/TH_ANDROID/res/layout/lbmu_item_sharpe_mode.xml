@@ -42,7 +42,6 @@
         android:id="@+id/leaderboard_user_item_display_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
         android:ellipsize="end"
         android:textStyle="bold"
         android:textSize="@dimen/leaderboard_title_text_size"
@@ -52,23 +51,40 @@
         android:shadowRadius="1"
         />
 
-    <TextView
-        android:id="@+id/leaderboard_user_item_hq"
-        android:layout_height="30dp"
-        android:layout_width="30dp"
-        android:layout_marginRight="30dp"
-        android:contentDescription="@null"
-        android:background="@drawable/hero_quotient_colour"
-        android:textSize="12dp"
-        android:gravity="center"
-        android:textStyle="bold"
-        android:paddingBottom="10dp"
-        android:shadowColor="@color/light_grey"
-        android:shadowDy="1"
-        android:shadowRadius="1"
-        android:layout_centerVertical="true"
-        android:layout_alignParentRight="true"
-        />
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_below="@id/leaderboard_user_item_display_name"
+        android:layout_toRightOf="@id/leaderboard_user_item_profile_picture"
+        android:paddingBottom="2dp">
+
+      <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="@string/sharpe_ratio"
+          android:gravity="right"
+          android:textColor="@color/light_grey"/>
+      <LinearLayout
+          android:layout_width="wrap_content"
+          android:paddingLeft="10dp"
+          android:layout_height="wrap_content"
+          >
+        <TextView
+            android:id="@+id/lbmu_sharpe_ratio"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            />
+        <TextView
+            android:id="@+id/lbmu_volatility"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="10dp"
+            android:textColor="@color/gray_1"
+            />
+      </LinearLayout>
+    </LinearLayout>
   </RelativeLayout>
 
   <ImageView
@@ -99,6 +115,39 @@
       android:orientation="vertical"
       android:padding="8dp"
       >
+    <!-- Hero Quotient -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingBottom="2dp"
+        android:weightSum="3">
+
+      <TextView
+          android:layout_width="0dp"
+          android:layout_weight="1"
+          android:layout_height="wrap_content"
+          android:text="@string/hero_quotient"
+          android:gravity="right"
+          android:textColor="@color/light_grey"/>
+
+      <TextView
+          android:id="@+id/leaderboard_user_item_hq"
+          android:layout_height="30dp"
+          android:layout_width="30dp"
+          android:contentDescription="@null"
+          android:background="@drawable/hero_quotient_colour"
+          android:textSize="12dp"
+          android:gravity="center"
+          android:textStyle="bold"
+          android:paddingBottom="10dp"
+          android:layout_marginLeft="10dp"
+          android:shadowColor="@color/light_grey"
+          android:shadowDy="1"
+          android:shadowRadius="1"
+          />
+    </LinearLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -200,43 +249,6 @@
           android:textColor="@color/gray_1"
           />
     </LinearLayout>
-
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:paddingBottom="2dp">
-
-      <TextView
-          android:layout_width="0dp"
-          android:layout_weight="1"
-          android:layout_height="wrap_content"
-          android:text="@string/sharpe_ratio"
-          android:gravity="right"
-          android:textColor="@color/light_grey"/>
-      <LinearLayout
-          android:layout_width="0dp"
-          android:layout_weight="2"
-          android:paddingLeft="10dp"
-          android:layout_height="wrap_content"
-          >
-        <TextView
-            android:id="@+id/lbmu_sharpe_ratio"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textStyle="bold"
-            />
-        <TextView
-            android:id="@+id/lbmu_volatility"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingLeft="10dp"
-            android:textColor="@color/gray_1"
-            />
-      </LinearLayout>
-    </LinearLayout>
-
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -358,44 +370,11 @@
           />
     </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/leaderboard_user_item_action_buttons"
-        android:layout_width="wrap_content"
+    <include
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginTop="10dp"
-        >
-      <TextView
-          android:id="@+id/leaderboard_user_item_open_profile"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:text="@string/profile"
-          android:background="@drawable/leaderboard_user_item_border_background"
-          android:padding="@dimen/leaderboard_user_item_action_button_padding"
-          android:layout_marginRight="@dimen/leaderboard_user_item_action_button_margin"
-          android:layout_marginLeft="@dimen/leaderboard_user_item_action_button_margin"
-          />
-      <TextView
-          android:id="@+id/leaderboard_user_item_open_positions_list"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:text="@string/positions"
-          android:background="@drawable/leaderboard_user_item_border_background"
-          android:padding="@dimen/leaderboard_user_item_action_button_padding"
-          android:layout_marginRight="@dimen/leaderboard_user_item_action_button_margin"
-          android:layout_marginLeft="@dimen/leaderboard_user_item_action_button_margin"
-          />
-      <ImageView
-          android:id="@+id/leaderboard_user_item_follow"
-          android:layout_width="wrap_content"
-          android:layout_height="@dimen/temp_leaderboard_user_item_action_buttons_height"
-          android:background="@drawable/leaderboard_user_item_follow_action_button"
-          android:contentDescription="@null"
-          android:padding="@dimen/leaderboard_user_item_action_button_padding"
-          android:layout_marginRight="@dimen/leaderboard_user_item_action_button_margin"
-          android:layout_marginLeft="@dimen/leaderboard_user_item_action_button_margin"
-          />
-    </LinearLayout>
+        layout="@layout/lbmu_item_action_buttons"/>
+
   </LinearLayout>
 
 </com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserItemView>

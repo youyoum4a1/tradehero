@@ -58,7 +58,6 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
     private TextView lbmuPositionsCount;
     private TextView lbmuAvgDaysHeld;
     private TextView lbmuFollowersCount;
-    private Navigator navigator;
     private TextView lbmuRoiAnnualized;
     private TextView lbmuWinRatio;
     private TextView lbmuVolatility;
@@ -92,20 +91,10 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
 
     private void initViews()
     {
-        navigator = ((NavigatorActivity) getContext()).getNavigator();
-
         // top part
         lbmuPosition = (TextView) findViewById(R.id.leaderboard_user_item_position);
         lbmuDisplayName = (TextView) findViewById(R.id.leaderboard_user_item_display_name);
         lbmuProfilePicture = (ImageView) findViewById(R.id.leaderboard_user_item_profile_picture);
-
-        if (lbmuProfilePicture != null)
-        {
-            picasso.get().load(R.drawable.superman_facebook)
-                    .transform(new RoundedShapeTransformation())
-                    .into(lbmuProfilePicture);
-        }
-
         lbmuHeroQuotient = (TextView) findViewById(R.id.leaderboard_user_item_hq);
         lbmuPositionInfo = (ImageView) findViewById(R.id.leaderboard_user_item_info);
         if (lbmuPositionInfo != null)
@@ -292,7 +281,12 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         boolean isTimeRestrictedLeaderboard = leaderboardDef != null && leaderboardDef.isTimeRestrictedLeaderboard();
         bundle.putBoolean(LeaderboardDefDTO.LEADERBOARD_DEF_TIME_RESTRICTED, isTimeRestrictedLeaderboard);
 
-        navigator.pushFragment(LeaderboardPositionListFragment.class, bundle, true);
+        getNavigator().pushFragment(LeaderboardPositionListFragment.class, bundle, true);
+    }
+
+    private Navigator getNavigator()
+    {
+        return ((NavigatorActivity) getContext()).getNavigator();
     }
 
     private void handleOpenProfileButtonClicked()
@@ -304,7 +298,7 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
 
         if (currentUserBaseKeyHolder != null && currentUserBaseKeyHolder.getCurrentUserBaseKey().key != userId)
         {
-            navigator.pushFragment(TimelineFragment.class, b, true);
+            getNavigator().pushFragment(TimelineFragment.class, b, true);
         }
     }
 }

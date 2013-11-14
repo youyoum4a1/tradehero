@@ -6,11 +6,11 @@ import com.tradehero.th.R;
 public enum LeaderboardSortType
 {
 
-    Roi(R.string.roi, R.drawable.sort_roi, R.drawable.sort_roi_white),
-    HeroQuotient(R.string.hero_quotient, R.drawable.sort_hq, R.drawable.sort_hq_white),
-    Followers(R.string.followers, R.drawable.sort_followers, R.drawable.sort_followers_white),
-    Comments(R.string.comments, R.drawable.sort_comments, R.drawable.sort_comments_white),
-    SharpeRatio(R.string.sharpe_ratio, R.drawable.sort_sharpe, R.drawable.sort_sharpe_white);
+    Roi(R.string.roi, R.drawable.sort_roi, R.drawable.sort_roi_white, R.layout.lbmu_item_roi_mode),
+    HeroQuotient(R.string.hero_quotient, R.drawable.sort_hq, R.drawable.sort_hq_white, R.layout.lbmu_item_hq_mode),
+    Followers(R.string.followers, R.drawable.sort_followers, R.drawable.sort_followers_white, R.layout.lbmu_item_followers_mode),
+    Comments(R.string.comments, R.drawable.sort_comments, R.drawable.sort_comments_white, R.layout.lbmu_item_comments_mode),
+    SharpeRatio(R.string.sharpe_ratio, R.drawable.sort_sharpe, R.drawable.sort_sharpe_white, R.layout.lbmu_item_sharpe_mode);
 
 
     public static final String BUNDLE_FLAG = "LEADERBOARD_SORT_FLAG";
@@ -36,11 +36,21 @@ public enum LeaderboardSortType
         SharpeRatio.flag = SORT_SHARPE_RATIO;
     }
 
-    LeaderboardSortType(int resourceString, int resourceIcon, int selectedResourceIcon)
+    private int layoutResourceId;
+
+    /**
+     *
+     * @param resourceString Name of sort type
+     * @param resourceIcon icon to display in sorting selection menu
+     * @param selectedResourceIcon icon to be on ActionBar when selected
+     * @param layoutResourceId list item layout resource
+     */
+    LeaderboardSortType(int resourceString, int resourceIcon, int selectedResourceIcon, int layoutResourceId)
     {
         this.title = resourceString;
         this.resourceIcon = resourceIcon;
         this.selectedResourceIcon = selectedResourceIcon;
+        this.layoutResourceId = layoutResourceId;
     }
 
     public int getResourceIcon()
@@ -78,5 +88,10 @@ public enum LeaderboardSortType
     public int getSelectedResourceIcon()
     {
         return selectedResourceIcon;
+    }
+
+    public int getLayoutResourceId()
+    {
+        return layoutResourceId;
     }
 }

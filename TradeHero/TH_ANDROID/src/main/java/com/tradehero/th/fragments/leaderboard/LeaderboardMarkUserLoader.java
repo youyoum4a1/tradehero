@@ -17,7 +17,6 @@ import javax.inject.Inject;
 
 /** Created with IntelliJ IDEA. User: tho Date: 10/21/13 Time: 4:28 PM Copyright (c) TradeHero */
 public class LeaderboardMarkUserLoader extends PagedItemListLoader<LeaderboardUserDTO>
-    implements SortTypeChangedListener
 {
     private static final String TAG = LeaderboardMarkUserLoader.class.getName();
     public static final int UNIQUE_LOADER_ID = R.string.loaderboard_loader_id;
@@ -84,9 +83,13 @@ public class LeaderboardMarkUserLoader extends PagedItemListLoader<LeaderboardUs
         }
     }
 
-    @Override public void onSortTypeChange(LeaderboardSortType sortType)
+    public void setSortType(LeaderboardSortType sortType)
     {
         this.sortType = sortType;
+    }
+
+    public void reload()
+    {
         resetQuery();
         forceLoad();
     }
