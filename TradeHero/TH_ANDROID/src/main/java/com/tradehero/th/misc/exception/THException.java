@@ -10,7 +10,6 @@ import retrofit.RetrofitError;
 /** Created with IntelliJ IDEA. User: tho Date: 8/15/13 Time: 5:20 PM Copyright (c) TradeHero */
 public class THException extends Exception
 {
-
     private ExceptionCode code;
 
     public THException(Throwable cause)
@@ -24,7 +23,8 @@ public class THException extends Exception
     }
 
     @Override
-    public Throwable initCause(Throwable throwable) {
+    public Throwable initCause(Throwable throwable)
+    {
         this.code = ExceptionCode.UnknownError;
         if (throwable instanceof RetrofitError)
         {
