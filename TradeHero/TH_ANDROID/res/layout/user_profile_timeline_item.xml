@@ -117,7 +117,7 @@
         android:layout_toLeftOf="@id/timeline_share_facebook"
         android:paddingLeft="@dimen/timeline_share_button_padding"
         android:paddingRight="@dimen/timeline_share_button_padding"
-        android:src="@drawable/icon_alarm"
+        android:src="@drawable/add_alert"
         />
     <ImageView
         android:id="@+id/timeline_buy_stock"

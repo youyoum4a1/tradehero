@@ -48,7 +48,7 @@
         android:id="@+id/header_portfolio_follow_button"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:src="@drawable/follow_button"
+        android:src="@drawable/follow_user"
         android:scaleType="fitCenter"
         android:background="@null"/>
   </RelativeLayout>

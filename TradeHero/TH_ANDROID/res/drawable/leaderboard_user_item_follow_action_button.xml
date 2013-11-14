@@ -8,5 +8,5 @@
       <solid android:color="@android:color/transparent"/>
     </shape>
   </item>
-  <item android:drawable="@drawable/follow_button"/>
+  <item android:drawable="@drawable/follow_user"/>
 </layer-list>

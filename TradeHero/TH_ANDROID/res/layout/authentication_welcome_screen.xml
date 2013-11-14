@@ -18,7 +18,7 @@
       android:layout_below="@id/authentication_welcome_logo_text"
       android:layout_width="match_parent"
       android:layout_height="80dp"
-      android:background="@drawable/authentication_welcome_newuser_button_xml"
+      android:background="@drawable/authentication_welcome_newuser_button"
       android:text="@string/authentication_welcome_new_user"
       android:textColor="@color/white"
       android:textSize="30dip"

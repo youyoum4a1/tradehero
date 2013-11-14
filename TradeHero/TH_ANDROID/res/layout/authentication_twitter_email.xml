@@ -31,6 +31,6 @@
       android:textSize="24sp"
       android:textColor="@color/white"
       android:textStyle="bold"
-      android:background="@drawable/authentication_welcome_newuser_button_xml"
+      android:background="@drawable/authentication_welcome_newuser_button"
       />
 </LinearLayout>
