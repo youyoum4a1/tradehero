@@ -21,8 +21,8 @@ import com.tradehero.common.widget.ImageUrlView;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.users.UserSearchResultDTO;
-import com.tradehero.th.utills.DateUtils;
 import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th.utils.DateUtils;
 import java.util.concurrent.Future;
 import javax.inject.Inject;
 
@@ -139,9 +139,9 @@ public class SearchPeopleItemView extends FrameLayout implements DTOView<UserSea
         this.userDTO = user;
         userName.setText(user.userthDisplayName);
 
-        if (user.userMarkingAsOfUtc != null && user.userMarkingAsOfUtc.length() > 0)
+        if (user.userMarkingAsOfUtc != null)
         {
-            date.setText(DateUtils.getFormatedTrendDate(user.userMarkingAsOfUtc));
+            date.setText(DateUtils.getFormattedUtcDate(user.userMarkingAsOfUtc));
             date.setTextColor(Color.BLACK);
         }
         else

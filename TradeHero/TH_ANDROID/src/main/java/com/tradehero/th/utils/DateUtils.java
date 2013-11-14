@@ -3,6 +3,7 @@ package com.tradehero.th.utils;
 import android.content.Context;
 import com.tradehero.th.R;
 
+import com.tradehero.th.base.Application;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
@@ -22,14 +23,21 @@ public class DateUtils
     public static String getDisplayableDate(Context context, Date d)
     {
         if (d == null)
+        {
             return context.getString(R.string.na);
+        }
 
         return sdf.format(d);
     }
 
     public static int getNumberOfDaysBetweenDates(Date start, Date end)
     {
-           return (int)(end.getTime() - start.getTime())/MILLISECOND_PER_DAY;
+           return (int) (end.getTime() - start.getTime()) / MILLISECOND_PER_DAY;
     }
 
+    public static String getFormattedUtcDate(Date utcDate)
+    {
+        SimpleDateFormat requiredFormat = new SimpleDateFormat(Application.getResourceString(R.string.date_format_gmt_day_and_time));
+        return requiredFormat.format(utcDate);
+    }
 }

@@ -25,7 +25,7 @@ public class SecurityCompactDTO implements DTO
 
     private Date lastPriceDateEST;
     //// EDT/EST converted to UTC
-    public String lastPriceDateAndTimeUtc;
+    public Date lastPriceDateAndTimeUtc;
 
     public Double toUSDRate;
     public Date toUSDRateDate;

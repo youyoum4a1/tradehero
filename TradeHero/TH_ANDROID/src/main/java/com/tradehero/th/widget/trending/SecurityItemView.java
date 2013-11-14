@@ -17,10 +17,10 @@ import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.security.SecurityCompactDTO;
-import com.tradehero.th.utills.DateUtils;
 import com.tradehero.th.utills.YUtils;
 import com.tradehero.th.utils.ColorUtils;
 import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th.utils.DateUtils;
 import javax.inject.Inject;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 9/5/13 Time: 5:19 PM To change this template use File | Settings | File Templates. */
@@ -188,7 +188,7 @@ public class SecurityItemView extends RelativeLayout implements DTOView<Security
 
         if (date != null)
         {
-            date.setText(DateUtils.getFormatedTrendDate(this.securityCompactDTO.lastPriceDateAndTimeUtc));
+            date.setText(DateUtils.getFormattedUtcDate(this.securityCompactDTO.lastPriceDateAndTimeUtc));
             date.setTextColor(getResources().getColor(securityCompactDTO.marketOpen ? R.color.black : R.color.text_gray_normal));
         }
 

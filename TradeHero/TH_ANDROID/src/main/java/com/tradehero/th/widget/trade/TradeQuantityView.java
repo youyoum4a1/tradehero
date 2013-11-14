@@ -8,13 +8,12 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import com.tradehero.th.R;
-import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.position.SecurityPositionDetailDTO;
 import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityType;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.utills.DateUtils;
+import com.tradehero.th.utils.DateUtils;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 9/23/13 Time: 3:44 PM To change this template use File | Settings | File Templates. */
 public class TradeQuantityView extends TableLayout
@@ -236,11 +235,11 @@ public class TradeQuantityView extends TableLayout
         {
             if (quoteDTO != null)
             {
-                mPriceAsOf.setText(DateUtils.getFormatedTrendDate(quoteDTO.asOfUtc));
+                mPriceAsOf.setText(DateUtils.getFormattedUtcDate(quoteDTO.asOfUtc));
             }
             else if (securityCompactDTO != null)
             {
-                mPriceAsOf.setText(DateUtils.getFormatedTrendDate(securityCompactDTO.lastPriceDateAndTimeUtc));
+                mPriceAsOf.setText(DateUtils.getFormattedUtcDate(securityCompactDTO.lastPriceDateAndTimeUtc));
             }
             else
             {
