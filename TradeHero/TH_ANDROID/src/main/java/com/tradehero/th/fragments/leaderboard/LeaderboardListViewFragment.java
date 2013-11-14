@@ -75,7 +75,7 @@ public class LeaderboardListViewFragment extends AbstractLeaderboardFragment
     {
         super.onActivityCreated(savedInstanceState);
 
-        Bundle loaderBundle = new Bundle();
+        Bundle loaderBundle = new Bundle(getArguments());
         LeaderboardMarkUserLoader loader = (LeaderboardMarkUserLoader) getLoaderManager()
                 .initLoader(LeaderboardMarkUserLoader.UNIQUE_LOADER_ID, loaderBundle, loaderCallback);
 
@@ -132,8 +132,9 @@ public class LeaderboardListViewFragment extends AbstractLeaderboardFragment
     {
         @Override public Loader<List<LeaderboardUserDTO>> onCreateLoader(int id, Bundle bundle)
         {
-            int leaderboardId = getArguments().getInt(LeaderboardDTO.LEADERBOARD_ID);
-            return new LeaderboardMarkUserLoader(getActivity(), leaderboardId);
+            int leaderboardId = bundle.getInt(LeaderboardDTO.LEADERBOARD_ID);
+            LeaderboardSortType currentSortType = getCurrentSortType();
+            return new LeaderboardMarkUserLoader(getActivity(), leaderboardId, currentSortType);
         }
 
         @Override public void onLoadFinished(Loader<List<LeaderboardUserDTO>> loader, List<LeaderboardUserDTO> items)

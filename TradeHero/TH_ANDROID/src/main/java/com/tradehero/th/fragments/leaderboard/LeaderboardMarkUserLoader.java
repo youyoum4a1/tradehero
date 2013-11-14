@@ -30,10 +30,11 @@ public class LeaderboardMarkUserLoader extends PagedItemListLoader<LeaderboardUs
     protected LeaderboardManager leaderboardManager;
     private Date markUtc;
 
-    public LeaderboardMarkUserLoader(Context context, int leaderboardId)
+    public LeaderboardMarkUserLoader(Context context, int leaderboardId, LeaderboardSortType sortType)
     {
         super(context);
         this.leaderboardId = leaderboardId;
+        this.sortType = sortType;
         DaggerUtils.inject(this);
     }
 
@@ -55,7 +56,7 @@ public class LeaderboardMarkUserLoader extends PagedItemListLoader<LeaderboardUs
     @Override public List<LeaderboardUserDTO> loadInBackground()
     {
         THLog.d(TAG, String.format("Loader with id = " + getId()));
-        THLog.d(TAG, String.format("Start loading leaderboard %d, page=%d", leaderboardId, currentPage));
+        THLog.d(TAG, String.format("Start loading leaderboard %d, page=%d, sortType=%s", leaderboardId, currentPage, sortType.toString()));
 
         LeaderboardQuery query = new LeaderboardQuery();
         query.setId(leaderboardId);

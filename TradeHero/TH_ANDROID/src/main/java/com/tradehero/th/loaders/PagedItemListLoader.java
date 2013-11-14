@@ -15,6 +15,7 @@ public abstract class PagedItemListLoader<D extends ItemWithComparableId> extend
     private D firstVisibleItem;
     protected List<D> items;
     private LoadMode currentLoadMode = LoadMode.IDLE;
+    private boolean autoLoad = true;
 
     public PagedItemListLoader(Context context)
     {
@@ -39,7 +40,7 @@ public abstract class PagedItemListLoader<D extends ItemWithComparableId> extend
 
     protected boolean shouldReload()
     {
-        return items == null || items.isEmpty();
+        return (items == null || items.isEmpty()) && isAutoLoad();
     }
 
     public void loadNextPage()
@@ -183,6 +184,16 @@ public abstract class PagedItemListLoader<D extends ItemWithComparableId> extend
     public void setFirstVisibleItem(D firstVisibleItem)
     {
         this.firstVisibleItem = firstVisibleItem;
+    }
+
+    public boolean isAutoLoad()
+    {
+        return autoLoad;
+    }
+
+    public void setAutoLoad(boolean autoLoad)
+    {
+        this.autoLoad = autoLoad;
     }
 
     private enum LoadMode
