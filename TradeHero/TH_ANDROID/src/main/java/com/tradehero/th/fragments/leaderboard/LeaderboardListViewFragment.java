@@ -33,7 +33,6 @@ public class LeaderboardListViewFragment extends AbstractLeaderboardFragment
 
     private LeaderboardMarkUserListAdapter leaderboardMarkUserListAdapter;
     private LeaderboardMarkUserListView leaderboardMarkUserListView;
-    private TextView leaderboardMarkUserTimePeriod;
     private TextView leaderboardMarkUserMarkingTime;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -59,7 +58,7 @@ public class LeaderboardListViewFragment extends AbstractLeaderboardFragment
     {
         String leaderboardDefDesc = getArguments().getString(LeaderboardDefDTO.LEADERBOARD_DEF_DESC);
 
-        leaderboardMarkUserTimePeriod = (TextView) headerView.findViewById(R.id.leaderboard_time_period);
+        TextView leaderboardMarkUserTimePeriod = (TextView) headerView.findViewById(R.id.leaderboard_time_period);
         if (leaderboardDefDesc != null)
         {
             leaderboardMarkUserTimePeriod.setText(leaderboardDefDesc);

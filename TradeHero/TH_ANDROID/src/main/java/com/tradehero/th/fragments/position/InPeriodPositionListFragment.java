@@ -4,6 +4,7 @@ import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.position.InPeriodPositionItemAdapter;
+import com.tradehero.th.api.leaderboard.LeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import com.tradehero.th.api.leaderboard.position.GetLeaderboardPositionsDTO;
 import com.tradehero.th.api.leaderboard.position.LeaderboardMarkUserId;
@@ -23,21 +24,24 @@ public class InPeriodPositionListFragment extends PositionListFragment
 
     @Override protected void createPositionItemAdapter()
     {
+        boolean timeRestricted = getArguments().getBoolean(LeaderboardDefDTO.LEADERBOARD_DEF_TIME_RESTRICTED, false);
         positionItemAdapter = new InPeriodPositionItemAdapter(
                 getActivity(),
                 getActivity().getLayoutInflater(),
                 R.layout.position_item_header,
                 R.layout.position_locked_item,
-                R.layout.position_open_in_period,
-                R.layout.position_closed_in_period,
+                timeRestricted ? R.layout.position_open_in_period : R.layout.position_open_no_period,
+                timeRestricted ? R.layout.position_closed_in_period : R.layout.position_closed_no_period,
                 R.layout.position_quick_nothing);
     }
 
     @Override public void onResume()
     {
         this.leaderboardMarkUserId = new LeaderboardMarkUserId((int)getArguments().getLong(LeaderboardMarkUserId.BUNDLE_KEY));
+
         String periodStart = getArguments().getString(LeaderboardUserDTO.LEADERBOARD_PERIOD_START_STRING);
         THLog.d(TAG, "Period Start: " + periodStart);
+
         super.onResume();
     }
 

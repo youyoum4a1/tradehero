@@ -18,6 +18,7 @@ public class LeaderboardDefDTO extends AbstractItemWithComparableId<Integer>
     public static final int LEADERBOARD_DEF_EXCHANGE_ID = -3;
     public static final int LEADERBOARD_FRIEND_ID = -1;
     public static final String LEADERBOARD_DEF_DESC = "LEADERBOARD_DEF_DESC";
+    public static final String LEADERBOARD_DEF_TIME_RESTRICTED = "LEADERBOARD_DEF_TIME_RESTRICTED";
 
     public int id;
     public String name;

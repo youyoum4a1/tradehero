@@ -22,7 +22,6 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.base.NavigatorActivity;
 import com.tradehero.th.fragments.position.InPeriodPositionListFragment;
-import com.tradehero.th.fragments.position.PositionListFragment;
 import com.tradehero.th.fragments.timeline.TimelineFragment;
 import com.tradehero.th.models.THSignedNumber;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefCache;
@@ -185,6 +184,12 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
                     .transform(new RoundedShapeTransformation())
                     .into(lbmuProfilePicture);
         }
+        else
+        {
+            picasso.get().load(R.drawable.user_profile_oval)
+                    .transform(new RoundedShapeTransformation())
+                    .into(lbmuProfilePicture);
+        }
     }
 
     private void displayExpandableSection()
@@ -282,11 +287,12 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         String formattedStartPeriodUtc = sdf.format(model.periodStartUtc);
         bundle.putString(LeaderboardUserDTO.LEADERBOARD_PERIOD_START_STRING, formattedStartPeriodUtc);
 
+        // get leaderboard definition from cache, supposedly that it exists
         LeaderboardDefDTO leaderboardDef = leaderboardDefCache.get().get(new LeaderboardDefKey(leaderboardItem.getLeaderboardId()));
+        boolean isTimeRestrictedLeaderboard = leaderboardDef != null && leaderboardDef.isTimeRestrictedLeaderboard();
+        bundle.putBoolean(LeaderboardDefDTO.LEADERBOARD_DEF_TIME_RESTRICTED, isTimeRestrictedLeaderboard);
 
-        navigator.pushFragment(
-                leaderboardDef != null && leaderboardDef.isTimeRestrictedLeaderboard() ?
-                InPeriodPositionListFragment.class : PositionListFragment.class, bundle, true);
+        navigator.pushFragment(InPeriodPositionListFragment.class, bundle, true);
     }
 
     private void handleOpenProfileButtonClicked()
