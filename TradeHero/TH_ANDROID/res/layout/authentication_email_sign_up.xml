@@ -195,7 +195,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
-        android:background="@drawable/authentication_button_xml"
+        android:background="@drawable/authentication_button"
         android:padding="10dp"
         android:text="@string/sign_up"
         android:textColor="@color/white"

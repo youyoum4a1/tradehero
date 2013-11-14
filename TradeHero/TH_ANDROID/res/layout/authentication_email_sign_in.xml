@@ -36,7 +36,7 @@
       android:layout_below="@+id/et_pwd_login"
       android:layout_centerHorizontal="true"
       android:layout_marginTop="10dip"
-      android:background="@drawable/authentication_button_xml"
+      android:background="@drawable/authentication_button"
       android:padding="5dp"
       android:text="@string/sign_in"
       android:textColor="@color/signinfnt_color"

@@ -18,6 +18,7 @@
     <color name="white">#FFFFFF</color>
     <color name="signinbg_color">#D6D6D6</color>
     <color name="signinfnt_color">#47454A</color>
+
     <color name="btn_facebook_color_start">#5776b6</color>
     <color name="btn_facebook_color_end">#3d5c9b</color>
     <color name="btn_twitter_color_start">#5fb8ff</color>
