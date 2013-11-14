@@ -26,6 +26,7 @@ import com.tradehero.th.R;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.adapters.billing.StoreItemAdapter;
 import com.tradehero.th.adapters.billing.THSKUDetailsAdapter;
+import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
 import com.tradehero.th.billing.googleplay.IABAlertSKUUtils;
 import com.tradehero.th.billing.googleplay.IABAlertUtils;
 import com.tradehero.th.billing.googleplay.THIABActor;
@@ -37,6 +38,7 @@ import com.tradehero.th.fragments.billing.management.FollowerManagerFragment;
 import com.tradehero.th.fragments.billing.management.HeroManagerFragment;
 import java.lang.ref.WeakReference;
 import java.util.List;
+import javax.inject.Inject;
 
 public class StoreScreenFragment extends BasePurchaseManagerFragment
 {
@@ -44,6 +46,8 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
 
     private ListView listView;
     private StoreItemAdapter storeItemAdapter;
+
+    @Inject protected CurrentUserBaseKeyHolder currentUserBaseKeyHolder;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -106,6 +110,7 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
 
     private void handlePositionClicked(int position)
     {
+        Bundle bundle;
         switch (position)
         {
             case StoreItemAdapter.POSITION_BUY_VIRTUAL_DOLLARS:
@@ -125,11 +130,15 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
                 break;
 
             case StoreItemAdapter.POSITION_MANAGE_HEROES:
-                pushFragment(HeroManagerFragment.class);
+                bundle = new Bundle();
+                bundle.putInt(HeroManagerFragment.BUNDLE_KEY_USER_ID, currentUserBaseKeyHolder.getCurrentUserBaseKey().key);
+                pushFragment(HeroManagerFragment.class, bundle);
                 break;
 
             case StoreItemAdapter.POSITION_MANAGE_FOLLOWERS:
-                pushFragment(FollowerManagerFragment.class);
+                bundle = new Bundle();
+                bundle.putInt(HeroManagerFragment.BUNDLE_KEY_USER_ID, currentUserBaseKeyHolder.getCurrentUserBaseKey().key);
+                pushFragment(FollowerManagerFragment.class, bundle);
                 break;
 
             default:
@@ -141,5 +150,10 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
     private void pushFragment(Class<? extends Fragment> fragmentClass)
     {
         ((DashboardActivity) getActivity()).getNavigator().pushFragment(fragmentClass);
+    }
+
+    private void pushFragment(Class<? extends Fragment> fragmentClass, Bundle bundle)
+    {
+        ((DashboardActivity) getActivity()).getNavigator().pushFragment(fragmentClass, bundle);
     }
 }

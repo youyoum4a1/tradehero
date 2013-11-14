@@ -15,6 +15,7 @@ import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.DashboardActivity;
+import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.THUser;
@@ -28,14 +29,17 @@ import javax.inject.Inject;
 public class HeroManagerFragment extends BasePurchaseManagerFragment
 {
     public static final String TAG = HeroManagerFragment.class.getSimpleName();
+    public static final String BUNDLE_KEY_USER_ID = HeroManagerFragment.class.getName() + ".userId";
 
     private TextView followCount;
     private ImageView icnCoinStack;
     private ImageButton btnBuyMore;
     private Button btnGoMostSkilled;
 
+    private UserBaseKey userBaseKey;
     private UserProfileDTO userProfileDTO;
 
+    @Inject protected CurrentUserBaseKeyHolder currentUserBaseKeyHolder;
     @Inject protected Lazy<UserProfileCache> userProfileCache;
     private DTOCache.Listener<UserBaseKey, UserProfileDTO> userProfileListener;
     private DTOCache.GetOrFetchTask<UserProfileDTO> userProfileFetchTask;
@@ -93,6 +97,11 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
     @Override public void onResume()
     {
         super.onResume();
+        Bundle args = getArguments();
+        if (args != null)
+        {
+            userBaseKey = new UserBaseKey(args.getInt(BUNDLE_KEY_USER_ID, currentUserBaseKeyHolder.getCurrentUserBaseKey().key));
+        }
         fetchUserProfile();
     }
 
@@ -123,7 +132,11 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
 
     private void fetchUserProfile()
     {
-        UserProfileDTO userProfileDTO = userProfileCache.get().get(THUser.getCurrentUserBase().getBaseKey());
+        if (userBaseKey == null)
+        {
+            userBaseKey = currentUserBaseKeyHolder.getCurrentUserBaseKey();
+        }
+        UserProfileDTO userProfileDTO = userProfileCache.get().get(userBaseKey);
         if (userProfileDTO != null)
         {
             display(userProfileDTO);
@@ -149,7 +162,7 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
             {
                 userProfileFetchTask.forgetListener(true);
             }
-            userProfileFetchTask = userProfileCache.get().getOrFetch(THUser.getCurrentUserBase().getBaseKey(), userProfileListener);
+            userProfileFetchTask = userProfileCache.get().getOrFetch(userBaseKey, userProfileListener);
             userProfileFetchTask.execute();
         }
     }

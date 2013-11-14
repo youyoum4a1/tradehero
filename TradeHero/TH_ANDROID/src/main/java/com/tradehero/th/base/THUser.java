@@ -61,7 +61,7 @@ public class THUser
 
     private static void loadCredentialsToUserDefaults()
     {
-        currentUserBaseKeyHolder.setCurrentUserBaseKey(new UserBaseKey(Application.getPreferences().getInt(PREF_CURRENT_USER_KEY, 0)));
+        collectCurrentUserBaseKeyFromPref();
         Set<String> savedTokens = Application.getPreferences().getStringSet(PREF_MY_TOKEN, new HashSet<String>());
         currentSessionToken = Application.getPreferences().getString(PREF_CURRENT_SESSION_TOKEN, null);
         currentAuthenticationType = Application.getPreferences().getString(PREF_CURRENT_AUTHENTICATION_TYPE, null);
@@ -359,7 +359,7 @@ public class THUser
         {
         }
         userService.get().updateProfile(
-                getCurrentUserBase().id,
+                currentUserBaseKeyHolder.getCurrentUserBaseKey().key,
                 userFormDTO.deviceToken,
                 userFormDTO.displayName,
                 userFormDTO.email,

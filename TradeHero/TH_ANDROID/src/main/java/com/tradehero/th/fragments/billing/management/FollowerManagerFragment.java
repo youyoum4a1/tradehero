@@ -19,6 +19,7 @@ import com.tradehero.th.adapters.social.FollowerAndPayoutListItemAdapter;
 import com.tradehero.th.api.social.FollowerId;
 import com.tradehero.th.api.social.FollowerSummaryDTO;
 import com.tradehero.th.api.social.UserFollowerDTO;
+import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.base.THUser;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
@@ -43,6 +44,7 @@ public class FollowerManagerFragment extends BasePurchaseManagerFragment
     private UserBaseKey userBaseKey;
     private FollowerSummaryDTO followerSummaryDTO;
 
+    @Inject protected CurrentUserBaseKeyHolder currentUserBaseKeyHolder;
     @Inject protected Lazy<FollowerSummaryCache> followerSummaryCache;
     private DTOCache.Listener<UserBaseKey, FollowerSummaryDTO> followerSummaryListener;
     private DTOCache.GetOrFetchTask<FollowerSummaryDTO> followerSummaryFetchTask;
@@ -107,7 +109,7 @@ public class FollowerManagerFragment extends BasePurchaseManagerFragment
         Bundle args = getArguments();
         if (args != null)
         {
-            userBaseKey = new UserBaseKey(args.getInt(BUNDLE_KEY_USER_ID, THUser.getCurrentUserBase().getBaseKey().key));
+            userBaseKey = new UserBaseKey(args.getInt(BUNDLE_KEY_USER_ID, currentUserBaseKeyHolder.getCurrentUserBaseKey().key));
         }
         fetchFollowerSummary();
     }
@@ -134,7 +136,7 @@ public class FollowerManagerFragment extends BasePurchaseManagerFragment
     {
         if (userBaseKey == null)
         {
-            userBaseKey = THUser.getCurrentUserBase().getBaseKey();
+            userBaseKey = currentUserBaseKeyHolder.getCurrentUserBaseKey();
         }
         FollowerSummaryDTO summaryDTO = followerSummaryCache.get().get(userBaseKey);
         if (summaryDTO != null)
