@@ -18,6 +18,8 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.leaderboard.LeaderboardDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
+import com.tradehero.th.fragments.tutorial.TutorialFragment;
+import com.tradehero.th.fragments.tutorial.WithTutorial;
 import java.util.Date;
 import java.util.List;
 import javax.inject.Inject;
@@ -25,7 +27,7 @@ import org.ocpsoft.prettytime.PrettyTime;
 
 /** Created with IntelliJ IDEA. User: tho Date: 10/14/13 Time: 12:34 PM Copyright (c) TradeHero */
 public class LeaderboardMarkUserListViewFragment extends BaseLeaderboardFragment
-        implements SortTypeChangedListener
+        implements SortTypeChangedListener, WithTutorial
 {
     public static final String TITLE = LeaderboardMarkUserListViewFragment.class.getName() + ".title";
 
@@ -133,7 +135,7 @@ public class LeaderboardMarkUserListViewFragment extends BaseLeaderboardFragment
         switch (item.getItemId())
         {
             case R.id.leaderboard_listview_menu_help:
-                THToast.show("Not yet implemented");
+                getNavigator().showTutorial(this);
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -180,5 +182,10 @@ public class LeaderboardMarkUserListViewFragment extends BaseLeaderboardFragment
     @Override public boolean isTabBarVisible()
     {
         return false;
+    }
+
+    @Override public int getTutorialLayout()
+    {
+        return R.layout.authentication_agreement;
     }
 }

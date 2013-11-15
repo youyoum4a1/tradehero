@@ -5,4 +5,6 @@
   <integer name="slide_out_duration">500</integer>
   <integer name="slide_left_duration">300</integer>
   <integer name="slide_right_duration">300</integer>
+  <integer name="card_flip_time_full">300</integer>
+  <integer name="card_flip_time_half">150</integer>
 </resources>

@@ -12,7 +12,7 @@ import com.tradehero.common.graphics.GradientTransformation;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.models.THSignedNumber;
+import com.tradehero.th.utils.THSignedNumber;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.SecurityUtils;
 import com.tradehero.th.fragments.portfolio.PortfolioRequestListener;

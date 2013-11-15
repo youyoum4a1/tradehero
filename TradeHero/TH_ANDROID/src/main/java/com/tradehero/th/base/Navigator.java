@@ -2,6 +2,7 @@ package com.tradehero.th.base;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -9,7 +10,10 @@ import android.support.v4.app.FragmentTransaction;
 import android.view.ViewGroup;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
+import com.tradehero.th.activities.ActivityHelper;
 import com.tradehero.th.fragments.base.BaseFragment;
+import com.tradehero.th.fragments.tutorial.TutorialFragment;
+import com.tradehero.th.fragments.tutorial.WithTutorial;
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Map;
@@ -19,6 +23,9 @@ public class Navigator
 {
     private static final String TAG = Navigator.class.getSimpleName();
     public static final String NAVIGATE_FRAGMENT_NO_CACHE = Navigator.class.getName();
+    public static final int[] TUTORIAL_ANIMATION = new int[] {
+            R.anim.card_flip_right_in, R.anim.card_flip_right_out,
+            R.anim.card_flip_left_in, R.anim.card_flip_left_out};
 
     private final Context context;
     private final int[] animation;
@@ -64,15 +71,14 @@ public class Navigator
         this.fragmentContentId = fragmentContentId;
     }
 
-    public Fragment pushFragment(Class<? extends Fragment> fragmentClass, Bundle args, boolean withAnimation)
+    private Fragment pushFragment(Class<? extends Fragment> fragmentClass, Bundle args, int[] anim)
     {
         THLog.d(TAG, "Pushing fragment " + fragmentClass.getSimpleName());
         Fragment fragment = Fragment.instantiate(context, fragmentClass.getName(), args);
         fragment.setArguments(args);
         FragmentTransaction transaction = manager.beginTransaction();
-        if (withAnimation)
+        if (anim != null)
         {
-            int[] anim = getSafeAnimation();
             transaction.setCustomAnimations(anim[0], anim[1], anim[2], anim[3]);
         }
         transaction.replace(fragmentContentId, fragment)
@@ -80,6 +86,24 @@ public class Navigator
                 .commit();
 
         return fragment;
+    }
+
+    public Fragment pushFragment(Class<? extends Fragment> fragmentClass, Bundle args, boolean withAnimation)
+    {
+        return pushFragment(fragmentClass, args, getSafeAnimation());
+    }
+
+    public void showTutorial(Fragment ownerFragmentClass)
+    {
+        //if (ownerFragmentClass instanceof WithTutorial)
+        //{
+        //    int tutorialLayoutId = ((WithTutorial) ownerFragmentClass).getTutorialLayout();
+        //    Bundle bundle = new Bundle();
+        //    bundle.putInt(TutorialFragment.TUTORIAL_LAYOUT, tutorialLayoutId);
+        //    THLog.d(TAG, "Showing tutorial for " + ownerFragmentClass.getClass().getName());
+        //    pushFragment(TutorialFragment.class, bundle, TUTORIAL_ANIMATION);
+        //}
+        ActivityHelper.launchAuthentication(context);
     }
 
     public void pushFragment(Class<? extends Fragment> fragmentClass)

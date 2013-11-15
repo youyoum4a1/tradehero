@@ -1,4 +1,4 @@
-package com.tradehero.th.models;
+package com.tradehero.th.utils;
 
 import com.tradehero.th.R;
 
