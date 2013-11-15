@@ -61,7 +61,7 @@
 
   </RelativeLayout>
 
-  <com.tradehero.th.widget.social.AlertListView
+  <com.tradehero.th.fragments.billing.management.AlertListView
       android:id="@+id/alerts_list"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"

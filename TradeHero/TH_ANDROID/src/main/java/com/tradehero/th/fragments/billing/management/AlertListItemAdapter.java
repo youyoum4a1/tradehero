@@ -54,7 +54,7 @@ public class AlertListItemAdapter extends BaseAdapter
 
     @Override public int getViewTypeCount()
     {
-        return 5;
+        return 3;
     }
 
     public int getPayoutRealCount()
@@ -85,27 +85,19 @@ public class AlertListItemAdapter extends BaseAdapter
     {
         if (position <= 0)
         {
-            return VIEW_TYPE_HEADER;
+            return VIEW_TYPE_HEADER_ACTIVE;
         }
         else if (position <= getPayoutVisibleCount())
         {
-            if (getPayoutRealCount() == 0)
-            {
-                return VIEW_TYPE_ITEM_PAYOUT_NONE;
-            }
-            return VIEW_TYPE_ITEM_PAYOUT;
+            return VIEW_TYPE_ITEM_ALERT;
         }
         else if (position == getPayoutVisibleCount() + 1)
         {
-            return VIEW_TYPE_HEADER;
+            return VIEW_TYPE_HEADER_INACTIVE;
         }
         else
         {
-            if (getFollowerRealCount() == 0)
-            {
-                return VIEW_TYPE_ITEM_FOLLOWER_NONE;
-            }
-            return VIEW_TYPE_ITEM_FOLLOWER;
+            return VIEW_TYPE_ITEM_ALERT;
         }
     }
 
@@ -124,16 +116,12 @@ public class AlertListItemAdapter extends BaseAdapter
     {
         switch(getItemViewType(position))
         {
-            case VIEW_TYPE_ITEM_PAYOUT:
+            case VIEW_TYPE_ITEM_ALERT:
                 return getPayoutForPosition(position);
-            case VIEW_TYPE_ITEM_PAYOUT_NONE:
-                return null;
-            case VIEW_TYPE_ITEM_FOLLOWER:
-                return getFollowerForPosition(position);
-            case VIEW_TYPE_ITEM_FOLLOWER_NONE:
-                return null;
-            case VIEW_TYPE_HEADER:
-                return position == 0 ? "payoutHeader" : "followerHeader";
+            case VIEW_TYPE_HEADER_ACTIVE:
+                return "active";
+            case VIEW_TYPE_HEADER_INACTIVE:
+                return "inactive";
 
             default:
                 throw new IllegalStateException(getItemViewType(position) + " is not a known view type");
@@ -168,7 +156,7 @@ public class AlertListItemAdapter extends BaseAdapter
     {
         switch (getItemViewType(position))
         {
-            case VIEW_TYPE_ITEM_PAYOUT:
+            case VIEW_TYPE_ITEM_ALERT:
                 if (!(convertView instanceof HeroPayoutListItemView))
                 {
                     convertView = inflater.inflate(payoutResId, parent, false);
@@ -176,11 +164,7 @@ public class AlertListItemAdapter extends BaseAdapter
                 ((HeroPayoutListItemView) convertView).display((HeroPayoutDTO) getItem(position));
                 break;
 
-            case VIEW_TYPE_ITEM_PAYOUT_NONE:
-                convertView = inflater.inflate(payoutNoneResId, parent, false);
-                break;
-
-            case VIEW_TYPE_HEADER:
+            case VIEW_TYPE_HEADER_ACTIVE:
                 convertView = inflater.inflate(headerResId, parent, false);
 
                 int stringId = position == 0 ? R.string.manage_followers_payout_list_header : R.string.manage_followers_list_header;
@@ -188,16 +172,12 @@ public class AlertListItemAdapter extends BaseAdapter
                 ((BaseListHeaderView) convertView).setHeaderTextContent(String.format(context.getString(stringId), count));
                 break;
 
-            case VIEW_TYPE_ITEM_FOLLOWER:
+            case VIEW_TYPE_HEADER_INACTIVE:
                 if (!(convertView instanceof FollowerListItemView))
                 {
                     convertView = inflater.inflate(followerResId, parent, false);
                 }
                 ((FollowerListItemView) convertView).display((UserFollowerDTO) getItem(position));
-                break;
-
-            case VIEW_TYPE_ITEM_FOLLOWER_NONE:
-                convertView = inflater.inflate(followerNoneResId, parent, false);
                 break;
 
             default:
@@ -213,6 +193,6 @@ public class AlertListItemAdapter extends BaseAdapter
 
     @Override public boolean isEnabled(int position)
     {
-        return getItemViewType(position) == VIEW_TYPE_ITEM_FOLLOWER;
+        return getItemViewType(position) == VIEW_TYPE_ITEM_ALERT;
     }
 }
