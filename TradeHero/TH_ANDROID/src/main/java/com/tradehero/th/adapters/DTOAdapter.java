@@ -6,6 +6,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import com.tradehero.th.api.DTOView;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /** Created with IntelliJ IDEA. User: tho Date: 9/11/13 Time: 11:28 AM Copyright (c) TradeHero */
@@ -17,6 +19,7 @@ public abstract class DTOAdapter<T, V extends DTOView<T>> extends BaseAdapter
     protected final Context context;
     protected int layoutResourceId;
     protected List<T> items;
+    private Comparator<T> skuDetailsComparator;
 
     public DTOAdapter(Context context, LayoutInflater inflater, int layoutResourceId)
     {
@@ -28,6 +31,10 @@ public abstract class DTOAdapter<T, V extends DTOView<T>> extends BaseAdapter
 
     public void setItems(List<T> items)
     {
+        if (skuDetailsComparator != null)
+        {
+            Collections.sort(items, skuDetailsComparator);
+        }
         this.items = items;
     }
 
@@ -37,6 +44,16 @@ public abstract class DTOAdapter<T, V extends DTOView<T>> extends BaseAdapter
         {
             this.items.add(item);
         }
+    }
+
+    public Comparator<T> getSkuDetailsComparator()
+    {
+        return skuDetailsComparator;
+    }
+
+    public void setSkuDetailsComparator(Comparator<T> skuDetailsComparator)
+    {
+        this.skuDetailsComparator = skuDetailsComparator;
     }
 
     @Override public int getCount()
