@@ -22,10 +22,21 @@
         >
 
       <ImageView
+          android:id="@+id/send_love_icon"
+          android:layout_width="48dp"
+          android:layout_height="48dp"
+          android:layout_alignParentLeft="true"
+          android:layout_centerVertical="true"
+          android:src="@drawable/settings_send_love"
+          android:contentDescription="@null"
+        />
+
+      <ImageView
           android:id="@+id/send_love_further"
           android:layout_width="24dp"
           android:layout_height="24dp"
           android:layout_alignParentRight="true"
+          android:layout_centerVertical="true"
           android:src="@drawable/chevron_forward"
           android:contentDescription="@null"
         />
@@ -33,8 +44,9 @@
       <TextView
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:layout_alignParentLeft="true"
+          android:layout_toRightOf="@id/send_love_icon"
           android:layout_toLeftOf="@id/send_love_further"
+          android:layout_centerVertical="true"
           android:text="@string/settings_primary_send_love"
         />
 
@@ -49,10 +61,21 @@
         >
 
       <ImageView
+          android:id="@+id/send_feedback_icon"
+          android:layout_width="48dp"
+          android:layout_height="48dp"
+          android:layout_alignParentLeft="true"
+          android:layout_centerVertical="true"
+          android:src="@drawable/settings_send_feedback"
+          android:contentDescription="@null"
+          />
+
+      <ImageView
           android:id="@+id/send_feedback_further"
           android:layout_width="24dp"
           android:layout_height="24dp"
           android:layout_alignParentRight="true"
+          android:layout_centerVertical="true"
           android:src="@drawable/chevron_forward"
           android:contentDescription="@null"
         />
@@ -60,8 +83,9 @@
       <TextView
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:layout_alignParentLeft="true"
+          android:layout_toRightOf="@id/send_feedback_icon"
           android:layout_toLeftOf="@id/send_feedback_further"
+          android:layout_centerVertical="true"
           android:text="@string/settings_primary_send_feedback"
         />
 
@@ -76,10 +100,21 @@
         >
 
       <ImageView
+          android:id="@+id/faq_icon"
+          android:layout_width="48dp"
+          android:layout_height="48dp"
+          android:layout_alignParentLeft="true"
+          android:layout_centerVertical="true"
+          android:src="@drawable/settings_faq"
+          android:contentDescription="@null"
+          />
+
+      <ImageView
           android:id="@+id/faq_further"
           android:layout_width="24dp"
           android:layout_height="24dp"
           android:layout_alignParentRight="true"
+          android:layout_centerVertical="true"
           android:src="@drawable/chevron_forward"
           android:contentDescription="@null"
         />
@@ -87,8 +122,9 @@
       <TextView
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:layout_alignParentLeft="true"
+          android:layout_toRightOf="@id/faq_icon"
           android:layout_toLeftOf="@id/faq_further"
+          android:layout_centerVertical="true"
           android:text="@string/settings_primary_faq"
         />
 
@@ -103,10 +139,21 @@
         >
 
       <ImageView
+          android:id="@+id/profile_icon"
+          android:layout_width="48dp"
+          android:layout_height="48dp"
+          android:layout_alignParentLeft="true"
+          android:layout_centerVertical="true"
+          android:src="@drawable/settings_profile"
+          android:contentDescription="@null"
+          />
+
+      <ImageView
           android:id="@+id/profile_further"
           android:layout_width="24dp"
           android:layout_height="24dp"
           android:layout_alignParentRight="true"
+          android:layout_centerVertical="true"
           android:src="@drawable/chevron_forward"
           android:contentDescription="@null"
         />
@@ -114,8 +161,9 @@
       <TextView
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:layout_alignParentLeft="true"
+          android:layout_toRightOf="@id/profile_icon"
           android:layout_toLeftOf="@id/profile_further"
+          android:layout_centerVertical="true"
           android:text="@string/settings_primary_profile"
         />
 
@@ -130,10 +178,21 @@
         >
 
       <ImageView
+          android:id="@+id/paypal_icon"
+          android:layout_width="48dp"
+          android:layout_height="48dp"
+          android:layout_alignParentLeft="true"
+          android:layout_centerVertical="true"
+          android:src="@drawable/settings_paypal"
+          android:contentDescription="@null"
+          />
+
+      <ImageView
           android:id="@+id/paypal_further"
           android:layout_width="24dp"
           android:layout_height="24dp"
           android:layout_alignParentRight="true"
+          android:layout_centerVertical="true"
           android:src="@drawable/chevron_forward"
           android:contentDescription="@null"
         />
@@ -141,8 +200,9 @@
       <TextView
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:layout_alignParentLeft="true"
+          android:layout_toRightOf="@id/paypal_icon"
           android:layout_toLeftOf="@id/paypal_further"
+          android:layout_centerVertical="true"
           android:text="@string/settings_primary_paypal"
         />
 
@@ -157,10 +217,21 @@
         >
 
       <ImageView
+          android:id="@+id/transaction_history_icon"
+          android:layout_width="48dp"
+          android:layout_height="48dp"
+          android:layout_alignParentLeft="true"
+          android:layout_centerVertical="true"
+          android:src="@drawable/settings_trans_history"
+          android:contentDescription="@null"
+          />
+
+      <ImageView
           android:id="@+id/transaction_history_further"
           android:layout_width="24dp"
           android:layout_height="24dp"
           android:layout_alignParentRight="true"
+          android:layout_centerVertical="true"
           android:src="@drawable/chevron_forward"
           android:contentDescription="@null"
         />
@@ -168,8 +239,9 @@
       <TextView
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:layout_alignParentLeft="true"
+          android:layout_toRightOf="@id/transaction_history_icon"
           android:layout_toLeftOf="@id/transaction_history_further"
+          android:layout_centerVertical="true"
           android:text="@string/settings_primary_transaction_history"
         />
 
@@ -179,10 +251,20 @@
         android:id="@+id/email_notifications_block"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="0dp"
+        android:padding="8dp"
         android:descendantFocusability="blocksDescendants"
         style="@style/TH.ListItem"
         >
+
+      <ImageView
+          android:id="@+id/email_notification_icon"
+          android:layout_width="48dp"
+          android:layout_height="48dp"
+          android:layout_alignParentLeft="true"
+          android:layout_centerVertical="true"
+          android:src="@drawable/settings_email_noti"
+          android:contentDescription="@null"
+          />
 
       <CheckBox
           android:id="@+id/email_notifications_checkbox"
@@ -190,14 +272,15 @@
           android:layout_height="48dp"
           android:layout_marginRight="8dp"
           android:layout_alignParentRight="true"
+          android:layout_centerVertical="true"
           />
 
       <TextView
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:layout_margin="8dp"
-          android:layout_alignParentLeft="true"
+          android:layout_toRightOf="@id/email_notification_icon"
           android:layout_toLeftOf="@id/email_notifications_checkbox"
+          android:layout_centerVertical="true"
           android:text="@string/settings_notifications_email"
         />
 
@@ -211,10 +294,21 @@
         style="@style/TH.ListItem"
         >
 
+      <ImageView
+          android:id="@+id/reset_help_screens_icon"
+          android:layout_width="48dp"
+          android:layout_height="48dp"
+          android:layout_alignParentLeft="true"
+          android:layout_centerVertical="true"
+          android:src="@drawable/settings_reset_help_screen"
+          android:contentDescription="@null"
+          />
+
       <TextView
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:layout_alignParentLeft="true"
+          android:layout_toRightOf="@id/reset_help_screens_icon"
+          android:layout_centerVertical="true"
           android:text="@string/settings_misc_reset_help_screens"
           />
 
@@ -228,10 +322,21 @@
         style="@style/TH.ListItem"
         >
 
+      <ImageView
+          android:id="@+id/clear_cache_icon"
+          android:layout_width="48dp"
+          android:layout_height="48dp"
+          android:layout_alignParentLeft="true"
+          android:layout_centerVertical="true"
+          android:src="@drawable/settings_clear_cache"
+          android:contentDescription="@null"
+          />
+
       <TextView
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:layout_alignParentLeft="true"
+          android:layout_toRightOf="@id/clear_cache_icon"
+          android:layout_centerVertical="true"
           android:text="@string/settings_misc_clear_cache"
           />
 
@@ -245,10 +350,21 @@
         style="@style/TH.ListItem"
         >
 
+      <ImageView
+          android:id="@+id/sign_out_icon"
+          android:layout_width="48dp"
+          android:layout_height="48dp"
+          android:layout_alignParentLeft="true"
+          android:layout_centerVertical="true"
+          android:src="@drawable/settings_sign_out"
+          android:contentDescription="@null"
+          />
+
       <TextView
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:layout_alignParentLeft="true"
+          android:layout_toRightOf="@id/sign_out_icon"
+          android:layout_centerVertical="true"
           android:text="@string/settings_misc_sign_out"
           />
 
@@ -263,10 +379,21 @@
         >
 
       <ImageView
+          android:id="@+id/about_icon"
+          android:layout_width="48dp"
+          android:layout_height="48dp"
+          android:layout_alignParentLeft="true"
+          android:layout_centerVertical="true"
+          android:src="@drawable/settings_about"
+          android:contentDescription="@null"
+          />
+
+      <ImageView
           android:id="@+id/about_further"
           android:layout_width="24dp"
           android:layout_height="24dp"
           android:layout_alignParentRight="true"
+          android:layout_centerVertical="true"
           android:src="@drawable/chevron_forward"
           android:contentDescription="@null"
           />
@@ -274,8 +401,9 @@
       <TextView
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:layout_alignParentLeft="true"
+          android:layout_toRightOf="@id/about_icon"
           android:layout_toLeftOf="@id/about_further"
+          android:layout_centerVertical="true"
           android:text="@string/settings_misc_about"
           />
 
