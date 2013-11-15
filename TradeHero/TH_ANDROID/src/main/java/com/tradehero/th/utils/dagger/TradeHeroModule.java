@@ -21,11 +21,12 @@ import com.tradehero.th.fragments.billing.StoreScreenFragment;
 import com.tradehero.th.fragments.billing.management.FollowerManagerFragment;
 import com.tradehero.th.fragments.billing.management.FollowerPayoutManagerFragment;
 import com.tradehero.th.fragments.billing.management.HeroManagerFragment;
-import com.tradehero.th.fragments.leaderboard.AbstractLeaderboardFragment;
+import com.tradehero.th.fragments.leaderboard.BaseLeaderboardFragment;
 import com.tradehero.th.fragments.leaderboard.LeaderboardCommunityFragment;
 import com.tradehero.th.fragments.leaderboard.LeaderboardDefListViewFragment;
 import com.tradehero.th.fragments.leaderboard.LeaderboardDefView;
 import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserItemView;
+import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserListView;
 import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserListViewFragment;
 import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserLoader;
 import com.tradehero.th.fragments.portfolio.PortfolioListFragment;
@@ -82,7 +83,6 @@ import com.tradehero.th.persistence.user.UserStore;
 import com.tradehero.th.utils.NumberDisplayUtils;
 import com.tradehero.th.widget.MarkdownTextView;
 import com.tradehero.th.widget.ServerValidatedUsernameText;
-import com.tradehero.th.widget.leaderboard.LeaderboardMarkUserListView;
 import com.tradehero.th.fragments.portfolio.PortfolioListItemView;
 import com.tradehero.th.fragments.portfolio.header.CurrentUserPortfolioHeaderView;
 import com.tradehero.th.fragments.portfolio.header.OtherUserPortfolioHeaderView;
@@ -202,7 +202,7 @@ import org.ocpsoft.prettytime.PrettyTime;
                 LeaderboardManager.class,
                 LeaderboardMarkUserLoader.class,
                 LeaderboardMarkUserListViewFragment.class,
-                AbstractLeaderboardFragment.class,
+                BaseLeaderboardFragment.class,
                 LeaderboardMarkUserItemView.class,
                 LeaderboardMarkUserListView.class,
 

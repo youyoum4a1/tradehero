@@ -85,8 +85,10 @@ public class LeaderboardDefView extends RelativeLayout implements DTOView<Leader
 
         if (currentUserBaseKeyHolder != null)
         {
-            userProfileRequestTask = userProfileCache.get().getOrFetch(currentUserBaseKeyHolder.getCurrentUserBaseKey(), false, userProfileListener);
-            userProfileRequestTask.execute();
+            // TODO this is just for getting leaderboard ranking of current user, which is already done by getting user rank from DefDTO, see
+            // method @updateRankTitle
+            //userProfileRequestTask = userProfileCache.get().getOrFetch(currentUserBaseKeyHolder.getCurrentUserBaseKey(), false, userProfileListener);
+            //userProfileRequestTask.execute();
         }
     }
 
@@ -146,18 +148,37 @@ public class LeaderboardDefView extends RelativeLayout implements DTOView<Leader
             // TODO new background image for android
             //leaderboardDefUserRank.setBackgroundResource(R.drawable.lb_friends_bg);
         }
+
+        updateRankTitle();
+    }
+
+    private void updateRankTitle()
+    {
+        Integer rank = dto.getRank();
+        if (rank == null)
+        {
+            // not a hard coded definition
+            if (dto.getId() > 0)
+            {
+                leaderboardDefUserRank.setText(getContext().getString(R.string.not_ranked));
+            }
+        }
+        else
+        {
+            leaderboardDefUserRank.setText(rank.toString());
+        }
     }
 
     private void updateLeaderboardOwnRank(UserProfileDTO userProfileDTO)
     {
-        if (dto != null)
-        {
-            int leaderboardRank = userProfileDTO.getLeaderboardRanking(dto.getId());
-            if (leaderboardRank > 0)
-            {
-                leaderboardDefUserRank.setText("" + leaderboardRank);
-            }
-        }
+        //if (dto != null)
+        //{
+        //    int leaderboardRank = userProfileDTO.getLeaderboardRanking(dto.getId());
+        //    if (leaderboardRank > 0)
+        //    {
+        //        leaderboardDefUserRank.setText("" + leaderboardRank);
+        //    }
+        //}
     }
 
     /**

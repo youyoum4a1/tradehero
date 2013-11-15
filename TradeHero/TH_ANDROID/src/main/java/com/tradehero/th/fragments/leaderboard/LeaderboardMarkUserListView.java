@@ -1,4 +1,4 @@
-package com.tradehero.th.widget.leaderboard;
+package com.tradehero.th.fragments.leaderboard;
 
 import android.content.Context;
 import android.util.AttributeSet;

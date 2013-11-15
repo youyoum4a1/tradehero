@@ -182,6 +182,7 @@
   <string name="period">Period</string>
   <string name="in_period">In Period</string>
   <string name="overall">Overall</string>
+  <string name="not_ranked">Not ranked</string>
   <item name="done" type="id">Done</item>
 
   <string name="cache_clearing_alert_title">Cache is being cleared</string>

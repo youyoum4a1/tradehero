@@ -103,9 +103,4 @@ public class LeaderboardMarkUserListAdapter extends
             this.leaderboardId = leaderboardId;
         }
     }
-
-    public void setLayoutResourceId(int layoutResourceId)
-    {
-        this.layoutResourceId = layoutResourceId;
-    }
 }

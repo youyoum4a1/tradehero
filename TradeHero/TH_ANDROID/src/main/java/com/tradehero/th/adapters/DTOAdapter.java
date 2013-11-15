@@ -93,5 +93,10 @@ public abstract class DTOAdapter<T, V extends DTOView<T>> extends BaseAdapter
         return convertView;
     }
 
+    public void setLayoutResourceId(int layoutResourceId)
+    {
+        this.layoutResourceId = layoutResourceId;
+    }
+
     protected abstract void fineTune(int position, T dto, V dtoView);
 }

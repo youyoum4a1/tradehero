@@ -12,8 +12,9 @@ public enum LeaderboardSortType
     Comments(R.string.comments, R.drawable.sort_comments, R.drawable.sort_comments_white, R.layout.lbmu_item_comments_mode),
     SharpeRatio(R.string.sharpe_ratio, R.drawable.sort_sharpe, R.drawable.sort_sharpe_white, R.layout.lbmu_item_sharpe_mode);
 
-
     public static final String BUNDLE_FLAG = "LEADERBOARD_SORT_FLAG";
+    public static final String TAG = "LEADERBOARD_SORT_TYPE";
+
     public static LeaderboardSortType DefaultSortType = HeroQuotient;
 
     private static final int SORT_ROI = 0x1;
@@ -78,6 +79,18 @@ public enum LeaderboardSortType
         for (LeaderboardSortType sortType: LeaderboardSortType.values())
         {
             if (sortType.flag == flag)
+            {
+                return sortType;
+            }
+        }
+        return null;
+    }
+
+    public static LeaderboardSortType byServerFlag(int flag)
+    {
+        for (LeaderboardSortType sortType: LeaderboardSortType.values())
+        {
+            if (sortType.flag == (1 << (flag-1)))
             {
                 return sortType;
             }

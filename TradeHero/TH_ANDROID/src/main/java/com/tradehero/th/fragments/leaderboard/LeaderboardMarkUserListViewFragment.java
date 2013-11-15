@@ -18,14 +18,13 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.leaderboard.LeaderboardDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
-import com.tradehero.th.widget.leaderboard.LeaderboardMarkUserListView;
 import java.util.Date;
 import java.util.List;
 import javax.inject.Inject;
 import org.ocpsoft.prettytime.PrettyTime;
 
 /** Created with IntelliJ IDEA. User: tho Date: 10/14/13 Time: 12:34 PM Copyright (c) TradeHero */
-public class LeaderboardMarkUserListViewFragment extends AbstractLeaderboardFragment
+public class LeaderboardMarkUserListViewFragment extends BaseLeaderboardFragment
         implements SortTypeChangedListener
 {
     public static final String TITLE = LeaderboardMarkUserListViewFragment.class.getName() + ".title";

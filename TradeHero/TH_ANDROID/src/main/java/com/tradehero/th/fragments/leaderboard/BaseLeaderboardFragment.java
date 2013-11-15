@@ -13,11 +13,11 @@ import com.tradehero.th.fragments.base.DashboardFragment;
 import javax.inject.Inject;
 
 /** Created with IntelliJ IDEA. User: tho Date: 11/1/13 Time: 6:24 PM Copyright (c) TradeHero */
-public class AbstractLeaderboardFragment extends DashboardFragment
+public class BaseLeaderboardFragment extends DashboardFragment
         implements BaseFragment.TabBarVisibilityInformer
 {
     public static final String TITLE = "LEADERBOARD_DEF_TITLE";
-    public static final String CURRENT_SORT_TYPE = AbstractLeaderboardFragment.class.getName() + ".currentSortType";
+    public static final String CURRENT_SORT_TYPE = BaseLeaderboardFragment.class.getName() + ".currentSortType";
 
     @Inject protected LeaderboardSortHelper leaderboardSortHelper;
 
@@ -32,7 +32,7 @@ public class AbstractLeaderboardFragment extends DashboardFragment
         bundle.putInt(LeaderboardDTO.LEADERBOARD_ID, dto.getId());
         bundle.putString(LeaderboardMarkUserListViewFragment.TITLE, dto.name);
         bundle.putInt(LeaderboardMarkUserListViewFragment.CURRENT_SORT_TYPE,
-                getCurrentSortType() != null ? getCurrentSortType().getFlag() : dto.getDefaultSortType());
+                getCurrentSortType() != null ? getCurrentSortType().getFlag() : dto.getDefaultSortType().getFlag());
         bundle.putString(LeaderboardDefDTO.LEADERBOARD_DEF_DESC, dto.desc);
 
         bundle.putInt(LeaderboardSortType.BUNDLE_FLAG, dto.getSortOptionFlags());
@@ -43,7 +43,7 @@ public class AbstractLeaderboardFragment extends DashboardFragment
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         createSortSubMenu(menu);
-        updateSortSubMenu(getArguments());
+        onCreateSortSubMenu();
 
         ActionBar actionBar = getSherlockActivity().getSupportActionBar();
         actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME);
@@ -77,7 +77,7 @@ public class AbstractLeaderboardFragment extends DashboardFragment
         leaderboardSortHelper.addSortMenu(sortSubMenu, flags);
     }
 
-    private void setCurrentSortType(LeaderboardSortType selectedSortType)
+    protected void setCurrentSortType(LeaderboardSortType selectedSortType)
     {
         if (sortTypeChangeListener != null && currentSortType != selectedSortType)
         {
@@ -85,6 +85,7 @@ public class AbstractLeaderboardFragment extends DashboardFragment
         }
         sortSubMenu.setIcon(selectedSortType.getSelectedResourceIcon());
         currentSortType = selectedSortType;
+        onCurrentSortTypeChanged();
     }
 
     protected LeaderboardSortType getCurrentSortType()
@@ -97,16 +98,22 @@ public class AbstractLeaderboardFragment extends DashboardFragment
         this.sortTypeChangeListener = sortTypeChangeListener;
     }
 
-    private void updateSortSubMenu(Bundle bundle)
+    private void onCreateSortSubMenu()
     {
-        flags = bundle.getInt(LeaderboardSortType.BUNDLE_FLAG);
-        updateCurrentSortType(bundle);
+        flags = getArguments().getInt(LeaderboardSortType.BUNDLE_FLAG);
+        initSortTypeFromArguments();
     }
 
-    protected void updateCurrentSortType(Bundle bundle)
+    protected void initSortTypeFromArguments()
     {
-        setCurrentSortType(LeaderboardSortType.byFlag(bundle.getInt(CURRENT_SORT_TYPE)));
+        setCurrentSortType(LeaderboardSortType.byFlag(getArguments().getInt(CURRENT_SORT_TYPE)));
     }
+
+    protected void onCurrentSortTypeChanged()
+    {
+        // do nothing
+    }
+
     //</editor-fold>
 
     @Override public boolean isTabBarVisible()

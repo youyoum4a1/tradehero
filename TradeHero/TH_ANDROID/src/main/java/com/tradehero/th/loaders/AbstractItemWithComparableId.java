@@ -1,7 +1,10 @@
 package com.tradehero.th.loaders;
 
+import com.tradehero.th.api.ExtraDTO;
+
 /** Created with IntelliJ IDEA. User: tho Date: 9/13/13 Time: 3:19 PM Copyright (c) TradeHero */
-public abstract class AbstractItemWithComparableId<T extends Comparable<T>> implements ItemWithComparableId<T>
+public abstract class AbstractItemWithComparableId<T extends Comparable<T>> extends ExtraDTO
+        implements ItemWithComparableId<T>
 {
     public abstract T getId();
 

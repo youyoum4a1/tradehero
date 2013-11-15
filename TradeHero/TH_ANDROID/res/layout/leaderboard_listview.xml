@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     >
-  <com.tradehero.th.widget.leaderboard.LeaderboardMarkUserListView
+  <com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserListView
       xmlns:ptr="http://schemas.android.com/apk/res-auto"
       android:layout_width="match_parent"
       android:layout_height="match_parent"

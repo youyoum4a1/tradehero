@@ -20,9 +20,8 @@ import java.util.List;
 import javax.inject.Inject;
 
 /** Created with IntelliJ IDEA. User: tho Date: 10/17/13 Time: 7:21 PM Copyright (c) TradeHero */
-public class LeaderboardDefListViewFragment extends AbstractLeaderboardFragment
-    implements
-        DTOCache.Listener<LeaderboardDefListKey, LeaderboardDefKeyList>
+public class LeaderboardDefListViewFragment extends BaseLeaderboardFragment
+    implements DTOCache.Listener<LeaderboardDefListKey, LeaderboardDefKeyList>
 {
     private static final String TAG = LeaderboardDefListViewFragment.class.getName();
 
@@ -58,7 +57,6 @@ public class LeaderboardDefListViewFragment extends AbstractLeaderboardFragment
                 }
             }
         });
-
         super.onResume();
     }
 
@@ -67,6 +65,15 @@ public class LeaderboardDefListViewFragment extends AbstractLeaderboardFragment
     {
         LeaderboardDefListKey key = new LeaderboardDefListKey(bundle);
         leaderboardDefListCache.get().getOrFetch(key, false, this).execute();
+    }
+
+    @Override protected void onCurrentSortTypeChanged()
+    {
+        if (leaderboardDefListAdapter != null)
+        {
+            leaderboardDefListAdapter.setSortType(getCurrentSortType());
+            leaderboardDefListAdapter.notifyDataSetChanged();
+        }
     }
 
     @Override public void onDTOReceived(LeaderboardDefListKey key, LeaderboardDefKeyList value)
@@ -89,5 +96,4 @@ public class LeaderboardDefListViewFragment extends AbstractLeaderboardFragment
         THToast.show(getString(R.string.error_fetch_leaderboard_def_list_key));
         THLog.e(TAG, "Error fetching the leaderboard def key list " + key, error);
     }
-
 }

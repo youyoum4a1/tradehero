@@ -10,11 +10,20 @@ import java.util.List;
 /** Created with IntelliJ IDEA. User: tho Date: 10/16/13 Time: 4:08 PM Copyright (c) TradeHero */
 public class LeaderboardDefListAdapter extends DTOAdapter<LeaderboardDefDTO, LeaderboardDefView>
 {
+    private LeaderboardSortType sortType;
 
     public LeaderboardDefListAdapter(Context context, LayoutInflater inflater, List<LeaderboardDefDTO> items, int layoutResourceId)
     {
         super(context, inflater, layoutResourceId);
         setItems(items);
+    }
+
+    @Override public Object getItem(int i)
+    {
+        LeaderboardDefDTO item = (LeaderboardDefDTO) super.getItem(i);
+        item.put(LeaderboardSortType.TAG, sortType);
+
+        return item;
     }
 
     @Override protected void fineTune(int position, LeaderboardDefDTO dto, LeaderboardDefView dtoView)
@@ -38,5 +47,10 @@ public class LeaderboardDefListAdapter extends DTOAdapter<LeaderboardDefDTO, Lea
         {
             dtoView.setBackgroundResource(R.drawable.leaderboard_button_border_full);
         }
+    }
+
+    public void setSortType(LeaderboardSortType sortType)
+    {
+        this.sortType = sortType;
     }
 }

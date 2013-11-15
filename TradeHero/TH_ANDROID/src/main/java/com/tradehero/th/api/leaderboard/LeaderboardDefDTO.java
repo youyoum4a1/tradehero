@@ -1,6 +1,5 @@
 package com.tradehero.th.api.leaderboard;
 
-import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.fragments.leaderboard.LeaderboardSortType;
 import com.tradehero.th.loaders.AbstractItemWithComparableId;
 import java.util.Date;
@@ -8,7 +7,6 @@ import java.util.List;
 
 /** Created with IntelliJ IDEA. User: tho Date: 10/14/13 Time: 2:05 PM Copyright (c) TradeHero */
 public class LeaderboardDefDTO extends AbstractItemWithComparableId<Integer>
-    implements DTO
 {
     // TODO HARDCODED
     public static final int LEADERBOARD_DEF_MOST_SKILLED_ID = 49;
@@ -100,9 +98,9 @@ public class LeaderboardDefDTO extends AbstractItemWithComparableId<Integer>
         }
     }
 
-    public int getDefaultSortType()
+    public LeaderboardSortType getDefaultSortType()
     {
-        return defaultSortTypeId != null ? defaultSortTypeId : LeaderboardSortType.DefaultSortType.getFlag();
+        return defaultSortTypeId != null ? LeaderboardSortType.byServerFlag(defaultSortTypeId) : LeaderboardSortType.DefaultSortType;
     }
 
     public boolean isSectorRestricted()
@@ -125,6 +123,32 @@ public class LeaderboardDefDTO extends AbstractItemWithComparableId<Integer>
     public String getPeriodEndString()
     {
         return toUtcRestricted != null ? toUtcRestricted.toString() : null;
+    }
+
+    public Integer getRank()
+    {
+        LeaderboardSortType currentSortType = (LeaderboardSortType) get(LeaderboardSortType.TAG);
+        if (currentSortType == null)
+        {
+            currentSortType = getDefaultSortType();
+        }
+
+        if (sortTypes == null)
+        {
+            return null;
+        }
+
+        for (LeaderboardSortTypeDTO sortTypeDTO: sortTypes)
+        {
+            if (sortTypeDTO.sortTypeId == currentSortType.getServerFlag())
+            {
+                if (sortTypeDTO.userRankingOrdinalPosition != null)
+                {
+                    return sortTypeDTO.userRankingOrdinalPosition + 1;
+                }
+            }
+        }
+        return null;
     }
 }
 

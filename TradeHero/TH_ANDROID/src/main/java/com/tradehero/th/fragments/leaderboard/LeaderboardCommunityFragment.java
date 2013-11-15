@@ -5,7 +5,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
@@ -32,7 +31,7 @@ import java.util.Comparator;
 import java.util.List;
 import javax.inject.Inject;
 
-public class LeaderboardCommunityFragment extends AbstractLeaderboardFragment
+public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
         implements DTOCache.Listener<LeaderboardDefListKey, LeaderboardDefKeyList>
 {
     private static final String TAG = LeaderboardCommunityFragment.class.getName();
@@ -45,6 +44,8 @@ public class LeaderboardCommunityFragment extends AbstractLeaderboardFragment
     private ListView mostSkilledListView;
     private ListView timePeriodListView;
     private ListView sectorListView;
+    private LeaderboardDefListAdapter mostSkilledListAdapter;
+    private LeaderboardDefListAdapter timePeriodListAdapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -55,9 +56,9 @@ public class LeaderboardCommunityFragment extends AbstractLeaderboardFragment
         return view;
     }
 
-    @Override public void onResume()
+    @Override public void onActivityCreated(Bundle savedInstanceState)
     {
-        super.onResume();
+        super.onActivityCreated(savedInstanceState);
     }
 
     private void prepareAdapters()
@@ -82,6 +83,22 @@ public class LeaderboardCommunityFragment extends AbstractLeaderboardFragment
     {
         super.onStop();
         fetched = false;
+    }
+
+    private AdapterView.OnItemClickListener createLeaderboardItemClickListener()
+    {
+        return new AdapterView.OnItemClickListener()
+        {
+            @Override public void onItemClick(AdapterView<?> adapterView, View view, int position, long id)
+            {
+                LeaderboardDefDTO dto = (LeaderboardDefDTO) adapterView.getAdapter().getItem(position);
+
+                if (dto != null)
+                {
+                    pushLeaderboardListViewFragment(dto);
+                }
+            }
+        };
     }
 
     //<editor-fold desc="ActionBar">
@@ -151,22 +168,6 @@ public class LeaderboardCommunityFragment extends AbstractLeaderboardFragment
     }
     //</editor-fold>
 
-    private AdapterView.OnItemClickListener createLeaderboardItemClickListener()
-    {
-        return new AdapterView.OnItemClickListener()
-        {
-            @Override public void onItemClick(AdapterView<?> adapterView, View view, int position, long id)
-            {
-                LeaderboardDefDTO dto = (LeaderboardDefDTO) adapterView.getAdapter().getItem(position);
-
-                if (dto != null)
-                {
-                    pushLeaderboardListViewFragment(dto);
-                }
-            }
-        };
-    }
-
     //<editor-fold desc="Init some default LeaderboardDefDTOs - Hardcoded">
     private LeaderboardDefDTO initDefaultLeaderboardDefDTOForExchange()
     {
@@ -211,14 +212,14 @@ public class LeaderboardCommunityFragment extends AbstractLeaderboardFragment
                             Bundle bundle = new Bundle(getArguments());
                             (new LeaderboardDefSectorListKey()).putParameters(bundle);
                             bundle.putString(LeaderboardDefListViewFragment.TITLE, getString(R.string.leaderboard_sector));
-                            bundle.putInt(AbstractLeaderboardFragment.CURRENT_SORT_TYPE, getCurrentSortType().getFlag());
+                            bundle.putInt(BaseLeaderboardFragment.CURRENT_SORT_TYPE, getCurrentSortType().getFlag());
                             getNavigator().pushFragment(LeaderboardDefListViewFragment.class, bundle);
                         } break;
                         case LeaderboardDefDTO.LEADERBOARD_DEF_EXCHANGE_ID:
                         {
                             Bundle bundle = new LeaderboardDefExchangeListKey().getArgs();
                             bundle.putString(LeaderboardDefListViewFragment.TITLE, getString(R.string.leaderboard_exchange));
-                            bundle.putInt(AbstractLeaderboardFragment.CURRENT_SORT_TYPE, getCurrentSortType().getFlag());
+                            bundle.putInt(BaseLeaderboardFragment.CURRENT_SORT_TYPE, getCurrentSortType().getFlag());
                             getNavigator().pushFragment(LeaderboardDefListViewFragment.class, bundle);
                         } break;
                     }
@@ -227,7 +228,7 @@ public class LeaderboardCommunityFragment extends AbstractLeaderboardFragment
         });
     }
 
-    private ListAdapter createTimePeriodListAdapter(List<LeaderboardDefDTO> timePeriodItems)
+    private LeaderboardDefListAdapter createTimePeriodListAdapter(List<LeaderboardDefDTO> timePeriodItems)
     {
         // sort time period items by number of days
         Collections.sort(timePeriodItems, new Comparator<LeaderboardDefDTO>()
@@ -243,11 +244,11 @@ public class LeaderboardCommunityFragment extends AbstractLeaderboardFragment
                 else return (lhs.toDateDays > rhs.toDateDays) ? 1 : -1;
             }
         });
-        return new LeaderboardDefTimePeriodListAdapter(
+        return new LeaderboardDefListAdapter(
                 getActivity(), getActivity().getLayoutInflater(), timePeriodItems, R.layout.leaderboard_def_item);
     }
 
-    private ListAdapter createMostSkilledListAdapter(List<LeaderboardDefDTO> values)
+    private LeaderboardDefMostSkilledListAdapter createMostSkilledListAdapter(List<LeaderboardDefDTO> values)
     {
         return new LeaderboardDefMostSkilledListAdapter(
                 getActivity(), getActivity().getLayoutInflater(), values, R.layout.leaderboard_def_item);
@@ -259,7 +260,8 @@ public class LeaderboardCommunityFragment extends AbstractLeaderboardFragment
     {
         try
         {
-            mostSkilledListView.setAdapter(createMostSkilledListAdapter(leaderboardDefCache.get().getOrFetch(value)));
+            mostSkilledListAdapter = createMostSkilledListAdapter(leaderboardDefCache.get().getOrFetch(value));
+            mostSkilledListView.setAdapter(mostSkilledListAdapter);
         }
         catch (Throwable throwable)
         {
@@ -272,7 +274,8 @@ public class LeaderboardCommunityFragment extends AbstractLeaderboardFragment
     {
         try
         {
-            timePeriodListView.setAdapter(createTimePeriodListAdapter(leaderboardDefCache.get().getOrFetch(value)));
+            timePeriodListAdapter = createTimePeriodListAdapter(leaderboardDefCache.get().getOrFetch(value));
+            timePeriodListView.setAdapter(timePeriodListAdapter);
         }
         catch (Throwable throwable)
         {
@@ -282,10 +285,27 @@ public class LeaderboardCommunityFragment extends AbstractLeaderboardFragment
     }
     //</editor-fold>
 
-    @Override protected void updateCurrentSortType(Bundle bundle)
+    //<editor-fold desc="Sorting">
+    @Override protected void initSortTypeFromArguments()
     {
         // I'm the leaderboard master screen, one can change my sort type :))
     }
+
+    @Override protected void onCurrentSortTypeChanged()
+    {
+        if (timePeriodListAdapter != null)
+        {
+            timePeriodListAdapter.setSortType(getCurrentSortType());
+            timePeriodListAdapter.notifyDataSetChanged();
+        }
+
+        if (mostSkilledListAdapter != null)
+        {
+            mostSkilledListAdapter.setSortType(getCurrentSortType());
+            mostSkilledListAdapter.notifyDataSetChanged();
+        }
+    }
+    //</editor-fold>
 
     //<editor-fold desc="BaseFragment.TabBarVisibilityInformer">
     @Override public boolean isTabBarVisible()
