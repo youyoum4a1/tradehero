@@ -103,7 +103,7 @@
 
 
   <style name="TradeHero.Dashboard.ActionBar" parent="Widget.Sherlock.ActionBar">
-    <item name="android:background">@drawable/topbarrectangle</item>
+    <item name="android:background">@drawable/topbarrectangle_default</item>
     <item name="android:titleTextStyle">@style/TradeHero.Dashboard.ActionBar.TitleTextStyle</item>
     <item name="android:actionMenuTextColor">@style/TradeHero.Dashboard.ActionBar.MenuTextColor</item>
 

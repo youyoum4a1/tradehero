@@ -64,7 +64,7 @@ public class TrendingFragment extends DashboardFragment
 
     private int filterPageSelected = 0;
     private ExchangeStringId[] selectedExchangeStringIds = new ExchangeStringId[TrendingFilterPagerAdapter.FRAGMENT_COUNT];
-    private boolean isQuerying;
+    private boolean querying;
     @Inject Lazy<SecurityCompactListCache> securityCompactListCache;
     @Inject Lazy<SecurityCompactCache> securityCompactCache;
     private DTOCache.GetOrFetchTask<SecurityIdList> trendingTask;
@@ -92,6 +92,10 @@ public class TrendingFragment extends DashboardFragment
     protected void initViews(View view)
     {
         mProgressSpinner = (ProgressBar) view.findViewById(R.id.progress_spinner);
+        if (mProgressSpinner != null)
+        {
+            mProgressSpinner.setVisibility(View.GONE);
+        }
 
         securityItemViewAdapter = new SecurityItemViewAdapter(getActivity(), getActivity().getLayoutInflater(), R.layout.trending_security_item);
         mTrendingGridView = (AbsListView) view.findViewById(R.id.trending_gridview);
@@ -295,6 +299,17 @@ public class TrendingFragment extends DashboardFragment
         super.onDestroyView();
     }
 
+    public boolean isQuerying()
+    {
+        return querying;
+    }
+
+    protected void setQuerying(boolean querying)
+    {
+        this.querying = querying;
+        showProgressSpinner(this.querying);
+    }
+
     private void setDataAdapterToGridView(List<SecurityCompactDTO> securityCompactDTOs)
     {
         this.securityCompactDTOs = securityCompactDTOs;
@@ -310,7 +325,7 @@ public class TrendingFragment extends DashboardFragment
             trendingTask.cancel(false);
             trendingTask = null;
         }
-        isQuerying = true;
+        setQuerying(true);
         trendingTask = securityCompactListCache.get().getOrFetch(getSecurityListType(), false, this);
         trendingTask.execute();
     }
@@ -385,12 +400,14 @@ public class TrendingFragment extends DashboardFragment
                 onErrorThrown(key, throwable);
             }
         }
+        setQuerying(false);
     }
 
     @Override public void onErrorThrown(SecurityListType key, Throwable error)
     {
         THToast.show(getString(R.string.error_fetch_security_list_info));
         THLog.e(TAG, "Error fetching the list " + key, error);
+        setQuerying(false);
     }
 
     //</editor-fold>
