@@ -123,4 +123,10 @@
   <style name="TradeHero.Dashboard.ActionBar.MenuTextColor">
     <item name="android:color">@color/white</item>
   </style>
+
+  <style name="TH.ListItem">
+    <item name="android:background">@drawable/list_item_bg</item>
+    <item name="android:minHeight">48dp</item>
+  </style>
+
 </resources>
