@@ -16,7 +16,7 @@
       android:layout_centerInParent="true"
       android:visibility="gone" />
 
-  <com.tradehero.th.widget.trending.TrendingSecurityGridView
+  <com.tradehero.th.fragments.trending.TrendingSecurityGridView
         android:id="@+id/trending_gridview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -33,7 +33,7 @@
         android:paddingBottom="55dp"
         android:clipToPadding="false"
       >
-  </com.tradehero.th.widget.trending.TrendingSecurityGridView>
+  </com.tradehero.th.fragments.trending.TrendingSecurityGridView>
 
   <LinearLayout
       android:id="@+id/trending_filter_placeholder"

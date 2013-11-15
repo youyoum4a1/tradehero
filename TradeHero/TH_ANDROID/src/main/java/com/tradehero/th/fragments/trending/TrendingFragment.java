@@ -21,8 +21,6 @@ import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
-import com.tradehero.th.adapters.trending.SecurityItemViewAdapter;
-import com.tradehero.th.adapters.trending.TrendingFilterPagerAdapter;
 import com.tradehero.th.api.market.ExchangeStringId;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityIdList;

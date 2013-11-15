@@ -1,17 +1,14 @@
 package com.tradehero.th.fragments.security;
 
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.th.R;
-import com.tradehero.th.adapters.YahooNewsAdapter;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.yahoo.NewsList;
 import com.tradehero.th.persistence.yahoo.NewsCache;
-import com.tradehero.th.widget.news.YahooNewsListView;
 import dagger.Lazy;
 import javax.inject.Inject;
 

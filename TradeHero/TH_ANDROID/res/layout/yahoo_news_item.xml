@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<com.tradehero.th.widget.news.YahooNewsView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.tradehero.th.fragments.security.YahooNewsView xmlns:android="http://schemas.android.com/apk/res/android"
              android:layout_width="match_parent"
              android:layout_height="match_parent"
              android:orientation="vertical" android:padding="10dp">
@@ -13,4 +13,4 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/date_yahooNews"/>
-</com.tradehero.th.widget.news.YahooNewsView>
+</com.tradehero.th.fragments.security.YahooNewsView>

@@ -14,13 +14,11 @@ import com.tradehero.common.graphics.RoundedShapeTransformation;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
-import com.tradehero.th.adapters.social.FollowerPaymentListItemAdapter;
 import com.tradehero.th.api.social.FollowerId;
 import com.tradehero.th.api.social.UserFollowerDTO;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.persistence.social.UserFollowerCache;
 import com.tradehero.th.utils.SecurityUtils;
-import com.tradehero.th.widget.social.FollowerPaymentListView;
 import dagger.Lazy;
 import javax.inject.Inject;
 

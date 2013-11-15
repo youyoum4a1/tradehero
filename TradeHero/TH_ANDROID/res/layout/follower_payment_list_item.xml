@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<com.tradehero.th.widget.social.FollowerPaymentListItemView
+<com.tradehero.th.fragments.billing.management.FollowerPaymentListItemView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res/com.tradehero.th"
     android:layout_width="match_parent"
@@ -47,4 +47,4 @@
       android:gravity="right"
       />
 
-</com.tradehero.th.widget.social.FollowerPaymentListItemView>
+</com.tradehero.th.fragments.billing.management.FollowerPaymentListItemView>

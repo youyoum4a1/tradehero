@@ -1,16 +1,12 @@
 package com.tradehero.th.widget;
 
 import android.content.Context;
-import android.graphics.Canvas;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
 import com.tradehero.common.text.OnElementClickListener;
 import com.tradehero.common.text.RichTextCreator;
-import com.tradehero.common.utils.THLog;
-import com.tradehero.th.utils.DaggerUtils;
-import com.tradehero.th.widget.timeline.TimelineItemView;
 import javax.inject.Inject;
 
 /** Created with IntelliJ IDEA. User: tho Date: 9/17/13 Time: 11:18 AM Copyright (c) TradeHero */

@@ -3,7 +3,6 @@ package com.tradehero.th.fragments.position;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
-import com.tradehero.th.adapters.position.LeaderboardPositionItemAdapter;
 import com.tradehero.th.api.leaderboard.LeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import com.tradehero.th.api.leaderboard.position.GetLeaderboardPositionsDTO;

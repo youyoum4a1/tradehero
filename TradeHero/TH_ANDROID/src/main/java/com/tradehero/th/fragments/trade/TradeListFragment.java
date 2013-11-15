@@ -14,7 +14,6 @@ import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
-import com.tradehero.th.adapters.trade.TradeListItemAdapter;
 import com.tradehero.th.api.position.OwnedPositionId;
 import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.api.security.SecurityId;
@@ -28,8 +27,6 @@ import com.tradehero.th.fragments.timeline.TimelineFragment;
 import com.tradehero.th.persistence.position.PositionCache;
 import com.tradehero.th.persistence.security.SecurityIdCache;
 import com.tradehero.th.persistence.trade.TradeListCache;
-import com.tradehero.th.widget.trade.TradeListHeaderView;
-import com.tradehero.th.widget.trade.TradeListOverlayHeaderView;
 import dagger.Lazy;
 
 import javax.inject.Inject;

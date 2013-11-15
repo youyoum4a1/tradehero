@@ -1,9 +1,8 @@
 package com.tradehero.th.billing.googleplay;
 
 import android.app.Activity;
-import com.tradehero.common.billing.googleplay.SKUDetails;
 import com.tradehero.common.billing.googleplay.SKUDetailsDecreasingPriceComparator;
-import com.tradehero.th.adapters.billing.THSKUDetailsAdapter;
+import com.tradehero.th.fragments.billing.THSKUDetailsAdapter;
 import java.util.List;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/11/13 Time: 10:49 AM To change this template use File | Settings | File Templates. */

@@ -15,17 +15,14 @@ import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.DashboardActivity;
-import com.tradehero.th.adapters.social.FollowerAndPayoutListItemAdapter;
 import com.tradehero.th.api.social.FollowerId;
 import com.tradehero.th.api.social.FollowerSummaryDTO;
 import com.tradehero.th.api.social.UserFollowerDTO;
 import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
 import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.base.THUser;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.persistence.social.FollowerSummaryCache;
 import com.tradehero.th.utils.SecurityUtils;
-import com.tradehero.th.widget.social.FollowerListView;
 import dagger.Lazy;
 import javax.inject.Inject;
 

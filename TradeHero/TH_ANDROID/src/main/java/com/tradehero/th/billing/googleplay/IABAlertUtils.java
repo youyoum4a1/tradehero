@@ -7,8 +7,8 @@ import android.content.Intent;
 import android.provider.Settings;
 import com.tradehero.common.billing.googleplay.SKUDetails;
 import com.tradehero.th.R;
-import com.tradehero.th.adapters.billing.SKUDetailsAdapter;
-import com.tradehero.th.widget.billing.SKUDetailView;
+import com.tradehero.th.fragments.billing.SKUDetailsAdapter;
+import com.tradehero.th.fragments.billing.SKUDetailView;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/7/13 Time: 5:52 PM To change this template use File | Settings | File Templates. */
 public class IABAlertUtils

@@ -12,7 +12,7 @@
       android:layout_height="wrap_content"
       android:gravity="center_horizontal"/>
 
-  <com.tradehero.th.widget.timeline.TimelineListView
+  <com.tradehero.th.fragments.timeline.TimelineListView
       xmlns:ptr="http://schemas.android.com/apk/res-auto"
       android:id="@+id/pull_refresh_list"
       android:layout_width="fill_parent"
