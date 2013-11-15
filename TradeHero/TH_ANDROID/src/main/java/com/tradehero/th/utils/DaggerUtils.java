@@ -1,5 +1,6 @@
 package com.tradehero.th.utils;
 
+import com.tradehero.common.cache.LruMemFileCache;
 import com.tradehero.th.base.Application;
 import com.tradehero.th.network.NetworkEngine;
 import com.tradehero.th.network.YahooEngine;
@@ -15,8 +16,12 @@ public class DaggerUtils
 
     public static void initialize()
     {
-        objectGraph = ObjectGraph.create(new TradeHeroModule(NetworkEngine.getInstance(),  YahooEngine.getInstance(),
-                Application.context()));
+        LruMemFileCache.createInstance(Application.context());
+        objectGraph = ObjectGraph.create(new TradeHeroModule(
+                NetworkEngine.getInstance(),
+                YahooEngine.getInstance(),
+                Application.context(),
+                LruMemFileCache.getInstance()));
         objectGraph.injectStatics();
     }
 

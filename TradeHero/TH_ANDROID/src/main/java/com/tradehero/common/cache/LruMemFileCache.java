@@ -8,6 +8,8 @@ import android.util.Log;
 import com.jakewharton.disklrucache.DiskLruCache;
 import com.squareup.picasso.LruCache;
 import com.tradehero.common.utils.THLog;
+import com.tradehero.common.utils.THToast;
+import com.tradehero.th.R;
 import com.tradehero.th.base.Application;
 import java.io.File;
 import java.io.IOException;
@@ -25,6 +27,8 @@ public class LruMemFileCache extends LruCache
 
     // Here we use only 1 index value per key on the disk cache
     public static final int DEFAULT_INDEX = 0;
+
+    private static LruMemFileCache instance = null;
 
     private DiskLruCache diskLruCache;
 
@@ -78,6 +82,24 @@ public class LruMemFileCache extends LruCache
     }
     //</editor-fold>
 
+    public static void createInstance(Context context)
+    {
+        try
+        {
+            instance = new LruMemFileCache(context);
+            THLog.i(TAG, "Memory cache size " + instance.maxSize());
+        }
+        catch (Exception e)
+        {
+            THLog.e(TAG, "Failed to create LRU", e);
+        }
+    }
+
+    public static LruMemFileCache getInstance()
+    {
+        return instance;
+    }
+
     private void initDir(Context context, long maxFileSize, String dirName)
     {
         this.context = context;
@@ -87,6 +109,12 @@ public class LruMemFileCache extends LruCache
         //Find the dir to save cached images
         cacheDir = new File(getPreferredCacheParentDirectory(this.context), this.dirName);
 
+        createMissingDir();
+        openCacheDir();
+    }
+
+    private void createMissingDir()
+    {
         if (!cacheDir.exists())
         {
             synchronized (dirLock)
@@ -105,7 +133,10 @@ public class LruMemFileCache extends LruCache
         {
             Log.d(TAG, "Dirs exist " + cacheDir.getPath());
         }
+    }
 
+    private void openCacheDir()
+    {
         try
         {
             this.diskLruCache = DiskLruCache.open(cacheDir, 0, 1, this.maxFileSize);
@@ -238,7 +269,7 @@ public class LruMemFileCache extends LruCache
         return Base64.encodeToString(getMd5().digest(key.getBytes()), DEFAULT_BASE_64_PARAM).replace('/', 'b').replace('+', 'c').toLowerCase();
     }
 
-    public void clearDir()
+    public void flush()
     {
         super.clear();
         synchronized (dirLock)
@@ -247,12 +278,17 @@ public class LruMemFileCache extends LruCache
             {
                 try
                 {
-                    diskLruCache.flush();
-                    //diskLruCache.delete();
+                    diskLruCache.delete();
                 }
                 catch (IOException e)
                 {
                     THLog.e(TAG, "Failed to flush", e);
+                    THToast.show(R.string.error_cache_flush);
+                }
+                finally
+                {
+                    createMissingDir();
+                    openCacheDir();
                 }
             }
         }

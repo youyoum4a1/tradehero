@@ -4,52 +4,35 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 import android.net.Uri;
-import android.os.Build;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.text.Layout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.ListView;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
-import com.tradehero.common.persistence.DTOCache;
+import com.tradehero.common.cache.LruMemFileCache;
+import com.tradehero.common.utils.SlowedAsyncTask;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.ActivityHelper;
-import com.tradehero.th.activities.AuthenticationActivity;
-import com.tradehero.th.api.form.UserFormFactory;
 import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
-import com.tradehero.th.api.users.UserBaseDTO;
-import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.api.yahoo.News;
 import com.tradehero.th.base.Application;
-import com.tradehero.th.base.Navigator;
-import com.tradehero.th.base.NavigatorActivity;
 import com.tradehero.th.base.THUser;
 import com.tradehero.th.fragments.WebViewFragment;
 import com.tradehero.th.fragments.authentication.EmailSignUpFragment;
 import com.tradehero.th.fragments.base.DashboardFragment;
-import com.tradehero.th.misc.callback.THCallback;
-import com.tradehero.th.misc.callback.THResponse;
-import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.service.SessionService;
 import com.tradehero.th.network.service.UserService;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.VersionUtils;
 import dagger.Lazy;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 import javax.inject.Inject;
@@ -61,7 +44,6 @@ import retrofit.client.Response;
 public class SettingsFragment extends DashboardFragment
 {
     public static final String TAG = SettingsFragment.class.getSimpleName();
-    public static final String APP_VERSION = "1.5.2";
 
     @Inject UserService userService;
     @Inject SessionService sessionService;
@@ -363,7 +345,42 @@ public class SettingsFragment extends DashboardFragment
 
     private void handleClearCacheClicked()
     {
-        THToast.show("Not implemented yet");
+        progressDialog = ProgressDialog.show(
+                getActivity(),
+                Application.getResourceString(R.string.cache_clearing_alert_title),
+                Application.getResourceString(R.string.cache_clearing_alert_message),
+                true);
+        new SlowedAsyncTask<Void, Void, Void>(500)
+        {
+            @Override protected Void doBackgroundAction(Void... voids)
+            {
+                LruMemFileCache.getInstance().flush();
+                return null;
+            }
+
+            @Override protected void onPostExecute(Void aVoid)
+            {
+                handleCacheCleared();
+            }
+        }.execute();
+    }
+
+    private void handleCacheCleared()
+    {
+        if (progressDialog == null)
+        {
+            THLog.d(TAG, "handleCacheCleared: progressDialog is null");
+            return;
+        }
+        progressDialog.setTitle(R.string.cache_cleared_alert_title);
+        progressDialog.setMessage("");
+        getView().postDelayed(new Runnable()
+        {
+            @Override public void run()
+            {
+                progressDialog.hide();
+            }
+        }, 500);
     }
 
     private void handleSignOutClicked()

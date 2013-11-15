@@ -2,7 +2,6 @@ package com.tradehero.th.utils.dagger;
 
 import android.app.Application;
 import android.content.Context;
-import com.squareup.picasso.Cache;
 import com.squareup.picasso.Picasso;
 import com.tradehero.common.billing.googleplay.IABServiceConnector;
 import com.tradehero.common.billing.googleplay.InventoryFetcher;
@@ -10,31 +9,24 @@ import com.tradehero.common.billing.googleplay.PurchaseFetcher;
 import com.tradehero.common.cache.DatabaseCache;
 import com.tradehero.common.cache.LruMemFileCache;
 import com.tradehero.common.persistence.CacheHelper;
-import com.tradehero.common.utils.THLog;
 import com.tradehero.th.api.form.AbstractUserAvailabilityRequester;
 import com.tradehero.th.api.portfolio.DisplayablePortfolioDTO;
 import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
+import com.tradehero.th.base.THUser;
 import com.tradehero.th.billing.googleplay.SKUDetailsPurchaser;
 import com.tradehero.th.billing.googleplay.THInventoryFetcher;
+import com.tradehero.th.fragments.WebViewFragment;
+import com.tradehero.th.fragments.authentication.EmailSignInFragment;
 import com.tradehero.th.fragments.billing.StoreScreenFragment;
 import com.tradehero.th.fragments.billing.management.FollowerManagerFragment;
 import com.tradehero.th.fragments.billing.management.FollowerPayoutManagerFragment;
 import com.tradehero.th.fragments.billing.management.HeroManagerFragment;
-import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserListViewFragment;
-import com.tradehero.th.network.service.AlertPlanService;
-import com.tradehero.th.network.service.AlertService;
-import com.tradehero.th.network.service.FollowerService;
-import com.tradehero.th.network.service.SessionService;
-import com.tradehero.th.persistence.portfolio.OwnedPortfolioFetchAssistant;
-import com.tradehero.th.persistence.user.UserProfileFetchAssistant;
-import com.tradehero.th.base.THUser;
-import com.tradehero.th.fragments.WebViewFragment;
-import com.tradehero.th.fragments.authentication.EmailSignInFragment;
 import com.tradehero.th.fragments.leaderboard.AbstractLeaderboardFragment;
 import com.tradehero.th.fragments.leaderboard.LeaderboardCommunityFragment;
 import com.tradehero.th.fragments.leaderboard.LeaderboardDefListViewFragment;
 import com.tradehero.th.fragments.leaderboard.LeaderboardDefView;
 import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserItemView;
+import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserListViewFragment;
 import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserLoader;
 import com.tradehero.th.fragments.portfolio.PortfolioListFragment;
 import com.tradehero.th.fragments.portfolio.PushablePortfolioListFragment;
@@ -64,6 +56,9 @@ import com.tradehero.th.loaders.SearchStockPageItemListLoader;
 import com.tradehero.th.loaders.TimelinePagedItemListLoader;
 import com.tradehero.th.network.NetworkEngine;
 import com.tradehero.th.network.YahooEngine;
+import com.tradehero.th.network.service.AlertPlanService;
+import com.tradehero.th.network.service.AlertService;
+import com.tradehero.th.network.service.FollowerService;
 import com.tradehero.th.network.service.LeaderboardService;
 import com.tradehero.th.network.service.MarketService;
 import com.tradehero.th.network.service.PortfolioService;
@@ -71,15 +66,18 @@ import com.tradehero.th.network.service.PositionService;
 import com.tradehero.th.network.service.ProviderService;
 import com.tradehero.th.network.service.QuoteService;
 import com.tradehero.th.network.service.SecurityService;
+import com.tradehero.th.network.service.SessionService;
 import com.tradehero.th.network.service.TradeService;
 import com.tradehero.th.network.service.UserService;
 import com.tradehero.th.network.service.UserTimelineService;
 import com.tradehero.th.network.service.YahooNewsService;
 import com.tradehero.th.persistence.leaderboard.LeaderboardManager;
+import com.tradehero.th.persistence.portfolio.OwnedPortfolioFetchAssistant;
 import com.tradehero.th.persistence.timeline.TimelineManager;
 import com.tradehero.th.persistence.timeline.TimelineStore;
 import com.tradehero.th.persistence.user.AbstractUserStore;
 import com.tradehero.th.persistence.user.UserManager;
+import com.tradehero.th.persistence.user.UserProfileFetchAssistant;
 import com.tradehero.th.persistence.user.UserStore;
 import com.tradehero.th.utils.NumberDisplayUtils;
 import com.tradehero.th.widget.MarkdownTextView;
@@ -231,12 +229,14 @@ public class TradeHeroModule
     private final Application application;
     private final NetworkEngine engine;
     private final YahooEngine yahooEngine;
+    private final LruMemFileCache lruFileCache;
 
-    public TradeHeroModule(NetworkEngine engine, YahooEngine yahooEngine, Application application)
+    public TradeHeroModule(NetworkEngine engine, YahooEngine yahooEngine, Application application, LruMemFileCache lruFileCache)
     {
         this.application = application;
         this.engine = engine;
         this.yahooEngine = yahooEngine;
+        this.lruFileCache = lruFileCache;
     }
 
     @Provides @Singleton UserService provideUserService()
@@ -321,17 +321,6 @@ public class TradeHeroModule
 
     @Provides @Singleton Picasso providePicasso()
     {
-        Cache lruFileCache = null;
-        try
-        {
-            lruFileCache = new LruMemFileCache(application);
-            THLog.i(TAG, "Memory cache size " + lruFileCache.maxSize());
-        }
-        catch (Exception e)
-        {
-            THLog.e(TAG, "Failed to create LRU", e);
-        }
-
         Picasso mPicasso = new Picasso.Builder(application)
                 //.downloader(new UrlConnectionDownloader(getContext()))
                 .memoryCache(lruFileCache)

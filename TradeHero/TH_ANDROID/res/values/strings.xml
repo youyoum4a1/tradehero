@@ -183,4 +183,9 @@
   <string name="in_period">In Period</string>
   <string name="overall">Overall</string>
   <item name="done" type="id">Done</item>
+
+  <string name="cache_clearing_alert_title">Cache is being cleared</string>
+  <string name="cache_clearing_alert_message">Please hold</string>
+  <string name="cache_cleared_alert_title">Cache cleared</string>
+
 </resources>
