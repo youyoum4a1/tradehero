@@ -42,6 +42,8 @@ import com.tradehero.th.persistence.user.UserBaseKeyListCache;
 import com.tradehero.th.persistence.user.UserSearchResultCache;
 import dagger.Lazy;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 import javax.inject.Inject;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 9/18/13 Time: 12:09 PM To change this template use File | Settings | File Templates. */
@@ -56,6 +58,7 @@ public class SearchStockPeopleFragment extends DashboardFragment
 
     public final static int DEFAULT_PAGE = 1;
     public final static int DEFAULT_PER_PAGE = 15;
+    public final static long DELAY_REQUEST_DATA_MILLI_SEC = 1000;
 
     private TextView mNothingYet;
     private ListView mSearchStockListView;
@@ -73,6 +76,7 @@ public class SearchStockPeopleFragment extends DashboardFragment
     private EditText mSearchTextField;
     private String mSearchText;
 
+    private Timer requestDataTimer;
     private boolean isQuerying;
 
     @Inject Lazy<SecurityCompactListCache> securityCompactListCache;
@@ -307,6 +311,78 @@ public class SearchStockPeopleFragment extends DashboardFragment
         super.onDestroyView();
     }
 
+    protected void scheduleRequestDataIfNotInCache()
+    {
+        if (!updateWithCacheOnly())
+        {
+            scheduleRequestData();
+        }
+    }
+
+    protected boolean updateWithCacheOnly()
+    {
+        if (mSearchType == null)
+        {
+            return true;
+        }
+        else if (mSearchType == TrendingSearchType.STOCKS)
+        {
+            return updateSecuritiesWithCacheOnly(makeSearchSecurityListType());
+        }
+        else if (mSearchType == TrendingSearchType.PEOPLE)
+        {
+            return updatePeopleWithCacheOnly(makeSearchUserListType());
+        }
+        else
+        {
+            throw new IllegalArgumentException("Unhandled SearchType." + mSearchType);
+        }
+    }
+
+    private boolean updateSecuritiesWithCacheOnly(SecurityListType searchSecurityListType)
+    {
+        SecurityIdList securityIds = securityCompactListCache.get().get(searchSecurityListType);
+        if (securityIds != null)
+        {
+            linkWith(securityCompactCache.get().get(securityIds), true, (SecurityCompactDTO) null);
+            return true;
+        }
+        return false;
+    }
+
+    private boolean updatePeopleWithCacheOnly(UserListType searchUserListType)
+    {
+        UserBaseKeyList userBaseKeys = userBaseKeyListCache.get().get(searchUserListType);
+        if (userBaseKeys != null)
+        {
+            linkWith(userSearchResultCache.get().get(userBaseKeys), true, (UserSearchResultDTO) null);
+            return true;
+        }
+        return false;
+    }
+
+    protected void scheduleRequestData()
+    {
+        if (requestDataTimer != null)
+        {
+            requestDataTimer.cancel();
+        }
+        requestDataTimer = new Timer();
+        requestDataTimer.schedule(new TimerTask()
+        {
+            @Override public void run()
+            {
+                getView().post(new Runnable()
+                {
+                    @Override public void run()
+                    {
+                        requestData();
+                    }
+                });
+            }
+        }, DELAY_REQUEST_DATA_MILLI_SEC);
+    }
+
     protected void requestData()
     {
         if (mSearchType == null)
@@ -332,12 +408,7 @@ public class SearchStockPeopleFragment extends DashboardFragment
         if (mSearchText != null && !mSearchText.isEmpty())
         {
             SecurityListType searchSecurityListType = makeSearchSecurityListType();
-            SecurityIdList securityIds = securityCompactListCache.get().get(searchSecurityListType);
-            if (securityIds != null)
-            {
-                linkWith(securityCompactCache.get().get(securityIds), true, (SecurityCompactDTO) null);
-            }
-            else
+            if (!updateSecuritiesWithCacheOnly(makeSearchSecurityListType()))
             {
                 if (securitySearchListener == null)
                 {
@@ -376,12 +447,7 @@ public class SearchStockPeopleFragment extends DashboardFragment
         if (mSearchText != null && !mSearchText.isEmpty())
         {
             UserListType searchUserListType = makeSearchUserListType();
-            UserBaseKeyList userBaseKeys = userBaseKeyListCache.get().get(searchUserListType);
-            if (userBaseKeys != null)
-            {
-                linkWith(userSearchResultCache.get().get(userBaseKeys), true, (UserSearchResultDTO) null);
-            }
-            else
+            if (!updatePeopleWithCacheOnly(makeSearchUserListType()))
             {
                 if (peopleSearchListener == null)
                 {
@@ -634,7 +700,7 @@ public class SearchStockPeopleFragment extends DashboardFragment
     }
 
     @Override public void onTextChanged(CharSequence charSequence, int start, int before, int count)
- {
+    {
         mSearchText = charSequence.toString();
         if (mSearchText == null || mSearchText.isEmpty())
         {
@@ -643,7 +709,7 @@ public class SearchStockPeopleFragment extends DashboardFragment
         }
         else
         {
-            requestData();
+            scheduleRequestDataIfNotInCache();
         }
     }
     //</editor-fold>
