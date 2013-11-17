@@ -22,6 +22,7 @@
         <option value="$PROJECT_DIR$/dagger/core/pom.xml" />
         <option value="$PROJECT_DIR$/viewpagerindicator/library/pom.xml" />
         <option value="$PROJECT_DIR$/ActionBarSherlock/actionbarsherlock/pom.xml" />
+        <option value="$PROJECT_DIR$/facebook-android-sdk/facebook/pom.xml" />
       </list>
     </option>
   </component>

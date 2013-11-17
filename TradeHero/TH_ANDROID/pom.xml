@@ -135,6 +135,12 @@
       <version>4.4.0</version>
     </dependency>
 
+    <dependency>
+      <groupId>com.facebook</groupId>
+      <artifactId>facebook-android-sdk</artifactId>
+      <version>3.5.2-SNAPSHOT</version>
+    </dependency>
+
     <!--/git-submodules dependencies-->
 
     <!--test libraries-->
