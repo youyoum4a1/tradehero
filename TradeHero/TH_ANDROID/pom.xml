@@ -277,8 +277,8 @@
         <version>3.5.0</version>
         <configuration>
           <sdk>
-            <!-- platform or api level (api level 16 = platform 4.1)-->
-            <platform>16</platform>
+            <!-- platform or api level (api level 14 = platform 4.0)-->
+            <platform>14</platform>
           </sdk>
           <undeployBeforeDeploy>true</undeployBeforeDeploy>
         </configuration>
