@@ -13,6 +13,7 @@ git checkout origin/develop --track
 - Enable Maven auto import when you are asked to do that or go to Settings -> search for maven ->  "Import Maven ..."
 - Get android sdk latest version from Google
 - With each maven module which referencing an outside module (you should see something like ```<relativePath>../pom.xml</relativePath>``` in pom.xml of that project), go to referenced project and mark it as a maven project as well.
+- Setup all configuration ask prompted for JAVA & Android, after that, download Android 4.0 (API 14) from SDK Manager (Tool > Android > SDK Manager)
 - To make it easier working with Dagger (dependency injection module), install this plugin: https://github.com/square/dagger-intellij-plugin
 
 #### Useful tip

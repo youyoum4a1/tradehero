@@ -4,19 +4,22 @@
     <output url="file://$MODULE_DIR$/dagger/compiler/target/classes" />
     <output-test url="file://$MODULE_DIR$/dagger/compiler/target/test-classes" />
     <content url="file://$MODULE_DIR$/dagger/compiler">
+      <sourceFolder url="file://$MODULE_DIR$/dagger/compiler/target/generated-test-sources/test-annotations" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/dagger/compiler/src/main/java" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/dagger/compiler/src/main/resources" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/dagger/compiler/src/test/java" isTestSource="true" />
-      <sourceFolder url="file://$MODULE_DIR$/dagger/compiler/target/generated-test-sources/test-annotations" isTestSource="true" />
-      <excludeFolder url="file://$MODULE_DIR$/dagger/compiler/target/classes" />
-      <excludeFolder url="file://$MODULE_DIR$/dagger/compiler/target/maven-status" />
-      <excludeFolder url="file://$MODULE_DIR$/dagger/compiler/target/site" />
-      <excludeFolder url="file://$MODULE_DIR$/dagger/compiler/target/surefire-reports" />
-      <excludeFolder url="file://$MODULE_DIR$/dagger/compiler/target/test-classes" />
+      <excludeFolder url="file://$MODULE_DIR$/dagger/compiler/target" />
     </content>
     <orderEntry type="jdk" jdkName="1.7" jdkType="JavaSDK" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="Maven: com.sun:tools:1.7.0_10" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.easytesting:fest-assert:1.4" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.easytesting:fest-util:1.1.6" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: com.squareup.dagger:dagger:tests:1.1.1-SNAPSHOT" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: com.google.testing.compile:compile-testing:0.1" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.truth0:truth:0.13" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: com.google.guava:guava:15.0-rc1" level="project" />
+    <orderEntry type="library" name="Maven: com.sun:tools:1.6.0_65" level="project" />
     <orderEntry type="module" module-name="dagger" />
     <orderEntry type="library" name="Maven: javax.inject:javax.inject:1" level="project" />
     <orderEntry type="library" name="Maven: com.squareup:javawriter:2.1.1" level="project" />
@@ -29,7 +32,7 @@
     <orderEntry type="library" scope="TEST" name="Maven: com.google.testing.compile:compile-testing:0.1" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.truth0:truth:0.13" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: com.google.guava:guava:15.0-rc1" level="project" />
-    <orderEntry type="library" name="Maven: com.sun:tools:1.6.0_65" level="project" />
+    <orderEntry type="library" name="Maven: com.sun:tools:1.7.0_10" level="project" />
   </component>
 </module>
 
