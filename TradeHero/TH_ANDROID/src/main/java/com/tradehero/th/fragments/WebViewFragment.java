@@ -6,6 +6,8 @@
  */
 package com.tradehero.th.fragments;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,7 +29,7 @@ import com.tradehero.th.fragments.base.DashboardFragment;
 
 public class WebViewFragment extends DashboardFragment
 {
-    public static final String BUNDLE_KEY_URL = WebViewFragment.class.getName() + ".url";
+    public static final String BUNDLE_KEY_URL = "url";
 
     private WebView webView;
 
@@ -43,7 +45,8 @@ public class WebViewFragment extends DashboardFragment
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         inflater.inflate(R.menu.webview_menu, menu);
-        getSherlockActivity().getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_HOME_AS_UP);
+        getSherlockActivity().getSupportActionBar()
+                .setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_HOME_AS_UP);
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -52,16 +55,26 @@ public class WebViewFragment extends DashboardFragment
         switch (item.getItemId())
         {
             case R.id.webview_back:
-                // TODO
+                if (webView.canGoBack())
+                {
+                    webView.goBack();
+                }
                 break;
 
             case R.id.webview_forward:
-                // TODO
+                if (webView.canGoForward())
+                {
+                    webView.goForward();
+                }
                 break;
 
             case R.id.webview_view_in_browser:
-                // TODO
-                break;
+            {
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setData(Uri.parse(webView.getUrl()));
+                getActivity().startActivity(intent);
+            }
+            break;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -90,7 +103,7 @@ public class WebViewFragment extends DashboardFragment
         webView.getSettings().setUseWideViewPort(true);
         webView.getSettings().setLoadWithOverviewMode(true);
 
-        webView.setWebChromeClient(new WebChromeClient()
+        WebChromeClient webChromeClient = new WebChromeClient()
         {
             @Override public void onProgressChanged(WebView view, int newProgress)
             {
@@ -102,16 +115,18 @@ public class WebViewFragment extends DashboardFragment
                 super.onReceivedTitle(view, title);
                 getSherlockActivity().getSupportActionBar().setTitle(view.getTitle());
             }
-        });
+        };
+        webView.setWebChromeClient(webChromeClient);
 
-        webView.setWebViewClient(new WebViewClient()
+        WebViewClient webViewClient = new WebViewClient()
         {
             @Override public boolean shouldOverrideUrlLoading(WebView view, String url)
             {
                 view.loadUrl(url);
                 return false;
             }
-        });
+        };
+        webView.setWebViewClient(webViewClient);
     }
 
     //<editor-fold desc="BaseFragment.TabBarVisibilityInformer">
