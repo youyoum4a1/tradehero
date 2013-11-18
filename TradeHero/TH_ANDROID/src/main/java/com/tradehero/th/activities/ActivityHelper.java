@@ -11,9 +11,10 @@ public class ActivityHelper
 {
     public static void launchAuthentication(Context activity)
     {
-        Intent localIntent = new Intent(Application.context(), AuthenticationActivity.class);
+        Intent localIntent = new Intent(activity, AuthenticationActivity.class);
         localIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         activity.startActivity(localIntent);
+        ((Activity) activity).finish();
     }
 
     public static void launchDashboard(Activity activity)

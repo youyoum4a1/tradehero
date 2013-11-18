@@ -320,6 +320,10 @@ public class FragmentTabHost extends TabHost
     }
 
     private FragmentTransaction doTabChanged(String tabId, FragmentTransaction ft) {
+        if (tabId == null)
+        {
+            return null;
+        }
         TabInfo newTab = null;
         for (int i=0; i<mTabs.size(); i++) {
             TabInfo tab = mTabs.get(i);

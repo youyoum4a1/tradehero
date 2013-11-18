@@ -25,11 +25,15 @@ public class DashboardNavigator extends Navigator
     private static final String BUNDLE_KEY = "key";
     private FragmentTabHost mTabHost;
 
-    public DashboardNavigator(Context context, FragmentManager manager, int fragmentContentId)
+    public DashboardNavigator(Context context, FragmentManager manager, int fragmentContentId, boolean withTab)
     {
         super(context, manager, fragmentContentId);
         this.activity = (FragmentActivity)context;
-        initTabs();
+
+        if (withTab)
+        {
+            initTabs();
+        }
     }
 
     private void initTabs()
@@ -85,7 +89,10 @@ public class DashboardNavigator extends Navigator
 
     public void goToTab(DashboardTabType tabType)
     {
-        mTabHost.setCurrentTabByTag(makeTabSpec(tabType).getTag());
+        if (mTabHost != null)
+        {
+            mTabHost.setCurrentTabByTag(makeTabSpec(tabType).getTag());
+        }
     }
 
     //public void clearBackStack()
@@ -98,17 +105,24 @@ public class DashboardNavigator extends Navigator
     {
         Fragment fragment = super.pushFragment(fragmentClass, args, withAnimation);
         manager.executePendingTransactions();
-        updateTabBarOnNavigate(fragment);
+        if (mTabHost != null)
+        {
+            updateTabBarOnNavigate(fragment);
+        }
         return fragment;
     }
 
     @Override public void popFragment()
     {
         super.popFragment();
-        if (manager.getBackStackEntryCount() > 0)
+
+        if (!isBackStackEmpty())
         {
-            manager.executePendingTransactions();
-            updateTabBarOnNavigate(null);
+            if (mTabHost != null)
+            {
+                updateTabBarOnNavigate(null);
+            }
+
         }
         THLog.d(TAG, "BackstackCount " + manager.getBackStackEntryCount());
     }
@@ -120,8 +134,6 @@ public class DashboardNavigator extends Navigator
         {
             shouldHideTabBar = !((BaseFragment.TabBarVisibilityInformer) currentFragment).isTabBarVisible();
         }
-
-
 
         if (shouldHideTabBar)
         {

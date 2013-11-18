@@ -28,7 +28,7 @@ public class SplashActivity extends SherlockActivity
         if (THUser.getSessionToken() != null)
         {
             ActivityHelper.launchDashboard(SplashActivity.this);
-            //finish();
+            finish();
         }
         else
         {

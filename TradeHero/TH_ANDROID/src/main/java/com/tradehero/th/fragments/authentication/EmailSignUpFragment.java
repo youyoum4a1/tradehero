@@ -62,8 +62,6 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
 
     private int mWhichEdittext = 0;
     private CharSequence mText;
-    private ImageView mOptionalImage;
-    private View mView;
     private String selectedPath = null;
     private Bitmap imageBmp;
     private int mImagesize = 0;
@@ -109,9 +107,6 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
         signButton.setOnClickListener(this);
 
         //signupButton.setOnTouchListener(this);
-        //mOptionalImage = (ImageView) view.findViewById(R.id.image_optional);
-        //mOptionalImage.setOnClickListener(this);
-        //mOptionalImage.setOnTouchListener(this);
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -271,10 +266,6 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
                     {
                         THToast.show("Please chose picture from appropriate path");
                     }
-
-                    Bitmap circleBitmap = Util.getRoundedShape(imageBmp);
-                    mOptionalImage.setImageBitmap(
-                            Util.getImagerotation(selectedPath, circleBitmap));
                 } catch (Exception e)
                 {
                     e.printStackTrace();

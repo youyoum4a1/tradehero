@@ -29,7 +29,7 @@ import com.tradehero.th.fragments.base.DashboardFragment;
 
 public class WebViewFragment extends DashboardFragment
 {
-    public static final String BUNDLE_KEY_URL = "url";
+    public static final String BUNDLE_KEY_URL = WebViewFragment.class.getName() + ".url";
 
     private WebView webView;
 

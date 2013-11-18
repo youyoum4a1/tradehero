@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+  <PreferenceCategory
+    android:title="@string/setting_general">
+    <Preference
+      android:title="@string/settings_primary_send_love"
+        android:icon="@drawable/settings_send_love"
+      />
+    <Preference
+        android:title="@string/settings_primary_send_feedback"
+        android:icon="@drawable/settings_send_feedback"
+        />
+    <Preference
+        android:key="@string/settings_primary_faq"
+        android:title="@string/settings_primary_faq"
+        android:icon="@drawable/settings_faq"
+        >
+      <intent
+          android:targetPackage="com.tradehero.th"
+          android:targetClass="com.tradehero.th.activities.DashboardActivity"
+          android:action="android.intent.action.VIEW"
+          >
+      </intent>
+    </Preference>
+  </PreferenceCategory>
+
+  <PreferenceCategory
+    android:title="@string/setting_accounts"
+  >
+    <Preference
+        android:title="@string/settings_primary_profile"
+        android:icon="@drawable/settings_profile"
+        />
+    <Preference
+        android:title="@string/settings_primary_paypal"
+        android:icon="@drawable/settings_paypal"
+        />
+    <Preference
+        android:title="@string/settings_primary_transaction_history"
+        android:icon="@drawable/settings_trans_history"
+        />
+    <Preference
+        android:title="@string/settings_primary_restore_purchases"
+        />
+    <Preference
+        android:title="@string/settings_misc_sign_out"
+        android:icon="@drawable/settings_sign_out"
+        />
+  </PreferenceCategory>
+
+  <PreferenceCategory
+    android:title="@string/settings_notifications">
+
+    <SwitchPreference
+        android:icon="@drawable/settings_email_noti"
+        android:title="@string/settings_notifications_email" />
+    <SwitchPreference
+        android:title="@string/settings_notifications_push" />
+  </PreferenceCategory>
+
+  <PreferenceCategory android:title="@string/settings_misc">
+    <Preference
+      android:icon="@drawable/settings_reset_help_screen"
+      android:title="@string/settings_misc_reset_help_screens"
+      />
+    <Preference
+      android:icon="@drawable/settings_clear_cache"
+      android:title="@string/settings_misc_clear_cache"
+      />
+    <Preference
+      android:icon="@drawable/settings_about"
+      android:title="@string/settings_misc_about"
+      />
+  </PreferenceCategory>
+</PreferenceScreen>
