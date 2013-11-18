@@ -1,7 +1,6 @@
 package com.tradehero.th.misc.exception;
 
 import com.facebook.FacebookOperationCanceledException;
-import com.tradehero.common.utils.THJsonAdapter;
 import com.tradehero.th.R;
 import com.tradehero.th.api.ErrorMessageDTO;
 import com.tradehero.th.base.Application;
@@ -35,8 +34,7 @@ public class THException extends Exception
             }
             else if (error.getResponse() != null && error.getResponse().getStatus() == 400) // Bad Request
             {
-                ErrorMessageDTO dto = (ErrorMessageDTO) THJsonAdapter.getInstance()
-                        .fromBody(error.getResponse().getBody(), ErrorMessageDTO.class);
+                ErrorMessageDTO dto = (ErrorMessageDTO) error.getBodyAs(ErrorMessageDTO.class);
                 this.code = ExceptionCode.UnknownError;
                 String errorMessage = dto != null ? dto.Message : Application.getResourceString(R.string.error_unknown);
                 return super.initCause(new Exception(errorMessage));
