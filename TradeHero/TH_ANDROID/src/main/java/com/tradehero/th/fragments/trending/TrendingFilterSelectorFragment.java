@@ -311,7 +311,15 @@ abstract public class TrendingFilterSelectorFragment extends SherlockFragment
             for (ExchangeDTO exchangeDTO: this.exchangeDTOs)
             {
                 dropDownTexts.add(String.format("%s - %s",exchangeDTO.name, exchangeDTO.desc));
-                dropDownIcons.add(getResources().getDrawable(Exchange.valueOf(exchangeDTO.name).logoId));
+                try
+                {
+
+                    dropDownIcons.add(getResources().getDrawable(Exchange.valueOf(exchangeDTO.name).logoId));
+                }
+                catch (IllegalArgumentException ex)
+                {
+                    THLog.d(TAG, "Exchange logo does not exists: " + ex.getMessage());
+                }
             }
         }
     }

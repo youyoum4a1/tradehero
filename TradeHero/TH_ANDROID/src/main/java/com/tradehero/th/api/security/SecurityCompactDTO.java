@@ -115,7 +115,14 @@ public class SecurityCompactDTO implements DTO
 
     public int getExchangeLogoId()
     {
-        return Exchange.valueOf(exchange).logoId;
+        try
+        {
+            return Exchange.valueOf(exchange).logoId;
+        }
+        catch (IllegalArgumentException ex)
+        {
+            return 0;
+        }
     }
 
     public boolean isLastPriceNotNullOrZero()

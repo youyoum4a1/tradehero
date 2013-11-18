@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+import com.tradehero.th.R;
 import java.util.List;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 9/16/13 Time: 6:51 PM To change this template use File | Settings | File Templates. */
@@ -79,11 +80,19 @@ public class SpinnerIconAdapter extends ArrayAdapter<CharSequence>
 
     public Drawable getIcon(int position)
     {
+        if (position >= icons.length)
+        {
+            return getContext().getResources().getDrawable(R.drawable.th_logo);
+        }
         return icons[position];
     }
 
     public Drawable getDropDownIcon(int position)
     {
+        if (position >= dropDownIcons.length)
+        {
+            return getContext().getResources().getDrawable(R.drawable.th_logo);
+        }
         return dropDownIcons[position];
     }
 

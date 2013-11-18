@@ -777,7 +777,11 @@ public class BuySellFragment extends AbstractBuySellFragment
             // These ensure that views with a missing image do not receive images from elsewhere
             if (mStockLogo != null && this.securityCompactDTO != null)
             {
-                mStockLogo.setImageResource(this.securityCompactDTO.getExchangeLogoId());
+                int logoId = this.securityCompactDTO.getExchangeLogoId();
+                if (logoId != 0)
+                {
+                    mStockLogo.setImageResource(logoId);
+                }
             }
             else if (mStockLogo != null)
             {
@@ -954,11 +958,15 @@ public class BuySellFragment extends AbstractBuySellFragment
                 }
                 else if (mStockBgLogo != null && securityPositionDetailDTO != null && securityPositionDetailDTO.security != null)
                 {
-                    mPicasso.load(securityPositionDetailDTO.security.getExchangeLogoId())
+                    int logoId = securityPositionDetailDTO.security.getExchangeLogoId();
+                    if (logoId != 0)
+                    {
+                        mPicasso.load(logoId)
                             .resize(mStockBgLogo.getWidth(), mStockBgLogo.getHeight())
                             .centerCrop()
                             .transform(foregroundTransformation)
                             .into(mStockBgLogo);
+                    }
                 }
             }
         };

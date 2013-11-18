@@ -66,9 +66,15 @@ public enum Exchange
     PSE(R.drawable.flag_country_round_philippines),
 
     // malaysia
-    MYX(R.drawable.flag_country_round_malaysia);
+    MYX(R.drawable.flag_country_round_malaysia),
 
-    private static final String TAG = Exchange.class.getSimpleName();
+    // TODO use proper flags
+    // india
+    NSE(R.drawable.th_logo),
+    BSE(R.drawable.th_logo),
+
+    // japan
+    TSE(R.drawable.th_logo);
 
     public final int logoId;
 
