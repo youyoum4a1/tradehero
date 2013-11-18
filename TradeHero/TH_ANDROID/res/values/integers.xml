@@ -2,4 +2,5 @@
 <resources>
   <integer name="slide_right_duration">300</integer>
   <integer name="slide_left_duration">300</integer>
+  <integer name="setting_slide_in_duration">300</integer>
 </resources>

@@ -113,8 +113,7 @@ public class TimelineFragment extends BaseFragment
         {
             case R.id.menu_settings:
                 Navigator navigator = ((NavigatorActivity) getActivity()).getNavigator();
-                Bundle bundle = new Bundle();
-                navigator.pushFragment(SettingsFragment.class, bundle);
+                navigator.openSettings();
                 return true;
         }
         return super.onOptionsItemSelected(item);

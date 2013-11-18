@@ -188,5 +188,13 @@
   <string name="cache_clearing_alert_title">Cache is being cleared</string>
   <string name="cache_clearing_alert_message">Please hold</string>
   <string name="cache_cleared_alert_title">Cache cleared</string>
+  <string name="pref_social">Social</string>
+  <string name="setting_accounts">Account</string>
+  <string name="setting_general">General</string>
+  <string name="settings_notifications">Notifications</string>
+  <string name="settings_notifications_push">Push Notifications</string>
+  <string name="settings_primary_restore_purchases">Restore Purchases</string>
+  <string name="settings_misc">Misc</string>
+  <string name="settings">Settings</string>
 
 </resources>

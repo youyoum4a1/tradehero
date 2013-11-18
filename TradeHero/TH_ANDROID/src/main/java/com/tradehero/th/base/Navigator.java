@@ -11,12 +11,7 @@ import android.view.ViewGroup;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.ActivityHelper;
-import com.tradehero.th.fragments.base.BaseFragment;
-import com.tradehero.th.fragments.tutorial.TutorialFragment;
-import com.tradehero.th.fragments.tutorial.WithTutorial;
-import java.lang.ref.WeakReference;
-import java.util.HashMap;
-import java.util.Map;
+import com.tradehero.th.activities.SettingsActivity;
 
 /** Created with IntelliJ IDEA. User: tho Date: 9/30/13 Time: 5:59 PM Copyright (c) TradeHero */
 public class Navigator
@@ -106,6 +101,13 @@ public class Navigator
         ActivityHelper.launchAuthentication(context);
     }
 
+    public void openSettings()
+    {
+        Intent intent = new Intent(context, SettingsActivity.class);
+        context.startActivity(intent);
+        ((Activity)context).overridePendingTransition(R.anim.slide_in_from_bottom, R.anim.nothing);
+    }
+
     public void pushFragment(Class<? extends Fragment> fragmentClass)
     {
         pushFragment(fragmentClass, null);
@@ -119,6 +121,16 @@ public class Navigator
     public void popFragment()
     {
         THLog.d(TAG, "Popping fragment, count: " + manager.getBackStackEntryCount());
-        manager.popBackStack();
+        manager.popBackStackImmediate();
+
+        if (isBackStackEmpty())
+        {
+            ((Activity)context).finish();
+        }
+    }
+
+    public boolean isBackStackEmpty()
+    {
+        return manager.getBackStackEntryCount() == 0;
     }
 }

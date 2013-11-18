@@ -9,7 +9,10 @@
     <item name="android:windowNoTitle">false</item>
     <item name="android:windowActionBarOverlay">true</item>
   </style>
-
+  <style name="TradeHero.Settings" parent="TradeHero">
+    <item name="android:actionBarStyle">@style/TradeHero.Dashboard.ActionBar</item>
+    <item name="android:windowActionBarOverlay">false</item>
+  </style>
   <style name="AppBaseTheme.NoActionBar" parent="TradeHero">
     <item name="android:windowActionBar">false</item>
     <item name="android:windowNoTitle">true</item>

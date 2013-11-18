@@ -5,19 +5,20 @@ import android.os.Bundle;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.MenuItem;
 import com.tradehero.common.utils.THLog;
+import com.tradehero.th.R;
+import com.tradehero.th.base.DashboardNavigatorActivity;
+import com.tradehero.th.base.Navigator;
 import com.tradehero.th.billing.googleplay.THIABActor;
 import com.tradehero.th.billing.googleplay.THIABLogicHolderExtended;
 import com.tradehero.th.billing.googleplay.THIABPurchaseHandler;
 import com.tradehero.th.billing.googleplay.THSKUDetails;
-import com.tradehero.th.R;
-import com.tradehero.th.base.DashboardNavigatorActivity;
-import com.tradehero.th.base.Navigator;
 import com.tradehero.th.fragments.DashboardNavigator;
 import java.util.List;
 
 public class DashboardActivity extends SherlockFragmentActivity implements DashboardNavigatorActivity, THIABActor
 {
     public static final String TAG = DashboardActivity.class.getSimpleName();
+    public static final String EXTRA_FRAGMENT = DashboardActivity.class.getName() + ".fragment";
 
     private DashboardNavigator navigator;
     private THIABLogicHolderExtended thiabLogicHolderExtended;
@@ -27,8 +28,46 @@ public class DashboardActivity extends SherlockFragmentActivity implements Dashb
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.dashboard_with_bottom_bar);
-        navigator = new DashboardNavigator(this, getSupportFragmentManager(), R.id.realtabcontent);
 
+        launchIAB();
+
+        THLog.d(TAG, "onCreate");
+    }
+
+    private void launchActions()
+    {
+        Intent intent = getIntent();
+        if (intent == null || intent.getAction() == null)
+        {
+            return;
+        }
+        switch (intent.getAction())
+        {
+            case Intent.ACTION_VIEW:
+                if (intent.hasExtra(EXTRA_FRAGMENT))
+                {
+                    switchFragment(intent.getExtras());
+                }
+                break;
+        }
+        THLog.d(TAG, getIntent().getAction());
+    }
+
+    private void switchFragment(Bundle extras)
+    {
+        try
+        {
+            Class fragmentClass = Class.forName(extras.getString(EXTRA_FRAGMENT));
+            navigator.pushFragment(fragmentClass, extras);
+        }
+        catch (ClassNotFoundException e)
+        {
+            THLog.d(TAG, "Fragment not found");
+        }
+    }
+
+    private void launchIAB()
+    {
         thiabLogicHolderExtended = new THIABLogicHolderExtended(this);
         launchSkuInventorySequence();
         thiabLogicHolderExtended.launchFetchPurchasesSequence();
@@ -36,7 +75,6 @@ public class DashboardActivity extends SherlockFragmentActivity implements Dashb
 
     @Override public void onBackPressed()
     {
-        //super.onBackPressed();
         navigator.popFragment();
     }
 
@@ -48,14 +86,15 @@ public class DashboardActivity extends SherlockFragmentActivity implements Dashb
 
     @Override protected void onResume()
     {
-        THLog.d(TAG, "onResume");
-        super.onResume();
-    }
+        if (navigator == null)
+        {
+            navigator = new DashboardNavigator(
+                this, getSupportFragmentManager(), R.id.realtabcontent, getIntent() == null || !getIntent().hasExtra(EXTRA_FRAGMENT));
+        }
 
-    @Override protected void onPause()
-    {
-        THLog.d(TAG, "onPause");
-        super.onPause();
+        launchActions();
+
+        super.onResume();
     }
 
     @Override protected void onDestroy()
