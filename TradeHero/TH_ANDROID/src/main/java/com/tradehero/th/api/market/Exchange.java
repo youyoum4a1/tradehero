@@ -68,13 +68,12 @@ public enum Exchange
     // malaysia
     MYX(R.drawable.flag_country_round_malaysia),
 
-    // TODO use proper flags
     // india
-    NSE(R.drawable.th_logo),
-    BSE(R.drawable.th_logo),
+    NSE(R.drawable.flag_country_round_india),
+    BSE(R.drawable.flag_country_round_india),
 
     // japan
-    TSE(R.drawable.th_logo);
+    TSE(R.drawable.flag_country_round_japan);
 
     public final int logoId;
 
