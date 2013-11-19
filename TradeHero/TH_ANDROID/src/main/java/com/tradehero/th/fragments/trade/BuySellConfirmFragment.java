@@ -36,6 +36,7 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.network.service.SecurityService;
 import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.utils.AlertDialogUtil;
 import dagger.Lazy;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -204,6 +205,16 @@ public class BuySellConfirmFragment extends AbstractBuySellFragment
         MenuItem menuElements = menu.findItem(R.id.menu_elements_buy_sell_confirm);
 
         marketCloseIcon = (ImageView) menuElements.getActionView().findViewById(R.id.market_status);
+        if (marketCloseIcon != null)
+        {
+            marketCloseIcon.setOnClickListener(new OnClickListener()
+            {
+                @Override public void onClick(View v)
+                {
+                    handleMarketCloseClicked();
+                }
+            });
+        }
 
         displayMarketClose();
     }
@@ -211,6 +222,11 @@ public class BuySellConfirmFragment extends AbstractBuySellFragment
     @Override public void onDestroyOptionsMenu()
     {
         super.onDestroyOptionsMenu();
+        if (marketCloseIcon != null)
+        {
+            marketCloseIcon.setOnClickListener(null);
+        }
+        marketCloseIcon = null;
     }
 
     @Override public boolean onOptionsItemSelected(MenuItem item)
@@ -530,6 +546,15 @@ public class BuySellConfirmFragment extends AbstractBuySellFragment
                 isBuy ? mBuyQuantity : mSellQuantity,
                 securityPositionDetailDTO.positions.get(mPositionIndex).portfolioId
         );
+    }
+
+
+    private void handleMarketCloseClicked()
+    {
+        AlertDialogUtil.popWithCancelButton(getActivity(),
+                R.string.alert_dialog_market_close_title,
+                R.string.alert_dialog_market_close_message,
+                R.string.alert_dialog_market_close_cancel);
     }
 
     private void launchBuySell()

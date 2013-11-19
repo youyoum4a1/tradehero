@@ -53,6 +53,7 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.security.StockInfoFragment;
 import com.tradehero.th.models.alert.SecurityAlertAssistant;
 import com.tradehero.th.network.service.SecurityService;
+import com.tradehero.th.utils.AlertDialogUtil;
 import com.viewpagerindicator.PageIndicator;
 import dagger.Lazy;
 import javax.inject.Inject;
@@ -323,11 +324,27 @@ public class BuySellFragment extends AbstractBuySellFragment
         MenuItem menuElements = menu.findItem(R.id.menu_elements_buy_sell);
 
         marketCloseIcon = (ImageView) menuElements.getActionView().findViewById(R.id.market_status);
+        if (marketCloseIcon != null)
+        {
+            marketCloseIcon.setOnClickListener(new OnClickListener()
+            {
+                @Override public void onClick(View v)
+                {
+                    handleMarketCloseClicked();
+                }
+            });
+        }
 
         mBuySellSwitch = (ToggleButton) menuElements.getActionView().findViewById(R.id.trade_menu_toggle_mode);
         if (mBuySellSwitch != null)
         {
-            mBuySellSwitch.setOnCheckedChangeListener(createBuySellListener());
+            mBuySellSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
+            {
+                @Override public void onCheckedChanged(CompoundButton compoundButton, boolean checked)
+                {
+                    setTransactionTypeBuy(checked);
+                }
+            });
         }
         displayActionBarElements();
     }
@@ -335,6 +352,12 @@ public class BuySellFragment extends AbstractBuySellFragment
     @Override public void onDestroyOptionsMenu()
     {
         THLog.d(TAG, "onDestroyOptionsMenu");
+        if (marketCloseIcon != null)
+        {
+            marketCloseIcon.setOnClickListener(null);
+        }
+        marketCloseIcon = null;
+
         if (mBuySellSwitch != null)
         {
             mBuySellSwitch.setOnCheckedChangeListener(null);
@@ -918,6 +941,14 @@ public class BuySellFragment extends AbstractBuySellFragment
         freshQuoteHolder.identifier = "BuySellFragment";
     }
 
+    private void handleMarketCloseClicked()
+    {
+        AlertDialogUtil.popWithCancelButton(getActivity(),
+                R.string.alert_dialog_market_close_title,
+                R.string.alert_dialog_market_close_message,
+                R.string.alert_dialog_market_close_cancel);
+    }
+
     private void handleBtnAddTriggerClicked()
     {
         if (securityAlertAssistant.isPopulated() && securityAlertAssistant.getAlertId(securityId) != null)
@@ -1140,17 +1171,6 @@ public class BuySellFragment extends AbstractBuySellFragment
     private void pushStockInfoFragmentIn()
     {
         navigator.pushFragment(StockInfoFragment.class, this.securityId.getArgs());
-    }
-
-    private CompoundButton.OnCheckedChangeListener createBuySellListener()
-    {
-        return new CompoundButton.OnCheckedChangeListener()
-        {
-            @Override public void onCheckedChanged(CompoundButton compoundButton, boolean checked)
-            {
-                setTransactionTypeBuy(checked);
-            }
-        };
     }
     //</editor-fold>
 

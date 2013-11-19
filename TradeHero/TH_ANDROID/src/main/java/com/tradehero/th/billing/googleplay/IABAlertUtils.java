@@ -9,6 +9,7 @@ import com.tradehero.common.billing.googleplay.SKUDetails;
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.billing.SKUDetailsAdapter;
 import com.tradehero.th.fragments.billing.SKUDetailView;
+import com.tradehero.th.utils.AlertDialogUtil;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/7/13 Time: 5:52 PM To change this template use File | Settings | File Templates. */
 public class IABAlertUtils
@@ -45,14 +46,14 @@ public class IABAlertUtils
 
     public static void popWaitWhileLoading(final Context context)
     {
-        popWithCancelButton(context, R.string.store_billing_loading_window_title,
+        AlertDialogUtil.popWithCancelButton(context, R.string.store_billing_loading_window_title,
                 R.string.store_billing_loading_window_description,
                 R.string.store_billing_loading_cancel);
     }
 
     public static void popVerificationFailed(final Context context)
     {
-        popWithCancelButton(context, R.string.store_billing_verification_failed_window_title,
+        AlertDialogUtil.popWithCancelButton(context, R.string.store_billing_verification_failed_window_title,
                 R.string.store_billing_verification_failed_window_description,
                 R.string.store_billing_verification_failed_cancel);
     }
@@ -118,28 +119,28 @@ public class IABAlertUtils
 
     public static void popBadResponse(final Context context)
     {
-        popWithCancelButton(context, R.string.store_billing_bad_response_window_title,
+        AlertDialogUtil.popWithCancelButton(context, R.string.store_billing_bad_response_window_title,
                 R.string.store_billing_bad_response_window_description,
                 R.string.store_billing_bad_response_cancel);
     }
 
     public static void popRemoteError(final Context context)
     {
-        popWithCancelButton(context, R.string.store_billing_remote_error_window_title,
+        AlertDialogUtil.popWithCancelButton(context, R.string.store_billing_remote_error_window_title,
                 R.string.store_billing_remote_error_window_description,
                 R.string.store_billing_remote_error_cancel);
     }
 
     public static void popSendIntent(final Context context)
     {
-        popWithCancelButton(context, R.string.store_billing_send_intent_error_window_title,
+        AlertDialogUtil.popWithCancelButton(context, R.string.store_billing_send_intent_error_window_title,
                 R.string.store_billing_send_intent_error_window_description,
                 R.string.store_billing_send_intent_error_cancel);
     }
 
     public static void popFailedToReport(final Context context)
     {
-        popWithCancelButton(context, R.string.store_billing_report_api_error_window_title,
+        AlertDialogUtil.popWithCancelButton(context, R.string.store_billing_report_api_error_window_title,
                 R.string.store_billing_report_api_error_window_description,
                 R.string.store_billing_report_api_error_cancel);
     }
@@ -160,25 +161,6 @@ public class IABAlertUtils
                     }
                 })
                 .setNegativeButton(R.string.store_billing_unknown_error_cancel, new DialogInterface.OnClickListener()
-                {
-                    public void onClick(DialogInterface dialog, int id)
-                    {
-                        dialog.cancel();
-                    }
-                });
-        AlertDialog alertDialog = alertDialogBuilder.create();
-        alertDialog.show();
-    }
-
-    public static void popWithCancelButton(final Context context, int titleResId, int descriptionResId, int cancelResId)
-    {
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
-        alertDialogBuilder
-                .setTitle(titleResId)
-                .setMessage(descriptionResId)
-                .setIcon(R.drawable.th_app_logo)
-                .setCancelable(true)
-                .setNegativeButton(cancelResId, new DialogInterface.OnClickListener()
                 {
                     public void onClick(DialogInterface dialog, int id)
                     {
