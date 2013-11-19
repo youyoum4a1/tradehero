@@ -2,6 +2,7 @@ package com.tradehero.th.billing.googleplay;
 
 import com.android.internal.util.Predicate;
 import com.tradehero.common.billing.googleplay.SKUDetails;
+import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.R;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -10,7 +11,7 @@ import java.util.List;
 import org.json.JSONException;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/6/13 Time: 3:40 PM To change this template use File | Settings | File Templates. */
-public class THSKUDetails extends SKUDetails
+public class THSKUDetails extends SKUDetails implements DTO
 {
     public static final String TAG = THSKUDetails.class.getSimpleName();
 

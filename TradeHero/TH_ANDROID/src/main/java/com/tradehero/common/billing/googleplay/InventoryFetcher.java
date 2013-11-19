@@ -10,6 +10,8 @@ import com.tradehero.common.billing.googleplay.exceptions.IABException;
 import com.tradehero.common.billing.googleplay.exceptions.IABExceptionFactory;
 import com.tradehero.common.billing.googleplay.exceptions.IABRemoteException;
 import com.tradehero.common.utils.THLog;
+import com.tradehero.th.billing.googleplay.THSKUDetails;
+import com.tradehero.th.persistence.billing.SKUDetailCache;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
 import java.lang.ref.WeakReference;
@@ -30,7 +32,6 @@ abstract public class InventoryFetcher<SKUDetailsType extends SKUDetails>
     private List<IABSKU> iabSKUs;
 
     private WeakReference<InventoryListener> inventoryListener = new WeakReference<>(null);
-    private WeakReference<ProductDetailsTuner<SKUDetailsType>> skuDetailsTuner = new WeakReference<>(null);
     @Inject protected Lazy<IABExceptionFactory> iabExceptionFactory;
 
     public InventoryFetcher(Context ctx, List<IABSKU> iabSKUs)
@@ -123,7 +124,7 @@ abstract public class InventoryFetcher<SKUDetailsType extends SKUDetails>
         }
     }
 
-    private HashMap<IABSKU, SKUDetailsType> internalFetchCompleteInventory() throws IABException, RemoteException, JSONException
+    protected HashMap<IABSKU, SKUDetailsType> internalFetchCompleteInventory() throws IABException, RemoteException, JSONException
     {
         if (iabSKUs == null || iabSKUs.isEmpty())
         {
@@ -137,6 +138,7 @@ abstract public class InventoryFetcher<SKUDetailsType extends SKUDetails>
             HashMap<IABSKU, SKUDetailsType> subscriptionsMap = internalFetchSKUType(Constants.ITEM_TYPE_SUBS);
             map.putAll(subscriptionsMap);
         }
+
         return map;
     }
 
@@ -178,7 +180,6 @@ abstract public class InventoryFetcher<SKUDetailsType extends SKUDetails>
         for (String json : responseList)
         {
             SKUDetailsType details = createSKUDetails(itemType, json);
-            fineTune(details);
             THLog.d(TAG, "Got iabSKU details: " + details);
             map.put(details.iabSKU, details);
         }
@@ -198,25 +199,6 @@ abstract public class InventoryFetcher<SKUDetailsType extends SKUDetails>
     public void setInventoryListener(InventoryListener inventoryListener)
     {
         this.inventoryListener = new WeakReference<>(inventoryListener);
-    }
-
-    public ProductDetailsTuner<SKUDetailsType> getSkuDetailsTuner()
-    {
-        return skuDetailsTuner.get();
-    }
-
-    public void setSkuDetailsTuner(ProductDetailsTuner<SKUDetailsType> skuDetailsTuner)
-    {
-        this.skuDetailsTuner = new WeakReference<>(skuDetailsTuner);
-    }
-
-    private void fineTune(SKUDetailsType skuDetails)
-    {
-        ProductDetailsTuner<SKUDetailsType> tuner = getSkuDetailsTuner();
-        if (tuner != null)
-        {
-            tuner.fineTune(skuDetails);
-        }
     }
 
     public static interface InventoryListener<InventoryFetcherType extends InventoryFetcher, SKUDetailsType extends SKUDetails>

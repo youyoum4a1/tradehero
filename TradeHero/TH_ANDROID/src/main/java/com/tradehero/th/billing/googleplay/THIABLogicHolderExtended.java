@@ -27,7 +27,6 @@ public class THIABLogicHolderExtended
     public static final String TAG = THIABLogicHolderExtended.class.getSimpleName();
 
     protected SKUFetcher skuFetcher;
-    protected THSKUDetailsTuner thSKUDetailsTuner;
     protected PurchaseFetcher purchaseFetcher;
     protected THInventoryFetcher inventoryFetcher;
 
@@ -38,7 +37,6 @@ public class THIABLogicHolderExtended
     public THIABLogicHolderExtended(Activity activity)
     {
         super(activity);
-        thSKUDetailsTuner = new THSKUDetailsTuner();
     }
 
     @Override public void onDestroy()
@@ -62,7 +60,6 @@ public class THIABLogicHolderExtended
         {
             inventoryFetcher.setListener(null);
             inventoryFetcher.setInventoryListener(null);
-            inventoryFetcher.setSkuDetailsTuner(null);
             inventoryFetcher.dispose();
         }
         inventoryFetcher = null;
@@ -78,7 +75,6 @@ public class THIABLogicHolderExtended
         {
             inventoryFetcher.setListener(null);
             inventoryFetcher.setInventoryListener(null);
-            inventoryFetcher.setSkuDetailsTuner(null);
         }
         inventoryFetcher = null;
 
@@ -142,9 +138,8 @@ public class THIABLogicHolderExtended
             }
             latestInventoryFetcherException = null;
             inventoryFetcher = new THInventoryFetcher(getActivity(), mixedIABSKUs);
-            inventoryFetcher.setSkuDetailsTuner(thSKUDetailsTuner);
             inventoryFetcher.setInventoryListener(this);
-            inventoryFetcher.startConnectionSetup();
+            inventoryFetcher.fetchInventory();
         }
         else
         {
