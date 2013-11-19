@@ -108,6 +108,9 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
 
             case StoreItemAdapter.POSITION_MANAGE_HEROES:
                 bundle = new Bundle();
+
+                // TODO use SKUPurchase userId instead of current userId
+                // TODO fix crash when userId is null (Integer != int)
                 bundle.putInt(HeroManagerFragment.BUNDLE_KEY_USER_ID, getApplicablePortfolioId().userId);
                 pushFragment(HeroManagerFragment.class, bundle);
                 break;
