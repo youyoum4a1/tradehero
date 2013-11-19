@@ -1,11 +1,12 @@
 package com.tradehero.th.billing.googleplay;
 
 import com.tradehero.common.billing.ProductDetailsTuner;
+import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/6/13 Time: 3:25 PM To change this template use File | Settings | File Templates. */
-public class THSKUDetailsTuner implements ProductDetailsTuner<THSKUDetails>
+public class THSKUDetailsTuner implements ProductDetailsTuner<IABSKU, THSKUDetails>
 {
     public static final String TAG = THSKUDetailsTuner.class.getSimpleName();
 

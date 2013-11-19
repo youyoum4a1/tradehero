@@ -24,8 +24,8 @@ import retrofit.client.Response;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/18/13 Time: 12:20 PM To change this template use File | Settings | File Templates. */
 public class PurchaseReporter extends BasePurchaseReporter<
-        THIABOrderId,
         IABSKU,
+        THIABOrderId,
         THSKUDetails,
         SKUPurchase>
 {

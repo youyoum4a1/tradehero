@@ -15,7 +15,7 @@ import java.util.List;
 public class IABPurchaseConsumer<
         IABSKUType extends IABSKU,
         IABOrderIdType extends IABOrderId,
-        IABPurchaseType extends IABPurchase<IABOrderIdType, IABSKUType>>
+        IABPurchaseType extends IABPurchase<IABSKUType, IABOrderIdType>>
         extends IABServiceConnector
 {
     public static final String TAG = IABPurchaseConsumer.class.getSimpleName();

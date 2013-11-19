@@ -82,7 +82,7 @@ abstract public class THIABLogicHolder
 
     protected BasePurchaseReporter.OnPurchaseReportedListener createPurchaseReportedListener(final int requestCode)
     {
-        return new BasePurchaseReporter.OnPurchaseReportedListener<THIABOrderId, IABSKU, SKUPurchase>()
+        return new BasePurchaseReporter.OnPurchaseReportedListener<IABSKU, THIABOrderId, SKUPurchase>()
         {
             private PurchaseReportedHandler getPurchaseReportedHandler()
             {

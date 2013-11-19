@@ -11,20 +11,20 @@ import java.lang.ref.WeakReference;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/18/13 Time: 12:06 PM To change this template use File | Settings | File Templates. */
 abstract public class BasePurchaseReporter<
-        IABOrderIdType extends IABOrderId,
         IABSKUType extends IABSKU,
+        IABOrderIdType extends IABOrderId,
         IABSKUDetailsType extends IABProductDetails<IABSKUType>,
-        IABPurchaseType extends IABPurchase<IABOrderIdType, IABSKUType>>
+        IABPurchaseType extends IABPurchase<IABSKUType, IABOrderIdType>>
 {
     public static final String TAG = BasePurchaseReporter.class.getSimpleName();
 
     protected IABPurchaseType purchase;
-    private WeakReference<OnPurchaseReportedListener<IABOrderIdType, IABSKUType, IABPurchaseType>> listener = new WeakReference<>(null);
+    private WeakReference<OnPurchaseReportedListener<IABSKUType, IABOrderIdType, IABPurchaseType>> listener = new WeakReference<>(null);
 
     abstract public void reportPurchase(final IABPurchaseType purchase);
     abstract public UserProfileDTO reportPurchaseSync(final IABPurchaseType purchase);
 
-    public OnPurchaseReportedListener<IABOrderIdType, IABSKUType, IABPurchaseType> getListener()
+    public OnPurchaseReportedListener<IABSKUType, IABOrderIdType, IABPurchaseType> getListener()
     {
         return this.listener.get();
     }
@@ -33,14 +33,14 @@ abstract public class BasePurchaseReporter<
      * The listener should be strongly referenced elsewhere
      * @param listener
      */
-    public void setListener(final OnPurchaseReportedListener<IABOrderIdType, IABSKUType, IABPurchaseType> listener)
+    public void setListener(final OnPurchaseReportedListener<IABSKUType, IABOrderIdType, IABPurchaseType> listener)
     {
         this.listener = new WeakReference<>(listener);
     }
 
     protected void notifyListenerSuccess(final UserProfileDTO updatedUserPortfolio)
     {
-        OnPurchaseReportedListener<IABOrderIdType, IABSKUType, IABPurchaseType> listener1 = getListener();
+        OnPurchaseReportedListener<IABSKUType, IABOrderIdType, IABPurchaseType> listener1 = getListener();
         if (listener1 != null)
         {
             listener1.onPurchaseReported(this.purchase, updatedUserPortfolio);
@@ -49,7 +49,7 @@ abstract public class BasePurchaseReporter<
 
     protected void notifyListenerReportFailed(final Throwable error)
     {
-        OnPurchaseReportedListener<IABOrderIdType, IABSKUType, IABPurchaseType> listener1 = getListener();
+        OnPurchaseReportedListener<IABSKUType, IABOrderIdType, IABPurchaseType> listener1 = getListener();
         if (listener1 != null)
         {
             listener1.onPurchaseReportFailed(this.purchase, error);
@@ -57,9 +57,9 @@ abstract public class BasePurchaseReporter<
     }
 
     public static interface OnPurchaseReportedListener<
-            IABOrderIdType extends IABOrderId,
             IABSKUType extends IABSKU,
-            IABPurchaseType extends IABPurchase<IABOrderIdType, IABSKUType>>
+            IABOrderIdType extends IABOrderId,
+            IABPurchaseType extends IABPurchase<IABSKUType, IABOrderIdType>>
     {
         void onPurchaseReported(IABPurchaseType reportedPurchase, UserProfileDTO updatedUserPortfolio);
         void onPurchaseReportFailed(IABPurchaseType reportedPurchase, Throwable error);

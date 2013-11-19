@@ -24,7 +24,7 @@ import org.json.JSONObject;
 /**
  * Represents an in-app billing purchase.
  */
-public class SKUPurchase implements IABPurchase<THIABOrderId, IABSKU>
+public class SKUPurchase implements IABPurchase<IABSKU, THIABOrderId>
 {
     public static final String JSON_KEY_ORDER_ID = "orderId";
     public static final String JSON_KEY_PACKAGE_NAME = "packageName";

@@ -15,14 +15,13 @@ abstract public class BaseIABActor<
                     IABProductDetailsType extends IABProductDetails<IABSKUType>,
                     IABPurchaseOrderType extends IABPurchaseOrder<IABSKUType>,
                     IABOrderIdType extends IABOrderId,
-                    IABPurchaseType extends IABPurchase<IABOrderIdType, IABSKUType>,
+                    IABPurchaseType extends IABPurchase<IABSKUType, IABOrderIdType>,
                     IABPurchaserType extends IABPurchaser<IABSKUType, IABProductDetailsType, IABPurchaseOrderType, IABOrderIdType, IABPurchaseType>,
                     IABPurchaseHandlerType extends IABPurchaseHandler<IABSKUType, IABOrderIdType, IABPurchaseType, IABException>,
                     IABPurchaseConsumerType extends IABPurchaseConsumer<IABSKUType, IABOrderIdType, IABPurchaseType>,
                     IABPurchaseConsumeHandlerType extends IABPurchaseConsumeHandler<IABSKUType, IABOrderIdType, IABPurchaseType, IABException>>
     implements IABActor<
                     IABSKUType,
-                    IABProductDetailsType,
                     IABPurchaseOrderType,
                     IABOrderIdType,
                     IABPurchaseType,

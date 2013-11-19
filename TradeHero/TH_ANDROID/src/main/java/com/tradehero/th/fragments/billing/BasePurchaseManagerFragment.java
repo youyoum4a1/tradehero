@@ -39,7 +39,7 @@ import javax.inject.Inject;
 abstract public class BasePurchaseManagerFragment extends DashboardFragment
         implements IABAlertUtils.OnDialogSKUDetailsClickListener<THSKUDetails>,
         THIABActorUser, THIABPurchaseHandler,
-        BasePurchaseReporter.OnPurchaseReportedListener<THIABOrderId, IABSKU, SKUPurchase>
+        BasePurchaseReporter.OnPurchaseReportedListener<IABSKU, THIABOrderId, SKUPurchase>
 {
     public static final String TAG = BasePurchaseManagerFragment.class.getSimpleName();
 

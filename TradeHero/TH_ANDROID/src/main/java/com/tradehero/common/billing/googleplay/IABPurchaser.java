@@ -27,7 +27,7 @@ abstract public class IABPurchaser<
                     IABProductDetailsType extends IABProductDetails<IABSKUType>,
                     IABPurchaseOrderType extends IABPurchaseOrder<IABSKUType>,
                     IABOrderIdType extends IABOrderId,
-                    IABPurchaseType extends IABPurchase<IABOrderIdType, IABSKUType>>
+                    IABPurchaseType extends IABPurchase<IABSKUType, IABOrderIdType>>
         extends IABServiceConnector
 {
     public static final String TAG = IABPurchaser.class.getSimpleName();

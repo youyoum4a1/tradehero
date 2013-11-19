@@ -4,7 +4,7 @@ package com.tradehero.common.billing;
 public interface BillingPurchaseHandler<
                                     ProductIdentifierType extends ProductIdentifier,
                                     OrderIdType extends OrderId,
-                                    ProductPurchaseType extends ProductPurchase<OrderIdType, ProductIdentifierType>,
+                                    ProductPurchaseType extends ProductPurchase<ProductIdentifierType, OrderIdType>,
                                     ExceptionType extends Exception>
 {
     void handlePurchaseReceived(int requestCode, ProductPurchaseType purchase);
