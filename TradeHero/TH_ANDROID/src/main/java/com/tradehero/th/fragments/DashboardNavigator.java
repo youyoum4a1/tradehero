@@ -118,6 +118,7 @@ public class DashboardNavigator extends Navigator
 
         if (!isBackStackEmpty())
         {
+            manager.executePendingTransactions();
             if (mTabHost != null)
             {
                 updateTabBarOnNavigate(null);
