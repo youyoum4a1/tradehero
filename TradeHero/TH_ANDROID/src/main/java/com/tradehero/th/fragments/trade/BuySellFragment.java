@@ -198,7 +198,7 @@ public class BuySellFragment extends AbstractBuySellFragment
             {
                 @Override public void onClick(View view)
                 {
-                    THToast.show("Nothing yet");
+                    handleBtnAddCashPressed();
                 }
             });
         }
@@ -939,6 +939,11 @@ public class BuySellFragment extends AbstractBuySellFragment
     {
         super.prepareFreshQuoteHolder();
         freshQuoteHolder.identifier = "BuySellFragment";
+    }
+
+    private void handleBtnAddCashPressed()
+    {
+        conditionalPopBuyVirtualDollars();
     }
 
     private void handleBtnAddTriggerClicked()
