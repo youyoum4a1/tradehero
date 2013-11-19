@@ -137,6 +137,13 @@ public class IABAlertUtils
                 R.string.store_billing_send_intent_error_cancel);
     }
 
+    public static void popFailedToReport(final Context context)
+    {
+        popWithCancelButton(context, R.string.store_billing_report_api_error_window_title,
+                R.string.store_billing_report_api_error_window_description,
+                R.string.store_billing_report_api_error_cancel);
+    }
+
     public static void popUnknownError(final Context context)
     {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);

@@ -11,6 +11,7 @@ import com.tradehero.common.cache.LruMemFileCache;
 import com.tradehero.common.persistence.CacheHelper;
 import com.tradehero.th.api.form.AbstractUserAvailabilityRequester;
 import com.tradehero.th.api.portfolio.DisplayablePortfolioDTO;
+import com.tradehero.th.billing.PurchaseReporter;
 import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
 import com.tradehero.th.base.THUser;
 import com.tradehero.th.billing.googleplay.SKUDetailsPurchaser;
@@ -55,6 +56,7 @@ import com.tradehero.th.fragments.trending.TrendingFilterSelectorVolumeFragment;
 import com.tradehero.th.fragments.trending.TrendingFragment;
 import com.tradehero.th.loaders.SearchStockPageItemListLoader;
 import com.tradehero.th.loaders.TimelinePagedItemListLoader;
+import com.tradehero.th.models.alert.SecurityAlertAssistant;
 import com.tradehero.th.network.NetworkEngine;
 import com.tradehero.th.network.YahooEngine;
 import com.tradehero.th.network.service.AlertPlanService;
@@ -116,6 +118,8 @@ import org.ocpsoft.prettytime.PrettyTime;
         {
                 UserProfileFetchAssistant.class,
                 OwnedPortfolioFetchAssistant.class,
+                SecurityAlertAssistant.class,
+                PurchaseReporter.class,
 
                 SettingsTransactionHistoryFragment.class,
                 SettingsPayPalFragment.class,

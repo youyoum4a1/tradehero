@@ -56,6 +56,13 @@
   <!--string name="store_billing_send_intent_error_ok">Sure</string-->
   <string name="store_billing_send_intent_error_cancel">Ok</string>
 
+  <string name="store_billing_report_api_launching_window_title">Processing Your Purchase</string>
+  <string name="store_billing_report_api_launching_window_message">Please Hold...</string>
+
+  <string name="store_billing_report_api_error_window_title">This is embarassing</string>
+  <string name="store_billing_report_api_error_window_description">We got an error when reporting your purchase to our TradeHero servers. You may want to relaunch TradeHero</string>
+  <string name="store_billing_report_api_error_cancel">Ok</string>
+
   <string name="store_billing_unknown_error_window_title">An unidentified error occured</string>
   <string name="store_billing_unknown_error_window_description">Care to let us know what happened?</string>
   <string name="store_billing_unknown_error_ok">Sure</string>

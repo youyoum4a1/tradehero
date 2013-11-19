@@ -51,12 +51,14 @@ import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.security.StockInfoFragment;
+import com.tradehero.th.models.alert.SecurityAlertAssistant;
 import com.tradehero.th.network.service.SecurityService;
 import com.viewpagerindicator.PageIndicator;
 import dagger.Lazy;
 import javax.inject.Inject;
 
 public class BuySellFragment extends AbstractBuySellFragment
+    implements SecurityAlertAssistant.OnPopulatedListener
 {
     private final static String TAG = BuySellFragment.class.getSimpleName();
     public final static int TRANSACTION_COST = 10;
@@ -87,6 +89,8 @@ public class BuySellFragment extends AbstractBuySellFragment
 
     @Inject protected Lazy<SecurityService> securityService;
 
+    protected SecurityAlertAssistant securityAlertAssistant;
+
     double lastPrice;
     int sliderIncrement = 0;
     int maxQuantity = 0;
@@ -102,6 +106,12 @@ public class BuySellFragment extends AbstractBuySellFragment
     private Transformation foregroundTransformation;
     private Transformation backgroundTransformation;
     private BuySellBottomStockPagerAdapter bottomViewPagerAdapter;
+
+    @Override public void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        securityAlertAssistant = new SecurityAlertAssistant();
+    }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -199,7 +209,7 @@ public class BuySellFragment extends AbstractBuySellFragment
             {
                 @Override public void onClick(View view)
                 {
-                    THToast.show("Nothing yet");
+                    handleBtnAddTriggerClicked();
                 }
             });
         }
@@ -348,7 +358,17 @@ public class BuySellFragment extends AbstractBuySellFragment
             mTradeQuantityView.setBuy(isTransactionTypeBuy);
         }
 
+        securityAlertAssistant.setOnPopulatedListener(this);
+        securityAlertAssistant.setUserBaseKey(currentUserBaseKeyHolder.getCurrentUserBaseKey());
+        securityAlertAssistant.populate();
+
         display();
+    }
+
+    @Override public void onPause()
+    {
+        securityAlertAssistant.setOnPopulatedListener(null);
+        super.onPause();
     }
 
     @Override public void onDestroyView()
@@ -406,8 +426,7 @@ public class BuySellFragment extends AbstractBuySellFragment
 
     @Override public void onDestroy()
     {
-        //((TrendingDetailFragment) getActivity().getSupportFragmentManager()
-        //        .findFragmentByTag("trending_detail")).setYahooQuoteUpdateListener(null);
+        securityAlertAssistant = null;
         super.onDestroy();
     }
 
@@ -539,6 +558,7 @@ public class BuySellFragment extends AbstractBuySellFragment
         displayStockName();
         displayQuickPriceButtonSet();
         displaySlider();
+        displayTriggerButton();
         storeImageUrlInImageViews();
         loadImages();
     }
@@ -747,6 +767,25 @@ public class BuySellFragment extends AbstractBuySellFragment
         }
     }
 
+    public void displayTriggerButton()
+    {
+        if (mBtnAddTrigger != null)
+        {
+            if (securityAlertAssistant.isPopulated() && securityAlertAssistant.getAlertId(securityId) != null)
+            {
+                mBtnAddTrigger.setImageResource(R.drawable.buyscreen_txtnotice_bought);
+            }
+            else if (securityAlertAssistant.isPopulated() && securityAlertAssistant.getAlertId(securityId) == null)
+            {
+                mBtnAddTrigger.setImageResource(R.drawable.buyscreen_txtnotice_buy);
+            }
+            else // TODO check if failed
+            {
+                mBtnAddTrigger.setImageResource(R.drawable.buy_alerts_infinite);
+            }
+        }
+    }
+
     private void storeImageUrlInImageViews()
     {
         if (mStockLogo != null && securityCompactDTO != null)
@@ -877,6 +916,26 @@ public class BuySellFragment extends AbstractBuySellFragment
     {
         super.prepareFreshQuoteHolder();
         freshQuoteHolder.identifier = "BuySellFragment";
+    }
+
+    private void handleBtnAddTriggerClicked()
+    {
+        if (securityAlertAssistant.isPopulated() && securityAlertAssistant.getAlertId(securityId) != null)
+        {
+            THToast.show("Push fragment to display the alert");
+        }
+        else if (securityAlertAssistant.isPopulated() && securityAlertAssistant.getAlertId(securityId) == null)
+        {
+            THToast.show("Push fragment to display a new alert");
+        }
+        else if (securityAlertAssistant.isFailed())
+        {
+            THToast.show("We do not know if you already have an alert on it");
+        }
+        else
+        {
+            THToast.show("Try again in a moment");
+        }
     }
 
     private void pushBuyFragmentIn()
@@ -1092,6 +1151,19 @@ public class BuySellFragment extends AbstractBuySellFragment
                 setTransactionTypeBuy(checked);
             }
         };
+    }
+    //</editor-fold>
+
+    //<editor-fold desc="SecurityAlertAssistant.OnPopulatedListener">
+    @Override public void onPopulateFailed(SecurityAlertAssistant securityAlertAssistant, Throwable error)
+    {
+        THLog.e(TAG, "There was an error getting the alert ids", error);
+        displayTriggerButton();
+    }
+
+    @Override public void onPopulated(SecurityAlertAssistant securityAlertAssistant)
+    {
+        displayTriggerButton();
     }
     //</editor-fold>
 }

@@ -82,7 +82,7 @@ public class PurchaseFetcher extends IABServiceConnector
 
     protected HashMap<IABSKU, SKUPurchase> queryPurchases(String itemType) throws JSONException, RemoteException, IABException
     {
-        // Query purchases
+        // Query purchase
         THLog.d(TAG, "Querying owned items, item type: " + itemType);
         THLog.d(TAG, "Package name: " + context.getPackageName());
         String continueToken = null;

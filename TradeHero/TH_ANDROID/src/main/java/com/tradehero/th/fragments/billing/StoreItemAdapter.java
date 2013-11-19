@@ -9,7 +9,7 @@ import com.tradehero.th.R;
 import java.util.HashMap;
 
 /**
- * - InApp purchases
+ * - InApp purchase
  *     - Virtual Dollars
  *     - Follow Credits
  *     - Stock Alerts

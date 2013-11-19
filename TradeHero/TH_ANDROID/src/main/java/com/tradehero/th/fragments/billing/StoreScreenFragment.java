@@ -13,6 +13,7 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.DashboardActivity;
+import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
 import com.tradehero.th.billing.googleplay.IABAlertUtils;
 import com.tradehero.th.fragments.billing.management.FollowerManagerFragment;
@@ -25,8 +26,6 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
 
     private ListView listView;
     private StoreItemAdapter storeItemAdapter;
-
-    @Inject protected CurrentUserBaseKeyHolder currentUserBaseKeyHolder;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -109,13 +108,13 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
 
             case StoreItemAdapter.POSITION_MANAGE_HEROES:
                 bundle = new Bundle();
-                bundle.putInt(HeroManagerFragment.BUNDLE_KEY_USER_ID, currentUserBaseKeyHolder.getCurrentUserBaseKey().key);
+                bundle.putInt(HeroManagerFragment.BUNDLE_KEY_USER_ID, getApplicablePortfolioId().userId);
                 pushFragment(HeroManagerFragment.class, bundle);
                 break;
 
             case StoreItemAdapter.POSITION_MANAGE_FOLLOWERS:
                 bundle = new Bundle();
-                bundle.putInt(HeroManagerFragment.BUNDLE_KEY_USER_ID, currentUserBaseKeyHolder.getCurrentUserBaseKey().key);
+                bundle.putInt(HeroManagerFragment.BUNDLE_KEY_USER_ID, getApplicablePortfolioId().userId);
                 pushFragment(FollowerManagerFragment.class, bundle);
                 break;
 

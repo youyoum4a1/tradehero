@@ -2,7 +2,7 @@ package com.tradehero.th.network.service;
 
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.portfolio.PortfolioDTO;
-import com.tradehero.th.api.purchase.PurchaseDTO;
+import com.tradehero.common.billing.googleplay.GooglePlayPurchaseDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
 import java.util.List;
 import retrofit.Callback;
@@ -46,14 +46,14 @@ public interface PortfolioService
     UserProfileDTO resetPortfolio(
             @Path("userId") int userId,
             @Path("portfolioId") int portfolioId,
-            @Body PurchaseDTO purchaseDTO)
+            @Body GooglePlayPurchaseDTO purchaseDTO)
         throws RetrofitError;
 
     @POST("/users/{userId}/portfolios/{portfolioId}/reset")
     void resetPortfolio(
             @Path("userId") int userId,
             @Path("portfolioId") int portfolioId,
-            @Body PurchaseDTO purchaseDTO,
+            @Body GooglePlayPurchaseDTO purchaseDTO,
             Callback<UserProfileDTO> callback);
     //</editor-fold>
 
@@ -62,14 +62,14 @@ public interface PortfolioService
     UserProfileDTO addCash(
             @Path("userId") int userId,
             @Path("portfolioId") int portfolioId,
-            @Body PurchaseDTO purchaseDTO)
+            @Body GooglePlayPurchaseDTO purchaseDTO)
         throws RetrofitError;
 
     @POST("/users/{userId}/portfolios/{portfolioId}/addcash")
     void addCash(
             @Path("userId") int userId,
             @Path("portfolioId") int portfolioId,
-            @Body PurchaseDTO purchaseDTO,
+            @Body GooglePlayPurchaseDTO purchaseDTO,
             Callback<UserProfileDTO> callback);
     //</editor-fold>
 

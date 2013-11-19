@@ -1,7 +1,186 @@
 package com.tradehero.th.models.alert;
 
+import android.os.AsyncTask;
+import com.tradehero.common.persistence.DTOCache;
+import com.tradehero.common.utils.THLog;
+import com.tradehero.th.api.alert.AlertCompactDTO;
+import com.tradehero.th.api.alert.AlertId;
+import com.tradehero.th.api.alert.AlertIdList;
+import com.tradehero.th.api.security.SecurityId;
+import com.tradehero.th.api.users.UserBaseKey;
+import com.tradehero.th.persistence.alert.AlertCompactCache;
+import com.tradehero.th.persistence.alert.AlertCompactListCache;
+import com.tradehero.th.utils.DaggerUtils;
+import java.lang.ref.WeakReference;
+import java.util.HashMap;
+import java.util.Map;
+import javax.inject.Inject;
+
 /** Created with IntelliJ IDEA. User: xavier Date: 11/15/13 Time: 6:40 PM To change this template use File | Settings | File Templates. */
 public class SecurityAlertAssistant
 {
     public static final String TAG = SecurityAlertAssistant.class.getSimpleName();
+
+    @Inject AlertCompactListCache alertCompactListCache;
+    @Inject AlertCompactCache alertCompactCache;
+
+    private boolean populated;
+    private boolean failed;
+    private UserBaseKey userBaseKey;
+    private Map<SecurityId, AlertId> securitiesWithAlerts;
+    private WeakReference<OnPopulatedListener> onPopulatedListener = new WeakReference<>(null);
+    private AsyncTask<Void, Void, Void> populateTask;
+
+    public SecurityAlertAssistant()
+    {
+        super();
+        securitiesWithAlerts = new HashMap<>();
+        DaggerUtils.inject(this);
+    }
+
+    public void onDestroy()
+    {
+        if (populateTask != null)
+        {
+            populateTask.cancel(false);
+        }
+        populateTask = null;
+    }
+
+    public boolean isPopulated()
+    {
+        return populated;
+    }
+
+    public boolean isFailed()
+    {
+        return failed;
+    }
+
+    public UserBaseKey getUserBaseKey()
+    {
+        return userBaseKey;
+    }
+
+    public void setUserBaseKey(UserBaseKey userBaseKey)
+    {
+        this.userBaseKey = userBaseKey;
+    }
+
+    public OnPopulatedListener getOnPopulatedListener()
+    {
+        return onPopulatedListener.get();
+    }
+
+    /**
+     * The listener needs to be strongly referenced elsewhere
+     * @param onPopulatedListener
+     */
+    public void setOnPopulatedListener(OnPopulatedListener onPopulatedListener)
+    {
+        this.onPopulatedListener = new WeakReference<>(onPopulatedListener);
+    }
+
+    protected void notifyPopulated()
+    {
+        populated = true;
+        failed = false;
+        OnPopulatedListener populatedListener = getOnPopulatedListener();
+        if (populatedListener != null)
+        {
+            populatedListener.onPopulated(this);
+        }
+    }
+
+    protected void notifyPopulateFailed(Throwable error)
+    {
+        populated = false;
+        failed = true;
+        OnPopulatedListener populatedListener = getOnPopulatedListener();
+        if (populatedListener != null)
+        {
+            populatedListener.onPopulateFailed(this, error);
+        }
+    }
+
+    public void populate()
+    {
+        populated = false;
+        failed = false;
+        securitiesWithAlerts.clear();
+        if (populateTask != null)
+        {
+            populateTask.cancel(false);
+        }
+        populateTask = new AsyncTask<Void, Void, Void>()
+        {
+            private Throwable error;
+
+            @Override protected Void doInBackground(Void... voids)
+            {
+                try
+                {
+                    requestAlertListFromCache();
+                }
+                catch (Throwable throwable)
+                {
+                    error = throwable;
+                }
+                return null;
+            }
+
+            @Override protected void onPostExecute(Void aVoid)
+            {
+                if (error != null)
+                {
+                    notifyPopulateFailed(error);
+                }
+                else
+                {
+                    notifyPopulated();
+                }
+            }
+        };
+        populateTask.execute();
+    }
+
+    protected void requestAlertListFromCache() throws Throwable
+    {
+        populate(alertCompactListCache.getOrFetch(userBaseKey));
+    }
+
+    protected void populate(AlertIdList alertIds)
+    {
+        if (alertIds != null)
+        {
+            AlertCompactDTO alertCompactDTO;
+            for (AlertId alertId : alertIds)
+            {
+                alertCompactDTO = alertCompactCache.get(alertId);
+                if (alertCompactDTO != null && alertCompactDTO.security != null)
+                {
+                    securitiesWithAlerts.put(alertCompactDTO.security.getSecurityId(), alertId);
+                }
+                else
+                {
+                    THLog.d(TAG, "populate: AlertId " + alertId + " had a null alertCompact of securityCompact");
+                }
+            }
+        }
+        else
+        {
+            THLog.d(TAG, "populate: alertIds were null");
+        }
+    }
+
+    public AlertId getAlertId(SecurityId securityId)
+    {
+        return securitiesWithAlerts.get(securityId);
+    }
+
+    public static interface OnPopulatedListener
+    {
+        void onPopulated(SecurityAlertAssistant securityAlertAssistant);
+        void onPopulateFailed(SecurityAlertAssistant securityAlertAssistant, Throwable error);
+    }
 }

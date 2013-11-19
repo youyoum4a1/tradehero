@@ -21,6 +21,7 @@ import org.json.JSONException;
 abstract public class IABPurchaser<
                     IABSKUType extends IABSKU,
                     IABProductDetailsType extends IABProductDetails<IABSKUType>,
+                    IABPurchaseOrderType extends IABPurchaseOrder<IABSKUType, IABProductDetailsType>,
                     IABOrderIdType extends IABOrderId,
                     IABPurchaseType extends IABPurchase<IABOrderIdType, IABSKUType>>
         extends IABServiceConnector
@@ -28,8 +29,7 @@ abstract public class IABPurchaser<
     public static final String TAG = IABPurchaser.class.getSimpleName();
 
     private boolean purchasing = false;
-    private IABProductDetailsType skuDetails;
-    private String extraData;
+    private IABPurchaseOrderType purchaseOrder;
     private int activityRequestCode;
     private WeakReference<OnIABPurchaseFinishedListener> purchaseFinishedListener = new WeakReference<>(null);
 
@@ -68,20 +68,23 @@ abstract public class IABPurchaser<
         this.purchaseFinishedListener = new WeakReference<>(purchaseFinishedListener);
     }
 
-    public void purchase(IABProductDetailsType skuDetails, String extraData, int activityRequestCode)
+    public void purchase(IABPurchaseOrderType purchaseOrder, int activityRequestCode)
     {
         checkNotPurchasing();
-        if (skuDetails == null)
+        if (purchaseOrder == null)
         {
-            throw new NullPointerException("SkuDetails cannot be null");
+            throw new NullPointerException("purchaseOrder cannot be null");
         }
-        if (skuDetails.getProductIdentifier() == null)
+        if (purchaseOrder.getProductIdentifier() == null)
         {
-            throw new NullPointerException("SkuDetails identifier cannot be null");
+            throw new NullPointerException("purchaseOrder identifier cannot be null");
+        }
+        if (purchaseOrder.getProductDetails() == null)
+        {
+            throw new NullPointerException("purchaseOrder details cannot be null");
         }
         purchasing = true;
-        this.skuDetails = skuDetails;
-        this.extraData = extraData;
+        this.purchaseOrder = purchaseOrder;
         this.activityRequestCode = activityRequestCode;
         startConnectionSetup();
     }
@@ -142,7 +145,7 @@ abstract public class IABPurchaser<
 
     private void startPurchaseActivity()
     {
-        if (!areSubscriptionsSupported() && skuDetails.isOfType(Constants.ITEM_TYPE_SUBS))
+        if (!areSubscriptionsSupported() && purchaseOrder.getProductDetails().isOfType(Constants.ITEM_TYPE_SUBS))
         {
             handlePurchaseFailedInternal(new IABSubscriptionUnavailableException("Subscriptions are not available."));
             return;
@@ -154,32 +157,37 @@ abstract public class IABPurchaser<
             THLog.d(TAG, "BuyIntentBundle " + buyIntentBundle);
 
             PendingIntent pendingIntent = buyIntentBundle.getParcelable(Constants.RESPONSE_BUY_INTENT);
-            THLog.d(TAG, "Launching buy intent for " + skuDetails + ". Request code: " + activityRequestCode);
+            THLog.d(TAG, "Launching buy intent for " + purchaseOrder.getProductDetails() + ". Request code: " + activityRequestCode);
             getActivity().startIntentSenderForResult(pendingIntent.getIntentSender(),
                     activityRequestCode, new Intent(),
                     Integer.valueOf(0), Integer.valueOf(0), Integer.valueOf(0));
         }
         catch (IntentSender.SendIntentException e)
         {
-            THLog.e(TAG, "SendIntentException while launching purchase flow for skuDetails " + skuDetails, e);
+            THLog.e(TAG, "SendIntentException while launching purchase flow for skuDetails " + purchaseOrder.getProductDetails(), e);
             handlePurchaseFailedInternal(new IABSendIntentException("Failed to send intent."));
         }
         catch (RemoteException e)
         {
-            THLog.e(TAG, "RemoteException while launching purchase flow for skuDetails " + skuDetails, e);
+            THLog.e(TAG, "RemoteException while launching purchase flow for skuDetails " + purchaseOrder.getProductDetails(), e);
             handlePurchaseFailedInternal(new IABRemoteException("Remote exception while starting purchase flow"));
         }
         catch (IABException e)
         {
-            THLog.e(TAG, "IABException while launching purchase flow for skuDetails " + skuDetails, e);
+            THLog.e(TAG, "IABException while launching purchase flow for skuDetails " + purchaseOrder.getProductDetails(), e);
             handlePurchaseFailedInternal(e);
         }
     }
 
     private Bundle createBuyIntentBundle() throws RemoteException, IABException
     {
-        THLog.d(TAG, "Constructing buy intent for " + skuDetails + ", item type: " + skuDetails.getType());
-        Bundle buyIntentBundle = billingService.getBuyIntent(TARGET_BILLING_API_VERSION3, context.getPackageName(), skuDetails.getProductIdentifier().identifier, skuDetails.getType(), extraData);
+        THLog.d(TAG, "Constructing buy intent for " + purchaseOrder.getProductDetails() + ", item type: " + purchaseOrder.getProductDetails().getType());
+        Bundle buyIntentBundle = billingService.getBuyIntent(
+                TARGET_BILLING_API_VERSION3,
+                context.getPackageName(),
+                purchaseOrder.getProductIdentifier().identifier,
+                purchaseOrder.getProductDetails().getType(),
+                purchaseOrder.getDeveloperPayload());
         int response = Constants.getResponseCodeFromBundle(buyIntentBundle);
         if (response != Constants.BILLING_RESPONSE_RESULT_OK)
         {
@@ -225,11 +233,11 @@ abstract public class IABPurchaser<
 
             if (resultCode == Activity.RESULT_OK && responseCode == Constants.BILLING_RESPONSE_RESULT_OK)
             {
-                THLog.d(TAG, "Successful resultcode from purchase activity.");
+                THLog.d(TAG, "Successful resultCode from purchase activity.");
                 THLog.d(TAG, "Purchase data: " + purchaseData);
                 THLog.d(TAG, "Data signature: " + dataSignature);
                 THLog.d(TAG, "Extras: " + data.getExtras());
-                THLog.d(TAG, "Expected item type: " + skuDetails.getType());
+                THLog.d(TAG, "Expected item type: " + purchaseOrder.getProductDetails().getType());
 
                 if (purchaseData == null || dataSignature == null)
                 {
@@ -241,7 +249,7 @@ abstract public class IABPurchaser<
                 {
                     try
                     {
-                        IABPurchaseType purchase = createPurchase(skuDetails.getType(), purchaseData, dataSignature);
+                        IABPurchaseType purchase = createPurchase(purchaseOrder.getProductDetails().getType(), purchaseData, dataSignature);
                         String sku = purchase.getProductIdentifier().identifier;
 
                         // Verify signature

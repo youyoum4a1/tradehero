@@ -1,11 +1,13 @@
-package com.tradehero.th.api.purchase;
+package com.tradehero.th.billing;
 
 import com.tradehero.common.billing.googleplay.IABOrderId;
 import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.common.billing.googleplay.SKUPurchase;
+import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.billing.googleplay.THIABOrderId;
 import com.tradehero.th.billing.googleplay.THSKUDetails;
 import com.tradehero.th.billing.googleplay.exception.UnhandledSKUDomainException;
 import com.tradehero.th.network.service.AlertPlanService;
@@ -20,7 +22,7 @@ import retrofit.client.Response;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/18/13 Time: 12:20 PM To change this template use File | Settings | File Templates. */
 public class PurchaseReporter extends BasePurchaseReporter<
-        IABOrderId,
+        THIABOrderId,
         IABSKU,
         THSKUDetails,
         SKUPurchase>
@@ -30,7 +32,6 @@ public class PurchaseReporter extends BasePurchaseReporter<
     @Inject Lazy<PortfolioService> portfolioService;
     @Inject Lazy<AlertPlanService> alertPlanService;
     @Inject Lazy<UserService> userService;
-    @Inject Lazy<CurrentUserBaseKeyHolder> currentUserBaseKeyHolder;
 
     private Callback<UserProfileDTO> userProfileDTOCallback;
 
@@ -39,69 +40,81 @@ public class PurchaseReporter extends BasePurchaseReporter<
         DaggerUtils.inject(this);
     }
 
-    @Override public void reportPurchase(SKUPurchase purchase, THSKUDetails skuDetails, int portfolioId)
-    {
-        reportPurchase(purchase, skuDetails, currentUserBaseKeyHolder.get().getCurrentUserBaseKey(), portfolioId);
-    }
-
-    @Override public void reportPurchase(SKUPurchase purchase, THSKUDetails skuDetails, UserBaseKey userBaseKey, int portfolioId)
+    @Override public void reportPurchase(SKUPurchase purchase, THSKUDetails skuDetails)
     {
         this.purchase = purchase;
         this.skuDetails = skuDetails;
+        OwnedPortfolioId portfolioId = purchase.getApplicableOwnedPortfolioId();
         createCallbackIfMissing();
 
         switch (this.skuDetails.domain)
         {
             case THSKUDetails.DOMAIN_RESET_PORTFOLIO:
                 portfolioService.get().resetPortfolio(
-                        userBaseKey.key,
-                        portfolioId,
+                        portfolioId.userId,
+                        portfolioId.portfolioId,
                         purchase.getGooglePlayPurchaseDTO(),
                         userProfileDTOCallback);
                 break;
 
             case THSKUDetails.DOMAIN_VIRTUAL_DOLLAR:
                 portfolioService.get().addCash(
-                        userBaseKey.key,
-                        portfolioId,
+                        portfolioId.userId,
+                        portfolioId.portfolioId,
                         purchase.getGooglePlayPurchaseDTO(),
                         userProfileDTOCallback);
                 break;
 
-            default:
-                reportPurchase(purchase, skuDetails, userBaseKey);
-                break;
-        }
-    }
-
-    @Override public void reportPurchase(SKUPurchase purchase, THSKUDetails skuDetails)
-    {
-        reportPurchase(purchase, skuDetails, currentUserBaseKeyHolder.get().getCurrentUserBaseKey());
-    }
-
-    @Override public void reportPurchase(SKUPurchase purchase, THSKUDetails skuDetails, UserBaseKey userBaseKey)
-    {
-        this.purchase = purchase;
-        this.skuDetails = skuDetails;
-        createCallbackIfMissing();
-
-        switch (this.skuDetails.domain)
-        {
             case THSKUDetails.DOMAIN_STOCK_ALERTS:
                 alertPlanService.get().subscribeToAlertPlan(
-                        userBaseKey.key,
+                        portfolioId.userId,
                         purchase.getGooglePlayPurchaseDTO(),
                         userProfileDTOCallback);
                 break;
 
             case THSKUDetails.DOMAIN_FOLLOW_CREDITS:
                 userService.get().addCredit(
-                        userBaseKey.key,
+                        portfolioId.userId,
                         purchase.getGooglePlayPurchaseDTO(),
                         userProfileDTOCallback);
                 break;
+
             default:
                 notifyListenerReportFailed(new UnhandledSKUDomainException(this.skuDetails.domain + " is not handled by this method"));
+                break;
+        }
+    }
+
+    @Override public UserProfileDTO reportPurchaseSync(SKUPurchase purchase, THSKUDetails skuDetails)
+    {
+        OwnedPortfolioId portfolioId = purchase.getApplicableOwnedPortfolioId();
+
+        switch (this.skuDetails.domain)
+        {
+            case THSKUDetails.DOMAIN_RESET_PORTFOLIO:
+                return portfolioService.get().resetPortfolio(
+                        portfolioId.userId,
+                        portfolioId.portfolioId,
+                        purchase.getGooglePlayPurchaseDTO());
+
+            case THSKUDetails.DOMAIN_VIRTUAL_DOLLAR:
+                return portfolioService.get().addCash(
+                        portfolioId.userId,
+                        portfolioId.portfolioId,
+                        purchase.getGooglePlayPurchaseDTO());
+
+            case THSKUDetails.DOMAIN_STOCK_ALERTS:
+                return alertPlanService.get().subscribeToAlertPlan(
+                        portfolioId.userId,
+                        purchase.getGooglePlayPurchaseDTO());
+
+            case THSKUDetails.DOMAIN_FOLLOW_CREDITS:
+                return userService.get().addCredit(
+                        portfolioId.userId,
+                        purchase.getGooglePlayPurchaseDTO());
+
+            default:
+                throw new UnhandledSKUDomainException(this.skuDetails.domain + " is not handled by this method");
         }
     }
 

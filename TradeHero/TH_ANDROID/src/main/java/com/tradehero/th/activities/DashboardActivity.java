@@ -1,22 +1,27 @@
 package com.tradehero.th.activities;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.MenuItem;
+import com.tradehero.common.billing.googleplay.SKUPurchase;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
+import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.base.Navigator;
+import com.tradehero.th.billing.PurchaseReportedHandler;
 import com.tradehero.th.billing.googleplay.THIABActor;
 import com.tradehero.th.billing.googleplay.THIABLogicHolderExtended;
+import com.tradehero.th.billing.googleplay.THIABPurchaseConsumeHandler;
 import com.tradehero.th.billing.googleplay.THIABPurchaseHandler;
+import com.tradehero.th.billing.googleplay.THIABPurchaseOrder;
 import com.tradehero.th.billing.googleplay.THSKUDetails;
 import com.tradehero.th.fragments.DashboardNavigator;
 import java.util.List;
 
-public class DashboardActivity extends SherlockFragmentActivity implements DashboardNavigatorActivity, THIABActor
+public class DashboardActivity extends SherlockFragmentActivity
+        implements DashboardNavigatorActivity, THIABActor
 {
     public static final String TAG = DashboardActivity.class.getSimpleName();
     public static final String EXTRA_FRAGMENT = DashboardActivity.class.getName() + ".fragment";
@@ -147,19 +152,24 @@ public class DashboardActivity extends SherlockFragmentActivity implements Dashb
         return thiabLogicHolderExtended.getDetailsOfDomain(domain);
     }
 
-    @Override public int launchPurchaseSequence(THIABPurchaseHandler purchaseHandler, THSKUDetails skuDetails)
+    @Override public int launchPurchaseSequence(THIABPurchaseHandler purchaseHandler, THIABPurchaseOrder purchaseOrder)
     {
-        return thiabLogicHolderExtended.launchPurchaseSequence(purchaseHandler, skuDetails);
+        return thiabLogicHolderExtended.launchPurchaseSequence(purchaseHandler, purchaseOrder);
     }
 
-    @Override public int launchPurchaseSequence(THIABPurchaseHandler purchaseHandler, THSKUDetails skuDetails, Object extraData)
+    @Override public int launchConsumeSequence(THIABPurchaseConsumeHandler purchaseConsumeHandler, SKUPurchase purchase)
     {
-        return thiabLogicHolderExtended.launchPurchaseSequence(purchaseHandler, skuDetails, extraData);
+        return thiabLogicHolderExtended.launchConsumeSequence(purchaseConsumeHandler, purchase);
     }
 
-    @Override public int launchPurchaseSequence(THIABPurchaseHandler purchaseHandler, THSKUDetails skuDetails, String extraData)
+    @Override public int launchReportSequence(PurchaseReportedHandler purchaseReportedHandler, SKUPurchase purchase, THSKUDetails skuDetails)
     {
-        return thiabLogicHolderExtended.launchPurchaseSequence(purchaseHandler, skuDetails, extraData);
+        return thiabLogicHolderExtended.launchReportSequence(purchaseReportedHandler, purchase, skuDetails);
+    }
+
+    @Override public UserProfileDTO launchReportSequenceSync(SKUPurchase purchase, THSKUDetails skuDetails)
+    {
+        return thiabLogicHolderExtended.launchReportSequenceSync(purchase, skuDetails);
     }
     //</editor-fold>
 

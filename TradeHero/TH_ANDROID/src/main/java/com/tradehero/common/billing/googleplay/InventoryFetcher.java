@@ -61,7 +61,8 @@ abstract public class InventoryFetcher<SKUDetailsType extends SKUDetails>
 
     private void fetchInventoryAsync()
     {
-        AsyncTask<Void, Void, HashMap<IABSKU, SKUDetailsType>> backgroundTask =  new AsyncTask<Void, Void, HashMap<IABSKU, SKUDetailsType>>() {
+        AsyncTask<Void, Void, HashMap<IABSKU, SKUDetailsType>> backgroundTask =  new AsyncTask<Void, Void, HashMap<IABSKU, SKUDetailsType>>()
+        {
             private IABException exception;
 
             @Override protected HashMap<IABSKU, SKUDetailsType> doInBackground(Void... params)

@@ -15,14 +15,16 @@
 
 package com.tradehero.common.billing.googleplay;
 
-import com.tradehero.common.billing.ProductPurchase;
+import com.tradehero.common.utils.THJsonAdapter;
+import com.tradehero.th.api.portfolio.OwnedPortfolioId;
+import com.tradehero.th.billing.googleplay.THIABOrderId;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
  * Represents an in-app billing purchase.
  */
-public class SKUPurchase implements IABPurchase<IABOrderId, IABSKU>
+public class SKUPurchase implements IABPurchase<THIABOrderId, IABSKU>
 {
     public static final String JSON_KEY_ORDER_ID = "orderId";
     public static final String JSON_KEY_PACKAGE_NAME = "packageName";
@@ -34,7 +36,7 @@ public class SKUPurchase implements IABPurchase<IABOrderId, IABSKU>
     public static final String JSON_KEY_PURCHASE_TOKEN = "purchaseToken";
 
     public final String itemType;  // ITEM_TYPE_INAPP or ITEM_TYPE_SUBS
-    protected final IABOrderId orderId;
+    protected final THIABOrderId orderId;
     public final String packageName;
     protected final IABSKU iabSKU;
     public final long purchaseTime;
@@ -47,21 +49,31 @@ public class SKUPurchase implements IABPurchase<IABOrderId, IABSKU>
     public SKUPurchase(String itemType, String jsonPurchaseInfo, String signature) throws JSONException
     {
         this.itemType = itemType;
-        originalJson = jsonPurchaseInfo;
-        JSONObject o = new JSONObject(originalJson);
+        this.originalJson = jsonPurchaseInfo;
+        JSONObject o = new JSONObject(this.originalJson);
         String orderIdString = o.optString(JSON_KEY_ORDER_ID);
-        orderId = new IABOrderId(orderIdString);
-        packageName = o.optString(JSON_KEY_PACKAGE_NAME);
+        this.orderId = new THIABOrderId(orderIdString);
+        this.packageName = o.optString(JSON_KEY_PACKAGE_NAME);
         String skuString = o.optString(JSON_KEY_PRODUCT_ID);
-        iabSKU = new IABSKU(skuString);
-        purchaseTime = o.optLong(JSON_KEY_PURCHASE_TIME);
-        purchaseState = o.optInt(JSON_KEY_PURCHASE_STATE);
-        developerPayload = o.optString(JSON_KEY_DEVELOPER_PAY_LOAD);
-        token = o.optString(JSON_KEY_TOKEN, o.optString(JSON_KEY_PURCHASE_TOKEN));
+        this.iabSKU = new IABSKU(skuString);
+        this.purchaseTime = o.optLong(JSON_KEY_PURCHASE_TIME);
+        this.purchaseState = o.optInt(JSON_KEY_PURCHASE_STATE);
+        this.developerPayload = o.optString(JSON_KEY_DEVELOPER_PAY_LOAD);
+        this.token = o.optString(JSON_KEY_TOKEN, o.optString(JSON_KEY_PURCHASE_TOKEN));
         this.signature = signature;
     }
 
-    @Override public IABOrderId getOrderId()
+    @Override public String getType()
+    {
+        return itemType;
+    }
+
+    @Override public String getToken()
+    {
+        return token;
+    }
+
+    @Override public THIABOrderId getOrderId()
     {
         return orderId;
     }
@@ -69,6 +81,30 @@ public class SKUPurchase implements IABPurchase<IABOrderId, IABSKU>
     @Override public IABSKU getProductIdentifier()
     {
         return iabSKU;
+    }
+
+    @Override public String getOriginalJson()
+    {
+        return this.originalJson;
+    }
+
+    @Override public String getSignature()
+    {
+        return this.signature;
+    }
+
+    @Override public GooglePlayPurchaseDTO getGooglePlayPurchaseDTO()
+    {
+        return new GooglePlayPurchaseDTO(this.originalJson, this.signature);
+    }
+
+    public OwnedPortfolioId getApplicableOwnedPortfolioId()
+    {
+        if (developerPayload != null)
+        {
+            return (OwnedPortfolioId) THJsonAdapter.getInstance().fromBody(developerPayload, OwnedPortfolioId.class);
+        }
+        return null;
     }
 
     @Override public String toString()

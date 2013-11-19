@@ -50,11 +50,17 @@ import javax.inject.Singleton;
             case Constants.IABHELPER_UNKNOWN_PURCHASE_RESPONSE:
                 return new IABUnknownPurchaseResponseException(message);
 
+            case Constants.IABHELPER_MISSING_TOKEN:
+                return new IABMissingTokenException(message);
+
             case Constants.IABHELPER_UNKNOWN_ERROR:
                 return new IABUnknownErrorException(message);
 
             case Constants.IABHELPER_SUBSCRIPTIONS_NOT_AVAILABLE:
                 return new IABSubscriptionUnavailableException(message);
+
+            case Constants.IABHELPER_INVALID_CONSUMPTION:
+                return new IABInvalidConsumptionException(message);
 
             default:
                 return new IABException(responseStatus, message);

@@ -41,9 +41,8 @@ public class THIABLogicHolderExtended
         thSKUDetailsTuner = new THSKUDetailsTuner();
     }
 
-    public void onDestroy()
+    @Override public void onDestroy()
     {
-        super.onDestroy();
         if (skuFetcher != null)
         {
             skuFetcher.setListener(null);
@@ -67,6 +66,7 @@ public class THIABLogicHolderExtended
             inventoryFetcher.dispose();
         }
         inventoryFetcher = null;
+        super.onDestroy();
     }
 
     //<editor-fold desc="THIABActor">

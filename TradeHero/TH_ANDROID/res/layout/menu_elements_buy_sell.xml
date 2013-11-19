@@ -12,7 +12,7 @@
       android:layout_height="match_parent"
       android:scaleType="fitCenter"
       android:visible="false"
-      android:src="@drawable/market_sleep_white"
+      android:src="@drawable/buyscreen_stock_inactive"
       android:contentDescription="@null"
       android:padding="4dp"
     />

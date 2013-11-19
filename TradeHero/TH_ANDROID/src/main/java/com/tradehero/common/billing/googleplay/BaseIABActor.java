@@ -2,35 +2,32 @@ package com.tradehero.common.billing.googleplay;
 
 import android.app.Activity;
 import android.content.Intent;
-import com.tradehero.common.billing.googleplay.exceptions.IABBillingUnavailableException;
 import com.tradehero.common.billing.googleplay.exceptions.IABException;
-import com.tradehero.common.utils.ArrayUtils;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
-import com.tradehero.th.billing.googleplay.SKUDetailsPurchaser;
-import com.tradehero.th.billing.googleplay.SKUFetcher;
-import com.tradehero.th.billing.googleplay.THIABPurchaseHandler;
-import com.tradehero.th.billing.googleplay.THInventoryFetcher;
-import com.tradehero.th.billing.googleplay.THSKUDetails;
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/8/13 Time: 12:32 PM To change this template use File | Settings | File Templates. */
 abstract public class BaseIABActor<
                     IABSKUType extends IABSKU,
                     IABProductDetailsType extends IABProductDetails<IABSKUType>,
+                    IABPurchaseOrderType extends IABPurchaseOrder<IABSKUType, IABProductDetailsType>,
                     IABOrderIdType extends IABOrderId,
                     IABPurchaseType extends IABPurchase<IABOrderIdType, IABSKUType>,
-                    IABPurchaserType extends IABPurchaser<IABSKUType, IABProductDetailsType, IABOrderIdType, IABPurchaseType>,
-                    IABPurchaseHandlerType extends IABPurchaseHandler<IABSKUType, IABOrderIdType, IABPurchaseType, IABException>>
+                    IABPurchaserType extends IABPurchaser<IABSKUType, IABProductDetailsType, IABPurchaseOrderType, IABOrderIdType, IABPurchaseType>,
+                    IABPurchaseHandlerType extends IABPurchaseHandler<IABSKUType, IABOrderIdType, IABPurchaseType, IABException>,
+                    IABPurchaseConsumerType extends IABPurchaseConsumer<IABSKUType, IABOrderIdType, IABPurchaseType>,
+                    IABPurchaseConsumeHandlerType extends IABPurchaseConsumeHandler<IABSKUType, IABOrderIdType, IABPurchaseType, IABException>>
     implements IABActor<
                     IABSKUType,
                     IABProductDetailsType,
+                    IABPurchaseOrderType,
                     IABOrderIdType,
                     IABPurchaseType,
                     IABPurchaseHandlerType,
+                    IABPurchaseConsumeHandlerType,
                     IABException>
 {
     public static final String TAG = BaseIABActor.class.getSimpleName();
@@ -38,9 +35,14 @@ abstract public class BaseIABActor<
 
     protected WeakReference<Activity> weakActivity = new WeakReference<>(null);
 
-    protected Map<Integer, IABPurchaserType> iabPurchasers;
-    protected Map<Integer, IABPurchaser.OnIABPurchaseFinishedListener> purchaseFinishedListeners;
-    protected Map<Integer, WeakReference<IABPurchaseHandlerType>> purchaseHandlers;
+    protected Map<Integer /*requestCode*/, IABPurchaserType> iabPurchasers;
+    protected Map<Integer /*requestCode*/, IABPurchaser.OnIABPurchaseFinishedListener> purchaseFinishedListeners;
+    protected Map<Integer /*requestCode*/, WeakReference<IABPurchaseHandlerType>> purchaseHandlers;
+
+    protected Map<Integer /*requestCode*/, IABPurchaseConsumerType> iabPurchaseConsumers;
+    protected Map<Integer /*requestCode*/, IABPurchaseConsumer.OnIABConsumptionFinishedListener> purchaseConsumptionFinishedListeners;
+    protected Map<Integer /*requestCode*/, WeakReference<IABPurchaseConsumeHandlerType>> purchaseConsumeHandlers;
+
 
     public BaseIABActor(Activity activity)
     {
@@ -49,11 +51,15 @@ abstract public class BaseIABActor<
         iabPurchasers = new HashMap<>();
         purchaseFinishedListeners = new HashMap<>();
         purchaseHandlers = new HashMap<>();
+
+        iabPurchaseConsumers = new HashMap<>();
+        purchaseConsumptionFinishedListeners = new HashMap<>();
+        purchaseConsumeHandlers = new HashMap<>();
     }
 
     public void onDestroy()
     {
-        for (IABPurchaser iabPurchaser: iabPurchasers.values())
+        for (IABPurchaserType iabPurchaser: iabPurchasers.values())
         {
             if (iabPurchaser != null)
             {
@@ -65,6 +71,19 @@ abstract public class BaseIABActor<
         iabPurchasers.clear();
         purchaseFinishedListeners.clear();
         purchaseHandlers.clear();
+
+        for (IABPurchaseConsumerType iabPurchaseConsumer: iabPurchaseConsumers.values())
+        {
+            if (iabPurchaseConsumer != null)
+            {
+                iabPurchaseConsumer.setListener(null);
+                iabPurchaseConsumer.setConsumptionFinishedListener(null);
+                iabPurchaseConsumer.dispose();
+            }
+        }
+        iabPurchaseConsumers.clear();
+        purchaseConsumptionFinishedListeners.clear();
+        purchaseConsumeHandlers.clear();
     }
 
     public Activity getActivity()
@@ -84,9 +103,7 @@ abstract public class BaseIABActor<
         while (retries-- > 0)
         {
             randomNumber = (int) (Math.random() * Integer.MAX_VALUE);
-            if (!iabPurchasers.containsKey(randomNumber) &&
-                    !purchaseFinishedListeners.containsKey(randomNumber) &&
-                    !purchaseHandlers.containsKey(randomNumber))
+            if (isUnusedRequestCode(randomNumber))
             {
                 return randomNumber;
             }
@@ -94,11 +111,25 @@ abstract public class BaseIABActor<
         throw new IllegalStateException("Could not find an unused requestCode after " + MAX_RANDOM_RETRIES + " trials");
     }
 
+    protected boolean isUnusedRequestCode(int randomNumber)
+    {
+        return !iabPurchasers.containsKey(randomNumber) &&
+                !purchaseFinishedListeners.containsKey(randomNumber) &&
+                !purchaseHandlers.containsKey(randomNumber) &&
+                !iabPurchaseConsumers.containsKey(randomNumber) &&
+                !purchaseConsumptionFinishedListeners.containsKey(randomNumber) &&
+                !purchaseConsumeHandlers.containsKey(randomNumber);
+    }
+
     public void forgetRequestCode(int requestCode)
     {
         iabPurchasers.remove(requestCode);
         purchaseFinishedListeners.remove(requestCode);
         purchaseHandlers.remove(requestCode);
+
+        iabPurchaseConsumers.remove(requestCode);
+        purchaseConsumptionFinishedListeners.remove(requestCode);
+        purchaseConsumeHandlers.remove(requestCode);
     }
 
     /**
@@ -111,22 +142,18 @@ abstract public class BaseIABActor<
         purchaseHandlers.put(requestCode, new WeakReference<>(purchaseHandler));
     }
 
+    /**
+     * The purchaseConsumeHandler should be strongly referenced elsewhere
+     * @param requestCode
+     * @param purchaseConsumeHandler
+     */
+    protected void registerPurchaseConsumeHandler(int requestCode, IABPurchaseConsumeHandlerType purchaseConsumeHandler)
+    {
+        purchaseConsumeHandlers.put(requestCode, new WeakReference<>(purchaseConsumeHandler));
+    }
+
     //<editor-fold desc="IABActor">
-    @Override public int launchPurchaseSequence(IABPurchaseHandlerType purchaseHandler, IABProductDetailsType skuDetails)
-    {
-        return launchPurchaseSequence(purchaseHandler, skuDetails, null);
-    }
-
-    @Override public int launchPurchaseSequence(IABPurchaseHandlerType purchaseHandler, IABProductDetailsType skuDetails, Object extraData)
-    {
-        if (!(extraData instanceof String))
-        {
-            throw new IllegalArgumentException("Extra data needs to be a String");
-        }
-        return launchPurchaseSequence(purchaseHandler, skuDetails, (String) extraData);
-    }
-
-    @Override public int launchPurchaseSequence(IABPurchaseHandlerType purchaseHandler, IABProductDetailsType skuDetails, String extraData)
+    @Override public int launchPurchaseSequence(IABPurchaseHandlerType purchaseHandler, IABPurchaseOrderType purchaseOrder)
     {
         int requestCode = getUnusedRequestCode();
         registerPurchaseHandler(requestCode, purchaseHandler);
@@ -134,7 +161,19 @@ abstract public class BaseIABActor<
 
         IABPurchaserType iabPurchaser = createPurchaser(requestCode);
         iabPurchasers.put(requestCode, iabPurchaser);
-        iabPurchaser.purchase(skuDetails, extraData, requestCode);
+        iabPurchaser.purchase(purchaseOrder, requestCode);
+        return requestCode;
+    }
+
+    @Override public int launchConsumeSequence(IABPurchaseConsumeHandlerType purchaseConsumeHandler, IABPurchaseType purchase)
+    {
+        int requestCode = getUnusedRequestCode();
+        registerPurchaseConsumeHandler(requestCode, purchaseConsumeHandler);
+        createAndRegisterPurchaseConsumeFinishedListener(requestCode);
+
+        IABPurchaseConsumerType iabPurchaseConsumer = createPurchaseConsumer(requestCode);
+        iabPurchaseConsumers.put(requestCode, iabPurchaseConsumer);
+        iabPurchaseConsumer.consume(purchase);
         return requestCode;
     }
     //</editor-fold>
@@ -198,8 +237,69 @@ abstract public class BaseIABActor<
         };
     }
 
-    abstract protected <PurchaserType extends IABPurchaser<IABSKUType, IABProductDetailsType, IABOrderIdType, IABPurchaseType>>
-        PurchaserType createPurchaser(final int requestCode);
+    protected void createAndRegisterPurchaseConsumeFinishedListener(final int requestCode)
+    {
+        purchaseConsumptionFinishedListeners.put(requestCode, createPurchaseConsumeFinishedListener(requestCode));
+    }
+
+    protected IABPurchaseConsumer.OnIABConsumptionFinishedListener createPurchaseConsumeFinishedListener(final int requestCode)
+    {
+        return new IABPurchaseConsumer.OnIABConsumptionFinishedListener<IABPurchaseType, IABException>()
+        {
+            private IABPurchaseConsumeHandlerType getPurchaseConsumeHandler()
+            {
+                WeakReference<IABPurchaseConsumeHandlerType> weakHandler = purchaseConsumeHandlers.get(requestCode);
+                if (weakHandler != null)
+                {
+                    return weakHandler.get();
+                }
+                return null;
+            }
+
+            @Override public void onIABConsumptionFinished(IABPurchaseConsumer purchaseConsumer, IABPurchaseType info)
+            {
+                THToast.show("OnIABConsumptionFinishedListener.onIABPurchaseFinished Purchase went through ok");
+                THLog.d(TAG, "OnIABConsumptionFinishedListener.onIABPurchaseFinished Purchase info " + info);
+                IABPurchaseConsumeHandlerType handler = getPurchaseConsumeHandler();
+                if (handler != null)
+                {
+                    THLog.d(TAG, "OnIABConsumptionFinishedListener.onIABPurchaseFinished passing on the purchase for requestCode " + requestCode);
+                    handler.handlePurchaseConsumed(requestCode, info);
+                }
+                else
+                {
+                    THLog.d(TAG, "OnIABConsumptionFinishedListener.onIABPurchaseFinished No THIABPurchaseHandler for requestCode " + requestCode);
+                }
+                finish();
+            }
+
+            @Override public void onIABConsumptionFailed(IABPurchaseConsumer purchaseConsumer, IABException exception)
+            {
+                THLog.e(TAG, "OnIABConsumptionFinishedListener.onIABConsumptionFailed There was an exception during the consumption", exception);
+                IABPurchaseConsumeHandlerType handler = getPurchaseConsumeHandler();
+                if (handler != null)
+                {
+                    THLog.d(TAG, "OnIABConsumptionFinishedListener.onIABConsumptionFailed passing on the exception for requestCode " + requestCode);
+                    handler.handlePurchaseConsumeException(requestCode, exception);
+                }
+                else
+                {
+                    THLog.d(TAG, "OnIABConsumptionFinishedListener.onIABConsumptionFailed No THIABPurchaseHandler for requestCode " + requestCode);
+                }
+                finish();
+            }
+
+            private void finish()
+            {
+                forgetRequestCode(requestCode);
+            }
+        };
+    }
+
+    abstract protected /*<PurchaserType extends IABPurchaser<IABSKUType, IABProductDetailsType, IABOrderIdType, IABPurchaseType>>*/
+        IABPurchaserType createPurchaser(final int requestCode);
+
+    abstract protected IABPurchaseConsumerType createPurchaseConsumer(final int requestCode);
 
     public void onActivityResult(int requestCode, int resultCode, Intent data)
     {

@@ -4,12 +4,14 @@ package com.tradehero.common.billing;
 public interface BillingActorUser<
                         ProductIdentifierType extends ProductIdentifier,
                         ProductDetailsType extends ProductDetails<ProductIdentifierType>,
+                        PurchaseOrderType extends PurchaseOrder<ProductIdentifierType>,
                         OrderIdType extends OrderId,
                         ProductPurchaseType extends ProductPurchase<OrderIdType, ProductIdentifierType>,
                         BillingPurchaseHandlerType extends BillingPurchaseHandler<ProductIdentifierType, OrderIdType, ProductPurchaseType, ExceptionType>,
                         BillingActorType extends BillingActor<
                                                     ProductIdentifierType,
                                                     ProductDetailsType,
+                                                    PurchaseOrderType,
                                                     OrderIdType,
                                                     ProductPurchaseType,
                                                     BillingPurchaseHandlerType,

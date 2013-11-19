@@ -8,6 +8,12 @@ public class IABOrderId implements OrderId
     public static final String TAG = IABOrderId.class.getSimpleName();
 
     public final String orderId;
+    public String packageName;
+    public String productId;
+    public long purchaseTime;
+    public int purchaseState;
+    public String developerPayload;
+    public String purchaseToken;
 
     public IABOrderId(String orderId)
     {

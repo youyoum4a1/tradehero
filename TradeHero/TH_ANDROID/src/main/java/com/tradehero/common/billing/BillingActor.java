@@ -6,6 +6,7 @@ import com.tradehero.th.billing.googleplay.THSKUDetails;
 public interface BillingActor<
                         ProductIdentifierType extends ProductIdentifier,
                         ProductDetailsType extends ProductDetails<ProductIdentifierType>,
+                        PurchaseOrderType extends PurchaseOrder<ProductIdentifierType>,
                         OrderIdType extends OrderId,
                         ProductPurchaseType extends ProductPurchase<OrderIdType, ProductIdentifierType>,
                         BillingPurchaseHandlerType extends BillingPurchaseHandler<
@@ -19,6 +20,5 @@ public interface BillingActor<
     boolean isInventoryReady();
     boolean hadErrorLoadingInventory();
     void launchSkuInventorySequence();
-    int launchPurchaseSequence(BillingPurchaseHandlerType billingPurchaseHandler, ProductDetailsType productDetails);
-    int launchPurchaseSequence(BillingPurchaseHandlerType billingPurchaseHandler, ProductDetailsType productDetails, Object extraData);
+    int launchPurchaseSequence(BillingPurchaseHandlerType billingPurchaseHandler, PurchaseOrderType productDetails);
 }

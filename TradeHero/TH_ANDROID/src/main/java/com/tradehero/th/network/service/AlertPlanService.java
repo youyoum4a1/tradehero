@@ -1,7 +1,7 @@
 package com.tradehero.th.network.service;
 
-import com.tradehero.th.api.purchase.PurchaseDTO;
 import com.tradehero.th.api.alert.AlertPlanDTO;
+import com.tradehero.common.billing.googleplay.GooglePlayPurchaseDTO;
 import com.tradehero.th.api.users.RestorePurchaseForm;
 import com.tradehero.th.api.users.UserProfileDTO;
 import java.util.List;
@@ -31,13 +31,13 @@ public interface AlertPlanService
     @POST("/users/{userId}/alertPlans")
     UserProfileDTO subscribeToAlertPlan(
             @Path("userId") int userId,
-            @Body PurchaseDTO purchaseDTO)
+            @Body GooglePlayPurchaseDTO purchaseDTO)
         throws RetrofitError;
 
     @POST("/users/{userId}/alertPlans")
     void subscribeToAlertPlan(
             @Path("userId") int userId,
-            @Body PurchaseDTO purchaseDTO,
+            @Body GooglePlayPurchaseDTO purchaseDTO,
             Callback<UserProfileDTO> callback);
     //</editor-fold>
 

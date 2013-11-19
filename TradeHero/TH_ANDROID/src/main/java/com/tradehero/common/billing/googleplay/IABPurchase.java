@@ -6,4 +6,9 @@ import com.tradehero.common.billing.ProductPurchase;
 public interface IABPurchase<IABOrderIdType extends IABOrderId, IABSKUType extends IABSKU>
         extends ProductPurchase<IABOrderIdType, IABSKUType>
 {
+    String getType();
+    String getToken();
+    String getOriginalJson();
+    String getSignature();
+    GooglePlayPurchaseDTO getGooglePlayPurchaseDTO();
 }

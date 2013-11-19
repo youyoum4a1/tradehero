@@ -1,8 +1,10 @@
 package com.tradehero.th.fragments.billing;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.common.billing.googleplay.SKUPurchase;
 import com.tradehero.common.billing.googleplay.exceptions.IABAlreadyOwnedException;
 import com.tradehero.common.billing.googleplay.exceptions.IABBadResponseException;
@@ -13,30 +15,82 @@ import com.tradehero.common.billing.googleplay.exceptions.IABUserCancelledExcept
 import com.tradehero.common.billing.googleplay.exceptions.IABVerificationFailedException;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
+import com.tradehero.th.api.portfolio.OwnedPortfolioId;
+import com.tradehero.th.billing.BasePurchaseReporter;
+import com.tradehero.th.billing.PurchaseReporter;
+import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.base.Application;
 import com.tradehero.th.billing.googleplay.IABAlertSKUUtils;
 import com.tradehero.th.billing.googleplay.IABAlertUtils;
 import com.tradehero.th.billing.googleplay.THIABActor;
 import com.tradehero.th.billing.googleplay.THIABActorUser;
+import com.tradehero.th.billing.googleplay.THIABOrderId;
 import com.tradehero.th.billing.googleplay.THIABPurchaseHandler;
+import com.tradehero.th.billing.googleplay.THIABPurchaseOrder;
 import com.tradehero.th.billing.googleplay.THSKUDetails;
 import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.persistence.user.UserProfileCache;
+import dagger.Lazy;
 import java.lang.ref.WeakReference;
+import javax.inject.Inject;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/11/13 Time: 11:05 AM To change this template use File | Settings | File Templates. */
 abstract public class BasePurchaseManagerFragment extends DashboardFragment
         implements IABAlertUtils.OnDialogSKUDetailsClickListener<THSKUDetails>,
-        THIABActorUser, THIABPurchaseHandler
+        THIABActorUser, THIABPurchaseHandler,
+        BasePurchaseReporter.OnPurchaseReportedListener<THIABOrderId, IABSKU, SKUPurchase>
 {
     public static final String TAG = BasePurchaseManagerFragment.class.getSimpleName();
 
+    public static final String BUNDLE_KEY_USER_ID = BasePurchaseManagerFragment.class.getName() + ".userId";
+    public static final String BUNDLE_KEY_PORTFOLIO_ID = BasePurchaseManagerFragment.class.getName() + ".portfolioId";
+
+    private ProgressDialog progressDialog;
+    @Inject Lazy<UserProfileCache> userProfileCache;
     protected WeakReference<THIABActor> billingActor = new WeakReference<>(null);
+    protected PurchaseReporter purchaseReporter = new PurchaseReporter();
     protected int requestCode = (int) (Math.random() * Integer.MAX_VALUE);
-    protected THSKUDetails skuDetails;
+    protected THIABPurchaseOrder purchaseOrder;
+    protected Integer userId;
+    protected Integer portfolioId;
+    protected SKUPurchase purchase;
 
     @Override public void onActivityCreated(Bundle savedInstanceState)
     {
         super.onActivityCreated(savedInstanceState);
         setBillingActor((THIABActor) getActivity());
+    }
+
+    @Override public void onResume()
+    {
+        super.onResume();
+        Bundle args = getArguments();
+        if (args != null)
+        {
+            if (args.containsKey(BUNDLE_KEY_USER_ID))
+            {
+                userId = args.getInt(BUNDLE_KEY_USER_ID);
+            }
+            if (args.containsKey(BUNDLE_KEY_PORTFOLIO_ID))
+            {
+                portfolioId = args.getInt(BUNDLE_KEY_PORTFOLIO_ID);
+            }
+        }
+    }
+
+    @Override public void onDestroyView()
+    {
+        if (progressDialog != null)
+        {
+            progressDialog.hide();
+            progressDialog = null;
+        }
+        super.onDestroyView();
+    }
+
+    protected OwnedPortfolioId getApplicablePortfolioId()
+    {
+        return new OwnedPortfolioId(userId, portfolioId);
     }
 
     protected boolean isBillingAvailable()
@@ -106,6 +160,7 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
         alertDialog.show();
     }
 
+    //<editor-fold desc="Pop SKU list">
     protected void conditionalPopBuyVirtualDollars()
     {
         if (!popErrorConditional())
@@ -162,6 +217,29 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
     {
         IABAlertSKUUtils.popBuyDialog(getActivity(), getBillingActor(), this, skuDomain, titleResId);
     }
+    //</editor-fold>
+
+    //<editor-fold desc="IABAlertUtils.OnDialogSKUDetailsClickListener">
+    @Override public void onDialogSKUDetailsClicked(DialogInterface dialogInterface, int position, THSKUDetails skuDetails)
+    {
+        //THToast.show("Sku clicked " + skuDetails.getProductIdentifier().identifier);
+        THIABActor actor = getBillingActor();
+        if (actor != null)
+        {
+            launchPurchaseSequence(actor, new THIABPurchaseOrder(skuDetails.getProductIdentifier(), getApplicablePortfolioId()));
+        }
+        else
+        {
+            THLog.d(TAG, "IABActor was null");
+        }
+    }
+    //</editor-fold>
+
+    protected void launchPurchaseSequence(THIABActor actor, THIABPurchaseOrder purchaseOrder)
+    {
+        this.purchaseOrder = purchaseOrder;
+        this.requestCode = actor.launchPurchaseSequence(this, purchaseOrder);
+    }
 
     //<editor-fold desc="THIABPurchaseHandler">
     @Override public void handlePurchaseReceived(int requestCode, SKUPurchase purchase)
@@ -173,6 +251,7 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
         else
         {
             THLog.d(TAG, "handlePurchaseReceived. Received requestCode " + requestCode + ", purchase " + purchase);
+            handlePurchaseSuccess(requestCode, purchase);
         }
     }
 
@@ -200,7 +279,7 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
         }
         else if (exception instanceof IABAlreadyOwnedException)
         {
-            IABAlertUtils.popSKUAlreadyOwned(getActivity(), skuDetails);
+            IABAlertUtils.popSKUAlreadyOwned(getActivity(), purchaseOrder.getProductDetails());
         }
         else if (exception instanceof IABSendIntentException)
         {
@@ -213,20 +292,76 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
     }
     //</editor-fold>
 
-    //<editor-fold desc="IABAlertUtils.OnDialogSKUDetailsClickListener">
-    @Override public void onDialogSKUDetailsClicked(DialogInterface dialogInterface, int position, THSKUDetails skuDetails)
+    protected void handlePurchaseSuccess(int requestCode, SKUPurchase purchase)
     {
-        //THToast.show("Sku clicked " + skuDetails.getProductIdentifier().identifier);
-        THIABActor actor = getBillingActor();
-        if (actor != null)
+        this.purchase = purchase;
+        reportPurchaseToServerAPI(purchase);
+    }
+
+    protected void reportPurchaseToServerAPI(SKUPurchase purchase)
+    {
+        progressDialog = ProgressDialog.show(
+                getActivity(),
+                Application.getResourceString(R.string.store_billing_report_api_launching_window_title),
+                Application.getResourceString(R.string.store_billing_report_api_launching_window_message),
+                true);
+        purchaseReporter.setListener(this);
+        purchaseReporter.reportPurchase(purchase, purchaseOrder.getProductDetails());
+    }
+
+    //<editor-fold desc="BasePurchaseReporter.OnPurchaseReportedListener">
+    @Override public void onPurchaseReported(SKUPurchase reportedPurchase, UserProfileDTO updatedUserPortfolio)
+    {
+        if (!reportedPurchase.getProductIdentifier().equals(purchase.getProductIdentifier()))
         {
-            this.requestCode = actor.launchPurchaseSequence(this, skuDetails, "From store");
-            this.skuDetails = skuDetails;
+            THLog.d(TAG, "This was not the purchase we reported. Expected " + purchase.getProductIdentifier() + ", actual " + reportedPurchase.getProductIdentifier());
+        }
+        else if (!reportedPurchase.getOrderId().equals(purchase.getOrderId()))
+        {
+            THLog.d(TAG, "This was not the purchase we reported. Expected " + purchase.getOrderId() + ", actual " + reportedPurchase.getOrderId());
         }
         else
         {
-            THLog.d(TAG, "IABActor was null");
+            handlePurchaseReportSuccess(reportedPurchase, updatedUserPortfolio);
         }
+    }
+
+    protected void handlePurchaseReportSuccess(SKUPurchase reportedPurchase, UserProfileDTO updatedUserPortfolio)
+    {
+        userProfileCache.get().put(updatedUserPortfolio.getBaseKey(), updatedUserPortfolio);
+
+        ProgressDialog dialog = progressDialog;
+        if (dialog != null)
+        {
+            dialog.setTitle("Done");
+            dialog.setMessage("Closing");
+        }
+
+        getView().postDelayed(new Runnable()
+        {
+            @Override public void run()
+            {
+                ProgressDialog dialog = progressDialog;
+                if (dialog != null)
+                {
+                    dialog.hide();
+                }
+            }
+        }, 500);
+
+        // TODO consume
+    }
+
+
+
+    @Override public void onPurchaseReportFailed(SKUPurchase reportedPurchase, Throwable error)
+    {
+        THLog.e(TAG, "Failed to report to server", error);
+        if (progressDialog != null)
+        {
+            progressDialog.hide();
+        }
+        IABAlertUtils.popFailedToReport(getActivity());
     }
     //</editor-fold>
 }

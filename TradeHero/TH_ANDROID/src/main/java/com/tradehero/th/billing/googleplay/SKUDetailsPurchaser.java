@@ -8,7 +8,7 @@ import com.tradehero.common.billing.googleplay.SKUPurchase;
 import org.json.JSONException;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/7/13 Time: 12:35 PM To change this template use File | Settings | File Templates. */
-public class SKUDetailsPurchaser extends IABPurchaser<IABSKU, THSKUDetails, IABOrderId, SKUPurchase>
+public class SKUDetailsPurchaser extends IABPurchaser<IABSKU, THSKUDetails, THIABPurchaseOrder, THIABOrderId, SKUPurchase>
 {
     public static final String TAG = SKUDetailsPurchaser.class.getSimpleName();
 

@@ -1,5 +1,6 @@
 package com.tradehero.th.network.service;
 
+import com.tradehero.common.billing.googleplay.GooglePlayPurchaseDTO;
 import com.tradehero.th.api.social.InviteFormDTO;
 import com.tradehero.th.api.social.UserFriendsDTO;
 import com.tradehero.th.api.users.password.ForgotPasswordFormDTO;
@@ -253,4 +254,16 @@ public interface UserService
             @Body InviteFormDTO inviteFormDTO,
             Callback<Response> callback);
     //</editor-fold>
+
+    @POST("/users/{userId}/addCredit")
+    UserProfileDTO addCredit(
+            @Path("userId") int userId,
+            @Body GooglePlayPurchaseDTO purchaseDTO)
+        throws RetrofitError;
+
+    @POST("/users/{userId}/addCredit")
+    void addCredit(
+            @Path("userId") int userId,
+            @Body GooglePlayPurchaseDTO purchaseDTO,
+            Callback<UserProfileDTO> callback);
 }

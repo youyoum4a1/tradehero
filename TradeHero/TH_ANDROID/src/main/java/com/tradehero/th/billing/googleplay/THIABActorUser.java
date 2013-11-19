@@ -10,7 +10,8 @@ import com.tradehero.common.billing.googleplay.exceptions.IABException;
 public interface THIABActorUser extends IABActorUser<
                                             IABSKU,
                                             THSKUDetails,
-                                            IABOrderId,
+                                            THIABPurchaseOrder,
+                                            THIABOrderId,
                                             SKUPurchase,
                                             THIABPurchaseHandler,
                                             THIABActor,

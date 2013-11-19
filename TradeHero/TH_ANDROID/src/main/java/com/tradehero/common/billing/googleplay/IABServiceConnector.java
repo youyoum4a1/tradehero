@@ -157,7 +157,7 @@ public class IABServiceConnector
         int responseStatus = purchaseTypeSupportStatus(Constants.ITEM_TYPE_INAPP);
         if (responseStatus != Constants.BILLING_RESPONSE_RESULT_OK)
         {
-            // if in-app purchases aren't supported, neither are subscriptions.
+            // if in-app purchase aren't supported, neither are subscriptions.
             subscriptionSupported = false;
             throw iabExceptionFactory.get().create(responseStatus, "Error checking for billing v3 support.");
         }

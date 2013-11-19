@@ -1,10 +1,10 @@
-package com.tradehero.th.api.purchase;
+package com.tradehero.th.billing;
 
 import com.tradehero.common.billing.googleplay.IABOrderId;
 import com.tradehero.common.billing.googleplay.IABProductDetails;
 import com.tradehero.common.billing.googleplay.IABPurchase;
 import com.tradehero.common.billing.googleplay.IABSKU;
-import com.tradehero.common.billing.googleplay.exceptions.IABException;
+import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import java.lang.ref.WeakReference;
@@ -20,14 +20,12 @@ abstract public class BasePurchaseReporter<
 
     protected IABPurchaseType purchase;
     protected IABSKUDetailsType skuDetails;
-    private WeakReference<PurchaseReporterListener<IABOrderIdType, IABSKUType, IABPurchaseType>> listener = new WeakReference<>(null);
+    private WeakReference<OnPurchaseReportedListener<IABOrderIdType, IABSKUType, IABPurchaseType>> listener = new WeakReference<>(null);
 
     abstract public void reportPurchase(final IABPurchaseType purchase, final IABSKUDetailsType skuDetails);
-    abstract public void reportPurchase(final IABPurchaseType purchase, final IABSKUDetailsType skuDetails, UserBaseKey userBaseKey);
-    abstract public void reportPurchase(final IABPurchaseType purchase, final IABSKUDetailsType skuDetails, int portfolioId);
-    abstract public void reportPurchase(final IABPurchaseType purchase, final IABSKUDetailsType skuDetails, UserBaseKey userBaseKey, int portfolioId);
+    abstract public UserProfileDTO reportPurchaseSync(final IABPurchaseType purchase, final IABSKUDetailsType skuDetails);
 
-    public PurchaseReporterListener<IABOrderIdType, IABSKUType, IABPurchaseType> getListener()
+    public OnPurchaseReportedListener<IABOrderIdType, IABSKUType, IABPurchaseType> getListener()
     {
         return this.listener.get();
     }
@@ -36,14 +34,14 @@ abstract public class BasePurchaseReporter<
      * The listener should be strongly referenced elsewhere
      * @param listener
      */
-    public void setListener(final PurchaseReporterListener<IABOrderIdType, IABSKUType, IABPurchaseType> listener)
+    public void setListener(final OnPurchaseReportedListener<IABOrderIdType, IABSKUType, IABPurchaseType> listener)
     {
         this.listener = new WeakReference<>(listener);
     }
 
     protected void notifyListenerSuccess(final UserProfileDTO updatedUserPortfolio)
     {
-        PurchaseReporterListener<IABOrderIdType, IABSKUType, IABPurchaseType> listener1 = getListener();
+        OnPurchaseReportedListener<IABOrderIdType, IABSKUType, IABPurchaseType> listener1 = getListener();
         if (listener1 != null)
         {
             listener1.onPurchaseReported(this.purchase, updatedUserPortfolio);
@@ -52,14 +50,14 @@ abstract public class BasePurchaseReporter<
 
     protected void notifyListenerReportFailed(final Throwable error)
     {
-        PurchaseReporterListener<IABOrderIdType, IABSKUType, IABPurchaseType> listener1 = getListener();
+        OnPurchaseReportedListener<IABOrderIdType, IABSKUType, IABPurchaseType> listener1 = getListener();
         if (listener1 != null)
         {
             listener1.onPurchaseReportFailed(this.purchase, error);
         }
     }
 
-    public static interface PurchaseReporterListener<
+    public static interface OnPurchaseReportedListener<
             IABOrderIdType extends IABOrderId,
             IABSKUType extends IABSKU,
             IABPurchaseType extends IABPurchase<IABOrderIdType, IABSKUType>>
