@@ -28,4 +28,23 @@ public class AlertDialogUtil
         AlertDialog alertDialog = alertDialogBuilder.create();
         alertDialog.show();
     }
+
+    public static void popWithCancelButton(final Context context, String titleRes, String descriptionRes, String cancelRes)
+    {
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
+        alertDialogBuilder
+                .setTitle(titleRes)
+                .setMessage(descriptionRes)
+                .setIcon(R.drawable.th_app_logo)
+                .setCancelable(true)
+                .setNegativeButton(cancelRes, new DialogInterface.OnClickListener()
+                {
+                    public void onClick(DialogInterface dialog, int id)
+                    {
+                        dialog.cancel();
+                    }
+                });
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.show();
+    }
 }

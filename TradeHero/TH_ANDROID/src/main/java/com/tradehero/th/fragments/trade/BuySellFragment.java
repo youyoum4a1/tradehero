@@ -941,14 +941,6 @@ public class BuySellFragment extends AbstractBuySellFragment
         freshQuoteHolder.identifier = "BuySellFragment";
     }
 
-    private void handleMarketCloseClicked()
-    {
-        AlertDialogUtil.popWithCancelButton(getActivity(),
-                R.string.alert_dialog_market_close_title,
-                R.string.alert_dialog_market_close_message,
-                R.string.alert_dialog_market_close_cancel);
-    }
-
     private void handleBtnAddTriggerClicked()
     {
         if (securityAlertAssistant.isPopulated() && securityAlertAssistant.getAlertId(securityId) != null)

@@ -24,6 +24,7 @@ import com.tradehero.th.persistence.alert.AlertCache;
 import com.tradehero.th.persistence.position.SecurityPositionDetailCache;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.SecurityUtils;
 import dagger.Lazy;
 import javax.inject.Inject;
@@ -435,6 +436,24 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
     }
 
     abstract public void display();
+
+    protected void handleMarketCloseClicked()
+    {
+        if (securityId == null)
+        {
+            AlertDialogUtil.popWithCancelButton(getActivity(),
+                    R.string.alert_dialog_market_close_title,
+                    R.string.alert_dialog_market_close_message_basic,
+                    R.string.alert_dialog_market_close_cancel);
+        }
+        else
+        {
+            AlertDialogUtil.popWithCancelButton(getActivity(),
+                    getString(R.string.alert_dialog_market_close_title),
+                    String.format(getString(R.string.alert_dialog_market_close_message), securityId.exchange, securityId.securitySymbol),
+                    getString(R.string.alert_dialog_market_close_cancel));
+        }
+    }
 
     private DTOCache.Listener<UserBaseKey, UserProfileDTO> createUserProfileListener(final UserBaseKey userBaseKey)
     {
