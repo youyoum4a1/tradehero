@@ -15,6 +15,7 @@ import com.tradehero.th.billing.PurchaseReporter;
 import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
 import com.tradehero.th.base.THUser;
 import com.tradehero.th.billing.googleplay.SKUDetailsPurchaser;
+import com.tradehero.th.billing.googleplay.THIABLogicHolderExtended;
 import com.tradehero.th.billing.googleplay.THInventoryFetcher;
 import com.tradehero.th.fragments.WebViewFragment;
 import com.tradehero.th.fragments.authentication.EmailSignInFragment;
@@ -217,6 +218,8 @@ import org.ocpsoft.prettytime.PrettyTime;
                 PurchaseFetcher.class,
                 SKUDetailsPurchaser.class,
                 PurchaseReporter.class,
+                THIABLogicHolderExtended.class,
+
         },
         staticInjections =
         {

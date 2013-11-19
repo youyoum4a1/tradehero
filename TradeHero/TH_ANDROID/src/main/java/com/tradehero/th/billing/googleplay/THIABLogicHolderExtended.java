@@ -5,6 +5,8 @@ import android.content.Intent;
 import com.tradehero.common.billing.googleplay.BaseIABActor;
 import com.tradehero.common.billing.googleplay.Constants;
 import com.tradehero.common.billing.googleplay.IABOrderId;
+import com.tradehero.common.billing.googleplay.IABPurchaseConsumeHandler;
+import com.tradehero.common.billing.googleplay.IABPurchaseConsumer;
 import com.tradehero.common.billing.googleplay.SKUPurchase;
 import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.common.billing.googleplay.InventoryFetcher;
@@ -14,8 +16,15 @@ import com.tradehero.common.billing.googleplay.exceptions.IABException;
 import com.tradehero.common.utils.ArrayUtils;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
+import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.billing.PurchaseReportedHandler;
+import com.tradehero.th.billing.PurchaseReporter;
+import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.utils.DaggerUtils;
+import dagger.Lazy;
 import java.util.List;
 import java.util.Map;
+import javax.inject.Inject;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/8/13 Time: 12:32 PM To change this template use File | Settings | File Templates. */
 public class THIABLogicHolderExtended
@@ -34,9 +43,12 @@ public class THIABLogicHolderExtended
     protected Exception latestInventoryFetcherException;
     protected Exception latestPurchaseFetcherException;
 
+    @Inject Lazy<UserProfileCache> userProfileCache;
+
     public THIABLogicHolderExtended(Activity activity)
     {
         super(activity);
+        DaggerUtils.inject(this);
     }
 
     @Override public void onDestroy()
@@ -182,6 +194,7 @@ public class THIABLogicHolderExtended
             if (purchases != null && purchases.size() > 0)
             {
                 THToast.show("There are some purchases to be consumed");
+                sequentiallyConsume(purchases);
             }
             else
             {
@@ -195,6 +208,45 @@ public class THIABLogicHolderExtended
 
     }
     //</editor-fold>
+
+    protected void sequentiallyConsume(Map<IABSKU, SKUPurchase> purchases)
+    {
+        final THIABPurchaseConsumeHandler consumeListener = new THIABPurchaseConsumeHandler()
+        {
+            @Override public void handlePurchaseConsumeException(int requestCode, IABException exception)
+            {
+                THToast.show("There are some purchases that could not be consumed");
+                THLog.e(TAG, "Could not consume a purchase", exception);
+            }
+
+            @Override public void handlePurchaseConsumed(int requestCode, SKUPurchase purchase)
+            {
+                THToast.show(purchase.getProductIdentifier().identifier + " has been successfully consumed");
+            }
+        };
+
+        PurchaseReportedHandler reportedListener = new PurchaseReportedHandler()
+        {
+            @Override public void handlePurchaseReported(int requestCode, SKUPurchase purchase, UserProfileDTO userProfileDTO)
+            {
+                launchConsumeSequence(consumeListener, purchase);
+            }
+
+            @Override public void handlePurchaseReportFailed(int requestCode, Throwable exception)
+            {
+                THToast.show("A purchase could not be been reported");
+                THLog.e(TAG, "A purchase could not be reported", exception);
+            }
+        };
+
+        for (SKUPurchase purchase : purchases.values())
+        {
+            THLog.d(TAG, "Purchasing " + purchase);
+            // launchReportSequence(reportedListener, purchase);
+            break;
+        }
+
+    }
 
     //<editor-fold desc="InventoryFetcher.InventoryListener">
     @Override public void onInventoryFetchSuccess(THInventoryFetcher fetcher, Map<IABSKU, THSKUDetails> inventory)

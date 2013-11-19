@@ -296,9 +296,7 @@ abstract public class BaseIABActor<
         };
     }
 
-    abstract protected /*<PurchaserType extends IABPurchaser<IABSKUType, IABProductDetailsType, IABOrderIdType, IABPurchaseType>>*/
-        IABPurchaserType createPurchaser(final int requestCode);
-
+    abstract protected IABPurchaserType createPurchaser(final int requestCode);
     abstract protected IABPurchaseConsumerType createPurchaseConsumer(final int requestCode);
 
     public void onActivityResult(int requestCode, int resultCode, Intent data)
