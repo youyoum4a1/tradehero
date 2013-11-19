@@ -15,7 +15,7 @@
       android:layout_height="48dp"
       android:layout_alignParentLeft="true"
       android:layout_centerVertical="true"
-      android:src="@drawable/chevron_back"
+      android:src="@drawable/settings_back_dark"
       android:contentDescription="@null"
       android:background="@android:color/transparent"
       />
@@ -81,7 +81,7 @@
       android:layout_height="48dp"
       android:layout_alignParentRight="true"
       android:layout_centerVertical="true"
-      android:src="@drawable/chevron_forward"
+      android:src="@drawable/settings_forward_dark"
       android:contentDescription="@null"
       android:background="@android:color/transparent"
     />

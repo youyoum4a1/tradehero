@@ -28,7 +28,7 @@ public class TrendingFilterSelectorPriceFragment extends TrendingFilterSelectorF
         super.displayNextButton();
         if (mNext != null)
         {
-            mNext.setVisibility(View.INVISIBLE);
+            mNext.setEnabled(false);
         }
     }
 }

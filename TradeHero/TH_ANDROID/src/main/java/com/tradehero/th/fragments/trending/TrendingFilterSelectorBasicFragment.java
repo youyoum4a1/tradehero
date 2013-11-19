@@ -28,7 +28,7 @@ public class TrendingFilterSelectorBasicFragment extends TrendingFilterSelectorF
         super.displayPreviousButton();
         if (mPrevious != null)
         {
-            mPrevious.setVisibility(View.INVISIBLE);
+            mPrevious.setEnabled(false);
         }
     }
 }

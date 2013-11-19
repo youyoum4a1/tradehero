@@ -169,7 +169,7 @@ abstract public class TrendingFilterSelectorFragment extends SherlockFragment
     {
         if (mPrevious != null)
         {
-            mPrevious.setVisibility(View.VISIBLE);
+            mPrevious.setEnabled(true);
         }
     }
 
@@ -177,7 +177,7 @@ abstract public class TrendingFilterSelectorFragment extends SherlockFragment
     {
         if (mNext != null)
         {
-            mNext.setVisibility(View.VISIBLE);
+            mNext.setEnabled(true);
         }
     }
 
