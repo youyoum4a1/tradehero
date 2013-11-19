@@ -631,7 +631,10 @@ public class SettingsFragment extends PreferenceFragment
     private LogInCallback socialConnectCallback = new LogInCallback()
     {
         @Override public void done(UserBaseDTO user, THException ex)
-        {}
+        {
+            // when user cancel the process
+            progressDialog.dismiss();
+        }
 
         @Override public void onStart()
         {}
