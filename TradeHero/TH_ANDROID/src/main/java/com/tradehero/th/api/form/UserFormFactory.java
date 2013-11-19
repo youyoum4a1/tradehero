@@ -20,15 +20,21 @@ public class UserFormFactory
     public static final String KEY_EMAIL_NOTIFICATION_ENABLED = "emailNotificationsEnabled";
     public static final String KEY_PUSH_NOTIFICATION_ENABLED = "pushNotificationsEnabled";
 
-    public static UserFormDTO create (JSONObject json) throws JSONException
+    public static UserFormDTO create (JSONObject json)
     {
-        String type = json.getString(KEY_TYPE);
+        try
+        {
+            String type = json.getString(KEY_TYPE);
 
-        UserFormDTO userFormDTO = createEmptyForType(type);
-        populateBase(userFormDTO, json);
-        populatePerType(userFormDTO, type, json);
-
-        return userFormDTO;
+            UserFormDTO userFormDTO = createEmptyForType(type);
+            populateBase(userFormDTO, json);
+            populatePerType(userFormDTO, type, json);
+            return userFormDTO;
+        }
+        catch (JSONException ex)
+        {
+            return null;
+        }
     }
 
     private static UserFormDTO createEmptyForType (String type)

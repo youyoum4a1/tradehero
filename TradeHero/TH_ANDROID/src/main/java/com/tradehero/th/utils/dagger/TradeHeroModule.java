@@ -71,6 +71,7 @@ import com.tradehero.th.network.service.ProviderService;
 import com.tradehero.th.network.service.QuoteService;
 import com.tradehero.th.network.service.SecurityService;
 import com.tradehero.th.network.service.SessionService;
+import com.tradehero.th.network.service.SocialService;
 import com.tradehero.th.network.service.TradeService;
 import com.tradehero.th.network.service.UserService;
 import com.tradehero.th.network.service.UserTimelineService;
@@ -314,6 +315,11 @@ public class TradeHeroModule
      @Provides @Singleton AlertPlanService provideAlertPlanService()
     {
         return engine.createService(AlertPlanService.class);
+    }
+
+    @Provides @Singleton SocialService provideSocialService()
+    {
+        return engine.createService(SocialService.class);
     }
 
     @Provides @Singleton YahooNewsService provideYahooNewsService()

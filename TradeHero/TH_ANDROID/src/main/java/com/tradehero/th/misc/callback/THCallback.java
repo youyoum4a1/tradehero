@@ -10,14 +10,14 @@ public abstract class THCallback<T> implements Callback<T>
 {
     @Override public void success(T t, Response response)
     {
-        finish();
         success(t, new THResponse(response));
+        finish();
     }
 
     @Override public void failure(RetrofitError error)
     {
-        finish();
         failure(new THException(error));
+        finish();
     }
 
     protected abstract void success(T t, THResponse thResponse);

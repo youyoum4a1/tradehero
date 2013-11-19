@@ -2,6 +2,15 @@
 
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
   <PreferenceCategory
+    android:title="@string/sharing">
+    <CheckBoxPreference android:key="@string/settings_sharing_facebook"
+      android:title="@string/facebook"/>
+    <CheckBoxPreference android:key="@string/settings_sharing_twitter"
+        android:title="@string/settings_sharing_twitter"/>
+    <CheckBoxPreference android:key="@string/settings_sharing_linked_in"
+        android:title="@string/settings_sharing_linked_in"/>
+  </PreferenceCategory>
+  <PreferenceCategory
       android:title="@string/setting_general">
     <Preference
         android:key="@string/settings_primary_send_love"
@@ -39,6 +48,7 @@
         android:icon="@drawable/settings_trans_history"
         />
     <Preference
+        android:enabled="false"
         android:key="@string/settings_primary_restore_purchases"
         android:title="@string/settings_primary_restore_purchases"
         />
@@ -57,8 +67,11 @@
         android:icon="@drawable/settings_email_noti"
         android:title="@string/settings_notifications_email"/>
     <SwitchPreference
+        android:enabled="false"
         android:key="@string/settings_notifications_push"
-        android:title="@string/settings_notifications_push"/>
+        android:title="@string/settings_notifications_push"
+        android:icon="@drawable/settings_push_noti"
+        />
   </PreferenceCategory>
 
   <PreferenceCategory android:title="@string/settings_misc">

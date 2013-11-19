@@ -5,10 +5,16 @@ public class SocialNetworkFormDTO
 {
     public static final String TAG = SocialNetworkFormDTO.class.getSimpleName();
 
-    public String socialNetwork;
+    public SocialNetworkEnum socialNetwork;
 
     public SocialNetworkFormDTO()
     {
         super();
+    }
+
+    public SocialNetworkFormDTO(SocialNetworkEnum socialNetwork)
+    {
+        super();
+        this.socialNetwork = socialNetwork;
     }
 }

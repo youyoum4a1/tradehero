@@ -157,15 +157,16 @@ public class THUser
 
     public static void logInAsyncWithJson(final JSONObject json, final LogInCallback callback)
     {
-        UserFormDTO userFormDTO;
-        try
+        UserFormDTO userFormDTO = UserFormFactory.create(json);
+        if (userFormDTO == null)
         {
-            userFormDTO = UserFormFactory.create(json);
-        }
-        catch (JSONException e)
-        {
-            THLog.e("THUser.logInAsyncWithJson", e.getMessage(), e);
+            // input error, unable to parse as json data
             return;
+        }
+
+        if (authenticationMode == null)
+        {
+            authenticationMode = AuthenticationMode.SignIn;
         }
 
         switch (authenticationMode)
@@ -221,10 +222,11 @@ public class THUser
         {
             @Override public void success(UserLoginDTO userLoginDTO, THResponse response)
             {
-                UserProfileDTO userDTO = userLoginDTO.profileDTO;
-                saveCurrentUser(userDTO);
+                UserProfileDTO userProfileDTO = userLoginDTO.profileDTO;
+                userProfileCache.get().put(userProfileDTO.getBaseKey(), userProfileDTO);
+                saveCurrentUser(userProfileDTO);
                 saveCredentialsToUserDefaults(json);
-                callback.done(userDTO, null);
+                callback.done(userProfileDTO, null);
             }
 
             @Override public void failure(THException error)
@@ -284,7 +286,7 @@ public class THUser
         authenticationProviders.put(provider.getAuthType(), provider);
     }
 
-    private static void saveCredentialsToUserDefaults(JSONObject json)
+    public static void saveCredentialsToUserDefaults(JSONObject json)
     {
         if (credentials == null)
         {
@@ -324,6 +326,7 @@ public class THUser
     public static void clearCurrentUser()
     {
         currentSessionToken = null;
+        userProfileCache.get().invalidate(currentUserBaseKeyHolder.getCurrentUserBaseKey());
         currentUserBaseKeyHolder.setCurrentUserBaseKey(new UserBaseKey(0));
         credentials.clear();
         VisitedFriendListPrefs.clearVisitedIdList();
@@ -350,16 +353,15 @@ public class THUser
         return currentAuthenticationType + " " + currentSessionToken;
     }
 
-    public static void updateProfile(JSONObject userFormJSON, final LogInCallback callback)
+    // whether update is posted
+    public static boolean updateProfile(JSONObject userFormJSON, final LogInCallback callback)
     {
-        UserFormDTO userFormDTO = null;
-        try
+        UserFormDTO userFormDTO = UserFormFactory.create(userFormJSON);
+        if (userFormDTO == null)
         {
-            userFormDTO = UserFormFactory.create(userFormJSON);
+            return false;
         }
-        catch (JSONException je)
-        {
-        }
+
         userService.get().updateProfile(
                 currentUserBaseKeyHolder.getCurrentUserBaseKey().key,
                 userFormDTO.deviceToken,
@@ -371,5 +373,34 @@ public class THUser
                 userFormDTO.passwordConfirmation,
                 userFormDTO.username,
                 createCallbackForSignUpAsyncWithJson(userFormJSON, callback));
+        return true;
+    }
+
+    public static String getCurrentAuthenticationType()
+    {
+        return currentAuthenticationType;
+    }
+
+    public static void removeCredential(String authenticationHeader)
+    {
+        if (credentials == null)
+        {
+            THLog.d(TAG, "saveCredentialsToUserDefaults: Credentials were null");
+            return;
+        }
+
+        THLog.d(TAG, String.format("%d authentication tokens loaded", credentials.size()));
+
+        credentials.remove(authenticationHeader);
+
+        Set<String> toSave = new HashSet<>();
+        for (JSONObject entry : credentials.values())
+        {
+            toSave.add(entry.toString());
+        }
+
+        SharedPreferences.Editor prefEditor = Application.getPreferences().edit();
+        prefEditor.putStringSet(PREF_MY_TOKEN, toSave);
+        prefEditor.commit();
     }
 }

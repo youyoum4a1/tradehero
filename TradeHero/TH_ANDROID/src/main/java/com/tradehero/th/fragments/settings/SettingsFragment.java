@@ -6,7 +6,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.CheckBoxPreference;
 import android.preference.Preference;
+import android.preference.SwitchPreference;
 import android.support.v4.preference.PreferenceFragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,7 +23,11 @@ import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.ActivityHelper;
+import com.tradehero.th.api.form.UserFormFactory;
+import com.tradehero.th.api.social.SocialNetworkEnum;
+import com.tradehero.th.api.social.SocialNetworkFormDTO;
 import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
+import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.Application;
 import com.tradehero.th.base.DashboardNavigatorActivity;
@@ -29,12 +35,22 @@ import com.tradehero.th.base.THUser;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.WebViewFragment;
 import com.tradehero.th.fragments.authentication.EmailSignUpFragment;
+import com.tradehero.th.misc.callback.LogInCallback;
+import com.tradehero.th.misc.callback.THCallback;
+import com.tradehero.th.misc.callback.THResponse;
+import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.service.SessionService;
+import com.tradehero.th.network.service.SocialService;
 import com.tradehero.th.network.service.UserService;
 import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th.utils.FacebookUtils;
+import com.tradehero.th.utils.LinkedInUtils;
+import com.tradehero.th.utils.TwitterUtils;
 import com.tradehero.th.utils.VersionUtils;
 import dagger.Lazy;
 import javax.inject.Inject;
+import org.json.JSONObject;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -46,9 +62,15 @@ public class SettingsFragment extends PreferenceFragment
 
     @Inject UserService userService;
     @Inject SessionService sessionService;
+    @Inject SocialService socialService;
     @Inject protected Lazy<UserProfileCache> userProfileCache;
     @Inject protected CurrentUserBaseKeyHolder currentUserBaseKeyHolder;
+
     private ProgressDialog progressDialog;
+    private CheckBoxPreference facebookSharing;
+    private SocialNetworkEnum currentSocialNetworkConnect;
+    private CheckBoxPreference twitterSharing;
+    private CheckBoxPreference linkedInSharing;
 
     @Override public View onCreateView(LayoutInflater paramLayoutInflater, ViewGroup paramViewGroup, Bundle paramBundle)
     {
@@ -64,6 +86,7 @@ public class SettingsFragment extends PreferenceFragment
         setHasOptionsMenu(true);
         addPreferencesFromResource(R.xml.settings);
 
+        DaggerUtils.inject(this);
         initPreferenceClickHandlers();
     }
 
@@ -219,8 +242,170 @@ public class SettingsFragment extends PreferenceFragment
                 }
             });
         }
+
+        // Sharing
+        facebookSharing = (CheckBoxPreference) findPreference(getString(R.string.settings_sharing_facebook));
+        if (facebookSharing != null)
+        {
+            facebookSharing.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener()
+            {
+                @Override public boolean onPreferenceChange(Preference preference, Object newValue)
+                {
+                    return changeSharing(SocialNetworkEnum.FB, (boolean) newValue);
+                }
+            });
+        }
+        twitterSharing = (CheckBoxPreference) findPreference(getString(R.string.settings_sharing_twitter));
+        if (twitterSharing != null)
+        {
+            twitterSharing.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener()
+            {
+                @Override public boolean onPreferenceChange(Preference preference, Object newValue)
+                {
+                    return changeSharing(SocialNetworkEnum.TW, (boolean) newValue);
+                }
+            });
+        }
+        linkedInSharing = (CheckBoxPreference) findPreference(getString(R.string.settings_sharing_linked_in));
+        if (linkedInSharing != null)
+        {
+            linkedInSharing.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener()
+            {
+                @Override public boolean onPreferenceChange(Preference preference, Object newValue)
+                {
+                    return changeSharing(SocialNetworkEnum.LI, (boolean) newValue);
+                }
+            });
+        }
+
+        updateSocialConnectStatus();
+        updateNotificationStatus();
     }
 
+    private void updateNotificationStatus()
+    {
+        // notification
+        UserProfileDTO currentUserProfile = userProfileCache.get().get(currentUserBaseKeyHolder.getCurrentUserBaseKey());
+        if (currentUserProfile == null)
+        {
+            return;
+        }
+
+        SwitchPreference pushNotification = (SwitchPreference) findPreference(getString(R.string.settings_notifications_push));
+        if (pushNotification != null)
+        {
+            pushNotification.setChecked(currentUserProfile.pushNotificationsEnabled);
+            pushNotification.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener()
+            {
+                @Override public boolean onPreferenceChange(Preference preference, Object newValue)
+                {
+                    return changePushNotification((boolean) newValue);
+                }
+            });
+        }
+
+        SwitchPreference emailNotification = (SwitchPreference) findPreference(getString(R.string.settings_notifications_email));
+        if (emailNotification != null)
+        {
+            emailNotification.setChecked(currentUserProfile.emailNotificationsEnabled);
+            emailNotification.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener()
+            {
+                @Override public boolean onPreferenceChange(Preference preference, Object newValue)
+                {
+                    return changeEmailNotification((boolean) newValue);
+                }
+            });
+        }
+    }
+
+    private boolean changeEmailNotification(boolean newValue)
+    {
+        return false;  //To change body of created methods use File | Settings | File Templates.
+    }
+
+    private boolean changePushNotification(boolean newValue)
+    {
+        return false;  //To change body of created methods use File | Settings | File Templates.
+    }
+
+    private boolean changeSharing(SocialNetworkEnum socialNetwork, boolean enable)
+    {
+        currentSocialNetworkConnect = socialNetwork;
+        if (enable)
+        {
+            switch (socialNetwork)
+            {
+                case FB:
+                    progressDialog = ProgressDialog.show(getActivity(), getString(R.string.facebook), getString(R.string.connecting_to_facebook));
+                    FacebookUtils.logIn(getActivity(), socialConnectCallback);
+                    break;
+                case TW:
+                    progressDialog = ProgressDialog.show(getActivity(), getString(R.string.twiter), getString(R.string.connecting_to_twitter));
+                    TwitterUtils.logIn(getActivity(), socialConnectCallback);
+                    break;
+                case TH:
+                    break;
+                case LI:
+                    progressDialog = ProgressDialog.show(getActivity(), getString(R.string.linkedin), getString(R.string.connecting_to_linkedin));
+                    LinkedInUtils.logIn(getActivity(), socialConnectCallback);
+                    break;
+            }
+        }
+        else
+        {
+            progressDialog = ProgressDialog.show(getActivity(), getString(R.string.please_wait), getString(R.string.connecting_tradehero_only));
+            socialService.disconnect(
+                    currentUserBaseKeyHolder.getCurrentUserBaseKey().key,
+                    new SocialNetworkFormDTO(socialNetwork),
+                    createSocialDisconnectCallback());
+
+            if (socialNetwork.getAuthenticationHeader().equals(THUser.getCurrentAuthenticationType()))
+            {
+                effectSignOut();
+                return false;
+            }
+        }
+        return false;
+    }
+
+    private Callback<UserProfileDTO> createSocialDisconnectCallback()
+    {
+        return new SocialLinkingCallback()
+        {
+            @Override protected void success(UserProfileDTO userProfileDTO, THResponse thResponse)
+            {
+                super.success(userProfileDTO, thResponse);
+                THUser.removeCredential(currentSocialNetworkConnect.getAuthenticationHeader());
+            }
+        };
+    }
+
+    private Callback<UserProfileDTO> createSocialConnectCallback()
+    {
+        return new SocialLinkingCallback();
+    }
+
+    private void updateSocialConnectStatus()
+    {
+        UserProfileDTO updatedUserProfileDTO = userProfileCache.get().get(currentUserBaseKeyHolder.getCurrentUserBaseKey());
+        if (updatedUserProfileDTO != null)
+        {
+            if (facebookSharing != null)
+            {
+                facebookSharing.setChecked(updatedUserProfileDTO.fbLinked);
+            }
+            if (twitterSharing != null)
+            {
+                twitterSharing.setChecked(updatedUserProfileDTO.twLinked);
+            }
+            if (linkedInSharing != null)
+            {
+                linkedInSharing.setChecked(updatedUserProfileDTO.liLinked);
+            }
+        }
+    }
+
+    //<editor-fold desc="ActionBar">
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         super.onCreateOptionsMenu(menu, inflater);
@@ -239,6 +424,7 @@ public class SettingsFragment extends PreferenceFragment
         }
         return super.onOptionsItemSelected(item);
     }
+    //</editor-fold>
 
     private DashboardNavigator getNavigator()
     {
@@ -440,5 +626,45 @@ public class SettingsFragment extends PreferenceFragment
     private void handleAboutClicked()
     {
         getNavigator().pushFragment(AboutFragment.class);
+    }
+
+    private LogInCallback socialConnectCallback = new LogInCallback()
+    {
+        @Override public void done(UserBaseDTO user, THException ex)
+        {}
+
+        @Override public void onStart()
+        {}
+
+        @Override public boolean onSocialAuthDone(JSONObject json)
+        {
+            socialService.connect(
+                    currentUserBaseKeyHolder.getCurrentUserBaseKey().key,
+                    UserFormFactory.create(json),
+                    createSocialConnectCallback());
+            progressDialog.setMessage(String.format(getString(R.string.connecting_tradehero), currentSocialNetworkConnect.getName()));
+            return false;
+        }
+    };
+
+    private class SocialLinkingCallback extends THCallback<UserProfileDTO>
+    {
+
+        @Override protected void success(UserProfileDTO userProfileDTO, THResponse thResponse)
+        {
+            userProfileCache.get().put(currentUserBaseKeyHolder.getCurrentUserBaseKey(), userProfileDTO);
+        }
+
+        @Override protected void failure(THException ex)
+        {
+            // user unlinked current authentication
+            THToast.show(ex);
+        }
+
+        @Override protected void finish()
+        {
+            progressDialog.dismiss();
+            updateSocialConnectStatus();
+        }
     }
 }
