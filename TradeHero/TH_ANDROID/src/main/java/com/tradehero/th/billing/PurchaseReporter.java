@@ -1,11 +1,9 @@
 package com.tradehero.th.billing;
 
-import com.tradehero.common.billing.googleplay.IABOrderId;
 import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.common.billing.googleplay.SKUPurchase;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
-import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.billing.googleplay.THIABOrderId;
 import com.tradehero.th.billing.googleplay.THSKUDetails;
@@ -13,7 +11,8 @@ import com.tradehero.th.billing.googleplay.exception.UnhandledSKUDomainException
 import com.tradehero.th.network.service.AlertPlanService;
 import com.tradehero.th.network.service.PortfolioService;
 import com.tradehero.th.network.service.UserService;
-import com.tradehero.th.persistence.billing.SKUDetailCache;
+import com.tradehero.th.persistence.billing.ProductDetailCache;
+import com.tradehero.th.persistence.billing.googleplay.THSKUDetailCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
@@ -26,7 +25,6 @@ import retrofit.client.Response;
 public class PurchaseReporter extends BasePurchaseReporter<
         IABSKU,
         THIABOrderId,
-        THSKUDetails,
         SKUPurchase>
 {
     public static final String TAG = PurchaseReporter.class.getSimpleName();
@@ -35,7 +33,7 @@ public class PurchaseReporter extends BasePurchaseReporter<
     @Inject Lazy<PortfolioService> portfolioService;
     @Inject Lazy<AlertPlanService> alertPlanService;
     @Inject Lazy<UserService> userService;
-    @Inject Lazy<SKUDetailCache> skuDetailCache;
+    @Inject Lazy<THSKUDetailCache> skuDetailCache;
     @Inject Lazy<PortfolioCompactListCache> portfolioCompactListCache;
 
     private Callback<UserProfileDTO> userProfileDTOCallback;

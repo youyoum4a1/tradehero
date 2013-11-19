@@ -35,11 +35,11 @@ abstract public class BaseIABActor<
     protected WeakReference<Activity> weakActivity = new WeakReference<>(null);
 
     protected Map<Integer /*requestCode*/, IABPurchaserType> iabPurchasers;
-    protected Map<Integer /*requestCode*/, IABPurchaser.OnIABPurchaseFinishedListener> purchaseFinishedListeners;
+    protected Map<Integer /*requestCode*/, IABPurchaser.OnIABPurchaseFinishedListener<IABSKUType, IABOrderIdType, IABPurchaseType, IABException>> purchaseFinishedListeners;
     protected Map<Integer /*requestCode*/, WeakReference<IABPurchaseHandlerType>> purchaseHandlers;
 
     protected Map<Integer /*requestCode*/, IABPurchaseConsumerType> iabPurchaseConsumers;
-    protected Map<Integer /*requestCode*/, IABPurchaseConsumer.OnIABConsumptionFinishedListener> purchaseConsumptionFinishedListeners;
+    protected Map<Integer /*requestCode*/, IABPurchaseConsumer.OnIABConsumptionFinishedListener<IABSKUType, IABOrderIdType, IABPurchaseType, IABException>> purchaseConsumptionFinishedListeners;
     protected Map<Integer /*requestCode*/, WeakReference<IABPurchaseConsumeHandlerType>> purchaseConsumeHandlers;
 
 
@@ -182,9 +182,9 @@ abstract public class BaseIABActor<
         purchaseFinishedListeners.put(requestCode, createPurchaseFinishedListener(requestCode));
     }
 
-    protected IABPurchaser.OnIABPurchaseFinishedListener createPurchaseFinishedListener(final int requestCode)
+    protected IABPurchaser.OnIABPurchaseFinishedListener<IABSKUType, IABOrderIdType, IABPurchaseType, IABException> createPurchaseFinishedListener(final int requestCode)
     {
-        return new IABPurchaser.OnIABPurchaseFinishedListener<IABPurchaseType, IABException>()
+        return new IABPurchaser.OnIABPurchaseFinishedListener<IABSKUType, IABOrderIdType, IABPurchaseType, IABException>()
         {
             private IABPurchaseHandlerType getPurchaseHandler()
             {
@@ -241,9 +241,9 @@ abstract public class BaseIABActor<
         purchaseConsumptionFinishedListeners.put(requestCode, createPurchaseConsumeFinishedListener(requestCode));
     }
 
-    protected IABPurchaseConsumer.OnIABConsumptionFinishedListener createPurchaseConsumeFinishedListener(final int requestCode)
+    protected IABPurchaseConsumer.OnIABConsumptionFinishedListener<IABSKUType, IABOrderIdType, IABPurchaseType, IABException> createPurchaseConsumeFinishedListener(final int requestCode)
     {
-        return new IABPurchaseConsumer.OnIABConsumptionFinishedListener<IABPurchaseType, IABException>()
+        return new IABPurchaseConsumer.OnIABConsumptionFinishedListener<IABSKUType, IABOrderIdType, IABPurchaseType, IABException>()
         {
             private IABPurchaseConsumeHandlerType getPurchaseConsumeHandler()
             {

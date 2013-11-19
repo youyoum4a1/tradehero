@@ -4,7 +4,8 @@ import android.app.Activity;
 import com.tradehero.common.billing.googleplay.IABPurchaser;
 import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.common.billing.googleplay.SKUPurchase;
-import com.tradehero.th.persistence.billing.SKUDetailCache;
+import com.tradehero.th.persistence.billing.ProductDetailCache;
+import com.tradehero.th.persistence.billing.googleplay.THSKUDetailCache;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
 import javax.inject.Inject;
@@ -15,7 +16,7 @@ public class SKUDetailsPurchaser extends IABPurchaser<IABSKU, THSKUDetails, THIA
 {
     public static final String TAG = SKUDetailsPurchaser.class.getSimpleName();
 
-    @Inject protected Lazy<SKUDetailCache> skuDetailCache;
+    @Inject protected Lazy<THSKUDetailCache> skuDetailCache;
 
     public SKUDetailsPurchaser(Activity activity)
     {

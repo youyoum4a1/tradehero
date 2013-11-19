@@ -29,7 +29,8 @@ import com.tradehero.th.billing.googleplay.THIABPurchaseHandler;
 import com.tradehero.th.billing.googleplay.THIABPurchaseOrder;
 import com.tradehero.th.billing.googleplay.THSKUDetails;
 import com.tradehero.th.fragments.base.DashboardFragment;
-import com.tradehero.th.persistence.billing.SKUDetailCache;
+import com.tradehero.th.persistence.billing.ProductDetailCache;
+import com.tradehero.th.persistence.billing.googleplay.THSKUDetailCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import dagger.Lazy;
 import java.lang.ref.WeakReference;
@@ -48,7 +49,7 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
 
     private ProgressDialog progressDialog;
     @Inject Lazy<UserProfileCache> userProfileCache;
-    @Inject Lazy<SKUDetailCache> skuDetailCache;
+    @Inject Lazy<THSKUDetailCache> skuDetailCache;
     protected WeakReference<THIABActor> billingActor = new WeakReference<>(null);
     protected PurchaseReporter purchaseReporter = new PurchaseReporter();
     protected int requestCode = (int) (Math.random() * Integer.MAX_VALUE);

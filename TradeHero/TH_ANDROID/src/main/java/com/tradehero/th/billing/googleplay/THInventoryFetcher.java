@@ -5,7 +5,8 @@ import android.os.RemoteException;
 import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.common.billing.googleplay.InventoryFetcher;
 import com.tradehero.common.billing.googleplay.exceptions.IABException;
-import com.tradehero.th.persistence.billing.SKUDetailCache;
+import com.tradehero.th.persistence.billing.ProductDetailCache;
+import com.tradehero.th.persistence.billing.googleplay.THSKUDetailCache;
 import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,7 +19,7 @@ public class THInventoryFetcher extends InventoryFetcher<THSKUDetails>
 {
     public static final String TAG = THInventoryFetcher.class.getSimpleName();
 
-    @Inject protected Lazy<SKUDetailCache> skuDetailCache;
+    @Inject protected Lazy<THSKUDetailCache> skuDetailCache;
 
     public THInventoryFetcher(Context ctx, List<IABSKU> iabSKUs)
     {

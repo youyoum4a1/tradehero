@@ -13,16 +13,16 @@ import java.util.List;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/18/13 Time: 3:23 PM To change this template use File | Settings | File Templates. */
 public class IABPurchaseConsumer<
-        IABSKUType extends IABSKU,
-        IABOrderIdType extends IABOrderId,
-        IABPurchaseType extends IABPurchase<IABSKUType, IABOrderIdType>>
+            IABSKUType extends IABSKU,
+            IABOrderIdType extends IABOrderId,
+            IABPurchaseType extends IABPurchase<IABSKUType, IABOrderIdType>>
         extends IABServiceConnector
 {
     public static final String TAG = IABPurchaseConsumer.class.getSimpleName();
 
     private boolean consuming = false;
     protected IABPurchaseType purchase;
-    private WeakReference<OnIABConsumptionFinishedListener> consumptionFinishedListener = new WeakReference<>(null);
+    private WeakReference<OnIABConsumptionFinishedListener<IABSKUType, IABOrderIdType, IABPurchaseType, IABException>> consumptionFinishedListener = new WeakReference<>(null);
 
     public IABPurchaseConsumer(Activity activity)
     {
@@ -47,7 +47,7 @@ public class IABPurchaseConsumer<
         }
     }
 
-    public OnIABConsumptionFinishedListener getConsumptionFinishedListener()
+    public OnIABConsumptionFinishedListener<IABSKUType, IABOrderIdType, IABPurchaseType, IABException> getConsumptionFinishedListener()
     {
         return consumptionFinishedListener.get();
     }
@@ -56,7 +56,7 @@ public class IABPurchaseConsumer<
      * the listener should be strongly referenced elsewhere
      * @param consumptionFinishedListener
      */
-    public void setConsumptionFinishedListener(OnIABConsumptionFinishedListener consumptionFinishedListener)
+    public void setConsumptionFinishedListener(OnIABConsumptionFinishedListener<IABSKUType, IABOrderIdType, IABPurchaseType, IABException> consumptionFinishedListener)
     {
         this.consumptionFinishedListener = new WeakReference<>(consumptionFinishedListener);
     }
@@ -120,7 +120,7 @@ public class IABPurchaseConsumer<
 
     private void notifyListenerConsumeFailed(IABException exception)
     {
-        OnIABConsumptionFinishedListener listener = getConsumptionFinishedListener();
+        OnIABConsumptionFinishedListener<IABSKUType, IABOrderIdType, IABPurchaseType, IABException> listener = getConsumptionFinishedListener();
         if (listener != null)
         {
             listener.onIABConsumptionFailed(this, exception);
@@ -141,7 +141,7 @@ public class IABPurchaseConsumer<
 
     private void notifyListenerConsumeFinished(IABPurchaseType purchase)
     {
-        OnIABConsumptionFinishedListener listener = getConsumptionFinishedListener();
+        OnIABConsumptionFinishedListener<IABSKUType, IABOrderIdType, IABPurchaseType, IABException> listener = getConsumptionFinishedListener();
         if (listener != null)
         {
             listener.onIABConsumptionFinished(this, purchase);
@@ -203,7 +203,9 @@ public class IABPurchaseConsumer<
     }
 
     public static interface OnIABConsumptionFinishedListener<
-            IABPurchaseType extends IABPurchase,
+            IABSKUType extends IABSKU,
+            IABOrderIdType extends IABOrderId,
+            IABPurchaseType extends IABPurchase<IABSKUType, IABOrderIdType>,
             IABExceptionType extends IABException>
     {
         void onIABConsumptionFinished(IABPurchaseConsumer purchaseConsumer, IABPurchaseType info);

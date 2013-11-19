@@ -13,7 +13,6 @@ import java.lang.ref.WeakReference;
 abstract public class BasePurchaseReporter<
         IABSKUType extends IABSKU,
         IABOrderIdType extends IABOrderId,
-        IABSKUDetailsType extends IABProductDetails<IABSKUType>,
         IABPurchaseType extends IABPurchase<IABSKUType, IABOrderIdType>>
 {
     public static final String TAG = BasePurchaseReporter.class.getSimpleName();

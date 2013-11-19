@@ -14,11 +14,7 @@ import com.tradehero.common.billing.googleplay.exceptions.IABSubscriptionUnavail
 import com.tradehero.common.billing.googleplay.exceptions.IABUnknownErrorException;
 import com.tradehero.common.billing.googleplay.exceptions.IABVerificationFailedException;
 import com.tradehero.common.utils.THLog;
-import com.tradehero.th.persistence.billing.SKUDetailCache;
-import com.tradehero.th.utils.DaggerUtils;
-import dagger.Lazy;
 import java.lang.ref.WeakReference;
-import javax.inject.Inject;
 import org.json.JSONException;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/7/13 Time: 11:05 AM To change this template use File | Settings | File Templates. */
@@ -35,7 +31,7 @@ abstract public class IABPurchaser<
     private boolean purchasing = false;
     private IABPurchaseOrderType purchaseOrder;
     private int activityRequestCode;
-    private WeakReference<OnIABPurchaseFinishedListener> purchaseFinishedListener = new WeakReference<>(null);
+    private WeakReference<OnIABPurchaseFinishedListener<IABSKUType, IABOrderIdType, IABPurchaseType, IABException>> purchaseFinishedListener = new WeakReference<>(null);
 
     public IABPurchaser(Activity activity)
     {
@@ -63,12 +59,12 @@ abstract public class IABPurchaser<
         }
     }
 
-    public OnIABPurchaseFinishedListener getPurchaseFinishedListener()
+    public OnIABPurchaseFinishedListener<IABSKUType, IABOrderIdType, IABPurchaseType, IABException> getPurchaseFinishedListener()
     {
         return purchaseFinishedListener.get();
     }
 
-    public void setPurchaseFinishedListener(OnIABPurchaseFinishedListener purchaseFinishedListener)
+    public void setPurchaseFinishedListener(OnIABPurchaseFinishedListener<IABSKUType, IABOrderIdType, IABPurchaseType, IABException> purchaseFinishedListener)
     {
         this.purchaseFinishedListener = new WeakReference<>(purchaseFinishedListener);
     }
@@ -183,7 +179,8 @@ abstract public class IABPurchaser<
 
     private Bundle createBuyIntentBundle() throws RemoteException, IABException
     {
-        THLog.d(TAG, "Constructing buy intent for " + getProductDetails(purchaseOrder.getProductIdentifier()) + ", item type: " + getProductDetails(purchaseOrder.getProductIdentifier()).getType());
+        THLog.d(TAG, "Constructing buy intent for " + getProductDetails(purchaseOrder.getProductIdentifier()) + ", item type: " + getProductDetails(
+                purchaseOrder.getProductIdentifier()).getType());
         Bundle buyIntentBundle = billingService.getBuyIntent(
                 TARGET_BILLING_API_VERSION3,
                 context.getPackageName(),
@@ -300,7 +297,9 @@ abstract public class IABPurchaser<
      *  Created with IntelliJ IDEA. User: xavier Date: 11/7/13 Time: 11:00 AM To change this template use File | Settings | File Templates.
      *  */
     public static interface OnIABPurchaseFinishedListener<
-                                        IABPurchaseType extends IABPurchase,
+                                        IABSKUType extends IABSKU,
+                                        IABOrderIdType extends IABOrderId,
+                                        IABPurchaseType extends IABPurchase<IABSKUType, IABOrderIdType>,
                                         IABExceptionType extends IABException>
     {
         /**

@@ -11,7 +11,7 @@ import java.util.List;
 import org.json.JSONException;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/6/13 Time: 3:40 PM To change this template use File | Settings | File Templates. */
-public class THSKUDetails extends SKUDetails implements DTO
+public class THSKUDetails extends SKUDetails
 {
     public static final String TAG = THSKUDetails.class.getSimpleName();
 
