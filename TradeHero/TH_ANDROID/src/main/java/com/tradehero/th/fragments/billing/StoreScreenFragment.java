@@ -18,6 +18,7 @@ import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
 import com.tradehero.th.billing.googleplay.IABAlertUtils;
 import com.tradehero.th.fragments.billing.management.FollowerManagerFragment;
 import com.tradehero.th.fragments.billing.management.HeroManagerFragment;
+import com.tradehero.th.utils.AlertDialogUtil;
 import javax.inject.Inject;
 
 public class StoreScreenFragment extends BasePurchaseManagerFragment
@@ -107,18 +108,30 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
                 break;
 
             case StoreItemAdapter.POSITION_MANAGE_HEROES:
-                bundle = new Bundle();
-
-                // TODO use SKUPurchase userId instead of current userId
-                // TODO fix crash when userId is null (Integer != int)
-                bundle.putInt(HeroManagerFragment.BUNDLE_KEY_USER_ID, getApplicablePortfolioId().userId);
-                pushFragment(HeroManagerFragment.class, bundle);
+                if (applicablePortfolioId == null || applicablePortfolioId.userId == null)
+                {
+                    popPleaseWait();
+                }
+                else
+                {
+                    bundle = new Bundle();
+                    // TODO fix crash when userId is null (Integer != int)
+                    bundle.putInt(HeroManagerFragment.BUNDLE_KEY_USER_ID, applicablePortfolioId.userId);
+                    pushFragment(HeroManagerFragment.class, bundle);
+                }
                 break;
 
             case StoreItemAdapter.POSITION_MANAGE_FOLLOWERS:
-                bundle = new Bundle();
-                bundle.putInt(HeroManagerFragment.BUNDLE_KEY_USER_ID, getApplicablePortfolioId().userId);
-                pushFragment(FollowerManagerFragment.class, bundle);
+                if (applicablePortfolioId == null || applicablePortfolioId.userId == null)
+                {
+                    popPleaseWait();
+                }
+                else
+                {
+                    bundle = new Bundle();
+                    bundle.putInt(FollowerManagerFragment.BUNDLE_KEY_USER_ID, applicablePortfolioId.userId);
+                    pushFragment(FollowerManagerFragment.class, bundle);
+                }
                 break;
 
             default:
@@ -135,5 +148,13 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
     private void pushFragment(Class<? extends Fragment> fragmentClass, Bundle bundle)
     {
         ((DashboardActivity) getActivity()).getNavigator().pushFragment(fragmentClass, bundle);
+    }
+
+    private void popPleaseWait()
+    {
+        AlertDialogUtil.popWithCancelButton(getActivity(),
+                R.string.error_incomplete_info_title,
+                R.string.error_incomplete_info_message,
+                R.string.error_incomplete_info_cancel);
     }
 }

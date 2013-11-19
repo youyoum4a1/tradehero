@@ -13,9 +13,14 @@ import com.tradehero.common.billing.googleplay.exceptions.IABRemoteException;
 import com.tradehero.common.billing.googleplay.exceptions.IABSendIntentException;
 import com.tradehero.common.billing.googleplay.exceptions.IABUserCancelledException;
 import com.tradehero.common.billing.googleplay.exceptions.IABVerificationFailedException;
+import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THLog;
+import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
+import com.tradehero.th.api.portfolio.OwnedPortfolioIdList;
+import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
+import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.billing.BasePurchaseReporter;
 import com.tradehero.th.billing.PurchaseReporter;
 import com.tradehero.th.api.users.UserProfileDTO;
@@ -29,8 +34,8 @@ import com.tradehero.th.billing.googleplay.THIABPurchaseHandler;
 import com.tradehero.th.billing.googleplay.THIABPurchaseOrder;
 import com.tradehero.th.billing.googleplay.THSKUDetails;
 import com.tradehero.th.fragments.base.DashboardFragment;
-import com.tradehero.th.persistence.billing.ProductDetailCache;
 import com.tradehero.th.persistence.billing.googleplay.THSKUDetailCache;
+import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import dagger.Lazy;
 import java.lang.ref.WeakReference;
@@ -48,14 +53,19 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
     public static final String BUNDLE_KEY_PORTFOLIO_ID = BasePurchaseManagerFragment.class.getName() + ".portfolioId";
 
     private ProgressDialog progressDialog;
+    @Inject Lazy<CurrentUserBaseKeyHolder> currentUserBaseKeyHolder;
     @Inject Lazy<UserProfileCache> userProfileCache;
+
+    @Inject Lazy<PortfolioCompactListCache> portfolioCompactListCache;
+    private DTOCache.Listener<UserBaseKey, OwnedPortfolioIdList> portfolioIdListListener;
+    private DTOCache.GetOrFetchTask<OwnedPortfolioIdList> portfolioIdListFetchTask;
+
     @Inject Lazy<THSKUDetailCache> skuDetailCache;
     protected WeakReference<THIABActor> billingActor = new WeakReference<>(null);
     protected PurchaseReporter purchaseReporter = new PurchaseReporter();
     protected int requestCode = (int) (Math.random() * Integer.MAX_VALUE);
     protected THIABPurchaseOrder purchaseOrder;
-    protected Integer userId;
-    protected Integer portfolioId;
+    protected OwnedPortfolioId applicablePortfolioId;
     protected SKUPurchase purchase;
 
     @Override public void onActivityCreated(Bundle savedInstanceState)
@@ -67,18 +77,18 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
     @Override public void onResume()
     {
         super.onResume();
-        Bundle args = getArguments();
-        if (args != null)
+        prepareApplicablePortfolioId();
+    }
+
+    @Override public void onPause()
+    {
+        if (portfolioIdListFetchTask != null)
         {
-            if (args.containsKey(BUNDLE_KEY_USER_ID))
-            {
-                userId = args.getInt(BUNDLE_KEY_USER_ID);
-            }
-            if (args.containsKey(BUNDLE_KEY_PORTFOLIO_ID))
-            {
-                portfolioId = args.getInt(BUNDLE_KEY_PORTFOLIO_ID);
-            }
+            portfolioIdListFetchTask.forgetListener(true);
         }
+        portfolioIdListFetchTask = null;
+        portfolioIdListListener = null;
+        super.onPause();
     }
 
     @Override public void onDestroyView()
@@ -91,9 +101,67 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
         super.onDestroyView();
     }
 
-    protected OwnedPortfolioId getApplicablePortfolioId()
+    protected void prepareApplicablePortfolioId()
     {
-        return new OwnedPortfolioId(userId, portfolioId);
+        Integer userId = null;
+        Integer portfolioId = null;
+
+        Bundle args = getArguments();
+
+        if (args != null && args.containsKey(BUNDLE_KEY_USER_ID))
+        {
+            userId = args.getInt(BUNDLE_KEY_USER_ID);
+        }
+        else
+        {
+            userId = currentUserBaseKeyHolder.get().getCurrentUserBaseKey().key;
+        }
+
+        if (args != null && args.containsKey(BUNDLE_KEY_PORTFOLIO_ID))
+        {
+            portfolioId = args.getInt(BUNDLE_KEY_PORTFOLIO_ID);
+        }
+        else if (portfolioCompactListCache.get().getDefaultPortfolio(new UserBaseKey(userId)) != null)
+        {
+            portfolioId = portfolioCompactListCache.get().getDefaultPortfolio(new UserBaseKey(userId)).portfolioId;
+        }
+        else
+        {
+            // TODO
+            if (portfolioIdListListener == null)
+            {
+                portfolioIdListListener = new DTOCache.Listener<UserBaseKey, OwnedPortfolioIdList>()
+                {
+                    @Override public void onDTOReceived(UserBaseKey key, OwnedPortfolioIdList value)
+                    {
+                        if (value == null)
+                        {
+                            THToast.show("There was a problem getting the portfolio information");
+                            THLog.d(TAG, "prepareApplicablePortfolioId:onDTOReceived Value is null");
+                        }
+                        else
+                        {
+                            prepareApplicablePortfolioId();
+                        }
+                    }
+
+                    @Override public void onErrorThrown(UserBaseKey key, Throwable error)
+                    {
+                        THToast.show("There was an error fetching the portfolio information");
+                        THLog.e(TAG, "Error fetching portfolio list", error);
+                    }
+                };
+            }
+            portfolioIdListFetchTask = portfolioCompactListCache.get().getOrFetch(new UserBaseKey(userId), portfolioIdListListener);
+            portfolioIdListFetchTask.execute();
+        }
+
+        this.applicablePortfolioId = new OwnedPortfolioId(userId, portfolioId);
+    }
+
+    public OwnedPortfolioId getApplicablePortfolioId()
+    {
+        return applicablePortfolioId;
     }
 
     protected boolean isBillingAvailable()

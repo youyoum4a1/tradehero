@@ -29,14 +29,12 @@ import javax.inject.Inject;
 public class HeroManagerFragment extends BasePurchaseManagerFragment
 {
     public static final String TAG = HeroManagerFragment.class.getSimpleName();
-    public static final String BUNDLE_KEY_USER_ID = HeroManagerFragment.class.getName() + ".userId";
 
     private TextView followCount;
     private ImageView icnCoinStack;
     private ImageButton btnBuyMore;
     private Button btnGoMostSkilled;
 
-    private UserBaseKey userBaseKey;
     private UserProfileDTO userProfileDTO;
 
     @Inject protected CurrentUserBaseKeyHolder currentUserBaseKeyHolder;
@@ -97,11 +95,6 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
     @Override public void onResume()
     {
         super.onResume();
-        Bundle args = getArguments();
-        if (args != null)
-        {
-            userBaseKey = new UserBaseKey(args.getInt(BUNDLE_KEY_USER_ID, currentUserBaseKeyHolder.getCurrentUserBaseKey().key));
-        }
         fetchUserProfile();
     }
 
@@ -132,11 +125,7 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
 
     private void fetchUserProfile()
     {
-        if (userBaseKey == null)
-        {
-            userBaseKey = currentUserBaseKeyHolder.getCurrentUserBaseKey();
-        }
-        UserProfileDTO userProfileDTO = userProfileCache.get().get(userBaseKey);
+        UserProfileDTO userProfileDTO = userProfileCache.get().get(new UserBaseKey(applicablePortfolioId.userId));
         if (userProfileDTO != null)
         {
             display(userProfileDTO);
@@ -162,7 +151,7 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
             {
                 userProfileFetchTask.forgetListener(true);
             }
-            userProfileFetchTask = userProfileCache.get().getOrFetch(userBaseKey, userProfileListener);
+            userProfileFetchTask = userProfileCache.get().getOrFetch(new UserBaseKey(applicablePortfolioId.userId), userProfileListener);
             userProfileFetchTask.execute();
         }
     }

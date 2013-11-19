@@ -30,7 +30,6 @@ import javax.inject.Inject;
 public class FollowerManagerFragment extends BasePurchaseManagerFragment
 {
     public static final String TAG = FollowerManagerFragment.class.getSimpleName();
-    public static final String BUNDLE_KEY_USER_ID = FollowerManagerFragment.class.getName() + ".userId";
 
     private TextView totalRevenue;
     private TextView totalAmountPaid;
@@ -38,7 +37,6 @@ public class FollowerManagerFragment extends BasePurchaseManagerFragment
     private ListView followerList;
 
     private FollowerAndPayoutListItemAdapter followerListAdapter;
-    private UserBaseKey userBaseKey;
     private FollowerSummaryDTO followerSummaryDTO;
 
     @Inject protected CurrentUserBaseKeyHolder currentUserBaseKeyHolder;
@@ -103,11 +101,6 @@ public class FollowerManagerFragment extends BasePurchaseManagerFragment
     @Override public void onResume()
     {
         super.onResume();
-        Bundle args = getArguments();
-        if (args != null)
-        {
-            userBaseKey = new UserBaseKey(args.getInt(BUNDLE_KEY_USER_ID, currentUserBaseKeyHolder.getCurrentUserBaseKey().key));
-        }
         fetchFollowerSummary();
     }
 
@@ -131,11 +124,7 @@ public class FollowerManagerFragment extends BasePurchaseManagerFragment
 
     protected void fetchFollowerSummary()
     {
-        if (userBaseKey == null)
-        {
-            userBaseKey = currentUserBaseKeyHolder.getCurrentUserBaseKey();
-        }
-        FollowerSummaryDTO summaryDTO = followerSummaryCache.get().get(userBaseKey);
+        FollowerSummaryDTO summaryDTO = followerSummaryCache.get().get(new UserBaseKey(applicablePortfolioId.userId));
         if (summaryDTO != null)
         {
             display(summaryDTO);
@@ -161,7 +150,7 @@ public class FollowerManagerFragment extends BasePurchaseManagerFragment
             {
                 followerSummaryFetchTask.forgetListener(true);
             }
-            followerSummaryFetchTask = followerSummaryCache.get().getOrFetch(userBaseKey, followerSummaryListener);
+            followerSummaryFetchTask = followerSummaryCache.get().getOrFetch(new UserBaseKey(applicablePortfolioId.userId), followerSummaryListener);
             followerSummaryFetchTask.execute();
         }
     }
@@ -259,7 +248,7 @@ public class FollowerManagerFragment extends BasePurchaseManagerFragment
             UserFollowerDTO followerDTO = (UserFollowerDTO) followerListAdapter.getItem(position);
             if (followerDTO != null)
             {
-                FollowerId followerId = new FollowerId(userBaseKey.key, followerDTO.id);
+                FollowerId followerId = new FollowerId(applicablePortfolioId.userId, followerDTO.id);
                 ((DashboardActivity) getActivity()).getDashboardNavigator().pushFragment(FollowerPayoutManagerFragment.class, followerId.getArgs());
             }
             else
