@@ -332,16 +332,16 @@ public class TrendingFragment extends DashboardFragment
 
     public void displayFilterPager()
     {
-        if (mTrendingFilterPagerAdapter != null)
+        getView().post(new Runnable()
         {
-            getView().post(new Runnable()
+            @Override public void run()
             {
-                @Override public void run()
+                if (mTrendingFilterPagerAdapter != null)
                 {
                     mTrendingFilterPagerAdapter.notifyDataSetChanged();
                 }
-            });
-        }
+            }
+        });
     }
 
     public TrendingSecurityListType getSecurityListType()
