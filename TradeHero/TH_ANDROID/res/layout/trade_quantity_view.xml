@@ -42,6 +42,7 @@
         android:gravity="right"
         android:paddingRight="@dimen/trade_screen_info_title_padding_right"
         android:text="@string/price_as_of"
+        android:textSize="10sp"
         />
 
     <TextView
@@ -53,6 +54,7 @@
         android:gravity="left"
         android:text=""
         android:textStyle="bold"
+        android:textSize="10sp"
         />
 
   </TableRow>

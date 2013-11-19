@@ -20,6 +20,7 @@ import com.tradehero.th.api.yahoo.NewsList;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.persistence.yahoo.NewsCache;
+import com.tradehero.th.utils.AlertDialogUtil;
 import com.viewpagerindicator.PageIndicator;
 import dagger.Lazy;
 import javax.inject.Inject;
@@ -114,8 +115,30 @@ public class StockInfoFragment extends DashboardFragment
     {
         super.onPrepareOptionsMenu(menu);
         MenuItem menuElements = menu.findItem(R.id.menu_elements_stock_info);
+
         marketCloseIcon = (ImageView) menuElements.getActionView().findViewById(R.id.market_status);
+        if (marketCloseIcon != null)
+        {
+            marketCloseIcon.setOnClickListener(new View.OnClickListener()
+            {
+                @Override public void onClick(View v)
+                {
+                    handleMarketCloseClicked();
+                }
+            });
+        }
+
         displayMarketClose();
+    }
+
+    @Override public void onDestroyOptionsMenu()
+    {
+        if (marketCloseIcon != null)
+        {
+            marketCloseIcon.setOnClickListener(null);
+        }
+        marketCloseIcon = null;
+        super.onDestroyOptionsMenu();
     }
 
     @Override public void onPause()
@@ -308,6 +331,24 @@ public class StockInfoFragment extends DashboardFragment
         if (yahooNewsListView != null)
         {
             yahooNewsListView.display(yahooNewsList);
+        }
+    }
+
+    protected void handleMarketCloseClicked()
+    {
+        if (securityId == null)
+        {
+            AlertDialogUtil.popWithCancelButton(getActivity(),
+                    R.string.alert_dialog_market_close_title,
+                    R.string.alert_dialog_market_close_message_basic,
+                    R.string.alert_dialog_market_close_cancel);
+        }
+        else
+        {
+            AlertDialogUtil.popWithCancelButton(getActivity(),
+                    getString(R.string.alert_dialog_market_close_title),
+                    String.format(getString(R.string.alert_dialog_market_close_message), securityId.exchange, securityId.securitySymbol),
+                    getString(R.string.alert_dialog_market_close_cancel));
         }
     }
 

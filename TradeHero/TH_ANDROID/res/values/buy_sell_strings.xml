@@ -28,9 +28,9 @@
   <string name="share_public">Public</string>
   <string name="share_private">Private</string>
 
-  <string name="alert_dialog_market_close_title">Off Trading Hours</string>
-  <string name="alert_dialog_market_close_message_basic">The stock market listing this stock is closed for the day. Trading now would result in an unfavourable buy / sell spread.</string>
-  <string name="alert_dialog_market_close_message">%1$s is closed for the day. Trading %2$s now would result in an unfavourable buy / sell spread.</string>
+  <string name="alert_dialog_market_close_title">Market Closed</string>
+  <string name="alert_dialog_market_close_message_basic">The stock exchange for this security is currently closed.\nYou can still trade off-hours quoted bid and ask prices, but be aware that the spread may be much larger than it is during regular hours.</string>
+  <string name="alert_dialog_market_close_message">%1$s is currently closed.\nYou can still trade %2$s off-hours quoted bid and ask prices, but be aware that the spread may be much larger than it is during regular hours.</string>
   <string name="alert_dialog_market_close_cancel">Right!</string>
 
 </resources>

@@ -1,149 +1,156 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="horizontal"
-    android:paddingLeft="4dp"
-    android:paddingRight="4dp"
-    android:paddingTop="4dp"
-    android:background="@color/white"
-    android:baselineAligned="false"
-    >
+    android:orientation="vertical"
+>
+
+  <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="horizontal"
+      android:paddingLeft="4dp"
+      android:paddingRight="4dp"
+      android:paddingTop="4dp"
+      android:background="@color/white"
+      android:baselineAligned="false"
+      >
 
     <TableLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="1" >
 
-        <TableRow
-            android:layout_width="fill_parent"
+      <TableRow
+          android:layout_width="fill_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginBottom="8dp">
+
+        <TextView
+            style="@style/TH.Title"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp">
+            android:layout_weight="1"
+            android:text="@string/previous_close"
+            android:textSize="13sp"
+            android:gravity="right"
+            />
 
-            <TextView
-                style="@style/TH.Title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/previous_close"
-                android:textSize="13sp"
-                android:gravity="right"
-                />
-
-            <TextView
-                android:id="@+id/vprevious_close"
-                style="@style/TH.Value"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="left"
-                android:text=""
-                android:textSize="13sp" />
-        </TableRow>
-
-        <TableRow
-            android:layout_width="fill_parent"
+        <TextView
+            android:id="@+id/vprevious_close"
+            style="@style/TH.Value"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp">
+            android:layout_weight="1"
+            android:gravity="left"
+            android:text=""
+            android:textSize="13sp" />
+      </TableRow>
 
-            <TextView
-                style="@style/TH.Title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/open"
-                android:textSize="13sp"
-                android:gravity="right"
-                />
+      <TableRow
+          android:layout_width="fill_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginBottom="8dp">
 
-            <TextView
-                android:id="@+id/vopen"
-                style="@style/TH.Value"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="left"
-                android:text=""
-                android:textSize="13sp" />
-        </TableRow>
+        <TextView
+            style="@style/TH.Title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/open"
+            android:textSize="13sp"
+            android:gravity="right"
+            />
 
-        <TableRow
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content" 
-            android:layout_marginBottom="8dp">
+        <TextView
+            android:id="@+id/vopen"
+            style="@style/TH.Value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="left"
+            android:text=""
+            android:textSize="13sp" />
+      </TableRow>
 
-            <TextView
-                style="@style/TH.Title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/days_high"
-                android:textSize="13sp"
-                android:gravity="right"
-                />
+      <TableRow
+          android:layout_width="fill_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginBottom="8dp">
 
-            <TextView
-                android:id="@+id/vdays_high"
-                style="@style/TH.Value"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="left"
-                android:text=""
-                android:textSize="13sp" />
-        </TableRow>
+        <TextView
+            style="@style/TH.Title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/days_high"
+            android:textSize="13sp"
+            android:gravity="right"
+            />
 
-        <TableRow
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content" 
-            android:layout_marginBottom="8dp">
+        <TextView
+            android:id="@+id/vdays_high"
+            style="@style/TH.Value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="left"
+            android:text=""
+            android:textSize="13sp" />
+      </TableRow>
 
-            <TextView
-                style="@style/TH.Title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/days_low"
-                android:textSize="13sp"
-                android:gravity="right"
-                />
+      <TableRow
+          android:layout_width="fill_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginBottom="8dp">
 
-            <TextView
-                android:id="@+id/vdays_low"
-                style="@style/TH.Value"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="left"
-                android:text=""
-                android:textSize="13sp" />
-        </TableRow>
-        
-         <TableRow
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content" 
-            android:layout_marginBottom="8dp">
+        <TextView
+            style="@style/TH.Title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/days_low"
+            android:textSize="13sp"
+            android:gravity="right"
+            />
 
-            <TextView
-                style="@style/TH.Title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/market_cap"
-                android:textSize="13sp"
-                android:gravity="right"
-                />
+        <TextView
+            android:id="@+id/vdays_low"
+            style="@style/TH.Value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="left"
+            android:text=""
+            android:textSize="13sp" />
+      </TableRow>
 
-            <TextView
-                android:id="@+id/vmarket_cap"
-                style="@style/TH.Value"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="left"
-                android:text=""
-                android:textSize="13sp" />
-        </TableRow>
+      <TableRow
+          android:layout_width="fill_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginBottom="8dp">
+
+        <TextView
+            style="@style/TH.Title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/market_cap"
+            android:textSize="13sp"
+            android:gravity="right"
+            />
+
+        <TextView
+            android:id="@+id/vmarket_cap"
+            style="@style/TH.Value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="left"
+            android:text=""
+            android:textSize="13sp" />
+      </TableRow>
     </TableLayout>
 
     <TableLayout
@@ -152,113 +159,115 @@
         android:layout_weight="1"
         >
 
-        <TableRow
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content" 
-            android:layout_marginBottom="8dp">
+      <TableRow
+          android:layout_width="fill_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginBottom="8dp">
 
-            <TextView
-                style="@style/TH.Title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/pe_ratio"
-                android:textSize="13sp"
-                android:gravity="right"
-                />
+        <TextView
+            style="@style/TH.Title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/pe_ratio"
+            android:textSize="13sp"
+            android:gravity="right"
+            />
 
-            <TextView
-                android:id="@+id/vpe_ratio"
-                style="@style/TH.Value"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="left"
-                android:text=""
-                android:textSize="13sp" />
-        </TableRow>
-        
-        <TableRow
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content" 
-            android:layout_marginBottom="8dp">
+        <TextView
+            android:id="@+id/vpe_ratio"
+            style="@style/TH.Value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="left"
+            android:text=""
+            android:textSize="13sp" />
+      </TableRow>
 
-            <TextView
-                style="@style/TH.Title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/eps"
-                android:textSize="13sp"
-                android:gravity="right"
-                />
+      <TableRow
+          android:layout_width="fill_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginBottom="8dp">
 
-            <TextView
-                android:id="@+id/veps"
-                style="@style/TH.Value"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="left"
-                android:text=""
-                android:textSize="13sp"
-                />
-        </TableRow>
-        
-        <TableRow
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content" 
-            android:layout_marginBottom="8dp">
+        <TextView
+            style="@style/TH.Title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/eps"
+            android:textSize="13sp"
+            android:gravity="right"
+            />
 
-            <TextView
-                style="@style/TH.Title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/volume"
-                android:textSize="13sp"
-                android:gravity="right"
-                />
+        <TextView
+            android:id="@+id/veps"
+            style="@style/TH.Value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="left"
+            android:text=""
+            android:textSize="13sp"
+            />
+      </TableRow>
 
-            <TextView
-                android:id="@+id/vvolume"
-                style="@style/TH.Value"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="left"
-                android:text="@string/na"
-                android:textSize="13sp"
-                />
-        </TableRow>
-        
-        <TableRow
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content" 
-            android:layout_marginBottom="8dp">
+      <TableRow
+          android:layout_width="fill_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginBottom="8dp">
 
-            <TextView
-                style="@style/TH.Title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/avg_volume"
-                android:textSize="13sp"
-                android:gravity="right"
-                />
+        <TextView
+            style="@style/TH.Title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/volume"
+            android:textSize="13sp"
+            android:gravity="right"
+            />
 
-            <TextView
-                android:id="@+id/vavg_volume"
-                style="@style/TH.Value"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="left"
-                android:text="@string/na"
-                android:textSize="13sp"
-                />
-        </TableRow>
-        
+        <TextView
+            android:id="@+id/vvolume"
+            style="@style/TH.Value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="left"
+            android:text="@string/na"
+            android:textSize="13sp"
+            />
+      </TableRow>
+
+      <TableRow
+          android:layout_width="fill_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginBottom="8dp">
+
+        <TextView
+            style="@style/TH.Title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/avg_volume"
+            android:textSize="13sp"
+            android:gravity="right"
+            />
+
+        <TextView
+            android:id="@+id/vavg_volume"
+            style="@style/TH.Value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="left"
+            android:text="@string/na"
+            android:textSize="13sp"
+            />
+      </TableRow>
+
     </TableLayout>
 
-</LinearLayout>
+  </LinearLayout>
+
+</ScrollView>

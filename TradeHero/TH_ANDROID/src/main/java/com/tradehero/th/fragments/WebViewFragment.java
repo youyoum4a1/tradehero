@@ -32,6 +32,7 @@ public class WebViewFragment extends DashboardFragment
     public static final String BUNDLE_KEY_URL = WebViewFragment.class.getName() + ".url";
 
     private WebView webView;
+    private ActionBar actionBar;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -45,8 +46,8 @@ public class WebViewFragment extends DashboardFragment
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         inflater.inflate(R.menu.webview_menu, menu);
-        getSherlockActivity().getSupportActionBar()
-                .setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_HOME_AS_UP);
+        this.actionBar = getSherlockActivity().getSupportActionBar();
+        this.actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_HOME_AS_UP);
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -78,6 +79,13 @@ public class WebViewFragment extends DashboardFragment
         }
         return super.onOptionsItemSelected(item);
     }
+
+    @Override public void onDestroyOptionsMenu()
+    {
+        this.actionBar = null;
+        super.onDestroyOptionsMenu();
+    }
+
     //</editor-fold>
 
     @Override public void onActivityCreated(Bundle savedInstanceState)
@@ -113,7 +121,10 @@ public class WebViewFragment extends DashboardFragment
             @Override public void onReceivedTitle(WebView view, String title)
             {
                 super.onReceivedTitle(view, title);
-                getSherlockActivity().getSupportActionBar().setTitle(view.getTitle());
+                if (WebViewFragment.this.actionBar != null && view != null) // It may be null if the fragment has already had its view destroyed
+                {
+                    WebViewFragment.this.actionBar.setTitle(view.getTitle());
+                }
             }
         };
         webView.setWebChromeClient(webChromeClient);
