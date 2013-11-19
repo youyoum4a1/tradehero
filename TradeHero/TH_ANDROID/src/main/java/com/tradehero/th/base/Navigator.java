@@ -12,6 +12,7 @@ import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.ActivityHelper;
 import com.tradehero.th.activities.SettingsActivity;
+import com.tradehero.th.fragments.settings.SettingsFragment;
 
 /** Created with IntelliJ IDEA. User: tho Date: 9/30/13 Time: 5:59 PM Copyright (c) TradeHero */
 public class Navigator
@@ -103,9 +104,10 @@ public class Navigator
 
     public void openSettings()
     {
-        Intent intent = new Intent(context, SettingsActivity.class);
-        context.startActivity(intent);
-        ((Activity)context).overridePendingTransition(R.anim.slide_in_from_bottom, R.anim.nothing);
+        //Intent intent = new Intent(context, SettingsActivity.class);
+        //context.startActivity(intent);
+        //((Activity)context).overridePendingTransition(R.anim.slide_in_from_bottom, R.anim.nothing);
+        pushFragment(SettingsFragment.class);
     }
 
     public void pushFragment(Class<? extends Fragment> fragmentClass)

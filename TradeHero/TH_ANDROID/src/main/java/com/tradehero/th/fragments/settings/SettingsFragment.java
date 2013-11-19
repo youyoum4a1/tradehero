@@ -5,16 +5,16 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.Preference;
+import android.support.v4.preference.PreferenceFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
 import com.tradehero.common.cache.LruMemFileCache;
 import com.tradehero.common.utils.SlowedAsyncTask;
 import com.tradehero.common.utils.THLog;
@@ -24,24 +24,23 @@ import com.tradehero.th.activities.ActivityHelper;
 import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.Application;
+import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.base.THUser;
+import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.WebViewFragment;
 import com.tradehero.th.fragments.authentication.EmailSignUpFragment;
-import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.network.service.SessionService;
 import com.tradehero.th.network.service.UserService;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.VersionUtils;
 import dagger.Lazy;
-import java.util.Timer;
-import java.util.TimerTask;
 import javax.inject.Inject;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
 /** Created with IntelliJ IDEA. User: nia Date: 17/10/13 Time: 12:38 PM To change this template use File | Settings | File Templates. */
-public class SettingsFragment extends DashboardFragment
+public class SettingsFragment extends PreferenceFragment
 {
     public static final String TAG = SettingsFragment.class.getSimpleName();
 
@@ -49,212 +48,201 @@ public class SettingsFragment extends DashboardFragment
     @Inject SessionService sessionService;
     @Inject protected Lazy<UserProfileCache> userProfileCache;
     @Inject protected CurrentUserBaseKeyHolder currentUserBaseKeyHolder;
-
     private ProgressDialog progressDialog;
-    private Timer signOutTimer;
 
-    private View sendLoveBlock;
-    private View sendFeedbackBlock;
-    private View faqBlock;
-    private View profileBlock;
-    private View paypalBlock;
-    private View transactionHistoryBlock;
-
-    private CheckBox emailNotificationsCheckbox;
-
-    private View resetHelpScreensBlock;
-    private View clearCacheBlock;
-    private View signOutBlock;
-    private View aboutBlock;
-
-    @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    @Override public View onCreateView(LayoutInflater paramLayoutInflater, ViewGroup paramViewGroup, Bundle paramBundle)
     {
-        super.onCreateView(inflater, container, savedInstanceState);
-        View view = inflater.inflate(R.layout.fragment_settings, container, false);
-
-        initViews(view);
+        View view = super.onCreateView(paramLayoutInflater, paramViewGroup, paramBundle);
+        view.setBackgroundColor(getResources().getColor(R.color.white));
         return view;
     }
 
-    private void initViews(View view)
+    @Override public void onCreate(Bundle savedInstanceState)
     {
-        sendLoveBlock = view.findViewById(R.id.send_love_block);
-        if (sendLoveBlock != null)
-        {
-            sendLoveBlock.setOnClickListener(new View.OnClickListener()
-            {
-                @Override public void onClick(View view)
-                {
-                    handleSendLoveClicked();
-                }
-            });
-        }
+        super.onCreate(savedInstanceState);
 
-        sendFeedbackBlock = view.findViewById(R.id.send_feedback_block);
-        if (sendFeedbackBlock != null)
+        setHasOptionsMenu(true);
+        addPreferencesFromResource(R.xml.settings);
+
+        initPreferenceClickHandlers();
+    }
+
+    private void initPreferenceClickHandlers()
+    {
+        Preference settingFaq = findPreference(getString(R.string.settings_primary_faq));
+        settingFaq.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
         {
-            sendFeedbackBlock.setOnClickListener(new View.OnClickListener()
+            @Override public boolean onPreferenceClick(Preference preference)
             {
-                @Override public void onClick(View view)
-                {
-                    handleSendFeedbackClicked();
-                }
-            });
-            sendFeedbackBlock.setOnLongClickListener(new View.OnLongClickListener()
+                handleFaqClicked();
+                return true;
+            }
+        });
+
+        Preference settingAbout = findPreference(getString(R.string.settings_misc_about));
+
+        if (settingAbout != null)
+        {
+            settingAbout.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
             {
-                @Override public boolean onLongClick(View view)
+                @Override public boolean onPreferenceClick(Preference preference)
                 {
-                    handleSendFeedbackLongClicked();
+                    handleAboutClicked();
                     return true;
                 }
             });
         }
 
-        faqBlock = view.findViewById(R.id.faq_block);
-        if (faqBlock != null)
+        Preference sendLoveBlock = findPreference(getString(R.string.settings_primary_send_love));
+        if (sendLoveBlock != null)
         {
-            faqBlock.setOnClickListener(new View.OnClickListener()
+            sendLoveBlock.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
             {
-                @Override public void onClick(View view)
+                @Override public boolean onPreferenceClick(Preference preference)
                 {
-                    handleFaqClicked();
+                    handleSendLoveClicked();
+                    return true;
                 }
             });
         }
 
-        profileBlock = view.findViewById(R.id.profile_block);
+        Preference sendFeedbackBlock = findPreference(getString(R.string.settings_primary_send_feedback));
+        if (sendFeedbackBlock != null)
+        {
+            sendFeedbackBlock.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
+            {
+                @Override public boolean onPreferenceClick(Preference preference)
+                {
+                    handleSendFeedbackClicked();
+                    return true;
+                }
+            });
+
+            // TODO
+            //sendFeedbackBlock.setOnLongClickListener(new View.OnLongClickListener()
+            //{
+            //    @Override public boolean onLongClick(View view)
+            //    {
+            //        handleSendFeedbackLongClicked();
+            //        return true;
+            //    }
+            //});
+        }
+
+        Preference profileBlock = findPreference(getString(R.string.settings_primary_profile));
         if (profileBlock != null)
         {
-            profileBlock.setOnClickListener(new View.OnClickListener()
+            profileBlock.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
             {
-                @Override public void onClick(View view)
+                @Override public boolean onPreferenceClick(Preference preference)
                 {
                     handleProfileClicked();
+                    return true;
                 }
             });
         }
 
-        paypalBlock = view.findViewById(R.id.paypal_block);
+        Preference paypalBlock = findPreference(getString(R.string.settings_primary_paypal));
         if (paypalBlock != null)
         {
-            paypalBlock.setOnClickListener(new View.OnClickListener()
+            paypalBlock.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
             {
-                @Override public void onClick(View view)
+                @Override public boolean onPreferenceClick(Preference preference)
                 {
                     handlePaypalClicked();
+                    return true;
                 }
             });
         }
 
-        transactionHistoryBlock = view.findViewById(R.id.transaction_history_block);
+        Preference transactionHistoryBlock = findPreference(getString(R.string.settings_primary_transaction_history));
         if (transactionHistoryBlock != null)
         {
-            transactionHistoryBlock.setOnClickListener(new View.OnClickListener()
+            transactionHistoryBlock.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
             {
-                @Override public void onClick(View view)
+                @Override public boolean onPreferenceClick(Preference preference)
                 {
                     handleTransactionHistoryClicked();
+                    return true;
                 }
             });
         }
 
-        emailNotificationsCheckbox = (CheckBox) view.findViewById(R.id.email_notifications_checkbox);
-        if (emailNotificationsCheckbox != null)
-        {
-            emailNotificationsCheckbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
-            {
-                @Override public void onCheckedChanged(CompoundButton compoundButton, boolean newStatus)
-                {
-                    handleEmailNotificationsCheckedChanged(newStatus);
-                }
-            });
-        }
-
-        resetHelpScreensBlock = view.findViewById(R.id.reset_help_screens_block);
+        Preference resetHelpScreensBlock = findPreference(getString(R.string.settings_misc_reset_help_screens));
         if (resetHelpScreensBlock != null)
         {
-            resetHelpScreensBlock.setOnClickListener(new View.OnClickListener()
+            resetHelpScreensBlock.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
             {
-                @Override public void onClick(View view)
+                @Override public boolean onPreferenceClick(Preference preference)
                 {
                     handleResetHelpScreensClicked();
+                    return true;
                 }
             });
         }
 
-        clearCacheBlock = view.findViewById(R.id.clear_cache_block);
+        Preference clearCacheBlock = findPreference(getString(R.string.settings_misc_clear_cache));
         if (clearCacheBlock != null)
         {
-            clearCacheBlock.setOnClickListener(new View.OnClickListener()
+            clearCacheBlock.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
             {
-                @Override public void onClick(View view)
+                @Override public boolean onPreferenceClick(Preference preference)
                 {
                     handleClearCacheClicked();
+                    return true;
                 }
             });
         }
 
-        signOutBlock = view.findViewById(R.id.sign_out_block);
+        Preference signOutBlock = findPreference(getString(R.string.settings_misc_sign_out));
         if (signOutBlock != null)
         {
-            signOutBlock.setOnClickListener(new View.OnClickListener()
+            signOutBlock.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
             {
-                @Override public void onClick(View view)
+                @Override public boolean onPreferenceClick(Preference preference)
                 {
                     handleSignOutClicked();
+                    return true;
                 }
             });
         }
 
-        aboutBlock = view.findViewById(R.id.about_block);
+        Preference aboutBlock = findPreference(getString(R.string.settings_about));
         if (aboutBlock != null)
         {
-            aboutBlock.setOnClickListener(new View.OnClickListener()
+            aboutBlock.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
             {
-                @Override public void onClick(View view)
+                @Override public boolean onPreferenceClick(Preference preference)
                 {
                     handleAboutClicked();
+                    return true;
                 }
             });
         }
     }
 
-    //<editor-fold desc="ActionBar">
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
-        getSherlockActivity().getSupportActionBar()
-                .setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_HOME_AS_UP);
-        getSherlockActivity().getSupportActionBar().setTitle(getResources().getString(R.string.action_settings));
         super.onCreateOptionsMenu(menu, inflater);
+        getSherlockActivity().getSupportActionBar().setDisplayOptions(
+                ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_SHOW_TITLE);
+        getSherlockActivity().getSupportActionBar().setTitle(getString(R.string.settings));
     }
-    //</editor-fold>
 
-    @Override public void onDestroyView()
+    @Override public boolean onOptionsItemSelected(MenuItem item)
     {
-        sendLoveBlock = null;
-        sendFeedbackBlock = null;
-        faqBlock = null;
-        profileBlock = null;
-        paypalBlock = null;
-        transactionHistoryBlock = null;
-        emailNotificationsCheckbox = null;
-        resetHelpScreensBlock = null;
-        clearCacheBlock = null;
-        signOutBlock = null;
-        aboutBlock = null;
-
-        if (progressDialog != null)
+        switch (item.getItemId())
         {
-            progressDialog.hide();
-            progressDialog = null;
+            case android.R.id.home:
+                getNavigator().popFragment();
+                return true;
         }
-        if (signOutTimer != null)
-        {
-            signOutTimer.cancel();
-            signOutTimer = null;
-        }
+        return super.onOptionsItemSelected(item);
+    }
 
-        super.onDestroyView();
+    private DashboardNavigator getNavigator()
+    {
+        return ((DashboardNavigatorActivity) getActivity()).getDashboardNavigator();
     }
 
     private void handleSendLoveClicked()
@@ -286,7 +274,7 @@ public class SettingsFragment extends DashboardFragment
         String faqUrl = getResources().getString(R.string.th_faq_url);
         Bundle bundle = new Bundle();
         bundle.putString(WebViewFragment.BUNDLE_KEY_URL, faqUrl);
-        navigator.pushFragment(WebViewFragment.class, bundle);
+        getNavigator().pushFragment(WebViewFragment.class, bundle);
     }
 
     private void handleProfileClicked()
@@ -294,17 +282,17 @@ public class SettingsFragment extends DashboardFragment
         Bundle bundle = new Bundle();
         bundle.putBoolean(EmailSignUpFragment.BUNDLE_KEY_EDIT_CURRENT_USER, true);
         bundle.putBoolean(EmailSignUpFragment.BUNDLE_KEY_SHOW_BUTTON_BACK, true);
-        navigator.pushFragment(EmailSignUpFragment.class, bundle);
+        getNavigator().pushFragment(EmailSignUpFragment.class, bundle);
     }
 
     private void handlePaypalClicked()
     {
-        navigator.pushFragment(SettingsPayPalFragment.class);
+        getNavigator().pushFragment(SettingsPayPalFragment.class);
     }
 
     private void handleTransactionHistoryClicked()
     {
-        navigator.pushFragment(SettingsTransactionHistoryFragment.class);
+        getNavigator().pushFragment(SettingsTransactionHistoryFragment.class);
     }
 
     private void handleEmailNotificationsCheckedChanged(boolean newStatus)
@@ -438,12 +426,10 @@ public class SettingsFragment extends DashboardFragment
             {
                 progressDialog.setTitle(R.string.settings_misc_sign_out_failed);
                 progressDialog.setMessage("");
-                signOutTimer = new Timer();
-                signOutTimer.schedule(new TimerTask()
+                getView().postDelayed(new Runnable()
                 {
-                    public void run()
+                    @Override public void run()
                     {
-                        signOutTimer.cancel();
                         progressDialog.hide();
                     }
                 }, 3000);
@@ -453,13 +439,6 @@ public class SettingsFragment extends DashboardFragment
 
     private void handleAboutClicked()
     {
-        navigator.pushFragment(AboutFragment.class);
+        getNavigator().pushFragment(AboutFragment.class);
     }
-
-    //<editor-fold desc="BaseFragment.TabBarVisibilityInformer">
-    @Override public boolean isTabBarVisible()
-    {
-        return false;
-    }
-    //</editor-fold>
 }
