@@ -75,8 +75,7 @@ public class DashboardActivity extends SherlockFragmentActivity
     private void launchIAB()
     {
         thiabLogicHolderExtended = new THIABLogicHolderExtended(this);
-        launchSkuInventorySequence();
-        thiabLogicHolderExtended.launchFetchPurchasesSequence();
+        launchSkuInventorySequence(); // Will follow: portfolio list, then fetch purchases
     }
 
     @Override public void onBackPressed()

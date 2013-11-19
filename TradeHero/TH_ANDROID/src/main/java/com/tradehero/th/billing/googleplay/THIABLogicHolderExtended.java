@@ -13,12 +13,17 @@ import com.tradehero.common.billing.googleplay.InventoryFetcher;
 import com.tradehero.common.billing.googleplay.PurchaseFetcher;
 import com.tradehero.common.billing.googleplay.exceptions.IABBillingUnavailableException;
 import com.tradehero.common.billing.googleplay.exceptions.IABException;
+import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.ArrayUtils;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
+import com.tradehero.th.api.portfolio.OwnedPortfolioIdList;
+import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
+import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.billing.PurchaseReportedHandler;
 import com.tradehero.th.billing.PurchaseReporter;
+import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
@@ -43,7 +48,12 @@ public class THIABLogicHolderExtended
     protected Exception latestInventoryFetcherException;
     protected Exception latestPurchaseFetcherException;
 
+    @Inject Lazy<CurrentUserBaseKeyHolder> currentUserBaseKeyHolder;
+    @Inject Lazy<PortfolioCompactListCache> portfolioCompactListCache;
     @Inject Lazy<UserProfileCache> userProfileCache;
+
+    private DTOCache.Listener<UserBaseKey, OwnedPortfolioIdList> portfolioCompactListCacheListener;
+    private DTOCache.GetOrFetchTask<OwnedPortfolioIdList> portfolioCompactListFetchTask;
 
     public THIABLogicHolderExtended(Activity activity)
     {
@@ -160,6 +170,61 @@ public class THIABLogicHolderExtended
     }
     //</editor-fold>
 
+    //<editor-fold desc="InventoryFetcher.InventoryListener">
+    @Override public void onInventoryFetchSuccess(THInventoryFetcher fetcher, Map<IABSKU, THSKUDetails> inventory)
+    {
+        if (fetcher == this.inventoryFetcher)
+        {
+            //THToast.show("Inventory successfully fetched");
+            launchOwnPortfolioSequence();
+        }
+        else
+        {
+            THLog.w(TAG, "We have received a callback from another inventoryFetcher");
+        }
+
+    }
+
+    @Override public void onInventoryFetchFail(THInventoryFetcher fetcher, IABException exception)
+    {
+        if (fetcher == inventoryFetcher)
+        {
+            latestInventoryFetcherException = exception;
+            //handleException(exception); // TODO
+        }
+        else
+        {
+            THLog.e(TAG, "We have received a callback from another inventoryFetcher", exception);
+        }
+    }
+    //</editor-fold>
+
+    private void launchOwnPortfolioSequence()
+    {
+        if (portfolioCompactListCacheListener == null)
+        {
+            portfolioCompactListCacheListener = new DTOCache.Listener<UserBaseKey, OwnedPortfolioIdList>()
+            {
+                @Override public void onDTOReceived(UserBaseKey key, OwnedPortfolioIdList value)
+                {
+                    THLog.d(TAG, "Received the list of portfolios for user " + key);
+                    launchFetchPurchasesSequence();
+                }
+
+                @Override public void onErrorThrown(UserBaseKey key, Throwable error)
+                {
+                    THToast.show("There was an error fetching your portfolio list");
+                }
+            };
+        }
+        if (portfolioCompactListFetchTask != null)
+        {
+            portfolioCompactListFetchTask.forgetListener(true);
+        }
+        portfolioCompactListFetchTask = portfolioCompactListCache.get().getOrFetch(currentUserBaseKeyHolder.get().getCurrentUserBaseKey(), portfolioCompactListCacheListener);
+        portfolioCompactListFetchTask.execute();
+    }
+
     public void launchFetchPurchasesSequence()
     {
         latestPurchaseFetcherException = null;
@@ -242,37 +307,9 @@ public class THIABLogicHolderExtended
         for (SKUPurchase purchase : purchases.values())
         {
             THLog.d(TAG, "Purchasing " + purchase);
-            // launchReportSequence(reportedListener, purchase);
+            launchReportSequence(reportedListener, purchase);
             break;
         }
 
     }
-
-    //<editor-fold desc="InventoryFetcher.InventoryListener">
-    @Override public void onInventoryFetchSuccess(THInventoryFetcher fetcher, Map<IABSKU, THSKUDetails> inventory)
-    {
-        if (fetcher == this.inventoryFetcher)
-        {
-            //THToast.show("Inventory successfully fetched");
-        }
-        else
-        {
-            THLog.w(TAG, "We have received a callback from another inventoryFetcher");
-        }
-
-    }
-
-    @Override public void onInventoryFetchFail(THInventoryFetcher fetcher, IABException exception)
-    {
-        if (fetcher == inventoryFetcher)
-        {
-            latestInventoryFetcherException = exception;
-            //handleException(exception); // TODO
-        }
-        else
-        {
-            THLog.e(TAG, "We have received a callback from another inventoryFetcher", exception);
-        }
-    }
-    //</editor-fold>
 }

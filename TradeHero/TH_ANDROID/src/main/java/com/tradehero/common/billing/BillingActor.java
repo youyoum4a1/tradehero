@@ -17,8 +17,8 @@ public interface BillingActor<
                         ExceptionType extends Exception>
 {
     boolean isBillingAvailable();
+    void launchSkuInventorySequence();
     boolean isInventoryReady();
     boolean hadErrorLoadingInventory();
-    void launchSkuInventorySequence();
     int launchPurchaseSequence(BillingPurchaseHandlerType billingPurchaseHandler, PurchaseOrderType purchaseOrder);
 }

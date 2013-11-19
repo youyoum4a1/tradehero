@@ -14,6 +14,7 @@ import com.tradehero.th.network.service.AlertPlanService;
 import com.tradehero.th.network.service.PortfolioService;
 import com.tradehero.th.network.service.UserService;
 import com.tradehero.th.persistence.billing.SKUDetailCache;
+import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
 import javax.inject.Inject;
@@ -30,10 +31,12 @@ public class PurchaseReporter extends BasePurchaseReporter<
 {
     public static final String TAG = PurchaseReporter.class.getSimpleName();
 
+    @Inject Lazy<CurrentUserBaseKeyHolder> currentUserBaseKeyHolder;
     @Inject Lazy<PortfolioService> portfolioService;
     @Inject Lazy<AlertPlanService> alertPlanService;
     @Inject Lazy<UserService> userService;
     @Inject Lazy<SKUDetailCache> skuDetailCache;
+    @Inject Lazy<PortfolioCompactListCache> portfolioCompactListCache;
 
     private Callback<UserProfileDTO> userProfileDTOCallback;
 
@@ -42,10 +45,20 @@ public class PurchaseReporter extends BasePurchaseReporter<
         DaggerUtils.inject(this);
     }
 
+    private OwnedPortfolioId getApplicableOwnedPortfolioId(SKUPurchase purchase)
+    {
+        OwnedPortfolioId portfolioId = purchase.getApplicableOwnedPortfolioId();
+        if (portfolioId == null)
+        {
+            portfolioId = portfolioCompactListCache.get().getDefaultPortfolio(currentUserBaseKeyHolder.get().getCurrentUserBaseKey());
+        }
+        return portfolioId;
+    }
+
     @Override public void reportPurchase(SKUPurchase purchase)
     {
         this.purchase = purchase;
-        OwnedPortfolioId portfolioId = purchase.getApplicableOwnedPortfolioId();
+        OwnedPortfolioId portfolioId = getApplicableOwnedPortfolioId(purchase);
         createCallbackIfMissing();
 
         switch (skuDetailCache.get().get(purchase.getProductIdentifier()).domain)
@@ -88,7 +101,7 @@ public class PurchaseReporter extends BasePurchaseReporter<
 
     @Override public UserProfileDTO reportPurchaseSync(SKUPurchase purchase)
     {
-        OwnedPortfolioId portfolioId = purchase.getApplicableOwnedPortfolioId();
+        OwnedPortfolioId portfolioId = getApplicableOwnedPortfolioId(purchase);
 
         switch (skuDetailCache.get().get(purchase.getProductIdentifier()).domain)
         {

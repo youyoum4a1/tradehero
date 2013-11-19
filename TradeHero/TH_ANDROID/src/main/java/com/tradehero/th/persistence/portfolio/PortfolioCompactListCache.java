@@ -53,4 +53,14 @@ import retrofit.RetrofitError;
         }
         return ownedPortfolioIds;
     }
+
+    public OwnedPortfolioId getDefaultPortfolio(UserBaseKey key)
+    {
+        OwnedPortfolioIdList list = get(key);
+        if (list == null || list.size() == 0)
+        {
+            return null;
+        }
+        return list.get(0);
+    }
 }
