@@ -119,7 +119,6 @@ import org.ocpsoft.prettytime.PrettyTime;
                 UserProfileFetchAssistant.class,
                 OwnedPortfolioFetchAssistant.class,
                 SecurityAlertAssistant.class,
-                PurchaseReporter.class,
 
                 SettingsTransactionHistoryFragment.class,
                 SettingsPayPalFragment.class,
@@ -217,6 +216,7 @@ import org.ocpsoft.prettytime.PrettyTime;
                 THInventoryFetcher.class,
                 PurchaseFetcher.class,
                 SKUDetailsPurchaser.class,
+                PurchaseReporter.class,
         },
         staticInjections =
         {

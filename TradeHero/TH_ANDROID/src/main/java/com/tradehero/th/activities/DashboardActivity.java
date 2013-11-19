@@ -162,14 +162,14 @@ public class DashboardActivity extends SherlockFragmentActivity
         return thiabLogicHolderExtended.launchConsumeSequence(purchaseConsumeHandler, purchase);
     }
 
-    @Override public int launchReportSequence(PurchaseReportedHandler purchaseReportedHandler, SKUPurchase purchase, THSKUDetails skuDetails)
+    @Override public int launchReportSequence(PurchaseReportedHandler purchaseReportedHandler, SKUPurchase purchase)
     {
-        return thiabLogicHolderExtended.launchReportSequence(purchaseReportedHandler, purchase, skuDetails);
+        return thiabLogicHolderExtended.launchReportSequence(purchaseReportedHandler, purchase);
     }
 
-    @Override public UserProfileDTO launchReportSequenceSync(SKUPurchase purchase, THSKUDetails skuDetails)
+    @Override public UserProfileDTO launchReportSequenceSync(SKUPurchase purchase)
     {
-        return thiabLogicHolderExtended.launchReportSequenceSync(purchase, skuDetails);
+        return thiabLogicHolderExtended.launchReportSequenceSync(purchase);
     }
     //</editor-fold>
 

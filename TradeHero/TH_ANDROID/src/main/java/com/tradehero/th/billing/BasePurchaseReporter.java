@@ -19,11 +19,10 @@ abstract public class BasePurchaseReporter<
     public static final String TAG = BasePurchaseReporter.class.getSimpleName();
 
     protected IABPurchaseType purchase;
-    protected IABSKUDetailsType skuDetails;
     private WeakReference<OnPurchaseReportedListener<IABOrderIdType, IABSKUType, IABPurchaseType>> listener = new WeakReference<>(null);
 
-    abstract public void reportPurchase(final IABPurchaseType purchase, final IABSKUDetailsType skuDetails);
-    abstract public UserProfileDTO reportPurchaseSync(final IABPurchaseType purchase, final IABSKUDetailsType skuDetails);
+    abstract public void reportPurchase(final IABPurchaseType purchase);
+    abstract public UserProfileDTO reportPurchaseSync(final IABPurchaseType purchase);
 
     public OnPurchaseReportedListener<IABOrderIdType, IABSKUType, IABPurchaseType> getListener()
     {

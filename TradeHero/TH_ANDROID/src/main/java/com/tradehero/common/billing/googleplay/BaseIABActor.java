@@ -13,7 +13,7 @@ import java.util.Map;
 abstract public class BaseIABActor<
                     IABSKUType extends IABSKU,
                     IABProductDetailsType extends IABProductDetails<IABSKUType>,
-                    IABPurchaseOrderType extends IABPurchaseOrder<IABSKUType, IABProductDetailsType>,
+                    IABPurchaseOrderType extends IABPurchaseOrder<IABSKUType>,
                     IABOrderIdType extends IABOrderId,
                     IABPurchaseType extends IABPurchase<IABOrderIdType, IABSKUType>,
                     IABPurchaserType extends IABPurchaser<IABSKUType, IABProductDetailsType, IABPurchaseOrderType, IABOrderIdType, IABPurchaseType>,

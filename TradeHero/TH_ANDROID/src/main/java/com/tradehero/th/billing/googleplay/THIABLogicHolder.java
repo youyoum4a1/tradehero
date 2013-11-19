@@ -134,7 +134,7 @@ abstract public class THIABLogicHolder
         };
     }
 
-    @Override public int launchReportSequence(PurchaseReportedHandler purchaseReportedHandler, SKUPurchase purchase, THSKUDetails skuDetails)
+    @Override public int launchReportSequence(PurchaseReportedHandler purchaseReportedHandler, SKUPurchase purchase)
     {
         int requestCode = getUnusedRequestCode();
         registerPurchaseReportedHandler(requestCode, purchaseReportedHandler);
@@ -142,13 +142,13 @@ abstract public class THIABLogicHolder
 
         PurchaseReporter purchaseReporter = new PurchaseReporter();
         purchaseReporters.put(requestCode, purchaseReporter);
-        purchaseReporter.reportPurchase(purchase, skuDetails);
+        purchaseReporter.reportPurchase(purchase);
         return requestCode;
     }
 
-    @Override public UserProfileDTO launchReportSequenceSync(SKUPurchase purchase, THSKUDetails skuDetails)
+    @Override public UserProfileDTO launchReportSequenceSync(SKUPurchase purchase)
     {
-        return new PurchaseReporter().reportPurchaseSync(purchase, skuDetails);
+        return new PurchaseReporter().reportPurchaseSync(purchase);
     }
 
     @Override protected SKUDetailsPurchaser createPurchaser(final int requestCode)

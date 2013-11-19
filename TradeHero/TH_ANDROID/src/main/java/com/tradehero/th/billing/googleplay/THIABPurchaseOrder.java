@@ -10,12 +10,11 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/19/13 Time: 10:45 AM To change this template use File | Settings | File Templates. */
-public class THIABPurchaseOrder implements IABPurchaseOrder<IABSKU, THSKUDetails>
+public class THIABPurchaseOrder implements IABPurchaseOrder<IABSKU>
 {
     public static final String TAG = THIABPurchaseOrder.class.getSimpleName();
 
     private IABSKU sku;
-    private THSKUDetails skuDetails;
     private int quantity;
     private OwnedPortfolioId developerPayload;
 
@@ -51,16 +50,6 @@ public class THIABPurchaseOrder implements IABPurchaseOrder<IABSKU, THSKUDetails
     @Override public int getQuantity()
     {
         return this.quantity;
-    }
-
-    @Override public THSKUDetails getProductDetails()
-    {
-        return this.skuDetails;
-    }
-
-    @Override public void setProductDetails(THSKUDetails productDetails)
-    {
-        this.skuDetails = productDetails;
     }
 
     @Override public String getDeveloperPayload()

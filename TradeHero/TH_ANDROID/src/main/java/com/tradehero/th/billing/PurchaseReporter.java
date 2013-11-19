@@ -13,6 +13,7 @@ import com.tradehero.th.billing.googleplay.exception.UnhandledSKUDomainException
 import com.tradehero.th.network.service.AlertPlanService;
 import com.tradehero.th.network.service.PortfolioService;
 import com.tradehero.th.network.service.UserService;
+import com.tradehero.th.persistence.billing.SKUDetailCache;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
 import javax.inject.Inject;
@@ -32,6 +33,7 @@ public class PurchaseReporter extends BasePurchaseReporter<
     @Inject Lazy<PortfolioService> portfolioService;
     @Inject Lazy<AlertPlanService> alertPlanService;
     @Inject Lazy<UserService> userService;
+    @Inject Lazy<SKUDetailCache> skuDetailCache;
 
     private Callback<UserProfileDTO> userProfileDTOCallback;
 
@@ -40,14 +42,13 @@ public class PurchaseReporter extends BasePurchaseReporter<
         DaggerUtils.inject(this);
     }
 
-    @Override public void reportPurchase(SKUPurchase purchase, THSKUDetails skuDetails)
+    @Override public void reportPurchase(SKUPurchase purchase)
     {
         this.purchase = purchase;
-        this.skuDetails = skuDetails;
         OwnedPortfolioId portfolioId = purchase.getApplicableOwnedPortfolioId();
         createCallbackIfMissing();
 
-        switch (this.skuDetails.domain)
+        switch (skuDetailCache.get().get(purchase.getProductIdentifier()).domain)
         {
             case THSKUDetails.DOMAIN_RESET_PORTFOLIO:
                 portfolioService.get().resetPortfolio(
@@ -80,16 +81,16 @@ public class PurchaseReporter extends BasePurchaseReporter<
                 break;
 
             default:
-                notifyListenerReportFailed(new UnhandledSKUDomainException(this.skuDetails.domain + " is not handled by this method"));
+                notifyListenerReportFailed(new UnhandledSKUDomainException(skuDetailCache.get().get(purchase.getProductIdentifier()).domain + " is not handled by this method"));
                 break;
         }
     }
 
-    @Override public UserProfileDTO reportPurchaseSync(SKUPurchase purchase, THSKUDetails skuDetails)
+    @Override public UserProfileDTO reportPurchaseSync(SKUPurchase purchase)
     {
         OwnedPortfolioId portfolioId = purchase.getApplicableOwnedPortfolioId();
 
-        switch (this.skuDetails.domain)
+        switch (skuDetailCache.get().get(purchase.getProductIdentifier()).domain)
         {
             case THSKUDetails.DOMAIN_RESET_PORTFOLIO:
                 return portfolioService.get().resetPortfolio(
@@ -114,7 +115,7 @@ public class PurchaseReporter extends BasePurchaseReporter<
                         purchase.getGooglePlayPurchaseDTO());
 
             default:
-                throw new UnhandledSKUDomainException(this.skuDetails.domain + " is not handled by this method");
+                throw new UnhandledSKUDomainException(skuDetailCache.get().get(purchase.getProductIdentifier()).domain + " is not handled by this method");
         }
     }
 
