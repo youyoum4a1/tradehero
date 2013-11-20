@@ -62,12 +62,11 @@
   <PreferenceCategory
       android:title="@string/settings_notifications">
 
-    <SwitchPreference
+    <CheckBoxPreference
         android:key="@string/settings_notifications_email"
         android:icon="@drawable/settings_email_noti"
         android:title="@string/settings_notifications_email"/>
-    <SwitchPreference
-        android:enabled="false"
+    <CheckBoxPreference
         android:key="@string/settings_notifications_push"
         android:title="@string/settings_notifications_push"
         android:icon="@drawable/settings_push_noti"

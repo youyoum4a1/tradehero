@@ -8,7 +8,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.Preference;
-import android.preference.SwitchPreference;
+import android.preference.TwoStatePreference;
 import android.support.v4.preference.PreferenceFragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -71,12 +71,21 @@ public class SettingsFragment extends PreferenceFragment
     private SocialNetworkEnum currentSocialNetworkConnect;
     private CheckBoxPreference twitterSharing;
     private CheckBoxPreference linkedInSharing;
+    private TwoStatePreference pushNotification;
+    private TwoStatePreference emailNotification;
 
     @Override public View onCreateView(LayoutInflater paramLayoutInflater, ViewGroup paramViewGroup, Bundle paramBundle)
     {
         View view = super.onCreateView(paramLayoutInflater, paramViewGroup, paramBundle);
         view.setBackgroundColor(getResources().getColor(R.color.white));
+
         return view;
+    }
+
+    @Override public void onViewCreated(View view, Bundle savedInstanceState)
+    {
+        initPreferenceClickHandlers();
+        super.onViewCreated(view, savedInstanceState);
     }
 
     @Override public void onCreate(Bundle savedInstanceState)
@@ -87,7 +96,6 @@ public class SettingsFragment extends PreferenceFragment
         addPreferencesFromResource(R.xml.settings);
 
         DaggerUtils.inject(this);
-        initPreferenceClickHandlers();
     }
 
     private void initPreferenceClickHandlers()
@@ -277,50 +285,67 @@ public class SettingsFragment extends PreferenceFragment
                 }
             });
         }
-
         updateSocialConnectStatus();
+
+        // notification
+        UserProfileDTO currentUserProfile = userProfileCache.get().get(currentUserBaseKeyHolder.getCurrentUserBaseKey());
+        if (currentUserProfile != null)
+        {
+            pushNotification = (TwoStatePreference) findPreference(getString(R.string.settings_notifications_push));
+            if (pushNotification != null)
+            {
+                pushNotification.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener()
+                {
+                    @Override public boolean onPreferenceChange(Preference preference, Object newValue)
+                    {
+                        if (newValue != emailNotification.isChecked())
+                        {
+                            return changePushNotification((boolean) newValue);
+                        }
+                        return false;
+                    }
+                });
+            }
+
+            emailNotification = (TwoStatePreference) findPreference(getString(R.string.settings_notifications_email));
+            if (emailNotification != null)
+            {
+                emailNotification.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener()
+                {
+                    @Override public boolean onPreferenceChange(Preference preference, Object newValue)
+                    {
+                        if (newValue != emailNotification.isChecked())
+                        {
+                            return changeEmailNotification((boolean) newValue);
+                        }
+                        return false;
+                    }
+                });
+            }
+        }
         updateNotificationStatus();
     }
 
     private void updateNotificationStatus()
     {
-        // notification
-        UserProfileDTO currentUserProfile = userProfileCache.get().get(currentUserBaseKeyHolder.getCurrentUserBaseKey());
-        if (currentUserProfile == null)
-        {
-            return;
-        }
-
-        SwitchPreference pushNotification = (SwitchPreference) findPreference(getString(R.string.settings_notifications_push));
-        if (pushNotification != null)
+        final UserProfileDTO currentUserProfile = userProfileCache.get().get(currentUserBaseKeyHolder.getCurrentUserBaseKey());
+        if (currentUserProfile != null)
         {
             pushNotification.setChecked(currentUserProfile.pushNotificationsEnabled);
-            pushNotification.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener()
-            {
-                @Override public boolean onPreferenceChange(Preference preference, Object newValue)
-                {
-                    return changePushNotification((boolean) newValue);
-                }
-            });
-        }
-
-        SwitchPreference emailNotification = (SwitchPreference) findPreference(getString(R.string.settings_notifications_email));
-        if (emailNotification != null)
-        {
             emailNotification.setChecked(currentUserProfile.emailNotificationsEnabled);
-            emailNotification.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener()
-            {
-                @Override public boolean onPreferenceChange(Preference preference, Object newValue)
-                {
-                    return changeEmailNotification((boolean) newValue);
-                }
-            });
         }
     }
 
-    private boolean changeEmailNotification(boolean newValue)
+    private boolean changeEmailNotification(boolean enable)
     {
-        return false;  //To change body of created methods use File | Settings | File Templates.
+        progressDialog = ProgressDialog.show(
+                getSherlockActivity(),
+                Application.getResourceString(R.string.settings_notifications_email_alert_title),
+                Application.getResourceString(R.string.settings_notifications_email_alert_message),
+                true);
+
+        userService.updateProfile(THUser.getCurrentUserBase().id, enable, createUserProfileCallback());
+        return false;
     }
 
     private boolean changePushNotification(boolean newValue)
@@ -330,6 +355,7 @@ public class SettingsFragment extends PreferenceFragment
 
     private boolean changeSharing(SocialNetworkEnum socialNetwork, boolean enable)
     {
+        THLog.d(TAG, "Sharing is asked to change");
         currentSocialNetworkConnect = socialNetwork;
         if (enable)
         {
@@ -362,7 +388,6 @@ public class SettingsFragment extends PreferenceFragment
             if (socialNetwork.getAuthenticationHeader().equals(THUser.getCurrentAuthenticationType()))
             {
                 effectSignOut();
-                return false;
             }
         }
         return false;
@@ -402,6 +427,7 @@ public class SettingsFragment extends PreferenceFragment
             {
                 linkedInSharing.setChecked(updatedUserProfileDTO.liLinked);
             }
+            THLog.d(TAG, "Sharing is updated");
         }
     }
 
@@ -481,32 +507,24 @@ public class SettingsFragment extends PreferenceFragment
         getNavigator().pushFragment(SettingsTransactionHistoryFragment.class);
     }
 
-    private void handleEmailNotificationsCheckedChanged(boolean newStatus)
-    {
-        progressDialog = ProgressDialog.show(
-                getSherlockActivity(),
-                Application.getResourceString(R.string.settings_notifications_email_alert_title),
-                Application.getResourceString(R.string.settings_notifications_email_alert_message),
-                true);
-
-        userService.updateProfile(THUser.getCurrentUserBase().id, newStatus, createUserProfileCallback());
-    }
-
     private Callback<UserProfileDTO> createUserProfileCallback()
     {
-        return new Callback<UserProfileDTO>()
+        return new THCallback<UserProfileDTO>()
         {
-            @Override
-            public void success(UserProfileDTO userProfileDTO, Response response)
+            @Override protected void success(UserProfileDTO userProfileDTO, THResponse thResponse)
             {
-                progressDialog.hide();
                 userProfileCache.get().put(userProfileDTO.getBaseKey(), userProfileDTO);
             }
 
-            @Override
-            public void failure(RetrofitError error)
+            @Override protected void failure(THException ex)
+            {
+                THToast.show(ex);
+            }
+
+            @Override protected void finish()
             {
                 progressDialog.hide();
+                updateNotificationStatus();
             }
         };
     }
