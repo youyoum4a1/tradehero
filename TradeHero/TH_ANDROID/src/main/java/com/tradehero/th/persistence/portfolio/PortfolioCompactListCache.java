@@ -5,6 +5,7 @@ import com.tradehero.common.utils.THLog;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.OwnedPortfolioIdList;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
+import com.tradehero.th.api.portfolio.PortfolioId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.network.BasicRetrofitErrorHandler;
 import com.tradehero.th.network.service.PortfolioService;
@@ -54,6 +55,11 @@ import retrofit.RetrofitError;
         return ownedPortfolioIds;
     }
 
+    /**
+     * The default portfolio is the one without providerId.
+     * @param key
+     * @return
+     */
     public OwnedPortfolioId getDefaultPortfolio(UserBaseKey key)
     {
         OwnedPortfolioIdList list = get(key);
@@ -61,6 +67,26 @@ import retrofit.RetrofitError;
         {
             return null;
         }
-        return list.get(0);
+        // Find the one without providerId
+        PortfolioId portfolioId;
+        PortfolioCompactDTO portfolioCompactDTO;
+        for (OwnedPortfolioId ownedPortfolioId : list)
+        {
+            if (ownedPortfolioId == null)
+            {
+                return null;
+            }
+            portfolioId = ownedPortfolioId.getPortfolioId();
+            if (portfolioId.key == null)
+            {
+                return null;
+            }
+            portfolioCompactDTO = portfolioCompactCache.get().get(portfolioId);
+            if (portfolioCompactDTO.providerId == null)
+            {
+                return ownedPortfolioId;
+            }
+        }
+        return null;
     }
 }
