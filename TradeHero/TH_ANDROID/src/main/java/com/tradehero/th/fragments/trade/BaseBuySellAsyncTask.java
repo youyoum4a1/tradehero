@@ -126,9 +126,6 @@ abstract public class BaseBuySellAsyncTask extends AsyncTask<Void, Void, Securit
 
     protected void onPostHandleErrorCode()
     {
-        AlertDialogUtilBuySell.informBuySellOrderWasNull(context);
-        AlertDialogUtilBuySell.informBuySellOrderFailedRetrofit(context);
-        AlertDialogUtilBuySell.informBuySellOrderReturnedNull(context);
         switch (errorCode)
         {
             case CODE_BUY_SELL_ORDER_NULL:

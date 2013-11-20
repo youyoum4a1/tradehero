@@ -46,6 +46,7 @@ import com.tradehero.th.fragments.settings.SettingsTransactionHistoryFragment;
 import com.tradehero.th.fragments.timeline.MeTimelineFragment;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.fragments.timeline.TimelineFragment;
+import com.tradehero.th.fragments.trade.BaseBuySellAsyncTask;
 import com.tradehero.th.fragments.trade.BuySellConfirmFragment;
 import com.tradehero.th.fragments.trade.BuySellFragment;
 import com.tradehero.th.fragments.trade.FreshQuoteHolder;
@@ -136,15 +137,15 @@ import org.ocpsoft.prettytime.PrettyTime;
                 SecurityItemView.class,
                 SearchStockPeopleFragment.class,
                 SearchPeopleItemView.class,
+                FreshQuoteHolder.class,
                 BuySellFragment.class,
+                BuySellConfirmFragment.class,
+                BuySellConfirmFragment.BuySellAsyncTask.class,
                 TimelineFragment.class,
                 MeTimelineFragment.class,
                 PushableTimelineFragment.class,
                 MarkdownTextView.class,
 
-                TrendingFragment.class,
-                FreshQuoteHolder.class,
-                BuySellConfirmFragment.class,
                 YahooNewsFragment.class,
                 ChartFragment.class,
                 StockInfoValueFragment.class,

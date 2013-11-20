@@ -6,7 +6,7 @@
  */
 package com.tradehero.th.fragments.trade;
 
-import android.os.AsyncTask;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,17 +30,11 @@ import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.TransactionFormDTO;
-import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
-import com.tradehero.th.api.users.UserBaseDTO;
-import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.network.service.SecurityService;
 import com.tradehero.th.persistence.user.UserProfileCache;
-import com.tradehero.th.utils.AlertDialogUtil;
 import dagger.Lazy;
 import javax.inject.Inject;
-import javax.inject.Named;
-import retrofit.RetrofitError;
 
 public class BuySellConfirmFragment extends AbstractBuySellFragment
 {
@@ -72,7 +66,7 @@ public class BuySellConfirmFragment extends AbstractBuySellFragment
     @Inject protected Lazy<UserProfileCache> userProfileCache;
     private boolean isBuying = false;
     private boolean isSelling = false;
-    private AsyncTask<Void, Void, SecurityPositionDetailDTO> buySellTask;
+    private BaseBuySellAsyncTask buySellTask;
 
     //private String yahooQuoteStr;
     //private Quote mQuote;
@@ -528,9 +522,9 @@ public class BuySellConfirmFragment extends AbstractBuySellFragment
         {
             return null;
         }
-        if (securityPositionDetailDTO == null || securityPositionDetailDTO.positions == null || securityPositionDetailDTO.positions.size() == 0 ||
-                securityPositionDetailDTO.positions.get(mPositionIndex) == null)
+        if (applicablePortfolioId == null || applicablePortfolioId.portfolioId == null)
         {
+            THLog.e(TAG, "No portfolioId to apply to", new IllegalStateException());
             return null;
         }
         return new TransactionFormDTO(
@@ -544,7 +538,7 @@ public class BuySellConfirmFragment extends AbstractBuySellFragment
                 mCommentsET == null ? null : mCommentsET.getText().toString(),
                 quoteDTO.rawResponse,
                 isBuy ? mBuyQuantity : mSellQuantity,
-                securityPositionDetailDTO.positions.get(mPositionIndex).portfolioId
+                applicablePortfolioId.portfolioId
         );
     }
 
@@ -554,7 +548,7 @@ public class BuySellConfirmFragment extends AbstractBuySellFragment
         {
             buySellTask.cancel(false);
         }
-        buySellTask = createBuySellTask(isTransactionTypeBuy);
+        buySellTask = new BuySellAsyncTask(getActivity(), isTransactionTypeBuy, securityId);
         if (isTransactionTypeBuy)
         {
             setBuying(true);
@@ -566,72 +560,41 @@ public class BuySellConfirmFragment extends AbstractBuySellFragment
         buySellTask.execute();
     }
 
-    private AsyncTask<Void, Void, SecurityPositionDetailDTO> createBuySellTask(final boolean isBuy)
+    public class BuySellAsyncTask extends BaseBuySellAsyncTask
     {
-        return new AsyncTask<Void, Void, SecurityPositionDetailDTO>()
+        public BuySellAsyncTask(Context context, boolean isBuy, SecurityId securityId)
         {
-            @Override protected SecurityPositionDetailDTO doInBackground(Void... voids)
-            {
-                TransactionFormDTO buySellOrder = getBuySellOrder(isBuy);
-                if (buySellOrder == null)
-                {
-                    return null;
-                }
-                SecurityPositionDetailDTO returned = null;
-                try
-                {
-                    if (isBuy)
-                    {
-                        returned = securityService.get().buy(securityId.exchange, securityId.securitySymbol, buySellOrder);
-                    }
-                    else
-                    {
-                        returned = securityService.get().sell(securityId.exchange, securityId.securitySymbol, buySellOrder);
-                    }
-                }
-                catch (RetrofitError e)
-                {
-                    THLog.e(TAG, "Failed to buy-sell", e);
-                }
-                if (returned != null)
-                {
-                    securityPositionDetailCache.get().put(securityId, returned);
+            super(context, isBuy, securityId);
+        }
 
-                    if (returned.portfolio != null)
-                    {
-                        UserBaseKey userBaseKey = currentUserBaseKeyHolder.getCurrentUserBaseKey();
-                        UserProfileDTO userProfileDTO = userProfileCache.get().get(userBaseKey);
-                        if (userProfileDTO != null && (userProfileDTO.portfolio == null || userProfileDTO.portfolio.id == returned.portfolio.id))
-                        {
-                            userProfileDTO.portfolio = returned.portfolio;
-                            userProfileCache.get().put(userBaseKey, userProfileDTO);
-                        }
-                    }
-                }
-                return returned;
+        @Override TransactionFormDTO getBuySellOrder()
+        {
+            return BuySellConfirmFragment.this.getBuySellOrder(isBuy);
+        }
+
+        @Override protected void onPostExecute(SecurityPositionDetailDTO securityPositionDetailDTO)
+        {
+            super.onPostExecute(securityPositionDetailDTO);
+            if (isCancelled())
+            {
+                return;
             }
 
-            @Override protected void onPostExecute(SecurityPositionDetailDTO securityPositionDetailDTO)
+            if (isBuy)
             {
-                super.onPostExecute(securityPositionDetailDTO);
-                if (isCancelled())
-                {
-                    return;
-                }
-
-                if (securityPositionDetailDTO != null && isBuy)
-                {
-                    setBuying(false);
-                }
-                else if (securityPositionDetailDTO != null)
-                {
-                    setSelling(false);
-                }
-                //displayConfirmMenuItem(buySellConfirmItem);
-                // TODO post to social network?
+                setBuying(false);
+            }
+            else
+            {
+                setSelling(false);
+            }
+            //displayConfirmMenuItem(buySellConfirmItem);
+            // TODO post to social network?
+            if (errorCode == CODE_OK)
+            {
                 returnToTradeFragment();
             }
-        };
+        }
     }
 
     private void returnToTradeFragment()
