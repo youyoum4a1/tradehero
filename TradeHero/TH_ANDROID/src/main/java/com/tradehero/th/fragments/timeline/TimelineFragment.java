@@ -271,16 +271,16 @@ public class TimelineFragment extends BaseFragment
         switch (step)
         {
             case 0:
-                ProfileView profileView = (ProfileView) getActivity().getLayoutInflater().inflate(R.layout.profile_screen_user_detail, null);
-                profileView.display(profile);
-                profileView.setPortfolioRequestListener(this);
-                return profileView;
-            case 1:
                 ProfileCompactView profileCompactView =
                         (ProfileCompactView) getActivity().getLayoutInflater().inflate(R.layout.profile_screen_user_compact, null);
                 profileCompactView.display(profile);
                 profileCompactView.setPortfolioRequestListener(this);
                 return profileCompactView;
+            case 1:
+                ProfileView profileView = (ProfileView) getActivity().getLayoutInflater().inflate(R.layout.profile_screen_user_detail, null);
+                profileView.display(profile);
+                profileView.setPortfolioRequestListener(this);
+                return profileView;
         }
         return null;
     }

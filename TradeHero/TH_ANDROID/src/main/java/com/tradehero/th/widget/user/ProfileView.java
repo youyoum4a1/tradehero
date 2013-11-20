@@ -38,7 +38,7 @@ public class ProfileView extends FrameLayout implements DTOView<UserProfileDTO>
     private TextView heroesCount;
     private TextView tradesCount;
     private TextView exchangesCount;
-    private ImageButton btnDefaultPortfolio;
+    private ImageView btnDefaultPortfolio;
 
     @Inject protected Picasso picasso;
     private boolean initiated;
@@ -87,7 +87,7 @@ public class ProfileView extends FrameLayout implements DTOView<UserProfileDTO>
         heroesCount = (TextView) findViewById(R.id.user_profile_heroes_count);
         tradesCount = (TextView) findViewById(R.id.user_profile_trade_count);
         exchangesCount = (TextView) findViewById(R.id.user_profile_exchanges_count);
-        btnDefaultPortfolio = (ImageButton) findViewById(R.id.btn_user_profile_default_portfolio);
+        btnDefaultPortfolio = (ImageView) findViewById(R.id.btn_user_profile_default_portfolio);
         if (btnDefaultPortfolio != null)
         {
             btnDefaultPortfolio.setOnClickListener(new OnClickListener()

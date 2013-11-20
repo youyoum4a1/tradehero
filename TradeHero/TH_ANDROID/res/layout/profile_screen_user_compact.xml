@@ -15,49 +15,36 @@
       android:layout_height="70dp"
       android:layout_alignParentLeft="true"
       android:layout_centerVertical="true"
-      android:layout_marginLeft="5dp"
+      android:layout_margin="@dimen/user_profile_compact_avatar_margin"
       android:background="@drawable/layout_oval"
       android:padding="0.5dp"
       android:src="@drawable/avatar"
-      android:contentDescription="@string/empty"/>
+      android:contentDescription="@null"/>
 
-  <TextView
-      android:id="@+id/user_profile_compact_display_name"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_marginLeft="5dp"
-      android:layout_toRightOf="@id/user_profile_compact_avatar"
-      android:textSize="20sp"
-      android:textStyle="bold"
-      android:shadowColor="@color/black"
-      android:shadowDy="1"
-      android:shadowRadius="3"
+  <!--Default Portfolio-->
+
+  <ImageView
+      android:id="@+id/btn_user_profile_default_portfolio"
+      android:layout_width="48dp"
+      android:layout_height="48dp"
+      android:gravity="center"
+      android:src="@drawable/buyscreen_info"
+      android:contentDescription="@null"
+      android:layout_alignParentRight="true"
+      android:layout_marginRight="5dp"
+      android:layout_centerVertical="true"
       />
-
-  <TextView
-      android:id="@+id/user_profile_compact_roi"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_marginLeft="5dp"
-      android:layout_toRightOf="@id/user_profile_compact_avatar"
-      android:layout_below="@id/user_profile_compact_display_name"
-      android:textColor="@color/font_roi"
-      android:textSize="18sp"
-      android:textStyle="bold"
-      android:shadowColor="@color/black"
-      android:shadowDy="1"
-      android:shadowRadius="3"
-      />
-
 
   <!--Followers-->
   <LinearLayout
+      android:id="@+id/user_profile_compact_followers_count_wrapper"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:orientation="vertical"
       android:gravity="center_horizontal"
       android:layout_toLeftOf="@+id/user_profile_compact_heroes_count_wrapper"
       android:layout_marginRight="5dp"
+      android:layout_centerVertical="true"
       >
 
     <TextView
@@ -79,7 +66,8 @@
       android:layout_height="wrap_content"
       android:orientation="vertical"
       android:gravity="center_horizontal"
-      android:layout_toLeftOf="@+id/user_profile_default_portfolio_wrapper"
+      android:layout_centerVertical="true"
+      android:layout_toLeftOf="@id/btn_user_profile_default_portfolio"
       >
 
     <TextView
@@ -92,28 +80,39 @@
         android:textStyle="bold"
         android:drawableTop="@drawable/icn_heroes"/>
 
-    </LinearLayout>
+  </LinearLayout>
 
-    <!--Default Portfolio-->
-  <LinearLayout
-      android:id="@+id/user_profile_default_portfolio_wrapper"
+
+  <TextView
+      android:id="@+id/user_profile_compact_display_name"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:orientation="vertical"
-      android:gravity="center_horizontal"
-      android:layout_alignParentRight="true"
-      android:layout_marginRight="5dp"
-      >
+      android:layout_marginLeft="5dp"
+      android:layout_marginTop="5dp"
+      android:layout_toRightOf="@id/user_profile_compact_avatar"
+      android:layout_toLeftOf="@id/user_profile_compact_followers_count_wrapper"
+      android:textSize="20sp"
+      android:textStyle="bold"
+      android:shadowColor="@color/black"
+      android:shadowDy="1"
+      android:shadowRadius="3"
+      android:ellipsize="end"
+      android:singleLine="true"
+      />
 
-    <ImageButton
-        android:id="@+id/btn_user_profile_default_portfolio"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:gravity="center"
-        android:src="@drawable/ic_info"
-        android:contentDescription="@null"
-        />
-
-  </LinearLayout>
+  <TextView
+      android:id="@+id/user_profile_compact_roi"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginLeft="5dp"
+      android:layout_toRightOf="@id/user_profile_compact_avatar"
+      android:layout_below="@id/user_profile_compact_display_name"
+      android:textColor="@color/font_roi"
+      android:textSize="18sp"
+      android:textStyle="bold"
+      android:shadowColor="@color/black"
+      android:shadowDy="1"
+      android:shadowRadius="3"
+      />
 
 </com.tradehero.th.widget.user.ProfileCompactView>

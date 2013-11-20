@@ -29,7 +29,7 @@ public class ProfileCompactView extends RelativeLayout implements DTOView<UserPr
     private TextView followersCount;
     private TextView heroesCount;
     private TextView username;
-    private ImageButton btnDefaultPortfolio;
+    private ImageView btnDefaultPortfolio;
 
     @Inject protected Picasso picasso;
     private WeakReference<PortfolioRequestListener> portfolioRequestListener = new WeakReference<>(null);
@@ -77,7 +77,7 @@ public class ProfileCompactView extends RelativeLayout implements DTOView<UserPr
         }
 
         heroesCount = (TextView) findViewById(R.id.user_profile_compact_heroes_count);
-        btnDefaultPortfolio = (ImageButton) findViewById(R.id.btn_user_profile_default_portfolio);
+        btnDefaultPortfolio = (ImageView) findViewById(R.id.btn_user_profile_default_portfolio);
         if (btnDefaultPortfolio != null)
         {
             btnDefaultPortfolio.setOnClickListener(new OnClickListener()

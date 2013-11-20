@@ -13,6 +13,7 @@
       android:baselineAligned="false"
       >
     <RelativeLayout
+        android:id="@+id/timeline_action_button_monitor_wrapper"
         android:layout_width="0dp"
         android:layout_weight="1"
         android:layout_height="wrap_content">
@@ -43,6 +44,7 @@
 
 
     <RelativeLayout
+        android:id="@+id/timeline_action_button_trade_wrapper"
         android:layout_width="0dp"
         android:layout_weight="1"
         android:layout_height="wrap_content">
@@ -71,6 +73,7 @@
     </RelativeLayout>
 
     <RelativeLayout
+        android:id="@+id/timeline_action_button_share_wrapper"
         android:layout_width="0dp"
         android:layout_weight="1"
         android:layout_height="wrap_content">

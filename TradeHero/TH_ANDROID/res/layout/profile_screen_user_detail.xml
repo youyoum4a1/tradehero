@@ -156,7 +156,7 @@
               android:shadowDy="1"
               android:shadowRadius="2"
               android:text="@string/member_since"
-            />
+              />
 
           <TextView
               android:id="@+id/txt_member_since"
@@ -168,7 +168,7 @@
               android:shadowColor="@color/black"
               android:shadowDy="1"
               android:shadowRadius="2"
-            />
+              />
 
         </LinearLayout>
 
@@ -179,7 +179,7 @@
     <TableLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-      >
+        >
 
       <TableRow>
 
@@ -187,7 +187,7 @@
             style="@style/TH.SmallTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_weight="3"
             android:gravity="right"
             android:paddingRight="@dimen/trade_screen_info_title_padding_right"
             android:textColor="@color/white"
@@ -199,7 +199,7 @@
             style="@style/TH.SmallValue"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_weight="4"
             android:gravity="left"
             android:textColor="@color/white"
             android:text=""
@@ -214,7 +214,7 @@
             style="@style/TH.SmallTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_weight="3"
             android:gravity="right"
             android:paddingRight="@dimen/trade_screen_info_title_padding_right"
             android:textColor="@color/white"
@@ -226,7 +226,7 @@
             style="@style/TH.SmallValue"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_weight="4"
             android:gravity="left"
             android:textColor="@color/white"
             android:text=""
@@ -241,7 +241,7 @@
             style="@style/TH.SmallTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_weight="3"
             android:gravity="right"
             android:paddingRight="@dimen/trade_screen_info_title_padding_right"
             android:textColor="@color/white"
@@ -253,7 +253,7 @@
             style="@style/TH.SmallValue"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_weight="4"
             android:gravity="left"
             android:textColor="@color/white"
             android:text=""
@@ -272,7 +272,6 @@
         android:paddingTop="5dip"
         android:paddingBottom="5dip"
         android:background="@android:color/transparent"
-        android:weightSum="4"
         android:baselineAligned="false">
 
       <!--Followers-->
@@ -290,7 +289,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:textColor="@color/white"
-            android:text="8"
+            android:text="@null"
             android:textSize="20sp"
             android:textStyle="bold"
             android:drawableTop="@drawable/icn_followers"/>
@@ -322,7 +321,7 @@
             android:textColor="@color/white"
             android:textSize="20sp"
             android:textStyle="bold"
-            android:text="8"
+            android:text="@null"
             android:drawableTop="@drawable/icn_heroes"/>
 
         <TextView
@@ -352,7 +351,7 @@
             android:textColor="@color/white"
             android:textSize="20sp"
             android:textStyle="bold"
-            android:text="8"
+            android:text="@null"
             android:drawableTop="@drawable/icn_trades"/>
 
         <TextView
@@ -379,7 +378,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="8"
+            android:text="@null"
             android:textColor="@color/white"
             android:textSize="20sp"
             android:textStyle="bold"
@@ -397,23 +396,14 @@
       </LinearLayout>
 
       <!--Default Portfolio-->
-      <LinearLayout
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:orientation="vertical"
-          android:layout_weight="1"
-          android:gravity="center">
-
-        <ImageButton
-            android:id="@+id/btn_user_profile_default_portfolio"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:scaleType="fitXY"
-            android:src="@drawable/ic_info"
-            android:contentDescription="@null"
-            />
-
-      </LinearLayout>
+      <ImageView
+          android:id="@+id/btn_user_profile_default_portfolio"
+          android:layout_width="48dp"
+          android:layout_height="48dp"
+          android:scaleType="fitXY"
+          android:src="@drawable/buyscreen_info"
+          android:contentDescription="@null"
+          />
 
     </LinearLayout>
 

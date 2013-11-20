@@ -31,7 +31,8 @@
   <dimen name="timeline_side_spacing">10dp</dimen>
   <dimen name="timeline_item_padding">10dip</dimen>
   <dimen name="timeline_item_corner_radius">2dp</dimen>
-  <dimen name="timeline_action_buttons_padding">5dp</dimen>
+  <dimen name="timeline_action_buttons_padding">10dp</dimen>
   <dimen name="timeline_action_buttons_drawable_padding">5dp</dimen>
+  <dimen name="user_profile_compact_avatar_margin">10dp</dimen>
 
 </resources>

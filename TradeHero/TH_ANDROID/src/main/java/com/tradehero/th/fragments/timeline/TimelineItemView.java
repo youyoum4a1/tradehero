@@ -48,13 +48,9 @@ public class TimelineItemView extends LinearLayout implements
     @Inject protected CurrentUserBaseKeyHolder currentUserBaseKeyHolder;
     @Inject protected Lazy<Picasso> picasso;
     private TimelineItem currentTimelineItem;
-
-    //private ImageView twShare;
-    //private ImageView sellStock;
-    //private ImageView buyStock;
-    //private ImageView addAlert;
-    //private ImageView liShare;
-    //private ImageView fbShare;
+    private View tradeActionButton;
+    private View shareActionButton;
+    private View monitorActionButton;
 
     //<editor-fold desc="Constructors">
     public TimelineItemView(Context context)
@@ -115,22 +111,19 @@ public class TimelineItemView extends LinearLayout implements
 
     private void initActionButtons()
     {
-        //fbShare = (ImageView) findViewById(R.id.timeline_share_facebook);
-        //twShare = (ImageView) findViewById(R.id.timeline_share_twitter);
-        //liShare = (ImageView) findViewById(R.id.timeline_share_linked_in);
-        //addAlert = (ImageView) findViewById(R.id.timeline_add_alert);
-        //buyStock = (ImageView) findViewById(R.id.timeline_buy_stock);
-        //sellStock = (ImageView) findViewById(R.id.timeline_sell_stock);
-        //
-        //View[] actionButtons = new View[]
-        //        { fbShare, twShare, liShare, addAlert, buyStock, sellStock };
-        //for (View actionButton: actionButtons)
-        //{
-        //    if (actionButton!=null)
-        //    {
-        //        actionButton.setOnClickListener(this);
-        //    }
-        //}
+        tradeActionButton = findViewById(R.id.timeline_action_button_trade_wrapper);
+        shareActionButton = findViewById(R.id.timeline_action_button_share_wrapper);
+        monitorActionButton = findViewById(R.id.timeline_action_button_monitor_wrapper);
+
+        View[] actionButtons = new View[]
+                { tradeActionButton, shareActionButton, monitorActionButton };
+        for (View actionButton: actionButtons)
+        {
+            if (actionButton!=null)
+            {
+                actionButton.setOnClickListener(this);
+            }
+        }
     }
 
     @Override public void display(TimelineItem item)
@@ -174,6 +167,17 @@ public class TimelineItemView extends LinearLayout implements
                     .transform(new WhiteToTransparentTransformation())
                     .into(vendorImage);
         }
+
+        refreshActionButtons();
+    }
+
+    private void refreshActionButtons()
+    {
+        // hide/show optional action buttons
+        List<SecurityMediaDTO> medias = currentTimelineItem.getMedias();
+        int visibility = medias != null && medias.size() > 0 ? VISIBLE : INVISIBLE;
+        tradeActionButton.setVisibility(visibility);
+        monitorActionButton.setVisibility(visibility);
     }
 
     @Override public void onClick(View textView, String data, String key, String[] matchStrings)
@@ -238,19 +242,16 @@ public class TimelineItemView extends LinearLayout implements
                 }
                 break;
             case R.id.timeline_vendor_picture:
-
-            //// TODO pass parameter in bundle to switch mode between buy/sell
-            //case R.id.timeline_buy_stock:
-            //case R.id.timeline_sell_stock:
-            //    if (currentTimelineItem != null)
-            //    {
-            //        SecurityMediaDTO firstMediaWithLogo = currentTimelineItem.getFirstMediaWithLogo();
-            //        if (firstMediaWithLogo != null && firstMediaWithLogo.securityId != 0)
-            //        {
-            //            openSecurityProfile(firstMediaWithLogo.exchange, firstMediaWithLogo.symbol);
-            //        }
-            //    }
-            //    break;
+            case R.id.timeline_action_button_trade_wrapper:
+                if (currentTimelineItem != null)
+                {
+                    SecurityMediaDTO firstMediaWithLogo = currentTimelineItem.getFirstMediaWithLogo();
+                    if (firstMediaWithLogo != null && firstMediaWithLogo.securityId != 0)
+                    {
+                        openSecurityProfile(firstMediaWithLogo.exchange, firstMediaWithLogo.symbol);
+                    }
+                }
+                break;
         }
     }
 }
