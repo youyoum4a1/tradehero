@@ -4,6 +4,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.pm.ResolveInfo;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.RemoteException;
@@ -14,6 +15,7 @@ import com.tradehero.common.utils.THLog;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
 import java.lang.ref.WeakReference;
+import java.util.List;
 import javax.inject.Inject;
 
 /** Created by julien on 5/11/13 */
@@ -83,7 +85,8 @@ public class IABServiceConnector
 
     protected boolean isServiceAvailable(Intent serviceIntent)
     {
-        return !context.getPackageManager().queryIntentServices(serviceIntent, 0).isEmpty();
+        List<ResolveInfo> intentService = context.getPackageManager().queryIntentServices(serviceIntent, 0);
+        return intentService!= null && !intentService.isEmpty();
     }
 
     /**
@@ -97,7 +100,7 @@ public class IABServiceConnector
         if (serviceConnection != null)
         {
             THLog.d(TAG, "Unbinding from service.");
-            if (context != null)
+            if (context != null && billingService != null)
             {
                 context.unbindService(serviceConnection);
             }
