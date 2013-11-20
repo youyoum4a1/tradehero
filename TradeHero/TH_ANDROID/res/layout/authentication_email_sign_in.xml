@@ -23,7 +23,7 @@
       android:layout_height="wrap_content"
       android:layout_below="@+id/authentication_sign_in_email"
       android:layout_marginTop="10dip"
-      android:text="testing"
+      android:text="asd123"
       android:hint="@string/pwd"
       android:drawableLeft="@drawable/accounts_glyph_password_default"
       android:inputType="textPassword"
