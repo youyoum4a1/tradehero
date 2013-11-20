@@ -10,7 +10,6 @@
   <dimen name="authentication_textbox_radius">5dp</dimen>
   <dimen name="user_profile_corner_radius">8dp</dimen>
   <dimen name="dashboard_padding">8dip</dimen>
-  <dimen name="home_screen_list_item_padding">5dip</dimen>
 
   <!-- Trending screen -->
   <dimen name="trending_grid_item_corner_radius">8dp</dimen>
@@ -28,5 +27,11 @@
   <dimen name="leaderboard_user_item_action_button_padding">5dp</dimen>
   <dimen name="leaderboard_user_item_action_button_margin">5dp</dimen>
   <dimen name="leaderboard_def_item_icon">50dp</dimen>
+  <dimen name="timeline_item_margin">10dp</dimen>
+  <dimen name="timeline_side_spacing">10dp</dimen>
+  <dimen name="timeline_item_padding">10dip</dimen>
+  <dimen name="timeline_item_corner_radius">2dp</dimen>
+  <dimen name="timeline_action_buttons_padding">5dp</dimen>
+  <dimen name="timeline_action_buttons_drawable_padding">5dp</dimen>
 
 </resources>

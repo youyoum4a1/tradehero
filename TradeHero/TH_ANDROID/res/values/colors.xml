@@ -4,9 +4,13 @@
   <color name="authentication_forgot_password_link">#9F9F9F</color>
   <color name="authentication_button_dark">#9e9e9e</color>
   <color name="authentication_button_light">#808080</color>
-  <color name="timeline_list_item_background">#f2f2f2</color>
   <color name="timeline_item">#000000</color>
   <color name="timeline_item_link">#364667</color>
   <color name="trending_grid_item_stock_name">#384152</color>
   <color name="leaderboard_ranking_position">#4d6d9d</color>
+  <color name="timeline_list_item_action_buttons_background">#dedede</color>
+  <color name="timeline_list_item_background">@color/white</color>
+  <color name="timeline_background_color">#E3E8EE</color>
+  <color name="timeline_action_button_text_color">#80929292</color>
+  <color name="timeline_action_button_text_color_shadow">#000000</color>
 </resources>

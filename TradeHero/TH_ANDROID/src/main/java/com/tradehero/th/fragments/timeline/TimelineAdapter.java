@@ -16,7 +16,6 @@ public class TimelineAdapter extends DTOAdapter<TimelineItem, TimelineItemView>
     private static final String TAG = TimelineAdapter.class.getName();
     private TimelinePagedItemListLoader loader;
     private int currentScrollState;
-    private int onScreenMiddleItemPosition;
 
     public TimelineAdapter(Context context, LayoutInflater inflater, int layoutResourceId)
     {
@@ -54,17 +53,6 @@ public class TimelineAdapter extends DTOAdapter<TimelineItem, TimelineItemView>
     @Override public void onScrollStateChanged(final AbsListView absListView, int scrollState)
     {
         currentScrollState = scrollState;
-
-        if (currentScrollState != SCROLL_STATE_FLING)
-        {
-            absListView.post(new Runnable()
-            {
-                @Override public void run()
-                {
-                    absListView.setItemChecked(onScreenMiddleItemPosition, true);
-                }
-            });
-        }
     }
 
     @Override public void onScroll(final AbsListView absListView, int firstVisibleItem, int visibleItemCount, int totalItemCount)
@@ -82,20 +70,6 @@ public class TimelineAdapter extends DTOAdapter<TimelineItem, TimelineItemView>
             loader.setFirstVisibleItem((TimelineItem) getItem(firstItemId));
             loader.setLastVisibleItem((TimelineItem) getItem(lastItemId));
         }
-
-        onScreenMiddleItemPosition = firstVisibleItem + (visibleItemCount-1) / 2;
-
-        // TODO when scrolling speed is low, display button bar
-        //if (currentScrollState == SCROLL_STATE_TOUCH_SCROLL)
-        //{
-        //    absListView.post(new Runnable()
-        //    {
-        //        @Override public void run()
-        //        {
-        //            absListView.setItemChecked(onScreenMiddleItemPosition, true);
-        //        }
-        //    });
-        //}
     }
 
     @Override public void onLastItemVisible()

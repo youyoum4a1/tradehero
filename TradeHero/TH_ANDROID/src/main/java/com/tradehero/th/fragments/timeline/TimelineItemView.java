@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.text.method.LinkMovementMethod;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Checkable;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -35,7 +36,7 @@ import org.ocpsoft.prettytime.PrettyTime;
 
 /** Created with IntelliJ IDEA. User: tho Date: 9/9/13 Time: 4:24 PM Copyright (c) TradeHero */
 public class TimelineItemView extends LinearLayout implements
-        DTOView<TimelineItem>, OnElementClickListener, Checkable, View.OnClickListener
+        DTOView<TimelineItem>, OnElementClickListener, View.OnClickListener
 {
     private static final String TAG = TimelineItemView.class.getName();
     private TextView username;
@@ -46,16 +47,14 @@ public class TimelineItemView extends LinearLayout implements
 
     @Inject protected CurrentUserBaseKeyHolder currentUserBaseKeyHolder;
     @Inject protected Lazy<Picasso> picasso;
-    private boolean checked;
-    private Navigator navigator;
     private TimelineItem currentTimelineItem;
 
-    private ImageView twShare;
-    private ImageView sellStock;
-    private ImageView buyStock;
-    private ImageView addAlert;
-    private ImageView linkedInShare;
-    private ImageView fbShare;
+    //private ImageView twShare;
+    //private ImageView sellStock;
+    //private ImageView buyStock;
+    //private ImageView addAlert;
+    //private ImageView liShare;
+    //private ImageView fbShare;
 
     //<editor-fold desc="Constructors">
     public TimelineItemView(Context context)
@@ -75,10 +74,15 @@ public class TimelineItemView extends LinearLayout implements
     }
     //</editor-fold>
 
+
+    @Override protected void onFinishInflate()
+    {
+        super.onFinishInflate();
+        init();
+    }
+
     private void init()
     {
-        navigator = ((NavigatorActivity) getContext()).getNavigator();
-
         username = (TextView) findViewById(R.id.timeline_user_profile_name);
         if (username != null)
         {
@@ -111,38 +115,22 @@ public class TimelineItemView extends LinearLayout implements
 
     private void initActionButtons()
     {
-        fbShare = (ImageView) findViewById(R.id.timeline_share_facebook);
-        twShare = (ImageView) findViewById(R.id.timeline_share_twitter);
-        linkedInShare = (ImageView) findViewById(R.id.timeline_share_linked_in);
-        addAlert = (ImageView) findViewById(R.id.timeline_add_alert);
-        buyStock = (ImageView) findViewById(R.id.timeline_buy_stock);
-        sellStock = (ImageView) findViewById(R.id.timeline_sell_stock);
-
-        View[] actionButtons = new View[]
-                { fbShare, twShare, linkedInShare, addAlert, buyStock, sellStock };
-        for (View actionButton: actionButtons)
-        {
-            if (actionButton!=null)
-            {
-                actionButton.setOnClickListener(this);
-            }
-        }
-    }
-
-    public void refreshOptionalButtons()
-    {
-        // hide/show optional action buttons
-        List<SecurityMediaDTO> medias = currentTimelineItem.getMedias();
-        int visibility = medias != null && medias.size() > 0 ? VISIBLE : INVISIBLE;
-
-        sellStock.setVisibility(visibility);
-        buyStock.setVisibility(visibility);
-        addAlert.setVisibility(visibility);
-    }
-
-    @Override protected void onFinishInflate()
-    {
-        init();
+        //fbShare = (ImageView) findViewById(R.id.timeline_share_facebook);
+        //twShare = (ImageView) findViewById(R.id.timeline_share_twitter);
+        //liShare = (ImageView) findViewById(R.id.timeline_share_linked_in);
+        //addAlert = (ImageView) findViewById(R.id.timeline_add_alert);
+        //buyStock = (ImageView) findViewById(R.id.timeline_buy_stock);
+        //sellStock = (ImageView) findViewById(R.id.timeline_sell_stock);
+        //
+        //View[] actionButtons = new View[]
+        //        { fbShare, twShare, liShare, addAlert, buyStock, sellStock };
+        //for (View actionButton: actionButtons)
+        //{
+        //    if (actionButton!=null)
+        //    {
+        //        actionButton.setOnClickListener(this);
+        //    }
+        //}
     }
 
     @Override public void display(TimelineItem item)
@@ -186,8 +174,6 @@ public class TimelineItemView extends LinearLayout implements
                     .transform(new WhiteToTransparentTransformation())
                     .into(vendorImage);
         }
-
-        refreshOptionalButtons();
     }
 
     @Override public void onClick(View textView, String data, String key, String[] matchStrings)
@@ -216,7 +202,12 @@ public class TimelineItemView extends LinearLayout implements
     private void openSecurityProfile(String exchange, String symbol)
     {
         SecurityId securityId = new SecurityId(exchange, symbol);
-        navigator.pushFragment(BuySellFragment.class, securityId.getArgs());
+        getNavigator().pushFragment(BuySellFragment.class, securityId.getArgs());
+    }
+
+    private Navigator getNavigator()
+    {
+        return ((NavigatorActivity) getContext()).getNavigator();
     }
 
     private void openUserProfile(int userId)
@@ -227,64 +218,10 @@ public class TimelineItemView extends LinearLayout implements
 
         if (currentUserBaseKeyHolder.getCurrentUserBaseKey().key != userId)
         {
-            navigator.pushFragment(TimelineFragment.class, b, true);
+            getNavigator().pushFragment(TimelineFragment.class, b, true);
         }
     }
 
-    //<editor-fold desc="android.View.ViewGroup">
-    @Override protected int[] onCreateDrawableState(int extraSpace)
-    {
-        final int[] drawableState = super.onCreateDrawableState(extraSpace + 1);
-        if (isChecked())
-        {
-            mergeDrawableStates(drawableState, new int[] { android.R.attr.state_checked });
-        }
-        return drawableState;
-    }
-    //</editor-fold>
-
-    //<editor-fold desc="android.widget.Checkable">
-    @Override public void setChecked(boolean checked)
-    {
-        if (this.checked != checked)
-        {
-            this.checked = checked;
-
-            refreshButtonBarVisibility(checked);
-
-            refreshDrawableState();
-        }
-    }
-
-    private void refreshButtonBarVisibility(boolean checked)
-    {
-        View buttons = findViewById(R.id.timeline_share_buttons);
-        if (checked)
-        {
-            //buttons.startAnimation(AnimationUtils.loadAnimation(getContext(), R.anim.reveal_from_top));
-            buttons.setVisibility(View.VISIBLE);
-        }
-        else
-        {
-            buttons.setVisibility(View.GONE);
-            //buttons.startAnimation(AnimationUtils.loadAnimation(getContext(), R.anim.slide_in_from_top));
-        }
-        // use postInvalidate coz there are more than one item on the listview, each item has its own bottom bar, queue the update
-        buttons.postInvalidate();
-        THLog.d(TAG, "post invalidation for buttons is submitted");
-    }
-
-    @Override public boolean isChecked()
-    {
-        return checked;
-    }
-
-    @Override public void toggle()
-    {
-        setChecked(!checked);
-    }
-
-    //</editor-fold>
     @Override public void onClick(View view)
     {
         switch (view.getId())
@@ -302,18 +239,18 @@ public class TimelineItemView extends LinearLayout implements
                 break;
             case R.id.timeline_vendor_picture:
 
-            // TODO pass parameter in bundle to switch mode between buy/sell
-            case R.id.timeline_buy_stock:
-            case R.id.timeline_sell_stock:
-                if (currentTimelineItem != null)
-                {
-                    SecurityMediaDTO firstMediaWithLogo = currentTimelineItem.getFirstMediaWithLogo();
-                    if (firstMediaWithLogo != null && firstMediaWithLogo.securityId != 0)
-                    {
-                        openSecurityProfile(firstMediaWithLogo.exchange, firstMediaWithLogo.symbol);
-                    }
-                }
-                break;
+            //// TODO pass parameter in bundle to switch mode between buy/sell
+            //case R.id.timeline_buy_stock:
+            //case R.id.timeline_sell_stock:
+            //    if (currentTimelineItem != null)
+            //    {
+            //        SecurityMediaDTO firstMediaWithLogo = currentTimelineItem.getFirstMediaWithLogo();
+            //        if (firstMediaWithLogo != null && firstMediaWithLogo.securityId != 0)
+            //        {
+            //            openSecurityProfile(firstMediaWithLogo.exchange, firstMediaWithLogo.symbol);
+            //        }
+            //    }
+            //    break;
         }
     }
 }

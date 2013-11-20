@@ -51,12 +51,4 @@ public class MarkdownTextView extends TextView implements OnElementClickListener
     {
         this.onElementClickListener = listener;
     }
-
-    @Override public boolean onTouchEvent(MotionEvent event)
-    {
-        super.onTouchEvent(event);
-        return false;
-    }
-
-
 }

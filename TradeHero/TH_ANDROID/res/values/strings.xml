@@ -174,5 +174,8 @@
   <string name="settings_sharing_facebook">Facebook</string>
   <string name="settings_sharing_twitter">Twitter</string>
   <string name="settings_sharing_linked_in">LinkedIn</string>
+  <string name="monitor">Monitor</string>
+  <string name="trade">Trade</string>
+  <string name="share">Share</string>
 
 </resources>

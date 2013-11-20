@@ -7,7 +7,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
-import android.widget.AdapterView;
 import android.widget.ListView;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
@@ -26,7 +25,6 @@ import com.tradehero.th.base.Navigator;
 import com.tradehero.th.base.NavigatorActivity;
 import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.fragments.position.PositionListFragment;
-import com.tradehero.th.fragments.settings.SettingsFragment;
 import com.tradehero.th.loaders.TimelinePagedItemListLoader;
 import com.tradehero.th.persistence.portfolio.PortfolioCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
@@ -79,13 +77,6 @@ public class TimelineFragment extends BaseFragment
         {
             timelineAdapter = createTimelineAdapter();
         }
-        timelineListView.setOnItemClickListener(new AdapterView.OnItemClickListener()
-        {
-            @Override public void onItemClick(AdapterView<?> parent, View view, int position, long id)
-            {
-                refreshableListView.setItemChecked(position, true);
-            }
-        });
 
         timelineListView.setAdapter(timelineAdapter);
         timelineListView.setOnRefreshListener(timelineAdapter);
@@ -262,7 +253,7 @@ public class TimelineFragment extends BaseFragment
     //<editor-fold desc="Initial methods">
     private TimelineAdapter createTimelineAdapter()
     {
-        timelineAdapter = new TimelineAdapter(getActivity(), getActivity().getLayoutInflater(), R.layout.user_profile_timeline_item);
+        timelineAdapter = new TimelineAdapter(getActivity(), getActivity().getLayoutInflater(), R.layout.timeline_item_view);
         timelineAdapter.setLoader(createTimelineLoader());
         return timelineAdapter;
     }
