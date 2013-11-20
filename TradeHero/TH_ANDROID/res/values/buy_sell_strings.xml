@@ -33,4 +33,17 @@
   <string name="alert_dialog_market_close_message">%1$s is currently closed.\nYou can still trade %2$s off-hours quoted bid and ask prices, but be aware that the spread may be much larger than it is during regular hours.</string>
   <string name="alert_dialog_market_close_cancel">Right!</string>
 
+  <string name="alert_dialog_buy_sell_order_null_title">This is embarassing</string>
+  <string name="alert_dialog_buy_sell_order_null_message">We failed to prepare the buy or sell order.</string>
+  <string name="alert_dialog_buy_sell_order_null_cancel">Okay</string>
+
+  <string name="alert_dialog_buy_sell_retrofit_failed_title">Oh Oh</string>
+  <string name="alert_dialog_buy_sell_retrofit_failed_message">We failed to execute your order.\nYou may confirm the trade did not go through and try again.</string>
+  <string name="alert_dialog_buy_sell_retrofit_failed_cancel">Okay</string>
+
+  <string name="alert_dialog_buy_sell_returned_null_title">Oh Oh</string>
+  <string name="alert_dialog_buy_sell_returned_null_message">The server returned invalid information.\nYou may confirm the trade did not go through and try again.</string>
+  <string name="alert_dialog_buy_sell_returned_null_cancel">Okay</string>
+
+
 </resources>
