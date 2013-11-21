@@ -1,5 +1,6 @@
 package com.tradehero.common.persistence;
 
+import com.tradehero.common.milestone.BaseMilestone;
 import com.tradehero.common.milestone.Milestone;
 import com.tradehero.common.utils.THLog;
 import java.lang.ref.WeakReference;
@@ -9,13 +10,12 @@ abstract public class DTORetrievedMilestone<
         DTOKeyType extends DTOKey,
         DTOType extends DTO,
         DTOCacheType extends DTOCache<DTOKeyType, DTOType>>
-    implements Milestone
+    extends BaseMilestone
 {
     public static final String TAG = DTORetrievedMilestone.class.getSimpleName();
 
     private boolean failed = false;
     protected final DTOKeyType key;
-    protected WeakReference<OnCompleteListener> parentCompleteListener = new WeakReference<>(null);
     protected final DTOCache.Listener<DTOKeyType, DTOType> cacheListener;
     protected DTOCache.GetOrFetchTask<DTOType> fetchTask;
 
@@ -74,20 +74,6 @@ abstract public class DTORetrievedMilestone<
         }
     }
 
-    @Override public OnCompleteListener getOnCompleteListener()
-    {
-        return parentCompleteListener.get();
-    }
-
-    /**
-     * The listener should be strongly referenced elsewhere
-     * @param listener
-     */
-    @Override public void setOnCompleteListener(OnCompleteListener listener)
-    {
-        this.parentCompleteListener = new WeakReference<>(listener);
-    }
-
     public boolean isRunning()
     {
         return fetchTask != null;
@@ -103,30 +89,9 @@ abstract public class DTORetrievedMilestone<
         return failed;
     }
 
-    protected void conditionalNotifyCompleteListener()
-    {
-        if (isComplete())
-        {
-            notifyCompleteListener();
-        }
-    }
-
-    protected void notifyCompleteListener()
-    {
-        OnCompleteListener listener = getOnCompleteListener();
-        if (listener != null)
-        {
-            listener.onComplete(this);
-        }
-    }
-
     protected void notifyFailedListener(Throwable throwable)
     {
         failed = true;
-        OnCompleteListener listener = getOnCompleteListener();
-        if (listener != null)
-        {
-            listener.onFailed(this, throwable);
-        }
+        super.notifyFailedListener(throwable);
     }
 }

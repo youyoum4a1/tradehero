@@ -10,7 +10,10 @@ import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 11/21/13 Time: 6:27 PM To change this template use File | Settings | File Templates. */
+/**
+ * This cache happens to populate itself fully when called once.
+ * Created with IntelliJ IDEA. User: xavier Date: 11/21/13 Time: 6:27 PM To change this template use File | Settings | File Templates.
+ * */
 @Singleton public class IABSKUListCache extends StraightDTOCache<IABSKUListType, IABSKUList>
 {
     public static final String TAG = IABSKUListCache.class.getSimpleName();

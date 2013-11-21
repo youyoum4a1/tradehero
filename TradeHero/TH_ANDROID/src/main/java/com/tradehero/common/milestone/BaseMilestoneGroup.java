@@ -5,13 +5,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/21/13 Time: 5:26 PM To change this template use File | Settings | File Templates. */
-public class BaseMilestoneGroup implements MilestoneGroup
+public class BaseMilestoneGroup extends BaseMilestone implements MilestoneGroup
 {
     public static final String TAG = BaseMilestoneGroup.class.getSimpleName();
 
     protected final List<Milestone> milestones;
     private final OnCompleteListener childCompleteListener;
-    protected WeakReference<OnCompleteListener> parentCompleteListener = new WeakReference<>(null);
 
     public BaseMilestoneGroup()
     {
@@ -41,20 +40,6 @@ public class BaseMilestoneGroup implements MilestoneGroup
             }
         }
         milestones.clear();
-    }
-
-    @Override public OnCompleteListener getOnCompleteListener()
-    {
-        return parentCompleteListener.get();
-    }
-
-    /**
-     * The listener should be strongly referenced elsewhere
-     * @param listener
-     */
-    @Override public void setOnCompleteListener(OnCompleteListener listener)
-    {
-        this.parentCompleteListener = new WeakReference<>(listener);
     }
 
     @Override public void add(Milestone milestone)
@@ -120,40 +105,6 @@ public class BaseMilestoneGroup implements MilestoneGroup
             }
         }
         return false;
-    }
-
-    protected void conditionalNotifyCompleteListener()
-    {
-        if (isComplete())
-        {
-            notifyCompleteListener();
-        }
-    }
-
-    protected void notifyCompleteListener()
-    {
-        OnCompleteListener listener = getOnCompleteListener();
-        if (listener != null)
-        {
-            listener.onComplete(this);
-        }
-    }
-
-    protected void conditionalNotifyFailedListener(Throwable throwable)
-    {
-        if (isFailed())
-        {
-            notifyFailedListener(throwable);
-        }
-    }
-
-    protected void notifyFailedListener(Throwable throwable)
-    {
-        OnCompleteListener listener = getOnCompleteListener();
-        if (listener != null)
-        {
-            listener.onFailed(this, throwable);
-        }
     }
 
     @Override public int getMilestoneCount()

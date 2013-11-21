@@ -19,6 +19,7 @@ import com.tradehero.th.base.THUser;
 import com.tradehero.th.billing.googleplay.SKUDetailsPurchaser;
 import com.tradehero.th.billing.googleplay.THIABLogicHolderExtended;
 import com.tradehero.th.billing.googleplay.THIABPurchaseConsumer;
+import com.tradehero.th.billing.googleplay.THInventoryFetchMilestone;
 import com.tradehero.th.billing.googleplay.THInventoryFetcher;
 import com.tradehero.th.fragments.WebViewFragment;
 import com.tradehero.th.fragments.authentication.EmailSignInFragment;
@@ -81,8 +82,10 @@ import com.tradehero.th.network.service.UserService;
 import com.tradehero.th.network.service.UserTimelineService;
 import com.tradehero.th.network.service.YahooNewsService;
 import com.tradehero.th.persistence.DTOCacheUtil;
+import com.tradehero.th.persistence.billing.googleplay.IABSKUListRetrievedMilestone;
 import com.tradehero.th.persistence.leaderboard.LeaderboardManager;
 import com.tradehero.th.persistence.portfolio.OwnedPortfolioFetchAssistant;
+import com.tradehero.th.persistence.portfolio.PortfolioCompactListRetrievedMilestone;
 import com.tradehero.th.persistence.timeline.TimelineManager;
 import com.tradehero.th.persistence.timeline.TimelineStore;
 import com.tradehero.th.persistence.user.AbstractUserStore;
@@ -231,6 +234,9 @@ import org.ocpsoft.prettytime.PrettyTime;
                 PurchaseReporter.class,
                 THIABLogicHolderExtended.class,
                 THIABPurchaseConsumer.class,
+                THInventoryFetchMilestone.class,
+                IABSKUListRetrievedMilestone.class,
+                PortfolioCompactListRetrievedMilestone.class,
 
         },
         staticInjections =

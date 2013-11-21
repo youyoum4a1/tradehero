@@ -9,6 +9,16 @@ public class IABSKUListType extends AbstractStringDTOKey
     public static final String TAG = IABSKUListType.class.getSimpleName();
     public static final String BUNDLE_KEY_KEY = IABSKUListType.class.getName() + ".key";
 
+    public static IABSKUListType getInApp()
+    {
+        return new IABSKUListType(Constants.ITEM_TYPE_INAPP);
+    }
+
+    public static IABSKUListType getSubs()
+    {
+        return new IABSKUListType(Constants.ITEM_TYPE_SUBS);
+    }
+
     //<editor-fold desc="Constructors">
     public IABSKUListType(Bundle args)
     {

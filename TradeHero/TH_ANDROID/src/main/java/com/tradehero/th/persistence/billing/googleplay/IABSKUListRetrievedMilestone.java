@@ -3,6 +3,7 @@ package com.tradehero.th.persistence.billing.googleplay;
 import com.tradehero.common.billing.googleplay.IABSKUList;
 import com.tradehero.common.billing.googleplay.IABSKUListType;
 import com.tradehero.common.persistence.DTORetrievedMilestone;
+import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
 import javax.inject.Inject;
 
@@ -16,6 +17,7 @@ public class IABSKUListRetrievedMilestone extends DTORetrievedMilestone<IABSKULi
     public IABSKUListRetrievedMilestone(IABSKUListType key)
     {
         super(key);
+        DaggerUtils.inject(this);
     }
 
     @Override protected IABSKUListCache getCache()

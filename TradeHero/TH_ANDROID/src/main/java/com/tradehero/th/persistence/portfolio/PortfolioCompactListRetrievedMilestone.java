@@ -3,6 +3,7 @@ package com.tradehero.th.persistence.portfolio;
 import com.tradehero.common.persistence.DTORetrievedMilestone;
 import com.tradehero.th.api.portfolio.OwnedPortfolioIdList;
 import com.tradehero.th.api.users.UserBaseKey;
+import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
 import javax.inject.Inject;
 
@@ -16,6 +17,7 @@ public class PortfolioCompactListRetrievedMilestone extends DTORetrievedMileston
     public PortfolioCompactListRetrievedMilestone(UserBaseKey key)
     {
         super(key);
+        DaggerUtils.inject(this);
     }
 
     @Override protected PortfolioCompactListCache getCache()

@@ -4,6 +4,7 @@ import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.th.billing.googleplay.THSKUDetails;
 import com.tradehero.th.billing.googleplay.THSKUDetailsTuner;
 import com.tradehero.th.persistence.billing.ProductDetailCache;
+import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
@@ -27,5 +28,15 @@ import javax.inject.Singleton;
     @Override protected THSKUDetails fetch(IABSKU key)
     {
         throw new IllegalStateException("You should not fetch THSKUDetails individually");
+    }
+
+    @Override public THSKUDetails put(IABSKU key, THSKUDetails value)
+    {
+        return super.put(key, value);    //To change body of overridden methods use File | Settings | File Templates.
+    }
+
+    @Override public List<THSKUDetails> put(List<THSKUDetails> values)
+    {
+        return super.put(values);    //To change body of overridden methods use File | Settings | File Templates.
     }
 }

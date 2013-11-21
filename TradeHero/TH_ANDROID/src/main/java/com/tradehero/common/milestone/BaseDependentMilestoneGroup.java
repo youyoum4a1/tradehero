@@ -27,6 +27,12 @@ public class BaseDependentMilestoneGroup extends BaseMilestoneGroup
         };
     }
 
+    @Override public void onDestroy()
+    {
+        dependsOn = null;
+        super.onDestroy();
+    }
+
     @Override public Milestone getDependsOn()
     {
         return dependsOn;
