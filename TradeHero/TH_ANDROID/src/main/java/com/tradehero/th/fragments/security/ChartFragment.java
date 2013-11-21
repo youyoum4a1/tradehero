@@ -33,6 +33,7 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
     private ChartSize chartSize = ChartSize.medium;
 
     @Inject protected Lazy<SecurityCompactCache> securityCompactCache;
+    @Inject protected Picasso picasso;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -157,7 +158,7 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
             if (value != null && value.yahooSymbol != null)
             {
                 String imageURL = Utils.getChartURL(value.yahooSymbol, chartSize, timeSpan);
-                Picasso.with(getActivity()).load(imageURL).into(stockBgLogo);
+                picasso.load(imageURL).into(stockBgLogo);
             }
             postChooseOtherSize();
         }
