@@ -298,7 +298,6 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
     //<editor-fold desc="IABAlertUtils.OnDialogSKUDetailsClickListener">
     @Override public void onDialogSKUDetailsClicked(DialogInterface dialogInterface, int position, THSKUDetails skuDetails)
     {
-        //THToast.show("Sku clicked " + skuDetails.getProductIdentifier().identifier);
         THIABActor actor = getBillingActor();
         if (actor != null)
         {
@@ -381,6 +380,7 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
                 Application.getResourceString(R.string.store_billing_report_api_launching_window_title),
                 Application.getResourceString(R.string.store_billing_report_api_launching_window_message),
                 true);
+        getBillingActor().launchReportSequenceAsync(purchase);
         purchaseReporter.setListener(this);
         purchaseReporter.reportPurchase(purchase);
     }

@@ -130,6 +130,9 @@ public class OwnedPortfolioId  implements Comparable, DTOKey
 
     @Override public String toString()
     {
-        return String.format("[userId=%d; portfolioId=%d]", userId, portfolioId);
+        return "OwnedPortfolioId{" +
+                "portfolioId=" + portfolioId +
+                ", userId=" + userId +
+                '}';
     }
 }

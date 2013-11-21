@@ -46,6 +46,7 @@ import retrofit.RetrofitError;
             OwnedPortfolioId ownedPortfolioId;
             for(PortfolioCompactDTO portfolioCompactDTO: fleshedValues)
             {
+                //THLog.d(TAG, portfolioCompactDTO.toString());
                 ownedPortfolioId = new OwnedPortfolioId(key, portfolioCompactDTO.getPortfolioId());
                 ownedPortfolioIds.add(ownedPortfolioId);
                 portfolioCompactCache.get().put(portfolioCompactDTO.getPortfolioId(), portfolioCompactDTO);

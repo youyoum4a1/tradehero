@@ -32,6 +32,7 @@ public class THIABPurchaseOrder implements IABPurchaseOrder<IABSKU>
     public THIABPurchaseOrder (IABSKU sku, OwnedPortfolioId developerPayload)
     {
         this(sku, 1, developerPayload);
+        THLog.d(TAG, "THIABPurchaseOrder with " + developerPayload);
     }
 
     public THIABPurchaseOrder (IABSKU sku, int quantity, OwnedPortfolioId developerPayload)

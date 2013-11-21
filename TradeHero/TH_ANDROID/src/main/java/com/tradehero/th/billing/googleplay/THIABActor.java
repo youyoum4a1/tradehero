@@ -24,5 +24,6 @@ public interface THIABActor extends IABActor<
 {
     List<THSKUDetails> getDetailsOfDomain(String domain);
     int launchReportSequence(PurchaseReportedHandler purchaseReportedHandler, SKUPurchase purchase);
+    int launchReportSequenceAsync(SKUPurchase purchase);
     UserProfileDTO launchReportSequenceSync(SKUPurchase purchase);
 }

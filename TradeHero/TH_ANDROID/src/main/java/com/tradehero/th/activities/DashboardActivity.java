@@ -166,6 +166,11 @@ public class DashboardActivity extends SherlockFragmentActivity
         return thiabLogicHolderExtended.launchReportSequence(purchaseReportedHandler, purchase);
     }
 
+    @Override public int launchReportSequenceAsync(SKUPurchase purchase)
+    {
+        return thiabLogicHolderExtended.launchReportSequenceAsync(purchase);
+    }
+
     @Override public UserProfileDTO launchReportSequenceSync(SKUPurchase purchase)
     {
         return thiabLogicHolderExtended.launchReportSequenceSync(purchase);

@@ -33,7 +33,6 @@ public class PortfolioDTO extends PortfolioCompactDTO implements DTO
     public double plY2D;
 
     public List<UpdatePricesQuoteDTO> yahooSymbols;
-    public Date markingAsOfUtc;
 
     public int countTrades;
     public int countExchanges;

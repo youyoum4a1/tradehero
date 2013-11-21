@@ -300,10 +300,15 @@ abstract public class BaseIABActor<
 
     public void onActivityResult(int requestCode, int resultCode, Intent data)
     {
+        THLog.d(TAG, "onActivityResult requestCode: " + requestCode + ", resultCode: " + resultCode);
         IABPurchaser iabPurchaser = iabPurchasers.get(requestCode);
         if (iabPurchaser != null)
         {
             iabPurchaser.handleActivityResult(requestCode, resultCode, data);
+        }
+        else
+        {
+            THLog.w(TAG, "onActivityResult no handler");
         }
     }
 }

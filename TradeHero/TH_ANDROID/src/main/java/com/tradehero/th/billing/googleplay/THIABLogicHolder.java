@@ -1,18 +1,25 @@
 package com.tradehero.th.billing.googleplay;
 
 import android.app.Activity;
+import android.content.DialogInterface;
+import android.content.Intent;
 import com.tradehero.common.billing.googleplay.BaseIABActor;
 import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.common.billing.googleplay.SKUPurchase;
+import com.tradehero.common.billing.googleplay.exceptions.IABException;
 import com.tradehero.common.utils.THLog;
-import com.tradehero.common.utils.THToast;
+import com.tradehero.th.R;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.billing.BasePurchaseReporter;
 import com.tradehero.th.billing.PurchaseReportedHandler;
 import com.tradehero.th.billing.PurchaseReporter;
+import com.tradehero.th.persistence.billing.googleplay.THSKUDetailCache;
+import com.tradehero.th.persistence.user.UserProfileCache;
+import dagger.Lazy;
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Map;
+import javax.inject.Inject;
 import retrofit.RetrofitError;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/8/13 Time: 12:32 PM To change this template use File | Settings | File Templates. */
@@ -34,6 +41,9 @@ abstract public class THIABLogicHolder
     protected Map<Integer /*requestCode*/, PurchaseReporter> purchaseReporters;
     protected Map<Integer /*requestCode*/, BasePurchaseReporter.OnPurchaseReportedListener> purchaseReportedListeners;
     protected Map<Integer /*requestCode*/, WeakReference<PurchaseReportedHandler>> purchaseReportedHandlers;
+
+    @Inject Lazy<UserProfileCache> userProfileCache;
+    @Inject Lazy<THSKUDetailCache> thskuDetailCache;
 
     public THIABLogicHolder(Activity activity)
     {
@@ -92,7 +102,6 @@ abstract public class THIABLogicHolder
 
             @Override public void onPurchaseReported(SKUPurchase reportedPurchase, UserProfileDTO updatedUserPortfolio)
             {
-                THToast.show("OnPurchaseReportedListener.onPurchaseReported Report went through ok");
                 THLog.d(TAG, "OnPurchaseReportedListener.onPurchaseReported Purchase info " + reportedPurchase);
                 PurchaseReportedHandler handler = getPurchaseReportedHandler();
                 if (handler != null)
@@ -143,6 +152,12 @@ abstract public class THIABLogicHolder
         return requestCode;
     }
 
+    @Override public int launchReportSequenceAsync(SKUPurchase purchase)
+    {
+        THLog.d(TAG, "launchReportSequenceAsync " + purchase);
+        return launchReportSequence(createReportListener(), purchase);
+    }
+
     @Override public UserProfileDTO launchReportSequenceSync(SKUPurchase purchase) throws RetrofitError
     {
         return new PurchaseReporter().reportPurchaseSync(purchase);
@@ -160,5 +175,109 @@ abstract public class THIABLogicHolder
         THIABPurchaseConsumer consumer = new THIABPurchaseConsumer(getActivity());
         consumer.setConsumptionFinishedListener(purchaseConsumptionFinishedListeners.get(requestCode));
         return consumer;
+    }
+
+    public void launchReportSequenceAsync(Map<IABSKU, SKUPurchase> purchases)
+    {
+        for (SKUPurchase purchase : purchases.values())
+        {
+            THLog.d(TAG, "Purchasing " + purchase);
+            launchReportSequenceAsync(purchase);
+        }
+    }
+
+    protected PurchaseReportedHandler createReportListener()
+    {
+        return new PurchaseReportedHandler()
+        {
+            @Override public void handlePurchaseReported(int requestCode, SKUPurchase purchase, UserProfileDTO userProfileDTO)
+            {
+                THIABLogicHolder.this.handlePurchaseReported(requestCode, purchase, userProfileDTO);
+            }
+
+            @Override public void handlePurchaseReportFailed(int requestCode, SKUPurchase purchase, Throwable exception)
+            {
+                THIABLogicHolder.this.handlePurchaseReportFailed(requestCode, purchase, exception);
+            }
+        };
+    }
+
+    protected void handlePurchaseReportFailed(int requestCode, final SKUPurchase purchase, Throwable exception)
+    {
+        THLog.e(TAG, "A purchase could not be reported", exception);
+
+        if (exception instanceof RetrofitError)
+        {
+            // TODO finer identification of "already has reported purchase"
+            if (((RetrofitError) exception).getResponse().getStatus() >= 400)
+            {
+                // Consume quietly anyway
+                consumeOne(requestCode, purchase, true);
+
+                // Offer to send an email to support
+                IABAlertUtils.popSendEmailSupportReportFailed(getActivity(), new DialogInterface.OnClickListener()
+                {
+                    @Override public void onClick(DialogInterface dialog, int which)
+                    {
+                        sendSupportEmailReportFailed(purchase);
+                    }
+                });
+            }
+        }
+        else
+        {
+            IABAlertUtils.popUnknownError(getActivity());
+        }
+    }
+
+    protected void sendSupportEmailReportFailed(SKUPurchase purchase)
+    {
+        getActivity().startActivity(Intent.createChooser(
+                GooglePlayUtils.getSupportPurchaseReportEmailIntent(getActivity(), purchase),
+                getActivity().getString(R.string.google_play_send_support_email_chooser_title)));
+    }
+
+    protected void handlePurchaseReported(int requestCode, SKUPurchase purchase, UserProfileDTO userProfileDTO)
+    {
+        THLog.d(TAG, "handlePurchaseReported " + purchase);
+        if (userProfileDTO != null)
+        {
+            userProfileCache.get().put(userProfileDTO.getBaseKey(), userProfileDTO);
+        }
+        consumeOne(requestCode, purchase);
+    }
+
+    protected void consumeOne(int requestCode, SKUPurchase purchase)
+    {
+        consumeOne(requestCode, purchase, false);
+    }
+
+    protected void consumeOne(int requestCode, SKUPurchase purchase, final boolean reportSuccessQuiet)
+    {
+        final THIABPurchaseConsumeHandler consumeListener = new THIABPurchaseConsumeHandler()
+        {
+            @Override public void handlePurchaseConsumeException(int requestCode, IABException exception)
+            {
+                IABAlertUtils.popOfferSendEmailSupportConsumeFailed(getActivity(), exception);
+            }
+
+            @Override public void handlePurchaseConsumed(int requestCode, SKUPurchase purchase)
+            {
+                if (reportSuccessQuiet)
+                {
+                    // Nothing to do
+                }
+                else if (purchase == null || purchase.getProductIdentifier() == null || purchase.getProductIdentifier().identifier == null)
+                {
+                    IABAlertUtils.popConsumePurchaseSuccess(getActivity(), null);
+                }
+                else
+                {
+                    IABAlertUtils.popConsumePurchaseSuccess(getActivity(), thskuDetailCache.get().get(purchase.getProductIdentifier()).description);
+                }
+            }
+        };
+
+        launchConsumeSequence(consumeListener, purchase);
     }
 }

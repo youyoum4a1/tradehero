@@ -212,8 +212,10 @@ abstract public class IABPurchaser<
      */
     public boolean handleActivityResult(int requestCode, int resultCode, Intent data)
     {
+        THLog.d(TAG, "handleActivityResult requestCode: " + requestCode + ", resultCode: " + resultCode);
         if (requestCode != activityRequestCode)
         {
+            THLog.w(TAG, "handleActivityResult. This requestcode was not for me");
             return false;
         }
 

@@ -1,8 +1,6 @@
 package com.tradehero.th.billing.googleplay;
 
 import android.app.Activity;
-import android.content.DialogInterface;
-import android.content.Intent;
 import com.tradehero.common.billing.googleplay.Constants;
 import com.tradehero.common.billing.googleplay.SKUPurchase;
 import com.tradehero.common.billing.googleplay.IABSKU;
@@ -13,22 +11,15 @@ import com.tradehero.common.billing.googleplay.exceptions.IABException;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.ArrayUtils;
 import com.tradehero.common.utils.THLog;
-import com.tradehero.common.utils.THToast;
-import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.OwnedPortfolioIdList;
 import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
 import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.billing.PurchaseReportedHandler;
-import com.tradehero.th.persistence.billing.googleplay.THSKUDetailCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
-import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
 import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
-import retrofit.RetrofitError;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/8/13 Time: 12:32 PM To change this template use File | Settings | File Templates. */
 public class THIABLogicHolderExtended
@@ -49,8 +40,6 @@ public class THIABLogicHolderExtended
 
     @Inject Lazy<CurrentUserBaseKeyHolder> currentUserBaseKeyHolder;
     @Inject Lazy<PortfolioCompactListCache> portfolioCompactListCache;
-    @Inject Lazy<UserProfileCache> userProfileCache;
-    @Inject Lazy<THSKUDetailCache> thskuDetailCache;
 
     private DTOCache.Listener<UserBaseKey, OwnedPortfolioIdList> portfolioCompactListCacheListener;
     private DTOCache.GetOrFetchTask<OwnedPortfolioIdList> portfolioCompactListFetchTask;
@@ -141,7 +130,7 @@ public class THIABLogicHolderExtended
         if (fetcher == this.skuFetcher)
         {
             latestSkuFetcherException = exception;
-            THToast.show("There was an error fetching the list of SKUs");
+            THLog.e(TAG, "There was an error fetching the list of SKUs", exception);
         }
         else
         {
@@ -175,7 +164,6 @@ public class THIABLogicHolderExtended
     {
         if (fetcher == this.inventoryFetcher)
         {
-            //THToast.show("Inventory successfully fetched");
             launchOwnPortfolioSequence();
         }
         else
@@ -213,7 +201,7 @@ public class THIABLogicHolderExtended
 
                 @Override public void onErrorThrown(UserBaseKey key, Throwable error)
                 {
-                    THToast.show("There was an error fetching your portfolio list");
+                    THLog.e(TAG, "There was an error fetching your portfolio list", error);
                 }
             };
         }
@@ -259,7 +247,7 @@ public class THIABLogicHolderExtended
             if (purchases != null && purchases.size() > 0)
             {
                 THLog.d(TAG, "There are " + purchases.size() + " purchases to be consumed");
-                sequentiallyReport(purchases);
+                launchReportSequenceAsync(purchases);
             }
             else
             {
@@ -272,104 +260,4 @@ public class THIABLogicHolderExtended
         }
     }
     //</editor-fold>
-
-    protected void sequentiallyReport(Map<IABSKU, SKUPurchase> purchases)
-    {
-        PurchaseReportedHandler reportedListener = new PurchaseReportedHandler()
-        {
-            @Override public void handlePurchaseReported(int requestCode, SKUPurchase purchase, UserProfileDTO userProfileDTO)
-            {
-                THIABLogicHolderExtended.this.handlePurchaseReported(requestCode, purchase, userProfileDTO);
-            }
-
-            @Override public void handlePurchaseReportFailed(int requestCode, SKUPurchase purchase, Throwable exception)
-            {
-                THIABLogicHolderExtended.this.handlePurchaseReportFailed(requestCode, purchase, exception);
-            }
-        };
-
-        for (SKUPurchase purchase : purchases.values())
-        {
-            THLog.d(TAG, "Purchasing " + purchase);
-            launchReportSequence(reportedListener, purchase);
-        }
-    }
-
-    protected void handlePurchaseReportFailed(int requestCode, final SKUPurchase purchase, Throwable exception)
-    {
-        THLog.e(TAG, "A purchase could not be reported", exception);
-
-        if (exception instanceof RetrofitError)
-        {
-            // TODO finer identification of "already has reported purchase"
-            if (((RetrofitError) exception).getResponse().getStatus() >= 400)
-            {
-                // Consume quietly anyway
-                consumeOne(requestCode, purchase, true);
-
-                // Offer to send an email to support
-                IABAlertUtils.popSendEmailSupportReportFailed(getActivity(), new DialogInterface.OnClickListener()
-                {
-                    @Override public void onClick(DialogInterface dialog, int which)
-                    {
-                        sendSupportEmailReportFailed(purchase);
-                    }
-                });
-            }
-        }
-        else
-        {
-            IABAlertUtils.popUnknownError(getActivity());
-        }
-    }
-
-    protected void sendSupportEmailReportFailed(SKUPurchase purchase)
-    {
-        getActivity().startActivity(Intent.createChooser(
-                GooglePlayUtils.getSupportPurchaseReportEmailIntent(getActivity(), purchase),
-                getActivity().getString(R.string.google_play_send_support_email_chooser_title)));
-    }
-
-    protected void handlePurchaseReported(int requestCode, SKUPurchase purchase, UserProfileDTO userProfileDTO)
-    {
-        if (userProfileDTO != null)
-        {
-            userProfileCache.get().put(userProfileDTO.getBaseKey(), userProfileDTO);
-        }
-        consumeOne(requestCode, purchase);
-    }
-
-    protected void consumeOne(int requestCode, SKUPurchase purchase)
-    {
-        consumeOne(requestCode, purchase, false);
-    }
-
-    protected void consumeOne(int requestCode, SKUPurchase purchase, final boolean reportSuccessQuiet)
-    {
-        final THIABPurchaseConsumeHandler consumeListener = new THIABPurchaseConsumeHandler()
-        {
-            @Override public void handlePurchaseConsumeException(int requestCode, IABException exception)
-            {
-                IABAlertUtils.popOfferSendEmailSupportConsumeFailed(getActivity(), exception);
-            }
-
-            @Override public void handlePurchaseConsumed(int requestCode, SKUPurchase purchase)
-            {
-                if (reportSuccessQuiet)
-                {
-                    // Nothing to do
-                }
-                else if (purchase == null || purchase.getProductIdentifier() == null || purchase.getProductIdentifier().identifier == null)
-                {
-                    IABAlertUtils.popConsumePurchaseSuccess(getActivity(), null);
-                }
-                else
-                {
-                    IABAlertUtils.popConsumePurchaseSuccess(getActivity(), thskuDetailCache.get().get(purchase.getProductIdentifier()).description);
-                }
-            }
-        };
-
-        launchConsumeSequence(consumeListener, purchase);
-    }
 }
