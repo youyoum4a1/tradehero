@@ -121,39 +121,43 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
         {
             portfolioId = args.getInt(BUNDLE_KEY_PORTFOLIO_ID);
         }
-        else if (portfolioCompactListCache.get().getDefaultPortfolio(new UserBaseKey(userId)) != null)
-        {
-            portfolioId = portfolioCompactListCache.get().getDefaultPortfolio(new UserBaseKey(userId)).portfolioId;
-        }
         else
         {
-            // TODO
-            if (portfolioIdListListener == null)
+            OwnedPortfolioId ownedPortfolioId = portfolioCompactListCache.get().getDefaultPortfolio(new UserBaseKey(userId));
+            if (ownedPortfolioId != null)
             {
-                portfolioIdListListener = new DTOCache.Listener<UserBaseKey, OwnedPortfolioIdList>()
-                {
-                    @Override public void onDTOReceived(UserBaseKey key, OwnedPortfolioIdList value)
-                    {
-                        if (value == null)
-                        {
-                            THToast.show("There was a problem getting the portfolio information");
-                            THLog.d(TAG, "prepareApplicablePortfolioId:onDTOReceived Value is null");
-                        }
-                        else
-                        {
-                            prepareApplicablePortfolioId();
-                        }
-                    }
-
-                    @Override public void onErrorThrown(UserBaseKey key, Throwable error)
-                    {
-                        THToast.show("There was an error fetching the portfolio information");
-                        THLog.e(TAG, "Error fetching portfolio list", error);
-                    }
-                };
+                portfolioId = ownedPortfolioId.portfolioId;
             }
-            portfolioIdListFetchTask = portfolioCompactListCache.get().getOrFetch(new UserBaseKey(userId), portfolioIdListListener);
-            portfolioIdListFetchTask.execute();
+            else
+            {
+                // TODO
+                if (portfolioIdListListener == null)
+                {
+                    portfolioIdListListener = new DTOCache.Listener<UserBaseKey, OwnedPortfolioIdList>()
+                    {
+                        @Override public void onDTOReceived(UserBaseKey key, OwnedPortfolioIdList value)
+                        {
+                            if (value == null)
+                            {
+                                THToast.show("There was a problem getting the portfolio information");
+                                THLog.d(TAG, "prepareApplicablePortfolioId:onDTOReceived Value is null");
+                            }
+                            else
+                            {
+                                prepareApplicablePortfolioId();
+                            }
+                        }
+
+                        @Override public void onErrorThrown(UserBaseKey key, Throwable error)
+                        {
+                            THToast.show("There was an error fetching the portfolio information");
+                            THLog.e(TAG, "Error fetching portfolio list", error);
+                        }
+                    };
+                }
+                portfolioIdListFetchTask = portfolioCompactListCache.get().getOrFetch(new UserBaseKey(userId), portfolioIdListListener);
+                portfolioIdListFetchTask.execute();
+            }
         }
 
         linkWith(new OwnedPortfolioId(userId, portfolioId), true);

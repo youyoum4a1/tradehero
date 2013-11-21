@@ -36,4 +36,42 @@ public class PortfolioDTO extends PortfolioCompactDTO implements DTO
 
     public int countTrades;
     public int countExchanges;
+
+    @Override public String toString()
+    {
+        return "PortfolioDTO{" +
+                "cashBalance=" + cashBalance +
+                ", id=" + id +
+                ", providerId=" + providerId +
+                ", title='" + title + '\'' +
+                ", totalValue=" + totalValue +
+                ", totalExtraCashPurchased=" + totalExtraCashPurchased +
+                ", totalExtraCashGiven=" + totalExtraCashGiven +
+                ", isWatchlist=" + isWatchlist +
+                ", openPositionsCount=" + openPositionsCount +
+                ", closedPositionsCount=" + closedPositionsCount +
+                ", watchlistPositionsCount=" + watchlistPositionsCount +
+                ", markingAsOfUtc=" + markingAsOfUtc +
+                ", countExchanges=" + countExchanges +
+
+                ", initialCash=" + initialCash +
+                ", creationDate=" + creationDate +
+                ", description='" + description + '\'' +
+                ", Currency='" + Currency + '\'' +
+                ", roiSinceInception=" + roiSinceInception +
+                ", roiSinceInceptionAnnualized=" + roiSinceInceptionAnnualized +
+                ", plSinceInception=" + plSinceInception +
+                ", roiM2D=" + roiM2D +
+                ", roiM2DAnnualized=" + roiM2DAnnualized +
+                ", plM2D=" + plM2D +
+                ", roiQ2D=" + roiQ2D +
+                ", roiQ2DAnnualized=" + roiQ2DAnnualized +
+                ", plQ2D=" + plQ2D +
+                ", roiY2D=" + roiY2D +
+                ", roiY2DAnnualized=" + roiY2DAnnualized +
+                ", plY2D=" + plY2D +
+                ", yahooSymbols=" + yahooSymbols +
+                ", countTrades=" + countTrades +
+                '}';
+    }
 }
