@@ -10,6 +10,7 @@ import com.tradehero.common.milestone.DependentMilestone;
 import com.tradehero.common.milestone.Milestone;
 import com.tradehero.th.persistence.billing.googleplay.IABSKUListCache;
 import com.tradehero.th.persistence.billing.googleplay.IABSKUListRetrievedMilestone;
+import com.tradehero.th.persistence.billing.googleplay.THSKUDetailCache;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
 import java.util.List;
@@ -30,6 +31,7 @@ public class THInventoryFetchMilestone extends BaseMilestone implements Dependen
     protected IABSKUListRetrievedMilestone dependsOn;
     private final OnCompleteListener dependCompleteListener;
     @Inject Lazy<IABSKUListCache> iabskuListCache;
+    @Inject Lazy<THSKUDetailCache> thskuDetailCache;
 
     public THInventoryFetchMilestone(Context context)
     {
@@ -84,8 +86,16 @@ public class THInventoryFetchMilestone extends BaseMilestone implements Dependen
         {
             skus.addAll(iabskuListCache.get().get(IABSKUListType.getSubs()));
         }
-        inventoryFetcher = new THInventoryFetcher(context, skus);
-        inventoryFetcher.fetchInventory();
+        if (areDetailsInCache(skus))
+        {
+            notifyCompleteListener();
+        }
+        else
+        {
+            inventoryFetcher = new THInventoryFetcher(context, skus);
+            inventoryFetcher.setInventoryListener(fetchListener);
+            inventoryFetcher.fetchInventory();
+        }
     }
 
     @Override public boolean isRunning()
@@ -101,6 +111,18 @@ public class THInventoryFetchMilestone extends BaseMilestone implements Dependen
     @Override public boolean isFailed()
     {
         return failed;
+    }
+
+    private boolean areDetailsInCache(List<IABSKU> skus)
+    {
+        for (IABSKU sku : skus)
+        {
+            if (thskuDetailCache.get().get(sku) == null)
+            {
+                return false;
+            }
+        }
+        return true;
     }
 
     @Override protected void notifyCompleteListener()
