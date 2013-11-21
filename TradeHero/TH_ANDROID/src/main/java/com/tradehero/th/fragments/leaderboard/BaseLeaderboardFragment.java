@@ -24,7 +24,6 @@ public class BaseLeaderboardFragment extends DashboardFragment
     private LeaderboardSortType currentSortType;
     private SortTypeChangedListener sortTypeChangeListener;
     private SubMenu sortSubMenu;
-    private int flags;
 
     protected void pushLeaderboardListViewFragment(LeaderboardDefDTO dto)
     {
@@ -43,7 +42,7 @@ public class BaseLeaderboardFragment extends DashboardFragment
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         createSortSubMenu(menu);
-        onCreateSortSubMenu();
+        initSortTypeFromArguments();
 
         ActionBar actionBar = getSherlockActivity().getSupportActionBar();
         actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME);
@@ -74,7 +73,12 @@ public class BaseLeaderboardFragment extends DashboardFragment
     {
         LeaderboardSortType sortType = getCurrentSortType();
         sortSubMenu = menu.addSubMenu("").setIcon(sortType.getSelectedResourceIcon());
-        leaderboardSortHelper.addSortMenu(sortSubMenu, flags);
+        leaderboardSortHelper.addSortMenu(sortSubMenu, getSortMenuFlag());
+    }
+
+    private int getSortMenuFlag()
+    {
+        return getArguments().getInt(LeaderboardSortType.BUNDLE_FLAG);
     }
 
     protected void setCurrentSortType(LeaderboardSortType selectedSortType)
@@ -96,12 +100,6 @@ public class BaseLeaderboardFragment extends DashboardFragment
     public void setSortTypeChangeListener(SortTypeChangedListener sortTypeChangeListener)
     {
         this.sortTypeChangeListener = sortTypeChangeListener;
-    }
-
-    private void onCreateSortSubMenu()
-    {
-        flags = getArguments().getInt(LeaderboardSortType.BUNDLE_FLAG);
-        initSortTypeFromArguments();
     }
 
     protected void initSortTypeFromArguments()
