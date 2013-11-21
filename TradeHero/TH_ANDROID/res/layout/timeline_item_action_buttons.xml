@@ -9,14 +9,15 @@
       android:layout_marginLeft="@dimen/timeline_side_spacing"
       android:layout_marginRight="@dimen/timeline_side_spacing"
       android:background="@drawable/timeline_action_buttons_background"
-      android:padding="@dimen/timeline_action_buttons_padding"
       android:baselineAligned="false"
       >
     <RelativeLayout
         android:id="@+id/timeline_action_button_monitor_wrapper"
         android:layout_width="0dp"
         android:layout_weight="1"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:padding="@dimen/timeline_action_buttons_padding"
+        >
 
       <TextView
           android:id="@+id/timeline_action_button_monitor"
@@ -47,7 +48,9 @@
         android:id="@+id/timeline_action_button_trade_wrapper"
         android:layout_width="0dp"
         android:layout_weight="1"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:padding="@dimen/timeline_action_buttons_padding"
+        >
       <TextView
           android:id="@+id/timeline_action_button_trade"
           android:layout_width="wrap_content"
@@ -76,7 +79,9 @@
         android:id="@+id/timeline_action_button_share_wrapper"
         android:layout_width="0dp"
         android:layout_weight="1"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:padding="@dimen/timeline_action_buttons_padding"
+        >
 
       <TextView
           android:id="@+id/timeline_action_button_share"

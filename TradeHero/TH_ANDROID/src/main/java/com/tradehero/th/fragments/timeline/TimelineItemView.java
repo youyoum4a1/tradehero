@@ -5,16 +5,14 @@ import android.os.Bundle;
 import android.text.method.LinkMovementMethod;
 import android.util.AttributeSet;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Checkable;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 import com.tradehero.common.graphics.RoundedShapeTransformation;
+import com.tradehero.common.graphics.ScaleKeepRatioTransformation;
 import com.tradehero.common.graphics.WhiteToTransparentTransformation;
 import com.tradehero.common.text.OnElementClickListener;
-import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.local.TimelineItem;
@@ -165,6 +163,11 @@ public class TimelineItemView extends LinearLayout implements
             picasso.get()
                     .load(firstMediaWithLogo.url)
                     .transform(new WhiteToTransparentTransformation())
+                    .transform(new ScaleKeepRatioTransformation(
+                            0,
+                            getResources().getDimensionPixelSize(R.dimen.timeline_vendor_logo_height),
+                            getResources().getDimensionPixelSize(R.dimen.timeline_vendor_logo_max_width),
+                            getResources().getDimensionPixelSize(R.dimen.timeline_vendor_logo_max_height)))
                     .into(vendorImage);
         }
 
