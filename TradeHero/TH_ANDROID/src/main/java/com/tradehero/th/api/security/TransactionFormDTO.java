@@ -38,4 +38,21 @@ public class TransactionFormDTO extends PublishableFormDTO
         map.put(POST_KEY_PORTFOLIO, String.format("%d", portfolio));
         return map;
     }
+
+    @Override public String toString()
+    {
+        return "TransactionFormDTO{" +
+                "portfolio=" + portfolio +
+                ", signedQuoteDto='" + signedQuoteDto + '\'' +
+                ", quantity=" + quantity +
+                ", geo_alt='" + geo_alt + '\'' +
+                ", publishToFb=" + publishToFb +
+                ", publishToTw=" + publishToTw +
+                ", publishToLi=" + publishToLi +
+                ", geo_lat='" + geo_lat + '\'' +
+                ", geo_long='" + geo_long + '\'' +
+                ", isPublic=" + isPublic +
+                ", tradeComment='" + tradeComment + '\'' +
+                '}';
+    }
 }
