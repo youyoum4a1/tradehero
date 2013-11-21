@@ -47,7 +47,7 @@ public class PurchaseReporter extends BasePurchaseReporter<
     private OwnedPortfolioId getApplicableOwnedPortfolioId(SKUPurchase purchase)
     {
         OwnedPortfolioId portfolioId = purchase.getApplicableOwnedPortfolioId();
-        if (portfolioId == null)
+        if (portfolioId == null || portfolioId.userId == null || portfolioId.portfolioId == null)
         {
             portfolioId = portfolioCompactListCache.get().getDefaultPortfolio(currentUserBaseKeyHolder.get().getCurrentUserBaseKey());
         }

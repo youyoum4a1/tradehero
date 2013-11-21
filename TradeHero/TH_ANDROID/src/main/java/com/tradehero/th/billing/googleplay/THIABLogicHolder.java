@@ -9,11 +9,14 @@ import com.tradehero.common.billing.googleplay.SKUPurchase;
 import com.tradehero.common.billing.googleplay.exceptions.IABException;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
+import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.billing.BasePurchaseReporter;
 import com.tradehero.th.billing.PurchaseReportedHandler;
 import com.tradehero.th.billing.PurchaseReporter;
 import com.tradehero.th.persistence.billing.googleplay.THSKUDetailCache;
+import com.tradehero.th.persistence.portfolio.PortfolioCache;
+import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import dagger.Lazy;
 import java.lang.ref.WeakReference;
@@ -43,6 +46,8 @@ abstract public class THIABLogicHolder
     protected Map<Integer /*requestCode*/, WeakReference<PurchaseReportedHandler>> purchaseReportedHandlers;
 
     @Inject Lazy<UserProfileCache> userProfileCache;
+    @Inject Lazy<PortfolioCompactListCache> portfolioCompactListCache;
+    @Inject Lazy<PortfolioCache> portfolioCache;
     @Inject Lazy<THSKUDetailCache> thskuDetailCache;
 
     public THIABLogicHolder(Activity activity)
@@ -263,6 +268,16 @@ abstract public class THIABLogicHolder
 
             @Override public void handlePurchaseConsumed(int requestCode, SKUPurchase purchase)
             {
+                if (purchase != null)
+                {
+                    OwnedPortfolioId applicablePortfolioId = purchase.getApplicableOwnedPortfolioId();
+                    if (applicablePortfolioId != null)
+                    {
+                        portfolioCompactListCache.get().invalidate(applicablePortfolioId.getUserBaseKey());
+                        portfolioCache.get().invalidate(applicablePortfolioId);
+                    }
+                }
+
                 if (reportSuccessQuiet)
                 {
                     // Nothing to do

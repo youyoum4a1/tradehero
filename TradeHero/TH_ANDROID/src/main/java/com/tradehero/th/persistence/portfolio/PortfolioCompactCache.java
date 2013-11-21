@@ -30,8 +30,6 @@ import javax.inject.Singleton;
 
     @Override public PortfolioCompactDTO put(PortfolioId key, PortfolioCompactDTO value)
     {
-        THLog.e(TAG, "put " + value, new Exception());
-
         // HACK We need to take care of the bug https://www.pivotaltracker.com/story/show/61190894
         {
             PortfolioCompactDTO current = get(key);
