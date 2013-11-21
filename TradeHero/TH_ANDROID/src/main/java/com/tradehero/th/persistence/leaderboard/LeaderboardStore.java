@@ -22,7 +22,7 @@ import retrofit.RetrofitError;
 /** Created with IntelliJ IDEA. User: tho Date: 10/21/13 Time: 4:41 PM Copyright (c) TradeHero */
 public class LeaderboardStore implements PersistableResource<LeaderboardDTO>
 {
-    public static final String SORT_TYPE = "sortType";
+    public static final String INCLUDE_FRIENDS_OF_FRIENDS = "includeFoF";
     public static final String PER_PAGE = "perPage";
     private static final Integer DEFAULT_PER_PAGE = 42;
 
@@ -39,6 +39,7 @@ public class LeaderboardStore implements PersistableResource<LeaderboardDTO>
             {
                 Integer leaderboardId = (Integer) query.getId();
                 Integer perPage = (Integer) query.getProperty(PER_PAGE);
+                Boolean includeFoF = (Boolean) query.getProperty(INCLUDE_FRIENDS_OF_FRIENDS);
                 if (perPage == null)
                 {
                     perPage = DEFAULT_PER_PAGE;
@@ -49,7 +50,7 @@ public class LeaderboardStore implements PersistableResource<LeaderboardDTO>
                     switch (leaderboardId)
                     {
                         case LeaderboardDefDTO.LEADERBOARD_FRIEND_ID:
-                            leaderboardDTO = leaderboardService.get().getFriendsLeaderboard(query.getPage(), perPage, false, query.getSortType());
+                            leaderboardDTO = leaderboardService.get().getFriendsLeaderboard(query.getPage(), perPage, includeFoF, query.getSortType());
                             break;
                         default:
                             leaderboardDTO = leaderboardService.get().getLeaderboard(leaderboardId, query.getPage(), perPage, query.getSortType());

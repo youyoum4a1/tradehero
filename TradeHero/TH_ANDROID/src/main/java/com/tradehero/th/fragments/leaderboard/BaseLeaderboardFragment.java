@@ -6,6 +6,7 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.actionbarsherlock.view.SubMenu;
+import com.tradehero.th.R;
 import com.tradehero.th.api.leaderboard.LeaderboardDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardDefDTO;
 import com.tradehero.th.fragments.base.BaseFragment;
@@ -29,13 +30,22 @@ public class BaseLeaderboardFragment extends DashboardFragment
     {
         Bundle bundle = new Bundle(getArguments());
         bundle.putInt(LeaderboardDTO.LEADERBOARD_ID, dto.getId());
-        bundle.putString(LeaderboardMarkUserListViewFragment.TITLE, dto.name);
+        bundle.putString(BaseLeaderboardFragment.TITLE, dto.name);
         bundle.putInt(LeaderboardMarkUserListViewFragment.CURRENT_SORT_TYPE,
                 getCurrentSortType() != null ? getCurrentSortType().getFlag() : dto.getDefaultSortType().getFlag());
         bundle.putString(LeaderboardDefDTO.LEADERBOARD_DEF_DESC, dto.desc);
-
         bundle.putInt(LeaderboardSortType.BUNDLE_FLAG, dto.getSortOptionFlags());
-        getNavigator().pushFragment(LeaderboardMarkUserListViewFragment.class, bundle);
+
+        switch (dto.getId())
+        {
+            case LeaderboardDefDTO.LEADERBOARD_FRIEND_ID:
+                getNavigator().pushFragment(FriendLeaderboardMarkUserListViewFragment.class, bundle);
+                break;
+
+            default:
+                getNavigator().pushFragment(LeaderboardMarkUserListViewFragment.class, bundle);
+                break;
+        }
     }
 
     //<editor-fold desc="ActionBar">
@@ -43,6 +53,9 @@ public class BaseLeaderboardFragment extends DashboardFragment
     {
         createSortSubMenu(menu);
         initSortTypeFromArguments();
+
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(getMenuResource(), menu);
 
         ActionBar actionBar = getSherlockActivity().getSupportActionBar();
         actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME);
@@ -53,8 +66,11 @@ public class BaseLeaderboardFragment extends DashboardFragment
             String title = args.getString(TITLE);
             actionBar.setTitle(title == null ? "" : title);
         }
+    }
 
-        super.onCreateOptionsMenu(menu, inflater);
+    protected int getMenuResource()
+    {
+        return R.menu.leaderboard_menu;
     }
 
     @Override public boolean onOptionsItemSelected(MenuItem item)

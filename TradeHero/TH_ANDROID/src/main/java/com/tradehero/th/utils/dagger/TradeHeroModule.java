@@ -28,6 +28,7 @@ import com.tradehero.th.fragments.billing.management.FollowerManagerFragment;
 import com.tradehero.th.fragments.billing.management.FollowerPayoutManagerFragment;
 import com.tradehero.th.fragments.billing.management.HeroManagerFragment;
 import com.tradehero.th.fragments.leaderboard.BaseLeaderboardFragment;
+import com.tradehero.th.fragments.leaderboard.FriendLeaderboardMarkUserListViewFragment;
 import com.tradehero.th.fragments.leaderboard.LeaderboardCommunityFragment;
 import com.tradehero.th.fragments.leaderboard.LeaderboardDefListViewFragment;
 import com.tradehero.th.fragments.leaderboard.LeaderboardDefView;
@@ -50,7 +51,6 @@ import com.tradehero.th.fragments.settings.SettingsTransactionHistoryFragment;
 import com.tradehero.th.fragments.timeline.MeTimelineFragment;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.fragments.timeline.TimelineFragment;
-import com.tradehero.th.fragments.trade.BaseBuySellAsyncTask;
 import com.tradehero.th.fragments.trade.BuySellConfirmFragment;
 import com.tradehero.th.fragments.trade.BuySellFragment;
 import com.tradehero.th.fragments.trade.FreshQuoteHolder;
@@ -223,6 +223,7 @@ import org.ocpsoft.prettytime.PrettyTime;
                 BaseLeaderboardFragment.class,
                 LeaderboardMarkUserItemView.class,
                 LeaderboardMarkUserListView.class,
+                FriendLeaderboardMarkUserListViewFragment.class,
 
                 WebViewFragment.class,
 

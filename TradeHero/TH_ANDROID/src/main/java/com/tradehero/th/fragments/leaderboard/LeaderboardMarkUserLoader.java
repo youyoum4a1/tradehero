@@ -23,6 +23,7 @@ public class LeaderboardMarkUserLoader extends PagedItemListLoader<LeaderboardUs
 
     private Integer currentPage;
     private Integer leaderboardId;
+    private boolean includeFoF;
     private LeaderboardSortType sortType = LeaderboardSortType.DefaultSortType;
 
     @Inject
@@ -61,6 +62,7 @@ public class LeaderboardMarkUserLoader extends PagedItemListLoader<LeaderboardUs
         query.setId(leaderboardId);
         query.setPage(currentPage);
         query.setSortType(sortType.getServerFlag());
+        query.setProperty(LeaderboardStore.INCLUDE_FRIENDS_OF_FRIENDS, includeFoF);
         query.setProperty(LeaderboardStore.PER_PAGE, getItemsPerPage());
 
         try
@@ -111,5 +113,15 @@ public class LeaderboardMarkUserLoader extends PagedItemListLoader<LeaderboardUs
     public Integer getLeaderboardId()
     {
         return leaderboardId;
+    }
+
+    public void setIncludeFoF(boolean includeFoF)
+    {
+        this.includeFoF = includeFoF;
+    }
+
+    public boolean isIncludeFoF()
+    {
+        return includeFoF;
     }
 }

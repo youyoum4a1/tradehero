@@ -36,7 +36,8 @@ public class LeaderboardMarkUserListViewFragment extends BaseLeaderboardFragment
     private LeaderboardMarkUserListAdapter leaderboardMarkUserListAdapter;
     private LeaderboardMarkUserListView leaderboardMarkUserListView;
     private TextView leaderboardMarkUserMarkingTime;
-    private LeaderboardMarkUserLoader leaderboardMarkUserLoader;
+
+    protected LeaderboardMarkUserLoader leaderboardMarkUserLoader;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -117,17 +118,11 @@ public class LeaderboardMarkUserListViewFragment extends BaseLeaderboardFragment
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.leaderboard_listview_menu, menu);
+    }
 
-        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-        actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_HOME_AS_UP);
-
-        Bundle argument = getArguments();
-        if (argument != null)
-        {
-            String title = argument.getString(TITLE);
-            actionBar.setTitle(title == null ? "" : title);
-        }
+    @Override protected int getMenuResource()
+    {
+        return R.menu.leaderboard_listview_menu;
     }
 
     @Override public boolean onOptionsItemSelected(MenuItem item)
