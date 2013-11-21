@@ -1,6 +1,7 @@
 package com.tradehero.th.utils;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import com.tradehero.th.auth.FacebookAuthenticationProvider;
 import com.tradehero.th.base.Application;
@@ -13,24 +14,21 @@ import java.util.Collections;
 
 public class FacebookUtils
 {
-    private static FacebookAuthenticationProvider provider;
-    private static boolean isInitialized = false;
+    private FacebookAuthenticationProvider provider;
 
-    public static void initialize(String appId)
+    public FacebookUtils(Context context, String appId)
     {
-        provider = new FacebookAuthenticationProvider(Application.context(), appId);
+        provider = new FacebookAuthenticationProvider(context, appId);
         THUser.registerAuthenticationProvider(provider);
-        isInitialized = true;
     }
 
-    public static void logIn(Activity activity, LogInCallback callback)
+    public void logIn(Activity activity, LogInCallback callback)
     {
         logIn(null, activity, 32655, callback);
     }
 
-    public static void logIn(Collection<String> permissions, Activity activity, int activityCode, LogInCallback callback)
+    public void logIn(Collection<String> permissions, Activity activity, int activityCode, LogInCallback callback)
     {
-        checkInitialization();
         provider.setActivity(activity);
         provider.setActivityCode(activityCode);
         if (permissions == null)
@@ -41,15 +39,7 @@ public class FacebookUtils
         THUser.logInWithAsync(provider.getAuthType(), callback);
     }
 
-    private static void checkInitialization()
-    {
-        if (!isInitialized)
-        {
-            throw new IllegalStateException("You must call FacebookUtils.initialize() before using FacebookUtils");
-        }
-    }
-
-    public static void finishAuthentication(int requestCode, int resultCode, Intent data)
+    public void finishAuthentication(int requestCode, int resultCode, Intent data)
     {
         if (provider != null)
             provider.onActivityResult(requestCode, resultCode, data);

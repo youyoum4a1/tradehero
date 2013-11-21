@@ -10,11 +10,10 @@ import com.tradehero.th.misc.callback.LogInCallback;
 
 public final class TwitterUtils
 {
-    private static Twitter twitter;
-    private static TwitterAuthenticationProvider provider;
-    private static boolean isInitialized;
+    private Twitter twitter;
+    private TwitterAuthenticationProvider provider;
 
-    private static TwitterAuthenticationProvider getAuthenticationProvider()
+    private TwitterAuthenticationProvider getAuthenticationProvider()
     {
         if (provider == null)
         {
@@ -23,7 +22,7 @@ public final class TwitterUtils
         return provider;
     }
 
-    public static Twitter getTwitter()
+    public Twitter getTwitter()
     {
         if (twitter == null)
         {
@@ -32,32 +31,15 @@ public final class TwitterUtils
         return twitter;
     }
 
-    public static void initialize(String consumerKey, String consumerSecret)
+    public TwitterUtils(String consumerKey, String consumerSecret)
     {
         getTwitter().setConsumerKey(consumerKey);
         getTwitter().setConsumerSecret(consumerSecret);
         THUser.registerAuthenticationProvider(getAuthenticationProvider());
-        isInitialized = true;
     }
 
-    private static void checkInitialization()
+    public void logIn(Context context, LogInCallback callback)
     {
-        if (!isInitialized)
-        {
-            throw new IllegalStateException(
-                    "You must call TwitterUtils.initialize() before using TwitterUtils");
-        }
-    }
-
-    public static void logIn(String twitterId, String screenName, String authToken,
-            String authTokenSecret, LogInCallback callback)
-    {
-        checkInitialization();
-    }
-
-    public static void logIn(Context context, LogInCallback callback)
-    {
-        checkInitialization();
         provider.setContext(context);
         THUser.logInWithAsync(provider.getAuthType(), callback);
     }

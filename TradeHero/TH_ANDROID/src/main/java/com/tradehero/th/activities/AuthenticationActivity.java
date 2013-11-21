@@ -28,11 +28,14 @@ import com.tradehero.th.fragments.authentication.WelcomeFragment;
 import com.tradehero.th.misc.callback.LogInCallback;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.utils.Constants;
+import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.FacebookUtils;
 import com.tradehero.th.utils.LinkedInUtils;
 import com.tradehero.th.utils.TwitterUtils;
+import dagger.Lazy;
 import java.util.HashMap;
 import java.util.Map;
+import javax.inject.Inject;
 import org.json.JSONException;
 import org.json.JSONObject;
 import retrofit.RetrofitError;
@@ -51,9 +54,15 @@ public class AuthenticationActivity extends SherlockFragmentActivity
     private ProgressDialog progressDialog;
     private JSONObject twitterJson;
 
+    @Inject protected Lazy<FacebookUtils> facebookUtils;
+    @Inject protected Lazy<TwitterUtils> twitterUtils;
+    @Inject protected Lazy<LinkedInUtils> linkedInUtils;
+
     @Override protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+
+        DaggerUtils.inject(this);
 
         // check if there is a saved fragment, restore it
         if (savedInstanceState != null)
@@ -108,7 +117,7 @@ public class AuthenticationActivity extends SherlockFragmentActivity
     @Override protected void onActivityResult(int requestCode, int resultCode, Intent data)
     {
         super.onActivityResult(requestCode, resultCode, data);
-        FacebookUtils.finishAuthentication(requestCode, resultCode, data);
+        facebookUtils.get().finishAuthentication(requestCode, resultCode, data);
         THLog.d(TAG, "onActivityResult " + requestCode + ", " + resultCode + ", " + data);
     }
 
@@ -215,7 +224,7 @@ public class AuthenticationActivity extends SherlockFragmentActivity
                 Application.getResourceString(R.string.please_wait),
                 Application.getResourceString(R.string.connecting_to_linkedin),
                 true);
-        LinkedInUtils.logIn(this, new SocialAuthenticationCallback("LinkedIn"));
+        linkedInUtils.get().logIn(this, new SocialAuthenticationCallback("LinkedIn"));
     }
 
     private void authenticateWithFacebook()
@@ -225,7 +234,7 @@ public class AuthenticationActivity extends SherlockFragmentActivity
                 Application.getResourceString(R.string.please_wait),
                 Application.getResourceString(R.string.connecting_to_facebook),
                 true);
-        FacebookUtils.logIn(this, new SocialAuthenticationCallback("Facebook"));
+        facebookUtils.get().logIn(this, new SocialAuthenticationCallback("Facebook"));
     }
 
     private void authenticateWithTwitter()
@@ -235,7 +244,7 @@ public class AuthenticationActivity extends SherlockFragmentActivity
                 Application.getResourceString(R.string.please_wait),
                 Application.getResourceString(R.string.connecting_to_twitter),
                 true);
-        TwitterUtils.logIn(this, createTwitterAuthenticationCallback());
+        twitterUtils.get().logIn(this, createTwitterAuthenticationCallback());
     }
 
     private SocialAuthenticationCallback createTwitterAuthenticationCallback ()

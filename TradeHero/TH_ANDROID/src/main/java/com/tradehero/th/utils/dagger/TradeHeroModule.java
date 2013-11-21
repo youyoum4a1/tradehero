@@ -9,6 +9,8 @@ import com.tradehero.common.billing.googleplay.PurchaseFetcher;
 import com.tradehero.common.cache.DatabaseCache;
 import com.tradehero.common.cache.LruMemFileCache;
 import com.tradehero.common.persistence.CacheHelper;
+import com.tradehero.th.R;
+import com.tradehero.th.activities.AuthenticationActivity;
 import com.tradehero.th.api.form.AbstractUserAvailabilityRequester;
 import com.tradehero.th.api.portfolio.DisplayablePortfolioDTO;
 import com.tradehero.th.billing.PurchaseReporter;
@@ -87,7 +89,10 @@ import com.tradehero.th.persistence.user.AbstractUserStore;
 import com.tradehero.th.persistence.user.UserManager;
 import com.tradehero.th.persistence.user.UserProfileFetchAssistant;
 import com.tradehero.th.persistence.user.UserStore;
+import com.tradehero.th.utils.FacebookUtils;
+import com.tradehero.th.utils.LinkedInUtils;
 import com.tradehero.th.utils.NumberDisplayUtils;
+import com.tradehero.th.utils.TwitterUtils;
 import com.tradehero.th.widget.MarkdownTextView;
 import com.tradehero.th.widget.ServerValidatedUsernameText;
 import com.tradehero.th.fragments.portfolio.PortfolioListItemView;
@@ -121,6 +126,8 @@ import org.ocpsoft.prettytime.PrettyTime;
 @Module(
         injects =
         {
+                AuthenticationActivity.class,
+
                 UserProfileFetchAssistant.class,
                 OwnedPortfolioFetchAssistant.class,
                 SecurityAlertAssistant.class,
@@ -345,6 +352,24 @@ public class TradeHeroModule
                 .build();
         //mPicasso.setDebugging(true);
         return mPicasso;
+    }
+
+    @Provides @Singleton FacebookUtils provideFacebookUtils(Context context)
+    {
+        return new FacebookUtils(context, context.getString(R.string.FACEBOOK_APP_ID));
+    }
+
+    @Provides @Singleton TwitterUtils provideTwitterUtils(Context context)
+    {
+        return new TwitterUtils(
+                context.getString(R.string.TWITTER_CONSUMER_KEY),
+                context.getString(R.string.TWITTER_CONSUMER_SECRET));
+    }
+    @Provides @Singleton LinkedInUtils provideLinkedInUtils(Context context)
+    {
+        return new LinkedInUtils(
+                context.getString(R.string.LINKEDIN_CONSUMER_KEY),
+                context.getString(R.string.LINKEDIN_CONSUMER_SECRET));
     }
 
     @Provides Context provideContext()

@@ -66,6 +66,10 @@ public class SettingsFragment extends PreferenceFragment
     @Inject protected Lazy<UserProfileCache> userProfileCache;
     @Inject protected CurrentUserBaseKeyHolder currentUserBaseKeyHolder;
 
+    @Inject protected Lazy<FacebookUtils> facebookUtils;
+    @Inject protected Lazy<TwitterUtils> twitterUtils;
+    @Inject protected Lazy<LinkedInUtils> linkedInUtils;
+
     private ProgressDialog progressDialog;
     private CheckBoxPreference facebookSharing;
     private SocialNetworkEnum currentSocialNetworkConnect;
@@ -363,17 +367,17 @@ public class SettingsFragment extends PreferenceFragment
             {
                 case FB:
                     progressDialog = ProgressDialog.show(getActivity(), getString(R.string.facebook), getString(R.string.connecting_to_facebook));
-                    FacebookUtils.logIn(getActivity(), socialConnectCallback);
+                    facebookUtils.get().logIn(getActivity(), socialConnectCallback);
                     break;
                 case TW:
                     progressDialog = ProgressDialog.show(getActivity(), getString(R.string.twitter), getString(R.string.connecting_to_twitter));
-                    TwitterUtils.logIn(getActivity(), socialConnectCallback);
+                    twitterUtils.get().logIn(getActivity(), socialConnectCallback);
                     break;
                 case TH:
                     break;
                 case LI:
                     progressDialog = ProgressDialog.show(getActivity(), getString(R.string.linkedin), getString(R.string.connecting_to_linkedin));
-                    LinkedInUtils.logIn(getActivity(), socialConnectCallback);
+                    linkedInUtils.get().logIn(getActivity(), socialConnectCallback);
                     break;
             }
         }

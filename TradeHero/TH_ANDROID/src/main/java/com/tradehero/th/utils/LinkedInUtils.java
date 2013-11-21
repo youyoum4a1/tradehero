@@ -10,11 +10,10 @@ import com.tradehero.th.misc.callback.LogInCallback;
 public class LinkedInUtils
 {
 
-    private static LinkedIn linkedIn;
-    private static LinkedInAuthenticationProvider provider;
-    private static boolean isInitialized;
+    private LinkedIn linkedIn;
+    private LinkedInAuthenticationProvider provider;
 
-    private static LinkedInAuthenticationProvider getAuthenticationProvider()
+    private LinkedInAuthenticationProvider getAuthenticationProvider()
     {
         if (provider == null)
         {
@@ -23,7 +22,7 @@ public class LinkedInUtils
         return provider;
     }
 
-    public static LinkedIn getLinkedIn()
+    public LinkedIn getLinkedIn()
     {
         if (linkedIn == null)
         {
@@ -32,32 +31,15 @@ public class LinkedInUtils
         return linkedIn;
     }
 
-    public static void initialize(String consumerKey, String consumerSecret)
+    public LinkedInUtils(String consumerKey, String consumerSecret)
     {
         getLinkedIn().setConsumerKey(consumerKey);
         getLinkedIn().setConsumerSecret(consumerSecret);
         THUser.registerAuthenticationProvider(getAuthenticationProvider());
-        isInitialized = true;
     }
 
-    private static void checkInitialization()
+    public void logIn(Context context, LogInCallback callback)
     {
-        if (!isInitialized)
-        {
-            throw new IllegalStateException(
-                    "You must call LinkedInUtils.initialize() before using LinkedInUtils");
-        }
-    }
-
-    public static void logIn(String twitterId, String screenName, String authToken,
-            String authTokenSecret, LogInCallback callback)
-    {
-        checkInitialization();
-    }
-
-    public static void logIn(Context context, LogInCallback callback)
-    {
-        checkInitialization();
         provider.setContext(context);
         THUser.logInWithAsync(provider.getAuthType(), callback);
     }
