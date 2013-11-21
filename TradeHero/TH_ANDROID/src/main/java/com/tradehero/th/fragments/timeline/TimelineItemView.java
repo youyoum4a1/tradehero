@@ -16,11 +16,14 @@ import com.tradehero.common.graphics.RoundedShapeTransformation;
 import com.tradehero.common.graphics.ScaleKeepRatioTransformation;
 import com.tradehero.common.graphics.WhiteToTransparentTransformation;
 import com.tradehero.common.text.OnElementClickListener;
+import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.local.TimelineItem;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.SecurityMediaDTO;
+import com.tradehero.th.api.social.SocialNetworkEnum;
+import com.tradehero.th.api.timeline.TimelineItemShareRequestDTO;
 import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileCompactDTO;
@@ -28,6 +31,10 @@ import com.tradehero.th.base.Navigator;
 import com.tradehero.th.base.NavigatorActivity;
 import com.tradehero.th.fragments.security.StockInfoFragment;
 import com.tradehero.th.fragments.trade.BuySellFragment;
+import com.tradehero.th.misc.callback.THCallback;
+import com.tradehero.th.misc.callback.THResponse;
+import com.tradehero.th.misc.exception.THException;
+import com.tradehero.th.network.service.UserTimelineService;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.widget.MarkdownTextView;
 import dagger.Lazy;
@@ -35,10 +42,12 @@ import java.util.Date;
 import java.util.List;
 import javax.inject.Inject;
 import org.ocpsoft.prettytime.PrettyTime;
+import retrofit.Callback;
+import retrofit.client.Response;
 
 /** Created with IntelliJ IDEA. User: tho Date: 9/9/13 Time: 4:24 PM Copyright (c) TradeHero */
 public class TimelineItemView extends LinearLayout implements
-        DTOView<TimelineItem>, OnElementClickListener, View.OnClickListener, PopupMenu.OnMenuItemClickListener
+        DTOView<TimelineItem>, OnElementClickListener, View.OnClickListener
 {
     private static final String TAG = TimelineItemView.class.getName();
     private TextView username;
@@ -49,6 +58,8 @@ public class TimelineItemView extends LinearLayout implements
 
     @Inject protected CurrentUserBaseKeyHolder currentUserBaseKeyHolder;
     @Inject protected Lazy<Picasso> picasso;
+    @Inject protected Lazy<UserTimelineService> userTimelineService;
+
     private TimelineItem currentTimelineItem;
     private View tradeActionButton;
     private View shareActionButton;
@@ -214,6 +225,56 @@ public class TimelineItemView extends LinearLayout implements
         }
     }
 
+    private PopupMenu.OnMenuItemClickListener monitorPopupMenuClickListener = new PopupMenu.OnMenuItemClickListener()
+    {
+        @Override public boolean onMenuItemClick(MenuItem item)
+        {
+            switch (item.getItemId())
+            {
+                case R.id.timeline_popup_menu_monitor_add_to_watch_list:
+
+                    return true;
+                case R.id.timeline_popup_menu_monitor_enable_stock_alert:
+                    return true;
+                case R.id.timeline_popup_menu_monitor_view_graph:
+                    SecurityId securityId = getSecurityId();
+                    getNavigator().pushFragment(StockInfoFragment.class, securityId != null ? securityId.getArgs() : null);
+                    return true;
+            }
+            return false;
+        }
+    };
+
+    private PopupMenu.OnMenuItemClickListener sharePopupMenuClickListener = new PopupMenu.OnMenuItemClickListener()
+    {
+        @Override public boolean onMenuItemClick(MenuItem item)
+        {
+            SocialNetworkEnum socialNetworkEnum = null;
+            switch (item.getItemId())
+            {
+                case R.id.timeline_popup_menu_share_facebook:
+                    socialNetworkEnum = SocialNetworkEnum.FB;
+                    break;
+                case R.id.timeline_popup_menu_share_twitter:
+                    socialNetworkEnum = SocialNetworkEnum.TW;
+                    break;
+                case R.id.timeline_popup_menu_share_linked_in:
+                    socialNetworkEnum = SocialNetworkEnum.LI;
+                    break;
+            }
+            if (socialNetworkEnum == null)
+            {
+                return false;
+            }
+
+            userTimelineService.get().shareTimelineItem(
+                    currentUserBaseKeyHolder.getCurrentUserBaseKey().key,
+                    currentTimelineItem.getId(), new TimelineItemShareRequestDTO(socialNetworkEnum),
+                    createShareRequestCallback(socialNetworkEnum));
+            return true;
+        }
+    };
+
     @Override public void onClick(View view)
     {
         switch (view.getId())
@@ -265,7 +326,7 @@ public class TimelineItemView extends LinearLayout implements
         PopupMenu popupMenu = new PopupMenu(getContext(), monitorActionButton);
         MenuInflater menuInflater = popupMenu.getMenuInflater();
         menuInflater.inflate(R.menu.timeline_monitor_popup_menu, popupMenu.getMenu());
-        popupMenu.setOnMenuItemClickListener(this);
+        popupMenu.setOnMenuItemClickListener(monitorPopupMenuClickListener);
         return popupMenu;
     }
 
@@ -283,31 +344,24 @@ public class TimelineItemView extends LinearLayout implements
         PopupMenu popupMenu = new PopupMenu(getContext(), shareActionButton);
         MenuInflater menuInflater = popupMenu.getMenuInflater();
         menuInflater.inflate(R.menu.timeline_share_popup_menu, popupMenu.getMenu());
-        popupMenu.setOnMenuItemClickListener(this);
+        popupMenu.setOnMenuItemClickListener(sharePopupMenuClickListener);
         return popupMenu;
     }
 
-    @Override public boolean onMenuItemClick(MenuItem item)
+    private Callback<Response> createShareRequestCallback(final SocialNetworkEnum socialNetworkEnum)
     {
-        switch (item.getItemId())
+        return new THCallback<Response>()
         {
-            case R.id.timeline_popup_menu_monitor_add_to_watch_list:
+            @Override protected void success(Response response, THResponse thResponse)
+            {
+                THToast.show(String.format(getContext().getString(R.string.timeline_post_to_social_network), socialNetworkEnum.getName()));
+            }
 
-                return true;
-            case R.id.timeline_popup_menu_monitor_enable_stock_alert:
-                return true;
-            case R.id.timeline_popup_menu_monitor_view_graph:
-                SecurityId securityId = getSecurityId();
-                getNavigator().pushFragment(StockInfoFragment.class, securityId != null ? securityId.getArgs() : null);
-                return true;
-            case R.id.timeline_popup_menu_share_facebook:
-                return true;
-            case R.id.timeline_popup_menu_share_twitter:
-                return true;
-            case R.id.timeline_popup_menu_share_linked_in:
-                return true;
-        }
-        return false;
+            @Override protected void failure(THException ex)
+            {
+                THToast.show(ex);
+            }
+        };
     }
 
     private SecurityId getSecurityId()
