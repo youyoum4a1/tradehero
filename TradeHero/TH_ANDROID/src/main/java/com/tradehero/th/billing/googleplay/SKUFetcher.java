@@ -58,6 +58,11 @@ public class SKUFetcher
         notifyListenerFetched();
     }
 
+    public Map<String, List<IABSKU>> fetchSkusSync()
+    {
+        return Collections.unmodifiableMap(availableSkus);
+    }
+
     public Map<String, List<IABSKU>> getAvailableSkus()
     {
         // TODO find out whether the lists are modifiable
