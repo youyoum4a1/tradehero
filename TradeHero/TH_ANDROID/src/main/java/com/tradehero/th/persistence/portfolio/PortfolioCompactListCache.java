@@ -82,7 +82,7 @@ import retrofit.RetrofitError;
                 return null;
             }
             portfolioCompactDTO = portfolioCompactCache.get().get(portfolioId);
-            if (portfolioCompactDTO.providerId == null)
+            if (portfolioCompactDTO.providerId == null) // TODO care about watchlist?
             {
                 return ownedPortfolioId;
             }

@@ -121,6 +121,11 @@ import retrofit.RetrofitError;
         lruCache.remove(key);
     }
 
+    @Override public void invalidateAll()
+    {
+        lruCache.evictAll();
+    }
+
     protected void invalidateMatchingPositionCache(GetLeaderboardPositionsDTO value)
     {
         if (value != null && value.positions != null)

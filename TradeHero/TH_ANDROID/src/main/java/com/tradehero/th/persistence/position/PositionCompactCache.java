@@ -3,6 +3,7 @@ package com.tradehero.th.persistence.position;
 import com.tradehero.common.persistence.StraightDTOCache;
 import com.tradehero.th.api.position.PositionCompactId;
 import com.tradehero.th.api.position.PositionDTOCompact;
+import com.tradehero.th.api.position.PositionDTOCompactList;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
@@ -25,14 +26,14 @@ import javax.inject.Singleton;
         throw new IllegalStateException("You should not fetch PositionDTOCompact");
     }
 
-    public List<PositionDTOCompact> put(List<PositionDTOCompact> values)
+    public PositionDTOCompactList put(PositionDTOCompactList values)
     {
         if (values == null)
         {
             return null;
         }
 
-        List<PositionDTOCompact> previousValues = new ArrayList<>();
+        PositionDTOCompactList previousValues = new PositionDTOCompactList();
 
         for (PositionDTOCompact value: values)
         {
@@ -42,13 +43,13 @@ import javax.inject.Singleton;
         return previousValues;
     }
 
-    public List<PositionDTOCompact> get(List<PositionCompactId> positionCompactIds)
+    public PositionDTOCompactList get(List<PositionCompactId> positionCompactIds)
     {
         if (positionCompactIds == null)
         {
             return null;
         }
-        List<PositionDTOCompact> positionDTOCompacts = new ArrayList<>();
+        PositionDTOCompactList positionDTOCompacts = new PositionDTOCompactList();
 
         for (PositionCompactId positionCompactId: positionCompactIds)
         {

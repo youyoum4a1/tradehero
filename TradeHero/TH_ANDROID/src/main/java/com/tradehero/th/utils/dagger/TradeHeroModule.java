@@ -77,6 +77,7 @@ import com.tradehero.th.network.service.TradeService;
 import com.tradehero.th.network.service.UserService;
 import com.tradehero.th.network.service.UserTimelineService;
 import com.tradehero.th.network.service.YahooNewsService;
+import com.tradehero.th.persistence.DTOCacheUtil;
 import com.tradehero.th.persistence.leaderboard.LeaderboardManager;
 import com.tradehero.th.persistence.portfolio.OwnedPortfolioFetchAssistant;
 import com.tradehero.th.persistence.timeline.TimelineManager;
@@ -227,7 +228,8 @@ import org.ocpsoft.prettytime.PrettyTime;
         {
                 THUser.class,
                 NumberDisplayUtils.class,
-                DisplayablePortfolioDTO.class
+                DisplayablePortfolioDTO.class,
+                DTOCacheUtil.class,
         },
         library = true // TEMP
 )

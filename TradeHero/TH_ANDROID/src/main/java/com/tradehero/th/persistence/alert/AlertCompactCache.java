@@ -68,7 +68,12 @@ import javax.inject.Singleton;
     {
         lruCache.remove(key);
     }
-    
+
+    @Override public void invalidateAll()
+    {
+        lruCache.evictAll();
+    }
+
     private static class AlertCompactCutDTO
     {
         public int id;

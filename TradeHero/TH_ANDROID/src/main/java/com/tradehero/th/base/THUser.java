@@ -19,6 +19,8 @@ import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.misc.exception.THException.ExceptionCode;
 import com.tradehero.th.network.service.SessionService;
 import com.tradehero.th.network.service.UserService;
+import com.tradehero.th.persistence.DTOCacheUtil;
+import com.tradehero.th.persistence.position.SecurityPositionDetailCache;
 import com.tradehero.th.persistence.social.VisitedFriendListPrefs;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import dagger.Lazy;
@@ -327,6 +329,7 @@ public class THUser
     {
         currentSessionToken = null;
         userProfileCache.get().invalidate(currentUserBaseKeyHolder.getCurrentUserBaseKey());
+        DTOCacheUtil.clearUserRelatedCaches();
         currentUserBaseKeyHolder.setCurrentUserBaseKey(new UserBaseKey(0));
         credentials.clear();
         VisitedFriendListPrefs.clearVisitedIdList();

@@ -16,7 +16,6 @@ import javax.inject.Singleton;
     public static final String TAG = UserSearchResultCache.class.getSimpleName();
     public static final int DEFAULT_MAX_SIZE = 5000;
 
-
     //<editor-fold desc="Constructors">
     @Inject public UserSearchResultCache()
     {

@@ -12,7 +12,6 @@ import com.tradehero.th.api.position.SecurityPositionDetailDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
-import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.network.service.SecurityService;
 import com.tradehero.th.persistence.competition.ProviderCache;
@@ -94,6 +93,11 @@ import javax.inject.Singleton;
     @Override public void invalidate(SecurityId key)
     {
         lruCache.remove(key);
+    }
+
+    @Override public void invalidateAll()
+    {
+        lruCache.evictAll();
     }
 
     // The purpose of this class is to save on memory usage by cutting out the elements that already enjoy their own cache.

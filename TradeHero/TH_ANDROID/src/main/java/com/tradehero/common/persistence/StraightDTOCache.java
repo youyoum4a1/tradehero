@@ -37,4 +37,9 @@ abstract public class StraightDTOCache<DTOKeyType extends DTOKey, DTOType extend
     {
         lruCache.remove(key);
     }
+
+    @Override public void invalidateAll()
+    {
+        lruCache.evictAll();
+    }
 }

@@ -23,6 +23,7 @@ public interface DTOCache<DTOKeyType extends DTOKey, DTOType extends DTO>
     GetOrFetchTask<DTOType> getOrFetch(DTOKeyType key, boolean force, Listener<DTOKeyType, DTOType> callback);
     DTOType put(DTOKeyType key, DTOType value);
     void invalidate(DTOKeyType key);
+    void invalidateAll();
 
     public static interface Listener<DTOKeyType, DTOType>
     {
