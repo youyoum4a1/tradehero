@@ -7,5 +7,5 @@ import com.tradehero.th.api.users.UserProfileDTO;
 public interface PurchaseReportedHandler
 {
     void handlePurchaseReported(int requestCode, SKUPurchase purchase, UserProfileDTO userProfileDTO);
-    void handlePurchaseReportFailed(int requestCode, Throwable exception);
+    void handlePurchaseReportFailed(int requestCode, SKUPurchase purchase, Throwable exception);
 }

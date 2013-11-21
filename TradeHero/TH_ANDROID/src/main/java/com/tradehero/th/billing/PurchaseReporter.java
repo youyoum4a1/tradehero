@@ -2,6 +2,7 @@ package com.tradehero.th.billing;
 
 import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.common.billing.googleplay.SKUPurchase;
+import com.tradehero.common.utils.THLog;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
 import com.tradehero.th.api.users.UserProfileDTO;
@@ -97,7 +98,7 @@ public class PurchaseReporter extends BasePurchaseReporter<
         }
     }
 
-    @Override public UserProfileDTO reportPurchaseSync(SKUPurchase purchase)
+    @Override public UserProfileDTO reportPurchaseSync(SKUPurchase purchase) throws RetrofitError
     {
         OwnedPortfolioId portfolioId = getApplicableOwnedPortfolioId(purchase);
 
@@ -156,6 +157,7 @@ public class PurchaseReporter extends BasePurchaseReporter<
 
     protected void handleCallbackFailed(RetrofitError error)
     {
+        THLog.e(TAG, "Failed reporting to TradeHero server", error);
         notifyListenerReportFailed(error);
     }
 }

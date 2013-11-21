@@ -2,15 +2,10 @@ package com.tradehero.th.billing.googleplay;
 
 import android.app.Activity;
 import com.tradehero.common.billing.googleplay.BaseIABActor;
-import com.tradehero.common.billing.googleplay.IABOrderId;
-import com.tradehero.common.billing.googleplay.IABPurchase;
-import com.tradehero.common.billing.googleplay.IABPurchaser;
 import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.common.billing.googleplay.SKUPurchase;
-import com.tradehero.common.billing.googleplay.exceptions.IABException;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
-import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.billing.BasePurchaseReporter;
 import com.tradehero.th.billing.PurchaseReportedHandler;
@@ -18,6 +13,7 @@ import com.tradehero.th.billing.PurchaseReporter;
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Map;
+import retrofit.RetrofitError;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/8/13 Time: 12:32 PM To change this template use File | Settings | File Templates. */
 abstract public class THIABLogicHolder
@@ -118,7 +114,7 @@ abstract public class THIABLogicHolder
                 if (handler != null)
                 {
                     THLog.d(TAG, "OnPurchaseReportedListener.onPurchaseReportFailed passing on the exception for requestCode " + requestCode);
-                    handler.handlePurchaseReportFailed(requestCode, error);
+                    handler.handlePurchaseReportFailed(requestCode, reportedPurchase, error);
                 }
                 else
                 {
@@ -141,12 +137,13 @@ abstract public class THIABLogicHolder
         createAndRegisterPurchaseReportedListener(requestCode);
 
         PurchaseReporter purchaseReporter = new PurchaseReporter();
+        purchaseReporter.setListener(purchaseReportedListeners.get(requestCode));
         purchaseReporters.put(requestCode, purchaseReporter);
         purchaseReporter.reportPurchase(purchase);
         return requestCode;
     }
 
-    @Override public UserProfileDTO launchReportSequenceSync(SKUPurchase purchase)
+    @Override public UserProfileDTO launchReportSequenceSync(SKUPurchase purchase) throws RetrofitError
     {
         return new PurchaseReporter().reportPurchaseSync(purchase);
     }

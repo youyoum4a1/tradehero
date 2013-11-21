@@ -112,4 +112,23 @@
   <string name="manage_alerts_plan">Plan:</string>
   <string name="manage_alerts_with_count">%d alerts</string>
 
+
+
+  <string name="google_play_send_support_email_chooser_title">Send an email to TradeHero support</string>
+
+  <string name="google_play_send_support_email_report_fail_title">Purchase Report Failed</string>
+  <string name="google_play_send_support_email_report_fail_message">Do you mind reporting the incident to TradeHero?</string>
+  <string name="google_play_send_support_email_report_fail_ok">Sure</string>
+  <string name="google_play_send_support_email_report_fail_cancel">Never Mind</string>
+
+  <string name="google_play_send_support_email_consume_fail_title">Purchase Consume Failed</string>
+  <string name="google_play_send_support_email_consume_fail_message">Do you mind reporting the incident to TradeHero?</string>
+  <string name="google_play_send_support_email_consume_fail_ok">Sure</string>
+  <string name="google_play_send_support_email_consume_fail_cancel">Never Mind</string>
+
+  <string name="google_play_consumed_purchase_title">Purchased</string>
+  <string name="google_play_consumed_purchase_message">Your purchase went through ok</string>
+  <string name="google_play_consumed_purchase_message_info">Your "%s" went through ok</string>
+  <string name="google_play_consumed_purchase_cancel">Okay</string>
+
 </resources>

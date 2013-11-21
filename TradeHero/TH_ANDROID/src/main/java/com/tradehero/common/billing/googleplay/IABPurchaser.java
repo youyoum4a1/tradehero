@@ -66,6 +66,7 @@ abstract public class IABPurchaser<
 
     public void setPurchaseFinishedListener(OnIABPurchaseFinishedListener<IABSKUType, IABOrderIdType, IABPurchaseType, IABException> purchaseFinishedListener)
     {
+        THLog.d(TAG, "setPurchaseFinishedListener " + purchaseFinishedListener.getClass().getSimpleName());
         this.purchaseFinishedListener = new WeakReference<>(purchaseFinishedListener);
     }
 

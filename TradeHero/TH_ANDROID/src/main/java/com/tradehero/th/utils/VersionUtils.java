@@ -1,5 +1,6 @@
 package com.tradehero.th.utils;
 
+import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
@@ -13,15 +14,15 @@ public class VersionUtils
 {
     public static final String TAG = VersionUtils.class.getSimpleName();
 
-    public static Intent getSupportEmailIntent(ContextWrapper contextWrapper)
+    public static Intent getSupportEmailIntent(Context context)
     {
-        return getSupportEmailIntent(contextWrapper, false);
+        return getSupportEmailIntent(context, false);
     }
 
-    public static Intent getSupportEmailIntent(ContextWrapper contextWrapper, boolean longInfo)
+    public static Intent getSupportEmailIntent(Context context, boolean longInfo)
     {
         String deviceDetails = "\n\n-----\n" +
-                StringUtils.join("\n", getSupportEmailTraceParameters(contextWrapper, longInfo)) +
+                StringUtils.join("\n", getSupportEmailTraceParameters(context, longInfo)) +
                 "\n-----\n";
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setType("plain/text");
@@ -31,10 +32,10 @@ public class VersionUtils
         return intent;
     }
 
-    public static List<String> getSupportEmailTraceParameters(ContextWrapper contextWrapper, boolean longInfo)
+    public static List<String> getSupportEmailTraceParameters(Context context, boolean longInfo)
     {
         List<String> parameters = new ArrayList<>();
-        parameters.add("TradeHero: " + getAppVersion(contextWrapper));
+        parameters.add("TradeHero: " + getAppVersion(context));
         parameters.add("Device Name: " + getDeviceName());
         if (longInfo)
         {
@@ -51,12 +52,12 @@ public class VersionUtils
         return parameters;
     }
 
-    public static String getAppVersion(ContextWrapper contextWrapper)
+    public static String getAppVersion(Context context)
     {
         String appVersion = "";
         try
         {
-            PackageInfo pInfo = contextWrapper.getPackageManager().getPackageInfo(contextWrapper.getPackageName(), 0);
+            PackageInfo pInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
             appVersion = pInfo.versionName;
         }
         catch (PackageManager.NameNotFoundException e)

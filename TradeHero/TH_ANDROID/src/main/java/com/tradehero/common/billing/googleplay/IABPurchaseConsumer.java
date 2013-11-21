@@ -78,7 +78,7 @@ public class IABPurchaseConsumer<
             throw new IllegalArgumentException("Product Identifier's identifier cannot be null");
         }
 
-        if (purchase.getType().equals(Constants.ITEM_TYPE_INAPP))
+        if (!purchase.getType().equals(Constants.ITEM_TYPE_INAPP))
         {
             handleConsumeFailedInternal(new IABInvalidConsumptionException("Can only consume inApp purchase types"));
         }
@@ -200,6 +200,7 @@ public class IABPurchaseConsumer<
         {
             throw iabExceptionFactory.get().create(response);
         }
+        THLog.d(TAG, "Consumed successfully sku: " + sku);
     }
 
     public static interface OnIABConsumptionFinishedListener<

@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.provider.Settings;
 import com.tradehero.common.billing.googleplay.SKUDetails;
+import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.billing.SKUDetailsAdapter;
 import com.tradehero.th.fragments.billing.SKUDetailView;
@@ -60,6 +61,7 @@ public class IABAlertUtils
 
     public static void popUserCancelled(final Context context)
     {
+        THLog.e(TAG, "popUserCancelled", new Exception());
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
         alertDialogBuilder
                 .setTitle(R.string.store_billing_user_cancelled_window_title)
@@ -147,6 +149,7 @@ public class IABAlertUtils
 
     public static void popUnknownError(final Context context)
     {
+        THLog.e(TAG, "popUnknownError", new Exception());
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
         alertDialogBuilder
                 .setTitle(R.string.store_billing_unknown_error_window_title)
@@ -211,5 +214,55 @@ public class IABAlertUtils
     public static interface OnDialogSKUDetailsClickListener<SKUDetailsType extends SKUDetails>
     {
         void onDialogSKUDetailsClicked(DialogInterface dialogInterface, int position, SKUDetailsType skuDetails);
+    }
+
+    public static void popSendEmailSupportReportFailed(final Context context, final DialogInterface.OnClickListener clickListener)
+    {
+        AlertDialogUtil.popWithOkCancelButton(context,
+                R.string.google_play_send_support_email_report_fail_title,
+                R.string.google_play_send_support_email_report_fail_message,
+                R.string.google_play_send_support_email_report_fail_ok,
+                R.string.google_play_send_support_email_report_fail_cancel,
+                clickListener);
+    }
+
+    public static void popOfferSendEmailSupportConsumeFailed(final Context context, final Exception exception)
+    {
+        // Offer to send an email to support
+        THLog.e(TAG, "Could not consume a purchase", exception);
+
+        IABAlertUtils.popSendEmailSupportConsumeFailed(context, new DialogInterface.OnClickListener()
+        {
+            @Override public void onClick(DialogInterface dialog, int which)
+            {
+                sendSupportEmailConsumeFailed(context, exception);
+            }
+        });
+    }
+
+    public static void sendSupportEmailConsumeFailed(final Context context, Exception exception)
+    {
+        context.startActivity(Intent.createChooser(
+                GooglePlayUtils.getSupportPurchaseConsumeEmailIntent(context, exception),
+                context.getString(R.string.google_play_send_support_email_chooser_title)));
+    }
+
+    public static void popSendEmailSupportConsumeFailed(final Context context, final DialogInterface.OnClickListener clickListener)
+    {
+        AlertDialogUtil.popWithOkCancelButton(context,
+                R.string.google_play_send_support_email_consume_fail_title,
+                R.string.google_play_send_support_email_consume_fail_message,
+                R.string.google_play_send_support_email_consume_fail_ok,
+                R.string.google_play_send_support_email_consume_fail_cancel,
+                clickListener);
+    }
+
+    public static void popConsumePurchaseSuccess(final Context context, final String skuName)
+    {
+        AlertDialogUtil.popWithCancelButton(context,
+                context.getString(R.string.google_play_consumed_purchase_title),
+                skuName == null ? context.getString(R.string.google_play_consumed_purchase_message) :
+                    String.format(context.getString(R.string.google_play_consumed_purchase_message_info), skuName),
+                context.getString(R.string.google_play_consumed_purchase_cancel));
     }
 }
