@@ -11,7 +11,7 @@ import java.util.List;
 public class SecurityPositionDetailDTO implements DTO
 {
     public SecurityCompactDTO security;
-    public List<PositionDTOCompact> positions;
+    public PositionDTOCompactList positions;
     //public PositionDTOCompact position; // This is a backward compatible element. Do not add back
     public PortfolioDTO portfolio;
     public List<ProviderDTO> providers;
@@ -21,7 +21,7 @@ public class SecurityPositionDetailDTO implements DTO
     {
     }
 
-    public SecurityPositionDetailDTO(SecurityCompactDTO security, List<PositionDTOCompact> positions,
+    public SecurityPositionDetailDTO(SecurityCompactDTO security, PositionDTOCompactList positions,
             PortfolioDTO portfolio, List<ProviderDTO> providers, int firstTradeAllTime)
     {
         this.security = security;
