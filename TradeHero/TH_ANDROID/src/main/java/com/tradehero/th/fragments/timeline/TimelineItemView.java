@@ -4,9 +4,12 @@ import android.content.Context;
 import android.os.Bundle;
 import android.text.method.LinkMovementMethod;
 import android.util.AttributeSet;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 import com.tradehero.common.graphics.RoundedShapeTransformation;
@@ -23,6 +26,7 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileCompactDTO;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.base.NavigatorActivity;
+import com.tradehero.th.fragments.security.StockInfoFragment;
 import com.tradehero.th.fragments.trade.BuySellFragment;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.widget.MarkdownTextView;
@@ -34,7 +38,7 @@ import org.ocpsoft.prettytime.PrettyTime;
 
 /** Created with IntelliJ IDEA. User: tho Date: 9/9/13 Time: 4:24 PM Copyright (c) TradeHero */
 public class TimelineItemView extends LinearLayout implements
-        DTOView<TimelineItem>, OnElementClickListener, View.OnClickListener
+        DTOView<TimelineItem>, OnElementClickListener, View.OnClickListener, PopupMenu.OnMenuItemClickListener
 {
     private static final String TAG = TimelineItemView.class.getName();
     private TextView username;
@@ -49,6 +53,8 @@ public class TimelineItemView extends LinearLayout implements
     private View tradeActionButton;
     private View shareActionButton;
     private View monitorActionButton;
+    private PopupMenu sharePopupMenu;
+    private PopupMenu monitorPopupMenu;
 
     //<editor-fold desc="Constructors">
     public TimelineItemView(Context context)
@@ -107,6 +113,7 @@ public class TimelineItemView extends LinearLayout implements
         DaggerUtils.inject(this);
     }
 
+    //<editor-fold desc="Action Buttons">
     private void initActionButtons()
     {
         tradeActionButton = findViewById(R.id.timeline_action_button_trade_wrapper);
@@ -123,6 +130,16 @@ public class TimelineItemView extends LinearLayout implements
             }
         }
     }
+
+    private void updateActionButtonsVisibility()
+    {
+        // hide/show optional action buttons
+        List<SecurityMediaDTO> medias = currentTimelineItem.getMedias();
+        int visibility = medias != null && medias.size() > 0 ? VISIBLE : INVISIBLE;
+        tradeActionButton.setVisibility(visibility);
+        monitorActionButton.setVisibility(visibility);
+    }
+    //</editor-fold>
 
     @Override public void display(TimelineItem item)
     {
@@ -171,16 +188,7 @@ public class TimelineItemView extends LinearLayout implements
                     .into(vendorImage);
         }
 
-        refreshActionButtons();
-    }
-
-    private void refreshActionButtons()
-    {
-        // hide/show optional action buttons
-        List<SecurityMediaDTO> medias = currentTimelineItem.getMedias();
-        int visibility = medias != null && medias.size() > 0 ? VISIBLE : INVISIBLE;
-        tradeActionButton.setVisibility(visibility);
-        monitorActionButton.setVisibility(visibility);
+        updateActionButtonsVisibility();
     }
 
     @Override public void onClick(View textView, String data, String key, String[] matchStrings)
@@ -203,29 +211,6 @@ public class TimelineItemView extends LinearLayout implements
                 String link = matchStrings[2];
 
                 break;
-        }
-    }
-
-    private void openSecurityProfile(String exchange, String symbol)
-    {
-        SecurityId securityId = new SecurityId(exchange, symbol);
-        getNavigator().pushFragment(BuySellFragment.class, securityId.getArgs());
-    }
-
-    private Navigator getNavigator()
-    {
-        return ((NavigatorActivity) getContext()).getNavigator();
-    }
-
-    private void openUserProfile(int userId)
-    {
-        Bundle b = new Bundle();
-        b.putInt(UserBaseKey.BUNDLE_KEY_KEY, userId);
-        b.putBoolean(Navigator.NAVIGATE_FRAGMENT_NO_CACHE, true);
-
-        if (currentUserBaseKeyHolder.getCurrentUserBaseKey().key != userId)
-        {
-            getNavigator().pushFragment(TimelineFragment.class, b, true);
         }
     }
 
@@ -255,6 +240,112 @@ public class TimelineItemView extends LinearLayout implements
                     }
                 }
                 break;
+            case R.id.timeline_action_button_share_wrapper:
+                createAndShowSharePopupMenu();
+                break;
+
+            case R.id.timeline_action_button_monitor_wrapper:
+                createAndShowMonitorPopupMenu();
+                break;
         }
     }
+
+    //<editor-fold desc="Popup dialog">
+    private void createAndShowMonitorPopupMenu()
+    {
+        if (monitorPopupMenu == null)
+        {
+            monitorPopupMenu = createMonitorPopupMenu();
+        }
+        monitorPopupMenu.show();
+    }
+
+    private PopupMenu createMonitorPopupMenu()
+    {
+        PopupMenu popupMenu = new PopupMenu(getContext(), monitorActionButton);
+        MenuInflater menuInflater = popupMenu.getMenuInflater();
+        menuInflater.inflate(R.menu.timeline_monitor_popup_menu, popupMenu.getMenu());
+        popupMenu.setOnMenuItemClickListener(this);
+        return popupMenu;
+    }
+
+    private void createAndShowSharePopupMenu()
+    {
+        if (sharePopupMenu == null)
+        {
+            sharePopupMenu = createSharePopupMenu();
+        }
+        sharePopupMenu.show();
+    }
+
+    private PopupMenu createSharePopupMenu()
+    {
+        PopupMenu popupMenu = new PopupMenu(getContext(), shareActionButton);
+        MenuInflater menuInflater = popupMenu.getMenuInflater();
+        menuInflater.inflate(R.menu.timeline_share_popup_menu, popupMenu.getMenu());
+        popupMenu.setOnMenuItemClickListener(this);
+        return popupMenu;
+    }
+
+    @Override public boolean onMenuItemClick(MenuItem item)
+    {
+        switch (item.getItemId())
+        {
+            case R.id.timeline_popup_menu_monitor_add_to_watch_list:
+
+                return true;
+            case R.id.timeline_popup_menu_monitor_enable_stock_alert:
+                return true;
+            case R.id.timeline_popup_menu_monitor_view_graph:
+                SecurityId securityId = getSecurityId();
+                getNavigator().pushFragment(StockInfoFragment.class, securityId != null ? securityId.getArgs() : null);
+                return true;
+            case R.id.timeline_popup_menu_share_facebook:
+                return true;
+            case R.id.timeline_popup_menu_share_twitter:
+                return true;
+            case R.id.timeline_popup_menu_share_linked_in:
+                return true;
+        }
+        return false;
+    }
+
+    private SecurityId getSecurityId()
+    {
+        if (currentTimelineItem == null || currentTimelineItem.getFirstMediaWithLogo() == null)
+        {
+            return null;
+        }
+
+        return new SecurityId(currentTimelineItem.getFirstMediaWithLogo().exchange, currentTimelineItem.getFirstMediaWithLogo().symbol);
+    }
+    //</editor-fold>
+
+
+    //<editor-fold desc="Navigations">
+    private void openSecurityProfile(String exchange, String symbol)
+    {
+        SecurityId securityId = new SecurityId(exchange, symbol);
+        getNavigator().pushFragment(BuySellFragment.class, securityId.getArgs());
+    }
+
+    private Navigator getNavigator()
+    {
+        return ((NavigatorActivity) getContext()).getNavigator();
+    }
+
+    private void openUserProfile(int userId)
+    {
+        Bundle b = new Bundle();
+        b.putInt(UserBaseKey.BUNDLE_KEY_KEY, userId);
+        b.putBoolean(Navigator.NAVIGATE_FRAGMENT_NO_CACHE, true);
+
+        if (currentUserBaseKeyHolder.getCurrentUserBaseKey().key != userId)
+        {
+            getNavigator().pushFragment(TimelineFragment.class, b, true);
+        }
+    }
+    //</editor-fold>
+
+
 }

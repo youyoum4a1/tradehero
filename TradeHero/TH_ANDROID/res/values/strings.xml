@@ -9,7 +9,7 @@
   <string name="sign_in">Sign In</string>
   <string name="facebook">Facebook</string>
   <string name="linkedin">LinkedIn</string>
-  <string name="twiter">Twitter</string>
+  <string name="twitter">Twitter</string>
   <string name="Signup_content">Sign up with:</string>
   <string name="Signup_content1">or sign up with an</string>
   <string name="Signup_content2">email address</string>
@@ -177,5 +177,8 @@
   <string name="monitor">Monitor</string>
   <string name="trade">Trade</string>
   <string name="share">Share</string>
+  <string name="add_to_watch_list">Add to Watchlist</string>
+  <string name="enable_stock_alert">Enable Stock Alert</string>
+  <string name="view_graph">View Graph</string>
 
 </resources>

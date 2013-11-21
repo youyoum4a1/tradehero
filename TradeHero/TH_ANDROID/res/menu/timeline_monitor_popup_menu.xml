@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+ <item android:id="@+id/timeline_popup_menu_monitor_add_to_watch_list"
+   android:title="@string/add_to_watch_list"/>
+ <item android:id="@+id/timeline_popup_menu_monitor_enable_stock_alert"
+      android:title="@string/enable_stock_alert"/>
+ <item android:id="@+id/timeline_popup_menu_monitor_view_graph"
+      android:title="@string/view_graph"/>
+</menu>

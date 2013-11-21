@@ -22,7 +22,7 @@
       android:layout_height="78dip"
       android:layout_marginTop="10dp"
       android:background="@drawable/btn_background_social_twitter"
-      android:text="@string/twiter"
+      android:text="@string/twitter"
       android:textColor="@color/white"
       android:textSize="30sp"
       android:textStyle="bold"

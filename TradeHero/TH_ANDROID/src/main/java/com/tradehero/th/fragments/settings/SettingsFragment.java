@@ -366,7 +366,7 @@ public class SettingsFragment extends PreferenceFragment
                     FacebookUtils.logIn(getActivity(), socialConnectCallback);
                     break;
                 case TW:
-                    progressDialog = ProgressDialog.show(getActivity(), getString(R.string.twiter), getString(R.string.connecting_to_twitter));
+                    progressDialog = ProgressDialog.show(getActivity(), getString(R.string.twitter), getString(R.string.connecting_to_twitter));
                     TwitterUtils.logIn(getActivity(), socialConnectCallback);
                     break;
                 case TH:
