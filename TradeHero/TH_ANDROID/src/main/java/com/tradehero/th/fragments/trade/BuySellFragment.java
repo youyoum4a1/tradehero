@@ -44,6 +44,7 @@ import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.ImageViewThreadSafe;
 import com.tradehero.th.R;
+import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.fragments.security.BuySellBottomStockPagerAdapter;
 import com.tradehero.th.api.position.SecurityPositionDetailDTO;
 import com.tradehero.th.api.quote.QuoteDTO;
@@ -459,6 +460,15 @@ public class BuySellFragment extends AbstractBuySellFragment
         super.onDetach();
     }
 
+    @Override protected void linkWith(OwnedPortfolioId ownedPortfolioId, boolean andDisplay)
+    {
+        super.linkWith(ownedPortfolioId, andDisplay);
+        if (andDisplay)
+        {
+            displayTradeQuantityView();
+        }
+    }
+
     @Override public void linkWith(SecurityId securityId, boolean andDisplay)
     {
         super.linkWith(securityId, andDisplay);
@@ -486,7 +496,7 @@ public class BuySellFragment extends AbstractBuySellFragment
 
     @Override public void linkWith(final SecurityPositionDetailDTO securityPositionDetailDTO, boolean andDisplay)
     {
-        Integer maxSellableShares = getMaxSellableShares(securityPositionDetailDTO, mPositionIndex); // TODO use other position indices
+        Integer maxSellableShares = getMaxSellableShares();
         if (this.securityPositionDetailDTO == null) // This is the first update
         {
             if (maxSellableShares != null)
@@ -616,6 +626,10 @@ public class BuySellFragment extends AbstractBuySellFragment
     {
         if (mTradeQuantityView != null)
         {
+            if (applicablePortfolioId != null)
+            {
+                mTradeQuantityView.linkWith(applicablePortfolioId.getPortfolioId(), true);
+            }
             if (securityPositionDetailDTO != null)
             {
                 mTradeQuantityView.linkWith(securityPositionDetailDTO, true);

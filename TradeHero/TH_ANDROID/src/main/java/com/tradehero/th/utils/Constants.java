@@ -24,6 +24,8 @@ public class Constants
     public static final String URL_TWITTER_OAUTH_TOKEN = "https://api.twitter.com/oauth/access_token";
 
     //URL
+    //public static final String BASE_TH_URL = "https://192.168.1.64:44301/";
+    //public static final String BASE_TH_URL = "http://192.168.1.64:1857/";
     public static final String BASE_TH_URL = "https://www.tradehero.mobi/";
     public static final String BASE_API_URL = BASE_TH_URL + "api/";
     public static final String SIGN_UP_WITH_EMAIL_URL = BASE_API_URL + "SignupWithEmail";

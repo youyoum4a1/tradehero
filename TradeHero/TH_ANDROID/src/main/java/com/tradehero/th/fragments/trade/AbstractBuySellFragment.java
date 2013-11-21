@@ -11,6 +11,7 @@ import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
+import com.tradehero.th.api.position.PositionDTOCompact;
 import com.tradehero.th.api.position.SecurityPositionDetailDTO;
 import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
@@ -35,11 +36,8 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
     private final static String TAG = AbstractBuySellFragment.class.getSimpleName();
 
     public final static String BUNDLE_KEY_IS_BUY = BuySellConfirmFragment.class.getName() + ".isBuy";
-    public final static String BUNDLE_KEY_POSITION_INDEX = BuySellConfirmFragment.class.getName() + ".positionIndex";
     public final static String BUNDLE_KEY_QUANTITY_BUY = BuySellConfirmFragment.class.getName() + ".quantityBuy";
     public final static String BUNDLE_KEY_QUANTITY_SELL = BuySellConfirmFragment.class.getName() + ".quantitySell";
-
-    public final static int DEFAULT_POSITION_INDEX = 0;
 
     public final static long MILLISEC_QUOTE_REFRESH = 30000;
     public final static long MILLISEC_QUOTE_COUNTDOWN_PRECISION = 50;
@@ -66,7 +64,6 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
     protected boolean isTransactionTypeBuy = true;
     protected int mBuyQuantity;
     protected int mSellQuantity;
-    protected int mPositionIndex = DEFAULT_POSITION_INDEX;
 
     protected ImageView marketCloseIcon;
 
@@ -89,7 +86,6 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
             isTransactionTypeBuy = args.getBoolean(BUNDLE_KEY_IS_BUY, isTransactionTypeBuy);
             mBuyQuantity = args.getInt(BUNDLE_KEY_QUANTITY_BUY, mBuyQuantity);
             mSellQuantity = args.getInt(BUNDLE_KEY_QUANTITY_SELL, mSellQuantity);
-            mPositionIndex = args.getInt(BUNDLE_KEY_POSITION_INDEX, mPositionIndex);
         }
     }
 
@@ -103,7 +99,6 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
 
     @Override public void onResume()
     {
-        THLog.d(TAG, "onResume");
         super.onResume();
 
         Bundle args = getArguments();
@@ -113,7 +108,6 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
             isTransactionTypeBuy = args.getBoolean(BUNDLE_KEY_IS_BUY, isTransactionTypeBuy);
             mBuyQuantity = args.getInt(BUNDLE_KEY_QUANTITY_BUY, mBuyQuantity);
             mSellQuantity = args.getInt(BUNDLE_KEY_QUANTITY_SELL, mSellQuantity);
-            mPositionIndex = args.getInt(BUNDLE_KEY_POSITION_INDEX, mPositionIndex);
         }
 
         UserProfileDTO profileDTO = userProfileCache.get().get(currentUserBaseKeyHolder.getCurrentUserBaseKey());
@@ -167,7 +161,6 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
         outState.putBoolean(BUNDLE_KEY_IS_BUY, isTransactionTypeBuy);
         outState.putInt(BUNDLE_KEY_QUANTITY_BUY, mBuyQuantity);
         outState.putInt(BUNDLE_KEY_QUANTITY_SELL, mSellQuantity);
-        outState.putInt(BUNDLE_KEY_POSITION_INDEX, mPositionIndex);
     }
 
     @Override public void onDestroyView()
@@ -218,26 +211,11 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
 
     public Integer getMaxSellableShares()
     {
-        // TODO handle more portfolios
-        return getMaxSellableShares(this.securityPositionDetailDTO, mPositionIndex);
-    }
-
-    public static Integer getMaxSellableShares(SecurityPositionDetailDTO securityPositionDetailDTO, int positionIndex)
-    {
-        if (securityPositionDetailDTO == null)
+        if (this.securityPositionDetailDTO != null && this.securityPositionDetailDTO.positions != null)
         {
-            return null;
+            return this.securityPositionDetailDTO.positions.getMaxSellableShares(applicablePortfolioId.getPortfolioId());
         }
-        if (securityPositionDetailDTO.positions == null || securityPositionDetailDTO.positions.size() == 0)
-        {
-            return 0;
-        }
-        if (securityPositionDetailDTO.positions.get(positionIndex) == null ||
-                securityPositionDetailDTO.positions.get(positionIndex).shares == null || securityPositionDetailDTO.positions.get(positionIndex).shares == 0)
-        {
-            return null;
-        }
-        return securityPositionDetailDTO.positions.get(positionIndex).shares;
+        return null;
     }
 
     protected void requestPositionDetail()

@@ -156,7 +156,12 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
             portfolioIdListFetchTask.execute();
         }
 
-        this.applicablePortfolioId = new OwnedPortfolioId(userId, portfolioId);
+        linkWith(new OwnedPortfolioId(userId, portfolioId), true);
+    }
+
+    protected void linkWith(OwnedPortfolioId ownedPortfolioId, boolean andDisplay)
+    {
+        this.applicablePortfolioId = ownedPortfolioId;
     }
 
     public OwnedPortfolioId getApplicablePortfolioId()

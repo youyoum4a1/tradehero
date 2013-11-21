@@ -8,6 +8,7 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import com.tradehero.th.R;
+import com.tradehero.th.api.portfolio.PortfolioId;
 import com.tradehero.th.api.position.SecurityPositionDetailDTO;
 import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
@@ -38,6 +39,7 @@ public class TradeQuantityView extends TableLayout
     private TableRow mTradeValueRow;
     private TableRow mProjectedPLRow;
 
+    private PortfolioId portfolioId;
     private SecurityCompactDTO securityCompactDTO;
     private SecurityPositionDetailDTO securityPositionDetailDTO;
     private UserProfileDTO userProfileDTO;
@@ -154,6 +156,15 @@ public class TradeQuantityView extends TableLayout
         display();
     }
 
+    public void linkWith(PortfolioId portfolioId, boolean andDisplay)
+    {
+        this.portfolioId = portfolioId;
+        if (andDisplay)
+        {
+            displayShareAvailable();
+        }
+    }
+
     public void linkWith(SecurityCompactDTO securityCompactDTO, boolean andDisplay)
     {
         this.securityCompactDTO = securityCompactDTO;
@@ -252,6 +263,7 @@ public class TradeQuantityView extends TableLayout
     {
         if (mCashAvailable != null && userProfileDTO != null && userProfileDTO.portfolio != null)
         {
+            // TODO Take the cash available from portfolioDTO, not userProfileDTO
             double cashAvailable = userProfileDTO.portfolio.cashBalance;
             if (cashAvailable == (int) cashAvailable)
             {
@@ -276,22 +288,13 @@ public class TradeQuantityView extends TableLayout
     {
         if (mShareAvailable != null)
         {
-            if (securityPositionDetailDTO == null || securityPositionDetailDTO.positions == null || securityPositionDetailDTO.positions.size() == 0)
+            if (securityPositionDetailDTO == null || securityPositionDetailDTO.positions == null || portfolioId == null)
             {
                 mShareAvailable.setText("0");
             }
             else
             {
-                // TODO handle the case when we have more than 1 position
-                Integer sharesAvailable = securityPositionDetailDTO.positions.get(0).shares;
-                if (sharesAvailable == null || sharesAvailable.intValue() == 0)
-                {
-                    mShareAvailable.setText("0");
-                }
-                else
-                {
-                    mShareAvailable.setText(String.format("%,d", sharesAvailable));
-                }
+                mShareAvailable.setText(String.format("%,d", securityPositionDetailDTO.positions.getMaxSellableShares(portfolioId)));
             }
         }
     }

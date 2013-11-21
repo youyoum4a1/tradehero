@@ -26,6 +26,7 @@ public class TradeListItemAdapter extends ExpandableDTOAdapter<OwnedTradeId, Tra
     public static class ExpandableTradeItem extends ExpandableListItem<OwnedTradeId>
     {
         private boolean isLastTrade;
+
         public ExpandableTradeItem(OwnedTradeId model, boolean isLastTrade)
         {
             super(model);
@@ -36,6 +37,5 @@ public class TradeListItemAdapter extends ExpandableDTOAdapter<OwnedTradeId, Tra
         {
             return isLastTrade;
         }
-
     }
 }

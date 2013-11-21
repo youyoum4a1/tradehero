@@ -157,7 +157,6 @@ public class TrendingFragment extends DashboardFragment
                     SecurityCompactDTO securityCompactDTO = (SecurityCompactDTO) parent.getItemAtPosition(position);
                     Bundle args = securityCompactDTO.getSecurityId().getArgs();
                     // TODO use other positions
-                    args.putInt(AbstractBuySellFragment.BUNDLE_KEY_POSITION_INDEX, AbstractBuySellFragment.DEFAULT_POSITION_INDEX);
                     navigator.pushFragment(BuySellFragment.class, securityCompactDTO.getSecurityId().getArgs());
                 }
             });
