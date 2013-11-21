@@ -233,7 +233,7 @@ public class TrendingFragment extends DashboardFragment
         super.onResume();
         securityItemViewAdapter.notifyDataSetChanged();
         displayFilterPager();
-        filterPagerEndHeight =(int) getResources().getDimension(R.dimen.trending_filter_view_pager_height);
+        filterPagerEndHeight = (int) getResources().getDimension(R.dimen.trending_filter_view_pager_height);
         if (mFilterViewPager != null)
         {
             filterLayoutParams = (RelativeLayout.LayoutParams) mFilterViewPager.getLayoutParams();
