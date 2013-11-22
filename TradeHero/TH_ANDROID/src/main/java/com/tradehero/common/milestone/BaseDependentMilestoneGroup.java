@@ -16,7 +16,7 @@ public class BaseDependentMilestoneGroup extends BaseMilestoneGroup
         {
             @Override public void onComplete(Milestone milestone)
             {
-                launch();
+                launchOwn();
                 // When its children are complete, then the listener will be notified
             }
 
@@ -45,5 +45,10 @@ public class BaseDependentMilestoneGroup extends BaseMilestoneGroup
             milestone.setOnCompleteListener(dependCompleteListener);
         }
         this.dependsOn = milestone;
+    }
+
+    @Override public void launch()
+    {
+        dependsOn.launch();
     }
 }

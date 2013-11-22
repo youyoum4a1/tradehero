@@ -24,4 +24,10 @@ public class IABSKUListRetrievedMilestone extends DTORetrievedMilestone<IABSKULi
     {
         return iabskuListCache.get();
     }
+
+
+    @Override public void launch()
+    {
+        launchInternal();
+    }
 }

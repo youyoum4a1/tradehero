@@ -58,7 +58,7 @@ public class THInventoryFetchMilestone extends BaseMilestone implements Dependen
         {
             @Override public void onComplete(Milestone milestone)
             {
-                launch();
+                launchOwn();
             }
 
             @Override public void onFailed(Milestone milestone, Throwable throwable)
@@ -76,6 +76,11 @@ public class THInventoryFetchMilestone extends BaseMilestone implements Dependen
     }
 
     @Override public void launch()
+    {
+        dependsOn.launch();
+    }
+
+    @Override public void launchOwn()
     {
         running = true;
         complete = false;

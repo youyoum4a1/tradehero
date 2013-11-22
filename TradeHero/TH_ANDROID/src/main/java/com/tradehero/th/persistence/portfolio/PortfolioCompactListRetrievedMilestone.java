@@ -24,4 +24,9 @@ public class PortfolioCompactListRetrievedMilestone extends DTORetrievedMileston
     {
         return portfolioCompactListCache.get();
     }
+
+    @Override public void launch()
+    {
+        launchInternal();
+    }
 }

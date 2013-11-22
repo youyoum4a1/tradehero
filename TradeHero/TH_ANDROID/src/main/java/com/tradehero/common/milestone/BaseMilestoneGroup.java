@@ -53,6 +53,11 @@ public class BaseMilestoneGroup extends BaseMilestone implements MilestoneGroup
 
     @Override public void launch()
     {
+        launchOwn();
+    }
+
+    public void launchOwn()
+    {
         for (Milestone milestone : milestones)
         {
             milestone.launch();
