@@ -781,7 +781,7 @@ public class BuySellFragment extends AbstractBuySellFragment
         {
             if (securityPositionDetailDTO == null || securityPositionDetailDTO.positions == null || securityPositionDetailDTO.positions.size() == 0)
             {
-                mBuySellSwitch.setEnabled(false);
+                mBuySellSwitch.setVisibility(View.GONE);
             }
             else
             {
@@ -789,15 +789,14 @@ public class BuySellFragment extends AbstractBuySellFragment
                 Integer shareCount = securityPositionDetailDTO.positions.get(0).shares;
                 if (shareCount == null || shareCount == 0)
                 {
-                    mBuySellSwitch.setEnabled(false);
+                    mBuySellSwitch.setVisibility(View.GONE);
                 }
                 else
                 {
-                    mBuySellSwitch.setEnabled(true);
+                    mBuySellSwitch.setVisibility(View.VISIBLE);
                 }
             }
             mBuySellSwitch.setChecked(isTransactionTypeBuy);
-            mBuySellSwitch.setAlpha(mBuySellSwitch.isEnabled() ? 1 : 0.5f);
         }
     }
 
