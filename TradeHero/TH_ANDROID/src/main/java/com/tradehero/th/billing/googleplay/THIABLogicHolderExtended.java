@@ -1,10 +1,10 @@
 package com.tradehero.th.billing.googleplay;
 
 import android.app.Activity;
+import com.tradehero.common.billing.InventoryFetcher;
 import com.tradehero.common.billing.googleplay.Constants;
 import com.tradehero.common.billing.googleplay.SKUPurchase;
 import com.tradehero.common.billing.googleplay.IABSKU;
-import com.tradehero.common.billing.googleplay.InventoryFetcher;
 import com.tradehero.common.billing.googleplay.PurchaseFetcher;
 import com.tradehero.common.billing.googleplay.exceptions.IABBillingUnavailableException;
 import com.tradehero.common.billing.googleplay.exceptions.IABException;
@@ -26,13 +26,13 @@ public class THIABLogicHolderExtended
     extends THIABLogicHolder
     implements SKUFetcher.SKUFetcherListener,
         PurchaseFetcher.PublicFetcherListener,
-        InventoryFetcher.InventoryListener<THInventoryFetcher, THSKUDetails>
+        InventoryFetcher.InventoryFetchedListener<IABSKU, THSKUDetails, IABException>
 {
     public static final String TAG = THIABLogicHolderExtended.class.getSimpleName();
 
     protected SKUFetcher skuFetcher;
     protected PurchaseFetcher purchaseFetcher;
-    protected THInventoryFetcher inventoryFetcher;
+    protected THIABInventoryFetcher inventoryFetcher;
 
     protected Exception latestSkuFetcherException;
     protected Exception latestInventoryFetcherException;
@@ -70,7 +70,7 @@ public class THIABLogicHolderExtended
         if (inventoryFetcher != null)
         {
             inventoryFetcher.setListener(null);
-            inventoryFetcher.setInventoryListener(null);
+            inventoryFetcher.setInventoryFetchedListener(null);
             inventoryFetcher.dispose();
         }
         inventoryFetcher = null;
@@ -85,7 +85,7 @@ public class THIABLogicHolderExtended
         if (inventoryFetcher != null)
         {
             inventoryFetcher.setListener(null);
-            inventoryFetcher.setInventoryListener(null);
+            inventoryFetcher.setInventoryFetchedListener(null);
         }
         inventoryFetcher = null;
 
@@ -148,8 +148,9 @@ public class THIABLogicHolderExtended
                 mixedIABSKUs.addAll(availableSkus.get(Constants.ITEM_TYPE_SUBS));
             }
             latestInventoryFetcherException = null;
-            inventoryFetcher = new THInventoryFetcher(getActivity(), mixedIABSKUs);
-            inventoryFetcher.setInventoryListener(this);
+            inventoryFetcher = new THIABInventoryFetcher(getActivity());
+            inventoryFetcher.setProductIdentifiers(mixedIABSKUs);
+            inventoryFetcher.setInventoryFetchedListener(this);
             inventoryFetcher.fetchInventory();
         }
         else
@@ -159,8 +160,8 @@ public class THIABLogicHolderExtended
     }
     //</editor-fold>
 
-    //<editor-fold desc="InventoryFetcher.InventoryListener">
-    @Override public void onInventoryFetchSuccess(THInventoryFetcher fetcher, Map<IABSKU, THSKUDetails> inventory)
+    //<editor-fold desc="IABInventoryFetcher.InventoryFetchedListener">
+    @Override public void onInventoryFetchSuccess(InventoryFetcher fetcher, Map<IABSKU, THSKUDetails> inventory)
     {
         if (fetcher == this.inventoryFetcher)
         {
@@ -173,7 +174,7 @@ public class THIABLogicHolderExtended
 
     }
 
-    @Override public void onInventoryFetchFail(THInventoryFetcher fetcher, IABException exception)
+    @Override public void onInventoryFetchFail(InventoryFetcher fetcher, IABException exception)
     {
         if (fetcher == inventoryFetcher)
         {

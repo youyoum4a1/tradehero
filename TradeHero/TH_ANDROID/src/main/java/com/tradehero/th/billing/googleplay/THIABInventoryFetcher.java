@@ -2,10 +2,9 @@ package com.tradehero.th.billing.googleplay;
 
 import android.content.Context;
 import android.os.RemoteException;
+import com.tradehero.common.billing.googleplay.IABInventoryFetcher;
 import com.tradehero.common.billing.googleplay.IABSKU;
-import com.tradehero.common.billing.googleplay.InventoryFetcher;
 import com.tradehero.common.billing.googleplay.exceptions.IABException;
-import com.tradehero.th.persistence.billing.ProductDetailCache;
 import com.tradehero.th.persistence.billing.googleplay.THSKUDetailCache;
 import dagger.Lazy;
 import java.util.ArrayList;
@@ -15,15 +14,15 @@ import javax.inject.Inject;
 import org.json.JSONException;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/6/13 Time: 3:48 PM To change this template use File | Settings | File Templates. */
-public class THInventoryFetcher extends InventoryFetcher<THSKUDetails>
+public class THIABInventoryFetcher extends IABInventoryFetcher<IABSKU, THSKUDetails>
 {
-    public static final String TAG = THInventoryFetcher.class.getSimpleName();
+    public static final String TAG = THIABInventoryFetcher.class.getSimpleName();
 
     @Inject protected Lazy<THSKUDetailCache> skuDetailCache;
 
-    public THInventoryFetcher(Context ctx, List<IABSKU> iabSKUs)
+    public THIABInventoryFetcher(Context ctx)
     {
-        super(ctx, iabSKUs);
+        super(ctx);
     }
 
     @Override protected THSKUDetails createSKUDetails(String itemType, String json) throws JSONException

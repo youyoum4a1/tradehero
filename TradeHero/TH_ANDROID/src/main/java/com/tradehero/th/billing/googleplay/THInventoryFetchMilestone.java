@@ -1,9 +1,9 @@
 package com.tradehero.th.billing.googleplay;
 
 import android.content.Context;
+import com.tradehero.common.billing.InventoryFetcher;
 import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.common.billing.googleplay.IABSKUListType;
-import com.tradehero.common.billing.googleplay.InventoryFetcher;
 import com.tradehero.common.billing.googleplay.exceptions.IABException;
 import com.tradehero.common.milestone.BaseMilestone;
 import com.tradehero.common.milestone.DependentMilestone;
@@ -27,8 +27,8 @@ public class THInventoryFetchMilestone extends BaseMilestone implements Dependen
     private boolean failed;
     private final Context context;
     private final IABSKUListType iabskuListType;
-    private THInventoryFetcher inventoryFetcher;
-    private final InventoryFetcher.InventoryListener<THInventoryFetcher, THSKUDetails> fetchListener;
+    private THIABInventoryFetcher inventoryFetcher;
+    private final InventoryFetcher.InventoryFetchedListener<IABSKU, THSKUDetails, IABException> fetchListener;
     protected IABSKUListRetrievedMilestone dependsOn;
     private final OnCompleteListener dependCompleteListener;
     @Inject Lazy<IABSKUListCache> iabskuListCache;
@@ -42,15 +42,15 @@ public class THInventoryFetchMilestone extends BaseMilestone implements Dependen
         failed = false;
         this.context = context;
         this.iabskuListType = iabskuListType;
-        fetchListener = new InventoryFetcher.InventoryListener<THInventoryFetcher, THSKUDetails>()
+        fetchListener = new InventoryFetcher.InventoryFetchedListener<IABSKU, THSKUDetails, IABException>()
         {
-            @Override public void onInventoryFetchSuccess(THInventoryFetcher fetcher, Map<IABSKU, THSKUDetails> inventory)
+            @Override public void onInventoryFetchSuccess(InventoryFetcher fetcher, Map<IABSKU, THSKUDetails> inventory)
             {
                 running = false;
                 notifyCompleteListener();
             }
 
-            @Override public void onInventoryFetchFail(THInventoryFetcher fetcher, IABException exception)
+            @Override public void onInventoryFetchFail(InventoryFetcher fetcher, IABException exception)
             {
                 running = false;
                 notifyFailedListener(exception);
@@ -101,8 +101,9 @@ public class THInventoryFetchMilestone extends BaseMilestone implements Dependen
         }
         else
         {
-            inventoryFetcher = new THInventoryFetcher(context, skus);
-            inventoryFetcher.setInventoryListener(fetchListener);
+            inventoryFetcher = new THIABInventoryFetcher(context);
+            inventoryFetcher.setProductIdentifiers(skus);
+            inventoryFetcher.setInventoryFetchedListener(fetchListener);
             inventoryFetcher.fetchInventory();
         }
     }

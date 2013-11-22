@@ -3,8 +3,8 @@ package com.tradehero.th.utils.dagger;
 import android.app.Application;
 import android.content.Context;
 import com.squareup.picasso.Picasso;
+import com.tradehero.common.billing.googleplay.IABInventoryFetcher;
 import com.tradehero.common.billing.googleplay.IABServiceConnector;
-import com.tradehero.common.billing.googleplay.InventoryFetcher;
 import com.tradehero.common.billing.googleplay.PurchaseFetcher;
 import com.tradehero.common.cache.DatabaseCache;
 import com.tradehero.common.cache.LruMemFileCache;
@@ -20,7 +20,7 @@ import com.tradehero.th.billing.googleplay.SKUDetailsPurchaser;
 import com.tradehero.th.billing.googleplay.THIABLogicHolderExtended;
 import com.tradehero.th.billing.googleplay.THIABPurchaseConsumer;
 import com.tradehero.th.billing.googleplay.THInventoryFetchMilestone;
-import com.tradehero.th.billing.googleplay.THInventoryFetcher;
+import com.tradehero.th.billing.googleplay.THIABInventoryFetcher;
 import com.tradehero.th.fragments.WebViewFragment;
 import com.tradehero.th.fragments.authentication.EmailSignInFragment;
 import com.tradehero.th.fragments.billing.StoreScreenFragment;
@@ -228,8 +228,8 @@ import org.ocpsoft.prettytime.PrettyTime;
                 WebViewFragment.class,
 
                 IABServiceConnector.class,
-                InventoryFetcher.class,
-                THInventoryFetcher.class,
+                IABInventoryFetcher.class,
+                THIABInventoryFetcher.class,
                 PurchaseFetcher.class,
                 SKUDetailsPurchaser.class,
                 PurchaseReporter.class,
