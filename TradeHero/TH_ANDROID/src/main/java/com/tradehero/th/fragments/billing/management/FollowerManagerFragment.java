@@ -122,6 +122,11 @@ public class FollowerManagerFragment extends BasePurchaseManagerFragment
         super.onDestroyView();
     }
 
+    @Override protected void handleShowSkuDetailsMilestoneFailed(Throwable throwable)
+    {
+        // Nothing to do presumably
+    }
+
     protected void fetchFollowerSummary()
     {
         FollowerSummaryDTO summaryDTO = followerSummaryCache.get().get(new UserBaseKey(getApplicablePortfolioId().userId));

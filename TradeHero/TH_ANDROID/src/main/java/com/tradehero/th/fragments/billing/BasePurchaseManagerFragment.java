@@ -168,10 +168,12 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
             @Override public void onFailed(Milestone milestone, Throwable throwable)
             {
                 THLog.e(TAG, "Failed to complete ShowSkuDetailsMilestone", throwable);
-                IABAlertUtils.popFailedToLoadRequiredInfo(getActivity());
+                handleShowSkuDetailsMilestoneFailed(throwable);
             }
         };
     }
+
+    abstract protected void handleShowSkuDetailsMilestoneFailed(Throwable throwable);
 
     protected void handleShowSkuDetailsMilestoneComplete()
     {
@@ -441,7 +443,11 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
                 Application.getResourceString(R.string.store_billing_loading_info_window_title),
                 Application.getResourceString(R.string.store_billing_loading_info_window_message),
                 true);
+    }
 
+    protected void popFailedToLoadRequiredInfo()
+    {
+        IABAlertUtils.popFailedToLoadRequiredInfo(getActivity());
     }
 
     protected void reportPurchaseToServerAPI(SKUPurchase purchase)

@@ -288,6 +288,11 @@ public class BuySellConfirmFragment extends AbstractBuySellFragment
         outState.putBoolean(BUNDLE_KEY_SHARE_PUBLIC, sharePublic);
     }
 
+    @Override protected void handleShowSkuDetailsMilestoneFailed(Throwable throwable)
+    {
+        // Nothing to do presumably
+    }
+
     @Override public void linkWith(SecurityId securityId, boolean andDisplay)
     {
         super.linkWith(securityId, andDisplay);

@@ -109,9 +109,14 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
         super.onPause();
     }
 
+    @Override protected void handleShowSkuDetailsMilestoneFailed(Throwable throwable)
+    {
+        // Nothing to do presumably
+    }
+
     private void handleBuyMoreClicked()
     {
-        popBuyFollowCredits();
+        conditionalPopBuyFollowCredits();
     }
 
     private void handleGoMostSkilled()

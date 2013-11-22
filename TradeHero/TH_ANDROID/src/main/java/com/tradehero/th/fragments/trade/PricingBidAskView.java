@@ -65,6 +65,8 @@ public class PricingBidAskView extends LinearLayout implements DTOView<SecurityC
     {
         this.buy = buy;
         updateVisibilities();
+        displayLastPrice();
+        displayLastPriceUSD();
     }
 
     public boolean isRefreshingQuote()
@@ -137,70 +139,58 @@ public class PricingBidAskView extends LinearLayout implements DTOView<SecurityC
 
     public void display()
     {
-        if (mLastPrice != null)
-        {
-            if (securityCompactDTO == null)
-            {
-                mLastPrice.setText("");
-            }
-            else if (securityCompactDTO.lastPrice == null)
-            {
-                mLastPrice.setText(String.format("%s-", securityCompactDTO.currencyDisplay));
-            }
-            else
-            {
-                mLastPrice.setText(String.format("%s%.2f", securityCompactDTO.currencyDisplay, securityCompactDTO.lastPrice));
-            }
-        }
-
-        if (mAskPrice != null)
-        {
-            if (quoteDTO == null)
-            {
-                mAskPrice.setText("-");
-            }
-            else if (quoteDTO.ask == null)
-            {
-                mAskPrice.setText("N/A");
-            }
-            else
-            {
-                mAskPrice.setText(String.format("%.2f", quoteDTO.ask));
-            }
-        }
-
-        if (mBidPrice != null)
-        {
-            if (quoteDTO == null)
-            {
-                mBidPrice.setText("-");
-            }
-            else if (quoteDTO.bid == null)
-            {
-                mBidPrice.setText("N/A");
-            }
-            else
-            {
-                mBidPrice.setText(String.format(" %.2f", quoteDTO.bid));
-            }
-        }
-
-        if (mLastPriceUSD != null)
-        {
-            if (securityCompactDTO != null && !securityCompactDTO.lastPrice.isNaN() &&
-                    quoteDTO != null && quoteDTO.toUSDRate != null && !quoteDTO.toUSDRate.isNaN())
-            {
-                mLastPriceUSD.setText(String.format("%s %.2f",
-                        getResources().getString(R.string.usd_price_unit_left),
-                        securityCompactDTO.lastPrice * quoteDTO.toUSDRate));
-            }
-            else
-            {
-                mLastPriceUSD.setText(R.string.usd_price_unit_left);
-            }
-        }
+        displayLastPrice();
+        displayLastPriceUSD();
+        displayAskPrice();
+        displayBidPrice();
 
         updateVisibilities();
+    }
+
+    public void displayLastPrice()
+    {
+        TextView   lastPriceView = mLastPrice;
+        if (lastPriceView != null)
+        {
+            lastPriceView.setText(getLastPriceText());
+        }
+    }
+
+    public void displayAskPrice()
+    {
+        TextView askPriceView = mAskPrice;
+        if (askPriceView != null)
+        {
+            askPriceView.setText(getAskPriceText());
+        }
+    }
+
+    public void displayBidPrice()
+    {
+        TextView bidPriceView = mBidPrice;
+        if (bidPriceView != null)
+        {
+            bidPriceView.setText(getBidPriceText());
+        }
+    }
+
+    public void displayLastPriceUSD()
+    {
+        TextView lastPrice = mLastPriceUSD;
+        if (lastPrice != null)
+        {
+            if (quoteDTO == null || quoteDTO.ask == null ||
+                    quoteDTO.bid == null || quoteDTO.toUSDRate == null )
+            {
+                lastPrice.setText(R.string.usd_price_unit_left);
+            }
+            else
+            {
+                lastPrice.setText(String.format("%s %.2f",
+                        getResources().getString(R.string.usd_price_unit_left),
+                        (buy ? quoteDTO.ask : quoteDTO.bid) * quoteDTO.toUSDRate));
+            }
+        }
     }
 
     private void updateVisibilities()
@@ -239,5 +229,41 @@ public class PricingBidAskView extends LinearLayout implements DTOView<SecurityC
         {
             mBidPrice.setTextColor(buy ? inactiveColor : activeColor);
         }
+    }
+
+    public String getLastPriceText()
+    {
+        return String.format("%s%s", getCurrencyDisplay(), buy ? getAskPriceText() : getBidPriceText());
+    }
+
+    public String getCurrencyDisplay()
+    {
+        return securityCompactDTO == null ? "" : securityCompactDTO.currencyDisplay;
+    }
+
+    public String getAskPriceText()
+    {
+        if (quoteDTO == null)
+        {
+            return "-";
+        }
+        else if (quoteDTO.ask == null)
+        {
+            return "N/A";
+        }
+        return String.format("%.2f", quoteDTO.ask);
+    }
+
+    public String getBidPriceText()
+    {
+        if (quoteDTO == null)
+        {
+            return "-";
+        }
+        else if (quoteDTO.bid == null)
+        {
+            return "N/A";
+        }
+        return String.format("%.2f", quoteDTO.bid);
     }
 }

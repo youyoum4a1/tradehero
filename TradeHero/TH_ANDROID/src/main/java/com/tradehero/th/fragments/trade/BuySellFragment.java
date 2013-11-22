@@ -458,6 +458,11 @@ public class BuySellFragment extends AbstractBuySellFragment
         super.onDetach();
     }
 
+    @Override protected void handleShowSkuDetailsMilestoneFailed(Throwable throwable)
+    {
+        // Nothing to do presumably
+    }
+
     @Override protected void handleShowSkuDetailsMilestoneComplete()
     {
         super.handleShowSkuDetailsMilestoneComplete();

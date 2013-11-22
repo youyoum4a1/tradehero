@@ -86,6 +86,11 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
         return true;
     }
 
+    @Override protected void handleShowSkuDetailsMilestoneFailed(Throwable throwable)
+    {
+        // Nothing to do presumably
+    }
+
     private void handlePositionClicked(int position)
     {
         Bundle bundle;
