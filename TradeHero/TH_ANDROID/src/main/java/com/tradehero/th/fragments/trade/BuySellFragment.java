@@ -422,6 +422,7 @@ public class BuySellFragment extends AbstractBuySellFragment
 
         if (mBtnAddTrigger != null)
         {
+            mBtnAddTrigger.setEnabled(false);
             mBtnAddTrigger.setOnClickListener(null);
         }
         mBtnAddTrigger = null;
@@ -816,15 +817,17 @@ public class BuySellFragment extends AbstractBuySellFragment
         {
             if (securityAlertAssistant.isPopulated() && securityAlertAssistant.getAlertId(securityId) != null)
             {
+                mBtnAddTrigger.setEnabled(true);
                 mBtnAddTrigger.setImageResource(R.drawable.buyscreen_txtnotice_bought);
             }
             else if (securityAlertAssistant.isPopulated() && securityAlertAssistant.getAlertId(securityId) == null)
             {
+                mBtnAddTrigger.setEnabled(true);
                 mBtnAddTrigger.setImageResource(R.drawable.buyscreen_txtnotice_buy);
             }
             else // TODO check if failed
             {
-                mBtnAddTrigger.setImageResource(R.drawable.buy_alerts_infinite);
+                mBtnAddTrigger.setEnabled(false);
             }
         }
     }

@@ -179,8 +179,7 @@ public class PricingBidAskView extends LinearLayout implements DTOView<SecurityC
         TextView lastPrice = mLastPriceUSD;
         if (lastPrice != null)
         {
-            if (quoteDTO == null || quoteDTO.ask == null ||
-                    quoteDTO.bid == null || quoteDTO.toUSDRate == null )
+            if (quoteDTO == null || quoteDTO.ask == null || quoteDTO.bid == null || quoteDTO.toUSDRate == null )
             {
                 lastPrice.setText(R.string.usd_price_unit_left);
             }
