@@ -522,7 +522,7 @@ public class BuySellConfirmFragment extends AbstractBuySellFragment
         {
             return null;
         }
-        if (applicablePortfolioId == null || applicablePortfolioId.portfolioId == null)
+        if (getApplicablePortfolioId() == null || getApplicablePortfolioId().portfolioId == null)
         {
             THLog.e(TAG, "No portfolioId to apply to", new IllegalStateException());
             return null;
@@ -538,7 +538,7 @@ public class BuySellConfirmFragment extends AbstractBuySellFragment
                 mCommentsET == null ? null : mCommentsET.getText().toString(),
                 quoteDTO.rawResponse,
                 isBuy ? mBuyQuantity : mSellQuantity,
-                applicablePortfolioId.portfolioId
+                getApplicablePortfolioId().portfolioId
         );
     }
 

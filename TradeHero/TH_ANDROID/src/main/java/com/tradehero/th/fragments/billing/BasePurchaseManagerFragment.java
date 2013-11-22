@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import com.tradehero.common.billing.googleplay.IABSKU;
+import com.tradehero.common.billing.googleplay.IABSKUListType;
 import com.tradehero.common.billing.googleplay.SKUPurchase;
 import com.tradehero.common.billing.googleplay.exceptions.IABAlreadyOwnedException;
 import com.tradehero.common.billing.googleplay.exceptions.IABBadResponseException;
@@ -13,6 +14,7 @@ import com.tradehero.common.billing.googleplay.exceptions.IABRemoteException;
 import com.tradehero.common.billing.googleplay.exceptions.IABSendIntentException;
 import com.tradehero.common.billing.googleplay.exceptions.IABUserCancelledException;
 import com.tradehero.common.billing.googleplay.exceptions.IABVerificationFailedException;
+import com.tradehero.common.milestone.Milestone;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
@@ -52,6 +54,10 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
     public static final String BUNDLE_KEY_USER_ID = BasePurchaseManagerFragment.class.getName() + ".userId";
     public static final String BUNDLE_KEY_PORTFOLIO_ID = BasePurchaseManagerFragment.class.getName() + ".portfolioId";
 
+    private ShowSkuDetailsMilestone showSkuDetailsMilestone;
+    private Milestone.OnCompleteListener showSkuDetailsMilestoneListener;
+    private Runnable runOnShowSkuDetailsMilestoneComplete;
+
     private ProgressDialog progressDialog;
     @Inject Lazy<CurrentUserBaseKeyHolder> currentUserBaseKeyHolder;
     @Inject Lazy<UserProfileCache> userProfileCache;
@@ -65,7 +71,7 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
     protected PurchaseReporter purchaseReporter = new PurchaseReporter();
     protected int requestCode = (int) (Math.random() * Integer.MAX_VALUE);
     protected THIABPurchaseOrder purchaseOrder;
-    protected OwnedPortfolioId applicablePortfolioId;
+    protected UserBaseKey userBaseKey;
     protected SKUPurchase purchase;
 
     @Override public void onActivityCreated(Bundle savedInstanceState)
@@ -77,7 +83,7 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
     @Override public void onResume()
     {
         super.onResume();
-        prepareApplicablePortfolioId();
+        preparePrerequisites();
     }
 
     @Override public void onPause()
@@ -101,20 +107,19 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
         super.onDestroyView();
     }
 
-    protected void prepareApplicablePortfolioId()
+    protected void preparePrerequisites()
     {
-        Integer userId = null;
         Integer portfolioId = null;
 
         Bundle args = getArguments();
 
         if (args != null && args.containsKey(BUNDLE_KEY_USER_ID))
         {
-            userId = args.getInt(BUNDLE_KEY_USER_ID);
+            userBaseKey = new UserBaseKey(args.getInt(BUNDLE_KEY_USER_ID));
         }
         else
         {
-            userId = currentUserBaseKeyHolder.get().getCurrentUserBaseKey().key;
+            userBaseKey = new UserBaseKey(currentUserBaseKeyHolder.get().getCurrentUserBaseKey().key);
         }
 
         if (args != null && args.containsKey(BUNDLE_KEY_PORTFOLIO_ID))
@@ -123,54 +128,94 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
         }
         else
         {
-            OwnedPortfolioId ownedPortfolioId = portfolioCompactListCache.get().getDefaultPortfolio(new UserBaseKey(userId));
+            OwnedPortfolioId ownedPortfolioId = portfolioCompactListCache.get().getDefaultPortfolio(userBaseKey);
             if (ownedPortfolioId != null)
             {
                 portfolioId = ownedPortfolioId.portfolioId;
             }
-            else
-            {
-                // TODO
-                if (portfolioIdListListener == null)
-                {
-                    portfolioIdListListener = new DTOCache.Listener<UserBaseKey, OwnedPortfolioIdList>()
-                    {
-                        @Override public void onDTOReceived(UserBaseKey key, OwnedPortfolioIdList value)
-                        {
-                            if (value == null)
-                            {
-                                THToast.show("There was a problem getting the portfolio information");
-                                THLog.d(TAG, "prepareApplicablePortfolioId:onDTOReceived Value is null");
-                            }
-                            else
-                            {
-                                prepareApplicablePortfolioId();
-                            }
-                        }
-
-                        @Override public void onErrorThrown(UserBaseKey key, Throwable error)
-                        {
-                            THToast.show("There was an error fetching the portfolio information");
-                            THLog.e(TAG, "Error fetching portfolio list", error);
-                        }
-                    };
-                }
-                portfolioIdListFetchTask = portfolioCompactListCache.get().getOrFetch(new UserBaseKey(userId), portfolioIdListListener);
-                portfolioIdListFetchTask.execute();
-            }
         }
 
-        linkWith(new OwnedPortfolioId(userId, portfolioId), true);
+        if (portfolioId == null)
+        {
+            // We still need to collect the portfolios
+            showSkuDetailsMilestone = new ShowSkuDetailsMilestone(getActivity(), IABSKUListType.getInApp(), userBaseKey);
+        }
+        else
+        {
+            showSkuDetailsMilestone = new ShowSkuDetailsMilestone(getActivity(), IABSKUListType.getInApp(), null);
+        }
+        showSkuDetailsMilestoneListener = createShowSkuDetailsMilestoneListener();
+        showSkuDetailsMilestone.setOnCompleteListener(showSkuDetailsMilestoneListener);
+        showSkuDetailsMilestone.launch();
     }
 
-    protected void linkWith(OwnedPortfolioId ownedPortfolioId, boolean andDisplay)
+    protected Milestone.OnCompleteListener createShowSkuDetailsMilestoneListener()
     {
-        this.applicablePortfolioId = ownedPortfolioId;
+        return new Milestone.OnCompleteListener()
+        {
+            @Override public void onComplete(Milestone milestone)
+            {
+                if (!(milestone instanceof ShowSkuDetailsMilestone))
+                {
+                    THLog.e(TAG, "We did not receive the proper milestone type: " + milestone.getClass().getName(), new Exception());
+                }
+                else
+                {
+                    handleShowSkuDetailsMilestoneComplete();
+                }
+            }
+
+            @Override public void onFailed(Milestone milestone, Throwable throwable)
+            {
+                THLog.e(TAG, "Failed to complete ShowSkuDetailsMilestone", throwable);
+                IABAlertUtils.popFailedToLoadRequiredInfo(getActivity());
+            }
+        };
+    }
+
+    protected void handleShowSkuDetailsMilestoneComplete()
+    {
+        // At this stage, we know the applicable portfolio is available
+        runWhatWaitingForSkuDetailsMilestone();
+    }
+
+    protected void runWhatWaitingForSkuDetailsMilestone()
+    {
+        if (progressDialog != null)
+        {
+            progressDialog.hide();
+        }
+        Runnable runnable = runOnShowSkuDetailsMilestoneComplete;
+        if (runnable != null)
+        {
+            runOnShowSkuDetailsMilestoneComplete = null;
+            runnable.run();
+        }
+    }
+
+    protected void waitForSkuDetailsMilestoneComplete(Runnable runnable)
+    {
+        if (showSkuDetailsMilestone.isComplete())
+        {
+            if (runnable != null)
+            {
+                runnable.run();
+            }
+        }
+        else
+        {
+            popDialogLoadingInfo();
+            runOnShowSkuDetailsMilestoneComplete = runnable;
+            if (showSkuDetailsMilestone.isFailed() || !showSkuDetailsMilestone.isRunning())
+            {
+                showSkuDetailsMilestone.launch();
+            }
+        }
     }
 
     public OwnedPortfolioId getApplicablePortfolioId()
     {
-        return applicablePortfolioId;
+        return portfolioCompactListCache.get().getDefaultPortfolio(userBaseKey);
     }
 
     protected boolean isBillingAvailable()
@@ -293,9 +338,21 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
         popBuyDialog(THSKUDetails.DOMAIN_RESET_PORTFOLIO, R.string.store_buy_reset_portfolio_window_title);
     }
 
-    protected void popBuyDialog(String skuDomain, int titleResId)
+    protected void popBuyDialog(final String skuDomain, final int titleResId)
     {
-        IABAlertSKUUtils.popBuyDialog(getActivity(), getBillingActor(), this, skuDomain, titleResId);
+        waitForSkuDetailsMilestoneComplete(new Runnable()
+        {
+            @Override public void run()
+            {
+                getView().post(new Runnable()
+                {
+                    @Override public void run()
+                    {
+                        IABAlertSKUUtils.popBuyDialog(getActivity(), getBillingActor(), BasePurchaseManagerFragment.this, skuDomain, titleResId);
+                    }
+                });
+            }
+        });
     }
     //</editor-fold>
 
@@ -375,6 +432,16 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
     {
         this.purchase = purchase;
         reportPurchaseToServerAPI(purchase);
+    }
+
+    protected void popDialogLoadingInfo()
+    {
+        progressDialog = ProgressDialog.show(
+                getActivity(),
+                Application.getResourceString(R.string.store_billing_loading_info_window_title),
+                Application.getResourceString(R.string.store_billing_loading_info_window_message),
+                true);
+
     }
 
     protected void reportPurchaseToServerAPI(SKUPurchase purchase)

@@ -108,7 +108,7 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
                 break;
 
             case StoreItemAdapter.POSITION_MANAGE_HEROES:
-                if (applicablePortfolioId == null || applicablePortfolioId.userId == null)
+                if (getApplicablePortfolioId() == null || getApplicablePortfolioId().userId == null)
                 {
                     popPleaseWait();
                 }
@@ -116,20 +116,20 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
                 {
                     bundle = new Bundle();
                     // TODO fix crash when userId is null (Integer != int)
-                    bundle.putInt(HeroManagerFragment.BUNDLE_KEY_USER_ID, applicablePortfolioId.userId);
+                    bundle.putInt(HeroManagerFragment.BUNDLE_KEY_USER_ID, getApplicablePortfolioId().userId);
                     pushFragment(HeroManagerFragment.class, bundle);
                 }
                 break;
 
             case StoreItemAdapter.POSITION_MANAGE_FOLLOWERS:
-                if (applicablePortfolioId == null || applicablePortfolioId.userId == null)
+                if (getApplicablePortfolioId() == null || getApplicablePortfolioId().userId == null)
                 {
                     popPleaseWait();
                 }
                 else
                 {
                     bundle = new Bundle();
-                    bundle.putInt(FollowerManagerFragment.BUNDLE_KEY_USER_ID, applicablePortfolioId.userId);
+                    bundle.putInt(FollowerManagerFragment.BUNDLE_KEY_USER_ID, getApplicablePortfolioId().userId);
                     pushFragment(FollowerManagerFragment.class, bundle);
                 }
                 break;

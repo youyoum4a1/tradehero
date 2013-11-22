@@ -213,7 +213,7 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
     {
         if (this.securityPositionDetailDTO != null && this.securityPositionDetailDTO.positions != null)
         {
-            return this.securityPositionDetailDTO.positions.getMaxSellableShares(applicablePortfolioId.getPortfolioId());
+            return this.securityPositionDetailDTO.positions.getMaxSellableShares(getApplicablePortfolioId().getPortfolioId());
         }
         return null;
     }

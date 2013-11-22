@@ -28,6 +28,6 @@ public class IABSKUListRetrievedMilestone extends DTORetrievedMilestone<IABSKULi
 
     @Override public void launch()
     {
-        launchInternal();
+        launchOwn();
     }
 }

@@ -460,13 +460,10 @@ public class BuySellFragment extends AbstractBuySellFragment
         super.onDetach();
     }
 
-    @Override protected void linkWith(OwnedPortfolioId ownedPortfolioId, boolean andDisplay)
+    @Override protected void handleShowSkuDetailsMilestoneComplete()
     {
-        super.linkWith(ownedPortfolioId, andDisplay);
-        if (andDisplay)
-        {
-            displayTradeQuantityView();
-        }
+        super.handleShowSkuDetailsMilestoneComplete();
+        displayTradeQuantityView();
     }
 
     @Override public void linkWith(SecurityId securityId, boolean andDisplay)
@@ -626,9 +623,9 @@ public class BuySellFragment extends AbstractBuySellFragment
     {
         if (mTradeQuantityView != null)
         {
-            if (applicablePortfolioId != null)
+            if (getApplicablePortfolioId() != null)
             {
-                mTradeQuantityView.linkWith(applicablePortfolioId.getPortfolioId(), true);
+                mTradeQuantityView.linkWith(getApplicablePortfolioId().getPortfolioId(), true);
             }
             if (securityPositionDetailDTO != null)
             {

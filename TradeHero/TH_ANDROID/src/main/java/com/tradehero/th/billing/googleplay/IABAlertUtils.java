@@ -147,6 +147,13 @@ public class IABAlertUtils
                 R.string.store_billing_report_api_error_cancel);
     }
 
+    public static void popFailedToLoadRequiredInfo(final Context context)
+    {
+        AlertDialogUtil.popWithCancelButton(context, R.string.store_billing_load_info_error_window_title,
+                R.string.store_billing_load_info_error_window_description,
+                R.string.store_billing_load_info_error_cancel);
+    }
+
     public static void popUnknownError(final Context context)
     {
         THLog.e(TAG, "popUnknownError", new Exception());

@@ -125,7 +125,7 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
 
     private void fetchUserProfile()
     {
-        UserProfileDTO userProfileDTO = userProfileCache.get().get(new UserBaseKey(applicablePortfolioId.userId));
+        UserProfileDTO userProfileDTO = userProfileCache.get().get(new UserBaseKey(getApplicablePortfolioId().userId));
         if (userProfileDTO != null)
         {
             display(userProfileDTO);
@@ -151,7 +151,7 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
             {
                 userProfileFetchTask.forgetListener(true);
             }
-            userProfileFetchTask = userProfileCache.get().getOrFetch(new UserBaseKey(applicablePortfolioId.userId), userProfileListener);
+            userProfileFetchTask = userProfileCache.get().getOrFetch(new UserBaseKey(getApplicablePortfolioId().userId), userProfileListener);
             userProfileFetchTask.execute();
         }
     }

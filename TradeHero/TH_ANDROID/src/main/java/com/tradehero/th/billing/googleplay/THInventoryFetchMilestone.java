@@ -26,6 +26,7 @@ public class THInventoryFetchMilestone extends BaseMilestone implements Dependen
     private boolean complete;
     private boolean failed;
     private final Context context;
+    private final IABSKUListType iabskuListType;
     private THInventoryFetcher inventoryFetcher;
     private final InventoryFetcher.InventoryListener<THInventoryFetcher, THSKUDetails> fetchListener;
     protected IABSKUListRetrievedMilestone dependsOn;
@@ -33,13 +34,14 @@ public class THInventoryFetchMilestone extends BaseMilestone implements Dependen
     @Inject Lazy<IABSKUListCache> iabskuListCache;
     @Inject Lazy<THSKUDetailCache> thskuDetailCache;
 
-    public THInventoryFetchMilestone(Context context)
+    public THInventoryFetchMilestone(Context context, IABSKUListType iabskuListType)
     {
         super();
         running = false;
         complete = false;
         failed = false;
         this.context = context;
+        this.iabskuListType = iabskuListType;
         fetchListener = new InventoryFetcher.InventoryListener<THInventoryFetcher, THSKUDetails>()
         {
             @Override public void onInventoryFetchSuccess(THInventoryFetcher fetcher, Map<IABSKU, THSKUDetails> inventory)
@@ -66,6 +68,8 @@ public class THInventoryFetchMilestone extends BaseMilestone implements Dependen
                 notifyFailedListener(throwable);
             }
         };
+        dependsOn = new IABSKUListRetrievedMilestone(iabskuListType);
+        dependsOn.setOnCompleteListener(dependCompleteListener);
         DaggerUtils.inject(this);
     }
 

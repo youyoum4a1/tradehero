@@ -27,6 +27,6 @@ public class PortfolioCompactListRetrievedMilestone extends DTORetrievedMileston
 
     @Override public void launch()
     {
-        launchInternal();
+        launchOwn();
     }
 }

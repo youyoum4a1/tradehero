@@ -55,7 +55,7 @@ abstract public class DTORetrievedMilestone<
 
     abstract protected DTOCacheType getCache();
 
-    protected void launchInternal()
+    public void launchOwn()
     {
         failed = false;
 

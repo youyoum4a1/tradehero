@@ -124,7 +124,7 @@ public class FollowerManagerFragment extends BasePurchaseManagerFragment
 
     protected void fetchFollowerSummary()
     {
-        FollowerSummaryDTO summaryDTO = followerSummaryCache.get().get(new UserBaseKey(applicablePortfolioId.userId));
+        FollowerSummaryDTO summaryDTO = followerSummaryCache.get().get(new UserBaseKey(getApplicablePortfolioId().userId));
         if (summaryDTO != null)
         {
             display(summaryDTO);
@@ -150,7 +150,7 @@ public class FollowerManagerFragment extends BasePurchaseManagerFragment
             {
                 followerSummaryFetchTask.forgetListener(true);
             }
-            followerSummaryFetchTask = followerSummaryCache.get().getOrFetch(new UserBaseKey(applicablePortfolioId.userId), followerSummaryListener);
+            followerSummaryFetchTask = followerSummaryCache.get().getOrFetch(new UserBaseKey(getApplicablePortfolioId().userId), followerSummaryListener);
             followerSummaryFetchTask.execute();
         }
     }
@@ -248,7 +248,7 @@ public class FollowerManagerFragment extends BasePurchaseManagerFragment
             UserFollowerDTO followerDTO = (UserFollowerDTO) followerListAdapter.getItem(position);
             if (followerDTO != null)
             {
-                FollowerId followerId = new FollowerId(applicablePortfolioId.userId, followerDTO.id);
+                FollowerId followerId = new FollowerId(getApplicablePortfolioId().userId, followerDTO.id);
                 ((DashboardActivity) getActivity()).getDashboardNavigator().pushFragment(FollowerPayoutManagerFragment.class, followerId.getArgs());
             }
             else
