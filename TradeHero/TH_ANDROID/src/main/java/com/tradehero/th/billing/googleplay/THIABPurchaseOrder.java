@@ -79,5 +79,4 @@ public class THIABPurchaseOrder implements IABPurchaseOrder<IABSKU>
             this.developerPayload = null;
         }
     }
-
 }

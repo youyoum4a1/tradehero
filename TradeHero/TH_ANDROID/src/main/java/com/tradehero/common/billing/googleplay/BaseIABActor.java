@@ -152,28 +152,35 @@ abstract public class BaseIABActor<
     }
 
     //<editor-fold desc="IABActor">
-    @Override public int launchPurchaseSequence(IABPurchaseHandlerType purchaseHandler, IABPurchaseOrderType purchaseOrder)
+
+    @Override public int registerBillingPurchaseHandler(IABPurchaseHandlerType purchaseHandler)
     {
         int requestCode = getUnusedRequestCode();
         registerPurchaseHandler(requestCode, purchaseHandler);
-        createAndRegisterPurchaseFinishedListener(requestCode);
-
-        IABPurchaserType iabPurchaser = createPurchaser(requestCode);
-        iabPurchasers.put(requestCode, iabPurchaser);
-        iabPurchaser.purchase(purchaseOrder, requestCode);
         return requestCode;
     }
 
-    @Override public int launchConsumeSequence(IABPurchaseConsumeHandlerType purchaseConsumeHandler, IABPurchaseType purchase)
+    @Override public void launchPurchaseSequence(int requestCode, IABPurchaseOrderType purchaseOrder)
+    {
+        createAndRegisterPurchaseFinishedListener(requestCode);
+        IABPurchaserType iabPurchaser = createPurchaser(requestCode);
+        iabPurchasers.put(requestCode, iabPurchaser);
+        iabPurchaser.purchase(purchaseOrder, requestCode);
+    }
+
+    @Override public int registerPurchaseConsumeHandler(IABPurchaseConsumeHandlerType purchaseConsumeHandler)
     {
         int requestCode = getUnusedRequestCode();
         registerPurchaseConsumeHandler(requestCode, purchaseConsumeHandler);
-        createAndRegisterPurchaseConsumeFinishedListener(requestCode);
+        return requestCode;
+    }
 
+    @Override public void launchConsumeSequence(int requestCode, IABPurchaseType purchase)
+    {
+        createAndRegisterPurchaseConsumeFinishedListener(requestCode);
         IABPurchaseConsumerType iabPurchaseConsumer = createPurchaseConsumer(requestCode);
         iabPurchaseConsumers.put(requestCode, iabPurchaseConsumer);
         iabPurchaseConsumer.consume(purchase);
-        return requestCode;
     }
     //</editor-fold>
 

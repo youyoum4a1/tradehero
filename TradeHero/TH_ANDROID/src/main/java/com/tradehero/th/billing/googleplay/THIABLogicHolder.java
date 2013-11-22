@@ -42,7 +42,7 @@ abstract public class THIABLogicHolder
     public static final String TAG = THIABLogicHolder.class.getSimpleName();
 
     protected Map<Integer /*requestCode*/, PurchaseReporter> purchaseReporters;
-    protected Map<Integer /*requestCode*/, BasePurchaseReporter.OnPurchaseReportedListener> purchaseReportedListeners;
+    protected Map<Integer /*requestCode*/, BasePurchaseReporter.OnPurchaseReportedListener<IABSKU, THIABOrderId, SKUPurchase>> purchaseReportedListeners;
     protected Map<Integer /*requestCode*/, WeakReference<PurchaseReportedHandler>> purchaseReportedHandlers;
 
     @Inject Lazy<UserProfileCache> userProfileCache;
@@ -144,23 +144,29 @@ abstract public class THIABLogicHolder
         };
     }
 
-    @Override public int launchReportSequence(PurchaseReportedHandler purchaseReportedHandler, SKUPurchase purchase)
+    @Override public int registerPurchaseReportedHandler(PurchaseReportedHandler purchaseReportedHandler)
     {
         int requestCode = getUnusedRequestCode();
         registerPurchaseReportedHandler(requestCode, purchaseReportedHandler);
-        createAndRegisterPurchaseReportedListener(requestCode);
+        return requestCode;
+    }
 
+    @Override public void launchReportSequence(int requestCode, SKUPurchase purchase)
+    {
+        createAndRegisterPurchaseReportedListener(requestCode);
         PurchaseReporter purchaseReporter = new PurchaseReporter();
         purchaseReporter.setListener(purchaseReportedListeners.get(requestCode));
         purchaseReporters.put(requestCode, purchaseReporter);
         purchaseReporter.reportPurchase(purchase);
-        return requestCode;
     }
 
     @Override public int launchReportSequenceAsync(SKUPurchase purchase)
     {
+        // TODO review this one as it looks HACKy
         THLog.d(TAG, "launchReportSequenceAsync " + purchase);
-        return launchReportSequence(createReportListener(), purchase);
+        int requestCode = registerPurchaseReportedHandler(createReportListener());
+        launchReportSequence(requestCode, purchase);
+        return requestCode;
     }
 
     @Override public UserProfileDTO launchReportSequenceSync(SKUPurchase purchase) throws RetrofitError
@@ -292,7 +298,7 @@ abstract public class THIABLogicHolder
                 }
             }
         };
-
-        launchConsumeSequence(consumeListener, purchase);
+        registerPurchaseConsumeHandler(requestCode, consumeListener);
+        launchConsumeSequence(requestCode, purchase);
     }
 }

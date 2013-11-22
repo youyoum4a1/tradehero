@@ -19,5 +19,6 @@ public interface BillingActor<
     void launchSkuInventorySequence();
     boolean isInventoryReady();
     boolean hadErrorLoadingInventory();
-    int launchPurchaseSequence(BillingPurchaseHandlerType billingPurchaseHandler, PurchaseOrderType purchaseOrder);
+    int registerBillingPurchaseHandler(BillingPurchaseHandlerType billingPurchaseHandler);
+    void launchPurchaseSequence(int requestCode, PurchaseOrderType purchaseOrder);
 }

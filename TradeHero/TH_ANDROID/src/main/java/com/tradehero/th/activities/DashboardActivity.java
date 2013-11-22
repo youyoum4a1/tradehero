@@ -151,19 +151,34 @@ public class DashboardActivity extends SherlockFragmentActivity
         return thiabLogicHolderExtended.getDetailsOfDomain(domain);
     }
 
-    @Override public int launchPurchaseSequence(THIABPurchaseHandler purchaseHandler, THIABPurchaseOrder purchaseOrder)
+    @Override public int registerBillingPurchaseHandler(THIABPurchaseHandler billingPurchaseHandler)
     {
-        return thiabLogicHolderExtended.launchPurchaseSequence(purchaseHandler, purchaseOrder);
+        return thiabLogicHolderExtended.registerBillingPurchaseHandler(billingPurchaseHandler);
     }
 
-    @Override public int launchConsumeSequence(THIABPurchaseConsumeHandler purchaseConsumeHandler, SKUPurchase purchase)
+    @Override public void launchPurchaseSequence(int requestCode, THIABPurchaseOrder purchaseOrder)
     {
-        return thiabLogicHolderExtended.launchConsumeSequence(purchaseConsumeHandler, purchase);
+        thiabLogicHolderExtended.launchPurchaseSequence(requestCode, purchaseOrder);
     }
 
-    @Override public int launchReportSequence(PurchaseReportedHandler purchaseReportedHandler, SKUPurchase purchase)
+    @Override public int registerPurchaseConsumeHandler(THIABPurchaseConsumeHandler purchaseConsumeHandler)
     {
-        return thiabLogicHolderExtended.launchReportSequence(purchaseReportedHandler, purchase);
+        return thiabLogicHolderExtended.registerPurchaseConsumeHandler(purchaseConsumeHandler);
+    }
+
+    @Override public void launchConsumeSequence(int requestCode, SKUPurchase purchase)
+    {
+        thiabLogicHolderExtended.launchConsumeSequence(requestCode, purchase);
+    }
+
+    @Override public int registerPurchaseReportedHandler(PurchaseReportedHandler purchaseReportedHandler)
+    {
+        return thiabLogicHolderExtended.registerPurchaseReportedHandler(purchaseReportedHandler);
+    }
+
+    @Override public void launchReportSequence(int requestCode, SKUPurchase purchase)
+    {
+        thiabLogicHolderExtended.launchReportSequence(requestCode, purchase);
     }
 
     @Override public int launchReportSequenceAsync(SKUPurchase purchase)

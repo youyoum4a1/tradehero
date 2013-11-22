@@ -29,5 +29,6 @@ public interface IABActor<
                         IABPurchaseHandlerType,
                         IABExceptionType>
 {
-    int launchConsumeSequence(IABPurchaseConsumeHandlerType purchaseConsumeHandler, IABPurchaseType purchase);
+    int registerPurchaseConsumeHandler(IABPurchaseConsumeHandlerType purchaseConsumeHandler);
+    void launchConsumeSequence(int requestCode, IABPurchaseType purchase);
 }

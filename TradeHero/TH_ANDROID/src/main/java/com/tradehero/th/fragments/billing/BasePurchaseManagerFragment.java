@@ -376,7 +376,8 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
     protected void launchPurchaseSequence(THIABActor actor, THIABPurchaseOrder purchaseOrder)
     {
         this.purchaseOrder = purchaseOrder;
-        this.requestCode = actor.launchPurchaseSequence(this, purchaseOrder);
+        this.requestCode = actor.registerBillingPurchaseHandler(this);
+        actor.launchPurchaseSequence(requestCode, purchaseOrder);
     }
 
     //<editor-fold desc="THIABPurchaseHandler">
