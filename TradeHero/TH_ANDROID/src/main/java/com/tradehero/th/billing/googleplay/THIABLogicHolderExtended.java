@@ -161,30 +161,14 @@ public class THIABLogicHolderExtended
     //</editor-fold>
 
     //<editor-fold desc="IABInventoryFetcher.InventoryFetchedListener">
-    @Override public void onInventoryFetchSuccess(InventoryFetcher fetcher, Map<IABSKU, THSKUDetails> inventory)
+    @Override public void onInventoryFetchSuccess(List<IABSKU> productIdentifiers, Map<IABSKU, THSKUDetails> inventory)
     {
-        if (fetcher == this.inventoryFetcher)
-        {
-            launchOwnPortfolioSequence();
-        }
-        else
-        {
-            THLog.w(TAG, "We have received a callback from another inventoryFetcher");
-        }
-
+        launchOwnPortfolioSequence();
     }
 
-    @Override public void onInventoryFetchFail(InventoryFetcher fetcher, IABException exception)
+    @Override public void onInventoryFetchFail(List<IABSKU> productIdentifiers, IABException exception)
     {
-        if (fetcher == inventoryFetcher)
-        {
-            latestInventoryFetcherException = exception;
-            //handleException(exception); // TODO
-        }
-        else
-        {
-            THLog.e(TAG, "We have received a callback from another inventoryFetcher", exception);
-        }
+        latestInventoryFetcherException = exception;
     }
     //</editor-fold>
 

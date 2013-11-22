@@ -47,9 +47,9 @@ abstract public class IABInventoryFetcher<
         return iabSKUs;
     }
 
-    public void setProductIdentifiers(List<IABSKUType> iabSKUs)
+    public void setProductIdentifiers(List<IABSKUType> productIdentifiers)
     {
-        this.iabSKUs = iabSKUs;
+        this.iabSKUs = productIdentifiers;
     }
 
     abstract protected IABProductDetailsType createSKUDetails(String itemType, String json) throws JSONException;
@@ -121,7 +121,7 @@ abstract public class IABInventoryFetcher<
         InventoryFetchedListener<IABSKUType, IABProductDetailsType, IABException> listenerCopy = getInventoryFetchedListener();
         if (listenerCopy != null)
         {
-            listenerCopy.onInventoryFetchFail(this, e);
+            listenerCopy.onInventoryFetchFail(iabSKUs, e);
         }
     }
 
@@ -130,7 +130,7 @@ abstract public class IABInventoryFetcher<
         InventoryFetchedListener<IABSKUType, IABProductDetailsType, IABException> listenerCopy = getInventoryFetchedListener();
         if (listenerCopy != null)
         {
-            listenerCopy.onInventoryFetchSuccess(this, this.getInventory());
+            listenerCopy.onInventoryFetchSuccess(iabSKUs, this.getInventory());
         }
     }
 

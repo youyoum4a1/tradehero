@@ -44,13 +44,13 @@ public class THInventoryFetchMilestone extends BaseMilestone implements Dependen
         this.iabskuListType = iabskuListType;
         fetchListener = new InventoryFetcher.InventoryFetchedListener<IABSKU, THSKUDetails, IABException>()
         {
-            @Override public void onInventoryFetchSuccess(InventoryFetcher fetcher, Map<IABSKU, THSKUDetails> inventory)
+            @Override public void onInventoryFetchSuccess(List<IABSKU> productIdentifiers, Map<IABSKU, THSKUDetails> inventory)
             {
                 running = false;
                 notifyCompleteListener();
             }
 
-            @Override public void onInventoryFetchFail(InventoryFetcher fetcher, IABException exception)
+            @Override public void onInventoryFetchFail(List<IABSKU> productIdentifiers, IABException exception)
             {
                 running = false;
                 notifyFailedListener(exception);

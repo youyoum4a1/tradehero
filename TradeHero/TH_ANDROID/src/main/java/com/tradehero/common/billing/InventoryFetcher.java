@@ -10,22 +10,16 @@ public interface InventoryFetcher<
         ExceptionType extends Exception>
 {
     public List<ProductIdentifierType> getProductIdentifiers();
-    public void setProductIdentifiers(List<ProductIdentifierType> iabSKUs);
-    public InventoryFetchedListener<
-                ProductIdentifierType,
-                ProductDetailsType,
-                ExceptionType> getInventoryFetchedListener();
-    public void setInventoryFetchedListener(InventoryFetchedListener<
-                ProductIdentifierType,
-                ProductDetailsType,
-                ExceptionType> inventoryFetchedListener);
+    public void setProductIdentifiers(List<ProductIdentifierType> productIdentifiers);
+    public InventoryFetchedListener<ProductIdentifierType, ProductDetailsType, ExceptionType> getInventoryFetchedListener();
+    public void setInventoryFetchedListener(InventoryFetchedListener<ProductIdentifierType, ProductDetailsType, ExceptionType> inventoryFetchedListener);
 
     public static interface InventoryFetchedListener<
             ProductIdentifierType extends ProductIdentifier,
             ProductDetailsType extends ProductDetails<ProductIdentifierType>,
             ExceptionType extends Exception>
     {
-        void onInventoryFetchSuccess(InventoryFetcher fetcher, Map<ProductIdentifierType, ProductDetailsType> inventory);
-        void onInventoryFetchFail(InventoryFetcher fetcher, ExceptionType exception);
+        void onInventoryFetchSuccess(List<ProductIdentifierType> productIdentifiers, Map<ProductIdentifierType, ProductDetailsType> inventory);
+        void onInventoryFetchFail(List<ProductIdentifierType> productIdentifiers, ExceptionType exception);
     }
 }
