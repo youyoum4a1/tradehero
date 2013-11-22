@@ -31,6 +31,7 @@ import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.TransactionFormDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.fragments.position.PositionListFragment;
 import com.tradehero.th.network.service.SecurityService;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import dagger.Lazy;
@@ -592,14 +593,16 @@ public class BuySellConfirmFragment extends AbstractBuySellFragment
             // TODO post to social network?
             if (errorCode == CODE_OK)
             {
-                returnToTradeFragment();
+                pushPortfolioFragment();
             }
         }
     }
 
-    private void returnToTradeFragment()
+    private void pushPortfolioFragment()
     {
+        // TODO find a better way to remove this fragment from the stack
         navigator.popFragment();
+        navigator.pushFragment(PositionListFragment.class, getApplicablePortfolioId().getArgs());
     }
 
     //<editor-fold desc="BaseFragment.TabBarVisibilityInformer">

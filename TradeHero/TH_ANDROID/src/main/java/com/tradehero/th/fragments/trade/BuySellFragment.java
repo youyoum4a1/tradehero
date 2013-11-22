@@ -670,20 +670,26 @@ public class BuySellFragment extends AbstractBuySellFragment
 
     public void displayBottomViewPager()
     {
-        if (bottomViewPagerAdapter != null)
+        BuySellBottomStockPagerAdapter adapter = bottomViewPagerAdapter;
+        if (adapter != null)
         {
-            if (securityId != null && !securityId.equals(bottomViewPagerAdapter.getSecurityId()))
+            if (securityId != null && !securityId.equals(adapter.getSecurityId()))
             {
-                bottomViewPagerAdapter.linkWith(securityId);
+                adapter.linkWith(securityId);
 
-                if (mBottomViewPager != null)
+                ViewPager viewPager = mBottomViewPager;
+                if (viewPager != null)
                 {
-                    mBottomViewPager.post(new Runnable()
+                    viewPager.post(new Runnable()
                     {
                         @Override public void run()
                         {
                             // We need to do it in a later frame otherwise the pager adapter crashes with IllegalStateException
-                            bottomViewPagerAdapter.notifyDataSetChanged();
+                            BuySellBottomStockPagerAdapter adapter = bottomViewPagerAdapter;
+                            if (adapter != null)
+                            {
+                                adapter.notifyDataSetChanged();
+                            }
                         }
                     });
                 }
@@ -779,14 +785,15 @@ public class BuySellFragment extends AbstractBuySellFragment
     {
         if (mBuySellSwitch != null)
         {
-            if (securityPositionDetailDTO == null || securityPositionDetailDTO.positions == null || securityPositionDetailDTO.positions.size() == 0)
+            if (securityPositionDetailDTO == null || securityPositionDetailDTO.positions == null || securityPositionDetailDTO.positions.size() == 0 ||
+                    getApplicablePortfolioId() == null)
             {
                 mBuySellSwitch.setVisibility(View.GONE);
             }
             else
             {
                 // TODO handle the case when we have move than 1 position
-                Integer shareCount = securityPositionDetailDTO.positions.get(0).shares;
+                Integer shareCount = securityPositionDetailDTO.positions.getMaxSellableShares(getApplicablePortfolioId().getPortfolioId());
                 if (shareCount == null || shareCount == 0)
                 {
                     mBuySellSwitch.setVisibility(View.GONE);
