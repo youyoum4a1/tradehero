@@ -30,11 +30,12 @@ public class LeaderboardMarkUserLoader extends PagedItemListLoader<LeaderboardUs
     protected LeaderboardManager leaderboardManager;
     private Date markUtc;
 
-    public LeaderboardMarkUserLoader(Context context, int leaderboardId, LeaderboardSortType sortType)
+    public LeaderboardMarkUserLoader(Context context, int leaderboardId, LeaderboardSortType sortType, boolean includeFoF)
     {
         super(context);
         this.leaderboardId = leaderboardId;
         this.sortType = sortType;
+        this.includeFoF = includeFoF;
         DaggerUtils.inject(this);
     }
 

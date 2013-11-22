@@ -48,4 +48,14 @@ public class StringUtils
         }
         return out.toString();
     }
+
+    public static boolean isNullOrEmpty(String str)
+    {
+        return str == null || str.length() == 0;
+    }
+
+    public static boolean isNullOrEmptyOrSpaces(String str)
+    {
+        return str == null || str.trim().length() == 0;
+    }
 }

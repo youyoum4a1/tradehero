@@ -8,6 +8,7 @@ import java.util.List;
 public class LeaderboardDTO extends AbstractItemWithComparableId<Integer>
 {
     public static final String LEADERBOARD_ID = "LEADERBOARD_ID";
+    public static final String INCLUDE_FOF = "INCLUDE_FOF";
 
     public int id;
     public String name;

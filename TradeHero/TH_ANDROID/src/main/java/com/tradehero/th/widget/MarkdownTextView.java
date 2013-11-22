@@ -1,20 +1,27 @@
 package com.tradehero.th.widget;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
 import com.tradehero.common.text.OnElementClickListener;
 import com.tradehero.common.text.RichTextCreator;
+import com.tradehero.th.api.security.SecurityId;
+import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
+import com.tradehero.th.api.users.UserBaseKey;
+import com.tradehero.th.base.Navigator;
+import com.tradehero.th.base.NavigatorActivity;
+import com.tradehero.th.fragments.timeline.TimelineFragment;
+import com.tradehero.th.fragments.trade.BuySellFragment;
 import javax.inject.Inject;
 
 /** Created with IntelliJ IDEA. User: tho Date: 9/17/13 Time: 11:18 AM Copyright (c) TradeHero */
 public class MarkdownTextView extends TextView implements OnElementClickListener
 {
     @Inject RichTextCreator parser;
-
-    private OnElementClickListener onElementClickListener;
+    @Inject CurrentUserBaseKeyHolder currentUserBaseKeyHolder;
 
     //<editor-fold desc="Constructors">
     public MarkdownTextView(Context context)
@@ -35,20 +42,56 @@ public class MarkdownTextView extends TextView implements OnElementClickListener
 
     @Override public void setText(CharSequence text, BufferType type)
     {
-        if (parser != null)
+        if (parser != null && text != null)
         {
             text = parser.load(text.toString().trim()).create();
         }
-        super.setText(text, type);
+        super.setText(text, BufferType.SPANNABLE);
     }
 
     @Override public void onClick(View textView, String data, String key, String[] matchStrings)
     {
-        onElementClickListener.onClick(textView, data, key, matchStrings);
+        switch (key)
+        {
+            case "user":
+                int userId = Integer.parseInt(matchStrings[2]);
+                openUserProfile(userId);
+                break;
+            case "security":
+                if (matchStrings.length < 3) break;
+                String exchange = matchStrings[1];
+                String symbol = matchStrings[2];
+                openSecurityProfile(exchange, symbol);
+                break;
+
+            case "link":
+                if (matchStrings.length < 3) break;
+                String link = matchStrings[2];
+
+                break;
+        }
     }
 
-    public void setOnElementClickListener(OnElementClickListener listener)
+    private void openSecurityProfile(String exchange, String symbol)
     {
-        this.onElementClickListener = listener;
+        SecurityId securityId = new SecurityId(exchange, symbol);
+        getNavigator().pushFragment(BuySellFragment.class, securityId.getArgs());
+    }
+
+    private Navigator getNavigator()
+    {
+        return ((NavigatorActivity) getContext()).getNavigator();
+    }
+
+    private void openUserProfile(int userId)
+    {
+        Bundle b = new Bundle();
+        b.putInt(UserBaseKey.BUNDLE_KEY_KEY, userId);
+        b.putBoolean(Navigator.NAVIGATE_FRAGMENT_NO_CACHE, true);
+
+        if (currentUserBaseKeyHolder.getCurrentUserBaseKey().key != userId)
+        {
+            getNavigator().pushFragment(TimelineFragment.class, b, true);
+        }
     }
 }

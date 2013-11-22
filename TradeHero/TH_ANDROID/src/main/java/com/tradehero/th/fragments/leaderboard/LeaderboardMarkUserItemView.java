@@ -3,6 +3,7 @@ package com.tradehero.th.fragments.leaderboard;
 import android.content.Context;
 import android.os.Bundle;
 import android.text.Html;
+import android.text.method.LinkMovementMethod;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
@@ -23,10 +24,12 @@ import com.tradehero.th.base.Navigator;
 import com.tradehero.th.base.NavigatorActivity;
 import com.tradehero.th.fragments.position.LeaderboardPositionListFragment;
 import com.tradehero.th.fragments.timeline.TimelineFragment;
+import com.tradehero.th.utils.StringUtils;
 import com.tradehero.th.utils.THSignedNumber;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefCache;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.NumberDisplayUtils;
+import com.tradehero.th.widget.MarkdownTextView;
 import dagger.Lazy;
 import java.text.SimpleDateFormat;
 import javax.inject.Inject;
@@ -63,6 +66,7 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
     private TextView lbmuVolatility;
     private TextView lbmuNumberOfTrades;
     private TextView lbmuPeriod;
+    private MarkdownTextView lbmuFoF;
 
     //<editor-fold desc="Constructors">
     public LeaderboardMarkUserItemView(Context context)
@@ -96,13 +100,20 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         lbmuDisplayName = (TextView) findViewById(R.id.leaderboard_user_item_display_name);
         lbmuProfilePicture = (ImageView) findViewById(R.id.leaderboard_user_item_profile_picture);
         lbmuHeroQuotient = (TextView) findViewById(R.id.leaderboard_user_item_hq);
+        lbmuFoF = (MarkdownTextView) findViewById(R.id.leaderboard_user_item_fof);
+        if (lbmuFoF != null)
+        {
+            DaggerUtils.inject(lbmuFoF);
+            lbmuFoF.setMovementMethod(LinkMovementMethod.getInstance());
+        }
+
         lbmuPositionInfo = (ImageView) findViewById(R.id.leaderboard_user_item_info);
         if (lbmuPositionInfo != null)
         {
             lbmuPositionInfo.setOnClickListener(this);
         }
 
-        // for expanding part
+        // expanding part
         lbmuPl = (TextView) findViewById(R.id.lbmu_pl);
         lbmuPeriod = (TextView) findViewById(R.id.lbmu_period);
         lbmuRoi = (TextView) findViewById(R.id.lbmu_roi);
@@ -166,6 +177,11 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         lbmuPosition.setText("" + (leaderboardItem.getPosition() + 1));
         lbmuDisplayName.setText(dto.displayName);
         lbmuHeroQuotient.setText(dto.getHeroQuotientFormatted());
+        if (lbmuFoF != null)
+        {
+            lbmuFoF.setVisibility(leaderboardItem.isIncludeFoF() && !StringUtils.isNullOrEmptyOrSpaces(dto.friendOf_markupString) ? VISIBLE : GONE);
+            lbmuFoF.setText(dto.friendOf_markupString);
+        }
 
         if (dto.picture != null)
         {

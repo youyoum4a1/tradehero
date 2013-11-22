@@ -28,6 +28,7 @@ public class LeaderboardMarkUserListAdapter extends
         ExpandableLeaderboardUserRankItemWrapper dtoWrapper = (ExpandableLeaderboardUserRankItemWrapper) super.getItem(position);
         dtoWrapper.setPosition(position);
         dtoWrapper.setLeaderboardId(loader.getLeaderboardId());
+        dtoWrapper.setIncludeFoF(loader.isIncludeFoF());
 
         return dtoWrapper;
     }
@@ -62,6 +63,7 @@ public class LeaderboardMarkUserListAdapter extends
     {
         private int position;
         private int leaderboardId;
+        private boolean includeFoF;
 
         public ExpandableLeaderboardUserRankItemWrapper(LeaderboardUserDTO model)
         {
@@ -101,6 +103,16 @@ public class LeaderboardMarkUserListAdapter extends
         public void setLeaderboardId(int leaderboardId)
         {
             this.leaderboardId = leaderboardId;
+        }
+
+        public void setIncludeFoF(boolean includeFoF)
+        {
+            this.includeFoF = includeFoF;
+        }
+
+        public boolean isIncludeFoF()
+        {
+            return includeFoF;
         }
     }
 }

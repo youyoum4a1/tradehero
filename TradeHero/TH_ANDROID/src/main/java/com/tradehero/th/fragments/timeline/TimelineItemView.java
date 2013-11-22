@@ -15,7 +15,6 @@ import com.squareup.picasso.Picasso;
 import com.tradehero.common.graphics.RoundedShapeTransformation;
 import com.tradehero.common.graphics.ScaleKeepRatioTransformation;
 import com.tradehero.common.graphics.WhiteToTransparentTransformation;
-import com.tradehero.common.text.OnElementClickListener;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
@@ -47,7 +46,7 @@ import retrofit.client.Response;
 
 /** Created with IntelliJ IDEA. User: tho Date: 9/9/13 Time: 4:24 PM Copyright (c) TradeHero */
 public class TimelineItemView extends LinearLayout implements
-        DTOView<TimelineItem>, OnElementClickListener, View.OnClickListener
+        DTOView<TimelineItem>, View.OnClickListener
 {
     private static final String TAG = TimelineItemView.class.getName();
     private TextView username;
@@ -108,7 +107,6 @@ public class TimelineItemView extends LinearLayout implements
 
         content = (MarkdownTextView) findViewById(R.id.timeline_item_content);
         content.setMovementMethod(LinkMovementMethod.getInstance());
-        content.setOnElementClickListener(this);
 
         time = (TextView) findViewById(R.id.timeline_time);
 
@@ -200,29 +198,6 @@ public class TimelineItemView extends LinearLayout implements
         }
 
         updateActionButtonsVisibility();
-    }
-
-    @Override public void onClick(View textView, String data, String key, String[] matchStrings)
-    {
-        switch (key)
-        {
-            case "user":
-                int userId = Integer.parseInt(matchStrings[2]);
-                openUserProfile(userId);
-                break;
-            case "security":
-                if (matchStrings.length < 3) break;
-                String exchange = matchStrings[1];
-                String symbol = matchStrings[2];
-                openSecurityProfile(exchange, symbol);
-                break;
-
-            case "link":
-                if (matchStrings.length < 3) break;
-                String link = matchStrings[2];
-
-                break;
-        }
     }
 
     private PopupMenu.OnMenuItemClickListener monitorPopupMenuClickListener = new PopupMenu.OnMenuItemClickListener()

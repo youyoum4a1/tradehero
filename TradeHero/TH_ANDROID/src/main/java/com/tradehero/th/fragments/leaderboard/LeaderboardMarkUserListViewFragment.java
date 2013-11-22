@@ -29,7 +29,6 @@ import org.ocpsoft.prettytime.PrettyTime;
 public class LeaderboardMarkUserListViewFragment extends BaseLeaderboardFragment
         implements SortTypeChangedListener, WithTutorial
 {
-    public static final String TITLE = LeaderboardMarkUserListViewFragment.class.getName() + ".title";
 
     @Inject protected PrettyTime prettyTime;
 
@@ -82,7 +81,6 @@ public class LeaderboardMarkUserListViewFragment extends BaseLeaderboardFragment
         Bundle loaderBundle = new Bundle(getArguments());
         leaderboardMarkUserLoader = (LeaderboardMarkUserLoader) getLoaderManager()
                 .initLoader(LeaderboardMarkUserLoader.UNIQUE_LOADER_ID, loaderBundle, loaderCallback);
-
         setSortTypeChangeListener(this);
         leaderboardMarkUserListAdapter.setLoader(leaderboardMarkUserLoader);
     }
@@ -92,10 +90,17 @@ public class LeaderboardMarkUserListViewFragment extends BaseLeaderboardFragment
         leaderboardMarkUserLoader.setSortType(sortType);
         leaderboardMarkUserLoader.reload();
 
-        // update layoutResourceId
-        // http://grepcode.com/file/repository.grepcode.com/java/ext/com.google.android/android/4.0.3_r1/android/widget/ListView.java#443
-        // this crazy way is the only way I found to clear ListView's recycle (reusing item view)
+        //update layoutResourceId
         leaderboardMarkUserListAdapter.setLayoutResourceId(sortType.getLayoutResourceId());
+        invalidateCachedItemView();
+    }
+
+    /**
+     * http://grepcode.com/file/repository.grepcode.com/java/ext/com.google.android/android/4.0.3_r1/android/widget/ListView.java#443
+     * this crazy way works and is the only way I found to clear ListView's recycle (reusing item view)
+     */
+    protected void invalidateCachedItemView()
+    {
         leaderboardMarkUserListView.setAdapter(leaderboardMarkUserListAdapter);
     }
 
@@ -144,7 +149,8 @@ public class LeaderboardMarkUserListViewFragment extends BaseLeaderboardFragment
         {
             int leaderboardId = bundle.getInt(LeaderboardDTO.LEADERBOARD_ID);
             LeaderboardSortType currentSortType = getCurrentSortType();
-            return new LeaderboardMarkUserLoader(getActivity(), leaderboardId, currentSortType);
+            boolean includeFoF = bundle.getBoolean(LeaderboardDTO.INCLUDE_FOF);
+            return new LeaderboardMarkUserLoader(getActivity(), leaderboardId, currentSortType, includeFoF);
         }
 
         @Override public void onLoadFinished(Loader<List<LeaderboardUserDTO>> loader, List<LeaderboardUserDTO> items)

@@ -1,7 +1,9 @@
 package com.tradehero.th.fragments.leaderboard;
 
+import android.os.Bundle;
 import com.actionbarsherlock.view.MenuItem;
 import com.tradehero.th.R;
+import com.tradehero.th.api.leaderboard.LeaderboardDTO;
 
 /** Created with IntelliJ IDEA. User: tho Date: 11/21/13 Time: 6:26 PM Copyright (c) TradeHero */
 public class FriendLeaderboardMarkUserListViewFragment extends LeaderboardMarkUserListViewFragment
@@ -21,19 +23,24 @@ public class FriendLeaderboardMarkUserListViewFragment extends LeaderboardMarkUs
                 case R.id.friend_leaderboard_menu_show_friends_of_friends:
                     if (!oldIncludeFoF)
                     {
-                        leaderboardMarkUserLoader.setIncludeFoF(true);
-                        leaderboardMarkUserLoader.reload();
+                        setFriendOfFriendFilter(true);
                     }
                     return true;
                 case R.id.friend_leaderboard_menu_show_friends_only:
                     if (oldIncludeFoF)
                     {
-                        leaderboardMarkUserLoader.setIncludeFoF(false);
-                        leaderboardMarkUserLoader.reload();
+                        setFriendOfFriendFilter(false);
                     }
                     return true;
             }
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void setFriendOfFriendFilter(boolean isFoF)
+    {
+        leaderboardMarkUserLoader.setIncludeFoF(isFoF);
+        leaderboardMarkUserLoader.reload();
+        invalidateCachedItemView();
     }
 }
