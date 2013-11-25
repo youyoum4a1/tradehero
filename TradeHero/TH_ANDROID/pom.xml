@@ -7,7 +7,7 @@
   <groupId>com.tradehero.th</groupId>
   <artifactId>TH_Android</artifactId>
   <version>1.0-SNAPSHOT</version>
-  <packaging>apklib</packaging>
+  <packaging>apk</packaging>
   
   <parent>
     <groupId>com.tradehero.th</groupId>
@@ -214,6 +214,8 @@
   </dependencies>
 
   <build>
+	<finalName>${project.artifactId}</finalName>
+	
     <pluginManagement>
       <plugins>
         <plugin>
@@ -243,18 +245,6 @@
           <compilerArguments>
             <Xlint />
           </compilerArguments>
-        </configuration>
-      </plugin>
-
-      <plugin>
-        <groupId>com.jayway.maven.plugins.android.generation2</groupId>
-        <artifactId>android-maven-plugin</artifactId>
-        <version>3.6.0</version>
-        <configuration>
-          <nativeLibrariesDirectory>ignored</nativeLibrariesDirectory>
-          <sdk>
-            <platform>${android.platform}</platform>
-          </sdk>
         </configuration>
       </plugin>
 
@@ -309,7 +299,7 @@
       <plugin>
         <groupId>com.jayway.maven.plugins.android.generation2</groupId>
         <artifactId>android-maven-plugin</artifactId>
-        <version>3.5.0</version>
+        <version>3.7.0</version>
         <configuration>
           <sdk>
             <!-- platform or api level (api level 14 = platform 4.0)-->

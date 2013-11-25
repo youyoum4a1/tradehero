@@ -47,6 +47,11 @@
     <gson.version>2.2.4</gson.version>
     <javawriter.version>2.1.1</javawriter.version>
 	<android-support.version>r7</android-support.version>
+	
+   <keystore.location>${basedir}/../../tradehero_android_release_key.keystore</keystore.location>
+    <keystore.password>password99__**01</keystore.password>
+    <keystore.keypass>password99__**01</keystore.keypass>
+    <keystore.alias>tradehero</keystore.alias>	
   </properties>
 
   <dependencies>
@@ -94,13 +99,7 @@
           <failOnError>false</failOnError>
         </configuration>
       </plugin>
-
-      <plugin>
-        <groupId>org.holoeverywhere</groupId>
-        <artifactId>resbuilder</artifactId>
-        <version>1.5.0</version>
-      </plugin>
-
+	  
       <plugin>
         <groupId>com.google.code.maven-replacer-plugin</groupId>
         <artifactId>maven-replacer-plugin</artifactId>
@@ -131,7 +130,7 @@
       <plugin>
         <groupId>com.jayway.maven.plugins.android.generation2</groupId>
         <artifactId>android-maven-plugin</artifactId>
-        <version>3.6.0</version>
+        <version>3.5.0</version>
         <configuration>
           <sdk>
 			<path>${ANDROID_HOME}</path>
@@ -153,4 +152,66 @@
       </plugin>
     </plugins>
   </build>
+  
+
+	<profiles>
+	  <profile>
+		<id>sign</id>
+		<build>
+		  <plugins>
+			<plugin>
+			  <groupId>org.apache.maven.plugins</groupId>
+			  <artifactId>maven-jarsigner-plugin</artifactId>
+			  <version>1.2</version>
+			  <executions>
+				<execution>
+				  <id>signing</id>
+				  <goals>
+					<goal>sign</goal>
+				  </goals>
+				  <phase>package</phase>
+				  <inherited>true</inherited>
+				  <configuration>
+					<archiveDirectory></archiveDirectory>
+					<includes>
+					  <include>target/*.apk</include>
+					</includes>
+					<keystore>${keystore.location}</keystore>
+					<storepass>${keystore.password}</storepass>
+					<keypass>${keystore.keypass}</keypass>
+					<alias>${keystore.alias}</alias>
+					<arguments>
+					  <argument>-sigalg</argument><argument>MD5withRSA</argument>
+					  <argument>-digestalg</argument><argument>SHA1</argument>
+					</arguments>
+				  </configuration>
+				</execution>
+			  </executions>
+			</plugin>
+			<plugin>
+			  <groupId>com.jayway.maven.plugins.android.generation2</groupId>
+			  <artifactId>maven-android-plugin</artifactId>
+			  <inherited>true</inherited>
+			  <configuration>
+				<sign>
+				  <debug>false</debug>
+				</sign>
+				<zipalign>
+					<verbose>true</verbose>
+				</zipalign>
+			  </configuration>
+			  <executions>
+				<execution>
+					<id>alignApk</id>
+					<phase>package</phase>
+					<goals>
+						<goal>zipalign</goal>
+					</goals>
+				</execution>
+			</executions>
+			</plugin>
+		  </plugins>
+		</build>
+	  </profile>
+	</profiles>
 </project>
