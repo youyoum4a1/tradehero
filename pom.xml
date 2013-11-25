@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.sonatype.oss</groupId>
+    <artifactId>oss-parent</artifactId>
+    <version>7</version>
+  </parent>
+  
+  <groupId>com.tradehero.th</groupId>
+  <artifactId>parent</artifactId>
+  <packaging>pom</packaging>
+  <version>1.0-SNAPSHOT</version>
+
+  <modules>
+    <module>retrofit</module>
+    <module>facebook-android-sdk/facebook</module>
+    <module>prettytime/core</module>
+    <module>viewpagerindicator/library</module>
+    <module>Android-PullToRefresh/library</module>
+    <module>TradeHero/TH_ANDROID</module>
+  </modules>
+  
+  <organization>
+    <name>TradeHero</name>
+    <url>http://tradehero.mobi</url>
+  </organization>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.sourceEncoding>UTF-8</project.reporting.sourceEncoding>
+
+    <!-- Compilation -->
+    <java.version>1.7</java.version>
+
+    <!-- Dependencies -->
+    <android.version>4.1.1.4</android.version>
+    <android.platform>16</android.platform>
+
+    <!-- Test Dependencies -->
+    <junit.version>4.10</junit.version>
+    <fest.version>2.0M10</fest.version>
+    <mockito.version>1.9.5</mockito.version>
+    <gson.version>2.2.4</gson.version>
+    <javawriter.version>2.1.1</javawriter.version>
+	<android-support.version>r7</android-support.version>
+	
+   <keystore.location>${basedir}/../../tradehero_android_release_key.keystore</keystore.location>
+    <keystore.password>password99__**01</keystore.password>
+    <keystore.keypass>password99__**01</keystore.keypass>
+    <keystore.alias>tradehero</keystore.alias>	
+  </properties>
+
+  <dependencies>
+      <dependency>
+        <groupId>com.google.android</groupId>
+        <artifactId>android</artifactId>
+        <version>${android.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.google.android</groupId>
+        <artifactId>support-v4</artifactId>
+        <version>${android-support.version}</version>
+      </dependency>
+  </dependencies>
+
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-invoker-plugin</artifactId>
+          <version>1.7</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>3.1</version>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <version>1.8</version>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>2.9</version>
+        <configuration>
+          <failOnError>false</failOnError>
+        </configuration>
+      </plugin>
+	  
+      <plugin>
+        <groupId>com.google.code.maven-replacer-plugin</groupId>
+        <artifactId>maven-replacer-plugin</artifactId>
+        <version>1.4.0</version>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>${java.version}</source>
+          <target>${java.version}</target>
+          <compilerArgument>-Xlint:all</compilerArgument>
+          <showWarnings>true</showWarnings>
+          <showDeprecation>true</showDeprecation>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-release-plugin</artifactId>
+        <version>2.3.2</version>
+        <configuration>
+          <autoVersionSubmodules>true</autoVersionSubmodules>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>com.jayway.maven.plugins.android.generation2</groupId>
+        <artifactId>android-maven-plugin</artifactId>
+        <version>3.5.0</version>
+        <configuration>
+          <sdk>
+			<path>${ANDROID_HOME}</path>
+            <!-- platform or api level (api level 14 = platform 4.0)-->
+            <platform>14</platform>
+          </sdk>
+          <undeployBeforeDeploy>true</undeployBeforeDeploy>
+        </configuration>
+        <extensions>true</extensions>
+      </plugin>
+	  
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>2.12.4</version>
+        <configuration>
+          <skipTests>true</skipTests>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+  
+
+	<profiles>
+	  <profile>
+		<id>sign</id>
+		<build>
+		  <plugins>
+			<plugin>
+			  <groupId>org.apache.maven.plugins</groupId>
+			  <artifactId>maven-jarsigner-plugin</artifactId>
+			  <version>1.2</version>
+			  <executions>
+				<execution>
+				  <id>signing</id>
+				  <goals>
+					<goal>sign</goal>
+				  </goals>
+				  <phase>package</phase>
+				  <inherited>true</inherited>
+				  <configuration>
+					<archiveDirectory></archiveDirectory>
+					<includes>
+					  <include>target/*.apk</include>
+					</includes>
+					<keystore>${keystore.location}</keystore>
+					<storepass>${keystore.password}</storepass>
+					<keypass>${keystore.keypass}</keypass>
+					<alias>${keystore.alias}</alias>
+					<arguments>
+					  <argument>-sigalg</argument><argument>MD5withRSA</argument>
+					  <argument>-digestalg</argument><argument>SHA1</argument>
+					</arguments>
+				  </configuration>
+				</execution>
+			  </executions>
+			</plugin>
+			<plugin>
+			  <groupId>com.jayway.maven.plugins.android.generation2</groupId>
+			  <artifactId>maven-android-plugin</artifactId>
+			  <inherited>true</inherited>
+			  <configuration>
+				<sign>
+				  <debug>false</debug>
+				</sign>
+				<zipalign>
+					<verbose>true</verbose>
+				</zipalign>
+			  </configuration>
+			  <executions>
+				<execution>
+					<id>alignApk</id>
+					<phase>package</phase>
+					<goals>
+						<goal>zipalign</goal>
+					</goals>
+				</execution>
+			</executions>
+			</plugin>
+		  </plugins>
+		</build>
+	  </profile>
+	</profiles>
+</project>
