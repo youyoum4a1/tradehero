@@ -6,6 +6,7 @@
   <component name="FrameworkDetectionExcludesConfiguration">
     <file type="android" url="file://$PROJECT_DIR$/ActionBarSherlock/actionbarsherlock" />
     <file type="android" url="file://$PROJECT_DIR$/Android-PullToRefresh/library" />
+    <file type="android" url="file://$PROJECT_DIR$/facebook-android-sdk/facebook" />
     <file type="android" url="file://$PROJECT_DIR$/TradeHero/TH_ANDROID" />
     <file type="android" url="file://$PROJECT_DIR$/viewpagerindicator/library" />
   </component>
@@ -24,6 +25,13 @@
         <option value="$PROJECT_DIR$/ActionBarSherlock/actionbarsherlock/pom.xml" />
         <option value="$PROJECT_DIR$/facebook-android-sdk/facebook/pom.xml" />
       </list>
+    </option>
+    <option name="ignoredFiles">
+      <set>
+        <option value="$PROJECT_DIR$/dagger/compiler/pom.xml" />
+        <option value="$PROJECT_DIR$/dagger/core/pom.xml" />
+        <option value="$PROJECT_DIR$/picasso/picasso/pom.xml" />
+      </set>
     </option>
   </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_1_7" assert-keyword="true" jdk-15="true" project-jdk-name="1.7" project-jdk-type="JavaSDK">

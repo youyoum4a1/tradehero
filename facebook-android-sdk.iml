@@ -11,6 +11,7 @@
         <option name="LIBS_FOLDER_RELATIVE_PATH" value="/facebook-android-sdk/facebook/libs" />
         <option name="LIBRARY_PROJECT" value="true" />
         <option name="UPDATE_PROPERTY_FILES" value="false" />
+        <option name="COMPILE_CUSTOM_GENERATED_SOURCES" value="false" />
         <resOverlayFolders>
           <path>/facebook-android-sdk/facebook/res-overlay</path>
         </resOverlayFolders>
@@ -21,8 +22,8 @@
     <output url="file://$MODULE_DIR$/facebook-android-sdk/facebook/target/classes" />
     <output-test url="file://$MODULE_DIR$/facebook-android-sdk/facebook/target/test-classes" />
     <content url="file://$MODULE_DIR$/facebook-android-sdk/facebook">
-      <sourceFolder url="file://$MODULE_DIR$/facebook-android-sdk/facebook/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/facebook-android-sdk/facebook/gen" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/facebook-android-sdk/facebook/src" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/facebook-android-sdk/facebook/target" />
     </content>
     <orderEntry type="jdk" jdkName="Maven Android 4.0 Platform" jdkType="Android SDK" />
@@ -36,6 +37,7 @@
     <orderEntry type="library" scope="PROVIDED" name="Maven: xerces:xmlParserAPIs:2.6.2" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: xpp3:xpp3:1.1.4c" level="project" />
     <orderEntry type="library" name="Maven: org.json:json:20090211" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: com.google.android:annotations:4.1.1.4" level="project" />
     <orderEntry type="library" name="Maven: com.google.android:support-v4:r7" level="project" />
   </component>
 </module>
