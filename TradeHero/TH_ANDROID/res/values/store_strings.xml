@@ -138,4 +138,18 @@
   <string name="google_play_consumed_purchase_message_info">Your "%s" went through ok</string>
   <string name="google_play_consumed_purchase_cancel">Okay</string>
 
+  <string name="google_play_purchase_restored_title">Purchases Restored</string>
+  <string name="google_play_purchase_restored_message">We have restored %1$d purchases of yours.</string>
+  <string name="google_play_purchase_restored_cancel">Okay</string>
+
+  <string name="google_play_send_support_email_restore_fail_partial_title">Purchases Restored</string>
+  <string name="google_play_send_support_email_restore_fail_partial_message">We have restored %1$d purchases of yours, but %2$d could not be restored. \n\nDo you mind reporting the incident to TradeHero?</string>
+  <string name="google_play_send_support_email_restore_fail_partial_ok">Sure</string>
+  <string name="google_play_send_support_email_restore_fail_partial_cancel">Never Mind</string>
+
+  <string name="google_play_send_support_email_restore_fail_title">Purchases Failed To Restored</string>
+  <string name="google_play_send_support_email_restore_fail_message">We could not restore your purchases. \n\nDo you mind reporting the incident to TradeHero?</string>
+  <string name="google_play_send_support_email_restore_fail_ok">Sure</string>
+  <string name="google_play_send_support_email_restore_fail_cancel">Never Mind</string>
+
 </resources>

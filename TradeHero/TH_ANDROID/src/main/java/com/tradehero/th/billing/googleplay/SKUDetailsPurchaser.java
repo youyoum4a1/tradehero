@@ -12,7 +12,7 @@ import javax.inject.Inject;
 import org.json.JSONException;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/7/13 Time: 12:35 PM To change this template use File | Settings | File Templates. */
-public class SKUDetailsPurchaser extends IABPurchaser<IABSKU, THSKUDetails, THIABPurchaseOrder, THIABOrderId, SKUPurchase>
+public class SKUDetailsPurchaser extends IABPurchaser<IABSKU, THSKUDetails, THIABOrderId, THIABPurchaseOrder, SKUPurchase>
 {
     public static final String TAG = SKUDetailsPurchaser.class.getSimpleName();
 

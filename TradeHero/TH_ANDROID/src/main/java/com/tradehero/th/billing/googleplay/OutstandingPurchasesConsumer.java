@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/18/13 Time: 5:27 PM To change this template use File | Settings | File Templates. */
+@Deprecated
 public class OutstandingPurchasesConsumer
 {
     public static final String TAG = OutstandingPurchasesConsumer.class.getSimpleName();

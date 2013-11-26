@@ -21,10 +21,16 @@
     <output url="file://$MODULE_DIR$/TradeHero/TH_ANDROID/target/idea-classes" />
     <output-test url="file://$MODULE_DIR$/TradeHero/TH_ANDROID/target/idea-test-classes" />
     <content url="file://$MODULE_DIR$/TradeHero/TH_ANDROID">
+      <sourceFolder url="file://$MODULE_DIR$/TradeHero/TH_ANDROID/gen" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/TradeHero/TH_ANDROID/src/main/java" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/TradeHero/TH_ANDROID/src/test/java" isTestSource="true" />
-      <sourceFolder url="file://$MODULE_DIR$/TradeHero/TH_ANDROID/gen" isTestSource="false" />
-      <excludeFolder url="file://$MODULE_DIR$/TradeHero/TH_ANDROID/target" />
+      <sourceFolder url="file://$MODULE_DIR$/TradeHero/TH_ANDROID/target/generated-test-sources/test-annotations" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/TradeHero/TH_ANDROID/target/generated-sources/annotations" isTestSource="false" />
+      <excludeFolder url="file://$MODULE_DIR$/TradeHero/TH_ANDROID/target/classes" />
+      <excludeFolder url="file://$MODULE_DIR$/TradeHero/TH_ANDROID/target/generated-sources/combined-assets" />
+      <excludeFolder url="file://$MODULE_DIR$/TradeHero/TH_ANDROID/target/generated-sources/combined-resources" />
+      <excludeFolder url="file://$MODULE_DIR$/TradeHero/TH_ANDROID/target/generated-sources/extracted-dependencies" />
+      <excludeFolder url="file://$MODULE_DIR$/TradeHero/TH_ANDROID/target/test-classes" />
     </content>
     <orderEntry type="jdk" jdkName="Maven Android 4.0 Platform" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />

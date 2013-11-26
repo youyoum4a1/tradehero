@@ -1,38 +1,54 @@
 package com.tradehero.th.activities;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.MenuItem;
+import com.tradehero.common.billing.BillingPurchaser;
+import com.tradehero.common.billing.InventoryFetcher;
+import com.tradehero.common.billing.googleplay.IABPurchaseConsumer;
+import com.tradehero.common.billing.googleplay.IABPurchaseFetcher;
+import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.common.billing.googleplay.SKUPurchase;
+import com.tradehero.common.billing.googleplay.exceptions.IABException;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
+import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.base.Navigator;
-import com.tradehero.th.billing.PurchaseReportedHandler;
+import com.tradehero.th.billing.BasePurchaseReporter;
+import com.tradehero.th.billing.googleplay.IABSKUFetcher;
+import com.tradehero.th.billing.googleplay.PurchaseRestorer;
 import com.tradehero.th.billing.googleplay.THIABActor;
+import com.tradehero.th.billing.googleplay.THIABActorUser;
 import com.tradehero.th.billing.googleplay.THIABLogicHolderExtended;
-import com.tradehero.th.billing.googleplay.THIABPurchaseConsumeHandler;
-import com.tradehero.th.billing.googleplay.THIABPurchaseHandler;
+import com.tradehero.th.billing.googleplay.THIABOrderId;
 import com.tradehero.th.billing.googleplay.THIABPurchaseOrder;
 import com.tradehero.th.billing.googleplay.THSKUDetails;
 import com.tradehero.th.fragments.DashboardNavigator;
+import com.tradehero.th.fragments.billing.PurchaseRestorerAlertUtil;
+import com.tradehero.th.utils.DaggerUtils;
 import java.util.List;
+import javax.inject.Inject;
 
 public class DashboardActivity extends SherlockFragmentActivity
-        implements DashboardNavigatorActivity, THIABActor
+        implements DashboardNavigatorActivity
 {
     public static final String TAG = DashboardActivity.class.getSimpleName();
     public static final String EXTRA_FRAGMENT = DashboardActivity.class.getName() + ".fragment";
 
     private DashboardNavigator navigator;
     private THIABLogicHolderExtended thiabLogicHolderExtended;
+    private PurchaseRestorer purchaseRestorer;
+    private PurchaseRestorer.OnPurchaseRestorerFinishedListener purchaseRestorerFinishedListener;
+    @Inject CurrentUserBaseKeyHolder currentUserBaseKeyHolder;
 
-    public void onCreate(Bundle savedInstanceState)
+    @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-
+        DaggerUtils.inject(this);
         setContentView(R.layout.dashboard_with_bottom_bar);
 
         launchIAB();
@@ -75,7 +91,42 @@ public class DashboardActivity extends SherlockFragmentActivity
     private void launchIAB()
     {
         thiabLogicHolderExtended = new THIABLogicHolderExtended(this);
-        launchSkuInventorySequence(); // Will follow: portfolio list, then fetch purchases
+        purchaseRestorer = new PurchaseRestorer(this,
+                thiabLogicHolderExtended,
+                thiabLogicHolderExtended,
+                thiabLogicHolderExtended,
+                currentUserBaseKeyHolder.getCurrentUserBaseKey());
+        purchaseRestorerFinishedListener = new PurchaseRestorer.OnPurchaseRestorerFinishedListener()
+        {
+            @Override
+            public void onPurchaseRestoreFinished(List<SKUPurchase> consumed, List<SKUPurchase> reportFailed, List<SKUPurchase> consumeFailed)
+            {
+                THLog.d(TAG, "onPurchaseRestoreFinished3");
+                PurchaseRestorerAlertUtil.handlePurchaseRestoreFinished(
+                        DashboardActivity.this,
+                        consumed,
+                        reportFailed,
+                        consumeFailed,
+                        createFailedRestoreClickListener(new Exception())); // TODO have a better exception
+            }
+
+            @Override public void onPurchaseRestoreFinished(List<SKUPurchase> consumed, List<SKUPurchase> consumeFailed)
+            {
+                THLog.d(TAG, "onPurchaseRestoreFinished2");
+            }
+
+            @Override public void onPurchaseRestoreFailed(Throwable throwable)
+            {
+                THLog.d(TAG, "onPurchaseRestoreFailed");
+                // We keep silent on this one as we don't want to bother the user if for instance billing is not available
+                // On the other hand, the settings fragment will inform
+            }
+        };
+        purchaseRestorer.setFinishedListener(purchaseRestorerFinishedListener);
+        purchaseRestorer.init();
+        purchaseRestorer.launchRestorePurchaseSequence();
+
+        // TODO fetch more stuff?
     }
 
     @Override public void onBackPressed()
@@ -125,72 +176,10 @@ public class DashboardActivity extends SherlockFragmentActivity
     }
     //</editor-fold>
 
-    //<editor-fold desc="THIABActor">
-    @Override public void launchSkuInventorySequence()
+    public THIABLogicHolderExtended getThiabLogicHolderExtended()
     {
-        thiabLogicHolderExtended.launchSkuInventorySequence();
+        return thiabLogicHolderExtended;
     }
-
-    @Override public boolean isBillingAvailable()
-    {
-        return thiabLogicHolderExtended.isBillingAvailable();
-    }
-
-    @Override public boolean hadErrorLoadingInventory()
-    {
-        return thiabLogicHolderExtended.hadErrorLoadingInventory();
-    }
-
-    @Override public boolean isInventoryReady()
-    {
-        return thiabLogicHolderExtended.isInventoryReady();
-    }
-
-    @Override public List<THSKUDetails> getDetailsOfDomain(String domain)
-    {
-        return thiabLogicHolderExtended.getDetailsOfDomain(domain);
-    }
-
-    @Override public int registerBillingPurchaseHandler(THIABPurchaseHandler billingPurchaseHandler)
-    {
-        return thiabLogicHolderExtended.registerBillingPurchaseHandler(billingPurchaseHandler);
-    }
-
-    @Override public void launchPurchaseSequence(int requestCode, THIABPurchaseOrder purchaseOrder)
-    {
-        thiabLogicHolderExtended.launchPurchaseSequence(requestCode, purchaseOrder);
-    }
-
-    @Override public int registerPurchaseConsumeHandler(THIABPurchaseConsumeHandler purchaseConsumeHandler)
-    {
-        return thiabLogicHolderExtended.registerPurchaseConsumeHandler(purchaseConsumeHandler);
-    }
-
-    @Override public void launchConsumeSequence(int requestCode, SKUPurchase purchase)
-    {
-        thiabLogicHolderExtended.launchConsumeSequence(requestCode, purchase);
-    }
-
-    @Override public int registerPurchaseReportedHandler(PurchaseReportedHandler purchaseReportedHandler)
-    {
-        return thiabLogicHolderExtended.registerPurchaseReportedHandler(purchaseReportedHandler);
-    }
-
-    @Override public void launchReportSequence(int requestCode, SKUPurchase purchase)
-    {
-        thiabLogicHolderExtended.launchReportSequence(requestCode, purchase);
-    }
-
-    @Override public int launchReportSequenceAsync(SKUPurchase purchase)
-    {
-        return thiabLogicHolderExtended.launchReportSequenceAsync(purchase);
-    }
-
-    @Override public UserProfileDTO launchReportSequenceSync(SKUPurchase purchase)
-    {
-        return thiabLogicHolderExtended.launchReportSequenceSync(purchase);
-    }
-    //</editor-fold>
 
     @Override protected void onActivityResult(int requestCode, int resultCode, Intent data)
     {
@@ -198,5 +187,16 @@ public class DashboardActivity extends SherlockFragmentActivity
 
         // Passing it on just in case it is expecting something
         thiabLogicHolderExtended.onActivityResult(requestCode, resultCode, data);
+    }
+
+    protected DialogInterface.OnClickListener createFailedRestoreClickListener(final Exception exception)
+    {
+        return new DialogInterface.OnClickListener()
+        {
+            @Override public void onClick(DialogInterface dialog, int which)
+            {
+                PurchaseRestorerAlertUtil.sendSupportEmailRestoreFailed(DashboardActivity.this, exception);
+            }
+        };
     }
 }

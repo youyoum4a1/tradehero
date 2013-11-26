@@ -28,7 +28,7 @@ public class THInventoryFetchMilestone extends BaseMilestone implements Dependen
     private final Context context;
     private final IABSKUListType iabskuListType;
     private THIABInventoryFetcher inventoryFetcher;
-    private final InventoryFetcher.InventoryFetchedListener<IABSKU, THSKUDetails, IABException> fetchListener;
+    private final InventoryFetcher.OnInventoryFetchedListener<IABSKU, THSKUDetails, IABException> fetchListener;
     protected IABSKUListRetrievedMilestone dependsOn;
     private final OnCompleteListener dependCompleteListener;
     @Inject Lazy<IABSKUListCache> iabskuListCache;
@@ -42,15 +42,15 @@ public class THInventoryFetchMilestone extends BaseMilestone implements Dependen
         failed = false;
         this.context = context;
         this.iabskuListType = iabskuListType;
-        fetchListener = new InventoryFetcher.InventoryFetchedListener<IABSKU, THSKUDetails, IABException>()
+        fetchListener = new InventoryFetcher.OnInventoryFetchedListener<IABSKU, THSKUDetails, IABException>()
         {
-            @Override public void onInventoryFetchSuccess(List<IABSKU> productIdentifiers, Map<IABSKU, THSKUDetails> inventory)
+            @Override public void onInventoryFetchSuccess(int requestCode, List<IABSKU> productIdentifiers, Map<IABSKU, THSKUDetails> inventory)
             {
                 running = false;
                 notifyCompleteListener();
             }
 
-            @Override public void onInventoryFetchFail(List<IABSKU> productIdentifiers, IABException exception)
+            @Override public void onInventoryFetchFail(int requestCode, List<IABSKU> productIdentifiers, IABException exception)
             {
                 running = false;
                 notifyFailedListener(exception);
@@ -104,7 +104,7 @@ public class THInventoryFetchMilestone extends BaseMilestone implements Dependen
             inventoryFetcher = new THIABInventoryFetcher(context);
             inventoryFetcher.setProductIdentifiers(skus);
             inventoryFetcher.setInventoryFetchedListener(fetchListener);
-            inventoryFetcher.fetchInventory();
+            inventoryFetcher.fetchInventory(0);
         }
     }
 

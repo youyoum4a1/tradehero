@@ -1,5 +1,6 @@
 package com.tradehero.common.milestone;
 
+import com.tradehero.common.utils.THLog;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,20 +11,24 @@ public class BaseMilestoneGroup extends BaseMilestone implements MilestoneGroup
     public static final String TAG = BaseMilestoneGroup.class.getSimpleName();
 
     protected final List<Milestone> milestones;
+    protected boolean failedReported;
     private final OnCompleteListener childCompleteListener;
 
     public BaseMilestoneGroup()
     {
+        super();
         milestones = new ArrayList<>();
         childCompleteListener = new OnCompleteListener()
         {
             @Override public void onComplete(Milestone milestone)
             {
+                THLog.d(TAG, "onComplete");
                 conditionalNotifyCompleteListener();
             }
 
             @Override public void onFailed(Milestone milestone, Throwable throwable)
             {
+                THLog.d(TAG, "onFailed");
                 conditionalNotifyFailedListener(throwable);
             }
         };
@@ -58,6 +63,7 @@ public class BaseMilestoneGroup extends BaseMilestone implements MilestoneGroup
 
     public void launchOwn()
     {
+        failedReported = false;
         for (Milestone milestone : milestones)
         {
             milestone.launch();
@@ -141,5 +147,14 @@ public class BaseMilestoneGroup extends BaseMilestone implements MilestoneGroup
             }
         }
         return total;
+    }
+
+    @Override protected void conditionalNotifyFailedListener(Throwable throwable)
+    {
+        if (!failedReported)
+        {
+            failedReported = true;
+            super.conditionalNotifyFailedListener(throwable);
+        }
     }
 }

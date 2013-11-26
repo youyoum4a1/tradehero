@@ -1,11 +1,8 @@
 package com.tradehero.th.billing;
 
 import com.tradehero.common.billing.googleplay.IABOrderId;
-import com.tradehero.common.billing.googleplay.IABProductDetails;
 import com.tradehero.common.billing.googleplay.IABPurchase;
 import com.tradehero.common.billing.googleplay.IABSKU;
-import com.tradehero.th.api.portfolio.OwnedPortfolioId;
-import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import java.lang.ref.WeakReference;
 
@@ -17,10 +14,11 @@ abstract public class BasePurchaseReporter<
 {
     public static final String TAG = BasePurchaseReporter.class.getSimpleName();
 
+    protected int requestCode;
     protected IABPurchaseType purchase;
     private WeakReference<OnPurchaseReportedListener<IABSKUType, IABOrderIdType, IABPurchaseType>> listener = new WeakReference<>(null);
 
-    abstract public void reportPurchase(final IABPurchaseType purchase);
+    abstract public void reportPurchase(int requestCode, final IABPurchaseType purchase);
     abstract public UserProfileDTO reportPurchaseSync(final IABPurchaseType purchase);
 
     public OnPurchaseReportedListener<IABSKUType, IABOrderIdType, IABPurchaseType> getListener()
@@ -42,7 +40,7 @@ abstract public class BasePurchaseReporter<
         OnPurchaseReportedListener<IABSKUType, IABOrderIdType, IABPurchaseType> listener1 = getListener();
         if (listener1 != null)
         {
-            listener1.onPurchaseReported(this.purchase, updatedUserPortfolio);
+            listener1.onPurchaseReported(requestCode, this.purchase, updatedUserPortfolio);
         }
     }
 
@@ -51,7 +49,7 @@ abstract public class BasePurchaseReporter<
         OnPurchaseReportedListener<IABSKUType, IABOrderIdType, IABPurchaseType> listener1 = getListener();
         if (listener1 != null)
         {
-            listener1.onPurchaseReportFailed(this.purchase, error);
+            listener1.onPurchaseReportFailed(requestCode, this.purchase, error);
         }
     }
 
@@ -60,7 +58,7 @@ abstract public class BasePurchaseReporter<
             IABOrderIdType extends IABOrderId,
             IABPurchaseType extends IABPurchase<IABSKUType, IABOrderIdType>>
     {
-        void onPurchaseReported(IABPurchaseType reportedPurchase, UserProfileDTO updatedUserPortfolio);
-        void onPurchaseReportFailed(IABPurchaseType reportedPurchase, Throwable error);
+        void onPurchaseReported(int requestCode, IABPurchaseType reportedPurchase, UserProfileDTO updatedUserPortfolio);
+        void onPurchaseReportFailed(int requestCode, IABPurchaseType reportedPurchase, Throwable error);
     }
 }

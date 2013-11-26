@@ -76,4 +76,33 @@ public class AlertDialogUtil
         AlertDialog alertDialog = alertDialogBuilder.create();
         alertDialog.show();
     }
+
+    public static void popWithOkCancelButton(final Context context, String title, String description, int okResId, int cancelResId, final DialogInterface.OnClickListener okClickListener)
+    {
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
+        alertDialogBuilder
+                .setTitle(title)
+                .setMessage(description)
+                .setIcon(R.drawable.th_app_logo)
+                .setCancelable(true)
+                .setNegativeButton(cancelResId, new DialogInterface.OnClickListener()
+                {
+                    public void onClick(DialogInterface dialog, int id)
+                    {
+                        dialog.cancel();
+                    }
+                }).setPositiveButton(okResId, new DialogInterface.OnClickListener()
+                {
+                    @Override public void onClick(DialogInterface dialog, int which)
+                    {
+                        if (okClickListener != null)
+                        {
+                            okClickListener.onClick(dialog, which);
+                        }
+                        dialog.cancel();
+                    }
+                });
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.show();
+    }
 }

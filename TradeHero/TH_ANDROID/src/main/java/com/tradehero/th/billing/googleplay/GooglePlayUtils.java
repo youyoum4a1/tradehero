@@ -60,6 +60,19 @@ public class GooglePlayUtils
         return intent;
     }
 
+    public static Intent getSupportPurchaseRestoreEmailIntent(Context context, Exception exception)
+    {
+        String deviceDetails = "\n\nThere appears to have been a problem restoring my purchase with GooglePlay\n\n-----\n" +
+                StringUtils.join("\n", getExceptionStrings(context, exception)) +
+                "\n-----\n";
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("plain/text");
+        intent.putExtra(Intent.EXTRA_EMAIL, new String[] {"support@tradehero.mobi"});
+        intent.putExtra(Intent.EXTRA_SUBJECT, "TradeHero - GooglePlay Support");
+        intent.putExtra(Intent.EXTRA_TEXT, deviceDetails);
+        return intent;
+    }
+
     public static List<String> getExceptionStrings(Context context, Exception exception)
     {
         List<String> reported = new ArrayList<>();

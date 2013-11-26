@@ -9,17 +9,19 @@ public interface InventoryFetcher<
         ProductDetailsType extends ProductDetails<ProductIdentifierType>,
         ExceptionType extends Exception>
 {
-    public List<ProductIdentifierType> getProductIdentifiers();
-    public void setProductIdentifiers(List<ProductIdentifierType> productIdentifiers);
-    public InventoryFetchedListener<ProductIdentifierType, ProductDetailsType, ExceptionType> getInventoryFetchedListener();
-    public void setInventoryFetchedListener(InventoryFetchedListener<ProductIdentifierType, ProductDetailsType, ExceptionType> inventoryFetchedListener);
+    List<ProductIdentifierType> getProductIdentifiers();
+    void setProductIdentifiers(List<ProductIdentifierType> productIdentifiers);
+    OnInventoryFetchedListener<ProductIdentifierType, ProductDetailsType, ExceptionType> getInventoryFetchedListener();
+    void setInventoryFetchedListener(OnInventoryFetchedListener<ProductIdentifierType, ProductDetailsType, ExceptionType> onInventoryFetchedListener);
+    void fetchInventory(int requestCode);
+    int getRequestCode();
 
-    public static interface InventoryFetchedListener<
+    public static interface OnInventoryFetchedListener<
             ProductIdentifierType extends ProductIdentifier,
             ProductDetailsType extends ProductDetails<ProductIdentifierType>,
             ExceptionType extends Exception>
     {
-        void onInventoryFetchSuccess(List<ProductIdentifierType> productIdentifiers, Map<ProductIdentifierType, ProductDetailsType> inventory);
-        void onInventoryFetchFail(List<ProductIdentifierType> productIdentifiers, ExceptionType exception);
+        void onInventoryFetchSuccess(int requestCode, List<ProductIdentifierType> productIdentifiers, Map<ProductIdentifierType, ProductDetailsType> inventory);
+        void onInventoryFetchFail(int requestCode, List<ProductIdentifierType> productIdentifiers, ExceptionType exception);
     }
 }

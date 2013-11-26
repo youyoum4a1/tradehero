@@ -4,6 +4,10 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import com.tradehero.common.billing.BillingPurchaser;
+import com.tradehero.common.billing.InventoryFetcher;
+import com.tradehero.common.billing.googleplay.IABOrderId;
+import com.tradehero.common.billing.googleplay.IABPurchase;
 import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.common.billing.googleplay.IABSKUListType;
 import com.tradehero.common.billing.googleplay.SKUPurchase;
@@ -17,8 +21,8 @@ import com.tradehero.common.billing.googleplay.exceptions.IABVerificationFailedE
 import com.tradehero.common.milestone.Milestone;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THLog;
-import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
+import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.OwnedPortfolioIdList;
 import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
@@ -32,7 +36,6 @@ import com.tradehero.th.billing.googleplay.IABAlertUtils;
 import com.tradehero.th.billing.googleplay.THIABActor;
 import com.tradehero.th.billing.googleplay.THIABActorUser;
 import com.tradehero.th.billing.googleplay.THIABOrderId;
-import com.tradehero.th.billing.googleplay.THIABPurchaseHandler;
 import com.tradehero.th.billing.googleplay.THIABPurchaseOrder;
 import com.tradehero.th.billing.googleplay.THSKUDetails;
 import com.tradehero.th.fragments.base.DashboardFragment;
@@ -41,13 +44,21 @@ import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import dagger.Lazy;
 import java.lang.ref.WeakReference;
+import java.util.List;
+import java.util.Map;
 import javax.inject.Inject;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/11/13 Time: 11:05 AM To change this template use File | Settings | File Templates. */
 abstract public class BasePurchaseManagerFragment extends DashboardFragment
         implements IABAlertUtils.OnDialogSKUDetailsClickListener<THSKUDetails>,
-        THIABActorUser, THIABPurchaseHandler,
-        BasePurchaseReporter.OnPurchaseReportedListener<IABSKU, THIABOrderId, SKUPurchase>
+        THIABActorUser,
+        BasePurchaseReporter.OnPurchaseReportedListener<IABSKU, THIABOrderId, SKUPurchase>,
+        BillingPurchaser.OnPurchaseFinishedListener<
+                IABSKU,
+                THIABPurchaseOrder,
+                THIABOrderId,
+                SKUPurchase,
+                IABException>
 {
     public static final String TAG = BasePurchaseManagerFragment.class.getSimpleName();
 
@@ -68,7 +79,7 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
 
     @Inject Lazy<THSKUDetailCache> skuDetailCache;
     protected WeakReference<THIABActor> billingActor = new WeakReference<>(null);
-    protected PurchaseReporter purchaseReporter = new PurchaseReporter();
+    protected InventoryFetcher.OnInventoryFetchedListener<IABSKU, THSKUDetails, IABException> inventoryFetchedForgetListener;
     protected int requestCode = (int) (Math.random() * Integer.MAX_VALUE);
     protected THIABPurchaseOrder purchaseOrder;
     protected UserBaseKey userBaseKey;
@@ -77,7 +88,7 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
     @Override public void onActivityCreated(Bundle savedInstanceState)
     {
         super.onActivityCreated(savedInstanceState);
-        setBillingActor((THIABActor) getActivity());
+        setBillingActor(((DashboardActivity) getActivity()).getThiabLogicHolderExtended());
     }
 
     @Override public void onResume()
@@ -88,6 +99,8 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
 
     @Override public void onPause()
     {
+        inventoryFetchedForgetListener = null;
+
         if (portfolioIdListFetchTask != null)
         {
             portfolioIdListFetchTask.forgetListener(true);
@@ -280,11 +293,32 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
                 {
                     @Override public void onClick(DialogInterface dialogInterface, int i)
                     {
-                        getBillingActor().launchSkuInventorySequence();
+                        if (inventoryFetchedForgetListener == null)
+                        {
+                            inventoryFetchedForgetListener = createForgetFetchedListener();
+                        }
+                        int requestCode = getBillingActor().registerInventoryFetchedListener(inventoryFetchedForgetListener);
+                        getBillingActor().launchInventoryFetchSequence(requestCode);
                     }
                 });
         AlertDialog alertDialog = alertDialogBuilder.create();
         alertDialog.show();
+    }
+
+    protected InventoryFetcher.OnInventoryFetchedListener<IABSKU, THSKUDetails, IABException> createForgetFetchedListener()
+    {
+        return new InventoryFetcher.OnInventoryFetchedListener<IABSKU, THSKUDetails, IABException>()
+        {
+            @Override public void onInventoryFetchSuccess(int requestCode, List<IABSKU> productIdentifiers, Map<IABSKU, THSKUDetails> inventory)
+            {
+                getBillingActor().forgetRequestCode(requestCode);
+            }
+
+            @Override public void onInventoryFetchFail(int requestCode, List<IABSKU> productIdentifiers, IABException exception)
+            {
+                getBillingActor().forgetRequestCode(requestCode);
+            }
+        };
     }
 
     //<editor-fold desc="Pop SKU list">
@@ -376,25 +410,13 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
     protected void launchPurchaseSequence(THIABActor actor, THIABPurchaseOrder purchaseOrder)
     {
         this.purchaseOrder = purchaseOrder;
-        this.requestCode = actor.registerBillingPurchaseHandler(this);
+        this.requestCode = actor.registerPurchaseFinishedListener(this);
         actor.launchPurchaseSequence(requestCode, purchaseOrder);
     }
 
-    //<editor-fold desc="THIABPurchaseHandler">
-    @Override public void handlePurchaseReceived(int requestCode, SKUPurchase purchase)
-    {
-        if (this.requestCode != requestCode)
-        {
-            THLog.d(TAG, "handlePurchaseReceived. Received requestCode " + requestCode + ", when in fact it expects " + this.requestCode);
-        }
-        else
-        {
-            THLog.d(TAG, "handlePurchaseReceived. Received requestCode " + requestCode + ", purchase " + purchase);
-            handlePurchaseSuccess(requestCode, purchase);
-        }
-    }
+    //<editor-fold desc="BillingPurchaser.OnPurchaseFinishedListener">
 
-    @Override public void handlePurchaseException(int requestCode, IABException exception)
+    @Override public void onPurchaseFailed(int requestCode, THIABPurchaseOrder purchaseOrder, IABException exception)
     {
         if (this.requestCode != requestCode)
         {
@@ -429,6 +451,19 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
             IABAlertUtils.popUnknownError(getActivity());
         }
     }
+
+    @Override public void onPurchaseFinished(int requestCode, THIABPurchaseOrder purchaseOrder, SKUPurchase purchase)
+    {
+        if (this.requestCode != requestCode)
+        {
+            THLog.d(TAG, "handlePurchaseReceived. Received requestCode " + requestCode + ", when in fact it expects " + this.requestCode);
+        }
+        else
+        {
+            THLog.d(TAG, "handlePurchaseReceived. Received requestCode " + requestCode + ", purchase " + purchase);
+            handlePurchaseSuccess(requestCode, purchase);
+        }
+    }
     //</editor-fold>
 
     protected void handlePurchaseSuccess(int requestCode, SKUPurchase purchase)
@@ -458,13 +493,12 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
                 Application.getResourceString(R.string.store_billing_report_api_launching_window_title),
                 Application.getResourceString(R.string.store_billing_report_api_launching_window_message),
                 true);
-        getBillingActor().launchReportSequenceAsync(purchase);
-        purchaseReporter.setListener(this);
-        purchaseReporter.reportPurchase(purchase);
+        int requestCode = getBillingActor().registerPurchaseReportedHandler(this);
+        getBillingActor().launchReportSequence(requestCode, purchase);
     }
 
     //<editor-fold desc="BasePurchaseReporter.OnPurchaseReportedListener">
-    @Override public void onPurchaseReported(SKUPurchase reportedPurchase, UserProfileDTO updatedUserPortfolio)
+    @Override public void onPurchaseReported(int requestCode, SKUPurchase reportedPurchase, UserProfileDTO updatedUserPortfolio)
     {
         if (!reportedPurchase.getProductIdentifier().equals(purchase.getProductIdentifier()))
         {
@@ -508,7 +542,7 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
 
 
 
-    @Override public void onPurchaseReportFailed(SKUPurchase reportedPurchase, Throwable error)
+    @Override public void onPurchaseReportFailed(int requestCode, SKUPurchase reportedPurchase, Throwable error)
     {
         THLog.e(TAG, "Failed to report to server", error);
         if (progressDialog != null)

@@ -12,7 +12,6 @@ import com.tradehero.th.billing.googleplay.exception.UnhandledSKUDomainException
 import com.tradehero.th.network.service.AlertPlanService;
 import com.tradehero.th.network.service.PortfolioService;
 import com.tradehero.th.network.service.UserService;
-import com.tradehero.th.persistence.billing.ProductDetailCache;
 import com.tradehero.th.persistence.billing.googleplay.THSKUDetailCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
 import com.tradehero.th.utils.DaggerUtils;
@@ -54,12 +53,14 @@ public class PurchaseReporter extends BasePurchaseReporter<
         return portfolioId;
     }
 
-    @Override public void reportPurchase(SKUPurchase purchase)
+    @Override public void reportPurchase(int requestCode, SKUPurchase purchase)
     {
+        this.requestCode = requestCode;
         this.purchase = purchase;
         OwnedPortfolioId portfolioId = getApplicableOwnedPortfolioId(purchase);
         createCallbackIfMissing();
 
+        // TODO do something when info is not available
         switch (skuDetailCache.get().get(purchase.getProductIdentifier()).domain)
         {
             case THSKUDetails.DOMAIN_RESET_PORTFOLIO:

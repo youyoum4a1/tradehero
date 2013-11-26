@@ -31,8 +31,9 @@ abstract public class IABInventoryFetcher<
 
     protected HashMap<IABSKUType, IABProductDetailsType> inventory;
     private List<IABSKUType> iabSKUs;
+    private int requestCode;
 
-    private WeakReference<InventoryFetchedListener<IABSKUType, IABProductDetailsType, IABException>> inventoryListener = new WeakReference<>(null);
+    private WeakReference<OnInventoryFetchedListener<IABSKUType, IABProductDetailsType, IABException>> inventoryListener = new WeakReference<>(null);
     @Inject protected Lazy<IABExceptionFactory> iabExceptionFactory;
 
     public IABInventoryFetcher(Context ctx)
@@ -52,10 +53,16 @@ abstract public class IABInventoryFetcher<
         this.iabSKUs = productIdentifiers;
     }
 
+    @Override public int getRequestCode()
+    {
+        return requestCode;
+    }
+
     abstract protected IABProductDetailsType createSKUDetails(String itemType, String json) throws JSONException;
 
-    public void fetchInventory()
+    public void fetchInventory(int requestCode)
     {
+        this.requestCode = requestCode;
         this.startConnectionSetup();
     }
 
@@ -118,19 +125,19 @@ abstract public class IABInventoryFetcher<
 
     private void handleInventoryFetchFailure(IABException e)
     {
-        InventoryFetchedListener<IABSKUType, IABProductDetailsType, IABException> listenerCopy = getInventoryFetchedListener();
+        OnInventoryFetchedListener<IABSKUType, IABProductDetailsType, IABException> listenerCopy = getInventoryFetchedListener();
         if (listenerCopy != null)
         {
-            listenerCopy.onInventoryFetchFail(iabSKUs, e);
+            listenerCopy.onInventoryFetchFail(requestCode, iabSKUs, e);
         }
     }
 
     protected void notifyListenerFetched()
     {
-        InventoryFetchedListener<IABSKUType, IABProductDetailsType, IABException> listenerCopy = getInventoryFetchedListener();
+        OnInventoryFetchedListener<IABSKUType, IABProductDetailsType, IABException> listenerCopy = getInventoryFetchedListener();
         if (listenerCopy != null)
         {
-            listenerCopy.onInventoryFetchSuccess(iabSKUs, this.getInventory());
+            listenerCopy.onInventoryFetchSuccess(requestCode, iabSKUs, this.getInventory());
         }
     }
 
@@ -201,13 +208,13 @@ abstract public class IABInventoryFetcher<
         return Collections.unmodifiableMap(inventory);
     }
 
-    @Override public InventoryFetchedListener<IABSKUType, IABProductDetailsType, IABException> getInventoryFetchedListener()
+    @Override public OnInventoryFetchedListener<IABSKUType, IABProductDetailsType, IABException> getInventoryFetchedListener()
     {
         return inventoryListener.get();
     }
 
-    @Override public void setInventoryFetchedListener(InventoryFetchedListener<IABSKUType, IABProductDetailsType, IABException> inventoryFetchedListener)
+    @Override public void setInventoryFetchedListener(OnInventoryFetchedListener<IABSKUType, IABProductDetailsType, IABException> onInventoryFetchedListener)
     {
-        this.inventoryListener = new WeakReference<>(inventoryFetchedListener);
+        this.inventoryListener = new WeakReference<>(onInventoryFetchedListener);
     }
 }

@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/5/13 Time: 4:58 PM To change this template use File | Settings | File Templates. */
-public class SKUFetcher
+public class SKUFetcher extends BaseIABSKUFetcher<IABSKU>
 {
     public static final String TAG = SKUFetcher.class.getSimpleName();
 
@@ -25,14 +25,9 @@ public class SKUFetcher
 
     public static final String RESET_PORTFOLIO_0 = "com.myhero.th.resetportfolio.0";
 
-    private Map<String, List<IABSKU>> availableSkus;
-    private WeakReference<SKUFetcherListener> listener = new WeakReference<>(null);
-
     public SKUFetcher()
     {
         super();
-        availableSkus = new HashMap<>();
-
         // TODO hard-coded while there is nothing coming from the server.
         List<IABSKU> inAppIABSKUs = new ArrayList<>();
         inAppIABSKUs.add(new IABSKU(EXTRA_CASH_T0_KEY));
@@ -48,17 +43,13 @@ public class SKUFetcher
         availableSkus.put(Constants.ITEM_TYPE_SUBS, new ArrayList<IABSKU>());
     }
 
-    public void dispose()
+    @Override public void fetchSkus(int requestCode)
     {
-        listener = null;
-    }
-
-    public void fetchSkus()
-    {
+        this.requestCode = requestCode;
         notifyListenerFetched();
     }
 
-    public Map<String, List<IABSKU>> fetchSkusSync()
+    @Override public Map<String, List<IABSKU>> fetchSkusSync()
     {
         return Collections.unmodifiableMap(availableSkus);
     }
@@ -67,54 +58,5 @@ public class SKUFetcher
     {
         // TODO find out whether the lists are modifiable
         return Collections.unmodifiableMap(availableSkus);
-    }
-
-    public List<IABSKU> getAvailableInAppSkus()
-    {
-        return getAvailableSkusOfType(Constants.ITEM_TYPE_INAPP);
-    }
-
-    public List<IABSKU> getAvailableSubscriptionSkus()
-    {
-        return getAvailableSkusOfType(Constants.ITEM_TYPE_SUBS);
-    }
-
-    private List<IABSKU> getAvailableSkusOfType(String itemType)
-    {
-        return Collections.unmodifiableList(availableSkus.get(itemType));
-    }
-
-    public SKUFetcherListener getListener()
-    {
-        return listener.get();
-    }
-
-    public void setListener(SKUFetcherListener listener)
-    {
-        this.listener = new WeakReference<>(listener);
-    }
-
-    protected void notifyListenerFetched()
-    {
-        SKUFetcherListener listenerCopy = getListener();
-        if (listenerCopy != null)
-        {
-            listenerCopy.onFetchedSKUs(this, Collections.unmodifiableMap(availableSkus));
-        }
-    }
-
-    protected void notifyListenerFetchFailed(Exception exception)
-    {
-        SKUFetcherListener listenerCopy = getListener();
-        if (listenerCopy != null)
-        {
-            listenerCopy.onFetchSKUsFailed(this, exception);
-        }
-    }
-
-    public static interface SKUFetcherListener
-    {
-        void onFetchedSKUs(SKUFetcher fetcher, Map<String, List<IABSKU>> availableSkus);
-        void onFetchSKUsFailed(SKUFetcher fetcher, Exception exception); // TODO decide if we create specific Exception
     }
 }

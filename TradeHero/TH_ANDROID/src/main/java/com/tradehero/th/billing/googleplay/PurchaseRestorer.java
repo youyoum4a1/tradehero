@@ -1,0 +1,170 @@
+package com.tradehero.th.billing.googleplay;
+
+import android.app.Activity;
+import com.tradehero.common.billing.googleplay.IABPurchaseConsumer;
+import com.tradehero.common.billing.googleplay.IABPurchaseRestorer;
+import com.tradehero.common.billing.googleplay.IABSKU;
+import com.tradehero.common.billing.googleplay.SKUPurchase;
+import com.tradehero.common.billing.googleplay.exceptions.IABException;
+import com.tradehero.common.milestone.Milestone;
+import com.tradehero.common.utils.THLog;
+import com.tradehero.th.api.users.UserBaseKey;
+import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.billing.BasePurchaseReporter;
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
+/** Created with IntelliJ IDEA. User: xavier Date: 11/25/13 Time: 5:47 PM To change this template use File | Settings | File Templates. */
+public class PurchaseRestorer extends IABPurchaseRestorer<
+        IABSKU,
+        THIABOrderId,
+        SKUPurchase,
+        THIABActorPurchaseConsumer,
+        IABPurchaseConsumer.OnIABConsumptionFinishedListener<
+                IABSKU,
+                THIABOrderId,
+                SKUPurchase,
+                IABException>>
+{
+    public static final String TAG = PurchaseRestorer.class.getSimpleName();
+
+    private final WeakReference<Activity> activity;
+    private WeakReference<THIABActorPurchaseFetcher> actorPurchaseFetcher = new WeakReference<>(null);
+    private WeakReference<THIABActorPurchaseReporter> actorPurchaseReporter = new WeakReference<>(null);
+    protected final UserBaseKey userBaseKey;
+    private WeakReference<OnPurchaseRestorerFinishedListener> finishedListener = new WeakReference<>(null);
+    protected int requestCodeReporter;
+    private BasePurchaseReporter.OnPurchaseReportedListener<IABSKU, THIABOrderId, SKUPurchase> purchaseReportedListener;
+    private final List<SKUPurchase> failedReports;
+
+    public PurchaseRestorer(
+            Activity activity,
+            THIABActorPurchaseFetcher actorPurchaseFetcher,
+            THIABActorPurchaseConsumer billingActorConsumer,
+            THIABActorPurchaseReporter actorPurchaseReporter,
+            UserBaseKey userBaseKey)
+    {
+        super(billingActorConsumer);
+        this.activity = new WeakReference<>(activity);
+        this.actorPurchaseFetcher = new WeakReference<>(actorPurchaseFetcher);
+        this.actorPurchaseReporter = new WeakReference<>(actorPurchaseReporter);
+        this.userBaseKey = userBaseKey;
+        failedReports = new ArrayList<>();
+    }
+
+    @Override public void init()
+    {
+        super.init();
+        purchaseReportedListener = new BasePurchaseReporter.OnPurchaseReportedListener<IABSKU, THIABOrderId, SKUPurchase>()
+        {
+            @Override public void onPurchaseReportFailed(int requestCode, SKUPurchase reportedPurchase, Throwable error)
+            {
+                THLog.d(TAG, "onPurchaseReportFailed");
+                haveBillingActorForget(requestCode);
+                failedReports.add(reportedPurchase);
+                continueSequenceOrNotify();
+            }
+
+            @Override public void onPurchaseReported(int requestCode, SKUPurchase reportedPurchase, UserProfileDTO updatedUserPortfolio)
+            {
+                THLog.d(TAG, "onPurchaseReported");
+                haveBillingActorForget(requestCode);
+                launchOneConsumeSequence(reportedPurchase);
+            }
+        };
+    }
+
+    @Override protected Milestone createMilestone()
+    {
+        return new PurchaseRestorerRequiredMilestone(activity.get(), actorPurchaseFetcher.get(), userBaseKey);
+    }
+
+    @Override protected IABPurchaseConsumer.OnIABConsumptionFinishedListener<IABSKU, THIABOrderId, SKUPurchase, IABException> createPurchaseConsumerListener()
+    {
+        return new IABPurchaseConsumer.OnIABConsumptionFinishedListener<IABSKU, THIABOrderId, SKUPurchase, IABException>()
+        {
+            @Override public void onPurchaseConsumed(int requestCode, SKUPurchase purchase)
+            {
+                THLog.d(TAG, "onPurchaseConsumed");
+                handlePurchaseConsumed(requestCode, purchase);
+            }
+
+            @Override public void onPurchaseConsumeFailed(int requestCode, SKUPurchase purchase, IABException exception)
+            {
+                THLog.d(TAG, "onPurchaseConsumeFailed");
+                handlePurchaseConsumeFailed(requestCode, purchase, exception);
+            }
+        };
+    }
+
+    @Override protected void handlePurchaseConsumed(int requestCode, SKUPurchase purchase)
+    {
+        super.handlePurchaseConsumed(requestCode, purchase);
+        continueSequenceOrNotify();
+    }
+
+    @Override protected void handlePurchaseConsumeFailed(int requestCode, SKUPurchase purchase, IABException exception)
+    {
+        super.handlePurchaseConsumeFailed(requestCode, purchase, exception);
+        continueSequenceOrNotify();
+    }
+
+    public void onDestroy()
+    {
+        failedReports.clear();
+        super.onDestroy();
+    }
+
+    protected void notifyFinishedListener()
+    {
+        super.notifyFinishedListener();
+        OnIABPurchaseRestorerFinishedListener<IABSKU, THIABOrderId, SKUPurchase> finishedListener = getFinishedListener();
+        if (finishedListener instanceof OnPurchaseRestorerFinishedListener)
+        {
+            ((OnPurchaseRestorerFinishedListener) finishedListener).onPurchaseRestoreFinished(okPurchases, failedReports, failedConsumes);
+        }
+    }
+
+    protected void launchWholeSequence()
+    {
+        remainingPurchasesToWorkOn = new ArrayList<> (((PurchaseRestorerRequiredMilestone) milestone).getFetchedPurchases().values());
+        continueSequenceOrNotify();
+    }
+
+    protected void continueSequenceOrNotify()
+    {
+        if (remainingPurchasesToWorkOn.size() > 0)
+        {
+            launchOneReportSequence();
+        }
+        else
+        {
+            notifyFinishedListener();
+        }
+    }
+
+    protected void launchOneReportSequence()
+    {
+        SKUPurchase purchase = remainingPurchasesToWorkOn.get(0);
+        remainingPurchasesToWorkOn.remove(purchase);
+        THIABActorPurchaseReporter actorReporter = actorPurchaseReporter.get();
+        if (actorReporter != null)
+        {
+            requestCodeReporter = actorReporter.registerPurchaseReportedHandler(purchaseReportedListener);
+            actorReporter.launchReportSequence(requestCodeReporter, purchase);
+        }
+        else
+        {
+            THLog.w(TAG, "launchOneReportSequence: BillingActor just became null");
+            failedReports.add(purchase);
+            continueSequenceOrNotify();
+        }
+    }
+
+    public static interface OnPurchaseRestorerFinishedListener extends OnIABPurchaseRestorerFinishedListener<IABSKU, THIABOrderId, SKUPurchase>
+    {
+        void onPurchaseRestoreFinished(List<SKUPurchase> consumed, List<SKUPurchase> reportFailed, List<SKUPurchase> consumeFailed);
+    }
+}

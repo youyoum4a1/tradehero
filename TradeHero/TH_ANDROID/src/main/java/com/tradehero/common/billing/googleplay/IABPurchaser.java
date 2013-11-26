@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.IntentSender;
 import android.os.Bundle;
 import android.os.RemoteException;
+import com.tradehero.common.billing.BillingPurchaser;
 import com.tradehero.common.billing.googleplay.exceptions.IABBadResponseException;
 import com.tradehero.common.billing.googleplay.exceptions.IABException;
 import com.tradehero.common.billing.googleplay.exceptions.IABRemoteException;
@@ -19,19 +20,25 @@ import org.json.JSONException;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/7/13 Time: 11:05 AM To change this template use File | Settings | File Templates. */
 abstract public class IABPurchaser<
-                    IABSKUType extends IABSKU,
-                    IABProductDetailsType extends IABProductDetails<IABSKUType>,
-                    IABPurchaseOrderType extends IABPurchaseOrder<IABSKUType>,
-                    IABOrderIdType extends IABOrderId,
-                    IABPurchaseType extends IABPurchase<IABSKUType, IABOrderIdType>>
+        IABSKUType extends IABSKU,
+        IABProductDetailsType extends IABProductDetails<IABSKUType>,
+        IABOrderIdType extends IABOrderId,
+        IABPurchaseOrderType extends IABPurchaseOrder<IABSKUType>,
+        IABPurchaseType extends IABPurchase<IABSKUType, IABOrderIdType>>
         extends IABServiceConnector
+    implements BillingPurchaser<
+        IABSKUType,
+        IABOrderIdType,
+        IABPurchaseOrderType,
+        IABPurchaseType,
+        IABException>
 {
     public static final String TAG = IABPurchaser.class.getSimpleName();
 
     private boolean purchasing = false;
     private IABPurchaseOrderType purchaseOrder;
     private int activityRequestCode;
-    private WeakReference<OnIABPurchaseFinishedListener<IABSKUType, IABOrderIdType, IABPurchaseType, IABException>> purchaseFinishedListener = new WeakReference<>(null);
+    private WeakReference<OnPurchaseFinishedListener<IABSKUType, IABPurchaseOrderType, IABOrderIdType, IABPurchaseType, IABException>> purchaseFinishedListener = new WeakReference<>(null);
 
     public IABPurchaser(Activity activity)
     {
@@ -44,6 +51,11 @@ abstract public class IABPurchaser<
     protected Activity getActivity()
     {
         return (Activity) context;
+    }
+
+    @Override public int getRequestCode()
+    {
+        return activityRequestCode;
     }
 
     public boolean isPurchasing()
@@ -59,18 +71,18 @@ abstract public class IABPurchaser<
         }
     }
 
-    public OnIABPurchaseFinishedListener<IABSKUType, IABOrderIdType, IABPurchaseType, IABException> getPurchaseFinishedListener()
+    @Override public OnPurchaseFinishedListener<IABSKUType, IABPurchaseOrderType, IABOrderIdType, IABPurchaseType, IABException> getPurchaseFinishedListener()
     {
         return purchaseFinishedListener.get();
     }
 
-    public void setPurchaseFinishedListener(OnIABPurchaseFinishedListener<IABSKUType, IABOrderIdType, IABPurchaseType, IABException> purchaseFinishedListener)
+    @Override public void setPurchaseFinishedListener(OnPurchaseFinishedListener<IABSKUType, IABPurchaseOrderType, IABOrderIdType, IABPurchaseType, IABException> purchaseFinishedListener)
     {
         THLog.d(TAG, "setPurchaseFinishedListener " + purchaseFinishedListener.getClass().getSimpleName());
         this.purchaseFinishedListener = new WeakReference<>(purchaseFinishedListener);
     }
 
-    public void purchase(IABPurchaseOrderType purchaseOrder, int activityRequestCode)
+    @Override public void purchase(int activityRequestCode, IABPurchaseOrderType purchaseOrder)
     {
         checkNotPurchasing();
         if (purchaseOrder == null)
@@ -113,10 +125,10 @@ abstract public class IABPurchaser<
 
     private void notifyListenerPurchaseFailed(IABException exception)
     {
-        OnIABPurchaseFinishedListener listener = getPurchaseFinishedListener();
+        OnPurchaseFinishedListener listener = getPurchaseFinishedListener();
         if (listener != null)
         {
-            listener.onIABPurchaseFailed(this, exception);
+            listener.onPurchaseFailed(activityRequestCode, purchaseOrder, exception);
         }
     }
 
@@ -134,10 +146,10 @@ abstract public class IABPurchaser<
 
     private void notifyListenerPurchaseFinished(IABPurchaseType purchase)
     {
-        OnIABPurchaseFinishedListener listener = getPurchaseFinishedListener();
+        OnPurchaseFinishedListener listener = getPurchaseFinishedListener();
         if (listener != null)
         {
-            listener.onIABPurchaseFinished(this, purchase);
+            listener.onPurchaseFinished(activityRequestCode, purchaseOrder, purchase);
         }
     }
 
@@ -293,28 +305,5 @@ abstract public class IABPurchaser<
         }
 
         return true;
-    }
-
-    /**
-     * Callback that notifies when a purchase is finished.
-     *  Created with IntelliJ IDEA. User: xavier Date: 11/7/13 Time: 11:00 AM To change this template use File | Settings | File Templates.
-     *  */
-    public static interface OnIABPurchaseFinishedListener<
-                                        IABSKUType extends IABSKU,
-                                        IABOrderIdType extends IABOrderId,
-                                        IABPurchaseType extends IABPurchase<IABSKUType, IABOrderIdType>,
-                                        IABExceptionType extends IABException>
-    {
-        /**
-         * Called to notify that an in-app purchase finished. If the purchase was successful,
-         * then the sku parameter specifies which item was purchased. If the purchase failed,
-         * the sku and extraData parameters may or may not be null, depending on how far the purchase
-         * process went.
-         *
-         * @param info The purchase information (null if purchase failed)
-         */
-        void onIABPurchaseFinished(IABPurchaser purchaser, IABPurchaseType info);
-
-        void onIABPurchaseFailed(IABPurchaser purchaser, IABExceptionType exception);
     }
 }

@@ -1,34 +1,67 @@
 package com.tradehero.common.billing.googleplay;
 
 import com.tradehero.common.billing.BillingActor;
-import com.tradehero.common.billing.ProductDetails;
+import com.tradehero.common.billing.BillingPurchaser;
+import com.tradehero.common.billing.InventoryFetcher;
 import com.tradehero.common.billing.googleplay.exceptions.IABException;
+import com.tradehero.th.billing.BasePurchaseReporter;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/8/13 Time: 11:06 AM To change this template use File | Settings | File Templates. */
 public interface IABActor<
-                        IABSKUType extends IABSKU,
-                        IABPurchaseOrderType extends IABPurchaseOrder<IABSKUType>,
-                        IABOrderIdType extends IABOrderId,
-                        IABPurchaseType extends IABPurchase<IABSKUType, IABOrderIdType>,
-                        IABPurchaseHandlerType extends IABPurchaseHandler<
-                                                            IABSKUType,
-                                                            IABOrderIdType,
-                                                            IABPurchaseType,
-                                                            IABExceptionType>,
-                        IABPurchaseConsumeHandlerType extends IABPurchaseConsumeHandler<
-                                                            IABSKUType,
-                                                            IABOrderIdType,
-                                                            IABPurchaseType,
-                                                            IABExceptionType>,
-                        IABExceptionType extends IABException>
-    extends BillingActor<
-                        IABSKUType,
-                        IABPurchaseOrderType,
-                        IABOrderIdType,
-                        IABPurchaseType,
-                        IABPurchaseHandlerType,
-                        IABExceptionType>
+        IABSKUType extends IABSKU,
+        IABProductDetailsType extends IABProductDetails<IABSKUType>,
+        InventoryFetchedListenerType extends InventoryFetcher.OnInventoryFetchedListener<IABSKUType, IABProductDetailsType, IABExceptionType>,
+        IABPurchaseOrderType extends IABPurchaseOrder<IABSKUType>,
+        IABOrderIdType extends IABOrderId,
+        IABPurchaseType extends IABPurchase<IABSKUType, IABOrderIdType>,
+        IABPurchaseFetchedListenerType extends IABPurchaseFetcher.OnPurchaseFetchedListener<
+                IABSKUType,
+                IABOrderIdType,
+                IABPurchaseType>,
+        IABPurchaseFinishedListenerType extends BillingPurchaser.OnPurchaseFinishedListener<
+                IABSKUType,
+                IABPurchaseOrderType,
+                IABOrderIdType,
+                IABPurchaseType,
+                IABExceptionType>,
+        IABConsumeFinishedListenerType extends IABPurchaseConsumer.OnIABConsumptionFinishedListener<
+                IABSKUType,
+                IABOrderIdType,
+                IABPurchaseType,
+                IABExceptionType>,
+        IABExceptionType extends IABException>
+    extends
+        BillingActor<
+                IABSKUType,
+                IABProductDetailsType,
+                InventoryFetchedListenerType,
+                IABPurchaseOrderType,
+                IABOrderIdType,
+                IABPurchaseType,
+                IABPurchaseFinishedListenerType,
+                IABExceptionType>,
+        IABActorInventoryFetcher< // This one is redundant but serves as a highlight to the reader
+                IABSKUType,
+                IABProductDetailsType,
+                InventoryFetchedListenerType,
+                IABExceptionType>,
+        IABActorPurchaser< // This one is redundant but serves as a highlight to the reader
+                IABSKUType,
+                IABPurchaseOrderType,
+                IABOrderIdType,
+                IABPurchaseType,
+                IABPurchaseFinishedListenerType,
+                IABExceptionType>,
+        IABActorPurchaseFetcher<
+                IABSKUType,
+                IABOrderIdType,
+                IABPurchaseType,
+                IABPurchaseFetchedListenerType>,
+        IABActorPurchaseConsumer<
+                IABSKUType,
+                IABOrderIdType,
+                IABPurchaseType,
+                IABConsumeFinishedListenerType,
+                IABExceptionType>
 {
-    int registerPurchaseConsumeHandler(IABPurchaseConsumeHandlerType purchaseConsumeHandler);
-    void launchConsumeSequence(int requestCode, IABPurchaseType purchase);
 }

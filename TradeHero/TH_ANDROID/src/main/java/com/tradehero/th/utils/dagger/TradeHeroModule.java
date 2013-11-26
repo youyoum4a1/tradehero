@@ -11,19 +11,22 @@ import com.tradehero.common.cache.LruMemFileCache;
 import com.tradehero.common.persistence.CacheHelper;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.AuthenticationActivity;
+import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.form.AbstractUserAvailabilityRequester;
 import com.tradehero.th.api.portfolio.DisplayablePortfolioDTO;
-import com.tradehero.th.billing.PurchaseReporter;
 import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
 import com.tradehero.th.base.THUser;
+import com.tradehero.th.billing.PurchaseReporter;
+import com.tradehero.th.billing.googleplay.PurchaseRestorerRequiredMilestone;
 import com.tradehero.th.billing.googleplay.SKUDetailsPurchaser;
+import com.tradehero.th.billing.googleplay.THIABInventoryFetcher;
 import com.tradehero.th.billing.googleplay.THIABLogicHolderExtended;
 import com.tradehero.th.billing.googleplay.THIABPurchaseConsumer;
 import com.tradehero.th.billing.googleplay.THInventoryFetchMilestone;
-import com.tradehero.th.billing.googleplay.THIABInventoryFetcher;
 import com.tradehero.th.fragments.WebViewFragment;
 import com.tradehero.th.fragments.authentication.EmailSignInFragment;
 import com.tradehero.th.fragments.billing.StoreScreenFragment;
+import com.tradehero.th.fragments.billing.management.FollowerListItemView;
 import com.tradehero.th.fragments.billing.management.FollowerManagerFragment;
 import com.tradehero.th.fragments.billing.management.FollowerPayoutManagerFragment;
 import com.tradehero.th.fragments.billing.management.HeroManagerFragment;
@@ -37,9 +40,22 @@ import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserListView;
 import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserListViewFragment;
 import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserLoader;
 import com.tradehero.th.fragments.portfolio.PortfolioListFragment;
+import com.tradehero.th.fragments.portfolio.PortfolioListItemView;
 import com.tradehero.th.fragments.portfolio.PushablePortfolioListFragment;
+import com.tradehero.th.fragments.portfolio.header.CurrentUserPortfolioHeaderView;
+import com.tradehero.th.fragments.portfolio.header.OtherUserPortfolioHeaderView;
 import com.tradehero.th.fragments.position.LeaderboardPositionListFragment;
+import com.tradehero.th.fragments.position.LockedPositionItem;
+import com.tradehero.th.fragments.position.PositionClosedView;
+import com.tradehero.th.fragments.position.PositionInPeriodClosedView;
+import com.tradehero.th.fragments.position.PositionInPeriodOpenView;
 import com.tradehero.th.fragments.position.PositionListFragment;
+import com.tradehero.th.fragments.position.PositionOpenView;
+import com.tradehero.th.fragments.position.partial.PositionPartialBottomClosedView;
+import com.tradehero.th.fragments.position.partial.PositionPartialBottomInPeriodClosedView;
+import com.tradehero.th.fragments.position.partial.PositionPartialBottomInPeriodOpenView;
+import com.tradehero.th.fragments.position.partial.PositionPartialBottomOpenView;
+import com.tradehero.th.fragments.position.partial.PositionPartialTopView;
 import com.tradehero.th.fragments.security.ChartFragment;
 import com.tradehero.th.fragments.security.StockInfoFragment;
 import com.tradehero.th.fragments.security.StockInfoValueFragment;
@@ -51,11 +67,17 @@ import com.tradehero.th.fragments.settings.SettingsTransactionHistoryFragment;
 import com.tradehero.th.fragments.timeline.MeTimelineFragment;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.fragments.timeline.TimelineFragment;
+import com.tradehero.th.fragments.timeline.TimelineItemView;
 import com.tradehero.th.fragments.trade.BuySellConfirmFragment;
 import com.tradehero.th.fragments.trade.BuySellFragment;
 import com.tradehero.th.fragments.trade.FreshQuoteHolder;
 import com.tradehero.th.fragments.trade.TradeListFragment;
+import com.tradehero.th.fragments.trade.TradeListHeaderView;
+import com.tradehero.th.fragments.trade.TradeListItemView;
+import com.tradehero.th.fragments.trade.TradeListOverlayHeaderView;
+import com.tradehero.th.fragments.trending.SearchPeopleItemView;
 import com.tradehero.th.fragments.trending.SearchStockPeopleFragment;
+import com.tradehero.th.fragments.trending.SecurityItemView;
 import com.tradehero.th.fragments.trending.TrendingFilterSelectorBasicFragment;
 import com.tradehero.th.fragments.trending.TrendingFilterSelectorPriceFragment;
 import com.tradehero.th.fragments.trending.TrendingFilterSelectorVolumeFragment;
@@ -98,26 +120,6 @@ import com.tradehero.th.utils.NumberDisplayUtils;
 import com.tradehero.th.utils.TwitterUtils;
 import com.tradehero.th.widget.MarkdownTextView;
 import com.tradehero.th.widget.ServerValidatedUsernameText;
-import com.tradehero.th.fragments.portfolio.PortfolioListItemView;
-import com.tradehero.th.fragments.portfolio.header.CurrentUserPortfolioHeaderView;
-import com.tradehero.th.fragments.portfolio.header.OtherUserPortfolioHeaderView;
-import com.tradehero.th.fragments.position.LockedPositionItem;
-import com.tradehero.th.fragments.position.PositionClosedView;
-import com.tradehero.th.fragments.position.PositionInPeriodClosedView;
-import com.tradehero.th.fragments.position.PositionInPeriodOpenView;
-import com.tradehero.th.fragments.position.PositionOpenView;
-import com.tradehero.th.fragments.position.partial.PositionPartialBottomClosedView;
-import com.tradehero.th.fragments.position.partial.PositionPartialBottomInPeriodClosedView;
-import com.tradehero.th.fragments.position.partial.PositionPartialBottomInPeriodOpenView;
-import com.tradehero.th.fragments.position.partial.PositionPartialBottomOpenView;
-import com.tradehero.th.fragments.position.partial.PositionPartialTopView;
-import com.tradehero.th.fragments.billing.management.FollowerListItemView;
-import com.tradehero.th.fragments.timeline.TimelineItemView;
-import com.tradehero.th.fragments.trade.TradeListHeaderView;
-import com.tradehero.th.fragments.trade.TradeListItemView;
-import com.tradehero.th.fragments.trade.TradeListOverlayHeaderView;
-import com.tradehero.th.fragments.trending.SearchPeopleItemView;
-import com.tradehero.th.fragments.trending.SecurityItemView;
 import com.tradehero.th.widget.user.ProfileCompactView;
 import com.tradehero.th.widget.user.ProfileView;
 import dagger.Module;
@@ -130,6 +132,7 @@ import org.ocpsoft.prettytime.PrettyTime;
         injects =
         {
                 AuthenticationActivity.class,
+                DashboardActivity.class,
 
                 UserProfileFetchAssistant.class,
                 OwnedPortfolioFetchAssistant.class,
@@ -238,7 +241,7 @@ import org.ocpsoft.prettytime.PrettyTime;
                 THInventoryFetchMilestone.class,
                 IABSKUListRetrievedMilestone.class,
                 PortfolioCompactListRetrievedMilestone.class,
-
+                PurchaseRestorerRequiredMilestone.class,
         },
         staticInjections =
         {
@@ -372,6 +375,7 @@ public class TradeHeroModule
                 context.getString(R.string.TWITTER_CONSUMER_KEY),
                 context.getString(R.string.TWITTER_CONSUMER_SECRET));
     }
+
     @Provides @Singleton LinkedInUtils provideLinkedInUtils(Context context)
     {
         return new LinkedInUtils(

@@ -9,7 +9,6 @@ import com.tradehero.common.billing.googleplay.exceptions.IABMissingTokenExcepti
 import com.tradehero.common.billing.googleplay.exceptions.IABRemoteException;
 import com.tradehero.common.utils.THLog;
 import java.lang.ref.WeakReference;
-import java.util.List;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/18/13 Time: 3:23 PM To change this template use File | Settings | File Templates. */
 public class IABPurchaseConsumer<
@@ -20,6 +19,7 @@ public class IABPurchaseConsumer<
 {
     public static final String TAG = IABPurchaseConsumer.class.getSimpleName();
 
+    private int requestCode;
     private boolean consuming = false;
     protected IABPurchaseType purchase;
     private WeakReference<OnIABConsumptionFinishedListener<IABSKUType, IABOrderIdType, IABPurchaseType, IABException>> consumptionFinishedListener = new WeakReference<>(null);
@@ -61,9 +61,10 @@ public class IABPurchaseConsumer<
         this.consumptionFinishedListener = new WeakReference<>(consumptionFinishedListener);
     }
 
-    public void consume(IABPurchaseType purchase)
+    public void consume(int requestCode, IABPurchaseType purchase)
     {
         checkNotConsuming();
+        this.requestCode = requestCode;
 
         if (purchase == null)
         {
@@ -123,7 +124,7 @@ public class IABPurchaseConsumer<
         OnIABConsumptionFinishedListener<IABSKUType, IABOrderIdType, IABPurchaseType, IABException> listener = getConsumptionFinishedListener();
         if (listener != null)
         {
-            listener.onIABConsumptionFailed(this, exception);
+            listener.onPurchaseConsumeFailed(requestCode, purchase, exception);
         }
     }
 
@@ -144,7 +145,7 @@ public class IABPurchaseConsumer<
         OnIABConsumptionFinishedListener<IABSKUType, IABOrderIdType, IABPurchaseType, IABException> listener = getConsumptionFinishedListener();
         if (listener != null)
         {
-            listener.onIABConsumptionFinished(this, purchase);
+            listener.onPurchaseConsumed(requestCode, purchase);
         }
     }
 
@@ -209,8 +210,7 @@ public class IABPurchaseConsumer<
             IABPurchaseType extends IABPurchase<IABSKUType, IABOrderIdType>,
             IABExceptionType extends IABException>
     {
-        void onIABConsumptionFinished(IABPurchaseConsumer purchaseConsumer, IABPurchaseType info);
-
-        void onIABConsumptionFailed(IABPurchaseConsumer purchaseConsumer, IABExceptionType exception);
+        void onPurchaseConsumed(int requestCode, IABPurchaseType purchase);
+        void onPurchaseConsumeFailed(int requestCode, IABPurchaseType purchase, IABExceptionType exception);
     }
 }

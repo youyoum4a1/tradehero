@@ -2,62 +2,117 @@ package com.tradehero.common.billing.googleplay;
 
 import android.app.Activity;
 import android.content.Intent;
+import com.tradehero.common.billing.BillingPurchaser;
+import com.tradehero.common.billing.InventoryFetcher;
+import com.tradehero.common.billing.googleplay.exceptions.IABBillingUnavailableException;
 import com.tradehero.common.billing.googleplay.exceptions.IABException;
 import com.tradehero.common.utils.THLog;
-import com.tradehero.common.utils.THToast;
+import com.tradehero.th.billing.googleplay.THIABOrderId;
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/8/13 Time: 12:32 PM To change this template use File | Settings | File Templates. */
 abstract public class BaseIABActor<
-                    IABSKUType extends IABSKU,
-                    IABProductDetailsType extends IABProductDetails<IABSKUType>,
-                    IABPurchaseOrderType extends IABPurchaseOrder<IABSKUType>,
-                    IABOrderIdType extends IABOrderId,
-                    IABPurchaseType extends IABPurchase<IABSKUType, IABOrderIdType>,
-                    IABPurchaserType extends IABPurchaser<IABSKUType, IABProductDetailsType, IABPurchaseOrderType, IABOrderIdType, IABPurchaseType>,
-                    IABPurchaseHandlerType extends IABPurchaseHandler<IABSKUType, IABOrderIdType, IABPurchaseType, IABException>,
-                    IABPurchaseConsumerType extends IABPurchaseConsumer<IABSKUType, IABOrderIdType, IABPurchaseType>,
-                    IABPurchaseConsumeHandlerType extends IABPurchaseConsumeHandler<IABSKUType, IABOrderIdType, IABPurchaseType, IABException>>
+        IABSKUType extends IABSKU,
+        IABProductDetailsType extends IABProductDetails<IABSKUType>,
+        IABInventoryFetcherType extends IABInventoryFetcher<IABSKUType, IABProductDetailsType>,
+        IABInventoryFetchedListenerType extends InventoryFetcher.OnInventoryFetchedListener<IABSKUType, IABProductDetailsType, IABException>,
+        IABPurchaseOrderType extends IABPurchaseOrder<IABSKUType>,
+        IABOrderIdType extends IABOrderId,
+        IABPurchaseType extends IABPurchase<IABSKUType, IABOrderIdType>,
+        IABPurchaseFetcherType extends IABPurchaseFetcher<IABSKUType, IABOrderIdType, IABPurchaseType>,
+        IABPurchaseFetchedListenerType extends IABPurchaseFetcher.OnPurchaseFetchedListener<IABSKUType, IABOrderIdType, IABPurchaseType>,
+        IABPurchaserType extends IABPurchaser<IABSKUType, IABProductDetailsType, IABOrderIdType, IABPurchaseOrderType, IABPurchaseType>,
+        IABPurchaseFinishedListenerType extends BillingPurchaser.OnPurchaseFinishedListener<IABSKUType, IABPurchaseOrderType, IABOrderIdType, IABPurchaseType, IABException>,
+        IABPurchaseConsumerType extends IABPurchaseConsumer<IABSKUType, IABOrderIdType, IABPurchaseType>,
+        IABConsumeFinishedListenerType extends IABPurchaseConsumer.OnIABConsumptionFinishedListener<IABSKUType, IABOrderIdType, IABPurchaseType, IABException>>
     implements IABActor<
-                    IABSKUType,
-                    IABPurchaseOrderType,
-                    IABOrderIdType,
-                    IABPurchaseType,
-                    IABPurchaseHandlerType,
-                    IABPurchaseConsumeHandlerType,
-                    IABException>
+        IABSKUType,
+        IABProductDetailsType,
+        IABInventoryFetchedListenerType,
+        IABPurchaseOrderType,
+        IABOrderIdType,
+        IABPurchaseType,
+        IABPurchaseFetchedListenerType,
+        IABPurchaseFinishedListenerType,
+        IABConsumeFinishedListenerType,
+        IABException>
 {
     public static final String TAG = BaseIABActor.class.getSimpleName();
     public static final int MAX_RANDOM_RETRIES = 50;
 
     protected WeakReference<Activity> weakActivity = new WeakReference<>(null);
+    protected boolean inventoryReady = false; // TODO this feels HACKy
+    protected boolean errorLoadingInventory = false; // TODO here too
+    protected Exception latestInventoryFetcherException; // TODO here too
+
+    protected Map<Integer /*requestCode*/, IABInventoryFetcherType> iabInventoryFetchers;
+    protected Map<Integer /*requestCode*/, InventoryFetcher.OnInventoryFetchedListener<IABSKUType, IABProductDetailsType, IABException>> inventoryFetchedListeners;
+    protected Map<Integer /*requestCode*/, WeakReference<IABInventoryFetchedListenerType>>parentInventoryFetchedListeners;
+
+    protected Map<Integer /*requestCode*/, IABPurchaseFetcherType> purchaseFetchers;
+    protected Map<Integer /*requestCode*/, IABPurchaseFetcher.OnPurchaseFetchedListener<IABSKUType, IABOrderIdType, IABPurchaseType>> purchaseFetchedListeners;
+    protected Map<Integer /*requestCode*/, WeakReference<IABPurchaseFetchedListenerType>> parentPurchaseFetchedListeners;
 
     protected Map<Integer /*requestCode*/, IABPurchaserType> iabPurchasers;
-    protected Map<Integer /*requestCode*/, IABPurchaser.OnIABPurchaseFinishedListener<IABSKUType, IABOrderIdType, IABPurchaseType, IABException>> purchaseFinishedListeners;
-    protected Map<Integer /*requestCode*/, WeakReference<IABPurchaseHandlerType>> purchaseHandlers;
+    protected Map<Integer /*requestCode*/, BillingPurchaser.OnPurchaseFinishedListener<IABSKUType, IABPurchaseOrderType, IABOrderIdType, IABPurchaseType, IABException>> purchaseFinishedListeners;
+    protected Map<Integer /*requestCode*/, WeakReference<IABPurchaseFinishedListenerType>> parentPurchaseFinishedListeners;
 
     protected Map<Integer /*requestCode*/, IABPurchaseConsumerType> iabPurchaseConsumers;
-    protected Map<Integer /*requestCode*/, IABPurchaseConsumer.OnIABConsumptionFinishedListener<IABSKUType, IABOrderIdType, IABPurchaseType, IABException>> purchaseConsumptionFinishedListeners;
-    protected Map<Integer /*requestCode*/, WeakReference<IABPurchaseConsumeHandlerType>> purchaseConsumeHandlers;
-
+    protected Map<Integer /*requestCode*/, IABPurchaseConsumer.OnIABConsumptionFinishedListener<IABSKUType, IABOrderIdType, IABPurchaseType, IABException>> consumptionFinishedListeners;
+    protected Map<Integer /*requestCode*/, WeakReference<IABConsumeFinishedListenerType>> parentConsumeFinishedHandlers;
 
     public BaseIABActor(Activity activity)
     {
         super();
         setActivity(activity);
+        iabInventoryFetchers = new HashMap<>();
+        inventoryFetchedListeners = new HashMap<>();
+        parentInventoryFetchedListeners = new HashMap<>();
+
+        purchaseFetchers = new HashMap<>();
+        purchaseFetchedListeners = new HashMap<>();
+        parentPurchaseFetchedListeners = new HashMap<>();
+
         iabPurchasers = new HashMap<>();
         purchaseFinishedListeners = new HashMap<>();
-        purchaseHandlers = new HashMap<>();
+        parentPurchaseFinishedListeners = new HashMap<>();
 
         iabPurchaseConsumers = new HashMap<>();
-        purchaseConsumptionFinishedListeners = new HashMap<>();
-        purchaseConsumeHandlers = new HashMap<>();
+        consumptionFinishedListeners = new HashMap<>();
+        parentConsumeFinishedHandlers = new HashMap<>();
     }
 
     public void onDestroy()
     {
+        for (IABInventoryFetcherType inventoryFetcher : iabInventoryFetchers.values())
+        {
+            if (inventoryFetcher != null)
+            {
+                inventoryFetcher.setListener(null);
+                inventoryFetcher.setInventoryFetchedListener(null);
+                inventoryFetcher.dispose();
+            }
+        }
+        iabInventoryFetchers.clear();
+        inventoryFetchedListeners.clear();
+        parentInventoryFetchedListeners.clear();
+
+        for (IABPurchaseFetcherType purchaseFetcher : purchaseFetchers.values())
+        {
+            if (purchaseFetcher != null)
+            {
+                purchaseFetcher.setListener(null);
+                purchaseFetcher.setFetchListener(null);
+                purchaseFetcher.dispose();
+            }
+        }
+        purchaseFetchers.clear();
+        purchaseFetchedListeners.clear();
+        parentPurchaseFetchedListeners.clear();
+
         for (IABPurchaserType iabPurchaser: iabPurchasers.values())
         {
             if (iabPurchaser != null)
@@ -69,7 +124,7 @@ abstract public class BaseIABActor<
         }
         iabPurchasers.clear();
         purchaseFinishedListeners.clear();
-        purchaseHandlers.clear();
+        parentPurchaseFinishedListeners.clear();
 
         for (IABPurchaseConsumerType iabPurchaseConsumer: iabPurchaseConsumers.values())
         {
@@ -81,8 +136,8 @@ abstract public class BaseIABActor<
             }
         }
         iabPurchaseConsumers.clear();
-        purchaseConsumptionFinishedListeners.clear();
-        purchaseConsumeHandlers.clear();
+        consumptionFinishedListeners.clear();
+        parentConsumeFinishedHandlers.clear();
     }
 
     public Activity getActivity()
@@ -90,9 +145,18 @@ abstract public class BaseIABActor<
         return weakActivity.get();
     }
 
-    public void setActivity(Activity context)
+    /**
+     * The activity should be strongly referenced elsewhere
+     * @param activity
+     */
+    public void setActivity(Activity activity)
     {
-        this.weakActivity = new WeakReference<>(context);
+        this.weakActivity = new WeakReference<>(activity);
+    }
+
+    @Override public boolean isBillingAvailable() // TODO review to make less HACKy
+    {
+        return latestInventoryFetcherException == null || !(latestInventoryFetcherException instanceof IABBillingUnavailableException);
     }
 
     public int getUnusedRequestCode()
@@ -112,33 +176,283 @@ abstract public class BaseIABActor<
 
     protected boolean isUnusedRequestCode(int randomNumber)
     {
-        return !iabPurchasers.containsKey(randomNumber) &&
+        return !iabInventoryFetchers.containsKey(randomNumber) &&
+                !inventoryFetchedListeners.containsKey(randomNumber) &&
+                !parentInventoryFetchedListeners.containsKey(randomNumber) &&
+
+                !purchaseFetchers.containsKey(randomNumber) &&
+                !purchaseFetchedListeners.containsKey(randomNumber) &&
+                !parentPurchaseFetchedListeners.containsKey(randomNumber) &&
+
+                !iabPurchasers.containsKey(randomNumber) &&
                 !purchaseFinishedListeners.containsKey(randomNumber) &&
-                !purchaseHandlers.containsKey(randomNumber) &&
+                !parentPurchaseFinishedListeners.containsKey(randomNumber) &&
+
                 !iabPurchaseConsumers.containsKey(randomNumber) &&
-                !purchaseConsumptionFinishedListeners.containsKey(randomNumber) &&
-                !purchaseConsumeHandlers.containsKey(randomNumber);
+                !consumptionFinishedListeners.containsKey(randomNumber) &&
+                !parentConsumeFinishedHandlers.containsKey(randomNumber);
     }
 
-    public void forgetRequestCode(int requestCode)
+    @Override public void forgetRequestCode(int requestCode)
     {
+        iabInventoryFetchers.remove(requestCode);
+        inventoryFetchedListeners.remove(requestCode);
+        parentInventoryFetchedListeners.remove(requestCode);
+
+        purchaseFetchers.remove(requestCode);
+        purchaseFetchedListeners.remove(requestCode);
+        parentPurchaseFetchedListeners.remove(requestCode);
+
         iabPurchasers.remove(requestCode);
         purchaseFinishedListeners.remove(requestCode);
-        purchaseHandlers.remove(requestCode);
+        parentPurchaseFinishedListeners.remove(requestCode);
 
         iabPurchaseConsumers.remove(requestCode);
-        purchaseConsumptionFinishedListeners.remove(requestCode);
-        purchaseConsumeHandlers.remove(requestCode);
+        consumptionFinishedListeners.remove(requestCode);
+        parentConsumeFinishedHandlers.remove(requestCode);
+    }
+
+    @Override public IABInventoryFetchedListenerType getInventoryFetchedListener(int requestCode)
+    {
+        WeakReference<IABInventoryFetchedListenerType> weakFetchedListener = parentInventoryFetchedListeners.get(requestCode);
+        if (weakFetchedListener == null)
+        {
+            return null;
+        }
+        return weakFetchedListener.get();
     }
 
     /**
-     * The purchaseHandler should be strongly referenced elsewhere.
-     * @param purchaseHandler
+     * The listener needs to be strong referenced elsewhere
+     * @param requestCode
+     * @param inventoryFetchedListener
+     */
+    protected void registerInventoryFetchedListener(int requestCode, IABInventoryFetchedListenerType inventoryFetchedListener)
+    {
+        parentInventoryFetchedListeners.put(requestCode, new WeakReference<>(inventoryFetchedListener));
+    }
+
+    /**
+     * The listener needs to be strong referenced elsewhere
+     * @param inventoryFetchedListener
      * @return
      */
-    protected void registerPurchaseHandler(int requestCode, IABPurchaseHandlerType purchaseHandler)
+    @Override public int registerInventoryFetchedListener(IABInventoryFetchedListenerType inventoryFetchedListener)
     {
-        purchaseHandlers.put(requestCode, new WeakReference<>(purchaseHandler));
+        int requestCode = getUnusedRequestCode();
+        registerInventoryFetchedListener(requestCode, inventoryFetchedListener);
+        return requestCode;
+    }
+
+    @Override public void launchInventoryFetchSequence(int requestCode)
+    {
+        latestInventoryFetcherException = null;
+        InventoryFetcher.OnInventoryFetchedListener<IABSKUType, IABProductDetailsType, IABException>
+                fetchedListener = new InventoryFetcher.OnInventoryFetchedListener<IABSKUType, IABProductDetailsType, IABException>()
+        {
+            @Override public void onInventoryFetchSuccess(int requestCode, List<IABSKUType> productIdentifiers, Map<IABSKUType, IABProductDetailsType> inventory)
+            {
+                notifyInventoryFetchedSuccess(requestCode, productIdentifiers, inventory);
+            }
+
+            @Override public void onInventoryFetchFail(int requestCode, List<IABSKUType> productIdentifiers, IABException exception)
+            {
+                notifyInventoryFetchFailed(requestCode, productIdentifiers, exception);
+            }
+        };
+        inventoryFetchedListeners.put(requestCode, fetchedListener);
+
+        IABInventoryFetcherType inventoryFetcher = createInventoryFetcher();
+        iabInventoryFetchers.put(requestCode, inventoryFetcher);
+        inventoryFetcher.setProductIdentifiers(getAllSkus());
+        inventoryFetcher.setInventoryFetchedListener(fetchedListener);
+        inventoryFetcher.fetchInventory(requestCode);
+    }
+
+    protected void notifyInventoryFetchedSuccess(int requestCode, List<IABSKUType> productIdentifiers, Map<IABSKUType, IABProductDetailsType> inventory)
+    {
+        inventoryReady = true;
+        errorLoadingInventory = false;
+        IABInventoryFetchedListenerType parentFetchedListener = getInventoryFetchedListener(requestCode);
+        if (parentFetchedListener != null)
+        {
+            parentFetchedListener.onInventoryFetchSuccess(requestCode, productIdentifiers, inventory);
+        }
+    }
+
+    protected void notifyInventoryFetchFailed(int requestCode, List<IABSKUType> productIdentifiers, IABException exception)
+    {
+        latestInventoryFetcherException = exception;
+        inventoryReady = false;
+        errorLoadingInventory = !(exception instanceof IABBillingUnavailableException);
+        IABInventoryFetchedListenerType parentFetchedListener = getInventoryFetchedListener(requestCode);
+        if (parentFetchedListener != null)
+        {
+            parentFetchedListener.onInventoryFetchFail(requestCode, productIdentifiers, exception);
+        }
+    }
+
+    @Override public boolean hadErrorLoadingInventory()
+    {
+        return errorLoadingInventory;
+    }
+
+    @Override public boolean isInventoryReady()
+    {
+        return inventoryReady;
+    }
+
+    @Override public IABPurchaseFetchedListenerType getPurchaseFetchedListener(int requestCode)
+    {
+        WeakReference<IABPurchaseFetchedListenerType> weakListener = parentPurchaseFetchedListeners.get(requestCode);
+        if (weakListener == null)
+        {
+            return null;
+        }
+        return weakListener.get();
+    }
+
+    /**
+     * The listener needs to be strongly referenced elsewhere.
+     * @param requestCode
+     * @param purchaseFetchedListener
+     */
+    protected void registerPurchaseFetchedListener(int requestCode, IABPurchaseFetchedListenerType purchaseFetchedListener)
+    {
+        parentPurchaseFetchedListeners.put(requestCode, new WeakReference<>(purchaseFetchedListener));
+    }
+
+    /**
+     * The listener needs to be strongly referenced elsewhere.
+     * @param purchaseFetchedListener
+     * @return
+     */
+    @Override public int registerPurchaseFetchedListener(IABPurchaseFetchedListenerType purchaseFetchedListener)
+    {
+        int requestCode = getUnusedRequestCode();
+        registerPurchaseFetchedListener(requestCode, purchaseFetchedListener);
+        return requestCode;
+    }
+
+    @Override public void launchFetchPurchaseSequence(int requestCode)
+    {
+        IABPurchaseFetcher.OnPurchaseFetchedListener<IABSKUType, IABOrderIdType, IABPurchaseType> purchaseFetchedListener = new IABPurchaseFetcher.OnPurchaseFetchedListener<IABSKUType, IABOrderIdType, IABPurchaseType>()
+        {
+            @Override public void onFetchPurchasesFailed(int requestCode, IABException exception)
+            {
+                notifyPurchaseFetchedFailed(requestCode, exception);
+            }
+
+            @Override public void onFetchedPurchases(int requestCode, Map<IABSKUType, IABPurchaseType> purchases)
+            {
+                notifyPurchaseFetchedSuccess(requestCode, purchases);
+            }
+        };
+        purchaseFetchedListeners.put(requestCode, purchaseFetchedListener);
+        IABPurchaseFetcherType purchaseFetcher = createPurchaseFetcher();
+        purchaseFetcher.setFetchListener(purchaseFetchedListener);
+        purchaseFetchers.put(requestCode, purchaseFetcher);
+        purchaseFetcher.fetchPurchases(requestCode);
+    }
+
+    protected void notifyPurchaseFetchedSuccess(int requestCode, Map<IABSKUType, IABPurchaseType> purchases)
+    {
+        IABPurchaseFetchedListenerType parentListener = getPurchaseFetchedListener(requestCode);
+        if (parentListener != null)
+        {
+            parentListener.onFetchedPurchases(requestCode, purchases);
+        }
+    }
+
+    protected void notifyPurchaseFetchedFailed(int requestCode, IABException exception)
+    {
+        IABPurchaseFetchedListenerType parentListener = getPurchaseFetchedListener(requestCode);
+        if (parentListener != null)
+        {
+            parentListener.onFetchPurchasesFailed(requestCode, exception);
+        }
+    }
+
+    /**
+     * The listener should be strongly referenced elsewhere.
+     * @param purchaseFinishedListener
+     * @return
+     */
+    protected void registerPurchaseFinishedListener(int requestCode, IABPurchaseFinishedListenerType purchaseFinishedListener)
+    {
+        parentPurchaseFinishedListeners.put(requestCode, new WeakReference<>(purchaseFinishedListener));
+    }
+
+    /**
+     * The listener should be strongly referenced elsewhere
+     * @param purchaseFinishedListener
+     * @return
+     */
+    @Override public int registerPurchaseFinishedListener(IABPurchaseFinishedListenerType purchaseFinishedListener)
+    {
+        int requestCode = getUnusedRequestCode();
+        registerPurchaseFinishedListener(requestCode, purchaseFinishedListener);
+        return requestCode;
+    }
+
+    @Override public void launchPurchaseSequence(int requestCode, IABPurchaseOrderType purchaseOrder)
+    {
+        BillingPurchaser.OnPurchaseFinishedListener<IABSKUType, IABPurchaseOrderType, IABOrderIdType, IABPurchaseType, IABException> purchaseListener = new BillingPurchaser.OnPurchaseFinishedListener<IABSKUType, IABPurchaseOrderType, IABOrderIdType, IABPurchaseType, IABException>()
+        {
+            @Override public void onPurchaseFinished(int requestCode, IABPurchaseOrderType purchaseOrder, IABPurchaseType purchase)
+            {
+                notifyIABPurchaseFinished(requestCode, purchaseOrder, purchase);
+            }
+
+            @Override public void onPurchaseFailed(int requestCode, IABPurchaseOrderType purchaseOrder, IABException exception)
+            {
+                notifyIABPurchaseFailed(requestCode, purchaseOrder, exception);
+            }
+        };
+        purchaseFinishedListeners.put(requestCode, purchaseListener);
+        IABPurchaserType iabPurchaser = createPurchaser();
+        iabPurchasers.put(requestCode, iabPurchaser);
+        iabPurchaser.purchase(requestCode, purchaseOrder);
+    }
+
+    @Override public IABPurchaseFinishedListenerType getPurchaseFinishedListener(int requestCode)
+    {
+        WeakReference<IABPurchaseFinishedListenerType> weakHandler = parentPurchaseFinishedListeners.get(requestCode);
+        if (weakHandler != null)
+        {
+            return weakHandler.get();
+        }
+        return null;
+    }
+
+    protected void notifyIABPurchaseFinished(int requestCode, IABPurchaseOrderType purchaseOrder, IABPurchaseType purchase)
+    {
+        THLog.d(TAG, "notifyIABPurchaseFinished Purchase " + purchase);
+        IABPurchaseFinishedListenerType handler = getPurchaseFinishedListener(requestCode);
+        if (handler != null)
+        {
+            THLog.d(TAG, "notifyIABPurchaseFinished passing on the purchase for requestCode " + requestCode);
+            handler.onPurchaseFinished(requestCode, purchaseOrder, purchase);
+        }
+        else
+        {
+            THLog.d(TAG, "notifyIABPurchaseFinished No THIABPurchaseHandler for requestCode " + requestCode);
+        }
+    }
+
+    protected void notifyIABPurchaseFailed(int requestCode, IABPurchaseOrderType purchaseOrder, IABException exception)
+    {
+        THLog.e(TAG, "notifyIABPurchaseFailed There was an exception during the purchase", exception);
+        IABPurchaseFinishedListenerType handler = getPurchaseFinishedListener(requestCode);
+        if (handler != null)
+        {
+            THLog.d(TAG, "notifyIABPurchaseFailed passing on the exception for requestCode " + requestCode);
+            handler.onPurchaseFailed(requestCode, purchaseOrder, exception);
+        }
+        else
+        {
+            THLog.d(TAG, "onPurchaseFailed No THIABPurchaseHandler for requestCode " + requestCode);
+        }
     }
 
     /**
@@ -146,164 +460,84 @@ abstract public class BaseIABActor<
      * @param requestCode
      * @param purchaseConsumeHandler
      */
-    protected void registerPurchaseConsumeHandler(int requestCode, IABPurchaseConsumeHandlerType purchaseConsumeHandler)
+    protected void registerConsumeFinishedListener(int requestCode, IABConsumeFinishedListenerType purchaseConsumeHandler)
     {
-        purchaseConsumeHandlers.put(requestCode, new WeakReference<>(purchaseConsumeHandler));
+        parentConsumeFinishedHandlers.put(requestCode, new WeakReference<>(purchaseConsumeHandler));
     }
 
-    //<editor-fold desc="IABActor">
-
-    @Override public int registerBillingPurchaseHandler(IABPurchaseHandlerType purchaseHandler)
+    @Override public int registerConsumeFinishedListener(IABConsumeFinishedListenerType purchaseConsumeHandler)
     {
         int requestCode = getUnusedRequestCode();
-        registerPurchaseHandler(requestCode, purchaseHandler);
-        return requestCode;
-    }
-
-    @Override public void launchPurchaseSequence(int requestCode, IABPurchaseOrderType purchaseOrder)
-    {
-        createAndRegisterPurchaseFinishedListener(requestCode);
-        IABPurchaserType iabPurchaser = createPurchaser(requestCode);
-        iabPurchasers.put(requestCode, iabPurchaser);
-        iabPurchaser.purchase(purchaseOrder, requestCode);
-    }
-
-    @Override public int registerPurchaseConsumeHandler(IABPurchaseConsumeHandlerType purchaseConsumeHandler)
-    {
-        int requestCode = getUnusedRequestCode();
-        registerPurchaseConsumeHandler(requestCode, purchaseConsumeHandler);
+        registerConsumeFinishedListener(requestCode, purchaseConsumeHandler);
         return requestCode;
     }
 
     @Override public void launchConsumeSequence(int requestCode, IABPurchaseType purchase)
     {
-        createAndRegisterPurchaseConsumeFinishedListener(requestCode);
-        IABPurchaseConsumerType iabPurchaseConsumer = createPurchaseConsumer(requestCode);
+        IABPurchaseConsumer.OnIABConsumptionFinishedListener<IABSKUType, IABOrderIdType, IABPurchaseType, IABException> consumeListener =  new IABPurchaseConsumer.OnIABConsumptionFinishedListener<IABSKUType, IABOrderIdType, IABPurchaseType, IABException>()
+        {
+            @Override public void onPurchaseConsumed(int requestCode, IABPurchaseType purchase)
+            {
+                notifyPurchaseConsumeSuccess(requestCode, purchase);
+            }
+
+            @Override public void onPurchaseConsumeFailed(int requestCode, IABPurchaseType purchase, IABException exception)
+            {
+                notifyPurchaseConsumeFail(requestCode, purchase, exception);
+            }
+        };
+        consumptionFinishedListeners.put(requestCode, consumeListener);
+        IABPurchaseConsumerType iabPurchaseConsumer = createPurchaseConsumer();
+        iabPurchaseConsumer.setConsumptionFinishedListener(consumeListener);
         iabPurchaseConsumers.put(requestCode, iabPurchaseConsumer);
-        iabPurchaseConsumer.consume(purchase);
-    }
-    //</editor-fold>
-
-    protected void createAndRegisterPurchaseFinishedListener(final int requestCode)
-    {
-        purchaseFinishedListeners.put(requestCode, createPurchaseFinishedListener(requestCode));
+        iabPurchaseConsumer.consume(requestCode, purchase);
     }
 
-    protected IABPurchaser.OnIABPurchaseFinishedListener<IABSKUType, IABOrderIdType, IABPurchaseType, IABException> createPurchaseFinishedListener(final int requestCode)
+    @Override public IABConsumeFinishedListenerType getConsumeFinishedListener(int requestCode)
     {
-        return new IABPurchaser.OnIABPurchaseFinishedListener<IABSKUType, IABOrderIdType, IABPurchaseType, IABException>()
+        WeakReference<IABConsumeFinishedListenerType> weakHandler = parentConsumeFinishedHandlers.get(requestCode);
+        if (weakHandler != null)
         {
-            private IABPurchaseHandlerType getPurchaseHandler()
-            {
-                WeakReference<IABPurchaseHandlerType> weakHandler = purchaseHandlers.get(requestCode);
-                if (weakHandler != null)
-                {
-                    return weakHandler.get();
-                }
-                return null;
-            }
-
-            @Override public void onIABPurchaseFinished(IABPurchaser purchaser, IABPurchaseType info)
-            {
-                THToast.show("OnIABPurchaseFinishedListener.onIABPurchaseFinished Purchase went through ok");
-                THLog.d(TAG, "OnIABPurchaseFinishedListener.onIABPurchaseFinished Purchase info " + info);
-                IABPurchaseHandlerType handler = getPurchaseHandler();
-                if (handler != null)
-                {
-                    THLog.d(TAG, "OnIABPurchaseFinishedListener.onIABPurchaseFinished passing on the purchase for requestCode " + requestCode);
-                    handler.handlePurchaseReceived(requestCode, info);
-                }
-                else
-                {
-                    THLog.d(TAG, "OnIABPurchaseFinishedListener.onIABPurchaseFinished No THIABPurchaseHandler for requestCode " + requestCode);
-                }
-                finish();
-            }
-
-            @Override public void onIABPurchaseFailed(IABPurchaser purchaser, IABException exception)
-            {
-                THLog.e(TAG, "OnIABPurchaseFinishedListener.onIABPurchaseFailed There was an exception during the purchase", exception);
-                IABPurchaseHandlerType handler = getPurchaseHandler();
-                if (handler != null)
-                {
-                    THLog.d(TAG, "OnIABPurchaseFinishedListener.onIABPurchaseFailed passing on the exception for requestCode " + requestCode);
-                    handler.handlePurchaseException(requestCode, exception);
-                }
-                else
-                {
-                    THLog.d(TAG, "OnIABPurchaseFinishedListener.onIABPurchaseFailed No THIABPurchaseHandler for requestCode " + requestCode);
-                }
-                finish();
-            }
-
-            private void finish()
-            {
-                forgetRequestCode(requestCode);
-            }
-        };
+            return weakHandler.get();
+        }
+        return null;
     }
 
-    protected void createAndRegisterPurchaseConsumeFinishedListener(final int requestCode)
+    protected void notifyPurchaseConsumeSuccess(int requestCode, IABPurchaseType purchase)
     {
-        purchaseConsumptionFinishedListeners.put(requestCode, createPurchaseConsumeFinishedListener(requestCode));
-    }
-
-    protected IABPurchaseConsumer.OnIABConsumptionFinishedListener<IABSKUType, IABOrderIdType, IABPurchaseType, IABException> createPurchaseConsumeFinishedListener(final int requestCode)
-    {
-        return new IABPurchaseConsumer.OnIABConsumptionFinishedListener<IABSKUType, IABOrderIdType, IABPurchaseType, IABException>()
+        THLog.d(TAG, "notifyPurchaseConsumeSuccess Purchase info " + purchase);
+        IABConsumeFinishedListenerType handler = getConsumeFinishedListener(requestCode);
+        if (handler != null)
         {
-            private IABPurchaseConsumeHandlerType getPurchaseConsumeHandler()
-            {
-                WeakReference<IABPurchaseConsumeHandlerType> weakHandler = purchaseConsumeHandlers.get(requestCode);
-                if (weakHandler != null)
-                {
-                    return weakHandler.get();
-                }
-                return null;
-            }
-
-            @Override public void onIABConsumptionFinished(IABPurchaseConsumer purchaseConsumer, IABPurchaseType info)
-            {
-                THToast.show("OnIABConsumptionFinishedListener.onIABPurchaseFinished Purchase went through ok");
-                THLog.d(TAG, "OnIABConsumptionFinishedListener.onIABPurchaseFinished Purchase info " + info);
-                IABPurchaseConsumeHandlerType handler = getPurchaseConsumeHandler();
-                if (handler != null)
-                {
-                    THLog.d(TAG, "OnIABConsumptionFinishedListener.onIABPurchaseFinished passing on the purchase for requestCode " + requestCode);
-                    handler.handlePurchaseConsumed(requestCode, info);
-                }
-                else
-                {
-                    THLog.d(TAG, "OnIABConsumptionFinishedListener.onIABPurchaseFinished No THIABPurchaseHandler for requestCode " + requestCode);
-                }
-                finish();
-            }
-
-            @Override public void onIABConsumptionFailed(IABPurchaseConsumer purchaseConsumer, IABException exception)
-            {
-                THLog.e(TAG, "OnIABConsumptionFinishedListener.onIABConsumptionFailed There was an exception during the consumption", exception);
-                IABPurchaseConsumeHandlerType handler = getPurchaseConsumeHandler();
-                if (handler != null)
-                {
-                    THLog.d(TAG, "OnIABConsumptionFinishedListener.onIABConsumptionFailed passing on the exception for requestCode " + requestCode);
-                    handler.handlePurchaseConsumeException(requestCode, exception);
-                }
-                else
-                {
-                    THLog.d(TAG, "OnIABConsumptionFinishedListener.onIABConsumptionFailed No THIABPurchaseHandler for requestCode " + requestCode);
-                }
-                finish();
-            }
-
-            private void finish()
-            {
-                forgetRequestCode(requestCode);
-            }
-        };
+            THLog.d(TAG, "notifyPurchaseConsumeSuccess passing on the purchase for requestCode " + requestCode);
+            handler.onPurchaseConsumed(requestCode, purchase);
+        }
+        else
+        {
+            THLog.d(TAG, "notifyPurchaseConsumeSuccess No THIABPurchaseHandler for requestCode " + requestCode);
+        }
     }
 
-    abstract protected IABPurchaserType createPurchaser(final int requestCode);
-    abstract protected IABPurchaseConsumerType createPurchaseConsumer(final int requestCode);
+    protected void notifyPurchaseConsumeFail(int requestCode, IABPurchaseType purchase, IABException exception)
+    {
+        THLog.e(TAG, "notifyPurchaseConsumeFail There was an exception during the consumption", exception);
+        IABConsumeFinishedListenerType handler = getConsumeFinishedListener(requestCode);
+        if (handler != null)
+        {
+            THLog.d(TAG, "notifyPurchaseConsumeFail passing on the exception for requestCode " + requestCode);
+            handler.onPurchaseConsumeFailed(requestCode, purchase, exception);
+        }
+        else
+        {
+            THLog.d(TAG, "notifyPurchaseConsumeFail No THIABPurchaseHandler for requestCode " + requestCode);
+        }
+    }
+
+    abstract protected BaseIABSKUList<IABSKUType> getAllSkus();
+    abstract protected IABInventoryFetcherType createInventoryFetcher();
+    abstract protected IABPurchaseFetcherType createPurchaseFetcher();
+    abstract protected IABPurchaserType createPurchaser();
+    abstract protected IABPurchaseConsumerType createPurchaseConsumer();
 
     public void onActivityResult(int requestCode, int resultCode, Intent data)
     {
