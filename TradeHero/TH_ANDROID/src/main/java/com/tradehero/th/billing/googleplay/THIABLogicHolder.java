@@ -231,6 +231,19 @@ abstract public class THIABLogicHolder
     protected void handlePurchaseReported(int requestCode, BaseIABPurchase reportedPurchase, UserProfileDTO updatedUserPortfolio)
     {
         THLog.d(TAG, "handlePurchaseReported Purchase info " + reportedPurchase);
+
+        if (updatedUserPortfolio != null)
+        {
+            userProfileCache.get().put(updatedUserPortfolio.getBaseKey(), updatedUserPortfolio);
+        }
+
+        OwnedPortfolioId applicablePortfolioId = reportedPurchase.getApplicableOwnedPortfolioId();
+        if (applicablePortfolioId != null)
+        {
+            portfolioCompactListCache.get().invalidate(applicablePortfolioId.getUserBaseKey());
+            portfolioCache.get().invalidate(applicablePortfolioId);
+        }
+
         PurchaseReporter.OnPurchaseReportedListener<IABSKU, THIABOrderId, BaseIABPurchase, Exception> handler = getPurchaseReportHandler(requestCode);
         if (handler != null)
         {
@@ -324,49 +337,11 @@ abstract public class THIABLogicHolder
         }
     }
 
-    protected void handlePurchaseReportFailed_Old(int requestCode, final BaseIABPurchase purchase, Throwable exception) // TODO place somewhere else
-    {
-        THLog.e(TAG, "A purchase could not be reported", exception);
-
-        if (exception instanceof RetrofitError)
-        {
-            // TODO finer identification of "already has reported purchase"
-            if (((RetrofitError) exception).getResponse().getStatus() >= 400)
-            {
-                // Consume quietly anyway
-                consumeOne(requestCode, purchase, true);
-
-                // Offer to send an email to support
-                IABAlertUtils.popSendEmailSupportReportFailed(getActivity(), new DialogInterface.OnClickListener()
-                {
-                    @Override public void onClick(DialogInterface dialog, int which)
-                    {
-                        sendSupportEmailReportFailed(purchase);
-                    }
-                });
-            }
-        }
-        else
-        {
-            IABAlertUtils.popUnknownError(getActivity());
-        }
-    }
-
     protected void sendSupportEmailReportFailed(BaseIABPurchase purchase)
     {
         getActivity().startActivity(Intent.createChooser(
                 GooglePlayUtils.getSupportPurchaseReportEmailIntent(getActivity(), purchase),
                 getActivity().getString(R.string.google_play_send_support_email_chooser_title)));
-    }
-
-    protected void handlePurchaseReported_Old(int requestCode, BaseIABPurchase purchase, UserProfileDTO userProfileDTO) // TODO place somewhere else
-    {
-        THLog.d(TAG, "handlePurchaseReported " + purchase);
-        if (userProfileDTO != null)
-        {
-            userProfileCache.get().put(userProfileDTO.getBaseKey(), userProfileDTO);
-        }
-        consumeOne(requestCode, purchase);
     }
 
     protected void consumeOne(int requestCode, BaseIABPurchase purchase)

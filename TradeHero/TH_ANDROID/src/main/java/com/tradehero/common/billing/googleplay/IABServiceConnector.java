@@ -66,6 +66,7 @@ public class IABServiceConnector
         if (isServiceAvailable(serviceIntent))
         {
             // service available to handle that Intent
+            ComponentName myService = context.startService(serviceIntent);
             context.bindService(serviceIntent, serviceConnection, Context.BIND_AUTO_CREATE);
         }
         else

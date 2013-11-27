@@ -467,7 +467,7 @@ abstract public class BaseIABActor<
         }
         else
         {
-            THLog.d(TAG, "notifyIABPurchaseFinished No THIABPurchaseHandler for requestCode " + requestCode);
+            THLog.d(TAG, "notifyIABPurchaseFinished No OnPurchaseFinishedListener for requestCode " + requestCode);
         }
     }
 

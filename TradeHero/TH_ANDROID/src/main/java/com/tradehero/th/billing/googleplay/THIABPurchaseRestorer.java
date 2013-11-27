@@ -63,7 +63,7 @@ public class THIABPurchaseRestorer extends IABPurchaseRestorer<
         {
             @Override public void onPurchaseReportFailed(int requestCode, BaseIABPurchase reportedPurchase, Exception error)
             {
-                THLog.d(TAG, "onPurchaseReportFailed");
+                THLog.e(TAG, "onPurchaseReportFailed", error);
                 haveBillingActorForget(requestCode);
                 failedReports.add(reportedPurchase);
                 continueSequenceOrNotify();

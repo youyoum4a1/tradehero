@@ -11,6 +11,7 @@ import com.tradehero.th.R;
 import com.tradehero.th.fragments.billing.SKUDetailsAdapter;
 import com.tradehero.th.fragments.billing.SKUDetailView;
 import com.tradehero.th.utils.AlertDialogUtil;
+import com.tradehero.th.utils.VersionUtils;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/7/13 Time: 5:52 PM To change this template use File | Settings | File Templates. */
 public class IABAlertUtils
@@ -70,8 +71,8 @@ public class IABAlertUtils
                 {
                     public void onClick(DialogInterface dialog, int id)
                     {
-                        // TODO open email
                         dialog.cancel();
+                        sendSupportEmailCancelledPurchase(context);
                     }
                 })
                 .setNegativeButton(R.string.store_billing_user_cancelled_cancel, new DialogInterface.OnClickListener()
@@ -83,6 +84,15 @@ public class IABAlertUtils
                 });
         AlertDialog alertDialog = alertDialogBuilder.create();
         alertDialog.show();
+    }
+
+    public static void sendSupportEmailCancelledPurchase(final Context context)
+    {
+        Intent emailIntent = VersionUtils.getSupportEmailIntent(context, true);
+        emailIntent.putExtra(Intent.EXTRA_SUBJECT, "I cancelled the purchase");
+        context.startActivity(Intent.createChooser(
+                emailIntent,
+                context.getString(R.string.google_play_send_support_email_chooser_title)));
     }
 
     public static void popSKUAlreadyOwned(final Context context)
@@ -103,8 +113,8 @@ public class IABAlertUtils
                 {
                     public void onClick(DialogInterface dialog, int id)
                     {
-                        // TODO open email
                         dialog.cancel();
+                        sendSupportEmailPurchaseNotRestored(context);
                     }
                 })
                 .setNegativeButton(R.string.store_billing_sku_already_owned_cancel, new DialogInterface.OnClickListener()
@@ -116,6 +126,15 @@ public class IABAlertUtils
                 });
         AlertDialog alertDialog = alertDialogBuilder.create();
         alertDialog.show();
+    }
+
+    public static void sendSupportEmailPurchaseNotRestored(final Context context)
+    {
+        Intent emailIntent = VersionUtils.getSupportEmailIntent(context, true);
+        emailIntent.putExtra(Intent.EXTRA_SUBJECT, "My purchase is not being handled even after restart");
+        context.startActivity(Intent.createChooser(
+                emailIntent,
+                context.getString(R.string.google_play_send_support_email_chooser_title)));
     }
 
     public static void popBadResponse(final Context context)
