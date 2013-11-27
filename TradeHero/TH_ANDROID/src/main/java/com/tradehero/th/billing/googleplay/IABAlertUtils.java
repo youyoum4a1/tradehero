@@ -61,7 +61,6 @@ public class IABAlertUtils
 
     public static void popUserCancelled(final Context context)
     {
-        THLog.e(TAG, "popUserCancelled", new Exception());
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
         alertDialogBuilder
                 .setTitle(R.string.store_billing_user_cancelled_window_title)
@@ -156,7 +155,6 @@ public class IABAlertUtils
 
     public static void popUnknownError(final Context context)
     {
-        THLog.e(TAG, "popUnknownError", new Exception());
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
         alertDialogBuilder
                 .setTitle(R.string.store_billing_unknown_error_window_title)

@@ -50,7 +50,11 @@ import javax.inject.Inject;
 abstract public class BasePurchaseManagerFragment extends DashboardFragment
         implements IABAlertUtils.OnDialogSKUDetailsClickListener<THIABProductDetails>,
         THIABActorUser,
-        PurchaseReporter.OnPurchaseReportedListener<IABSKU, THIABOrderId, BaseIABPurchase, Exception>,
+        PurchaseReporter.OnPurchaseReportedListener<
+                IABSKU,
+                THIABOrderId,
+                BaseIABPurchase,
+                Exception>,
         BillingPurchaser.OnPurchaseFinishedListener<
                 IABSKU,
                 THIABPurchaseOrder,
@@ -412,9 +416,9 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
     }
 
     //<editor-fold desc="BillingPurchaser.OnPurchaseFinishedListener">
-
     @Override public void onPurchaseFailed(int requestCode, THIABPurchaseOrder purchaseOrder, IABException exception)
     {
+        THLog.e(TAG, "onPurchaseFailed requestCode " + requestCode ,exception);
         if (this.requestCode != requestCode)
         {
             THLog.d(TAG, "handlePurchaseException. Received requestCode " + requestCode + ", when in fact it expects " + this.requestCode);

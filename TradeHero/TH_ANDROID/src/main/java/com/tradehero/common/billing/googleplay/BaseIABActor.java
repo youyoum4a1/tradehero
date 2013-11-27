@@ -441,6 +441,7 @@ abstract public class BaseIABActor<
         };
         purchaseFinishedListeners.put(requestCode, purchaseListener);
         IABPurchaserType iabPurchaser = createPurchaser();
+        iabPurchaser.setPurchaseFinishedListener(purchaseListener);
         iabPurchasers.put(requestCode, iabPurchaser);
         iabPurchaser.purchase(requestCode, purchaseOrder);
     }
