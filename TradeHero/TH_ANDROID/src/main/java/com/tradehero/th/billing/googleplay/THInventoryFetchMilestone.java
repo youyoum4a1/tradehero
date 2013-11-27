@@ -30,7 +30,7 @@ public class THInventoryFetchMilestone extends BaseMilestone implements Dependen
     private final Context context;
     private final IABSKUListType iabskuListType;
     private WeakReference<THIABActorInventoryFetcher> actorInventoryFetcherWeak = new WeakReference<>(null);
-    private InventoryFetcher.OnInventoryFetchedListener<IABSKU, THSKUDetails, IABException> fetchListener;
+    private InventoryFetcher.OnInventoryFetchedListener<IABSKU, THIABProductDetails, IABException> fetchListener;
     protected IABSKUListRetrievedMilestone dependsOn;
     private OnCompleteListener dependCompleteListener;
     @Inject Lazy<IABSKUListCache> iabskuListCache;
@@ -45,9 +45,9 @@ public class THInventoryFetchMilestone extends BaseMilestone implements Dependen
         this.context = context;
         this.actorInventoryFetcherWeak = new WeakReference<>(actorInventoryFetcher);
         this.iabskuListType = iabskuListType;
-        fetchListener = new InventoryFetcher.OnInventoryFetchedListener<IABSKU, THSKUDetails, IABException>()
+        fetchListener = new InventoryFetcher.OnInventoryFetchedListener<IABSKU, THIABProductDetails, IABException>()
         {
-            @Override public void onInventoryFetchSuccess(int requestCode, List<IABSKU> productIdentifiers, Map<IABSKU, THSKUDetails> inventory)
+            @Override public void onInventoryFetchSuccess(int requestCode, List<IABSKU> productIdentifiers, Map<IABSKU, THIABProductDetails> inventory)
             {
                 running = false;
                 notifyCompleteListener();

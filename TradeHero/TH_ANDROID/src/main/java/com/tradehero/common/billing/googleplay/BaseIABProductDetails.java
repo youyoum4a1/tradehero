@@ -1,6 +1,5 @@
 package com.tradehero.common.billing.googleplay;
 
-import com.tradehero.common.billing.ProductDetails;
 import java.util.Comparator;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -8,7 +7,7 @@ import org.json.JSONObject;
 /**
  * Created by julien on 4/11/13
  */
-public class SKUDetails implements IABProductDetails<IABSKU>
+public class BaseIABProductDetails implements IABProductDetails<IABSKU>
 {
     public static final String JSON_KEY_PRODUCT_ID = "productId";
     public static final String JSON_KEY_TYPE = "type";
@@ -28,12 +27,12 @@ public class SKUDetails implements IABProductDetails<IABSKU>
     public final String description;
     protected final String json;
 
-    public SKUDetails(String jsonSkuDetails) throws JSONException
+    public BaseIABProductDetails(String jsonSkuDetails) throws JSONException
     {
         this(Constants.ITEM_TYPE_INAPP, jsonSkuDetails);
     }
 
-    public SKUDetails(String itemType, String jsonSkuDetails) throws JSONException
+    public BaseIABProductDetails(String itemType, String jsonSkuDetails) throws JSONException
     {
         this.itemType = itemType;
         this.json = jsonSkuDetails;
@@ -73,19 +72,19 @@ public class SKUDetails implements IABProductDetails<IABSKU>
     }
     //</editor-fold>
 
-    public static Comparator<SKUDetails> DecreasingPriceComparator = new Comparator<SKUDetails>()
+    public static Comparator<BaseIABProductDetails> DecreasingPriceComparator = new Comparator<BaseIABProductDetails>()
     {
-        public int compare(SKUDetails skuDetails1, SKUDetails skuDetails2)
+        public int compare(BaseIABProductDetails BaseIABProductDetails1, BaseIABProductDetails BaseIABProductDetails2)
         {
-            if (skuDetails1 == null)
+            if (BaseIABProductDetails1 == null)
             {
-                return skuDetails2 == null ? 0 : 1;
+                return BaseIABProductDetails2 == null ? 0 : 1;
             }
-            if (skuDetails2 == null)
+            if (BaseIABProductDetails2 == null)
             {
                 return 1;
             }
-            return skuDetails2.priceAmountMicros.compareTo(skuDetails1.priceAmountMicros);
+            return BaseIABProductDetails2.priceAmountMicros.compareTo(BaseIABProductDetails1.priceAmountMicros);
         }
     };
 }

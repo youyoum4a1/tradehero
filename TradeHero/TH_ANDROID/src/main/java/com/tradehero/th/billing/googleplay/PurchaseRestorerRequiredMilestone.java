@@ -1,9 +1,9 @@
 package com.tradehero.th.billing.googleplay;
 
 import android.content.Context;
+import com.tradehero.common.billing.googleplay.BaseIABPurchase;
 import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.common.billing.googleplay.IABSKUListType;
-import com.tradehero.common.billing.googleplay.SKUPurchase;
 import com.tradehero.common.milestone.BaseMilestoneGroup;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListRetrievedMilestone;
@@ -23,12 +23,12 @@ public class PurchaseRestorerRequiredMilestone extends BaseMilestoneGroup
         super();
         DaggerUtils.inject(this);
         add(new THInventoryFetchMilestone(context, actorInventoryFetcher, IABSKUListType.getInApp()));
-        add(new SKUPurchaseFetchMilestone(actorPurchaseFetcher));
+        add(new THIABPurchaseFetchMilestone(actorPurchaseFetcher));
         add(new PortfolioCompactListRetrievedMilestone(userBaseKey));
     }
 
-    public Map<IABSKU, SKUPurchase> getFetchedPurchases()
+    public Map<IABSKU, BaseIABPurchase> getFetchedPurchases()
     {
-        return ((SKUPurchaseFetchMilestone) milestones.get(POSITION_FETCH_PURCHASE)).getFetchedPurchases();
+        return ((THIABPurchaseFetchMilestone) milestones.get(POSITION_FETCH_PURCHASE)).getFetchedPurchases();
     }
 }

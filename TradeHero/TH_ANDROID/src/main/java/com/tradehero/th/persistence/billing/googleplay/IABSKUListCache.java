@@ -4,7 +4,7 @@ import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.common.billing.googleplay.IABSKUList;
 import com.tradehero.common.billing.googleplay.IABSKUListType;
 import com.tradehero.common.persistence.StraightDTOCache;
-import com.tradehero.th.billing.googleplay.SKUFetcher;
+import com.tradehero.th.billing.googleplay.THIABSKUFetcher;
 import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
@@ -19,12 +19,12 @@ import javax.inject.Singleton;
     public static final String TAG = IABSKUListCache.class.getSimpleName();
     public static final int MAX_SIZE = 5;
 
-    private SKUFetcher skuFetcher;
+    private THIABSKUFetcher skuFetcher;
 
     @Inject public IABSKUListCache()
     {
         super(MAX_SIZE);
-        skuFetcher = new SKUFetcher();
+        skuFetcher = new THIABSKUFetcher();
     }
 
     @Override protected IABSKUList fetch(IABSKUListType key) throws Throwable

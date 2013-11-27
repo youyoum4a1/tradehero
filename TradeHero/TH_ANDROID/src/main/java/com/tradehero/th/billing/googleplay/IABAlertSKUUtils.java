@@ -1,7 +1,7 @@
 package com.tradehero.th.billing.googleplay;
 
 import android.app.Activity;
-import com.tradehero.common.billing.googleplay.SKUDetailsDecreasingPriceComparator;
+import com.tradehero.common.billing.googleplay.BaseIABProductDetailsDecreasingPriceComparator;
 import com.tradehero.th.fragments.billing.THSKUDetailsAdapter;
 import java.util.List;
 
@@ -12,13 +12,13 @@ public class IABAlertSKUUtils
 
     public static void popBuyDialog(Activity activity,
                                 SKUDomainInformer domainInformer,
-                                IABAlertUtils.OnDialogSKUDetailsClickListener<THSKUDetails> clickListener,
+                                IABAlertUtils.OnDialogSKUDetailsClickListener<THIABProductDetails> clickListener,
                                 String skuDomain, int
                                 titleResId)
     {
         final THSKUDetailsAdapter detailsAdapter = new THSKUDetailsAdapter(activity, activity.getLayoutInflater(), skuDomain);
-        detailsAdapter.setSkuDetailsComparator(new SKUDetailsDecreasingPriceComparator<THSKUDetails>());
-        List<THSKUDetails> desiredSkuDetails = domainInformer.getDetailsOfDomain(skuDomain);
+        detailsAdapter.setSkuDetailsComparator(new BaseIABProductDetailsDecreasingPriceComparator<THIABProductDetails>());
+        List<THIABProductDetails> desiredSkuDetails = domainInformer.getDetailsOfDomain(skuDomain);
         detailsAdapter.setItems(desiredSkuDetails);
 
         IABAlertUtils.popBuyDialog(activity, detailsAdapter, titleResId, clickListener);

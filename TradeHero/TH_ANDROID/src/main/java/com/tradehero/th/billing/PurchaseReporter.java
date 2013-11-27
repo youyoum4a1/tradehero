@@ -1,164 +1,34 @@
 package com.tradehero.th.billing;
 
-import com.tradehero.common.billing.googleplay.IABSKU;
-import com.tradehero.common.billing.googleplay.SKUPurchase;
-import com.tradehero.common.utils.THLog;
-import com.tradehero.th.api.portfolio.OwnedPortfolioId;
-import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
+import com.tradehero.common.billing.OrderId;
+import com.tradehero.common.billing.ProductIdentifier;
+import com.tradehero.common.billing.ProductPurchase;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.billing.googleplay.THIABOrderId;
-import com.tradehero.th.billing.googleplay.THSKUDetails;
-import com.tradehero.th.billing.googleplay.exception.UnhandledSKUDomainException;
-import com.tradehero.th.network.service.AlertPlanService;
-import com.tradehero.th.network.service.PortfolioService;
-import com.tradehero.th.network.service.UserService;
-import com.tradehero.th.persistence.billing.googleplay.THSKUDetailCache;
-import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
-import com.tradehero.th.utils.DaggerUtils;
-import dagger.Lazy;
-import javax.inject.Inject;
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 11/18/13 Time: 12:20 PM To change this template use File | Settings | File Templates. */
-public class PurchaseReporter extends BasePurchaseReporter<
-        IABSKU,
-        THIABOrderId,
-        SKUPurchase>
+/** Created with IntelliJ IDEA. User: xavier Date: 11/27/13 Time: 1:01 PM To change this template use File | Settings | File Templates. */
+public interface PurchaseReporter<
+        ProductIdentifierType extends ProductIdentifier,
+        OrderIdType extends OrderId,
+        ProductPurchaseType extends ProductPurchase<ProductIdentifierType, OrderIdType>,
+        OnPurchaseReportedListenerType extends PurchaseReporter.OnPurchaseReportedListener<
+                ProductIdentifierType,
+                OrderIdType,
+                ProductPurchaseType,
+                ThrowableType>,
+        ThrowableType extends Throwable>
 {
-    public static final String TAG = PurchaseReporter.class.getSimpleName();
+    OnPurchaseReportedListenerType getListener();
+    void setListener(final OnPurchaseReportedListenerType listener);
+    void reportPurchase(int requestCode, ProductPurchaseType purchase);
+    UserProfileDTO reportPurchaseSync(ProductPurchaseType purchase);
 
-    @Inject Lazy<CurrentUserBaseKeyHolder> currentUserBaseKeyHolder;
-    @Inject Lazy<PortfolioService> portfolioService;
-    @Inject Lazy<AlertPlanService> alertPlanService;
-    @Inject Lazy<UserService> userService;
-    @Inject Lazy<THSKUDetailCache> skuDetailCache;
-    @Inject Lazy<PortfolioCompactListCache> portfolioCompactListCache;
-
-    private Callback<UserProfileDTO> userProfileDTOCallback;
-
-    public PurchaseReporter()
+    public static interface OnPurchaseReportedListener<
+            ProductIdentifierType extends ProductIdentifier,
+            OrderIdType extends OrderId,
+            ProductPurchaseType extends ProductPurchase<ProductIdentifierType, OrderIdType>,
+            ThrowableType extends Throwable>
     {
-        DaggerUtils.inject(this);
-    }
-
-    private OwnedPortfolioId getApplicableOwnedPortfolioId(SKUPurchase purchase)
-    {
-        OwnedPortfolioId portfolioId = purchase.getApplicableOwnedPortfolioId();
-        if (portfolioId == null || portfolioId.userId == null || portfolioId.portfolioId == null)
-        {
-            portfolioId = portfolioCompactListCache.get().getDefaultPortfolio(currentUserBaseKeyHolder.get().getCurrentUserBaseKey());
-        }
-        return portfolioId;
-    }
-
-    @Override public void reportPurchase(int requestCode, SKUPurchase purchase)
-    {
-        this.requestCode = requestCode;
-        this.purchase = purchase;
-        OwnedPortfolioId portfolioId = getApplicableOwnedPortfolioId(purchase);
-        createCallbackIfMissing();
-
-        // TODO do something when info is not available
-        switch (skuDetailCache.get().get(purchase.getProductIdentifier()).domain)
-        {
-            case THSKUDetails.DOMAIN_RESET_PORTFOLIO:
-                portfolioService.get().resetPortfolio(
-                        portfolioId.userId,
-                        portfolioId.portfolioId,
-                        purchase.getGooglePlayPurchaseDTO(),
-                        userProfileDTOCallback);
-                break;
-
-            case THSKUDetails.DOMAIN_VIRTUAL_DOLLAR:
-                portfolioService.get().addCash(
-                        portfolioId.userId,
-                        portfolioId.portfolioId,
-                        purchase.getGooglePlayPurchaseDTO(),
-                        userProfileDTOCallback);
-                break;
-
-            case THSKUDetails.DOMAIN_STOCK_ALERTS:
-                alertPlanService.get().subscribeToAlertPlan(
-                        portfolioId.userId,
-                        purchase.getGooglePlayPurchaseDTO(),
-                        userProfileDTOCallback);
-                break;
-
-            case THSKUDetails.DOMAIN_FOLLOW_CREDITS:
-                userService.get().addCredit(
-                        portfolioId.userId,
-                        purchase.getGooglePlayPurchaseDTO(),
-                        userProfileDTOCallback);
-                break;
-
-            default:
-                notifyListenerReportFailed(new UnhandledSKUDomainException(skuDetailCache.get().get(purchase.getProductIdentifier()).domain + " is not handled by this method"));
-                break;
-        }
-    }
-
-    @Override public UserProfileDTO reportPurchaseSync(SKUPurchase purchase) throws RetrofitError
-    {
-        OwnedPortfolioId portfolioId = getApplicableOwnedPortfolioId(purchase);
-
-        switch (skuDetailCache.get().get(purchase.getProductIdentifier()).domain)
-        {
-            case THSKUDetails.DOMAIN_RESET_PORTFOLIO:
-                return portfolioService.get().resetPortfolio(
-                        portfolioId.userId,
-                        portfolioId.portfolioId,
-                        purchase.getGooglePlayPurchaseDTO());
-
-            case THSKUDetails.DOMAIN_VIRTUAL_DOLLAR:
-                return portfolioService.get().addCash(
-                        portfolioId.userId,
-                        portfolioId.portfolioId,
-                        purchase.getGooglePlayPurchaseDTO());
-
-            case THSKUDetails.DOMAIN_STOCK_ALERTS:
-                return alertPlanService.get().subscribeToAlertPlan(
-                        portfolioId.userId,
-                        purchase.getGooglePlayPurchaseDTO());
-
-            case THSKUDetails.DOMAIN_FOLLOW_CREDITS:
-                return userService.get().addCredit(
-                        portfolioId.userId,
-                        purchase.getGooglePlayPurchaseDTO());
-
-            default:
-                throw new UnhandledSKUDomainException(skuDetailCache.get().get(purchase.getProductIdentifier()).domain + " is not handled by this method");
-        }
-    }
-
-    protected void createCallbackIfMissing()
-    {
-        if (userProfileDTOCallback == null)
-        {
-            userProfileDTOCallback = new Callback<UserProfileDTO>()
-            {
-                @Override public void success(UserProfileDTO userProfileDTO, Response response)
-                {
-                    handleCallbackSuccess(userProfileDTO, response);
-                }
-
-                @Override public void failure(RetrofitError error)
-                {
-                    handleCallbackFailed(error);
-                }
-            };
-        }
-    }
-
-    protected void handleCallbackSuccess(UserProfileDTO userProfileDTO, Response response)
-    {
-        notifyListenerSuccess(userProfileDTO);
-    }
-
-    protected void handleCallbackFailed(RetrofitError error)
-    {
-        THLog.e(TAG, "Failed reporting to TradeHero server", error);
-        notifyListenerReportFailed(error);
+        void onPurchaseReported(int requestCode, ProductPurchaseType reportedPurchase, UserProfileDTO updatedUserPortfolio);
+        void onPurchaseReportFailed(int requestCode, ProductPurchaseType reportedPurchase, ThrowableType error);
     }
 }

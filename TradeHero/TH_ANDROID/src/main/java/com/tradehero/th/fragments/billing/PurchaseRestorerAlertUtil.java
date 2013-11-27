@@ -3,7 +3,7 @@ package com.tradehero.th.fragments.billing;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import com.tradehero.common.billing.googleplay.SKUPurchase;
+import com.tradehero.common.billing.googleplay.BaseIABPurchase;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
 import com.tradehero.th.billing.googleplay.GooglePlayUtils;
@@ -15,7 +15,7 @@ public class PurchaseRestorerAlertUtil
 {
     public static final String TAG = PurchaseRestorerAlertUtil.class.getSimpleName();
 
-    public static void handlePurchaseRestoreFinished(final Context context, List<SKUPurchase> consumed, List<SKUPurchase> reportFailed, List<SKUPurchase> consumeFailed, final DialogInterface.OnClickListener clickListener)
+    public static void handlePurchaseRestoreFinished(final Context context, List<BaseIABPurchase> consumed, List<BaseIABPurchase> reportFailed, List<BaseIABPurchase> consumeFailed, final DialogInterface.OnClickListener clickListener)
     {
         int countOk = (consumed == null ? 0 : consumed.size());
         int countReportFailed = (reportFailed == null ? 0 : reportFailed.size());

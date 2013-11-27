@@ -1,7 +1,7 @@
-package com.tradehero.th.billing.googleplay;
+package com.tradehero.th.billing;
 
-import com.tradehero.common.billing.googleplay.Constants;
-import com.tradehero.common.billing.googleplay.IABSKU;
+import com.tradehero.common.billing.ProductIdentifier;
+import com.tradehero.th.billing.googleplay.IABSKUFetcher;
 import java.lang.ref.WeakReference;
 import java.util.Collections;
 import java.util.HashMap;
@@ -9,16 +9,18 @@ import java.util.List;
 import java.util.Map;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/5/13 Time: 4:58 PM To change this template use File | Settings | File Templates. */
-abstract public class BaseIABSKUFetcher<IABSKUType extends IABSKU>
-        implements IABSKUFetcher<IABSKUType>
+abstract public class BaseSKUFetcher<
+        ProductIdentifierType extends ProductIdentifier,
+        OnSKUFetchedListenerType extends SKUFetcher.OnSKUFetchedListener<ProductIdentifierType>>
+        implements SKUFetcher<ProductIdentifierType, OnSKUFetchedListenerType>
 {
-    public static final String TAG = BaseIABSKUFetcher.class.getSimpleName();
+    public static final String TAG = BaseSKUFetcher.class.getSimpleName();
 
     protected int requestCode;
-    protected Map<String, List<IABSKUType>> availableSkus;
-    protected WeakReference<OnSKUFetchedListener<IABSKUType>> listener = new WeakReference<>(null);
+    protected Map<String, List<ProductIdentifierType>> availableSkus;
+    protected WeakReference<OnSKUFetchedListenerType> listener = new WeakReference<>(null);
 
-    public BaseIABSKUFetcher()
+    public BaseSKUFetcher()
     {
         super();
         availableSkus = new HashMap<>();
@@ -34,19 +36,19 @@ abstract public class BaseIABSKUFetcher<IABSKUType extends IABSKU>
         return requestCode;
     }
 
-    @Override public OnSKUFetchedListener<IABSKUType> getListener()
+    @Override public OnSKUFetchedListenerType getListener()
     {
         return listener.get();
     }
 
-    @Override public void setListener(OnSKUFetchedListener<IABSKUType> listener)
+    @Override public void setListener(OnSKUFetchedListenerType listener)
     {
         this.listener = new WeakReference<>(listener);
     }
 
     protected void notifyListenerFetched()
     {
-        OnSKUFetchedListener<IABSKUType> listenerCopy = getListener();
+        OnSKUFetchedListener<ProductIdentifierType> listenerCopy = getListener();
         if (listenerCopy != null)
         {
             listenerCopy.onFetchedSKUs(requestCode, Collections.unmodifiableMap(availableSkus));
@@ -55,7 +57,7 @@ abstract public class BaseIABSKUFetcher<IABSKUType extends IABSKU>
 
     protected void notifyListenerFetchFailed(Exception exception)
     {
-        OnSKUFetchedListener<IABSKUType> listenerCopy = getListener();
+        OnSKUFetchedListener<ProductIdentifierType> listenerCopy = getListener();
         if (listenerCopy != null)
         {
             listenerCopy.onFetchSKUsFailed(requestCode, exception);

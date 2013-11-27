@@ -6,13 +6,13 @@ import android.content.Intent;
 import com.tradehero.common.billing.BillingPurchaser;
 import com.tradehero.common.billing.InventoryFetcher;
 import com.tradehero.common.billing.googleplay.BaseIABActor;
+import com.tradehero.common.billing.googleplay.BaseIABPurchase;
 import com.tradehero.common.billing.googleplay.BaseIABSKUList;
 import com.tradehero.common.billing.googleplay.IABPurchaseConsumer;
 import com.tradehero.common.billing.googleplay.IABPurchaseFetcher;
 import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.common.billing.googleplay.IABSKUListType;
-import com.tradehero.common.billing.googleplay.PurchaseFetcher;
-import com.tradehero.common.billing.googleplay.SKUPurchase;
+import com.tradehero.common.billing.googleplay.BaseIABPurchaseFetcher;
 import com.tradehero.common.billing.googleplay.exceptions.IABException;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
@@ -37,29 +37,29 @@ import retrofit.RetrofitError;
 abstract public class THIABLogicHolder
     extends BaseIABActor<
         IABSKU,
-        THSKUDetails,
+        THIABProductDetails,
         THIABInventoryFetcher,
-        InventoryFetcher.OnInventoryFetchedListener<IABSKU, THSKUDetails, IABException>,
+        InventoryFetcher.OnInventoryFetchedListener<IABSKU, THIABProductDetails, IABException>,
         THIABPurchaseOrder,
         THIABOrderId,
-        SKUPurchase,
-        PurchaseFetcher,
-        IABPurchaseFetcher.OnPurchaseFetchedListener<IABSKU, THIABOrderId, SKUPurchase>,
-        SKUDetailsPurchaser,
-        BillingPurchaser.OnPurchaseFinishedListener<IABSKU, THIABPurchaseOrder, THIABOrderId, SKUPurchase, IABException>,
+        BaseIABPurchase,
+        BaseIABPurchaseFetcher,
+        IABPurchaseFetcher.OnPurchaseFetchedListener<IABSKU, THIABOrderId, BaseIABPurchase>,
+        THIABPurchaser,
+        BillingPurchaser.OnPurchaseFinishedListener<IABSKU, THIABPurchaseOrder, THIABOrderId, BaseIABPurchase, IABException>,
         THIABPurchaseConsumer,
-        THIABPurchaseConsumer.OnIABConsumptionFinishedListener<IABSKU, THIABOrderId, SKUPurchase, IABException>>
+        THIABPurchaseConsumer.OnIABConsumptionFinishedListener<IABSKU, THIABOrderId, BaseIABPurchase, IABException>>
     implements THIABActor
 {
     public static final String TAG = THIABLogicHolder.class.getSimpleName();
 
-    protected Map<Integer /*requestCode*/, SKUFetcher> skuFetchers;
+    protected Map<Integer /*requestCode*/, THIABSKUFetcher> skuFetchers;
     protected Map<Integer /*requestCode*/, IABSKUFetcher.OnSKUFetchedListener<IABSKU>> skuFetchedListeners;
     protected Map<Integer /*requestCode*/, WeakReference<IABSKUFetcher.OnSKUFetchedListener<IABSKU>>> parentSkuFetchedListeners;
 
-    protected Map<Integer /*requestCode*/, PurchaseReporter> purchaseReporters;
-    protected Map<Integer /*requestCode*/, BasePurchaseReporter.OnPurchaseReportedListener<IABSKU, THIABOrderId, SKUPurchase>> purchaseReportedListeners;
-    protected Map<Integer /*requestCode*/, WeakReference<BasePurchaseReporter.OnPurchaseReportedListener<IABSKU, THIABOrderId, SKUPurchase>>> parentPurchaseReportedHandlers;
+    protected Map<Integer /*requestCode*/, THIABPurchaseReporter> purchaseReporters;
+    protected Map<Integer /*requestCode*/, PurchaseReporter.OnPurchaseReportedListener<IABSKU, THIABOrderId, BaseIABPurchase>> purchaseReportedListeners;
+    protected Map<Integer /*requestCode*/, WeakReference<BasePurchaseReporter.OnPurchaseReportedListener<IABSKU, THIABOrderId, BaseIABPurchase>>> parentPurchaseReportedHandlers;
 
     @Inject Lazy<UserProfileCache> userProfileCache;
     @Inject Lazy<PortfolioCompactListCache> portfolioCompactListCache;
@@ -82,7 +82,7 @@ abstract public class THIABLogicHolder
 
     @Override public void onDestroy()
     {
-        for (SKUFetcher skuFetcher : skuFetchers.values())
+        for (THIABSKUFetcher skuFetcher : skuFetchers.values())
         {
             if (skuFetcher != null)
             {
@@ -93,7 +93,7 @@ abstract public class THIABLogicHolder
         skuFetchedListeners.clear();
         parentSkuFetchedListeners.clear();
 
-        for (PurchaseReporter purchaseReporter: purchaseReporters.values())
+        for (THIABPurchaseReporter purchaseReporter: purchaseReporters.values())
         {
             if (purchaseReporter != null)
             {
@@ -157,7 +157,7 @@ abstract public class THIABLogicHolder
             }
         };
         skuFetchedListeners.put(requestCode, skuFetchedListener);
-        SKUFetcher skuFetcher = new SKUFetcher();
+        THIABSKUFetcher skuFetcher = new THIABSKUFetcher();
         skuFetcher.setListener(skuFetchedListener);
         skuFetchers.put(requestCode, skuFetcher);
         skuFetcher.fetchSkus(requestCode);
@@ -191,9 +191,9 @@ abstract public class THIABLogicHolder
         }
     }
 
-    public BasePurchaseReporter.OnPurchaseReportedListener<IABSKU, THIABOrderId, SKUPurchase> getPurchaseReportHandler(int requestCode)
+    public PurchaseReporter.OnPurchaseReportedListener<IABSKU, THIABOrderId, BaseIABPurchase> getPurchaseReportHandler(int requestCode)
     {
-        WeakReference<BasePurchaseReporter.OnPurchaseReportedListener<IABSKU, THIABOrderId, SKUPurchase>> weakHandler = parentPurchaseReportedHandlers.get(requestCode);
+        WeakReference<PurchaseReporter.OnPurchaseReportedListener<IABSKU, THIABOrderId, BaseIABPurchase>> weakHandler = parentPurchaseReportedHandlers.get(requestCode);
         if (weakHandler != null)
         {
             return weakHandler.get();
@@ -201,22 +201,22 @@ abstract public class THIABLogicHolder
         return null;
     }
 
-    protected void registerPurchaseReportedHandler(int requestCode, BasePurchaseReporter.OnPurchaseReportedListener<IABSKU, THIABOrderId, SKUPurchase> purchaseReportedHandler)
+    protected void registerPurchaseReportedHandler(int requestCode, PurchaseReporter.OnPurchaseReportedListener<IABSKU, THIABOrderId, BaseIABPurchase> purchaseReportedHandler)
     {
         parentPurchaseReportedHandlers.put(requestCode, new WeakReference<>(purchaseReportedHandler));
     }
 
-    @Override public int registerPurchaseReportedHandler(BasePurchaseReporter.OnPurchaseReportedListener<IABSKU, THIABOrderId, SKUPurchase> purchaseReportedHandler)
+    @Override public int registerPurchaseReportedHandler(PurchaseReporter.OnPurchaseReportedListener<IABSKU, THIABOrderId, BaseIABPurchase> purchaseReportedHandler)
     {
         int requestCode = getUnusedRequestCode();
         registerPurchaseReportedHandler(requestCode, purchaseReportedHandler);
         return requestCode;
     }
 
-    protected void handlePurchaseReported(int requestCode, SKUPurchase reportedPurchase, UserProfileDTO updatedUserPortfolio)
+    protected void handlePurchaseReported(int requestCode, BaseIABPurchase reportedPurchase, UserProfileDTO updatedUserPortfolio)
     {
         THLog.d(TAG, "handlePurchaseReported Purchase info " + reportedPurchase);
-        BasePurchaseReporter.OnPurchaseReportedListener<IABSKU, THIABOrderId, SKUPurchase> handler = getPurchaseReportHandler(requestCode);
+        PurchaseReporter.OnPurchaseReportedListener<IABSKU, THIABOrderId, BaseIABPurchase> handler = getPurchaseReportHandler(requestCode);
         if (handler != null)
         {
             THLog.d(TAG, "handlePurchaseReported passing on the purchase for requestCode " + requestCode);
@@ -228,10 +228,10 @@ abstract public class THIABLogicHolder
         }
     }
 
-    protected void handlePurchaseReportFailed(int requestCode, SKUPurchase reportedPurchase, Throwable error)
+    protected void handlePurchaseReportFailed(int requestCode, BaseIABPurchase reportedPurchase, Throwable error)
     {
         THLog.e(TAG, "handlePurchaseReportFailed There was an exception during the report", error);
-        BasePurchaseReporter.OnPurchaseReportedListener<IABSKU, THIABOrderId, SKUPurchase> handler = getPurchaseReportHandler(requestCode);
+        PurchaseReporter.OnPurchaseReportedListener<IABSKU, THIABOrderId, BaseIABPurchase> handler = getPurchaseReportHandler(requestCode);
         if (handler != null)
         {
             THLog.d(TAG, "handlePurchaseReportFailed passing on the exception for requestCode " + requestCode);
@@ -243,30 +243,30 @@ abstract public class THIABLogicHolder
         }
     }
 
-    @Override public void launchReportSequence(int requestCode, SKUPurchase purchase)
+    @Override public void launchReportSequence(int requestCode, BaseIABPurchase purchase)
     {
-        BasePurchaseReporter.OnPurchaseReportedListener<IABSKU, THIABOrderId, SKUPurchase> reportedListener = new BasePurchaseReporter.OnPurchaseReportedListener<IABSKU, THIABOrderId, SKUPurchase>()
+        PurchaseReporter.OnPurchaseReportedListener<IABSKU, THIABOrderId, BaseIABPurchase> reportedListener = new PurchaseReporter.OnPurchaseReportedListener<IABSKU, THIABOrderId, BaseIABPurchase>()
         {
-            @Override public void onPurchaseReported(int requestCode, SKUPurchase reportedPurchase, UserProfileDTO updatedUserPortfolio)
+            @Override public void onPurchaseReported(int requestCode, BaseIABPurchase reportedPurchase, UserProfileDTO updatedUserPortfolio)
             {
                 handlePurchaseReported(requestCode, reportedPurchase, updatedUserPortfolio);
             }
 
-            @Override public void onPurchaseReportFailed(int requestCode, SKUPurchase reportedPurchase, Throwable error)
+            @Override public void onPurchaseReportFailed(int requestCode, BaseIABPurchase reportedPurchase, Throwable error)
             {
                 handlePurchaseReportFailed(requestCode, reportedPurchase, error);
             }
         };
         purchaseReportedListeners.put(requestCode, reportedListener);
-        PurchaseReporter purchaseReporter = new PurchaseReporter();
+        THIABPurchaseReporter purchaseReporter = new THIABPurchaseReporter();
         purchaseReporter.setListener(reportedListener);
         purchaseReporters.put(requestCode, purchaseReporter);
         purchaseReporter.reportPurchase(requestCode, purchase);
     }
 
-    @Override public UserProfileDTO launchReportSequenceSync(SKUPurchase purchase) throws RetrofitError
+    @Override public UserProfileDTO launchReportSequenceSync(BaseIABPurchase purchase) throws RetrofitError
     {
-        return new PurchaseReporter().reportPurchaseSync(purchase);
+        return new THIABPurchaseReporter().reportPurchaseSync(purchase);
     }
 
     @Override protected BaseIABSKUList<IABSKU> getAllSkus()
@@ -285,14 +285,14 @@ abstract public class THIABLogicHolder
         return new THIABInventoryFetcher(getActivity());
     }
 
-    @Override protected PurchaseFetcher createPurchaseFetcher()
+    @Override protected BaseIABPurchaseFetcher createPurchaseFetcher()
     {
-        return new PurchaseFetcher(getActivity());
+        return new BaseIABPurchaseFetcher(getActivity());
     }
 
-    @Override protected SKUDetailsPurchaser createPurchaser()
+    @Override protected THIABPurchaser createPurchaser()
     {
-        return new SKUDetailsPurchaser(getActivity());
+        return new THIABPurchaser(getActivity());
     }
 
     @Override protected THIABPurchaseConsumer createPurchaseConsumer()
@@ -300,16 +300,16 @@ abstract public class THIABLogicHolder
         return new THIABPurchaseConsumer(getActivity());
     }
 
-    public void launchReportSequenceAsync(Map<IABSKU, SKUPurchase> purchases)
+    public void launchReportSequenceAsync(Map<IABSKU, BaseIABPurchase> purchases)
     {
-        for (SKUPurchase purchase : purchases.values())
+        for (BaseIABPurchase purchase : purchases.values())
         {
             THLog.d(TAG, "Purchasing " + purchase);
             // TODO
         }
     }
 
-    protected void handlePurchaseReportFailed_Old(int requestCode, final SKUPurchase purchase, Throwable exception) // TODO place somewhere else
+    protected void handlePurchaseReportFailed_Old(int requestCode, final BaseIABPurchase purchase, Throwable exception) // TODO place somewhere else
     {
         THLog.e(TAG, "A purchase could not be reported", exception);
 
@@ -337,14 +337,14 @@ abstract public class THIABLogicHolder
         }
     }
 
-    protected void sendSupportEmailReportFailed(SKUPurchase purchase)
+    protected void sendSupportEmailReportFailed(BaseIABPurchase purchase)
     {
         getActivity().startActivity(Intent.createChooser(
                 GooglePlayUtils.getSupportPurchaseReportEmailIntent(getActivity(), purchase),
                 getActivity().getString(R.string.google_play_send_support_email_chooser_title)));
     }
 
-    protected void handlePurchaseReported_Old(int requestCode, SKUPurchase purchase, UserProfileDTO userProfileDTO) // TODO place somewhere else
+    protected void handlePurchaseReported_Old(int requestCode, BaseIABPurchase purchase, UserProfileDTO userProfileDTO) // TODO place somewhere else
     {
         THLog.d(TAG, "handlePurchaseReported " + purchase);
         if (userProfileDTO != null)
@@ -354,16 +354,16 @@ abstract public class THIABLogicHolder
         consumeOne(requestCode, purchase);
     }
 
-    protected void consumeOne(int requestCode, SKUPurchase purchase)
+    protected void consumeOne(int requestCode, BaseIABPurchase purchase)
     {
         consumeOne(requestCode, purchase, false);
     }
 
-    protected void consumeOne(int requestCode, SKUPurchase purchase, final boolean reportSuccessQuiet)
+    protected void consumeOne(int requestCode, BaseIABPurchase purchase, final boolean reportSuccessQuiet)
     {
-        IABPurchaseConsumer.OnIABConsumptionFinishedListener<IABSKU, THIABOrderId, SKUPurchase, IABException> consumeListener =  new IABPurchaseConsumer.OnIABConsumptionFinishedListener<IABSKU, THIABOrderId, SKUPurchase, IABException>()
+        IABPurchaseConsumer.OnIABConsumptionFinishedListener<IABSKU, THIABOrderId, BaseIABPurchase, IABException> consumeListener =  new IABPurchaseConsumer.OnIABConsumptionFinishedListener<IABSKU, THIABOrderId, BaseIABPurchase, IABException>()
         {
-            @Override public void onPurchaseConsumed(int requestCode, SKUPurchase purchase)
+            @Override public void onPurchaseConsumed(int requestCode, BaseIABPurchase purchase)
             {
                 if (purchase != null)
                 {
@@ -389,7 +389,7 @@ abstract public class THIABLogicHolder
                 }
             }
 
-            @Override public void onPurchaseConsumeFailed(int requestCode, SKUPurchase purchase, IABException exception)
+            @Override public void onPurchaseConsumeFailed(int requestCode, BaseIABPurchase purchase, IABException exception)
             {
                 IABAlertUtils.popOfferSendEmailSupportConsumeFailed(getActivity(), exception);
                 //notifyPurchaseConsumeFail(requestCode, purchase, exception);

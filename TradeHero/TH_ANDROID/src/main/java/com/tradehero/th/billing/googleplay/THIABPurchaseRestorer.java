@@ -1,34 +1,33 @@
 package com.tradehero.th.billing.googleplay;
 
 import android.app.Activity;
+import com.tradehero.common.billing.googleplay.BaseIABPurchase;
 import com.tradehero.common.billing.googleplay.IABPurchaseConsumer;
 import com.tradehero.common.billing.googleplay.IABPurchaseRestorer;
 import com.tradehero.common.billing.googleplay.IABSKU;
-import com.tradehero.common.billing.googleplay.SKUPurchase;
 import com.tradehero.common.billing.googleplay.exceptions.IABException;
 import com.tradehero.common.milestone.Milestone;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.billing.BasePurchaseReporter;
+import com.tradehero.th.billing.PurchaseReporter;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/25/13 Time: 5:47 PM To change this template use File | Settings | File Templates. */
-public class PurchaseRestorer extends IABPurchaseRestorer<
+public class THIABPurchaseRestorer extends IABPurchaseRestorer<
         IABSKU,
         THIABOrderId,
-        SKUPurchase,
+        BaseIABPurchase,
         THIABActorPurchaseConsumer,
         IABPurchaseConsumer.OnIABConsumptionFinishedListener<
                 IABSKU,
                 THIABOrderId,
-                SKUPurchase,
+                BaseIABPurchase,
                 IABException>>
 {
-    public static final String TAG = PurchaseRestorer.class.getSimpleName();
+    public static final String TAG = THIABPurchaseRestorer.class.getSimpleName();
 
     private final WeakReference<Activity> activity;
     private WeakReference<THIABActorInventoryFetcher> actorInventoryFetcher = new WeakReference<>(null);
@@ -37,10 +36,10 @@ public class PurchaseRestorer extends IABPurchaseRestorer<
     protected final UserBaseKey userBaseKey;
     private WeakReference<OnPurchaseRestorerFinishedListener> finishedListener = new WeakReference<>(null);
     protected int requestCodeReporter;
-    private BasePurchaseReporter.OnPurchaseReportedListener<IABSKU, THIABOrderId, SKUPurchase> purchaseReportedListener;
-    private final List<SKUPurchase> failedReports;
+    private PurchaseReporter.OnPurchaseReportedListener<IABSKU, THIABOrderId, BaseIABPurchase> purchaseReportedListener;
+    private final List<BaseIABPurchase> failedReports;
 
-    public PurchaseRestorer(
+    public THIABPurchaseRestorer(
             Activity activity,
             THIABActorInventoryFetcher actorInventoryFetcher,
             THIABActorPurchaseFetcher actorPurchaseFetcher,
@@ -60,9 +59,9 @@ public class PurchaseRestorer extends IABPurchaseRestorer<
     @Override public void init()
     {
         super.init();
-        purchaseReportedListener = new BasePurchaseReporter.OnPurchaseReportedListener<IABSKU, THIABOrderId, SKUPurchase>()
+        purchaseReportedListener = new PurchaseReporter.OnPurchaseReportedListener<IABSKU, THIABOrderId, BaseIABPurchase>()
         {
-            @Override public void onPurchaseReportFailed(int requestCode, SKUPurchase reportedPurchase, Throwable error)
+            @Override public void onPurchaseReportFailed(int requestCode, BaseIABPurchase reportedPurchase, Throwable error)
             {
                 THLog.d(TAG, "onPurchaseReportFailed");
                 haveBillingActorForget(requestCode);
@@ -70,7 +69,7 @@ public class PurchaseRestorer extends IABPurchaseRestorer<
                 continueSequenceOrNotify();
             }
 
-            @Override public void onPurchaseReported(int requestCode, SKUPurchase reportedPurchase, UserProfileDTO updatedUserPortfolio)
+            @Override public void onPurchaseReported(int requestCode, BaseIABPurchase reportedPurchase, UserProfileDTO updatedUserPortfolio)
             {
                 THLog.d(TAG, "onPurchaseReported");
                 haveBillingActorForget(requestCode);
@@ -84,17 +83,17 @@ public class PurchaseRestorer extends IABPurchaseRestorer<
         return new PurchaseRestorerRequiredMilestone(activity.get(), actorInventoryFetcher.get(), actorPurchaseFetcher.get(), userBaseKey);
     }
 
-    @Override protected IABPurchaseConsumer.OnIABConsumptionFinishedListener<IABSKU, THIABOrderId, SKUPurchase, IABException> createPurchaseConsumerListener()
+    @Override protected IABPurchaseConsumer.OnIABConsumptionFinishedListener<IABSKU, THIABOrderId, BaseIABPurchase, IABException> createPurchaseConsumerListener()
     {
-        return new IABPurchaseConsumer.OnIABConsumptionFinishedListener<IABSKU, THIABOrderId, SKUPurchase, IABException>()
+        return new IABPurchaseConsumer.OnIABConsumptionFinishedListener<IABSKU, THIABOrderId, BaseIABPurchase, IABException>()
         {
-            @Override public void onPurchaseConsumed(int requestCode, SKUPurchase purchase)
+            @Override public void onPurchaseConsumed(int requestCode, BaseIABPurchase purchase)
             {
                 THLog.d(TAG, "onPurchaseConsumed");
                 handlePurchaseConsumed(requestCode, purchase);
             }
 
-            @Override public void onPurchaseConsumeFailed(int requestCode, SKUPurchase purchase, IABException exception)
+            @Override public void onPurchaseConsumeFailed(int requestCode, BaseIABPurchase purchase, IABException exception)
             {
                 THLog.d(TAG, "onPurchaseConsumeFailed");
                 handlePurchaseConsumeFailed(requestCode, purchase, exception);
@@ -102,13 +101,13 @@ public class PurchaseRestorer extends IABPurchaseRestorer<
         };
     }
 
-    @Override protected void handlePurchaseConsumed(int requestCode, SKUPurchase purchase)
+    @Override protected void handlePurchaseConsumed(int requestCode, BaseIABPurchase purchase)
     {
         super.handlePurchaseConsumed(requestCode, purchase);
         continueSequenceOrNotify();
     }
 
-    @Override protected void handlePurchaseConsumeFailed(int requestCode, SKUPurchase purchase, IABException exception)
+    @Override protected void handlePurchaseConsumeFailed(int requestCode, BaseIABPurchase purchase, IABException exception)
     {
         super.handlePurchaseConsumeFailed(requestCode, purchase, exception);
         continueSequenceOrNotify();
@@ -123,7 +122,7 @@ public class PurchaseRestorer extends IABPurchaseRestorer<
     protected void notifyFinishedListener()
     {
         super.notifyFinishedListener();
-        OnIABPurchaseRestorerFinishedListener<IABSKU, THIABOrderId, SKUPurchase> finishedListener = getFinishedListener();
+        OnIABPurchaseRestorerFinishedListener<IABSKU, THIABOrderId, BaseIABPurchase> finishedListener = getFinishedListener();
         if (finishedListener instanceof OnPurchaseRestorerFinishedListener)
         {
             ((OnPurchaseRestorerFinishedListener) finishedListener).onPurchaseRestoreFinished(okPurchases, failedReports, failedConsumes);
@@ -150,7 +149,7 @@ public class PurchaseRestorer extends IABPurchaseRestorer<
 
     protected void launchOneReportSequence()
     {
-        SKUPurchase purchase = remainingPurchasesToWorkOn.get(0);
+        BaseIABPurchase purchase = remainingPurchasesToWorkOn.get(0);
         remainingPurchasesToWorkOn.remove(purchase);
         THIABActorPurchaseReporter actorReporter = actorPurchaseReporter.get();
         if (actorReporter != null)
@@ -166,8 +165,8 @@ public class PurchaseRestorer extends IABPurchaseRestorer<
         }
     }
 
-    public static interface OnPurchaseRestorerFinishedListener extends OnIABPurchaseRestorerFinishedListener<IABSKU, THIABOrderId, SKUPurchase>
+    public static interface OnPurchaseRestorerFinishedListener extends OnIABPurchaseRestorerFinishedListener<IABSKU, THIABOrderId, BaseIABPurchase>
     {
-        void onPurchaseRestoreFinished(List<SKUPurchase> consumed, List<SKUPurchase> reportFailed, List<SKUPurchase> consumeFailed);
+        void onPurchaseRestoreFinished(List<BaseIABPurchase> consumed, List<BaseIABPurchase> reportFailed, List<BaseIABPurchase> consumeFailed);
     }
 }

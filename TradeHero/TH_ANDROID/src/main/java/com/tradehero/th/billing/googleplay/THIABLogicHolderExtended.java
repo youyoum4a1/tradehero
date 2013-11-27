@@ -2,16 +2,14 @@ package com.tradehero.th.billing.googleplay;
 
 import android.app.Activity;
 import com.tradehero.common.billing.googleplay.Constants;
-import com.tradehero.common.billing.googleplay.SKUPurchase;
 import com.tradehero.common.billing.googleplay.IABSKU;
-import com.tradehero.common.billing.googleplay.PurchaseFetcher;
-import com.tradehero.common.billing.googleplay.exceptions.IABException;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.ArrayUtils;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.api.portfolio.OwnedPortfolioIdList;
 import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
 import com.tradehero.th.api.users.UserBaseKey;
+import com.tradehero.th.billing.SKUFetcher;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
@@ -22,7 +20,7 @@ import javax.inject.Inject;
 /** Created with IntelliJ IDEA. User: xavier Date: 11/8/13 Time: 12:32 PM To change this template use File | Settings | File Templates. */
 public class THIABLogicHolderExtended
     extends THIABLogicHolder
-    implements IABSKUFetcher.OnSKUFetchedListener<IABSKU>
+    implements SKUFetcher.OnSKUFetchedListener<IABSKU>
 {
     public static final String TAG = THIABLogicHolderExtended.class.getSimpleName();
 
@@ -41,13 +39,13 @@ public class THIABLogicHolderExtended
     }
 
     //<editor-fold desc="THIABActor">
-    @Override public List<THSKUDetails> getDetailsOfDomain(String domain)
+    @Override public List<THIABProductDetails> getDetailsOfDomain(String domain)
     {
-        return ArrayUtils.filter(thskuDetailCache.get().get(getAllSkus()), THSKUDetails.getPredicateIsOfCertainDomain(domain));
+        return ArrayUtils.filter(thskuDetailCache.get().get(getAllSkus()), THIABProductDetails.getPredicateIsOfCertainDomain(domain));
     }
     //</editor-fold>
 
-    //<editor-fold desc="SKUFetcher.OnSKUFetchedListener">
+    //<editor-fold desc="THIABSKUFetcher.OnSKUFetchedListener">
     @Override public void onFetchSKUsFailed(int requestCode, Exception exception)
     {
         latestSkuFetcherException = exception;

@@ -5,7 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.provider.Settings;
-import com.tradehero.common.billing.googleplay.SKUDetails;
+import com.tradehero.common.billing.googleplay.BaseIABProductDetails;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.billing.SKUDetailsAdapter;
@@ -91,7 +91,7 @@ public class IABAlertUtils
         popSKUAlreadyOwned(context, null);
     }
 
-    public static <SKUDetailsType extends SKUDetails>void popSKUAlreadyOwned(final Context context, SKUDetailsType skuDetails)
+    public static <SKUDetailsType extends BaseIABProductDetails>void popSKUAlreadyOwned(final Context context, SKUDetailsType skuDetails)
     {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
         alertDialogBuilder
@@ -181,7 +181,7 @@ public class IABAlertUtils
         alertDialog.show();
     }
 
-    public static <SKUDetailsType extends SKUDetails, SKUDetailViewType extends SKUDetailView<SKUDetailsType>> void popBuyDialog(
+    public static <SKUDetailsType extends BaseIABProductDetails, SKUDetailViewType extends SKUDetailView<SKUDetailsType>> void popBuyDialog(
         final Context context, final SKUDetailsAdapter<SKUDetailsType, SKUDetailViewType> detailsAdapter,
         int titleResId, final OnDialogSKUDetailsClickListener<SKUDetailsType> clickListener)
     {
@@ -218,7 +218,7 @@ public class IABAlertUtils
         alertDialog.show();
     }
 
-    public static interface OnDialogSKUDetailsClickListener<SKUDetailsType extends SKUDetails>
+    public static interface OnDialogSKUDetailsClickListener<SKUDetailsType extends BaseIABProductDetails>
     {
         void onDialogSKUDetailsClicked(DialogInterface dialogInterface, int position, SKUDetailsType skuDetails);
     }

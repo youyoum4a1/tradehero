@@ -6,12 +6,12 @@ import android.view.View;
 import android.widget.RadioButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import com.tradehero.common.billing.googleplay.SKUDetails;
+import com.tradehero.common.billing.googleplay.BaseIABProductDetails;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/6/13 Time: 2:49 PM To change this template use File | Settings | File Templates. */
-public class SKUDetailView<SKUDetailsType extends SKUDetails>
+public class SKUDetailView<SKUDetailsType extends BaseIABProductDetails>
         extends RelativeLayout implements DTOView<SKUDetailsType>
 {
     public static final String TAG = SKUDetailView.class.getSimpleName();

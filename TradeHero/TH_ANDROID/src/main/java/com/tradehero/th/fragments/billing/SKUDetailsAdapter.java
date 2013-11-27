@@ -4,11 +4,11 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import com.tradehero.common.billing.googleplay.SKUDetails;
+import com.tradehero.common.billing.googleplay.BaseIABProductDetails;
 import com.tradehero.th.adapters.DTOAdapter;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/6/13 Time: 4:14 PM To change this template use File | Settings | File Templates. */
-abstract public class SKUDetailsAdapter<SKUDetailsType extends SKUDetails,
+abstract public class SKUDetailsAdapter<SKUDetailsType extends BaseIABProductDetails,
                                         SKUDetailViewType extends SKUDetailView<SKUDetailsType>>
         extends DTOAdapter<SKUDetailsType, SKUDetailViewType>
 {

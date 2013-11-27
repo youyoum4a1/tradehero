@@ -2,7 +2,6 @@ package com.tradehero.th.billing.googleplay;
 
 import com.tradehero.common.billing.googleplay.IABPurchaseOrder;
 import com.tradehero.common.billing.googleplay.IABSKU;
-import com.tradehero.common.billing.googleplay.SKUDetails;
 import com.tradehero.common.utils.THJsonAdapter;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;

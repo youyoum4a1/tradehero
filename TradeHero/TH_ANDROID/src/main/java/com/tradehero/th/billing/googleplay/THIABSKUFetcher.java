@@ -2,17 +2,20 @@ package com.tradehero.th.billing.googleplay;
 
 import com.tradehero.common.billing.googleplay.Constants;
 import com.tradehero.common.billing.googleplay.IABSKU;
-import java.lang.ref.WeakReference;
+import com.tradehero.th.billing.BaseSKUFetcher;
+import com.tradehero.th.billing.SKUFetcher;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/5/13 Time: 4:58 PM To change this template use File | Settings | File Templates. */
-public class SKUFetcher extends BaseIABSKUFetcher<IABSKU>
+public class THIABSKUFetcher extends BaseSKUFetcher<
+        IABSKU,
+        SKUFetcher.OnSKUFetchedListener<IABSKU>>
+    implements IABSKUFetcher<IABSKU, SKUFetcher.OnSKUFetchedListener<IABSKU>>
 {
-    public static final String TAG = SKUFetcher.class.getSimpleName();
+    public static final String TAG = THIABSKUFetcher.class.getSimpleName();
 
     public static final String EXTRA_CASH_T0_KEY = "com.myhero.th.extracash.t0";
     public static final String EXTRA_CASH_T1_KEY = "com.myhero.th.extracash.t1";
@@ -25,7 +28,7 @@ public class SKUFetcher extends BaseIABSKUFetcher<IABSKU>
 
     public static final String RESET_PORTFOLIO_0 = "com.myhero.th.resetportfolio.0";
 
-    public SKUFetcher()
+    public THIABSKUFetcher()
     {
         super();
         // TODO hard-coded while there is nothing coming from the server.

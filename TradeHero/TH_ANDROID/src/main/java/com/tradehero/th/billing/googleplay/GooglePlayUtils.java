@@ -1,10 +1,9 @@
 package com.tradehero.th.billing.googleplay;
 
 import android.content.Context;
-import android.content.ContextWrapper;
 import android.content.Intent;
+import com.tradehero.common.billing.googleplay.BaseIABPurchase;
 import com.tradehero.common.billing.googleplay.GooglePlayPurchaseDTO;
-import com.tradehero.common.billing.googleplay.SKUPurchase;
 import com.tradehero.th.utils.ExceptionUtils;
 import com.tradehero.th.utils.StringUtils;
 import com.tradehero.th.utils.VersionUtils;
@@ -16,7 +15,7 @@ public class GooglePlayUtils
 {
     public static final String TAG = GooglePlayUtils.class.getSimpleName();
 
-    public static Intent getSupportPurchaseReportEmailIntent(Context context, SKUPurchase purchase)
+    public static Intent getSupportPurchaseReportEmailIntent(Context context, BaseIABPurchase purchase)
     {
         String deviceDetails = "\n\nThere appears to have been a problem reporting my purchase to TradeHero server\n\n-----\n" +
                 StringUtils.join("\n", getPurchaseReportStrings(context, purchase)) +
@@ -29,7 +28,7 @@ public class GooglePlayUtils
         return intent;
     }
 
-    public static List<String> getPurchaseReportStrings(Context context, SKUPurchase purchase)
+    public static List<String> getPurchaseReportStrings(Context context, BaseIABPurchase purchase)
     {
         List<String> reported = new ArrayList<>();
 

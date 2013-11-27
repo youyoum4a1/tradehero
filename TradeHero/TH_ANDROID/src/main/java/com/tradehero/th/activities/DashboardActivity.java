@@ -5,28 +5,16 @@ import android.content.Intent;
 import android.os.Bundle;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.MenuItem;
-import com.tradehero.common.billing.BillingPurchaser;
-import com.tradehero.common.billing.InventoryFetcher;
-import com.tradehero.common.billing.googleplay.IABPurchaseConsumer;
-import com.tradehero.common.billing.googleplay.IABPurchaseFetcher;
-import com.tradehero.common.billing.googleplay.IABSKU;
-import com.tradehero.common.billing.googleplay.SKUPurchase;
-import com.tradehero.common.billing.googleplay.exceptions.IABException;
+import com.tradehero.common.billing.googleplay.BaseIABPurchase;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
 import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
-import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.base.Navigator;
-import com.tradehero.th.billing.BasePurchaseReporter;
-import com.tradehero.th.billing.googleplay.IABSKUFetcher;
-import com.tradehero.th.billing.googleplay.PurchaseRestorer;
+import com.tradehero.th.billing.googleplay.THIABPurchaseRestorer;
 import com.tradehero.th.billing.googleplay.THIABActor;
 import com.tradehero.th.billing.googleplay.THIABActorUser;
 import com.tradehero.th.billing.googleplay.THIABLogicHolderExtended;
-import com.tradehero.th.billing.googleplay.THIABOrderId;
-import com.tradehero.th.billing.googleplay.THIABPurchaseOrder;
-import com.tradehero.th.billing.googleplay.THSKUDetails;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.billing.PurchaseRestorerAlertUtil;
 import com.tradehero.th.utils.DaggerUtils;
@@ -42,8 +30,8 @@ public class DashboardActivity extends SherlockFragmentActivity
 
     private DashboardNavigator navigator;
     private THIABLogicHolderExtended thiabLogicHolderExtended;
-    private PurchaseRestorer purchaseRestorer;
-    private PurchaseRestorer.OnPurchaseRestorerFinishedListener purchaseRestorerFinishedListener;
+    private THIABPurchaseRestorer purchaseRestorer;
+    private THIABPurchaseRestorer.OnPurchaseRestorerFinishedListener purchaseRestorerFinishedListener;
     @Inject CurrentUserBaseKeyHolder currentUserBaseKeyHolder;
 
     @Override public void onCreate(Bundle savedInstanceState)
@@ -92,16 +80,16 @@ public class DashboardActivity extends SherlockFragmentActivity
     private void launchIAB()
     {
         thiabLogicHolderExtended = new THIABLogicHolderExtended(this);
-        purchaseRestorer = new PurchaseRestorer(this,
+        purchaseRestorer = new THIABPurchaseRestorer(this,
                 getBillingActor(),
                 getBillingActor(),
                 getBillingActor(),
                 getBillingActor(),
                 currentUserBaseKeyHolder.getCurrentUserBaseKey());
-        purchaseRestorerFinishedListener = new PurchaseRestorer.OnPurchaseRestorerFinishedListener()
+        purchaseRestorerFinishedListener = new THIABPurchaseRestorer.OnPurchaseRestorerFinishedListener()
         {
             @Override
-            public void onPurchaseRestoreFinished(List<SKUPurchase> consumed, List<SKUPurchase> reportFailed, List<SKUPurchase> consumeFailed)
+            public void onPurchaseRestoreFinished(List<BaseIABPurchase> consumed, List<BaseIABPurchase> reportFailed, List<BaseIABPurchase> consumeFailed)
             {
                 THLog.d(TAG, "onPurchaseRestoreFinished3");
                 PurchaseRestorerAlertUtil.handlePurchaseRestoreFinished(
@@ -112,7 +100,7 @@ public class DashboardActivity extends SherlockFragmentActivity
                         createFailedRestoreClickListener(new Exception())); // TODO have a better exception
             }
 
-            @Override public void onPurchaseRestoreFinished(List<SKUPurchase> consumed, List<SKUPurchase> consumeFailed)
+            @Override public void onPurchaseRestoreFinished(List<BaseIABPurchase> consumed, List<BaseIABPurchase> consumeFailed)
             {
                 THLog.d(TAG, "onPurchaseRestoreFinished2");
             }

@@ -5,7 +5,7 @@ import android.content.Context;
 import com.squareup.picasso.Picasso;
 import com.tradehero.common.billing.googleplay.IABInventoryFetcher;
 import com.tradehero.common.billing.googleplay.IABServiceConnector;
-import com.tradehero.common.billing.googleplay.PurchaseFetcher;
+import com.tradehero.common.billing.googleplay.BaseIABPurchaseFetcher;
 import com.tradehero.common.cache.DatabaseCache;
 import com.tradehero.common.cache.LruMemFileCache;
 import com.tradehero.common.persistence.CacheHelper;
@@ -16,9 +16,9 @@ import com.tradehero.th.api.form.AbstractUserAvailabilityRequester;
 import com.tradehero.th.api.portfolio.DisplayablePortfolioDTO;
 import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
 import com.tradehero.th.base.THUser;
-import com.tradehero.th.billing.PurchaseReporter;
+import com.tradehero.th.billing.googleplay.THIABPurchaseReporter;
 import com.tradehero.th.billing.googleplay.PurchaseRestorerRequiredMilestone;
-import com.tradehero.th.billing.googleplay.SKUDetailsPurchaser;
+import com.tradehero.th.billing.googleplay.THIABPurchaser;
 import com.tradehero.th.billing.googleplay.THIABInventoryFetcher;
 import com.tradehero.th.billing.googleplay.THIABLogicHolderExtended;
 import com.tradehero.th.billing.googleplay.THIABPurchaseConsumer;
@@ -233,9 +233,9 @@ import org.ocpsoft.prettytime.PrettyTime;
                 IABServiceConnector.class,
                 IABInventoryFetcher.class,
                 THIABInventoryFetcher.class,
-                PurchaseFetcher.class,
-                SKUDetailsPurchaser.class,
-                PurchaseReporter.class,
+                BaseIABPurchaseFetcher.class,
+                THIABPurchaser.class,
+                THIABPurchaseReporter.class,
                 THIABLogicHolderExtended.class,
                 THIABPurchaseConsumer.class,
                 THInventoryFetchMilestone.class,

@@ -9,12 +9,11 @@ import com.tradehero.th.persistence.billing.googleplay.THSKUDetailCache;
 import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import javax.inject.Inject;
 import org.json.JSONException;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/6/13 Time: 3:48 PM To change this template use File | Settings | File Templates. */
-public class THIABInventoryFetcher extends IABInventoryFetcher<IABSKU, THSKUDetails>
+public class THIABInventoryFetcher extends IABInventoryFetcher<IABSKU, THIABProductDetails>
 {
     public static final String TAG = THIABInventoryFetcher.class.getSimpleName();
 
@@ -25,14 +24,14 @@ public class THIABInventoryFetcher extends IABInventoryFetcher<IABSKU, THSKUDeta
         super(ctx);
     }
 
-    @Override protected THSKUDetails createSKUDetails(String itemType, String json) throws JSONException
+    @Override protected THIABProductDetails createSKUDetails(String itemType, String json) throws JSONException
     {
-        return new THSKUDetails(itemType, json);
+        return new THIABProductDetails(itemType, json);
     }
 
-    @Override protected HashMap<IABSKU, THSKUDetails> internalFetchCompleteInventory() throws IABException, RemoteException, JSONException
+    @Override protected HashMap<IABSKU, THIABProductDetails> internalFetchCompleteInventory() throws IABException, RemoteException, JSONException
     {
-        HashMap<IABSKU, THSKUDetails> inventory = super.internalFetchCompleteInventory();
+        HashMap<IABSKU, THIABProductDetails> inventory = super.internalFetchCompleteInventory();
         skuDetailCache.get().put(new ArrayList<>(inventory.values()));
         return inventory;
     }

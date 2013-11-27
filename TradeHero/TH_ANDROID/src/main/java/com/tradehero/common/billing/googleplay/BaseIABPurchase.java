@@ -24,7 +24,7 @@ import org.json.JSONObject;
 /**
  * Represents an in-app billing purchase.
  */
-public class SKUPurchase implements IABPurchase<IABSKU, THIABOrderId>
+public class BaseIABPurchase implements IABPurchase<IABSKU, THIABOrderId>
 {
     public static final String JSON_KEY_ORDER_ID = "orderId";
     public static final String JSON_KEY_PACKAGE_NAME = "packageName";
@@ -46,7 +46,7 @@ public class SKUPurchase implements IABPurchase<IABSKU, THIABOrderId>
     public final String originalJson;
     public final String signature;
 
-    public SKUPurchase(String itemType, String jsonPurchaseInfo, String signature) throws JSONException
+    public BaseIABPurchase(String itemType, String jsonPurchaseInfo, String signature) throws JSONException
     {
         this.itemType = itemType;
         this.originalJson = jsonPurchaseInfo;

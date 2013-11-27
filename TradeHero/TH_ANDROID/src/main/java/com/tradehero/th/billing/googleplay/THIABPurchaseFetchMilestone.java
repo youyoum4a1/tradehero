@@ -1,38 +1,38 @@
 package com.tradehero.th.billing.googleplay;
 
+import com.tradehero.common.billing.googleplay.BaseIABPurchase;
 import com.tradehero.common.billing.googleplay.IABPurchaseFetchMilestone;
 import com.tradehero.common.billing.googleplay.IABPurchaseFetcher;
 import com.tradehero.common.billing.googleplay.IABSKU;
-import com.tradehero.common.billing.googleplay.SKUPurchase;
 import com.tradehero.common.billing.googleplay.exceptions.IABException;
 import java.util.Map;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/26/13 Time: 11:36 AM To change this template use File | Settings | File Templates. */
-public class SKUPurchaseFetchMilestone
+public class THIABPurchaseFetchMilestone
         extends
         IABPurchaseFetchMilestone<
                 IABSKU,
                 THIABOrderId,
-                SKUPurchase,
+                BaseIABPurchase,
                 IABPurchaseFetcher.OnPurchaseFetchedListener<
                         IABSKU,
                         THIABOrderId,
-                        SKUPurchase>>
+                        BaseIABPurchase>>
 {
-    public static final String TAG = SKUPurchaseFetchMilestone.class.getSimpleName();
+    public static final String TAG = THIABPurchaseFetchMilestone.class.getSimpleName();
 
     /**
      * The billing actor should be strongly referenced elsewhere
      * @param actorPurchaseFetcher
      */
-    public SKUPurchaseFetchMilestone(THIABActorPurchaseFetcher actorPurchaseFetcher)
+    public THIABPurchaseFetchMilestone(THIABActorPurchaseFetcher actorPurchaseFetcher)
     {
         super(actorPurchaseFetcher);
     }
 
-    @Override protected IABPurchaseFetcher.OnPurchaseFetchedListener<IABSKU, THIABOrderId, SKUPurchase> createPurchaseFetchedListener()
+    @Override protected IABPurchaseFetcher.OnPurchaseFetchedListener<IABSKU, THIABOrderId, BaseIABPurchase> createPurchaseFetchedListener()
     {
-        return new IABPurchaseFetcher.OnPurchaseFetchedListener<IABSKU, THIABOrderId, SKUPurchase>()
+        return new IABPurchaseFetcher.OnPurchaseFetchedListener<IABSKU, THIABOrderId, BaseIABPurchase>()
         {
             @Override public void onFetchPurchasesFailed(int requestCode, IABException exception)
             {
@@ -42,7 +42,7 @@ public class SKUPurchaseFetchMilestone
                 notifyFailedListener(exception);
             }
 
-            @Override public void onFetchedPurchases(int requestCode, Map<IABSKU, SKUPurchase> purchases)
+            @Override public void onFetchedPurchases(int requestCode, Map<IABSKU, BaseIABPurchase> purchases)
             {
                 failed = false;
                 complete = true;
