@@ -18,11 +18,11 @@ public class PurchaseRestorerRequiredMilestone extends BaseMilestoneGroup
     private static final int POSITION_FETCH_PURCHASE = 1;
     private static final int POSITION_FETCH_PORTFOLIO = 2;
 
-    public PurchaseRestorerRequiredMilestone(Context context, THIABActorPurchaseFetcher actorPurchaseFetcher, UserBaseKey userBaseKey)
+    public PurchaseRestorerRequiredMilestone(Context context, THIABActorInventoryFetcher actorInventoryFetcher, THIABActorPurchaseFetcher actorPurchaseFetcher, UserBaseKey userBaseKey)
     {
         super();
         DaggerUtils.inject(this);
-        add(new THInventoryFetchMilestone(context, IABSKUListType.getInApp()));
+        add(new THInventoryFetchMilestone(context, actorInventoryFetcher, IABSKUListType.getInApp()));
         add(new SKUPurchaseFetchMilestone(actorPurchaseFetcher));
         add(new PortfolioCompactListRetrievedMilestone(userBaseKey));
     }

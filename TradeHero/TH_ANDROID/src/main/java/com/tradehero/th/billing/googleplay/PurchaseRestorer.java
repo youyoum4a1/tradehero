@@ -31,6 +31,7 @@ public class PurchaseRestorer extends IABPurchaseRestorer<
     public static final String TAG = PurchaseRestorer.class.getSimpleName();
 
     private final WeakReference<Activity> activity;
+    private WeakReference<THIABActorInventoryFetcher> actorInventoryFetcher = new WeakReference<>(null);
     private WeakReference<THIABActorPurchaseFetcher> actorPurchaseFetcher = new WeakReference<>(null);
     private WeakReference<THIABActorPurchaseReporter> actorPurchaseReporter = new WeakReference<>(null);
     protected final UserBaseKey userBaseKey;
@@ -41,6 +42,7 @@ public class PurchaseRestorer extends IABPurchaseRestorer<
 
     public PurchaseRestorer(
             Activity activity,
+            THIABActorInventoryFetcher actorInventoryFetcher,
             THIABActorPurchaseFetcher actorPurchaseFetcher,
             THIABActorPurchaseConsumer billingActorConsumer,
             THIABActorPurchaseReporter actorPurchaseReporter,
@@ -48,6 +50,7 @@ public class PurchaseRestorer extends IABPurchaseRestorer<
     {
         super(billingActorConsumer);
         this.activity = new WeakReference<>(activity);
+        this.actorInventoryFetcher = new WeakReference<>(actorInventoryFetcher);
         this.actorPurchaseFetcher = new WeakReference<>(actorPurchaseFetcher);
         this.actorPurchaseReporter = new WeakReference<>(actorPurchaseReporter);
         this.userBaseKey = userBaseKey;
@@ -78,7 +81,7 @@ public class PurchaseRestorer extends IABPurchaseRestorer<
 
     @Override protected Milestone createMilestone()
     {
-        return new PurchaseRestorerRequiredMilestone(activity.get(), actorPurchaseFetcher.get(), userBaseKey);
+        return new PurchaseRestorerRequiredMilestone(activity.get(), actorInventoryFetcher.get(), actorPurchaseFetcher.get(), userBaseKey);
     }
 
     @Override protected IABPurchaseConsumer.OnIABConsumptionFinishedListener<IABSKU, THIABOrderId, SKUPurchase, IABException> createPurchaseConsumerListener()

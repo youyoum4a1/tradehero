@@ -42,6 +42,9 @@ public class SKUDetails implements IABProductDetails<IABSKU>
         this.iabSKU =  new IABSKU(skuString);
         this.type = o.optString(JSON_KEY_TYPE);
         this.price = o.optString(JSON_KEY_PRICE);
+        // This field is probably dependent on the version of the google play installed.
+        // To have it, perhaps only opening the Google Play Store twice is enough...
+        // https://code.google.com/p/marketbilling/issues/detail?id=93
         this.priceAmountMicros = o.optLong(JSON_KEY_PRICE_MICROS);
         this.priceCurrencyCode = o.optString(JSON_KEY_PRICE_CURRENCY_CODE);
         this.title = o.optString(JSON_KEY_TITLE);

@@ -48,7 +48,9 @@ import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 11/11/13 Time: 11:05 AM To change this template use File | Settings | File Templates. */
+/**
+ * It expects its Activity to implement THIABActorUser.
+ * Created with IntelliJ IDEA. User: xavier Date: 11/11/13 Time: 11:05 AM To change this template use File | Settings | File Templates. */
 abstract public class BasePurchaseManagerFragment extends DashboardFragment
         implements IABAlertUtils.OnDialogSKUDetailsClickListener<THSKUDetails>,
         THIABActorUser,
@@ -68,6 +70,7 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
     private ShowSkuDetailsMilestone showSkuDetailsMilestone;
     private Milestone.OnCompleteListener showSkuDetailsMilestoneListener;
     private Runnable runOnShowSkuDetailsMilestoneComplete;
+    protected Throwable showSkuDetailsMilestoneException;
 
     private ProgressDialog progressDialog;
     @Inject Lazy<CurrentUserBaseKeyHolder> currentUserBaseKeyHolder;
@@ -88,7 +91,7 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
     @Override public void onActivityCreated(Bundle savedInstanceState)
     {
         super.onActivityCreated(savedInstanceState);
-        setBillingActor(((DashboardActivity) getActivity()).getThiabLogicHolderExtended());
+        setBillingActor(((THIABActorUser) getActivity()).getBillingActor());
     }
 
     @Override public void onResume()
@@ -151,14 +154,15 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
         if (portfolioId == null)
         {
             // We still need to collect the portfolios
-            showSkuDetailsMilestone = new ShowSkuDetailsMilestone(getActivity(), IABSKUListType.getInApp(), userBaseKey);
+            showSkuDetailsMilestone = new ShowSkuDetailsMilestone(getActivity(), getBillingActor(), IABSKUListType.getInApp(), userBaseKey);
         }
         else
         {
-            showSkuDetailsMilestone = new ShowSkuDetailsMilestone(getActivity(), IABSKUListType.getInApp(), null);
+            showSkuDetailsMilestone = new ShowSkuDetailsMilestone(getActivity(), getBillingActor(), IABSKUListType.getInApp(), null);
         }
         showSkuDetailsMilestoneListener = createShowSkuDetailsMilestoneListener();
         showSkuDetailsMilestone.setOnCompleteListener(showSkuDetailsMilestoneListener);
+        showSkuDetailsMilestoneException = null;
         showSkuDetailsMilestone.launch();
     }
 
@@ -181,6 +185,7 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
             @Override public void onFailed(Milestone milestone, Throwable throwable)
             {
                 THLog.e(TAG, "Failed to complete ShowSkuDetailsMilestone", throwable);
+                showSkuDetailsMilestoneException = throwable;
                 handleShowSkuDetailsMilestoneFailed(throwable);
             }
         };
@@ -269,10 +274,6 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
         else if (hadErrorLoadingInventory())
         {
             popErrorWhenLoading();
-        }
-        else if (!isInventoryReady())
-        {
-            IABAlertUtils.popWaitWhileLoading(getActivity());
         }
         else
         {
@@ -478,7 +479,15 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
                 getActivity(),
                 Application.getResourceString(R.string.store_billing_loading_info_window_title),
                 Application.getResourceString(R.string.store_billing_loading_info_window_message),
-                true);
+                true,
+                true,
+                new DialogInterface.OnCancelListener()
+                {
+                    @Override public void onCancel(DialogInterface dialog)
+                    {
+                        runOnShowSkuDetailsMilestoneComplete = null;
+                    }
+                });
     }
 
     protected void popFailedToLoadRequiredInfo()

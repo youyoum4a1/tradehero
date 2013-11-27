@@ -10,6 +10,7 @@ import android.widget.ListView;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
+import com.tradehero.common.billing.googleplay.exceptions.IABBillingUnavailableException;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.DashboardActivity;
@@ -88,6 +89,11 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
 
     @Override protected void handleShowSkuDetailsMilestoneFailed(Throwable throwable)
     {
+        // TODO warn if there are things unset
+        if (throwable instanceof IABBillingUnavailableException)
+        {
+            IABAlertUtils.popBillingUnavailable(getActivity());
+        }
         // Nothing to do presumably
     }
 

@@ -15,8 +15,9 @@ import java.util.List;
 /** Created with IntelliJ IDEA. User: xavier Date: 11/8/13 Time: 11:06 AM To change this template use File | Settings | File Templates. */
 public interface THIABActor extends
         SKUDomainInformer,
+        THIABActorInventoryFetcher, // This is redundant but allows passing of interface
         THIABActorPurchaseFetcher, // This is redundant but allows passing of interface
-        THIABActorPurchaseReporter,
+        THIABActorPurchaseReporter, // This is redundant but allows passing of interface
         THIABActorPurchaseConsumer, // This is redundant but allows passing of interface
         IABActor<
                 IABSKU,

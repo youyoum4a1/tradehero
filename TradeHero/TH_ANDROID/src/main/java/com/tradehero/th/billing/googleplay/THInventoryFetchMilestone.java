@@ -8,11 +8,13 @@ import com.tradehero.common.billing.googleplay.exceptions.IABException;
 import com.tradehero.common.milestone.BaseMilestone;
 import com.tradehero.common.milestone.DependentMilestone;
 import com.tradehero.common.milestone.Milestone;
+import com.tradehero.common.utils.THLog;
 import com.tradehero.th.persistence.billing.googleplay.IABSKUListCache;
 import com.tradehero.th.persistence.billing.googleplay.IABSKUListRetrievedMilestone;
 import com.tradehero.th.persistence.billing.googleplay.THSKUDetailCache;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
+import java.lang.ref.WeakReference;
 import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
@@ -27,20 +29,21 @@ public class THInventoryFetchMilestone extends BaseMilestone implements Dependen
     private boolean failed;
     private final Context context;
     private final IABSKUListType iabskuListType;
-    private THIABInventoryFetcher inventoryFetcher;
-    private final InventoryFetcher.OnInventoryFetchedListener<IABSKU, THSKUDetails, IABException> fetchListener;
+    private WeakReference<THIABActorInventoryFetcher> actorInventoryFetcherWeak = new WeakReference<>(null);
+    private InventoryFetcher.OnInventoryFetchedListener<IABSKU, THSKUDetails, IABException> fetchListener;
     protected IABSKUListRetrievedMilestone dependsOn;
-    private final OnCompleteListener dependCompleteListener;
+    private OnCompleteListener dependCompleteListener;
     @Inject Lazy<IABSKUListCache> iabskuListCache;
     @Inject Lazy<THSKUDetailCache> thskuDetailCache;
 
-    public THInventoryFetchMilestone(Context context, IABSKUListType iabskuListType)
+    public THInventoryFetchMilestone(Context context, THIABActorInventoryFetcher actorInventoryFetcher, IABSKUListType iabskuListType)
     {
         super();
         running = false;
         complete = false;
         failed = false;
         this.context = context;
+        this.actorInventoryFetcherWeak = new WeakReference<>(actorInventoryFetcher);
         this.iabskuListType = iabskuListType;
         fetchListener = new InventoryFetcher.OnInventoryFetchedListener<IABSKU, THSKUDetails, IABException>()
         {
@@ -75,8 +78,14 @@ public class THInventoryFetchMilestone extends BaseMilestone implements Dependen
 
     @Override public void onDestroy()
     {
-        inventoryFetcher = null;
+        if (dependsOn != null)
+        {
+            dependsOn.onDestroy();
+        }
+        actorInventoryFetcherWeak = null;
+        fetchListener = null;
         dependsOn = null;
+        dependCompleteListener = null;
     }
 
     @Override public void launch()
@@ -97,14 +106,21 @@ public class THInventoryFetchMilestone extends BaseMilestone implements Dependen
         }
         if (areDetailsInCache(skus))
         {
+            THLog.d(TAG, "Details are already in cache");
             notifyCompleteListener();
         }
         else
         {
-            inventoryFetcher = new THIABInventoryFetcher(context);
-            inventoryFetcher.setProductIdentifiers(skus);
-            inventoryFetcher.setInventoryFetchedListener(fetchListener);
-            inventoryFetcher.fetchInventory(0);
+            THIABActorInventoryFetcher actorInventoryFetcher = actorInventoryFetcherWeak.get();
+            if (actorInventoryFetcher == null)
+            {
+                notifyFailedListener(new NullPointerException("actorInventoryFetcher was null"));
+            }
+            else
+            {
+                int requestCode = actorInventoryFetcher.registerInventoryFetchedListener(fetchListener);
+                actorInventoryFetcher.launchInventoryFetchSequence(requestCode);
+            }
         }
     }
 

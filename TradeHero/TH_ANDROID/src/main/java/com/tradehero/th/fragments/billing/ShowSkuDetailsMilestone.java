@@ -4,6 +4,7 @@ import android.content.Context;
 import com.tradehero.common.billing.googleplay.IABSKUListType;
 import com.tradehero.common.milestone.BaseMilestoneGroup;
 import com.tradehero.th.api.users.UserBaseKey;
+import com.tradehero.th.billing.googleplay.THIABActorInventoryFetcher;
 import com.tradehero.th.billing.googleplay.THInventoryFetchMilestone;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListRetrievedMilestone;
 
@@ -19,12 +20,12 @@ public class ShowSkuDetailsMilestone extends BaseMilestoneGroup
      * @param context
      * @param userBaseKey
      */
-    public ShowSkuDetailsMilestone(final Context context, IABSKUListType iabskuListType, final UserBaseKey userBaseKey)
+    public ShowSkuDetailsMilestone(final Context context, THIABActorInventoryFetcher actorInventoryFetcher, IABSKUListType iabskuListType, final UserBaseKey userBaseKey)
     {
         super();
 
         this.userBaseKey = userBaseKey;
-        add(new THInventoryFetchMilestone(context, iabskuListType));
+        add(new THInventoryFetchMilestone(context, actorInventoryFetcher, iabskuListType));
         if (userBaseKey != null)
         {
             add(new PortfolioCompactListRetrievedMilestone(userBaseKey));

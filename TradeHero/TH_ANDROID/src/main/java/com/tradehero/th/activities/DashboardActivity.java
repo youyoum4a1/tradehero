@@ -32,9 +32,10 @@ import com.tradehero.th.fragments.billing.PurchaseRestorerAlertUtil;
 import com.tradehero.th.utils.DaggerUtils;
 import java.util.List;
 import javax.inject.Inject;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 public class DashboardActivity extends SherlockFragmentActivity
-        implements DashboardNavigatorActivity
+        implements DashboardNavigatorActivity, THIABActorUser
 {
     public static final String TAG = DashboardActivity.class.getSimpleName();
     public static final String EXTRA_FRAGMENT = DashboardActivity.class.getName() + ".fragment";
@@ -92,9 +93,10 @@ public class DashboardActivity extends SherlockFragmentActivity
     {
         thiabLogicHolderExtended = new THIABLogicHolderExtended(this);
         purchaseRestorer = new PurchaseRestorer(this,
-                thiabLogicHolderExtended,
-                thiabLogicHolderExtended,
-                thiabLogicHolderExtended,
+                getBillingActor(),
+                getBillingActor(),
+                getBillingActor(),
+                getBillingActor(),
                 currentUserBaseKeyHolder.getCurrentUserBaseKey());
         purchaseRestorerFinishedListener = new PurchaseRestorer.OnPurchaseRestorerFinishedListener()
         {
@@ -176,7 +178,12 @@ public class DashboardActivity extends SherlockFragmentActivity
     }
     //</editor-fold>
 
-    public THIABLogicHolderExtended getThiabLogicHolderExtended()
+    @Override public void setBillingActor(THIABActor billingActor)
+    {
+        throw new NotImplementedException(); // You should not use this method
+    }
+
+    @Override public THIABActor getBillingActor()
     {
         return thiabLogicHolderExtended;
     }
