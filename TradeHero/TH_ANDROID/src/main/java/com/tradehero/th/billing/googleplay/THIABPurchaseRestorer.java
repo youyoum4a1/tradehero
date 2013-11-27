@@ -36,7 +36,7 @@ public class THIABPurchaseRestorer extends IABPurchaseRestorer<
     protected final UserBaseKey userBaseKey;
     private WeakReference<OnPurchaseRestorerFinishedListener> finishedListener = new WeakReference<>(null);
     protected int requestCodeReporter;
-    private PurchaseReporter.OnPurchaseReportedListener<IABSKU, THIABOrderId, BaseIABPurchase> purchaseReportedListener;
+    private PurchaseReporter.OnPurchaseReportedListener<IABSKU, THIABOrderId, BaseIABPurchase, Exception> purchaseReportedListener;
     private final List<BaseIABPurchase> failedReports;
 
     public THIABPurchaseRestorer(
@@ -59,9 +59,9 @@ public class THIABPurchaseRestorer extends IABPurchaseRestorer<
     @Override public void init()
     {
         super.init();
-        purchaseReportedListener = new PurchaseReporter.OnPurchaseReportedListener<IABSKU, THIABOrderId, BaseIABPurchase>()
+        purchaseReportedListener = new PurchaseReporter.OnPurchaseReportedListener<IABSKU, THIABOrderId, BaseIABPurchase, Exception>()
         {
-            @Override public void onPurchaseReportFailed(int requestCode, BaseIABPurchase reportedPurchase, Throwable error)
+            @Override public void onPurchaseReportFailed(int requestCode, BaseIABPurchase reportedPurchase, Exception error)
             {
                 THLog.d(TAG, "onPurchaseReportFailed");
                 haveBillingActorForget(requestCode);

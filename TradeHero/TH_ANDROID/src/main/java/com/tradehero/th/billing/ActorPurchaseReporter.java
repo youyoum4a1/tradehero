@@ -10,13 +10,18 @@ public interface ActorPurchaseReporter<
         ProductIdentifierType extends ProductIdentifier,
         OrderIdType extends OrderId,
         ProductPurchaseType extends ProductPurchase<ProductIdentifierType, OrderIdType>,
-        UserProfileDTOType extends UserProfileDTO>
+        UserProfileDTOType extends UserProfileDTO,
+        OnPurchaseReportedListenerType extends PurchaseReporter.OnPurchaseReportedListener<
+                ProductIdentifierType,
+                OrderIdType,
+                ProductPurchaseType,
+                ThrowableType>,
+        ThrowableType extends Throwable>
 {
     void forgetRequestCode(int requestCode);
 
-    PurchaseReporter.OnPurchaseReportedListener<ProductIdentifierType, OrderIdType, ProductPurchaseType> getPurchaseReportHandler(int requestCode);
-    int registerPurchaseReportedHandler(
-            PurchaseReporter.OnPurchaseReportedListener<ProductIdentifierType, OrderIdType, ProductPurchaseType> purchaseReportedHandler);
+    OnPurchaseReportedListenerType getPurchaseReportHandler(int requestCode);
+    int registerPurchaseReportedHandler(OnPurchaseReportedListenerType purchaseReportedHandler);
     void launchReportSequence(int requestCode, ProductPurchaseType purchase);
     UserProfileDTOType launchReportSequenceSync(ProductPurchaseType purchase);
 }

@@ -50,7 +50,7 @@ import javax.inject.Inject;
 abstract public class BasePurchaseManagerFragment extends DashboardFragment
         implements IABAlertUtils.OnDialogSKUDetailsClickListener<THIABProductDetails>,
         THIABActorUser,
-        PurchaseReporter.OnPurchaseReportedListener<IABSKU, THIABOrderId, BaseIABPurchase>,
+        PurchaseReporter.OnPurchaseReportedListener<IABSKU, THIABOrderId, BaseIABPurchase, Exception>,
         BillingPurchaser.OnPurchaseFinishedListener<
                 IABSKU,
                 THIABPurchaseOrder,
@@ -547,7 +547,7 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
 
 
 
-    @Override public void onPurchaseReportFailed(int requestCode, BaseIABPurchase reportedPurchase, Throwable error)
+    @Override public void onPurchaseReportFailed(int requestCode, BaseIABPurchase reportedPurchase, Exception error)
     {
         THLog.e(TAG, "Failed to report to server", error);
         if (progressDialog != null)

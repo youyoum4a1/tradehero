@@ -17,17 +17,47 @@ import java.util.Map;
 abstract public class BaseIABActor<
         IABSKUType extends IABSKU,
         IABProductDetailsType extends IABProductDetails<IABSKUType>,
-        IABInventoryFetcherType extends IABInventoryFetcher<IABSKUType, IABProductDetailsType>,
-        IABInventoryFetchedListenerType extends InventoryFetcher.OnInventoryFetchedListener<IABSKUType, IABProductDetailsType, IABException>,
+        IABInventoryFetcherType extends IABInventoryFetcher<
+                IABSKUType,
+                IABProductDetailsType>,
+        IABInventoryFetchedListenerType extends InventoryFetcher.OnInventoryFetchedListener<
+                IABSKUType,
+                IABProductDetailsType,
+                IABException>,
         IABPurchaseOrderType extends IABPurchaseOrder<IABSKUType>,
         IABOrderIdType extends IABOrderId,
-        IABPurchaseType extends IABPurchase<IABSKUType, IABOrderIdType>,
-        IABPurchaseFetcherType extends IABPurchaseFetcher<IABSKUType, IABOrderIdType, IABPurchaseType>,
-        IABPurchaseFetchedListenerType extends IABPurchaseFetcher.OnPurchaseFetchedListener<IABSKUType, IABOrderIdType, IABPurchaseType>,
-        IABPurchaserType extends IABPurchaser<IABSKUType, IABProductDetailsType, IABOrderIdType, IABPurchaseOrderType, IABPurchaseType>,
-        IABPurchaseFinishedListenerType extends BillingPurchaser.OnPurchaseFinishedListener<IABSKUType, IABPurchaseOrderType, IABOrderIdType, IABPurchaseType, IABException>,
-        IABPurchaseConsumerType extends IABPurchaseConsumer<IABSKUType, IABOrderIdType, IABPurchaseType>,
-        IABConsumeFinishedListenerType extends IABPurchaseConsumer.OnIABConsumptionFinishedListener<IABSKUType, IABOrderIdType, IABPurchaseType, IABException>>
+        IABPurchaseType extends IABPurchase<
+                IABSKUType,
+                IABOrderIdType>,
+        IABPurchaseFetcherType extends IABPurchaseFetcher<
+                IABSKUType,
+                IABOrderIdType,
+                IABPurchaseType>,
+        IABPurchaseFetchedListenerType extends IABPurchaseFetcher.OnPurchaseFetchedListener<
+                IABSKUType,
+                IABOrderIdType,
+                IABPurchaseType>,
+        IABPurchaserType extends IABPurchaser<
+                IABSKUType,
+                IABProductDetailsType,
+                IABOrderIdType,
+                IABPurchaseOrderType,
+                IABPurchaseType>,
+        IABPurchaseFinishedListenerType extends BillingPurchaser.OnPurchaseFinishedListener<
+                IABSKUType,
+                IABPurchaseOrderType,
+                IABOrderIdType,
+                IABPurchaseType,
+                IABException>,
+        IABPurchaseConsumerType extends IABPurchaseConsumer<
+                IABSKUType,
+                IABOrderIdType,
+                IABPurchaseType>,
+        IABConsumeFinishedListenerType extends IABPurchaseConsumer.OnIABConsumptionFinishedListener<
+                IABSKUType,
+                IABOrderIdType,
+                IABPurchaseType,
+                IABException>>
     implements IABActor<
         IABSKUType,
         IABProductDetailsType,

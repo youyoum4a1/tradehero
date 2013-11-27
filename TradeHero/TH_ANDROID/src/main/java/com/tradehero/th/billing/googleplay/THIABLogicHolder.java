@@ -39,16 +39,31 @@ abstract public class THIABLogicHolder
         IABSKU,
         THIABProductDetails,
         THIABInventoryFetcher,
-        InventoryFetcher.OnInventoryFetchedListener<IABSKU, THIABProductDetails, IABException>,
+        InventoryFetcher.OnInventoryFetchedListener<
+                IABSKU,
+                THIABProductDetails,
+                IABException>,
         THIABPurchaseOrder,
         THIABOrderId,
         BaseIABPurchase,
         BaseIABPurchaseFetcher,
-        IABPurchaseFetcher.OnPurchaseFetchedListener<IABSKU, THIABOrderId, BaseIABPurchase>,
+        IABPurchaseFetcher.OnPurchaseFetchedListener<
+                IABSKU,
+                THIABOrderId,
+                BaseIABPurchase>,
         THIABPurchaser,
-        BillingPurchaser.OnPurchaseFinishedListener<IABSKU, THIABPurchaseOrder, THIABOrderId, BaseIABPurchase, IABException>,
+        BillingPurchaser.OnPurchaseFinishedListener<
+                IABSKU,
+                THIABPurchaseOrder,
+                THIABOrderId,
+                BaseIABPurchase,
+                IABException>,
         THIABPurchaseConsumer,
-        THIABPurchaseConsumer.OnIABConsumptionFinishedListener<IABSKU, THIABOrderId, BaseIABPurchase, IABException>>
+        THIABPurchaseConsumer.OnIABConsumptionFinishedListener<
+                IABSKU,
+                THIABOrderId,
+                BaseIABPurchase,
+                IABException>>
     implements THIABActor
 {
     public static final String TAG = THIABLogicHolder.class.getSimpleName();
@@ -58,8 +73,8 @@ abstract public class THIABLogicHolder
     protected Map<Integer /*requestCode*/, WeakReference<IABSKUFetcher.OnSKUFetchedListener<IABSKU>>> parentSkuFetchedListeners;
 
     protected Map<Integer /*requestCode*/, THIABPurchaseReporter> purchaseReporters;
-    protected Map<Integer /*requestCode*/, PurchaseReporter.OnPurchaseReportedListener<IABSKU, THIABOrderId, BaseIABPurchase>> purchaseReportedListeners;
-    protected Map<Integer /*requestCode*/, WeakReference<BasePurchaseReporter.OnPurchaseReportedListener<IABSKU, THIABOrderId, BaseIABPurchase>>> parentPurchaseReportedHandlers;
+    protected Map<Integer /*requestCode*/, PurchaseReporter.OnPurchaseReportedListener<IABSKU, THIABOrderId, BaseIABPurchase, Exception>> purchaseReportedListeners;
+    protected Map<Integer /*requestCode*/, WeakReference<BasePurchaseReporter.OnPurchaseReportedListener<IABSKU, THIABOrderId, BaseIABPurchase, Exception>>> parentPurchaseReportedHandlers;
 
     @Inject Lazy<UserProfileCache> userProfileCache;
     @Inject Lazy<PortfolioCompactListCache> portfolioCompactListCache;
@@ -191,9 +206,9 @@ abstract public class THIABLogicHolder
         }
     }
 
-    public PurchaseReporter.OnPurchaseReportedListener<IABSKU, THIABOrderId, BaseIABPurchase> getPurchaseReportHandler(int requestCode)
+    public PurchaseReporter.OnPurchaseReportedListener<IABSKU, THIABOrderId, BaseIABPurchase, Exception> getPurchaseReportHandler(int requestCode)
     {
-        WeakReference<PurchaseReporter.OnPurchaseReportedListener<IABSKU, THIABOrderId, BaseIABPurchase>> weakHandler = parentPurchaseReportedHandlers.get(requestCode);
+        WeakReference<PurchaseReporter.OnPurchaseReportedListener<IABSKU, THIABOrderId, BaseIABPurchase, Exception>> weakHandler = parentPurchaseReportedHandlers.get(requestCode);
         if (weakHandler != null)
         {
             return weakHandler.get();
@@ -201,12 +216,12 @@ abstract public class THIABLogicHolder
         return null;
     }
 
-    protected void registerPurchaseReportedHandler(int requestCode, PurchaseReporter.OnPurchaseReportedListener<IABSKU, THIABOrderId, BaseIABPurchase> purchaseReportedHandler)
+    protected void registerPurchaseReportedHandler(int requestCode, PurchaseReporter.OnPurchaseReportedListener<IABSKU, THIABOrderId, BaseIABPurchase, Exception> purchaseReportedHandler)
     {
         parentPurchaseReportedHandlers.put(requestCode, new WeakReference<>(purchaseReportedHandler));
     }
 
-    @Override public int registerPurchaseReportedHandler(PurchaseReporter.OnPurchaseReportedListener<IABSKU, THIABOrderId, BaseIABPurchase> purchaseReportedHandler)
+    @Override public int registerPurchaseReportedHandler(PurchaseReporter.OnPurchaseReportedListener<IABSKU, THIABOrderId, BaseIABPurchase, Exception> purchaseReportedHandler)
     {
         int requestCode = getUnusedRequestCode();
         registerPurchaseReportedHandler(requestCode, purchaseReportedHandler);
@@ -216,7 +231,7 @@ abstract public class THIABLogicHolder
     protected void handlePurchaseReported(int requestCode, BaseIABPurchase reportedPurchase, UserProfileDTO updatedUserPortfolio)
     {
         THLog.d(TAG, "handlePurchaseReported Purchase info " + reportedPurchase);
-        PurchaseReporter.OnPurchaseReportedListener<IABSKU, THIABOrderId, BaseIABPurchase> handler = getPurchaseReportHandler(requestCode);
+        PurchaseReporter.OnPurchaseReportedListener<IABSKU, THIABOrderId, BaseIABPurchase, Exception> handler = getPurchaseReportHandler(requestCode);
         if (handler != null)
         {
             THLog.d(TAG, "handlePurchaseReported passing on the purchase for requestCode " + requestCode);
@@ -228,10 +243,10 @@ abstract public class THIABLogicHolder
         }
     }
 
-    protected void handlePurchaseReportFailed(int requestCode, BaseIABPurchase reportedPurchase, Throwable error)
+    protected void handlePurchaseReportFailed(int requestCode, BaseIABPurchase reportedPurchase, Exception error)
     {
         THLog.e(TAG, "handlePurchaseReportFailed There was an exception during the report", error);
-        PurchaseReporter.OnPurchaseReportedListener<IABSKU, THIABOrderId, BaseIABPurchase> handler = getPurchaseReportHandler(requestCode);
+        PurchaseReporter.OnPurchaseReportedListener<IABSKU, THIABOrderId, BaseIABPurchase, Exception> handler = getPurchaseReportHandler(requestCode);
         if (handler != null)
         {
             THLog.d(TAG, "handlePurchaseReportFailed passing on the exception for requestCode " + requestCode);
@@ -245,14 +260,14 @@ abstract public class THIABLogicHolder
 
     @Override public void launchReportSequence(int requestCode, BaseIABPurchase purchase)
     {
-        PurchaseReporter.OnPurchaseReportedListener<IABSKU, THIABOrderId, BaseIABPurchase> reportedListener = new PurchaseReporter.OnPurchaseReportedListener<IABSKU, THIABOrderId, BaseIABPurchase>()
+        PurchaseReporter.OnPurchaseReportedListener<IABSKU, THIABOrderId, BaseIABPurchase, Exception> reportedListener = new PurchaseReporter.OnPurchaseReportedListener<IABSKU, THIABOrderId, BaseIABPurchase, Exception>()
         {
             @Override public void onPurchaseReported(int requestCode, BaseIABPurchase reportedPurchase, UserProfileDTO updatedUserPortfolio)
             {
                 handlePurchaseReported(requestCode, reportedPurchase, updatedUserPortfolio);
             }
 
-            @Override public void onPurchaseReportFailed(int requestCode, BaseIABPurchase reportedPurchase, Throwable error)
+            @Override public void onPurchaseReportFailed(int requestCode, BaseIABPurchase reportedPurchase, Exception error)
             {
                 handlePurchaseReportFailed(requestCode, reportedPurchase, error);
             }
