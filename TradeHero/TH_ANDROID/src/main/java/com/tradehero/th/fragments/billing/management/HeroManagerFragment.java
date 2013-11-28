@@ -11,7 +11,9 @@ import android.widget.TextView;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
+import com.tradehero.common.billing.googleplay.BaseIABPurchase;
 import com.tradehero.common.persistence.DTOCache;
+import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.DashboardActivity;
@@ -91,12 +93,6 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
         super.onCreateOptionsMenu(menu, inflater);
     }
 
-    @Override public void onResume()
-    {
-        super.onResume();
-        fetchUserProfile();
-    }
-
     @Override public void onPause()
     {
         userProfileListener = null;
@@ -113,9 +109,21 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
         // Nothing to do presumably
     }
 
+    @Override protected void handleShowSkuDetailsMilestoneComplete()
+    {
+        super.handleShowSkuDetailsMilestoneComplete();
+        fetchUserProfile();
+    }
+
     private void handleBuyMoreClicked()
     {
         conditionalPopBuyFollowCredits();
+    }
+
+    @Override protected void handlePurchaseReportSuccess(BaseIABPurchase reportedPurchase, UserProfileDTO updatedUserPortfolio)
+    {
+        super.handlePurchaseReportSuccess(reportedPurchase, updatedUserPortfolio);
+        fetchUserProfile();
     }
 
     private void handleGoMostSkilled()
@@ -129,7 +137,7 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
 
     private void fetchUserProfile()
     {
-        UserProfileDTO userProfileDTO = userProfileCache.get().get(new UserBaseKey(getApplicablePortfolioId().userId));
+        UserProfileDTO userProfileDTO = userProfileCache.get().get(userBaseKey);
         if (userProfileDTO != null)
         {
             display(userProfileDTO);
@@ -171,12 +179,14 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
         if (andDisplay)
         {
             displayFollowCount();
+            displayCoinStack();
         }
     }
 
     public void display()
     {
         displayFollowCount();
+        displayCoinStack();
     }
 
     public void displayFollowCount()
@@ -186,6 +196,17 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
             if (userProfileDTO != null)
             {
                 followCreditCount.setText(String.format("+%.0f", userProfileDTO.ccBalance));
+            }
+        }
+    }
+
+    public void displayCoinStack()
+    {
+        if (icnCoinStack != null)
+        {
+            if (userProfileDTO != null)
+            {
+                icnCoinStack.getDrawable().setLevel((int) userProfileDTO.ccBalance);
             }
         }
     }

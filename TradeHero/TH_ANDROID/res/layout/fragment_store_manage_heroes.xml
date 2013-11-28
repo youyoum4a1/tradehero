@@ -27,7 +27,7 @@
         android:contentDescription="@null"
       />
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
@@ -37,30 +37,35 @@
       >
 
         <TextView
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:text="@string/manage_heroes_follows"
-          android:layout_centerVertical="true"
-        />
+            android:id="@+id/follow_header_text_follows"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:text="@string/manage_heroes_follows"
+            android:layout_centerVertical="true"
+          />
 
         <TextView
-          android:id="@+id/manage_heroes_follow_credit_count"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:text="+0"
-          android:layout_centerVertical="true"
-        />
+            android:id="@+id/manage_heroes_follow_credit_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/follow_header_text_follows"
+            android:layout_marginRight="8dp"
+            android:layout_centerVertical="true"
+         />
 
         <ImageView
-          android:id="@+id/icn_credit_quantity"
-          android:layout_width="32dp"
-          android:layout_height="32dp"
-          android:src="@drawable/credit_layer"
-          android:layout_centerVertical="true"
-          android:baselineAlignBottom="true"
-        />
+            android:id="@+id/icn_credit_quantity"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_toRightOf="@id/manage_heroes_follow_credit_count"
+            android:src="@drawable/follow_credit_level_list"
+            android:layout_centerVertical="true"
+            android:baselineAlignBottom="true"
+            android:contentDescription="@null"
+          />
 
-      </LinearLayout>
+      </RelativeLayout>
 
   </RelativeLayout>
 

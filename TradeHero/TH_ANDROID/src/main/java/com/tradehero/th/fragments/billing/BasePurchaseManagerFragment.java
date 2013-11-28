@@ -26,6 +26,7 @@ import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.OwnedPortfolioIdList;
+import com.tradehero.th.api.portfolio.PortfolioId;
 import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
@@ -80,6 +81,7 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
     protected WeakReference<THIABActor> billingActor = new WeakReference<>(null);
     protected InventoryFetcher.OnInventoryFetchedListener<IABSKU, THIABProductDetails, IABException> inventoryFetchedForgetListener;
     protected UserBaseKey userBaseKey;
+    protected PortfolioId portfolioId;
 
     protected BillingPurchaser.OnPurchaseFinishedListener<
         IABSKU,
@@ -233,8 +235,18 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
         }
     }
 
+    protected void haveActorForget(int requestCode)
+    {
+        THIABActor actor = getBillingActor();
+        if (actor != null)
+        {
+            actor.forgetRequestCode(requestCode);
+        }
+    }
+
     protected void preparePrerequisites()
     {
+        this.portfolioId = null;
         Integer portfolioId = null;
 
         Bundle args = getArguments();
@@ -268,21 +280,13 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
         }
         else
         {
+            this.portfolioId = new PortfolioId(portfolioId);
             showSkuDetailsMilestone = new ShowSkuDetailsMilestone(getActivity(), getBillingActor(), IABSKUListType.getInApp(), null);
         }
         showSkuDetailsMilestoneListener = createShowSkuDetailsMilestoneListener();
         showSkuDetailsMilestone.setOnCompleteListener(showSkuDetailsMilestoneListener);
         showSkuDetailsMilestoneException = null;
         showSkuDetailsMilestone.launch();
-    }
-
-    protected void haveActorForget(int requestCode)
-    {
-        THIABActor actor = getBillingActor();
-        if (actor != null)
-        {
-            actor.forgetRequestCode(requestCode);
-        }
     }
 
     protected Milestone.OnCompleteListener createShowSkuDetailsMilestoneListener()
@@ -314,7 +318,12 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
 
     protected void handleShowSkuDetailsMilestoneComplete()
     {
-        // At this stage, we know the applicable portfolio is available
+        // At this stage, we know the applicable portfolio is available in the cache
+        if (this.portfolioId == null)
+        {
+            this.portfolioId = portfolioCompactListCache.get().getDefaultPortfolio(userBaseKey).getPortfolioId();
+        }
+
         runWhatWaitingForSkuDetailsMilestone();
     }
 
@@ -357,7 +366,7 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
 
     public OwnedPortfolioId getApplicablePortfolioId()
     {
-        return portfolioCompactListCache.get().getDefaultPortfolio(userBaseKey);
+        return new OwnedPortfolioId(userBaseKey, portfolioId);
     }
 
     protected boolean isBillingAvailable()
@@ -607,7 +616,7 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
                     dialog.hide();
                 }
             }
-        }, 500);
+        }, 1500);
     }
 
     protected void handlePurchaseConsumeFailed()

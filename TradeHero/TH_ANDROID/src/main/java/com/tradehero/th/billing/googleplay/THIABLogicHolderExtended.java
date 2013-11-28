@@ -71,7 +71,7 @@ public class THIABLogicHolderExtended
                 @Override public void onDTOReceived(UserBaseKey key, OwnedPortfolioIdList value)
                 {
                     THLog.d(TAG, "Received the list of portfolios for user " + key);
-                    // TODO launch fetch purchase somwhere
+                    // TODO launch fetch purchase somewhere
                 }
 
                 @Override public void onErrorThrown(UserBaseKey key, Throwable error)

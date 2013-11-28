@@ -119,36 +119,45 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
                 break;
 
             case StoreItemAdapter.POSITION_MANAGE_HEROES:
-                if (getApplicablePortfolioId() == null || getApplicablePortfolioId().userId == null)
-                {
-                    popPleaseWait();
-                }
-                else
-                {
-                    bundle = new Bundle();
-                    // TODO fix crash when userId is null (Integer != int)
-                    bundle.putInt(HeroManagerFragment.BUNDLE_KEY_USER_ID, getApplicablePortfolioId().userId);
-                    pushFragment(HeroManagerFragment.class, bundle);
-                }
+                pushHeroFragmentWhenReady();
                 break;
 
             case StoreItemAdapter.POSITION_MANAGE_FOLLOWERS:
-                if (getApplicablePortfolioId() == null || getApplicablePortfolioId().userId == null)
-                {
-                    popPleaseWait();
-                }
-                else
-                {
-                    bundle = new Bundle();
-                    bundle.putInt(FollowerManagerFragment.BUNDLE_KEY_USER_ID, getApplicablePortfolioId().userId);
-                    pushFragment(FollowerManagerFragment.class, bundle);
-                }
+                pushFollowerFragmentWhenReady();
                 break;
 
             default:
                 THToast.show("Clicked at position " + position);
                 break;
         }
+    }
+
+    protected void pushHeroFragmentWhenReady()
+    {
+        waitForSkuDetailsMilestoneComplete(new Runnable()
+        {
+            @Override public void run()
+            {
+                Bundle bundle = new Bundle();
+                bundle.putInt(HeroManagerFragment.BUNDLE_KEY_USER_ID, userBaseKey.key);
+                bundle.putInt(HeroManagerFragment.BUNDLE_KEY_PORTFOLIO_ID, portfolioId.key);
+                pushFragment(HeroManagerFragment.class, bundle);
+            }
+        });
+    }
+
+    protected void pushFollowerFragmentWhenReady()
+    {
+        waitForSkuDetailsMilestoneComplete(new Runnable()
+        {
+            @Override public void run()
+            {
+                Bundle bundle = new Bundle();
+                bundle.putInt(HeroManagerFragment.BUNDLE_KEY_USER_ID, userBaseKey.key);
+                bundle.putInt(HeroManagerFragment.BUNDLE_KEY_PORTFOLIO_ID, portfolioId.key);
+                pushFragment(FollowerManagerFragment.class, bundle);
+            }
+        });
     }
 
     private void pushFragment(Class<? extends Fragment> fragmentClass)
