@@ -18,7 +18,6 @@ import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.base.THUser;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.fragments.dashboard.DashboardTabType;
 import com.tradehero.th.persistence.user.UserProfileCache;
@@ -30,7 +29,7 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
 {
     public static final String TAG = HeroManagerFragment.class.getSimpleName();
 
-    private TextView followCount;
+    private TextView followCreditCount;
     private ImageView icnCoinStack;
     private ImageButton btnBuyMore;
     private Button btnGoMostSkilled;
@@ -58,7 +57,7 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
 
     protected void initViews(View view)
     {
-        followCount = (TextView) view.findViewById(R.id.manage_heroes_follow_count);
+        followCreditCount = (TextView) view.findViewById(R.id.manage_heroes_follow_credit_count);
         icnCoinStack = (ImageView) view.findViewById(R.id.icn_credit_quantity);
         btnBuyMore = (ImageButton) view.findViewById(R.id.btn_buy_more);
         if (btnBuyMore != null)
@@ -182,11 +181,11 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
 
     public void displayFollowCount()
     {
-        if (followCount != null)
+        if (followCreditCount != null)
         {
             if (userProfileDTO != null)
             {
-                followCount.setText(String.format("+%d", userProfileDTO.heroIds == null ? 0 : userProfileDTO.heroIds.size()));
+                followCreditCount.setText(String.format("+%.0f", userProfileDTO.ccBalance));
             }
         }
     }
