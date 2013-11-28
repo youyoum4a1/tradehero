@@ -29,6 +29,7 @@ import com.tradehero.th.fragments.billing.StoreScreenFragment;
 import com.tradehero.th.fragments.billing.management.FollowerListItemView;
 import com.tradehero.th.fragments.billing.management.FollowerManagerFragment;
 import com.tradehero.th.fragments.billing.management.FollowerPayoutManagerFragment;
+import com.tradehero.th.fragments.billing.management.HeroListItemView;
 import com.tradehero.th.fragments.billing.management.HeroManagerFragment;
 import com.tradehero.th.fragments.leaderboard.BaseLeaderboardFragment;
 import com.tradehero.th.fragments.leaderboard.FriendLeaderboardMarkUserListViewFragment;
@@ -193,6 +194,7 @@ import org.ocpsoft.prettytime.PrettyTime;
 
                 StoreScreenFragment.class,
                 HeroManagerFragment.class,
+                HeroListItemView.class,
                 FollowerManagerFragment.class,
                 FollowerPayoutManagerFragment.class,
                 FollowerListItemView.class,

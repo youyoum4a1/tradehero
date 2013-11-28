@@ -123,6 +123,7 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
         }
         portfolioIdListFetchTask = null;
         portfolioIdListListener = null;
+        runOnShowSkuDetailsMilestoneComplete = null;
         super.onPause();
     }
 

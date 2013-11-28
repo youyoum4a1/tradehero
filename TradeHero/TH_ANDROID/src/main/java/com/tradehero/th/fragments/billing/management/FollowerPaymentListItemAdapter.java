@@ -12,7 +12,7 @@ import com.tradehero.th.widget.list.BaseListHeaderView;
 /** Created with IntelliJ IDEA. User: xavier Date: 10/14/13 Time: 4:12 PM To change this template use File | Settings | File Templates. */
 public class FollowerPaymentListItemAdapter extends DTOAdapter<FollowerTransactionDTO, FollowerPaymentListItemView>
 {
-    public static final String TAG = FollowerPaymentListItemAdapter.class.getName();
+    public static final String TAG = FollowerPaymentListItemAdapter.class.getSimpleName();
 
     public static final int VIEW_TYPE_HEADER = 0;
     public static final int VIEW_TYPE_ITEM = 1;

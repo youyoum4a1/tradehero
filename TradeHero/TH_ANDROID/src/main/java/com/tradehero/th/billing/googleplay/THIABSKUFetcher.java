@@ -22,7 +22,7 @@ public class THIABSKUFetcher extends BaseSKUFetcher<
     public static final String EXTRA_CASH_T2_KEY = "com.myhero.th.extracash.t2";
 
     public static final String CREDIT_1 = "com.myhero.th.1cc";
-    public static final String CREDIT_5 = "com.myhero.th.5cc";
+    //public static final String CREDIT_5 = "com.myhero.th.5cc";
     public static final String CREDIT_10 = "com.myhero.th.10cc";
     public static final String CREDIT_20 = "com.myhero.th.20cc";
 
@@ -37,7 +37,7 @@ public class THIABSKUFetcher extends BaseSKUFetcher<
         inAppIABSKUs.add(new IABSKU(EXTRA_CASH_T1_KEY));
         inAppIABSKUs.add(new IABSKU(EXTRA_CASH_T2_KEY));
         inAppIABSKUs.add(new IABSKU(CREDIT_1));
-        inAppIABSKUs.add(new IABSKU(CREDIT_5));
+        //inAppIABSKUs.add(new IABSKU(CREDIT_5));
         inAppIABSKUs.add(new IABSKU(CREDIT_10));
         inAppIABSKUs.add(new IABSKU(CREDIT_20));
         inAppIABSKUs.add(new IABSKU(RESET_PORTFOLIO_0));

@@ -88,7 +88,6 @@ public class LeaderboardPositionItemAdapter extends AbstractPositionItemAdapter<
 
     @Override protected void setPosition(PositionInPeriodDTO positionDTO)
     {
-
         ExpandableLeaderboardPositionItem item = new ExpandableLeaderboardPositionItem(positionDTO.getLbOwnedPositionId());
         item.setTimeRestricted(isTimeRestricted);
 

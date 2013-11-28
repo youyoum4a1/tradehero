@@ -1,6 +1,7 @@
 package com.tradehero.th.network.service;
 
 import com.tradehero.common.billing.googleplay.GooglePlayPurchaseDTO;
+import com.tradehero.th.api.social.HeroDTO;
 import com.tradehero.th.api.social.InviteFormDTO;
 import com.tradehero.th.api.social.UserFriendsDTO;
 import com.tradehero.th.api.users.password.ForgotPasswordFormDTO;
@@ -255,6 +256,7 @@ public interface UserService
             Callback<Response> callback);
     //</editor-fold>
 
+    //<editor-fold desc="Add Follow Credit">
     @POST("/users/{userId}/addCredit")
     UserProfileDTO addCredit(
             @Path("userId") int userId,
@@ -266,4 +268,53 @@ public interface UserService
             @Path("userId") int userId,
             @Body GooglePlayPurchaseDTO purchaseDTO,
             Callback<UserProfileDTO> callback);
+    //</editor-fold>
+
+    //<editor-fold desc="Follow Hero">
+    @POST("/users/{userId}/follow")
+    UserProfileDTO follow(
+            @Path("userId") int userId)
+        throws RetrofitError;
+
+    @POST("/users/{userId}/follow")
+    void follow(
+            @Path("userId") int userId,
+            Callback<UserProfileDTO> callback);
+
+    @POST("/users/{userId}/follow")
+    UserProfileDTO follow(
+            @Path("userId") int userId,
+            GooglePlayPurchaseDTO purchaseDTO)
+        throws RetrofitError;
+
+    @POST("/users/{userId}/follow")
+    void follow(
+            @Path("userId") int userId,
+            GooglePlayPurchaseDTO purchaseDTO,
+            Callback<UserProfileDTO> callback);
+    //</editor-fold>
+
+    //<editor-fold desc="Unfollow Hero">
+    @POST("/users/{userId}/unfollow")
+    UserProfileDTO unfollow(
+            @Path("userId") int userId)
+        throws RetrofitError;
+
+    @POST("/users/{userId}/unfollow")
+    void unfollow(
+            @Path("userId") int userId,
+            Callback<UserProfileDTO> callback);
+    //</editor-fold>
+
+    //<editor-fold desc="Get Heroes">
+    @GET("/users/{userId}/heroes")
+    List<HeroDTO> getHeroes(
+            @Path("userId") int userId)
+        throws RetrofitError;
+
+    @GET("/users/{userId}/heroes")
+    void getHeroes(
+            @Path("userId") int userId,
+            Callback<List<HeroDTO>> callback);
+    //</editor-fold>
 }

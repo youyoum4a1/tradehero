@@ -1,9 +1,10 @@
 package com.tradehero.th.api.users;
 
+import com.tradehero.common.persistence.DTO;
 import java.util.Date;
 
 /** Created with IntelliJ IDEA. User: tho Date: 8/15/13 Time: 6:47 PM Copyright (c) TradeHero */
-public class UserBaseDTO
+public class UserBaseDTO  implements DTO
 {
     public int id;
     public String picture;

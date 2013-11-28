@@ -1,14 +1,14 @@
 package com.tradehero.th.api.users;
 
-import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.api.alert.UserAlertPlanDTO;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.leaderboard.UserLeaderboardRankingDTO;
 import com.tradehero.th.api.portfolio.PortfolioDTO;
+import java.util.ArrayList;
 import java.util.List;
 
 /** Created with IntelliJ IDEA. User: tho Date: 8/15/13 Time: 7:03 PM Copyright (c) TradeHero */
-public class UserProfileDTO extends UserProfileCompactDTO implements DTO
+public class UserProfileDTO extends UserProfileCompactDTO
 {
     public String email;
     public String address;
@@ -47,6 +47,23 @@ public class UserProfileDTO extends UserProfileCompactDTO implements DTO
     public boolean isFollowingUser(int userId)
     {
         return this.heroIds.contains(userId);
+    }
+
+    public List<UserBaseKey> getHeroBaseKeys()
+    {
+        if (heroIds == null)
+        {
+            return null;
+        }
+        List<UserBaseKey> heroKeys = new ArrayList<>();
+        for (Integer heroId: heroIds)
+        {
+            if (heroId != null)
+            {
+                heroKeys.add(new UserBaseKey(heroId));
+            }
+        }
+        return heroKeys;
     }
 
     public int getLeaderboardRanking(int leaderboardId)

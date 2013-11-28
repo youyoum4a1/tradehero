@@ -46,10 +46,10 @@ public class THSKUDetailsTuner implements ProductDetailsTuner<IABSKU, THIABProdu
                 productDetails.domain = THIABProductDetails.DOMAIN_FOLLOW_CREDITS;
                 break;
 
-            case THIABSKUFetcher.CREDIT_5:
-                productDetails.iconResId = R.drawable.credit_1;
-                productDetails.domain = THIABProductDetails.DOMAIN_FOLLOW_CREDITS;
-                break;
+            //case THIABSKUFetcher.CREDIT_5:
+            //    productDetails.iconResId = R.drawable.credit_1;
+            //    productDetails.domain = THIABProductDetails.DOMAIN_FOLLOW_CREDITS;
+            //    break;
 
             case THIABSKUFetcher.CREDIT_10:
                 productDetails.iconResId = R.drawable.credit_5;

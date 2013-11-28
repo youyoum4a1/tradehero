@@ -1,5 +1,6 @@
 package com.tradehero.th.api.social;
 
+import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileCompactDTO;
 import java.util.Date;
 
@@ -11,4 +12,9 @@ public class HeroDTO extends UserProfileCompactDTO
     public Date followingSince;
     public Date stoppedFollowingOn;
     public boolean active;
+
+    public HeroId getHeroId(UserBaseKey followerId)
+    {
+        return new HeroId(id, followerId.key);
+    }
 }

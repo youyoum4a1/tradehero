@@ -273,10 +273,6 @@ public class BuySellFragment extends AbstractBuySellFragment
                     .build();
             //mPicasso.setDebugging(true);
         }
-
-        //mCashAvailableValue
-
-        displayPageElements();
     }
 
     @Override public void onActivityCreated(Bundle savedInstanceState)
@@ -384,7 +380,13 @@ public class BuySellFragment extends AbstractBuySellFragment
         securityAlertAssistant.setUserBaseKey(currentUserBaseKeyHolder.getCurrentUserBaseKey());
         securityAlertAssistant.populate();
 
-        display();
+        waitForSkuDetailsMilestoneComplete(new Runnable()
+        {
+            @Override public void run()
+            {
+                display();
+            }
+        });
     }
 
     @Override public void onPause()
