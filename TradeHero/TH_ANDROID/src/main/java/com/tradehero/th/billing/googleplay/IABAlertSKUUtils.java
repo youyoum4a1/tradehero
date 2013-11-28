@@ -10,17 +10,19 @@ public class IABAlertSKUUtils
 {
     public static final String TAG = IABAlertSKUUtils.class.getSimpleName();
 
-    public static void popBuyDialog(Activity activity,
-                                SKUDomainInformer domainInformer,
-                                IABAlertUtils.OnDialogSKUDetailsClickListener<THIABProductDetails> clickListener,
-                                String skuDomain, int
-                                titleResId)
+    public static void popBuyDialog(
+            Activity activity,
+            SKUDomainInformer domainInformer,
+            IABAlertUtils.OnDialogSKUDetailsClickListener<THIABProductDetails> clickListener,
+            String skuDomain,
+            int titleResId,
+            Runnable runOnPurchaseComplete)
     {
         final THSKUDetailsAdapter detailsAdapter = new THSKUDetailsAdapter(activity, activity.getLayoutInflater(), skuDomain);
         detailsAdapter.setSkuDetailsComparator(new BaseIABProductDetailsDecreasingPriceComparator<THIABProductDetails>());
         List<THIABProductDetails> desiredSkuDetails = domainInformer.getDetailsOfDomain(skuDomain);
         detailsAdapter.setItems(desiredSkuDetails);
 
-        IABAlertUtils.popBuyDialog(activity, detailsAdapter, titleResId, clickListener);
+        IABAlertUtils.popBuyDialog(activity, detailsAdapter, titleResId, clickListener, runOnPurchaseComplete);
     }
 }

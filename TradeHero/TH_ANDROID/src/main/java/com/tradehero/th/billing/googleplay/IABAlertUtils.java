@@ -198,9 +198,13 @@ public class IABAlertUtils
         alertDialog.show();
     }
 
-    public static <SKUDetailsType extends BaseIABProductDetails, SKUDetailViewType extends SKUDetailView<SKUDetailsType>> void popBuyDialog(
-        final Context context, final SKUDetailsAdapter<SKUDetailsType, SKUDetailViewType> detailsAdapter,
-        int titleResId, final OnDialogSKUDetailsClickListener<SKUDetailsType> clickListener)
+    public static <SKUDetailsType extends BaseIABProductDetails, SKUDetailViewType extends SKUDetailView<SKUDetailsType>>
+    void popBuyDialog(
+        final Context context,
+            final SKUDetailsAdapter<SKUDetailsType, SKUDetailViewType> detailsAdapter,
+            int titleResId,
+            final OnDialogSKUDetailsClickListener<SKUDetailsType> clickListener,
+            final Runnable runOnPurchaseComplete)
     {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
 
@@ -214,7 +218,7 @@ public class IABAlertUtils
                     {
                         if (clickListener != null)
                         {
-                            clickListener.onDialogSKUDetailsClicked(dialogInterface, i, (SKUDetailsType) detailsAdapter.getItem(i));
+                            clickListener.onDialogSKUDetailsClicked(dialogInterface, i, (SKUDetailsType) detailsAdapter.getItem(i), runOnPurchaseComplete);
                         }
                         dialogInterface.cancel();
                     }
@@ -237,7 +241,7 @@ public class IABAlertUtils
 
     public static interface OnDialogSKUDetailsClickListener<SKUDetailsType extends BaseIABProductDetails>
     {
-        void onDialogSKUDetailsClicked(DialogInterface dialogInterface, int position, SKUDetailsType skuDetails);
+        void onDialogSKUDetailsClicked(DialogInterface dialogInterface, int position, SKUDetailsType skuDetails, Runnable runOnPurchaseComplete);
     }
 
     public static void popSendEmailSupportReportFailed(final Context context, final DialogInterface.OnClickListener clickListener)

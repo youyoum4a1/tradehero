@@ -82,6 +82,7 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
     protected InventoryFetcher.OnInventoryFetchedListener<IABSKU, THIABProductDetails, IABException> inventoryFetchedForgetListener;
     protected UserBaseKey userBaseKey;
     protected PortfolioId portfolioId;
+    private Runnable runOnPurchaseComplete;
 
     protected BillingPurchaser.OnPurchaseFinishedListener<
         IABSKU,
@@ -150,6 +151,7 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
                 @Override public void onPurchaseFailed(int requestCode, THIABPurchaseOrder purchaseOrder, IABException exception)
                 {
                     haveActorForget(requestCode);
+                    runOnPurchaseComplete = null;
                     THLog.e(TAG, "onPurchaseFailed requestCode " + requestCode, exception);
                     if (exception instanceof IABVerificationFailedException)
                     {
@@ -202,6 +204,7 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
                 @Override public void onPurchaseReportFailed(int requestCode, BaseIABPurchase reportedPurchase, Exception error)
                 {
                     haveActorForget(requestCode);
+                    runOnPurchaseComplete = null;
                     THLog.e(TAG, "Failed to report to server", error);
                     if (progressDialog != null)
                     {
@@ -219,6 +222,7 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
                 @Override public void onPurchaseConsumeFailed(int requestCode, BaseIABPurchase purchase, IABException exception)
                 {
                     haveActorForget(requestCode);
+                    runOnPurchaseComplete = null;
                     THLog.e(TAG, "Failed to consume purchase", exception);
                     if (progressDialog != null)
                     {
@@ -457,57 +461,102 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
     //<editor-fold desc="Pop SKU list">
     protected void conditionalPopBuyVirtualDollars()
     {
+        conditionalPopBuyVirtualDollars(null);
+    }
+
+    protected void conditionalPopBuyVirtualDollars(Runnable runOnPurchaseComplete)
+    {
         if (!popErrorConditional())
         {
-            popBuyVirtualDollars();
+            popBuyVirtualDollars(runOnPurchaseComplete);
         }
     }
 
     protected void popBuyVirtualDollars()
     {
-        popBuyDialog(THIABProductDetails.DOMAIN_VIRTUAL_DOLLAR, R.string.store_buy_virtual_dollar_window_title);
+        popBuyVirtualDollars(null);
+    }
+
+    protected void popBuyVirtualDollars(Runnable runOnPurchaseComplete)
+    {
+        popBuyDialog(THIABProductDetails.DOMAIN_VIRTUAL_DOLLAR, R.string.store_buy_virtual_dollar_window_title, runOnPurchaseComplete);
     }
 
     protected void conditionalPopBuyFollowCredits()
     {
+        conditionalPopBuyFollowCredits(null);
+    }
+
+    protected void conditionalPopBuyFollowCredits(Runnable runOnPurchaseComplete)
+    {
         if (!popErrorConditional())
         {
-            popBuyFollowCredits();
+            popBuyFollowCredits(runOnPurchaseComplete);
         }
     }
 
     protected void popBuyFollowCredits()
     {
-        popBuyDialog(THIABProductDetails.DOMAIN_FOLLOW_CREDITS, R.string.store_buy_follow_credits_window_message);
+        popBuyFollowCredits(null);
+    }
+
+    protected void popBuyFollowCredits(Runnable runOnPurchaseComplete)
+    {
+        popBuyDialog(THIABProductDetails.DOMAIN_FOLLOW_CREDITS, R.string.store_buy_follow_credits_window_message, runOnPurchaseComplete);
     }
 
     protected void conditionalPopBuyStockAlerts()
     {
+        conditionalPopBuyStockAlerts(null);
+    }
+
+    protected void conditionalPopBuyStockAlerts(Runnable runOnPurchaseComplete)
+    {
         if (!popErrorConditional())
         {
-            popBuyStockAlerts();
+            popBuyStockAlerts(runOnPurchaseComplete);
         }
     }
 
     protected void popBuyStockAlerts()
     {
-        popBuyDialog(THIABProductDetails.DOMAIN_STOCK_ALERTS, R.string.store_buy_stock_alerts_window_title);
+        popBuyStockAlerts(null);
+    }
+
+    protected void popBuyStockAlerts(Runnable runOnPurchaseComplete)
+    {
+        popBuyDialog(THIABProductDetails.DOMAIN_STOCK_ALERTS, R.string.store_buy_stock_alerts_window_title, runOnPurchaseComplete);
     }
 
     protected void conditionalPopBuyResetPortfolio()
     {
+        conditionalPopBuyResetPortfolio(null);
+    }
+
+    protected void conditionalPopBuyResetPortfolio(Runnable runOnPurchaseComplete)
+    {
         if (!popErrorConditional())
         {
-            popBuyResetPortfolio();
+            popBuyResetPortfolio(runOnPurchaseComplete);
         }
     }
 
     protected void popBuyResetPortfolio()
     {
-        popBuyDialog(THIABProductDetails.DOMAIN_RESET_PORTFOLIO, R.string.store_buy_reset_portfolio_window_title);
+        popBuyResetPortfolio(null);
+    }
+
+    protected void popBuyResetPortfolio(Runnable runOnPurchaseComplete)
+    {
+        popBuyDialog(THIABProductDetails.DOMAIN_RESET_PORTFOLIO, R.string.store_buy_reset_portfolio_window_title, runOnPurchaseComplete);
     }
 
     protected void popBuyDialog(final String skuDomain, final int titleResId)
+    {
+        popBuyDialog(skuDomain, titleResId, null);
+    }
+
+    protected void popBuyDialog(final String skuDomain, final int titleResId, final Runnable runOnPurchaseComplete)
     {
         waitForSkuDetailsMilestoneComplete(new Runnable()
         {
@@ -517,7 +566,7 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
                 {
                     @Override public void run()
                     {
-                        IABAlertSKUUtils.popBuyDialog(getActivity(), getBillingActor(), BasePurchaseManagerFragment.this, skuDomain, titleResId);
+                        IABAlertSKUUtils.popBuyDialog(getActivity(), getBillingActor(), BasePurchaseManagerFragment.this, skuDomain, titleResId, runOnPurchaseComplete);
                     }
                 });
             }
@@ -526,8 +575,9 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
     //</editor-fold>
 
     //<editor-fold desc="IABAlertUtils.OnDialogSKUDetailsClickListener">
-    @Override public void onDialogSKUDetailsClicked(DialogInterface dialogInterface, int position, THIABProductDetails skuDetails)
+    @Override public void onDialogSKUDetailsClicked(DialogInterface dialogInterface, int position, THIABProductDetails skuDetails, Runnable runOnPurchaseComplete)
     {
+        this.runOnPurchaseComplete = runOnPurchaseComplete;
         launchPurchaseSequence(new THIABPurchaseOrder(skuDetails.getProductIdentifier(), getApplicablePortfolioId()));
     }
     //</editor-fold>
@@ -581,9 +631,9 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
         actorPurchaseReporter.launchReportSequence(requestCode, purchase);
     }
 
-    protected void handlePurchaseReportSuccess(BaseIABPurchase reportedPurchase, UserProfileDTO updatedUserPortfolio)
+    protected void handlePurchaseReportSuccess(BaseIABPurchase reportedPurchase, UserProfileDTO updatedUserProfile)
     {
-        userProfileCache.get().put(updatedUserPortfolio.getBaseKey(), updatedUserPortfolio);
+        userProfileCache.get().put(updatedUserProfile.getBaseKey(), updatedUserProfile);
         launchConsumeSequence(reportedPurchase);
     }
 
@@ -615,6 +665,13 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
                 if (dialog != null)
                 {
                     dialog.hide();
+                }
+
+                Runnable runOnPurchaseCompleteCopy = runOnPurchaseComplete;
+                runOnPurchaseComplete = null;
+                if (runOnPurchaseCompleteCopy != null)
+                {
+                    runOnPurchaseCompleteCopy.run();
                 }
             }
         }, 1500);

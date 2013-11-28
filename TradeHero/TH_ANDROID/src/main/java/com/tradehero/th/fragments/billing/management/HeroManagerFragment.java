@@ -237,9 +237,9 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
         conditionalPopBuyFollowCredits();
     }
 
-    @Override protected void handlePurchaseReportSuccess(BaseIABPurchase reportedPurchase, UserProfileDTO updatedUserPortfolio)
+    @Override protected void handlePurchaseReportSuccess(BaseIABPurchase reportedPurchase, UserProfileDTO updatedUserProfile)
     {
-        super.handlePurchaseReportSuccess(reportedPurchase, updatedUserPortfolio);
+        super.handlePurchaseReportSuccess(reportedPurchase, updatedUserProfile);
         fetchUserProfile();
     }
 
@@ -274,7 +274,7 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
         }
     }
 
-    private void followHero(HeroDTO heroDTO)
+    private void followHero(final HeroDTO heroDTO)
     {
         if (userProfileDTO != null && userProfileDTO.ccBalance == 0)
         {
@@ -282,7 +282,15 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
             {
                 @Override public void run()
                 {
-                    conditionalPopBuyFollowCredits();
+                    conditionalPopBuyFollowCredits(new Runnable()
+                    {
+                        @Override public void run()
+                        {
+                            // At this point, we have already updated the userProfileDTO, and we can only assume that
+                            // the credits have properly been given.
+                            followHero(heroDTO);
+                        }
+                    });
                 }
             });
         }
