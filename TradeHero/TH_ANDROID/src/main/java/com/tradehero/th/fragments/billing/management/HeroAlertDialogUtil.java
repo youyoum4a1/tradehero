@@ -1,5 +1,6 @@
 package com.tradehero.th.fragments.billing.management;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import com.tradehero.th.R;
@@ -10,9 +11,9 @@ public class HeroAlertDialogUtil
 {
     public static final String TAG = HeroAlertDialogUtil.class.getSimpleName();
 
-    public static void popAlertFollowHero(Context context, DialogInterface.OnClickListener okClickListener)
+    public static AlertDialog popAlertFollowHero(Context context, DialogInterface.OnClickListener okClickListener)
     {
-        AlertDialogUtil.popWithOkCancelButton(
+        return AlertDialogUtil.popWithOkCancelButton(
                 context,
                 R.string.manage_heroes_alert_follow_title,
                 R.string.manage_heroes_alert_follow_message,
@@ -21,9 +22,9 @@ public class HeroAlertDialogUtil
                 okClickListener);
     }
 
-    public static void popAlertUnfollowHero(Context context, DialogInterface.OnClickListener okClickListener)
+    public static AlertDialog popAlertUnfollowHero(Context context, DialogInterface.OnClickListener okClickListener)
     {
-        AlertDialogUtil.popWithOkCancelButton(
+        return AlertDialogUtil.popWithOkCancelButton(
                 context,
                 R.string.manage_heroes_alert_unfollow_title,
                 R.string.manage_heroes_alert_unfollow_message,

@@ -4,9 +4,6 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 import com.tradehero.common.billing.BillingPurchaser;
 import com.tradehero.common.billing.InventoryFetcher;
 import com.tradehero.common.billing.googleplay.BaseIABPurchase;
@@ -32,8 +29,8 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.Application;
 import com.tradehero.th.billing.PurchaseReporter;
-import com.tradehero.th.billing.googleplay.IABAlertSKUUtils;
-import com.tradehero.th.billing.googleplay.IABAlertUtils;
+import com.tradehero.th.billing.googleplay.IABAlertDialogSKUUtil;
+import com.tradehero.th.billing.googleplay.IABAlertDialogUtil;
 import com.tradehero.th.billing.googleplay.THIABActor;
 import com.tradehero.th.billing.googleplay.THIABActorPurchaseConsumer;
 import com.tradehero.th.billing.googleplay.THIABActorPurchaseReporter;
@@ -56,7 +53,7 @@ import javax.inject.Inject;
  * It expects its Activity to implement THIABActorUser.
  * Created with IntelliJ IDEA. User: xavier Date: 11/11/13 Time: 11:05 AM To change this template use File | Settings | File Templates. */
 abstract public class BasePurchaseManagerFragment extends DashboardFragment
-        implements IABAlertUtils.OnDialogSKUDetailsClickListener<THIABProductDetails>,
+        implements IABAlertDialogUtil.OnDialogSKUDetailsClickListener<THIABProductDetails>,
         THIABActorUser
 {
     public static final String TAG = BasePurchaseManagerFragment.class.getSimpleName();
@@ -155,31 +152,31 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
                     THLog.e(TAG, "onPurchaseFailed requestCode " + requestCode, exception);
                     if (exception instanceof IABVerificationFailedException)
                     {
-                        IABAlertUtils.popVerificationFailed(getActivity());
+                        IABAlertDialogUtil.popVerificationFailed(getActivity());
                     }
                     else if (exception instanceof IABUserCancelledException)
                     {
-                        IABAlertUtils.popUserCancelled(getActivity());
+                        IABAlertDialogUtil.popUserCancelled(getActivity());
                     }
                     else if (exception instanceof IABBadResponseException)
                     {
-                        IABAlertUtils.popBadResponse(getActivity());
+                        IABAlertDialogUtil.popBadResponse(getActivity());
                     }
                     else if (exception instanceof IABRemoteException)
                     {
-                        IABAlertUtils.popRemoteError(getActivity());
+                        IABAlertDialogUtil.popRemoteError(getActivity());
                     }
                     else if (exception instanceof IABAlreadyOwnedException)
                     {
-                        IABAlertUtils.popSKUAlreadyOwned(getActivity(), skuDetailCache.get().get(purchaseOrder.getProductIdentifier()));
+                        IABAlertDialogUtil.popSKUAlreadyOwned(getActivity(), skuDetailCache.get().get(purchaseOrder.getProductIdentifier()));
                     }
                     else if (exception instanceof IABSendIntentException)
                     {
-                        IABAlertUtils.popSendIntent(getActivity());
+                        IABAlertDialogUtil.popSendIntent(getActivity());
                     }
                     else
                     {
-                        IABAlertUtils.popUnknownError(getActivity());
+                        IABAlertDialogUtil.popUnknownError(getActivity());
                     }
                 }
 
@@ -210,7 +207,7 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
                     {
                         progressDialog.hide();
                     }
-                    IABAlertUtils.popFailedToReport(getActivity());
+                    IABAlertDialogUtil.popFailedToReport(getActivity());
                 }
             };
         }
@@ -228,7 +225,7 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
                     {
                         progressDialog.hide();
                     }
-                    IABAlertUtils.popOfferSendEmailSupportConsumeFailed(getActivity(), exception);
+                    IABAlertDialogUtil.popOfferSendEmailSupportConsumeFailed(getActivity(), exception);
                 }
 
                 @Override public void onPurchaseConsumed(int requestCode, BaseIABPurchase purchase)
@@ -405,7 +402,7 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
     {
         if (!isBillingAvailable())
         {
-            IABAlertUtils.popBillingUnavailable(getActivity());
+            IABAlertDialogUtil.popBillingUnavailable(getActivity());
         }
         else if (hadErrorLoadingInventory())
         {
@@ -566,7 +563,8 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
                 {
                     @Override public void run()
                     {
-                        IABAlertSKUUtils.popBuyDialog(getActivity(), getBillingActor(), BasePurchaseManagerFragment.this, skuDomain, titleResId, runOnPurchaseComplete);
+                        IABAlertDialogSKUUtil.popBuyDialog(getActivity(), getBillingActor(), BasePurchaseManagerFragment.this, skuDomain, titleResId,
+                                runOnPurchaseComplete);
                     }
                 });
             }
@@ -574,7 +572,7 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
     }
     //</editor-fold>
 
-    //<editor-fold desc="IABAlertUtils.OnDialogSKUDetailsClickListener">
+    //<editor-fold desc="IABAlertDialogUtil.OnDialogSKUDetailsClickListener">
     @Override public void onDialogSKUDetailsClicked(DialogInterface dialogInterface, int position, THIABProductDetails skuDetails, Runnable runOnPurchaseComplete)
     {
         this.runOnPurchaseComplete = runOnPurchaseComplete;
@@ -612,7 +610,7 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
 
     protected void popFailedToLoadRequiredInfo()
     {
-        IABAlertUtils.popFailedToLoadRequiredInfo(getActivity());
+        IABAlertDialogUtil.popFailedToLoadRequiredInfo(getActivity());
     }
 
     protected void launchReportPurchaseSequence(BaseIABPurchase purchase)

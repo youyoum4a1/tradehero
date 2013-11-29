@@ -14,13 +14,10 @@ import com.tradehero.common.billing.googleplay.exceptions.IABBillingUnavailableE
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.DashboardActivity;
-import com.tradehero.th.api.portfolio.OwnedPortfolioId;
-import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
-import com.tradehero.th.billing.googleplay.IABAlertUtils;
+import com.tradehero.th.billing.googleplay.IABAlertDialogUtil;
 import com.tradehero.th.fragments.billing.management.FollowerManagerFragment;
 import com.tradehero.th.fragments.billing.management.HeroManagerFragment;
 import com.tradehero.th.utils.AlertDialogUtil;
-import javax.inject.Inject;
 
 public class StoreScreenFragment extends BasePurchaseManagerFragment
 {
@@ -67,7 +64,7 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
         storeItemAdapter.notifyDataSetChanged();
         if (!isBillingAvailable())
         {
-            IABAlertUtils.popBillingUnavailable(getActivity());
+            IABAlertDialogUtil.popBillingUnavailable(getActivity());
         }
     }
 
@@ -92,7 +89,7 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
         // TODO warn if there are things unset
         if (throwable instanceof IABBillingUnavailableException)
         {
-            IABAlertUtils.popBillingUnavailable(getActivity());
+            IABAlertDialogUtil.popBillingUnavailable(getActivity());
         }
         // Nothing to do presumably
     }
@@ -172,7 +169,7 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
 
     private void popPleaseWait()
     {
-        AlertDialogUtil.popWithCancelButton(getActivity(),
+        AlertDialogUtil.popWithNegativeButton(getActivity(),
                 R.string.error_incomplete_info_title,
                 R.string.error_incomplete_info_message,
                 R.string.error_incomplete_info_cancel);

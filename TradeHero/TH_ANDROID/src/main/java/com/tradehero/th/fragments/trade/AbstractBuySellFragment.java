@@ -11,7 +11,6 @@ import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
-import com.tradehero.th.api.position.PositionDTOCompact;
 import com.tradehero.th.api.position.SecurityPositionDetailDTO;
 import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
@@ -19,7 +18,6 @@ import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.persistence.position.SecurityPositionDetailCache;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
@@ -418,14 +416,14 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
     {
         if (securityId == null)
         {
-            AlertDialogUtil.popWithCancelButton(getActivity(),
+            AlertDialogUtil.popWithNegativeButton(getActivity(),
                     R.string.alert_dialog_market_close_title,
                     R.string.alert_dialog_market_close_message_basic,
                     R.string.alert_dialog_market_close_cancel);
         }
         else
         {
-            AlertDialogUtil.popWithCancelButton(getActivity(),
+            AlertDialogUtil.popWithNegativeButton(getActivity(),
                     getString(R.string.alert_dialog_market_close_title),
                     String.format(getString(R.string.alert_dialog_market_close_message), securityId.exchange, securityId.securitySymbol),
                     getString(R.string.alert_dialog_market_close_cancel));

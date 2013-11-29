@@ -11,7 +11,7 @@ public class AlertDialogUtilBuySell extends AlertDialogUtil
 
     public static void informBuySellOrderWasNull(Context context)
     {
-        popWithCancelButton(context,
+        popWithNegativeButton(context,
                 R.string.alert_dialog_buy_sell_order_null_title,
                 R.string.alert_dialog_buy_sell_order_null_message,
                 R.string.alert_dialog_buy_sell_order_null_cancel);
@@ -19,7 +19,7 @@ public class AlertDialogUtilBuySell extends AlertDialogUtil
 
     public static void informBuySellOrderFailedRetrofit(Context context)
     {
-        popWithCancelButton(context,
+        popWithNegativeButton(context,
                 R.string.alert_dialog_buy_sell_retrofit_failed_title,
                 R.string.alert_dialog_buy_sell_retrofit_failed_message,
                 R.string.alert_dialog_buy_sell_retrofit_failed_cancel);
@@ -27,7 +27,7 @@ public class AlertDialogUtilBuySell extends AlertDialogUtil
 
     public static void informBuySellOrderReturnedNull(Context context)
     {
-        popWithCancelButton(context,
+        popWithNegativeButton(context,
                 R.string.alert_dialog_buy_sell_returned_null_title,
                 R.string.alert_dialog_buy_sell_returned_null_message,
                 R.string.alert_dialog_buy_sell_returned_null_cancel);

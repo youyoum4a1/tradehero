@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import com.tradehero.common.billing.googleplay.BaseIABPurchase;
 import com.tradehero.common.billing.googleplay.GooglePlayPurchaseDTO;
-import com.tradehero.th.utils.ExceptionUtils;
 import com.tradehero.th.utils.StringUtils;
 import com.tradehero.th.utils.VersionUtils;
 import java.util.ArrayList;
@@ -20,10 +19,7 @@ public class GooglePlayUtils
         String deviceDetails = "\n\nThere appears to have been a problem reporting my purchase to TradeHero server\n\n-----\n" +
                 StringUtils.join("\n", getPurchaseReportStrings(context, purchase)) +
                 "\n-----\n";
-        Intent intent = new Intent(Intent.ACTION_SEND);
-        intent.setType("plain/text");
-        intent.putExtra(Intent.EXTRA_EMAIL, new String[] {"support@tradehero.mobi"});
-        intent.putExtra(Intent.EXTRA_SUBJECT, "TradeHero - GooglePlay Support");
+        Intent intent = getIncompleteSupportPurchaseEmailIntent(context);
         intent.putExtra(Intent.EXTRA_TEXT, deviceDetails);
         return intent;
     }
@@ -49,12 +45,9 @@ public class GooglePlayUtils
     public static Intent getSupportPurchaseConsumeEmailIntent(Context context, Exception exception)
     {
         String deviceDetails = "\n\nThere appears to have been a problem consuming my purchase with GooglePlay\n\n-----\n" +
-                StringUtils.join("\n", getExceptionStrings(context, exception)) +
+                StringUtils.join("\n", VersionUtils.getExceptionStringsAndTraceParameters(context, exception)) +
                 "\n-----\n";
-        Intent intent = new Intent(Intent.ACTION_SEND);
-        intent.setType("plain/text");
-        intent.putExtra(Intent.EXTRA_EMAIL, new String[] {"support@tradehero.mobi"});
-        intent.putExtra(Intent.EXTRA_SUBJECT, "TradeHero - GooglePlay Support");
+        Intent intent = getIncompleteSupportPurchaseEmailIntent(context);
         intent.putExtra(Intent.EXTRA_TEXT, deviceDetails);
         return intent;
     }
@@ -62,27 +55,19 @@ public class GooglePlayUtils
     public static Intent getSupportPurchaseRestoreEmailIntent(Context context, Exception exception)
     {
         String deviceDetails = "\n\nThere appears to have been a problem restoring my purchase with GooglePlay\n\n-----\n" +
-                StringUtils.join("\n", getExceptionStrings(context, exception)) +
+                StringUtils.join("\n", VersionUtils.getExceptionStringsAndTraceParameters(context, exception)) +
                 "\n-----\n";
-        Intent intent = new Intent(Intent.ACTION_SEND);
-        intent.setType("plain/text");
-        intent.putExtra(Intent.EXTRA_EMAIL, new String[] {"support@tradehero.mobi"});
-        intent.putExtra(Intent.EXTRA_SUBJECT, "TradeHero - GooglePlay Support");
+        Intent intent = getIncompleteSupportPurchaseEmailIntent(context);
         intent.putExtra(Intent.EXTRA_TEXT, deviceDetails);
         return intent;
     }
 
-    public static List<String> getExceptionStrings(Context context, Exception exception)
+    public static Intent getIncompleteSupportPurchaseEmailIntent(Context context)
     {
-        List<String> reported = new ArrayList<>();
-
-        if (exception != null)
-        {
-            reported.addAll(ExceptionUtils.getElements(exception));
-            reported.add("-----");
-        }
-        reported.addAll(VersionUtils.getSupportEmailTraceParameters(context, true));
-
-        return reported;
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("plain/text");
+        intent.putExtra(Intent.EXTRA_EMAIL, new String[] {"support@tradehero.mobi"});
+        intent.putExtra(Intent.EXTRA_SUBJECT, "TradeHero - GooglePlay Support");
+        return intent;
     }
 }

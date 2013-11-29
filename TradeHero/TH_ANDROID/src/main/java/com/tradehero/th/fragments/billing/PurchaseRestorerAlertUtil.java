@@ -38,7 +38,7 @@ public class PurchaseRestorerAlertUtil
 
     public static void popPurchasesRestored(final Context context, final int countOk)
     {
-        AlertDialogUtil.popWithCancelButton(context,
+        AlertDialogUtil.popWithNegativeButton(context,
                 context.getString(R.string.google_play_purchase_restored_title),
                 String.format(context.getString(R.string.google_play_purchase_restored_message), countOk),
                 context.getString(R.string.google_play_purchase_restored_cancel));

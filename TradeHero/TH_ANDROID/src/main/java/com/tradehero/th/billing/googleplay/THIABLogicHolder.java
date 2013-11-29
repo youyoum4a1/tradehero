@@ -1,7 +1,6 @@
 package com.tradehero.th.billing.googleplay;
 
 import android.app.Activity;
-import android.content.DialogInterface;
 import android.content.Intent;
 import com.tradehero.common.billing.BillingPurchaser;
 import com.tradehero.common.billing.InventoryFetcher;
@@ -25,6 +24,7 @@ import com.tradehero.th.persistence.billing.googleplay.THSKUDetailCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.utils.ActivityUtil;
 import dagger.Lazy;
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
@@ -326,66 +326,5 @@ abstract public class THIABLogicHolder
     @Override protected THIABPurchaseConsumer createPurchaseConsumer()
     {
         return new THIABPurchaseConsumer(getActivity());
-    }
-
-    public void launchReportSequenceAsync(Map<IABSKU, BaseIABPurchase> purchases)
-    {
-        for (BaseIABPurchase purchase : purchases.values())
-        {
-            THLog.d(TAG, "Purchasing " + purchase);
-            // TODO
-        }
-    }
-
-    protected void sendSupportEmailReportFailed(BaseIABPurchase purchase)
-    {
-        getActivity().startActivity(Intent.createChooser(
-                GooglePlayUtils.getSupportPurchaseReportEmailIntent(getActivity(), purchase),
-                getActivity().getString(R.string.google_play_send_support_email_chooser_title)));
-    }
-
-    protected void consumeOne(int requestCode, BaseIABPurchase purchase)
-    {
-        consumeOne(requestCode, purchase, false);
-    }
-
-    protected void consumeOne(int requestCode, BaseIABPurchase purchase, final boolean reportSuccessQuiet)
-    {
-        IABPurchaseConsumer.OnIABConsumptionFinishedListener<IABSKU, THIABOrderId, BaseIABPurchase, IABException> consumeListener =  new IABPurchaseConsumer.OnIABConsumptionFinishedListener<IABSKU, THIABOrderId, BaseIABPurchase, IABException>()
-        {
-            @Override public void onPurchaseConsumed(int requestCode, BaseIABPurchase purchase)
-            {
-                if (purchase != null)
-                {
-                    OwnedPortfolioId applicablePortfolioId = purchase.getApplicableOwnedPortfolioId();
-                    if (applicablePortfolioId != null)
-                    {
-                        portfolioCompactListCache.get().invalidate(applicablePortfolioId.getUserBaseKey());
-                        portfolioCache.get().invalidate(applicablePortfolioId);
-                    }
-                }
-
-                if (reportSuccessQuiet)
-                {
-                    // Nothing to do
-                }
-                else if (purchase == null || purchase.getProductIdentifier() == null || purchase.getProductIdentifier().identifier == null)
-                {
-                    IABAlertUtils.popConsumePurchaseSuccess(getActivity(), null);
-                }
-                else
-                {
-                    IABAlertUtils.popConsumePurchaseSuccess(getActivity(), thskuDetailCache.get().get(purchase.getProductIdentifier()).description);
-                }
-            }
-
-            @Override public void onPurchaseConsumeFailed(int requestCode, BaseIABPurchase purchase, IABException exception)
-            {
-                IABAlertUtils.popOfferSendEmailSupportConsumeFailed(getActivity(), exception);
-                //notifyPurchaseConsumeFail(requestCode, purchase, exception);
-            }
-        };
-        registerConsumeFinishedListener(requestCode, consumeListener);
-        launchConsumeSequence(requestCode, purchase);
     }
 }

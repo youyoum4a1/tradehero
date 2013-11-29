@@ -21,8 +21,13 @@ public class VersionUtils
 
     public static Intent getSupportEmailIntent(Context context, boolean longInfo)
     {
+        return getSupportEmailIntent(getSupportEmailTraceParameters(context, longInfo));
+    }
+
+   public static Intent getSupportEmailIntent(List<String> infoStrings)
+    {
         String deviceDetails = "\n\n-----\n" +
-                StringUtils.join("\n", getSupportEmailTraceParameters(context, longInfo)) +
+                StringUtils.join("\n", infoStrings) +
                 "\n-----\n";
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setType("plain/text");
@@ -50,6 +55,26 @@ public class VersionUtils
             parameters.add("Android CodeName: " + Build.VERSION.CODENAME);
         }
         return parameters;
+    }
+
+    public static List<String> getExceptionStringsAndTraceParameters(Context context, Exception exception)
+    {
+        List<String> reported = getExceptionStrings(context, exception);
+        reported.addAll(VersionUtils.getSupportEmailTraceParameters(context, true));
+        return reported;
+    }
+
+    public static List<String> getExceptionStrings(Context context, Exception exception)
+    {
+        List<String> reported = new ArrayList<>();
+
+        if (exception != null)
+        {
+            reported.addAll(ExceptionUtils.getElements(exception));
+            reported.add("-----");
+        }
+
+        return reported;
     }
 
     public static String getAppVersion(Context context)

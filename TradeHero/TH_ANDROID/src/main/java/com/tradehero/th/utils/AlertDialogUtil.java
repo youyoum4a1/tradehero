@@ -10,26 +10,39 @@ public class AlertDialogUtil
 {
     public static final String TAG = AlertDialogUtil.class.getSimpleName();
 
-    public static void popWithCancelButton(final Context context, int titleResId, int descriptionResId, int cancelResId)
+    public static DialogInterface.OnClickListener createDefaultCancelListener()
     {
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
-        alertDialogBuilder
-                .setTitle(titleResId)
-                .setMessage(descriptionResId)
-                .setIcon(R.drawable.th_app_logo)
-                .setCancelable(true)
-                .setNegativeButton(cancelResId, new DialogInterface.OnClickListener()
-                {
-                    public void onClick(DialogInterface dialog, int id)
-                    {
-                        dialog.cancel();
-                    }
-                });
-        AlertDialog alertDialog = alertDialogBuilder.create();
-        alertDialog.show();
+        return new DialogInterface.OnClickListener()
+        {
+            public void onClick(DialogInterface dialog, int id)
+            {
+                dialog.cancel();
+            }
+        };
     }
 
-    public static void popWithCancelButton(final Context context, String titleRes, String descriptionRes, String cancelRes)
+    public static AlertDialog popWithNegativeButton(final Context context, int titleResId, int descriptionResId, int cancelResId)
+    {
+        return popWithNegativeButton(context, titleResId, descriptionResId, cancelResId, createDefaultCancelListener());
+    }
+
+    public static AlertDialog popWithNegativeButton(final Context context, int titleResId, int descriptionResId, int cancelResId,
+            DialogInterface.OnClickListener cancelListener)
+    {
+        return popWithNegativeButton(context,
+                context.getString(titleResId),
+                context.getString(descriptionResId),
+                context.getString(cancelResId),
+                cancelListener);
+    }
+
+    public static AlertDialog popWithNegativeButton(final Context context, String titleRes, String descriptionRes, String cancelRes)
+    {
+        return popWithNegativeButton(context, titleRes, descriptionRes, cancelRes, createDefaultCancelListener());
+    }
+
+    public static AlertDialog popWithNegativeButton(final Context context, String titleRes, String descriptionRes, String cancelRes,
+            DialogInterface.OnClickListener cancelListener)
     {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
         alertDialogBuilder
@@ -37,47 +50,40 @@ public class AlertDialogUtil
                 .setMessage(descriptionRes)
                 .setIcon(R.drawable.th_app_logo)
                 .setCancelable(true)
-                .setNegativeButton(cancelRes, new DialogInterface.OnClickListener()
-                {
-                    public void onClick(DialogInterface dialog, int id)
-                    {
-                        dialog.cancel();
-                    }
-                });
+                .setNegativeButton(cancelRes, cancelListener);
         AlertDialog alertDialog = alertDialogBuilder.create();
         alertDialog.show();
+        return alertDialog;
     }
 
-    public static void popWithOkCancelButton(final Context context, int titleResId, int descriptionResId, int okResId, int cancelResId, final DialogInterface.OnClickListener okClickListener)
+    public static AlertDialog popWithOkCancelButton(final Context context, int titleResId, int descriptionResId, int okResId, int cancelResId,
+            final DialogInterface.OnClickListener okClickListener)
     {
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
-        alertDialogBuilder
-                .setTitle(titleResId)
-                .setMessage(descriptionResId)
-                .setIcon(R.drawable.th_app_logo)
-                .setCancelable(true)
-                .setNegativeButton(cancelResId, new DialogInterface.OnClickListener()
-                {
-                    public void onClick(DialogInterface dialog, int id)
-                    {
-                        dialog.cancel();
-                    }
-                }).setPositiveButton(okResId, new DialogInterface.OnClickListener()
-                {
-                    @Override public void onClick(DialogInterface dialog, int which)
-                    {
-                        if (okClickListener != null)
-                        {
-                            okClickListener.onClick(dialog, which);
-                        }
-                        dialog.cancel();
-                    }
-                });
-        AlertDialog alertDialog = alertDialogBuilder.create();
-        alertDialog.show();
+        return popWithOkCancelButton(context, titleResId, descriptionResId, okResId, cancelResId,
+                okClickListener, createDefaultCancelListener());
     }
 
-    public static void popWithOkCancelButton(final Context context, String title, String description, int okResId, int cancelResId, final DialogInterface.OnClickListener okClickListener)
+    public static AlertDialog popWithOkCancelButton(final Context context, int titleResId, int descriptionResId, int okResId, int cancelResId,
+            final DialogInterface.OnClickListener okClickListener, final DialogInterface.OnClickListener cancelClickListener)
+    {
+        return popWithOkCancelButton(context,
+                context.getString(titleResId),
+                context.getString(descriptionResId),
+                okResId,
+                cancelResId,
+                okClickListener,
+                cancelClickListener);
+    }
+
+    public static AlertDialog popWithOkCancelButton(final Context context, String title, String description, int okResId, int cancelResId,
+            final DialogInterface.OnClickListener okClickListener)
+    {
+        return popWithOkCancelButton(context, title, description, okResId, cancelResId,
+                okClickListener, createDefaultCancelListener());
+    }
+
+    public static AlertDialog popWithOkCancelButton(final Context context, String title, String description, int okResId, int cancelResId,
+            final DialogInterface.OnClickListener okClickListener, final DialogInterface.OnClickListener cancelClickListener)
     {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
         alertDialogBuilder
@@ -85,24 +91,10 @@ public class AlertDialogUtil
                 .setMessage(description)
                 .setIcon(R.drawable.th_app_logo)
                 .setCancelable(true)
-                .setNegativeButton(cancelResId, new DialogInterface.OnClickListener()
-                {
-                    public void onClick(DialogInterface dialog, int id)
-                    {
-                        dialog.cancel();
-                    }
-                }).setPositiveButton(okResId, new DialogInterface.OnClickListener()
-                {
-                    @Override public void onClick(DialogInterface dialog, int which)
-                    {
-                        if (okClickListener != null)
-                        {
-                            okClickListener.onClick(dialog, which);
-                        }
-                        dialog.cancel();
-                    }
-                });
+                .setNegativeButton(cancelResId, cancelClickListener)
+                .setPositiveButton(okResId, okClickListener);
         AlertDialog alertDialog = alertDialogBuilder.create();
         alertDialog.show();
+        return alertDialog;
     }
 }

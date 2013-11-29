@@ -338,14 +338,14 @@ public class StockInfoFragment extends DashboardFragment
     {
         if (securityId == null)
         {
-            AlertDialogUtil.popWithCancelButton(getActivity(),
+            AlertDialogUtil.popWithNegativeButton(getActivity(),
                     R.string.alert_dialog_market_close_title,
                     R.string.alert_dialog_market_close_message_basic,
                     R.string.alert_dialog_market_close_cancel);
         }
         else
         {
-            AlertDialogUtil.popWithCancelButton(getActivity(),
+            AlertDialogUtil.popWithNegativeButton(getActivity(),
                     getString(R.string.alert_dialog_market_close_title),
                     String.format(getString(R.string.alert_dialog_market_close_message), securityId.exchange, securityId.securitySymbol),
                     getString(R.string.alert_dialog_market_close_cancel));
