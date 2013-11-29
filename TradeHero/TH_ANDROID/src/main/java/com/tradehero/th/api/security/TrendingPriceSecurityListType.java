@@ -6,12 +6,12 @@ public class TrendingPriceSecurityListType extends TrendingSecurityListType
     //<editor-fold desc="Constructors">
     public TrendingPriceSecurityListType()
     {
-        super();    //To change body of overridden methods use File | Settings | File Templates.
+        super();
     }
 
     public TrendingPriceSecurityListType(String exchange)
     {
-        super(exchange);    //To change body of overridden methods use File | Settings | File Templates.
+        super(exchange);
     }
     //</editor-fold>
 

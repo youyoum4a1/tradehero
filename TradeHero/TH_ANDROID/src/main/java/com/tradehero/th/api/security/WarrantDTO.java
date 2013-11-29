@@ -18,7 +18,7 @@ public class WarrantDTO
 
     public String fallbackExternalURL;
 
-    public boolean IsMacquarieWarrant()
+    public boolean isMacquarieWarrant()
     {
         return this.issuerName != null && this.issuerName.toLowerCase().contains("mb");
     }

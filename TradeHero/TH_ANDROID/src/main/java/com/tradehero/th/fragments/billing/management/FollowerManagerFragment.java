@@ -254,7 +254,9 @@ public class FollowerManagerFragment extends BasePurchaseManagerFragment
             if (followerDTO != null)
             {
                 FollowerId followerId = new FollowerId(getApplicablePortfolioId().userId, followerDTO.id);
-                ((DashboardActivity) getActivity()).getDashboardNavigator().pushFragment(FollowerPayoutManagerFragment.class, followerId.getArgs());
+                Bundle args = new Bundle();
+                args.putBundle(FollowerPayoutManagerFragment.BUNDLE_KEY_FOLLOWER_ID_BUNDLE, followerId.getArgs());
+                ((DashboardActivity) getActivity()).getDashboardNavigator().pushFragment(FollowerPayoutManagerFragment.class, args);
             }
             else
             {

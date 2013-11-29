@@ -27,6 +27,8 @@ public class FollowerPayoutManagerFragment extends BasePurchaseManagerFragment
 {
     public static final String TAG = FollowerPayoutManagerFragment.class.getSimpleName();
 
+    public static final String BUNDLE_KEY_FOLLOWER_ID_BUNDLE = FollowerPayoutManagerFragment.class.getName() + ".followerId";
+
     private ImageView userIcon;
     private TextView followerName;
     private TextView totalRevenue;
@@ -85,7 +87,7 @@ public class FollowerPayoutManagerFragment extends BasePurchaseManagerFragment
     {
         super.onResume();
 
-        followerId = new FollowerId(getArguments());
+        followerId = new FollowerId(getArguments().getBundle(BUNDLE_KEY_FOLLOWER_ID_BUNDLE));
         fetchFollowerSummary();
     }
 

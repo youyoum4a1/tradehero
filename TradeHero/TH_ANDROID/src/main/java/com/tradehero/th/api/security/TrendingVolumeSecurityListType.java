@@ -6,12 +6,12 @@ public class TrendingVolumeSecurityListType extends TrendingSecurityListType
     //<editor-fold desc="Constructors">
     public TrendingVolumeSecurityListType()
     {
-        super();    //To change body of overridden methods use File | Settings | File Templates.
+        super();
     }
 
     public TrendingVolumeSecurityListType(String exchange)
     {
-        super(exchange);    //To change body of overridden methods use File | Settings | File Templates.
+        super(exchange);
     }
     //</editor-fold>
 
