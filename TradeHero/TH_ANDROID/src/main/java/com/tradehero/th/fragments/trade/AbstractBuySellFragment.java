@@ -33,6 +33,7 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
 {
     private final static String TAG = AbstractBuySellFragment.class.getSimpleName();
 
+    public final static String BUNDLE_KEY_SECURITY_ID_BUNDLE = AbstractBuySellFragment.class.getName() + ".securityId";
     public final static String BUNDLE_KEY_IS_BUY = BuySellConfirmFragment.class.getName() + ".isBuy";
     public final static String BUNDLE_KEY_QUANTITY_BUY = BuySellConfirmFragment.class.getName() + ".quantityBuy";
     public final static String BUNDLE_KEY_QUANTITY_SELL = BuySellConfirmFragment.class.getName() + ".quantitySell";
@@ -102,7 +103,11 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
         Bundle args = getArguments();
         if (args != null)
         {
-            linkWith(new SecurityId(args), true);
+            Bundle securityIdBundle = args.getBundle(BUNDLE_KEY_SECURITY_ID_BUNDLE);
+            if (securityIdBundle != null)
+            {
+                linkWith(new SecurityId(securityIdBundle), true);
+            }
             isTransactionTypeBuy = args.getBoolean(BUNDLE_KEY_IS_BUY, isTransactionTypeBuy);
             mBuyQuantity = args.getInt(BUNDLE_KEY_QUANTITY_BUY, mBuyQuantity);
             mSellQuantity = args.getInt(BUNDLE_KEY_QUANTITY_SELL, mSellQuantity);

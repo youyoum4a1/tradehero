@@ -648,7 +648,9 @@ public class SearchStockPeopleFragment extends DashboardFragment
             THLog.e(TAG, "Cannot handle null " + securityCompactDTO, new IllegalArgumentException());
             return;
         }
-        navigator.pushFragment(BuySellFragment.class, securityCompactDTO.getSecurityId().getArgs());
+        Bundle args = new Bundle();
+        args.putBundle(BuySellFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityCompactDTO.getSecurityId().getArgs());
+        navigator.pushFragment(BuySellFragment.class, args);
     }
 
     protected void pushUserFragmentIn(UserSearchResultDTO userSearchResultDTO)

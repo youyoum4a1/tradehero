@@ -275,24 +275,6 @@ public class BuySellFragment extends AbstractBuySellFragment
         }
     }
 
-    @Override public void onActivityCreated(Bundle savedInstanceState)
-    {
-        super.onActivityCreated(savedInstanceState);
-
-        //((TrendingDetailFragment) getActivity().getSupportFragmentManager()
-        //        .findFragmentByTag("trending_detail")).setYahooQuoteUpdateListener(this);
-
-        if (savedInstanceState != null)
-        {
-            securityId = new SecurityId(savedInstanceState);
-            THLog.d(TAG, securityId.toString());
-        }
-        else
-        {
-            THLog.d(TAG, "SavedInstanceState null");
-        }
-    }
-
     //<editor-fold desc="ActionBar">
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
@@ -441,12 +423,6 @@ public class BuySellFragment extends AbstractBuySellFragment
         mBottomPagerIndicator = null;
         mBottomViewPager = null;
         super.onDestroyView();
-    }
-
-    @Override public void onSaveInstanceState(Bundle outState)
-    {
-        THLog.d(TAG, "onSaveInstanceState");
-        super.onSaveInstanceState(outState);
     }
 
     @Override public void onDestroy()
@@ -991,30 +967,18 @@ public class BuySellFragment extends AbstractBuySellFragment
         }
     }
 
-    private void pushBuyFragmentIn()
+    private void pushBuySellConfirmFragmentIn()
     {
-        // save own state for when popped
-        Bundle own = getArguments();
-        if (own == null && securityId != null)
+        Bundle args = new Bundle();
+        args.putBoolean(BuySellConfirmFragment.BUNDLE_KEY_IS_BUY, isTransactionTypeBuy);
+        args.putInt(BuySellConfirmFragment.BUNDLE_KEY_QUANTITY_BUY, mBuyQuantity);
+        args.putInt(BuySellConfirmFragment.BUNDLE_KEY_QUANTITY_SELL, mSellQuantity);
+        if (securityId != null)
         {
-            own = securityId.getArgs();
+            args.putBundle(BuySellConfirmFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
         }
-        else if (own == null)
-        {
-            own = new Bundle();
-        }
-        own.putBoolean(BUNDLE_KEY_IS_BUY, isTransactionTypeBuy);
-        own.putInt(BUNDLE_KEY_QUANTITY_BUY, mBuyQuantity);
-        own.putInt(BUNDLE_KEY_QUANTITY_SELL, mSellQuantity);
-        //setArguments(own); // Cannot do it
 
-        Bundle b = new Bundle();
-        b.putBoolean(BuySellConfirmFragment.BUNDLE_KEY_IS_BUY, isTransactionTypeBuy);
-        b.putInt(BuySellConfirmFragment.BUNDLE_KEY_QUANTITY_BUY, mBuyQuantity);
-        b.putInt(BuySellConfirmFragment.BUNDLE_KEY_QUANTITY_SELL, mSellQuantity);
-        securityId.putParameters(b);
-
-        navigator.pushFragment(BuySellConfirmFragment.class, b);
+        navigator.pushFragment(BuySellConfirmFragment.class, args);
     }
 
     private void showInfoDialog()
@@ -1136,7 +1100,7 @@ public class BuySellFragment extends AbstractBuySellFragment
             @Override
             public void onClick(View v)
             {
-                pushBuyFragmentIn();
+                pushBuySellConfirmFragmentIn();
                 return;
                 //String buyDetail = String.format("Buy %s %s:%s @ %s %f\nTransaction fee: virtual US$ 10\nTotal cost: US$ %.2f",
                 //        /*tvQuantity.getText()*/ "quantity", securityPositionDetailDTO.security.exchange, securityPositionDetailDTO.security.symbol, securityPositionDetailDTO.security.currencyDisplay,
@@ -1192,7 +1156,9 @@ public class BuySellFragment extends AbstractBuySellFragment
 
     private void pushStockInfoFragmentIn()
     {
-        navigator.pushFragment(StockInfoFragment.class, this.securityId.getArgs());
+        Bundle args = new Bundle();
+        args.putBundle(StockInfoFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, this.securityId.getArgs());
+        navigator.pushFragment(StockInfoFragment.class, args);
     }
     //</editor-fold>
 

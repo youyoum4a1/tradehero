@@ -14,6 +14,7 @@ abstract public class AbstractSecurityInfoFragment<InfoType> extends SherlockFra
         implements DTOCache.Listener<SecurityId, InfoType>
 {
     public final static String TAG = AbstractSecurityInfoFragment.class.getSimpleName();
+    public final static String BUNDLE_KEY_SECURITY_ID_BUNDLE = AbstractSecurityInfoFragment.class.getName() + ".securityId";
 
     protected SecurityId securityId;
     protected InfoType value;
@@ -31,7 +32,11 @@ abstract public class AbstractSecurityInfoFragment<InfoType> extends SherlockFra
         Bundle args = getArguments();
         if (args != null)
         {
-            linkWith(new SecurityId(args), true);
+            Bundle securityIdBundle = args.getBundle(BUNDLE_KEY_SECURITY_ID_BUNDLE);
+            if (securityIdBundle != null)
+            {
+                linkWith(new SecurityId(securityIdBundle), true);
+            }
         }
         else
         {

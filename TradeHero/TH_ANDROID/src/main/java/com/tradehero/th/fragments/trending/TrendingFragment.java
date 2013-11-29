@@ -155,9 +155,10 @@ public class TrendingFragment extends DashboardFragment
                 @Override public void onItemClick(AdapterView<?> parent, View view, int position, long id)
                 {
                     SecurityCompactDTO securityCompactDTO = (SecurityCompactDTO) parent.getItemAtPosition(position);
-                    Bundle args = securityCompactDTO.getSecurityId().getArgs();
+                    Bundle args = new Bundle();
+                    args.putBundle(BuySellFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityCompactDTO.getSecurityId().getArgs());
                     // TODO use other positions
-                    navigator.pushFragment(BuySellFragment.class, securityCompactDTO.getSecurityId().getArgs());
+                    navigator.pushFragment(BuySellFragment.class, args);
                 }
             });
 

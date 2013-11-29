@@ -28,6 +28,7 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileCompactDTO;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.base.NavigatorActivity;
+import com.tradehero.th.fragments.security.AbstractSecurityInfoFragment;
 import com.tradehero.th.fragments.security.StockInfoFragment;
 import com.tradehero.th.fragments.trade.BuySellFragment;
 import com.tradehero.th.misc.callback.THCallback;
@@ -207,13 +208,19 @@ public class TimelineItemView extends LinearLayout implements
             switch (item.getItemId())
             {
                 case R.id.timeline_popup_menu_monitor_add_to_watch_list:
-
                     return true;
+
                 case R.id.timeline_popup_menu_monitor_enable_stock_alert:
                     return true;
+
                 case R.id.timeline_popup_menu_monitor_view_graph:
+                    Bundle args = new Bundle();
                     SecurityId securityId = getSecurityId();
-                    getNavigator().pushFragment(StockInfoFragment.class, securityId != null ? securityId.getArgs() : null);
+                    if (securityId != null)
+                    {
+                        args.putBundle(StockInfoFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
+                    }
+                    getNavigator().pushFragment(StockInfoFragment.class, args);
                     return true;
             }
             return false;

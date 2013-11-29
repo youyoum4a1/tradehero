@@ -10,6 +10,7 @@ import com.tradehero.common.utils.THLog;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.utils.yahoo.ChartSize;
 import com.tradehero.th.utils.yahoo.TimeSpan;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/31/13 Time: 12:42 PM To change this template use File | Settings | File Templates. */
 public class InfoTopStockPagerAdapter extends FragmentStatePagerAdapter
@@ -45,12 +46,13 @@ public class InfoTopStockPagerAdapter extends FragmentStatePagerAdapter
 
     @Override public Fragment getItem(int position)
     {
-        Fragment fragment = null;
+        Fragment fragment;
         Bundle args = new Bundle();
         if (securityId != null)
         {
-            securityId.putParameters(args);
+            args.putBundle(AbstractSecurityInfoFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
         }
+
         switch(position)
         {
             case 0:
@@ -64,7 +66,8 @@ public class InfoTopStockPagerAdapter extends FragmentStatePagerAdapter
                 break;
 
             default:
-                THLog.i(TAG, "Not supported index " + position);
+                THLog.w(TAG, "Not supported index " + position);
+                throw new NotImplementedException();
         }
 
         fragment.setArguments(args);

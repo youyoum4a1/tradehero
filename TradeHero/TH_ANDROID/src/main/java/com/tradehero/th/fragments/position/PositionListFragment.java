@@ -22,6 +22,7 @@ import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.dashboard.DashboardTabType;
+import com.tradehero.th.fragments.security.AbstractSecurityInfoFragment;
 import com.tradehero.th.fragments.security.StockInfoFragment;
 import com.tradehero.th.fragments.trade.BuySellFragment;
 import com.tradehero.th.fragments.trade.TradeListFragment;
@@ -369,7 +370,8 @@ public class PositionListFragment extends DashboardFragment
                 }
                 else
                 {
-                    Bundle args = securityId.getArgs();
+                    Bundle args = new Bundle();
+                    args.putBundle(BuySellFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
                     args.putBoolean(BuySellFragment.BUNDLE_KEY_IS_BUY, isBuy);
                     navigator.pushFragment(BuySellFragment.class, args);
                 }
@@ -427,7 +429,9 @@ public class PositionListFragment extends DashboardFragment
             }
             else
             {
-                navigator.pushFragment(StockInfoFragment.class, securityId.getArgs());
+                Bundle args = new Bundle();
+                args.putBundle(StockInfoFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
+                navigator.pushFragment(StockInfoFragment.class, args);
             }
         }
     }

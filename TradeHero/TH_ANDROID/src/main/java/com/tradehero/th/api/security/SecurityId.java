@@ -7,8 +7,8 @@ import com.tradehero.common.persistence.DTOKey;
 /** Created with IntelliJ IDEA. User: xavier Date: 10/1/13 Time: 12:29 PM To change this template use File | Settings | File Templates. */
 public class SecurityId implements Comparable, DTOKey, DTO
 {
-    public final static String BUNDLE_KEY_EXCHANGE = SecurityId.class.getName() + ".exchange";
-    public final static String BUNDLE_KEY_SYMBOL = SecurityId.class.getName() + ".symbol";
+    private final static String BUNDLE_KEY_EXCHANGE = SecurityId.class.getName() + ".exchange";
+    private final static String BUNDLE_KEY_SYMBOL = SecurityId.class.getName() + ".symbol";
 
     public final String exchange;
     public final String securitySymbol;
@@ -95,7 +95,7 @@ public class SecurityId implements Comparable, DTOKey, DTO
                 !args.getString(BUNDLE_KEY_SYMBOL).isEmpty();
     }
 
-    public void putParameters(Bundle args)
+    protected void putParameters(Bundle args)
     {
         args.putString(BUNDLE_KEY_EXCHANGE, exchange);
         args.putString(BUNDLE_KEY_SYMBOL, securitySymbol);

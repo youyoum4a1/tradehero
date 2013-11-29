@@ -151,8 +151,9 @@ public class TradeListFragment extends DashboardFragment
                 }
                 else
                 {
-                    Bundle args = securityId.getArgs();
+                    Bundle args = new Bundle();
                     args.putBoolean(BuySellFragment.BUNDLE_KEY_IS_BUY, isBuy);
+                    args.putBundle(BuySellFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
                     navigator.pushFragment(BuySellFragment.class, args);
                 }
             }

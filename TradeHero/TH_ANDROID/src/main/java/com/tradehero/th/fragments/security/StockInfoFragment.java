@@ -29,6 +29,7 @@ import javax.inject.Inject;
 public class StockInfoFragment extends DashboardFragment
 {
     public static final String TAG = StockInfoFragment.class.getSimpleName();
+    public final static String BUNDLE_KEY_SECURITY_ID_BUNDLE = StockInfoFragment.class.getName() + ".securityId";
 
     protected SecurityId securityId;
 
@@ -89,16 +90,11 @@ public class StockInfoFragment extends DashboardFragment
         Bundle args = getArguments();
         if (args != null)
         {
-            linkWith(new SecurityId(args), true);
-        }
-
-        // This feels HACKy
-
-        if (topPager != null)
-        {
-            //RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) topPager.getLayoutParams();
-            //layoutParams.height = getView().getWidth();
-            //topPager.setLayoutParams(layoutParams);
+            Bundle securityIdBundle = args.getBundle(BUNDLE_KEY_SECURITY_ID_BUNDLE);
+            if (securityIdBundle != null)
+            {
+                linkWith(new SecurityId(securityIdBundle), true);
+            }
         }
     }
 
