@@ -231,7 +231,7 @@ public class TradeQuantityView extends TableLayout
         {
             if (securityCompactDTO != null)
             {
-                mSecurityType.setText(SecurityType.getStringResourceId(securityCompactDTO.getSecurityType()));
+                mSecurityType.setText(securityCompactDTO.getSecurityType().stringResId);
             }
             else
             {

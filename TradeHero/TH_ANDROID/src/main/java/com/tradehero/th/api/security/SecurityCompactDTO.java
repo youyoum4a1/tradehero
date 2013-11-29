@@ -105,7 +105,7 @@ public class SecurityCompactDTO implements DTO
 
     public int getSecurityTypeStringResourceId()
     {
-        return SecurityType.getStringResourceId(getSecurityType());
+        return getSecurityType().stringResId;
     }
 
     public String getExchangeSymbol()
