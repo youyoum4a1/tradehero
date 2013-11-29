@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.billing.management;
+package com.tradehero.th.fragments.social.follower;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -9,6 +9,7 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.social.FollowerSummaryDTO;
 import com.tradehero.th.api.social.HeroPayoutDTO;
 import com.tradehero.th.api.social.UserFollowerDTO;
+import com.tradehero.th.fragments.social.hero.HeroPayoutListItemView;
 import com.tradehero.th.widget.list.BaseListHeaderView;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/14/13 Time: 4:12 PM To change this template use File | Settings | File Templates. */

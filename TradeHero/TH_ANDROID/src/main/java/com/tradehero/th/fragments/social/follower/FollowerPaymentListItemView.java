@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.billing.management;
+package com.tradehero.th.fragments.social.follower;
 
 import android.content.Context;
 import android.util.AttributeSet;

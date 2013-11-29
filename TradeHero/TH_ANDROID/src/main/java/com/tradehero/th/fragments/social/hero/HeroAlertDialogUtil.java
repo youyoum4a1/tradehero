@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.billing.management;
+package com.tradehero.th.fragments.social.hero;
 
 import android.app.AlertDialog;
 import android.content.Context;

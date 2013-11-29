@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<com.tradehero.th.fragments.billing.management.FollowerListItemView
+<com.tradehero.th.fragments.social.follower.FollowerListItemView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res/com.tradehero.th"
     android:layout_width="match_parent"
@@ -62,4 +62,4 @@
       android:contentDescription="@null"
     />
 
-</com.tradehero.th.fragments.billing.management.FollowerListItemView>
+</com.tradehero.th.fragments.social.follower.FollowerListItemView>

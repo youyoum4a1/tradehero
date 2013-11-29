@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.billing.management;
+package com.tradehero.th.fragments.social.follower;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;

@@ -19,8 +19,8 @@ import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.billing.googleplay.IABAlertDialogUtil;
 import com.tradehero.th.billing.googleplay.THIABActor;
-import com.tradehero.th.fragments.billing.management.FollowerManagerFragment;
-import com.tradehero.th.fragments.billing.management.HeroManagerFragment;
+import com.tradehero.th.fragments.social.follower.FollowerManagerFragment;
+import com.tradehero.th.fragments.social.hero.HeroManagerFragment;
 import com.tradehero.th.utils.AlertDialogUtil;
 
 public class StoreScreenFragment extends BasePurchaseManagerFragment

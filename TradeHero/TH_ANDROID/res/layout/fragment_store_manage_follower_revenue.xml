@@ -61,7 +61,7 @@
 
   </RelativeLayout>
 
-  <com.tradehero.th.fragments.billing.management.FollowerPaymentListView
+  <com.tradehero.th.fragments.social.follower.FollowerPaymentListView
       android:id="@+id/follower_payments_list"
       android:layout_width="match_parent"
       android:layout_height="match_parent"

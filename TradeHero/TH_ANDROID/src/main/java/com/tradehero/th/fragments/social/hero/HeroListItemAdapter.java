@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.billing.management;
+package com.tradehero.th.fragments.social.hero;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -7,7 +7,6 @@ import android.view.ViewGroup;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.DTOAdapter;
-import com.tradehero.th.api.social.FollowerTransactionDTO;
 import com.tradehero.th.api.social.HeroDTO;
 import com.tradehero.th.widget.list.BaseListHeaderView;
 import java.lang.ref.WeakReference;
