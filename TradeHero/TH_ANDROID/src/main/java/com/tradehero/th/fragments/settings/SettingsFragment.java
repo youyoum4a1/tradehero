@@ -623,9 +623,9 @@ public class SettingsFragment extends PreferenceFragment
             public void success(UserProfileDTO o, Response response)
             {
                 THUser.clearCurrentUser();
+                progressDialog.dismiss();
                 ActivityHelper.launchAuthentication(getActivity());
                 getActivity().finish();
-                progressDialog.hide();
                 // TODO clear caches
                 THLog.d(TAG, "After successful signout current user base key " + currentUserBaseKeyHolder.getCurrentUserBaseKey().key);
             }
@@ -638,7 +638,7 @@ public class SettingsFragment extends PreferenceFragment
                 {
                     @Override public void run()
                     {
-                        progressDialog.hide();
+                        progressDialog.dismiss();
                     }
                 }, 3000);
             }
