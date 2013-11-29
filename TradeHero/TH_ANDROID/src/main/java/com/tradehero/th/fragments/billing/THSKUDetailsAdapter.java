@@ -5,10 +5,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import com.tradehero.th.R;
-import com.tradehero.th.billing.googleplay.THIABProductDetails;
+import com.tradehero.th.billing.googleplay.THIABProductDetail;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/6/13 Time: 4:14 PM To change this template use File | Settings | File Templates. */
-public class THSKUDetailsAdapter extends SKUDetailsAdapter<THIABProductDetails, StoreSKUDetailView>
+public class THSKUDetailsAdapter extends SKUDetailsAdapter<THIABProductDetail, StoreSKUDetailView>
 {
     public static final String TAG = THSKUDetailsAdapter.class.getSimpleName();
 
@@ -35,7 +35,7 @@ public class THSKUDetailsAdapter extends SKUDetailsAdapter<THIABProductDetails, 
         return quickDescription;
     }
 
-    @Override protected void fineTune(int position, THIABProductDetails dto, StoreSKUDetailView dtoView)
+    @Override protected void fineTune(int position, THIABProductDetail dto, StoreSKUDetailView dtoView)
     {
     }
 

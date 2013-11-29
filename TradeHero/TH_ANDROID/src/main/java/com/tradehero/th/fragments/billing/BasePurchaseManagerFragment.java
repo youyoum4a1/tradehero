@@ -18,11 +18,9 @@ import com.tradehero.common.billing.googleplay.exceptions.IABSendIntentException
 import com.tradehero.common.billing.googleplay.exceptions.IABUserCancelledException;
 import com.tradehero.common.billing.googleplay.exceptions.IABVerificationFailedException;
 import com.tradehero.common.milestone.Milestone;
-import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
-import com.tradehero.th.api.portfolio.OwnedPortfolioIdList;
 import com.tradehero.th.api.portfolio.PortfolioId;
 import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
 import com.tradehero.th.api.users.UserBaseKey;
@@ -37,10 +35,10 @@ import com.tradehero.th.billing.googleplay.THIABActorPurchaseReporter;
 import com.tradehero.th.billing.googleplay.THIABActorPurchaser;
 import com.tradehero.th.billing.googleplay.THIABActorUser;
 import com.tradehero.th.billing.googleplay.THIABOrderId;
-import com.tradehero.th.billing.googleplay.THIABProductDetails;
+import com.tradehero.th.billing.googleplay.THIABProductDetail;
 import com.tradehero.th.billing.googleplay.THIABPurchaseOrder;
 import com.tradehero.th.fragments.base.DashboardFragment;
-import com.tradehero.th.persistence.billing.googleplay.THSKUDetailCache;
+import com.tradehero.th.persistence.billing.googleplay.THIABProductDetailCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import dagger.Lazy;
@@ -53,7 +51,7 @@ import javax.inject.Inject;
  * It expects its Activity to implement THIABActorUser.
  * Created with IntelliJ IDEA. User: xavier Date: 11/11/13 Time: 11:05 AM To change this template use File | Settings | File Templates. */
 abstract public class BasePurchaseManagerFragment extends DashboardFragment
-        implements IABAlertDialogUtil.OnDialogSKUDetailsClickListener<THIABProductDetails>,
+        implements IABAlertDialogUtil.OnDialogSKUDetailsClickListener<THIABProductDetail>,
         THIABActorUser
 {
     public static final String TAG = BasePurchaseManagerFragment.class.getSimpleName();
@@ -71,12 +69,10 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
     @Inject Lazy<UserProfileCache> userProfileCache;
 
     @Inject Lazy<PortfolioCompactListCache> portfolioCompactListCache;
-    private DTOCache.Listener<UserBaseKey, OwnedPortfolioIdList> portfolioIdListListener;
-    private DTOCache.GetOrFetchTask<OwnedPortfolioIdList> portfolioIdListFetchTask;
 
-    @Inject Lazy<THSKUDetailCache> skuDetailCache;
+    @Inject Lazy<THIABProductDetailCache> thiabProductDetailCache;
     protected WeakReference<THIABActor> billingActor = new WeakReference<>(null);
-    protected InventoryFetcher.OnInventoryFetchedListener<IABSKU, THIABProductDetails, IABException> inventoryFetchedForgetListener;
+    protected InventoryFetcher.OnInventoryFetchedListener<IABSKU, THIABProductDetail, IABException> inventoryFetchedForgetListener;
     protected UserBaseKey userBaseKey;
     protected PortfolioId portfolioId;
     private Runnable runOnPurchaseComplete;
@@ -115,12 +111,6 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
     {
         inventoryFetchedForgetListener = null;
 
-        if (portfolioIdListFetchTask != null)
-        {
-            portfolioIdListFetchTask.forgetListener(true);
-        }
-        portfolioIdListFetchTask = null;
-        portfolioIdListListener = null;
         runOnShowSkuDetailsMilestoneComplete = null;
         super.onPause();
     }
@@ -168,7 +158,7 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
                     }
                     else if (exception instanceof IABAlreadyOwnedException)
                     {
-                        IABAlertDialogUtil.popSKUAlreadyOwned(getActivity(), skuDetailCache.get().get(purchaseOrder.getProductIdentifier()));
+                        IABAlertDialogUtil.popSKUAlreadyOwned(getActivity(), thiabProductDetailCache.get().get(purchaseOrder.getProductIdentifier()));
                     }
                     else if (exception instanceof IABSendIntentException)
                     {
@@ -439,11 +429,11 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
         alertDialog.show();
     }
 
-    protected InventoryFetcher.OnInventoryFetchedListener<IABSKU, THIABProductDetails, IABException> createForgetFetchedListener()
+    protected InventoryFetcher.OnInventoryFetchedListener<IABSKU, THIABProductDetail, IABException> createForgetFetchedListener()
     {
-        return new InventoryFetcher.OnInventoryFetchedListener<IABSKU, THIABProductDetails, IABException>()
+        return new InventoryFetcher.OnInventoryFetchedListener<IABSKU, THIABProductDetail, IABException>()
         {
-            @Override public void onInventoryFetchSuccess(int requestCode, List<IABSKU> productIdentifiers, Map<IABSKU, THIABProductDetails> inventory)
+            @Override public void onInventoryFetchSuccess(int requestCode, List<IABSKU> productIdentifiers, Map<IABSKU, THIABProductDetail> inventory)
             {
                 getBillingActor().forgetRequestCode(requestCode);
             }
@@ -476,7 +466,7 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
 
     protected void popBuyVirtualDollars(Runnable runOnPurchaseComplete)
     {
-        popBuyDialog(THIABProductDetails.DOMAIN_VIRTUAL_DOLLAR, R.string.store_buy_virtual_dollar_window_title, runOnPurchaseComplete);
+        popBuyDialog(THIABProductDetail.DOMAIN_VIRTUAL_DOLLAR, R.string.store_buy_virtual_dollar_window_title, runOnPurchaseComplete);
     }
 
     protected void conditionalPopBuyFollowCredits()
@@ -499,7 +489,7 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
 
     protected void popBuyFollowCredits(Runnable runOnPurchaseComplete)
     {
-        popBuyDialog(THIABProductDetails.DOMAIN_FOLLOW_CREDITS, R.string.store_buy_follow_credits_window_message, runOnPurchaseComplete);
+        popBuyDialog(THIABProductDetail.DOMAIN_FOLLOW_CREDITS, R.string.store_buy_follow_credits_window_message, runOnPurchaseComplete);
     }
 
     protected void conditionalPopBuyStockAlerts()
@@ -522,7 +512,7 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
 
     protected void popBuyStockAlerts(Runnable runOnPurchaseComplete)
     {
-        popBuyDialog(THIABProductDetails.DOMAIN_STOCK_ALERTS, R.string.store_buy_stock_alerts_window_title, runOnPurchaseComplete);
+        popBuyDialog(THIABProductDetail.DOMAIN_STOCK_ALERTS, R.string.store_buy_stock_alerts_window_title, runOnPurchaseComplete);
     }
 
     protected void conditionalPopBuyResetPortfolio()
@@ -545,7 +535,7 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
 
     protected void popBuyResetPortfolio(Runnable runOnPurchaseComplete)
     {
-        popBuyDialog(THIABProductDetails.DOMAIN_RESET_PORTFOLIO, R.string.store_buy_reset_portfolio_window_title, runOnPurchaseComplete);
+        popBuyDialog(THIABProductDetail.DOMAIN_RESET_PORTFOLIO, R.string.store_buy_reset_portfolio_window_title, runOnPurchaseComplete);
     }
 
     protected void popBuyDialog(final String skuDomain, final int titleResId)
@@ -573,7 +563,7 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
     //</editor-fold>
 
     //<editor-fold desc="IABAlertDialogUtil.OnDialogSKUDetailsClickListener">
-    @Override public void onDialogSKUDetailsClicked(DialogInterface dialogInterface, int position, THIABProductDetails skuDetails, Runnable runOnPurchaseComplete)
+    @Override public void onDialogSKUDetailsClicked(DialogInterface dialogInterface, int position, THIABProductDetail skuDetails, Runnable runOnPurchaseComplete)
     {
         this.runOnPurchaseComplete = runOnPurchaseComplete;
         launchPurchaseSequence(new THIABPurchaseOrder(skuDetails.getProductIdentifier(), getApplicablePortfolioId()));

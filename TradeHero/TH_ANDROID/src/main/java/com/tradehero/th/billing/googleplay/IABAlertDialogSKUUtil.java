@@ -14,14 +14,14 @@ public class IABAlertDialogSKUUtil
     public static AlertDialog popBuyDialog(
             Activity activity,
             SKUDomainInformer domainInformer,
-            IABAlertDialogUtil.OnDialogSKUDetailsClickListener<THIABProductDetails> clickListener,
+            IABAlertDialogUtil.OnDialogSKUDetailsClickListener<THIABProductDetail> clickListener,
             String skuDomain,
             int titleResId,
             Runnable runOnPurchaseComplete)
     {
         final THSKUDetailsAdapter detailsAdapter = new THSKUDetailsAdapter(activity, activity.getLayoutInflater(), skuDomain);
-        detailsAdapter.setSkuDetailsComparator(new BaseIABProductDetailsDecreasingPriceComparator<THIABProductDetails>());
-        List<THIABProductDetails> desiredSkuDetails = domainInformer.getDetailsOfDomain(skuDomain);
+        detailsAdapter.setSkuDetailsComparator(new BaseIABProductDetailsDecreasingPriceComparator<THIABProductDetail>());
+        List<THIABProductDetail> desiredSkuDetails = domainInformer.getDetailsOfDomain(skuDomain);
         detailsAdapter.setItems(desiredSkuDetails);
 
         return IABAlertDialogUtil.popBuyDialog(activity, detailsAdapter, titleResId, clickListener, runOnPurchaseComplete);

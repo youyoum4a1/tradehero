@@ -20,8 +20,8 @@ public interface THIABActor extends
         THIABActorPurchaseConsumer, // This is redundant but allows passing of interface
         IABActor<
                 IABSKU,
-                THIABProductDetails,
-                InventoryFetcher.OnInventoryFetchedListener<IABSKU, THIABProductDetails, IABException>,
+                THIABProductDetail,
+                InventoryFetcher.OnInventoryFetchedListener<IABSKU, THIABProductDetail, IABException>,
                 THIABPurchaseOrder,
                 THIABOrderId,
                 BaseIABPurchase,

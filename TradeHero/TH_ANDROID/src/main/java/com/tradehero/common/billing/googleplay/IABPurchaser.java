@@ -21,7 +21,7 @@ import org.json.JSONException;
 /** Created with IntelliJ IDEA. User: xavier Date: 11/7/13 Time: 11:05 AM To change this template use File | Settings | File Templates. */
 abstract public class IABPurchaser<
         IABSKUType extends IABSKU,
-        IABProductDetailsType extends IABProductDetails<IABSKUType>,
+        IABProductDetailType extends IABProductDetail<IABSKUType>,
         IABOrderIdType extends IABOrderId,
         IABPurchaseOrderType extends IABPurchaseOrder<IABSKUType>,
         IABPurchaseType extends IABPurchase<IABSKUType, IABOrderIdType>>
@@ -46,7 +46,7 @@ abstract public class IABPurchaser<
     }
 
     abstract protected IABPurchaseType createPurchase(String itemType, String purchaseData, String dataSignature) throws JSONException;
-    abstract protected IABProductDetailsType getProductDetails(IABSKUType iabskuType);
+    abstract protected IABProductDetailType getProductDetails(IABSKUType iabskuType);
 
     protected Activity getActivity()
     {

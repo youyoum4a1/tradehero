@@ -5,10 +5,10 @@ import android.util.AttributeSet;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.tradehero.th.R;
-import com.tradehero.th.billing.googleplay.THIABProductDetails;
+import com.tradehero.th.billing.googleplay.THIABProductDetail;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/6/13 Time: 2:49 PM To change this template use File | Settings | File Templates. */
-public class StoreSKUDetailView extends SKUDetailView<THIABProductDetails>
+public class StoreSKUDetailView extends SKUDetailView<THIABProductDetail>
 {
     public static final String TAG = StoreSKUDetailView.class.getSimpleName();
 

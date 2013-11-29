@@ -11,7 +11,7 @@ import com.tradehero.common.milestone.Milestone;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.persistence.billing.googleplay.IABSKUListCache;
 import com.tradehero.th.persistence.billing.googleplay.IABSKUListRetrievedMilestone;
-import com.tradehero.th.persistence.billing.googleplay.THSKUDetailCache;
+import com.tradehero.th.persistence.billing.googleplay.THIABProductDetailCache;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
 import java.lang.ref.WeakReference;
@@ -30,11 +30,11 @@ public class THInventoryFetchMilestone extends BaseMilestone implements Dependen
     private final Context context;
     private final IABSKUListType iabskuListType;
     private WeakReference<THIABActorInventoryFetcher> actorInventoryFetcherWeak = new WeakReference<>(null);
-    private InventoryFetcher.OnInventoryFetchedListener<IABSKU, THIABProductDetails, IABException> fetchListener;
+    private InventoryFetcher.OnInventoryFetchedListener<IABSKU, THIABProductDetail, IABException> fetchListener;
     protected IABSKUListRetrievedMilestone dependsOn;
     private OnCompleteListener dependCompleteListener;
     @Inject Lazy<IABSKUListCache> iabskuListCache;
-    @Inject Lazy<THSKUDetailCache> thskuDetailCache;
+    @Inject Lazy<THIABProductDetailCache> thskuDetailCache;
 
     public THInventoryFetchMilestone(Context context, THIABActorInventoryFetcher actorInventoryFetcher, IABSKUListType iabskuListType)
     {
@@ -45,9 +45,9 @@ public class THInventoryFetchMilestone extends BaseMilestone implements Dependen
         this.context = context;
         this.actorInventoryFetcherWeak = new WeakReference<>(actorInventoryFetcher);
         this.iabskuListType = iabskuListType;
-        fetchListener = new InventoryFetcher.OnInventoryFetchedListener<IABSKU, THIABProductDetails, IABException>()
+        fetchListener = new InventoryFetcher.OnInventoryFetchedListener<IABSKU, THIABProductDetail, IABException>()
         {
-            @Override public void onInventoryFetchSuccess(int requestCode, List<IABSKU> productIdentifiers, Map<IABSKU, THIABProductDetails> inventory)
+            @Override public void onInventoryFetchSuccess(int requestCode, List<IABSKU> productIdentifiers, Map<IABSKU, THIABProductDetail> inventory)
             {
                 running = false;
                 notifyCompleteListener();

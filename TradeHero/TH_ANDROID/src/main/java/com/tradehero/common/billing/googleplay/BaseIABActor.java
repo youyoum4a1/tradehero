@@ -7,7 +7,6 @@ import com.tradehero.common.billing.InventoryFetcher;
 import com.tradehero.common.billing.googleplay.exceptions.IABBillingUnavailableException;
 import com.tradehero.common.billing.googleplay.exceptions.IABException;
 import com.tradehero.common.utils.THLog;
-import com.tradehero.th.billing.googleplay.THIABOrderId;
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.List;
@@ -16,13 +15,13 @@ import java.util.Map;
 /** Created with IntelliJ IDEA. User: xavier Date: 11/8/13 Time: 12:32 PM To change this template use File | Settings | File Templates. */
 abstract public class BaseIABActor<
         IABSKUType extends IABSKU,
-        IABProductDetailsType extends IABProductDetails<IABSKUType>,
+        IABProductDetailType extends IABProductDetail<IABSKUType>,
         IABInventoryFetcherType extends IABInventoryFetcher<
                 IABSKUType,
-                IABProductDetailsType>,
+                IABProductDetailType>,
         IABInventoryFetchedListenerType extends InventoryFetcher.OnInventoryFetchedListener<
                 IABSKUType,
-                IABProductDetailsType,
+                IABProductDetailType,
                 IABException>,
         IABPurchaseOrderType extends IABPurchaseOrder<IABSKUType>,
         IABOrderIdType extends IABOrderId,
@@ -39,7 +38,7 @@ abstract public class BaseIABActor<
                 IABPurchaseType>,
         IABPurchaserType extends IABPurchaser<
                 IABSKUType,
-                IABProductDetailsType,
+                IABProductDetailType,
                 IABOrderIdType,
                 IABPurchaseOrderType,
                 IABPurchaseType>,
@@ -60,7 +59,7 @@ abstract public class BaseIABActor<
                 IABException>>
     implements IABActor<
         IABSKUType,
-        IABProductDetailsType,
+        IABProductDetailType,
         IABInventoryFetchedListenerType,
         IABPurchaseOrderType,
         IABOrderIdType,
@@ -79,7 +78,7 @@ abstract public class BaseIABActor<
     protected Exception latestInventoryFetcherException; // TODO here too
 
     protected Map<Integer /*requestCode*/, IABInventoryFetcherType> iabInventoryFetchers;
-    protected Map<Integer /*requestCode*/, InventoryFetcher.OnInventoryFetchedListener<IABSKUType, IABProductDetailsType, IABException>> inventoryFetchedListeners;
+    protected Map<Integer /*requestCode*/, InventoryFetcher.OnInventoryFetchedListener<IABSKUType, IABProductDetailType, IABException>> inventoryFetchedListeners;
     protected Map<Integer /*requestCode*/, WeakReference<IABInventoryFetchedListenerType>>parentInventoryFetchedListeners;
 
     protected Map<Integer /*requestCode*/, IABPurchaseFetcherType> purchaseFetchers;
@@ -277,10 +276,10 @@ abstract public class BaseIABActor<
     @Override public void launchInventoryFetchSequence(int requestCode)
     {
         latestInventoryFetcherException = null;
-        InventoryFetcher.OnInventoryFetchedListener<IABSKUType, IABProductDetailsType, IABException>
-                fetchedListener = new InventoryFetcher.OnInventoryFetchedListener<IABSKUType, IABProductDetailsType, IABException>()
+        InventoryFetcher.OnInventoryFetchedListener<IABSKUType, IABProductDetailType, IABException>
+                fetchedListener = new InventoryFetcher.OnInventoryFetchedListener<IABSKUType, IABProductDetailType, IABException>()
         {
-            @Override public void onInventoryFetchSuccess(int requestCode, List<IABSKUType> productIdentifiers, Map<IABSKUType, IABProductDetailsType> inventory)
+            @Override public void onInventoryFetchSuccess(int requestCode, List<IABSKUType> productIdentifiers, Map<IABSKUType, IABProductDetailType> inventory)
             {
                 notifyInventoryFetchedSuccess(requestCode, productIdentifiers, inventory);
             }
@@ -299,7 +298,7 @@ abstract public class BaseIABActor<
         inventoryFetcher.fetchInventory(requestCode);
     }
 
-    protected void notifyInventoryFetchedSuccess(int requestCode, List<IABSKUType> productIdentifiers, Map<IABSKUType, IABProductDetailsType> inventory)
+    protected void notifyInventoryFetchedSuccess(int requestCode, List<IABSKUType> productIdentifiers, Map<IABSKUType, IABProductDetailType> inventory)
     {
         inventoryReady = true;
         errorLoadingInventory = false;

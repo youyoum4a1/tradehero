@@ -9,8 +9,8 @@ import com.tradehero.common.billing.googleplay.exceptions.IABException;
 /** Created with IntelliJ IDEA. User: xavier Date: 11/8/13 Time: 11:06 AM To change this template use File | Settings | File Templates. */
 public interface IABActorUser<
         IABSKUType extends IABSKU,
-        IABProductDetailsType extends IABProductDetails<IABSKUType>,
-        InventoryFetchedListenerType extends InventoryFetcher.OnInventoryFetchedListener<IABSKUType, IABProductDetailsType, IABExceptionType>,
+        IABProductDetailType extends IABProductDetail<IABSKUType>,
+        InventoryFetchedListenerType extends InventoryFetcher.OnInventoryFetchedListener<IABSKUType, IABProductDetailType, IABExceptionType>,
         IABPurchaseOrderType extends IABPurchaseOrder<IABSKUType>,
         IABOrderIdType extends IABOrderId,
         IABPurchaseType extends IABPurchase<IABSKUType, IABOrderIdType>,
@@ -22,7 +22,7 @@ public interface IABActorUser<
                 IABExceptionType>,
         IABActorType extends BillingActor<
                 IABSKUType,
-                IABProductDetailsType,
+                IABProductDetailType,
                 InventoryFetchedListenerType,
                 IABPurchaseOrderType,
                 IABOrderIdType,
@@ -32,7 +32,7 @@ public interface IABActorUser<
         IABExceptionType extends IABException>
     extends BillingActorUser<
         IABSKUType,
-        IABProductDetailsType,
+        IABProductDetailType,
         InventoryFetchedListenerType,
         IABPurchaseOrderType,
         IABOrderIdType,

@@ -4,13 +4,12 @@ import com.tradehero.common.billing.BillingActor;
 import com.tradehero.common.billing.BillingPurchaser;
 import com.tradehero.common.billing.InventoryFetcher;
 import com.tradehero.common.billing.googleplay.exceptions.IABException;
-import com.tradehero.th.billing.BasePurchaseReporter;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/8/13 Time: 11:06 AM To change this template use File | Settings | File Templates. */
 public interface IABActor<
         IABSKUType extends IABSKU,
-        IABProductDetailsType extends IABProductDetails<IABSKUType>,
-        InventoryFetchedListenerType extends InventoryFetcher.OnInventoryFetchedListener<IABSKUType, IABProductDetailsType, IABExceptionType>,
+        IABProductDetailType extends IABProductDetail<IABSKUType>,
+        InventoryFetchedListenerType extends InventoryFetcher.OnInventoryFetchedListener<IABSKUType, IABProductDetailType, IABExceptionType>,
         IABPurchaseOrderType extends IABPurchaseOrder<IABSKUType>,
         IABOrderIdType extends IABOrderId,
         IABPurchaseType extends IABPurchase<IABSKUType, IABOrderIdType>,
@@ -33,7 +32,7 @@ public interface IABActor<
     extends
         BillingActor<
                 IABSKUType,
-                IABProductDetailsType,
+                IABProductDetailType,
                 InventoryFetchedListenerType,
                 IABPurchaseOrderType,
                 IABOrderIdType,
@@ -42,7 +41,7 @@ public interface IABActor<
                 IABExceptionType>,
         IABActorInventoryFetcher< // This one is redundant but serves as a highlight to the reader
                 IABSKUType,
-                IABProductDetailsType,
+                IABProductDetailType,
                 InventoryFetchedListenerType,
                 IABExceptionType>,
         IABActorPurchaser< // This one is redundant but serves as a highlight to the reader

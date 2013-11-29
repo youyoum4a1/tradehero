@@ -5,7 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.provider.Settings;
-import com.tradehero.common.billing.googleplay.BaseIABProductDetails;
+import com.tradehero.common.billing.googleplay.BaseIABProductDetail;
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.billing.SKUDetailsAdapter;
 import com.tradehero.th.fragments.billing.SKUDetailView;
@@ -84,7 +84,7 @@ public class IABAlertDialogUtil
         return popSKUAlreadyOwned(context, null);
     }
 
-    public static <SKUDetailsType extends BaseIABProductDetails>
+    public static <SKUDetailsType extends BaseIABProductDetail>
         AlertDialog popSKUAlreadyOwned(final Context context, SKUDetailsType skuDetails)
     {
         return AlertDialogUtil.popWithOkCancelButton(context,
@@ -170,7 +170,7 @@ public class IABAlertDialogUtil
         ActivityUtil.sendSupportEmail(context, emailIntent);
     }
 
-    public static <SKUDetailsType extends BaseIABProductDetails, SKUDetailViewType extends SKUDetailView<SKUDetailsType>>
+    public static <SKUDetailsType extends BaseIABProductDetail, SKUDetailViewType extends SKUDetailView<SKUDetailsType>>
     AlertDialog popBuyDialog(
             final Context context,
             final SKUDetailsAdapter<SKUDetailsType, SKUDetailViewType> detailsAdapter,
@@ -242,7 +242,7 @@ public class IABAlertDialogUtil
                 okClickListener);
     }
 
-    public static interface OnDialogSKUDetailsClickListener<BaseIABProductDetailsType extends BaseIABProductDetails>
+    public static interface OnDialogSKUDetailsClickListener<BaseIABProductDetailsType extends BaseIABProductDetail>
     {
         void onDialogSKUDetailsClicked(DialogInterface dialogInterface, int position, BaseIABProductDetailsType skuDetails, Runnable runOnPurchaseComplete);
     }

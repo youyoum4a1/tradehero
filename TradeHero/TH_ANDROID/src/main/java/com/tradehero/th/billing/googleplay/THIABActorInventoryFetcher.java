@@ -8,8 +8,8 @@ import com.tradehero.common.billing.googleplay.exceptions.IABException;
 /** Created with IntelliJ IDEA. User: xavier Date: 11/8/13 Time: 11:06 AM To change this template use File | Settings | File Templates. */
 public interface THIABActorInventoryFetcher extends IABActorInventoryFetcher<
         IABSKU,
-        THIABProductDetails,
-        InventoryFetcher.OnInventoryFetchedListener<IABSKU, THIABProductDetails, IABException>,
+        THIABProductDetail,
+        InventoryFetcher.OnInventoryFetchedListener<IABSKU, THIABProductDetail, IABException>,
         IABException>
 {
 }

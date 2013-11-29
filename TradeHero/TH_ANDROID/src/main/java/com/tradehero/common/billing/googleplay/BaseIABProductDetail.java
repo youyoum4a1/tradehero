@@ -7,7 +7,7 @@ import org.json.JSONObject;
 /**
  * Created by julien on 4/11/13
  */
-public class BaseIABProductDetails implements IABProductDetails<IABSKU>
+public class BaseIABProductDetail implements IABProductDetail<IABSKU>
 {
     public static final String JSON_KEY_PRODUCT_ID = "productId";
     public static final String JSON_KEY_TYPE = "type";
@@ -27,12 +27,12 @@ public class BaseIABProductDetails implements IABProductDetails<IABSKU>
     public final String description;
     protected final String json;
 
-    public BaseIABProductDetails(String jsonSkuDetails) throws JSONException
+    public BaseIABProductDetail(String jsonSkuDetails) throws JSONException
     {
         this(Constants.ITEM_TYPE_INAPP, jsonSkuDetails);
     }
 
-    public BaseIABProductDetails(String itemType, String jsonSkuDetails) throws JSONException
+    public BaseIABProductDetail(String itemType, String jsonSkuDetails) throws JSONException
     {
         this.itemType = itemType;
         this.json = jsonSkuDetails;
@@ -55,7 +55,7 @@ public class BaseIABProductDetails implements IABProductDetails<IABSKU>
         return "SkuDetails:" + json;
     }
 
-    //<editor-fold desc="IABProductDetails<IABSKU>">
+    //<editor-fold desc="IABProductDetail<IABSKU>">
     @Override public IABSKU getProductIdentifier()
     {
         return this.iabSKU;
@@ -72,19 +72,19 @@ public class BaseIABProductDetails implements IABProductDetails<IABSKU>
     }
     //</editor-fold>
 
-    public static Comparator<BaseIABProductDetails> DecreasingPriceComparator = new Comparator<BaseIABProductDetails>()
+    public static Comparator<BaseIABProductDetail> DecreasingPriceComparator = new Comparator<BaseIABProductDetail>()
     {
-        public int compare(BaseIABProductDetails BaseIABProductDetails1, BaseIABProductDetails BaseIABProductDetails2)
+        public int compare(BaseIABProductDetail baseIABProductDetail1, BaseIABProductDetail baseIABProductDetail2)
         {
-            if (BaseIABProductDetails1 == null)
+            if (baseIABProductDetail1 == null)
             {
-                return BaseIABProductDetails2 == null ? 0 : 1;
+                return baseIABProductDetail2 == null ? 0 : 1;
             }
-            if (BaseIABProductDetails2 == null)
+            if (baseIABProductDetail2 == null)
             {
                 return 1;
             }
-            return BaseIABProductDetails2.priceAmountMicros.compareTo(BaseIABProductDetails1.priceAmountMicros);
+            return baseIABProductDetail2.priceAmountMicros.compareTo(baseIABProductDetail1.priceAmountMicros);
         }
     };
 }

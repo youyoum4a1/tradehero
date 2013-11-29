@@ -39,9 +39,9 @@ public class THIABLogicHolderExtended
     }
 
     //<editor-fold desc="THIABActor">
-    @Override public List<THIABProductDetails> getDetailsOfDomain(String domain)
+    @Override public List<THIABProductDetail> getDetailsOfDomain(String domain)
     {
-        return ArrayUtils.filter(thskuDetailCache.get().get(getAllSkus()), THIABProductDetails.getPredicateIsOfCertainDomain(domain));
+        return ArrayUtils.filter(thskuDetailCache.get().get(getAllSkus()), THIABProductDetail.getPredicateIsOfCertainDomain(domain));
     }
     //</editor-fold>
 

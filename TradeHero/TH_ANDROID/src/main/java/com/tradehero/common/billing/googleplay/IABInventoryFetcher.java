@@ -23,7 +23,7 @@ import java.util.*;
  */
 abstract public class IABInventoryFetcher<
             IABSKUType extends IABSKU,
-            IABProductDetailsType extends IABProductDetails<IABSKUType>>
+            IABProductDetailsType extends IABProductDetail<IABSKUType>>
         extends IABServiceConnector
         implements InventoryFetcher<IABSKUType, IABProductDetailsType, IABException>
 {

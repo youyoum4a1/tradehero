@@ -12,7 +12,7 @@ import com.tradehero.th.billing.googleplay.exception.UnhandledSKUDomainException
 import com.tradehero.th.network.service.AlertPlanService;
 import com.tradehero.th.network.service.PortfolioService;
 import com.tradehero.th.network.service.UserService;
-import com.tradehero.th.persistence.billing.googleplay.THSKUDetailCache;
+import com.tradehero.th.persistence.billing.googleplay.THIABProductDetailCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
@@ -35,7 +35,7 @@ public class THIABPurchaseReporter extends BasePurchaseReporter<
     @Inject Lazy<PortfolioService> portfolioService;
     @Inject Lazy<AlertPlanService> alertPlanService;
     @Inject Lazy<UserService> userService;
-    @Inject Lazy<THSKUDetailCache> skuDetailCache;
+    @Inject Lazy<THIABProductDetailCache> skuDetailCache;
     @Inject Lazy<PortfolioCompactListCache> portfolioCompactListCache;
 
     private Callback<UserProfileDTO> userProfileDTOCallback;
@@ -65,7 +65,7 @@ public class THIABPurchaseReporter extends BasePurchaseReporter<
         // TODO do something when info is not available
         switch (skuDetailCache.get().get(purchase.getProductIdentifier()).domain)
         {
-            case THIABProductDetails.DOMAIN_RESET_PORTFOLIO:
+            case THIABProductDetail.DOMAIN_RESET_PORTFOLIO:
                 portfolioService.get().resetPortfolio(
                         portfolioId.userId,
                         portfolioId.portfolioId,
@@ -73,7 +73,7 @@ public class THIABPurchaseReporter extends BasePurchaseReporter<
                         userProfileDTOCallback);
                 break;
 
-            case THIABProductDetails.DOMAIN_VIRTUAL_DOLLAR:
+            case THIABProductDetail.DOMAIN_VIRTUAL_DOLLAR:
                 portfolioService.get().addCash(
                         portfolioId.userId,
                         portfolioId.portfolioId,
@@ -81,14 +81,14 @@ public class THIABPurchaseReporter extends BasePurchaseReporter<
                         userProfileDTOCallback);
                 break;
 
-            case THIABProductDetails.DOMAIN_STOCK_ALERTS:
+            case THIABProductDetail.DOMAIN_STOCK_ALERTS:
                 alertPlanService.get().subscribeToAlertPlan(
                         portfolioId.userId,
                         purchase.getGooglePlayPurchaseDTO(),
                         userProfileDTOCallback);
                 break;
 
-            case THIABProductDetails.DOMAIN_FOLLOW_CREDITS:
+            case THIABProductDetail.DOMAIN_FOLLOW_CREDITS:
                 userService.get().addCredit(
                         portfolioId.userId,
                         purchase.getGooglePlayPurchaseDTO(),
@@ -107,24 +107,24 @@ public class THIABPurchaseReporter extends BasePurchaseReporter<
 
         switch (skuDetailCache.get().get(purchase.getProductIdentifier()).domain)
         {
-            case THIABProductDetails.DOMAIN_RESET_PORTFOLIO:
+            case THIABProductDetail.DOMAIN_RESET_PORTFOLIO:
                 return portfolioService.get().resetPortfolio(
                         portfolioId.userId,
                         portfolioId.portfolioId,
                         purchase.getGooglePlayPurchaseDTO());
 
-            case THIABProductDetails.DOMAIN_VIRTUAL_DOLLAR:
+            case THIABProductDetail.DOMAIN_VIRTUAL_DOLLAR:
                 return portfolioService.get().addCash(
                         portfolioId.userId,
                         portfolioId.portfolioId,
                         purchase.getGooglePlayPurchaseDTO());
 
-            case THIABProductDetails.DOMAIN_STOCK_ALERTS:
+            case THIABProductDetail.DOMAIN_STOCK_ALERTS:
                 return alertPlanService.get().subscribeToAlertPlan(
                         portfolioId.userId,
                         purchase.getGooglePlayPurchaseDTO());
 
-            case THIABProductDetails.DOMAIN_FOLLOW_CREDITS:
+            case THIABProductDetail.DOMAIN_FOLLOW_CREDITS:
                 return userService.get().addCredit(
                         portfolioId.userId,
                         purchase.getGooglePlayPurchaseDTO());

@@ -1,14 +1,14 @@
 package com.tradehero.th.billing.googleplay;
 
 import com.android.internal.util.Predicate;
-import com.tradehero.common.billing.googleplay.BaseIABProductDetails;
+import com.tradehero.common.billing.googleplay.BaseIABProductDetail;
 import com.tradehero.th.R;
 import org.json.JSONException;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/6/13 Time: 3:40 PM To change this template use File | Settings | File Templates. */
-public class THIABProductDetails extends BaseIABProductDetails
+public class THIABProductDetail extends BaseIABProductDetail
 {
-    public static final String TAG = THIABProductDetails.class.getSimpleName();
+    public static final String TAG = THIABProductDetail.class.getSimpleName();
 
     public static final String DOMAIN_VIRTUAL_DOLLAR = "virtualDollar";
     public static final String DOMAIN_FOLLOW_CREDITS = "followCredits";
@@ -23,12 +23,12 @@ public class THIABProductDetails extends BaseIABProductDetails
     public String domain;
 
     //<editor-fold desc="Constructors">
-    public THIABProductDetails(String itemType, String jsonSkuDetails) throws JSONException
+    public THIABProductDetail(String itemType, String jsonSkuDetails) throws JSONException
     {
         super(itemType, jsonSkuDetails);
     }
 
-    public THIABProductDetails(String jsonSkuDetails) throws JSONException
+    public THIABProductDetail(String jsonSkuDetails) throws JSONException
     {
         super(jsonSkuDetails);
     }
@@ -39,13 +39,13 @@ public class THIABProductDetails extends BaseIABProductDetails
         return "ThSkuDetails:" + json;
     }
 
-    public static Predicate<THIABProductDetails> getPredicateIsOfCertainDomain(final String domain)
+    public static Predicate<THIABProductDetail> getPredicateIsOfCertainDomain(final String domain)
     {
-        return new Predicate<THIABProductDetails>()
+        return new Predicate<THIABProductDetail>()
         {
-            @Override public boolean apply(THIABProductDetails THIABProductDetails)
+            @Override public boolean apply(THIABProductDetail THIABProductDetail)
             {
-                return THIABProductDetails != null && (THIABProductDetails.domain == null ? domain == null : THIABProductDetails.domain.equals(domain));
+                return THIABProductDetail != null && (THIABProductDetail.domain == null ? domain == null : THIABProductDetail.domain.equals(domain));
             }
         };
     }

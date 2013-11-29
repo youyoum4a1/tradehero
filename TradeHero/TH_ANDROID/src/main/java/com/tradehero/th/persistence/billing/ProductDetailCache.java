@@ -1,18 +1,17 @@
 package com.tradehero.th.persistence.billing;
 
-import com.tradehero.common.billing.ProductDetails;
-import com.tradehero.common.billing.ProductDetailsTuner;
+import com.tradehero.common.billing.ProductDetail;
+import com.tradehero.common.billing.ProductDetailTuner;
 import com.tradehero.common.billing.ProductIdentifier;
 import com.tradehero.common.persistence.StraightDTOCache;
 import java.util.ArrayList;
 import java.util.List;
-import javax.inject.Inject;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/16/13 Time: 1:05 PM To change this template use File | Settings | File Templates. */
 abstract public class ProductDetailCache<
             ProductIdentifierType extends ProductIdentifier,
-            ProductDetailsType extends ProductDetails<ProductIdentifierType>,
-            ProductTunerType extends ProductDetailsTuner<ProductIdentifierType, ProductDetailsType>>
+            ProductDetailsType extends ProductDetail<ProductIdentifierType>,
+            ProductTunerType extends ProductDetailTuner<ProductIdentifierType, ProductDetailsType>>
         extends StraightDTOCache<ProductIdentifierType, ProductDetailsType>
 {
     private static final int DEFAULT_MAX_SIZE = 200;

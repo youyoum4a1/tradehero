@@ -1,30 +1,26 @@
 package com.tradehero.th.billing.googleplay;
 
 import android.app.Activity;
-import android.content.Intent;
 import com.tradehero.common.billing.BillingPurchaser;
 import com.tradehero.common.billing.InventoryFetcher;
 import com.tradehero.common.billing.googleplay.BaseIABActor;
 import com.tradehero.common.billing.googleplay.BaseIABPurchase;
 import com.tradehero.common.billing.googleplay.BaseIABSKUList;
-import com.tradehero.common.billing.googleplay.IABPurchaseConsumer;
 import com.tradehero.common.billing.googleplay.IABPurchaseFetcher;
 import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.common.billing.googleplay.IABSKUListType;
 import com.tradehero.common.billing.googleplay.BaseIABPurchaseFetcher;
 import com.tradehero.common.billing.googleplay.exceptions.IABException;
 import com.tradehero.common.utils.THLog;
-import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.billing.BasePurchaseReporter;
 import com.tradehero.th.billing.PurchaseReporter;
 import com.tradehero.th.persistence.billing.googleplay.IABSKUListCache;
-import com.tradehero.th.persistence.billing.googleplay.THSKUDetailCache;
+import com.tradehero.th.persistence.billing.googleplay.THIABProductDetailCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
-import com.tradehero.th.utils.ActivityUtil;
 import dagger.Lazy;
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
@@ -37,11 +33,11 @@ import retrofit.RetrofitError;
 abstract public class THIABLogicHolder
     extends BaseIABActor<
         IABSKU,
-        THIABProductDetails,
+        THIABProductDetail,
         THIABInventoryFetcher,
         InventoryFetcher.OnInventoryFetchedListener<
                 IABSKU,
-                THIABProductDetails,
+                THIABProductDetail,
                 IABException>,
         THIABPurchaseOrder,
         THIABOrderId,
@@ -80,7 +76,7 @@ abstract public class THIABLogicHolder
     @Inject Lazy<PortfolioCompactListCache> portfolioCompactListCache;
     @Inject Lazy<PortfolioCache> portfolioCache;
     @Inject protected Lazy<IABSKUListCache> iabskuListCache;
-    @Inject protected Lazy<THSKUDetailCache> thskuDetailCache;
+    @Inject protected Lazy<THIABProductDetailCache> thskuDetailCache;
 
     public THIABLogicHolder(Activity activity)
     {
