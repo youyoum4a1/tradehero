@@ -115,6 +115,7 @@ import com.tradehero.th.persistence.timeline.TimelineStore;
 import com.tradehero.th.persistence.user.AbstractUserStore;
 import com.tradehero.th.persistence.user.UserManager;
 import com.tradehero.th.persistence.user.UserProfileFetchAssistant;
+import com.tradehero.th.persistence.user.UserProfileRetrievedMilestone;
 import com.tradehero.th.persistence.user.UserStore;
 import com.tradehero.th.utils.FacebookUtils;
 import com.tradehero.th.utils.LinkedInUtils;
@@ -244,6 +245,7 @@ import org.ocpsoft.prettytime.PrettyTime;
                 THInventoryFetchMilestone.class,
                 IABSKUListRetrievedMilestone.class,
                 PortfolioCompactListRetrievedMilestone.class,
+                UserProfileRetrievedMilestone.class,
                 PurchaseRestorerRequiredMilestone.class,
                 THIABUserInteractor.class,
                 StoreScreenFragment.StoreScreenTHIABUserInteractor.class,

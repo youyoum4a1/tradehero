@@ -63,14 +63,10 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
     private List<HeroDTO> heroDTOs;
 
     @Inject protected Lazy<UserProfileCache> userProfileCache;
-    private DTOCache.Listener<UserBaseKey, UserProfileDTO> userProfileListener;
-    private DTOCache.GetOrFetchTask<UserProfileDTO> userProfileFetchTask;
     @Inject protected Lazy<HeroListCache> heroListCache;
     @Inject protected Lazy<HeroCache> heroCache;
     private DTOCache.Listener<UserBaseKey, HeroIdList> heroListListener;
     private DTOCache.GetOrFetchTask<HeroIdList> heroListFetchTask;
-    @Inject protected Lazy<UserService> userService;
-    private Callback<UserProfileDTO> followCallback;
 
     //<editor-fold desc="BaseFragment.TabBarVisibilityInformer">
     @Override public boolean isTabBarVisible()
@@ -140,31 +136,6 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
                 }
             });
         }
-
-        followCallback = new Callback<UserProfileDTO>()
-        {
-            @Override public void success(UserProfileDTO userProfileDTO, Response response)
-            {
-                userProfileCache.get().put(userProfileDTO.getBaseKey(), userProfileDTO);
-                heroListCache.get().invalidate(userProfileDTO.getBaseKey());
-                linkWith(userProfileDTO, true);
-                fetchHeroes();
-                if (progressDialog != null)
-                {
-                    progressDialog.hide();
-                }
-            }
-
-            @Override public void failure(RetrofitError error)
-            {
-                THLog.e(TAG, "Failed to un/follow", error);
-                if (progressDialog != null)
-                {
-                    progressDialog.hide();
-                }
-                THToast.show(R.string.manage_heroes_follow_failed);
-            }
-        };
     }
 
     @Override protected void createUserInteractor()
@@ -182,13 +153,6 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
 
     @Override public void onPause()
     {
-        userProfileListener = null;
-        if (userProfileFetchTask != null)
-        {
-            userProfileFetchTask.forgetListener(true);
-        }
-        userProfileFetchTask = null;
-
         heroListListener = null;
         if (heroListFetchTask != null)
         {
@@ -219,7 +183,6 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
         icnCoinStack = null;
         btnBuyMore = null;
         btnGoMostSkilled = null;
-        followCallback = null;
         super.onDestroyView();
     }
 
@@ -243,7 +206,7 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
             {
                 @Override public void onClick(DialogInterface dialog, int which)
                 {
-                    followHero(clickedHeroDTO);
+                    userInteractor.followHero(clickedHeroDTO.getBaseKey());
                 }
             });
         }
@@ -253,60 +216,10 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
             {
                 @Override public void onClick(DialogInterface dialog, int which)
                 {
-                    unfollowHero(clickedHeroDTO);
+                    userInteractor.unfollowHero(clickedHeroDTO.getBaseKey());
                 }
             });
         }
-    }
-
-    private void followHero(final HeroDTO heroDTO)
-    {
-        if (userProfileDTO != null && userProfileDTO.ccBalance == 0)
-        {
-            userInteractor.waitForSkuDetailsMilestoneComplete(new Runnable()
-            {
-                @Override public void run()
-                {
-                    THIABUserInteractor userInteractorCopy = userInteractor;
-                    if (userInteractorCopy != null)
-                    {
-                        userInteractorCopy.conditionalPopBuyFollowCredits(new Runnable()
-                        {
-                            @Override public void run()
-                            {
-                                // At this point, we have already updated the userProfileDTO, and we can only assume that
-                                // the credits have properly been given.
-                                followHero(heroDTO);
-                            }
-                        });
-                    }
-                }
-            });
-        }
-        else
-        {
-            progressDialog = ProgressDialog.show(
-                    getActivity(),
-                    getResources().getString(R.string.manage_heroes_follow_progress_title),
-                    getResources().getString(R.string.manage_heroes_follow_progress_message),
-                    true,
-                    true
-            );
-            userService.get().follow(heroDTO.id, followCallback);
-        }
-    }
-
-    private void unfollowHero(HeroDTO heroDTO)
-    {
-        progressDialog = ProgressDialog.show(
-                getActivity(),
-                getResources().getString(R.string.manage_heroes_unfollow_progress_title),
-                getResources().getString(R.string.manage_heroes_unfollow_progress_message),
-                true,
-                true
-                );
-
-        userService.get().unfollow(heroDTO.id, followCallback);
     }
 
     private void pushTimelineFragment(UserBaseKey userBaseKey)
@@ -321,41 +234,6 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
 
         // TODO make it go to most skilled
         ((DashboardActivity) getActivity()).getDashboardNavigator().goToTab(DashboardTabType.COMMUNITY);
-    }
-
-    private void fetchUserProfile()
-    {
-        UserBaseKey userBaseKey = userInteractor.getApplicablePortfolioId().getUserBaseKey();
-        UserProfileDTO userProfileDTO = userProfileCache.get().get(userBaseKey);
-        if (userProfileDTO != null)
-        {
-            display(userProfileDTO);
-        }
-        else
-        {
-            if (userProfileListener == null)
-            {
-                userProfileListener = new DTOCache.Listener<UserBaseKey, UserProfileDTO>()
-                {
-                    @Override public void onDTOReceived(UserBaseKey key, UserProfileDTO value)
-                    {
-                        display(value);
-                    }
-
-                    @Override public void onErrorThrown(UserBaseKey key, Throwable error)
-                    {
-                        THLog.e(TAG, "Could not fetch user profile", error);
-                        THToast.show("There was an error fetching your profile information");
-                    }
-                };
-            }
-            if (userProfileFetchTask != null)
-            {
-                userProfileFetchTask.forgetListener(true);
-            }
-            userProfileFetchTask = userProfileCache.get().getOrFetch(userBaseKey, userProfileListener);
-            userProfileFetchTask.execute();
-        }
     }
 
     private void fetchHeroes()
@@ -417,13 +295,14 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
     public void linkWith(List<HeroDTO> heroDTOs, boolean andDisplay)
     {
         this.heroDTOs = heroDTOs;
-        heroListAdapter.setItems(heroDTOs);
+        heroListAdapter.setItems(this.heroDTOs);
         if (andDisplay)
         {
             displayHeroList();
         }
     }
 
+    //<editor-fold desc="Display methods">
     public void display()
     {
         displayFollowCount();
@@ -460,6 +339,7 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
             heroListAdapter.notifyDataSetChanged();
         }
     }
+    //</editor-fold>
 
     public class HeroManagerTHIABUserInteractor extends THIABUserInteractor
     {
@@ -471,14 +351,27 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
         @Override protected void handleShowSkuDetailsMilestoneComplete()
         {
             super.handleShowSkuDetailsMilestoneComplete();
-            fetchUserProfile();
             fetchHeroes();
+            display(userProfileCache.get().get(applicablePortfolioId.getUserBaseKey()));
         }
 
         @Override protected void handlePurchaseReportSuccess(BaseIABPurchase reportedPurchase, UserProfileDTO updatedUserProfile)
         {
             super.handlePurchaseReportSuccess(reportedPurchase, updatedUserProfile);
-            fetchUserProfile();
+            display(updatedUserProfile);
+        }
+
+        @Override protected void createFollowCallback()
+        {
+            this.followCallback = new UserInteractorFollowHeroCallback(heroListCache.get(), userProfileCache.get())
+            {
+                @Override public void success(UserProfileDTO userProfileDTO, Response response)
+                {
+                    super.success(userProfileDTO, response);
+                    HeroManagerFragment.this.linkWith(userProfileDTO, true);
+                    HeroManagerFragment.this.fetchHeroes();
+                }
+            };
         }
     }
 }

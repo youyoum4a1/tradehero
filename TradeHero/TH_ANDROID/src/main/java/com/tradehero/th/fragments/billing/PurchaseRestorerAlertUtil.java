@@ -7,11 +7,12 @@ import com.tradehero.common.billing.googleplay.BaseIABPurchase;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
 import com.tradehero.th.billing.googleplay.GooglePlayUtils;
+import com.tradehero.th.billing.googleplay.IABAlertDialogUtil;
 import com.tradehero.th.utils.AlertDialogUtil;
 import java.util.List;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/26/13 Time: 5:28 PM To change this template use File | Settings | File Templates. */
-public class PurchaseRestorerAlertUtil
+public class PurchaseRestorerAlertUtil extends IABAlertDialogUtil
 {
     public static final String TAG = PurchaseRestorerAlertUtil.class.getSimpleName();
 
@@ -38,7 +39,7 @@ public class PurchaseRestorerAlertUtil
 
     public static void popPurchasesRestored(final Context context, final int countOk)
     {
-        AlertDialogUtil.popWithNegativeButton(context,
+        popWithNegativeButton(context,
                 context.getString(R.string.google_play_purchase_restored_title),
                 String.format(context.getString(R.string.google_play_purchase_restored_message), countOk),
                 context.getString(R.string.google_play_purchase_restored_cancel));
@@ -46,7 +47,7 @@ public class PurchaseRestorerAlertUtil
 
     public static void popSendEmailSupportRestorePartiallyFailed(final Context context, final DialogInterface.OnClickListener clickListener, final int countOk, final int countFailed)
     {
-        AlertDialogUtil.popWithOkCancelButton(context,
+        popWithOkCancelButton(context,
                 context.getString(R.string.google_play_send_support_email_restore_fail_partial_title),
                 String.format(context.getString(R.string.google_play_send_support_email_restore_fail_partial_message), countOk, countFailed),
                 R.string.google_play_send_support_email_restore_fail_partial_ok,
@@ -56,8 +57,7 @@ public class PurchaseRestorerAlertUtil
 
     public static void popSendEmailSupportRestoreFailed(final Context context, final DialogInterface.OnClickListener clickListener)
     {
-        THLog.d(TAG, "popSendEmailSupportRestoreFailed");
-        AlertDialogUtil.popWithOkCancelButton(context,
+        popWithOkCancelButton(context,
                 R.string.google_play_send_support_email_restore_fail_title,
                 R.string.google_play_send_support_email_restore_fail_message,
                 R.string.google_play_send_support_email_restore_fail_ok,

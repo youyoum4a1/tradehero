@@ -7,7 +7,7 @@ import com.tradehero.th.fragments.billing.THSKUDetailsAdapter;
 import java.util.List;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/11/13 Time: 10:49 AM To change this template use File | Settings | File Templates. */
-public class IABAlertDialogSKUUtil
+public class IABAlertDialogSKUUtil extends IABAlertDialogUtil
 {
     public static final String TAG = IABAlertDialogSKUUtil.class.getSimpleName();
 
@@ -24,6 +24,6 @@ public class IABAlertDialogSKUUtil
         List<THIABProductDetail> desiredSkuDetails = domainInformer.getDetailsOfDomain(skuDomain);
         detailsAdapter.setItems(desiredSkuDetails);
 
-        return IABAlertDialogUtil.popBuyDialog(activity, detailsAdapter, titleResId, clickListener, runOnPurchaseComplete);
+        return popBuyDialog(activity, detailsAdapter, titleResId, clickListener, runOnPurchaseComplete);
     }
 }

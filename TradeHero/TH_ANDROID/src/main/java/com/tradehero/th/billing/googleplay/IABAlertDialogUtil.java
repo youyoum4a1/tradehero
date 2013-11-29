@@ -14,13 +14,13 @@ import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.VersionUtils;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/7/13 Time: 5:52 PM To change this template use File | Settings | File Templates. */
-public class IABAlertDialogUtil
+public class IABAlertDialogUtil extends AlertDialogUtil
 {
     public static final String TAG = IABAlertDialogUtil.class.getSimpleName();
 
     public static AlertDialog popBillingUnavailable(final Context context)
     {
-        return AlertDialogUtil.popWithOkCancelButton(context,
+        return popWithOkCancelButton(context,
                 R.string.store_billing_unavailable_window_title,
                 R.string.store_billing_unavailable_window_description,
                 R.string.store_billing_unavailable_act,
@@ -43,21 +43,21 @@ public class IABAlertDialogUtil
 
     public static AlertDialog popWaitWhileLoading(final Context context)
     {
-        return AlertDialogUtil.popWithNegativeButton(context, R.string.store_billing_loading_window_title,
+        return popWithNegativeButton(context, R.string.store_billing_loading_window_title,
                 R.string.store_billing_loading_window_description,
                 R.string.store_billing_loading_cancel);
     }
 
     public static AlertDialog popVerificationFailed(final Context context)
     {
-        return AlertDialogUtil.popWithNegativeButton(context, R.string.store_billing_verification_failed_window_title,
+        return popWithNegativeButton(context, R.string.store_billing_verification_failed_window_title,
                 R.string.store_billing_verification_failed_window_description,
                 R.string.store_billing_verification_failed_cancel);
     }
 
     public static AlertDialog popUserCancelled(final Context context)
     {
-        return AlertDialogUtil.popWithOkCancelButton(context,
+        return popWithOkCancelButton(context,
                 R.string.store_billing_user_cancelled_window_title,
                 R.string.store_billing_user_cancelled_window_description,
                 R.string.store_billing_user_cancelled_ok,
@@ -87,7 +87,7 @@ public class IABAlertDialogUtil
     public static <SKUDetailsType extends BaseIABProductDetail>
         AlertDialog popSKUAlreadyOwned(final Context context, SKUDetailsType skuDetails)
     {
-        return AlertDialogUtil.popWithOkCancelButton(context,
+        return popWithOkCancelButton(context,
                 skuDetails == null ?
                         context.getString(R.string.store_billing_sku_already_owned_window_title) :
                         String.format(context.getString(R.string.store_billing_sku_already_owned_name_window_title), skuDetails.description),
@@ -113,42 +113,42 @@ public class IABAlertDialogUtil
 
     public static AlertDialog popBadResponse(final Context context)
     {
-        return AlertDialogUtil.popWithNegativeButton(context, R.string.store_billing_bad_response_window_title,
+        return popWithNegativeButton(context, R.string.store_billing_bad_response_window_title,
                 R.string.store_billing_bad_response_window_description,
                 R.string.store_billing_bad_response_cancel);
     }
 
     public static AlertDialog popRemoteError(final Context context)
     {
-        return AlertDialogUtil.popWithNegativeButton(context, R.string.store_billing_remote_error_window_title,
+        return popWithNegativeButton(context, R.string.store_billing_remote_error_window_title,
                 R.string.store_billing_remote_error_window_description,
                 R.string.store_billing_remote_error_cancel);
     }
 
     public static AlertDialog popSendIntent(final Context context)
     {
-        return AlertDialogUtil.popWithNegativeButton(context, R.string.store_billing_send_intent_error_window_title,
+        return popWithNegativeButton(context, R.string.store_billing_send_intent_error_window_title,
                 R.string.store_billing_send_intent_error_window_description,
                 R.string.store_billing_send_intent_error_cancel);
     }
 
     public static AlertDialog popFailedToReport(final Context context)
     {
-        return AlertDialogUtil.popWithNegativeButton(context, R.string.store_billing_report_api_error_window_title,
+        return popWithNegativeButton(context, R.string.store_billing_report_api_error_window_title,
                 R.string.store_billing_report_api_error_window_description,
                 R.string.store_billing_report_api_error_cancel);
     }
 
     public static AlertDialog popFailedToLoadRequiredInfo(final Context context)
     {
-        return AlertDialogUtil.popWithNegativeButton(context, R.string.store_billing_load_info_error_window_title,
+        return popWithNegativeButton(context, R.string.store_billing_load_info_error_window_title,
                 R.string.store_billing_load_info_error_window_description,
                 R.string.store_billing_load_info_error_cancel);
     }
 
     public static AlertDialog popUnknownError(final Context context)
     {
-        return AlertDialogUtil.popWithOkCancelButton(context,
+        return popWithOkCancelButton(context,
                 R.string.store_billing_unknown_error_window_title,
                 R.string.store_billing_unknown_error_window_description,
                 R.string.store_billing_unknown_error_ok,
@@ -208,7 +208,7 @@ public class IABAlertDialogUtil
 
     public static AlertDialog popSendEmailSupportReportFailed(final Context context, final DialogInterface.OnClickListener okClickListener)
     {
-        return AlertDialogUtil.popWithOkCancelButton(context,
+        return popWithOkCancelButton(context,
                 R.string.google_play_send_support_email_report_fail_title,
                 R.string.google_play_send_support_email_report_fail_message,
                 R.string.google_play_send_support_email_report_fail_ok,
@@ -218,7 +218,7 @@ public class IABAlertDialogUtil
 
     public static AlertDialog popOfferSendEmailSupportConsumeFailed(final Context context, final Exception exception)
     {
-        return IABAlertDialogUtil.popSendEmailSupportConsumeFailed(context, new DialogInterface.OnClickListener()
+        return popSendEmailSupportConsumeFailed(context, new DialogInterface.OnClickListener()
         {
             @Override public void onClick(DialogInterface dialog, int which)
             {
@@ -234,7 +234,7 @@ public class IABAlertDialogUtil
 
     public static AlertDialog popSendEmailSupportConsumeFailed(final Context context, final DialogInterface.OnClickListener okClickListener)
     {
-        return AlertDialogUtil.popWithOkCancelButton(context,
+        return popWithOkCancelButton(context,
                 R.string.google_play_send_support_email_consume_fail_title,
                 R.string.google_play_send_support_email_consume_fail_message,
                 R.string.google_play_send_support_email_consume_fail_ok,

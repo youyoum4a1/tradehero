@@ -7,6 +7,7 @@ import android.widget.*;
 import com.squareup.picasso.Picasso;
 import com.tradehero.common.graphics.RoundedShapeTransformation;
 import com.tradehero.common.persistence.DTOCache;
+import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
@@ -17,6 +18,7 @@ import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
 
+import java.lang.ref.WeakReference;
 import javax.inject.Inject;
 
 /**
@@ -24,6 +26,8 @@ import javax.inject.Inject;
  */
 public class OtherUserPortfolioHeaderView extends RelativeLayout implements PortfolioHeaderView
 {
+    public static final String TAG = OtherUserPortfolioHeaderView.class.getSimpleName();
+
     private ImageView userImageView;
     private TextView usernameTextView;
     private ImageView followingImageView;
@@ -32,6 +36,8 @@ public class OtherUserPortfolioHeaderView extends RelativeLayout implements Port
     @Inject protected CurrentUserBaseKeyHolder currentUserBaseKeyHolder;
     @Inject Lazy<UserProfileCache> userCache;
     @Inject Lazy<Picasso> picasso;
+    private UserProfileDTO userProfileDTO;
+    private WeakReference<OnFollowRequestedListener> followRequestedListenerWeak = new WeakReference<>(null);
 
     private DTOCache.Listener<UserBaseKey, UserProfileDTO> getUserCacheListener;
     private DTOCache.GetOrFetchTask<UserProfileDTO> fetchUserProfileTask;
@@ -62,18 +68,10 @@ public class OtherUserPortfolioHeaderView extends RelativeLayout implements Port
 
     private void initViews()
     {
-        userImageView = (ImageView)findViewById(R.id.portfolio_header_avatar);
+        userImageView = (ImageView) findViewById(R.id.portfolio_header_avatar);
         usernameTextView = (TextView) findViewById(R.id.header_portfolio_username);
         followingImageView = (ImageView) findViewById(R.id.header_portfolio_following_image);
         followButton = (ImageButton) findViewById(R.id.header_portfolio_follow_button);
-        followButton.setOnClickListener(new OnClickListener()
-        {
-            @Override
-            public void onClick(View view)
-            {
-                THToast.show("Nope");
-            }
-        });
     }
 
     @Override protected void onAttachedToWindow()
@@ -89,20 +87,44 @@ public class OtherUserPortfolioHeaderView extends RelativeLayout implements Port
 
             @Override public void onErrorThrown(UserBaseKey key, Throwable error)
             {
-                //To change body of implemented methods use File | Settings | File Templates.
             }
         };
 
+        if (followButton != null)
+        {
+            followButton.setOnClickListener(new OnClickListener()
+            {
+                @Override public void onClick(View view)
+                {
+                    if (userProfileDTO != null)
+                    {
+                        notifyFollowRequested(userProfileDTO.getBaseKey());
+                    }
+                }
+            });
+        }
+    }
+
+    @Override protected void onDetachedFromWindow()
+    {
+        if (followButton != null)
+        {
+            followButton.setOnClickListener(null);
+        }
         if (fetchUserProfileTask != null)
         {
             fetchUserProfileTask.forgetListener(true);
         }
+        getUserCacheListener = null;
+
+        super.onDetachedFromWindow();
     }
 
     private void display(UserProfileDTO user)
     {
-        configureUserViews(user);
-        configureFollowItemsVisibility(user);
+        this.userProfileDTO = user;
+        configureUserViews();
+        configureFollowItemsVisibility();
     }
 
     @Override public void bindOwnedPortfolioId(OwnedPortfolioId id)
@@ -111,25 +133,25 @@ public class OtherUserPortfolioHeaderView extends RelativeLayout implements Port
         fetchUserProfileTask.execute();
     }
 
-    private void configureUserViews(UserProfileDTO user)
+    private void configureUserViews()
     {
         if (this.usernameTextView != null)
         {
-            this.usernameTextView.setText(user.displayName);
+            this.usernameTextView.setText(this.userProfileDTO.displayName);
         }
 
         if (this.userImageView != null)
         {
-            picasso.get().load(user.picture)
+            picasso.get().load(this.userProfileDTO.picture)
                     .transform(new RoundedShapeTransformation())
                     .into(this.userImageView);
         }
     }
 
-    private void configureFollowItemsVisibility(UserProfileDTO user)
+    private void configureFollowItemsVisibility()
     {
         UserProfileDTO currentUser = this.userCache.get().get(currentUserBaseKeyHolder.getCurrentUserBaseKey());
-        if (currentUser.isFollowingUser(user.id))
+        if (currentUser.isFollowingUser(this.userProfileDTO.id))
         {
             this.followingImageView.setVisibility(VISIBLE);
             this.followButton.setVisibility(GONE);
@@ -138,6 +160,20 @@ public class OtherUserPortfolioHeaderView extends RelativeLayout implements Port
         {
             this.followingImageView.setVisibility(GONE);
             this.followButton.setVisibility(VISIBLE);
+        }
+    }
+
+    @Override public void setFollowRequestedListener(OnFollowRequestedListener followRequestedListener)
+    {
+        this.followRequestedListenerWeak = new WeakReference<>(followRequestedListener);
+    }
+
+    protected void notifyFollowRequested(UserBaseKey userBaseKey)
+    {
+        OnFollowRequestedListener followRequestedListener = followRequestedListenerWeak.get();
+        if (followRequestedListener != null)
+        {
+            followRequestedListener.onFollowRequested(userBaseKey);
         }
     }
 }

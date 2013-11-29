@@ -71,10 +71,7 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
     {
         super.onResume();
         storeItemAdapter.notifyDataSetChanged();
-        if (!isBillingAvailable())
-        {
-            IABAlertDialogUtil.popBillingUnavailable(getActivity());
-        }
+        userInteractor.conditionalPopBillingNotAvailable();
     }
 
     @Override public void onDestroyView()

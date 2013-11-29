@@ -4,16 +4,17 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import com.tradehero.th.R;
+import com.tradehero.th.billing.googleplay.IABAlertDialogUtil;
 import com.tradehero.th.utils.AlertDialogUtil;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/28/13 Time: 4:34 PM To change this template use File | Settings | File Templates. */
-public class HeroAlertDialogUtil
+public class HeroAlertDialogUtil extends AlertDialogUtil
 {
     public static final String TAG = HeroAlertDialogUtil.class.getSimpleName();
 
     public static AlertDialog popAlertFollowHero(Context context, DialogInterface.OnClickListener okClickListener)
     {
-        return AlertDialogUtil.popWithOkCancelButton(
+        return popWithOkCancelButton(
                 context,
                 R.string.manage_heroes_alert_follow_title,
                 R.string.manage_heroes_alert_follow_message,
@@ -24,7 +25,7 @@ public class HeroAlertDialogUtil
 
     public static AlertDialog popAlertUnfollowHero(Context context, DialogInterface.OnClickListener okClickListener)
     {
-        return AlertDialogUtil.popWithOkCancelButton(
+        return popWithOkCancelButton(
                 context,
                 R.string.manage_heroes_alert_unfollow_title,
                 R.string.manage_heroes_alert_unfollow_message,

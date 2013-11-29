@@ -20,10 +20,13 @@ import com.tradehero.common.billing.googleplay.exceptions.IABSendIntentException
 import com.tradehero.common.billing.googleplay.exceptions.IABUserCancelledException;
 import com.tradehero.common.billing.googleplay.exceptions.IABVerificationFailedException;
 import com.tradehero.common.milestone.Milestone;
+import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THLog;
+import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
+import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.Application;
 import com.tradehero.th.billing.PurchaseReporter;
@@ -37,8 +40,11 @@ import com.tradehero.th.billing.googleplay.THIABActorUser;
 import com.tradehero.th.billing.googleplay.THIABOrderId;
 import com.tradehero.th.billing.googleplay.THIABProductDetail;
 import com.tradehero.th.billing.googleplay.THIABPurchaseOrder;
+import com.tradehero.th.fragments.social.hero.FollowHeroCallback;
+import com.tradehero.th.network.service.UserService;
 import com.tradehero.th.persistence.billing.googleplay.THIABProductDetailCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
+import com.tradehero.th.persistence.social.HeroListCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
@@ -46,6 +52,9 @@ import java.lang.ref.WeakReference;
 import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 /**
  * It expects its Activity to implement THIABActorUser.
@@ -66,7 +75,6 @@ public class THIABUserInteractor
 
     private ProgressDialog progressDialog;
     @Inject Lazy<CurrentUserBaseKeyHolder> currentUserBaseKeyHolder;
-    @Inject Lazy<UserProfileCache> userProfileCache;
     @Inject Lazy<PortfolioCompactListCache> portfolioCompactListCache;
     @Inject Lazy<THIABProductDetailCache> thiabProductDetailCache;
     protected WeakReference<THIABActor> billingActor = new WeakReference<>(null);
@@ -90,6 +98,14 @@ public class THIABUserInteractor
         THIABOrderId,
         BaseIABPurchase,
         IABException> consumptionFinishedListener;
+
+    @Inject protected Lazy<HeroListCache> heroListCache;
+    @Inject protected Lazy<UserService> userService;
+    protected Callback<UserProfileDTO> followCallback;
+    private UserProfileDTO userProfileDTO;
+    @Inject protected Lazy<UserProfileCache> userProfileCache;
+    private DTOCache.Listener<UserBaseKey, UserProfileDTO> userProfileListener;
+    private DTOCache.GetOrFetchTask<UserProfileDTO> userProfileFetchTask;
 
     /**
      * The activityWeak and handler should be strongly referenced elsewhere
@@ -143,6 +159,7 @@ public class THIABUserInteractor
         purchaseReportedListener = null;
         consumptionFinishedListener = null;
         showSkuDetailsMilestoneListener = null;
+        followCallback = null;
     }
 
     public void setApplicablePortfolioId(OwnedPortfolioId applicablePortfolioId)
@@ -252,6 +269,16 @@ public class THIABUserInteractor
                 }
             };
         }
+
+        if (followCallback == null)
+        {
+            createFollowCallback();
+        }
+    }
+
+    protected void createFollowCallback()
+    {
+        followCallback = new UserInteractorFollowHeroCallback(heroListCache.get(), userProfileCache.get());
     }
 
     protected void haveActorForget(int requestCode)
@@ -283,16 +310,7 @@ public class THIABUserInteractor
             }
         }
 
-        if (this.applicablePortfolioId.portfolioId == null)
-        {
-            // We still need to collect the portfolios
-            showSkuDetailsMilestone = new ShowSkuDetailsMilestone(activityWeak.get(), getBillingActor(), IABSKUListType.getInApp(), this.applicablePortfolioId.getUserBaseKey());
-        }
-        else
-        {
-            showSkuDetailsMilestone = new ShowSkuDetailsMilestone(activityWeak.get(), getBillingActor(), IABSKUListType.getInApp(), null);
-        }
-
+        showSkuDetailsMilestone = new ShowSkuDetailsMilestone(activityWeak.get(), getBillingActor(), IABSKUListType.getInApp(), this.applicablePortfolioId.getUserBaseKey());
         showSkuDetailsMilestone.setOnCompleteListener(showSkuDetailsMilestoneListener);
         showSkuDetailsMilestoneException = null;
         showSkuDetailsMilestone.launch();
@@ -310,6 +328,8 @@ public class THIABUserInteractor
         {
             this.applicablePortfolioId = portfolioCompactListCache.get().getDefaultPortfolio(this.applicablePortfolioId.getUserBaseKey());
         }
+        // We also know that the userProfile is in the cache
+        this.userProfileDTO = userProfileCache.get().get(this.applicablePortfolioId.getUserBaseKey());
 
         runWhatWaitingForSkuDetailsMilestone();
     }
@@ -384,6 +404,15 @@ public class THIABUserInteractor
         this.billingActor = new WeakReference<>(billingActor);
     }
     //</editor-fold>
+
+    public AlertDialog conditionalPopBillingNotAvailable()
+    {
+        if (!isBillingAvailable())
+        {
+            return IABAlertDialogUtil.popBillingUnavailable(activityWeak.get());
+        }
+        return null;
+    }
 
     public AlertDialog popErrorConditional()
     {
@@ -680,5 +709,102 @@ public class THIABUserInteractor
 
     protected void handlePurchaseConsumeFailed()
     {
+    }
+
+    public void linkWith(UserProfileDTO userProfileDTO)
+    {
+        this.userProfileDTO = userProfileDTO;
+    }
+
+    public void followHero(final UserBaseKey userBaseKey)
+    {
+        if (userProfileDTO == null)
+        {
+            waitForSkuDetailsMilestoneComplete(new Runnable()
+            {
+                @Override public void run()
+                {
+                    followHero(userBaseKey);
+                }
+            });
+        }
+        else if (userProfileDTO.ccBalance == 0)
+        {
+            waitForSkuDetailsMilestoneComplete(new Runnable()
+            {
+                @Override public void run()
+                {
+                    conditionalPopBuyFollowCredits(new Runnable()
+                    {
+                        @Override public void run()
+                        {
+                            // At this point, we have already updated the userProfileDTO, and we can only assume that
+                            // the credits have properly been given.
+                            followHero(userBaseKey);
+                        }
+                    });
+                }
+            });
+        }
+        else
+        {
+            Activity activity = activityWeak.get();
+            if (activity != null)
+            {
+                progressDialog = ProgressDialog.show(
+                        activity,
+                        activity.getString(R.string.manage_heroes_follow_progress_title),
+                        activity.getResources().getString(R.string.manage_heroes_follow_progress_message),
+                        true,
+                        true
+                );
+            }
+            userService.get().follow(userBaseKey.key, followCallback);
+        }
+    }
+
+    public void unfollowHero(UserBaseKey userBaseKey)
+    {
+        Activity activity = activityWeak.get();
+        if (activity != null)
+        {
+            progressDialog = ProgressDialog.show(
+                    activity,
+                    activity.getString(R.string.manage_heroes_unfollow_progress_title),
+                    activity.getString(R.string.manage_heroes_unfollow_progress_message),
+                    true,
+                    true
+            );
+        }
+
+        userService.get().unfollow(userBaseKey.key, followCallback);
+    }
+
+    protected class UserInteractorFollowHeroCallback extends FollowHeroCallback
+    {
+        public UserInteractorFollowHeroCallback(HeroListCache heroListCache, UserProfileCache userProfileCache)
+        {
+            super(heroListCache, userProfileCache);
+        }
+
+        @Override public void success(UserProfileDTO userProfileDTO, Response response)
+        {
+            super.success(userProfileDTO, response);
+            linkWith(userProfileDTO);
+            if (progressDialog != null)
+            {
+                progressDialog.hide();
+            }
+        }
+
+        @Override public void failure(RetrofitError error)
+        {
+            THLog.e(TAG, "Failed to un/follow", error);
+            if (progressDialog != null)
+            {
+                progressDialog.hide();
+            }
+            THToast.show(R.string.manage_heroes_follow_failed);
+        }
     }
 }

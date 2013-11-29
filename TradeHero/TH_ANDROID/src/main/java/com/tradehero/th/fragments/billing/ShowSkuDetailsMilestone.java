@@ -7,6 +7,7 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.billing.googleplay.THIABActorInventoryFetcher;
 import com.tradehero.th.billing.googleplay.THInventoryFetchMilestone;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListRetrievedMilestone;
+import com.tradehero.th.persistence.user.UserProfileRetrievedMilestone;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/22/13 Time: 11:08 AM To change this template use File | Settings | File Templates. */
 public class ShowSkuDetailsMilestone extends BaseMilestoneGroup
@@ -26,9 +27,7 @@ public class ShowSkuDetailsMilestone extends BaseMilestoneGroup
 
         this.userBaseKey = userBaseKey;
         add(new THInventoryFetchMilestone(context, actorInventoryFetcher, iabskuListType));
-        if (userBaseKey != null)
-        {
-            add(new PortfolioCompactListRetrievedMilestone(userBaseKey));
-        }
+        add(new PortfolioCompactListRetrievedMilestone(userBaseKey));
+        add(new UserProfileRetrievedMilestone(userBaseKey));
     }
 }

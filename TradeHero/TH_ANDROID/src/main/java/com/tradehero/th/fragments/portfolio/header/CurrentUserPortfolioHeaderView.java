@@ -107,4 +107,9 @@ public class CurrentUserPortfolioHeaderView extends RelativeLayout implements Po
         fetchPortfolioTask = this.portfolioCache.get().getOrFetch(id.getPortfolioId(), false, portfolioCacheListener);
         fetchPortfolioTask.execute();
     }
+
+    @Override public void setFollowRequestedListener(OnFollowRequestedListener followRequestedListener)
+    {
+        // Nothing to do
+    }
 }

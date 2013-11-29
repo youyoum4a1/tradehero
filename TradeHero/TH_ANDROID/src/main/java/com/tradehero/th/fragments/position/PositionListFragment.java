@@ -1,5 +1,6 @@
 package com.tradehero.th.fragments.position;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,8 +20,12 @@ import com.tradehero.th.api.position.GetPositionsDTO;
 import com.tradehero.th.api.position.OwnedPositionId;
 import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.api.security.SecurityId;
+import com.tradehero.th.api.social.HeroDTO;
+import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
+import com.tradehero.th.fragments.billing.THIABUserInteractor;
 import com.tradehero.th.fragments.dashboard.DashboardTabType;
 import com.tradehero.th.fragments.security.AbstractSecurityInfoFragment;
 import com.tradehero.th.fragments.security.StockInfoFragment;
@@ -37,7 +42,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/16/13 Time: 5:56 PM To change this template use File | Settings | File Templates. */
-public class PositionListFragment extends DashboardFragment
+public class PositionListFragment extends BasePurchaseManagerFragment
     implements BaseFragment.TabBarVisibilityInformer, PositionListener
 {
     public static final String TAG = PositionListFragment.class.getSimpleName();
@@ -63,6 +68,7 @@ public class PositionListFragment extends DashboardFragment
 
     private DTOCache.GetOrFetchTask<GetPositionsDTO> fetchGetPositionsDTOTask;
     private GetPositionsCache.Listener<OwnedPortfolioId, GetPositionsDTO> getPositionsCacheListener;
+    private PortfolioHeaderView.OnFollowRequestedListener followRequestedListener;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -84,7 +90,6 @@ public class PositionListFragment extends DashboardFragment
     private void initViews(View view)
     {
         if (view != null)
-
         {
             positionsListView = (ExpandingListView) view.findViewById(R.id.position_list);
             positionsListView.setEmptyView(view.findViewById(android.R.id.empty));
@@ -181,12 +186,30 @@ public class PositionListFragment extends DashboardFragment
                 linkWith(new OwnedPortfolioId(ownedPortfolioIdBundle), true);
             }
         }
+        followRequestedListener = new PortfolioHeaderView.OnFollowRequestedListener()
+        {
+            @Override public void onFollowRequested(UserBaseKey userBaseKey)
+            {
+                THLog.d(TAG, "onFollowRequested " + userBaseKey);
+                userInteractor.followHero(userBaseKey);
+            }
+        };
+        if (portfolioHeaderView != null)
+        {
+            THLog.d(TAG, "Setting portfolioHeaderView listener");
+            portfolioHeaderView.setFollowRequestedListener(followRequestedListener);
+        }
     }
 
     @Override public void onPause()
     {
         THLog.d(TAG, "onPause");
         getPositionsCacheListener = null;
+        followRequestedListener = null;
+        if (portfolioHeaderView != null)
+        {
+            portfolioHeaderView.setFollowRequestedListener(null);
+        }
         if (fetchGetPositionsDTOTask != null)
         {
             fetchGetPositionsDTOTask.forgetListener(true);
