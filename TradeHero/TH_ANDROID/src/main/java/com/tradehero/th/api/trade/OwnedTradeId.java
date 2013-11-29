@@ -104,7 +104,7 @@ public class OwnedTradeId extends OwnedPositionId implements DTOKey
         return super.isValid() && this.tradeId != null;
     }
 
-    @Override public void putParameters(Bundle args)
+    @Override protected void putParameters(Bundle args)
     {
         super.putParameters(args);
         args.putInt(BUNDLE_KEY_TRADE_ID, tradeId);

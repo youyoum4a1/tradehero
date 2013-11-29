@@ -94,7 +94,7 @@ public class PagedOwnedPortfolioId extends OwnedPortfolioId
         return super.isValid() && page != null;
     }
 
-    @Override public void putParameters(Bundle args)
+    @Override protected void putParameters(Bundle args)
     {
         super.putParameters(args);
         args.putInt(BUNDLE_KEY_PAGE, page);

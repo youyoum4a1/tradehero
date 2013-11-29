@@ -94,7 +94,7 @@ public class PerPagedOwnedPortfolioId extends PagedOwnedPortfolioId
         return super.isValid() && perPage != null;
     }
 
-    @Override public void putParameters(Bundle args)
+    @Override protected void putParameters(Bundle args)
     {
         super.putParameters(args);
         args.putInt(BUNDLE_KEY_PER_PAGE, perPage);

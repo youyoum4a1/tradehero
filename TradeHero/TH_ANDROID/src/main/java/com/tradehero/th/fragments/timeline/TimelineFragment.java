@@ -332,7 +332,9 @@ public class TimelineFragment extends BaseFragment
 
     private void pushPositionListFragment(OwnedPortfolioId ownedPortfolioId)
     {
+        Bundle args = new Bundle ();
+        args.putBundle(PositionListFragment.BUNDLE_KEY_OWNED_PORTFOLIO_ID_BUNDLE, ownedPortfolioId.getArgs());
         Navigator navigator = ((NavigatorActivity) getActivity()).getNavigator();
-        navigator.pushFragment(PositionListFragment.class, ownedPortfolioId.getArgs());
+        navigator.pushFragment(PositionListFragment.class, args);
     }
 }

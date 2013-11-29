@@ -41,6 +41,7 @@ import java.util.List;
 public class TradeListFragment extends DashboardFragment
 {
     public static final String TAG = TradeListFragment.class.getSimpleName();
+    public static final String BUNDLE_KEY_OWNED_POSITION_ID_BUNDLE = TradeListFragment.class.getName() + ".ownedPositionId";
 
     private OwnedPositionId ownedPositionId;
     @Inject Lazy<PositionCache> positionCache;
@@ -190,7 +191,11 @@ public class TradeListFragment extends DashboardFragment
         Bundle args = getArguments();
         if (args != null)
         {
-            linkWith(new OwnedPositionId(args), true);
+            Bundle ownedPositionIdBundle = args.getBundle(BUNDLE_KEY_OWNED_POSITION_ID_BUNDLE);
+            if (ownedPositionIdBundle != null)
+            {
+                linkWith(new OwnedPositionId(ownedPositionIdBundle), true);
+            }
         }
     }
 

@@ -19,13 +19,13 @@ import javax.inject.Singleton;
     @Inject protected CurrentUserBaseKeyHolder currentUserBaseKeyHolder;
     @Inject Lazy<UserProfileCache> userCache;
 
-    public int layoutIdForArguments(Bundle args)
+    public int layoutIdForArguments(Bundle ownedPortfolioIdBundle)
     {
-        if (args == null)
+        if (ownedPortfolioIdBundle == null)
         {
             throw new PortfolioHeaderFactoryException("Unable to build arguments from Bundle");
         }
-        OwnedPortfolioId id = new OwnedPortfolioId(args);
+        OwnedPortfolioId id = new OwnedPortfolioId(ownedPortfolioIdBundle);
 
         UserProfileDTO currentUser = userCache.get().get(currentUserBaseKeyHolder.getCurrentUserBaseKey());
 

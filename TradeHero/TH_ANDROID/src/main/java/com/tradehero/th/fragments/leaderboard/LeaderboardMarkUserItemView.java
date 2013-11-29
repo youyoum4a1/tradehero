@@ -284,7 +284,8 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         OwnedPortfolioId ownedPortfolioId = new OwnedPortfolioId(userId, portfolioId);
 
         // leaderboard mark user id, to get marking user information
-        Bundle bundle = ownedPortfolioId.getArgs();
+        Bundle bundle = new Bundle();
+        bundle.putBundle(LeaderboardPositionListFragment.BUNDLE_KEY_OWNED_PORTFOLIO_ID_BUNDLE, ownedPortfolioId.getArgs());
         bundle.putLong(LeaderboardMarkUserId.BUNDLE_KEY, model.lbmuId);
 
         // to display time of value on start investment

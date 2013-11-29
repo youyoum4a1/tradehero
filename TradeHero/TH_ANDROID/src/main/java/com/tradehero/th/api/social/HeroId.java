@@ -92,7 +92,7 @@ public class HeroId implements Comparable, DTOKey
                 args.containsKey(BUNDLE_KEY_FOLLOWER_ID);
     }
 
-    public void putParameters(Bundle args)
+    private void putParameters(Bundle args)
     {
         args.putInt(BUNDLE_KEY_HERO_ID, heroId);
         args.putInt(BUNDLE_KEY_FOLLOWER_ID, followerId);

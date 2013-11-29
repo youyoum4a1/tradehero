@@ -97,17 +97,10 @@ public class OwnedPositionId extends OwnedPortfolioId implements DTO
         return super.isValid() && this.positionId != null;
     }
 
-    @Override public void putParameters(Bundle args)
+    @Override protected void putParameters(Bundle args)
     {
         super.putParameters(args);
         args.putInt(BUNDLE_KEY_POSITION_ID, positionId);
-    }
-
-    @Override public Bundle getArgs()
-    {
-        Bundle args = new Bundle();
-        putParameters(args);
-        return args;
     }
 
     @Override public String toString()

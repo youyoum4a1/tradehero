@@ -506,7 +506,9 @@ public class PortfolioListFragment extends DashboardFragment
     {
         if (view instanceof PortfolioListItemView)
         {
-            navigator.pushFragment(PositionListFragment.class, ((PortfolioListItemView) view).getDisplayablePortfolioDTO().ownedPortfolioId.getArgs());
+            Bundle args = new Bundle();
+            args.putBundle(PositionListFragment.BUNDLE_KEY_OWNED_PORTFOLIO_ID_BUNDLE, ((PortfolioListItemView) view).getDisplayablePortfolioDTO().ownedPortfolioId.getArgs());
+            navigator.pushFragment(PositionListFragment.class, args);
         }
         else
         {

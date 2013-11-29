@@ -46,7 +46,7 @@ import java.util.List;
             tradeIds = new OwnedTradeIdList();
             OwnedTradeId tradeId;
             int i = 0;
-            for(TradeDTO trade: fleshedValues)
+            for (TradeDTO trade: fleshedValues)
             {
                 tradeId = new OwnedTradeId(key, trade.id);
                 tradeIds.add(tradeId);

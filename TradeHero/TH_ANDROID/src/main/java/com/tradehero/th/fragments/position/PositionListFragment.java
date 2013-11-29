@@ -41,6 +41,7 @@ public class PositionListFragment extends DashboardFragment
     implements BaseFragment.TabBarVisibilityInformer, PositionListener
 {
     public static final String TAG = PositionListFragment.class.getSimpleName();
+    public static final String BUNDLE_KEY_OWNED_PORTFOLIO_ID_BUNDLE = PositionListFragment.class.getName() + ".ownedPortfolioId";
     public static final String BUNDLE_KEY_FIRST_POSITION_VISIBLE = PositionListFragment.class.getName() + ".firstPositionVisible";
     public static final String BUNDLE_KEY_EXPANDED_LIST_FLAGS = PositionListFragment.class.getName() + ".expandedListFlags";
 
@@ -116,7 +117,7 @@ public class PositionListFragment extends DashboardFragment
             if (args != null)
             {
                 ViewStub stub = (ViewStub) view.findViewById(R.id.position_list_header_stub);
-                int headerLayoutId = headerFactory.get().layoutIdForArguments(args);
+                int headerLayoutId = headerFactory.get().layoutIdForArguments(args.getBundle(BUNDLE_KEY_OWNED_PORTFOLIO_ID_BUNDLE));
                 stub.setLayoutResource(headerLayoutId);
                 this.portfolioHeaderView = (PortfolioHeaderView) stub.inflate();
             }
@@ -170,12 +171,15 @@ public class PositionListFragment extends DashboardFragment
 
     @Override public void onResume()
     {
-        THLog.d(TAG, "onResume");
         super.onResume();
         Bundle args = getArguments();
         if (args != null)
         {
-            linkWith(new OwnedPortfolioId(args), true);
+            Bundle ownedPortfolioIdBundle = args.getBundle(BUNDLE_KEY_OWNED_PORTFOLIO_ID_BUNDLE);
+            if (ownedPortfolioIdBundle != null)
+            {
+                linkWith(new OwnedPortfolioId(ownedPortfolioIdBundle), true);
+            }
         }
     }
 
@@ -393,7 +397,9 @@ public class PositionListFragment extends DashboardFragment
     //<editor-fold desc="PositionListener">
     @Override public void onTradeHistoryClicked(OwnedPositionId clickedOwnedPositionId)
     {
-        navigator.pushFragment(TradeListFragment.class, clickedOwnedPositionId.getArgs());
+        Bundle args = new Bundle();
+        args.putBundle(TradeListFragment.BUNDLE_KEY_OWNED_POSITION_ID_BUNDLE, clickedOwnedPositionId.getArgs());
+        navigator.pushFragment(TradeListFragment.class, args);
     }
 
     @Override public void onBuyClicked(OwnedPositionId clickedOwnedPositionId)
