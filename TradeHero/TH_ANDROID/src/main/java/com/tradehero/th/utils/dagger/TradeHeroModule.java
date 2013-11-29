@@ -18,7 +18,7 @@ import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
 import com.tradehero.th.base.THUser;
 import com.tradehero.th.billing.googleplay.PurchaseRestorerRequiredMilestone;
 import com.tradehero.th.billing.googleplay.THIABInventoryFetcher;
-import com.tradehero.th.billing.googleplay.THIABLogicHolderExtended;
+import com.tradehero.th.billing.googleplay.THIABLogicHolder;
 import com.tradehero.th.billing.googleplay.THIABPurchaseConsumer;
 import com.tradehero.th.billing.googleplay.THIABPurchaseReporter;
 import com.tradehero.th.billing.googleplay.THIABPurchaser;
@@ -238,7 +238,7 @@ import org.ocpsoft.prettytime.PrettyTime;
                 BaseIABPurchaseFetcher.class,
                 THIABPurchaser.class,
                 THIABPurchaseReporter.class,
-                THIABLogicHolderExtended.class,
+                THIABLogicHolder.class,
                 THIABPurchaseConsumer.class,
                 THInventoryFetchMilestone.class,
                 IABSKUListRetrievedMilestone.class,

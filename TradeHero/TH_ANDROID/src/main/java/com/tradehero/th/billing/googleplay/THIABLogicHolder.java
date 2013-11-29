@@ -11,6 +11,7 @@ import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.common.billing.googleplay.IABSKUListType;
 import com.tradehero.common.billing.googleplay.BaseIABPurchaseFetcher;
 import com.tradehero.common.billing.googleplay.exceptions.IABException;
+import com.tradehero.common.utils.ArrayUtils;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.UserProfileDTO;
@@ -21,6 +22,7 @@ import com.tradehero.th.persistence.billing.googleplay.THIABProductDetailCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
@@ -30,7 +32,7 @@ import javax.inject.Inject;
 import retrofit.RetrofitError;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/8/13 Time: 12:32 PM To change this template use File | Settings | File Templates. */
-abstract public class THIABLogicHolder
+public class THIABLogicHolder
     extends BaseIABActor<
         IABSKU,
         THIABProductDetail,
@@ -89,6 +91,8 @@ abstract public class THIABLogicHolder
         purchaseReporters = new HashMap<>();
         purchaseReportedListeners = new HashMap<>();
         parentPurchaseReportedHandlers = new HashMap<>();
+
+        DaggerUtils.inject(this);
     }
 
     @Override public void onDestroy()
@@ -200,6 +204,11 @@ abstract public class THIABLogicHolder
         {
             fetchedListener.onFetchSKUsFailed(requestCode, exception);
         }
+    }
+
+    @Override public List<THIABProductDetail> getDetailsOfDomain(String domain)
+    {
+        return ArrayUtils.filter(thskuDetailCache.get().get(getAllSkus()), THIABProductDetail.getPredicateIsOfCertainDomain(domain));
     }
 
     public PurchaseReporter.OnPurchaseReportedListener<IABSKU, THIABOrderId, BaseIABPurchase, Exception> getPurchaseReportHandler(int requestCode)

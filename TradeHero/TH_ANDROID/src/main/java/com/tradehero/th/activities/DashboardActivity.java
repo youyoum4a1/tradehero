@@ -11,10 +11,10 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.base.Navigator;
+import com.tradehero.th.billing.googleplay.THIABLogicHolder;
 import com.tradehero.th.billing.googleplay.THIABPurchaseRestorer;
 import com.tradehero.th.billing.googleplay.THIABActor;
 import com.tradehero.th.billing.googleplay.THIABActorUser;
-import com.tradehero.th.billing.googleplay.THIABLogicHolderExtended;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.billing.PurchaseRestorerAlertUtil;
 import com.tradehero.th.utils.DaggerUtils;
@@ -29,7 +29,7 @@ public class DashboardActivity extends SherlockFragmentActivity
     public static final String EXTRA_FRAGMENT = DashboardActivity.class.getName() + ".fragment";
 
     private DashboardNavigator navigator;
-    private THIABLogicHolderExtended thiabLogicHolderExtended;
+    private THIABLogicHolder thiabLogicHolder;
     private THIABPurchaseRestorer purchaseRestorer;
     private THIABPurchaseRestorer.OnPurchaseRestorerFinishedListener purchaseRestorerFinishedListener;
     @Inject CurrentUserBaseKeyHolder currentUserBaseKeyHolder;
@@ -79,7 +79,7 @@ public class DashboardActivity extends SherlockFragmentActivity
 
     private void launchIAB()
     {
-        thiabLogicHolderExtended = new THIABLogicHolderExtended(this);
+        thiabLogicHolder = new THIABLogicHolder(this);
         purchaseRestorer = new THIABPurchaseRestorer(this,
                 getBillingActor(),
                 getBillingActor(),
@@ -146,11 +146,11 @@ public class DashboardActivity extends SherlockFragmentActivity
     @Override protected void onDestroy()
     {
         THLog.d(TAG, "onDestroy");
-        if (thiabLogicHolderExtended != null)
+        if (thiabLogicHolder != null)
         {
-            thiabLogicHolderExtended.onDestroy();
+            thiabLogicHolder.onDestroy();
         }
-        thiabLogicHolderExtended = null;
+        thiabLogicHolder = null;
         super.onDestroy();
     }
 
@@ -173,7 +173,7 @@ public class DashboardActivity extends SherlockFragmentActivity
 
     @Override public THIABActor getBillingActor()
     {
-        return thiabLogicHolderExtended;
+        return thiabLogicHolder;
     }
 
     @Override protected void onActivityResult(int requestCode, int resultCode, Intent data)
@@ -181,7 +181,7 @@ public class DashboardActivity extends SherlockFragmentActivity
         super.onActivityResult(requestCode, resultCode, data);
 
         // Passing it on just in case it is expecting something
-        thiabLogicHolderExtended.onActivityResult(requestCode, resultCode, data);
+        thiabLogicHolder.onActivityResult(requestCode, resultCode, data);
     }
 
     protected DialogInterface.OnClickListener createFailedRestoreClickListener(final Exception exception)

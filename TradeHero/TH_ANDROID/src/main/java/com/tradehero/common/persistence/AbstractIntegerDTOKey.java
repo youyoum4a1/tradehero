@@ -19,6 +19,7 @@ abstract public class AbstractIntegerDTOKey extends AbstractPrimitiveDTOKey<Inte
     {
         super(args);
     }
+    //</editor-fold>
 
 
     abstract public String getBundleKey();
