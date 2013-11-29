@@ -5,7 +5,9 @@ import com.tradehero.common.utils.THJsonAdapter;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.api.form.UserFormDTO;
 import com.tradehero.th.api.form.UserFormFactory;
+import com.tradehero.th.api.misc.ClientType;
 import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
+import com.tradehero.th.api.users.LoginFormDTO;
 import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserLoginDTO;
@@ -23,6 +25,8 @@ import com.tradehero.th.persistence.DTOCacheUtil;
 import com.tradehero.th.persistence.position.SecurityPositionDetailCache;
 import com.tradehero.th.persistence.social.VisitedFriendListPrefs;
 import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.utils.Constants;
+import com.urbanairship.push.PushManager;
 import dagger.Lazy;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -195,7 +199,8 @@ public class THUser
                 userService.get().signUp(authenticator.getAuthHeader(), userFormDTO, createCallbackForSignUpAsyncWithJson(json, callback));
                 break;
             case SignIn:
-                sessionService.get().login(authenticator.getAuthHeader(), userFormDTO, createCallbackForSignInAsyncWithJson(json, callback));
+                LoginFormDTO loginFormDTO = new LoginFormDTO(PushManager.shared().getAPID(), ClientType.Android, Constants.TH_CLIENT_VERSION_VALUE);
+                sessionService.get().login(authenticator.getAuthHeader(), loginFormDTO, createCallbackForSignInAsyncWithJson(json, callback));
                 break;
         }
     }

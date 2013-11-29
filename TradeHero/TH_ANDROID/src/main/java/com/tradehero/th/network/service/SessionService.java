@@ -1,6 +1,7 @@
 package com.tradehero.th.network.service;
 
 import com.tradehero.th.api.form.UserFormDTO;
+import com.tradehero.th.api.users.LoginFormDTO;
 import com.tradehero.th.api.users.UserLoginDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
 import retrofit.Callback;
@@ -17,13 +18,13 @@ public interface SessionService
     @POST("/login")
     UserLoginDTO login(
             @Header("Authorization") String authorization,
-            @Body UserFormDTO user)
+            @Body LoginFormDTO loginFormDTO)
             throws RetrofitError;
 
     @POST("/login")
     void login(
             @Header("Authorization") String authorization,
-            @Body UserFormDTO user,
+            @Body LoginFormDTO loginFormDTO,
             Callback<UserLoginDTO> callback);
     //</editor-fold>
 
