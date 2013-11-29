@@ -107,8 +107,14 @@ public class OwnedPortfolioId  implements Comparable, DTOKey
 
     protected void putParameters(Bundle args)
     {
-        args.putInt(BUNDLE_KEY_USER_ID, userId);
-        args.putInt(BUNDLE_KEY_PORTFOLIO_ID, portfolioId);
+        if (userId != null)
+        {
+            args.putInt(BUNDLE_KEY_USER_ID, userId);
+        }
+        if (portfolioId != null)
+        {
+            args.putInt(BUNDLE_KEY_PORTFOLIO_ID, portfolioId);
+        }
     }
 
     public Bundle getArgs()

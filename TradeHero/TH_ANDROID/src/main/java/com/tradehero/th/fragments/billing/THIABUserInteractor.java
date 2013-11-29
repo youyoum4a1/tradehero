@@ -23,6 +23,7 @@ import com.tradehero.common.milestone.Milestone;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
+import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.Application;
 import com.tradehero.th.billing.PurchaseReporter;
@@ -64,6 +65,7 @@ public class THIABUserInteractor
     protected Throwable showSkuDetailsMilestoneException;
 
     private ProgressDialog progressDialog;
+    @Inject Lazy<CurrentUserBaseKeyHolder> currentUserBaseKeyHolder;
     @Inject Lazy<UserProfileCache> userProfileCache;
     @Inject Lazy<PortfolioCompactListCache> portfolioCompactListCache;
     @Inject Lazy<THIABProductDetailCache> thiabProductDetailCache;
@@ -265,11 +267,11 @@ public class THIABUserInteractor
     {
         if (this.applicablePortfolioId == null)
         {
-            throw new NullPointerException("ApplicationPortfolioId cannot be null");
+            this.applicablePortfolioId = new OwnedPortfolioId(currentUserBaseKeyHolder.get().getCurrentUserBaseKey().key, null);
         }
         if (this.applicablePortfolioId.userId == null)
         {
-            throw new NullPointerException("ApplicationPortfolioId.userId cannot be null");
+            this.applicablePortfolioId = new OwnedPortfolioId(currentUserBaseKeyHolder.get().getCurrentUserBaseKey().key, this.applicablePortfolioId.portfolioId);
         }
 
         if (this.applicablePortfolioId.portfolioId == null)

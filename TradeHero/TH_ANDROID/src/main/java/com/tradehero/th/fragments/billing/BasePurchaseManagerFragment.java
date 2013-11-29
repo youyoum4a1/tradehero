@@ -55,8 +55,7 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
 {
     public static final String TAG = BasePurchaseManagerFragment.class.getSimpleName();
 
-    public static final String BUNDLE_KEY_USER_ID = BasePurchaseManagerFragment.class.getName() + ".userId";
-    public static final String BUNDLE_KEY_PORTFOLIO_ID = BasePurchaseManagerFragment.class.getName() + ".portfolioId";
+    public static final String BUNDLE_KEY_PORTFOLIO_ID_BUNDLE = BasePurchaseManagerFragment.class.getName() + ".portfolioId";
 
     protected THIABUserInteractor userInteractor;
 
@@ -79,26 +78,19 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
     @Override public void onResume()
     {
         super.onResume();
-        Integer userBaseKey;
-        Integer portfolioId = null;
+        OwnedPortfolioId applicablePortfolioId = null;
 
         Bundle args = getArguments();
-
-        if (args != null && args.containsKey(BUNDLE_KEY_USER_ID))
+        if (args != null)
         {
-            userBaseKey = args.getInt(BUNDLE_KEY_USER_ID);
-        }
-        else
-        {
-            userBaseKey = currentUserBaseKeyHolder.get().getCurrentUserBaseKey().key;
-        }
-
-        if (args != null && args.containsKey(BUNDLE_KEY_PORTFOLIO_ID))
-        {
-            portfolioId = args.getInt(BUNDLE_KEY_PORTFOLIO_ID);
+            Bundle portfolioIdBundle = args.getBundle(BUNDLE_KEY_PORTFOLIO_ID_BUNDLE);
+            if (portfolioIdBundle != null)
+            {
+                applicablePortfolioId = new OwnedPortfolioId(portfolioIdBundle);
+            }
         }
 
-        userInteractor.setApplicablePortfolioId(new OwnedPortfolioId(userBaseKey, portfolioId));
+        userInteractor.setApplicablePortfolioId(applicablePortfolioId);
     }
 
     @Override public void onPause()
