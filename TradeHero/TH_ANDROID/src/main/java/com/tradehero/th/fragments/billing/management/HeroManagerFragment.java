@@ -1,8 +1,10 @@
 package com.tradehero.th.fragments.billing.management;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,7 +27,9 @@ import com.tradehero.th.api.social.HeroDTOList;
 import com.tradehero.th.api.social.HeroIdList;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.billing.googleplay.THIABActor;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
+import com.tradehero.th.fragments.billing.THIABUserInteractor;
 import com.tradehero.th.fragments.dashboard.DashboardTabType;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.network.service.UserService;
@@ -163,6 +167,11 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
         };
     }
 
+    @Override protected void createUserInteractor()
+    {
+        userInteractor = new HeroManagerTHIABUserInteractor(getActivity(), getBillingActor(), getView().getHandler());
+    }
+
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         ActionBar actionBar = getSherlockActivity().getSupportActionBar();
@@ -214,27 +223,9 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
         super.onDestroyView();
     }
 
-    @Override protected void handleShowSkuDetailsMilestoneFailed(Throwable throwable)
-    {
-        // Nothing to do presumably
-    }
-
-    @Override protected void handleShowSkuDetailsMilestoneComplete()
-    {
-        super.handleShowSkuDetailsMilestoneComplete();
-        fetchUserProfile();
-        fetchHeroes();
-    }
-
     private void handleBuyMoreClicked()
     {
-        conditionalPopBuyFollowCredits();
-    }
-
-    @Override protected void handlePurchaseReportSuccess(BaseIABPurchase reportedPurchase, UserProfileDTO updatedUserProfile)
-    {
-        super.handlePurchaseReportSuccess(reportedPurchase, updatedUserProfile);
-        fetchUserProfile();
+        userInteractor.conditionalPopBuyFollowCredits();
     }
 
     private void handleHeroClicked(AdapterView<?> parent, View view, int position, long id)
@@ -272,19 +263,23 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
     {
         if (userProfileDTO != null && userProfileDTO.ccBalance == 0)
         {
-            waitForSkuDetailsMilestoneComplete(new Runnable()
+            userInteractor.waitForSkuDetailsMilestoneComplete(new Runnable()
             {
                 @Override public void run()
                 {
-                    conditionalPopBuyFollowCredits(new Runnable()
+                    THIABUserInteractor userInteractorCopy = userInteractor;
+                    if (userInteractorCopy != null)
                     {
-                        @Override public void run()
+                        userInteractorCopy.conditionalPopBuyFollowCredits(new Runnable()
                         {
-                            // At this point, we have already updated the userProfileDTO, and we can only assume that
-                            // the credits have properly been given.
-                            followHero(heroDTO);
-                        }
-                    });
+                            @Override public void run()
+                            {
+                                // At this point, we have already updated the userProfileDTO, and we can only assume that
+                                // the credits have properly been given.
+                                followHero(heroDTO);
+                            }
+                        });
+                    }
                 }
             });
         }
@@ -330,6 +325,7 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
 
     private void fetchUserProfile()
     {
+        UserBaseKey userBaseKey = userInteractor.getApplicablePortfolioId().getUserBaseKey();
         UserProfileDTO userProfileDTO = userProfileCache.get().get(userBaseKey);
         if (userProfileDTO != null)
         {
@@ -364,6 +360,7 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
 
     private void fetchHeroes()
     {
+        UserBaseKey userBaseKey = userInteractor.getApplicablePortfolioId().getUserBaseKey();
         HeroIdList heroIds = heroListCache.get().get(userBaseKey);
         HeroDTOList heroDTOs = heroCache.get().get(heroIds);
         if (heroIds != null && heroDTOs != null && heroIds.size() == heroDTOs.size()) // We need this longer test in case DTO have been flushed.
@@ -461,6 +458,27 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
         if (heroListAdapter != null)
         {
             heroListAdapter.notifyDataSetChanged();
+        }
+    }
+
+    public class HeroManagerTHIABUserInteractor extends THIABUserInteractor
+    {
+        public HeroManagerTHIABUserInteractor(Activity activity, THIABActor billingActor, Handler handler)
+        {
+            super(activity, billingActor, handler);
+        }
+
+        @Override protected void handleShowSkuDetailsMilestoneComplete()
+        {
+            super.handleShowSkuDetailsMilestoneComplete();
+            fetchUserProfile();
+            fetchHeroes();
+        }
+
+        @Override protected void handlePurchaseReportSuccess(BaseIABPurchase reportedPurchase, UserProfileDTO updatedUserProfile)
+        {
+            super.handlePurchaseReportSuccess(reportedPurchase, updatedUserProfile);
+            fetchUserProfile();
         }
     }
 }

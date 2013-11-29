@@ -26,6 +26,7 @@ import com.tradehero.th.billing.googleplay.THInventoryFetchMilestone;
 import com.tradehero.th.fragments.WebViewFragment;
 import com.tradehero.th.fragments.authentication.EmailSignInFragment;
 import com.tradehero.th.fragments.billing.StoreScreenFragment;
+import com.tradehero.th.fragments.billing.THIABUserInteractor;
 import com.tradehero.th.fragments.billing.management.FollowerListItemView;
 import com.tradehero.th.fragments.billing.management.FollowerManagerFragment;
 import com.tradehero.th.fragments.billing.management.FollowerPayoutManagerFragment;
@@ -244,6 +245,10 @@ import org.ocpsoft.prettytime.PrettyTime;
                 IABSKUListRetrievedMilestone.class,
                 PortfolioCompactListRetrievedMilestone.class,
                 PurchaseRestorerRequiredMilestone.class,
+                THIABUserInteractor.class,
+                StoreScreenFragment.StoreScreenTHIABUserInteractor.class,
+                HeroManagerFragment.HeroManagerTHIABUserInteractor.class,
+                BuySellFragment.BuySellTHIABUserInteractor.class,
         },
         staticInjections =
         {

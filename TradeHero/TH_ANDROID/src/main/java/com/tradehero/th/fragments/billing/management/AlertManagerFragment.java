@@ -71,11 +71,6 @@ public class AlertManagerFragment extends BasePurchaseManagerFragment
         }
     }
 
-    @Override protected void handleShowSkuDetailsMilestoneFailed(Throwable throwable)
-    {
-        // Nothing to do presumably
-    }
-
     private void handleAlertItemClicked(View view, int position, long id)
     {
 

@@ -1,6 +1,8 @@
 package com.tradehero.th.fragments.billing;
 
+import android.app.Activity;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,7 +16,9 @@ import com.tradehero.common.billing.googleplay.exceptions.IABBillingUnavailableE
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.DashboardActivity;
+import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.billing.googleplay.IABAlertDialogUtil;
+import com.tradehero.th.billing.googleplay.THIABActor;
 import com.tradehero.th.fragments.billing.management.FollowerManagerFragment;
 import com.tradehero.th.fragments.billing.management.HeroManagerFragment;
 import com.tradehero.th.utils.AlertDialogUtil;
@@ -48,6 +52,11 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
                 }
             });
         }
+    }
+
+    @Override protected void createUserInteractor()
+    {
+        userInteractor = new StoreScreenTHIABUserInteractor(getActivity(), getBillingActor(), getView().getHandler());
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
@@ -84,35 +93,25 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
         return true;
     }
 
-    @Override protected void handleShowSkuDetailsMilestoneFailed(Throwable throwable)
-    {
-        // TODO warn if there are things unset
-        if (throwable instanceof IABBillingUnavailableException)
-        {
-            IABAlertDialogUtil.popBillingUnavailable(getActivity());
-        }
-        // Nothing to do presumably
-    }
-
     private void handlePositionClicked(int position)
     {
         Bundle bundle;
         switch (position)
         {
             case StoreItemAdapter.POSITION_BUY_VIRTUAL_DOLLARS:
-                conditionalPopBuyVirtualDollars();
+                userInteractor.conditionalPopBuyVirtualDollars();
                 break;
 
             case StoreItemAdapter.POSITION_BUY_FOLLOW_CREDITS:
-                conditionalPopBuyFollowCredits();
+                userInteractor.conditionalPopBuyFollowCredits();
                 break;
 
             case StoreItemAdapter.POSITION_BUY_STOCK_ALERTS:
-                conditionalPopBuyStockAlerts();
+                userInteractor.conditionalPopBuyStockAlerts();
                 break;
 
             case StoreItemAdapter.POSITION_BUY_RESET_PORTFOLIO:
-                conditionalPopBuyResetPortfolio();
+                userInteractor.conditionalPopBuyResetPortfolio();
                 break;
 
             case StoreItemAdapter.POSITION_MANAGE_HEROES:
@@ -131,13 +130,14 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
 
     protected void pushHeroFragmentWhenReady()
     {
-        waitForSkuDetailsMilestoneComplete(new Runnable()
+        userInteractor.waitForSkuDetailsMilestoneComplete(new Runnable()
         {
             @Override public void run()
             {
+                OwnedPortfolioId applicablePortfolio = userInteractor.getApplicablePortfolioId();
                 Bundle bundle = new Bundle();
-                bundle.putInt(HeroManagerFragment.BUNDLE_KEY_USER_ID, userBaseKey.key);
-                bundle.putInt(HeroManagerFragment.BUNDLE_KEY_PORTFOLIO_ID, portfolioId.key);
+                bundle.putInt(HeroManagerFragment.BUNDLE_KEY_USER_ID, applicablePortfolio.userId);
+                bundle.putInt(HeroManagerFragment.BUNDLE_KEY_PORTFOLIO_ID, applicablePortfolio.portfolioId);
                 pushFragment(HeroManagerFragment.class, bundle);
             }
         });
@@ -145,13 +145,14 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
 
     protected void pushFollowerFragmentWhenReady()
     {
-        waitForSkuDetailsMilestoneComplete(new Runnable()
+        userInteractor.waitForSkuDetailsMilestoneComplete(new Runnable()
         {
             @Override public void run()
             {
+                OwnedPortfolioId applicablePortfolio = userInteractor.getApplicablePortfolioId();
                 Bundle bundle = new Bundle();
-                bundle.putInt(HeroManagerFragment.BUNDLE_KEY_USER_ID, userBaseKey.key);
-                bundle.putInt(HeroManagerFragment.BUNDLE_KEY_PORTFOLIO_ID, portfolioId.key);
+                bundle.putInt(FollowerManagerFragment.BUNDLE_KEY_USER_ID, applicablePortfolio.userId);
+                bundle.putInt(FollowerManagerFragment.BUNDLE_KEY_PORTFOLIO_ID, applicablePortfolio.portfolioId);
                 pushFragment(FollowerManagerFragment.class, bundle);
             }
         });
@@ -173,5 +174,23 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
                 R.string.error_incomplete_info_title,
                 R.string.error_incomplete_info_message,
                 R.string.error_incomplete_info_cancel);
+    }
+
+    public class StoreScreenTHIABUserInteractor extends THIABUserInteractor
+    {
+        public StoreScreenTHIABUserInteractor(Activity activity, THIABActor billingActor, Handler handler)
+        {
+            super(activity, billingActor, handler);
+        }
+
+        @Override protected void handleShowSkuDetailsMilestoneFailed(Throwable throwable)
+        {
+            // TODO warn if there are things unset
+            if (throwable instanceof IABBillingUnavailableException)
+            {
+                IABAlertDialogUtil.popBillingUnavailable(getActivity());
+            }
+            // Nothing to do presumably
+        }
     }
 }

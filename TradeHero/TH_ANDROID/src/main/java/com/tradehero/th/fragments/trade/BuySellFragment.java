@@ -6,7 +6,9 @@
  */
 package com.tradehero.th.fragments.trade;
 
+import android.app.Activity;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -44,6 +46,8 @@ import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.ImageViewThreadSafe;
 import com.tradehero.th.R;
+import com.tradehero.th.billing.googleplay.THIABActor;
+import com.tradehero.th.fragments.billing.THIABUserInteractor;
 import com.tradehero.th.fragments.security.BuySellBottomStockPagerAdapter;
 import com.tradehero.th.api.position.SecurityPositionDetailDTO;
 import com.tradehero.th.api.quote.QuoteDTO;
@@ -275,6 +279,11 @@ public class BuySellFragment extends AbstractBuySellFragment
         }
     }
 
+    @Override protected void createUserInteractor()
+    {
+        userInteractor = new BuySellTHIABUserInteractor(getActivity(), getBillingActor(), getView().getHandler());
+    }
+
     //<editor-fold desc="ActionBar">
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
@@ -362,7 +371,7 @@ public class BuySellFragment extends AbstractBuySellFragment
         securityAlertAssistant.setUserBaseKey(currentUserBaseKeyHolder.getCurrentUserBaseKey());
         securityAlertAssistant.populate();
 
-        waitForSkuDetailsMilestoneComplete(new Runnable()
+        userInteractor.waitForSkuDetailsMilestoneComplete(new Runnable()
         {
             @Override public void run()
             {
@@ -435,17 +444,6 @@ public class BuySellFragment extends AbstractBuySellFragment
     {
         THLog.d(TAG, "onDetach");
         super.onDetach();
-    }
-
-    @Override protected void handleShowSkuDetailsMilestoneFailed(Throwable throwable)
-    {
-        // Nothing to do presumably
-    }
-
-    @Override protected void handleShowSkuDetailsMilestoneComplete()
-    {
-        super.handleShowSkuDetailsMilestoneComplete();
-        displayTradeQuantityView();
     }
 
     @Override public void linkWith(SecurityId securityId, boolean andDisplay)
@@ -944,7 +942,7 @@ public class BuySellFragment extends AbstractBuySellFragment
 
     private void handleBtnAddCashPressed()
     {
-        conditionalPopBuyVirtualDollars();
+        userInteractor.conditionalPopBuyVirtualDollars();
     }
 
     private void handleBtnAddTriggerClicked()
@@ -1174,4 +1172,18 @@ public class BuySellFragment extends AbstractBuySellFragment
         displayTriggerButton();
     }
     //</editor-fold>
+
+    public class BuySellTHIABUserInteractor extends THIABUserInteractor
+    {
+        public BuySellTHIABUserInteractor(Activity activity, THIABActor billingActor, Handler handler)
+        {
+            super(activity, billingActor, handler);
+        }
+
+        @Override protected void handleShowSkuDetailsMilestoneComplete()
+        {
+            super.handleShowSkuDetailsMilestoneComplete();
+            displayTradeQuantityView();
+        }
+    }
 }
