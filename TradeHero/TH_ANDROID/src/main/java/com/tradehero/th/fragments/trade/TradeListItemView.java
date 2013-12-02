@@ -23,7 +23,6 @@ import com.tradehero.th.utils.ColorUtils;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.SecurityUtils;
 import dagger.Lazy;
-
 import javax.inject.Inject;
 import java.text.SimpleDateFormat;
 import java.util.TimeZone;
@@ -67,7 +66,7 @@ public class TradeListItemView extends LinearLayout implements DTOView<TradeList
     private View commentSection;
     private TextView commentTextView;
 
-
+    //<editor-fold desc="Constructors">
     public TradeListItemView(Context context)
     {
         super(context);
@@ -82,20 +81,18 @@ public class TradeListItemView extends LinearLayout implements DTOView<TradeList
     {
         super(context, attrs, defStyle);
     }
-
-
+    //</editor-fold>
 
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
         DaggerUtils.inject(this);
         initViews();
-
     }
 
     private void initViews()
     {
-        profitIndicatorView = (ImageView)findViewById(R.id.ic_position_profit_indicator_left);
+        profitIndicatorView = (ImageView) findViewById(R.id.ic_position_profit_indicator_left);
         if (profitIndicatorView != null)
         {
             picasso.get()
@@ -104,15 +101,15 @@ public class TradeListItemView extends LinearLayout implements DTOView<TradeList
                     .into(profitIndicatorView);
         }
 
-        dateTextView = (TextView)findViewById(R.id.trade_date_label);
-        quantityTextView = (TextView)findViewById(R.id.trade_quantity_label);
+        dateTextView = (TextView) findViewById(R.id.trade_date_label);
+        quantityTextView = (TextView) findViewById(R.id.trade_quantity_label);
 
-        averagePriceTextView = (TextView)findViewById(R.id.trade_avg_price);
-        realizedPLTextView = (TextView)findViewById(R.id.trade_realized_pl);
-        unrealizedPLTextView = (TextView)findViewById(R.id.trade_unrealized_pl);
-        positionQuantityTextView = (TextView)findViewById(R.id.trade_quantity);
+        averagePriceTextView = (TextView) findViewById(R.id.trade_avg_price);
+        realizedPLTextView = (TextView) findViewById(R.id.trade_realized_pl);
+        unrealizedPLTextView = (TextView) findViewById(R.id.trade_unrealized_pl);
+        positionQuantityTextView = (TextView) findViewById(R.id.trade_quantity);
         commentSection = findViewById(R.id.trade_list_comment_section);
-        commentTextView = (TextView)findViewById(R.id.trade_list_comment);
+        commentTextView = (TextView) findViewById(R.id.trade_list_comment);
     }
 
     @Override
@@ -145,7 +142,10 @@ public class TradeListItemView extends LinearLayout implements DTOView<TradeList
 
     public void display()
     {
-        if (trade == null) return;
+        if (trade == null)
+        {
+            return;
+        }
 
         displayTopSection();
         displayExpandableSection();
@@ -220,19 +220,26 @@ public class TradeListItemView extends LinearLayout implements DTOView<TradeList
         }
     }
 
-
-
     private String getCurrencyDisplay()
     {
         if (currencyDisplay == null)
         {
-            if (position == null) return null;
+            if (position == null)
+            {
+                return null;
+            }
 
             SecurityId securityId = securityIdCache.get().get(position.getSecurityIntegerId());
-            if (securityId == null) return null;
+            if (securityId == null)
+            {
+                return null;
+            }
 
             SecurityCompactDTO security = securityCache.get().get(securityId);
-            if (security == null) return null;
+            if (security == null)
+            {
+                return null;
+            }
 
             currencyDisplay = security.currencyDisplay;
         }
@@ -250,7 +257,4 @@ public class TradeListItemView extends LinearLayout implements DTOView<TradeList
             return trade.realized_pl_after_trade;
         }
     }
-
-
-
 }

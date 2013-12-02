@@ -17,7 +17,6 @@ import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.persistence.security.SecurityIdCache;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
-
 import javax.inject.Inject;
 import java.lang.ref.WeakReference;
 
@@ -38,6 +37,7 @@ public class TradeListHeaderView extends LinearLayout
 
     private WeakReference<TradeListHeaderClickListener> listener;
 
+    //<editor-fold desc="Constructors">
     public TradeListHeaderView(Context context)
     {
         super(context);
@@ -52,6 +52,7 @@ public class TradeListHeaderView extends LinearLayout
     {
         super(context, attrs, defStyle);
     }
+    //</editor-fold>
 
     @Override protected void onFinishInflate()
     {
@@ -62,31 +63,65 @@ public class TradeListHeaderView extends LinearLayout
 
     private void initViews()
     {
-        securityNameTextView = (TextView)findViewById(R.id.trade_history_header_username);
-        buyButton = (Button)findViewById(R.id.trade_list_header_buy);
-        buyButton.setOnClickListener(new OnClickListener()
-        {
-            @Override public void onClick(View v)
-            {
-                if (listener == null) return;
+        securityNameTextView = (TextView) findViewById(R.id.trade_history_header_username);
+        buyButton = (Button) findViewById(R.id.trade_list_header_buy);
+        sellButton = (Button) findViewById(R.id.trade_list_header_sell);
+    }
 
-                TradeListHeaderClickListener l = listener.get();
-                if(l != null)
-                    l.onBuyButtonClicked(TradeListHeaderView.this, ownedPositionId);
-            }
-        });
-        sellButton = (Button)findViewById(R.id.trade_list_header_sell);
-        sellButton.setOnClickListener(new OnClickListener()
+    @Override protected void onAttachedToWindow()
+    {
+        super.onAttachedToWindow();
+        if (buyButton != null)
         {
-            @Override public void onClick(View v)
+            buyButton.setOnClickListener(new OnClickListener()
             {
-                if (listener == null) return;
+                @Override public void onClick(View v)
+                {
+                    if (listener == null)
+                    {
+                        return;
+                    }
 
-                TradeListHeaderClickListener l = listener.get();
-                if(l != null)
-                    l.onSellButtonClicked(TradeListHeaderView.this, ownedPositionId);
-            }
-        });
+                    TradeListHeaderClickListener l = listener.get();
+                    if (l != null)
+                    {
+                        l.onBuyButtonClicked(TradeListHeaderView.this, ownedPositionId);
+                    }
+                }
+            });
+        }
+        if (sellButton != null)
+        {
+            sellButton.setOnClickListener(new OnClickListener()
+            {
+                @Override public void onClick(View v)
+                {
+                    if (listener == null)
+                    {
+                        return;
+                    }
+
+                    TradeListHeaderClickListener l = listener.get();
+                    if (l != null)
+                    {
+                        l.onSellButtonClicked(TradeListHeaderView.this, ownedPositionId);
+                    }
+                }
+            });
+        }
+    }
+
+    @Override protected void onDetachedFromWindow()
+    {
+        if (buyButton != null)
+        {
+            buyButton.setOnClickListener(null);
+        }
+        if (sellButton != null)
+        {
+            sellButton.setOnClickListener(null);
+        }
+        super.onDetachedFromWindow();
     }
 
     public void bindOwnedPositionId(OwnedPositionId ownedPositionId)
@@ -95,7 +130,10 @@ public class TradeListHeaderView extends LinearLayout
 
         PositionDTO position = positionCache.get().get(ownedPositionId);
 
-        if (position== null) return;
+        if (position == null)
+        {
+            return;
+        }
 
         if (position.isClosed())
         {
@@ -104,15 +142,22 @@ public class TradeListHeaderView extends LinearLayout
 
         SecurityIntegerId securityIntegerId = position.getSecurityIntegerId();
 
-        if (securityIntegerId == null) return;
+        if (securityIntegerId == null)
+        {
+            return;
+        }
 
         SecurityId secId = this.securityIdCache.get().get(securityIntegerId);
 
-        if (secId == null) return;
+        if (secId == null)
+        {
+            return;
+        }
 
         SecurityCompactDTO security = this.securityCache.get().get(secId);
 
-        if (security != null && security.name != null) {
+        if (security != null && security.name != null)
+        {
             this.securityName = security.name.toUpperCase();
         }
         display();
@@ -134,7 +179,9 @@ public class TradeListHeaderView extends LinearLayout
     public TradeListHeaderClickListener getListener()
     {
         if (listener == null)
+        {
             return null;
+        }
 
         return listener.get();
     }

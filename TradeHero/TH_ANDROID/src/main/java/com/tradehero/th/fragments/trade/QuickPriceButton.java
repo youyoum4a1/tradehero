@@ -46,7 +46,7 @@ public class QuickPriceButton extends Button
         {
             return 0;
         }
-        return price.doubleValue();
+        return price;
     }
 
     public void setPrice(double price)
@@ -61,4 +61,9 @@ public class QuickPriceButton extends Button
     }
     //</editor-fold>
 
+    @Override protected void onDetachedFromWindow()
+    {
+        setOnClickListener(null);
+        super.onDetachedFromWindow();
+    }
 }

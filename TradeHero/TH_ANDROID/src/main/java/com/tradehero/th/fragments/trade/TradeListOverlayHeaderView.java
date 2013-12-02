@@ -20,7 +20,6 @@ import com.tradehero.th.persistence.security.SecurityIdCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
-
 import javax.inject.Inject;
 import java.lang.ref.WeakReference;
 
@@ -74,31 +73,24 @@ public class TradeListOverlayHeaderView extends LinearLayout
 
     private void initViews()
     {
-        usernameTextView= (TextView) findViewById(R.id.trade_history_header_username);
+        usernameTextView = (TextView) findViewById(R.id.trade_history_header_username);
         imageProfile = (ImageView) findViewById(R.id.trade_history_header_image);
         qualifiedSecuritySymbol = (TextView) findViewById(R.id.trade_history_header_security_symbol);
         righSection = (LinearLayout) findViewById(R.id.trade_history_header_right_section);
-        attachListeners();
     }
 
-    private void attachListeners()
+    @Override protected void onAttachedToWindow()
     {
+        super.onAttachedToWindow();
         OnClickListener usernameListener = new OnClickListener()
         {
             @Override public void onClick(View v)
             {
-                if (listener == null)
-                {
-                    return;
-                }
-
                 Listener l = listener.get();
-                if (l == null)
+                if (l != null)
                 {
-                    return;
+                    l.onUserClicked(TradeListOverlayHeaderView.this, ownedPositionId.getUserBaseKey());
                 }
-
-                l.onUserClicked(TradeListOverlayHeaderView.this, ownedPositionId.getUserBaseKey());
             }
         };
 
@@ -118,23 +110,35 @@ public class TradeListOverlayHeaderView extends LinearLayout
             {
                 @Override public void onClick(View v)
                 {
-                    if (listener == null)
-                    {
-                        return;
-                    }
-
                     Listener l = listener.get();
-                    if (l == null)
+                    if (l != null)
                     {
-                        return;
+                        l.onSecurityClicked(TradeListOverlayHeaderView.this, ownedPositionId);
                     }
-
-                    l.onSecurityClicked(TradeListOverlayHeaderView.this, ownedPositionId);
                 }
             });
         }
     }
 
+    @Override protected void onDetachedFromWindow()
+    {
+        if (this.usernameTextView != null)
+        {
+            this.usernameTextView.setOnClickListener(null);
+        }
+
+        if (this.imageProfile != null)
+        {
+            this.imageProfile.setOnClickListener(null);
+        }
+
+        if (this.righSection != null)
+        {
+            this.righSection.setOnClickListener(null);
+        }
+
+        super.onDetachedFromWindow();
+    }
 
     public void bindOwnedPositionId(OwnedPositionId ownedPositionId)
     {

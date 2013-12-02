@@ -20,6 +20,7 @@ public class QuickPriceButtonSet extends LinearLayout
     private boolean enabled = false;
     private double maxPrice = Double.MAX_VALUE;
     private QuickPriceButton currentSelected;
+    private boolean attachedToWindow = false;
 
     //<editor-fold desc="Constructors">
     public QuickPriceButtonSet(Context context)
@@ -66,18 +67,21 @@ public class QuickPriceButtonSet extends LinearLayout
     }
     //</editor-fold>
 
+    public void addButton(int resourceId)
+    {
+        addButton((QuickPriceButton) findViewById(resourceId));
+    }
+
     public void addButton(QuickPriceButton quickPriceButton)
     {
         if (quickPriceButton != null)
         {
-            quickPriceButton.setOnClickListener(createButtonOnClickListener());
             buttons.add(quickPriceButton);
+            if (attachedToWindow)
+            {
+                quickPriceButton.setOnClickListener(createButtonOnClickListener());
+            }
         }
-    }
-
-    public void addButton(int resourceId)
-    {
-        addButton((QuickPriceButton) findViewById(resourceId));
     }
 
     public void removeButton(QuickPriceButton quickPriceButton)
@@ -91,11 +95,44 @@ public class QuickPriceButtonSet extends LinearLayout
 
     public void clearButtons()
     {
-        for(QuickPriceButton button:buttons)
+        for (QuickPriceButton button:buttons)
         {
             button.setOnClickListener(null);
         }
         buttons.clear();
+    }
+
+    @Override protected void onAttachedToWindow()
+    {
+        attachedToWindow = true;
+        if (buttons != null)
+        {
+            OnClickListener buttonListener = createButtonOnClickListener();
+            for (QuickPriceButton button : buttons)
+            {
+                if (button != null)
+                {
+                    button.setOnClickListener(buttonListener);
+                }
+            }
+        }
+        super.onAttachedToWindow();
+    }
+
+    @Override protected void onDetachedFromWindow()
+    {
+        attachedToWindow = false;
+        if (buttons != null)
+        {
+            for (QuickPriceButton button : buttons)
+            {
+                if (button != null)
+                {
+                    button.setOnClickListener(null);
+                }
+            }
+        }
+        super.onDetachedFromWindow();
     }
 
     public void setListener(OnQuickPriceButtonSelectedListener listener)
@@ -113,7 +150,7 @@ public class QuickPriceButtonSet extends LinearLayout
 
     public void display()
     {
-        for(QuickPriceButton button: buttons)
+        for (QuickPriceButton button: buttons)
         {
             button.setEnabled(enabled && (button.getPrice() <= maxPrice));
         }
