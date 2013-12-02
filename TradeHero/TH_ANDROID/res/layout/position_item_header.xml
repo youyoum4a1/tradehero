@@ -12,7 +12,6 @@
       android:id="@+id/header_text"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:text="Open Positions (6)"
     />
 
 </com.tradehero.th.fragments.position.PositionSectionHeaderItemView>

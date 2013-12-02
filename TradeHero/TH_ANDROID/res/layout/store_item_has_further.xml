@@ -21,11 +21,12 @@
 
   <ImageView
       android:id="@+id/ic_hint_further"
-      android:layout_width="wrap_content"
-      android:layout_height="24dp"
+      android:layout_width="48dp"
+      android:layout_height="48dp"
       android:layout_alignParentRight="true"
       android:layout_centerVertical="true"
-      android:src="@drawable/chevron_forward"
+      android:src="@drawable/settings_forward_light"
+      android:scaleType="fitXY"
       android:contentDescription="@null"
       />
 

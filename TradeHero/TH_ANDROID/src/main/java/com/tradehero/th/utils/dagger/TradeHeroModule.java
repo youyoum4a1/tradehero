@@ -14,6 +14,7 @@ import com.tradehero.th.activities.AuthenticationActivity;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.form.AbstractUserAvailabilityRequester;
 import com.tradehero.th.api.portfolio.DisplayablePortfolioDTO;
+import com.tradehero.th.api.portfolio.DisplayablePortfolioUtil;
 import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
 import com.tradehero.th.base.THUser;
 import com.tradehero.th.billing.googleplay.PurchaseRestorerRequiredMilestone;
@@ -258,6 +259,7 @@ import org.ocpsoft.prettytime.PrettyTime;
                 THUser.class,
                 NumberDisplayUtils.class,
                 DisplayablePortfolioDTO.class,
+                DisplayablePortfolioUtil.class,
                 DTOCacheUtil.class,
         },
         library = true // TEMP

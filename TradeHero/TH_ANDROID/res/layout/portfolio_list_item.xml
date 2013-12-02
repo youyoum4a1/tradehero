@@ -10,9 +10,32 @@
     >
 
   <ImageView
+      android:id="@+id/hint_open_portfolio"
+      android:layout_width="48dp"
+      android:layout_height="48dp"
+      android:layout_alignParentRight="true"
+      android:layout_centerVertical="true"
+      android:src="@drawable/settings_forward_light"
+      android:scaleType="fitXY"
+      android:contentDescription="@null"
+      />
+
+  <ImageView
+      android:id="@+id/following_image"
+      android:layout_width="131dp"
+      android:layout_height="48dp"
+      android:layout_toLeftOf="@id/hint_open_portfolio"
+      android:layout_centerVertical="true"
+      android:scaleType="fitXY"
+      android:src="@drawable/following_stamp"
+      android:visibility="gone"
+      android:contentDescription="@null"
+      />
+
+  <ImageView
       android:id="@+id/user_icon"
-      android:layout_width="44dp"
-      android:layout_height="44dp"
+      android:layout_width="48dp"
+      android:layout_height="48dp"
       android:layout_alignParentLeft="true"
       android:src="@drawable/superman_facebook"
       android:contentDescription="@null"
@@ -37,7 +60,6 @@
           android:maxLines="1"
           android:layout_weight="3"
           android:textStyle="bold"
-          android:text="Batman"
         />
 
       <TextView
@@ -46,20 +68,8 @@
           android:layout_height="0dp"
           android:layout_weight="2"
           android:maxLines="1"
-          android:text="Default Portfolio"
         />
 
   </LinearLayout>
-
-  <ImageView
-      android:id="@+id/hint_open_portfolio"
-      android:layout_width="20dp"
-      android:layout_height="30dp"
-      android:layout_alignParentRight="true"
-      android:layout_centerVertical="true"
-      android:src="@drawable/chevron_forward"
-      android:scaleType="center"
-      android:contentDescription="@null"
-    />
 
 </com.tradehero.th.fragments.portfolio.PortfolioListItemView>

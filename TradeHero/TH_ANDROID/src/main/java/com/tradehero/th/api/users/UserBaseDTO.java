@@ -31,4 +31,16 @@ public class UserBaseDTO  implements DTO
     {
         return (other instanceof UserBaseDTO) && (new Integer(id)).equals(((UserBaseDTO) other).id);
     }
+
+    @Override public String toString()
+    {
+        return "UserBaseDTO{" +
+                "displayName='" + displayName + '\'' +
+                ", id=" + id +
+                ", picture='" + picture + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", memberSince=" + memberSince +
+                '}';
+    }
 }
