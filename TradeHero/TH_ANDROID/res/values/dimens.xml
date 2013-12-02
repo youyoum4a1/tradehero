@@ -40,6 +40,6 @@
   <dimen name="leaderboard_fof_text_size">12sp</dimen>
   <dimen name="notification_margin">10dp</dimen>
   <dimen name="notification_logo_width">24dp</dimen>
-  <dimen name="notification_padding_top">10dps</dimen>
+  <dimen name="notification_padding_top">10dp</dimen>
 
 </resources>
