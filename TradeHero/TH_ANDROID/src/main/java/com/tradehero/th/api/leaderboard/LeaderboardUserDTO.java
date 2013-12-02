@@ -27,6 +27,7 @@ public class LeaderboardUserDTO extends UserBaseDTO
 
     public int numberOfTradesInPeriod;
     public int numberOfPositionsInPeriod;
+    public int avgNumberOfTradesPerMonth;
 
     public int ordinalPosition; // OK
 
