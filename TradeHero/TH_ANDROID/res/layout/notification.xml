@@ -3,22 +3,24 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:orientation="vertical"
-    android:paddingTop="8px"
+    android:paddingTop="@dimen/notification_padding_top"
     android:layout_alignParentTop="true"
-    android:layout_height="fill_parent">
+    android:layout_height="fill_parent"
+    android:background="@color/notification_background_color">
 
-  <ImageView android:id="@+id/icon"
+  <ImageView android:id="@+id/notification_icon"
       android:src="@drawable/icon"
-      android:layout_marginRight="10px"
-      android:layout_marginLeft="10px"
-      android:layout_width="24dip"
-      android:layout_height="24dip" />
+      android:layout_marginRight="@dimen/notification_margin"
+      android:layout_marginLeft="@dimen/notification_margin"
+      android:layout_width="@dimen/notification_logo_width"
+      android:layout_height="@dimen/notification_logo_width"
+      android:contentDescription="@null"/>
 
-  <TextView android:id="@+id/subject"
-      android:text="Subject"
+  <TextView android:id="@+id/notification_subject"
       style="@style/dark_bold_header"
-      android:layout_alignTop="@+id/icon"
-      android:layout_toRightOf="@+id/icon"
+      android:text="@null"
+      android:layout_alignTop="@+id/notification_icon"
+      android:layout_toRightOf="@+id/notification_icon"
       android:layout_height="wrap_content"
       android:layout_width="wrap_content"
       android:maxLines="1" />
@@ -26,13 +28,13 @@
   <TextView android:id="@+id/message"
       android:textSize="14dip"
       android:textColor="#FF000000"
-      android:text="Message"
+      android:text="@null"
       android:maxLines="1"
       android:layout_marginTop="3dip"
-      android:layout_marginRight="10px"
-      android:layout_marginLeft="10px"
+      android:layout_marginRight="@dimen/notification_margin"
+      android:layout_marginLeft="@dimen/notification_margin"
       android:layout_height="wrap_content"
-      android:layout_below="@+id/subject"
+      android:layout_below="@+id/notification_subject"
       android:layout_width="wrap_content" />
 
 </RelativeLayout>

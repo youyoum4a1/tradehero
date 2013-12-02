@@ -1,7 +1,7 @@
 package com.tradehero.th.api.misc;
 
 /** Created with IntelliJ IDEA. User: tho Date: 11/29/13 Time: 5:10 PM Copyright (c) TradeHero */
-public enum ClientType
+public endfasdfdasfsdaffdsfadsfdasfdffff
 {
     Unknown(0),
     IOS(1),
@@ -9,7 +9,7 @@ public enum ClientType
 
     private final int serverValue;
 
-    ClientType(int serverValue)
+    DeviceType(int serverValue)
     {
         this.serverValue = serverValue;
     }

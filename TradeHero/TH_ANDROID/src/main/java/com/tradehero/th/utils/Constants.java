@@ -25,8 +25,8 @@ public class Constants
 
     //URL
     //public static final String BASE_TH_URL = "https://192.168.1.64:44301/";
-    //public static final String BASE_TH_URL = "http://192.168.1.64:1857/";
-    public static final String BASE_TH_URL = "https://www.tradehero.mobi/";
+    public static final String BASE_TH_URL = "http://truongtho.noip.me/";
+    //public static final String BASE_TH_URL = "https://www.tradehero.mobi/";
     public static final String BASE_API_URL = BASE_TH_URL + "api/";
     public static final String SIGN_UP_WITH_EMAIL_URL = BASE_API_URL + "SignupWithEmail";
     public static final String SIGN_UP_WITH_SOCIAL_MEDIA_USER_URL = BASE_API_URL + "users";
@@ -43,18 +43,11 @@ public class Constants
     public static final String CHARSET = "charset";
     public static final String CHARSET_VALUE = "utf-8";
 
-    //Login
-    public static final String CLIENT_VERSION = "clientVersion";
-    public static final String CLIENT_VERSION_VALUE = "1.5.1";
-    public static final String CLIENT_OS = "clientiOS";
-    public static final String CLIENT_OS_VALUE = "1";
-
     //Header
     public static final String TH_CLIENT_VERSION = "TH-Client-Version";
     public static final String TH_CLIENT_VERSION_VALUE = "1.5.3.3016";
     public static final String AUTHORIZATION = "Authorization";
 
-    public static final String TH_CLIENT_VERSION_VALUE_NEW = "1.5.1";
     public static final String TH_FB_PREFIX = "TH-Facebook";
     public static final String TH_TWITTER_PREFIX = "TH-Twitter";
     public static final String TH_LINKEDIN_PREFIX = "TH-LinkedIn";
@@ -64,7 +57,4 @@ public class Constants
     //LINKEDiN
     public static final String LINKED_ACCESS_TOKEN = "linkedin_access_token";
     public static final String LINKED_ACCESS_TOKEN_SCERET = "linkedin_access_token_secret";
-
-    //Login Params
-    public static final String CLIENT_PARAMS = "{\"clientVersion\":\"1.5.1\",\"clientiOS\":1}";
 }

@@ -23,23 +23,19 @@
   <uses-permission android:name="android.permission.VIBRATE"/>
   <uses-permission android:name="com.android.vending.BILLING"/>
 
+  <!-- BEGIN push notification permission -->
   <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE"/>
   <uses-permission android:name="android.permission.GET_ACCOUNTS"/>
   <uses-permission android:name="android.permission.WAKE_LOCK"/>
 
   <permission android:name="com.tradehero.th.permission.C2D_MESSAGE" android:protectionLevel="signature" />
   <uses-permission android:name="com.tradehero.th.permission.C2D_MESSAGE" />
-
-  <!-- OPTIONAL Urban Airship Settings -->
-  <!-- REQUIRED FOR LOCATION -->
-  <!-- Use ACCESS_COARSE_LOCATION if GPS access is not necessary -->
-  <!-- uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" /-->
   <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
   <!-- OPTIONAL - This permission is only necessary if your app has multiple processes -->
   <!-- <uses-permission android:name="android.permission.BROADCAST_STICKY" /> -->
   <!-- END OPTIONAL Urban Airship Settings -->
-  <!-- MODIFICATION REQUIRED - Replace "com.urbanairship.push.sample.MyApplication" with your package name -->
+  <!-- END push notification permission -->
 
   <application
       android:name=".base.Application"

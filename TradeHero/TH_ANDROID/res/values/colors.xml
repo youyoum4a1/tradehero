@@ -14,4 +14,5 @@
   <color name="timeline_action_button_text_color">#80929292</color>
   <color name="timeline_action_button_text_color_shadow">#000000</color>
   <color name="timeline_action_button_text_color_pressed">#007aff</color>
+  <color name="notification_background_color">white</color>
 </resources>

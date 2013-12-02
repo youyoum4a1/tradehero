@@ -12,7 +12,7 @@
   >
 
   <ImageView
-      android:id="@+id/icon"
+      android:id="@+id/notification_icon"
       android:layout_width="32dp"
       android:layout_height="32dp"
       android:layout_alignParentLeft="true"
