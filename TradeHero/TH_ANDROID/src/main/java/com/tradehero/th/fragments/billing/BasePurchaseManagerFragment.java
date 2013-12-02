@@ -14,7 +14,7 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
         implements THIABActorUser
 {
     public static final String TAG = BasePurchaseManagerFragment.class.getSimpleName();
-    public static final String BUNDLE_KEY_PORTFOLIO_ID_BUNDLE = BasePurchaseManagerFragment.class.getName() + ".portfolioId";
+    public static final String BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE = BasePurchaseManagerFragment.class.getName() + ".purchaseApplicablePortfolioId";
 
     protected THIABUserInteractor userInteractor;
     protected WeakReference<THIABActor> billingActor = new WeakReference<>(null);
@@ -39,7 +39,7 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
         Bundle args = getArguments();
         if (args != null)
         {
-            Bundle portfolioIdBundle = args.getBundle(BUNDLE_KEY_PORTFOLIO_ID_BUNDLE);
+            Bundle portfolioIdBundle = args.getBundle(BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE);
             if (portfolioIdBundle != null)
             {
                 applicablePortfolioId = new OwnedPortfolioId(portfolioIdBundle);

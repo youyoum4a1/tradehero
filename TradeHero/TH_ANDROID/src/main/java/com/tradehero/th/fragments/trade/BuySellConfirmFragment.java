@@ -603,7 +603,7 @@ public class BuySellConfirmFragment extends AbstractBuySellFragment
         // TODO find a better way to remove this fragment from the stack
         navigator.popFragment();
         Bundle args = new Bundle();
-        args.putBundle(PositionListFragment.BUNDLE_KEY_OWNED_PORTFOLIO_ID_BUNDLE, getApplicablePortfolioId().getArgs());
+        args.putBundle(PositionListFragment.BUNDLE_KEY_SHOW_PORTFOLIO_ID_BUNDLE, getApplicablePortfolioId().getArgs());
         navigator.pushFragment(PositionListFragment.class, args);
     }
 

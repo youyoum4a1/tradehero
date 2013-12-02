@@ -42,7 +42,7 @@ public class OtherUserPortfolioHeaderView extends RelativeLayout implements Port
     private DTOCache.Listener<UserBaseKey, UserProfileDTO> getUserCacheListener;
     private DTOCache.GetOrFetchTask<UserProfileDTO> fetchUserProfileTask;
 
-    //<editor-fold desc="Description">
+    //<editor-fold desc="Constructors">
     public OtherUserPortfolioHeaderView(Context context)
     {
         super(context);
@@ -87,6 +87,8 @@ public class OtherUserPortfolioHeaderView extends RelativeLayout implements Port
 
             @Override public void onErrorThrown(UserBaseKey key, Throwable error)
             {
+                THLog.e(TAG, "There was an error fetching the profile of " + key, error);
+                THToast.show(R.string.error_fetch_user_profile);
             }
         };
 
@@ -151,7 +153,12 @@ public class OtherUserPortfolioHeaderView extends RelativeLayout implements Port
     private void configureFollowItemsVisibility()
     {
         UserProfileDTO currentUser = this.userCache.get().get(currentUserBaseKeyHolder.getCurrentUserBaseKey());
-        if (currentUser.isFollowingUser(this.userProfileDTO.id))
+        if (this.userProfileDTO == null)
+        {
+            this.followingImageView.setVisibility(GONE);
+            this.followButton.setVisibility(GONE);
+        }
+        else if (currentUser.isFollowingUser(this.userProfileDTO.id))
         {
             this.followingImageView.setVisibility(VISIBLE);
             this.followButton.setVisibility(GONE);
@@ -163,6 +170,10 @@ public class OtherUserPortfolioHeaderView extends RelativeLayout implements Port
         }
     }
 
+    /**
+     * The listener should be strongly referenced elsewhere.
+     * @param followRequestedListener
+     */
     @Override public void setFollowRequestedListener(OnFollowRequestedListener followRequestedListener)
     {
         this.followRequestedListenerWeak = new WeakReference<>(followRequestedListener);

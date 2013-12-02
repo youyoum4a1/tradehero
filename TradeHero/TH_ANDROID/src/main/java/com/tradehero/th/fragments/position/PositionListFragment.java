@@ -1,7 +1,9 @@
 package com.tradehero.th.fragments.position;
 
-import android.app.ProgressDialog;
+import android.app.Activity;
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +13,7 @@ import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
+import com.tradehero.common.billing.googleplay.BaseIABPurchase;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
@@ -20,15 +23,15 @@ import com.tradehero.th.api.position.GetPositionsDTO;
 import com.tradehero.th.api.position.OwnedPositionId;
 import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.api.security.SecurityId;
-import com.tradehero.th.api.social.HeroDTO;
 import com.tradehero.th.api.users.UserBaseKey;
+import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.billing.googleplay.THIABActor;
 import com.tradehero.th.fragments.base.BaseFragment;
-import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.fragments.billing.THIABUserInteractor;
 import com.tradehero.th.fragments.dashboard.DashboardTabType;
-import com.tradehero.th.fragments.security.AbstractSecurityInfoFragment;
 import com.tradehero.th.fragments.security.StockInfoFragment;
+import com.tradehero.th.fragments.social.hero.HeroAlertDialogUtil;
 import com.tradehero.th.fragments.trade.BuySellFragment;
 import com.tradehero.th.fragments.trade.TradeListFragment;
 import com.tradehero.th.persistence.position.GetPositionsCache;
@@ -40,13 +43,15 @@ import com.tradehero.th.fragments.portfolio.header.PortfolioHeaderView;
 import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
+import retrofit.client.Response;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/16/13 Time: 5:56 PM To change this template use File | Settings | File Templates. */
 public class PositionListFragment extends BasePurchaseManagerFragment
-    implements BaseFragment.TabBarVisibilityInformer, PositionListener
+    implements BaseFragment.TabBarVisibilityInformer, PositionListener,
+        PortfolioHeaderView.OnFollowRequestedListener
 {
     public static final String TAG = PositionListFragment.class.getSimpleName();
-    public static final String BUNDLE_KEY_OWNED_PORTFOLIO_ID_BUNDLE = PositionListFragment.class.getName() + ".ownedPortfolioId";
+    public static final String BUNDLE_KEY_SHOW_PORTFOLIO_ID_BUNDLE = PositionListFragment.class.getName() + ".showPortfolioId";
     public static final String BUNDLE_KEY_FIRST_POSITION_VISIBLE = PositionListFragment.class.getName() + ".firstPositionVisible";
     public static final String BUNDLE_KEY_EXPANDED_LIST_FLAGS = PositionListFragment.class.getName() + ".expandedListFlags";
 
@@ -68,7 +73,6 @@ public class PositionListFragment extends BasePurchaseManagerFragment
 
     private DTOCache.GetOrFetchTask<GetPositionsDTO> fetchGetPositionsDTOTask;
     private GetPositionsCache.Listener<OwnedPortfolioId, GetPositionsDTO> getPositionsCacheListener;
-    private PortfolioHeaderView.OnFollowRequestedListener followRequestedListener;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -122,7 +126,7 @@ public class PositionListFragment extends BasePurchaseManagerFragment
             if (args != null)
             {
                 ViewStub stub = (ViewStub) view.findViewById(R.id.position_list_header_stub);
-                int headerLayoutId = headerFactory.get().layoutIdForArguments(args.getBundle(BUNDLE_KEY_OWNED_PORTFOLIO_ID_BUNDLE));
+                int headerLayoutId = headerFactory.get().layoutIdForArguments(args.getBundle(BUNDLE_KEY_SHOW_PORTFOLIO_ID_BUNDLE));
                 stub.setLayoutResource(headerLayoutId);
                 this.portfolioHeaderView = (PortfolioHeaderView) stub.inflate();
             }
@@ -139,6 +143,11 @@ public class PositionListFragment extends BasePurchaseManagerFragment
                 R.layout.position_open_no_period,
                 R.layout.position_closed_no_period,
                 R.layout.position_quick_nothing);
+    }
+
+    @Override protected void createUserInteractor()
+    {
+        userInteractor = new PositionListTHIABUserInteractor(getActivity(), getBillingActor(), getView().getHandler());
     }
 
     private void handlePositionItemClicked(AdapterView<?> parent, View view, int position, long id)
@@ -180,32 +189,21 @@ public class PositionListFragment extends BasePurchaseManagerFragment
         Bundle args = getArguments();
         if (args != null)
         {
-            Bundle ownedPortfolioIdBundle = args.getBundle(BUNDLE_KEY_OWNED_PORTFOLIO_ID_BUNDLE);
+            Bundle ownedPortfolioIdBundle = args.getBundle(BUNDLE_KEY_SHOW_PORTFOLIO_ID_BUNDLE);
             if (ownedPortfolioIdBundle != null)
             {
                 linkWith(new OwnedPortfolioId(ownedPortfolioIdBundle), true);
             }
         }
-        followRequestedListener = new PortfolioHeaderView.OnFollowRequestedListener()
-        {
-            @Override public void onFollowRequested(UserBaseKey userBaseKey)
-            {
-                THLog.d(TAG, "onFollowRequested " + userBaseKey);
-                userInteractor.followHero(userBaseKey);
-            }
-        };
         if (portfolioHeaderView != null)
         {
-            THLog.d(TAG, "Setting portfolioHeaderView listener");
-            portfolioHeaderView.setFollowRequestedListener(followRequestedListener);
+            portfolioHeaderView.setFollowRequestedListener(this);
         }
     }
 
     @Override public void onPause()
     {
-        THLog.d(TAG, "onPause");
         getPositionsCacheListener = null;
-        followRequestedListener = null;
         if (portfolioHeaderView != null)
         {
             portfolioHeaderView.setFollowRequestedListener(null);
@@ -244,7 +242,6 @@ public class PositionListFragment extends BasePurchaseManagerFragment
 
     @Override public void onSaveInstanceState(Bundle outState)
     {
-        THLog.d(TAG, "onSaveInstanceState");
         super.onSaveInstanceState(outState);
         outState.putInt(BUNDLE_KEY_FIRST_POSITION_VISIBLE, firstPositionVisible);
         outState.putBooleanArray(BUNDLE_KEY_EXPANDED_LIST_FLAGS, expandedPositions);
@@ -252,7 +249,6 @@ public class PositionListFragment extends BasePurchaseManagerFragment
 
     @Override public void onDestroyView()
     {
-        THLog.d(TAG, "onDestroyView");
         if (positionsListView != null)
         {
             positionsListView.setOnScrollListener(null);
@@ -417,6 +413,20 @@ public class PositionListFragment extends BasePurchaseManagerFragment
     }
     //</editor-fold>
 
+    //<editor-fold desc="PortfolioHeaderView.OnFollowRequestedListener">
+    @Override public void onFollowRequested(final UserBaseKey userBaseKey)
+    {
+        THLog.d(TAG, "onFollowRequested " + userBaseKey);
+        HeroAlertDialogUtil.popAlertFollowHero(getActivity(), new DialogInterface.OnClickListener()
+        {
+            @Override public void onClick(DialogInterface dialog, int which)
+            {
+                userInteractor.followHero(userBaseKey);
+            }
+        });
+    }
+    //</editor-fold>
+
     //<editor-fold desc="PositionListener">
     @Override public void onTradeHistoryClicked(OwnedPositionId clickedOwnedPositionId)
     {
@@ -465,4 +475,33 @@ public class PositionListFragment extends BasePurchaseManagerFragment
         }
     }
     //</editor-fold>
+
+    public class PositionListTHIABUserInteractor extends THIABUserInteractor
+    {
+        public final String TAG = PositionListTHIABUserInteractor.class.getName();
+
+        public PositionListTHIABUserInteractor(Activity activity, THIABActor billingActor, Handler handler)
+        {
+            super(activity, billingActor, handler);
+        }
+
+        @Override protected void handlePurchaseReportSuccess(BaseIABPurchase reportedPurchase, UserProfileDTO updatedUserProfile)
+        {
+            super.handlePurchaseReportSuccess(reportedPurchase, updatedUserProfile);
+            displayHeaderView();
+
+        }
+
+        @Override protected void createFollowCallback()
+        {
+            this.followCallback = new UserInteractorFollowHeroCallback(heroListCache.get(), userProfileCache.get())
+            {
+                @Override public void success(UserProfileDTO userProfileDTO, Response response)
+                {
+                    super.success(userProfileDTO, response);
+                    displayHeaderView();
+                }
+            };
+        }
+    }
 }

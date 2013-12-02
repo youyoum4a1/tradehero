@@ -285,7 +285,7 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
 
         // leaderboard mark user id, to get marking user information
         Bundle bundle = new Bundle();
-        bundle.putBundle(LeaderboardPositionListFragment.BUNDLE_KEY_OWNED_PORTFOLIO_ID_BUNDLE, ownedPortfolioId.getArgs());
+        bundle.putBundle(LeaderboardPositionListFragment.BUNDLE_KEY_SHOW_PORTFOLIO_ID_BUNDLE, ownedPortfolioId.getArgs());
         bundle.putLong(LeaderboardMarkUserId.BUNDLE_KEY, model.lbmuId);
 
         // to display time of value on start investment

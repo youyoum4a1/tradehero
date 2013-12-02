@@ -105,6 +105,7 @@ public class HeroListItemAdapter extends DTOAdapter<HeroDTO, HeroListItemView>
         int inactiveCount = getInactiveCount();
         if (activeCount == 0 && inactiveCount > 0)
         {
+            // Only inactive heroes are visible
             // At this stage position > 0
             if (position == 1)
             {
@@ -114,7 +115,7 @@ public class HeroListItemAdapter extends DTOAdapter<HeroDTO, HeroListItemView>
             return VIEW_TYPE_ITEM_INACTIVE;
         }
         // By now, (activeCount > 0 && inactiveCount > 0) is true
-        if (position == activeCount + 2)
+        if (position == activeCount + 1)
         {
             // When there are active, inactive come after
             return VIEW_TYPE_HEADER_INACTIVE;

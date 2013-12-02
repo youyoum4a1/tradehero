@@ -50,6 +50,7 @@
         android:layout_height="match_parent"
         android:src="@drawable/follow_user"
         android:scaleType="fitCenter"
+        android:visibility="gone"
         android:background="@null"/>
   </RelativeLayout>
 </com.tradehero.th.fragments.portfolio.header.OtherUserPortfolioHeaderView>

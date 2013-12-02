@@ -46,7 +46,7 @@ public class UserProfileDTO extends UserProfileCompactDTO
 
     public boolean isFollowingUser(int userId)
     {
-        return this.heroIds.contains(userId);
+        return this.heroIds != null && this.heroIds.contains(userId);
     }
 
     public List<UserBaseKey> getHeroBaseKeys()

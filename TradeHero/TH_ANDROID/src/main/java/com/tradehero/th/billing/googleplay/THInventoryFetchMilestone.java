@@ -49,13 +49,11 @@ public class THInventoryFetchMilestone extends BaseMilestone implements Dependen
         {
             @Override public void onInventoryFetchSuccess(int requestCode, List<IABSKU> productIdentifiers, Map<IABSKU, THIABProductDetail> inventory)
             {
-                running = false;
                 notifyCompleteListener();
             }
 
             @Override public void onInventoryFetchFail(int requestCode, List<IABSKU> productIdentifiers, IABException exception)
             {
-                running = false;
                 notifyFailedListener(exception);
             }
         };
@@ -154,12 +152,16 @@ public class THInventoryFetchMilestone extends BaseMilestone implements Dependen
     @Override protected void notifyCompleteListener()
     {
         complete = true;
+        failed = false;
+        running = false;
         super.notifyCompleteListener();
     }
 
     @Override protected void notifyFailedListener(Throwable throwable)
     {
+        complete = false;
         failed = true;
+        running = false;
         super.notifyFailedListener(throwable);
     }
 

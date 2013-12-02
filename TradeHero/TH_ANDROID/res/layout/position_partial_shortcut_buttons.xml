@@ -16,7 +16,7 @@
         android:layout_alignParentLeft="true"
         android:src="@drawable/buy_stock"
         android:contentDescription="@null"
-        android:scaleType="centerInside"
+        android:scaleType="fitXY"
         android:background="@android:color/transparent"
       />
 
@@ -28,7 +28,7 @@
         android:layout_toRightOf="@id/btn_buy_now"
         android:src="@drawable/sell_stock"
         android:contentDescription="@null"
-        android:scaleType="centerInside"
+        android:scaleType="fitXY"
         android:background="@android:color/transparent"
       />
 

@@ -122,14 +122,7 @@ public class THIABUserInteractor
         {
             @Override public void onComplete(Milestone milestone)
             {
-                if (!(milestone instanceof ShowSkuDetailsMilestone))
-                {
-                    THLog.e(TAG, "We did not receive the proper milestone type: " + milestone.getClass().getName(), new Exception());
-                }
-                else
-                {
-                    handleShowSkuDetailsMilestoneComplete();
-                }
+                handleShowSkuDetailsMilestoneComplete();
             }
 
             @Override public void onFailed(Milestone milestone, Throwable throwable)
@@ -655,6 +648,7 @@ public class THIABUserInteractor
 
     protected void handlePurchaseReportSuccess(BaseIABPurchase reportedPurchase, UserProfileDTO updatedUserProfile)
     {
+        userProfileDTO = updatedUserProfile;
         userProfileCache.get().put(updatedUserProfile.getBaseKey(), updatedUserProfile);
         launchConsumeSequence(reportedPurchase);
     }
@@ -704,6 +698,10 @@ public class THIABUserInteractor
                     }
                 }
             }, 1500);
+        }
+        else
+        {
+            THLog.w(TAG, "Handler is null");
         }
     }
 

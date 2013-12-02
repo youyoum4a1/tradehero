@@ -173,6 +173,7 @@ import org.ocpsoft.prettytime.PrettyTime;
                 PortfolioListItemView.class,
 
                 PositionListFragment.class,
+                PositionListFragment.PositionListTHIABUserInteractor.class,
                 LeaderboardPositionListFragment.class,
                 CurrentUserPortfolioHeaderView.class,
                 OtherUserPortfolioHeaderView.class,
