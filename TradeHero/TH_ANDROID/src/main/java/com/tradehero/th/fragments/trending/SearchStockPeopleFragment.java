@@ -665,7 +665,7 @@ public class SearchStockPeopleFragment extends DashboardFragment
         // TODO put back in
 
         Bundle args = new Bundle();
-        args.putInt(UserBaseKey.BUNDLE_KEY_KEY, userSearchResultDTO.userId);
+        args.putInt(PushableTimelineFragment.BUNDLE_KEY_SHOW_USER_ID, userSearchResultDTO.userId);
 
         navigator.pushFragment(PushableTimelineFragment.class, args);
     }

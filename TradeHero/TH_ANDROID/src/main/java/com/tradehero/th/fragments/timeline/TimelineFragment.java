@@ -41,6 +41,7 @@ public class TimelineFragment extends BaseFragment
         implements StepView.StepProvider, PortfolioRequestListener
 {
     public static final String TAG = TimelineFragment.class.getSimpleName();
+    public static final String BUNDLE_KEY_SHOW_USER_ID = TimelineFragment.class.getName() + ".showUserId";
 
     @Inject protected Lazy<PortfolioCache> portfolioCache;
     @Inject protected Lazy<UserProfileCache> userProfileCache;
@@ -115,7 +116,7 @@ public class TimelineFragment extends BaseFragment
     {
         super.onResume();
 
-        UserBaseKey newUserBaseKey = new UserBaseKey(getArguments().getInt(UserBaseKey.BUNDLE_KEY_KEY));
+        UserBaseKey newUserBaseKey = new UserBaseKey(getArguments().getInt(BUNDLE_KEY_SHOW_USER_ID));
         linkWith(newUserBaseKey, true);
 
         Bundle loaderBundle = new Bundle(newUserBaseKey.getArgs());

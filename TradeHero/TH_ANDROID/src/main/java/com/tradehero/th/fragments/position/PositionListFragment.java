@@ -436,7 +436,7 @@ public class PositionListFragment extends BasePurchaseManagerFragment
     @Override public void onTimelineRequested(UserBaseKey userBaseKey)
     {
         Bundle args = new Bundle();
-        args.putInt(UserBaseKey.BUNDLE_KEY_KEY, userBaseKey.key);
+        args.putInt(PushableTimelineFragment.BUNDLE_KEY_SHOW_USER_ID, userBaseKey.key);
         ((DashboardActivity) getActivity()).getNavigator().pushFragment(PushableTimelineFragment.class, args);
     }
     //</editor-fold>

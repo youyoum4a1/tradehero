@@ -17,7 +17,7 @@ public class MeTimelineFragment extends TimelineFragment
     {
         if (currentUserBaseKeyHolder != null)
         {
-            getArguments().putInt(UserBaseKey.BUNDLE_KEY_KEY, currentUserBaseKeyHolder.getCurrentUserBaseKey().key);
+            getArguments().putInt(BUNDLE_KEY_SHOW_USER_ID, currentUserBaseKeyHolder.getCurrentUserBaseKey().key);
         }
         return super.onCreateView(inflater, container, savedInstanceState);
     }

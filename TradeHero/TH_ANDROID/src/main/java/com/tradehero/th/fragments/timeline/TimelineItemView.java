@@ -374,7 +374,7 @@ public class TimelineItemView extends LinearLayout implements
     private void openUserProfile(int userId)
     {
         Bundle b = new Bundle();
-        b.putInt(UserBaseKey.BUNDLE_KEY_KEY, userId);
+        b.putInt(TimelineFragment.BUNDLE_KEY_SHOW_USER_ID, userId);
         b.putBoolean(Navigator.NAVIGATE_FRAGMENT_NO_CACHE, true);
 
         if (currentUserBaseKeyHolder.getCurrentUserBaseKey().key != userId)

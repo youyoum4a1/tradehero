@@ -311,7 +311,7 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         int userId = leaderboardItem.getModel().getId();
 
         Bundle b = new Bundle();
-        b.putInt(UserBaseKey.BUNDLE_KEY_KEY, userId);
+        b.putInt(TimelineFragment.BUNDLE_KEY_SHOW_USER_ID, userId);
 
         if (currentUserBaseKeyHolder != null && currentUserBaseKeyHolder.getCurrentUserBaseKey().key != userId)
         {
