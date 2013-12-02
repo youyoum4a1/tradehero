@@ -187,7 +187,6 @@ public class PortfolioListItemView extends RelativeLayout implements DTOView<Dis
         {
             if (isThisUserFollowed())
             {
-                THLog.d(TAG, "Visible " + displayablePortfolioDTO.userBaseDTO);
                 followingStamp.setVisibility(VISIBLE);
             }
             else
@@ -195,19 +194,13 @@ public class PortfolioListItemView extends RelativeLayout implements DTOView<Dis
                 followingStamp.setVisibility(GONE);
             }
         }
-        else
-        {
-            THLog.d(TAG, "Following stamp is null");
-        }
     }
 
     public boolean isThisUserFollowed()
     {
         UserProfileDTO currentUserProfile = userProfileCache.get().get(currentUserBaseKeyHolder.get().getCurrentUserBaseKey());
-        return currentUserProfile != null && displayablePortfolioDTO != null && displayablePortfolioDTO.userBaseDTO != null &&
-                !displayablePortfolioDTO.userBaseDTO.getBaseKey().equals(currentUserBaseKeyHolder.get().getCurrentUserBaseKey()) &&
-                currentUserProfile.heroIds != null &&
-                currentUserProfile.heroIds.contains(displayablePortfolioDTO.userBaseDTO.id);
+        return currentUserProfile != null && displayablePortfolioDTO != null &&
+                currentUserProfile.isFollowingUser(displayablePortfolioDTO.userBaseDTO);
     }
     //</editor-fold>
 }

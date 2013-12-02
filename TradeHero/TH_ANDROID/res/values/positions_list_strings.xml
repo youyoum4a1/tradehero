@@ -5,7 +5,8 @@
     <string name="topbar_portfolios_title">Portfolios</string>
     <string name="webview_back">Back</string>
     <string name="webview_forward">Forward</string>
-    <string name="portfolio_recently_viewed">Recently Viewed Users</string>
+    <string name="portfolio_recently_viewed_heroes">Recently Viewed Heroes</string>
+    <string name="portfolio_recently_viewed_others">Recently Viewed Users</string>
     <string name="portfolio_loading_count">Loading %1$,d/%2$,d Portfolios...</string>
     <string name="error_fetch_portfolio_list_info">There was an error when fetching the list of portfolios</string>
     <string name="error_fetch_portfolio_info">There was an error when fetching the portfolio information</string>

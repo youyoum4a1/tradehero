@@ -28,6 +28,7 @@ import com.tradehero.th.fragments.WebViewFragment;
 import com.tradehero.th.fragments.authentication.EmailSignInFragment;
 import com.tradehero.th.fragments.billing.StoreScreenFragment;
 import com.tradehero.th.fragments.billing.THIABUserInteractor;
+import com.tradehero.th.fragments.portfolio.PortfolioListItemAdapter;
 import com.tradehero.th.fragments.social.follower.FollowerListItemView;
 import com.tradehero.th.fragments.social.follower.FollowerManagerFragment;
 import com.tradehero.th.fragments.social.follower.FollowerPayoutManagerFragment;
@@ -172,6 +173,7 @@ import org.ocpsoft.prettytime.PrettyTime;
                 PortfolioListFragment.class,
                 PushablePortfolioListFragment.class,
                 PortfolioListItemView.class,
+                PortfolioListItemAdapter.class,
 
                 PositionListFragment.class,
                 PositionListFragment.PositionListTHIABUserInteractor.class,
