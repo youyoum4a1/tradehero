@@ -8,6 +8,7 @@ import android.util.AttributeSet;
  */
 public class PositionPartialBottomInPeriodOpenView extends PositionPartialBottomOpenView
 {
+    //<editor-fold desc="Constructors">
     public PositionPartialBottomInPeriodOpenView(Context context)
     {
         super(context);
@@ -22,4 +23,5 @@ public class PositionPartialBottomInPeriodOpenView extends PositionPartialBottom
     {
         super(context, attrs, defStyle);
     }
+    //</editor-fold>
 }

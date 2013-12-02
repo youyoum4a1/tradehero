@@ -47,7 +47,7 @@ public class LeaderboardPositionItemAdapter extends AbstractPositionItemAdapter<
 
             if (expandableWrapper.getModel().isLocked())
             {
-                LockedPositionItem cell = (LockedPositionItem)convertView;
+                LockedPositionItem cell = (LockedPositionItem) convertView;
                 cell.linkWith(expandableWrapper.getModel(), true);
             }
             else
@@ -74,10 +74,10 @@ public class LeaderboardPositionItemAdapter extends AbstractPositionItemAdapter<
 
     private void bindCell(View convertView, ExpandableLeaderboardPositionItem item)
     {
-        AbstractPositionView cell = (AbstractPositionView)convertView;
+        AbstractPositionView cell = (AbstractPositionView) convertView;
         if (cell instanceof PositionInPeriodClosedView)
         {
-            ((PositionInPeriodClosedView)cell).linkWith(item, true);
+            ((PositionInPeriodClosedView) cell).linkWith(item, true);
         }
         else
         {

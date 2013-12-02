@@ -36,15 +36,6 @@ public class PositionInPeriodClosedView extends PositionClosedView
         bottomView = (PositionPartialBottomInPeriodClosedView) findViewById(R.id.expanding_layout);
     }
 
-    @Override public void onDestroyView()
-    {
-        if (bottomView != null)
-        {
-            bottomView.onDestroyView();
-        }
-        super.onDestroyView();
-    }
-
     @Override public void linkWith(OwnedLeaderboardPositionId ownedPositionId, boolean andDisplay)
     {
         super.linkWith(ownedPositionId, andDisplay);

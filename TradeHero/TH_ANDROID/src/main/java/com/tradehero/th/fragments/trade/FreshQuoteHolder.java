@@ -76,9 +76,28 @@ public class FreshQuoteHolder
     //</editor-fold>
 
     //<editor-fold desc="Listener Handling">
+    public boolean hasListener(FreshQuoteListener listener)
+    {
+        if (listener != null)
+        {
+            for (WeakReference<FreshQuoteListener> weakListener : listeners)
+            {
+                if (weakListener != null && weakListener.get() == listener)
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * The listener should be strongly referenced elsewhere
+     * @param listener
+     */
     public void registerListener(FreshQuoteListener listener)
     {
-        if (listener != null && !listeners.contains(listener))
+        if (listener != null && !hasListener(listener))
         {
             listeners.add(new WeakReference<>(listener));
         }
@@ -99,7 +118,7 @@ public class FreshQuoteHolder
     private void notifyListenersCountDown(long milliSecToRefresh)
     {
         FreshQuoteListener listener;
-        for(WeakReference<FreshQuoteListener> weakListener: listeners)
+        for (WeakReference<FreshQuoteListener> weakListener: listeners)
         {
             listener = weakListener.get();
             if (listener != null)
@@ -112,7 +131,7 @@ public class FreshQuoteHolder
     private void notifyListenersRefreshing()
     {
         FreshQuoteListener listener;
-        for(WeakReference<FreshQuoteListener> weakListener: listeners)
+        for (WeakReference<FreshQuoteListener> weakListener: listeners)
         {
             listener = weakListener.get();
             if (listener != null)
@@ -125,7 +144,7 @@ public class FreshQuoteHolder
     private void notifyListenersOnFreshQuote(QuoteDTO quoteDTO)
     {
         FreshQuoteListener listener;
-        for(WeakReference<FreshQuoteListener> weakListener: listeners)
+        for (WeakReference<FreshQuoteListener> weakListener: listeners)
         {
             listener = weakListener.get();
             if (listener != null)

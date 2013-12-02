@@ -8,6 +8,7 @@ import android.util.AttributeSet;
  */
 public class PositionInPeriodOpenView extends AbstractPositionView
 {
+    //<editor-fold desc="Constructors">
     public PositionInPeriodOpenView(Context context)
     {
         super(context);
@@ -22,4 +23,5 @@ public class PositionInPeriodOpenView extends AbstractPositionView
     {
         super(context, attrs, defStyle);
     }
+    //</editor-fold>
 }

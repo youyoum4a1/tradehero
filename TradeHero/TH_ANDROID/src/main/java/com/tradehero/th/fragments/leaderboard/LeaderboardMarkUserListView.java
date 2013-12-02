@@ -18,25 +18,21 @@ public class LeaderboardMarkUserListView extends PullToRefreshListView
     public LeaderboardMarkUserListView(Context context)
     {
         super(context);
-        init();
     }
 
     public LeaderboardMarkUserListView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
-        init();
     }
 
     public LeaderboardMarkUserListView(Context context, Mode mode)
     {
         super(context, mode);
-        init();
     }
 
     public LeaderboardMarkUserListView(Context context, Mode mode, AnimationStyle style)
     {
         super(context, mode, style);
-        init();
     }
     //</editor-fold>
 
@@ -50,6 +46,12 @@ public class LeaderboardMarkUserListView extends PullToRefreshListView
     {
         DaggerUtils.inject(this);
         super.setOnItemClickListener(defaultExpandingListViewListener);
+    }
+
+    @Override protected void onDetachedFromWindow()
+    {
+        super.setOnItemClickListener(null);
+        super.onDetachedFromWindow();
     }
 
     @Override public void setOnItemClickListener(AdapterView.OnItemClickListener listener)

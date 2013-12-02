@@ -13,7 +13,8 @@ public enum PositionItemType
 
     public final int value;
 
-    private PositionItemType(int value) {
+    private PositionItemType(int value)
+    {
         this.value = value;
     }
 }

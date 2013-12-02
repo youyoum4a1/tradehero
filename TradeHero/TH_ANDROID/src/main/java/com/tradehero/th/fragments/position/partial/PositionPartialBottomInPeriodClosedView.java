@@ -25,9 +25,6 @@ public class PositionPartialBottomInPeriodClosedView extends PositionPartialBott
 
     @Inject protected Lazy<LeaderboardPositionCache> inPeriodPositionCache;
 
-    private DTOCache.Listener<OwnedLeaderboardPositionId, PositionInPeriodDTO> positionCacheListener;
-    private DTOCache.GetOrFetchTask<PositionInPeriodDTO> fetchPositionTask;
-
     private TextView inPeriodPL;
     private TextView inPeriodAdditionalInvested;
     private TextView inPeriodValueAtStart;
@@ -54,53 +51,24 @@ public class PositionPartialBottomInPeriodClosedView extends PositionPartialBott
     }
     //</editor-fold>
 
-    public void onDestroyView()
-    {
-        // Nothing to do
-    }
-
     @Override protected void initViews()
     {
+        super.initViews();
         // in period
         inPeriodPL = (TextView) findViewById(R.id.in_period_pl_value);
         inPeriodAdditionalInvested = (TextView) findViewById(R.id.in_period_additional_invested);
         inPeriodValueAtStart = (TextView) findViewById(R.id.in_period_start_value);
         inPeriodStartValueDate = (TextView) findViewById(R.id.in_period_start_value_date);
         inPeriodRoiValue = (TextView) findViewById(R.id.in_period_roi_value);
-
         inPeriodTitle = findViewById(R.id.position_list_in_period_title);
         inPeriodPositionList = findViewById(R.id.position_list_bottom_in_period);
-
-        super.initViews();
     }
 
     public void linkWith(OwnedLeaderboardPositionId ownedPositionId, boolean andDisplay)
     {
         this.ownedPositionId = ownedPositionId;
 
-        if (positionCacheListener == null)
-        {
-            positionCacheListener = createPositionCacheListener();
-        }
-
-        fetchPositionTask = inPeriodPositionCache.get().getOrFetch(this.ownedPositionId, false, positionCacheListener);
-        fetchPositionTask.execute();
-    }
-
-    private DTOCache.Listener<OwnedLeaderboardPositionId, PositionInPeriodDTO> createPositionCacheListener()
-    {
-        return new DTOCache.Listener<OwnedLeaderboardPositionId, PositionInPeriodDTO>()
-        {
-            @Override public void onDTOReceived(OwnedLeaderboardPositionId key, PositionInPeriodDTO value)
-            {
-                linkWith(value, true);
-            }
-
-            @Override public void onErrorThrown(OwnedLeaderboardPositionId key, Throwable error)
-            {
-                //To change body of implemented methods use File | Settings | File Templates.
-            }
-        };
+        linkWith(inPeriodPositionCache.get().get(ownedPositionId), andDisplay);
     }
 
     public void linkWith(PositionInPeriodDTO positionDTO, boolean andDisplay)

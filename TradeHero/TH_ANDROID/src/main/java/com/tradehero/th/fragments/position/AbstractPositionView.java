@@ -15,7 +15,6 @@ import com.tradehero.th.persistence.position.PositionCache;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.fragments.position.partial.PositionPartialTopView;
 import dagger.Lazy;
-
 import javax.inject.Inject;
 import java.lang.ref.WeakReference;
 
@@ -32,6 +31,7 @@ public abstract class AbstractPositionView extends LinearLayout
     protected ImageButton btnSell;
     protected ImageButton btnAddAlert;
     protected ImageButton btnStockInfo;
+    protected ImageButton historyButton;
 
     @Inject Lazy<PositionCache> positionCache;
     @Inject Lazy<LeaderboardPositionCache> leaderboardPositionCache;
@@ -68,10 +68,96 @@ public abstract class AbstractPositionView extends LinearLayout
     {
         topView = (PositionPartialTopView) findViewById(R.id.position_partial_top);
         colorIndicator = (ColorIndicator) findViewById(R.id.color_indicator);
-        initShortcutButtons();
+        btnBuy = (ImageButton) findViewById(R.id.btn_buy_now);
+        btnSell = (ImageButton) findViewById(R.id.btn_sell_now);
+        btnAddAlert = (ImageButton) findViewById(R.id.btn_add_alert);
+        btnStockInfo = (ImageButton) findViewById(R.id.btn_stock_info);
+        if (topView != null)
+        {
+            historyButton = topView.getTradeHistoryButton();
+        }
     }
 
-    public void onDestroyView()
+    @Override protected void onAttachedToWindow()
+    {
+        if (btnBuy != null)
+        {
+            btnBuy.setOnClickListener(new OnClickListener()
+            {
+                @Override public void onClick(View v)
+                {
+                    PositionListener listenerCopy = listener.get();
+                    if (listenerCopy != null)
+                    {
+                        listenerCopy.onBuyClicked(ownedPositionId);
+                    }
+                }
+            });
+        }
+
+        if (btnSell != null)
+        {
+            btnSell.setOnClickListener(new OnClickListener()
+            {
+                @Override public void onClick(View v)
+                {
+                    PositionListener listenerCopy = listener.get();
+                    if (listenerCopy != null)
+                    {
+                        listenerCopy.onSellClicked(ownedPositionId);
+                    }
+                }
+            });
+        }
+
+        if (btnAddAlert != null)
+        {
+            btnAddAlert.setOnClickListener(new OnClickListener()
+            {
+                @Override public void onClick(View v)
+                {
+                    PositionListener listenerCopy = listener.get();
+                    if (listenerCopy != null)
+                    {
+                        listenerCopy.onAddAlertClicked(ownedPositionId);
+                    }
+                }
+            });
+        }
+
+        if (btnStockInfo != null)
+        {
+            btnStockInfo.setOnClickListener(new OnClickListener()
+            {
+                @Override public void onClick(View v)
+                {
+                    PositionListener listenerCopy = listener.get();
+                    if (listenerCopy != null)
+                    {
+                        listenerCopy.onStockInfoClicked(ownedPositionId);
+                    }
+                }
+            });
+        }
+
+        if (historyButton != null)
+        {
+            historyButton.setOnClickListener(new OnClickListener()
+            {
+                @Override public void onClick(View v)
+                {
+                    PositionListener listenerCopy = listener.get();
+                    if (listenerCopy != null)
+                    {
+                        listenerCopy.onTradeHistoryClicked(ownedPositionId);
+                    }
+                }
+            });
+        }
+        super.onAttachedToWindow();
+    }
+
+    @Override protected void onDetachedFromWindow()
     {
         if (btnBuy != null)
         {
@@ -93,6 +179,12 @@ public abstract class AbstractPositionView extends LinearLayout
             btnStockInfo.setOnClickListener(null);
         }
         btnStockInfo = null;
+        if (historyButton != null)
+        {
+            historyButton.setOnClickListener(null);
+        }
+        historyButton = null;
+        super.onDetachedFromWindow();
     }
 
     public void linkWith(OwnedPositionId ownedPositionId, boolean andDisplay)
@@ -131,95 +223,15 @@ public abstract class AbstractPositionView extends LinearLayout
         }
     }
 
-    public void initShortcutButtons()
-    {
-        btnBuy = (ImageButton) findViewById(R.id.btn_buy_now);
-        if (btnBuy != null)
-        {
-            btnBuy.setOnClickListener(new OnClickListener()
-            {
-                @Override public void onClick(View v)
-                {
-                    PositionListener l = listener.get();
-                    if (l != null)
-                    {
-                        l.onBuyClicked(ownedPositionId);
-                    }
-                }
-            });
-        }
-
-        btnSell = (ImageButton) findViewById(R.id.btn_sell_now);
-        if (btnSell != null)
-        {
-            btnSell.setOnClickListener(new OnClickListener()
-            {
-                @Override public void onClick(View v)
-                {
-                    PositionListener l = listener.get();
-                    if (l != null)
-                    {
-                        l.onSellClicked(ownedPositionId);
-                    }
-                }
-            });
-        }
-
-        btnAddAlert = (ImageButton) findViewById(R.id.btn_add_alert);
-        if (btnAddAlert != null)
-        {
-            btnAddAlert.setOnClickListener(new OnClickListener()
-            {
-                @Override public void onClick(View v)
-                {
-                    PositionListener l = listener.get();
-                    if (l != null)
-                    {
-                        l.onAddAlertClicked(ownedPositionId);
-                    }
-                }
-            });
-        }
-
-        btnStockInfo = (ImageButton) findViewById(R.id.btn_stock_info);
-        if (btnStockInfo != null)
-        {
-            btnStockInfo.setOnClickListener(new OnClickListener()
-            {
-                @Override public void onClick(View v)
-                {
-                    PositionListener l = listener.get();
-                    if (l != null)
-                    {
-                        l.onStockInfoClicked(ownedPositionId);
-                    }
-                }
-            });
-        }
-
-        ImageButton historyButton = topView.getTradeHistoryButton();
-        if (historyButton != null)
-        {
-            historyButton.setOnClickListener(new OnClickListener()
-            {
-                @Override
-                public void onClick(View v)
-                {
-                    PositionListener l = listener.get();
-                    if (l != null)
-                    {
-                        l.onTradeHistoryClicked(ownedPositionId);
-                    }
-                }
-            });
-        }
-    }
-
     public PositionListener getListener()
     {
         return listener.get();
     }
 
+    /**
+     * The listener should be strongly referenced elsewhere
+     * @param listener
+     */
     public void setListener(PositionListener listener)
     {
         this.listener = new WeakReference<>(listener);

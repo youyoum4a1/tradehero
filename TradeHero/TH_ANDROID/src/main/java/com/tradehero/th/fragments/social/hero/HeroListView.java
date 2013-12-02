@@ -26,7 +26,6 @@ public class HeroListView extends ListView
     }
     //</editor-fold>
 
-
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
@@ -36,7 +35,6 @@ public class HeroListView extends ListView
     protected void init ()
     {
     }
-
 
     public static interface HeroListItemListener extends OnItemClickListener
     {

@@ -24,7 +24,6 @@ public class AlertListView extends ListView
     }
     //</editor-fold>
 
-
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();

@@ -24,11 +24,9 @@ import com.tradehero.th.api.security.SecurityMediaDTO;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.timeline.TimelineItemShareRequestDTO;
 import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
-import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileCompactDTO;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.base.NavigatorActivity;
-import com.tradehero.th.fragments.security.AbstractSecurityInfoFragment;
 import com.tradehero.th.fragments.security.StockInfoFragment;
 import com.tradehero.th.fragments.trade.BuySellFragment;
 import com.tradehero.th.misc.callback.THCallback;
@@ -95,52 +93,52 @@ public class TimelineItemView extends LinearLayout implements
     private void init()
     {
         username = (TextView) findViewById(R.id.timeline_user_profile_name);
-        if (username != null)
-        {
-            username.setOnClickListener(this);
-        }
-
         avatar = (ImageView) findViewById(R.id.timeline_user_profile_picture);
-        if (avatar != null)
-        {
-            avatar.setOnClickListener(this);
-        }
-
         content = (MarkdownTextView) findViewById(R.id.timeline_item_content);
-        content.setMovementMethod(LinkMovementMethod.getInstance());
-
         time = (TextView) findViewById(R.id.timeline_time);
-
         vendorImage = (ImageView) findViewById(R.id.timeline_vendor_picture);
-        if (vendorImage != null)
-        {
-            vendorImage.setOnClickListener(this);
-        }
 
-        initActionButtons();
+        tradeActionButton = findViewById(R.id.timeline_action_button_trade_wrapper);
+        shareActionButton = findViewById(R.id.timeline_action_button_share_wrapper);
+        monitorActionButton = findViewById(R.id.timeline_action_button_monitor_wrapper);
 
         DaggerUtils.inject(content);
         DaggerUtils.inject(this);
     }
 
-    //<editor-fold desc="Action Buttons">
-    private void initActionButtons()
+    @Override protected void onAttachedToWindow()
     {
-        tradeActionButton = findViewById(R.id.timeline_action_button_trade_wrapper);
-        shareActionButton = findViewById(R.id.timeline_action_button_share_wrapper);
-        monitorActionButton = findViewById(R.id.timeline_action_button_monitor_wrapper);
-
+        super.onAttachedToWindow();
+        if (content != null)
+        {
+            content.setMovementMethod(LinkMovementMethod.getInstance());
+        }
         View[] actionButtons = new View[]
-                { tradeActionButton, shareActionButton, monitorActionButton };
+                { username, avatar, vendorImage, tradeActionButton, shareActionButton, monitorActionButton };
         for (View actionButton: actionButtons)
         {
-            if (actionButton!=null)
+            if (actionButton != null)
             {
                 actionButton.setOnClickListener(this);
             }
         }
     }
 
+    @Override protected void onDetachedFromWindow()
+    {
+        View[] actionButtons = new View[]
+                { username, avatar, vendorImage, tradeActionButton, shareActionButton, monitorActionButton };
+        for (View actionButton: actionButtons)
+        {
+            if (actionButton != null)
+            {
+                actionButton.setOnClickListener(null);
+            }
+        }
+        super.onDetachedFromWindow();
+    }
+
+    //<editor-fold desc="Action Buttons">
     private void updateActionButtonsVisibility()
     {
         // hide/show optional action buttons

@@ -69,11 +69,6 @@ public class PositionPartialBottomOpenView extends RelativeLayout
         averagePriceValue = (TextView) findViewById(R.id.average_price_value);
     }
 
-    public void onDestroyView()
-    {
-        // Nothing to do
-    }
-
     public void linkWith(OwnedPositionId ownedPositionId, boolean andDisplay)
     {
         this.ownedPositionId = ownedPositionId;

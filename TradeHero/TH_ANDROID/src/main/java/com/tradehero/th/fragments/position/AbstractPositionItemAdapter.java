@@ -243,7 +243,7 @@ public abstract class AbstractPositionItemAdapter<T extends PositionDTO> extends
             ExpandableListItem<OwnedPositionId> expandableWrapper = (ExpandableListItem<OwnedPositionId>) getItem(position);
             if (expandableWrapper.getModel().isLocked())
             {
-                LockedPositionItem cell = (LockedPositionItem)convertView;
+                LockedPositionItem cell = (LockedPositionItem) convertView;
                 cell.linkWith(expandableWrapper.getModel(), true);
             }
             else
@@ -313,7 +313,7 @@ public abstract class AbstractPositionItemAdapter<T extends PositionDTO> extends
 
     private void bindCell(View convertView, OwnedPositionId model)
     {
-        AbstractPositionView cell = (AbstractPositionView)convertView;
+        AbstractPositionView cell = (AbstractPositionView) convertView;
         cell.linkWith(model, true);
         cell.setListener(getInternalListener());
     }

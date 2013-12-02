@@ -19,16 +19,15 @@ import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import com.tradehero.th.api.leaderboard.position.LeaderboardMarkUserId;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
-import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.base.NavigatorActivity;
 import com.tradehero.th.fragments.position.LeaderboardPositionListFragment;
 import com.tradehero.th.fragments.timeline.TimelineFragment;
-import com.tradehero.th.utils.StringUtils;
-import com.tradehero.th.utils.THSignedNumber;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefCache;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.NumberDisplayUtils;
+import com.tradehero.th.utils.StringUtils;
+import com.tradehero.th.utils.THSignedNumber;
 import com.tradehero.th.widget.MarkdownTextView;
 import dagger.Lazy;
 import java.text.SimpleDateFormat;
@@ -101,17 +100,7 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         lbmuProfilePicture = (ImageView) findViewById(R.id.leaderboard_user_item_profile_picture);
         lbmuHeroQuotient = (TextView) findViewById(R.id.leaderboard_user_item_hq);
         lbmuFoF = (MarkdownTextView) findViewById(R.id.leaderboard_user_item_fof);
-        if (lbmuFoF != null)
-        {
-            DaggerUtils.inject(lbmuFoF);
-            lbmuFoF.setMovementMethod(LinkMovementMethod.getInstance());
-        }
-
         lbmuPositionInfo = (ImageView) findViewById(R.id.leaderboard_user_item_info);
-        if (lbmuPositionInfo != null)
-        {
-            lbmuPositionInfo.setOnClickListener(this);
-        }
 
         // expanding part
         lbmuPl = (TextView) findViewById(R.id.lbmu_pl);
@@ -139,6 +128,33 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         {
             lbmuOpenPositionsList.setOnClickListener(this);
         }
+    }
+
+    @Override protected void onAttachedToWindow()
+    {
+        super.onAttachedToWindow();
+        if (lbmuFoF != null)
+        {
+            DaggerUtils.inject(lbmuFoF);
+            lbmuFoF.setMovementMethod(LinkMovementMethod.getInstance());
+        }
+        if (lbmuPositionInfo != null)
+        {
+            lbmuPositionInfo.setOnClickListener(this);
+        }
+    }
+
+    @Override protected void onDetachedFromWindow()
+    {
+        if (lbmuFoF != null)
+        {
+            lbmuFoF.setMovementMethod(null);
+        }
+        if (lbmuPositionInfo != null)
+        {
+            lbmuPositionInfo.setOnClickListener(null);
+        }
+        super.onDetachedFromWindow();
     }
 
     @Override public void display(LeaderboardMarkUserListAdapter.ExpandableLeaderboardUserRankItemWrapper expandableItem)

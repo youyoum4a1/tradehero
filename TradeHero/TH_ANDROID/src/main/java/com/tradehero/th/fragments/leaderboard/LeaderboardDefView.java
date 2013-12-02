@@ -38,21 +38,17 @@ public class LeaderboardDefView extends RelativeLayout implements DTOView<Leader
     public LeaderboardDefView(Context context)
     {
         super(context);
-        init();
     }
 
     public LeaderboardDefView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
-        init();
     }
 
     public LeaderboardDefView(Context context, AttributeSet attrs, int defStyle)
     {
         super(context, attrs, defStyle);
-        init();
     }
-
     //</editor-fold>
 
     @Override protected void onFinishInflate()
@@ -68,7 +64,11 @@ public class LeaderboardDefView extends RelativeLayout implements DTOView<Leader
         leaderboardDefIcon = (ImageView) findViewById(R.id.leaderboard_def_item_icon);
         leaderboardDefUserRank = (TextView) findViewById(R.id.leaderboard_def_item_user_rank);
         leaderboardDefDesc = (TextView) findViewById(R.id.leaderboard_def_item_desc);
+    }
 
+    @Override protected void onAttachedToWindow()
+    {
+        super.onAttachedToWindow();
         userProfileListener = new DTOCache.Listener<UserBaseKey, UserProfileDTO>()
         {
             @Override public void onDTOReceived(UserBaseKey key, UserProfileDTO value)
@@ -82,7 +82,6 @@ public class LeaderboardDefView extends RelativeLayout implements DTOView<Leader
             }
         };
 
-
         if (currentUserBaseKeyHolder != null)
         {
             // TODO this is just for getting leaderboard ranking of current user, which is already done by getting user rank from DefDTO, see
@@ -92,11 +91,6 @@ public class LeaderboardDefView extends RelativeLayout implements DTOView<Leader
         }
     }
 
-    @Override public void display(LeaderboardDefDTO dto)
-    {
-        linkWith(dto, true);
-    }
-
     @Override protected void onDetachedFromWindow()
     {
         super.onDetachedFromWindow();
@@ -104,6 +98,13 @@ public class LeaderboardDefView extends RelativeLayout implements DTOView<Leader
         {
             userProfileRequestTask.forgetListener(true);
         }
+        userProfileRequestTask = null;
+        userProfileListener = null;
+    }
+
+    @Override public void display(LeaderboardDefDTO dto)
+    {
+        linkWith(dto, true);
     }
 
     private void linkWith(LeaderboardDefDTO dto, boolean andDisplay)

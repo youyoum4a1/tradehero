@@ -98,20 +98,21 @@ public class PositionPartialTopView extends LinearLayout
         tradeHistoryButton = (ImageButton) findViewById(R.id.btn_trade_history);
     }
 
-    public void onDestroyView()
+    @Override protected void onDetachedFromWindow()
     {
         if (tradeHistoryButton != null)
         {
             tradeHistoryButton.setOnTouchListener(null);
         }
         tradeHistoryButton = null;
-        securityCompactCacheListener = null;
+
         if (securityCompactCacheFetchTask != null)
         {
             securityCompactCacheFetchTask.forgetListener(true);
         }
         securityCompactCacheFetchTask = null;
         securityCompactCacheListener = null;
+        super.onDetachedFromWindow();
     }
 
     public void linkWith(OwnedPositionId ownedPositionId, boolean andDisplay)
@@ -195,6 +196,7 @@ public class PositionPartialTopView extends LinearLayout
         }
     }
 
+    //<editor-fold desc="Display Methods">
     public void display()
     {
         displayStockLogo();
@@ -354,6 +356,7 @@ public class PositionPartialTopView extends LinearLayout
             }
         }
     }
+    //</editor-fold>
 
     private SecurityCompactCache.Listener<SecurityId, SecurityCompactDTO> createSecurityCompactCacheListener()
     {
