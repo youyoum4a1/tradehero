@@ -18,6 +18,7 @@ import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
+import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.position.GetPositionsDTO;
 import com.tradehero.th.api.position.OwnedPositionId;
@@ -32,6 +33,7 @@ import com.tradehero.th.fragments.billing.THIABUserInteractor;
 import com.tradehero.th.fragments.dashboard.DashboardTabType;
 import com.tradehero.th.fragments.security.StockInfoFragment;
 import com.tradehero.th.fragments.social.hero.HeroAlertDialogUtil;
+import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.fragments.trade.BuySellFragment;
 import com.tradehero.th.fragments.trade.TradeListFragment;
 import com.tradehero.th.persistence.position.GetPositionsCache;
@@ -48,7 +50,8 @@ import retrofit.client.Response;
 /** Created with IntelliJ IDEA. User: xavier Date: 10/16/13 Time: 5:56 PM To change this template use File | Settings | File Templates. */
 public class PositionListFragment extends BasePurchaseManagerFragment
     implements BaseFragment.TabBarVisibilityInformer, PositionListener,
-        PortfolioHeaderView.OnFollowRequestedListener
+        PortfolioHeaderView.OnFollowRequestedListener,
+        PortfolioHeaderView.OnTimelineRequestedListener
 {
     public static final String TAG = PositionListFragment.class.getSimpleName();
     public static final String BUNDLE_KEY_SHOW_PORTFOLIO_ID_BUNDLE = PositionListFragment.class.getName() + ".showPortfolioId";
@@ -198,6 +201,7 @@ public class PositionListFragment extends BasePurchaseManagerFragment
         if (portfolioHeaderView != null)
         {
             portfolioHeaderView.setFollowRequestedListener(this);
+            portfolioHeaderView.setTimelineRequestedListener(this);
         }
     }
 
@@ -207,6 +211,7 @@ public class PositionListFragment extends BasePurchaseManagerFragment
         if (portfolioHeaderView != null)
         {
             portfolioHeaderView.setFollowRequestedListener(null);
+            portfolioHeaderView.setTimelineRequestedListener(null);
         }
         if (fetchGetPositionsDTOTask != null)
         {
@@ -424,6 +429,15 @@ public class PositionListFragment extends BasePurchaseManagerFragment
                 userInteractor.followHero(userBaseKey);
             }
         });
+    }
+    //</editor-fold>
+
+    //<editor-fold desc="PortfolioHeaderView.OnTimelineRequestedListener">
+    @Override public void onTimelineRequested(UserBaseKey userBaseKey)
+    {
+        Bundle args = new Bundle();
+        args.putInt(UserBaseKey.BUNDLE_KEY_KEY, userBaseKey.key);
+        ((DashboardActivity) getActivity()).getNavigator().pushFragment(PushableTimelineFragment.class, args);
     }
     //</editor-fold>
 

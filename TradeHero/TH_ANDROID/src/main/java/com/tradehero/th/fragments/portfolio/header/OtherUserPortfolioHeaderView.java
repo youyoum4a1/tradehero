@@ -38,6 +38,7 @@ public class OtherUserPortfolioHeaderView extends RelativeLayout implements Port
     @Inject Lazy<Picasso> picasso;
     private UserProfileDTO userProfileDTO;
     private WeakReference<OnFollowRequestedListener> followRequestedListenerWeak = new WeakReference<>(null);
+    private WeakReference<OnTimelineRequestedListener> timelineRequestedListenerWeak = new WeakReference<>(null);
 
     private DTOCache.Listener<UserBaseKey, UserProfileDTO> getUserCacheListener;
     private DTOCache.GetOrFetchTask<UserProfileDTO> fetchUserProfileTask;
@@ -105,6 +106,20 @@ public class OtherUserPortfolioHeaderView extends RelativeLayout implements Port
                 }
             });
         }
+
+        if (usernameTextView != null)
+        {
+            usernameTextView.setOnClickListener(new OnClickListener()
+            {
+                @Override public void onClick(View v)
+                {
+                    if (userProfileDTO != null)
+                    {
+                        notifyTimelineRequested(userProfileDTO.getBaseKey());
+                    }
+                }
+            });
+        }
     }
 
     @Override protected void onDetachedFromWindow()
@@ -112,6 +127,10 @@ public class OtherUserPortfolioHeaderView extends RelativeLayout implements Port
         if (followButton != null)
         {
             followButton.setOnClickListener(null);
+        }
+        if (usernameTextView != null)
+        {
+            usernameTextView.setOnClickListener(null);
         }
         if (fetchUserProfileTask != null)
         {
@@ -185,6 +204,24 @@ public class OtherUserPortfolioHeaderView extends RelativeLayout implements Port
         if (followRequestedListener != null)
         {
             followRequestedListener.onFollowRequested(userBaseKey);
+        }
+    }
+
+    /**
+     * The listener should be strongly referenced elsewhere
+     * @param timelineRequestedListener
+     */
+    @Override public void setTimelineRequestedListener(OnTimelineRequestedListener timelineRequestedListener)
+    {
+        this.timelineRequestedListenerWeak = new WeakReference<>(timelineRequestedListener);
+    }
+
+    protected void notifyTimelineRequested(UserBaseKey userBaseKey)
+    {
+        OnTimelineRequestedListener timelineRequestedListener = timelineRequestedListenerWeak.get();
+        if (timelineRequestedListener != null)
+        {
+            timelineRequestedListener.onTimelineRequested(userBaseKey);
         }
     }
 }

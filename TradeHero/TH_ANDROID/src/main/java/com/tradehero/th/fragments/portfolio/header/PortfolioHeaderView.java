@@ -11,9 +11,15 @@ public interface PortfolioHeaderView
 {
     public void bindOwnedPortfolioId(OwnedPortfolioId id);
     void setFollowRequestedListener(OnFollowRequestedListener followRequestedListener);
+    void setTimelineRequestedListener(OnTimelineRequestedListener timelineRequestedListener);
 
     public static interface OnFollowRequestedListener
     {
         void onFollowRequested(UserBaseKey userBaseKey);
+    }
+
+    public static interface OnTimelineRequestedListener
+    {
+        void onTimelineRequested(UserBaseKey userBaseKey);
     }
 }

@@ -112,4 +112,9 @@ public class CurrentUserPortfolioHeaderView extends RelativeLayout implements Po
     {
         // Nothing to do
     }
+
+    @Override public void setTimelineRequestedListener(OnTimelineRequestedListener timelineRequestedListener)
+    {
+        // Nothing to do
+    }
 }
