@@ -1,14 +1,21 @@
 package com.tradehero.th.fragments.timeline;
 
+import android.app.Activity;
+import android.content.DialogInterface;
+import android.os.Handler;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
-import com.tradehero.common.utils.THToast;
+import com.tradehero.common.billing.googleplay.BaseIABPurchase;
 import com.tradehero.th.R;
+import com.tradehero.th.api.users.UserBaseKey;
+import com.tradehero.th.api.users.UserBaseUtil;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.base.Navigator;
-import com.tradehero.th.base.NavigatorActivity;
+import com.tradehero.th.billing.googleplay.THIABActor;
+import com.tradehero.th.fragments.billing.THIABUserInteractor;
+import com.tradehero.th.fragments.social.hero.HeroAlertDialogUtil;
+import retrofit.client.Response;
 
 /**
  * Created with IntelliJ IDEA. User: xavier Date: 10/23/13 Time: 5:41 PM To change this template use File | Settings | File Templates.
@@ -19,26 +26,33 @@ public class PushableTimelineFragment extends TimelineFragment
 {
     public static final String TAG = PushableTimelineFragment.class.getSimpleName();
 
+    private ActionBar actionBar;
+    private MenuItem btnFollow;
+    private MenuItem followingStamp;
+
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         inflater.inflate(R.menu.timeline_menu_pushable_other, menu);
-        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
+        this.actionBar = getSherlockActivity().getSupportActionBar();
         actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_SHOW_TITLE);
         //super.onCreateOptionsMenu(menu, inflater);
+        btnFollow = menu.findItem(R.id.btn_follow_this_user);
+        followingStamp = menu.findItem(R.id.ic_following);
         displayActionBarTitle();
     }
 
-    public void displayActionBarTitle()
+    @Override public void onPrepareOptionsMenu(Menu menu)
     {
-        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-        if (profile != null)
+        Boolean isFollowing = isPurchaserFollowingUserShown();
+        if (btnFollow != null)
         {
-            actionBar.setTitle(String.format(getString(R.string.first_last_name_display), profile.firstName, profile.lastName));
+            btnFollow.setVisible(isFollowing != null && !isFollowing);
         }
-        else
+        if (followingStamp != null)
         {
-            actionBar.setTitle(R.string.loading_loading);
+            followingStamp.setVisible(isFollowing != null && isFollowing);
         }
+        super.onPrepareOptionsMenu(menu);
     }
 
     @Override public boolean onOptionsItemSelected(MenuItem item)
@@ -46,25 +60,23 @@ public class PushableTimelineFragment extends TimelineFragment
         switch (item.getItemId())
         {
             case R.id.btn_follow_this_user:
-                handleInfoButtonPressed(item);
-                break;
-
-            case android.R.id.home:
-                handleHomeButtonPressed(item);
+                handleInfoButtonPressed();
                 break;
         }
         return super.onOptionsItemSelected(item);
     }
 
-    private void handleHomeButtonPressed(MenuItem menuItem)
+    @Override public void onDestroyOptionsMenu()
     {
-        Navigator navigator = ((NavigatorActivity) getActivity()).getNavigator();
-        navigator.popFragment();
+        this.actionBar = null;
+        this.btnFollow = null;
+        this.followingStamp = null;
+        super.onDestroyOptionsMenu();
     }
 
-    private void handleInfoButtonPressed(MenuItem menuItem)
+    @Override protected void createUserInteractor()
     {
-        THToast.show("Nothing for now");
+        userInteractor = new PushableTimelineTHIABUserInteractor(getActivity(), getBillingActor(), getView().getHandler());
     }
 
     @Override protected void linkWith(UserProfileDTO userProfileDTO, boolean andDisplay)
@@ -73,6 +85,97 @@ public class PushableTimelineFragment extends TimelineFragment
         if (andDisplay)
         {
             displayActionBarTitle();
+            displayFollowButton();
+        }
+    }
+
+    /**
+     * Null means unsure.
+     * @return
+     */
+    protected Boolean isPurchaserFollowingUserShown()
+    {
+        UserBaseKey purchaserKey = userInteractor.getApplicablePortfolioId().getUserBaseKey();
+        if (purchaserKey != null)
+        {
+            UserProfileDTO purchaserProfile = userProfileCache.get().get(purchaserKey);
+            if (purchaserProfile != null)
+            {
+                return purchaserProfile.isFollowingUser(shownUserBaseKey);
+            }
+        }
+        return null;
+    }
+
+    public void displayActionBarTitle()
+    {
+        if (actionBar != null)
+        {
+            if (shownProfile != null)
+            {
+                actionBar.setTitle(UserBaseUtil.getLongDisplayName(getActivity(), shownProfile));
+            }
+            else
+            {
+                actionBar.setTitle(R.string.loading_loading);
+            }
+        }
+    }
+
+    public void displayFollowButton()
+    {
+        getActivity().supportInvalidateOptionsMenu();
+    }
+
+    private void handleInfoButtonPressed()
+    {
+        HeroAlertDialogUtil.popAlertFollowHero(getActivity(), new DialogInterface.OnClickListener()
+        {
+            @Override public void onClick(DialogInterface dialog, int which)
+            {
+                userInteractor.followHero(shownUserBaseKey);
+            }
+        });
+    }
+
+    //<editor-fold desc="BaseFragment.TabBarVisibilityInformer">
+    @Override public boolean isTabBarVisible()
+    {
+        return false;
+    }
+    //</editor-fold>
+
+    public class PushableTimelineTHIABUserInteractor extends THIABUserInteractor
+    {
+        public final String TAG = PushableTimelineTHIABUserInteractor.class.getName();
+
+        public PushableTimelineTHIABUserInteractor(Activity activity, THIABActor billingActor, Handler handler)
+        {
+            super(activity, billingActor, handler);
+        }
+
+        @Override protected void handleShowSkuDetailsMilestoneComplete()
+        {
+            super.handleShowSkuDetailsMilestoneComplete();
+            displayFollowButton();
+        }
+
+        @Override protected void handlePurchaseReportSuccess(BaseIABPurchase reportedPurchase, UserProfileDTO updatedUserProfile)
+        {
+            super.handlePurchaseReportSuccess(reportedPurchase, updatedUserProfile);
+            displayFollowButton();
+        }
+
+        @Override protected void createFollowCallback()
+        {
+            this.followCallback = new UserInteractorFollowHeroCallback(heroListCache.get(), userProfileCache.get())
+            {
+                @Override public void success(UserProfileDTO userProfileDTO, Response response)
+                {
+                    super.success(userProfileDTO, response);
+                    displayFollowButton();
+                }
+            };
         }
     }
 }

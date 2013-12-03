@@ -11,6 +11,7 @@ import com.tradehero.common.graphics.RoundedShapeTransformation;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.social.HeroDTO;
+import com.tradehero.th.api.users.UserBaseUtil;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
 import java.lang.ref.WeakReference;
@@ -150,27 +151,7 @@ public class HeroListItemView extends RelativeLayout implements DTOView<HeroDTO>
     {
         if (title != null)
         {
-            if (heroDTO != null)
-            {
-                if (heroDTO.firstName != null &&
-                        !heroDTO.firstName.isEmpty() &&
-                        heroDTO.lastName != null &&
-                        !heroDTO.lastName.isEmpty())
-                {
-                    title.setText(String.format(
-                            getContext().getString(R.string.first_last_name_display),
-                            heroDTO.firstName,
-                            heroDTO.lastName));
-                }
-                else
-                {
-                    title.setText(heroDTO.displayName);
-                }
-            }
-            else
-            {
-                title.setText(R.string.na);
-            }
+            title.setText(UserBaseUtil.getLongDisplayName(getContext(), heroDTO));
         }
     }
 

@@ -164,6 +164,7 @@ import org.ocpsoft.prettytime.PrettyTime;
                 TimelineFragment.class,
                 MeTimelineFragment.class,
                 PushableTimelineFragment.class,
+                PushableTimelineFragment.PushableTimelineTHIABUserInteractor.class,
                 MarkdownTextView.class,
 
                 YahooNewsFragment.class,

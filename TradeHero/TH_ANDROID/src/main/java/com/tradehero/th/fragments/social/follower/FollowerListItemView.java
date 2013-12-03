@@ -10,6 +10,7 @@ import com.tradehero.common.graphics.RoundedShapeTransformation;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.social.UserFollowerDTO;
+import com.tradehero.th.api.users.UserBaseUtil;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.SecurityUtils;
 import dagger.Lazy;
@@ -110,27 +111,7 @@ public class FollowerListItemView extends RelativeLayout implements DTOView<User
     {
         if (title != null)
         {
-            if (userFollowerDTO != null)
-            {
-                if (userFollowerDTO.firstName != null &&
-                        !userFollowerDTO.firstName.isEmpty() &&
-                        userFollowerDTO.lastName != null &&
-                        !userFollowerDTO.lastName.isEmpty())
-                {
-                    title.setText(String.format(
-                            getContext().getString(R.string.first_last_name_display),
-                            userFollowerDTO.firstName,
-                            userFollowerDTO.lastName));
-                }
-                else
-                {
-                    title.setText(userFollowerDTO.displayName);
-                }
-            }
-            else
-            {
-                title.setText(R.string.na);
-            }
+            title.setText(UserBaseUtil.getLongDisplayName(getContext(), userFollowerDTO));
         }
     }
 

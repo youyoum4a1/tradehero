@@ -525,12 +525,20 @@ public class SearchStockPeopleFragment extends DashboardFragment
                 {
                     @Override public void run()
                     {
-                        peopleItemViewAdapter.notifyDataSetChanged();
+                        PeopleItemViewAdapter adapterCopy = peopleItemViewAdapter;
+                        if (adapterCopy != null)
+                        {
+                            adapterCopy.notifyDataSetChanged();
+                        }
 
                         // All these damn HACKs are not enough to have the list update itself!
-                        mSearchPeopleListView.invalidateViews();
-                        mSearchPeopleListView.scrollBy(0, 0);
-                        mSearchPeopleListView.refreshDrawableState();
+                        ListView peopleListView = mSearchPeopleListView;
+                        if (peopleListView != null)
+                        {
+                            mSearchPeopleListView.invalidateViews();
+                            mSearchPeopleListView.scrollBy(0, 0);
+                            mSearchPeopleListView.refreshDrawableState();
+                        }
 
                         updateVisibilities();
                     }

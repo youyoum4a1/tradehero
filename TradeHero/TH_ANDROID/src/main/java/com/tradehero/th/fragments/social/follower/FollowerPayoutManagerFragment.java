@@ -16,6 +16,7 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.social.FollowerId;
 import com.tradehero.th.api.social.UserFollowerDTO;
+import com.tradehero.th.api.users.UserBaseUtil;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.persistence.social.UserFollowerCache;
 import com.tradehero.th.utils.SecurityUtils;
@@ -143,24 +144,7 @@ public class FollowerPayoutManagerFragment extends BasePurchaseManagerFragment
 
     protected String getDisplayName()
     {
-        if (userFollowerDTO == null)
-        {
-            return getString(R.string.na);
-        }
-        else if (userFollowerDTO.firstName != null &&
-                !userFollowerDTO.firstName.isEmpty() &&
-                userFollowerDTO.lastName != null &&
-                !userFollowerDTO.lastName.isEmpty())
-        {
-            return String.format(
-                    getString(R.string.first_last_name_display),
-                    userFollowerDTO.firstName,
-                    userFollowerDTO.lastName);
-        }
-        else
-        {
-            return userFollowerDTO.displayName;
-        }
+        return UserBaseUtil.getLongDisplayName(getActivity(), userFollowerDTO);
     }
 
     public void display(UserFollowerDTO summaryDTO)

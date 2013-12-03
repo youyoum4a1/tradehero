@@ -8,6 +8,15 @@
       android:icon="@drawable/follow_user"
       android:title="@string/action_bar_follow"
       android:showAsAction="ifRoom"
+      android:visible="false"
+    />
+
+  <item
+      android:id="@+id/ic_following"
+      android:icon="@drawable/following_stamp"
+      android:title="@string/action_bar_following"
+      android:showAsAction="ifRoom"
+      android:visible="false"
     />
 
 </menu>

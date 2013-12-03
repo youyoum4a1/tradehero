@@ -23,21 +23,21 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.base.NavigatorActivity;
-import com.tradehero.th.fragments.base.BaseFragment;
+import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
+import com.tradehero.th.fragments.portfolio.PortfolioRequestListener;
 import com.tradehero.th.fragments.position.PositionListFragment;
 import com.tradehero.th.loaders.TimelinePagedItemListLoader;
 import com.tradehero.th.persistence.portfolio.PortfolioCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.widget.StepView;
-import com.tradehero.th.fragments.portfolio.PortfolioRequestListener;
 import com.tradehero.th.widget.user.ProfileCompactView;
 import com.tradehero.th.widget.user.ProfileView;
 import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
 
-public class TimelineFragment extends BaseFragment
+public class TimelineFragment extends BasePurchaseManagerFragment
         implements StepView.StepProvider, PortfolioRequestListener
 {
     public static final String TAG = TimelineFragment.class.getSimpleName();
@@ -50,8 +50,8 @@ public class TimelineFragment extends BaseFragment
     private TimelineAdapter timelineAdapter;
     private TimelineListView timelineListView;
 
-    protected UserBaseKey userBaseKey;
-    protected UserProfileDTO profile;
+    protected UserBaseKey shown UserBaseKey;
+    protected UserProfileDTO shownProfile;
     protected OwnedPortfolioIdList portfolioIdList;
 
     protected DTOCache.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
@@ -60,8 +60,7 @@ public class TimelineFragment extends BaseFragment
     protected DTOCache.GetOrFetchTask<OwnedPortfolioIdList> portfolioCompactListCacheTask;
     private StepView stepView;
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.timeline_screen, container, false);
         initView(view);
@@ -92,9 +91,9 @@ public class TimelineFragment extends BaseFragment
         inflater.inflate(R.menu.timeline_menu, menu);
 
         getSherlockActivity().getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME);
-        if (profile != null)
+        if (shownProfile != null)
         {
-            getSherlockActivity().getSupportActionBar().setTitle(profile.displayName);
+            getSherlockActivity().getSupportActionBar().setTitle(shownProfile.displayName);
         }
         super.onCreateOptionsMenu(menu, inflater);
     }
@@ -144,7 +143,7 @@ public class TimelineFragment extends BaseFragment
 
     protected void linkWith(UserBaseKey userBaseKey, final boolean andDisplay)
     {
-        this.userBaseKey = userBaseKey;
+        this.shownUserBaseKey = userBaseKey;
         if (userBaseKey != null)
         {
             timelineAdapter.getLoader().resetQuery();
@@ -215,7 +214,7 @@ public class TimelineFragment extends BaseFragment
 
     protected void linkWith(UserProfileDTO userProfileDTO, boolean andDisplay)
     {
-        this.profile = userProfileDTO;
+        this.shownProfile = userProfileDTO;
         if (andDisplay)
         {
             updateView();
@@ -244,9 +243,9 @@ public class TimelineFragment extends BaseFragment
             timelineListView.addHeaderView(stepView);
         }
 
-        if (profile != null)
+        if (shownProfile != null)
         {
-            getSherlockActivity().getSupportActionBar().setTitle(profile.displayName);
+            getSherlockActivity().getSupportActionBar().setTitle(shownProfile.displayName);
         }
     }
     //</editor-fold>
@@ -274,12 +273,12 @@ public class TimelineFragment extends BaseFragment
             case 0:
                 ProfileCompactView profileCompactView =
                         (ProfileCompactView) getActivity().getLayoutInflater().inflate(R.layout.profile_screen_user_compact, null);
-                profileCompactView.display(profile);
+                profileCompactView.display(shownProfile);
                 profileCompactView.setPortfolioRequestListener(this);
                 return profileCompactView;
             case 1:
                 ProfileView profileView = (ProfileView) getActivity().getLayoutInflater().inflate(R.layout.profile_screen_user_detail, null);
-                profileView.display(profile);
+                profileView.display(shownProfile);
                 profileView.setPortfolioRequestListener(this);
                 return profileView;
         }
@@ -338,4 +337,11 @@ public class TimelineFragment extends BaseFragment
         Navigator navigator = ((NavigatorActivity) getActivity()).getNavigator();
         navigator.pushFragment(PositionListFragment.class, args);
     }
+
+    //<editor-fold desc="BaseFragment.TabBarVisibilityInformer">
+    @Override public boolean isTabBarVisible()
+    {
+        return true;
+    }
+    //</editor-fold>
 }
