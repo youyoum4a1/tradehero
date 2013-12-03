@@ -24,11 +24,12 @@ public class PortfolioListItemAdapter extends DTOAdapter<DisplayablePortfolioDTO
 {
     public static final String TAG = PortfolioListItemAdapter.class.getName();
 
-    public static final int ITEM_TYPE_OWN = 0;
-    public static final int ITEM_TYPE_HERO_HEADER = 1;
-    public static final int ITEM_TYPE_HERO = 2;
-    public static final int ITEM_TYPE_OTHER_HEADER = 3;
-    public static final int ITEM_TYPE_OTHER = 4;
+    public static final int ITEM_TYPE_OWN_HEADER = 0;
+    public static final int ITEM_TYPE_OWN = 1;
+    public static final int ITEM_TYPE_HERO_HEADER = 2;
+    public static final int ITEM_TYPE_HERO = 3;
+    public static final int ITEM_TYPE_OTHER_HEADER = 4;
+    public static final int ITEM_TYPE_OTHER = 5;
 
     private List<Integer> orderedTypes;
     private List<Object> orderedItems;
@@ -87,6 +88,8 @@ public class PortfolioListItemAdapter extends DTOAdapter<DisplayablePortfolioDTO
                 }
             }
 
+            orderedTypes.add(ITEM_TYPE_OWN_HEADER);
+            orderedItems.add(R.string.portfolio_own_header);
             for (DisplayablePortfolioDTO displayablePortfolioDTO: ownPortfolios)
             {
                 orderedTypes.add(ITEM_TYPE_OWN);
@@ -122,7 +125,7 @@ public class PortfolioListItemAdapter extends DTOAdapter<DisplayablePortfolioDTO
 
     @Override public int getViewTypeCount()
     {
-        return 5;
+        return 6;
     }
 
     @Override public int getItemViewType(int position)
@@ -152,6 +155,7 @@ public class PortfolioListItemAdapter extends DTOAdapter<DisplayablePortfolioDTO
                 ((PortfolioListItemView) view).display((DisplayablePortfolioDTO) getItem(position));
                 break;
 
+            case ITEM_TYPE_OWN_HEADER:
             case ITEM_TYPE_HERO_HEADER:
             case ITEM_TYPE_OTHER_HEADER:
                 view = inflater.inflate(otherHeaderResId, parent, false);

@@ -22,8 +22,8 @@
 
   <ImageView
       android:id="@+id/following_image"
-      android:layout_width="131dp"
-      android:layout_height="48dp"
+      android:layout_width="88dp"
+      android:layout_height="32dp"
       android:layout_toLeftOf="@id/hint_open_portfolio"
       android:layout_centerVertical="true"
       android:scaleType="fitXY"
