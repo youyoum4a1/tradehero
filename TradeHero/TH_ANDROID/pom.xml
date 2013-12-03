@@ -158,7 +158,7 @@
     <dependency>
       <groupId>org.ocpsoft.prettytime</groupId>
       <artifactId>prettytime</artifactId>
-      <version>3.0.3-SNAPSHOT</version>
+      <version>3.2.1.Final</version>
     </dependency>
 
     <dependency>
@@ -223,29 +223,13 @@
 
     <finalName>${project.artifactId}</finalName>
 
-    <pluginManagement>
-      <plugins>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-invoker-plugin</artifactId>
-          <version>1.7</version>
-        </plugin>
-
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-compiler-plugin</artifactId>
-          <version>3.1</version>
-        </plugin>
-      </plugins>
-    </pluginManagement>
-
     <plugins>
 
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>build-helper-maven-plugin</artifactId>
-        <version>1.8</version>
-      </plugin>
+      <!--<plugin>-->
+        <!--<groupId>org.codehaus.mojo</groupId>-->
+        <!--<artifactId>build-helper-maven-plugin</artifactId>-->
+        <!--<version>1.8</version>-->
+      <!--</plugin>-->
 
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -254,12 +238,6 @@
         <configuration>
           <failOnError>false</failOnError>
         </configuration>
-      </plugin>
-
-      <plugin>
-        <groupId>org.holoeverywhere</groupId>
-        <artifactId>resbuilder</artifactId>
-        <version>1.5.0</version>
       </plugin>
 
       <plugin>
@@ -296,7 +274,7 @@
         <configuration>
           <sdk>
             <!-- platform or api level (api level 14 = platform 4.0)-->
-            <platform>14</platform>
+            <platform>${android.platform}</platform>
           </sdk>
           <undeployBeforeDeploy>true</undeployBeforeDeploy>
         </configuration>

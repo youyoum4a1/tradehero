@@ -21,7 +21,7 @@
     <artifactId>oss-parent</artifactId>
     <version>7</version>
   </parent>
-  
+
   <groupId>com.tradehero.th</groupId>
   <artifactId>parent</artifactId>
   <packaging>pom</packaging>
@@ -30,12 +30,11 @@
   <modules>
     <module>retrofit</module>
     <module>facebook-android-sdk/facebook</module>
-    <module>prettytime/core</module>
     <module>viewpagerindicator/library</module>
     <module>Android-PullToRefresh/library</module>
     <module>TradeHero/TH_ANDROID</module>
   </modules>
-  
+
   <organization>
     <name>TradeHero</name>
     <url>http://tradehero.mobi</url>
@@ -47,10 +46,11 @@
 
     <!-- Compilation -->
     <java.version>1.7</java.version>
+    <java.version-target>1.6</java.version-target>
 
     <!-- Dependencies -->
     <android.version>4.1.1.4</android.version>
-    <android.platform>16</android.platform>
+    <android.platform>14</android.platform>
 
     <!-- Test Dependencies -->
     <junit.version>4.10</junit.version>
@@ -58,15 +58,16 @@
     <mockito.version>1.9.5</mockito.version>
     <gson.version>2.2.4</gson.version>
     <javawriter.version>2.1.1</javawriter.version>
-	<android-support.version>r7</android-support.version>
-	
-   <keystore.location>${basedir}/../../tradehero_android_release_key.keystore</keystore.location>
+    <android-support.version>r7</android-support.version>
+
+    <keystore.location>${basedir}${file.separator}..${file.separator}..${file.separator}tradehero_android_release_key.keystore</keystore.location>
     <keystore.password>password99__**01</keystore.password>
     <keystore.keypass>password99__**01</keystore.keypass>
-    <keystore.alias>tradehero</keystore.alias>	
+    <keystore.alias>tradehero</keystore.alias>
   </properties>
 
-  <dependencies>
+  <dependencyManagement>
+    <dependencies>
       <dependency>
         <groupId>com.google.android</groupId>
         <artifactId>android</artifactId>
@@ -77,7 +78,8 @@
         <artifactId>support-v4</artifactId>
         <version>${android-support.version}</version>
       </dependency>
-  </dependencies>
+    </dependencies>
+  </dependencyManagement>
 
   <build>
     <pluginManagement>
@@ -111,7 +113,7 @@
           <failOnError>false</failOnError>
         </configuration>
       </plugin>
-	  
+
       <plugin>
         <groupId>com.google.code.maven-replacer-plugin</groupId>
         <artifactId>maven-replacer-plugin</artifactId>
@@ -123,7 +125,7 @@
         <artifactId>maven-compiler-plugin</artifactId>
         <configuration>
           <source>${java.version}</source>
-          <target>${java.version}</target>
+          <target>${java.version-target}</target>
           <compilerArgument>-Xlint:all</compilerArgument>
           <showWarnings>true</showWarnings>
           <showDeprecation>true</showDeprecation>
@@ -145,7 +147,7 @@
         <version>3.5.0</version>
         <configuration>
           <sdk>
-			<path>${ANDROID_HOME}</path>
+            <path>${ANDROID_HOME}</path>
             <!-- platform or api level (api level 14 = platform 4.0)-->
             <platform>14</platform>
           </sdk>
@@ -153,7 +155,7 @@
         </configuration>
         <extensions>true</extensions>
       </plugin>
-	  
+
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
@@ -163,67 +165,72 @@
         </configuration>
       </plugin>
     </plugins>
+    <sourceDirectory>src</sourceDirectory>
   </build>
-  
 
-	<profiles>
-	  <profile>
-		<id>sign</id>
-		<build>
-		  <plugins>
-			<plugin>
-			  <groupId>org.apache.maven.plugins</groupId>
-			  <artifactId>maven-jarsigner-plugin</artifactId>
-			  <version>1.2</version>
-			  <executions>
-				<execution>
-				  <id>signing</id>
-				  <goals>
-					<goal>sign</goal>
-				  </goals>
-				  <phase>package</phase>
-				  <inherited>true</inherited>
-				  <configuration>
-					<archiveDirectory></archiveDirectory>
-					<includes>
-					  <include>target/*.apk</include>
-					</includes>
-					<keystore>${keystore.location}</keystore>
-					<storepass>${keystore.password}</storepass>
-					<keypass>${keystore.keypass}</keypass>
-					<alias>${keystore.alias}</alias>
-					<arguments>
-					  <argument>-sigalg</argument><argument>MD5withRSA</argument>
-					  <argument>-digestalg</argument><argument>SHA1</argument>
-					</arguments>
-				  </configuration>
-				</execution>
-			  </executions>
-			</plugin>
-			<plugin>
-			  <groupId>com.jayway.maven.plugins.android.generation2</groupId>
-			  <artifactId>maven-android-plugin</artifactId>
-			  <inherited>true</inherited>
-			  <configuration>
-				<sign>
-				  <debug>false</debug>
-				</sign>
-				<zipalign>
-					<verbose>true</verbose>
-				</zipalign>
-			  </configuration>
-			  <executions>
-				<execution>
-					<id>alignApk</id>
-					<phase>package</phase>
-					<goals>
-						<goal>zipalign</goal>
-					</goals>
-				</execution>
-			</executions>
-			</plugin>
-		  </plugins>
-		</build>
-	  </profile>
-	</profiles>
+  <profiles>
+    <profile>
+      <id>sign</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-jarsigner-plugin</artifactId>
+            <version>1.2</version>
+            <executions>
+              <execution>
+                <id>signing</id>
+                <goals>
+                  <goal>sign</goal>
+                </goals>
+                <phase>package</phase>
+                <inherited>true</inherited>
+                <configuration>
+                  <includes>
+                    <include>target${file.separator}*-aligned.apk</include>
+                  </includes>
+                  <keystore>${keystore.location}</keystore>
+                  <storepass>${keystore.password}</storepass>
+                  <keypass>${keystore.keypass}</keypass>
+                  <alias>${keystore.alias}</alias>
+                  <arguments>
+                    <argument>-sigalg</argument>
+                    <argument>MD5withRSA</argument>
+                    <argument>-digestalg</argument>
+                    <argument>SHA1</argument>
+                  </arguments>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+
+          <plugin>
+            <groupId>com.jayway.maven.plugins.android.generation2</groupId>
+            <artifactId>maven-android-plugin</artifactId>
+            <inherited>true</inherited>
+            <configuration>
+              <sign>
+                <debug>false</debug>
+              </sign>
+              <zipalign>
+                <skip>false</skip>
+                <verbose>true</verbose>
+                <inputApk>${project.build.directory}/${project.artifactId}.apk</inputApk>
+                <outputApk>${project.build.directory}/${project.artifactId}-aligned.apk</outputApk>
+              </zipalign>
+            </configuration>
+            <executions>
+              <execution>
+                <id>alignApk</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>zipalign</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 </project>
