@@ -25,16 +25,9 @@
       <sourceFolder url="file://$MODULE_DIR$/TradeHero/TH_ANDROID/src/main/java" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/TradeHero/TH_ANDROID/src/test/java" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/TradeHero/TH_ANDROID/target/generated-test-sources/test-annotations" isTestSource="true" />
-      <sourceFolder url="file://$MODULE_DIR$/TradeHero/TH_ANDROID/target/generated-sources/annotations" isTestSource="false" />
-      <excludeFolder url="file://$MODULE_DIR$/TradeHero/TH_ANDROID/target/classes" />
-      <excludeFolder url="file://$MODULE_DIR$/TradeHero/TH_ANDROID/target/generated-sources/combined-assets" />
-      <excludeFolder url="file://$MODULE_DIR$/TradeHero/TH_ANDROID/target/generated-sources/combined-resources" />
-      <excludeFolder url="file://$MODULE_DIR$/TradeHero/TH_ANDROID/target/generated-sources/extracted-dependencies" />
-      <excludeFolder url="file://$MODULE_DIR$/TradeHero/TH_ANDROID/target/idea-classes" />
-      <excludeFolder url="file://$MODULE_DIR$/TradeHero/TH_ANDROID/target/idea-test-classes" />
-      <excludeFolder url="file://$MODULE_DIR$/TradeHero/TH_ANDROID/target/test-classes" />
+      <excludeFolder url="file://$MODULE_DIR$/TradeHero/TH_ANDROID/target" />
     </content>
-    <orderEntry type="jdk" jdkName="Maven Android 4.0 Platform" jdkType="Android SDK" />
+    <orderEntry type="jdk" jdkName="Maven Android 4.1.2 Platform" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="Maven: com.android.support:support-v4:13.0.0" level="project" />
     <orderEntry type="library" name="Maven: com.urbanairship:urbanairship-lib:3.2.1" level="project" />
@@ -66,7 +59,7 @@
     <orderEntry type="module" module-name="retrofit" />
     <orderEntry type="module" module-name="Android-PullToRefresh" />
     <orderEntry type="library" name="Maven: com.squareup.picasso:picasso:2.1.1" level="project" />
-    <orderEntry type="module" module-name="prettytime" />
+    <orderEntry type="library" name="Maven: org.ocpsoft.prettytime:prettytime:3.2.1.Final" level="project" />
     <orderEntry type="module" module-name="ActionBarSherlock" />
     <orderEntry type="module" module-name="facebook-android-sdk" />
     <orderEntry type="library" scope="TEST" name="Maven: org.easytesting:fest-assert-core:2.0M10" level="project" />

@@ -6,7 +6,6 @@
       <module fileurl="file://$PROJECT_DIR$/Android-PullToRefresh.iml" filepath="$PROJECT_DIR$/Android-PullToRefresh.iml" />
       <module fileurl="file://$PROJECT_DIR$/TH_Android.iml" filepath="$PROJECT_DIR$/TH_Android.iml" />
       <module fileurl="file://$PROJECT_DIR$/facebook-android-sdk.iml" filepath="$PROJECT_DIR$/facebook-android-sdk.iml" />
-      <module fileurl="file://$PROJECT_DIR$/prettytime.iml" filepath="$PROJECT_DIR$/prettytime.iml" />
       <module fileurl="file://$PROJECT_DIR$/retrofit.iml" filepath="$PROJECT_DIR$/retrofit.iml" />
       <module fileurl="file://$PROJECT_DIR$/viewpagerIndicator.iml" filepath="$PROJECT_DIR$/viewpagerIndicator.iml" />
     </modules>

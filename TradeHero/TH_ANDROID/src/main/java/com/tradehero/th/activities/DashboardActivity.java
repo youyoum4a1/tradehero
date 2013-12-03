@@ -20,7 +20,6 @@ import com.tradehero.th.fragments.billing.PurchaseRestorerAlertUtil;
 import com.tradehero.th.utils.DaggerUtils;
 import java.util.List;
 import javax.inject.Inject;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 public class DashboardActivity extends SherlockFragmentActivity
         implements DashboardNavigatorActivity, THIABActorUser
@@ -168,7 +167,7 @@ public class DashboardActivity extends SherlockFragmentActivity
 
     @Override public void setBillingActor(THIABActor billingActor)
     {
-        throw new NotImplementedException(); // You should not use this method
+        throw new UnsupportedOperationException("Not implemented"); // You should not use this method
     }
 
     @Override public THIABActor getBillingActor()

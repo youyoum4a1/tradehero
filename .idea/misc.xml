@@ -31,6 +31,7 @@
         <option value="$PROJECT_DIR$/dagger/compiler/pom.xml" />
         <option value="$PROJECT_DIR$/dagger/core/pom.xml" />
         <option value="$PROJECT_DIR$/picasso/picasso/pom.xml" />
+        <option value="$PROJECT_DIR$/prettytime/core/pom.xml" />
       </set>
     </option>
   </component>
