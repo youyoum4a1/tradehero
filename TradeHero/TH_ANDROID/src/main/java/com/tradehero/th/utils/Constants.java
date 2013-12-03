@@ -7,6 +7,7 @@ public class Constants
     //Linked In
     public static final String LINKEDIN_CONSUMER_KEY = "afed437khxve";
     public static final String LINKEDIN_CONSUMER_SECRET = "hO7VeSyL4y1W2ZiK";
+    public static final String TEST_FLIGHT_TOKEN = "a8a266bb-500c-4cdf-a5b0-f9c5bd6ad995";
     public static String OAUTH_CALLBACK_URL = "x-oauthflow-linkedin://callback";
 
     //Twitter
