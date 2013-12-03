@@ -18,7 +18,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 import javax.inject.Inject;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/14/13 Time: 4:12 PM To change this template use File | Settings | File Templates. */
 public class PortfolioListItemAdapter extends DTOAdapter<DisplayablePortfolioDTO, PortfolioListItemView>
@@ -160,7 +159,7 @@ public class PortfolioListItemAdapter extends DTOAdapter<DisplayablePortfolioDTO
                 break;
 
             default:
-                throw new NotImplementedException();
+                throw new UnsupportedOperationException("Not implemented"); // You should not use this method
         }
         return view;
     }

@@ -8,7 +8,6 @@ import com.tradehero.th.api.users.UserBaseKey;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/16/13 Time: 2:35 PM To change this template use File | Settings | File Templates. */
 @Singleton public class HeroCache extends StraightDTOCache<HeroId, HeroDTO>
@@ -24,7 +23,7 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
     @Override protected HeroDTO fetch(HeroId key)
     {
-        throw new NotImplementedException();
+        throw new UnsupportedOperationException("Not implemented");
     }
 
     public HeroDTOList put(UserBaseKey followerId, HeroDTOList values)

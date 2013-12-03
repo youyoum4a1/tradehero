@@ -12,7 +12,6 @@ import com.tradehero.th.widget.list.BaseListHeaderView;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/14/13 Time: 4:12 PM To change this template use File | Settings | File Templates. */
 public class HeroListItemAdapter extends DTOAdapter<HeroDTO, HeroListItemView>
@@ -174,7 +173,7 @@ public class HeroListItemAdapter extends DTOAdapter<HeroDTO, HeroListItemView>
                 return inactiveHeroes.get(getOffsetPositionInactive(position));
 
             default:
-                throw new NotImplementedException();
+                throw new UnsupportedOperationException("Not implemented");
         }
     }
 
@@ -213,7 +212,7 @@ public class HeroListItemAdapter extends DTOAdapter<HeroDTO, HeroListItemView>
                 break;
 
             default:
-                throw new NotImplementedException();
+                throw new UnsupportedOperationException("Not implemented");
         }
         return convertView;
     }
@@ -235,12 +234,12 @@ public class HeroListItemAdapter extends DTOAdapter<HeroDTO, HeroListItemView>
             case VIEW_TYPE_ITEM_INACTIVE:
                 return true;
             default:
-                throw new NotImplementedException();
+                throw new UnsupportedOperationException("Not implemented");
         }
     }
 
     @Override protected void fineTune(int position, HeroDTO dto, HeroListItemView dtoView)
     {
-        throw new NotImplementedException();
+        throw new UnsupportedOperationException("Not implemented");
     }
 }

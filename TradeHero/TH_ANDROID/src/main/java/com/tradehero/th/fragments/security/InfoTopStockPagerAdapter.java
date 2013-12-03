@@ -10,7 +10,6 @@ import com.tradehero.common.utils.THLog;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.utils.yahoo.ChartSize;
 import com.tradehero.th.utils.yahoo.TimeSpan;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/31/13 Time: 12:42 PM To change this template use File | Settings | File Templates. */
 public class InfoTopStockPagerAdapter extends FragmentStatePagerAdapter
@@ -67,7 +66,7 @@ public class InfoTopStockPagerAdapter extends FragmentStatePagerAdapter
 
             default:
                 THLog.w(TAG, "Not supported index " + position);
-                throw new NotImplementedException();
+                throw new UnsupportedOperationException("Not implemented");
         }
 
         fragment.setArguments(args);
