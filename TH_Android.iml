@@ -27,9 +27,8 @@
       <sourceFolder url="file://$MODULE_DIR$/TradeHero/TH_ANDROID/target/generated-test-sources/test-annotations" isTestSource="true" />
       <excludeFolder url="file://$MODULE_DIR$/TradeHero/TH_ANDROID/target" />
     </content>
-    <orderEntry type="jdk" jdkName="Maven Android 4.1.2 Platform" jdkType="Android SDK" />
+    <orderEntry type="jdk" jdkName="Maven Android 4.1.2 Platform (1)" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="Maven: com.android.support:support-v4:13.0.0" level="project" />
     <orderEntry type="library" name="Maven: com.urbanairship:urbanairship-lib:3.2.1" level="project" />
     <orderEntry type="library" name="Maven: javax.inject:javax.inject:1" level="project" />
     <orderEntry type="library" name="Maven: oauth.signpost:signpost-core:1.2.1.2" level="project" />

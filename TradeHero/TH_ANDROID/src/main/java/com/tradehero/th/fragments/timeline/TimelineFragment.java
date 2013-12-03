@@ -50,7 +50,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     private TimelineAdapter timelineAdapter;
     private TimelineListView timelineListView;
 
-    protected UserBaseKey shown UserBaseKey;
+    protected UserBaseKey shownUserBaseKey;
     protected UserProfileDTO shownProfile;
     protected OwnedPortfolioIdList portfolioIdList;
 
