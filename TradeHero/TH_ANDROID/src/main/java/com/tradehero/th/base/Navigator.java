@@ -21,7 +21,12 @@ public class Navigator
     public static final String NAVIGATE_FRAGMENT_NO_CACHE = Navigator.class.getName();
     public static final int[] TUTORIAL_ANIMATION = new int[] {
             R.anim.card_flip_right_in, R.anim.card_flip_right_out,
-            R.anim.card_flip_left_in, R.anim.card_flip_left_out};
+            R.anim.card_flip_left_in, R.anim.card_flip_left_out
+    };
+    public static final int[] PUSH_UP_FROM_BOTTOM = new int[] {
+            R.anim.slide_in_from_bottom, R.anim.slide_out_to_bottom,
+            R.anim.fade_back, R.anim.fade_back
+    };
 
     private final Context context;
     private final int[] animation;
@@ -67,7 +72,7 @@ public class Navigator
         this.fragmentContentId = fragmentContentId;
     }
 
-    private Fragment pushFragment(Class<? extends Fragment> fragmentClass, Bundle args, int[] anim)
+    public Fragment pushFragment(Class<? extends Fragment> fragmentClass, Bundle args, int[] anim)
     {
         THLog.d(TAG, "Pushing fragment " + fragmentClass.getSimpleName());
         Fragment fragment = Fragment.instantiate(context, fragmentClass.getName(), args);

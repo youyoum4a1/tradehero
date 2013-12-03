@@ -34,7 +34,7 @@ import retrofit.RetrofitError;
 
     @Override protected OwnedPortfolioIdList fetch(UserBaseKey key) throws Throwable
     {
-        return putInternal(key, portfolioService.get().getPortfolios(key.key));
+        return putInternal(key, portfolioService.get().getPortfolios(key.key, true));
     }
 
     protected OwnedPortfolioIdList putInternal(UserBaseKey key, List<PortfolioCompactDTO> fleshedValues)

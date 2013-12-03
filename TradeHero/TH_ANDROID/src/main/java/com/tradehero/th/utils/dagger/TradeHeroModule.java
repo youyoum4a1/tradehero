@@ -29,6 +29,7 @@ import com.tradehero.th.fragments.authentication.EmailSignInFragment;
 import com.tradehero.th.fragments.billing.StoreScreenFragment;
 import com.tradehero.th.fragments.billing.THIABUserInteractor;
 import com.tradehero.th.fragments.portfolio.PortfolioListItemAdapter;
+import com.tradehero.th.fragments.security.AddToWatchListFragment;
 import com.tradehero.th.fragments.social.follower.FollowerListItemView;
 import com.tradehero.th.fragments.social.follower.FollowerManagerFragment;
 import com.tradehero.th.fragments.social.follower.FollowerPayoutManagerFragment;
@@ -256,6 +257,8 @@ import org.ocpsoft.prettytime.PrettyTime;
                 StoreScreenFragment.StoreScreenTHIABUserInteractor.class,
                 HeroManagerFragment.HeroManagerTHIABUserInteractor.class,
                 BuySellFragment.BuySellTHIABUserInteractor.class,
+
+                AddToWatchListFragment.class,
         },
         staticInjections =
         {

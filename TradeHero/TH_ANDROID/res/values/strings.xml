@@ -185,5 +185,7 @@
   <string name="link_account">Account is not linked, please go to Settings and link %s account</string>
   <string name="show_friends_only">Show friends only</string>
   <string name="show_friends_of_friends">Show friends of friends</string>
+  <string name="average_purchase_price">Average Price (US$)</string>
+  <string name="unit">1</string>
 
 </resources>

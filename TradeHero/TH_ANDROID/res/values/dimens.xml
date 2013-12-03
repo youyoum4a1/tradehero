@@ -41,5 +41,6 @@
   <dimen name="notification_margin">10dp</dimen>
   <dimen name="notification_logo_width">24dp</dimen>
   <dimen name="notification_padding_top">10dp</dimen>
+  <dimen name="add_to_watch_list_padding">10dp</dimen>
 
 </resources>

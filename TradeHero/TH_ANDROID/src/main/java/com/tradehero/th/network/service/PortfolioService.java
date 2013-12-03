@@ -11,6 +11,7 @@ import retrofit.http.Body;
 import retrofit.http.GET;
 import retrofit.http.POST;
 import retrofit.http.Path;
+import retrofit.http.Query;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/14/13 Time: 12:11 PM To change this template use File | Settings | File Templates. */
 public interface PortfolioService
@@ -18,12 +19,12 @@ public interface PortfolioService
     //<editor-fold desc="Get User Portfolio List">
     @GET("/users/{userId}/portfolios")
     List<PortfolioCompactDTO> getPortfolios(
-            @Path("userId") int userId)
+            @Path("userId") int userId, @Query("includeWatchlist") Boolean includeWatchList)
         throws RetrofitError;
 
     @GET("/users/{userId}/portfolios")
     void getPortfolios(
-            @Path("userId") int userId,
+            @Path("userId") int userId, @Query("includeWatchlist") Boolean includeWatchList,
             Callback<List<PortfolioCompactDTO>> callback);
     //</editor-fold>
 

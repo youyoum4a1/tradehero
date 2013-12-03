@@ -27,6 +27,7 @@ import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
 import com.tradehero.th.api.users.UserProfileCompactDTO;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.base.NavigatorActivity;
+import com.tradehero.th.fragments.security.AddToWatchListFragment;
 import com.tradehero.th.fragments.security.StockInfoFragment;
 import com.tradehero.th.fragments.trade.BuySellFragment;
 import com.tradehero.th.misc.callback.THCallback;
@@ -205,13 +206,21 @@ public class TimelineItemView extends LinearLayout implements
         {
             switch (item.getItemId())
             {
-                case R.id.timeline_popup_menu_monitor_add_to_watch_list:
+                case R.id.timeline_popup_menu_monitor_add_to_watch_list: {
+                    Bundle args = new Bundle();
+                    SecurityId securityId = getSecurityId();
+                    if (securityId != null)
+                    {
+                        args.putBundle(AddToWatchListFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
+                    }
+                    getNavigator().pushFragment(AddToWatchListFragment.class, args, Navigator.PUSH_UP_FROM_BOTTOM);
                     return true;
+                }
 
                 case R.id.timeline_popup_menu_monitor_enable_stock_alert:
                     return true;
 
-                case R.id.timeline_popup_menu_monitor_view_graph:
+                case R.id.timeline_popup_menu_monitor_view_graph: {
                     Bundle args = new Bundle();
                     SecurityId securityId = getSecurityId();
                     if (securityId != null)
@@ -220,6 +229,7 @@ public class TimelineItemView extends LinearLayout implements
                     }
                     getNavigator().pushFragment(StockInfoFragment.class, args);
                     return true;
+                }
             }
             return false;
         }
