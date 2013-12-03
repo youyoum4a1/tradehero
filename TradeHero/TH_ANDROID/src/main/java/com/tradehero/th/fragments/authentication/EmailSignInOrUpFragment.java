@@ -9,8 +9,8 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.form.UserFormFactory;
 import com.tradehero.th.auth.EmailAuthenticationProvider;
+import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.NetworkUtils;
-import com.tradehero.th.utills.Util;
 import com.tradehero.th.widget.ValidationListener;
 import com.tradehero.th.widget.ValidationMessage;
 import java.util.HashMap;
@@ -48,7 +48,7 @@ abstract public class EmailSignInOrUpFragment extends AuthenticationFragment imp
 
     protected void handleSignInOrUpButtonClicked (View view)
     {
-        Util.dismissKeyBoard(getActivity(), view);
+        DeviceUtil.dismissKeyBoard(getActivity(), view);
         forceValidateFields();
 
         try

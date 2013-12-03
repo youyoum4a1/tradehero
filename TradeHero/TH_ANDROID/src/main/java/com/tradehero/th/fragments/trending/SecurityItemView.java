@@ -17,7 +17,6 @@ import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.security.SecurityCompactDTO;
-import com.tradehero.th.utills.YUtils;
 import com.tradehero.th.utils.ColorUtils;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.DateUtils;
@@ -192,10 +191,9 @@ public class SecurityItemView extends RelativeLayout implements DTOView<Security
             date.setTextColor(getResources().getColor(securityCompactDTO.marketOpen ? R.color.black : R.color.text_gray_normal));
         }
 
-        double dLastPrice = YUtils.parseQuoteValue(securityCompactDTO.lastPrice.toString());
-        if (!Double.isNaN(dLastPrice))
+        if (securityCompactDTO.lastPrice != null && !Double.isNaN(securityCompactDTO.lastPrice))
         {
-            lastPrice.setText(String.format("%.2f", dLastPrice));
+            lastPrice.setText(String.format("%.2f", securityCompactDTO.lastPrice));
         }
         else
         {

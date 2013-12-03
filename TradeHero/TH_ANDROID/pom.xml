@@ -8,7 +8,7 @@
   <artifactId>TH_Android</artifactId>
   <version>1.0-SNAPSHOT</version>
   <packaging>apk</packaging>
-  
+
   <parent>
     <groupId>com.tradehero.th</groupId>
     <artifactId>parent</artifactId>
@@ -64,13 +64,13 @@
       <artifactId>signpost-commonshttp4</artifactId>
       <version>1.2.1.2</version>
     </dependency>
-	
-	<dependency>
-		<groupId>org.twitter4j</groupId>
-		<artifactId>twitter4j-core</artifactId>
-		<version>3.0.3</version>
-	</dependency>
-	
+
+    <dependency>
+      <groupId>org.twitter4j</groupId>
+      <artifactId>twitter4j-core</artifactId>
+      <version>3.0.3</version>
+    </dependency>
+
     <dependency>
       <groupId>com.squareup</groupId>
       <artifactId>javawriter</artifactId>
@@ -105,7 +105,7 @@
       <groupId>com.jakewharton</groupId>
       <artifactId>disklrucache</artifactId>
       <version>2.0.2</version>
-    </dependency>            
+    </dependency>
 
     <dependency>
       <groupId>com.google.android</groupId>
@@ -121,7 +121,7 @@
       <groupId>com.viewpagerindicator</groupId>
       <artifactId>library</artifactId>
       <version>2.4.1</version>
-	  <type>apklib</type>
+      <type>apklib</type>
     </dependency>
 
     <dependency>
@@ -146,7 +146,7 @@
       <groupId>com.github.chrisbanes.pulltorefresh</groupId>
       <artifactId>library</artifactId>
       <version>2.1.2-SNAPSHOT</version>
-	  <type>apklib</type>
+      <type>apklib</type>
     </dependency>
 
     <dependency>
@@ -165,14 +165,14 @@
       <groupId>com.actionbarsherlock</groupId>
       <artifactId>actionbarsherlock</artifactId>
       <version>4.4.0</version>
-	  <type>apklib</type>
+      <type>apklib</type>
     </dependency>
 
     <dependency>
       <groupId>com.facebook</groupId>
       <artifactId>facebook-android-sdk</artifactId>
       <version>3.5.2-SNAPSHOT</version>
-	  <type>apklib</type>
+      <type>apklib</type>
     </dependency>
 
     <!--/git-submodules dependencies-->
@@ -219,8 +219,10 @@
   </dependencies>
 
   <build>
-	<finalName>${project.artifactId}</finalName>
-	
+    <sourceDirectory>src/main/java</sourceDirectory>
+
+    <finalName>${project.artifactId}</finalName>
+
     <pluginManagement>
       <plugins>
         <plugin>

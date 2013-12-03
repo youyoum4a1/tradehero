@@ -15,7 +15,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
@@ -33,7 +32,7 @@ import com.tradehero.th.base.THUser;
 import com.tradehero.th.fragments.settings.FocusableOnTouchListener;
 import com.tradehero.th.misc.callback.LogInCallback;
 import com.tradehero.th.misc.exception.THException;
-import com.tradehero.th.utills.Util;
+import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.NetworkUtils;
 import com.tradehero.th.widget.MatchingPasswordText;
 import com.tradehero.th.widget.ServerValidatedEmailText;
@@ -301,7 +300,7 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
 
     private void updateProfile(View view)
     {
-        Util.dismissKeyBoard(getActivity(), view);
+        DeviceUtil.dismissKeyBoard(getActivity(), view);
         forceValidateFields();
 
         if (!NetworkUtils.isConnected(getActivity()))
