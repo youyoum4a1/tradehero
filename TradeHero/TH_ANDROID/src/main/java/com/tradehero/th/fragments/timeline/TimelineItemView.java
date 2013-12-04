@@ -371,7 +371,9 @@ public class TimelineItemView extends LinearLayout implements
     private void openSecurityProfile(String exchange, String symbol)
     {
         SecurityId securityId = new SecurityId(exchange, symbol);
-        getNavigator().pushFragment(BuySellFragment.class, securityId.getArgs());
+        Bundle args = new Bundle();
+        args.putBundle(BuySellFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
+        getNavigator().pushFragment(BuySellFragment.class, args);
     }
 
     private Navigator getNavigator()
