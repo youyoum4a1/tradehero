@@ -195,6 +195,11 @@ public class TimelineItemView extends LinearLayout implements
                             getResources().getDimensionPixelSize(R.dimen.timeline_vendor_logo_max_width),
                             getResources().getDimensionPixelSize(R.dimen.timeline_vendor_logo_max_height)))
                     .into(vendorImage);
+            vendorImage.setVisibility(VISIBLE);
+        }
+        else
+        {
+            vendorImage.setVisibility(GONE);
         }
 
         updateActionButtonsVisibility();
