@@ -13,9 +13,4 @@ public class LeaderboardDefTimePeriodListKey extends LeaderboardDefListKey
         super(ALL_LEADERBOARD_DEF_TIME_PERIOD);
     }
     //</editor-fold>
-
-    @Override public boolean equals(Object other)
-    {
-        return (other instanceof LeaderboardDefTimePeriodListKey) && equals((LeaderboardDefTimePeriodListKey) other);
-    }
 }

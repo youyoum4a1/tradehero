@@ -27,11 +27,6 @@ public class ExchangeListType extends AbstractStringDTOKey
     }
     //</editor-fold>
 
-    @Override public boolean equals(Object other)
-    {
-        return (other instanceof ExchangeListType) && equals((ExchangeListType) other);
-    }
-
     @Override public String getBundleKey()
     {
         return BUNDLE_KEY_KEY;

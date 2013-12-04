@@ -26,11 +26,6 @@ public class LeaderboardDefListKey extends AbstractStringDTOKey
     }
     //</editor-fold>
 
-    @Override public boolean equals(Object other)
-    {
-        return (other instanceof LeaderboardDefListKey) && equals((LeaderboardDefListKey) other);
-    }
-
     @Override public String getBundleKey()
     {
         return BUNDLE_KEY_KEY;

@@ -55,7 +55,7 @@ public class OwnedPortfolioId  implements Comparable, DTOKey
 
     @Override public boolean equals(Object other)
     {
-        return (other instanceof OwnedPortfolioId) && equals((OwnedPortfolioId) other);
+        return getClass().isInstance(other) && equals(getClass().cast(other));
     }
 
     public boolean equals(OwnedPortfolioId other)
@@ -72,11 +72,11 @@ public class OwnedPortfolioId  implements Comparable, DTOKey
             return 1;
         }
 
-        if (o.getClass() == OwnedPortfolioId.class)
+        if (o.getClass() == getClass())
         {
-            return compareTo((OwnedPortfolioId) o);
+            return compareTo(getClass().cast(o));
         }
-        return o.getClass().getName().compareTo(OwnedPortfolioId.class.getName());
+        return o.getClass().getName().compareTo(getClass().getName());
     }
 
     public int compareTo(OwnedPortfolioId other)

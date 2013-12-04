@@ -27,11 +27,6 @@ public class SearchSecurityListType extends SecurityListType
                 new Integer(perPage).hashCode();
     }
 
-    @Override public boolean equals(Object other)
-    {
-        return (other instanceof SearchSecurityListType) && equals((SearchSecurityListType) other);
-    }
-
     @Override public boolean equals(SecurityListType other)
     {
         return (other instanceof SearchSecurityListType) && equals((SearchSecurityListType) other);

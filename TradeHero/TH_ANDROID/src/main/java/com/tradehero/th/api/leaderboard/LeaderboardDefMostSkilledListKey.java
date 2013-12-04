@@ -11,9 +11,4 @@ public class LeaderboardDefMostSkilledListKey extends LeaderboardDefListKey
         super(ALL_LEADERBOARD_DEF_MOST_SKILLED);
     }
     //</editor-fold>
-
-    @Override public boolean equals(Object other)
-    {
-        return (other instanceof LeaderboardDefMostSkilledListKey) && equals((LeaderboardDefMostSkilledListKey) other);
-    }
 }

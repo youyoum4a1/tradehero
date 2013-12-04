@@ -20,11 +20,6 @@ public class LeaderboardMarkUserPositionId extends AbstractIntegerDTOKey
         super(args);
     }
 
-    @Override public boolean equals(Object other)
-    {
-        return (other instanceof LeaderboardMarkUserPositionId) && equals((LeaderboardMarkUserPositionId) other);
-    }
-
     @Override public String getBundleKey()
     {
         return BUNDLE_KEY;

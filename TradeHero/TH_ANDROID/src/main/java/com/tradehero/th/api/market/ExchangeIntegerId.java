@@ -22,11 +22,6 @@ public class ExchangeIntegerId extends AbstractIntegerDTOKey implements DTO
     }
     //</editor-fold>
 
-    @Override public boolean equals(Object other)
-    {
-        return (other instanceof ExchangeIntegerId) && equals((ExchangeIntegerId) other);
-    }
-
     @Override public String getBundleKey()
     {
         return BUNDLE_KEY_KEY;

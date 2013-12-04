@@ -52,11 +52,11 @@ public class SecurityId implements Comparable, DTOKey, DTO
             return 1;
         }
 
-        if (o.getClass() == SecurityId.class)
+        if (o.getClass() == getClass())
         {
-            return compareTo((SecurityId) o);
+            return compareTo(getClass().cast(o));
         }
-        return o.getClass().getName().compareTo(SecurityId.class.getName());
+        return o.getClass().getName().compareTo(getClass().getName());
     }
 
     public int compareTo(SecurityId other)

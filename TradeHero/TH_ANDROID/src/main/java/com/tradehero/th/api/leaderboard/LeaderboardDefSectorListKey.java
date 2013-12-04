@@ -18,9 +18,4 @@ public class LeaderboardDefSectorListKey extends LeaderboardDefListKey
         super(args);
     }
     //</editor-fold>
-
-    @Override public boolean equals(Object other)
-    {
-        return (other instanceof LeaderboardDefSectorListKey) && equals((LeaderboardDefSectorListKey) other);
-    }
 }

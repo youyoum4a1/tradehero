@@ -9,7 +9,7 @@ abstract public class SecurityListType implements Comparable<SecurityListType>, 
 
     @Override public boolean equals(Object other)
     {
-        return (other instanceof SecurityListType) && equals((SecurityListType) other);
+        return getClass().isInstance(other) && equals(getClass().cast(other));
     }
 
     abstract public boolean equals(SecurityListType other);

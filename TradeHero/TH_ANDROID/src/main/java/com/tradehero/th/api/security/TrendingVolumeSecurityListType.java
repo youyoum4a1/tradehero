@@ -15,32 +15,8 @@ public class TrendingVolumeSecurityListType extends TrendingSecurityListType
     }
     //</editor-fold>
 
-    @Override public boolean equals(Object other)
-    {
-        return (other instanceof TrendingVolumeSecurityListType) && equals((TrendingVolumeSecurityListType) other);
-    }
-
-    @Override public boolean equals(SecurityListType other)
-    {
-        return (other instanceof TrendingVolumeSecurityListType) && equals((TrendingVolumeSecurityListType) other);
-    }
-
     @Override public boolean equals(TrendingSecurityListType other)
     {
         return (other instanceof TrendingVolumeSecurityListType) && super.equals(other);
-    }
-
-    @Override public int compareTo(SecurityListType securityListType)
-    {
-        if (securityListType == null)
-        {
-            return 1;
-        }
-
-        if (securityListType instanceof TrendingVolumeSecurityListType)
-        {
-            return super.compareTo(securityListType);
-        }
-        return TrendingVolumeSecurityListType.class.getName().compareTo(securityListType.getClass().getName());
     }
 }

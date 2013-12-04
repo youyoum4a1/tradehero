@@ -54,7 +54,10 @@ public abstract class AbstractPrimitiveDTOKey<T extends Comparable> implements C
     //    return equals((AbstractPrimitiveDTOKey) other);
     //}
 
-    @Override abstract public boolean equals(Object other);
+    @Override public boolean equals(Object other)
+    {
+        return getClass().isInstance(other) && equals(getClass().cast(other));
+    }
 
     public boolean equals(AbstractPrimitiveDTOKey other)
     {
@@ -68,11 +71,11 @@ public abstract class AbstractPrimitiveDTOKey<T extends Comparable> implements C
             return 1;
         }
 
-        if (o.getClass() == AbstractPrimitiveDTOKey.class)
+        if (o.getClass() == getClass())
         {
-            return compareTo((AbstractPrimitiveDTOKey) o);
+            return compareTo(getClass().cast(o));
         }
-        return o.getClass().getName().compareTo(AbstractIntegerDTOKey.class.getName());
+        return o.getClass().getName().compareTo(getClass().getName());
     }
 
     public int compareTo(AbstractPrimitiveDTOKey other)

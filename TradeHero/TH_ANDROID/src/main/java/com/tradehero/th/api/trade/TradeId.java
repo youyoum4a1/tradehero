@@ -28,11 +28,6 @@ public class TradeId extends AbstractIntegerDTOKey
         return BUNDLE_KEY_KEY;
     }
 
-    @Override public boolean equals(Object other)
-    {
-        return (other instanceof TradeId) && equals((TradeId) other);
-    }
-
     @Override public String toString()
     {
         return String.format("[%s key=%d]", TAG, key);

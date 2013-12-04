@@ -42,30 +42,11 @@ public class PerPagedOwnedPortfolioId extends PagedOwnedPortfolioId
         return super.hashCode() ^ (perPage == null ? 0 : perPage.hashCode());
     }
 
-    @Override public boolean equals(Object other)
-    {
-        return (other instanceof PerPagedOwnedPortfolioId) && equals((PerPagedOwnedPortfolioId) other);
-    }
-
     public boolean equals(PerPagedOwnedPortfolioId other)
     {
         return other != null &&
                 super.equals(other) &&
                 (perPage == null ? other.perPage == null : perPage.equals(other.perPage));
-    }
-
-    @Override public int compareTo(Object o)
-    {
-        if (o == null)
-        {
-            return 1;
-        }
-
-        if (o.getClass() == PerPagedOwnedPortfolioId.class)
-        {
-            return compareTo((PerPagedOwnedPortfolioId) o);
-        }
-        return o.getClass().getName().compareTo(PerPagedOwnedPortfolioId.class.getName());
     }
 
     public int compareTo(PerPagedOwnedPortfolioId other)

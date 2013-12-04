@@ -45,30 +45,11 @@ public class OwnedPositionId extends OwnedPortfolioId implements DTO
         return super.hashCode() ^ (positionId == null ? 0 : positionId.hashCode());
     }
 
-    @Override public boolean equals(Object other)
-    {
-        return (other instanceof OwnedPositionId) && equals((OwnedPositionId) other);
-    }
-
     public boolean equals(OwnedPositionId other)
     {
         return (other != null) &&
                 super.equals(other) &&
                 (positionId == null ? other.positionId == null : positionId.equals(other.positionId));
-    }
-
-    @Override public int compareTo(Object o)
-    {
-        if (o == null)
-        {
-            return 1;
-        }
-
-        if (o.getClass() == OwnedPositionId.class)
-        {
-            return compareTo((OwnedPositionId) o);
-        }
-        return o.getClass().getName().compareTo(OwnedPositionId.class.getName());
     }
 
     public int compareTo(OwnedPositionId other)

@@ -21,13 +21,7 @@ abstract public class AbstractIntegerDTOKey extends AbstractPrimitiveDTOKey<Inte
     }
     //</editor-fold>
 
-
     abstract public String getBundleKey();
-
-    @Override public boolean equals(Object other)
-    {
-        return (other instanceof AbstractIntegerDTOKey) && equals((AbstractIntegerDTOKey) other);
-    }
 
     /**
      * If the key is null, it removes it from the bundle

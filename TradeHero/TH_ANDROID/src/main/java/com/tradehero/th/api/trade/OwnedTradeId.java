@@ -52,30 +52,11 @@ public class OwnedTradeId extends OwnedPositionId implements DTOKey
         return super.hashCode() ^ (tradeId == null ? 0 : tradeId.hashCode());
     }
 
-    @Override public boolean equals(Object other)
-    {
-        return (other instanceof OwnedTradeId) && equals((OwnedTradeId) other);
-    }
-
     public boolean equals(OwnedTradeId other)
     {
         return (other != null) &&
                 super.equals(other) &&
                 (tradeId == null ? other.tradeId == null : tradeId.equals(other.tradeId));
-    }
-
-    @Override public int compareTo(Object o)
-    {
-        if (o == null)
-        {
-            return 1;
-        }
-
-        if (o.getClass() == OwnedTradeId.class)
-        {
-            return compareTo((OwnedTradeId) o);
-        }
-        return o.getClass().getName().compareTo(OwnedTradeId.class.getName());
     }
 
     public int compareTo(OwnedTradeId other)

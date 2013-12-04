@@ -26,11 +26,6 @@ public class UserBaseKey extends AbstractIntegerDTOKey
         return BUNDLE_KEY_KEY;
     }
 
-    @Override public boolean equals(Object other)
-    {
-        return (other instanceof UserBaseKey) && equals((UserBaseKey) other);
-    }
-
     public boolean isValid()
     {
         return key > 0;

@@ -28,30 +28,11 @@ public class PerPagedLeaderboardMarkUserId extends PagedLeaderboardMarkUserId
         return super.hashCode() ^ (perPage == null ? 0 : perPage.hashCode());
     }
 
-    @Override public boolean equals(Object other)
-    {
-        return (other instanceof PerPagedLeaderboardMarkUserId) && equals((PerPagedLeaderboardMarkUserId) other);
-    }
-
     public boolean equals(PerPagedLeaderboardMarkUserId other)
     {
         return other != null &&
                 super.equals(other) &&
                 (perPage == null ? other.perPage == null : perPage.equals(other.perPage));
-    }
-
-    @Override public int compareTo(Object o)
-    {
-        if (o == null)
-        {
-            return 1;
-        }
-
-        if (o.getClass() == PerPagedLeaderboardMarkUserId.class)
-        {
-            return compareTo((PerPagedLeaderboardMarkUserId) o);
-        }
-        return o.getClass().getName().compareTo(PerPagedLeaderboardMarkUserId.class.getName());
     }
 
     public int compareTo(PerPagedLeaderboardMarkUserId other)

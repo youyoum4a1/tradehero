@@ -19,11 +19,6 @@ public abstract class AbstractStringDTOKey extends AbstractPrimitiveDTOKey<Strin
 
     abstract public String getBundleKey();
 
-    @Override public boolean equals(Object other)
-    {
-        return (other instanceof AbstractStringDTOKey) && equals((AbstractStringDTOKey) other);
-    }
-
     public void putParameters(Bundle args)
     {
         args.putString(getBundleKey(), key);

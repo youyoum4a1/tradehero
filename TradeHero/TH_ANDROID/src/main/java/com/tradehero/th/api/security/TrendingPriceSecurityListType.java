@@ -15,32 +15,8 @@ public class TrendingPriceSecurityListType extends TrendingSecurityListType
     }
     //</editor-fold>
 
-    @Override public boolean equals(Object other)
-    {
-        return (other instanceof TrendingPriceSecurityListType) && equals((TrendingPriceSecurityListType) other);
-    }
-
-    @Override public boolean equals(SecurityListType other)
-    {
-        return (other instanceof TrendingPriceSecurityListType) && equals((TrendingPriceSecurityListType) other);
-    }
-
     @Override public boolean equals(TrendingSecurityListType other)
     {
         return (other instanceof TrendingPriceSecurityListType) && super.equals(other);
-    }
-
-    @Override public int compareTo(SecurityListType securityListType)
-    {
-        if (securityListType == null)
-        {
-            return 1;
-        }
-
-        if (securityListType instanceof TrendingPriceSecurityListType)
-        {
-            return super.compareTo(securityListType);
-        }
-        return TrendingPriceSecurityListType.class.getName().compareTo(securityListType.getClass().getName());
     }
 }
