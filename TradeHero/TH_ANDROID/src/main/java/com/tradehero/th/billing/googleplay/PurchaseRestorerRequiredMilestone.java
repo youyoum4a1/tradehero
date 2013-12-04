@@ -9,6 +9,8 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListRetrievedMilestone;
 import com.tradehero.th.utils.DaggerUtils;
 import java.util.Map;
+import javax.inject.Inject;
+import javax.inject.Provider;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/26/13 Time: 12:18 PM To change this template use File | Settings | File Templates. */
 public class PurchaseRestorerRequiredMilestone extends BaseMilestoneGroup
@@ -18,13 +20,15 @@ public class PurchaseRestorerRequiredMilestone extends BaseMilestoneGroup
     private static final int POSITION_FETCH_PURCHASE = 1;
     private static final int POSITION_FETCH_PORTFOLIO = 2;
 
-    public PurchaseRestorerRequiredMilestone(Context context, THIABActorInventoryFetcher actorInventoryFetcher, THIABActorPurchaseFetcher actorPurchaseFetcher, UserBaseKey userBaseKey)
+    @Inject protected Provider<PortfolioCompactListRetrievedMilestone> portfolioCompactListRetrievedMilestoneProvider;
+
+    public PurchaseRestorerRequiredMilestone(Context context, THIABActorInventoryFetcher actorInventoryFetcher, THIABActorPurchaseFetcher actorPurchaseFetcher)
     {
         super();
         DaggerUtils.inject(this);
         add(new THInventoryFetchMilestone(context, actorInventoryFetcher, IABSKUListType.getInApp()));
         add(new THIABPurchaseFetchMilestone(actorPurchaseFetcher));
-        add(new PortfolioCompactListRetrievedMilestone(userBaseKey));
+        add(portfolioCompactListRetrievedMilestoneProvider.get());
     }
 
     public Map<IABSKU, BaseIABPurchase> getFetchedPurchases()

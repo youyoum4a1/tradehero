@@ -8,7 +8,6 @@ import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 import com.tradehero.common.graphics.RoundedShapeTransformation;
 import com.tradehero.common.milestone.Milestone;
-import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
@@ -16,15 +15,13 @@ import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.portfolio.DisplayablePortfolioDTO;
 import com.tradehero.th.api.portfolio.DisplayablePortfolioUtil;
 import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
-import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.fragments.portfolio.header.PortfolioHeaderView;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.persistence.user.UserProfileRetrievedMilestone;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
-import java.lang.ref.WeakReference;
 import javax.inject.Inject;
+import javax.inject.Provider;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/14/13 Time: 12:28 PM To change this template use File | Settings | File Templates. */
 public class PortfolioListItemView extends RelativeLayout implements DTOView<DisplayablePortfolioDTO>
@@ -40,6 +37,7 @@ public class PortfolioListItemView extends RelativeLayout implements DTOView<Dis
     @Inject Lazy<Picasso> picasso;
     @Inject Lazy<CurrentUserBaseKeyHolder> currentUserBaseKeyHolder;
     @Inject Lazy<UserProfileCache> userProfileCache;
+    @Inject Provider<UserProfileRetrievedMilestone> currentUserProfileMilestoneProvider;
 
     private UserProfileRetrievedMilestone currentUserProfileRetrievedMilestone;
     private Milestone.OnCompleteListener currentUserProfileRetrievedMilestoneListener;
@@ -99,7 +97,7 @@ public class PortfolioListItemView extends RelativeLayout implements DTOView<Dis
                 THToast.show(R.string.error_fetch_your_user_profile);
             }
         };
-        UserProfileRetrievedMilestone milestone = new UserProfileRetrievedMilestone(currentUserBaseKeyHolder.get().getCurrentUserBaseKey());
+        UserProfileRetrievedMilestone milestone = currentUserProfileMilestoneProvider.get();
         milestone.setOnCompleteListener(currentUserProfileRetrievedMilestoneListener);
         currentUserProfileRetrievedMilestone = milestone;
         milestone.launch();

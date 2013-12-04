@@ -83,8 +83,7 @@ public class DashboardActivity extends SherlockFragmentActivity
                 getBillingActor(),
                 getBillingActor(),
                 getBillingActor(),
-                getBillingActor(),
-                currentUserBaseKeyHolder.getCurrentUserBaseKey());
+                getBillingActor());
         purchaseRestorerFinishedListener = new THIABPurchaseRestorer.OnPurchaseRestorerFinishedListener()
         {
             @Override

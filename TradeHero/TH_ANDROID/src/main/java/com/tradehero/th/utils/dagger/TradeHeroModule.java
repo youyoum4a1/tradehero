@@ -16,6 +16,7 @@ import com.tradehero.th.api.form.AbstractUserAvailabilityRequester;
 import com.tradehero.th.api.portfolio.DisplayablePortfolioDTO;
 import com.tradehero.th.api.portfolio.DisplayablePortfolioUtil;
 import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
+import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.base.THUser;
 import com.tradehero.th.billing.googleplay.PurchaseRestorerRequiredMilestone;
 import com.tradehero.th.billing.googleplay.THIABInventoryFetcher;
@@ -107,6 +108,7 @@ import com.tradehero.th.network.service.SocialService;
 import com.tradehero.th.network.service.TradeService;
 import com.tradehero.th.network.service.UserService;
 import com.tradehero.th.network.service.UserTimelineService;
+import com.tradehero.th.network.service.WatchlistService;
 import com.tradehero.th.network.service.YahooNewsService;
 import com.tradehero.th.persistence.DTOCacheUtil;
 import com.tradehero.th.persistence.billing.googleplay.IABSKUListRetrievedMilestone;
@@ -120,6 +122,7 @@ import com.tradehero.th.persistence.user.UserManager;
 import com.tradehero.th.persistence.user.UserProfileFetchAssistant;
 import com.tradehero.th.persistence.user.UserProfileRetrievedMilestone;
 import com.tradehero.th.persistence.user.UserStore;
+import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
 import com.tradehero.th.utils.FacebookUtils;
 import com.tradehero.th.utils.LinkedInUtils;
 import com.tradehero.th.utils.NumberDisplayUtils;
@@ -259,6 +262,7 @@ import org.ocpsoft.prettytime.PrettyTime;
                 BuySellFragment.BuySellTHIABUserInteractor.class,
 
                 AddToWatchListFragment.class,
+                WatchlistPositionCache.class,
         },
         staticInjections =
         {
@@ -287,6 +291,7 @@ public class TradeHeroModule
         this.lruFileCache = lruFileCache;
     }
 
+    //<editor-fold desc="API service endpoints">
     @Provides @Singleton UserService provideUserService()
     {
         return engine.createService(UserService.class);
@@ -367,21 +372,13 @@ public class TradeHeroModule
         return yahooEngine.createService(YahooNewsService.class);
     }
 
-    @Provides @Singleton AbstractUserStore provideUserStore(UserStore store)
+    @Provides @Singleton WatchlistService provideWatchlistService()
     {
-        return store;
+        return engine.createService(WatchlistService.class);
     }
+    //</editor-fold>
 
-    @Provides @Singleton Picasso providePicasso()
-    {
-        Picasso mPicasso = new Picasso.Builder(application)
-                //.downloader(new UrlConnectionDownloader(getContext()))
-                .memoryCache(lruFileCache)
-                .build();
-        //mPicasso.setDebugging(true);
-        return mPicasso;
-    }
-
+    //<editor-fold desc="Utilities">
     @Provides @Singleton FacebookUtils provideFacebookUtils(Context context)
     {
         return new FacebookUtils(context, context.getString(R.string.FACEBOOK_APP_ID));
@@ -400,6 +397,7 @@ public class TradeHeroModule
                 context.getString(R.string.LINKEDIN_CONSUMER_KEY),
                 context.getString(R.string.LINKEDIN_CONSUMER_SECRET));
     }
+    //</editor-fold>
 
     @Provides Context provideContext()
     {
@@ -414,5 +412,20 @@ public class TradeHeroModule
     @Provides PrettyTime providePrettyTime()
     {
         return new PrettyTime();
+    }
+
+    @Provides @Singleton Picasso providePicasso()
+    {
+        Picasso mPicasso = new Picasso.Builder(application)
+                //.downloader(new UrlConnectionDownloader(getContext()))
+                .memoryCache(lruFileCache)
+                .build();
+        //mPicasso.setDebugging(true);
+        return mPicasso;
+    }
+
+    @Provides @Singleton AbstractUserStore provideUserStore(UserStore store)
+    {
+        return store;
     }
 }

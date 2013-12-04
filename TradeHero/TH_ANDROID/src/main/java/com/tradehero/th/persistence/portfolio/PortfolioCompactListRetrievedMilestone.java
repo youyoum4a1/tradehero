@@ -2,6 +2,7 @@ package com.tradehero.th.persistence.portfolio;
 
 import com.tradehero.common.persistence.DTORetrievedMilestone;
 import com.tradehero.th.api.portfolio.OwnedPortfolioIdList;
+import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
@@ -13,6 +14,11 @@ public class PortfolioCompactListRetrievedMilestone extends DTORetrievedMileston
     public static final String TAG = PortfolioCompactListRetrievedMilestone.class.getSimpleName();
 
     @Inject Lazy<PortfolioCompactListCache> portfolioCompactListCache;
+
+    @Inject public PortfolioCompactListRetrievedMilestone(CurrentUserBaseKeyHolder currentUserBaseKeyHolder)
+    {
+        this(currentUserBaseKeyHolder.getCurrentUserBaseKey());
+    }
 
     public PortfolioCompactListRetrievedMilestone(UserBaseKey key)
     {

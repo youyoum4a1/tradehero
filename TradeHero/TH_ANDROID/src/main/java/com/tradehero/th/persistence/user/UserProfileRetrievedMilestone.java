@@ -1,9 +1,9 @@
 package com.tradehero.th.persistence.user;
 
 import com.tradehero.common.persistence.DTORetrievedMilestone;
+import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
 import javax.inject.Inject;
@@ -14,6 +14,11 @@ public class UserProfileRetrievedMilestone extends DTORetrievedMilestone<UserBas
     public static final String TAG = UserProfileRetrievedMilestone.class.getSimpleName();
 
     @Inject Lazy<UserProfileCache> userProfileCache;
+
+    @Inject public UserProfileRetrievedMilestone(CurrentUserBaseKeyHolder currentUserBaseKeyHolder)
+    {
+        this(currentUserBaseKeyHolder.getCurrentUserBaseKey());
+    }
 
     public UserProfileRetrievedMilestone(UserBaseKey key)
     {

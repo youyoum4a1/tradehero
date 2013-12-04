@@ -33,7 +33,6 @@ public class THIABPurchaseRestorer extends IABPurchaseRestorer<
     private WeakReference<THIABActorInventoryFetcher> actorInventoryFetcher = new WeakReference<>(null);
     private WeakReference<THIABActorPurchaseFetcher> actorPurchaseFetcher = new WeakReference<>(null);
     private WeakReference<THIABActorPurchaseReporter> actorPurchaseReporter = new WeakReference<>(null);
-    protected final UserBaseKey userBaseKey;
     private WeakReference<OnPurchaseRestorerFinishedListener> finishedListener = new WeakReference<>(null);
     protected int requestCodeReporter;
     private PurchaseReporter.OnPurchaseReportedListener<IABSKU, THIABOrderId, BaseIABPurchase, Exception> purchaseReportedListener;
@@ -44,15 +43,13 @@ public class THIABPurchaseRestorer extends IABPurchaseRestorer<
             THIABActorInventoryFetcher actorInventoryFetcher,
             THIABActorPurchaseFetcher actorPurchaseFetcher,
             THIABActorPurchaseConsumer billingActorConsumer,
-            THIABActorPurchaseReporter actorPurchaseReporter,
-            UserBaseKey userBaseKey)
+            THIABActorPurchaseReporter actorPurchaseReporter)
     {
         super(billingActorConsumer);
         this.activity = new WeakReference<>(activity);
         this.actorInventoryFetcher = new WeakReference<>(actorInventoryFetcher);
         this.actorPurchaseFetcher = new WeakReference<>(actorPurchaseFetcher);
         this.actorPurchaseReporter = new WeakReference<>(actorPurchaseReporter);
-        this.userBaseKey = userBaseKey;
         failedReports = new ArrayList<>();
     }
 
@@ -80,7 +77,7 @@ public class THIABPurchaseRestorer extends IABPurchaseRestorer<
 
     @Override protected Milestone createMilestone()
     {
-        return new PurchaseRestorerRequiredMilestone(activity.get(), actorInventoryFetcher.get(), actorPurchaseFetcher.get(), userBaseKey);
+        return new PurchaseRestorerRequiredMilestone(activity.get(), actorInventoryFetcher.get(), actorPurchaseFetcher.get());
     }
 
     @Override protected IABPurchaseConsumer.OnIABConsumptionFinishedListener<IABSKU, THIABOrderId, BaseIABPurchase, IABException> createPurchaseConsumerListener()
