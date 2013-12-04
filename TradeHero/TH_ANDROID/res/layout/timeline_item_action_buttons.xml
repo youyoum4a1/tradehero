@@ -49,6 +49,7 @@
         android:layout_width="0dp"
         android:layout_weight="1"
         android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
         android:padding="@dimen/timeline_action_buttons_padding"
         >
       <TextView
