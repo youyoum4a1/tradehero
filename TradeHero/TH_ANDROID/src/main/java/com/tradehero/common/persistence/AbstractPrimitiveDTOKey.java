@@ -21,10 +21,14 @@ public abstract class AbstractPrimitiveDTOKey<T extends Comparable> implements C
     {
         super();
 
-        // TODO typo?
-        if (args.containsKey(getBundleKey()));
+        if (args.containsKey(getBundleKey()))
         {
-            this.key = (T)args.get(getBundleKey());
+            Object unbundled = args.get(getBundleKey());
+            this.key = (T) unbundled;
+        }
+        else
+        {
+            key = null;
         }
         init();
     }
@@ -56,7 +60,7 @@ public abstract class AbstractPrimitiveDTOKey<T extends Comparable> implements C
 
     @Override public boolean equals(Object other)
     {
-        return getClass().isInstance(other) && equals(getClass().cast(other));
+        return ((Object) this).getClass().isInstance(other) && equals(((Object) this).getClass().cast(other));
     }
 
     public boolean equals(AbstractPrimitiveDTOKey other)
@@ -71,11 +75,11 @@ public abstract class AbstractPrimitiveDTOKey<T extends Comparable> implements C
             return 1;
         }
 
-        if (o.getClass() == getClass())
+        if (o.getClass() == ((Object) this).getClass())
         {
-            return compareTo(getClass().cast(o));
+            return compareTo(((Object) this).getClass().cast(o));
         }
-        return o.getClass().getName().compareTo(getClass().getName());
+        return o.getClass().getName().compareTo(((Object) this).getClass().getName());
     }
 
     public int compareTo(AbstractPrimitiveDTOKey other)
