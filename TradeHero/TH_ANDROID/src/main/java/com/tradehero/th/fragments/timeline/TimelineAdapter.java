@@ -6,10 +6,10 @@ import android.widget.AbsListView;
 import android.widget.ListView;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
-import com.testflightapp.lib.TestFlight;
 import com.tradehero.th.adapters.DTOAdapter;
 import com.tradehero.th.api.local.TimelineItem;
 import com.tradehero.th.loaders.TimelinePagedItemListLoader;
+import com.tradehero.th.utils.TestFlightUtils;
 
 public class TimelineAdapter extends DTOAdapter<TimelineItem, TimelineItemView>
         implements PullToRefreshListView.OnRefreshListener<ListView>, AbsListView.OnScrollListener, PullToRefreshBase.OnLastItemVisibleListener
@@ -44,11 +44,11 @@ public class TimelineAdapter extends DTOAdapter<TimelineItem, TimelineItemView>
         {
             case PULL_FROM_START:
                 loader.loadNextPage();
-                TestFlight.passCheckpoint("timeline.pull.from_top");
+                TestFlightUtils.passCheckpoint("timeline.pull.from_top");
                 break;
             case PULL_FROM_END:
                 loader.loadPreviousPage();
-                TestFlight.passCheckpoint("timeline.pull.from_bottom");
+                TestFlightUtils.passCheckpoint("timeline.pull.from_bottom");
                 break;
         }
     }

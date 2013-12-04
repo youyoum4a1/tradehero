@@ -2,6 +2,7 @@ package com.tradehero.th.persistence.social;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import com.tradehero.common.utils.THLog;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.base.Application;
 import com.tradehero.th.base.THUser;
@@ -33,14 +34,17 @@ public class VisitedFriendListPrefs
         saveVisitedIdList(userBaseKeys);
     }
 
-    private static void saveVisitedIdList(List<UserBaseKey> userBaseKeys)
+    private static void saveVisitedIdList(final List<UserBaseKey> userBaseKeys)
     {
         Set<String> userKeys = new TreeSet<>();
         if (userBaseKeys != null)
         {
             for (UserBaseKey userBaseKey: userBaseKeys)
             {
-                userKeys.add(userBaseKey.key.toString());
+                if (userBaseKey.key != null && userBaseKey.key > 0)
+                {
+                    userKeys.add(userBaseKey.key.toString());
+                }
             }
         }
 
@@ -51,14 +55,37 @@ public class VisitedFriendListPrefs
 
     public static List<UserBaseKey> getVisitedIdList()
     {
-        SharedPreferences preferences = Application.context().getSharedPreferences(KEY_PREFS, Context.MODE_PRIVATE);
-        Set<String> userKeys = preferences.getStringSet(KEY_VISITED_ID_SET, new TreeSet<String>());
+        final SharedPreferences preferences = Application.context().getSharedPreferences(KEY_PREFS, Context.MODE_PRIVATE);
+        final Set<String> userKeys = preferences.getStringSet(KEY_VISITED_ID_SET, new TreeSet<String>());
 
-        List<UserBaseKey> userBaseKeys = new ArrayList<>();
+        final List<UserBaseKey> userBaseKeys = new ArrayList<>();
         for (String userKey: userKeys)
         {
-            userBaseKeys.add(new UserBaseKey(Integer.parseInt(userKey)));
+            int parsedInt;
+            try
+            {
+                parsedInt = Integer.parseInt(userKey);
+                if (parsedInt > 0)
+                {
+                    userBaseKeys.add(new UserBaseKey(parsedInt));
+                }
+                else
+                {
+                    THLog.d(TAG, "A userKey was not positive " + userKey);
+                }
+            }
+            catch (NumberFormatException e)
+            {
+                THLog.e(TAG, "There was a bad userKey " + userKey, e);
+            }
         }
+
+        // Potentially resaved sanitised list
+        if (userBaseKeys.size() != userKeys.size())
+        {
+            saveVisitedIdList(userBaseKeys);
+        }
+
         return userBaseKeys;
     }
 

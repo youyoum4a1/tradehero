@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.DTOAdapter;
 import com.tradehero.th.api.portfolio.DisplayablePortfolioDTO;
@@ -56,8 +57,8 @@ public class PortfolioListItemAdapter extends DTOAdapter<DisplayablePortfolioDTO
     {
         super.setItems(items);
         // Prepare the data for display
-        orderedTypes = new ArrayList<>();
-        orderedItems = new ArrayList<>();
+        List<Integer> preparedOrderedTypes = new ArrayList<>();
+        List<Object> preparedOrderedItems = new ArrayList<>();
 
         if (items != null)
         {
@@ -88,39 +89,41 @@ public class PortfolioListItemAdapter extends DTOAdapter<DisplayablePortfolioDTO
                 }
             }
 
-            orderedTypes.add(ITEM_TYPE_OWN_HEADER);
-            orderedItems.add(R.string.portfolio_own_header);
+            preparedOrderedTypes.add(ITEM_TYPE_OWN_HEADER);
+            preparedOrderedItems.add(R.string.portfolio_own_header);
             for (DisplayablePortfolioDTO displayablePortfolioDTO: ownPortfolios)
             {
-                orderedTypes.add(ITEM_TYPE_OWN);
-                orderedItems.add(displayablePortfolioDTO);
+                preparedOrderedTypes.add(ITEM_TYPE_OWN);
+                preparedOrderedItems.add(displayablePortfolioDTO);
             }
             if (heroPortfolios.size() > 0)
             {
-                orderedTypes.add(ITEM_TYPE_HERO_HEADER);
-                orderedItems.add(R.string.portfolio_recently_viewed_heroes);
+                preparedOrderedTypes.add(ITEM_TYPE_HERO_HEADER);
+                preparedOrderedItems.add(R.string.portfolio_recently_viewed_heroes);
                 for (DisplayablePortfolioDTO displayablePortfolioDTO: heroPortfolios)
                 {
-                    orderedTypes.add(ITEM_TYPE_HERO);
-                    orderedItems.add(displayablePortfolioDTO);
+                    preparedOrderedTypes.add(ITEM_TYPE_HERO);
+                    preparedOrderedItems.add(displayablePortfolioDTO);
                 }
             }
             if (otherPortfolios.size() > 0)
             {
-                orderedTypes.add(ITEM_TYPE_OTHER_HEADER);
-                orderedItems.add(R.string.portfolio_recently_viewed_others);
+                preparedOrderedTypes.add(ITEM_TYPE_OTHER_HEADER);
+                preparedOrderedItems.add(R.string.portfolio_recently_viewed_others);
                 for (DisplayablePortfolioDTO displayablePortfolioDTO: otherPortfolios)
                 {
-                    orderedTypes.add(ITEM_TYPE_OTHER);
-                    orderedItems.add(displayablePortfolioDTO);
+                    preparedOrderedTypes.add(ITEM_TYPE_OTHER);
+                    preparedOrderedItems.add(displayablePortfolioDTO);
                 }
             }
+            this.orderedTypes = preparedOrderedTypes;
+            this.orderedItems = preparedOrderedItems;
         }
     }
 
     @Override public int getCount()
     {
-        return orderedTypes.size();
+        return this.orderedTypes.size();
     }
 
     @Override public int getViewTypeCount()
@@ -130,7 +133,17 @@ public class PortfolioListItemAdapter extends DTOAdapter<DisplayablePortfolioDTO
 
     @Override public int getItemViewType(int position)
     {
-        return orderedTypes.get(position);
+        List<Integer> orderedTypesCopy = this.orderedTypes;
+        int size = orderedTypesCopy.size();
+        if (position < size)
+        {
+            return orderedTypesCopy.get(position);
+        }
+        if (size > 0)
+        {
+            return orderedTypesCopy.get(size - 1);
+        }
+        return ITEM_TYPE_OWN_HEADER;
     }
 
     @Override public long getItemId(int position)
@@ -140,26 +153,52 @@ public class PortfolioListItemAdapter extends DTOAdapter<DisplayablePortfolioDTO
 
     @Override public Object getItem(int position)
     {
-        return orderedItems.get(position);
+        List<Object> orderedItemsCopy = this.orderedItems;
+        int size = orderedItemsCopy.size();
+        if (position < size)
+        {
+            return orderedItemsCopy.get(position);
+        }
+        if (size > 0)
+        {
+            return orderedItemsCopy.get(size - 1);
+        }
+        return R.string.portfolio_own_header;
     }
 
     @Override public View getView(int position, View convertView, ViewGroup parent)
     {
         View view = null;
-        switch (getItemViewType(position))
+        Object item = getItem(position);
+        int itemType = getItemViewType(position);
+        switch (itemType)
         {
             case ITEM_TYPE_OWN:
             case ITEM_TYPE_HERO:
             case ITEM_TYPE_OTHER:
                 view = inflater.inflate(layoutResourceId, parent, false);
-                ((PortfolioListItemView) view).display((DisplayablePortfolioDTO) getItem(position));
+                if (item instanceof DisplayablePortfolioDTO)
+                {
+                    ((PortfolioListItemView) view).display((DisplayablePortfolioDTO) item);
+                }
+                else
+                {
+                    THLog.w(TAG, "type " + itemType + ", item not DisplayablePortfolioDTO " + item);
+                }
                 break;
 
             case ITEM_TYPE_OWN_HEADER:
             case ITEM_TYPE_HERO_HEADER:
             case ITEM_TYPE_OTHER_HEADER:
                 view = inflater.inflate(otherHeaderResId, parent, false);
-                ((BaseListHeaderView) view).setHeaderTextContent(context.getString((int) getItem(position)));
+                if (item instanceof Integer)
+                {
+                    ((BaseListHeaderView) view).setHeaderTextContent(context.getString((int) item));
+                }
+                else
+                {
+                    THLog.w(TAG, "type " + itemType + ", item not Integer " + item);
+                }
                 break;
 
             default:

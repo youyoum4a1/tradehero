@@ -68,6 +68,7 @@ public class PortfolioListFragment extends DashboardFragment
         super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.fragment_portfolios_list, container, false);
         initViews(view);
+        ownPortfolioListListener = createOwnPortfolioListListener();
         return view;
     }
 
@@ -213,16 +214,20 @@ public class PortfolioListFragment extends DashboardFragment
 
     private void fetchListOwn()
     {
-        if (ownPortfolioListListener == null)
-        {
-            ownPortfolioListListener = createOwnPortfolioListListener();
-        }
         if (fetchOwnPortfolioListFetchTask != null)
         {
             fetchOwnPortfolioListFetchTask.forgetListener(true);
         }
-        fetchOwnPortfolioListFetchTask = portfolioListCache.get().getOrFetch(currentUserBaseKeyHolder.getCurrentUserBaseKey(), ownPortfolioListListener);
-        fetchOwnPortfolioListFetchTask.execute();
+        OwnedPortfolioIdList portfolioIdList = portfolioListCache.get().get(currentUserBaseKeyHolder.getCurrentUserBaseKey());
+        if (portfolioIdList != null)
+        {
+            linkWithOwn(portfolioIdList, true, (OwnedPortfolioId) null);
+        }
+        else
+        {
+            fetchOwnPortfolioListFetchTask = portfolioListCache.get().getOrFetch(currentUserBaseKeyHolder.getCurrentUserBaseKey(), ownPortfolioListListener);
+            fetchOwnPortfolioListFetchTask.execute();
+        }
     }
 
     private PortfolioCompactListCache.Listener<UserBaseKey, OwnedPortfolioIdList> createOwnPortfolioListListener()

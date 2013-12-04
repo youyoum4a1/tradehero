@@ -22,7 +22,7 @@
     <output url="file://$MODULE_DIR$/ActionBarSherlock/actionbarsherlock/target/classes" />
     <output-test url="file://$MODULE_DIR$/ActionBarSherlock/actionbarsherlock/target/test-classes" />
     <content url="file://$MODULE_DIR$/ActionBarSherlock/actionbarsherlock">
-      <sourceFolder url="file://$MODULE_DIR$/ActionBarSherlock/actionbarsherlock/gen" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/ActionBarSherlock/actionbarsherlock/gen" isTestSource="false" generated="true" />
       <sourceFolder url="file://$MODULE_DIR$/ActionBarSherlock/actionbarsherlock/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/ActionBarSherlock/actionbarsherlock/test" isTestSource="true" />
       <excludeFolder url="file://$MODULE_DIR$/ActionBarSherlock/actionbarsherlock/target" />

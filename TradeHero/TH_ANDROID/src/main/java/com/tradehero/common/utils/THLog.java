@@ -6,6 +6,7 @@ import android.content.pm.Signature;
 import android.util.Base64;
 import android.util.Log;
 import com.tradehero.th.base.Application;
+import com.tradehero.th.utils.TestFlightUtils;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
@@ -34,7 +35,9 @@ public class THLog
 
     public static void e(String tag, String msg, Throwable ex)
     {
-        Log.e(PREFIX + tag, msg, ex);
+        String prefixedTag = PREFIX + tag;
+        Log.e(prefixedTag, msg, ex);
+        TestFlightUtils.log(prefixedTag, msg, ex);
     }
 
     public static void d(String tag, String msg, long startNanoTime)

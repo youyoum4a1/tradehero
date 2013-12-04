@@ -82,7 +82,6 @@ public class PortfolioListItemView extends RelativeLayout implements DTOView<Dis
 
     @Override protected void onAttachedToWindow()
     {
-        THLog.d(TAG, "onAttachedToWindow");
         super.onAttachedToWindow();
         currentUserProfileRetrievedMilestoneListener = new Milestone.OnCompleteListener()
         {

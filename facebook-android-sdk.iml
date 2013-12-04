@@ -22,7 +22,7 @@
     <output url="file://$MODULE_DIR$/facebook-android-sdk/facebook/target/classes" />
     <output-test url="file://$MODULE_DIR$/facebook-android-sdk/facebook/target/test-classes" />
     <content url="file://$MODULE_DIR$/facebook-android-sdk/facebook">
-      <sourceFolder url="file://$MODULE_DIR$/facebook-android-sdk/facebook/gen" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/facebook-android-sdk/facebook/gen" isTestSource="false" generated="true" />
       <sourceFolder url="file://$MODULE_DIR$/facebook-android-sdk/facebook/src" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/facebook-android-sdk/facebook/target" />
     </content>
