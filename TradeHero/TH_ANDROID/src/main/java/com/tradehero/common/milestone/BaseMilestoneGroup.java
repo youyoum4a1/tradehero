@@ -63,10 +63,28 @@ public class BaseMilestoneGroup extends BaseMilestone implements MilestoneGroup
 
     public void launchOwn()
     {
-        failedReported = false;
+        // Let's launch only those that are not complete
+        List<Milestone> milestonesToLaunch = new ArrayList<>();
         for (Milestone milestone : milestones)
         {
-            milestone.launch();
+            if (!milestone.isComplete())
+            {
+                milestonesToLaunch.add(milestone);
+            }
+        }
+
+        if (milestonesToLaunch.size() > 0)
+        {
+            failedReported = false;
+            for (Milestone milestone : milestones)
+            {
+                milestone.launch();
+            }
+        }
+        else
+        {
+            // Everything is complete already, let's go straight to notification
+            notifyCompleteListener();
         }
     }
 

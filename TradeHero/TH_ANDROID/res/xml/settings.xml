@@ -48,7 +48,7 @@
         android:icon="@drawable/settings_trans_history"
         />
     <Preference
-        android:enabled="false"
+        android:enabled="true"
         android:key="@string/settings_primary_restore_purchases"
         android:title="@string/settings_primary_restore_purchases"
         />

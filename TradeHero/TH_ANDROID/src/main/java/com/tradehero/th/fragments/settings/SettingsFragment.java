@@ -17,12 +17,15 @@ import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
+import com.sun.javaws.progress.Progress;
+import com.tradehero.common.billing.googleplay.BaseIABPurchase;
 import com.tradehero.common.cache.LruMemFileCache;
 import com.tradehero.common.utils.SlowedAsyncTask;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.ActivityHelper;
+import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.form.UserFormFactory;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.social.SocialNetworkFormDTO;
@@ -32,9 +35,15 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.Application;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.base.THUser;
+import com.tradehero.th.billing.googleplay.IABAlertDialogUtil;
+import com.tradehero.th.billing.googleplay.THIABActor;
+import com.tradehero.th.billing.googleplay.THIABActorUser;
+import com.tradehero.th.billing.googleplay.THIABPurchaseRestorer;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.WebViewFragment;
 import com.tradehero.th.fragments.authentication.EmailSignUpFragment;
+import com.tradehero.th.fragments.billing.PurchaseRestorerAlertUtil;
+import com.tradehero.th.fragments.billing.THIABUserInteractor;
 import com.tradehero.th.misc.callback.LogInCallback;
 import com.tradehero.th.misc.callback.THCallback;
 import com.tradehero.th.misc.callback.THResponse;
@@ -49,6 +58,7 @@ import com.tradehero.th.utils.LinkedInUtils;
 import com.tradehero.th.utils.TwitterUtils;
 import com.tradehero.th.utils.VersionUtils;
 import dagger.Lazy;
+import java.util.List;
 import javax.inject.Inject;
 import org.json.JSONObject;
 import retrofit.Callback;
@@ -70,13 +80,22 @@ public class SettingsFragment extends PreferenceFragment
     @Inject protected Lazy<TwitterUtils> twitterUtils;
     @Inject protected Lazy<LinkedInUtils> linkedInUtils;
 
+    private THIABUserInteractor userInteractor;
+
     private ProgressDialog progressDialog;
     private CheckBoxPreference facebookSharing;
     private SocialNetworkEnum currentSocialNetworkConnect;
     private CheckBoxPreference twitterSharing;
     private CheckBoxPreference linkedInSharing;
-    private TwoStatePreference pushNotification;
-    private TwoStatePreference emailNotification;
+    private CheckBoxPreference pushNotification;
+    private CheckBoxPreference emailNotification;
+
+    @Override public void onActivityCreated(Bundle savedInstanceState)
+    {
+        super.onActivityCreated(savedInstanceState);
+        userInteractor = new THIABUserInteractor(getActivity(), ((DashboardActivity) getActivity()).getBillingActor(), getView().getHandler());
+        userInteractor.setApplicablePortfolioId(null);
+    }
 
     @Override public View onCreateView(LayoutInflater paramLayoutInflater, ViewGroup paramViewGroup, Bundle paramBundle)
     {
@@ -100,6 +119,36 @@ public class SettingsFragment extends PreferenceFragment
         addPreferencesFromResource(R.xml.settings);
 
         DaggerUtils.inject(this);
+    }
+
+    private THIABPurchaseRestorer.OnPurchaseRestorerFinishedListener createPurchaseRestorerListener()
+    {
+        return new THIABPurchaseRestorer.OnPurchaseRestorerFinishedListener()
+        {
+            @Override
+            public void onPurchaseRestoreFinished(List<BaseIABPurchase> consumed, List<BaseIABPurchase> reportFailed, List<BaseIABPurchase> consumeFailed)
+            {
+                THLog.d(TAG, "onPurchaseRestoreFinished3");
+                PurchaseRestorerAlertUtil.handlePurchaseRestoreFinished(
+                        getActivity(),
+                        consumed,
+                        reportFailed,
+                        consumeFailed,
+                        PurchaseRestorerAlertUtil.createFailedRestoreClickListener(getActivity(), new Exception())); // TODO have a better exception
+            }
+
+            @Override public void onPurchaseRestoreFinished(List<BaseIABPurchase> consumed, List<BaseIABPurchase> consumeFailed)
+            {
+                THLog.d(TAG, "onPurchaseRestoreFinished2");
+            }
+
+            @Override public void onPurchaseRestoreFailed(Throwable throwable)
+            {
+                THLog.e(TAG, "onPurchaseRestoreFailed", throwable);
+                // Inform
+                userInteractor.conditionalPopBillingNotAvailable();
+            }
+        };
     }
 
     private void initPreferenceClickHandlers()
@@ -203,6 +252,19 @@ public class SettingsFragment extends PreferenceFragment
             });
         }
 
+        Preference restorePurchaseBlock = findPreference(getString(R.string.settings_primary_restore_purchases));
+        if (restorePurchaseBlock != null)
+        {
+            restorePurchaseBlock.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
+            {
+                @Override public boolean onPreferenceClick(Preference preference)
+                {
+                    handleRestorePurchaseClicked();
+                    return true;
+                }
+            });
+        }
+
         Preference resetHelpScreensBlock = findPreference(getString(R.string.settings_misc_reset_help_screens));
         if (resetHelpScreensBlock != null)
         {
@@ -295,7 +357,7 @@ public class SettingsFragment extends PreferenceFragment
         UserProfileDTO currentUserProfile = userProfileCache.get().get(currentUserBaseKeyHolder.getCurrentUserBaseKey());
         if (currentUserProfile != null)
         {
-            pushNotification = (TwoStatePreference) findPreference(getString(R.string.settings_notifications_push));
+            pushNotification = (CheckBoxPreference) findPreference(getString(R.string.settings_notifications_push));
             if (pushNotification != null)
             {
                 pushNotification.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener()
@@ -311,7 +373,7 @@ public class SettingsFragment extends PreferenceFragment
                 });
             }
 
-            emailNotification = (TwoStatePreference) findPreference(getString(R.string.settings_notifications_email));
+            emailNotification = (CheckBoxPreference) findPreference(getString(R.string.settings_notifications_email));
             if (emailNotification != null)
             {
                 emailNotification.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener()
@@ -509,6 +571,14 @@ public class SettingsFragment extends PreferenceFragment
     private void handleTransactionHistoryClicked()
     {
         getNavigator().pushFragment(SettingsTransactionHistoryFragment.class);
+    }
+
+    private void handleRestorePurchaseClicked()
+    {
+        if (userInteractor.popErrorConditional() == null)
+        {
+            userInteractor.launchRestoreSequence();
+        }
     }
 
     private Callback<UserProfileDTO> createUserProfileCallback()

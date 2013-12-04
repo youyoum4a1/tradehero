@@ -40,6 +40,7 @@ import com.tradehero.th.billing.googleplay.THIABActorUser;
 import com.tradehero.th.billing.googleplay.THIABOrderId;
 import com.tradehero.th.billing.googleplay.THIABProductDetail;
 import com.tradehero.th.billing.googleplay.THIABPurchaseOrder;
+import com.tradehero.th.billing.googleplay.THIABPurchaseRestorer;
 import com.tradehero.th.fragments.social.hero.FollowHeroCallback;
 import com.tradehero.th.network.service.UserService;
 import com.tradehero.th.persistence.billing.googleplay.THIABProductDetailCache;
@@ -78,6 +79,7 @@ public class THIABUserInteractor
     @Inject Lazy<PortfolioCompactListCache> portfolioCompactListCache;
     @Inject Lazy<THIABProductDetailCache> thiabProductDetailCache;
     protected WeakReference<THIABActor> billingActor = new WeakReference<>(null);
+    protected THIABPurchaseRestorer purchaseRestorer;
     protected InventoryFetcher.OnInventoryFetchedListener<IABSKU, THIABProductDetail, IABException> inventoryFetchedForgetListener;
     protected OwnedPortfolioId applicablePortfolioId;
     private Runnable runOnPurchaseComplete;
@@ -98,6 +100,7 @@ public class THIABUserInteractor
         THIABOrderId,
         BaseIABPurchase,
         IABException> consumptionFinishedListener;
+    protected THIABPurchaseRestorer.OnPurchaseRestorerFinishedListener purchaseRestorerFinishedListener;
 
     @Inject protected Lazy<HeroListCache> heroListCache;
     @Inject protected Lazy<UserService> userService;
@@ -117,6 +120,11 @@ public class THIABUserInteractor
         DaggerUtils.inject(this);
         this.activityWeak = new WeakReference<>(activity);
         setBillingActor(billingActor);
+        purchaseRestorer = new THIABPurchaseRestorer(activity,
+                billingActor,
+                billingActor,
+                billingActor,
+                billingActor);
         this.handlerWeak = new WeakReference<>(handler);
         showSkuDetailsMilestoneListener = new Milestone.OnCompleteListener()
         {
@@ -133,6 +141,9 @@ public class THIABUserInteractor
             }
         };
         prepareCallbacks(activity);
+
+        purchaseRestorer.setFinishedListener(purchaseRestorerFinishedListener);
+        purchaseRestorer.init();
     }
 
     public void onPause()
@@ -152,6 +163,12 @@ public class THIABUserInteractor
         purchaseReportedListener = null;
         consumptionFinishedListener = null;
         showSkuDetailsMilestoneListener = null;
+        purchaseRestorerFinishedListener = null;
+        if (purchaseRestorer != null)
+        {
+            purchaseRestorer.setFinishedListener(null);
+        }
+        purchaseRestorer = null;
         followCallback = null;
     }
 
@@ -259,6 +276,44 @@ public class THIABUserInteractor
                 {
                     haveActorForget(requestCode);
                     handlePurchaseConsumed(purchase);
+                }
+            };
+        }
+
+        if (purchaseRestorerFinishedListener == null)
+        {
+            purchaseRestorerFinishedListener = new THIABPurchaseRestorer.OnPurchaseRestorerFinishedListener()
+            {
+                @Override
+                public void onPurchaseRestoreFinished(List<BaseIABPurchase> consumed, List<BaseIABPurchase> reportFailed, List<BaseIABPurchase> consumeFailed)
+                {
+                    THLog.d(TAG, "onPurchaseRestoreFinished3");
+                    if (progressDialog != null)
+                    {
+                        progressDialog.hide();
+                    }
+
+                    PurchaseRestorerAlertUtil.handlePurchaseRestoreFinished(
+                            context,
+                            consumed,
+                            reportFailed,
+                            consumeFailed,
+                            PurchaseRestorerAlertUtil.createFailedRestoreClickListener(context, new Exception()),
+                            true); // TODO have a better exception
+                }
+
+                @Override public void onPurchaseRestoreFinished(List<BaseIABPurchase> consumed, List<BaseIABPurchase> consumeFailed)
+                {
+                    THLog.d(TAG, "onPurchaseRestoreFinished2");
+                }
+
+                @Override public void onPurchaseRestoreFailed(Throwable throwable)
+                {
+                    THLog.e(TAG, "onPurchaseRestoreFailed", throwable);
+                    if (throwable instanceof Exception)
+                    {
+                        PurchaseRestorerAlertUtil.popSendEmailSupportRestoreFailed(context, (Exception) throwable);
+                    }
                 }
             };
         }
@@ -707,6 +762,34 @@ public class THIABUserInteractor
 
     protected void handlePurchaseConsumeFailed()
     {
+    }
+
+    public void launchRestoreSequence()
+    {
+        Activity activity = this.activityWeak.get();
+        if (activity != null)
+        {
+            progressDialog = ProgressDialog.show(
+                    activity,
+                    activity.getString(R.string.store_billing_restoring_purchase_window_title),
+                    activity.getString(R.string.store_billing_restoring_purchase_window_message),
+                    true,
+                    true,
+                    new DialogInterface.OnCancelListener()
+                    {
+                        @Override public void onCancel(DialogInterface dialog)
+                        {
+                            runOnShowSkuDetailsMilestoneComplete = null;
+                        }
+                    });
+        }
+        waitForSkuDetailsMilestoneComplete(new Runnable()
+        {
+            @Override public void run()
+            {
+                purchaseRestorer.launchRestorePurchaseSequence();
+            }
+        });
     }
 
     public void linkWith(UserProfileDTO userProfileDTO)

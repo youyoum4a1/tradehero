@@ -2,16 +2,16 @@ package com.tradehero.th.base;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.view.ViewGroup;
+import com.facebook.Settings;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.ActivityHelper;
-import com.tradehero.th.activities.SettingsActivity;
+import com.tradehero.th.billing.googleplay.THIABActor;
 import com.tradehero.th.fragments.settings.SettingsFragment;
 
 /** Created with IntelliJ IDEA. User: tho Date: 9/30/13 Time: 5:59 PM Copyright (c) TradeHero */
@@ -115,14 +115,14 @@ public class Navigator
         pushFragment(SettingsFragment.class);
     }
 
-    public void pushFragment(Class<? extends Fragment> fragmentClass)
+    public Fragment pushFragment(Class<? extends Fragment> fragmentClass)
     {
-        pushFragment(fragmentClass, null);
+        return pushFragment(fragmentClass, null);
     }
 
-    public void pushFragment(Class<? extends Fragment> fragmentClass, Bundle args)
+    public Fragment pushFragment(Class<? extends Fragment> fragmentClass, Bundle args)
     {
-        pushFragment(fragmentClass, args, true);
+        return pushFragment(fragmentClass, args, true);
     }
 
     public void popFragment()

@@ -95,7 +95,7 @@ public class DashboardActivity extends SherlockFragmentActivity
                         consumed,
                         reportFailed,
                         consumeFailed,
-                        createFailedRestoreClickListener(new Exception())); // TODO have a better exception
+                        PurchaseRestorerAlertUtil.createFailedRestoreClickListener(DashboardActivity.this, new Exception())); // TODO have a better exception
             }
 
             @Override public void onPurchaseRestoreFinished(List<BaseIABPurchase> consumed, List<BaseIABPurchase> consumeFailed)
@@ -180,16 +180,5 @@ public class DashboardActivity extends SherlockFragmentActivity
 
         // Passing it on just in case it is expecting something
         thiabLogicHolder.onActivityResult(requestCode, resultCode, data);
-    }
-
-    protected DialogInterface.OnClickListener createFailedRestoreClickListener(final Exception exception)
-    {
-        return new DialogInterface.OnClickListener()
-        {
-            @Override public void onClick(DialogInterface dialog, int which)
-            {
-                PurchaseRestorerAlertUtil.sendSupportEmailRestoreFailed(DashboardActivity.this, exception);
-            }
-        };
     }
 }
