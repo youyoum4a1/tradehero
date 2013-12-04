@@ -6,6 +6,7 @@ import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.SecurityIdList;
 import com.tradehero.th.api.security.SecurityListType;
+import com.tradehero.th.api.security.TrendingAllSecurityListType;
 import com.tradehero.th.api.security.TrendingBasicSecurityListType;
 import com.tradehero.th.api.security.TrendingPriceSecurityListType;
 import com.tradehero.th.api.security.TrendingSecurityListType;
@@ -51,11 +52,15 @@ import retrofit.RetrofitError;
         {
             return putInternal(key, fetch((TrendingVolumeSecurityListType) key));
         }
+        if (key instanceof TrendingAllSecurityListType)
+        {
+            return putInternal(key, fetch((TrendingAllSecurityListType) key));
+        }
         if (key instanceof SearchSecurityListType)
         {
             return putInternal(key, fetch((SearchSecurityListType) key));
         }
-        throw new IllegalArgumentException("Unhandled type " + key.getClass().getName());
+        throw new IllegalArgumentException("Unhandled type " + ((Object) key).getClass().getName());
     }
 
     @Override public SecurityIdList get(SecurityListType key)
@@ -66,7 +71,7 @@ import retrofit.RetrofitError;
 
     protected List<SecurityCompactDTO> fetch(TrendingBasicSecurityListType key) throws RetrofitError
     {
-        if (key.getExchange() == TrendingSecurityListType.ALL_EXCHANGES)
+        if (key.getExchange().equals(TrendingSecurityListType.ALL_EXCHANGES))
         {
             return securityService.get().getTrendingSecurities();
         }
@@ -78,7 +83,7 @@ import retrofit.RetrofitError;
 
     protected List<SecurityCompactDTO> fetch(TrendingPriceSecurityListType key) throws RetrofitError
     {
-        if (key.getExchange() == TrendingSecurityListType.ALL_EXCHANGES)
+        if (key.getExchange().equals(TrendingSecurityListType.ALL_EXCHANGES))
         {
             return securityService.get().getTrendingSecuritiesByPrice();
         }
@@ -90,13 +95,25 @@ import retrofit.RetrofitError;
 
     protected List<SecurityCompactDTO> fetch(TrendingVolumeSecurityListType key) throws RetrofitError
     {
-        if (key.getExchange() == TrendingSecurityListType.ALL_EXCHANGES)
+        if (key.getExchange().equals(TrendingSecurityListType.ALL_EXCHANGES))
         {
             return securityService.get().getTrendingSecuritiesByVolume();
         }
         else
         {
             return securityService.get().getTrendingSecuritiesByVolume(key.getExchange());
+        }
+    }
+
+    protected List<SecurityCompactDTO> fetch(TrendingAllSecurityListType key) throws RetrofitError
+    {
+        if (key.getExchange().equals(TrendingSecurityListType.ALL_EXCHANGES))
+        {
+            return securityService.get().getTrendingSecuritiesAll();
+        }
+        else
+        {
+            return securityService.get().getTrendingSecuritiesAll(key.getExchange());
         }
     }
 

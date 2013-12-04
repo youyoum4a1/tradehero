@@ -22,13 +22,4 @@ public class TrendingFilterSelectorPriceFragment extends TrendingFilterSelectorF
     {
         return R.string.trending_filter_price_description;
     }
-
-    @Override public void displayNextButton()
-    {
-        super.displayNextButton();
-        if (mNext != null)
-        {
-            mNext.setEnabled(false);
-        }
-    }
 }

@@ -75,6 +75,26 @@ public interface SecurityService
         throws RetrofitError;
     //</editor-fold>
 
+    //<editor-fold desc="Get Trending For All">
+    @GET("/securities/trendingExchange/")
+    void getTrendingSecuritiesAll(
+            Callback<List<SecurityCompactDTO>> callback);
+
+    @GET("/securities/trendingExchange/")
+    List<SecurityCompactDTO> getTrendingSecuritiesAll()
+        throws RetrofitError;
+
+    @GET("/securities/trendingExchange/")
+    void getTrendingSecuritiesAll(
+            @Query("exchange") String exchange,
+            Callback<List<SecurityCompactDTO>> callback);
+
+    @GET("/securities/trendingExchange/")
+    List<SecurityCompactDTO> getTrendingSecuritiesAll(
+            @Query("exchange") String exchange)
+        throws RetrofitError;
+    //</editor-fold>
+
     //<editor-fold desc="Search Securities">
     @GET("/securities/search")
     void searchSecurities(

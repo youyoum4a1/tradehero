@@ -84,6 +84,7 @@ import com.tradehero.th.fragments.trade.TradeListOverlayHeaderView;
 import com.tradehero.th.fragments.trending.SearchPeopleItemView;
 import com.tradehero.th.fragments.trending.SearchStockPeopleFragment;
 import com.tradehero.th.fragments.trending.SecurityItemView;
+import com.tradehero.th.fragments.trending.TrendingFilterSelectorAllFragment;
 import com.tradehero.th.fragments.trending.TrendingFilterSelectorBasicFragment;
 import com.tradehero.th.fragments.trending.TrendingFilterSelectorPriceFragment;
 import com.tradehero.th.fragments.trending.TrendingFilterSelectorVolumeFragment;
@@ -158,6 +159,7 @@ import org.ocpsoft.prettytime.PrettyTime;
                 TrendingFilterSelectorBasicFragment.class,
                 TrendingFilterSelectorVolumeFragment.class,
                 TrendingFilterSelectorPriceFragment.class,
+                TrendingFilterSelectorAllFragment.class,
                 SecurityItemView.class,
                 SearchStockPeopleFragment.class,
                 SearchPeopleItemView.class,

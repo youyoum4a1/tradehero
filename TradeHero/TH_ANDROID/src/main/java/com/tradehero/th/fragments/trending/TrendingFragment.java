@@ -25,6 +25,7 @@ import com.tradehero.th.api.market.ExchangeStringId;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityIdList;
 import com.tradehero.th.api.security.SecurityListType;
+import com.tradehero.th.api.security.TrendingAllSecurityListType;
 import com.tradehero.th.api.security.TrendingBasicSecurityListType;
 import com.tradehero.th.api.security.TrendingPriceSecurityListType;
 import com.tradehero.th.api.security.TrendingSecurityListType;
@@ -374,6 +375,11 @@ public class TrendingFragment extends DashboardFragment
                 securityListType = usableExchangeName == null ?
                         new TrendingPriceSecurityListType() :
                         new TrendingPriceSecurityListType(usableExchangeName);
+                break;
+            case TrendingFilterSelectorAllFragment.POSITION_IN_PAGER:
+                securityListType = usableExchangeName == null ?
+                        new TrendingAllSecurityListType() :
+                        new TrendingAllSecurityListType(usableExchangeName);
                 break;
             default:
                 THLog.d(TAG, "getSecurityListType: Unhandled filterPageSelector: " + filterPageSelected);
