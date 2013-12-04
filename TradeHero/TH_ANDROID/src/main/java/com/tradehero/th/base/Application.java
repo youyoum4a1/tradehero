@@ -6,7 +6,6 @@ import com.tradehero.common.utils.THLog;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.EmailSignUtils;
 import com.tradehero.th.utils.PushUtils;
-import com.tradehero.th.utils.TestFlightUtils;
 
 /** Created with IntelliJ IDEA. User: tho Date: 8/15/13 Time: 3:33 PM Copyright (c) TradeHero */
 public class Application extends PApplication
@@ -28,8 +27,6 @@ public class Application extends PApplication
         EmailSignUtils.initialize();
 
         PushUtils.initialize();
-
-        TestFlightUtils.initialize();
 
         THLog.showDeveloperKeyHash();
     }
