@@ -26,12 +26,60 @@ public interface SecurityService
 
     @GET("/securities/trending/")
     void getTrendingSecurities(
+            @Query("page") int page,
+            Callback<List<SecurityCompactDTO>> callback);
+
+    @GET("/securities/trending/")
+    List<SecurityCompactDTO> getTrendingSecurities(
+            @Query("page") int page)
+        throws RetrofitError;
+
+    @GET("/securities/trending/")
+    void getTrendingSecurities(
+            @Query("page") int page,
+            @Query("perPage") int perPage,
+            Callback<List<SecurityCompactDTO>> callback);
+
+    @GET("/securities/trending/")
+    List<SecurityCompactDTO> getTrendingSecurities(
+            @Query("page") int page,
+            @Query("perPage") int perPage)
+        throws RetrofitError;
+
+    @GET("/securities/trending/")
+    void getTrendingSecurities(
             @Query("exchange") String exchange,
             Callback<List<SecurityCompactDTO>> callback);
 
     @GET("/securities/trending/")
     List<SecurityCompactDTO> getTrendingSecurities(
             @Query("exchange") String exchange)
+        throws RetrofitError;
+
+    @GET("/securities/trending/")
+    void getTrendingSecurities(
+            @Query("exchange") String exchange,
+            @Query("page") int page,
+            Callback<List<SecurityCompactDTO>> callback);
+
+    @GET("/securities/trending/")
+    List<SecurityCompactDTO> getTrendingSecurities(
+            @Query("exchange") String exchange,
+            @Query("page") int page)
+        throws RetrofitError;
+
+    @GET("/securities/trending/")
+    void getTrendingSecurities(
+            @Query("exchange") String exchange,
+            @Query("page") int page,
+            @Query("perPage") int perPage,
+            Callback<List<SecurityCompactDTO>> callback);
+
+    @GET("/securities/trending/")
+    List<SecurityCompactDTO> getTrendingSecurities(
+            @Query("exchange") String exchange,
+            @Query("page") int page,
+            @Query("perPage") int perPage)
         throws RetrofitError;
     //</editor-fold>
 
@@ -46,12 +94,60 @@ public interface SecurityService
 
     @GET("/securities/trendingVol/")
     void getTrendingSecuritiesByVolume(
+            @Query("page") int page,
+            Callback<List<SecurityCompactDTO>> callback);
+
+    @GET("/securities/trendingVol/")
+    List<SecurityCompactDTO> getTrendingSecuritiesByVolume(
+            @Query("page") int page)
+        throws RetrofitError;
+
+    @GET("/securities/trendingVol/")
+    void getTrendingSecuritiesByVolume(
+            @Query("page") int page,
+            @Query("perPage") int perPage,
+            Callback<List<SecurityCompactDTO>> callback);
+
+    @GET("/securities/trendingVol/")
+    List<SecurityCompactDTO> getTrendingSecuritiesByVolume(
+            @Query("page") int page,
+            @Query("perPage") int perPage)
+        throws RetrofitError;
+
+    @GET("/securities/trendingVol/")
+    void getTrendingSecuritiesByVolume(
             @Query("exchange") String exchange,
             Callback<List<SecurityCompactDTO>> callback);
 
     @GET("/securities/trendingVol/")
     List<SecurityCompactDTO> getTrendingSecuritiesByVolume(
             @Query("exchange") String exchange)
+        throws RetrofitError;
+
+    @GET("/securities/trendingVol/")
+    void getTrendingSecuritiesByVolume(
+            @Query("exchange") String exchange,
+            @Query("page") int page,
+            Callback<List<SecurityCompactDTO>> callback);
+
+    @GET("/securities/trendingVol/")
+    List<SecurityCompactDTO> getTrendingSecuritiesByVolume(
+            @Query("exchange") String exchange,
+            @Query("page") int page)
+        throws RetrofitError;
+
+    @GET("/securities/trendingVol/")
+    void getTrendingSecuritiesByVolume(
+            @Query("exchange") String exchange,
+            @Query("page") int page,
+            @Query("perPage") int perPage,
+            Callback<List<SecurityCompactDTO>> callback);
+
+    @GET("/securities/trendingVol/")
+    List<SecurityCompactDTO> getTrendingSecuritiesByVolume(
+            @Query("exchange") String exchange,
+            @Query("page") int page,
+            @Query("perPage") int perPage)
         throws RetrofitError;
     //</editor-fold>
 
@@ -66,6 +162,28 @@ public interface SecurityService
 
     @GET("/securities/trendingPrice/")
     void getTrendingSecuritiesByPrice(
+            @Query("page") int page,
+            Callback<List<SecurityCompactDTO>> callback);
+
+    @GET("/securities/trendingPrice/")
+    List<SecurityCompactDTO> getTrendingSecuritiesByPrice(
+            @Query("page") int page)
+        throws RetrofitError;
+
+    @GET("/securities/trendingPrice/")
+    void getTrendingSecuritiesByPrice(
+            @Query("page") int page,
+            @Query("perPage") int perPage,
+            Callback<List<SecurityCompactDTO>> callback);
+
+    @GET("/securities/trendingPrice/")
+    List<SecurityCompactDTO> getTrendingSecuritiesByPrice(
+            @Query("page") int page,
+            @Query("perPage") int perPage)
+        throws RetrofitError;
+
+    @GET("/securities/trendingPrice/")
+    void getTrendingSecuritiesByPrice(
             @Query("exchange") String exchange,
             Callback<List<SecurityCompactDTO>> callback);
 
@@ -73,25 +191,99 @@ public interface SecurityService
     List<SecurityCompactDTO> getTrendingSecuritiesByPrice(
             @Query("exchange") String exchange)
         throws RetrofitError;
+
+    @GET("/securities/trendingPrice/")
+    void getTrendingSecuritiesByPrice(
+            @Query("exchange") String exchange,
+            @Query("page") int page,
+            Callback<List<SecurityCompactDTO>> callback);
+
+    @GET("/securities/trendingPrice/")
+    List<SecurityCompactDTO> getTrendingSecuritiesByPrice(
+            @Query("exchange") String exchange,
+            @Query("page") int page)
+        throws RetrofitError;
+
+    @GET("/securities/trendingPrice/")
+    void getTrendingSecuritiesByPrice(
+            @Query("exchange") String exchange,
+            @Query("page") int page,
+            @Query("perPage") int perPage,
+            Callback<List<SecurityCompactDTO>> callback);
+
+    @GET("/securities/trendingPrice/")
+    List<SecurityCompactDTO> getTrendingSecuritiesByPrice(
+            @Query("exchange") String exchange,
+            @Query("page") int page,
+            @Query("perPage") int perPage)
+        throws RetrofitError;
     //</editor-fold>
 
     //<editor-fold desc="Get Trending For All">
     @GET("/securities/trendingExchange/")
-    void getTrendingSecuritiesAll(
+    void getTrendingSecuritiesAllInExchange(
             Callback<List<SecurityCompactDTO>> callback);
 
     @GET("/securities/trendingExchange/")
-    List<SecurityCompactDTO> getTrendingSecuritiesAll()
+    List<SecurityCompactDTO> getTrendingSecuritiesAllInExchange()
         throws RetrofitError;
 
     @GET("/securities/trendingExchange/")
-    void getTrendingSecuritiesAll(
+    void getTrendingSecuritiesAllInExchange(
+            @Query("page") int page,
+            Callback<List<SecurityCompactDTO>> callback);
+
+    @GET("/securities/trendingExchange/")
+    List<SecurityCompactDTO> getTrendingSecuritiesAllInExchange(
+            @Query("page") int page)
+        throws RetrofitError;
+
+    @GET("/securities/trendingExchange/")
+    void getTrendingSecuritiesAllInExchange(
+            @Query("page") int page,
+            @Query("perPage") int perPage,
+            Callback<List<SecurityCompactDTO>> callback);
+
+    @GET("/securities/trendingExchange/")
+    List<SecurityCompactDTO> getTrendingSecuritiesAllInExchange(
+            @Query("page") int page,
+            @Query("perPage") int perPage)
+        throws RetrofitError;
+
+    @GET("/securities/trendingExchange/")
+    void getTrendingSecuritiesAllInExchange(
             @Query("exchange") String exchange,
             Callback<List<SecurityCompactDTO>> callback);
 
     @GET("/securities/trendingExchange/")
-    List<SecurityCompactDTO> getTrendingSecuritiesAll(
+    List<SecurityCompactDTO> getTrendingSecuritiesAllInExchange(
             @Query("exchange") String exchange)
+        throws RetrofitError;
+
+    @GET("/securities/trendingExchange/")
+    void getTrendingSecuritiesAllInExchange(
+            @Query("exchange") String exchange,
+            @Query("page") int page,
+            Callback<List<SecurityCompactDTO>> callback);
+
+    @GET("/securities/trendingExchange/")
+    List<SecurityCompactDTO> getTrendingSecuritiesAllInExchange(
+            @Query("exchange") String exchange,
+            @Query("page") int page)
+        throws RetrofitError;
+
+    @GET("/securities/trendingExchange/")
+    void getTrendingSecuritiesAllInExchange(
+            @Query("exchange") String exchange,
+            @Query("page") int page,
+            @Query("perPage") int perPage,
+            Callback<List<SecurityCompactDTO>> callback);
+
+    @GET("/securities/trendingExchange/")
+    List<SecurityCompactDTO> getTrendingSecuritiesAllInExchange(
+            @Query("exchange") String exchange,
+            @Query("page") int page,
+            @Query("perPage") int perPage)
         throws RetrofitError;
     //</editor-fold>
 

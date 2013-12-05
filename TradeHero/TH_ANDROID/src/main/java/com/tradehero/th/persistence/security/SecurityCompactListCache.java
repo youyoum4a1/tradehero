@@ -1,27 +1,18 @@
 package com.tradehero.th.persistence.security;
 
-import com.tradehero.common.utils.THLog;
-import com.tradehero.th.api.security.SearchSecurityListType;
+import com.tradehero.common.persistence.StraightDTOCache;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.SecurityIdList;
 import com.tradehero.th.api.security.SecurityListType;
-import com.tradehero.th.api.security.TrendingAllSecurityListType;
-import com.tradehero.th.api.security.TrendingBasicSecurityListType;
-import com.tradehero.th.api.security.TrendingPriceSecurityListType;
-import com.tradehero.th.api.security.TrendingSecurityListType;
-import com.tradehero.th.api.security.TrendingVolumeSecurityListType;
-import com.tradehero.th.network.BasicRetrofitErrorHandler;
 import com.tradehero.th.network.service.SecurityService;
-import com.tradehero.common.persistence.StraightDTOCache;
+import com.tradehero.th.network.service.SecurityServiceUtil;
 import dagger.Lazy;
-import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import retrofit.RetrofitError;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 10/3/13 Time: 5:04 PM To change this template use File | Settings | File Templates. */
+/** Created with IntelliJ IDEA. User: xavier Date: 10/3/13 Time: 5:04 PM */
 @Singleton public class SecurityCompactListCache extends StraightDTOCache<SecurityListType, SecurityIdList>
 {
     public static final String TAG = SecurityCompactListCache.class.getSimpleName();
@@ -40,89 +31,7 @@ import retrofit.RetrofitError;
     @Override protected SecurityIdList fetch(SecurityListType key) throws Throwable
     {
         //THLog.d(TAG, "fetch " + key);
-        if (key instanceof TrendingBasicSecurityListType)
-        {
-            return putInternal(key, fetch((TrendingBasicSecurityListType) key));
-        }
-        if (key instanceof TrendingPriceSecurityListType)
-        {
-            return putInternal(key, fetch((TrendingPriceSecurityListType) key));
-        }
-        if (key instanceof TrendingVolumeSecurityListType)
-        {
-            return putInternal(key, fetch((TrendingVolumeSecurityListType) key));
-        }
-        if (key instanceof TrendingAllSecurityListType)
-        {
-            return putInternal(key, fetch((TrendingAllSecurityListType) key));
-        }
-        if (key instanceof SearchSecurityListType)
-        {
-            return putInternal(key, fetch((SearchSecurityListType) key));
-        }
-        throw new IllegalArgumentException("Unhandled type " + ((Object) key).getClass().getName());
-    }
-
-    @Override public SecurityIdList get(SecurityListType key)
-    {
-        //THLog.d(TAG, "get " + key);
-        return super.get(key);
-    }
-
-    protected List<SecurityCompactDTO> fetch(TrendingBasicSecurityListType key) throws RetrofitError
-    {
-        if (key.getExchange().equals(TrendingSecurityListType.ALL_EXCHANGES))
-        {
-            return securityService.get().getTrendingSecurities();
-        }
-        else
-        {
-            return securityService.get().getTrendingSecuritiesByPrice(key.getExchange());
-        }
-    }
-
-    protected List<SecurityCompactDTO> fetch(TrendingPriceSecurityListType key) throws RetrofitError
-    {
-        if (key.getExchange().equals(TrendingSecurityListType.ALL_EXCHANGES))
-        {
-            return securityService.get().getTrendingSecuritiesByPrice();
-        }
-        else
-        {
-            return securityService.get().getTrendingSecuritiesByPrice(key.getExchange());
-        }
-    }
-
-    protected List<SecurityCompactDTO> fetch(TrendingVolumeSecurityListType key) throws RetrofitError
-    {
-        if (key.getExchange().equals(TrendingSecurityListType.ALL_EXCHANGES))
-        {
-            return securityService.get().getTrendingSecuritiesByVolume();
-        }
-        else
-        {
-            return securityService.get().getTrendingSecuritiesByVolume(key.getExchange());
-        }
-    }
-
-    protected List<SecurityCompactDTO> fetch(TrendingAllSecurityListType key) throws RetrofitError
-    {
-        if (key.getExchange().equals(TrendingSecurityListType.ALL_EXCHANGES))
-        {
-            return securityService.get().getTrendingSecuritiesAll();
-        }
-        else
-        {
-            return securityService.get().getTrendingSecuritiesAll(key.getExchange());
-        }
-    }
-
-    protected List<SecurityCompactDTO> fetch(SearchSecurityListType key) throws RetrofitError
-    {
-        return securityService.get().searchSecurities(
-                key.getSearchString(),
-                key.getPage(),
-                key.getPerPage());
+        return putInternal(key, SecurityServiceUtil.getSecurities(securityService.get(), key));
     }
 
     protected SecurityIdList putInternal(SecurityListType key, List<SecurityCompactDTO> fleshedValues)

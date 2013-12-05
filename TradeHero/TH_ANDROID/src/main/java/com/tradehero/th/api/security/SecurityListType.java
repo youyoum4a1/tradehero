@@ -5,12 +5,68 @@ import com.tradehero.common.persistence.DTOKey;
 /** Created with IntelliJ IDEA. User: xavier Date: 10/3/13 Time: 5:05 PM To change this template use File | Settings | File Templates. */
 abstract public class SecurityListType implements Comparable<SecurityListType>, DTOKey
 {
-    @Override abstract public int hashCode();
+    public final Integer page;
+    public final Integer perPage;
+
+    //<editor-fold desc="Constructors">
+    protected SecurityListType(Integer page, Integer perPage)
+    {
+        this.page = page;
+        this.perPage = perPage;
+    }
+
+    protected SecurityListType(Integer page)
+    {
+        this.page = page;
+        this.perPage = null;
+    }
+
+    protected SecurityListType()
+    {
+        this.page = null;
+        this.perPage = null;
+    }
+    //</editor-fold>
+
+    @Override public int hashCode()
+    {
+        return (page == null ? 0 : page.hashCode()) ^
+                (perPage == null ? 0 : perPage.hashCode());
+    }
 
     @Override public boolean equals(Object other)
     {
-        return getClass().isInstance(other) && equals(getClass().cast(other));
+        return SecurityListType.class.isInstance(other) && equals(SecurityListType.class.cast(other));
     }
 
-    abstract public boolean equals(SecurityListType other);
+    public boolean equals(SecurityListType other)
+    {
+        return (other != null) &&
+                (page == null ? other.page == null : page.equals(other.page)) &&
+                (perPage == null ? other.perPage == null : perPage.equals(other.perPage));
+    }
+
+    @Override public int compareTo(SecurityListType another)
+    {
+        if (another == null)
+        {
+            return 1;
+        }
+
+        int pageCompare = page == null ? (another.page == null ? 0 : -1) : page.compareTo(another.page);
+        if (pageCompare != 0)
+        {
+            return pageCompare;
+        }
+
+        return perPage == null ? (another.perPage == null ? 0 : -1) : perPage.compareTo(another.perPage);
+    }
+
+    @Override public String toString()
+    {
+        return "SecurityListType{" +
+                "page=" + page +
+                ", perPage=" + perPage +
+                '}';
+    }
 }

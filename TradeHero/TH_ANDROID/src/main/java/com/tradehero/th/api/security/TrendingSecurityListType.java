@@ -7,70 +7,109 @@ public class TrendingSecurityListType extends SecurityListType
 
     public static final String ALL_EXCHANGES = "allExchanges";
 
-    private final String exchange;
+    public final String exchange;
 
     //<editor-fold desc="Constructor">
-    public TrendingSecurityListType()
+    public TrendingSecurityListType(String exchange, Integer page, Integer perPage)
     {
-        this.exchange = ALL_EXCHANGES;
+        super(page, perPage);
+        this.exchange = exchange;
+        validate();
+    }
+
+    public TrendingSecurityListType(String exchange, Integer page)
+    {
+        super(page);
+        this.exchange = exchange;
+        validate();
     }
 
     public TrendingSecurityListType(String exchange)
+    {
+        super();
+        this.exchange = exchange;
+        validate();
+    }
+
+    public TrendingSecurityListType(Integer page, Integer perPage)
+    {
+        this(ALL_EXCHANGES, page, perPage);
+    }
+
+    public TrendingSecurityListType(Integer page)
+    {
+        this(ALL_EXCHANGES, page);
+    }
+
+    public TrendingSecurityListType()
+    {
+        this(ALL_EXCHANGES);
+    }
+    //</editor-fold>
+
+    private void validate()
     {
         if (exchange == null)
         {
             throw new NullPointerException("Null is not a valid Exchange");
         }
-        this.exchange = exchange;
     }
-    //</editor-fold>
-
-    //<editor-fold desc="Accessors">
-    public String getExchange()
-    {
-        return exchange;
-    }
-    //</editor-fold>
 
     @Override public int hashCode()
     {
-        return exchange == null ? 0 : exchange.hashCode();
+        return super.hashCode() ^
+                (exchange == null ? 0 : exchange.hashCode());
     }
 
     @Override public boolean equals(SecurityListType other)
     {
-        return getClass().isInstance(other) && equals(getClass().cast(other));
+        return TrendingSecurityListType.class.isInstance(other) && equals(TrendingSecurityListType.class.cast(other));
     }
 
     public boolean equals(TrendingSecurityListType other)
     {
-        return (other != null) &&
+        return super.equals(other) &&
                 (exchange == null ? other.exchange == null : exchange.equals(other.exchange));
     }
 
-    @Override public int compareTo(SecurityListType securityListType)
+    //<editor-fold desc="Comparable">
+    @Override public int compareTo(SecurityListType another)
     {
-        if (securityListType == null)
+        if (another == null)
         {
             return 1;
         }
 
-        if (getClass().isInstance(securityListType))
+        if (!TrendingSecurityListType.class.isInstance(another))
         {
-            return compareTo(getClass().cast(securityListType));
+            // TODO is it very expensive?
+            return TrendingSecurityListType.class.getName().compareTo(another.getClass().getName());
         }
 
-        // TODO is it very expensive?
-        return getClass().getName().compareTo(securityListType.getClass().getName());
+        return compareTo(TrendingSecurityListType.class.cast(another));
     }
 
     public int compareTo(TrendingSecurityListType trendingSecurityListType)
     {
-        return exchange.compareTo(trendingSecurityListType.exchange);
+        if (trendingSecurityListType == null)
+        {
+            return 1;
+        }
+        int exchangeCompare = exchange.compareTo(trendingSecurityListType.exchange);
+        if (exchangeCompare != 0)
+        {
+            return exchangeCompare;
+        }
+        return super.compareTo(trendingSecurityListType);
     }
+    //</editor-fold>
 
     @Override public String toString()
     {
-        return String.format("[%s]", TAG);
+        return "TrendingSecurityListType{" +
+                "exchange='" + exchange +
+                ", page=" + page +
+                ", perPage=" + perPage +
+                '}';
     }
 }

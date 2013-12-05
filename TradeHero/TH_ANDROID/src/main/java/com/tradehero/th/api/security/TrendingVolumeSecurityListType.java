@@ -4,19 +4,60 @@ package com.tradehero.th.api.security;
 public class TrendingVolumeSecurityListType extends TrendingSecurityListType
 {
     //<editor-fold desc="Constructors">
-    public TrendingVolumeSecurityListType()
+    public TrendingVolumeSecurityListType(String exchange, Integer page, Integer perPage)
     {
-        super();
+        super(exchange, page, perPage);
+    }
+
+    public TrendingVolumeSecurityListType(String exchange, Integer page)
+    {
+        super(exchange, page);
     }
 
     public TrendingVolumeSecurityListType(String exchange)
     {
         super(exchange);
     }
+
+    public TrendingVolumeSecurityListType(Integer page, Integer perPage)
+    {
+        super(page, perPage);
+    }
+
+    public TrendingVolumeSecurityListType(Integer page)
+    {
+        super(page);
+    }
+
+    public TrendingVolumeSecurityListType()
+    {
+        super();
+    }
     //</editor-fold>
 
     @Override public boolean equals(TrendingSecurityListType other)
     {
         return (other instanceof TrendingVolumeSecurityListType) && super.equals(other);
+    }
+
+    @Override public int compareTo(TrendingSecurityListType another)
+    {
+        if (another == null)
+        {
+            return 1;
+        }
+
+        if (!TrendingVolumeSecurityListType.class.isInstance(another))
+        {
+            // TODO is it very expensive?
+            return TrendingVolumeSecurityListType.class.getName().compareTo(another.getClass().getName());
+        }
+
+        return compareTo(TrendingVolumeSecurityListType.class.cast(another));
+    }
+
+    public int compareTo(TrendingVolumeSecurityListType another)
+    {
+        return super.compareTo(another);
     }
 }

@@ -20,6 +20,7 @@ import com.actionbarsherlock.view.MenuItem;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
+import com.tradehero.common.widget.EndlessScrollListener;
 import com.tradehero.th.R;
 import com.tradehero.th.api.market.ExchangeStringId;
 import com.tradehero.th.api.security.SecurityCompactDTO;
@@ -58,6 +59,7 @@ public class TrendingFragment extends DashboardFragment
 
     private ProgressBar mProgressSpinner;
     private AbsListView mTrendingGridView;
+    private EndlessScrollListener gridScrollListener;
     private float gridCumulativeScrollY = 0;
     private float awayBy = 0;
     private boolean filterVisibleBeforeFling = true;
@@ -99,6 +101,13 @@ public class TrendingFragment extends DashboardFragment
         }
 
         securityItemViewAdapter = new SecurityItemViewAdapter(getActivity(), getActivity().getLayoutInflater(), R.layout.trending_security_item);
+        gridScrollListener = new EndlessScrollListener()
+        {
+            @Override protected void loadPage(int page)
+            {
+                THToast.show("Page to load " + page);
+            }
+        };
         mTrendingGridView = (AbsListView) view.findViewById(R.id.trending_gridview);
         initTrendingGidView();
 
@@ -149,6 +158,8 @@ public class TrendingFragment extends DashboardFragment
     {
         if (mTrendingGridView != null)
         {
+            mTrendingGridView.setOnScrollListener(gridScrollListener);
+
             mTrendingGridView.setAdapter(securityItemViewAdapter);
 
             mTrendingGridView.setOnItemClickListener(new OnItemClickListener()
@@ -279,8 +290,10 @@ public class TrendingFragment extends DashboardFragment
         if (mTrendingGridView != null)
         {
             mTrendingGridView.setOnItemClickListener(null);
+            mTrendingGridView.setOnScrollListener(null);
         }
         mTrendingGridView = null;
+        gridScrollListener = null;
 
         if (trendingTask != null)
         {
