@@ -45,7 +45,7 @@ abstract public class DTORetrievedMilestone<
 
     @Override public void onDestroy()
     {
-        parentCompleteListener = new WeakReference<>(null);
+        parentCompleteListener.clear();
         if (fetchTask != null)
         {
             fetchTask.forgetListener(true);

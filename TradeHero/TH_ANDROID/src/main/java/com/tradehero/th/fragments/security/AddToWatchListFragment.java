@@ -162,6 +162,11 @@ public class AddToWatchListFragment extends DashboardFragment
                 if (exchangeId != 0)
                 {
                     securityLogo.setImageResource(securityCompactDTO.getExchangeLogoId());
+                    securityLogo.setVisibility(View.VISIBLE);
+                }
+                else
+                {
+                    securityLogo.setVisibility(View.GONE);
                 }
             }
 

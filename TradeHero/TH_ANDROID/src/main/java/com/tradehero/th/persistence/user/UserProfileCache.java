@@ -46,12 +46,9 @@ import retrofit.RetrofitError;
         }
 
         List<UserProfileDTO> userProfileDTOs = new ArrayList<>();
-        if (baseKeys != null)
+        for(UserBaseKey baseKey: baseKeys)
         {
-            for(UserBaseKey baseKey: baseKeys)
-            {
-                userProfileDTOs.add(getOrFetch(baseKey, false));
-            }
+            userProfileDTOs.add(getOrFetch(baseKey, false));
         }
         return userProfileDTOs;
     }

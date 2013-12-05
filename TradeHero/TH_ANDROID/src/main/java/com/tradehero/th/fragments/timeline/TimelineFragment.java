@@ -29,7 +29,10 @@ import com.tradehero.th.fragments.position.PositionListFragment;
 import com.tradehero.th.loaders.TimelinePagedItemListLoader;
 import com.tradehero.th.persistence.portfolio.PortfolioCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
+import com.tradehero.th.persistence.timeline.TimelineRetrievedMilestone;
 import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.persistence.user.UserProfileRetrievedMilestone;
+import com.tradehero.th.persistence.watchlist.WatchlistRetrievedMilestone;
 import com.tradehero.th.widget.StepView;
 import com.tradehero.th.widget.user.ProfileCompactView;
 import com.tradehero.th.widget.user.ProfileView;
@@ -47,6 +50,10 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     @Inject protected Lazy<UserProfileCache> userProfileCache;
     @Inject protected Lazy<PortfolioCompactListCache> portfolioCompactListCache;
 
+    @Inject protected Lazy<UserProfileRetrievedMilestone> currentUserProfileRetrievedMilestone;
+    @Inject protected Lazy<WatchlistRetrievedMilestone> watchlistRetrievedMilestone;
+    @Inject protected Lazy<TimelineRetrievedMilestone> timelineRetrievedMilestone;
+
     private TimelineAdapter timelineAdapter;
     private TimelineListView timelineListView;
 
@@ -58,6 +65,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     protected DTOCache.GetOrFetchTask<UserProfileDTO> userProfileCacheTask;
     protected DTOCache.Listener<UserBaseKey, OwnedPortfolioIdList> portfolioCompactListCacheListener;
     protected DTOCache.GetOrFetchTask<OwnedPortfolioIdList> portfolioCompactListCacheTask;
+
     private StepView stepView;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
