@@ -471,7 +471,7 @@ public class TrendingFragment extends DashboardFragment
     {
         if (mFilterViewPager != null)
         {
-            mFilterViewPager.setCurrentItem((mFilterViewPager.getCurrentItem() + 1) % mFilterViewPager.getChildCount());
+            mFilterViewPager.setCurrentItem((mFilterViewPager.getCurrentItem() + 1) % TrendingFilterPagerAdapter.FRAGMENT_COUNT /*mFilterViewPager.getChildCount()*/);
         }
     }
 
@@ -479,7 +479,7 @@ public class TrendingFragment extends DashboardFragment
     {
         if (mFilterViewPager != null)
         {
-            mFilterViewPager.setCurrentItem((mFilterViewPager.getCurrentItem() - 1) % mFilterViewPager.getChildCount());
+            mFilterViewPager.setCurrentItem((mFilterViewPager.getCurrentItem() - 1) % TrendingFilterPagerAdapter.FRAGMENT_COUNT /*mFilterViewPager.getChildCount()*/);
         }
     }
     //</editor-fold>
