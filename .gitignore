@@ -64,3 +64,5 @@ th_android.properties
 # output folder
 **/target/*
 TradeHero/TH_ANDROID/target/*
+**/gen-external-apklibs
+**/*.iml

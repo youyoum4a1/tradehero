@@ -247,7 +247,6 @@ import org.ocpsoft.prettytime.PrettyTime;
                 IABServiceConnector.class,
                 IABInventoryFetcher.class,
                 THIABInventoryFetcher.class,
-                BaseIABPurchaseFetcher.class,
                 THIABPurchaser.class,
                 THIABPurchaseReporter.class,
                 THIABLogicHolder.class,
