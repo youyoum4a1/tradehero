@@ -5,6 +5,7 @@ import com.tradehero.th.api.watchlist.WatchlistPositionFormDTO;
 import java.util.List;
 import retrofit.Callback;
 import retrofit.RetrofitError;
+import retrofit.http.Body;
 import retrofit.http.GET;
 import retrofit.http.POST;
 import retrofit.http.Query;
@@ -15,19 +16,19 @@ public interface WatchlistService
     //<editor-fold desc="Add/Edit a watch item">
     @POST("/watchlistPositions")
     WatchlistPositionDTO createWatchlistEntry(
-            WatchlistPositionFormDTO watchlistPositionFormDTO
+            @Body WatchlistPositionFormDTO watchlistPositionFormDTO
     ) throws RetrofitError;
 
     @POST("/watchlistPositions")
     void createWatchlistEntry(
-            WatchlistPositionFormDTO watchlistPositionFormDTO,
+            @Body WatchlistPositionFormDTO watchlistPositionFormDTO,
             Callback<WatchlistPositionDTO> callback
     );
     //</editor-fold>
 
     //<editor-fold desc="Query for watchlist">
     @GET("/watchlistPositions")
-    List<WatchlistPositionDTO> GetAllByUser(
+    List<WatchlistPositionDTO> getAllByUser(
             @Query("pageNumber") Integer pageNumber,
             @Query("perPage") Integer perPage,
             @Query("securityId") Integer securityId,
@@ -35,7 +36,7 @@ public interface WatchlistService
             throws RetrofitError;
 
     @GET("/watchlistPositions")
-    void GetAllByUser(
+    void getAllByUser(
             @Query("pageNumber") Integer pageNumber,
             @Query("perPage") Integer perPage,
             @Query("securityId") Integer securityId,

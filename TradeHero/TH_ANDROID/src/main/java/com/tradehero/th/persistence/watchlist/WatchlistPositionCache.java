@@ -1,6 +1,7 @@
 package com.tradehero.th.persistence.watchlist;
 
 import com.tradehero.common.persistence.StraightDTOCache;
+import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.watchlist.WatchlistPositionDTO;
 import com.tradehero.th.network.service.WatchlistService;
 import dagger.Lazy;
@@ -8,7 +9,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 /** Created with IntelliJ IDEA. User: tho Date: 12/3/13 Time: 5:54 PM Copyright (c) TradeHero */
-@Singleton public class WatchlistPositionCache extends StraightDTOCache<WatchlistPositionId, WatchlistPositionDTO>
+@Singleton public class WatchlistPositionCache extends StraightDTOCache<UserBaseKey, WatchlistPositionDTO>
 {
     private static final int DEFAULT_MAX_SIZE = 200;
 
@@ -19,9 +20,9 @@ import javax.inject.Singleton;
         super(DEFAULT_MAX_SIZE);
     }
 
-    @Override protected WatchlistPositionDTO fetch(WatchlistPositionId key) throws Throwable
+    @Override protected WatchlistPositionDTO fetch(UserBaseKey key) throws Throwable
     {
-        //watchlistService.get().
+        // TODO publish watchlist item to data cache internally
         return null;
     }
 }

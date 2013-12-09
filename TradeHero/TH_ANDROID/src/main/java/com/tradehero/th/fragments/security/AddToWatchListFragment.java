@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
@@ -17,16 +18,22 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
+import com.tradehero.th.api.watchlist.WatchlistPositionDTO;
+import com.tradehero.th.api.watchlist.WatchlistPositionFormDTO;
 import com.tradehero.th.fragments.base.DashboardFragment;
-import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
+import com.tradehero.th.misc.callback.THCallback;
+import com.tradehero.th.misc.callback.THResponse;
+import com.tradehero.th.misc.exception.THException;
+import com.tradehero.th.network.service.WatchlistService;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
+import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
 import dagger.Lazy;
 import javax.inject.Inject;
 
 /** Created with IntelliJ IDEA. User: tho Date: 12/3/13 Time: 4:05 PM Copyright (c) TradeHero */
 public class AddToWatchListFragment extends DashboardFragment
 {
-    public static final String BUNDLE_KEY_SECURITY_ID_BUNDLE = AddToWatchListFragment.class.getName() + ".securityId";
+    public static final String BUNDLE_KEY_SECURITY_ID_BUNDLE = AddToWatchListFragment.class.getName() + ".securityKeyId";
     private static final String TAG = DashboardFragment.class.getName();
 
     private ImageView securityLogo;
@@ -34,18 +41,22 @@ public class AddToWatchListFragment extends DashboardFragment
     private TextView securityDesc;
     private EditText watchPrice;
     private EditText watchQuantity;
-    private SecurityId securityId;
+    private SecurityId securityKeyId;
     private Button watchAction;
+    private ProgressBar progressBar;
 
     private DTOCache.GetOrFetchTask<SecurityCompactDTO> compactCacheFetchTask;
 
     @Inject protected Lazy<SecurityCompactCache> securityCompactCache;
     @Inject protected Lazy<WatchlistPositionCache> watchlistPositionCache;
+    @Inject protected Lazy<WatchlistService> watchlistService;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.add_to_watch_list_layout, container, false);
         initViews(view);
+
+        progressBar = (ProgressBar) view.findViewById(R.id.progress);
         return view;
     }
 
@@ -71,9 +82,51 @@ public class AddToWatchListFragment extends DashboardFragment
         {
             @Override public void onClick(View v)
             {
-
+                handleWatchButtonClicked();
             }
         };
+    }
+
+    private void handleWatchButtonClicked()
+    {
+        progressBar.setVisibility(View.VISIBLE);
+        try
+        {
+            double price = Double.parseDouble(watchPrice.getText().toString());
+            int quantity = Integer.parseInt(watchQuantity.getText().toString());
+            // add new watchlist
+            SecurityCompactDTO securityCompactDTO = securityCompactCache.get().get(securityKeyId);
+            if (securityCompactDTO != null)
+            {
+                WatchlistPositionFormDTO newWatchPositionItem = new WatchlistPositionFormDTO(securityCompactDTO.id, price, quantity);
+                watchlistService.get().createWatchlistEntry(newWatchPositionItem, new THCallback<WatchlistPositionDTO>()
+                {
+                    @Override protected void finish()
+                    {
+                        progressBar.setVisibility(View.GONE);
+                    }
+
+                    @Override protected void success(WatchlistPositionDTO watchlistPositionDTO, THResponse response)
+                    {
+                        // TODO
+
+                        // push back timeline fragment
+
+                        // update data
+                    }
+
+                    @Override protected void failure(THException ex)
+                    {
+                        THToast.show(ex);
+                    }
+                });
+            }
+        }
+        catch (Exception ex)
+        {
+            // most likely number exception when parsing text to number
+            THLog.e(TAG, "Parsing error", ex);
+        }
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
@@ -102,7 +155,7 @@ public class AddToWatchListFragment extends DashboardFragment
 
     private void linkWith(SecurityId securityId, boolean andDisplay)
     {
-        this.securityId = securityId;
+        this.securityKeyId = securityId;
 
         if (securityId != null)
         {
@@ -119,7 +172,7 @@ public class AddToWatchListFragment extends DashboardFragment
     {
         if (securityTitle != null)
         {
-            securityTitle.setText(String.format("%s:%s", securityId.securitySymbol, securityId.exchange));
+            securityTitle.setText(String.format("%s:%s", securityKeyId.securitySymbol, securityKeyId.exchange));
         }
     }
 

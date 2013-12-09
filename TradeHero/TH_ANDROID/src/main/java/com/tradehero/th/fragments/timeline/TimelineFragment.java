@@ -32,6 +32,7 @@ import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
 import com.tradehero.th.persistence.timeline.TimelineRetrievedMilestone;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.persistence.user.UserProfileRetrievedMilestone;
+import com.tradehero.th.persistence.watchlist.WatchlistRetrievedMilestone;
 import com.tradehero.th.widget.StepView;
 import com.tradehero.th.widget.user.ProfileCompactView;
 import com.tradehero.th.widget.user.ProfileView;
@@ -50,7 +51,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     @Inject protected Lazy<PortfolioCompactListCache> portfolioCompactListCache;
 
     @Inject protected Lazy<UserProfileRetrievedMilestone> currentUserProfileRetrievedMilestone;
-    //@Inject protected Lazy<WatchlistRetrievedMilestone> watchlistRetrievedMilestone;
+    @Inject protected Lazy<WatchlistRetrievedMilestone> watchlistRetrievedMilestone;
     //@Inject protected Lazy<TimelineRetrievedMilestone> timelineRetrievedMilestone;
 
     private TimelineAdapter timelineAdapter;

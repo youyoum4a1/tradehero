@@ -6,4 +6,11 @@ public class WatchlistPositionFormDTO
     public int securityId;
     public double price;
     public int quantity;
+
+    public WatchlistPositionFormDTO(int securityId, double price, int quantity)
+    {
+        this.securityId = securityId;
+        this.price = price;
+        this.quantity = quantity;
+    }
 }
