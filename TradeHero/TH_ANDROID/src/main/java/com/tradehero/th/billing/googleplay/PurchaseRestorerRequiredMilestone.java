@@ -31,7 +31,7 @@ public class PurchaseRestorerRequiredMilestone extends BaseMilestoneGroup
         add(portfolioCompactListRetrievedMilestoneProvider.get());
     }
 
-    public Map<IABSKU, BaseIABPurchase> getFetchedPurchases()
+    public Map<IABSKU, THIABPurchase> getFetchedPurchases()
     {
         return ((THIABPurchaseFetchMilestone) milestones.get(POSITION_FETCH_PURCHASE)).getFetchedPurchases();
     }

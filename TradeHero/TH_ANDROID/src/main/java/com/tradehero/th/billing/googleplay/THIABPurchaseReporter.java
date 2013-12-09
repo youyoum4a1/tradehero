@@ -25,8 +25,8 @@ import retrofit.client.Response;
 public class THIABPurchaseReporter extends BasePurchaseReporter<
         IABSKU,
         THIABOrderId,
-        BaseIABPurchase,
-        PurchaseReporter.OnPurchaseReportedListener<IABSKU, THIABOrderId, BaseIABPurchase, Exception>,
+        THIABPurchase,
+        PurchaseReporter.OnPurchaseReportedListener<IABSKU, THIABOrderId, THIABPurchase, Exception>,
         Exception>
 {
     public static final String TAG = THIABPurchaseReporter.class.getSimpleName();
@@ -45,7 +45,7 @@ public class THIABPurchaseReporter extends BasePurchaseReporter<
         DaggerUtils.inject(this);
     }
 
-    private OwnedPortfolioId getApplicableOwnedPortfolioId(BaseIABPurchase purchase)
+    private OwnedPortfolioId getApplicableOwnedPortfolioId(THIABPurchase purchase)
     {
         OwnedPortfolioId portfolioId = purchase.getApplicableOwnedPortfolioId();
         if (portfolioId == null || portfolioId.userId == null || portfolioId.portfolioId == null)
@@ -55,7 +55,7 @@ public class THIABPurchaseReporter extends BasePurchaseReporter<
         return portfolioId;
     }
 
-    @Override public void reportPurchase(int requestCode, BaseIABPurchase purchase)
+    @Override public void reportPurchase(int requestCode, THIABPurchase purchase)
     {
         this.requestCode = requestCode;
         this.purchase = purchase;
@@ -101,7 +101,7 @@ public class THIABPurchaseReporter extends BasePurchaseReporter<
         }
     }
 
-    @Override public UserProfileDTO reportPurchaseSync(BaseIABPurchase purchase) throws RetrofitError
+    @Override public UserProfileDTO reportPurchaseSync(THIABPurchase purchase) throws RetrofitError
     {
         OwnedPortfolioId portfolioId = getApplicableOwnedPortfolioId(purchase);
 

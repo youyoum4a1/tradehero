@@ -12,12 +12,12 @@ public interface THIABActorPurchaser
         IABSKU,
         THIABPurchaseOrder,
         THIABOrderId,
-        BaseIABPurchase,
+        THIABPurchase,
         BillingPurchaser.OnPurchaseFinishedListener<
                 IABSKU,
                 THIABPurchaseOrder,
                 THIABOrderId,
-                BaseIABPurchase,
+                THIABPurchase,
                 IABException>,
         IABException>
 {

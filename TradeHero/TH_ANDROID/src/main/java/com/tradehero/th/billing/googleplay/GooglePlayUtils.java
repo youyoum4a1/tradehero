@@ -14,7 +14,7 @@ public class GooglePlayUtils
 {
     public static final String TAG = GooglePlayUtils.class.getSimpleName();
 
-    public static Intent getSupportPurchaseReportEmailIntent(Context context, BaseIABPurchase purchase)
+    public static Intent getSupportPurchaseReportEmailIntent(Context context, THIABPurchase purchase)
     {
         String deviceDetails = "\n\nThere appears to have been a problem reporting my purchase to TradeHero server\n\n-----\n" +
                 StringUtils.join("\n", getPurchaseReportStrings(context, purchase)) +
@@ -24,7 +24,7 @@ public class GooglePlayUtils
         return intent;
     }
 
-    public static List<String> getPurchaseReportStrings(Context context, BaseIABPurchase purchase)
+    public static List<String> getPurchaseReportStrings(Context context, THIABPurchase purchase)
     {
         List<String> reported = new ArrayList<>();
 

@@ -98,15 +98,6 @@ public class BaseIABPurchase implements IABPurchase<IABSKU, THIABOrderId>
         return new GooglePlayPurchaseDTO(this.originalJson, this.signature);
     }
 
-    public OwnedPortfolioId getApplicableOwnedPortfolioId()
-    {
-        if (developerPayload != null)
-        {
-            return (OwnedPortfolioId) THJsonAdapter.getInstance().fromBody(developerPayload, OwnedPortfolioId.class);
-        }
-        return null;
-    }
-
     @Override public String toString()
     {
         return "PurchaseInfo(type:" + itemType + "):" + originalJson + "; signature:" + signature;

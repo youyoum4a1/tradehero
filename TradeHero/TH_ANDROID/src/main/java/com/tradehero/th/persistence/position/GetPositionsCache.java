@@ -15,6 +15,7 @@ import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.network.BasicRetrofitErrorHandler;
 import com.tradehero.th.network.service.PositionService;
+import com.tradehero.th.network.service.PositionServiceUtil;
 import com.tradehero.th.persistence.portfolio.PortfolioCache;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import dagger.Lazy;
@@ -50,32 +51,9 @@ import retrofit.RetrofitError;
     }
     //</editor-fold>
 
-    protected GetPositionsDTO fetch(OwnedPortfolioId key)
+    protected GetPositionsDTO fetch(OwnedPortfolioId key) throws RetrofitError
     {
-        GetPositionsDTO getPositionsDTO = null;
-        try
-        {
-            getPositionsDTO = fetchInternal(key);
-        }
-        catch (RetrofitError retrofitError)
-        {
-            BasicRetrofitErrorHandler.handle(retrofitError);
-            THLog.e(TAG, "Error requesting key " + key.toString(), retrofitError);
-        }
-        return getPositionsDTO;
-    }
-
-    protected GetPositionsDTO fetchInternal(OwnedPortfolioId key)
-    {
-        if (key instanceof PerPagedOwnedPortfolioId)
-        {
-            return positionService.get().getPositions(key.userId, key.portfolioId, ((PerPagedOwnedPortfolioId) key).page, ((PerPagedOwnedPortfolioId) key).perPage);
-        }
-        if (key instanceof PagedOwnedPortfolioId)
-        {
-            return positionService.get().getPositions(key.userId, key.portfolioId, ((PagedOwnedPortfolioId) key).page);
-        }
-        return positionService.get().getPositions(key.userId, key.portfolioId);
+        return PositionServiceUtil.getPositions(positionService.get(), key);
     }
 
     @Override public GetPositionsDTO get(OwnedPortfolioId key)

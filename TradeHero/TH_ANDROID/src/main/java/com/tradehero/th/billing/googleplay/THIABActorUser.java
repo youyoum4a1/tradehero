@@ -14,12 +14,12 @@ public interface THIABActorUser extends IABActorUser<
         InventoryFetcher.OnInventoryFetchedListener<IABSKU, THIABProductDetail, IABException>,
         THIABPurchaseOrder,
         THIABOrderId,
-        BaseIABPurchase,
+        THIABPurchase,
         BillingPurchaser.OnPurchaseFinishedListener<
                 IABSKU,
                 THIABPurchaseOrder,
                 THIABOrderId,
-                BaseIABPurchase,
+                THIABPurchase,
                 IABException>,
         THIABActor,
         IABException>

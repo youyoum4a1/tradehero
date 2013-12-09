@@ -39,6 +39,7 @@ import com.tradehero.th.billing.googleplay.THIABActorPurchaser;
 import com.tradehero.th.billing.googleplay.THIABActorUser;
 import com.tradehero.th.billing.googleplay.THIABOrderId;
 import com.tradehero.th.billing.googleplay.THIABProductDetail;
+import com.tradehero.th.billing.googleplay.THIABPurchase;
 import com.tradehero.th.billing.googleplay.THIABPurchaseOrder;
 import com.tradehero.th.billing.googleplay.THIABPurchaseRestorer;
 import com.tradehero.th.fragments.social.hero.FollowHeroCallback;
@@ -88,17 +89,17 @@ public class THIABUserInteractor
         IABSKU,
         THIABPurchaseOrder,
         THIABOrderId,
-        BaseIABPurchase,
+        THIABPurchase,
         IABException> purchaseFinishedListener;
     protected PurchaseReporter.OnPurchaseReportedListener<
         IABSKU,
         THIABOrderId,
-        BaseIABPurchase,
+        THIABPurchase,
         Exception> purchaseReportedListener;
     protected IABPurchaseConsumer.OnIABConsumptionFinishedListener<
         IABSKU,
         THIABOrderId,
-        BaseIABPurchase,
+        THIABPurchase,
         IABException> consumptionFinishedListener;
     protected THIABPurchaseRestorer.OnPurchaseRestorerFinishedListener purchaseRestorerFinishedListener;
 
@@ -187,7 +188,7 @@ public class THIABUserInteractor
     {
         if (purchaseFinishedListener == null)
         {
-            purchaseFinishedListener = new BillingPurchaser.OnPurchaseFinishedListener<IABSKU, THIABPurchaseOrder, THIABOrderId, BaseIABPurchase, IABException>()
+            purchaseFinishedListener = new BillingPurchaser.OnPurchaseFinishedListener<IABSKU, THIABPurchaseOrder, THIABOrderId, THIABPurchase, IABException>()
             {
                 @Override public void onPurchaseFailed(int requestCode, THIABPurchaseOrder purchaseOrder, IABException exception)
                 {
@@ -224,7 +225,7 @@ public class THIABUserInteractor
                     }
                 }
 
-                @Override public void onPurchaseFinished(int requestCode, THIABPurchaseOrder purchaseOrder, BaseIABPurchase purchase)
+                @Override public void onPurchaseFinished(int requestCode, THIABPurchaseOrder purchaseOrder, THIABPurchase purchase)
                 {
                     haveActorForget(requestCode);
                     launchReportPurchaseSequence(purchase);
@@ -234,15 +235,15 @@ public class THIABUserInteractor
 
         if (purchaseReportedListener == null)
         {
-            purchaseReportedListener = new PurchaseReporter.OnPurchaseReportedListener<IABSKU, THIABOrderId, BaseIABPurchase, Exception>()
+            purchaseReportedListener = new PurchaseReporter.OnPurchaseReportedListener<IABSKU, THIABOrderId, THIABPurchase, Exception>()
             {
-                @Override public void onPurchaseReported(int requestCode, BaseIABPurchase reportedPurchase, UserProfileDTO updatedUserPortfolio)
+                @Override public void onPurchaseReported(int requestCode, THIABPurchase reportedPurchase, UserProfileDTO updatedUserPortfolio)
                 {
                     haveActorForget(requestCode);
                     handlePurchaseReportSuccess(reportedPurchase, updatedUserPortfolio);
                 }
 
-                @Override public void onPurchaseReportFailed(int requestCode, BaseIABPurchase reportedPurchase, Exception error)
+                @Override public void onPurchaseReportFailed(int requestCode, THIABPurchase reportedPurchase, Exception error)
                 {
                     haveActorForget(requestCode);
                     runOnPurchaseComplete = null;
@@ -258,9 +259,9 @@ public class THIABUserInteractor
 
         if (consumptionFinishedListener == null)
         {
-            consumptionFinishedListener = new IABPurchaseConsumer.OnIABConsumptionFinishedListener<IABSKU, THIABOrderId, BaseIABPurchase, IABException>()
+            consumptionFinishedListener = new IABPurchaseConsumer.OnIABConsumptionFinishedListener<IABSKU, THIABOrderId, THIABPurchase, IABException>()
             {
-                @Override public void onPurchaseConsumeFailed(int requestCode, BaseIABPurchase purchase, IABException exception)
+                @Override public void onPurchaseConsumeFailed(int requestCode, THIABPurchase purchase, IABException exception)
                 {
                     haveActorForget(requestCode);
                     runOnPurchaseComplete = null;
@@ -272,7 +273,7 @@ public class THIABUserInteractor
                     IABAlertDialogUtil.popOfferSendEmailSupportConsumeFailed(context, exception);
                 }
 
-                @Override public void onPurchaseConsumed(int requestCode, BaseIABPurchase purchase)
+                @Override public void onPurchaseConsumed(int requestCode, THIABPurchase purchase)
                 {
                     haveActorForget(requestCode);
                     handlePurchaseConsumed(purchase);
@@ -285,7 +286,7 @@ public class THIABUserInteractor
             purchaseRestorerFinishedListener = new THIABPurchaseRestorer.OnPurchaseRestorerFinishedListener()
             {
                 @Override
-                public void onPurchaseRestoreFinished(List<BaseIABPurchase> consumed, List<BaseIABPurchase> reportFailed, List<BaseIABPurchase> consumeFailed)
+                public void onPurchaseRestoreFinished(List<THIABPurchase> consumed, List<THIABPurchase> reportFailed, List<THIABPurchase> consumeFailed)
                 {
                     THLog.d(TAG, "onPurchaseRestoreFinished3");
                     if (progressDialog != null)
@@ -302,7 +303,7 @@ public class THIABUserInteractor
                             true); // TODO have a better exception
                 }
 
-                @Override public void onPurchaseRestoreFinished(List<BaseIABPurchase> consumed, List<BaseIABPurchase> consumeFailed)
+                @Override public void onPurchaseRestoreFinished(List<THIABPurchase> consumed, List<THIABPurchase> consumeFailed)
                 {
                     THLog.d(TAG, "onPurchaseRestoreFinished2");
                 }
@@ -681,12 +682,12 @@ public class THIABUserInteractor
         IABAlertDialogUtil.popFailedToLoadRequiredInfo(activityWeak.get());
     }
 
-    protected void launchReportPurchaseSequence(BaseIABPurchase purchase)
+    protected void launchReportPurchaseSequence(THIABPurchase purchase)
     {
         launchReportPurchaseSequence(getBillingActor(), purchase);
     }
 
-    protected void launchReportPurchaseSequence(THIABActorPurchaseReporter actorPurchaseReporter, BaseIABPurchase purchase)
+    protected void launchReportPurchaseSequence(THIABActorPurchaseReporter actorPurchaseReporter, THIABPurchase purchase)
     {
         Activity activity = this.activityWeak.get();
         if (activity != null)
@@ -701,25 +702,25 @@ public class THIABUserInteractor
         actorPurchaseReporter.launchReportSequence(requestCode, purchase);
     }
 
-    protected void handlePurchaseReportSuccess(BaseIABPurchase reportedPurchase, UserProfileDTO updatedUserProfile)
+    protected void handlePurchaseReportSuccess(THIABPurchase reportedPurchase, UserProfileDTO updatedUserProfile)
     {
         userProfileDTO = updatedUserProfile;
         userProfileCache.get().put(updatedUserProfile.getBaseKey(), updatedUserProfile);
         launchConsumeSequence(reportedPurchase);
     }
 
-    protected void launchConsumeSequence(BaseIABPurchase reportedPurchase)
+    protected void launchConsumeSequence(THIABPurchase reportedPurchase)
     {
         launchConsumeSequence(getBillingActor(), reportedPurchase);
     }
 
-    protected void launchConsumeSequence(THIABActorPurchaseConsumer actorConsumer, BaseIABPurchase reportedPurchase)
+    protected void launchConsumeSequence(THIABActorPurchaseConsumer actorConsumer, THIABPurchase reportedPurchase)
     {
         int requestCode = actorConsumer.registerConsumeFinishedListener(consumptionFinishedListener);
         actorConsumer.launchConsumeSequence(requestCode, reportedPurchase);
     }
 
-    protected void handlePurchaseConsumed(BaseIABPurchase purchase)
+    protected void handlePurchaseConsumed(THIABPurchase purchase)
     {
         ProgressDialog dialog = progressDialog;
         if (dialog != null)

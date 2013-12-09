@@ -10,6 +10,7 @@ import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
 import com.tradehero.th.billing.googleplay.GooglePlayUtils;
 import com.tradehero.th.billing.googleplay.IABAlertDialogUtil;
+import com.tradehero.th.billing.googleplay.THIABPurchase;
 import com.tradehero.th.utils.AlertDialogUtil;
 import java.util.List;
 
@@ -18,12 +19,12 @@ public class PurchaseRestorerAlertUtil extends IABAlertDialogUtil
 {
     public static final String TAG = PurchaseRestorerAlertUtil.class.getSimpleName();
 
-    public static AlertDialog handlePurchaseRestoreFinished(final Context context, List<BaseIABPurchase> consumed, List<BaseIABPurchase> reportFailed, List<BaseIABPurchase> consumeFailed, final DialogInterface.OnClickListener clickListener)
+    public static AlertDialog handlePurchaseRestoreFinished(final Context context, List<THIABPurchase> consumed, List<THIABPurchase> reportFailed, List<THIABPurchase> consumeFailed, final DialogInterface.OnClickListener clickListener)
     {
         return handlePurchaseRestoreFinished(context, consumed, reportFailed, consumeFailed, clickListener, false);
     }
 
-    public static AlertDialog handlePurchaseRestoreFinished(final Context context, List<BaseIABPurchase> consumed, List<BaseIABPurchase> reportFailed, List<BaseIABPurchase> consumeFailed, final DialogInterface.OnClickListener clickListener, boolean verbose)
+    public static AlertDialog handlePurchaseRestoreFinished(final Context context, List<THIABPurchase> consumed, List<THIABPurchase> reportFailed, List<THIABPurchase> consumeFailed, final DialogInterface.OnClickListener clickListener, boolean verbose)
     {
         int countOk = (consumed == null ? 0 : consumed.size());
         int countReportFailed = (reportFailed == null ? 0 : reportFailed.size());

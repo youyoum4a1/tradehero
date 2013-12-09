@@ -13,6 +13,7 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserBaseUtil;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.billing.googleplay.THIABActor;
+import com.tradehero.th.billing.googleplay.THIABPurchase;
 import com.tradehero.th.fragments.billing.THIABUserInteractor;
 import com.tradehero.th.fragments.social.hero.HeroAlertDialogUtil;
 import retrofit.client.Response;
@@ -160,7 +161,7 @@ public class PushableTimelineFragment extends TimelineFragment
             displayFollowButton();
         }
 
-        @Override protected void handlePurchaseReportSuccess(BaseIABPurchase reportedPurchase, UserProfileDTO updatedUserProfile)
+        @Override protected void handlePurchaseReportSuccess(THIABPurchase reportedPurchase, UserProfileDTO updatedUserProfile)
         {
             super.handlePurchaseReportSuccess(reportedPurchase, updatedUserProfile);
             displayFollowButton();

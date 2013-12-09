@@ -13,11 +13,11 @@ public class THIABPurchaseFetchMilestone
         IABPurchaseFetchMilestone<
                 IABSKU,
                 THIABOrderId,
-                BaseIABPurchase,
+                THIABPurchase,
                 IABPurchaseFetcher.OnPurchaseFetchedListener<
                         IABSKU,
                         THIABOrderId,
-                        BaseIABPurchase>>
+                        THIABPurchase>>
 {
     public static final String TAG = THIABPurchaseFetchMilestone.class.getSimpleName();
 
@@ -30,9 +30,9 @@ public class THIABPurchaseFetchMilestone
         super(actorPurchaseFetcher);
     }
 
-    @Override protected IABPurchaseFetcher.OnPurchaseFetchedListener<IABSKU, THIABOrderId, BaseIABPurchase> createPurchaseFetchedListener()
+    @Override protected IABPurchaseFetcher.OnPurchaseFetchedListener<IABSKU, THIABOrderId, THIABPurchase> createPurchaseFetchedListener()
     {
-        return new IABPurchaseFetcher.OnPurchaseFetchedListener<IABSKU, THIABOrderId, BaseIABPurchase>()
+        return new IABPurchaseFetcher.OnPurchaseFetchedListener<IABSKU, THIABOrderId, THIABPurchase>()
         {
             @Override public void onFetchPurchasesFailed(int requestCode, IABException exception)
             {
@@ -42,7 +42,7 @@ public class THIABPurchaseFetchMilestone
                 notifyFailedListener(exception);
             }
 
-            @Override public void onFetchedPurchases(int requestCode, Map<IABSKU, BaseIABPurchase> purchases)
+            @Override public void onFetchedPurchases(int requestCode, Map<IABSKU, THIABPurchase> purchases)
             {
                 failed = false;
                 complete = true;

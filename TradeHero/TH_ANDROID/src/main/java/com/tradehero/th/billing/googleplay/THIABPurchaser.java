@@ -11,7 +11,7 @@ import javax.inject.Inject;
 import org.json.JSONException;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/7/13 Time: 12:35 PM To change this template use File | Settings | File Templates. */
-public class THIABPurchaser extends IABPurchaser<IABSKU, THIABProductDetail, THIABOrderId, THIABPurchaseOrder, BaseIABPurchase>
+public class THIABPurchaser extends IABPurchaser<IABSKU, THIABProductDetail, THIABOrderId, THIABPurchaseOrder, THIABPurchase>
 {
     public static final String TAG = THIABPurchaser.class.getSimpleName();
 
@@ -23,9 +23,9 @@ public class THIABPurchaser extends IABPurchaser<IABSKU, THIABProductDetail, THI
         DaggerUtils.inject(this);
     }
 
-    @Override protected BaseIABPurchase createPurchase(String itemType, String purchaseData, String dataSignature) throws JSONException
+    @Override protected THIABPurchase createPurchase(String itemType, String purchaseData, String dataSignature) throws JSONException
     {
-        return new BaseIABPurchase(itemType, purchaseData, dataSignature);
+        return new THIABPurchase(itemType, purchaseData, dataSignature);
     }
 
     @Override protected THIABProductDetail getProductDetails(IABSKU iabsku)

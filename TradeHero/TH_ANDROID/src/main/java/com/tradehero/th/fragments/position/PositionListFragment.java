@@ -27,6 +27,7 @@ import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.billing.googleplay.THIABActor;
+import com.tradehero.th.billing.googleplay.THIABPurchase;
 import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.fragments.billing.THIABUserInteractor;
@@ -499,7 +500,7 @@ public class PositionListFragment extends BasePurchaseManagerFragment
             super(activity, billingActor, handler);
         }
 
-        @Override protected void handlePurchaseReportSuccess(BaseIABPurchase reportedPurchase, UserProfileDTO updatedUserProfile)
+        @Override protected void handlePurchaseReportSuccess(THIABPurchase reportedPurchase, UserProfileDTO updatedUserProfile)
         {
             super.handlePurchaseReportSuccess(reportedPurchase, updatedUserProfile);
             displayHeaderView();

@@ -9,10 +9,10 @@ import com.tradehero.common.billing.googleplay.IABSKU;
 public interface THIABActorPurchaseFetcher extends IABActorPurchaseFetcher<
         IABSKU,
         THIABOrderId,
-        BaseIABPurchase,
+        THIABPurchase,
         IABPurchaseFetcher.OnPurchaseFetchedListener<
                 IABSKU,
                 THIABOrderId,
-                BaseIABPurchase>>
+                THIABPurchase>>
 {
 }

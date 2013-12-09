@@ -13,21 +13,42 @@ abstract public class SecurityListType implements Comparable<SecurityListType>, 
     {
         this.page = page;
         this.perPage = perPage;
+        validate();
     }
 
     protected SecurityListType(Integer page)
     {
         this.page = page;
         this.perPage = null;
+        validate();
     }
 
     protected SecurityListType()
     {
         this.page = null;
         this.perPage = null;
+        validate();
     }
     //</editor-fold>
 
+    /**
+     * It should not be made protected or public as it is called in the constructor.
+     */
+    private void validate()
+    {
+        if (page == null && perPage != null)
+        {
+            throw new NullPointerException("Page cannot be null if perPage is not null");
+        }
+        else if (page != null && page < 0)
+        {
+            throw new IllegalArgumentException("Page cannot be negative");
+        }
+        else if (perPage != null && perPage <= 0)
+        {
+            throw new IllegalArgumentException("PerPage cannot be zero or negative");
+        }
+    }
     @Override public int hashCode()
     {
         return (page == null ? 0 : page.hashCode()) ^

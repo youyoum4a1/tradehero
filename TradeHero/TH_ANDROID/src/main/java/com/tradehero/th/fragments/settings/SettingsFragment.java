@@ -33,6 +33,7 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.Application;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.base.THUser;
+import com.tradehero.th.billing.googleplay.THIABPurchase;
 import com.tradehero.th.billing.googleplay.THIABPurchaseRestorer;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.WebViewFragment;
@@ -121,7 +122,7 @@ public class SettingsFragment extends PreferenceFragment
         return new THIABPurchaseRestorer.OnPurchaseRestorerFinishedListener()
         {
             @Override
-            public void onPurchaseRestoreFinished(List<BaseIABPurchase> consumed, List<BaseIABPurchase> reportFailed, List<BaseIABPurchase> consumeFailed)
+            public void onPurchaseRestoreFinished(List<THIABPurchase> consumed, List<THIABPurchase> reportFailed, List<THIABPurchase> consumeFailed)
             {
                 THLog.d(TAG, "onPurchaseRestoreFinished3");
                 PurchaseRestorerAlertUtil.handlePurchaseRestoreFinished(
@@ -132,7 +133,7 @@ public class SettingsFragment extends PreferenceFragment
                         PurchaseRestorerAlertUtil.createFailedRestoreClickListener(getActivity(), new Exception())); // TODO have a better exception
             }
 
-            @Override public void onPurchaseRestoreFinished(List<BaseIABPurchase> consumed, List<BaseIABPurchase> consumeFailed)
+            @Override public void onPurchaseRestoreFinished(List<THIABPurchase> consumed, List<THIABPurchase> consumeFailed)
             {
                 THLog.d(TAG, "onPurchaseRestoreFinished2");
             }

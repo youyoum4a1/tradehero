@@ -10,12 +10,12 @@ public interface THIABActorPurchaseReporter extends
         IABActorPurchaseReporter<
                 IABSKU,
                 THIABOrderId,
-                BaseIABPurchase,
+                THIABPurchase,
                 UserProfileDTO,
                 PurchaseReporter.OnPurchaseReportedListener<
                         IABSKU,
                         THIABOrderId,
-                        BaseIABPurchase,
+                        THIABPurchase,
                         Exception>,
                 Exception>
 {

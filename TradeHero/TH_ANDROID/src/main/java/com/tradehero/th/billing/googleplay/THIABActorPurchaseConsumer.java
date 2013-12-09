@@ -10,11 +10,11 @@ import com.tradehero.common.billing.googleplay.exceptions.IABException;
 public interface THIABActorPurchaseConsumer extends IABActorPurchaseConsumer<
         IABSKU,
         THIABOrderId,
-        BaseIABPurchase,
+        THIABPurchase,
         IABPurchaseConsumer.OnIABConsumptionFinishedListener<
                 IABSKU,
                 THIABOrderId,
-                BaseIABPurchase,
+                THIABPurchase,
                 IABException>,
         IABException>
 {

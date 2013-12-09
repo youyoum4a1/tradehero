@@ -10,7 +10,7 @@ import com.tradehero.common.persistence.PersistableResource;
  */
 abstract public class LoaderMilestone<T> extends BaseMilestone
 {
-    private final LoaderManager.LoaderCallbacks<T> loaderCallback;
+    private LoaderManager.LoaderCallbacks<T> loaderCallback;
 
     protected PersistableResource<T> persistableResource;
 
@@ -65,6 +65,6 @@ abstract public class LoaderMilestone<T> extends BaseMilestone
 
     @Override public void onDestroy()
     {
-
+        loaderCallback = null;
     }
 }

@@ -24,10 +24,10 @@ public interface THIABActor extends
                 InventoryFetcher.OnInventoryFetchedListener<IABSKU, THIABProductDetail, IABException>,
                 THIABPurchaseOrder,
                 THIABOrderId,
-                BaseIABPurchase,
-                IABPurchaseFetcher.OnPurchaseFetchedListener<IABSKU, THIABOrderId, BaseIABPurchase>,
-                BillingPurchaser.OnPurchaseFinishedListener<IABSKU, THIABPurchaseOrder, THIABOrderId, BaseIABPurchase, IABException>,
-                IABPurchaseConsumer.OnIABConsumptionFinishedListener<IABSKU, THIABOrderId, BaseIABPurchase, IABException>,
+                THIABPurchase,
+                IABPurchaseFetcher.OnPurchaseFetchedListener<IABSKU, THIABOrderId, THIABPurchase>,
+                BillingPurchaser.OnPurchaseFinishedListener<IABSKU, THIABPurchaseOrder, THIABOrderId, THIABPurchase, IABException>,
+                IABPurchaseConsumer.OnIABConsumptionFinishedListener<IABSKU, THIABOrderId, THIABPurchase, IABException>,
                 IABException>
 {
 }

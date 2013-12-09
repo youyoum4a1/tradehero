@@ -19,12 +19,14 @@ public interface PortfolioService
     //<editor-fold desc="Get User Portfolio List">
     @GET("/users/{userId}/portfolios")
     List<PortfolioCompactDTO> getPortfolios(
-            @Path("userId") int userId, @Query("includeWatchlist") Boolean includeWatchList)
+            @Path("userId") int userId,
+            @Query("includeWatchlist") Boolean includeWatchList)
         throws RetrofitError;
 
     @GET("/users/{userId}/portfolios")
     void getPortfolios(
-            @Path("userId") int userId, @Query("includeWatchlist") Boolean includeWatchList,
+            @Path("userId") int userId,
+            @Query("includeWatchlist") Boolean includeWatchList,
             Callback<List<PortfolioCompactDTO>> callback);
     //</editor-fold>
 
