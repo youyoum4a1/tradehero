@@ -167,6 +167,7 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
 
     @Override public void onDestroyView()
     {
+        heroStatusButtonClickedListener = null;
         if (heroListAdapter != null)
         {
             heroListAdapter.setHeroStatusButtonClickedListener(null);
@@ -222,7 +223,9 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
 
     private void pushTimelineFragment(UserBaseKey userBaseKey)
     {
-        ((DashboardActivity) getActivity()).getDashboardNavigator().pushFragment(PushableTimelineFragment.class, userBaseKey.getArgs());
+        Bundle args = new Bundle();
+        args.putInt(PushableTimelineFragment.BUNDLE_KEY_SHOW_USER_ID, userBaseKey.key);
+        ((DashboardActivity) getActivity()).getDashboardNavigator().pushFragment(PushableTimelineFragment.class, args);
     }
 
     private void handleGoMostSkilled()

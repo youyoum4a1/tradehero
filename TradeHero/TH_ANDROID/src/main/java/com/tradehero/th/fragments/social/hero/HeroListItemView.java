@@ -74,6 +74,7 @@ public class HeroListItemView extends RelativeLayout implements DTOView<HeroDTO>
 
     @Override protected void onAttachedToWindow()
     {
+        super.onAttachedToWindow();
         if (statusIcon != null)
         {
             statusIcon.setOnClickListener(new OnClickListener()
@@ -96,6 +97,7 @@ public class HeroListItemView extends RelativeLayout implements DTOView<HeroDTO>
         {
             statusIcon.setOnClickListener(null);
         }
+        super.onDetachedFromWindow();
     }
 
     public void setHeroStatusButtonClickedListener(OnHeroStatusButtonClickedListener heroStatusButtonClickedListener)
