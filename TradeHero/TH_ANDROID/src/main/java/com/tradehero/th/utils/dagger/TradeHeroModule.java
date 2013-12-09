@@ -20,6 +20,7 @@ import com.tradehero.th.billing.googleplay.PurchaseRestorerRequiredMilestone;
 import com.tradehero.th.billing.googleplay.THIABInventoryFetcher;
 import com.tradehero.th.billing.googleplay.THIABLogicHolder;
 import com.tradehero.th.billing.googleplay.THIABPurchaseConsumer;
+import com.tradehero.th.billing.googleplay.THIABPurchaseFetcher;
 import com.tradehero.th.billing.googleplay.THIABPurchaseReporter;
 import com.tradehero.th.billing.googleplay.THIABPurchaser;
 import com.tradehero.th.billing.googleplay.THInventoryFetchMilestone;
@@ -248,6 +249,7 @@ import org.ocpsoft.prettytime.PrettyTime;
                 IABInventoryFetcher.class,
                 THIABInventoryFetcher.class,
                 THIABPurchaser.class,
+                THIABPurchaseFetcher.class,
                 THIABPurchaseReporter.class,
                 THIABLogicHolder.class,
                 THIABPurchaseConsumer.class,

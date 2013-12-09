@@ -24,14 +24,8 @@
     <content url="file://$MODULE_DIR$/facebook-android-sdk/facebook">
       <sourceFolder url="file://$MODULE_DIR$/facebook-android-sdk/facebook/gen" isTestSource="false" generated="true" />
       <sourceFolder url="file://$MODULE_DIR$/facebook-android-sdk/facebook/src" isTestSource="false" />
-      <excludeFolder url="file://$MODULE_DIR$/facebook-android-sdk/facebook/target/classes" />
       <excludeFolder url="file://$MODULE_DIR$/facebook-android-sdk/facebook/target/generated-sources/aidl" />
-      <excludeFolder url="file://$MODULE_DIR$/facebook-android-sdk/facebook/target/generated-sources/combined-assets" />
-      <excludeFolder url="file://$MODULE_DIR$/facebook-android-sdk/facebook/target/generated-sources/combined-resources" />
-      <excludeFolder url="file://$MODULE_DIR$/facebook-android-sdk/facebook/target/generated-sources/extracted-dependencies" />
       <excludeFolder url="file://$MODULE_DIR$/facebook-android-sdk/facebook/target/generated-sources/r" />
-      <excludeFolder url="file://$MODULE_DIR$/facebook-android-sdk/facebook/target/maven-archiver" />
-      <excludeFolder url="file://$MODULE_DIR$/facebook-android-sdk/facebook/target/maven-status" />
     </content>
     <orderEntry type="jdk" jdkName="Maven Android 4.0 Platform" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
