@@ -124,6 +124,7 @@ import com.tradehero.th.persistence.user.UserProfileRetrievedMilestone;
 import com.tradehero.th.persistence.user.UserStore;
 import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
 import com.tradehero.th.persistence.watchlist.WatchlistRetrievedMilestone;
+import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.FacebookUtils;
 import com.tradehero.th.utils.LinkedInUtils;
 import com.tradehero.th.utils.NumberDisplayUtils;
@@ -247,6 +248,7 @@ import org.ocpsoft.prettytime.PrettyTime;
 
                 IABServiceConnector.class,
                 IABInventoryFetcher.class,
+                THIABPurchaseFetcher.class,
                 THIABInventoryFetcher.class,
                 THIABPurchaser.class,
                 THIABPurchaseFetcher.class,
@@ -423,7 +425,7 @@ public class TradeHeroModule
                 //.downloader(new UrlConnectionDownloader(getContext()))
                 .memoryCache(lruFileCache)
                 .build();
-        //mPicasso.setDebugging(true);
+        mPicasso.setDebugging(Constants.PICASSO_DEBUG);
         return mPicasso;
     }
 

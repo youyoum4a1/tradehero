@@ -27,7 +27,7 @@
       <excludeFolder url="file://$MODULE_DIR$/Android-PullToRefresh/library/target/generated-sources/aidl" />
       <excludeFolder url="file://$MODULE_DIR$/Android-PullToRefresh/library/target/generated-sources/r" />
     </content>
-    <orderEntry type="jdk" jdkName="Maven Android 4.1.2 Platform (1)" jdkType="Android SDK" />
+    <orderEntry type="jdk" jdkName="Maven Android 4.0 Platform" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: com.google.android:android:4.1.1.4" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: commons-logging:commons-logging:1.1.1" level="project" />

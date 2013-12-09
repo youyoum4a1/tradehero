@@ -4,6 +4,12 @@ import twitter4j.auth.RequestToken;
 
 public class Constants
 {
+    // build constants
+    public static final boolean RELEASE = false;
+
+    public static final boolean PICASSO_DEBUG = !RELEASE;
+
+
     //Linked In
     public static final String LINKEDIN_CONSUMER_KEY = "afed437khxve";
     public static final String LINKEDIN_CONSUMER_SECRET = "hO7VeSyL4y1W2ZiK";
