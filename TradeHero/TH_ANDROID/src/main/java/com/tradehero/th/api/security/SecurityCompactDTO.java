@@ -9,7 +9,7 @@ import java.util.List;
     /** Created with IntelliJ IDEA. User: xavier Date: 9/4/13 Time: 5:30 PM To change this template use File | Settings | File Templates. */
 public class SecurityCompactDTO implements DTO
 {
-    public static final String EXCHANGE_SYMBOL_FOMAT = "%s:%s";
+    public static final String EXCHANGE_SYMBOL_FORMAT = "%s:%s";
 
     public Integer id;
     public String symbol;
@@ -110,7 +110,7 @@ public class SecurityCompactDTO implements DTO
 
     public String getExchangeSymbol()
     {
-        return String.format(EXCHANGE_SYMBOL_FOMAT, exchange, symbol);
+        return String.format(EXCHANGE_SYMBOL_FORMAT, exchange, symbol);
     }
 
     public int getExchangeLogoId()

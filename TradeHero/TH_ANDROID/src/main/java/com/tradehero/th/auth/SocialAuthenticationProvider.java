@@ -49,8 +49,6 @@ public abstract class SocialAuthenticationProvider implements THAuthenticationPr
 
     @Override public String getAuthHeader()
     {
-        StringBuilder sb = new StringBuilder();
-        sb.append(getAuthType()).append(" ").append(getAuthHeaderParameter());
-        return sb.toString();
+        return getAuthType() + " " + getAuthHeaderParameter();
     }
 }

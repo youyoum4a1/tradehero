@@ -73,7 +73,7 @@ public class LinkedIn extends SocialOperator
                                 String failingUrl)
                         {
                             callback.onError(new Exception(
-                                    String.format("Error {0}, description: {1}, url: {2}",
+                                    String.format("Error %s, description: %s, url: %s",
                                             errorCode, description, failingUrl)));
                         }
 
