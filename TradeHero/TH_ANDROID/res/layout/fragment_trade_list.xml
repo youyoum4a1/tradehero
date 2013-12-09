@@ -6,18 +6,18 @@
               android:layout_height="match_parent">
 
     <com.tradehero.th.widget.list.ExpandingListView
-            android:id="@+id/trade_list"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_alignParentTop="true"
-            android:clipToPadding="false"
-            android:divider="@color/light_grey"
-            android:paddingTop="45dp"
-            android:dividerHeight="1dp"
-            />
+        android:id="@+id/trade_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentTop="true"
+        android:clipToPadding="false"
+        android:divider="@color/light_grey"
+        android:paddingTop="45dp"
+        android:dividerHeight="1dp"
+      />
 
     <include layout="@layout/trade_list_overlay_header"
-            android:id="@+id/trade_list_header"
-            android:layout_height="50dp"/>
+        android:id="@+id/trade_list_header"
+        android:layout_height="50dp"/>
 
 </RelativeLayout>

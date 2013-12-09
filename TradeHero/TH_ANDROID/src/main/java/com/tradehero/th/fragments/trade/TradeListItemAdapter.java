@@ -6,6 +6,8 @@ import com.tradehero.th.R;
 import com.tradehero.th.adapters.ExpandableDTOAdapter;
 import com.tradehero.th.adapters.ExpandableListItem;
 import com.tradehero.th.api.trade.OwnedTradeId;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by julien on 23/10/13
@@ -19,23 +21,55 @@ public class TradeListItemAdapter extends ExpandableDTOAdapter<OwnedTradeId, Tra
         super(context, inflater, R.layout.trade_list_item);
     }
 
+    @Override public void setUnderlyingItems(final List<OwnedTradeId> underlyingItems)
+    {
+        super.setUnderlyingItems(underlyingItems);
+
+        if (underlyingItems == null)
+        {
+            this.items = null;
+        }
+        else
+        {
+            this.items = new ArrayList<>(underlyingItems.size());
+            int i = 0;
+            for (final OwnedTradeId id : underlyingItems)
+            {
+                TradeListItemAdapter.ExpandableTradeItem item = new TradeListItemAdapter.ExpandableTradeItem(id, i == 0);
+                item.setExpanded(i == 0);
+                items.add(item);
+                ++i;
+            }
+        }
+    }
+
     @Override protected void fineTune(int position, ExpandableTradeItem dto, TradeListItemView convertView)
     {
     }
 
+    @Override protected ExpandableTradeItem wrap(final OwnedTradeId underlyingItem)
+    {
+        return new ExpandableTradeItem(underlyingItem);
+    }
+
     public static class ExpandableTradeItem extends ExpandableListItem<OwnedTradeId>
     {
-        private boolean isLastTrade;
+        private boolean lastTrade;
 
-        public ExpandableTradeItem(OwnedTradeId model, boolean isLastTrade)
+        public ExpandableTradeItem(final OwnedTradeId model)
+        {
+            this(model, false);
+        }
+
+        public ExpandableTradeItem(final OwnedTradeId model, final boolean lastTrade)
         {
             super(model);
-            this.isLastTrade = isLastTrade;
+            this.lastTrade = lastTrade;
         }
 
         public boolean isLastTrade()
         {
-            return isLastTrade;
+            return this.lastTrade;
         }
     }
 }

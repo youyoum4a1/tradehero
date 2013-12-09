@@ -84,14 +84,17 @@ public class OwnedPositionId extends OwnedPortfolioId implements DTO
         args.putInt(BUNDLE_KEY_POSITION_ID, positionId);
     }
 
-    @Override public String toString()
-    {
-        return String.format("[userId=%d; portfolioId=%d; ownedPositionId=%d]", userId, portfolioId, positionId);
-    }
-
     public boolean isLocked()
     {
         return this.positionId < 0;
     }
 
+    @Override public String toString()
+    {
+        return "OwnedPositionId{" +
+                "portfolioId=" + portfolioId +
+                ", userId=" + userId +
+                ", positionId=" + positionId +
+                '}';
+    }
 }

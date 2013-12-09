@@ -13,7 +13,6 @@ import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
-import com.tradehero.common.billing.googleplay.BaseIABPurchase;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
@@ -130,7 +129,7 @@ public class PositionListFragment extends BasePurchaseManagerFragment
             if (args != null)
             {
                 ViewStub stub = (ViewStub) view.findViewById(R.id.position_list_header_stub);
-                int headerLayoutId = headerFactory.get().layoutIdForArguments(args.getBundle(BUNDLE_KEY_SHOW_PORTFOLIO_ID_BUNDLE));
+                int headerLayoutId = headerFactory.get().layoutIdFor(args.getBundle(BUNDLE_KEY_SHOW_PORTFOLIO_ID_BUNDLE));
                 stub.setLayoutResource(headerLayoutId);
                 this.portfolioHeaderView = (PortfolioHeaderView) stub.inflate();
             }

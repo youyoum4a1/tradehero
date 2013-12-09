@@ -11,9 +11,13 @@ import java.util.List;
 /**
  * Created by julien on 24/10/13
  */
-public abstract class ExpandableDTOAdapter<T, E extends ExpandableListItem<T>, V extends DTOView<E>> extends DTOAdapter<E, V>
+public abstract class ExpandableDTOAdapter<
+            DTOType,
+            WrappedDTOType extends ExpandableListItem<DTOType>,
+            DTOViewType extends DTOView<WrappedDTOType>>
+        extends DTOAdapter<WrappedDTOType, DTOViewType>
 {
-    private List<T> underlyingItems;
+    private List<DTOType> underlyingItems;
 
     public ExpandableDTOAdapter(Context context, LayoutInflater inflater, int layoutResourceId)
     {
@@ -28,8 +32,8 @@ public abstract class ExpandableDTOAdapter<T, E extends ExpandableListItem<T>, V
             convertView = inflater.inflate(layoutResourceId, viewGroup, false);
         }
 
-        V dtoView = (V) convertView;
-        E expandableWrapper = (E) getItem(position);
+        DTOViewType dtoView = (DTOViewType) convertView;
+        WrappedDTOType expandableWrapper = (WrappedDTOType) getItem(position);
 
         View expandingLayout = convertView.findViewById(R.id.expanding_layout);
         if (expandingLayout != null)
@@ -49,13 +53,12 @@ public abstract class ExpandableDTOAdapter<T, E extends ExpandableListItem<T>, V
         return convertView;
     }
 
-
-    public void setUnderlyingItems(List<T> underlyingItems)
+    public void setUnderlyingItems(List<DTOType> underlyingItems)
     {
         this.underlyingItems = underlyingItems;
     }
 
-    public void addUnderlyingItem(T item)
+    public void addUnderlyingItem(DTOType item)
     {
         if (this.underlyingItems != null)
         {
@@ -73,7 +76,7 @@ public abstract class ExpandableDTOAdapter<T, E extends ExpandableListItem<T>, V
         Object wrappedItem = super.getItem(i);
         if (wrappedItem == null)
         {
-            T underlyingItem = underlyingItems != null ? underlyingItems.get(i) : null;
+            DTOType underlyingItem = underlyingItems != null ? underlyingItems.get(i) : null;
             if (underlyingItem == null)
             {
                 return null;
@@ -81,13 +84,13 @@ public abstract class ExpandableDTOAdapter<T, E extends ExpandableListItem<T>, V
             wrappedItem = wrap(underlyingItem);
             if (items != null)
             {
-                items.set(i, (E) wrappedItem);
+                items.set(i, (WrappedDTOType) wrappedItem);
             }
         }
         return wrappedItem;
     }
 
-    protected E wrap(T underlyingItem)
+    protected WrappedDTOType wrap(DTOType underlyingItem)
     {
         throw new RuntimeException("wrap method is not implemented");
     }

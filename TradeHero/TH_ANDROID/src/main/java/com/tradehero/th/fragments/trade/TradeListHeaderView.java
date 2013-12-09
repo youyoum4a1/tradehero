@@ -63,7 +63,7 @@ public class TradeListHeaderView extends LinearLayout
 
     private void initViews()
     {
-        securityNameTextView = (TextView) findViewById(R.id.trade_history_header_username);
+        securityNameTextView = (TextView) findViewById(R.id.trade_list_header_security_name);
         buyButton = (Button) findViewById(R.id.trade_list_header_buy);
         sellButton = (Button) findViewById(R.id.trade_list_header_sell);
     }

@@ -62,7 +62,7 @@ public class TradeListFragment extends DashboardFragment
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         super.onCreateView(inflater, container, savedInstanceState);
-        RelativeLayout view = (RelativeLayout)inflater.inflate(R.layout.fragment_trade_list, container, false);
+        RelativeLayout view = (RelativeLayout) inflater.inflate(R.layout.fragment_trade_list, container, false);
 
         initViews(view, inflater);
         return view;
@@ -72,10 +72,7 @@ public class TradeListFragment extends DashboardFragment
     {
         if (view != null)
         {
-            if (adapter == null)
-            {
-                adapter = new TradeListItemAdapter(getActivity(), getActivity().getLayoutInflater());
-            }
+            adapter = new TradeListItemAdapter(getActivity(), getActivity().getLayoutInflater());
 
             tradeListView = (ListView) view.findViewById(R.id.trade_list);
 
@@ -196,6 +193,14 @@ public class TradeListFragment extends DashboardFragment
             {
                 linkWith(new OwnedPositionId(ownedPositionIdBundle), true);
             }
+            else
+            {
+                THLog.d(TAG, "ownedPositionIdBundle is null");
+            }
+        }
+        else
+        {
+            THLog.d(TAG, "args is null");
         }
     }
 
@@ -282,29 +287,17 @@ public class TradeListFragment extends DashboardFragment
 
     public void linkWith(List<OwnedTradeId> ownedTradeIds, boolean andDisplay)
     {
-        if (ownedTradeIds != null)
-        {
-            List<TradeListItemAdapter.ExpandableTradeItem> items = new ArrayList<>(ownedTradeIds.size());
-            int i = 0;
-            for (OwnedTradeId id : ownedTradeIds)
-            {
-                TradeListItemAdapter.ExpandableTradeItem item = new TradeListItemAdapter.ExpandableTradeItem(id, i == 0);
-                item.setExpanded(i == 0);
-                items.add(item);
-                ++i;
-            }
-            adapter.setItems(items);
-            getView().post(
-                    new Runnable()
+        adapter.setUnderlyingItems(ownedTradeIds);
+        getView().post(
+                new Runnable()
+                {
+                    @Override
+                    public void run()
                     {
-                        @Override
-                        public void run()
-                        {
-                            adapter.notifyDataSetChanged();
-                        }
+                        adapter.notifyDataSetChanged();
                     }
-            );
-        }
+                }
+        );
 
         if (andDisplay)
         {

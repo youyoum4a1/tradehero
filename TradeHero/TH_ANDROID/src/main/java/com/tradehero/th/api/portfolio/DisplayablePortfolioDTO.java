@@ -48,29 +48,29 @@ public class DisplayablePortfolioDTO implements Comparable
 
     public void populate(UserProfileCache userProfileCache)
     {
-        this.userBaseDTO = userProfileCache.get(ownedPortfolioId.getUserBaseKey());
+        this.userBaseDTO = userProfileCache.get(this.ownedPortfolioId.getUserBaseKey());
     }
 
     public void populate(PortfolioCache portfolioCache)
     {
-        this.portfolioDTO = portfolioCache.get(ownedPortfolioId);
+        this.portfolioDTO = portfolioCache.get(this.ownedPortfolioId);
     }
 
     public boolean isPopulated()
     {
-        return ownedPortfolioId != null && userBaseDTO != null && portfolioDTO != null;
+        return this.ownedPortfolioId != null && this.userBaseDTO != null && this.portfolioDTO != null;
     }
 
     public boolean isValid()
     {
         return isPopulated() &&
-                userBaseDTO.id == ownedPortfolioId.userId &&
-                portfolioDTO.id == ownedPortfolioId.portfolioId;
+                this.userBaseDTO.id == this.ownedPortfolioId.userId &&
+                this.portfolioDTO.id == this.ownedPortfolioId.portfolioId;
     }
 
     public boolean isUserCurrentUser()
     {
-        return currentUserBaseKeyHolder.getCurrentUserBaseKey().equals(userBaseDTO.getBaseKey());
+        return currentUserBaseKeyHolder.getCurrentUserBaseKey().equals(this.ownedPortfolioId.getUserBaseKey());
     }
 
     @Override public boolean equals(Object other)
@@ -81,12 +81,12 @@ public class DisplayablePortfolioDTO implements Comparable
     public boolean equals(DisplayablePortfolioDTO other)
     {
         return (other != null) &&
-                (ownedPortfolioId == null ? other.ownedPortfolioId == null : ownedPortfolioId.equals(other.ownedPortfolioId));
+                (this.ownedPortfolioId == null ? other.ownedPortfolioId == null : this.ownedPortfolioId.equals(other.ownedPortfolioId));
     }
 
     @Override public int hashCode()
     {
-        return ownedPortfolioId == null ? 0 : ownedPortfolioId.hashCode();
+        return this.ownedPortfolioId == null ? 0 : this.ownedPortfolioId.hashCode();
     }
 
     /**
@@ -129,7 +129,7 @@ public class DisplayablePortfolioDTO implements Comparable
             return 1; // a-
         }
 
-        if (ownedPortfolioId == null)
+        if (this.ownedPortfolioId == null)
         {
             return other.ownedPortfolioId == null ? 0 : -1;
         }
@@ -138,6 +138,6 @@ public class DisplayablePortfolioDTO implements Comparable
             return 1;
         }
 
-        return ownedPortfolioId.compareTo(other.ownedPortfolioId);
+        return this.ownedPortfolioId.compareTo(other.ownedPortfolioId);
     }
 }
