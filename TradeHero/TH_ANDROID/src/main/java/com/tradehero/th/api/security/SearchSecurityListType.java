@@ -1,7 +1,5 @@
 package com.tradehero.th.api.security;
 
-import com.sun.istack.internal.Nullable;
-
 /** Created with IntelliJ IDEA. User: xavier Date: 10/3/13 Time: 5:12 PM To change this template use File | Settings | File Templates. */
 public class SearchSecurityListType extends SecurityListType
 {
@@ -55,7 +53,7 @@ public class SearchSecurityListType extends SecurityListType
         }
         if (!SearchSecurityListType.class.isInstance(another))
         {
-            return SearchSecurityListType.class.getName().compareTo(another.getClass().getName());
+            return SearchSecurityListType.class.getName().compareTo(((Object)another).getClass().getName());
         }
 
         return compareTo(SearchSecurityListType.class.cast(another));
