@@ -124,6 +124,7 @@ import com.tradehero.th.persistence.user.UserProfileFetchAssistant;
 import com.tradehero.th.persistence.user.UserProfileRetrievedMilestone;
 import com.tradehero.th.persistence.user.UserStore;
 import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
+import com.tradehero.th.persistence.watchlist.WatchlistRetrievedMilestone;
 import com.tradehero.th.utils.FacebookUtils;
 import com.tradehero.th.utils.LinkedInUtils;
 import com.tradehero.th.utils.NumberDisplayUtils;
@@ -265,6 +266,7 @@ import org.ocpsoft.prettytime.PrettyTime;
 
                 AddToWatchListFragment.class,
                 WatchlistPositionCache.class,
+                WatchlistRetrievedMilestone.class,
         },
         staticInjections =
         {
