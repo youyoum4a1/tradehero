@@ -135,6 +135,7 @@ import com.tradehero.th.widget.user.ProfileCompactView;
 import com.tradehero.th.widget.user.ProfileView;
 import dagger.Module;
 import dagger.Provides;
+import javax.inject.Named;
 import javax.inject.Singleton;
 import org.ocpsoft.prettytime.PrettyTime;
 
@@ -401,6 +402,20 @@ public class TradeHeroModule
         return new LinkedInUtils(
                 context.getString(R.string.LINKEDIN_CONSUMER_KEY),
                 context.getString(R.string.LINKEDIN_CONSUMER_SECRET));
+    }
+    //</editor-fold>
+
+    //<editor-fold desc="Singleton Milestones">
+    @Provides @Singleton @Named("Singleton")
+    UserProfileRetrievedMilestone provideSingletonUserProfileRetrievedMilestone(CurrentUserBaseKeyHolder holder)
+    {
+        return new UserProfileRetrievedMilestone(holder);
+    }
+
+    @Provides @Singleton @Named("Singleton")
+    PortfolioCompactListRetrievedMilestone provideSingletonPortfolioCompactListRetrievedMilestone(CurrentUserBaseKeyHolder holder)
+    {
+        return new PortfolioCompactListRetrievedMilestone(holder);
     }
     //</editor-fold>
 

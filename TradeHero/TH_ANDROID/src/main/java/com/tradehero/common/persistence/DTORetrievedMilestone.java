@@ -1,9 +1,7 @@
 package com.tradehero.common.persistence;
 
 import com.tradehero.common.milestone.BaseMilestone;
-import com.tradehero.common.milestone.Milestone;
 import com.tradehero.common.utils.THLog;
-import java.lang.ref.WeakReference;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/21/13 Time: 5:40 PM To change this template use File | Settings | File Templates. */
 abstract public class DTORetrievedMilestone<
