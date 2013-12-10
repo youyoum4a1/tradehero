@@ -1,21 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<com.tradehero.th.fragments.trade.TradeListItemView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.tradehero.th.fragments.trade.TradeListItemView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="horizontal"
     android:background="@color/white">
-  <ImageView
+
+  <com.tradehero.common.widget.ColorIndicator
       android:id="@+id/ic_position_profit_indicator_left"
-      android:layout_width="9dp"
       android:layout_height="match_parent"
-      android:layout_alignParentLeft="true"
-      android:layout_marginRight="4dp"
-      android:src="@drawable/edit_button_bg"
-      android:scaleType="fitXY"
-      android:contentDescription="@null"
-      android:layout_margin="5dp"
+      android:layout_width="9dp"
+      android:background="@color/number_green"
+      android:layout_marginLeft="2dp"
+      android:layout_marginTop="2dp"
+      android:layout_marginBottom="2dp"
       />
+
   <LinearLayout
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
@@ -34,6 +35,7 @@
           android:layout_weight="2"
           android:layout_height="wrap_content"
           android:gravity="right"/>
+
       <TextView
           android:id="@+id/trade_quantity_label"
           android:layout_width="0dp"
@@ -41,8 +43,8 @@
           android:layout_height="wrap_content"
           android:paddingLeft="10dp"
           />
-    </LinearLayout>
 
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/expanding_layout"
@@ -50,6 +52,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:padding="8dp">
+
       <LinearLayout
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
@@ -63,6 +66,7 @@
             android:text="@string/trade_list_avg_price"
             android:gravity="right"
             android:textColor="@color/light_grey"/>
+
         <TextView
             android:id="@+id/trade_avg_price"
             android:layout_width="0dp"
@@ -70,12 +74,15 @@
             android:paddingLeft="10dp"
             android:layout_height="wrap_content"
             />
+
       </LinearLayout>
+
       <LinearLayout
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:orientation="horizontal"
           android:paddingBottom="2dp">
+
         <TextView
             android:layout_width="0dp"
             android:layout_weight="2"
@@ -83,6 +90,7 @@
             android:text="@string/trade_list_realized_pl"
             android:gravity="right"
             android:textColor="@color/light_grey"/>
+
         <TextView
             android:id="@+id/trade_realized_pl"
             android:layout_width="0dp"
@@ -90,7 +98,9 @@
             android:paddingLeft="10dp"
             android:layout_height="wrap_content"
             />
+
       </LinearLayout>
+
       <LinearLayout
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
@@ -104,6 +114,7 @@
             android:text="@string/trade_list_unrealized_pl"
             android:gravity="right"
             android:textColor="@color/light_grey"/>
+
         <TextView
             android:id="@+id/trade_unrealized_pl"
             android:layout_width="0dp"
@@ -111,7 +122,9 @@
             android:paddingLeft="10dp"
             android:layout_height="wrap_content"
             />
+
       </LinearLayout>
+
       <LinearLayout
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
@@ -125,6 +138,7 @@
             android:text="@string/trade_list_quantity"
             android:gravity="right"
             android:textColor="@color/light_grey"/>
+
         <TextView
             android:id="@+id/trade_quantity"
             android:layout_width="0dp"
@@ -132,6 +146,7 @@
             android:paddingLeft="10dp"
             android:layout_height="wrap_content"
             />
+
       </LinearLayout>
 
       <LinearLayout
@@ -142,27 +157,36 @@
           android:layout_marginTop="6dp"
           android:padding="6dp"
           android:background="@drawable/trade_list_comment_bg">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:paddingBottom="2dp">
+
           <ImageView
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
-              android:src="@drawable/sort_comments"/>
+              android:src="@drawable/sort_comments"
+              android:contentDescription="@null"/>
+
           <TextView
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
               android:paddingLeft="5dp"
               android:text="@string/trade_list_comment"/>
+
         </LinearLayout>
+
         <TextView
             android:id="@+id/trade_list_comment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
+
       </LinearLayout>
+
     </LinearLayout>
+
   </LinearLayout>
 
 </com.tradehero.th.fragments.trade.TradeListItemView>

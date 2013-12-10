@@ -8,6 +8,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 import com.tradehero.common.graphics.FlipAlphaTransformation;
+import com.tradehero.common.widget.ColorIndicator;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.position.OwnedPositionId;
@@ -53,7 +54,7 @@ public class TradeListItemView extends LinearLayout implements DTOView<TradeList
     @Inject Lazy<SecurityIdCache> securityIdCache;
     @Inject Lazy<SecurityCompactCache> securityCache;
 
-    private ImageView profitIndicatorView;
+    private ColorIndicator profitIndicatorView;
 
     private TextView dateTextView;
     private TextView quantityTextView;
@@ -92,14 +93,7 @@ public class TradeListItemView extends LinearLayout implements DTOView<TradeList
 
     private void initViews()
     {
-        profitIndicatorView = (ImageView) findViewById(R.id.ic_position_profit_indicator_left);
-        if (profitIndicatorView != null)
-        {
-            picasso.get()
-                    .load(R.drawable.edit_button_bg)
-                    .transform(new FlipAlphaTransformation())
-                    .into(profitIndicatorView);
-        }
+        profitIndicatorView = (ColorIndicator) findViewById(R.id.ic_position_profit_indicator_left);
 
         dateTextView = (TextView) findViewById(R.id.trade_date_label);
         quantityTextView = (TextView) findViewById(R.id.trade_quantity_label);
@@ -155,8 +149,7 @@ public class TradeListItemView extends LinearLayout implements DTOView<TradeList
     {
         if (this.profitIndicatorView != null)
         {
-            double numberToDisplay = getNumberToDisplay();
-            this.profitIndicatorView.setBackgroundColor(getResources().getColor(ColorUtils.getColorResourceForNumber(numberToDisplay)));
+            this.profitIndicatorView.linkWith(getNumberToDisplay());
         }
 
         if (this.quantityTextView != null)
