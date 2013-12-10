@@ -15,13 +15,6 @@
       android:clipToPadding="false"
       />
 
-  <ProgressBar
-      android:layout_height="wrap_content"
-      android:layout_width="wrap_content"
-      android:layout_centerInParent="true"
-      android:id="@android:id/empty"
-      />
-
   <ViewStub
       android:id="@+id/position_list_header_stub"
       android:inflatedId="@+id/position_list_portfolio_header"
@@ -29,6 +22,12 @@
       android:layout_height="wrap_content"
       />
 
+  <ProgressBar
+      android:id="@android:id/empty"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_centerInParent="true"
+      />
   <!-- see PortfolioHeaderFactory.java for the different layout that are used -->
 
 </RelativeLayout>

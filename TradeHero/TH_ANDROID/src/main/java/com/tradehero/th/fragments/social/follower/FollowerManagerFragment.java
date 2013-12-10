@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
@@ -35,6 +36,7 @@ public class FollowerManagerFragment extends BasePurchaseManagerFragment
     private TextView totalAmountPaid;
     private TextView followersCount;
     private ListView followerList;
+    private ProgressBar progressBar;
 
     private FollowerAndPayoutListItemAdapter followerListAdapter;
     private FollowerSummaryDTO followerSummaryDTO;
@@ -64,6 +66,7 @@ public class FollowerManagerFragment extends BasePurchaseManagerFragment
         totalAmountPaid = (TextView) view.findViewById(R.id.manage_followers_total_amount_paid);
         followersCount = (TextView) view.findViewById(R.id.manage_followers_number_followers);
         followerList = (FollowerListView) view.findViewById(R.id.followers_list);
+        progressBar = (ProgressBar) view.findViewById(android.R.id.empty);
 
         if (followerListAdapter == null)
         {
@@ -137,12 +140,15 @@ public class FollowerManagerFragment extends BasePurchaseManagerFragment
                 {
                     @Override public void onDTOReceived(UserBaseKey key, FollowerSummaryDTO value)
                     {
+                        displayProgress(false);
                         display(value);
                     }
 
                     @Override public void onErrorThrown(UserBaseKey key, Throwable error)
                     {
+                        displayProgress(false);
                         THToast.show("There was an error fetching your follower summary information");
+                        THLog.e(TAG, "Failed to fetch FollowerSummary", error);
                     }
                 };
             }
@@ -238,6 +244,14 @@ public class FollowerManagerFragment extends BasePurchaseManagerFragment
         if (followerListAdapter != null)
         {
             followerListAdapter.setFollowerSummaryDTO(followerSummaryDTO);
+        }
+    }
+
+    public void displayProgress(boolean running)
+    {
+        if (progressBar != null)
+        {
+            progressBar.setVisibility(running ? View.VISIBLE : View.GONE);
         }
     }
 

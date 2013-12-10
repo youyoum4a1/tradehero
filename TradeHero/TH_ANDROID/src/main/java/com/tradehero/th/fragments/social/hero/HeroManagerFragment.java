@@ -12,6 +12,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
@@ -51,6 +52,7 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
     private ImageButton btnBuyMore;
     private Button btnGoMostSkilled;
     private ProgressDialog progressDialog;
+    private ProgressBar progressBar;
 
     private HeroListView heroListView;
     private HeroListItemAdapter heroListAdapter;
@@ -82,6 +84,7 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
 
     protected void initViews(View view)
     {
+        progressBar = (ProgressBar) view.findViewById(android.R.id.empty);
         followCreditCount = (TextView) view.findViewById(R.id.manage_heroes_follow_credit_count);
         icnCoinStack = (ImageView) view.findViewById(R.id.icn_credit_quantity);
         btnBuyMore = (ImageButton) view.findViewById(R.id.btn_buy_more);
@@ -254,11 +257,13 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
                 {
                     @Override public void onDTOReceived(UserBaseKey key, HeroIdList value)
                     {
+                        displayProgress(false);
                         display(heroCache.get().get(value));
                     }
 
                     @Override public void onErrorThrown(UserBaseKey key, Throwable error)
                     {
+                        displayProgress(false);
                         THLog.e(TAG, "Could not fetch heroes", error);
                         THToast.show("There was an error fetching your heroes");
                     }
@@ -269,6 +274,7 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
                 heroListFetchTask.forgetListener(true);
             }
             heroListFetchTask = heroListCache.get().getOrFetch(userBaseKey, heroListListener);
+            displayProgress(true);
             heroListFetchTask.execute();
         }
     }
@@ -338,6 +344,14 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
         if (heroListAdapter != null)
         {
             heroListAdapter.notifyDataSetChanged();
+        }
+    }
+
+    public void displayProgress(boolean running)
+    {
+        if (progressBar != null)
+        {
+            progressBar.setVisibility(running ? View.VISIBLE : View.GONE);
         }
     }
     //</editor-fold>

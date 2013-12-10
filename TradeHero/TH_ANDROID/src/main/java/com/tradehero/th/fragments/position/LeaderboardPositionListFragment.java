@@ -38,7 +38,7 @@ public class LeaderboardPositionListFragment extends PositionListFragment
 
     @Override public void onResume()
     {
-        this.leaderboardMarkUserId = new LeaderboardMarkUserId((int)getArguments().getLong(LeaderboardMarkUserId.BUNDLE_KEY));
+        this.leaderboardMarkUserId = new LeaderboardMarkUserId((int) getArguments().getLong(LeaderboardMarkUserId.BUNDLE_KEY));
 
         String periodStart = getArguments().getString(LeaderboardUserDTO.LEADERBOARD_PERIOD_START_STRING);
         THLog.d(TAG, "Period Start: " + periodStart);
