@@ -174,6 +174,7 @@ abstract public class IABInventoryFetcher<
     private HashMap<IABSKUType, IABProductDetailsType> internalFetchSKUType(String itemType) throws IABException, RemoteException, JSONException
     {
         Bundle querySkus = getQuerySKUBundle();
+        // TODO billingService is null sometime here, lead to crashing on startup the app
         Bundle skuDetails = this.billingService.getSkuDetails(TARGET_BILLING_API_VERSION3, context.getPackageName(), itemType, querySkus);
 
         if (!skuDetails.containsKey(Constants.RESPONSE_GET_SKU_DETAILS_LIST))
