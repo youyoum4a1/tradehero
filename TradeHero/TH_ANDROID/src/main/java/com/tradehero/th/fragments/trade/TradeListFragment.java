@@ -50,11 +50,11 @@ public class TradeListFragment extends DashboardFragment
     @Inject CurrentUserBaseKeyHolder currentUserBaseKeyHolder;
 
     private TradeListOverlayHeaderView header;
-    private TradeListHeaderView tableHeader;
     private ListView tradeListView;
     private ActionBar actionBar;
 
     private TradeListItemAdapter adapter;
+    private TradeListHeaderView.TradeListHeaderClickListener buttonListener;
 
     private DTOCache.GetOrFetchTask<OwnedTradeIdList> fetchTradesTask;
     private TradeListCache.Listener<OwnedPositionId, OwnedTradeIdList> getTradesListener;
@@ -72,42 +72,31 @@ public class TradeListFragment extends DashboardFragment
     {
         if (view != null)
         {
+            this.buttonListener = new TradeListHeaderView.TradeListHeaderClickListener()
+            {
+                @Override public void onBuyButtonClicked(TradeListHeaderView tradeListHeaderView, OwnedPositionId ownedPositionId)
+                {
+                    pushBuySellFragment(ownedPositionId, true);
+                }
+
+                @Override public void onSellButtonClicked(TradeListHeaderView tradeListHeaderView, OwnedPositionId ownedPositionId)
+                {
+                    pushBuySellFragment(ownedPositionId, false);
+                }
+            };
+
             adapter = new TradeListItemAdapter(getActivity(), getActivity().getLayoutInflater());
+            adapter.setTradeListHeaderClickListener(this.buttonListener);
 
             tradeListView = (ListView) view.findViewById(R.id.trade_list);
-
             if (tradeListView != null)
             {
-                tableHeader = (TradeListHeaderView) inflater.inflate(R.layout.trade_list_header, null);
-                registerTableHeaderListener();
-                tradeListView.addHeaderView(tableHeader);
                 tradeListView.setAdapter(adapter);
             }
 
             header = (TradeListOverlayHeaderView) view.findViewById(R.id.trade_list_header);
             registerOverlayHeaderListener();
         }
-    }
-
-    private void registerTableHeaderListener()
-    {
-        if (this.tableHeader == null)
-        {
-            return;
-        }
-
-        this.tableHeader.setListener(new TradeListHeaderView.TradeListHeaderClickListener()
-        {
-            @Override public void onBuyButtonClicked(TradeListHeaderView tradeListHeaderView, OwnedPositionId ownedPositionId)
-            {
-                pushBuySellFragment(ownedPositionId, true);
-            }
-
-            @Override public void onSellButtonClicked(TradeListHeaderView tradeListHeaderView, OwnedPositionId ownedPositionId)
-            {
-                pushBuySellFragment(ownedPositionId, false);
-            }
-        });
     }
 
     private void registerOverlayHeaderListener()
@@ -219,28 +208,24 @@ public class TradeListFragment extends DashboardFragment
         fetchTradesTask = null;
         getTradesListener = null;
         tradeListView = null;
-        adapter = null;
-        if (this.tableHeader != null)
+        buttonListener = null;
+        if (adapter != null)
         {
-            this.tableHeader.setListener(null);
+            adapter.setTradeListHeaderClickListener(null);
         }
-        this.tableHeader = null;
+        adapter = null;
         super.onDestroyView();
     }
 
     public void linkWith(OwnedPositionId ownedPositionId, boolean andDisplay)
     {
         this.ownedPositionId = ownedPositionId;
-        if (!ownedPositionId.getUserBaseKey().equals(currentUserBaseKeyHolder.getCurrentUserBaseKey()))
+        if (this.adapter != null)
         {
-            this.tradeListView.removeHeaderView(this.tableHeader);
+            this.adapter.setShownPositionId(this.ownedPositionId);
         }
-        else if (this.tableHeader.getParent() == null)
-        {
-            this.tradeListView.addHeaderView(this.tableHeader);
-        }
-
         fetchTrades();
+
         if (andDisplay)
         {
             display();
@@ -312,11 +297,6 @@ public class TradeListFragment extends DashboardFragment
             if (this.header != null)
             {
                 header.bindOwnedPositionId(this.ownedPositionId);
-            }
-
-            if (this.tableHeader != null)
-            {
-                tableHeader.bindOwnedPositionId(this.ownedPositionId);
             }
         }
 

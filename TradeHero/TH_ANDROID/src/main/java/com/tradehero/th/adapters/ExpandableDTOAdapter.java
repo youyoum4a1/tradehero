@@ -17,6 +17,7 @@ public abstract class ExpandableDTOAdapter<
             DTOViewType extends DTOView<WrappedDTOType>>
         extends DTOAdapter<WrappedDTOType, DTOViewType>
 {
+    public static final int RES_ID_EXPANDED_LAYOUT = R.id.expanding_layout;
     private List<DTOType> underlyingItems;
 
     public ExpandableDTOAdapter(Context context, LayoutInflater inflater, int layoutResourceId)
@@ -35,7 +36,16 @@ public abstract class ExpandableDTOAdapter<
         DTOViewType dtoView = (DTOViewType) convertView;
         WrappedDTOType expandableWrapper = (WrappedDTOType) getItem(position);
 
-        View expandingLayout = convertView.findViewById(R.id.expanding_layout);
+        toggleExpanded(expandableWrapper, convertView);
+
+        dtoView.display(expandableWrapper);
+        fineTune(position, expandableWrapper, dtoView);
+        return convertView;
+    }
+
+    protected void toggleExpanded(WrappedDTOType expandableWrapper, View convertView)
+    {
+        View expandingLayout = convertView.findViewById(RES_ID_EXPANDED_LAYOUT);
         if (expandingLayout != null)
         {
             if (!expandableWrapper.isExpanded())
@@ -47,10 +57,6 @@ public abstract class ExpandableDTOAdapter<
                 expandingLayout.setVisibility(View.VISIBLE);
             }
         }
-
-        dtoView.display(expandableWrapper);
-        fineTune(position, expandableWrapper, dtoView);
-        return convertView;
     }
 
     public void setUnderlyingItems(List<DTOType> underlyingItems)

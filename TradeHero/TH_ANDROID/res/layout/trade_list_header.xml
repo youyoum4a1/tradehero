@@ -2,16 +2,19 @@
 
 <com.tradehero.th.fragments.trade.TradeListHeaderView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingLeft="8dp"
     android:paddingRight="8dp">
 
   <LinearLayout
+      android:id="@+id/trade_list_button_holder"
       android:orientation="horizontal"
       android:layout_width="match_parent"
-      android:layout_height="wrap_content">
+      android:layout_height="wrap_content"
+      android:layout_alignParentTop="true"
+      android:layout_centerHorizontal="true"
+    >
 
       <Button
           android:id="@+id/trade_list_header_buy"
@@ -39,7 +42,10 @@
       android:id="@+id/trade_list_header_security_name"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
+      android:layout_below="@id/trade_list_button_holder"
+      android:layout_centerHorizontal="true"
       android:textColor="@color/actionbar_gradient1"
-      android:paddingTop="4dp"/>
+      android:paddingTop="4dp"
+    />
 
 </com.tradehero.th.fragments.trade.TradeListHeaderView>

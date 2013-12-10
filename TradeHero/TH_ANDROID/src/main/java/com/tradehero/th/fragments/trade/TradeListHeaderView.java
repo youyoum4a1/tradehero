@@ -5,6 +5,7 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import com.tradehero.th.R;
 import com.tradehero.th.api.position.OwnedPositionId;
@@ -23,7 +24,7 @@ import java.lang.ref.WeakReference;
 /**
  * Created by julien on 28/10/13
  */
-public class TradeListHeaderView extends LinearLayout
+public class TradeListHeaderView extends RelativeLayout
 {
     @Inject Lazy<PositionCache> positionCache;
     @Inject Lazy<SecurityIdCache> securityIdCache;
@@ -35,7 +36,7 @@ public class TradeListHeaderView extends LinearLayout
     private Button buyButton;
     private Button sellButton;
 
-    private WeakReference<TradeListHeaderClickListener> listener;
+    private WeakReference<TradeListHeaderClickListener> listener = new WeakReference<>(null);
 
     //<editor-fold desc="Constructors">
     public TradeListHeaderView(Context context)
@@ -178,14 +179,13 @@ public class TradeListHeaderView extends LinearLayout
 
     public TradeListHeaderClickListener getListener()
     {
-        if (listener == null)
-        {
-            return null;
-        }
-
         return listener.get();
     }
 
+    /**
+     * The listener should be strongly referenced elsewhere
+     * @param listener
+     */
     public void setListener(TradeListHeaderClickListener listener)
     {
         this.listener = new WeakReference<>(listener);
