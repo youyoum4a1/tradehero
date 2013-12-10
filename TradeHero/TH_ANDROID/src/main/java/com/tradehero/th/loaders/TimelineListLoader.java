@@ -4,6 +4,7 @@ import android.content.Context;
 import com.tradehero.common.persistence.Query;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.api.local.TimelineItem;
+import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.persistence.timeline.TimelineManager;
 import com.tradehero.th.persistence.timeline.TimelineStore;
 import com.tradehero.th.utils.DaggerUtils;
@@ -12,39 +13,41 @@ import java.util.List;
 import javax.inject.Inject;
 
 /** Created with IntelliJ IDEA. User: tho Date: 9/12/13 Time: 11:37 AM Copyright (c) TradeHero */
-public class TimelinePagedItemListLoader extends PagedItemListLoader<TimelineItem>
+public class TimelineListLoader extends PaginationListLoader<TimelineItem>
 {
-    private static final String TAG = TimelinePagedItemListLoader.class.getSimpleName();
+    private static final String TAG = TimelineListLoader.class.getSimpleName();
 
-    private int ownerId;
-    private Integer maxItemId;
-    private Integer minItemId;
+    private final UserBaseKey userBaseKey;
 
-    @Inject TimelineManager timelineManager;
+    private Integer upperItemId;
+    private Integer lowerItemId;
 
-    public TimelinePagedItemListLoader(Context context)
+    @Inject protected TimelineManager timelineManager;
+
+    public TimelineListLoader(Context context, UserBaseKey userBaseKey)
     {
         super(context);
+        this.userBaseKey = userBaseKey;
         DaggerUtils.inject(this);
     }
 
     @Override public List<TimelineItem> loadInBackground()
     {
-        if (minItemId != null)
+        if (lowerItemId != null)
         {
-            ++minItemId;
+            ++lowerItemId;
         }
-        if (maxItemId != null)
+        if (upperItemId != null)
         {
-            --maxItemId;
+            --upperItemId;
         }
-        THLog.d(TAG, "Start loading timeline with maxItemId=" + maxItemId + "/ minItemId=" + minItemId);
+        THLog.d(TAG, "Start loading timeline with upperItemId=" + upperItemId + "/ lowerItemId=" + lowerItemId);
 
         Query query = new Query();
-        query.setId(ownerId);
-        query.setLower(minItemId);
-        query.setUpper(maxItemId);
-        query.setProperty(TimelineStore.PER_PAGE, getItemsPerPage());
+        query.setId(getOwnerId());
+        query.setLower(lowerItemId);
+        query.setUpper(upperItemId);
+        query.setProperty(TimelineStore.PER_PAGE, getPerPage());
 
         try
         {
@@ -57,27 +60,27 @@ public class TimelinePagedItemListLoader extends PagedItemListLoader<TimelineIte
         }
     }
 
-    @Override protected void onLoadNextPage(TimelineItem firstVisibleItem)
+    @Override protected void onLoadNext(TimelineItem firstVisible)
     {
-        if (firstVisibleItem == null)
+        if (firstVisible == null)
         {
             return;
         }
 
-        maxItemId = null;
-        minItemId = firstVisibleItem.getId();
+        upperItemId = null;
+        lowerItemId = firstVisible.getId();
         forceLoad();
     }
 
-    @Override protected void onLoadPreviousPage(TimelineItem lastVisibleItem)
+    @Override protected void onLoadPrevious(TimelineItem startItem)
     {
-        if (lastVisibleItem == null)
+        if (startItem == null)
         {
             return;
         }
 
-        minItemId = null;
-        maxItemId = lastVisibleItem.getId();
+        lowerItemId = null;
+        upperItemId = startItem.getId();
         forceLoad();
     }
 
@@ -88,17 +91,12 @@ public class TimelinePagedItemListLoader extends PagedItemListLoader<TimelineIte
 
     public void resetQuery()
     {
-        maxItemId = null;
-        minItemId = null;
-    }
-
-    public void setOwnerId(int ownerId)
-    {
-        this.ownerId = ownerId;
+        upperItemId = null;
+        lowerItemId = null;
     }
 
     public int getOwnerId()
     {
-        return ownerId;
+        return userBaseKey.key;
     }
 }

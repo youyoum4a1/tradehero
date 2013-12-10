@@ -8,17 +8,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.TextView;
-import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
-import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.leaderboard.LeaderboardDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
-import com.tradehero.th.fragments.tutorial.TutorialFragment;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
 import java.util.Date;
 import java.util.List;
@@ -113,7 +110,7 @@ public class LeaderboardMarkUserListViewFragment extends BaseLeaderboardFragment
                 Loader loader = getLoaderManager().getLoader(LeaderboardMarkUserLoader.UNIQUE_LOADER_ID);
                 if (loader instanceof LeaderboardMarkUserLoader)
                 {
-                    ((LeaderboardMarkUserLoader) loader).loadPreviousPage();
+                    ((LeaderboardMarkUserLoader) loader).loadPrevious();
                 }
             }
         };

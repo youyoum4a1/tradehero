@@ -32,7 +32,6 @@ import com.tradehero.th.api.security.TrendingPriceSecurityListType;
 import com.tradehero.th.api.security.TrendingSecurityListType;
 import com.tradehero.th.api.security.TrendingVolumeSecurityListType;
 import com.tradehero.th.fragments.base.DashboardFragment;
-import com.tradehero.th.fragments.trade.AbstractBuySellFragment;
 import com.tradehero.th.fragments.trade.BuySellFragment;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.persistence.security.SecurityCompactListCache;
@@ -72,7 +71,7 @@ public class TrendingFragment extends DashboardFragment
     @Inject Lazy<SecurityCompactCache> securityCompactCache;
     private DTOCache.GetOrFetchTask<SecurityIdList> trendingTask;
     private List<SecurityCompactDTO> securityCompactDTOs;
-    protected SecurityItemViewAdapter securityItemViewAdapter;
+    protected SecurityItemViewAdapterArray securityItemViewAdapter;
     protected TrendingFilterSelectorFragment.OnResumedListener trendingFilterSelectorResumedListener;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -100,7 +99,7 @@ public class TrendingFragment extends DashboardFragment
             mProgressSpinner.setVisibility(View.GONE);
         }
 
-        securityItemViewAdapter = new SecurityItemViewAdapter(getActivity(), getActivity().getLayoutInflater(), R.layout.trending_security_item);
+        securityItemViewAdapter = new SecurityItemViewAdapterArray(getActivity(), getActivity().getLayoutInflater(), R.layout.trending_security_item);
         gridScrollListener = new EndlessScrollListener()
         {
             @Override protected void loadPage(int page)

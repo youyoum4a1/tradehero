@@ -8,10 +8,10 @@ package com.tradehero.th.fragments.trending;
 
 import android.content.Context;
 import android.view.LayoutInflater;
-import com.tradehero.th.adapters.DTOAdapter;
+import com.tradehero.th.adapters.ArrayDTOAdapter;
 import com.tradehero.th.api.users.UserSearchResultDTO;
 
-public class PeopleItemViewAdapter extends DTOAdapter<UserSearchResultDTO, SearchPeopleItemView>
+public class PeopleItemViewAdapter extends ArrayDTOAdapter<UserSearchResultDTO, SearchPeopleItemView>
 {
     private final static String TAG = PeopleItemViewAdapter.class.getSimpleName();
 

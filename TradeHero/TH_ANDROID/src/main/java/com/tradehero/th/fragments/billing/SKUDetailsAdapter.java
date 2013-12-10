@@ -5,22 +5,37 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import com.tradehero.common.billing.googleplay.BaseIABProductDetail;
-import com.tradehero.th.adapters.DTOAdapter;
+import com.tradehero.th.adapters.ArrayDTOAdapter;
+import java.util.Comparator;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/6/13 Time: 4:14 PM To change this template use File | Settings | File Templates. */
 abstract public class SKUDetailsAdapter<SKUDetailsType extends BaseIABProductDetail,
                                         SKUDetailViewType extends SKUDetailView<SKUDetailsType>>
-        extends DTOAdapter<SKUDetailsType, SKUDetailViewType>
+        extends ArrayDTOAdapter<SKUDetailsType, SKUDetailViewType>
 {
     public static final String TAG = SKUDetailsAdapter.class.getSimpleName();
 
     public static final int ITEM_TYPE_HEADER = 0;
     public static final int ITEM_TYPE_VALUE = 1;
 
+    private Comparator<SKUDetailsType> skuDetailsComparator;
+
+
     public SKUDetailsAdapter(Context context, LayoutInflater inflater, int layoutResourceId)
     {
         super(context, inflater, layoutResourceId);
     }
+
+    public Comparator<SKUDetailsType> getSkuDetailsComparator()
+    {
+        return skuDetailsComparator;
+    }
+
+    public void setSkuDetailsComparator(Comparator<SKUDetailsType> skuDetailsComparator)
+    {
+        this.skuDetailsComparator = skuDetailsComparator;
+    }
+
 
     @Override public int getViewTypeCount()
     {

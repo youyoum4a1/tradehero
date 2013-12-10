@@ -3,12 +3,12 @@ package com.tradehero.th.fragments.leaderboard;
 import android.content.Context;
 import android.view.LayoutInflater;
 import com.tradehero.th.R;
-import com.tradehero.th.adapters.DTOAdapter;
+import com.tradehero.th.adapters.ArrayDTOAdapter;
 import com.tradehero.th.api.leaderboard.LeaderboardDefDTO;
 import java.util.List;
 
 /** Created with IntelliJ IDEA. User: tho Date: 10/16/13 Time: 4:08 PM Copyright (c) TradeHero */
-public class LeaderboardDefListAdapter extends DTOAdapter<LeaderboardDefDTO, LeaderboardDefView>
+public class LeaderboardDefListAdapter extends ArrayDTOAdapter<LeaderboardDefDTO, LeaderboardDefView>
 {
     private LeaderboardSortType sortType;
 

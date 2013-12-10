@@ -5,12 +5,12 @@ import android.view.LayoutInflater;
 import com.tradehero.th.adapters.ArrayDTOAdapter;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 
-public class SecurityItemViewAdapter extends ArrayDTOAdapter<SecurityCompactDTO, SecurityItemView>
+public class SecurityItemViewAdapterArray extends ArrayDTOAdapter<SecurityCompactDTO, SecurityItemView>
 {
-    private final static String TAG = SecurityItemViewAdapter.class.getSimpleName();
+    private final static String TAG = SecurityItemViewAdapterArray.class.getSimpleName();
 
     //<editor-fold desc="Constructors">
-    public SecurityItemViewAdapter(Context context, LayoutInflater inflater, int layoutResourceId)
+    public SecurityItemViewAdapterArray(Context context, LayoutInflater inflater, int layoutResourceId)
     {
         super(context, inflater, layoutResourceId);
     }

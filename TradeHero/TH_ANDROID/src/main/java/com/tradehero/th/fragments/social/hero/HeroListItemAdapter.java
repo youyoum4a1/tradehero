@@ -6,7 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
-import com.tradehero.th.adapters.DTOAdapter;
+import com.tradehero.th.adapters.ArrayDTOAdapter;
 import com.tradehero.th.api.social.HeroDTO;
 import com.tradehero.th.widget.list.BaseListHeaderView;
 import java.lang.ref.WeakReference;
@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/14/13 Time: 4:12 PM To change this template use File | Settings | File Templates. */
-public class HeroListItemAdapter extends DTOAdapter<HeroDTO, HeroListItemView>
+public class HeroListItemAdapter extends ArrayDTOAdapter<HeroDTO, HeroListItemView>
 {
     public static final String TAG = HeroListItemAdapter.class.getSimpleName();
 

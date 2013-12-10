@@ -4,7 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
-import com.tradehero.th.adapters.DTOAdapter;
+import com.tradehero.th.adapters.ArrayDTOAdapter;
 import com.tradehero.th.api.yahoo.News;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.base.NavigatorActivity;
@@ -15,7 +15,7 @@ import com.tradehero.th.fragments.WebViewFragment;
  *
  * Map a Yahoo News object to a YahooNewsView.
  */
-public class YahooNewsAdapter extends DTOAdapter<News, YahooNewsView>
+public class YahooNewsAdapter extends ArrayDTOAdapter<News, YahooNewsView>
 {
     private final static String TAG = YahooNewsAdapter.class.getSimpleName();
 

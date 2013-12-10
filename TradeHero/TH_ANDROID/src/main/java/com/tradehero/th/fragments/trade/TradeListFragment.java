@@ -9,7 +9,6 @@ import android.widget.RelativeLayout;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
@@ -25,14 +24,12 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
-import com.tradehero.th.fragments.timeline.TimelineFragment;
 import com.tradehero.th.persistence.position.PositionCache;
 import com.tradehero.th.persistence.security.SecurityIdCache;
 import com.tradehero.th.persistence.trade.TradeListCache;
 import dagger.Lazy;
 
 import javax.inject.Inject;
-import java.util.ArrayList;
 import java.util.List;
 
 /**

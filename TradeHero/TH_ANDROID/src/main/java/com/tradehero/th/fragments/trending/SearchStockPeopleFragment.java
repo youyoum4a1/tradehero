@@ -29,7 +29,6 @@ import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityIdList;
 import com.tradehero.th.api.security.SecurityListType;
 import com.tradehero.th.api.users.SearchUserListType;
-import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserBaseKeyList;
 import com.tradehero.th.api.users.UserListType;
 import com.tradehero.th.api.users.UserSearchResultDTO;
@@ -84,7 +83,7 @@ public class SearchStockPeopleFragment extends DashboardFragment
     private DTOCache.Listener<SecurityListType, SecurityIdList> securitySearchListener;
     private DTOCache.GetOrFetchTask<SecurityIdList> securitySearchTask;
     private List<SecurityCompactDTO> securityList;
-    private SecurityItemViewAdapter securityItemViewAdapter;
+    private SecurityItemViewAdapterArray securityItemViewAdapter;
 
     @Inject Lazy<UserBaseKeyListCache> userBaseKeyListCache;
     @Inject Lazy<UserSearchResultCache> userSearchResultCache;
@@ -135,7 +134,7 @@ public class SearchStockPeopleFragment extends DashboardFragment
 
         if (securityItemViewAdapter == null)
         {
-            securityItemViewAdapter = new SecurityItemViewAdapter(getActivity(), getActivity().getLayoutInflater(), R.layout.search_security_item);
+            securityItemViewAdapter = new SecurityItemViewAdapterArray(getActivity(), getActivity().getLayoutInflater(), R.layout.search_security_item);
         }
         mSearchStockListView = (ListView) view.findViewById(R.id.trending_listview);
         if (mSearchStockListView != null)

@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
+import com.tradehero.th.adapters.ArrayDTOAdapter;
 import com.tradehero.th.adapters.DTOAdapter;
 import com.tradehero.th.api.portfolio.DisplayablePortfolioDTO;
 import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
@@ -21,7 +22,7 @@ import java.util.TreeSet;
 import javax.inject.Inject;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/14/13 Time: 4:12 PM To change this template use File | Settings | File Templates. */
-public class PortfolioListItemAdapter extends DTOAdapter<DisplayablePortfolioDTO, PortfolioListItemView>
+public class PortfolioListItemAdapter extends ArrayDTOAdapter<DisplayablePortfolioDTO, PortfolioListItemView>
 {
     public static final String TAG = PortfolioListItemAdapter.class.getName();
 

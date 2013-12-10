@@ -88,8 +88,8 @@ import com.tradehero.th.fragments.trending.TrendingFilterSelectorBasicFragment;
 import com.tradehero.th.fragments.trending.TrendingFilterSelectorPriceFragment;
 import com.tradehero.th.fragments.trending.TrendingFilterSelectorVolumeFragment;
 import com.tradehero.th.fragments.trending.TrendingFragment;
-import com.tradehero.th.loaders.SearchStockPageItemListLoader;
-import com.tradehero.th.loaders.TimelinePagedItemListLoader;
+import com.tradehero.th.loaders.SearchStockPageListLoader;
+import com.tradehero.th.loaders.TimelineListLoader;
 import com.tradehero.th.models.alert.SecurityAlertAssistant;
 import com.tradehero.th.network.NetworkEngine;
 import com.tradehero.th.network.YahooEngine;
@@ -215,8 +215,8 @@ import org.ocpsoft.prettytime.PrettyTime;
                 FollowerListItemView.class,
 
                 AbstractUserAvailabilityRequester.class,
-                SearchStockPageItemListLoader.class,
-                TimelinePagedItemListLoader.class,
+                SearchStockPageListLoader.class,
+                TimelineListLoader.class,
 
                 UserManager.class,
                 TimelineManager.class,

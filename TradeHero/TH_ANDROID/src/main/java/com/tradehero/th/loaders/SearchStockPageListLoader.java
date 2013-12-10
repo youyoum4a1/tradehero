@@ -11,7 +11,7 @@ import retrofit.RetrofitError;
 import javax.inject.Inject;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 9/20/13 Time: 1:12 PM To change this template use File | Settings | File Templates. */
-public class SearchStockPageItemListLoader extends PagedItemListLoader<ListedSecurityCompact>
+public class SearchStockPageListLoader extends PaginationListLoader<ListedSecurityCompact>
 {
     @Inject SecurityService securityService;
 
@@ -21,18 +21,18 @@ public class SearchStockPageItemListLoader extends PagedItemListLoader<ListedSec
      */
     private int page;
 
-    public SearchStockPageItemListLoader(Context context)
+    public SearchStockPageListLoader(Context context)
     {
         super(context);
     }
 
-    @Override protected void onLoadPreviousPage(ListedSecurityCompact startItem)
+    @Override protected void onLoadPrevious(ListedSecurityCompact startItem)
     {
         page = getPageOfItem(startItem) - 1;
         forceLoad();
     }
 
-    @Override protected void onLoadNextPage(ListedSecurityCompact lastItem)
+    @Override protected void onLoadNext(ListedSecurityCompact lastItem)
     {
         page = getPageOfItem(lastItem) + 1;
         forceLoad();
@@ -45,7 +45,7 @@ public class SearchStockPageItemListLoader extends PagedItemListLoader<ListedSec
      */
     private int getPageOfItem(ListedSecurityCompact item)
     {
-        return item.getId() / getItemsPerPage();
+        return item.getId() / getPerPage();
     }
 
     @Override protected boolean shouldReload()
@@ -60,8 +60,8 @@ public class SearchStockPageItemListLoader extends PagedItemListLoader<ListedSec
         try
         {
             listed = ListedSecurityCompactFactory.createList(
-                    securityService.searchSecurities(searchText, page, getItemsPerPage()),
-                    page * getItemsPerPage());
+                    securityService.searchSecurities(searchText, page, getPerPage()),
+                    page * getPerPage());
         }
         catch (RetrofitError retrofitError)
         {

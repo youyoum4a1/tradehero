@@ -11,7 +11,6 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 import com.tradehero.common.persistence.CacheHelper;
 import com.tradehero.common.persistence.PersistableResource;
-import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -22,7 +21,7 @@ import javax.inject.Singleton;
 /** Given a PersistableResource, this class will take support loading/storing it's data or requesting fresh data, as appropriate. */
 @Singleton public class DatabaseCache
 {
-    private static final String TAG = "DatabaseCache";
+    private static final String TAG = DatabaseCache.class.getName();
 
     @Inject Lazy<CacheHelper> helperProvider;
 

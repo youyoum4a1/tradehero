@@ -68,7 +68,8 @@ public class FollowerPayoutManagerFragment extends BasePurchaseManagerFragment
 
         if (followerPaymentListAdapter == null)
         {
-            followerPaymentListAdapter = new FollowerPaymentListItemAdapter(getActivity(), getActivity().getLayoutInflater(), R.layout.follower_payment_list_item, R.layout.follower_payment_list_header);
+            followerPaymentListAdapter = new FollowerPaymentListItemAdapter(
+                    getActivity(), getActivity().getLayoutInflater(), R.layout.follower_payment_list_item, R.layout.follower_payment_list_header);
         }
         if (followerPaymentListView != null)
         {

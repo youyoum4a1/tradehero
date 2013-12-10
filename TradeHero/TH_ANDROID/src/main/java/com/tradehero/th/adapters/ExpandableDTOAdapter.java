@@ -15,7 +15,7 @@ public abstract class ExpandableDTOAdapter<
             DTOType,
             WrappedDTOType extends ExpandableListItem<DTOType>,
             DTOViewType extends DTOView<WrappedDTOType>>
-        extends DTOAdapter<WrappedDTOType, DTOViewType>
+        extends ArrayDTOAdapter<WrappedDTOType, DTOViewType>
 {
     public static final int RES_ID_EXPANDED_LAYOUT = R.id.expanding_layout;
     private List<DTOType> underlyingItems;

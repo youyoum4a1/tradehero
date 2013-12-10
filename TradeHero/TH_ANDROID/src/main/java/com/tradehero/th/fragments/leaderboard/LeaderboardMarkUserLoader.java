@@ -6,7 +6,8 @@ import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
 import com.tradehero.th.api.leaderboard.LeaderboardDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
-import com.tradehero.th.loaders.PagedItemListLoader;
+import com.tradehero.th.loaders.ListLoader;
+import com.tradehero.th.loaders.PaginationListLoader;
 import com.tradehero.th.persistence.leaderboard.LeaderboardManager;
 import com.tradehero.th.persistence.leaderboard.LeaderboardStore;
 import com.tradehero.th.utils.DaggerUtils;
@@ -16,7 +17,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 /** Created with IntelliJ IDEA. User: tho Date: 10/21/13 Time: 4:28 PM Copyright (c) TradeHero */
-public class LeaderboardMarkUserLoader extends PagedItemListLoader<LeaderboardUserDTO>
+public class LeaderboardMarkUserLoader extends PaginationListLoader<LeaderboardUserDTO>
 {
     private static final String TAG = LeaderboardMarkUserLoader.class.getName();
     public static final int UNIQUE_LOADER_ID = R.string.loaderboard_loader_id;
@@ -39,12 +40,12 @@ public class LeaderboardMarkUserLoader extends PagedItemListLoader<LeaderboardUs
         DaggerUtils.inject(this);
     }
 
-    @Override protected void onLoadNextPage(LeaderboardUserDTO firstVisibleItem)
+    @Override protected void onLoadNext(LeaderboardUserDTO firstVisibleItem)
     {
         // do nothing
     }
 
-    @Override protected void onLoadPreviousPage(LeaderboardUserDTO lastVisibleItem)
+    @Override protected void onLoadPrevious(LeaderboardUserDTO lastVisibleItem)
     {
         if (currentPage == null)
         {
@@ -64,7 +65,7 @@ public class LeaderboardMarkUserLoader extends PagedItemListLoader<LeaderboardUs
         query.setPage(currentPage);
         query.setSortType(sortType.getServerFlag());
         query.setProperty(LeaderboardStore.INCLUDE_FRIENDS_OF_FRIENDS, includeFoF);
-        query.setProperty(LeaderboardStore.PER_PAGE, getItemsPerPage());
+        query.setProperty(LeaderboardStore.PER_PAGE, getPerPage());
 
         try
         {
