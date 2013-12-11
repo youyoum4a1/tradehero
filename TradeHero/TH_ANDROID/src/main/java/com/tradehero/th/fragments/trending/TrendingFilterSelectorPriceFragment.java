@@ -1,7 +1,8 @@
 package com.tradehero.th.fragments.trending;
 
-import android.view.View;
 import com.tradehero.th.R;
+import com.tradehero.th.api.security.TrendingPriceSecurityListType;
+import com.tradehero.th.api.security.TrendingSecurityListType;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/18/13 Time: 10:34 AM To change this template use File | Settings | File Templates. */
 public class TrendingFilterSelectorPriceFragment extends TrendingFilterSelectorFragment
@@ -21,5 +22,15 @@ public class TrendingFilterSelectorPriceFragment extends TrendingFilterSelectorF
     @Override int getDescriptionResId()
     {
         return R.string.trending_filter_price_description;
+    }
+
+    @Override public TrendingSecurityListType getTrendingSecurityListType(String exchangeName, Integer page, Integer perPage)
+    {
+        return sGetTrendingSecurityListType(exchangeName, page, perPage);
+    }
+
+    public static TrendingSecurityListType sGetTrendingSecurityListType(String exchangeName, Integer page, Integer perPage)
+    {
+        return new TrendingPriceSecurityListType(exchangeName, page, perPage);
     }
 }

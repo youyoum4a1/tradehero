@@ -25,6 +25,7 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
     public final static String BUNDLE_KEY_TIME_SPAN_STRING = ChartFragment.class.getName() + ".timeSpanString";
     public final static String BUNDLE_KEY_CHART_SIZE = ChartFragment.class.getName() + ".chartSize";
 
+    private boolean viewCreated = false;
     private ImageView stockBgLogo;
     private TimeSpanButtonSet timeSpanButtonSet;
     private TimeSpanButtonSet.OnTimeSpanButtonSelectedListener timeSpanButtonSetListener;
@@ -71,6 +72,9 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
             timeSpanButtonSet.setListener(timeSpanButtonSetListener);
             timeSpanButtonSet.setActive(TimeSpan.month3);
         }
+
+        this.viewCreated = true;
+
         return view;
     }
 
@@ -99,6 +103,8 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
 
     @Override public void onDestroyView()
     {
+        this.viewCreated = false;
+
         if (timeSpanButtonSet != null)
         {
             timeSpanButtonSet.setListener(null);
@@ -153,7 +159,7 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
 
     public void displayBgLogo()
     {
-        if (stockBgLogo != null)
+        if (this.viewCreated && stockBgLogo != null)
         {
             if (value != null && value.yahooSymbol != null)
             {
@@ -173,7 +179,7 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
             {
                 @Override public void run()
                 {
-                    if (stockBgLogo != null)
+                    if (ChartFragment.this.viewCreated && stockBgLogo != null)
                     {
                         ChartSize newChartSize = Utils.getPreferredSize(stockBgLogo.getWidth(), stockBgLogo.getHeight());
                         if (newChartSize != chartSize)

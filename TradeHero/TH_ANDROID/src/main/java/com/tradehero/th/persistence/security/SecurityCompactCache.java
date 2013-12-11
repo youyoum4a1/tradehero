@@ -59,12 +59,9 @@ import retrofit.RetrofitError;
         }
 
         List<SecurityCompactDTO> securityCompactDTOList = new ArrayList<>();
-        if (securityIds != null)
+        for (SecurityId securityId: securityIds)
         {
-            for(SecurityId securityId: securityIds)
-            {
-                securityCompactDTOList.add(getOrFetch(securityId, force));
-            }
+            securityCompactDTOList.add(getOrFetch(securityId, force));
         }
         return securityCompactDTOList;
     }

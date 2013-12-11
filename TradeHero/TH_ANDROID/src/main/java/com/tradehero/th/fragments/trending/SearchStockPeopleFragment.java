@@ -26,6 +26,7 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.security.SearchSecurityListType;
 import com.tradehero.th.api.security.SecurityCompactDTO;
+import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.SecurityIdList;
 import com.tradehero.th.api.security.SecurityListType;
 import com.tradehero.th.api.users.SearchUserListType;
@@ -41,6 +42,8 @@ import com.tradehero.th.persistence.security.SecurityCompactListCache;
 import com.tradehero.th.persistence.user.UserBaseKeyListCache;
 import com.tradehero.th.persistence.user.UserSearchResultCache;
 import dagger.Lazy;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -497,7 +500,19 @@ public class SearchStockPeopleFragment extends DashboardFragment
 
         if (securityItemViewAdapter != null)
         {
-            securityItemViewAdapter.setItems(securityCompactDTOs);
+            if (securityCompactDTOs == null)
+            {
+                securityItemViewAdapter.setItems(null);
+            }
+            else
+            {
+                List<SecurityId> securityIds = new ArrayList<>();
+                for (SecurityCompactDTO securityCompactDTO : securityCompactDTOs)
+                {
+                    securityIds.add(securityCompactDTO.getSecurityId());
+                }
+                securityItemViewAdapter.setItems(securityIds);
+            }
             if (andDisplay)
             {
                 getView().post(new Runnable()

@@ -6,24 +6,31 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import com.squareup.picasso.*;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.RequestCreator;
+import com.squareup.picasso.Transformation;
 import com.tradehero.common.graphics.AbstractSequentialTransformation;
 import com.tradehero.common.graphics.FastBlurTransformation;
 import com.tradehero.common.graphics.GrayscaleTransformation;
 import com.tradehero.common.graphics.RoundedCornerTransformation;
 import com.tradehero.common.graphics.WhiteToTransparentTransformation;
+import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.thread.KnownExecutorServices;
 import com.tradehero.common.utils.THLog;
+import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.security.SecurityCompactDTO;
+import com.tradehero.th.api.security.SecurityId;
+import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.utils.ColorUtils;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.DateUtils;
+import dagger.Lazy;
 import javax.inject.Inject;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 9/5/13 Time: 5:19 PM To change this template use File | Settings | File Templates. */
-public class SecurityItemView extends RelativeLayout implements DTOView<SecurityCompactDTO>
+public class SecurityItemView extends RelativeLayout implements DTOView<SecurityId>
 {
     private static final String TAG = SecurityItemView.class.getSimpleName();
     private static Transformation foregroundTransformation;
@@ -43,7 +50,11 @@ public class SecurityItemView extends RelativeLayout implements DTOView<Security
     private TextView date;
     private TextView securityType;
 
+    private SecurityId securityId;
     private SecurityCompactDTO securityCompactDTO;
+    @Inject protected Lazy<SecurityCompactCache> securityCompactCache;
+    private SecurityCompactListener securityCompactListener;
+    private DTOCache.GetOrFetchTask<SecurityCompactDTO> securityCompactFetchTask;
 
     private Runnable loadBgLogoRunnable = new Runnable()
     {
@@ -133,6 +144,13 @@ public class SecurityItemView extends RelativeLayout implements DTOView<Security
         return (url != null) && (!url.isEmpty());
     }
 
+    @Override protected void onAttachedToWindow()
+    {
+        super.onAttachedToWindow();
+
+        securityCompactListener = new SecurityCompactListener();
+    }
+
     @Override protected void onDetachedFromWindow()
     {
         clearImageViewUrls();
@@ -170,9 +188,42 @@ public class SecurityItemView extends RelativeLayout implements DTOView<Security
                     .error(R.drawable.default_image)
                     .into(stockBgLogo);
         }
+
+        securityCompactListener = null;
+        if (securityCompactFetchTask != null)
+        {
+            securityCompactFetchTask.forgetListener(true);
+        }
+        securityCompactFetchTask = null;
     }
 
-    @Override public void display (final SecurityCompactDTO securityCompactDTO)
+    @Override public void display(final SecurityId securityId)
+    {
+        if (this.securityId != null && this.securityId.equals(securityId))
+        {
+            return;
+        }
+
+        this.securityId = securityId;
+        this.securityCompactDTO = null;
+
+        if (securityCompactFetchTask != null)
+        {
+            securityCompactFetchTask.forgetListener(true);
+        }
+        final SecurityCompactDTO cachedSecurityCompactDTO = securityCompactCache.get().get(this.securityId);
+        if (cachedSecurityCompactDTO != null)
+        {
+            display(cachedSecurityCompactDTO);
+        }
+        else
+        {
+            securityCompactFetchTask = securityCompactCache.get().getOrFetch(this.securityId, this.securityCompactListener);
+            securityCompactFetchTask.execute();
+        }
+    }
+
+    public void display (final SecurityCompactDTO securityCompactDTO)
     {
         if (this.securityCompactDTO != null && securityCompactDTO.name.equals(this.securityCompactDTO.name))
         {
@@ -317,5 +368,19 @@ public class SecurityItemView extends RelativeLayout implements DTOView<Security
                 }
             }
         });
+    }
+
+    private class SecurityCompactListener implements DTOCache.Listener<SecurityId, SecurityCompactDTO>
+    {
+        @Override public void onDTOReceived(SecurityId key, SecurityCompactDTO value)
+        {
+            display(value);
+        }
+
+        @Override public void onErrorThrown(SecurityId key, Throwable error)
+        {
+            THToast.show(R.string.error_fetch_security_info);
+            THLog.e(TAG, "Error loading securityId " + key, error);
+        }
     }
 }

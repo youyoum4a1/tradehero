@@ -106,7 +106,7 @@ public class TrendingSecurityListType extends SecurityListType
     @Override public String toString()
     {
         return "TrendingSecurityListType{" +
-                "exchange='" + exchange +
+                "exchange='" + exchange + "'" +
                 ", page=" + page +
                 ", perPage=" + perPage +
                 '}';

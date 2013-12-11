@@ -23,6 +23,8 @@ import com.tradehero.th.api.market.ExchangeDTO;
 import com.tradehero.th.api.market.ExchangeDTOList;
 import com.tradehero.th.api.market.ExchangeListType;
 import com.tradehero.th.api.market.ExchangeStringId;
+import com.tradehero.th.api.security.TrendingBasicSecurityListType;
+import com.tradehero.th.api.security.TrendingSecurityListType;
 import com.tradehero.th.persistence.market.ExchangeListCache;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
@@ -153,6 +155,7 @@ abstract public class TrendingFilterSelectorFragment extends SherlockFragment
     abstract int getTitleResId();
     abstract int getTitleLeftDrawableResId();
     abstract int getDescriptionResId();
+    abstract public TrendingSecurityListType getTrendingSecurityListType(String exchangeName, Integer page, Integer perPage);
 
     //<editor-fold desc="Display Methods">
     public void display()
