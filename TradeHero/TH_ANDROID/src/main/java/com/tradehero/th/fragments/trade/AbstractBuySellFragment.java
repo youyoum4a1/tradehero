@@ -29,7 +29,6 @@ import javax.inject.Inject;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/9/13 Time: 11:14 AM To change this template use File | Settings | File Templates. */
 abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragment
-        implements FreshQuoteHolder.FreshQuoteListener
 {
     private final static String TAG = AbstractBuySellFragment.class.getSimpleName();
 
@@ -49,14 +48,15 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
     protected SecurityPositionDetailDTO securityPositionDetailDTO;
     protected boolean querying = false;
     protected DTOCache.Listener<SecurityId, SecurityPositionDetailDTO> securityPositionDetailCacheListener;
-    protected AsyncTask<Void, Void, SecurityPositionDetailDTO> fetchPositionDetailTask;
+    protected DTOCache.GetOrFetchTask<SecurityPositionDetailDTO> fetchPositionDetailTask;
 
     @Inject protected Lazy<UserProfileCache> userProfileCache;
     protected UserProfileDTO userProfileDTO;
     protected DTOCache.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
-    protected AsyncTask<Void, Void, UserProfileDTO> fetchUserProfileTask;
+    protected DTOCache.GetOrFetchTask<UserProfileDTO> fetchUserProfileTask;
 
     protected FreshQuoteHolder freshQuoteHolder;
+    protected FreshQuoteHolder.FreshQuoteListener freshQuoteListener;
     protected QuoteDTO quoteDTO;
     protected boolean refreshingQuote = false;
 
@@ -94,6 +94,7 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
         securityCompactDTO = null;
         securityPositionDetailDTO = null;
         quoteDTO = null;
+        freshQuoteListener = createFreshQuoteListener();
     }
 
     @Override public void onResume()
@@ -170,18 +171,19 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
     {
         if (fetchPositionDetailTask != null)
         {
-            fetchPositionDetailTask.cancel(false);
+            fetchPositionDetailTask.forgetListener(true);
         }
         fetchPositionDetailTask = null;
         securityPositionDetailCacheListener = null;
 
         if (fetchUserProfileTask != null)
         {
-            fetchUserProfileTask.cancel(false);
+            fetchUserProfileTask.forgetListener(true);
         }
         fetchUserProfileTask = null;
         userProfileCacheListener = null;
 
+        freshQuoteListener = null;
         querying = false;
 
         super.onDestroyView();
@@ -411,7 +413,7 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
             freshQuoteHolder.cancel();
         }
         freshQuoteHolder = new FreshQuoteHolder(securityId, MILLISEC_QUOTE_REFRESH, MILLISEC_QUOTE_COUNTDOWN_PRECISION);
-        freshQuoteHolder.registerListener(this);
+        freshQuoteHolder.registerListener(freshQuoteListener);
         freshQuoteHolder.start();
     }
 
@@ -475,17 +477,20 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
         };
     }
 
-    //<editor-fold desc="FreshQuoteHolder.FreshQuoteListener">
-    @Override abstract public void onMilliSecToRefreshQuote(long milliSecToRefresh);
+    abstract protected FreshQuoteHolder.FreshQuoteListener createFreshQuoteListener();
 
-    @Override public void onIsRefreshing(boolean refreshing)
+    abstract protected class AbstractBuySellFreshQuoteListener implements FreshQuoteHolder.FreshQuoteListener
     {
-        setRefreshingQuote(refreshing);
-    }
+        @Override abstract public void onMilliSecToRefreshQuote(long milliSecToRefresh);
 
-    @Override public void onFreshQuote(QuoteDTO quoteDTO)
-    {
-        linkWith(quoteDTO, true);
+        @Override public void onIsRefreshing(boolean refreshing)
+        {
+            setRefreshingQuote(refreshing);
+        }
+
+        @Override public void onFreshQuote(QuoteDTO quoteDTO)
+        {
+            linkWith(quoteDTO, true);
+        }
     }
-    //</editor-fold>
 }
