@@ -4,8 +4,6 @@ import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
-import com.sun.javafx.collections.MappingChange;
-import com.tradehero.common.utils.THLog;
 import com.tradehero.th.api.market.ExchangeStringId;
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
