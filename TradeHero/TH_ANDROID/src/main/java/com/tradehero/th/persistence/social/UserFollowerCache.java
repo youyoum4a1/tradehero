@@ -5,6 +5,7 @@ import com.tradehero.th.api.social.FollowerId;
 import com.tradehero.th.api.social.UserFollowerDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.network.service.FollowerService;
+import com.tradehero.th.network.service.FollowerServiceUtil;
 import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +29,7 @@ import javax.inject.Singleton;
 
     @Override protected UserFollowerDTO fetch(FollowerId key) throws Throwable
     {
-        return followerService.get().getFollowerSubscriptionDetail(key.followedId, key.followerId);
+        return FollowerServiceUtil.getFollowerSubscriptionDetail(followerService.get(), key);
     }
 
     public List<UserFollowerDTO> getOrFetch(List<FollowerId> followerIds) throws Throwable

@@ -4,6 +4,7 @@ import com.tradehero.common.persistence.StraightDTOCache;
 import com.tradehero.th.api.alert.AlertDTO;
 import com.tradehero.th.api.alert.AlertId;
 import com.tradehero.th.network.service.AlertService;
+import com.tradehero.th.network.service.AlertServiceUtil;
 import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +29,7 @@ import javax.inject.Singleton;
 
     @Override protected AlertDTO fetch(AlertId key) throws Throwable
     {
-        return alertService.get().getAlert(key.userId, key.alertId);
+        return AlertServiceUtil.getAlert(alertService.get(), key);
     }
 
     @Override public AlertDTO put(AlertId key, AlertDTO value)

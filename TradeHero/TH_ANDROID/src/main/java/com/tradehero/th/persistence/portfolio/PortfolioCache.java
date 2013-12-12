@@ -7,6 +7,7 @@ import com.tradehero.th.api.portfolio.PortfolioDTO;
 import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.base.THUser;
 import com.tradehero.th.network.service.PortfolioService;
+import com.tradehero.th.network.service.PortfolioServiceUtil;
 import com.tradehero.th.persistence.position.GetPositionsCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import dagger.Lazy;
@@ -43,7 +44,7 @@ import retrofit.RetrofitError;
 
     @Override protected PortfolioDTO fetch(OwnedPortfolioId key) throws Throwable
     {
-        return portfolioService.get().getPortfolio(key.userId, key.portfolioId);
+        return PortfolioServiceUtil.getPortfolio(portfolioService.get(), key);
     }
 
     @Override public PortfolioDTO put(OwnedPortfolioId key, PortfolioDTO value)
