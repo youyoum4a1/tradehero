@@ -126,26 +126,16 @@ public class ProfileView extends FrameLayout implements DTOView<UserProfileDTO>
                 .transform(new RoundedShapeTransformation())
                 .into(avatar);
 
-
-            // TODO make it less hacKy
-            final DisplayMetrics displayMetrics = new DisplayMetrics();
-            ((Activity) getContext()).getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-
-            background.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener()
+            post(new Runnable()
             {
-                @Override public boolean onPreDraw()
+                @Override public void run()
                 {
-                    if (ProfileView.this.getHeight() > 0 && background.getDrawable() == null)
-                    {
-                        picasso
-                                .load(dto.picture)
-                                .transform(new GradientTransformation())
-                                .transform(new ScaleKeepRatioTransformation(displayMetrics.widthPixels, 0))
-                                .resize(displayMetrics.widthPixels, ProfileView.this.getHeight())
-                                .centerCrop()
-                                .into(background);
-                    }
-                    return true;
+                    picasso
+                            .load(dto.picture)
+                            .transform(new GradientTransformation())
+                            .resize(ProfileView.this.getWidth(), ProfileView.this.getHeight())
+                            .centerCrop()
+                            .into(background);
                 }
             });
         }
