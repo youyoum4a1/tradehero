@@ -568,23 +568,23 @@ public class SearchStockPeopleFragment extends DashboardFragment
         }
     }
 
-    private void pushTradeFragmentIn(SecurityCompactDTO securityCompactDTO)
+    private void pushTradeFragmentIn(SecurityId securityId)
     {
-        if (securityCompactDTO == null || securityCompactDTO.getSecurityId() == null)
+        if (securityId == null)
         {
-            THLog.e(TAG, "Cannot handle null " + securityCompactDTO, new IllegalArgumentException());
+            THLog.e(TAG, "Cannot handle null SecurityId", new IllegalArgumentException());
             return;
         }
         Bundle args = new Bundle();
-        args.putBundle(BuySellFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityCompactDTO.getSecurityId().getArgs());
+        args.putBundle(BuySellFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
         navigator.pushFragment(BuySellFragment.class, args);
     }
 
-    protected void pushUserFragmentIn(UserSearchResultDTO userSearchResultDTO)
+    protected void pushUserFragmentIn(UserBaseKey userBaseKey)
     {
-        if (userSearchResultDTO == null || userSearchResultDTO.userId == null)
+        if (userBaseKey == null || userBaseKey.key == null)
         {
-            THLog.e(TAG, "Cannot handle null " + userSearchResultDTO, new IllegalArgumentException());
+            THLog.e(TAG, "Cannot handle null userBaseKey", new IllegalArgumentException());
             return;
         }
 
@@ -592,7 +592,7 @@ public class SearchStockPeopleFragment extends DashboardFragment
         // TODO put back in
 
         Bundle args = new Bundle();
-        args.putInt(PushableTimelineFragment.BUNDLE_KEY_SHOW_USER_ID, userSearchResultDTO.userId);
+        args.putInt(PushableTimelineFragment.BUNDLE_KEY_SHOW_USER_ID, userBaseKey.key);
 
         navigator.pushFragment(PushableTimelineFragment.class, args);
     }
@@ -645,7 +645,7 @@ public class SearchStockPeopleFragment extends DashboardFragment
     {
         @Override public void onItemClick(AdapterView<?> parent, View view, int position, long id)
         {
-            pushTradeFragmentIn((SecurityCompactDTO) parent.getItemAtPosition(position));
+            pushTradeFragmentIn((SecurityId) parent.getItemAtPosition(position));
         }
     }
 
@@ -653,7 +653,7 @@ public class SearchStockPeopleFragment extends DashboardFragment
     {
         @Override public void onItemClick(AdapterView<?> parent, View view, int position, long id)
         {
-            pushUserFragmentIn((UserSearchResultDTO) parent.getItemAtPosition(position));
+            pushUserFragmentIn((UserBaseKey) parent.getItemAtPosition(position));
         }
     }
 

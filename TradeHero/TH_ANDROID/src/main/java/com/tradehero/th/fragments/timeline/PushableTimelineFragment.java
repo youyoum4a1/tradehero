@@ -9,6 +9,7 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.tradehero.common.billing.googleplay.BaseIABPurchase;
 import com.tradehero.th.R;
+import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserBaseUtil;
 import com.tradehero.th.api.users.UserProfileDTO;
@@ -96,13 +97,20 @@ public class PushableTimelineFragment extends TimelineFragment
      */
     protected Boolean isPurchaserFollowingUserShown()
     {
-        UserBaseKey purchaserKey = userInteractor.getApplicablePortfolioId().getUserBaseKey();
-        if (purchaserKey != null)
+        if (userInteractor != null)
         {
-            UserProfileDTO purchaserProfile = userProfileCache.get().get(purchaserKey);
-            if (purchaserProfile != null)
+            OwnedPortfolioId applicablePortfolioId = userInteractor.getApplicablePortfolioId();
+            if (applicablePortfolioId != null)
             {
-                return purchaserProfile.isFollowingUser(shownUserBaseKey);
+                UserBaseKey purchaserKey = applicablePortfolioId.getUserBaseKey();
+                if (purchaserKey != null)
+                {
+                    UserProfileDTO purchaserProfile = userProfileCache.get().get(purchaserKey);
+                    if (purchaserProfile != null)
+                    {
+                        return purchaserProfile.isFollowingUser(shownUserBaseKey);
+                    }
+                }
             }
         }
         return null;
