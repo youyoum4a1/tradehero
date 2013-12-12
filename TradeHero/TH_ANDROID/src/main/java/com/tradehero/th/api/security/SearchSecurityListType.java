@@ -73,7 +73,7 @@ public class SearchSecurityListType extends SecurityListType
     @Override public String toString()
     {
         return "SearchSecurityListType{" +
-                "searchString='" + searchString +
+                "searchString='" + searchString + "'" +
                 ", page=" + page +
                 ", perPage=" + perPage +
                 '}';

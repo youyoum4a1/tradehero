@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/ActionBarSherlock.iml" filepath="$PROJECT_DIR$/ActionBarSherlock.iml" />
       <module fileurl="file://$PROJECT_DIR$/Android-PullToRefresh.iml" filepath="$PROJECT_DIR$/Android-PullToRefresh.iml" />
+      <module fileurl="file://$PROJECT_DIR$/TradeHero/TH_ANDROID/TH_Android.iml" filepath="$PROJECT_DIR$/TradeHero/TH_ANDROID/TH_Android.iml" />
       <module fileurl="file://$PROJECT_DIR$/TH_Android.iml" filepath="$PROJECT_DIR$/TH_Android.iml" />
       <module fileurl="file://$PROJECT_DIR$/facebook-android-sdk.iml" filepath="$PROJECT_DIR$/facebook-android-sdk.iml" />
       <module fileurl="file://$PROJECT_DIR$/retrofit.iml" filepath="$PROJECT_DIR$/retrofit.iml" />

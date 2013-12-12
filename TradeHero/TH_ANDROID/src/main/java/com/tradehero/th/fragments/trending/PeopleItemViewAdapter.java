@@ -9,9 +9,10 @@ package com.tradehero.th.fragments.trending;
 import android.content.Context;
 import android.view.LayoutInflater;
 import com.tradehero.th.adapters.DTOAdapter;
+import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserSearchResultDTO;
 
-public class PeopleItemViewAdapter extends DTOAdapter<UserSearchResultDTO, SearchPeopleItemView>
+public class PeopleItemViewAdapter extends DTOAdapter<UserBaseKey, SearchPeopleItemView>
 {
     private final static String TAG = PeopleItemViewAdapter.class.getSimpleName();
 
@@ -20,7 +21,7 @@ public class PeopleItemViewAdapter extends DTOAdapter<UserSearchResultDTO, Searc
         super(context, inflater, peopleItemLayoutResId);
     }
 
-    @Override protected void fineTune(int position, UserSearchResultDTO dto, SearchPeopleItemView dtoView)
+    @Override protected void fineTune(int position, UserBaseKey dto, SearchPeopleItemView dtoView)
     {
         // Nothing to do
     }
