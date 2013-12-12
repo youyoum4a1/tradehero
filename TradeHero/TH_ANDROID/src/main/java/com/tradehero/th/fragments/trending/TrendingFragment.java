@@ -20,34 +20,29 @@ import com.actionbarsherlock.view.MenuItem;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
-import com.tradehero.common.widget.EndlessScrollListener;
+import com.tradehero.common.widget.FlagNearEndScrollListener;
 import com.tradehero.th.R;
 import com.tradehero.th.api.market.ExchangeStringId;
-import com.tradehero.th.api.security.SecurityCompactDTO;
+import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.SecurityIdList;
 import com.tradehero.th.api.security.SecurityListType;
-import com.tradehero.th.api.security.TrendingAllSecurityListType;
-import com.tradehero.th.api.security.TrendingBasicSecurityListType;
-import com.tradehero.th.api.security.TrendingPriceSecurityListType;
 import com.tradehero.th.api.security.TrendingSecurityListType;
-import com.tradehero.th.api.security.TrendingVolumeSecurityListType;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.trade.BuySellFragment;
-import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.persistence.security.SecurityCompactListCache;
 import dagger.Lazy;
+import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
 
 public class TrendingFragment extends DashboardFragment
-        implements DTOCache.Listener<SecurityListType, SecurityIdList>,
-        TrendingFilterPagerAdapter.OnPositionedExchangeSelectionChangedListener,
-        TrendingFilterSelectorFragment.OnPreviousNextListener
 {
     private final static String TAG = TrendingFragment.class.getSimpleName();
 
     public final static String BUNDLE_KEY_FILTER_PAGE = TrendingFragment.class.getName() + ".filterPage";
     public final static String BUNDLE_KEY_SELECTED_EXCHANGE_NAMES = TrendingFragment.class.getName() + ".selectedExchangeNames";
+    public final static int FIRST_PAGE = 1;
+    public final static int DEFAULT_PER_PAGE = 30;
 
     public final static float MIN_FLING_VELOCITY_Y_FOR_HIDE_FILTER = 1000f;
 
@@ -55,23 +50,29 @@ public class TrendingFragment extends DashboardFragment
     private TrendingFilterPagerAdapter mTrendingFilterPagerAdapter;
     private int filterPagerEndHeight = 80;
     private RelativeLayout.LayoutParams filterLayoutParams;
+    private TrendingOnPreviousNextListener onPreviousNextListener;
+    private TrendingOnPositionedExchangeSelectionChangedListener exchangeSelectionChangedListener;
 
     private ProgressBar mProgressSpinner;
     private AbsListView mTrendingGridView;
-    private EndlessScrollListener gridScrollListener;
+    private FlagNearEndScrollListener gridScrollListener;
     private float gridCumulativeScrollY = 0;
     private float awayBy = 0;
     private boolean filterVisibleBeforeFling = true;
     private GestureDetector gridViewGesture;
 
     private int filterPageSelected = 0;
-    private ExchangeStringId[] selectedExchangeStringIds = new ExchangeStringId[TrendingFilterPagerAdapter.FRAGMENT_COUNT];
+    private ExchangeStringId[] selectedExchangeStringIds = new ExchangeStringId[TrendingFilterSelectorUtil.FRAGMENT_COUNT];
     private boolean querying;
     @Inject Lazy<SecurityCompactListCache> securityCompactListCache;
-    @Inject Lazy<SecurityCompactCache> securityCompactCache;
     private DTOCache.GetOrFetchTask<SecurityIdList> trendingTask;
-    private List<SecurityCompactDTO> securityCompactDTOs;
-    protected SecurityItemViewAdapterArray securityItemViewAdapter;
+    private TrendingSecurityListCacheListener trendingCacheListener;
+    private List<SecurityId> securityIds;
+    private int currentlyLoadingPage;
+    private int lastLoadedPage;
+    private int perPage = DEFAULT_PER_PAGE;
+    protected SecurityItemViewAdapter securityItemViewAdapter;
+    protected int firstVisiblePosition = 0;
     protected TrendingFilterSelectorFragment.OnResumedListener trendingFilterSelectorResumedListener;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -93,139 +94,40 @@ public class TrendingFragment extends DashboardFragment
 
     protected void initViews(View view)
     {
+        trendingCacheListener = new TrendingSecurityListCacheListener();
+
         mProgressSpinner = (ProgressBar) view.findViewById(R.id.progress_spinner);
         if (mProgressSpinner != null)
         {
             mProgressSpinner.setVisibility(View.GONE);
         }
 
-        securityItemViewAdapter = new SecurityItemViewAdapterArray(getActivity(), getActivity().getLayoutInflater(), R.layout.trending_security_item);
-        gridScrollListener = new EndlessScrollListener()
-        {
-            @Override protected void loadPage(int page)
-            {
-                THToast.show("Page to load " + page);
-            }
-        };
+        gridScrollListener = new TrendingFlagNearEndScrollListener();
+        securityItemViewAdapter = new SecurityItemViewAdapter(getActivity(), getActivity().getLayoutInflater(), R.layout.trending_security_item);
         mTrendingGridView = (AbsListView) view.findViewById(R.id.trending_gridview);
-        initTrendingGidView();
-
-        if (securityCompactDTOs != null && securityCompactDTOs.size() > 0)
-        {
-            setDataAdapterToGridView(securityCompactDTOs);
-        }
-        else
-        {
-            refreshGridView();
-        }
-
-        if (mTrendingFilterPagerAdapter == null)
-        {
-            mTrendingFilterPagerAdapter = new TrendingFilterPagerAdapter(getActivity(), getFragmentManager());
-            trendingFilterSelectorResumedListener = new TrendingFilterSelectorFragment.OnResumedListener()
-            {
-                @Override public void onResumed(final Fragment fragment)
-                {
-                    View viewOnResume = getView();
-                    if (viewOnResume != null) // It may be null after coming out of sleep
-                    {
-                        viewOnResume.post(new Runnable()
-                        {
-                            @Override public void run()
-                            {
-                                resizeViewPager(fragment);
-                            }
-                        });
-                    }
-                }
-            };
-            mTrendingFilterPagerAdapter.setOnResumedListener(trendingFilterSelectorResumedListener);
-            mTrendingFilterPagerAdapter.setOnPreviousNextListener(this);
-            mTrendingFilterPagerAdapter.setOnPositionedExchangeSelectionChangedListener(this);
-        }
-        mFilterViewPager = (ViewPager) view.findViewById(R.id.trending_filter_pager);
-
-        if (mFilterViewPager != null)
-        {
-            mFilterViewPager.setAdapter(mTrendingFilterPagerAdapter);
-            mFilterViewPager.setOnPageChangeListener(createFilterPageChangeListener());
-            mFilterViewPager.setCurrentItem(TrendingFilterSelectorBasicFragment.POSITION_IN_PAGER);
-        }
-    }
-
-    private void initTrendingGidView()
-    {
         if (mTrendingGridView != null)
         {
             mTrendingGridView.setOnScrollListener(gridScrollListener);
-
             mTrendingGridView.setAdapter(securityItemViewAdapter);
+            mTrendingGridView.setOnItemClickListener(new OnSecurityViewClickListener());
+            gridViewGesture = new GestureDetector(getActivity(), new TrendingOnGestureListener());
+            mTrendingGridView.setOnTouchListener(new TrendingOnTouchListener());
+        }
 
-            mTrendingGridView.setOnItemClickListener(new OnItemClickListener()
-            {
-                @Override public void onItemClick(AdapterView<?> parent, View view, int position, long id)
-                {
-                    SecurityCompactDTO securityCompactDTO = (SecurityCompactDTO) parent.getItemAtPosition(position);
-                    Bundle args = new Bundle();
-                    args.putBundle(BuySellFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityCompactDTO.getSecurityId().getArgs());
-                    // TODO use other positions
-                    navigator.pushFragment(BuySellFragment.class, args);
-                }
-            });
+        this.mTrendingFilterPagerAdapter = new TrendingFilterPagerAdapter(getActivity(), getFragmentManager());
+        this.trendingFilterSelectorResumedListener = new TrendingOnResumedListener();
+        this.mTrendingFilterPagerAdapter.setOnResumedListener(this.trendingFilterSelectorResumedListener);
+        this.onPreviousNextListener = new TrendingOnPreviousNextListener();
+        this.mTrendingFilterPagerAdapter.setOnPreviousNextListener(this.onPreviousNextListener);
+        this.exchangeSelectionChangedListener = new TrendingOnPositionedExchangeSelectionChangedListener();
+        this.mTrendingFilterPagerAdapter.setOnPositionedExchangeSelectionChangedListener(this.exchangeSelectionChangedListener);
 
-            gridViewGesture = new GestureDetector(getActivity(), new GestureDetector.SimpleOnGestureListener()
-            {
-                @Override public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY)
-                {
-                    if ((gridCumulativeScrollY < filterPagerEndHeight && distanceY > 0) || // In an attempt to bypass useless updates
-                            (gridCumulativeScrollY > 0 && distanceY < 0))
-                    {
-                        //THLog.d(TAG, "Scroll " + distanceY);
-                        addTouchScrollY(distanceY);
-                    }
-                    return super.onScroll(e1, e2, distanceX, distanceY);
-                }
-
-                @Override public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY)
-                {
-                    if (velocityY < 0 || velocityY > MIN_FLING_VELOCITY_Y_FOR_HIDE_FILTER)
-                    {
-                        filterVisibleBeforeFling = (awayBy < filterPagerEndHeight);
-                        setAwayBy(filterPagerEndHeight);
-                    }
-                    else if (velocityY > 0)
-                    {
-                        setAwayBy(0);
-                    }
-                    //THLog.d(TAG, "VelocityY " + velocityY);
-                    return super.onFling(e1, e2, velocityX, velocityY);
-                }
-            });
-
-            mTrendingGridView.setOnTouchListener(new View.OnTouchListener()
-            {
-                @Override public boolean onTouch(View view, MotionEvent motionEvent)
-                {
-                    return gridViewGesture.onTouchEvent(motionEvent);
-                }
-            });
-
-            mTrendingGridView.setOnScrollListener(new AbsListView.OnScrollListener()
-            {
-                @Override public void onScrollStateChanged(AbsListView absListView, int i)
-                {
-                    setGridViewScrollState(i);
-                }
-
-                @Override public void onScroll(AbsListView absListView, int firstVisibleItem, int visibleItemCount, int totalItemCount)
-                {
-                }
-            });
-
-            if (mTrendingGridView.getCount() == 0)
-            {
-                showProgressSpinner(true);
-            }
+        mFilterViewPager = (ViewPager) view.findViewById(R.id.trending_filter_pager);
+        if (mFilterViewPager != null)
+        {
+            mFilterViewPager.setAdapter(mTrendingFilterPagerAdapter);
+            mFilterViewPager.setOnPageChangeListener(new TrendingFilterOnPageChangeListener());
+            mFilterViewPager.setCurrentItem(TrendingFilterSelectorBasicFragment.POSITION_IN_PAGER);
         }
     }
 
@@ -243,7 +145,6 @@ public class TrendingFragment extends DashboardFragment
     @Override public void onResume()
     {
         super.onResume();
-        securityItemViewAdapter.notifyDataSetChanged();
         displayFilterPager();
         filterPagerEndHeight = (int) getResources().getDimension(R.dimen.trending_filter_view_pager_height);
         if (mFilterViewPager != null)
@@ -251,6 +152,12 @@ public class TrendingFragment extends DashboardFragment
             filterLayoutParams = (RelativeLayout.LayoutParams) mFilterViewPager.getLayoutParams();
             setAwayBy(0);
         }
+        securityItemViewAdapter.setItems(securityIds);
+        if (securityIds == null || securityIds.size() == 0)
+        {
+            startAnew();
+        }
+        mTrendingGridView.setSelection(Math.min(firstVisiblePosition, mTrendingGridView.getCount()));
     }
 
     @Override public boolean onOptionsItemSelected(MenuItem item)
@@ -267,20 +174,12 @@ public class TrendingFragment extends DashboardFragment
     @Override public void onPause()
     {
         setAwayBy(0);
-        super.onPause();
-    }
-
-    @Override public void onSaveInstanceState(Bundle outState)
-    {
-        super.onSaveInstanceState(outState);
-        outState.putInt(BUNDLE_KEY_FILTER_PAGE, filterPageSelected);
-        String[] exchangeNames = new String[selectedExchangeStringIds.length];
-        int index = 0;
-        for (ExchangeStringId exchangeStringId: selectedExchangeStringIds)
+        firstVisiblePosition = mTrendingGridView.getFirstVisiblePosition();
+        if (gridScrollListener != null)
         {
-            exchangeNames[index++] = exchangeStringId == null ? null : exchangeStringId.key;
+            gridScrollListener.deactivate();
         }
-        outState.putStringArray(BUNDLE_KEY_SELECTED_EXCHANGE_NAMES, exchangeNames);
+        super.onPause();
     }
 
     @Override public void onDestroyView()
@@ -296,9 +195,10 @@ public class TrendingFragment extends DashboardFragment
 
         if (trendingTask != null)
         {
-            trendingTask.cancel(false);
+            trendingTask.forgetListener(true);
         }
         trendingTask = null;
+        trendingCacheListener = null;
 
         if (mTrendingFilterPagerAdapter != null)
         {
@@ -307,9 +207,35 @@ public class TrendingFragment extends DashboardFragment
             mTrendingFilterPagerAdapter.setOnPositionedExchangeSelectionChangedListener(null);
         }
         mTrendingFilterPagerAdapter = null;
+        onPreviousNextListener = null;
+        exchangeSelectionChangedListener = null;
 
+        if (mFilterViewPager != null)
+        {
+            mFilterViewPager.setOnPageChangeListener(null);
+        }
         mFilterViewPager = null;
         super.onDestroyView();
+    }
+
+    @Override public void onDestroy()
+    {
+        securityItemViewAdapter = null;
+        super.onDestroy();
+    }
+
+    @Override public void onSaveInstanceState(Bundle outState)
+    {
+        THLog.d(TAG, "onSaveInstanceState");
+        super.onSaveInstanceState(outState);
+        outState.putInt(BUNDLE_KEY_FILTER_PAGE, filterPageSelected);
+        String[] exchangeNames = new String[selectedExchangeStringIds.length];
+        int index = 0;
+        for (ExchangeStringId exchangeStringId: selectedExchangeStringIds)
+        {
+            exchangeNames[index++] = exchangeStringId == null ? null : exchangeStringId.key;
+        }
+        outState.putStringArray(BUNDLE_KEY_SELECTED_EXCHANGE_NAMES, exchangeNames);
     }
 
     public boolean isQuerying()
@@ -323,23 +249,36 @@ public class TrendingFragment extends DashboardFragment
         showProgressSpinner(this.querying);
     }
 
-    private void setDataAdapterToGridView(List<SecurityCompactDTO> securityCompactDTOs)
+    protected void startAnew()
     {
-        this.securityCompactDTOs = securityCompactDTOs;
-        securityItemViewAdapter.setItems(securityCompactDTOs);
-        securityItemViewAdapter.notifyDataSetChanged();
-        showProgressSpinner(false);
+        this.lastLoadedPage = FIRST_PAGE - 1;
+        this.currentlyLoadingPage = FIRST_PAGE - 1;
+        this.securityIds = new ArrayList<>();
+        if (gridScrollListener != null)
+        {
+            gridScrollListener.lowerFlag();
+            gridScrollListener.activate();
+        }
+
     }
 
-    protected void refreshGridView()
+    protected void loadNewPage(int newPage)
     {
+        if (newPage != lastLoadedPage + 1)
+        {
+            THLog.e(TAG, "Will not load newPage " + newPage + ", lastLoadedPage " + lastLoadedPage, new Exception());
+        }
+        if (currentlyLoadingPage != FIRST_PAGE - 1 && currentlyLoadingPage != newPage)
+        {
+            THLog.e(TAG, "This page is already loading another one " + currentlyLoadingPage + ", will not load " + newPage, new Exception());
+        }
         if (trendingTask != null)
         {
-            trendingTask.cancel(false);
-            trendingTask = null;
+            trendingTask.forgetListener(true);
         }
         setQuerying(true);
-        trendingTask = securityCompactListCache.get().getOrFetch(getSecurityListType(), false, this);
+        currentlyLoadingPage = newPage;
+        trendingTask = securityCompactListCache.get().getOrFetch(getSecurityListType(newPage), false, trendingCacheListener);
         trendingTask.execute();
     }
 
@@ -357,78 +296,25 @@ public class TrendingFragment extends DashboardFragment
         });
     }
 
-    public TrendingSecurityListType getSecurityListType()
+    public TrendingSecurityListType getSecurityListType(int page)
     {
-        TrendingSecurityListType securityListType = null;
+        return TrendingFilterSelectorUtil.getSecurityListType(filterPageSelected, getUsableExchangeName(), page, perPage);
+    }
 
+    protected String getUsableExchangeName()
+    {
         String usableExchangeName = null;
         if (selectedExchangeStringIds[filterPageSelected] != null)
         {
             usableExchangeName = selectedExchangeStringIds[filterPageSelected].key;
-            if (usableExchangeName.isEmpty())
-            {
-                usableExchangeName = null;
-            }
         }
 
-        switch (filterPageSelected)
+        if (usableExchangeName == null || usableExchangeName.isEmpty())
         {
-            case TrendingFilterSelectorBasicFragment.POSITION_IN_PAGER:
-                securityListType = usableExchangeName == null ?
-                        new TrendingBasicSecurityListType() :
-                        new TrendingBasicSecurityListType(usableExchangeName);
-                break;
-            case TrendingFilterSelectorVolumeFragment.POSITION_IN_PAGER:
-                securityListType = usableExchangeName == null ?
-                        new TrendingVolumeSecurityListType() :
-                        new TrendingVolumeSecurityListType(usableExchangeName);
-                break;
-            case TrendingFilterSelectorPriceFragment.POSITION_IN_PAGER:
-                securityListType = usableExchangeName == null ?
-                        new TrendingPriceSecurityListType() :
-                        new TrendingPriceSecurityListType(usableExchangeName);
-                break;
-            case TrendingFilterSelectorAllFragment.POSITION_IN_PAGER:
-                securityListType = usableExchangeName == null ?
-                        new TrendingAllSecurityListType() :
-                        new TrendingAllSecurityListType(usableExchangeName);
-                break;
-            default:
-                THLog.d(TAG, "getSecurityListType: Unhandled filterPageSelector: " + filterPageSelected);
-                securityListType = new TrendingBasicSecurityListType();
+            usableExchangeName = TrendingSecurityListType.ALL_EXCHANGES;
         }
-
-        // TODO set exchange selection
-
-        return securityListType;
+        return usableExchangeName;
     }
-
-    //<editor-fold desc="DTOCache.Listener<SecurityListType, SecurityIdList>">
-    @Override public void onDTOReceived(SecurityListType key, SecurityIdList value)
-    {
-        // To make sure we do not update to some old stuff
-        if (key.equals(getSecurityListType()))
-        {
-            try
-            {
-                setDataAdapterToGridView(securityCompactCache.get().getOrFetch(value));
-            }
-            catch (Throwable throwable)
-            {
-                onErrorThrown(key, throwable);
-            }
-        }
-        setQuerying(false);
-    }
-
-    @Override public void onErrorThrown(SecurityListType key, Throwable error)
-    {
-        THToast.show(getString(R.string.error_fetch_security_list_info));
-        THLog.e(TAG, "Error fetching the list " + key, error);
-        setQuerying(false);
-    }
-
-    //</editor-fold>
 
     protected void showProgressSpinner(boolean flag)
     {
@@ -443,28 +329,6 @@ public class TrendingFragment extends DashboardFragment
         navigator.pushFragment(SearchStockPeopleFragment.class);
     }
 
-    private ViewPager.OnPageChangeListener createFilterPageChangeListener()
-    {
-        return new ViewPager.OnPageChangeListener()
-        {
-            @Override public void onPageScrolled(int i, float v, int i2)
-            {
-                // TODO
-            }
-
-            @Override public void onPageSelected(int position)
-            {
-                filterPageSelected = position;
-                refreshGridView();
-            }
-
-            @Override public void onPageScrollStateChanged(int state)
-            {
-                // TODO
-            }
-        };
-    }
-
     private void resizeViewPager(Fragment fragment)
     {
         if (mFilterViewPager != null && fragment != null && fragment.getView() != null)
@@ -477,32 +341,6 @@ public class TrendingFragment extends DashboardFragment
             }
         }
     }
-
-    //<editor-fold desc="TrendingFilterSelectorFragment.OnPreviousNextListener">
-    @Override public void onNextRequested()
-    {
-        if (mFilterViewPager != null)
-        {
-            mFilterViewPager.setCurrentItem((mFilterViewPager.getCurrentItem() + 1) % TrendingFilterPagerAdapter.FRAGMENT_COUNT /*mFilterViewPager.getChildCount()*/);
-        }
-    }
-
-    @Override public void onPreviousRequested()
-    {
-        if (mFilterViewPager != null)
-        {
-            mFilterViewPager.setCurrentItem((mFilterViewPager.getCurrentItem() - 1) % TrendingFilterPagerAdapter.FRAGMENT_COUNT /*mFilterViewPager.getChildCount()*/);
-        }
-    }
-    //</editor-fold>
-
-    //<editor-fold desc="TrendingFilterPagerAdapter.OnPositionedExchangeSelectionChangedListener">
-    @Override public void onExchangeSelectionChanged(int fragmentPosition, ExchangeStringId exchangeId)
-    {
-        selectedExchangeStringIds[fragmentPosition] = exchangeId;
-        refreshGridView();
-    }
-    //</editor-fold>
 
     //<editor-fold desc="BaseFragment.TabBarVisibilityInformer">
     @Override public boolean isTabBarVisible()
@@ -568,4 +406,169 @@ public class TrendingFragment extends DashboardFragment
             mFilterViewPager.setVisibility(awayBy == filterPagerEndHeight ? View.GONE : View.VISIBLE);
         }
     }
+
+    //<editor-fold desc="Listeners">
+    private class TrendingFlagNearEndScrollListener extends FlagNearEndScrollListener
+    {
+        @Override public void raiseFlag()
+        {
+            super.raiseFlag();
+            loadNewPage(lastLoadedPage + 1);
+        }
+    }
+
+    private class TrendingSecurityListCacheListener implements DTOCache.Listener<SecurityListType, SecurityIdList>
+    {
+        @Override public void onDTOReceived(SecurityListType key, SecurityIdList value)
+        {
+            THLog.d(TAG, "Received key " + key);
+            if (lastLoadedPage + 1 != key.page)
+            {
+                throw new IllegalStateException("We just got a wrong page; last: " + lastLoadedPage + ", received page: " + key.page);
+            }
+            lastLoadedPage = key.page;
+            currentlyLoadingPage = FIRST_PAGE - 1;
+            gridScrollListener.lowerFlag();
+            if (value == null || value.size() == 0)
+            {
+                gridScrollListener.deactivate();
+            }
+            else
+            {
+                securityIds.addAll(value);
+                securityItemViewAdapter.setItems(securityIds);
+            }
+            setQuerying(false);
+            securityItemViewAdapter.notifyDataSetChanged();
+        }
+
+        @Override public void onErrorThrown(SecurityListType key, Throwable error)
+        {
+            THToast.show(getString(R.string.error_fetch_security_list_info));
+            THLog.e(TAG, "Error fetching the list " + key, error);
+            currentlyLoadingPage = FIRST_PAGE - 1;
+            gridScrollListener.lowerFlag();
+            setQuerying(false);
+        }
+    }
+
+    private class OnSecurityViewClickListener implements OnItemClickListener
+    {
+        @Override public void onItemClick(AdapterView<?> parent, View view, int position, long id)
+        {
+            SecurityId securityId = (SecurityId) parent.getItemAtPosition(position);
+            Bundle args = new Bundle();
+            args.putBundle(BuySellFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
+            // TODO use other positions
+            navigator.pushFragment(BuySellFragment.class, args);
+        }
+    }
+
+    private class TrendingOnGestureListener extends GestureDetector.SimpleOnGestureListener
+    {
+        @Override public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY)
+        {
+            if ((gridCumulativeScrollY < filterPagerEndHeight && distanceY > 0) || // In an attempt to bypass useless updates
+                    (gridCumulativeScrollY > 0 && distanceY < 0))
+            {
+                //THLog.d(TAG, "Scroll " + distanceY);
+                addTouchScrollY(distanceY);
+            }
+            return super.onScroll(e1, e2, distanceX, distanceY);
+        }
+
+        @Override public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY)
+        {
+            if (velocityY < 0 || velocityY > MIN_FLING_VELOCITY_Y_FOR_HIDE_FILTER)
+            {
+                filterVisibleBeforeFling = (awayBy < filterPagerEndHeight);
+                setAwayBy(filterPagerEndHeight);
+            }
+            else if (velocityY > 0)
+            {
+                setAwayBy(0);
+            }
+            //THLog.d(TAG, "VelocityY " + velocityY);
+            return super.onFling(e1, e2, velocityX, velocityY);
+        }
+    }
+
+    private class TrendingOnTouchListener implements View.OnTouchListener
+    {
+        @Override public boolean onTouch(View view, MotionEvent motionEvent)
+        {
+            return gridViewGesture.onTouchEvent(motionEvent);
+        }
+    }
+
+    private class TrendingOnResumedListener implements TrendingFilterSelectorFragment.OnResumedListener
+    {
+        @Override public void onResumed(final Fragment fragment)
+        {
+            View viewOnResume = getView();
+            if (viewOnResume != null) // It may be null after coming out of sleep
+            {
+                viewOnResume.post(new Runnable()
+                {
+                    @Override public void run()
+                    {
+                        resizeViewPager(fragment);
+                    }
+                });
+            }
+        }
+    }
+
+    private class TrendingOnPreviousNextListener implements TrendingFilterSelectorFragment.OnPreviousNextListener
+    {
+        @Override public void onNextRequested()
+        {
+            if (mFilterViewPager != null)
+            {
+                mFilterViewPager.setCurrentItem((mFilterViewPager.getCurrentItem() + 1) % TrendingFilterSelectorUtil.FRAGMENT_COUNT /*mFilterViewPager.getChildCount()*/);
+            }
+        }
+
+        @Override public void onPreviousRequested()
+        {
+            if (mFilterViewPager != null)
+            {
+                mFilterViewPager.setCurrentItem((mFilterViewPager.getCurrentItem() - 1) % TrendingFilterSelectorUtil.FRAGMENT_COUNT /*mFilterViewPager.getChildCount()*/);
+            }
+        }
+    }
+
+    private class TrendingOnPositionedExchangeSelectionChangedListener implements TrendingFilterPagerAdapter.OnPositionedExchangeSelectionChangedListener
+    {
+        @Override public void onExchangeSelectionChanged(int fragmentPosition, ExchangeStringId exchangeId)
+        {
+            selectedExchangeStringIds[fragmentPosition] = exchangeId;
+            if (fragmentPosition == filterPageSelected)
+            {
+                startAnew();
+                loadNewPage(FIRST_PAGE);
+            }
+        }
+    }
+
+    private class TrendingFilterOnPageChangeListener implements ViewPager.OnPageChangeListener
+    {
+        @Override public void onPageScrolled(int i, float v, int i2)
+        {
+            // TODO
+        }
+
+        @Override public void onPageSelected(int position)
+        {
+            filterPageSelected = position;
+            startAnew();
+            loadNewPage(FIRST_PAGE);
+        }
+
+        @Override public void onPageScrollStateChanged(int state)
+        {
+            // TODO
+        }
+    }
+    //</editor-fold>
 }

@@ -244,11 +244,11 @@ public class TradeQuantityView extends TableLayout
     {
         if (mPriceAsOf != null)
         {
-            if (quoteDTO != null)
+            if (quoteDTO != null && quoteDTO.asOfUtc != null)
             {
                 mPriceAsOf.setText(DateUtils.getFormattedUtcDate(quoteDTO.asOfUtc));
             }
-            else if (securityCompactDTO != null)
+            else if (securityCompactDTO != null && securityCompactDTO.lastPriceDateAndTimeUtc != null)
             {
                 mPriceAsOf.setText(DateUtils.getFormattedUtcDate(securityCompactDTO.lastPriceDateAndTimeUtc));
             }

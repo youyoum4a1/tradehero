@@ -105,4 +105,9 @@ public abstract class ListLoader<D extends ItemWithComparableId> extends AsyncTa
         onStopLoading();
         releaseResources(items);
     }
+
+    public int getCount()
+    {
+        return getItems().size();
+    }
 }

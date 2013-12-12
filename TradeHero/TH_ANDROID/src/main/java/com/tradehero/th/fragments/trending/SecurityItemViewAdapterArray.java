@@ -4,8 +4,9 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import com.tradehero.th.adapters.ArrayDTOAdapter;
 import com.tradehero.th.api.security.SecurityCompactDTO;
+import com.tradehero.th.api.security.SecurityId;
 
-public class SecurityItemViewAdapterArray extends ArrayDTOAdapter<SecurityCompactDTO, SecurityItemView>
+public class SecurityItemViewAdapterArray extends ArrayDTOAdapter<SecurityId, SecurityItemView>
 {
     private final static String TAG = SecurityItemViewAdapterArray.class.getSimpleName();
 
@@ -16,7 +17,7 @@ public class SecurityItemViewAdapterArray extends ArrayDTOAdapter<SecurityCompac
     }
     //</editor-fold>
 
-    @Override protected void fineTune(int position, SecurityCompactDTO securityCompactDTO, final SecurityItemView dtoView)
+    @Override protected void fineTune(int position, SecurityId securityCompactDTO, final SecurityItemView dtoView)
     {
         // Nothing to do
     }

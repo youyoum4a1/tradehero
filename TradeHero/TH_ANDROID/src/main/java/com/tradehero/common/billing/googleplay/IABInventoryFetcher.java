@@ -175,6 +175,14 @@ abstract public class IABInventoryFetcher<
     {
         Bundle querySkus = getQuerySKUBundle();
         // TODO billingService is null sometime here, lead to crashing on startup the app
+        if (context == null)
+        {
+            throw new NullPointerException("Context cannot be null");
+        }
+        if (this.billingService == null)
+        {
+            throw new NullPointerException("billingService cannot be null");
+        }
         Bundle skuDetails = this.billingService.getSkuDetails(TARGET_BILLING_API_VERSION3, context.getPackageName(), itemType, querySkus);
 
         if (!skuDetails.containsKey(Constants.RESPONSE_GET_SKU_DETAILS_LIST))

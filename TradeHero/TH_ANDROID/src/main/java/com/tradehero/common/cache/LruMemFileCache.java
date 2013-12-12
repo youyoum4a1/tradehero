@@ -244,6 +244,10 @@ public class LruMemFileCache extends LruCache
                     {
                         THLog.e(TAG, "Failed to get entry " + key, e);
                     }
+                    catch (OutOfMemoryError e)
+                    {
+                        THLog.e(TAG, "Failed to decode " + key, e);
+                    }
 
                     if (retrieved != null)
                     {

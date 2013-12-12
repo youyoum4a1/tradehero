@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
@@ -49,6 +50,7 @@ public class TradeListFragment extends DashboardFragment
     private TradeListOverlayHeaderView header;
     private ListView tradeListView;
     private ActionBar actionBar;
+    private ProgressBar progressBar;
 
     private TradeListItemAdapter adapter;
     private TradeListHeaderView.TradeListHeaderClickListener buttonListener;
@@ -69,6 +71,8 @@ public class TradeListFragment extends DashboardFragment
     {
         if (view != null)
         {
+            progressBar = (ProgressBar) view.findViewById(android.R.id.empty);
+
             this.buttonListener = new TradeListHeaderView.TradeListHeaderClickListener()
             {
                 @Override public void onBuyButtonClicked(TradeListHeaderView tradeListHeaderView, OwnedPositionId ownedPositionId)
@@ -235,37 +239,17 @@ public class TradeListFragment extends DashboardFragment
         {
             if (getTradesListener == null)
             {
-                getTradesListener = createGetTradesListener();
+                getTradesListener = new GetTradesListener();
             }
             if (fetchTradesTask != null)
             {
                 fetchTradesTask.forgetListener(true);
             }
             fetchTradesTask = tradeListCache.get().getOrFetch(ownedPositionId, getTradesListener);
+            displayProgress(true);
             fetchTradesTask.execute();
         }
     }
-
-    private DTOCache.Listener<OwnedPositionId, OwnedTradeIdList> createGetTradesListener()
-    {
-        return new TradeListCache.Listener<OwnedPositionId, OwnedTradeIdList>()
-        {
-            @Override public void onDTOReceived(OwnedPositionId key, OwnedTradeIdList ownedTradeIds)
-            {
-                if (ownedPositionId != null && ownedPositionId.equals(key))
-                {
-                    linkWith(ownedTradeIds, true);
-                }
-            }
-
-            @Override public void onErrorThrown(OwnedPositionId key, Throwable error)
-            {
-                THToast.show(getString(R.string.error_fetch_trade_list_info));
-                THLog.e(TAG, "Error fetching the list of trades " + key, error);
-            }
-        };
-    }
-
 
     public void linkWith(List<OwnedTradeId> ownedTradeIds, boolean andDisplay)
     {
@@ -317,10 +301,40 @@ public class TradeListFragment extends DashboardFragment
         }
     }
 
+    public void displayProgress(boolean running)
+    {
+        if (progressBar != null)
+        {
+            progressBar.setVisibility(running ? View.VISIBLE : View.GONE);
+        }
+    }
+
     //<editor-fold desc="BaseFragment.TabBarVisibilityInformer">
     @Override public boolean isTabBarVisible()
     {
         return false;
     }
     //</editor-fold>
+
+    private class GetTradesListener implements TradeListCache.Listener<OwnedPositionId, OwnedTradeIdList>
+    {
+        @Override public void onDTOReceived(OwnedPositionId key, OwnedTradeIdList ownedTradeIds)
+        {
+            if (ownedPositionId != null && ownedPositionId.equals(key))
+            {
+                displayProgress(false);
+                linkWith(ownedTradeIds, true);
+            }
+        }
+
+        @Override public void onErrorThrown(OwnedPositionId key, Throwable error)
+        {
+            if (ownedPositionId != null && ownedPositionId.equals(key))
+            {
+                displayProgress(false);
+                THToast.show(getString(R.string.error_fetch_trade_list_info));
+                THLog.e(TAG, "Error fetching the list of trades " + key, error);
+            }
+        }
+    }
 }

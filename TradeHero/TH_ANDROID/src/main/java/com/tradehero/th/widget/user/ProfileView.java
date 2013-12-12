@@ -1,14 +1,23 @@
 package com.tradehero.th.widget.user;
 
+import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
+import android.util.DisplayMetrics;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
-import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 import com.tradehero.common.graphics.GradientTransformation;
+import com.tradehero.common.graphics.RoundedShapeTransformation;
+import com.tradehero.common.graphics.ScaleKeepRatioTransformation;
+import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.users.UserProfileDTO;
@@ -23,6 +32,7 @@ import javax.inject.Inject;
 /** Created with IntelliJ IDEA. User: tho Date: 9/10/13 Time: 6:34 PM Copyright (c) TradeHero */
 public class ProfileView extends FrameLayout implements DTOView<UserProfileDTO>
 {
+    private static final String TAG = ProfileView.class.getName();
     private ImageView avatar;
     private ImageView background;
 
@@ -102,7 +112,7 @@ public class ProfileView extends FrameLayout implements DTOView<UserProfileDTO>
         DaggerUtils.inject(this);
     }
 
-    @Override public void display(UserProfileDTO dto)
+    @Override public void display(final UserProfileDTO dto)
     {
         if (dto == null)
         {
@@ -113,12 +123,21 @@ public class ProfileView extends FrameLayout implements DTOView<UserProfileDTO>
         {
             picasso
                 .load(dto.picture)
+                .transform(new RoundedShapeTransformation())
                 .into(avatar);
 
-            picasso
-                .load(dto.picture)
-                .transform(new GradientTransformation())
-                .into(background);
+            post(new Runnable()
+            {
+                @Override public void run()
+                {
+                    picasso
+                            .load(dto.picture)
+                            .transform(new GradientTransformation())
+                            .resize(ProfileView.this.getWidth(), ProfileView.this.getHeight())
+                            .centerCrop()
+                            .into(background);
+                }
+            });
         }
 
         if (dto.portfolio != null)
@@ -212,6 +231,4 @@ public class ProfileView extends FrameLayout implements DTOView<UserProfileDTO>
             listener.onDefaultPortfolioRequested();
         }
     }
-
-
 }

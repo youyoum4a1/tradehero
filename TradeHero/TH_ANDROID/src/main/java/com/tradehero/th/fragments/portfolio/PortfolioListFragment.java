@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ProgressBar;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
@@ -40,6 +41,7 @@ public class PortfolioListFragment extends DashboardFragment
 {
     public static final String TAG = PortfolioListFragment.class.getSimpleName();
 
+    private ProgressBar progressBar;
     private PortfolioListView portfolioListView;
 
     private PortfolioListItemAdapter portfolioListAdapter;
@@ -76,6 +78,8 @@ public class PortfolioListFragment extends DashboardFragment
     {
         if (view != null)
         {
+            progressBar = (ProgressBar) view.findViewById(android.R.id.empty);
+
             if (portfolioListAdapter == null)
             {
                 portfolioListAdapter = new PortfolioListItemAdapter(getActivity(), getActivity().getLayoutInflater(), R.layout.portfolio_list_item, R.layout.portfolio_list_header);
@@ -221,11 +225,13 @@ public class PortfolioListFragment extends DashboardFragment
         OwnedPortfolioIdList portfolioIdList = portfolioListCache.get().get(currentUserBaseKeyHolder.getCurrentUserBaseKey());
         if (portfolioIdList != null)
         {
+            displayProgress(false);
             linkWithOwn(portfolioIdList, true, (OwnedPortfolioId) null);
         }
         else
         {
             fetchOwnPortfolioListFetchTask = portfolioListCache.get().getOrFetch(currentUserBaseKeyHolder.getCurrentUserBaseKey(), ownPortfolioListListener);
+            displayProgress(true);
             fetchOwnPortfolioListFetchTask.execute();
         }
     }
@@ -238,14 +244,19 @@ public class PortfolioListFragment extends DashboardFragment
             {
                 if (key.equals(currentUserBaseKeyHolder.getCurrentUserBaseKey()))
                 {
+                    displayProgress(false);
                     linkWithOwn(value, true, (OwnedPortfolioId) null);
                 }
             }
 
             @Override public void onErrorThrown(UserBaseKey key, Throwable error)
             {
-                THToast.show(getString(R.string.error_fetch_portfolio_list_info));
-                THLog.e(TAG, "Error fetching the portfolio id list " + key, error);
+                if (key.equals(currentUserBaseKeyHolder.getCurrentUserBaseKey()))
+                {
+                    displayProgress(false);
+                    THToast.show(getString(R.string.error_fetch_portfolio_list_info));
+                    THLog.e(TAG, "Error fetching the portfolio id list " + key, error);
+                }
             }
         };
     }
@@ -494,6 +505,14 @@ public class PortfolioListFragment extends DashboardFragment
                     getString(R.string.portfolio_loading_count),
                     getDisplayablePortfoliosValidCount(),
                     getDisplayablePortfoliosCount()));
+        }
+    }
+
+    public void displayProgress(boolean running)
+    {
+        if (progressBar != null)
+        {
+            progressBar.setVisibility(running ? View.VISIBLE : View.GONE);
         }
     }
 

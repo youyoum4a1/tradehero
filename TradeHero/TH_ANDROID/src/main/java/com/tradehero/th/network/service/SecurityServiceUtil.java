@@ -103,9 +103,9 @@ public class SecurityServiceUtil
             }
             else if (key.perPage == null)
             {
-                return securityService.getTrendingSecurities(key.page);
+                return securityService.getTrendingSecurities("", key.page);
             }
-            return securityService.getTrendingSecurities(key.page, key.perPage);
+            return securityService.getTrendingSecurities("", key.page, key.perPage);
         }
         else if (key.page == null)
         {
@@ -129,11 +129,11 @@ public class SecurityServiceUtil
             }
             else if (key.perPage == null)
             {
-                securityService.getTrendingSecurities(key.page, callback);
+                securityService.getTrendingSecurities("", key.page, callback);
             }
             else
             {
-                securityService.getTrendingSecurities(key.page, key.perPage, callback);
+                securityService.getTrendingSecurities("", key.page, key.perPage, callback);
             }
         }
         else if (key.page == null)
@@ -161,9 +161,9 @@ public class SecurityServiceUtil
             }
             else if (key.perPage == null)
             {
-                return securityService.getTrendingSecuritiesByPrice(key.page);
+                return securityService.getTrendingSecuritiesByPrice("", key.page);
             }
-            return securityService.getTrendingSecuritiesByPrice(key.page, key.perPage);
+            return securityService.getTrendingSecuritiesByPrice("", key.page, key.perPage);
         }
         else if (key.page == null)
         {
@@ -187,11 +187,11 @@ public class SecurityServiceUtil
             }
             else if (key.perPage == null)
             {
-                securityService.getTrendingSecuritiesByPrice(key.page, callback);
+                securityService.getTrendingSecuritiesByPrice("", key.page, callback);
             }
             else
             {
-                securityService.getTrendingSecuritiesByPrice(key.page, key.perPage, callback);
+                securityService.getTrendingSecuritiesByPrice("", key.page, key.perPage, callback);
             }
         }
         else if (key.page == null)
@@ -219,9 +219,9 @@ public class SecurityServiceUtil
             }
             else if (key.perPage == null)
             {
-                return securityService.getTrendingSecuritiesByVolume(key.page);
+                return securityService.getTrendingSecuritiesByVolume("", key.page);
             }
-            return securityService.getTrendingSecuritiesByVolume(key.page, key.perPage);
+            return securityService.getTrendingSecuritiesByVolume("", key.page, key.perPage);
         }
         else if (key.page == null)
         {
@@ -245,11 +245,11 @@ public class SecurityServiceUtil
             }
             else if (key.perPage == null)
             {
-                securityService.getTrendingSecuritiesByVolume(key.page, callback);
+                securityService.getTrendingSecuritiesByVolume("", key.page, callback);
             }
             else
             {
-                securityService.getTrendingSecuritiesByVolume(key.page, key.perPage, callback);
+                securityService.getTrendingSecuritiesByVolume("", key.page, key.perPage, callback);
             }
         }
         else if (key.page == null)
@@ -277,9 +277,9 @@ public class SecurityServiceUtil
             }
             else if (key.perPage == null)
             {
-                return securityService.getTrendingSecuritiesAllInExchange(key.page);
+                return securityService.getTrendingSecuritiesAllInExchange("", key.page);
             }
-            return securityService.getTrendingSecuritiesAllInExchange(key.page, key.perPage);
+            return securityService.getTrendingSecuritiesAllInExchange("", key.page, key.perPage);
         }
         else if (key.page == null)
         {
@@ -303,11 +303,11 @@ public class SecurityServiceUtil
             }
             else if (key.perPage == null)
             {
-                securityService.getTrendingSecuritiesAllInExchange(key.page, callback);
+                securityService.getTrendingSecuritiesAllInExchange("", key.page, callback);
             }
             else
             {
-                securityService.getTrendingSecuritiesAllInExchange(key.page, key.perPage, callback);
+                securityService.getTrendingSecuritiesAllInExchange("", key.page, key.perPage, callback);
             }
         }
         else if (key.page == null)

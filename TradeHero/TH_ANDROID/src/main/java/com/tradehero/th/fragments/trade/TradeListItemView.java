@@ -33,13 +33,11 @@ public class TradeListItemView extends LinearLayout implements DTOView<TradeList
 {
     public static final String TAG = TradeListItemView.class.getName();
 
-
     private TradeListItemAdapter.ExpandableTradeItem tradeItem;
     private TradeDTO trade;
     private PositionDTO position;
 
     private String currencyDisplay; //cached value - cleared in onDetach
-
 
     @Inject Lazy<TradeCache> tradeCache;
     @Inject Lazy<Picasso> picasso;
@@ -104,8 +102,7 @@ public class TradeListItemView extends LinearLayout implements DTOView<TradeList
         commentTextView = (TextView) findViewById(R.id.trade_list_comment);
     }
 
-    @Override
-    protected void onDetachedFromWindow()
+    @Override protected void onDetachedFromWindow()
     {
         this.currencyDisplay = null;
         super.onDetachedFromWindow();

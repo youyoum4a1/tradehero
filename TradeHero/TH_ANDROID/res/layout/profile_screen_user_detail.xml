@@ -10,18 +10,10 @@
 
   <ImageView
       android:id="@+id/user_profile_background_by_sketched_avatar"
-      android:layout_height="wrap_content"
       android:layout_width="match_parent"
-      android:contentDescription="@null"
-      android:scaleType="fitXY"
-      />
-  <!--android:layout_marginBottom="@dimen/user_profile_corner_radius"-->
-
-  <ImageView
       android:layout_height="match_parent"
-      android:layout_width="match_parent"
-      android:src="@drawable/user_profile_gradient_filter_xml"
       android:contentDescription="@null"
+      android:layout_alignParentBottom="true"
       />
 
   <LinearLayout

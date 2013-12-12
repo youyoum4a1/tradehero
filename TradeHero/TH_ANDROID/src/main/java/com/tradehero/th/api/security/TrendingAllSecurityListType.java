@@ -60,4 +60,13 @@ public class TrendingAllSecurityListType extends TrendingSecurityListType
     {
         return super.compareTo(another);
     }
+
+    @Override public String toString()
+    {
+        return "TrendingAllSecurityListType{" +
+                "exchange='" + exchange + "'" +
+                ", page=" + page +
+                ", perPage=" + perPage +
+                '}';
+    }
 }

@@ -8,7 +8,9 @@ import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
+import com.tradehero.common.milestone.BaseMilestoneGroup;
 import com.tradehero.common.milestone.Milestone;
+import com.tradehero.common.milestone.MilestoneGroup;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
@@ -43,8 +45,6 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     @Inject protected Lazy<PortfolioCache> portfolioCache;
     @Inject protected Lazy<PortfolioCompactListCache> portfolioCompactListCache;
     @Inject protected Lazy<UserProfileCache> userProfileCache;
-
-    //@Inject protected Lazy<WatchlistRetrievedMilestone> watchlistRetrievedMilestone;
 
     private TimelineAdapter timelineAdapter;
     private TimelineListView timelineListView;
@@ -123,12 +123,24 @@ public class TimelineFragment extends BasePurchaseManagerFragment
             getUserProfileRetrievedMilestone().setOnCompleteListener(userProfileRetrievedMilestoneListener);
             getUserProfileRetrievedMilestone().launch();
 
-            getPortfolioCompactListRetrievedMilestone().setOnCompleteListener(portfolioCompactListRetrievedMilestoneListener);
-            getPortfolioCompactListRetrievedMilestone().launch();
 
-            getTimelineRetrievedMilestone().setOnCompleteListener(timelineRetrievedMilestoneListener);
-            getTimelineRetrievedMilestone().launch();
+            MilestoneGroup timelineMilestone = createTimelineMilestone();
+            timelineMilestone.setOnCompleteListener(timelineRetrievedMilestoneListener);
+            timelineMilestone.launch();
+            //getPortfolioCompactListRetrievedMilestone().setOnCompleteListener(portfolioCompactListRetrievedMilestoneListener);
+            //getPortfolioCompactListRetrievedMilestone().launch();
+            //
+            //getTimelineRetrievedMilestone().setOnCompleteListener(timelineRetrievedMilestoneListener);
+            //getTimelineRetrievedMilestone().launch();
         }
+    }
+
+    private MilestoneGroup createTimelineMilestone()
+    {
+        BaseMilestoneGroup milestone = new BaseMilestoneGroup();
+        milestone.add(getPortfolioCompactListRetrievedMilestone());
+        milestone.add(getTimelineRetrievedMilestone());
+        return milestone;
     }
 
     protected void linkWith(UserProfileDTO userProfileDTO, boolean andDisplay)
@@ -190,7 +202,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
 
     protected TimelineRetrievedMilestone getTimelineRetrievedMilestone()
     {
-        if (timelineRetrievedMilestone != null)
+        if (timelineRetrievedMilestone == null)
         {
             timelineRetrievedMilestone = new TimelineRetrievedMilestone(getActivity(), shownUserBaseKey);
         }

@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewStub;
 import android.widget.AdapterView;
+import android.widget.ProgressBar;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
@@ -65,6 +66,7 @@ public class PositionListFragment extends BasePurchaseManagerFragment
 
     private PortfolioHeaderView portfolioHeaderView;
     private ExpandingListView positionsListView;
+    private ProgressBar progressBar;
 
     protected OwnedPortfolioId ownedPortfolioId;
     private GetPositionsDTO getPositionsDTO;
@@ -98,6 +100,8 @@ public class PositionListFragment extends BasePurchaseManagerFragment
     {
         if (view != null)
         {
+            progressBar = (ProgressBar) view.findViewById(android.R.id.empty);
+
             positionsListView = (ExpandingListView) view.findViewById(R.id.position_list);
             positionsListView.setEmptyView(view.findViewById(android.R.id.empty));
 
@@ -284,13 +288,14 @@ public class PositionListFragment extends BasePurchaseManagerFragment
         {
             if (getPositionsCacheListener == null)
             {
-                getPositionsCacheListener = createGetPositionsCacheListener();
+                getPositionsCacheListener = new GetPositionsListener();
             }
             if (fetchGetPositionsDTOTask != null)
             {
                 fetchGetPositionsDTOTask.forgetListener(true);
             }
             fetchGetPositionsDTOTask = getPositionsCache.get().getOrFetch(ownedPortfolioId, getPositionsCacheListener);
+            displayProgress(true);
             fetchGetPositionsDTOTask.execute();
         }
     }
@@ -355,29 +360,17 @@ public class PositionListFragment extends BasePurchaseManagerFragment
         }
     }
 
+    public void displayProgress(boolean running)
+    {
+        if (progressBar != null)
+        {
+            progressBar.setVisibility(running ? View.VISIBLE : View.GONE);
+        }
+    }
+
     private void handleInfoButtonPressed(MenuItem item)
     {
         THToast.show("No info for now");
-    }
-
-    private GetPositionsCache.Listener<OwnedPortfolioId, GetPositionsDTO> createGetPositionsCacheListener()
-    {
-        return new GetPositionsCache.Listener<OwnedPortfolioId, GetPositionsDTO>()
-        {
-            @Override public void onDTOReceived(OwnedPortfolioId key, GetPositionsDTO value)
-            {
-                if (key.equals(ownedPortfolioId))
-                {
-                    linkWith(value, true);
-                }
-            }
-
-            @Override public void onErrorThrown(OwnedPortfolioId key, Throwable error)
-            {
-                THToast.show(getString(R.string.error_fetch_position_list_info));
-                THLog.e(TAG, "Error fetching the getPortfolioId " + key, error);
-            }
-        };
     }
 
     private void pushBuySellFragment(OwnedPositionId clickedOwnedPositionId, boolean isBuy)
@@ -516,6 +509,28 @@ public class PositionListFragment extends BasePurchaseManagerFragment
                     displayHeaderView();
                 }
             };
+        }
+    }
+
+    private class GetPositionsListener implements GetPositionsCache.Listener<OwnedPortfolioId, GetPositionsDTO>
+    {
+        @Override public void onDTOReceived(OwnedPortfolioId key, GetPositionsDTO value)
+        {
+            if (key.equals(ownedPortfolioId))
+            {
+                displayProgress(false);
+                linkWith(value, true);
+            }
+        }
+
+        @Override public void onErrorThrown(OwnedPortfolioId key, Throwable error)
+        {
+            if (key.equals(ownedPortfolioId))
+            {
+                displayProgress(false);
+                THToast.show(getString(R.string.error_fetch_position_list_info));
+                THLog.e(TAG, "Error fetching the getPortfolioId " + key, error);
+            }
         }
     }
 }

@@ -4,25 +4,22 @@ import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
-import com.tradehero.common.utils.THLog;
 import com.tradehero.th.api.market.ExchangeStringId;
 import java.lang.ref.WeakReference;
+import java.util.HashMap;
+import java.util.Map;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/18/13 Time: 10:27 AM To change this template use File | Settings | File Templates. */
 public class TrendingFilterPagerAdapter extends FragmentStatePagerAdapter
 {
     public static final String TAG = TrendingFilterPagerAdapter.class.getSimpleName();
-    public static final int FRAGMENT_COUNT = 4;
 
     private final Context context;
     private WeakReference<TrendingFilterSelectorFragment.OnPreviousNextListener> parentOnPreviousNextListener = new WeakReference<>(null);
     private WeakReference<TrendingFilterSelectorFragment.OnResumedListener> onResumedListener = new WeakReference<>(null);
     private WeakReference<OnPositionedExchangeSelectionChangedListener> onPositionedExchangeSelectionChangedListener = new WeakReference<>(null);
 
-    private TrendingFilterSelectorFragment.OnExchangeSelectionChangedListener onExchangeSelectionChangedListenerBasic;
-    private TrendingFilterSelectorFragment.OnExchangeSelectionChangedListener onExchangeSelectionChangedListenerVolume;
-    private TrendingFilterSelectorFragment.OnExchangeSelectionChangedListener onExchangeSelectionChangedListenerPrice;
-    private TrendingFilterSelectorFragment.OnExchangeSelectionChangedListener onExchangeSelectionChangedListenerAll;
+    private Map<Integer, TrendingFilterSelectorFragment.OnExchangeSelectionChangedListener> onExchangeSelectionChangedListeners;
 
     //<editor-fold desc="Constructors">
     public TrendingFilterPagerAdapter(Context context, FragmentManager fragmentManager)
@@ -35,66 +32,22 @@ public class TrendingFilterPagerAdapter extends FragmentStatePagerAdapter
 
     private void init()
     {
-        onExchangeSelectionChangedListenerBasic = new TrendingFilterSelectorFragment.OnExchangeSelectionChangedListener()
+        onExchangeSelectionChangedListeners = new HashMap<>();
+        for (int position : TrendingFilterSelectorUtil.getPositions())
         {
-            @Override public void onExchangeSelectionChanged(ExchangeStringId exchangeId)
-            {
-                notifyPositionedExchangeSelectionChangedListener(TrendingFilterSelectorBasicFragment.POSITION_IN_PAGER, exchangeId);
-            }
-        };
-        onExchangeSelectionChangedListenerVolume = new TrendingFilterSelectorFragment.OnExchangeSelectionChangedListener()
-            {
-                @Override public void onExchangeSelectionChanged(ExchangeStringId exchangeId)
-                {
-                    notifyPositionedExchangeSelectionChangedListener(TrendingFilterSelectorVolumeFragment.POSITION_IN_PAGER, exchangeId);
-                }
-            };
-        onExchangeSelectionChangedListenerPrice = new TrendingFilterSelectorFragment.OnExchangeSelectionChangedListener()
-            {
-                @Override public void onExchangeSelectionChanged(ExchangeStringId exchangeId)
-                {
-                    notifyPositionedExchangeSelectionChangedListener(TrendingFilterSelectorPriceFragment.POSITION_IN_PAGER, exchangeId);
-                }
-            };
-        onExchangeSelectionChangedListenerAll = new TrendingFilterSelectorFragment.OnExchangeSelectionChangedListener()
-            {
-                @Override public void onExchangeSelectionChanged(ExchangeStringId exchangeId)
-                {
-                    notifyPositionedExchangeSelectionChangedListener(TrendingFilterSelectorAllFragment.POSITION_IN_PAGER, exchangeId);
-                }
-            };
+            onExchangeSelectionChangedListeners.put(position, new TrendingAdapterExchangeSelectionChangedListener(position));
+        }
     }
 
     @Override public int getCount()
     {
-        return FRAGMENT_COUNT;
+        return TrendingFilterSelectorUtil.FRAGMENT_COUNT;
     }
 
     @Override public Fragment getItem(int position)
     {
-        TrendingFilterSelectorFragment fragment = null;
-        switch(position)
-        {
-            default:
-                THLog.i(TAG, "Not supported index " + position);
-            case TrendingFilterSelectorBasicFragment.POSITION_IN_PAGER:
-                fragment = new TrendingFilterSelectorBasicFragment();
-                fragment.setOnExchangeSelectionChangedListener(onExchangeSelectionChangedListenerBasic);
-                break;
-            case TrendingFilterSelectorVolumeFragment.POSITION_IN_PAGER:
-                fragment = new TrendingFilterSelectorVolumeFragment();
-                fragment.setOnExchangeSelectionChangedListener(onExchangeSelectionChangedListenerVolume);
-                break;
-            case TrendingFilterSelectorPriceFragment.POSITION_IN_PAGER:
-                fragment = new TrendingFilterSelectorPriceFragment();
-                fragment.setOnExchangeSelectionChangedListener(onExchangeSelectionChangedListenerPrice);
-                break;
-            case TrendingFilterSelectorAllFragment.POSITION_IN_PAGER:
-                fragment = new TrendingFilterSelectorAllFragment();
-                fragment.setOnExchangeSelectionChangedListener(onExchangeSelectionChangedListenerAll);
-                break;
-        }
-
+        TrendingFilterSelectorFragment fragment = TrendingFilterSelectorUtil.createNewFragment(position);
+        fragment.setOnExchangeSelectionChangedListener(onExchangeSelectionChangedListeners.get(position));
         fragment.setOnPreviousNextListener(parentOnPreviousNextListener.get());
         fragment.setOnResumedListener(onResumedListener.get());
 
@@ -106,6 +59,10 @@ public class TrendingFilterPagerAdapter extends FragmentStatePagerAdapter
 
     @Override public int getItemPosition(Object object)
     {
+        if (object instanceof TrendingFilterSelectorFragment)
+        {
+            return TrendingFilterSelectorUtil.getFragmentPosition((TrendingFilterSelectorFragment) object);
+        }
         return POSITION_NONE;
     }
 
@@ -142,6 +99,21 @@ public class TrendingFilterPagerAdapter extends FragmentStatePagerAdapter
         if (listener != null)
         {
             listener.onExchangeSelectionChanged(fragmentPosition, exchangeId);
+        }
+    }
+
+    private class TrendingAdapterExchangeSelectionChangedListener implements TrendingFilterSelectorFragment.OnExchangeSelectionChangedListener
+    {
+        final private int position;
+
+        public TrendingAdapterExchangeSelectionChangedListener(final int position)
+        {
+            this.position = position;
+        }
+
+        @Override public void onExchangeSelectionChanged(final ExchangeStringId exchangeId)
+        {
+            notifyPositionedExchangeSelectionChangedListener(this.position, exchangeId);
         }
     }
 

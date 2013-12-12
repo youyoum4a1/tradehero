@@ -28,6 +28,4 @@ public class TimelineRetrievedMilestone extends LoaderMilestone
     {
         super.launch();
     }
-
-
 }

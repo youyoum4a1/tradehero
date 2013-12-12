@@ -60,4 +60,13 @@ public class TrendingVolumeSecurityListType extends TrendingSecurityListType
     {
         return super.compareTo(another);
     }
+
+    @Override public String toString()
+    {
+        return "TrendingVolumeSecurityListType{" +
+                "exchange='" + exchange + "'" +
+                ", page=" + page +
+                ", perPage=" + perPage +
+                '}';
+    }
 }
