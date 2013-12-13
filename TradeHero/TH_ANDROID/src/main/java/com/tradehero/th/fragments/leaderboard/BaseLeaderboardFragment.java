@@ -29,14 +29,14 @@ public class BaseLeaderboardFragment extends DashboardFragment
     protected void pushLeaderboardListViewFragment(LeaderboardDefDTO dto)
     {
         Bundle bundle = new Bundle(getArguments());
-        bundle.putInt(LeaderboardDTO.LEADERBOARD_ID, dto.getId());
+        bundle.putInt(LeaderboardDTO.LEADERBOARD_ID, dto.id);
         bundle.putString(BaseLeaderboardFragment.TITLE, dto.name);
         bundle.putInt(LeaderboardMarkUserListViewFragment.CURRENT_SORT_TYPE,
                 getCurrentSortType() != null ? getCurrentSortType().getFlag() : dto.getDefaultSortType().getFlag());
         bundle.putString(LeaderboardDefDTO.LEADERBOARD_DEF_DESC, dto.desc);
         bundle.putInt(LeaderboardSortType.BUNDLE_FLAG, dto.getSortOptionFlags());
 
-        switch (dto.getId())
+        switch (dto.id)
         {
             case LeaderboardDefDTO.LEADERBOARD_FRIEND_ID:
                 getNavigator().pushFragment(FriendLeaderboardMarkUserListViewFragment.class, bundle);

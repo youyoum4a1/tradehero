@@ -293,7 +293,7 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
     {
         LeaderboardUserDTO model = leaderboardItem.getModel();
 
-        int userId = model.getId();
+        int userId = model.id;
 
         // portfolio, to display position list
         int portfolioId = leaderboardItem.getModel().portfolioId;
@@ -324,7 +324,7 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
 
     private void handleOpenProfileButtonClicked()
     {
-        int userId = leaderboardItem.getModel().getId();
+        int userId = leaderboardItem.getModel().id;
 
         Bundle b = new Bundle();
         b.putInt(TimelineFragment.BUNDLE_KEY_SHOW_USER_ID, userId);

@@ -45,7 +45,7 @@ public class SearchStockPageListLoader extends PaginationListLoader<ListedSecuri
      */
     private int getPageOfItem(ListedSecurityCompact item)
     {
-        return item.getId() / getPerPage();
+        return item.id / getPerPage();
     }
 
     @Override protected boolean shouldReload()

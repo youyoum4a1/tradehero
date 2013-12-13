@@ -68,7 +68,7 @@ public class TimelineListLoader extends PaginationListLoader<TimelineItem>
         }
 
         upperItemId = null;
-        lowerItemId = firstVisible.getId();
+        lowerItemId = firstVisible.getTimelineItemId();
         forceLoad();
     }
 
@@ -80,7 +80,7 @@ public class TimelineListLoader extends PaginationListLoader<TimelineItem>
         }
 
         lowerItemId = null;
-        upperItemId = startItem.getId();
+        upperItemId = startItem.getTimelineItemId();
         forceLoad();
     }
 

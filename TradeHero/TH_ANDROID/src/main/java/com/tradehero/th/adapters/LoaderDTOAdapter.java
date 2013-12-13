@@ -7,7 +7,6 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.view.LayoutInflater;
 import com.tradehero.th.api.DTOView;
-import com.tradehero.th.loaders.ItemWithComparableId;
 import com.tradehero.th.loaders.ListLoader;
 import java.util.List;
 
@@ -15,7 +14,7 @@ import java.util.List;
  * Created with IntelliJ IDEA. User: tho Date: 12/10/13 Time: 4:40 PM Copyright (c) TradeHero
  */
 public abstract class LoaderDTOAdapter<
-        DTOType extends ItemWithComparableId,
+        DTOType,
         DTOViewType extends DTOView<DTOType>,
         LoaderType extends ListLoader<DTOType>> extends DTOAdapter<DTOType, DTOViewType>
 {
@@ -82,7 +81,7 @@ public abstract class LoaderDTOAdapter<
         this.callback = callback;
     }
 
-    public static abstract class ListLoaderCallback<DTOType extends ItemWithComparableId>
+    public static abstract class ListLoaderCallback<DTOType>
             implements LoaderManager.LoaderCallbacks<List<DTOType>>
     {
         @Override public Loader<List<DTOType>> onCreateLoader(int id, Bundle args)

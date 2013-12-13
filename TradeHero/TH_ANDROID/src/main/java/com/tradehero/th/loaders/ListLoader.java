@@ -6,7 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 /** Created with IntelliJ IDEA. User: tho Date: 9/11/13 Time: 7:21 PM Copyright (c) TradeHero */
-public abstract class ListLoader<D extends ItemWithComparableId> extends AsyncTaskLoader<List<D>>
+public abstract class ListLoader<D> extends AsyncTaskLoader<List<D>>
 {
     protected final List<D> items;
 

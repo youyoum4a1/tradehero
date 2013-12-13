@@ -144,7 +144,7 @@ public class LeaderboardDefView extends RelativeLayout implements DTOView<Leader
             leaderboardDefDesc.setVisibility(GONE);
         }
 
-        if (dto.getId() == LeaderboardDefDTO.LEADERBOARD_FRIEND_ID)
+        if (dto.id == LeaderboardDefDTO.LEADERBOARD_FRIEND_ID)
         {
             // TODO new background image for android
             //leaderboardDefUserRank.setBackgroundResource(R.drawable.lb_friends_bg);
@@ -159,7 +159,7 @@ public class LeaderboardDefView extends RelativeLayout implements DTOView<Leader
         if (rank == null)
         {
             // not a hard coded definition
-            if (dto.getId() > 0)
+            if (dto.id > 0)
             {
                 leaderboardDefUserRank.setText(getContext().getString(R.string.not_ranked));
             }
@@ -189,7 +189,7 @@ public class LeaderboardDefView extends RelativeLayout implements DTOView<Leader
      */
     private int getLeaderboardDefIcon()
     {
-        switch (dto.getId())
+        switch (dto.id)
         {
             case LeaderboardDefDTO.LEADERBOARD_FRIEND_ID:
                 return R.drawable.lb_friends_blue;

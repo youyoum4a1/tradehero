@@ -20,7 +20,7 @@ public class LeaderboardDefMostSkilledListAdapter extends LeaderboardDefListAdap
     private LeaderboardDefDTO createFriendLeaderboardDefItemView()
     {
         LeaderboardDefDTO friendLeaderboardDefDTO = new LeaderboardDefDTO();
-        friendLeaderboardDefDTO.setId(LeaderboardDefDTO.LEADERBOARD_FRIEND_ID);
+        friendLeaderboardDefDTO.id = LeaderboardDefDTO.LEADERBOARD_FRIEND_ID;
         friendLeaderboardDefDTO.name = context.getString(R.string.leaderboard_friends);
         return friendLeaderboardDefDTO;
     }

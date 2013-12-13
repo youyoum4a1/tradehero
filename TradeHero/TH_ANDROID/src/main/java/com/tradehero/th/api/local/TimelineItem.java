@@ -1,16 +1,14 @@
 package com.tradehero.th.api.local;
 
-import com.tradehero.th.api.misc.MediaDTO;
 import com.tradehero.th.api.security.SecurityMediaDTO;
 import com.tradehero.th.api.timeline.TimelineItemDTOEnhanced;
 import com.tradehero.th.api.users.UserProfileCompactDTO;
-import com.tradehero.th.loaders.AbstractItemWithComparableId;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
 /** Created with IntelliJ IDEA. User: tho Date: 9/10/13 Time: 11:31 AM Copyright (c) TradeHero */
-public class TimelineItem extends AbstractItemWithComparableId<Integer>
+public class TimelineItem
 {
     private int timelineItemId;
     private UserProfileCompactDTO user;
@@ -67,13 +65,8 @@ public class TimelineItem extends AbstractItemWithComparableId<Integer>
         return Collections.unmodifiableList(medias);
     }
 
-    @Override public Integer getId()
+    public int getTimelineItemId()
     {
         return timelineItemId;
-    }
-
-    @Override public void setId(Integer id)
-    {
-        timelineItemId = id;
     }
 }

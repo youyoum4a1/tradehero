@@ -264,7 +264,7 @@ public class TimelineItemView extends LinearLayout implements
 
             userTimelineService.get().shareTimelineItem(
                     currentUserBaseKeyHolder.getCurrentUserBaseKey().key,
-                    currentTimelineItem.getId(), new TimelineItemShareRequestDTO(socialNetworkEnum),
+                    currentTimelineItem.getTimelineItemId(), new TimelineItemShareRequestDTO(socialNetworkEnum),
                     createShareRequestCallback(socialNetworkEnum));
             return true;
         }

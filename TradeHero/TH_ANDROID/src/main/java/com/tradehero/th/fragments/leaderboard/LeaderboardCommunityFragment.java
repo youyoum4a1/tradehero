@@ -203,7 +203,7 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
                 LeaderboardDefDTO dto = (LeaderboardDefDTO) adapterView.getItemAtPosition(position);
                 if (dto != null)
                 {
-                    switch (dto.getId())
+                    switch (dto.id)
                     {
                         case LeaderboardDefDTO.LEADERBOARD_DEF_SECTOR_ID:
                         {

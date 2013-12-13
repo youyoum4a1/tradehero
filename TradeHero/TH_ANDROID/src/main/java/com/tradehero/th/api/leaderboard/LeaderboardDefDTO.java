@@ -1,12 +1,12 @@
 package com.tradehero.th.api.leaderboard;
 
+import com.tradehero.th.api.ExtraDTO;
 import com.tradehero.th.fragments.leaderboard.LeaderboardSortType;
-import com.tradehero.th.loaders.AbstractItemWithComparableId;
 import java.util.Date;
 import java.util.List;
 
 /** Created with IntelliJ IDEA. User: tho Date: 10/14/13 Time: 2:05 PM Copyright (c) TradeHero */
-public class LeaderboardDefDTO extends AbstractItemWithComparableId<Integer>
+public class LeaderboardDefDTO extends ExtraDTO
 {
     // TODO HARDCODED
     public static final int LEADERBOARD_DEF_MOST_SKILLED_ID = 49;
@@ -43,18 +43,6 @@ public class LeaderboardDefDTO extends AbstractItemWithComparableId<Integer>
     {
         super();
     }
-
-    //<editor-fold desc="AbstractItemWithComparableId">
-    @Override public Integer getId()
-    {
-        return id;
-    }
-
-    @Override public void setId(Integer id)
-    {
-        this.id = id;
-    }
-    //</editor-fold>
 
     public boolean isTimeRestrictedLeaderboard()
     {
