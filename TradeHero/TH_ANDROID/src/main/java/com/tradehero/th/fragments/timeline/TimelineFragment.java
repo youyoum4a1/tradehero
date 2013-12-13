@@ -80,8 +80,9 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     {
         inflater.inflate(R.menu.timeline_menu, menu);
 
-        getSherlockActivity().getSupportActionBar()
-                .setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME);
+        getSherlockActivity().getSupportActionBar().setDisplayOptions(
+                (isTabBarVisible() ? 0 : ActionBar.DISPLAY_HOME_AS_UP)
+                        | ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME);
         if (shownProfile != null)
         {
             getSherlockActivity().getSupportActionBar().setTitle(shownProfile.displayName);
