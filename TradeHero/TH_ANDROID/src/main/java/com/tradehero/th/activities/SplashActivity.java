@@ -6,7 +6,6 @@ import com.actionbarsherlock.app.SherlockActivity;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
 import com.tradehero.th.base.THUser;
-import com.tradehero.th.utils.PushUtils;
 import com.tradehero.th.utils.TestFlightUtils;
 import java.util.Timer;
 import java.util.TimerTask;
