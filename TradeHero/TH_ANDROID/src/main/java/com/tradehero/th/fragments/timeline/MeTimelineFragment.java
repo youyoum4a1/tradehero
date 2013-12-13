@@ -17,14 +17,18 @@ import javax.inject.Named;
 public class MeTimelineFragment extends TimelineFragment
 {
     @Inject protected CurrentUserBaseKeyHolder currentUserBaseKeyHolder;
-    @Inject @Named("Singleton") protected Lazy<UserProfileRetrievedMilestone> currentUserProfileRetrievedMilestone;
-    @Inject @Named("Singleton") protected Lazy<PortfolioCompactListRetrievedMilestone> currentUserPortfolioCompactListRetrievedMilestone;
+    @Inject @Named("Singleton") protected Lazy<UserProfileRetrievedMilestone>
+            currentUserProfileRetrievedMilestone;
+    @Inject @Named("Singleton") protected Lazy<PortfolioCompactListRetrievedMilestone>
+            currentUserPortfolioCompactListRetrievedMilestone;
 
-    @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
+            Bundle savedInstanceState)
     {
         if (currentUserBaseKeyHolder != null)
         {
-            getArguments().putInt(BUNDLE_KEY_SHOW_USER_ID, currentUserBaseKeyHolder.getCurrentUserBaseKey().key);
+            getArguments().putInt(BUNDLE_KEY_SHOW_USER_ID,
+                    currentUserBaseKeyHolder.getCurrentUserBaseKey().key);
         }
         return super.onCreateView(inflater, container, savedInstanceState);
     }
@@ -37,5 +41,10 @@ public class MeTimelineFragment extends TimelineFragment
     @Override protected Milestone getPortfolioCompactListRetrievedMilestone()
     {
         return currentUserPortfolioCompactListRetrievedMilestone.get();
+    }
+
+    @Override public boolean isTabBarVisible()
+    {
+        return true;
     }
 }

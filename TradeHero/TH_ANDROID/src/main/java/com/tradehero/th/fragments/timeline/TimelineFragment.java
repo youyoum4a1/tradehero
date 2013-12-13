@@ -9,9 +9,7 @@ import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
-import com.tradehero.common.milestone.BaseMilestoneGroup;
 import com.tradehero.common.milestone.Milestone;
-import com.tradehero.common.milestone.MilestoneGroup;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
@@ -31,7 +29,6 @@ import com.tradehero.th.loaders.TimelineListLoader;
 import com.tradehero.th.persistence.portfolio.PortfolioCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListRetrievedMilestone;
-import com.tradehero.th.persistence.timeline.TimelineRetrievedMilestone;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.persistence.user.UserProfileRetrievedMilestone;
 import com.tradehero.th.utils.Constants;
@@ -46,7 +43,8 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         implements StepView.StepProvider, PortfolioRequestListener
 {
     public static final String TAG = TimelineFragment.class.getSimpleName();
-    public static final String BUNDLE_KEY_SHOW_USER_ID = TimelineFragment.class.getName() + ".showUserId";
+    public static final String BUNDLE_KEY_SHOW_USER_ID =
+            TimelineFragment.class.getName() + ".showUserId";
 
     @Inject protected Lazy<PortfolioCache> portfolioCache;
     @Inject protected Lazy<PortfolioCompactListCache> portfolioCompactListCache;
@@ -62,9 +60,9 @@ public class TimelineFragment extends BasePurchaseManagerFragment
 
     private UserProfileRetrievedMilestone userProfileRetrievedMilestone;
     private PortfolioCompactListRetrievedMilestone portfolioCompactListRetrievedMilestone;
-    private TimelineRetrievedMilestone timelineRetrievedMilestone;
 
-    @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
+            Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.timeline_screen, container, false);
         initView(view);
@@ -82,7 +80,8 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     {
         inflater.inflate(R.menu.timeline_menu, menu);
 
-        getSherlockActivity().getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME);
+        getSherlockActivity().getSupportActionBar()
+                .setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME);
         if (shownProfile != null)
         {
             getSherlockActivity().getSupportActionBar().setTitle(shownProfile.displayName);
@@ -107,11 +106,12 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     {
         super.onResume();
 
-        UserBaseKey newUserBaseKey = new UserBaseKey(getArguments().getInt(BUNDLE_KEY_SHOW_USER_ID));
+        UserBaseKey newUserBaseKey =
+                new UserBaseKey(getArguments().getInt(BUNDLE_KEY_SHOW_USER_ID));
         linkWith(newUserBaseKey, true);
 
-        THLog.d(TAG, "Picking up loader with id " + newUserBaseKey.key);
-        getActivity().getSupportLoaderManager().initLoader(newUserBaseKey.key, null, timelineAdapter.getLoaderCallback());
+        getActivity().getSupportLoaderManager()
+                .initLoader(newUserBaseKey.key, null, timelineAdapter.getLoaderCallback());
     }
 
     //<editor-fold desc="Display methods">
@@ -130,10 +130,12 @@ public class TimelineFragment extends BasePurchaseManagerFragment
 
         if (userBaseKey != null)
         {
-            getUserProfileRetrievedMilestone().setOnCompleteListener(userProfileRetrievedMilestoneListener);
+            getUserProfileRetrievedMilestone().setOnCompleteListener(
+                    userProfileRetrievedMilestoneListener);
             getUserProfileRetrievedMilestone().launch();
 
-            getPortfolioCompactListRetrievedMilestone().setOnCompleteListener(portfolioCompactListRetrievedMilestoneListener);
+            getPortfolioCompactListRetrievedMilestone().setOnCompleteListener(
+                    portfolioCompactListRetrievedMilestoneListener);
             getPortfolioCompactListRetrievedMilestone().launch();
         }
     }
@@ -181,7 +183,8 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     {
         if (portfolioCompactListRetrievedMilestone == null)
         {
-            portfolioCompactListRetrievedMilestone = new PortfolioCompactListRetrievedMilestone(shownUserBaseKey);
+            portfolioCompactListRetrievedMilestone =
+                    new PortfolioCompactListRetrievedMilestone(shownUserBaseKey);
         }
         return portfolioCompactListRetrievedMilestone;
     }
@@ -200,18 +203,19 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     //<editor-fold desc="Initial methods">
     private TimelineAdapter createTimelineAdapter()
     {
-        timelineAdapter = new TimelineAdapter(getActivity(), getActivity().getLayoutInflater(), shownUserBaseKey.key, R.layout.timeline_item_view);
+        timelineAdapter = new TimelineAdapter(getActivity(), getActivity().getLayoutInflater(),
+                shownUserBaseKey.key, R.layout.timeline_item_view);
         timelineAdapter.setDTOLoaderCallback(new LoaderDTOAdapter.ListLoaderCallback<TimelineItem>()
         {
 
-            @Override public void onLoadFinished(Loader<List<TimelineItem>> loader, List<TimelineItem> data)
+            @Override
+            public void onLoadFinished(Loader<List<TimelineItem>> loader, List<TimelineItem> data)
             {
                 timelineListView.onRefreshComplete();
             }
 
             @Override public ListLoader<TimelineItem> onCreateLoader(Bundle args)
             {
-                THLog.d(TAG, "New loader is being created");
                 return createTimelineLoader();
             }
         });
@@ -232,12 +236,14 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         {
             case 0:
                 ProfileCompactView profileCompactView =
-                        (ProfileCompactView) getActivity().getLayoutInflater().inflate(R.layout.profile_screen_user_compact, null);
+                        (ProfileCompactView) getActivity().getLayoutInflater()
+                                .inflate(R.layout.profile_screen_user_compact, null);
                 profileCompactView.display(shownProfile);
                 profileCompactView.setPortfolioRequestListener(this);
                 return profileCompactView;
             case 1:
-                ProfileView profileView = (ProfileView) getActivity().getLayoutInflater().inflate(R.layout.profile_screen_user_detail, null);
+                ProfileView profileView = (ProfileView) getActivity().getLayoutInflater()
+                        .inflate(R.layout.profile_screen_user_detail, null);
                 profileView.display(shownProfile);
                 profileView.setPortfolioRequestListener(this);
                 return profileView;
@@ -267,54 +273,59 @@ public class TimelineFragment extends BasePurchaseManagerFragment
 
     private void pushPositionListFragment(OwnedPortfolioId ownedPortfolioId)
     {
-        Bundle args = new Bundle ();
-        args.putBundle(PositionListFragment.BUNDLE_KEY_SHOW_PORTFOLIO_ID_BUNDLE, ownedPortfolioId.getArgs());
+        Bundle args = new Bundle();
+        args.putBundle(PositionListFragment.BUNDLE_KEY_SHOW_PORTFOLIO_ID_BUNDLE,
+                ownedPortfolioId.getArgs());
         Navigator navigator = ((NavigatorActivity) getActivity()).getNavigator();
         navigator.pushFragment(PositionListFragment.class, args);
     }
 
     //<editor-fold desc="Milestone retrieved listeners">
-    private Milestone.OnCompleteListener userProfileRetrievedMilestoneListener = new Milestone.OnCompleteListener()
-    {
-        @Override public void onComplete(Milestone milestone)
-        {
-            UserProfileDTO cachedUserProfile = userProfileCache.get().get(shownUserBaseKey);
-            if (cachedUserProfile != null)
+    private Milestone.OnCompleteListener userProfileRetrievedMilestoneListener =
+            new Milestone.OnCompleteListener()
             {
-                linkWith(cachedUserProfile, true);
-            }
-        }
+                @Override public void onComplete(Milestone milestone)
+                {
+                    UserProfileDTO cachedUserProfile = userProfileCache.get().get(shownUserBaseKey);
+                    if (cachedUserProfile != null)
+                    {
+                        linkWith(cachedUserProfile, true);
+                    }
+                }
 
-        @Override public void onFailed(Milestone milestone, Throwable throwable)
-        {
-            THToast.show(getString(R.string.error_fetch_user_profile));
-        }
-    };
+                @Override public void onFailed(Milestone milestone, Throwable throwable)
+                {
+                    THToast.show(getString(R.string.error_fetch_user_profile));
+                }
+            };
 
-    private Milestone.OnCompleteListener portfolioCompactListRetrievedMilestoneListener = new Milestone.OnCompleteListener()
-    {
-        @Override public void onComplete(Milestone milestone)
-        {
-            OwnedPortfolioIdList cachedOwnedPortfolioIdList = portfolioCompactListCache.get().get(shownUserBaseKey);
-            if (cachedOwnedPortfolioIdList != null)
+    private Milestone.OnCompleteListener portfolioCompactListRetrievedMilestoneListener =
+            new Milestone.OnCompleteListener()
             {
-                linkWith(cachedOwnedPortfolioIdList, true);
-            }
-        }
+                @Override public void onComplete(Milestone milestone)
+                {
+                    OwnedPortfolioIdList cachedOwnedPortfolioIdList =
+                            portfolioCompactListCache.get().get(shownUserBaseKey);
+                    if (cachedOwnedPortfolioIdList != null)
+                    {
+                        linkWith(cachedOwnedPortfolioIdList, true);
+                    }
+                }
 
-        @Override public void onFailed(Milestone milestone, Throwable throwable)
-        {
-            // We do not need to inform the player here
-            THLog.e(TAG, "Error fetching the list of portfolio for user: " + shownUserBaseKey.key, throwable);
-        }
-    };
+                @Override public void onFailed(Milestone milestone, Throwable throwable)
+                {
+                    // We do not need to inform the player here
+                    THLog.e(TAG, "Error fetching the list of portfolio for user: "
+                            + shownUserBaseKey.key, throwable);
+                }
+            };
 
     //</editor-fold>
 
     //<editor-fold desc="BaseFragment.TabBarVisibilityInformer">
     @Override public boolean isTabBarVisible()
     {
-        return true;
+        return false;
     }
     //</editor-fold>
 }
