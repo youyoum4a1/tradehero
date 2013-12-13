@@ -31,7 +31,7 @@ public class FreshQuoteHolder
     private final SecurityId securityId;
     private final long milliSecQuoteRefresh;
     private final long millisecQuoteCountdownPrecision;
-    private final List<WeakReference<FreshQuoteListener>> listeners; // TODO weak references?
+    private final List<WeakReference<FreshQuoteListener>> listeners;
     private CountDownTimer nextQuoteCountDownTimer;
     private boolean refreshing = false;
     public String identifier = "noId";

@@ -1,6 +1,5 @@
 package com.tradehero.th.fragments.trade;
 
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,12 +11,14 @@ import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.position.SecurityPositionDetailDTO;
+import com.tradehero.th.api.position.SecurityPositionDetailDTOUtil;
 import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.api.users.UserProfileDTOUtil;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.persistence.position.SecurityPositionDetailCache;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
@@ -201,26 +202,12 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
 
     public Integer getMaxPurchasableShares()
     {
-        return getMaxPurchasableShares(this.quoteDTO, userProfileDTO);
-    }
-
-    public static Integer getMaxPurchasableShares(QuoteDTO quoteDTO, UserProfileDTO userProfileDTO)
-    {
-        if (quoteDTO == null || quoteDTO.ask == null || quoteDTO.ask == 0 || quoteDTO.toUSDRate == null || quoteDTO.toUSDRate == 0 ||
-                userProfileDTO == null || userProfileDTO.portfolio == null)
-        {
-            return null;
-        }
-        return (int) Math.floor(userProfileDTO.portfolio.cashBalance / (quoteDTO.ask * quoteDTO.toUSDRate));
+        return UserProfileDTOUtil.getMaxPurchasableShares(userProfileDTO, this.quoteDTO);
     }
 
     public Integer getMaxSellableShares()
     {
-        if (this.securityPositionDetailDTO != null && this.securityPositionDetailDTO.positions != null)
-        {
-            return this.securityPositionDetailDTO.positions.getMaxSellableShares(getApplicablePortfolioId().getPortfolioId());
-        }
-        return null;
+        return SecurityPositionDetailDTOUtil.getMaxSellableShares(securityPositionDetailDTO, getApplicablePortfolioId().getPortfolioId());
     }
 
     protected void requestPositionDetail()
@@ -229,7 +216,7 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
         {
             fetchPositionDetailTask.cancel(false);
         }
-        securityPositionDetailCacheListener = createSecurityPositionDetailListener(this.securityId); // We need to keep a strong reference because the cache does not
+        securityPositionDetailCacheListener = new AbstractBuySellSecurityPositionCacheListener(this.securityId); // We need to keep a strong reference because the cache does not
         fetchPositionDetailTask = securityPositionDetailCache.get().getOrFetch(this.securityId, false, securityPositionDetailCacheListener);
         fetchPositionDetailTask.execute();
     }
@@ -241,7 +228,7 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
             fetchUserProfileTask.cancel(false);
         }
         UserBaseKey baseKey = currentUserBaseKeyHolder.getCurrentUserBaseKey();
-        userProfileCacheListener = createUserProfileListener(baseKey); // We need to keep a strong reference because the cache does not
+        userProfileCacheListener = new AbstractBuySellUserProfileCacheListener(baseKey); // We need to keep a strong reference because the cache does not
         fetchUserProfileTask = userProfileCache.get().getOrFetch(baseKey, false, userProfileCacheListener);
         fetchUserProfileTask.execute();
     }
@@ -308,9 +295,9 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
                 securityId.securitySymbol,
                 securityCompactDTO.currencyDisplay,
                 quoteDTO.bid,
-                "US$", // TODO Have this currency taken from somewhere
-                10f, // TODO Have this value taken from somewhere
-                "US$", // TODO Have this currency taken from somewhere
+                SecurityUtils.DEFAULT_TRANSACTION_CURRENCY_DISPLAY, // TODO Have this currency taken from somewhere
+                SecurityUtils.DEFAULT_TRANSACTION_COST, // TODO Have this value taken from somewhere
+                SecurityUtils.DEFAULT_VIRTUAL_CASH_CURRENCY_DISPLAY, // TODO Have this currency taken from somewhere
                 getTotalCostForSell());
     }
 
@@ -437,46 +424,6 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
         }
     }
 
-    private DTOCache.Listener<UserBaseKey, UserProfileDTO> createUserProfileListener(final UserBaseKey userBaseKey)
-    {
-        return new DTOCache.Listener<UserBaseKey, UserProfileDTO>()
-        {
-            @Override public void onDTOReceived(UserBaseKey key, UserProfileDTO value)
-            {
-                if (key.equals(userBaseKey))
-                {
-                    linkWith(value, true);
-                }
-            }
-
-            @Override public void onErrorThrown(UserBaseKey key, Throwable error)
-            {
-                THToast.show(getString(R.string.error_fetch_your_user_profile));
-                THLog.e(TAG, "Error fetching the user profile " + key, error);
-            }
-        };
-    }
-
-    private DTOCache.Listener<SecurityId, SecurityPositionDetailDTO> createSecurityPositionDetailListener(final SecurityId securityId)
-    {
-        return new DTOCache.Listener<SecurityId, SecurityPositionDetailDTO>()
-        {
-            @Override public void onDTOReceived(SecurityId key, SecurityPositionDetailDTO value)
-            {
-                if (key.equals(securityId))
-                {
-                    linkWith(value, true);
-                }
-            }
-
-            @Override public void onErrorThrown(SecurityId key, Throwable error)
-            {
-                THToast.show(getString(R.string.error_fetch_detailed_security_info));
-                THLog.e(TAG, "Error fetching the security position detail " + key, error);
-            }
-        };
-    }
-
     abstract protected FreshQuoteHolder.FreshQuoteListener createFreshQuoteListener();
 
     abstract protected class AbstractBuySellFreshQuoteListener implements FreshQuoteHolder.FreshQuoteListener
@@ -491,6 +438,54 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
         @Override public void onFreshQuote(QuoteDTO quoteDTO)
         {
             linkWith(quoteDTO, true);
+        }
+    }
+
+    private class AbstractBuySellSecurityPositionCacheListener implements DTOCache.Listener<SecurityId, SecurityPositionDetailDTO>
+    {
+        private final SecurityId securityId;
+
+        public AbstractBuySellSecurityPositionCacheListener(final SecurityId securityId)
+        {
+            this.securityId = securityId;
+        }
+
+        @Override public void onDTOReceived(final SecurityId key, final SecurityPositionDetailDTO value)
+        {
+            if (key.equals(this.securityId))
+            {
+                linkWith(value, true);
+            }
+        }
+
+        @Override public void onErrorThrown(SecurityId key, Throwable error)
+        {
+            THToast.show(R.string.error_fetch_detailed_security_info);
+            THLog.e(TAG, "Error fetching the security position detail " + key, error);
+        }
+    }
+
+    private class AbstractBuySellUserProfileCacheListener implements DTOCache.Listener<UserBaseKey, UserProfileDTO>
+    {
+        private final UserBaseKey userBaseKey;
+
+        public AbstractBuySellUserProfileCacheListener(final UserBaseKey userBaseKey)
+        {
+            this.userBaseKey = userBaseKey;
+        }
+
+        @Override public void onDTOReceived(final UserBaseKey key, final UserProfileDTO value)
+        {
+            if (key.equals(userBaseKey))
+            {
+                linkWith(value, true);
+            }
+        }
+
+        @Override public void onErrorThrown(UserBaseKey key, Throwable error)
+        {
+            THToast.show(R.string.error_fetch_your_user_profile);
+            THLog.e(TAG, "Error fetching the user profile " + key, error);
         }
     }
 }
