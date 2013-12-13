@@ -74,7 +74,7 @@ public class SearchSecurityListType extends SecurityListType
     {
         return "SearchSecurityListType{" +
                 "searchString='" + searchString + "'" +
-                ", page=" + page +
+                ", page=" + getPage() +
                 ", perPage=" + perPage +
                 '}';
     }

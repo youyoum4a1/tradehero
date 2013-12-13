@@ -711,11 +711,11 @@ public class SearchStockPeopleFragment extends DashboardFragment
     {
         @Override public void onDTOReceived(SecurityListType key, SecurityIdList value)
         {
-            if (lastLoadedPage + 1 != key.page)
+            if (lastLoadedPage + 1 != key.getPage())
             {
-                throw new IllegalStateException("We just got a wrong page; last: " + lastLoadedPage + ", received page: " + key.page);
+                throw new IllegalStateException("We just got a wrong page; last: " + lastLoadedPage + ", received page: " + key.getPage());
             }
-            lastLoadedPage = key.page;
+            lastLoadedPage = key.getPage();
             currentlyLoadingPage = FIRST_PAGE - 1;
             nearEndScrollListener.lowerFlag();
             if (value == null || value.size() == 0)

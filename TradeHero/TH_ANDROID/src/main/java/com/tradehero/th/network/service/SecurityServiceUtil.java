@@ -97,25 +97,25 @@ public class SecurityServiceUtil
     {
         if (key.exchange.equals(TrendingSecurityListType.ALL_EXCHANGES))
         {
-            if (key.page == null)
+            if (key.getPage() == null)
             {
                 return securityService.getTrendingSecurities();
             }
             else if (key.perPage == null)
             {
-                return securityService.getTrendingSecurities("", key.page);
+                return securityService.getTrendingSecurities("", key.getPage());
             }
-            return securityService.getTrendingSecurities("", key.page, key.perPage);
+            return securityService.getTrendingSecurities("", key.getPage(), key.perPage);
         }
-        else if (key.page == null)
+        else if (key.getPage() == null)
         {
             return securityService.getTrendingSecurities(key.exchange);
         }
         else if (key.perPage == null)
         {
-            return securityService.getTrendingSecurities(key.exchange, key.page);
+            return securityService.getTrendingSecurities(key.exchange, key.getPage());
         }
-        return securityService.getTrendingSecurities(key.exchange, key.page, key.perPage);
+        return securityService.getTrendingSecurities(key.exchange, key.getPage(), key.perPage);
     }
 
     public static void getTrendingSecuritiesBasic(SecurityService securityService, TrendingBasicSecurityListType key,
@@ -123,30 +123,30 @@ public class SecurityServiceUtil
     {
         if (key.exchange.equals(TrendingSecurityListType.ALL_EXCHANGES))
         {
-            if (key.page == null)
+            if (key.getPage() == null)
             {
                 securityService.getTrendingSecurities(callback);
             }
             else if (key.perPage == null)
             {
-                securityService.getTrendingSecurities("", key.page, callback);
+                securityService.getTrendingSecurities("", key.getPage(), callback);
             }
             else
             {
-                securityService.getTrendingSecurities("", key.page, key.perPage, callback);
+                securityService.getTrendingSecurities("", key.getPage(), key.perPage, callback);
             }
         }
-        else if (key.page == null)
+        else if (key.getPage() == null)
         {
             securityService.getTrendingSecurities(key.exchange, callback);
         }
         else if (key.perPage == null)
         {
-            securityService.getTrendingSecurities(key.exchange, key.page, callback);
+            securityService.getTrendingSecurities(key.exchange, key.getPage(), callback);
         }
         else
         {
-            securityService.getTrendingSecurities(key.exchange, key.page, key.perPage, callback);
+            securityService.getTrendingSecurities(key.exchange, key.getPage(), key.perPage, callback);
         }
     }
 
@@ -155,25 +155,25 @@ public class SecurityServiceUtil
     {
         if (key.exchange.equals(TrendingSecurityListType.ALL_EXCHANGES))
         {
-            if (key.page == null)
+            if (key.getPage() == null)
             {
                 return securityService.getTrendingSecuritiesByPrice();
             }
             else if (key.perPage == null)
             {
-                return securityService.getTrendingSecuritiesByPrice("", key.page);
+                return securityService.getTrendingSecuritiesByPrice("", key.getPage());
             }
-            return securityService.getTrendingSecuritiesByPrice("", key.page, key.perPage);
+            return securityService.getTrendingSecuritiesByPrice("", key.getPage(), key.perPage);
         }
-        else if (key.page == null)
+        else if (key.getPage() == null)
         {
             return securityService.getTrendingSecuritiesByPrice(key.exchange);
         }
         else if (key.perPage == null)
         {
-            return securityService.getTrendingSecuritiesByPrice(key.exchange, key.page);
+            return securityService.getTrendingSecuritiesByPrice(key.exchange, key.getPage());
         }
-        return securityService.getTrendingSecuritiesByPrice(key.exchange, key.page, key.perPage);
+        return securityService.getTrendingSecuritiesByPrice(key.exchange, key.getPage(), key.perPage);
     }
 
     public static void getTrendingSecuritiesByPrice(SecurityService securityService, TrendingPriceSecurityListType key,
@@ -181,30 +181,30 @@ public class SecurityServiceUtil
     {
         if (key.exchange.equals(TrendingSecurityListType.ALL_EXCHANGES))
         {
-            if (key.page == null)
+            if (key.getPage() == null)
             {
                 securityService.getTrendingSecuritiesByPrice(callback);
             }
             else if (key.perPage == null)
             {
-                securityService.getTrendingSecuritiesByPrice("", key.page, callback);
+                securityService.getTrendingSecuritiesByPrice("", key.getPage(), callback);
             }
             else
             {
-                securityService.getTrendingSecuritiesByPrice("", key.page, key.perPage, callback);
+                securityService.getTrendingSecuritiesByPrice("", key.getPage(), key.perPage, callback);
             }
         }
-        else if (key.page == null)
+        else if (key.getPage() == null)
         {
             securityService.getTrendingSecuritiesByPrice(key.exchange, callback);
         }
         else if (key.perPage == null)
         {
-            securityService.getTrendingSecuritiesByPrice(key.exchange, key.page, callback);
+            securityService.getTrendingSecuritiesByPrice(key.exchange, key.getPage(), callback);
         }
         else
         {
-            securityService.getTrendingSecuritiesByPrice(key.exchange, key.page, key.perPage, callback);
+            securityService.getTrendingSecuritiesByPrice(key.exchange, key.getPage(), key.perPage, callback);
         }
     }
 
@@ -213,25 +213,25 @@ public class SecurityServiceUtil
     {
         if (key.exchange.equals(TrendingSecurityListType.ALL_EXCHANGES))
         {
-            if (key.page == null)
+            if (key.getPage() == null)
             {
                 return securityService.getTrendingSecuritiesByVolume();
             }
             else if (key.perPage == null)
             {
-                return securityService.getTrendingSecuritiesByVolume("", key.page);
+                return securityService.getTrendingSecuritiesByVolume("", key.getPage());
             }
-            return securityService.getTrendingSecuritiesByVolume("", key.page, key.perPage);
+            return securityService.getTrendingSecuritiesByVolume("", key.getPage(), key.perPage);
         }
-        else if (key.page == null)
+        else if (key.getPage() == null)
         {
             return securityService.getTrendingSecuritiesByVolume(key.exchange);
         }
         else if (key.perPage == null)
         {
-            return securityService.getTrendingSecuritiesByVolume(key.exchange, key.page);
+            return securityService.getTrendingSecuritiesByVolume(key.exchange, key.getPage());
         }
-        return securityService.getTrendingSecuritiesByVolume(key.exchange, key.page, key.perPage);
+        return securityService.getTrendingSecuritiesByVolume(key.exchange, key.getPage(), key.perPage);
     }
 
     public static void getTrendingSecuritiesByVolume(SecurityService securityService, TrendingVolumeSecurityListType key,
@@ -239,30 +239,30 @@ public class SecurityServiceUtil
     {
         if (key.exchange.equals(TrendingSecurityListType.ALL_EXCHANGES))
         {
-            if (key.page == null)
+            if (key.getPage() == null)
             {
                 securityService.getTrendingSecuritiesByVolume(callback);
             }
             else if (key.perPage == null)
             {
-                securityService.getTrendingSecuritiesByVolume("", key.page, callback);
+                securityService.getTrendingSecuritiesByVolume("", key.getPage(), callback);
             }
             else
             {
-                securityService.getTrendingSecuritiesByVolume("", key.page, key.perPage, callback);
+                securityService.getTrendingSecuritiesByVolume("", key.getPage(), key.perPage, callback);
             }
         }
-        else if (key.page == null)
+        else if (key.getPage() == null)
         {
             securityService.getTrendingSecuritiesByVolume(key.exchange, callback);
         }
         else if (key.perPage == null)
         {
-            securityService.getTrendingSecuritiesByVolume(key.exchange, key.page, callback);
+            securityService.getTrendingSecuritiesByVolume(key.exchange, key.getPage(), callback);
         }
         else
         {
-            securityService.getTrendingSecuritiesByVolume(key.exchange, key.page, key.perPage, callback);
+            securityService.getTrendingSecuritiesByVolume(key.exchange, key.getPage(), key.perPage, callback);
         }
     }
 
@@ -271,25 +271,25 @@ public class SecurityServiceUtil
     {
         if (key.exchange.equals(TrendingSecurityListType.ALL_EXCHANGES))
         {
-            if (key.page == null)
+            if (key.getPage() == null)
             {
                 return securityService.getTrendingSecuritiesAllInExchange();
             }
             else if (key.perPage == null)
             {
-                return securityService.getTrendingSecuritiesAllInExchange("", key.page);
+                return securityService.getTrendingSecuritiesAllInExchange("", key.getPage());
             }
-            return securityService.getTrendingSecuritiesAllInExchange("", key.page, key.perPage);
+            return securityService.getTrendingSecuritiesAllInExchange("", key.getPage(), key.perPage);
         }
-        else if (key.page == null)
+        else if (key.getPage() == null)
         {
             return securityService.getTrendingSecuritiesAllInExchange(key.exchange);
         }
         else if (key.perPage == null)
         {
-            return securityService.getTrendingSecuritiesAllInExchange(key.exchange, key.page);
+            return securityService.getTrendingSecuritiesAllInExchange(key.exchange, key.getPage());
         }
-        return securityService.getTrendingSecuritiesAllInExchange(key.exchange, key.page, key.perPage);
+        return securityService.getTrendingSecuritiesAllInExchange(key.exchange, key.getPage(), key.perPage);
     }
 
     public static void getTrendingSecuritiesAllInExchange(SecurityService securityService, TrendingAllSecurityListType key,
@@ -297,61 +297,61 @@ public class SecurityServiceUtil
     {
         if (key.exchange.equals(TrendingSecurityListType.ALL_EXCHANGES))
         {
-            if (key.page == null)
+            if (key.getPage() == null)
             {
                 securityService.getTrendingSecuritiesAllInExchange(callback);
             }
             else if (key.perPage == null)
             {
-                securityService.getTrendingSecuritiesAllInExchange("", key.page, callback);
+                securityService.getTrendingSecuritiesAllInExchange("", key.getPage(), callback);
             }
             else
             {
-                securityService.getTrendingSecuritiesAllInExchange("", key.page, key.perPage, callback);
+                securityService.getTrendingSecuritiesAllInExchange("", key.getPage(), key.perPage, callback);
             }
         }
-        else if (key.page == null)
+        else if (key.getPage() == null)
         {
             securityService.getTrendingSecuritiesAllInExchange(key.exchange, callback);
         }
         else if (key.perPage == null)
         {
-            securityService.getTrendingSecuritiesAllInExchange(key.exchange, key.page, callback);
+            securityService.getTrendingSecuritiesAllInExchange(key.exchange, key.getPage(), callback);
         }
         else
         {
-            securityService.getTrendingSecuritiesAllInExchange(key.exchange, key.page, key.perPage, callback);
+            securityService.getTrendingSecuritiesAllInExchange(key.exchange, key.getPage(), key.perPage, callback);
         }
     }
 
     public static List<SecurityCompactDTO> searchSecurities(SecurityService securityService, SearchSecurityListType key)
             throws RetrofitError
     {
-        if (key.page == null)
+        if (key.getPage() == null)
         {
             return securityService.searchSecurities(key.searchString);
         }
         else if (key.perPage == null)
         {
-            return securityService.searchSecurities(key.searchString, key.page);
+            return securityService.searchSecurities(key.searchString, key.getPage());
         }
-        return securityService.searchSecurities(key.searchString, key.page, key.perPage);
+        return securityService.searchSecurities(key.searchString, key.getPage(), key.perPage);
     }
 
     public static void searchSecurities(SecurityService securityService, SearchSecurityListType key,
             Callback<List<SecurityCompactDTO>> callback)
     {
-        if (key.page == null)
+        if (key.getPage() == null)
         {
             securityService.searchSecurities(key.searchString, callback);
         }
         else if (key.perPage == null)
         {
-            securityService.searchSecurities(key.searchString, key.page, callback);
+            securityService.searchSecurities(key.searchString, key.getPage(), callback);
         }
         else
         {
-            securityService.searchSecurities(key.searchString, key.page, key.perPage, callback);
+            securityService.searchSecurities(key.searchString, key.getPage(), key.perPage, callback);
         }
     }
 }

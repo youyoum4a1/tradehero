@@ -65,7 +65,7 @@ public class TrendingAllSecurityListType extends TrendingSecurityListType
     {
         return "TrendingAllSecurityListType{" +
                 "exchange='" + exchange + "'" +
-                ", page=" + page +
+                ", page=" + getPage() +
                 ", perPage=" + perPage +
                 '}';
     }

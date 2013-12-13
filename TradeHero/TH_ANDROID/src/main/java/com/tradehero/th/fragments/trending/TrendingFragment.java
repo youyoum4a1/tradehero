@@ -345,11 +345,11 @@ public class TrendingFragment extends DashboardFragment
         @Override public void onDTOReceived(SecurityListType key, SecurityIdList value)
         {
             THLog.d(TAG, "Received key " + key);
-            if (lastLoadedPage + 1 != key.page)
+            if (lastLoadedPage + 1 != key.getPage())
             {
-                throw new IllegalStateException("We just got a wrong page; last: " + lastLoadedPage + ", received page: " + key.page);
+                throw new IllegalStateException("We just got a wrong page; last: " + lastLoadedPage + ", received page: " + key.getPage());
             }
-            lastLoadedPage = key.page;
+            lastLoadedPage = key.getPage();
             currentlyLoadingPage = FIRST_PAGE - 1;
             gridScrollListener.lowerFlag();
             if (value == null || value.size() == 0)
