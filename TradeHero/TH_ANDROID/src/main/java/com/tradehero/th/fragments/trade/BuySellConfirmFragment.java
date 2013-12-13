@@ -507,16 +507,6 @@ public class BuySellConfirmFragment extends AbstractBuySellFragment
         // TODO other visual cue
     }
 
-    //<editor-fold desc="FreshQuoteHolder.FreshQuoteListener">
-    @Override public void onMilliSecToRefreshQuote(long milliSecToRefresh)
-    {
-        if (mQuoteRefreshProgressBar != null)
-        {
-            mQuoteRefreshProgressBar.setProgress((int) (milliSecToRefresh / MILLISEC_QUOTE_COUNTDOWN_PRECISION));
-        }
-    }
-    //</editor-fold>
-
     private TransactionFormDTO getBuySellOrder(boolean isBuy)
     {
         if (quoteDTO == null)
@@ -613,4 +603,20 @@ public class BuySellConfirmFragment extends AbstractBuySellFragment
         return false;
     }
     //</editor-fold>
+
+    @Override protected FreshQuoteHolder.FreshQuoteListener createFreshQuoteListener()
+    {
+        return new BuySellConfirmationFreshQuoteListener();
+    }
+
+    protected class BuySellConfirmationFreshQuoteListener extends AbstractBuySellFreshQuoteListener
+    {
+        @Override public void onMilliSecToRefreshQuote(long milliSecToRefresh)
+        {
+            if (mQuoteRefreshProgressBar != null)
+            {
+                mQuoteRefreshProgressBar.setProgress((int) (milliSecToRefresh / MILLISEC_QUOTE_COUNTDOWN_PRECISION));
+            }
+        }
+    }
 }

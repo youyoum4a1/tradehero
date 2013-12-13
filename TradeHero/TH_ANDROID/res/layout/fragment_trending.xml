@@ -28,7 +28,7 @@
       >
   </com.tradehero.th.fragments.trending.TrendingSecurityGridView>
 
-  <android.support.v4.view.ViewPager
+  <com.tradehero.th.fragments.trending.TrendingFilterViewPager
       android:id="@+id/trending_filter_pager"
       android:layout_width="match_parent"
       android:layout_height="@dimen/trending_filter_view_pager_height"

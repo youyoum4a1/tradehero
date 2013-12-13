@@ -14,43 +14,43 @@ public interface PositionService
     @GET("/users/{userId}/portfolios/{portfolioId}/positions")
     void getPositions(
             @Path("userId") int userId,
-            @Path("portfolioId")int portfolioId,
+            @Path("portfolioId") int portfolioId,
             Callback<GetPositionsDTO> callback);
 
     @GET("/users/{userId}/portfolios/{portfolioId}/positions")
     GetPositionsDTO getPositions(
             @Path("userId") int userId,
-            @Path("portfolioId")int portfolioId)
+            @Path("portfolioId") int portfolioId)
         throws RetrofitError;
 
     @GET("/users/{userId}/portfolios/{portfolioId}/positions")
     void getPositions(
             @Path("userId") int userId,
-            @Path("portfolioId")int portfolioId,
-            @Query("pageNumber") Integer pageNumber,
+            @Path("portfolioId") int portfolioId,
+            @Query("pageNumber") int pageNumber,
             Callback<GetPositionsDTO> callback);
 
     @GET("/users/{userId}/portfolios/{portfolioId}/positions")
     GetPositionsDTO getPositions(
             @Path("userId") int userId,
-            @Path("portfolioId")int portfolioId,
-            @Query("pageNumber") Integer pageNumber)
+            @Path("portfolioId") int portfolioId,
+            @Query("pageNumber") int pageNumber)
         throws RetrofitError;
 
     @GET("/users/{userId}/portfolios/{portfolioId}/positions")
     void getPositions(
             @Path("userId") int userId,
-            @Path("portfolioId")int portfolioId,
-            @Query("pageNumber") Integer pageNumber,
-            @Query("perPage") Integer perPage,
+            @Path("portfolioId") int portfolioId,
+            @Query("pageNumber") int pageNumber,
+            @Query("perPage") int perPage,
             Callback<GetPositionsDTO> callback);
 
     @GET("/users/{userId}/portfolios/{portfolioId}/positions")
     GetPositionsDTO getPositions(
             @Path("userId") int userId,
-            @Path("portfolioId")int portfolioId,
-            @Query("pageNumber") Integer pageNumber,
-            @Query("perPage") Integer perPage)
+            @Path("portfolioId") int portfolioId,
+            @Query("pageNumber") int pageNumber,
+            @Query("perPage") int perPage)
         throws RetrofitError;
     //</editor-fold>
 }

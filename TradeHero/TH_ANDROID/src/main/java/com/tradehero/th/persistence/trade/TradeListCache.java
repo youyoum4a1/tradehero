@@ -8,6 +8,7 @@ import com.tradehero.th.api.trade.OwnedTradeIdList;
 import com.tradehero.th.api.trade.TradeDTO;
 import com.tradehero.th.network.BasicRetrofitErrorHandler;
 import com.tradehero.th.network.service.TradeService;
+import com.tradehero.th.network.service.TradeServiceUtil;
 import dagger.Lazy;
 import retrofit.RetrofitError;
 
@@ -35,7 +36,7 @@ import java.util.List;
 
     @Override protected OwnedTradeIdList fetch(OwnedPositionId key) throws Throwable
     {
-        return putInternal(key, tradeService.get().getTrades(key.userId, key.portfolioId, key.positionId));
+        return putInternal(key, TradeServiceUtil.getTrades(tradeService.get(), key));
     }
 
     protected OwnedTradeIdList putInternal(OwnedPositionId key, List<TradeDTO> fleshedValues)

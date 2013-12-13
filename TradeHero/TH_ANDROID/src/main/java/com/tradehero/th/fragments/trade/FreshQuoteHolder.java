@@ -6,6 +6,7 @@ import com.tradehero.th.api.SignatureContainer;
 import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.network.service.QuoteService;
+import com.tradehero.th.network.service.QuoteServiceUtil;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
 import java.io.IOException;
@@ -30,7 +31,7 @@ public class FreshQuoteHolder
     private final SecurityId securityId;
     private final long milliSecQuoteRefresh;
     private final long millisecQuoteCountdownPrecision;
-    private final List<WeakReference<FreshQuoteListener>> listeners; // TODO weak references?
+    private final List<WeakReference<FreshQuoteListener>> listeners;
     private CountDownTimer nextQuoteCountDownTimer;
     private boolean refreshing = false;
     public String identifier = "noId";
@@ -166,7 +167,7 @@ public class FreshQuoteHolder
         {
             refreshing = true;
             notifyListenersRefreshing();
-            quoteService.get().getQuote(securityId.exchange, securityId.securitySymbol, createCallback());
+            QuoteServiceUtil.getQuote(quoteService.get(), securityId, createCallback());
         }
     }
 

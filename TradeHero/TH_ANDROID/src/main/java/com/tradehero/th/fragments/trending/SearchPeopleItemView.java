@@ -20,20 +20,24 @@ import com.tradehero.common.utils.THLog;
 import com.tradehero.common.widget.ImageUrlView;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
+import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserSearchResultDTO;
+import com.tradehero.th.persistence.user.UserSearchResultCache;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.DateUtils;
+import dagger.Lazy;
 import java.util.concurrent.Future;
 import javax.inject.Inject;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 9/17/13 Time: 3:39 PM To change this template use File | Settings | File Templates. */
-public class SearchPeopleItemView extends FrameLayout implements DTOView<UserSearchResultDTO>
+public class SearchPeopleItemView extends FrameLayout implements DTOView<UserBaseKey>
 {
     private static final String TAG = SearchPeopleItemView.class.getSimpleName();
     private static Transformation roundedShapeTransformation;
     private static Transformation backgroundTransformation;
 
     @Inject protected Picasso mPicasso;
+    @Inject protected Lazy<UserSearchResultCache> userSearchResultCache;
     private TextView userName;
     private TextView profitIndicator;
     private TextView stockPercentage;
@@ -43,6 +47,7 @@ public class SearchPeopleItemView extends FrameLayout implements DTOView<UserSea
     private ImageUrlView peopleBgImage;
     private int defaultDrawable = R.drawable.superman_facebook;
 
+    private UserBaseKey userKey;
     private UserSearchResultDTO userDTO;
     private boolean mAttachedToWindow;
     private int mVisibility;
@@ -123,7 +128,7 @@ public class SearchPeopleItemView extends FrameLayout implements DTOView<UserSea
     {
         THLog.i(TAG, "Detached from Window");
         mAttachedToWindow = false;
-        this.userDTO = null;
+        this.userKey = null;
         super.onDetachedFromWindow();
     }
 
@@ -134,58 +139,94 @@ public class SearchPeopleItemView extends FrameLayout implements DTOView<UserSea
                 (userDTO.userPicture.length() > 0);
     }
 
-    @Override public void display(UserSearchResultDTO user)
+    @Override public void display(UserBaseKey user)
     {
-        this.userDTO = user;
-        userName.setText(user.userthDisplayName);
+        this.userKey = user;
+        display(userSearchResultCache.get().get(this.userKey));
+    }
 
-        if (user.userMarkingAsOfUtc != null)
+    public void display(UserSearchResultDTO userSearchResultDTO)
+    {
+        this.userDTO = userSearchResultDTO;
+
+        if (userSearchResultDTO == null)
         {
-            date.setText(DateUtils.getFormattedUtcDate(user.userMarkingAsOfUtc));
-            date.setTextColor(Color.BLACK);
-        }
-        else
-        {
-            date.setText("N/A");
-            date.setTextColor(Color.GRAY);
+            return;
         }
 
-        if (user.userRoiSinceInception != null)
+        if (userName != null)
         {
-            double roi = user.userRoiSinceInception.doubleValue();
+            userName.setText(userSearchResultDTO.userthDisplayName);
+        }
+
+        if (date != null)
+        {
+            if (userSearchResultDTO.userMarkingAsOfUtc != null)
+            {
+                date.setText(DateUtils.getFormattedUtcDate(userSearchResultDTO.userMarkingAsOfUtc));
+                date.setTextColor(Color.BLACK);
+            }
+            else
+            {
+                date.setText(R.string.na);
+                date.setTextColor(Color.GRAY);
+            }
+        }
+
+        int profitIndicatorResId = 0;
+        int profitIndicatorVisibility = View.GONE;
+        int profitIndicatorColor = Color.RED;
+        String stockPercentageText;
+        int stockPercentageColor = Color.RED;
+        if (userSearchResultDTO.userRoiSinceInception != null)
+        {
+            double roi = userSearchResultDTO.userRoiSinceInception;
             if (!Double.isNaN(roi))
             {
-                profitIndicator.setVisibility(View.VISIBLE);
+                profitIndicatorVisibility = View.VISIBLE;
                 roi = roi * 100;
 
                 if (roi >= 1)
                 {
-                    profitIndicator.setText(getContext().getString(R.string.positive_prefix));
-                    profitIndicator.setTextColor(Color.GREEN);
-                    stockPercentage.setText(String.format("%.2f", roi) + "%");
-                    stockPercentage.setTextColor(Color.GREEN);
+                    profitIndicatorResId = R.string.positive_prefix;
+                    profitIndicatorColor = Color.GREEN;
+                    stockPercentageText = String.format("%.2f", roi) + "%";
+                    stockPercentageColor = Color.GREEN;
                 }
                 else
                 {
-                    profitIndicator.setText(getContext().getString(R.string.negative_prefix));
-                    profitIndicator.setTextColor(Color.RED);
+                    profitIndicatorResId = R.string.negative_prefix;
                     roi = Math.abs(roi);
-                    stockPercentage.setText(String.format("%.2f", roi) + "%");
-                    stockPercentage.setTextColor(Color.RED);
+                    stockPercentageText = String.format("%.2f", roi) + "%";
                 }
             }
             else
             {
-                profitIndicator.setVisibility(View.GONE);
-                stockPercentage.setText("N/A");
-                stockPercentage.setTextColor(Color.RED);
+                stockPercentageText = getResources().getString(R.string.na);
             }
         }
         else
         {
-            profitIndicator.setVisibility(View.GONE);
-            stockPercentage.setText("N/A");
-            stockPercentage.setTextColor(Color.RED);
+            stockPercentageText = getResources().getString(R.string.na);
+        }
+
+        if (profitIndicator != null)
+        {
+            if (profitIndicatorResId != 0)
+            {
+                profitIndicator.setText(profitIndicatorResId);
+            }
+            else
+            {
+                profitIndicator.setText("");
+            }
+            profitIndicator.setVisibility(profitIndicatorVisibility);
+            profitIndicator.setTextColor(profitIndicatorColor);
+        }
+        if (stockPercentage != null)
+        {
+            stockPercentage.setText(stockPercentageText);
+            stockPercentage.setTextColor(stockPercentageColor);
         }
 
         conditionalLoadImages();

@@ -10,7 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
@@ -23,6 +22,7 @@ import com.tradehero.common.adapter.SpinnerIconAdapter;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
+import com.tradehero.common.widget.FlagNearEndScrollListener;
 import com.tradehero.th.R;
 import com.tradehero.th.api.security.SearchSecurityListType;
 import com.tradehero.th.api.security.SecurityCompactDTO;
@@ -30,19 +30,18 @@ import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.SecurityIdList;
 import com.tradehero.th.api.security.SecurityListType;
 import com.tradehero.th.api.users.SearchUserListType;
+import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserBaseKeyList;
 import com.tradehero.th.api.users.UserListType;
 import com.tradehero.th.api.users.UserSearchResultDTO;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.fragments.trade.BuySellFragment;
-import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.persistence.security.SecurityCompactListCache;
 import com.tradehero.th.persistence.user.UserBaseKeyListCache;
 import com.tradehero.th.persistence.user.UserSearchResultCache;
 import dagger.Lazy;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -50,7 +49,6 @@ import javax.inject.Inject;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 9/18/13 Time: 12:09 PM To change this template use File | Settings | File Templates. */
 public class SearchStockPeopleFragment extends DashboardFragment
-        implements AdapterView.OnItemSelectedListener, TextWatcher
 {
     public final static String BUNDLE_KEY_SEARCH_STRING = SearchStockPeopleFragment.class.getName() + ".searchString";
     public final static String BUNDLE_KEY_SEARCH_TYPE = SearchStockPeopleFragment.class.getName() + ".searchType";
@@ -58,44 +56,44 @@ public class SearchStockPeopleFragment extends DashboardFragment
     public final static String BUNDLE_KEY_PER_PAGE = SearchStockPeopleFragment.class.getName() + ".perPage";
     private final static String TAG = SearchStockPeopleFragment.class.getSimpleName();
 
-    public final static int DEFAULT_PAGE = 1;
+    public final static int FIRST_PAGE = 1;
     public final static int DEFAULT_PER_PAGE = 15;
     public final static long DELAY_REQUEST_DATA_MILLI_SEC = 1000;
 
     private TextView mNothingYet;
     private ListView mSearchStockListView;
     private ListView mSearchPeopleListView;
+    private FlagNearEndScrollListener nearEndScrollListener;
     private ProgressBar mProgressSpinner;
 
     private CharSequence[] dropDownTexts;
     private Drawable[] dropDownIcons;
     private Drawable[] spinnerIcons;
     private View actionBar;
-    private ImageButton mBackBtn;
     private SpinnerIconAdapter mSearchTypeSpinnerAdapter;
     private Spinner mSearchTypeSpinner;
     private TrendingSearchType mSearchType = TrendingSearchType.STOCKS;
     private EditText mSearchTextField;
     private String mSearchText;
+    private SearchTextWatcher mSearchTextWatcher;
 
     private Timer requestDataTimer;
     private boolean isQuerying;
 
     @Inject Lazy<SecurityCompactListCache> securityCompactListCache;
-    @Inject Lazy<SecurityCompactCache> securityCompactCache;
-    private DTOCache.Listener<SecurityListType, SecurityIdList> securitySearchListener;
+    private SecurityIdListCacheListener securityIdListCacheListener;
     private DTOCache.GetOrFetchTask<SecurityIdList> securitySearchTask;
-    private List<SecurityCompactDTO> securityList;
-    private SecurityItemViewAdapterArray securityItemViewAdapter;
+    private List<SecurityId> securityIds;
+    private SecurityItemViewAdapter securityItemViewAdapter;
 
     @Inject Lazy<UserBaseKeyListCache> userBaseKeyListCache;
-    @Inject Lazy<UserSearchResultCache> userSearchResultCache;
-    private DTOCache.Listener<UserListType, UserBaseKeyList>  peopleSearchListener;
+    private PeopleListCacheListener peopleListCacheListener;
     private DTOCache.GetOrFetchTask<UserBaseKeyList> peopleSearchTask;
-    private List<UserSearchResultDTO> userDTOList;
+    private List<UserBaseKey> userBaseKeys;
     private PeopleItemViewAdapter peopleItemViewAdapter;
 
-    private int page = DEFAULT_PAGE;
+    private int currentlyLoadingPage;
+    private int lastLoadedPage;
     private int perPage = DEFAULT_PER_PAGE;
 
     @Override public void onAttach(Activity activity)
@@ -107,11 +105,11 @@ public class SearchStockPeopleFragment extends DashboardFragment
             dropDownTexts = new CharSequence[TrendingSearchType.values().length];
             dropDownIcons = new Drawable[TrendingSearchType.values().length];
             spinnerIcons = new Drawable[TrendingSearchType.values().length];
-            for(TrendingSearchType searchType: TrendingSearchType.values())
+            for (TrendingSearchType searchType: TrendingSearchType.values())
             {
-                dropDownTexts[searchType.getValue()] = getString(searchType.getSearchStringResId());
-                dropDownIcons[searchType.getValue()] = getResources().getDrawable(searchType.getSearchDropDownDrawableResId());
-                spinnerIcons[searchType.getValue()] = getResources().getDrawable(searchType.getSearchDrawableResId());
+                dropDownTexts[searchType.value] = getString(searchType.searchStringResId);
+                dropDownIcons[searchType.value] = getResources().getDrawable(searchType.searchDropDownDrawableResId);
+                spinnerIcons[searchType.value] = getResources().getDrawable(searchType.searchDrawableResId);
             }
         }
     }
@@ -134,42 +132,28 @@ public class SearchStockPeopleFragment extends DashboardFragment
     {
         mNothingYet = (TextView) view.findViewById(R.id.search_stock_nothing_yet_view);
         mProgressSpinner = (ProgressBar) view.findViewById(R.id.progress_spinner);
+        nearEndScrollListener = new SearchFlagNearEndScrollListener();
 
-        if (securityItemViewAdapter == null)
-        {
-            securityItemViewAdapter = new SecurityItemViewAdapterArray(getActivity(), getActivity().getLayoutInflater(), R.layout.search_security_item);
-        }
+        securityItemViewAdapter = new SecurityItemViewAdapter(getActivity(), getActivity().getLayoutInflater(), R.layout.search_security_item);
         mSearchStockListView = (ListView) view.findViewById(R.id.trending_listview);
         if (mSearchStockListView != null)
         {
             mSearchStockListView.setAdapter(securityItemViewAdapter);
-            mSearchStockListView.setOnItemClickListener(new AdapterView.OnItemClickListener()
-            {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id)
-                {
-                    pushTradeFragmentIn((SecurityCompactDTO) parent.getItemAtPosition(position));
-                }
-            });
+            mSearchStockListView.setOnItemClickListener(new SearchStockOnItemClickListener());
+            mSearchStockListView.setOnScrollListener(nearEndScrollListener);
         }
 
-        if (peopleItemViewAdapter == null)
-        {
-            peopleItemViewAdapter = new PeopleItemViewAdapter(getActivity().getApplicationContext(), inflater, R.layout.search_people_item);
-        }
+        peopleItemViewAdapter = new PeopleItemViewAdapter(getActivity().getApplicationContext(), inflater, R.layout.search_people_item);
         mSearchPeopleListView = (ListView) view.findViewById(R.id.people_listview);
         if (mSearchPeopleListView != null)
         {
             mSearchPeopleListView.setAdapter(peopleItemViewAdapter);
-            mSearchPeopleListView.setOnItemClickListener(new AdapterView.OnItemClickListener()
-            {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id)
-                {
-                    pushUserFragmentIn((UserSearchResultDTO) parent.getItemAtPosition(position));
-                }
-            });
+            mSearchPeopleListView.setOnItemClickListener(new SearchPeopleOnItemClickListener());
+            mSearchPeopleListView.setOnScrollListener(nearEndScrollListener);
         }
+
+        securityIdListCacheListener = new SecurityIdListCacheListener();
+        peopleListCacheListener = new PeopleListCacheListener();
     }
 
     @Override public void onActivityCreated(Bundle savedInstanceState)
@@ -192,33 +176,30 @@ public class SearchStockPeopleFragment extends DashboardFragment
 
         MenuItem securitySearchElements = menu.findItem(R.id.security_search_menu_elements);
 
-        mSearchTypeSpinner = (Spinner) securitySearchElements.getActionView().findViewById(R.id.spinner);
-
-        if (mSearchTypeSpinnerAdapter == null)
-        {
-            mSearchTypeSpinnerAdapter = new SpinnerIconAdapter(
-                    getActivity(),
-                    R.layout.search_spinner_item,
-                    R.id.search_spinner_item_label,
-                    R.id.search_spinner_item_icon,
-                    R.id.search_spinner_item_icon,
-                    dropDownTexts,
-                    spinnerIcons,
-                    dropDownIcons);
-        }
+        mSearchTypeSpinnerAdapter = new SpinnerIconAdapter(
+                getActivity(),
+                R.layout.search_spinner_item,
+                R.id.search_spinner_item_label,
+                R.id.search_spinner_item_icon,
+                R.id.search_spinner_item_icon,
+                dropDownTexts,
+                spinnerIcons,
+                dropDownIcons);
         mSearchTypeSpinnerAdapter.setDropDownViewResource(R.layout.search_spinner_dropdown_item);
 
+        mSearchTypeSpinner = (Spinner) securitySearchElements.getActionView().findViewById(R.id.spinner);
         if (mSearchTypeSpinner != null)
         {
             mSearchTypeSpinner.setVisibility(View.VISIBLE);
             mSearchTypeSpinner.setAdapter(mSearchTypeSpinnerAdapter);
-            mSearchTypeSpinner.setOnItemSelectedListener(this);
+            mSearchTypeSpinner.setOnItemSelectedListener(new SearchTypeSpinnerOnItemClickListener());
         }
 
+        mSearchTextWatcher = new SearchTextWatcher();
         mSearchTextField = (EditText) securitySearchElements.getActionView().findViewById(R.id.search_field);
         if (mSearchTextField != null)
         {
-            mSearchTextField.addTextChangedListener(this);
+            mSearchTextField.addTextChangedListener(mSearchTextWatcher);
         }
 
         populateSearchActionBar();
@@ -231,12 +212,25 @@ public class SearchStockPeopleFragment extends DashboardFragment
         initialPopulateOnCreate();
     }
 
+    protected void startAnew()
+    {
+        this.lastLoadedPage = FIRST_PAGE - 1;
+        this.currentlyLoadingPage = FIRST_PAGE - 1;
+        this.securityIds = new ArrayList<>();
+        this.userBaseKeys = new ArrayList<>();
+        if (nearEndScrollListener != null)
+        {
+            nearEndScrollListener.lowerFlag();
+            nearEndScrollListener.activate();
+        }
+    }
+
     private void populateSearchActionBar()
     {
         THLog.d(TAG, "populateSearchActionBar " + mSearchType + " " + mSearchText);
         if (mSearchTypeSpinner != null && mSearchType != null)
         {
-            mSearchTypeSpinner.setSelection(mSearchType.getValue());
+            mSearchTypeSpinner.setSelection(mSearchType.value);
         }
         if (mSearchTextField != null)
         {
@@ -248,23 +242,25 @@ public class SearchStockPeopleFragment extends DashboardFragment
     {
         if (mSearchType == TrendingSearchType.STOCKS)
         {
-            if (securityList != null && securityList.size() > 0)
+            if (securityIds != null && securityIds.size() > 0)
             {
-                linkWith(securityList, true, (SecurityCompactDTO) null);
+                linkWith(securityIds, true, (SecurityId) null);
             }
             else
             {
+                startAnew();
                 requestData();
             }
         }
         else if (mSearchType == TrendingSearchType.PEOPLE)
         {
-            if (userDTOList != null && userDTOList.size() > 0)
+            if (userBaseKeys != null && userBaseKeys.size() > 0)
             {
-                linkWith(userDTOList, true, (UserSearchResultDTO) null);
+                linkWith(userBaseKeys, true, (UserBaseKey) null);
             }
             else
             {
+                startAnew();
                 requestData();
             }
         }
@@ -281,15 +277,17 @@ public class SearchStockPeopleFragment extends DashboardFragment
         if (mSearchTypeSpinner != null)
         {
             mSearchTypeSpinner.setAdapter(null);
+            mSearchTypeSpinner.setOnItemSelectedListener(null);
         }
-        if (mBackBtn != null)
-        {
-            mBackBtn.setOnClickListener(null);
-        }
+        mSearchTypeSpinner = null;
+        mSearchTypeSpinnerAdapter = null;
+
         if (mSearchTextField != null)
         {
-            mSearchTextField.removeTextChangedListener(this);
+            mSearchTextField.removeTextChangedListener(mSearchTextWatcher);
         }
+        mSearchTextField = null;
+        mSearchTextWatcher = null;
         super.onDestroyOptionsMenu();
     }
 
@@ -298,69 +296,40 @@ public class SearchStockPeopleFragment extends DashboardFragment
         if (mSearchStockListView != null)
         {
             mSearchStockListView.setOnItemClickListener(null);
+            mSearchStockListView.setOnScrollListener(null);
         }
+        securityItemViewAdapter = null;
+        mSearchStockListView = null; // To break the cycle link with the adapter
+
         if (mSearchPeopleListView != null)
         {
             mSearchPeopleListView.setOnItemClickListener(null);
+            mSearchPeopleListView.setOnScrollListener(null);
         }
+        peopleItemViewAdapter = null;
+        mSearchPeopleListView = null;
 
         cancelSearchTasks();
-        securitySearchListener = null;
-        peopleSearchListener = null;
+        securityIdListCacheListener = null;
+        peopleListCacheListener = null;
 
-        mSearchStockListView = null; // To break the cycle link with the adapter
-        mSearchPeopleListView = null;
         super.onDestroyView();
     }
 
-    protected void scheduleRequestDataIfNotInCache()
+    private void cancelSearchTasks()
     {
-        if (!updateWithCacheOnly())
+        if (securitySearchTask != null)
         {
-            scheduleRequestData();
+            securitySearchTask.forgetListener(true);
         }
-    }
+        securitySearchTask = null;
 
-    protected boolean updateWithCacheOnly()
-    {
-        if (mSearchType == null)
+        if (peopleSearchTask != null)
         {
-            return true;
+            peopleSearchTask.forgetListener(true);
         }
-        else if (mSearchType == TrendingSearchType.STOCKS)
-        {
-            return updateSecuritiesWithCacheOnly(makeSearchSecurityListType());
-        }
-        else if (mSearchType == TrendingSearchType.PEOPLE)
-        {
-            return updatePeopleWithCacheOnly(makeSearchUserListType());
-        }
-        else
-        {
-            throw new IllegalArgumentException("Unhandled SearchType." + mSearchType);
-        }
-    }
-
-    private boolean updateSecuritiesWithCacheOnly(SecurityListType searchSecurityListType)
-    {
-        SecurityIdList securityIds = securityCompactListCache.get().get(searchSecurityListType);
-        if (securityIds != null)
-        {
-            linkWith(securityCompactCache.get().get(securityIds), true, (SecurityCompactDTO) null);
-            return true;
-        }
-        return false;
-    }
-
-    private boolean updatePeopleWithCacheOnly(UserListType searchUserListType)
-    {
-        UserBaseKeyList userBaseKeys = userBaseKeyListCache.get().get(searchUserListType);
-        if (userBaseKeys != null)
-        {
-            linkWith(userSearchResultCache.get().get(userBaseKeys), true, (UserSearchResultDTO) null);
-            return true;
-        }
-        return false;
+        peopleSearchTask = null;
+        isQuerying = false;
     }
 
     protected void scheduleRequestData()
@@ -370,19 +339,22 @@ public class SearchStockPeopleFragment extends DashboardFragment
             requestDataTimer.cancel();
         }
         requestDataTimer = new Timer();
-        requestDataTimer.schedule(new TimerTask()
+        requestDataTimer.schedule(new RequestDataTimerTask(), DELAY_REQUEST_DATA_MILLI_SEC);
+    }
+
+    protected void loadNewPage(int newPage)
+    {
+        if (newPage != lastLoadedPage + 1)
         {
-            @Override public void run()
-            {
-                getView().post(new Runnable()
-                {
-                    @Override public void run()
-                    {
-                        requestData();
-                    }
-                });
-            }
-        }, DELAY_REQUEST_DATA_MILLI_SEC);
+            THLog.e(TAG, "Will not load newPage " + newPage + ", lastLoadedPage " + lastLoadedPage, new Exception());
+        }
+        if (currentlyLoadingPage != FIRST_PAGE - 1 && currentlyLoadingPage != newPage)
+        {
+            THLog.e(TAG, "This page is already loading another one " + currentlyLoadingPage + ", will not load " + newPage, new Exception());
+        }
+        cancelSearchTasks();
+        currentlyLoadingPage = newPage;
+        requestData();
     }
 
     protected void requestData()
@@ -409,38 +381,12 @@ public class SearchStockPeopleFragment extends DashboardFragment
     {
         if (mSearchText != null && !mSearchText.isEmpty())
         {
-            SecurityListType searchSecurityListType = makeSearchSecurityListType();
-            if (!updateSecuritiesWithCacheOnly(makeSearchSecurityListType()))
-            {
-                if (securitySearchListener == null)
-                {
-                    securitySearchListener = new DTOCache.Listener<SecurityListType, SecurityIdList>()
-                    {
-                        @Override public void onDTOReceived(SecurityListType key, SecurityIdList value)
-                        {
-                            setQuerying(false);
-                            try
-                            {
-                                linkWith(securityCompactCache.get().getOrFetch(value), true, (SecurityCompactDTO) null);
-                            }
-                            catch (Throwable error)
-                            {
-                                onErrorThrown(key, error);
-                            }
-                        }
-
-                        @Override public void onErrorThrown(SecurityListType key, Throwable error)
-                        {
-                            THToast.show(getString(R.string.error_fetch_security_list_info));
-                            THLog.e(TAG, "Error fetching the list of securities " + key, error);
-                        }
-                    };
-                }
-                cancelSearchTasks();
-                setQuerying(true);
-                securitySearchTask = securityCompactListCache.get().getOrFetch(searchSecurityListType, securitySearchListener);
-                securitySearchTask.execute();
-            }
+            cancelSearchTasks();
+            SecurityListType searchSecurityListType = makeSearchSecurityListType(lastLoadedPage + 1);
+            setQuerying(true);
+            currentlyLoadingPage = lastLoadedPage + 1;
+            securitySearchTask = securityCompactListCache.get().getOrFetch(searchSecurityListType, securityIdListCacheListener);
+            securitySearchTask.execute();
         }
     }
 
@@ -448,68 +394,27 @@ public class SearchStockPeopleFragment extends DashboardFragment
     {
         if (mSearchText != null && !mSearchText.isEmpty())
         {
-            UserListType searchUserListType = makeSearchUserListType();
-            if (!updatePeopleWithCacheOnly(makeSearchUserListType()))
-            {
-                if (peopleSearchListener == null)
-                {
-                    peopleSearchListener = new DTOCache.Listener<UserListType, UserBaseKeyList>()
-                    {
-                        @Override public void onDTOReceived(UserListType key, UserBaseKeyList value)
-                        {
-                            THLog.i(TAG, "onDTOReceived UserBaseKeyList");
-                            setQuerying(false);
-                            linkWith(userSearchResultCache.get().get(value), true, (UserSearchResultDTO) null);
-                        }
-
-                        @Override public void onErrorThrown(UserListType key, Throwable error)
-                        {
-                            THToast.show(getString(R.string.error_fetch_people_list_info));
-                            THLog.e(TAG, "Error fetching the list of people " + key, error);
-                        }
-                    };
-                }
-                cancelSearchTasks();
-                setQuerying(true);
-                peopleSearchTask = userBaseKeyListCache.get().getOrFetch(searchUserListType, peopleSearchListener);
-                peopleSearchTask.execute();
-            }
+            cancelSearchTasks();
+            UserListType searchUserListType = makeSearchUserListType(lastLoadedPage + 1);
+            setQuerying(true);
+            currentlyLoadingPage = lastLoadedPage + 1;
+            peopleSearchTask = userBaseKeyListCache.get().getOrFetch(searchUserListType, peopleListCacheListener);
+            peopleSearchTask.execute();
         }
     }
 
-    private void cancelSearchTasks()
+    private void linkWith(List<SecurityId> securityIds, boolean andDisplay, SecurityId typeQualifier)
     {
-        if (securitySearchTask != null)
-        {
-            securitySearchTask.forgetListener(true);
-        }
-        securitySearchTask = null;
-
-        if (peopleSearchTask != null)
-        {
-            peopleSearchTask.forgetListener(true);
-        }
-        peopleSearchTask = null;
-        isQuerying = false;
-    }
-
-    private void linkWith(List<SecurityCompactDTO> securityCompactDTOs, boolean andDisplay, SecurityCompactDTO typeQualifier)
-    {
-        this.securityList = securityCompactDTOs;
+        this.securityIds = securityIds;
 
         if (securityItemViewAdapter != null)
         {
-            if (securityCompactDTOs == null)
+            if (securityIds == null)
             {
                 securityItemViewAdapter.setItems(null);
             }
             else
             {
-                List<SecurityId> securityIds = new ArrayList<>();
-                for (SecurityCompactDTO securityCompactDTO : securityCompactDTOs)
-                {
-                    securityIds.add(securityCompactDTO.getSecurityId());
-                }
                 securityItemViewAdapter.setItems(securityIds);
             }
             if (andDisplay)
@@ -526,9 +431,9 @@ public class SearchStockPeopleFragment extends DashboardFragment
         }
     }
 
-    private void linkWith(final List<UserSearchResultDTO> users, boolean andDisplay, UserSearchResultDTO typeQualifier)
+    private void linkWith(final List<UserBaseKey> users, boolean andDisplay, UserBaseKey typeQualifier)
     {
-        this.userDTOList = users;
+        this.userBaseKeys = users;
 
         if (peopleItemViewAdapter != null)
         {
@@ -599,7 +504,7 @@ public class SearchStockPeopleFragment extends DashboardFragment
             {
                 mSearchPeopleListView.setVisibility(View.INVISIBLE);
             }
-            if (securityList == null || securityList.size() == 0)
+            if (securityIds == null || securityIds.size() == 0)
             {
                 mNothingYet.setVisibility(View.VISIBLE);
             }
@@ -622,7 +527,7 @@ public class SearchStockPeopleFragment extends DashboardFragment
             {
                 mSearchPeopleListView.setVisibility(View.VISIBLE);
             }
-            if (userDTOList == null || userDTOList.size() == 0)
+            if (userBaseKeys == null || userBaseKeys.size() == 0)
             {
                 mNothingYet.setVisibility(View.VISIBLE);
             }
@@ -647,7 +552,7 @@ public class SearchStockPeopleFragment extends DashboardFragment
         {
             args.putString(BUNDLE_KEY_SEARCH_TYPE, mSearchType.name());
             args.putString(BUNDLE_KEY_SEARCH_STRING, mSearchText);
-            args.putInt(BUNDLE_KEY_PAGE, page);
+            args.putInt(BUNDLE_KEY_PAGE, lastLoadedPage);
             args.putInt(BUNDLE_KEY_PER_PAGE, perPage);
         }
     }
@@ -659,27 +564,27 @@ public class SearchStockPeopleFragment extends DashboardFragment
             mSearchType = TrendingSearchType.valueOf(args.getString(BUNDLE_KEY_SEARCH_TYPE, TrendingSearchType.STOCKS.name()));
             mSearchText = args.getString(BUNDLE_KEY_SEARCH_STRING);
             perPage = args.getInt(BUNDLE_KEY_PER_PAGE, DEFAULT_PER_PAGE);
-            page = args.getInt(BUNDLE_KEY_PAGE, DEFAULT_PAGE);
+            lastLoadedPage = args.getInt(BUNDLE_KEY_PAGE, FIRST_PAGE);
         }
     }
 
-    private void pushTradeFragmentIn(SecurityCompactDTO securityCompactDTO)
+    private void pushTradeFragmentIn(SecurityId securityId)
     {
-        if (securityCompactDTO == null || securityCompactDTO.getSecurityId() == null)
+        if (securityId == null)
         {
-            THLog.e(TAG, "Cannot handle null " + securityCompactDTO, new IllegalArgumentException());
+            THLog.e(TAG, "Cannot handle null SecurityId", new IllegalArgumentException());
             return;
         }
         Bundle args = new Bundle();
-        args.putBundle(BuySellFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityCompactDTO.getSecurityId().getArgs());
+        args.putBundle(BuySellFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
         navigator.pushFragment(BuySellFragment.class, args);
     }
 
-    protected void pushUserFragmentIn(UserSearchResultDTO userSearchResultDTO)
+    protected void pushUserFragmentIn(UserBaseKey userBaseKey)
     {
-        if (userSearchResultDTO == null || userSearchResultDTO.userId == null)
+        if (userBaseKey == null || userBaseKey.key == null)
         {
-            THLog.e(TAG, "Cannot handle null " + userSearchResultDTO, new IllegalArgumentException());
+            THLog.e(TAG, "Cannot handle null userBaseKey", new IllegalArgumentException());
             return;
         }
 
@@ -687,15 +592,20 @@ public class SearchStockPeopleFragment extends DashboardFragment
         // TODO put back in
 
         Bundle args = new Bundle();
-        args.putInt(PushableTimelineFragment.BUNDLE_KEY_SHOW_USER_ID, userSearchResultDTO.userId);
+        args.putInt(PushableTimelineFragment.BUNDLE_KEY_SHOW_USER_ID, userBaseKey.key);
 
         navigator.pushFragment(PushableTimelineFragment.class, args);
     }
 
     //<editor-fold desc="Accessors">
-    public int getPage()
+    public int getCurrentlyLoadingPage()
     {
-        return page;
+        return currentlyLoadingPage;
+    }
+
+    public int getLastLoadedPage()
+    {
+        return lastLoadedPage;
     }
 
     public int getPerPage()
@@ -703,60 +613,14 @@ public class SearchStockPeopleFragment extends DashboardFragment
         return perPage;
     }
 
-    public SecurityListType makeSearchSecurityListType()
+    public SecurityListType makeSearchSecurityListType(int page)
     {
         return new SearchSecurityListType(mSearchText, page, perPage);
     }
 
-    public UserListType makeSearchUserListType()
+    public UserListType makeSearchUserListType(int page)
     {
         return new SearchUserListType(mSearchText, page, perPage);
-    }
-    //</editor-fold>
-
-    //<editor-fold desc="TextWatcher">
-    @Override public void afterTextChanged(Editable editable)
-    {
-    }
-
-    @Override public void beforeTextChanged(CharSequence charSequence, int start, int count, int after)
-    {
-    }
-
-    @Override public void onTextChanged(CharSequence charSequence, int start, int before, int count)
-    {
-        mSearchText = charSequence.toString();
-        if (mSearchText == null || mSearchText.isEmpty())
-        {
-            linkWith(null, true, (SecurityCompactDTO) null);
-            linkWith(null, true, (UserSearchResultDTO) null);
-        }
-        else
-        {
-            scheduleRequestDataIfNotInCache();
-        }
-    }
-    //</editor-fold>
-
-    //<editor-fold desc="AdapterView.OnItemSelectedListener">
-    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l)
-    {
-        THLog.i(TAG, "onItemSelected Spinner i " + i + ", l " + l + ", view " + view + ", type " + TrendingSearchType.fromInt(i));
-        TrendingSearchType newSearchType = TrendingSearchType.fromInt(i);
-        boolean isChanged = newSearchType != mSearchType;
-        mSearchType = newSearchType;
-        updateVisibilities();
-        if (isChanged)
-        {
-            requestData();
-        }
-    }
-
-    public void onNothingSelected(AdapterView<?> adapterView)
-    {
-        THLog.i(TAG, "onNothingSelected Spinner");
-        mSearchType = null;
-        updateVisibilities();
     }
     //</editor-fold>
 
@@ -764,6 +628,161 @@ public class SearchStockPeopleFragment extends DashboardFragment
     @Override public boolean isTabBarVisible()
     {
         return false;
+    }
+    //</editor-fold>
+
+    //<editor-fold desc="Listeners">
+    private class SearchFlagNearEndScrollListener extends FlagNearEndScrollListener
+    {
+        @Override public void raiseFlag()
+        {
+            super.raiseFlag();
+            loadNewPage(lastLoadedPage + 1);
+        }
+    }
+
+    private class SearchStockOnItemClickListener implements AdapterView.OnItemClickListener
+    {
+        @Override public void onItemClick(AdapterView<?> parent, View view, int position, long id)
+        {
+            pushTradeFragmentIn((SecurityId) parent.getItemAtPosition(position));
+        }
+    }
+
+    private class SearchPeopleOnItemClickListener implements AdapterView.OnItemClickListener
+    {
+        @Override public void onItemClick(AdapterView<?> parent, View view, int position, long id)
+        {
+            pushUserFragmentIn((UserBaseKey) parent.getItemAtPosition(position));
+        }
+    }
+
+    private class SearchTypeSpinnerOnItemClickListener implements AdapterView.OnItemSelectedListener
+    {
+        @Override public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l)
+        {
+            THLog.i(TAG, "onItemSelected Spinner i " + i + ", l " + l + ", view " + view + ", type " + TrendingSearchType.fromInt(i));
+            TrendingSearchType newSearchType = TrendingSearchType.fromInt(i);
+            boolean isChanged = newSearchType != mSearchType;
+            mSearchType = newSearchType;
+            updateVisibilities();
+            if (isChanged)
+            {
+                THLog.d(TAG, "Requesting data");
+                startAnew();
+                requestData();
+            }
+        }
+
+        @Override public void onNothingSelected(AdapterView<?> adapterView)
+        {
+            THLog.i(TAG, "onNothingSelected Spinner");
+            mSearchType = null;
+            updateVisibilities();
+        }
+    }
+
+    private class SearchTextWatcher implements TextWatcher
+    {
+        @Override public void afterTextChanged(Editable editable)
+        {
+        }
+
+        @Override public void beforeTextChanged(CharSequence charSequence, int start, int count, int after)
+        {
+        }
+
+        @Override public void onTextChanged(CharSequence charSequence, int start, int before, int count)
+        {
+            mSearchText = charSequence.toString();
+            if (mSearchText == null || mSearchText.isEmpty())
+            {
+                linkWith(null, true, (SecurityId) null);
+                linkWith(null, true, (UserBaseKey) null);
+            }
+            else
+            {
+                scheduleRequestData();
+            }
+        }
+    }
+
+    private class SecurityIdListCacheListener implements DTOCache.Listener<SecurityListType, SecurityIdList>
+    {
+        @Override public void onDTOReceived(SecurityListType key, SecurityIdList value)
+        {
+            if (lastLoadedPage + 1 != key.getPage())
+            {
+                throw new IllegalStateException("We just got a wrong page; last: " + lastLoadedPage + ", received page: " + key.getPage());
+            }
+            lastLoadedPage = key.getPage();
+            currentlyLoadingPage = FIRST_PAGE - 1;
+            nearEndScrollListener.lowerFlag();
+            if (value == null || value.size() == 0)
+            {
+                nearEndScrollListener.deactivate();
+            }
+            else
+            {
+                securityIds.addAll(value);
+                securityItemViewAdapter.setItems(securityIds);
+            }
+            setQuerying(false);
+            securityItemViewAdapter.notifyDataSetChanged();
+        }
+
+        @Override public void onErrorThrown(SecurityListType key, Throwable error)
+        {
+            THToast.show(getString(R.string.error_fetch_security_list_info));
+            THLog.e(TAG, "Error fetching the list of securities " + key, error);
+        }
+    }
+
+    private class PeopleListCacheListener implements DTOCache.Listener<UserListType, UserBaseKeyList>
+    {
+        @Override public void onDTOReceived(UserListType key, UserBaseKeyList value)
+        {
+            SearchUserListType castedKey = (SearchUserListType) key;
+            if (lastLoadedPage + 1 != castedKey.page)
+            {
+                throw new IllegalStateException("We just got a wrong page; last: " + lastLoadedPage + ", received page: " + castedKey.page);
+            }
+            lastLoadedPage = castedKey.page;
+            currentlyLoadingPage = FIRST_PAGE - 1;
+            nearEndScrollListener.lowerFlag();
+            if (value == null || value.size() == 0)
+            {
+                nearEndScrollListener.deactivate();
+            }
+            else
+            {
+                userBaseKeys.addAll(value);
+                peopleItemViewAdapter.setItems(userBaseKeys);
+            }
+            setQuerying(false);
+            peopleItemViewAdapter.notifyDataSetChanged();
+        }
+
+        @Override public void onErrorThrown(UserListType key, Throwable error)
+        {
+            THToast.show(getString(R.string.error_fetch_people_list_info));
+            THLog.e(TAG, "Error fetching the list of people " + key, error);
+        }
+    }
+
+    private class RequestDataTimerTask extends TimerTask
+    {
+        @Override public void run()
+        {
+            getView().post(new Runnable()
+            {
+                @Override public void run()
+                {
+                    startAnew();
+                    requestData();
+                }
+            });
+        }
     }
     //</editor-fold>
 }

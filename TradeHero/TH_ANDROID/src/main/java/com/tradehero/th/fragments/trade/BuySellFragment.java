@@ -985,16 +985,6 @@ public class BuySellFragment extends AbstractBuySellFragment
         // TODO
     }
 
-    //<editor-fold desc="FreshQuoteHolder.FreshQuoteListener">
-    @Override public void onMilliSecToRefreshQuote(long milliSecToRefresh)
-    {
-        if (mQuoteRefreshProgressBar != null)
-        {
-            mQuoteRefreshProgressBar.setProgress((int) (milliSecToRefresh / MILLISEC_QUOTE_COUNTDOWN_PRECISION));
-        }
-    }
-    //</editor-fold>
-
     //<editor-fold desc="BaseFragment.TabBarVisibilityInformer">
     @Override public boolean isTabBarVisible()
     {
@@ -1173,6 +1163,11 @@ public class BuySellFragment extends AbstractBuySellFragment
     }
     //</editor-fold>
 
+    @Override protected FreshQuoteHolder.FreshQuoteListener createFreshQuoteListener()
+    {
+        return new BuySellFreshQuoteListener();
+    }
+
     public class BuySellTHIABUserInteractor extends THIABUserInteractor
     {
         public BuySellTHIABUserInteractor(Activity activity, THIABActor billingActor, Handler handler)
@@ -1184,6 +1179,17 @@ public class BuySellFragment extends AbstractBuySellFragment
         {
             super.handleShowSkuDetailsMilestoneComplete();
             displayTradeQuantityView();
+        }
+    }
+
+    protected class BuySellFreshQuoteListener extends AbstractBuySellFreshQuoteListener
+    {
+        @Override public void onMilliSecToRefreshQuote(long milliSecToRefresh)
+        {
+            if (mQuoteRefreshProgressBar != null)
+            {
+                mQuoteRefreshProgressBar.setProgress((int) (milliSecToRefresh / MILLISEC_QUOTE_COUNTDOWN_PRECISION));
+            }
         }
     }
 }

@@ -65,7 +65,7 @@ public class TrendingVolumeSecurityListType extends TrendingSecurityListType
     {
         return "TrendingVolumeSecurityListType{" +
                 "exchange='" + exchange + "'" +
-                ", page=" + page +
+                ", page=" + getPage() +
                 ", perPage=" + perPage +
                 '}';
     }

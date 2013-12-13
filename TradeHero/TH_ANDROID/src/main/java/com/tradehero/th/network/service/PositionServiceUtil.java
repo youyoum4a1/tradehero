@@ -15,34 +15,107 @@ public class PositionServiceUtil
 {
     public static final String TAG = PositionServiceUtil.class.getSimpleName();
 
-    public static GetPositionsDTO getPositions(PositionService positionService, OwnedPortfolioId key)
-        throws RetrofitError
+    private static void basicCheck(OwnedPortfolioId ownedPortfolioId)
     {
-        if (key instanceof PerPagedOwnedPortfolioId)
+        if (ownedPortfolioId == null)
         {
-            return positionService.getPositions(key.userId, key.portfolioId, ((PerPagedOwnedPortfolioId) key).page, ((PerPagedOwnedPortfolioId) key).perPage);
+            throw new NullPointerException("ownedPortfolioId cannot be null");
         }
-        if (key instanceof PagedOwnedPortfolioId)
+        if (ownedPortfolioId.userId == null)
         {
-            return positionService.getPositions(key.userId, key.portfolioId, ((PagedOwnedPortfolioId) key).page);
+            throw new NullPointerException("ownedPortfolioId.userId cannot be null");
         }
-        return positionService.getPositions(key.userId, key.portfolioId);
+        if (ownedPortfolioId.portfolioId == null)
+        {
+            throw new NullPointerException("ownedPortfolioId.portfolioId cannot be null");
+        }
     }
 
-    public static void getPositions(PositionService positionService, OwnedPortfolioId key, Callback<GetPositionsDTO> callback)
+    public static GetPositionsDTO getPositions(PositionService positionService, OwnedPortfolioId ownedPortfolioId)
+        throws RetrofitError
     {
-        if (key instanceof PerPagedOwnedPortfolioId)
+        if (ownedPortfolioId instanceof PagedOwnedPortfolioId)
         {
-            positionService.getPositions(key.userId, key.portfolioId, ((PerPagedOwnedPortfolioId) key).page, ((PerPagedOwnedPortfolioId) key).perPage,
-                    callback);
+            return getPositions(positionService, (PagedOwnedPortfolioId) ownedPortfolioId);
         }
-        if (key instanceof PagedOwnedPortfolioId)
+        basicCheck(ownedPortfolioId);
+        return positionService.getPositions(ownedPortfolioId.userId, ownedPortfolioId.portfolioId);
+    }
+
+    public static GetPositionsDTO getPositions(PositionService positionService, PagedOwnedPortfolioId pagedOwnedPortfolioId)
+        throws RetrofitError
+    {
+        if (pagedOwnedPortfolioId instanceof PerPagedOwnedPortfolioId)
         {
-            positionService.getPositions(key.userId, key.portfolioId, ((PagedOwnedPortfolioId) key).page, callback);
+            return getPositions(positionService, (PerPagedOwnedPortfolioId) pagedOwnedPortfolioId);
+        }
+        basicCheck(pagedOwnedPortfolioId);
+        if (pagedOwnedPortfolioId.page == null)
+        {
+            return positionService.getPositions(pagedOwnedPortfolioId.userId, pagedOwnedPortfolioId.portfolioId);
+        }
+        return positionService.getPositions(pagedOwnedPortfolioId.userId, pagedOwnedPortfolioId.portfolioId, pagedOwnedPortfolioId.page);
+    }
+
+    public static GetPositionsDTO getPositions(PositionService positionService, PerPagedOwnedPortfolioId perPagedOwnedPortfolioId)
+        throws RetrofitError
+    {
+        basicCheck(perPagedOwnedPortfolioId);
+        if (perPagedOwnedPortfolioId.page == null)
+        {
+            return positionService.getPositions(perPagedOwnedPortfolioId.userId, perPagedOwnedPortfolioId.portfolioId);
+        }
+        else if (perPagedOwnedPortfolioId.perPage == null)
+        {
+            return positionService.getPositions(perPagedOwnedPortfolioId.userId, perPagedOwnedPortfolioId.portfolioId, perPagedOwnedPortfolioId.page);
+        }
+        return positionService.getPositions(perPagedOwnedPortfolioId.userId, perPagedOwnedPortfolioId.portfolioId, perPagedOwnedPortfolioId.page, perPagedOwnedPortfolioId.perPage);
+    }
+
+    public static void getPositions(PositionService positionService, OwnedPortfolioId kownedPortfolioIdy, Callback<GetPositionsDTO> callback)
+    {
+        if (kownedPortfolioIdy instanceof PagedOwnedPortfolioId)
+        {
+            getPositions(positionService, (PagedOwnedPortfolioId) kownedPortfolioIdy, callback);
         }
         else
         {
-            positionService.getPositions(key.userId, key.portfolioId, callback);
+            basicCheck(kownedPortfolioIdy);
+            positionService.getPositions(kownedPortfolioIdy.userId, kownedPortfolioIdy.portfolioId, callback);
+        }
+    }
+
+    public static void getPositions(PositionService positionService, PagedOwnedPortfolioId pagedOwnedPortfolioId, Callback<GetPositionsDTO> callback)
+    {
+        basicCheck(pagedOwnedPortfolioId);
+        if (pagedOwnedPortfolioId instanceof PerPagedOwnedPortfolioId)
+        {
+            getPositions(positionService, (PerPagedOwnedPortfolioId) pagedOwnedPortfolioId, callback);
+        }
+        else if (pagedOwnedPortfolioId.page == null)
+        {
+            positionService.getPositions(pagedOwnedPortfolioId.userId, pagedOwnedPortfolioId.portfolioId, callback);
+        }
+        else
+        {
+            positionService.getPositions(pagedOwnedPortfolioId.userId, pagedOwnedPortfolioId.portfolioId, pagedOwnedPortfolioId.page, callback);
+        }
+    }
+
+    public static void getPositions(PositionService positionService, PerPagedOwnedPortfolioId perPagedOwnedPortfolioId, Callback<GetPositionsDTO> callback)
+    {
+        basicCheck(perPagedOwnedPortfolioId);
+        if (perPagedOwnedPortfolioId.page == null)
+        {
+            positionService.getPositions(perPagedOwnedPortfolioId.userId, perPagedOwnedPortfolioId.portfolioId, callback);
+        }
+        else if (perPagedOwnedPortfolioId.perPage == null)
+        {
+            positionService.getPositions(perPagedOwnedPortfolioId.userId, perPagedOwnedPortfolioId.portfolioId, perPagedOwnedPortfolioId.page, callback);
+        }
+        else
+        {
+            positionService.getPositions(perPagedOwnedPortfolioId.userId, perPagedOwnedPortfolioId.portfolioId, perPagedOwnedPortfolioId.page, perPagedOwnedPortfolioId.perPage, callback);
         }
     }
 }

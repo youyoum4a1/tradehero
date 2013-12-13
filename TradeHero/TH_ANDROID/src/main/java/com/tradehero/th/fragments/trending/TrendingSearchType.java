@@ -1,6 +1,5 @@
 package com.tradehero.th.fragments.trending;
 
-import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
 import java.util.HashMap;
 import java.util.Map;
@@ -13,12 +12,13 @@ public enum TrendingSearchType
     PEOPLE(1, R.string.search_stock_spinner_people, R.drawable.sort_community, R.drawable.toggle_users);
 
     public final static String TAG = TrendingSearchType.class.getSimpleName();
-    private static final Map<Integer, TrendingSearchType> intToTypeMap = new HashMap<Integer, TrendingSearchType>();
+    private static final Map<Integer, TrendingSearchType> INT_TO_TYPE_MAP = new HashMap<Integer, TrendingSearchType>();
 
-    private final int value;
-    private final int searchStringResId;
-    private final int searchDropDownDrawableResId;
-    private final int searchDrawableResId;
+    public final int value;
+    public final int searchStringResId;
+    public final int searchDropDownDrawableResId;
+    public final int searchDrawableResId;
+
     private TrendingSearchType(int value, int searchStringResId, int searchDropDownDrawableResId, int searchDrawableResId)
     {
         this.value = value;
@@ -27,37 +27,17 @@ public enum TrendingSearchType
         this.searchDrawableResId = searchDrawableResId;
     }
 
-    public int getValue()
-    {
-        return value;
-    }
-
-    public int getSearchStringResId()
-    {
-        return searchStringResId;
-    }
-
-    public int getSearchDropDownDrawableResId()
-    {
-        return searchDropDownDrawableResId;
-    }
-
-    public int getSearchDrawableResId()
-    {
-        return searchDrawableResId;
-    }
-
     static
     {
         for (TrendingSearchType type : TrendingSearchType.values())
         {
-            intToTypeMap.put(type.value, type);
+            INT_TO_TYPE_MAP.put(type.value, type);
         }
     }
 
     public static TrendingSearchType fromInt(int i)
     {
-        TrendingSearchType type = intToTypeMap.get(i);
+        TrendingSearchType type = INT_TO_TYPE_MAP.get(i);
         if (type == null)
         {
             return TrendingSearchType.STOCKS;

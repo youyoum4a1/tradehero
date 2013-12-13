@@ -6,9 +6,9 @@ public class SearchUserListType extends UserListType
     public static final String TAG = SearchUserListType.class.getSimpleName();
 
     //<editor-fold desc="Fields">
-    private final String searchString;
-    private final Integer page;
-    private final Integer perPage;
+    public final String searchString;
+    public final Integer page;
+    public final Integer perPage;
     //</editor-fold>
 
     //<editor-fold desc="Constructors">
@@ -64,34 +64,21 @@ public class SearchUserListType extends UserListType
         {
             return stringCompare;
         }
-        int pageCompare = new Integer(page).compareTo(new Integer(searchUserListType.page));
+        int pageCompare = page.compareTo(searchUserListType.page);
         if (pageCompare != 0)
         {
             return pageCompare;
         }
-        return new Integer(perPage).compareTo(new Integer(searchUserListType.perPage));
-    }
-    //</editor-fold>
-
-    //<editor-fold desc="Accessors">
-    public String getSearchString()
-    {
-        return searchString;
-    }
-
-    public Integer getPage()
-    {
-        return page;
-    }
-
-    public Integer getPerPage()
-    {
-        return perPage;
+        return perPage.compareTo(searchUserListType.perPage);
     }
     //</editor-fold>
 
     @Override public String toString()
     {
-        return String.format("[%s: searchString=%s; page=%d; perPage=%d]", SearchUserListType.class.getName(), searchString, page, perPage);
+        return "SearchUserListType{" +
+                "searchString='" + searchString + '\'' +
+                ", page=" + page +
+                ", perPage=" + perPage +
+                '}';
     }
 }

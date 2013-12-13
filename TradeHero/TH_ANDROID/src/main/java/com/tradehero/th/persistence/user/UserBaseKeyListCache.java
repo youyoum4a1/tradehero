@@ -9,6 +9,7 @@ import com.tradehero.th.api.users.UserListType;
 import com.tradehero.th.api.users.UserSearchResultDTO;
 import com.tradehero.th.network.BasicRetrofitErrorHandler;
 import com.tradehero.th.network.service.UserService;
+import com.tradehero.th.network.service.UserServiceUtil;
 import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
@@ -33,35 +34,7 @@ import retrofit.RetrofitError;
 
     @Override protected UserBaseKeyList fetch(UserListType key) throws Throwable
     {
-        if (key instanceof SearchUserListType)
-        {
-            return putInternal(key, fetch((SearchUserListType) key));
-        }
-        throw new IllegalArgumentException("Unhandled type " + key.getClass().getName());
-    }
-
-    protected List<UserSearchResultDTO> fetch(SearchUserListType key) throws RetrofitError
-    {
-        if (key == null)
-        {
-            return null;
-        }
-        else if (key.getPerPage() != null)
-        {
-            return userService.get().searchUsers(key.getSearchString(), key.getPage(), key.getPerPage());
-        }
-        else if (key.getPage() != null)
-        {
-            return userService.get().searchUsers(key.getSearchString(), key.getPage());
-        }
-        else if (key.getSearchString() != null)
-        {
-            return userService.get().searchUsers(key.getSearchString());
-        }
-        else
-        {
-            return null;
-        }
+        return putInternal(key, UserServiceUtil.searchUsers(userService.get(), key));
     }
 
     protected UserBaseKeyList putInternal(UserListType key, List<UserSearchResultDTO> fleshedValues)
