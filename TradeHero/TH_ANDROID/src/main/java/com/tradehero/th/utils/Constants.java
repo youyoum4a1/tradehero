@@ -13,6 +13,7 @@ public class Constants
     //Linked In
     public static final String LINKEDIN_CONSUMER_KEY = "afed437khxve";
     public static final String LINKEDIN_CONSUMER_SECRET = "hO7VeSyL4y1W2ZiK";
+    public static final int TIMELINE_ITEM_PERPAGE = 42;
     public static String OAUTH_CALLBACK_URL = "x-oauthflow-linkedin://callback";
 
     //Twitter

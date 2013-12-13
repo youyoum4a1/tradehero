@@ -1,41 +1,105 @@
 package com.tradehero.th.adapters;
 
 import android.content.Context;
+import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.Loader;
 import android.view.LayoutInflater;
-import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.loaders.ItemWithComparableId;
-import com.tradehero.th.loaders.PaginationListLoader;
+import com.tradehero.th.loaders.ListLoader;
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA. User: tho Date: 12/10/13 Time: 4:40 PM Copyright (c) TradeHero
  */
-public abstract class LoaderDTOAdapter<DTOType extends ItemWithComparableId, DTOViewType extends DTOView<DTOType>> extends DTOAdapter<DTOType, DTOViewType>
+public abstract class LoaderDTOAdapter<
+        DTOType extends ItemWithComparableId,
+        DTOViewType extends DTOView<DTOType>,
+        LoaderType extends ListLoader<DTOType>> extends DTOAdapter<DTOType, DTOViewType>
 {
-    private PaginationListLoader<DTOType> loader;
+    private int loaderId;
+    private ListLoaderCallback<DTOType> callback;
 
-    public LoaderDTOAdapter(Context context, LayoutInflater inflater, int layoutResourceId)
+    public LoaderDTOAdapter(Context context, LayoutInflater inflater, int timelineLoaderId, int layoutResourceId)
     {
         super(context, inflater, layoutResourceId);
+        loaderId = timelineLoaderId;
     }
 
     @Override public int getCount()
     {
-        return loader != null ? loader.getCount() : 0;
+        return getLoader() != null ? getLoader().getCount() : 0;
     }
 
     @Override public Object getItem(int position)
     {
-        return getCount() > position && loader != null ? loader.getItems().get(position) : null;
+        return getCount() > position && getLoader() != null ? getLoader().getItems().get(position) : null;
     }
 
-    public void setLoader(PaginationListLoader<DTOType> loader)
+    public LoaderType getLoader()
     {
-        this.loader = loader;
+        if (context instanceof FragmentActivity)
+        {
+            Loader loader = (Loader) ((FragmentActivity) context).getSupportLoaderManager().getLoader(loaderId);
+            return (LoaderType) loader;
+        }
+        throw new IllegalArgumentException("Context has to be FragmentActivity");
     }
 
-    public PaginationListLoader<DTOType> getLoader()
+    public LoaderManager.LoaderCallbacks<List<DTOType>> getLoaderCallback()
     {
-        return loader;
+        return new LoaderManager.LoaderCallbacks<List<DTOType>>()
+        {
+            @Override public Loader<List<DTOType>> onCreateLoader(int id, Bundle args)
+            {
+                //loaderId = id;
+                return callback != null ? callback.onCreateLoader(id, args) : null;
+            }
+
+            @Override public void onLoadFinished(Loader<List<DTOType>> loader, List<DTOType> data)
+            {
+                notifyDataSetChanged();
+                if (callback != null)
+                {
+                    callback.onLoadFinished(loader, data);
+                }
+            }
+
+            @Override public void onLoaderReset(Loader<List<DTOType>> loader)
+            {
+                if (loader instanceof ListLoader)
+                {
+                    callback.onLoaderReset((ListLoader<DTOType>)loader);
+                }
+            }
+        };
+    }
+
+    public void setDTOLoaderCallback(ListLoaderCallback<DTOType> callback)
+    {
+        this.callback = callback;
+    }
+
+    public static abstract class ListLoaderCallback<DTOType extends ItemWithComparableId>
+            implements LoaderManager.LoaderCallbacks<List<DTOType>>
+    {
+        @Override public Loader<List<DTOType>> onCreateLoader(int id, Bundle args)
+        {
+            return onCreateLoader(args);
+        }
+
+        @Override public void onLoaderReset(Loader<List<DTOType>> loader)
+        {
+            throw new IllegalAccessError("This method should not be call!");
+        }
+
+        public abstract ListLoader<DTOType> onCreateLoader(Bundle args);
+
+        protected void onLoaderReset(ListLoader<DTOType> loader)
+        {
+            //loader.getItems().clear();
+        }
     }
 }

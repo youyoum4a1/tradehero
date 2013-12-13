@@ -5,13 +5,12 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
-import com.actionbarsherlock.app.SherlockActivity;
 import com.tradehero.common.persistence.PersistableResource;
 
 /**
  * Created with IntelliJ IDEA. User: tho Date: 12/5/13 Time: 5:18 PM Copyright (c) TradeHero
  */
-abstract public class LoaderMilestone<T> extends ContextMilestone
+public abstract class LoaderMilestone<T> extends ContextMilestone
 {
     private LoaderManager.LoaderCallbacks<T> loaderCallback;
 
@@ -75,7 +74,7 @@ abstract public class LoaderMilestone<T> extends ContextMilestone
 
     @Override public boolean isComplete()
     {
-        return false;
+        return !getLoader().isStarted();
     }
 
     @Override public boolean isFailed()

@@ -9,7 +9,6 @@ import java.util.List;
 public abstract class ListLoader<D extends ItemWithComparableId> extends AsyncTaskLoader<List<D>>
 {
     protected final List<D> items;
-    private LoadMode currentLoadMode = LoadMode.IDLE;
 
     public ListLoader(Context context)
     {
@@ -64,35 +63,7 @@ public abstract class ListLoader<D extends ItemWithComparableId> extends AsyncTa
         releaseResources(data);
     }
 
-    @Override public void deliverResult(List<D> data)
-    {
-        if (isReset())
-        {
-            releaseResources(data);
-            return;
-        }
-
-        if (isStarted())
-        {
-            if (data != null)
-            {
-                switch (currentLoadMode)
-                {
-                    case IDLE:
-                    case NEXT:
-                        items.addAll(0, data);
-                        break;
-                    case PREVIOUS:
-                        items.addAll(data);
-                        break;
-                }
-            }
-            super.deliverResult(data);
-            currentLoadMode = LoadMode.IDLE;
-        }
-    }
-
-    private void releaseResources(List<D> data)
+    protected void releaseResources(List<D> data)
     {
         if (data != null)
         {

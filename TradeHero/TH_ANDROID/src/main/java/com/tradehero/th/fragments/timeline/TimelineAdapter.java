@@ -8,17 +8,21 @@ import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.tradehero.th.adapters.LoaderDTOAdapter;
 import com.tradehero.th.api.local.TimelineItem;
+import com.tradehero.th.loaders.PaginationListLoader;
 import com.tradehero.th.utils.TestFlightUtils;
 
-public class TimelineAdapter extends LoaderDTOAdapter<TimelineItem, TimelineItemView>
-        implements PullToRefreshListView.OnRefreshListener<ListView>, AbsListView.OnScrollListener, PullToRefreshBase.OnLastItemVisibleListener
+public class TimelineAdapter extends LoaderDTOAdapter<TimelineItem, TimelineItemView, PaginationListLoader<TimelineItem>>
+        implements
+            PullToRefreshListView.OnRefreshListener<ListView>,
+            AbsListView.OnScrollListener,
+            PullToRefreshBase.OnLastItemVisibleListener
 {
     private static final String TAG = TimelineAdapter.class.getName();
     private int currentScrollState;
 
-    public TimelineAdapter(Context context, LayoutInflater inflater, int layoutResourceId)
+    public TimelineAdapter(Context context, LayoutInflater inflater, int timelineLoaderId, int layoutResourceId)
     {
-        super(context, inflater, layoutResourceId);
+        super(context, inflater, timelineLoaderId, layoutResourceId);
     }
 
     @Override protected void fineTune(int position, TimelineItem dto, TimelineItemView dtoView)
@@ -54,9 +58,9 @@ public class TimelineAdapter extends LoaderDTOAdapter<TimelineItem, TimelineItem
         // update loader last & first visible item
         if (getLoader() != null)
         {
-            //int lastItemId = firstVisibleItem + visibleItemCount > getCount() ? getCount() - 1 : firstVisibleItem + visibleItemCount - 1;
-            // strange behavior of onScroll, sometime firstVisibleItem >= getCount(), which is logically wrong, that's why I have to do this check
-            //int firstItemId = Math.min(firstVisibleItem, getCount() - 1);
+            int lastItemId = firstVisibleItem + visibleItemCount > getCount() ? getCount() - 1 : firstVisibleItem + visibleItemCount - 1;
+            //strange behavior of onScroll, sometime firstVisibleItem >= getCount(), which is logically wrong, that's why I have to do this check
+            int firstItemId = Math.min(firstVisibleItem, getCount() - 1);
             //getLoader().setFirstVisibleItem((TimelineItem) getItem(firstItemId));
             //getLoader().setLastVisibleItem((TimelineItem) getItem(lastItemId));
         }

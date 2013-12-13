@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.timeline;
 
 import android.os.Bundle;
+import android.support.v4.content.Loader;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,8 @@ import com.tradehero.common.milestone.MilestoneGroup;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
+import com.tradehero.th.adapters.LoaderDTOAdapter;
+import com.tradehero.th.api.local.TimelineItem;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.OwnedPortfolioIdList;
 import com.tradehero.th.api.users.UserBaseKey;
@@ -23,6 +26,7 @@ import com.tradehero.th.base.NavigatorActivity;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.fragments.portfolio.PortfolioRequestListener;
 import com.tradehero.th.fragments.position.PositionListFragment;
+import com.tradehero.th.loaders.ListLoader;
 import com.tradehero.th.loaders.TimelineListLoader;
 import com.tradehero.th.persistence.portfolio.PortfolioCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
@@ -30,10 +34,12 @@ import com.tradehero.th.persistence.portfolio.PortfolioCompactListRetrievedMiles
 import com.tradehero.th.persistence.timeline.TimelineRetrievedMilestone;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.persistence.user.UserProfileRetrievedMilestone;
+import com.tradehero.th.utils.Constants;
 import com.tradehero.th.widget.StepView;
 import com.tradehero.th.widget.user.ProfileCompactView;
 import com.tradehero.th.widget.user.ProfileView;
 import dagger.Lazy;
+import java.util.List;
 import javax.inject.Inject;
 
 public class TimelineFragment extends BasePurchaseManagerFragment
@@ -69,15 +75,6 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     {
         timelineListView = (TimelineListView) view.findViewById(R.id.pull_refresh_list);
         timelineListView.setEmptyView(view.findViewById(android.R.id.empty));
-        if (timelineAdapter == null)
-        {
-            timelineAdapter = createTimelineAdapter();
-        }
-
-        timelineListView.setAdapter(timelineAdapter);
-        timelineListView.setOnRefreshListener(timelineAdapter);
-        timelineListView.setOnScrollListener(timelineAdapter);
-        timelineListView.setOnLastItemVisibleListener(timelineAdapter);
     }
 
     //<editor-fold desc="ActionBar">
@@ -112,35 +109,33 @@ public class TimelineFragment extends BasePurchaseManagerFragment
 
         UserBaseKey newUserBaseKey = new UserBaseKey(getArguments().getInt(BUNDLE_KEY_SHOW_USER_ID));
         linkWith(newUserBaseKey, true);
+
+        THLog.d(TAG, "Picking up loader with id " + newUserBaseKey.key);
+        getActivity().getSupportLoaderManager().initLoader(newUserBaseKey.key, null, timelineAdapter.getLoaderCallback());
     }
 
     //<editor-fold desc="Display methods">
     protected void linkWith(UserBaseKey userBaseKey, final boolean andDisplay)
     {
         this.shownUserBaseKey = userBaseKey;
+        if (timelineAdapter == null)
+        {
+            timelineAdapter = createTimelineAdapter();
+        }
+
+        timelineListView.setAdapter(timelineAdapter);
+        timelineListView.setOnRefreshListener(timelineAdapter);
+        timelineListView.setOnScrollListener(timelineAdapter);
+        timelineListView.setOnLastItemVisibleListener(timelineAdapter);
+
         if (userBaseKey != null)
         {
             getUserProfileRetrievedMilestone().setOnCompleteListener(userProfileRetrievedMilestoneListener);
             getUserProfileRetrievedMilestone().launch();
 
-
-            MilestoneGroup timelineMilestone = createTimelineMilestone();
-            timelineMilestone.setOnCompleteListener(timelineRetrievedMilestoneListener);
-            timelineMilestone.launch();
-            //getPortfolioCompactListRetrievedMilestone().setOnCompleteListener(portfolioCompactListRetrievedMilestoneListener);
-            //getPortfolioCompactListRetrievedMilestone().launch();
-            //
-            //getTimelineRetrievedMilestone().setOnCompleteListener(timelineRetrievedMilestoneListener);
-            //getTimelineRetrievedMilestone().launch();
+            getPortfolioCompactListRetrievedMilestone().setOnCompleteListener(portfolioCompactListRetrievedMilestoneListener);
+            getPortfolioCompactListRetrievedMilestone().launch();
         }
-    }
-
-    private MilestoneGroup createTimelineMilestone()
-    {
-        BaseMilestoneGroup milestone = new BaseMilestoneGroup();
-        milestone.add(getPortfolioCompactListRetrievedMilestone());
-        milestone.add(getTimelineRetrievedMilestone());
-        return milestone;
     }
 
     protected void linkWith(UserProfileDTO userProfileDTO, boolean andDisplay)
@@ -200,22 +195,34 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         return userProfileRetrievedMilestone;
     }
 
-    protected TimelineRetrievedMilestone getTimelineRetrievedMilestone()
-    {
-        if (timelineRetrievedMilestone == null)
-        {
-            timelineRetrievedMilestone = new TimelineRetrievedMilestone(getActivity(), shownUserBaseKey);
-        }
-        return timelineRetrievedMilestone;
-    }
     //</editor-fold>
 
     //<editor-fold desc="Initial methods">
     private TimelineAdapter createTimelineAdapter()
     {
-        timelineAdapter = new TimelineAdapter(getActivity(), getActivity().getLayoutInflater(), R.layout.timeline_item_view);
-        //timelineAdapter.setLoader(createTimelineLoader());
+        timelineAdapter = new TimelineAdapter(getActivity(), getActivity().getLayoutInflater(), shownUserBaseKey.key, R.layout.timeline_item_view);
+        timelineAdapter.setDTOLoaderCallback(new LoaderDTOAdapter.ListLoaderCallback<TimelineItem>()
+        {
+
+            @Override public void onLoadFinished(Loader<List<TimelineItem>> loader, List<TimelineItem> data)
+            {
+                timelineListView.onRefreshComplete();
+            }
+
+            @Override public ListLoader<TimelineItem> onCreateLoader(Bundle args)
+            {
+                THLog.d(TAG, "New loader is being created");
+                return createTimelineLoader();
+            }
+        });
         return timelineAdapter;
+    }
+
+    private ListLoader<TimelineItem> createTimelineLoader()
+    {
+        TimelineListLoader timelineLoader = new TimelineListLoader(getActivity(), shownUserBaseKey);
+        timelineLoader.setPerPage(Constants.TIMELINE_ITEM_PERPAGE);
+        return timelineLoader;
     }
     //</editor-fold>
 
@@ -237,29 +244,6 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         }
         return null;
     }
-
-    //<editor-fold desc="Loader Callback">
-    //private LoaderManager.LoaderCallbacks<List<TimelineItem>> loaderCallback = new LoaderManager.LoaderCallbacks<List<TimelineItem>>()
-    //{
-    //
-    //    @Override public void onLoaderReset(Loader<List<TimelineItem>> listLoader)
-    //    {
-    //        if (timelineAdapter != null)
-    //        {
-    //            timelineAdapter.setItems(null);
-    //        }
-    //    }
-    //
-    //    @Override public void onLoadFinished(Loader<List<TimelineItem>> listLoader, List<TimelineItem> items)
-    //    {
-    //    }
-    //
-    //    @Override public Loader<List<TimelineItem>> onCreateLoader(int id, Bundle bundle)
-    //    {
-    //        return timelineAdapter == null ? null : timelineAdapter.getLoader();
-    //    }
-    //};
-    //</editor-fold>
 
     //<editor-fold desc="PortfolioRequestListener">
     @Override public void onPortfolioRequested(OwnedPortfolioId ownedPortfolioId)
@@ -325,20 +309,6 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         }
     };
 
-    private Milestone.OnCompleteListener timelineRetrievedMilestoneListener = new Milestone.OnCompleteListener()
-    {
-        @Override public void onComplete(Milestone milestone)
-        {
-            THToast.show("Retrieved timeline");
-            timelineAdapter.notifyDataSetChanged();
-            timelineListView.onRefreshComplete();
-        }
-
-        @Override public void onFailed(Milestone milestone, Throwable throwable)
-        {
-            THLog.e(TAG, "Error fetching timeline for user: " + shownUserBaseKey.key, throwable);
-        }
-    };
     //</editor-fold>
 
     //<editor-fold desc="BaseFragment.TabBarVisibilityInformer">
