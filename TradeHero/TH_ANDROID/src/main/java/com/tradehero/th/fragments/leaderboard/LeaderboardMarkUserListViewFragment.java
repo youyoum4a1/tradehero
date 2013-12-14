@@ -15,6 +15,7 @@ import com.tradehero.th.api.leaderboard.LeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.loaders.ListLoader;
+import com.tradehero.th.utils.Constants;
 import java.util.Date;
 import java.util.List;
 import javax.inject.Inject;
@@ -78,7 +79,9 @@ public class LeaderboardMarkUserListViewFragment extends BaseLeaderboardFragment
             {
                 int leaderboardId = args.getInt(LeaderboardDTO.LEADERBOARD_ID);
                 boolean includeFoF = args.getBoolean(LeaderboardDTO.INCLUDE_FOF);
-                return new LeaderboardMarkUserLoader(getActivity(), leaderboardId, getCurrentSortType(), includeFoF);
+                LeaderboardMarkUserLoader leaderboardMarkUserLoader = new LeaderboardMarkUserLoader(getActivity(), leaderboardId, getCurrentSortType(), includeFoF);
+                leaderboardMarkUserLoader.setPerPage(Constants.LEADERBOARD_MARK_USER_ITEM_PER_PAGE);
+                return leaderboardMarkUserLoader;
             }
 
             @Override public void onLoadFinished(ListLoader<LeaderboardUserDTO> loader, List<LeaderboardUserDTO> data)

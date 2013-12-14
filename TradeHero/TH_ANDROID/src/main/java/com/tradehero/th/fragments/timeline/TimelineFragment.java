@@ -1,7 +1,6 @@
 package com.tradehero.th.fragments.timeline;
 
 import android.os.Bundle;
-import android.support.v4.content.Loader;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -224,7 +223,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     private ListLoader<TimelineItem> createTimelineLoader()
     {
         TimelineListLoader timelineLoader = new TimelineListLoader(getActivity(), shownUserBaseKey);
-        timelineLoader.setPerPage(Constants.TIMELINE_ITEM_PERPAGE);
+        timelineLoader.setPerPage(Constants.TIMELINE_ITEM_PER_PAGE);
         return timelineLoader;
     }
     //</editor-fold>
