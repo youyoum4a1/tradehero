@@ -65,17 +65,6 @@ public class ProfileCompactView extends RelativeLayout implements DTOView<UserPr
         roiSinceInception = (TextView) findViewById(R.id.user_profile_compact_roi);
 
         followersCount = (TextView) findViewById(R.id.user_profile_compact_followers_count);
-        if (followersCount != null)
-        {
-            followersCount.setOnClickListener(new OnClickListener()
-            {
-                @Override public void onClick(View view)
-                {
-                    THToast.show("Hello");
-                }
-            });
-        }
-
         heroesCount = (TextView) findViewById(R.id.user_profile_compact_heroes_count);
         btnDefaultPortfolio = (ImageView) findViewById(R.id.btn_user_profile_default_portfolio);
         if (btnDefaultPortfolio != null)
