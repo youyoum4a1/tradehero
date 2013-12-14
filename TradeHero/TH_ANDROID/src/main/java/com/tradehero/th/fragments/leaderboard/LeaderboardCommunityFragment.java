@@ -52,13 +52,18 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
     {
         View view = inflater.inflate(R.layout.leaderboard_community_screen, container, false);
         initViews(view);
-        prepareAdapters();
         return view;
     }
 
     @Override public void onActivityCreated(Bundle savedInstanceState)
     {
         super.onActivityCreated(savedInstanceState);
+    }
+
+    @Override public void onResume()
+    {
+        super.onResume();
+        prepareAdapters();
     }
 
     private void prepareAdapters()
