@@ -9,9 +9,10 @@ import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.tradehero.th.adapters.LoaderDTOAdapter;
 import com.tradehero.th.api.local.TimelineItem;
 import com.tradehero.th.loaders.PaginationListLoader;
+import com.tradehero.th.loaders.TimelineListLoader;
 import com.tradehero.th.utils.TestFlightUtils;
 
-public class TimelineAdapter extends LoaderDTOAdapter<TimelineItem, TimelineItemView, PaginationListLoader<TimelineItem>>
+public class TimelineAdapter extends LoaderDTOAdapter<TimelineItem, TimelineItemView, TimelineListLoader>
         implements
             PullToRefreshListView.OnRefreshListener<ListView>,
             AbsListView.OnScrollListener,

@@ -6,11 +6,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 /** Created with IntelliJ IDEA. User: tho Date: 11/15/13 Time: 11:47 AM Copyright (c) TradeHero */
-public class ExtraDTO implements DTO
+public class ExtendedDTO implements DTO
 {
     @JsonIgnore private transient Map<String, Object> extra;
 
-    public ExtraDTO()
+    public ExtendedDTO()
     {
         super();
     }
@@ -29,5 +29,18 @@ public class ExtraDTO implements DTO
     public Object get(String key)
     {
         return extra.get(key);
+    }
+
+    public Object get(String key, Object defaultValue)
+    {
+        Object ret = extra.get(key);
+        if (ret != null)
+        {
+            return ret;
+        }
+        else
+        {
+            return defaultValue;
+        }
     }
 }

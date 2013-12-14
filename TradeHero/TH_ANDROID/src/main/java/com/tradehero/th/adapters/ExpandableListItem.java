@@ -3,7 +3,9 @@ package com.tradehero.th.adapters;
 /**
  * Created by julien on 24/10/13
  */
-public class ExpandableListItem<T> implements OnSizeChangedListener
+public class ExpandableListItem<T> implements
+        ExpandableItem,
+        OnSizeChangedListener
 {
     private boolean expanded;
     private T model;
@@ -22,12 +24,12 @@ public class ExpandableListItem<T> implements OnSizeChangedListener
     {
     }
 
-    public boolean isExpanded()
+    @Override public boolean isExpanded()
     {
         return expanded;
     }
 
-    public void setExpanded(boolean expanded)
+    @Override public void setExpanded(boolean expanded)
     {
         this.expanded = expanded;
     }

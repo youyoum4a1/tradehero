@@ -1,22 +1,20 @@
 package com.tradehero.th.fragments.leaderboard;
 
 import android.os.Bundle;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.Loader;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
 import android.widget.TextView;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
-import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.tradehero.th.R;
+import com.tradehero.th.adapters.LoaderDTOAdapter;
 import com.tradehero.th.api.leaderboard.LeaderboardDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
+import com.tradehero.th.loaders.ListLoader;
 import java.util.Date;
 import java.util.List;
 import javax.inject.Inject;
@@ -40,11 +38,6 @@ public class LeaderboardMarkUserListViewFragment extends BaseLeaderboardFragment
         View view = inflater.inflate(R.layout.leaderboard_listview, container, false);
 
         leaderboardMarkUserListView = (LeaderboardMarkUserListView) view.findViewById(R.id.leaderboard_listview);
-        leaderboardMarkUserListAdapter = new LeaderboardMarkUserListAdapter(
-                getActivity(), getActivity().getLayoutInflater(), null, getCurrentSortType().getLayoutResourceId());
-        leaderboardMarkUserListView.setAdapter(leaderboardMarkUserListAdapter);
-        leaderboardMarkUserListView.setOnRefreshListener(createOnRefreshListener());
-        leaderboardMarkUserListView.setEmptyView(view.findViewById(android.R.id.empty));
 
         View headerView = inflater.inflate(R.layout.leaderboard_listview_header, null);
         leaderboardMarkUserListView.getRefreshableView().addHeaderView(headerView, null, false);
@@ -75,11 +68,41 @@ public class LeaderboardMarkUserListViewFragment extends BaseLeaderboardFragment
     {
         super.onActivityCreated(savedInstanceState);
 
+        int leaderboardId = getArguments().getInt(LeaderboardDTO.LEADERBOARD_ID);
+
+        leaderboardMarkUserListAdapter = new LeaderboardMarkUserListAdapter(
+                getActivity(), getActivity().getLayoutInflater(), leaderboardId, getCurrentSortType().getLayoutResourceId());
+        leaderboardMarkUserListAdapter.setDTOLoaderCallback(new LoaderDTOAdapter.ListLoaderCallback<LeaderboardUserDTO>()
+        {
+            @Override public ListLoader<LeaderboardUserDTO> onCreateLoader(Bundle args)
+            {
+                int leaderboardId = args.getInt(LeaderboardDTO.LEADERBOARD_ID);
+                boolean includeFoF = args.getBoolean(LeaderboardDTO.INCLUDE_FOF);
+                return new LeaderboardMarkUserLoader(getActivity(), leaderboardId, getCurrentSortType(), includeFoF);
+            }
+
+            @Override public void onLoadFinished(ListLoader<LeaderboardUserDTO> loader, List<LeaderboardUserDTO> data)
+            {
+                // display marking time
+                LeaderboardMarkUserLoader leaderboardMarkUserLoader = (LeaderboardMarkUserLoader) loader;
+                Date markingTime = leaderboardMarkUserLoader.getMarkUtc();
+                if (markingTime != null && leaderboardMarkUserMarkingTime != null)
+                {
+                    leaderboardMarkUserMarkingTime.setText(prettyTime.format(markingTime));
+                }
+                leaderboardMarkUserListView.onRefreshComplete();
+            }
+        });
+        leaderboardMarkUserListView.setAdapter(leaderboardMarkUserListAdapter);
+        leaderboardMarkUserListView.setOnRefreshListener(leaderboardMarkUserListAdapter);
+        leaderboardMarkUserListView.setEmptyView(getView().findViewById(android.R.id.empty));
+
         Bundle loaderBundle = new Bundle(getArguments());
-        leaderboardMarkUserLoader = (LeaderboardMarkUserLoader) getLoaderManager()
-                .initLoader(LeaderboardMarkUserLoader.UNIQUE_LOADER_ID, loaderBundle, loaderCallback);
+        leaderboardMarkUserLoader = (LeaderboardMarkUserLoader) getActivity().getSupportLoaderManager().initLoader(
+                leaderboardId, loaderBundle, leaderboardMarkUserListAdapter.getLoaderCallback());
+
+        // when loader is available
         setSortTypeChangeListener(this);
-        leaderboardMarkUserListAdapter.setLoader(leaderboardMarkUserLoader);
     }
 
     @Override public void onSortTypeChange(LeaderboardSortType sortType)
@@ -99,21 +122,6 @@ public class LeaderboardMarkUserListViewFragment extends BaseLeaderboardFragment
     protected void invalidateCachedItemView()
     {
         leaderboardMarkUserListView.setAdapter(leaderboardMarkUserListAdapter);
-    }
-
-    private PullToRefreshBase.OnRefreshListener<ListView> createOnRefreshListener()
-    {
-        return new PullToRefreshBase.OnRefreshListener<ListView>()
-        {
-            @Override public void onRefresh(PullToRefreshBase<ListView> refreshView)
-            {
-                Loader loader = getLoaderManager().getLoader(LeaderboardMarkUserLoader.UNIQUE_LOADER_ID);
-                if (loader instanceof LeaderboardMarkUserLoader)
-                {
-                    ((LeaderboardMarkUserLoader) loader).loadPrevious();
-                }
-            }
-        };
     }
 
     //<editor-fold desc="ActionBar">
@@ -137,44 +145,6 @@ public class LeaderboardMarkUserListViewFragment extends BaseLeaderboardFragment
         }
         return super.onOptionsItemSelected(item);
     }
-    //</editor-fold>
-
-    //<editor-fold desc="Loader callback">
-    private LoaderManager.LoaderCallbacks<List<LeaderboardUserDTO>> loaderCallback = new LoaderManager.LoaderCallbacks<List<LeaderboardUserDTO>>()
-    {
-        @Override public Loader<List<LeaderboardUserDTO>> onCreateLoader(int id, Bundle bundle)
-        {
-            int leaderboardId = bundle.getInt(LeaderboardDTO.LEADERBOARD_ID);
-            LeaderboardSortType currentSortType = getCurrentSortType();
-            boolean includeFoF = bundle.getBoolean(LeaderboardDTO.INCLUDE_FOF);
-            return new LeaderboardMarkUserLoader(getActivity(), leaderboardId, currentSortType, includeFoF);
-        }
-
-        @Override public void onLoadFinished(Loader<List<LeaderboardUserDTO>> loader, List<LeaderboardUserDTO> items)
-        {
-            // modify data set
-            if (leaderboardMarkUserListAdapter.getCount() == 0)
-            {
-                leaderboardMarkUserListAdapter.setUnderlyingItems(items);
-            }
-
-            // display marking time
-            LeaderboardMarkUserLoader leaderboardMarkUserLoader = (LeaderboardMarkUserLoader) loader;
-            Date markingTime = leaderboardMarkUserLoader.getMarkUtc();
-            if (markingTime != null && leaderboardMarkUserMarkingTime != null)
-            {
-                leaderboardMarkUserMarkingTime.setText(prettyTime.format(markingTime));
-            }
-
-            leaderboardMarkUserListAdapter.notifyDataSetChanged();
-            leaderboardMarkUserListView.onRefreshComplete();
-        }
-
-        @Override public void onLoaderReset(Loader<List<LeaderboardUserDTO>> loader)
-        {
-            // TODO what should do when loader is reset
-        }
-    };
     //</editor-fold>
 
     @Override public boolean isTabBarVisible()

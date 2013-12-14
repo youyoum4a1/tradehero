@@ -85,7 +85,7 @@ public class LeaderboardPositionListFragment extends PositionListFragment
     @SuppressWarnings("unchecked")
     private void linkWith(GetLeaderboardPositionsDTO leaderboardPositionsDTO, boolean andDisplay)
     {
-        if (leaderboardPositionsDTO != null)
+        if (leaderboardPositionsDTO != null && ownedPortfolioId != null)
         {
             positionItemAdapter.setPositions(leaderboardPositionsDTO.positions, ownedPortfolioId.getPortfolioId());
             restoreExpandingStates();

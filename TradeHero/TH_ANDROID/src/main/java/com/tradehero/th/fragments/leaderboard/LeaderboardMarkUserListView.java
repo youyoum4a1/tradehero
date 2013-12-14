@@ -54,7 +54,7 @@ public class LeaderboardMarkUserListView extends PullToRefreshListView
         super.onDetachedFromWindow();
     }
 
-    @Override public void setOnItemClickListener(AdapterView.OnItemClickListener listener)
+    @Override public final void setOnItemClickListener(AdapterView.OnItemClickListener listener)
     {
         throw new IllegalArgumentException("You are trying to override the default listener");
     }

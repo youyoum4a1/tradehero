@@ -35,14 +35,14 @@ import javax.inject.Inject;
 
 /** Created with IntelliJ IDEA. User: tho Date: 10/21/13 Time: 4:14 PM Copyright (c) TradeHero */
 public class LeaderboardMarkUserItemView extends RelativeLayout
-        implements DTOView<LeaderboardMarkUserListAdapter.ExpandableLeaderboardUserRankItemWrapper>,View.OnClickListener
+        implements DTOView<LeaderboardUserDTO>, View.OnClickListener
 {
     @Inject protected Lazy<Picasso> picasso;
     @Inject protected Lazy<LeaderboardDefCache> leaderboardDefCache;
     @Inject protected CurrentUserBaseKeyHolder currentUserBaseKeyHolder;
 
     // data
-    private LeaderboardMarkUserListAdapter.ExpandableLeaderboardUserRankItemWrapper leaderboardItem;
+    private LeaderboardUserDTO leaderboardItem;
 
     // top view
     private TextView lbmuDisplayName;
@@ -157,12 +157,12 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         super.onDetachedFromWindow();
     }
 
-    @Override public void display(LeaderboardMarkUserListAdapter.ExpandableLeaderboardUserRankItemWrapper expandableItem)
+    @Override public void display(LeaderboardUserDTO expandableItem)
     {
         linkWith(expandableItem, true);
     }
 
-    private void linkWith(LeaderboardMarkUserListAdapter.ExpandableLeaderboardUserRankItemWrapper expandableItem, boolean andDisplay)
+    private void linkWith(LeaderboardUserDTO expandableItem, boolean andDisplay)
     {
         this.leaderboardItem = expandableItem;
         if (leaderboardItem != null)
@@ -177,7 +177,7 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
 
     private void display()
     {
-        if (leaderboardItem == null || leaderboardItem.getModel() == null)
+        if (leaderboardItem == null)
         {
             return;
         }
@@ -188,20 +188,18 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
 
     private void displayTopSection()
     {
-        LeaderboardUserDTO dto = leaderboardItem.getModel();
-
         lbmuPosition.setText("" + (leaderboardItem.getPosition() + 1));
-        lbmuDisplayName.setText(dto.displayName);
-        lbmuHeroQuotient.setText(dto.getHeroQuotientFormatted());
+        lbmuDisplayName.setText(leaderboardItem.displayName);
+        lbmuHeroQuotient.setText(leaderboardItem.getHeroQuotientFormatted());
         if (lbmuFoF != null)
         {
-            lbmuFoF.setVisibility(leaderboardItem.isIncludeFoF() && !StringUtils.isNullOrEmptyOrSpaces(dto.friendOf_markupString) ? VISIBLE : GONE);
-            lbmuFoF.setText(dto.friendOf_markupString);
+            lbmuFoF.setVisibility(leaderboardItem.isIncludeFoF() && !StringUtils.isNullOrEmptyOrSpaces(leaderboardItem.friendOf_markupString) ? VISIBLE : GONE);
+            lbmuFoF.setText(leaderboardItem.friendOf_markupString);
         }
 
-        if (dto.picture != null)
+        if (leaderboardItem.picture != null)
         {
-            picasso.get().load(dto.picture)
+            picasso.get().load(leaderboardItem.picture)
                     .transform(new RoundedShapeTransformation())
                     .into(lbmuProfilePicture);
         }
@@ -215,62 +213,60 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
 
     private void displayExpandableSection()
     {
-        LeaderboardUserDTO dto = leaderboardItem.getModel();
-
         // display P&L
-        lbmuPl.setText(dto.getFormattedPL() + " " + getContext().getString(R.string.ref_currency));
+        lbmuPl.setText(leaderboardItem.getFormattedPL() + " " + getContext().getString(R.string.ref_currency));
         String periodFormat = getContext().getString(R.string.leaderboard_ranking_period);
 
         // display period
         SimpleDateFormat sdf = new SimpleDateFormat(getContext().getString(R.string.leaderboard_datetime_format));
-        String formattedStartPeriodUtc = sdf.format(dto.periodStartUtc);
-        String formattedEndPeriodUtc = sdf.format(dto.periodEndUtc);
+        String formattedStartPeriodUtc = sdf.format(leaderboardItem.periodStartUtc);
+        String formattedEndPeriodUtc = sdf.format(leaderboardItem.periodEndUtc);
         String period = String.format(periodFormat, formattedStartPeriodUtc, formattedEndPeriodUtc);
         lbmuPeriod.setText(period);
 
         // display Roi
-        THSignedNumber roi = new THSignedNumber(THSignedNumber.TYPE_PERCENTAGE, dto.roiInPeriod * 100);
+        THSignedNumber roi = new THSignedNumber(THSignedNumber.TYPE_PERCENTAGE, leaderboardItem.roiInPeriod * 100);
         lbmuRoi.setText(roi.toString());
         lbmuRoi.setTextColor(getResources().getColor(roi.getColor()));
 
         // display Roi annualized
-        THSignedNumber roiAnnualizedVal = new THSignedNumber(THSignedNumber.TYPE_PERCENTAGE, dto.roiAnnualizedInPeriod * 100);
+        THSignedNumber roiAnnualizedVal = new THSignedNumber(THSignedNumber.TYPE_PERCENTAGE, leaderboardItem.roiAnnualizedInPeriod * 100);
         String roiAnnualizedFormat = getContext().getString(R.string.leaderboard_roi_annualized);
         String roiAnnualized = String.format(roiAnnualizedFormat, roiAnnualizedVal.toString());
         lbmuRoiAnnualized.setText(Html.fromHtml(roiAnnualized));
 
         // benchmark roi
-        THSignedNumber benchmarkRoiInPeriodVal = new THSignedNumber(THSignedNumber.TYPE_PERCENTAGE, dto.getBenchmarkRoiInPeriod() * 100);
+        THSignedNumber benchmarkRoiInPeriodVal = new THSignedNumber(THSignedNumber.TYPE_PERCENTAGE, leaderboardItem.getBenchmarkRoiInPeriod() * 100);
         String benchmarkRoiInPeriodFormat = getContext().getString(R.string.leaderboard_benchmark_roi_format);
         String benchmarkRoiInPeriod = String.format(benchmarkRoiInPeriodFormat, benchmarkRoiInPeriodVal.toString());
         lbmuBenchmarkRoi.setText(Html.fromHtml(benchmarkRoiInPeriod));
 
         // sharpe ratio
-        lbmuSharpeRatio.setText(dto.getFormattedSharpeRatio());
+        lbmuSharpeRatio.setText(leaderboardItem.getFormattedSharpeRatio());
 
         // volatility
         String volatilityFormat = getContext().getString(R.string.leaderboard_volatility);
-        String volatility = String.format(volatilityFormat, dto.getVolatility());
+        String volatility = String.format(volatilityFormat, leaderboardItem.getVolatility());
         lbmuVolatility.setText(Html.fromHtml(volatility));
 
         // number of positions holding
-        lbmuPositionsCount.setText("" + dto.numberOfPositionsInPeriod);
+        lbmuPositionsCount.setText("" + leaderboardItem.numberOfPositionsInPeriod);
 
         // number of trades
         String numberOfTradeFormat = getContext().getString(
-                dto.getNumberOfTrades() > 1 ? R.string.leaderboard_number_of_trades_plural : R.string.leaderboard_number_of_trade);
-        String numberOfTrades = String.format(numberOfTradeFormat, dto.getNumberOfTrades());
+                leaderboardItem.getNumberOfTrades() > 1 ? R.string.leaderboard_number_of_trades_plural : R.string.leaderboard_number_of_trade);
+        String numberOfTrades = String.format(numberOfTradeFormat, leaderboardItem.getNumberOfTrades());
         lbmuNumberOfTrades.setText(Html.fromHtml(numberOfTrades));
 
         // average days held
-        lbmuAvgDaysHeld.setText(NumberDisplayUtils.formatWithRelevantDigits((double) dto.avgHoldingPeriodMins / (60*24), 3));
+        lbmuAvgDaysHeld.setText(NumberDisplayUtils.formatWithRelevantDigits((double) leaderboardItem.avgHoldingPeriodMins / (60*24), 3));
         String winRatioFormat = getContext().getString(R.string.leaderboard_win_ratio);
-        String winRatio = String.format(winRatioFormat, NumberDisplayUtils.formatWithRelevantDigits(dto.getWinRatio() * 100, 3));
+        String winRatio = String.format(winRatioFormat, NumberDisplayUtils.formatWithRelevantDigits(leaderboardItem.getWinRatio() * 100, 3));
         lbmuWinRatio.setText(winRatio);
 
         // followers & comments count
-        lbmuFollowersCount.setText("" + dto.getTotalFollowersCount());
-        lbmuCommentsCount.setText("" + dto.getCommentsCount());
+        lbmuFollowersCount.setText("" + leaderboardItem.getTotalFollowersCount());
+        lbmuCommentsCount.setText("" + leaderboardItem.getCommentsCount());
     }
 
     @Override public void onClick(View view)
@@ -291,22 +287,20 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
 
     private void handleOpenPositionListClicked()
     {
-        LeaderboardUserDTO model = leaderboardItem.getModel();
-
-        int userId = model.id;
+        int userId = leaderboardItem.id;
 
         // portfolio, to display position list
-        int portfolioId = leaderboardItem.getModel().portfolioId;
+        int portfolioId = leaderboardItem.portfolioId;
         OwnedPortfolioId ownedPortfolioId = new OwnedPortfolioId(userId, portfolioId);
 
         // leaderboard mark user id, to get marking user information
         Bundle bundle = new Bundle();
         bundle.putBundle(LeaderboardPositionListFragment.BUNDLE_KEY_SHOW_PORTFOLIO_ID_BUNDLE, ownedPortfolioId.getArgs());
-        bundle.putLong(LeaderboardMarkUserId.BUNDLE_KEY, model.lbmuId);
+        bundle.putLong(LeaderboardMarkUserId.BUNDLE_KEY, leaderboardItem.lbmuId);
 
         // to display time of value on start investment
         SimpleDateFormat sdf = new SimpleDateFormat(getContext().getString(R.string.leaderboard_datetime_format));
-        String formattedStartPeriodUtc = sdf.format(model.periodStartUtc);
+        String formattedStartPeriodUtc = sdf.format(leaderboardItem.periodStartUtc);
         bundle.putString(LeaderboardUserDTO.LEADERBOARD_PERIOD_START_STRING, formattedStartPeriodUtc);
 
         // get leaderboard definition from cache, supposedly it exists coz this view appears after leaderboard definition list
@@ -324,7 +318,7 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
 
     private void handleOpenProfileButtonClicked()
     {
-        int userId = leaderboardItem.getModel().id;
+        int userId = leaderboardItem.id;
 
         Bundle b = new Bundle();
         b.putInt(TimelineFragment.BUNDLE_KEY_SHOW_USER_ID, userId);

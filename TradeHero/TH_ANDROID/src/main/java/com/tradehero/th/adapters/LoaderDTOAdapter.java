@@ -21,10 +21,10 @@ public abstract class LoaderDTOAdapter<
     private int loaderId;
     private ListLoaderCallback<DTOType> callback;
 
-    public LoaderDTOAdapter(Context context, LayoutInflater inflater, int timelineLoaderId, int layoutResourceId)
+    public LoaderDTOAdapter(Context context, LayoutInflater inflater, int loaderId, int layoutResourceId)
     {
         super(context, inflater, layoutResourceId);
-        loaderId = timelineLoaderId;
+        this.loaderId = loaderId;
     }
 
     @Override public int getCount()
@@ -41,7 +41,7 @@ public abstract class LoaderDTOAdapter<
     {
         if (context instanceof FragmentActivity)
         {
-            Loader loader = (Loader) ((FragmentActivity) context).getSupportLoaderManager().getLoader(loaderId);
+            Loader loader = (Loader) ((FragmentActivity) context).getSupportLoaderManager().getLoader(getLoaderId());
             return (LoaderType) loader;
         }
         throw new IllegalArgumentException("Context has to be FragmentActivity");
@@ -60,9 +60,10 @@ public abstract class LoaderDTOAdapter<
             @Override public void onLoadFinished(Loader<List<DTOType>> loader, List<DTOType> data)
             {
                 notifyDataSetChanged();
-                if (callback != null)
+
+                if (loader instanceof ListLoader)
                 {
-                    callback.onLoadFinished(loader, data);
+                    callback.onLoadFinished((ListLoader<DTOType>) loader, data);
                 }
             }
 
@@ -81,6 +82,11 @@ public abstract class LoaderDTOAdapter<
         this.callback = callback;
     }
 
+    public int getLoaderId()
+    {
+        return loaderId;
+    }
+
     public static abstract class ListLoaderCallback<DTOType>
             implements LoaderManager.LoaderCallbacks<List<DTOType>>
     {
@@ -89,12 +95,19 @@ public abstract class LoaderDTOAdapter<
             return onCreateLoader(args);
         }
 
-        @Override public void onLoaderReset(Loader<List<DTOType>> loader)
+        @Override public final void onLoaderReset(Loader<List<DTOType>> loader)
         {
             throw new IllegalAccessError("This method should not be call!");
         }
 
-        public abstract ListLoader<DTOType> onCreateLoader(Bundle args);
+        @Override public final void onLoadFinished(Loader<List<DTOType>> loader, List<DTOType> data)
+        {
+            throw new IllegalAccessError("This method should not be call");
+        }
+
+        protected abstract void onLoadFinished(ListLoader<DTOType> loader, List<DTOType> data);
+
+        protected abstract ListLoader<DTOType> onCreateLoader(Bundle args);
 
         protected void onLoaderReset(ListLoader<DTOType> loader)
         {

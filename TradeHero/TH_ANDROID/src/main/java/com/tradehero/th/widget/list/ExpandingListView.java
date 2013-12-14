@@ -5,6 +5,7 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import com.tradehero.th.adapters.ExpandableItem;
 import com.tradehero.th.adapters.ExpandableListItem;
 import com.tradehero.th.R;
 import com.tradehero.th.api.position.OwnedPositionId;
@@ -51,12 +52,12 @@ public class ExpandingListView extends ListView
                 }
 
                 Object o = getItemAtPosition(getPositionForView(view));
-                if (o == null || !(o instanceof ExpandableListItem))
+                if (o == null || !(o instanceof ExpandableItem))
                 {
                     return;
                 }
 
-                ExpandableListItem viewObject = (ExpandableListItem) o;
+                ExpandableItem viewObject = (ExpandableItem) o;
                 if (!viewObject.isExpanded())
                 {
                     expandView(view);
@@ -79,7 +80,7 @@ public class ExpandingListView extends ListView
         });
     }
 
-    @Override public void setOnItemClickListener(OnItemClickListener listener)
+    @Override public final void setOnItemClickListener(OnItemClickListener listener)
     {
         throw new IllegalArgumentException("You are trying to override the default listener");
     }

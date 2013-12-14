@@ -112,7 +112,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         linkWith(newUserBaseKey, true);
 
         getActivity().getSupportLoaderManager()
-                .initLoader(newUserBaseKey.key, null, timelineAdapter.getLoaderCallback());
+                .initLoader(timelineAdapter.getLoaderId(), null, timelineAdapter.getLoaderCallback());
     }
 
     //<editor-fold desc="Display methods">
@@ -131,12 +131,10 @@ public class TimelineFragment extends BasePurchaseManagerFragment
 
         if (userBaseKey != null)
         {
-            getUserProfileRetrievedMilestone().setOnCompleteListener(
-                    userProfileRetrievedMilestoneListener);
+            getUserProfileRetrievedMilestone().setOnCompleteListener(userProfileRetrievedMilestoneListener);
             getUserProfileRetrievedMilestone().launch();
 
-            getPortfolioCompactListRetrievedMilestone().setOnCompleteListener(
-                    portfolioCompactListRetrievedMilestoneListener);
+            getPortfolioCompactListRetrievedMilestone().setOnCompleteListener(portfolioCompactListRetrievedMilestoneListener);
             getPortfolioCompactListRetrievedMilestone().launch();
         }
     }
@@ -210,7 +208,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         {
 
             @Override
-            public void onLoadFinished(Loader<List<TimelineItem>> loader, List<TimelineItem> data)
+            public void onLoadFinished(ListLoader<TimelineItem> loader, List<TimelineItem> data)
             {
                 timelineListView.onRefreshComplete();
             }

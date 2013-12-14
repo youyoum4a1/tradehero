@@ -3,6 +3,7 @@ package com.tradehero.th.widget.list;
 import android.view.View;
 import android.widget.AdapterView;
 import com.tradehero.th.R;
+import com.tradehero.th.adapters.ExpandableItem;
 import com.tradehero.th.adapters.ExpandableListItem;
 import javax.inject.Inject;
 
@@ -29,7 +30,12 @@ public class DefaultExpandingListViewListener implements ExpandingListView.Expan
 
     @Override public void onItemClick(AdapterView<?> parent, View view, int position, long id)
     {
-        ExpandableListItem viewObject = (ExpandableListItem) parent.getItemAtPosition(parent.getPositionForView(view));
+        Object o = parent.getItemAtPosition(parent.getPositionForView(view));
+        if (o == null || !(o instanceof ExpandableItem))
+        {
+            return;
+        }
+        ExpandableItem viewObject = (ExpandableItem) o;
         if (!viewObject.isExpanded())
         {
             viewObject.setExpanded(true);
