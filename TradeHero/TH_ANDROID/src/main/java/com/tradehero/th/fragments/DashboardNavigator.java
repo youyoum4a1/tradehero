@@ -28,7 +28,7 @@ public class DashboardNavigator extends Navigator
     public DashboardNavigator(Context context, FragmentManager manager, int fragmentContentId, boolean withTab)
     {
         super(context, manager, fragmentContentId);
-        this.activity = (FragmentActivity)context;
+        this.activity = (FragmentActivity) context;
 
         if (withTab)
         {
@@ -48,7 +48,7 @@ public class DashboardNavigator extends Navigator
             }
         });
 
-        for (DashboardTabType tabType: DashboardTabType.values())
+        for (DashboardTabType tabType : DashboardTabType.values())
         {
             addNewTab(tabType);
         }
@@ -78,13 +78,13 @@ public class DashboardNavigator extends Navigator
         Bundle b = new Bundle();
         b.putString(BUNDLE_KEY, activity.getString(tabType.stringResId));
         mTabHost.addTab(
-            makeTabSpec(tabType)
-                .setIndicator(
-                        "",
-                        activity.getResources().getDrawable(tabType.drawableResId)
-                ),
-            tabType.fragmentClass,
-            b);
+                makeTabSpec(tabType)
+                        .setIndicator(
+                                "",
+                                activity.getResources().getDrawable(tabType.drawableResId)
+                        ),
+                tabType.fragmentClass,
+                b);
     }
 
     public void goToTab(DashboardTabType tabType)
@@ -123,7 +123,6 @@ public class DashboardNavigator extends Navigator
             {
                 updateTabBarOnNavigate(null);
             }
-
         }
         THLog.d(TAG, "BackstackCount " + manager.getBackStackEntryCount());
     }
@@ -153,15 +152,21 @@ public class DashboardNavigator extends Navigator
 
     private void showTabBar()
     {
-        mTabHost.getTabWidget().setVisibility(View.VISIBLE);
-        mTabHost.getTabWidget()
-                .startAnimation(AnimationUtils.loadAnimation(activity, R.anim.slide_in));
+        View tabBar = mTabHost.findViewById(android.R.id.tabhost);
+        if (tabBar != null)
+        {
+            tabBar.setVisibility(View.VISIBLE);
+            tabBar.startAnimation(AnimationUtils.loadAnimation(activity, R.anim.slide_in));
+        }
     }
 
     private void hideTabBar()
     {
-        mTabHost.getTabWidget()
-                .startAnimation(AnimationUtils.loadAnimation(activity, R.anim.slide_out));
-        mTabHost.getTabWidget().setVisibility(View.GONE);
+        View tabBar = mTabHost.findViewById(android.R.id.tabhost);
+        if (tabBar != null)
+        {
+            tabBar.startAnimation(AnimationUtils.loadAnimation(activity, R.anim.slide_out));
+            tabBar.setVisibility(View.GONE);
+        }
     }
 }
