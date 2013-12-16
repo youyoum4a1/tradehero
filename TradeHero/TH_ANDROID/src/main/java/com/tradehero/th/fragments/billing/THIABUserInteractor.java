@@ -367,7 +367,10 @@ public class THIABUserInteractor
 
     protected void handleShowSkuDetailsMilestoneFailed(Throwable throwable)
     {
-        // Nothing to do unless overridden
+        if (progressDialog != null)
+        {
+            progressDialog.hide();
+        }
     }
 
     protected void handleShowSkuDetailsMilestoneComplete()

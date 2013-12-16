@@ -1180,6 +1180,12 @@ public class BuySellFragment extends AbstractBuySellFragment
             super.handleShowSkuDetailsMilestoneComplete();
             displayTradeQuantityView();
         }
+
+        @Override protected void handleShowSkuDetailsMilestoneFailed(Throwable throwable)
+        {
+            super.handleShowSkuDetailsMilestoneFailed(throwable);
+            THLog.e(TAG, "Failed to load the sku details", throwable);
+        }
     }
 
     protected class BuySellFreshQuoteListener extends AbstractBuySellFreshQuoteListener
