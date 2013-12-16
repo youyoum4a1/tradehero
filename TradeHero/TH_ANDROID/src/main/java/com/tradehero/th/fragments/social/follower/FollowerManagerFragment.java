@@ -32,19 +32,16 @@ public class FollowerManagerFragment extends BasePurchaseManagerFragment
 {
     public static final String TAG = FollowerManagerFragment.class.getSimpleName();
 
-    private TextView totalRevenue;
-    private TextView totalAmountPaid;
-    private TextView followersCount;
-    private ListView followerList;
-    private ProgressBar progressBar;
+    public static final String BUNDLE_KEY_FOLLOWED_ID = FollowerManagerFragment.class.getName() + ".followedId";
+
+    private FollowerManagerViewContainer viewContainer;
 
     private FollowerAndPayoutListItemAdapter followerListAdapter;
+    private UserBaseKey followedId;
     private FollowerSummaryDTO followerSummaryDTO;
 
     @Inject protected CurrentUserBaseKeyHolder currentUserBaseKeyHolder;
-    @Inject protected Lazy<FollowerSummaryCache> followerSummaryCache;
-    private DTOCache.Listener<UserBaseKey, FollowerSummaryDTO> followerSummaryListener;
-    private DTOCache.GetOrFetchTask<FollowerSummaryDTO> followerSummaryFetchTask;
+    private FollowerManagerInfoFetcher infoFetcher;
 
     //<editor-fold desc="BaseFragment.TabBarVisibilityInformer">
     @Override public boolean isTabBarVisible()
@@ -62,11 +59,8 @@ public class FollowerManagerFragment extends BasePurchaseManagerFragment
 
     protected void initViews(View view)
     {
-        totalRevenue = (TextView) view.findViewById(R.id.manage_followers_total_revenue);
-        totalAmountPaid = (TextView) view.findViewById(R.id.manage_followers_total_amount_paid);
-        followersCount = (TextView) view.findViewById(R.id.manage_followers_number_followers);
-        followerList = (FollowerListView) view.findViewById(R.id.followers_list);
-        progressBar = (ProgressBar) view.findViewById(android.R.id.empty);
+        this.viewContainer = new FollowerManagerViewContainer(view);
+        this.infoFetcher = new FollowerManagerInfoFetcher(new FollowerManagerFollowerSummaryListener());
 
         if (followerListAdapter == null)
         {
@@ -80,16 +74,16 @@ public class FollowerManagerFragment extends BasePurchaseManagerFragment
             );
         }
 
-        if (followerList != null)
+        if (this.viewContainer.followerList != null)
         {
-            followerList.setOnItemClickListener(new AdapterView.OnItemClickListener()
+            this.viewContainer.followerList.setOnItemClickListener(new AdapterView.OnItemClickListener()
             {
                 @Override public void onItemClick(AdapterView<?> parent, View view, int position, long id)
                 {
                     handleFollowerItemClicked(view, position, id);
                 }
             });
-            followerList.setAdapter(followerListAdapter);
+            this.viewContainer.followerList.setAdapter(followerListAdapter);
         }
     }
 
@@ -104,61 +98,26 @@ public class FollowerManagerFragment extends BasePurchaseManagerFragment
     @Override public void onResume()
     {
         super.onResume();
-        fetchFollowerSummary();
+        this.followedId = new UserBaseKey(getArguments().getInt(BUNDLE_KEY_FOLLOWED_ID));
+        this.infoFetcher.fetch(this.followedId);
     }
 
     @Override public void onPause()
     {
-        followerSummaryListener = null;
-        if (followerSummaryFetchTask != null)
-        {
-            followerSummaryFetchTask.forgetListener(true);
-        }
-        followerSummaryFetchTask = null;
+        this.infoFetcher.onPause();
         super.onPause();
     }
 
     @Override public void onDestroyView()
     {
-        followerList = null;
-        followerListAdapter = null;
+        if (this.viewContainer.followerList != null)
+        {
+            this.viewContainer.followerList.setOnItemClickListener(null);
+        }
+        this.viewContainer = null;
+        this.followerListAdapter = null;
+        this.infoFetcher = null;
         super.onDestroyView();
-    }
-
-    protected void fetchFollowerSummary()
-    {
-        FollowerSummaryDTO summaryDTO = followerSummaryCache.get().get(new UserBaseKey(getApplicablePortfolioId().userId));
-        if (summaryDTO != null)
-        {
-            display(summaryDTO);
-        }
-        else
-        {
-            if (followerSummaryListener == null)
-            {
-                followerSummaryListener = new DTOCache.Listener<UserBaseKey, FollowerSummaryDTO>()
-                {
-                    @Override public void onDTOReceived(UserBaseKey key, FollowerSummaryDTO value)
-                    {
-                        displayProgress(false);
-                        display(value);
-                    }
-
-                    @Override public void onErrorThrown(UserBaseKey key, Throwable error)
-                    {
-                        displayProgress(false);
-                        THToast.show("There was an error fetching your follower summary information");
-                        THLog.e(TAG, "Failed to fetch FollowerSummary", error);
-                    }
-                };
-            }
-            if (followerSummaryFetchTask != null)
-            {
-                followerSummaryFetchTask.forgetListener(true);
-            }
-            followerSummaryFetchTask = followerSummaryCache.get().getOrFetch(new UserBaseKey(getApplicablePortfolioId().userId), followerSummaryListener);
-            followerSummaryFetchTask.execute();
-        }
     }
 
     public void display(FollowerSummaryDTO summaryDTO)
@@ -171,87 +130,34 @@ public class FollowerManagerFragment extends BasePurchaseManagerFragment
         this.followerSummaryDTO = summaryDTO;
         if (andDisplay)
         {
-            displayTotalRevenue();
-            displayTotalAmountPaid();
-            displayFollowersCount();
+            this.viewContainer.displayTotalRevenue(summaryDTO);
+            this.viewContainer.displayTotalAmountPaid(summaryDTO);
+            this.viewContainer.displayFollowersCount(summaryDTO);
             displayFollowerList();
         }
     }
 
     public void display()
     {
-        displayTotalRevenue();
-        displayTotalAmountPaid();
-        displayFollowersCount();
+        this.viewContainer.displayTotalRevenue(this.followerSummaryDTO);
+        this.viewContainer.displayTotalAmountPaid(this.followerSummaryDTO);
+        this.viewContainer.displayFollowersCount(this.followerSummaryDTO);
         displayFollowerList();
-    }
-
-    public void displayTotalRevenue()
-    {
-        if (totalRevenue != null)
-        {
-            if (followerSummaryDTO != null)
-            {
-                totalRevenue.setText(String.format("%s %,.2f", SecurityUtils.DEFAULT_VIRTUAL_CASH_CURRENCY_DISPLAY, followerSummaryDTO.totalRevenue));
-            }
-            else
-            {
-                totalRevenue.setText(R.string.na);
-            }
-        }
-    }
-
-    public void displayTotalAmountPaid()
-    {
-        if (totalAmountPaid != null)
-        {
-            if (followerSummaryDTO != null && followerSummaryDTO.payoutSummary != null)
-            {
-                totalAmountPaid.setText(String.format("%s %,.2f", SecurityUtils.DEFAULT_VIRTUAL_CASH_CURRENCY_DISPLAY, followerSummaryDTO.payoutSummary.totalPayout));
-            }
-            else if (followerSummaryDTO != null)
-            {
-                totalAmountPaid.setText("0");
-            }
-            else
-            {
-                totalAmountPaid.setText(R.string.na);
-            }
-        }
-    }
-
-    public void displayFollowersCount()
-    {
-        if (followersCount != null)
-        {
-            if (followerSummaryDTO != null && followerSummaryDTO.userFollowers != null)
-            {
-                followersCount.setText(String.format("%d", followerSummaryDTO.userFollowers.size()));
-            }
-            else if (followerSummaryDTO != null)
-            {
-                followersCount.setText("0");
-            }
-            else
-            {
-                followersCount.setText(R.string.na);
-            }
-        }
     }
 
     public void displayFollowerList()
     {
-        if (followerListAdapter != null)
+        if (this.followerListAdapter != null)
         {
-            followerListAdapter.setFollowerSummaryDTO(followerSummaryDTO);
+            this.followerListAdapter.setFollowerSummaryDTO(this.followerSummaryDTO);
         }
     }
 
     public void displayProgress(boolean running)
     {
-        if (progressBar != null)
+        if (this.viewContainer.progressBar != null)
         {
-            progressBar.setVisibility(running ? View.VISIBLE : View.GONE);
+            this.viewContainer.progressBar.setVisibility(running ? View.VISIBLE : View.GONE);
         }
     }
 
@@ -275,6 +181,22 @@ public class FollowerManagerFragment extends BasePurchaseManagerFragment
         else
         {
             THToast.show("Position clicked " + position);
+        }
+    }
+
+    private class FollowerManagerFollowerSummaryListener implements DTOCache.Listener<UserBaseKey, FollowerSummaryDTO>
+    {
+        @Override public void onDTOReceived(UserBaseKey key, FollowerSummaryDTO value)
+        {
+            displayProgress(false);
+            display(value);
+        }
+
+        @Override public void onErrorThrown(UserBaseKey key, Throwable error)
+        {
+            displayProgress(false);
+            THToast.show(R.string.error_fetch_follower);
+            THLog.e(TAG, "Failed to fetch FollowerSummary", error);
         }
     }
 }

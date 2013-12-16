@@ -12,14 +12,12 @@ import android.widget.AdapterView;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
-import com.tradehero.common.milestone.Milestone;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.social.HeroDTO;
-import com.tradehero.th.api.social.HeroDTOList;
 import com.tradehero.th.api.social.HeroIdList;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
@@ -30,9 +28,6 @@ import com.tradehero.th.fragments.billing.THIABUserInteractor;
 import com.tradehero.th.fragments.dashboard.DashboardTabType;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.persistence.social.HeroCache;
-import com.tradehero.th.persistence.social.HeroListCache;
-import com.tradehero.th.persistence.user.UserProfileCache;
-import com.tradehero.th.persistence.user.UserProfileRetrievedMilestone;
 import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
@@ -60,9 +55,7 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
     private List<HeroDTO> heroDTOs;
 
     @Inject protected Lazy<HeroCache> heroCache;
-    private HeroManagerUserProfileCacheListener userProfileListener;
-    private HeroManagerHeroListCacheListener heroListListener;
-    private HeroManagerInfoFetcher heroManagerInfoFetcher;
+    private HeroManagerInfoFetcher infoFetcher;
 
     //<editor-fold desc="BaseFragment.TabBarVisibilityInformer">
     @Override public boolean isTabBarVisible()
@@ -129,9 +122,7 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
             });
         }
 
-        this.heroListListener = new HeroManagerHeroListCacheListener();
-        this.userProfileListener = new HeroManagerUserProfileCacheListener();
-        this.heroManagerInfoFetcher = new HeroManagerInfoFetcher(this.userProfileListener, this.heroListListener);
+        this.infoFetcher = new HeroManagerInfoFetcher(new HeroManagerUserProfileCacheListener(), new HeroManagerHeroListCacheListener());
     }
 
     @Override protected void createUserInteractor()
@@ -152,15 +143,12 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
         super.onResume();
         this.followerId = new UserBaseKey(getArguments().getInt(BUNDLE_KEY_FOLLOWER_ID));
         displayProgress(true);
-        this.heroManagerInfoFetcher.fetch(this.followerId);
+        this.infoFetcher.fetch(this.followerId);
     }
 
     @Override public void onPause()
     {
-        if (this.heroManagerInfoFetcher != null)
-        {
-            this.heroManagerInfoFetcher.onPause();
-        }
+        this.infoFetcher.onPause();
 
         if (this.progressDialog != null)
         {
@@ -171,9 +159,7 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
 
     @Override public void onDestroyView()
     {
-        this.userProfileListener = null;
-        this.heroListListener = null;
-        this.heroManagerInfoFetcher = null;
+        this.infoFetcher = null;
 
         this.heroStatusButtonClickedListener = null;
         if (this.heroListAdapter != null)
@@ -327,9 +313,9 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
                 {
                     super.success(userProfileDTO, response);
                     HeroManagerFragment.this.linkWith(userProfileDTO, true);
-                    if (HeroManagerFragment.this.heroManagerInfoFetcher != null)
+                    if (HeroManagerFragment.this.infoFetcher != null)
                     {
-                        HeroManagerFragment.this.heroManagerInfoFetcher.fetchHeroes(HeroManagerFragment.this.followerId);
+                        HeroManagerFragment.this.infoFetcher.fetchHeroes(HeroManagerFragment.this.followerId);
                     }
                 }
             };

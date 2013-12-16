@@ -66,6 +66,7 @@ import com.tradehero.th.fragments.settings.SettingsPayPalFragment;
 import com.tradehero.th.fragments.settings.SettingsTransactionHistoryFragment;
 import com.tradehero.th.fragments.social.follower.FollowerListItemView;
 import com.tradehero.th.fragments.social.follower.FollowerManagerFragment;
+import com.tradehero.th.fragments.social.follower.FollowerManagerInfoFetcher;
 import com.tradehero.th.fragments.social.follower.FollowerPayoutManagerFragment;
 import com.tradehero.th.fragments.social.hero.HeroListItemView;
 import com.tradehero.th.fragments.social.hero.HeroManagerFragment;
@@ -214,6 +215,7 @@ import org.ocpsoft.prettytime.PrettyTime;
                 HeroManagerFragment.class,
                 HeroListItemView.class,
                 FollowerManagerFragment.class,
+                FollowerManagerInfoFetcher.class,
                 FollowerPayoutManagerFragment.class,
                 FollowerListItemView.class,
 

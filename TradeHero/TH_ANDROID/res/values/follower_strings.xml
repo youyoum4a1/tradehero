@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="error_fetch_follower">There was an error when fetching the follower information</string>
+</resources>

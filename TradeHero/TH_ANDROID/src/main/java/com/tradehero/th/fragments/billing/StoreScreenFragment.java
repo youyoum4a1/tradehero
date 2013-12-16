@@ -119,11 +119,11 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
                 break;
 
             case StoreItemAdapter.POSITION_MANAGE_HEROES:
-                pushHeroFragmentWhenReady();
+                pushHeroFragment();
                 break;
 
             case StoreItemAdapter.POSITION_MANAGE_FOLLOWERS:
-                pushFollowerFragmentWhenReady();
+                pushFollowerFragment();
                 break;
 
             default:
@@ -132,7 +132,7 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
         }
     }
 
-    protected void pushHeroFragmentWhenReady()
+    protected void pushHeroFragment()
     {
         Bundle bundle = new Bundle();
         bundle.putInt(HeroManagerFragment.BUNDLE_KEY_FOLLOWER_ID, currentUserBaseKeyHolder.getCurrentUserBaseKey().key);
@@ -144,18 +144,16 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
         pushFragment(HeroManagerFragment.class, bundle);
     }
 
-    protected void pushFollowerFragmentWhenReady()
+    protected void pushFollowerFragment()
     {
-        userInteractor.waitForSkuDetailsMilestoneComplete(new Runnable()
+        Bundle bundle = new Bundle();
+        bundle.putInt(FollowerManagerFragment.BUNDLE_KEY_FOLLOWED_ID, currentUserBaseKeyHolder.getCurrentUserBaseKey().key);
+        OwnedPortfolioId applicablePortfolio = userInteractor.getApplicablePortfolioId();
+        if (applicablePortfolio != null)
         {
-            @Override public void run()
-            {
-                OwnedPortfolioId applicablePortfolio = userInteractor.getApplicablePortfolioId();
-                Bundle bundle = new Bundle();
-                bundle.putBundle(FollowerManagerFragment.BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE, applicablePortfolio.getArgs());
-                pushFragment(FollowerManagerFragment.class, bundle);
-            }
-        });
+            bundle.putBundle(FollowerManagerFragment.BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE, applicablePortfolio.getArgs());
+        }
+        pushFragment(FollowerManagerFragment.class, bundle);
     }
 
     private void pushFragment(Class<? extends Fragment> fragmentClass)
