@@ -4,6 +4,11 @@ package com.tradehero.th.api.security;
 public class TrendingBasicSecurityListType extends TrendingSecurityListType
 {
     //<editor-fold desc="Constructors">
+    public TrendingBasicSecurityListType(TrendingSecurityListType other)
+    {
+        super(other);
+    }
+
     public TrendingBasicSecurityListType(String exchange, Integer page, Integer perPage)
     {
         super(exchange, page, perPage);

@@ -9,6 +9,12 @@ public class TrendingSecurityListType extends SecurityListType
     public final String exchange;
 
     //<editor-fold desc="Constructor">
+    protected TrendingSecurityListType(TrendingSecurityListType other)
+    {
+        super(other);
+        this.exchange = other.exchange;
+    }
+
     public TrendingSecurityListType(String exchange, Integer page, Integer perPage)
     {
         super(page, perPage);

@@ -4,6 +4,11 @@ package com.tradehero.th.api.security;
 public class TrendingVolumeSecurityListType extends TrendingSecurityListType
 {
     //<editor-fold desc="Constructors">
+    public TrendingVolumeSecurityListType(TrendingSecurityListType other)
+    {
+        super(other);
+    }
+
     public TrendingVolumeSecurityListType(String exchange, Integer page, Integer perPage)
     {
         super(exchange, page, perPage);

@@ -6,10 +6,16 @@ import com.tradehero.common.persistence.DTOKey;
 /** Created with IntelliJ IDEA. User: xavier Date: 10/3/13 Time: 5:05 PM To change this template use File | Settings | File Templates. */
 abstract public class SecurityListType implements Comparable<SecurityListType>, PagedDTOKey
 {
-    private Integer page;
+    public final Integer page;
     public final Integer perPage;
 
     //<editor-fold desc="Constructors">
+    protected SecurityListType(SecurityListType other)
+    {
+        this.page = other.page;
+        this.perPage = other.perPage;
+    }
+
     protected SecurityListType(Integer page, Integer perPage)
     {
         this.page = page;
@@ -87,11 +93,6 @@ abstract public class SecurityListType implements Comparable<SecurityListType>, 
     @Override public Integer getPage()
     {
         return page;
-    }
-
-    @Override public void setPage(Integer page)
-    {
-        this.page = page;
     }
 
     @Override public String toString()

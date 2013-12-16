@@ -1,6 +1,7 @@
 package com.tradehero.common.widget;
 
 import android.widget.AbsListView;
+import com.tradehero.common.utils.THLog;
 
 /**
  * It raises the flag when near the end.
@@ -24,7 +25,7 @@ abstract public class FlagNearEndScrollListener implements AbsListView.OnScrollL
         this(DEFAULT_VISIBLE_THRESHOLD);
     }
 
-    public FlagNearEndScrollListener(int visibleThreshold)
+    public FlagNearEndScrollListener(final int visibleThreshold)
     {
         this.visibleThreshold = visibleThreshold;
     }
@@ -32,7 +33,7 @@ abstract public class FlagNearEndScrollListener implements AbsListView.OnScrollL
 
     public boolean isNearEnd()
     {
-        return nearEnd;
+        return this.nearEnd;
     }
 
     public void lowerFlag()
@@ -49,7 +50,7 @@ abstract public class FlagNearEndScrollListener implements AbsListView.OnScrollL
 
     public boolean isActive()
     {
-        return active;
+        return this.active;
     }
 
     public void activate()
@@ -62,13 +63,13 @@ abstract public class FlagNearEndScrollListener implements AbsListView.OnScrollL
         this.active = false;
     }
 
-    @Override public void onScrollStateChanged(AbsListView view, int scrollState)
+    @Override public void onScrollStateChanged(final AbsListView view, final int scrollState)
     {
     }
 
-    @Override public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount)
+    @Override public void onScroll(final AbsListView view, final int firstVisibleItem, final int visibleItemCount, final int totalItemCount)
     {
-        if (active && !nearEnd && (totalItemCount - visibleItemCount) <= (firstVisibleItem + visibleThreshold))
+        if (this.active && !this.nearEnd && (totalItemCount - visibleItemCount) <= (firstVisibleItem + this.visibleThreshold))
         {
             //THLog.d(TAG, "onScroll first: " + firstVisibleItem + ", visiCount: " + visibleItemCount + ", totalCount: " + totalItemCount);
             raiseFlag();

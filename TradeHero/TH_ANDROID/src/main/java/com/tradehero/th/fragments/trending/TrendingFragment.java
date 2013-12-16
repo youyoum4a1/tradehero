@@ -1,7 +1,8 @@
 package com.tradehero.th.fragments.trending;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.Loader;
 import android.support.v4.view.ViewPager;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
@@ -12,28 +13,21 @@ import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
-import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THLog;
-import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.FlagNearEndScrollListener;
 import com.tradehero.th.R;
 import com.tradehero.th.api.market.ExchangeStringId;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.SecurityIdList;
-import com.tradehero.th.api.security.SecurityListType;
 import com.tradehero.th.api.security.TrendingSecurityListType;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.trade.BuySellFragment;
-import com.tradehero.th.persistence.security.SecurityCompactListCache;
-import dagger.Lazy;
-import java.util.ArrayList;
-import java.util.List;
-import javax.inject.Inject;
+import com.tradehero.th.loaders.PagedDTOCacheLoader;
+import com.tradehero.th.loaders.security.SecurityListPagedLoader;
 
 public class TrendingFragment extends DashboardFragment
 {
@@ -42,7 +36,8 @@ public class TrendingFragment extends DashboardFragment
     public final static String BUNDLE_KEY_FILTER_PAGE = TrendingFragment.class.getName() + ".filterPage";
     public final static String BUNDLE_KEY_SELECTED_EXCHANGE_NAMES = TrendingFragment.class.getName() + ".selectedExchangeNames";
     public final static int FIRST_PAGE = 1;
-    public final static int DEFAULT_PER_PAGE = 30;
+    public final static int DEFAULT_PER_PAGE = 10;
+    public final static int SECURITY_ID_LIST_LOADER_ID = 0;
 
     public final static float MIN_FLING_VELOCITY_Y_FOR_HIDE_FILTER = 1000f;
 
@@ -50,6 +45,8 @@ public class TrendingFragment extends DashboardFragment
     private TrendingFilterPagerAdapter mTrendingFilterPagerAdapter;
     private TrendingOnPreviousNextListener onPreviousNextListener;
     private TrendingOnPositionedExchangeSelectionChangedListener exchangeSelectionChangedListener;
+    private TrendingOnQueryingChangedListener queryingChangedListener;
+    private TrendingOnNoMorePagesChangedListener noMorePagesChangedListener;
 
     private ProgressBar mProgressSpinner;
     private AbsListView mTrendingGridView;
@@ -58,20 +55,13 @@ public class TrendingFragment extends DashboardFragment
 
     private int filterPageSelected = 0;
     private ExchangeStringId[] selectedExchangeStringIds = new ExchangeStringId[TrendingFilterSelectorUtil.FRAGMENT_COUNT];
-    private boolean querying;
-    @Inject Lazy<SecurityCompactListCache> securityCompactListCache;
-    private DTOCache.GetOrFetchTask<SecurityIdList> trendingTask;
-    private TrendingSecurityListCacheListener trendingCacheListener;
-    private List<SecurityId> securityIds;
-    private int currentlyLoadingPage;
-    private int lastLoadedPage;
     private int perPage = DEFAULT_PER_PAGE;
     protected SecurityItemViewAdapter securityItemViewAdapter;
     protected int firstVisiblePosition = 0;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        THLog.d(TAG, "onCreateView");
+        //THLog.d(TAG, "onCreateView");
         if (savedInstanceState != null)
         {
             filterPageSelected = savedInstanceState.getInt(BUNDLE_KEY_FILTER_PAGE, filterPageSelected);
@@ -89,8 +79,6 @@ public class TrendingFragment extends DashboardFragment
 
     protected void initViews(View view)
     {
-        trendingCacheListener = new TrendingSecurityListCacheListener();
-
         mProgressSpinner = (ProgressBar) view.findViewById(R.id.progress_spinner);
         if (mProgressSpinner != null)
         {
@@ -98,6 +86,8 @@ public class TrendingFragment extends DashboardFragment
         }
 
         gridScrollListener = new TrendingFlagNearEndScrollListener();
+        queryingChangedListener = new TrendingOnQueryingChangedListener();
+        noMorePagesChangedListener = new TrendingOnNoMorePagesChangedListener();
         securityItemViewAdapter = new SecurityItemViewAdapter(getActivity(), getActivity().getLayoutInflater(), R.layout.trending_security_item);
         mTrendingGridView = (AbsListView) view.findViewById(R.id.trending_gridview);
         if (mTrendingGridView != null)
@@ -126,7 +116,7 @@ public class TrendingFragment extends DashboardFragment
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
-        THLog.i(TAG, "onCreateOptionsMenu");
+        //THLog.i(TAG, "onCreateOptionsMenu");
         super.onCreateOptionsMenu(menu, inflater);
         ActionBar actionBar = getSherlockActivity().getSupportActionBar();
         actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME);
@@ -135,16 +125,24 @@ public class TrendingFragment extends DashboardFragment
         inflater.inflate(R.menu.trending_menu, menu);
     }
 
+    @Override public void onActivityCreated(Bundle savedInstanceState)
+    {
+        super.onActivityCreated(savedInstanceState);
+        getActivity().getSupportLoaderManager().initLoader(SECURITY_ID_LIST_LOADER_ID, null, new TrendingLoaderCallback());
+    }
+
     @Override public void onResume()
     {
+        //THLog.d(TAG, "onResume");
         super.onResume();
         displayFilterPager();
-        securityItemViewAdapter.setItems(securityIds);
-        if (securityIds == null || securityIds.size() == 0)
-        {
-            startAnew();
-        }
         mTrendingGridView.setSelection(Math.min(firstVisiblePosition, mTrendingGridView.getCount()));
+        if (gridScrollListener != null)
+        {
+            gridScrollListener.lowerFlag();
+            gridScrollListener.activate();
+        }
+        //load();
     }
 
     @Override public boolean onOptionsItemSelected(MenuItem item)
@@ -170,7 +168,7 @@ public class TrendingFragment extends DashboardFragment
 
     @Override public void onDestroyView()
     {
-        THLog.d(TAG, "onDestroyView");
+        //THLog.d(TAG, "onDestroyView");
         if (mTrendingGridView != null)
         {
             mTrendingGridView.setOnItemClickListener(null);
@@ -178,13 +176,8 @@ public class TrendingFragment extends DashboardFragment
         }
         mTrendingGridView = null;
         gridScrollListener = null;
-
-        if (trendingTask != null)
-        {
-            trendingTask.forgetListener(true);
-        }
-        trendingTask = null;
-        trendingCacheListener = null;
+        queryingChangedListener = null;
+        noMorePagesChangedListener = null;
 
         if (mTrendingFilterPagerAdapter != null)
         {
@@ -224,49 +217,6 @@ public class TrendingFragment extends DashboardFragment
         outState.putStringArray(BUNDLE_KEY_SELECTED_EXCHANGE_NAMES, exchangeNames);
     }
 
-    public boolean isQuerying()
-    {
-        return querying;
-    }
-
-    protected void setQuerying(boolean querying)
-    {
-        this.querying = querying;
-        showProgressSpinner(this.querying);
-    }
-
-    protected void startAnew()
-    {
-        this.lastLoadedPage = FIRST_PAGE - 1;
-        this.currentlyLoadingPage = FIRST_PAGE - 1;
-        this.securityIds = new ArrayList<>();
-        if (gridScrollListener != null)
-        {
-            gridScrollListener.lowerFlag();
-            gridScrollListener.activate();
-        }
-    }
-
-    protected void loadNewPage(int newPage)
-    {
-        if (newPage != lastLoadedPage + 1)
-        {
-            THLog.e(TAG, "Will not load newPage " + newPage + ", lastLoadedPage " + lastLoadedPage, new Exception());
-        }
-        if (currentlyLoadingPage != FIRST_PAGE - 1 && currentlyLoadingPage != newPage)
-        {
-            THLog.e(TAG, "This page is already loading another one " + currentlyLoadingPage + ", will not load " + newPage, new Exception());
-        }
-        if (trendingTask != null)
-        {
-            trendingTask.forgetListener(true);
-        }
-        setQuerying(true);
-        currentlyLoadingPage = newPage;
-        trendingTask = securityCompactListCache.get().getOrFetch(getSecurityListType(newPage), false, trendingCacheListener);
-        trendingTask.execute();
-    }
-
     public void displayFilterPager()
     {
         getView().post(new Runnable()
@@ -279,6 +229,38 @@ public class TrendingFragment extends DashboardFragment
                 }
             }
         });
+    }
+
+    protected void forceInitialLoad()
+    {
+        Loader loader = getActivity().getSupportLoaderManager().getLoader(SECURITY_ID_LIST_LOADER_ID);
+        SecurityListPagedLoader pagedLoader = (SecurityListPagedLoader) loader;
+        pagedLoader.setQueryKey(getInitialSecurityListType());
+        if (this.gridScrollListener != null)
+        {
+            this.gridScrollListener.activate();
+            this.gridScrollListener.raiseFlag();
+        }
+        loader.forceLoad();
+    }
+
+    protected void load()
+    {
+        Loader loader = getActivity().getSupportLoaderManager().getLoader(SECURITY_ID_LIST_LOADER_ID);
+        loader.startLoading();
+    }
+
+    protected void loadNextPage()
+    {
+        Loader loader = getActivity().getSupportLoaderManager().getLoader(SECURITY_ID_LIST_LOADER_ID);
+        SecurityListPagedLoader pagedLoader = (SecurityListPagedLoader) loader;
+        pagedLoader.loadNextPage();
+        loader.startLoading();
+    }
+
+    public TrendingSecurityListType getInitialSecurityListType()
+    {
+        return getSecurityListType(FIRST_PAGE - 1);
     }
 
     public TrendingSecurityListType getSecurityListType(int page)
@@ -324,10 +306,12 @@ public class TrendingFragment extends DashboardFragment
     //<editor-fold desc="Listeners">
     private class TrendingFlagNearEndScrollListener extends FlagNearEndScrollListener
     {
+        public final String TAG = TrendingFlagNearEndScrollListener.class.getSimpleName();
+
         @Override public void raiseFlag()
         {
             super.raiseFlag();
-            loadNewPage(lastLoadedPage + 1);
+            loadNextPage();
         }
 
         @Override public void onScrollStateChanged(AbsListView view, int scrollState)
@@ -337,41 +321,6 @@ public class TrendingFragment extends DashboardFragment
             {
                 mFilterViewPager.setVisibility(View.VISIBLE);
             }
-        }
-    }
-
-    private class TrendingSecurityListCacheListener implements DTOCache.Listener<SecurityListType, SecurityIdList>
-    {
-        @Override public void onDTOReceived(SecurityListType key, SecurityIdList value)
-        {
-            THLog.d(TAG, "Received key " + key);
-            if (lastLoadedPage + 1 != key.getPage())
-            {
-                throw new IllegalStateException("We just got a wrong page; last: " + lastLoadedPage + ", received page: " + key.getPage());
-            }
-            lastLoadedPage = key.getPage();
-            currentlyLoadingPage = FIRST_PAGE - 1;
-            gridScrollListener.lowerFlag();
-            if (value == null || value.size() == 0)
-            {
-                gridScrollListener.deactivate();
-            }
-            else
-            {
-                securityIds.addAll(value);
-                securityItemViewAdapter.setItems(securityIds);
-            }
-            setQuerying(false);
-            securityItemViewAdapter.notifyDataSetChanged();
-        }
-
-        @Override public void onErrorThrown(SecurityListType key, Throwable error)
-        {
-            THToast.show(getString(R.string.error_fetch_security_list_info));
-            THLog.e(TAG, "Error fetching the list " + key, error);
-            currentlyLoadingPage = FIRST_PAGE - 1;
-            gridScrollListener.lowerFlag();
-            setQuerying(false);
         }
     }
 
@@ -443,8 +392,7 @@ public class TrendingFragment extends DashboardFragment
             selectedExchangeStringIds[fragmentPosition] = exchangeId;
             if (fragmentPosition == filterPageSelected)
             {
-                startAnew();
-                loadNewPage(FIRST_PAGE);
+                forceInitialLoad();
             }
         }
     }
@@ -459,12 +407,73 @@ public class TrendingFragment extends DashboardFragment
         @Override public void onPageSelected(int position)
         {
             filterPageSelected = position;
-            startAnew();
-            loadNewPage(FIRST_PAGE);
+            forceInitialLoad();
         }
 
         @Override public void onPageScrollStateChanged(int state)
         {
+            // TODO
+        }
+    }
+
+    private class TrendingOnQueryingChangedListener implements PagedDTOCacheLoader.OnQueryingChangedListener
+    {
+        @Override public void onQueryingChanged(boolean querying)
+        {
+            getView().post(new Runnable()
+            {
+                @Override public void run()
+                {
+                    SecurityListPagedLoader securityListPagedLoader = (SecurityListPagedLoader) (Loader) getActivity().getSupportLoaderManager().getLoader(SECURITY_ID_LIST_LOADER_ID);
+                    showProgressSpinner(securityListPagedLoader.isQuerying());
+                }
+            });
+        }
+    }
+
+    private class TrendingOnNoMorePagesChangedListener implements PagedDTOCacheLoader.OnNoMorePagesChangedListener
+    {
+        @Override public void onNoMorePagesChanged(boolean noMorePages)
+        {
+            if (gridScrollListener != null && !noMorePages)
+            {
+                // There are more pages, so we want to raise the flag  when at the end.
+                gridScrollListener.lowerFlag();
+            }
+            else if (gridScrollListener != null)
+            {
+                gridScrollListener.deactivate();
+            }
+        }
+    }
+
+    private class TrendingLoaderCallback implements LoaderManager.LoaderCallbacks<SecurityIdList>
+    {
+        @Override public Loader<SecurityIdList> onCreateLoader(int id, Bundle args)
+        {
+            if (id == SECURITY_ID_LIST_LOADER_ID)
+            {
+                SecurityListPagedLoader loader = new SecurityListPagedLoader(getActivity());
+                loader.setQueryingChangedListenerWeak(queryingChangedListener);
+                loader.setNoMorePagesChangedListenerWeak(noMorePagesChangedListener);
+                return loader;
+            }
+            throw new IllegalStateException("Unhandled loader id " + id);
+        }
+
+        @Override public void onLoadFinished(Loader<SecurityIdList> securityIdListLoader, SecurityIdList securityIds)
+        {
+            securityItemViewAdapter.setItems(securityIds);
+            securityItemViewAdapter.notifyDataSetChanged();
+            if (gridScrollListener != null)
+            {
+                gridScrollListener.lowerFlag();
+            }
+        }
+
+        @Override public void onLoaderReset(Loader<SecurityIdList> securityIdListLoader)
+        {
+            THLog.d(TAG, "TrendingLoaderCallback.onLoaderReset");
             // TODO
         }
     }

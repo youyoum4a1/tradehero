@@ -1,9 +1,6 @@
 package com.tradehero.common.persistence;
 
 import android.support.v4.util.LruCache;
-import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-import java.util.List;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/4/13 Time: 11:01 AM To change this template use File | Settings | File Templates.
  *

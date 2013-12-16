@@ -37,7 +37,7 @@ import javax.inject.Inject;
 abstract public class TrendingFilterSelectorFragment extends SherlockFragment
     implements AdapterView.OnItemSelectedListener
 {
-    public static final String TAG = TrendingFilterSelectorFragment.class.getName();
+    public static final String TAG = TrendingFilterSelectorFragment.class.getSimpleName();
     public static final String BUNDLE_KEY_SELECTED_EXCHANGE_INDEX = TrendingFilterSelectorFragment.class.getName() + ".exchangeIndex";
 
     protected ImageButton mPrevious;
