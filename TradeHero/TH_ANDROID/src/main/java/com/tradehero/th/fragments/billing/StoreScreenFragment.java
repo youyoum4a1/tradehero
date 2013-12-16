@@ -30,6 +30,8 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
 {
     public static final String TAG = StoreScreenFragment.class.getSimpleName();
 
+    public static boolean alreadyNotifiedNeedCreateAccount = false;
+
     @Inject CurrentUserBaseKeyHolder currentUserBaseKeyHolder;
 
     private ListView listView;
@@ -184,8 +186,9 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
         @Override protected void handleShowSkuDetailsMilestoneFailed(Throwable throwable)
         {
             // TODO warn if there are things unset
-            if (throwable instanceof IABBillingUnavailableException)
+            if (throwable instanceof IABBillingUnavailableException && !alreadyNotifiedNeedCreateAccount)
             {
+                alreadyNotifiedNeedCreateAccount = true;
                 IABAlertDialogUtil.popBillingUnavailable(getActivity());
             }
             // Nothing to do presumably

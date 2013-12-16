@@ -1,15 +1,12 @@
 package com.tradehero.th.fragments.social.hero;
 
-import android.app.ProgressDialog;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import com.tradehero.th.R;
-import com.tradehero.th.api.social.HeroDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
 
 /**
