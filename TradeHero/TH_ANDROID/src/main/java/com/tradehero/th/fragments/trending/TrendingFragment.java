@@ -36,7 +36,7 @@ public class TrendingFragment extends DashboardFragment
     public final static String BUNDLE_KEY_FILTER_PAGE = TrendingFragment.class.getName() + ".filterPage";
     public final static String BUNDLE_KEY_SELECTED_EXCHANGE_NAMES = TrendingFragment.class.getName() + ".selectedExchangeNames";
     public final static int FIRST_PAGE = 1;
-    public final static int DEFAULT_PER_PAGE = 10;
+    public final static int DEFAULT_PER_PAGE = 20;
     public final static int SECURITY_ID_LIST_LOADER_ID = 0;
 
     public final static float MIN_FLING_VELOCITY_Y_FOR_HIDE_FILTER = 1000f;

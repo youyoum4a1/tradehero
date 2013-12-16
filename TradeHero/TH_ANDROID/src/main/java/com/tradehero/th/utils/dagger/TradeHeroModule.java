@@ -104,6 +104,7 @@ import com.tradehero.th.network.service.PositionService;
 import com.tradehero.th.network.service.ProviderService;
 import com.tradehero.th.network.service.QuoteService;
 import com.tradehero.th.network.service.SecurityService;
+import com.tradehero.th.network.service.SecurityServiceWrapper;
 import com.tradehero.th.network.service.SessionService;
 import com.tradehero.th.network.service.SocialService;
 import com.tradehero.th.network.service.TradeService;
@@ -271,6 +272,8 @@ import org.ocpsoft.prettytime.PrettyTime;
                 AddToWatchListFragment.class,
                 WatchlistPositionCache.class,
                 WatchlistRetrievedMilestone.class,
+
+                SecurityServiceWrapper.class,
         },
         staticInjections =
         {
@@ -313,6 +316,11 @@ public class TradeHeroModule
     @Provides @Singleton SecurityService provideSecurityService()
     {
         return engine.createService(SecurityService.class);
+    }
+
+    @Provides @Singleton SecurityServiceWrapper provideSecurityServiceWrapper()
+    {
+        return new SecurityServiceWrapper();
     }
 
     @Provides @Singleton UserTimelineService provideUserTimelineService()

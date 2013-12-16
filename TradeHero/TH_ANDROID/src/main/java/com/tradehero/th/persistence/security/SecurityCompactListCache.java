@@ -5,8 +5,7 @@ import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.SecurityIdList;
 import com.tradehero.th.api.security.SecurityListType;
-import com.tradehero.th.network.service.SecurityService;
-import com.tradehero.th.network.service.SecurityServiceUtil;
+import com.tradehero.th.network.service.SecurityServiceWrapper;
 import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
@@ -18,7 +17,7 @@ import javax.inject.Singleton;
     public static final String TAG = SecurityCompactListCache.class.getSimpleName();
     public static final int DEFAULT_MAX_SIZE = 50;
 
-    @Inject protected Lazy<SecurityService> securityService;
+    @Inject protected Lazy<SecurityServiceWrapper> securityServiceWrapper;
     @Inject protected Lazy<SecurityCompactCache> securityCompactCache;
 
     //<editor-fold desc="Constructors">
@@ -31,7 +30,7 @@ import javax.inject.Singleton;
     @Override protected SecurityIdList fetch(SecurityListType key) throws Throwable
     {
         //THLog.d(TAG, "fetch " + key);
-        return putInternal(key, SecurityServiceUtil.getSecurities(securityService.get(), key));
+        return putInternal(key, securityServiceWrapper.get().getSecurities(key));
     }
 
     protected SecurityIdList putInternal(SecurityListType key, List<SecurityCompactDTO> fleshedValues)
