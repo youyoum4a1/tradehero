@@ -9,7 +9,7 @@ import com.tradehero.th.api.security.TransactionFormDTO;
 import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.network.service.SecurityService;
+import com.tradehero.th.network.service.SecurityServiceWrapper;
 import com.tradehero.th.persistence.position.SecurityPositionDetailCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.DaggerUtils;
@@ -32,7 +32,7 @@ abstract public class BaseBuySellAsyncTask extends AsyncTask<Void, Void, Securit
     protected final boolean isBuy;
     protected final SecurityId securityId;
     protected final TransactionFormDTO buySellOrder;
-    @Inject protected Lazy<SecurityService> securityService;
+    @Inject protected Lazy<SecurityServiceWrapper> securityServiceWrapper;
     @Inject protected Lazy<SecurityPositionDetailCache> securityPositionDetailCache;
     @Inject protected Lazy<CurrentUserBaseKeyHolder> currentUserBaseKeyHolder;
     @Inject protected Lazy<UserProfileCache> userProfileCache;
@@ -96,9 +96,9 @@ abstract public class BaseBuySellAsyncTask extends AsyncTask<Void, Void, Securit
     {
         if (isBuy)
         {
-            return securityService.get().buy(securityId.exchange, securityId.securitySymbol, buySellOrder);
+            return securityServiceWrapper.get().buy(securityId, buySellOrder);
         }
-        return securityService.get().sell(securityId.exchange, securityId.securitySymbol, buySellOrder);
+        return securityServiceWrapper.get().sell(securityId, buySellOrder);
     }
 
     protected void updateCaches(SecurityPositionDetailDTO returned)

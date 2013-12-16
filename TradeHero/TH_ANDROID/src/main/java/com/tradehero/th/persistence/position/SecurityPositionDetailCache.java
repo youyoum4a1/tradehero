@@ -13,7 +13,7 @@ import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
 import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.network.service.SecurityService;
+import com.tradehero.th.network.service.SecurityServiceWrapper;
 import com.tradehero.th.persistence.competition.ProviderCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCache;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
@@ -31,7 +31,7 @@ import javax.inject.Singleton;
     @Inject protected CurrentUserBaseKeyHolder currentUserBaseKeyHolder;
     // We need to compose here, instead of inheritance, otherwise we get a compile error regarding erasure on put and put.
     private LruCache<SecurityId, SecurityPositionDetailCache.SecurityPositionDetailCutDTO> lruCache;
-    @Inject protected Lazy<SecurityService> securityService;
+    @Inject protected Lazy<SecurityServiceWrapper> securityServiceWrapper;
     @Inject protected Lazy<SecurityCompactCache> securityCompactCache;
     @Inject protected Lazy<PositionCompactCache> positionCompactCache;
     @Inject protected Lazy<PortfolioCache> portfolioCache;
@@ -52,7 +52,7 @@ import javax.inject.Singleton;
 
     protected SecurityPositionDetailDTO fetch(SecurityId key) throws Throwable
     {
-        return securityService.get().getSecurity(key.exchange, key.securitySymbol);
+        return securityServiceWrapper.get().getSecurity(key);
     }
 
     @Override public SecurityPositionDetailDTO get(SecurityId key)

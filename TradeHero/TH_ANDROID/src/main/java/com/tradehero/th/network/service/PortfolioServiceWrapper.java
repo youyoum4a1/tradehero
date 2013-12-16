@@ -4,8 +4,8 @@ import com.tradehero.common.billing.googleplay.GooglePlayPurchaseDTO;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PortfolioDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.utils.DaggerUtils;
 import javax.inject.Inject;
+import javax.inject.Singleton;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 
@@ -13,16 +13,15 @@ import retrofit.RetrofitError;
  * Repurpose PortfolioService calls
  * Created by xavier on 12/5/13.
  */
-public class PortfolioServiceWrapper
+@Singleton public class PortfolioServiceWrapper
 {
     public static final String TAG = PortfolioServiceWrapper.class.getSimpleName();
 
     @Inject PortfolioService portfolioService;
 
-    public PortfolioServiceWrapper()
+    @Inject public PortfolioServiceWrapper()
     {
         super();
-        DaggerUtils.inject(this);
     }
 
     private void basicCheck(OwnedPortfolioId ownedPortfolioId)

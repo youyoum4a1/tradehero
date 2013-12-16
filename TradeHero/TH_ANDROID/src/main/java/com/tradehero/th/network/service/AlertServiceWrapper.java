@@ -4,8 +4,8 @@ import com.tradehero.th.api.alert.AlertCompactDTO;
 import com.tradehero.th.api.alert.AlertDTO;
 import com.tradehero.th.api.alert.AlertFormDTO;
 import com.tradehero.th.api.alert.AlertId;
-import com.tradehero.th.utils.DaggerUtils;
 import javax.inject.Inject;
+import javax.inject.Singleton;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 
@@ -13,16 +13,15 @@ import retrofit.RetrofitError;
  * Repurposes requests
  * Created by xavier on 12/12/13.
  */
-public class AlertServiceWrapper
+@Singleton public class AlertServiceWrapper
 {
     public static final String TAG = AlertServiceWrapper.class.getSimpleName();
 
     @Inject AlertService alertService;
 
-    public AlertServiceWrapper()
+    @Inject public AlertServiceWrapper()
     {
         super();
-        DaggerUtils.inject(this);
     }
 
     private void basicCheck(AlertId alertId)

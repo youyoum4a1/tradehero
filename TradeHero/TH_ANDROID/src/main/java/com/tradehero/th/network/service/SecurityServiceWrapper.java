@@ -1,16 +1,19 @@
 package com.tradehero.th.network.service;
 
+import com.tradehero.th.api.position.SecurityPositionDetailDTO;
 import com.tradehero.th.api.security.SearchSecurityListType;
 import com.tradehero.th.api.security.SecurityCompactDTO;
+import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.SecurityListType;
+import com.tradehero.th.api.security.TransactionFormDTO;
 import com.tradehero.th.api.security.TrendingAllSecurityListType;
 import com.tradehero.th.api.security.TrendingBasicSecurityListType;
 import com.tradehero.th.api.security.TrendingPriceSecurityListType;
 import com.tradehero.th.api.security.TrendingSecurityListType;
 import com.tradehero.th.api.security.TrendingVolumeSecurityListType;
-import com.tradehero.th.utils.DaggerUtils;
 import java.util.List;
 import javax.inject.Inject;
+import javax.inject.Singleton;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 
@@ -18,18 +21,18 @@ import retrofit.RetrofitError;
  * Repurpose queries
  * Created by xavier on 12/5/13.
  */
-public class SecurityServiceWrapper
+@Singleton public class SecurityServiceWrapper
 {
     public static final String TAG = SecurityServiceWrapper.class.getSimpleName();
 
     @Inject SecurityService securityService;
 
-    public SecurityServiceWrapper()
+    @Inject public SecurityServiceWrapper()
     {
         super();
-        DaggerUtils.inject(this);
     }
 
+    //<editor-fold desc="Routing Trending">
     public List<SecurityCompactDTO> getSecurities(SecurityListType key)
         throws RetrofitError
     {
@@ -101,7 +104,9 @@ public class SecurityServiceWrapper
         }
         throw new IllegalArgumentException("Unhandled type " + key.getClass().getName());
     }
+    //</editor-fold>
 
+    //<editor-fold desc="Get Basic Trending">
     public List<SecurityCompactDTO> getTrendingSecuritiesBasic(TrendingBasicSecurityListType key)
         throws RetrofitError
     {
@@ -159,7 +164,9 @@ public class SecurityServiceWrapper
             this.securityService.getTrendingSecurities(key.exchange, key.getPage(), key.perPage, callback);
         }
     }
+    //</editor-fold>
 
+    //<editor-fold desc="Get Trending By Price">
     public List<SecurityCompactDTO> getTrendingSecuritiesByPrice(TrendingPriceSecurityListType key)
             throws RetrofitError
     {
@@ -217,7 +224,9 @@ public class SecurityServiceWrapper
             this.securityService.getTrendingSecuritiesByPrice(key.exchange, key.getPage(), key.perPage, callback);
         }
     }
+    //</editor-fold>
 
+    //<editor-fold desc="Get Trending By Volume">
     public List<SecurityCompactDTO> getTrendingSecuritiesByVolume(TrendingVolumeSecurityListType key)
             throws RetrofitError
     {
@@ -275,7 +284,9 @@ public class SecurityServiceWrapper
             this.securityService.getTrendingSecuritiesByVolume(key.exchange, key.getPage(), key.perPage, callback);
         }
     }
+    //</editor-fold>
 
+    //<editor-fold desc="Get Trending For All">
     public List<SecurityCompactDTO> getTrendingSecuritiesAllInExchange(TrendingAllSecurityListType key)
             throws RetrofitError
     {
@@ -333,7 +344,9 @@ public class SecurityServiceWrapper
             this.securityService.getTrendingSecuritiesAllInExchange(key.exchange, key.getPage(), key.perPage, callback);
         }
     }
+    //</editor-fold>
 
+    //<editor-fold desc="Search Securities">
     public List<SecurityCompactDTO> searchSecurities(SearchSecurityListType key)
             throws RetrofitError
     {
@@ -364,4 +377,44 @@ public class SecurityServiceWrapper
             this.securityService.searchSecurities(key.searchString, key.getPage(), key.perPage, callback);
         }
     }
+    //</editor-fold>
+
+    //<editor-fold desc="Get Security">
+    public SecurityPositionDetailDTO getSecurity(SecurityId securityId)
+        throws RetrofitError
+    {
+        return this.securityService.getSecurity(securityId.exchange, securityId.securitySymbol);
+    }
+
+    public void getSecurity(SecurityId securityId, Callback<SecurityPositionDetailDTO> callback)
+    {
+        this.securityService.getSecurity(securityId.exchange, securityId.securitySymbol, callback);
+    }
+    //</editor-fold>
+
+    //<editor-fold desc="Buy">
+    public SecurityPositionDetailDTO buy(SecurityId securityId, TransactionFormDTO transactionFormDTO)
+        throws RetrofitError
+    {
+        return this.securityService.buy(securityId.exchange, securityId.securitySymbol, transactionFormDTO);
+    }
+
+    public void buy(SecurityId securityId, TransactionFormDTO transactionFormDTO, Callback<SecurityPositionDetailDTO> callback)
+    {
+        this.securityService.buy(securityId.exchange, securityId.securitySymbol, transactionFormDTO, callback);
+    }
+    //</editor-fold>
+
+    //<editor-fold desc="Sell">
+    public SecurityPositionDetailDTO sell(SecurityId securityId, TransactionFormDTO transactionFormDTO)
+        throws RetrofitError
+    {
+        return this.securityService.sell(securityId.exchange, securityId.securitySymbol, transactionFormDTO);
+    }
+
+    public void sell(SecurityId securityId, TransactionFormDTO transactionFormDTO, Callback<SecurityPositionDetailDTO> callback)
+    {
+        this.securityService.sell(securityId.exchange, securityId.securitySymbol, transactionFormDTO, callback);
+    }
+    //</editor-fold>
 }

@@ -3,8 +3,8 @@ package com.tradehero.th.network.service;
 import com.tradehero.th.api.SignatureContainer;
 import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.security.SecurityId;
-import com.tradehero.th.utils.DaggerUtils;
 import javax.inject.Inject;
+import javax.inject.Singleton;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 
@@ -12,16 +12,15 @@ import retrofit.RetrofitError;
  * Repurposes requests
  * Created by xavier on 12/12/13.
  */
-public class QuoteServiceWrapper
+@Singleton public class QuoteServiceWrapper
 {
     public static final String TAG = QuoteServiceWrapper.class.getSimpleName();
 
     @Inject QuoteService quoteService;
 
-    public QuoteServiceWrapper()
+    @Inject public QuoteServiceWrapper()
     {
         super();
-        DaggerUtils.inject(this);
     }
 
     private void basicCheck(SecurityId securityId)

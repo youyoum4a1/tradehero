@@ -4,8 +4,8 @@ import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PagedOwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PerPagedOwnedPortfolioId;
 import com.tradehero.th.api.position.GetPositionsDTO;
-import com.tradehero.th.utils.DaggerUtils;
 import javax.inject.Inject;
+import javax.inject.Singleton;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 
@@ -13,16 +13,15 @@ import retrofit.RetrofitError;
  * Repurpose PositionService calls
  * Created by xavier on 12/5/13.
  */
-public class PositionServiceWrapper
+@Singleton public class PositionServiceWrapper
 {
     public static final String TAG = PositionServiceWrapper.class.getSimpleName();
 
     @Inject PositionService positionService;
 
-    public PositionServiceWrapper()
+    @Inject public PositionServiceWrapper()
     {
         super();
-        DaggerUtils.inject(this);
     }
 
     private void basicCheck(OwnedPortfolioId ownedPortfolioId)

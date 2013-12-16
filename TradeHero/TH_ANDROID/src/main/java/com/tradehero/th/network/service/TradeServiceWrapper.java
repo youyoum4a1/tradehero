@@ -3,9 +3,9 @@ package com.tradehero.th.network.service;
 import com.tradehero.th.api.position.OwnedPositionId;
 import com.tradehero.th.api.trade.OwnedTradeId;
 import com.tradehero.th.api.trade.TradeDTO;
-import com.tradehero.th.utils.DaggerUtils;
 import java.util.List;
 import javax.inject.Inject;
+import javax.inject.Singleton;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 
@@ -13,16 +13,15 @@ import retrofit.RetrofitError;
  * Repurposes trade requests
  * Created by xavier on 12/12/13.
  */
-public class TradeServiceWrapper
+@Singleton public class TradeServiceWrapper
 {
     public static final String TAG = TradeServiceWrapper.class.getSimpleName();
 
     @Inject TradeService tradeService;
 
-    public TradeServiceWrapper()
+    @Inject public TradeServiceWrapper()
     {
         super();
-        DaggerUtils.inject(this);
     }
 
     private void basicCheck(OwnedPositionId ownedPositionId)

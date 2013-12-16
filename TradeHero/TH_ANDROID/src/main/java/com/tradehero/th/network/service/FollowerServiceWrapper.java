@@ -2,8 +2,8 @@ package com.tradehero.th.network.service;
 
 import com.tradehero.th.api.social.FollowerId;
 import com.tradehero.th.api.social.UserFollowerDTO;
-import com.tradehero.th.utils.DaggerUtils;
 import javax.inject.Inject;
+import javax.inject.Singleton;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 
@@ -11,16 +11,15 @@ import retrofit.RetrofitError;
  * Repurposes requests
  * Created by xavier on 12/12/13.
  */
-public class FollowerServiceWrapper
+@Singleton public class FollowerServiceWrapper
 {
     public static final String TAG = FollowerServiceWrapper.class.getSimpleName();
 
     @Inject FollowerService followerService;
 
-    public FollowerServiceWrapper()
+    @Inject public FollowerServiceWrapper()
     {
         super();
-        DaggerUtils.inject(this);
     }
 
     private void basicCheck(FollowerId followerId)

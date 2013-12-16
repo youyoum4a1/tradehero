@@ -3,9 +3,9 @@ package com.tradehero.th.network.service;
 import com.tradehero.th.api.users.SearchUserListType;
 import com.tradehero.th.api.users.UserListType;
 import com.tradehero.th.api.users.UserSearchResultDTO;
-import com.tradehero.th.utils.DaggerUtils;
 import java.util.List;
 import javax.inject.Inject;
+import javax.inject.Singleton;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 
@@ -13,16 +13,15 @@ import retrofit.RetrofitError;
  * Repurposes queries
  * Created by xavier on 12/12/13.
  */
-public class UserServiceWrapper
+@Singleton public class UserServiceWrapper
 {
     public static final String TAG = UserServiceWrapper.class.getSimpleName();
 
     @Inject UserService userService;
 
-    public UserServiceWrapper()
+    @Inject public UserServiceWrapper()
     {
         super();
-        DaggerUtils.inject(this);
     }
 
     //<editor-fold desc="Search Users">

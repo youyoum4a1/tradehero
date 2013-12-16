@@ -1,19 +1,16 @@
 package com.tradehero.th.persistence.security;
 
-import com.tradehero.common.utils.THLog;
 import com.tradehero.th.api.position.SecurityPositionDetailDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
-import com.tradehero.th.network.BasicRetrofitErrorHandler;
-import com.tradehero.th.network.service.SecurityService;
 import com.tradehero.common.persistence.StraightDTOCache;
+import com.tradehero.th.network.service.SecurityServiceWrapper;
 import com.tradehero.th.persistence.position.SecurityPositionDetailCache;
 import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import retrofit.RetrofitError;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/3/13 Time: 4:40 PM To change this template use File | Settings | File Templates. */
 @Singleton public class SecurityCompactCache extends StraightDTOCache<SecurityId, SecurityCompactDTO>
@@ -21,7 +18,7 @@ import retrofit.RetrofitError;
     public static final String TAG = SecurityCompactCache.class.getSimpleName();
     public static final int DEFAULT_MAX_SIZE = 1000;
 
-    @Inject protected Lazy<SecurityService> securityService;
+    @Inject protected Lazy<SecurityServiceWrapper> securityServiceWrapper;
     @Inject protected Lazy<SecurityPositionDetailCache> securityPositionDetailCache;
     @Inject protected Lazy<SecurityIdCache> securityIdCache;
 
@@ -35,7 +32,7 @@ import retrofit.RetrofitError;
     @Override protected SecurityCompactDTO fetch(SecurityId key) throws Throwable
     {
         SecurityCompactDTO securityCompactDTO = null;
-        SecurityPositionDetailDTO securityPositionDetailDTO = securityService.get().getSecurity(key.exchange, key.securitySymbol);
+        SecurityPositionDetailDTO securityPositionDetailDTO = securityServiceWrapper.get().getSecurity(key);
 
         if (securityPositionDetailDTO != null)
         {
