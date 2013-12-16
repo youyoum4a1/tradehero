@@ -41,6 +41,8 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
     public final static long MILLISEC_QUOTE_REFRESH = 30000;
     public final static long MILLISEC_QUOTE_COUNTDOWN_PRECISION = 50;
 
+    public static boolean alreadyNotifiedMarketClosed = false;
+
     @Inject protected CurrentUserBaseKeyHolder currentUserBaseKeyHolder;
     @Inject protected Lazy<SecurityCompactCache> securityCompactCache;
     @Inject protected Lazy<SecurityPositionDetailCache> securityPositionDetailCache;
@@ -137,9 +139,12 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
     {
         if (marketCloseIcon != null)
         {
-            marketCloseIcon.setVisibility(securityCompactDTO == null ||
-                    securityCompactDTO.marketOpen == null ||
-                    securityCompactDTO.marketOpen ? View.GONE : View.VISIBLE);
+            boolean marketIsOpen = securityCompactDTO == null || securityCompactDTO.marketOpen == null || securityCompactDTO.marketOpen;
+            marketCloseIcon.setVisibility(marketIsOpen ? View.GONE : View.VISIBLE);
+            if (!marketIsOpen)
+            {
+                notifyOnceMarketClosed();
+            }
         }
     }
 
@@ -400,7 +405,21 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
 
     abstract public void display();
 
+    protected void notifyOnceMarketClosed()
+    {
+        if (!alreadyNotifiedMarketClosed)
+        {
+            alreadyNotifiedMarketClosed = true;
+            notifyMarketClosed();
+        }
+    }
+
     protected void handleMarketCloseClicked()
+    {
+        notifyMarketClosed();
+    }
+
+    protected void notifyMarketClosed()
     {
         if (securityId == null)
         {
