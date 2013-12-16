@@ -17,18 +17,25 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
+import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
 import com.tradehero.th.billing.googleplay.IABAlertDialogUtil;
 import com.tradehero.th.billing.googleplay.THIABActor;
 import com.tradehero.th.fragments.social.follower.FollowerManagerFragment;
 import com.tradehero.th.fragments.social.hero.HeroManagerFragment;
+import com.tradehero.th.persistence.portfolio.PortfolioCompactListRetrievedMilestone;
 import com.tradehero.th.utils.AlertDialogUtil;
+import javax.inject.Inject;
 
 public class StoreScreenFragment extends BasePurchaseManagerFragment
 {
     public static final String TAG = StoreScreenFragment.class.getSimpleName();
 
+    @Inject CurrentUserBaseKeyHolder currentUserBaseKeyHolder;
+
     private ListView listView;
     private StoreItemAdapter storeItemAdapter;
+
+    private PortfolioCompactListRetrievedMilestone portfolioCompactListRetrievedMilestone;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -127,16 +134,14 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
 
     protected void pushHeroFragmentWhenReady()
     {
-        userInteractor.waitForSkuDetailsMilestoneComplete(new Runnable()
+        Bundle bundle = new Bundle();
+        bundle.putInt(HeroManagerFragment.BUNDLE_KEY_FOLLOWER_ID, currentUserBaseKeyHolder.getCurrentUserBaseKey().key);
+        OwnedPortfolioId applicablePortfolio = userInteractor.getApplicablePortfolioId();
+        if (applicablePortfolio != null)
         {
-            @Override public void run()
-            {
-                OwnedPortfolioId applicablePortfolio = userInteractor.getApplicablePortfolioId();
-                Bundle bundle = new Bundle();
-                bundle.putBundle(HeroManagerFragment.BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE, applicablePortfolio.getArgs());
-                pushFragment(HeroManagerFragment.class, bundle);
-            }
-        });
+            bundle.putBundle(HeroManagerFragment.BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE, applicablePortfolio.getArgs());
+        }
+        pushFragment(HeroManagerFragment.class, bundle);
     }
 
     protected void pushFollowerFragmentWhenReady()
