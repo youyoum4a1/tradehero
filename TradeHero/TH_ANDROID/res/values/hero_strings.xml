@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="error_fetch_hero">There was an error when fetching the hero information</string>
+</resources>

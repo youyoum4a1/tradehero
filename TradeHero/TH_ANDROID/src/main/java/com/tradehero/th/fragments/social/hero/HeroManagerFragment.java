@@ -9,14 +9,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.Button;
-import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
+import com.tradehero.common.milestone.Milestone;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
@@ -36,6 +32,7 @@ import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.persistence.social.HeroCache;
 import com.tradehero.th.persistence.social.HeroListCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.persistence.user.UserProfileRetrievedMilestone;
 import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
@@ -46,26 +43,26 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
 {
     public static final String TAG = HeroManagerFragment.class.getSimpleName();
 
-    private TextView followCreditCount;
-    private ImageView icnCoinStack;
-    private ImageButton btnBuyMore;
-    private Button btnGoMostSkilled;
-    private ProgressDialog progressDialog;
-    private ProgressBar progressBar;
+    /**
+     * We are showing the heroes of this follower
+     */
+    public static final String BUNDLE_KEY_FOLLOWER_ID = HeroManagerFragment.class.getName() + ".followerId";
 
-    private HeroListView heroListView;
+    private HeroManagerViewContainer viewContainer;
+    private ProgressDialog progressDialog;
+
     private HeroListItemAdapter heroListAdapter;
     private HeroListItemView.OnHeroStatusButtonClickedListener heroStatusButtonClickedListener;
 
     // The user whose heroes we are listing
+    private UserBaseKey followerId;
     private UserProfileDTO userProfileDTO;
     private List<HeroDTO> heroDTOs;
 
-    @Inject protected Lazy<UserProfileCache> userProfileCache;
-    @Inject protected Lazy<HeroListCache> heroListCache;
     @Inject protected Lazy<HeroCache> heroCache;
-    private DTOCache.Listener<UserBaseKey, HeroIdList> heroListListener;
-    private DTOCache.GetOrFetchTask<HeroIdList> heroListFetchTask;
+    private HeroManagerUserProfileCacheListener userProfileListener;
+    private HeroManagerHeroListCacheListener heroListListener;
+    private HeroManagerInfoFetcher heroManagerInfoFetcher;
 
     //<editor-fold desc="BaseFragment.TabBarVisibilityInformer">
     @Override public boolean isTabBarVisible()
@@ -83,13 +80,10 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
 
     protected void initViews(View view)
     {
-        progressBar = (ProgressBar) view.findViewById(android.R.id.empty);
-        followCreditCount = (TextView) view.findViewById(R.id.manage_heroes_follow_credit_count);
-        icnCoinStack = (ImageView) view.findViewById(R.id.icn_credit_quantity);
-        btnBuyMore = (ImageButton) view.findViewById(R.id.btn_buy_more);
-        if (btnBuyMore != null)
+        this.viewContainer = new HeroManagerViewContainer(view);
+        if (this.viewContainer.btnBuyMore != null)
         {
-            btnBuyMore.setOnClickListener(new View.OnClickListener()
+            this.viewContainer.btnBuyMore.setOnClickListener(new View.OnClickListener()
             {
                 @Override public void onClick(View view)
                 {
@@ -97,10 +91,9 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
                 }
             });
         }
-        btnGoMostSkilled = (Button) view.findViewById(R.id.btn_leaderboard_most_skilled);
-        if (btnGoMostSkilled != null)
+        if (this.viewContainer.btnGoMostSkilled != null)
         {
-            btnGoMostSkilled.setOnClickListener(new View.OnClickListener()
+            this.viewContainer.btnGoMostSkilled.setOnClickListener(new View.OnClickListener()
             {
                 @Override public void onClick(View view)
                 {
@@ -109,26 +102,25 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
             });
         }
 
-        heroListView = (HeroListView) view.findViewById(R.id.heros_list);
-        heroStatusButtonClickedListener = new HeroListItemView.OnHeroStatusButtonClickedListener()
+        this.heroStatusButtonClickedListener = new HeroListItemView.OnHeroStatusButtonClickedListener()
         {
             @Override public void onHeroStatusButtonClicked(HeroListItemView heroListItemView, HeroDTO heroDTO)
             {
                 handleHeroStatusChangeRequired(heroDTO);
             }
         };
-        heroListAdapter = new HeroListItemAdapter(
+        this.heroListAdapter = new HeroListItemAdapter(
                 getActivity(),
                 getActivity().getLayoutInflater(),
                 R.layout.hero_list_item_empty_placeholder,
                 R.layout.hero_list_item,
                 R.layout.hero_list_header,
                 R.layout.hero_list_header);
-        heroListAdapter.setHeroStatusButtonClickedListener(heroStatusButtonClickedListener);
-        if (heroListView != null)
+        this.heroListAdapter.setHeroStatusButtonClickedListener(this.heroStatusButtonClickedListener);
+        if (this.viewContainer.heroListView != null)
         {
-            heroListView.setAdapter(heroListAdapter);
-            heroListView.setOnItemClickListener(new AdapterView.OnItemClickListener()
+            this.viewContainer.heroListView.setAdapter(this.heroListAdapter);
+            this.viewContainer.heroListView.setOnItemClickListener(new AdapterView.OnItemClickListener()
             {
                 @Override public void onItemClick(AdapterView<?> parent, View view, int position, long id)
                 {
@@ -136,6 +128,10 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
                 }
             });
         }
+
+        this.heroListListener = new HeroManagerHeroListCacheListener();
+        this.userProfileListener = new HeroManagerUserProfileCacheListener();
+        this.heroManagerInfoFetcher = new HeroManagerInfoFetcher(this.userProfileListener, this.heroListListener);
     }
 
     @Override protected void createUserInteractor()
@@ -151,39 +147,45 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
         super.onCreateOptionsMenu(menu, inflater);
     }
 
+    @Override public void onResume()
+    {
+        super.onResume();
+        this.followerId = new UserBaseKey(getArguments().getInt(BUNDLE_KEY_FOLLOWER_ID));
+        displayProgress(true);
+        this.heroManagerInfoFetcher.fetch(this.followerId);
+    }
+
     @Override public void onPause()
     {
-        heroListListener = null;
-        if (heroListFetchTask != null)
+        if (this.heroManagerInfoFetcher != null)
         {
-            heroListFetchTask.forgetListener(true);
+            this.heroManagerInfoFetcher.onPause();
         }
-        heroListFetchTask = null;
 
-        if (progressDialog != null)
+        if (this.progressDialog != null)
         {
-            progressDialog.hide();
+            this.progressDialog.hide();
         }
         super.onPause();
     }
 
     @Override public void onDestroyView()
     {
-        heroStatusButtonClickedListener = null;
-        if (heroListAdapter != null)
+        this.userProfileListener = null;
+        this.heroListListener = null;
+        this.heroManagerInfoFetcher = null;
+
+        this.heroStatusButtonClickedListener = null;
+        if (this.heroListAdapter != null)
         {
-            heroListAdapter.setHeroStatusButtonClickedListener(null);
+            this.heroListAdapter.setHeroStatusButtonClickedListener(null);
         }
-        heroListAdapter = null;
-        if (heroListView != null)
+        this.heroListAdapter = null;
+        if (this.viewContainer.heroListView != null)
         {
-            heroListView.setOnItemClickListener(null);
+            this.viewContainer.heroListView.setOnItemClickListener(null);
         }
-        heroListView = null;
-        followCreditCount = null;
-        icnCoinStack = null;
-        btnBuyMore = null;
-        btnGoMostSkilled = null;
+        this.viewContainer = null;
         super.onDestroyView();
     }
 
@@ -239,45 +241,6 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
         ((DashboardActivity) getActivity()).getDashboardNavigator().goToTab(DashboardTabType.COMMUNITY);
     }
 
-    private void fetchHeroes()
-    {
-        UserBaseKey userBaseKey = userInteractor.getApplicablePortfolioId().getUserBaseKey();
-        HeroIdList heroIds = heroListCache.get().get(userBaseKey);
-        HeroDTOList heroDTOs = heroCache.get().get(heroIds);
-        if (heroIds != null && heroDTOs != null && heroIds.size() == heroDTOs.size()) // We need this longer test in case DTO have been flushed.
-        {
-            display(heroDTOs);
-        }
-        else
-        {
-            if (heroListListener == null)
-            {
-                heroListListener = new DTOCache.Listener<UserBaseKey, HeroIdList>()
-                {
-                    @Override public void onDTOReceived(UserBaseKey key, HeroIdList value)
-                    {
-                        displayProgress(false);
-                        display(heroCache.get().get(value));
-                    }
-
-                    @Override public void onErrorThrown(UserBaseKey key, Throwable error)
-                    {
-                        displayProgress(false);
-                        THLog.e(TAG, "Could not fetch heroes", error);
-                        THToast.show("There was an error fetching your heroes");
-                    }
-                };
-            }
-            if (heroListFetchTask != null)
-            {
-                heroListFetchTask.forgetListener(true);
-            }
-            heroListFetchTask = heroListCache.get().getOrFetch(userBaseKey, heroListListener);
-            displayProgress(true);
-            heroListFetchTask.execute();
-        }
-    }
-
     public void display(UserProfileDTO userProfileDTO)
     {
         linkWith(userProfileDTO, true);
@@ -293,8 +256,8 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
         this.userProfileDTO = userProfileDTO;
         if (andDisplay)
         {
-            displayFollowCount();
-            displayCoinStack();
+            viewContainer.displayFollowCount(userProfileDTO);
+            viewContainer.displayCoinStack(userProfileDTO);
         }
     }
 
@@ -311,31 +274,9 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
     //<editor-fold desc="Display methods">
     public void display()
     {
-        displayFollowCount();
-        displayCoinStack();
+        viewContainer.displayFollowCount(userProfileDTO);
+        viewContainer.displayCoinStack(userProfileDTO);
         displayHeroList();
-    }
-
-    public void displayFollowCount()
-    {
-        if (followCreditCount != null)
-        {
-            if (userProfileDTO != null)
-            {
-                followCreditCount.setText(String.format("+%.0f", userProfileDTO.ccBalance));
-            }
-        }
-    }
-
-    public void displayCoinStack()
-    {
-        if (icnCoinStack != null)
-        {
-            if (userProfileDTO != null)
-            {
-                icnCoinStack.getDrawable().setLevel((int) userProfileDTO.ccBalance);
-            }
-        }
     }
 
     public void displayHeroList()
@@ -348,9 +289,9 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
 
     public void displayProgress(boolean running)
     {
-        if (progressBar != null)
+        if (viewContainer.progressBar != null)
         {
-            progressBar.setVisibility(running ? View.VISIBLE : View.GONE);
+            viewContainer.progressBar.setVisibility(running ? View.VISIBLE : View.GONE);
         }
     }
     //</editor-fold>
@@ -365,8 +306,11 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
         @Override protected void handleShowSkuDetailsMilestoneComplete()
         {
             super.handleShowSkuDetailsMilestoneComplete();
-            fetchHeroes();
-            display(userProfileCache.get().get(applicablePortfolioId.getUserBaseKey()));
+        }
+
+        @Override protected void handleShowSkuDetailsMilestoneFailed(Throwable throwable)
+        {
+            super.handleShowSkuDetailsMilestoneFailed(throwable);
         }
 
         @Override protected void handlePurchaseReportSuccess(THIABPurchase reportedPurchase, UserProfileDTO updatedUserProfile)
@@ -383,9 +327,45 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
                 {
                     super.success(userProfileDTO, response);
                     HeroManagerFragment.this.linkWith(userProfileDTO, true);
-                    HeroManagerFragment.this.fetchHeroes();
+                    if (HeroManagerFragment.this.heroManagerInfoFetcher != null)
+                    {
+                        HeroManagerFragment.this.heroManagerInfoFetcher.fetchHeroes(HeroManagerFragment.this.followerId);
+                    }
                 }
             };
+        }
+    }
+
+    private class HeroManagerUserProfileCacheListener implements DTOCache.Listener<UserBaseKey, UserProfileDTO>
+    {
+        @Override public void onDTOReceived(UserBaseKey key, UserProfileDTO value)
+        {
+            if (key.equals(HeroManagerFragment.this.followerId))
+            {
+                display(value);
+            }
+        }
+
+        @Override public void onErrorThrown(UserBaseKey key, Throwable error)
+        {
+            THLog.e(TAG, "Could not fetch user profile", error);
+            THToast.show(R.string.error_fetch_user_profile);
+        }
+    }
+
+    private class HeroManagerHeroListCacheListener implements DTOCache.Listener<UserBaseKey, HeroIdList>
+    {
+        @Override public void onDTOReceived(UserBaseKey key, HeroIdList value)
+        {
+            displayProgress(false);
+            display(heroCache.get().get(value));
+        }
+
+        @Override public void onErrorThrown(UserBaseKey key, Throwable error)
+        {
+            displayProgress(false);
+            THLog.e(TAG, "Could not fetch heroes", error);
+            THToast.show(R.string.error_fetch_hero);
         }
     }
 }

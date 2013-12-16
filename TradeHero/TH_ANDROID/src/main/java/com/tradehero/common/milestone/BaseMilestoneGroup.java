@@ -18,20 +18,7 @@ public class BaseMilestoneGroup extends BaseMilestone implements MilestoneGroup
     {
         super();
         milestones = new ArrayList<>();
-        childCompleteListener = new OnCompleteListener()
-        {
-            @Override public void onComplete(Milestone milestone)
-            {
-                THLog.d(TAG, "onComplete");
-                conditionalNotifyCompleteListener();
-            }
-
-            @Override public void onFailed(Milestone milestone, Throwable throwable)
-            {
-                THLog.d(TAG, "onFailed");
-                conditionalNotifyFailedListener(throwable);
-            }
-        };
+        childCompleteListener = new MilestoneGroupCompleteListener();
     }
 
     @Override public void onDestroy()
@@ -173,6 +160,21 @@ public class BaseMilestoneGroup extends BaseMilestone implements MilestoneGroup
         {
             failedReported = true;
             super.conditionalNotifyFailedListener(throwable);
+        }
+    }
+
+    protected class MilestoneGroupCompleteListener implements OnCompleteListener
+    {
+        @Override public void onComplete(Milestone milestone)
+        {
+            THLog.d(TAG, "onComplete");
+            conditionalNotifyCompleteListener();
+        }
+
+        @Override public void onFailed(Milestone milestone, Throwable throwable)
+        {
+            THLog.d(TAG, "onFailed");
+            conditionalNotifyFailedListener(throwable);
         }
     }
 }

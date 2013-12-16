@@ -69,6 +69,7 @@ import com.tradehero.th.fragments.social.follower.FollowerManagerFragment;
 import com.tradehero.th.fragments.social.follower.FollowerPayoutManagerFragment;
 import com.tradehero.th.fragments.social.hero.HeroListItemView;
 import com.tradehero.th.fragments.social.hero.HeroManagerFragment;
+import com.tradehero.th.fragments.social.hero.HeroManagerInfoFetcher;
 import com.tradehero.th.fragments.timeline.MeTimelineFragment;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.fragments.timeline.TimelineFragment;
@@ -266,6 +267,7 @@ import org.ocpsoft.prettytime.PrettyTime;
                 THIABUserInteractor.class,
                 StoreScreenFragment.StoreScreenTHIABUserInteractor.class,
                 HeroManagerFragment.HeroManagerTHIABUserInteractor.class,
+                HeroManagerInfoFetcher.class,
                 BuySellFragment.BuySellTHIABUserInteractor.class,
 
                 AddToWatchListFragment.class,

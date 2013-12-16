@@ -1,5 +1,6 @@
 package com.tradehero.th.persistence.watchlist;
 
+import com.tradehero.common.persistence.DTORetrievedAsyncMilestone;
 import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.watchlist.WatchlistPositionDTO;
@@ -10,7 +11,7 @@ import javax.inject.Inject;
 /**
  * Created with IntelliJ IDEA. User: tho on 12/5/13.
  */
-public class WatchlistRetrievedMilestone extends DTORetrievedMilestone<UserBaseKey, WatchlistPositionDTO, WatchlistPositionCache>
+public class WatchlistRetrievedMilestone extends DTORetrievedAsyncMilestone<UserBaseKey, WatchlistPositionDTO, WatchlistPositionCache>
 {
     @Inject protected Lazy<WatchlistPositionCache> watchlistPositionCache;
 
