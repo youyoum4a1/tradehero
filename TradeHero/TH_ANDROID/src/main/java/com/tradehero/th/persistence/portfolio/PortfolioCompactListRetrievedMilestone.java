@@ -1,6 +1,5 @@
 package com.tradehero.th.persistence.portfolio;
 
-import com.tradehero.common.persistence.DTORetrievedMilestone;
 import com.tradehero.th.api.portfolio.OwnedPortfolioIdList;
 import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
 import com.tradehero.th.api.users.UserBaseKey;

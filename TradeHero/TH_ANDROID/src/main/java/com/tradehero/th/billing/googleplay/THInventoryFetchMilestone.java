@@ -10,7 +10,7 @@ import com.tradehero.common.milestone.DependentMilestone;
 import com.tradehero.common.milestone.Milestone;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.persistence.billing.googleplay.IABSKUListCache;
-import com.tradehero.th.persistence.billing.googleplay.IABSKUListRetrievedMilestone;
+import com.tradehero.th.persistence.billing.googleplay.IABSKUListRetrievedAsyncMilestone;
 import com.tradehero.th.persistence.billing.googleplay.THIABProductDetailCache;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
@@ -31,7 +31,7 @@ public class THInventoryFetchMilestone extends BaseMilestone implements Dependen
     private final IABSKUListType iabskuListType;
     private WeakReference<THIABActorInventoryFetcher> actorInventoryFetcherWeak = new WeakReference<>(null);
     private InventoryFetcher.OnInventoryFetchedListener<IABSKU, THIABProductDetail, IABException> fetchListener;
-    protected IABSKUListRetrievedMilestone dependsOn;
+    protected IABSKUListRetrievedAsyncMilestone dependsOn;
     private OnCompleteListener dependCompleteListener;
     @Inject Lazy<IABSKUListCache> iabskuListCache;
     @Inject Lazy<THIABProductDetailCache> thskuDetailCache;
@@ -69,7 +69,7 @@ public class THInventoryFetchMilestone extends BaseMilestone implements Dependen
                 notifyFailedListener(throwable);
             }
         };
-        dependsOn = new IABSKUListRetrievedMilestone(iabskuListType);
+        dependsOn = new IABSKUListRetrievedAsyncMilestone(iabskuListType);
         dependsOn.setOnCompleteListener(dependCompleteListener);
         DaggerUtils.inject(this);
     }
@@ -172,11 +172,11 @@ public class THInventoryFetchMilestone extends BaseMilestone implements Dependen
 
     @Override public void setDependsOn(Milestone milestone)
     {
-        if (!(milestone instanceof IABSKUListRetrievedMilestone))
+        if (!(milestone instanceof IABSKUListRetrievedAsyncMilestone))
         {
-            throw new IllegalArgumentException("Only IABSKUListRetrievedMilestone is accepted");
+            throw new IllegalArgumentException("Only IABSKUListRetrievedAsyncMilestone is accepted");
         }
         milestone.setOnCompleteListener(dependCompleteListener);
-        this.dependsOn = (IABSKUListRetrievedMilestone) milestone;
+        this.dependsOn = (IABSKUListRetrievedAsyncMilestone) milestone;
     }
 }

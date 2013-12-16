@@ -1,6 +1,5 @@
 package com.tradehero.th.persistence.security;
 
-import com.tradehero.common.persistence.DTORetrievedMilestone;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import dagger.Lazy;

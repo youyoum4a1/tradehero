@@ -34,9 +34,9 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
     private final static String TAG = AbstractBuySellFragment.class.getSimpleName();
 
     public final static String BUNDLE_KEY_SECURITY_ID_BUNDLE = AbstractBuySellFragment.class.getName() + ".securityId";
-    public final static String BUNDLE_KEY_IS_BUY = BuySellConfirmFragment.class.getName() + ".isBuy";
-    public final static String BUNDLE_KEY_QUANTITY_BUY = BuySellConfirmFragment.class.getName() + ".quantityBuy";
-    public final static String BUNDLE_KEY_QUANTITY_SELL = BuySellConfirmFragment.class.getName() + ".quantitySell";
+    public final static String BUNDLE_KEY_IS_BUY = AbstractBuySellFragment.class.getName() + ".isBuy";
+    public final static String BUNDLE_KEY_QUANTITY_BUY = AbstractBuySellFragment.class.getName() + ".quantityBuy";
+    public final static String BUNDLE_KEY_QUANTITY_SELL = AbstractBuySellFragment.class.getName() + ".quantitySell";
 
     public final static long MILLISEC_QUOTE_REFRESH = 30000;
     public final static long MILLISEC_QUOTE_COUNTDOWN_PRECISION = 50;
@@ -103,17 +103,11 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
         super.onResume();
 
         Bundle args = getArguments();
-        if (args != null)
-        {
-            Bundle securityIdBundle = args.getBundle(BUNDLE_KEY_SECURITY_ID_BUNDLE);
-            if (securityIdBundle != null)
-            {
-                linkWith(new SecurityId(securityIdBundle), true);
-            }
-            isTransactionTypeBuy = args.getBoolean(BUNDLE_KEY_IS_BUY, isTransactionTypeBuy);
-            mBuyQuantity = args.getInt(BUNDLE_KEY_QUANTITY_BUY, mBuyQuantity);
-            mSellQuantity = args.getInt(BUNDLE_KEY_QUANTITY_SELL, mSellQuantity);
-        }
+        isTransactionTypeBuy = args.getBoolean(BUNDLE_KEY_IS_BUY, isTransactionTypeBuy);
+        mBuyQuantity = args.getInt(BUNDLE_KEY_QUANTITY_BUY, mBuyQuantity);
+        mSellQuantity = args.getInt(BUNDLE_KEY_QUANTITY_SELL, mSellQuantity);
+        Bundle securityIdBundle = args.getBundle(BUNDLE_KEY_SECURITY_ID_BUNDLE);
+        linkWith(new SecurityId(securityIdBundle), true);
 
         UserProfileDTO profileDTO = userProfileCache.get().get(currentUserBaseKeyHolder.getCurrentUserBaseKey());
         if (profileDTO != null)

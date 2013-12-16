@@ -112,7 +112,7 @@ import com.tradehero.th.network.service.UserTimelineService;
 import com.tradehero.th.network.service.WatchlistService;
 import com.tradehero.th.network.service.YahooNewsService;
 import com.tradehero.th.persistence.DTOCacheUtil;
-import com.tradehero.th.persistence.billing.googleplay.IABSKUListRetrievedMilestone;
+import com.tradehero.th.persistence.billing.googleplay.IABSKUListRetrievedAsyncMilestone;
 import com.tradehero.th.persistence.leaderboard.LeaderboardManager;
 import com.tradehero.th.persistence.portfolio.OwnedPortfolioFetchAssistant;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListRetrievedMilestone;
@@ -259,7 +259,7 @@ import org.ocpsoft.prettytime.PrettyTime;
                 THIABLogicHolder.class,
                 THIABPurchaseConsumer.class,
                 THInventoryFetchMilestone.class,
-                IABSKUListRetrievedMilestone.class,
+                IABSKUListRetrievedAsyncMilestone.class,
                 PortfolioCompactListRetrievedMilestone.class,
                 UserProfileRetrievedMilestone.class,
                 PurchaseRestorerRequiredMilestone.class,
