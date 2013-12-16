@@ -96,19 +96,26 @@ import com.tradehero.th.network.NetworkEngine;
 import com.tradehero.th.network.YahooEngine;
 import com.tradehero.th.network.service.AlertPlanService;
 import com.tradehero.th.network.service.AlertService;
+import com.tradehero.th.network.service.AlertServiceWrapper;
 import com.tradehero.th.network.service.FollowerService;
+import com.tradehero.th.network.service.FollowerServiceWrapper;
 import com.tradehero.th.network.service.LeaderboardService;
 import com.tradehero.th.network.service.MarketService;
 import com.tradehero.th.network.service.PortfolioService;
+import com.tradehero.th.network.service.PortfolioServiceWrapper;
 import com.tradehero.th.network.service.PositionService;
+import com.tradehero.th.network.service.PositionServiceWrapper;
 import com.tradehero.th.network.service.ProviderService;
 import com.tradehero.th.network.service.QuoteService;
+import com.tradehero.th.network.service.QuoteServiceWrapper;
 import com.tradehero.th.network.service.SecurityService;
 import com.tradehero.th.network.service.SecurityServiceWrapper;
 import com.tradehero.th.network.service.SessionService;
 import com.tradehero.th.network.service.SocialService;
 import com.tradehero.th.network.service.TradeService;
+import com.tradehero.th.network.service.TradeServiceWrapper;
 import com.tradehero.th.network.service.UserService;
+import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.network.service.UserTimelineService;
 import com.tradehero.th.network.service.WatchlistService;
 import com.tradehero.th.network.service.YahooNewsService;
@@ -274,6 +281,13 @@ import org.ocpsoft.prettytime.PrettyTime;
                 WatchlistRetrievedMilestone.class,
 
                 SecurityServiceWrapper.class,
+                QuoteServiceWrapper.class,
+                PositionServiceWrapper.class,
+                PortfolioServiceWrapper.class,
+                FollowerServiceWrapper.class,
+                AlertServiceWrapper.class,
+                TradeServiceWrapper.class,
+                UserServiceWrapper.class,
         },
         staticInjections =
         {
@@ -308,6 +322,11 @@ public class TradeHeroModule
         return engine.createService(UserService.class);
     }
 
+    @Provides @Singleton UserServiceWrapper provideUserServiceWrapper()
+    {
+        return new UserServiceWrapper();
+    }
+
     @Provides @Singleton SessionService provideSessionService()
     {
         return engine.createService(SessionService.class);
@@ -333,9 +352,19 @@ public class TradeHeroModule
         return engine.createService(QuoteService.class);
     }
 
+    @Provides @Singleton QuoteServiceWrapper provideQuoteServiceWrapper()
+    {
+        return new QuoteServiceWrapper();
+    }
+
     @Provides @Singleton PortfolioService providePortfolioService()
     {
         return engine.createService(PortfolioService.class);
+    }
+
+    @Provides @Singleton PortfolioServiceWrapper providePortfolioServiceWrapper()
+    {
+        return new PortfolioServiceWrapper();
     }
 
     @Provides @Singleton PositionService providePositionService()
@@ -343,9 +372,19 @@ public class TradeHeroModule
         return engine.createService(PositionService.class);
     }
 
+    @Provides @Singleton PositionServiceWrapper providePositionServiceWrapper()
+    {
+        return new PositionServiceWrapper();
+    }
+
     @Provides @Singleton TradeService provideTradeService()
     {
         return engine.createService(TradeService.class);
+    }
+
+    @Provides @Singleton TradeServiceWrapper provideTradeServiceWrapper()
+    {
+        return new TradeServiceWrapper();
     }
 
     @Provides @Singleton LeaderboardService provideLeaderboardService()
@@ -368,12 +407,22 @@ public class TradeHeroModule
         return engine.createService(FollowerService.class);
     }
 
-     @Provides @Singleton AlertService provideAlertService()
+    @Provides @Singleton FollowerServiceWrapper provideFollowerServiceWrapper()
+    {
+        return new FollowerServiceWrapper();
+    }
+
+    @Provides @Singleton AlertService provideAlertService()
     {
         return engine.createService(AlertService.class);
     }
 
-     @Provides @Singleton AlertPlanService provideAlertPlanService()
+    @Provides @Singleton AlertServiceWrapper provideAlertServiceWrapper()
+    {
+        return new AlertServiceWrapper();
+    }
+
+    @Provides @Singleton AlertPlanService provideAlertPlanService()
     {
         return engine.createService(AlertPlanService.class);
     }

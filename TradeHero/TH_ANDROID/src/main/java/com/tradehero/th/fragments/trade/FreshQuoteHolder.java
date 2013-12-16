@@ -5,8 +5,7 @@ import com.tradehero.common.utils.THLog;
 import com.tradehero.th.api.SignatureContainer;
 import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.security.SecurityId;
-import com.tradehero.th.network.service.QuoteService;
-import com.tradehero.th.network.service.QuoteServiceUtil;
+import com.tradehero.th.network.service.QuoteServiceWrapper;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
 import java.io.IOException;
@@ -36,7 +35,7 @@ public class FreshQuoteHolder
     private boolean refreshing = false;
     public String identifier = "noId";
 
-    @Inject protected Lazy<QuoteService> quoteService;
+    @Inject protected Lazy<QuoteServiceWrapper> quoteServiceWrapper;
 
     //<editor-fold desc="Constructors">
     public FreshQuoteHolder(SecurityId securityId)
@@ -167,7 +166,7 @@ public class FreshQuoteHolder
         {
             refreshing = true;
             notifyListenersRefreshing();
-            QuoteServiceUtil.getQuote(quoteService.get(), securityId, createCallback());
+            quoteServiceWrapper.get().getQuote(securityId, createCallback());
         }
     }
 

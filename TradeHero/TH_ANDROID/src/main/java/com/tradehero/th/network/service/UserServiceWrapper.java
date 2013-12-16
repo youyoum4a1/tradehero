@@ -3,7 +3,9 @@ package com.tradehero.th.network.service;
 import com.tradehero.th.api.users.SearchUserListType;
 import com.tradehero.th.api.users.UserListType;
 import com.tradehero.th.api.users.UserSearchResultDTO;
+import com.tradehero.th.utils.DaggerUtils;
 import java.util.List;
+import javax.inject.Inject;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 
@@ -11,31 +13,39 @@ import retrofit.RetrofitError;
  * Repurposes queries
  * Created by xavier on 12/12/13.
  */
-public class UserServiceUtil
+public class UserServiceWrapper
 {
-    public static final String TAG = UserServiceUtil.class.getSimpleName();
+    public static final String TAG = UserServiceWrapper.class.getSimpleName();
+
+    @Inject UserService userService;
+
+    public UserServiceWrapper()
+    {
+        super();
+        DaggerUtils.inject(this);
+    }
 
     //<editor-fold desc="Search Users">
-    public static List<UserSearchResultDTO> searchUsers(UserService userService, UserListType key)
+    public List<UserSearchResultDTO> searchUsers(UserListType key)
             throws RetrofitError
     {
         if (key instanceof SearchUserListType)
         {
-            return searchUsers(userService, (SearchUserListType) key);
+            return searchUsers((SearchUserListType) key);
         }
         throw new IllegalArgumentException("Unhandled type " + key.getClass().getName());
     }
 
-    public static void searchUsers(UserService userService, UserListType key, Callback<List<UserSearchResultDTO>> callback)
+    public void searchUsers(UserListType key, Callback<List<UserSearchResultDTO>> callback)
     {
         if (key instanceof SearchUserListType)
         {
-            searchUsers(userService, (SearchUserListType) key, callback);
+            searchUsers((SearchUserListType) key, callback);
         }
         throw new IllegalArgumentException("Unhandled type " + key.getClass().getName());
     }
 
-    public static List<UserSearchResultDTO> searchUsers(UserService userService, SearchUserListType key)
+    public List<UserSearchResultDTO> searchUsers(SearchUserListType key)
             throws RetrofitError
     {
         if (key.searchString == null)
@@ -44,16 +54,16 @@ public class UserServiceUtil
         }
         else if (key.page == null)
         {
-            return userService.searchUsers(key.searchString);
+            return this.userService.searchUsers(key.searchString);
         }
         else if (key.perPage == null)
         {
-            return userService.searchUsers(key.searchString, key.page);
+            return this.userService.searchUsers(key.searchString, key.page);
         }
-        return userService.searchUsers(key.searchString, key.page, key.perPage);
+        return this.userService.searchUsers(key.searchString, key.page, key.perPage);
     }
 
-    public static void searchUsers(UserService userService, SearchUserListType key, Callback<List<UserSearchResultDTO>> callback)
+    public void searchUsers(SearchUserListType key, Callback<List<UserSearchResultDTO>> callback)
     {
         if (key.searchString == null)
         {
@@ -61,15 +71,15 @@ public class UserServiceUtil
         }
         else if (key.page == null)
         {
-            userService.searchUsers(key.searchString, callback);
+            this.userService.searchUsers(key.searchString, callback);
         }
         else if (key.perPage == null)
         {
-            userService.searchUsers(key.searchString, key.page, callback);
+            this.userService.searchUsers(key.searchString, key.page, callback);
         }
         else
         {
-            userService.searchUsers(key.searchString, key.page, key.perPage, callback);
+            this.userService.searchUsers(key.searchString, key.page, key.perPage, callback);
         }
     }
     //</editor-fold>

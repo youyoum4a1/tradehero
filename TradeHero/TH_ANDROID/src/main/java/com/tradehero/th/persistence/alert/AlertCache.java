@@ -3,8 +3,7 @@ package com.tradehero.th.persistence.alert;
 import com.tradehero.common.persistence.StraightDTOCache;
 import com.tradehero.th.api.alert.AlertDTO;
 import com.tradehero.th.api.alert.AlertId;
-import com.tradehero.th.network.service.AlertService;
-import com.tradehero.th.network.service.AlertServiceUtil;
+import com.tradehero.th.network.service.AlertServiceWrapper;
 import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +16,7 @@ import javax.inject.Singleton;
     public static final String TAG = AlertCache.class.getSimpleName();
     public static final int DEFAULT_MAX_SIZE = 100;
 
-    @Inject protected Lazy<AlertService> alertService;
+    @Inject protected Lazy<AlertServiceWrapper> alertServiceWrapper;
     @Inject protected Lazy<AlertCompactCache> alertCompactCache;
 
     //<editor-fold desc="Constructors">
@@ -29,7 +28,7 @@ import javax.inject.Singleton;
 
     @Override protected AlertDTO fetch(AlertId key) throws Throwable
     {
-        return AlertServiceUtil.getAlert(alertService.get(), key);
+        return this.alertServiceWrapper.get().getAlert(key);
     }
 
     @Override public AlertDTO put(AlertId key, AlertDTO value)

@@ -1,28 +1,17 @@
 package com.tradehero.th.persistence.portfolio;
 
 import com.tradehero.common.persistence.StraightDTOCache;
-import com.tradehero.common.utils.THLog;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PortfolioDTO;
-import com.tradehero.th.api.users.UserBaseDTO;
-import com.tradehero.th.base.THUser;
-import com.tradehero.th.network.service.PortfolioService;
-import com.tradehero.th.network.service.PortfolioServiceUtil;
+import com.tradehero.th.network.service.PortfolioServiceWrapper;
 import com.tradehero.th.persistence.position.GetPositionsCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import dagger.Lazy;
-import java.io.IOException;
-import java.io.StringWriter;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import javax.inject.Inject;
-import javax.inject.Named;
 import javax.inject.Singleton;
-import org.apache.commons.io.IOUtils;
-import retrofit.RetrofitError;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/14/13 Time: 3:28 PM To change this template use File | Settings | File Templates. */
 @Singleton public class PortfolioCache extends StraightDTOCache<OwnedPortfolioId, PortfolioDTO>
@@ -30,7 +19,7 @@ import retrofit.RetrofitError;
     public static final String TAG = PortfolioCache.class.getName();
     public static final int DEFAULT_MAX_SIZE = 200;
 
-    @Inject Lazy<PortfolioService> portfolioService;
+    @Inject Lazy<PortfolioServiceWrapper> portfolioServiceWrapper;
     @Inject Lazy<PortfolioCompactCache> portfolioCompactCache;
     @Inject Lazy<UserProfileCache> userProfileCache;
     @Inject Lazy<GetPositionsCache> getPositionsCache;
@@ -44,7 +33,7 @@ import retrofit.RetrofitError;
 
     @Override protected PortfolioDTO fetch(OwnedPortfolioId key) throws Throwable
     {
-        return PortfolioServiceUtil.getPortfolio(portfolioService.get(), key);
+        return portfolioServiceWrapper.get().getPortfolio(key);
     }
 
     @Override public PortfolioDTO put(OwnedPortfolioId key, PortfolioDTO value)

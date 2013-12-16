@@ -1,21 +1,29 @@
 package com.tradehero.th.network.service;
 
-import com.tradehero.th.api.alert.AlertId;
 import com.tradehero.th.api.social.FollowerId;
 import com.tradehero.th.api.social.UserFollowerDTO;
+import com.tradehero.th.utils.DaggerUtils;
+import javax.inject.Inject;
 import retrofit.Callback;
 import retrofit.RetrofitError;
-import retrofit.http.Path;
 
 /**
  * Repurposes requests
  * Created by xavier on 12/12/13.
  */
-public class FollowerServiceUtil
+public class FollowerServiceWrapper
 {
-    public static final String TAG = FollowerServiceUtil.class.getSimpleName();
+    public static final String TAG = FollowerServiceWrapper.class.getSimpleName();
 
-    private static void basicCheck(FollowerId followerId)
+    @Inject FollowerService followerService;
+
+    public FollowerServiceWrapper()
+    {
+        super();
+        DaggerUtils.inject(this);
+    }
+
+    private void basicCheck(FollowerId followerId)
     {
         if (followerId == null)
         {
@@ -32,17 +40,17 @@ public class FollowerServiceUtil
     }
 
     //<editor-fold desc="Get Follower Subscription Detail">
-    public static UserFollowerDTO getFollowerSubscriptionDetail(FollowerService followerService, FollowerId followerId)
+    public UserFollowerDTO getFollowerSubscriptionDetail(FollowerId followerId)
             throws RetrofitError
     {
         basicCheck(followerId);
-        return followerService.getFollowerSubscriptionDetail(followerId.followedId, followerId.followerId);
+        return this.followerService.getFollowerSubscriptionDetail(followerId.followedId, followerId.followerId);
     }
 
-    public static void getFollowerSubscriptionDetail(FollowerService followerService, FollowerId followerId, Callback<UserFollowerDTO> callback)
+    public void getFollowerSubscriptionDetail(FollowerId followerId, Callback<UserFollowerDTO> callback)
     {
         basicCheck(followerId);
-        followerService.getFollowerSubscriptionDetail(followerId.followedId, followerId.followerId, callback);
+        this.followerService.getFollowerSubscriptionDetail(followerId.followedId, followerId.followerId, callback);
     }
     //</editor-fold>
 }

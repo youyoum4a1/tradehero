@@ -1,25 +1,17 @@
 package com.tradehero.th.persistence.position;
 
-import android.os.AsyncTask;
 import android.support.v4.util.LruCache;
-import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.persistence.PartialDTOCache;
-import com.tradehero.common.utils.THLog;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
-import com.tradehero.th.api.portfolio.PagedOwnedPortfolioId;
-import com.tradehero.th.api.portfolio.PerPagedOwnedPortfolioId;
 import com.tradehero.th.api.position.OwnedPositionId;
 import com.tradehero.th.api.position.GetPositionsDTO;
 import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
-import com.tradehero.th.network.BasicRetrofitErrorHandler;
-import com.tradehero.th.network.service.PositionService;
-import com.tradehero.th.network.service.PositionServiceUtil;
+import com.tradehero.th.network.service.PositionServiceWrapper;
 import com.tradehero.th.persistence.portfolio.PortfolioCache;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import dagger.Lazy;
-import java.lang.ref.WeakReference;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -33,7 +25,7 @@ import retrofit.RetrofitError;
 
     // We need to compose here, instead of inheritance, otherwise we get a compile error regarding erasure on put and put.
     private LruCache<OwnedPortfolioId, GetPositionsCache.GetPositionsCutDTO> lruCache;
-    @Inject protected Lazy<PositionService> positionService;
+    @Inject protected Lazy<PositionServiceWrapper> positionServiceWrapper;
     @Inject protected Lazy<SecurityCompactCache> securityCompactCache;
     @Inject protected Lazy<PortfolioCache> portfolioCache;
     @Inject protected Lazy<PositionCache> filedPositionCache;
@@ -44,21 +36,21 @@ import retrofit.RetrofitError;
         this(DEFAULT_MAX_SIZE);
     }
 
-    public GetPositionsCache(int maxSize)
+    public GetPositionsCache(final int maxSize)
     {
         super();
         lruCache = new LruCache<>(maxSize);
     }
     //</editor-fold>
 
-    protected GetPositionsDTO fetch(OwnedPortfolioId key) throws RetrofitError
+    protected GetPositionsDTO fetch(final OwnedPortfolioId key) throws RetrofitError
     {
-        return PositionServiceUtil.getPositions(positionService.get(), key);
+        return this.positionServiceWrapper.get().getPositions(key);
     }
 
-    @Override public GetPositionsDTO get(OwnedPortfolioId key)
+    @Override public GetPositionsDTO get(final OwnedPortfolioId key)
     {
-        GetPositionsCutDTO getPositionsCutDTO = this.lruCache.get(key);
+        final GetPositionsCutDTO getPositionsCutDTO = this.lruCache.get(key);
         if (getPositionsCutDTO == null)
         {
             return null;
@@ -66,7 +58,7 @@ import retrofit.RetrofitError;
         return getPositionsCutDTO.create(key.portfolioId, securityCompactCache.get(), filedPositionCache.get());
     }
 
-    @Override public GetPositionsDTO put(OwnedPortfolioId key, GetPositionsDTO value)
+    @Override public GetPositionsDTO put(final OwnedPortfolioId key, final GetPositionsDTO value)
     {
         // We invalidate the previous list of positions before it get updated
         invalidateMatchingPositionCache(get(key));
@@ -94,7 +86,7 @@ import retrofit.RetrofitError;
         return previous;
     }
 
-    @Override public void invalidate(OwnedPortfolioId key)
+    @Override public void invalidate(final OwnedPortfolioId key)
     {
         invalidateMatchingPositionCache(get(key));
         lruCache.remove(key);
@@ -105,7 +97,7 @@ import retrofit.RetrofitError;
         lruCache.evictAll();
     }
 
-    protected void invalidateMatchingPositionCache(GetPositionsDTO value)
+    protected void invalidateMatchingPositionCache(final GetPositionsDTO value)
     {
         if (value != null && value.positions != null)
         {
@@ -118,10 +110,10 @@ import retrofit.RetrofitError;
 
     private static class GetPositionsCutDTO
     {
-        public List<OwnedPositionId> ownedPositionIds;
-        public List<SecurityId> securityIds;
-        public int openPositionsCount;
-        public int closedPositionsCount;
+        public final List<OwnedPositionId> ownedPositionIds;
+        public final List<SecurityId> securityIds;
+        public final int openPositionsCount;
+        public final int closedPositionsCount;
 
         public GetPositionsCutDTO(
                 GetPositionsDTO getPositionsDTO,

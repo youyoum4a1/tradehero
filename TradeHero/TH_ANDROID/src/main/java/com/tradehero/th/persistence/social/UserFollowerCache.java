@@ -3,9 +3,7 @@ package com.tradehero.th.persistence.social;
 import com.tradehero.common.persistence.StraightDTOCache;
 import com.tradehero.th.api.social.FollowerId;
 import com.tradehero.th.api.social.UserFollowerDTO;
-import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.network.service.FollowerService;
-import com.tradehero.th.network.service.FollowerServiceUtil;
+import com.tradehero.th.network.service.FollowerServiceWrapper;
 import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +16,7 @@ import javax.inject.Singleton;
     public static final String TAG = UserFollowerCache.class.getSimpleName();
     public static final int DEFAULT_MAX_SIZE = 100;
 
-    @Inject protected Lazy<FollowerService> followerService;
+    @Inject protected Lazy<FollowerServiceWrapper> followerServiceWrapper;
 
     //<editor-fold desc="Constructors">
     @Inject public UserFollowerCache()
@@ -29,7 +27,7 @@ import javax.inject.Singleton;
 
     @Override protected UserFollowerDTO fetch(FollowerId key) throws Throwable
     {
-        return FollowerServiceUtil.getFollowerSubscriptionDetail(followerService.get(), key);
+        return this.followerServiceWrapper.get().getFollowerSubscriptionDetail(key);
     }
 
     public List<UserFollowerDTO> getOrFetch(List<FollowerId> followerIds) throws Throwable

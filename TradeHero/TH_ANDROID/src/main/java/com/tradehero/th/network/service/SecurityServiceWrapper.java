@@ -20,7 +20,7 @@ import retrofit.RetrofitError;
  */
 public class SecurityServiceWrapper
 {
-    public final String TAG = SecurityServiceWrapper.class.getSimpleName();
+    public static final String TAG = SecurityServiceWrapper.class.getSimpleName();
 
     @Inject SecurityService securityService;
 

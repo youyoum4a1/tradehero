@@ -1,10 +1,11 @@
 package com.tradehero.th.network.service;
 
-import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.position.OwnedPositionId;
 import com.tradehero.th.api.trade.OwnedTradeId;
 import com.tradehero.th.api.trade.TradeDTO;
+import com.tradehero.th.utils.DaggerUtils;
 import java.util.List;
+import javax.inject.Inject;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 
@@ -12,11 +13,19 @@ import retrofit.RetrofitError;
  * Repurposes trade requests
  * Created by xavier on 12/12/13.
  */
-public class TradeServiceUtil
+public class TradeServiceWrapper
 {
-    public static final String TAG = TradeServiceUtil.class.getSimpleName();
+    public static final String TAG = TradeServiceWrapper.class.getSimpleName();
 
-    private static void basicCheck(OwnedPositionId ownedPositionId)
+    @Inject TradeService tradeService;
+
+    public TradeServiceWrapper()
+    {
+        super();
+        DaggerUtils.inject(this);
+    }
+
+    private void basicCheck(OwnedPositionId ownedPositionId)
     {
         if (ownedPositionId == null)
         {
@@ -36,7 +45,7 @@ public class TradeServiceUtil
         }
     }
 
-    private static void basicCheck(OwnedTradeId ownedTradeId)
+    private void basicCheck(OwnedTradeId ownedTradeId)
     {
         basicCheck((OwnedPositionId) ownedTradeId);
         if (ownedTradeId.tradeId == null)
@@ -45,31 +54,31 @@ public class TradeServiceUtil
         }
     }
 
-    public static List<TradeDTO> getTrades(TradeService tradeService, OwnedPositionId ownedPositionId)
+    public List<TradeDTO> getTrades(OwnedPositionId ownedPositionId)
             throws RetrofitError
     {
         basicCheck(ownedPositionId);
-        return tradeService.getTrades(ownedPositionId.userId, ownedPositionId.portfolioId, ownedPositionId.positionId);
+        return this.tradeService.getTrades(ownedPositionId.userId, ownedPositionId.portfolioId, ownedPositionId.positionId);
     }
 
-    public static void getTrades(TradeService tradeService, OwnedPositionId ownedPositionId, Callback<List<TradeDTO>> callback)
+    public void getTrades(OwnedPositionId ownedPositionId, Callback<List<TradeDTO>> callback)
             throws RetrofitError
     {
         basicCheck(ownedPositionId);
-        tradeService.getTrades(ownedPositionId.userId, ownedPositionId.portfolioId, ownedPositionId.positionId, callback);
+        this.tradeService.getTrades(ownedPositionId.userId, ownedPositionId.portfolioId, ownedPositionId.positionId, callback);
     }
 
-    public static TradeDTO getTrade(TradeService tradeService, OwnedTradeId ownedTradeId)
+    public TradeDTO getTrade(OwnedTradeId ownedTradeId)
             throws RetrofitError
     {
         basicCheck(ownedTradeId);
-        return tradeService.getTrade(ownedTradeId.userId, ownedTradeId.portfolioId, ownedTradeId.positionId, ownedTradeId.tradeId);
+        return this.tradeService.getTrade(ownedTradeId.userId, ownedTradeId.portfolioId, ownedTradeId.positionId, ownedTradeId.tradeId);
     }
 
-    public static void getTrade(TradeService tradeService, OwnedTradeId ownedTradeId, Callback<TradeDTO> callback)
+    public void getTrade(OwnedTradeId ownedTradeId, Callback<TradeDTO> callback)
             throws RetrofitError
     {
         basicCheck(ownedTradeId);
-        tradeService.getTrade(ownedTradeId.userId, ownedTradeId.portfolioId, ownedTradeId.positionId, ownedTradeId.tradeId, callback);
+        this.tradeService.getTrade(ownedTradeId.userId, ownedTradeId.portfolioId, ownedTradeId.positionId, ownedTradeId.tradeId, callback);
     }
 }

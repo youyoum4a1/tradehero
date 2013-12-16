@@ -3,6 +3,8 @@ package com.tradehero.th.network.service;
 import com.tradehero.th.api.SignatureContainer;
 import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.security.SecurityId;
+import com.tradehero.th.utils.DaggerUtils;
+import javax.inject.Inject;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 
@@ -10,11 +12,19 @@ import retrofit.RetrofitError;
  * Repurposes requests
  * Created by xavier on 12/12/13.
  */
-public class QuoteServiceUtil
+public class QuoteServiceWrapper
 {
-    public static final String TAG = QuoteServiceUtil.class.getSimpleName();
+    public static final String TAG = QuoteServiceWrapper.class.getSimpleName();
 
-    private static void basicCheck(SecurityId securityId)
+    @Inject QuoteService quoteService;
+
+    public QuoteServiceWrapper()
+    {
+        super();
+        DaggerUtils.inject(this);
+    }
+
+    private void basicCheck(SecurityId securityId)
     {
         if (securityId == null)
         {
@@ -31,18 +41,18 @@ public class QuoteServiceUtil
     }
 
     //<editor-fold desc="Get Quote">
-    public static SignatureContainer<QuoteDTO> getQuote(QuoteService quoteService, SecurityId securityId)
+    public SignatureContainer<QuoteDTO> getQuote(SecurityId securityId)
             throws RetrofitError
     {
         basicCheck(securityId);
-        return quoteService.getQuote(securityId.exchange, securityId.securitySymbol);
+        return this.quoteService.getQuote(securityId.exchange, securityId.securitySymbol);
     }
 
-    public static void getQuote(QuoteService quoteService, SecurityId securityId, Callback<SignatureContainer<QuoteDTO>> callback)
+    public void getQuote(SecurityId securityId, Callback<SignatureContainer<QuoteDTO>> callback)
             throws RetrofitError
     {
         basicCheck(securityId);
-        quoteService.getQuote(securityId.exchange, securityId.securitySymbol, callback);
+        this.quoteService.getQuote(securityId.exchange, securityId.securitySymbol, callback);
     }
     //</editor-fold>
 }

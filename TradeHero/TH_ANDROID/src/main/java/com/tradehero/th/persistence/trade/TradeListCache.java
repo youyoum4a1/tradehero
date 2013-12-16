@@ -1,20 +1,15 @@
 package com.tradehero.th.persistence.trade;
 
 import com.tradehero.common.persistence.StraightDTOCache;
-import com.tradehero.common.utils.THLog;
 import com.tradehero.th.api.position.OwnedPositionId;
 import com.tradehero.th.api.trade.OwnedTradeId;
 import com.tradehero.th.api.trade.OwnedTradeIdList;
 import com.tradehero.th.api.trade.TradeDTO;
-import com.tradehero.th.network.BasicRetrofitErrorHandler;
-import com.tradehero.th.network.service.TradeService;
-import com.tradehero.th.network.service.TradeServiceUtil;
+import com.tradehero.th.network.service.TradeServiceWrapper;
 import dagger.Lazy;
-import retrofit.RetrofitError;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -25,7 +20,7 @@ import java.util.List;
     public static final String TAG = TradeListCache.class.getSimpleName();
     public static final int DEFAULT_MAX_SIZE = 100;
 
-    @Inject protected Lazy<TradeService> tradeService;
+    @Inject protected Lazy<TradeServiceWrapper> tradeServiceWrapper;
     @Inject protected Lazy<TradeCache> tradeCache;
 
     //<editor-fold desc="Constructors">
@@ -36,7 +31,7 @@ import java.util.List;
 
     @Override protected OwnedTradeIdList fetch(OwnedPositionId key) throws Throwable
     {
-        return putInternal(key, TradeServiceUtil.getTrades(tradeService.get(), key));
+        return putInternal(key, tradeServiceWrapper.get().getTrades(key));
     }
 
     protected OwnedTradeIdList putInternal(OwnedPositionId key, List<TradeDTO> fleshedValues)

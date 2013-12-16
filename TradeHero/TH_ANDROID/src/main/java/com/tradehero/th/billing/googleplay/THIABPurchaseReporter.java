@@ -1,6 +1,5 @@
 package com.tradehero.th.billing.googleplay;
 
-import com.tradehero.common.billing.googleplay.BaseIABPurchase;
 import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
@@ -10,8 +9,7 @@ import com.tradehero.th.billing.BasePurchaseReporter;
 import com.tradehero.th.billing.PurchaseReporter;
 import com.tradehero.th.billing.googleplay.exception.UnhandledSKUDomainException;
 import com.tradehero.th.network.service.AlertPlanService;
-import com.tradehero.th.network.service.PortfolioService;
-import com.tradehero.th.network.service.PortfolioServiceUtil;
+import com.tradehero.th.network.service.PortfolioServiceWrapper;
 import com.tradehero.th.network.service.UserService;
 import com.tradehero.th.persistence.billing.googleplay.THIABProductDetailCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
@@ -33,7 +31,7 @@ public class THIABPurchaseReporter extends BasePurchaseReporter<
     public static final String TAG = THIABPurchaseReporter.class.getSimpleName();
 
     @Inject Lazy<CurrentUserBaseKeyHolder> currentUserBaseKeyHolder;
-    @Inject Lazy<PortfolioService> portfolioService;
+    @Inject Lazy<PortfolioServiceWrapper> portfolioServiceWrapper;
     @Inject Lazy<AlertPlanService> alertPlanService;
     @Inject Lazy<UserService> userService;
     @Inject Lazy<THIABProductDetailCache> skuDetailCache;
@@ -67,11 +65,11 @@ public class THIABPurchaseReporter extends BasePurchaseReporter<
         switch (skuDetailCache.get().get(purchase.getProductIdentifier()).domain)
         {
             case THIABProductDetail.DOMAIN_RESET_PORTFOLIO:
-                PortfolioServiceUtil.resetPortfolio(portfolioService.get(), portfolioId, purchase.getGooglePlayPurchaseDTO(), userProfileDTOCallback);
+                portfolioServiceWrapper.get().resetPortfolio(portfolioId, purchase.getGooglePlayPurchaseDTO(), userProfileDTOCallback);
                 break;
 
             case THIABProductDetail.DOMAIN_VIRTUAL_DOLLAR:
-                PortfolioServiceUtil.addCash(portfolioService.get(), portfolioId, purchase.getGooglePlayPurchaseDTO(), userProfileDTOCallback);
+                portfolioServiceWrapper.get().addCash(portfolioId, purchase.getGooglePlayPurchaseDTO(), userProfileDTOCallback);
                 break;
 
             case THIABProductDetail.DOMAIN_STOCK_ALERTS:
@@ -101,10 +99,10 @@ public class THIABPurchaseReporter extends BasePurchaseReporter<
         switch (skuDetailCache.get().get(purchase.getProductIdentifier()).domain)
         {
             case THIABProductDetail.DOMAIN_RESET_PORTFOLIO:
-                return PortfolioServiceUtil.resetPortfolio(portfolioService.get(), portfolioId, purchase.getGooglePlayPurchaseDTO());
+                return portfolioServiceWrapper.get().resetPortfolio(portfolioId, purchase.getGooglePlayPurchaseDTO());
 
             case THIABProductDetail.DOMAIN_VIRTUAL_DOLLAR:
-                return PortfolioServiceUtil.addCash(portfolioService.get(), portfolioId, purchase.getGooglePlayPurchaseDTO());
+                return portfolioServiceWrapper.get().addCash(portfolioId, purchase.getGooglePlayPurchaseDTO());
 
             case THIABProductDetail.DOMAIN_STOCK_ALERTS:
                 return alertPlanService.get().subscribeToAlertPlan(
