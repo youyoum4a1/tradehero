@@ -43,6 +43,7 @@ public class PortfolioListFragment extends DashboardFragment
 
     private ProgressBar progressBar;
     private PortfolioListView portfolioListView;
+    ActionBar actionBar;
 
     private PortfolioListItemAdapter portfolioListAdapter;
 
@@ -102,9 +103,9 @@ public class PortfolioListFragment extends DashboardFragment
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
-        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-        actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME);
-        actionBar.setDisplayHomeAsUpEnabled(isDisplayHomeAsUpEnabled());
+        this.actionBar = getSherlockActivity().getSupportActionBar();
+        this.actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME);
+        this.actionBar.setDisplayHomeAsUpEnabled(isDisplayHomeAsUpEnabled());
         displayActionBarTitle();
         super.onCreateOptionsMenu(menu, inflater);
     }
@@ -137,6 +138,12 @@ public class PortfolioListFragment extends DashboardFragment
         }
         otherPortfolioFetchAssistant = null;
         super.onPause();
+    }
+
+    @Override public void onDestroyOptionsMenu()
+    {
+        this.actionBar = null;
+        super.onDestroyOptionsMenu();
     }
 
     @Override public void onDestroyView()
@@ -494,17 +501,19 @@ public class PortfolioListFragment extends DashboardFragment
 
     public void displayActionBarTitle()
     {
-        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-        if (displayablePortfolios == null || areOthersComplete)
+        if (this.actionBar != null)
         {
-            actionBar.setTitle(getString(R.string.topbar_portfolios_title));
-        }
-        else
-        {
-            actionBar.setTitle(String.format(
-                    getString(R.string.portfolio_loading_count),
-                    getDisplayablePortfoliosValidCount(),
-                    getDisplayablePortfoliosCount()));
+            if (displayablePortfolios == null || areOthersComplete)
+            {
+                this.actionBar.setTitle(getString(R.string.topbar_portfolios_title));
+            }
+            else
+            {
+                this.actionBar.setTitle(String.format(
+                        getString(R.string.portfolio_loading_count),
+                        getDisplayablePortfoliosValidCount(),
+                        getDisplayablePortfoliosCount()));
+            }
         }
     }
 
