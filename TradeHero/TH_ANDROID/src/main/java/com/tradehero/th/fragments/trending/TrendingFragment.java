@@ -217,9 +217,18 @@ public class TrendingFragment extends DashboardFragment
         outState.putStringArray(BUNDLE_KEY_SELECTED_EXCHANGE_NAMES, exchangeNames);
     }
 
+    private void postIfCan(final Runnable runnable)
+    {
+        View fragmentView = getView();
+        if (fragmentView != null)
+        {
+            fragmentView.post(runnable);
+        }
+    }
+
     public void displayFilterPager()
     {
-        getView().post(new Runnable()
+        postIfCan(new Runnable()
         {
             @Override public void run()
             {
@@ -420,11 +429,12 @@ public class TrendingFragment extends DashboardFragment
     {
         @Override public void onQueryingChanged(boolean querying)
         {
-            getView().post(new Runnable()
+            postIfCan(new Runnable()
             {
                 @Override public void run()
                 {
-                    SecurityListPagedLoader securityListPagedLoader = (SecurityListPagedLoader) (Loader) getActivity().getSupportLoaderManager().getLoader(SECURITY_ID_LIST_LOADER_ID);
+                    SecurityListPagedLoader securityListPagedLoader =
+                            (SecurityListPagedLoader) (Loader) getActivity().getSupportLoaderManager().getLoader(SECURITY_ID_LIST_LOADER_ID);
                     showProgressSpinner(securityListPagedLoader.isQuerying());
                 }
             });

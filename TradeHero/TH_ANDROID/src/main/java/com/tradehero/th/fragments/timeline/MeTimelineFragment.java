@@ -19,10 +19,6 @@ import javax.inject.Named;
 public class MeTimelineFragment extends TimelineFragment
 {
     @Inject protected CurrentUserBaseKeyHolder currentUserBaseKeyHolder;
-    @Inject @Named("Singleton") protected Lazy<UserProfileRetrievedMilestone>
-            currentUserProfileRetrievedMilestone;
-    @Inject @Named("Singleton") protected Lazy<PortfolioCompactListRetrievedMilestone>
-            currentUserPortfolioCompactListRetrievedMilestone;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState)
@@ -35,14 +31,14 @@ public class MeTimelineFragment extends TimelineFragment
         return super.onCreateView(inflater, container, savedInstanceState);
     }
 
-    @Override protected Milestone getUserProfileRetrievedMilestone()
+    @Override protected void createUserProfileRetrievedMilestone()
     {
-        return currentUserProfileRetrievedMilestone.get();
+        userProfileRetrievedMilestone = new UserProfileRetrievedMilestone(currentUserBaseKeyHolder.getCurrentUserBaseKey());
     }
 
-    @Override protected Milestone getPortfolioCompactListRetrievedMilestone()
+    @Override protected void createPortfolioCompactListRetrievedMilestone()
     {
-        return currentUserPortfolioCompactListRetrievedMilestone.get();
+        portfolioCompactListRetrievedMilestone = new PortfolioCompactListRetrievedMilestone(currentUserBaseKeyHolder.getCurrentUserBaseKey());
     }
 
     @Override public boolean isTabBarVisible()

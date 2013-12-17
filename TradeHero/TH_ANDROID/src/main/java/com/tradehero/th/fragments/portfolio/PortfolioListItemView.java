@@ -37,7 +37,6 @@ public class PortfolioListItemView extends RelativeLayout implements DTOView<Dis
     @Inject Lazy<Picasso> picasso;
     @Inject Lazy<CurrentUserBaseKeyHolder> currentUserBaseKeyHolder;
     @Inject Lazy<UserProfileCache> userProfileCache;
-    @Inject Provider<UserProfileRetrievedMilestone> currentUserProfileMilestoneProvider;
 
     private UserProfileRetrievedMilestone currentUserProfileRetrievedMilestone;
     private Milestone.OnCompleteListener currentUserProfileRetrievedMilestoneListener;
@@ -83,20 +82,9 @@ public class PortfolioListItemView extends RelativeLayout implements DTOView<Dis
     @Override protected void onAttachedToWindow()
     {
         super.onAttachedToWindow();
-        currentUserProfileRetrievedMilestoneListener = new Milestone.OnCompleteListener()
-        {
-            @Override public void onComplete(Milestone milestone)
-            {
-                displayFollowingStamp();
-            }
+        currentUserProfileRetrievedMilestoneListener = new PortfolioListItemViewUserProfileRetrievedListener();
 
-            @Override public void onFailed(Milestone milestone, Throwable throwable)
-            {
-                THLog.e(TAG, "Failed to fetch user profile", throwable);
-                THToast.show(R.string.error_fetch_your_user_profile);
-            }
-        };
-        UserProfileRetrievedMilestone milestone = currentUserProfileMilestoneProvider.get();
+        UserProfileRetrievedMilestone milestone = new UserProfileRetrievedMilestone(currentUserBaseKeyHolder.get().getCurrentUserBaseKey());
         milestone.setOnCompleteListener(currentUserProfileRetrievedMilestoneListener);
         currentUserProfileRetrievedMilestone = milestone;
         milestone.launch();
@@ -200,4 +188,18 @@ public class PortfolioListItemView extends RelativeLayout implements DTOView<Dis
                 currentUserProfile.isFollowingUser(displayablePortfolioDTO.userBaseDTO);
     }
     //</editor-fold>
+
+    private class PortfolioListItemViewUserProfileRetrievedListener implements Milestone.OnCompleteListener
+    {
+        @Override public void onComplete(Milestone milestone)
+        {
+            displayFollowingStamp();
+        }
+
+        @Override public void onFailed(Milestone milestone, Throwable throwable)
+        {
+            THLog.e(TAG, "Failed to fetch user profile", throwable);
+            THToast.show(R.string.error_fetch_your_user_profile);
+        }
+    }
 }

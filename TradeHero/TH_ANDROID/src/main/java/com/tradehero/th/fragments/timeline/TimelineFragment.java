@@ -59,8 +59,8 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     protected UserProfileDTO shownProfile;
     protected OwnedPortfolioIdList portfolioIdList;
 
-    private UserProfileRetrievedMilestone userProfileRetrievedMilestone;
-    private PortfolioCompactListRetrievedMilestone portfolioCompactListRetrievedMilestone;
+    protected UserProfileRetrievedMilestone userProfileRetrievedMilestone;
+    protected PortfolioCompactListRetrievedMilestone portfolioCompactListRetrievedMilestone;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState)
@@ -143,11 +143,13 @@ public class TimelineFragment extends BasePurchaseManagerFragment
 
         if (userBaseKey != null)
         {
-            getUserProfileRetrievedMilestone().setOnCompleteListener(userProfileRetrievedMilestoneListener);
-            getUserProfileRetrievedMilestone().launch();
+            createUserProfileRetrievedMilestone();
+            userProfileRetrievedMilestone.setOnCompleteListener(userProfileRetrievedMilestoneListener);
+            userProfileRetrievedMilestone.launch();
 
-            getPortfolioCompactListRetrievedMilestone().setOnCompleteListener(portfolioCompactListRetrievedMilestoneListener);
-            getPortfolioCompactListRetrievedMilestone().launch();
+            createPortfolioCompactListRetrievedMilestone();
+            portfolioCompactListRetrievedMilestone.setOnCompleteListener(portfolioCompactListRetrievedMilestoneListener);
+            portfolioCompactListRetrievedMilestone.launch();
         }
     }
 
@@ -190,25 +192,23 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     //</editor-fold>
 
     //<editor-fold desc="Init milestones">
-    protected Milestone getPortfolioCompactListRetrievedMilestone()
+    protected void createUserProfileRetrievedMilestone()
     {
-        if (portfolioCompactListRetrievedMilestone == null)
+        if (userProfileRetrievedMilestone != null)
         {
-            portfolioCompactListRetrievedMilestone =
-                    new PortfolioCompactListRetrievedMilestone(shownUserBaseKey);
+            userProfileRetrievedMilestone.setOnCompleteListener(null);
         }
-        return portfolioCompactListRetrievedMilestone;
+        userProfileRetrievedMilestone = new UserProfileRetrievedMilestone(shownUserBaseKey);
     }
 
-    protected Milestone getUserProfileRetrievedMilestone()
+    protected void createPortfolioCompactListRetrievedMilestone()
     {
-        if (userProfileRetrievedMilestone == null)
+        if (portfolioCompactListRetrievedMilestone != null)
         {
-            userProfileRetrievedMilestone = new UserProfileRetrievedMilestone(shownUserBaseKey);
+            portfolioCompactListRetrievedMilestone.setOnCompleteListener(null);
         }
-        return userProfileRetrievedMilestone;
+        portfolioCompactListRetrievedMilestone = new PortfolioCompactListRetrievedMilestone(shownUserBaseKey);
     }
-
     //</editor-fold>
 
     //<editor-fold desc="Initial methods">

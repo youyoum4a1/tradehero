@@ -411,20 +411,6 @@ public class TradeHeroModule
     }
     //</editor-fold>
 
-    //<editor-fold desc="Singleton Milestones">
-    @Provides @Singleton @Named("Singleton")
-    UserProfileRetrievedMilestone provideSingletonUserProfileRetrievedMilestone(CurrentUserBaseKeyHolder holder)
-    {
-        return new UserProfileRetrievedMilestone(holder);
-    }
-
-    @Provides @Singleton @Named("Singleton")
-    PortfolioCompactListRetrievedMilestone provideSingletonPortfolioCompactListRetrievedMilestone(CurrentUserBaseKeyHolder holder)
-    {
-        return new PortfolioCompactListRetrievedMilestone(holder);
-    }
-    //</editor-fold>
-
     @Provides Context provideContext()
     {
         return application.getApplicationContext();
