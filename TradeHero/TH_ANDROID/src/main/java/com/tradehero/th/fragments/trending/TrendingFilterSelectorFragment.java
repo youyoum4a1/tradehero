@@ -120,7 +120,7 @@ abstract public class TrendingFilterSelectorFragment extends SherlockFragment
 
     @Override public void onDestroyView()
     {
-        onResumedListener = null;
+        onResumedListener = new WeakReference<>(null);
 
         if (mPrevious != null)
         {
@@ -372,7 +372,7 @@ abstract public class TrendingFilterSelectorFragment extends SherlockFragment
     //<editor-fold desc="AdapterView.OnItemSelectedListener">
     @Override public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l)
     {
-        THLog.d(TAG, "Selected " + i);
+        THLog.d(TAG, "onItemSelected Selected " + i);
         selectedExchangeIndex = i;
         notifyOnExchangeSelectionChangedListener();
     }
