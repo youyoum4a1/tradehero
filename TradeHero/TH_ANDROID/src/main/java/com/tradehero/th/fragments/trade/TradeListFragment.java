@@ -16,6 +16,7 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.position.OwnedPositionId;
 import com.tradehero.th.api.position.PositionDTO;
+import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.SecurityIntegerId;
 import com.tradehero.th.api.trade.OwnedTradeId;
@@ -26,12 +27,12 @@ import com.tradehero.th.base.Navigator;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.persistence.position.PositionCache;
+import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.persistence.security.SecurityIdCache;
 import com.tradehero.th.persistence.trade.TradeListCache;
 import dagger.Lazy;
-
-import javax.inject.Inject;
 import java.util.List;
+import javax.inject.Inject;
 
 /**
  * Created by julien on 23/10/13
@@ -45,6 +46,7 @@ public class TradeListFragment extends DashboardFragment
     @Inject Lazy<PositionCache> positionCache;
     @Inject Lazy<TradeListCache> tradeListCache;
     @Inject Lazy<SecurityIdCache> securityIdCache;
+    @Inject Lazy<SecurityCompactCache> securityCompactCache;
     @Inject CurrentUserBaseKeyHolder currentUserBaseKeyHolder;
 
     private TradeListOverlayHeaderView header;
@@ -286,17 +288,43 @@ public class TradeListFragment extends DashboardFragment
 
     public void displayActionBarTitle()
     {
-        if (actionBar != null)
+        ActionBar actionBarCopy = this.actionBar;
+        if (actionBarCopy != null)
         {
             if (ownedPositionId == null || positionCache.get().get(ownedPositionId) == null ||
                     securityIdCache.get().get(new SecurityIntegerId(positionCache.get().get(ownedPositionId).securityId)) == null)
             {
-                actionBar.setTitle(R.string.trade_list_title);
+                actionBarCopy.setTitle(R.string.trade_list_title);
             }
             else
             {
-                SecurityId securityId = securityIdCache.get().get(new SecurityIntegerId(positionCache.get().get(ownedPositionId).securityId));
-                actionBar.setTitle(String.format(getString(R.string.trade_list_title_with_security), securityId.exchange, securityId.securitySymbol));
+                PositionDTO positionDTO = positionCache.get().get(ownedPositionId);
+                if (positionDTO == null)
+                {
+                    actionBarCopy.setTitle(R.string.trade_list_title);
+                }
+                else
+                {
+
+                    SecurityId securityId = securityIdCache.get().get(new SecurityIntegerId(positionDTO.securityId));
+                    if (securityId == null)
+                    {
+                        actionBarCopy.setTitle(R.string.trade_list_title);
+                    }
+                    else
+                    {
+                        SecurityCompactDTO securityCompactDTO = securityCompactCache.get().get(securityId);
+                        if (securityCompactDTO == null || securityCompactDTO.name == null)
+                        {
+                            actionBarCopy.setTitle(
+                                    String.format(getString(R.string.trade_list_title_with_security), securityId.exchange, securityId.securitySymbol));
+                        }
+                        else
+                        {
+                            actionBarCopy.setTitle(securityCompactDTO.name);
+                        }
+                    }
+                }
             }
         }
     }
