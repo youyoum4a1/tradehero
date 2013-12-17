@@ -53,6 +53,13 @@ public class PushableTimelineFragment extends TimelineFragment
         {
             followingStamp.setVisible(isFollowing != null && isFollowing);
         }
+
+        MenuItem settingsButton = menu.findItem(R.id.menu_settings);
+        if (settingsButton != null)
+        {
+            settingsButton.setVisible(false);
+        }
+
         super.onPrepareOptionsMenu(menu);
     }
 

@@ -76,7 +76,6 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         this.timelineListView.setEmptyView(view.findViewById(android.R.id.empty));
     }
 
-    //<editor-fold desc="ActionBar">
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         inflater.inflate(R.menu.timeline_menu, menu);
@@ -103,7 +102,6 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         }
         return super.onOptionsItemSelected(item);
     }
-    //</editor-fold>
 
     @Override public void onResume()
     {
