@@ -392,7 +392,7 @@ import retrofit.RetrofitError;
     }
     //</editor-fold>
 
-    //<editor-fold desc="Buy">
+    //<editor-fold desc="Buy Security">
     public SecurityPositionDetailDTO buy(SecurityId securityId, TransactionFormDTO transactionFormDTO)
         throws RetrofitError
     {
@@ -405,7 +405,7 @@ import retrofit.RetrofitError;
     }
     //</editor-fold>
 
-    //<editor-fold desc="Sell">
+    //<editor-fold desc="Sell Security">
     public SecurityPositionDetailDTO sell(SecurityId securityId, TransactionFormDTO transactionFormDTO)
         throws RetrofitError
     {

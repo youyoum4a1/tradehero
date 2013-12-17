@@ -52,6 +52,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     private TimelineAdapter timelineAdapter;
     private TimelineListView timelineListView;
     private StepView stepView;
+    private ActionBar actionBar;
 
     protected UserBaseKey shownUserBaseKey;
     protected UserProfileDTO shownProfile;
@@ -70,8 +71,8 @@ public class TimelineFragment extends BasePurchaseManagerFragment
 
     private void initView(View view)
     {
-        timelineListView = (TimelineListView) view.findViewById(R.id.pull_refresh_list);
-        timelineListView.setEmptyView(view.findViewById(android.R.id.empty));
+        this.timelineListView = (TimelineListView) view.findViewById(R.id.pull_refresh_list);
+        this.timelineListView.setEmptyView(view.findViewById(android.R.id.empty));
     }
 
     //<editor-fold desc="ActionBar">
@@ -79,12 +80,13 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     {
         inflater.inflate(R.menu.timeline_menu, menu);
 
-        getSherlockActivity().getSupportActionBar().setDisplayOptions(
+        this.actionBar = getSherlockActivity().getSupportActionBar();
+        this.actionBar.setDisplayOptions(
                 (isTabBarVisible() ? 0 : ActionBar.DISPLAY_HOME_AS_UP)
                         | ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME);
         if (shownProfile != null)
         {
-            getSherlockActivity().getSupportActionBar().setTitle(shownProfile.displayName);
+            this.actionBar.setTitle(shownProfile.displayName);
         }
         super.onCreateOptionsMenu(menu, inflater);
     }
@@ -114,15 +116,25 @@ public class TimelineFragment extends BasePurchaseManagerFragment
                 .initLoader(timelineAdapter.getLoaderId(), null, timelineAdapter.getLoaderCallback());
     }
 
+    @Override public void onDestroyOptionsMenu()
+    {
+        this.actionBar = null;
+        super.onDestroyOptionsMenu();
+    }
+
+    @Override public void onDestroyView()
+    {
+        this.timelineListView = null;
+        this.timelineAdapter = null;
+        super.onDestroyView();
+    }
+
     //<editor-fold desc="Display methods">
     protected void linkWith(UserBaseKey userBaseKey, final boolean andDisplay)
     {
         this.shownUserBaseKey = userBaseKey;
-        if (timelineAdapter == null)
-        {
-            timelineAdapter = createTimelineAdapter();
-        }
 
+        this.timelineAdapter = createTimelineAdapter();
         timelineListView.setAdapter(timelineAdapter);
         timelineListView.setOnRefreshListener(timelineAdapter);
         timelineListView.setOnScrollListener(timelineAdapter);
@@ -164,14 +176,14 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         stepView = new StepView(getActivity(), getActivity().getLayoutInflater());
         stepView.setStepProvider(this);
 
-        if (timelineListView.getRefreshableView().getHeaderViewsCount() == 1)
+        if (this.timelineListView != null && this.timelineListView.getRefreshableView().getHeaderViewsCount() == 1)
         {
             timelineListView.addHeaderView(stepView);
         }
 
-        if (shownProfile != null)
+        if (shownProfile != null && this.actionBar != null)
         {
-            getSherlockActivity().getSupportActionBar().setTitle(shownProfile.displayName);
+            this.actionBar.setTitle(shownProfile.displayName);
         }
     }
     //</editor-fold>
@@ -206,10 +218,12 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         timelineAdapter.setDTOLoaderCallback(new LoaderDTOAdapter.ListLoaderCallback<TimelineItem>()
         {
 
-            @Override
-            public void onLoadFinished(ListLoader<TimelineItem> loader, List<TimelineItem> data)
+            @Override public void onLoadFinished(ListLoader<TimelineItem> loader, List<TimelineItem> data)
             {
-                timelineListView.onRefreshComplete();
+                if (timelineListView != null)
+                {
+                    timelineListView.onRefreshComplete();
+                }
             }
 
             @Override public ListLoader<TimelineItem> onCreateLoader(Bundle args)

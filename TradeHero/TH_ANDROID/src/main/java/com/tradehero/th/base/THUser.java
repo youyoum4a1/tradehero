@@ -21,6 +21,7 @@ import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.misc.exception.THException.ExceptionCode;
 import com.tradehero.th.network.service.SessionService;
 import com.tradehero.th.network.service.UserService;
+import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.DTOCacheUtil;
 import com.tradehero.th.persistence.social.VisitedFriendListPrefs;
 import com.tradehero.th.persistence.user.UserProfileCache;
@@ -56,6 +57,7 @@ public class THUser
     private static String currentAuthenticationType;
 
     @Inject static Lazy<UserService> userService;
+    @Inject static Lazy<UserServiceWrapper> userServiceWrapper;
     @Inject static Lazy<SessionService> sessionService;
     @Inject static protected Lazy<UserProfileCache> userProfileCache;
     @Inject static protected CurrentUserBaseKeyHolder currentUserBaseKeyHolder;
@@ -178,24 +180,16 @@ public class THUser
         {
             case SignUpWithEmail:
                 // TODO I love this smell of hacking :v
-                userService.get().signUpWithEmail(authenticator.getAuthHeader(),
-                        userFormDTO.biography,
-                        userFormDTO.deviceToken,
-                        userFormDTO.displayName,
-                        userFormDTO.email,
-                        userFormDTO.emailNotificationsEnabled,
-                        userFormDTO.firstName,
-                        userFormDTO.lastName,
-                        userFormDTO.location,
-                        userFormDTO.password,
-                        userFormDTO.passwordConfirmation,
-                        userFormDTO.pushNotificationsEnabled,
-                        userFormDTO.username,
-                        userFormDTO.website,
+                userServiceWrapper.get().signUpWithEmail(
+                        authenticator.getAuthHeader(),
+                        userFormDTO,
                         createCallbackForSignUpAsyncWithJson(json, callback));
                 break;
             case SignUp:
-                userService.get().signUp(authenticator.getAuthHeader(), userFormDTO, createCallbackForSignUpAsyncWithJson(json, callback));
+                userService.get().signUp(
+                        authenticator.getAuthHeader(),
+                        userFormDTO,
+                        createCallbackForSignUpAsyncWithJson(json, callback));
                 break;
             case SignIn:
                 LoginFormDTO loginFormDTO = new LoginFormDTO(PushManager.shared().getAPID(), DeviceType.Android, Constants.TH_CLIENT_VERSION_VALUE);
@@ -369,16 +363,9 @@ public class THUser
             return false;
         }
 
-        userService.get().updateProfile(
-                currentUserBaseKeyHolder.getCurrentUserBaseKey().key,
-                userFormDTO.deviceToken,
-                userFormDTO.displayName,
-                userFormDTO.email,
-                userFormDTO.firstName,
-                userFormDTO.lastName,
-                userFormDTO.password,
-                userFormDTO.passwordConfirmation,
-                userFormDTO.username,
+        userServiceWrapper.get().updateProfile(
+                currentUserBaseKeyHolder.getCurrentUserBaseKey(),
+                userFormDTO,
                 createCallbackForSignUpAsyncWithJson(userFormJSON, callback));
         return true;
     }

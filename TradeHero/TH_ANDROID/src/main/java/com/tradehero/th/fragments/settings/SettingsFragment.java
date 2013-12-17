@@ -47,6 +47,7 @@ import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.service.SessionService;
 import com.tradehero.th.network.service.SocialService;
 import com.tradehero.th.network.service.UserService;
+import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.FacebookUtils;
@@ -66,7 +67,7 @@ public class SettingsFragment extends PreferenceFragment
 {
     public static final String TAG = SettingsFragment.class.getSimpleName();
 
-    @Inject UserService userService;
+    @Inject UserServiceWrapper userServiceWrapper;
     @Inject SessionService sessionService;
     @Inject SocialService socialService;
     @Inject protected Lazy<UserProfileCache> userProfileCache;
@@ -406,7 +407,7 @@ public class SettingsFragment extends PreferenceFragment
                 Application.getResourceString(R.string.settings_notifications_email_alert_message),
                 true);
 
-        userService.updateProfile(THUser.getCurrentUserBase().id, enable, createUserProfileCallback());
+        userServiceWrapper.updateProfile(currentUserBaseKeyHolder.getCurrentUserBaseKey(), enable, createUserProfileCallback());
         return false;
     }
 

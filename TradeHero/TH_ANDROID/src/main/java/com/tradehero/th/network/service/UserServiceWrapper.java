@@ -1,13 +1,22 @@
 package com.tradehero.th.network.service;
 
+import com.tradehero.th.api.form.UserFormDTO;
 import com.tradehero.th.api.users.SearchUserListType;
+import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserListType;
+import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.api.users.UserSearchResultDTO;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import retrofit.Callback;
 import retrofit.RetrofitError;
+import retrofit.http.Field;
+import retrofit.http.FormUrlEncoded;
+import retrofit.http.Header;
+import retrofit.http.POST;
+import retrofit.http.PUT;
+import retrofit.http.Path;
 
 /**
  * Repurposes queries
@@ -23,6 +32,103 @@ import retrofit.RetrofitError;
     {
         super();
     }
+
+    //<editor-fold desc="Sign-Up With Email">
+    public UserProfileDTO signUpWithEmail(
+            String authorization,
+            UserFormDTO userFormDTO)
+            throws RetrofitError
+    {
+        return userService.signUpWithEmail(
+                authorization,
+                userFormDTO.biography,
+                userFormDTO.deviceToken,
+                userFormDTO.displayName,
+                userFormDTO.email,
+                userFormDTO.emailNotificationsEnabled,
+                userFormDTO.firstName,
+                userFormDTO.lastName,
+                userFormDTO.location,
+                userFormDTO.password,
+                userFormDTO.passwordConfirmation,
+                userFormDTO.pushNotificationsEnabled,
+                userFormDTO.username,
+                userFormDTO.website);
+    }
+
+    public void signUpWithEmail(
+            String authorization,
+            UserFormDTO userFormDTO,
+            Callback<UserProfileDTO> callback)
+    {
+        userService.signUpWithEmail(
+                authorization,
+                userFormDTO.biography,
+                userFormDTO.deviceToken,
+                userFormDTO.displayName,
+                userFormDTO.email,
+                userFormDTO.emailNotificationsEnabled,
+                userFormDTO.firstName,
+                userFormDTO.lastName,
+                userFormDTO.location,
+                userFormDTO.password,
+                userFormDTO.passwordConfirmation,
+                userFormDTO.pushNotificationsEnabled,
+                userFormDTO.username,
+                userFormDTO.website,
+                callback);
+    }
+    //</editor-fold>
+
+    //<editor-fold desc="Update Profile">
+    public UserProfileDTO updateProfile(UserBaseKey userBaseKey, UserFormDTO userFormDTO)
+            throws RetrofitError
+    {
+        return userService.updateProfile(
+                userBaseKey.key,
+                userFormDTO.deviceToken,
+                userFormDTO.displayName,
+                userFormDTO.email,
+                userFormDTO.firstName,
+                userFormDTO.lastName,
+                userFormDTO.password,
+                userFormDTO.passwordConfirmation,
+                userFormDTO.username
+        );
+    }
+
+    public void updateProfile(UserBaseKey userBaseKey, UserFormDTO userFormDTO, Callback<UserProfileDTO> callback)
+    {
+        userService.updateProfile(
+                userBaseKey.key,
+                userFormDTO.deviceToken,
+                userFormDTO.displayName,
+                userFormDTO.email,
+                userFormDTO.firstName,
+                userFormDTO.lastName,
+                userFormDTO.password,
+                userFormDTO.passwordConfirmation,
+                userFormDTO.username,
+                callback
+        );
+    }
+
+    public UserProfileDTO updateProfile(
+            UserBaseKey userBaseKey,
+            Boolean emailNotificationsEnabled)
+            throws RetrofitError
+    {
+        return userService.updateProfile(userBaseKey.key, emailNotificationsEnabled);
+    }
+
+    public void updateProfile(
+            UserBaseKey userBaseKey,
+            Boolean emailNotificationsEnabled,
+            Callback<UserProfileDTO> callback)
+    {
+        userService.updateProfile(userBaseKey.key, emailNotificationsEnabled, callback);
+    }
+    //</editor-fold>
 
     //<editor-fold desc="Search Users">
     public List<UserSearchResultDTO> searchUsers(UserListType key)

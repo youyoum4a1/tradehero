@@ -32,7 +32,7 @@ import retrofit.http.Query;
 
 public interface UserService
 {
-
+    //<editor-fold desc="Sign-Up With Email">
     // TODO @retrofit does not accept to pass a Map as multiple fields
     //{
     //    "biography": null,
@@ -51,6 +51,24 @@ public interface UserService
     //}
     @FormUrlEncoded
     @POST("/SignupWithEmail")
+    UserProfileDTO signUpWithEmail(@Header("Authorization") String authorization,
+            @Field("biography") String biography,
+            @Field("deviceToken") String deviceToken,
+            @Field("displayName") String displayName,
+            @Field("email") String email,
+            @Field("emailNotificationsEnabled") Boolean emailNotificationsEnabled,
+            @Field("firstName") String firstName,
+            @Field("lastName") String lastName,
+            @Field("location") String location,
+            @Field("password") String password,
+            @Field("passwordConfirmation") String passwordConfirmation,
+            @Field("pushNotificationsEnabled") Boolean pushNotificationsEnabled,
+            @Field("username") String username,
+            @Field("website") String website)
+            throws RetrofitError;
+
+    @FormUrlEncoded
+    @POST("/SignupWithEmail")
     void signUpWithEmail(@Header("Authorization") String authorization,
             @Field("biography") String biography,
             @Field("deviceToken") String deviceToken,
@@ -66,27 +84,51 @@ public interface UserService
             @Field("username") String username,
             @Field("website") String website,
             Callback<UserProfileDTO> cb);
+    //</editor-fold>
+
+    //<editor-fold desc="Update Profile">
+    @FormUrlEncoded
+    @PUT("/users/{userId}/updateUser")
+    UserProfileDTO updateProfile(
+            @Path("userId") int userId,
+            @Field("deviceToken") String deviceToken,
+            @Field("displayName") String displayName,
+            @Field("email") String email,
+            @Field("firstName") String firstName,
+            @Field("lastName") String lastName,
+            @Field("password") String password,
+            @Field("passwordConfirmation") String passwordConfirmation,
+            @Field("username") String username)
+            throws RetrofitError;
 
     @FormUrlEncoded
     @PUT("/users/{userId}/updateUser")
     void updateProfile(
-           @Path("userId") int userId,
-           @Field("deviceToken") String deviceToken,
-           @Field("displayName") String displayName,
-           @Field("email") String email,
-           @Field("firstName") String firstName,
-           @Field("lastName") String lastName,
-           @Field("password") String password,
-           @Field("passwordConfirmation") String passwordConfirmation,
-           @Field("username") String username,
-           Callback<UserProfileDTO> cb);
+            @Path("userId") int userId,
+            @Field("deviceToken") String deviceToken,
+            @Field("displayName") String displayName,
+            @Field("email") String email,
+            @Field("firstName") String firstName,
+            @Field("lastName") String lastName,
+            @Field("password") String password,
+            @Field("passwordConfirmation") String passwordConfirmation,
+            @Field("username") String username,
+            Callback<UserProfileDTO> cb);
+
+    @FormUrlEncoded
+    @PUT("/users/{userId}/updateUser")
+    UserProfileDTO updateProfile(
+            @Path("userId") int userId,
+            @Field("emailNotificationsEnabled") Boolean emailNotificationsEnabled)
+            throws RetrofitError;
 
     @FormUrlEncoded
     @PUT("/users/{userId}/updateUser")
     void updateProfile(
-           @Path("userId") int userId,
-           @Field("emailNotificationsEnabled") Boolean emailNotificationsEnabled,
-           Callback<UserProfileDTO> cb);
+            @Path("userId") int userId,
+            @Field("emailNotificationsEnabled") Boolean emailNotificationsEnabled,
+            Callback<UserProfileDTO> cb);
+    //</editor-fold>
 
     @Multipart
     @POST("/SignupWithEmail")

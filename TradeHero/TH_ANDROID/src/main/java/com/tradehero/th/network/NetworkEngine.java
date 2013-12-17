@@ -9,6 +9,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tradehero.common.utils.JacksonConverter;
 import com.tradehero.th.base.THUser;
 import com.tradehero.th.utils.Constants;
+import com.tradehero.th.utils.RetrofitConstants;
 import retrofit.ErrorHandler;
 import retrofit.RequestInterceptor;
 import retrofit.RestAdapter;
@@ -51,7 +52,7 @@ public class NetworkEngine
                     }
                 })
                 .setErrorHandler(retrofitErrorHandler)
-                .setLogLevel(RestAdapter.LogLevel.FULL)
+                .setLogLevel(RetrofitConstants.DEFAULT_SERVICE_LOG_LEVEL)
                 .build();
     }
 
