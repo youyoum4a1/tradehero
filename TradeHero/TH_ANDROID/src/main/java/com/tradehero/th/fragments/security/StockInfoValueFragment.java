@@ -9,6 +9,7 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
+import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.NumberDisplayUtils;
 import com.tradehero.th.utils.SecurityUtils;
 import dagger.Lazy;
@@ -35,6 +36,12 @@ public class StockInfoValueFragment extends AbstractSecurityInfoFragment<Securit
     private TextView mAvgVolume;
 
     @Inject protected Lazy<SecurityCompactCache> securityCompactCache;
+
+    @Override public void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        DaggerUtils.inject(this);
+    }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {

@@ -10,6 +10,7 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
+import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.yahoo.*;
 import com.tradehero.th.widget.news.TimeSpanButtonSet;
 import dagger.Lazy;
@@ -25,8 +26,7 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
     public final static String BUNDLE_KEY_TIME_SPAN_STRING = ChartFragment.class.getName() + ".timeSpanString";
     public final static String BUNDLE_KEY_CHART_SIZE = ChartFragment.class.getName() + ".chartSize";
 
-    private boolean viewCreated = false;
-    private ImageView stockBgLogo;
+    private ImageView chartImage;
     private TimeSpanButtonSet timeSpanButtonSet;
     private TimeSpanButtonSet.OnTimeSpanButtonSelectedListener timeSpanButtonSetListener;
     private TimeSpan timeSpan = TimeSpan.day1;
@@ -35,6 +35,12 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
 
     @Inject protected Lazy<SecurityCompactCache> securityCompactCache;
     @Inject protected Picasso picasso;
+
+    @Override public void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        DaggerUtils.inject(this);
+    }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -56,32 +62,26 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
             chartSize = ChartSize.valueOf(savedInstanceState.getString(BUNDLE_KEY_CHART_SIZE, chartSize.name()));
         }
 
-        stockBgLogo = (ImageView) view.findViewById(R.id.chart_imageView);
-        timeSpanButtonSet = (TimeSpanButtonSet) view.findViewById(R.id.yahoo_time_span_button_set);
-        if (timeSpanButtonSet != null)
+        chartImage = (ImageView) view.findViewById(R.id.chart_imageView);
+
+        this.timeSpanButtonSetListener = new TimeSpanButtonSet.OnTimeSpanButtonSelectedListener()
         {
-            timeSpanButtonSetListener = new TimeSpanButtonSet.OnTimeSpanButtonSelectedListener()
+            @Override public void onTimeSpanButtonSelected(TimeSpan selected)
             {
-                @Override public void onTimeSpanButtonSelected(TimeSpan selected)
-                {
-                    linkWith(selected, true);
-                }
-            };
+                linkWith(selected, true);
+            }
+        };
 
-            timeSpanButtonSet.addAllChildButtons();
-            timeSpanButtonSet.setListener(timeSpanButtonSetListener);
-            timeSpanButtonSet.setActive(TimeSpan.month3);
+        TimeSpanButtonSet timeSpanButtonSetTemp = (TimeSpanButtonSet) view.findViewById(R.id.yahoo_time_span_button_set);
+        if (timeSpanButtonSetTemp != null)
+        {
+            timeSpanButtonSetTemp.addAllChildButtons();
+            timeSpanButtonSetTemp.setListener(this.timeSpanButtonSetListener);
+            timeSpanButtonSetTemp.setActive(TimeSpan.month3);
         }
-
-        this.viewCreated = true;
+        this.timeSpanButtonSet = timeSpanButtonSetTemp;
 
         return view;
-    }
-
-    @Override public void onResume()
-    {
-        super.onResume();
-        display();
     }
 
     @Override public void onPause()
@@ -103,13 +103,14 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
 
     @Override public void onDestroyView()
     {
-        this.viewCreated = false;
-
-        if (timeSpanButtonSet != null)
+        this.chartImage = null;
+        TimeSpanButtonSet buttonSet = this.timeSpanButtonSet;
+        if (buttonSet != null)
         {
-            timeSpanButtonSet.setListener(null);
+            buttonSet.setListener(null);
         }
-        timeSpanButtonSetListener = null;
+        this.timeSpanButtonSet = null;
+        this.timeSpanButtonSetListener = null;
         super.onDestroyView();
     }
 
@@ -127,10 +128,10 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
     @Override public void linkWith(SecurityId securityId, boolean andDisplay)
     {
         super.linkWith(securityId, andDisplay);
-        if (this.securityId != null)
+        if (securityId != null)
         {
             securityCompactCache.get().registerListener(this);
-            linkWith(securityCompactCache.get().get(this.securityId), andDisplay);
+            linkWith(securityCompactCache.get().get(securityId), andDisplay);
         }
     }
 
@@ -139,32 +140,34 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
         this.timeSpan = timeSpan;
         if (andDisplay)
         {
-            displayBgLogo();
+            displayChartImage();
         }
     }
 
     @Override public void display()
     {
-        displayBgLogo();
+        displayChartImage();
         displayTimeSpanButtonSet();
     }
 
     public void displayTimeSpanButtonSet()
     {
-        if (timeSpanButtonSet != null)
+        TimeSpanButtonSet buttonSet = this.timeSpanButtonSet;
+        if (buttonSet != null)
         {
-            timeSpanButtonSet.setVisibility(timeSpanButtonSetVisibility);
+            buttonSet.setVisibility(timeSpanButtonSetVisibility);
         }
     }
 
-    public void displayBgLogo()
+    public void displayChartImage()
     {
-        if (this.viewCreated && stockBgLogo != null)
+        ImageView image = this.chartImage;
+        if (image != null)
         {
-            if (value != null && value.yahooSymbol != null)
+            if (this.value != null && this.value.yahooSymbol != null)
             {
-                String imageURL = Utils.getChartURL(value.yahooSymbol, chartSize, timeSpan);
-                picasso.load(imageURL).into(stockBgLogo);
+                String imageURL = Utils.getChartURL(this.value.yahooSymbol, this.chartSize, this.timeSpan);
+                this.picasso.load(imageURL).into(image);
             }
             postChooseOtherSize();
         }
@@ -172,24 +175,40 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
 
     public void postChooseOtherSize()
     {
+        postDelayed(getChooseOtherSizeRunnable(), 500);
+    }
+
+    protected Runnable getChooseOtherSizeRunnable()
+    {
+        return new Runnable()
+        {
+            @Override public void run()
+            {
+                chooseOtherSize();
+            }
+        };
+    }
+
+    protected void chooseOtherSize()
+    {
+        ImageView image = chartImage;
+        if (image != null)
+        {
+            ChartSize newChartSize = Utils.getPreferredSize(image.getWidth(), image.getHeight());
+            if (newChartSize != chartSize)
+            {
+                chartSize = newChartSize;
+                displayChartImage();
+            }
+        }
+    }
+
+    protected void postDelayed(Runnable runnable, long delayMillis)
+    {
         View view = getView();
         if (view != null)
         {
-            view.postDelayed(new Runnable()
-            {
-                @Override public void run()
-                {
-                    if (ChartFragment.this.viewCreated && stockBgLogo != null)
-                    {
-                        ChartSize newChartSize = Utils.getPreferredSize(stockBgLogo.getWidth(), stockBgLogo.getHeight());
-                        if (newChartSize != chartSize)
-                        {
-                            chartSize = newChartSize;
-                            displayBgLogo();
-                        }
-                    }
-                }
-            }, 500);
+            view.postDelayed(runnable, delayMillis);
         }
     }
 }

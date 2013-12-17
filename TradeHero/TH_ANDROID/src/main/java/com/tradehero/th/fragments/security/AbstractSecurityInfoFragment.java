@@ -1,13 +1,11 @@
 package com.tradehero.th.fragments.security;
 
-import android.os.Bundle;
 import com.actionbarsherlock.app.SherlockFragment;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.security.SecurityId;
-import com.tradehero.th.utils.DaggerUtils;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/14/13 Time: 7:04 PM To change this template use File | Settings | File Templates. */
 abstract public class AbstractSecurityInfoFragment<InfoType> extends SherlockFragment
@@ -19,29 +17,10 @@ abstract public class AbstractSecurityInfoFragment<InfoType> extends SherlockFra
     protected SecurityId securityId;
     protected InfoType value;
 
-    @Override public void onCreate(Bundle savedInstanceState)
-    {
-        super.onCreate(savedInstanceState);
-        DaggerUtils.inject(this);
-    }
-
     @Override public void onResume()
     {
         super.onResume();
-
-        Bundle args = getArguments();
-        if (args != null)
-        {
-            Bundle securityIdBundle = args.getBundle(BUNDLE_KEY_SECURITY_ID_BUNDLE);
-            if (securityIdBundle != null)
-            {
-                linkWith(new SecurityId(securityIdBundle), true);
-            }
-        }
-        else
-        {
-            display();
-        }
+        linkWith(new SecurityId(getArguments().getBundle(BUNDLE_KEY_SECURITY_ID_BUNDLE)), true);
     }
 
     public void linkWith(SecurityId securityId, boolean andDisplay)

@@ -9,6 +9,7 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.yahoo.NewsList;
 import com.tradehero.th.persistence.yahoo.NewsCache;
+import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
 import javax.inject.Inject;
 
@@ -25,6 +26,12 @@ public class YahooNewsFragment extends AbstractSecurityInfoFragment<NewsList>
     private DTOCache.GetOrFetchTask<NewsList> fetchTask;
     @Inject protected Lazy<NewsCache> yahooNewsCache;
     private YahooNewsListView listView;
+
+    @Override public void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        DaggerUtils.inject(this);
+    }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
