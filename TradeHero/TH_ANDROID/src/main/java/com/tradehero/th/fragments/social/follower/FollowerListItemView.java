@@ -10,7 +10,7 @@ import com.tradehero.common.graphics.RoundedShapeTransformation;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.social.UserFollowerDTO;
-import com.tradehero.th.api.users.UserBaseUtil;
+import com.tradehero.th.api.users.UserBaseDTOUtil;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.SecurityUtils;
 import dagger.Lazy;
@@ -111,7 +111,7 @@ public class FollowerListItemView extends RelativeLayout implements DTOView<User
     {
         if (title != null)
         {
-            title.setText(UserBaseUtil.getLongDisplayName(getContext(), userFollowerDTO));
+            title.setText(UserBaseDTOUtil.getLongDisplayName(getContext(), userFollowerDTO));
         }
     }
 

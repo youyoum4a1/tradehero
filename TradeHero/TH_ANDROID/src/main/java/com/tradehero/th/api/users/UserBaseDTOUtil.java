@@ -4,9 +4,9 @@ import android.content.Context;
 import com.tradehero.th.R;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 12/2/13 Time: 4:36 PM To change this template use File | Settings | File Templates. */
-public class UserBaseUtil
+public class UserBaseDTOUtil
 {
-    public static final String TAG = UserBaseUtil.class.getSimpleName();
+    public static final String TAG = UserBaseDTOUtil.class.getSimpleName();
 
     public static String getLongDisplayName(Context context, UserBaseDTO userBaseDTO)
     {

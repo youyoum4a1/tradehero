@@ -3,7 +3,7 @@ package com.tradehero.th.api.portfolio;
 import android.content.Context;
 import com.tradehero.th.R;
 import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
-import com.tradehero.th.api.users.UserBaseUtil;
+import com.tradehero.th.api.users.UserBaseDTOUtil;
 import dagger.Lazy;
 import javax.inject.Inject;
 
@@ -20,7 +20,7 @@ public class DisplayablePortfolioUtil
                 displayablePortfolioDTO.userBaseDTO != null &&
                 !currentUserBaseKeyHolder.get().getCurrentUserBaseKey().equals(displayablePortfolioDTO.userBaseDTO.getBaseKey()))
         {
-            return UserBaseUtil.getLongDisplayName(context, displayablePortfolioDTO.userBaseDTO);
+            return UserBaseDTOUtil.getLongDisplayName(context, displayablePortfolioDTO.userBaseDTO);
         }
 
         if (displayablePortfolioDTO != null && displayablePortfolioDTO.portfolioDTO != null)

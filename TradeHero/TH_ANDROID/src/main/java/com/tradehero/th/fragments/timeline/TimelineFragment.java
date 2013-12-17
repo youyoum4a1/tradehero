@@ -16,6 +16,7 @@ import com.tradehero.th.adapters.LoaderDTOAdapter;
 import com.tradehero.th.api.local.TimelineItem;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.OwnedPortfolioIdList;
+import com.tradehero.th.api.users.UserBaseDTOUtil;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.Navigator;
@@ -181,9 +182,9 @@ public class TimelineFragment extends BasePurchaseManagerFragment
             timelineListView.addHeaderView(stepView);
         }
 
-        if (shownProfile != null && this.actionBar != null)
+        if (this.actionBar != null)
         {
-            this.actionBar.setTitle(shownProfile.displayName);
+            this.actionBar.setTitle(UserBaseDTOUtil.getLongDisplayName(getActivity(), shownProfile));
         }
     }
     //</editor-fold>

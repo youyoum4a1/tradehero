@@ -7,11 +7,10 @@ import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
-import com.tradehero.common.billing.googleplay.BaseIABPurchase;
 import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
+import com.tradehero.th.api.users.UserBaseDTOUtil;
 import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.api.users.UserBaseUtil;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.billing.googleplay.THIABActor;
 import com.tradehero.th.billing.googleplay.THIABPurchase;
@@ -122,7 +121,7 @@ public class PushableTimelineFragment extends TimelineFragment
         {
             if (shownProfile != null)
             {
-                actionBar.setTitle(UserBaseUtil.getLongDisplayName(getActivity(), shownProfile));
+                actionBar.setTitle(UserBaseDTOUtil.getLongDisplayName(getActivity(), shownProfile));
             }
             else
             {
