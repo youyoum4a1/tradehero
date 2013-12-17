@@ -80,6 +80,7 @@ import com.tradehero.th.fragments.trade.BuySellFragment;
 import com.tradehero.th.fragments.trade.FreshQuoteHolder;
 import com.tradehero.th.fragments.trade.TradeListFragment;
 import com.tradehero.th.fragments.trade.TradeListHeaderView;
+import com.tradehero.th.fragments.trade.TradeListItemAdapter;
 import com.tradehero.th.fragments.trade.TradeListItemView;
 import com.tradehero.th.fragments.trade.TradeListOverlayHeaderView;
 import com.tradehero.th.fragments.trending.SearchPeopleItemView;
@@ -207,6 +208,7 @@ import org.ocpsoft.prettytime.PrettyTime;
                 LockedPositionItem.class,
 
                 TradeListFragment.class,
+                TradeListItemAdapter.class,
                 TradeListItemView.class,
                 TradeListOverlayHeaderView.class,
                 TradeListHeaderView.class,
