@@ -70,6 +70,11 @@ public class StepView extends FrameLayout
 
     private void step()
     {
+        if (views == null || views.isEmpty())
+        {
+            return;
+        }
+
         View oldStep = null;
 
         if (currentStep >=0 && currentStep < views.size())
