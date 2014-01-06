@@ -28,10 +28,6 @@
   <version>1.0-SNAPSHOT</version>
 
   <modules>
-    <module>retrofit</module>
-    <module>facebook-android-sdk/facebook</module>
-    <module>viewpagerindicator/library</module>
-    <module>Android-PullToRefresh/library</module>
     <module>TradeHero/TH_ANDROID</module>
   </modules>
 
