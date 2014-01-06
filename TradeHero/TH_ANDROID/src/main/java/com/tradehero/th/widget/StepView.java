@@ -70,7 +70,7 @@ public class StepView extends FrameLayout
 
     private void step()
     {
-        if (views == null || views.isEmpty())
+        if (views == null)
         {
             return;
         }
@@ -105,7 +105,7 @@ public class StepView extends FrameLayout
         {
             newStep = views.get(currentStep);
         }
-        else if (circular)
+        else if (circular && !views.isEmpty())
         {
             // circular
             currentStep = 0;
