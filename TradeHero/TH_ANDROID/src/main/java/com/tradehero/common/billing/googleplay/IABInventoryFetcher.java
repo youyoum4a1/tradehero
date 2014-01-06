@@ -10,6 +10,7 @@ import com.tradehero.common.billing.googleplay.exceptions.IABException;
 import com.tradehero.common.billing.googleplay.exceptions.IABExceptionFactory;
 import com.tradehero.common.billing.googleplay.exceptions.IABRemoteException;
 import com.tradehero.common.utils.THLog;
+import com.tradehero.th.base.Application;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
 import java.lang.ref.WeakReference;
@@ -174,16 +175,19 @@ abstract public class IABInventoryFetcher<
     private HashMap<IABSKUType, IABProductDetailsType> internalFetchSKUType(String itemType) throws IABException, RemoteException, JSONException
     {
         Bundle querySkus = getQuerySKUBundle();
-        // TODO billingService is null sometime here, lead to crashing on startup the app
-        if (context == null)
-        {
-            throw new NullPointerException("Context cannot be null");
-        }
+        // throws NullPointerException still makes app crash, use global application context to get package name instead
+
+        //if (context == null)
+        //{
+        //    throw new NullPointerException("Context cannot be null");
+        //}
+
+        // TODO still crashing with NullPointerException
         if (this.billingService == null)
         {
             throw new NullPointerException("billingService cannot be null");
         }
-        Bundle skuDetails = this.billingService.getSkuDetails(TARGET_BILLING_API_VERSION3, context.getPackageName(), itemType, querySkus);
+        Bundle skuDetails = this.billingService.getSkuDetails(TARGET_BILLING_API_VERSION3, Application.context().getPackageName(), itemType, querySkus);
 
         if (!skuDetails.containsKey(Constants.RESPONSE_GET_SKU_DETAILS_LIST))
         {
