@@ -25,6 +25,7 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
+import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.position.SecurityPositionDetailDTO;
 import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
@@ -583,17 +584,30 @@ public class BuySellConfirmFragment extends AbstractBuySellFragment
             // TODO post to social network?
             if (errorCode == CODE_OK)
             {
-                pushPortfolioFragment();
+                if (securityPositionDetailDTO != null && securityPositionDetailDTO.portfolio != null)
+                {
+                    pushPortfolioFragment(new OwnedPortfolioId(currentUserBaseKeyHolder.get().getCurrentUserBaseKey(), securityPositionDetailDTO.portfolio.getPortfolioId()));
+                }
+                else
+                {
+                    pushPortfolioFragment();
+                }
             }
         }
     }
 
     private void pushPortfolioFragment()
     {
+        pushPortfolioFragment(getApplicablePortfolioId());
+    }
+
+    private void pushPortfolioFragment(OwnedPortfolioId ownedPortfolioId)
+    {
         // TODO find a better way to remove this fragment from the stack
         navigator.popFragment();
+
         Bundle args = new Bundle();
-        args.putBundle(PositionListFragment.BUNDLE_KEY_SHOW_PORTFOLIO_ID_BUNDLE, getApplicablePortfolioId().getArgs());
+        args.putBundle(PositionListFragment.BUNDLE_KEY_SHOW_PORTFOLIO_ID_BUNDLE, ownedPortfolioId.getArgs());
         navigator.pushFragment(PositionListFragment.class, args);
     }
 
