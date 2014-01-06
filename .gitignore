@@ -69,3 +69,4 @@ TradeHero/TH_ANDROID/target/*
 
 # intellij setting directory
 .idea
+*.iml
