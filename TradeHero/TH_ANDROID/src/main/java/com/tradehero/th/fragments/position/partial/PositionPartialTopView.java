@@ -58,7 +58,7 @@ public class PositionPartialTopView extends LinearLayout
     protected PositionDTO positionDTO;
 
     private SecurityCompactCache.Listener<SecurityId, SecurityCompactDTO> securityCompactCacheListener;
-    private DTOCache.GetOrFetchTask<SecurityCompactDTO> securityCompactCacheFetchTask;
+    private DTOCache.GetOrFetchTask<SecurityId, SecurityCompactDTO> securityCompactCacheFetchTask;
     private OwnedLeaderboardPositionId ownedLeaderboardPositionId;
 
     //<editor-fold desc="Constructors">
@@ -108,7 +108,7 @@ public class PositionPartialTopView extends LinearLayout
 
         if (securityCompactCacheFetchTask != null)
         {
-            securityCompactCacheFetchTask.forgetListener(true);
+            securityCompactCacheFetchTask.setListener(null);
         }
         securityCompactCacheFetchTask = null;
         securityCompactCacheListener = null;
@@ -166,7 +166,7 @@ public class PositionPartialTopView extends LinearLayout
             }
             if (securityCompactCacheFetchTask != null)
             {
-                securityCompactCacheFetchTask.forgetListener(true);
+                securityCompactCacheFetchTask.setListener(null);
             }
             securityCompactCacheFetchTask = securityCompactCache.get().getOrFetch(securityId, securityCompactCacheListener);
             securityCompactCacheFetchTask.execute();

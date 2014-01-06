@@ -51,12 +51,12 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
     protected SecurityPositionDetailDTO securityPositionDetailDTO;
     protected boolean querying = false;
     protected DTOCache.Listener<SecurityId, SecurityPositionDetailDTO> securityPositionDetailCacheListener;
-    protected DTOCache.GetOrFetchTask<SecurityPositionDetailDTO> fetchPositionDetailTask;
+    protected DTOCache.GetOrFetchTask<SecurityId, SecurityPositionDetailDTO> fetchPositionDetailTask;
 
     @Inject protected Lazy<UserProfileCache> userProfileCache;
     protected UserProfileDTO userProfileDTO;
     protected DTOCache.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
-    protected DTOCache.GetOrFetchTask<UserProfileDTO> fetchUserProfileTask;
+    protected DTOCache.GetOrFetchTask<UserBaseKey, UserProfileDTO> fetchUserProfileTask;
 
     protected FreshQuoteHolder freshQuoteHolder;
     protected FreshQuoteHolder.FreshQuoteListener freshQuoteListener;
@@ -171,14 +171,14 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
     {
         if (fetchPositionDetailTask != null)
         {
-            fetchPositionDetailTask.forgetListener(true);
+            fetchPositionDetailTask.setListener(null);
         }
         fetchPositionDetailTask = null;
         securityPositionDetailCacheListener = null;
 
         if (fetchUserProfileTask != null)
         {
-            fetchUserProfileTask.forgetListener(true);
+            fetchUserProfileTask.setListener(null);
         }
         fetchUserProfileTask = null;
         userProfileCacheListener = null;

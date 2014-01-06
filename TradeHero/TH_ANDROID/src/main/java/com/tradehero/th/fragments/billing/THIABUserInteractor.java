@@ -109,7 +109,7 @@ public class THIABUserInteractor
     private UserProfileDTO userProfileDTO;
     @Inject protected Lazy<UserProfileCache> userProfileCache;
     private DTOCache.Listener<UserBaseKey, UserProfileDTO> userProfileListener;
-    private DTOCache.GetOrFetchTask<UserProfileDTO> userProfileFetchTask;
+    private DTOCache.GetOrFetchTask<UserBaseKey, UserProfileDTO> userProfileFetchTask;
 
     /**
      * The activityWeak and handler should be strongly referenced elsewhere

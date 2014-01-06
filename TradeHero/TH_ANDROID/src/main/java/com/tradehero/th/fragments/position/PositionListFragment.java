@@ -76,7 +76,7 @@ public class PositionListFragment extends BasePurchaseManagerFragment
     private int firstPositionVisible = 0;
     private boolean[] expandedPositions;
 
-    private DTOCache.GetOrFetchTask<GetPositionsDTO> fetchGetPositionsDTOTask;
+    private DTOCache.GetOrFetchTask<OwnedPortfolioId, GetPositionsDTO> fetchGetPositionsDTOTask;
     private GetPositionsCache.Listener<OwnedPortfolioId, GetPositionsDTO> getPositionsCacheListener;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -219,7 +219,7 @@ public class PositionListFragment extends BasePurchaseManagerFragment
         }
         if (fetchGetPositionsDTOTask != null)
         {
-            fetchGetPositionsDTOTask.forgetListener(true);
+            fetchGetPositionsDTOTask.setListener(null);
         }
         fetchGetPositionsDTOTask = null;
 
@@ -292,7 +292,7 @@ public class PositionListFragment extends BasePurchaseManagerFragment
             }
             if (fetchGetPositionsDTOTask != null)
             {
-                fetchGetPositionsDTOTask.forgetListener(true);
+                fetchGetPositionsDTOTask.setListener(null);
             }
             fetchGetPositionsDTOTask = getPositionsCache.get().getOrFetch(ownedPortfolioId, getPositionsCacheListener);
             displayProgress(true);

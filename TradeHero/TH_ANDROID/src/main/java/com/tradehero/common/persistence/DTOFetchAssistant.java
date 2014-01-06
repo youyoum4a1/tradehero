@@ -2,7 +2,6 @@ package com.tradehero.common.persistence;
 
 import android.os.AsyncTask;
 import com.tradehero.common.utils.THLog;
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -15,7 +14,7 @@ abstract public class DTOFetchAssistant<DTOKeyType extends DTOKey, DTOType exten
 {
     public static final String TAG = DTOFetchAssistant.class.getSimpleName();
 
-    private final Map<DTOKeyType, DTOCache.GetOrFetchTask<DTOType>> fetchTasks;
+    private final Map<DTOKeyType, DTOCache.GetOrFetchTask<DTOKeyType, DTOType>> fetchTasks;
 
     public DTOFetchAssistant(List<DTOKeyType> keysToFetch)
     {
@@ -53,10 +52,10 @@ abstract public class DTOFetchAssistant<DTOKeyType extends DTOKey, DTOType exten
 
     private void fetch(DTOKeyType key, boolean force)
     {
-        DTOCache.GetOrFetchTask<DTOType> fetchTask = fetchTasks.get(key);
+        DTOCache.GetOrFetchTask<DTOKeyType, DTOType> fetchTask = fetchTasks.get(key);
         if (fetchTask != null)
         {
-            fetchTask.forgetListener(true);
+            fetchTask.setListener(null);
         }
         fetchTask = getCache().getOrFetch(key, force, this);
         fetchTasks.put(key, fetchTask);
@@ -66,11 +65,11 @@ abstract public class DTOFetchAssistant<DTOKeyType extends DTOKey, DTOType exten
     @Override public void clear()
     {
         super.clear();
-        for (DTOCache.GetOrFetchTask<DTOType> task: fetchTasks.values())
+        for (DTOCache.GetOrFetchTask<DTOKeyType, DTOType> task: fetchTasks.values())
         {
             if (task != null)
             {
-                task.forgetListener(true);
+                task.setListener(null);
             }
         }
         fetchTasks.clear();
@@ -96,7 +95,7 @@ abstract public class DTOFetchAssistant<DTOKeyType extends DTOKey, DTOType exten
 
     public boolean hasActiveFetchTasks()
     {
-        for (DTOCache.GetOrFetchTask<DTOType> task: fetchTasks.values())
+        for (DTOCache.GetOrFetchTask<DTOKeyType, DTOType> task: fetchTasks.values())
         {
             if (task != null && task.getStatus() != AsyncTask.Status.FINISHED)
             {

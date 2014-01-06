@@ -25,7 +25,6 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.FlagNearEndScrollListener;
 import com.tradehero.th.R;
 import com.tradehero.th.api.security.SearchSecurityListType;
-import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.SecurityIdList;
 import com.tradehero.th.api.security.SecurityListType;
@@ -33,13 +32,11 @@ import com.tradehero.th.api.users.SearchUserListType;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserBaseKeyList;
 import com.tradehero.th.api.users.UserListType;
-import com.tradehero.th.api.users.UserSearchResultDTO;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.fragments.trade.BuySellFragment;
 import com.tradehero.th.persistence.security.SecurityCompactListCache;
 import com.tradehero.th.persistence.user.UserBaseKeyListCache;
-import com.tradehero.th.persistence.user.UserSearchResultCache;
 import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.List;
@@ -82,13 +79,13 @@ public class SearchStockPeopleFragment extends DashboardFragment
 
     @Inject Lazy<SecurityCompactListCache> securityCompactListCache;
     private SecurityIdListCacheListener securityIdListCacheListener;
-    private DTOCache.GetOrFetchTask<SecurityIdList> securitySearchTask;
+    private DTOCache.GetOrFetchTask<SecurityListType, SecurityIdList> securitySearchTask;
     private List<SecurityId> securityIds;
     private SecurityItemViewAdapter securityItemViewAdapter;
 
     @Inject Lazy<UserBaseKeyListCache> userBaseKeyListCache;
     private PeopleListCacheListener peopleListCacheListener;
-    private DTOCache.GetOrFetchTask<UserBaseKeyList> peopleSearchTask;
+    private DTOCache.GetOrFetchTask<UserListType, UserBaseKeyList> peopleSearchTask;
     private List<UserBaseKey> userBaseKeys;
     private PeopleItemViewAdapter peopleItemViewAdapter;
 
@@ -320,13 +317,13 @@ public class SearchStockPeopleFragment extends DashboardFragment
     {
         if (securitySearchTask != null)
         {
-            securitySearchTask.forgetListener(true);
+            securitySearchTask.setListener(null);
         }
         securitySearchTask = null;
 
         if (peopleSearchTask != null)
         {
-            peopleSearchTask.forgetListener(true);
+            peopleSearchTask.setListener(null);
         }
         peopleSearchTask = null;
         isQuerying = false;

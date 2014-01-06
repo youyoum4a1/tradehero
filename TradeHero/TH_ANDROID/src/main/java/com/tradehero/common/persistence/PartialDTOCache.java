@@ -16,7 +16,7 @@ abstract public class PartialDTOCache<DTOKeyType extends DTOKey, DTOType extends
     public static final int DEFAULT_AUTO_FETCH_TASK_MAX_SIZE = 50;
 
     private List<WeakReference<Listener<DTOKeyType, DTOType>>> listeners;
-    private LruCache<DTOKeyType, GetOrFetchTask<DTOType>> autoFetchTasks = new LruCache<>(DEFAULT_AUTO_FETCH_TASK_MAX_SIZE);
+    private LruCache<DTOKeyType, GetOrFetchTask<DTOKeyType, DTOType>> autoFetchTasks = new LruCache<>(DEFAULT_AUTO_FETCH_TASK_MAX_SIZE);
 
     public PartialDTOCache()
     {
@@ -48,7 +48,7 @@ abstract public class PartialDTOCache<DTOKeyType extends DTOKey, DTOType extends
         return value;
     }
 
-    @Override public GetOrFetchTask<DTOType> getOrFetch(final DTOKeyType key, final Listener<DTOKeyType, DTOType> callback)
+    @Override public GetOrFetchTask<DTOKeyType, DTOType> getOrFetch(final DTOKeyType key, final Listener<DTOKeyType, DTOType> callback)
     {
         return getOrFetch(key, false, callback);
     }
@@ -60,11 +60,9 @@ abstract public class PartialDTOCache<DTOKeyType extends DTOKey, DTOType extends
      * @param callback
      * @return
      */
-    @Override public GetOrFetchTask<DTOType> getOrFetch(final DTOKeyType key, final boolean force, final Listener<DTOKeyType, DTOType> callback)
+    @Override public GetOrFetchTask<DTOKeyType, DTOType> getOrFetch(final DTOKeyType key, final boolean force, final Listener<DTOKeyType, DTOType> callback)
     {
-        final WeakReference<Listener<DTOKeyType, DTOType>> weakCallback = new WeakReference<>(callback);
-
-        return new GetOrFetchTask<DTOType>()
+        return new GetOrFetchTask<DTOKeyType, DTOType>(callback)
         {
             private Throwable error = null;
 
@@ -86,10 +84,10 @@ abstract public class PartialDTOCache<DTOKeyType extends DTOKey, DTOType extends
             {
                 super.onPostExecute(value);
 
-                if (!hasForgottenListener() && !isCancelled())
+                if (!isCancelled())
                 {
-                    // We retrieve the callback right away to avoid having it vanish between the 2 get() calls.
-                    Listener<DTOKeyType, DTOType> retrievedCallback = weakCallback.get();
+                    // We retrieve the callback right away to avoid having it vanish between the 2 usages.
+                    Listener<DTOKeyType, DTOType> retrievedCallback = getListener();
                     if (retrievedCallback != null)
                     {
                         if (error != null)
@@ -208,7 +206,7 @@ abstract public class PartialDTOCache<DTOKeyType extends DTOKey, DTOType extends
             return;
         }
 
-        GetOrFetchTask<DTOType> fetchTask = getOrFetch(key, force, null);
+        GetOrFetchTask<DTOKeyType, DTOType> fetchTask = getOrFetch(key, force, null);
         autoFetchTasks.put(key, fetchTask);
         fetchTask.execute();
     }

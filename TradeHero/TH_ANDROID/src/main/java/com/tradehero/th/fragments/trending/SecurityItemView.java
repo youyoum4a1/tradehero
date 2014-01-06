@@ -54,7 +54,7 @@ public class SecurityItemView extends RelativeLayout implements DTOView<Security
     private SecurityCompactDTO securityCompactDTO;
     @Inject protected Lazy<SecurityCompactCache> securityCompactCache;
     private SecurityCompactListener securityCompactListener;
-    private DTOCache.GetOrFetchTask<SecurityCompactDTO> securityCompactFetchTask;
+    private DTOCache.GetOrFetchTask<SecurityId, SecurityCompactDTO> securityCompactFetchTask;
 
     private Runnable loadBgLogoRunnable = new Runnable()
     {
@@ -192,7 +192,7 @@ public class SecurityItemView extends RelativeLayout implements DTOView<Security
         securityCompactListener = null;
         if (securityCompactFetchTask != null)
         {
-            securityCompactFetchTask.forgetListener(true);
+            securityCompactFetchTask.setListener(null);
         }
         securityCompactFetchTask = null;
     }
@@ -209,7 +209,7 @@ public class SecurityItemView extends RelativeLayout implements DTOView<Security
 
         if (securityCompactFetchTask != null)
         {
-            securityCompactFetchTask.forgetListener(true);
+            securityCompactFetchTask.setListener(null);
         }
         final SecurityCompactDTO cachedSecurityCompactDTO = securityCompactCache.get().get(this.securityId);
         if (cachedSecurityCompactDTO != null)

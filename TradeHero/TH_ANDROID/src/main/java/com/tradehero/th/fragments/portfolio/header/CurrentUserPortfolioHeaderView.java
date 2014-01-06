@@ -27,7 +27,7 @@ public class CurrentUserPortfolioHeaderView extends RelativeLayout implements Po
     private TextView totalValueTextView;
     private TextView cashValueTextView;
     private DTOCache.Listener<PortfolioId, PortfolioCompactDTO> portfolioCacheListener;
-    private DTOCache.GetOrFetchTask<PortfolioCompactDTO> fetchPortfolioTask;
+    private DTOCache.GetOrFetchTask<PortfolioId, PortfolioCompactDTO> fetchPortfolioTask;
 
     //<editor-fold desc="Description">
     public CurrentUserPortfolioHeaderView(Context context)
@@ -72,7 +72,7 @@ public class CurrentUserPortfolioHeaderView extends RelativeLayout implements Po
 
         if (fetchPortfolioTask != null)
         {
-            fetchPortfolioTask.forgetListener(true);
+            fetchPortfolioTask.setListener(null);
         }
     }
 

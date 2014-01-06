@@ -41,7 +41,7 @@ public class OtherUserPortfolioHeaderView extends RelativeLayout implements Port
     private WeakReference<OnTimelineRequestedListener> timelineRequestedListenerWeak = new WeakReference<>(null);
 
     private DTOCache.Listener<UserBaseKey, UserProfileDTO> getUserCacheListener;
-    private DTOCache.GetOrFetchTask<UserProfileDTO> fetchUserProfileTask;
+    private DTOCache.GetOrFetchTask<UserBaseKey, UserProfileDTO> fetchUserProfileTask;
 
     //<editor-fold desc="Constructors">
     public OtherUserPortfolioHeaderView(Context context)
@@ -134,7 +134,7 @@ public class OtherUserPortfolioHeaderView extends RelativeLayout implements Port
         }
         if (fetchUserProfileTask != null)
         {
-            fetchUserProfileTask.forgetListener(true);
+            fetchUserProfileTask.setListener(null);
         }
         getUserCacheListener = null;
 

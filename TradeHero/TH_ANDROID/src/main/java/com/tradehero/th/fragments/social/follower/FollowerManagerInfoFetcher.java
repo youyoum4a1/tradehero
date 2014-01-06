@@ -16,7 +16,7 @@ public class FollowerManagerInfoFetcher
     public static final String TAG = FollowerManagerInfoFetcher.class.getSimpleName();
 
     @Inject protected Lazy<FollowerSummaryCache> followerSummaryCache;
-    private DTOCache.GetOrFetchTask<FollowerSummaryDTO> followerSummaryFetchTask;
+    private DTOCache.GetOrFetchTask<UserBaseKey, FollowerSummaryDTO> followerSummaryFetchTask;
     private final DTOCache.Listener<UserBaseKey, FollowerSummaryDTO> followerSummaryListener;
 
     public FollowerManagerInfoFetcher(final DTOCache.Listener<UserBaseKey, FollowerSummaryDTO> followerSummaryListener)
@@ -30,7 +30,7 @@ public class FollowerManagerInfoFetcher
     {
         if (this.followerSummaryFetchTask != null)
         {
-            this.followerSummaryFetchTask.forgetListener(true);
+            this.followerSummaryFetchTask.setListener(null);
         }
         this.followerSummaryFetchTask = null;
     }
@@ -49,7 +49,7 @@ public class FollowerManagerInfoFetcher
         {
             if (this.followerSummaryFetchTask != null)
             {
-                this.followerSummaryFetchTask.forgetListener(true);
+                this.followerSummaryFetchTask.setListener(null);
             }
             this.followerSummaryFetchTask = this.followerSummaryCache.get().getOrFetch(followedId, this.followerSummaryListener);
             this.followerSummaryFetchTask.execute();

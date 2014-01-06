@@ -36,12 +36,12 @@ public class StockInfoFragment extends DashboardFragment
     protected SecurityCompactDTO securityCompactDTO;
     @Inject Lazy<SecurityCompactCache> securityCompactCache;
     private DTOCache.Listener<SecurityId, SecurityCompactDTO> compactCacheListener;
-    private DTOCache.GetOrFetchTask<SecurityCompactDTO> compactCacheFetchTask;
+    private DTOCache.GetOrFetchTask<SecurityId, SecurityCompactDTO> compactCacheFetchTask;
 
     protected NewsList yahooNewsList;
     @Inject Lazy<NewsCache> yahooNewsCache;
     private DTOCache.Listener<SecurityId, NewsList> yahooNewsCacheListener;
-    private DTOCache.GetOrFetchTask<NewsList> yahooNewsCacheFetchTask;
+    private DTOCache.GetOrFetchTask<SecurityId, NewsList> yahooNewsCacheFetchTask;
 
     private ActionBar actionBar;
     private ImageView marketCloseIcon;
@@ -141,14 +141,14 @@ public class StockInfoFragment extends DashboardFragment
     {
         if (compactCacheFetchTask != null)
         {
-            compactCacheFetchTask.forgetListener(true);
+            compactCacheFetchTask.setListener(null);
             compactCacheFetchTask.cancel(false);
         }
         compactCacheFetchTask = null;
 
         if (yahooNewsCacheFetchTask != null)
         {
-            yahooNewsCacheFetchTask.forgetListener(true);
+            yahooNewsCacheFetchTask.setListener(null);
             yahooNewsCacheFetchTask.cancel(false);
         }
         yahooNewsCacheFetchTask = null;

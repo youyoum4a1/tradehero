@@ -1,7 +1,6 @@
 package com.tradehero.th.fragments.trending;
 
 import android.graphics.drawable.Drawable;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -23,7 +22,6 @@ import com.tradehero.th.api.market.ExchangeDTO;
 import com.tradehero.th.api.market.ExchangeDTOList;
 import com.tradehero.th.api.market.ExchangeListType;
 import com.tradehero.th.api.market.ExchangeStringId;
-import com.tradehero.th.api.security.TrendingBasicSecurityListType;
 import com.tradehero.th.api.security.TrendingSecurityListType;
 import com.tradehero.th.persistence.market.ExchangeListCache;
 import com.tradehero.th.utils.DaggerUtils;
@@ -56,7 +54,7 @@ abstract public class TrendingFilterSelectorFragment extends SherlockFragment
     private List<CharSequence> dropDownTexts;
     private List<Drawable> dropDownIcons;
     private DTOCache.Listener<ExchangeListType, ExchangeDTOList> exchangeListTypeCacheListener;
-    private DTOCache.GetOrFetchTask<ExchangeDTOList> exchangeListCacheFetchTask;
+    private DTOCache.GetOrFetchTask<ExchangeListType, ExchangeDTOList> exchangeListCacheFetchTask;
     private int selectedExchangeIndex;
 
     @Override public void onCreate(Bundle savedInstanceState)
@@ -132,7 +130,7 @@ abstract public class TrendingFilterSelectorFragment extends SherlockFragment
         }
         if (exchangeListCacheFetchTask != null)
         {
-            exchangeListCacheFetchTask.forgetListener(true);
+            exchangeListCacheFetchTask.setListener(null);
         }
         exchangeListCacheFetchTask = null;
         exchangeListTypeCacheListener = null;
@@ -247,7 +245,7 @@ abstract public class TrendingFilterSelectorFragment extends SherlockFragment
     {
         if (exchangeListCacheFetchTask != null)
         {
-            exchangeListCacheFetchTask.forgetListener(true);
+            exchangeListCacheFetchTask.setListener(null);
         }
         if (exchangeListTypeCacheListener == null)
         {

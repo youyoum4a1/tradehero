@@ -43,7 +43,7 @@ public class FollowerPayoutManagerFragment extends BasePurchaseManagerFragment
     @Inject protected Lazy<Picasso> picasso;
     @Inject protected Lazy<UserFollowerCache> userFollowerCache;
     private DTOCache.Listener<FollowerId, UserFollowerDTO> userFollowerListener;
-    private DTOCache.GetOrFetchTask<UserFollowerDTO> userFollowerFetchTask;
+    private DTOCache.GetOrFetchTask<FollowerId, UserFollowerDTO> userFollowerFetchTask;
 
     //<editor-fold desc="BaseFragment.TabBarVisibilityInformer">
     @Override public boolean isTabBarVisible()
@@ -98,7 +98,7 @@ public class FollowerPayoutManagerFragment extends BasePurchaseManagerFragment
         userFollowerListener = null;
         if (userFollowerFetchTask != null)
         {
-            userFollowerFetchTask.forgetListener(true);
+            userFollowerFetchTask.setListener(null);
         }
         userFollowerFetchTask = null;
         super.onPause();
@@ -136,7 +136,7 @@ public class FollowerPayoutManagerFragment extends BasePurchaseManagerFragment
             }
             if (userFollowerFetchTask != null)
             {
-                userFollowerFetchTask.forgetListener(true);
+                userFollowerFetchTask.setListener(null);
             }
             userFollowerFetchTask = userFollowerCache.get().getOrFetch(followerId, userFollowerListener);
             userFollowerFetchTask.execute();

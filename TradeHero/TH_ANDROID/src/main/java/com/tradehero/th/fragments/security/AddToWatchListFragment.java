@@ -45,7 +45,7 @@ public class AddToWatchListFragment extends DashboardFragment
     private Button watchAction;
     private ProgressBar progressBar;
 
-    private DTOCache.GetOrFetchTask<SecurityCompactDTO> compactCacheFetchTask;
+    private DTOCache.GetOrFetchTask<SecurityId, SecurityCompactDTO> compactCacheFetchTask;
 
     @Inject protected Lazy<SecurityCompactCache> securityCompactCache;
     @Inject protected Lazy<WatchlistPositionCache> watchlistPositionCache;

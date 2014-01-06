@@ -17,7 +17,7 @@ public class LeaderboardPositionListFragment extends PositionListFragment
     @Inject Lazy<GetLeaderboardPositionsCache> getLeaderboardPositionsCache;
 
     private DTOCache.Listener<LeaderboardMarkUserId, GetLeaderboardPositionsDTO> getLeaderboardPositionsCacheListener;
-    private DTOCache.GetOrFetchTask<GetLeaderboardPositionsDTO> fetchGetPositionsDTOTask;
+    private DTOCache.GetOrFetchTask<LeaderboardMarkUserId, GetLeaderboardPositionsDTO> fetchGetPositionsDTOTask;
 
     private LeaderboardMarkUserId leaderboardMarkUserId;
     private boolean timeRestricted;
@@ -56,7 +56,7 @@ public class LeaderboardPositionListFragment extends PositionListFragment
             }
             if (fetchGetPositionsDTOTask != null)
             {
-                fetchGetPositionsDTOTask.forgetListener(true);
+                fetchGetPositionsDTOTask.setListener(null);
             }
             fetchGetPositionsDTOTask = getLeaderboardPositionsCache.get().getOrFetch(leaderboardMarkUserId, getLeaderboardPositionsCacheListener);
             fetchGetPositionsDTOTask.execute();

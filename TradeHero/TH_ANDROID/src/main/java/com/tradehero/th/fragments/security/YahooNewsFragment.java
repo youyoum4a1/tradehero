@@ -23,7 +23,7 @@ public class YahooNewsFragment extends AbstractSecurityInfoFragment<NewsList>
 {
     private final static String TAG = YahooNewsFragment.class.getSimpleName();
 
-    private DTOCache.GetOrFetchTask<NewsList> fetchTask;
+    private DTOCache.GetOrFetchTask<SecurityId, NewsList> fetchTask;
     @Inject protected Lazy<NewsCache> yahooNewsCache;
     private YahooNewsListView listView;
 

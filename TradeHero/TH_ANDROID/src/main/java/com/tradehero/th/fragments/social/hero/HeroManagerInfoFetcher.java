@@ -24,9 +24,9 @@ public class HeroManagerInfoFetcher
     @Inject protected Lazy<HeroCache> heroCache;
 
     private final DTOCache.Listener<UserBaseKey, UserProfileDTO> userProfileListener;
-    private DTOCache.GetOrFetchTask<UserProfileDTO> userProfileFetchTask;
+    private DTOCache.GetOrFetchTask<UserBaseKey, UserProfileDTO> userProfileFetchTask;
     private final DTOCache.Listener<UserBaseKey, HeroIdList> heroListListener;
-    private DTOCache.GetOrFetchTask<HeroIdList> heroListFetchTask;
+    private DTOCache.GetOrFetchTask<UserBaseKey, HeroIdList> heroListFetchTask;
 
     public HeroManagerInfoFetcher(DTOCache.Listener<UserBaseKey, UserProfileDTO> userProfileListener,
             DTOCache.Listener<UserBaseKey, HeroIdList> heroListListener)
@@ -41,13 +41,13 @@ public class HeroManagerInfoFetcher
     {
         if (this.userProfileFetchTask != null)
         {
-            this.userProfileFetchTask.forgetListener(true);
+            this.userProfileFetchTask.setListener(null);
         }
         this.userProfileFetchTask = null;
 
         if (this.heroListFetchTask != null)
         {
-            this.heroListFetchTask.forgetListener(true);
+            this.heroListFetchTask.setListener(null);
         }
         this.heroListFetchTask = null;
     }
@@ -72,7 +72,7 @@ public class HeroManagerInfoFetcher
         {
             if (this.userProfileFetchTask != null)
             {
-                this.userProfileFetchTask.forgetListener(true);
+                this.userProfileFetchTask.setListener(null);
             }
             this.userProfileFetchTask = this.userProfileCache.get().getOrFetch(userBaseKey, this.userProfileListener);
             this.userProfileFetchTask.execute();
@@ -94,7 +94,7 @@ public class HeroManagerInfoFetcher
         {
             if (heroListFetchTask != null)
             {
-                heroListFetchTask.forgetListener(true);
+                heroListFetchTask.setListener(null);
             }
             heroListFetchTask = heroListCache.get().getOrFetch(userBaseKey, heroListListener);
             heroListFetchTask.execute();

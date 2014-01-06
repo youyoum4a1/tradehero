@@ -58,13 +58,13 @@ public class PortfolioListFragment extends DashboardFragment
     @Inject Lazy<UserProfileCache> userProfileCache;
 
     private PortfolioCompactListCache.Listener<UserBaseKey, OwnedPortfolioIdList> ownPortfolioListListener;
-    private DTOCache.GetOrFetchTask<OwnedPortfolioIdList> fetchOwnPortfolioListFetchTask;
+    private DTOCache.GetOrFetchTask<UserBaseKey, OwnedPortfolioIdList> fetchOwnPortfolioListFetchTask;
 
     private Map<OwnedPortfolioId, UserProfileCache.Listener<UserBaseKey, UserProfileDTO>> userProfileDTOListeners = new HashMap<>();
     private Map<OwnedPortfolioId, PortfolioCache.Listener<OwnedPortfolioId, PortfolioDTO>> portfolioDTOListeners = new HashMap<>();
 
-    private Map<Integer /* userId */, DTOCache.GetOrFetchTask<UserProfileDTO>> fetchUserTaskMap = new HashMap<>();
-    private Map<Integer /* portfolioId */, DTOCache.GetOrFetchTask<PortfolioDTO>> fetchPortfolioTaskMap = new HashMap<>();
+    private Map<Integer /* userId */, DTOCache.GetOrFetchTask<UserBaseKey, UserProfileDTO>> fetchUserTaskMap = new HashMap<>();
+    private Map<Integer /* portfolioId */, DTOCache.GetOrFetchTask<OwnedPortfolioId, PortfolioDTO>> fetchPortfolioTaskMap = new HashMap<>();
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -156,18 +156,18 @@ public class PortfolioListFragment extends DashboardFragment
 
         if (fetchOwnPortfolioListFetchTask != null)
         {
-            fetchOwnPortfolioListFetchTask.forgetListener(true);
+            fetchOwnPortfolioListFetchTask.setListener(null);
         }
         fetchOwnPortfolioListFetchTask = null;
         ownPortfolioListListener = null;
 
         if (fetchUserTaskMap != null)
         {
-            for (DTOCache.GetOrFetchTask<UserProfileDTO> task: fetchUserTaskMap.values())
+            for (DTOCache.GetOrFetchTask<UserBaseKey, UserProfileDTO> task: fetchUserTaskMap.values())
             {
                 if (task != null)
                 {
-                    task.forgetListener(true);
+                    task.setListener(null);
                 }
             }
             fetchUserTaskMap.clear();
@@ -179,11 +179,11 @@ public class PortfolioListFragment extends DashboardFragment
 
         if (fetchPortfolioTaskMap != null)
         {
-            for (DTOCache.GetOrFetchTask<PortfolioDTO> task: fetchPortfolioTaskMap.values())
+            for (DTOCache.GetOrFetchTask<OwnedPortfolioId, PortfolioDTO> task: fetchPortfolioTaskMap.values())
             {
                 if (task != null)
                 {
-                    task.forgetListener(true);
+                    task.setListener(null);
                 }
             }
             fetchPortfolioTaskMap.clear();
@@ -227,7 +227,7 @@ public class PortfolioListFragment extends DashboardFragment
     {
         if (fetchOwnPortfolioListFetchTask != null)
         {
-            fetchOwnPortfolioListFetchTask.forgetListener(true);
+            fetchOwnPortfolioListFetchTask.setListener(null);
         }
         OwnedPortfolioIdList portfolioIdList = portfolioListCache.get().get(currentUserBaseKeyHolder.getCurrentUserBaseKey());
         if (portfolioIdList != null)
@@ -402,10 +402,10 @@ public class PortfolioListFragment extends DashboardFragment
     {
         if (fetchUserTaskMap.containsKey(displayablePortfolioDTO.ownedPortfolioId.userId))
         {
-            DTOCache.GetOrFetchTask<UserProfileDTO> fetchTask = fetchUserTaskMap.get(displayablePortfolioDTO.ownedPortfolioId.userId);
+            DTOCache.GetOrFetchTask<UserBaseKey, UserProfileDTO> fetchTask = fetchUserTaskMap.get(displayablePortfolioDTO.ownedPortfolioId.userId);
             if (fetchTask != null)
             {
-                fetchTask.forgetListener(true);
+                fetchTask.setListener(null);
             }
         }
 
@@ -429,7 +429,7 @@ public class PortfolioListFragment extends DashboardFragment
             userProfileDTOListeners.put(displayablePortfolioDTO.ownedPortfolioId, fetchListener);
         }
 
-        DTOCache.GetOrFetchTask<UserProfileDTO> fetchTask = userProfileCache.get().getOrFetch(
+        DTOCache.GetOrFetchTask<UserBaseKey, UserProfileDTO> fetchTask = userProfileCache.get().getOrFetch(
                 displayablePortfolioDTO.ownedPortfolioId.getUserBaseKey(), fetchListener);
         fetchUserTaskMap.put(displayablePortfolioDTO.ownedPortfolioId.userId, fetchTask);
         fetchTask.execute();
@@ -439,10 +439,10 @@ public class PortfolioListFragment extends DashboardFragment
     {
         if (fetchPortfolioTaskMap.containsKey(displayablePortfolioDTO.ownedPortfolioId.portfolioId))
         {
-            DTOCache.GetOrFetchTask<PortfolioDTO> fetchTask = fetchPortfolioTaskMap.get(displayablePortfolioDTO.ownedPortfolioId.portfolioId);
+            DTOCache.GetOrFetchTask<OwnedPortfolioId, PortfolioDTO> fetchTask = fetchPortfolioTaskMap.get(displayablePortfolioDTO.ownedPortfolioId.portfolioId);
             if (fetchTask != null)
             {
-                fetchTask.forgetListener(true);
+                fetchTask.setListener(null);
             }
         }
 
@@ -466,7 +466,7 @@ public class PortfolioListFragment extends DashboardFragment
             portfolioDTOListeners.put(displayablePortfolioDTO.ownedPortfolioId, fetchListener);
         }
 
-        DTOCache.GetOrFetchTask<PortfolioDTO> fetchTask = portfolioCache.get().getOrFetch(
+        DTOCache.GetOrFetchTask<OwnedPortfolioId, PortfolioDTO> fetchTask = portfolioCache.get().getOrFetch(
                 displayablePortfolioDTO.ownedPortfolioId, fetchListener);
         fetchPortfolioTaskMap.put(displayablePortfolioDTO.ownedPortfolioId.portfolioId, fetchTask);
         fetchTask.execute();

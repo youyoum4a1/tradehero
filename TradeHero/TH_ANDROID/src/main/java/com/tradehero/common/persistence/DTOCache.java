@@ -1,6 +1,7 @@
 package com.tradehero.common.persistence;
 
 import android.os.AsyncTask;
+import java.lang.ref.WeakReference;
 
 /**
  * Created with IntelliJ IDEA. User: xavier Date: 10/3/13 Time: 4:48 PM To change this template use File | Settings | File Templates.
@@ -19,8 +20,8 @@ public interface DTOCache<DTOKeyType extends DTOKey, DTOType extends DTO>
 
     DTOType getOrFetch(DTOKeyType key)  throws Throwable;
     DTOType getOrFetch(DTOKeyType key, boolean force)  throws Throwable;
-    GetOrFetchTask<DTOType> getOrFetch(DTOKeyType key, Listener<DTOKeyType, DTOType> callback);
-    GetOrFetchTask<DTOType> getOrFetch(DTOKeyType key, boolean force, Listener<DTOKeyType, DTOType> callback);
+    GetOrFetchTask<DTOKeyType, DTOType> getOrFetch(DTOKeyType key, Listener<DTOKeyType, DTOType> callback);
+    GetOrFetchTask<DTOKeyType, DTOType> getOrFetch(DTOKeyType key, boolean force, Listener<DTOKeyType, DTOType> callback);
     DTOType put(DTOKeyType key, DTOType value);
     void invalidate(DTOKeyType key);
     void invalidateAll();
@@ -32,35 +33,34 @@ public interface DTOCache<DTOKeyType extends DTOKey, DTOType extends DTO>
     }
 
     /**
-     * Indicates whether a task should forget its listener
-     */
-    public static interface ForgettableListenerTask
-    {
-        void forgetListener(boolean forgetListener);
-    }
-
-    /**
      * The advantage of this class over simply a cancellable AsyncTask is that implementations can let the fetch run its course,
      * which includes caching, but stop just before calling the listener.
+     * @param <DTOKeyType>
      * @param <DTOType>
      */
-    abstract public static class GetOrFetchTask<DTOType> extends AsyncTask<Void, Void, DTOType> implements ForgettableListenerTask
+    abstract public static class GetOrFetchTask<DTOKeyType, DTOType> extends AsyncTask<Void, Void, DTOType>
     {
-        private boolean forgetListener;
+        private WeakReference<Listener<DTOKeyType, DTOType>> listenerWeak;
 
         public GetOrFetchTask()
         {
+            this(null);
+        }
+
+        public GetOrFetchTask(Listener<DTOKeyType, DTOType> listener)
+        {
             super();
+            this.listenerWeak = new WeakReference<>(listener);
         }
 
-        public boolean hasForgottenListener()
+        public void setListener(Listener<DTOKeyType, DTOType> listener)
         {
-            return forgetListener;
+            this.listenerWeak = new WeakReference<>(listener);
         }
 
-        @Override public void forgetListener(boolean forgetListener)
+        public Listener<DTOKeyType, DTOType> getListener()
         {
-            this.forgetListener = forgetListener;
+            return this.listenerWeak.get();
         }
     }
 }

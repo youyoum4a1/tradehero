@@ -75,21 +75,21 @@ import javax.inject.Singleton;
         return values;
     }
 
-    public GetOrFetchTask<List<PortfolioDTO>> getOrFetchTask(
+    public GetOrFetchTask<List<? extends OwnedPortfolioId>, List<? extends PortfolioDTO>> getOrFetchTask(
             final List<? extends OwnedPortfolioId> keys,
             Listener<List<? extends OwnedPortfolioId>, List<? extends PortfolioDTO>> callback)
     {
         return getOrFetchTask(keys, false, callback);
     }
 
-    public GetOrFetchTask<List<PortfolioDTO>> getOrFetchTask(
+    public GetOrFetchTask<List<? extends OwnedPortfolioId>, List<? extends PortfolioDTO>> getOrFetchTask(
             final List<? extends OwnedPortfolioId> keys,
             final boolean force,
             Listener<List<? extends OwnedPortfolioId>, List<? extends PortfolioDTO>> callback)
     {
         final WeakReference<Listener<List<? extends OwnedPortfolioId>, List<? extends PortfolioDTO>>> weakCallback = new WeakReference<>(callback);
 
-        return new GetOrFetchTask<List<PortfolioDTO>>()
+        return new GetOrFetchTask<List<? extends OwnedPortfolioId>, List<? extends PortfolioDTO>>(callback)
         {
             Throwable error = null;
 
@@ -114,10 +114,10 @@ import javax.inject.Singleton;
                 return values;
             }
 
-            @Override protected void onPostExecute(List<PortfolioDTO> values)
+            @Override protected void onPostExecute(List<? extends PortfolioDTO> values)
             {
                 super.onPostExecute(values);
-                if (!hasForgottenListener() && !isCancelled())
+                if (!isCancelled())
                 {
                     Listener<List<? extends OwnedPortfolioId>, List<? extends PortfolioDTO>> retrievedCallback = weakCallback.get();
                     if (retrievedCallback != null)

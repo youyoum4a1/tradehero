@@ -57,7 +57,7 @@ public class TradeListFragment extends DashboardFragment
     private TradeListItemAdapter adapter;
     private TradeListHeaderView.TradeListHeaderClickListener buttonListener;
 
-    private DTOCache.GetOrFetchTask<OwnedTradeIdList> fetchTradesTask;
+    private DTOCache.GetOrFetchTask<OwnedPositionId, OwnedTradeIdList> fetchTradesTask;
     private TradeListCache.Listener<OwnedPositionId, OwnedTradeIdList> getTradesListener;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -206,7 +206,7 @@ public class TradeListFragment extends DashboardFragment
     {
         if (fetchTradesTask != null)
         {
-            fetchTradesTask.forgetListener(true);
+            fetchTradesTask.setListener(null);
         }
         fetchTradesTask = null;
         getTradesListener = null;
@@ -245,7 +245,7 @@ public class TradeListFragment extends DashboardFragment
             }
             if (fetchTradesTask != null)
             {
-                fetchTradesTask.forgetListener(true);
+                fetchTradesTask.setListener(null);
             }
             fetchTradesTask = tradeListCache.get().getOrFetch(ownedPositionId, getTradesListener);
             displayProgress(true);

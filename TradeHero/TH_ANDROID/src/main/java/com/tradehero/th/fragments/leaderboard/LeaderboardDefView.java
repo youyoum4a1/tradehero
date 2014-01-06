@@ -32,7 +32,7 @@ public class LeaderboardDefView extends RelativeLayout implements DTOView<Leader
     private LeaderboardDefDTO dto;
 
     private DTOCache.Listener<UserBaseKey, UserProfileDTO> userProfileListener;
-    private DTOCache.GetOrFetchTask<UserProfileDTO> userProfileRequestTask;
+    private DTOCache.GetOrFetchTask<UserBaseKey, UserProfileDTO> userProfileRequestTask;
 
     //<editor-fold desc="Constructors">
     public LeaderboardDefView(Context context)
@@ -96,7 +96,7 @@ public class LeaderboardDefView extends RelativeLayout implements DTOView<Leader
         super.onDetachedFromWindow();
         if (userProfileRequestTask != null)
         {
-            userProfileRequestTask.forgetListener(true);
+            userProfileRequestTask.setListener(null);
         }
         userProfileRequestTask = null;
         userProfileListener = null;
