@@ -15,7 +15,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewStub;
 import android.widget.Button;
-import android.widget.EditText;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
@@ -33,14 +32,11 @@ import com.tradehero.th.base.Navigator;
 import com.tradehero.th.base.NavigatorActivity;
 import com.tradehero.th.base.THUser;
 import com.tradehero.th.fragments.settings.FocusableOnTouchListener;
+import com.tradehero.th.fragments.settings.ProfileInfoView;
 import com.tradehero.th.misc.callback.LogInCallback;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.NetworkUtils;
-import com.tradehero.th.widget.MatchingPasswordText;
-import com.tradehero.th.widget.ServerValidatedEmailText;
-import com.tradehero.th.widget.ServerValidatedUsernameText;
-import com.tradehero.th.widget.ValidatedPasswordText;
 import java.util.Map;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -51,12 +47,7 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
     public static final String BUNDLE_KEY_EDIT_CURRENT_USER = EmailSignUpFragment.class.getName() + ".editCurrentUser";
     public static final String BUNDLE_KEY_SHOW_BUTTON_BACK = EmailSignUpFragment.class.getName() + ".showButtonBack";
 
-    private ServerValidatedEmailText email;
-    private ValidatedPasswordText password;
-    private MatchingPasswordText confirmPassword;
-    private ServerValidatedUsernameText displayName;
-    private EditText firstName, lastName;
-    private ProgressDialog progressDialog;
+    private ProfileInfoView profileView;
 
     private boolean editCurrentUser;
     private boolean showButtonBack;
@@ -78,26 +69,10 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
     {
         FocusableOnTouchListener touchListener = new FocusableOnTouchListener();
 
-        email = (ServerValidatedEmailText) view.findViewById(R.id.authentication_sign_up_email);
-        email.addListener(this);
-        email.setOnTouchListener(touchListener); // HACK: force this to focus instead of the TabHost stealing focus..
+        profileView = (ProfileInfoView) view.findViewById(R.id.profile_info);
 
-        password = (ValidatedPasswordText) view.findViewById(R.id.authentication_sign_up_password);
-        password.addListener(this);
-        password.setOnTouchListener(touchListener); // HACK: force this to focus instead of the TabHost stealing focus..
-
-        confirmPassword = (MatchingPasswordText) view.findViewById(R.id.authentication_sign_up_confirm_password);
-        confirmPassword.addListener(this);
-        confirmPassword.setOnTouchListener(touchListener); // HACK: force this to focus instead of the TabHost stealing focus..
-
-        displayName = (ServerValidatedUsernameText) view.findViewById(R.id.authentication_sign_up_username);
-        displayName.addListener(this);
-        displayName.setOnTouchListener(touchListener); // HACK: force this to focus instead of the TabHost stealing focus..
-
-        firstName = (EditText) view.findViewById(R.id.et_firstname);
-        firstName.setOnTouchListener(touchListener); // HACK: force this to focus instead of the TabHost stealing focus..
-        lastName = (EditText) view.findViewById(R.id.et_lastname);
-        lastName.setOnTouchListener(touchListener); // HACK: force this to focus instead of the TabHost stealing focus..
+        profileView.setOnTouchListenerOnFields(touchListener);
+        profileView.addValidationListenerOnFields(this);
 
         signButton = (Button) view.findViewById(R.id.authentication_sign_up_button);
         signButton.setOnClickListener(this);
@@ -186,66 +161,41 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
 
     @Override protected void forceValidateFields()
     {
-        email.forceValidate();
-        password.forceValidate();
-        confirmPassword.forceValidate();
-        displayName.forceValidate();
+        profileView.forceValidateFields();
     }
 
     @Override public boolean areFieldsValid()
     {
-        return email.isValid() && password.isValid() && confirmPassword.isValid() && displayName.isValid();
+        return profileView.areFieldsValid();
     }
 
     @Override protected Map<String, Object> getUserFormMap()
     {
         Map<String, Object> map = super.getUserFormMap();
-        map.put(UserFormFactory.KEY_EMAIL, email.getText());
-        map.put(UserFormFactory.KEY_PASSWORD, password.getText());
-        map.put(UserFormFactory.KEY_PASSWORD_CONFIRM, confirmPassword.getText());
-        map.put(UserFormFactory.KEY_DISPLAY_NAME, displayName.getText());
-        map.put(UserFormFactory.KEY_FIRST_NAME, firstName.getText());
-        map.put(UserFormFactory.KEY_LAST_NAME, lastName.getText());
+        map.put(UserFormFactory.KEY_EMAIL, profileView.email.getText());
+        map.put(UserFormFactory.KEY_PASSWORD, profileView.password.getText());
+        map.put(UserFormFactory.KEY_PASSWORD_CONFIRM, profileView.confirmPassword.getText());
+        map.put(UserFormFactory.KEY_DISPLAY_NAME, profileView.displayName.getText());
+        map.put(UserFormFactory.KEY_FIRST_NAME, profileView.firstName.getText());
+        map.put(UserFormFactory.KEY_LAST_NAME, profileView.lastName.getText());
         // TODO add profile picture
         return map;
     }
 
     @Override public void onDestroyView()
     {
-        if (email != null)
+        if (profileView != null)
         {
-            email.removeAllListeners();
-            email.setOnTouchListener(null);
-            email = null;
+            profileView.setOnTouchListenerOnFields(null);
+            profileView.removeAllListenersOnFields();
+            profileView.email = null;
+            profileView.password = null;
+            profileView.confirmPassword = null;
+            profileView.displayName = null;
+            profileView.firstName = null;
+            profileView.lastName = null;
         }
-        if (password != null)
-        {
-            password.removeAllListeners();
-            password.setOnTouchListener(null);
-            password = null;
-        }
-        if (confirmPassword != null)
-        {
-            confirmPassword.removeAllListeners();
-            confirmPassword.setOnTouchListener(null);
-            confirmPassword = null;
-        }
-        if (displayName != null)
-        {
-            displayName.removeAllListeners();
-            displayName.setOnTouchListener(null);
-            displayName = null;
-        }
-        if (firstName != null)
-        {
-            firstName.setOnTouchListener(null);
-            firstName = null;
-        }
-        if (lastName != null)
-        {
-            lastName.setOnTouchListener(null);
-            lastName = null;
-        }
+        profileView = null;
         super.onDestroyView();
     }
 
@@ -301,10 +251,10 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
         UserBaseDTO currentUserBase = THUser.getCurrentUserBase();
 
         this.signButton.setText(getResources().getString(R.string.settings_update_profile));
-        this.firstName.setText(currentUserBase.firstName);
-        this.lastName.setText(currentUserBase.lastName);
-        this.displayName.setText(currentUserBase.displayName);
-        this.displayName.setOriginalUsernameValue(currentUserBase.displayName);
+        this.profileView.firstName.setText(currentUserBase.firstName);
+        this.profileView.lastName.setText(currentUserBase.lastName);
+        this.profileView.displayName.setText(currentUserBase.displayName);
+        this.profileView.displayName.setOriginalUsernameValue(currentUserBase.displayName);
 
         JSONObject credentials = THUser.currentCredentials();
         String emailValue = null, passwordValue = null;
@@ -316,9 +266,9 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
         {
             THLog.e(TAG, "populateCurrentUser", e);
         }
-        this.email.setText(emailValue);
-        this.password.setText(passwordValue);
-        this.confirmPassword.setText(passwordValue);
+        this.profileView.email.setText(emailValue);
+        this.profileView.password.setText(passwordValue);
+        this.profileView.confirmPassword.setText(passwordValue);
     }
 
     private void updateProfile(View view)
@@ -336,7 +286,7 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
         }
         else
         {
-            progressDialog = ProgressDialog.show(
+            profileView.progressDialog = ProgressDialog.show(
                     getSherlockActivity(),
                     Application.getResourceString(R.string.please_wait),
                     Application.getResourceString(R.string.connecting_tradehero_only),
@@ -356,7 +306,7 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
                     {
                         THToast.show(ex.getMessage());
                     }
-                    progressDialog.hide();
+                    profileView.progressDialog.hide();
                 }
 
                 @Override public void onStart()
