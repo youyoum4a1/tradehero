@@ -3,17 +3,15 @@ package com.tradehero.th.widget;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.AttributeSet;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
 import com.tradehero.common.text.OnElementClickListener;
 import com.tradehero.common.text.RichTextCreator;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
-import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.base.NavigatorActivity;
-import com.tradehero.th.fragments.timeline.TimelineFragment;
+import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.fragments.trade.BuySellFragment;
 import javax.inject.Inject;
 
@@ -88,12 +86,12 @@ public class MarkdownTextView extends TextView implements OnElementClickListener
     private void openUserProfile(int userId)
     {
         Bundle b = new Bundle();
-        b.putInt(TimelineFragment.BUNDLE_KEY_SHOW_USER_ID, userId);
+        b.putInt(PushableTimelineFragment.BUNDLE_KEY_SHOW_USER_ID, userId);
         b.putBoolean(Navigator.NAVIGATE_FRAGMENT_NO_CACHE, true);
 
         if (currentUserBaseKeyHolder.getCurrentUserBaseKey().key != userId)
         {
-            getNavigator().pushFragment(TimelineFragment.class, b, true);
+            getNavigator().pushFragment(PushableTimelineFragment.class, b, true);
         }
     }
 }

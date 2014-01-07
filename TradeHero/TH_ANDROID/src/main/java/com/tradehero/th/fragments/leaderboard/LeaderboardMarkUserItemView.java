@@ -22,7 +22,7 @@ import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.base.NavigatorActivity;
 import com.tradehero.th.fragments.position.LeaderboardPositionListFragment;
-import com.tradehero.th.fragments.timeline.TimelineFragment;
+import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefCache;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.NumberDisplayUtils;
@@ -324,11 +324,11 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         int userId = leaderboardItem.id;
 
         Bundle b = new Bundle();
-        b.putInt(TimelineFragment.BUNDLE_KEY_SHOW_USER_ID, userId);
+        b.putInt(PushableTimelineFragment.BUNDLE_KEY_SHOW_USER_ID, userId);
 
         if (currentUserBaseKeyHolder != null && currentUserBaseKeyHolder.getCurrentUserBaseKey().key != userId)
         {
-            getNavigator().pushFragment(TimelineFragment.class, b, true);
+            getNavigator().pushFragment(PushableTimelineFragment.class, b, true);
         }
     }
 }
