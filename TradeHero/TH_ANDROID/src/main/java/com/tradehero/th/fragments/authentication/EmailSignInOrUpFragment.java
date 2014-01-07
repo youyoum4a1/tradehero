@@ -29,13 +29,18 @@ abstract public class EmailSignInOrUpFragment extends AuthenticationFragment imp
 
     abstract public boolean areFieldsValid();
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         View view = inflater.inflate(getDefaultViewId(), container, false);
+        inflateStubs(view);
+
         initSetup(view);
         setHasOptionsMenu(true);
         return view;
+    }
+
+    protected void inflateStubs(View view)
+    {
     }
 
     @Override public void notifyValidation(ValidationMessage message)

@@ -13,11 +13,13 @@ import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewStub;
 import android.widget.Button;
 import android.widget.EditText;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
@@ -26,6 +28,7 @@ import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.auth.AuthenticationMode;
 import com.tradehero.th.auth.EmailAuthenticationProvider;
 import com.tradehero.th.base.Application;
+import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.base.NavigatorActivity;
 import com.tradehero.th.base.THUser;
@@ -38,10 +41,9 @@ import com.tradehero.th.widget.MatchingPasswordText;
 import com.tradehero.th.widget.ServerValidatedEmailText;
 import com.tradehero.th.widget.ServerValidatedUsernameText;
 import com.tradehero.th.widget.ValidatedPasswordText;
+import java.util.Map;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.util.Map;
 
 public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View.OnClickListener
 {
@@ -66,11 +68,6 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
     private int mImagesize = 0;
     private Context mContext;
     private static final int REQUEST_GALLERY = 111;
-
-    @Override public void onCreate(Bundle savedInstanceState)
-    {
-        super.onCreate(savedInstanceState);
-    }
 
     @Override public int getDefaultViewId()
     {
@@ -112,7 +109,6 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
     {
         Bundle args = getArguments();
         editCurrentUser = args != null && args.containsKey(BUNDLE_KEY_EDIT_CURRENT_USER) && args.getBoolean(BUNDLE_KEY_EDIT_CURRENT_USER);
-        showButtonBack = args != null && args.containsKey(BUNDLE_KEY_SHOW_BUTTON_BACK) && args.getBoolean(BUNDLE_KEY_SHOW_BUTTON_BACK);
 
         View view = super.onCreateView(inflater, container, savedInstanceState);
 
@@ -124,8 +120,17 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
         return view;
     }
 
+    @Override protected void inflateStubs(View view)
+    {
+        super.inflateStubs(view);
+        ((ViewStub) view.findViewById(R.id.profile_info_stub)).inflate();
+    }
+
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
+        Bundle args = getArguments();
+        showButtonBack = args != null && args.containsKey(BUNDLE_KEY_SHOW_BUTTON_BACK) && args.getBoolean(BUNDLE_KEY_SHOW_BUTTON_BACK);
+
         ActionBar actionBar = getSherlockActivity().getSupportActionBar();
         if (showButtonBack)
         {
@@ -137,6 +142,24 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
         }
         actionBar.setDisplayHomeAsUpEnabled(showButtonBack);
         super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override public boolean onOptionsItemSelected(MenuItem item)
+    {
+        switch (item.getItemId())
+        {
+            case android.R.id.home:
+                if (getActivity() instanceof DashboardNavigatorActivity)
+                {
+                    ((DashboardNavigatorActivity) getActivity()).getDashboardNavigator().popFragment();
+                }
+                else
+                {
+                    THLog.e(TAG, "Activity is not a DashboardNavigatorActivity", new Exception());
+                }
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override public void onClick(View view)
