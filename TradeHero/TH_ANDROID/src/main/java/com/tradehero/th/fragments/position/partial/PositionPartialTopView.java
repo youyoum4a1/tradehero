@@ -214,11 +214,17 @@ public class PositionPartialTopView extends LinearLayout
     {
         if (stockLogo != null)
         {
-            if (securityCompactDTO != null)
+            if (securityCompactDTO != null && securityCompactDTO.imageBlobUrl != null)
             {
                 picasso.get()
                         .load(securityCompactDTO.imageBlobUrl)
                         .transform(new WhiteToTransparentTransformation())
+                        .into(stockLogo);
+            }
+            else if (securityCompactDTO != null)
+            {
+                picasso.get()
+                        .load(securityCompactDTO.getExchangeLogoId())
                         .into(stockLogo);
             }
             else
