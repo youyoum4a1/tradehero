@@ -29,6 +29,7 @@
 
   <modules>
     <module>TradeHero/TH_ANDROID</module>
+    <module>facebook-android-sdk/facebook</module>
   </modules>
 
   <organization>
