@@ -100,6 +100,10 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         lbmuProfilePicture = (ImageView) findViewById(R.id.leaderboard_user_item_profile_picture);
         lbmuHeroQuotient = (TextView) findViewById(R.id.leaderboard_user_item_hq);
         lbmuFoF = (MarkdownTextView) findViewById(R.id.leaderboard_user_item_fof);
+        if (lbmuFoF != null)
+        {
+            DaggerUtils.inject(lbmuFoF);
+        }
         lbmuPositionInfo = (ImageView) findViewById(R.id.leaderboard_user_item_info);
 
         // expanding part
@@ -135,7 +139,6 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         super.onAttachedToWindow();
         if (lbmuFoF != null)
         {
-            DaggerUtils.inject(lbmuFoF);
             lbmuFoF.setMovementMethod(LinkMovementMethod.getInstance());
         }
         if (lbmuPositionInfo != null)
