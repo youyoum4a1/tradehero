@@ -44,27 +44,6 @@
   <string name="first_last_name_display">%1$s %2$s</string> <!-- It is good to have it here as other localistations may swap those -->
   <string name="date_format_gmt_day_and_time">dd MMM HH:mm \'GMT\'</string>
 
-  <!-- What's Trending -->
-  <string name="header_trending">What\'s Trending</string>
-  <string name="positive_prefix">▲</string>
-  <string name="negative_prefix">▼</string>
-  <string name="zero_prefix"></string>
-  <string name="search_stock_hint">Select to search &gt;</string>
-  <string name="search_stock_nothing_yet">Nothing to show.\nType in the search field</string>
-
-  <!-- What's Trending filters -->
-  <string name="trending_filter_basic_title">Trending Securities</string>
-  <string name="trending_filter_basic_description">what people are buying and selling on TradeHero</string>
-  <string name="trending_filter_volume_title">Unusual Volumes</string>
-  <string name="trending_filter_volume_description">previous day volume &gt; average daily volume</string>
-  <string name="trending_filter_price_title">Price Action</string>
-  <string name="trending_filter_price_description">previous day close &gt; 50 day moving average</string>
-  <string name="trending_filter_all_title">All Securities</string>
-  <string name="trending_filter_all_description"> </string>
-  <string name="trending_filter_exchange_all">All Exchanges</string>
-
-  <!-- What's Trending Details -->
-
   <!-- What's Trending Details - StockInfo -->
   <string name="previous_close">Prev. Close</string>
   <string name="open">Open</string>
