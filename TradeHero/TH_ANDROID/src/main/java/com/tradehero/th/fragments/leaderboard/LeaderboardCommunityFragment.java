@@ -109,7 +109,9 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
     //<editor-fold desc="ActionBar">
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
-        int defaultSortFlags = LeaderboardSortType.HeroQuotient.getFlag() | LeaderboardSortType.Roi.getFlag();
+        int defaultSortFlags =
+                //LeaderboardSortType.HeroQuotient.getFlag() |
+                LeaderboardSortType.Roi.getFlag();
         getArguments().putInt(LeaderboardSortType.BUNDLE_FLAG, defaultSortFlags);
 
         super.onCreateOptionsMenu(menu, inflater);

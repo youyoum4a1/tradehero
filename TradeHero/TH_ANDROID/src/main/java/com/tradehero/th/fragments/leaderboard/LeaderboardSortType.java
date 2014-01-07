@@ -7,7 +7,7 @@ public enum LeaderboardSortType
 {
 
     Roi(R.string.roi, R.drawable.sort_roi, R.drawable.sort_roi_white, R.layout.lbmu_item_roi_mode),
-    HeroQuotient(R.string.hero_quotient, R.drawable.sort_hq, R.drawable.sort_hq_white, R.layout.lbmu_item_hq_mode),
+    //HeroQuotient(R.string.hero_quotient, R.drawable.sort_hq, R.drawable.sort_hq_white, R.layout.lbmu_item_hq_mode),
     Followers(R.string.followers, R.drawable.sort_followers, R.drawable.sort_followers_white, R.layout.lbmu_item_followers_mode),
     Comments(R.string.comments, R.drawable.sort_comments, R.drawable.sort_comments_white, R.layout.lbmu_item_comments_mode),
     SharpeRatio(R.string.sharpe_ratio, R.drawable.sort_sharpe, R.drawable.sort_sharpe_white, R.layout.lbmu_item_sharpe_mode);
@@ -15,7 +15,7 @@ public enum LeaderboardSortType
     public static final String BUNDLE_FLAG = "LEADERBOARD_SORT_FLAG";
     public static final String TAG = "LEADERBOARD_SORT_TYPE";
 
-    public static LeaderboardSortType DefaultSortType = HeroQuotient;
+    public static LeaderboardSortType DefaultSortType = Roi;
 
     private static final int SORT_ROI = 0x1;
     private static final int SORT_HERO_QUOTIENT = 0x2;
@@ -31,7 +31,7 @@ public enum LeaderboardSortType
     static
     {
         Roi.flag = SORT_ROI;
-        HeroQuotient.flag = SORT_HERO_QUOTIENT;
+        //HeroQuotient.flag = SORT_HERO_QUOTIENT;
         Followers.flag = SORT_FOLLOWERS;
         Comments.flag = SORT_COMMENTS;
         SharpeRatio.flag = SORT_SHARPE_RATIO;
