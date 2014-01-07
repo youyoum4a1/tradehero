@@ -116,7 +116,7 @@ public class SpinnerIconAdapter extends ArrayAdapter<CharSequence>
         return parentView;
     }
 
-    private void updateText(View container, int position)
+    protected void updateText(View container, int position)
     {
         View textView = container.findViewById(textViewResourceId);
         if (textView != null)
@@ -125,7 +125,7 @@ public class SpinnerIconAdapter extends ArrayAdapter<CharSequence>
         }
     }
 
-    private void updateIcon(View container, int position)
+    protected void updateIcon(View container, int position)
     {
         if (icons != null)
         {
@@ -137,7 +137,7 @@ public class SpinnerIconAdapter extends ArrayAdapter<CharSequence>
         }
     }
 
-    private void updateDropDownIcon(View container, int position)
+    protected void updateDropDownIcon(View container, int position)
     {
         if (icons != null)
         {

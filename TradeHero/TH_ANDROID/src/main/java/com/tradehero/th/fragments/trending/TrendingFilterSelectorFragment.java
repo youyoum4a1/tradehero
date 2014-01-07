@@ -211,12 +211,8 @@ abstract public class TrendingFilterSelectorFragment extends SherlockFragment
         if (mExchangeSelection != null && dropDownTexts != null)
         {
             // TODO make sure we do not need to check for null before
-            mExchangeSelectionAdapter = new SpinnerIconAdapter(
+            mExchangeSelectionAdapter = new TrendingFilterSpinnerIconAdapter(
                     getActivity(),
-                    R.layout.trending_filter_spinner_item,
-                    R.id.trending_filter_spinner_item_label,
-                    R.id.trending_filter_spinner_item_icon,
-                    R.id.trending_filter_spinner_item_icon,
                     getDropDownTextsArray(),
                     getDropDownIconsArray(),
                     getDropDownIconsArray());
