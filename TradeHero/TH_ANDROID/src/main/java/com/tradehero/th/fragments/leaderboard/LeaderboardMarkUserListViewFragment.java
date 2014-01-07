@@ -19,6 +19,7 @@ import com.tradehero.th.utils.Constants;
 import java.util.Date;
 import java.util.List;
 import javax.inject.Inject;
+import javax.inject.Provider;
 import org.ocpsoft.prettytime.PrettyTime;
 
 /** Created with IntelliJ IDEA. User: tho Date: 10/14/13 Time: 12:34 PM Copyright (c) TradeHero */
@@ -26,7 +27,7 @@ public class LeaderboardMarkUserListViewFragment extends BaseLeaderboardFragment
         implements SortTypeChangedListener, WithTutorial
 {
 
-    @Inject protected PrettyTime prettyTime;
+    @Inject protected Provider<PrettyTime> prettyTime;
 
     private LeaderboardMarkUserListAdapter leaderboardMarkUserListAdapter;
     private LeaderboardMarkUserListView leaderboardMarkUserListView;
@@ -91,7 +92,7 @@ public class LeaderboardMarkUserListViewFragment extends BaseLeaderboardFragment
                 Date markingTime = leaderboardMarkUserLoader.getMarkUtc();
                 if (markingTime != null && leaderboardMarkUserMarkingTime != null)
                 {
-                    leaderboardMarkUserMarkingTime.setText(prettyTime.format(markingTime));
+                    leaderboardMarkUserMarkingTime.setText(prettyTime.get().format(markingTime));
                 }
                 leaderboardMarkUserListView.onRefreshComplete();
             }

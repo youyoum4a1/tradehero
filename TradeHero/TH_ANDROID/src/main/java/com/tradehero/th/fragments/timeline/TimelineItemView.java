@@ -40,6 +40,7 @@ import dagger.Lazy;
 import java.util.Date;
 import java.util.List;
 import javax.inject.Inject;
+import javax.inject.Provider;
 import org.ocpsoft.prettytime.PrettyTime;
 import retrofit.Callback;
 import retrofit.client.Response;
@@ -55,6 +56,7 @@ public class TimelineItemView extends LinearLayout implements
     private ImageView vendorImage;
     private TextView time;
 
+    @Inject protected Provider<PrettyTime> prettyTime;
     @Inject protected CurrentUserBaseKeyHolder currentUserBaseKeyHolder;
     @Inject protected Lazy<Picasso> picasso;
     @Inject protected Lazy<UserTimelineService> userTimelineService;
@@ -175,8 +177,7 @@ public class TimelineItemView extends LinearLayout implements
         content.setText(item.getText());
 
         // timeline time
-        PrettyTime prettyTime = new PrettyTime(new Date());
-        time.setText(prettyTime.format(item.getDate()));
+        time.setText(prettyTime.get().formatUnrounded(item.getDate()));
 
         // vendor logo
         SecurityMediaDTO firstMediaWithLogo = item.getFirstMediaWithLogo();
