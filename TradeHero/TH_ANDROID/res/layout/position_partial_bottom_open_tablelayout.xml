@@ -23,13 +23,6 @@
         <TextView
                 android:id="@+id/unrealised_pl_value"
                 style="@style/TH.SmallValue"
-                android:text="US $12,442"
-                />
-
-        <TextView
-                android:id="@+id/overall_roi_value"
-                style="@style/TH.SmallValue"
-                android:text="+3.14%"
                 />
 
     </TableRow>
