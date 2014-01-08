@@ -74,13 +74,11 @@ public class TimelineListLoader extends PaginationListLoader<TimelineItem>
 
     @Override protected void onLoadPrevious(TimelineItem startItem)
     {
-        if (startItem == null)
+        resetQuery();
+        if (startItem != null)
         {
-            return;
+            upperItemId = startItem.getTimelineItemId();
         }
-
-        lowerItemId = null;
-        upperItemId = startItem.getTimelineItemId();
         forceLoad();
     }
 

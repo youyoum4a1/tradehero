@@ -71,4 +71,14 @@ public class TimelineAdapter extends LoaderDTOAdapter<TimelineItem, TimelineItem
     {
         getLoader().loadPrevious();
     }
+
+    /**
+     * force to render header of the listview
+     * somewhat hacKy :v
+     * @return
+     */
+    @Override public boolean isEmpty()
+    {
+        return false;
+    }
 }

@@ -142,4 +142,18 @@ public class StepView extends FrameLayout
     {
         public View provideView(int step);
     }
+
+    protected List<View> getViews()
+    {
+        return views;
+    }
+
+    protected View getCurrentStep()
+    {
+        if (views != null && currentStep < views.size())
+        {
+            return views.get(currentStep);
+        }
+        return null;
+    }
 }

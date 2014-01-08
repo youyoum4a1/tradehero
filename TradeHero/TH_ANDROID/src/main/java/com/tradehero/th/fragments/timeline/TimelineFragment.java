@@ -1,5 +1,6 @@
 package com.tradehero.th.fragments.timeline;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +14,7 @@ import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.LoaderDTOAdapter;
+import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.local.TimelineItem;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.OwnedPortfolioIdList;
@@ -52,7 +54,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
 
     private TimelineAdapter timelineAdapter;
     private TimelineListView timelineListView;
-    private StepView stepView;
+    private UserProfileStepView stepView;
     private ActionBar actionBar;
 
     protected UserBaseKey shownUserBaseKey;
@@ -74,6 +76,15 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     {
         this.timelineListView = (TimelineListView) view.findViewById(R.id.pull_refresh_list);
         this.timelineListView.setEmptyView(view.findViewById(android.R.id.empty));
+
+        // TODO retain state for stepView
+        stepView = new UserProfileStepView(getActivity(), getActivity().getLayoutInflater());
+        stepView.setStepProvider(this);
+
+        if (this.timelineListView != null && this.timelineListView.getRefreshableView().getHeaderViewsCount() == 1)
+        {
+            timelineListView.addHeaderView(stepView);
+        }
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
@@ -138,6 +149,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         timelineListView.setOnRefreshListener(timelineAdapter);
         timelineListView.setOnScrollListener(timelineAdapter);
         timelineListView.setOnLastItemVisibleListener(timelineAdapter);
+        timelineListView.setRefreshing();
 
         if (userBaseKey != null)
         {
@@ -173,15 +185,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
 
     protected void updateView()
     {
-        // TODO retain state for stepView
-        stepView = new StepView(getActivity(), getActivity().getLayoutInflater());
-        stepView.setStepProvider(this);
-
-        if (this.timelineListView != null && this.timelineListView.getRefreshableView().getHeaderViewsCount() == 1)
-        {
-            timelineListView.addHeaderView(stepView);
-        }
-
+        stepView.display(shownProfile);
         if (this.actionBar != null)
         {
             this.actionBar.setTitle(UserBaseDTOUtil.getLongDisplayName(getActivity(), shownProfile));
@@ -337,6 +341,31 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     @Override public boolean isTabBarVisible()
     {
         return false;
+    }
+
+    private static class UserProfileStepView extends StepView implements DTOView<UserProfileDTO>
+    {
+        public UserProfileStepView(Context context, LayoutInflater layoutInflater, View startingView)
+        {
+            super(context, layoutInflater, startingView);
+        }
+
+        public UserProfileStepView(Context context, LayoutInflater layoutInflater)
+        {
+            super(context, layoutInflater);
+        }
+
+        @Override public void display(UserProfileDTO shownProfile)
+        {
+            View currentStep = getCurrentStep();
+            if (currentStep != null)
+            {
+                if (currentStep instanceof DTOView)
+                {
+                    ((DTOView<UserProfileDTO>) currentStep).display(shownProfile);
+                }
+            }
+        }
     }
     //</editor-fold>
 }
