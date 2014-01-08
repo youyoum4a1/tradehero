@@ -37,11 +37,8 @@ public abstract class PaginationListLoader<D> extends ListLoader<D>
             return;
         }
         currentLoadMode = LoadMode.NEXT;
-
-        if (!items.isEmpty())
-        {
-            onLoadNext(items.get(0));
-        }
+        D oldestItem = items.isEmpty() ? null : items.get(0);
+        onLoadPrevious(oldestItem);
     }
 
     public void loadPrevious()
@@ -51,12 +48,10 @@ public abstract class PaginationListLoader<D> extends ListLoader<D>
             onBusy();
             return;
         }
-        currentLoadMode = LoadMode.PREVIOUS;
 
-        if (!items.isEmpty())
-        {
-            onLoadPrevious(items.get(items.size() - 1));
-        }
+        currentLoadMode = LoadMode.PREVIOUS;
+        D oldestItem = items.isEmpty() ? null : items.get(items.size() - 1);
+        onLoadPrevious(oldestItem);
     }
 
     @Override public void deliverResult(List<D> data)
