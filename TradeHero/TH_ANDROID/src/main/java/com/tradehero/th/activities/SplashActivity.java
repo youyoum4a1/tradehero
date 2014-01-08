@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import com.actionbarsherlock.app.SherlockActivity;
+import com.crashlytics.android.Crashlytics;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
 import com.tradehero.th.base.THUser;
@@ -21,6 +22,8 @@ public class SplashActivity extends SherlockActivity
     @Override protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        Crashlytics.start(this);
+
         setContentView(R.layout.splash_screen);
     }
 
