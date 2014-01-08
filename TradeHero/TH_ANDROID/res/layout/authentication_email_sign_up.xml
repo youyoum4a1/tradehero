@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res/com.tradehero.th"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
@@ -24,13 +23,9 @@
       android:focusableInTouchMode="true"
       android:gravity="top">
 
-    <ViewStub
-        android:id="@+id/profile_info_stub"
-        android:inflatedId="@+id/profile_info"
-        android:layout="@layout/profile_info"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-      />
+    <include
+        android:id="@+id/profile_info"
+        layout="@layout/profile_info" />
 
     <Button
         android:id="@+id/authentication_sign_up_button"

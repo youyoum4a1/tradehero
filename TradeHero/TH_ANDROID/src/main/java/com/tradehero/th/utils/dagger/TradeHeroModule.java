@@ -63,6 +63,7 @@ import com.tradehero.th.fragments.security.YahooNewsFragment;
 import com.tradehero.th.fragments.settings.AboutFragment;
 import com.tradehero.th.fragments.settings.SettingsFragment;
 import com.tradehero.th.fragments.settings.SettingsPayPalFragment;
+import com.tradehero.th.fragments.settings.SettingsProfileFragment;
 import com.tradehero.th.fragments.settings.SettingsTransactionHistoryFragment;
 import com.tradehero.th.fragments.social.follower.FollowerListItemView;
 import com.tradehero.th.fragments.social.follower.FollowerManagerFragment;
@@ -156,6 +157,7 @@ import org.ocpsoft.prettytime.PrettyTime;
 
                 SettingsTransactionHistoryFragment.class,
                 SettingsPayPalFragment.class,
+                SettingsProfileFragment.class,
                 SettingsFragment.class,
                 AboutFragment.class,
                 EmailSignInFragment.class,

@@ -6,12 +6,18 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
+import com.tradehero.th.api.form.UserFormFactory;
+import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.widget.MatchingPasswordText;
 import com.tradehero.th.widget.ServerValidatedEmailText;
 import com.tradehero.th.widget.ServerValidatedUsernameText;
 import com.tradehero.th.widget.ValidatedPasswordText;
 import com.tradehero.th.widget.ValidationListener;
+import java.util.Map;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  * Created by xavier on 1/7/14.
@@ -151,5 +157,52 @@ public class ProfileInfoView extends LinearLayout
         {
             displayName.removeAllListeners();
         }
+    }
+
+    public void setNullOnFields()
+    {
+        email = null;
+        password = null;
+        confirmPassword = null;
+        displayName = null;
+        firstName = null;
+        lastName = null;
+        progressDialog = null;
+    }
+
+    public void populateUserFormMap(Map<String, Object> map)
+    {
+        map.put(UserFormFactory.KEY_EMAIL, email.getText());
+        map.put(UserFormFactory.KEY_PASSWORD, password.getText());
+        map.put(UserFormFactory.KEY_PASSWORD_CONFIRM, confirmPassword.getText());
+        map.put(UserFormFactory.KEY_DISPLAY_NAME, displayName.getText());
+        map.put(UserFormFactory.KEY_FIRST_NAME, firstName.getText());
+        map.put(UserFormFactory.KEY_LAST_NAME, lastName.getText());
+        // TODO add profile picture
+    }
+
+    public void populate(UserBaseDTO userBaseDTO)
+    {
+        this.firstName.setText(userBaseDTO.firstName);
+        this.lastName.setText(userBaseDTO.lastName);
+        this.displayName.setText(userBaseDTO.displayName);
+        this.displayName.setOriginalUsernameValue(userBaseDTO.displayName);
+    }
+
+    public void populateCredentials(JSONObject credentials)
+    {
+        String emailValue = null, passwordValue = null;
+        try
+        {
+            emailValue = credentials.getString("email");
+            passwordValue = credentials.getString("password");
+        }
+        catch (JSONException e)
+        {
+            THLog.e(TAG, "populateCurrentUser", e);
+        }
+        this.email.setText(emailValue);
+        this.password.setText(passwordValue);
+        this.confirmPassword.setText(passwordValue);
     }
 }

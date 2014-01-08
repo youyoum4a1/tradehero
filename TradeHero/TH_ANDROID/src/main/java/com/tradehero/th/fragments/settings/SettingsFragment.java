@@ -555,9 +555,8 @@ public class SettingsFragment extends PreferenceFragment
     private void handleProfileClicked()
     {
         Bundle bundle = new Bundle();
-        bundle.putBoolean(EmailSignUpFragment.BUNDLE_KEY_EDIT_CURRENT_USER, true);
-        bundle.putBoolean(EmailSignUpFragment.BUNDLE_KEY_SHOW_BUTTON_BACK, true);
-        getNavigator().pushFragment(EmailSignUpFragment.class, bundle);
+        bundle.putBoolean(SettingsProfileFragment.BUNDLE_KEY_SHOW_BUTTON_BACK, true);
+        getNavigator().pushFragment(SettingsProfileFragment.class, bundle);
     }
 
     private void handlePaypalClicked()
