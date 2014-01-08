@@ -83,7 +83,7 @@ public class ProfileCompactView extends RelativeLayout implements DTOView<UserPr
 
     @Override public void display(UserProfileDTO dto)
     {
-        if (dto.picture == null)
+        if (dto == null || dto.picture == null)
         {
             return;
         }
