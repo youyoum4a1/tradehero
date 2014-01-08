@@ -254,12 +254,12 @@ public class SecurityItemView extends RelativeLayout implements DTOView<Security
         if (securityCompactDTO.pc50DMA > 0)
         {
             //profitIndicator.setText(getContext().getString(R.string.positive_prefix));
-            profitIndicator.setText(R.string.positive_prefix);
+            profitIndicator.setText(R.string.arrow_prefix_positive);
         }
         else if (securityCompactDTO.pc50DMA < 0)
         {
             //profitIndicator.setText(getContext().getString(R.string.negative_prefix));
-            profitIndicator.setText(R.string.negative_prefix);
+            profitIndicator.setText(R.string.arrow_prefix_negative);
         }
 
         profitIndicator.setTextColor(ColorUtils.getColorForPercentage(((float) securityCompactDTO.pc50DMA) / 5f));

@@ -188,14 +188,14 @@ public class SearchPeopleItemView extends FrameLayout implements DTOView<UserBas
 
                 if (roi >= 1)
                 {
-                    profitIndicatorResId = R.string.positive_prefix;
+                    profitIndicatorResId = R.string.arrow_prefix_positive;
                     profitIndicatorColor = Color.GREEN;
                     stockPercentageText = String.format("%.2f", roi) + "%";
                     stockPercentageColor = Color.GREEN;
                 }
                 else
                 {
-                    profitIndicatorResId = R.string.negative_prefix;
+                    profitIndicatorResId = R.string.arrow_prefix_negative;
                     roi = Math.abs(roi);
                     stockPercentageText = String.format("%.2f", roi) + "%";
                 }

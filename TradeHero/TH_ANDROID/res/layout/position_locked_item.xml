@@ -61,9 +61,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:maxLines="1"
-                    android:textSize="10sp"
                     android:layout_alignParentTop="true"
-                    android:text="+3.15%"
                     />
         </LinearLayout>
         <TableLayout

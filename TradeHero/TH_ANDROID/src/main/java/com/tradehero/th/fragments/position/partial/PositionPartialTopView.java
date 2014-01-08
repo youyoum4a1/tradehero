@@ -277,11 +277,11 @@ public class PositionPartialTopView extends LinearLayout
                 }
                 else if (securityCompactDTO.pc50DMA > 0)
                 {
-                    stockMovementIndicator.setText(R.string.positive_prefix);
+                    stockMovementIndicator.setText(R.string.arrow_prefix_positive);
                 }
                 else if (securityCompactDTO.pc50DMA < 0)
                 {
-                    stockMovementIndicator.setText(R.string.negative_prefix);
+                    stockMovementIndicator.setText(R.string.arrow_prefix_negative);
                 }
                 stockMovementIndicator.setTextColor(ColorUtils.getColorForPercentage(securityCompactDTO.pc50DMA / 5));
             }

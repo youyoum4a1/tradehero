@@ -68,15 +68,15 @@
   <string name="store_billing_restoring_purchase_window_title">Restoring Your Purchases</string>
   <string name="store_billing_restoring_purchase_window_message">Please Hold&#8230;</string>
 
-  <string name="store_billing_report_api_error_window_title">This is embarassing</string>
+  <string name="store_billing_report_api_error_window_title">This is embarrassing</string>
   <string name="store_billing_report_api_error_window_description">We got an error when reporting your purchase to our TradeHero servers. You may want to relaunch TradeHero</string>
   <string name="store_billing_report_api_error_cancel">OK</string>
 
-  <string name="store_billing_load_info_error_window_title">This is embarassing</string>
+  <string name="store_billing_load_info_error_window_title">This is embarrassing</string>
   <string name="store_billing_load_info_error_window_description">We got an error loading data required by TradeHero store. You may restart the application.</string>
   <string name="store_billing_load_info_error_cancel">Okay</string>
 
-  <string name="store_billing_unknown_error_window_title">An unidentified error occured</string>
+  <string name="store_billing_unknown_error_window_title">An unidentified error occurred</string>
   <string name="store_billing_unknown_error_window_description">Care to let us know what happened?</string>
   <string name="store_billing_unknown_error_ok">Sure</string>
   <string name="store_billing_unknown_error_cancel">No need</string>
@@ -164,8 +164,8 @@
   <string name="google_play_send_support_email_consume_fail_cancel">Never Mind</string>
 
   <string name="google_play_consumed_purchase_title">Purchased</string>
-  <string name="google_play_consumed_purchase_message">Your purchase went through ok</string>
-  <string name="google_play_consumed_purchase_message_info">Your "%s" went through ok</string>
+  <string name="google_play_consumed_purchase_message">Your purchase went through OK</string>
+  <string name="google_play_consumed_purchase_message_info">Your "%s" went through OK</string>
   <string name="google_play_consumed_purchase_cancel">Okay</string>
 
   <string name="google_play_purchase_restored_none_title">No Purchase To Restore</string>

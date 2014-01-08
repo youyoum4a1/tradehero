@@ -3,6 +3,8 @@ package com.tradehero.th.utils;
 import android.content.Context;
 import android.content.res.Resources;
 import com.tradehero.th.R;
+import com.tradehero.th.base.Application;
+import java.io.StringWriter;
 import javax.inject.Inject;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/17/13 Time: 4:45 PM To change this template use File | Settings | File Templates. */
@@ -21,6 +23,30 @@ public class NumberDisplayUtils
     private static final String[] FALLBACK_SUFFIXES = {"", "k", "M", "B", "Tr"};
 
     @Inject static public Context context;
+
+    public static int getPlusMinusPrefixResId(double value)
+    {
+        return value > 0 ? R.string.sign_prefix_positive :
+                value < 0 ? R.string.sign_prefix_negative :
+                        R.string.sign_prefix_zero;
+    }
+
+    public static String getPlusMinusPrefix(double value)
+    {
+        return Application.getResourceString(getPlusMinusPrefixResId(value));
+    }
+
+    public static int getArrowPrefixResId(double value)
+    {
+        return value > 0 ? R.string.arrow_prefix_positive :
+                value < 0 ? R.string.arrow_prefix_negative :
+                R.string.arrow_prefix_zero;
+    }
+
+    public static String getArrowPrefix(double value)
+    {
+        return Application.getResourceString(getArrowPrefixResId(value));
+    }
 
     public static String formatWithRelevantDigits(double number, int relevantDigits)
     {

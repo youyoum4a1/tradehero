@@ -5,6 +5,7 @@ import android.widget.TextView;
 import com.tradehero.th.R;
 import com.tradehero.th.api.position.PositionInPeriodDTO;
 import com.tradehero.th.api.position.PositionDTO;
+import com.tradehero.th.base.Application;
 
 /**
  * Created by julien on 31/10/13
@@ -107,18 +108,7 @@ public class PositionUtils
     {
         if (positionDTO != null)
         {
-            Double roiSinceInception = positionDTO.getROISinceInception();
-            if (roiSinceInception == null)
-            {
-                textView.setText(R.string.na);
-                textView.setTextColor(textView.getContext().getResources().getColor(R.color.black));
-            }
-            else
-            {
-                textView.setText(String.format("%+,.2f%%", roiSinceInception * 100.0));
-                textView.setTextColor(
-                        ColorUtils.getColorForPercentage((float) roiSinceInception.doubleValue() * PERCENT_STRETCHING_FOR_COLOR));
-            }
+            setROILook(textView, positionDTO.getROISinceInception());
         }
     }
 
@@ -127,18 +117,24 @@ public class PositionUtils
 
         if (positionInPeriodDTO != null)
         {
-            Double roiInPeriod = positionInPeriodDTO.getROIInPeriod();
-            if (roiInPeriod == null)
-            {
-                textView.setText(R.string.na);
-                textView.setTextColor(textView.getContext().getResources().getColor(R.color.black));
-            }
-            else
-            {
-                textView.setText(String.format("%+,.2f%%", roiInPeriod * 100.0));
-                textView.setTextColor(
-                        ColorUtils.getColorForPercentage((float) roiInPeriod.doubleValue() * PERCENT_STRETCHING_FOR_COLOR));
-            }
+            setROILook(textView, positionInPeriodDTO.getROIInPeriod());
+        }
+    }
+
+    private static void setROILook(TextView textView, Double roiValue)
+    {
+        if (roiValue == null)
+        {
+            textView.setText(R.string.na);
+            textView.setTextColor(textView.getContext().getResources().getColor(R.color.black));
+        }
+        else
+        {
+            String roiText = NumberDisplayUtils.getArrowPrefix(roiValue);
+            roiText += NumberDisplayUtils.formatWithRelevantDigits(Math.abs(roiValue * 100.0), 3) + "%";
+            textView.setText(roiText);
+            textView.setTextColor(
+                    ColorUtils.getColorForPercentage(roiValue.floatValue() * PERCENT_STRETCHING_FOR_COLOR));
         }
     }
 

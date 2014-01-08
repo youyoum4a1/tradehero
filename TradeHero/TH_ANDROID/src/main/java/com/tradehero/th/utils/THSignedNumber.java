@@ -70,9 +70,9 @@ public class THSignedNumber
     // Private
     private String signedFormattedPercentage()
     {
-        sign = upDownSignFromNumber();
+        sign = NumberDisplayUtils.getArrowPrefix(number);
         precision = precisionFromNumber();
-        color = colorFromNumber();
+        color = ColorUtils.getColorResourceForNumber(number);
         String numberFormat = "%s%." + precision + "f";
 
         return String.format(numberFormat,
@@ -82,57 +82,15 @@ public class THSignedNumber
 
     private String signedFormattedMoney()
     {
-        sign = plusMinusSignFromNumber();
+        sign = NumberDisplayUtils.getPlusMinusPrefix(number);
         precision = precisionFromNumber();
-        color = colorFromNumber();
+        color = ColorUtils.getColorResourceForNumber(number);
         String numberFormat = "%s%s %." + precision + "f";
 
         return String.format(numberFormat,
                 sign,
                 currency,
                 Math.abs(number));
-    }
-
-    private String upDownSignFromNumber()
-    {
-        String sign = "";
-        if (number > 0)
-        {
-            sign = "▲";
-        }
-        else if (number < 0)
-        {
-            sign = "▼";
-        }
-        return sign;
-    }
-
-    private String plusMinusSignFromNumber()
-    {
-        String sign = "";
-        if (number > 0)
-        {
-            sign = "+";
-        }
-        else if (number < 0)
-        {
-            sign = "-";
-        }
-        return sign;
-    }
-
-    private int colorFromNumber()
-    {
-        int color = R.color.black;
-        if (number > 0)
-        {
-            color = R.color.number_green;
-        }
-        else if (number < 0)
-        {
-            color = R.color.number_red;
-        }
-        return color;
     }
 
     private int precisionFromNumber()

@@ -24,13 +24,7 @@ public class ColorUtils
 
     public static int getColorResourceForNumber(double n)
     {
-        if (n == 0.0)
-            return  R.color.black;
-
-        if (n < 0.0)
-            return R.color.number_red;
-        else
-            return R.color.number_green;
+        return n < 0 ? R.color.number_red : n > 0 ? R.color.number_green : R.color.black;
     }
 
 
