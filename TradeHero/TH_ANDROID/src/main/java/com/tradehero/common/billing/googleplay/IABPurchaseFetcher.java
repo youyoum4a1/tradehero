@@ -10,6 +10,7 @@ import com.tradehero.common.billing.googleplay.exceptions.IABException;
 import com.tradehero.common.billing.googleplay.exceptions.IABExceptionFactory;
 import com.tradehero.common.billing.googleplay.exceptions.IABVerificationFailedException;
 import com.tradehero.common.utils.THLog;
+import com.tradehero.th.base.Application;
 import dagger.Lazy;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -115,7 +116,7 @@ abstract public class IABPurchaseFetcher<
     {
         // Query purchase
         THLog.d(TAG, "Querying owned items, item type: " + itemType);
-        THLog.d(TAG, "Package name: " + context.getPackageName());
+        THLog.d(TAG, "Package name: " + Application.context().getPackageName());
         String continueToken = null;
         HashMap<IABSKUType, IABPurchaseType> purchasesMap = new HashMap<>();
 
