@@ -2,6 +2,7 @@ package com.tradehero.th.activities;
 
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import com.actionbarsherlock.app.SherlockActivity;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
@@ -9,8 +10,6 @@ import com.tradehero.th.base.THUser;
 import com.tradehero.th.utils.TestFlightUtils;
 import java.util.Timer;
 import java.util.TimerTask;
-
-import android.os.Bundle;
 
 public class SplashActivity extends SherlockActivity
 {
