@@ -76,15 +76,6 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     {
         this.timelineListView = (TimelineListView) view.findViewById(R.id.pull_refresh_list);
         this.timelineListView.setEmptyView(view.findViewById(android.R.id.empty));
-
-        // TODO retain state for stepView
-        stepView = new UserProfileStepView(getActivity(), getActivity().getLayoutInflater());
-        stepView.setStepProvider(this);
-
-        if (this.timelineListView != null && this.timelineListView.getRefreshableView().getHeaderViewsCount() == 1)
-        {
-            timelineListView.addHeaderView(stepView);
-        }
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
@@ -117,6 +108,16 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     @Override public void onResume()
     {
         super.onResume();
+
+        // && this.timelineListView.getRefreshableView().getHeaderViewsCount() == 1
+        if (this.timelineListView != null)
+        {
+            timelineListView.getRefreshableView().removeHeaderView(stepView);
+            // TODO retain state for stepView
+            stepView = new UserProfileStepView(getActivity(), getActivity().getLayoutInflater());
+            stepView.setStepProvider(this);
+            timelineListView.getRefreshableView().addHeaderView(stepView);
+        }
 
         UserBaseKey newUserBaseKey =
                 new UserBaseKey(getArguments().getInt(BUNDLE_KEY_SHOW_USER_ID));

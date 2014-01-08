@@ -150,7 +150,7 @@ public class StepView extends FrameLayout
 
     protected View getCurrentStep()
     {
-        if (views != null && currentStep < views.size())
+        if (views != null && currentStep < views.size() && currentStep >= 0)
         {
             return views.get(currentStep);
         }
