@@ -8,6 +8,8 @@ import retrofit.RetrofitError;
 import retrofit.http.Body;
 import retrofit.http.GET;
 import retrofit.http.POST;
+import retrofit.http.PUT;
+import retrofit.http.Path;
 import retrofit.http.Query;
 
 /** Created with IntelliJ IDEA. User: tho Date: 12/3/13 Time: 5:46 PM Copyright (c) TradeHero */
@@ -21,6 +23,13 @@ public interface WatchlistService
 
     @POST("/watchlistPositions")
     void createWatchlistEntry(
+            @Body WatchlistPositionFormDTO watchlistPositionFormDTO,
+            Callback<WatchlistPositionDTO> callback
+    );
+
+    @PUT("/watchlistPositions/{position}")
+    void updateWatchlistEntry(
+            @Path("position") int position,
             @Body WatchlistPositionFormDTO watchlistPositionFormDTO,
             Callback<WatchlistPositionDTO> callback
     );

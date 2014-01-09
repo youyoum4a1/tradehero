@@ -26,7 +26,7 @@ import com.tradehero.th.misc.callback.THResponse;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.service.WatchlistService;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
-import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
+import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
 import dagger.Lazy;
 import javax.inject.Inject;
 
@@ -48,7 +48,7 @@ public class AddToWatchListFragment extends DashboardFragment
     private DTOCache.GetOrFetchTask<SecurityId, SecurityCompactDTO> compactCacheFetchTask;
 
     @Inject protected Lazy<SecurityCompactCache> securityCompactCache;
-    @Inject protected Lazy<UserWatchlistPositionCache> watchlistPositionCache;
+    @Inject protected Lazy<WatchlistPositionCache> watchlistPositionCache;
     @Inject protected Lazy<WatchlistService> watchlistService;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -98,8 +98,8 @@ public class AddToWatchListFragment extends DashboardFragment
             SecurityCompactDTO securityCompactDTO = securityCompactCache.get().get(securityKeyId);
             if (securityCompactDTO != null)
             {
-                WatchlistPositionFormDTO newWatchPositionItem = new WatchlistPositionFormDTO(securityCompactDTO.id, price, quantity);
-                watchlistService.get().createWatchlistEntry(newWatchPositionItem, new THCallback<WatchlistPositionDTO>()
+                WatchlistPositionFormDTO watchPositionItemForm = new WatchlistPositionFormDTO(securityCompactDTO.id, price, quantity);
+                THCallback<WatchlistPositionDTO> watchlistUpdateCallback = new THCallback<WatchlistPositionDTO>()
                 {
                     @Override protected void finish()
                     {
@@ -108,18 +108,26 @@ public class AddToWatchListFragment extends DashboardFragment
 
                     @Override protected void success(WatchlistPositionDTO watchlistPositionDTO, THResponse response)
                     {
-                        // TODO
-
-                        // push back timeline fragment
-
-                        // update data
+                        // update cache
+                        watchlistPositionCache.get().put(watchlistPositionDTO.securityDTO.getSecurityId(), watchlistPositionDTO);
+                        getNavigator().popFragment();
                     }
 
                     @Override protected void failure(THException ex)
                     {
                         THToast.show(ex);
                     }
-                });
+                };
+
+                WatchlistPositionDTO existingWatchlistPosition = watchlistPositionCache.get().get(securityCompactDTO.getSecurityId());
+                if (existingWatchlistPosition != null)
+                {
+                    watchlistService.get().updateWatchlistEntry(existingWatchlistPosition.id, watchPositionItemForm, watchlistUpdateCallback);
+                }
+                else
+                {
+                    watchlistService.get().createWatchlistEntry(watchPositionItemForm, watchlistUpdateCallback);
+                }
             }
         }
         catch (Exception ex)
@@ -223,9 +231,13 @@ public class AddToWatchListFragment extends DashboardFragment
                 }
             }
 
-            if (watchPrice != null && securityCompactDTO.lastPrice != null)
+            WatchlistPositionDTO watchListItem = watchlistPositionCache.get().get(securityCompactDTO.getSecurityId());
+            if (watchPrice != null)
             {
-                watchPrice.setText(securityCompactDTO.lastPrice.toString());
+                watchPrice.setText(
+                        watchListItem != null ?
+                                "" + watchListItem.watchlistPrice :
+                                securityCompactDTO.lastPrice != null ? securityCompactDTO.lastPrice.toString() : "");
             }
         }
     }
