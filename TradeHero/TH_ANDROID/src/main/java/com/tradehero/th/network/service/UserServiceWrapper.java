@@ -93,7 +93,12 @@ import retrofit.http.Path;
                 userFormDTO.lastName,
                 userFormDTO.password,
                 userFormDTO.passwordConfirmation,
-                userFormDTO.username
+                userFormDTO.username,
+                userFormDTO.emailNotificationsEnabled,
+                userFormDTO.pushNotificationsEnabled,
+                userFormDTO.biography,
+                userFormDTO.location,
+                userFormDTO.website
         );
     }
 
@@ -109,24 +114,53 @@ import retrofit.http.Path;
                 userFormDTO.password,
                 userFormDTO.passwordConfirmation,
                 userFormDTO.username,
+                userFormDTO.emailNotificationsEnabled,
+                userFormDTO.pushNotificationsEnabled,
+                userFormDTO.biography,
+                userFormDTO.location,
+                userFormDTO.website,
                 callback
         );
     }
 
-    public UserProfileDTO updateProfile(
+    public UserProfileDTO updateProfilePropertyEmailNotifications(
             UserBaseKey userBaseKey,
             Boolean emailNotificationsEnabled)
             throws RetrofitError
     {
-        return userService.updateProfile(userBaseKey.key, emailNotificationsEnabled);
+        UserFormDTO userFormDTO = new UserFormDTO();
+        userFormDTO.emailNotificationsEnabled = emailNotificationsEnabled;
+        return this.updateProfile(userBaseKey, userFormDTO);
     }
 
-    public void updateProfile(
+    public void updateProfilePropertyEmailNotifications(
             UserBaseKey userBaseKey,
             Boolean emailNotificationsEnabled,
             Callback<UserProfileDTO> callback)
     {
-        userService.updateProfile(userBaseKey.key, emailNotificationsEnabled, callback);
+        UserFormDTO userFormDTO = new UserFormDTO();
+        userFormDTO.emailNotificationsEnabled = emailNotificationsEnabled;
+        this.updateProfile(userBaseKey, userFormDTO, callback);
+    }
+
+    public UserProfileDTO updateProfilePropertyPushNotifications(
+            UserBaseKey userBaseKey,
+            Boolean pushNotificationsEnabled)
+            throws RetrofitError
+    {
+        UserFormDTO userFormDTO = new UserFormDTO();
+        userFormDTO.pushNotificationsEnabled = pushNotificationsEnabled;
+        return this.updateProfile(userBaseKey, userFormDTO);
+    }
+
+    public void updateProfilePropertyPushNotifications(
+            UserBaseKey userBaseKey,
+            Boolean pushNotificationsEnabled,
+            Callback<UserProfileDTO> callback)
+    {
+        UserFormDTO userFormDTO = new UserFormDTO();
+        userFormDTO.pushNotificationsEnabled = pushNotificationsEnabled;
+        this.updateProfile(userBaseKey, userFormDTO, callback);
     }
     //</editor-fold>
 

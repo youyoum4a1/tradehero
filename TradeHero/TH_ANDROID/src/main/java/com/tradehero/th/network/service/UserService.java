@@ -98,7 +98,12 @@ public interface UserService
             @Field("lastName") String lastName,
             @Field("password") String password,
             @Field("passwordConfirmation") String passwordConfirmation,
-            @Field("username") String username)
+            @Field("username") String username,
+            @Field("emailNotificationsEnabled") Boolean emailNotificationsEnabled,
+            @Field("pushNotificationsEnabled") Boolean pushNotificationsEnabled,
+            @Field("biography") String biography,
+            @Field("location") String location,
+            @Field("website") String website)
             throws RetrofitError;
 
     @FormUrlEncoded
@@ -113,20 +118,11 @@ public interface UserService
             @Field("password") String password,
             @Field("passwordConfirmation") String passwordConfirmation,
             @Field("username") String username,
-            Callback<UserProfileDTO> cb);
-
-    @FormUrlEncoded
-    @PUT("/users/{userId}/updateUser")
-    UserProfileDTO updateProfile(
-            @Path("userId") int userId,
-            @Field("emailNotificationsEnabled") Boolean emailNotificationsEnabled)
-            throws RetrofitError;
-
-    @FormUrlEncoded
-    @PUT("/users/{userId}/updateUser")
-    void updateProfile(
-            @Path("userId") int userId,
             @Field("emailNotificationsEnabled") Boolean emailNotificationsEnabled,
+            @Field("pushNotificationsEnabled") Boolean pushNotificationsEnabled,
+            @Field("biography") String biography,
+            @Field("location") String location,
+            @Field("website") String website,
             Callback<UserProfileDTO> cb);
     //</editor-fold>
 

@@ -31,4 +31,23 @@ public class UserFormDTO
     public UserFormDTO()
     {
     }
+
+    @Override public String toString()
+    {
+        return "UserFormDTO{" +
+                "email='" + email + '\'' +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", passwordConfirmation='" + passwordConfirmation + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", displayName='" + displayName + '\'' +
+                ", pushNotificationsEnabled=" + pushNotificationsEnabled +
+                ", emailNotificationsEnabled=" + emailNotificationsEnabled +
+                ", biography='" + biography + '\'' +
+                ", location='" + location + '\'' +
+                ", website='" + website + '\'' +
+                ", deviceToken='" + deviceToken + '\'' +
+                '}';
+    }
 }

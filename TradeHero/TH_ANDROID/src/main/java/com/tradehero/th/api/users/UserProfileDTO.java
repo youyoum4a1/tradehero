@@ -104,4 +104,37 @@ public class UserProfileDTO extends UserProfileCompactDTO
         }
         return count;
     }
+
+    @Override public String toString()
+    {
+        return "UserProfileDTO{" +
+                "displayName='" + displayName + '\'' +
+                ", id=" + id +
+                ", picture='" + picture + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", memberSince=" + memberSince +
+                ", email='" + email + '\'' +
+                ", address='" + address + '\'' +
+                ", biography='" + biography + '\'' +
+                ", location='" + location + '\'' +
+                ", website='" + website + '\'' +
+                ", heroIds=" + heroIds +
+                ", followerCount=" + followerCount +
+                ", ccPerMonthBalance=" + ccPerMonthBalance +
+                ", ccBalance=" + ccBalance +
+                ", portfolio=" + portfolio +
+                ", paypalEmailAddress='" + paypalEmailAddress + '\'' +
+                ", pushNotificationsEnabled=" + pushNotificationsEnabled +
+                ", emailNotificationsEnabled=" + emailNotificationsEnabled +
+                ", rank=" + rank +
+                ", firstFollowAllTime=" + firstFollowAllTime +
+                ", useTHPrice=" + useTHPrice +
+                ", unreadCount=" + unreadCount +
+                ", alertCount=" + alertCount +
+                ", tradesSharedCount_FB=" + tradesSharedCount_FB +
+                ", userAlertPlans=" + userAlertPlans +
+                ", enrolledProviders=" + enrolledProviders +
+                '}';
+    }
 }

@@ -24,6 +24,7 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.ActivityHelper;
 import com.tradehero.th.activities.DashboardActivity;
+import com.tradehero.th.api.form.UserFormDTO;
 import com.tradehero.th.api.form.UserFormFactory;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.social.SocialNetworkFormDTO;
@@ -54,6 +55,7 @@ import com.tradehero.th.utils.FacebookUtils;
 import com.tradehero.th.utils.LinkedInUtils;
 import com.tradehero.th.utils.TwitterUtils;
 import com.tradehero.th.utils.VersionUtils;
+import com.urbanairship.push.PushManager;
 import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
@@ -361,7 +363,7 @@ public class SettingsFragment extends PreferenceFragment
                 {
                     @Override public boolean onPreferenceChange(Preference preference, Object newValue)
                     {
-                        if (newValue != emailNotification.isChecked())
+                        if (newValue != pushNotification.isChecked())
                         {
                             return changePushNotification((boolean) newValue);
                         }
@@ -394,8 +396,17 @@ public class SettingsFragment extends PreferenceFragment
         final UserProfileDTO currentUserProfile = userProfileCache.get().get(currentUserBaseKeyHolder.getCurrentUserBaseKey());
         if (currentUserProfile != null)
         {
-            pushNotification.setChecked(currentUserProfile.pushNotificationsEnabled);
+            THLog.d(TAG, "updateNotificationStatus " + currentUserProfile);
             emailNotification.setChecked(currentUserProfile.emailNotificationsEnabled);
+            pushNotification.setChecked(currentUserProfile.pushNotificationsEnabled);
+            if (currentUserProfile.pushNotificationsEnabled)
+            {
+                PushManager.enablePush();
+            }
+            else
+            {
+                PushManager.disablePush();
+            }
         }
     }
 
@@ -403,17 +414,24 @@ public class SettingsFragment extends PreferenceFragment
     {
         progressDialog = ProgressDialog.show(
                 getSherlockActivity(),
-                Application.getResourceString(R.string.settings_notifications_email_alert_title),
-                Application.getResourceString(R.string.settings_notifications_email_alert_message),
+                getString(R.string.settings_notifications_email_alert_title),
+                getString(R.string.settings_notifications_email_alert_message),
                 true);
 
-        userServiceWrapper.updateProfile(currentUserBaseKeyHolder.getCurrentUserBaseKey(), enable, createUserProfileCallback());
+        userServiceWrapper.updateProfilePropertyEmailNotifications(currentUserBaseKeyHolder.getCurrentUserBaseKey(), enable, createUserProfileCallback());
         return false;
     }
 
-    private boolean changePushNotification(boolean newValue)
+    private boolean changePushNotification(boolean enable)
     {
-        return false;  //To change body of created methods use File | Settings | File Templates.
+        progressDialog = ProgressDialog.show(
+                getSherlockActivity(),
+                getString(R.string.settings_notifications_push_alert_title),
+                getString(R.string.settings_notifications_push_alert_message),
+                true);
+
+        userServiceWrapper.updateProfilePropertyPushNotifications(currentUserBaseKeyHolder.getCurrentUserBaseKey(), enable, createUserProfileCallback());
+        return false;
     }
 
     private boolean changeSharing(SocialNetworkEnum socialNetwork, boolean enable)
