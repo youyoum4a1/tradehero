@@ -35,6 +35,12 @@ public class DateUtils
            return (int) (end.getTime() - start.getTime()) / MILLISECOND_PER_DAY;
     }
 
+    public static String getFormattedDate(Date utcDate)
+    {
+        SimpleDateFormat requiredFormat = new SimpleDateFormat(Application.getResourceString(R.string.date_format_day_and_time));
+        return requiredFormat.format(utcDate);
+    }
+
     public static String getFormattedUtcDate(Date utcDate)
     {
         SimpleDateFormat requiredFormat = new SimpleDateFormat(Application.getResourceString(R.string.date_format_gmt_day_and_time));
