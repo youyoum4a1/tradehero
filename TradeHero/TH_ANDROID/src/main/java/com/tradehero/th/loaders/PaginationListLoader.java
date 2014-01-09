@@ -37,8 +37,8 @@ public abstract class PaginationListLoader<D> extends ListLoader<D>
             return;
         }
         currentLoadMode = LoadMode.NEXT;
-        D oldestItem = items.isEmpty() ? null : items.get(0);
-        onLoadPrevious(oldestItem);
+        D newestItem = items.isEmpty() ? null : items.get(0);
+        onLoadNext(newestItem);
     }
 
     public void loadPrevious()
