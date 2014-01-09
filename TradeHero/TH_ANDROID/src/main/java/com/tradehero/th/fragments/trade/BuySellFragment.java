@@ -46,14 +46,14 @@ import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.ImageViewThreadSafe;
 import com.tradehero.th.R;
-import com.tradehero.th.billing.googleplay.THIABActor;
-import com.tradehero.th.fragments.billing.THIABUserInteractor;
-import com.tradehero.th.fragments.security.BuySellBottomStockPagerAdapter;
 import com.tradehero.th.api.position.SecurityPositionDetailDTO;
 import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.billing.googleplay.THIABActor;
+import com.tradehero.th.fragments.billing.THIABUserInteractor;
+import com.tradehero.th.fragments.security.BuySellBottomStockPagerAdapter;
 import com.tradehero.th.fragments.security.StockInfoFragment;
 import com.tradehero.th.models.alert.SecurityAlertAssistant;
 import com.tradehero.th.network.service.SecurityService;
@@ -773,7 +773,7 @@ public class BuySellFragment extends AbstractBuySellFragment
             else
             {
                 // TODO handle the case when we have move than 1 position
-                Integer shareCount = securityPositionDetailDTO.positions.getMaxSellableShares(getApplicablePortfolioId().getPortfolioId());
+                Integer shareCount = securityPositionDetailDTO.positions.getMaxSellableShares(this.userProfileDTO, this.quoteDTO, getApplicablePortfolioId().getPortfolioId());
                 if (shareCount == null || shareCount == 0)
                 {
                     mBuySellSwitch.setVisibility(View.GONE);

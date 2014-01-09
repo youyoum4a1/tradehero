@@ -12,7 +12,6 @@ import com.tradehero.th.api.portfolio.PortfolioId;
 import com.tradehero.th.api.position.SecurityPositionDetailDTO;
 import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
-import com.tradehero.th.api.security.SecurityType;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.utils.DateUtils;
 
@@ -294,7 +293,7 @@ public class TradeQuantityView extends TableLayout
             }
             else
             {
-                mShareAvailable.setText(String.format("%,d", securityPositionDetailDTO.positions.getMaxSellableShares(portfolioId)));
+                mShareAvailable.setText(String.format("%,d", securityPositionDetailDTO.positions.getMaxSellableShares(this.userProfileDTO, this.quoteDTO, this.portfolioId)));
             }
         }
     }
