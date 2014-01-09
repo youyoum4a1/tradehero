@@ -26,12 +26,13 @@ public class PositionDTOCompactList extends ArrayList<PositionDTOCompact>
         return total;
     }
 
-    public Integer getMaxSellableShares(UserProfileDTO userProfileDTO, QuoteDTO quoteDTO, PortfolioId portfolioId)
+    public Integer getMaxSellableShares(QuoteDTO quoteDTO, PortfolioId portfolioId, UserProfileDTO userProfileDTO)
     {
-        return getMaxSellableShares(userProfileDTO, quoteDTO, portfolioId, true);
+        return getMaxSellableShares(quoteDTO, portfolioId, userProfileDTO, true);
     }
 
-    public Integer getMaxSellableShares(UserProfileDTO userProfileDTO, QuoteDTO quoteDTO, PortfolioId portfolioId, boolean includeTransactionCost)
+    public Integer getMaxSellableShares(QuoteDTO quoteDTO, PortfolioId portfolioId, UserProfileDTO userProfileDTO,
+            boolean includeTransactionCost)
     {
         Integer total = getShareCount(portfolioId);
         Double netProceeds = getMaxSellProceeds(quoteDTO, portfolioId);

@@ -206,8 +206,9 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
 
     public Integer getMaxSellableShares()
     {
-        return SecurityPositionDetailDTOUtil.getMaxSellableShares(this.userProfileDTO, this.quoteDTO , this.securityPositionDetailDTO,
-                getApplicablePortfolioId().getPortfolioId());
+        return SecurityPositionDetailDTOUtil.getMaxSellableShares(this.securityPositionDetailDTO, this.quoteDTO,
+                getApplicablePortfolioId().getPortfolioId(), this.userProfileDTO
+        );
     }
 
     protected void requestPositionDetail()

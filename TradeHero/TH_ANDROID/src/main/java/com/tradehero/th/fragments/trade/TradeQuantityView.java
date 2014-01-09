@@ -10,6 +10,7 @@ import android.widget.TextView;
 import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.PortfolioId;
 import com.tradehero.th.api.position.SecurityPositionDetailDTO;
+import com.tradehero.th.api.position.SecurityPositionDetailDTOUtil;
 import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
@@ -293,7 +294,8 @@ public class TradeQuantityView extends TableLayout
             }
             else
             {
-                mShareAvailable.setText(String.format("%,d", securityPositionDetailDTO.positions.getMaxSellableShares(this.userProfileDTO, this.quoteDTO, this.portfolioId)));
+                mShareAvailable.setText(String.format("%,d", securityPositionDetailDTO.positions.getMaxSellableShares(this.quoteDTO, this.portfolioId,
+                        this.userProfileDTO)));
             }
         }
     }
@@ -364,14 +366,9 @@ public class TradeQuantityView extends TableLayout
     {
         if (mProjectedPLValue != null)
         {
-            if (securityPositionDetailDTO != null && securityPositionDetailDTO.positions != null &&
-                    securityPositionDetailDTO.positions.get(0).averagePriceRefCcy != null &&
-                    quoteDTO != null && quoteDTO.bid != null && quoteDTO.toUSDRate != null)
+            Double plValue = SecurityPositionDetailDTOUtil.projectedPLValue(securityPositionDetailDTO, quoteDTO, shareQuantity);
+            if (plValue != null)
             {
-                double buyPrice = shareQuantity * securityPositionDetailDTO.positions.get(0).averagePriceRefCcy;
-                double sellPrice = shareQuantity * quoteDTO.bid * quoteDTO.toUSDRate;
-                // TODO handle transaction fee
-                double plValue = sellPrice - buyPrice;
                 mProjectedPLValue.setText(String.format("US$ %,.2f", plValue));
                 mProjectedPLValue.setTextColor(plValue == 0 ? colorPlNeutral : plValue > 0 ? colorPlGain : colorPlLoss);
             }

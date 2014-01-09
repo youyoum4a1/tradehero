@@ -773,7 +773,8 @@ public class BuySellFragment extends AbstractBuySellFragment
             else
             {
                 // TODO handle the case when we have move than 1 position
-                Integer shareCount = securityPositionDetailDTO.positions.getMaxSellableShares(this.userProfileDTO, this.quoteDTO, getApplicablePortfolioId().getPortfolioId());
+                Integer shareCount = securityPositionDetailDTO.positions.getMaxSellableShares(this.quoteDTO,
+                        getApplicablePortfolioId().getPortfolioId(), this.userProfileDTO);
                 if (shareCount == null || shareCount == 0)
                 {
                     mBuySellSwitch.setVisibility(View.GONE);
