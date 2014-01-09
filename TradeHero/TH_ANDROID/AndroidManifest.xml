@@ -28,7 +28,9 @@
   <uses-permission android:name="android.permission.GET_ACCOUNTS"/>
   <uses-permission android:name="android.permission.WAKE_LOCK"/>
 
-  <permission android:name="com.tradehero.th.permission.C2D_MESSAGE" android:protectionLevel="signature" />
+  <permission
+      android:name="com.tradehero.th.permission.C2D_MESSAGE"
+      android:protectionLevel="signature" />
   <uses-permission android:name="com.tradehero.th.permission.C2D_MESSAGE" />
   <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
@@ -100,7 +102,8 @@
     <!-- GCM -->
     <!-- REQUIRED for Urban Airship GCM-->
     <receiver android:name="com.urbanairship.CoreReceiver" />
-    <receiver android:name="com.urbanairship.push.GCMPushReceiver"
+    <receiver
+        android:name="com.urbanairship.push.GCMPushReceiver"
         android:permission="com.google.android.c2dm.permission.SEND">
       <intent-filter>
         <action android:name="com.google.android.c2dm.intent.RECEIVE" />
@@ -116,12 +119,17 @@
       </intent-filter>
     </receiver>
 
-    <service android:name="com.urbanairship.push.PushService"
+    <service
+        android:name="com.urbanairship.push.PushService"
         android:label="Push Notification Service"/>
+    <service
+        android:name="com.urbanairship.analytics.EventService"
+        android:label="Event Service" />
 
     <!-- This is required for persisting preferences related to push and location -->
     <!-- MODIFICATION REQUIRED - Use your package name + ".urbanairship.provider" in the android:authorities -->
-    <provider android:name="com.urbanairship.UrbanAirshipProvider"
+    <provider
+        android:name="com.urbanairship.UrbanAirshipProvider"
         android:authorities="com.tradehero.th.urbanairship.provider"
         android:exported="false"
         android:multiprocess="true" />
@@ -132,6 +140,7 @@
     <!-- OPTIONAL, if you want to receive push, push opened and registration completed intents -->
     <!-- Replace the receiver below with your package and class name -->
     <receiver android:name=".push.IntentReceiver" />
+
     <meta-data android:name="com.crashlytics.ApiKey" android:value="3c3ead4115907f8dbc3133b7ed3c8c66f05daebf"/>
   </application>
 

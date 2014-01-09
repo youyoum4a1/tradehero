@@ -41,7 +41,7 @@ import java.util.Set;
 
 public class IntentReceiver extends BroadcastReceiver
 {
-    private static final String TAG = "PushSample";
+    private static final String TAG = IntentReceiver.class.getSimpleName();
 
     public static String APID_UPDATED_ACTION_SUFFIX = ".apid.updated";
 

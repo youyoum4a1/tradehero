@@ -1,5 +1,6 @@
 package com.tradehero.th.utils;
 
+import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
 import com.tradehero.th.base.Application;
 import com.tradehero.th.push.IntentReceiver;
@@ -10,10 +11,17 @@ import com.urbanairship.push.PushManager;
 /** Created with IntelliJ IDEA. User: tho Date: 12/2/13 Time: 5:40 PM Copyright (c) TradeHero */
 public class PushUtils
 {
+    public static String TAG = PushUtils.class.getSimpleName();
+
     public static void initialize()
     {
         UAirship.takeOff(Application.context());
         PushManager.enablePush();
+
+        { // DEBUG
+            String apid = PushManager.shared().getAPID();
+            THLog.d(TAG, "My Application onCreate - App APID: " + apid);
+        }
 
         //use CustomPushNotificationBuilder to specify a custom layout
         CustomPushNotificationBuilder nb = new CustomPushNotificationBuilder();
