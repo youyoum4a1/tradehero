@@ -17,6 +17,8 @@ import com.tradehero.th.billing.googleplay.THIABPurchaseRestorer;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.billing.PurchaseRestorerAlertUtil;
 import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th.utils.FacebookUtils;
+import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
 
@@ -30,6 +32,8 @@ public class DashboardActivity extends SherlockFragmentActivity
     private THIABLogicHolder thiabLogicHolder;
     private THIABPurchaseRestorer purchaseRestorer;
     private THIABPurchaseRestorer.OnPurchaseRestorerFinishedListener purchaseRestorerFinishedListener;
+
+    @Inject protected Lazy<FacebookUtils> facebookUtils;
     @Inject CurrentUserBaseKeyHolder currentUserBaseKeyHolder;
 
     @Override public void onCreate(Bundle savedInstanceState)
@@ -176,7 +180,7 @@ public class DashboardActivity extends SherlockFragmentActivity
     @Override protected void onActivityResult(int requestCode, int resultCode, Intent data)
     {
         super.onActivityResult(requestCode, resultCode, data);
-
+        facebookUtils.get().finishAuthentication(requestCode, resultCode, data);
         // Passing it on just in case it is expecting something
         thiabLogicHolder.onActivityResult(requestCode, resultCode, data);
     }
