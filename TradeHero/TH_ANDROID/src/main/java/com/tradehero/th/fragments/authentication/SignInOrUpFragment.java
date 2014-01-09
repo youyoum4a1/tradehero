@@ -14,9 +14,7 @@ abstract public class SignInOrUpFragment extends AuthenticationFragment
 
     abstract protected int getEmailSignUpViewId ();
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-            Bundle savedInstanceState)
+    @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         View view = inflater.inflate(getViewId(), container, false);
 

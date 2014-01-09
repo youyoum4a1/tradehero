@@ -20,5 +20,11 @@ public abstract class AuthenticationFragment extends SherlockFragment
         }
     }
 
+    @Override public void onDetach()
+    {
+       onClickListener = null;
+        super.onDetach();
+    }
+
     public abstract AuthenticationMode getAuthenticationMode();
 }

@@ -42,6 +42,7 @@ public class EmailSignInFragment extends EmailSignInOrUpFragment
     {
         return R.layout.authentication_email_sign_in;
     }
+
     @Override protected void initSetup(View view)
     {
         email = (SelfValidatedText) view.findViewById(R.id.authentication_sign_in_email);
@@ -55,6 +56,35 @@ public class EmailSignInFragment extends EmailSignInOrUpFragment
 
         forgotPasswordLink = (TextView) view.findViewById(R.id.authentication_sign_in_forgot_password);
         forgotPasswordLink.setOnClickListener(this);
+    }
+
+    @Override public void onDestroyView()
+    {
+        if (this.email != null)
+        {
+            this.email.removeAllListeners();
+        }
+        this.email = null;
+
+        if (this.password != null)
+        {
+            this.password.removeAllListeners();
+        }
+        this.password = null;
+
+        if (this.signButton != null)
+        {
+            this.signButton.setOnClickListener(null);
+        }
+        this.signButton = null;
+
+        if (this.forgotPasswordLink != null)
+        {
+            this.forgotPasswordLink.setOnClickListener(null);
+        }
+        this.forgotPasswordLink = null;
+
+        super.onDestroyView();
     }
 
     @Override public void onClick(View view)

@@ -50,13 +50,13 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
     {
         FocusableOnTouchListener touchListener = new FocusableOnTouchListener();
 
-        profileView = (ProfileInfoView) view.findViewById(R.id.profile_info);
+        this.profileView = (ProfileInfoView) view.findViewById(R.id.profile_info);
 
-        profileView.setOnTouchListenerOnFields(touchListener);
-        profileView.addValidationListenerOnFields(this);
+        this.profileView.setOnTouchListenerOnFields(touchListener);
+        this.profileView.addValidationListenerOnFields(this);
 
-        signButton = (Button) view.findViewById(R.id.authentication_sign_up_button);
-        signButton.setOnClickListener(this);
+        this.signButton = (Button) view.findViewById(R.id.authentication_sign_up_button);
+        this.signButton.setOnClickListener(this);
 
         //signupButton.setOnTouchListener(this);
     }
@@ -95,50 +95,6 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
                 return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override public void onClick(View view)
-    {
-        switch (view.getId())
-        {
-            case R.id.authentication_sign_up_button:
-                handleSignInOrUpButtonClicked(view);
-                break;
-            case R.id.image_optional:
-                Intent intent = new Intent(Intent.ACTION_PICK);
-                intent.setType("image/jpeg");
-                startActivityForResult(intent, REQUEST_GALLERY);
-                break;
-        }
-    }
-
-    @Override protected void forceValidateFields()
-    {
-        profileView.forceValidateFields();
-    }
-
-    @Override public boolean areFieldsValid()
-    {
-        return profileView.areFieldsValid();
-    }
-
-    @Override protected Map<String, Object> getUserFormMap()
-    {
-        Map<String, Object> map = super.getUserFormMap();
-        profileView.populateUserFormMap(map);
-        return map;
-    }
-
-    @Override public void onDestroyView()
-    {
-        if (profileView != null)
-        {
-            profileView.setOnTouchListenerOnFields(null);
-            profileView.removeAllListenersOnFields();
-            profileView.setNullOnFields();
-        }
-        profileView = null;
-        super.onDestroyView();
     }
 
     @Override public void onActivityResult(int requestCode, int resultCode, Intent data)
@@ -186,6 +142,57 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
                 }
             }
         }
+    }
+
+    @Override public void onDestroyView()
+    {
+        if (this.profileView != null)
+        {
+            this.profileView.setOnTouchListenerOnFields(null);
+            this.profileView.removeAllListenersOnFields();
+            this.profileView.setNullOnFields();
+        }
+        this.profileView = null;
+
+        if (this.signButton != null)
+        {
+            this.signButton.setOnClickListener(null);
+        }
+        this.signButton = null;
+
+        super.onDestroyView();
+    }
+
+    @Override public void onClick(View view)
+    {
+        switch (view.getId())
+        {
+            case R.id.authentication_sign_up_button:
+                handleSignInOrUpButtonClicked(view);
+                break;
+            case R.id.image_optional:
+                Intent intent = new Intent(Intent.ACTION_PICK);
+                intent.setType("image/jpeg");
+                startActivityForResult(intent, REQUEST_GALLERY);
+                break;
+        }
+    }
+
+    @Override protected void forceValidateFields()
+    {
+        this.profileView.forceValidateFields();
+    }
+
+    @Override public boolean areFieldsValid()
+    {
+        return this.profileView.areFieldsValid();
+    }
+
+    @Override protected Map<String, Object> getUserFormMap()
+    {
+        Map<String, Object> map = super.getUserFormMap();
+        this.profileView.populateUserFormMap(map);
+        return map;
     }
 
     public String getPath(Uri uri)
