@@ -16,15 +16,14 @@ import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
-import com.tradehero.common.billing.googleplay.BaseIABPurchase;
 import com.tradehero.common.cache.LruMemFileCache;
+import com.tradehero.common.milestone.Milestone;
 import com.tradehero.common.utils.SlowedAsyncTask;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.ActivityHelper;
 import com.tradehero.th.activities.DashboardActivity;
-import com.tradehero.th.api.form.UserFormDTO;
 import com.tradehero.th.api.form.UserFormFactory;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.social.SocialNetworkFormDTO;
@@ -38,7 +37,6 @@ import com.tradehero.th.billing.googleplay.THIABPurchase;
 import com.tradehero.th.billing.googleplay.THIABPurchaseRestorer;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.WebViewFragment;
-import com.tradehero.th.fragments.authentication.EmailSignUpFragment;
 import com.tradehero.th.fragments.billing.PurchaseRestorerAlertUtil;
 import com.tradehero.th.fragments.billing.THIABUserInteractor;
 import com.tradehero.th.misc.callback.LogInCallback;
@@ -47,9 +45,9 @@ import com.tradehero.th.misc.callback.THResponse;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.service.SessionService;
 import com.tradehero.th.network.service.SocialService;
-import com.tradehero.th.network.service.UserService;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.persistence.user.UserProfileRetrievedMilestone;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.FacebookUtils;
 import com.tradehero.th.utils.LinkedInUtils;
@@ -74,6 +72,7 @@ public class SettingsFragment extends PreferenceFragment
     @Inject SocialService socialService;
     @Inject protected Lazy<UserProfileCache> userProfileCache;
     @Inject protected CurrentUserBaseKeyHolder currentUserBaseKeyHolder;
+    protected UserProfileRetrievedMilestone currentUserProfileRetrievedMilestone;
 
     @Inject protected Lazy<FacebookUtils> facebookUtils;
     @Inject protected Lazy<TwitterUtils> twitterUtils;
@@ -101,6 +100,10 @@ public class SettingsFragment extends PreferenceFragment
         View view = super.onCreateView(paramLayoutInflater, paramViewGroup, paramBundle);
         view.setBackgroundColor(getResources().getColor(R.color.white));
 
+        this.currentUserProfileRetrievedMilestone = new UserProfileRetrievedMilestone(currentUserBaseKeyHolder.getCurrentUserBaseKey());
+        this.currentUserProfileRetrievedMilestone.setOnCompleteListener(new SettingsUserProfileRetrievedCompleteListener());
+        this.currentUserProfileRetrievedMilestone.launch();
+
         return view;
     }
 
@@ -118,6 +121,13 @@ public class SettingsFragment extends PreferenceFragment
         addPreferencesFromResource(R.xml.settings);
 
         DaggerUtils.inject(this);
+    }
+
+    @Override public void onDestroyView()
+    {
+        this.currentUserProfileRetrievedMilestone.setOnCompleteListener(null);
+        this.currentUserProfileRetrievedMilestone = null;
+        super.onDestroyView();
     }
 
     private THIABPurchaseRestorer.OnPurchaseRestorerFinishedListener createPurchaseRestorerListener()
@@ -350,45 +360,39 @@ public class SettingsFragment extends PreferenceFragment
                 }
             });
         }
-        updateSocialConnectStatus();
 
         // notification
-        UserProfileDTO currentUserProfile = userProfileCache.get().get(currentUserBaseKeyHolder.getCurrentUserBaseKey());
-        if (currentUserProfile != null)
+        pushNotification = (CheckBoxPreference) findPreference(getString(R.string.settings_notifications_push));
+        if (pushNotification != null)
         {
-            pushNotification = (CheckBoxPreference) findPreference(getString(R.string.settings_notifications_push));
-            if (pushNotification != null)
+            pushNotification.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener()
             {
-                pushNotification.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener()
+                @Override public boolean onPreferenceChange(Preference preference, Object newValue)
                 {
-                    @Override public boolean onPreferenceChange(Preference preference, Object newValue)
-                    {
-                        if (newValue != pushNotification.isChecked())
-                        {
-                            return changePushNotification((boolean) newValue);
-                        }
-                        return false;
-                    }
-                });
-            }
-
-            emailNotification = (CheckBoxPreference) findPreference(getString(R.string.settings_notifications_email));
-            if (emailNotification != null)
-            {
-                emailNotification.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener()
-                {
-                    @Override public boolean onPreferenceChange(Preference preference, Object newValue)
-                    {
-                        if (newValue != emailNotification.isChecked())
-                        {
-                            return changeEmailNotification((boolean) newValue);
-                        }
-                        return false;
-                    }
-                });
-            }
+                    return changePushNotification((boolean) newValue);
+                }
+            });
         }
-        updateNotificationStatus();
+
+        emailNotification = (CheckBoxPreference) findPreference(getString(R.string.settings_notifications_email));
+        if (emailNotification != null)
+        {
+            emailNotification.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener()
+            {
+                @Override public boolean onPreferenceChange(Preference preference, Object newValue)
+                {
+                    return changeEmailNotification((boolean) newValue);
+                }
+            });
+        }
+
+
+        if (this.currentUserProfileRetrievedMilestone.isComplete())
+        {
+            updateNotificationStatus();
+            updateSocialConnectStatus();
+        }
+        // Otherwise we rely on the complete listener
     }
 
     private void updateNotificationStatus()
@@ -396,9 +400,14 @@ public class SettingsFragment extends PreferenceFragment
         final UserProfileDTO currentUserProfile = userProfileCache.get().get(currentUserBaseKeyHolder.getCurrentUserBaseKey());
         if (currentUserProfile != null)
         {
-            THLog.d(TAG, "updateNotificationStatus " + currentUserProfile);
-            emailNotification.setChecked(currentUserProfile.emailNotificationsEnabled);
-            pushNotification.setChecked(currentUserProfile.pushNotificationsEnabled);
+            if (emailNotification != null)
+            {
+                emailNotification.setChecked(currentUserProfile.emailNotificationsEnabled);
+            }
+            if (pushNotification != null)
+            {
+                pushNotification.setChecked(currentUserProfile.pushNotificationsEnabled);
+            }
             if (currentUserProfile.pushNotificationsEnabled)
             {
                 PushManager.enablePush();
@@ -418,7 +427,8 @@ public class SettingsFragment extends PreferenceFragment
                 getString(R.string.settings_notifications_email_alert_message),
                 true);
 
-        userServiceWrapper.updateProfilePropertyEmailNotifications(currentUserBaseKeyHolder.getCurrentUserBaseKey(), enable, createUserProfileCallback());
+        userServiceWrapper.updateProfilePropertyEmailNotifications(currentUserBaseKeyHolder.getCurrentUserBaseKey(), enable,
+                createUserProfileCallback());
         return false;
     }
 
@@ -430,7 +440,8 @@ public class SettingsFragment extends PreferenceFragment
                 getString(R.string.settings_notifications_push_alert_message),
                 true);
 
-        userServiceWrapper.updateProfilePropertyPushNotifications(currentUserBaseKeyHolder.getCurrentUserBaseKey(), enable, createUserProfileCallback());
+        userServiceWrapper.updateProfilePropertyPushNotifications(currentUserBaseKeyHolder.getCurrentUserBaseKey(), enable,
+                createUserProfileCallback());
         return false;
     }
 
@@ -774,6 +785,20 @@ public class SettingsFragment extends PreferenceFragment
         {
             progressDialog.dismiss();
             updateSocialConnectStatus();
+        }
+    }
+
+    private class SettingsUserProfileRetrievedCompleteListener implements Milestone.OnCompleteListener
+    {
+        @Override public void onComplete(Milestone milestone)
+        {
+            updateNotificationStatus();
+            updateSocialConnectStatus();
+        }
+
+        @Override public void onFailed(Milestone milestone, Throwable throwable)
+        {
+            THToast.show(R.string.error_fetch_your_user_profile);
         }
     }
 }
