@@ -54,6 +54,7 @@ import com.tradehero.th.utils.LinkedInUtils;
 import com.tradehero.th.utils.TwitterUtils;
 import com.tradehero.th.utils.VersionUtils;
 import com.urbanairship.push.PushManager;
+import com.urbanairship.push.PushPreferences;
 import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
@@ -87,6 +88,8 @@ public class SettingsFragment extends PreferenceFragment
     private CheckBoxPreference linkedInSharing;
     private CheckBoxPreference pushNotification;
     private CheckBoxPreference emailNotification;
+    private CheckBoxPreference pushNotificationSound;
+    private CheckBoxPreference pushNotificationVibrate;
 
     @Override public void onActivityCreated(Bundle savedInstanceState)
     {
@@ -386,6 +389,33 @@ public class SettingsFragment extends PreferenceFragment
             });
         }
 
+        pushNotificationSound = (CheckBoxPreference) findPreference(getString(R.string.settings_notifications_push_alert_sound));
+        if (pushNotificationSound != null)
+        {
+            pushNotificationSound.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener()
+            {
+                @Override public boolean onPreferenceChange(Preference preference, Object newValue)
+                {
+                    PushPreferences prefs = PushManager.shared().getPreferences();
+                    prefs.setSoundEnabled((boolean) newValue);
+                    return true;
+                }
+            });
+        }
+
+        pushNotificationVibrate = (CheckBoxPreference) findPreference(getString(R.string.settings_notifications_push_alert_vibrate));
+        if (pushNotificationVibrate != null)
+        {
+            pushNotificationVibrate.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener()
+            {
+                @Override public boolean onPreferenceChange(Preference preference, Object newValue)
+                {
+                    PushPreferences prefs = PushManager.shared().getPreferences();
+                    prefs.setVibrateEnabled((boolean) newValue);
+                    return true;
+                }
+            });
+        }
 
         if (this.currentUserProfileRetrievedMilestone.isComplete())
         {
@@ -404,10 +434,22 @@ public class SettingsFragment extends PreferenceFragment
             {
                 emailNotification.setChecked(currentUserProfile.emailNotificationsEnabled);
             }
+
             if (pushNotification != null)
             {
                 pushNotification.setChecked(currentUserProfile.pushNotificationsEnabled);
             }
+
+            if (pushNotificationSound != null)
+            {
+                pushNotificationSound.setEnabled(currentUserProfile.pushNotificationsEnabled);
+            }
+
+            if (pushNotificationVibrate != null)
+            {
+                pushNotificationVibrate.setEnabled(currentUserProfile.pushNotificationsEnabled);
+            }
+
             if (currentUserProfile.pushNotificationsEnabled)
             {
                 PushManager.enablePush();

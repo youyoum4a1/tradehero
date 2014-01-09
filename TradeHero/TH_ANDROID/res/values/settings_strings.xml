@@ -33,6 +33,8 @@
   <string name="settings_notifications_push">Push Notifications</string>
   <string name="settings_notifications_push_alert_title">Updating Your Push Notification Settings</string>
   <string name="settings_notifications_push_alert_message">Please hold&#8230;</string>
+  <string name="settings_notifications_push_alert_sound">Notification Sounds</string>
+  <string name="settings_notifications_push_alert_vibrate">Notification Vibration</string>
 
   <string name="settings_misc">Misc</string>
   <string name="settings_misc_reset_help_screens">Reset Help Screens Now</string>

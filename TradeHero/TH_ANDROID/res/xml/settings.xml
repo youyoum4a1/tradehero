@@ -66,11 +66,25 @@
         android:key="@string/settings_notifications_email"
         android:icon="@drawable/settings_email_noti"
         android:title="@string/settings_notifications_email"/>
+
     <CheckBoxPreference
         android:key="@string/settings_notifications_push"
         android:title="@string/settings_notifications_push"
         android:icon="@drawable/settings_push_noti"
         />
+
+    <CheckBoxPreference
+        android:key="@string/settings_notifications_push_alert_sound"
+        android:title="@string/settings_notifications_push_alert_sound"
+        android:icon="@null"
+        />
+
+    <CheckBoxPreference
+        android:key="@string/settings_notifications_push_alert_vibrate"
+        android:title="@string/settings_notifications_push_alert_vibrate"
+        android:icon="@null"
+        />
+
   </PreferenceCategory>
 
   <PreferenceCategory android:title="@string/settings_misc">
