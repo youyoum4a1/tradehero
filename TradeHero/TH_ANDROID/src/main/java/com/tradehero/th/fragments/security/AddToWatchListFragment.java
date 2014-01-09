@@ -26,7 +26,7 @@ import com.tradehero.th.misc.callback.THResponse;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.service.WatchlistService;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
-import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
+import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import dagger.Lazy;
 import javax.inject.Inject;
 
@@ -48,7 +48,7 @@ public class AddToWatchListFragment extends DashboardFragment
     private DTOCache.GetOrFetchTask<SecurityId, SecurityCompactDTO> compactCacheFetchTask;
 
     @Inject protected Lazy<SecurityCompactCache> securityCompactCache;
-    @Inject protected Lazy<WatchlistPositionCache> watchlistPositionCache;
+    @Inject protected Lazy<UserWatchlistPositionCache> watchlistPositionCache;
     @Inject protected Lazy<WatchlistService> watchlistService;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)

@@ -36,11 +36,18 @@ public interface WatchlistService
             throws RetrofitError;
 
     @GET("/watchlistPositions")
+    List<WatchlistPositionDTO> getAllByUser(
+            @Query("pageNumber") Integer pageNumber,
+            @Query("perPage") Integer perPage)
+            throws RetrofitError;
+
+    @GET("/watchlistPositions")
     void getAllByUser(
             @Query("pageNumber") Integer pageNumber,
             @Query("perPage") Integer perPage,
             @Query("securityId") Integer securityId,
             @Query("skipCache") Boolean skipCache,
             Callback<List<WatchlistPositionDTO>> callback);
+
     //</editor-fold>
 }

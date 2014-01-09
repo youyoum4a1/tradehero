@@ -127,7 +127,7 @@ import com.tradehero.th.persistence.user.UserManager;
 import com.tradehero.th.persistence.user.UserProfileFetchAssistant;
 import com.tradehero.th.persistence.user.UserProfileRetrievedMilestone;
 import com.tradehero.th.persistence.user.UserStore;
-import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
+import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import com.tradehero.th.persistence.watchlist.WatchlistRetrievedMilestone;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.FacebookUtils;
@@ -140,7 +140,6 @@ import com.tradehero.th.widget.user.ProfileCompactView;
 import com.tradehero.th.widget.user.ProfileView;
 import dagger.Module;
 import dagger.Provides;
-import javax.inject.Named;
 import javax.inject.Singleton;
 import org.ocpsoft.prettytime.PrettyTime;
 
@@ -277,7 +276,7 @@ import org.ocpsoft.prettytime.PrettyTime;
                 BuySellFragment.BuySellTHIABUserInteractor.class,
 
                 AddToWatchListFragment.class,
-                WatchlistPositionCache.class,
+                UserWatchlistPositionCache.class,
                 WatchlistRetrievedMilestone.class,
         },
         staticInjections =

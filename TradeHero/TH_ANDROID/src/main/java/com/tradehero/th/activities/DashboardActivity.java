@@ -17,6 +17,7 @@ import com.tradehero.th.billing.googleplay.THIABPurchase;
 import com.tradehero.th.billing.googleplay.THIABPurchaseRestorer;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.billing.PurchaseRestorerAlertUtil;
+import com.tradehero.th.persistence.watchlist.WatchlistRetrievedMilestone;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.FacebookUtils;
 import dagger.Lazy;
@@ -47,7 +48,15 @@ public class DashboardActivity extends SherlockFragmentActivity
 
         launchIAB();
 
+        retrieveWatchlist();
+
         THLog.d(TAG, "onCreate");
+    }
+
+    private void retrieveWatchlist()
+    {
+        WatchlistRetrievedMilestone watchlistRetrievedMilestone = new WatchlistRetrievedMilestone(currentUserBaseKeyHolder.getCurrentUserBaseKey());
+        watchlistRetrievedMilestone.launch();
     }
 
     private void launchActions()
