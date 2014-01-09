@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.MenuItem;
+import com.crashlytics.android.Crashlytics;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
 import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
@@ -40,6 +41,8 @@ public class DashboardActivity extends SherlockFragmentActivity
     {
         super.onCreate(savedInstanceState);
         DaggerUtils.inject(this);
+
+        Crashlytics.setUserIdentifier("" + currentUserBaseKeyHolder.getCurrentUserBaseKey().key);
         setContentView(R.layout.dashboard_with_bottom_bar);
 
         launchIAB();
