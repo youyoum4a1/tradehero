@@ -169,6 +169,7 @@
   <string name="trade">Trade</string>
   <string name="share">Share</string>
   <string name="add_to_watch_list">Add to Watchlist</string>
+  <string name="edit_in_watch_list">Edit in Watchlist</string>
   <string name="enable_stock_alert">Enable Stock Alert</string>
   <string name="view_graph">View Graph</string>
   <string name="timeline_post_to_social_network">Successfully posted to %s</string>

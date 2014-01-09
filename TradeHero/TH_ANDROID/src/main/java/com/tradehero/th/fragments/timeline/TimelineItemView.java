@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.text.method.LinkMovementMethod;
 import android.util.AttributeSet;
+import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -34,10 +35,11 @@ import com.tradehero.th.misc.callback.THCallback;
 import com.tradehero.th.misc.callback.THResponse;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.service.UserTimelineService;
+import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
+import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.widget.MarkdownTextView;
 import dagger.Lazy;
-import java.util.Date;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -59,6 +61,8 @@ public class TimelineItemView extends LinearLayout implements
     @Inject protected Provider<PrettyTime> prettyTime;
     @Inject protected CurrentUserBaseKeyHolder currentUserBaseKeyHolder;
     @Inject protected Lazy<Picasso> picasso;
+    @Inject protected Lazy<WatchlistPositionCache> watchlistPositionCache;
+    @Inject protected Lazy<UserWatchlistPositionCache> userWatchlistPositionCache;
     @Inject protected Lazy<UserTimelineService> userTimelineService;
 
     private TimelineItem currentTimelineItem;
@@ -85,7 +89,6 @@ public class TimelineItemView extends LinearLayout implements
         init();
     }
     //</editor-fold>
-
 
     @Override protected void onFinishInflate()
     {
@@ -117,8 +120,8 @@ public class TimelineItemView extends LinearLayout implements
             content.setMovementMethod(LinkMovementMethod.getInstance());
         }
         View[] actionButtons = new View[]
-                { username, avatar, vendorImage, tradeActionButton, shareActionButton, monitorActionButton };
-        for (View actionButton: actionButtons)
+                {username, avatar, vendorImage, tradeActionButton, shareActionButton, monitorActionButton};
+        for (View actionButton : actionButtons)
         {
             if (actionButton != null)
             {
@@ -130,8 +133,8 @@ public class TimelineItemView extends LinearLayout implements
     @Override protected void onDetachedFromWindow()
     {
         View[] actionButtons = new View[]
-                { username, avatar, vendorImage, tradeActionButton, shareActionButton, monitorActionButton };
-        for (View actionButton: actionButtons)
+                {username, avatar, vendorImage, tradeActionButton, shareActionButton, monitorActionButton};
+        for (View actionButton : actionButtons)
         {
             if (actionButton != null)
             {
@@ -212,7 +215,8 @@ public class TimelineItemView extends LinearLayout implements
         {
             switch (item.getItemId())
             {
-                case R.id.timeline_popup_menu_monitor_add_to_watch_list: {
+                case R.id.timeline_popup_menu_monitor_add_to_watch_list:
+                {
                     Bundle args = new Bundle();
                     SecurityId securityId = getSecurityId();
                     if (securityId != null)
@@ -226,7 +230,8 @@ public class TimelineItemView extends LinearLayout implements
                 case R.id.timeline_popup_menu_monitor_enable_stock_alert:
                     return true;
 
-                case R.id.timeline_popup_menu_monitor_view_graph: {
+                case R.id.timeline_popup_menu_monitor_view_graph:
+                {
                     Bundle args = new Bundle();
                     SecurityId securityId = getSecurityId();
                     if (securityId != null)
@@ -314,6 +319,7 @@ public class TimelineItemView extends LinearLayout implements
         {
             monitorPopupMenu = createMonitorPopupMenu();
         }
+        updateMonitorMenuView(monitorPopupMenu.getMenu());
         monitorPopupMenu.show();
     }
 
@@ -344,6 +350,28 @@ public class TimelineItemView extends LinearLayout implements
         return popupMenu;
     }
 
+    private void updateMonitorMenuView(Menu menu)
+    {
+        if (menu != null)
+        {
+            SecurityId securityId = getSecurityId();
+
+            MenuItem watchListMenuItem = menu.findItem(R.id.timeline_popup_menu_monitor_add_to_watch_list);
+            // if Watchlist milestone has finished receiving data
+            if (watchListMenuItem != null && userWatchlistPositionCache.get().get(currentUserBaseKeyHolder.getCurrentUserBaseKey()) != null)
+            {
+                if (watchlistPositionCache.get().get(securityId) == null)
+                {
+                    watchListMenuItem.setTitle(getContext().getString(R.string.add_to_watch_list));
+                }
+                else
+                {
+                    watchListMenuItem.setTitle(getContext().getString(R.string.edit_in_watch_list));
+                }
+            }
+        }
+    }
+
     private Callback<Response> createShareRequestCallback(final SocialNetworkEnum socialNetworkEnum)
     {
         return new THCallback<Response>()
@@ -372,7 +400,6 @@ public class TimelineItemView extends LinearLayout implements
     }
     //</editor-fold>
 
-
     //<editor-fold desc="Navigations">
     private void openSecurityProfile(String exchange, String symbol)
     {
@@ -399,6 +426,4 @@ public class TimelineItemView extends LinearLayout implements
         }
     }
     //</editor-fold>
-
-
 }
