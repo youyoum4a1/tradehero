@@ -1,4 +1,4 @@
-package com.tradehero.th.api.push;
+package com.tradehero.th.models.push;
 
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
@@ -7,7 +7,6 @@ import com.tradehero.th.push.IntentReceiver;
 import com.urbanairship.UAirship;
 import com.urbanairship.push.CustomPushNotificationBuilder;
 import com.urbanairship.push.PushManager;
-import com.urbanairship.push.PushPreferences;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 

@@ -1,4 +1,4 @@
-package com.tradehero.th.api.push;
+package com.tradehero.th.models.push;
 
 /**
  * Created by xavier on 1/10/14.
