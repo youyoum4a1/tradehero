@@ -365,17 +365,25 @@ public class TimelineItemView extends LinearLayout implements
             SecurityId securityId = getSecurityId();
 
             MenuItem watchListMenuItem = menu.findItem(R.id.timeline_popup_menu_monitor_add_to_watch_list);
-            // if Watchlist milestone has finished receiving data
-            if (watchListMenuItem != null && userWatchlistPositionCache.get().get(currentUserBaseKeyHolder.getCurrentUserBaseKey()) != null)
+            if (securityId != null && watchListMenuItem != null)
             {
-                if (watchlistPositionCache.get().get(securityId) == null)
+                // if Watchlist milestone has finished receiving data
+                if (userWatchlistPositionCache.get().get(currentUserBaseKeyHolder.getCurrentUserBaseKey()) != null)
                 {
-                    watchListMenuItem.setTitle(getContext().getString(R.string.add_to_watch_list));
+                    if (watchlistPositionCache.get().get(securityId) == null)
+                    {
+                        watchListMenuItem.setTitle(getContext().getString(R.string.add_to_watch_list));
+                    }
+                    else
+                    {
+                        watchListMenuItem.setTitle(getContext().getString(R.string.edit_in_watch_list));
+                    }
+                    watchListMenuItem.setVisible(true);
                 }
-                else
-                {
-                    watchListMenuItem.setTitle(getContext().getString(R.string.edit_in_watch_list));
-                }
+            }
+            else
+            {
+                watchListMenuItem.setVisible(false);
             }
         }
     }
