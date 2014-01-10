@@ -32,6 +32,8 @@ public class WatchlistItemView extends LinearLayout implements DTOView<SecurityI
     private TextView companyName;
     private TextView numberOfShares;
     private WatchlistPositionDTO watchlistPositionDTO;
+    private TextView positionPercentage;
+    private TextView positionLastAmount;
 
     //<editor-fold desc="Constructors">
     public WatchlistItemView(Context context)
@@ -64,6 +66,8 @@ public class WatchlistItemView extends LinearLayout implements DTOView<SecurityI
         stockSymbol = (TextView) findViewById(R.id.stock_symbol);
         companyName = (TextView) findViewById(R.id.company_name);
         numberOfShares = (TextView) findViewById(R.id.number_of_shares);
+        positionPercentage = (TextView) findViewById(R.id.position_percentage);
+        positionLastAmount = (TextView) findViewById(R.id.position_last_amount);
     }
 
     @Override public void display(SecurityId securityId)
@@ -79,9 +83,36 @@ public class WatchlistItemView extends LinearLayout implements DTOView<SecurityI
 
         displayExchangeSymbol();
 
+        displayNumberOfShares();
+
         displayCompanyName();
 
-        displayNumberOfShares();
+        displayPlPercentage();
+    }
+
+    private void displayPlPercentage()
+    {
+        SecurityCompactDTO securityCompactDTO = watchlistPositionDTO.securityDTO;
+
+        if (securityCompactDTO != null)
+        {
+            Double lastPrice = securityCompactDTO.lastPrice;
+            Double watchlistPrice = watchlistPositionDTO.getWatchlistPrice();
+            if (lastPrice == null)
+            {
+                lastPrice = 0.0;
+            }
+            if (watchlistPrice != 0)
+            {
+                double pl = (lastPrice - watchlistPrice) * 100 / watchlistPrice;
+                positionPercentage.setText("" + pl);
+            }
+        }
+        else
+        {
+            positionPercentage.setText("");
+            positionLastAmount.setText("");
+        }
     }
 
     private void displayNumberOfShares()
