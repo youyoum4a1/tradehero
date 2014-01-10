@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tradehero.th.fragments.position.WatchlistItemView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/position_partial_top"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="60dp"
+    android:background="@color/white"
+    >
+  <ImageView
+      android:id="@+id/stock_logo"
+      android:layout_width="0dp"
+      android:layout_weight="1"
+      android:layout_height="match_parent"
+      android:layout_margin="2dp"
+      android:scaleType="fitCenter"
+      android:contentDescription="@null"
+      />
+  <RelativeLayout
+      android:id="@+id/stock_quick_info"
+      android:orientation="vertical"
+      android:layout_width="0dp"
+      android:layout_weight="2"
+      android:layout_height="match_parent"
+      android:layout_marginLeft="4dp"
+      android:layout_marginTop="2dp"
+      android:layout_marginBottom="2dp"
+      >
+
+    <TextView
+        android:id="@+id/stock_symbol"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:maxLines="1"
+        android:layout_alignParentTop="true"
+        android:text="LSE:VOD"
+        />
+
+    <TextView
+        android:id="@+id/company_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:maxLines="1"
+        android:layout_centerInParent="true"
+        android:textSize="10sp"
+        android:text="Vodaphone"
+        />
+
+  </RelativeLayout>
+
+  <RelativeLayout
+      android:id="@+id/quick_position_info"
+      android:orientation="vertical"
+      android:layout_width="0dp"
+      android:layout_weight="1"
+      android:layout_height="match_parent"
+      android:layout_marginLeft="4dp"
+      android:layout_marginTop="2dp"
+      android:layout_marginBottom="2dp"
+      >
+
+    <TextView
+        android:id="@+id/position_percentage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:maxLines="1"
+        android:layout_alignParentTop="true"
+        />
+    <TextView
+        android:id="@+id/position_last_amount"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:maxLines="1"
+        android:textSize="10sp"
+        android:layout_alignParentBottom="true"
+        />
+  </RelativeLayout>
+</com.tradehero.th.fragments.position.WatchlistItemView>

@@ -23,6 +23,7 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.position.PositionListFragment;
+import com.tradehero.th.fragments.position.PositionWatchlistFragment;
 import com.tradehero.th.persistence.portfolio.PortfolioCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
 import com.tradehero.th.persistence.portfolio.UserPortfolioFetchAssistant;
@@ -537,11 +538,21 @@ public class PortfolioListFragment extends DashboardFragment
 
     private void handlePortfolioItemClicked(View view, int position, long id)
     {
-        if (view instanceof PortfolioListItemView)
+        if (view instanceof PortfolioListItemView && portfolioListAdapter.getItem(position) instanceof DisplayablePortfolioDTO)
         {
             Bundle args = new Bundle();
-            args.putBundle(PositionListFragment.BUNDLE_KEY_SHOW_PORTFOLIO_ID_BUNDLE, ((PortfolioListItemView) view).getDisplayablePortfolioDTO().ownedPortfolioId.getArgs());
-            navigator.pushFragment(PositionListFragment.class, args);
+
+            DisplayablePortfolioDTO displayablePortfolioDTO = (DisplayablePortfolioDTO) portfolioListAdapter.getItem(position);
+
+            if (displayablePortfolioDTO.portfolioDTO != null && displayablePortfolioDTO.portfolioDTO.isWatchlist)
+            {
+                navigator.pushFragment(PositionWatchlistFragment.class, args);
+            }
+            else
+            {
+                args.putBundle(PositionListFragment.BUNDLE_KEY_SHOW_PORTFOLIO_ID_BUNDLE, displayablePortfolioDTO.ownedPortfolioId.getArgs());
+                navigator.pushFragment(PositionListFragment.class, args);
+            }
         }
         else
         {

@@ -167,5 +167,6 @@
   <string name="show_friends_of_friends">Show friends of friends</string>
   <string name="average_purchase_price">Average Price (US$)</string>
   <string name="unit">1</string>
+  <string name="watchlist">Watchlist</string>
 
 </resources>

@@ -50,6 +50,8 @@ import com.tradehero.th.fragments.position.PositionInPeriodClosedView;
 import com.tradehero.th.fragments.position.PositionInPeriodOpenView;
 import com.tradehero.th.fragments.position.PositionListFragment;
 import com.tradehero.th.fragments.position.PositionOpenView;
+import com.tradehero.th.fragments.position.PositionWatchlistFragment;
+import com.tradehero.th.fragments.position.WatchlistItemView;
 import com.tradehero.th.fragments.position.partial.PositionPartialBottomClosedView;
 import com.tradehero.th.fragments.position.partial.PositionPartialBottomInPeriodClosedView;
 import com.tradehero.th.fragments.position.partial.PositionPartialBottomInPeriodOpenView;
@@ -282,6 +284,8 @@ import org.ocpsoft.prettytime.PrettyTime;
                 WatchListFragment.class,
                 UserWatchlistPositionCache.class,
                 WatchlistRetrievedMilestone.class,
+                PositionWatchlistFragment.class,
+                WatchlistItemView.class,
         },
         staticInjections =
         {

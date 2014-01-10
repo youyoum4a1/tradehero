@@ -16,6 +16,7 @@ import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.widget.list.BaseListHeaderView;
 import dagger.Lazy;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
@@ -66,9 +67,9 @@ public class PortfolioListItemAdapter extends ArrayDTOAdapter<DisplayablePortfol
             // TODO This could be improved
             // Here it is relying on the cache to be already filled to separate the heroes from the others.
             UserProfileDTO currentUserProfile = userProfileCache.get().get(currentUserBaseKeyHolder.get().getCurrentUserBaseKey());
-            Set<DisplayablePortfolioDTO> ownPortfolios = new TreeSet<>();
-            Set<DisplayablePortfolioDTO> heroPortfolios = new TreeSet<>();
-            Set<DisplayablePortfolioDTO> otherPortfolios = new TreeSet<>();
+            Set<DisplayablePortfolioDTO> ownPortfolios = new HashSet<>();
+            Set<DisplayablePortfolioDTO> heroPortfolios = new HashSet<>();
+            Set<DisplayablePortfolioDTO> otherPortfolios = new HashSet<>();
 
             for (DisplayablePortfolioDTO displayablePortfolioDTO: items)
             {
