@@ -28,13 +28,14 @@ package com.tradehero.th.push;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.util.Log;
-
+import com.tradehero.th.R;
 import com.tradehero.th.activities.DashboardActivity;
+import com.tradehero.th.base.Application;
 import com.urbanairship.UAirship;
 import com.urbanairship.push.GCMMessageHandler;
 import com.urbanairship.push.PushManager;
-
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
@@ -72,6 +73,11 @@ public class IntentReceiver extends BroadcastReceiver
             Intent launch = new Intent(Intent.ACTION_MAIN);
             launch.setClass(UAirship.shared().getApplicationContext(), DashboardActivity.class);
             launch.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            String deepLink = (String) intent.getExtras().get(Application.getResourceString(R.string.push_notification_deep_link_url));
+            if (deepLink != null)
+            {
+                launch.setData(Uri.parse(deepLink));
+            }
 
             UAirship.shared().getApplicationContext().startActivity(launch);
         }

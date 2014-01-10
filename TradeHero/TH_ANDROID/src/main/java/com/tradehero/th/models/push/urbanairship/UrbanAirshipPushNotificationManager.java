@@ -1,8 +1,9 @@
-package com.tradehero.th.models.push;
+package com.tradehero.th.models.push.urbanairship;
 
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
 import com.tradehero.th.base.Application;
+import com.tradehero.th.models.push.PushNotificationManager;
 import com.tradehero.th.push.IntentReceiver;
 import com.urbanairship.UAirship;
 import com.urbanairship.push.CustomPushNotificationBuilder;

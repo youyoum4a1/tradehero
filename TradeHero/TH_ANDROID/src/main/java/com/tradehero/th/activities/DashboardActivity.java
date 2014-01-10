@@ -71,6 +71,7 @@ public class DashboardActivity extends SherlockFragmentActivity
         switch (intent.getAction())
         {
             case Intent.ACTION_VIEW:
+            case Intent.ACTION_MAIN:
                 if (thIntentFactory.get().isHandlableIntent(intent))
                 {
                     navigator.goToPage(thIntentFactory.get().create(intent));
