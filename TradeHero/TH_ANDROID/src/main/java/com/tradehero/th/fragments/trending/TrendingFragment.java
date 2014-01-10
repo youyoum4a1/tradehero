@@ -342,6 +342,8 @@ public class TrendingFragment extends DashboardFragment
             args.putBundle(BuySellFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
             // TODO use other positions
             navigator.pushFragment(BuySellFragment.class, args);
+
+            // startActivity(new SecurityBuyIntent(securityId)); // Example using external navigation
         }
     }
 

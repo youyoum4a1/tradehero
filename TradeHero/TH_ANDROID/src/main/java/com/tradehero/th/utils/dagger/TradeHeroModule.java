@@ -98,6 +98,8 @@ import com.tradehero.th.loaders.SearchStockPageListLoader;
 import com.tradehero.th.loaders.TimelineListLoader;
 import com.tradehero.th.loaders.security.SecurityListPagedLoader;
 import com.tradehero.th.models.alert.SecurityAlertAssistant;
+import com.tradehero.th.models.intent.THIntentFactory;
+import com.tradehero.th.models.intent.trending.TrendingIntentFactory;
 import com.tradehero.th.models.push.PushNotificationManager;
 import com.tradehero.th.models.push.UrbanAirshipPushNotificationManager;
 import com.tradehero.th.network.NetworkEngine;
@@ -286,6 +288,9 @@ import org.ocpsoft.prettytime.PrettyTime;
                 WatchlistRetrievedMilestone.class,
                 PositionWatchlistFragment.class,
                 WatchlistItemView.class,
+
+                THIntentFactory.class,
+                TrendingIntentFactory.class,
         },
         staticInjections =
         {

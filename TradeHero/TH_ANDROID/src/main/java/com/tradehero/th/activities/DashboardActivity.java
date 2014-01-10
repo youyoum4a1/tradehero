@@ -2,6 +2,8 @@ package com.tradehero.th.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.widget.TabHost;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.MenuItem;
 import com.crashlytics.android.Crashlytics;
@@ -17,6 +19,8 @@ import com.tradehero.th.billing.googleplay.THIABPurchase;
 import com.tradehero.th.billing.googleplay.THIABPurchaseRestorer;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.billing.PurchaseRestorerAlertUtil;
+import com.tradehero.th.models.intent.THIntent;
+import com.tradehero.th.models.intent.THIntentFactory;
 import com.tradehero.th.persistence.watchlist.WatchlistRetrievedMilestone;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.FacebookUtils;
@@ -28,7 +32,6 @@ public class DashboardActivity extends SherlockFragmentActivity
         implements DashboardNavigatorActivity, THIABActorUser
 {
     public static final String TAG = DashboardActivity.class.getSimpleName();
-    public static final String EXTRA_FRAGMENT = DashboardActivity.class.getName() + ".fragment";
 
     private DashboardNavigator navigator;
     private THIABLogicHolder thiabLogicHolder;
@@ -37,6 +40,7 @@ public class DashboardActivity extends SherlockFragmentActivity
 
     @Inject protected Lazy<FacebookUtils> facebookUtils;
     @Inject CurrentUserBaseKeyHolder currentUserBaseKeyHolder;
+    @Inject Lazy<THIntentFactory> thIntentFactory;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -49,8 +53,6 @@ public class DashboardActivity extends SherlockFragmentActivity
         launchIAB();
 
         retrieveWatchlist();
-
-        THLog.d(TAG, "onCreate");
     }
 
     private void retrieveWatchlist()
@@ -69,26 +71,13 @@ public class DashboardActivity extends SherlockFragmentActivity
         switch (intent.getAction())
         {
             case Intent.ACTION_VIEW:
-                if (intent.hasExtra(EXTRA_FRAGMENT))
+                if (thIntentFactory.get().isHandlableIntent(intent))
                 {
-                    switchFragment(intent.getExtras());
+                    navigator.goToPage(thIntentFactory.get().create(intent));
                 }
                 break;
         }
         THLog.d(TAG, getIntent().getAction());
-    }
-
-    private void switchFragment(Bundle extras)
-    {
-        try
-        {
-            Class fragmentClass = Class.forName(extras.getString(EXTRA_FRAGMENT));
-            navigator.pushFragment(fragmentClass, extras);
-        }
-        catch (ClassNotFoundException e)
-        {
-            THLog.d(TAG, "Fragment not found");
-        }
     }
 
     private void launchIAB()
@@ -104,7 +93,6 @@ public class DashboardActivity extends SherlockFragmentActivity
             @Override
             public void onPurchaseRestoreFinished(List<THIABPurchase> consumed, List<THIABPurchase> reportFailed, List<THIABPurchase> consumeFailed)
             {
-                THLog.d(TAG, "onPurchaseRestoreFinished3");
                 PurchaseRestorerAlertUtil.handlePurchaseRestoreFinished(
                         DashboardActivity.this,
                         consumed,
@@ -115,12 +103,10 @@ public class DashboardActivity extends SherlockFragmentActivity
 
             @Override public void onPurchaseRestoreFinished(List<THIABPurchase> consumed, List<THIABPurchase> consumeFailed)
             {
-                THLog.d(TAG, "onPurchaseRestoreFinished2");
             }
 
             @Override public void onPurchaseRestoreFailed(Throwable throwable)
             {
-                THLog.d(TAG, "onPurchaseRestoreFailed");
                 // We keep silent on this one as we don't want to bother the user if for instance billing is not available
                 // On the other hand, the settings fragment will inform
             }
@@ -147,8 +133,7 @@ public class DashboardActivity extends SherlockFragmentActivity
     {
         if (navigator == null)
         {
-            navigator = new DashboardNavigator(
-                this, getSupportFragmentManager(), R.id.realtabcontent, getIntent() == null || !getIntent().hasExtra(EXTRA_FRAGMENT));
+            navigator = new DashboardNavigator(this, getSupportFragmentManager(), R.id.realtabcontent);
         }
 
         launchActions();
@@ -164,6 +149,11 @@ public class DashboardActivity extends SherlockFragmentActivity
             thiabLogicHolder.onDestroy();
         }
         thiabLogicHolder = null;
+        if (navigator != null)
+        {
+            navigator.onDestroy();
+        }
+        navigator = null;
         super.onDestroy();
     }
 

@@ -53,8 +53,18 @@ public class PApplication extends Application
         return context().getResources().getString(resourceId);
     }
 
+    public static String getResourceString(int resourceId, java.lang.Object... formatArgs)
+    {
+        return context().getResources().getString(resourceId, formatArgs);
+    }
+
     public static int getResourceColor(int resourceId)
     {
         return context().getResources().getColor(resourceId);
+    }
+
+    public static int getResourceInteger(int resourceId)
+    {
+        return context().getResources().getInteger(resourceId);
     }
 }

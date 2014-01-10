@@ -88,8 +88,15 @@
         <!--<action android:name="com.android.vending.billing.RESPONSE_CODE" />-->
         <!--<action android:name="com.android.vending.billing.PURCHASE_STATE_CHANGED" />-->
         <data android:host="tradehero" android:path="/view" android:scheme="http"/>
-        <data android:path="view" android:scheme="tradehero"/>
+
+        <data android:scheme="@string/intent_scheme" android:host="@string/intent_host_trending" android:pathPattern=".*"/>
+        <data android:scheme="@string/intent_scheme" android:host="@string/intent_host_community" android:pathPattern=".*"/>
+        <data android:scheme="@string/intent_scheme" android:host="@string/intent_host_profile" android:pathPattern=".*"/>
+        <data android:scheme="@string/intent_scheme" android:host="@string/intent_host_portfolio" android:pathPattern=".*"/>
+        <data android:scheme="@string/intent_scheme" android:host="@string/intent_host_store" android:pathPattern=".*"/>
+
       </intent-filter>
+
     </activity>
 
     <activity

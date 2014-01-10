@@ -11,10 +11,11 @@ import android.view.animation.AnimationUtils;
 import android.widget.TabHost;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
+import com.tradehero.th.base.Application;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.fragments.base.BaseFragment;
-import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.dashboard.DashboardTabType;
+import com.tradehero.th.models.intent.THIntent;
 
 /** Created with IntelliJ IDEA. User: tho Date: 10/11/13 Time: 4:24 PM Copyright (c) TradeHero */
 public class DashboardNavigator extends Navigator
@@ -24,16 +25,14 @@ public class DashboardNavigator extends Navigator
 
     private static final String BUNDLE_KEY = "key";
     private FragmentTabHost mTabHost;
+    private TabHost.OnTabChangeListener mOnTabChangedListener;
 
-    public DashboardNavigator(Context context, FragmentManager manager, int fragmentContentId, boolean withTab)
+    public DashboardNavigator(Context context, FragmentManager manager, int fragmentContentId)
     {
         super(context, manager, fragmentContentId);
         this.activity = (FragmentActivity) context;
 
-        if (withTab)
-        {
-            initTabs();
-        }
+        initTabs();
     }
 
     private void initTabs()
@@ -66,6 +65,7 @@ public class DashboardNavigator extends Navigator
             mTabHost.setOnTabChangedListener(null);
         }
         mTabHost = null;
+        mOnTabChangedListener = null;
     }
 
     private TabHost.TabSpec makeTabSpec(DashboardTabType tabType)
@@ -87,10 +87,52 @@ public class DashboardNavigator extends Navigator
                 b);
     }
 
+    public void goToPage(final THIntent thIntent)
+    {
+        final String expectedTag = Application.getResourceString(thIntent.getDashboardType().stringResId);
+        goToTab(
+                thIntent.getDashboardType(),
+                new TabHost.OnTabChangeListener()
+                {
+                    @Override public void onTabChanged(String tabTag)
+                    {
+                        if (expectedTag.equals(tabTag))
+                        {
+                            postPushActionFragment(thIntent);
+                        }
+                    }
+                });
+    }
+
+    private void postPushActionFragment(final THIntent thIntent)
+    {
+        final Class<? extends Fragment> actionFragment = thIntent.getActionFragment();
+        if (actionFragment == null)
+        {
+            return;
+        }
+
+        mTabHost.getCurrentTabView().post(new Runnable()
+        {
+            // This is the way we found to make sure we do not superimpose 2 fragments.
+            @Override public void run()
+            {
+                pushFragment(actionFragment, thIntent.getBundle());
+            }
+        });
+    }
+
     public void goToTab(DashboardTabType tabType)
     {
+        goToTab(tabType, null);
+    }
+
+    public void goToTab(DashboardTabType tabType, TabHost.OnTabChangeListener changeListener)
+    {
+        THLog.d(TAG, "goToTab " + tabType + " with listener " + changeListener);
         if (mTabHost != null)
         {
+            mOnTabChangedListener = changeListener;
             mTabHost.setCurrentTabByTag(makeTabSpec(tabType).getTag());
         }
     }
@@ -145,9 +187,16 @@ public class DashboardNavigator extends Navigator
         }
     }
 
-    private void updateTabBarOnTabChanged(String tag)
+    private void updateTabBarOnTabChanged(String tabId)
     {
-        THLog.d(TAG, "tabBarChanged to " + tag + ", backstack " + manager.getBackStackEntryCount());
+        THLog.d(TAG, "tabBarChanged to " + tabId + ", backstack " + manager.getBackStackEntryCount());
+
+        if (mOnTabChangedListener != null)
+        {
+            THLog.d(TAG, "Called further onTabChangedListener");
+            mOnTabChangedListener.onTabChanged(tabId);
+        }
+        mOnTabChangedListener = null;
     }
 
     private void showTabBar()

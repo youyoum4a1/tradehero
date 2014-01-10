@@ -3,7 +3,6 @@ package com.tradehero.th.fragments.trending;
 import android.content.Context;
 import android.view.LayoutInflater;
 import com.tradehero.th.adapters.ArrayDTOAdapter;
-import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 
 public class SecurityItemViewAdapter extends ArrayDTOAdapter<SecurityId, SecurityItemView>
@@ -27,8 +26,9 @@ public class SecurityItemViewAdapter extends ArrayDTOAdapter<SecurityId, Securit
         return true;
     }
 
-    @Override public long getItemId(int i)
+    @Override public long getItemId(int position)
     {
-        return ((SecurityId) getItem(i)).hashCode();
+        Object item = getItem(position);
+        return item == null ? 0 : ((SecurityId) item).hashCode();
     }
 }
