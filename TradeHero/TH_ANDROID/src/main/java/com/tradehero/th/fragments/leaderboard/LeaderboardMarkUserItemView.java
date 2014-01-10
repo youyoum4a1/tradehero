@@ -21,7 +21,9 @@ import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.base.NavigatorActivity;
+import com.tradehero.th.fragments.portfolio.PortfolioListFragment;
 import com.tradehero.th.fragments.position.LeaderboardPositionListFragment;
+import com.tradehero.th.fragments.position.PositionListFragment;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefCache;
 import com.tradehero.th.utils.DaggerUtils;
@@ -296,11 +298,7 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         int portfolioId = leaderboardItem.portfolioId;
         OwnedPortfolioId ownedPortfolioId = new OwnedPortfolioId(userId, portfolioId);
 
-        // leaderboard mark user id, to get marking user information
         Bundle bundle = new Bundle();
-        bundle.putBundle(LeaderboardPositionListFragment.BUNDLE_KEY_SHOW_PORTFOLIO_ID_BUNDLE, ownedPortfolioId.getArgs());
-        bundle.putLong(LeaderboardMarkUserId.BUNDLE_KEY, leaderboardItem.lbmuId);
-
         // to display time of value on start investment
         SimpleDateFormat sdf = new SimpleDateFormat(getContext().getString(R.string.leaderboard_datetime_format));
         String formattedStartPeriodUtc = sdf.format(leaderboardItem.periodStartUtc);
@@ -311,7 +309,18 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         boolean isTimeRestrictedLeaderboard = leaderboardDef != null && leaderboardDef.isTimeRestrictedLeaderboard();
         bundle.putBoolean(LeaderboardDefDTO.LEADERBOARD_DEF_TIME_RESTRICTED, isTimeRestrictedLeaderboard);
 
-        getNavigator().pushFragment(LeaderboardPositionListFragment.class, bundle, true);
+        if (leaderboardItem.lbmuId != -1)
+        {
+            // leaderboard mark user id, to get marking user information
+            bundle.putBundle(LeaderboardPositionListFragment.BUNDLE_KEY_SHOW_PORTFOLIO_ID_BUNDLE, ownedPortfolioId.getArgs());
+            bundle.putLong(LeaderboardMarkUserId.BUNDLE_KEY, leaderboardItem.lbmuId);
+            getNavigator().pushFragment(LeaderboardPositionListFragment.class, bundle, true);
+        }
+        else
+        {
+            bundle.putBundle(PositionListFragment.BUNDLE_KEY_SHOW_PORTFOLIO_ID_BUNDLE, ownedPortfolioId.getArgs());
+            getNavigator().pushFragment(PositionListFragment.class, bundle, true);
+        }
     }
 
     private Navigator getNavigator()
