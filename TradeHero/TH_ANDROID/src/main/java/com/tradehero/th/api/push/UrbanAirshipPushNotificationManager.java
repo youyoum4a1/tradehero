@@ -1,4 +1,4 @@
-package com.tradehero.th.utils;
+package com.tradehero.th.api.push;
 
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
@@ -7,13 +7,22 @@ import com.tradehero.th.push.IntentReceiver;
 import com.urbanairship.UAirship;
 import com.urbanairship.push.CustomPushNotificationBuilder;
 import com.urbanairship.push.PushManager;
+import com.urbanairship.push.PushPreferences;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 
-/** Created with IntelliJ IDEA. User: tho Date: 12/2/13 Time: 5:40 PM Copyright (c) TradeHero */
-public class PushUtils
+/**
+ * Created by xavier on 1/10/14.
+ */
+@Singleton public class UrbanAirshipPushNotificationManager implements PushNotificationManager
 {
-    public static String TAG = PushUtils.class.getSimpleName();
+    public static final String TAG = UrbanAirshipPushNotificationManager.class.getSimpleName();
 
-    public static void initialize()
+    @Inject public UrbanAirshipPushNotificationManager()
+    {
+    }
+
+    @Override public void initialise()
     {
         UAirship.takeOff(Application.context());
         PushManager.enablePush();
@@ -39,5 +48,25 @@ public class PushUtils
 
         PushManager.shared().setNotificationBuilder(nb);
         PushManager.shared().setIntentReceiver(IntentReceiver.class);
+    }
+
+    @Override public void enablePush()
+    {
+        PushManager.enablePush();
+    }
+
+    @Override public void disablePush()
+    {
+        PushManager.disablePush();
+    }
+
+    @Override public void setSoundEnabled(boolean enabled)
+    {
+        PushManager.shared().getPreferences().setSoundEnabled(enabled);
+    }
+
+    @Override public void setVibrateEnabled(boolean enabled)
+    {
+        PushManager.shared().getPreferences().setVibrateEnabled(enabled);
     }
 }

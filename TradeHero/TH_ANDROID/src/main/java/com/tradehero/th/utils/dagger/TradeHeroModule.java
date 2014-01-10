@@ -14,6 +14,8 @@ import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.form.AbstractUserAvailabilityRequester;
 import com.tradehero.th.api.portfolio.DisplayablePortfolioDTO;
 import com.tradehero.th.api.portfolio.DisplayablePortfolioUtil;
+import com.tradehero.th.api.push.PushNotificationManager;
+import com.tradehero.th.api.push.UrbanAirshipPushNotificationManager;
 import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
 import com.tradehero.th.base.THUser;
 import com.tradehero.th.billing.googleplay.PurchaseRestorerRequiredMilestone;
@@ -147,6 +149,8 @@ import org.ocpsoft.prettytime.PrettyTime;
 @Module(
         injects =
         {
+                com.tradehero.th.base.Application.class,
+
                 AuthenticationActivity.class,
                 DashboardActivity.class,
 
@@ -442,5 +446,10 @@ public class TradeHeroModule
     @Provides @Singleton AbstractUserStore provideUserStore(UserStore store)
     {
         return store;
+    }
+
+    @Provides @Singleton PushNotificationManager providePushNotificationManager()
+    {
+        return new UrbanAirshipPushNotificationManager();
     }
 }

@@ -25,6 +25,7 @@ import com.tradehero.th.R;
 import com.tradehero.th.activities.ActivityHelper;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.form.UserFormFactory;
+import com.tradehero.th.api.push.PushNotificationManager;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.social.SocialNetworkFormDTO;
 import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
@@ -53,8 +54,6 @@ import com.tradehero.th.utils.FacebookUtils;
 import com.tradehero.th.utils.LinkedInUtils;
 import com.tradehero.th.utils.TwitterUtils;
 import com.tradehero.th.utils.VersionUtils;
-import com.urbanairship.push.PushManager;
-import com.urbanairship.push.PushPreferences;
 import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
@@ -74,6 +73,7 @@ public class SettingsFragment extends PreferenceFragment
     @Inject protected Lazy<UserProfileCache> userProfileCache;
     @Inject protected CurrentUserBaseKeyHolder currentUserBaseKeyHolder;
     protected UserProfileRetrievedMilestone currentUserProfileRetrievedMilestone;
+    @Inject protected PushNotificationManager pushNotificationManager;
 
     @Inject protected Lazy<FacebookUtils> facebookUtils;
     @Inject protected Lazy<TwitterUtils> twitterUtils;
@@ -396,8 +396,7 @@ public class SettingsFragment extends PreferenceFragment
             {
                 @Override public boolean onPreferenceChange(Preference preference, Object newValue)
                 {
-                    PushPreferences prefs = PushManager.shared().getPreferences();
-                    prefs.setSoundEnabled((boolean) newValue);
+                    pushNotificationManager.setSoundEnabled((boolean) newValue);
                     return true;
                 }
             });
@@ -410,8 +409,7 @@ public class SettingsFragment extends PreferenceFragment
             {
                 @Override public boolean onPreferenceChange(Preference preference, Object newValue)
                 {
-                    PushPreferences prefs = PushManager.shared().getPreferences();
-                    prefs.setVibrateEnabled((boolean) newValue);
+                    pushNotificationManager.setVibrateEnabled((boolean) newValue);
                     return true;
                 }
             });
@@ -452,11 +450,11 @@ public class SettingsFragment extends PreferenceFragment
 
             if (currentUserProfile.pushNotificationsEnabled)
             {
-                PushManager.enablePush();
+                pushNotificationManager.enablePush();
             }
             else
             {
-                PushManager.disablePush();
+                pushNotificationManager.disablePush();
             }
         }
     }
