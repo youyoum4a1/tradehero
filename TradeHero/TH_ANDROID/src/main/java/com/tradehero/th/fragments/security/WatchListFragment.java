@@ -31,9 +31,10 @@ import dagger.Lazy;
 import javax.inject.Inject;
 
 /** Created with IntelliJ IDEA. User: tho Date: 12/3/13 Time: 4:05 PM Copyright (c) TradeHero */
-public class AddToWatchListFragment extends DashboardFragment
+public class WatchListFragment extends DashboardFragment
 {
-    public static final String BUNDLE_KEY_SECURITY_ID_BUNDLE = AddToWatchListFragment.class.getName() + ".securityKeyId";
+    public static final String BUNDLE_KEY_SECURITY_ID_BUNDLE = WatchListFragment.class.getName() + ".securityKeyId";
+    public static final String BUNDLE_KEY_TITLE = WatchListFragment.class.getName() + ".title";
     private static final String TAG = DashboardFragment.class.getName();
 
     private ImageView securityLogo;
@@ -141,9 +142,12 @@ public class AddToWatchListFragment extends DashboardFragment
     {
         super.onCreateOptionsMenu(menu, inflater);
 
+        Bundle argument = getArguments();
+        String title = argument.getString(BUNDLE_KEY_TITLE);
+
         ActionBar actionBar = getSherlockActivity().getSupportActionBar();
         actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME);
-        actionBar.setTitle(getString(R.string.add_to_watch_list));
+        actionBar.setTitle(title);
     }
 
     @Override public void onResume()

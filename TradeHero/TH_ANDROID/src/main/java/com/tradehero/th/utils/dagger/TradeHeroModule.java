@@ -55,7 +55,7 @@ import com.tradehero.th.fragments.position.partial.PositionPartialBottomInPeriod
 import com.tradehero.th.fragments.position.partial.PositionPartialBottomInPeriodOpenView;
 import com.tradehero.th.fragments.position.partial.PositionPartialBottomOpenView;
 import com.tradehero.th.fragments.position.partial.PositionPartialTopView;
-import com.tradehero.th.fragments.security.AddToWatchListFragment;
+import com.tradehero.th.fragments.security.WatchListFragment;
 import com.tradehero.th.fragments.security.ChartFragment;
 import com.tradehero.th.fragments.security.StockInfoFragment;
 import com.tradehero.th.fragments.security.StockInfoValueFragment;
@@ -279,7 +279,7 @@ import org.ocpsoft.prettytime.PrettyTime;
                 HeroManagerInfoFetcher.class,
                 BuySellFragment.BuySellTHIABUserInteractor.class,
 
-                AddToWatchListFragment.class,
+                WatchListFragment.class,
                 UserWatchlistPositionCache.class,
                 WatchlistRetrievedMilestone.class,
         },
