@@ -1,6 +1,8 @@
 package com.tradehero.th.fragments.position;
 
 import android.content.Context;
+import android.text.Html;
+import android.text.Spanned;
 import android.util.AttributeSet;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -28,6 +30,8 @@ public class WatchlistItemView extends LinearLayout implements DTOView<SecurityI
     private ImageView stockLogo;
     private TextView stockSymbol;
     private TextView companyName;
+    private TextView numberOfShares;
+    private WatchlistPositionDTO watchlistPositionDTO;
 
     //<editor-fold desc="Constructors">
     public WatchlistItemView(Context context)
@@ -59,28 +63,63 @@ public class WatchlistItemView extends LinearLayout implements DTOView<SecurityI
         stockLogo = (ImageView) findViewById(R.id.stock_logo);
         stockSymbol = (TextView) findViewById(R.id.stock_symbol);
         companyName = (TextView) findViewById(R.id.company_name);
+        numberOfShares = (TextView) findViewById(R.id.number_of_shares);
     }
 
     @Override public void display(SecurityId securityId)
     {
-        WatchlistPositionDTO watchlistPositionDTO = watchlistPositionCache.get().get(securityId);
+        watchlistPositionDTO = watchlistPositionCache.get().get(securityId);
 
         if (watchlistPositionDTO == null)
         {
             return;
         }
 
-        SecurityCompactDTO securityCompactDTO = watchlistPositionDTO.securityDTO;
+        displayStockLogo();
 
-        displayStockLogo(securityCompactDTO);
+        displayExchangeSymbol();
 
-        displayExchangeSymbol(securityCompactDTO);
+        displayCompanyName();
 
-        displayCompanyName(securityCompactDTO);
+        displayNumberOfShares();
     }
 
-    private void displayCompanyName(SecurityCompactDTO securityCompactDTO)
+    private void displayNumberOfShares()
     {
+        SecurityCompactDTO securityCompactDTO = watchlistPositionDTO.securityDTO;
+        if (numberOfShares != null)
+        {
+            if (securityCompactDTO != null)
+            {
+                Double formattedPrice = watchlistPositionDTO.getWatchlistPrice();
+                numberOfShares.setText(formatNumberOfShares(watchlistPositionDTO.shares, securityCompactDTO.currencyDisplay, formattedPrice));
+            }
+            else
+            {
+                numberOfShares.setText("");
+            }
+        }
+    }
+
+    private Spanned formatNumberOfShares(Integer shares, String currencyDisplay, Double formattedPrice)
+    {
+        if (formattedPrice == null)
+        {
+            formattedPrice = 0.0;
+        }
+        if (shares == null)
+        {
+            shares = 0;
+        }
+        return Html.fromHtml(String.format(
+                getContext().getString(R.string.watchlist_number_of_shares),
+                shares, currencyDisplay, formattedPrice
+        ));
+    }
+
+    private void displayCompanyName()
+    {
+        SecurityCompactDTO securityCompactDTO = watchlistPositionDTO.securityDTO;
         if (companyName != null)
         {
             if (securityCompactDTO != null)
@@ -94,8 +133,10 @@ public class WatchlistItemView extends LinearLayout implements DTOView<SecurityI
         }
     }
 
-    private void displayStockLogo(SecurityCompactDTO securityCompactDTO)
+    private void displayStockLogo()
     {
+        SecurityCompactDTO securityCompactDTO = watchlistPositionDTO.securityDTO;
+
         if (stockLogo != null)
         {
             if (securityCompactDTO != null && securityCompactDTO.imageBlobUrl != null)
@@ -118,8 +159,10 @@ public class WatchlistItemView extends LinearLayout implements DTOView<SecurityI
         }
     }
 
-    private void displayExchangeSymbol(SecurityCompactDTO securityCompactDTO)
+    private void displayExchangeSymbol()
     {
+        SecurityCompactDTO securityCompactDTO = watchlistPositionDTO.securityDTO;
+
         if (stockSymbol != null)
         {
             if (securityCompactDTO != null)

@@ -168,5 +168,5 @@
   <string name="average_purchase_price">Average Price (US$)</string>
   <string name="unit">1</string>
   <string name="watchlist">Watchlist</string>
-
+  <string name="watchlist_number_of_shares"><![CDATA[<b>%1$d</b> shares @ %2$s <b>%3$s</b>]]></string>
 </resources>
