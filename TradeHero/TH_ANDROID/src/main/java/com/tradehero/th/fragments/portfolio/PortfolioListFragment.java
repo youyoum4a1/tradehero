@@ -544,13 +544,14 @@ public class PortfolioListFragment extends DashboardFragment
 
             DisplayablePortfolioDTO displayablePortfolioDTO = (DisplayablePortfolioDTO) portfolioListAdapter.getItem(position);
 
+            args.putBundle(PositionListFragment.BUNDLE_KEY_SHOW_PORTFOLIO_ID_BUNDLE, displayablePortfolioDTO.ownedPortfolioId.getArgs());
+
             if (displayablePortfolioDTO.portfolioDTO != null && displayablePortfolioDTO.portfolioDTO.isWatchlist)
             {
                 navigator.pushFragment(PositionWatchlistFragment.class, args);
             }
             else
             {
-                args.putBundle(PositionListFragment.BUNDLE_KEY_SHOW_PORTFOLIO_ID_BUNDLE, displayablePortfolioDTO.ownedPortfolioId.getArgs());
                 navigator.pushFragment(PositionListFragment.class, args);
             }
         }

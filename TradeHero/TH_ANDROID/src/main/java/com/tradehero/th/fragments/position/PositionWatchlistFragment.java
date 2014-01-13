@@ -13,6 +13,7 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.tradehero.common.milestone.Milestone;
 import com.tradehero.th.R;
+import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
 import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.fragments.base.DashboardFragment;
@@ -58,18 +59,7 @@ public class PositionWatchlistFragment extends DashboardFragment
         {
             progressBar = (ProgressBar) view.findViewById(android.R.id.empty);
             watchlistListView = (ListView) view.findViewById(android.R.id.list);
-            // watchlist is not yet retrieved
-            if (userWatchlistCache.get().get(currentUserBaseKeyHolder.getCurrentUserBaseKey()) == null)
-            {
-                WatchlistRetrievedMilestone watchlistRetrievedMilestone = new WatchlistRetrievedMilestone(currentUserBaseKeyHolder.getCurrentUserBaseKey());
-                watchlistRetrievedMilestone.setOnCompleteListener(watchlistRetrievedMilestoneListener);
 
-                displayProgress(true);
-            }
-            else
-            {
-                display();
-            }
             // portfolio header
             Bundle args = getArguments();
             if (args != null)
@@ -82,6 +72,23 @@ public class PositionWatchlistFragment extends DashboardFragment
         }
     }
 
+    @Override public void onResume()
+    {
+        super.onResume();
+
+        // watchlist is not yet retrieved
+        if (userWatchlistCache.get().get(currentUserBaseKeyHolder.getCurrentUserBaseKey()) == null)
+        {
+            WatchlistRetrievedMilestone watchlistRetrievedMilestone = new WatchlistRetrievedMilestone(currentUserBaseKeyHolder.getCurrentUserBaseKey());
+            watchlistRetrievedMilestone.setOnCompleteListener(watchlistRetrievedMilestoneListener);
+
+            displayProgress(true);
+        }
+        else
+        {
+            display();
+        }
+    }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
@@ -107,7 +114,8 @@ public class PositionWatchlistFragment extends DashboardFragment
     {
         if (portfolioHeaderView != null)
         {
-            // bind with correct portfolio
+            portfolioHeaderView.bindOwnedPortfolioId(
+                    new OwnedPortfolioId(getArguments().getBundle(PositionListFragment.BUNDLE_KEY_SHOW_PORTFOLIO_ID_BUNDLE)));
         }
     }
 
