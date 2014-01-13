@@ -147,8 +147,8 @@ public class WatchlistItemView extends LinearLayout implements DTOView<SecurityI
         {
             if (securityCompactDTO != null)
             {
-                Double formattedPrice = watchlistPositionDTO.getWatchlistPrice();
-                numberOfShares.setText(formatNumberOfShares(watchlistPositionDTO.shares, securityCompactDTO.currencyDisplay, formattedPrice));
+                Double watchListPrice = watchlistPositionDTO.getWatchlistPrice();
+                numberOfShares.setText(formatNumberOfShares(watchlistPositionDTO.shares, securityCompactDTO.currencyDisplay, watchListPrice));
             }
             else
             {

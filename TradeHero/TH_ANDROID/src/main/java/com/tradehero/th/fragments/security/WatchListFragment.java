@@ -12,6 +12,8 @@ import android.widget.TextView;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
+import com.squareup.picasso.Picasso;
+import com.tradehero.common.graphics.WhiteToTransparentTransformation;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
@@ -51,6 +53,7 @@ public class WatchListFragment extends DashboardFragment
     @Inject protected Lazy<SecurityCompactCache> securityCompactCache;
     @Inject protected Lazy<WatchlistPositionCache> watchlistPositionCache;
     @Inject protected Lazy<WatchlistService> watchlistService;
+    @Inject protected Lazy<Picasso> picasso;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -184,7 +187,7 @@ public class WatchListFragment extends DashboardFragment
     {
         if (securityTitle != null)
         {
-            securityTitle.setText(String.format("%s:%s", securityKeyId.securitySymbol, securityKeyId.exchange));
+            securityTitle.setText(String.format("%s:%s", securityKeyId.exchange, securityKeyId.securitySymbol));
         }
     }
 
@@ -223,15 +226,25 @@ public class WatchListFragment extends DashboardFragment
 
             if (securityLogo != null)
             {
-                int exchangeId = securityCompactDTO.getExchangeLogoId();
-                if (exchangeId != 0)
+                if (securityCompactDTO.imageBlobUrl != null)
                 {
-                    securityLogo.setImageResource(securityCompactDTO.getExchangeLogoId());
-                    securityLogo.setVisibility(View.VISIBLE);
+                    picasso.get()
+                            .load(securityCompactDTO.imageBlobUrl)
+                            .transform(new WhiteToTransparentTransformation())
+                            .into(securityLogo);
                 }
                 else
                 {
-                    securityLogo.setVisibility(View.GONE);
+                    int exchangeId = securityCompactDTO.getExchangeLogoId();
+                    if (exchangeId != 0)
+                    {
+                        securityLogo.setImageResource(securityCompactDTO.getExchangeLogoId());
+                        securityLogo.setVisibility(View.VISIBLE);
+                    }
+                    else
+                    {
+                        securityLogo.setVisibility(View.GONE);
+                    }
                 }
             }
 

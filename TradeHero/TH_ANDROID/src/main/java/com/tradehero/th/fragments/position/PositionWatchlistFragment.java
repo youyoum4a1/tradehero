@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewStub;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import com.actionbarsherlock.app.ActionBar;
@@ -14,11 +15,14 @@ import com.actionbarsherlock.view.MenuItem;
 import com.tradehero.common.milestone.Milestone;
 import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
+import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
+import com.tradehero.th.base.Navigator;
 import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.portfolio.header.PortfolioHeaderFactory;
 import com.tradehero.th.fragments.portfolio.header.PortfolioHeaderView;
+import com.tradehero.th.fragments.security.WatchListFragment;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
 import com.tradehero.th.persistence.watchlist.WatchlistRetrievedMilestone;
@@ -37,7 +41,7 @@ public class PositionWatchlistFragment extends DashboardFragment
 
     @Inject protected Lazy<WatchlistPositionCache> watchlistCache;
     @Inject protected Lazy<UserWatchlistPositionCache> userWatchlistCache;
-    @Inject Lazy<PortfolioHeaderFactory> headerFactory;
+    @Inject protected Lazy<PortfolioHeaderFactory> headerFactory;
     @Inject protected CurrentUserBaseKeyHolder currentUserBaseKeyHolder;
 
     private ListView watchlistListView;
@@ -124,6 +128,7 @@ public class PositionWatchlistFragment extends DashboardFragment
         WatchlistAdapter watchListAdapter = createWatchlistAdapter();
         watchListAdapter.setItems(userWatchlistCache.get().get(currentUserBaseKeyHolder.getCurrentUserBaseKey()));
         watchlistListView.setAdapter(watchListAdapter);
+        watchlistListView.setOnItemClickListener(watchlistItemClickListener);
     }
 
     private WatchlistAdapter createWatchlistAdapter()
@@ -154,6 +159,25 @@ public class PositionWatchlistFragment extends DashboardFragment
         @Override public void onFailed(Milestone milestone, Throwable throwable)
         {
             displayProgress(false);
+        }
+    };
+
+
+    private AdapterView.OnItemClickListener watchlistItemClickListener = new AdapterView.OnItemClickListener()
+    {
+        @Override public void onItemClick(AdapterView<?> parent, View view, int position, long id)
+        {
+            SecurityId securityId = (SecurityId) parent.getItemAtPosition(position);
+            Bundle args = new Bundle();
+            if (securityId != null)
+            {
+                args.putBundle(WatchListFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
+                if (watchlistCache.get().get(securityId) != null)
+                {
+                    args.putString(WatchListFragment.BUNDLE_KEY_TITLE, getString(R.string.edit_in_watch_list));
+                }
+            }
+            getNavigator().pushFragment(WatchListFragment.class, args, Navigator.PUSH_UP_FROM_BOTTOM);
         }
     };
 }
