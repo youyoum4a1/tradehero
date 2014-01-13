@@ -23,7 +23,7 @@ OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
 ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.tradehero.th.push;
+package com.tradehero.th.models.push.urbanairship;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -40,60 +40,76 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
-public class IntentReceiver extends BroadcastReceiver
+public class UrbanAirshipIntentReceiver extends BroadcastReceiver
 {
-    private static final String TAG = IntentReceiver.class.getSimpleName();
+    private static final String TAG = UrbanAirshipIntentReceiver.class.getSimpleName();
 
     public static String APID_UPDATED_ACTION_SUFFIX = ".apid.updated";
 
-    @Override
-    public void onReceive(Context context, Intent intent)
+    @Override public void onReceive(Context context, Intent intent)
     {
         Log.i(TAG, "Received intent: " + intent.toString());
         String action = intent.getAction();
 
         if (action.equals(PushManager.ACTION_PUSH_RECEIVED))
         {
-
-            int id = intent.getIntExtra(PushManager.EXTRA_NOTIFICATION_ID, 0);
-
-            Log.i(TAG, "Received push notification. Alert: "
-                    + intent.getStringExtra(PushManager.EXTRA_ALERT)
-                    + " [NotificationID=" + id + "]");
-
-            logPushExtras(intent);
+            handlePushReceived(context, intent);
         }
         else if (action.equals(PushManager.ACTION_NOTIFICATION_OPENED))
         {
-
-            Log.i(TAG, "User clicked notification. Message: " + intent.getStringExtra(PushManager.EXTRA_ALERT));
-
-            logPushExtras(intent);
-
-            Intent launch = new Intent(Intent.ACTION_MAIN);
-            launch.setClass(UAirship.shared().getApplicationContext(), DashboardActivity.class);
-            launch.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            String deepLink = (String) intent.getExtras().get(Application.getResourceString(R.string.push_notification_deep_link_url));
-            if (deepLink != null)
-            {
-                launch.setData(Uri.parse(deepLink));
-            }
-
-            UAirship.shared().getApplicationContext().startActivity(launch);
+            handleNotificationOpened(context, intent);
         }
         else if (action.equals(PushManager.ACTION_REGISTRATION_FINISHED))
         {
-            Log.i(TAG, "Registration complete. APID:" + intent.getStringExtra(PushManager.EXTRA_APID)
-                    + ". Valid: " + intent.getBooleanExtra(PushManager.EXTRA_REGISTRATION_VALID, false));
-
-            // Notify any app-specific listeners
-            Intent launch = new Intent(UAirship.getPackageName() + APID_UPDATED_ACTION_SUFFIX);
-            UAirship.shared().getApplicationContext().sendBroadcast(launch);
+            handleRegistrationFinished(context, intent);
         }
         else if (action.equals(GCMMessageHandler.ACTION_GCM_DELETED_MESSAGES))
         {
             Log.i(TAG, "The GCM service deleted " + intent.getStringExtra(GCMMessageHandler.EXTRA_GCM_TOTAL_DELETED) + " messages.");
         }
+    }
+
+    private void handlePushReceived(Context context, Intent intent)
+    {
+        int id = intent.getIntExtra(PushManager.EXTRA_NOTIFICATION_ID, 0);
+
+        Log.i(TAG, "Received push notification. Alert: "
+                + intent.getStringExtra(PushManager.EXTRA_ALERT)
+                + " [NotificationID=" + id + "]");
+
+        logPushExtras(intent);
+    }
+
+    private void handleNotificationOpened(Context context, Intent intent)
+    {
+        Log.i(TAG, "User clicked notification. Message: " + intent.getStringExtra(PushManager.EXTRA_ALERT));
+
+        logPushExtras(intent);
+
+        UAirship.shared().getApplicationContext().startActivity(createLaunchIntent(intent));
+    }
+
+    private void handleRegistrationFinished(Context context, Intent intent)
+    {
+        Log.i(TAG, "Registration complete. APID:" + intent.getStringExtra(PushManager.EXTRA_APID)
+                + ". Valid: " + intent.getBooleanExtra(PushManager.EXTRA_REGISTRATION_VALID, false));
+
+        // Notify any app-specific listeners
+        Intent launch = new Intent(UAirship.getPackageName() + APID_UPDATED_ACTION_SUFFIX);
+        UAirship.shared().getApplicationContext().sendBroadcast(launch);
+    }
+
+    private Intent createLaunchIntent(Intent intent)
+    {
+        Intent launch = new Intent(Intent.ACTION_MAIN);
+        launch.setClass(UAirship.shared().getApplicationContext(), DashboardActivity.class);
+        launch.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        String deepLink = (String) intent.getExtras().get(Application.getResourceString(R.string.push_notification_deep_link_url));
+        if (deepLink != null)
+        {
+            launch.setData(Uri.parse(deepLink));
+        }
+        return launch;
     }
 
     /**

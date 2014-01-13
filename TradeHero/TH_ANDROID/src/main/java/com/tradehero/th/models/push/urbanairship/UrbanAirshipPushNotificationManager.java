@@ -4,7 +4,6 @@ import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
 import com.tradehero.th.base.Application;
 import com.tradehero.th.models.push.PushNotificationManager;
-import com.tradehero.th.push.IntentReceiver;
 import com.urbanairship.UAirship;
 import com.urbanairship.push.CustomPushNotificationBuilder;
 import com.urbanairship.push.PushManager;
@@ -47,7 +46,7 @@ import javax.inject.Singleton;
         //nb.soundUri = Uri.parse("android.resource://"+this.getPackageName()+"/" +R.raw.cat);
 
         PushManager.shared().setNotificationBuilder(nb);
-        PushManager.shared().setIntentReceiver(IntentReceiver.class);
+        PushManager.shared().setIntentReceiver(UrbanAirshipIntentReceiver.class);
     }
 
     @Override public void enablePush()

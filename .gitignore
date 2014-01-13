@@ -72,3 +72,6 @@ TradeHero/TH_ANDROID/target/*
 *.iml
 *.ipr
 *.iws
+
+#Crashlytics
+TradeHero/TH_ANDROID/res/values/com_crashlytics_export_strings.xml
