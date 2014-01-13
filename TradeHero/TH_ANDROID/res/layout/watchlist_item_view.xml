@@ -67,14 +67,15 @@
       android:layout_marginLeft="4dp"
       android:layout_marginTop="2dp"
       android:layout_marginBottom="2dp"
+      android:layout_alignParentRight="true"
       >
     <TextView
         android:id="@+id/position_last_amount"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:maxLines="1"
-        android:textSize="10sp"
         android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
         />
 
     <TextView
@@ -83,6 +84,7 @@
         android:layout_height="wrap_content"
         android:maxLines="1"
         android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
         />
   </RelativeLayout>
 </com.tradehero.th.fragments.position.WatchlistItemView>

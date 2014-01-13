@@ -87,10 +87,10 @@ public class WatchlistItemView extends LinearLayout implements DTOView<SecurityI
 
         displayCompanyName();
 
-        displayPlPercentage();
+        displayPlPercentageAndLastPrice();
     }
 
-    private void displayPlPercentage()
+    private void displayPlPercentageAndLastPrice()
     {
         SecurityCompactDTO securityCompactDTO = watchlistPositionDTO.securityDTO;
 
@@ -102,17 +102,42 @@ public class WatchlistItemView extends LinearLayout implements DTOView<SecurityI
             {
                 lastPrice = 0.0;
             }
+            // last price
+            positionLastAmount.setText(formatLastPrice(securityCompactDTO.currencyDisplay, lastPrice));
+
+            // pl percentage
             if (watchlistPrice != 0)
             {
                 double pl = (lastPrice - watchlistPrice) * 100 / watchlistPrice;
-                positionPercentage.setText("" + pl);
+                positionPercentage.setText(String.format(getContext().getString(R.string.watchlist_pl_percentage_format), pl));
+
+                if (pl > 0)
+                {
+                    positionPercentage.setTextColor(getResources().getColor(R.color.number_green));
+                }
+                else if (pl < 0)
+                {
+                    positionPercentage.setTextColor(getResources().getColor(R.color.number_red));
+                }
+                else
+                {
+                    positionPercentage.setTextColor(getResources().getColor(R.color.text_gray_normal));
+                }
+            }
+            else
+            {
+                positionPercentage.setText("");
             }
         }
         else
         {
             positionPercentage.setText("");
-            positionLastAmount.setText("");
         }
+    }
+
+    private Spanned formatLastPrice(String currencyDisplay, Double lastPrice)
+    {
+        return Html.fromHtml(String.format(getContext().getString(R.string.watchlist_last_price_format), currencyDisplay, lastPrice));
     }
 
     private void displayNumberOfShares()
