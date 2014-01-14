@@ -2,6 +2,7 @@ package com.tradehero.th.fragments.portfolio.header;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import com.tradehero.common.persistence.DTOCache;
@@ -19,7 +20,7 @@ import javax.inject.Inject;
  * Created by julien on 21/10/13
  * Header displayed on aPortfolio owned by the authenticated user.
  */
-public class CurrentUserPortfolioHeaderView extends RelativeLayout implements PortfolioHeaderView
+public class CurrentUserPortfolioHeaderView extends LinearLayout implements PortfolioHeaderView
 {
     @Inject Lazy<PortfolioCompactCache> portfolioCache;
     private PortfolioCompactDTO portfolio;

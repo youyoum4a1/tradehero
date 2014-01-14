@@ -1,60 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <com.tradehero.th.fragments.portfolio.header.CurrentUserPortfolioHeaderView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:paddingTop="4dp"
+    android:paddingBottom="4dp"
     android:background="@color/portfolio_header_background_color"
-  >
+    >
 
   <LinearLayout
-      android:layout_width="match_parent"
+      android:layout_width="0dp"
       android:layout_height="wrap_content"
-      android:orientation="horizontal"
-      android:paddingTop="4dp"
-      android:paddingBottom="4dp"
-      >
-
-        <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical" >
-            <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/portfolio_header_total_value"
-                    android:gravity="center"
-                    android:textColor="@color/portfolio_header_text_color"
-                    android:textSize="12sp"/>
-            <TextView
-                    android:id="@+id/header_portfolio_total_value"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/portfolio_header_text_color"
-                    android:textStyle="bold"
-                    android:gravity="center"/>
-        </LinearLayout>
-        <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical" >
-            <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/portfolio_header_cash_value"
-                    android:gravity="center"
-                    android:textColor="@color/portfolio_header_text_color"
-                    android:textSize="12sp"/>
-            <TextView
-                    android:id="@+id/header_portfolio_cash_value"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textStyle="bold"
-                    android:textColor="@color/portfolio_header_text_color"
-                    android:gravity="center"/>
-        </LinearLayout>
-    </LinearLayout>
+      android:layout_weight="1"
+      android:orientation="vertical">
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/portfolio_header_total_value"
+        android:gravity="center"
+        android:textColor="@color/portfolio_header_text_color"
+        android:textSize="12sp"/>
+    <TextView
+        android:id="@+id/header_portfolio_total_value"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/portfolio_header_text_color"
+        android:textStyle="bold"
+        android:gravity="center"/>
+  </LinearLayout>
+  <LinearLayout
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="1"
+      android:orientation="vertical">
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/portfolio_header_cash_value"
+        android:gravity="center"
+        android:textColor="@color/portfolio_header_text_color"
+        android:textSize="12sp"/>
+    <TextView
+        android:id="@+id/header_portfolio_cash_value"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:textColor="@color/portfolio_header_text_color"
+        android:gravity="center"/>
+  </LinearLayout>
 </com.tradehero.th.fragments.portfolio.header.CurrentUserPortfolioHeaderView>
