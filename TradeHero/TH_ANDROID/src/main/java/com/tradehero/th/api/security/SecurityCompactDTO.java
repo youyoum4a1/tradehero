@@ -2,6 +2,7 @@
 
 import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.api.market.Exchange;
+import com.tradehero.th.utils.SecurityUtils;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -153,5 +154,20 @@ public class SecurityCompactDTO implements DTO
             securityIds.add(value.getSecurityId());
         }
         return securityIds;
+    }
+
+    public Double getLastPriceInUSD()
+    {
+        if (lastPrice == null || currencyISO.equalsIgnoreCase(SecurityUtils.DEFAULT_TRANSACTION_CURRENCY_ISO))
+        {
+            return lastPrice;
+        }
+
+        if (toUSDRate != null)
+        {
+            return lastPrice * toUSDRate;
+        }
+
+        return null;
     }
 }

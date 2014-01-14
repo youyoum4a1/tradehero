@@ -173,4 +173,7 @@
   <string name="watchlist_last_price_format"><![CDATA[%1$s <b>%2$.2f</b>]]></string>
   <string name="plus">+</string>
   <string name="watchlist_add_item_menu">Add</string>
+  <string name="current_value">Current Value</string>
+  <string name="original_value">Original Value</string>
+  <string name="gain_loss">Gain/Loss</string>
 </resources>

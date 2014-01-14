@@ -50,8 +50,7 @@ import com.tradehero.th.fragments.position.PositionInPeriodClosedView;
 import com.tradehero.th.fragments.position.PositionInPeriodOpenView;
 import com.tradehero.th.fragments.position.PositionListFragment;
 import com.tradehero.th.fragments.position.PositionOpenView;
-import com.tradehero.th.fragments.position.PositionWatchlistFragment;
-import com.tradehero.th.fragments.position.WatchlistItemView;
+import com.tradehero.th.fragments.watchlist.WatchlistItemView;
 import com.tradehero.th.fragments.position.partial.PositionPartialBottomClosedView;
 import com.tradehero.th.fragments.position.partial.PositionPartialBottomInPeriodClosedView;
 import com.tradehero.th.fragments.position.partial.PositionPartialBottomInPeriodOpenView;
@@ -94,6 +93,8 @@ import com.tradehero.th.fragments.trending.TrendingFilterSelectorBasicFragment;
 import com.tradehero.th.fragments.trending.TrendingFilterSelectorPriceFragment;
 import com.tradehero.th.fragments.trending.TrendingFilterSelectorVolumeFragment;
 import com.tradehero.th.fragments.trending.TrendingFragment;
+import com.tradehero.th.fragments.watchlist.WatchlistPortfolioHeaderView;
+import com.tradehero.th.fragments.watchlist.WatchlistPositionFragment;
 import com.tradehero.th.loaders.SearchStockPageListLoader;
 import com.tradehero.th.loaders.TimelineListLoader;
 import com.tradehero.th.loaders.security.SecurityListPagedLoader;
@@ -288,8 +289,9 @@ import org.ocpsoft.prettytime.PrettyTime;
                 WatchListFragment.class,
                 UserWatchlistPositionCache.class,
                 WatchlistRetrievedMilestone.class,
-                PositionWatchlistFragment.class,
+                WatchlistPositionFragment.class,
                 WatchlistItemView.class,
+                WatchlistPortfolioHeaderView.class,
 
                 TrendingIntentFactory.class,
         },

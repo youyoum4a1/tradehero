@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.position;
+package com.tradehero.th.fragments.watchlist;
 
 import android.content.Context;
 import android.text.Html;

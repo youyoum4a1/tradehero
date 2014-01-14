@@ -23,7 +23,7 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.position.PositionListFragment;
-import com.tradehero.th.fragments.position.PositionWatchlistFragment;
+import com.tradehero.th.fragments.watchlist.WatchlistPositionFragment;
 import com.tradehero.th.persistence.portfolio.PortfolioCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
 import com.tradehero.th.persistence.portfolio.UserPortfolioFetchAssistant;
@@ -548,7 +548,7 @@ public class PortfolioListFragment extends DashboardFragment
 
             if (displayablePortfolioDTO.portfolioDTO != null && displayablePortfolioDTO.portfolioDTO.isWatchlist)
             {
-                navigator.pushFragment(PositionWatchlistFragment.class, args);
+                navigator.pushFragment(WatchlistPositionFragment.class, args);
             }
             else
             {

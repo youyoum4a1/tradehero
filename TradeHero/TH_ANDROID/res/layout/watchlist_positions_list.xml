@@ -15,11 +15,10 @@
       android:clipToPadding="false"
       />
 
-  <ViewStub
-      android:id="@+id/position_list_header_stub"
-      android:inflatedId="@+id/position_list_portfolio_header"
+  <include
       android:layout_width="match_parent"
-      android:layout_height="wrap_content"
+      android:layout_height="50dp"
+      layout="@layout/watchlist_position_header_view"
       />
 
   <ProgressBar

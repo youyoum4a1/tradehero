@@ -1,10 +1,9 @@
-package com.tradehero.th.fragments.position;
+package com.tradehero.th.fragments.watchlist;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewStub;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -21,8 +20,9 @@ import com.tradehero.th.base.Navigator;
 import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.portfolio.header.PortfolioHeaderFactory;
-import com.tradehero.th.fragments.portfolio.header.PortfolioHeaderView;
+import com.tradehero.th.fragments.position.PositionListFragment;
 import com.tradehero.th.fragments.security.WatchListFragment;
+import com.tradehero.th.fragments.trending.SearchStockPeopleFragment;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
 import com.tradehero.th.persistence.watchlist.WatchlistRetrievedMilestone;
@@ -32,11 +32,10 @@ import javax.inject.Inject;
 /**
  * Created with IntelliJ IDEA. User: tho Date: 1/10/14 Time: 4:11 PM Copyright (c) TradeHero
  */
-public class PositionWatchlistFragment extends DashboardFragment
+public class WatchlistPositionFragment extends DashboardFragment
     implements BaseFragment.TabBarVisibilityInformer
 {
-
-    private static final String TAG = PositionWatchlistFragment.class.getName();
+    private static final String TAG = WatchlistPositionFragment.class.getName();
     private ProgressBar progressBar;
 
     @Inject protected Lazy<WatchlistPositionCache> watchlistCache;
@@ -45,7 +44,7 @@ public class PositionWatchlistFragment extends DashboardFragment
     @Inject protected CurrentUserBaseKeyHolder currentUserBaseKeyHolder;
 
     private ListView watchlistListView;
-    private PortfolioHeaderView portfolioHeaderView;
+    private WatchlistPortfolioHeaderView watchlistPortfolioHeaderView;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -65,14 +64,7 @@ public class PositionWatchlistFragment extends DashboardFragment
             watchlistListView = (ListView) view.findViewById(android.R.id.list);
 
             // portfolio header
-            Bundle args = getArguments();
-            if (args != null)
-            {
-                ViewStub stub = (ViewStub) view.findViewById(R.id.position_list_header_stub);
-                int headerLayoutId = headerFactory.get().layoutIdFor(currentUserBaseKeyHolder.getCurrentUserBaseKey());
-                stub.setLayoutResource(headerLayoutId);
-                portfolioHeaderView = (PortfolioHeaderView) stub.inflate();
-            }
+            watchlistPortfolioHeaderView = (WatchlistPortfolioHeaderView) view.findViewById(R.id.watchlist_position_list_header);
         }
     }
 
@@ -94,18 +86,27 @@ public class PositionWatchlistFragment extends DashboardFragment
         }
     }
 
+    //<editor-fold desc="ActionBar Menu Actions">
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         ActionBar actionBar = getSherlockActivity().getSupportActionBar();
         actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_SHOW_TITLE);
         actionBar.setTitle(getString(R.string.watchlist));
         super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.position_watchlist_menu, menu);
     }
 
     @Override public boolean onOptionsItemSelected(MenuItem item)
     {
+        switch (item.getItemId())
+        {
+            case R.id.position_watchlist_add:
+                getNavigator().pushFragment(SearchStockPeopleFragment.class, null);
+                return true;
+        }
         return super.onOptionsItemSelected(item);
     }
+    //</editor-fold>
 
     private void display()
     {
@@ -116,10 +117,9 @@ public class PositionWatchlistFragment extends DashboardFragment
 
     private void displayHeader()
     {
-        if (portfolioHeaderView != null)
+        if (watchlistPortfolioHeaderView != null)
         {
-            portfolioHeaderView.bindOwnedPortfolioId(
-                    new OwnedPortfolioId(getArguments().getBundle(PositionListFragment.BUNDLE_KEY_SHOW_PORTFOLIO_ID_BUNDLE)));
+            watchlistPortfolioHeaderView.display(currentUserBaseKeyHolder.getCurrentUserBaseKey());
         }
     }
 
