@@ -9,6 +9,7 @@ import com.tradehero.th.R;
 import com.tradehero.th.adapters.ArrayDTOAdapter;
 import com.tradehero.th.adapters.DTOAdapter;
 import com.tradehero.th.api.portfolio.DisplayablePortfolioDTO;
+import com.tradehero.th.api.portfolio.DisplayablePortfolioDTOWithinUserComparator;
 import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.persistence.user.UserProfileCache;
@@ -19,6 +20,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.SortedSet;
 import java.util.TreeSet;
 import javax.inject.Inject;
 
@@ -39,12 +41,14 @@ public class PortfolioListItemAdapter extends ArrayDTOAdapter<DisplayablePortfol
 
     @Inject Lazy<CurrentUserBaseKeyHolder> currentUserBaseKeyHolder;
     @Inject Lazy<UserProfileCache> userProfileCache;
+    private final DisplayablePortfolioDTOWithinUserComparator ownDisplayablePortfolioDTOWithinUserComparator;
     private final int otherHeaderResId;
 
     public PortfolioListItemAdapter(Context context, LayoutInflater inflater, int portfolioHeaderLayoutResourceId, int otherHeaderResId)
     {
         super(context, inflater, portfolioHeaderLayoutResourceId);
         this.otherHeaderResId = otherHeaderResId;
+        this.ownDisplayablePortfolioDTOWithinUserComparator = new DisplayablePortfolioDTOWithinUserComparator();
         orderedTypes = new ArrayList<>();
         orderedItems = new ArrayList<>();
         DaggerUtils.inject(this);
@@ -67,7 +71,7 @@ public class PortfolioListItemAdapter extends ArrayDTOAdapter<DisplayablePortfol
             // TODO This could be improved
             // Here it is relying on the cache to be already filled to separate the heroes from the others.
             UserProfileDTO currentUserProfile = userProfileCache.get().get(currentUserBaseKeyHolder.get().getCurrentUserBaseKey());
-            Set<DisplayablePortfolioDTO> ownPortfolios = new HashSet<>();
+            SortedSet<DisplayablePortfolioDTO> ownPortfolios = new TreeSet<>(this.ownDisplayablePortfolioDTOWithinUserComparator);
             Set<DisplayablePortfolioDTO> heroPortfolios = new HashSet<>();
             Set<DisplayablePortfolioDTO> otherPortfolios = new HashSet<>();
 

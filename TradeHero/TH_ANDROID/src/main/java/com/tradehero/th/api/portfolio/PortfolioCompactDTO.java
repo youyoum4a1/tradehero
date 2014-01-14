@@ -34,7 +34,7 @@ public class PortfolioCompactDTO implements DTO
 
     public boolean isDefault()
     {
-        return DEFAULT_TITLE.equals(title);
+        return providerId == null && !isWatchlist;
     }
 
     public double getTotalExtraCash()
