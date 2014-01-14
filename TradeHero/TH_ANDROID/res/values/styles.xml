@@ -18,6 +18,10 @@
     <item name="android:windowNoTitle">true</item>
   </style>
 
+  <style name="TradeHero.Menu.ItemTextIcon" parent="TextAppearance.Sherlock.Light.SearchResult">
+    <item name="android:textStyle">bold</item>
+    <item name="android:textSize">20sp</item>
+  </style>
   <!-- Application theme. -->
   <style name="AppTheme" parent="TradeHero">
     <!-- All customizations that are NOT specific to a particular API-level can go here. -->
@@ -104,12 +108,10 @@
   </style>
 
 
-
   <style name="TradeHero.Dashboard.ActionBar" parent="Widget.Sherlock.ActionBar">
     <item name="android:background">@drawable/topbarrectangle_default</item>
     <item name="android:titleTextStyle">@style/TradeHero.Dashboard.ActionBar.TitleTextStyle</item>
     <item name="android:actionMenuTextColor">@style/TradeHero.Dashboard.ActionBar.MenuTextColor</item>
-
   </style>
 
   <style name="TradeHero.Dashboard.ActionBar.TitleTextStyle" parent="TextAppearance.Sherlock.Widget.ActionBar.Title">
@@ -131,5 +133,4 @@
     <item name="android:background">@drawable/list_item_bg</item>
     <item name="android:minHeight">48dp</item>
   </style>
-
 </resources>

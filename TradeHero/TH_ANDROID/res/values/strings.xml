@@ -171,4 +171,6 @@
   <string name="watchlist_number_of_shares"><![CDATA[<b>%1$d</b> shares @ %2$s <b>%3$s</b>]]></string>
   <string name="watchlist_pl_percentage_format">%.2f %%</string>
   <string name="watchlist_last_price_format"><![CDATA[%1$s <b>%2$.2f</b>]]></string>
+  <string name="plus">+</string>
+  <string name="watchlist_add_item_menu">Add</string>
 </resources>

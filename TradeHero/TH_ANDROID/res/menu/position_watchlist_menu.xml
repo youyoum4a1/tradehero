@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+  <item android:id="@+id/position_watchlist_add"
+      android:showAsAction="ifRoom"
+      android:title="@string/watchlist_add_item_menu"
+      android:actionLayout="@layout/action_bar_menu_plus"
+      />
+</menu>
