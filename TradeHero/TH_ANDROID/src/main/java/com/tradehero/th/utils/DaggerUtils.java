@@ -7,8 +7,6 @@ import com.tradehero.th.network.NetworkEngine;
 import com.tradehero.th.network.YahooEngine;
 import com.tradehero.th.utils.dagger.TradeHeroModule;
 import dagger.ObjectGraph;
-import java.util.Arrays;
-import java.util.List;
 
 /** Created with IntelliJ IDEA. User: tho Date: 9/16/13 Time: 5:18 PM Copyright (c) TradeHero */
 public class DaggerUtils
