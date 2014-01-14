@@ -89,21 +89,28 @@ public class WatchlistPositionFragment extends DashboardFragment
     //<editor-fold desc="ActionBar Menu Actions">
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
+        inflater.inflate(R.menu.position_watchlist_menu, menu);
         ActionBar actionBar = getSherlockActivity().getSupportActionBar();
         actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_SHOW_TITLE);
         actionBar.setTitle(getString(R.string.watchlist));
         super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.position_watchlist_menu, menu);
+
+        MenuItem menuItem = menu.findItem(R.id.position_watchlist_add);
+        View menuAddWatchlist = menuItem.getActionView().findViewById(R.id.position_watchlist_add_view);
+        if (menuAddWatchlist != null)
+        {
+            menuAddWatchlist.setOnClickListener(new View.OnClickListener()
+            {
+                @Override public void onClick(View v)
+                {
+                    getNavigator().pushFragment(SearchStockPeopleFragment.class);
+                }
+            });
+        }
     }
 
     @Override public boolean onOptionsItemSelected(MenuItem item)
     {
-        switch (item.getItemId())
-        {
-            case R.id.position_watchlist_add:
-                getNavigator().pushFragment(SearchStockPeopleFragment.class, null);
-                return true;
-        }
         return super.onOptionsItemSelected(item);
     }
     //</editor-fold>
@@ -167,7 +174,6 @@ public class WatchlistPositionFragment extends DashboardFragment
     {
         @Override public void onStateChanged(View view, boolean state)
         {
-            // TODO if (view.getId() == R.id.)
             if (watchListAdapter != null)
             {
                 watchListAdapter.setShowGainLossPercentage(state);
