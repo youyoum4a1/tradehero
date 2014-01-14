@@ -33,8 +33,10 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserBaseKeyList;
 import com.tradehero.th.api.users.UserListType;
 import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.fragments.security.WatchlistEditFragment;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.fragments.trade.BuySellFragment;
+import com.tradehero.th.fragments.watchlist.WatchlistPositionFragment;
 import com.tradehero.th.persistence.security.SecurityCompactListCache;
 import com.tradehero.th.persistence.user.UserBaseKeyListCache;
 import dagger.Lazy;
@@ -51,17 +53,19 @@ public class SearchStockPeopleFragment extends DashboardFragment
     public final static String BUNDLE_KEY_SEARCH_TYPE = SearchStockPeopleFragment.class.getName() + ".searchType";
     public final static String BUNDLE_KEY_PAGE = SearchStockPeopleFragment.class.getName() + ".page";
     public final static String BUNDLE_KEY_PER_PAGE = SearchStockPeopleFragment.class.getName() + ".perPage";
+    public static final String BUNDLE_KEY_CALLER_FRAGMENT = SearchStockPeopleFragment.class.getName() + ".nextFragment";
     private final static String TAG = SearchStockPeopleFragment.class.getSimpleName();
 
     public final static int FIRST_PAGE = 1;
     public final static int DEFAULT_PER_PAGE = 15;
-    public final static long DELAY_REQUEST_DATA_MILLI_SEC = 1000;
+    public final static long DELAY_REQUEST_DATA_MILLI_SEC = 1000;;
 
     private TextView mNothingYet;
     private ListView mSearchStockListView;
     private ListView mSearchPeopleListView;
     private FlagNearEndScrollListener nearEndScrollListener;
     private ProgressBar mProgressSpinner;
+    private int perPage = DEFAULT_PER_PAGE;
 
     private CharSequence[] dropDownTexts;
     private Drawable[] dropDownIcons;
@@ -78,12 +82,12 @@ public class SearchStockPeopleFragment extends DashboardFragment
     private boolean isQuerying;
 
     @Inject Lazy<SecurityCompactListCache> securityCompactListCache;
+    @Inject Lazy<UserBaseKeyListCache> userBaseKeyListCache;
+
     private SecurityIdListCacheListener securityIdListCacheListener;
     private DTOCache.GetOrFetchTask<SecurityListType, SecurityIdList> securitySearchTask;
     private List<SecurityId> securityIds;
     private SecurityItemViewAdapter securityItemViewAdapter;
-
-    @Inject Lazy<UserBaseKeyListCache> userBaseKeyListCache;
     private PeopleListCacheListener peopleListCacheListener;
     private DTOCache.GetOrFetchTask<UserListType, UserBaseKeyList> peopleSearchTask;
     private List<UserBaseKey> userBaseKeys;
@@ -91,7 +95,7 @@ public class SearchStockPeopleFragment extends DashboardFragment
 
     private int currentlyLoadingPage;
     private int lastLoadedPage;
-    private int perPage = DEFAULT_PER_PAGE;
+    private boolean shouldDisableSearchTypeOption;
 
     @Override public void onAttach(Activity activity)
     {
@@ -187,7 +191,7 @@ public class SearchStockPeopleFragment extends DashboardFragment
         mSearchTypeSpinner = (Spinner) securitySearchElements.getActionView().findViewById(R.id.spinner);
         if (mSearchTypeSpinner != null)
         {
-            mSearchTypeSpinner.setVisibility(View.VISIBLE);
+            mSearchTypeSpinner.setVisibility(shouldDisableSearchTypeOption ? View.GONE : View.VISIBLE);
             mSearchTypeSpinner.setAdapter(mSearchTypeSpinnerAdapter);
             mSearchTypeSpinner.setOnItemSelectedListener(new SearchTypeSpinnerOnItemClickListener());
         }
@@ -205,8 +209,19 @@ public class SearchStockPeopleFragment extends DashboardFragment
     @Override public void onResume()
     {
         super.onResume();
+
         populateSearchActionBar();
         initialPopulateOnCreate();
+
+        Bundle arguments = getArguments();
+        if (arguments != null)
+        {
+            String callerClassName = arguments.getString(BUNDLE_KEY_CALLER_FRAGMENT);
+            if (callerClassName != null && callerClassName.equalsIgnoreCase(WatchlistPositionFragment.class.getName()) && mSearchTypeSpinner != null)
+            {
+                shouldDisableSearchTypeOption = true;
+            }
+        }
     }
 
     protected void startAnew()
@@ -594,6 +609,18 @@ public class SearchStockPeopleFragment extends DashboardFragment
         navigator.pushFragment(PushableTimelineFragment.class, args);
     }
 
+    protected void pushWatchlistFragmentIn(SecurityId securityId)
+    {
+        if (securityId == null)
+        {
+            THLog.e(TAG, "Cannot handle null SecurityId", new IllegalArgumentException());
+            return;
+        }
+
+        Bundle args = new Bundle();
+        navigator.pushFragment(WatchlistEditFragment.class, args);
+    }
+
     //<editor-fold desc="Accessors">
     public int getCurrentlyLoadingPage()
     {
@@ -642,7 +669,20 @@ public class SearchStockPeopleFragment extends DashboardFragment
     {
         @Override public void onItemClick(AdapterView<?> parent, View view, int position, long id)
         {
-            pushTradeFragmentIn((SecurityId) parent.getItemAtPosition(position));
+            SecurityId clickedItem = (SecurityId) parent.getItemAtPosition(position);
+
+            if (shouldDisableSearchTypeOption)
+            {
+                // pop out current fragment and push in watchlistedit fragment
+                Bundle args = new Bundle();
+                args.putBundle(WatchlistEditFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, clickedItem.getArgs());
+                navigator.popFragment();
+                navigator.pushFragment(WatchlistEditFragment.class, args);
+            }
+            else
+            {
+                pushTradeFragmentIn(clickedItem);
+            }
         }
     }
 

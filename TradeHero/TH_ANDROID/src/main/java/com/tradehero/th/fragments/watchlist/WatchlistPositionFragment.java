@@ -103,7 +103,9 @@ public class WatchlistPositionFragment extends DashboardFragment
             {
                 @Override public void onClick(View v)
                 {
-                    getNavigator().pushFragment(SearchStockPeopleFragment.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putString(SearchStockPeopleFragment.BUNDLE_KEY_CALLER_FRAGMENT, WatchlistPositionFragment.class.getName());
+                    getNavigator().pushFragment(SearchStockPeopleFragment.class, bundle);
                 }
             });
         }

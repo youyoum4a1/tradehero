@@ -62,8 +62,7 @@ public class Navigator
     private int[] getSafeAnimation()
     {
         if (animationInitiated) return this.animation;
-        setAnimation(R.anim.slide_right_in, R.anim.slide_left_out,
-                R.anim.slide_left_in, R.anim.slide_right_out);
+        setAnimation(R.anim.slide_right_in, R.anim.slide_left_out, R.anim.slide_left_in, R.anim.slide_right_out);
         return animation;
     }
 
@@ -128,7 +127,7 @@ public class Navigator
     public void popFragment()
     {
         THLog.d(TAG, "Popping fragment, count: " + manager.getBackStackEntryCount());
-        manager.popBackStack();
+        manager.popBackStackImmediate();
     }
 
     public boolean isBackStackEmpty()

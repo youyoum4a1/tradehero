@@ -157,10 +157,20 @@ public class WatchlistEditFragment extends DashboardFragment
         super.onCreateOptionsMenu(menu, inflater);
 
         Bundle argument = getArguments();
-        String title = argument.getString(BUNDLE_KEY_TITLE);
 
         ActionBar actionBar = getSherlockActivity().getSupportActionBar();
         actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME);
+
+        String title = argument.getString(BUNDLE_KEY_TITLE);
+        if (title != null && !title.isEmpty())
+        {
+            setActionBarTitle(title);
+        }
+    }
+
+    private void setActionBarTitle(String title)
+    {
+        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
         actionBar.setTitle(title);
     }
 
@@ -174,7 +184,8 @@ public class WatchlistEditFragment extends DashboardFragment
             Bundle securityIdBundle = args.getBundle(BUNDLE_KEY_SECURITY_ID_BUNDLE);
             if (securityIdBundle != null)
             {
-                linkWith(new SecurityId(securityIdBundle), true);
+                SecurityId securityId = new SecurityId(securityIdBundle);
+                linkWith(securityId, true);
             }
         }
     }
@@ -185,6 +196,15 @@ public class WatchlistEditFragment extends DashboardFragment
 
         if (securityId != null)
         {
+            if (watchlistPositionCache.get().get(securityId) != null)
+            {
+                setActionBarTitle(getString(R.string.edit_in_watch_list));
+            }
+            else
+            {
+                setActionBarTitle(getString(R.string.add_to_watch_list));
+            }
+
             querySecurity(securityId, andDisplay);
         }
 
