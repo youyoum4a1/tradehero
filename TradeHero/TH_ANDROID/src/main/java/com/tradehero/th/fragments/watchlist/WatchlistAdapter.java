@@ -10,6 +10,8 @@ import com.tradehero.th.api.security.SecurityId;
  */
 public class WatchlistAdapter extends ArrayDTOAdapter<SecurityId, WatchlistItemView>
 {
+    private boolean showGainLossPercentage;
+
     public WatchlistAdapter(Context context, LayoutInflater inflater, int layoutResourceId)
     {
         super(context, inflater, layoutResourceId);
@@ -17,6 +19,11 @@ public class WatchlistAdapter extends ArrayDTOAdapter<SecurityId, WatchlistItemV
 
     @Override protected void fineTune(int position, SecurityId dto, WatchlistItemView dtoView)
     {
+        dtoView.displayPlPercentage(showGainLossPercentage);
+    }
 
+    public void setShowGainLossPercentage(boolean show)
+    {
+        showGainLossPercentage = show;
     }
 }

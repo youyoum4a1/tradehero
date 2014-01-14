@@ -50,6 +50,7 @@ import com.tradehero.th.fragments.position.PositionInPeriodClosedView;
 import com.tradehero.th.fragments.position.PositionInPeriodOpenView;
 import com.tradehero.th.fragments.position.PositionListFragment;
 import com.tradehero.th.fragments.position.PositionOpenView;
+import com.tradehero.th.fragments.security.WatchlistEditFragment;
 import com.tradehero.th.fragments.watchlist.WatchlistItemView;
 import com.tradehero.th.fragments.position.partial.PositionPartialBottomClosedView;
 import com.tradehero.th.fragments.position.partial.PositionPartialBottomInPeriodClosedView;
@@ -59,7 +60,6 @@ import com.tradehero.th.fragments.position.partial.PositionPartialTopView;
 import com.tradehero.th.fragments.security.ChartFragment;
 import com.tradehero.th.fragments.security.StockInfoFragment;
 import com.tradehero.th.fragments.security.StockInfoValueFragment;
-import com.tradehero.th.fragments.security.WatchListFragment;
 import com.tradehero.th.fragments.security.YahooNewsFragment;
 import com.tradehero.th.fragments.settings.AboutFragment;
 import com.tradehero.th.fragments.settings.SettingsFragment;
@@ -99,9 +99,6 @@ import com.tradehero.th.loaders.SearchStockPageListLoader;
 import com.tradehero.th.loaders.TimelineListLoader;
 import com.tradehero.th.loaders.security.SecurityListPagedLoader;
 import com.tradehero.th.models.alert.SecurityAlertAssistant;
-import com.tradehero.th.models.intent.THIntentFactory;
-import com.tradehero.th.models.intent.THIntentFactoryImpl;
-import com.tradehero.th.models.intent.portfolio.PortfolioIntentFactory;
 import com.tradehero.th.models.intent.trending.TrendingIntentFactory;
 import com.tradehero.th.models.push.PushNotificationManager;
 import com.tradehero.th.models.push.urbanairship.UrbanAirshipPushNotificationManager;
@@ -286,7 +283,7 @@ import org.ocpsoft.prettytime.PrettyTime;
                 HeroManagerInfoFetcher.class,
                 BuySellFragment.BuySellTHIABUserInteractor.class,
 
-                WatchListFragment.class,
+                WatchlistEditFragment.class,
                 UserWatchlistPositionCache.class,
                 WatchlistRetrievedMilestone.class,
                 WatchlistPositionFragment.class,

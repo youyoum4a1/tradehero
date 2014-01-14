@@ -28,7 +28,7 @@ import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
 import com.tradehero.th.api.users.UserProfileCompactDTO;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.base.NavigatorActivity;
-import com.tradehero.th.fragments.security.WatchListFragment;
+import com.tradehero.th.fragments.security.WatchlistEditFragment;
 import com.tradehero.th.fragments.security.StockInfoFragment;
 import com.tradehero.th.fragments.trade.BuySellFragment;
 import com.tradehero.th.misc.callback.THCallback;
@@ -221,17 +221,17 @@ public class TimelineItemView extends LinearLayout implements
                     SecurityId securityId = getSecurityId();
                     if (securityId != null)
                     {
-                        args.putBundle(WatchListFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
+                        args.putBundle(WatchlistEditFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
                         if (watchlistPositionCache.get().get(securityId) != null)
                         {
-                            args.putString(WatchListFragment.BUNDLE_KEY_TITLE, getContext().getString(R.string.edit_in_watch_list));
+                            args.putString(WatchlistEditFragment.BUNDLE_KEY_TITLE, getContext().getString(R.string.edit_in_watch_list));
                         }
                         else
                         {
-                            args.putString(WatchListFragment.BUNDLE_KEY_TITLE, getContext().getString(R.string.add_to_watch_list));
+                            args.putString(WatchlistEditFragment.BUNDLE_KEY_TITLE, getContext().getString(R.string.add_to_watch_list));
                         }
                     }
-                    getNavigator().pushFragment(WatchListFragment.class, args, Navigator.PUSH_UP_FROM_BOTTOM);
+                    getNavigator().pushFragment(WatchlistEditFragment.class, args, Navigator.PUSH_UP_FROM_BOTTOM);
                     return true;
                 }
 

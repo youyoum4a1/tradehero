@@ -20,6 +20,8 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
+import com.tradehero.th.api.security.SecurityIdList;
+import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
 import com.tradehero.th.api.watchlist.WatchlistPositionDTO;
 import com.tradehero.th.api.watchlist.WatchlistPositionFormDTO;
 import com.tradehero.th.fragments.base.DashboardFragment;
@@ -28,15 +30,16 @@ import com.tradehero.th.misc.callback.THResponse;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.service.WatchlistService;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
+import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
 import dagger.Lazy;
 import javax.inject.Inject;
 
 /** Created with IntelliJ IDEA. User: tho Date: 12/3/13 Time: 4:05 PM Copyright (c) TradeHero */
-public class WatchListFragment extends DashboardFragment
+public class WatchlistEditFragment extends DashboardFragment
 {
-    public static final String BUNDLE_KEY_SECURITY_ID_BUNDLE = WatchListFragment.class.getName() + ".securityKeyId";
-    public static final String BUNDLE_KEY_TITLE = WatchListFragment.class.getName() + ".title";
+    public static final String BUNDLE_KEY_SECURITY_ID_BUNDLE = WatchlistEditFragment.class.getName() + ".securityKeyId";
+    public static final String BUNDLE_KEY_TITLE = WatchlistEditFragment.class.getName() + ".title";
     private static final String TAG = DashboardFragment.class.getName();
 
     private ImageView securityLogo;
@@ -52,8 +55,10 @@ public class WatchListFragment extends DashboardFragment
 
     @Inject protected Lazy<SecurityCompactCache> securityCompactCache;
     @Inject protected Lazy<WatchlistPositionCache> watchlistPositionCache;
+    @Inject protected Lazy<UserWatchlistPositionCache> userWatchlistPositionCache;
     @Inject protected Lazy<WatchlistService> watchlistService;
     @Inject protected Lazy<Picasso> picasso;
+    @Inject protected CurrentUserBaseKeyHolder currentUserBaseKeyHolder;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -112,8 +117,14 @@ public class WatchListFragment extends DashboardFragment
 
                     @Override protected void success(WatchlistPositionDTO watchlistPositionDTO, THResponse response)
                     {
-                        // update cache
-                        watchlistPositionCache.get().put(watchlistPositionDTO.securityDTO.getSecurityId(), watchlistPositionDTO);
+                        SecurityId securityId = watchlistPositionDTO.securityDTO.getSecurityId();
+                        watchlistPositionCache.get().put(securityId, watchlistPositionDTO);
+                        SecurityIdList currentUserWatchlistSecurities =
+                                userWatchlistPositionCache.get().get(currentUserBaseKeyHolder.getCurrentUserBaseKey());
+                        if (currentUserWatchlistSecurities != null && !currentUserWatchlistSecurities.contains(securityId))
+                        {
+                            currentUserWatchlistSecurities.add(watchlistPositionDTO.securityDTO.getSecurityId());
+                        }
                         getNavigator().popFragment();
                     }
 

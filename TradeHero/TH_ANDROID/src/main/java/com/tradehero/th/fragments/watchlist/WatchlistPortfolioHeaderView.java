@@ -3,13 +3,11 @@ package com.tradehero.th.fragments.watchlist;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.LinearLayout;
+import com.tradehero.common.widget.TwoStateView;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
-import com.tradehero.th.api.portfolio.OwnedPortfolioId;
-import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.SecurityIdList;
-import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.watchlist.WatchlistPositionDTO;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
@@ -55,6 +53,21 @@ public class WatchlistPortfolioHeaderView extends LinearLayout
     {
         super.onFinishInflate();
         init();
+    }
+
+    public void setOnStateChangeListener(TwoStateView.OnStateChange onStateChangeListener)
+    {
+        if (gainLoss != null)
+        {
+            gainLoss.setOnStateChange(onStateChangeListener);
+        }
+
+        // Only handle when user click on gain/loss area
+        //
+        //if (valuation != null)
+        //{
+        //    valuation.setOnStateChange(onStateChangeListener);
+        //}
     }
 
     private void init()

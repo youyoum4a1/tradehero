@@ -32,8 +32,9 @@ public class WatchlistItemView extends LinearLayout implements DTOView<SecurityI
     private TextView companyName;
     private TextView numberOfShares;
     private WatchlistPositionDTO watchlistPositionDTO;
-    private TextView positionPercentage;
+    private TextView gainLossLabel;
     private TextView positionLastAmount;
+    private SecurityId securityId;
 
     //<editor-fold desc="Constructors">
     public WatchlistItemView(Context context)
@@ -66,12 +67,20 @@ public class WatchlistItemView extends LinearLayout implements DTOView<SecurityI
         stockSymbol = (TextView) findViewById(R.id.stock_symbol);
         companyName = (TextView) findViewById(R.id.company_name);
         numberOfShares = (TextView) findViewById(R.id.number_of_shares);
-        positionPercentage = (TextView) findViewById(R.id.position_percentage);
+        gainLossLabel = (TextView) findViewById(R.id.position_percentage);
         positionLastAmount = (TextView) findViewById(R.id.position_last_amount);
     }
 
     @Override public void display(SecurityId securityId)
     {
+        this.securityId = securityId;
+
+        linkWith(securityId, true);
+    }
+
+    private void linkWith(SecurityId securityId, boolean andDisplay)
+    {
+
         watchlistPositionDTO = watchlistPositionCache.get().get(securityId);
 
         if (watchlistPositionDTO == null)
@@ -79,18 +88,68 @@ public class WatchlistItemView extends LinearLayout implements DTOView<SecurityI
             return;
         }
 
-        displayStockLogo();
+        if (andDisplay)
+        {
+            displayStockLogo();
 
-        displayExchangeSymbol();
+            displayExchangeSymbol();
 
-        displayNumberOfShares();
+            displayNumberOfShares();
 
-        displayCompanyName();
+            displayCompanyName();
 
-        displayPlPercentageAndLastPrice();
+            displayLastPrice();
+        }
     }
 
-    private void displayPlPercentageAndLastPrice()
+    public void displayPlPercentage(boolean showInPercentage)
+    {
+        SecurityCompactDTO securityCompactDTO = watchlistPositionDTO.securityDTO;
+
+        if (securityCompactDTO != null)
+        {
+            Double lastPrice = securityCompactDTO.lastPrice;
+            Double watchlistPrice = watchlistPositionDTO.getWatchlistPrice();
+            // pl percentage
+            if (watchlistPrice != 0)
+            {
+                double gainLoss = (lastPrice - watchlistPrice);
+                double pl = gainLoss * 100 / watchlistPrice;
+
+                if (showInPercentage)
+                {
+                    gainLossLabel.setText(String.format(getContext().getString(R.string.watchlist_pl_percentage_format), pl));
+                }
+                else
+                {
+                    gainLossLabel.setText(watchlistPositionDTO.securityDTO.currencyDisplay + gainLoss);
+                }
+
+                if (pl > 0)
+                {
+                    gainLossLabel.setTextColor(getResources().getColor(R.color.number_green));
+                }
+                else if (pl < 0)
+                {
+                    gainLossLabel.setTextColor(getResources().getColor(R.color.number_red));
+                }
+                else
+                {
+                    gainLossLabel.setTextColor(getResources().getColor(R.color.text_gray_normal));
+                }
+            }
+            else
+            {
+                gainLossLabel.setText("");
+            }
+        }
+        else
+        {
+            gainLossLabel.setText("");
+        }
+    }
+
+    private void displayLastPrice()
     {
         SecurityCompactDTO securityCompactDTO = watchlistPositionDTO.securityDTO;
 
@@ -109,29 +168,29 @@ public class WatchlistItemView extends LinearLayout implements DTOView<SecurityI
             if (watchlistPrice != 0)
             {
                 double pl = (lastPrice - watchlistPrice) * 100 / watchlistPrice;
-                positionPercentage.setText(String.format(getContext().getString(R.string.watchlist_pl_percentage_format), pl));
+                gainLossLabel.setText(String.format(getContext().getString(R.string.watchlist_pl_percentage_format), pl));
 
                 if (pl > 0)
                 {
-                    positionPercentage.setTextColor(getResources().getColor(R.color.number_green));
+                    gainLossLabel.setTextColor(getResources().getColor(R.color.number_green));
                 }
                 else if (pl < 0)
                 {
-                    positionPercentage.setTextColor(getResources().getColor(R.color.number_red));
+                    gainLossLabel.setTextColor(getResources().getColor(R.color.number_red));
                 }
                 else
                 {
-                    positionPercentage.setTextColor(getResources().getColor(R.color.text_gray_normal));
+                    gainLossLabel.setTextColor(getResources().getColor(R.color.text_gray_normal));
                 }
             }
             else
             {
-                positionPercentage.setText("");
+                gainLossLabel.setText("");
             }
         }
         else
         {
-            positionPercentage.setText("");
+            gainLossLabel.setText("");
         }
     }
 
