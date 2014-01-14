@@ -63,11 +63,7 @@ public class THLog
                 THLog.d("KeyHash:", Base64.encodeToString(md.digest(), Base64.DEFAULT));
             }
         }
-        catch (PackageManager.NameNotFoundException e)
-        {
-            THLog.d("KeyHash Error", e.getMessage());
-        }
-        catch (NoSuchAlgorithmException e)
+        catch (NullPointerException|PackageManager.NameNotFoundException|NoSuchAlgorithmException e)
         {
             THLog.d("KeyHash Error", e.getMessage());
         }

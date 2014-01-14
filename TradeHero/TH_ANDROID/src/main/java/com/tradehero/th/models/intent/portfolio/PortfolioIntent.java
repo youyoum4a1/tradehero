@@ -17,11 +17,6 @@ public class PortfolioIntent extends THIntent
     {
         super();
     }
-
-    public PortfolioIntent(Uri uri)
-    {
-        super(uri);
-    }
     //</editor-fold>
 
     @Override public String getUriPath()

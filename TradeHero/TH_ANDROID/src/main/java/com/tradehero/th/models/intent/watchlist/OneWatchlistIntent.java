@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.PortfolioId;
 import com.tradehero.th.fragments.position.PositionListFragment;
+import com.tradehero.th.fragments.position.PositionWatchlistFragment;
 import com.tradehero.th.models.intent.portfolio.PortfolioIntent;
 import java.util.List;
 
@@ -40,9 +41,10 @@ abstract public class OneWatchlistIntent extends PortfolioIntent
                 portfolioId.key);
     }
 
+
     public int getIntentActionUriResId()
     {
-        return R.string.intent_uri_action_watchlist;
+        return R.string.intent_uri_action_one_watchlist;
     }
 
     abstract int getIntentActionResId();
@@ -59,17 +61,18 @@ abstract public class OneWatchlistIntent extends PortfolioIntent
 
     public static PortfolioId getPortfolioId(List<String> pathSegments)
     {
-        return new PortfolioId(Integer.parseInt(pathSegments.get(getInteger(R.integer.intent_uri_action_portfolio_path_index_id))));
+        return new PortfolioId(Integer.parseInt(pathSegments.get(getInteger(R.integer.intent_uri_action_watchlist_path_index_id))));
     }
 
     @Override public Class<? extends Fragment> getActionFragment()
     {
-        return PositionListFragment.class;
+        return PositionWatchlistFragment.class;
     }
 
     @Override public void populate(Bundle bundle)
     {
         super.populate(bundle);
-        bundle.putInt(PositionListFragment.BUNDLE_KEY_SHOW_PORTFOLIO_ID_BUNDLE, getPortfolioId().key);
+        // TODO have implementation
+        //bundle.putInt(PositionWatchlistFragment.BUNDLE_KEY_SHOW_PORTFOLIO_ID_BUNDLE, getPortfolioId().key);
     }
 }

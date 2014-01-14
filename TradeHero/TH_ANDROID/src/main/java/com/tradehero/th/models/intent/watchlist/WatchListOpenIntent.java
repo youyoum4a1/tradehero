@@ -2,17 +2,16 @@ package com.tradehero.th.models.intent.watchlist;
 
 import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.PortfolioId;
-import com.tradehero.th.models.intent.position.OnePortfolioIntent;
 
 /**
  * Created by xavier on 1/10/14.
  */
-public class WatchListOpenIntent extends OneWatchlistIntent
+public class WatchlistOpenIntent extends OneWatchlistIntent
 {
-    public static final String TAG = WatchListOpenIntent.class.getSimpleName();
+    public static final String TAG = WatchlistOpenIntent.class.getSimpleName();
 
     //<editor-fold desc="Constructors">
-    public WatchListOpenIntent(PortfolioId portfolioId)
+    public WatchlistOpenIntent(PortfolioId portfolioId)
     {
         super(portfolioId);
     }

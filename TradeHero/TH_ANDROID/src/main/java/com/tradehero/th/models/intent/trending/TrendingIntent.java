@@ -16,11 +16,7 @@ public class TrendingIntent extends THIntent
     public TrendingIntent()
     {
         super();
-    }
-
-    public TrendingIntent(Uri uri)
-    {
-        super(uri);
+        setData(getUri());
     }
     //</editor-fold>
 

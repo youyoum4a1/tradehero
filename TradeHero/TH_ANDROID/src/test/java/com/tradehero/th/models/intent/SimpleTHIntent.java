@@ -9,10 +9,12 @@ public class SimpleTHIntent extends THIntent
 {
     public static final String TAG = SimpleTHIntent.class.getSimpleName();
 
+    //<editor-fold desc="Constructors">
     public SimpleTHIntent()
     {
         super();
     }
+    //</editor-fold>
 
     @Override public DashboardTabType getDashboardType()
     {

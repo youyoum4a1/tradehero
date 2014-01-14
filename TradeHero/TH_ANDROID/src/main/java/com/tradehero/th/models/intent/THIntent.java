@@ -23,11 +23,7 @@ abstract public class THIntent extends Intent
     {
         super();
         setDefaultAction();
-    }
-
-    public THIntent(Uri uri)
-    {
-        super(getDefaultAction(), uri);
+        setData(getUri());
     }
     //</editor-fold>
 

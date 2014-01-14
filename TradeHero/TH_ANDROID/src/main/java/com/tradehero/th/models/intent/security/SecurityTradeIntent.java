@@ -24,6 +24,11 @@ abstract public class SecurityTradeIntent extends TrendingIntent
     }
     //</editor-fold>
 
+    @Override public String getUriPath()
+    {
+        return super.getUriPath();
+    }
+
     public Uri getSecurityActionUri(SecurityId securityId)
     {
         return Uri.parse(getSecurityActionUriPath(securityId));
