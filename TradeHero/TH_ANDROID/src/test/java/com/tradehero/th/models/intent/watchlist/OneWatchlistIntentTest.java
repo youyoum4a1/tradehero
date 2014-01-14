@@ -5,7 +5,7 @@ import android.os.Bundle;
 import com.tradehero.TestConstants;
 import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.PortfolioId;
-import com.tradehero.th.fragments.position.PositionWatchlistFragment;
+import com.tradehero.th.fragments.watchlist.WatchlistPositionFragment;
 import com.tradehero.th.models.intent.THIntent;
 import java.util.List;
 import org.junit.After;
@@ -96,7 +96,7 @@ public class OneWatchlistIntentTest
 
     @Test public void actionFragmentIsCorrect()
     {
-        assertEquals(PositionWatchlistFragment.class, new SimpleOneWatchlistIntent(new PortfolioId(567)).getActionFragment());
+        assertEquals(WatchlistPositionFragment.class, new SimpleOneWatchlistIntent(new PortfolioId(567)).getActionFragment());
     }
 
     @Test public void bundleIsCorrect()
