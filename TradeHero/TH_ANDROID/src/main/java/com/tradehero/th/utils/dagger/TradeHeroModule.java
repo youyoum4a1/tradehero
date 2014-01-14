@@ -99,6 +99,8 @@ import com.tradehero.th.loaders.TimelineListLoader;
 import com.tradehero.th.loaders.security.SecurityListPagedLoader;
 import com.tradehero.th.models.alert.SecurityAlertAssistant;
 import com.tradehero.th.models.intent.THIntentFactory;
+import com.tradehero.th.models.intent.THIntentFactoryImpl;
+import com.tradehero.th.models.intent.portfolio.PortfolioIntentFactory;
 import com.tradehero.th.models.intent.trending.TrendingIntentFactory;
 import com.tradehero.th.models.push.PushNotificationManager;
 import com.tradehero.th.models.push.urbanairship.UrbanAirshipPushNotificationManager;
@@ -461,4 +463,12 @@ public class TradeHeroModule
     {
         return new UrbanAirshipPushNotificationManager();
     }
-}
+
+    //TEMP
+    @Provides @Singleton THIntentFactory provideTHIntentFactory()
+    {
+        THIntentFactoryImpl factory = new THIntentFactoryImpl();
+        factory.addSubFactory(new TrendingIntentFactory());
+        factory.addSubFactory(new PortfolioIntentFactory());
+        return factory;
+    }}
