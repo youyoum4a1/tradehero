@@ -291,7 +291,6 @@ import org.ocpsoft.prettytime.PrettyTime;
                 PositionWatchlistFragment.class,
                 WatchlistItemView.class,
 
-                THIntentFactory.class,
                 TrendingIntentFactory.class,
         },
         staticInjections =
@@ -301,6 +300,9 @@ import org.ocpsoft.prettytime.PrettyTime;
                 DisplayablePortfolioDTO.class,
                 DisplayablePortfolioUtil.class,
                 DTOCacheUtil.class,
+
+                //TEMP
+                com.tradehero.th.models.intent.THIntent.class,
         },
         library = true // TEMP
 )
