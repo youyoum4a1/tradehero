@@ -3,7 +3,6 @@ package com.tradehero.th.models.intent;
 import com.tradehero.th.models.intent.portfolio.PortfolioIntentFactory;
 import com.tradehero.th.models.intent.trending.TrendingIntentFactory;
 import dagger.Module;
-import dagger.ObjectGraph;
 import dagger.Provides;
 import javax.inject.Singleton;
 

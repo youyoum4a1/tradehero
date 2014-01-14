@@ -300,10 +300,8 @@ import org.ocpsoft.prettytime.PrettyTime;
                 DisplayablePortfolioDTO.class,
                 DisplayablePortfolioUtil.class,
                 DTOCacheUtil.class,
-
-                //TEMP
-                com.tradehero.th.models.intent.THIntent.class,
         },
+        complete = false,
         library = true // TEMP
 )
 public class TradeHeroModule
@@ -465,12 +463,4 @@ public class TradeHeroModule
     {
         return new UrbanAirshipPushNotificationManager();
     }
-
-    //TEMP
-    @Provides @Singleton THIntentFactory provideTHIntentFactory()
-    {
-        THIntentFactoryImpl factory = new THIntentFactoryImpl();
-        factory.addSubFactory(new TrendingIntentFactory());
-        factory.addSubFactory(new PortfolioIntentFactory());
-        return factory;
-    }}
+}

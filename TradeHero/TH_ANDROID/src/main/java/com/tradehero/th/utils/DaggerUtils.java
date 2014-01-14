@@ -16,11 +16,7 @@ public class DaggerUtils
     public static void initialize()
     {
         LruMemFileCache.createInstance(Application.context());
-        objectGraph = ObjectGraph.create(new TradeHeroModule(
-                NetworkEngine.getInstance(),
-                YahooEngine.getInstance(),
-                Application.context(),
-                LruMemFileCache.getInstance()));
+        objectGraph = ObjectGraph.create(getModules());
         objectGraph.injectStatics();
     }
 
