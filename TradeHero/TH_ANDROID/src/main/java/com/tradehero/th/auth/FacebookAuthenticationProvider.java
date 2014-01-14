@@ -48,6 +48,7 @@ public class FacebookAuthenticationProvider implements THAuthenticationProvider
         this.preciseDateFormat.setTimeZone(new SimpleTimeZone(0, "GMT"));
 
         this.activityCode = 32665;
+        this.baseActivity = new WeakReference<>(null);
 
         this.applicationId = applicationId;
         if (context != null)

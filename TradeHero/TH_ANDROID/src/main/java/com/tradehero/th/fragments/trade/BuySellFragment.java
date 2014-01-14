@@ -1122,13 +1122,13 @@ public class BuySellFragment extends AbstractBuySellFragment
                 {
                     // Nothing to do
                 }
-                else if (isTransactionTypeBuy && quoteDTO.ask != null)
+                else if (isTransactionTypeBuy && quoteDTO.ask != null && quoteDTO.toUSDRate != null)
                 {
-                    mBuyQuantity = (int) Math.floor(priceSelected / quoteDTO.ask);
+                    mBuyQuantity = (int) Math.floor(priceSelected / (quoteDTO.ask * quoteDTO.toUSDRate));
                 }
-                else if (!isTransactionTypeBuy && quoteDTO.bid != null)
+                else if (!isTransactionTypeBuy && quoteDTO.bid != null && quoteDTO.toUSDRate != null)
                 {
-                    mSellQuantity = (int) Math.floor(priceSelected / quoteDTO.bid);
+                    mSellQuantity = (int) Math.floor(priceSelected / (quoteDTO.bid * quoteDTO.toUSDRate));
                 }
                 else
                 {

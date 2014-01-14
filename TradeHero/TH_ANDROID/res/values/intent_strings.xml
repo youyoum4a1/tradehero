@@ -27,7 +27,6 @@
   <string name="intent_action_portfolio_open">open</string>
 
   <!-- Building tradehero://portfolio/watchlist/open/1232 -->
-  <string name="intent_uri_action_watchlist">%1$s://%2$s/%3$s/%4$s</string>
   <string name="intent_action_watchlist">watchlist</string>
   <string name="intent_uri_action_one_watchlist">%1$s://%2$s/%3$s/%4$s/%5$s</string>
   <integer name="intent_uri_action_watchlist_path_index_action">1</integer>
