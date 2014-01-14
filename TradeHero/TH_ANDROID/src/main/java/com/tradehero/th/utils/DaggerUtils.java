@@ -2,6 +2,7 @@ package com.tradehero.th.utils;
 
 import com.tradehero.common.cache.LruMemFileCache;
 import com.tradehero.th.base.Application;
+import com.tradehero.th.models.intent.IntentDaggerModule;
 import com.tradehero.th.network.NetworkEngine;
 import com.tradehero.th.network.YahooEngine;
 import com.tradehero.th.utils.dagger.TradeHeroModule;
@@ -25,10 +26,15 @@ public class DaggerUtils
         objectGraph.injectStatics();
     }
 
-    private static List<Object> getModules()
+    private static Object[] getModules()
     {
-        return Arrays.asList(
-                );
+        return new Object[] {
+                new TradeHeroModule(
+                        NetworkEngine.getInstance(),
+                        YahooEngine.getInstance(),
+                        Application.context(),
+                        LruMemFileCache.getInstance()),
+                new IntentDaggerModule()};
     }
 
     public static void inject(Object object)
