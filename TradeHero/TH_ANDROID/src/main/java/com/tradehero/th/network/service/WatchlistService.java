@@ -6,6 +6,7 @@ import java.util.List;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.http.Body;
+import retrofit.http.DELETE;
 import retrofit.http.GET;
 import retrofit.http.POST;
 import retrofit.http.PUT;
@@ -57,6 +58,9 @@ public interface WatchlistService
             @Query("securityId") Integer securityId,
             @Query("skipCache") Boolean skipCache,
             Callback<List<WatchlistPositionDTO>> callback);
+
+    @DELETE("/watchlistPositions/{watchlistId}")
+    void deleteWatchlist(@Path("watchlistId") int watchlistId, Callback<WatchlistPositionDTO> callback);
 
     //</editor-fold>
 }

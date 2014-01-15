@@ -177,4 +177,8 @@
   <string name="original_value">Original Value</string>
   <string name="gain_loss">Gain/Loss</string>
   <string name="updating">Updating ...</string>
+  <string name="delete">Delete</string>
+  <string name="watchlist_item_deleted_successfully">Watchlist item for security: %d has been deleted</string>
+  <string name="watchlist_item_deleted_failed">Fail to delete watchlist item for security %d</string>
+  <string name="more">More</string>
 </resources>

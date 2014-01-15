@@ -15,10 +15,24 @@
       </snapshots>
     </repository>
 
-
     <repository>
       <id>crashlytics-repo</id>
       <url>http://download.crashlytics.com/maven</url>
+    </repository>
+
+    <repository>
+      <id>sonatype</id>
+      <url>https://oss.sonatype.org/content/groups/public/</url>
+      <releases>
+        <enabled>true</enabled>
+        <updatePolicy>daily</updatePolicy>
+        <checksumPolicy>fail</checksumPolicy>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+        <updatePolicy>always</updatePolicy>
+        <checksumPolicy>ignore</checksumPolicy>
+      </snapshots>
     </repository>
 
   </repositories>
@@ -72,6 +86,7 @@
     <gson.version>2.2.4</gson.version>
     <javawriter.version>2.1.1</javawriter.version>
     <android-support.version>r7</android-support.version>
+    <nineoldandroids.version>2.4.0</nineoldandroids.version>
 
     <keystore.location>${basedir}${file.separator}..${file.separator}..${file.separator}tradehero_android_release_key.keystore</keystore.location>
     <keystore.password>password99__**01</keystore.password>
@@ -90,6 +105,12 @@
         <groupId>com.google.android</groupId>
         <artifactId>support-v4</artifactId>
         <version>${android-support.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.nineoldandroids</groupId>
+        <artifactId>library</artifactId>
+        <version>${nineoldandroids.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>

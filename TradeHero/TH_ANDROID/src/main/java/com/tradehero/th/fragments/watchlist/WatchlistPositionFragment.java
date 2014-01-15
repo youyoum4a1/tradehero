@@ -5,12 +5,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ListView;
 import android.widget.ProgressBar;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
+import com.fortysevendeg.android.swipelistview.SwipeListView;
 import com.tradehero.common.milestone.Milestone;
 import com.tradehero.common.widget.TwoStateView;
 import com.tradehero.th.R;
@@ -42,7 +42,7 @@ public class WatchlistPositionFragment extends DashboardFragment
     @Inject protected Lazy<PortfolioHeaderFactory> headerFactory;
     @Inject protected CurrentUserBaseKeyHolder currentUserBaseKeyHolder;
 
-    private ListView watchlistListView;
+    private SwipeListView watchlistListView;
     private WatchlistPortfolioHeaderView watchlistPortfolioHeaderView;
     private WatchlistAdapter watchListAdapter;
 
@@ -61,7 +61,15 @@ public class WatchlistPositionFragment extends DashboardFragment
         if (view != null)
         {
             progressBar = (ProgressBar) view.findViewById(android.R.id.empty);
-            watchlistListView = (ListView) view.findViewById(android.R.id.list);
+            watchlistListView = (SwipeListView) view.findViewById(android.R.id.list);
+            watchlistListView.post(new Runnable()
+            {
+                @Override public void run()
+                {
+                    watchlistListView.setOffsetLeft(watchlistListView.getWidth() -
+                            getResources().getDimension(R.dimen.watchlist_item_button_width) * 2);
+                }
+            });
 
             // portfolio header
             watchlistPortfolioHeaderView = (WatchlistPortfolioHeaderView) view.findViewById(R.id.watchlist_position_list_header);

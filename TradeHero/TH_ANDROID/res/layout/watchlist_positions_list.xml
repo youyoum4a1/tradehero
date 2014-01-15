@@ -2,18 +2,28 @@
 
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:swipe="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-  <ListView
+  <com.fortysevendeg.android.swipelistview.SwipeListView
       android:id="@android:id/list"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
       android:layout_alignParentTop="true"
       android:paddingTop="50dp"
       android:clipToPadding="false"
+      swipe:swipeFrontView="@id/front"
+      swipe:swipeBackView="@id/back"
+      swipe:swipeDrawableChecked="@drawable/ic_info"
+      swipe:swipeDrawableUnchecked="@drawable/ic_info"
+      swipe:swipeCloseAllItemsWhenMoveList="true"
+      swipe:swipeMode="left"
       />
+
+  <!--swipe:swipeOffsetLeft="[dimension]"-->
+  <!--swipe:swipeOffsetRight="[dimension]"-->
 
   <include
       android:layout_width="match_parent"
@@ -27,6 +37,4 @@
       android:layout_height="wrap_content"
       android:layout_centerInParent="true"
       />
-  <!-- see PortfolioHeaderFactory.java for the different layout that are used -->
-
 </RelativeLayout>
