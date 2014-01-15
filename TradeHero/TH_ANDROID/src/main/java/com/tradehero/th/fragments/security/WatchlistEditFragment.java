@@ -42,6 +42,7 @@ public class WatchlistEditFragment extends DashboardFragment
     public static final String BUNDLE_KEY_SECURITY_ID_BUNDLE = WatchlistEditFragment.class.getName() + ".securityKeyId";
     public static final String BUNDLE_KEY_TITLE = WatchlistEditFragment.class.getName() + ".title";
     private static final String TAG = DashboardFragment.class.getName();
+    public static final String BUNDLE_KEY_RETURN_FRAGMENT = WatchlistEditFragment.class.getName() + ".returnFragment";
 
     private ImageView securityLogo;
     private TextView securityTitle;
@@ -109,31 +110,6 @@ public class WatchlistEditFragment extends DashboardFragment
             if (securityCompactDTO != null)
             {
                 WatchlistPositionFormDTO watchPositionItemForm = new WatchlistPositionFormDTO(securityCompactDTO.id, price, quantity);
-                THCallback<WatchlistPositionDTO> watchlistUpdateCallback = new THCallback<WatchlistPositionDTO>()
-                {
-                    @Override protected void finish()
-                    {
-                        progressBar.setVisibility(View.GONE);
-                    }
-
-                    @Override protected void success(WatchlistPositionDTO watchlistPositionDTO, THResponse response)
-                    {
-                        SecurityId securityId = watchlistPositionDTO.securityDTO.getSecurityId();
-                        watchlistPositionCache.get().put(securityId, watchlistPositionDTO);
-                        SecurityIdList currentUserWatchlistSecurities =
-                                userWatchlistPositionCache.get().get(currentUserBaseKeyHolder.getCurrentUserBaseKey());
-                        if (currentUserWatchlistSecurities != null && !currentUserWatchlistSecurities.contains(securityId))
-                        {
-                            currentUserWatchlistSecurities.add(watchlistPositionDTO.securityDTO.getSecurityId());
-                        }
-                        getNavigator().popFragment(WatchlistPositionFragment.class.getName());
-                    }
-
-                    @Override protected void failure(THException ex)
-                    {
-                        THToast.show(ex);
-                    }
-                };
 
                 WatchlistPositionDTO existingWatchlistPosition = watchlistPositionCache.get().get(securityCompactDTO.getSecurityId());
                 if (existingWatchlistPosition != null)
@@ -290,6 +266,42 @@ public class WatchlistEditFragment extends DashboardFragment
             }
         }
     }
+
+    private THCallback<WatchlistPositionDTO> watchlistUpdateCallback = new THCallback<WatchlistPositionDTO>()
+    {
+        @Override protected void finish()
+        {
+            progressBar.setVisibility(View.GONE);
+        }
+
+        @Override protected void success(WatchlistPositionDTO watchlistPositionDTO, THResponse response)
+        {
+            SecurityId securityId = watchlistPositionDTO.securityDTO.getSecurityId();
+            watchlistPositionCache.get().put(securityId, watchlistPositionDTO);
+            SecurityIdList currentUserWatchlistSecurities =
+                    userWatchlistPositionCache.get().get(currentUserBaseKeyHolder.getCurrentUserBaseKey());
+            if (currentUserWatchlistSecurities != null && !currentUserWatchlistSecurities.contains(securityId))
+            {
+                currentUserWatchlistSecurities.add(watchlistPositionDTO.securityDTO.getSecurityId());
+            }
+            Bundle args = getArguments();
+            if (args != null)
+            {
+                String returnFragment = args.getString(BUNDLE_KEY_RETURN_FRAGMENT);
+                if (returnFragment != null)
+                {
+                    getNavigator().popFragment(returnFragment);
+                    return;
+                }
+            }
+            getNavigator().popFragment();
+        }
+
+        @Override protected void failure(THException ex)
+        {
+            THToast.show(ex);
+        }
+    };
 
     //<editor-fold desc="TabBarVisibilityInformer">
     @Override public boolean isTabBarVisible()

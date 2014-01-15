@@ -665,6 +665,7 @@ public class SearchStockPeopleFragment extends DashboardFragment
                 // pop out current fragment and push in watchlist edit fragment
                 Bundle args = new Bundle();
                 args.putBundle(WatchlistEditFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, clickedItem.getArgs());
+                args.putString(WatchlistEditFragment.BUNDLE_KEY_RETURN_FRAGMENT, WatchlistPositionFragment.class.getName());
                 DeviceUtil.dismissKeyBoard(getActivity(), getView());
                 navigator.pushFragment(WatchlistEditFragment.class, args);
             }
