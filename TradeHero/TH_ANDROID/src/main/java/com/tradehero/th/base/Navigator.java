@@ -21,8 +21,12 @@ public class Navigator
             R.anim.card_flip_left_in, R.anim.card_flip_left_out
     };
     public static final int[] PUSH_UP_FROM_BOTTOM = new int[] {
-            R.anim.slide_in_from_bottom, R.anim.slide_out_to_bottom,
-            R.anim.fade_back, R.anim.fade_back
+            R.anim.slide_in_from_bottom, R.anim.slide_out_to_top,
+            R.anim.slide_in_from_top, R.anim.slide_out_to_bottom
+    };
+    public static final int[] DEFAULT_FRAGMENT_ANIMATION = new int[] {
+            R.anim.slide_right_in, R.anim.slide_left_out,
+            R.anim.slide_left_in, R.anim.slide_right_out
     };
 
     private final Context context;
@@ -57,13 +61,22 @@ public class Navigator
         this.animationInitiated = true;
     }
 
+    public void setAnimation(int[] anim)
+    {
+        if (anim == null || anim.length != 4)
+        {
+            anim = DEFAULT_FRAGMENT_ANIMATION;
+        }
+        setAnimation(anim[0], anim[1], anim[2], anim[3]);
+    }
+
     private int[] getSafeAnimation()
     {
         if (animationInitiated)
         {
             return this.animation;
         }
-        setAnimation(R.anim.slide_right_in, R.anim.slide_left_out, R.anim.slide_left_in, R.anim.slide_right_out);
+        setAnimation(DEFAULT_FRAGMENT_ANIMATION);
         return animation;
     }
 
@@ -84,8 +97,13 @@ public class Navigator
         }
         transaction.setCustomAnimations(anim[0], anim[1], anim[2], anim[3]);
 
+        if (backStackName == null)
+        {
+            backStackName = fragmentClass.getName();
+        }
+
         FragmentTransaction ft = transaction.replace(fragmentContentId, fragment);
-        ft.addToBackStack(fragmentClass.getName());
+        ft.addToBackStack(backStackName);
         ft.commit();
 
         return fragment;
@@ -160,7 +178,9 @@ public class Navigator
         if (pushUpFromBottom != null && pushUpFromBottom.length == 4)
         {
             setAnimation(pushUpFromBottom[0], pushUpFromBottom[1], pushUpFromBottom[2], pushUpFromBottom[3]);
-            return pushFragment(fragmentClass, args);
+            Fragment fragment = pushFragment(fragmentClass, args);
+            setAnimation(DEFAULT_FRAGMENT_ANIMATION);
+            return fragment;
         }
         return null;
     }
