@@ -127,7 +127,7 @@ public class Navigator
     public void popFragment()
     {
         THLog.d(TAG, "Popping fragment, count: " + manager.getBackStackEntryCount());
-        manager.popBackStackImmediate();
+        manager.popBackStack();
     }
 
     public boolean isBackStackEmpty()
