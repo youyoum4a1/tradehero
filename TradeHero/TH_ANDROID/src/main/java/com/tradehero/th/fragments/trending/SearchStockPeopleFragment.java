@@ -609,18 +609,6 @@ public class SearchStockPeopleFragment extends DashboardFragment
         navigator.pushFragment(PushableTimelineFragment.class, args);
     }
 
-    protected void pushWatchlistFragmentIn(SecurityId securityId)
-    {
-        if (securityId == null)
-        {
-            THLog.e(TAG, "Cannot handle null SecurityId", new IllegalArgumentException());
-            return;
-        }
-
-        Bundle args = new Bundle();
-        navigator.pushFragment(WatchlistEditFragment.class, args);
-    }
-
     //<editor-fold desc="Accessors">
     public int getCurrentlyLoadingPage()
     {
@@ -673,10 +661,9 @@ public class SearchStockPeopleFragment extends DashboardFragment
 
             if (shouldDisableSearchTypeOption)
             {
-                // pop out current fragment and push in watchlistedit fragment
+                // pop out current fragment and push in watchlist edit fragment
                 Bundle args = new Bundle();
                 args.putBundle(WatchlistEditFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, clickedItem.getArgs());
-                navigator.popFragment();
                 navigator.pushFragment(WatchlistEditFragment.class, args);
             }
             else
@@ -811,14 +798,18 @@ public class SearchStockPeopleFragment extends DashboardFragment
     {
         @Override public void run()
         {
-            getView().post(new Runnable()
+            View view = getView();
+            if (view != null)
             {
-                @Override public void run()
+                view.post(new Runnable()
                 {
-                    startAnew();
-                    requestData();
-                }
-            });
+                    @Override public void run()
+                    {
+                        startAnew();
+                        requestData();
+                    }
+                });
+            }
         }
     }
     //</editor-fold>
