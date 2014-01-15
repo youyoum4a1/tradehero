@@ -12,15 +12,15 @@ public class DisplayablePortfolioUtil
 {
     public static final String TAG = DisplayablePortfolioUtil.class.getSimpleName();
 
-    @Inject public static Lazy<CurrentUserBaseKeyHolder> currentUserBaseKeyHolder;
+    @Inject public static CurrentUserBaseKeyHolder currentUserBaseKeyHolder;
 
     public static String getLongTitle(Context context, DisplayablePortfolioDTO displayablePortfolioDTO)
     {
         if (displayablePortfolioDTO != null &&
                 displayablePortfolioDTO.userBaseDTO != null &&
-                !currentUserBaseKeyHolder.get().getCurrentUserBaseKey().equals(displayablePortfolioDTO.userBaseDTO.getBaseKey()))
+                !currentUserBaseKeyHolder.getCurrentUserBaseKey().equals(displayablePortfolioDTO.userBaseDTO.getBaseKey()))
         {
-            return UserBaseDTOUtil.getLongDisplayName(context, displayablePortfolioDTO.userBaseDTO);
+            return displayablePortfolioDTO.userBaseDTO.displayName;
         }
 
         if (displayablePortfolioDTO != null && displayablePortfolioDTO.portfolioDTO != null)

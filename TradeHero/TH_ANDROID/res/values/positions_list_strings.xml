@@ -2,7 +2,7 @@
 <resources>
 
     <!-- Portfolios list -->
-    <string name="topbar_portfolios_title">Portfolios</string>
+    <string name="topbar_portfolios_title">Portfolios and Watchlists</string>
     <string name="webview_back">Back</string>
     <string name="webview_forward">Forward</string>
     <string name="portfolio_own_header">PORTFOLIOS</string>
@@ -11,6 +11,9 @@
     <string name="portfolio_loading_count">Loading %1$,d/%2$,d Portfolios...</string>
     <string name="error_fetch_portfolio_list_info">There was an error when fetching the list of portfolios</string>
     <string name="error_fetch_portfolio_info">There was an error when fetching the portfolio information</string>
+    <string name="portfolio_description_count_open_positions">You have %1$d open positions</string>
+    <string name="portfolio_description_count_closed_positions">You have %1$d closed positions</string>
+    <string name="portfolio_description_count_watchlist">You have %1$d items</string>
 
     <!-- Portfolio detail / Positions -->
     <string name="position_nothing_description">No open positions. Tap to Trade!</string>
