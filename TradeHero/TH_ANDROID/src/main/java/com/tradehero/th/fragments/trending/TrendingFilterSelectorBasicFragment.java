@@ -27,9 +27,9 @@ public class TrendingFilterSelectorBasicFragment extends TrendingFilterSelectorF
     @Override public void displayPreviousButton()
     {
         super.displayPreviousButton();
-        if (mPrevious != null)
+        if (selectorView.mPrevious != null)
         {
-            mPrevious.setEnabled(false);
+            selectorView.mPrevious.setEnabled(false);
         }
     }
 

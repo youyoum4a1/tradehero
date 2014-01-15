@@ -38,13 +38,8 @@ abstract public class TrendingFilterSelectorFragment extends SherlockFragment
     public static final String TAG = TrendingFilterSelectorFragment.class.getSimpleName();
     public static final String BUNDLE_KEY_SELECTED_EXCHANGE_INDEX = TrendingFilterSelectorFragment.class.getName() + ".exchangeIndex";
 
-    protected ImageButton mPrevious;
-    protected ImageButton mNext;
-    private TextView mTitle;
-    private ImageView mTitleIcon;
-    private TextView mDescription;
-    private Spinner mExchangeSelection;
-    private SpinnerIconAdapter mExchangeSelectionAdapter;
+    protected TrendingFilterSelectorView selectorView;
+    public SpinnerIconAdapter mExchangeSelectionAdapter;
     private WeakReference<OnPreviousNextListener> onPreviousNextListener = new WeakReference<>(null);
     private WeakReference<OnResumedListener> onResumedListener = new WeakReference<>(null);
     private WeakReference<OnExchangeSelectionChangedListener> onExchangeSelectionChangedListener = new WeakReference<>(null);
@@ -79,32 +74,31 @@ abstract public class TrendingFilterSelectorFragment extends SherlockFragment
     {
         if (view != null)
         {
-            mPrevious = (ImageButton) view.findViewById(R.id.previous_filter);
-            if (mPrevious != null)
+            selectorView = (TrendingFilterSelectorView) view.findViewById(R.id.trending_filter_selector_view);
+            if (selectorView != null)
             {
-                mPrevious.setOnClickListener(new View.OnClickListener()
+                if (selectorView.mPrevious != null)
                 {
-                    @Override public void onClick(View view)
+                    selectorView.mPrevious.setOnClickListener(new View.OnClickListener()
                     {
-                        handlePreviousClicked();
-                    }
-                });
-            }
-            mNext = (ImageButton) view.findViewById(R.id.next_filter);
-            if (mNext != null)
-            {
-                mNext.setOnClickListener(new View.OnClickListener()
+                        @Override public void onClick(View view)
+                        {
+                            handlePreviousClicked();
+                        }
+                    });
+
+                }
+                if (selectorView.mNext != null)
                 {
-                    @Override public void onClick(View view)
+                    selectorView.mNext.setOnClickListener(new View.OnClickListener()
                     {
-                        handleNextClicked();
-                    }
-                });
+                        @Override public void onClick(View view)
+                        {
+                            handleNextClicked();
+                        }
+                    });
+                }
             }
-            mTitle = (TextView) view.findViewById(R.id.title);
-            mTitleIcon = (ImageView) view.findViewById(R.id.trending_filter_title_icon);
-            mDescription = (TextView) view.findViewById(R.id.description);
-            mExchangeSelection = (Spinner) view.findViewById(R.id.exchange_selection);
         }
     }
 
@@ -120,26 +114,18 @@ abstract public class TrendingFilterSelectorFragment extends SherlockFragment
     {
         onResumedListener = new WeakReference<>(null);
 
-        if (mPrevious != null)
+        if (selectorView != null)
         {
-            mPrevious.setOnClickListener(null);
+            selectorView.onDestroy();
         }
-        if (mNext != null)
-        {
-            mNext.setOnClickListener(null);
-        }
+
         if (exchangeListCacheFetchTask != null)
         {
             exchangeListCacheFetchTask.setListener(null);
         }
         exchangeListCacheFetchTask = null;
         exchangeListTypeCacheListener = null;
-        if (mExchangeSelection != null)
-        {
-            mExchangeSelection.setOnItemSelectedListener(null);
-            mExchangeSelection.setAdapter(null);
-        }
-        mExchangeSelection = null;
+
         mExchangeSelectionAdapter = null;
         super.onDestroyView();
     }
@@ -168,47 +154,47 @@ abstract public class TrendingFilterSelectorFragment extends SherlockFragment
 
     public void displayPreviousButton()
     {
-        if (mPrevious != null)
+        if (selectorView != null && selectorView.mPrevious != null)
         {
-            mPrevious.setEnabled(true);
+            selectorView.mPrevious.setEnabled(true);
         }
     }
 
     public void displayNextButton()
     {
-        if (mNext != null)
+        if (selectorView != null && selectorView.mNext != null)
         {
-            mNext.setEnabled(true);
+            selectorView.mNext.setEnabled(true);
         }
     }
 
     public void displayTitle()
     {
-        if (mTitle != null)
+        if (selectorView != null && selectorView.mTitle != null)
         {
-            mTitle.setText(getTitleResId());
+            selectorView.mTitle.setText(getTitleResId());
         }
     }
 
     public void displayTitleIcon()
     {
-        if (mTitleIcon != null)
+        if (selectorView != null && selectorView.mTitleIcon != null)
         {
-            mTitleIcon.setImageResource(getTitleLeftDrawableResId());
+            selectorView.mTitleIcon.setImageResource(getTitleLeftDrawableResId());
         }
     }
 
     public void displayDescription()
     {
-        if (mDescription != null)
+        if (selectorView != null && selectorView.mDescription != null)
         {
-            mDescription.setText(getDescriptionResId());
+            selectorView.mDescription.setText(getDescriptionResId());
         }
     }
 
     public void displaySpinner()
     {
-        if (mExchangeSelection != null && dropDownTexts != null)
+        if (selectorView != null && selectorView.mExchangeSelection != null && dropDownTexts != null)
         {
             // TODO make sure we do not need to check for null before
             mExchangeSelectionAdapter = new TrendingFilterSpinnerIconAdapter(
@@ -217,12 +203,9 @@ abstract public class TrendingFilterSelectorFragment extends SherlockFragment
                     getDropDownIconsArray(),
                     getDropDownIconsArray());
             mExchangeSelectionAdapter.setDropDownViewResource(R.layout.trending_filter_spinner_dropdown_item);
-            if (mExchangeSelection != null)
-            {
-                mExchangeSelection.setAdapter(mExchangeSelectionAdapter);
-            }
-            mExchangeSelection.setSelection(selectedExchangeIndex);
-            mExchangeSelection.setOnItemSelectedListener(this);
+            selectorView.mExchangeSelection.setAdapter(mExchangeSelectionAdapter);
+            selectorView.mExchangeSelection.setSelection(selectedExchangeIndex);
+            selectorView.mExchangeSelection.setOnItemSelectedListener(this);
         }
     }
     //</editor-fold>
