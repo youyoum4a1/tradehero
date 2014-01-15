@@ -75,4 +75,35 @@ public class TrendingFilterSelectorView extends RelativeLayout
         }
         mExchangeSelection = null;
     }
+
+    public void apply(TrendingFilterTypeDTO typeDTO)
+    {
+        if (typeDTO != null)
+        {
+            if (mPrevious != null)
+            {
+                mPrevious.setEnabled(typeDTO.hasPreviousButton);
+            }
+
+            if (mNext != null)
+            {
+                mNext.setEnabled(typeDTO.hasNextButton);
+            }
+
+            if (mTitle != null)
+            {
+                mTitle.setText(typeDTO.titleResId);
+            }
+
+            if (mTitleIcon != null)
+            {
+                mTitleIcon.setImageResource(typeDTO.titleIconResId);
+            }
+
+            if (mDescription != null)
+            {
+                mDescription.setText(typeDTO.descriptionResId);
+            }
+        }
+    }
 }

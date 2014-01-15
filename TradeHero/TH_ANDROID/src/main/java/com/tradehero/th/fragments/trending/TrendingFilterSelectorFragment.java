@@ -136,19 +136,16 @@ abstract public class TrendingFilterSelectorFragment extends SherlockFragment
         outState.putInt(BUNDLE_KEY_SELECTED_EXCHANGE_INDEX, selectedExchangeIndex);
     }
 
-    abstract int getTitleResId();
-    abstract int getTitleLeftDrawableResId();
-    abstract int getDescriptionResId();
+    abstract TrendingFilterTypeDTO getTrendingFilterTypeDTO();
     abstract public TrendingSecurityListType getTrendingSecurityListType(String exchangeName, Integer page, Integer perPage);
 
     //<editor-fold desc="Display Methods">
     public void display()
     {
-        displayPreviousButton();
-        displayNextButton();
-        displayTitle();
-        displayTitleIcon();
-        displayDescription();
+        if (selectorView != null)
+        {
+            selectorView.apply(getTrendingFilterTypeDTO());
+        }
         displaySpinner();
     }
 
@@ -165,30 +162,6 @@ abstract public class TrendingFilterSelectorFragment extends SherlockFragment
         if (selectorView != null && selectorView.mNext != null)
         {
             selectorView.mNext.setEnabled(true);
-        }
-    }
-
-    public void displayTitle()
-    {
-        if (selectorView != null && selectorView.mTitle != null)
-        {
-            selectorView.mTitle.setText(getTitleResId());
-        }
-    }
-
-    public void displayTitleIcon()
-    {
-        if (selectorView != null && selectorView.mTitleIcon != null)
-        {
-            selectorView.mTitleIcon.setImageResource(getTitleLeftDrawableResId());
-        }
-    }
-
-    public void displayDescription()
-    {
-        if (selectorView != null && selectorView.mDescription != null)
-        {
-            selectorView.mDescription.setText(getDescriptionResId());
         }
     }
 

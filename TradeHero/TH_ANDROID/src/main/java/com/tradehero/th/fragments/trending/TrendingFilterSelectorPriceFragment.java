@@ -9,19 +9,9 @@ public class TrendingFilterSelectorPriceFragment extends TrendingFilterSelectorF
 {
     public static final int POSITION_IN_PAGER  = 2;
 
-    @Override int getTitleResId()
+    @Override TrendingFilterTypeDTO getTrendingFilterTypeDTO()
     {
-        return R.string.trending_filter_price_title;
-    }
-
-    @Override int getTitleLeftDrawableResId()
-    {
-        return R.drawable.ic_trending_price;
-    }
-
-    @Override int getDescriptionResId()
-    {
-        return R.string.trending_filter_price_description;
+        return TrendingFilterTypeDTO.getPrice();
     }
 
     @Override public TrendingSecurityListType getTrendingSecurityListType(String exchangeName, Integer page, Integer perPage)

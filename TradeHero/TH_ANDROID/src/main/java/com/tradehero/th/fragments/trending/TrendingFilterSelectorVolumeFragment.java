@@ -9,19 +9,9 @@ public class TrendingFilterSelectorVolumeFragment extends TrendingFilterSelector
 {
     public static final int POSITION_IN_PAGER  = 1;
 
-    @Override int getTitleResId()
+    @Override TrendingFilterTypeDTO getTrendingFilterTypeDTO()
     {
-        return R.string.trending_filter_volume_title;
-    }
-
-    @Override int getTitleLeftDrawableResId()
-    {
-        return R.drawable.ic_trending_volume;
-    }
-
-    @Override int getDescriptionResId()
-    {
-        return R.string.trending_filter_volume_description;
+        return TrendingFilterTypeDTO.getVolume();
     }
 
     @Override public TrendingSecurityListType getTrendingSecurityListType(String exchangeName, Integer page, Integer perPage)

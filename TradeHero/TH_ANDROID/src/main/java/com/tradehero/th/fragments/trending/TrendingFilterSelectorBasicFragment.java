@@ -9,19 +9,9 @@ public class TrendingFilterSelectorBasicFragment extends TrendingFilterSelectorF
 {
     public static final int POSITION_IN_PAGER  = 0;
 
-    @Override int getTitleResId()
+    @Override TrendingFilterTypeDTO getTrendingFilterTypeDTO()
     {
-        return R.string.trending_filter_basic_title;
-    }
-
-    @Override int getTitleLeftDrawableResId()
-    {
-        return 0;
-    }
-
-    @Override int getDescriptionResId()
-    {
-        return R.string.trending_filter_basic_description;
+        return TrendingFilterTypeDTO.getBasic();
     }
 
     @Override public void displayPreviousButton()
