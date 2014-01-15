@@ -71,6 +71,7 @@ public class TimelineItemView extends LinearLayout implements
     private View monitorActionButton;
     private PopupMenu sharePopupMenu;
     private PopupMenu monitorPopupMenu;
+    private ImageView watchlistIndicator;
 
     //<editor-fold desc="Constructors">
     public TimelineItemView(Context context)
@@ -107,6 +108,8 @@ public class TimelineItemView extends LinearLayout implements
         tradeActionButton = findViewById(R.id.timeline_action_button_trade_wrapper);
         shareActionButton = findViewById(R.id.timeline_action_button_share_wrapper);
         monitorActionButton = findViewById(R.id.timeline_action_button_monitor_wrapper);
+
+        watchlistIndicator = (ImageView) findViewById(R.id.in_watchlist_indicator);
 
         DaggerUtils.inject(content);
         DaggerUtils.inject(this);
@@ -165,9 +168,32 @@ public class TimelineItemView extends LinearLayout implements
         currentTimelineItem = item;
 
         // username
-        username.setText(user.displayName);
+        displayUsername(user);
 
         // user profile picture
+        displayUserProfilePicture(user);
+
+        // markup text
+        displayMarkupText(item);
+
+        // timeline time
+        displayTimelineTime(item);
+
+        // vendor logo
+        displayVendorLogo(item);
+
+        displayWatchlistIndicator();
+
+        updateActionButtonsVisibility();
+    }
+
+    private void displayUsername(UserProfileCompactDTO user)
+    {
+        username.setText(user.displayName);
+    }
+
+    private void displayUserProfilePicture(UserProfileCompactDTO user)
+    {
         if (user.picture != null)
         {
             picasso.get()
@@ -175,14 +201,20 @@ public class TimelineItemView extends LinearLayout implements
                     .transform(new RoundedShapeTransformation())
                     .into(avatar);
         }
+    }
 
-        // markup text
+    private void displayMarkupText(TimelineItem item)
+    {
         content.setText(item.getText());
+    }
 
-        // timeline time
+    private void displayTimelineTime(TimelineItem item)
+    {
         time.setText(prettyTime.get().formatUnrounded(item.getDate()));
+    }
 
-        // vendor logo
+    private void displayVendorLogo(TimelineItem item)
+    {
         SecurityMediaDTO firstMediaWithLogo = item.getFirstMediaWithLogo();
         if (firstMediaWithLogo != null)
         {
@@ -205,8 +237,23 @@ public class TimelineItemView extends LinearLayout implements
         {
             vendorImage.setVisibility(GONE);
         }
+    }
 
-        updateActionButtonsVisibility();
+    private void displayWatchlistIndicator()
+    {
+        if (watchlistIndicator == null)
+        {
+            return;
+        }
+
+        if (watchlistPositionCache.get().get(getSecurityId()) != null)
+        {
+            watchlistIndicator.setVisibility(View.VISIBLE);
+        }
+        else
+        {
+            watchlistIndicator.setVisibility(View.INVISIBLE);
+        }
     }
 
     private PopupMenu.OnMenuItemClickListener monitorPopupMenuClickListener = new PopupMenu.OnMenuItemClickListener()
