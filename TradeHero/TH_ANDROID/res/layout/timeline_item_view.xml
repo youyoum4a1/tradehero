@@ -36,7 +36,6 @@
           android:id="@+id/in_watchlist_indicator"
           android:layout_width="15dp"
           android:layout_height="wrap_content"
-          android:layout_marginTop="-10dp"
           android:layout_alignParentRight="true"
           android:layout_alignParentTop="true"
           android:src="@drawable/icn_watchlist_active"

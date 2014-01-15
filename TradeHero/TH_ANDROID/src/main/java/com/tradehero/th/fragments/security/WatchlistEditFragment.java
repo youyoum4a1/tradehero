@@ -1,5 +1,6 @@
 package com.tradehero.th.fragments.security;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -51,7 +52,7 @@ public class WatchlistEditFragment extends DashboardFragment
     private EditText watchQuantity;
     private SecurityId securityKeyId;
     private Button watchAction;
-    private ProgressBar progressBar;
+    private ProgressDialog progressBar;
 
     private DTOCache.GetOrFetchTask<SecurityId, SecurityCompactDTO> compactCacheFetchTask;
 
@@ -66,8 +67,6 @@ public class WatchlistEditFragment extends DashboardFragment
     {
         View view = inflater.inflate(R.layout.add_to_watch_list_layout, container, false);
         initViews(view);
-
-        progressBar = (ProgressBar) view.findViewById(R.id.progress);
         return view;
     }
 
@@ -100,7 +99,7 @@ public class WatchlistEditFragment extends DashboardFragment
 
     private void handleWatchButtonClicked()
     {
-        progressBar.setVisibility(View.VISIBLE);
+        progressBar = ProgressDialog.show(getActivity(), getString(R.string.please_wait), getString(R.string.updating), true);
         try
         {
             double price = Double.parseDouble(watchPrice.getText().toString());
@@ -126,6 +125,7 @@ public class WatchlistEditFragment extends DashboardFragment
         {
             // most likely number exception when parsing text to number
             THLog.e(TAG, "Parsing error", ex);
+            progressBar.hide();
         }
     }
 
@@ -271,7 +271,7 @@ public class WatchlistEditFragment extends DashboardFragment
     {
         @Override protected void finish()
         {
-            progressBar.setVisibility(View.GONE);
+            progressBar.hide();
         }
 
         @Override protected void success(WatchlistPositionDTO watchlistPositionDTO, THResponse response)
