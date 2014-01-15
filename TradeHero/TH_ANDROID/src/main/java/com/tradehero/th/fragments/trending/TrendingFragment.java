@@ -26,6 +26,11 @@ import com.tradehero.th.api.security.SecurityIdList;
 import com.tradehero.th.api.security.TrendingSecurityListType;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.trade.BuySellFragment;
+import com.tradehero.th.fragments.trending.filter.TrendingFilterPagerAdapter;
+import com.tradehero.th.fragments.trending.filter.TrendingFilterSelectorBasicFragment;
+import com.tradehero.th.fragments.trending.filter.TrendingFilterSelectorFragment;
+import com.tradehero.th.fragments.trending.filter.TrendingFilterSelectorUtil;
+import com.tradehero.th.fragments.trending.filter.TrendingFilterViewPager;
 import com.tradehero.th.loaders.PagedDTOCacheLoader;
 import com.tradehero.th.loaders.security.SecurityListPagedLoader;
 

@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.trending;
+package com.tradehero.th.fragments.trending.filter;
 
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -7,10 +7,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.Spinner;
-import android.widget.TextView;
 import com.actionbarsherlock.app.SherlockFragment;
 import com.tradehero.common.adapter.SpinnerIconAdapter;
 import com.tradehero.common.persistence.DTOCache;

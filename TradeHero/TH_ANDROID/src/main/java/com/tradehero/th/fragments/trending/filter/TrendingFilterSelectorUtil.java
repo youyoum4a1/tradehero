@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.trending;
+package com.tradehero.th.fragments.trending.filter;
 
 import android.support.v4.view.PagerAdapter;
 import com.tradehero.common.utils.THLog;

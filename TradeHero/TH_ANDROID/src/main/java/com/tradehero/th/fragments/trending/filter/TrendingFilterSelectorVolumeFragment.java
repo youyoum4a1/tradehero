@@ -1,26 +1,16 @@
-package com.tradehero.th.fragments.trending;
+package com.tradehero.th.fragments.trending.filter;
 
-import com.tradehero.th.R;
-import com.tradehero.th.api.security.TrendingAllSecurityListType;
 import com.tradehero.th.api.security.TrendingSecurityListType;
+import com.tradehero.th.api.security.TrendingVolumeSecurityListType;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/18/13 Time: 10:34 AM To change this template use File | Settings | File Templates. */
-public class TrendingFilterSelectorAllFragment extends TrendingFilterSelectorFragment
+public class TrendingFilterSelectorVolumeFragment extends TrendingFilterSelectorFragment
 {
-    public static final int POSITION_IN_PAGER  = 3;
+    public static final int POSITION_IN_PAGER  = 1;
 
     @Override TrendingFilterTypeDTO getTrendingFilterTypeDTO()
     {
-        return TrendingFilterTypeDTO.getGeneric();
-    }
-
-    @Override public void displayNextButton()
-    {
-        super.displayNextButton();
-        if (selectorView.mNext != null)
-        {
-            selectorView.mNext.setEnabled(false);
-        }
+        return TrendingFilterTypeDTO.getVolume();
     }
 
     @Override public TrendingSecurityListType getTrendingSecurityListType(String exchangeName, Integer page, Integer perPage)
@@ -30,6 +20,6 @@ public class TrendingFilterSelectorAllFragment extends TrendingFilterSelectorFra
 
     public static TrendingSecurityListType sGetTrendingSecurityListType(String exchangeName, Integer page, Integer perPage)
     {
-        return new TrendingAllSecurityListType(exchangeName, page, perPage);
+        return new TrendingVolumeSecurityListType(exchangeName, page, perPage);
     }
 }

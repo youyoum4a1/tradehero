@@ -1,14 +1,12 @@
-package com.tradehero.th.fragments.trending;
+package com.tradehero.th.fragments.trending.filter;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
-import com.tradehero.common.adapter.SpinnerIconAdapter;
 import com.tradehero.th.R;
 
 /**

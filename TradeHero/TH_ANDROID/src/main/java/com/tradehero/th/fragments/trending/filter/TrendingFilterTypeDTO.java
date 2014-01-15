@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.trending;
+package com.tradehero.th.fragments.trending.filter;
 
 import com.tradehero.th.R;
 import java.util.ArrayList;

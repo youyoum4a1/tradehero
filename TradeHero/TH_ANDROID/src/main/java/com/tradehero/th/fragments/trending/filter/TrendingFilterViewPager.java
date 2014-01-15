@@ -1,10 +1,9 @@
-package com.tradehero.th.fragments.trending;
+package com.tradehero.th.fragments.trending.filter;
 
 import android.content.Context;
 import android.graphics.Canvas;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
-import com.tradehero.common.utils.THLog;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/18/13 Time: 11:43 AM To change this template use File | Settings | File Templates. */
 public class TrendingFilterViewPager extends ViewPager
