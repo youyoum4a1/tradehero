@@ -437,11 +437,10 @@ public class TimelineItemView extends LinearLayout implements
     {
         Bundle b = new Bundle();
         b.putInt(TimelineFragment.BUNDLE_KEY_SHOW_USER_ID, userId);
-        b.putBoolean(Navigator.NAVIGATE_FRAGMENT_NO_CACHE, true);
 
         if (currentUserBaseKeyHolder.getCurrentUserBaseKey().key != userId)
         {
-            getNavigator().pushFragment(TimelineFragment.class, b, true);
+            getNavigator().pushFragment(TimelineFragment.class, b);
         }
     }
     //</editor-fold>

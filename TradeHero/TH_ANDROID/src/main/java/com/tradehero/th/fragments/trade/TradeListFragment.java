@@ -158,11 +158,10 @@ public class TradeListFragment extends DashboardFragment
     {
         Bundle b = new Bundle();
         b.putInt(PushableTimelineFragment.BUNDLE_KEY_SHOW_USER_ID, userId.key);
-        b.putBoolean(Navigator.NAVIGATE_FRAGMENT_NO_CACHE, true);
 
         if (!currentUserBaseKeyHolder.getCurrentUserBaseKey().key.equals(userId.key))
         {
-            navigator.pushFragment(PushableTimelineFragment.class, b, true);
+            navigator.pushFragment(PushableTimelineFragment.class, b);
         }
     }
 

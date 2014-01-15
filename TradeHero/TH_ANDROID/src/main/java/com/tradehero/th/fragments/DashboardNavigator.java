@@ -15,6 +15,7 @@ import com.tradehero.th.base.Application;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.fragments.dashboard.DashboardTabType;
+import com.tradehero.th.fragments.security.WatchlistEditFragment;
 import com.tradehero.th.models.intent.THIntent;
 
 /** Created with IntelliJ IDEA. User: tho Date: 10/11/13 Time: 4:24 PM Copyright (c) TradeHero */
@@ -143,20 +144,25 @@ public class DashboardNavigator extends Navigator
     //    manager.popBackStack(rootFragment, FragmentManager.POP_BACK_STACK_INCLUSIVE);
     //}
 
-    @Override public Fragment pushFragment(Class<? extends Fragment> fragmentClass, Bundle args, boolean withAnimation)
+    @Override public Fragment pushFragment(Class<? extends Fragment> fragmentClass, Bundle args)
     {
-        Fragment fragment = super.pushFragment(fragmentClass, args, withAnimation);
+        Fragment fragment = super.pushFragment(fragmentClass, args);
+        executePending(fragment);
+        return fragment;
+    }
+
+    private void executePending(Fragment fragment)
+    {
         manager.executePendingTransactions();
         if (mTabHost != null)
         {
             updateTabBarOnNavigate(fragment);
         }
-        return fragment;
     }
 
-    @Override public void popFragment()
+    @Override public void popFragment(String backStackName)
     {
-        super.popFragment();
+        super.popFragment(backStackName);
 
         if (!isBackStackEmpty())
         {

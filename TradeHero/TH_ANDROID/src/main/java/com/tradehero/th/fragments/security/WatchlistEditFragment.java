@@ -25,6 +25,7 @@ import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
 import com.tradehero.th.api.watchlist.WatchlistPositionDTO;
 import com.tradehero.th.api.watchlist.WatchlistPositionFormDTO;
 import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.fragments.watchlist.WatchlistPositionFragment;
 import com.tradehero.th.misc.callback.THCallback;
 import com.tradehero.th.misc.callback.THResponse;
 import com.tradehero.th.misc.exception.THException;
@@ -125,7 +126,7 @@ public class WatchlistEditFragment extends DashboardFragment
                         {
                             currentUserWatchlistSecurities.add(watchlistPositionDTO.securityDTO.getSecurityId());
                         }
-                        getNavigator().popFragment();
+                        getNavigator().popFragment(WatchlistPositionFragment.class.getName());
                     }
 
                     @Override protected void failure(THException ex)

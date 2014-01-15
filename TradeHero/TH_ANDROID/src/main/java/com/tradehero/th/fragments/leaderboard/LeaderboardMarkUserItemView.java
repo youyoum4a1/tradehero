@@ -314,12 +314,12 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
             // leaderboard mark user id, to get marking user information
             bundle.putBundle(LeaderboardPositionListFragment.BUNDLE_KEY_SHOW_PORTFOLIO_ID_BUNDLE, ownedPortfolioId.getArgs());
             bundle.putLong(LeaderboardMarkUserId.BUNDLE_KEY, leaderboardItem.lbmuId);
-            getNavigator().pushFragment(LeaderboardPositionListFragment.class, bundle, true);
+            getNavigator().pushFragment(LeaderboardPositionListFragment.class, bundle);
         }
         else
         {
             bundle.putBundle(PositionListFragment.BUNDLE_KEY_SHOW_PORTFOLIO_ID_BUNDLE, ownedPortfolioId.getArgs());
-            getNavigator().pushFragment(PositionListFragment.class, bundle, true);
+            getNavigator().pushFragment(PositionListFragment.class, bundle);
         }
     }
 
@@ -337,7 +337,7 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
 
         if (currentUserBaseKeyHolder != null && currentUserBaseKeyHolder.getCurrentUserBaseKey().key != userId)
         {
-            getNavigator().pushFragment(PushableTimelineFragment.class, b, true);
+            getNavigator().pushFragment(PushableTimelineFragment.class, b);
         }
     }
 }

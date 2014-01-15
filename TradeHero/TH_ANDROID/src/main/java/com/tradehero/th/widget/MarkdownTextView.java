@@ -87,11 +87,10 @@ public class MarkdownTextView extends TextView implements OnElementClickListener
     {
         Bundle b = new Bundle();
         b.putInt(PushableTimelineFragment.BUNDLE_KEY_SHOW_USER_ID, userId);
-        b.putBoolean(Navigator.NAVIGATE_FRAGMENT_NO_CACHE, true);
 
         if (currentUserBaseKeyHolder.getCurrentUserBaseKey().key != userId)
         {
-            getNavigator().pushFragment(PushableTimelineFragment.class, b, true);
+            getNavigator().pushFragment(PushableTimelineFragment.class, b);
         }
     }
 }

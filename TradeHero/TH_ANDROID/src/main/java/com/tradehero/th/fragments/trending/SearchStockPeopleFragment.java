@@ -39,6 +39,7 @@ import com.tradehero.th.fragments.trade.BuySellFragment;
 import com.tradehero.th.fragments.watchlist.WatchlistPositionFragment;
 import com.tradehero.th.persistence.security.SecurityCompactListCache;
 import com.tradehero.th.persistence.user.UserBaseKeyListCache;
+import com.tradehero.th.utils.DeviceUtil;
 import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.List;
@@ -664,6 +665,7 @@ public class SearchStockPeopleFragment extends DashboardFragment
                 // pop out current fragment and push in watchlist edit fragment
                 Bundle args = new Bundle();
                 args.putBundle(WatchlistEditFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, clickedItem.getArgs());
+                DeviceUtil.dismissKeyBoard(getActivity(), getView());
                 navigator.pushFragment(WatchlistEditFragment.class, args);
             }
             else
@@ -748,7 +750,10 @@ public class SearchStockPeopleFragment extends DashboardFragment
             }
             else
             {
-                securityIds.addAll(value);
+                if (securityIds != null)
+                {
+                    securityIds.addAll(value);
+                }
                 securityItemViewAdapter.setItems(securityIds);
             }
             setQuerying(false);

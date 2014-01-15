@@ -7,18 +7,15 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.view.ViewGroup;
-import com.facebook.Settings;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.ActivityHelper;
-import com.tradehero.th.billing.googleplay.THIABActor;
 import com.tradehero.th.fragments.settings.SettingsFragment;
 
 /** Created with IntelliJ IDEA. User: tho Date: 9/30/13 Time: 5:59 PM Copyright (c) TradeHero */
 public class Navigator
 {
     private static final String TAG = Navigator.class.getSimpleName();
-    public static final String NAVIGATE_FRAGMENT_NO_CACHE = Navigator.class.getName();
     public static final int[] TUTORIAL_ANIMATION = new int[] {
             R.anim.card_flip_right_in, R.anim.card_flip_right_out,
             R.anim.card_flip_left_in, R.anim.card_flip_left_out
@@ -59,9 +56,13 @@ public class Navigator
         this.animation[3] = popExit;
         this.animationInitiated = true;
     }
+
     private int[] getSafeAnimation()
     {
-        if (animationInitiated) return this.animation;
+        if (animationInitiated)
+        {
+            return this.animation;
+        }
         setAnimation(R.anim.slide_right_in, R.anim.slide_left_out, R.anim.slide_left_in, R.anim.slide_right_out);
         return animation;
     }
@@ -71,27 +72,34 @@ public class Navigator
         this.fragmentContentId = fragmentContentId;
     }
 
-    public Fragment pushFragment(Class<? extends Fragment> fragmentClass, Bundle args, int[] anim)
+    public Fragment pushFragment(Class<? extends Fragment> fragmentClass, Bundle args, int[] anim, String backStackName)
     {
         THLog.d(TAG, "Pushing fragment " + fragmentClass.getSimpleName());
         Fragment fragment = Fragment.instantiate(context, fragmentClass.getName(), args);
         fragment.setArguments(args);
         FragmentTransaction transaction = manager.beginTransaction();
-        if (anim != null)
+        if (anim == null)
         {
-            transaction.setCustomAnimations(anim[0], anim[1], anim[2], anim[3]);
+            anim = getSafeAnimation();
         }
-        transaction.replace(fragmentContentId, fragment)
-                .addToBackStack(null)
-                .commit();
+        transaction.setCustomAnimations(anim[0], anim[1], anim[2], anim[3]);
+
+        FragmentTransaction ft = transaction.replace(fragmentContentId, fragment);
+        ft.addToBackStack(fragmentClass.getName());
+        ft.commit();
 
         return fragment;
     }
 
-    public Fragment pushFragment(Class<? extends Fragment> fragmentClass, Bundle args, boolean withAnimation)
+    public Fragment pushFragment(Class<? extends Fragment> fragmentClass, Bundle args, String addBackStack)
     {
-        return pushFragment(fragmentClass, args, getSafeAnimation());
+        return pushFragment(fragmentClass, args, null, addBackStack);
     }
+
+    //public Fragment pushFragment(Class<? extends Fragment> fragmentClass, Bundle args)
+    //{
+    //    return pushFragment(fragmentClass, args, getSafeAnimation());
+    //}
 
     public void showTutorial(Fragment ownerFragmentClass)
     {
@@ -121,17 +129,34 @@ public class Navigator
 
     public Fragment pushFragment(Class<? extends Fragment> fragmentClass, Bundle args)
     {
-        return pushFragment(fragmentClass, args, true);
+        return pushFragment(fragmentClass, args, null, null);
+    }
+
+    public void popFragment(String backStackName)
+    {
+        THLog.d(TAG, "Popping fragment, count: " + manager.getBackStackEntryCount());
+        if (backStackName == null)
+        {
+            manager.popBackStack();
+        }
+        else
+        {
+            manager.popBackStack(backStackName, 0);
+        }
     }
 
     public void popFragment()
     {
-        THLog.d(TAG, "Popping fragment, count: " + manager.getBackStackEntryCount());
-        manager.popBackStack();
+        popFragment(null);
     }
 
     public boolean isBackStackEmpty()
     {
         return manager.getBackStackEntryCount() == 0;
+    }
+
+    public Fragment pushFragment(Class<? extends Fragment> fragmentClass, Bundle args, int[] pushUpFromBottom)
+    {
+        return pushFragment(fragmentClass, args, pushUpFromBottom, null);
     }
 }

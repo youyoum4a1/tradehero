@@ -4,7 +4,6 @@ import android.R;
 import android.os.Bundle;
 import com.actionbarsherlock.view.MenuItem;
 import com.tradehero.th.base.DashboardNavigatorActivity;
-import com.tradehero.th.base.Navigator;
 import com.tradehero.th.fragments.DashboardNavigator;
 
 /** Created with IntelliJ IDEA. User: tho Date: 9/30/13 Time: 6:56 PM Copyright (c) TradeHero */
@@ -37,7 +36,7 @@ abstract public class DashboardFragment extends BaseFragment
     }
 
 
-    protected Navigator getNavigator()
+    protected DashboardNavigator getNavigator()
     {
         return navigator;
     }
