@@ -1,5 +1,6 @@
 package com.tradehero.th.fragments.security;
 
+import android.os.Bundle;
 import com.actionbarsherlock.app.SherlockFragment;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THLog;
@@ -20,7 +21,11 @@ abstract public class AbstractSecurityInfoFragment<InfoType> extends SherlockFra
     @Override public void onResume()
     {
         super.onResume();
-        linkWith(new SecurityId(getArguments().getBundle(BUNDLE_KEY_SECURITY_ID_BUNDLE)), true);
+        Bundle args = getArguments();
+        if (args != null)
+        {
+            linkWith(new SecurityId(getArguments().getBundle(BUNDLE_KEY_SECURITY_ID_BUNDLE)), true);
+        }
     }
 
     public void linkWith(SecurityId securityId, boolean andDisplay)
