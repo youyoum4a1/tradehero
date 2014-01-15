@@ -157,6 +157,11 @@ public class Navigator
 
     public Fragment pushFragment(Class<? extends Fragment> fragmentClass, Bundle args, int[] pushUpFromBottom)
     {
-        return pushFragment(fragmentClass, args, pushUpFromBottom, null);
+        if (pushUpFromBottom != null && pushUpFromBottom.length == 4)
+        {
+            setAnimation(pushUpFromBottom[0], pushUpFromBottom[1], pushUpFromBottom[2], pushUpFromBottom[3]);
+            return pushFragment(fragmentClass, args);
+        }
+        return null;
     }
 }
