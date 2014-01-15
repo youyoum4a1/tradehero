@@ -50,8 +50,6 @@ import com.tradehero.th.fragments.position.PositionInPeriodClosedView;
 import com.tradehero.th.fragments.position.PositionInPeriodOpenView;
 import com.tradehero.th.fragments.position.PositionListFragment;
 import com.tradehero.th.fragments.position.PositionOpenView;
-import com.tradehero.th.fragments.security.WatchlistEditFragment;
-import com.tradehero.th.fragments.watchlist.WatchlistItemView;
 import com.tradehero.th.fragments.position.partial.PositionPartialBottomClosedView;
 import com.tradehero.th.fragments.position.partial.PositionPartialBottomInPeriodClosedView;
 import com.tradehero.th.fragments.position.partial.PositionPartialBottomInPeriodOpenView;
@@ -60,6 +58,7 @@ import com.tradehero.th.fragments.position.partial.PositionPartialTopView;
 import com.tradehero.th.fragments.security.ChartFragment;
 import com.tradehero.th.fragments.security.StockInfoFragment;
 import com.tradehero.th.fragments.security.StockInfoValueFragment;
+import com.tradehero.th.fragments.security.WatchlistEditFragment;
 import com.tradehero.th.fragments.security.YahooNewsFragment;
 import com.tradehero.th.fragments.settings.AboutFragment;
 import com.tradehero.th.fragments.settings.SettingsFragment;
@@ -93,6 +92,7 @@ import com.tradehero.th.fragments.trending.TrendingFilterSelectorBasicFragment;
 import com.tradehero.th.fragments.trending.TrendingFilterSelectorPriceFragment;
 import com.tradehero.th.fragments.trending.TrendingFilterSelectorVolumeFragment;
 import com.tradehero.th.fragments.trending.TrendingFragment;
+import com.tradehero.th.fragments.watchlist.WatchlistItemView;
 import com.tradehero.th.fragments.watchlist.WatchlistPortfolioHeaderView;
 import com.tradehero.th.fragments.watchlist.WatchlistPositionFragment;
 import com.tradehero.th.loaders.SearchStockPageListLoader;
@@ -121,7 +121,6 @@ import com.tradehero.th.network.service.UserService;
 import com.tradehero.th.network.service.UserTimelineService;
 import com.tradehero.th.network.service.WatchlistService;
 import com.tradehero.th.network.service.YahooNewsService;
-import com.tradehero.th.persistence.DTOCacheUtil;
 import com.tradehero.th.persistence.billing.googleplay.IABSKUListRetrievedAsyncMilestone;
 import com.tradehero.th.persistence.leaderboard.LeaderboardManager;
 import com.tradehero.th.persistence.portfolio.OwnedPortfolioFetchAssistant;
@@ -298,7 +297,6 @@ import org.ocpsoft.prettytime.PrettyTime;
                 NumberDisplayUtils.class,
                 DisplayablePortfolioDTO.class,
                 DisplayablePortfolioUtil.class,
-                DTOCacheUtil.class,
         },
         complete = false,
         library = true // TEMP

@@ -18,6 +18,7 @@ import com.tradehero.th.billing.googleplay.THIABPurchaseRestorer;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.billing.PurchaseRestorerAlertUtil;
 import com.tradehero.th.models.intent.THIntentFactory;
+import com.tradehero.th.persistence.DTOCacheUtil;
 import com.tradehero.th.persistence.watchlist.WatchlistRetrievedMilestone;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.FacebookUtils;
@@ -38,6 +39,7 @@ public class DashboardActivity extends SherlockFragmentActivity
     @Inject protected Lazy<FacebookUtils> facebookUtils;
     @Inject CurrentUserBaseKeyHolder currentUserBaseKeyHolder;
     @Inject Lazy<THIntentFactory> thIntentFactory;
+    @Inject DTOCacheUtil dtoCacheUtil;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -49,13 +51,7 @@ public class DashboardActivity extends SherlockFragmentActivity
 
         launchIAB();
 
-        retrieveWatchlist();
-    }
-
-    private void retrieveWatchlist()
-    {
-        WatchlistRetrievedMilestone watchlistRetrievedMilestone = new WatchlistRetrievedMilestone(currentUserBaseKeyHolder.getCurrentUserBaseKey());
-        watchlistRetrievedMilestone.launch();
+        this.dtoCacheUtil.initialPrefetches();
     }
 
     private void launchActions()

@@ -38,6 +38,7 @@ public class TrendingFragment extends DashboardFragment
     public final static int FIRST_PAGE = 1;
     public final static int DEFAULT_PER_PAGE = 20;
     public final static int SECURITY_ID_LIST_LOADER_ID = 0;
+    public static final int DEFAULT_VISIBLE_THRESHOLD = 20;
 
     public final static float MIN_FLING_VELOCITY_Y_FOR_HIDE_FILTER = 1000f;
 
@@ -85,7 +86,7 @@ public class TrendingFragment extends DashboardFragment
             mProgressSpinner.setVisibility(View.GONE);
         }
 
-        gridScrollListener = new TrendingFlagNearEndScrollListener();
+        gridScrollListener = new TrendingFlagNearEndScrollListener(DEFAULT_VISIBLE_THRESHOLD);
         queryingChangedListener = new TrendingOnQueryingChangedListener();
         noMorePagesChangedListener = new TrendingOnNoMorePagesChangedListener();
         securityItemViewAdapter = new SecurityItemViewAdapter(getActivity(), getActivity().getLayoutInflater(), R.layout.trending_security_item);
@@ -316,6 +317,11 @@ public class TrendingFragment extends DashboardFragment
     private class TrendingFlagNearEndScrollListener extends FlagNearEndScrollListener
     {
         public final String TAG = TrendingFlagNearEndScrollListener.class.getSimpleName();
+
+        public TrendingFlagNearEndScrollListener(int visibleThreshold)
+        {
+            super(visibleThreshold);
+        }
 
         @Override public void raiseFlag()
         {

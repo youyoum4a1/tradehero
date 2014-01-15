@@ -61,6 +61,7 @@ public class THUser
     @Inject static Lazy<SessionService> sessionService;
     @Inject static protected Lazy<UserProfileCache> userProfileCache;
     @Inject static protected CurrentUserBaseKeyHolder currentUserBaseKeyHolder;
+    @Inject static protected Lazy<DTOCacheUtil> dtoCacheUtil;
 
     public static void initialize()
     {
@@ -327,7 +328,7 @@ public class THUser
     {
         currentSessionToken = null;
         userProfileCache.get().invalidate(currentUserBaseKeyHolder.getCurrentUserBaseKey());
-        DTOCacheUtil.clearUserRelatedCaches();
+        dtoCacheUtil.get().clearUserRelatedCaches();
         currentUserBaseKeyHolder.setCurrentUserBaseKey(new UserBaseKey(0));
         credentials.clear();
         VisitedFriendListPrefs.clearVisitedIdList();

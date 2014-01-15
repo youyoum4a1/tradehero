@@ -128,7 +128,7 @@ public class SecurityItemView extends RelativeLayout implements DTOView<Security
         lastPrice = (TextView) findViewById(R.id.last_price);
         marketCloseIcon = (ImageView) findViewById(R.id.ic_market_close);
         stockLogo = (ImageView) findViewById(R.id.stock_logo);
-        stockBgLogo = (ImageView) findViewById(R.id.stock_bg_logo);
+        //stockBgLogo = (ImageView) findViewById(R.id.stock_bg_logo);
         countryLogo = (ImageView) findViewById(R.id.country_logo);
         date = (TextView) findViewById(R.id.date);
         securityType = (TextView) findViewById(R.id.sec_type);
