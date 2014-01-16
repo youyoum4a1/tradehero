@@ -32,7 +32,7 @@ import com.tradehero.th.fragments.trade.BuySellFragment;
 import com.tradehero.th.fragments.trending.filter.TrendingFilterSelectorView;
 import com.tradehero.th.fragments.trending.filter.TrendingFilterTypeBasicDTO;
 import com.tradehero.th.fragments.trending.filter.TrendingFilterTypeDTO;
-import com.tradehero.th.fragments.trending.filter.TrendingFilterTypeDTOUtil;
+import com.tradehero.th.fragments.trending.filter.TrendingFilterTypeDTOFactory;
 import com.tradehero.th.loaders.PagedDTOCacheLoader;
 import com.tradehero.th.loaders.security.SecurityListPagedLoader;
 import com.tradehero.th.persistence.market.ExchangeListCache;
@@ -45,6 +45,9 @@ public class TrendingFragment extends DashboardFragment
 {
     private final static String TAG = TrendingFragment.class.getSimpleName();
 
+    public static final String BUNDLE_KEY_TRENDING_FILTER_TYPE_DTO = TrendingFragment.class.getName() + ".trendingFilterTypeDTO";
+    public static final String BUNDLE_KEY_PAGE = TrendingFragment.class.getName() + ".page";
+
     public final static int FIRST_PAGE = 1;
     public final static int DEFAULT_PER_PAGE = 20;
     public final static int SECURITY_ID_LIST_LOADER_ID = 0;
@@ -55,7 +58,7 @@ public class TrendingFragment extends DashboardFragment
     private TrendingFilterSelectorView filterSelectorView;
     private TrendingOnFilterTypeChangedListener onFilterTypeChangedListener;
     private TrendingFilterTypeDTO trendingFilterTypeDTO;
-    @Inject TrendingFilterTypeDTOUtil trendingFilterTypeDTOUtil;
+    @Inject TrendingFilterTypeDTOFactory trendingFilterTypeDTOFactory;
     private TrendingOnQueryingChangedListener queryingChangedListener;
     private TrendingOnNoMorePagesChangedListener noMorePagesChangedListener;
 
@@ -73,6 +76,25 @@ public class TrendingFragment extends DashboardFragment
     protected SecurityItemViewAdapter securityItemViewAdapter;
     protected int firstVisiblePosition = 0;
 
+    @Override public void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+
+        // Saved instance takes precedence
+        if (savedInstanceState != null && savedInstanceState.containsKey(BUNDLE_KEY_TRENDING_FILTER_TYPE_DTO))
+        {
+            this.trendingFilterTypeDTO = this.trendingFilterTypeDTOFactory.create(savedInstanceState.getBundle(BUNDLE_KEY_TRENDING_FILTER_TYPE_DTO));
+        }
+        else if (getArguments() != null && getArguments().containsKey(BUNDLE_KEY_TRENDING_FILTER_TYPE_DTO))
+        {
+            this.trendingFilterTypeDTO = this.trendingFilterTypeDTOFactory.create(getArguments().getBundle(BUNDLE_KEY_TRENDING_FILTER_TYPE_DTO));
+        }
+        else
+        {
+            this.trendingFilterTypeDTO = new TrendingFilterTypeBasicDTO();
+        }
+    }
+
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         //THLog.d(TAG, "onCreateView");
@@ -89,8 +111,6 @@ public class TrendingFragment extends DashboardFragment
         {
             mProgressSpinner.setVisibility(View.GONE);
         }
-
-        trendingFilterTypeDTO = new TrendingFilterTypeBasicDTO();
 
         gridScrollListener = new TrendingFlagNearEndScrollListener(DEFAULT_VISIBLE_THRESHOLD);
         queryingChangedListener = new TrendingOnQueryingChangedListener();
@@ -110,6 +130,7 @@ public class TrendingFragment extends DashboardFragment
         this.filterSelectorView = (TrendingFilterSelectorView) view.findViewById(R.id.trending_filter_selector_view);
         if (this.filterSelectorView != null)
         {
+            this.filterSelectorView.apply(this.trendingFilterTypeDTO);
             this.filterSelectorView.setChangedListener(this.onFilterTypeChangedListener);
         }
 
@@ -208,6 +229,10 @@ public class TrendingFragment extends DashboardFragment
     {
         THLog.d(TAG, "onSaveInstanceState");
         super.onSaveInstanceState(outState);
+        if (this.trendingFilterTypeDTO != null)
+        {
+            outState.putBundle(BUNDLE_KEY_TRENDING_FILTER_TYPE_DTO, this.trendingFilterTypeDTO.getArgs());
+        }
     }
 
     private void postIfCan(final Runnable runnable)
@@ -297,7 +322,7 @@ public class TrendingFragment extends DashboardFragment
 
     public TrendingSecurityListType getSecurityListType(int page)
     {
-        return trendingFilterTypeDTOUtil.getSecurityListType(trendingFilterTypeDTO, getUsableExchangeName(), page, perPage);
+        return trendingFilterTypeDTO.getSecurityListType(getUsableExchangeName(), page, perPage);
     }
 
     protected String getUsableExchangeName()

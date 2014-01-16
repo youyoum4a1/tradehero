@@ -39,7 +39,7 @@ public class TrendingFilterSelectorView extends RelativeLayout
     private TrendingFilterTypeDTO trendingFilterTypeDTO;
     private ExchangeSpinnerDTO[] exchangeSpinnerDTOs;
     private OnFilterTypeChangedListener changedListener;
-    @Inject TrendingFilterTypeDTOUtil trendingFilterTypeDTOUtil;
+    //@Inject TrendingFilterTypeDTOUtil trendingFilterTypeDTOUtil;
     @Inject ExchangeSpinnerDTOUtil exchangeSpinnerDTOUtil;
 
     //<editor-fold desc="Constructors">
@@ -133,7 +133,7 @@ public class TrendingFilterSelectorView extends RelativeLayout
         Drawable[] spinnerIcons = exchangeSpinnerDTOUtil.getSpinnerIcons(getContext(), exchangeDTOs);
         if (mExchangeSelection != null)
         {
-            trendingFilterTypeDTOUtil.createDropDownTextsAndIcons(getContext(), exchangeDTOs);
+            //trendingFilterTypeDTOUtil.createDropDownTextsAndIcons(getContext(), exchangeDTOs);
             mExchangeSelectionAdapter = new TrendingFilterSpinnerIconAdapter(
                     getContext(),
                     this.exchangeSpinnerDTOs,
@@ -151,16 +151,6 @@ public class TrendingFilterSelectorView extends RelativeLayout
         this.trendingFilterTypeDTO = typeDTO;
         if (typeDTO != null)
         {
-            if (mPrevious != null)
-            {
-                mPrevious.setEnabled(typeDTO.hasPreviousButton);
-            }
-
-            if (mNext != null)
-            {
-                mNext.setEnabled(typeDTO.hasNextButton);
-            }
-
             if (mTitle != null)
             {
                 mTitle.setText(typeDTO.titleResId);

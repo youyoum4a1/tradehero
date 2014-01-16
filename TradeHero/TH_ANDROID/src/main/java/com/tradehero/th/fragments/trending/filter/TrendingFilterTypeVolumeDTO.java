@@ -1,5 +1,6 @@
 package com.tradehero.th.fragments.trending.filter;
 
+import android.os.Bundle;
 import com.tradehero.th.R;
 import com.tradehero.th.api.market.ExchangeDTO;
 import com.tradehero.th.api.security.TrendingSecurityListType;
@@ -11,21 +12,33 @@ import com.tradehero.th.api.security.TrendingVolumeSecurityListType;
 public class TrendingFilterTypeVolumeDTO extends TrendingFilterTypeDTO
 {
     public static final String TAG = TrendingFilterTypeVolumeDTO.class.getSimpleName();
+    public static final int DEFAULT_TITLE_RES_ID = R.string.trending_filter_volume_title;
+    public static final int DEFAULT_ICON_RES_ID = R.drawable.ic_trending_volume;
+    public static final int DEFAULT_DESCRIPTION_RES_ID = R.string.trending_filter_volume_description;
 
+    //<editor-fold desc="Constructors">
     public TrendingFilterTypeVolumeDTO()
     {
-        super(true, true,
-                R.string.trending_filter_volume_title, R.drawable.ic_trending_volume,
-                R.string.trending_filter_volume_description);
+        super(
+                DEFAULT_TITLE_RES_ID,
+                DEFAULT_ICON_RES_ID,
+                DEFAULT_DESCRIPTION_RES_ID);
     }
 
     public TrendingFilterTypeVolumeDTO(ExchangeDTO exchangeDTO)
     {
-        super(true, true,
-                R.string.trending_filter_volume_title, R.drawable.ic_trending_volume,
-                R.string.trending_filter_volume_description,
+        super(
+                DEFAULT_TITLE_RES_ID,
+                DEFAULT_ICON_RES_ID,
+                DEFAULT_DESCRIPTION_RES_ID,
                 exchangeDTO);
     }
+
+    public TrendingFilterTypeVolumeDTO(Bundle bundle)
+    {
+        super(bundle);
+    }
+    //</editor-fold>
 
     @Override public TrendingFilterTypeDTO getPrevious()
     {
@@ -42,4 +55,9 @@ public class TrendingFilterTypeVolumeDTO extends TrendingFilterTypeDTO
         return new TrendingVolumeSecurityListType(usableExchangeName, page, perPage);
     }
 
+    @Override protected void putParameters(Bundle args)
+    {
+        super.putParameters(args);
+        args.putString(BUNDLE_KEY_CLASS_TYPE, TrendingFilterTypeVolumeDTO.class.getName());
+    }
 }

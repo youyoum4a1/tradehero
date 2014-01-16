@@ -1,9 +1,8 @@
 package com.tradehero.th.fragments.trending.filter;
 
-import com.tradehero.common.utils.THLog;
+import android.os.Bundle;
 import com.tradehero.th.R;
 import com.tradehero.th.api.market.ExchangeDTO;
-import com.tradehero.th.api.market.ExchangeStringId;
 import com.tradehero.th.api.security.TrendingBasicSecurityListType;
 import com.tradehero.th.api.security.TrendingSecurityListType;
 
@@ -13,21 +12,33 @@ import com.tradehero.th.api.security.TrendingSecurityListType;
 public class TrendingFilterTypeBasicDTO extends TrendingFilterTypeDTO
 {
     public static final String TAG = TrendingFilterTypeBasicDTO.class.getSimpleName();
+    public static final int DEFAULT_TITLE_RES_ID = R.string.trending_filter_basic_title;
+    public static final int DEFAULT_ICON_RES_ID = 0;
+    public static final int DEFAULT_DESCRIPTION_RES_ID = R.string.trending_filter_basic_description;
 
+    //<editor-fold desc="Constructors">
     public TrendingFilterTypeBasicDTO()
     {
-        super(true, true,
-                R.string.trending_filter_basic_title, 0,
-                R.string.trending_filter_basic_description);
+        super(
+                DEFAULT_TITLE_RES_ID,
+                DEFAULT_ICON_RES_ID,
+                DEFAULT_DESCRIPTION_RES_ID);
     }
 
     public TrendingFilterTypeBasicDTO(ExchangeDTO exchangeDTO)
     {
-        super(true, true,
-                R.string.trending_filter_basic_title, 0,
-                R.string.trending_filter_basic_description,
+        super(
+                DEFAULT_TITLE_RES_ID,
+                DEFAULT_ICON_RES_ID,
+                DEFAULT_DESCRIPTION_RES_ID,
                 exchangeDTO);
     }
+
+    public TrendingFilterTypeBasicDTO(Bundle bundle)
+    {
+        super(bundle);
+    }
+    //</editor-fold>
 
     @Override public TrendingFilterTypeDTO getPrevious()
     {
@@ -44,4 +55,9 @@ public class TrendingFilterTypeBasicDTO extends TrendingFilterTypeDTO
         return new TrendingBasicSecurityListType(usableExchangeName, page, perPage);
     }
 
+    @Override protected void putParameters(Bundle args)
+    {
+        super.putParameters(args);
+        args.putString(BUNDLE_KEY_CLASS_TYPE, TrendingFilterTypeBasicDTO.class.getName());
+    }
 }

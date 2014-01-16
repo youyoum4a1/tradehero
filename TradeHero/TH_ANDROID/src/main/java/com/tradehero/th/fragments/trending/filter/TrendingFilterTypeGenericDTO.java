@@ -1,11 +1,9 @@
 package com.tradehero.th.fragments.trending.filter;
 
-import com.tradehero.common.utils.THLog;
+import android.os.Bundle;
 import com.tradehero.th.R;
 import com.tradehero.th.api.market.ExchangeDTO;
-import com.tradehero.th.api.market.ExchangeStringId;
 import com.tradehero.th.api.security.TrendingAllSecurityListType;
-import com.tradehero.th.api.security.TrendingBasicSecurityListType;
 import com.tradehero.th.api.security.TrendingSecurityListType;
 
 /**
@@ -14,21 +12,33 @@ import com.tradehero.th.api.security.TrendingSecurityListType;
 public class TrendingFilterTypeGenericDTO extends TrendingFilterTypeDTO
 {
     public static final String TAG = TrendingFilterTypeGenericDTO.class.getSimpleName();
+    public static final int DEFAULT_TITLE_RES_ID = R.string.trending_filter_all_title;
+    public static final int DEFAULT_ICON_RES_ID = 0;
+    public static final int DEFAULT_DESCRIPTION_RES_ID = R.string.trending_filter_all_description;
 
+    //<editor-fold desc="Constructors">
     public TrendingFilterTypeGenericDTO()
     {
-        super(true, true,
-                R.string.trending_filter_all_title, 0,
-                R.string.trending_filter_all_description);
+        super(
+                DEFAULT_TITLE_RES_ID,
+                DEFAULT_ICON_RES_ID,
+                DEFAULT_DESCRIPTION_RES_ID);
     }
 
     public TrendingFilterTypeGenericDTO(ExchangeDTO exchangeDTO)
     {
-        super(true, true,
-                R.string.trending_filter_all_title, 0,
-                R.string.trending_filter_all_description,
+        super(
+                DEFAULT_TITLE_RES_ID,
+                DEFAULT_ICON_RES_ID,
+                DEFAULT_DESCRIPTION_RES_ID,
                 exchangeDTO);
     }
+
+    public TrendingFilterTypeGenericDTO(Bundle bundle)
+    {
+        super(bundle);
+    }
+    //</editor-fold>
 
     @Override public TrendingFilterTypeDTO getPrevious()
     {
@@ -45,4 +55,9 @@ public class TrendingFilterTypeGenericDTO extends TrendingFilterTypeDTO
         return new TrendingAllSecurityListType(usableExchangeName, page, perPage);
     }
 
+    @Override protected void putParameters(Bundle args)
+    {
+        super.putParameters(args);
+        args.putString(BUNDLE_KEY_CLASS_TYPE, TrendingFilterTypeGenericDTO.class.getName());
+    }
 }

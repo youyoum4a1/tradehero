@@ -1,11 +1,17 @@
 package com.tradehero.th.api.market;
 
+import android.os.Bundle;
 import com.tradehero.common.persistence.DTO;
 import java.util.List;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/18/13 Time: 5:54 PM To change this template use File | Settings | File Templates. */
 public class ExchangeDTO implements DTO
 {
+    public static final String BUNDLE_KEY_ID = ExchangeDTO.class.getName() + ".id";
+    public static final String BUNDLE_KEY_NAME = ExchangeDTO.class.getName() + ".name";
+    public static final String BUNDLE_KEY_DESC = ExchangeDTO.class.getName() + ".desc";
+    public static final String BUNDLE_KEY_IS_INCLUDED_IN_TRENDING = ExchangeDTO.class.getName() + ".isIncludedInTrending";
+
     public int id;
     public String name;
 
@@ -44,6 +50,14 @@ public class ExchangeDTO implements DTO
         this.isInternal = other.isInternal;
         this.isIncludedInTrending = other.isIncludedInTrending;
     }
+
+    public ExchangeDTO(Bundle bundle)
+    {
+        this.id = bundle.getInt(BUNDLE_KEY_ID);
+        this.name = bundle.getString(BUNDLE_KEY_NAME);
+        this.desc = bundle.getString(BUNDLE_KEY_DESC);
+        this.isIncludedInTrending = bundle.getBoolean(BUNDLE_KEY_IS_INCLUDED_IN_TRENDING);
+    }
     //</editor-fold>
 
     public ExchangeIntegerId getExchangeIntegerId()
@@ -54,6 +68,21 @@ public class ExchangeDTO implements DTO
     public ExchangeStringId getExchangeStringId()
     {
         return new ExchangeStringId(name);
+    }
+
+    protected void putParameters(Bundle args)
+    {
+        args.putInt(BUNDLE_KEY_ID, this.id);
+        args.putString(BUNDLE_KEY_NAME, this.name);
+        args.putString(BUNDLE_KEY_DESC, this.desc);
+        args.putBoolean(BUNDLE_KEY_IS_INCLUDED_IN_TRENDING, this.isIncludedInTrending);
+    }
+
+    public Bundle getArgs()
+    {
+        Bundle args = new Bundle();
+        putParameters(args);
+        return args;
     }
 
     @Override public boolean equals(Object other)
