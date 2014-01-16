@@ -1,6 +1,10 @@
 package com.tradehero.th.fragments.watchlist;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.AttributeSet;
 import android.widget.LinearLayout;
 import com.tradehero.common.widget.TwoStateView;
@@ -98,6 +102,22 @@ public class WatchlistPortfolioHeaderView extends LinearLayout
         linkWith(userBaseKey, true);
     }
 
+    @Override protected void onAttachedToWindow()
+    {
+        super.onAttachedToWindow();
+
+        LocalBroadcastManager.getInstance(getContext())
+                .registerReceiver(watchlistItemDeletedReceiver, new IntentFilter(WatchlistItemView.WATCHLIST_ITEM_DELETED));
+    }
+
+    @Override protected void onDetachedFromWindow()
+    {
+        super.onDetachedFromWindow();
+
+        LocalBroadcastManager.getInstance(getContext())
+                .unregisterReceiver(watchlistItemDeletedReceiver);
+    }
+
     private void linkWith(UserBaseKey userBaseKey, boolean andDisplay)
     {
         this.userBaseKey = userBaseKey;
@@ -115,6 +135,7 @@ public class WatchlistPortfolioHeaderView extends LinearLayout
         THSignedNumber thSignedNumber = new THSignedNumber(THSignedNumber.TYPE_MONEY, getAbsoluteGain());
         gainLoss.setFirstValue(new DecimalFormat("#.##").format(getPercentageGain()) + "%");
         gainLoss.setSecondValue(thSignedNumber.toString(0));
+        gainLoss.invalidate();
     }
 
     private double getPercentageGain()
@@ -136,6 +157,7 @@ public class WatchlistPortfolioHeaderView extends LinearLayout
     {
         valuation.setFirstValue(SecurityUtils.DEFAULT_VIRTUAL_CASH_CURRENCY_DISPLAY + new DecimalFormat("#.##").format(getTotalValue()));
         valuation.setSecondValue(SecurityUtils.DEFAULT_VIRTUAL_CASH_CURRENCY_DISPLAY + new DecimalFormat("#.##").format(getTotalInvested()));
+        valuation.invalidate();
     }
 
     private double getAbsoluteGain()
@@ -177,4 +199,12 @@ public class WatchlistPortfolioHeaderView extends LinearLayout
         }
         return totalInvested;
     }
+
+    private BroadcastReceiver watchlistItemDeletedReceiver = new BroadcastReceiver()
+    {
+        @Override public void onReceive(Context context, Intent intent)
+        {
+            display(userBaseKey);
+        }
+    };
 }

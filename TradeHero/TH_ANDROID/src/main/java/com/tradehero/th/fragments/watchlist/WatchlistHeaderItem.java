@@ -83,6 +83,12 @@ public class WatchlistHeaderItem extends TwoStateView
         syncTextState();
     }
 
+    @Override public void invalidate()
+    {
+        syncTextState();
+        super.invalidate();
+    }
+
     private void syncTextState()
     {
         if (title != null)
