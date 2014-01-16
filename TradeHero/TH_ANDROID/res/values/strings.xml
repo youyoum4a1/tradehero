@@ -182,4 +182,5 @@
   <string name="watchlist_item_deleted_failed">Fail to delete watchlist item for security %d</string>
   <string name="more">More</string>
   <string name="quantity_should_not_be_zero">Quantity should be at least 1</string>
+  <string name="watchlist_empty_view">Tab the \'+\' button above to add a security to your watchlist</string>
 </resources>

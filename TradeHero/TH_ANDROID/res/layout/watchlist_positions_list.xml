@@ -12,7 +12,7 @@
       android:layout_width="match_parent"
       android:layout_height="match_parent"
       android:layout_alignParentTop="true"
-      android:paddingTop="50dp"
+      android:paddingTop="@dimen/watchlist_position_header_height"
       android:clipToPadding="false"
       swipe:swipeFrontView="@id/front"
       swipe:swipeBackView="@id/back"
@@ -31,10 +31,15 @@
       layout="@layout/watchlist_position_header_view"
       />
 
-  <ProgressBar
-      android:id="@android:id/empty"
-      android:layout_width="wrap_content"
+  <TextView
+      android:id="@+id/watchlist_position_list_empty_view"
+      android:layout_marginTop="@dimen/watchlist_position_header_height"
+      android:paddingTop="10dp"
+      android:paddingLeft="3dp"
+      android:paddingRight="3dp"
+      android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_centerInParent="true"
+      android:text="@string/watchlist_empty_view"
+      android:gravity="center_horizontal"
       />
 </RelativeLayout>
