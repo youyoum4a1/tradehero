@@ -39,9 +39,9 @@ import javax.inject.Inject;
 /** Created with IntelliJ IDEA. User: tho Date: 12/3/13 Time: 4:05 PM Copyright (c) TradeHero */
 public class WatchlistEditFragment extends DashboardFragment
 {
+    private static final String TAG = WatchlistEditFragment.class.getName();
     public static final String BUNDLE_KEY_SECURITY_ID_BUNDLE = WatchlistEditFragment.class.getName() + ".securityKeyId";
     public static final String BUNDLE_KEY_TITLE = WatchlistEditFragment.class.getName() + ".title";
-    private static final String TAG = DashboardFragment.class.getName();
     public static final String BUNDLE_KEY_RETURN_FRAGMENT = WatchlistEditFragment.class.getName() + ".returnFragment";
 
     private ImageView securityLogo;
@@ -54,6 +54,7 @@ public class WatchlistEditFragment extends DashboardFragment
     private ProgressDialog progressBar;
 
     private DTOCache.GetOrFetchTask<SecurityId, SecurityCompactDTO> compactCacheFetchTask;
+    private DTOCache.Listener<SecurityId, SecurityCompactDTO> compactCacheListener;
 
     @Inject protected Lazy<SecurityCompactCache> securityCompactCache;
     @Inject protected Lazy<WatchlistPositionCache> watchlistPositionCache;
@@ -91,6 +92,7 @@ public class WatchlistEditFragment extends DashboardFragment
         {
             @Override public void onClick(View v)
             {
+                DeviceUtil.dismissKeyBoard(getActivity(), getView());
                 handleWatchButtonClicked();
             }
         };
@@ -98,7 +100,14 @@ public class WatchlistEditFragment extends DashboardFragment
 
     private void handleWatchButtonClicked()
     {
-        progressBar = ProgressDialog.show(getActivity(), getString(R.string.please_wait), getString(R.string.updating), true);
+        if (progressBar != null)
+        {
+            progressBar.show();
+        }
+        else
+        {
+            progressBar = ProgressDialog.show(getActivity(), getString(R.string.please_wait), getString(R.string.updating), true);
+        }
         try
         {
             double price = Double.parseDouble(watchPrice.getText().toString());
@@ -128,12 +137,12 @@ public class WatchlistEditFragment extends DashboardFragment
         {
             THToast.show(getString(R.string.wrong_number_format));
             THLog.e(TAG, "Parsing error", ex);
-            progressBar.hide();
+            progressBar.dismiss();
         }
         catch (Exception ex)
         {
             THToast.show(ex.getMessage());
-            progressBar.hide();
+            progressBar.dismiss();
         }
     }
 
@@ -209,23 +218,31 @@ public class WatchlistEditFragment extends DashboardFragment
 
     private void querySecurity(SecurityId securityId, final boolean andDisplay)
     {
-        progressBar = ProgressDialog.show(getActivity(), getString(R.string.please_wait), getString(R.string.loading_loading), true);
-        DTOCache.Listener<SecurityId, SecurityCompactDTO> compactCacheListener = new DTOCache.Listener<SecurityId, SecurityCompactDTO>()
+        if (progressBar != null)
+        {
+            progressBar.show();
+        }
+        else
+        {
+            progressBar = ProgressDialog.show(getActivity(), getString(R.string.please_wait), getString(R.string.loading_loading), true);
+        }
+
+        compactCacheListener = new DTOCache.Listener<SecurityId, SecurityCompactDTO>()
         {
             @Override public void onDTOReceived(SecurityId key, SecurityCompactDTO value)
             {
-                linkWith(value, andDisplay);
                 if (progressBar != null)
                 {
-                    progressBar.hide();
+                    progressBar.dismiss();
                 }
+                linkWith(value, andDisplay);
             }
 
             @Override public void onErrorThrown(SecurityId key, Throwable error)
             {
                 if (progressBar != null)
                 {
-                    progressBar.hide();
+                    progressBar.dismiss();
                 }
                 THToast.show(R.string.error_fetch_security_info);
                 THLog.e(TAG, "Failed to fetch SecurityCompact for " + key, error);
@@ -236,6 +253,7 @@ public class WatchlistEditFragment extends DashboardFragment
         {
             compactCacheFetchTask.cancel(true);
         }
+
         compactCacheFetchTask = securityCompactCache.get().getOrFetch(securityId, compactCacheListener);
         compactCacheFetchTask.execute();
     }
@@ -295,7 +313,7 @@ public class WatchlistEditFragment extends DashboardFragment
         {
             if (progressBar != null)
             {
-                progressBar.hide();
+                progressBar.dismiss();
             }
         }
 
@@ -320,7 +338,6 @@ public class WatchlistEditFragment extends DashboardFragment
                 }
             }
             getNavigator().popFragment();
-            DeviceUtil.dismissKeyBoard(getActivity(), getView());
         }
 
         @Override protected void failure(THException ex)

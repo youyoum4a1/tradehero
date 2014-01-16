@@ -32,7 +32,7 @@ public final class DeviceUtil
     public static void dismissKeyBoard(Context ctx, View v)
     {
         InputMethodManager imm = (InputMethodManager) ctx.getSystemService(Context.INPUT_METHOD_SERVICE);
-        if (imm != null)
+        if (imm != null && v != null)
         {
             imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
         }
