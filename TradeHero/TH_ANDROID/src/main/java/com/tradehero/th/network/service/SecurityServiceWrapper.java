@@ -1,5 +1,6 @@
 package com.tradehero.th.network.service;
 
+import com.tradehero.th.api.competition.ProviderSecurityListType;
 import com.tradehero.th.api.position.SecurityPositionDetailDTO;
 import com.tradehero.th.api.security.SearchSecurityListType;
 import com.tradehero.th.api.security.SecurityCompactDTO;
@@ -26,13 +27,14 @@ import retrofit.RetrofitError;
     public static final String TAG = SecurityServiceWrapper.class.getSimpleName();
 
     @Inject SecurityService securityService;
+    @Inject ProviderServiceWrapper providerServiceWrapper;
 
     @Inject public SecurityServiceWrapper()
     {
         super();
     }
 
-    //<editor-fold desc="Routing Trending">
+    //<editor-fold desc="Routing SecurityListType">
     public List<SecurityCompactDTO> getSecurities(SecurityListType key)
         throws RetrofitError
     {
@@ -43,6 +45,10 @@ import retrofit.RetrofitError;
         else if (key instanceof SearchSecurityListType)
         {
             return searchSecurities((SearchSecurityListType) key);
+        }
+        else if (key instanceof ProviderSecurityListType)
+        {
+            return providerServiceWrapper.getProviderSecurities((ProviderSecurityListType) key);
         }
         throw new IllegalArgumentException("Unhandled type " + key.getClass().getName());
     }
@@ -58,7 +64,14 @@ import retrofit.RetrofitError;
         {
             searchSecurities((SearchSecurityListType) key, callback);
         }
-        throw new IllegalArgumentException("Unhandled type " + key.getClass().getName());
+        else if (key instanceof ProviderSecurityListType)
+        {
+            providerServiceWrapper.getProviderSecurities((ProviderSecurityListType) key, callback);
+        }
+        else
+        {
+            throw new IllegalArgumentException("Unhandled type " + key.getClass().getName());
+        }
     }
 
     public List<SecurityCompactDTO> getTrendingSecurities(TrendingSecurityListType key)

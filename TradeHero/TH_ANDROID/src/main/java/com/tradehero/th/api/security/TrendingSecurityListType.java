@@ -13,6 +13,7 @@ public class TrendingSecurityListType extends SecurityListType
     {
         super(other);
         this.exchange = other.exchange;
+        validate();
     }
 
     public TrendingSecurityListType(String exchange, Integer page, Integer perPage)
