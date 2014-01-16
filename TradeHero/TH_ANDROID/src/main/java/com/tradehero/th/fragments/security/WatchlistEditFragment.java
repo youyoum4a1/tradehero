@@ -32,6 +32,7 @@ import com.tradehero.th.network.service.WatchlistService;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
+import com.tradehero.th.utils.DeviceUtil;
 import dagger.Lazy;
 import javax.inject.Inject;
 
@@ -319,6 +320,7 @@ public class WatchlistEditFragment extends DashboardFragment
                 }
             }
             getNavigator().popFragment();
+            DeviceUtil.dismissKeyBoard(getActivity(), getView());
         }
 
         @Override protected void failure(THException ex)
