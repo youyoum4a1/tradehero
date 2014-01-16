@@ -66,6 +66,12 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
         prepareAdapters();
     }
 
+    @Override public void onPause()
+    {
+        super.onPause();
+        sectorListView.setAdapter(null);
+    }
+
     private void prepareAdapters()
     {
         leaderboardDefListCache.get().getOrFetch(new LeaderboardDefMostSkilledListKey(), false, this).execute();
