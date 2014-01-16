@@ -10,4 +10,5 @@
   <string name="validation_incorrect_pattern_email">This does not look like a legit email</string>
 
   <string name="forgot_email_incorrect_input_email">You must provide an Email id.</string>
+  <string name="wrong_number_format">You must provide valid number.</string>
 </resources>

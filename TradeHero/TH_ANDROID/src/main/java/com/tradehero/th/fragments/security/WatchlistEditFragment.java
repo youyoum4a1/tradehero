@@ -8,7 +8,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
@@ -26,7 +25,6 @@ import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
 import com.tradehero.th.api.watchlist.WatchlistPositionDTO;
 import com.tradehero.th.api.watchlist.WatchlistPositionFormDTO;
 import com.tradehero.th.fragments.base.DashboardFragment;
-import com.tradehero.th.fragments.watchlist.WatchlistPositionFragment;
 import com.tradehero.th.misc.callback.THCallback;
 import com.tradehero.th.misc.callback.THResponse;
 import com.tradehero.th.misc.exception.THException;
@@ -65,21 +63,21 @@ public class WatchlistEditFragment extends DashboardFragment
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        View view = inflater.inflate(R.layout.add_to_watch_list_layout, container, false);
+        View view = inflater.inflate(R.layout.edit_watchlist_item_layout, container, false);
         initViews(view);
         return view;
     }
 
     private void initViews(View view)
     {
-        securityLogo = (ImageView) view.findViewById(R.id.add_to_watch_list_security_logo);
-        securityTitle = (TextView) view.findViewById(R.id.add_to_watch_list_security_name);
-        securityDesc = (TextView) view.findViewById(R.id.add_to_watch_list_security_desc);
+        securityLogo = (ImageView) view.findViewById(R.id.edit_watchlist_item_security_logo);
+        securityTitle = (TextView) view.findViewById(R.id.edit_watchlist_item_security_name);
+        securityDesc = (TextView) view.findViewById(R.id.edit_watchlist_item_security_desc);
 
-        watchPrice = (EditText) view.findViewById(R.id.add_to_watch_list_security_price);
-        watchQuantity = (EditText) view.findViewById(R.id.add_to_watch_list_security_quantity);
+        watchPrice = (EditText) view.findViewById(R.id.edit_watchlist_item_security_price);
+        watchQuantity = (EditText) view.findViewById(R.id.edit_watchlist_item_security_quantity);
 
-        watchAction = (Button) view.findViewById(R.id.add_to_watch_list_done);
+        watchAction = (Button) view.findViewById(R.id.edit_watchlist_item_done);
         if (watchAction != null)
         {
             watchAction.setOnClickListener(createOnWatchButtonClickedListener());
@@ -104,6 +102,10 @@ public class WatchlistEditFragment extends DashboardFragment
         {
             double price = Double.parseDouble(watchPrice.getText().toString());
             int quantity = Integer.parseInt(watchQuantity.getText().toString());
+            if (quantity == 0)
+            {
+                 throw new Exception(getString(R.string.quantity_should_not_be_zero));
+            }
             // add new watchlist
             SecurityCompactDTO securityCompactDTO = securityCompactCache.get().get(securityKeyId);
             if (securityCompactDTO != null)
@@ -121,10 +123,15 @@ public class WatchlistEditFragment extends DashboardFragment
                 }
             }
         }
+        catch (NumberFormatException ex)
+        {
+            THToast.show(getString(R.string.wrong_number_format));
+            THLog.e(TAG, "Parsing error", ex);
+            progressBar.hide();
+        }
         catch (Exception ex)
         {
-            // most likely number exception when parsing text to number
-            THLog.e(TAG, "Parsing error", ex);
+            THToast.show(ex.getMessage());
             progressBar.hide();
         }
     }
@@ -201,15 +208,24 @@ public class WatchlistEditFragment extends DashboardFragment
 
     private void querySecurity(SecurityId securityId, final boolean andDisplay)
     {
+        progressBar = ProgressDialog.show(getActivity(), getString(R.string.please_wait), getString(R.string.loading_loading), true);
         DTOCache.Listener<SecurityId, SecurityCompactDTO> compactCacheListener = new DTOCache.Listener<SecurityId, SecurityCompactDTO>()
         {
             @Override public void onDTOReceived(SecurityId key, SecurityCompactDTO value)
             {
                 linkWith(value, andDisplay);
+                if (progressBar != null)
+                {
+                    progressBar.hide();
+                }
             }
 
             @Override public void onErrorThrown(SecurityId key, Throwable error)
             {
+                if (progressBar != null)
+                {
+                    progressBar.hide();
+                }
                 THToast.show(R.string.error_fetch_security_info);
                 THLog.e(TAG, "Failed to fetch SecurityCompact for " + key, error);
             }
@@ -264,6 +280,11 @@ public class WatchlistEditFragment extends DashboardFragment
                                 "" + watchListItem.getWatchlistPrice() :
                                 securityCompactDTO.lastPrice != null ? securityCompactDTO.lastPrice.toString() : "");
             }
+
+            if (watchListItem != null)
+            {
+                watchQuantity.setText("" + (watchListItem.shares == null ? 1 : watchListItem.shares));
+            }
         }
     }
 
@@ -271,7 +292,10 @@ public class WatchlistEditFragment extends DashboardFragment
     {
         @Override protected void finish()
         {
-            progressBar.hide();
+            if (progressBar != null)
+            {
+                progressBar.hide();
+            }
         }
 
         @Override protected void success(WatchlistPositionDTO watchlistPositionDTO, THResponse response)

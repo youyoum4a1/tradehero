@@ -12,26 +12,28 @@
       android:padding="@dimen/add_to_watch_list_padding"
       >
     <ImageView
-        android:id="@+id/add_to_watch_list_security_logo"
+        android:id="@+id/edit_watchlist_item_security_logo"
         android:layout_width="80dp"
         android:layout_height="40dp"
         android:contentDescription="@null"
         />
     <TextView
-        android:id="@+id/add_to_watch_list_security_name"
+        android:id="@+id/edit_watchlist_item_security_name"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
         android:text="@string/na"
         android:textStyle="bold"
-        android:layout_toRightOf="@id/add_to_watch_list_security_logo"
+        android:layout_toRightOf="@id/edit_watchlist_item_security_logo"
+        android:paddingLeft="5dp"
         />
     <TextView
-        android:id="@+id/add_to_watch_list_security_desc"
+        android:id="@+id/edit_watchlist_item_security_desc"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
         android:text="@string/na"
-        android:layout_below="@id/add_to_watch_list_security_name"
-        android:layout_toRightOf="@id/add_to_watch_list_security_logo"
+        android:paddingLeft="5dp"
+        android:layout_below="@id/edit_watchlist_item_security_name"
+        android:layout_toRightOf="@id/edit_watchlist_item_security_logo"
         />
   </RelativeLayout>
 
@@ -54,7 +56,7 @@
         android:gravity="right"
         />
     <EditText
-        android:id="@+id/add_to_watch_list_security_price"
+        android:id="@+id/edit_watchlist_item_security_price"
         android:layout_weight="1"
         android:layout_width="0dp"
         android:maxLength="10"
@@ -76,7 +78,7 @@
         android:gravity="right"
         />
     <EditText
-        android:id="@+id/add_to_watch_list_security_quantity"
+        android:id="@+id/edit_watchlist_item_security_quantity"
         android:layout_weight="1"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -86,7 +88,7 @@
         />
   </LinearLayout>
   <Button
-      android:id="@+id/add_to_watch_list_done"
+      android:id="@+id/edit_watchlist_item_done"
       android:layout_height="wrap_content"
       android:layout_width="wrap_content"
       android:layout_gravity="center"
