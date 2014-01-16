@@ -2,6 +2,7 @@ package com.tradehero.th.network.service;
 
 import com.tradehero.th.api.competition.BasicProviderSecurityListType;
 import com.tradehero.th.api.competition.HelpVideoDTO;
+import com.tradehero.th.api.competition.HelpVideoListKey;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.competition.ProviderSecurityListType;
@@ -141,6 +142,17 @@ import retrofit.http.Path;
     //</editor-fold>
 
     //<editor-fold desc="Get Help Videos">
+    public List<HelpVideoDTO> getHelpVideos(HelpVideoListKey helpVideoListKey)
+            throws RetrofitError
+    {
+        return this.getHelpVideos(helpVideoListKey.getProviderId());
+    }
+
+    void getHelpVideos(HelpVideoListKey helpVideoListKey, Callback<List<HelpVideoDTO>> callback)
+    {
+        this.getHelpVideos(helpVideoListKey.getProviderId(), callback);
+    }
+
     public List<HelpVideoDTO> getHelpVideos(ProviderId providerId)
             throws RetrofitError
     {

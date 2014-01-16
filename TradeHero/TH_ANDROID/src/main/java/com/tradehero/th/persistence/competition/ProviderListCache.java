@@ -8,6 +8,7 @@ import com.tradehero.th.api.competition.ProviderIdList;
 import com.tradehero.th.api.competition.ProviderListKey;
 import com.tradehero.th.network.BasicRetrofitErrorHandler;
 import com.tradehero.th.network.service.ProviderService;
+import com.tradehero.th.network.service.ProviderServiceWrapper;
 import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,8 +22,8 @@ import retrofit.RetrofitError;
     public static final String TAG = ProviderListCache.class.getSimpleName();
     public static final int DEFAULT_MAX_SIZE = 50;
 
-    @Inject protected Lazy<ProviderService> providerService;
-    @Inject protected Lazy<ProviderCache> providerCache;
+    @Inject protected ProviderServiceWrapper providerServiceWrapper;
+    @Inject protected ProviderCache providerCache;
 
     //<editor-fold desc="Constructors">
     @Inject public ProviderListCache()
@@ -34,9 +35,9 @@ import retrofit.RetrofitError;
     @Override protected ProviderIdList fetch(ProviderListKey key) throws Throwable
     {
         THLog.d(TAG, "fetch " + key);
-        if (key.key == ProviderListKey.ALL_PROVIDERS)
+        if (key.key.equals(ProviderListKey.ALL_PROVIDERS))
         {
-            return putInternal(key, providerService.get().getProviders());
+            return putInternal(key, providerServiceWrapper.getProviders());
         }
 
         throw new IllegalArgumentException("Unknown ProviderListKey " + key);
@@ -49,11 +50,11 @@ import retrofit.RetrofitError;
         {
             providerIds = new ProviderIdList();
             ProviderId providerId;
-            for(ProviderDTO providerDTO: fleshedValues)
+            for (ProviderDTO providerDTO: fleshedValues)
             {
                 providerId = providerDTO.getProviderId();
                 providerIds.add(providerId);
-                providerCache.get().put(providerId, providerDTO);
+                providerCache.put(providerId, providerDTO);
             }
             put(key, providerIds);
         }

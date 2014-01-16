@@ -1,10 +1,12 @@
 package com.tradehero.th.persistence;
 
+import com.tradehero.th.api.competition.ProviderListKey;
 import com.tradehero.th.api.market.ExchangeListType;
 import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
 import com.tradehero.th.persistence.alert.AlertCache;
 import com.tradehero.th.persistence.alert.AlertCompactCache;
 import com.tradehero.th.persistence.alert.AlertCompactListCache;
+import com.tradehero.th.persistence.competition.ProviderListCache;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefCache;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefListCache;
 import com.tradehero.th.persistence.leaderboard.position.GetLeaderboardPositionsCache;
@@ -58,6 +60,7 @@ import javax.inject.Singleton;
     @Inject protected Lazy<UserFollowerCache> userFollowerCache;
     @Inject protected Lazy<ExchangeListCache> exchangeListCache;
     @Inject protected Lazy<UserWatchlistPositionCache> watchlistPositionCache;
+    @Inject protected Lazy<ProviderListCache> providerListCache;
 
     @Inject public DTOCacheUtil()
     {
@@ -103,5 +106,10 @@ import javax.inject.Singleton;
     public void preFetchWatchlist()
     {
         watchlistPositionCache.get().autoFetch(currentUserBaseKeyHolder.getCurrentUserBaseKey());
+    }
+
+    public void preFetchProviders()
+    {
+        this.providerListCache.get().autoFetch(new ProviderListKey());
     }
 }

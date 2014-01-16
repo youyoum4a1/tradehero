@@ -28,7 +28,8 @@ import com.tradehero.th.fragments.WebViewFragment;
 import com.tradehero.th.fragments.authentication.EmailSignInFragment;
 import com.tradehero.th.fragments.billing.StoreScreenFragment;
 import com.tradehero.th.fragments.billing.THIABUserInteractor;
-import com.tradehero.th.fragments.competition.CompetitionFragment;
+import com.tradehero.th.fragments.competition.ProviderVideoListFragment;
+import com.tradehero.th.fragments.competition.ProviderVideoListItem;
 import com.tradehero.th.fragments.leaderboard.BaseLeaderboardFragment;
 import com.tradehero.th.fragments.leaderboard.FriendLeaderboardMarkUserListViewFragment;
 import com.tradehero.th.fragments.leaderboard.LeaderboardCommunityFragment;
@@ -255,7 +256,8 @@ import org.ocpsoft.prettytime.PrettyTime;
                 LeaderboardMarkUserListView.class,
                 FriendLeaderboardMarkUserListViewFragment.class,
 
-                CompetitionFragment.class,
+                ProviderVideoListFragment.class,
+                ProviderVideoListItem.class,
 
                 WebViewFragment.class,
 

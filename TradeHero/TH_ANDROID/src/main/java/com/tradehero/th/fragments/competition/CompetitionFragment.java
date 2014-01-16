@@ -10,15 +10,15 @@ import javax.inject.Inject;
 /**
  * Created by xavier on 1/16/14.
  */
-public class CompetitionFragment extends DashboardFragment
+abstract public class CompetitionFragment extends DashboardFragment
 {
     public static final String TAG = CompetitionFragment.class.getSimpleName();
 
     public static final String BUNDLE_KEY_PROVIDER_ID = CompetitionFragment.class.getName() + ".providerId";
 
-    private ProviderId providerId;
-    private ProviderDTO providerDTO;
-    @Inject ProviderCache providerCache;
+    protected ProviderId providerId;
+    protected ProviderDTO providerDTO;
+    @Inject protected ProviderCache providerCache;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -32,12 +32,9 @@ public class CompetitionFragment extends DashboardFragment
         {
             this.providerId = new ProviderId(getArguments().getBundle(BUNDLE_KEY_PROVIDER_ID));
         }
-    }
-
-
-
-    @Override public boolean isTabBarVisible()
-    {
-        return false;
+        else
+        {
+            throw new IllegalArgumentException("There is no defined providerId");
+        }
     }
 }
