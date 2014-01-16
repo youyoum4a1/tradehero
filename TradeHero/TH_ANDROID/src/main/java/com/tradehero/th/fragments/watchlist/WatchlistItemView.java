@@ -390,6 +390,7 @@ public class WatchlistItemView extends FrameLayout implements DTOView<SecurityId
             LocalBroadcastManager.getInstance(WatchlistItemView.this.getContext())
                     .sendBroadcast(itemDeletionIntent);
             securityIds.remove(securityId);
+            watchlistPositionCache.get().invalidate(securityId);
         }
     };
     private OnClickListener watchlistItemMoreButtonClickHandler = new OnClickListener()
