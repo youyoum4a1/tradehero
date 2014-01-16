@@ -11,7 +11,6 @@ public class THSignedNumber
 
     private int type;
     private String sign;
-    private int precision;
     private String currency;
     private Double number;
     private String formattedNumber;
@@ -20,7 +19,6 @@ public class THSignedNumber
     public THSignedNumber(int type, Double number)
     {
         this(type, null, number);
-        formattedNumber = toString();
     }
 
     public THSignedNumber(int type, String currency, Double number)
@@ -31,7 +29,6 @@ public class THSignedNumber
         {
             this.currency = REF_CURRENCY;
         }
-        formattedNumber = toString();
     }
 
     public int getColor()
@@ -49,7 +46,7 @@ public class THSignedNumber
         return sign != null;
     }
 
-    public String toString()
+    public String toString(int precision)
     {
         if (formattedNumber != null)
         {
@@ -59,19 +56,28 @@ public class THSignedNumber
         switch (type)
         {
             case TYPE_PERCENTAGE:
-                formattedNumber = signedFormattedPercentage();
+                formattedNumber = signedFormattedPercentage(precision);
                 break;
             case TYPE_MONEY:
-                formattedNumber = signedFormattedMoney();
+                formattedNumber = signedFormattedMoney(precision);
         }
         return formattedNumber;
     }
 
+    @Override public String toString()
+    {
+        return toString(-1);
+    }
+
     // Private
-    private String signedFormattedPercentage()
+    private String signedFormattedPercentage(int precision)
     {
         sign = NumberDisplayUtils.getArrowPrefix(number);
-        precision = precisionFromNumber();
+        if (precision < 0)
+        {
+            precision = precisionFromNumber();
+        }
+
         color = ColorUtils.getColorResourceForNumber(number);
         String numberFormat = "%s%." + precision + "f";
 
@@ -80,10 +86,13 @@ public class THSignedNumber
                 Math.abs(number)) + "%";
     }
 
-    private String signedFormattedMoney()
+    private String signedFormattedMoney(int precision)
     {
         sign = NumberDisplayUtils.getPlusMinusPrefix(number);
-        precision = precisionFromNumber();
+        if (precision < 0)
+        {
+            precision = precisionFromNumber();
+        }
         color = ColorUtils.getColorResourceForNumber(number);
         String numberFormat = "%s%s %." + precision + "f";
 
