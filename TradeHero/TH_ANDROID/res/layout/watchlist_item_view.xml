@@ -23,13 +23,13 @@
         android:layout_alignParentRight="true"
         android:text="@string/delete"/>
     <Button
+        android:id="@+id/position_watchlist_more"
         android:layout_width="@dimen/watchlist_item_button_width"
         android:layout_height="match_parent"
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
         android:background="@color/gray_normal"
         android:textColor="@color/white"
-        android:id="@+id/position_watchlist_more"
         android:layout_toLeftOf="@id/position_watchlist_delete"
         android:text="@string/more"/>
   </RelativeLayout>

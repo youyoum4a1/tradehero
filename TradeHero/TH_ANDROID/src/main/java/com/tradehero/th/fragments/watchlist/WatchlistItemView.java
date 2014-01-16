@@ -2,14 +2,18 @@ package com.tradehero.th.fragments.watchlist;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.Html;
 import android.text.Spanned;
 import android.util.AttributeSet;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 import com.tradehero.common.graphics.WhiteToTransparentTransformation;
@@ -19,8 +23,14 @@ import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.SecurityIdList;
+import com.tradehero.th.api.security.SecurityMediaDTO;
 import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
 import com.tradehero.th.api.watchlist.WatchlistPositionDTO;
+import com.tradehero.th.base.Navigator;
+import com.tradehero.th.base.NavigatorActivity;
+import com.tradehero.th.fragments.security.StockInfoFragment;
+import com.tradehero.th.fragments.security.WatchlistEditFragment;
+import com.tradehero.th.fragments.trade.BuySellFragment;
 import com.tradehero.th.misc.callback.THCallback;
 import com.tradehero.th.misc.callback.THResponse;
 import com.tradehero.th.misc.exception.THException;
@@ -56,7 +66,10 @@ public class WatchlistItemView extends FrameLayout implements DTOView<SecurityId
     private TextView gainLossLabel;
     private TextView positionLastAmount;
     private SecurityId securityId;
-    private Button delete;
+    private Button deleteButton;
+    private PopupMenu morePopupMenu;
+
+    private Button moreButton;
 
     //<editor-fold desc="Constructors">
     public WatchlistItemView(Context context)
@@ -68,11 +81,11 @@ public class WatchlistItemView extends FrameLayout implements DTOView<SecurityId
     {
         super(context, attrs);
     }
-
     public WatchlistItemView(Context context, AttributeSet attrs, int defStyle)
     {
         super(context, attrs, defStyle);
     }
+
     //</editor-fold>
 
     @Override protected void onFinishInflate()
@@ -91,11 +104,37 @@ public class WatchlistItemView extends FrameLayout implements DTOView<SecurityId
         numberOfShares = (TextView) findViewById(R.id.number_of_shares);
         gainLossLabel = (TextView) findViewById(R.id.position_percentage);
         positionLastAmount = (TextView) findViewById(R.id.position_last_amount);
-        delete = (Button) findViewById(R.id.position_watchlist_delete);
 
-        if (delete != null)
+        deleteButton = (Button) findViewById(R.id.position_watchlist_delete);
+        if (deleteButton != null)
         {
-            delete.setOnClickListener(watchlistItemDeleteHandler);
+            deleteButton.setOnClickListener(watchlistItemDeleteClickHandler);
+        }
+
+        moreButton = (Button) findViewById(R.id.position_watchlist_more);
+        if (moreButton != null)
+        {
+            moreButton.setOnClickListener(watchlistItemMoreButtonClickHandler);
+        }
+    }
+
+    @Override protected void onDetachedFromWindow()
+    {
+        super.onDetachedFromWindow();
+
+        if (deleteButton != null)
+        {
+            deleteButton.setOnClickListener(null);
+        }
+
+        if (moreButton != null)
+        {
+            moreButton.setOnClickListener(null);
+        }
+
+        if (morePopupMenu != null)
+        {
+            morePopupMenu.setOnMenuItemClickListener(null);
         }
     }
 
@@ -108,7 +147,6 @@ public class WatchlistItemView extends FrameLayout implements DTOView<SecurityId
 
     private void linkWith(SecurityId securityId, boolean andDisplay)
     {
-
         watchlistPositionDTO = watchlistPositionCache.get().get(securityId);
 
         if (watchlistPositionDTO == null)
@@ -309,6 +347,7 @@ public class WatchlistItemView extends FrameLayout implements DTOView<SecurityId
         }
     }
 
+
     private void displayExchangeSymbol()
     {
         SecurityCompactDTO securityCompactDTO = watchlistPositionDTO.securityDTO;
@@ -327,7 +366,16 @@ public class WatchlistItemView extends FrameLayout implements DTOView<SecurityId
     }
 
 
-    private OnClickListener watchlistItemDeleteHandler = new OnClickListener()
+    private PopupMenu createMoreOptionsPopupMenu()
+    {
+        PopupMenu popupMenu = new PopupMenu(getContext(), moreButton);
+        MenuInflater menuInflater = popupMenu.getMenuInflater();
+        menuInflater.inflate(R.menu.watchlist_more_popup_menu, popupMenu.getMenu());
+        popupMenu.setOnMenuItemClickListener(moreButtonPopupMenuClickHandler);
+        return popupMenu;
+    }
+
+    private OnClickListener watchlistItemDeleteClickHandler = new OnClickListener()
     {
         @Override public void onClick(View v)
         {
@@ -344,6 +392,80 @@ public class WatchlistItemView extends FrameLayout implements DTOView<SecurityId
             securityIds.remove(securityId);
         }
     };
+    private OnClickListener watchlistItemMoreButtonClickHandler = new OnClickListener()
+    {
+        @Override public void onClick(View v)
+        {
+            if (morePopupMenu == null)
+            {
+                morePopupMenu = createMoreOptionsPopupMenu();
+            }
+            morePopupMenu.show();
+        }
+    };
+
+    private PopupMenu.OnMenuItemClickListener moreButtonPopupMenuClickHandler = new PopupMenu.OnMenuItemClickListener()
+    {
+        @Override public boolean onMenuItemClick(MenuItem item)
+        {
+            if (item == null)
+            {
+                return false;
+            }
+            switch (item.getItemId())
+            {
+                case R.id.watchlist_item_add_alert:
+                    // TODO add alert
+                    break;
+                case R.id.watchlist_item_edit_in_watchlist:
+                    openWatchlistEditor();
+                    break;
+                case R.id.watchlist_item_new_discussion:
+                    // TODO new discussion
+                    break;
+                case R.id.watchlist_item_view_graph:
+                    openSecurityGraph();
+                    break;
+                case R.id.watchlist_item_trade:
+                    openSecurityProfile();
+                    break;
+            }
+            return true;
+        }
+    };
+
+    private void openSecurityProfile()
+    {
+        Bundle args = new Bundle();
+        args.putBundle(BuySellFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
+        getNavigator().pushFragment(BuySellFragment.class, args);
+    }
+
+    private void openSecurityGraph()
+    {
+        Bundle args = new Bundle();
+        if (securityId != null)
+        {
+            args.putBundle(StockInfoFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
+        }
+        getNavigator().pushFragment(StockInfoFragment.class, args);
+    }
+
+    private void openWatchlistEditor()
+    {
+        Bundle args = new Bundle();
+        if (securityId != null)
+        {
+            args.putBundle(WatchlistEditFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
+            args.putString(WatchlistEditFragment.BUNDLE_KEY_TITLE, getContext().getString(R.string.edit_in_watch_list));
+        }
+        getNavigator().pushFragment(WatchlistEditFragment.class, args, Navigator.PUSH_UP_FROM_BOTTOM);
+    }
+
+    private Navigator getNavigator()
+    {
+        return ((NavigatorActivity) getContext()).getNavigator();
+    }
 
     private Callback<WatchlistPositionDTO> watchlistDeletionCallback = new THCallback<WatchlistPositionDTO>()
     {

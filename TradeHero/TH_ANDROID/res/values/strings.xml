@@ -183,4 +183,6 @@
   <string name="more">More</string>
   <string name="quantity_should_not_be_zero">Quantity should be at least 1</string>
   <string name="watchlist_empty_view">Tab the \'+\' button above to add a security to your watchlist</string>
+  <string name="new_discussion">New Discussion</string>
+  <string name="add_alert">Add Alert</string>
 </resources>
