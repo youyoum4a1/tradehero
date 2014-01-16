@@ -144,6 +144,12 @@ public class TimelineItemView extends LinearLayout implements
                 actionButton.setOnClickListener(null);
             }
         }
+
+        if (monitorPopupMenu != null)
+        {
+            monitorPopupMenu.setOnMenuItemClickListener(null);
+        }
+
         super.onDetachedFromWindow();
     }
 
@@ -264,25 +270,12 @@ public class TimelineItemView extends LinearLayout implements
             {
                 case R.id.timeline_popup_menu_monitor_add_to_watch_list:
                 {
-                    Bundle args = new Bundle();
-                    SecurityId securityId = getSecurityId();
-                    if (securityId != null)
-                    {
-                        args.putBundle(WatchlistEditFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
-                        if (watchlistPositionCache.get().get(securityId) != null)
-                        {
-                            args.putString(WatchlistEditFragment.BUNDLE_KEY_TITLE, getContext().getString(R.string.edit_in_watch_list));
-                        }
-                        else
-                        {
-                            args.putString(WatchlistEditFragment.BUNDLE_KEY_TITLE, getContext().getString(R.string.add_to_watch_list));
-                        }
-                    }
-                    getNavigator().pushFragment(WatchlistEditFragment.class, args, Navigator.PUSH_UP_FROM_BOTTOM);
+                    openWatchlistEditor();
                     return true;
                 }
 
                 case R.id.timeline_popup_menu_monitor_enable_stock_alert:
+                    // TODO add stock alert
                     return true;
 
                 case R.id.timeline_popup_menu_monitor_view_graph:
@@ -300,6 +293,25 @@ public class TimelineItemView extends LinearLayout implements
             return false;
         }
     };
+
+    private void openWatchlistEditor()
+    {
+        Bundle args = new Bundle();
+        SecurityId securityId = getSecurityId();
+        if (securityId != null)
+        {
+            args.putBundle(WatchlistEditFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
+            if (watchlistPositionCache.get().get(securityId) != null)
+            {
+                args.putString(WatchlistEditFragment.BUNDLE_KEY_TITLE, getContext().getString(R.string.edit_in_watch_list));
+            }
+            else
+            {
+                args.putString(WatchlistEditFragment.BUNDLE_KEY_TITLE, getContext().getString(R.string.add_to_watch_list));
+            }
+        }
+        getNavigator().pushFragment(WatchlistEditFragment.class, args, Navigator.PUSH_UP_FROM_BOTTOM);
+    }
 
     private PopupMenu.OnMenuItemClickListener sharePopupMenuClickListener = new PopupMenu.OnMenuItemClickListener()
     {
@@ -350,11 +362,7 @@ public class TimelineItemView extends LinearLayout implements
             case R.id.timeline_action_button_trade_wrapper:
                 if (currentTimelineItem != null)
                 {
-                    SecurityMediaDTO firstMediaWithLogo = currentTimelineItem.getFirstMediaWithLogo();
-                    if (firstMediaWithLogo != null && firstMediaWithLogo.securityId != 0)
-                    {
-                        openSecurityProfile(firstMediaWithLogo.exchange, firstMediaWithLogo.symbol);
-                    }
+                    openSecurityProfile();
                 }
                 break;
             case R.id.timeline_action_button_share_wrapper:
@@ -364,6 +372,15 @@ public class TimelineItemView extends LinearLayout implements
             case R.id.timeline_action_button_monitor_wrapper:
                 createAndShowMonitorPopupMenu();
                 break;
+        }
+    }
+
+    private void openSecurityProfile()
+    {
+        SecurityMediaDTO firstMediaWithLogo = currentTimelineItem.getFirstMediaWithLogo();
+        if (firstMediaWithLogo != null && firstMediaWithLogo.securityId != 0)
+        {
+            openSecurityProfile(firstMediaWithLogo.exchange, firstMediaWithLogo.symbol);
         }
     }
 
