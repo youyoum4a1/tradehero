@@ -208,7 +208,7 @@ public class DashboardNavigator extends Navigator
     private void showTabBar()
     {
         View tabBar = mTabHost.findViewById(android.R.id.tabhost);
-        if (tabBar != null)
+        if (tabBar != null && tabBar.getVisibility() != View.VISIBLE)
         {
             tabBar.setVisibility(View.VISIBLE);
             tabBar.startAnimation(AnimationUtils.loadAnimation(activity, R.anim.slide_in));
@@ -218,7 +218,7 @@ public class DashboardNavigator extends Navigator
     private void hideTabBar()
     {
         View tabBar = mTabHost.findViewById(android.R.id.tabhost);
-        if (tabBar != null)
+        if (tabBar != null && tabBar.getVisibility() != View.GONE)
         {
             tabBar.startAnimation(AnimationUtils.loadAnimation(activity, R.anim.slide_out));
             tabBar.setVisibility(View.GONE);
