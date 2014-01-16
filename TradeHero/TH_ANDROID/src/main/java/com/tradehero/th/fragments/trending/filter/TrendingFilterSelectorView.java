@@ -1,13 +1,25 @@
 package com.tradehero.th.fragments.trending.filter;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+import com.tradehero.common.adapter.SpinnerIconAdapter;
 import com.tradehero.th.R;
+import com.tradehero.th.api.market.ExchangeDTO;
+import com.tradehero.th.models.market.ExchangeSpinnerDTO;
+import com.tradehero.th.models.market.ExchangeSpinnerDTOUtil;
+import com.tradehero.th.utils.DaggerUtils;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import javax.inject.Inject;
 
 /**
  * Created by xavier on 1/15/14.
@@ -22,27 +34,39 @@ public class TrendingFilterSelectorView extends RelativeLayout
     public ImageView mTitleIcon;
     public TextView mDescription;
     public Spinner mExchangeSelection;
+    private SpinnerIconAdapter mExchangeSelectionAdapter;
+
+    private TrendingFilterTypeDTO trendingFilterTypeDTO;
+    private ExchangeSpinnerDTO[] exchangeSpinnerDTOs;
+    private OnFilterTypeChangedListener changedListener;
+    @Inject TrendingFilterTypeDTOUtil trendingFilterTypeDTOUtil;
+    @Inject ExchangeSpinnerDTOUtil exchangeSpinnerDTOUtil;
 
     //<editor-fold desc="Constructors">
     public TrendingFilterSelectorView(Context context)
     {
         super(context);
+        DaggerUtils.inject(this);
     }
 
     public TrendingFilterSelectorView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
+        DaggerUtils.inject(this);
     }
 
     public TrendingFilterSelectorView(Context context, AttributeSet attrs, int defStyle)
     {
         super(context, attrs, defStyle);
+        DaggerUtils.inject(this);
     }
     //</editor-fold>
 
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
+
+        trendingFilterTypeDTO = new TrendingFilterTypeBasicDTO();
 
         mPrevious = (ImageButton) findViewById(R.id.previous_filter);
         mNext = (ImageButton) findViewById(R.id.next_filter);
@@ -52,18 +76,47 @@ public class TrendingFilterSelectorView extends RelativeLayout
         mExchangeSelection = (Spinner) findViewById(R.id.exchange_selection);
     }
 
-    public void onDestroy()
+    @Override protected void onAttachedToWindow()
+    {
+        super.onAttachedToWindow();
+        if (mPrevious != null)
+        {
+            mPrevious.setOnClickListener(new View.OnClickListener()
+            {
+                @Override public void onClick(View view)
+                {
+                    handlePreviousClicked();
+                }
+            });
+        }
+        if (mNext != null)
+        {
+            mNext.setOnClickListener(new View.OnClickListener()
+            {
+                @Override public void onClick(View view)
+                {
+                    handleNextClicked();
+                }
+            });
+        }
+    }
+
+    @Override protected void onDetachedFromWindow()
     {
         if (mPrevious != null)
         {
             mPrevious.setOnClickListener(null);
         }
-        mPrevious = null;
-
         if (mNext != null)
         {
             mNext.setOnClickListener(null);
         }
+        super.onDetachedFromWindow();
+    }
+
+    public void onDestroy()
+    {
+        mPrevious = null;
         mNext = null;
 
         if (mExchangeSelection != null)
@@ -74,8 +127,28 @@ public class TrendingFilterSelectorView extends RelativeLayout
         mExchangeSelection = null;
     }
 
+    public void setUpExchangeSpinner(List<ExchangeDTO> exchangeDTOs)
+    {
+        this.exchangeSpinnerDTOs = exchangeSpinnerDTOUtil.getSpinnerDTOs(getContext(), exchangeDTOs);
+        Drawable[] spinnerIcons = exchangeSpinnerDTOUtil.getSpinnerIcons(getContext(), exchangeDTOs);
+        if (mExchangeSelection != null)
+        {
+            trendingFilterTypeDTOUtil.createDropDownTextsAndIcons(getContext(), exchangeDTOs);
+            mExchangeSelectionAdapter = new TrendingFilterSpinnerIconAdapter(
+                    getContext(),
+                    this.exchangeSpinnerDTOs,
+                    spinnerIcons,
+                    spinnerIcons);
+            mExchangeSelectionAdapter.setDropDownViewResource(R.layout.trending_filter_spinner_dropdown_item);
+            mExchangeSelection.setAdapter(mExchangeSelectionAdapter);
+            mExchangeSelection.setSelection(exchangeSpinnerDTOUtil.indexOf(this.exchangeSpinnerDTOs, trendingFilterTypeDTO.exchange));
+            mExchangeSelection.setOnItemSelectedListener(new TrendingFilterSelectorViewSpinnerListener());
+        }
+    }
+
     public void apply(TrendingFilterTypeDTO typeDTO)
     {
+        this.trendingFilterTypeDTO = typeDTO;
         if (typeDTO != null)
         {
             if (mPrevious != null)
@@ -103,5 +176,56 @@ public class TrendingFilterSelectorView extends RelativeLayout
                 mDescription.setText(typeDTO.descriptionResId);
             }
         }
+    }
+
+    private void handlePreviousClicked()
+    {
+        apply(trendingFilterTypeDTO.getPrevious());
+        notifyListenerChanged();
+    }
+
+    private void handleNextClicked()
+    {
+        apply(trendingFilterTypeDTO.getNext());
+        notifyListenerChanged();
+    }
+
+    public void setChangedListener(OnFilterTypeChangedListener listener)
+    {
+        this.changedListener = listener;
+    }
+
+    private void notifyListenerChanged()
+    {
+        if (changedListener != null)
+        {
+            changedListener.onFilterTypeChanged(trendingFilterTypeDTO);
+        }
+    }
+
+    private class TrendingFilterSelectorViewSpinnerListener implements AdapterView.OnItemSelectedListener
+    {
+        @Override public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l)
+        {
+            if (trendingFilterTypeDTO == null)
+            {
+                trendingFilterTypeDTO = new TrendingFilterTypeBasicDTO();
+            }
+            if (exchangeSpinnerDTOs != null && exchangeSpinnerDTOs.length > i)
+            {
+                trendingFilterTypeDTO.exchange = exchangeSpinnerDTOs[i];
+            }
+            notifyListenerChanged();
+        }
+
+        @Override public void onNothingSelected(AdapterView<?> adapterView)
+        {
+            // Nothing to do
+        }
+    }
+
+    public static interface OnFilterTypeChangedListener
+    {
+        void onFilterTypeChanged(TrendingFilterTypeDTO trendingFilterTypeDTO);
     }
 }

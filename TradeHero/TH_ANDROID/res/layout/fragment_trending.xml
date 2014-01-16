@@ -28,13 +28,13 @@
       >
   </com.tradehero.th.fragments.trending.TrendingSecurityGridView>
 
-  <com.tradehero.th.fragments.trending.filter.TrendingFilterViewPager
-      android:id="@+id/trending_filter_pager"
+  <include
+      layout="@layout/fragment_trending_filter"
+      android:id="@+id/trending_filter_selector_view"
       android:layout_width="match_parent"
       android:layout_height="@dimen/trending_filter_view_pager_height"
       android:layout_alignParentTop="true"
-      android:visibility="visible"
-    />
+      />
 
   <ProgressBar
       android:id="@+id/progress_spinner"

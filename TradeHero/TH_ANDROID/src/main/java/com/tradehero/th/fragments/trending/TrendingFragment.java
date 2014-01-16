@@ -3,7 +3,6 @@ package com.tradehero.th.fragments.trending;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
-import android.support.v4.view.ViewPager;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -17,29 +16,35 @@ import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
+import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THLog;
+import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.FlagNearEndScrollListener;
 import com.tradehero.th.R;
-import com.tradehero.th.api.market.ExchangeStringId;
+import com.tradehero.th.api.market.ExchangeDTO;
+import com.tradehero.th.api.market.ExchangeDTOList;
+import com.tradehero.th.api.market.ExchangeListType;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.SecurityIdList;
 import com.tradehero.th.api.security.TrendingSecurityListType;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.trade.BuySellFragment;
-import com.tradehero.th.fragments.trending.filter.TrendingFilterPagerAdapter;
-import com.tradehero.th.fragments.trending.filter.TrendingFilterSelectorBasicFragment;
-import com.tradehero.th.fragments.trending.filter.TrendingFilterSelectorFragment;
-import com.tradehero.th.fragments.trending.filter.TrendingFilterSelectorUtil;
-import com.tradehero.th.fragments.trending.filter.TrendingFilterViewPager;
+import com.tradehero.th.fragments.trending.filter.TrendingFilterSelectorView;
+import com.tradehero.th.fragments.trending.filter.TrendingFilterTypeBasicDTO;
+import com.tradehero.th.fragments.trending.filter.TrendingFilterTypeDTO;
+import com.tradehero.th.fragments.trending.filter.TrendingFilterTypeDTOUtil;
 import com.tradehero.th.loaders.PagedDTOCacheLoader;
 import com.tradehero.th.loaders.security.SecurityListPagedLoader;
+import com.tradehero.th.persistence.market.ExchangeListCache;
+import dagger.Lazy;
+import java.util.ArrayList;
+import java.util.List;
+import javax.inject.Inject;
 
 public class TrendingFragment extends DashboardFragment
 {
     private final static String TAG = TrendingFragment.class.getSimpleName();
 
-    public final static String BUNDLE_KEY_FILTER_PAGE = TrendingFragment.class.getName() + ".filterPage";
-    public final static String BUNDLE_KEY_SELECTED_EXCHANGE_NAMES = TrendingFragment.class.getName() + ".selectedExchangeNames";
     public final static int FIRST_PAGE = 1;
     public final static int DEFAULT_PER_PAGE = 20;
     public final static int SECURITY_ID_LIST_LOADER_ID = 0;
@@ -47,20 +52,23 @@ public class TrendingFragment extends DashboardFragment
 
     public final static float MIN_FLING_VELOCITY_Y_FOR_HIDE_FILTER = 1000f;
 
-    private TrendingFilterViewPager mFilterViewPager;
-    private TrendingFilterPagerAdapter mTrendingFilterPagerAdapter;
-    private TrendingOnPreviousNextListener onPreviousNextListener;
-    private TrendingOnPositionedExchangeSelectionChangedListener exchangeSelectionChangedListener;
+    private TrendingFilterSelectorView filterSelectorView;
+    private TrendingOnFilterTypeChangedListener onFilterTypeChangedListener;
+    private TrendingFilterTypeDTO trendingFilterTypeDTO;
+    @Inject TrendingFilterTypeDTOUtil trendingFilterTypeDTOUtil;
     private TrendingOnQueryingChangedListener queryingChangedListener;
     private TrendingOnNoMorePagesChangedListener noMorePagesChangedListener;
+
+    @Inject protected Lazy<ExchangeListCache> exchangeListCache;
+    private List<ExchangeDTO> exchangeDTOs;
+    private DTOCache.Listener<ExchangeListType, ExchangeDTOList> exchangeListTypeCacheListener;
+    private DTOCache.GetOrFetchTask<ExchangeListType, ExchangeDTOList> exchangeListCacheFetchTask;
 
     private ProgressBar mProgressSpinner;
     private AbsListView mTrendingGridView;
     private FlagNearEndScrollListener gridScrollListener;
     private GestureDetector gridViewGesture;
 
-    private int filterPageSelected = 0;
-    private ExchangeStringId[] selectedExchangeStringIds = new ExchangeStringId[TrendingFilterSelectorUtil.FRAGMENT_COUNT];
     private int perPage = DEFAULT_PER_PAGE;
     protected SecurityItemViewAdapter securityItemViewAdapter;
     protected int firstVisiblePosition = 0;
@@ -68,15 +76,6 @@ public class TrendingFragment extends DashboardFragment
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         //THLog.d(TAG, "onCreateView");
-        if (savedInstanceState != null)
-        {
-            filterPageSelected = savedInstanceState.getInt(BUNDLE_KEY_FILTER_PAGE, filterPageSelected);
-            String[] exchangeNames = savedInstanceState.getStringArray(BUNDLE_KEY_SELECTED_EXCHANGE_NAMES);
-            for (int i = 0; i < selectedExchangeStringIds.length; i++)
-            {
-                selectedExchangeStringIds[i] = new ExchangeStringId(exchangeNames[i] == null ? "" : exchangeNames[i]);
-            }
-        }
 
         View view = inflater.inflate(R.layout.fragment_trending, container, false);
         initViews(view);
@@ -90,6 +89,8 @@ public class TrendingFragment extends DashboardFragment
         {
             mProgressSpinner.setVisibility(View.GONE);
         }
+
+        trendingFilterTypeDTO = new TrendingFilterTypeBasicDTO();
 
         gridScrollListener = new TrendingFlagNearEndScrollListener(DEFAULT_VISIBLE_THRESHOLD);
         queryingChangedListener = new TrendingOnQueryingChangedListener();
@@ -105,19 +106,14 @@ public class TrendingFragment extends DashboardFragment
             mTrendingGridView.setOnTouchListener(new TrendingOnTouchListener());
         }
 
-        this.mTrendingFilterPagerAdapter = new TrendingFilterPagerAdapter(getActivity(), getFragmentManager());
-        this.onPreviousNextListener = new TrendingOnPreviousNextListener();
-        this.mTrendingFilterPagerAdapter.setOnPreviousNextListener(this.onPreviousNextListener);
-        this.exchangeSelectionChangedListener = new TrendingOnPositionedExchangeSelectionChangedListener();
-        this.mTrendingFilterPagerAdapter.setOnPositionedExchangeSelectionChangedListener(this.exchangeSelectionChangedListener);
-
-        mFilterViewPager = (TrendingFilterViewPager) view.findViewById(R.id.trending_filter_pager);
-        if (mFilterViewPager != null)
+        this.onFilterTypeChangedListener = new TrendingOnFilterTypeChangedListener();
+        this.filterSelectorView = (TrendingFilterSelectorView) view.findViewById(R.id.trending_filter_selector_view);
+        if (this.filterSelectorView != null)
         {
-            mFilterViewPager.setAdapter(mTrendingFilterPagerAdapter);
-            mFilterViewPager.setOnPageChangeListener(new TrendingFilterOnPageChangeListener());
-            mFilterViewPager.setCurrentItem(TrendingFilterSelectorBasicFragment.POSITION_IN_PAGER);
+            this.filterSelectorView.setChangedListener(this.onFilterTypeChangedListener);
         }
+
+        fetchExchangeList();
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
@@ -141,7 +137,6 @@ public class TrendingFragment extends DashboardFragment
     {
         //THLog.d(TAG, "onResume");
         super.onResume();
-        displayFilterPager();
         mTrendingGridView.setSelection(Math.min(firstVisiblePosition, mTrendingGridView.getCount()));
         if (gridScrollListener != null)
         {
@@ -185,21 +180,21 @@ public class TrendingFragment extends DashboardFragment
         queryingChangedListener = null;
         noMorePagesChangedListener = null;
 
-        if (mTrendingFilterPagerAdapter != null)
-        {
-            mTrendingFilterPagerAdapter.setOnPreviousNextListener(null);
-            mTrendingFilterPagerAdapter.setOnResumedListener(null);
-            mTrendingFilterPagerAdapter.setOnPositionedExchangeSelectionChangedListener(null);
-        }
-        mTrendingFilterPagerAdapter = null;
-        onPreviousNextListener = null;
-        exchangeSelectionChangedListener = null;
+        this.onFilterTypeChangedListener = null;
 
-        if (mFilterViewPager != null)
+        if (filterSelectorView != null)
         {
-            mFilterViewPager.setOnPageChangeListener(null);
+            filterSelectorView.setChangedListener(null);
         }
-        mFilterViewPager = null;
+        filterSelectorView = null;
+
+        if (exchangeListCacheFetchTask != null)
+        {
+            exchangeListCacheFetchTask.setListener(null);
+        }
+        exchangeListCacheFetchTask = null;
+        exchangeListTypeCacheListener = null;
+
         super.onDestroyView();
     }
 
@@ -213,14 +208,6 @@ public class TrendingFragment extends DashboardFragment
     {
         THLog.d(TAG, "onSaveInstanceState");
         super.onSaveInstanceState(outState);
-        outState.putInt(BUNDLE_KEY_FILTER_PAGE, filterPageSelected);
-        String[] exchangeNames = new String[selectedExchangeStringIds.length];
-        int index = 0;
-        for (ExchangeStringId exchangeStringId: selectedExchangeStringIds)
-        {
-            exchangeNames[index++] = exchangeStringId == null ? null : exchangeStringId.key;
-        }
-        outState.putStringArray(BUNDLE_KEY_SELECTED_EXCHANGE_NAMES, exchangeNames);
     }
 
     private void postIfCan(final Runnable runnable)
@@ -232,18 +219,48 @@ public class TrendingFragment extends DashboardFragment
         }
     }
 
-    public void displayFilterPager()
+    private void fetchExchangeList()
     {
-        postIfCan(new Runnable()
+        if (exchangeListCacheFetchTask != null)
         {
-            @Override public void run()
+            exchangeListCacheFetchTask.setListener(null);
+        }
+        if (exchangeListTypeCacheListener == null)
+        {
+            exchangeListTypeCacheListener = new TrendingExchangeListListener();
+        }
+        exchangeListCacheFetchTask = exchangeListCache.get().getOrFetch(new ExchangeListType(), exchangeListTypeCacheListener);
+        exchangeListCacheFetchTask.execute();
+    }
+
+    private void linkWith(ExchangeDTOList exchangeDTOs, boolean andDisplay)
+    {
+        if (exchangeDTOs == null)
+        {
+            this.exchangeDTOs = null;
+        }
+        else
+        {
+            // We keep only those included in Trending
+            this.exchangeDTOs = new ArrayList<>();
+            for (ExchangeDTO exchangeDTO: exchangeDTOs)
             {
-                if (mTrendingFilterPagerAdapter != null)
+                if (exchangeDTO.isIncludedInTrending)
                 {
-                    mTrendingFilterPagerAdapter.notifyDataSetChanged();
+                    this.exchangeDTOs.add(exchangeDTO);
                 }
             }
-        });
+        }
+
+        if (filterSelectorView != null)
+        {
+            filterSelectorView.setUpExchangeSpinner(exchangeDTOs);
+            filterSelectorView.apply(trendingFilterTypeDTO);
+        }
+
+        if (andDisplay)
+        {
+        }
     }
 
     protected void forceInitialLoad()
@@ -280,22 +297,16 @@ public class TrendingFragment extends DashboardFragment
 
     public TrendingSecurityListType getSecurityListType(int page)
     {
-        return TrendingFilterSelectorUtil.getSecurityListType(filterPageSelected, getUsableExchangeName(), page, perPage);
+        return trendingFilterTypeDTOUtil.getSecurityListType(trendingFilterTypeDTO, getUsableExchangeName(), page, perPage);
     }
 
     protected String getUsableExchangeName()
     {
-        String usableExchangeName = null;
-        if (selectedExchangeStringIds[filterPageSelected] != null)
+        if (trendingFilterTypeDTO != null && trendingFilterTypeDTO.exchange != null && trendingFilterTypeDTO.exchange.name != null)
         {
-            usableExchangeName = selectedExchangeStringIds[filterPageSelected].key;
+            return trendingFilterTypeDTO.exchange.name;
         }
-
-        if (usableExchangeName == null || usableExchangeName.isEmpty())
-        {
-            usableExchangeName = TrendingSecurityListType.ALL_EXCHANGES;
-        }
-        return usableExchangeName;
+        return TrendingSecurityListType.ALL_EXCHANGES;
     }
 
     protected void showProgressSpinner(boolean flag)
@@ -337,10 +348,6 @@ public class TrendingFragment extends DashboardFragment
         @Override public void onScrollStateChanged(AbsListView view, int scrollState)
         {
             super.onScrollStateChanged(view, scrollState);
-            if (mFilterViewPager != null && scrollState == SCROLL_STATE_IDLE)
-            {
-                mFilterViewPager.setVisibility(View.VISIBLE);
-            }
         }
     }
 
@@ -362,19 +369,15 @@ public class TrendingFragment extends DashboardFragment
     {
         @Override public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY)
         {
-            if (mFilterViewPager != null)
-            {
-                mFilterViewPager.setVisibility(View.VISIBLE);
-            }
             return super.onScroll(e1, e2, distanceX, distanceY);
         }
 
         @Override public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY)
         {
-            if (mFilterViewPager != null && Math.abs(velocityY) > MIN_FLING_VELOCITY_Y_FOR_HIDE_FILTER)
-            {
-                mFilterViewPager.setVisibility(View.GONE);
-            }
+            //if (mFilterViewPager != null && Math.abs(velocityY) > MIN_FLING_VELOCITY_Y_FOR_HIDE_FILTER)
+            //{
+            //    mFilterViewPager.setVisibility(View.GONE);
+            //}
             //THLog.d(TAG, "VelocityY " + velocityY);
             return super.onFling(e1, e2, velocityX, velocityY);
         }
@@ -388,53 +391,13 @@ public class TrendingFragment extends DashboardFragment
         }
     }
 
-    private class TrendingOnPreviousNextListener implements TrendingFilterSelectorFragment.OnPreviousNextListener
+    private class TrendingOnFilterTypeChangedListener implements TrendingFilterSelectorView.OnFilterTypeChangedListener
     {
-        @Override public void onNextRequested()
+        @Override public void onFilterTypeChanged(TrendingFilterTypeDTO trendingFilterTypeDTO)
         {
-            if (mFilterViewPager != null)
-            {
-                mFilterViewPager.setCurrentItem((mFilterViewPager.getCurrentItem() + 1) % TrendingFilterSelectorUtil.FRAGMENT_COUNT /*mFilterViewPager.getChildCount()*/);
-            }
-        }
-
-        @Override public void onPreviousRequested()
-        {
-            if (mFilterViewPager != null)
-            {
-                mFilterViewPager.setCurrentItem((mFilterViewPager.getCurrentItem() - 1) % TrendingFilterSelectorUtil.FRAGMENT_COUNT /*mFilterViewPager.getChildCount()*/);
-            }
-        }
-    }
-
-    private class TrendingOnPositionedExchangeSelectionChangedListener implements TrendingFilterPagerAdapter.OnPositionedExchangeSelectionChangedListener
-    {
-        @Override public void onExchangeSelectionChanged(int fragmentPosition, ExchangeStringId exchangeId)
-        {
-            selectedExchangeStringIds[fragmentPosition] = exchangeId;
-            if (fragmentPosition == filterPageSelected)
-            {
-                forceInitialLoad();
-            }
-        }
-    }
-
-    private class TrendingFilterOnPageChangeListener implements ViewPager.OnPageChangeListener
-    {
-        @Override public void onPageScrolled(int i, float v, int i2)
-        {
+            TrendingFragment.this.trendingFilterTypeDTO = trendingFilterTypeDTO;
             // TODO
-        }
-
-        @Override public void onPageSelected(int position)
-        {
-            filterPageSelected = position;
             forceInitialLoad();
-        }
-
-        @Override public void onPageScrollStateChanged(int state)
-        {
-            // TODO
         }
     }
 
@@ -500,5 +463,19 @@ public class TrendingFragment extends DashboardFragment
             // TODO
         }
     }
+
+    private class TrendingExchangeListListener implements DTOCache.Listener<ExchangeListType, ExchangeDTOList>
+    {
+        @Override public void onDTOReceived(ExchangeListType key, ExchangeDTOList value)
+        {
+            linkWith(value, true);
+        }
+
+        @Override public void onErrorThrown(ExchangeListType key, Throwable error)
+        {
+            THToast.show(getString(R.string.error_fetch_exchange_list_info));
+            THLog.e(TAG, "Error fetching the list of exchanges " + key, error);
+        }
+    };
     //</editor-fold>
 }

@@ -87,11 +87,8 @@ import com.tradehero.th.fragments.trade.TradeListOverlayHeaderView;
 import com.tradehero.th.fragments.trending.SearchPeopleItemView;
 import com.tradehero.th.fragments.trending.SearchStockPeopleFragment;
 import com.tradehero.th.fragments.trending.SecurityItemView;
-import com.tradehero.th.fragments.trending.filter.TrendingFilterSelectorAllFragment;
-import com.tradehero.th.fragments.trending.filter.TrendingFilterSelectorBasicFragment;
-import com.tradehero.th.fragments.trending.filter.TrendingFilterSelectorPriceFragment;
-import com.tradehero.th.fragments.trending.filter.TrendingFilterSelectorVolumeFragment;
 import com.tradehero.th.fragments.trending.TrendingFragment;
+import com.tradehero.th.fragments.trending.filter.TrendingFilterSelectorView;
 import com.tradehero.th.fragments.watchlist.WatchlistItemView;
 import com.tradehero.th.fragments.watchlist.WatchlistPortfolioHeaderView;
 import com.tradehero.th.fragments.watchlist.WatchlistPositionFragment;
@@ -170,10 +167,7 @@ import org.ocpsoft.prettytime.PrettyTime;
                 ServerValidatedUsernameText.UserAvailabilityRequester.class,
                 ServerValidatedUsernameText.class,
                 TrendingFragment.class,
-                TrendingFilterSelectorBasicFragment.class,
-                TrendingFilterSelectorVolumeFragment.class,
-                TrendingFilterSelectorPriceFragment.class,
-                TrendingFilterSelectorAllFragment.class,
+                TrendingFilterSelectorView.class,
                 SecurityListPagedLoader.class,
                 SecurityItemView.class,
                 SearchStockPeopleFragment.class,

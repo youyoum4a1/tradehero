@@ -14,7 +14,7 @@ public enum Exchange
     OTCBB(R.drawable.flag_country_round_united_states),
     AMEX(R.drawable.flag_country_round_united_states),
 
-    // singapore
+    // Singapore
     SGX(R.drawable.flag_country_round_singapore),
 
     // Australia
@@ -27,52 +27,52 @@ public enum Exchange
     // Hong Kong
     HKEX(R.drawable.flag_country_round_hong_kong),
 
-    // france
+    // France
     PAR(R.drawable.flag_country_round_france),
 
-    // netherlands
+    // Netherlands
     AMS(R.drawable.flag_country_round_netherlands),
 
     // Belgium
     BRU(R.drawable.flag_country_round_belgium),
 
-    // portugal
+    // Portugal
     LIS(R.drawable.flag_country_round_portugal),
 
-    // italy
+    // Italy
     MLSE(R.drawable.flag_country_round_italy),
 
     // New Zealand
     NZX(R.drawable.flag_country_round_new_zealand),
 
-    // china
+    // China
     SHA(R.drawable.flag_country_round_china),
     SHE(R.drawable.flag_country_round_china),
 
-    // indonesia
+    // Indonesia
     JKT(R.drawable.flag_country_round_indonesia),
 
     // South Korea
     KDQ(R.drawable.flag_country_round_korea_south),
     KRX(R.drawable.flag_country_round_korea_south),
 
-    // taiwan
+    // Taiwan
     TPE(R.drawable.flag_country_round_taiwan),
 
-    // thailand
+    // Thailand
     SET(R.drawable.flag_country_round_thailand),
 
-    // philippines
+    // Philippines
     PSE(R.drawable.flag_country_round_philippines),
 
-    // malaysia
+    // Malaysia
     MYX(R.drawable.flag_country_round_malaysia),
 
-    // india
+    // India
     NSE(R.drawable.flag_country_round_india),
     BSE(R.drawable.flag_country_round_india),
 
-    // japan
+    // Japan
     TSE(R.drawable.flag_country_round_japan);
 
     public final int logoId;
