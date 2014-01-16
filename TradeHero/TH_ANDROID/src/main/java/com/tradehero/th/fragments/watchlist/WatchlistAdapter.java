@@ -17,7 +17,7 @@ import javax.inject.Inject;
  */
 public class WatchlistAdapter extends ArrayDTOAdapter<SecurityId, WatchlistItemView>
 {
-    private boolean showGainLossPercentage;
+    private boolean showGainLossPercentage = true;
 
     public WatchlistAdapter(Context context, LayoutInflater inflater, int layoutResourceId)
     {
