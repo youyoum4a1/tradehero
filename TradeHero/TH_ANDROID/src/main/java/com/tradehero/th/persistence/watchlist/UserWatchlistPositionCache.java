@@ -36,6 +36,7 @@ import javax.inject.Singleton;
         SecurityIdList securityIds = new SecurityIdList();
         if (watchlistPositionDTOs != null)
         {
+            watchlistPositionCache.get().invalidateAll();
             for (WatchlistPositionDTO watchlistPositionDTO : watchlistPositionDTOs)
             {
                 if (watchlistPositionDTO.securityDTO != null)
