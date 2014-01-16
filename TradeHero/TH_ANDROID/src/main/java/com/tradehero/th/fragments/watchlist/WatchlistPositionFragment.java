@@ -10,6 +10,7 @@ import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
+import com.fortysevendeg.android.swipelistview.BaseSwipeListViewListener;
 import com.fortysevendeg.android.swipelistview.SwipeListView;
 import com.tradehero.common.milestone.Milestone;
 import com.tradehero.common.widget.TwoStateView;
@@ -146,7 +147,30 @@ public class WatchlistPositionFragment extends DashboardFragment
         watchListAdapter = createWatchlistAdapter();
         watchListAdapter.setItems(userWatchlistCache.get().get(currentUserBaseKeyHolder.getCurrentUserBaseKey()));
         watchlistListView.setAdapter(watchListAdapter);
-        watchlistListView.setOnItemClickListener(watchlistItemClickListener);
+        watchlistListView.setSwipeListViewListener(new BaseSwipeListViewListener()
+        {
+            @Override public void onClickFrontView(int position)
+            {
+                super.onClickFrontView(position);
+
+                openWatchlistItemEditor(position);
+            }
+        });
+    }
+
+    private void openWatchlistItemEditor(int position)
+    {
+        SecurityId securityId = (SecurityId) watchListAdapter.getItem(position);
+        Bundle args = new Bundle();
+        if (securityId != null)
+        {
+            args.putBundle(WatchlistEditFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
+            if (watchlistCache.get().get(securityId) != null)
+            {
+                args.putString(WatchlistEditFragment.BUNDLE_KEY_TITLE, getString(R.string.edit_in_watch_list));
+            }
+        }
+        getNavigator().pushFragment(WatchlistEditFragment.class, args, Navigator.PUSH_UP_FROM_BOTTOM);
     }
 
     private WatchlistAdapter createWatchlistAdapter()
@@ -189,24 +213,6 @@ public class WatchlistPositionFragment extends DashboardFragment
                 watchListAdapter.setShowGainLossPercentage(!state);
                 watchListAdapter.notifyDataSetChanged();
             }
-        }
-    };
-
-    private AdapterView.OnItemClickListener watchlistItemClickListener = new AdapterView.OnItemClickListener()
-    {
-        @Override public void onItemClick(AdapterView<?> parent, View view, int position, long id)
-        {
-            SecurityId securityId = (SecurityId) parent.getItemAtPosition(position);
-            Bundle args = new Bundle();
-            if (securityId != null)
-            {
-                args.putBundle(WatchlistEditFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
-                if (watchlistCache.get().get(securityId) != null)
-                {
-                    args.putString(WatchlistEditFragment.BUNDLE_KEY_TITLE, getString(R.string.edit_in_watch_list));
-                }
-            }
-            getNavigator().pushFragment(WatchlistEditFragment.class, args, Navigator.PUSH_UP_FROM_BOTTOM);
         }
     };
 }
