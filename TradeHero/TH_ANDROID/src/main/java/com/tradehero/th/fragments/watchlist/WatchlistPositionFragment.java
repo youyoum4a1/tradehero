@@ -186,7 +186,7 @@ public class WatchlistPositionFragment extends DashboardFragment
         {
             if (watchListAdapter != null)
             {
-                watchListAdapter.setShowGainLossPercentage(state);
+                watchListAdapter.setShowGainLossPercentage(!state);
                 watchListAdapter.notifyDataSetChanged();
             }
         }
