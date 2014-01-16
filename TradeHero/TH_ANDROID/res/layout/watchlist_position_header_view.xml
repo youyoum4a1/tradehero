@@ -5,7 +5,7 @@
   <com.tradehero.th.fragments.watchlist.WatchlistPortfolioHeaderView
       android:id="@+id/watchlist_position_list_header"
       android:layout_width="match_parent"
-      android:layout_height="50dp"
+      android:layout_height="@dimen/watchlist_position_header_height"
       android:layout_weight="2"
       android:orientation="horizontal"
       android:background="@color/portfolio_header_background_color"
