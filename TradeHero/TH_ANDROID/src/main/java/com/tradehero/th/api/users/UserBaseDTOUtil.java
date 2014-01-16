@@ -17,14 +17,23 @@ public class UserBaseDTOUtil
                 userBaseDTO.lastName != null &&
                 !userBaseDTO.lastName.isEmpty())
             {
-                return String.format(context.getString(R.string.first_last_name_display),
-                        userBaseDTO.firstName,
-                        userBaseDTO.lastName);
+                return getFirstLastName(context, userBaseDTO);
             }
 
             return userBaseDTO.displayName;
         }
 
+        return context.getString(R.string.na);
+    }
+
+    public static String getFirstLastName(Context context, UserBaseDTO userBaseDTO)
+    {
+        if (userBaseDTO != null)
+        {
+            return String.format(context.getString(R.string.first_last_name_display),
+                    userBaseDTO.firstName == null ? "" : userBaseDTO.firstName,
+                    userBaseDTO.lastName == null ? "" : userBaseDTO.lastName).trim();
+        }
         return context.getString(R.string.na);
     }
 }

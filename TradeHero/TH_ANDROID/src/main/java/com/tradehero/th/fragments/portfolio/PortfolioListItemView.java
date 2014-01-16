@@ -20,6 +20,7 @@ import com.tradehero.th.api.position.GetPositionsDTO;
 import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.api.security.SecurityIdList;
 import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
+import com.tradehero.th.api.users.UserBaseDTOUtil;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.persistence.position.GetPositionsCache;
@@ -300,18 +301,13 @@ public class PortfolioListItemView extends RelativeLayout implements DTOView<Dis
         if (displayablePortfolioDTOCopy == null || displayablePortfolioDTOCopy.userBaseDTO == null ||
                 displayablePortfolioDTOCopy.portfolioDTO == null)
         {
-            THLog.d(TAG, "getDescription 1");
             return "";
         }
 
         // When this is another user
         if (!currentUserBaseKeyHolder.getCurrentUserBaseKey().equals(displayablePortfolioDTOCopy.userBaseDTO.getBaseKey()))
         {
-            THLog.d(TAG, "getDescription 2");
-            return getResources().getString(
-                    R.string.first_last_name_display,
-                    displayablePortfolioDTOCopy.userBaseDTO.firstName,
-                    displayablePortfolioDTOCopy.userBaseDTO.lastName);
+            return UserBaseDTOUtil.getFirstLastName(getContext(), displayablePortfolioDTOCopy.userBaseDTO);
         }
 
         // When this is current user
@@ -323,23 +319,19 @@ public class PortfolioListItemView extends RelativeLayout implements DTOView<Dis
             List<PositionDTO> openPositions = getPositionsDTOCopy.getOpenPositions();
             if (openPositions != null && openPositions.size() > 0)
             {
-                THLog.d(TAG, "getDescription 3");
                 return getResources().getString(R.string.portfolio_description_count_open_positions, openPositions.size());
             }
 
             List<PositionDTO> closedPositions = getPositionsDTOCopy.getClosedPositions();
             if (closedPositions != null && closedPositions.size() > 0)
             {
-                THLog.d(TAG, "getDescription 4");
                 return getResources().getString(R.string.portfolio_description_count_closed_positions, closedPositions.size());
             }
         }
         if (displayablePortfolioDTOCopy.portfolioDTO.isWatchlist && watchedSecurityIdsCopy != null)
         {
-            THLog.d(TAG, "getDescription 5");
             return getResources().getString(R.string.portfolio_description_count_watchlist, watchedSecurityIdsCopy.size());
         }
-        THLog.d(TAG, "getDescription 6");
         return "";
     }
 
