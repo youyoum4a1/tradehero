@@ -1,10 +1,14 @@
 package com.tradehero.th.fragments.watchlist;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ProgressBar;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
@@ -81,6 +85,9 @@ public class WatchlistPositionFragment extends DashboardFragment
     {
         super.onResume();
 
+        LocalBroadcastManager.getInstance(this.getActivity())
+                .registerReceiver(broadcastReceiver, new IntentFilter(WatchlistItemView.WATCHLIST_ITEM_DELETED));
+
         // watchlist is not yet retrieved
         if (userWatchlistCache.get().get(currentUserBaseKeyHolder.getCurrentUserBaseKey()) == null)
         {
@@ -93,6 +100,14 @@ public class WatchlistPositionFragment extends DashboardFragment
         {
             display();
         }
+    }
+
+    @Override public void onPause()
+    {
+        super.onPause();
+
+        LocalBroadcastManager.getInstance(this.getActivity())
+                .unregisterReceiver(broadcastReceiver);
     }
 
     //<editor-fold desc="ActionBar Menu Actions">
@@ -155,6 +170,15 @@ public class WatchlistPositionFragment extends DashboardFragment
 
                 openWatchlistItemEditor(position);
             }
+
+            @Override public void onDismiss(int[] reverseSortedPositions)
+            {
+                super.onDismiss(reverseSortedPositions);
+                if (watchListAdapter != null)
+                {
+                    watchListAdapter.notifyDataSetChanged();
+                }
+            }
         });
     }
 
@@ -212,6 +236,22 @@ public class WatchlistPositionFragment extends DashboardFragment
             {
                 watchListAdapter.setShowGainLossPercentage(!state);
                 watchListAdapter.notifyDataSetChanged();
+            }
+        }
+    };
+
+    private BroadcastReceiver broadcastReceiver = new BroadcastReceiver()
+    {
+        @Override public void onReceive(Context context, Intent intent)
+        {
+            if (watchlistListView != null)
+            {
+                int deletedItemId = intent.getIntExtra(WatchlistItemView.BUNDLE_KEY_WATCHLIST_ITEM_INDEX, -1);
+                if (deletedItemId != -1)
+                {
+                    watchlistListView.dismiss(deletedItemId);
+                    watchlistListView.closeOpenedItems();
+                }
             }
         }
     };

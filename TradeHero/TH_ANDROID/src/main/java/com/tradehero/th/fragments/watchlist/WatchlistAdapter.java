@@ -27,24 +27,10 @@ public class WatchlistAdapter extends ArrayDTOAdapter<SecurityId, WatchlistItemV
     @Override protected void fineTune(int position, SecurityId dto, WatchlistItemView dtoView)
     {
         dtoView.displayPlPercentage(showGainLossPercentage);
-        dtoView.setAdapterOnSizeChangedListener(onSizeChangedListener);
     }
 
     public void setShowGainLossPercentage(boolean show)
     {
         showGainLossPercentage = show;
-    }
-
-    private OnSizeChangedListener onSizeChangedListener = new OnSizeChangedListener()
-    {
-        @Override public void onSizeChanged(int newHeight)
-        {
-            notifyDataSetChanged();
-        }
-    };
-
-    public static interface OnSwipeItemDeletedListener
-    {
-        void onSwipeItemDeleted(int position);
     }
 }

@@ -1,6 +1,8 @@
 package com.tradehero.th.fragments.watchlist;
 
 import android.content.Context;
+import android.content.Intent;
+import android.support.v4.content.LocalBroadcastManager;
 import android.text.Html;
 import android.text.Spanned;
 import android.util.AttributeSet;
@@ -13,7 +15,6 @@ import com.squareup.picasso.Picasso;
 import com.tradehero.common.graphics.WhiteToTransparentTransformation;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
-import com.tradehero.th.adapters.OnSizeChangedListener;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
@@ -28,7 +29,6 @@ import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
-import java.lang.ref.WeakReference;
 import java.text.DecimalFormat;
 import javax.inject.Inject;
 import retrofit.Callback;
@@ -39,14 +39,14 @@ import retrofit.Callback;
 public class WatchlistItemView extends FrameLayout implements DTOView<SecurityId>
 {
     private static final String TAG = WatchlistItemView.class.getName();
+    public static final String WATCHLIST_ITEM_DELETED = "watchlistItemDeleted";
+    public static final String BUNDLE_KEY_WATCHLIST_ITEM_INDEX = "watchlistItemId";
 
     @Inject protected Lazy<WatchlistPositionCache> watchlistPositionCache;
     @Inject protected Lazy<UserWatchlistPositionCache> userWatchlistPositionCache;
     @Inject protected Lazy<WatchlistService> watchlistService;
     @Inject protected Lazy<Picasso> picasso;
     @Inject protected CurrentUserBaseKeyHolder currentUserBaseKeyHolder;
-
-    private WeakReference<OnSizeChangedListener> weakAdapterOnSizeChangedListener = new WeakReference<>(null);
 
     private ImageView stockLogo;
     private TextView stockSymbol;
@@ -178,11 +178,6 @@ public class WatchlistItemView extends FrameLayout implements DTOView<SecurityId
         {
             gainLossLabel.setText("");
         }
-    }
-
-    public void setAdapterOnSizeChangedListener(OnSizeChangedListener listener)
-    {
-        weakAdapterOnSizeChangedListener = new WeakReference<>(listener);
     }
 
     private void displayLastPrice()
@@ -338,20 +333,15 @@ public class WatchlistItemView extends FrameLayout implements DTOView<SecurityId
         {
             // remove current security from the watchlist
             SecurityIdList securityIds = userWatchlistPositionCache.get().get(currentUserBaseKeyHolder.getCurrentUserBaseKey());
-            securityIds.remove(securityId);
 
             // not to show dialog but request deletion in background
             watchlistService.get().deleteWatchlist(watchlistPositionDTO.id, watchlistDeletionCallback);
 
-            // notify adapter
-            if (weakAdapterOnSizeChangedListener != null)
-            {
-                OnSizeChangedListener adapterOnSizeChangedListener = weakAdapterOnSizeChangedListener.get();
-                if (adapterOnSizeChangedListener != null)
-                {
-                    adapterOnSizeChangedListener.onSizeChanged(securityIds.size());
-                }
-            }
+            Intent itemDeletionIntent = new Intent(WatchlistItemView.WATCHLIST_ITEM_DELETED);
+            itemDeletionIntent.putExtra(WatchlistItemView.BUNDLE_KEY_WATCHLIST_ITEM_INDEX, securityIds.indexOf(securityId));
+            LocalBroadcastManager.getInstance(WatchlistItemView.this.getContext())
+                    .sendBroadcast(itemDeletionIntent);
+            securityIds.remove(securityId);
         }
     };
 
