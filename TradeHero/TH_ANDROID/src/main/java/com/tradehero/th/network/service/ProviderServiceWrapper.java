@@ -1,6 +1,9 @@
 package com.tradehero.th.network.service;
 
 import com.tradehero.th.api.competition.BasicProviderSecurityListType;
+import com.tradehero.th.api.competition.HelpVideoDTO;
+import com.tradehero.th.api.competition.ProviderDTO;
+import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.competition.ProviderSecurityListType;
 import com.tradehero.th.api.competition.WarrantProviderSecurityListType;
 import com.tradehero.th.api.security.SearchSecurityListType;
@@ -11,6 +14,8 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import retrofit.Callback;
 import retrofit.RetrofitError;
+import retrofit.http.GET;
+import retrofit.http.Path;
 
 /**
  * Created by xavier on 1/16/14.
@@ -25,6 +30,19 @@ import retrofit.RetrofitError;
     {
         super();
     }
+
+    //<editor-fold desc="Get Providers">
+    public List<ProviderDTO> getProviders()
+            throws RetrofitError
+    {
+        return this.providerService.getProviders();
+    }
+
+    public void getProviders(Callback<List<ProviderDTO>> callback)
+    {
+        this.providerService.getProviders(callback);
+    }
+    //</editor-fold>
 
     //<editor-fold desc="Get Provider Securities">
     public List<SecurityCompactDTO> getProviderSecurities(ProviderSecurityListType key)
@@ -119,6 +137,19 @@ import retrofit.RetrofitError;
         {
             this.providerService.getWarrantUnderlyers(key.getProviderId().key, key.getPage(), key.perPage, callback);
         }
+    }
+    //</editor-fold>
+
+    //<editor-fold desc="Get Help Videos">
+    public List<HelpVideoDTO> getHelpVideos(ProviderId providerId)
+            throws RetrofitError
+    {
+        return this.providerService.getHelpVideos(providerId.key);
+    }
+
+    void getHelpVideos(ProviderId providerId, Callback<List<HelpVideoDTO>> callback)
+    {
+        this.providerService.getHelpVideos(providerId.key, callback);
     }
     //</editor-fold>
 }
