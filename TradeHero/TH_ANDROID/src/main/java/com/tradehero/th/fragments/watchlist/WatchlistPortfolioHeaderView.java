@@ -16,6 +16,7 @@ import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.SecurityUtils;
 import com.tradehero.th.utils.THSignedNumber;
 import dagger.Lazy;
+import java.text.DecimalFormat;
 import javax.inject.Inject;
 
 /**
@@ -112,8 +113,8 @@ public class WatchlistPortfolioHeaderView extends LinearLayout
     private void displayGainLoss()
     {
         THSignedNumber thSignedNumber = new THSignedNumber(THSignedNumber.TYPE_MONEY, getAbsoluteGain());
-        gainLoss.setFirstValue(String.format("%.2f%%", getPercentageGain()));
-        gainLoss.setSecondValue(thSignedNumber.toString());
+        gainLoss.setFirstValue(new DecimalFormat("#.##").format(getPercentageGain()) + "%");
+        gainLoss.setSecondValue(thSignedNumber.toString(0));
     }
 
     private double getPercentageGain()
@@ -133,8 +134,8 @@ public class WatchlistPortfolioHeaderView extends LinearLayout
 
     private void displayValuation()
     {
-        valuation.setFirstValue(SecurityUtils.DEFAULT_VIRTUAL_CASH_CURRENCY_DISPLAY + getTotalValue());
-        valuation.setSecondValue(SecurityUtils.DEFAULT_VIRTUAL_CASH_CURRENCY_DISPLAY + getTotalInvested());
+        valuation.setFirstValue(SecurityUtils.DEFAULT_VIRTUAL_CASH_CURRENCY_DISPLAY + new DecimalFormat("#.##").format(getTotalValue()));
+        valuation.setSecondValue(SecurityUtils.DEFAULT_VIRTUAL_CASH_CURRENCY_DISPLAY + new DecimalFormat("#.##").format(getTotalInvested()));
     }
 
     private double getAbsoluteGain()

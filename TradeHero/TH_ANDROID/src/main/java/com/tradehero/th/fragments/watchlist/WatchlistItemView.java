@@ -29,6 +29,7 @@ import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
 import java.lang.ref.WeakReference;
+import java.text.DecimalFormat;
 import javax.inject.Inject;
 import retrofit.Callback;
 
@@ -145,11 +146,14 @@ public class WatchlistItemView extends FrameLayout implements DTOView<SecurityId
 
                 if (showInPercentage)
                 {
-                    gainLossLabel.setText(String.format(getContext().getString(R.string.watchlist_pl_percentage_format), pl));
+                    gainLossLabel.setText(String.format(getContext().getString(R.string.watchlist_pl_percentage_format),
+                            new DecimalFormat("##.##").format(pl)
+                    ));
                 }
                 else
                 {
-                    gainLossLabel.setText(watchlistPositionDTO.securityDTO.currencyDisplay + gainLoss);
+                    gainLossLabel.setText(watchlistPositionDTO.securityDTO.currencyDisplay + " " +
+                            new DecimalFormat("##.##").format(gainLoss));
                 }
 
                 if (pl > 0)
@@ -200,7 +204,9 @@ public class WatchlistItemView extends FrameLayout implements DTOView<SecurityId
             if (watchlistPrice != 0)
             {
                 double pl = (lastPrice - watchlistPrice) * 100 / watchlistPrice;
-                gainLossLabel.setText(String.format(getContext().getString(R.string.watchlist_pl_percentage_format), pl));
+                gainLossLabel.setText(String.format(getContext().getString(R.string.watchlist_pl_percentage_format),
+                        new DecimalFormat("##.##").format(pl)
+                ));
 
                 if (pl > 0)
                 {
@@ -228,7 +234,9 @@ public class WatchlistItemView extends FrameLayout implements DTOView<SecurityId
 
     private Spanned formatLastPrice(String currencyDisplay, Double lastPrice)
     {
-        return Html.fromHtml(String.format(getContext().getString(R.string.watchlist_last_price_format), currencyDisplay, lastPrice));
+        return Html.fromHtml(String.format(getContext().getString(R.string.watchlist_last_price_format),
+                currencyDisplay,
+                new DecimalFormat("#.##").format(lastPrice)));
     }
 
     private void displayNumberOfShares()
