@@ -12,7 +12,6 @@
       android:layout_width="match_parent"
       android:layout_height="match_parent"
       android:layout_alignParentTop="true"
-      android:paddingTop="@dimen/watchlist_position_header_height"
       android:clipToPadding="false"
       swipe:swipeFrontView="@id/front"
       swipe:swipeBackView="@id/back"
@@ -22,8 +21,11 @@
       swipe:swipeMode="left"
       />
 
-  <!--swipe:swipeOffsetLeft="[dimension]"-->
-  <!--swipe:swipeOffsetRight="[dimension]"-->
+  <com.tradehero.th.fragments.watchlist.WatchlistPositionListView
+      android:id="@+id/pull_to_refresh_watchlist_listview"
+      android:layout_marginTop="@dimen/watchlist_position_header_height"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"/>
 
   <include
       android:layout_width="match_parent"

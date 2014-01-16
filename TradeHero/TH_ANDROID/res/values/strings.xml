@@ -185,4 +185,5 @@
   <string name="watchlist_empty_view">Tab the \'+\' button above to add a security to your watchlist</string>
   <string name="new_discussion">New Discussion</string>
   <string name="add_alert">Add Alert</string>
+  <string name="error_fetch_portfolio_watchlist">There was an error when fetching the watch list</string>
 </resources>

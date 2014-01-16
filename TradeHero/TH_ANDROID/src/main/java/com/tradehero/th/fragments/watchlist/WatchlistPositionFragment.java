@@ -9,6 +9,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 import android.widget.ProgressBar;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
@@ -16,11 +17,16 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.fortysevendeg.android.swipelistview.BaseSwipeListViewListener;
 import com.fortysevendeg.android.swipelistview.SwipeListView;
+import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.tradehero.common.milestone.Milestone;
+import com.tradehero.common.persistence.DTOCache;
+import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.TwoStateView;
 import com.tradehero.th.R;
 import com.tradehero.th.api.security.SecurityId;
+import com.tradehero.th.api.security.SecurityIdList;
 import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
+import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.fragments.base.DashboardFragment;
@@ -51,6 +57,8 @@ public class WatchlistPositionFragment extends DashboardFragment
     private SwipeListView watchlistListView;
     private WatchlistPortfolioHeaderView watchlistPortfolioHeaderView;
     private WatchlistAdapter watchListAdapter;
+    private WatchlistPositionListView watchlistPositionListView;
+    private DTOCache.GetOrFetchTask<UserBaseKey, SecurityIdList> refreshWatchlistCache;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -79,7 +87,24 @@ public class WatchlistPositionFragment extends DashboardFragment
             watchlistListView.setEmptyView(view.findViewById(R.id.watchlist_position_list_empty_view));
             // portfolio header
             watchlistPortfolioHeaderView = (WatchlistPortfolioHeaderView) view.findViewById(R.id.watchlist_position_list_header);
+
+            initPullToRefreshListView(view);
         }
+    }
+
+    private void initPullToRefreshListView(View view)
+    {
+        watchlistPositionListView = (WatchlistPositionListView) view.findViewById(R.id.pull_to_refresh_watchlist_listview);
+        ((ViewGroup)view).removeView(watchlistListView);
+        watchlistPositionListView.setRefreshableView(watchlistListView);
+        watchlistPositionListView.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener<ListView>()
+        {
+            @Override public void onRefresh(PullToRefreshBase<ListView> refreshView)
+            {
+                refreshWatchlistCache = userWatchlistCache.get().getOrFetch(currentUserBaseKeyHolder.getCurrentUserBaseKey(), true, watchlistFetchCompleteListener);
+                refreshWatchlistCache.execute();
+            }
+        });
     }
 
     @Override public void onResume()
@@ -109,6 +134,14 @@ public class WatchlistPositionFragment extends DashboardFragment
 
         LocalBroadcastManager.getInstance(this.getActivity())
                 .unregisterReceiver(broadcastReceiver);
+    }
+
+    @Override public void onDestroy()
+    {
+        super.onDestroy();
+
+        watchlistPositionListView.onRefreshComplete();
+        watchlistPositionListView.setOnRefreshListener((PullToRefreshBase.OnRefreshListener<ListView>)null);
     }
 
     //<editor-fold desc="ActionBar Menu Actions">
@@ -177,6 +210,7 @@ public class WatchlistPositionFragment extends DashboardFragment
                 super.onDismiss(reverseSortedPositions);
                 if (watchListAdapter != null)
                 {
+                    watchListAdapter.setItems(userWatchlistCache.get().get(currentUserBaseKeyHolder.getCurrentUserBaseKey()));
                     watchListAdapter.notifyDataSetChanged();
                 }
             }
@@ -254,6 +288,22 @@ public class WatchlistPositionFragment extends DashboardFragment
                     watchlistListView.closeOpenedItems();
                 }
             }
+        }
+    };
+
+    private DTOCache.Listener<UserBaseKey, SecurityIdList> watchlistFetchCompleteListener = new DTOCache.Listener<UserBaseKey, SecurityIdList>()
+    {
+        @Override public void onDTOReceived(UserBaseKey key, SecurityIdList value)
+        {
+            watchlistPositionListView.onRefreshComplete();
+            watchListAdapter.setItems(userWatchlistCache.get().get(currentUserBaseKeyHolder.getCurrentUserBaseKey()));
+            watchListAdapter.notifyDataSetChanged();
+        }
+
+        @Override public void onErrorThrown(UserBaseKey key, Throwable error)
+        {
+            watchlistPositionListView.onRefreshComplete();
+            THToast.show(getString(R.string.error_fetch_portfolio_watchlist));
         }
     };
 }
