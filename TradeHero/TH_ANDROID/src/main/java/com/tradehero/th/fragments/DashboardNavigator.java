@@ -16,6 +16,7 @@ import com.tradehero.th.base.Navigator;
 import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.fragments.dashboard.DashboardTabType;
 import com.tradehero.th.fragments.security.WatchlistEditFragment;
+import com.tradehero.th.fragments.timeline.TimelineFragment;
 import com.tradehero.th.models.intent.THIntent;
 
 /** Created with IntelliJ IDEA. User: tho Date: 10/11/13 Time: 4:24 PM Copyright (c) TradeHero */
@@ -136,6 +137,13 @@ public class DashboardNavigator extends Navigator
             mOnTabChangedListener = changeListener;
             mTabHost.setCurrentTabByTag(makeTabSpec(tabType).getTag());
         }
+    }
+
+    public void openTimeline(int userId)
+    {
+        Bundle bundle = new Bundle();
+        bundle.putInt(TimelineFragment.BUNDLE_KEY_SHOW_USER_ID, userId);
+        pushFragment(TimelineFragment.class, bundle);
     }
 
     //public void clearBackStack()

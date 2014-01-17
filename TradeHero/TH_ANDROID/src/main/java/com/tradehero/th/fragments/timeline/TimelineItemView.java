@@ -26,8 +26,10 @@ import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.timeline.TimelineItemShareRequestDTO;
 import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
 import com.tradehero.th.api.users.UserProfileCompactDTO;
+import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.base.NavigatorActivity;
+import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.security.WatchlistEditFragment;
 import com.tradehero.th.fragments.security.StockInfoFragment;
 import com.tradehero.th.fragments.trade.BuySellFragment;
@@ -355,7 +357,10 @@ public class TimelineItemView extends LinearLayout implements
                     UserProfileCompactDTO user = currentTimelineItem.getUser();
                     if (user != null)
                     {
-                        openUserProfile(user.id);
+                        if (currentUserBaseKeyHolder.getCurrentUserBaseKey().key != user.id)
+                        {
+                            getNavigator().openTimeline(user.id);
+                        }
                     }
                 }
                 break;
@@ -493,20 +498,9 @@ public class TimelineItemView extends LinearLayout implements
         getNavigator().pushFragment(BuySellFragment.class, args);
     }
 
-    private Navigator getNavigator()
+    private DashboardNavigator getNavigator()
     {
-        return ((NavigatorActivity) getContext()).getNavigator();
-    }
-
-    private void openUserProfile(int userId)
-    {
-        Bundle b = new Bundle();
-        b.putInt(TimelineFragment.BUNDLE_KEY_SHOW_USER_ID, userId);
-
-        if (currentUserBaseKeyHolder.getCurrentUserBaseKey().key != userId)
-        {
-            getNavigator().pushFragment(TimelineFragment.class, b);
-        }
+        return ((DashboardNavigatorActivity) getContext()).getDashboardNavigator();
     }
     //</editor-fold>
 }

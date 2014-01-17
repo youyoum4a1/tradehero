@@ -94,7 +94,7 @@ public class PortfolioListItemView extends RelativeLayout implements DTOView<Dis
 
     private void initViews()
     {
-        userIcon = (ImageView) findViewById(R.id.user_icon);
+        userIcon = (ImageView) findViewById(R.id.follower_profile_picture);
         title = (TextView) findViewById(R.id.portfolio_title);
         description = (TextView) findViewById(R.id.portfolio_description);
         followingStamp = (ImageView) findViewById(R.id.following_image);

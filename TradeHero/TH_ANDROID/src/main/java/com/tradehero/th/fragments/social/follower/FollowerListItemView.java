@@ -60,7 +60,7 @@ public class FollowerListItemView extends RelativeLayout implements DTOView<User
 
     private void initViews()
     {
-        userIcon = (ImageView) findViewById(R.id.user_icon);
+        userIcon = (ImageView) findViewById(R.id.follower_profile_picture);
         title = (TextView) findViewById(R.id.follower_title);
         revenueInfo = (TextView) findViewById(R.id.follower_revenue);
     }

@@ -66,7 +66,7 @@ public class HeroListItemView extends RelativeLayout implements DTOView<HeroDTO>
 
     private void initViews()
     {
-        userIcon = (ImageView) findViewById(R.id.user_icon);
+        userIcon = (ImageView) findViewById(R.id.follower_profile_picture);
         title = (TextView) findViewById(R.id.hero_title);
         dateInfo = (TextView) findViewById(R.id.hero_date_info);
         statusIcon = (ImageView) findViewById(R.id.ic_status);

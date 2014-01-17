@@ -10,7 +10,7 @@
     >
 
   <ImageView
-      android:id="@+id/user_icon"
+      android:id="@+id/follower_profile_picture"
       android:layout_width="48dp"
       android:layout_height="48dp"
       android:layout_alignParentLeft="true"
@@ -46,7 +46,7 @@
       android:orientation="vertical"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_toRightOf="@id/user_icon"
+      android:layout_toRightOf="@id/follower_profile_picture"
       android:layout_toLeftOf="@+id/ic_status"
       android:paddingTop="2dp"
       android:paddingBottom="2dp"

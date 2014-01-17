@@ -30,7 +30,7 @@ public class FollowerPayoutManagerFragment extends BasePurchaseManagerFragment
 
     public static final String BUNDLE_KEY_FOLLOWER_ID_BUNDLE = FollowerPayoutManagerFragment.class.getName() + ".followerId";
 
-    private ImageView userIcon;
+    private ImageView followerPicture;
     private TextView followerName;
     private TextView totalRevenue;
     private ActionBar actionBar;
@@ -61,8 +61,17 @@ public class FollowerPayoutManagerFragment extends BasePurchaseManagerFragment
 
     protected void initViews(View view)
     {
-        userIcon = (ImageView) view.findViewById(R.id.user_icon);
+        followerPicture = (ImageView) view.findViewById(R.id.follower_profile_picture);
+        if (followerPicture != null)
+        {
+            followerPicture.setOnClickListener(userClickHandler);
+        }
         followerName = (TextView) view.findViewById(R.id.follower_title);
+        if (followerName != null)
+        {
+            followerName.setOnClickListener(userClickHandler);
+        }
+
         totalRevenue = (TextView) view.findViewById(R.id.follower_revenue);
         followerPaymentListView = (FollowerPaymentListView) view.findViewById(R.id.follower_payments_list);
 
@@ -107,6 +116,8 @@ public class FollowerPayoutManagerFragment extends BasePurchaseManagerFragment
     @Override public void onDestroyView()
     {
         followerPaymentListAdapter = null;
+        followerPicture.setOnClickListener(null);
+        followerName.setOnClickListener(null);
         super.onDestroyView();
     }
 
@@ -158,11 +169,7 @@ public class FollowerPayoutManagerFragment extends BasePurchaseManagerFragment
         this.userFollowerDTO = summaryDTO;
         if (andDisplay)
         {
-            displayUserIcon();
-            displayActionBarTitle();
-            displayFollowerName();
-            displayTotalRevenue();
-            displayPaymentList();
+            display();
         }
     }
 
@@ -177,13 +184,13 @@ public class FollowerPayoutManagerFragment extends BasePurchaseManagerFragment
 
     public void displayUserIcon()
     {
-        if (userIcon != null)
+        if (followerPicture != null)
         {
             if (userFollowerDTO != null)
             {
                 picasso.get().load(userFollowerDTO.picture)
                         .transform(new RoundedShapeTransformation())
-                        .into(userIcon);
+                        .into(followerPicture);
             }
         }
     }
@@ -229,4 +236,15 @@ public class FollowerPayoutManagerFragment extends BasePurchaseManagerFragment
             }
         }
     }
+
+    private View.OnClickListener userClickHandler = new View.OnClickListener()
+    {
+        @Override public void onClick(View v)
+        {
+            if (userFollowerDTO != null)
+            {
+                getNavigator().openTimeline(userFollowerDTO.id);
+            }
+        }
+    };
 }

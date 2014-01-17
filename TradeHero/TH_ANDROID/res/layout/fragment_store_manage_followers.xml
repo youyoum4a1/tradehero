@@ -14,34 +14,44 @@
       android:background="@color/gray_3"
     >
 
-    <TableRow>
+    <TableRow
+        android:weightSum="3">
 
       <TextView
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
+          android:gravity="center_horizontal"
+          android:layout_weight="1"
           android:text="@string/manage_followers_total_revenue"
           />
 
       <TextView
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
+          android:gravity="center_horizontal"
+          android:layout_weight="1"
           android:text="@string/manage_followers_total_amount_paid"
           />
 
       <TextView
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
+          android:gravity="center_horizontal"
+          android:layout_weight="1"
           android:text="@string/manage_followers_number_followers"
           />
 
     </TableRow>
 
-    <TableRow>
+    <TableRow
+        android:weightSum="3">
 
         <TextView
             android:id="@+id/manage_followers_total_revenue"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:layout_weight="1"
             android:textStyle="bold"
           />
 
@@ -49,6 +59,8 @@
             android:id="@+id/manage_followers_total_amount_paid"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:layout_weight="1"
             android:textStyle="bold"
           />
 
@@ -56,6 +68,8 @@
             android:id="@+id/manage_followers_number_followers"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:layout_weight="1"
             android:textStyle="bold"
           />
 

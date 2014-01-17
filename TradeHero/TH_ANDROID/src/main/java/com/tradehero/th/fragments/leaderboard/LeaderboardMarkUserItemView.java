@@ -19,12 +19,10 @@ import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import com.tradehero.th.api.leaderboard.position.LeaderboardMarkUserId;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
-import com.tradehero.th.base.Navigator;
-import com.tradehero.th.base.NavigatorActivity;
-import com.tradehero.th.fragments.portfolio.PortfolioListFragment;
+import com.tradehero.th.base.DashboardNavigatorActivity;
+import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.position.LeaderboardPositionListFragment;
 import com.tradehero.th.fragments.position.PositionListFragment;
-import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefCache;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.NumberDisplayUtils;
@@ -323,21 +321,18 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         }
     }
 
-    private Navigator getNavigator()
+    private DashboardNavigator getNavigator()
     {
-        return ((NavigatorActivity) getContext()).getNavigator();
+        return ((DashboardNavigatorActivity) getContext()).getDashboardNavigator();
     }
 
     private void handleOpenProfileButtonClicked()
     {
         int userId = leaderboardItem.id;
 
-        Bundle b = new Bundle();
-        b.putInt(PushableTimelineFragment.BUNDLE_KEY_SHOW_USER_ID, userId);
-
         if (currentUserBaseKeyHolder != null && currentUserBaseKeyHolder.getCurrentUserBaseKey().key != userId)
         {
-            getNavigator().pushFragment(PushableTimelineFragment.class, b);
+            getNavigator().openTimeline(userId);
         }
     }
 }
