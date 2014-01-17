@@ -1,19 +1,28 @@
 package com.tradehero.th.fragments.leaderboard;
 
+import android.app.Activity;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
+import com.squareup.picasso.Picasso;
+import com.tradehero.common.milestone.Milestone;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
+import com.tradehero.th.api.competition.ProviderDTO;
+import com.tradehero.th.api.competition.ProviderId;
+import com.tradehero.th.api.competition.ProviderIdList;
+import com.tradehero.th.api.competition.ProviderListKey;
 import com.tradehero.th.api.leaderboard.LeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardDefExchangeListKey;
 import com.tradehero.th.api.leaderboard.LeaderboardDefKeyList;
@@ -21,7 +30,10 @@ import com.tradehero.th.api.leaderboard.LeaderboardDefListKey;
 import com.tradehero.th.api.leaderboard.LeaderboardDefMostSkilledListKey;
 import com.tradehero.th.api.leaderboard.LeaderboardDefSectorListKey;
 import com.tradehero.th.api.leaderboard.LeaderboardDefTimePeriodListKey;
+import com.tradehero.th.fragments.competition.ProviderVideoListFragment;
+import com.tradehero.th.persistence.competition.ProviderCache;
 import com.tradehero.th.persistence.competition.ProviderListCache;
+import com.tradehero.th.persistence.competition.ProviderListRetrievedMilestone;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefCache;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefListCache;
 import dagger.Lazy;
@@ -38,14 +50,21 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
 
     @Inject protected Lazy<LeaderboardDefListCache> leaderboardDefListCache;
     @Inject protected Lazy<LeaderboardDefCache> leaderboardDefCache;
-    @Inject protected Lazy<ProviderListCache> providerCache;
+    @Inject protected Lazy<ProviderListCache> providerListCache;
+    @Inject protected Lazy<ProviderCache> providerCache;
+    @Inject protected Picasso picasso;
 
     private boolean fetched = false;
+    private ImageButton firstProviderLink;
     private ListView mostSkilledListView;
     private ListView timePeriodListView;
     private ListView sectorListView;
     private LeaderboardDefListAdapter mostSkilledListAdapter;
     private LeaderboardDefListAdapter timePeriodListAdapter;
+
+    @Inject protected ProviderListRetrievedMilestone providerListRetrievedMilestone;
+    private Milestone.OnCompleteListener providerListRetrievedListener;
+    private ProviderDTO firstProvider;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -55,9 +74,18 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
         return view;
     }
 
-    @Override public void onActivityCreated(Bundle savedInstanceState)
+    @Override public void onAttach(Activity activity)
     {
-        super.onActivityCreated(savedInstanceState);
+        super.onAttach(activity);
+
+        this.providerListRetrievedListener = new LeaderboardCommunityFragmentProviderListRetrievedListener();
+        this.providerListRetrievedMilestone.setOnCompleteListener(this.providerListRetrievedListener);
+    }
+
+    @Override public void onStart()
+    {
+        super.onStart();
+        this.providerListRetrievedMilestone.launch();
     }
 
     @Override public void onResume()
@@ -79,6 +107,11 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
 
     private void initViews(View view)
     {
+        this.firstProviderLink = (ImageButton) view.findViewById(R.id.btn_first_provider);
+        if (this.firstProviderLink != null)
+        {
+            this.firstProviderLink.setOnClickListener(new LeaderboardCommunityFragmentProviderLinkClickListener());
+        }
         mostSkilledListView = (ListView) view.findViewById(R.id.leaderboard_most_skilled);
         timePeriodListView = (ListView) view.findViewById(R.id.leaderboard_time_period);
         sectorListView = (ListView) view.findViewById(R.id.leaderboard_sector);
@@ -94,6 +127,27 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
     {
         super.onStop();
         fetched = false;
+    }
+
+    @Override public void onDetach()
+    {
+        this.providerListRetrievedListener = null;
+        if (this.providerListRetrievedMilestone != null)
+        {
+            this.providerListRetrievedMilestone.setOnCompleteListener(null);
+        }
+        this.providerListRetrievedMilestone = null;
+        super.onDetach();
+    }
+
+    @Override public void onDestroyView()
+    {
+        if (this.firstProviderLink != null)
+        {
+            this.firstProviderLink.setOnClickListener(null);
+        }
+        this.firstProviderLink = null;
+        super.onDestroyView();
     }
 
     private AdapterView.OnItemClickListener createLeaderboardItemClickListener()
@@ -318,10 +372,57 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
     }
     //</editor-fold>
 
+    private void displayFirstCompetitionProvider(List<ProviderId> providerIds)
+    {
+        if (providerIds != null && providerIds.size() > 0)
+        {
+            displayFirstProviderButton(this.providerCache.get().get(providerIds.get(0)));
+        }
+    }
+
+    private void displayFirstProviderButton(ProviderDTO providerDTO)
+    {
+        this.firstProvider = providerDTO;
+        if (firstProvider != null && firstProviderLink != null)
+        {
+            firstProviderLink.setVisibility(View.VISIBLE);
+            this.picasso.load(firstProvider.isUserEnrolled ? firstProvider.singleJoinedImageUrl : firstProvider.singleImageUrl)
+                .into(firstProviderLink);
+        }
+    }
+
     //<editor-fold desc="BaseFragment.TabBarVisibilityInformer">
     @Override public boolean isTabBarVisible()
     {
         return true;
     }
     //</editor-fold>
+
+    private class LeaderboardCommunityFragmentProviderListRetrievedListener implements Milestone.OnCompleteListener
+    {
+        @Override public void onComplete(Milestone milestone)
+        {
+            displayFirstCompetitionProvider(providerListCache.get().get(new ProviderListKey()));
+        }
+
+        @Override public void onFailed(Milestone milestone, Throwable throwable)
+        {
+            THToast.show(getString(R.string.error_fetch_provider_info_list));
+            THLog.e(TAG, "Failed retrieving the list of competition providers", throwable);
+        }
+    }
+
+    private class LeaderboardCommunityFragmentProviderLinkClickListener implements View.OnClickListener
+    {
+        @Override public void onClick(View view)
+        {
+            if (firstProvider != null)
+            {
+                Bundle args = new Bundle();
+                args.putBundle(ProviderVideoListFragment.BUNDLE_KEY_PROVIDER_ID, firstProvider.getProviderId().getArgs());
+                args.putBundle(ProviderVideoListFragment.BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE, firstProvider.associatedPortfolio.getPortfolioId().getArgs());
+                navigator.pushFragment(ProviderVideoListFragment.class, args);
+            }
+        }
+    }
 }

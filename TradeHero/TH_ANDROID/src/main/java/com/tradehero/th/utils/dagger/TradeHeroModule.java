@@ -123,6 +123,7 @@ import com.tradehero.th.network.service.UserTimelineService;
 import com.tradehero.th.network.service.WatchlistService;
 import com.tradehero.th.network.service.YahooNewsService;
 import com.tradehero.th.persistence.billing.googleplay.IABSKUListRetrievedAsyncMilestone;
+import com.tradehero.th.persistence.competition.ProviderListRetrievedMilestone;
 import com.tradehero.th.persistence.leaderboard.LeaderboardManager;
 import com.tradehero.th.persistence.portfolio.OwnedPortfolioFetchAssistant;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListRetrievedMilestone;
@@ -260,6 +261,7 @@ import org.ocpsoft.prettytime.PrettyTime;
 
                 ProviderVideoListFragment.class,
                 ProviderVideoListItem.class,
+                ProviderListRetrievedMilestone.class,
 
                 WebViewFragment.class,
 
