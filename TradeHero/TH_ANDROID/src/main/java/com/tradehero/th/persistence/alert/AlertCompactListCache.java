@@ -39,10 +39,10 @@ import javax.inject.Singleton;
         if (fleshedValues != null)
         {
             alertIds = new AlertIdList();
-            AlertId alertId;
+            alertCompactCache.get().invalidateAll();
             for (AlertCompactDTO alertCompactDTO: fleshedValues)
             {
-                alertId = alertCompactDTO.getAlertId(key.key);
+                AlertId alertId = alertCompactDTO.getAlertId(key.key);
                 alertIds.add(alertId);
                 alertCompactCache.get().put(alertId, alertCompactDTO);
             }
