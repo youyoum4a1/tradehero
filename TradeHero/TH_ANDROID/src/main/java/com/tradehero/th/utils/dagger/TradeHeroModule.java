@@ -106,6 +106,7 @@ import com.tradehero.th.network.NetworkEngine;
 import com.tradehero.th.network.YahooEngine;
 import com.tradehero.th.network.service.AlertPlanService;
 import com.tradehero.th.network.service.AlertService;
+import com.tradehero.th.network.service.CompetitionService;
 import com.tradehero.th.network.service.FollowerService;
 import com.tradehero.th.network.service.LeaderboardService;
 import com.tradehero.th.network.service.MarketService;
@@ -404,6 +405,11 @@ public class TradeHeroModule
     @Provides @Singleton WatchlistService provideWatchlistService()
     {
         return engine.createService(WatchlistService.class);
+    }
+
+    @Provides @Singleton CompetitionService provideCompetitionService()
+    {
+        return engine.createService(CompetitionService.class);
     }
     //</editor-fold>
 

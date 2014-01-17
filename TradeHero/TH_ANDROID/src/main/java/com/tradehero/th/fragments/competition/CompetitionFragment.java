@@ -1,23 +1,20 @@
 package com.tradehero.th.fragments.competition;
 
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderId;
-import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.persistence.competition.ProviderCache;
 import javax.inject.Inject;
 
 /**
  * Created by xavier on 1/16/14.
  */
-abstract public class CompetitionFragment extends DashboardFragment
+abstract public class CompetitionFragment extends BasePurchaseManagerFragment
 {
     public static final String TAG = CompetitionFragment.class.getSimpleName();
 
