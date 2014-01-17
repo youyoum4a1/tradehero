@@ -55,7 +55,7 @@
 	<color name="btn_buy_default">#ff636363</color>
 	<color name="btn_buy_pressed">#ff636363</color>
 	<color name="stock_info_bg">#ffebebeb</color>
-	<color name="tab_color">#313131</color>
+	<color name="tab_color">#e0111111</color>
 	<color name="tab_scroll_color">#217ac8</color>
   <color name="authentication_welcome_bg">#f2f2f2</color>
   <color name="authentication_background_color">#f2f2f2</color>
