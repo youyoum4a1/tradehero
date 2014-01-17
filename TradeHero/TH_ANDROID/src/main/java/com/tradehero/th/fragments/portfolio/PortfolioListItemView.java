@@ -60,8 +60,6 @@ public class PortfolioListItemView extends RelativeLayout implements DTOView<Dis
     private DTOCache.Listener<UserBaseKey, SecurityIdList> userWatchlistListener;
     private DTOCache.GetOrFetchTask<UserBaseKey, SecurityIdList> userWatchlistFetchTask;
 
-    private final int count = countUp++;
-
     //<editor-fold desc="Constructors">
     public PortfolioListItemView(Context context)
     {
@@ -102,7 +100,7 @@ public class PortfolioListItemView extends RelativeLayout implements DTOView<Dis
 
     @Override protected void onAttachedToWindow()
     {
-        THLog.d(TAG, "onAttachedToWindow " + count);
+        THLog.d(TAG, "onAttachedToWindow ");
         super.onAttachedToWindow();
         this.currentUserProfileRetrievedMilestoneListener = new PortfolioListItemViewUserProfileRetrievedListener();
 
@@ -118,7 +116,7 @@ public class PortfolioListItemView extends RelativeLayout implements DTOView<Dis
 
     @Override protected void onDetachedFromWindow()
     {
-        THLog.d(TAG, "onDetachedFromWindow " + count);
+        THLog.d(TAG, "onDetachedFromWindow ");
         this.currentUserProfileRetrievedMilestoneListener = null;
         detachMilestone();
 
