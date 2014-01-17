@@ -25,8 +25,6 @@ public class ProviderVideoListItem extends RelativeLayout implements DTOView<Hel
     private HelpVideoId videoId;
     private HelpVideoDTO videoDTO;
     @Inject protected HelpVideoCache helpVideoCache;
-    private DTOCache.Listener<HelpVideoId, HelpVideoDTO> helpVideoCacheListener;
-    private DTOCache.GetOrFetchTask<HelpVideoId, HelpVideoDTO> helpVideoCacheFetchTask;
 
     //<editor-fold desc="Constructors">
     public ProviderVideoListItem(Context context)
@@ -51,31 +49,16 @@ public class ProviderVideoListItem extends RelativeLayout implements DTOView<Hel
         DaggerUtils.inject(this);
     }
 
-    @Override protected void onAttachedToWindow()
-    {
-        super.onAttachedToWindow();
-        this.helpVideoCacheListener = new ProviderVideoListItemVideoCacheListener();
-    }
-
-    @Override protected void onDetachedFromWindow()
-    {
-        detachFetchTask();
-        this.helpVideoCacheListener = null;
-        super.onDetachedFromWindow();
-    }
-
-    private void detachFetchTask()
-    {
-        if (this.helpVideoCacheFetchTask != null)
-        {
-            this.helpVideoCacheFetchTask.setListener(null);
-        }
-        this.helpVideoCacheFetchTask = null;
-    }
-
     @Override public void display(HelpVideoId videoId1)
     {
-        // TODO call
+        if (videoId1 == null)
+        {
+            this.linkWith(null, true);
+        }
+        else
+        {
+            this.linkWith(helpVideoCache.get(videoId1), true);
+        }
     }
 
     public void linkWith(HelpVideoDTO videoDto, boolean andDisplay)
@@ -84,20 +67,6 @@ public class ProviderVideoListItem extends RelativeLayout implements DTOView<Hel
         if (andDisplay)
         {
             // TODO
-        }
-    }
-
-    private class ProviderVideoListItemVideoCacheListener implements DTOCache.Listener<HelpVideoId, HelpVideoDTO>
-    {
-        @Override public void onDTOReceived(HelpVideoId key, HelpVideoDTO value)
-        {
-            linkWith(value, true);
-        }
-
-        @Override public void onErrorThrown(HelpVideoId key, Throwable error)
-        {
-            THToast.show(getContext().getString(R.string.error_fetch_help_video_list_info));
-            THLog.e(TAG, "Error fetching the help video info" + key, error);
         }
     }
 }
