@@ -2,6 +2,7 @@ package com.tradehero.th.persistence;
 
 import com.tradehero.th.api.competition.ProviderListKey;
 import com.tradehero.th.api.market.ExchangeListType;
+import com.tradehero.th.api.security.TrendingBasicSecurityListType;
 import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
 import com.tradehero.th.persistence.alert.AlertCache;
 import com.tradehero.th.persistence.alert.AlertCompactCache;
@@ -21,6 +22,7 @@ import com.tradehero.th.persistence.position.PositionCache;
 import com.tradehero.th.persistence.position.PositionCompactCache;
 import com.tradehero.th.persistence.position.PositionCompactIdCache;
 import com.tradehero.th.persistence.position.SecurityPositionDetailCache;
+import com.tradehero.th.persistence.security.SecurityCompactListCache;
 import com.tradehero.th.persistence.social.FollowerSummaryCache;
 import com.tradehero.th.persistence.social.UserFollowerCache;
 import com.tradehero.th.persistence.trade.TradeCache;
@@ -54,6 +56,7 @@ import javax.inject.Singleton;
     @Inject protected Lazy<PositionCompactCache> positionCompactCache;
     @Inject protected Lazy<PositionCompactIdCache> positionCompactIdCache;
     @Inject protected Lazy<SecurityPositionDetailCache> securityPositionDetailCache;
+    @Inject protected Lazy<SecurityCompactListCache> securityCompactListCache;
     @Inject protected Lazy<TradeCache> tradeCache;
     @Inject protected Lazy<TradeListCache> tradeListCache;
     @Inject protected Lazy<UserProfileCache> userProfileCache;
@@ -96,6 +99,7 @@ import javax.inject.Singleton;
     {
         preFetchExchanges();
         preFetchWatchlist();
+        preFetchTrending();
     }
     
     public void preFetchExchanges()
@@ -111,5 +115,10 @@ import javax.inject.Singleton;
     public void preFetchProviders()
     {
         this.providerListCache.get().autoFetch(new ProviderListKey());
+    }
+
+    public void preFetchTrending()
+    {
+        this.securityCompactListCache.get().autoFetch(new TrendingBasicSecurityListType());
     }
 }

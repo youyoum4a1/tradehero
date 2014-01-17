@@ -254,8 +254,17 @@ public class TrendingFragment extends DashboardFragment
         {
             exchangeListTypeCacheListener = new TrendingExchangeListListener();
         }
-        exchangeListCacheFetchTask = exchangeListCache.get().getOrFetch(new ExchangeListType(), exchangeListTypeCacheListener);
-        exchangeListCacheFetchTask.execute();
+
+        ExchangeDTOList cachedExchangeDTOs = exchangeListCache.get().get(new ExchangeListType());
+        if (cachedExchangeDTOs == null)
+        {
+            exchangeListCacheFetchTask = exchangeListCache.get().getOrFetch(new ExchangeListType(), exchangeListTypeCacheListener);
+            exchangeListCacheFetchTask.execute();
+        }
+        else
+        {
+            linkWith(cachedExchangeDTOs, true);
+        }
     }
 
     private void linkWith(ExchangeDTOList exchangeDTOs, boolean andDisplay)
