@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import com.tradehero.th.R;
 import com.tradehero.th.api.leaderboard.LeaderboardDefDTO;
+import com.tradehero.th.utils.Constants;
 import java.util.List;
 
 /** Created with IntelliJ IDEA. User: tho Date: 10/16/13 Time: 6:03 PM Copyright (c) TradeHero */
@@ -31,20 +32,22 @@ public class LeaderboardDefMostSkilledListAdapter extends LeaderboardDefListAdap
         super.setItems(items);
     }
 
-    @Override protected void fineTune(int position,LeaderboardDefDTO dto, LeaderboardDefView dtoView)
+    @Override protected void fineTune(int position, LeaderboardDefDTO dto, LeaderboardDefView dtoView)
     {
-
-        dtoView.setBackgroundResource(R.drawable.leaderboard_button_border_full);
-
-        if (getCount() >= 2)
+        if (Constants.LEADERBOARD_BACKGROUND_IMAGE_ENABLED)
         {
-            if (position == 0)
+            dtoView.setBackgroundResource(R.drawable.leaderboard_button_border_full);
+
+            if (getCount() >= 2)
             {
-                dtoView.setBackgroundResource(R.drawable.leaderboard_button_border_top);
-            }
-            else if (position == getCount() - 1)
-            {
-                dtoView.setBackgroundResource(R.drawable.leaderboard_button_border_bottom);
+                if (position == 0)
+                {
+                    dtoView.setBackgroundResource(R.drawable.leaderboard_button_border_top);
+                }
+                else if (position == getCount() - 1)
+                {
+                    dtoView.setBackgroundResource(R.drawable.leaderboard_button_border_bottom);
+                }
             }
         }
     }

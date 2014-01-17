@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.ArrayDTOAdapter;
 import com.tradehero.th.api.leaderboard.LeaderboardDefDTO;
+import com.tradehero.th.utils.Constants;
 import java.util.List;
 
 /** Created with IntelliJ IDEA. User: tho Date: 10/16/13 Time: 4:08 PM Copyright (c) TradeHero */
@@ -28,24 +29,28 @@ public class LeaderboardDefListAdapter extends ArrayDTOAdapter<LeaderboardDefDTO
 
     @Override protected void fineTune(int position, LeaderboardDefDTO dto, LeaderboardDefView dtoView)
     {
-        if (getCount() >= 2)
+
+        if (Constants.LEADERBOARD_BACKGROUND_IMAGE_ENABLED)
         {
-            if (position == 0)
+            if (getCount() >= 2)
             {
-                dtoView.setBackgroundResource(R.drawable.leaderboard_button_border_top);
-            }
-            else if (position == getCount() - 1)
-            {
-                dtoView.setBackgroundResource(R.drawable.leaderboard_button_border_bottom);
+                if (position == 0)
+                {
+                    dtoView.setBackgroundResource(R.drawable.leaderboard_button_border_top);
+                }
+                else if (position == getCount() - 1)
+                {
+                    dtoView.setBackgroundResource(R.drawable.leaderboard_button_border_bottom);
+                }
+                else
+                {
+                    dtoView.setBackgroundResource(R.drawable.leaderboard_button_border_middle);
+                }
             }
             else
             {
-                dtoView.setBackgroundResource(R.drawable.leaderboard_button_border_middle);
+                dtoView.setBackgroundResource(R.drawable.leaderboard_button_border_full);
             }
-        }
-        else
-        {
-            dtoView.setBackgroundResource(R.drawable.leaderboard_button_border_full);
         }
     }
 
