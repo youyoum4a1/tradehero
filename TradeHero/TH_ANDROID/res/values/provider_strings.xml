@@ -2,4 +2,10 @@
 <resources>
   <string name="error_fetch_provider_info_list">There was an error when fetching the list of competition providers.</string>
   <string name="error_fetch_provider_info">There was an error when fetching the competition provider info.</string>
+
+  <string name="provider_competition_portfolio_title">Competition Portfolio</string>
+  <string name="provider_competition_portfolio_description">view your competition positions</string>
+  <string name="provider_competition_wizard_title">Wizard</string>
+  <string name="provider_competition_rules_title">Competition Rules</string>
+  <string name="provider_competition_terms_title">Terms &amp; Conditions</string>
 </resources>

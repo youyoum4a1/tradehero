@@ -1,0 +1,109 @@
+package com.tradehero.th.fragments.competition;
+
+import android.content.Context;
+import android.util.AttributeSet;
+import android.widget.ImageView;
+import android.widget.TextView;
+import com.squareup.picasso.Picasso;
+import com.tradehero.th.R;
+import com.tradehero.th.fragments.competition.zone.CompetitionZoneDTO;
+import com.tradehero.th.utils.DaggerUtils;
+import javax.inject.Inject;
+
+public class CompetitionZoneListItemView extends AbstractCompetitionZoneListItemView
+{
+    public static final String TAG = CompetitionZoneListItemView.class.getSimpleName();
+    private static int countUp = 0;
+
+    private ImageView zoneIcon;
+    private TextView title;
+    private TextView description;
+
+    @Inject Picasso picasso;
+
+    //<editor-fold desc="Constructors">
+    public CompetitionZoneListItemView(Context context)
+    {
+        super(context);
+    }
+
+    public CompetitionZoneListItemView(Context context, AttributeSet attrs)
+    {
+        super(context, attrs);
+    }
+
+    public CompetitionZoneListItemView(Context context, AttributeSet attrs, int defStyle)
+    {
+        super(context, attrs, defStyle);
+    }
+    //</editor-fold>
+
+    @Override protected void onFinishInflate()
+    {
+        super.onFinishInflate();
+        initViews();
+        DaggerUtils.inject(this);
+    }
+
+    private void initViews()
+    {
+        zoneIcon = (ImageView) findViewById(R.id.icn_competition_zone);
+        title = (TextView) findViewById(R.id.competition_zone_title);
+        description = (TextView) findViewById(R.id.competition_zone_description);
+    }
+
+    public void linkWith(CompetitionZoneDTO competitionZoneDTO, boolean andDisplay)
+    {
+        super.linkWith(competitionZoneDTO, andDisplay);
+
+        if (andDisplay)
+        {
+            displayUserIcon();
+            displayTitle();
+            displayDescription();
+        }
+    }
+
+    //<editor-fold desc="Display Methods">
+    public void display()
+    {
+        displayUserIcon();
+        displayTitle();
+        displayDescription();
+    }
+
+    public void displayUserIcon()
+    {
+        if (zoneIcon != null)
+        {
+            if (competitionZoneDTO != null)
+            {
+                // TODO
+                //picasso.load(competitionZoneDTO.)
+                //             .into(zoneIcon);
+            }
+        }
+    }
+
+    public void displayTitle()
+    {
+        TextView titleCopy = this.title;
+        if (titleCopy != null)
+        {
+            titleCopy.setText(competitionZoneDTO.title);
+        }
+    }
+
+    public void displayDescription()
+    {
+        TextView descriptionCopy = this.description;
+        if (descriptionCopy != null)
+        {
+            if (competitionZoneDTO != null)
+            {
+                descriptionCopy.setText(competitionZoneDTO.description);
+            }
+        }
+    }
+    //</editor-fold>
+}

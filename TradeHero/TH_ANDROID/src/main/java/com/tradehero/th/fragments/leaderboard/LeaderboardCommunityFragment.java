@@ -30,6 +30,7 @@ import com.tradehero.th.api.leaderboard.LeaderboardDefListKey;
 import com.tradehero.th.api.leaderboard.LeaderboardDefMostSkilledListKey;
 import com.tradehero.th.api.leaderboard.LeaderboardDefSectorListKey;
 import com.tradehero.th.api.leaderboard.LeaderboardDefTimePeriodListKey;
+import com.tradehero.th.fragments.competition.MainCompetitionFragment;
 import com.tradehero.th.fragments.competition.ProviderVideoListFragment;
 import com.tradehero.th.persistence.competition.ProviderCache;
 import com.tradehero.th.persistence.competition.ProviderListCache;
@@ -419,9 +420,9 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
             if (firstProvider != null)
             {
                 Bundle args = new Bundle();
-                args.putBundle(ProviderVideoListFragment.BUNDLE_KEY_PROVIDER_ID, firstProvider.getProviderId().getArgs());
-                args.putBundle(ProviderVideoListFragment.BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE, firstProvider.associatedPortfolio.getPortfolioId().getArgs());
-                navigator.pushFragment(ProviderVideoListFragment.class, args);
+                args.putBundle(MainCompetitionFragment.BUNDLE_KEY_PROVIDER_ID, firstProvider.getProviderId().getArgs());
+                args.putBundle(MainCompetitionFragment.BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE, firstProvider.associatedPortfolio.getPortfolioId().getArgs());
+                navigator.pushFragment(MainCompetitionFragment.class, args);
             }
         }
     }

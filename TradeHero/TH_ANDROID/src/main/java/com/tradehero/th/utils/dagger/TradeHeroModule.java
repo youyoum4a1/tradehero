@@ -25,12 +25,10 @@ import com.tradehero.th.billing.googleplay.THIABPurchaseReporter;
 import com.tradehero.th.billing.googleplay.THIABPurchaser;
 import com.tradehero.th.billing.googleplay.THInventoryFetchMilestone;
 import com.tradehero.th.fragments.WebViewFragment;
+import com.tradehero.th.fragments.alert.AlertManagerFragment;
 import com.tradehero.th.fragments.authentication.EmailSignInFragment;
 import com.tradehero.th.fragments.billing.StoreScreenFragment;
 import com.tradehero.th.fragments.billing.THIABUserInteractor;
-import com.tradehero.th.fragments.alert.AlertManagerFragment;
-import com.tradehero.th.fragments.competition.ProviderVideoListFragment;
-import com.tradehero.th.fragments.competition.ProviderVideoListItem;
 import com.tradehero.th.fragments.leaderboard.BaseLeaderboardFragment;
 import com.tradehero.th.fragments.leaderboard.FriendLeaderboardMarkUserListViewFragment;
 import com.tradehero.th.fragments.leaderboard.LeaderboardCommunityFragment;
@@ -123,7 +121,6 @@ import com.tradehero.th.network.service.UserTimelineService;
 import com.tradehero.th.network.service.WatchlistService;
 import com.tradehero.th.network.service.YahooNewsService;
 import com.tradehero.th.persistence.billing.googleplay.IABSKUListRetrievedAsyncMilestone;
-import com.tradehero.th.persistence.competition.ProviderListRetrievedMilestone;
 import com.tradehero.th.persistence.leaderboard.LeaderboardManager;
 import com.tradehero.th.persistence.portfolio.OwnedPortfolioFetchAssistant;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListRetrievedMilestone;
@@ -258,10 +255,6 @@ import org.ocpsoft.prettytime.PrettyTime;
                 LeaderboardMarkUserItemView.class,
                 LeaderboardMarkUserListView.class,
                 FriendLeaderboardMarkUserListViewFragment.class,
-
-                ProviderVideoListFragment.class,
-                ProviderVideoListItem.class,
-                ProviderListRetrievedMilestone.class,
 
                 WebViewFragment.class,
 

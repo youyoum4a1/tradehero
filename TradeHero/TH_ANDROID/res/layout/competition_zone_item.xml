@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<com.tradehero.th.fragments.competition.CompetitionZoneListItemView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res/com.tradehero.th"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="5dp"
+    android:background="@color/white"
+    >
+
+  <ImageView
+      android:id="@+id/hint_open_competition_zone"
+      android:layout_width="48dp"
+      android:layout_height="48dp"
+      android:layout_alignParentRight="true"
+      android:layout_centerVertical="true"
+      android:src="@drawable/settings_forward_light"
+      android:scaleType="fitXY"
+      android:contentDescription="@null"
+      />
+
+  <ImageView
+      android:id="@+id/icn_competition_zone"
+      android:layout_width="48dp"
+      android:layout_height="48dp"
+      android:layout_alignParentLeft="true"
+      android:src="@drawable/superman_facebook"
+      android:contentDescription="@null"
+      />
+
+  <LinearLayout
+      android:orientation="vertical"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_toRightOf="@id/icn_competition_zone"
+      android:layout_toLeftOf="@+id/hint_open_competition_zone"
+      android:paddingTop="2dp"
+      android:paddingBottom="2dp"
+      android:paddingLeft="5dp"
+      android:layout_centerVertical="true"
+      >
+
+    <TextView
+        android:id="@+id/competition_zone_title"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:maxLines="1"
+        android:layout_weight="3"
+        android:textStyle="bold"
+        />
+
+    <TextView
+        android:id="@+id/competition_zone_description"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="2"
+        android:maxLines="1"
+        />
+
+  </LinearLayout>
+
+</com.tradehero.th.fragments.competition.CompetitionZoneListItemView>
