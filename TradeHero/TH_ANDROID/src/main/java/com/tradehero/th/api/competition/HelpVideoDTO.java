@@ -17,4 +17,22 @@ public class HelpVideoDTO implements DTO
     {
         return new HelpVideoId(id);
     }
+
+    public ProviderId getProviderId()
+    {
+        return new ProviderId(providerId);
+    }
+
+    @Override public String toString()
+    {
+        return "HelpVideoDTO{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", subtitle='" + subtitle + '\'' +
+                ", thumbnailUrl='" + thumbnailUrl + '\'' +
+                ", videoUrl='" + videoUrl + '\'' +
+                ", providerId=" + providerId +
+                ", embedCode='" + embedCode + '\'' +
+                '}';
+    }
 }

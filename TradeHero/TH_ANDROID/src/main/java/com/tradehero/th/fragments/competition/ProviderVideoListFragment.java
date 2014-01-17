@@ -1,5 +1,8 @@
 package com.tradehero.th.fragments.competition;
 
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,10 +19,12 @@ import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
+import com.tradehero.th.api.competition.HelpVideoDTO;
 import com.tradehero.th.api.competition.HelpVideoId;
 import com.tradehero.th.api.competition.HelpVideoIdList;
 import com.tradehero.th.api.competition.HelpVideoListKey;
 import com.tradehero.th.api.competition.ProviderDTO;
+import com.tradehero.th.persistence.competition.HelpVideoCache;
 import com.tradehero.th.persistence.competition.HelpVideoListCache;
 import java.util.ArrayList;
 import javax.inject.Inject;
@@ -35,6 +40,7 @@ public class ProviderVideoListFragment extends CompetitionFragment
     private ProgressBar progressBar;
     private AbsListView videoListView;
     @Inject protected HelpVideoListCache helpVideoListCache;
+    @Inject protected HelpVideoCache helpVideoCache;
     private HelpVideoIdList helpVideoIds;
     private DTOCache.Listener<HelpVideoListKey, HelpVideoIdList> helpVideoListCacheListener;
     private DTOCache.GetOrFetchTask<HelpVideoListKey, HelpVideoIdList> helpVideoListFetchTask;
@@ -84,12 +90,21 @@ public class ProviderVideoListFragment extends CompetitionFragment
         super.onResume();
 
         detachListVideoFetchTask();
-        this.helpVideoListFetchTask = this.helpVideoListCache.getOrFetch(new HelpVideoListKey(this.providerId), this.helpVideoListCacheListener);
-        if (this.progressBar != null)
+
+        HelpVideoIdList cachedHelpVideos = this.helpVideoListCache.get(new HelpVideoListKey(this.providerId));
+        if (cachedHelpVideos != null)
         {
-            this.progressBar.setVisibility(View.VISIBLE);
+            linkWith(cachedHelpVideos, true);
         }
-        this.helpVideoListFetchTask.execute();
+        else
+        {
+            this.helpVideoListFetchTask = this.helpVideoListCache.getOrFetch(new HelpVideoListKey(this.providerId), this.helpVideoListCacheListener);
+            if (this.progressBar != null)
+            {
+                this.progressBar.setVisibility(View.VISIBLE);
+            }
+            this.helpVideoListFetchTask.execute();
+        }
     }
 
     @Override public void onDestroyView()
@@ -161,6 +176,32 @@ public class ProviderVideoListFragment extends CompetitionFragment
     private void launchVideo(HelpVideoId helpVideoId)
     {
         // TODO
+        HelpVideoDTO cachedHelpVideo = helpVideoCache.get(helpVideoId);
+        if (cachedHelpVideo == null)
+        {
+            THLog.d(TAG, "There is no Help Video in cache for id " + helpVideoId);
+            THToast.show(R.string.error_fetch_help_video_info);
+            return;
+        }
+
+        //Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(cachedHelpVideo.videoUrl));
+        //intent.setType("video/*");
+
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.putExtra(Intent.EXTRA_TEXT, cachedHelpVideo.embedCode);
+        intent.putExtra(Intent.EXTRA_HTML_TEXT, cachedHelpVideo.embedCode);
+        intent.setType("text/html");
+
+        if (getActivity().getPackageManager().queryIntentActivities(intent,
+                PackageManager.MATCH_DEFAULT_ONLY).size() == 0)
+        {
+            THLog.d(TAG, "There is no package that can play the video for id " + helpVideoId + ", dto " + cachedHelpVideo);
+            THToast.show(R.string.error_help_video_no_package_available_to_play);
+            return;
+        }
+
+        THLog.d(TAG, "Launching video intent on " + cachedHelpVideo.embedCode);
+        startActivity(intent);
     }
 
     private class ProviderVideoListFragmentVideoListCacheListener implements DTOCache.Listener<HelpVideoListKey, HelpVideoIdList>

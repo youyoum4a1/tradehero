@@ -29,4 +29,14 @@ public class HelpVideoListKey implements DTOKey
     {
         return providerId;
     }
+
+    @Override public boolean equals(Object other)
+    {
+        return (other instanceof HelpVideoListKey) && equals((HelpVideoListKey) other);
+    }
+
+    public boolean equals(HelpVideoListKey other)
+    {
+        return other != null;
+    }
 }

@@ -25,4 +25,9 @@ public class HelpVideoId extends AbstractIntegerDTOKey
     {
         return BUNDLE_KEY_KEY;
     }
+
+    @Override public String toString()
+    {
+        return String.format("[HelpVideoId key=%s]", key);
+    }
 }
