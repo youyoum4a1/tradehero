@@ -40,6 +40,7 @@ public class DashboardActivity extends SherlockFragmentActivity
     @Inject CurrentUserBaseKeyHolder currentUserBaseKeyHolder;
     @Inject Lazy<THIntentFactory> thIntentFactory;
     @Inject DTOCacheUtil dtoCacheUtil;
+    @Inject PurchaseRestorerAlertUtil purchaseRestorerAlertUtil;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -87,12 +88,12 @@ public class DashboardActivity extends SherlockFragmentActivity
             @Override
             public void onPurchaseRestoreFinished(List<THIABPurchase> consumed, List<THIABPurchase> reportFailed, List<THIABPurchase> consumeFailed)
             {
-                PurchaseRestorerAlertUtil.handlePurchaseRestoreFinished(
+                purchaseRestorerAlertUtil.handlePurchaseRestoreFinished(
                         DashboardActivity.this,
                         consumed,
                         reportFailed,
                         consumeFailed,
-                        PurchaseRestorerAlertUtil.createFailedRestoreClickListener(DashboardActivity.this, new Exception())); // TODO have a better exception
+                        purchaseRestorerAlertUtil.createFailedRestoreClickListener(DashboardActivity.this, new Exception())); // TODO have a better exception
             }
 
             @Override public void onPurchaseRestoreFinished(List<THIABPurchase> consumed, List<THIABPurchase> consumeFailed)

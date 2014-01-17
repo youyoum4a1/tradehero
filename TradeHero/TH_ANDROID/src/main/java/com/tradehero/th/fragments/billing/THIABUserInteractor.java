@@ -85,6 +85,9 @@ public class THIABUserInteractor
     protected OwnedPortfolioId applicablePortfolioId;
     private Runnable runOnPurchaseComplete;
 
+    @Inject protected IABAlertDialogSKUUtil iabAlertDialogSKUUtil;
+    @Inject protected PurchaseRestorerAlertUtil purchaseRestorerAlertUtil;
+
     protected BillingPurchaser.OnPurchaseFinishedListener<
         IABSKU,
         THIABPurchaseOrder,
@@ -197,31 +200,31 @@ public class THIABUserInteractor
                     THLog.e(TAG, "onPurchaseFailed requestCode " + requestCode, exception);
                     if (exception instanceof IABVerificationFailedException)
                     {
-                        IABAlertDialogUtil.popVerificationFailed(context);
+                        iabAlertDialogSKUUtil.popVerificationFailed(context);
                     }
                     else if (exception instanceof IABUserCancelledException)
                     {
-                        IABAlertDialogUtil.popUserCancelled(context);
+                        iabAlertDialogSKUUtil.popUserCancelled(context);
                     }
                     else if (exception instanceof IABBadResponseException)
                     {
-                        IABAlertDialogUtil.popBadResponse(context);
+                        iabAlertDialogSKUUtil.popBadResponse(context);
                     }
                     else if (exception instanceof IABRemoteException)
                     {
-                        IABAlertDialogUtil.popRemoteError(context);
+                        iabAlertDialogSKUUtil.popRemoteError(context);
                     }
                     else if (exception instanceof IABAlreadyOwnedException)
                     {
-                        IABAlertDialogUtil.popSKUAlreadyOwned(context, thiabProductDetailCache.get().get(purchaseOrder.getProductIdentifier()));
+                        iabAlertDialogSKUUtil.popSKUAlreadyOwned(context, thiabProductDetailCache.get().get(purchaseOrder.getProductIdentifier()));
                     }
                     else if (exception instanceof IABSendIntentException)
                     {
-                        IABAlertDialogUtil.popSendIntent(context);
+                        iabAlertDialogSKUUtil.popSendIntent(context);
                     }
                     else
                     {
-                        IABAlertDialogUtil.popUnknownError(context);
+                        iabAlertDialogSKUUtil.popUnknownError(context);
                     }
                 }
 
@@ -252,7 +255,7 @@ public class THIABUserInteractor
                     {
                         progressDialog.hide();
                     }
-                    IABAlertDialogUtil.popFailedToReport(context);
+                    iabAlertDialogSKUUtil.popFailedToReport(context);
                 }
             };
         }
@@ -270,7 +273,7 @@ public class THIABUserInteractor
                     {
                         progressDialog.hide();
                     }
-                    IABAlertDialogUtil.popOfferSendEmailSupportConsumeFailed(context, exception);
+                    iabAlertDialogSKUUtil.popOfferSendEmailSupportConsumeFailed(context, exception);
                 }
 
                 @Override public void onPurchaseConsumed(int requestCode, THIABPurchase purchase)
@@ -294,12 +297,12 @@ public class THIABUserInteractor
                         progressDialog.hide();
                     }
 
-                    PurchaseRestorerAlertUtil.handlePurchaseRestoreFinished(
+                    purchaseRestorerAlertUtil.handlePurchaseRestoreFinished(
                             context,
                             consumed,
                             reportFailed,
                             consumeFailed,
-                            PurchaseRestorerAlertUtil.createFailedRestoreClickListener(context, new Exception()),
+                            purchaseRestorerAlertUtil.createFailedRestoreClickListener(context, new Exception()),
                             true); // TODO have a better exception
                 }
 
@@ -313,7 +316,7 @@ public class THIABUserInteractor
                     THLog.e(TAG, "onPurchaseRestoreFailed", throwable);
                     if (throwable instanceof Exception)
                     {
-                        PurchaseRestorerAlertUtil.popSendEmailSupportRestoreFailed(context, (Exception) throwable);
+                        purchaseRestorerAlertUtil.popSendEmailSupportRestoreFailed(context, (Exception) throwable);
                     }
                 }
             };
@@ -461,7 +464,7 @@ public class THIABUserInteractor
     {
         if (!isBillingAvailable())
         {
-            return IABAlertDialogUtil.popBillingUnavailable(activityWeak.get());
+            return iabAlertDialogSKUUtil.popBillingUnavailable(activityWeak.get());
         }
         return null;
     }
@@ -470,7 +473,7 @@ public class THIABUserInteractor
     {
         if (!isBillingAvailable())
         {
-            return IABAlertDialogUtil.popBillingUnavailable(activityWeak.get());
+            return iabAlertDialogSKUUtil.popBillingUnavailable(activityWeak.get());
         }
         else if (hadErrorLoadingInventory())
         {
@@ -630,7 +633,7 @@ public class THIABUserInteractor
                     {
                         @Override public void run()
                         {
-                            IABAlertDialogSKUUtil.popBuyDialog(activityWeak.get(), getBillingActor(), THIABUserInteractor.this, skuDomain, titleResId,
+                            iabAlertDialogSKUUtil.popBuyDialog(activityWeak.get(), getBillingActor(), THIABUserInteractor.this, skuDomain, titleResId,
                                     runOnPurchaseComplete);
                         }
                     });
@@ -682,7 +685,7 @@ public class THIABUserInteractor
 
     protected void popFailedToLoadRequiredInfo()
     {
-        IABAlertDialogUtil.popFailedToLoadRequiredInfo(activityWeak.get());
+        iabAlertDialogSKUUtil.popFailedToLoadRequiredInfo(activityWeak.get());
     }
 
     protected void launchReportPurchaseSequence(THIABPurchase purchase)

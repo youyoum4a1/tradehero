@@ -80,6 +80,7 @@ public class SettingsFragment extends PreferenceFragment
     @Inject protected Lazy<LinkedInUtils> linkedInUtils;
 
     private THIABUserInteractor userInteractor;
+    @Inject protected PurchaseRestorerAlertUtil purchaseRestorerAlertUtil;
 
     private ProgressDialog progressDialog;
     private CheckBoxPreference facebookSharing;
@@ -141,12 +142,12 @@ public class SettingsFragment extends PreferenceFragment
             public void onPurchaseRestoreFinished(List<THIABPurchase> consumed, List<THIABPurchase> reportFailed, List<THIABPurchase> consumeFailed)
             {
                 THLog.d(TAG, "onPurchaseRestoreFinished3");
-                PurchaseRestorerAlertUtil.handlePurchaseRestoreFinished(
+                purchaseRestorerAlertUtil.handlePurchaseRestoreFinished(
                         getActivity(),
                         consumed,
                         reportFailed,
                         consumeFailed,
-                        PurchaseRestorerAlertUtil.createFailedRestoreClickListener(getActivity(), new Exception())); // TODO have a better exception
+                        purchaseRestorerAlertUtil.createFailedRestoreClickListener(getActivity(), new Exception())); // TODO have a better exception
             }
 
             @Override public void onPurchaseRestoreFinished(List<THIABPurchase> consumed, List<THIABPurchase> consumeFailed)

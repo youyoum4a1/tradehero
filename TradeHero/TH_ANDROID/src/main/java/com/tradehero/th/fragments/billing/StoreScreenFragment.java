@@ -33,6 +33,7 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
     public static boolean alreadyNotifiedNeedCreateAccount = false;
 
     @Inject CurrentUserBaseKeyHolder currentUserBaseKeyHolder;
+    @Inject IABAlertDialogUtil iabAlertDialogUtil;
 
     private ListView listView;
     private StoreItemAdapter storeItemAdapter;
@@ -189,7 +190,7 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
             if (throwable instanceof IABBillingUnavailableException && !alreadyNotifiedNeedCreateAccount)
             {
                 alreadyNotifiedNeedCreateAccount = true;
-                IABAlertDialogUtil.popBillingUnavailable(getActivity());
+                iabAlertDialogUtil.popBillingUnavailable(getActivity());
             }
             // Nothing to do presumably
         }

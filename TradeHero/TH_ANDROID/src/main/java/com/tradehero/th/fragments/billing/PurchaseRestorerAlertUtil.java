@@ -13,18 +13,24 @@ import com.tradehero.th.billing.googleplay.IABAlertDialogUtil;
 import com.tradehero.th.billing.googleplay.THIABPurchase;
 import com.tradehero.th.utils.AlertDialogUtil;
 import java.util.List;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/26/13 Time: 5:28 PM To change this template use File | Settings | File Templates. */
-public class PurchaseRestorerAlertUtil extends IABAlertDialogUtil
+@Singleton public class PurchaseRestorerAlertUtil extends IABAlertDialogUtil
 {
     public static final String TAG = PurchaseRestorerAlertUtil.class.getSimpleName();
 
-    public static AlertDialog handlePurchaseRestoreFinished(final Context context, List<THIABPurchase> consumed, List<THIABPurchase> reportFailed, List<THIABPurchase> consumeFailed, final DialogInterface.OnClickListener clickListener)
+    @Inject public PurchaseRestorerAlertUtil()
+    {
+    }
+
+    public AlertDialog handlePurchaseRestoreFinished(final Context context, List<THIABPurchase> consumed, List<THIABPurchase> reportFailed, List<THIABPurchase> consumeFailed, final DialogInterface.OnClickListener clickListener)
     {
         return handlePurchaseRestoreFinished(context, consumed, reportFailed, consumeFailed, clickListener, false);
     }
 
-    public static AlertDialog handlePurchaseRestoreFinished(final Context context, List<THIABPurchase> consumed, List<THIABPurchase> reportFailed, List<THIABPurchase> consumeFailed, final DialogInterface.OnClickListener clickListener, boolean verbose)
+    public AlertDialog handlePurchaseRestoreFinished(final Context context, List<THIABPurchase> consumed, List<THIABPurchase> reportFailed, List<THIABPurchase> consumeFailed, final DialogInterface.OnClickListener clickListener, boolean verbose)
     {
         int countOk = (consumed == null ? 0 : consumed.size());
         int countReportFailed = (reportFailed == null ? 0 : reportFailed.size());
@@ -53,7 +59,7 @@ public class PurchaseRestorerAlertUtil extends IABAlertDialogUtil
         return alertDialog;
     }
 
-    public static AlertDialog popNoPurchaseToRestore(final Context context)
+    public AlertDialog popNoPurchaseToRestore(final Context context)
     {
         return popWithNegativeButton(context,
                 context.getString(R.string.google_play_purchase_restored_none_title),
@@ -61,7 +67,7 @@ public class PurchaseRestorerAlertUtil extends IABAlertDialogUtil
                 context.getString(R.string.google_play_purchase_restored_none_cancel));
     }
 
-    public static AlertDialog popPurchasesRestored(final Context context, final int countOk)
+    public AlertDialog popPurchasesRestored(final Context context, final int countOk)
     {
         return popWithNegativeButton(context,
                 context.getString(R.string.google_play_purchase_restored_title),
@@ -69,7 +75,7 @@ public class PurchaseRestorerAlertUtil extends IABAlertDialogUtil
                 context.getString(R.string.google_play_purchase_restored_cancel));
     }
 
-    public static AlertDialog popSendEmailSupportRestorePartiallyFailed(final Context context, final DialogInterface.OnClickListener clickListener, final int countOk, final int countFailed)
+    public AlertDialog popSendEmailSupportRestorePartiallyFailed(final Context context, final DialogInterface.OnClickListener clickListener, final int countOk, final int countFailed)
     {
         return popWithOkCancelButton(context,
                 context.getString(R.string.google_play_send_support_email_restore_fail_partial_title),
@@ -79,12 +85,12 @@ public class PurchaseRestorerAlertUtil extends IABAlertDialogUtil
                 clickListener);
     }
 
-    public static AlertDialog popSendEmailSupportRestoreFailed(final Context context, final Exception exception)
+    public AlertDialog popSendEmailSupportRestoreFailed(final Context context, final Exception exception)
     {
         return popSendEmailSupportRestoreFailed(context, createFailedRestoreClickListener(context, exception));
     }
 
-    public static AlertDialog popSendEmailSupportRestoreFailed(final Context context, final DialogInterface.OnClickListener clickListener)
+    public AlertDialog popSendEmailSupportRestoreFailed(final Context context, final DialogInterface.OnClickListener clickListener)
     {
         return popWithOkCancelButton(context,
                 R.string.google_play_send_support_email_restore_fail_title,
@@ -94,18 +100,18 @@ public class PurchaseRestorerAlertUtil extends IABAlertDialogUtil
                 clickListener);
     }
 
-    public static DialogInterface.OnClickListener createFailedRestoreClickListener(final Context context, final Exception exception)
+    public DialogInterface.OnClickListener createFailedRestoreClickListener(final Context context, final Exception exception)
     {
         return new DialogInterface.OnClickListener()
         {
             @Override public void onClick(DialogInterface dialog, int which)
             {
-                PurchaseRestorerAlertUtil.sendSupportEmailRestoreFailed(context, exception);
+                sendSupportEmailRestoreFailed(context, exception);
             }
         };
     }
 
-    public static void sendSupportEmailRestoreFailed(final Context context, Exception exception)
+    public void sendSupportEmailRestoreFailed(final Context context, Exception exception)
     {
         context.startActivity(Intent.createChooser(
                 GooglePlayUtils.getSupportPurchaseRestoreEmailIntent(context, exception),
