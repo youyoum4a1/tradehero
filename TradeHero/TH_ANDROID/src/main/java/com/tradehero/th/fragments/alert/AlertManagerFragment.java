@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.billing.management;
+package com.tradehero.th.fragments.alert;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -15,7 +15,6 @@ import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.alert.AlertIdList;
-import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
@@ -68,6 +67,8 @@ public class AlertManagerFragment extends BasePurchaseManagerFragment
             alertListItemAdapter = new AlertListItemAdapter(
                     getActivity(),
                     getActivity().getLayoutInflater(),
+                    alertCompactListCache.get(),
+                    currentUserBaseKeyHolder.getCurrentUserBaseKey(),
                     R.layout.alert_list_header,
                     R.layout.alert_list_item,
                     R.layout.alert_list_item,

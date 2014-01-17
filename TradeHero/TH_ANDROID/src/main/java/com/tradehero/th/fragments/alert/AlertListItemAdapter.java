@@ -1,20 +1,23 @@
-package com.tradehero.th.fragments.billing.management;
+package com.tradehero.th.fragments.alert;
 
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
+import com.tradehero.common.persistence.DTOListCacheAdapter;
 import com.tradehero.th.R;
+import com.tradehero.th.api.alert.AlertId;
 import com.tradehero.th.api.social.FollowerSummaryDTO;
 import com.tradehero.th.api.social.HeroPayoutDTO;
 import com.tradehero.th.api.social.UserFollowerDTO;
+import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.fragments.social.follower.FollowerListItemView;
 import com.tradehero.th.fragments.social.hero.HeroPayoutListItemView;
+import com.tradehero.th.persistence.alert.AlertCompactListCache;
 import com.tradehero.th.widget.list.BaseListHeaderView;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/14/13 Time: 4:12 PM To change this template use File | Settings | File Templates. */
-public class AlertListItemAdapter extends BaseAdapter
+public class AlertListItemAdapter extends DTOListCacheAdapter<AlertId, UserBaseKey, AlertCompactListCache, AlertItemView>
 {
     public static final String TAG = AlertListItemAdapter.class.getName();
 
@@ -26,21 +29,23 @@ public class AlertListItemAdapter extends BaseAdapter
     protected final LayoutInflater inflater;
     protected final int headerResId;
     protected final int alertResId;
-    protected final int payoutNoneResId;
+    protected final int alertNoneResId;
     protected final int activeAlertHeaderResId;
     protected final int nonActiveAlertHeaderResId;
     protected FollowerSummaryDTO followerSummaryDTO;
 
-    public AlertListItemAdapter(Context context, LayoutInflater inflater, int headerResId, int alertResId, int payoutNoneResId,
+    public AlertListItemAdapter(Context context, LayoutInflater inflater, AlertCompactListCache dtoCache, UserBaseKey userBaseKey,
+            int headerResId,
+            int alertResId, int alertNoneResId,
             int activeAlertHeaderResId,
             int nonActiveAlertHeaderResId)
     {
-        super();
+        super(context, inflater, alertResId, dtoCache, userBaseKey);
         this.context = context;
         this.inflater = inflater;
         this.headerResId = headerResId;
         this.alertResId = alertResId;
-        this.payoutNoneResId = payoutNoneResId;
+        this.alertNoneResId = alertNoneResId;
         this.activeAlertHeaderResId = activeAlertHeaderResId;
         this.nonActiveAlertHeaderResId = nonActiveAlertHeaderResId;
     }
@@ -187,6 +192,11 @@ public class AlertListItemAdapter extends BaseAdapter
                 throw new IllegalStateException("Unhandled view type " + getItemViewType(position));
         }
         return convertView;
+    }
+
+    @Override protected void fineTune(int position, AlertId dto, AlertItemView dtoView)
+    {
+
     }
 
     @Override public boolean areAllItemsEnabled()

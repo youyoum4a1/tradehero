@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.billing.management;
+package com.tradehero.th.fragments.alert;
 
 import android.content.Context;
 import android.util.AttributeSet;
