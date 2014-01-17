@@ -1,28 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res/com.tradehero.th"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@null"
-    >
+  >
 
-  <com.tradehero.th.fragments.portfolio.PortfolioListView
-      android:id="@+id/own_portfolios_list"
+  <ListView
+      android:id="@+id/help_videos_list"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
       android:background="@null"
-      android:paddingBottom="48dp"
       android:clipToPadding="false"
-    />
+      />
 
   <ProgressBar
       android:id="@android:id/empty"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_centerInParent="true"
-    />
+      />
 
 </RelativeLayout>

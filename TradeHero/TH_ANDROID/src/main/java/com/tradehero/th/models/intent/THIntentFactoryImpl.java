@@ -2,15 +2,8 @@ package com.tradehero.th.models.intent;
 
 import android.content.Intent;
 import com.tradehero.common.utils.THLog;
-import com.tradehero.th.R;
-import com.tradehero.th.models.intent.portfolio.PortfolioIntentFactory;
-import com.tradehero.th.models.intent.trending.TrendingIntentFactory;
-import com.tradehero.th.utils.DaggerUtils;
 import java.util.HashMap;
 import java.util.Map;
-import javax.inject.Inject;
-import javax.inject.Singleton;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 /**
  * Created by xavier on 1/10/14.
@@ -28,7 +21,7 @@ public class THIntentFactoryImpl extends THIntentFactory<THIntent>
 
     @Override public String getHost()
     {
-        throw new NotImplementedException();
+        throw new RuntimeException();
     }
 
     public <T extends THIntent> void addSubFactory(THIntentFactory<T> factory)

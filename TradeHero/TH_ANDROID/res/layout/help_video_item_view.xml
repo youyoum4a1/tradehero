@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tradehero.th.fragments.competition.ProviderVideoListItem
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res/com.tradehero.th"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@null"
+    android:padding="8dp"
+  >
+
+  <ImageView
+      android:id="@+id/help_video_thumbnail"
+      android:layout_width="125dp"
+      android:layout_height="125dp"
+      android:layout_alignParentLeft="true"
+      android:scaleType="fitCenter"
+      android:contentDescription="@null"
+    />
+
+  <LinearLayout
+      android:orientation="vertical"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginLeft="8dp"
+      android:layout_toRightOf="@id/help_video_thumbnail"
+      android:layout_alignParentRight="true"
+      android:layout_centerVertical="true"
+    >
+
+    <TextView
+        android:id="@+id/help_video_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+      />
+
+    <TextView
+        android:id="@+id/help_video_description"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+      />
+
+  </LinearLayout>
+
+</com.tradehero.th.fragments.competition.ProviderVideoListItem>

@@ -1,6 +1,13 @@
 package com.tradehero.th.fragments.competition;
 
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import com.tradehero.common.persistence.DTOCache;
+import com.tradehero.common.utils.THLog;
+import com.tradehero.common.utils.THToast;
+import com.tradehero.th.R;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.fragments.base.DashboardFragment;
@@ -19,6 +26,8 @@ abstract public class CompetitionFragment extends DashboardFragment
     protected ProviderId providerId;
     protected ProviderDTO providerDTO;
     @Inject protected ProviderCache providerCache;
+    private DTOCache.Listener<ProviderId, ProviderDTO> providerCacheListener;
+    private DTOCache.GetOrFetchTask<ProviderId, ProviderDTO> providerCacheFetchTask;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -35,6 +44,63 @@ abstract public class CompetitionFragment extends DashboardFragment
         else
         {
             throw new IllegalArgumentException("There is no defined providerId");
+        }
+
+        this.providerCacheListener = new CompetitionFragmentProviderCacheListener();
+    }
+
+    @Override public void onStart()
+    {
+        super.onStart();
+        this.detachProviderFetchTask();
+        this.providerCacheFetchTask = providerCache.getOrFetch(this.providerId, this.providerCacheListener);
+        this.providerCacheFetchTask.execute();
+    }
+
+    @Override public void onStop()
+    {
+        this.detachProviderFetchTask();
+        super.onStop();
+    }
+
+    @Override public void onDestroy()
+    {
+        this.providerCacheListener = null;
+        super.onDestroy();
+    }
+
+    protected void detachProviderFetchTask()
+    {
+        if (this.providerCacheFetchTask != null)
+        {
+            this.providerCacheFetchTask.setListener(null);
+        }
+        this.providerCacheFetchTask = null;
+    }
+
+    protected void linkWith(ProviderDTO providerDTO, boolean andDisplay)
+    {
+        this.providerDTO = providerDTO;
+        if (andDisplay)
+        {
+
+        }
+    }
+
+    protected class CompetitionFragmentProviderCacheListener implements DTOCache.Listener<ProviderId, ProviderDTO>
+    {
+        @Override public void onDTOReceived(ProviderId key, ProviderDTO value)
+        {
+            if (key.equals(CompetitionFragment.this.providerId))
+            {
+                CompetitionFragment.this.linkWith(value, true);
+            }
+        }
+
+        @Override public void onErrorThrown(ProviderId key, Throwable error)
+        {
+            THToast.show(getString(R.string.error_fetch_provider_info));
+            THLog.e(TAG, "Error fetching the provider info " + key, error);
         }
     }
 }

@@ -3,7 +3,9 @@ package com.tradehero.th.persistence;
 import com.tradehero.th.api.competition.ProviderListKey;
 import com.tradehero.th.api.market.ExchangeListType;
 import com.tradehero.th.api.security.TrendingBasicSecurityListType;
+import com.tradehero.th.api.security.TrendingSecurityListType;
 import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
+import com.tradehero.th.fragments.trending.TrendingFragment;
 import com.tradehero.th.persistence.alert.AlertCache;
 import com.tradehero.th.persistence.alert.AlertCompactCache;
 import com.tradehero.th.persistence.alert.AlertCompactListCache;
@@ -88,17 +90,21 @@ import javax.inject.Singleton;
         positionCompactCache.get().invalidateAll();
         positionCompactIdCache.get().invalidateAll();
         securityPositionDetailCache.get().invalidateAll();
+        securityCompactListCache.get().invalidateAll();
         tradeCache.get().invalidateAll();
         tradeListCache.get().invalidateAll();
         userProfileCache.get().invalidateAll();
         userFollowerCache.get().invalidateAll();
         exchangeListCache.get().invalidateAll();
+        watchlistPositionCache.get().invalidateAll();
+        providerListCache.get().invalidateAll();
     }
 
     public void initialPrefetches()
     {
         preFetchExchanges();
         preFetchWatchlist();
+        preFetchProviders();
         preFetchTrending();
     }
     
@@ -119,6 +125,6 @@ import javax.inject.Singleton;
 
     public void preFetchTrending()
     {
-        this.securityCompactListCache.get().autoFetch(new TrendingBasicSecurityListType());
+        this.securityCompactListCache.get().autoFetch(new TrendingBasicSecurityListType(TrendingSecurityListType.ALL_EXCHANGES, 1, TrendingFragment.DEFAULT_PER_PAGE));
     }
 }

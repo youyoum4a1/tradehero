@@ -45,9 +45,14 @@ public class ProviderDTO implements DTO
     public String helpVideoText;
     public String ruleText;
     public boolean hasHelpVideo;
+    public String wizardUrl;
 
     public PortfolioCompactDTO associatedPortfolio;
 
+    /**
+     * Creates the id that identifies this DTO.
+     * @return
+     */
     public ProviderId getProviderId()
     {
         return new ProviderId(id);

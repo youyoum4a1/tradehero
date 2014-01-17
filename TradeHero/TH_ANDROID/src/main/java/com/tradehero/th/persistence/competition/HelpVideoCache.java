@@ -3,13 +3,10 @@ package com.tradehero.th.persistence.competition;
 import com.tradehero.common.persistence.StraightDTOCache;
 import com.tradehero.th.api.competition.HelpVideoDTO;
 import com.tradehero.th.api.competition.HelpVideoId;
-import com.tradehero.th.api.competition.ProviderListKey;
-import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/3/13 Time: 4:40 PM To change this template use File | Settings | File Templates. */
 @Singleton public class HelpVideoCache extends StraightDTOCache<HelpVideoId, HelpVideoDTO>
@@ -26,7 +23,7 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
     @Override protected HelpVideoDTO fetch(HelpVideoId key) throws Throwable
     {
-        throw new NotImplementedException();
+        throw new RuntimeException();
     }
 
     public List<HelpVideoDTO> getOrFetch(List<HelpVideoId> helpVideoIds) throws Throwable
