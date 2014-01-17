@@ -25,23 +25,24 @@ public class AlertListItemAdapter extends BaseAdapter
     protected final Context context;
     protected final LayoutInflater inflater;
     protected final int headerResId;
-    protected final int payoutResId;
+    protected final int alertResId;
     protected final int payoutNoneResId;
-    protected final int followerResId;
-    protected final int followerNoneResId;
+    protected final int activeAlertHeaderResId;
+    protected final int nonActiveAlertHeaderResId;
     protected FollowerSummaryDTO followerSummaryDTO;
 
-    public AlertListItemAdapter(Context context, LayoutInflater inflater, int headerResId, int payoutResId, int payoutNoneResId, int followerResId,
-            int followerNoneResId)
+    public AlertListItemAdapter(Context context, LayoutInflater inflater, int headerResId, int alertResId, int payoutNoneResId,
+            int activeAlertHeaderResId,
+            int nonActiveAlertHeaderResId)
     {
         super();
         this.context = context;
         this.inflater = inflater;
         this.headerResId = headerResId;
-        this.payoutResId = payoutResId;
+        this.alertResId = alertResId;
         this.payoutNoneResId = payoutNoneResId;
-        this.followerResId = followerResId;
-        this.followerNoneResId = followerNoneResId;
+        this.activeAlertHeaderResId = activeAlertHeaderResId;
+        this.nonActiveAlertHeaderResId = nonActiveAlertHeaderResId;
     }
 
     public void setFollowerSummaryDTO(FollowerSummaryDTO followerSummaryDTO)
@@ -161,7 +162,7 @@ public class AlertListItemAdapter extends BaseAdapter
             case VIEW_TYPE_ITEM_ALERT:
                 if (!(convertView instanceof HeroPayoutListItemView))
                 {
-                    convertView = inflater.inflate(payoutResId, parent, false);
+                    convertView = inflater.inflate(alertResId, parent, false);
                 }
                 ((HeroPayoutListItemView) convertView).display((HeroPayoutDTO) getItem(position));
                 break;
@@ -177,7 +178,7 @@ public class AlertListItemAdapter extends BaseAdapter
             case VIEW_TYPE_HEADER_INACTIVE:
                 if (!(convertView instanceof FollowerListItemView))
                 {
-                    convertView = inflater.inflate(followerResId, parent, false);
+                    convertView = inflater.inflate(activeAlertHeaderResId, parent, false);
                 }
                 ((FollowerListItemView) convertView).display((UserFollowerDTO) getItem(position));
                 break;

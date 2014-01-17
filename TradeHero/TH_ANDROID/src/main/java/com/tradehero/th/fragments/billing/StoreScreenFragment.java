@@ -20,6 +20,7 @@ import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
 import com.tradehero.th.billing.googleplay.IABAlertDialogUtil;
 import com.tradehero.th.billing.googleplay.THIABActor;
+import com.tradehero.th.fragments.billing.management.AlertManagerFragment;
 import com.tradehero.th.fragments.social.follower.FollowerManagerFragment;
 import com.tradehero.th.fragments.social.hero.HeroManagerFragment;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListRetrievedMilestone;
@@ -128,11 +129,20 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
             case StoreItemAdapter.POSITION_MANAGE_FOLLOWERS:
                 pushFollowerFragment();
                 break;
-
+            case StoreItemAdapter.POSITION_MANAGE_STOCK_ALERTS:
+                pushStockAlertFragment();
+                break;
             default:
                 THToast.show("Clicked at position " + position);
                 break;
         }
+    }
+
+    private void pushStockAlertFragment()
+    {
+        Bundle bundle = new Bundle();
+        bundle.putInt(AlertManagerFragment.BUNDLE_KEY_USER_ID, currentUserBaseKeyHolder.getCurrentUserBaseKey().key);
+        pushFragment(AlertManagerFragment.class, bundle);
     }
 
     protected void pushHeroFragment()

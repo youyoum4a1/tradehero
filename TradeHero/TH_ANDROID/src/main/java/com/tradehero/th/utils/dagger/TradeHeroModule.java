@@ -28,6 +28,7 @@ import com.tradehero.th.fragments.WebViewFragment;
 import com.tradehero.th.fragments.authentication.EmailSignInFragment;
 import com.tradehero.th.fragments.billing.StoreScreenFragment;
 import com.tradehero.th.fragments.billing.THIABUserInteractor;
+import com.tradehero.th.fragments.billing.management.AlertManagerFragment;
 import com.tradehero.th.fragments.competition.ProviderVideoListFragment;
 import com.tradehero.th.fragments.competition.ProviderVideoListItem;
 import com.tradehero.th.fragments.leaderboard.BaseLeaderboardFragment;
@@ -289,6 +290,8 @@ import org.ocpsoft.prettytime.PrettyTime;
                 WatchlistPortfolioHeaderView.class,
 
                 TrendingIntentFactory.class,
+
+                AlertManagerFragment.class,
         },
         staticInjections =
         {

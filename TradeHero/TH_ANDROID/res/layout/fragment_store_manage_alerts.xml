@@ -4,13 +4,14 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-  >
+    >
 
   <RelativeLayout
       android:id="@+id/manage_alerts_header"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_alignParentTop="true"
+      android:padding="@dimen/stock_alert_header_padding"
       android:background="@color/gray_3"
       >
 
@@ -20,44 +21,40 @@
         android:layout_height="48dp"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
-        android:layout_marginRight="8dp"
         android:scaleType="fitCenter"
-        android:src="@drawable/upgrade_alerts"
+        android:src="@drawable/btn_buy_stock_alerts"
         android:background="@null"
         android:contentDescription="@null"
         />
 
-    <LinearLayout
-        android:layout_width="match_parent"
+
+    <TextView
+        android:id="@+id/manage_alerts_plan_title"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text="@string/manage_alerts_plan"
         android:layout_alignParentLeft="true"
-        android:layout_toLeftOf="@id/btn_upgrade_plan"
         android:layout_centerVertical="true"
-        android:orientation="horizontal"
-        >
+        />
 
-      <TextView
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:text="@string/manage_alerts_plan"
-          />
+    <TextView
+        android:id="@+id/manage_alerts_count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_toRightOf="@id/manage_alerts_plan_title"
+        android:text="@null"
+        />
+    <!--<LinearLayout-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_alignParentLeft="true"-->
+    <!--android:layout_toLeftOf="@id/btn_upgrade_plan"-->
+    <!--android:layout_centerVertical="true"-->
+    <!--android:orientation="horizontal"-->
+    <!-->-->
 
-      <TextView
-          android:id="@+id/manage_alerts_count"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          />
-
-      <ImageView
-          android:id="@+id/icn_alert_plan_hint"
-          android:layout_width="32dp"
-          android:layout_height="32dp"
-          android:src="@drawable/buy_alerts_2"
-          android:baselineAlignBottom="true"
-          android:contentDescription="@null"
-          />
-
-    </LinearLayout>
+    <!--</LinearLayout>-->
 
   </RelativeLayout>
 
@@ -67,6 +64,6 @@
       android:layout_height="wrap_content"
       android:layout_below="@id/manage_alerts_header"
       android:background="@null"
-    />
+      />
 
 </RelativeLayout>

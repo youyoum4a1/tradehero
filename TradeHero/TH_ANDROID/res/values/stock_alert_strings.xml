@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="error_fetch_alert">There was an error when fetching alert information</string>
+  <string name="stock_alerts">Stock Alerts</string>
+</resources>
