@@ -186,4 +186,5 @@
   <string name="new_discussion">New Discussion</string>
   <string name="add_alert">Add Alert</string>
   <string name="error_fetch_portfolio_watchlist">There was an error when fetching the watch list</string>
+  <string name="not_yet_implemented">Not yet implemented. Stay stuned.</string>
 </resources>

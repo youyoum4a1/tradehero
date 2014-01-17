@@ -276,6 +276,7 @@ public class TimelineItemView extends LinearLayout implements
 
                 case R.id.timeline_popup_menu_monitor_enable_stock_alert:
                     // TODO add stock alert
+                    THToast.show(getContext().getString(R.string.not_yet_implemented));
                     return true;
 
                 case R.id.timeline_popup_menu_monitor_view_graph:

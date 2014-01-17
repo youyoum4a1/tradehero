@@ -18,6 +18,7 @@ import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 import com.tradehero.common.graphics.WhiteToTransparentTransformation;
 import com.tradehero.common.utils.THLog;
+import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.security.SecurityCompactDTO;
@@ -417,12 +418,13 @@ public class WatchlistItemView extends FrameLayout implements DTOView<SecurityId
             {
                 case R.id.watchlist_item_add_alert:
                     // TODO add alert
+                    THToast.show(getContext().getString(R.string.not_yet_implemented));
                     break;
                 case R.id.watchlist_item_edit_in_watchlist:
                     openWatchlistEditor();
                     break;
                 case R.id.watchlist_item_new_discussion:
-                    // TODO new discussion
+                    THToast.show(getContext().getString(R.string.not_yet_implemented));
                     break;
                 case R.id.watchlist_item_view_graph:
                     openSecurityGraph();
