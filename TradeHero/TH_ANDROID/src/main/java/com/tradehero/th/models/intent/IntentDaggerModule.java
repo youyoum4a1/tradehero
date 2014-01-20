@@ -1,5 +1,6 @@
 package com.tradehero.th.models.intent;
 
+import com.tradehero.th.models.intent.competition.ProviderIntentFactory;
 import com.tradehero.th.models.intent.portfolio.PortfolioIntentFactory;
 import com.tradehero.th.models.intent.trending.TrendingIntentFactory;
 import dagger.Module;
@@ -17,6 +18,7 @@ import javax.inject.Singleton;
         injects =
                 {
                         com.tradehero.th.activities.DashboardActivity.class,
+                        com.tradehero.th.fragments.web.THWebViewClient.class,
                 },
         complete = false,
         library = true
@@ -34,6 +36,7 @@ public class IntentDaggerModule
         THIntentFactoryImpl factory = new THIntentFactoryImpl();
         factory.addSubFactory(new TrendingIntentFactory());
         factory.addSubFactory(new PortfolioIntentFactory());
+        factory.addSubFactory(new ProviderIntentFactory());
         return factory;
     }
 }

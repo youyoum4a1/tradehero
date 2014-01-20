@@ -4,7 +4,7 @@
   <header
       android:title="@string/settings_primary_faq"
       android:icon="@drawable/settings_faq"
-      android:fragment="com.tradehero.th.fragments.WebViewFragment">
+      android:fragment="com.tradehero.th.fragments.web.WebViewFragment">
     <extra android:name="url" android:value="http://www.tradehero.mobi/faq"/>
   </header>
 </preference-headers>

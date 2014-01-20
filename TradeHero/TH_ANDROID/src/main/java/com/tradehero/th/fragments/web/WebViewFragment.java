@@ -4,14 +4,17 @@
  *
  * Created by @author Siddesh Bingi on Jul 28, 2013
  */
-package com.tradehero.th.fragments;
+package com.tradehero.th.fragments.web;
 
+import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.ConsoleMessage;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebSettings.PluginState;
@@ -19,20 +22,26 @@ import android.webkit.WebSettings.RenderPriority;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import com.actionbarsherlock.app.ActionBar;
-import com.actionbarsherlock.app.SherlockFragment;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
+import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
-import com.tradehero.th.api.yahoo.News;
 import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.models.intent.THIntent;
+import com.tradehero.th.models.intent.THIntentPassedListener;
 
 public class WebViewFragment extends DashboardFragment
 {
+    public static final String TAG = WebViewFragment.class.getSimpleName();
     public static final String BUNDLE_KEY_URL = WebViewFragment.class.getName() + ".url";
 
     private WebView webView;
     private ActionBar actionBar;
+
+    private THIntentPassedListener parentTHIntentPassedListener;
+    private THIntentPassedListener thIntentPassedListener;
+    private THWebViewClient thWebViewClient;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -92,16 +101,13 @@ public class WebViewFragment extends DashboardFragment
     {
         super.onActivityCreated(savedInstanceState);
 
-        String url = getArguments().getString(BUNDLE_KEY_URL);
-        if (url != null)
-        {
-            webView.loadUrl(url);
-        }
+        loadUrl(getArguments().getString(BUNDLE_KEY_URL));
     }
 
     private void initViews(View v)
     {
         webView = (WebView) v.findViewById(R.id.webview);
+
         webView.getSettings().setBuiltInZoomControls(true);
         webView.getSettings().setJavaScriptEnabled(true);
         webView.getSettings().setDomStorageEnabled(true);
@@ -126,18 +132,77 @@ public class WebViewFragment extends DashboardFragment
                     WebViewFragment.this.actionBar.setTitle(view.getTitle());
                 }
             }
+
+            @Override public void onConsoleMessage(String message, int lineNumber, String sourceID)
+            {
+                THLog.i(TAG, message + " -- From line " + lineNumber + " of " + sourceID);
+            }
+
+            @Override public boolean onConsoleMessage(ConsoleMessage cm)
+            {
+                THLog.i(TAG, cm.message() + " -- From line " + cm.lineNumber() + " of " + cm.sourceId());
+                return true;
+            }
+             
         };
         webView.setWebChromeClient(webChromeClient);
 
-        WebViewClient webViewClient = new WebViewClient()
+        this.thIntentPassedListener = new THIntentPassedListener()
         {
-            @Override public boolean shouldOverrideUrlLoading(WebView view, String url)
+            @Override public void onIntentPassed(THIntent thIntent)
             {
-                view.loadUrl(url);
-                return false;
+                notifyParentIntentPassed(thIntent);
             }
         };
-        webView.setWebViewClient(webViewClient);
+
+        this.thWebViewClient = new THWebViewClient(getActivity());
+        thWebViewClient.setThIntentPassedListener(this.thIntentPassedListener);
+        webView.setWebViewClient(thWebViewClient);
+    }
+
+    @Override public void onDestroyView()
+    {
+        if (this.thWebViewClient != null)
+        {
+            this.thWebViewClient.setThIntentPassedListener(null);
+        }
+        this.thWebViewClient = null;
+        this.thIntentPassedListener = null;
+        super.onDestroyView();
+    }
+
+    @Override public void onDestroy()
+    {
+        this.parentTHIntentPassedListener = null;
+        super.onDestroy();
+    }
+
+    public void loadUrl(String url)
+    {
+        if (url != null)
+        {
+            THLog.d(TAG, "url: " + url);
+            webView.loadUrl(url);
+        }
+    }
+
+    public void setThIntentPassedListener(THIntentPassedListener thIntentPassedListener)
+    {
+        THLog.d(TAG, "setThIntentPassedListener " + thIntentPassedListener);
+        this.parentTHIntentPassedListener = thIntentPassedListener;
+    }
+
+    private void notifyParentIntentPassed(THIntent thIntent)
+    {
+        THIntentPassedListener parentListenerCopy = this.parentTHIntentPassedListener;
+        if (parentListenerCopy != null)
+        {
+            parentListenerCopy.onIntentPassed(thIntent);
+        }
+        else
+        {
+            THLog.d(TAG, "notifyParentIntentPassed listener is null");
+        }
     }
 
     //<editor-fold desc="BaseFragment.TabBarVisibilityInformer">

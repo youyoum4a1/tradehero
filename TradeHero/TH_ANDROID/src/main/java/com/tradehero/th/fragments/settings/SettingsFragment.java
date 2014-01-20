@@ -36,7 +36,7 @@ import com.tradehero.th.base.THUser;
 import com.tradehero.th.billing.googleplay.THIABPurchase;
 import com.tradehero.th.billing.googleplay.THIABPurchaseRestorer;
 import com.tradehero.th.fragments.DashboardNavigator;
-import com.tradehero.th.fragments.WebViewFragment;
+import com.tradehero.th.fragments.web.WebViewFragment;
 import com.tradehero.th.fragments.billing.PurchaseRestorerAlertUtil;
 import com.tradehero.th.fragments.billing.THIABUserInteractor;
 import com.tradehero.th.misc.callback.LogInCallback;

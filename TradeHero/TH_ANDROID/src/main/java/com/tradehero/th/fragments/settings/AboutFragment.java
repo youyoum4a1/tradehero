@@ -8,10 +8,9 @@ import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.th.R;
-import com.tradehero.th.api.yahoo.News;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.base.NavigatorActivity;
-import com.tradehero.th.fragments.WebViewFragment;
+import com.tradehero.th.fragments.web.WebViewFragment;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import android.widget.Button;
 

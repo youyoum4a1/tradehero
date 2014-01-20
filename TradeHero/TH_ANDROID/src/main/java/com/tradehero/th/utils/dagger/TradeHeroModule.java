@@ -11,6 +11,7 @@ import com.tradehero.common.persistence.CacheHelper;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.AuthenticationActivity;
 import com.tradehero.th.activities.DashboardActivity;
+import com.tradehero.th.api.competition.ProviderConstants;
 import com.tradehero.th.api.form.AbstractUserAvailabilityRequester;
 import com.tradehero.th.api.portfolio.DisplayablePortfolioDTO;
 import com.tradehero.th.api.portfolio.DisplayablePortfolioUtil;
@@ -24,7 +25,7 @@ import com.tradehero.th.billing.googleplay.THIABPurchaseFetcher;
 import com.tradehero.th.billing.googleplay.THIABPurchaseReporter;
 import com.tradehero.th.billing.googleplay.THIABPurchaser;
 import com.tradehero.th.billing.googleplay.THInventoryFetchMilestone;
-import com.tradehero.th.fragments.WebViewFragment;
+import com.tradehero.th.fragments.web.WebViewFragment;
 import com.tradehero.th.fragments.alert.AlertManagerFragment;
 import com.tradehero.th.fragments.authentication.EmailSignInFragment;
 import com.tradehero.th.fragments.billing.StoreScreenFragment;
@@ -295,6 +296,7 @@ import org.ocpsoft.prettytime.PrettyTime;
                 NumberDisplayUtils.class,
                 DisplayablePortfolioDTO.class,
                 DisplayablePortfolioUtil.class,
+                ProviderConstants.class,
         },
         complete = false,
         library = true // TEMP

@@ -20,4 +20,12 @@ public class CompetitionZoneTradeNowDTO extends CompetitionZoneDTO
         return super.hashCode() ^
                 (imageUrl == null ? new Integer(0) : imageUrl).hashCode();
     }
+
+    @Override public String toString()
+    {
+        return "CompetitionZoneTradeNowDTO{" +
+                "title='" + title + '\'' +
+                ", description='" + description + '\'' +
+                '}';
+    }
 }

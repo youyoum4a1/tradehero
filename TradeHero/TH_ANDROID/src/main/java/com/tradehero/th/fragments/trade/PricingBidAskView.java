@@ -111,7 +111,7 @@ public class PricingBidAskView extends LinearLayout implements DTOView<SecurityC
         mRowBidAskHint = (TableRow) findViewById(R.id.row_bid_ask_hint);
         mAskPriceHint = (TextView) findViewById(R.id.ask_price_hint);
         mBidPriceHint = (TextView) findViewById(R.id.bid_price_hint);
-        mProgressBar = (ProgressBar) findViewById(R.id.progress);
+        //mProgressBar = (ProgressBar) findViewById(R.id.progress);
         display();
     }
 

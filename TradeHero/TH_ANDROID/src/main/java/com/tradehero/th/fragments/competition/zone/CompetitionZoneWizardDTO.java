@@ -11,4 +11,12 @@ public class CompetitionZoneWizardDTO extends CompetitionZoneDTO
     {
         super(title, description);
     }
+
+    @Override public String toString()
+    {
+        return "CompetitionZoneWizardDTO{" +
+                "title='" + title + '\'' +
+                ", description='" + description + '\'' +
+                '}';
+    }
 }

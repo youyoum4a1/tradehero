@@ -8,7 +8,7 @@ import com.tradehero.th.adapters.ArrayDTOAdapter;
 import com.tradehero.th.api.yahoo.News;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.base.NavigatorActivity;
-import com.tradehero.th.fragments.WebViewFragment;
+import com.tradehero.th.fragments.web.WebViewFragment;
 
 /**
  * Created by julien on 11/10/13

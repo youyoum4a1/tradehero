@@ -12,12 +12,18 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
+import com.tradehero.th.api.competition.ProviderConstants;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.fragments.competition.zone.CompetitionZoneDTO;
+import com.tradehero.th.fragments.competition.zone.CompetitionZoneLegalDTO;
 import com.tradehero.th.fragments.competition.zone.CompetitionZonePortfolioDTO;
 import com.tradehero.th.fragments.competition.zone.CompetitionZoneTradeNowDTO;
 import com.tradehero.th.fragments.competition.zone.CompetitionZoneVideoDTO;
 import com.tradehero.th.fragments.competition.zone.CompetitionZoneWizardDTO;
+import com.tradehero.th.fragments.web.WebViewFragment;
+import com.tradehero.th.models.intent.THIntent;
+import com.tradehero.th.models.intent.THIntentPassedListener;
+import com.tradehero.th.models.intent.competition.ProviderPageIntent;
 
 /**
  * Created by xavier on 1/17/14.
@@ -31,6 +37,15 @@ public class MainCompetitionFragment extends CompetitionFragment
     private AbsListView listView;
     private CompetitionZoneListItemAdapter competitionZoneListItemAdapter;
 
+    private THIntentPassedListener webViewTHIntentPassedListener;
+    private WebViewFragment webViewFragment;
+
+    @Override public void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        this.webViewTHIntentPassedListener = new MainCompetitionWebViewTHIntentPassedListener();
+    }
+
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.fragment_main_competition, container, false);
@@ -42,6 +57,7 @@ public class MainCompetitionFragment extends CompetitionFragment
                 R.layout.competition_zone_trade_now,
                 R.layout.competition_zone_header,
                 R.layout.competition_zone_legal_mentions);
+        this.competitionZoneListItemAdapter.setParentOnLegalElementClicked(new MainCompetitionLegalClickedListener());
 
         this.progressBar = (ProgressBar) view.findViewById(android.R.id.empty);
         if (this.progressBar != null)
@@ -54,6 +70,7 @@ public class MainCompetitionFragment extends CompetitionFragment
             this.listView.setAdapter(this.competitionZoneListItemAdapter);
             this.listView.setOnItemClickListener(new MainCompetitionFragmentItemClickListener());
         }
+
         return view;
     }
 
@@ -74,10 +91,46 @@ public class MainCompetitionFragment extends CompetitionFragment
     }
     //</editor-fold>
 
+    @Override public void onResume()
+    {
+        super.onResume();
+        // We came back into view so we have to forget the web fragment
+        if (this.webViewFragment != null)
+        {
+            this.webViewFragment.setThIntentPassedListener(null);
+        }
+        this.webViewFragment = null;
+    }
+
+    @Override public void onDestroyView()
+    {
+        if (this.competitionZoneListItemAdapter != null)
+        {
+            this.competitionZoneListItemAdapter.setParentOnLegalElementClicked(null);
+        }
+        this.competitionZoneListItemAdapter = null;
+
+        this.progressBar = null;
+
+        if (this.listView != null)
+        {
+            this.listView.setOnItemClickListener(null);
+        }
+        this.listView = null;
+
+        super.onDestroyView();
+    }
+
+    @Override public void onDestroy()
+    {
+        this.webViewTHIntentPassedListener = null;
+        super.onDestroy();
+    }
+
     @Override protected void linkWith(ProviderDTO providerDTO, boolean andDisplay)
     {
         super.linkWith(providerDTO, andDisplay);
-        this.competitionZoneListItemAdapter.setProvider(providerDTO);
+        this.competitionZoneListItemAdapter.setProviderAndUser(providerDTO);
         this.competitionZoneListItemAdapter.notifyDataSetChanged();
         if (progressBar != null)
         {
@@ -128,8 +181,26 @@ public class MainCompetitionFragment extends CompetitionFragment
         }
         else if (competitionZoneDTO instanceof CompetitionZoneWizardDTO)
         {
-
+            Bundle args = new Bundle();
+            args.putString(WebViewFragment.BUNDLE_KEY_URL, ProviderConstants.getWizardPage(providerId) + "&previous=whatever");
+            this.webViewFragment = (WebViewFragment) navigator.pushFragment(WebViewFragment.class, args);
+            this.webViewFragment.setThIntentPassedListener(this.webViewTHIntentPassedListener);
         }
+        else if (competitionZoneDTO instanceof CompetitionZoneLegalDTO)
+        {
+            THLog.d(TAG, "handleItemClicked " + competitionZoneDTO);
+            Bundle args = new Bundle();
+            if (((CompetitionZoneLegalDTO) competitionZoneDTO).requestedLink.equals(CompetitionZoneLegalDTO.LinkType.RULES))
+            {
+                args.putString(WebViewFragment.BUNDLE_KEY_URL, ProviderConstants.getRulesPage(providerId));
+            }
+            else
+            {
+                args.putString(WebViewFragment.BUNDLE_KEY_URL, ProviderConstants.getTermsPage(providerId));
+            }
+            navigator.pushFragment(WebViewFragment.class, args);
+        }
+
         // TODO others?
     }
 
@@ -139,6 +210,42 @@ public class MainCompetitionFragment extends CompetitionFragment
         {
             THLog.d(TAG, "onItemClient");
             handleItemClicked((CompetitionZoneDTO) adapterView.getItemAtPosition(i));
+        }
+    }
+
+    private class MainCompetitionWebViewTHIntentPassedListener implements THIntentPassedListener
+    {
+        @Override public void onIntentPassed(THIntent thIntent)
+        {
+            if (thIntent instanceof ProviderPageIntent)
+            {
+                THLog.d(TAG, "Intent is ProviderPageIntent");
+                if (webViewFragment != null)
+                {
+                    THLog.d(TAG, "Passing on " + ((ProviderPageIntent) thIntent).getCompleteForwardUriPath());
+                    webViewFragment.loadUrl(((ProviderPageIntent) thIntent).getCompleteForwardUriPath());
+                }
+                else
+                {
+                    THLog.d(TAG, "WebFragment is null");
+                }
+            }
+            else if (thIntent == null)
+            {
+                navigator.popFragment();
+            }
+            else
+            {
+                THLog.w(TAG, "Unhandled intent " + thIntent);
+            }
+        }
+    }
+
+    private class MainCompetitionLegalClickedListener implements CompetitionZoneLegalMentionsView.OnElementClickedListener
+    {
+        @Override public void onElementClicked(CompetitionZoneDTO competitionZoneLegalDTO)
+        {
+            handleItemClicked(competitionZoneLegalDTO);
         }
     }
 }

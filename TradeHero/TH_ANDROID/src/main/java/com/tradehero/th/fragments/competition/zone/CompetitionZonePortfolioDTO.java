@@ -11,4 +11,12 @@ public class CompetitionZonePortfolioDTO extends CompetitionZoneDTO
     {
         super(title, description);
     }
+
+    @Override public String toString()
+    {
+        return "CompetitionZonePortfolioDTO{" +
+                "title='" + title + '\'' +
+                ", description='" + description + '\'' +
+                '}';
+    }
 }

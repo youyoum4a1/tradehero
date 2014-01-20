@@ -33,6 +33,7 @@ public class CompetitionZoneListItemAdapter extends ArrayDTOAdapter<CompetitionZ
     private final int headerResId;
     private final int legalResId;
     @Inject protected CompetitionZoneDTOUtil competitionZoneDTOUtil;
+    private CompetitionZoneLegalMentionsView.OnElementClickedListener parentOnLegalElementClicked;
 
     public CompetitionZoneListItemAdapter(Context context, LayoutInflater inflater, int zoneItemLayoutResId, int tradeNowResId, int headerResId, int legalResId)
     {
@@ -51,7 +52,7 @@ public class CompetitionZoneListItemAdapter extends ArrayDTOAdapter<CompetitionZ
         return true;
     }
 
-    public void setProvider(ProviderDTO providerDTO)
+    public void setProviderAndUser(ProviderDTO providerDTO)
     {
         List<Integer> preparedOrderedTypes = new ArrayList<>();
         List<Object> preparedOrderedItems = new ArrayList<>();
@@ -138,6 +139,7 @@ public class CompetitionZoneListItemAdapter extends ArrayDTOAdapter<CompetitionZ
             case ITEM_TYPE_LEGAL_MENTIONS:
                 view = inflater.inflate(legalResId, parent, false);
                 ((AbstractCompetitionZoneListItemView) view).display((CompetitionZoneDTO) item);
+                ((CompetitionZoneLegalMentionsView) view).setOnElementClickedListener(this.parentOnLegalElementClicked);
                 break;
 
             default:
@@ -160,5 +162,10 @@ public class CompetitionZoneListItemAdapter extends ArrayDTOAdapter<CompetitionZ
     @Override protected void fineTune(int position, CompetitionZoneDTO dto, CompetitionZoneListItemView dtoView)
     {
         // Nothing to do
+    }
+
+    public void setParentOnLegalElementClicked(CompetitionZoneLegalMentionsView.OnElementClickedListener parentOnLegalElementClicked)
+    {
+        this.parentOnLegalElementClicked = parentOnLegalElementClicked;
     }
 }

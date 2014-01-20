@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.competition.zone;
 
 import android.content.Context;
+import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.fragments.competition.CompetitionZoneListItemAdapter;
@@ -55,6 +56,7 @@ import javax.inject.Singleton;
             // TODO add competitions
 
             preparedOrderedTypes.add(CompetitionZoneListItemAdapter.ITEM_TYPE_LEGAL_MENTIONS);
+            THLog.d(TAG, "rules title " + context.getString(R.string.provider_competition_rules_title));
             preparedOrderedItems.add(new CompetitionZoneLegalDTO(
                     context.getString(R.string.provider_competition_rules_title),
                     context.getString(R.string.provider_competition_terms_title)));

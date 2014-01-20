@@ -43,19 +43,12 @@ public class ProviderIntentFactory extends THIntentSubFactory<ProviderIntent>
 
         ProviderIntent providerIntent = null;
 
-        // TODO
-
         if (action.equals(getString(R.string.intent_action_provider_pages)))
         {
             providerIntent = new ProviderPageIntent(
                     ProviderPageIntent.getProviderId(pathSegments),
                     ProviderPageIntent.getForwardUriPath(pathSegments));
         }
-
-        //if (action.equals(getString(R.string.intent_action_portfolio_open)))
-        //{
-        //    providerIntent = new OpenProviderIntent(OneProviderIntent.getProviderId(pathSegments));
-        //}
 
         return providerIntent;
     }

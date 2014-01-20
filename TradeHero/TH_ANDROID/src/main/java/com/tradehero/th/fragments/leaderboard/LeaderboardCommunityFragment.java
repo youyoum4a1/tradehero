@@ -1,7 +1,6 @@
 package com.tradehero.th.fragments.leaderboard;
 
 import android.app.Activity;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,9 +18,9 @@ import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
+import com.tradehero.th.api.competition.ProviderConstants;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderId;
-import com.tradehero.th.api.competition.ProviderIdList;
 import com.tradehero.th.api.competition.ProviderListKey;
 import com.tradehero.th.api.leaderboard.LeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardDefExchangeListKey;
@@ -30,8 +29,13 @@ import com.tradehero.th.api.leaderboard.LeaderboardDefListKey;
 import com.tradehero.th.api.leaderboard.LeaderboardDefMostSkilledListKey;
 import com.tradehero.th.api.leaderboard.LeaderboardDefSectorListKey;
 import com.tradehero.th.api.leaderboard.LeaderboardDefTimePeriodListKey;
+import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
+import com.tradehero.th.base.THUser;
+import com.tradehero.th.fragments.web.WebViewFragment;
 import com.tradehero.th.fragments.competition.MainCompetitionFragment;
-import com.tradehero.th.fragments.competition.ProviderVideoListFragment;
+import com.tradehero.th.models.intent.THIntent;
+import com.tradehero.th.models.intent.THIntentPassedListener;
+import com.tradehero.th.models.intent.competition.ProviderPageIntent;
 import com.tradehero.th.persistence.competition.ProviderCache;
 import com.tradehero.th.persistence.competition.ProviderListCache;
 import com.tradehero.th.persistence.competition.ProviderListRetrievedMilestone;
@@ -54,6 +58,7 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
     @Inject protected Lazy<ProviderListCache> providerListCache;
     @Inject protected Lazy<ProviderCache> providerCache;
     @Inject protected Picasso picasso;
+    @Inject protected CurrentUserBaseKeyHolder currentUserBaseKeyHolder;
 
     private boolean fetched = false;
     private ImageButton firstProviderLink;
@@ -66,6 +71,8 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
     @Inject protected ProviderListRetrievedMilestone providerListRetrievedMilestone;
     private Milestone.OnCompleteListener providerListRetrievedListener;
     private ProviderDTO firstProvider;
+    private THIntentPassedListener thIntentPassedListener;
+    private WebViewFragment webFragment;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -93,6 +100,13 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
     {
         super.onResume();
         prepareAdapters();
+
+        // We came back into view so we have to forget the web fragment
+        if (this.webFragment != null)
+        {
+            this.webFragment.setThIntentPassedListener(null);
+        }
+        this.webFragment = null;
     }
 
     @Override public void onPause()
@@ -122,6 +136,8 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
         {
             listView.setEmptyView(view.findViewById(android.R.id.empty));
         }
+
+        this.thIntentPassedListener = new LeaderboardCommunityTHIntentPassedListener();
     }
 
     @Override public void onStop()
@@ -148,6 +164,9 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
             this.firstProviderLink.setOnClickListener(null);
         }
         this.firstProviderLink = null;
+
+        this.thIntentPassedListener = null;
+
         super.onDestroyView();
     }
 
@@ -387,8 +406,7 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
         if (firstProvider != null && firstProviderLink != null)
         {
             firstProviderLink.setVisibility(View.VISIBLE);
-            this.picasso.load(firstProvider.isUserEnrolled ? firstProvider.singleJoinedImageUrl : firstProvider.singleImageUrl)
-                .into(firstProviderLink);
+            this.picasso.load(firstProvider.getStatusSingleImageUrl()).into(firstProviderLink);
         }
     }
 
@@ -417,12 +435,45 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
     {
         @Override public void onClick(View view)
         {
-            if (firstProvider != null)
+            if (firstProvider != null && /*REMOVE*/firstProvider.isUserEnrolled)
             {
                 Bundle args = new Bundle();
                 args.putBundle(MainCompetitionFragment.BUNDLE_KEY_PROVIDER_ID, firstProvider.getProviderId().getArgs());
                 args.putBundle(MainCompetitionFragment.BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE, firstProvider.associatedPortfolio.getPortfolioId().getArgs());
                 navigator.pushFragment(MainCompetitionFragment.class, args);
+            }
+            else if (firstProvider != null)
+            {
+                Bundle args = new Bundle();
+                args.putString(WebViewFragment.BUNDLE_KEY_URL, ProviderConstants.getLandingPage(
+                        firstProvider.getProviderId(),
+                        currentUserBaseKeyHolder.getCurrentUserBaseKey()));
+                webFragment = (WebViewFragment) navigator.pushFragment(WebViewFragment.class, args);
+                webFragment.setThIntentPassedListener(thIntentPassedListener);
+            }
+        }
+    }
+
+    private class LeaderboardCommunityTHIntentPassedListener implements THIntentPassedListener
+    {
+        @Override public void onIntentPassed(THIntent thIntent)
+        {
+            if (thIntent instanceof ProviderPageIntent)
+            {
+                THLog.d(TAG, "Intent is ProviderPageIntent");
+                if (webFragment != null)
+                {
+                    THLog.d(TAG, "Passing on " + ((ProviderPageIntent) thIntent).getCompleteForwardUriPath());
+                    webFragment.loadUrl(((ProviderPageIntent) thIntent).getCompleteForwardUriPath());
+                }
+                else
+                {
+                    THLog.d(TAG, "WebFragment is null");
+                }
+            }
+            else
+            {
+                THLog.w(TAG, "Unhandled intent " + thIntent);
             }
         }
     }

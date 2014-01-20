@@ -12,11 +12,11 @@
         android:fadeScrollbars="true"
         android:scrollbarStyle="insideOverlay" />
 
-    <ProgressBar
+    <!--ProgressBar
         android:id="@+id/progress"
         style="?android:attr/progressBarStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true" />
+        android:layout_centerVertical="true" /-->
 </RelativeLayout>
