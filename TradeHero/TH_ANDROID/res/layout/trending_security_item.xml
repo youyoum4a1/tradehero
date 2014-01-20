@@ -1,118 +1,114 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.tradehero.th.fragments.trending.SecurityItemView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res/com.tradehero.th"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/trending_grid_item_bg"
+    android:padding="@dimen/trending_grid_item_padding"
     >
 
-    <com.tradehero.common.widget.ImageViewThreadSafe
-        android:id="@+id/stock_bg_logo"
-        android:layout_width="match_parent"
+  <com.tradehero.common.widget.ImageViewThreadSafe
+      android:id="@+id/stock_bg_logo"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_alignParentTop="true"
+      android:contentDescription="@null"
+      android:scaleType="centerCrop"
+      android:src="@null"
+      android:alpha="0.2"
+      />
+
+  <TextView
+      android:id="@+id/stock_name"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginLeft="5dp"
+      android:layout_marginRight="5dp"
+      android:layout_centerHorizontal="true"
+      android:ellipsize="end"
+      android:lines="1"
+      android:textColor="@color/trending_grid_item_stock_name"
+      android:text=""
+      android:textStyle="bold"/>
+
+  <com.tradehero.common.widget.ImageViewThreadSafe
+      android:id="@+id/stock_logo"
+      android:layout_width="match_parent"
+      android:layout_height="45dp"
+      android:layout_below="@id/stock_name"
+      android:layout_centerHorizontal="true"
+      android:layout_marginBottom="2dp"
+      android:layout_marginTop="0dp"
+      android:layout_marginLeft="20dp"
+      android:layout_marginRight="20dp"
+      android:adjustViewBounds="true"
+      android:contentDescription="@null"
+      android:scaleType="centerInside"
+      android:src="@drawable/default_image"/>
+
+  <TextView
+      android:id="@+id/exchange_symbol"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_below="@id/stock_logo"
+      android:layout_centerHorizontal="true"
+      android:ellipsize="end"
+      android:lines="1"
+      android:textColor="@color/trending_grid_item_stock_name"
+      android:text=""/>
+
+  <LinearLayout
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_below="@id/exchange_symbol"
+      android:layout_centerHorizontal="true"
+      android:orientation="horizontal"
+      android:layout_marginBottom="-35dp"
+      android:gravity="center_vertical"
+      >
+
+    <TextView
+        android:id="@+id/profit_indicator"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:contentDescription="@null"
-        android:scaleType="centerCrop"
-        android:src="@null"
-        android:alpha="0.2"
+        android:layout_marginLeft="2dp"
+        android:lines="1"
+        android:text="@null"
+        android:textColor="@color/black"
+        android:textStyle="bold"
         />
 
     <TextView
-        android:id="@+id/stock_name"
+        android:id="@+id/currency_display"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="5dp"
-        android:layout_marginRight="5dp"
-        android:layout_centerHorizontal="true"
-        android:ellipsize="end"
+        android:layout_marginLeft="2dp"
         android:lines="1"
-        android:textColor="@color/trending_grid_item_stock_name"
-        android:text=""
-        android:textStyle="bold" />
-
-    <com.tradehero.common.widget.ImageViewThreadSafe
-        android:id="@+id/stock_logo"
-        android:layout_width="match_parent"
-        android:layout_height="45dp"
-        android:layout_below="@id/stock_name"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="2dp"
-        android:layout_marginTop="0dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:adjustViewBounds="true"
-        android:contentDescription="@null"
-        android:scaleType="centerInside"
-        android:src="@drawable/default_image"/>
+        android:textColor="@color/black"
+        android:text="@null"
+        />
 
     <TextView
-        android:id="@+id/exchange_symbol"
+        android:id="@+id/last_price"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/stock_logo"
-        android:layout_centerHorizontal="true"
-        android:ellipsize="end"
         android:lines="1"
-        android:textColor="@color/trending_grid_item_stock_name"
-        android:text="" />
+        android:text="@null"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        />
+  </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/exchange_symbol"
-        android:layout_centerHorizontal="true"
-        android:orientation="horizontal"
-        android:layout_marginTop="-15dp"
-        android:layout_marginBottom="-35dp"
-        >
-
-        <TextView
-            android:id="@+id/profit_indicator"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="-12sp"
-            android:layout_marginLeft="2dp"
-            android:lines="1"
-            android:text=""
-            android:textColor="@color/black"
-            android:textSize="35sp"
-            />
-
-        <TextView
-            android:id="@+id/currency_display"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="2dp"
-            android:layout_marginTop="-10sp"
-            android:lines="1"
-            android:textColor="@color/black"
-            android:text=""
-            />
-
-        <TextView
-            android:id="@+id/last_price"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="-10sp"
-            android:lines="1"
-            android:text=""
-            android:textColor="@color/black"
-            android:textStyle="bold"
-            />
-    </LinearLayout>
-
-    <ImageView
-        android:id="@+id/ic_market_close"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:paddingBottom="8dp"
-        android:paddingRight="8dp"
-        android:contentDescription="@null"
-        android:scaleType="centerInside"
-        android:src="@drawable/market_sleep_grey"
+  <ImageView
+      android:id="@+id/ic_market_close"
+      android:layout_width="20dp"
+      android:layout_height="20dp"
+      android:layout_alignParentBottom="true"
+      android:layout_alignParentRight="true"
+      android:paddingBottom="8dp"
+      android:paddingRight="8dp"
+      android:contentDescription="@null"
+      android:scaleType="centerInside"
+      android:src="@drawable/market_sleep_grey"
       />
-
 </com.tradehero.th.fragments.trending.SecurityItemView>

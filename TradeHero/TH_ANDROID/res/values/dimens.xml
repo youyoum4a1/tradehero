@@ -9,7 +9,7 @@
   <dimen name="copyright_text_size">12sp</dimen>
   <dimen name="authentication_textbox_radius">5dp</dimen>
   <dimen name="user_profile_corner_radius">0dp</dimen>
-  <dimen name="dashboard_padding">8dip</dimen>
+  <dimen name="dashboard_padding">0dp</dimen>
 
   <!-- Trending screen -->
   <dimen name="trending_grid_item_corner_radius">8dp</dimen>
@@ -45,5 +45,12 @@
   <dimen name="watchlist_item_button_width">80dp</dimen>
   <dimen name="watchlist_position_header_height">50dp</dimen>
   <dimen name="stock_alert_header_padding">2dp</dimen>
+  <dimen name="trending_grid_padding_right">3dp</dimen>
+  <dimen name="trending_grid_padding_left">3dp</dimen>
+  <dimen name="trending_horizontal_spacing">8dp</dimen>
+  <dimen name="trending_vertical_spacing">8dp</dimen>
+  <dimen name="trending_padding_top">95dp</dimen>
+  <dimen name="trending_padding_bottom">95dp</dimen>
+  <dimen name="trending_grid_item_padding">0dp</dimen>
 
 </resources>
