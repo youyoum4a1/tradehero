@@ -1,92 +1,93 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<com.tradehero.th.fragments.trending.filter.TrendingFilterSelectorView
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/trending_filter_selector_view"
-    android:orientation="horizontal"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:paddingTop="4dp"
-    android:background="#f7ffffff"
-    >
-
-  <ImageButton
-      android:id="@+id/previous_filter"
-      android:layout_width="48dp"
-      android:layout_height="48dp"
-      android:layout_alignParentLeft="true"
-      android:layout_centerVertical="true"
-      android:src="@drawable/settings_back_light"
-      android:scaleType="fitCenter"
-      android:contentDescription="@null"
-      android:background="@android:color/transparent"
-      />
-
-  <ImageButton
-      android:id="@+id/next_filter"
-      android:layout_width="48dp"
-      android:layout_height="48dp"
-      android:layout_alignParentRight="true"
-      android:layout_centerVertical="true"
-      android:src="@drawable/settings_forward_light"
-      android:scaleType="fitCenter"
-      android:contentDescription="@null"
-      android:background="@android:color/transparent"
-      />
-
-  <LinearLayout
-      android:orientation="vertical"
+<merge xmlns:android="http://schemas.android.com/apk/res/android">
+  <com.tradehero.th.fragments.trending.filter.TrendingFilterSelectorView
+      android:id="@+id/trending_filter_selector_view"
+      android:orientation="horizontal"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_toRightOf="@id/previous_filter"
-      android:layout_toLeftOf="@id/next_filter"
-  >
+      android:paddingTop="4dp"
+      android:background="#f7ffffff"
+      >
+
+    <ImageButton
+        android:id="@+id/previous_filter"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:src="@drawable/settings_back_light"
+        android:scaleType="fitCenter"
+        android:contentDescription="@null"
+        android:background="@android:color/transparent"
+        />
+
+    <ImageButton
+        android:id="@+id/next_filter"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:src="@drawable/settings_forward_light"
+        android:scaleType="fitCenter"
+        android:contentDescription="@null"
+        android:background="@android:color/transparent"
+        />
 
     <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="wrap_content"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
+        android:layout_toRightOf="@id/previous_filter"
+        android:layout_toLeftOf="@id/next_filter"
         >
 
-      <ImageView
-          android:id="@+id/trending_filter_title_icon"
-          android:layout_width="16sp"
-          android:layout_height="16sp"
-          android:src="@null"
-          android:scaleType="centerInside"
-          android:baselineAlignBottom="true"
-          android:contentDescription="@null"
-          />
-
-      <TextView
-          android:id="@+id/title"
+      <LinearLayout
+          android:orientation="horizontal"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_gravity="center_horizontal"
-          android:textStyle="bold"
-          android:textSize="16sp"
-          android:drawableLeft="@null"
+          >
+
+        <ImageView
+            android:id="@+id/trending_filter_title_icon"
+            android:layout_width="16sp"
+            android:layout_height="16sp"
+            android:src="@null"
+            android:scaleType="centerInside"
+            android:baselineAlignBottom="true"
+            android:contentDescription="@null"
+            />
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:drawableLeft="@null"
+            />
+
+      </LinearLayout>
+
+      <TextView
+          android:id="@+id/description"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_gravity="center_horizontal"
+          android:textSize="9sp"
+          android:maxLines="1"
+          />
+
+      <Spinner
+          android:id="@+id/exchange_selection"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_gravity="center_horizontal"
           />
 
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/description"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:textSize="9sp"
-        android:maxLines="1"
-      />
-
-    <Spinner
-        android:id="@+id/exchange_selection"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-      />
-
-  </LinearLayout>
-
-</com.tradehero.th.fragments.trending.filter.TrendingFilterSelectorView>
+  </com.tradehero.th.fragments.trending.filter.TrendingFilterSelectorView>
+</merge>
