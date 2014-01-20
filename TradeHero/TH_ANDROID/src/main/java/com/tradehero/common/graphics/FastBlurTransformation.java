@@ -47,7 +47,7 @@ public class FastBlurTransformation implements Transformation
 
     @Override public String key()
     {
-        return "toFastBlur";
+        return String.format("toFastBlur(%d)", radius);
     }
 
     public Bitmap transform(Bitmap bitmap)

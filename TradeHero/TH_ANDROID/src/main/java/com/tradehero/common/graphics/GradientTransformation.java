@@ -50,6 +50,6 @@ public class GradientTransformation implements Transformation
 
     @Override public String key()
     {
-        return "gradient";
+        return String.format("gradient(%d, %d)", startColor, endColor);
     }
 }
