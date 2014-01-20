@@ -16,7 +16,7 @@ public class GradientTransformation implements Transformation
 
     public GradientTransformation()
     {
-        this(Color.TRANSPARENT, Color.BLACK);
+        this(Color.TRANSPARENT, Color.WHITE);
     }
 
     public GradientTransformation(int startColor, int endColor)
@@ -31,12 +31,8 @@ public class GradientTransformation implements Transformation
         Paint paint = new Paint();
         paint.setDither(true);
         paint.setShader(gradient);
-        paint.setStyle(Paint.Style.FILL);
-        paint.setAntiAlias(true);
-        paint.setDither(true);
-        paint.setFilterBitmap(true);
 
-        Bitmap targetBitmap = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), bitmap.getConfig());
+        Bitmap targetBitmap = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Bitmap.Config.ARGB_8888);
         Canvas c = new Canvas(targetBitmap);
         c.drawBitmap(bitmap, 0, 0, null);
         c.drawRect(0, 0, bitmap.getWidth(), bitmap.getHeight(), paint);

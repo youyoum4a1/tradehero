@@ -7,7 +7,9 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.squareup.picasso.Picasso;
+import com.tradehero.common.graphics.FastBlurTransformation;
 import com.tradehero.common.graphics.GradientTransformation;
+import com.tradehero.common.graphics.GrayscaleTransformation;
 import com.tradehero.common.graphics.RoundedShapeTransformation;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
@@ -28,7 +30,7 @@ public class ProfileView extends FrameLayout implements DTOView<UserProfileDTO>
     private ImageView background;
 
     private TextView roiSinceInception;
-    private TextView hqSinceInception;
+    //private TextView hqSinceInception;
     private TextView plSinceInception;
     private TextView memberSince;
     private TextView totalWealth;
@@ -44,6 +46,7 @@ public class ProfileView extends FrameLayout implements DTOView<UserProfileDTO>
     @Inject protected Picasso picasso;
     private boolean initiated;
     private WeakReference<PortfolioRequestListener> portfolioRequestListener = new WeakReference<>(null);
+    private TextView userName;
 
     //<editor-fold desc="Constructors">
     public ProfileView(Context context)
@@ -81,9 +84,10 @@ public class ProfileView extends FrameLayout implements DTOView<UserProfileDTO>
 
         avatar = (ImageView) findViewById(R.id.user_profile_avatar);
         background = (ImageView) findViewById(R.id.user_profile_background_by_sketched_avatar);
+        userName = (TextView) findViewById(R.id.user_profile_display_name);
 
         roiSinceInception = (TextView) findViewById(R.id.txt_roi);
-        hqSinceInception = (TextView) findViewById(R.id.txt_hero_quotient);
+        //hqSinceInception = (TextView) findViewById(R.id.txt_hero_quotient);
         plSinceInception = (TextView) findViewById(R.id.txt_profile_tradeprofit);
         memberSince = (TextView) findViewById(R.id.txt_member_since);
         totalWealth = (TextView) findViewById(R.id.txt_total_wealth);
@@ -129,7 +133,11 @@ public class ProfileView extends FrameLayout implements DTOView<UserProfileDTO>
                 {
                     picasso
                             .load(dto.picture)
-                            .transform(new GradientTransformation())
+                            .transform(new GrayscaleTransformation())
+                            .transform(new FastBlurTransformation(30))
+                            .transform(new GradientTransformation(
+                                    getResources().getColor(R.color.profile_view_gradient_top),
+                                    getResources().getColor(R.color.profile_view_gradient_bottom)))
                             .resize(ProfileView.this.getWidth(), ProfileView.this.getHeight())
                             .centerCrop()
                             .into(background);
@@ -189,10 +197,10 @@ public class ProfileView extends FrameLayout implements DTOView<UserProfileDTO>
             }
         }
 
-        if (hqSinceInception != null)
-        {
-            hqSinceInception.setText(R.string.na);
-        }
+        //if (hqSinceInception != null)
+        //{
+        //    hqSinceInception.setText(R.string.na);
+        //}
 
         if (memberSince != null)
         {
@@ -208,6 +216,11 @@ public class ProfileView extends FrameLayout implements DTOView<UserProfileDTO>
         if (heroesCount != null)
         {
             heroesCount.setText(Integer.toString(dto.heroIds == null ? 0 : dto.heroIds.size()));
+        }
+
+        if (userName != null)
+        {
+            userName.setText(dto.displayName);
         }
     }
 

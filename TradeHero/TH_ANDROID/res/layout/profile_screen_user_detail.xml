@@ -42,93 +42,57 @@
           android:src="@drawable/avatar"
           android:contentDescription="@string/empty"/>
 
+      <TextView
+          android:id="@+id/user_profile_display_name"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginLeft="5dp"
+          android:layout_marginTop="5dp"
+          android:layout_toRightOf="@id/user_profile_avatar"
+          android:textSize="20sp"
+          android:textStyle="bold"
+          android:shadowColor="@color/black"
+          android:shadowDy="1"
+          android:shadowRadius="3"
+          android:ellipsize="end"
+          android:singleLine="true"
+          />
+
       <LinearLayout
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:layout_centerVertical="true"
           android:layout_marginLeft="10dp"
           android:layout_toRightOf="@id/user_profile_avatar"
+          android:layout_below="@id/user_profile_display_name"
           android:background="@android:color/transparent"
           android:orientation="vertical">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@android:color/transparent"
-            android:orientation="horizontal">
+        <!--<LinearLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:background="@android:color/transparent"-->
+            <!--android:orientation="horizontal">-->
 
-          <TextView
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:textColor="@color/gray_3"
-              android:text="@string/Roi"
-              android:textSize="18sp"
-              android:textStyle="normal"/>
+          <!--<TextView-->
+              <!--android:layout_width="wrap_content"-->
+              <!--android:layout_height="wrap_content"-->
+              <!--android:layout_marginLeft="15dp"-->
+              <!--android:text="@string/Hq"-->
+              <!--android:textColor="@color/gray_3"-->
+              <!--android:textSize="18sp"-->
+              <!--android:textStyle="normal"/>-->
 
-          <TextView
-              android:id="@+id/txt_roi"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:layout_marginLeft="5dp"
-              android:textColor="@color/font_roi"
-              android:textSize="18sp"
-              android:textStyle="bold"
-              android:shadowColor="@color/black"
-              android:shadowDy="1"
-              android:shadowRadius="3"
-              />
+          <!--<TextView-->
+              <!--android:id="@+id/txt_hero_quotient"-->
+              <!--android:layout_width="wrap_content"-->
+              <!--android:layout_height="wrap_content"-->
+              <!--android:layout_marginLeft="5dp"-->
+              <!--android:textColor="@color/white"-->
+              <!--android:textSize="18sp"-->
+              <!--android:textStyle="bold"/>-->
 
-          <TextView
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:layout_marginLeft="15dp"
-              android:text="@string/Hq"
-              android:textColor="@color/gray_3"
-              android:textSize="18sp"
-              android:textStyle="normal"/>
-
-          <TextView
-              android:id="@+id/txt_hero_quotient"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:layout_marginLeft="5dp"
-              android:textColor="@color/white"
-              android:textSize="18sp"
-              android:textStyle="bold"/>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@android:color/transparent"
-            android:orientation="horizontal"
-            android:paddingTop="5dp">
-
-          <TextView
-              android:id="@+id/txt_profile_tradeprofitprefix_text"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:text="@string/Trade_Profit"
-              android:textColor="@color/gray_3"
-              android:textSize="18sp"
-              android:textStyle="normal"
-              />
-
-          <TextView
-              android:id="@+id/txt_profile_tradeprofit"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:layout_marginLeft="3dp"
-              android:textColor="@color/white"
-              android:textSize="18sp"
-              android:textStyle="bold"
-              android:shadowColor="@color/black"
-              android:shadowDy="1"
-              android:shadowRadius="3"
-              />
-
-        </LinearLayout>
+        <!--</LinearLayout>-->
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -142,7 +106,7 @@
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
               android:layout_marginRight="3sp"
-              android:textColor="@color/white"
+              android:textColor="@color/black"
               android:textSize="12sp"
               android:shadowColor="@color/black"
               android:shadowDy="1"
@@ -154,7 +118,7 @@
               android:id="@+id/txt_member_since"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
-              android:textColor="@color/white"
+              android:textColor="@color/black"
               android:textSize="12sp"
               android:textStyle="bold"
               android:shadowColor="@color/black"
@@ -172,7 +136,62 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         >
+      <TableRow>
 
+        <TextView
+            style="@style/TH.SmallTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/text_gray_normal"
+            android:text="@string/Roi"
+            android:layout_weight="3"
+            android:gravity="right"
+            android:textStyle="bold"/>
+
+        <TextView
+            style="@style/TH.SmallValue"
+            android:id="@+id/txt_roi"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="3dp"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:shadowColor="@color/black"
+            android:layout_weight="4"
+            android:gravity="left"
+            android:shadowDy="1"
+            android:shadowRadius="3"
+            />
+      </TableRow>
+      <TableRow>
+
+        <TextView
+            style="@style/TH.SmallTitle"
+            android:id="@+id/txt_profile_tradeprofitprefix_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="3"
+            android:gravity="right"
+            android:text="@string/trade_profit"
+            android:textColor="@color/text_gray_normal"
+            android:textStyle="normal"
+            />
+
+        <TextView
+            style="@style/TH.SmallValue"
+            android:id="@+id/txt_profile_tradeprofit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="3dp"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:shadowColor="@color/black"
+            android:layout_weight="4"
+            android:gravity="left"
+            android:shadowDy="1"
+            android:shadowRadius="3"
+            />
+      </TableRow>
       <TableRow>
 
         <TextView
@@ -182,7 +201,7 @@
             android:layout_weight="3"
             android:gravity="right"
             android:paddingRight="@dimen/trade_screen_info_title_padding_right"
-            android:textColor="@color/white"
+            android:textColor="@color/text_gray_normal"
             android:text="@string/total_wealth"
             />
 
@@ -193,8 +212,8 @@
             android:layout_height="wrap_content"
             android:layout_weight="4"
             android:gravity="left"
-            android:textColor="@color/white"
-            android:text=""
+            android:textColor="@color/black"
+            android:text="@null"
             android:textStyle="bold"
             />
 
@@ -209,7 +228,7 @@
             android:layout_weight="3"
             android:gravity="right"
             android:paddingRight="@dimen/trade_screen_info_title_padding_right"
-            android:textColor="@color/white"
+            android:textColor="@color/text_gray_normal"
             android:text="@string/additional_cash"
             />
 
@@ -220,7 +239,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="4"
             android:gravity="left"
-            android:textColor="@color/white"
+            android:textColor="@color/black"
             android:text=""
             android:textStyle="bold"
             />
@@ -236,7 +255,7 @@
             android:layout_weight="3"
             android:gravity="right"
             android:paddingRight="@dimen/trade_screen_info_title_padding_right"
-            android:textColor="@color/white"
+            android:textColor="@color/text_gray_normal"
             android:text="@string/cash_on_hand"
             />
 
@@ -247,7 +266,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="4"
             android:gravity="left"
-            android:textColor="@color/white"
+            android:textColor="@color/black"
             android:text=""
             android:textStyle="bold"
             />
@@ -280,7 +299,7 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:textColor="@color/white"
+            android:textColor="@color/black"
             android:text="@null"
             android:textSize="20sp"
             android:textStyle="bold"
@@ -292,7 +311,7 @@
             android:gravity="center_vertical"
             android:layout_marginTop="-5dip"
             android:text="@string/followers"
-            android:textColor="@color/white"
+            android:textColor="@color/text_gray_normal"
             android:textSize="12sp"
             android:textStyle="normal"/>
       </LinearLayout>
@@ -310,7 +329,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:textColor="@color/white"
+            android:textColor="@color/black"
             android:textSize="20sp"
             android:textStyle="bold"
             android:text="@null"
@@ -322,7 +341,7 @@
             android:layout_marginTop="-5dip"
             android:gravity="center_vertical"
             android:text="@string/heroes"
-            android:textColor="@color/white"
+            android:textColor="@color/text_gray_normal"
             android:textSize="12sp"
             android:textStyle="normal"/>
       </LinearLayout>
@@ -340,7 +359,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:textColor="@color/white"
+            android:textColor="@color/black"
             android:textSize="20sp"
             android:textStyle="bold"
             android:text="@null"
@@ -352,7 +371,7 @@
             android:gravity="center_vertical"
             android:layout_marginTop="-5dip"
             android:text="@string/trades"
-            android:textColor="@color/white"
+            android:textColor="@color/text_gray_normal"
             android:textSize="12sp"
             android:textStyle="normal"/>
       </LinearLayout>
@@ -371,7 +390,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="@null"
-            android:textColor="@color/white"
+            android:textColor="@color/black"
             android:textSize="20sp"
             android:textStyle="bold"
             android:drawableTop="@drawable/icn_exchanges"/>
@@ -382,7 +401,7 @@
             android:layout_marginTop="-5dip"
             android:gravity="center_vertical"
             android:text="@string/exchanges"
-            android:textColor="@color/white"
+            android:textColor="@color/text_gray_normal"
             android:textSize="12sp"
             android:textStyle="normal"/>
       </LinearLayout>
@@ -393,7 +412,7 @@
           android:layout_width="48dp"
           android:layout_height="48dp"
           android:scaleType="fitXY"
-          android:src="@drawable/buyscreen_info"
+          android:src="@drawable/icn_info"
           android:contentDescription="@null"
           />
 
