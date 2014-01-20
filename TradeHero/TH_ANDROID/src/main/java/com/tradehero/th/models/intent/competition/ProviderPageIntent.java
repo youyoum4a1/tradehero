@@ -64,6 +64,7 @@ public class ProviderPageIntent extends OneProviderIntent
 
     public static String getForwardUriPath(List<String> pathSegments)
     {
-        return Uri.decode(Uri.decode(pathSegments.get(getInteger(R.integer.intent_uri_action_provider_path_index_encoded_page))));
+        // Only 1 decode is necessary here as the getDataPathSegments already does one.
+        return Uri.decode(pathSegments.get(getInteger(R.integer.intent_uri_action_provider_path_index_encoded_page)));
     }
 }
