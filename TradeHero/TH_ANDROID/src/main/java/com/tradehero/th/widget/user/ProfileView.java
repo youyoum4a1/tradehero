@@ -1,30 +1,21 @@
 package com.tradehero.th.widget.user;
 
-import android.app.Activity;
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
-import android.util.DisplayMetrics;
 import android.view.View;
-import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
 import com.tradehero.common.graphics.GradientTransformation;
 import com.tradehero.common.graphics.RoundedShapeTransformation;
-import com.tradehero.common.graphics.ScaleKeepRatioTransformation;
-import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.utils.THSignedNumber;
+import com.tradehero.th.fragments.portfolio.PortfolioRequestListener;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.SecurityUtils;
-import com.tradehero.th.fragments.portfolio.PortfolioRequestListener;
+import com.tradehero.th.utils.THSignedNumber;
 import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
 import javax.inject.Inject;
@@ -75,6 +66,12 @@ public class ProfileView extends FrameLayout implements DTOView<UserProfileDTO>
     {
         super.onFinishInflate();
         init();
+    }
+
+    @Override protected void onDetachedFromWindow()
+    {
+        btnDefaultPortfolio.setOnClickListener(null);
+        super.onDetachedFromWindow();
     }
 
     private void init()
