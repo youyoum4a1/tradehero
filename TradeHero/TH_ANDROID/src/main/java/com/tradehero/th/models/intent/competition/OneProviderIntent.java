@@ -12,11 +12,16 @@ import java.util.List;
 /**
  * Created by xavier on 1/10/14.
  */
-abstract public class OneProviderIntent extends PortfolioIntent
+abstract public class OneProviderIntent extends ProviderIntent
 {
     public static final String TAG = OneProviderIntent.class.getSimpleName();
 
     //<editor-fold desc="Constructors">
+    protected OneProviderIntent()
+    {
+        super();
+    }
+
     protected OneProviderIntent(ProviderId providerId)
     {
         super();
@@ -41,7 +46,7 @@ abstract public class OneProviderIntent extends PortfolioIntent
 
     public int getIntentActionUriResId()
     {
-        return R.string.intent_uri_action_one_portfolio;
+        return R.string.intent_uri_action_one_provider;
     }
 
     abstract int getIntentProviderAction();
