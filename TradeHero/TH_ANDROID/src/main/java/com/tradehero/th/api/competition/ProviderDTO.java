@@ -58,6 +58,46 @@ public class ProviderDTO implements DTO
         return new ProviderId(id);
     }
 
+    public String getStatusSingleImageUrl(boolean isSelected)
+    {
+        return isSelected ? getStatusSingleSelectedImageUrl() : getStatusSingleImageUrl();
+    }
+
+    public String getStatusSingleImageUrl()
+    {
+        return isUserEnrolled ? singleJoinedImageUrl : singleImageUrl;
+    }
+
+    public String getStatusSingleSelectedImageUrl()
+    {
+        return isUserEnrolled ? singleJoinedSelectedImageUrl : singleSelectedImageUrl;
+    }
+
+    public String getStatusMultiImageUrl(boolean isSelected)
+    {
+        return isSelected ? getStatusMultiSelectedImageUrl() : getStatusMultiImageUrl();
+    }
+
+    public String getStatusMultiImageUrl()
+    {
+        return isUserEnrolled ? multiJoinedImageUrl : multiImageUrl;
+    }
+
+    public String getStatusMultiSelectedImageUrl()
+    {
+        return isUserEnrolled ? multiJoinedSelectedImageUrl : multiSelectedImageUrl;
+    }
+
+    public String getStatusTileImageUrl()
+    {
+        return isUserEnrolled ? tileJoinedImageUrl : tileImageUrl;
+    }
+
+    public String getTradeButtonImageUrl(boolean isSelected)
+    {
+        return isSelected ? tradeButtonSelectedImageUrl : tradeButtonImageUrl;
+    }
+
     public static List<ProviderId> getProviderIds(List<ProviderDTO> providerDTOs)
     {
         if (providerDTOs == null)

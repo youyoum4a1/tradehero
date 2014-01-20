@@ -14,6 +14,8 @@
   <string name="intent_host_portfolio">portfolio</string>
   <string name="intent_host_store">store</string>
 
+  <string name="intent_host_providers">providers</string>
+
   <!-- Building tradehero://trending/buy/OTCBB/MJNA -->
   <string name="intent_uri_action_trade_security">%1$s://%2$s/%3$s/%4$s/%5$s</string>
   <integer name="intent_uri_action_trade_security_path_index_exchange">1</integer>
@@ -32,5 +34,11 @@
   <integer name="intent_uri_action_watchlist_path_index_action">1</integer>
   <integer name="intent_uri_action_watchlist_path_index_id">2</integer>
   <string name="intent_action_watchlist_open">open</string>
+
+  <!-- Building tradehero://providers/123/pages/1232 -->
+  <string name="intent_uri_action_one_provider">%1$s://%2$s/%3$s/%4$s</string>
+  <integer name="intent_uri_action_provider_path_index_id">0</integer>
+  <integer name="intent_uri_action_provider_path_index_action">1</integer>
+  <string name="intent_action_provider_pages">pages</string>
 
 </resources>
