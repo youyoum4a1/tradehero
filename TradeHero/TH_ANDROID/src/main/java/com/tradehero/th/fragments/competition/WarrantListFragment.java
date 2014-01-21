@@ -63,14 +63,17 @@ public class WarrantListFragment extends SecurityListFragment
 
     @Override public void onStart()
     {
+        THLog.d(TAG, "onStart");
         super.onStart();
         this.detachProviderFetchTask();
         this.providerCacheFetchTask = providerCache.getOrFetch(this.providerId, this.providerCacheListener);
         this.providerCacheFetchTask.execute();
+        forceInitialLoad();
     }
 
     @Override public void onStop()
     {
+        THLog.d(TAG, "onStop");
         this.detachProviderFetchTask();
         super.onStop();
     }
