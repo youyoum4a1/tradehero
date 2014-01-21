@@ -91,8 +91,9 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
         }
     }
 
-    protected void initViews(View view)
+    @Override protected void initViews(View view)
     {
+        super.initViews(view);
         // Prevent reuse of previous values when changing securities
         securityCompactDTO = null;
         securityPositionDetailDTO = null;

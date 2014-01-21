@@ -68,12 +68,13 @@ public class TimelineFragment extends BasePurchaseManagerFragment
             Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.timeline_screen, container, false);
-        initView(view);
+        initViews(view);
         return view;
     }
 
-    private void initView(View view)
+    @Override protected void initViews(View view)
     {
+        super.initViews(view);
         this.timelineListView = (TimelineListView) view.findViewById(R.id.pull_refresh_list);
         this.timelineListView.setEmptyView(view.findViewById(android.R.id.empty));
     }

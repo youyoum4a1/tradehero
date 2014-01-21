@@ -49,7 +49,12 @@ public class MainCompetitionFragment extends CompetitionFragment
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.fragment_main_competition, container, false);
+        initViews(view);
+        return view;
+    }
 
+    @Override protected void initViews(View view)
+    {
         this.competitionZoneListItemAdapter = new CompetitionZoneListItemAdapter(
                 getActivity(),
                 getActivity().getLayoutInflater(),
@@ -70,8 +75,6 @@ public class MainCompetitionFragment extends CompetitionFragment
             this.listView.setAdapter(this.competitionZoneListItemAdapter);
             this.listView.setOnItemClickListener(new MainCompetitionFragmentItemClickListener());
         }
-
-        return view;
     }
 
     //<editor-fold desc="ActionBar">
@@ -166,7 +169,10 @@ public class MainCompetitionFragment extends CompetitionFragment
     {
         if (competitionZoneDTO instanceof CompetitionZoneTradeNowDTO)
         {
-
+            Bundle args = new Bundle();
+            args.putBundle(WarrantListFragment.BUNDLE_KEY_PROVIDER_ID, providerId.getArgs());
+            args.putBundle(WarrantListFragment.BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE, userInteractor.getApplicablePortfolioId().getArgs());
+            navigator.pushFragment(WarrantListFragment.class, args);
         }
         else if (competitionZoneDTO instanceof CompetitionZonePortfolioDTO)
         {
@@ -175,7 +181,7 @@ public class MainCompetitionFragment extends CompetitionFragment
         else if (competitionZoneDTO instanceof CompetitionZoneVideoDTO)
         {
             Bundle args = new Bundle();
-            args.putBundle(ProviderVideoListFragment.BUNDLE_KEY_PROVIDER_ID, providerDTO.getProviderId().getArgs());
+            args.putBundle(ProviderVideoListFragment.BUNDLE_KEY_PROVIDER_ID, providerId.getArgs());
             args.putBundle(ProviderVideoListFragment.BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE, providerDTO.associatedPortfolio.getPortfolioId().getArgs());
             navigator.pushFragment(ProviderVideoListFragment.class, args);
         }

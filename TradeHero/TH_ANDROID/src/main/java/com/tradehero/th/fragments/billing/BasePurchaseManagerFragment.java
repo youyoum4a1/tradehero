@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.billing;
 
 import android.os.Bundle;
+import android.view.View;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.billing.googleplay.THIABActor;
 import com.tradehero.th.billing.googleplay.THIABActorUser;
@@ -18,6 +19,8 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
 
     protected THIABUserInteractor userInteractor;
     protected WeakReference<THIABActor> billingActor = new WeakReference<>(null);
+
+    abstract protected void initViews(View view);
 
     @Override public void onActivityCreated(Bundle savedInstanceState)
     {

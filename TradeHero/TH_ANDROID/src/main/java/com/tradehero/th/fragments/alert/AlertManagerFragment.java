@@ -55,7 +55,7 @@ public class AlertManagerFragment extends BasePurchaseManagerFragment
         super.onCreateOptionsMenu(menu, inflater);
     }
 
-    protected void initViews(View view)
+    @Override protected void initViews(View view)
     {
         planCount = (TextView) view.findViewById(R.id.manage_alerts_count);
         //planCountHint = (ImageView) view.findViewById(R.id.icn_alert_plan_hint);

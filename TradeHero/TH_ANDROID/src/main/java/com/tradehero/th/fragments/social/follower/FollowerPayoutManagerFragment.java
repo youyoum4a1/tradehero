@@ -59,7 +59,7 @@ public class FollowerPayoutManagerFragment extends BasePurchaseManagerFragment
         return view;
     }
 
-    protected void initViews(View view)
+    @Override protected void initViews(View view)
     {
         followerPicture = (ImageView) view.findViewById(R.id.follower_profile_picture);
         if (followerPicture != null)

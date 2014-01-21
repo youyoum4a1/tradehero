@@ -71,7 +71,7 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
         return view;
     }
 
-    protected void initViews(View view)
+    @Override protected void initViews(View view)
     {
         this.viewContainer = new HeroManagerViewContainer(view);
         if (this.viewContainer.btnBuyMore != null)

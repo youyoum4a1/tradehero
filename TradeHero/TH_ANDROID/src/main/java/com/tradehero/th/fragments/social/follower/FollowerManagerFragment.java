@@ -57,7 +57,7 @@ public class FollowerManagerFragment extends BasePurchaseManagerFragment
         return view;
     }
 
-    protected void initViews(View view)
+    @Override protected void initViews(View view)
     {
         this.viewContainer = new FollowerManagerViewContainer(view);
         this.infoFetcher = new FollowerManagerInfoFetcher(new FollowerManagerFollowerSummaryListener());

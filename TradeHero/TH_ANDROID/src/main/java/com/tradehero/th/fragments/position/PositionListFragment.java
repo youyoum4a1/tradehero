@@ -96,7 +96,7 @@ public class PositionListFragment extends BasePurchaseManagerFragment
         return view;
     }
 
-    private void initViews(View view)
+    @Override protected void initViews(View view)
     {
         if (view != null)
         {

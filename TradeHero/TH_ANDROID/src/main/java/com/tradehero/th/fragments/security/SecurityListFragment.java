@@ -13,12 +13,12 @@ import com.tradehero.common.widget.FlagNearEndScrollListener;
 import com.tradehero.th.R;
 import com.tradehero.th.api.security.SecurityIdList;
 import com.tradehero.th.api.security.SecurityListType;
-import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.fragments.trending.SecurityItemViewAdapter;
 import com.tradehero.th.loaders.PagedDTOCacheLoader;
 import com.tradehero.th.loaders.security.SecurityListPagedLoader;
 
-abstract public class SecurityListFragment extends DashboardFragment
+abstract public class SecurityListFragment extends BasePurchaseManagerFragment
 {
     private final static String TAG = SecurityListFragment.class.getSimpleName();
 
@@ -42,7 +42,7 @@ abstract public class SecurityListFragment extends DashboardFragment
     protected SecurityItemViewAdapter securityItemViewAdapter;
     protected int firstVisiblePosition = 0;
 
-    protected void initViews(View view)
+    @Override protected void initViews(View view)
     {
         mProgressSpinner = (ProgressBar) view.findViewById(R.id.progress_spinner);
         if (mProgressSpinner != null)

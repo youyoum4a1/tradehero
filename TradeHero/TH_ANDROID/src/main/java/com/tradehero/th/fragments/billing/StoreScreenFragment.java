@@ -48,7 +48,7 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
         return view;
     }
 
-    private void initViews(View view)
+    @Override protected void initViews(View view)
     {
         listView = (ListView) view.findViewById(R.id.store_option_list);
         storeItemAdapter = new StoreItemAdapter(getActivity(), getActivity().getLayoutInflater());
