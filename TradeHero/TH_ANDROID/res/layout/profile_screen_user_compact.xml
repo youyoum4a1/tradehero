@@ -18,7 +18,7 @@
       android:layout_margin="@dimen/user_profile_compact_avatar_margin"
       android:background="@drawable/layout_oval"
       android:padding="0.5dp"
-      android:src="@drawable/superman_facebook"
+      android:src="@drawable/avatar"
       android:contentDescription="@null"/>
 
   <!--Default Portfolio-->

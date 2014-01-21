@@ -40,7 +40,7 @@ public class PApplication extends Application
 
     public static SharedPreferences getPersistPreferences()
     {
-        return context().getSharedPreferences(PERSIST_NAME, 0);
+        return context().getSharedPreferences(PERSIST_NAME, MODE_PRIVATE);
     }
 
     public static PApplication context()

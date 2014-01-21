@@ -69,12 +69,6 @@
         android:screenOrientation="portrait"
         />
     <activity
-        android:name=".activities.SettingsActivity"
-        android:screenOrientation="portrait"
-        android:label="@string/settings"
-        android:theme="@style/TradeHero.Settings"
-        />
-    <activity
         android:name=".activities.DashboardActivity"
         android:screenOrientation="portrait"
         android:theme="@style/TradeHero.Dashboard"

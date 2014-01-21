@@ -42,7 +42,7 @@
           android:layout_marginLeft="5dp"
           android:background="@drawable/layout_oval"
           android:padding="0.5dp"
-          android:src="@drawable/superman_facebook"
+          android:src="@drawable/avatar"
           android:contentDescription="@string/empty"/>
 
       <TextView
