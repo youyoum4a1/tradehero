@@ -8,11 +8,17 @@
   <PreferenceCategory
       android:title="@string/sharing">
     <CheckBoxPreference android:key="@string/settings_sharing_facebook"
-        android:title="@string/facebook"/>
+        android:title="@string/facebook"
+        android:icon="@drawable/settings_fb_normal"
+        />
     <CheckBoxPreference android:key="@string/settings_sharing_twitter"
-        android:title="@string/settings_sharing_twitter"/>
+        android:title="@string/settings_sharing_twitter"
+        android:icon="@drawable/settings_tweet_normal"
+        />
     <CheckBoxPreference android:key="@string/settings_sharing_linked_in"
-        android:title="@string/settings_sharing_linked_in"/>
+        android:title="@string/settings_sharing_linked_in"
+        android:icon="@drawable/settings_linkedin_normal"
+        />
   </PreferenceCategory>
   <PreferenceCategory
       android:title="@string/setting_general">
@@ -80,13 +86,13 @@
     <CheckBoxPreference
         android:key="@string/settings_notifications_push_alert_sound"
         android:title="@string/settings_notifications_push_alert_sound"
-        android:icon="@null"
+        android:icon="@drawable/settings_noti_sound"
         />
 
     <CheckBoxPreference
         android:key="@string/settings_notifications_push_alert_vibrate"
         android:title="@string/settings_notifications_push_alert_vibrate"
-        android:icon="@null"
+        android:icon="@drawable/settings_noti_vibrate"
         />
 
   </PreferenceCategory>
