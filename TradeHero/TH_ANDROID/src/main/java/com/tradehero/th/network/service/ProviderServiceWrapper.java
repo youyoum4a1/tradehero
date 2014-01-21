@@ -9,12 +9,14 @@ import com.tradehero.th.api.competition.ProviderSecurityListType;
 import com.tradehero.th.api.competition.WarrantProviderSecurityListType;
 import com.tradehero.th.api.security.SearchSecurityListType;
 import com.tradehero.th.api.security.SecurityCompactDTO;
+import com.tradehero.th.api.security.SecurityCompactDTOFactory;
 import com.tradehero.th.api.security.TrendingSecurityListType;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import retrofit.Callback;
 import retrofit.RetrofitError;
+import retrofit.client.Response;
 import retrofit.http.GET;
 import retrofit.http.Path;
 
@@ -26,6 +28,7 @@ import retrofit.http.Path;
     public static final String TAG = ProviderServiceWrapper.class.getSimpleName();
 
     @Inject ProviderService providerService;
+    @Inject SecurityCompactDTOFactory securityCompactDTOFactory;
 
     @Inject public ProviderServiceWrapper()
     {
@@ -81,15 +84,22 @@ import retrofit.http.Path;
     public List<SecurityCompactDTO> getProviderBasicSecurities(BasicProviderSecurityListType key)
             throws RetrofitError
     {
+        List<SecurityCompactDTO> returned;
+
         if (key.getPage() == null)
         {
-            return this.providerService.getSecurities(key.getProviderId().key);
+            returned = this.providerService.getSecurities(key.getProviderId().key);
         }
         else if (key.perPage == null)
         {
-            return this.providerService.getSecurities(key.getProviderId().key, key.getPage());
+            returned = this.providerService.getSecurities(key.getProviderId().key, key.getPage());
         }
-        return this.providerService.getSecurities(key.getProviderId().key, key.getPage(), key.perPage);
+        else
+        {
+            returned = this.providerService.getSecurities(key.getProviderId().key, key.getPage(), key.perPage);
+        }
+
+        return securityCompactDTOFactory.clonePerType(returned);
     }
 
     public void getProviderBasicSecurities(BasicProviderSecurityListType key, Callback<List<SecurityCompactDTO>> callback)
@@ -113,15 +123,22 @@ import retrofit.http.Path;
     public List<SecurityCompactDTO> getWarrantUnderlyers(WarrantProviderSecurityListType key)
             throws RetrofitError
     {
+        List<SecurityCompactDTO> returned;
+
         if (key.getPage() == null)
         {
-            return this.providerService.getWarrantUnderlyers(key.getProviderId().key);
+            returned = this.providerService.getWarrantUnderlyers(key.getProviderId().key);
         }
         else if (key.perPage == null)
         {
-            return this.providerService.getWarrantUnderlyers(key.getProviderId().key, key.getPage());
+            returned = this.providerService.getWarrantUnderlyers(key.getProviderId().key, key.getPage());
         }
-        return this.providerService.getWarrantUnderlyers(key.getProviderId().key, key.getPage(), key.perPage);
+        else
+        {
+            returned = this.providerService.getWarrantUnderlyers(key.getProviderId().key, key.getPage(), key.perPage);
+        }
+
+        return securityCompactDTOFactory.clonePerType(returned);
     }
 
     public void getWarrantUnderlyers(WarrantProviderSecurityListType key, Callback<List<SecurityCompactDTO>> callback)
@@ -164,4 +181,14 @@ import retrofit.http.Path;
         this.providerService.getHelpVideos(providerId.key, callback);
     }
     //</editor-fold>
+
+    abstract public class CallbackCloneListSecurityCompactDTO implements Callback<List<SecurityCompactDTO>>
+    {
+        @Override public final void success(List<SecurityCompactDTO> securityCompactDTOs, Response response)
+        {
+            successCloned(securityCompactDTOFactory.clonePerType(securityCompactDTOs), response);
+        }
+
+        abstract public void successCloned(List<SecurityCompactDTO> securityCompactDTOs, Response response);
+    }
 }

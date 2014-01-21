@@ -1,10 +1,11 @@
 package com.tradehero.th.api;
 
-import android.util.Log;
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tradehero.common.persistence.DTO;
+import com.tradehero.common.utils.THLog;
+import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,22 +16,47 @@ public class ExtendedDTO implements DTO
 
     @JsonIgnore private transient Map<String, Object> extra;
 
+    //<editor-fold desc="Constructors">
     public ExtendedDTO()
     {
         super();
+        extra = new HashMap<>();
     }
+    //</editor-fold>
 
     @JsonAnySetter
     public void put(String key, Object value)
     {
-        if (extra == null)
+        THLog.w(TAG, String.format("'%s' is not parsed properly in class: '%s'", key, getClass().getName()));
+
+        extra.put(key, value);
+    }
+
+    protected void put(String key, Object value, Class<? extends ExtendedDTO> myClass)
+    {
+        try
         {
-            // TODO ConcurrentHashMap?
-            extra = new HashMap<>();
+            Field field = myClass.getDeclaredField(key);
+            field.set(this, value);
+        }
+        catch (NoSuchFieldException | IllegalAccessException e)
+        {
+            THLog.e(TAG, "Tried to set key " + key + " with value " + value, e);
+            put(key, value);
+        }
+    }
+
+    public void putAll(Map<String, Object> pairs, Class<? extends ExtendedDTO> myClass)
+    {
+        if (pairs == null)
+        {
+            return;
         }
 
-        Log.w(TAG, String.format("'%s' is not parsed properly in class: '%s'", key, getClass().getName()));
-        extra.put(key, value);
+        for (Map.Entry<String, Object> pair: pairs.entrySet())
+        {
+            put(pair.getKey(), pair.getValue(), myClass);
+        }
     }
 
     @JsonAnyGetter

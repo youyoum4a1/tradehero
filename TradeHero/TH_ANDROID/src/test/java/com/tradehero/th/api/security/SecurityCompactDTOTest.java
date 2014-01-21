@@ -13,8 +13,9 @@ import static org.junit.Assert.assertThat;
 @Config(manifest= Config.NONE)
 public class SecurityCompactDTOTest
 {
-    @Test
-    public void shouldHaveHappySmiles() throws Exception
+    public static final String EXT_KEY_EXCHANGE = "exchange";
+
+    @Test public void shouldHaveHappySmiles() throws Exception
     {
         //String appName = new DashboardActivity().getResources().getString(R.string.app_name);
         //assertThat(appName, equalTo("TradeHero"));
@@ -25,4 +26,6 @@ public class SecurityCompactDTOTest
     //{
     //    new SecurityCompactDTO().getExchangeLogoId();
     //}
+
+
 }

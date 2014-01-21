@@ -1,6 +1,7 @@
     package com.tradehero.th.api.security;
 
 import com.tradehero.common.persistence.DTO;
+import com.tradehero.th.api.ExtendedDTO;
 import com.tradehero.th.api.market.Exchange;
 import com.tradehero.th.utils.SecurityUtils;
 import java.util.ArrayList;
@@ -8,7 +9,7 @@ import java.util.Date;
 import java.util.List;
 
     /** Created with IntelliJ IDEA. User: xavier Date: 9/4/13 Time: 5:30 PM To change this template use File | Settings | File Templates. */
-public class SecurityCompactDTO implements DTO
+public class SecurityCompactDTO extends ExtendedDTO
 {
     public static final String EXCHANGE_SYMBOL_FORMAT = "%s:%s";
 
@@ -57,6 +58,7 @@ public class SecurityCompactDTO implements DTO
     //
     public String secTypeDesc;
 
+    //<editor-fold desc="Constructors">
     public SecurityCompactDTO()
     {
         super();
@@ -64,40 +66,44 @@ public class SecurityCompactDTO implements DTO
 
     public SecurityCompactDTO(SecurityCompactDTO other)
     {
-        this.active = other.active;
-        this.askPrice = other.askPrice;
-        this.averageDailyVolume = other.averageDailyVolume;
-        this.bidPrice = other.bidPrice;
+        super();
+        this.id = other.id;
+        this.symbol = other.symbol;
+        this.securityType = other.securityType;
+        this.name = other.name;
+        this.exchange = other.exchange;
+        this.yahooSymbol = other.yahooSymbol;
         this.currencyDisplay = other.currencyDisplay;
         this.currencyISO = other.currencyISO;
-        this.eps = other.eps;
-        this.exchange = other.exchange;
-        this.exchangeClosingTimeLocal = other.exchangeClosingTimeLocal;
-        this.exchangeOpeningTimeLocal = other.exchangeOpeningTimeLocal;
-        this.exchangeTimezoneMsftName = other.exchangeTimezoneMsftName;
-        this.high = other.high;
-        this.id = other.id;
-        this.imageBlobUrl = other.imageBlobUrl;
-        this.lastPrice = other.lastPrice;
-        this.lastPriceDateAndTimeUtc = other.lastPriceDateAndTimeUtc;
-        this.lastPriceDateEST = other.lastPriceDateEST;
-        this.low = other.low;
         this.marketCap = other.marketCap;
-        this.marketOpen = other.marketOpen;
-        this.name = other.name;
-        this.open = other.open;
-        this.pc200DMA = other.pc200DMA;
-        this.pc50DMA = other.pc50DMA;
-        this.pe = other.pe;
-        this.previousClose = other.previousClose;
-        this.secTypeDesc = other.secTypeDesc;
-        this.securityType = other.securityType;
-        this.symbol = other.symbol;
+        this.lastPrice = other.lastPrice;
+        this.imageBlobUrl = other.imageBlobUrl;
+        this.lastPriceDateEST = other.lastPriceDateEST;
+        this.lastPriceDateAndTimeUtc = other.lastPriceDateAndTimeUtc;
         this.toUSDRate = other.toUSDRate;
         this.toUSDRateDate = other.toUSDRateDate;
+        this.active = other.active;
+        this.askPrice = other.askPrice;
+        this.bidPrice = other.bidPrice;
         this.volume = other.volume;
-        this.yahooSymbol = other.yahooSymbol;
+        this.averageDailyVolume = other.averageDailyVolume;
+        this.previousClose = other.previousClose;
+        this.open = other.open;
+        this.high = other.high;
+        this.low = other.low;
+        this.pe = other.pe;
+        this.eps = other.eps;
+        this.marketOpen = other.marketOpen;
+        this.pc50DMA = other.pc50DMA;
+        this.pc200DMA = other.pc200DMA;
+        this.exchangeTimezoneMsftName = other.exchangeTimezoneMsftName;
+        this.exchangeOpeningTimeLocal = other.exchangeOpeningTimeLocal;
+        this.exchangeClosingTimeLocal = other.exchangeClosingTimeLocal;
+        this.secTypeDesc = other.secTypeDesc;
+
+        this.putAll(other.getAll(), SecurityCompactDTO.class);
     }
+    //</editor-fold>
 
     public SecurityType getSecurityType()
     {
