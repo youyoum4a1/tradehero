@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+  <TableLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      >
+    <TableRow>
+
+      <TextView
+          style="@style/TH.SmallTitle"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:textColor="@color/text_gray_normal"
+          android:text="@string/Roi"
+          android:layout_weight="3"
+          android:gravity="right"
+          android:textStyle="bold"/>
+
+      <TextView
+          style="@style/TH.SmallValue"
+          android:id="@+id/txt_roi"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginLeft="3dp"
+          android:textColor="@color/black"
+          android:textStyle="bold"
+          android:shadowColor="@color/black"
+          android:layout_weight="4"
+          android:gravity="left"
+          android:shadowDy="1"
+          android:shadowRadius="3"
+          />
+    </TableRow>
+    <TableRow>
+
+      <TextView
+          style="@style/TH.SmallTitle"
+          android:id="@+id/txt_profile_tradeprofitprefix_text"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_weight="3"
+          android:gravity="right"
+          android:text="@string/trade_profit"
+          android:textColor="@color/text_gray_normal"
+          android:textStyle="normal"
+          />
+
+      <TextView
+          style="@style/TH.SmallValue"
+          android:id="@+id/txt_profile_tradeprofit"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginLeft="3dp"
+          android:textColor="@color/black"
+          android:textStyle="bold"
+          android:shadowColor="@color/black"
+          android:layout_weight="4"
+          android:gravity="left"
+          android:shadowDy="1"
+          android:shadowRadius="3"
+          />
+    </TableRow>
+    <TableRow>
+
+      <TextView
+          style="@style/TH.SmallTitle"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_weight="3"
+          android:gravity="right"
+          android:paddingRight="@dimen/trade_screen_info_title_padding_right"
+          android:textColor="@color/text_gray_normal"
+          android:text="@string/total_wealth"
+          />
+
+      <TextView
+          android:id="@+id/txt_total_wealth"
+          style="@style/TH.SmallValue"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_weight="4"
+          android:gravity="left"
+          android:textColor="@color/black"
+          android:text="@null"
+          android:textStyle="bold"
+          />
+
+    </TableRow>
+
+    <TableRow>
+
+      <TextView
+          style="@style/TH.SmallTitle"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_weight="3"
+          android:gravity="right"
+          android:paddingRight="@dimen/trade_screen_info_title_padding_right"
+          android:textColor="@color/text_gray_normal"
+          android:text="@string/additional_cash"
+          />
+
+      <TextView
+          android:id="@+id/txt_additional_cash"
+          style="@style/TH.SmallValue"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_weight="4"
+          android:gravity="left"
+          android:textColor="@color/black"
+          android:text=""
+          android:textStyle="bold"
+          />
+
+    </TableRow>
+
+    <TableRow>
+
+      <TextView
+          style="@style/TH.SmallTitle"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_weight="3"
+          android:gravity="right"
+          android:paddingRight="@dimen/trade_screen_info_title_padding_right"
+          android:textColor="@color/text_gray_normal"
+          android:text="@string/cash_on_hand"
+          />
+
+      <TextView
+          android:id="@+id/txt_cash_on_hand"
+          style="@style/TH.SmallValue"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_weight="4"
+          android:gravity="left"
+          android:textColor="@color/black"
+          android:text=""
+          android:textStyle="bold"
+          />
+
+    </TableRow>
+
+  </TableLayout>
+</merge>

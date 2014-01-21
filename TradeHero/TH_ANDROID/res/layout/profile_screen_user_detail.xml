@@ -4,22 +4,25 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/user_profile_rounded_background">
+    android:background="@drawable/user_profile_rounded_background"
+    android:orientation="vertical"
+    >
 
   <!-- layout_marginBottom: dirty trick to reserve background rounded corner radius-->
 
-  <ImageView
-      android:id="@+id/user_profile_background_by_sketched_avatar"
-      android:layout_width="match_parent"
-      android:layout_height="match_parent"
-      android:contentDescription="@null"
-      android:layout_alignParentBottom="true"
-      />
-
+  <!--<ImageView-->
+      <!--android:id="@+id/user_profile_background_by_sketched_avatar"-->
+      <!--android:layout_width="match_parent"-->
+      <!--android:layout_height="match_parent"-->
+      <!--android:contentDescription="@null"-->
+      <!--android:layout_alignParentBottom="true"-->
+      <!--/>-->
   <LinearLayout
+      android:id="@+id/profile_screen_user_detail_top"
       android:layout_width="fill_parent"
-      android:layout_height="fill_parent"
+      android:layout_height="wrap_content"
       android:orientation="vertical"
+      android:background="@drawable/user_profile_rounded_background"
       >
 
     <RelativeLayout
@@ -132,292 +135,12 @@
 
     </RelativeLayout>
 
-    <TableLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        >
-      <TableRow>
-
-        <TextView
-            style="@style/TH.SmallTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/text_gray_normal"
-            android:text="@string/Roi"
-            android:layout_weight="3"
-            android:gravity="right"
-            android:textStyle="bold"/>
-
-        <TextView
-            style="@style/TH.SmallValue"
-            android:id="@+id/txt_roi"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="3dp"
-            android:textColor="@color/black"
-            android:textStyle="bold"
-            android:shadowColor="@color/black"
-            android:layout_weight="4"
-            android:gravity="left"
-            android:shadowDy="1"
-            android:shadowRadius="3"
-            />
-      </TableRow>
-      <TableRow>
-
-        <TextView
-            style="@style/TH.SmallTitle"
-            android:id="@+id/txt_profile_tradeprofitprefix_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="3"
-            android:gravity="right"
-            android:text="@string/trade_profit"
-            android:textColor="@color/text_gray_normal"
-            android:textStyle="normal"
-            />
-
-        <TextView
-            style="@style/TH.SmallValue"
-            android:id="@+id/txt_profile_tradeprofit"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="3dp"
-            android:textColor="@color/black"
-            android:textStyle="bold"
-            android:shadowColor="@color/black"
-            android:layout_weight="4"
-            android:gravity="left"
-            android:shadowDy="1"
-            android:shadowRadius="3"
-            />
-      </TableRow>
-      <TableRow>
-
-        <TextView
-            style="@style/TH.SmallTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="3"
-            android:gravity="right"
-            android:paddingRight="@dimen/trade_screen_info_title_padding_right"
-            android:textColor="@color/text_gray_normal"
-            android:text="@string/total_wealth"
-            />
-
-        <TextView
-            android:id="@+id/txt_total_wealth"
-            style="@style/TH.SmallValue"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="4"
-            android:gravity="left"
-            android:textColor="@color/black"
-            android:text="@null"
-            android:textStyle="bold"
-            />
-
-      </TableRow>
-
-      <TableRow>
-
-        <TextView
-            style="@style/TH.SmallTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="3"
-            android:gravity="right"
-            android:paddingRight="@dimen/trade_screen_info_title_padding_right"
-            android:textColor="@color/text_gray_normal"
-            android:text="@string/additional_cash"
-            />
-
-        <TextView
-            android:id="@+id/txt_additional_cash"
-            style="@style/TH.SmallValue"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="4"
-            android:gravity="left"
-            android:textColor="@color/black"
-            android:text=""
-            android:textStyle="bold"
-            />
-
-      </TableRow>
-
-      <TableRow>
-
-        <TextView
-            style="@style/TH.SmallTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="3"
-            android:gravity="right"
-            android:paddingRight="@dimen/trade_screen_info_title_padding_right"
-            android:textColor="@color/text_gray_normal"
-            android:text="@string/cash_on_hand"
-            />
-
-        <TextView
-            android:id="@+id/txt_cash_on_hand"
-            style="@style/TH.SmallValue"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="4"
-            android:gravity="left"
-            android:textColor="@color/black"
-            android:text=""
-            android:textStyle="bold"
-            />
-
-      </TableRow>
-
-    </TableLayout>
-
-    <!-- followers bar layout -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="1dp"
-        android:paddingTop="5dip"
-        android:paddingBottom="5dip"
-        android:background="@android:color/transparent"
-        android:baselineAligned="false">
-
-      <!--Followers-->
-      <LinearLayout
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:orientation="vertical"
-          android:layout_weight="1"
-          android:gravity="center_horizontal"
-          >
-
-        <TextView
-            android:id="@+id/user_profile_followers_count"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:textColor="@color/black"
-            android:text="@null"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:drawableTop="@drawable/icn_followers"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:layout_marginTop="-5dip"
-            android:text="@string/followers"
-            android:textColor="@color/text_gray_normal"
-            android:textSize="12sp"
-            android:textStyle="normal"/>
-      </LinearLayout>
-
-      <!--Heroes-->
-      <LinearLayout
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:orientation="vertical"
-          android:layout_weight="1"
-          android:gravity="center_horizontal">
-
-        <TextView
-            android:id="@+id/user_profile_heroes_count"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:textColor="@color/black"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:text="@null"
-            android:drawableTop="@drawable/icn_heroes"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="-5dip"
-            android:gravity="center_vertical"
-            android:text="@string/heroes"
-            android:textColor="@color/text_gray_normal"
-            android:textSize="12sp"
-            android:textStyle="normal"/>
-      </LinearLayout>
-
-      <!--Trades-->
-      <LinearLayout
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:orientation="vertical"
-          android:layout_weight="1"
-          android:gravity="center_horizontal">
-
-        <TextView
-            android:id="@+id/user_profile_trade_count"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:textColor="@color/black"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:text="@null"
-            android:drawableTop="@drawable/icn_trades"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:layout_marginTop="-5dip"
-            android:text="@string/trades"
-            android:textColor="@color/text_gray_normal"
-            android:textSize="12sp"
-            android:textStyle="normal"/>
-      </LinearLayout>
-
-      <!--Exchanges-->
-      <LinearLayout
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:orientation="vertical"
-          android:layout_weight="1"
-          android:gravity="center_horizontal">
-
-        <TextView
-            android:id="@+id/user_profile_exchanges_count"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="@null"
-            android:textColor="@color/black"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:drawableTop="@drawable/icn_exchanges"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="-5dip"
-            android:gravity="center_vertical"
-            android:text="@string/exchanges"
-            android:textColor="@color/text_gray_normal"
-            android:textSize="12sp"
-            android:textStyle="normal"/>
-      </LinearLayout>
-
-      <!--Default Portfolio-->
-      <ImageView
-          android:id="@+id/btn_user_profile_default_portfolio"
-          android:layout_width="48dp"
-          android:layout_height="48dp"
-          android:scaleType="fitXY"
-          android:src="@drawable/icn_info"
-          android:contentDescription="@null"
-          />
-
-    </LinearLayout>
-
+    <include android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      layout="@layout/profile_screen_user_detail_info"/>
   </LinearLayout>
 
+  <include android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      layout="@layout/profile_screen_user_detail_bottom_buttons"/>
 </com.tradehero.th.widget.user.ProfileView>

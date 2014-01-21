@@ -65,7 +65,7 @@ public class Constants
 
     //Header
     public static final String TH_CLIENT_VERSION = "TH-Client-Version";
-    public static final String TH_CLIENT_VERSION_VALUE = "1.5.3.3016";
+    public static final String TH_CLIENT_VERSION_VALUE = "1.5.9.3451";
     public static final String AUTHORIZATION = "Authorization";
 
     public static final String TH_FB_PREFIX = "TH-Facebook";

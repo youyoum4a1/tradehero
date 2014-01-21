@@ -25,6 +25,7 @@ import com.tradehero.th.billing.googleplay.THIABPurchaseFetcher;
 import com.tradehero.th.billing.googleplay.THIABPurchaseReporter;
 import com.tradehero.th.billing.googleplay.THIABPurchaser;
 import com.tradehero.th.billing.googleplay.THInventoryFetchMilestone;
+import com.tradehero.th.fragments.settings.ReferralFragment;
 import com.tradehero.th.fragments.web.WebViewFragment;
 import com.tradehero.th.fragments.alert.AlertManagerFragment;
 import com.tradehero.th.fragments.authentication.EmailSignInFragment;
@@ -289,6 +290,8 @@ import org.ocpsoft.prettytime.PrettyTime;
                 TrendingIntentFactory.class,
 
                 AlertManagerFragment.class,
+
+                ReferralFragment.class,
         },
         staticInjections =
         {

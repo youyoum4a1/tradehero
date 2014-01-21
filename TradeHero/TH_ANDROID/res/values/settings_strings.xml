@@ -23,16 +23,16 @@
   <string name="settings_misc_sign_out_no">No</string>
   <string name="settings_misc_sign_out_yes">Yes</string>
   <string name="settings_misc_sign_out_alert_title">Signing Out</string>
-  <string name="settings_misc_sign_out_alert_message">Please hold&#8230;</string>
+  <string name="settings_misc_sign_out_alert_message">Please wait&#8230;</string>
   <string name="settings_misc_sign_out_failed">Failed to Sign Out</string>
 
   <string name="settings_notifications">Notifications</string>
   <string name="settings_notifications_email">Email Notifications</string>
   <string name="settings_notifications_email_alert_title">Updating Your Email Notification Settings</string>
-  <string name="settings_notifications_email_alert_message">Please hold&#8230;</string>
+  <string name="settings_notifications_email_alert_message">Please wait&#8230;</string>
   <string name="settings_notifications_push">Push Notifications</string>
   <string name="settings_notifications_push_alert_title">Updating Your Push Notification Settings</string>
-  <string name="settings_notifications_push_alert_message">Please hold&#8230;</string>
+  <string name="settings_notifications_push_alert_message">Please wait&#8230;</string>
   <string name="settings_notifications_push_alert_sound">Notification Sounds</string>
   <string name="settings_notifications_push_alert_vibrate">Notification Vibration</string>
 

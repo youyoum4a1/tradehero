@@ -88,7 +88,7 @@
   <string name="API_URL">https://www.tradehero.mobi/api</string>
   <string name="YAHOO_FINANCE_URL">http://finance.yahoo.com</string>
   <string name="please_wait">Please wait</string>
-  <string name="version_text">v1.5.2(2813)</string>
+  <string name="version_text">v1.5.9(3451)</string>
   <string name="authentication_sign_up_with">sign up with</string>
   <string name="email_address">email address</string>
   <string name="empty"/>

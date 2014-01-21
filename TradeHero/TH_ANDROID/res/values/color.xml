@@ -14,9 +14,9 @@
     <color name="round_rectangle4">#0087CE</color>
     <color name="round_rectangle5">#009CDA</color>
     <color name="round_rectangle6">#0167A3</color>
-    <color name="black">#000000</color>
+    <color name="black">@android:color/black</color>
     <color name="light_grey">#BFBFBF</color>
-    <color name="white">#FFFFFF</color>
+    <color name="white">@android:color/white</color>
     <color name="signinbg_color">#D6D6D6</color>
     <color name="signinfnt_color">#47454A</color>
 

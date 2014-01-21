@@ -1,12 +1,17 @@
 package com.tradehero.th.widget.user;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 import com.tradehero.common.graphics.FastBlurTransformation;
 import com.tradehero.common.graphics.GradientTransformation;
 import com.tradehero.common.graphics.GrayscaleTransformation;
@@ -23,30 +28,53 @@ import java.text.SimpleDateFormat;
 import javax.inject.Inject;
 
 /** Created with IntelliJ IDEA. User: tho Date: 9/10/13 Time: 6:34 PM Copyright (c) TradeHero */
-public class ProfileView extends FrameLayout implements DTOView<UserProfileDTO>
+public class ProfileView extends LinearLayout implements DTOView<UserProfileDTO>
 {
     private static final String TAG = ProfileView.class.getName();
-    private ImageView avatar;
-    private ImageView background;
+    @Inject protected Picasso picasso;
 
+    private ImageView avatar;
+    private LinearLayout profileTop;
     private TextView roiSinceInception;
     //private TextView hqSinceInception;
     private TextView plSinceInception;
     private TextView memberSince;
     private TextView totalWealth;
     private TextView additionalCash;
-    private TextView cashOnHand;
 
+    private TextView cashOnHand;
     private TextView followersCount;
     private TextView heroesCount;
     private TextView tradesCount;
     private TextView exchangesCount;
-    private ImageView btnDefaultPortfolio;
 
-    @Inject protected Picasso picasso;
+    private ImageView btnDefaultPortfolio;
     private boolean initiated;
     private WeakReference<PortfolioRequestListener> portfolioRequestListener = new WeakReference<>(null);
     private TextView userName;
+
+    private Target topBackgroundTarget = new Target()
+    {
+        @Override public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from)
+        {
+            if (profileTop != null)
+            {
+                profileTop.setBackgroundDrawable(new BitmapDrawable(getResources(), bitmap));
+                // only available since API level 16
+                // profileTop.setBackground(new BitmapDrawable(getResources(), bitmap));
+            }
+        }
+
+        @Override public void onBitmapFailed(Drawable errorDrawable)
+        {
+
+        }
+
+        @Override public void onPrepareLoad(Drawable placeHolderDrawable)
+        {
+
+        }
+    };
 
     //<editor-fold desc="Constructors">
     public ProfileView(Context context)
@@ -82,8 +110,8 @@ public class ProfileView extends FrameLayout implements DTOView<UserProfileDTO>
         if (initiated) return;
         initiated = true;
 
+        profileTop = (LinearLayout) findViewById(R.id.profile_screen_user_detail_top);
         avatar = (ImageView) findViewById(R.id.user_profile_avatar);
-        background = (ImageView) findViewById(R.id.user_profile_background_by_sketched_avatar);
         userName = (TextView) findViewById(R.id.user_profile_display_name);
 
         roiSinceInception = (TextView) findViewById(R.id.txt_roi);
@@ -127,7 +155,7 @@ public class ProfileView extends FrameLayout implements DTOView<UserProfileDTO>
                 .transform(new RoundedShapeTransformation())
                 .into(avatar);
 
-            post(new Runnable()
+            profileTop.post(new Runnable()
             {
                 @Override public void run()
                 {
@@ -138,9 +166,9 @@ public class ProfileView extends FrameLayout implements DTOView<UserProfileDTO>
                             .transform(new GradientTransformation(
                                     getResources().getColor(R.color.profile_view_gradient_top),
                                     getResources().getColor(R.color.profile_view_gradient_bottom)))
-                            .resize(ProfileView.this.getWidth(), ProfileView.this.getHeight())
+                            .resize(profileTop.getWidth(), profileTop.getHeight())
                             .centerCrop()
-                            .into(background);
+                            .into(topBackgroundTarget);
                 }
             });
         }

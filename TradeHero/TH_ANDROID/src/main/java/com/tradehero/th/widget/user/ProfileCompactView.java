@@ -1,6 +1,8 @@
 package com.tradehero.th.widget.user;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageButton;
@@ -8,6 +10,10 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
+import com.tradehero.common.graphics.FastBlurTransformation;
+import com.tradehero.common.graphics.GradientTransformation;
+import com.tradehero.common.graphics.GrayscaleTransformation;
 import com.tradehero.common.graphics.RoundedShapeTransformation;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
@@ -89,13 +95,21 @@ public class ProfileCompactView extends RelativeLayout implements DTOView<UserPr
         }
 
         picasso
-            .load(dto.picture)
-            .transform(new RoundedShapeTransformation())
-            .into(avatar);
+                .load(dto.picture)
+                .transform(new RoundedShapeTransformation())
+                .into(avatar);
+
+        picasso
+                .load(dto.picture)
+                .transform(new GrayscaleTransformation())
+                .transform(new FastBlurTransformation(30))
+                .transform(new GradientTransformation(
+                        getResources().getColor(R.color.profile_view_gradient_top),
+                        getResources().getColor(R.color.profile_view_gradient_bottom))).into(fakeTarget);
 
         if (dto.portfolio != null && dto.portfolio.roiSinceInception != null)
         {
-            THSignedNumber thRoiSinceInception = new THSignedNumber(THSignedNumber.TYPE_PERCENTAGE, dto.portfolio.roiSinceInception*100);
+            THSignedNumber thRoiSinceInception = new THSignedNumber(THSignedNumber.TYPE_PERCENTAGE, dto.portfolio.roiSinceInception * 100);
             roiSinceInception.setText(thRoiSinceInception.toString());
             roiSinceInception.setTextColor(getResources().getColor(thRoiSinceInception.getColor()));
         }
@@ -107,7 +121,6 @@ public class ProfileCompactView extends RelativeLayout implements DTOView<UserPr
 
     /**
      * Listeners should be strongly referenced elsewhere
-     * @param portfolioRequestListener
      */
     public void setPortfolioRequestListener(PortfolioRequestListener portfolioRequestListener)
     {
@@ -122,4 +135,23 @@ public class ProfileCompactView extends RelativeLayout implements DTOView<UserPr
             listener.onDefaultPortfolioRequested();
         }
     }
+
+
+    private Target fakeTarget = new Target()
+    {
+        @Override public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from)
+        {
+
+        }
+
+        @Override public void onBitmapFailed(Drawable errorDrawable)
+        {
+
+        }
+
+        @Override public void onPrepareLoad(Drawable placeHolderDrawable)
+        {
+
+        }
+    };
 }

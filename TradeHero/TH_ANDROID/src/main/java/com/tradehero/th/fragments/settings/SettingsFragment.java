@@ -32,6 +32,7 @@ import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.Application;
 import com.tradehero.th.base.DashboardNavigatorActivity;
+import com.tradehero.th.base.Navigator;
 import com.tradehero.th.base.THUser;
 import com.tradehero.th.billing.googleplay.THIABPurchase;
 import com.tradehero.th.billing.googleplay.THIABPurchaseRestorer;
@@ -166,6 +167,16 @@ public class SettingsFragment extends PreferenceFragment
 
     private void initPreferenceClickHandlers()
     {
+        Preference topBanner = findPreference(getString(R.string.key_preference_top_banner));
+        topBanner.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
+        {
+            @Override public boolean onPreferenceClick(Preference preference)
+            {
+                handleTopBannerClicked();
+                return false;
+            }
+        });
+
         Preference settingFaq = findPreference(getString(R.string.settings_primary_faq));
         settingFaq.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
         {
@@ -422,6 +433,11 @@ public class SettingsFragment extends PreferenceFragment
             updateSocialConnectStatus();
         }
         // Otherwise we rely on the complete listener
+    }
+
+    private void handleTopBannerClicked()
+    {
+        getNavigator().pushFragment(ReferralFragment.class, null, Navigator.PUSH_UP_FROM_BOTTOM);
     }
 
     private void updateNotificationStatus()
