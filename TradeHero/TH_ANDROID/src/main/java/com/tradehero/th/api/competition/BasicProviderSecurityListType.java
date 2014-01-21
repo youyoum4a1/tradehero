@@ -10,22 +10,22 @@ public class BasicProviderSecurityListType extends ProviderSecurityListType
     public static final String TAG = BasicProviderSecurityListType.class.getSimpleName();
 
     //<editor-fold desc="Constructors">
-    protected BasicProviderSecurityListType(ProviderSecurityListType other)
+    public BasicProviderSecurityListType(ProviderSecurityListType other)
     {
         super(other);
     }
 
-    protected BasicProviderSecurityListType(ProviderId providerId, Integer page, Integer perPage)
+    public BasicProviderSecurityListType(ProviderId providerId, Integer page, Integer perPage)
     {
         super(providerId, page, perPage);
     }
 
-    protected BasicProviderSecurityListType(ProviderId providerId, Integer page)
+    public BasicProviderSecurityListType(ProviderId providerId, Integer page)
     {
         super(providerId, page);
     }
 
-    protected BasicProviderSecurityListType(ProviderId providerId)
+    public BasicProviderSecurityListType(ProviderId providerId)
     {
         super(providerId);
     }

@@ -10,22 +10,22 @@ public class WarrantProviderSecurityListType extends ProviderSecurityListType
     public static final String TAG = WarrantProviderSecurityListType.class.getSimpleName();
 
     //<editor-fold desc="Constructors">
-    protected WarrantProviderSecurityListType(ProviderSecurityListType other)
+    public WarrantProviderSecurityListType(ProviderSecurityListType other)
     {
         super(other);
     }
 
-    protected WarrantProviderSecurityListType(ProviderId providerId, Integer page, Integer perPage)
+    public WarrantProviderSecurityListType(ProviderId providerId, Integer page, Integer perPage)
     {
         super(providerId, page, perPage);
     }
 
-    protected WarrantProviderSecurityListType(ProviderId providerId, Integer page)
+    public WarrantProviderSecurityListType(ProviderId providerId, Integer page)
     {
         super(providerId, page);
     }
 
-    protected WarrantProviderSecurityListType(ProviderId providerId)
+    public WarrantProviderSecurityListType(ProviderId providerId)
     {
         super(providerId);
     }
