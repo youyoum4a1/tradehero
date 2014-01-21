@@ -175,6 +175,14 @@ public class TimelineItemView extends LinearLayout implements
         }
         currentTimelineItem = item;
 
+        if (user.id != currentUserBaseKeyHolder.getCurrentUserBaseKey().key)
+        {
+            shareActionButton.setVisibility(View.INVISIBLE);
+        }
+        else
+        {
+            shareActionButton.setVisibility(View.VISIBLE);
+        }
         // username
         displayUsername(user);
 
