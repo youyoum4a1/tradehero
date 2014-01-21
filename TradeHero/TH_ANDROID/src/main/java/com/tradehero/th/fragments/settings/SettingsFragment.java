@@ -12,6 +12,7 @@ import android.support.v4.preference.PreferenceFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
@@ -108,6 +109,19 @@ public class SettingsFragment extends PreferenceFragment
         this.currentUserProfileRetrievedMilestone = new UserProfileRetrievedMilestone(currentUserBaseKeyHolder.getCurrentUserBaseKey());
         this.currentUserProfileRetrievedMilestone.setOnCompleteListener(new SettingsUserProfileRetrievedCompleteListener());
         this.currentUserProfileRetrievedMilestone.launch();
+
+        if (view != null)
+        {
+            ListView listView = (ListView) view.findViewById(android.R.id.list);
+            if (listView != null)
+            {
+                listView.setPadding(
+                        (int) getResources().getDimension(R.dimen.setting_padding_left),
+                        (int) getResources().getDimension(R.dimen.setting_padding_top),
+                        (int) getResources().getDimension(R.dimen.setting_padding_right),
+                        (int) getResources().getDimension(R.dimen.setting_padding_bottom));
+            }
+        }
 
         return view;
     }
@@ -811,7 +825,8 @@ public class SettingsFragment extends PreferenceFragment
         }
 
         @Override public void onStart()
-        {}
+        {
+        }
 
         @Override public boolean onSocialAuthDone(JSONObject json)
         {
