@@ -43,10 +43,10 @@ public class Constants
     public static final boolean TEST_FLIGHT_REPORT_LOG = true;
 
     //URL
-    public static final String BASE_TH_URL = "http://192.168.1.64:1857/";
+    //public static final String BASE_TH_URL = "http://192.168.1.64:1857/";
     //public static final String BASE_TH_URL = "https://192.168.1.64:44301/";
     //public static final String BASE_TH_URL = "http://truongtho.noip.me/";
-    //public static final String BASE_TH_URL = "https://www.tradehero.mobi/";
+    public static final String BASE_TH_URL = "https://www.tradehero.mobi/";
     public static final String BASE_API_URL = BASE_TH_URL + "api/";
     public static final String SIGN_UP_WITH_EMAIL_URL = BASE_API_URL + "SignupWithEmail";
     public static final String SIGN_UP_WITH_SOCIAL_MEDIA_USER_URL = BASE_API_URL + "users";
