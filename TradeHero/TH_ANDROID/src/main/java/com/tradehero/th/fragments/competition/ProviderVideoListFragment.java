@@ -49,7 +49,12 @@ public class ProviderVideoListFragment extends CompetitionFragment
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.fragment_help_video_list, container, false);
+        initViews(view);
+        return view;
+    }
 
+    @Override protected void initViews(View view)
+    {
         this.helpVideoListCacheListener = new ProviderVideoListFragmentVideoListCacheListener();
         this.providerVideoAdapter = new ProviderVideoAdapter(getActivity(), getActivity().getLayoutInflater(), R.layout.help_video_item_view);
         this.providerVideoAdapter.setItems(new ArrayList<HelpVideoId>());
@@ -65,7 +70,6 @@ public class ProviderVideoListFragment extends CompetitionFragment
             this.videoListView.setAdapter(this.providerVideoAdapter);
             this.videoListView.setOnItemClickListener(new ProviderVideoListFragmentItemClickListener());
         }
-        return view;
     }
 
     //<editor-fold desc="ActionBar">

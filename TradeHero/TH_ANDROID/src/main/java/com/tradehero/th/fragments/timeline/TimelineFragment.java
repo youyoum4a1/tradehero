@@ -74,7 +74,6 @@ public class TimelineFragment extends BasePurchaseManagerFragment
 
     @Override protected void initViews(View view)
     {
-        super.initViews(view);
         this.timelineListView = (TimelineListView) view.findViewById(R.id.pull_refresh_list);
         this.timelineListView.setEmptyView(view.findViewById(android.R.id.empty));
     }
