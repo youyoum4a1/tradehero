@@ -4,3 +4,6 @@
 [submodule "facebook-android-sdk"]
 	path = facebook-android-sdk
 	url = git@github.com:nguyentruongtho/facebook-android-sdk.git
+[submodule "StickyListHeaders"]
+	path = StickyListHeaders
+	url = git@github.com:nguyentruongtho/StickyListHeaders.git

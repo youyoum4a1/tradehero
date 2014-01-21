@@ -60,6 +60,7 @@
   <modules>
     <module>TradeHero/TH_ANDROID</module>
     <module>facebook-android-sdk/facebook</module>
+    <module>StickyListHeaders/library</module>
   </modules>
 
   <organization>

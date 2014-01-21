@@ -1,8 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    >
 
-</LinearLayout>
+  <se.emilsjolander.stickylistheaders.StickyListHeadersListView
+      android:id="@+id/sticky_list"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"/>
+
+  <TextView
+      android:id="@+id/refer_friend_list_empty_view"
+      android:paddingTop="10dp"
+      android:paddingLeft="3dp"
+      android:paddingRight="3dp"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:text="@string/refer_friend_empty_view"
+      android:gravity="center_horizontal"
+      />
+</FrameLayout>

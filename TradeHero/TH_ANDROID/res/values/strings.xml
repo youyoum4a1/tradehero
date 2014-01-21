@@ -187,4 +187,6 @@
   <string name="add_alert">Add Alert</string>
   <string name="error_fetch_portfolio_watchlist">There was an error when fetching the watch list</string>
   <string name="not_yet_implemented">Not yet implemented. Stay stuned.</string>
+  <string name="invite_friends">Invite Friends</string>
+  <string name="refer_friend_empty_view">Your friend list is empty, link your account with Facebook, Twitter or Linkedin to refer friends</string>
 </resources>
