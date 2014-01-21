@@ -170,9 +170,9 @@ public class MainCompetitionFragment extends CompetitionFragment
         if (competitionZoneDTO instanceof CompetitionZoneTradeNowDTO)
         {
             Bundle args = new Bundle();
-            args.putBundle(WarrantListFragment.BUNDLE_KEY_PROVIDER_ID, providerId.getArgs());
-            args.putBundle(WarrantListFragment.BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE, userInteractor.getApplicablePortfolioId().getArgs());
-            navigator.pushFragment(WarrantListFragment.class, args);
+            args.putBundle(ProviderSecurityListFragment.BUNDLE_KEY_PROVIDER_ID, providerId.getArgs());
+            args.putBundle(ProviderSecurityListFragment.BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE, userInteractor.getApplicablePortfolioId().getArgs());
+            navigator.pushFragment(ProviderSecurityListFragment.class, args);
         }
         else if (competitionZoneDTO instanceof CompetitionZonePortfolioDTO)
         {

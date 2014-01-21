@@ -1,23 +1,25 @@
-package com.tradehero.common;
+package com.tradehero.common.utils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.tradehero.common.utils.JacksonConverter;
 import com.tradehero.th.api.portfolio.PortfolioDTO;
 import com.tradehero.th.api.position.GetPositionsDTO;
 import java.io.File;
-import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
-import org.robolectric.bytecode.Setup;
+import retrofit.converter.ConversionException;
 import retrofit.mime.TypedFile;
 import retrofit.mime.TypedInput;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
@@ -71,5 +73,19 @@ public class JacksonConverterTest
         Object converted = jacksonConverter.fromBody(typedInputFile, GetPositionsDTO.class);
         assertThat(converted, instanceOf(GetPositionsDTO.class));
         assertThat(((GetPositionsDTO) converted).openPositionsCount, equalTo(10));
+    }
+
+    @Test public void canParseDate() throws ConversionException
+    {
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss"));
+        jacksonConverter = new JacksonConverter(objectMapper);
+
+        TypedInput typedInput = THJsonAdapter.toTypedInput("2013-04-23T12:30:40");
+        Object myDate = jacksonConverter.fromBody(typedInput, Date.class);
+        assertTrue(myDate instanceof Date);
+        Calendar myCalendar = Calendar.getInstance();
+        myCalendar.setTime((Date) myDate);
+        assertEquals(2013, myCalendar.get(Calendar.YEAR));
     }
 }

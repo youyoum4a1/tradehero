@@ -1,5 +1,6 @@
 package com.tradehero.th.api.security;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -35,7 +36,7 @@ public class WarrantDTOTest
         Map<String, Object> returned = new HashMap<>();
         returned.put(SecurityCompactDTOTest.EXT_KEY_EXCHANGE, "SGX");
         returned.put(EXT_KEY_WARRANT_TYPE, "C");
-        returned.put(EXT_KEY_EXPIRY_DATE, new Date());
+        returned.put(EXT_KEY_EXPIRY_DATE, "2014-04-30T00:00:00");
         returned.put(EXT_KEY_STRIKE_PRICE, 123d);
         returned.put(EXT_KEY_STRIKE_PRICE_CCY, "SGD");
         returned.put(EXT_KEY_ISSUER_NAME, "Mamacq");
@@ -61,7 +62,12 @@ public class WarrantDTOTest
     private void assertWarrantHasPairs1(WarrantDTO warrantDTO)
     {
         assertEquals("C", warrantDTO.warrantType);
+
         assertNotNull(warrantDTO.expiryDate);
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(warrantDTO.expiryDate);
+        assertEquals(2014, calendar.get(Calendar.YEAR));
+
         assertEquals(Double.valueOf(123d), warrantDTO.strikePrice);
         assertEquals("SGD", warrantDTO.strikePriceCcy);
         assertEquals("Mamacq", warrantDTO.issuerName);

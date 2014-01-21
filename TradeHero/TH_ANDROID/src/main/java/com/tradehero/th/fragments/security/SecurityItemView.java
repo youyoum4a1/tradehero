@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.trending;
+package com.tradehero.th.fragments.security;
 
 import android.content.Context;
 import android.util.AttributeSet;
@@ -35,23 +35,24 @@ public class SecurityItemView extends RelativeLayout implements DTOView<Security
     private static final String TAG = SecurityItemView.class.getSimpleName();
     private static Transformation foregroundTransformation;
     private static Transformation backgroundTransformation;
+    public static final float DIVISOR_PC_50_COLOR = 5f;
 
     @Inject protected Picasso mPicasso;
 
-    private ImageView stockBgLogo;
-    private ImageView stockLogo;
-    private ImageView countryLogo;
-    private ImageView marketCloseIcon;
-    private TextView stockName;
-    private TextView exchangeSymbol;
-    private TextView profitIndicator;
-    private TextView currencyDisplay;
-    private TextView lastPrice;
-    private TextView date;
-    private TextView securityType;
+    protected ImageView stockBgLogo;
+    protected ImageView stockLogo;
+    protected ImageView countryLogo;
+    protected ImageView marketCloseIcon;
+    protected TextView stockName;
+    protected TextView exchangeSymbol;
+    protected TextView profitIndicator;
+    protected TextView currencyDisplay;
+    protected TextView lastPrice;
+    protected TextView date;
+    protected TextView securityType;
 
-    private SecurityId securityId;
-    private SecurityCompactDTO securityCompactDTO;
+    protected SecurityId securityId;
+    protected SecurityCompactDTO securityCompactDTO;
     @Inject protected Lazy<SecurityCompactCache> securityCompactCache;
     private SecurityCompactListener securityCompactListener;
     private DTOCache.GetOrFetchTask<SecurityId, SecurityCompactDTO> securityCompactFetchTask;
@@ -119,7 +120,7 @@ public class SecurityItemView extends RelativeLayout implements DTOView<Security
         }
     }
 
-    private void fetchViews()
+    protected void fetchViews()
     {
         stockName = (TextView) findViewById(R.id.stock_name);
         exchangeSymbol = (TextView) findViewById(R.id.exchange_symbol);
@@ -225,6 +226,11 @@ public class SecurityItemView extends RelativeLayout implements DTOView<Security
 
     public void display (final SecurityCompactDTO securityCompactDTO)
     {
+        linkWith(securityCompactDTO, true);
+    }
+
+    public void linkWith(SecurityCompactDTO securityCompactDTO, boolean andDisplay)
+    {
         if (this.securityCompactDTO != null && securityCompactDTO.name.equals(this.securityCompactDTO.name))
         {
             return;
@@ -232,84 +238,149 @@ public class SecurityItemView extends RelativeLayout implements DTOView<Security
         }
 
         this.securityCompactDTO = securityCompactDTO;
-        stockName.setText(securityCompactDTO.name);
-        exchangeSymbol.setText(securityCompactDTO.getExchangeSymbol());
-        currencyDisplay.setText(securityCompactDTO.currencyDisplay);
 
-        if (date != null)
+        if (andDisplay)
         {
-            date.setText(DateUtils.getFormattedUtcDate(this.securityCompactDTO.lastPriceDateAndTimeUtc));
-            date.setTextColor(getResources().getColor(securityCompactDTO.marketOpen ? R.color.black : R.color.text_gray_normal));
+            displayStockName();
+            displayExchangeSymbol();
+            displayCurrencyDisplay();
+            displayDate();
+            displayLastPrice();
+            displayProfitIndicator();
+            displayMarketClose();
+            displaySecurityType();
+            displayCountryLogo();
+            storeImageUrlInImageViews();
+            loadImages();
         }
+    }
 
-        if (securityCompactDTO.lastPrice != null && !Double.isNaN(securityCompactDTO.lastPrice))
-        {
-            lastPrice.setText(String.format("%.2f", securityCompactDTO.lastPrice));
-        }
-        else
-        {
-            THLog.d(TAG, "TH: Unable to parse Last Price");
-        }
-
-        if (securityCompactDTO.pc50DMA > 0)
-        {
-            //profitIndicator.setText(getContext().getString(R.string.positive_prefix));
-            profitIndicator.setText(R.string.arrow_prefix_positive);
-        }
-        else if (securityCompactDTO.pc50DMA < 0)
-        {
-            //profitIndicator.setText(getContext().getString(R.string.negative_prefix));
-            profitIndicator.setText(R.string.arrow_prefix_negative);
-        }
-
-        profitIndicator.setTextColor(ColorUtils.getColorForPercentage(((float) securityCompactDTO.pc50DMA) / 5f));
-        exchangeSymbol.setTextColor(getResources().getColor(R.color.exchange_symbol));
-
-        if (securityCompactDTO.marketOpen)
-        {
-            if (marketCloseIcon != null)
-            {
-                marketCloseIcon.setVisibility(View.GONE);
-            }
-            currencyDisplay.setTextColor(getResources().getColor(R.color.exchange_symbol));
-            lastPrice.setTextColor(getResources().getColor(R.color.exchange_symbol));
-        }
-        else
-        {
-            if (marketCloseIcon != null)
-            {
-                marketCloseIcon.setVisibility(View.VISIBLE);
-            }
-            currencyDisplay.setTextColor(getResources().getColor(android.R.color.darker_gray));
-            lastPrice.setTextColor(getResources().getColor(android.R.color.darker_gray));
-        }
-
-        if (securityType != null && this.securityCompactDTO.getSecurityType() != null)
-        {
-            securityType.setText(securityCompactDTO.getSecurityTypeStringResourceId());
-        }
-
-        if (stockLogo != null)
-        {
-            stockLogo.setImageResource(R.drawable.default_image);
-        }
-
-        if (stockBgLogo != null)
-        {
-            stockBgLogo.setImageResource(R.drawable.default_image);
-        }
-
-        if (countryLogo != null)
-        {
-            countryLogo.setImageResource(securityCompactDTO.getExchangeLogoId());
-        }
-
+    //<editor-fold desc="Display Methods">
+    public void display()
+    {
+        displayStockName();
+        displayExchangeSymbol();
+        displayCurrencyDisplay();
+        displayDate();
+        displayLastPrice();
+        displayProfitIndicator();
+        displayMarketClose();
+        displaySecurityType();
+        displayCountryLogo();
         storeImageUrlInImageViews();
-
         loadImages();
     }
 
-    private void storeImageUrlInImageViews()
+    public void displayStockName()
+    {
+        if (stockName != null)
+        {
+            if (securityCompactDTO != null)
+            {
+                stockName.setText(securityCompactDTO.name);
+            }
+            else
+            {
+                stockName.setText(R.string.na);
+            }
+        }
+    }
+
+    public void displayExchangeSymbol()
+    {
+        if (exchangeSymbol != null)
+        {
+            if (securityCompactDTO != null)
+            {
+                exchangeSymbol.setText(securityCompactDTO.getExchangeSymbol());
+            }
+            else
+            {
+                exchangeSymbol.setText(R.string.na);
+            }
+            exchangeSymbol.setTextColor(getResources().getColor(R.color.exchange_symbol));
+        }
+    }
+
+    public void displayCurrencyDisplay()
+    {
+        if (currencyDisplay != null)
+        {
+            if (securityCompactDTO != null)
+            {
+                currencyDisplay.setText(securityCompactDTO.currencyDisplay);
+            }
+            else
+            {
+                currencyDisplay.setText(R.string.na);
+            }
+        }
+    }
+
+    public void displayDate()
+    {
+        if (date != null)
+        {
+            if (securityCompactDTO != null)
+            {
+                date.setText(DateUtils.getFormattedUtcDate(this.securityCompactDTO.lastPriceDateAndTimeUtc));
+                if (securityCompactDTO.marketOpen != null)
+                {
+                    date.setTextColor(getResources().getColor(securityCompactDTO.marketOpen ? R.color.black : R.color.text_gray_normal));
+                }
+            }
+            else
+            {
+                date.setText(R.string.na);
+            }
+        }
+    }
+
+    public void displayLastPrice()
+    {
+        if (lastPrice != null)
+        {
+            if (securityCompactDTO != null && securityCompactDTO.lastPrice != null && !Double.isNaN(securityCompactDTO.lastPrice))
+            {
+                lastPrice.setText(String.format("%.2f", securityCompactDTO.lastPrice));
+            }
+            else
+            {
+                lastPrice.setText(R.string.na);
+                THLog.d(TAG, "TH: Unable to parse Last Price");
+            }
+        }
+    }
+
+    public void displayProfitIndicator()
+    {
+        if (profitIndicator != null)
+        {
+            if (securityCompactDTO != null)
+            {
+                if (securityCompactDTO.pc50DMA == null)
+                {
+                    THLog.w(TAG, "displayProfitIndicator, pc50DMA was null");
+                }
+                else
+                {
+                    if (securityCompactDTO.pc50DMA > 0)
+                    {
+                        //profitIndicator.setText(getContext().getString(R.string.positive_prefix));
+                        profitIndicator.setText(R.string.arrow_prefix_positive);
+                    }
+                    else if (securityCompactDTO.pc50DMA < 0)
+                    {
+                        //profitIndicator.setText(getContext().getString(R.string.negative_prefix));
+                        profitIndicator.setText(R.string.arrow_prefix_negative);
+                    }
+                    profitIndicator.setTextColor(ColorUtils.getColorForPercentage(((float) securityCompactDTO.pc50DMA) / DIVISOR_PC_50_COLOR));
+                }
+            }
+        }
+    }
+
+    public void storeImageUrlInImageViews()
     {
         if (stockLogo != null)
         {
@@ -322,8 +393,91 @@ public class SecurityItemView extends RelativeLayout implements DTOView<Security
         }
     }
 
+    public void displayMarketClose()
+    {
+        if (securityCompactDTO == null)
+        {
+            // Nothing to do
+        }
+        else if (securityCompactDTO.marketOpen == null)
+        {
+            THLog.w(TAG, "displayMarketClose marketOpen is null");
+        }
+        else if (securityCompactDTO.marketOpen)
+        {
+            if (marketCloseIcon != null)
+            {
+                marketCloseIcon.setVisibility(View.GONE);
+            }
+            if (currencyDisplay != null)
+            {
+                currencyDisplay.setTextColor(getResources().getColor(R.color.exchange_symbol));
+            }
+            if (lastPrice != null)
+            {
+                lastPrice.setTextColor(getResources().getColor(R.color.exchange_symbol));
+            }
+        }
+        else
+        {
+            if (marketCloseIcon != null)
+            {
+                marketCloseIcon.setVisibility(View.VISIBLE);
+            }
+            if (currencyDisplay != null)
+            {
+                currencyDisplay.setTextColor(getResources().getColor(android.R.color.darker_gray));
+            }
+            if (lastPrice != null)
+            {
+                lastPrice.setTextColor(getResources().getColor(android.R.color.darker_gray));
+            }
+        }
+    }
+
+    public void displaySecurityType()
+    {
+        if (securityType != null)
+        {
+            if (this.securityCompactDTO != null && this.securityCompactDTO.getSecurityType() != null)
+            {
+                securityType.setText(securityCompactDTO.getSecurityTypeStringResourceId());
+            }
+            else
+            {
+                securityType.setText(R.string.na);
+            }
+        }
+    }
+
+    public void displayCountryLogo()
+    {
+        if (countryLogo != null)
+        {
+            if (securityCompactDTO != null)
+            {
+                countryLogo.setImageResource(securityCompactDTO.getExchangeLogoId());
+            }
+            else
+            {
+                countryLogo.setImageResource(R.drawable.default_image);
+            }
+        }
+    }
+    //</editor-fold>
+
     public void loadImages ()
     {
+        if (stockLogo != null)
+        {
+            stockLogo.setImageResource(R.drawable.default_image);
+        }
+
+        if (stockBgLogo != null)
+        {
+            stockBgLogo.setImageResource(R.drawable.default_image);
+        }
+
         if (isMyUrlOk())
         {
             loadImageInTarget(stockLogo, foregroundTransformation);

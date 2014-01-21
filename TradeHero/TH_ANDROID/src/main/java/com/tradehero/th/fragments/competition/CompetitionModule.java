@@ -19,7 +19,7 @@ import dagger.Module;
                         ProviderListRetrievedMilestone.class,
                         ProviderVideoListFragment.class,
                         ProviderVideoListItem.class,
-                        WarrantListFragment.class,
+                        ProviderSecurityListFragment.class,
                 },
         complete = false,
         library = true

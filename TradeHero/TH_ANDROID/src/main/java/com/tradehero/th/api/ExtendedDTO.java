@@ -6,6 +6,10 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tradehero.common.persistence.DTO;
 import com.tradehero.common.utils.THLog;
 import java.lang.reflect.Field;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -14,20 +18,28 @@ public class ExtendedDTO implements DTO
 {
     private static final String TAG = ExtendedDTO.class.getName();
 
+    public static final boolean VERBOSE = false;
+
     @JsonIgnore private transient Map<String, Object> extra;
+    @JsonIgnore protected transient DateFormat dateFormat;
 
     //<editor-fold desc="Constructors">
     public ExtendedDTO()
     {
         super();
         extra = new HashMap<>();
+        dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+        //dateFormat = new ISO8601DateFormat();
     }
     //</editor-fold>
 
     @JsonAnySetter
     public void put(String key, Object value)
     {
-        THLog.w(TAG, String.format("'%s' is not parsed properly in class: '%s'", key, getClass().getName()));
+        if (VERBOSE)
+        {
+            THLog.w(TAG, String.format("'%s' is not parsed properly in class: '%s'", key, getClass().getName()));
+        }
 
         extra.put(key, value);
     }
@@ -37,11 +49,20 @@ public class ExtendedDTO implements DTO
         try
         {
             Field field = myClass.getDeclaredField(key);
+            if (field.getType().equals(Date.class))
+            {
+                value = dateFormat.parse((String) value);
+                // TODO make it work more generically
+                //value = THJsonAdapter.getInstance().fromBody((String) value, field.getType());
+            }
             field.set(this, value);
         }
-        catch (NoSuchFieldException | IllegalAccessException e)
+        catch (NoSuchFieldException | IllegalAccessException | IllegalArgumentException | ParseException e)
         {
-            THLog.e(TAG, "Tried to set key " + key + " with value " + value, e);
+            if (VERBOSE)
+            {
+                THLog.e(TAG, "Tried to set key " + key + " with value " + value, e);
+            }
             put(key, value);
         }
     }

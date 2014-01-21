@@ -262,8 +262,12 @@ abstract public class SecurityListFragment extends BasePurchaseManagerFragment
 
         @Override public void onLoadFinished(Loader<SecurityIdList> securityIdListLoader, SecurityIdList securityIds)
         {
-            securityItemViewAdapter.setItems(securityIds);
-            securityItemViewAdapter.notifyDataSetChanged();
+            if (securityItemViewAdapter != null)
+            {
+                // It may have been nullified if coming out
+                securityItemViewAdapter.setItems(securityIds);
+                securityItemViewAdapter.notifyDataSetChanged();
+            }
             if (listViewScrollListener != null)
             {
                 listViewScrollListener.lowerFlag();

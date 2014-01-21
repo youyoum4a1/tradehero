@@ -3,8 +3,8 @@ package com.tradehero.th.fragments.trending;
 import android.content.Context;
 import android.view.LayoutInflater;
 import com.tradehero.th.adapters.ArrayDTOAdapter;
-import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
+import com.tradehero.th.fragments.security.SecurityItemView;
 
 public class SecurityItemViewAdapterArray extends ArrayDTOAdapter<SecurityId, SecurityItemView>
 {

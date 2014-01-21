@@ -1,8 +1,11 @@
 package com.tradehero.common.utils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import dagger.ObjectGraph;
+import java.text.SimpleDateFormat;
 import retrofit.converter.ConversionException;
 import retrofit.converter.Converter;
 import retrofit.converter.GsonConverter;
@@ -39,7 +42,7 @@ public class THJsonAdapter implements Converter
         converter = ConverterFactory.getConverter(CONVERTER_TYPE);
     }
 
-    private TypedInput toTypedInput(final byte[] jsonBytes)
+    public static TypedInput toTypedInput(final byte[] jsonBytes)
     {
         return new TypedInput()
         {
@@ -63,7 +66,7 @@ public class THJsonAdapter implements Converter
         };
     }
 
-    private TypedInput toTypedInput(String jsonString)
+    public static TypedInput toTypedInput(String jsonString)
     {
         try
         {
@@ -91,7 +94,9 @@ public class THJsonAdapter implements Converter
         try
         {
             return converter.fromBody(body, type);
-        }   catch (ConversionException ex) {
+        }
+        catch (ConversionException ex)
+        {
             THLog.e(TAG, "Conversion error", ex);
             return null;
         }
@@ -112,7 +117,7 @@ public class THJsonAdapter implements Converter
     {
         public static Converter getConverter(ConverterType converterType)
         {
-            switch (ConverterType.GSON)
+            switch (converterType)
             {
                 case GSON:
                     return getGsonConverter();
@@ -124,7 +129,10 @@ public class THJsonAdapter implements Converter
 
         private static Converter getJacksonConverter()
         {
-            return new JacksonConverter(new ObjectMapper());
+            ObjectMapper objectMapper = new ObjectMapper();
+            //objectMapper.setDateFormat(new ISO8601DateFormat());
+            objectMapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss"));
+            return new JacksonConverter(objectMapper);
         }
 
         private static Converter getGsonConverter()

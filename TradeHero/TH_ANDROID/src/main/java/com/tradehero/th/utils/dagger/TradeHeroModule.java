@@ -26,6 +26,7 @@ import com.tradehero.th.billing.googleplay.THIABPurchaseReporter;
 import com.tradehero.th.billing.googleplay.THIABPurchaser;
 import com.tradehero.th.billing.googleplay.THInventoryFetchMilestone;
 import com.tradehero.th.fragments.settings.ReferralFragment;
+import com.tradehero.th.fragments.security.WarrantSecurityItemView;
 import com.tradehero.th.fragments.web.WebViewFragment;
 import com.tradehero.th.fragments.alert.AlertManagerFragment;
 import com.tradehero.th.fragments.authentication.EmailSignInFragment;
@@ -89,7 +90,7 @@ import com.tradehero.th.fragments.trade.TradeListItemView;
 import com.tradehero.th.fragments.trade.TradeListOverlayHeaderView;
 import com.tradehero.th.fragments.trending.SearchPeopleItemView;
 import com.tradehero.th.fragments.trending.SearchStockPeopleFragment;
-import com.tradehero.th.fragments.trending.SecurityItemView;
+import com.tradehero.th.fragments.security.SecurityItemView;
 import com.tradehero.th.fragments.trending.TrendingFragment;
 import com.tradehero.th.fragments.trending.filter.TrendingFilterSelectorView;
 import com.tradehero.th.fragments.watchlist.WatchlistItemView;
@@ -174,6 +175,7 @@ import org.ocpsoft.prettytime.PrettyTime;
                 TrendingFilterSelectorView.class,
                 SecurityListPagedLoader.class,
                 SecurityItemView.class,
+                WarrantSecurityItemView.class,
                 SearchStockPeopleFragment.class,
                 SearchPeopleItemView.class,
                 FreshQuoteHolder.class,

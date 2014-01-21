@@ -20,18 +20,20 @@ import javax.inject.Inject;
 /**
  * Created by xavier on 1/21/14.
  */
-public class WarrantListFragment extends SecurityListFragment
+public class ProviderSecurityListFragment extends SecurityListFragment
 {
-    public static final String TAG = WarrantListFragment.class.getSimpleName();
-    public static final String BUNDLE_KEY_PROVIDER_ID = WarrantListFragment.class.getName() + ".providerId";
+    public static final String TAG = ProviderSecurityListFragment.class.getSimpleName();
+    public static final String BUNDLE_KEY_PROVIDER_ID = ProviderSecurityListFragment.class.getName() + ".providerId";
     public final static int SECURITY_ID_LIST_LOADER_ID = 2531;
 
-    // TODO populate it
+    // TODO sort warrants
     protected ProviderId providerId;
     protected ProviderDTO providerDTO;
     @Inject protected ProviderCache providerCache;
     private DTOCache.Listener<ProviderId, ProviderDTO> providerCacheListener;
     private DTOCache.GetOrFetchTask<ProviderId, ProviderDTO> providerCacheFetchTask;
+
+    @Inject SecurityItemLayoutFactory securityItemLayoutFactory;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -49,14 +51,14 @@ public class WarrantListFragment extends SecurityListFragment
             throw new IllegalArgumentException("There is no defined providerId");
         }
 
-        this.providerCacheListener = new WarrantListFragmentProviderCacheListener();
+        this.providerCacheListener = new ProviderSecurityListFragmentProviderCacheListener();
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         //THLog.d(TAG, "onCreateView");
 
-        View view = inflater.inflate(R.layout.fragment_trending, container, false);
+        View view = inflater.inflate(R.layout.fragment_provider_security_list, container, false);
         initViews(view);
         return view;
     }
@@ -104,8 +106,10 @@ public class WarrantListFragment extends SecurityListFragment
 
     @Override protected SecurityItemViewAdapter createSecurityItemViewAdapter()
     {
-        // TODO proper item view
-        return new SecurityItemViewAdapter(getActivity(), getActivity().getLayoutInflater(), R.layout.trending_security_item);
+        return new SecurityItemViewAdapter(
+                getActivity(),
+                getActivity().getLayoutInflater(),
+                securityItemLayoutFactory.getProviderLayout(providerId));
     }
 
     @Override public int getSecurityIdListLoaderId()
@@ -123,13 +127,13 @@ public class WarrantListFragment extends SecurityListFragment
         return false;
     }
 
-    protected class WarrantListFragmentProviderCacheListener implements DTOCache.Listener<ProviderId, ProviderDTO>
+    protected class ProviderSecurityListFragmentProviderCacheListener implements DTOCache.Listener<ProviderId, ProviderDTO>
     {
         @Override public void onDTOReceived(ProviderId key, ProviderDTO value)
         {
-            if (key.equals(WarrantListFragment.this.providerId))
+            if (key.equals(ProviderSecurityListFragment.this.providerId))
             {
-                WarrantListFragment.this.linkWith(value, true);
+                ProviderSecurityListFragment.this.linkWith(value, true);
             }
         }
 

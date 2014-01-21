@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@null"
+    android:paddingLeft="0dp"
+    android:paddingRight="0dp"
+    >
+
+  <com.tradehero.th.fragments.trending.TrendingSecurityGridView
+      android:id="@+id/trending_gridview"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:layout_alignParentTop="true"
+      android:drawSelectorOnTop="false"
+      android:gravity="center"
+      android:horizontalSpacing="@dimen/trending_horizontal_spacing"
+      android:verticalSpacing="@dimen/trending_vertical_spacing"
+      android:numColumns="2"
+      android:paddingRight="@dimen/trending_horizontal_spacing"
+      android:paddingLeft="@dimen/trending_horizontal_spacing"
+      android:paddingTop="@dimen/trending_horizontal_spacing"
+      android:paddingBottom="@dimen/trending_padding_bottom"
+      android:clipToPadding="false"
+      android:scrollbarStyle="outsideOverlay"
+      >
+  </com.tradehero.th.fragments.trending.TrendingSecurityGridView>
+
+  <ProgressBar
+      android:id="@+id/progress_spinner"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_centerInParent="true"
+      android:visibility="gone"/>
+
+</RelativeLayout>

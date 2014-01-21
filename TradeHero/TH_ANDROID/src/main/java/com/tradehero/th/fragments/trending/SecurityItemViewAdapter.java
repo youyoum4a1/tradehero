@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import com.tradehero.th.adapters.ArrayDTOAdapter;
 import com.tradehero.th.api.security.SecurityId;
+import com.tradehero.th.fragments.security.SecurityItemView;
 
 public class SecurityItemViewAdapter extends ArrayDTOAdapter<SecurityId, SecurityItemView>
 {
