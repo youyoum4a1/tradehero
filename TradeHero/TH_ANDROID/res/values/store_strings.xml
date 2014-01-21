@@ -57,16 +57,16 @@
   <string name="store_billing_send_intent_error_cancel">OK</string>
 
   <string name="store_billing_loading_info_window_title">Loading Required Information</string>
-  <string name="store_billing_loading_info_window_message">Please Hold&#8230;</string>
+  <string name="store_billing_loading_info_window_message">Please wait&#8230;</string>
 
   <string name="store_billing_report_api_launching_window_title">Processing Your Purchase</string>
-  <string name="store_billing_report_api_launching_window_message">Please Hold&#8230;</string>
+  <string name="store_billing_report_api_launching_window_message">Please wait&#8230;</string>
 
   <string name="store_billing_report_api_finishing_window_title">Your Purchase Went Through</string>
   <string name="store_billing_report_api_finishing_window_message">Closing&#8230;</string>
 
   <string name="store_billing_restoring_purchase_window_title">Restoring Your Purchases</string>
-  <string name="store_billing_restoring_purchase_window_message">Please Hold&#8230;</string>
+  <string name="store_billing_restoring_purchase_window_message">Please wait&#8230;</string>
 
   <string name="store_billing_report_api_error_window_title">This is embarrassing</string>
   <string name="store_billing_report_api_error_window_description">We got an error when reporting your purchase to our TradeHero servers. You may want to relaunch TradeHero</string>

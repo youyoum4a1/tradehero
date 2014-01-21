@@ -22,7 +22,7 @@
       android:layout_width="fill_parent"
       android:layout_height="wrap_content"
       android:orientation="vertical"
-      android:background="@drawable/user_profile_rounded_background"
+      android:background="@color/white"
       >
 
     <RelativeLayout
@@ -42,7 +42,7 @@
           android:layout_marginLeft="5dp"
           android:background="@drawable/layout_oval"
           android:padding="0.5dp"
-          android:src="@drawable/avatar"
+          android:src="@drawable/superman_facebook"
           android:contentDescription="@string/empty"/>
 
       <TextView
