@@ -332,12 +332,17 @@ public class THUser
         currentUserBaseKeyHolder.setCurrentUserBaseKey(new UserBaseKey(0));
         credentials.clear();
         VisitedFriendListPrefs.clearVisitedIdList();
+
+        // clear all preferences
         SharedPreferences.Editor prefEditor = Application.getPreferences().edit();
-        prefEditor.remove(PREF_MY_USER);
-        prefEditor.remove(PREF_MY_TOKEN);
-        prefEditor.remove(PREF_CURRENT_SESSION_TOKEN);
-        prefEditor.remove(PREF_CURRENT_AUTHENTICATION_TYPE);
+        prefEditor.clear();
         prefEditor.commit();
+
+        THAuthenticationProvider currentProvider = authenticationProviders.get(currentAuthenticationType);
+        if (currentProvider != null)
+        {
+            currentProvider.deauthenticate();
+        }
     }
 
     public static void setAuthenticationMode(AuthenticationMode authenticationMode)

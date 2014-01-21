@@ -15,6 +15,7 @@ import com.facebook.SharedPreferencesTokenCachingStrategy;
 import com.facebook.TokenCachingStrategy;
 import com.facebook.android.Facebook;
 import com.facebook.android.FacebookError;
+import com.tradehero.common.utils.THLog;
 import java.lang.ref.WeakReference;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -28,6 +29,7 @@ import org.json.JSONObject;
 
 public class FacebookAuthenticationProvider implements THAuthenticationProvider
 {
+    private static final String TAG = FacebookAuthenticationProvider.class.getName();
     private final DateFormat preciseDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault());
     public static final String ACCESS_TOKEN_KEY =  "access_token";
     public static final String EXPIRATION_DATE_KEY = "expiration_date";
@@ -351,13 +353,23 @@ public class FacebookAuthenticationProvider implements THAuthenticationProvider
         }
         catch (Exception e)
         {
+            THLog.e(TAG, "Unable to restore authentication", e);
         }
         return false;
     }
 
     public void deauthenticate()
     {
-        restoreAuthentication(null);
+        JSONObject authData = null;
+        try
+        {
+            authData = getAuthData("", "", new Date());
+        }
+        catch (JSONException e)
+        {
+            THLog.e(TAG, "Unable to deauthenticate", e);
+        }
+        restoreAuthentication(authData);
     }
 
     public String getUserId()
