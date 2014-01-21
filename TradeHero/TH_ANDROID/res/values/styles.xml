@@ -35,7 +35,7 @@
   </style>
 
   <style name="TH.SmallTitle" parent="TH.Title">
-    <item name="android:textSize">12sp</item>
+    <item name="android:textSize">14sp</item>
   </style>
 
   <style name="TH.Value">
@@ -44,7 +44,7 @@
   </style>
 
   <style name="TH.SmallValue" parent="TH.Value">
-    <item name="android:textSize">12sp</item>
+    <item name="android:textSize">14sp</item>
   </style>
 
   <style name="TH.Btn_Price_Bar">
