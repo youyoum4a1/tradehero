@@ -6,6 +6,7 @@ package com.tradehero.th.network;
  */
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.squareup.okhttp.OkHttpClient;
 import com.tradehero.common.utils.JacksonConverter;
 import com.tradehero.th.base.THUser;
 import com.tradehero.th.utils.Constants;
@@ -14,6 +15,7 @@ import retrofit.ErrorHandler;
 import retrofit.RequestInterceptor;
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;
+import retrofit.client.OkClient;
 import retrofit.converter.Converter;
 
 public class NetworkEngine
@@ -37,9 +39,14 @@ public class NetworkEngine
     public void initialize()
     {
         Converter converter = new JacksonConverter(new ObjectMapper());
+        OkHttpClient client = new OkHttpClient();
+
+
+
         restAdapter = new RestAdapter.Builder()
                 .setServer(Constants.BASE_API_URL)
                 .setConverter(converter)
+                .setClient(new OkClient(client))
                 .setRequestInterceptor(new RequestInterceptor()
                 {
                     @Override
@@ -47,7 +54,7 @@ public class NetworkEngine
                     {
                         if (THUser.hasSessionToken())
                         {
-                            buildAuthorizationHeader(request);
+                             buildAuthorizationHeader(request);
                         }
                     }
                 })

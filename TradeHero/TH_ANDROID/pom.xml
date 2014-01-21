@@ -42,6 +42,12 @@
 
   <dependencies>
     <dependency>
+      <groupId>com.squareup.okhttp</groupId>
+      <artifactId>okhttp</artifactId>
+      <version>1.3.0</version>
+    </dependency>
+
+    <dependency>
       <groupId>com.testflightapp.lib</groupId>
       <artifactId>testflightlib</artifactId>
       <version>1.3</version>
