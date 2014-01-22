@@ -54,7 +54,10 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
     private static final String TAG = LeaderboardCommunityFragment.class.getName();
 
     @Inject protected Lazy<LeaderboardDefListCache> leaderboardDefListCache;
-    protected DTOCache.GetOrFetchTask<LeaderboardDefListKey, LeaderboardDefKeyList> leaderboardDefListCacheFetchTask;
+    protected DTOCache.GetOrFetchTask<LeaderboardDefListKey, LeaderboardDefKeyList> leaderboardDefListCacheFetchMostSkilledTask;
+    protected DTOCache.GetOrFetchTask<LeaderboardDefListKey, LeaderboardDefKeyList> leaderboardDefListCacheFetchTimePeriodTask;
+    protected DTOCache.GetOrFetchTask<LeaderboardDefListKey, LeaderboardDefKeyList> leaderboardDefListCacheFetchSectorListTask;
+    protected DTOCache.GetOrFetchTask<LeaderboardDefListKey, LeaderboardDefKeyList> leaderboardDefListCacheFetchExchangeListTask;
     @Inject protected Lazy<LeaderboardDefCache> leaderboardDefCache;
     @Inject protected Lazy<ProviderListCache> providerListCache;
     @Inject protected Lazy<ProviderCache> providerCache;
@@ -116,20 +119,47 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
         sectorListView.setAdapter(null);
     }
 
-    private void detachLeaderboardDefListCacheFetchTask()
+    private void detachLeaderboardDefListCacheFetchMostSkilledTask()
     {
-        if (leaderboardDefListCacheFetchTask != null)
+        if (leaderboardDefListCacheFetchMostSkilledTask != null)
         {
-            leaderboardDefListCacheFetchTask.setListener(null);
+            leaderboardDefListCacheFetchMostSkilledTask.setListener(null);
         }
-        leaderboardDefListCacheFetchTask= null;
+        leaderboardDefListCacheFetchMostSkilledTask = null;
+    }
+
+    private void detachLeaderboardDefListCacheFetchTimePeriodTask()
+    {
+        if (leaderboardDefListCacheFetchTimePeriodTask != null)
+        {
+            leaderboardDefListCacheFetchTimePeriodTask.setListener(null);
+        }
+        leaderboardDefListCacheFetchTimePeriodTask = null;
+    }
+
+    private void detachLeaderboardDefListCacheFetchSectorListTask()
+    {
+        if (leaderboardDefListCacheFetchSectorListTask != null)
+        {
+            leaderboardDefListCacheFetchSectorListTask.setListener(null);
+        }
+        leaderboardDefListCacheFetchSectorListTask = null;
+    }
+
+    private void detachLeaderboardDefListCacheFetchExchangeListTask()
+    {
+        if (leaderboardDefListCacheFetchExchangeListTask != null)
+        {
+            leaderboardDefListCacheFetchExchangeListTask.setListener(null);
+        }
+        leaderboardDefListCacheFetchExchangeListTask = null;
     }
 
     private void prepareAdapters()
     {
-        detachLeaderboardDefListCacheFetchTask();
-        leaderboardDefListCacheFetchTask = leaderboardDefListCache.get().getOrFetch(new LeaderboardDefMostSkilledListKey(), false, this);
-        leaderboardDefListCacheFetchTask.execute();
+        detachLeaderboardDefListCacheFetchMostSkilledTask();
+        leaderboardDefListCacheFetchMostSkilledTask = leaderboardDefListCache.get().getOrFetch(new LeaderboardDefMostSkilledListKey(), false, this);
+        leaderboardDefListCacheFetchMostSkilledTask.execute();
     }
 
     private void initViews(View view)
@@ -174,7 +204,10 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
     @Override public void onStop()
     {
         super.onStop();
-        detachLeaderboardDefListCacheFetchTask();
+        detachLeaderboardDefListCacheFetchMostSkilledTask();
+        detachLeaderboardDefListCacheFetchTimePeriodTask();
+        detachLeaderboardDefListCacheFetchSectorListTask();
+        detachLeaderboardDefListCacheFetchExchangeListTask();
         fetched = false;
     }
 
@@ -256,9 +289,17 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
         if (!fetched)
         {
             fetched = true;
-            leaderboardDefListCache.get().getOrFetch(new LeaderboardDefTimePeriodListKey(), false, this).execute();
-            leaderboardDefListCache.get().getOrFetch(new LeaderboardDefSectorListKey(), false, this).execute();
-            leaderboardDefListCache.get().getOrFetch(new LeaderboardDefExchangeListKey(), false, this).execute();
+            detachLeaderboardDefListCacheFetchTimePeriodTask();
+            leaderboardDefListCacheFetchTimePeriodTask = leaderboardDefListCache.get().getOrFetch(new LeaderboardDefTimePeriodListKey(), false, this);
+            leaderboardDefListCacheFetchTimePeriodTask.execute();
+
+            detachLeaderboardDefListCacheFetchSectorListTask();
+            leaderboardDefListCacheFetchSectorListTask = leaderboardDefListCache.get().getOrFetch(new LeaderboardDefSectorListKey(), false, this);
+            leaderboardDefListCacheFetchSectorListTask.execute();
+
+            detachLeaderboardDefListCacheFetchExchangeListTask();
+            leaderboardDefListCacheFetchExchangeListTask = leaderboardDefListCache.get().getOrFetch(new LeaderboardDefExchangeListKey(), false, this);
+            leaderboardDefListCacheFetchExchangeListTask.execute();
         }
 
         if (value != null)
