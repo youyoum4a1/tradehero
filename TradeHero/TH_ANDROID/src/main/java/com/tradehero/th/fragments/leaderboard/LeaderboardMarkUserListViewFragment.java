@@ -91,7 +91,7 @@ public class LeaderboardMarkUserListViewFragment extends BaseLeaderboardFragment
                 Date markingTime = leaderboardMarkUserLoader.getMarkUtc();
                 if (markingTime != null && leaderboardMarkUserMarkingTime != null)
                 {
-                    leaderboardMarkUserMarkingTime.setText(prettyTime.get().format(markingTime));
+                    leaderboardMarkUserMarkingTime.setText(String.format("(%s)", prettyTime.get().format(markingTime)));
                 }
                 leaderboardMarkUserListView.onRefreshComplete();
             }
