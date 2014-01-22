@@ -10,24 +10,32 @@ import android.widget.ProgressBar;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
+import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THLog;
+import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
+import com.tradehero.th.api.competition.CompetitionId;
+import com.tradehero.th.api.competition.CompetitionIdList;
 import com.tradehero.th.api.competition.ProviderConstants;
 import com.tradehero.th.api.competition.ProviderDTO;
-import com.tradehero.th.api.portfolio.DisplayablePortfolioDTO;
+import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.fragments.competition.zone.CompetitionZoneDTO;
+import com.tradehero.th.fragments.competition.zone.CompetitionZoneLeaderboardDTO;
 import com.tradehero.th.fragments.competition.zone.CompetitionZoneLegalDTO;
 import com.tradehero.th.fragments.competition.zone.CompetitionZonePortfolioDTO;
 import com.tradehero.th.fragments.competition.zone.CompetitionZoneTradeNowDTO;
 import com.tradehero.th.fragments.competition.zone.CompetitionZoneVideoDTO;
 import com.tradehero.th.fragments.competition.zone.CompetitionZoneWizardDTO;
 import com.tradehero.th.fragments.position.PositionListFragment;
-import com.tradehero.th.fragments.watchlist.WatchlistPositionFragment;
 import com.tradehero.th.fragments.web.WebViewFragment;
 import com.tradehero.th.models.intent.THIntent;
 import com.tradehero.th.models.intent.THIntentPassedListener;
 import com.tradehero.th.models.intent.competition.ProviderPageIntent;
+import com.tradehero.th.persistence.competition.CompetitionCache;
+import com.tradehero.th.persistence.competition.CompetitionListCache;
+import java.util.List;
+import javax.inject.Inject;
 
 /**
  * Created by xavier on 1/17/14.
@@ -43,6 +51,12 @@ public class MainCompetitionFragment extends CompetitionFragment
 
     private THIntentPassedListener webViewTHIntentPassedListener;
     private WebViewFragment webViewFragment;
+
+    @Inject CompetitionListCache competitionListCache;
+    @Inject CompetitionCache competitionCache;
+    protected List<CompetitionId> competitionIds;
+    private DTOCache.Listener<ProviderId, CompetitionIdList> competitionListCacheListener;
+    private DTOCache.GetOrFetchTask<ProviderId, CompetitionIdList> competitionListCacheFetchTask;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -65,6 +79,7 @@ public class MainCompetitionFragment extends CompetitionFragment
                 R.layout.competition_zone_item,
                 R.layout.competition_zone_trade_now,
                 R.layout.competition_zone_header,
+                R.layout.competition_zone_leaderboard_item,
                 R.layout.competition_zone_legal_mentions);
         this.competitionZoneListItemAdapter.setParentOnLegalElementClicked(new MainCompetitionLegalClickedListener());
 
@@ -79,6 +94,8 @@ public class MainCompetitionFragment extends CompetitionFragment
             this.listView.setAdapter(this.competitionZoneListItemAdapter);
             this.listView.setOnItemClickListener(new MainCompetitionFragmentItemClickListener());
         }
+
+        this.competitionListCacheListener = new MainCompetitionCompetitionListCacheListener();
     }
 
     //<editor-fold desc="ActionBar">
@@ -98,6 +115,15 @@ public class MainCompetitionFragment extends CompetitionFragment
     }
     //</editor-fold>
 
+    @Override public void onStart()
+    {
+        super.onStart();
+        detachCompetitionListCacheTask();
+
+        competitionListCacheFetchTask = competitionListCache.getOrFetch(providerId, competitionListCacheListener);
+        competitionListCacheFetchTask.execute();
+    }
+
     @Override public void onResume()
     {
         super.onResume();
@@ -107,6 +133,12 @@ public class MainCompetitionFragment extends CompetitionFragment
             this.webViewFragment.setThIntentPassedListener(null);
         }
         this.webViewFragment = null;
+    }
+
+    @Override public void onStop()
+    {
+        detachCompetitionListCacheTask();
+        super.onStop();
     }
 
     @Override public void onDestroyView()
@@ -125,6 +157,8 @@ public class MainCompetitionFragment extends CompetitionFragment
         }
         this.listView = null;
 
+        this.competitionListCacheListener = null;
+
         super.onDestroyView();
     }
 
@@ -134,10 +168,19 @@ public class MainCompetitionFragment extends CompetitionFragment
         super.onDestroy();
     }
 
+    private void detachCompetitionListCacheTask()
+    {
+        if (competitionListCacheFetchTask != null)
+        {
+            competitionListCacheFetchTask.setListener(null);
+        }
+        competitionListCacheFetchTask = null;
+    }
+
     @Override protected void linkWith(ProviderDTO providerDTO, boolean andDisplay)
     {
         super.linkWith(providerDTO, andDisplay);
-        this.competitionZoneListItemAdapter.setProviderAndUser(providerDTO);
+        this.competitionZoneListItemAdapter.setProvider(providerDTO);
         this.competitionZoneListItemAdapter.notifyDataSetChanged();
         if (progressBar != null)
         {
@@ -147,6 +190,13 @@ public class MainCompetitionFragment extends CompetitionFragment
         {
             displayActionBarTitle();
         }
+    }
+
+    protected void linkWith(List<CompetitionId> competitionIds, boolean andDisplay)
+    {
+        this.competitionIds = competitionIds;
+        this.competitionZoneListItemAdapter.setCompetitionDTOs(competitionCache.get(competitionIds));
+        this.competitionZoneListItemAdapter.notifyDataSetChanged();
     }
 
     @Override public boolean isTabBarVisible()
@@ -169,6 +219,7 @@ public class MainCompetitionFragment extends CompetitionFragment
         }
     }
 
+    //<editor-fold desc="Click Handling">
     private void handleItemClicked(CompetitionZoneDTO competitionZoneDTO)
     {
         if (competitionZoneDTO instanceof CompetitionZoneTradeNowDTO)
@@ -186,6 +237,10 @@ public class MainCompetitionFragment extends CompetitionFragment
         else if (competitionZoneDTO instanceof CompetitionZoneWizardDTO)
         {
             pushWizardElement((CompetitionZoneWizardDTO) competitionZoneDTO);
+        }
+        else if (competitionZoneDTO instanceof CompetitionZoneLeaderboardDTO)
+        {
+            pushLeaderboardElement((CompetitionZoneLeaderboardDTO) competitionZoneDTO);
         }
         else if (competitionZoneDTO instanceof CompetitionZoneLegalDTO)
         {
@@ -232,6 +287,11 @@ public class MainCompetitionFragment extends CompetitionFragment
         this.webViewFragment.setThIntentPassedListener(this.webViewTHIntentPassedListener);
     }
 
+    private void pushLeaderboardElement(CompetitionZoneLeaderboardDTO competitionZoneDTO)
+    {
+        // TODO
+    }
+
     private void pushLegalElement(CompetitionZoneLegalDTO competitionZoneDTO)
     {
         Bundle args = new Bundle();
@@ -245,6 +305,7 @@ public class MainCompetitionFragment extends CompetitionFragment
         }
         navigator.pushFragment(WebViewFragment.class, args);
     }
+    //</editor-fold>
 
     private class MainCompetitionFragmentItemClickListener implements AdapterView.OnItemClickListener
     {
@@ -288,6 +349,20 @@ public class MainCompetitionFragment extends CompetitionFragment
         @Override public void onElementClicked(CompetitionZoneDTO competitionZoneLegalDTO)
         {
             handleItemClicked(competitionZoneLegalDTO);
+        }
+    }
+
+    private class MainCompetitionCompetitionListCacheListener implements DTOCache.Listener<ProviderId, CompetitionIdList>
+    {
+        @Override public void onDTOReceived(ProviderId providerId, CompetitionIdList value)
+        {
+            linkWith(value, true);
+        }
+
+        @Override public void onErrorThrown(ProviderId key, Throwable error)
+        {
+            THToast.show(getString(R.string.error_fetch_provider_competition_leaderboard_list));
+            THLog.e(TAG, "Error fetching the list of competition info " + key, error);
         }
     }
 }

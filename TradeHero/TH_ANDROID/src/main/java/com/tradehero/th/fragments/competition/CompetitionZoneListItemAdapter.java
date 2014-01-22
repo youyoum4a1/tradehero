@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.adapters.ArrayDTOAdapter;
+import com.tradehero.th.api.competition.CompetitionDTO;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.fragments.competition.zone.CompetitionZoneDTO;
 import com.tradehero.th.fragments.competition.zone.CompetitionZoneDTOUtil;
@@ -23,7 +24,8 @@ public class CompetitionZoneListItemAdapter extends ArrayDTOAdapter<CompetitionZ
     public static final int ITEM_TYPE_TRADE_NOW = 0;
     public static final int ITEM_TYPE_HEADER = 1;
     public static final int ITEM_TYPE_ZONE_ITEM = 2;
-    public static final int ITEM_TYPE_LEGAL_MENTIONS = 3;
+    public static final int ITEM_TYPE_LEADERBOARD = 3;
+    public static final int ITEM_TYPE_LEGAL_MENTIONS = 4;
 
     private List<Integer> orderedTypes;
     private List<Object> orderedItems;
@@ -31,16 +33,22 @@ public class CompetitionZoneListItemAdapter extends ArrayDTOAdapter<CompetitionZ
     private final Context context;
     private final int tradeNowResId;
     private final int headerResId;
+    private final int leaderboardResId;
     private final int legalResId;
     @Inject protected CompetitionZoneDTOUtil competitionZoneDTOUtil;
     private CompetitionZoneLegalMentionsView.OnElementClickedListener parentOnLegalElementClicked;
 
-    public CompetitionZoneListItemAdapter(Context context, LayoutInflater inflater, int zoneItemLayoutResId, int tradeNowResId, int headerResId, int legalResId)
+    private ProviderDTO providerDTO;
+    private List<CompetitionDTO> competitionDTOs;
+
+    public CompetitionZoneListItemAdapter(Context context, LayoutInflater inflater, int zoneItemLayoutResId, int tradeNowResId, int headerResId,
+            int leaderboardResId, int legalResId)
     {
         super(context, inflater, zoneItemLayoutResId);
         this.context = context;
         this.tradeNowResId = tradeNowResId;
         this.headerResId = headerResId;
+        this.leaderboardResId = leaderboardResId;
         this.legalResId = legalResId;
         orderedTypes = new ArrayList<>();
         orderedItems = new ArrayList<>();
@@ -52,15 +60,30 @@ public class CompetitionZoneListItemAdapter extends ArrayDTOAdapter<CompetitionZ
         return true;
     }
 
-    public void setProviderAndUser(ProviderDTO providerDTO)
+    public void setProvider(ProviderDTO providerDTO)
     {
-        List<Integer> preparedOrderedTypes = new ArrayList<>();
-        List<Object> preparedOrderedItems = new ArrayList<>();
+        this.providerDTO = providerDTO;
+        repopulateLists();
+    }
 
-        this.competitionZoneDTOUtil.populateLists(context, providerDTO, preparedOrderedTypes, preparedOrderedItems);
+    public void setCompetitionDTOs(List<CompetitionDTO> competitionDTOs)
+    {
+        this.competitionDTOs = competitionDTOs;
+        repopulateLists();
+    }
 
-        this.orderedTypes = preparedOrderedTypes;
-        this.orderedItems = preparedOrderedItems;
+    private void repopulateLists()
+    {
+        if (providerDTO != null)
+        {
+            List<Integer> preparedOrderedTypes = new ArrayList<>();
+            List<Object> preparedOrderedItems = new ArrayList<>();
+
+            this.competitionZoneDTOUtil.populateLists(context, providerDTO, competitionDTOs, preparedOrderedTypes, preparedOrderedItems);
+
+            this.orderedTypes = preparedOrderedTypes;
+            this.orderedItems = preparedOrderedItems;
+        }
     }
 
     @Override public void setItems(List<CompetitionZoneDTO> items)
@@ -75,7 +98,7 @@ public class CompetitionZoneListItemAdapter extends ArrayDTOAdapter<CompetitionZ
 
     @Override public int getViewTypeCount()
     {
-        return 4;
+        return 5;
     }
 
     @Override public int getItemViewType(int position)
@@ -136,6 +159,11 @@ public class CompetitionZoneListItemAdapter extends ArrayDTOAdapter<CompetitionZ
                 ((AbstractCompetitionZoneListItemView) view).display((CompetitionZoneDTO) item);
                 break;
 
+            case ITEM_TYPE_LEADERBOARD:
+                view = inflater.inflate(leaderboardResId, parent, false);
+                ((AbstractCompetitionZoneListItemView) view).display((CompetitionZoneDTO) item);
+                break;
+
             case ITEM_TYPE_LEGAL_MENTIONS:
                 view = inflater.inflate(legalResId, parent, false);
                 ((AbstractCompetitionZoneListItemView) view).display((CompetitionZoneDTO) item);
@@ -156,7 +184,7 @@ public class CompetitionZoneListItemAdapter extends ArrayDTOAdapter<CompetitionZ
     @Override public boolean isEnabled(int position)
     {
         int viewType = getItemViewType(position);
-        return viewType == ITEM_TYPE_ZONE_ITEM || viewType == ITEM_TYPE_TRADE_NOW;
+        return viewType == ITEM_TYPE_ZONE_ITEM || viewType == ITEM_TYPE_TRADE_NOW || viewType == ITEM_TYPE_LEADERBOARD;
     }
 
     @Override protected void fineTune(int position, CompetitionZoneDTO dto, CompetitionZoneListItemView dtoView)

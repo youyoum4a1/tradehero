@@ -69,6 +69,23 @@ import javax.inject.Singleton;
         return fleshedValues;
     }
 
+    public List<CompetitionLeaderboardDTO> getOrFetch(List<CompetitionLeaderboardId> competitionLeaderboardIds) throws Throwable
+    {
+        if (competitionLeaderboardIds == null)
+        {
+            return null;
+        }
+
+        List<CompetitionLeaderboardDTO> fleshedValues = new ArrayList<>();
+
+        for (CompetitionLeaderboardId competitionLeaderboardId: competitionLeaderboardIds)
+        {
+            fleshedValues.add(getOrFetch(competitionLeaderboardId));
+        }
+
+        return fleshedValues;
+    }
+
     @Override public CompetitionLeaderboardDTO put(CompetitionLeaderboardId key, CompetitionLeaderboardDTO value)
     {
         CompetitionLeaderboardDTO previous = null;

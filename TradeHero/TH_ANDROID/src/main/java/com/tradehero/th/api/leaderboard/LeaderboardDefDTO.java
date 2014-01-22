@@ -140,6 +140,12 @@ public class LeaderboardDefDTO extends ExtendedDTO
         }
         return null;
     }
+
+    public Boolean isWithinUtcRestricted()
+    {
+        // TODO make it right
+        return true;
+    }
 }
 
 

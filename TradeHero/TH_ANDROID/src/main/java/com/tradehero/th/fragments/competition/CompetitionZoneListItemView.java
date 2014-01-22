@@ -13,13 +13,12 @@ import javax.inject.Inject;
 public class CompetitionZoneListItemView extends AbstractCompetitionZoneListItemView
 {
     public static final String TAG = CompetitionZoneListItemView.class.getSimpleName();
-    private static int countUp = 0;
 
-    private ImageView zoneIcon;
-    private TextView title;
-    private TextView description;
+    protected ImageView zoneIcon;
+    protected TextView title;
+    protected TextView description;
 
-    @Inject Picasso picasso;
+    @Inject protected Picasso picasso;
 
     //<editor-fold desc="Constructors">
     public CompetitionZoneListItemView(Context context)
@@ -58,7 +57,7 @@ public class CompetitionZoneListItemView extends AbstractCompetitionZoneListItem
 
         if (andDisplay)
         {
-            displayUserIcon();
+            displayIcon();
             displayTitle();
             displayDescription();
         }
@@ -67,20 +66,18 @@ public class CompetitionZoneListItemView extends AbstractCompetitionZoneListItem
     //<editor-fold desc="Display Methods">
     public void display()
     {
-        displayUserIcon();
+        displayIcon();
         displayTitle();
         displayDescription();
     }
 
-    public void displayUserIcon()
+    public void displayIcon()
     {
         if (zoneIcon != null)
         {
             if (competitionZoneDTO != null)
             {
                 // TODO
-                //picasso.load(competitionZoneDTO.)
-                //             .into(zoneIcon);
             }
         }
     }

@@ -3,7 +3,10 @@ package com.tradehero.th.fragments.competition.zone;
 import android.content.Context;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
+import com.tradehero.th.api.competition.CompetitionDTO;
+import com.tradehero.th.api.competition.CompetitionId;
 import com.tradehero.th.api.competition.ProviderDTO;
+import com.tradehero.th.api.leaderboard.competition.CompetitionLeaderboardDTO;
 import com.tradehero.th.fragments.competition.CompetitionZoneListItemAdapter;
 import java.util.List;
 import javax.inject.Inject;
@@ -20,7 +23,10 @@ import javax.inject.Singleton;
     {
     }
 
-    public void populateLists(Context context, ProviderDTO providerDTO, List<Integer> preparedOrderedTypes, List<Object> preparedOrderedItems)
+    public void populateLists(Context context, ProviderDTO providerDTO,
+            List<CompetitionDTO> competitionDTOs,
+            List<Integer> preparedOrderedTypes,
+            List<Object> preparedOrderedItems)
     {
         if (providerDTO != null)
         {
@@ -53,7 +59,23 @@ import javax.inject.Singleton;
             preparedOrderedTypes.add(CompetitionZoneListItemAdapter.ITEM_TYPE_HEADER);
             preparedOrderedItems.add(new CompetitionZoneDTO(null, null));
 
-            // TODO add competitions
+            if (competitionDTOs != null)
+            {
+                for (CompetitionDTO competitionDTO: competitionDTOs)
+                {
+                    if (competitionDTO != null)
+                    {
+                        preparedOrderedTypes.add(CompetitionZoneListItemAdapter.ITEM_TYPE_LEADERBOARD);
+                        preparedOrderedItems.add(new CompetitionZoneLeaderboardDTO(
+                                competitionDTO.name,
+                                competitionDTO.leaderboard != null ? competitionDTO.leaderboard.desc : "",
+                                competitionDTO));
+                    }
+                }
+            }
+
+            preparedOrderedTypes.add(CompetitionZoneListItemAdapter.ITEM_TYPE_HEADER);
+            preparedOrderedItems.add(new CompetitionZoneDTO(null, null));
 
             preparedOrderedTypes.add(CompetitionZoneListItemAdapter.ITEM_TYPE_LEGAL_MENTIONS);
             THLog.d(TAG, "rules title " + context.getString(R.string.provider_competition_rules_title));

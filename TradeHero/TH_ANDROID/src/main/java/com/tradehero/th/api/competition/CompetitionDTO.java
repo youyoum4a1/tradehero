@@ -20,4 +20,18 @@ public class CompetitionDTO implements DTO
     {
         return new CompetitionId(id);
     }
+
+    public String getIconUrl()
+    {
+        LeaderboardDefDTO leaderboardCopy = this.leaderboard;
+        if (leaderboardCopy != null && leaderboardCopy.isWithinUtcRestricted())
+        {
+            return iconActiveUrl;
+        }
+        else if (leaderboardCopy != null && !leaderboardCopy.isWithinUtcRestricted())
+        {
+            return iconInactiveUrl;
+        }
+        return null;
+    }
 }

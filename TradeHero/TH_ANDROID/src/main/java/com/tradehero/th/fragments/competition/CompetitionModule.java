@@ -14,6 +14,7 @@ import dagger.Module;
                 {
                         CompetitionZoneListItemAdapter.class,
                         CompetitionZoneListItemView.class,
+                        CompetitionZoneLeaderboardListItemView.class,
                         CompetitionZoneListItemTradeNowView.class,
                         MainCompetitionFragment.class,
                         ProviderListRetrievedMilestone.class,
