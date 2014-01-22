@@ -24,13 +24,17 @@ public class CompetitionDTO implements DTO
     public String getIconUrl()
     {
         LeaderboardDefDTO leaderboardCopy = this.leaderboard;
-        if (leaderboardCopy != null && leaderboardCopy.isWithinUtcRestricted())
+        if (leaderboardCopy != null)
         {
-            return iconActiveUrl;
-        }
-        else if (leaderboardCopy != null && !leaderboardCopy.isWithinUtcRestricted())
-        {
-            return iconInactiveUrl;
+            Boolean isWithinUtcRestricted = leaderboardCopy.isWithinUtcRestricted();
+            if (isWithinUtcRestricted != null && isWithinUtcRestricted)
+            {
+                return iconActiveUrl;
+            }
+            else if (isWithinUtcRestricted != null)
+            {
+                return iconInactiveUrl;
+            }
         }
         return null;
     }

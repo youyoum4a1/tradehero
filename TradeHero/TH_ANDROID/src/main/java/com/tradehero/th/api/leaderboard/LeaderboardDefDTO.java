@@ -143,8 +143,13 @@ public class LeaderboardDefDTO extends ExtendedDTO
 
     public Boolean isWithinUtcRestricted()
     {
-        // TODO make it right
-        return true;
+        return isWithinUtcRestricted(new Date());
+    }
+
+    public Boolean isWithinUtcRestricted(Date now)
+    {
+        return (fromUtcRestricted == null || now.equals(fromUtcRestricted) || now.after(fromUtcRestricted)) &&
+                (toUtcRestricted == null || now.equals(toUtcRestricted) || now.before(toUtcRestricted));
     }
 }
 
