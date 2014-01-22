@@ -1,9 +1,3 @@
-/**
- * BuySellFragment.java
- * TradeHero
- *
- * Created by @author Siddesh Bingi on Jul 24, 2013
- */
 package com.tradehero.th.fragments.trade;
 
 import android.app.Activity;
@@ -46,6 +40,7 @@ import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.ImageViewThreadSafe;
 import com.tradehero.th.R;
+import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.position.SecurityPositionDetailDTO;
 import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
@@ -975,6 +970,12 @@ public class BuySellFragment extends AbstractBuySellFragment
         args.putInt(BuySellConfirmFragment.BUNDLE_KEY_QUANTITY_BUY, mBuyQuantity);
         args.putInt(BuySellConfirmFragment.BUNDLE_KEY_QUANTITY_SELL, mSellQuantity);
         args.putBundle(BuySellConfirmFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
+
+        OwnedPortfolioId applicablePortfolioId = getApplicablePortfolioId();
+        if (applicablePortfolioId != null)
+        {
+            args.putBundle(BuySellConfirmFragment.BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE, applicablePortfolioId.getArgs());
+        };
 
         navigator.pushFragment(BuySellConfirmFragment.class, args);
     }
