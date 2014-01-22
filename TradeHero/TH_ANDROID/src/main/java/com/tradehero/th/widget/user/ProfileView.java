@@ -6,7 +6,6 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -21,7 +20,6 @@ import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.portfolio.PortfolioRequestListener;
 import com.tradehero.th.utils.DaggerUtils;
-import com.tradehero.th.utils.SecurityUtils;
 import com.tradehero.th.utils.THSignedNumber;
 import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
@@ -201,17 +199,20 @@ public class ProfileView extends LinearLayout implements DTOView<UserProfileDTO>
 
             if (totalWealth != null)
             {
-                totalWealth.setText(String.format("%s %,.0f", SecurityUtils.DEFAULT_VIRTUAL_CASH_CURRENCY_DISPLAY, dto.portfolio.totalValue));
+                THSignedNumber thTotalWealth = new THSignedNumber(THSignedNumber.TYPE_MONEY, dto.portfolio.totalValue, false);
+                totalWealth.setText(thTotalWealth.toString());
             }
 
             if (additionalCash != null)
             {
-                additionalCash.setText(String.format("%s %,.0f", SecurityUtils.DEFAULT_VIRTUAL_CASH_CURRENCY_DISPLAY, dto.portfolio.getTotalExtraCash()));
+                THSignedNumber thAdditionalCash = new THSignedNumber(THSignedNumber.TYPE_MONEY, dto.portfolio.getTotalExtraCash(), false);
+                additionalCash.setText(thAdditionalCash.toString());
             }
 
             if (cashOnHand != null)
             {
-                cashOnHand.setText(String.format("%s %,.0f", SecurityUtils.DEFAULT_VIRTUAL_CASH_CURRENCY_DISPLAY, dto.portfolio.cashBalance));
+                THSignedNumber thCashOnHand = new THSignedNumber(THSignedNumber.TYPE_MONEY, dto.portfolio.cashBalance, false);
+                cashOnHand.setText(thCashOnHand.toString());
             }
 
             if (tradesCount != null)

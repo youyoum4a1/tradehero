@@ -1,14 +1,14 @@
 package com.tradehero.th.utils;
 
-import com.tradehero.th.R;
+import java.text.DecimalFormat;
 
 /** Created with IntelliJ IDEA. User: nia Date: 16/10/13 Time: 3:46 PM */
 public class THSignedNumber
 {
     public static final int TYPE_PERCENTAGE = 1;
     public static final int TYPE_MONEY = 2;
-    public static final String REF_CURRENCY = "US$";
 
+    private final boolean withSign;
     private int type;
     private String sign;
     private String currency;
@@ -18,16 +18,28 @@ public class THSignedNumber
 
     public THSignedNumber(int type, Double number)
     {
-        this(type, null, number);
+        this(type, number, null);
     }
 
-    public THSignedNumber(int type, String currency, Double number)
+    public THSignedNumber(int type, Double number, boolean withSign)
+    {
+        this(type, number, withSign, null);
+    }
+
+    public THSignedNumber(int type, Double number, String currency)
+    {
+        this(type, number, true, currency);
+    }
+
+    public THSignedNumber(int type, Double number, boolean withSign, String currency)
     {
         this.type = type;
         this.number = number;
+        this.withSign = withSign;
+
         if (type == TYPE_MONEY && currency == null)
         {
-            this.currency = REF_CURRENCY;
+            this.currency = SecurityUtils.DEFAULT_VIRTUAL_CASH_CURRENCY_DISPLAY;
         }
     }
 
@@ -72,7 +84,7 @@ public class THSignedNumber
     // Private
     private String signedFormattedPercentage(int precision)
     {
-        sign = NumberDisplayUtils.getArrowPrefix(number);
+        sign = withSign ? NumberDisplayUtils.getArrowPrefix(number) : "";
         if (precision < 0)
         {
             precision = precisionFromNumber();
@@ -88,18 +100,27 @@ public class THSignedNumber
 
     private String signedFormattedMoney(int precision)
     {
-        sign = NumberDisplayUtils.getPlusMinusPrefix(number);
-        if (precision < 0)
+        sign = withSign ? NumberDisplayUtils.getArrowPrefix(number) : "";
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("#,###");
+        if (precision > 0)
         {
-            precision = precisionFromNumber();
+            sb.append('.');
+            for (int i=0; i<precision; ++i)
+            {
+                sb.append('#');
+            }
         }
+        DecimalFormat df = new DecimalFormat(sb.toString());
+
         color = ColorUtils.getColorResourceForNumber(number);
-        String numberFormat = "%s%s %." + precision + "f";
+        String numberFormat = "%s%s %s";
 
         return String.format(numberFormat,
                 sign,
                 currency,
-                Math.abs(number));
+                df.format(Math.abs(number)));
     }
 
     private int precisionFromNumber()
