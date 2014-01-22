@@ -99,6 +99,10 @@ public class ProviderVideoListFragment extends CompetitionFragment
         if (cachedHelpVideos != null)
         {
             linkWith(cachedHelpVideos, true);
+            if (this.progressBar != null)
+            {
+                this.progressBar.setVisibility(View.GONE);
+            }
         }
         else
         {

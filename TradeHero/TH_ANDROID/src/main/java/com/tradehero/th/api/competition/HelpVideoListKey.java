@@ -30,6 +30,11 @@ public class HelpVideoListKey implements DTOKey
         return providerId;
     }
 
+    @Override public int hashCode()
+    {
+        return providerId == null ? 0 : providerId.hashCode();
+    }
+
     @Override public boolean equals(Object other)
     {
         return (other instanceof HelpVideoListKey) && equals((HelpVideoListKey) other);
@@ -37,6 +42,7 @@ public class HelpVideoListKey implements DTOKey
 
     public boolean equals(HelpVideoListKey other)
     {
-        return other != null;
+        return other != null &&
+                (providerId == null ? other.providerId == null : providerId.equals(other.providerId));
     }
 }
