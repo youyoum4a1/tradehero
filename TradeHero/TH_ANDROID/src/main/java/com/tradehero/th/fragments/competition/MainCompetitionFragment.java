@@ -169,10 +169,7 @@ public class MainCompetitionFragment extends CompetitionFragment
     {
         if (competitionZoneDTO instanceof CompetitionZoneTradeNowDTO)
         {
-            Bundle args = new Bundle();
-            args.putBundle(ProviderSecurityListFragment.BUNDLE_KEY_PROVIDER_ID, providerId.getArgs());
-            args.putBundle(ProviderSecurityListFragment.BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE, userInteractor.getApplicablePortfolioId().getArgs());
-            navigator.pushFragment(ProviderSecurityListFragment.class, args);
+            pushTradeNowElement((CompetitionZoneTradeNowDTO) competitionZoneDTO);
         }
         else if (competitionZoneDTO instanceof CompetitionZonePortfolioDTO)
         {
@@ -180,34 +177,57 @@ public class MainCompetitionFragment extends CompetitionFragment
         }
         else if (competitionZoneDTO instanceof CompetitionZoneVideoDTO)
         {
-            Bundle args = new Bundle();
-            args.putBundle(ProviderVideoListFragment.BUNDLE_KEY_PROVIDER_ID, providerId.getArgs());
-            args.putBundle(ProviderVideoListFragment.BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE, providerDTO.associatedPortfolio.getPortfolioId().getArgs());
-            navigator.pushFragment(ProviderVideoListFragment.class, args);
+            pushVideoElement((CompetitionZoneVideoDTO) competitionZoneDTO);
         }
         else if (competitionZoneDTO instanceof CompetitionZoneWizardDTO)
         {
-            Bundle args = new Bundle();
-            args.putString(WebViewFragment.BUNDLE_KEY_URL, ProviderConstants.getWizardPage(providerId) + "&previous=whatever");
-            this.webViewFragment = (WebViewFragment) navigator.pushFragment(WebViewFragment.class, args);
-            this.webViewFragment.setThIntentPassedListener(this.webViewTHIntentPassedListener);
+            pushWizardElement((CompetitionZoneWizardDTO) competitionZoneDTO);
         }
         else if (competitionZoneDTO instanceof CompetitionZoneLegalDTO)
         {
-            THLog.d(TAG, "handleItemClicked " + competitionZoneDTO);
-            Bundle args = new Bundle();
-            if (((CompetitionZoneLegalDTO) competitionZoneDTO).requestedLink.equals(CompetitionZoneLegalDTO.LinkType.RULES))
-            {
-                args.putString(WebViewFragment.BUNDLE_KEY_URL, ProviderConstants.getRulesPage(providerId));
-            }
-            else
-            {
-                args.putString(WebViewFragment.BUNDLE_KEY_URL, ProviderConstants.getTermsPage(providerId));
-            }
-            navigator.pushFragment(WebViewFragment.class, args);
+            pushLegalElement((CompetitionZoneLegalDTO) competitionZoneDTO);
         }
 
         // TODO others?
+    }
+
+    private void pushTradeNowElement(CompetitionZoneTradeNowDTO competitionZoneDTO)
+    {
+        Bundle args = new Bundle();
+        args.putBundle(ProviderSecurityListFragment.BUNDLE_KEY_PROVIDER_ID, providerId.getArgs());
+        args.putBundle(ProviderSecurityListFragment.BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE, userInteractor.getApplicablePortfolioId().getArgs());
+        navigator.pushFragment(ProviderSecurityListFragment.class, args);
+    }
+
+    private void pushVideoElement(CompetitionZoneVideoDTO competitionZoneDTO)
+    {
+        Bundle args = new Bundle();
+        args.putBundle(ProviderVideoListFragment.BUNDLE_KEY_PROVIDER_ID, providerId.getArgs());
+        args.putBundle(ProviderVideoListFragment.BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE,
+                providerDTO.associatedPortfolio.getPortfolioId().getArgs());
+        navigator.pushFragment(ProviderVideoListFragment.class, args);
+    }
+
+    private void pushWizardElement(CompetitionZoneWizardDTO competitionZoneDTO)
+    {
+        Bundle args = new Bundle();
+        args.putString(WebViewFragment.BUNDLE_KEY_URL, ProviderConstants.getWizardPage(providerId) + "&previous=whatever");
+        this.webViewFragment = (WebViewFragment) navigator.pushFragment(WebViewFragment.class, args);
+        this.webViewFragment.setThIntentPassedListener(this.webViewTHIntentPassedListener);
+    }
+
+    private void pushLegalElement(CompetitionZoneLegalDTO competitionZoneDTO)
+    {
+        Bundle args = new Bundle();
+        if ((competitionZoneDTO).requestedLink.equals(CompetitionZoneLegalDTO.LinkType.RULES))
+        {
+            args.putString(WebViewFragment.BUNDLE_KEY_URL, ProviderConstants.getRulesPage(providerId));
+        }
+        else
+        {
+            args.putString(WebViewFragment.BUNDLE_KEY_URL, ProviderConstants.getTermsPage(providerId));
+        }
+        navigator.pushFragment(WebViewFragment.class, args);
     }
 
     private class MainCompetitionFragmentItemClickListener implements AdapterView.OnItemClickListener
