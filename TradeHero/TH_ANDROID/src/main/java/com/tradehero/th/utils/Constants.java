@@ -20,6 +20,7 @@ public class Constants
     public static final String LINKEDIN_CONSUMER_KEY = "afed437khxve";
     public static final String LINKEDIN_CONSUMER_SECRET = "hO7VeSyL4y1W2ZiK";
     public static final boolean LEADERBOARD_BACKGROUND_IMAGE_ENABLED = false;
+    public static final String FACEBOOK_PROFILE_PICTURE = "http://graph.facebook.com/%s/picture?type=large";
     public static String OAUTH_CALLBACK_URL = "x-oauthflow-linkedin://callback";
 
     //Twitter

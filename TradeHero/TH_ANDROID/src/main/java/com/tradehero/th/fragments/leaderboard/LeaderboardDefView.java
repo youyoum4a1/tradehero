@@ -192,13 +192,13 @@ public class LeaderboardDefView extends RelativeLayout implements DTOView<Leader
         switch (dto.id)
         {
             case LeaderboardDefDTO.LEADERBOARD_FRIEND_ID:
-                return R.drawable.lb_friends_blue;
+                return R.drawable.leaderboard_friends;
 
             case LeaderboardDefDTO.LEADERBOARD_DEF_SECTOR_ID:
-                return R.drawable.lb_sector;
+                return R.drawable.leaderboard_bysector;
 
             case LeaderboardDefDTO.LEADERBOARD_DEF_EXCHANGE_ID:
-                return R.drawable.lb_exchange;
+                return R.drawable.leaderboard_byexchange;
 
             case 2:
                 return R.drawable.lb_toptraders;
@@ -261,16 +261,16 @@ public class LeaderboardDefView extends RelativeLayout implements DTOView<Leader
                 return R.drawable.lb_quarter4;
 
             case 40:
-                return R.drawable.lb_30days;
+                return R.drawable.leaderboard_30d;
 
             case 41:
-                return R.drawable.lb_90days;
+                return R.drawable.leaderboard_90d;
 
             case 49:
-                return R.drawable.lb_hq;
+                return R.drawable.leaderboard_most_skilled;
 
             case 285:
-                return R.drawable.lb_6mths;
+                return R.drawable.leaderboard_6m;
 
             default:
                 return 0;

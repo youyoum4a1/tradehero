@@ -19,7 +19,6 @@ import com.tradehero.th.network.service.UserService;
 import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
-import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 
 public class ReferralFragment extends DashboardFragment
@@ -27,27 +26,39 @@ public class ReferralFragment extends DashboardFragment
     @Inject protected CurrentUserBaseKeyHolder currentUserBaseKeyHolder;
     @Inject protected Lazy<UserService> userService;
 
-    private StickyListHeadersAdapter stickyListHeadersAdapter;
+    private FriendListAdapter referFriendListAdapter;
     private ProgressDialog progressDialog;
+    private View headerView;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.refer_fragment, container, false);
+        headerView = inflater.inflate(R.layout.refer_friend_header, container, false);
         initView(view);
         return view;
     }
 
     private void initView(View view)
     {
-        //stickyListHeadersAdapter = new
+        referFriendListAdapter = createFriendListAdapter();
         StickyListHeadersListView stickyListHeadersListView = (StickyListHeadersListView) view.findViewById(R.id.sticky_list);
-        stickyListHeadersListView.setAdapter(stickyListHeadersAdapter);
 
         View emptyView = view.findViewById(R.id.refer_friend_list_empty_view);
         if (emptyView != null)
         {
             stickyListHeadersListView.getWrappedList().setEmptyView(emptyView);
         }
+
+        if (stickyListHeadersListView.getWrappedList().getHeaderViewsCount() == 0)
+        {
+            //stickyListHeadersListView.getWrappedList().addHeaderView(headerView);
+        }
+        stickyListHeadersListView.setAdapter(referFriendListAdapter);
+    }
+
+    private FriendListAdapter createFriendListAdapter()
+    {
+        return new FriendListAdapter(getActivity(), getActivity().getLayoutInflater(), R.layout.refer_friend_list_item_view);
     }
 
     @Override public void onResume()
@@ -84,7 +95,11 @@ public class ReferralFragment extends DashboardFragment
 
     private void handleFriendListReceived(List<UserFriendsDTO> userFriendsDTOs)
     {
-
+        if (referFriendListAdapter != null)
+        {
+            referFriendListAdapter.setItems(userFriendsDTOs);
+            referFriendListAdapter.notifyDataSetChanged();
+        }
     }
 
     private THCallback<List<UserFriendsDTO>> getFriendsCallback = new THCallback<List<UserFriendsDTO>>()

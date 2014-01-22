@@ -89,7 +89,7 @@ public class BaseLeaderboardFragment extends DashboardFragment
     {
         LeaderboardSortType sortType = getCurrentSortType();
         sortSubMenu = menu.addSubMenu("").setIcon(sortType.getSelectedResourceIcon());
-        leaderboardSortHelper.addSortMenu(sortSubMenu, getSortMenuFlag());
+        //leaderboardSortHelper.addSortMenu(sortSubMenu, getSortMenuFlag());
     }
 
     private int getSortMenuFlag()

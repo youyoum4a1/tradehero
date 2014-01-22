@@ -1,5 +1,7 @@
 package com.tradehero.th.api.social;
 
+import com.tradehero.th.utils.Constants;
+
 /** Created with IntelliJ IDEA. User: xavier Date: 10/22/13 Time: 8:53 PM To change this template use File | Settings | File Templates. */
 public class UserFriendsDTO
 {
@@ -18,5 +20,18 @@ public class UserFriendsDTO
     public UserFriendsDTO()
     {
         super();
+    }
+
+    public String getProfilePictureURL()
+    {
+        if (fbId != null && !fbId.isEmpty())
+        {
+            return String.format(Constants.FACEBOOK_PROFILE_PICTURE, fbId);
+        }
+        else if (liPicUrl != null && !liPicUrl.isEmpty())
+        {
+            return liPicUrl;
+        }
+        return null;
     }
 }

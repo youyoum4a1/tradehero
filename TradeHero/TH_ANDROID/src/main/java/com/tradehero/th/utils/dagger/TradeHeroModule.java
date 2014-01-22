@@ -28,6 +28,7 @@ import com.tradehero.th.billing.googleplay.THInventoryFetchMilestone;
 import com.tradehero.th.fragments.security.WarrantInfoValueFragment;
 import com.tradehero.th.fragments.settings.ReferralFragment;
 import com.tradehero.th.fragments.security.WarrantSecurityItemView;
+import com.tradehero.th.fragments.settings.UserFriendDTOView;
 import com.tradehero.th.fragments.web.WebViewFragment;
 import com.tradehero.th.fragments.alert.AlertManagerFragment;
 import com.tradehero.th.fragments.authentication.EmailSignInFragment;
@@ -296,6 +297,8 @@ import org.ocpsoft.prettytime.PrettyTime;
                 AlertManagerFragment.class,
 
                 ReferralFragment.class,
+
+                UserFriendDTOView.class,
         },
         staticInjections =
         {
