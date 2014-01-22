@@ -165,6 +165,7 @@ public class ProviderSecurityListFragment extends SecurityListFragment
             Bundle args = new Bundle();
             args.putBundle(BuySellFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
             args.putBundle(BuySellFragment.BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE, getApplicablePortfolioId().getArgs());
+            args.putBundle(BuySellFragment.BUNDLE_KEY_PROVIDER_ID_BUNDLE, providerId.getArgs());
             // TODO use other positions
             navigator.pushFragment(BuySellFragment.class, args);
 

@@ -7,6 +7,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.view.View;
 import com.tradehero.common.utils.THLog;
+import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.WarrantDTO;
@@ -20,6 +21,7 @@ public class BuySellBottomStockPagerAdapter extends FragmentStatePagerAdapter
 
     private final Context context;
     private SecurityCompactDTO securityCompactDTO;
+    private ProviderId providerId;
 
     //<editor-fold desc="Constructors">
     public BuySellBottomStockPagerAdapter(Context context, FragmentManager fragmentManager)
@@ -28,6 +30,11 @@ public class BuySellBottomStockPagerAdapter extends FragmentStatePagerAdapter
         this.context = context;
     }
     //</editor-fold>
+
+    public void linkWith(ProviderId providerId)
+    {
+        this.providerId = providerId;
+    }
 
     public void linkWith(SecurityCompactDTO securityCompactDTO)
     {
@@ -72,6 +79,7 @@ public class BuySellBottomStockPagerAdapter extends FragmentStatePagerAdapter
         if (securityCompactDTO instanceof WarrantDTO && position == 0)
         {
             fragment = new WarrantInfoValueFragment();
+            populateForWarrantInfoFragment(args);
         }
         else
         {
@@ -102,6 +110,14 @@ public class BuySellBottomStockPagerAdapter extends FragmentStatePagerAdapter
         fragment.setArguments(args);
         fragment.setRetainInstance(false);
         return fragment;
+    }
+
+    private void populateForWarrantInfoFragment(Bundle args)
+    {
+        if (providerId != null)
+        {
+            args.putBundle(WarrantInfoValueFragment.BUNDLE_KEY_PROVIDER_ID_KEY, providerId.getArgs());
+        }
     }
 
     private void populateForChartFragment(Bundle args)

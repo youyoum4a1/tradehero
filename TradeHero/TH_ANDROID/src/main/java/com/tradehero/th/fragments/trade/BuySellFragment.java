@@ -656,6 +656,7 @@ public class BuySellFragment extends AbstractBuySellFragment
             SecurityCompactDTO adapterDTO = adapter.getSecurityCompactDTO();
             if (securityId != null && (adapterDTO == null || !securityId.equals(adapterDTO.getSecurityId())))
             {
+                adapter.linkWith(providerId);
                 adapter.linkWith(securityCompactDTO);
 
                 ViewPager viewPager = mBottomViewPager;

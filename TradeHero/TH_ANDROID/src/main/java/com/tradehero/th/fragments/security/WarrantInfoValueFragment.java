@@ -1,17 +1,25 @@
 package com.tradehero.th.fragments.security;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
+import com.tradehero.th.api.competition.ProviderDTO;
+import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.WarrantDTO;
+import com.tradehero.th.base.DashboardNavigatorActivity;
+import com.tradehero.th.fragments.competition.ProviderVideoListFragment;
+import com.tradehero.th.persistence.competition.ProviderCache;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.NumberDisplayUtils;
+import dagger.Lazy;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 import javax.inject.Inject;
@@ -20,6 +28,10 @@ public class WarrantInfoValueFragment extends AbstractSecurityInfoFragment<Secur
 {
     private final static String TAG = WarrantInfoValueFragment.class.getSimpleName();
 
+    public final static String BUNDLE_KEY_PROVIDER_ID_KEY = WarrantInfoValueFragment.class.getName() + ".providerId";
+
+    private View mHelpVideoLink;
+    private TextView mHelpVideoText;
     private TextView mWarrantType;
     private TextView mWarrantCode;
     private TextView mWarrantExpiry;
@@ -29,6 +41,9 @@ public class WarrantInfoValueFragment extends AbstractSecurityInfoFragment<Secur
 
     @Inject protected SecurityCompactCache securityCompactCache;
     protected WarrantDTO warrantDTO;
+    protected ProviderId providerId;
+    protected ProviderDTO providerDTO;
+    @Inject protected Lazy<ProviderCache> providerCache;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -46,12 +61,39 @@ public class WarrantInfoValueFragment extends AbstractSecurityInfoFragment<Secur
 
     private void initViews(View v)
     {
+        mHelpVideoLink = v.findViewById(R.id.warrant_help_video_link);
+        if (mHelpVideoLink != null)
+        {
+            mHelpVideoLink.setOnClickListener(new View.OnClickListener()
+            {
+                @Override public void onClick(View view)
+                {
+                    handleVideoLinkClicked();
+                }
+            });
+        }
+        mHelpVideoText = (TextView) v.findViewById(R.id.warrant_help_video_text);
         mWarrantType = (TextView) v.findViewById(R.id.vwarrant_type);
         mWarrantCode = (TextView) v.findViewById(R.id.vwarrant_code);
         mWarrantExpiry = (TextView) v.findViewById(R.id.vwarrant_expiry);
         mStrikePrice = (TextView) v.findViewById(R.id.vwarrant_strike_price);
         mUnderlying = (TextView) v.findViewById(R.id.vwarrant_underlying);
         mIssuer = (TextView) v.findViewById(R.id.vwarrant_issuer);
+    }
+
+    @Override public void onResume()
+    {
+        super.onResume();
+        Bundle args = getArguments();
+        if (args != null)
+        {
+            Bundle providerIdBundle = getArguments().getBundle(BUNDLE_KEY_PROVIDER_ID_KEY);
+            if (providerIdBundle != null)
+            {
+                linkWith(new ProviderId(providerIdBundle), true);
+            }
+            THLog.d(TAG, "onResume " + providerId);
+        }
     }
 
     @Override public void onPause()
@@ -61,6 +103,43 @@ public class WarrantInfoValueFragment extends AbstractSecurityInfoFragment<Secur
             securityCompactCache.unRegisterListener(this);
         }
         super.onPause();
+    }
+
+    @Override public void onDestroyView()
+    {
+        if (mHelpVideoLink != null)
+        {
+            mHelpVideoLink.setOnClickListener(null);
+        }
+        mHelpVideoLink = null;
+
+        super.onDestroyView();
+    }
+
+    public void linkWith(ProviderId providerId, boolean andDisplay)
+    {
+        this.providerId = providerId;
+        if (this.providerId != null)
+        {
+            linkWith(providerCache.get().get(providerId), andDisplay);
+        }
+        else
+        {
+            linkWith((ProviderDTO) null, andDisplay);
+        }
+        if (andDisplay)
+        {
+        }
+    }
+
+    public void linkWith(ProviderDTO providerDTO, boolean andDisplay)
+    {
+        this.providerDTO = providerDTO;
+        if (andDisplay)
+        {
+            displayLinkHelpVideoLink();
+            displayLinkHelpVideoText();
+        }
     }
 
     @Override public void linkWith(SecurityId securityId, boolean andDisplay)
@@ -82,12 +161,38 @@ public class WarrantInfoValueFragment extends AbstractSecurityInfoFragment<Secur
     //<editor-fold desc="Display Methods">
     public void display()
     {
+        displayLinkHelpVideoLink();
+        displayLinkHelpVideoText();
         displayWarrantType();
         displayWarrantCode();
         displayExpiry();
         displayStrikePrice();
         displayUnderlying();
         displayIssuer();
+    }
+
+    public void displayLinkHelpVideoLink()
+    {
+        if (mHelpVideoLink != null)
+        {
+            mHelpVideoLink.setVisibility(hasHelpVideo() ? View.VISIBLE : View.GONE);
+        }
+    }
+
+    public void displayLinkHelpVideoText()
+    {
+        if (mHelpVideoText != null)
+        {
+            if (providerDTO != null)
+            {
+                mHelpVideoText.setText(providerDTO.helpVideoText);
+            }
+        }
+    }
+
+    public boolean hasHelpVideo()
+    {
+        return providerDTO != null && providerDTO.hasHelpVideo;
     }
 
     public void displayWarrantType()
@@ -196,4 +301,15 @@ public class WarrantInfoValueFragment extends AbstractSecurityInfoFragment<Secur
         }
     }
     //</editor-fold>
+
+    private void handleVideoLinkClicked()
+    {
+        Activity activity = getActivity();
+        if (activity instanceof DashboardNavigatorActivity)
+        {
+            Bundle args = new Bundle();
+            args.putBundle(ProviderVideoListFragment.BUNDLE_KEY_PROVIDER_ID, providerId.getArgs());
+            ((DashboardNavigatorActivity) activity).getDashboardNavigator().pushFragment(ProviderVideoListFragment.class, args);
+        }
+    }
 }

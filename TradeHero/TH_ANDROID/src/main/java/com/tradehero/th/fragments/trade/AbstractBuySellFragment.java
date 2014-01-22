@@ -10,6 +10,7 @@ import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
+import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.position.SecurityPositionDetailDTO;
 import com.tradehero.th.api.position.SecurityPositionDetailDTOUtil;
 import com.tradehero.th.api.quote.QuoteDTO;
@@ -37,6 +38,7 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
     public final static String BUNDLE_KEY_IS_BUY = AbstractBuySellFragment.class.getName() + ".isBuy";
     public final static String BUNDLE_KEY_QUANTITY_BUY = AbstractBuySellFragment.class.getName() + ".quantityBuy";
     public final static String BUNDLE_KEY_QUANTITY_SELL = AbstractBuySellFragment.class.getName() + ".quantitySell";
+    public final static String BUNDLE_KEY_PROVIDER_ID_BUNDLE = AbstractBuySellFragment.class.getName() + ".providerId";
 
     public final static long MILLISEC_QUOTE_REFRESH = 30000;
     public final static long MILLISEC_QUOTE_COUNTDOWN_PRECISION = 50;
@@ -52,6 +54,8 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
     protected boolean querying = false;
     protected DTOCache.Listener<SecurityId, SecurityPositionDetailDTO> securityPositionDetailCacheListener;
     protected DTOCache.GetOrFetchTask<SecurityId, SecurityPositionDetailDTO> fetchPositionDetailTask;
+
+    protected ProviderId providerId;
 
     @Inject protected Lazy<UserProfileCache> userProfileCache;
     protected UserProfileDTO userProfileDTO;
@@ -108,6 +112,13 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
         isTransactionTypeBuy = args.getBoolean(BUNDLE_KEY_IS_BUY, isTransactionTypeBuy);
         mBuyQuantity = args.getInt(BUNDLE_KEY_QUANTITY_BUY, mBuyQuantity);
         mSellQuantity = args.getInt(BUNDLE_KEY_QUANTITY_SELL, mSellQuantity);
+
+        Bundle providerIdBundle = args.getBundle(BUNDLE_KEY_PROVIDER_ID_BUNDLE);
+        if (providerIdBundle != null)
+        {
+            providerId = new ProviderId(providerIdBundle);
+        }
+
         Bundle securityIdBundle = args.getBundle(BUNDLE_KEY_SECURITY_ID_BUNDLE);
         linkWith(new SecurityId(securityIdBundle), true);
 
