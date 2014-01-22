@@ -44,9 +44,9 @@ public class PortfolioListItemAdapter extends ArrayDTOAdapter<DisplayablePortfol
     private final DisplayablePortfolioDTOWithinUserComparator ownDisplayablePortfolioDTOWithinUserComparator;
     private final int otherHeaderResId;
 
-    public PortfolioListItemAdapter(Context context, LayoutInflater inflater, int portfolioHeaderLayoutResourceId, int otherHeaderResId)
+    public PortfolioListItemAdapter(Context context, LayoutInflater inflater, int portfolioLayoutResourceId, int otherHeaderResId)
     {
-        super(context, inflater, portfolioHeaderLayoutResourceId);
+        super(context, inflater, portfolioLayoutResourceId);
         this.otherHeaderResId = otherHeaderResId;
         this.ownDisplayablePortfolioDTOWithinUserComparator = new DisplayablePortfolioDTOWithinUserComparator();
         orderedTypes = new ArrayList<>();
