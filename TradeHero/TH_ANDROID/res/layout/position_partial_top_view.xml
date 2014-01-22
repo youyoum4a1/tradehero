@@ -4,7 +4,9 @@
     android:id="@+id/position_partial_top"
     android:orientation="horizontal"
     android:layout_width="match_parent"
-    android:layout_height="60dp">
+    android:layout_height="60dp"
+    android:paddingRight="@dimen/position_padding_right"
+    >
     <ImageView
             android:id="@+id/stock_logo"
             android:layout_width="0dp"
@@ -100,8 +102,8 @@
                 />
         <ImageButton
                 android:id="@+id/btn_trade_history"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
                 android:layout_alignParentRight="true"
                 android:scaleType="fitCenter"

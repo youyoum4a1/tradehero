@@ -8,15 +8,16 @@
       android:layout_height="wrap_content"
       android:paddingTop="4dp"
       android:background="#f7ffffff"
+      android:paddingRight="@dimen/position_padding_right"
       >
 
     <ImageButton
         android:id="@+id/previous_filter"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
-        android:src="@drawable/settings_back_light"
+        android:src="@drawable/trending_filter_back"
         android:scaleType="fitCenter"
         android:contentDescription="@null"
         android:background="@android:color/transparent"
@@ -24,11 +25,11 @@
 
     <ImageButton
         android:id="@+id/next_filter"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
-        android:src="@drawable/settings_forward_light"
+        android:src="@drawable/trending_filter_forward"
         android:scaleType="fitCenter"
         android:contentDescription="@null"
         android:background="@android:color/transparent"

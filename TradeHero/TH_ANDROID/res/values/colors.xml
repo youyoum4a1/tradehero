@@ -18,4 +18,8 @@
   <color name="dashboard_background_color">#E3E8EE</color>
   <color name="profile_view_gradient_top">#80ffffff</color>
   <color name="profile_view_gradient_bottom">#ffffff</color>
+  <color name="invite_friend_header_background_color">@color/invite_friend_background_color</color>
+  <color name="invite_friend_background_color">#e3e4e6</color>
+  <color name="refer_friend_item_background">@color/white</color>
+  <color name="invite_friend_announcement_header">#dbd9da</color>
 </resources>

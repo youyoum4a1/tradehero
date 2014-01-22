@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tradehero.th.fragments.settings.UserFriendDTOView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/refer_friend_item_background"
+    android:paddingLeft="@dimen/invite_friend_padding_left"
+    android:paddingRight="@dimen/invite_friend_padding_right"
+    android:paddingTop="@dimen/invite_friend_padding_top"
+    android:paddingBottom="@dimen/invite_friend_padding_bottom"
+    >
+    <ImageView
+        android:id="@+id/user_friend_avatar"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:background="@drawable/layout_oval_gray"
+        android:padding="1dp"
+        android:layout_marginRight="10dp"
+        android:src="@drawable/avatar"
+        android:contentDescription="@null"/>
+    <TextView
+        android:id="@+id/user_friend_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/user_friend_avatar"
+        android:textStyle="bold"
+        android:maxLines="1"
+        android:layout_alignParentTop="true"
+        android:text="@null"
+        />
+
+    <ImageView
+        android:id="@+id/user_friend_source_picture"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/user_friend_name"
+        android:layout_toRightOf="@id/user_friend_avatar"
+        android:layout_alignParentBottom="true"
+        android:contentDescription="@null"
+        />
+
+    <TextView
+        android:id="@+id/user_friend_source_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:maxLines="1"
+        android:layout_below="@id/user_friend_name"
+        android:layout_toRightOf="@id/user_friend_source_picture"
+        android:textSize="12sp"
+        android:text="@null"
+        />
+</com.tradehero.th.fragments.settings.UserFriendDTOView>

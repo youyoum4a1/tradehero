@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/invite_friend_background_color"
+    >
+  <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+      android:gravity="center"
+      >
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:drawableTop="@drawable/invite_friend_facebook_large"
+        android:text="@null"
+        android:padding="@dimen/refer_friend_invite_button_padding"
+        />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:drawableTop="@drawable/invite_friend_linked_in_large"
+        android:text="@null"
+        android:padding="@dimen/refer_friend_invite_button_padding"
+        />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:drawableTop="@drawable/invite_friend_contact_large"
+        android:text="@null"
+        android:padding="@dimen/refer_friend_invite_button_padding"
+        />
+  </LinearLayout>
+  <EditText android:layout_width="match_parent" android:layout_height="wrap_content"
+      android:hint="@string/search_friends"
+      android:layout_marginLeft="@dimen/invite_friend_horizontal_padding"
+      android:layout_marginRight="@dimen/invite_friend_horizontal_padding"
+      />
+</LinearLayout>

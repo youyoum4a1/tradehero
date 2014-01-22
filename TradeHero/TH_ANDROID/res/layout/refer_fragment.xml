@@ -6,10 +6,27 @@
     android:layout_height="match_parent"
     >
 
+  <TextView
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:background="@color/invite_friend_announcement_header"
+      android:paddingBottom="@dimen/invite_friend_announcement_vertical_padding"
+      android:paddingTop="@dimen/invite_friend_announcement_vertical_padding"
+      android:paddingLeft="@dimen/invite_friend_announcement_horizontal_padding"
+      android:paddingRight="@dimen/invite_friend_announcement_horizontal_padding"
+      android:gravity="center"
+      android:textStyle="bold"
+      android:layout_gravity="top|center_horizontal"
+      android:text="@string/refer_friend_announcement"
+      android:height="@dimen/invite_friend_announcement_height"
+      />
+
   <se.emilsjolander.stickylistheaders.StickyListHeadersListView
       android:id="@+id/sticky_list"
       android:layout_width="match_parent"
-      android:layout_height="match_parent"/>
+      android:layout_height="match_parent"
+      android:paddingTop="@dimen/invite_friend_announcement_height"
+      />
 
   <TextView
       android:id="@+id/refer_friend_list_empty_view"
@@ -20,5 +37,16 @@
       android:layout_height="wrap_content"
       android:text="@string/refer_friend_empty_view"
       android:gravity="center_horizontal"
+      />
+
+  <Button
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="@string/send_invitations"
+      android:layout_gravity="bottom|center_horizontal"
+      android:paddingTop="@dimen/refer_friend_action_button_horizontal_padding"
+      android:paddingBottom="@dimen/refer_friend_action_button_horizontal_padding"
+      android:background="#1a6ee6"
+      android:visibility="gone"
       />
 </FrameLayout>

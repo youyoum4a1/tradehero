@@ -171,4 +171,7 @@
   <string name="not_yet_implemented">Not yet implemented. Stay stuned.</string>
   <string name="invite_friends">Invite Friends</string>
   <string name="refer_friend_empty_view">Your friend list is empty, link your account with Facebook, Twitter or Linkedin to refer friends</string>
+  <string name="send_invitations">Send Invitations</string>
+  <string name="refer_friend_announcement">Get FREE TradeHero Dollars for each friend who signs up for TradeHero!</string>
+  <string name="search_friends">Search Friends</string>
 </resources>

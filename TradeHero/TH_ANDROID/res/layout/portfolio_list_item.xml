@@ -2,17 +2,19 @@
 
 <com.tradehero.th.fragments.portfolio.PortfolioListItemView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res/com.tradehero.th"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="5dp"
+    android:paddingLeft="@dimen/portfolio_padding_left"
+    android:paddingTop="@dimen/portfolio_padding_top"
+    android:paddingBottom="@dimen/portfolio_padding_bottom"
     android:background="@color/white"
+    android:paddingRight="@dimen/position_padding_right"
     >
 
   <ImageView
       android:id="@+id/hint_open_portfolio"
-      android:layout_width="48dp"
-      android:layout_height="48dp"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
       android:layout_alignParentRight="true"
       android:layout_centerVertical="true"
       android:src="@drawable/settings_forward_light"
