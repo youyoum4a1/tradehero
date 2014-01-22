@@ -131,6 +131,25 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
         mostSkilledListView = (ListView) view.findViewById(R.id.leaderboard_most_skilled);
         timePeriodListView = (ListView) view.findViewById(R.id.leaderboard_time_period);
         sectorListView = (ListView) view.findViewById(R.id.leaderboard_sector);
+        sectorListView.setOnItemClickListener(new AdapterView.OnItemClickListener()
+        {
+            @Override public void onItemClick(AdapterView<?> adapterView, View view, int position, long id)
+            {
+                LeaderboardDefDTO dto = (LeaderboardDefDTO) adapterView.getItemAtPosition(position);
+                if (dto != null)
+                {
+                    switch (dto.id)
+                    {
+                        case LeaderboardDefDTO.LEADERBOARD_DEF_SECTOR_ID:
+                            pushLeaderboardDefSector();
+                            break;
+                        case LeaderboardDefDTO.LEADERBOARD_DEF_EXCHANGE_ID:
+                            pushLeaderboardDefExchange();
+                            break;
+                    }
+                }
+            }
+        });
 
         ListView[] listViews = new ListView[] { mostSkilledListView, timePeriodListView, sectorListView };
         for (ListView listView: listViews)
@@ -167,6 +186,12 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
         this.firstProviderLink = null;
 
         this.thIntentPassedListener = null;
+
+        if (sectorListView != null)
+        {
+            sectorListView.setOnItemClickListener(null);
+        }
+        sectorListView = null;
 
         super.onDestroyView();
     }
@@ -284,34 +309,23 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
         LeaderboardDefListAdapter sectorListViewAdapter = (LeaderboardDefListAdapter) sectorListView.getAdapter();
         sectorListViewAdapter.addItem(dto);
         sectorListViewAdapter.notifyDataSetChanged();
-        sectorListView.setOnItemClickListener(new AdapterView.OnItemClickListener()
-        {
-            @Override public void onItemClick(AdapterView<?> adapterView, View view, int position, long id)
-            {
-                LeaderboardDefDTO dto = (LeaderboardDefDTO) adapterView.getItemAtPosition(position);
-                if (dto != null)
-                {
-                    switch (dto.id)
-                    {
-                        case LeaderboardDefDTO.LEADERBOARD_DEF_SECTOR_ID:
-                        {
-                            Bundle bundle = new Bundle(getArguments());
-                            (new LeaderboardDefSectorListKey()).putParameters(bundle);
-                            bundle.putString(LeaderboardDefListViewFragment.TITLE, getString(R.string.leaderboard_sector));
-                            bundle.putInt(BaseLeaderboardFragment.CURRENT_SORT_TYPE, getCurrentSortType().getFlag());
-                            getNavigator().pushFragment(LeaderboardDefListViewFragment.class, bundle);
-                        } break;
-                        case LeaderboardDefDTO.LEADERBOARD_DEF_EXCHANGE_ID:
-                        {
-                            Bundle bundle = new LeaderboardDefExchangeListKey().getArgs();
-                            bundle.putString(LeaderboardDefListViewFragment.TITLE, getString(R.string.leaderboard_exchange));
-                            bundle.putInt(BaseLeaderboardFragment.CURRENT_SORT_TYPE, getCurrentSortType().getFlag());
-                            getNavigator().pushFragment(LeaderboardDefListViewFragment.class, bundle);
-                        } break;
-                    }
-                }
-            }
-        });
+    }
+
+    private void pushLeaderboardDefSector()
+    {
+        Bundle bundle = new Bundle(getArguments());
+        (new LeaderboardDefSectorListKey()).putParameters(bundle);
+        bundle.putString(LeaderboardDefListViewFragment.TITLE, getString(R.string.leaderboard_sector));
+        bundle.putInt(BaseLeaderboardFragment.CURRENT_SORT_TYPE, getCurrentSortType().getFlag());
+        getNavigator().pushFragment(LeaderboardDefListViewFragment.class, bundle);
+    }
+
+    private void pushLeaderboardDefExchange()
+    {
+        Bundle bundle = new LeaderboardDefExchangeListKey().getArgs();
+        bundle.putString(LeaderboardDefListViewFragment.TITLE, getString(R.string.leaderboard_exchange));
+        bundle.putInt(BaseLeaderboardFragment.CURRENT_SORT_TYPE, getCurrentSortType().getFlag());
+        getNavigator().pushFragment(LeaderboardDefListViewFragment.class, bundle);
     }
 
     private LeaderboardDefListAdapter createTimePeriodListAdapter(List<LeaderboardDefDTO> timePeriodItems)
