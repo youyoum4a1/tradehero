@@ -1146,6 +1146,10 @@ public class BuySellFragment extends AbstractBuySellFragment
     {
         Bundle args = new Bundle();
         args.putBundle(StockInfoFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, this.securityId.getArgs());
+        if (providerId != null)
+        {
+            args.putBundle(StockInfoFragment.BUNDLE_KEY_PROVIDER_ID_BUNDLE, this.providerId.getArgs());
+        }
         navigator.pushFragment(StockInfoFragment.class, args);
     }
     //</editor-fold>

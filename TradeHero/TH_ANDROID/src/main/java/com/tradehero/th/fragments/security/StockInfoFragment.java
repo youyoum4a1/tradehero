@@ -14,6 +14,7 @@ import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
+import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.yahoo.NewsList;
@@ -30,9 +31,11 @@ public class StockInfoFragment extends DashboardFragment
 {
     public static final String TAG = StockInfoFragment.class.getSimpleName();
     public final static String BUNDLE_KEY_SECURITY_ID_BUNDLE = StockInfoFragment.class.getName() + ".securityId";
+    public final static String BUNDLE_KEY_PROVIDER_ID_BUNDLE = StockInfoFragment.class.getName() + ".providerId";
+
+    protected ProviderId providerId;
 
     protected SecurityId securityId;
-
     protected SecurityCompactDTO securityCompactDTO;
     @Inject Lazy<SecurityCompactCache> securityCompactCache;
     private DTOCache.Listener<SecurityId, SecurityCompactDTO> compactCacheListener;
@@ -90,11 +93,17 @@ public class StockInfoFragment extends DashboardFragment
         Bundle args = getArguments();
         if (args != null)
         {
+            Bundle providerIdBundle = args.getBundle(BUNDLE_KEY_PROVIDER_ID_BUNDLE);
+            if (providerIdBundle != null)
+            {
+                linkWith(new ProviderId(providerIdBundle), false);
+            }
             Bundle securityIdBundle = args.getBundle(BUNDLE_KEY_SECURITY_ID_BUNDLE);
             if (securityIdBundle != null)
             {
-                linkWith(new SecurityId(securityIdBundle), true);
+                linkWith(new SecurityId(securityIdBundle), false);
             }
+            display();
         }
     }
 
@@ -167,6 +176,16 @@ public class StockInfoFragment extends DashboardFragment
         super.onDestroyView();
     }
 
+    private void linkWith(final ProviderId providerId, final boolean andDisplay)
+    {
+        this.providerId = providerId;
+
+        if (andDisplay)
+        {
+            // TODO
+        }
+    }
+
     private void linkWith(final SecurityId securityId, final boolean andDisplay)
     {
         this.securityId = securityId;
@@ -180,7 +199,6 @@ public class StockInfoFragment extends DashboardFragment
         if (andDisplay)
         {
             displayExchangeSymbol();
-            displayTopViewPager();
         }
     }
 
@@ -255,6 +273,7 @@ public class StockInfoFragment extends DashboardFragment
         if (andDisplay)
         {
             displayMarketClose();
+            displayTopViewPager();
         }
     }
 
@@ -303,9 +322,11 @@ public class StockInfoFragment extends DashboardFragment
     {
         if (topViewPagerAdapter != null)
         {
-            if (securityId != null && !securityId.equals(topViewPagerAdapter.getSecurityId()))
+            SecurityCompactDTO adapterSecurityDTO = topViewPagerAdapter.getSecurityCompactDTO();
+            if (securityId != null && (adapterSecurityDTO == null || !securityId.equals(adapterSecurityDTO.getSecurityId())))
             {
-                topViewPagerAdapter.linkWith(securityId);
+                topViewPagerAdapter.linkWith(providerId);
+                topViewPagerAdapter.linkWith(securityCompactDTO);
 
                 if (topPager != null)
                 {
