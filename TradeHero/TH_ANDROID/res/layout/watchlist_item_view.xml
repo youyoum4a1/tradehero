@@ -68,16 +68,17 @@
           android:textStyle="bold"
           android:maxLines="1"
           android:layout_alignParentTop="true"
-          android:text="LSE:VOD"
+          android:text="@null"
           />
 
       <TextView
           android:id="@+id/number_of_shares"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
+          android:textSize="@dimen/watchlist_item_shares_font_size"
           android:maxLines="1"
           android:layout_below="@id/stock_symbol"
-          android:text="1 shares @ US$ 10"
+          android:text="@null"
           />
 
       <TextView
@@ -86,8 +87,9 @@
           android:layout_height="wrap_content"
           android:maxLines="1"
           android:layout_below="@id/number_of_shares"
-          android:textSize="10sp"
-          android:text="Vodaphone"
+          android:textSize="@dimen/watchlist_item_shares_font_size"
+          android:textColor="@color/text_gray_normal"
+          android:text="@null"
           />
 
     </RelativeLayout>
@@ -117,7 +119,7 @@
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:maxLines="1"
-          android:layout_alignParentBottom="true"
+          android:layout_below="@id/position_last_amount"
           android:layout_alignParentRight="true"
           />
     </RelativeLayout>

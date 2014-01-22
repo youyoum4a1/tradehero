@@ -155,9 +155,14 @@ public class WatchlistPortfolioHeaderView extends LinearLayout
 
     private void displayValuation()
     {
-        valuation.setFirstValue(SecurityUtils.DEFAULT_VIRTUAL_CASH_CURRENCY_DISPLAY + new DecimalFormat("#.##").format(getTotalValue()));
-        valuation.setSecondValue(SecurityUtils.DEFAULT_VIRTUAL_CASH_CURRENCY_DISPLAY + new DecimalFormat("#.##").format(getTotalInvested()));
+        valuation.setFirstValue(formatDisplayValue(getTotalValue()));
+        valuation.setSecondValue(formatDisplayValue(getTotalInvested()));
         valuation.invalidate();
+    }
+
+    private String formatDisplayValue(double value)
+    {
+        return String.format("%s %s", SecurityUtils.DEFAULT_VIRTUAL_CASH_CURRENCY_DISPLAY, new DecimalFormat("#,###").format(value));
     }
 
     private double getAbsoluteGain()
