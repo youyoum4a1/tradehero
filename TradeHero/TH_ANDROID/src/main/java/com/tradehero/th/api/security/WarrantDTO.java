@@ -51,6 +51,11 @@ public class WarrantDTO extends SecurityCompactDTO
                 (this.issuerName.toLowerCase().contains("mb") || this.issuerName.toLowerCase().contains("mbl"));
     }
 
+    public WarrantType getWarrantType()
+    {
+        return WarrantType.getByShortCode(warrantType);
+    }
+
     @Override public String toString()
     {
         return "WarrantDTO{" +

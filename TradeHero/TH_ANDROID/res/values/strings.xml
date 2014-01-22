@@ -54,24 +54,6 @@
   <string name="sign_prefix_zero"></string>
 
 
-  <!-- What's Trending Details - StockInfo -->
-  <string name="previous_close">Prev. Close</string>
-  <string name="open">Open</string>
-  <string name="days_high">Day\'s High</string>
-  <string name="days_low">Day\'s Low</string>
-  <string name="market_cap">Market Cap</string>
-  <string name="pe_ratio">P/E Ratio</string>
-  <string name="eps">EPS</string>
-  <string name="volume">Volume</string>
-  <string name="avg_volume">Avg. Volume</string>
-  <string name="na">N/A</string>
-  <string name="hint_buy_comment">Post comments to attract followers…(optional)</string>
-  <string name="btn_buy">Confirm</string>
-  <string name="share_on">Share on</string>
-  <string name="public_str">Public</string>
-  <string name="switch_buy">Buy</string>
-  <string name="switch_sell">Sell</string>
-  <string name="usd_price_unit_left">= US$</string>
 
   <!-- alert message -->
   <string name="ask_for_email">Please enter your email address:</string>

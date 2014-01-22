@@ -25,6 +25,7 @@ import com.tradehero.th.billing.googleplay.THIABPurchaseFetcher;
 import com.tradehero.th.billing.googleplay.THIABPurchaseReporter;
 import com.tradehero.th.billing.googleplay.THIABPurchaser;
 import com.tradehero.th.billing.googleplay.THInventoryFetchMilestone;
+import com.tradehero.th.fragments.security.WarrantInfoValueFragment;
 import com.tradehero.th.fragments.settings.ReferralFragment;
 import com.tradehero.th.fragments.security.WarrantSecurityItemView;
 import com.tradehero.th.fragments.web.WebViewFragment;
@@ -191,6 +192,7 @@ import org.ocpsoft.prettytime.PrettyTime;
                 YahooNewsFragment.class,
                 ChartFragment.class,
                 StockInfoValueFragment.class,
+                WarrantInfoValueFragment.class,
                 StockInfoFragment.class,
                 PortfolioListFragment.class,
                 PushablePortfolioListFragment.class,

@@ -122,7 +122,7 @@ public class WarrantSecurityItemView extends SecurityItemView
         {
             if (securityCompactDTO instanceof WarrantDTO && ((WarrantDTO) securityCompactDTO).expiryDate != null)
             {
-                SimpleDateFormat df = new SimpleDateFormat("dd MMM yy", Locale.US);
+                SimpleDateFormat df = new SimpleDateFormat("d MMM yy", Locale.US);
                 expiryDate.setText(df.format(((WarrantDTO) securityCompactDTO).expiryDate));
             }
             else

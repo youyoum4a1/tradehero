@@ -7,7 +7,9 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.view.View;
 import com.tradehero.common.utils.THLog;
+import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
+import com.tradehero.th.api.security.WarrantDTO;
 import com.tradehero.th.utils.yahoo.ChartSize;
 import com.tradehero.th.utils.yahoo.TimeSpan;
 
@@ -17,8 +19,7 @@ public class BuySellBottomStockPagerAdapter extends FragmentStatePagerAdapter
     public static final String TAG = BuySellBottomStockPagerAdapter.class.getSimpleName();
 
     private final Context context;
-
-    private SecurityId securityId;
+    private SecurityCompactDTO securityCompactDTO;
 
     //<editor-fold desc="Constructors">
     public BuySellBottomStockPagerAdapter(Context context, FragmentManager fragmentManager)
@@ -28,53 +29,86 @@ public class BuySellBottomStockPagerAdapter extends FragmentStatePagerAdapter
     }
     //</editor-fold>
 
-    public void linkWith(SecurityId securityId)
+    public void linkWith(SecurityCompactDTO securityCompactDTO)
     {
-        this.securityId = securityId;
+        this.securityCompactDTO = securityCompactDTO;
     }
 
-    public SecurityId getSecurityId()
+    public SecurityCompactDTO getSecurityCompactDTO()
     {
-        return securityId;
+        return securityCompactDTO;
     }
 
     @Override public int getCount()
     {
-        return 3;
+        if (securityCompactDTO == null)
+        {
+            return 0;
+        }
+        else if (securityCompactDTO instanceof WarrantDTO)
+        {
+            return 4;
+        }
+        else
+        {
+            return 3;
+        }
     }
+
+    /**
+     * Equity: Chart / StockInfo / News
+     * Warrant: WarrantInfo / Chart / StockInfo / News
+     *
+     * @param position
+     * @return
+     */
 
     @Override public Fragment getItem(int position)
     {
         Fragment fragment;
         Bundle args = new Bundle();
-        if (securityId != null)
+        args.putBundle(AbstractSecurityInfoFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityCompactDTO.getSecurityId().getArgs());
+
+        if (securityCompactDTO instanceof WarrantDTO && position == 0)
         {
-            args.putBundle(AbstractSecurityInfoFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
+            fragment = new WarrantInfoValueFragment();
         }
-
-        switch(position)
+        else
         {
-            case 0:
-                fragment = new ChartFragment();
-                args.putInt(ChartFragment.BUNDLE_KEY_TIME_SPAN_BUTTON_SET_VISIBILITY, View.GONE);
-                args.putString(ChartFragment.BUNDLE_KEY_TIME_SPAN_STRING, TimeSpan.month3.name());
-                args.putString(ChartFragment.BUNDLE_KEY_CHART_SIZE, ChartSize.large.name()); // TODO have a util class that decides on size
-                break;
-            case 1:
-                fragment = new StockInfoValueFragment();
-                break;
-            case 2:
-                fragment = new YahooNewsFragment();
-                break;
+            if (securityCompactDTO instanceof WarrantDTO)
+            {
+                position--;
+            }
 
-            default:
-                THLog.w(TAG, "Not supported index " + position);
-                throw new UnsupportedOperationException("Not implemented");
+            switch(position)
+            {
+                case 0:
+                    fragment = new ChartFragment();
+                    populateForChartFragment(args);
+                    break;
+                case 1:
+                    fragment = new StockInfoValueFragment();
+                    break;
+                case 2:
+                    fragment = new YahooNewsFragment();
+                    break;
+
+                default:
+                    THLog.w(TAG, "Not supported index " + position);
+                    throw new UnsupportedOperationException("Not implemented");
+            }
         }
 
         fragment.setArguments(args);
         fragment.setRetainInstance(false);
         return fragment;
+    }
+
+    private void populateForChartFragment(Bundle args)
+    {
+        args.putInt(ChartFragment.BUNDLE_KEY_TIME_SPAN_BUTTON_SET_VISIBILITY, View.GONE);
+        args.putString(ChartFragment.BUNDLE_KEY_TIME_SPAN_STRING, TimeSpan.month3.name());
+        args.putString(ChartFragment.BUNDLE_KEY_CHART_SIZE, ChartSize.large.name()); // TODO have a util class that decides on size
     }
 
     @Override public int getItemPosition(Object object)

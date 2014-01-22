@@ -453,7 +453,6 @@ public class BuySellFragment extends AbstractBuySellFragment
         {
             //displayExchangeSymbol();
             displayStockChartButton();
-            displayBottomViewPager();
         }
     }
 
@@ -466,6 +465,7 @@ public class BuySellFragment extends AbstractBuySellFragment
             displayPricingBidAskView();
             displayTradeQuantityView();
             displayStockName();
+            displayBottomViewPager();
             storeImageUrlInImageViews();
             loadImages();
         }
@@ -653,9 +653,10 @@ public class BuySellFragment extends AbstractBuySellFragment
         BuySellBottomStockPagerAdapter adapter = bottomViewPagerAdapter;
         if (adapter != null)
         {
-            if (securityId != null && !securityId.equals(adapter.getSecurityId()))
+            SecurityCompactDTO adapterDTO = adapter.getSecurityCompactDTO();
+            if (securityId != null && (adapterDTO == null || !securityId.equals(adapterDTO.getSecurityId())))
             {
-                adapter.linkWith(securityId);
+                adapter.linkWith(securityCompactDTO);
 
                 ViewPager viewPager = mBottomViewPager;
                 if (viewPager != null)
