@@ -19,12 +19,13 @@ public class LeaderboardManager
     public LeaderboardDTO firstOrDefault(Query query, boolean forceReload) throws IOException
     {
         List<LeaderboardDTO> dtos = getLeaderboards(query, forceReload);
-        return (dtos != null && dtos.size()>0) ? dtos.get(0) : null;
+        return (dtos != null && dtos.size() > 0) ? dtos.get(0) : null;
     }
 
     public List<LeaderboardDTO> getLeaderboards(Query query, boolean forceReload) throws IOException
     {
         leaderboardStore.setQuery(query);
+        // TODO This is not thread-safe; the query could have been changed between these 2 calls.
         return forceReload ? dbCache.requestAndStore(leaderboardStore) : dbCache.loadOrRequest(leaderboardStore);
     }
 }

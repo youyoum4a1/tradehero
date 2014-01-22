@@ -1,0 +1,121 @@
+package com.tradehero.th.persistence.leaderboard;
+
+import android.support.v4.util.LruCache;
+import com.tradehero.common.persistence.PartialDTOCache;
+import com.tradehero.th.api.leaderboard.LeaderboardDTO;
+import com.tradehero.th.api.leaderboard.LeaderboardKey;
+import com.tradehero.th.api.leaderboard.LeaderboardUserDTOUtil;
+import com.tradehero.th.api.leaderboard.LeaderboardUserId;
+import com.tradehero.th.api.security.SecurityCompactDTO;
+import dagger.Lazy;
+import java.util.Date;
+import java.util.List;
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
+/** Created with IntelliJ IDEA. User: xavier Date: 10/3/13 Time: 4:47 PM To change this template use File | Settings | File Templates. */
+@Singleton public class LeaderboardCache extends PartialDTOCache<LeaderboardKey, LeaderboardDTO>
+{
+    public static final String TAG = LeaderboardCache.class.getSimpleName();
+    public static final int DEFAULT_MAX_SIZE = 1000;
+
+    // We need to compose here, instead of inheritance, otherwise we get a compile error regarding erasure on put and put.
+    private LruCache<LeaderboardKey, LeaderboardCache.LeaderboardCutDTO> lruCache;
+    @Inject protected Lazy<LeaderboardUserCache> leaderboardUserCache;
+    @Inject protected LeaderboardUserDTOUtil leaderboardUserDTOUtil;
+
+    //<editor-fold desc="Constructors">
+    @Inject public LeaderboardCache()
+    {
+        this(DEFAULT_MAX_SIZE);
+    }
+
+    public LeaderboardCache(int maxSize)
+    {
+        super();
+        lruCache = new LruCache<>(maxSize);
+    }
+    //</editor-fold>
+
+    protected LeaderboardDTO fetch(LeaderboardKey key) throws Throwable
+    {
+        throw new IllegalStateException("There is no fetch on this cache");
+    }
+
+    @Override public LeaderboardDTO get(LeaderboardKey key)
+    {
+        LeaderboardCutDTO leaderboardCutDTO = this.lruCache.get(key);
+        if (leaderboardCutDTO == null)
+        {
+            return null;
+        }
+        return leaderboardCutDTO.create(leaderboardUserCache.get());
+    }
+
+    @Override public LeaderboardDTO put(LeaderboardKey key, LeaderboardDTO value)
+    {
+        LeaderboardDTO previous = null;
+
+        LeaderboardCutDTO previousCut = lruCache.put(
+                key,
+                new LeaderboardCutDTO(
+                        value,
+                        leaderboardUserCache.get(),
+                        leaderboardUserDTOUtil));
+
+        if (previousCut != null)
+        {
+            previous = previousCut.create(leaderboardUserCache.get());
+        }
+
+        return previous;
+    }
+
+    @Override public void invalidate(LeaderboardKey key)
+    {
+        lruCache.remove(key);
+    }
+
+    @Override public void invalidateAll()
+    {
+        lruCache.evictAll();
+    }
+
+    // The purpose of this class is to save on memory usage by cutting out the elements that already enjoy their own cache.
+    // It is static so as not to keep a link back to the cache instance.
+    private static class LeaderboardCutDTO
+    {
+        public int id;
+        public String name;
+        public List<LeaderboardUserId> userIds;
+        public int userIsAtPositionZeroBased;
+        public Date markUtc;
+        
+
+        public LeaderboardCutDTO(
+                LeaderboardDTO leaderboardDTO,
+                LeaderboardUserCache leaderboardUserCache,
+                LeaderboardUserDTOUtil leaderboardUserDTOUtil)
+        {
+            this.id = leaderboardDTO.id;
+            this.name = leaderboardDTO.name;
+
+            leaderboardUserCache.put(leaderboardUserDTOUtil.map(leaderboardDTO.users));
+            userIds = leaderboardUserDTOUtil.getIds(leaderboardDTO.users);
+
+            this.userIsAtPositionZeroBased = leaderboardDTO.userIsAtPositionZeroBased;
+            this.markUtc = leaderboardDTO.markUtc;
+        }
+
+        public LeaderboardDTO create(LeaderboardUserCache leaderboardUserCache)
+        {
+            return new LeaderboardDTO(
+                    id,
+                    name,
+                    leaderboardUserCache.get(userIds),
+                    userIsAtPositionZeroBased,
+                    markUtc
+            );
+        }
+    }
+}

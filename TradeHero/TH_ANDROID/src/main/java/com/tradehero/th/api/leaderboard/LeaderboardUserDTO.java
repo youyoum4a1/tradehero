@@ -57,6 +57,11 @@ public class LeaderboardUserDTO extends UserBaseDTO
         super();
     }
 
+    public LeaderboardUserId getLeaderboardUserId()
+    {
+        return new LeaderboardUserId(lbmuId);
+    }
+
     public String getHeroQuotientFormatted()
     {
         if (starRating == null)
