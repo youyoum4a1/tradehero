@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.trade;
 
 import android.os.CountDownTimer;
+import com.tradehero.common.utils.IOUtils;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.api.SignatureContainer;
 import com.tradehero.th.api.quote.QuoteDTO;
@@ -9,15 +10,14 @@ import com.tradehero.th.network.service.QuoteServiceWrapper;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
 import java.io.IOException;
-import java.io.StringWriter;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
-import org.apache.commons.io.IOUtils;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+import retrofit.mime.TypedInput;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/8/13 Time: 4:49 PM To change this template use File | Settings | File Templates. */
 public class FreshQuoteHolder
@@ -199,12 +199,15 @@ public class FreshQuoteHolder
         QuoteDTO quoteDTO = null;
         if (signedQuoteDTO != null && signedQuoteDTO.signedObject != null)
         {
+            TypedInput body = response.getBody();
             try
             {
-                StringWriter writer = new StringWriter();
-                IOUtils.copy(response.getBody().in(), writer, "UTF-8");
-                signedQuoteDTO.signedObject.rawResponse = writer.toString();
-                quoteDTO = signedQuoteDTO.signedObject;
+                if (body != null && body.mimeType() != null)
+                {
+                    byte[] responseBytes = IOUtils.streamToBytes(body.in());
+                    signedQuoteDTO.signedObject.rawResponse = new String(responseBytes);
+                    quoteDTO = signedQuoteDTO.signedObject;
+                }
             }
             catch (IOException e)
             {
