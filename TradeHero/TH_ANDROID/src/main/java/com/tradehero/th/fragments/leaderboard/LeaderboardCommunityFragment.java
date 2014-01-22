@@ -29,6 +29,7 @@ import com.tradehero.th.api.leaderboard.LeaderboardDefListKey;
 import com.tradehero.th.api.leaderboard.LeaderboardDefMostSkilledListKey;
 import com.tradehero.th.api.leaderboard.LeaderboardDefSectorListKey;
 import com.tradehero.th.api.leaderboard.LeaderboardDefTimePeriodListKey;
+import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
 import com.tradehero.th.base.THUser;
 import com.tradehero.th.fragments.web.WebViewFragment;
@@ -435,11 +436,12 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
     {
         @Override public void onClick(View view)
         {
-            if (firstProvider != null && /*REMOVE*/firstProvider.isUserEnrolled)
+            if (firstProvider != null && firstProvider.isUserEnrolled)
             {
                 Bundle args = new Bundle();
                 args.putBundle(MainCompetitionFragment.BUNDLE_KEY_PROVIDER_ID, firstProvider.getProviderId().getArgs());
-                args.putBundle(MainCompetitionFragment.BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE, firstProvider.associatedPortfolio.getPortfolioId().getArgs());
+                OwnedPortfolioId associatedPortfolioId = new OwnedPortfolioId(currentUserBaseKeyHolder.getCurrentUserBaseKey(), firstProvider.associatedPortfolio);
+                args.putBundle(MainCompetitionFragment.BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE, associatedPortfolioId.getArgs());
                 navigator.pushFragment(MainCompetitionFragment.class, args);
             }
             else if (firstProvider != null)
