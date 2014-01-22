@@ -7,7 +7,6 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.actionbarsherlock.view.SubMenu;
 import com.tradehero.th.R;
-import com.tradehero.th.api.leaderboard.LeaderboardDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardDefDTO;
 import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.fragments.base.DashboardFragment;
@@ -17,8 +16,11 @@ import javax.inject.Inject;
 public class BaseLeaderboardFragment extends DashboardFragment
         implements BaseFragment.TabBarVisibilityInformer
 {
-    public static final String TITLE = "LEADERBOARD_DEF_TITLE";
-    public static final String CURRENT_SORT_TYPE = BaseLeaderboardFragment.class.getName() + ".currentSortType";
+    public static final String BUNDLE_KEY_LEADERBOARD_ID = BaseLeaderboardFragment.class.getName() + ".leaderboardId";
+    public static final String BUNDLE_KEY_LEADERBOARD_DEF_TITLE = BaseLeaderboardFragment.class.getName() + ".leaderboardDefTitle";
+    public static final String BUNDLE_KEY_LEADERBOARD_DEF_DESC = BaseLeaderboardFragment.class.getName() + ".leaderboardDefDesc";
+    public static final String BUNDLE_KEY_CURRENT_SORT_TYPE = BaseLeaderboardFragment.class.getName() + ".currentSortType";
+    public static final String BUNDLE_KEY_SORT_OPTION_FLAGS = BaseLeaderboardFragment.class.getName() + ".sortOptionFlags";
 
     @Inject protected LeaderboardSortHelper leaderboardSortHelper;
 
@@ -29,12 +31,11 @@ public class BaseLeaderboardFragment extends DashboardFragment
     protected void pushLeaderboardListViewFragment(LeaderboardDefDTO dto)
     {
         Bundle bundle = new Bundle(getArguments());
-        bundle.putInt(LeaderboardDTO.LEADERBOARD_ID, dto.id);
-        bundle.putString(BaseLeaderboardFragment.TITLE, dto.name);
-        bundle.putInt(LeaderboardMarkUserListViewFragment.CURRENT_SORT_TYPE,
-                getCurrentSortType() != null ? getCurrentSortType().getFlag() : dto.getDefaultSortType().getFlag());
-        bundle.putString(LeaderboardDefDTO.LEADERBOARD_DEF_DESC, dto.desc);
-        bundle.putInt(LeaderboardSortType.BUNDLE_FLAG, dto.getSortOptionFlags());
+        bundle.putInt(BUNDLE_KEY_LEADERBOARD_ID, dto.id);
+        bundle.putString(BUNDLE_KEY_LEADERBOARD_DEF_TITLE, dto.name);
+        bundle.putInt(BUNDLE_KEY_CURRENT_SORT_TYPE, getCurrentSortType() != null ? getCurrentSortType().getFlag() : dto.getDefaultSortType().getFlag());
+        bundle.putString(BUNDLE_KEY_LEADERBOARD_DEF_DESC, dto.desc);
+        bundle.putInt(BUNDLE_KEY_SORT_OPTION_FLAGS, dto.getSortOptionFlags());
 
         switch (dto.id)
         {
@@ -63,7 +64,7 @@ public class BaseLeaderboardFragment extends DashboardFragment
         Bundle args = getArguments();
         if (args != null)
         {
-            String title = args.getString(TITLE);
+            String title = args.getString(BUNDLE_KEY_LEADERBOARD_DEF_TITLE);
             actionBar.setTitle(title == null ? "" : title);
         }
     }
@@ -94,7 +95,7 @@ public class BaseLeaderboardFragment extends DashboardFragment
 
     private int getSortMenuFlag()
     {
-        return getArguments().getInt(LeaderboardSortType.BUNDLE_FLAG);
+        return getArguments().getInt(BUNDLE_KEY_SORT_OPTION_FLAGS);
     }
 
     protected void setCurrentSortType(LeaderboardSortType selectedSortType)
@@ -120,7 +121,7 @@ public class BaseLeaderboardFragment extends DashboardFragment
 
     protected void initSortTypeFromArguments()
     {
-        setCurrentSortType(LeaderboardSortType.byFlag(getArguments().getInt(CURRENT_SORT_TYPE)));
+        setCurrentSortType(LeaderboardSortType.byFlag(getArguments().getInt(BUNDLE_KEY_CURRENT_SORT_TYPE)));
     }
 
     protected void onCurrentSortTypeChanged()

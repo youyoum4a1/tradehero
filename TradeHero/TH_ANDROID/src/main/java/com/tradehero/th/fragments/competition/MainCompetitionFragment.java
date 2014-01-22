@@ -28,6 +28,7 @@ import com.tradehero.th.fragments.competition.zone.dto.CompetitionZonePortfolioD
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneTradeNowDTO;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneVideoDTO;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneWizardDTO;
+import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserListViewFragment;
 import com.tradehero.th.fragments.position.PositionListFragment;
 import com.tradehero.th.fragments.web.WebViewFragment;
 import com.tradehero.th.models.intent.THIntent;
@@ -291,6 +292,7 @@ public class MainCompetitionFragment extends CompetitionFragment
     private void pushLeaderboardElement(CompetitionZoneLeaderboardDTO competitionZoneDTO)
     {
         // TODO
+        Bundle args = new Bundle();
     }
 
     private void pushLegalElement(CompetitionZoneLegalDTO competitionZoneDTO)

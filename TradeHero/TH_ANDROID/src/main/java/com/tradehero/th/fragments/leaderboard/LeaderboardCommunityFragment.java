@@ -31,7 +31,6 @@ import com.tradehero.th.api.leaderboard.LeaderboardDefSectorListKey;
 import com.tradehero.th.api.leaderboard.LeaderboardDefTimePeriodListKey;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
-import com.tradehero.th.base.THUser;
 import com.tradehero.th.fragments.web.WebViewFragment;
 import com.tradehero.th.fragments.competition.MainCompetitionFragment;
 import com.tradehero.th.models.intent.THIntent;
@@ -218,7 +217,7 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
         int defaultSortFlags =
                 //LeaderboardSortType.HeroQuotient.getFlag() |
                 LeaderboardSortType.Roi.getFlag();
-        getArguments().putInt(LeaderboardSortType.BUNDLE_FLAG, defaultSortFlags);
+        getArguments().putInt(BUNDLE_KEY_SORT_OPTION_FLAGS, defaultSortFlags);
 
         super.onCreateOptionsMenu(menu, inflater);
 
@@ -315,16 +314,16 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
     {
         Bundle bundle = new Bundle(getArguments());
         (new LeaderboardDefSectorListKey()).putParameters(bundle);
-        bundle.putString(LeaderboardDefListViewFragment.TITLE, getString(R.string.leaderboard_sector));
-        bundle.putInt(BaseLeaderboardFragment.CURRENT_SORT_TYPE, getCurrentSortType().getFlag());
+        bundle.putString(LeaderboardDefListViewFragment.BUNDLE_KEY_LEADERBOARD_DEF_TITLE, getString(R.string.leaderboard_sector));
+        bundle.putInt(BaseLeaderboardFragment.BUNDLE_KEY_CURRENT_SORT_TYPE, getCurrentSortType().getFlag());
         getNavigator().pushFragment(LeaderboardDefListViewFragment.class, bundle);
     }
 
     private void pushLeaderboardDefExchange()
     {
         Bundle bundle = new LeaderboardDefExchangeListKey().getArgs();
-        bundle.putString(LeaderboardDefListViewFragment.TITLE, getString(R.string.leaderboard_exchange));
-        bundle.putInt(BaseLeaderboardFragment.CURRENT_SORT_TYPE, getCurrentSortType().getFlag());
+        bundle.putString(LeaderboardDefListViewFragment.BUNDLE_KEY_LEADERBOARD_DEF_TITLE, getString(R.string.leaderboard_exchange));
+        bundle.putInt(BaseLeaderboardFragment.BUNDLE_KEY_CURRENT_SORT_TYPE, getCurrentSortType().getFlag());
         getNavigator().pushFragment(LeaderboardDefListViewFragment.class, bundle);
     }
 

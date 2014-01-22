@@ -12,7 +12,6 @@ public enum LeaderboardSortType
     Comments(R.string.comments, R.drawable.sort_comments, R.drawable.sort_comments_white, R.layout.lbmu_item_comments_mode),
     SharpeRatio(R.string.sharpe_ratio, R.drawable.sort_sharpe, R.drawable.sort_sharpe_white, R.layout.lbmu_item_sharpe_mode);
 
-    public static final String BUNDLE_FLAG = "LEADERBOARD_SORT_FLAG";
     public static final String TAG = "LEADERBOARD_SORT_TYPE";
 
     public static LeaderboardSortType DefaultSortType = Roi;

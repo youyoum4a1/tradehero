@@ -26,7 +26,6 @@ import org.ocpsoft.prettytime.PrettyTime;
 public class LeaderboardMarkUserListViewFragment extends BaseLeaderboardFragment
         implements SortTypeChangedListener, WithTutorial
 {
-
     @Inject protected Provider<PrettyTime> prettyTime;
 
     private LeaderboardMarkUserListAdapter leaderboardMarkUserListAdapter;
@@ -51,7 +50,7 @@ public class LeaderboardMarkUserListViewFragment extends BaseLeaderboardFragment
 
     private void initHeaderView(View headerView)
     {
-        String leaderboardDefDesc = getArguments().getString(LeaderboardDefDTO.LEADERBOARD_DEF_DESC);
+        String leaderboardDefDesc = getArguments().getString(BUNDLE_KEY_LEADERBOARD_DEF_DESC);
 
         TextView leaderboardMarkUserTimePeriod = (TextView) headerView.findViewById(R.id.leaderboard_time_period);
         if (leaderboardDefDesc != null)
@@ -70,7 +69,7 @@ public class LeaderboardMarkUserListViewFragment extends BaseLeaderboardFragment
     {
         super.onActivityCreated(savedInstanceState);
 
-        int leaderboardId = getArguments().getInt(LeaderboardDTO.LEADERBOARD_ID);
+        int leaderboardId = getArguments().getInt(BUNDLE_KEY_LEADERBOARD_ID);
 
         leaderboardMarkUserListAdapter = new LeaderboardMarkUserListAdapter(
                 getActivity(), getActivity().getLayoutInflater(), leaderboardId, getCurrentSortType().getLayoutResourceId());
@@ -78,7 +77,7 @@ public class LeaderboardMarkUserListViewFragment extends BaseLeaderboardFragment
         {
             @Override public ListLoader<LeaderboardUserDTO> onCreateLoader(Bundle args)
             {
-                int leaderboardId = args.getInt(LeaderboardDTO.LEADERBOARD_ID);
+                int leaderboardId = args.getInt(BUNDLE_KEY_LEADERBOARD_ID);
                 boolean includeFoF = args.getBoolean(LeaderboardDTO.INCLUDE_FOF);
                 LeaderboardMarkUserLoader leaderboardMarkUserLoader = new LeaderboardMarkUserLoader(getActivity(), leaderboardId, getCurrentSortType(), includeFoF);
                 leaderboardMarkUserLoader.setPerPage(Constants.LEADERBOARD_MARK_USER_ITEM_PER_PAGE);
