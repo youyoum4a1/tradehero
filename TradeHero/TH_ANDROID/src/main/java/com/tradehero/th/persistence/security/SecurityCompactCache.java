@@ -2,6 +2,7 @@ package com.tradehero.th.persistence.security;
 
 import com.tradehero.th.api.position.SecurityPositionDetailDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
+import com.tradehero.th.api.security.SecurityCompactDTOFactory;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.common.persistence.StraightDTOCache;
 import com.tradehero.th.network.service.SecurityServiceWrapper;
@@ -20,7 +21,8 @@ import javax.inject.Singleton;
 
     @Inject protected Lazy<SecurityServiceWrapper> securityServiceWrapper;
     @Inject protected Lazy<SecurityPositionDetailCache> securityPositionDetailCache;
-    @Inject protected Lazy<SecurityIdCache> securityIdCache;
+    @Inject protected SecurityIdCache securityIdCache;
+    @Inject protected SecurityCompactDTOFactory securityCompactDTOFactory;
 
     //<editor-fold desc="Constructors">
     @Inject public SecurityCompactCache()
@@ -66,9 +68,10 @@ import javax.inject.Singleton;
     @Override public SecurityCompactDTO put(SecurityId key, SecurityCompactDTO value)
     {
         // We save the correspondence between int id and exchange/symbol for future reference
-        securityIdCache.get().put(value.getSecurityIntegerId(), key);
+        securityIdCache.put(value.getSecurityIntegerId(), key);
 
-        return super.put(key, value);
+        // We make sure the proper type is recreated on the fly.
+        return super.put(key, securityCompactDTOFactory.clonePerType(value));
     }
 
     public List<SecurityCompactDTO> put(List<SecurityCompactDTO> values)

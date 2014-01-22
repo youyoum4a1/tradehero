@@ -40,6 +40,7 @@ import retrofit.RetrofitError;
         }
     }
 
+    //<editor-fold desc="Get One User Portfolio Positions List">
     public GetPositionsDTO getPositions(OwnedPortfolioId ownedPortfolioId)
         throws RetrofitError
     {
@@ -127,4 +128,5 @@ import retrofit.RetrofitError;
             this.positionService.getPositions(perPagedOwnedPortfolioId.userId, perPagedOwnedPortfolioId.portfolioId, perPagedOwnedPortfolioId.page, perPagedOwnedPortfolioId.perPage, callback);
         }
     }
+    //</editor-fold>
 }

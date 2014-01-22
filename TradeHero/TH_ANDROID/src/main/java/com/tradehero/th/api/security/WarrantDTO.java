@@ -50,4 +50,53 @@ public class WarrantDTO extends SecurityCompactDTO
         return this.issuerName != null &&
                 (this.issuerName.toLowerCase().contains("mb") || this.issuerName.toLowerCase().contains("mbl"));
     }
+
+    @Override public String toString()
+    {
+        return "WarrantDTO{" +
+                "id=" + id +
+                ", symbol='" + symbol + '\'' +
+                ", securityType=" + securityType +
+                ", name='" + name + '\'' +
+                ", exchange='" + exchange + '\'' +
+                ", yahooSymbol='" + yahooSymbol + '\'' +
+                ", currencyDisplay='" + currencyDisplay + '\'' +
+                ", currencyISO='" + currencyISO + '\'' +
+                ", marketCap=" + marketCap +
+                ", lastPrice=" + lastPrice +
+                ", imageBlobUrl='" + imageBlobUrl + '\'' +
+                //", lastPriceDateEST=" + lastPriceDateEST +
+                ", lastPriceDateAndTimeUtc=" + lastPriceDateAndTimeUtc +
+                ", toUSDRate=" + toUSDRate +
+                ", toUSDRateDate=" + toUSDRateDate +
+                ", active=" + active +
+                ", askPrice=" + askPrice +
+                ", bidPrice=" + bidPrice +
+                ", volume=" + volume +
+                ", averageDailyVolume=" + averageDailyVolume +
+                ", previousClose=" + previousClose +
+                ", open=" + open +
+                ", high=" + high +
+                ", low=" + low +
+                ", pe=" + pe +
+                ", eps=" + eps +
+                ", marketOpen=" + marketOpen +
+                ", pc50DMA=" + pc50DMA +
+                ", pc200DMA=" + pc200DMA +
+                ", exchangeTimezoneMsftName='" + exchangeTimezoneMsftName + '\'' +
+                ", exchangeOpeningTimeLocal='" + exchangeOpeningTimeLocal + '\'' +
+                ", exchangeClosingTimeLocal='" + exchangeClosingTimeLocal + '\'' +
+                ", secTypeDesc='" + secTypeDesc + '\'' +
+
+                ", warrantType='" + warrantType + '\'' +
+                ", expiryDate=" + expiryDate +
+                ", strikePrice=" + strikePrice +
+                ", strikePriceCcy='" + strikePriceCcy + '\'' +
+                ", issuerName='" + issuerName + '\'' +
+                ", underlyingName='" + underlyingName + '\'' +
+                ", externalAppURL='" + externalAppURL + '\'' +
+                ", fallbackExternalURL='" + fallbackExternalURL + '\'' +
+                ", extras={" + formatExtras(", ").toString() + "}" +
+                '}';
+    }
 }

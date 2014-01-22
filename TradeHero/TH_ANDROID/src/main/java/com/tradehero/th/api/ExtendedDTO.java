@@ -103,4 +103,23 @@ public class ExtendedDTO implements DTO
             return defaultValue;
         }
     }
+
+    protected StringBuilder formatExtras(String repeatSeparator)
+    {
+        StringBuilder builder = new StringBuilder();
+        String separator = "";
+        String equals = "=";
+        for (Map.Entry<String, Object> entry: extra.entrySet())
+        {
+            builder.append(separator);
+            builder.append(entry.getKey()).append(equals).append(entry.getValue());
+            separator = repeatSeparator;
+        }
+        return builder;
+    }
+
+    @Override public String toString()
+    {
+        return "ExtendedDTO{" + formatExtras(", ").toString() + "}";
+    }
 }

@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
@@ -12,7 +13,9 @@ import com.tradehero.th.api.competition.BasicProviderSecurityListType;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.competition.ProviderSecurityListType;
+import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.fragments.security.SecurityListFragment;
+import com.tradehero.th.fragments.trade.BuySellFragment;
 import com.tradehero.th.fragments.trending.SecurityItemViewAdapter;
 import com.tradehero.th.persistence.competition.ProviderCache;
 import javax.inject.Inject;
@@ -61,6 +64,16 @@ public class ProviderSecurityListFragment extends SecurityListFragment
         View view = inflater.inflate(R.layout.fragment_provider_security_list, container, false);
         initViews(view);
         return view;
+    }
+
+    @Override protected void initViews(View view)
+    {
+        super.initViews(view);
+
+        if (securityListView != null)
+        {
+            securityListView.setOnItemClickListener(new OnSecurityViewClickListener());
+        }
     }
 
     @Override public void onStart()
@@ -141,6 +154,21 @@ public class ProviderSecurityListFragment extends SecurityListFragment
         {
             THToast.show(getString(R.string.error_fetch_provider_info));
             THLog.e(TAG, "Error fetching the provider info " + key, error);
+        }
+    }
+
+    private class OnSecurityViewClickListener implements AdapterView.OnItemClickListener
+    {
+        @Override public void onItemClick(AdapterView<?> parent, View view, int position, long id)
+        {
+            SecurityId securityId = (SecurityId) parent.getItemAtPosition(position);
+            Bundle args = new Bundle();
+            args.putBundle(BuySellFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
+            args.putBundle(BuySellFragment.BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE, getApplicablePortfolioId().getArgs());
+            // TODO use other positions
+            navigator.pushFragment(BuySellFragment.class, args);
+
+            // startActivity(new SecurityBuyIntent(securityId)); // Example using external navigation
         }
     }
 }

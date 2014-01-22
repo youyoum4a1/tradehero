@@ -176,4 +176,44 @@ public class SecurityCompactDTO extends ExtendedDTO
 
         return null;
     }
+
+    @Override public String toString()
+    {
+        return "SecurityCompactDTO{" +
+                "id=" + id +
+                ", symbol='" + symbol + '\'' +
+                ", securityType=" + securityType +
+                ", name='" + name + '\'' +
+                ", exchange='" + exchange + '\'' +
+                ", yahooSymbol='" + yahooSymbol + '\'' +
+                ", currencyDisplay='" + currencyDisplay + '\'' +
+                ", currencyISO='" + currencyISO + '\'' +
+                ", marketCap=" + marketCap +
+                ", lastPrice=" + lastPrice +
+                ", imageBlobUrl='" + imageBlobUrl + '\'' +
+                ", lastPriceDateEST=" + lastPriceDateEST +
+                ", lastPriceDateAndTimeUtc=" + lastPriceDateAndTimeUtc +
+                ", toUSDRate=" + toUSDRate +
+                ", toUSDRateDate=" + toUSDRateDate +
+                ", active=" + active +
+                ", askPrice=" + askPrice +
+                ", bidPrice=" + bidPrice +
+                ", volume=" + volume +
+                ", averageDailyVolume=" + averageDailyVolume +
+                ", previousClose=" + previousClose +
+                ", open=" + open +
+                ", high=" + high +
+                ", low=" + low +
+                ", pe=" + pe +
+                ", eps=" + eps +
+                ", marketOpen=" + marketOpen +
+                ", pc50DMA=" + pc50DMA +
+                ", pc200DMA=" + pc200DMA +
+                ", exchangeTimezoneMsftName='" + exchangeTimezoneMsftName + '\'' +
+                ", exchangeOpeningTimeLocal='" + exchangeOpeningTimeLocal + '\'' +
+                ", exchangeClosingTimeLocal='" + exchangeClosingTimeLocal + '\'' +
+                ", secTypeDesc='" + secTypeDesc + '\'' +
+                ", extras={" + formatExtras(", ").toString() + "}" +
+                '}';
+    }
 }
