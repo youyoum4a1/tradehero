@@ -54,6 +54,7 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
     private static final String TAG = LeaderboardCommunityFragment.class.getName();
 
     @Inject protected Lazy<LeaderboardDefListCache> leaderboardDefListCache;
+    protected DTOCache.GetOrFetchTask<LeaderboardDefListKey, LeaderboardDefKeyList> leaderboardDefListCacheFetchTask;
     @Inject protected Lazy<LeaderboardDefCache> leaderboardDefCache;
     @Inject protected Lazy<ProviderListCache> providerListCache;
     @Inject protected Lazy<ProviderCache> providerCache;
@@ -94,12 +95,12 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
     {
         super.onStart();
         this.providerListRetrievedMilestone.launch();
+        prepareAdapters();
     }
 
     @Override public void onResume()
     {
         super.onResume();
-        prepareAdapters();
 
         // We came back into view so we have to forget the web fragment
         if (this.webFragment != null)
@@ -115,9 +116,20 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
         sectorListView.setAdapter(null);
     }
 
+    private void detachLeaderboardDefListCacheFetchTask()
+    {
+        if (leaderboardDefListCacheFetchTask != null)
+        {
+            leaderboardDefListCacheFetchTask.setListener(null);
+        }
+        leaderboardDefListCacheFetchTask= null;
+    }
+
     private void prepareAdapters()
     {
-        leaderboardDefListCache.get().getOrFetch(new LeaderboardDefMostSkilledListKey(), false, this).execute();
+        detachLeaderboardDefListCacheFetchTask();
+        leaderboardDefListCacheFetchTask = leaderboardDefListCache.get().getOrFetch(new LeaderboardDefMostSkilledListKey(), false, this);
+        leaderboardDefListCacheFetchTask.execute();
     }
 
     private void initViews(View view)
@@ -162,6 +174,7 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
     @Override public void onStop()
     {
         super.onStop();
+        detachLeaderboardDefListCacheFetchTask();
         fetched = false;
     }
 

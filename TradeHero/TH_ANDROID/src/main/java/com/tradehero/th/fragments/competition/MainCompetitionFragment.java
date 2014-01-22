@@ -19,6 +19,7 @@ import com.tradehero.th.api.competition.CompetitionIdList;
 import com.tradehero.th.api.competition.ProviderConstants;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderId;
+import com.tradehero.th.api.leaderboard.LeaderboardDefDTO;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneDTO;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneLeaderboardDTO;
@@ -291,8 +292,14 @@ public class MainCompetitionFragment extends CompetitionFragment
 
     private void pushLeaderboardElement(CompetitionZoneLeaderboardDTO competitionZoneDTO)
     {
-        // TODO
+        LeaderboardDefDTO leaderboardDefDTO = competitionZoneDTO.competitionDTO.leaderboard;
         Bundle args = new Bundle();
+        args.putInt(LeaderboardMarkUserListViewFragment.BUNDLE_KEY_LEADERBOARD_ID, leaderboardDefDTO.id);
+        args.putString(LeaderboardMarkUserListViewFragment.BUNDLE_KEY_LEADERBOARD_DEF_TITLE, leaderboardDefDTO.name);
+        args.putInt(LeaderboardMarkUserListViewFragment.BUNDLE_KEY_CURRENT_SORT_TYPE, leaderboardDefDTO.getDefaultSortType().getFlag());
+        args.putString(LeaderboardMarkUserListViewFragment.BUNDLE_KEY_LEADERBOARD_DEF_DESC, leaderboardDefDTO.desc);
+        args.putInt(LeaderboardMarkUserListViewFragment.BUNDLE_KEY_SORT_OPTION_FLAGS, leaderboardDefDTO.getSortOptionFlags());
+        navigator.pushFragment(LeaderboardMarkUserListViewFragment.class, args);
     }
 
     private void pushLegalElement(CompetitionZoneLegalDTO competitionZoneDTO)
