@@ -90,6 +90,10 @@ public class UserFriendDTOView extends RelativeLayout implements DTOView<UserFri
         {
             userFriendName.setText(userFriendDTO.name);
         }
+        else
+        {
+            userFriendName.setText("");
+        }
     }
 
     private void displayFriendAvatar()
@@ -100,6 +104,10 @@ public class UserFriendDTOView extends RelativeLayout implements DTOView<UserFri
             picasso.get().load(avatarUrl)
                     .transform(new RoundedShapeTransformation())
                     .into(userFriendAvatar);
+        }
+        else
+        {
+            userFriendAvatar.setImageResource(R.drawable.avatar);
         }
     }
 }

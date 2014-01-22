@@ -37,9 +37,11 @@
       android:layout_height="wrap_content"
       android:text="@string/refer_friend_empty_view"
       android:gravity="center_horizontal"
+      android:visibility="gone"
       />
 
   <Button
+      android:id="@+id/refer_friend_invite_button"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:text="@string/send_invitations"

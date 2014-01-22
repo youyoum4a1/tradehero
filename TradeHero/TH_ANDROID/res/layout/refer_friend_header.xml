@@ -9,31 +9,42 @@
   <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
       android:gravity="center"
       >
-    <TextView
-        android:layout_width="wrap_content"
+    <ToggleButton
+        android:layout_width="100sp"
         android:layout_height="wrap_content"
         android:drawableTop="@drawable/invite_friend_facebook_large"
         android:text="@null"
         android:padding="@dimen/refer_friend_invite_button_padding"
+        android:textOff="@string/add_all"
+        android:textOn="@string/remove_all"
+        android:background="@color/transparent"
         />
-    <TextView
-        android:layout_width="wrap_content"
+    <ToggleButton
+        android:layout_width="100sp"
         android:layout_height="wrap_content"
         android:drawableTop="@drawable/invite_friend_linked_in_large"
         android:text="@null"
         android:padding="@dimen/refer_friend_invite_button_padding"
+        android:textOff="@string/add_all"
+        android:textOn="@string/remove_all"
+        android:background="@color/transparent"
         />
-    <TextView
-        android:layout_width="wrap_content"
+    <ToggleButton
+        android:layout_width="100sp"
         android:layout_height="wrap_content"
         android:drawableTop="@drawable/invite_friend_contact_large"
         android:text="@null"
         android:padding="@dimen/refer_friend_invite_button_padding"
+        android:textOff="@string/add_all"
+        android:textOn="@string/remove_all"
+        android:background="@color/transparent"
         />
   </LinearLayout>
   <EditText android:layout_width="match_parent" android:layout_height="wrap_content"
       android:hint="@string/search_friends"
       android:layout_marginLeft="@dimen/invite_friend_horizontal_padding"
       android:layout_marginRight="@dimen/invite_friend_horizontal_padding"
+      android:layout_marginTop="10dp"
+      android:layout_marginBottom="10dp"
       />
 </LinearLayout>

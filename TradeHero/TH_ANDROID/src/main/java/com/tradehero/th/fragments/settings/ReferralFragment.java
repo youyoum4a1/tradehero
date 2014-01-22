@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.Button;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
@@ -29,31 +31,37 @@ public class ReferralFragment extends DashboardFragment
     private FriendListAdapter referFriendListAdapter;
     private ProgressDialog progressDialog;
     private View headerView;
+    private Button inviteFriendButton;
+
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.refer_fragment, container, false);
-        headerView = inflater.inflate(R.layout.refer_friend_header, container, false);
+        headerView = inflater.inflate(R.layout.refer_friend_header, null, false);
         initView(view);
         return view;
     }
 
     private void initView(View view)
     {
+        inviteFriendButton = (Button) view.findViewById(R.id.refer_friend_invite_button);
+
         referFriendListAdapter = createFriendListAdapter();
         StickyListHeadersListView stickyListHeadersListView = (StickyListHeadersListView) view.findViewById(R.id.sticky_list);
 
         View emptyView = view.findViewById(R.id.refer_friend_list_empty_view);
         if (emptyView != null)
         {
-            stickyListHeadersListView.getWrappedList().setEmptyView(emptyView);
+            //stickyListHeadersListView.getWrappedList().setEmptyView(emptyView);
         }
 
-        if (stickyListHeadersListView.getWrappedList().getHeaderViewsCount() == 0)
+        if (stickyListHeadersListView.getHeaderViewsCount() == 0)
         {
-            //stickyListHeadersListView.getWrappedList().addHeaderView(headerView);
+            stickyListHeadersListView.addHeaderView(headerView);
         }
         stickyListHeadersListView.setAdapter(referFriendListAdapter);
+
+        stickyListHeadersListView.getWrappedList().setOnItemSelectedListener(listItemSelectedListener);
     }
 
     private FriendListAdapter createFriendListAdapter()
@@ -119,6 +127,35 @@ public class ReferralFragment extends DashboardFragment
 
         }
     };
+
+    private AdapterView.OnItemSelectedListener listItemSelectedListener = new AdapterView.OnItemSelectedListener()
+    {
+        @Override public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
+        {
+            handleItemSelected();
+        }
+
+        @Override public void onNothingSelected(AdapterView<?> parent)
+        {
+            handleNoItemSelected();
+        }
+    };
+
+    private void handleNoItemSelected()
+    {
+        if (inviteFriendButton != null)
+        {
+            inviteFriendButton.setVisibility(View.GONE);
+        }
+    }
+
+    private void handleItemSelected()
+    {
+        if (inviteFriendButton != null)
+        {
+            inviteFriendButton.setVisibility(View.VISIBLE);
+        }
+    }
 
     //<editor-fold desc="Tab bar informer">
     @Override public boolean isTabBarVisible()

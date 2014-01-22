@@ -174,4 +174,6 @@
   <string name="send_invitations">Send Invitations</string>
   <string name="refer_friend_announcement">Get FREE TradeHero Dollars for each friend who signs up for TradeHero!</string>
   <string name="search_friends">Search Friends</string>
+  <string name="add_all">Add All</string>
+  <string name="remove_all">Remove All</string>
 </resources>

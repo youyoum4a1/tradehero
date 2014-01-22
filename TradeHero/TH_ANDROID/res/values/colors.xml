@@ -22,4 +22,5 @@
   <color name="invite_friend_background_color">#e3e4e6</color>
   <color name="refer_friend_item_background">@color/white</color>
   <color name="invite_friend_announcement_header">#dbd9da</color>
+  <color name="transparent">@android:color/transparent</color>
 </resources>
