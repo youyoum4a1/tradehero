@@ -14,12 +14,16 @@ import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.ProviderConstants;
 import com.tradehero.th.api.competition.ProviderDTO;
+import com.tradehero.th.api.portfolio.DisplayablePortfolioDTO;
+import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.fragments.competition.zone.CompetitionZoneDTO;
 import com.tradehero.th.fragments.competition.zone.CompetitionZoneLegalDTO;
 import com.tradehero.th.fragments.competition.zone.CompetitionZonePortfolioDTO;
 import com.tradehero.th.fragments.competition.zone.CompetitionZoneTradeNowDTO;
 import com.tradehero.th.fragments.competition.zone.CompetitionZoneVideoDTO;
 import com.tradehero.th.fragments.competition.zone.CompetitionZoneWizardDTO;
+import com.tradehero.th.fragments.position.PositionListFragment;
+import com.tradehero.th.fragments.watchlist.WatchlistPositionFragment;
 import com.tradehero.th.fragments.web.WebViewFragment;
 import com.tradehero.th.models.intent.THIntent;
 import com.tradehero.th.models.intent.THIntentPassedListener;
@@ -173,7 +177,7 @@ public class MainCompetitionFragment extends CompetitionFragment
         }
         else if (competitionZoneDTO instanceof CompetitionZonePortfolioDTO)
         {
-
+            pushPortfolioElement((CompetitionZonePortfolioDTO) competitionZoneDTO);
         }
         else if (competitionZoneDTO instanceof CompetitionZoneVideoDTO)
         {
@@ -197,6 +201,18 @@ public class MainCompetitionFragment extends CompetitionFragment
         args.putBundle(ProviderSecurityListFragment.BUNDLE_KEY_PROVIDER_ID, providerId.getArgs());
         args.putBundle(ProviderSecurityListFragment.BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE, userInteractor.getApplicablePortfolioId().getArgs());
         navigator.pushFragment(ProviderSecurityListFragment.class, args);
+    }
+
+    private void pushPortfolioElement(CompetitionZonePortfolioDTO competitionZoneDTO)
+    {
+        // TODO We need to be able to launch async when the portfolio Id is finally not null
+        OwnedPortfolioId portfolioId = userInteractor.getApplicablePortfolioId();
+        if (portfolioId != null)
+        {
+            Bundle args = new Bundle();
+            args.putBundle(PositionListFragment.BUNDLE_KEY_SHOW_PORTFOLIO_ID_BUNDLE, portfolioId.getArgs());
+            navigator.pushFragment(PositionListFragment.class, args);
+        }
     }
 
     private void pushVideoElement(CompetitionZoneVideoDTO competitionZoneDTO)
