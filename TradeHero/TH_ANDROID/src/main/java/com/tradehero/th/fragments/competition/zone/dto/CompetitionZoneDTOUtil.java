@@ -1,12 +1,10 @@
-package com.tradehero.th.fragments.competition.zone;
+package com.tradehero.th.fragments.competition.zone.dto;
 
 import android.content.Context;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.CompetitionDTO;
-import com.tradehero.th.api.competition.CompetitionId;
 import com.tradehero.th.api.competition.ProviderDTO;
-import com.tradehero.th.api.leaderboard.competition.CompetitionLeaderboardDTO;
 import com.tradehero.th.fragments.competition.CompetitionZoneListItemAdapter;
 import java.util.List;
 import javax.inject.Inject;

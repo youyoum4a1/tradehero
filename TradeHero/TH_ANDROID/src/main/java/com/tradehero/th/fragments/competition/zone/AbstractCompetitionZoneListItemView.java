@@ -1,11 +1,11 @@
-package com.tradehero.th.fragments.competition;
+package com.tradehero.th.fragments.competition.zone;
 
 import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.RelativeLayout;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.api.DTOView;
-import com.tradehero.th.fragments.competition.zone.CompetitionZoneDTO;
+import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneDTO;
 
 /**
  * Created by xavier on 1/17/14.

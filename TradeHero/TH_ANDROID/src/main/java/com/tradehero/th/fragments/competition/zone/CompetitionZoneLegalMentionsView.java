@@ -1,17 +1,14 @@
-package com.tradehero.th.fragments.competition;
+package com.tradehero.th.fragments.competition.zone;
 
 import android.content.Context;
-import android.os.Bundle;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.TextView;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
-import com.tradehero.th.api.competition.ProviderConstants;
 import com.tradehero.th.api.competition.ProviderId;
-import com.tradehero.th.fragments.competition.zone.CompetitionZoneDTO;
-import com.tradehero.th.fragments.competition.zone.CompetitionZoneLegalDTO;
-import com.tradehero.th.fragments.web.WebViewFragment;
+import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneDTO;
+import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneLegalDTO;
 
 public class CompetitionZoneLegalMentionsView extends AbstractCompetitionZoneListItemView
 {

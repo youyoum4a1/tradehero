@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.competition.zone;
+package com.tradehero.th.fragments.competition.zone.dto;
 
 import com.tradehero.th.api.competition.CompetitionDTO;
 

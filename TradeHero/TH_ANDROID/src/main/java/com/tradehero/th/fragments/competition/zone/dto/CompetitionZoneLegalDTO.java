@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.competition.zone;
+package com.tradehero.th.fragments.competition.zone.dto;
 
 /**
  * Created by xavier on 1/17/14.

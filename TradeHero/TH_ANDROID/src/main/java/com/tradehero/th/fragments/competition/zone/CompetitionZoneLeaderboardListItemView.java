@@ -1,15 +1,8 @@
-package com.tradehero.th.fragments.competition;
+package com.tradehero.th.fragments.competition.zone;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.widget.ImageView;
-import android.widget.TextView;
-import com.squareup.picasso.Picasso;
-import com.tradehero.th.R;
-import com.tradehero.th.fragments.competition.zone.CompetitionZoneDTO;
-import com.tradehero.th.fragments.competition.zone.CompetitionZoneLeaderboardDTO;
-import com.tradehero.th.utils.DaggerUtils;
-import javax.inject.Inject;
+import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneLeaderboardDTO;
 
 public class CompetitionZoneLeaderboardListItemView extends CompetitionZoneListItemView
 {
