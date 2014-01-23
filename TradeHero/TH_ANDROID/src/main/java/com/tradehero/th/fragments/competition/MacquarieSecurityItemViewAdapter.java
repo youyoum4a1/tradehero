@@ -46,18 +46,17 @@ public class MacquarieSecurityItemViewAdapter extends SecurityItemViewAdapter
             THLog.d(TAG, "Are all warrants");
             TreeSet<WarrantDTO> ordered = new TreeSet<>(warrantDTOComparator);
             ordered.addAll((List<WarrantDTO>) (List<?>) dtos);
-            List<SecurityId> securityIds = new ArrayList<>();
+            items.clear();
             for (WarrantDTO warrantDTO: ordered)
             {
-                securityIds.add(warrantDTO.getSecurityId());
+                items.add(warrantDTO.getSecurityId());
             }
-            super.setItems(securityIds);
         }
         else
         {
             THLog.d(TAG, "Not all are warrants");
-            super.setItems(items);
         }
+        super.setItems(items);
     }
 
 

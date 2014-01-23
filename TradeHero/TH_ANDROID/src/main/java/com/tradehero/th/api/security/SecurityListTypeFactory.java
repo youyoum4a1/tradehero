@@ -53,11 +53,11 @@ import javax.inject.Singleton;
             ProviderSecurityListType providerSecurityListType = (ProviderSecurityListType) initial;
             if (providerSecurityListType instanceof BasicProviderSecurityListType)
             {
-                return new BasicProviderSecurityListType(providerSecurityListType.getProviderId(), initial.page, initial.perPage);
+                return new BasicProviderSecurityListType(providerSecurityListType.getProviderId(), page, initial.perPage);
             }
             else if (providerSecurityListType instanceof WarrantProviderSecurityListType)
             {
-                return new WarrantProviderSecurityListType(providerSecurityListType.getProviderId(), initial.page, initial.perPage);
+                return new WarrantProviderSecurityListType(providerSecurityListType.getProviderId(), page, initial.perPage);
             }
         }
         return null;
