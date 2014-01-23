@@ -37,30 +37,45 @@ public class LeaderboardMarkUserListViewFragment extends BaseLeaderboardFragment
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.leaderboard_listview, container, false);
-
-        leaderboardMarkUserListView = (LeaderboardMarkUserListView) view.findViewById(R.id.leaderboard_listview);
-
-        View headerView = inflater.inflate(R.layout.leaderboard_listview_header, null);
-        leaderboardMarkUserListView.getRefreshableView().addHeaderView(headerView, null, false);
-
-        initHeaderView(headerView);
-
+        initViews(view);
+        inflateHeaderView(inflater);
         return view;
     }
 
-    private void initHeaderView(View headerView)
+    protected void initViews(View view)
+    {
+        leaderboardMarkUserListView = (LeaderboardMarkUserListView) view.findViewById(R.id.leaderboard_listview);
+    }
+
+    protected void inflateHeaderView(LayoutInflater inflater)
+    {
+        if (leaderboardMarkUserListView != null)
+        {
+            View headerView = inflater.inflate(R.layout.leaderboard_listview_header, null);
+            if (headerView != null)
+            {
+                leaderboardMarkUserListView.getRefreshableView().addHeaderView(headerView, null, false);
+                initHeaderView(headerView);
+            }
+        }
+    }
+
+    protected void initHeaderView(View headerView)
     {
         String leaderboardDefDesc = getArguments().getString(BUNDLE_KEY_LEADERBOARD_DEF_DESC);
 
         TextView leaderboardMarkUserTimePeriod = (TextView) headerView.findViewById(R.id.leaderboard_time_period);
-        if (leaderboardDefDesc != null)
+        if (leaderboardMarkUserTimePeriod != null)
         {
-            leaderboardMarkUserTimePeriod.setText(leaderboardDefDesc);
-            leaderboardMarkUserTimePeriod.setVisibility(View.VISIBLE);
-        }
-        else
-        {
-            leaderboardMarkUserTimePeriod.setVisibility(View.GONE);
+            if (leaderboardDefDesc != null)
+            {
+                leaderboardMarkUserTimePeriod.setText(leaderboardDefDesc);
+                leaderboardMarkUserTimePeriod.setVisibility(View.VISIBLE);
+            }
+            else
+            {
+                leaderboardMarkUserTimePeriod.setVisibility(View.GONE);
+            }
         }
         leaderboardMarkUserMarkingTime = (TextView) headerView.findViewById(R.id.leaderboard_marking_time);
     }
@@ -73,29 +88,7 @@ public class LeaderboardMarkUserListViewFragment extends BaseLeaderboardFragment
 
         leaderboardMarkUserListAdapter = new LeaderboardMarkUserListAdapter(
                 getActivity(), getActivity().getLayoutInflater(), leaderboardId, getCurrentSortType().getLayoutResourceId());
-        leaderboardMarkUserListAdapter.setDTOLoaderCallback(new LoaderDTOAdapter.ListLoaderCallback<LeaderboardUserDTO>()
-        {
-            @Override public ListLoader<LeaderboardUserDTO> onCreateLoader(Bundle args)
-            {
-                int leaderboardId = args.getInt(BUNDLE_KEY_LEADERBOARD_ID);
-                boolean includeFoF = args.getBoolean(LeaderboardDTO.INCLUDE_FOF);
-                LeaderboardMarkUserLoader leaderboardMarkUserLoader = new LeaderboardMarkUserLoader(getActivity(), leaderboardId, getCurrentSortType(), includeFoF);
-                leaderboardMarkUserLoader.setPerPage(Constants.LEADERBOARD_MARK_USER_ITEM_PER_PAGE);
-                return leaderboardMarkUserLoader;
-            }
-
-            @Override public void onLoadFinished(ListLoader<LeaderboardUserDTO> loader, List<LeaderboardUserDTO> data)
-            {
-                // display marking time
-                LeaderboardMarkUserLoader leaderboardMarkUserLoader = (LeaderboardMarkUserLoader) loader;
-                Date markingTime = leaderboardMarkUserLoader.getMarkUtc();
-                if (markingTime != null && leaderboardMarkUserMarkingTime != null)
-                {
-                    leaderboardMarkUserMarkingTime.setText(String.format("(%s)", prettyTime.get().format(markingTime)));
-                }
-                leaderboardMarkUserListView.onRefreshComplete();
-            }
-        });
+        leaderboardMarkUserListAdapter.setDTOLoaderCallback(new LeaderboardMarkUserListViewFragmentListLoaderCallback());
         leaderboardMarkUserListView.setAdapter(leaderboardMarkUserListAdapter);
         leaderboardMarkUserListView.setOnRefreshListener(leaderboardMarkUserListAdapter);
         leaderboardMarkUserListView.setEmptyView(getView().findViewById(android.R.id.empty));
@@ -106,6 +99,22 @@ public class LeaderboardMarkUserListViewFragment extends BaseLeaderboardFragment
 
         // when loader is available
         setSortTypeChangeListener(this);
+    }
+
+    @Override public void onDestroyView()
+    {
+        if (leaderboardMarkUserListAdapter != null)
+        {
+            leaderboardMarkUserListAdapter.setDTOLoaderCallback(null);
+        }
+        leaderboardMarkUserListAdapter = null;
+
+        if (leaderboardMarkUserListView != null)
+        {
+            leaderboardMarkUserListView.setOnRefreshListener((LeaderboardMarkUserListAdapter) null);
+        }
+        leaderboardMarkUserListView = null;
+        super.onDestroyView();
     }
 
     @Override public void onSortTypeChange(LeaderboardSortType sortType)
@@ -150,13 +159,39 @@ public class LeaderboardMarkUserListViewFragment extends BaseLeaderboardFragment
     }
     //</editor-fold>
 
+    //<editor-fold desc="BaseFragment.TabBarVisibilityInformer">
     @Override public boolean isTabBarVisible()
     {
         return false;
     }
+    //</editor-fold>
 
     @Override public int getTutorialLayout()
     {
         return R.layout.authentication_agreement;
+    }
+
+    private class LeaderboardMarkUserListViewFragmentListLoaderCallback extends LoaderDTOAdapter.ListLoaderCallback<LeaderboardUserDTO>
+    {
+        @Override public ListLoader<LeaderboardUserDTO> onCreateLoader(Bundle args)
+        {
+            int leaderboardId = args.getInt(BUNDLE_KEY_LEADERBOARD_ID);
+            boolean includeFoF = args.getBoolean(LeaderboardDTO.INCLUDE_FOF);
+            LeaderboardMarkUserLoader leaderboardMarkUserLoader = new LeaderboardMarkUserLoader(getActivity(), leaderboardId, getCurrentSortType(), includeFoF);
+            leaderboardMarkUserLoader.setPerPage(Constants.LEADERBOARD_MARK_USER_ITEM_PER_PAGE);
+            return leaderboardMarkUserLoader;
+        }
+
+        @Override public void onLoadFinished(ListLoader<LeaderboardUserDTO> loader, List<LeaderboardUserDTO> data)
+        {
+            // display marking time
+            LeaderboardMarkUserLoader leaderboardMarkUserLoader = (LeaderboardMarkUserLoader) loader;
+            Date markingTime = leaderboardMarkUserLoader.getMarkUtc();
+            if (markingTime != null && leaderboardMarkUserMarkingTime != null)
+            {
+                leaderboardMarkUserMarkingTime.setText(String.format("(%s)", prettyTime.get().format(markingTime)));
+            }
+            leaderboardMarkUserListView.onRefreshComplete();
+        }
     }
 }

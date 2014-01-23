@@ -22,7 +22,7 @@ public class BaseFragment extends SherlockFragment
         DaggerUtils.inject(this);
     }
 
-    public interface TabBarVisibilityInformer
+    public static interface TabBarVisibilityInformer
     {
         boolean isTabBarVisible();
     }
