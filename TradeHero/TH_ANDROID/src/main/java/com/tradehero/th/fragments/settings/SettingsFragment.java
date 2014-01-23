@@ -492,11 +492,9 @@ public class SettingsFragment extends PreferenceFragment
 
     private boolean changeEmailNotification(boolean enable)
     {
-        progressDialog = ProgressDialog.show(
-                getSherlockActivity(),
-                getString(R.string.settings_notifications_email_alert_title),
-                getString(R.string.settings_notifications_email_alert_message),
-                true);
+        progressDialog = getProgressDialog();
+        progressDialog.setMessage(getString(R.string.settings_notifications_email_alert_message));
+        progressDialog.setTitle(getString(R.string.settings_notifications_email_alert_title));
 
         userServiceWrapper.updateProfilePropertyEmailNotifications(currentUserBaseKeyHolder.getCurrentUserBaseKey(), enable,
                 createUserProfileCallback());
@@ -505,11 +503,10 @@ public class SettingsFragment extends PreferenceFragment
 
     private boolean changePushNotification(boolean enable)
     {
-        progressDialog = ProgressDialog.show(
-                getSherlockActivity(),
-                getString(R.string.settings_notifications_push_alert_title),
-                getString(R.string.settings_notifications_push_alert_message),
-                true);
+        progressDialog = getProgressDialog();
+        progressDialog.setMessage(getString(R.string.settings_notifications_push_alert_title));
+        progressDialog.setTitle(getString(R.string.settings_notifications_push_alert_message));
+        progressDialog.show();
 
         userServiceWrapper.updateProfilePropertyPushNotifications(currentUserBaseKeyHolder.getCurrentUserBaseKey(), enable,
                 createUserProfileCallback());
@@ -525,24 +522,32 @@ public class SettingsFragment extends PreferenceFragment
             switch (socialNetwork)
             {
                 case FB:
-                    progressDialog = ProgressDialog.show(getActivity(), getString(R.string.facebook), getString(R.string.connecting_to_facebook));
+                    getProgressDialog().setMessage(getString(R.string.connecting_to_facebook));
+                    getProgressDialog().setTitle(getString(R.string.facebook));
+                    getProgressDialog().show();
                     facebookUtils.get().logIn(getActivity(), socialConnectCallback);
                     break;
                 case TW:
-                    progressDialog = ProgressDialog.show(getActivity(), getString(R.string.twitter), getString(R.string.connecting_to_twitter));
+                    getProgressDialog().setMessage(getString(R.string.connecting_to_twitter));
+                    getProgressDialog().setTitle(getString(R.string.twitter));
+                    getProgressDialog().show();
                     twitterUtils.get().logIn(getActivity(), socialConnectCallback);
                     break;
                 case TH:
                     break;
                 case LI:
-                    progressDialog = ProgressDialog.show(getActivity(), getString(R.string.linkedin), getString(R.string.connecting_to_linkedin));
+                    getProgressDialog().setMessage(getString(R.string.connecting_to_linkedin));
+                    getProgressDialog().setTitle(getString(R.string.linkedin));
+                    getProgressDialog().show();
                     linkedInUtils.get().logIn(getActivity(), socialConnectCallback);
                     break;
             }
         }
         else
         {
-            progressDialog = ProgressDialog.show(getActivity(), getString(R.string.please_wait), getString(R.string.connecting_tradehero_only));
+            getProgressDialog().setMessage(getString(R.string.connecting_tradehero_only));
+            getProgressDialog().setTitle(getString(R.string.please_wait));
+            getProgressDialog().show();
             socialService.disconnect(
                     currentUserBaseKeyHolder.getCurrentUserBaseKey().key,
                     new SocialNetworkFormDTO(socialNetwork),
@@ -707,11 +712,9 @@ public class SettingsFragment extends PreferenceFragment
 
     private void handleClearCacheClicked()
     {
-        progressDialog = ProgressDialog.show(
-                getActivity(),
-                Application.getResourceString(R.string.cache_clearing_alert_title),
-                Application.getResourceString(R.string.cache_clearing_alert_message),
-                true);
+        getProgressDialog().setMessage(getString(R.string.cache_clearing_alert_title));
+        getProgressDialog().setTitle(getString(R.string.cache_clearing_alert_message));
+        getProgressDialog().show();
         new SlowedAsyncTask<Void, Void, Void>(500)
         {
             @Override protected Void doBackgroundAction(Void... voids)
@@ -729,13 +732,8 @@ public class SettingsFragment extends PreferenceFragment
 
     private void handleCacheCleared()
     {
-        if (progressDialog == null)
-        {
-            THLog.d(TAG, "handleCacheCleared: progressDialog is null");
-            return;
-        }
-        progressDialog.setTitle(R.string.cache_cleared_alert_title);
-        progressDialog.setMessage("");
+        getProgressDialog().setTitle(R.string.cache_cleared_alert_title);
+        getProgressDialog().setMessage("");
         getView().postDelayed(new Runnable()
         {
             @Override public void run()
@@ -771,11 +769,9 @@ public class SettingsFragment extends PreferenceFragment
 
     private void effectSignOut()
     {
-        progressDialog = ProgressDialog.show(
-                getActivity(),
-                Application.getResourceString(R.string.settings_misc_sign_out_alert_title),
-                Application.getResourceString(R.string.settings_misc_sign_out_alert_message),
-                true);
+        getProgressDialog().setMessage(getString(R.string.settings_misc_sign_out_alert_message));
+        getProgressDialog().setTitle(getString(R.string.settings_misc_sign_out_alert_title));
+        getProgressDialog().show();
 
         THLog.d(TAG, "Before signout current user base key " + currentUserBaseKeyHolder.getCurrentUserBaseKey().key);
         sessionService.logout(createSignOutCallback());
@@ -814,6 +810,20 @@ public class SettingsFragment extends PreferenceFragment
     private void handleAboutClicked()
     {
         getNavigator().pushFragment(AboutFragment.class);
+    }
+
+    private ProgressDialog getProgressDialog()
+    {
+        if (progressDialog != null)
+        {
+            return progressDialog;
+        }
+        progressDialog = ProgressDialog.show(
+                getActivity(),
+                getString(R.string.loading_loading),
+                getString(R.string.please_wait), true);
+        progressDialog.hide();
+        return progressDialog;
     }
 
     private LogInCallback socialConnectCallback = new LogInCallback()
