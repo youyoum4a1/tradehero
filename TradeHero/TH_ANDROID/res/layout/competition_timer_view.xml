@@ -17,12 +17,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/competition_leaderboard_timer_time_left_1"
+        android:textSize="10sp"
         />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/competition_leaderboard_timer_time_left_2"
+        android:textSize="10sp"
         />
 
   </LinearLayout>
@@ -31,7 +33,8 @@
       android:id="@+id/value_day_count"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:text="08"
+      android:text="@string/na"
+      android:textSize="20sp"
       />
 
   <TextView
@@ -46,33 +49,38 @@
       android:id="@+id/value_hour_count"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:text="09"
+      android:text="@string/na"
+      android:textSize="20sp"
       />
 
   <TextView
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:text="@string/competition_leaderboard_timer_time_separator"
+      android:textSize="20sp"
       />
 
   <TextView
       android:id="@+id/value_minute_count"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:text="10"
+      android:text="@string/na"
+      android:textSize="20sp"
       />
 
   <TextView
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:text="@string/competition_leaderboard_timer_time_separator"
+      android:textSize="20sp"
       />
 
   <TextView
       android:id="@+id/value_second_count"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:text="11"
+      android:text="@string/na"
+      android:textSize="20sp"
       />
 
 </LinearLayout>

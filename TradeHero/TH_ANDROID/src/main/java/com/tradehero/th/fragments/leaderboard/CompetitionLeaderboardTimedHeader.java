@@ -3,6 +3,7 @@ package com.tradehero.th.fragments.leaderboard;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.LinearLayout;
+import com.tradehero.common.utils.THLog;
 import com.tradehero.th.widget.time.TimeDisplayViewHolder;
 import java.util.Date;
 import java.util.Timer;
@@ -14,12 +15,11 @@ import java.util.TimerTask;
 public class CompetitionLeaderboardTimedHeader extends LinearLayout
 {
     public static final String TAG = CompetitionLeaderboardTimedHeader.class.getSimpleName();
-    public static final long DEFAULT_UPDATE_MILLISEC_INTERVAL = 500;
+    public static final long DEFAULT_UPDATE_MILLISEC_INTERVAL = 200;
 
     protected TimeDisplayViewHolder timeDisplayViewHolder;
-    protected TimerTask updateViewTimerTask;
-    protected Timer taskTimer;
     protected Date futureDateToCountDownTo;
+    protected Runnable viewUpdater;
 
     //<editor-fold desc="Constructors">
     public CompetitionLeaderboardTimedHeader(Context context)
@@ -43,16 +43,8 @@ public class CompetitionLeaderboardTimedHeader extends LinearLayout
 
     protected void init()
     {
-        timeDisplayViewHolder = new TimeDisplayViewHolder();
+        timeDisplayViewHolder = new TimeDisplayViewHolder(getContext());
         futureDateToCountDownTo = new Date();
-        updateViewTimerTask = new TimerTask()
-        {
-            @Override public void run()
-            {
-                timeDisplayViewHolder.showDuration(futureDateToCountDownTo);
-            }
-        };
-        taskTimer = new Timer();
     }
 
     @Override protected void onFinishInflate()
@@ -64,13 +56,28 @@ public class CompetitionLeaderboardTimedHeader extends LinearLayout
     @Override protected void onAttachedToWindow()
     {
         super.onAttachedToWindow();
-        taskTimer.schedule(updateViewTimerTask, DEFAULT_UPDATE_MILLISEC_INTERVAL);
+
+        viewUpdater = new Runnable()
+        {
+            @Override public void run()
+            {
+                timeDisplayViewHolder.showDuration(futureDateToCountDownTo);
+                postUpdateDurationIfCan();
+            }
+        };
+        postUpdateDurationIfCan();
     }
 
     @Override protected void onDetachedFromWindow()
     {
-        taskTimer.cancel();
+        getHandler().removeCallbacks(viewUpdater);
+        viewUpdater = null;
         super.onDetachedFromWindow();
+    }
+
+    public void postUpdateDurationIfCan()
+    {
+        postDelayed(viewUpdater, DEFAULT_UPDATE_MILLISEC_INTERVAL);
     }
 
     public void setFutureDateToCountDownTo(Date futureDateToCountDownTo)

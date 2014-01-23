@@ -1,15 +1,18 @@
 package com.tradehero.th.widget.time;
 
+import android.content.Context;
 import android.view.View;
 import android.widget.TextView;
 import com.tradehero.common.time.TimeFormatFloor;
 import com.tradehero.common.time.TimeUnitDayUnlimited;
 import com.tradehero.common.time.TimeUnitHourInDay;
+import com.tradehero.common.time.TimeUnitMilliSecondInSecond;
 import com.tradehero.common.time.TimeUnitMinuteInHour;
 import com.tradehero.common.time.TimeUnitSecondInMinute;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
 import java.util.Date;
+import java.util.List;
 import org.ocpsoft.prettytime.Duration;
 import org.ocpsoft.prettytime.PrettyTime;
 import org.ocpsoft.prettytime.TimeUnit;
@@ -26,24 +29,29 @@ public class TimeDisplayViewHolder
     public static final String TAG = TimeDisplayViewHolder.class.getSimpleName();
     public static final long MAX_DAY_COUNT = 99;
 
+    protected Context context;
     protected TextView dayCountView;
     protected TextView hourCountView;
     protected TextView minuteCountView;
     protected TextView secondCountView;
     protected PrettyTime prettyTime;
 
-    public TimeDisplayViewHolder()
+    public TimeDisplayViewHolder(Context context)
     {
+        this.context = context;
         prettyTime = new PrettyTime();
-        registerTimeUnit();
+        registerTimeUnits();
     }
 
-    protected void registerTimeUnit()
+    protected void registerTimeUnits()
     {
+        prettyTime.clearUnits();
         prettyTime.registerUnit(new TimeUnitDayUnlimited(), new TimeFormatFloor());
         prettyTime.registerUnit(new TimeUnitHourInDay(), new TimeFormatFloor());
         prettyTime.registerUnit(new TimeUnitMinuteInHour(), new TimeFormatFloor());
         prettyTime.registerUnit(new TimeUnitSecondInMinute(), new TimeFormatFloor());
+        // The milliseconds have to be added to avoid infinite loop https://github.com/ocpsoft/prettytime/issues/56
+        prettyTime.registerUnit(new TimeUnitMilliSecondInSecond(), new TimeFormatFloor());
     }
 
     public void fetchViews(View view)
@@ -60,66 +68,116 @@ public class TimeDisplayViewHolder
     public void showDuration(Date then)
     {
         prettyTime.setReference(new Date());
-        for (Duration duration: prettyTime.calculatePreciseDuration(then))
-        {
-            TimeUnit durationUnit = duration.getUnit();
-            if (durationUnit instanceof TimeUnitDayUnlimited)
-            {
-                displayDayCount(duration);
-            }
-            else if (durationUnit instanceof TimeUnitHourInDay)
-            {
-                displayHourCount(duration);
-            }
-            else if (durationUnit instanceof TimeUnitMinuteInHour)
-            {
-                displayMinuteCount(duration);
-            }
-            else if (durationUnit instanceof TimeUnitSecondInMinute)
-            {
-                displaySecondCount(duration);
-            }
-            else
-            {
-                // Not caring
-                THLog.d(TAG, "Unhandled duration of time " + durationUnit.getClass() + ", quantity " + duration.getQuantity());
-            }
-        }
+        display(new TimeDTO(prettyTime, then));
     }
 
-    public void displayDayCount(Duration duration)
+    public void display(TimeDTO timeDTO)
     {
-        assert (duration instanceof Day);
+        displayDayCount(timeDTO.days);
+        displayHourCount(timeDTO.hours);
+        displayMinuteCount(timeDTO.minutes);
+        displaySecondCount(timeDTO.seconds);
+    }
+
+    protected int getDayFormatResId()
+    {
+        return R.string.time_display_view_holder_format_day;
+    }
+
+    protected int getHourFormatResId()
+    {
+        return R.string.time_display_view_holder_format_hour;
+    }
+
+    protected int getMinuteFormatResId()
+    {
+        return R.string.time_display_view_holder_format_minute;
+    }
+
+    protected int getSecondFormatResId()
+    {
+        return R.string.time_display_view_holder_format_second;
+    }
+
+    public void displayDayCount(long days)
+    {
         if (dayCountView != null)
         {
-            dayCountView.setText(String.format("%d", duration.getQuantity()));
+            dayCountView.setText(context.getString(getDayFormatResId(), days));
         }
     }
 
-    public void displayHourCount(Duration duration)
+    public void displayHourCount(long hours)
     {
-        assert (duration instanceof Hour);
         if (hourCountView != null)
         {
-            hourCountView.setText(String.format("%d", duration.getQuantity()));
+            hourCountView.setText(context.getString(getHourFormatResId(), hours));
         }
     }
 
-    public void displayMinuteCount(Duration duration)
+    public void displayMinuteCount(long minutes)
     {
-        assert (duration instanceof Minute);
         if (minuteCountView != null)
         {
-            minuteCountView.setText(String.format("%d", duration.getQuantity()));
+            minuteCountView.setText(context.getString(getMinuteFormatResId(), minutes));
         }
     }
 
-    public void displaySecondCount(Duration duration)
+    public void displaySecondCount(long seconds)
     {
-        assert (duration instanceof Second);
         if (secondCountView != null)
         {
-            secondCountView.setText(String.format("%d", duration.getQuantity()));
+            secondCountView.setText(context.getString(getSecondFormatResId(), seconds));
+        }
+    }
+
+    protected static class TimeDTO
+    {
+        long days;
+        long hours;
+        long minutes;
+        long seconds;
+
+        public TimeDTO(PrettyTime prettyTime, Date then)
+        {
+            this();
+            populate(prettyTime, then);
+        }
+
+        public TimeDTO()
+        {
+            this.days = 0;
+            this.hours = 0;
+            this.minutes = 0;
+            this.seconds = 0;
+        }
+
+        public void populate(PrettyTime prettyTime, Date then)
+        {
+            for (Duration duration: prettyTime.calculatePreciseDuration(then))
+            {
+                TimeUnit durationUnit = duration.getUnit();
+                if (durationUnit instanceof TimeUnitDayUnlimited)
+                {
+                    days = duration.getQuantity();
+                }
+                else if (durationUnit instanceof TimeUnitHourInDay)
+                {
+                    hours = duration.getQuantity();
+                }
+                else if (durationUnit instanceof TimeUnitMinuteInHour)
+                {
+                    minutes = duration.getQuantity();
+                }
+                else if (durationUnit instanceof TimeUnitSecondInMinute)
+                {
+                    seconds = duration.getQuantity();
+                }
+                else
+                {
+                    // Not caring
+                }
+            }
         }
     }
 }

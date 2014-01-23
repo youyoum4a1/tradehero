@@ -176,4 +176,10 @@
   <string name="search_friends">Search Friends</string>
   <string name="add_all">Add All</string>
   <string name="remove_all">Remove All</string>
+
+  <!-- TimeDisplayViewHolder -->
+  <string name="time_display_view_holder_format_day">%02d</string>
+  <string name="time_display_view_holder_format_hour">%02d</string>
+  <string name="time_display_view_holder_format_minute">%02d</string>
+  <string name="time_display_view_holder_format_second">%02d</string>
 </resources>

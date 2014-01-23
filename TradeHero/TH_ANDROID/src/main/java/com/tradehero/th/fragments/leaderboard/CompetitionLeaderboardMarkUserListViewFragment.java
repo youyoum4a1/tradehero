@@ -43,4 +43,10 @@ public class CompetitionLeaderboardMarkUserListViewFragment extends LeaderboardM
         this.headerView = (CompetitionLeaderboardTimedHeader) headerView;
         this.headerView.setFutureDateToCountDownTo(leaderboardDefDTO.toUtcRestricted);
     }
+
+    @Override public void onDestroyView()
+    {
+        this.headerView = null;
+        super.onDestroyView();
+    }
 }
