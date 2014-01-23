@@ -43,6 +43,11 @@ public class LeaderboardDefDTO extends ExtendedDTO
         super();
     }
 
+    public LeaderboardDefKey getLeaderboardDefKey()
+    {
+        return new LeaderboardDefKey(id);
+    }
+
     public boolean isTimeRestrictedLeaderboard()
     {
         return (this.fromUtcRestricted != null && this.toUtcRestricted != null) || (this.toDateDays != null && this.toDateDays > 0);

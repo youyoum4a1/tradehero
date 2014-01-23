@@ -16,6 +16,25 @@ public class CompetitionDTO implements DTO
     public String iconInactiveUrl;
     public String prizeValueWithCcy;
 
+    //<editor-fold desc="Constructors">
+    public CompetitionDTO()
+    {
+        super();
+    }
+
+    public CompetitionDTO(int id, LeaderboardDefDTO leaderboard, String name, String competitionDurationType, String iconActiveUrl,
+            String iconInactiveUrl, String prizeValueWithCcy)
+    {
+        this.id = id;
+        this.leaderboard = leaderboard;
+        this.name = name;
+        this.competitionDurationType = competitionDurationType;
+        this.iconActiveUrl = iconActiveUrl;
+        this.iconInactiveUrl = iconInactiveUrl;
+        this.prizeValueWithCcy = prizeValueWithCcy;
+    }
+    //</editor-fold>
+
     public CompetitionId getCompetitionId()
     {
         return new CompetitionId(id);

@@ -1,59 +1,84 @@
 package com.tradehero.th.persistence.competition;
 
-import com.tradehero.common.persistence.StraightDTOCache;
+import android.support.v4.util.LruCache;
+import com.tradehero.common.persistence.PartialDTOCache;
 import com.tradehero.th.api.competition.CompetitionDTO;
 import com.tradehero.th.api.competition.CompetitionId;
-import com.tradehero.th.network.service.CompetitionServiceWrapper;
+import com.tradehero.th.api.leaderboard.LeaderboardDefKey;
+import com.tradehero.th.api.leaderboard.LeaderboardUserDTOUtil;
+import com.tradehero.th.persistence.leaderboard.LeaderboardDefCache;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 10/3/13 Time: 4:40 PM To change this template use File | Settings | File Templates. */
-@Singleton public class CompetitionCache extends StraightDTOCache<CompetitionId, CompetitionDTO>
+/** Created with IntelliJ IDEA. User: xavier Date: 10/3/13 Time: 4:47 PM To change this template use File | Settings | File Templates. */
+@Singleton public class CompetitionCache extends PartialDTOCache<CompetitionId, CompetitionDTO>
 {
     public static final String TAG = CompetitionCache.class.getSimpleName();
     public static final int DEFAULT_MAX_SIZE = 1000;
 
+    // We need to compose here, instead of inheritance, otherwise we get a compile error regarding erasure on put and put.
+    private LruCache<CompetitionId, CompetitionCache.CompetitionCutDTO> lruCache;
+    @Inject protected LeaderboardDefCache leaderboardDefCache;
+    @Inject protected LeaderboardUserDTOUtil leaderboardUserDTOUtil;
+
     //<editor-fold desc="Constructors">
     @Inject public CompetitionCache()
     {
-        super(DEFAULT_MAX_SIZE);
+        this(DEFAULT_MAX_SIZE);
+    }
+
+    public CompetitionCache(int maxSize)
+    {
+        super();
+        lruCache = new LruCache<>(maxSize);
     }
     //</editor-fold>
 
-    @Override protected CompetitionDTO fetch(CompetitionId key) throws Throwable
+    protected CompetitionDTO fetch(CompetitionId key) throws Throwable
     {
-        throw new RuntimeException();
+        throw new IllegalStateException("There is no fetch on this cache");
     }
 
-    public List<CompetitionDTO> getOrFetch(List<CompetitionId> providerIds) throws Throwable
+    @Override public CompetitionDTO get(CompetitionId key)
     {
-        if (providerIds == null)
+        CompetitionCutDTO leaderboardCutDTO = this.lruCache.get(key);
+        if (leaderboardCutDTO == null)
         {
             return null;
         }
-
-        List<CompetitionDTO> providerDTOList = new ArrayList<>();
-        for (CompetitionId providerId : providerIds)
-        {
-            providerDTOList.add(getOrFetch(providerId, false));
-        }
-        return providerDTOList;
+        return leaderboardCutDTO.create(leaderboardDefCache);
     }
 
-    public List<CompetitionDTO> get(List<CompetitionId> providerIds)
+    @Override public CompetitionDTO put(CompetitionId key, CompetitionDTO value)
     {
-        if (providerIds == null)
+        CompetitionDTO previous = null;
+
+        CompetitionCutDTO previousCut = lruCache.put(
+                key,
+                new CompetitionCutDTO(value, leaderboardDefCache));
+
+        if (previousCut != null)
+        {
+            previous = previousCut.create(leaderboardDefCache);
+        }
+
+        return previous;
+    }
+
+    public List<CompetitionDTO> get(List<CompetitionId> competitionIds)
+    {
+        if (competitionIds == null)
         {
             return null;
         }
 
         List<CompetitionDTO> fleshedValues = new ArrayList<>();
 
-        for (CompetitionId providerId: providerIds)
+        for (CompetitionId competitionId: competitionIds)
         {
-            fleshedValues.add(get(providerId));
+            fleshedValues.add(get(competitionId));
         }
 
         return fleshedValues;
@@ -68,11 +93,71 @@ import javax.inject.Singleton;
 
         List<CompetitionDTO> previousValues = new ArrayList<>();
 
-        for (CompetitionDTO providerDTO: values)
+        for (CompetitionDTO competitionDTO: values)
         {
-            previousValues.add(put(providerDTO.getCompetitionId(), providerDTO));
+            previousValues.add(put(competitionDTO.getCompetitionId(), competitionDTO));
         }
 
         return previousValues;
+    }
+
+    @Override public void invalidate(CompetitionId key)
+    {
+        lruCache.remove(key);
+    }
+
+    @Override public void invalidateAll()
+    {
+        lruCache.evictAll();
+    }
+
+    // The purpose of this class is to save on memory usage by cutting out the elements that already enjoy their own cache.
+    // It is static so as not to keep a link back to the cache instance.
+    private static class CompetitionCutDTO
+    {
+        public int id;
+        public LeaderboardDefKey leaderboardKey;
+        public String name;
+        public String competitionDurationType;
+        public String iconActiveUrl;
+        public String iconInactiveUrl;
+        public String prizeValueWithCcy;
+
+        public CompetitionCutDTO(
+                CompetitionDTO competitionDTO,
+                LeaderboardDefCache leaderboardDefCache)
+        {
+            this.id = competitionDTO.id;
+
+            if (competitionDTO.leaderboard == null)
+            {
+                leaderboardKey = null;
+            }
+            else
+            {
+                LeaderboardDefKey key = competitionDTO.leaderboard.getLeaderboardDefKey();
+                leaderboardDefCache.put(key, competitionDTO.leaderboard);
+                leaderboardKey = key;
+            }
+
+            this.name = competitionDTO.name;
+            this.competitionDurationType = competitionDTO.competitionDurationType;
+            this.iconActiveUrl = competitionDTO.iconActiveUrl;
+            this.iconInactiveUrl = competitionDTO.iconInactiveUrl;
+            this.prizeValueWithCcy = competitionDTO.prizeValueWithCcy;
+        }
+
+        public CompetitionDTO create(LeaderboardDefCache leaderboardDefCache)
+        {
+            return new CompetitionDTO(
+                    id,
+                    leaderboardKey == null ? null : leaderboardDefCache.get(leaderboardKey),
+                    name,
+                    competitionDurationType,
+                    iconActiveUrl,
+                    iconInactiveUrl,
+                    prizeValueWithCcy
+            );
+        }
     }
 }

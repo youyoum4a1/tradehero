@@ -6,7 +6,6 @@ import com.tradehero.th.api.competition.CompetitionDTO;
 import com.tradehero.th.api.competition.CompetitionIdList;
 import com.tradehero.th.api.competition.CompetitionId;
 import com.tradehero.th.api.competition.ProviderId;
-import com.tradehero.th.api.competition.ProviderListKey;
 import com.tradehero.th.network.service.CompetitionServiceWrapper;
 import java.util.List;
 import javax.inject.Inject;
