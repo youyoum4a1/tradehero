@@ -2,6 +2,7 @@ package com.tradehero.th.models.intent;
 
 import com.tradehero.th.models.intent.competition.ProviderIntentFactory;
 import com.tradehero.th.models.intent.portfolio.PortfolioIntentFactory;
+import com.tradehero.th.models.intent.security.SecurityIntentFactory;
 import com.tradehero.th.models.intent.trending.TrendingIntentFactory;
 import dagger.Module;
 import dagger.Provides;
@@ -34,9 +35,14 @@ public class IntentDaggerModule
     @Provides @Singleton THIntentFactory provideTHIntentFactory()
     {
         THIntentFactoryImpl factory = new THIntentFactoryImpl();
+
+        // Dashboard tab factories
         factory.addSubFactory(new TrendingIntentFactory());
         factory.addSubFactory(new PortfolioIntentFactory());
         factory.addSubFactory(new ProviderIntentFactory());
+
+        // Push only factories
+        factory.addSubFactory(new SecurityIntentFactory());
         return factory;
     }
 }

@@ -32,10 +32,12 @@ import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneWizardDTO;
 import com.tradehero.th.fragments.leaderboard.CompetitionLeaderboardMarkUserListViewFragment;
 import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserListViewFragment;
 import com.tradehero.th.fragments.position.PositionListFragment;
+import com.tradehero.th.fragments.trade.BuySellFragment;
 import com.tradehero.th.fragments.web.WebViewFragment;
 import com.tradehero.th.models.intent.THIntent;
 import com.tradehero.th.models.intent.THIntentPassedListener;
 import com.tradehero.th.models.intent.competition.ProviderPageIntent;
+import com.tradehero.th.models.intent.security.SecurityPushBuyIntent;
 import com.tradehero.th.persistence.competition.CompetitionCache;
 import com.tradehero.th.persistence.competition.CompetitionListCache;
 import java.util.List;
@@ -358,6 +360,10 @@ public class MainCompetitionFragment extends CompetitionFragment
                     THLog.d(TAG, "WebFragment is null");
                 }
             }
+            else if (thIntent instanceof SecurityPushBuyIntent)
+            {
+                handleSecurityPushBuyIntent((SecurityPushBuyIntent) thIntent);
+            }
             else if (thIntent == null)
             {
                 navigator.popFragment();
@@ -366,6 +372,25 @@ public class MainCompetitionFragment extends CompetitionFragment
             {
                 THLog.w(TAG, "Unhandled intent " + thIntent);
             }
+        }
+
+        protected void handleSecurityPushBuyIntent(SecurityPushBuyIntent thIntent)
+        {
+            // We are probably coming back from the wizard
+            getNavigator().popFragment(MainCompetitionFragment.class.getName());
+            // Now moving on
+            Bundle argsBundle = thIntent.getBundle();
+            if (thIntent.getActionFragment().equals(BuySellFragment.class))
+            {
+                argsBundle.putBundle(BuySellFragment.BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE, getApplicablePortfolioId().getArgs());
+                argsBundle.putBundle(BuySellFragment.BUNDLE_KEY_PROVIDER_ID_BUNDLE, providerId.getArgs());
+            }
+            getNavigator().pushFragment(thIntent.getActionFragment(), argsBundle,
+                    new int[] {
+                            R.anim.slide_right_in, R.anim.alpha_out,
+                            R.anim.slide_left_in, R.anim.slide_right_out
+                    }, null);
+            THLog.d(TAG, "onIntentPassed " + thIntent);
         }
     }
 
