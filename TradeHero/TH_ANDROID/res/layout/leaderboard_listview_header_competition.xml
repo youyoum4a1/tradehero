@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<com.tradehero.th.fragments.leaderboard.CompetitionLeaderboardTimedHeader
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+  <TextView
+      android:id="@+id/leaderboard_competition_title"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_gravity="center_horizontal"
+      android:textStyle="bold"
+      android:text="Warrants Only"
+      />
+
+  <TextView android:id="@+id/leaderboard_marking_time"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_gravity="center_horizontal"
+      android:text="(as of 21 hours ago)"
+      />
+
+  <include
+      android:id="@+id/competition_timer_view"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_margin="8dp"
+      layout="@layout/competition_timer_view"
+      android:layout_gravity="center_horizontal"
+      />
+
+  <TextView android:id="@+id/competition_rule_desc"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_gravity="center_horizontal"
+      android:text="3 warrants"
+      />
+
+</com.tradehero.th.fragments.leaderboard.CompetitionLeaderboardTimedHeader>

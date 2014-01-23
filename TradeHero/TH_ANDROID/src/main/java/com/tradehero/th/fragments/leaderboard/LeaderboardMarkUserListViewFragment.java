@@ -51,13 +51,18 @@ public class LeaderboardMarkUserListViewFragment extends BaseLeaderboardFragment
     {
         if (leaderboardMarkUserListView != null)
         {
-            View headerView = inflater.inflate(R.layout.leaderboard_listview_header, null);
+            View headerView = inflater.inflate(getHeaderViewResId(), null);
             if (headerView != null)
             {
                 leaderboardMarkUserListView.getRefreshableView().addHeaderView(headerView, null, false);
                 initHeaderView(headerView);
             }
         }
+    }
+
+    protected int getHeaderViewResId()
+    {
+        return R.layout.leaderboard_listview_header;
     }
 
     protected void initHeaderView(View headerView)

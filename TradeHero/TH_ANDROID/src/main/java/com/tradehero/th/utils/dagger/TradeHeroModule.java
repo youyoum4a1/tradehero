@@ -25,6 +25,7 @@ import com.tradehero.th.billing.googleplay.THIABPurchaseFetcher;
 import com.tradehero.th.billing.googleplay.THIABPurchaseReporter;
 import com.tradehero.th.billing.googleplay.THIABPurchaser;
 import com.tradehero.th.billing.googleplay.THInventoryFetchMilestone;
+import com.tradehero.th.fragments.leaderboard.CompetitionLeaderboardMarkUserListViewFragment;
 import com.tradehero.th.fragments.security.WarrantInfoValueFragment;
 import com.tradehero.th.fragments.settings.ReferralFragment;
 import com.tradehero.th.fragments.security.WarrantSecurityItemView;
@@ -262,6 +263,7 @@ import org.ocpsoft.prettytime.PrettyTime;
                 LeaderboardMarkUserItemView.class,
                 LeaderboardMarkUserListView.class,
                 FriendLeaderboardMarkUserListViewFragment.class,
+                CompetitionLeaderboardMarkUserListViewFragment.class,
 
                 WebViewFragment.class,
 
