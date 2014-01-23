@@ -40,7 +40,10 @@
         android:background="@color/transparent"
         />
   </LinearLayout>
-  <EditText android:layout_width="match_parent" android:layout_height="wrap_content"
+  <EditText
+      android:id="@+id/invite_friend_search"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
       android:hint="@string/search_friends"
       android:layout_marginLeft="@dimen/invite_friend_horizontal_padding"
       android:layout_marginRight="@dimen/invite_friend_horizontal_padding"

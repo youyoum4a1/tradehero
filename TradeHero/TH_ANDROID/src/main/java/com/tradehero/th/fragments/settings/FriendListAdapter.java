@@ -27,6 +27,7 @@ public class FriendListAdapter extends ArrayDTOAdapter<UserFriendsDTO, UserFrien
     private String[] collectedNames;
     private Integer[] sectionIndices;
     private Character[] sections;
+    private List<UserFriendsDTO> originalItems;
 
     public FriendListAdapter(Context context, LayoutInflater layoutInflater, int itemLayoutId)
     {
@@ -35,13 +36,18 @@ public class FriendListAdapter extends ArrayDTOAdapter<UserFriendsDTO, UserFrien
 
     @Override public void setItems(List<UserFriendsDTO> items)
     {
+        THLog.d(TAG, "number of friends: " + (items != null ? items.size() : 0));
         filterOutInvitedFriends(items);
 
+        originalItems = items != null ? Collections.unmodifiableList(items) : null;
+        setItemsInternal(items);
+    }
+
+    private void setItemsInternal(List<UserFriendsDTO> items)
+    {
         super.setItems(items);
-
-        sortUserFriendListByFirstCharacter();
-
-        collectNamesFromDTOList();
+        sortUserFriendListByName();
+        initNamesFromDTOList();
         initSectionIndices();
         initDistinctFirstCharacterNames();
     }
@@ -59,7 +65,6 @@ public class FriendListAdapter extends ArrayDTOAdapter<UserFriendsDTO, UserFrien
 
     @Override protected void fineTune(int position, UserFriendsDTO dto, UserFriendDTOView dtoView)
     {
-
     }
 
     @Override public View getHeaderView(int position, View convertView, ViewGroup parent)
@@ -102,7 +107,7 @@ public class FriendListAdapter extends ArrayDTOAdapter<UserFriendsDTO, UserFrien
         return sections;
     }
 
-    private void sortUserFriendListByFirstCharacter()
+    private void sortUserFriendListByName()
     {
         if (items != null)
         {
@@ -116,7 +121,7 @@ public class FriendListAdapter extends ArrayDTOAdapter<UserFriendsDTO, UserFrien
                     else if (lhs.name == null || lhs.name.isEmpty()) return -1;
                     else if (rhs.name == null || lhs.name.isEmpty()) return 1;
                     else if (lhs.name.equals(rhs.name)) return 0;
-                    else return lhs.name.charAt(0) - rhs.name.charAt(0);
+                    else return lhs.name.compareTo(rhs.name);
                 }
             });
         }
@@ -124,6 +129,7 @@ public class FriendListAdapter extends ArrayDTOAdapter<UserFriendsDTO, UserFrien
 
     private Character[] initDistinctFirstCharacterNames()
     {
+        sections = null;
         if (sectionIndices != null)
         {
             sections = new Character[sectionIndices.length];
@@ -133,7 +139,7 @@ public class FriendListAdapter extends ArrayDTOAdapter<UserFriendsDTO, UserFrien
             }
             return sections;
         }
-        return null;
+        return sections;
     }
 
     /**
@@ -141,6 +147,7 @@ public class FriendListAdapter extends ArrayDTOAdapter<UserFriendsDTO, UserFrien
      */
     private void initSectionIndices()
     {
+        sectionIndices = null;
         if (collectedNames != null && collectedNames.length > 0)
         {
             // collect distinct list of first appearance character
@@ -164,8 +171,9 @@ public class FriendListAdapter extends ArrayDTOAdapter<UserFriendsDTO, UserFrien
         }
     }
 
-    private void collectNamesFromDTOList()
+    private void initNamesFromDTOList()
     {
+        collectedNames = null;
         if (items != null)
         {
             ArrayList<String> nameList = new ArrayList<>();
@@ -215,6 +223,30 @@ public class FriendListAdapter extends ArrayDTOAdapter<UserFriendsDTO, UserFrien
             }
         }
         return sectionIndices.length - 1;
+    }
+
+    public void filter(String searchText)
+    {
+        List<UserFriendsDTO> newItems = new ArrayList<>();
+        if (originalItems != null && searchText != null)
+        {
+            for (UserFriendsDTO userFriendsDTO: originalItems)
+            {
+                if (userFriendsDTO != null && userFriendsDTO.name != null)
+                {
+                    if (userFriendsDTO.name.toUpperCase().contains(searchText.toUpperCase()))
+                    {
+                        newItems.add(userFriendsDTO);
+                    }
+                }
+            }
+        }
+        setItemsInternal(newItems);
+    }
+
+    public void resetItems()
+    {
+        setItemsInternal(new ArrayList<>(originalItems));
     }
 
     private static class SectionViewHolder

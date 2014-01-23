@@ -2,7 +2,7 @@ package com.tradehero.th.fragments.settings;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.widget.FrameLayout;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -21,9 +21,10 @@ import javax.inject.Inject;
 public class UserFriendDTOView extends RelativeLayout implements DTOView<UserFriendsDTO>
 {
     private ImageView userFriendAvatar;
-    private ImageView userFriendSourceImage;
     private TextView userFriendName;
-    private TextView userFriendSourceName;
+    private TextView userFriendSourceFb;
+    private TextView userFriendSourceLi;
+    private TextView userFriendSourceContact;
     private UserFriendsDTO userFriendDTO;
 
     @Inject protected Lazy<Picasso> picasso;
@@ -57,8 +58,10 @@ public class UserFriendDTOView extends RelativeLayout implements DTOView<UserFri
 
         userFriendAvatar = (ImageView) findViewById(R.id.user_friend_avatar);
         userFriendName = (TextView) findViewById(R.id.user_friend_name);
-        userFriendSourceName = (TextView) findViewById(R.id.user_friend_source_name);
-        userFriendSourceImage = (ImageView) findViewById(R.id.user_friend_source_picture);
+
+        userFriendSourceFb = (TextView) findViewById(R.id.user_friend_source_facebook);
+        userFriendSourceLi = (TextView) findViewById(R.id.user_friend_source_linkedin);
+        userFriendSourceContact = (TextView) findViewById(R.id.user_friend_source_contact);
     }
 
     @Override public void display(UserFriendsDTO dto)
@@ -82,6 +85,27 @@ public class UserFriendDTOView extends RelativeLayout implements DTOView<UserFri
 
     private void displayFriendSource()
     {
+        resetVisibilityOfSourceButtons();
+
+        if (userFriendDTO.fbId != null)
+        {
+            userFriendSourceFb.setVisibility(View.VISIBLE);
+        }
+        else if (userFriendDTO.liId != null)
+        {
+            userFriendSourceLi.setVisibility(View.VISIBLE);
+        }
+        else
+        {
+            userFriendSourceContact.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void resetVisibilityOfSourceButtons()
+    {
+        userFriendSourceFb.setVisibility(View.INVISIBLE);
+        userFriendSourceLi.setVisibility(View.INVISIBLE);
+        userFriendSourceContact.setVisibility(View.INVISIBLE);
     }
 
     private void displayFriendName()
@@ -107,7 +131,9 @@ public class UserFriendDTOView extends RelativeLayout implements DTOView<UserFri
         }
         else
         {
-            userFriendAvatar.setImageResource(R.drawable.avatar);
+            picasso.get().load(R.drawable.superman_facebook)
+                    .transform(new RoundedShapeTransformation())
+                    .into(userFriendAvatar);
         }
     }
 }
