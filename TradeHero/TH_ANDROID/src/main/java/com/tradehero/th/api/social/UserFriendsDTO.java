@@ -1,11 +1,13 @@
 package com.tradehero.th.api.social;
 
+import com.tradehero.th.api.ExtendedDTO;
 import com.tradehero.th.utils.Constants;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/22/13 Time: 8:53 PM To change this template use File | Settings | File Templates. */
-public class UserFriendsDTO
+public class UserFriendsDTO extends ExtendedDTO
 {
     public static final String TAG = UserFriendsDTO.class.getSimpleName();
+    private static final String PROPERTY_KEY_SELECTED = TAG + ".selected";
 
     public String name;       // name
 
@@ -33,5 +35,16 @@ public class UserFriendsDTO
             return liPicUrl;
         }
         return null;
+    }
+
+    public boolean isSelected()
+    {
+        Boolean selected = (Boolean) get(PROPERTY_KEY_SELECTED);
+        return selected == null ? false : selected;
+    }
+
+    public void setSelected(boolean isSelected)
+    {
+        put(PROPERTY_KEY_SELECTED, isSelected);
     }
 }

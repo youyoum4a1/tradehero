@@ -6,7 +6,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SectionIndexer;
 import android.widget.TextView;
-import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.ArrayDTOAdapter;
 import com.tradehero.th.api.social.UserFriendsDTO;
@@ -36,7 +35,6 @@ public class FriendListAdapter extends ArrayDTOAdapter<UserFriendsDTO, UserFrien
 
     @Override public void setItems(List<UserFriendsDTO> items)
     {
-        THLog.d(TAG, "number of friends: " + (items != null ? items.size() : 0));
         filterOutInvitedFriends(items);
 
         originalItems = items != null ? Collections.unmodifiableList(items) : null;
@@ -137,7 +135,6 @@ public class FriendListAdapter extends ArrayDTOAdapter<UserFriendsDTO, UserFrien
             {
                 sections[i] = collectedNames[sectionIndices[i]].charAt(0);
             }
-            return sections;
         }
         return sections;
     }
@@ -157,7 +154,6 @@ public class FriendListAdapter extends ArrayDTOAdapter<UserFriendsDTO, UserFrien
             for (int characterIndex=1; characterIndex < collectedNames.length; ++characterIndex)
             {
                 String name = collectedNames[characterIndex];
-                THLog.d(TAG, "last beginning char: " + name +"/"+ collectedNames[0]);
                 if (name != null && name.length() > 0 && name.charAt(0) != lastBeginningCharacter)
                 {
                     lastBeginningCharacter = name.charAt(0);
@@ -247,6 +243,45 @@ public class FriendListAdapter extends ArrayDTOAdapter<UserFriendsDTO, UserFrien
     public void resetItems()
     {
         setItemsInternal(new ArrayList<>(originalItems));
+    }
+
+    public int getSelectedCount()
+    {
+        int count = 0;
+        for (UserFriendsDTO userFriendsDTO: originalItems)
+        {
+            if (userFriendsDTO != null && userFriendsDTO.isSelected())
+            {
+                ++count;
+            }
+        }
+        return count;
+    }
+
+    public List<UserFriendsDTO> getSelectedLinkedInFriends()
+    {
+        List<UserFriendsDTO> selectedItems = new ArrayList<>();
+        for (UserFriendsDTO userFriendsDTO: originalItems)
+        {
+            if (userFriendsDTO.isSelected() && userFriendsDTO.liId != null)
+            {
+                selectedItems.add(userFriendsDTO);
+            }
+        }
+        return selectedItems;
+    }
+
+    public List<UserFriendsDTO> getSelectedFacebookFriends()
+    {
+        List<UserFriendsDTO> selectedItems = new ArrayList<>();
+        for (UserFriendsDTO userFriendsDTO: originalItems)
+        {
+            if (userFriendsDTO.isSelected() && userFriendsDTO.fbId != null)
+            {
+                selectedItems.add(userFriendsDTO);
+            }
+        }
+        return selectedItems;
     }
 
     private static class SectionViewHolder

@@ -47,9 +47,11 @@
       android:layout_height="wrap_content"
       android:text="@string/send_invitations"
       android:layout_gravity="bottom|center_horizontal"
-      android:paddingTop="@dimen/refer_friend_action_button_horizontal_padding"
-      android:paddingBottom="@dimen/refer_friend_action_button_horizontal_padding"
-      android:background="#1a6ee6"
+      android:paddingTop="@dimen/refer_friend_action_button_vertical_padding"
+      android:paddingBottom="@dimen/refer_friend_action_button_vertical_padding"
+      android:paddingLeft="@dimen/refer_friend_action_button_horizontal_padding"
+      android:paddingRight="@dimen/refer_friend_action_button_horizontal_padding"
       android:visibility="gone"
+      android:background="@drawable/refer_friend_invite_button_xml"
       />
 </FrameLayout>

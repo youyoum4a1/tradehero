@@ -119,7 +119,10 @@ public class THUser
             callback.onStart();
             if (authenticator.restoreAuthentication(savedTokens))
             {
-                logInAsyncWithJson(savedTokens, callback);
+                if (callback.onSocialAuthDone(savedTokens))
+                {
+                    logInAsyncWithJson(savedTokens, callback);
+                }
                 return;
             }
         }

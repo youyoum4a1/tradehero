@@ -3,6 +3,7 @@ package com.tradehero.th.fragments.settings;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
+import android.widget.Checkable;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -18,7 +19,8 @@ import javax.inject.Inject;
 /**
  * Created with IntelliJ IDEA. User: tho Date: 1/22/14 Time: 11:53 AM Copyright (c) TradeHero
  */
-public class UserFriendDTOView extends RelativeLayout implements DTOView<UserFriendsDTO>
+public class UserFriendDTOView extends RelativeLayout
+        implements DTOView<UserFriendsDTO>, Checkable
 {
     private ImageView userFriendAvatar;
     private TextView userFriendName;
@@ -80,7 +82,13 @@ public class UserFriendDTOView extends RelativeLayout implements DTOView<UserFri
             displayFriendAvatar();
             displayFriendName();
             displayFriendSource();
+            displaySelectionState();
         }
+    }
+
+    private void displaySelectionState()
+    {
+        setBackgroundColor(!isChecked() ? getResources().getColor(R.color.white) : getResources().getColor(R.color.gray_normal));
     }
 
     private void displayFriendSource()
@@ -135,5 +143,30 @@ public class UserFriendDTOView extends RelativeLayout implements DTOView<UserFri
                     .transform(new RoundedShapeTransformation())
                     .into(userFriendAvatar);
         }
+    }
+
+    @Override public void invalidate()
+    {
+        displaySelectionState();
+        super.invalidate();
+    }
+
+    @Override public void setChecked(boolean checked)
+    {
+        if (userFriendDTO != null && checked != isChecked())
+        {
+            userFriendDTO.setSelected(checked);
+            invalidate();
+        }
+    }
+
+    @Override public boolean isChecked()
+    {
+        return userFriendDTO != null && userFriendDTO.isSelected();
+    }
+
+    @Override public void toggle()
+    {
+        setChecked(!isChecked());
     }
 }

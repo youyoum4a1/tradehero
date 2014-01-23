@@ -176,10 +176,13 @@
   <string name="search_friends">Search Friends</string>
   <string name="add_all">Add All</string>
   <string name="remove_all">Remove All</string>
-
   <!-- TimeDisplayViewHolder -->
   <string name="time_display_view_holder_format_day">%02d</string>
   <string name="time_display_view_holder_format_hour">%02d</string>
   <string name="time_display_view_holder_format_minute">%02d</string>
   <string name="time_display_view_holder_format_second">%02d</string>
+  <string name="retrieve_friends_failed">There was problem retrieving friend list</string>
+  <string name="action_canceled">Action canceled</string>
+  <string name="success">Success</string>
+  <string name="facebook_tradehero_refer_friend_message">Download TradeHero: make money copying top traders!</string>
 </resources>

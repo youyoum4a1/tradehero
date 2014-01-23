@@ -70,10 +70,11 @@
   <dimen name="invite_friend_vertical_padding">5dp</dimen>
   <dimen name="invite_friend_padding_bottom">@dimen/invite_friend_vertical_padding</dimen>
   <dimen name="invite_friend_announcement_vertical_padding">3dp</dimen>
-  <dimen name="refer_friend_action_button_horizontal_padding">3dp</dimen>
+  <dimen name="refer_friend_action_button_horizontal_padding">10dp</dimen>
   <dimen name="invite_friend_announcement_height">60dp</dimen>
   <dimen name="invite_friend_announcement_horizontal_padding">15dp</dimen>
   <dimen name="refer_friend_invite_button_padding">10dp</dimen>
   <dimen name="watchlist_item_shares_font_size">12sp</dimen>
+  <dimen name="refer_friend_action_button_vertical_padding">3dp</dimen>
 
 </resources>
