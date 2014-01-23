@@ -1,15 +1,15 @@
 package com.tradehero.th.fragments.leaderboard;
 
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
-import com.tradehero.th.api.leaderboard.LeaderboardDefDTO;
-import com.tradehero.th.api.leaderboard.LeaderboardDefKey;
-import com.tradehero.th.persistence.leaderboard.LeaderboardDefCache;
-import com.tradehero.th.widget.time.TimeDisplayViewHolder;
+import com.tradehero.th.api.competition.CompetitionDTO;
+import com.tradehero.th.api.competition.CompetitionId;
+import com.tradehero.th.api.competition.ProviderDTO;
+import com.tradehero.th.api.competition.ProviderId;
+import com.tradehero.th.persistence.competition.CompetitionCache;
+import com.tradehero.th.persistence.competition.ProviderCache;
 import javax.inject.Inject;
 
 /**
@@ -18,18 +18,25 @@ import javax.inject.Inject;
 public class CompetitionLeaderboardMarkUserListViewFragment extends LeaderboardMarkUserListViewFragment
 {
     public static final String TAG = CompetitionLeaderboardMarkUserListViewFragment.class.getSimpleName();
+    public static final String BUNDLE_KEY_PROVIDER_ID = CompetitionLeaderboardMarkUserListViewFragment.class.getName() + ".providerId";
+    public static final String BUNDLE_KEY_COMPETITION_ID = CompetitionLeaderboardMarkUserListViewFragment.class.getName() + ".competitionId";
 
     protected CompetitionLeaderboardTimedHeader headerView;
-    @Inject LeaderboardDefCache leaderboardDefCache;
-    protected LeaderboardDefDTO leaderboardDefDTO;
+    @Inject ProviderCache providerCache;
+    protected ProviderDTO providerDTO;
+    @Inject CompetitionCache competitionCache;
+    protected CompetitionDTO competitionDTO;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        int leaderboardId = getArguments().getInt(BUNDLE_KEY_LEADERBOARD_ID);
-        this.leaderboardDefDTO = leaderboardDefCache.get(new LeaderboardDefKey(leaderboardId));
-        THLog.d(TAG, "leaderboardId " + leaderboardId);
-        THLog.d(TAG, "leaderboardDefDTO " + leaderboardDefDTO);
+        ProviderId providerId = new ProviderId(getArguments().getBundle(BUNDLE_KEY_PROVIDER_ID));
+        providerDTO = providerCache.get(providerId);
+        THLog.d(TAG, "providerDTO " + providerDTO);
+
+        CompetitionId competitionId = new CompetitionId(getArguments().getBundle(BUNDLE_KEY_COMPETITION_ID));
+        competitionDTO = competitionCache.get(competitionId);
+        THLog.d(TAG, "competitionDTO " + competitionDTO);
     }
 
     @Override protected int getHeaderViewResId()
@@ -41,7 +48,8 @@ public class CompetitionLeaderboardMarkUserListViewFragment extends LeaderboardM
     {
         super.initHeaderView(headerView);
         this.headerView = (CompetitionLeaderboardTimedHeader) headerView;
-        this.headerView.setFutureDateToCountDownTo(leaderboardDefDTO.toUtcRestricted);
+        this.headerView.linkWith(providerDTO, true);
+        this.headerView.setCompetitionDTO(competitionDTO);
     }
 
     @Override public void onDestroyView()

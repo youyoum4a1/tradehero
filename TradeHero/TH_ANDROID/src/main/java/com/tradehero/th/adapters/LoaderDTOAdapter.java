@@ -61,7 +61,7 @@ public abstract class LoaderDTOAdapter<
             {
                 notifyDataSetChanged();
 
-                if (loader instanceof ListLoader)
+                if (loader instanceof ListLoader && callback != null)
                 {
                     callback.onLoadFinished((ListLoader<DTOType>) loader, data);
                 }

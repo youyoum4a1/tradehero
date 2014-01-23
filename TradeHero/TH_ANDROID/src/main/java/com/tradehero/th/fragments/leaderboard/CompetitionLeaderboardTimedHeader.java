@@ -3,11 +3,11 @@ package com.tradehero.th.fragments.leaderboard;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.LinearLayout;
-import com.tradehero.common.utils.THLog;
+import android.widget.TextView;
+import com.tradehero.th.R;
+import com.tradehero.th.api.competition.CompetitionDTO;
+import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.widget.time.TimeDisplayViewHolder;
-import java.util.Date;
-import java.util.Timer;
-import java.util.TimerTask;
 
 /**
  * Created by xavier on 1/23/14.
@@ -17,8 +17,11 @@ public class CompetitionLeaderboardTimedHeader extends LinearLayout
     public static final String TAG = CompetitionLeaderboardTimedHeader.class.getSimpleName();
     public static final long DEFAULT_UPDATE_MILLISEC_INTERVAL = 200;
 
+    protected TextView providerTitle;
+    protected TextView ruleDescription;
     protected TimeDisplayViewHolder timeDisplayViewHolder;
-    protected Date futureDateToCountDownTo;
+    protected ProviderDTO providerDTO;
+    protected CompetitionDTO competitionDTO;
     protected Runnable viewUpdater;
 
     //<editor-fold desc="Constructors">
@@ -44,12 +47,18 @@ public class CompetitionLeaderboardTimedHeader extends LinearLayout
     protected void init()
     {
         timeDisplayViewHolder = new TimeDisplayViewHolder(getContext());
-        futureDateToCountDownTo = new Date();
     }
 
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
+        fetchViews();
+    }
+
+    protected void fetchViews()
+    {
+        providerTitle = (TextView) findViewById(R.id.leaderboard_provider_title);
+        ruleDescription = (TextView) findViewById(R.id.competition_rule_desc);
         timeDisplayViewHolder.fetchViews(getRootView());
     }
 
@@ -61,7 +70,10 @@ public class CompetitionLeaderboardTimedHeader extends LinearLayout
         {
             @Override public void run()
             {
-                timeDisplayViewHolder.showDuration(futureDateToCountDownTo);
+                if (competitionDTO != null)
+                {
+                    timeDisplayViewHolder.showDuration(competitionDTO.leaderboard.toUtcRestricted);
+                }
                 postUpdateDurationIfCan();
             }
         };
@@ -80,8 +92,40 @@ public class CompetitionLeaderboardTimedHeader extends LinearLayout
         postDelayed(viewUpdater, DEFAULT_UPDATE_MILLISEC_INTERVAL);
     }
 
-    public void setFutureDateToCountDownTo(Date futureDateToCountDownTo)
+    public void linkWith(ProviderDTO providerDTO, boolean andDisplay)
     {
-        this.futureDateToCountDownTo = futureDateToCountDownTo;
+        this.providerDTO = providerDTO;
+        if (andDisplay)
+        {
+            displayProviderTitle();
+            displayRuleDescription();
+        }
+    }
+
+    public void setCompetitionDTO(CompetitionDTO competitionDTO)
+    {
+        this.competitionDTO = competitionDTO;
+    }
+
+    public void displayProviderTitle()
+    {
+        if (providerTitle != null)
+        {
+            if (providerDTO != null)
+            {
+                providerTitle.setText(providerDTO.name);
+            }
+        }
+    }
+
+    public void displayRuleDescription()
+    {
+        if (ruleDescription != null)
+        {
+            if (providerDTO != null)
+            {
+                ruleDescription.setText(providerDTO.ruleText);
+            }
+        }
     }
 }

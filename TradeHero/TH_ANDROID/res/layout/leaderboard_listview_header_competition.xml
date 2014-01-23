@@ -7,19 +7,19 @@
     android:layout_height="match_parent">
 
   <TextView
-      android:id="@+id/leaderboard_competition_title"
+      android:id="@+id/leaderboard_provider_title"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_gravity="center_horizontal"
       android:textStyle="bold"
-      android:text="Warrants Only"
+      android:text="@string/na"
       />
 
   <TextView android:id="@+id/leaderboard_marking_time"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_gravity="center_horizontal"
-      android:text="(as of 21 hours ago)"
+      android:text="@string/na"
       />
 
   <include
@@ -35,7 +35,7 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_gravity="center_horizontal"
-      android:text="3 warrants"
+      android:text="@string/na"
       />
 
 </com.tradehero.th.fragments.leaderboard.CompetitionLeaderboardTimedHeader>

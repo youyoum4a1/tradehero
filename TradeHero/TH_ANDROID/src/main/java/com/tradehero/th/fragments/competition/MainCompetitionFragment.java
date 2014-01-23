@@ -297,6 +297,8 @@ public class MainCompetitionFragment extends CompetitionFragment
         Bundle args = new Bundle();
         if (competitionZoneDTO.competitionDTO.leaderboard.isWithinUtcRestricted())
         {
+            args.putBundle(CompetitionLeaderboardMarkUserListViewFragment.BUNDLE_KEY_PROVIDER_ID, providerId.getArgs());
+            args.putBundle(CompetitionLeaderboardMarkUserListViewFragment.BUNDLE_KEY_COMPETITION_ID, competitionZoneDTO.competitionDTO.getCompetitionId().getArgs());
             args.putInt(CompetitionLeaderboardMarkUserListViewFragment.BUNDLE_KEY_LEADERBOARD_ID, leaderboardDefDTO.id);
             args.putString(CompetitionLeaderboardMarkUserListViewFragment.BUNDLE_KEY_LEADERBOARD_DEF_TITLE, leaderboardDefDTO.name);
             args.putInt(CompetitionLeaderboardMarkUserListViewFragment.BUNDLE_KEY_CURRENT_SORT_TYPE, leaderboardDefDTO.getDefaultSortType().getFlag());
