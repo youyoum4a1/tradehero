@@ -41,6 +41,10 @@ public class THSignedNumber
         {
             this.currency = SecurityUtils.DEFAULT_VIRTUAL_CASH_CURRENCY_DISPLAY;
         }
+        else
+        {
+            this.currency = currency;
+        }
     }
 
     public int getColor()
@@ -101,7 +105,10 @@ public class THSignedNumber
     private String signedFormattedMoney(int precision)
     {
         sign = withSign ? NumberDisplayUtils.getArrowPrefix(number) : "";
-
+        if (precision < 0)
+        {
+            precision = precisionFromNumber();
+        }
         StringBuilder sb = new StringBuilder();
         sb.append("#,###");
         if (precision > 0)
@@ -142,6 +149,10 @@ public class THSignedNumber
         else if (absNumber >= 1)
         {
             precision = 3;
+        }
+        else
+        {
+            precision = 4;
         }
         return precision;
     }

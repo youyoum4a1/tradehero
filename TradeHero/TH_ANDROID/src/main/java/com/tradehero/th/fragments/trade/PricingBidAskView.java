@@ -12,6 +12,8 @@ import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.position.SecurityPositionDetailDTO;
 import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
+import com.tradehero.th.utils.SecurityUtils;
+import com.tradehero.th.utils.THSignedNumber;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 9/23/13 Time: 2:55 PM To change this template use File | Settings | File Templates. */
 public class PricingBidAskView extends LinearLayout implements DTOView<SecurityCompactDTO>
@@ -185,9 +187,8 @@ public class PricingBidAskView extends LinearLayout implements DTOView<SecurityC
             }
             else
             {
-                lastPrice.setText(String.format("%s %.2f",
-                        getResources().getString(R.string.usd_price_unit_left),
-                        (buy ? quoteDTO.ask : quoteDTO.bid) * quoteDTO.toUSDRate));
+                THSignedNumber thSignedNumber = new THSignedNumber(THSignedNumber.TYPE_MONEY, (buy ? quoteDTO.ask : quoteDTO.bid) * quoteDTO.toUSDRate, false);
+                lastPrice.setText(String.format("= %s", thSignedNumber.toString()));
             }
         }
     }
@@ -232,7 +233,7 @@ public class PricingBidAskView extends LinearLayout implements DTOView<SecurityC
 
     public String getLastPriceText()
     {
-        return String.format("%s%s", getCurrencyDisplay(), buy ? getAskPriceText() : getBidPriceText());
+        return String.format("%s %s", SecurityUtils.DEFAULT_VIRTUAL_CASH_CURRENCY_DISPLAY,  buy ? getAskPriceText() : getBidPriceText());
     }
 
     public String getCurrencyDisplay()
@@ -250,7 +251,9 @@ public class PricingBidAskView extends LinearLayout implements DTOView<SecurityC
         {
             return "N/A";
         }
-        return String.format("%.2f", quoteDTO.ask);
+
+        THSignedNumber thSignedNumber = new THSignedNumber(THSignedNumber.TYPE_MONEY, quoteDTO.ask, false, "");
+        return thSignedNumber.toString();
     }
 
     public String getBidPriceText()
@@ -263,6 +266,7 @@ public class PricingBidAskView extends LinearLayout implements DTOView<SecurityC
         {
             return "N/A";
         }
-        return String.format("%.2f", quoteDTO.bid);
+        THSignedNumber thSignedNumber = new THSignedNumber(THSignedNumber.TYPE_MONEY, quoteDTO.bid, false, "");
+        return thSignedNumber.toString();
     }
 }

@@ -15,6 +15,7 @@ import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.utils.DateUtils;
+import com.tradehero.th.utils.THSignedNumber;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 9/23/13 Time: 3:44 PM To change this template use File | Settings | File Templates. */
 public class TradeQuantityView extends TableLayout
@@ -265,14 +266,8 @@ public class TradeQuantityView extends TableLayout
         {
             // TODO Take the cash available from portfolioDTO, not userProfileDTO
             double cashAvailable = userProfileDTO.portfolio.cashBalance;
-            if (cashAvailable == (int) cashAvailable)
-            {
-                mCashAvailable.setText(String.format("US$ %,d", (int) cashAvailable));
-            }
-            else
-            {
-                mCashAvailable.setText(String.format("US$ %,.2f", cashAvailable));
-            }
+            THSignedNumber thSignedNumber = new THSignedNumber(THSignedNumber.TYPE_MONEY, cashAvailable, false);
+            mCashAvailable.setText(thSignedNumber.toString());
         }
     }
 
@@ -337,11 +332,13 @@ public class TradeQuantityView extends TableLayout
         {
             if (buy && quoteDTO != null && quoteDTO.ask != null && quoteDTO.toUSDRate != null)
             {
-                mTradeValue.setText(String.format("US$ %,.2f", shareQuantity * quoteDTO.ask * quoteDTO.toUSDRate));
+                THSignedNumber thTradeValue = new THSignedNumber(THSignedNumber.TYPE_MONEY, shareQuantity * quoteDTO.ask * quoteDTO.toUSDRate, false);
+                mTradeValue.setText(thTradeValue.toString());
             }
             else if (!buy && quoteDTO != null && quoteDTO.bid != null && quoteDTO.toUSDRate != null)
             {
-                mTradeValue.setText(String.format("US$ %,.2f", shareQuantity * quoteDTO.bid * quoteDTO.toUSDRate));
+                THSignedNumber thTradeValue = new THSignedNumber(THSignedNumber.TYPE_MONEY, shareQuantity * quoteDTO.bid * quoteDTO.toUSDRate, false);
+                mTradeValue.setText(thTradeValue.toString());
             }
             else
             {

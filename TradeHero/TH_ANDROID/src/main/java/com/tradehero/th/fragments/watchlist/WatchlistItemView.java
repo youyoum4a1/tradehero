@@ -39,6 +39,7 @@ import com.tradehero.th.network.service.WatchlistService;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
 import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th.utils.THSignedNumber;
 import dagger.Lazy;
 import java.text.DecimalFormat;
 import javax.inject.Inject;
@@ -300,9 +301,11 @@ public class WatchlistItemView extends FrameLayout implements DTOView<SecurityId
         {
             shares = 0;
         }
+
+        THSignedNumber thSignedNumber = new THSignedNumber(THSignedNumber.TYPE_MONEY, formattedPrice, false, currencyDisplay);
         return Html.fromHtml(String.format(
                 getContext().getString(R.string.watchlist_number_of_shares),
-                shares, currencyDisplay, formattedPrice
+                shares, thSignedNumber.toString()
         ));
     }
 
