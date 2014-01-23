@@ -185,4 +185,6 @@
   <string name="action_canceled">Action canceled</string>
   <string name="success">Success</string>
   <string name="facebook_tradehero_refer_friend_message">Download TradeHero: make money copying top traders!</string>
+  <string name="request_canceled">Request canceled</string>
+  <string name="request_sent">Request sent</string>
 </resources>

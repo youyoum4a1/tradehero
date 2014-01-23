@@ -10,7 +10,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
@@ -43,10 +45,8 @@ import com.tradehero.th.utils.StringUtils;
 import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Stack;
 import javax.inject.Inject;
 import org.json.JSONObject;
-import retrofit.Callback;
 import retrofit.client.Response;
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 
@@ -54,6 +54,9 @@ public class ReferralFragment extends DashboardFragment
 {
     private static final int MIN_LENGTH_TEXT_TO_SEARCH = 0;
     private static final String TAG = ReferralFragment.class.getName();
+    private static final int MAX_FACEBOOK_MESSAGE_LENGTH = 60;
+    private static final int MAX_FACEBOOK_FRIENDS_RECEIVERS = 50;
+
     @Inject protected CurrentUserBaseKeyHolder currentUserBaseKeyHolder;
     @Inject protected Lazy<UserService> userService;
     @Inject protected Lazy<SocialService> socialService;
@@ -71,6 +74,9 @@ public class ReferralFragment extends DashboardFragment
 
     private List<UserFriendsDTO> selectedLinkedInFriends;
     private List<UserFriendsDTO> selectedFacebookFriends;
+    private ToggleButton fbToggle;
+    private ToggleButton liToggle;
+    private ToggleButton contactToggle;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -114,6 +120,22 @@ public class ReferralFragment extends DashboardFragment
         stickyListHeadersListView.setOnItemClickListener(itemClickListener);
 
         searchTextView = (TextView) headerView.findViewById(R.id.invite_friend_search);
+        fbToggle = (ToggleButton) headerView.findViewById(R.id.invite_friend_facebook_toggle);
+        liToggle = (ToggleButton) headerView.findViewById(R.id.invite_friend_linkedin_toggle);
+        contactToggle = (ToggleButton) headerView.findViewById(R.id.invite_friend_contact_toggle);
+
+        if (fbToggle != null)
+        {
+            fbToggle.setOnCheckedChangeListener(onToggleFriendListListener);
+        }
+        if (liToggle != null)
+        {
+            liToggle.setOnCheckedChangeListener(onToggleFriendListListener);
+        }
+        if (contactToggle != null)
+        {
+            contactToggle.setOnCheckedChangeListener(onToggleFriendListListener);
+        }
     }
 
     private void inviteFriends()
@@ -147,7 +169,23 @@ public class ReferralFragment extends DashboardFragment
 
     @Override public void onDestroy()
     {
-        stickyListHeadersListView.setOnItemClickListener(null);
+        if (stickyListHeadersListView != null)
+        {
+            stickyListHeadersListView.setOnItemClickListener(null);
+        }
+
+        if (fbToggle != null)
+        {
+            fbToggle.setOnCheckedChangeListener(null);
+        }
+        if (liToggle != null)
+        {
+            liToggle.setOnCheckedChangeListener(null);
+        }
+        if (contactToggle != null)
+        {
+            contactToggle.setOnCheckedChangeListener(null);
+        }
         super.onDestroy();
     }
 
@@ -164,15 +202,6 @@ public class ReferralFragment extends DashboardFragment
         getProgressDialog().show();
         userService.get().getFriends(currentUserBaseKeyHolder.getCurrentUserBaseKey().key,
                 getFriendsCallback);
-    }
-
-    private void resetSearchText()
-    {
-        if (searchTextView != null)
-        {
-            searchTextView.setText("");
-            searchTextView.addTextChangedListener(searchTextWatcher);
-        }
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
@@ -207,24 +236,6 @@ public class ReferralFragment extends DashboardFragment
         }
     }
 
-    private THCallback<List<UserFriendsDTO>> getFriendsCallback = new THCallback<List<UserFriendsDTO>>()
-    {
-        @Override protected void finish()
-        {
-            getProgressDialog().dismiss();
-        }
-
-        @Override protected void success(List<UserFriendsDTO> userFriendsDTOs, THResponse thResponse)
-        {
-            handleFriendListReceived(userFriendsDTOs);
-        }
-
-        @Override protected void failure(THException ex)
-        {
-            THToast.show(getString(R.string.retrieve_friends_failed));
-        }
-    };
-
     //<editor-fold desc="Handle item selection">
     private AdapterView.OnItemClickListener itemClickListener = new AdapterView.OnItemClickListener()
     {
@@ -235,6 +246,30 @@ public class ReferralFragment extends DashboardFragment
                 UserFriendDTOView userFriendDTOView = ((UserFriendDTOView) view);
                 userFriendDTOView.toggle();
                 checkIfAbleToSendInvitation();
+            }
+        }
+    };
+
+    private CompoundButton.OnCheckedChangeListener onToggleFriendListListener = new CompoundButton.OnCheckedChangeListener()
+    {
+        @Override public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
+        {
+            if (buttonView != null && referFriendListAdapter != null)
+            {
+                switch (buttonView.getId())
+                {
+                    case R.id.invite_friend_contact_toggle:
+
+                        break;
+                    case R.id.invite_friend_facebook_toggle:
+                        referFriendListAdapter.toggleFacebookSelection(isChecked);
+                        break;
+                    case R.id.invite_friend_linkedin_toggle:
+                        referFriendListAdapter.toggleLinkedInSelection(isChecked);
+                        break;
+                }
+                checkIfAbleToSendInvitation();
+                referFriendListAdapter.notifyDataSetChanged();
             }
         }
     };
@@ -260,6 +295,17 @@ public class ReferralFragment extends DashboardFragment
     }
 
     //</editor-fold>
+
+    //<editor-fold desc="Search">
+
+    private void resetSearchText()
+    {
+        if (searchTextView != null)
+        {
+            searchTextView.setText("");
+            searchTextView.addTextChangedListener(searchTextWatcher);
+        }
+    }
 
     private TextWatcher searchTextWatcher = new TextWatcher()
     {
@@ -302,6 +348,34 @@ public class ReferralFragment extends DashboardFragment
         referFriendListAdapter.filter(searchText);
         referFriendListAdapter.notifyDataSetChanged();
     }
+    //</editor-fold>
+
+    //<editor-fold desc="Tab bar informer">
+    @Override public boolean isTabBarVisible()
+    {
+        return false;
+    }
+    //</editor-fold>
+
+    //<editor-fold desc="Callback for authentication & rest service">
+
+    private THCallback<List<UserFriendsDTO>> getFriendsCallback = new THCallback<List<UserFriendsDTO>>()
+    {
+        @Override protected void finish()
+        {
+            getProgressDialog().dismiss();
+        }
+
+        @Override protected void success(List<UserFriendsDTO> userFriendsDTOs, THResponse thResponse)
+        {
+            handleFriendListReceived(userFriendsDTOs);
+        }
+
+        @Override protected void failure(THException ex)
+        {
+            THToast.show(getString(R.string.retrieve_friends_failed));
+        }
+    };
 
     private THCallback<Response> inviteFriendCallback = new THCallback<Response>()
     {
@@ -320,6 +394,7 @@ public class ReferralFragment extends DashboardFragment
             // TODO failed
         }
     };
+
     private LogInCallback socialNetworkCallback = new LogInCallback()
     {
         @Override public void done(UserBaseDTO user, THException ex)
@@ -348,13 +423,6 @@ public class ReferralFragment extends DashboardFragment
         return new SocialLinkingCallback();
     }
 
-    //<editor-fold desc="Tab bar informer">
-    @Override public boolean isTabBarVisible()
-    {
-        return false;
-    }
-    //</editor-fold>
-
     private class SocialLinkingCallback extends THCallback<UserProfileDTO>
     {
 
@@ -375,7 +443,9 @@ public class ReferralFragment extends DashboardFragment
             progressDialog.dismiss();
         }
     }
+    //</editor-fold>
 
+    //<editor-fold desc="Sending actions">
     private void sendInvitation()
     {
         if (currentSocialNetworkConnect != null)
@@ -407,38 +477,47 @@ public class ReferralFragment extends DashboardFragment
 
     private void sendRequestDialog()
     {
-        String[] fbIds = new String[selectedFacebookFriends.size()];
+        StringBuilder stringBuilder = new StringBuilder();
         if (selectedFacebookFriends != null && !selectedFacebookFriends.isEmpty())
         {
-            for (int i=0; i<selectedFacebookFriends.size(); ++i)
+            for (int i = 0; i < selectedFacebookFriends.size() && i < MAX_FACEBOOK_FRIENDS_RECEIVERS; ++i)
             {
-                fbIds[i] = selectedFacebookFriends.get(i).fbId;
+                stringBuilder.append(selectedFacebookFriends.get(i).fbId).append(',');
             }
         }
+        // remove the last comma
+        if (stringBuilder.length() > 0)
+        {
+            stringBuilder.deleteCharAt(stringBuilder.length() - 1);
+        }
+        THLog.d(TAG, "list of fbIds: " + stringBuilder.toString());
 
         Bundle params = new Bundle();
-        params.putString("message", getString(R.string.facebook_tradehero_refer_friend_message));
-        params.putString("to", StringUtils.join(",", fbIds));
+        String messageToFacebookFriends = getString(R.string.facebook_tradehero_refer_friend_message);
+        if (messageToFacebookFriends.length() > MAX_FACEBOOK_MESSAGE_LENGTH)
+        {
+            messageToFacebookFriends = messageToFacebookFriends.substring(0, MAX_FACEBOOK_MESSAGE_LENGTH);
+        }
 
-        WebDialog requestsDialog = (
-                new WebDialog.RequestsDialogBuilder(getActivity(),
-                        Session.getActiveSession(),
-                        params))
+        params.putString("message", messageToFacebookFriends);
+        params.putString("to", stringBuilder.toString());
+
+        WebDialog requestsDialog = (new WebDialog.RequestsDialogBuilder(getActivity(), Session.getActiveSession(), params))
                 .setOnCompleteListener(new WebDialog.OnCompleteListener()
                 {
 
                     @Override
-                    public void onComplete(Bundle values,FacebookException error)
+                    public void onComplete(Bundle values, FacebookException error)
                     {
                         if (error != null)
                         {
                             if (error instanceof FacebookOperationCanceledException)
                             {
-                                THToast.show("Request cancelled");
+                                THToast.show(R.string.request_canceled);
                             }
                             else
                             {
-                                THToast.show("Network Error");
+                                THToast.show(new THException(error));
                             }
                         }
                         else
@@ -446,11 +525,11 @@ public class ReferralFragment extends DashboardFragment
                             final String requestId = values.getString("request");
                             if (requestId != null)
                             {
-                                THToast.show("Request sent");
+                                THToast.show(R.string.request_sent);
                             }
                             else
                             {
-                                THToast.show("Request cancelled");
+                                THToast.show(R.string.request_canceled);
                             }
                         }
                     }
@@ -458,4 +537,5 @@ public class ReferralFragment extends DashboardFragment
                 .build();
         requestsDialog.show();
     }
+    //</editor-fold>
 }

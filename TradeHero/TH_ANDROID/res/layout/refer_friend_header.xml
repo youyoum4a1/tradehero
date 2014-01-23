@@ -10,6 +10,7 @@
       android:gravity="center"
       >
     <ToggleButton
+        android:id="@+id/invite_friend_facebook_toggle"
         android:layout_width="100sp"
         android:layout_height="wrap_content"
         android:drawableTop="@drawable/invite_friend_facebook_large"
@@ -20,6 +21,7 @@
         android:background="@color/transparent"
         />
     <ToggleButton
+        android:id="@+id/invite_friend_linkedin_toggle"
         android:layout_width="100sp"
         android:layout_height="wrap_content"
         android:drawableTop="@drawable/invite_friend_linked_in_large"
@@ -30,6 +32,7 @@
         android:background="@color/transparent"
         />
     <ToggleButton
+        android:id="@+id/invite_friend_contact_toggle"
         android:layout_width="100sp"
         android:layout_height="wrap_content"
         android:drawableTop="@drawable/invite_friend_contact_large"

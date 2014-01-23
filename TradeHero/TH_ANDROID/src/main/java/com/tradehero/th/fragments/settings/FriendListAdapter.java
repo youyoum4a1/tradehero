@@ -284,6 +284,28 @@ public class FriendListAdapter extends ArrayDTOAdapter<UserFriendsDTO, UserFrien
         return selectedItems;
     }
 
+    public void toggleLinkedInSelection(boolean isSelected)
+    {
+        for (UserFriendsDTO userFriendsDTO: originalItems)
+        {
+            if (userFriendsDTO.liId != null)
+            {
+                userFriendsDTO.setSelected(isSelected);
+            }
+        }
+    }
+
+    public void toggleFacebookSelection(boolean isSelected)
+    {
+        for (UserFriendsDTO userFriendsDTO: originalItems)
+        {
+            if (userFriendsDTO.fbId != null)
+            {
+                userFriendsDTO.setSelected(isSelected);
+            }
+        }
+    }
+
     private static class SectionViewHolder
     {
         TextView labelText = null;
