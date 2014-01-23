@@ -41,7 +41,6 @@ import com.tradehero.th.network.service.UserService;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.FacebookUtils;
 import com.tradehero.th.utils.LinkedInUtils;
-import com.tradehero.th.utils.StringUtils;
 import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.List;
@@ -146,6 +145,8 @@ public class ReferralFragment extends DashboardFragment
             if (selectedLinkedInFriends.size() > 0)
             {
                 currentSocialNetworkConnect = SocialNetworkEnum.LI;
+
+                getProgressDialog().show();
                 linkedInUtils.get().logIn(getActivity(), socialNetworkCallback);
             }
 
@@ -185,6 +186,11 @@ public class ReferralFragment extends DashboardFragment
         if (contactToggle != null)
         {
             contactToggle.setOnCheckedChangeListener(null);
+        }
+
+        if (inviteFriendButton != null)
+        {
+            inviteFriendButton.setOnClickListener(null);
         }
         super.onDestroy();
     }
@@ -514,10 +520,6 @@ public class ReferralFragment extends DashboardFragment
                             if (error instanceof FacebookOperationCanceledException)
                             {
                                 THToast.show(R.string.request_canceled);
-                            }
-                            else
-                            {
-                                THToast.show(new THException(error));
                             }
                         }
                         else

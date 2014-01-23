@@ -145,18 +145,18 @@ public class UserFriendDTOView extends RelativeLayout
         }
     }
 
-    @Override public void invalidate()
-    {
-        displaySelectionState();
-        super.invalidate();
-    }
+    //@Override public void invalidate()
+    //{
+    //    displaySelectionState();
+    //    super.invalidate();
+    //}
 
     @Override public void setChecked(boolean checked)
     {
         if (userFriendDTO != null && checked != isChecked())
         {
             userFriendDTO.setSelected(checked);
-            invalidate();
+            displaySelectionState();
         }
     }
 
