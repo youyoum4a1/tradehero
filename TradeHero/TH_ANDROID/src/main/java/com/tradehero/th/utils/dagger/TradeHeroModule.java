@@ -25,6 +25,7 @@ import com.tradehero.th.billing.googleplay.THIABPurchaseFetcher;
 import com.tradehero.th.billing.googleplay.THIABPurchaseReporter;
 import com.tradehero.th.billing.googleplay.THIABPurchaser;
 import com.tradehero.th.billing.googleplay.THInventoryFetchMilestone;
+import com.tradehero.th.fragments.competition.MacquarieSecurityItemViewAdapter;
 import com.tradehero.th.fragments.leaderboard.CompetitionLeaderboardMarkUserListViewFragment;
 import com.tradehero.th.fragments.security.WarrantInfoValueFragment;
 import com.tradehero.th.fragments.settings.ReferralFragment;
@@ -177,6 +178,7 @@ import org.ocpsoft.prettytime.PrettyTime;
                 TrendingFragment.class,
                 TrendingFilterSelectorView.class,
                 SecurityListPagedLoader.class,
+                MacquarieSecurityItemViewAdapter.class,
                 SecurityItemView.class,
                 WarrantSecurityItemView.class,
                 SearchStockPeopleFragment.class,

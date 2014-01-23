@@ -91,14 +91,14 @@ import javax.inject.Singleton;
         return previousValues;
     }
 
-    public List<SecurityCompactDTO> get(List<SecurityId> keys)
+    public ArrayList<SecurityCompactDTO> get(List<SecurityId> keys)
     {
         if (keys == null)
         {
             return null;
         }
 
-        List<SecurityCompactDTO> values = new ArrayList<>();
+        ArrayList<SecurityCompactDTO> values = new ArrayList<>();
 
         for (SecurityId securityId: keys)
         {

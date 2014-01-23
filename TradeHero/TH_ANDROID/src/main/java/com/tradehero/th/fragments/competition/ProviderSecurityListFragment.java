@@ -12,6 +12,7 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.competition.BasicProviderSecurityListType;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderId;
+import com.tradehero.th.api.competition.ProviderIdConstants;
 import com.tradehero.th.api.competition.ProviderSecurityListType;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.fragments.security.SecurityListFragment;
@@ -119,6 +120,15 @@ public class ProviderSecurityListFragment extends SecurityListFragment
 
     @Override protected SecurityItemViewAdapter createSecurityItemViewAdapter()
     {
+        if (providerId != null && providerId.key.equals(ProviderIdConstants.PROVIDER_ID_MACQUARIE_WARRANTS))
+        {
+            THLog.d(TAG, "Macquarie adapter");
+            return new MacquarieSecurityItemViewAdapter(
+                    getActivity(),
+                    getActivity().getLayoutInflater(),
+                    securityItemLayoutFactory.getProviderLayout(providerId));
+        }
+        THLog.d(TAG, "Regular adapter");
         return new SecurityItemViewAdapter(
                 getActivity(),
                 getActivity().getLayoutInflater(),
