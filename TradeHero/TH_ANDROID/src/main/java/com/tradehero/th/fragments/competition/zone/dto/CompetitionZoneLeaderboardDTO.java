@@ -16,4 +16,13 @@ public class CompetitionZoneLeaderboardDTO extends CompetitionZoneDTO
         super(title, description);
         this.competitionDTO = competitionDTO;
     }
+
+    public Boolean isActive()
+    {
+        if (competitionDTO == null || competitionDTO.leaderboard == null)
+        {
+            return null;
+        }
+        return competitionDTO.leaderboard.isWithinUtcRestricted();
+    }
 }
