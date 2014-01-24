@@ -192,9 +192,9 @@ public class SearchStockPeopleFragment extends DashboardFragment
         mSearchTypeSpinner = (Spinner) securitySearchElements.getActionView().findViewById(R.id.spinner);
         if (mSearchTypeSpinner != null)
         {
-            mSearchTypeSpinner.setVisibility(shouldDisableSearchTypeOption ? View.GONE : View.VISIBLE);
             mSearchTypeSpinner.setAdapter(mSearchTypeSpinnerAdapter);
             mSearchTypeSpinner.setOnItemSelectedListener(new SearchTypeSpinnerOnItemClickListener());
+            mSearchTypeSpinner.setVisibility(shouldDisableSearchTypeOption ? View.GONE : View.VISIBLE);
         }
 
         mSearchTextWatcher = new SearchTextWatcher();
@@ -218,7 +218,7 @@ public class SearchStockPeopleFragment extends DashboardFragment
         if (arguments != null)
         {
             String callerClassName = arguments.getString(BUNDLE_KEY_CALLER_FRAGMENT);
-            if (callerClassName != null && callerClassName.equalsIgnoreCase(WatchlistPositionFragment.class.getName()) && mSearchTypeSpinner != null)
+            if (callerClassName != null && callerClassName.equalsIgnoreCase(WatchlistPositionFragment.class.getName()))
             {
                 shouldDisableSearchTypeOption = true;
             }
