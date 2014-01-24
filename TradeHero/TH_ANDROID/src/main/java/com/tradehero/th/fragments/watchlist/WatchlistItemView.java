@@ -24,7 +24,6 @@ import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.SecurityIdList;
-import com.tradehero.th.api.security.SecurityMediaDTO;
 import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
 import com.tradehero.th.api.watchlist.WatchlistPositionDTO;
 import com.tradehero.th.base.Navigator;

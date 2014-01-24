@@ -55,6 +55,11 @@ abstract public class PagedDTOCacheLoader<
         value = null;
     }
 
+    public DTOKeyType getQueryKey()
+    {
+        return queryKey;
+    }
+
     public boolean isQuerying()
     {
         return this.querying;

@@ -4,13 +4,13 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
+import android.widget.ArrayAdapter;
 import com.tradehero.th.api.DTOView;
 
 /**
  * Created with IntelliJ IDEA. User: tho Date: 12/10/13 Time: 4:07 PM Copyright (c) TradeHero
  */
-public abstract class DTOAdapter<T, V extends DTOView<T>> extends BaseAdapter
+public abstract class DTOAdapter<T, V extends DTOView<T>> extends ArrayAdapter
 {
     protected final LayoutInflater inflater;
     protected final Context context;
@@ -18,7 +18,7 @@ public abstract class DTOAdapter<T, V extends DTOView<T>> extends BaseAdapter
 
     public DTOAdapter(Context context, LayoutInflater inflater, int layoutResourceId)
     {
-        super();
+        super(context, layoutResourceId);
         this.context = context;
         this.inflater = inflater;
         this.layoutResourceId = layoutResourceId;

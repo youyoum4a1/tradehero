@@ -11,7 +11,6 @@ import com.tradehero.th.persistence.security.SecurityCompactListCache;
 import dagger.Lazy;
 import javax.inject.Inject;
 
-
 /**
  * Created by xavier on 12/13/13.
  */

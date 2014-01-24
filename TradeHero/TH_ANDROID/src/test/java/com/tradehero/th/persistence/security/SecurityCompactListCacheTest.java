@@ -1,14 +1,8 @@
 package com.tradehero.th.persistence.security;
 
-import android.content.SharedPreferences;
-import com.tradehero.common.utils.THJsonAdapter;
 import com.tradehero.th.api.security.SecurityIdList;
 import com.tradehero.th.api.security.TrendingBasicSecurityListType;
 import com.tradehero.th.api.security.TrendingSecurityListType;
-import com.tradehero.th.base.Application;
-import com.tradehero.th.base.THUser;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
