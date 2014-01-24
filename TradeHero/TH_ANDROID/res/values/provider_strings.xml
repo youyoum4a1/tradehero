@@ -12,6 +12,8 @@
   <string name="provider_competition_rules_title">Competition Rules</string>
   <string name="provider_competition_terms_title">Terms &amp; Conditions</string>
 
+  <string name="provider_security_list_search_hint">Filter By Underlying Name or Code</string>
+
   <string name="competition_leaderboard_timer_time_left_1">TIME</string>
   <string name="competition_leaderboard_timer_time_left_2">LEFT</string>
   <string name="competition_leaderboard_timer_days">DAYS</string>

@@ -71,8 +71,6 @@ public class TrendingFragment extends SecurityListFragment
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        //THLog.d(TAG, "onCreateView");
-
         View view = inflater.inflate(R.layout.fragment_trending, container, false);
         initViews(view);
         return view;
@@ -81,11 +79,6 @@ public class TrendingFragment extends SecurityListFragment
     @Override protected void initViews(View view)
     {
         super.initViews(view);
-
-        if (securityListView != null)
-        {
-            securityListView.setOnItemClickListener(new OnSecurityViewClickListener());
-        }
 
         this.onFilterTypeChangedListener = new TrendingOnFilterTypeChangedListener();
         this.filterSelectorView = (TrendingFilterSelectorView) view.findViewById(R.id.trending_filter_selector_view);
@@ -96,11 +89,6 @@ public class TrendingFragment extends SecurityListFragment
         }
 
         fetchExchangeList();
-    }
-
-    @Override protected SecurityItemViewAdapter createSecurityItemViewAdapter()
-    {
-        return new SecurityItemViewAdapter(getActivity(), getActivity().getLayoutInflater(), R.layout.trending_security_item);
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
@@ -144,6 +132,16 @@ public class TrendingFragment extends SecurityListFragment
         exchangeListTypeCacheListener = null;
 
         super.onDestroyView();
+    }
+
+    @Override protected OnItemClickListener createOnItemClickListener()
+    {
+        return new OnSecurityViewClickListener();
+    }
+
+    @Override protected SecurityItemViewAdapter createSecurityItemViewAdapter()
+    {
+        return new SecurityItemViewAdapter(getActivity(), getActivity().getLayoutInflater(), R.layout.trending_security_item);
     }
 
     @Override public int getSecurityIdListLoaderId()

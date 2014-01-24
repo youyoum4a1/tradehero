@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.competition;
 
 import android.os.Bundle;
+import android.support.v4.content.Loader;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,9 +16,13 @@ import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.competition.ProviderIdConstants;
 import com.tradehero.th.api.competition.ProviderSecurityListType;
 import com.tradehero.th.api.security.SecurityId;
+import com.tradehero.th.api.security.SecurityIdList;
+import com.tradehero.th.fragments.competition.macquarie.MacquarieSecurityItemViewAdapter;
 import com.tradehero.th.fragments.security.SecurityListFragment;
 import com.tradehero.th.fragments.trade.BuySellFragment;
 import com.tradehero.th.fragments.trending.SecurityItemViewAdapter;
+import com.tradehero.th.loaders.security.SecurityListPagedLoader;
+import com.tradehero.th.loaders.security.macquarie.MacquarieSecurityListPagedLoader;
 import com.tradehero.th.persistence.competition.ProviderCache;
 import javax.inject.Inject;
 
@@ -60,21 +65,9 @@ public class ProviderSecurityListFragment extends SecurityListFragment
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        //THLog.d(TAG, "onCreateView");
-
         View view = inflater.inflate(R.layout.fragment_provider_security_list, container, false);
         initViews(view);
         return view;
-    }
-
-    @Override protected void initViews(View view)
-    {
-        super.initViews(view);
-
-        if (securityListView != null)
-        {
-            securityListView.setOnItemClickListener(new OnSecurityViewClickListener());
-        }
     }
 
     @Override public void onStart()
@@ -84,6 +77,12 @@ public class ProviderSecurityListFragment extends SecurityListFragment
         this.detachProviderFetchTask();
         this.providerCacheFetchTask = providerCache.getOrFetch(this.providerId, this.providerCacheListener);
         this.providerCacheFetchTask.execute();
+        //forceInitialLoad();
+    }
+
+    @Override public void onResume()
+    {
+        super.onResume();
         forceInitialLoad();
     }
 
@@ -109,13 +108,22 @@ public class ProviderSecurityListFragment extends SecurityListFragment
         this.providerCacheFetchTask = null;
     }
 
+    protected void prepareSecurityLoader()
+    {
+        getActivity().getSupportLoaderManager().initLoader(getSecurityIdListLoaderId(), null, new ProviderSecurityListLoaderCallback());
+    }
+
     protected void linkWith(ProviderDTO providerDTO, boolean andDisplay)
     {
         this.providerDTO = providerDTO;
         if (andDisplay)
         {
-
         }
+    }
+
+    @Override protected AdapterView.OnItemClickListener createOnItemClickListener()
+    {
+        return new OnSecurityViewClickListener();
     }
 
     @Override protected SecurityItemViewAdapter createSecurityItemViewAdapter()
@@ -164,6 +172,31 @@ public class ProviderSecurityListFragment extends SecurityListFragment
         {
             THToast.show(getString(R.string.error_fetch_provider_info));
             THLog.e(TAG, "Error fetching the provider info " + key, error);
+        }
+    }
+
+    protected class ProviderSecurityListLoaderCallback extends SecurityListLoaderCallback
+    {
+        @Override public Loader<SecurityIdList> onCreateLoader(int id, Bundle args)
+        {
+            if (id == getSecurityIdListLoaderId())
+            {
+                SecurityListPagedLoader loader;
+                // TODO remove this HACK
+                if (providerId.key.equals(ProviderIdConstants.PROVIDER_ID_MACQUARIE_WARRANTS))
+                {
+                    THLog.w(TAG, "Passing Macquarie-specific loader");
+                    loader = new MacquarieSecurityListPagedLoader(getActivity());
+                }
+                else
+                {
+                    loader = new SecurityListPagedLoader(getActivity());
+                }
+                loader.setQueryingChangedListenerWeak(queryingChangedListener);
+                loader.setNoMorePagesChangedListenerWeak(noMorePagesChangedListener);
+                return loader;
+            }
+            throw new IllegalStateException("Unhandled loader id " + id);
         }
     }
 

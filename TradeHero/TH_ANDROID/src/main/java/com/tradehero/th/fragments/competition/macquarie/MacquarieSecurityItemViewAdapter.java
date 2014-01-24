@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.competition;
+package com.tradehero.th.fragments.competition.macquarie;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -11,7 +11,6 @@ import com.tradehero.th.fragments.security.SecurityItemView;
 import com.tradehero.th.fragments.trending.SecurityItemViewAdapter;
 import com.tradehero.th.models.security.WarrantDTOUnderlyerTypeComparator;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
-import com.tradehero.th.utils.DaggerUtils;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeSet;
@@ -29,7 +28,6 @@ public class MacquarieSecurityItemViewAdapter extends SecurityItemViewAdapter
     public MacquarieSecurityItemViewAdapter(Context context, LayoutInflater inflater, int layoutResourceId)
     {
         super(context, inflater, layoutResourceId);
-        DaggerUtils.inject(this);
     }
     //</editor-fold>
 

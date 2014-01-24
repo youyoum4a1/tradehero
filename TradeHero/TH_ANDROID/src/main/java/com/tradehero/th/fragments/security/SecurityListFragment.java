@@ -3,10 +3,14 @@ package com.tradehero.th.fragments.security;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AbsListView;
+import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.ProgressBar;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.common.widget.FlagNearEndScrollListener;
@@ -34,6 +38,10 @@ abstract public class SecurityListFragment extends BasePurchaseManagerFragment
     protected PagedDTOCacheLoader.OnNoMorePagesChangedListener noMorePagesChangedListener;
 
     protected ProgressBar mProgressSpinner;
+
+    protected EditText filterText;
+    protected TextWatcher filterTextWatcher;
+
     protected AbsListView securityListView;
     protected FlagNearEndScrollListener listViewScrollListener;
     protected GestureDetector listViewGesture;
@@ -41,6 +49,12 @@ abstract public class SecurityListFragment extends BasePurchaseManagerFragment
     protected int perPage = DEFAULT_PER_PAGE;
     protected SecurityItemViewAdapter securityItemViewAdapter;
     protected int firstVisiblePosition = 0;
+
+    @Override public void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        this.filterTextWatcher = new SecurityListOnFilterTextWatcher();
+    }
 
     @Override protected void initViews(View view)
     {
@@ -57,19 +71,28 @@ abstract public class SecurityListFragment extends BasePurchaseManagerFragment
         securityListView = (AbsListView) view.findViewById(R.id.trending_gridview);
         if (securityListView != null)
         {
+            securityListView.setOnItemClickListener(createOnItemClickListener());
             securityListView.setOnScrollListener(listViewScrollListener);
             securityListView.setAdapter(securityItemViewAdapter);
             listViewGesture = new GestureDetector(getActivity(), new SecurityListOnGestureListener());
             securityListView.setOnTouchListener(new SecurityListOnTouchListener());
         }
+
+        this.filterText = (EditText) view.findViewById(R.id.filter_text);
+        if (this.filterText != null)
+        {
+            this.filterText.addTextChangedListener(this.filterTextWatcher);
+        }
     }
 
     abstract protected SecurityItemViewAdapter createSecurityItemViewAdapter();
 
+    abstract protected AdapterView.OnItemClickListener createOnItemClickListener();
+
     @Override public void onActivityCreated(Bundle savedInstanceState)
     {
         super.onActivityCreated(savedInstanceState);
-        getActivity().getSupportLoaderManager().initLoader(getSecurityIdListLoaderId(), null, new SecurityListLoaderCallback());
+        prepareSecurityLoader();
     }
 
     @Override public void onResume()
@@ -110,7 +133,24 @@ abstract public class SecurityListFragment extends BasePurchaseManagerFragment
         queryingChangedListener = null;
         noMorePagesChangedListener = null;
 
+        if (this.filterText != null)
+        {
+            this.filterText.removeTextChangedListener(this.filterTextWatcher);
+        }
+        this.filterText = null;
+
         super.onDestroyView();
+    }
+
+    @Override public void onDestroy()
+    {
+        this.filterTextWatcher = null;
+        super.onDestroy();
+    }
+
+    protected void prepareSecurityLoader()
+    {
+        getActivity().getSupportLoaderManager().initLoader(getSecurityIdListLoaderId(), null, new SecurityListLoaderCallback());
     }
 
     abstract public int getSecurityIdListLoaderId();
@@ -281,4 +321,23 @@ abstract public class SecurityListFragment extends BasePurchaseManagerFragment
         }
     }
     //</editor-fold>
+
+    protected class SecurityListOnFilterTextWatcher implements TextWatcher
+    {
+        @Override public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3)
+        {
+
+        }
+
+        @Override public void onTextChanged(CharSequence charSequence, int i, int i2, int i3)
+        {
+            THLog.d(TAG, "Text: " + charSequence);
+            securityItemViewAdapter.getFilter().filter(charSequence);
+        }
+
+        @Override public void afterTextChanged(Editable editable)
+        {
+
+        }
+    }
 }
