@@ -78,7 +78,6 @@ public class ReferralFragment extends DashboardFragment
 
     private List<UserFriendsDTO> selectedLinkedInFriends;
     private List<UserFriendsDTO> selectedFacebookFriends;
-    private List<UserFriendsDTO> selectedContactFriends;
 
     private ToggleButton fbToggle;
     private ToggleButton liToggle;
