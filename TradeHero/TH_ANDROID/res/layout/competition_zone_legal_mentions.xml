@@ -6,7 +6,6 @@
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white"
     android:descendantFocusability="afterDescendants"
     >
 
@@ -23,8 +22,12 @@
       android:layout_height="wrap_content"
       android:layout_toLeftOf="@id/middle_aligner"
       android:maxLines="1"
+      android:textSize="10sp"
       android:text="@string/provider_competition_rules_title"
-      android:padding="8dp"
+      android:paddingBottom="24dp"
+      android:paddingTop="8dp"
+      android:paddingLeft="8dp"
+      android:paddingRight="8dp"
       />
 
   <TextView
@@ -33,7 +36,11 @@
       android:layout_height="wrap_content"
       android:layout_toRightOf="@id/middle_aligner"
       android:text="@string/provider_competition_terms_title"
-      android:padding="8dp"
+      android:textSize="10sp"
+      android:paddingBottom="24dp"
+      android:paddingTop="8dp"
+      android:paddingLeft="8dp"
+      android:paddingRight="8dp"
       />
 
 </com.tradehero.th.fragments.competition.zone.CompetitionZoneLegalMentionsView>

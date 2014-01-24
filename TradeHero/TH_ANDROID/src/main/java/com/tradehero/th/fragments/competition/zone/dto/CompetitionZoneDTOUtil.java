@@ -72,9 +72,6 @@ import javax.inject.Singleton;
                 }
             }
 
-            preparedOrderedTypes.add(CompetitionZoneListItemAdapter.ITEM_TYPE_HEADER);
-            preparedOrderedItems.add(new CompetitionZoneDTO(null, null));
-
             preparedOrderedTypes.add(CompetitionZoneListItemAdapter.ITEM_TYPE_LEGAL_MENTIONS);
             THLog.d(TAG, "rules title " + context.getString(R.string.provider_competition_rules_title));
             preparedOrderedItems.add(new CompetitionZoneLegalDTO(
