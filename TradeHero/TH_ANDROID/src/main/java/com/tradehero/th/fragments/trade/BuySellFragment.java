@@ -1,8 +1,13 @@
 package com.tradehero.th.fragments.trade;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -60,18 +65,17 @@ public class BuySellFragment extends AbstractBuySellFragment
     implements SecurityAlertAssistant.OnPopulatedListener
 {
     private final static String TAG = BuySellFragment.class.getSimpleName();
-    public final static int TRANSACTION_COST = 10;
+    public static final String EVENT_CHART_IMAGE_CLICKED = BuySellFragment.class.getName() + ".chartButtonClicked";
 
+    public final static int TRANSACTION_COST = 10;
     public final static float BUY_BUTTON_DISABLED_ALPHA = 0.5f;
 
     private ToggleButton mBuySellSwitch;
 
     private ImageViewThreadSafe mStockBgLogo;
     private ImageViewThreadSafe mStockLogo;
-    private ImageView mStockChart;
 
     private TextView mStockName;
-    private ImageButton mStockChartButton;
 
     private ProgressBar mQuoteRefreshProgressBar;
     private FrameLayout mInfoFrame;
@@ -144,17 +148,6 @@ public class BuySellFragment extends AbstractBuySellFragment
         //mStockChart = (ImageView) view.findViewById(R.id.stock_chart);
 
         mStockName = (TextView) view.findViewById(R.id.stock_name);
-        mStockChartButton = (ImageButton) view.findViewById(R.id.stock_chart_button);
-        if (mStockChartButton != null)
-        {
-            mStockChartButton.setOnClickListener(new OnClickListener()
-            {
-                @Override public void onClick(View view)
-                {
-                    pushStockInfoFragmentIn();
-                }
-            });
-        }
 
         mInfoFrame = (FrameLayout) view.findViewById(R.id.chart_frame);
 
@@ -362,6 +355,9 @@ public class BuySellFragment extends AbstractBuySellFragment
             mTradeQuantityView.setBuy(isTransactionTypeBuy);
         }
 
+        LocalBroadcastManager.getInstance(getActivity())
+                .registerReceiver(chartImageButtonClickReceiver, new IntentFilter(EVENT_CHART_IMAGE_CLICKED));
+
         securityAlertAssistant.setOnPopulatedListener(this);
         securityAlertAssistant.setUserBaseKey(currentUserBaseKeyHolder.getCurrentUserBaseKey());
         securityAlertAssistant.populate();
@@ -377,6 +373,8 @@ public class BuySellFragment extends AbstractBuySellFragment
 
     @Override public void onPause()
     {
+        LocalBroadcastManager.getInstance(getActivity())
+                .unregisterReceiver(chartImageButtonClickReceiver);
         securityAlertAssistant.setOnPopulatedListener(null);
         super.onPause();
     }
@@ -384,11 +382,6 @@ public class BuySellFragment extends AbstractBuySellFragment
     @Override public void onDestroyView()
     {
         THLog.d(TAG, "onDestroyView");
-        if (mStockChartButton != null)
-        {
-            mStockChartButton.setOnClickListener(null);
-        }
-        mStockChartButton = null;
 
         if (mQuickPriceButtonSet != null)
         {
@@ -444,11 +437,6 @@ public class BuySellFragment extends AbstractBuySellFragment
     @Override public void linkWith(SecurityId securityId, boolean andDisplay)
     {
         super.linkWith(securityId, andDisplay);
-        if (andDisplay)
-        {
-            //displayExchangeSymbol();
-            displayStockChartButton();
-        }
     }
 
     @Override public void linkWith(SecurityCompactDTO securityCompactDTO, boolean andDisplay)
@@ -555,7 +543,6 @@ public class BuySellFragment extends AbstractBuySellFragment
 
     public void displayPageElements()
     {
-        displayStockChartButton();
         displayPricingBidAskView();
         displayTradeQuantityView();
         displayBuyButton();
@@ -566,15 +553,6 @@ public class BuySellFragment extends AbstractBuySellFragment
         displayTriggerButton();
         storeImageUrlInImageViews();
         loadImages();
-    }
-
-    public void displayStockChartButton()
-    {
-        if (mStockChartButton != null)
-        {
-            mStockChartButton.setEnabled(this.securityId != null);
-            mStockChartButton.setAlpha(this.securityId != null ? 1 : 0.5f);
-        }
     }
 
     public void displayPricingBidAskView()
@@ -1153,6 +1131,14 @@ public class BuySellFragment extends AbstractBuySellFragment
         }
         navigator.pushFragment(StockInfoFragment.class, args);
     }
+
+    private BroadcastReceiver chartImageButtonClickReceiver = new BroadcastReceiver()
+    {
+        @Override public void onReceive(Context context, Intent intent)
+        {
+            pushStockInfoFragmentIn();
+        }
+    };
     //</editor-fold>
 
     //<editor-fold desc="SecurityAlertAssistant.OnPopulatedListener">

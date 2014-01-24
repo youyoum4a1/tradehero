@@ -1,6 +1,8 @@
 package com.tradehero.th.fragments.security;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +11,7 @@ import com.squareup.picasso.Picasso;
 import com.tradehero.th.R;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
+import com.tradehero.th.fragments.trade.BuySellFragment;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.yahoo.*;
@@ -63,6 +66,10 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
         }
 
         chartImage = (ImageView) view.findViewById(R.id.chart_imageView);
+        if (chartImage != null)
+        {
+            chartImage.setOnClickListener(chartImageClickListener);
+        }
 
         this.timeSpanButtonSetListener = new TimeSpanButtonSet.OnTimeSpanButtonSelectedListener()
         {
@@ -103,7 +110,11 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
 
     @Override public void onDestroyView()
     {
-        this.chartImage = null;
+        if (chartImage != null)
+        {
+            chartImage.setOnClickListener(null);
+            this.chartImage = null;
+        }
         TimeSpanButtonSet buttonSet = this.timeSpanButtonSet;
         if (buttonSet != null)
         {
@@ -211,6 +222,15 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
             view.postDelayed(runnable, delayMillis);
         }
     }
+
+    private View.OnClickListener chartImageClickListener = new View.OnClickListener()
+    {
+        @Override public void onClick(View v)
+        {
+            Intent intent = new Intent(BuySellFragment.EVENT_CHART_IMAGE_CLICKED);
+            LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
+        }
+    };
 }
 
 

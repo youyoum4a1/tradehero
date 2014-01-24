@@ -78,49 +78,16 @@
               android:layout_weight="3"
             >
 
+          <TextView
+              android:id="@+id/stock_name"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:layout_gravity="center_vertical"
+              android:textSize="18sp"
+              android:gravity="center"
+              android:maxLines="2"
+              />
             <!-- TODO Add stock name and chart icon -->
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="0dp"
-                >
-
-              <ImageButton
-                  android:id="@+id/stock_chart_button"
-                  android:layout_width="48dp"
-                  android:layout_height="48dp"
-                  android:layout_margin="8dp"
-                  android:layout_alignParentRight="true"
-                  android:layout_centerVertical="true"
-                  android:padding="8dp"
-                  android:src="@drawable/sort_chart"
-                  android:background="@null"
-                  android:contentDescription="@null"
-                  />
-
-              <FrameLayout
-                  android:layout_width="match_parent"
-                  android:layout_height="48dp"
-                  android:layout_centerVertical="true"
-                  android:layout_alignParentLeft="true"
-                  android:layout_toLeftOf="@id/stock_chart_button"
-                  android:layout_marginLeft="8dp"
-                  >
-
-                <TextView
-                    android:id="@+id/stock_name"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:textSize="18sp"
-                    android:gravity="center"
-                    android:maxLines="2"
-                    />
-
-              </FrameLayout>
-
-            </RelativeLayout>
 
             <com.tradehero.th.fragments.trade.TradeQuantityView
                 android:id="@+id/trade_quantity_view"
