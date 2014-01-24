@@ -166,40 +166,32 @@ public class ReferralFragment extends DashboardFragment
     {
         if (referFriendListAdapter != null)
         {
-            sendEmailInvitation(referFriendListAdapter.getSelectedContacts());
-
             selectedLinkedInFriends = referFriendListAdapter.getSelectedLinkedInFriends();
-            if (selectedLinkedInFriends.size() > 0)
-            {
-                currentSocialNetworkConnect = SocialNetworkEnum.LI;
-
-                getProgressDialog().show();
-                linkedInUtils.get().logIn(getActivity(), socialNetworkCallback);
-            }
-
             selectedFacebookFriends = referFriendListAdapter.getSelectedFacebookFriends();
-            if (selectedFacebookFriends.size() > 0)
-            {
-                currentSocialNetworkConnect = SocialNetworkEnum.FB;
-                facebookUtils.get().logIn(getActivity(), socialNetworkCallback);
-            }
-
+            sendEmailInvitation(referFriendListAdapter.getSelectedContacts());
         }
     }
 
     private void sendEmailInvitation(List<UserFriendsDTO> selectedContacts)
     {
-
-        InviteFormDTO inviteFriendForm = new InviteFormDTO();
-        inviteFriendForm.users = new ArrayList<>();
-        for (UserFriendsDTO userFriendsDTO : selectedContacts)
+        if (selectedContacts != null && !selectedContacts.isEmpty())
         {
-            InviteDTO inviteDTO = new InviteDTO();
-            inviteDTO.email = userFriendsDTO.getEmail();
-            inviteFriendForm.users.add(inviteDTO);
+            InviteFormDTO inviteFriendForm = new InviteFormDTO();
+            inviteFriendForm.users = new ArrayList<>();
+            for (UserFriendsDTO userFriendsDTO : selectedContacts)
+            {
+                InviteDTO inviteDTO = new InviteDTO();
+                inviteDTO.email = userFriendsDTO.getEmail();
+                inviteFriendForm.users.add(inviteDTO);
+            }
+            //getProgressDialog().setMessage(getString(R.string.sending_email_invitation));
+            getProgressDialog().show();
+            userService.get().inviteFriends(currentUserBaseKeyHolder.getCurrentUserBaseKey().key, inviteFriendForm, inviteFriendCallback);
         }
-        getProgressDialog().show();
-        userService.get().inviteFriends(currentUserBaseKeyHolder.getCurrentUserBaseKey().key, inviteFriendForm, inviteFriendCallback);
+        else
+        {
+            conditionalSendInvitations();
+        }
     }
 
     @Override public void onPause()
@@ -416,11 +408,13 @@ public class ReferralFragment extends DashboardFragment
         @Override protected void finish()
         {
             getProgressDialog().dismiss();
+            conditionalSendInvitations();
         }
 
         @Override protected void success(Response response, THResponse thResponse)
         {
             THToast.show(R.string.success);
+            // just hacked it :))
         }
 
         @Override protected void failure(THException ex)
@@ -428,6 +422,22 @@ public class ReferralFragment extends DashboardFragment
             // TODO failed
         }
     };
+
+    private void conditionalSendInvitations()
+    {
+        if (selectedLinkedInFriends != null && !selectedLinkedInFriends.isEmpty())
+        {
+            currentSocialNetworkConnect = SocialNetworkEnum.LI;
+
+            getProgressDialog().show();
+            linkedInUtils.get().logIn(getActivity(), socialNetworkCallback);
+        }
+        else if (selectedFacebookFriends != null && !selectedFacebookFriends.isEmpty())
+        {
+            currentSocialNetworkConnect = SocialNetworkEnum.FB;
+            facebookUtils.get().logIn(getActivity(), socialNetworkCallback);
+        }
+    }
 
     private LogInCallback socialNetworkCallback = new LogInCallback()
     {
@@ -497,10 +507,16 @@ public class ReferralFragment extends DashboardFragment
                             inviteDTO.liId = userFriendsDTO.liId;
                             inviteFriendForm.users.add(inviteDTO);
                         }
+                        selectedLinkedInFriends = null;
                         getProgressDialog().show();
                         userService.get().inviteFriends(currentUserBaseKeyHolder.getCurrentUserBaseKey().key, inviteFriendForm, inviteFriendCallback);
                     }
                 case FB:
+                    if (Session.getActiveSession() == null)
+                    {
+                        conditionalSendInvitations();
+                        return;
+                    }
                     if (selectedFacebookFriends != null && !selectedFacebookFriends.isEmpty())
                     {
                         sendRequestDialog();
@@ -519,6 +535,8 @@ public class ReferralFragment extends DashboardFragment
                 stringBuilder.append(selectedFacebookFriends.get(i).fbId).append(',');
             }
         }
+        // disable loop
+        selectedFacebookFriends = null;
         // remove the last comma
         if (stringBuilder.length() > 0)
         {
