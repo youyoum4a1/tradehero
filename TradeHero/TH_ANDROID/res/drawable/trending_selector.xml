@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <!-- When selected, you should use bg with grey -->
-    <item android:drawable="@drawable/icn_trending"
-          android:state_selected="true" />
+    <item android:drawable="@drawable/icn_trending_pressed" android:state_selected="true" />
     <!-- When not selected, you should use bg with white -->
-    <item android:drawable="@drawable/icn_trending" />
+    <item android:drawable="@drawable/icn_trending_normal" />
 </selector>
