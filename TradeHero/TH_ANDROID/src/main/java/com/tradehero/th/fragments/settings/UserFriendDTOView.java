@@ -103,9 +103,10 @@ public class UserFriendDTOView extends RelativeLayout
         {
             userFriendSourceLi.setVisibility(View.VISIBLE);
         }
-        else
+        else if (userFriendDTO.getEmail() != null)
         {
             userFriendSourceContact.setVisibility(View.VISIBLE);
+            userFriendSourceContact.setText(userFriendDTO.getEmail());
         }
     }
 

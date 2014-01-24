@@ -100,6 +100,7 @@ import com.tradehero.th.fragments.trending.filter.TrendingFilterSelectorView;
 import com.tradehero.th.fragments.watchlist.WatchlistItemView;
 import com.tradehero.th.fragments.watchlist.WatchlistPortfolioHeaderView;
 import com.tradehero.th.fragments.watchlist.WatchlistPositionFragment;
+import com.tradehero.th.loaders.FriendListLoader;
 import com.tradehero.th.loaders.SearchStockPageListLoader;
 import com.tradehero.th.loaders.TimelineListLoader;
 import com.tradehero.th.loaders.security.SecurityListPagedLoader;
@@ -303,6 +304,7 @@ import org.ocpsoft.prettytime.PrettyTime;
                 ReferralFragment.class,
 
                 UserFriendDTOView.class,
+                FriendListLoader.class,
         },
         staticInjections =
         {

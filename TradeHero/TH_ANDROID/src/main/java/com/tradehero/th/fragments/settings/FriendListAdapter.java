@@ -284,6 +284,19 @@ public class FriendListAdapter extends ArrayDTOAdapter<UserFriendsDTO, UserFrien
         return selectedItems;
     }
 
+    public List<UserFriendsDTO> getSelectedContacts()
+    {
+        List<UserFriendsDTO> selectedItems = new ArrayList<>();
+        for (UserFriendsDTO userFriendsDTO: originalItems)
+        {
+            if (userFriendsDTO.isSelected() && userFriendsDTO.getEmail() != null)
+            {
+                selectedItems.add(userFriendsDTO);
+            }
+        }
+        return selectedItems;
+    }
+
     public void toggleLinkedInSelection(boolean isSelected)
     {
         for (UserFriendsDTO userFriendsDTO: originalItems)
@@ -300,6 +313,17 @@ public class FriendListAdapter extends ArrayDTOAdapter<UserFriendsDTO, UserFrien
         for (UserFriendsDTO userFriendsDTO: originalItems)
         {
             if (userFriendsDTO.fbId != null)
+            {
+                userFriendsDTO.setSelected(isSelected);
+            }
+        }
+    }
+
+    public void toggleContactSelection(boolean isSelected)
+    {
+        for (UserFriendsDTO userFriendsDTO: originalItems)
+        {
+            if (userFriendsDTO.getEmail() != null)
             {
                 userFriendsDTO.setSelected(isSelected);
             }

@@ -3,6 +3,8 @@ package com.tradehero.th.fragments.settings;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.os.Looper;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.Loader;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -32,6 +34,7 @@ import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
 import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.loaders.FriendListLoader;
 import com.tradehero.th.misc.callback.LogInCallback;
 import com.tradehero.th.misc.callback.THCallback;
 import com.tradehero.th.misc.callback.THResponse;
@@ -51,10 +54,12 @@ import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 
 public class ReferralFragment extends DashboardFragment
 {
-    private static final int MIN_LENGTH_TEXT_TO_SEARCH = 0;
     private static final String TAG = ReferralFragment.class.getName();
+
+    private static final int MIN_LENGTH_TEXT_TO_SEARCH = 0;
     private static final int MAX_FACEBOOK_MESSAGE_LENGTH = 60;
     private static final int MAX_FACEBOOK_FRIENDS_RECEIVERS = 50;
+    private static final int CONTACT_LOADER_ID = 0;
 
     @Inject protected CurrentUserBaseKeyHolder currentUserBaseKeyHolder;
     @Inject protected Lazy<UserService> userService;
@@ -73,9 +78,30 @@ public class ReferralFragment extends DashboardFragment
 
     private List<UserFriendsDTO> selectedLinkedInFriends;
     private List<UserFriendsDTO> selectedFacebookFriends;
+    private List<UserFriendsDTO> selectedContactFriends;
+
     private ToggleButton fbToggle;
     private ToggleButton liToggle;
     private ToggleButton contactToggle;
+
+    private LoaderManager.LoaderCallbacks<List<UserFriendsDTO>> contactListLoaderCallback = new LoaderManager.LoaderCallbacks<List<UserFriendsDTO>>()
+    {
+        @Override public Loader<List<UserFriendsDTO>> onCreateLoader(int id, Bundle args)
+        {
+            return new FriendListLoader(getActivity());
+        }
+
+        @Override public void onLoadFinished(Loader<List<UserFriendsDTO>> loader, List<UserFriendsDTO> userFriendsDTOs)
+        {
+            getProgressDialog().dismiss();
+            handleFriendListReceived(userFriendsDTOs);
+        }
+
+        @Override public void onLoaderReset(Loader<List<UserFriendsDTO>> loader)
+        {
+
+        }
+    };
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -141,6 +167,8 @@ public class ReferralFragment extends DashboardFragment
     {
         if (referFriendListAdapter != null)
         {
+            sendEmailInvitation(referFriendListAdapter.getSelectedContacts());
+
             selectedLinkedInFriends = referFriendListAdapter.getSelectedLinkedInFriends();
             if (selectedLinkedInFriends.size() > 0)
             {
@@ -156,7 +184,23 @@ public class ReferralFragment extends DashboardFragment
                 currentSocialNetworkConnect = SocialNetworkEnum.FB;
                 facebookUtils.get().logIn(getActivity(), socialNetworkCallback);
             }
+
         }
+    }
+
+    private void sendEmailInvitation(List<UserFriendsDTO> selectedContacts)
+    {
+
+        InviteFormDTO inviteFriendForm = new InviteFormDTO();
+        inviteFriendForm.users = new ArrayList<>();
+        for (UserFriendsDTO userFriendsDTO : selectedContacts)
+        {
+            InviteDTO inviteDTO = new InviteDTO();
+            inviteDTO.email = userFriendsDTO.getEmail();
+            inviteFriendForm.users.add(inviteDTO);
+        }
+        getProgressDialog().show();
+        userService.get().inviteFriends(currentUserBaseKeyHolder.getCurrentUserBaseKey().key, inviteFriendForm, inviteFriendCallback);
     }
 
     @Override public void onPause()
@@ -206,8 +250,11 @@ public class ReferralFragment extends DashboardFragment
 
         resetSearchText();
         getProgressDialog().show();
-        userService.get().getFriends(currentUserBaseKeyHolder.getCurrentUserBaseKey().key,
-                getFriendsCallback);
+
+        // load friend list from server side
+        // userService.get().getFriends(currentUserBaseKeyHolder.getCurrentUserBaseKey().key, getFriendsCallback);
+        // load contact (with email) list of the phone
+        getLoaderManager().initLoader(CONTACT_LOADER_ID, null, contactListLoaderCallback);
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
@@ -265,7 +312,7 @@ public class ReferralFragment extends DashboardFragment
                 switch (buttonView.getId())
                 {
                     case R.id.invite_friend_contact_toggle:
-
+                        referFriendListAdapter.toggleContactSelection(isChecked);
                         break;
                     case R.id.invite_friend_facebook_toggle:
                         referFriendListAdapter.toggleFacebookSelection(isChecked);
@@ -364,24 +411,6 @@ public class ReferralFragment extends DashboardFragment
     //</editor-fold>
 
     //<editor-fold desc="Callback for authentication & rest service">
-
-    private THCallback<List<UserFriendsDTO>> getFriendsCallback = new THCallback<List<UserFriendsDTO>>()
-    {
-        @Override protected void finish()
-        {
-            getProgressDialog().dismiss();
-        }
-
-        @Override protected void success(List<UserFriendsDTO> userFriendsDTOs, THResponse thResponse)
-        {
-            handleFriendListReceived(userFriendsDTOs);
-        }
-
-        @Override protected void failure(THException ex)
-        {
-            THToast.show(getString(R.string.retrieve_friends_failed));
-        }
-    };
 
     private THCallback<Response> inviteFriendCallback = new THCallback<Response>()
     {
