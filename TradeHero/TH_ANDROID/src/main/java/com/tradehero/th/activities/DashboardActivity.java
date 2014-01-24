@@ -2,6 +2,7 @@ package com.tradehero.th.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.MenuItem;
 import com.crashlytics.android.Crashlytics;
@@ -134,6 +135,17 @@ public class DashboardActivity extends SherlockFragmentActivity
         launchActions();
 
         super.onResume();
+    }
+
+    @Override public boolean onKeyDown(int keyCode, KeyEvent event)
+    {
+        switch (keyCode)
+        {
+            case KeyEvent.KEYCODE_MENU:
+                getNavigator().openSettings();
+                break;
+        }
+        return super.onKeyDown(keyCode, event);
     }
 
     @Override protected void onDestroy()
