@@ -1,6 +1,5 @@
 package com.tradehero.common.widget.filter;
 
-import com.android.internal.util.Predicate;
 import java.util.List;
 
 /**
