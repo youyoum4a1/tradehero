@@ -39,14 +39,10 @@ public class NetworkEngine
     public void initialize()
     {
         Converter converter = new JacksonConverter(new ObjectMapper());
-        OkHttpClient client = new OkHttpClient();
-
-
 
         restAdapter = new RestAdapter.Builder()
                 .setServer(Constants.BASE_API_URL)
                 .setConverter(converter)
-                .setClient(new OkClient(client))
                 .setRequestInterceptor(new RequestInterceptor()
                 {
                     @Override
