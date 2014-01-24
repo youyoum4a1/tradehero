@@ -1,43 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingLeft="@dimen/dashboard_padding"
-    android:paddingRight="@dimen/dashboard_padding"
-    android:paddingTop="@dimen/dashboard_padding"
     >
+
+  <LinearLayout
+      android:orientation="vertical"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:paddingLeft="@dimen/dashboard_padding"
+      android:paddingRight="@dimen/dashboard_padding"
+      android:paddingTop="@dimen/dashboard_padding"
+      >
+
+    <ImageButton
+        android:id="@+id/btn_first_provider"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scaleType="center"
+        android:visibility="gone"
+        />
+
+    <ListView android:id="@+id/leaderboard_most_skilled"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        />
+
+    <ListView android:id="@+id/leaderboard_time_period"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_marginTop="5dip"
+        android:layout_marginBottom="5dip"
+        />
+
+    <ListView android:id="@+id/leaderboard_sector"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        />
+
+  </LinearLayout>
 
   <ProgressBar
       android:id="@android:id/empty"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:layout_gravity="center_horizontal"/>
+      android:layout_centerInParent="true"/>
 
-  <ImageButton
-      android:id="@+id/btn_first_provider"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:scaleType="center"
-      android:visibility="gone"
-    />
+</RelativeLayout>
 
-  <ListView android:id="@+id/leaderboard_most_skilled"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      />
-
-  <ListView android:id="@+id/leaderboard_time_period"
-      android:layout_height="wrap_content"
-      android:layout_width="match_parent"
-      android:layout_marginTop="5dip"
-      android:layout_marginBottom="5dip"
-      />
-
-  <ListView android:id="@+id/leaderboard_sector"
-      android:layout_height="wrap_content"
-      android:layout_width="match_parent"
-      />
-</LinearLayout>
