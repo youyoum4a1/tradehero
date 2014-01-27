@@ -52,9 +52,9 @@ import org.json.JSONObject;
 import retrofit.client.Response;
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 
-public class ReferralFragment extends DashboardFragment
+public class InviteFriendFragment extends DashboardFragment
 {
-    private static final String TAG = ReferralFragment.class.getName();
+    private static final String TAG = InviteFriendFragment.class.getName();
 
     private static final int MIN_LENGTH_TEXT_TO_SEARCH = 0;
     private static final int MAX_FACEBOOK_MESSAGE_LENGTH = 60;
@@ -104,8 +104,8 @@ public class ReferralFragment extends DashboardFragment
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        View view = inflater.inflate(R.layout.refer_fragment, container, false);
-        headerView = inflater.inflate(R.layout.refer_friend_header, null, false);
+        View view = inflater.inflate(R.layout.invite_friend_content, container, false);
+        headerView = inflater.inflate(R.layout.invite_friend_header, null, false);
         initView(view);
         return view;
     }
@@ -127,7 +127,7 @@ public class ReferralFragment extends DashboardFragment
         referFriendListAdapter = createFriendListAdapter();
         stickyListHeadersListView = (StickyListHeadersListView) view.findViewById(R.id.sticky_list);
 
-        View emptyView = view.findViewById(R.id.refer_friend_list_empty_view);
+        View emptyView = view.findViewById(R.id.friend_list_empty_view);
         if (emptyView != null)
         {
             //stickyListHeadersListView.getWrappedList().setEmptyView(emptyView);

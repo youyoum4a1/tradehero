@@ -31,7 +31,6 @@ import com.tradehero.th.api.social.SocialNetworkFormDTO;
 import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
 import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.base.Application;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.base.THUser;
@@ -451,7 +450,7 @@ public class SettingsFragment extends PreferenceFragment
 
     private void handleTopBannerClicked()
     {
-        getNavigator().pushFragment(ReferralFragment.class, null, Navigator.PUSH_UP_FROM_BOTTOM);
+        getNavigator().pushFragment(InviteFriendFragment.class, null, Navigator.PUSH_UP_FROM_BOTTOM);
     }
 
     private void updateNotificationStatus()

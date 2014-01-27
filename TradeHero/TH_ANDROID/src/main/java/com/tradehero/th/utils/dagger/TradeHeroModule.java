@@ -60,7 +60,7 @@ import com.tradehero.th.fragments.security.WarrantSecurityItemView;
 import com.tradehero.th.fragments.security.WatchlistEditFragment;
 import com.tradehero.th.fragments.security.YahooNewsFragment;
 import com.tradehero.th.fragments.settings.AboutFragment;
-import com.tradehero.th.fragments.settings.ReferralFragment;
+import com.tradehero.th.fragments.settings.InviteFriendFragment;
 import com.tradehero.th.fragments.settings.SettingsFragment;
 import com.tradehero.th.fragments.settings.SettingsProfileFragment;
 import com.tradehero.th.fragments.settings.UserFriendDTOView;
@@ -265,7 +265,7 @@ import javax.inject.Singleton;
 
                         AlertManagerFragment.class,
 
-                        ReferralFragment.class,
+                        InviteFriendFragment.class,
 
                         UserFriendDTOView.class,
                         FriendListLoader.class,
