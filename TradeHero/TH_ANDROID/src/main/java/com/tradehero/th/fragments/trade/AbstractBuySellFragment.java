@@ -226,7 +226,7 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
     {
         if (fetchPositionDetailTask != null)
         {
-            fetchPositionDetailTask.cancel(false);
+            fetchPositionDetailTask.setListener(null);
         }
         securityPositionDetailCacheListener = new AbstractBuySellSecurityPositionCacheListener(this.securityId); // We need to keep a strong reference because the cache does not
         fetchPositionDetailTask = securityPositionDetailCache.get().getOrFetch(this.securityId, false, securityPositionDetailCacheListener);

@@ -7,6 +7,7 @@ import com.tradehero.common.billing.googleplay.IABServiceConnector;
 import com.tradehero.common.cache.DatabaseCache;
 import com.tradehero.common.persistence.CacheHelper;
 import com.tradehero.th.api.form.AbstractUserAvailabilityRequester;
+import com.tradehero.th.api.position.PositionDTOCompactList;
 import com.tradehero.th.base.THUser;
 import com.tradehero.th.billing.googleplay.PurchaseRestorerRequiredMilestone;
 import com.tradehero.th.billing.googleplay.THIABInventoryFetcher;
@@ -244,6 +245,7 @@ import javax.inject.Singleton;
                         THInventoryFetchMilestone.class,
                         IABSKUListRetrievedAsyncMilestone.class,
                         PortfolioCompactListRetrievedMilestone.class,
+                        PositionDTOCompactList.class,
                         UserProfileRetrievedMilestone.class,
                         PurchaseRestorerRequiredMilestone.class,
                         THIABUserInteractor.class,

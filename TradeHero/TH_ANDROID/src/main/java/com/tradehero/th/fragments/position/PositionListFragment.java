@@ -402,6 +402,7 @@ public class PositionListFragment extends BasePurchaseManagerFragment
                 {
                     Bundle args = new Bundle();
                     args.putBundle(BuySellFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
+                    args.putBundle(BuySellFragment.BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE, clickedOwnedPositionId.getArgs());
                     args.putBoolean(BuySellFragment.BUNDLE_KEY_IS_BUY, isBuy);
                     navigator.pushFragment(BuySellFragment.class, args);
                 }

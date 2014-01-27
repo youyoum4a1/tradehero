@@ -1,15 +1,47 @@
 package com.tradehero.th.api.position;
 
+import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.portfolio.PortfolioId;
 import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.persistence.portfolio.PortfolioCompactCache;
+import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.SecurityUtils;
 import java.util.ArrayList;
+import java.util.Collection;
+import javax.inject.Inject;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/20/13 Time: 7:43 PM To change this template use File | Settings | File Templates. */
 public class PositionDTOCompactList extends ArrayList<PositionDTOCompact>
 {
     public static final String TAG = PositionDTOCompactList.class.getSimpleName();
+
+    @Inject PortfolioCompactCache portfolioCompactCache;
+
+    //<editor-fold desc="Constructors">
+    public PositionDTOCompactList(int capacity)
+    {
+        super(capacity);
+        init();
+    }
+
+    public PositionDTOCompactList()
+    {
+        super();
+        init();
+    }
+
+    public PositionDTOCompactList(Collection<? extends PositionDTOCompact> collection)
+    {
+        super(collection);
+        init();
+    }
+    //</editor-fold>
+
+    protected void init()
+    {
+        DaggerUtils.inject(this);
+    }
 
     public int getShareCount(PortfolioId portfolioId)
     {
@@ -43,7 +75,7 @@ public class PositionDTOCompactList extends ArrayList<PositionDTOCompact>
             {
                 netProceeds = 0d;
             }
-            netProceeds += userProfileDTO.portfolio.cashBalance; // TODO Care about the portfolio given its id
+            netProceeds += getCashBalance(portfolioId);
         }
 
         if (includeTransactionCost && netProceeds != null && netProceeds < SecurityUtils.DEFAULT_TRANSACTION_COST)
@@ -77,5 +109,27 @@ public class PositionDTOCompactList extends ArrayList<PositionDTOCompact>
         }
 
         return netProceeds;
+    }
+
+    public Double getCashBalance(PortfolioId portfolioId)
+    {
+        if (portfolioId == null || portfolioId.key == null)
+        {
+            return null;
+        }
+
+        for (PositionDTOCompact positionDTOCompact: this)
+        {
+            if (positionDTOCompact.portfolioId == portfolioId.key)
+            {
+                PortfolioCompactDTO portfolioCompactDTO = portfolioCompactCache.get(portfolioId);
+                if (portfolioCompactDTO != null)
+                {
+                    return portfolioCompactDTO.cashBalance;
+                }
+            }
+        }
+
+        return null;
     }
 }

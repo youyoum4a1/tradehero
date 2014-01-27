@@ -267,11 +267,11 @@ public class MainCompetitionFragment extends CompetitionFragment
     private void pushPortfolioElement(CompetitionZonePortfolioDTO competitionZoneDTO)
     {
         // TODO We need to be able to launch async when the portfolio Id is finally not null
-        OwnedPortfolioId portfolioId = userInteractor.getApplicablePortfolioId();
-        if (portfolioId != null)
+        OwnedPortfolioId ownedPortfolioId = userInteractor.getApplicablePortfolioId();
+        if (ownedPortfolioId != null)
         {
             Bundle args = new Bundle();
-            args.putBundle(PositionListFragment.BUNDLE_KEY_SHOW_PORTFOLIO_ID_BUNDLE, portfolioId.getArgs());
+            args.putBundle(PositionListFragment.BUNDLE_KEY_SHOW_PORTFOLIO_ID_BUNDLE, ownedPortfolioId.getArgs());
             navigator.pushFragment(PositionListFragment.class, args);
         }
     }
