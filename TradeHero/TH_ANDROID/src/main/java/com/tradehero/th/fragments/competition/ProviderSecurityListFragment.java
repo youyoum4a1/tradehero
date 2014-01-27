@@ -15,13 +15,13 @@ import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.competition.ProviderIdConstants;
 import com.tradehero.th.api.competition.ProviderSecurityListType;
-import com.tradehero.th.api.security.SecurityId;
+import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityIdList;
 import com.tradehero.th.fragments.competition.macquarie.MacquarieWarrantItemViewAdapter;
-import com.tradehero.th.fragments.security.SecurityListFragment;
-import com.tradehero.th.fragments.trade.BuySellFragment;
-import com.tradehero.th.fragments.security.SimpleSecurityItemViewAdapter;
 import com.tradehero.th.fragments.security.SecurityItemViewAdapter;
+import com.tradehero.th.fragments.security.SecurityListFragment;
+import com.tradehero.th.fragments.security.SimpleSecurityItemViewAdapter;
+import com.tradehero.th.fragments.trade.BuySellFragment;
 import com.tradehero.th.loaders.security.SecurityListPagedLoader;
 import com.tradehero.th.loaders.security.macquarie.MacquarieSecurityListPagedLoader;
 import com.tradehero.th.persistence.competition.ProviderCache;
@@ -205,15 +205,15 @@ public class ProviderSecurityListFragment extends SecurityListFragment
     {
         @Override public void onItemClick(AdapterView<?> parent, View view, int position, long id)
         {
-            SecurityId securityId = (SecurityId) parent.getItemAtPosition(position);
+            SecurityCompactDTO securityCompactDTO = (SecurityCompactDTO) parent.getItemAtPosition(position);
             Bundle args = new Bundle();
-            args.putBundle(BuySellFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
+            args.putBundle(BuySellFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityCompactDTO.getSecurityId().getArgs());
             args.putBundle(BuySellFragment.BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE, getApplicablePortfolioId().getArgs());
             args.putBundle(BuySellFragment.BUNDLE_KEY_PROVIDER_ID_BUNDLE, providerId.getArgs());
             // TODO use other positions
             navigator.pushFragment(BuySellFragment.class, args);
 
-            // startActivity(new SecurityBuyIntent(securityId)); // Example using external navigation
+            // startActivity(new SecurityBuyIntent(securityCompactDTO)); // Example using external navigation
         }
     }
 }
