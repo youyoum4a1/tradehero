@@ -118,16 +118,10 @@ public class PositionDTOCompactList extends ArrayList<PositionDTOCompact>
             return null;
         }
 
-        for (PositionDTOCompact positionDTOCompact: this)
+        PortfolioCompactDTO portfolioCompactDTO = portfolioCompactCache.get(portfolioId);
+        if (portfolioCompactDTO != null)
         {
-            if (positionDTOCompact.portfolioId == portfolioId.key)
-            {
-                PortfolioCompactDTO portfolioCompactDTO = portfolioCompactCache.get(portfolioId);
-                if (portfolioCompactDTO != null)
-                {
-                    return portfolioCompactDTO.cashBalance;
-                }
-            }
+            return portfolioCompactDTO.cashBalance;
         }
 
         return null;

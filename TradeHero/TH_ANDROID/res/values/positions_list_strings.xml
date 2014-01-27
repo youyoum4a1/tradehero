@@ -14,6 +14,7 @@
     <string name="portfolio_description_count_open_positions">You have %1$d open positions</string>
     <string name="portfolio_description_count_closed_positions">You have %1$d closed positions</string>
     <string name="portfolio_description_count_watchlist">You have %1$d items</string>
+  <string name="portfolio_default_title">Default Portfolio</string>
 
     <!-- Portfolio detail / Positions -->
     <string name="position_nothing_description">No open positions. Tap to Trade!</string>
