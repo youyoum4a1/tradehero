@@ -11,6 +11,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -19,6 +20,7 @@ import android.widget.CompoundButton;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
@@ -27,7 +29,6 @@ import android.widget.ToggleButton;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
 import com.squareup.picasso.Cache;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
@@ -46,6 +47,7 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.ImageViewThreadSafe;
 import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
+import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.position.SecurityPositionDetailDTO;
 import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
@@ -56,9 +58,14 @@ import com.tradehero.th.fragments.billing.THIABUserInteractor;
 import com.tradehero.th.fragments.security.BuySellBottomStockPagerAdapter;
 import com.tradehero.th.fragments.security.StockInfoFragment;
 import com.tradehero.th.models.alert.SecurityAlertAssistant;
-import com.tradehero.th.network.service.SecurityService;
+import com.tradehero.th.models.portfolio.MenuOwnedPortfolioId;
+import com.tradehero.th.persistence.portfolio.PortfolioCache;
+import com.tradehero.th.persistence.portfolio.PortfolioCompactCache;
+import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
 import com.viewpagerindicator.PageIndicator;
-import dagger.Lazy;
+import java.util.Iterator;
+import java.util.Set;
+import java.util.TreeSet;
 import javax.inject.Inject;
 
 public class BuySellFragment extends AbstractBuySellFragment
@@ -75,6 +82,11 @@ public class BuySellFragment extends AbstractBuySellFragment
     private ImageViewThreadSafe mStockBgLogo;
     private ImageViewThreadSafe mStockLogo;
 
+    private View mSelectedPortfolioContainer;
+    private TextView mSelectedPortfolio;
+    private PopupMenu mPortfolioSelectorMenu;
+    private Set<MenuOwnedPortfolioId> usedMenuOwnedPortfolioIds;
+
     private TextView mStockName;
 
     private ProgressBar mQuoteRefreshProgressBar;
@@ -90,9 +102,10 @@ public class BuySellFragment extends AbstractBuySellFragment
     private ImageButton mBtnAddCash;
     private ImageButton mBtnAddTrigger;
 
-    @Inject protected Lazy<SecurityService> securityService;
-
     protected SecurityAlertAssistant securityAlertAssistant;
+    @Inject protected PortfolioCache portfolioCache;
+    @Inject protected PortfolioCompactListCache portfolioCompactListCache;
+    @Inject protected PortfolioCompactCache portfolioCompactCache;
 
     double lastPrice;
     int sliderIncrement = 0;
@@ -114,6 +127,7 @@ public class BuySellFragment extends AbstractBuySellFragment
     {
         super.onCreate(savedInstanceState);
         securityAlertAssistant = new SecurityAlertAssistant();
+        buildUsedMenuPortfolios();
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -146,6 +160,48 @@ public class BuySellFragment extends AbstractBuySellFragment
         mStockBgLogo = (ImageViewThreadSafe) view.findViewById(R.id.stock_bg_logo);
         mStockLogo = (ImageViewThreadSafe) view.findViewById(R.id.stock_logo);
         //mStockChart = (ImageView) view.findViewById(R.id.stock_chart);
+
+
+        mSelectedPortfolioContainer = view.findViewById(R.id.portfolio_selector_container);
+        if (mSelectedPortfolioContainer != null)
+        {
+            mSelectedPortfolioContainer.setOnClickListener(new OnClickListener()
+            {
+                @Override public void onClick(View view)
+                {
+                    showPortfolioSelector();
+                }
+            });
+            mSelectedPortfolioContainer.setVisibility(usedMenuOwnedPortfolioIds.size() > 1 ? View.VISIBLE : View.GONE);
+        }
+
+        mSelectedPortfolio = (TextView) view.findViewById(R.id.portfolio_selected);
+        if (mSelectedPortfolio != null)
+        {
+            if (usedMenuOwnedPortfolioIds.size() > 0)
+            {
+                final Iterator<MenuOwnedPortfolioId> iterator = usedMenuOwnedPortfolioIds.iterator();
+                MenuOwnedPortfolioId lastElement = iterator.next();
+                while (iterator.hasNext())
+                {
+                    lastElement = iterator.next();
+                }
+                mSelectedPortfolio.setText(lastElement);
+            }
+
+            mPortfolioSelectorMenu = new PopupMenu(getActivity(), mSelectedPortfolio);
+            mPortfolioSelectorMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener()
+            {
+                @Override public boolean onMenuItemClick(android.view.MenuItem menuItem)
+                {
+                    return selectDifferentPortfolio(menuItem);
+                }
+            });
+            for (MenuOwnedPortfolioId menuOwnedPortfolioId: usedMenuOwnedPortfolioIds)
+            {
+                mPortfolioSelectorMenu.getMenu().add(Menu.NONE, Menu.NONE, Menu.NONE, menuOwnedPortfolioId);
+            }
+        }
 
         mStockName = (TextView) view.findViewById(R.id.stock_name);
 
@@ -267,6 +323,25 @@ public class BuySellFragment extends AbstractBuySellFragment
         }
     }
 
+    protected void buildUsedMenuPortfolios()
+    {
+        Set<MenuOwnedPortfolioId> newMenus = new TreeSet<>();
+
+        OwnedPortfolioId defaultOwnedPortfolioId = portfolioCompactListCache.getDefaultPortfolio(currentUserBaseKeyHolder.getCurrentUserBaseKey());
+        PortfolioCompactDTO defaultPortfolioCompactDTO = portfolioCompactCache.get(defaultOwnedPortfolioId.getPortfolioId());
+        newMenus.add(new MenuOwnedPortfolioId(defaultOwnedPortfolioId, defaultPortfolioCompactDTO));
+
+        Bundle ownedPortfolioArgs = getArguments().getBundle(BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE);
+        if (ownedPortfolioArgs != null)
+        {
+            OwnedPortfolioId ownedPortfolioId = new OwnedPortfolioId(ownedPortfolioArgs);
+            PortfolioCompactDTO portfolioCompactDTO = portfolioCompactCache.get(ownedPortfolioId.getPortfolioId());
+            newMenus.add(new MenuOwnedPortfolioId(ownedPortfolioId, portfolioCompactDTO));
+        }
+
+        usedMenuOwnedPortfolioIds = newMenus;
+    }
+
     @Override protected void createUserInteractor()
     {
         userInteractor = new BuySellTHIABUserInteractor(getActivity(), getBillingActor(), getView().getHandler());
@@ -295,7 +370,7 @@ public class BuySellFragment extends AbstractBuySellFragment
     {
         super.onPrepareOptionsMenu(menu);
 
-        MenuItem menuElements = menu.findItem(R.id.menu_elements_buy_sell);
+        com.actionbarsherlock.view.MenuItem menuElements = menu.findItem(R.id.menu_elements_buy_sell);
 
         marketCloseIcon = (ImageView) menuElements.getActionView().findViewById(R.id.market_status);
         if (marketCloseIcon != null)
@@ -382,6 +457,19 @@ public class BuySellFragment extends AbstractBuySellFragment
     @Override public void onDestroyView()
     {
         THLog.d(TAG, "onDestroyView");
+
+        if (mSelectedPortfolioContainer != null)
+        {
+            mSelectedPortfolioContainer.setOnClickListener(null);
+        }
+        mSelectedPortfolioContainer = null;
+        mSelectedPortfolio = null;
+
+        if (mPortfolioSelectorMenu != null)
+        {
+            mPortfolioSelectorMenu.setOnMenuItemClickListener(null);
+        }
+        mPortfolioSelectorMenu = null;
 
         if (mQuickPriceButtonSet != null)
         {
@@ -958,6 +1046,27 @@ public class BuySellFragment extends AbstractBuySellFragment
         navigator.pushFragment(BuySellConfirmFragment.class, args);
     }
 
+    private void showPortfolioSelector()
+    {
+        if (mPortfolioSelectorMenu != null)
+        {
+            mPortfolioSelectorMenu.show();
+        }
+    }
+
+    private boolean selectDifferentPortfolio(MenuItem menuItem)
+    {
+        THLog.d(TAG, "selectDifferentPortfolio " + menuItem.getTitle());
+        if (mSelectedPortfolio != null)
+        {
+            mSelectedPortfolio.setText(menuItem.getTitle());
+        }
+
+        OwnedPortfolioId applicableOwnedPortfolioId = (MenuOwnedPortfolioId) menuItem.getTitle();
+        userInteractor.setApplicablePortfolioId(applicableOwnedPortfolioId);
+        return true;
+    }
+
     private void showInfoDialog()
     {
         THToast.show("Nothing for now");
@@ -1069,26 +1178,6 @@ public class BuySellFragment extends AbstractBuySellFragment
             {
                 pushBuySellConfirmFragmentIn();
                 return;
-                //String buyDetail = String.format("Buy %s %s:%s @ %s %f\nTransaction fee: virtual US$ 10\nTotal cost: US$ %.2f",
-                //        /*tvQuantity.getText()*/ "quantity", securityPositionDetailDTO.security.exchange, securityPositionDetailDTO.security.symbol, securityPositionDetailDTO.security.currencyDisplay,
-                //        lastPrice, getTotalCostForBuy());
-                //
-                //Bundle b = new Bundle();
-                //
-                //b.putString(BuySellConfirmFragment.BUNDLE_KEY_BUY_DETAIL_STR, buyDetail);
-                //b.putString(BuySellConfirmFragment.BUNDLE_KEY_LAST_PRICE, String.valueOf(lastPrice));
-                //b.putString(BuySellConfirmFragment.BUNDLE_KEY_QUANTITY_BUY, /*tvQuantity.getText().toString().replace(",", "")*/ "quantity");
-                //b.putString(BuySellConfirmFragment.BUNDLE_KEY_SYMBOL, securityPositionDetailDTO.security.symbol);
-                //b.putString(BuySellConfirmFragment.BUNDLE_KEY_EXCHANGE, securityPositionDetailDTO.security.exchange);
-                //
-                //Fragment newFragment = Fragment.instantiate(getActivity(), BuySellConfirmFragment.class.getName(), b);
-                //
-                //// Add the fragment to the activity, pushing this transaction
-                //// on to the back stack.
-                //FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-                //ft.replace(R.id.realtabcontent, newFragment, "trend_buy");
-                //ft.addToBackStack("trend_buy");
-                //ft.commit();
             }
         };
     }
@@ -1169,7 +1258,11 @@ public class BuySellFragment extends AbstractBuySellFragment
         @Override protected void handleShowSkuDetailsMilestoneComplete()
         {
             super.handleShowSkuDetailsMilestoneComplete();
-            displayTradeQuantityView();
+            // Like this we retest for the possibility to buy and sell
+            if (securityPositionDetailDTO != null)
+            {
+                BuySellFragment.this.linkWith(securityPositionDetailDTO, true);
+            }
         }
 
         @Override protected void handleShowSkuDetailsMilestoneFailed(Throwable throwable)
