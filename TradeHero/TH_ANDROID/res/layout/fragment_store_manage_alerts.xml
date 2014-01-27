@@ -2,6 +2,7 @@
 
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     >
@@ -43,22 +44,13 @@
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_toRightOf="@id/manage_alerts_plan_title"
-        android:text="@null"
+        tools:text="Type of alert plan"
+        tools:textColor="@color/red"
         />
-    <!--<LinearLayout-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_alignParentLeft="true"-->
-    <!--android:layout_toLeftOf="@id/btn_upgrade_plan"-->
-    <!--android:layout_centerVertical="true"-->
-    <!--android:orientation="horizontal"-->
-    <!-->-->
-
-    <!--</LinearLayout>-->
 
   </RelativeLayout>
 
-  <com.tradehero.th.fragments.alert.AlertListView
+  <se.emilsjolander.stickylistheaders.StickyListHeadersListView
       android:id="@+id/alerts_list"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"

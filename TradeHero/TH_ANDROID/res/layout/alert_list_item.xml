@@ -1,32 +1,88 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<com.tradehero.th.fragments.alert.AlertListItemView
+<com.tradehero.th.fragments.alert.AlertItemView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res/com.tradehero.th"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:padding="5dp"
     android:background="@color/white"
     >
-
-  <TextView
-      android:id="@+id/payout_amount"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_alignParentRight="true"
-      android:textStyle="bold"
-      android:maxLines="1"
-      android:text=""
+  <ImageView
+      android:layout_width="60dp"
+      android:layout_height="60dp"
+      android:id="@+id/logo"
+      android:contentDescription="@null"
+      tools:background="@color/red"
+      tools:layout_width="60dp"
+      tools:layout_height="60dp"
+      android:layout_centerVertical="true"
       />
 
   <TextView
-      android:id="@+id/payout_date"
-      android:layout_width="match_parent"
+      android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:layout_alignParentLeft="true"
-      android:layout_toLeftOf="@+id/payout_amount"
-      android:maxLines="1"
-      android:text=""
-    />
+      android:id="@+id/stock_symbol"
+      android:layout_toRightOf="@id/logo"
+      android:layout_alignParentTop="true"
+      android:paddingLeft="5dp"
+      tools:text="stock name"
+      />
 
-</com.tradehero.th.fragments.alert.AlertListItemView>
+  <TextView
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:id="@+id/alert_description"
+      android:layout_toRightOf="@id/logo"
+      android:layout_below="@id/stock_symbol"
+      android:paddingLeft="5dp"
+      android:textSize="12sp"
+      tools:text="alert description"
+      />
+
+  <TextView
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:id="@+id/alert_status"
+      android:layout_toRightOf="@id/logo"
+      android:layout_below="@id/alert_description"
+      android:paddingLeft="5dp"
+      android:textSize="12sp"
+      tools:text="alert status"
+      />
+
+  <ImageView
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:id="@+id/buy_stock"
+      android:layout_toRightOf="@id/logo"
+      android:layout_below="@id/alert_status"
+      android:layout_alignParentBottom="true"
+      android:paddingLeft="5dp"
+      android:src="@drawable/buy_stock"
+      android:contentDescription="@null"
+      />
+
+  <ImageView
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:id="@+id/sell_stock"
+      android:layout_toRightOf="@id/buy_stock"
+      android:layout_below="@id/alert_status"
+      android:layout_alignParentBottom="true"
+      android:paddingLeft="5dp"
+      android:src="@drawable/sell_stock"
+      android:contentDescription="@null"
+      />
+
+
+  <ImageView
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_alignParentRight="true"
+      android:layout_centerVertical="true"
+      android:paddingRight="5dp"
+      android:src="@drawable/settings_forward_light"
+      android:contentDescription="@null"
+      />
+</com.tradehero.th.fragments.alert.AlertItemView>

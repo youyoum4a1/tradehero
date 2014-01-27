@@ -1,117 +1,53 @@
 package com.tradehero.th.fragments.alert;
 
 import android.content.Context;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import com.tradehero.common.persistence.DTOKeyIdList;
 import com.tradehero.common.persistence.DTOListCacheAdapter;
 import com.tradehero.th.R;
+import com.tradehero.th.api.alert.AlertCompactDTO;
 import com.tradehero.th.api.alert.AlertId;
-import com.tradehero.th.api.social.FollowerSummaryDTO;
-import com.tradehero.th.api.social.HeroPayoutDTO;
-import com.tradehero.th.api.social.UserFollowerDTO;
-import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.fragments.social.follower.FollowerListItemView;
-import com.tradehero.th.fragments.social.hero.HeroPayoutListItemView;
+import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
+import com.tradehero.th.persistence.alert.AlertCompactCache;
 import com.tradehero.th.persistence.alert.AlertCompactListCache;
-import com.tradehero.th.widget.list.BaseListHeaderView;
+import com.tradehero.th.utils.DaggerUtils;
+import dagger.Lazy;
+import javax.inject.Inject;
+import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/14/13 Time: 4:12 PM To change this template use File | Settings | File Templates. */
-public class AlertListItemAdapter extends DTOListCacheAdapter<AlertId, UserBaseKey, AlertCompactListCache, AlertItemView>
+public class AlertListItemAdapter extends DTOListCacheAdapter<AlertId, AlertItemView>
+    implements StickyListHeadersAdapter
 {
     public static final String TAG = AlertListItemAdapter.class.getName();
+    private static final long HEADER_ID_INACTIVE = 0;
+    private static final long HEADER_ID_ACTIVE = 1;
 
-    public static final int VIEW_TYPE_HEADER_ACTIVE = 0;
-    public static final int VIEW_TYPE_HEADER_INACTIVE = 1;
-    public static final int VIEW_TYPE_ITEM_ALERT = 2;
+    @Inject protected Lazy<AlertCompactListCache> alertCompactListCache;
+    @Inject protected Lazy<AlertCompactCache> alertCompactCache;
+
+    @Inject protected CurrentUserBaseKeyHolder currentUserBaseKeyHolder;
 
     protected final Context context;
-    protected final LayoutInflater inflater;
-    protected final int headerResId;
     protected final int alertResId;
-    protected final int alertNoneResId;
-    protected final int activeAlertHeaderResId;
-    protected final int nonActiveAlertHeaderResId;
-    protected FollowerSummaryDTO followerSummaryDTO;
 
-    public AlertListItemAdapter(Context context, LayoutInflater inflater, AlertCompactListCache dtoCache, UserBaseKey userBaseKey,
-            int headerResId,
-            int alertResId, int alertNoneResId,
-            int activeAlertHeaderResId,
-            int nonActiveAlertHeaderResId)
+    public AlertListItemAdapter(Context context, int alertResId)
     {
-        super(context, inflater, alertResId, dtoCache, userBaseKey);
+        super(context, alertResId);
         this.context = context;
-        this.inflater = inflater;
-        this.headerResId = headerResId;
-        this.alertResId = alertResId;
-        this.alertNoneResId = alertNoneResId;
-        this.activeAlertHeaderResId = activeAlertHeaderResId;
-        this.nonActiveAlertHeaderResId = nonActiveAlertHeaderResId;
-    }
 
-    public void setFollowerSummaryDTO(FollowerSummaryDTO followerSummaryDTO)
-    {
-        this.followerSummaryDTO = followerSummaryDTO;
+        this.alertResId = alertResId;
+
+        DaggerUtils.inject(this);
     }
 
     @Override public boolean hasStableIds()
     {
         return true;
-    }
-
-    @Override public int getViewTypeCount()
-    {
-        return 3;
-    }
-
-    public int getPayoutRealCount()
-    {
-        return (followerSummaryDTO == null || followerSummaryDTO.payoutSummary == null || followerSummaryDTO.payoutSummary.payouts == null) ?
-                0 :
-                followerSummaryDTO.payoutSummary.payouts.size();
-    }
-
-    public int getPayoutVisibleCount()
-    {
-        return Math.max (1, getPayoutRealCount());
-    }
-
-    public int getFollowerRealCount()
-    {
-        return (followerSummaryDTO == null || followerSummaryDTO.userFollowers == null) ?
-                0 :
-                followerSummaryDTO.userFollowers.size();
-    }
-
-    public int getFollowerVisibleCount()
-    {
-        return Math.max (1, getFollowerRealCount());
-    }
-
-    @Override public int getItemViewType(int position)
-    {
-        if (position <= 0)
-        {
-            return VIEW_TYPE_HEADER_ACTIVE;
-        }
-        else if (position <= getPayoutVisibleCount())
-        {
-            return VIEW_TYPE_ITEM_ALERT;
-        }
-        else if (position == getPayoutVisibleCount() + 1)
-        {
-            return VIEW_TYPE_HEADER_INACTIVE;
-        }
-        else
-        {
-            return VIEW_TYPE_ITEM_ALERT;
-        }
-    }
-
-    @Override public int getCount()
-    {
-        return 2 + getPayoutVisibleCount() + getFollowerVisibleCount();
     }
 
     @Override public long getItemId(int position)
@@ -120,78 +56,9 @@ public class AlertListItemAdapter extends DTOListCacheAdapter<AlertId, UserBaseK
         return item == null ? 0 : item.hashCode();
     }
 
-    @Override public Object getItem(int position)
+    @Override public DTOKeyIdList<AlertId> getItems()
     {
-        switch(getItemViewType(position))
-        {
-            case VIEW_TYPE_ITEM_ALERT:
-                return getPayoutForPosition(position);
-            case VIEW_TYPE_HEADER_ACTIVE:
-                return "active";
-            case VIEW_TYPE_HEADER_INACTIVE:
-                return "inactive";
-
-            default:
-                throw new IllegalStateException(getItemViewType(position) + " is not a known view type");
-        }
-    }
-
-    public int getPositionToPayoutIndex(int position)
-    {
-        return position - 1;
-    }
-
-    public HeroPayoutDTO getPayoutForPosition(int position)
-    {
-        return (followerSummaryDTO == null || followerSummaryDTO.payoutSummary == null || followerSummaryDTO.payoutSummary.payouts == null) ?
-                null :
-                followerSummaryDTO.payoutSummary.payouts.get(getPositionToPayoutIndex(position));
-    }
-
-    public int getPositionToFollowerIndex(int position)
-    {
-        return position - 2 - getPayoutVisibleCount();
-    }
-
-    public UserFollowerDTO getFollowerForPosition(int position)
-    {
-        return (followerSummaryDTO == null || followerSummaryDTO.userFollowers == null) ?
-                null :
-                followerSummaryDTO.userFollowers.get(getPositionToFollowerIndex(position));
-    }
-
-    @Override public View getView(int position, View convertView, ViewGroup parent)
-    {
-        switch (getItemViewType(position))
-        {
-            case VIEW_TYPE_ITEM_ALERT:
-                if (!(convertView instanceof HeroPayoutListItemView))
-                {
-                    convertView = inflater.inflate(alertResId, parent, false);
-                }
-                ((HeroPayoutListItemView) convertView).display((HeroPayoutDTO) getItem(position));
-                break;
-
-            case VIEW_TYPE_HEADER_ACTIVE:
-                convertView = inflater.inflate(headerResId, parent, false);
-
-                int stringId = position == 0 ? R.string.manage_followers_payout_list_header : R.string.manage_followers_list_header;
-                int count = position == 0 ? getPayoutRealCount() : getFollowerRealCount();
-                ((BaseListHeaderView) convertView).setHeaderTextContent(String.format(context.getString(stringId), count));
-                break;
-
-            case VIEW_TYPE_HEADER_INACTIVE:
-                if (!(convertView instanceof FollowerListItemView))
-                {
-                    convertView = inflater.inflate(activeAlertHeaderResId, parent, false);
-                }
-                ((FollowerListItemView) convertView).display((UserFollowerDTO) getItem(position));
-                break;
-
-            default:
-                throw new IllegalStateException("Unhandled view type " + getItemViewType(position));
-        }
-        return convertView;
+        return alertCompactListCache.get().get(currentUserBaseKeyHolder.getCurrentUserBaseKey());
     }
 
     @Override protected void fineTune(int position, AlertId dto, AlertItemView dtoView)
@@ -199,13 +66,45 @@ public class AlertListItemAdapter extends DTOListCacheAdapter<AlertId, UserBaseK
 
     }
 
-    @Override public boolean areAllItemsEnabled()
+    @Override public View getHeaderView(int position, View convertView, ViewGroup parent)
     {
-        return false;
+        TextHolder holder = null;
+        if (convertView == null) {
+            convertView = inflater.inflate(R.layout.alert_management_title, parent, false);
+            holder = new TextHolder(convertView);
+            convertView.setTag(holder);
+        } else {
+            holder = (TextHolder) convertView.getTag();
+        }
+
+        holder.text.setText(getHeaderId(position) == 1 ?
+                getContext().getString(R.string.stock_alerts_active) :getContext().getString(R.string.stock_alerts_inactive_title)
+        );
+        return convertView;
     }
 
-    @Override public boolean isEnabled(int position)
+    @Override public long getHeaderId(int position)
     {
-        return getItemViewType(position) == VIEW_TYPE_ITEM_ALERT;
+        AlertId alertId = (AlertId) getItem(position);
+        AlertCompactDTO alertCompactDTO = alertCompactCache.get().get(alertId);
+        if (alertCompactDTO!= null && alertCompactDTO.active)
+        {
+            return HEADER_ID_ACTIVE;
+        }
+        else
+        {
+            return HEADER_ID_INACTIVE;
+        }
+
+    }
+
+    static class TextHolder
+    {
+        @InjectView(R.id.title) TextView text;
+
+        public TextHolder(View convertView)
+        {
+            ButterKnife.inject(this, convertView);
+        }
     }
 }

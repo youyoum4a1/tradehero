@@ -2,6 +2,8 @@ package com.tradehero.th.utils.dagger;
 
 import android.content.Context;
 import com.tradehero.common.cache.LruMemFileCache;
+import com.tradehero.th.fragments.alert.AlertItemView;
+import com.tradehero.th.fragments.alert.AlertListItemAdapter;
 import com.tradehero.th.fragments.settings.SettingsPayPalFragment;
 import com.tradehero.th.models.alert.SecurityAlertAssistant;
 import com.tradehero.th.persistence.portfolio.OwnedPortfolioFetchAssistant;
@@ -20,6 +22,8 @@ import javax.inject.Singleton;
                 SecurityAlertAssistant.class,
                 SettingsPayPalFragment.class,
 
+                AlertListItemAdapter.class,
+                AlertItemView.class,
         },
         complete = false,
         library = true

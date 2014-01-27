@@ -21,6 +21,7 @@ import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.persistence.alert.AlertCompactListCache;
 import dagger.Lazy;
 import javax.inject.Inject;
+import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/13/13 Time: 12:04 PM To change this template use File | Settings | File Templates. */
 public class AlertManagerFragment extends BasePurchaseManagerFragment
@@ -31,7 +32,7 @@ public class AlertManagerFragment extends BasePurchaseManagerFragment
     private TextView planCount;
     private ImageView planCountHint;
     private ImageButton btnPlanUpgrade;
-    private AlertListView alertListView;
+    private StickyListHeadersListView alertListView;
 
     @Inject protected Lazy<AlertCompactListCache> alertCompactListCache;
     @Inject protected CurrentUserBaseKeyHolder currentUserBaseKeyHolder;
@@ -60,21 +61,11 @@ public class AlertManagerFragment extends BasePurchaseManagerFragment
         planCount = (TextView) view.findViewById(R.id.manage_alerts_count);
         //planCountHint = (ImageView) view.findViewById(R.id.icn_alert_plan_hint);
         btnPlanUpgrade = (ImageButton) view.findViewById(R.id.btn_upgrade_plan);
-        alertListView = (AlertListView) view.findViewById(R.id.alerts_list);
+        alertListView = (StickyListHeadersListView) view.findViewById(R.id.alerts_list);
 
         if (alertListItemAdapter == null)
         {
-            alertListItemAdapter = new AlertListItemAdapter(
-                    getActivity(),
-                    getActivity().getLayoutInflater(),
-                    alertCompactListCache.get(),
-                    currentUserBaseKeyHolder.getCurrentUserBaseKey(),
-                    R.layout.alert_list_header,
-                    R.layout.alert_list_item,
-                    R.layout.alert_list_item,
-                    R.layout.alert_list_header,
-                    R.layout.alert_list_header
-            );
+            alertListItemAdapter = new AlertListItemAdapter(getActivity(), R.layout.alert_list_item);
         }
 
         if (alertListView != null)
@@ -86,7 +77,7 @@ public class AlertManagerFragment extends BasePurchaseManagerFragment
                     handleAlertItemClicked(view, position, id);
                 }
             });
-            //alertListView.setAdapter(alertListItemAdapter);
+            alertListView.setAdapter(alertListItemAdapter);
         }
     }
 

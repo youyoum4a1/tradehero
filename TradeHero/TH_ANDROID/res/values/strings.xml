@@ -186,4 +186,8 @@
   <string name="facebook_tradehero_refer_friend_message">Download TradeHero: make money copying top traders!</string>
   <string name="request_canceled">Request canceled</string>
   <string name="request_sent">Request sent</string>
+  <string name="stock_alerts_active">Active stock alerts</string>
+  <string name="stock_alerts_inactive_title">Inactive stock alerts</string>
+  <string name="stock_alerts_active_until">Active Until <b>%s</b></string>
+  <string name="inactive">Inactive</string>
 </resources>

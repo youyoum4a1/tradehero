@@ -1,5 +1,6 @@
     package com.tradehero.th.api.security;
 
+import com.tradehero.common.graphics.WhiteToTransparentTransformation;
 import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.api.ExtendedDTO;
 import com.tradehero.th.api.market.Exchange;
