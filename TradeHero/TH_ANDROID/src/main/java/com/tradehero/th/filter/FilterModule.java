@@ -35,14 +35,14 @@ public class FilterModule
     {
     }
 
-    @Provides @Singleton CharSequencePredicate<SecurityId> provideSecurityIdPredicate()
+    @Provides CharSequencePredicate<SecurityId> provideSecurityIdPredicate()
     {
         // Your choice
         //return new SecurityIdSymbolCIPredicate();
         return new SecurityIdPaddedSymbolCIPredicate();
     }
 
-    @Provides @Singleton CharSequencePredicate<SecurityCompactDTO> provideSecurityCompactPredicate()
+    @Provides CharSequencePredicate<SecurityCompactDTO> provideSecurityCompactPredicate()
     {
         // Your choice
         //return new SecurityCompactSymbolCIPredicate<>();
@@ -50,17 +50,17 @@ public class FilterModule
     }
 
     // When matching Warrants, it includes underlying name
-    @Provides @Singleton CharSequencePredicate<WarrantDTO> provideWarrantPredicate()
+    @Provides CharSequencePredicate<WarrantDTO> provideWarrantPredicate()
     {
         return new WarrantPaddedSymbolOrUnderlyingCIPredicate<>();
     }
 
-    @Provides @Singleton ListCharSequencePredicateFilter<SecurityId> provideSecurityIdPatternFilter(CharSequencePredicate<SecurityId> predicate)
+    @Provides ListCharSequencePredicateFilter<SecurityId> provideSecurityIdPatternFilter(CharSequencePredicate<SecurityId> predicate)
     {
         return new BaseListCharSequencePredicateFilter<>(predicate);
     }
 
-    @Provides @Singleton ListCharSequencePredicateFilter<WarrantDTO> provideWarrantDTOPatternFilter(CharSequencePredicate<WarrantDTO> predicate)
+    @Provides ListCharSequencePredicateFilter<WarrantDTO> provideWarrantDTOPatternFilter(CharSequencePredicate<WarrantDTO> predicate)
     {
         return new BaseListCharSequencePredicateFilter<>(predicate);
     }

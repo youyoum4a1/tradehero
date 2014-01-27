@@ -12,7 +12,6 @@ public class MacquarieSecurityListPagedLoader extends SecurityListPagedLoader
 {
     public static final String TAG = MacquarieSecurityListPagedLoader.class.getSimpleName();
 
-
     public MacquarieSecurityListPagedLoader(Context context)
     {
         super(context);
