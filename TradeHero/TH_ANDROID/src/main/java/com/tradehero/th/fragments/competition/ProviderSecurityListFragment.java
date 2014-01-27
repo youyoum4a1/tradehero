@@ -17,10 +17,11 @@ import com.tradehero.th.api.competition.ProviderIdConstants;
 import com.tradehero.th.api.competition.ProviderSecurityListType;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.SecurityIdList;
-import com.tradehero.th.fragments.competition.macquarie.MacquarieSecurityItemViewAdapter;
+import com.tradehero.th.fragments.competition.macquarie.MacquarieWarrantItemViewAdapter;
 import com.tradehero.th.fragments.security.SecurityListFragment;
 import com.tradehero.th.fragments.trade.BuySellFragment;
-import com.tradehero.th.fragments.trending.SecurityItemViewAdapter;
+import com.tradehero.th.fragments.security.SimpleSecurityItemViewAdapter;
+import com.tradehero.th.fragments.security.SecurityItemViewAdapter;
 import com.tradehero.th.loaders.security.SecurityListPagedLoader;
 import com.tradehero.th.loaders.security.macquarie.MacquarieSecurityListPagedLoader;
 import com.tradehero.th.persistence.competition.ProviderCache;
@@ -131,13 +132,13 @@ public class ProviderSecurityListFragment extends SecurityListFragment
         if (providerId != null && providerId.key.equals(ProviderIdConstants.PROVIDER_ID_MACQUARIE_WARRANTS))
         {
             THLog.d(TAG, "Macquarie adapter");
-            return new MacquarieSecurityItemViewAdapter(
+            return new MacquarieWarrantItemViewAdapter(
                     getActivity(),
                     getActivity().getLayoutInflater(),
                     securityItemLayoutFactory.getProviderLayout(providerId));
         }
         THLog.d(TAG, "Regular adapter");
-        return new SecurityItemViewAdapter(
+        return new SimpleSecurityItemViewAdapter(
                 getActivity(),
                 getActivity().getLayoutInflater(),
                 securityItemLayoutFactory.getProviderLayout(providerId));

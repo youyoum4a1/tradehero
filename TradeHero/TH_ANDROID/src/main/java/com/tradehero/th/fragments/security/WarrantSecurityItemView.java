@@ -12,7 +12,7 @@ import java.util.Locale;
 /**
  * Created by xavier on 1/21/14.
  */
-public class WarrantSecurityItemView extends SecurityItemView
+public class WarrantSecurityItemView extends SecurityItemView<SecurityCompactDTO>
 {
     public static final String TAG = WarrantSecurityItemView.class.getSimpleName();
 

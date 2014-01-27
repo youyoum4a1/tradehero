@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.trending;
+package com.tradehero.th.fragments.security;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -6,43 +6,42 @@ import android.widget.Filter;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.common.widget.filter.ListCharSequencePredicateFilter;
 import com.tradehero.th.adapters.ArrayDTOAdapter;
-import com.tradehero.th.api.security.SecurityId;
-import com.tradehero.th.filter.security.SecurityIdFilter;
-import com.tradehero.th.fragments.security.SecurityItemView;
+import com.tradehero.th.api.security.SecurityCompactDTO;
+import com.tradehero.th.filter.security.SecurityCompactDTOFilter;
 import com.tradehero.th.utils.DaggerUtils;
 import java.util.List;
-import javax.inject.Inject;
 
-public class SecurityItemViewAdapter extends ArrayDTOAdapter<SecurityId, SecurityItemView>
+abstract public class SecurityItemViewAdapter<SecurityCompactDTOType extends SecurityCompactDTO>
+        extends ArrayDTOAdapter<SecurityCompactDTOType, SecurityItemView<SecurityCompactDTOType>>
 {
     private final static String TAG = SecurityItemViewAdapter.class.getSimpleName();
 
-    protected List<SecurityId> originalItems;
-    protected Filter filterToUse;
-    @Inject ListCharSequencePredicateFilter<SecurityId> securityIdPredicateFilter;
+    protected List<SecurityCompactDTOType> originalItems;
 
     //<editor-fold desc="Constructors">
     public SecurityItemViewAdapter(Context context, LayoutInflater inflater, int layoutResourceId)
     {
         super(context, inflater, layoutResourceId);
         DaggerUtils.inject(this);
-        filterToUse = new SecurityItemFilter(securityIdPredicateFilter);
     }
     //</editor-fold>
 
-    @Override public void setItems(List<SecurityId> items)
+    @Override public void setItems(List<SecurityCompactDTOType> items)
     {
         originalItems = items;
-        setItemsToShow(securityIdPredicateFilter.filter(items));
+        setItemsToShow(getPredicateFilter().filter(items));
     }
 
-    protected void setItemsToShow(List<SecurityId> showItems)
+    protected void setItemsToShow(List<SecurityCompactDTOType> showItems)
     {
         THLog.d(TAG, "setItemsToShow " + (showItems == null ? "null" : showItems.size()));
         super.setItems(showItems);
     }
 
-    @Override protected void fineTune(int position, SecurityId securityId, final SecurityItemView dtoView)
+    abstract public ListCharSequencePredicateFilter<SecurityCompactDTOType> getPredicateFilter();
+    abstract public Filter getFilter();
+
+    @Override protected void fineTune(int position, SecurityCompactDTOType securityCompact, final SecurityItemView<SecurityCompactDTOType> dtoView)
     {
         // Nothing to do
     }
@@ -58,26 +57,21 @@ public class SecurityItemViewAdapter extends ArrayDTOAdapter<SecurityId, Securit
         return item == null ? 0 : item.hashCode();
     }
 
-    @Override public Filter getFilter()
+    protected class SecurityItemFilter
+            extends SecurityCompactDTOFilter<SecurityCompactDTOType>
     {
-        return filterToUse;
-    }
-
-    protected class SecurityItemFilter extends SecurityIdFilter
-    {
-        public SecurityItemFilter(ListCharSequencePredicateFilter<SecurityId> predicateFilter)
+        public SecurityItemFilter(ListCharSequencePredicateFilter<SecurityCompactDTOType> predicateFilter)
         {
             super(predicateFilter);
         }
 
-        @Override protected FilterResults performFiltering(CharSequence charSequence)
+        @Override protected Filter.FilterResults performFiltering(CharSequence charSequence)
         {
 
             return performFiltering(charSequence, originalItems);
         }
 
-        @SuppressWarnings("unchecked")
-        @Override protected void publishResults(CharSequence charSequence, SecurityFilterResults filterResults)
+        @Override protected void publishResults(CharSequence charSequence, SecurityFilterResults<SecurityCompactDTOType> filterResults)
         {
             setItemsToShow(filterResults.castedValues);
             notifyDataSetChanged();

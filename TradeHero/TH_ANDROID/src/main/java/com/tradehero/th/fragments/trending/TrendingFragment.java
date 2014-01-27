@@ -19,8 +19,9 @@ import com.tradehero.th.api.market.ExchangeDTOList;
 import com.tradehero.th.api.market.ExchangeListType;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.TrendingSecurityListType;
-import com.tradehero.th.fragments.security.SecurityItemView;
+import com.tradehero.th.fragments.security.SecurityItemViewAdapter;
 import com.tradehero.th.fragments.security.SecurityListFragment;
+import com.tradehero.th.fragments.security.SimpleSecurityItemViewAdapter;
 import com.tradehero.th.fragments.trade.BuySellFragment;
 import com.tradehero.th.fragments.trending.filter.TrendingFilterSelectorView;
 import com.tradehero.th.fragments.trending.filter.TrendingFilterTypeBasicDTO;
@@ -141,7 +142,7 @@ public class TrendingFragment extends SecurityListFragment
 
     @Override protected SecurityItemViewAdapter createSecurityItemViewAdapter()
     {
-        return new SecurityItemViewAdapter(getActivity(), getActivity().getLayoutInflater(), R.layout.trending_security_item);
+        return new SimpleSecurityItemViewAdapter(getActivity(), getActivity().getLayoutInflater(), R.layout.trending_security_item);
     }
 
     @Override public int getSecurityIdListLoaderId()

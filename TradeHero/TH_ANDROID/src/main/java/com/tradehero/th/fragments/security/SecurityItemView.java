@@ -30,7 +30,8 @@ import dagger.Lazy;
 import javax.inject.Inject;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 9/5/13 Time: 5:19 PM To change this template use File | Settings | File Templates. */
-public class SecurityItemView extends RelativeLayout implements DTOView<SecurityId>
+public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
+        extends RelativeLayout implements DTOView<SecurityCompactDTOType>
 {
     private static final String TAG = SecurityItemView.class.getSimpleName();
     private static Transformation foregroundTransformation;
@@ -51,11 +52,7 @@ public class SecurityItemView extends RelativeLayout implements DTOView<Security
     protected TextView date;
     protected TextView securityType;
 
-    protected SecurityId securityId;
-    protected SecurityCompactDTO securityCompactDTO;
-    @Inject protected Lazy<SecurityCompactCache> securityCompactCache;
-    private SecurityCompactListener securityCompactListener;
-    private DTOCache.GetOrFetchTask<SecurityId, SecurityCompactDTO> securityCompactFetchTask;
+    protected SecurityCompactDTOType securityCompactDTO;
 
     private Runnable loadBgLogoRunnable = new Runnable()
     {
@@ -145,13 +142,6 @@ public class SecurityItemView extends RelativeLayout implements DTOView<Security
         return (url != null) && (!url.isEmpty());
     }
 
-    @Override protected void onAttachedToWindow()
-    {
-        super.onAttachedToWindow();
-
-        securityCompactListener = new SecurityCompactListener();
-    }
-
     @Override protected void onDetachedFromWindow()
     {
         clearImageViewUrls();
@@ -189,47 +179,14 @@ public class SecurityItemView extends RelativeLayout implements DTOView<Security
                     .error(R.drawable.default_image)
                     .into(stockBgLogo);
         }
-
-        securityCompactListener = null;
-        if (securityCompactFetchTask != null)
-        {
-            securityCompactFetchTask.setListener(null);
-        }
-        securityCompactFetchTask = null;
     }
 
-    @Override public void display(final SecurityId securityId)
-    {
-        if (this.securityId != null && this.securityId.equals(securityId))
-        {
-            return;
-        }
-
-        this.securityId = securityId;
-        this.securityCompactDTO = null;
-
-        if (securityCompactFetchTask != null)
-        {
-            securityCompactFetchTask.setListener(null);
-        }
-        final SecurityCompactDTO cachedSecurityCompactDTO = securityCompactCache.get().get(this.securityId);
-        if (cachedSecurityCompactDTO != null)
-        {
-            display(cachedSecurityCompactDTO);
-        }
-        else
-        {
-            securityCompactFetchTask = securityCompactCache.get().getOrFetch(this.securityId, this.securityCompactListener);
-            securityCompactFetchTask.execute();
-        }
-    }
-
-    public void display (final SecurityCompactDTO securityCompactDTO)
+    @Override public void display (final SecurityCompactDTOType securityCompactDTO)
     {
         linkWith(securityCompactDTO, true);
     }
 
-    public void linkWith(SecurityCompactDTO securityCompactDTO, boolean andDisplay)
+    public void linkWith(SecurityCompactDTOType securityCompactDTO, boolean andDisplay)
     {
         if (this.securityCompactDTO != null && securityCompactDTO.name.equals(this.securityCompactDTO.name))
         {
@@ -522,19 +479,5 @@ public class SecurityItemView extends RelativeLayout implements DTOView<Security
                 }
             }
         });
-    }
-
-    private class SecurityCompactListener implements DTOCache.Listener<SecurityId, SecurityCompactDTO>
-    {
-        @Override public void onDTOReceived(SecurityId key, SecurityCompactDTO value)
-        {
-            display(value);
-        }
-
-        @Override public void onErrorThrown(SecurityId key, Throwable error)
-        {
-            THToast.show(R.string.error_fetch_security_info);
-            THLog.e(TAG, "Error loading securityId " + key, error);
-        }
     }
 }

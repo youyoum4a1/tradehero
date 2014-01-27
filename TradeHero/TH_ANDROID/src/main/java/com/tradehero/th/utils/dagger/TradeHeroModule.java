@@ -25,13 +25,14 @@ import com.tradehero.th.billing.googleplay.THIABPurchaseFetcher;
 import com.tradehero.th.billing.googleplay.THIABPurchaseReporter;
 import com.tradehero.th.billing.googleplay.THIABPurchaser;
 import com.tradehero.th.billing.googleplay.THInventoryFetchMilestone;
-import com.tradehero.th.fragments.competition.macquarie.MacquarieSecurityItemViewAdapter;
+import com.tradehero.th.fragments.competition.macquarie.MacquarieWarrantItemViewAdapter;
 import com.tradehero.th.fragments.leaderboard.CompetitionLeaderboardMarkUserListViewFragment;
 import com.tradehero.th.fragments.security.WarrantInfoValueFragment;
 import com.tradehero.th.fragments.settings.ReferralFragment;
 import com.tradehero.th.fragments.security.WarrantSecurityItemView;
 import com.tradehero.th.fragments.settings.UserFriendDTOView;
-import com.tradehero.th.fragments.trending.SecurityItemViewAdapter;
+import com.tradehero.th.fragments.security.SimpleSecurityItemViewAdapter;
+import com.tradehero.th.fragments.security.SecurityItemViewAdapter;
 import com.tradehero.th.fragments.web.WebViewFragment;
 import com.tradehero.th.fragments.alert.AlertManagerFragment;
 import com.tradehero.th.fragments.authentication.EmailSignInFragment;
@@ -183,7 +184,8 @@ import org.ocpsoft.prettytime.PrettyTime;
                 SecurityListPagedLoader.class,
                 MacquarieSecurityListPagedLoader.class,
                 SecurityItemViewAdapter.class,
-                MacquarieSecurityItemViewAdapter.class,
+                SimpleSecurityItemViewAdapter.class,
+                MacquarieWarrantItemViewAdapter.class,
                 SecurityItemView.class,
                 WarrantSecurityItemView.class,
                 SearchStockPeopleFragment.class,

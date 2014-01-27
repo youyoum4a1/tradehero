@@ -15,12 +15,14 @@ import android.widget.ProgressBar;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.common.widget.FlagNearEndScrollListener;
 import com.tradehero.th.R;
+import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityIdList;
 import com.tradehero.th.api.security.SecurityListType;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
-import com.tradehero.th.fragments.trending.SecurityItemViewAdapter;
 import com.tradehero.th.loaders.PagedDTOCacheLoader;
 import com.tradehero.th.loaders.security.SecurityListPagedLoader;
+import com.tradehero.th.persistence.security.SecurityCompactCache;
+import javax.inject.Inject;
 
 abstract public class SecurityListFragment extends BasePurchaseManagerFragment
 {
@@ -47,8 +49,10 @@ abstract public class SecurityListFragment extends BasePurchaseManagerFragment
     protected GestureDetector listViewGesture;
 
     protected int perPage = DEFAULT_PER_PAGE;
-    protected SecurityItemViewAdapter securityItemViewAdapter;
+    protected SecurityItemViewAdapter<SecurityCompactDTO> securityItemViewAdapter;
     protected int firstVisiblePosition = 0;
+
+    @Inject protected SecurityCompactCache securityCompactCache;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -305,7 +309,7 @@ abstract public class SecurityListFragment extends BasePurchaseManagerFragment
             if (securityItemViewAdapter != null)
             {
                 // It may have been nullified if coming out
-                securityItemViewAdapter.setItems(securityIds);
+                securityItemViewAdapter.setItems(securityCompactCache.get(securityIds));
                 securityItemViewAdapter.notifyDataSetChanged();
             }
             if (listViewScrollListener != null)

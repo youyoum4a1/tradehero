@@ -25,6 +25,7 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.FlagNearEndScrollListener;
 import com.tradehero.th.R;
 import com.tradehero.th.api.security.SearchSecurityListType;
+import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.SecurityIdList;
 import com.tradehero.th.api.security.SecurityListType;
@@ -33,10 +34,13 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserBaseKeyList;
 import com.tradehero.th.api.users.UserListType;
 import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.fragments.security.SecurityItemViewAdapter;
+import com.tradehero.th.fragments.security.SimpleSecurityItemViewAdapter;
 import com.tradehero.th.fragments.security.WatchlistEditFragment;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.fragments.trade.BuySellFragment;
 import com.tradehero.th.fragments.watchlist.WatchlistPositionFragment;
+import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.persistence.security.SecurityCompactListCache;
 import com.tradehero.th.persistence.user.UserBaseKeyListCache;
 import com.tradehero.th.utils.DeviceUtil;
@@ -82,6 +86,7 @@ public class SearchStockPeopleFragment extends DashboardFragment
     private Timer requestDataTimer;
     private boolean isQuerying;
 
+    @Inject SecurityCompactCache securityCompactCache;
     @Inject Lazy<SecurityCompactListCache> securityCompactListCache;
     @Inject Lazy<UserBaseKeyListCache> userBaseKeyListCache;
 
@@ -136,7 +141,7 @@ public class SearchStockPeopleFragment extends DashboardFragment
         mProgressSpinner = (ProgressBar) view.findViewById(R.id.progress_spinner);
         nearEndScrollListener = new SearchFlagNearEndScrollListener();
 
-        securityItemViewAdapter = new SecurityItemViewAdapter(getActivity(), getActivity().getLayoutInflater(), R.layout.search_security_item);
+        securityItemViewAdapter = new SimpleSecurityItemViewAdapter(getActivity(), getActivity().getLayoutInflater(), R.layout.search_security_item);
         mSearchStockListView = (ListView) view.findViewById(R.id.trending_listview);
         if (mSearchStockListView != null)
         {
@@ -428,7 +433,7 @@ public class SearchStockPeopleFragment extends DashboardFragment
             }
             else
             {
-                securityItemViewAdapter.setItems(securityIds);
+                securityItemViewAdapter.setItems(securityCompactCache.get(securityIds));
             }
             if (andDisplay)
             {
@@ -658,20 +663,20 @@ public class SearchStockPeopleFragment extends DashboardFragment
     {
         @Override public void onItemClick(AdapterView<?> parent, View view, int position, long id)
         {
-            SecurityId clickedItem = (SecurityId) parent.getItemAtPosition(position);
+            SecurityCompactDTO clickedItem = (SecurityCompactDTO) parent.getItemAtPosition(position);
 
             if (shouldDisableSearchTypeOption)
             {
                 // pop out current fragment and push in watchlist edit fragment
                 Bundle args = new Bundle();
-                args.putBundle(WatchlistEditFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, clickedItem.getArgs());
+                args.putBundle(WatchlistEditFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, clickedItem.getSecurityId().getArgs());
                 args.putString(WatchlistEditFragment.BUNDLE_KEY_RETURN_FRAGMENT, WatchlistPositionFragment.class.getName());
                 DeviceUtil.dismissKeyBoard(getActivity(), getView());
                 navigator.pushFragment(WatchlistEditFragment.class, args);
             }
             else
             {
-                pushTradeFragmentIn(clickedItem);
+                pushTradeFragmentIn(clickedItem.getSecurityId());
             }
         }
     }
@@ -755,7 +760,7 @@ public class SearchStockPeopleFragment extends DashboardFragment
                 {
                     securityIds.addAll(value);
                 }
-                securityItemViewAdapter.setItems(securityIds);
+                securityItemViewAdapter.setItems(securityCompactCache.get(securityIds));
             }
             setQuerying(false);
             securityItemViewAdapter.notifyDataSetChanged();

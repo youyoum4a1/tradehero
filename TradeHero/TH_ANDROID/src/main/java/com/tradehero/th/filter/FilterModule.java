@@ -1,6 +1,5 @@
 package com.tradehero.th.filter;
 
-import com.android.internal.util.Predicate;
 import com.tradehero.common.widget.filter.BaseListCharSequencePredicateFilter;
 import com.tradehero.common.widget.filter.CharSequencePredicate;
 import com.tradehero.common.widget.filter.ListCharSequencePredicateFilter;
@@ -12,7 +11,6 @@ import com.tradehero.th.filter.security.SecurityIdPaddedSymbolCIPredicate;
 import com.tradehero.th.filter.security.WarrantPaddedSymbolOrUnderlyingCIPredicate;
 import dagger.Module;
 import dagger.Provides;
-import javax.inject.Singleton;
 
 /**
  * Created by xavier on 1/13/14.
@@ -23,6 +21,8 @@ import javax.inject.Singleton;
                 },
         injects =
                 {
+                        com.tradehero.th.fragments.competition.macquarie.MacquarieWarrantItemViewAdapter.class,
+                        com.tradehero.th.fragments.security.SimpleSecurityItemViewAdapter.class,
                 },
         complete = false,
         library = true
@@ -56,6 +56,11 @@ public class FilterModule
     }
 
     @Provides ListCharSequencePredicateFilter<SecurityId> provideSecurityIdPatternFilter(CharSequencePredicate<SecurityId> predicate)
+    {
+        return new BaseListCharSequencePredicateFilter<>(predicate);
+    }
+
+    @Provides ListCharSequencePredicateFilter<SecurityCompactDTO> provideSecurityCompactDTOPatternFilter(CharSequencePredicate<SecurityCompactDTO> predicate)
     {
         return new BaseListCharSequencePredicateFilter<>(predicate);
     }
