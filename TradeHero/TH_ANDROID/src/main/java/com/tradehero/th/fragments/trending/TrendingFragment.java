@@ -17,7 +17,7 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.market.ExchangeDTO;
 import com.tradehero.th.api.market.ExchangeDTOList;
 import com.tradehero.th.api.market.ExchangeListType;
-import com.tradehero.th.api.security.SecurityId;
+import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.TrendingSecurityListType;
 import com.tradehero.th.fragments.security.SecurityItemViewAdapter;
 import com.tradehero.th.fragments.security.SecurityListFragment;
@@ -244,13 +244,13 @@ public class TrendingFragment extends SecurityListFragment
     {
         @Override public void onItemClick(AdapterView<?> parent, View view, int position, long id)
         {
-            SecurityId securityId = (SecurityId) parent.getItemAtPosition(position);
+            SecurityCompactDTO securityCompactDTO = (SecurityCompactDTO) parent.getItemAtPosition(position);
             Bundle args = new Bundle();
-            args.putBundle(BuySellFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
+            args.putBundle(BuySellFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityCompactDTO.getSecurityId().getArgs());
             // TODO use other positions
             navigator.pushFragment(BuySellFragment.class, args);
 
-            // startActivity(new SecurityBuyIntent(securityId)); // Example using external navigation
+            // startActivity(new SecurityBuyIntent(securityCompactDTO)); // Example using external navigation
         }
     }
 
