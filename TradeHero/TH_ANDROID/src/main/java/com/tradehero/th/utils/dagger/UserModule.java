@@ -2,7 +2,6 @@ package com.tradehero.th.utils.dagger;
 
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.competition.ProviderConstants;
-import com.tradehero.th.api.portfolio.DisplayablePortfolioDTO;
 import com.tradehero.th.api.portfolio.DisplayablePortfolioUtil;
 import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
 import com.tradehero.th.loaders.FriendListLoader;
@@ -21,7 +20,6 @@ import javax.inject.Singleton;
                 DashboardActivity.class,
 
                 FriendListLoader.class,
-                DisplayablePortfolioDTO.class,
 
                 DashboardActivity.class,
                 UserManager.class,

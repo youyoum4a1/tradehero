@@ -39,7 +39,7 @@ public class PortfolioListItemAdapter extends ArrayDTOAdapter<DisplayablePortfol
     private List<Integer> orderedTypes;
     private List<Object> orderedItems;
 
-    @Inject Lazy<CurrentUserBaseKeyHolder> currentUserBaseKeyHolder;
+    @Inject CurrentUserBaseKeyHolder currentUserBaseKeyHolder;
     @Inject Lazy<UserProfileCache> userProfileCache;
     private final DisplayablePortfolioDTOWithinUserComparator ownDisplayablePortfolioDTOWithinUserComparator;
     private final int otherHeaderResId;
@@ -70,7 +70,7 @@ public class PortfolioListItemAdapter extends ArrayDTOAdapter<DisplayablePortfol
         {
             // TODO This could be improved
             // Here it is relying on the cache to be already filled to separate the heroes from the others.
-            UserProfileDTO currentUserProfile = userProfileCache.get().get(currentUserBaseKeyHolder.get().getCurrentUserBaseKey());
+            UserProfileDTO currentUserProfile = userProfileCache.get().get(currentUserBaseKeyHolder.getCurrentUserBaseKey());
             SortedSet<DisplayablePortfolioDTO> ownPortfolios = new TreeSet<>(this.ownDisplayablePortfolioDTOWithinUserComparator);
             Set<DisplayablePortfolioDTO> heroPortfolios = new HashSet<>();
             Set<DisplayablePortfolioDTO> otherPortfolios = new HashSet<>();
@@ -85,7 +85,7 @@ public class PortfolioListItemAdapter extends ArrayDTOAdapter<DisplayablePortfol
                 {
                     heroPortfolios.add(displayablePortfolioDTO);
                 }
-                else if (displayablePortfolioDTO.isUserCurrentUser())
+                else if (currentUserBaseKeyHolder.getCurrentUserBaseKey().equals(displayablePortfolioDTO.ownedPortfolioId.getUserBaseKey()))
                 {
                     ownPortfolios.add(displayablePortfolioDTO);
                 }

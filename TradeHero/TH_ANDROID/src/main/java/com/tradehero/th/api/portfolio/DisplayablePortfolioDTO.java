@@ -1,10 +1,8 @@
 package com.tradehero.th.api.portfolio;
 
-import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
 import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.persistence.portfolio.PortfolioCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
-import javax.inject.Inject;
 
 /**
  * This compound object allows the definition of a comparable mechanism, to order the list of PortfolioDTOs in the list.
@@ -14,8 +12,6 @@ import javax.inject.Inject;
 public class DisplayablePortfolioDTO implements Comparable
 {
     public static final String TAG = DisplayablePortfolioDTO.class.getSimpleName();
-
-    @Inject public CurrentUserBaseKeyHolder currentUserBaseKeyHolder;
 
     public OwnedPortfolioId ownedPortfolioId;
     public UserBaseDTO userBaseDTO;
@@ -66,11 +62,6 @@ public class DisplayablePortfolioDTO implements Comparable
         return isPopulated() &&
                 this.userBaseDTO.id == this.ownedPortfolioId.userId &&
                 this.portfolioDTO.id == this.ownedPortfolioId.portfolioId;
-    }
-
-    public boolean isUserCurrentUser()
-    {
-        return currentUserBaseKeyHolder.getCurrentUserBaseKey().equals(this.ownedPortfolioId.getUserBaseKey());
     }
 
     @Override public boolean equals(Object other)
