@@ -65,7 +65,7 @@ public class PositionListFragment extends BasePurchaseManagerFragment
     @Inject Lazy<GetPositionsCache> getPositionsCache;
 
     private PortfolioHeaderView portfolioHeaderView;
-    private ExpandingListView positionsListView;
+    protected ExpandingListView positionsListView;
     private ProgressBar progressBar;
 
     protected OwnedPortfolioId ownedPortfolioId;
@@ -109,7 +109,6 @@ public class PositionListFragment extends BasePurchaseManagerFragment
             {
                 createPositionItemAdapter();
             }
-            positionItemAdapter.setCellListener(this);
             if (positionsListView != null)
             {
                 positionsListView.setAdapter(positionItemAdapter);
@@ -142,6 +141,10 @@ public class PositionListFragment extends BasePurchaseManagerFragment
 
     protected void createPositionItemAdapter()
     {
+        if (positionItemAdapter != null)
+        {
+            positionItemAdapter.setCellListener(null);
+        }
         positionItemAdapter = new PositionItemAdapter(
                 getActivity(),
                 getActivity().getLayoutInflater(),
@@ -150,6 +153,7 @@ public class PositionListFragment extends BasePurchaseManagerFragment
                 R.layout.position_open_no_period,
                 R.layout.position_closed_no_period,
                 R.layout.position_quick_nothing);
+        positionItemAdapter.setCellListener(this);
     }
 
     @Override protected void createUserInteractor()
@@ -305,8 +309,13 @@ public class PositionListFragment extends BasePurchaseManagerFragment
         this.getPositionsDTO = getPositionsDTO;
         if (this.getPositionsDTO != null && ownedPortfolioId != null)
         {
+            createPositionItemAdapter();
             positionItemAdapter.setPositions(getPositionsDTO.positions, ownedPortfolioId.getPortfolioId());
             restoreExpandingStates();
+            if (positionsListView != null)
+            {
+                positionsListView.setAdapter(positionItemAdapter);
+            }
         }
 
         if (andDisplay)

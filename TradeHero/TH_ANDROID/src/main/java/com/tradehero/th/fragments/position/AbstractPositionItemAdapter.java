@@ -41,8 +41,14 @@ public abstract class AbstractPositionItemAdapter<T extends PositionDTO> extends
     // this listener is used as a bridge between the cell and the listener of the adapter
     private PositionListener internalListener;
 
-    public AbstractPositionItemAdapter(Context context, LayoutInflater inflater, int headerLayoutId, int lockedPositionLayoutId,
-            int openPositionLayoutId, int closedPositionLayoutId, int positionNothingId)
+    public AbstractPositionItemAdapter(
+            Context context,
+            LayoutInflater inflater,
+            int headerLayoutId,
+            int lockedPositionLayoutId,
+            int openPositionLayoutId,
+            int closedPositionLayoutId,
+            int positionNothingId)
     {
         super();
         this.context = context;

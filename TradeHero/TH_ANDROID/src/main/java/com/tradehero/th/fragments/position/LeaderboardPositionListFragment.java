@@ -14,6 +14,8 @@ import javax.inject.Inject;
 /** Created with IntelliJ IDEA. User: tho Date: 11/6/13 Time: 12:57 PM Copyright (c) TradeHero */
 public class LeaderboardPositionListFragment extends PositionListFragment
 {
+    public static final String TAG = LeaderboardPositionListFragment.class.getSimpleName();
+
     @Inject Lazy<GetLeaderboardPositionsCache> getLeaderboardPositionsCache;
 
     private DTOCache.Listener<LeaderboardMarkUserId, GetLeaderboardPositionsDTO> getLeaderboardPositionsCacheListener;
@@ -25,6 +27,10 @@ public class LeaderboardPositionListFragment extends PositionListFragment
     @Override protected void createPositionItemAdapter()
     {
         timeRestricted = getArguments().getBoolean(LeaderboardDefDTO.LEADERBOARD_DEF_TIME_RESTRICTED, false);
+        if (positionItemAdapter != null)
+        {
+            positionItemAdapter.setCellListener(null);
+        }
         positionItemAdapter = new LeaderboardPositionItemAdapter(
                 getActivity(),
                 getActivity().getLayoutInflater(),
@@ -34,6 +40,7 @@ public class LeaderboardPositionListFragment extends PositionListFragment
                 R.layout.position_closed_in_period,
                 R.layout.position_quick_nothing,
                 timeRestricted);
+        positionItemAdapter.setCellListener(this);
     }
 
     @Override public void onResume()
@@ -87,8 +94,13 @@ public class LeaderboardPositionListFragment extends PositionListFragment
     {
         if (leaderboardPositionsDTO != null && ownedPortfolioId != null)
         {
+            createPositionItemAdapter();
             positionItemAdapter.setPositions(leaderboardPositionsDTO.positions, ownedPortfolioId.getPortfolioId());
             restoreExpandingStates();
+            if (positionsListView != null)
+            {
+                positionsListView.setAdapter(positionItemAdapter);
+            }
         }
 
         if (andDisplay)

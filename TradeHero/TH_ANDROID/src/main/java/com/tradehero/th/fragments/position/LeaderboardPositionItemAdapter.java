@@ -14,10 +14,23 @@ public class LeaderboardPositionItemAdapter extends AbstractPositionItemAdapter<
 {
     private final boolean isTimeRestricted;
 
-    public LeaderboardPositionItemAdapter(Context context, LayoutInflater inflater, int headerLayoutId,
-            int lockedPositionLayoutId, int openPositionLayoutId, int closedPositionLayoutId, int positionNothingId, boolean isTimeRestricted)
+    public LeaderboardPositionItemAdapter(
+            Context context,
+            LayoutInflater inflater,
+            int headerLayoutId,
+            int lockedPositionLayoutId,
+            int openPositionLayoutId,
+            int closedPositionLayoutId,
+            int positionNothingId,
+            boolean isTimeRestricted)
     {
-        super(context, inflater, headerLayoutId, lockedPositionLayoutId, openPositionLayoutId, closedPositionLayoutId, positionNothingId);
+        super(context,
+                inflater,
+                headerLayoutId,
+                lockedPositionLayoutId,
+                openPositionLayoutId,
+                closedPositionLayoutId,
+                positionNothingId);
         this.isTimeRestricted = isTimeRestricted;
     }
 
