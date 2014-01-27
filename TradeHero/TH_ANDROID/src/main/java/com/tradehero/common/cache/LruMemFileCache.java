@@ -82,19 +82,6 @@ public class LruMemFileCache extends LruCache
     }
     //</editor-fold>
 
-    public static void createInstance(Context context)
-    {
-        try
-        {
-            instance = new LruMemFileCache(context);
-            THLog.i(TAG, "Memory cache size " + instance.maxSize());
-        }
-        catch (Exception e)
-        {
-            THLog.e(TAG, "Failed to create LRU", e);
-        }
-    }
-
     public static LruMemFileCache getInstance()
     {
         return instance;

@@ -1,6 +1,5 @@
 package com.tradehero.th.fragments.base;
 
-import android.R;
 import android.os.Bundle;
 import com.actionbarsherlock.view.MenuItem;
 import com.tradehero.th.base.DashboardNavigatorActivity;
@@ -28,13 +27,12 @@ abstract public class DashboardFragment extends BaseFragment
     {
         switch (item.getItemId())
         {
-            case R.id.home:
+            case android.R.id.home:
                 navigator.popFragment();
                 return true;
         }
         return super.onOptionsItemSelected(item);
     }
-
 
     protected DashboardNavigator getNavigator()
     {

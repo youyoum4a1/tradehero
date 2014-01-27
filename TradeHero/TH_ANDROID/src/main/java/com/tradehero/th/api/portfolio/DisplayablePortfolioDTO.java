@@ -15,7 +15,7 @@ public class DisplayablePortfolioDTO implements Comparable
 {
     public static final String TAG = DisplayablePortfolioDTO.class.getSimpleName();
 
-    @Inject public static CurrentUserBaseKeyHolder currentUserBaseKeyHolder;
+    @Inject public CurrentUserBaseKeyHolder currentUserBaseKeyHolder;
 
     public OwnedPortfolioId ownedPortfolioId;
     public UserBaseDTO userBaseDTO;

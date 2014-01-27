@@ -134,9 +134,6 @@ public class Navigator
 
     public void openSettings()
     {
-        //Intent intent = new Intent(context, SettingsActivity.class);
-        //context.startActivity(intent);
-        //((Activity)context).overridePendingTransition(R.anim.slide_in_from_bottom, R.anim.nothing);
         pushFragment(SettingsFragment.class);
     }
 

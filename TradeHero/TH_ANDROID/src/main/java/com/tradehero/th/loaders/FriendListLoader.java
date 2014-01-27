@@ -11,7 +11,6 @@ import com.tradehero.th.network.service.UserService;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import javax.inject.Inject;
 

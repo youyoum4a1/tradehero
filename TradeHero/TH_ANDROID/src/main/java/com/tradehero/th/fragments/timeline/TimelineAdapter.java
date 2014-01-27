@@ -72,6 +72,11 @@ public class TimelineAdapter extends LoaderDTOAdapter<TimelineItem, TimelineItem
         getLoader().loadPrevious();
     }
 
+    @Override public Object getItem(int position)
+    {
+        return super.getItem(position);
+    }
+
     /**
      * force to render header of the listview
      * somewhat hacKy :v

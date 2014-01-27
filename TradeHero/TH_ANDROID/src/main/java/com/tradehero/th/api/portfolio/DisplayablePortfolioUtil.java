@@ -3,8 +3,6 @@ package com.tradehero.th.api.portfolio;
 import android.content.Context;
 import com.tradehero.th.R;
 import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
-import com.tradehero.th.api.users.UserBaseDTOUtil;
-import dagger.Lazy;
 import javax.inject.Inject;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 12/2/13 Time: 4:40 PM To change this template use File | Settings | File Templates. */

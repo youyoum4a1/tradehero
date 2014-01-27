@@ -2,20 +2,11 @@ package com.tradehero.th.utils.dagger;
 
 import android.app.Application;
 import android.content.Context;
-import com.squareup.picasso.Picasso;
 import com.tradehero.common.billing.googleplay.IABInventoryFetcher;
 import com.tradehero.common.billing.googleplay.IABServiceConnector;
 import com.tradehero.common.cache.DatabaseCache;
-import com.tradehero.common.cache.LruMemFileCache;
 import com.tradehero.common.persistence.CacheHelper;
-import com.tradehero.th.R;
-import com.tradehero.th.activities.AuthenticationActivity;
-import com.tradehero.th.activities.DashboardActivity;
-import com.tradehero.th.api.competition.ProviderConstants;
 import com.tradehero.th.api.form.AbstractUserAvailabilityRequester;
-import com.tradehero.th.api.portfolio.DisplayablePortfolioDTO;
-import com.tradehero.th.api.portfolio.DisplayablePortfolioUtil;
-import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
 import com.tradehero.th.base.THUser;
 import com.tradehero.th.billing.googleplay.PurchaseRestorerRequiredMilestone;
 import com.tradehero.th.billing.googleplay.THIABInventoryFetcher;
@@ -25,20 +16,13 @@ import com.tradehero.th.billing.googleplay.THIABPurchaseFetcher;
 import com.tradehero.th.billing.googleplay.THIABPurchaseReporter;
 import com.tradehero.th.billing.googleplay.THIABPurchaser;
 import com.tradehero.th.billing.googleplay.THInventoryFetchMilestone;
-import com.tradehero.th.fragments.competition.macquarie.MacquarieWarrantItemViewAdapter;
-import com.tradehero.th.fragments.leaderboard.CompetitionLeaderboardMarkUserListViewFragment;
-import com.tradehero.th.fragments.security.WarrantInfoValueFragment;
-import com.tradehero.th.fragments.settings.ReferralFragment;
-import com.tradehero.th.fragments.security.WarrantSecurityItemView;
-import com.tradehero.th.fragments.settings.UserFriendDTOView;
-import com.tradehero.th.fragments.security.SimpleSecurityItemViewAdapter;
-import com.tradehero.th.fragments.security.SecurityItemViewAdapter;
-import com.tradehero.th.fragments.web.WebViewFragment;
 import com.tradehero.th.fragments.alert.AlertManagerFragment;
 import com.tradehero.th.fragments.authentication.EmailSignInFragment;
 import com.tradehero.th.fragments.billing.StoreScreenFragment;
 import com.tradehero.th.fragments.billing.THIABUserInteractor;
+import com.tradehero.th.fragments.competition.macquarie.MacquarieWarrantItemViewAdapter;
 import com.tradehero.th.fragments.leaderboard.BaseLeaderboardFragment;
+import com.tradehero.th.fragments.leaderboard.CompetitionLeaderboardMarkUserListViewFragment;
 import com.tradehero.th.fragments.leaderboard.FriendLeaderboardMarkUserListViewFragment;
 import com.tradehero.th.fragments.leaderboard.LeaderboardCommunityFragment;
 import com.tradehero.th.fragments.leaderboard.LeaderboardDefListViewFragment;
@@ -66,15 +50,19 @@ import com.tradehero.th.fragments.position.partial.PositionPartialBottomInPeriod
 import com.tradehero.th.fragments.position.partial.PositionPartialBottomOpenView;
 import com.tradehero.th.fragments.position.partial.PositionPartialTopView;
 import com.tradehero.th.fragments.security.ChartFragment;
+import com.tradehero.th.fragments.security.SecurityItemView;
+import com.tradehero.th.fragments.security.SecurityItemViewAdapter;
 import com.tradehero.th.fragments.security.StockInfoFragment;
 import com.tradehero.th.fragments.security.StockInfoValueFragment;
+import com.tradehero.th.fragments.security.WarrantInfoValueFragment;
+import com.tradehero.th.fragments.security.WarrantSecurityItemView;
 import com.tradehero.th.fragments.security.WatchlistEditFragment;
 import com.tradehero.th.fragments.security.YahooNewsFragment;
 import com.tradehero.th.fragments.settings.AboutFragment;
+import com.tradehero.th.fragments.settings.ReferralFragment;
 import com.tradehero.th.fragments.settings.SettingsFragment;
-import com.tradehero.th.fragments.settings.SettingsPayPalFragment;
 import com.tradehero.th.fragments.settings.SettingsProfileFragment;
-import com.tradehero.th.fragments.settings.SettingsTransactionHistoryFragment;
+import com.tradehero.th.fragments.settings.UserFriendDTOView;
 import com.tradehero.th.fragments.social.follower.FollowerListItemView;
 import com.tradehero.th.fragments.social.follower.FollowerManagerFragment;
 import com.tradehero.th.fragments.social.follower.FollowerManagerInfoFetcher;
@@ -96,59 +84,31 @@ import com.tradehero.th.fragments.trade.TradeListItemView;
 import com.tradehero.th.fragments.trade.TradeListOverlayHeaderView;
 import com.tradehero.th.fragments.trending.SearchPeopleItemView;
 import com.tradehero.th.fragments.trending.SearchStockPeopleFragment;
-import com.tradehero.th.fragments.security.SecurityItemView;
 import com.tradehero.th.fragments.trending.TrendingFragment;
 import com.tradehero.th.fragments.trending.filter.TrendingFilterSelectorView;
 import com.tradehero.th.fragments.watchlist.WatchlistItemView;
 import com.tradehero.th.fragments.watchlist.WatchlistPortfolioHeaderView;
 import com.tradehero.th.fragments.watchlist.WatchlistPositionFragment;
+import com.tradehero.th.fragments.web.WebViewFragment;
 import com.tradehero.th.loaders.FriendListLoader;
 import com.tradehero.th.loaders.SearchStockPageListLoader;
 import com.tradehero.th.loaders.TimelineListLoader;
 import com.tradehero.th.loaders.security.SecurityListPagedLoader;
 import com.tradehero.th.loaders.security.macquarie.MacquarieSecurityListPagedLoader;
-import com.tradehero.th.models.alert.SecurityAlertAssistant;
 import com.tradehero.th.models.intent.trending.TrendingIntentFactory;
 import com.tradehero.th.models.push.PushNotificationManager;
 import com.tradehero.th.models.push.urbanairship.UrbanAirshipPushNotificationManager;
-import com.tradehero.th.network.NetworkEngine;
-import com.tradehero.th.network.YahooEngine;
-import com.tradehero.th.network.service.AlertPlanService;
-import com.tradehero.th.network.service.AlertService;
-import com.tradehero.th.network.service.CompetitionService;
-import com.tradehero.th.network.service.FollowerService;
-import com.tradehero.th.network.service.LeaderboardService;
-import com.tradehero.th.network.service.MarketService;
-import com.tradehero.th.network.service.PortfolioService;
-import com.tradehero.th.network.service.PositionService;
-import com.tradehero.th.network.service.ProviderService;
-import com.tradehero.th.network.service.QuoteService;
-import com.tradehero.th.network.service.SecurityService;
-import com.tradehero.th.network.service.SessionService;
-import com.tradehero.th.network.service.SocialService;
-import com.tradehero.th.network.service.TradeService;
-import com.tradehero.th.network.service.UserService;
-import com.tradehero.th.network.service.UserTimelineService;
-import com.tradehero.th.network.service.WatchlistService;
-import com.tradehero.th.network.service.YahooNewsService;
 import com.tradehero.th.persistence.billing.googleplay.IABSKUListRetrievedAsyncMilestone;
 import com.tradehero.th.persistence.leaderboard.LeaderboardManager;
-import com.tradehero.th.persistence.portfolio.OwnedPortfolioFetchAssistant;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListRetrievedMilestone;
 import com.tradehero.th.persistence.timeline.TimelineManager;
 import com.tradehero.th.persistence.timeline.TimelineStore;
-import com.tradehero.th.persistence.user.AbstractUserStore;
 import com.tradehero.th.persistence.user.UserManager;
-import com.tradehero.th.persistence.user.UserProfileFetchAssistant;
 import com.tradehero.th.persistence.user.UserProfileRetrievedMilestone;
 import com.tradehero.th.persistence.user.UserStore;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import com.tradehero.th.persistence.watchlist.WatchlistRetrievedMilestone;
-import com.tradehero.th.utils.Constants;
-import com.tradehero.th.utils.FacebookUtils;
-import com.tradehero.th.utils.LinkedInUtils;
 import com.tradehero.th.utils.NumberDisplayUtils;
-import com.tradehero.th.utils.TwitterUtils;
 import com.tradehero.th.widget.MarkdownTextView;
 import com.tradehero.th.widget.ServerValidatedUsernameText;
 import com.tradehero.th.widget.user.ProfileCompactView;
@@ -156,331 +116,180 @@ import com.tradehero.th.widget.user.ProfileView;
 import dagger.Module;
 import dagger.Provides;
 import javax.inject.Singleton;
-import org.ocpsoft.prettytime.PrettyTime;
 
 /** Created with IntelliJ IDEA. User: tho Date: 9/16/13 Time: 5:36 PM Copyright (c) TradeHero */
 @Module(
+        includes = {
+                ApiModule.class,
+                CacheModule.class,
+                SocialNetworkModule.class,
+                UserModule.class,
+                GraphicModule.class,
+                UIModule.class,
+        },
         injects =
-        {
-                com.tradehero.th.base.Application.class,
+                {
+                        com.tradehero.th.base.Application.class,
+                        SettingsProfileFragment.class,
+                        SettingsFragment.class,
+                        AboutFragment.class,
+                        EmailSignInFragment.class,
+                        ServerValidatedUsernameText.UserAvailabilityRequester.class,
+                        ServerValidatedUsernameText.class,
+                        TrendingFragment.class,
+                        TrendingFilterSelectorView.class,
+                        SecurityListPagedLoader.class,
+                        MacquarieSecurityListPagedLoader.class,
+                        SecurityItemViewAdapter.class,
+                        MacquarieWarrantItemViewAdapter.class,
+                        SecurityItemView.class,
+                        WarrantSecurityItemView.class,
+                        SearchStockPeopleFragment.class,
+                        SearchPeopleItemView.class,
+                        FreshQuoteHolder.class,
+                        BuySellFragment.class,
+                        BuySellConfirmFragment.class,
+                        BuySellConfirmFragment.BuySellAsyncTask.class,
+                        TimelineFragment.class,
+                        MeTimelineFragment.class,
+                        PushableTimelineFragment.class,
+                        PushableTimelineFragment.PushableTimelineTHIABUserInteractor.class,
+                        MarkdownTextView.class,
 
-                AuthenticationActivity.class,
-                DashboardActivity.class,
+                        YahooNewsFragment.class,
+                        ChartFragment.class,
+                        StockInfoValueFragment.class,
+                        WarrantInfoValueFragment.class,
+                        StockInfoFragment.class,
+                        PortfolioListFragment.class,
+                        PushablePortfolioListFragment.class,
+                        PortfolioListItemView.class,
+                        PortfolioListItemAdapter.class,
 
-                UserProfileFetchAssistant.class,
-                OwnedPortfolioFetchAssistant.class,
-                SecurityAlertAssistant.class,
+                        PositionListFragment.class,
+                        PositionListFragment.PositionListTHIABUserInteractor.class,
+                        LeaderboardPositionListFragment.class,
+                        CurrentUserPortfolioHeaderView.class,
+                        OtherUserPortfolioHeaderView.class,
 
-                SettingsTransactionHistoryFragment.class,
-                SettingsPayPalFragment.class,
-                SettingsProfileFragment.class,
-                SettingsFragment.class,
-                AboutFragment.class,
-                EmailSignInFragment.class,
-                ServerValidatedUsernameText.UserAvailabilityRequester.class,
-                ServerValidatedUsernameText.class,
-                TrendingFragment.class,
-                TrendingFilterSelectorView.class,
-                SecurityListPagedLoader.class,
-                MacquarieSecurityListPagedLoader.class,
-                SecurityItemViewAdapter.class,
-                SimpleSecurityItemViewAdapter.class,
-                MacquarieWarrantItemViewAdapter.class,
-                SecurityItemView.class,
-                WarrantSecurityItemView.class,
-                SearchStockPeopleFragment.class,
-                SearchPeopleItemView.class,
-                FreshQuoteHolder.class,
-                BuySellFragment.class,
-                BuySellConfirmFragment.class,
-                BuySellConfirmFragment.BuySellAsyncTask.class,
-                TimelineFragment.class,
-                MeTimelineFragment.class,
-                PushableTimelineFragment.class,
-                PushableTimelineFragment.PushableTimelineTHIABUserInteractor.class,
-                MarkdownTextView.class,
+                        PositionOpenView.class,
+                        PositionInPeriodOpenView.class,
 
-                YahooNewsFragment.class,
-                ChartFragment.class,
-                StockInfoValueFragment.class,
-                WarrantInfoValueFragment.class,
-                StockInfoFragment.class,
-                PortfolioListFragment.class,
-                PushablePortfolioListFragment.class,
-                PortfolioListItemView.class,
-                PortfolioListItemAdapter.class,
+                        PositionClosedView.class,
+                        PositionInPeriodClosedView.class,
+                        PositionPartialTopView.class,
+                        PositionPartialBottomOpenView.class,
+                        PositionPartialBottomInPeriodOpenView.class,
+                        PositionPartialBottomClosedView.class,
+                        PositionPartialBottomInPeriodClosedView.class,
+                        LockedPositionItem.class,
 
-                PositionListFragment.class,
-                PositionListFragment.PositionListTHIABUserInteractor.class,
-                LeaderboardPositionListFragment.class,
-                CurrentUserPortfolioHeaderView.class,
-                OtherUserPortfolioHeaderView.class,
+                        TradeListFragment.class,
+                        TradeListItemAdapter.class,
+                        TradeListItemView.class,
+                        TradeListOverlayHeaderView.class,
+                        TradeListHeaderView.class,
 
-                PositionOpenView.class,
-                PositionInPeriodOpenView.class,
+                        StoreScreenFragment.class,
+                        HeroManagerFragment.class,
+                        HeroListItemView.class,
+                        FollowerManagerFragment.class,
+                        FollowerManagerInfoFetcher.class,
+                        FollowerPayoutManagerFragment.class,
+                        FollowerListItemView.class,
 
-                PositionClosedView.class,
-                PositionInPeriodClosedView.class,
-                PositionPartialTopView.class,
-                PositionPartialBottomOpenView.class,
-                PositionPartialBottomInPeriodOpenView.class,
-                PositionPartialBottomClosedView.class,
-                PositionPartialBottomInPeriodClosedView.class,
-                LockedPositionItem.class,
+                        AbstractUserAvailabilityRequester.class,
+                        SearchStockPageListLoader.class,
+                        TimelineListLoader.class,
 
-                TradeListFragment.class,
-                TradeListItemAdapter.class,
-                TradeListItemView.class,
-                TradeListOverlayHeaderView.class,
-                TradeListHeaderView.class,
+                        UserManager.class,
+                        TimelineManager.class,
 
-                StoreScreenFragment.class,
-                HeroManagerFragment.class,
-                HeroListItemView.class,
-                FollowerManagerFragment.class,
-                FollowerManagerInfoFetcher.class,
-                FollowerPayoutManagerFragment.class,
-                FollowerListItemView.class,
+                        UserStore.class,
+                        TimelineStore.class,
+                        TimelineStore.Factory.class,
 
-                AbstractUserAvailabilityRequester.class,
-                SearchStockPageListLoader.class,
-                TimelineListLoader.class,
+                        DatabaseCache.class,
+                        CacheHelper.class,
 
-                UserManager.class,
-                TimelineManager.class,
+                        TimelineFragment.class,
+                        TimelineItemView.class,
+                        ProfileView.class,
+                        ProfileCompactView.class,
 
-                UserStore.class,
-                TimelineStore.class,
-                TimelineStore.Factory.class,
+                        LeaderboardCommunityFragment.class,
+                        LeaderboardDefListViewFragment.class,
 
-                DatabaseCache.class,
-                CacheHelper.class,
+                        LeaderboardDefView.class,
+                        LeaderboardManager.class,
+                        LeaderboardMarkUserLoader.class,
+                        LeaderboardMarkUserListViewFragment.class,
+                        BaseLeaderboardFragment.class,
+                        LeaderboardMarkUserItemView.class,
+                        LeaderboardMarkUserListView.class,
+                        FriendLeaderboardMarkUserListViewFragment.class,
+                        CompetitionLeaderboardMarkUserListViewFragment.class,
 
-                TimelineFragment.class,
-                TimelineItemView.class,
-                ProfileView.class,
-                ProfileCompactView.class,
+                        WebViewFragment.class,
 
-                LeaderboardCommunityFragment.class,
-                LeaderboardDefListViewFragment.class,
+                        IABServiceConnector.class,
+                        IABInventoryFetcher.class,
+                        THIABPurchaseFetcher.class,
+                        THIABInventoryFetcher.class,
+                        THIABPurchaser.class,
+                        THIABPurchaseFetcher.class,
+                        THIABPurchaseReporter.class,
+                        THIABLogicHolder.class,
+                        THIABPurchaseConsumer.class,
+                        THInventoryFetchMilestone.class,
+                        IABSKUListRetrievedAsyncMilestone.class,
+                        PortfolioCompactListRetrievedMilestone.class,
+                        UserProfileRetrievedMilestone.class,
+                        PurchaseRestorerRequiredMilestone.class,
+                        THIABUserInteractor.class,
+                        StoreScreenFragment.StoreScreenTHIABUserInteractor.class,
+                        HeroManagerFragment.HeroManagerTHIABUserInteractor.class,
+                        HeroManagerInfoFetcher.class,
+                        BuySellFragment.BuySellTHIABUserInteractor.class,
 
-                LeaderboardDefView.class,
-                LeaderboardManager.class,
-                LeaderboardMarkUserLoader.class,
-                LeaderboardMarkUserListViewFragment.class,
-                BaseLeaderboardFragment.class,
-                LeaderboardMarkUserItemView.class,
-                LeaderboardMarkUserListView.class,
-                FriendLeaderboardMarkUserListViewFragment.class,
-                CompetitionLeaderboardMarkUserListViewFragment.class,
+                        WatchlistEditFragment.class,
+                        UserWatchlistPositionCache.class,
+                        WatchlistRetrievedMilestone.class,
+                        WatchlistPositionFragment.class,
+                        WatchlistItemView.class,
+                        WatchlistPortfolioHeaderView.class,
 
-                WebViewFragment.class,
+                        TrendingIntentFactory.class,
 
-                IABServiceConnector.class,
-                IABInventoryFetcher.class,
-                THIABPurchaseFetcher.class,
-                THIABInventoryFetcher.class,
-                THIABPurchaser.class,
-                THIABPurchaseFetcher.class,
-                THIABPurchaseReporter.class,
-                THIABLogicHolder.class,
-                THIABPurchaseConsumer.class,
-                THInventoryFetchMilestone.class,
-                IABSKUListRetrievedAsyncMilestone.class,
-                PortfolioCompactListRetrievedMilestone.class,
-                UserProfileRetrievedMilestone.class,
-                PurchaseRestorerRequiredMilestone.class,
-                THIABUserInteractor.class,
-                StoreScreenFragment.StoreScreenTHIABUserInteractor.class,
-                HeroManagerFragment.HeroManagerTHIABUserInteractor.class,
-                HeroManagerInfoFetcher.class,
-                BuySellFragment.BuySellTHIABUserInteractor.class,
+                        AlertManagerFragment.class,
 
-                WatchlistEditFragment.class,
-                UserWatchlistPositionCache.class,
-                WatchlistRetrievedMilestone.class,
-                WatchlistPositionFragment.class,
-                WatchlistItemView.class,
-                WatchlistPortfolioHeaderView.class,
+                        ReferralFragment.class,
 
-                TrendingIntentFactory.class,
-
-                AlertManagerFragment.class,
-
-                ReferralFragment.class,
-
-                UserFriendDTOView.class,
-                FriendListLoader.class,
-        },
+                        UserFriendDTOView.class,
+                        FriendListLoader.class,
+                },
         staticInjections =
-        {
-                THUser.class,
-                NumberDisplayUtils.class,
-                DisplayablePortfolioDTO.class,
-                DisplayablePortfolioUtil.class,
-                ProviderConstants.class,
-        },
+                {
+                        THUser.class,
+                        NumberDisplayUtils.class,
+                },
         complete = false,
-        library = true // TEMP
+        library = true // TODO remove this line
 )
 public class TradeHeroModule
 {
     public static final String TAG = TradeHeroModule.class.getSimpleName();
 
     private final Application application;
-    private final NetworkEngine engine;
-    private final YahooEngine yahooEngine;
-    private final LruMemFileCache lruFileCache;
 
-    public TradeHeroModule(NetworkEngine engine, YahooEngine yahooEngine, Application application, LruMemFileCache lruFileCache)
+    public TradeHeroModule(Application application)
     {
         this.application = application;
-        this.engine = engine;
-        this.yahooEngine = yahooEngine;
-        this.lruFileCache = lruFileCache;
     }
-
-    //<editor-fold desc="API service endpoints">
-    @Provides @Singleton UserService provideUserService()
-    {
-        return engine.createService(UserService.class);
-    }
-
-    @Provides @Singleton SessionService provideSessionService()
-    {
-        return engine.createService(SessionService.class);
-    }
-
-    @Provides @Singleton SecurityService provideSecurityService()
-    {
-        return engine.createService(SecurityService.class);
-    }
-
-    @Provides @Singleton UserTimelineService provideUserTimelineService()
-    {
-        return engine.createService(UserTimelineService.class);
-    }
-
-    @Provides @Singleton QuoteService provideQuoteService()
-    {
-        return engine.createService(QuoteService.class);
-    }
-
-    @Provides @Singleton PortfolioService providePortfolioService()
-    {
-        return engine.createService(PortfolioService.class);
-    }
-
-    @Provides @Singleton PositionService providePositionService()
-    {
-        return engine.createService(PositionService.class);
-    }
-
-    @Provides @Singleton TradeService provideTradeService()
-    {
-        return engine.createService(TradeService.class);
-    }
-
-    @Provides @Singleton LeaderboardService provideLeaderboardService()
-    {
-        return engine.createService(LeaderboardService.class);
-    }
-
-    @Provides @Singleton ProviderService provideProviderService()
-    {
-        return engine.createService(ProviderService.class);
-    }
-
-    @Provides @Singleton MarketService provideMarketService()
-    {
-        return engine.createService(MarketService.class);
-    }
-
-    @Provides @Singleton FollowerService provideFollowerService()
-    {
-        return engine.createService(FollowerService.class);
-    }
-
-    @Provides @Singleton AlertService provideAlertService()
-    {
-        return engine.createService(AlertService.class);
-    }
-
-    @Provides @Singleton AlertPlanService provideAlertPlanService()
-    {
-        return engine.createService(AlertPlanService.class);
-    }
-
-    @Provides @Singleton SocialService provideSocialService()
-    {
-        return engine.createService(SocialService.class);
-    }
-
-    @Provides @Singleton YahooNewsService provideYahooNewsService()
-    {
-        return yahooEngine.createService(YahooNewsService.class);
-    }
-
-    @Provides @Singleton WatchlistService provideWatchlistService()
-    {
-        return engine.createService(WatchlistService.class);
-    }
-
-    @Provides @Singleton CompetitionService provideCompetitionService()
-    {
-        return engine.createService(CompetitionService.class);
-    }
-    //</editor-fold>
-
-    //<editor-fold desc="Utilities">
-    @Provides @Singleton FacebookUtils provideFacebookUtils(Context context)
-    {
-        return new FacebookUtils(context, context.getString(R.string.FACEBOOK_APP_ID));
-    }
-
-    @Provides @Singleton TwitterUtils provideTwitterUtils(Context context)
-    {
-        return new TwitterUtils(
-                context.getString(R.string.TWITTER_CONSUMER_KEY),
-                context.getString(R.string.TWITTER_CONSUMER_SECRET));
-    }
-
-    @Provides @Singleton LinkedInUtils provideLinkedInUtils(Context context)
-    {
-        return new LinkedInUtils(
-                context.getString(R.string.LINKEDIN_CONSUMER_KEY),
-                context.getString(R.string.LINKEDIN_CONSUMER_SECRET));
-    }
-    //</editor-fold>
 
     @Provides Context provideContext()
     {
         return application.getApplicationContext();
-    }
-
-    @Provides @Singleton CurrentUserBaseKeyHolder provideCurrentUserBaseKeyHolder()
-    {
-        return new CurrentUserBaseKeyHolder();
-    }
-
-    @Provides PrettyTime providePrettyTime()
-    {
-        return new PrettyTime();
-    }
-
-    @Provides @Singleton Picasso providePicasso()
-    {
-        Picasso mPicasso = new Picasso.Builder(application)
-                //.downloader(new UrlConnectionDownloader(getContext()))
-                .memoryCache(lruFileCache)
-                .build();
-        mPicasso.setDebugging(Constants.PICASSO_DEBUG);
-        return mPicasso;
-    }
-
-    @Provides @Singleton AbstractUserStore provideUserStore(UserStore store)
-    {
-        return store;
     }
 
     @Provides @Singleton PushNotificationManager providePushNotificationManager()
