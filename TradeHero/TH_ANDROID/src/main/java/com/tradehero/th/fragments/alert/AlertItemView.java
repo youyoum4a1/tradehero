@@ -4,6 +4,7 @@ import android.content.Context;
 import android.text.Html;
 import android.text.Spanned;
 import android.util.AttributeSet;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -16,6 +17,9 @@ import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.alert.AlertCompactDTO;
 import com.tradehero.th.api.alert.AlertId;
 import com.tradehero.th.api.security.SecurityCompactDTO;
+import com.tradehero.th.api.security.SecurityId;
+import com.tradehero.th.base.DashboardNavigatorActivity;
+import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.persistence.alert.AlertCompactCache;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.DateUtils;
@@ -38,6 +42,8 @@ public class AlertItemView extends RelativeLayout
 
     @Inject protected Lazy<AlertCompactCache> alertCompactCache;
     @Inject protected Lazy<Picasso> picasso;
+
+    private AlertCompactDTO alertCompactDTO;
 
     //<editor-fold desc="Constructors">
     public AlertItemView(Context context)
@@ -63,6 +69,22 @@ public class AlertItemView extends RelativeLayout
         ButterKnife.inject(this);
     }
 
+    @Override protected void onAttachedToWindow()
+    {
+        super.onAttachedToWindow();
+
+        buyStock.setOnClickListener(buyStockClickListener);
+        sellStock.setOnClickListener(sellStockListener);
+    }
+
+    @Override protected void onDetachedFromWindow()
+    {
+        buyStock.setOnClickListener(null);
+        sellStock.setOnClickListener(null);
+
+        super.onDetachedFromWindow();
+    }
+
     @Override public void display(AlertId alertId)
     {
         if (alertId != null)
@@ -73,6 +95,7 @@ public class AlertItemView extends RelativeLayout
 
     private void display(AlertCompactDTO alertCompactDTO)
     {
+        this.alertCompactDTO = alertCompactDTO;
         if (alertCompactDTO != null)
         {
             displayStockSymbol(alertCompactDTO);
@@ -146,4 +169,28 @@ public class AlertItemView extends RelativeLayout
             stockLogo.setImageResource(R.drawable.default_image);
         }
     }
+
+    private OnClickListener buyStockClickListener = new OnClickListener()
+    {
+        @Override public void onClick(View v)
+        {
+            if (alertCompactDTO != null)
+            {
+                getNavigator().openSecurityProfile(alertCompactDTO.security.getSecurityId());
+            }
+        }
+    };
+
+    private DashboardNavigator getNavigator()
+    {
+        return ((DashboardNavigatorActivity) getContext()).getDashboardNavigator();
+    }
+
+    private OnClickListener sellStockListener = new OnClickListener()
+    {
+        @Override public void onClick(View v)
+        {
+
+        }
+    };
 }

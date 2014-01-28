@@ -11,12 +11,14 @@ import android.view.animation.AnimationUtils;
 import android.widget.TabHost;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
+import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.base.Application;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.fragments.dashboard.DashboardTabType;
 import com.tradehero.th.fragments.security.WatchlistEditFragment;
 import com.tradehero.th.fragments.timeline.TimelineFragment;
+import com.tradehero.th.fragments.trade.BuySellFragment;
 import com.tradehero.th.models.intent.THIntent;
 
 /** Created with IntelliJ IDEA. User: tho Date: 10/11/13 Time: 4:24 PM Copyright (c) TradeHero */
@@ -231,5 +233,12 @@ public class DashboardNavigator extends Navigator
             tabBar.startAnimation(AnimationUtils.loadAnimation(activity, R.anim.slide_out));
             tabBar.setVisibility(View.GONE);
         }
+    }
+
+    public void openSecurityProfile(SecurityId securityId)
+    {
+        Bundle args = new Bundle();
+        args.putBundle(BuySellFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
+        pushFragment(BuySellFragment.class, args);
     }
 }

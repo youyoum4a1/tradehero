@@ -392,10 +392,10 @@ public class TimelineItemView extends LinearLayout implements
 
     private void openSecurityProfile()
     {
-        SecurityMediaDTO firstMediaWithLogo = currentTimelineItem.getFlavorSecurityForDisplay();
-        if (firstMediaWithLogo != null && firstMediaWithLogo.securityId != 0)
+        SecurityMediaDTO flavorSecurityForDisplay = currentTimelineItem.getFlavorSecurityForDisplay();
+        if (flavorSecurityForDisplay != null && flavorSecurityForDisplay.securityId != 0)
         {
-            openSecurityProfile(firstMediaWithLogo.exchange, firstMediaWithLogo.symbol);
+            getNavigator().openSecurityProfile(new SecurityId(flavorSecurityForDisplay.exchange, flavorSecurityForDisplay.symbol));
         }
     }
 
@@ -499,14 +499,6 @@ public class TimelineItemView extends LinearLayout implements
     //</editor-fold>
 
     //<editor-fold desc="Navigations">
-    private void openSecurityProfile(String exchange, String symbol)
-    {
-        SecurityId securityId = new SecurityId(exchange, symbol);
-        Bundle args = new Bundle();
-        args.putBundle(BuySellFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
-        getNavigator().pushFragment(BuySellFragment.class, args);
-    }
-
     private DashboardNavigator getNavigator()
     {
         return ((DashboardNavigatorActivity) getContext()).getDashboardNavigator();
