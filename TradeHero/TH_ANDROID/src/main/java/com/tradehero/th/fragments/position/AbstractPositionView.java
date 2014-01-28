@@ -206,12 +206,14 @@ public abstract class AbstractPositionView extends LinearLayout
         if (andDisplay)
         {
             display();
+            displayButtonSell();
         }
     }
 
     protected void display()
     {
         displayColorIndicator();
+        displayButtonSell();
     }
 
     protected void displayColorIndicator()
@@ -220,6 +222,14 @@ public abstract class AbstractPositionView extends LinearLayout
         {
             Double roi = positionDTO.getROISinceInception();
             colorIndicator.linkWith(roi);
+        }
+    }
+
+    protected void displayButtonSell()
+    {
+        if (btnSell != null)
+        {
+            btnSell.setVisibility(this.positionDTO == null || this.positionDTO.isClosed() ? GONE : VISIBLE);
         }
     }
 
