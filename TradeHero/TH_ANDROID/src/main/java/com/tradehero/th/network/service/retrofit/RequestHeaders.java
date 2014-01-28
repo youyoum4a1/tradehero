@@ -1,4 +1,4 @@
-package com.tradehero.th.network;
+package com.tradehero.th.network.service.retrofit;
 
 import com.tradehero.th.base.THUser;
 import com.tradehero.th.utils.Constants;

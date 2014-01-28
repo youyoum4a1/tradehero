@@ -1,7 +1,5 @@
-package com.tradehero.th.network;
+package com.tradehero.th.network.service.retrofit;
 
-import com.tradehero.common.utils.THToast;
-import com.tradehero.th.R;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;

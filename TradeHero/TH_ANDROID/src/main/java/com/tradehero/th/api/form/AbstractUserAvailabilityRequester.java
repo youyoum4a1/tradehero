@@ -1,7 +1,7 @@
 package com.tradehero.th.api.form;
 
 import com.tradehero.th.api.users.UserAvailabilityDTO;
-import com.tradehero.th.network.CallbackWithSpecificNotifiers;
+import com.tradehero.th.network.service.retrofit.CallbackWithSpecificNotifiers;
 import com.tradehero.th.network.service.UserService;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;

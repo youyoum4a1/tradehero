@@ -6,14 +6,12 @@ import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.yahoo.News;
 import com.tradehero.th.api.yahoo.NewsList;
-import com.tradehero.th.network.BasicRetrofitErrorHandler;
 import com.tradehero.th.network.service.YahooNewsService;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import dagger.Lazy;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
-import retrofit.RetrofitError;
 import retrofit.client.Response;
 
 import javax.inject.Inject;

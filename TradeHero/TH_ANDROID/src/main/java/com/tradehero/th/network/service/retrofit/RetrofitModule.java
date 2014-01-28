@@ -4,8 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tradehero.common.utils.JacksonConverter;
 import com.tradehero.th.fragments.settings.SettingsPayPalFragment;
 import com.tradehero.th.fragments.settings.SettingsTransactionHistoryFragment;
-import com.tradehero.th.network.RequestHeaders;
-import com.tradehero.th.network.RetrofitSynchronousErrorHandler;
 import com.tradehero.th.network.service.AlertPlanService;
 import com.tradehero.th.network.service.AlertService;
 import com.tradehero.th.network.service.CompetitionService;
@@ -49,6 +47,7 @@ public class RetrofitModule
 {
     private static final String YAHOO_FINANCE_ENDPOINT = "http://finance.yahoo.com";
 
+    //<editor-fold desc="API Services">
     @Provides @Singleton UserService provideUserService(RestAdapter engine)
     {
         return engine.create(UserService.class);
@@ -133,18 +132,19 @@ public class RetrofitModule
     {
         return engine.create(CompetitionService.class);
     }
+    //</editor-fold>
 
     @Provides @Singleton Converter provideConverter()
     {
         return new JacksonConverter(new ObjectMapper());
     }
 
-    @Provides @Singleton Server provideServer()
+    @Provides @Singleton Server provideApiServer()
     {
         return new Server(Constants.BASE_API_URL);
     }
 
-    @Provides RestAdapter.Builder provideRestAdapter(
+    @Provides RestAdapter.Builder provideRestAdapterBuilder(
             Converter converter,
             RetrofitSynchronousErrorHandler errorHandler)
     {

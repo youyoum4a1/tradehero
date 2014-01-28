@@ -3,11 +3,9 @@ package com.tradehero.th.persistence.user;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import com.tradehero.common.persistence.Query;
-import com.tradehero.common.persistence.PersistableResource;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.network.BasicRetrofitErrorHandler;
+import com.tradehero.th.network.service.retrofit.BasicRetrofitErrorHandler;
 import com.tradehero.th.network.service.UserService;
-import com.tradehero.th.utils.DaggerUtils;
 
 import javax.inject.Inject;
 import java.util.Arrays;

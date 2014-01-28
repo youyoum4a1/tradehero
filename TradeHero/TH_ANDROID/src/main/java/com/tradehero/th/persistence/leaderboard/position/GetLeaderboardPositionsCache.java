@@ -11,7 +11,7 @@ import com.tradehero.th.api.leaderboard.position.PerPagedLeaderboardMarkUserId;
 import com.tradehero.th.api.position.PositionInPeriodDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
-import com.tradehero.th.network.BasicRetrofitErrorHandler;
+import com.tradehero.th.network.service.retrofit.BasicRetrofitErrorHandler;
 import com.tradehero.th.network.service.LeaderboardService;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import dagger.Lazy;

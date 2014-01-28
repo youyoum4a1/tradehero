@@ -1,4 +1,4 @@
-package com.tradehero.th.network;
+package com.tradehero.th.network.service.retrofit;
 
 import javax.inject.Inject;
 import retrofit.ErrorHandler;

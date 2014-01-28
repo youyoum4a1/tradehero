@@ -7,7 +7,7 @@ import com.tradehero.common.persistence.Query;
 import com.tradehero.th.api.local.TimelineItem;
 import com.tradehero.th.api.local.TimelineItemBuilder;
 import com.tradehero.th.api.timeline.TimelineDTO;
-import com.tradehero.th.network.BasicRetrofitErrorHandler;
+import com.tradehero.th.network.service.retrofit.BasicRetrofitErrorHandler;
 import com.tradehero.th.network.service.UserTimelineService;
 import java.util.List;
 import java.util.Map;
