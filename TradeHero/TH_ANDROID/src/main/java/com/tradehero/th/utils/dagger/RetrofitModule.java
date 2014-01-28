@@ -45,7 +45,7 @@ import retrofit.converter.Converter;
         complete = false,
         library = true
 )
-public class ApiModule
+public class RetrofitModule
 {
     private static final String YAHOO_FINANCE_ENDPOINT = "http://finance.yahoo.com";
 

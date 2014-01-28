@@ -121,7 +121,7 @@ import javax.inject.Singleton;
 /** Created with IntelliJ IDEA. User: tho Date: 9/16/13 Time: 5:36 PM Copyright (c) TradeHero */
 @Module(
         includes = {
-                ApiModule.class,
+                RetrofitModule.class,
                 CacheModule.class,
                 SocialNetworkModule.class,
                 UserModule.class,
