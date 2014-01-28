@@ -48,7 +48,8 @@ public class THException extends Exception
     }
 
     @Override
-    public String getMessage() {
+    public String getMessage()
+    {
         if (code != ExceptionCode.UnknownError)
         {
             return code.getErrorMessage();

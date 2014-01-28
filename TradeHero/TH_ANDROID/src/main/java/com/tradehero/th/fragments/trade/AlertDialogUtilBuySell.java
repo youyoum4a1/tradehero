@@ -32,4 +32,12 @@ public class AlertDialogUtilBuySell extends AlertDialogUtil
                 R.string.alert_dialog_buy_sell_returned_null_message,
                 R.string.alert_dialog_buy_sell_returned_null_cancel);
     }
+
+    public static void informErrorWithMessage(Context context, String message)
+    {
+        popWithNegativeButton(context,
+                context.getString(R.string.alert_dialog_buy_sell_returned_null_title),
+                message,
+                context.getString(R.string.alert_dialog_buy_sell_returned_null_cancel));
+    }
 }

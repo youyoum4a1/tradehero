@@ -29,6 +29,12 @@ public interface WatchlistService
     );
 
     @PUT("/watchlistPositions/{position}")
+    WatchlistPositionDTO updateWatchlistEntry(
+            @Path("position") int position,
+            @Body WatchlistPositionFormDTO watchlistPositionFormDTO
+    );
+
+    @PUT("/watchlistPositions/{position}")
     void updateWatchlistEntry(
             @Path("position") int position,
             @Body WatchlistPositionFormDTO watchlistPositionFormDTO,

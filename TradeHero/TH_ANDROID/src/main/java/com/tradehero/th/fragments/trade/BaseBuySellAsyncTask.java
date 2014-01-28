@@ -9,6 +9,7 @@ import com.tradehero.th.api.security.TransactionFormDTO;
 import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.service.SecurityServiceWrapper;
 import com.tradehero.th.persistence.position.SecurityPositionDetailCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
@@ -26,8 +27,10 @@ abstract public class BaseBuySellAsyncTask extends AsyncTask<Void, Void, Securit
     protected static final int CODE_BUY_SELL_ORDER_NULL = 1;
     protected static final int CODE_RETROFIT_ERROR = 2;
     protected static final int CODE_RETURNED_NULL = 3;
+    protected static final int CODE_UNKNOWN_ERROR = 4;
 
     protected int errorCode = CODE_OK;
+    protected String errorMessage;
     protected final Context context;
     protected final boolean isBuy;
     protected final SecurityId securityId;
@@ -86,7 +89,16 @@ abstract public class BaseBuySellAsyncTask extends AsyncTask<Void, Void, Securit
             catch (RetrofitError e)
             {
                 THLog.e(TAG, "Failed to buy-sell", e);
-                errorCode = CODE_RETROFIT_ERROR;
+                THException wrapped = new THException(e);
+                if (wrapped.getCode() == THException.ExceptionCode.UnknownError)
+                {
+                    errorCode = CODE_UNKNOWN_ERROR;
+                    errorMessage = wrapped.getMessage();
+                }
+                else
+                {
+                    errorCode = CODE_RETROFIT_ERROR;
+                }
             }
         }
         return returned;
@@ -138,6 +150,10 @@ abstract public class BaseBuySellAsyncTask extends AsyncTask<Void, Void, Securit
 
             case CODE_RETURNED_NULL:
                 AlertDialogUtilBuySell.informBuySellOrderReturnedNull(context);
+                break;
+
+            case CODE_UNKNOWN_ERROR:
+                AlertDialogUtilBuySell.informErrorWithMessage(context, errorMessage);
                 break;
         }
     }
