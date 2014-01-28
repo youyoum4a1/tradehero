@@ -8,6 +8,7 @@ import com.tradehero.common.utils.THLog;
 import com.tradehero.th.adapters.ArrayDTOAdapter;
 import com.tradehero.th.api.competition.CompetitionDTO;
 import com.tradehero.th.api.competition.ProviderDTO;
+import com.tradehero.th.api.users.UserProfileCompactDTO;
 import com.tradehero.th.fragments.competition.zone.AbstractCompetitionZoneListItemView;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneDTO;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneDTOUtil;
@@ -26,9 +27,10 @@ public class CompetitionZoneListItemAdapter extends ArrayDTOAdapter<CompetitionZ
 
     public static final int ITEM_TYPE_TRADE_NOW = 0;
     public static final int ITEM_TYPE_HEADER = 1;
-    public static final int ITEM_TYPE_ZONE_ITEM = 2;
-    public static final int ITEM_TYPE_LEADERBOARD = 3;
-    public static final int ITEM_TYPE_LEGAL_MENTIONS = 4;
+    public static final int ITEM_TYPE_PORTFOLIO = 2;
+    public static final int ITEM_TYPE_ZONE_ITEM = 3;
+    public static final int ITEM_TYPE_LEADERBOARD = 4;
+    public static final int ITEM_TYPE_LEGAL_MENTIONS = 5;
 
     private List<Integer> orderedTypes;
     private List<Object> orderedItems;
@@ -36,21 +38,24 @@ public class CompetitionZoneListItemAdapter extends ArrayDTOAdapter<CompetitionZ
     private final Context context;
     private final int tradeNowResId;
     private final int headerResId;
+    private final int portfolioResId;
     private final int leaderboardResId;
     private final int legalResId;
     @Inject protected CompetitionZoneDTOUtil competitionZoneDTOUtil;
     private CompetitionZoneLegalMentionsView.OnElementClickedListener parentOnLegalElementClicked;
 
+    private UserProfileCompactDTO portfolioUserProfileCompactDTO;
     private ProviderDTO providerDTO;
     private List<CompetitionDTO> competitionDTOs;
 
     public CompetitionZoneListItemAdapter(Context context, LayoutInflater inflater, int zoneItemLayoutResId, int tradeNowResId, int headerResId,
-            int leaderboardResId, int legalResId)
+            int portfolioResId, int leaderboardResId, int legalResId)
     {
         super(context, inflater, zoneItemLayoutResId);
         this.context = context;
         this.tradeNowResId = tradeNowResId;
         this.headerResId = headerResId;
+        this.portfolioResId = portfolioResId;
         this.leaderboardResId = leaderboardResId;
         this.legalResId = legalResId;
         orderedTypes = new ArrayList<>();
@@ -61,6 +66,12 @@ public class CompetitionZoneListItemAdapter extends ArrayDTOAdapter<CompetitionZ
     @Override public boolean hasStableIds()
     {
         return true;
+    }
+
+    public void setPortfolioUserProfileCompactDTO(UserProfileCompactDTO portfolioUserProfileCompactDTO)
+    {
+        this.portfolioUserProfileCompactDTO = portfolioUserProfileCompactDTO;
+        repopulateLists();
     }
 
     public void setProvider(ProviderDTO providerDTO)
@@ -82,7 +93,7 @@ public class CompetitionZoneListItemAdapter extends ArrayDTOAdapter<CompetitionZ
             List<Integer> preparedOrderedTypes = new ArrayList<>();
             List<Object> preparedOrderedItems = new ArrayList<>();
 
-            this.competitionZoneDTOUtil.populateLists(context, providerDTO, competitionDTOs, preparedOrderedTypes, preparedOrderedItems);
+            this.competitionZoneDTOUtil.populateLists(context, portfolioUserProfileCompactDTO, providerDTO, competitionDTOs, preparedOrderedTypes, preparedOrderedItems);
 
             this.orderedTypes = preparedOrderedTypes;
             this.orderedItems = preparedOrderedItems;
@@ -155,6 +166,11 @@ public class CompetitionZoneListItemAdapter extends ArrayDTOAdapter<CompetitionZ
             case ITEM_TYPE_HEADER:
                 view = inflater.inflate(headerResId, parent, false);
                 ((BaseListHeaderView) view).setHeaderTextContent(((CompetitionZoneDTO) item).title);
+                break;
+
+            case ITEM_TYPE_PORTFOLIO:
+                view = inflater.inflate(portfolioResId, parent, false);
+                ((AbstractCompetitionZoneListItemView) view).display((CompetitionZoneDTO) item);
                 break;
 
             case ITEM_TYPE_ZONE_ITEM:

@@ -15,11 +15,11 @@
       android:paddingTop="@dimen/dashboard_padding"
       >
 
-    <ImageButton
+    <ImageView
         android:id="@+id/btn_first_provider"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:scaleType="center"
+        android:scaleType="fitCenter"
         android:visibility="gone"
         />
 

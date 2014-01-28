@@ -21,6 +21,10 @@ import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.leaderboard.LeaderboardDefDTO;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
+import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
+import com.tradehero.th.api.users.UserBaseKey;
+import com.tradehero.th.api.users.UserProfileCompactDTO;
+import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.competition.zone.CompetitionZoneLegalMentionsView;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneDTO;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneLeaderboardDTO;
@@ -40,6 +44,7 @@ import com.tradehero.th.models.intent.competition.ProviderPageIntent;
 import com.tradehero.th.models.intent.security.SecurityPushBuyIntent;
 import com.tradehero.th.persistence.competition.CompetitionCache;
 import com.tradehero.th.persistence.competition.CompetitionListCache;
+import com.tradehero.th.persistence.user.UserProfileCache;
 import java.util.List;
 import javax.inject.Inject;
 
@@ -58,8 +63,15 @@ public class MainCompetitionFragment extends CompetitionFragment
     private THIntentPassedListener webViewTHIntentPassedListener;
     private WebViewFragment webViewFragment;
 
+    @Inject CurrentUserBaseKeyHolder currentUserBaseKeyHolder;
+    @Inject UserProfileCache userProfileCache;
     @Inject CompetitionListCache competitionListCache;
     @Inject CompetitionCache competitionCache;
+
+    protected UserProfileCompactDTO portfolioUserCompactDTO;
+    private DTOCache.Listener<UserBaseKey, UserProfileDTO> profileCacheListener;
+    private DTOCache.GetOrFetchTask<UserBaseKey, UserProfileDTO> profileCacheFetchTask;
+
     protected List<CompetitionId> competitionIds;
     private DTOCache.Listener<ProviderId, CompetitionIdList> competitionListCacheListener;
     private DTOCache.GetOrFetchTask<ProviderId, CompetitionIdList> competitionListCacheFetchTask;
@@ -79,15 +91,6 @@ public class MainCompetitionFragment extends CompetitionFragment
 
     @Override protected void initViews(View view)
     {
-        this.competitionZoneListItemAdapter = new CompetitionZoneListItemAdapter(
-                getActivity(),
-                getActivity().getLayoutInflater(),
-                R.layout.competition_zone_item,
-                R.layout.competition_zone_trade_now,
-                R.layout.competition_zone_header,
-                R.layout.competition_zone_leaderboard_item,
-                R.layout.competition_zone_legal_mentions);
-        this.competitionZoneListItemAdapter.setParentOnLegalElementClicked(new MainCompetitionLegalClickedListener());
 
         this.progressBar = (ProgressBar) view.findViewById(android.R.id.empty);
         if (this.progressBar != null)
@@ -97,10 +100,11 @@ public class MainCompetitionFragment extends CompetitionFragment
         this.listView = (AbsListView) view.findViewById(R.id.competition_zone_list);
         if (this.listView != null)
         {
-            this.listView.setAdapter(this.competitionZoneListItemAdapter);
             this.listView.setOnItemClickListener(new MainCompetitionFragmentItemClickListener());
         }
+        placeAdapterInList();
 
+        this.profileCacheListener = new MainCompetitionUserProfileCacheListener();
         this.competitionListCacheListener = new MainCompetitionCompetitionListCacheListener();
     }
 
@@ -124,8 +128,11 @@ public class MainCompetitionFragment extends CompetitionFragment
     @Override public void onStart()
     {
         super.onStart();
-        detachCompetitionListCacheTask();
+        detachUserProfileCacheTask();
+        profileCacheFetchTask = userProfileCache.getOrFetch(currentUserBaseKeyHolder.getCurrentUserBaseKey(), profileCacheListener);
+        profileCacheFetchTask.execute();
 
+        detachCompetitionListCacheTask();
         competitionListCacheFetchTask = competitionListCache.getOrFetch(providerId, competitionListCacheListener);
         competitionListCacheFetchTask.execute();
     }
@@ -143,6 +150,7 @@ public class MainCompetitionFragment extends CompetitionFragment
 
     @Override public void onStop()
     {
+        detachUserProfileCacheTask();
         detachCompetitionListCacheTask();
         super.onStop();
     }
@@ -163,6 +171,7 @@ public class MainCompetitionFragment extends CompetitionFragment
         }
         this.listView = null;
 
+        this.profileCacheListener = null;
         this.competitionListCacheListener = null;
 
         super.onDestroyView();
@@ -174,6 +183,15 @@ public class MainCompetitionFragment extends CompetitionFragment
         super.onDestroy();
     }
 
+    private void detachUserProfileCacheTask()
+    {
+        if (profileCacheFetchTask != null)
+        {
+            profileCacheFetchTask.setListener(null);
+        }
+        profileCacheFetchTask = null;
+    }
+
     private void detachCompetitionListCacheTask()
     {
         if (competitionListCacheFetchTask != null)
@@ -183,11 +201,16 @@ public class MainCompetitionFragment extends CompetitionFragment
         competitionListCacheFetchTask = null;
     }
 
+    protected void linkWith(UserProfileCompactDTO userProfileCompactDTO, boolean andDisplay)
+    {
+        this.portfolioUserCompactDTO = userProfileCompactDTO;
+        placeAdapterInList();
+    }
+
     @Override protected void linkWith(ProviderDTO providerDTO, boolean andDisplay)
     {
         super.linkWith(providerDTO, andDisplay);
-        this.competitionZoneListItemAdapter.setProvider(providerDTO);
-        this.competitionZoneListItemAdapter.notifyDataSetChanged();
+        placeAdapterInList();
         if (progressBar != null)
         {
             progressBar.setVisibility(View.GONE);
@@ -201,13 +224,41 @@ public class MainCompetitionFragment extends CompetitionFragment
     protected void linkWith(List<CompetitionId> competitionIds, boolean andDisplay)
     {
         this.competitionIds = competitionIds;
-        this.competitionZoneListItemAdapter.setCompetitionDTOs(competitionCache.get(competitionIds));
-        this.competitionZoneListItemAdapter.notifyDataSetChanged();
+        placeAdapterInList();
     }
 
     @Override public boolean isTabBarVisible()
     {
         return false;
+    }
+
+    protected void placeAdapterInList()
+    {
+        CompetitionZoneListItemAdapter newAdapter = new CompetitionZoneListItemAdapter(
+                getActivity(),
+                getActivity().getLayoutInflater(),
+                R.layout.competition_zone_item,
+                R.layout.competition_zone_trade_now,
+                R.layout.competition_zone_header,
+                R.layout.competition_zone_portfolio,
+                R.layout.competition_zone_leaderboard_item, R.layout.competition_zone_legal_mentions);
+        newAdapter.setParentOnLegalElementClicked(new MainCompetitionLegalClickedListener());
+        newAdapter.setPortfolioUserProfileCompactDTO(portfolioUserCompactDTO);
+        newAdapter.setProvider(providerDTO);
+        newAdapter.setCompetitionDTOs(competitionCache.get(competitionIds));
+
+        CompetitionZoneListItemAdapter currentAdapterCopy = this.competitionZoneListItemAdapter;
+        if (currentAdapterCopy != null)
+        {
+            currentAdapterCopy.setParentOnLegalElementClicked(null);
+        }
+
+        this.competitionZoneListItemAdapter = newAdapter;
+
+        if (this.listView != null)
+        {
+            this.listView.setAdapter(this.competitionZoneListItemAdapter);
+        }
     }
 
     private void displayActionBarTitle()
@@ -400,6 +451,20 @@ public class MainCompetitionFragment extends CompetitionFragment
         @Override public void onElementClicked(CompetitionZoneDTO competitionZoneLegalDTO)
         {
             handleItemClicked(competitionZoneLegalDTO);
+        }
+    }
+
+    private class MainCompetitionUserProfileCacheListener implements DTOCache.Listener<UserBaseKey, UserProfileDTO>
+    {
+        @Override public void onDTOReceived(UserBaseKey providerId, UserProfileDTO value)
+        {
+            linkWith(value, true);
+        }
+
+        @Override public void onErrorThrown(UserBaseKey key, Throwable error)
+        {
+            THToast.show(getString(R.string.error_fetch_your_user_profile));
+            THLog.e(TAG, "Error fetching the profile info " + key, error);
         }
     }
 

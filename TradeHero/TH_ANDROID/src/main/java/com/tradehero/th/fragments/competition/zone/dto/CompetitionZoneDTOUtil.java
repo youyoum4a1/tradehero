@@ -5,6 +5,7 @@ import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.CompetitionDTO;
 import com.tradehero.th.api.competition.ProviderDTO;
+import com.tradehero.th.api.users.UserProfileCompactDTO;
 import com.tradehero.th.fragments.competition.CompetitionZoneListItemAdapter;
 import java.util.List;
 import javax.inject.Inject;
@@ -21,7 +22,9 @@ import javax.inject.Singleton;
     {
     }
 
-    public void populateLists(Context context, ProviderDTO providerDTO,
+    public void populateLists(Context context,
+            UserProfileCompactDTO portfolioUserProfileCompact,
+            ProviderDTO providerDTO,
             List<CompetitionDTO> competitionDTOs,
             List<Integer> preparedOrderedTypes,
             List<Object> preparedOrderedItems)
@@ -36,10 +39,11 @@ import javax.inject.Singleton;
 
             if (providerDTO.associatedPortfolio != null)
             {
-                preparedOrderedTypes.add(CompetitionZoneListItemAdapter.ITEM_TYPE_ZONE_ITEM);
+                preparedOrderedTypes.add(CompetitionZoneListItemAdapter.ITEM_TYPE_PORTFOLIO);
                 preparedOrderedItems.add(new CompetitionZonePortfolioDTO(
                         context.getString(R.string.provider_competition_portfolio_title),
-                        context.getString(R.string.provider_competition_portfolio_description)));
+                        context.getString(R.string.provider_competition_portfolio_description),
+                        portfolioUserProfileCompact));
             }
 
             if (providerDTO.hasHelpVideo)

@@ -12,6 +12,7 @@
       android:id="@+id/ic_competition_zone_trade_now"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
+      android:scaleType="fitCenter"
     />
 
 </com.tradehero.th.fragments.competition.zone.CompetitionZoneListItemTradeNowView>

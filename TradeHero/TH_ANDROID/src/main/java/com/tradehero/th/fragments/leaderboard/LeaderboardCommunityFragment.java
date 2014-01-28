@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ListView;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
@@ -65,7 +66,7 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
     @Inject protected CurrentUserBaseKeyHolder currentUserBaseKeyHolder;
 
     private boolean fetched = false;
-    private ImageButton firstProviderLink;
+    private ImageView firstProviderLink;
     private ListView mostSkilledListView;
     private ListView timePeriodListView;
     private ListView sectorListView;
@@ -164,7 +165,7 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
 
     private void initViews(View view)
     {
-        this.firstProviderLink = (ImageButton) view.findViewById(R.id.btn_first_provider);
+        this.firstProviderLink = (ImageView) view.findViewById(R.id.btn_first_provider);
         if (this.firstProviderLink != null)
         {
             this.firstProviderLink.setOnClickListener(new LeaderboardCommunityFragmentProviderLinkClickListener());
