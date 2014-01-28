@@ -1,4 +1,4 @@
-package com.tradehero.th.utils.dagger;
+package com.tradehero.th.network.service.retrofit;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tradehero.common.utils.JacksonConverter;
