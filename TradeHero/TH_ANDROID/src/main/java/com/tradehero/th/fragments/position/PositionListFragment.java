@@ -63,6 +63,7 @@ public class PositionListFragment extends BasePurchaseManagerFragment
     @Inject Lazy<PositionCache> positionCache;
     @Inject Lazy<PortfolioHeaderFactory> headerFactory;
     @Inject Lazy<GetPositionsCache> getPositionsCache;
+    @Inject protected HeroAlertDialogUtil heroAlertDialogUtil;
 
     private PortfolioHeaderView portfolioHeaderView;
     protected ExpandingListView positionsListView;
@@ -425,7 +426,7 @@ public class PositionListFragment extends BasePurchaseManagerFragment
     @Override public void onFollowRequested(final UserBaseKey userBaseKey)
     {
         THLog.d(TAG, "onFollowRequested " + userBaseKey);
-        HeroAlertDialogUtil.popAlertFollowHero(getActivity(), new DialogInterface.OnClickListener()
+        heroAlertDialogUtil.popAlertFollowHero(getActivity(), new DialogInterface.OnClickListener()
         {
             @Override public void onClick(DialogInterface dialog, int which)
             {

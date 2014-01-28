@@ -45,6 +45,8 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
 
     public static boolean alreadyNotifiedMarketClosed = false;
 
+    @Inject protected AlertDialogUtil alertDialogUtil;
+
     @Inject protected CurrentUserBaseKeyHolder currentUserBaseKeyHolder;
     @Inject protected Lazy<SecurityCompactCache> securityCompactCache;
     @Inject protected Lazy<SecurityPositionDetailCache> securityPositionDetailCache;
@@ -436,14 +438,14 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
     {
         if (securityId == null)
         {
-            AlertDialogUtil.popWithNegativeButton(getActivity(),
+            alertDialogUtil.popWithNegativeButton(getActivity(),
                     R.string.alert_dialog_market_close_title,
                     R.string.alert_dialog_market_close_message_basic,
                     R.string.alert_dialog_market_close_cancel);
         }
         else
         {
-            AlertDialogUtil.popWithNegativeButton(getActivity(),
+            alertDialogUtil.popWithNegativeButton(getActivity(),
                     getString(R.string.alert_dialog_market_close_title),
                     String.format(getString(R.string.alert_dialog_market_close_message), securityId.exchange, securityId.securitySymbol),
                     getString(R.string.alert_dialog_market_close_cancel));

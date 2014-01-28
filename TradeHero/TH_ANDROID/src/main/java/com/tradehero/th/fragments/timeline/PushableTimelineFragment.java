@@ -16,6 +16,7 @@ import com.tradehero.th.billing.googleplay.THIABActor;
 import com.tradehero.th.billing.googleplay.THIABPurchase;
 import com.tradehero.th.fragments.billing.THIABUserInteractor;
 import com.tradehero.th.fragments.social.hero.HeroAlertDialogUtil;
+import javax.inject.Inject;
 import retrofit.client.Response;
 
 /**
@@ -30,6 +31,7 @@ public class PushableTimelineFragment extends TimelineFragment
     private ActionBar actionBar;
     private MenuItem btnFollow;
     private MenuItem followingStamp;
+    @Inject protected HeroAlertDialogUtil heroAlertDialogUtil;
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
@@ -144,7 +146,7 @@ public class PushableTimelineFragment extends TimelineFragment
 
     private void handleInfoButtonPressed()
     {
-        HeroAlertDialogUtil.popAlertFollowHero(getActivity(), new DialogInterface.OnClickListener()
+        heroAlertDialogUtil.popAlertFollowHero(getActivity(), new DialogInterface.OnClickListener()
         {
             @Override public void onClick(DialogInterface dialog, int which)
             {

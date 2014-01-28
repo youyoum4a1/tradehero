@@ -39,6 +39,7 @@ abstract public class BaseBuySellAsyncTask extends AsyncTask<Void, Void, Securit
     @Inject protected Lazy<SecurityPositionDetailCache> securityPositionDetailCache;
     @Inject protected Lazy<CurrentUserBaseKeyHolder> currentUserBaseKeyHolder;
     @Inject protected Lazy<UserProfileCache> userProfileCache;
+    @Inject protected AlertDialogUtilBuySell alertDialogUtilBuySell;
 
     public BaseBuySellAsyncTask(final Context context, final boolean isBuy, final SecurityId securityId)
     {
@@ -141,19 +142,19 @@ abstract public class BaseBuySellAsyncTask extends AsyncTask<Void, Void, Securit
         switch (errorCode)
         {
             case CODE_BUY_SELL_ORDER_NULL:
-                AlertDialogUtilBuySell.informBuySellOrderWasNull(context);
+                alertDialogUtilBuySell.informBuySellOrderWasNull(context);
                 break;
 
             case CODE_RETROFIT_ERROR:
-                AlertDialogUtilBuySell.informBuySellOrderFailedRetrofit(context);
+                alertDialogUtilBuySell.informBuySellOrderFailedRetrofit(context);
                 break;
 
             case CODE_RETURNED_NULL:
-                AlertDialogUtilBuySell.informBuySellOrderReturnedNull(context);
+                alertDialogUtilBuySell.informBuySellOrderReturnedNull(context);
                 break;
 
             case CODE_UNKNOWN_ERROR:
-                AlertDialogUtilBuySell.informErrorWithMessage(context, errorMessage);
+                alertDialogUtilBuySell.informErrorWithMessage(context, errorMessage);
                 break;
         }
     }

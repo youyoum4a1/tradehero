@@ -56,6 +56,7 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
 
     @Inject protected Lazy<HeroCache> heroCache;
     private HeroManagerInfoFetcher infoFetcher;
+    @Inject protected HeroAlertDialogUtil heroAlertDialogUtil;
 
     //<editor-fold desc="BaseFragment.TabBarVisibilityInformer">
     @Override public boolean isTabBarVisible()
@@ -191,7 +192,7 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
     {
         if (!clickedHeroDTO.active)
         {
-            HeroAlertDialogUtil.popAlertFollowHero(getActivity(), new DialogInterface.OnClickListener()
+            heroAlertDialogUtil.popAlertFollowHero(getActivity(), new DialogInterface.OnClickListener()
             {
                 @Override public void onClick(DialogInterface dialog, int which)
                 {
@@ -201,7 +202,7 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
         }
         else
         {
-            HeroAlertDialogUtil.popAlertUnfollowHero(getActivity(), new DialogInterface.OnClickListener()
+            heroAlertDialogUtil.popAlertUnfollowHero(getActivity(), new DialogInterface.OnClickListener()
             {
                 @Override public void onClick(DialogInterface dialog, int which)
                 {

@@ -4,13 +4,20 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import com.tradehero.th.R;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/19/13 Time: 4:38 PM To change this template use File | Settings | File Templates. */
-public class AlertDialogUtil
+@Singleton public class AlertDialogUtil
 {
     public static final String TAG = AlertDialogUtil.class.getSimpleName();
 
-    public static DialogInterface.OnClickListener createDefaultCancelListener()
+    @Inject public AlertDialogUtil()
+    {
+        super();
+    }
+
+    public DialogInterface.OnClickListener createDefaultCancelListener()
     {
         return new DialogInterface.OnClickListener()
         {
@@ -21,12 +28,12 @@ public class AlertDialogUtil
         };
     }
 
-    public static AlertDialog popWithNegativeButton(final Context context, int titleResId, int descriptionResId, int cancelResId)
+    public AlertDialog popWithNegativeButton(final Context context, int titleResId, int descriptionResId, int cancelResId)
     {
         return popWithNegativeButton(context, titleResId, descriptionResId, cancelResId, createDefaultCancelListener());
     }
 
-    public static AlertDialog popWithNegativeButton(final Context context, int titleResId, int descriptionResId, int cancelResId,
+    public AlertDialog popWithNegativeButton(final Context context, int titleResId, int descriptionResId, int cancelResId,
             DialogInterface.OnClickListener cancelListener)
     {
         return popWithNegativeButton(context,
@@ -36,12 +43,12 @@ public class AlertDialogUtil
                 cancelListener);
     }
 
-    public static AlertDialog popWithNegativeButton(final Context context, String titleRes, String descriptionRes, String cancelRes)
+    public AlertDialog popWithNegativeButton(final Context context, String titleRes, String descriptionRes, String cancelRes)
     {
         return popWithNegativeButton(context, titleRes, descriptionRes, cancelRes, createDefaultCancelListener());
     }
 
-    public static AlertDialog popWithNegativeButton(final Context context, String titleRes, String descriptionRes, String cancelRes,
+    public AlertDialog popWithNegativeButton(final Context context, String titleRes, String descriptionRes, String cancelRes,
             DialogInterface.OnClickListener cancelListener)
     {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
@@ -56,14 +63,14 @@ public class AlertDialogUtil
         return alertDialog;
     }
 
-    public static AlertDialog popWithOkCancelButton(final Context context, int titleResId, int descriptionResId, int okResId, int cancelResId,
+    public AlertDialog popWithOkCancelButton(final Context context, int titleResId, int descriptionResId, int okResId, int cancelResId,
             final DialogInterface.OnClickListener okClickListener)
     {
         return popWithOkCancelButton(context, titleResId, descriptionResId, okResId, cancelResId,
                 okClickListener, createDefaultCancelListener());
     }
 
-    public static AlertDialog popWithOkCancelButton(final Context context, int titleResId, int descriptionResId, int okResId, int cancelResId,
+    public AlertDialog popWithOkCancelButton(final Context context, int titleResId, int descriptionResId, int okResId, int cancelResId,
             final DialogInterface.OnClickListener okClickListener, final DialogInterface.OnClickListener cancelClickListener)
     {
         return popWithOkCancelButton(context,
@@ -75,14 +82,14 @@ public class AlertDialogUtil
                 cancelClickListener);
     }
 
-    public static AlertDialog popWithOkCancelButton(final Context context, String title, String description, int okResId, int cancelResId,
+    public AlertDialog popWithOkCancelButton(final Context context, String title, String description, int okResId, int cancelResId,
             final DialogInterface.OnClickListener okClickListener)
     {
         return popWithOkCancelButton(context, title, description, okResId, cancelResId,
                 okClickListener, createDefaultCancelListener());
     }
 
-    public static AlertDialog popWithOkCancelButton(final Context context, String title, String description, int okResId, int cancelResId,
+    public AlertDialog popWithOkCancelButton(final Context context, String title, String description, int okResId, int cancelResId,
             final DialogInterface.OnClickListener okClickListener, final DialogInterface.OnClickListener cancelClickListener)
     {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);

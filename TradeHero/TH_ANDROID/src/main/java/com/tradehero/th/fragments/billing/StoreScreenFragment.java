@@ -181,7 +181,7 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
 
     private void popPleaseWait()
     {
-        AlertDialogUtil.popWithNegativeButton(getActivity(),
+        iabAlertDialogUtil.popWithNegativeButton(getActivity(),
                 R.string.error_incomplete_info_title,
                 R.string.error_incomplete_info_message,
                 R.string.error_incomplete_info_cancel);
