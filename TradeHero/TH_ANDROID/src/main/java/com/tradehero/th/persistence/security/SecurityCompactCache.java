@@ -39,7 +39,10 @@ import javax.inject.Singleton;
         if (securityPositionDetailDTO != null)
         {
             securityPositionDetailCache.get().put(key, securityPositionDetailDTO);
-            securityCompactDTO = securityPositionDetailDTO.security;
+
+            // We do a get again here because the put may have cloned into subclasses.
+            // And we want the subclass
+            securityCompactDTO = get(key);
         }
 
         return securityCompactDTO;

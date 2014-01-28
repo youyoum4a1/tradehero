@@ -10,6 +10,7 @@ import com.tradehero.th.api.position.PositionCompactId;
 import com.tradehero.th.api.position.PositionDTOCompact;
 import com.tradehero.th.api.position.SecurityPositionDetailDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
+import com.tradehero.th.api.security.SecurityCompactDTOFactory;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
 import com.tradehero.th.api.users.UserBaseKey;
@@ -36,6 +37,7 @@ import javax.inject.Singleton;
     @Inject protected Lazy<PositionCompactCache> positionCompactCache;
     @Inject protected Lazy<PortfolioCache> portfolioCache;
     @Inject protected Lazy<ProviderCache> providerCache;
+    @Inject protected SecurityCompactDTOFactory securityCompactDTOFactory;
 
     //<editor-fold desc="Constructors">
     @Inject public SecurityPositionDetailCache()
@@ -52,7 +54,12 @@ import javax.inject.Singleton;
 
     protected SecurityPositionDetailDTO fetch(SecurityId key) throws Throwable
     {
-        return securityServiceWrapper.get().getSecurity(key);
+        SecurityPositionDetailDTO fetched = securityServiceWrapper.get().getSecurity(key);
+        if (fetched != null)
+        {
+            fetched.security = securityCompactDTOFactory.clonePerType(fetched.security);
+        }
+        return fetched;
     }
 
     @Override public SecurityPositionDetailDTO get(SecurityId key)
