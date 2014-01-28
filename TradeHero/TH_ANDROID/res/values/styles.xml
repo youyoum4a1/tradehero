@@ -8,6 +8,7 @@
     <item name="android:windowActionBar">true</item>
     <item name="android:windowNoTitle">false</item>
     <item name="android:windowActionBarOverlay">true</item>
+    <item name="android:actionMenuTextColor">@color/actionbar_menu_text_color</item>
   </style>
   <style name="TradeHero.Settings" parent="TradeHero">
     <item name="android:actionBarStyle">@style/TradeHero.Dashboard.ActionBar</item>
@@ -21,10 +22,6 @@
   <style name="TradeHero.Menu.ItemTextIcon" parent="TextAppearance.Sherlock.Light.SearchResult">
     <item name="android:textStyle">bold</item>
     <item name="android:textSize">20sp</item>
-  </style>
-  <!-- Application theme. -->
-  <style name="AppTheme" parent="TradeHero">
-    <!-- All customizations that are NOT specific to a particular API-level can go here. -->
   </style>
 
   <style name="TH"/>
@@ -133,4 +130,5 @@
     <item name="android:background">@drawable/list_item_bg</item>
     <item name="android:minHeight">48dp</item>
   </style>
+  <color name="actionbar_menu_text_color">@color/white</color>
 </resources>

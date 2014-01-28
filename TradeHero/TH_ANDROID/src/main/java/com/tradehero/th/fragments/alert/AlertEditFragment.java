@@ -1,6 +1,8 @@
 package com.tradehero.th.fragments.alert;
 
 import android.os.Bundle;
+import android.text.Html;
+import android.text.Spanned;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,15 +32,13 @@ import com.tradehero.th.utils.DateUtils;
 import com.tradehero.th.utils.THSignedNumber;
 import dagger.Lazy;
 import javax.inject.Inject;
-import org.ocpsoft.prettytime.PrettyTime;
-import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 
 /**
- * Created with IntelliJ IDEA. User: tho Date: 1/28/14 Time: 12:45 PM Copyright (c) TradeHero
+ * Created with IntelliJ IDEA. User: tho Date: 1/28/14 Time: 5:18 PM Copyright (c) TradeHero
  */
-public class AlertViewFragment extends DashboardFragment
+public class AlertEditFragment extends DashboardFragment
 {
-    public static final String BUNDLE_KEY_ALERT_ID_BUNDLE = AlertViewFragment.class.getName() + ".alertId";
+    public static final String BUNDLE_KEY_ALERT_ID_BUNDLE = AlertEditFragment.class.getName() + ".alertId";
 
     @InjectView(R.id.stock_logo) ImageView stockLogo;
     @InjectView(R.id.stock_symbol) TextView stockSymbol;
@@ -48,41 +48,40 @@ public class AlertViewFragment extends DashboardFragment
     @InjectView(R.id.active_until) TextView activeUntil;
     @InjectView(R.id.alert_toggle) Switch alertToggle;
 
-    private StickyListHeadersListView priceChangeHistoryList;
+    @InjectView(R.id.alert_edit_percentage_change) TextView percentageChange;
+    @InjectView(R.id.alert_edit_target_price_change) TextView targetPriceChange;
+    @InjectView(R.id.alert_edit_percentage_change_actual_value) TextView percentageChangeValue;
 
     @Inject protected Lazy<AlertCompactCache> alertCompactCache;
     @Inject protected Lazy<AlertServiceWrapper> alertServiceWrapper;
     @Inject protected Lazy<Picasso> picasso;
-    @Inject Lazy<PrettyTime> prettyTime;
 
-    private View headerView;
     private AlertDTO alertDTO;
     private SecurityCompactDTO securityCompactDTO;
-    private AlertEventAdapter alertEventAdapter;
     private AlertId alertId;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        priceChangeHistoryList = (StickyListHeadersListView) inflater.inflate(R.layout.alert_view_fragment, container, false);
-        headerView = inflater.inflate(R.layout.alert_security_profile, null);
-        ButterKnife.inject(this, headerView);
-        return priceChangeHistoryList;
+        View view = inflater.inflate(R.layout.alert_edit_fragment, container, false);
+        ButterKnife.inject(this, view);
+        return view;
+    }
+
+    @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
+    {
+        super.onCreateOptionsMenu(menu, inflater);
+
+        inflater.inflate(R.menu.alert_edit_menu, menu);
     }
 
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-
-        priceChangeHistoryList.addHeaderView(headerView);
-        alertEventAdapter = new AlertEventAdapter(getActivity(), getActivity().getLayoutInflater(),
-                R.layout.alert_event_item_view);
-        priceChangeHistoryList.setAdapter(alertEventAdapter);
+        alertToggle.setVisibility(View.GONE);
     }
 
     @Override public void onDestroyView()
     {
-        priceChangeHistoryList.removeHeaderView(headerView);
-
         super.onDestroyView();
     }
 
@@ -96,13 +95,6 @@ public class AlertViewFragment extends DashboardFragment
             alertId = new AlertId(args.getBundle(BUNDLE_KEY_ALERT_ID_BUNDLE));
             linkWith(alertId, true);
         }
-    }
-
-    @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
-    {
-        super.onCreateOptionsMenu(menu, inflater);
-
-        inflater.inflate(R.menu.alert_view_menu, menu);
     }
 
     @Override public boolean onOptionsItemSelected(MenuItem item)
@@ -132,9 +124,6 @@ public class AlertViewFragment extends DashboardFragment
     private void linkWith(AlertDTO alertDTO, boolean andDisplay)
     {
         this.alertDTO = alertDTO;
-
-        alertEventAdapter.setItems(alertDTO.alertEvents);
-        alertEventAdapter.notifyDataSetChanged();
 
         if (alertDTO.security != null)
         {
@@ -185,6 +174,27 @@ public class AlertViewFragment extends DashboardFragment
     {
         THSignedNumber thTargetPrice = new THSignedNumber(THSignedNumber.TYPE_MONEY, alertDTO.targetPrice, false);
         targetPrice.setText(thTargetPrice.toString());
+
+        if (alertDTO.active)
+        {
+            targetPriceChange.setText(getFormattedTargetPriceChange(thTargetPrice.toString()));
+        }
+        else
+        {
+            targetPriceChange.setText(getFormattedTargetPriceChange("-"));
+        }
+    }
+
+    private Spanned getFormattedTargetPriceChange(String targetPriceString)
+    {
+        return Html.fromHtml(
+                String.format(getString(R.string.target_price_change_format), targetPriceString));
+    }
+
+    private Spanned getFormattedPercentageChange(String percentageString)
+    {
+        return Html.fromHtml(
+                String.format(getString(R.string.percentage_change_format), percentageString));
     }
 
     private void displayCurrentPrice()
@@ -242,10 +252,8 @@ public class AlertViewFragment extends DashboardFragment
         }
     };
 
-    //region TabBarInformer
     @Override public boolean isTabBarVisible()
     {
         return false;
     }
-    //endregion
 }

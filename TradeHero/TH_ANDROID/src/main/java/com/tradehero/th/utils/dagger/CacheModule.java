@@ -2,6 +2,7 @@ package com.tradehero.th.utils.dagger;
 
 import android.content.Context;
 import com.tradehero.common.cache.LruMemFileCache;
+import com.tradehero.th.fragments.alert.AlertEditFragment;
 import com.tradehero.th.fragments.alert.AlertItemView;
 import com.tradehero.th.fragments.alert.AlertListItemAdapter;
 import com.tradehero.th.fragments.alert.AlertViewFragment;
@@ -26,6 +27,7 @@ import javax.inject.Singleton;
                 AlertListItemAdapter.class,
                 AlertItemView.class,
                 AlertViewFragment.class,
+                AlertEditFragment.class,
         },
         complete = false,
         library = true

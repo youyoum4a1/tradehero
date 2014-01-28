@@ -194,4 +194,16 @@
   <string name="active_until">Active Until</string>
   <string name="current_price">Current Price</string>
   <string name="notification_received">Notifications Received</string>
+  <string name="edit">Edit</string>
+  <string name="save">Save</string>
+  <string name="trigger_conditions">Trigger Conditions</string>
+  <string name="alert_target_price_help_text">You will receive an alert whenever the price of the security rises/falls to the set price.</string>
+  <string name="price_change">Price Change</string>
+  <string name="alert_price_change_help_text">You will receive an alert when the price of the give security moves by more than the given percentage.
+  </string>
+  <string name="alert_edit_note">Please note: price checks for stock alerts are done every 15 minutes and some price sources are delayed by up to 15
+    minutes
+  </string>
+  <string name="target_price_change_format"><![CDATA[Target Price <b>%s</b>]]></string>
+  <string name="percentage_change_format"><![CDATA[Price Change <b>%s</b>]]></string>
 </resources>

@@ -70,9 +70,7 @@
       android:layout_toRightOf="@id/buy_stock"
       android:layout_below="@id/alert_status"
       android:layout_alignParentBottom="true"
-      android:layout_alignParentRight="true"
-      android:layout_marginRight="30dp"
-      android:paddingLeft="5dp"
+      android:layout_marginLeft="15dp"
       android:src="@drawable/sell_stock"
       android:contentDescription="@null"
       />
