@@ -57,6 +57,7 @@ public class TradeListItemView extends LinearLayout implements DTOView<TradeList
 
     private TextView averagePriceTextView;
     private TextView realizedPLTextView;
+    private View unrealizedPLContainer;
     private TextView unrealizedPLTextView;
     private TextView positionQuantityTextView;
 
@@ -96,6 +97,7 @@ public class TradeListItemView extends LinearLayout implements DTOView<TradeList
 
         averagePriceTextView = (TextView) findViewById(R.id.trade_avg_price);
         realizedPLTextView = (TextView) findViewById(R.id.trade_realized_pl);
+        unrealizedPLContainer = findViewById(R.id.trade_unrealized_pl_container);
         unrealizedPLTextView = (TextView) findViewById(R.id.trade_unrealized_pl);
         positionQuantityTextView = (TextView) findViewById(R.id.trade_quantity);
         commentSection = findViewById(R.id.trade_list_comment_section);
@@ -176,6 +178,11 @@ public class TradeListItemView extends LinearLayout implements DTOView<TradeList
             String realizedPLString = String.format("%s %+,.2f", SecurityUtils.DEFAULT_VIRTUAL_CASH_CURRENCY_DISPLAY, trade.realized_pl_after_trade);
             this.realizedPLTextView.setText(realizedPLString);
             this.realizedPLTextView.setTextColor(getResources().getColor(ColorUtils.getColorResourceForNumber(trade.realized_pl_after_trade)));
+        }
+
+        if (this.unrealizedPLContainer != null)
+        {
+            this.unrealizedPLContainer.setVisibility(tradeItem.isLastTrade() && position.isClosed() ? GONE : VISIBLE);
         }
 
         if (this.unrealizedPLTextView != null)

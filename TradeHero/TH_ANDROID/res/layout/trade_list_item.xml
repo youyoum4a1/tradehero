@@ -102,6 +102,7 @@
       </LinearLayout>
 
       <LinearLayout
+          android:id="@+id/trade_unrealized_pl_container"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:orientation="horizontal"
