@@ -21,8 +21,7 @@ public class THException extends Exception
         initCause(new Exception(message));
     }
 
-    @Override
-    public Throwable initCause(Throwable throwable)
+    @Override public Throwable initCause(Throwable throwable)
     {
         this.code = ExceptionCode.UnknownError;
         if (throwable instanceof RetrofitError)
@@ -47,8 +46,7 @@ public class THException extends Exception
         return super.initCause(throwable);
     }
 
-    @Override
-    public String getMessage()
+    @Override public String getMessage()
     {
         if (code != ExceptionCode.UnknownError)
         {
@@ -59,7 +57,9 @@ public class THException extends Exception
             return getCause().getMessage();
         }
         else
+        {
             return getCause().getMessage();
+        }
     }
 
     public ExceptionCode getCode()

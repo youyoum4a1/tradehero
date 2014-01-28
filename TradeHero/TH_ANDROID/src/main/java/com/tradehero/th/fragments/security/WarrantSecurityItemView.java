@@ -6,8 +6,10 @@ import android.widget.TextView;
 import com.tradehero.th.R;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.WarrantDTO;
+import com.tradehero.th.models.security.WarrantDTOFormatter;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
+import javax.inject.Inject;
 
 /**
  * Created by xavier on 1/21/14.
@@ -16,10 +18,13 @@ public class WarrantSecurityItemView extends SecurityItemView<SecurityCompactDTO
 {
     public static final String TAG = WarrantSecurityItemView.class.getSimpleName();
 
-    private TextView strikePriceCcy;
+    private TextView combinedStrikePriceType;
     private TextView strikePrice;
+    private TextView strikePriceCcy;
     private TextView warrantType;
     private TextView expiryDate;
+
+    @Inject protected WarrantDTOFormatter warrantDTOFormatter;
 
     //<editor-fold desc="Constructors">
     public WarrantSecurityItemView(Context context)
@@ -42,6 +47,7 @@ public class WarrantSecurityItemView extends SecurityItemView<SecurityCompactDTO
     {
         super.fetchViews();
 
+        combinedStrikePriceType = (TextView) findViewById(R.id.combined_strike_price_type);
         strikePrice = (TextView) findViewById(R.id.strike_price);
         strikePriceCcy = (TextView) findViewById(R.id.strike_currency_display);
         warrantType = (TextView) findViewById(R.id.warrant_type);
@@ -54,6 +60,7 @@ public class WarrantSecurityItemView extends SecurityItemView<SecurityCompactDTO
 
         if (andDisplay)
         {
+            displayCombinedStrikePriceType();
             displayStrikePrice();
             displayStrikePriceCcy();
             displayWarrantType();
@@ -65,10 +72,26 @@ public class WarrantSecurityItemView extends SecurityItemView<SecurityCompactDTO
     {
         super.display();
 
+        displayCombinedStrikePriceType();
         displayStrikePrice();
         displayStrikePriceCcy();
         displayWarrantType();
         displayExpiryDate();
+    }
+
+    public void displayCombinedStrikePriceType()
+    {
+        if (combinedStrikePriceType != null)
+        {
+            if (securityCompactDTO instanceof WarrantDTO)
+            {
+                combinedStrikePriceType.setText(warrantDTOFormatter.getCombinedStrikePriceType(getContext(), (WarrantDTO) securityCompactDTO));
+            }
+            else
+            {
+                combinedStrikePriceType.setText(R.string.na);
+            }
+        }
     }
 
     public void displayStrikePrice()
