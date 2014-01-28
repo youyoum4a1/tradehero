@@ -77,5 +77,7 @@
   <dimen name="watchlist_item_shares_font_size">12sp</dimen>
   <dimen name="refer_friend_action_button_vertical_padding">3dp</dimen>
   <dimen name="refer_friend_source_drawable_padding">3dp</dimen>
+  <dimen name="timeline_item_date">@dimen/text_small</dimen>
+  <dimen name="text_small">12sp</dimen>
 
 </resources>

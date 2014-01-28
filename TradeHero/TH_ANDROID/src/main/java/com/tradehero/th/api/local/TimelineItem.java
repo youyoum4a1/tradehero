@@ -28,16 +28,23 @@ public class TimelineItem
         this.selected = false;
     }
 
-    public SecurityMediaDTO getFirstMediaWithLogo()
+    public SecurityMediaDTO getFlavorSecurityForDisplay()
     {
+        SecurityMediaDTO securityMediaDTO = null;
         for (SecurityMediaDTO m: medias)
         {
-            if (m.url != null)
+            if (m.securityId != 0)
             {
-                return m;
+                securityMediaDTO = m;
+            }
+
+            // we prefer the first security with photo
+            if (securityMediaDTO !=null && securityMediaDTO.url != null)
+            {
+                return securityMediaDTO;
             }
         }
-        return null;
+        return securityMediaDTO;
     }
 
     public UserProfileCompactDTO getUser()

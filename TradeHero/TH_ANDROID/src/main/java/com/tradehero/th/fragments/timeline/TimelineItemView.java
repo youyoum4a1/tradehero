@@ -28,7 +28,6 @@ import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
 import com.tradehero.th.api.users.UserProfileCompactDTO;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.base.Navigator;
-import com.tradehero.th.base.NavigatorActivity;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.security.WatchlistEditFragment;
 import com.tradehero.th.fragments.security.StockInfoFragment;
@@ -155,6 +154,8 @@ public class TimelineItemView extends LinearLayout implements
         super.onDetachedFromWindow();
     }
 
+
+
     //<editor-fold desc="Action Buttons">
     private void updateActionButtonsVisibility()
     {
@@ -231,8 +232,8 @@ public class TimelineItemView extends LinearLayout implements
 
     private void displayVendorLogo(TimelineItem item)
     {
-        SecurityMediaDTO firstMediaWithLogo = item.getFirstMediaWithLogo();
-        if (firstMediaWithLogo != null)
+        SecurityMediaDTO firstMediaWithLogo = item.getFlavorSecurityForDisplay();
+        if (firstMediaWithLogo != null && firstMediaWithLogo.url != null)
         {
             if (vendorImage != null && firstMediaWithLogo.securityId != 0)
             {
@@ -391,7 +392,7 @@ public class TimelineItemView extends LinearLayout implements
 
     private void openSecurityProfile()
     {
-        SecurityMediaDTO firstMediaWithLogo = currentTimelineItem.getFirstMediaWithLogo();
+        SecurityMediaDTO firstMediaWithLogo = currentTimelineItem.getFlavorSecurityForDisplay();
         if (firstMediaWithLogo != null && firstMediaWithLogo.securityId != 0)
         {
             openSecurityProfile(firstMediaWithLogo.exchange, firstMediaWithLogo.symbol);
@@ -488,12 +489,12 @@ public class TimelineItemView extends LinearLayout implements
 
     private SecurityId getSecurityId()
     {
-        if (currentTimelineItem == null || currentTimelineItem.getFirstMediaWithLogo() == null)
+        if (currentTimelineItem == null || currentTimelineItem.getFlavorSecurityForDisplay() == null)
         {
             return null;
         }
 
-        return new SecurityId(currentTimelineItem.getFirstMediaWithLogo().exchange, currentTimelineItem.getFirstMediaWithLogo().symbol);
+        return new SecurityId(currentTimelineItem.getFlavorSecurityForDisplay().exchange, currentTimelineItem.getFlavorSecurityForDisplay().symbol);
     }
     //</editor-fold>
 
