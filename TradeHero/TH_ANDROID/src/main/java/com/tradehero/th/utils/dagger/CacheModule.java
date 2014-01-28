@@ -4,6 +4,7 @@ import android.content.Context;
 import com.tradehero.common.cache.LruMemFileCache;
 import com.tradehero.th.fragments.alert.AlertItemView;
 import com.tradehero.th.fragments.alert.AlertListItemAdapter;
+import com.tradehero.th.fragments.alert.AlertViewFragment;
 import com.tradehero.th.fragments.settings.SettingsPayPalFragment;
 import com.tradehero.th.models.alert.SecurityAlertAssistant;
 import com.tradehero.th.persistence.portfolio.OwnedPortfolioFetchAssistant;
@@ -24,6 +25,7 @@ import javax.inject.Singleton;
 
                 AlertListItemAdapter.class,
                 AlertItemView.class,
+                AlertViewFragment.class,
         },
         complete = false,
         library = true

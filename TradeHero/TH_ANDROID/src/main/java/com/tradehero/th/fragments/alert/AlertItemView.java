@@ -17,7 +17,6 @@ import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.alert.AlertCompactDTO;
 import com.tradehero.th.api.alert.AlertId;
 import com.tradehero.th.api.security.SecurityCompactDTO;
-import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.persistence.alert.AlertCompactCache;
@@ -73,8 +72,8 @@ public class AlertItemView extends RelativeLayout
     {
         super.onAttachedToWindow();
 
-        buyStock.setOnClickListener(buyStockClickListener);
-        sellStock.setOnClickListener(sellStockListener);
+        buyStock.setOnClickListener(buyAndSellStockClickListener);
+        sellStock.setOnClickListener(buyAndSellStockClickListener);
     }
 
     @Override protected void onDetachedFromWindow()
@@ -105,7 +104,14 @@ public class AlertItemView extends RelativeLayout
             displayAlertStatus(alertCompactDTO);
             
             displayTrigger(alertCompactDTO);
+
+            updateActionButtonsVisibility(alertCompactDTO);
         }
+    }
+
+    private void updateActionButtonsVisibility(AlertCompactDTO alertCompactDTO)
+    {
+
     }
 
     private void displayTrigger(AlertCompactDTO alertCompactDTO)
@@ -170,27 +176,30 @@ public class AlertItemView extends RelativeLayout
         }
     }
 
-    private OnClickListener buyStockClickListener = new OnClickListener()
+    private OnClickListener buyAndSellStockClickListener = new OnClickListener()
     {
         @Override public void onClick(View v)
         {
-            if (alertCompactDTO != null)
+            switch (v.getId())
             {
-                getNavigator().openSecurityProfile(alertCompactDTO.security.getSecurityId());
+                case R.id.buy_stock:
+                case R.id.sell_stock:
+                    handleBuyAndSellButtonClick();
+                    break;
             }
         }
     };
+
+    private void handleBuyAndSellButtonClick()
+    {
+        if (alertCompactDTO != null)
+        {
+            getNavigator().openSecurityProfile(alertCompactDTO.security.getSecurityId());
+        }
+    }
 
     private DashboardNavigator getNavigator()
     {
         return ((DashboardNavigatorActivity) getContext()).getDashboardNavigator();
     }
-
-    private OnClickListener sellStockListener = new OnClickListener()
-    {
-        @Override public void onClick(View v)
-        {
-
-        }
-    };
 }

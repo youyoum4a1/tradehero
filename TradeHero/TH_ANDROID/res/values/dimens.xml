@@ -79,5 +79,9 @@
   <dimen name="refer_friend_source_drawable_padding">3dp</dimen>
   <dimen name="timeline_item_date">@dimen/text_small</dimen>
   <dimen name="text_small">12sp</dimen>
+  <dimen name="stock_symbol_header">@dimen/text_header</dimen>
+  <dimen name="text_header">15sp</dimen>
+  <dimen name="alert_company_name">@dimen/text_small</dimen>
+  <dimen name="alert_item_view_logo_width">80dp</dimen>
 
 </resources>

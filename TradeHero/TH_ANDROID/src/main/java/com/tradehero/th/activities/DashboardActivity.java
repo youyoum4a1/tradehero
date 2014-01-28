@@ -1,5 +1,6 @@
 package com.tradehero.th.activities;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.KeyEvent;
@@ -112,6 +113,11 @@ public class DashboardActivity extends SherlockFragmentActivity
         purchaseRestorer.launchRestorePurchaseSequence();
 
         // TODO fetch more stuff?
+    }
+
+    @Override protected void onPrepareDialog(int id, Dialog dialog, Bundle args)
+    {
+        super.onPrepareDialog(id, dialog, args);
     }
 
     @Override public void onBackPressed()

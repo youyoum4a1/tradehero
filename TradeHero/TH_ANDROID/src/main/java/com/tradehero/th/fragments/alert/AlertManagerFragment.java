@@ -14,6 +14,7 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
+import com.tradehero.th.api.alert.AlertId;
 import com.tradehero.th.api.alert.AlertIdList;
 import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
 import com.tradehero.th.api.users.UserBaseKey;
@@ -74,11 +75,22 @@ public class AlertManagerFragment extends BasePurchaseManagerFragment
             {
                 @Override public void onItemClick(AdapterView<?> parent, View view, int position, long id)
                 {
-                    handleAlertItemClicked(view, position, id);
+                    AlertId alertId = (AlertId) parent.getItemAtPosition(position);
+                    if (alertId != null)
+                    {
+                        handleAlertItemClicked(alertId);
+                    }
                 }
             });
             alertListView.setAdapter(alertListItemAdapter);
         }
+    }
+
+    private void handleAlertItemClicked(AlertId alertId)
+    {
+        Bundle bundle = new Bundle();
+        bundle.putBundle(AlertViewFragment.BUNDLE_KEY_ALERT_ID_BUNDLE, alertId.getArgs());
+        getNavigator().pushFragment(AlertViewFragment.class, bundle);
     }
 
     @Override public void onResume()
@@ -93,11 +105,6 @@ public class AlertManagerFragment extends BasePurchaseManagerFragment
     {
         alertListView.setOnItemClickListener(null);
         super.onDestroy();
-    }
-
-    private void handleAlertItemClicked(View view, int position, long id)
-    {
-
     }
 
     //<editor-fold desc="BaseFragment.TabBarVisibilityInformer">

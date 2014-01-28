@@ -71,7 +71,7 @@
       android:layout_below="@id/alert_status"
       android:layout_alignParentBottom="true"
       android:layout_alignParentRight="true"
-      android:paddingRight="30dp"
+      android:layout_marginRight="30dp"
       android:paddingLeft="5dp"
       android:src="@drawable/sell_stock"
       android:contentDescription="@null"

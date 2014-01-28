@@ -97,14 +97,4 @@ public class AlertListItemAdapter extends DTOListCacheAdapter<AlertId, AlertItem
         }
 
     }
-
-    static class TextHolder
-    {
-        @InjectView(R.id.title) TextView text;
-
-        public TextHolder(View convertView)
-        {
-            ButterKnife.inject(this, convertView);
-        }
-    }
 }

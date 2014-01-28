@@ -190,4 +190,8 @@
   <string name="stock_alerts_inactive_title">Inactive stock alerts</string>
   <string name="stock_alerts_active_until">Active Until <b>%s</b></string>
   <string name="inactive">Inactive</string>
+  <string name="target_price">Target Price</string>
+  <string name="active_until">Active Until</string>
+  <string name="current_price">Current Price</string>
+  <string name="notification_received">Notifications Received</string>
 </resources>
