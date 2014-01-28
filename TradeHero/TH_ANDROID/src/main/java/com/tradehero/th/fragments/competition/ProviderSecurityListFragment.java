@@ -183,16 +183,7 @@ public class ProviderSecurityListFragment extends SecurityListFragment
             if (id == getSecurityIdListLoaderId())
             {
                 SecurityListPagedLoader loader;
-                // TODO remove this HACK
-                if (providerId.key.equals(ProviderIdConstants.PROVIDER_ID_MACQUARIE_WARRANTS))
-                {
-                    THLog.w(TAG, "Passing Macquarie-specific loader");
-                    loader = new MacquarieSecurityListPagedLoader(getActivity());
-                }
-                else
-                {
-                    loader = new SecurityListPagedLoader(getActivity());
-                }
+                loader = new SecurityListPagedLoader(getActivity());
                 loader.setQueryingChangedListenerWeak(queryingChangedListener);
                 loader.setNoMorePagesChangedListenerWeak(noMorePagesChangedListener);
                 return loader;

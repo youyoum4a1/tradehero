@@ -48,6 +48,10 @@ public class WarrantSecurityItemView extends SecurityItemView<SecurityCompactDTO
         super.fetchViews();
 
         combinedStrikePriceType = (TextView) findViewById(R.id.combined_strike_price_type);
+        if (combinedStrikePriceType != null)
+        {
+            combinedStrikePriceType.setSelected(true);
+        }
         strikePrice = (TextView) findViewById(R.id.strike_price);
         strikePriceCcy = (TextView) findViewById(R.id.strike_currency_display);
         warrantType = (TextView) findViewById(R.id.warrant_type);
