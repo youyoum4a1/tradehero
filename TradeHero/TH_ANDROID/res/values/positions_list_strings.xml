@@ -20,12 +20,12 @@
     <string name="position_nothing_description">No open positions. Tap to Trade!</string>
     <string name="position_list_action_bar_header">%d Positions</string>
     <string name="position_list_action_bar_header_unknown">Positions</string>
-    <string name="position_list_header_open">Open Positions (%d)</string>
+    <string name="position_list_header_open">OPEN (%d)</string>
     <string name="position_list_header_open_summary">OPEN POSITION SUMMARY</string>
     <string name="position_list_header_closed_summary">CLOSED POSITION SUMMARY</string>
-    <string name="position_list_header_open_unsure">Open Positions (N/A)</string>
-    <string name="position_list_header_closed">Closed Positions (%d)</string>
-    <string name="position_list_header_closed_unsure">Closed Positions (N/A)</string>
+    <string name="position_list_header_open_unsure">OPEN (N/A)</string>
+    <string name="position_list_header_closed">CLOSED (%d)</string>
+    <string name="position_list_header_closed_unsure">CLOSED (N/A)</string>
     <string name="position_unrealised_pl_header">Unrealized P&amp;L</string>
     <string name="position_realised_pl_header">Realized P&amp;L</string>
     <string name="position_total_invested_header">Total Invested</string>

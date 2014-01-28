@@ -2,6 +2,7 @@
 
 <com.tradehero.th.fragments.position.PositionSectionHeaderItemView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -12,6 +13,18 @@
       android:id="@+id/header_text"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
+      android:layout_alignParentLeft="true"
+      tools:text="OPEN"
     />
+
+  <TextView
+      android:id="@+id/header_time_base"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_toRightOf="@id/header_text"
+      android:layout_alignParentRight="true"
+      android:gravity="right"
+      tools:text="2 OCT 2013 - 7 NOV 2013"
+      />
 
 </com.tradehero.th.fragments.position.PositionSectionHeaderItemView>
