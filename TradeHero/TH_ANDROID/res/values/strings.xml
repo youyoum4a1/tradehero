@@ -206,4 +206,5 @@
   </string>
   <string name="target_price_change_format"><![CDATA[Target Price <b>%s</b>]]></string>
   <string name="percentage_change_format"><![CDATA[Price Change <b>%s</b>]]></string>
+  <string name="percentage_change_target_value_format"><![CDATA[(Alert Price <b>%s</b>)]]></string>
 </resources>

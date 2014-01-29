@@ -14,9 +14,10 @@
     <Switch
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/toggle_target_price"
+        android:id="@+id/alert_edit_toggle_percentage_change"
         android:layout_alignParentTop="true"
-        android:layout_alignParentRight="true"/>
+        android:layout_alignParentRight="true"
+        />
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -29,6 +30,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="@dimen/text_header"
+        android:textColor="@color/text_gray_normal"
         tools:text="(Alert Price US$ 15.33)"
         android:id="@+id/alert_edit_percentage_change_actual_value"
         android:layout_below="@id/alert_edit_percentage_change"/>
@@ -47,10 +49,10 @@
     <SeekBar
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/alert_edit_price_changer_delta_seek_bar"
+        android:id="@+id/alert_edit_price_changer_percentage_seek_bar"
         android:layout_below="@id/alert_edit_price_change_help_text"
         android:paddingTop="5dp"
-        android:progress="50"
+        android:enabled="false"
         />
   </RelativeLayout>
 </merge>

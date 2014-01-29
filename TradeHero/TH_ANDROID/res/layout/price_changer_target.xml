@@ -18,7 +18,8 @@
         android:layout_height="wrap_content"
         android:id="@+id/alert_edit_toggle_target_price"
         android:layout_alignParentTop="true"
-        android:layout_alignParentRight="true"/>
+        android:layout_alignParentRight="true"
+        />
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -45,6 +46,8 @@
         android:paddingTop="10dp"
         android:layout_below="@id/alert_edit_target_price_help_text"
         android:progress="50"
+        android:enabled="false"
+        android:max="100"
         />
   </RelativeLayout>
 </merge>

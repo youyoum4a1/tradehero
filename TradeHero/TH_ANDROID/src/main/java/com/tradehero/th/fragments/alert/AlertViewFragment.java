@@ -9,6 +9,7 @@ import android.widget.Switch;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
@@ -82,7 +83,6 @@ public class AlertViewFragment extends DashboardFragment
     @Override public void onDestroyView()
     {
         priceChangeHistoryList.removeHeaderView(headerView);
-
         super.onDestroyView();
     }
 
@@ -201,7 +201,13 @@ public class AlertViewFragment extends DashboardFragment
     private void displayStockSymbol()
     {
         stockSymbol.setText(securityCompactDTO.getExchangeSymbol());
-        getSherlockActivity().getSupportActionBar().setTitle(securityCompactDTO.getExchangeSymbol());
+        getView().post(new Runnable()
+        {
+            @Override public void run()
+            {
+                getSherlockActivity().getSupportActionBar().setTitle(securityCompactDTO.getExchangeSymbol());
+            }
+        });
     }
 
     private void displayStockLogo()
