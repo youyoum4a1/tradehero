@@ -42,6 +42,7 @@ import com.tradehero.th.models.intent.THIntent;
 import com.tradehero.th.models.intent.THIntentPassedListener;
 import com.tradehero.th.models.intent.competition.ProviderPageIntent;
 import com.tradehero.th.models.intent.security.SecurityPushBuyIntent;
+import com.tradehero.th.models.provider.ProviderSpecificResourcesFactory;
 import com.tradehero.th.persistence.competition.CompetitionCache;
 import com.tradehero.th.persistence.competition.CompetitionListCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
@@ -265,7 +266,11 @@ public class MainCompetitionFragment extends CompetitionFragment
     {
         if (this.actionBar != null)
         {
-            if (this.providerDTO == null || this.providerDTO.name == null)
+            if (providerSpecificResourcesDTO != null && providerSpecificResourcesDTO.mainCompetitionFragmentTitleResId > 0)
+            {
+                this.actionBar.setTitle(providerSpecificResourcesDTO.mainCompetitionFragmentTitleResId);
+            }
+            else if (this.providerDTO == null || this.providerDTO.name == null)
             {
                 this.actionBar.setTitle("");
             }

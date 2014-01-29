@@ -8,6 +8,8 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
+import com.tradehero.th.models.provider.ProviderSpecificResourcesDTO;
+import com.tradehero.th.models.provider.ProviderSpecificResourcesFactory;
 import com.tradehero.th.persistence.competition.ProviderCache;
 import javax.inject.Inject;
 
@@ -25,6 +27,9 @@ abstract public class CompetitionFragment extends BasePurchaseManagerFragment
     @Inject protected ProviderCache providerCache;
     private DTOCache.Listener<ProviderId, ProviderDTO> providerCacheListener;
     private DTOCache.GetOrFetchTask<ProviderId, ProviderDTO> providerCacheFetchTask;
+
+    @Inject protected ProviderSpecificResourcesFactory providerSpecificResourcesFactory;
+    protected ProviderSpecificResourcesDTO providerSpecificResourcesDTO;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -78,6 +83,8 @@ abstract public class CompetitionFragment extends BasePurchaseManagerFragment
     protected void linkWith(ProviderDTO providerDTO, boolean andDisplay)
     {
         this.providerDTO = providerDTO;
+        providerSpecificResourcesDTO = providerSpecificResourcesFactory.createResourcesDTO(providerDTO);
+
         if (andDisplay)
         {
 

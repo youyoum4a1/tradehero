@@ -170,7 +170,11 @@ public class ProviderVideoListFragment extends CompetitionFragment
     {
         if (this.actionBar != null)
         {
-            if (this.providerDTO == null || this.providerDTO.name == null)
+            if (providerSpecificResourcesDTO != null && providerSpecificResourcesDTO.helpVideoListFragmentTitleResId > 0)
+            {
+                this.actionBar.setTitle(providerSpecificResourcesDTO.helpVideoListFragmentTitleResId);
+            }
+            else if (this.providerDTO == null || this.providerDTO.name == null)
             {
                 this.actionBar.setTitle("");
             }

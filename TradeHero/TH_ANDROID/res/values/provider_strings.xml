@@ -19,4 +19,8 @@
   <string name="competition_leaderboard_timer_days">DAYS</string>
   <string name="competition_leaderboard_timer_time_separator">:</string>
 
+  <!-- Macquarie WarrantHero specific strings. providerId == 3-->
+  <string name="competition_macquarie_warrant_hero_main_title">Macquarie WarrantHero</string>
+  <string name="competition_macquarie_warrant_hero_help_video_title">Help Videos - Macquarie WarrantHero</string>
+
 </resources>
