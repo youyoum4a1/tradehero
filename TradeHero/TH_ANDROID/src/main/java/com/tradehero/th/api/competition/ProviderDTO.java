@@ -1,7 +1,9 @@
 package com.tradehero.th.api.competition;
 
 import com.tradehero.common.persistence.DTO;
+import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
+import com.tradehero.th.api.users.UserBaseKey;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -118,6 +120,11 @@ public class ProviderDTO implements DTO
         }
 
         return providerIds;
+    }
+
+    public OwnedPortfolioId getAssociatedOwnedPortfolioId(UserBaseKey userBaseKey)
+    {
+        return new OwnedPortfolioId(userBaseKey, associatedPortfolio);
     }
 
     @Override public String toString()

@@ -19,9 +19,13 @@ import com.tradehero.common.graphics.WhiteToTransparentTransformation;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
+import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.local.TimelineItem;
+import com.tradehero.th.api.portfolio.OwnedPortfolioId;
+import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.SecurityMediaDTO;
+import com.tradehero.th.api.security.WarrantDTO;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.timeline.TimelineItemShareRequestDTO;
 import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
@@ -29,19 +33,22 @@ import com.tradehero.th.api.users.UserProfileCompactDTO;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.fragments.DashboardNavigator;
-import com.tradehero.th.fragments.security.WatchlistEditFragment;
 import com.tradehero.th.fragments.security.StockInfoFragment;
+import com.tradehero.th.fragments.security.WatchlistEditFragment;
 import com.tradehero.th.fragments.trade.BuySellFragment;
 import com.tradehero.th.misc.callback.THCallback;
 import com.tradehero.th.misc.callback.THResponse;
 import com.tradehero.th.misc.exception.THException;
+import com.tradehero.th.models.security.WarrantSpecificKnowledgeFactory;
 import com.tradehero.th.network.service.UserTimelineService;
+import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.widget.MarkdownTextView;
 import dagger.Lazy;
 import java.util.List;
+import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import org.ocpsoft.prettytime.PrettyTime;
@@ -65,6 +72,8 @@ public class TimelineItemView extends LinearLayout implements
     @Inject protected Lazy<WatchlistPositionCache> watchlistPositionCache;
     @Inject protected Lazy<UserWatchlistPositionCache> userWatchlistPositionCache;
     @Inject protected Lazy<UserTimelineService> userTimelineService;
+    @Inject protected Lazy<WarrantSpecificKnowledgeFactory> warrantSpecificKnowledgeFactory;
+    @Inject protected Lazy<SecurityCompactCache> securityCompactCache;
 
     private TimelineItem currentTimelineItem;
     private View tradeActionButton;
@@ -153,8 +162,6 @@ public class TimelineItemView extends LinearLayout implements
 
         super.onDetachedFromWindow();
     }
-
-
 
     //<editor-fold desc="Action Buttons">
     private void updateActionButtonsVisibility()
@@ -395,7 +402,31 @@ public class TimelineItemView extends LinearLayout implements
         SecurityMediaDTO flavorSecurityForDisplay = currentTimelineItem.getFlavorSecurityForDisplay();
         if (flavorSecurityForDisplay != null && flavorSecurityForDisplay.securityId != 0)
         {
-            getNavigator().openSecurityProfile(new SecurityId(flavorSecurityForDisplay.exchange, flavorSecurityForDisplay.symbol));
+            SecurityId securityId = new SecurityId(flavorSecurityForDisplay.exchange, flavorSecurityForDisplay.symbol);
+            Bundle args = new Bundle();
+            args.putBundle(
+                    BuySellFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE,
+                    securityId.getArgs());
+
+            // HACK
+            {
+                SecurityCompactDTO securityCompactDTO = securityCompactCache.get().get(securityId);
+                if (securityCompactDTO instanceof WarrantDTO)
+                {
+                    for (Map.Entry<ProviderId, OwnedPortfolioId> entry: warrantSpecificKnowledgeFactory.get().getWarrantApplicablePortfolios().entrySet())
+                    {
+                        args.putBundle(
+                                BuySellFragment.BUNDLE_KEY_PROVIDER_ID_BUNDLE,
+                                entry.getKey().getArgs());
+                        args.putBundle(
+                                BuySellFragment.BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE,
+                                entry.getValue().getArgs());
+                        break; // Keep only the first
+                    }
+                }
+            }
+
+            getNavigator().pushFragment(BuySellFragment.class, args);
         }
     }
 

@@ -39,7 +39,7 @@ import javax.inject.Singleton;
             switch(providerId.key)
             {
                 case ProviderIdConstants.PROVIDER_ID_MACQUARIE_WARRANTS:
-                    //created = getMacquarieWarrantHeroResources();
+                    created = getMacquarieWarrantHeroResources();
                     break;
             }
         }
@@ -49,12 +49,12 @@ import javax.inject.Singleton;
     protected ProviderSpecificResourcesDTO getMacquarieWarrantHeroResources()
     {
         ProviderSpecificResourcesDTO resourcesDTO = new ProviderSpecificResourcesDTO();
-        resourcesDTO.mainCompetitionFragmentTitleResId = R.string.competition_macquarie_warrant_hero_main_title;
-        resourcesDTO.helpVideoListFragmentTitleResId = R.string.competition_macquarie_warrant_hero_help_video_title;
+        //resourcesDTO.mainCompetitionFragmentTitleResId = R.string.competition_macquarie_warrant_hero_main_title;
+        //resourcesDTO.helpVideoListFragmentTitleResId = R.string.competition_macquarie_warrant_hero_help_video_title;
         resourcesDTO.helpVideoLinkBackgroundResId = R.drawable.btn_help_video_macquarie;
-        resourcesDTO.timedHeaderLeaderboardTitleResId = R.string.competition_macquarie_warrant_hero_main_title;
-        resourcesDTO.competitionPortfolioTitleResId = R.string.competition_macquarie_warrant_hero_main_title;
-        resourcesDTO.securityListFragmentTitleResId = R.string.competition_macquarie_warrant_hero_security_list_title;
+        //resourcesDTO.timedHeaderLeaderboardTitleResId = R.string.competition_macquarie_warrant_hero_main_title;
+        //resourcesDTO.competitionPortfolioTitleResId = R.string.competition_macquarie_warrant_hero_main_title;
+        //resourcesDTO.securityListFragmentTitleResId = R.string.competition_macquarie_warrant_hero_security_list_title;
 
         return resourcesDTO;
     }

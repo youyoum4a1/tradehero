@@ -43,15 +43,6 @@ import javax.inject.Singleton;
             alertIds = new AlertIdList();
             alertCompactCache.get().invalidateAll();
 
-            Collections.sort(fleshedValues, new Comparator<AlertCompactDTO>()
-            {
-                @Override public int compare(AlertCompactDTO lhs, AlertCompactDTO rhs)
-                {
-                    if (lhs.active == rhs.active) return 0;
-                    if (!lhs.active) return 1;
-                    else return 0;
-                }
-            });
             for (AlertCompactDTO alertCompactDTO: fleshedValues)
             {
                 AlertId alertId = alertCompactDTO.getAlertId(key.key);
@@ -61,5 +52,10 @@ import javax.inject.Singleton;
             put(key, alertIds);
         }
         return alertIds;
+    }
+
+    @Override public void invalidateAll()
+    {
+        super.invalidateAll();
     }
 }

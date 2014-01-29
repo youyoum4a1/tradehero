@@ -13,6 +13,8 @@ import com.tradehero.th.persistence.alert.AlertCompactCache;
 import com.tradehero.th.persistence.alert.AlertCompactListCache;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
+import java.util.Collections;
+import java.util.Comparator;
 import javax.inject.Inject;
 import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
 
@@ -40,6 +42,36 @@ public class AlertListItemAdapter extends DTOListCacheAdapter<AlertId, AlertItem
         this.alertResId = alertResId;
 
         DaggerUtils.inject(this);
+    }
+
+    @Override public void notifyDataSetChanged()
+    {
+        DTOKeyIdList<AlertId> items = getItems();
+        if (items != null)
+        {
+            Collections.sort(items, new Comparator<AlertId>()
+            {
+                @Override public int compare(AlertId lhs, AlertId rhs)
+                {
+                    AlertCompactDTO lhsItem = alertCompactCache.get().get(lhs);
+                    AlertCompactDTO rhsItem = alertCompactCache.get().get(rhs);
+                    if (lhsItem == rhsItem) return 0;
+                    if (lhsItem == null)
+                    {
+                        return -1;
+                    }
+                    if (rhsItem == null)
+                    {
+                        return 1;
+                    }
+
+                    if (lhsItem.active == rhsItem.active) return 0;
+                    if (!lhsItem.active) return 1;
+                    else return -1;
+                }
+            });
+        }
+        super.notifyDataSetChanged();
     }
 
     @Override public boolean hasStableIds()

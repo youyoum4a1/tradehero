@@ -8,12 +8,6 @@ public class AlertFormDTO
     public int securityId;
     public boolean active;
     public Boolean upOrDown;
-    public Float priceMovement;
+    public Double priceMovement;
     public double targetPrice;
-
-    public static boolean IsValid(AlertFormDTO dto)
-    {
-        return (dto != null) && (dto.securityId > 0) && (dto.upOrDown != null ^ dto.priceMovement != null) &&
-                (dto.targetPrice > 0);
-    }
 }

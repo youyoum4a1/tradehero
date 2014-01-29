@@ -1,9 +1,11 @@
 package com.tradehero.th.fragments.alert;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -17,7 +19,9 @@ import com.squareup.picasso.Picasso;
 import com.tradehero.common.graphics.WhiteToTransparentTransformation;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
+import com.tradehero.th.api.alert.AlertCompactDTO;
 import com.tradehero.th.api.alert.AlertDTO;
+import com.tradehero.th.api.alert.AlertFormDTO;
 import com.tradehero.th.api.alert.AlertId;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.base.Navigator;
@@ -28,6 +32,7 @@ import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.service.AlertServiceWrapper;
 import com.tradehero.th.persistence.alert.AlertCompactCache;
 import com.tradehero.th.utils.DateUtils;
+import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.THSignedNumber;
 import dagger.Lazy;
 import javax.inject.Inject;
@@ -45,6 +50,7 @@ public class AlertViewFragment extends DashboardFragment
     @InjectView(R.id.stock_symbol) TextView stockSymbol;
     @InjectView(R.id.company_name) TextView companyName;
     @InjectView(R.id.target_price) TextView targetPrice;
+    @InjectView(R.id.target_price_label) TextView targetPriceLabel;
     @InjectView(R.id.current_price) TextView currentPrice;
     @InjectView(R.id.active_until) TextView activeUntil;
     @InjectView(R.id.alert_toggle) Switch alertToggle;
@@ -61,6 +67,8 @@ public class AlertViewFragment extends DashboardFragment
     private SecurityCompactDTO securityCompactDTO;
     private AlertEventAdapter alertEventAdapter;
     private AlertId alertId;
+    private ActionBar actionBar;
+    private ProgressDialog progressDialog;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -83,6 +91,7 @@ public class AlertViewFragment extends DashboardFragment
     @Override public void onDestroyView()
     {
         priceChangeHistoryList.removeHeaderView(headerView);
+        alertToggle.setOnCheckedChangeListener(null);
         super.onDestroyView();
     }
 
@@ -102,6 +111,7 @@ public class AlertViewFragment extends DashboardFragment
     {
         super.onCreateOptionsMenu(menu, inflater);
 
+        actionBar = getSherlockActivity().getSupportActionBar();
         inflater.inflate(R.menu.alert_view_menu, menu);
     }
 
@@ -125,6 +135,7 @@ public class AlertViewFragment extends DashboardFragment
     {
         if (alertId != null)
         {
+            progressDialog = ProgressDialogUtil.show(getActivity(), R.string.loading_loading, R.string.please_wait);
             alertServiceWrapper.get().getAlert(alertId, alertCallback);
         }
     }
@@ -147,8 +158,16 @@ public class AlertViewFragment extends DashboardFragment
 
             displayTargetPrice();
 
+            displayToggle();
+
             displayActiveUntil();
         }
+    }
+
+    private void displayToggle()
+    {
+        alertToggle.setChecked(alertDTO.active);
+        alertToggle.setOnCheckedChangeListener(alertToggleCheckedChangeListener);
     }
 
     private void linkWith(SecurityCompactDTO security, boolean andDisplay)
@@ -167,7 +186,7 @@ public class AlertViewFragment extends DashboardFragment
 
     private void displayActiveUntil()
     {
-        if (!alertDTO.active)
+        if (!alertToggle.isChecked())
         {
             activeUntil.setText("-");
         }
@@ -183,8 +202,18 @@ public class AlertViewFragment extends DashboardFragment
 
     private void displayTargetPrice()
     {
-        THSignedNumber thTargetPrice = new THSignedNumber(THSignedNumber.TYPE_MONEY, alertDTO.targetPrice, false);
-        targetPrice.setText(thTargetPrice.toString());
+        if (alertDTO.priceMovement == null)
+        {
+            THSignedNumber thTargetPrice = new THSignedNumber(THSignedNumber.TYPE_MONEY, alertDTO.targetPrice, false);
+            targetPrice.setText(thTargetPrice.toString());
+            targetPriceLabel.setText(getString(R.string.target_price));
+        }
+        else
+        {
+            THSignedNumber thPriceMovement = new THSignedNumber(THSignedNumber.TYPE_PERCENTAGE, alertDTO.priceMovement * 100);
+            targetPrice.setText(thPriceMovement.toString(0));
+            targetPriceLabel.setText(getString(R.string.percentage_movement));
+        }
     }
 
     private void displayCurrentPrice()
@@ -201,13 +230,7 @@ public class AlertViewFragment extends DashboardFragment
     private void displayStockSymbol()
     {
         stockSymbol.setText(securityCompactDTO.getExchangeSymbol());
-        getView().post(new Runnable()
-        {
-            @Override public void run()
-            {
-                getSherlockActivity().getSupportActionBar().setTitle(securityCompactDTO.getExchangeSymbol());
-            }
-        });
+        if (actionBar != null) actionBar.setTitle(securityCompactDTO.getExchangeSymbol());
     }
 
     private void displayStockLogo()
@@ -234,12 +257,62 @@ public class AlertViewFragment extends DashboardFragment
 
     private THCallback<AlertDTO> alertCallback = new THCallback<AlertDTO>()
     {
+        @Override protected void finish()
+        {
+            progressDialog.hide();
+        }
+
         @Override protected void success(AlertDTO alertDTO, THResponse thResponse)
         {
             if (alertDTO != null)
             {
+                alertCompactCache.get().put(alertId, alertDTO);
                 linkWith(alertDTO, true);
             }
+        }
+
+        @Override protected void failure(THException ex)
+        {
+            THToast.show(ex);
+        }
+    };
+
+
+    private CompoundButton.OnCheckedChangeListener alertToggleCheckedChangeListener = new CompoundButton.OnCheckedChangeListener()
+    {
+        @Override public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
+        {
+            handleAlertToggleChanged(isChecked);
+        }
+    };
+
+    private void handleAlertToggleChanged(boolean alertActive)
+    {
+        progressDialog = ProgressDialogUtil.show(getActivity(), R.string.loading_loading, R.string.please_wait);
+
+        if (alertDTO != null)
+        {
+            AlertFormDTO alertFormDTO = new AlertFormDTO();
+            alertFormDTO.securityId = alertDTO.security.id;
+            alertFormDTO.targetPrice = alertDTO.targetPrice;
+            alertFormDTO.upOrDown = alertDTO.upOrDown;
+            alertFormDTO.priceMovement = alertDTO.priceMovement;
+            alertFormDTO.active = alertActive;
+            alertServiceWrapper.get().updateAlert(alertId, alertFormDTO, alertUpdateCallback);
+        }
+    }
+
+    private THCallback<AlertCompactDTO> alertUpdateCallback = new THCallback<AlertCompactDTO>()
+    {
+        @Override protected void finish()
+        {
+            progressDialog.hide();
+        }
+
+        @Override protected void success(AlertCompactDTO alertCompactDTO, THResponse thResponse)
+        {
+            alertCompactCache.get().put(alertId, alertCompactDTO);
+            displayActiveUntil();
         }
 
         @Override protected void failure(THException ex)

@@ -4,6 +4,8 @@ import com.tradehero.common.persistence.StraightDTOCache;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.competition.ProviderListKey;
+import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
+import com.tradehero.th.models.security.WarrantSpecificKnowledgeFactory;
 import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,6 +19,8 @@ import javax.inject.Singleton;
     public static final int DEFAULT_MAX_SIZE = 1000;
 
     @Inject protected Lazy<ProviderListCache> providerListCache;
+    @Inject protected CurrentUserBaseKeyHolder currentUserBaseKeyHolder;
+    @Inject protected WarrantSpecificKnowledgeFactory warrantSpecificKnowledgeFactory;
 
     //<editor-fold desc="Constructors">
     @Inject public ProviderCache()
@@ -31,6 +35,15 @@ import javax.inject.Singleton;
         providerListCache.get().fetch(new ProviderListKey(ProviderListKey.ALL_PROVIDERS));
         // By then, the list cache has updated this cache
         return get(key);
+    }
+
+    @Override public ProviderDTO put(ProviderId key, ProviderDTO value)
+    {
+        if (value != null)
+        {
+            warrantSpecificKnowledgeFactory.add(key, value.getAssociatedOwnedPortfolioId(currentUserBaseKeyHolder.getCurrentUserBaseKey()));
+        }
+        return super.put(key, value);
     }
 
     public List<ProviderDTO> getOrFetch(List<ProviderId> providerIds) throws Throwable
