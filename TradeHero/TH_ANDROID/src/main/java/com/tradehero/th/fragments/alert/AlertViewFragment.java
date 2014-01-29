@@ -1,9 +1,11 @@
 package com.tradehero.th.fragments.alert;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -17,7 +19,9 @@ import com.squareup.picasso.Picasso;
 import com.tradehero.common.graphics.WhiteToTransparentTransformation;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
+import com.tradehero.th.api.alert.AlertCompactDTO;
 import com.tradehero.th.api.alert.AlertDTO;
+import com.tradehero.th.api.alert.AlertFormDTO;
 import com.tradehero.th.api.alert.AlertId;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.base.Navigator;
@@ -28,10 +32,12 @@ import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.service.AlertServiceWrapper;
 import com.tradehero.th.persistence.alert.AlertCompactCache;
 import com.tradehero.th.utils.DateUtils;
+import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.THSignedNumber;
 import dagger.Lazy;
 import javax.inject.Inject;
 import org.ocpsoft.prettytime.PrettyTime;
+import retrofit.Callback;
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 
 /**
@@ -62,6 +68,7 @@ public class AlertViewFragment extends DashboardFragment
     private AlertEventAdapter alertEventAdapter;
     private AlertId alertId;
     private ActionBar actionBar;
+    private ProgressDialog progressDialog;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -84,6 +91,7 @@ public class AlertViewFragment extends DashboardFragment
     @Override public void onDestroyView()
     {
         priceChangeHistoryList.removeHeaderView(headerView);
+        alertToggle.setOnCheckedChangeListener(null);
         super.onDestroyView();
     }
 
@@ -127,6 +135,7 @@ public class AlertViewFragment extends DashboardFragment
     {
         if (alertId != null)
         {
+            progressDialog = ProgressDialogUtil.show(getActivity(), R.string.loading_loading, R.string.please_wait);
             alertServiceWrapper.get().getAlert(alertId, alertCallback);
         }
     }
@@ -150,7 +159,15 @@ public class AlertViewFragment extends DashboardFragment
             displayTargetPrice();
 
             displayActiveUntil();
+
+            displayToggle();
         }
+    }
+
+    private void displayToggle()
+    {
+        alertToggle.setChecked(alertDTO.active);
+        alertToggle.setOnCheckedChangeListener(alertToggleCheckedChangeListener);
     }
 
     private void linkWith(SecurityCompactDTO security, boolean andDisplay)
@@ -230,12 +247,61 @@ public class AlertViewFragment extends DashboardFragment
 
     private THCallback<AlertDTO> alertCallback = new THCallback<AlertDTO>()
     {
+        @Override protected void finish()
+        {
+            progressDialog.hide();
+        }
+
         @Override protected void success(AlertDTO alertDTO, THResponse thResponse)
         {
             if (alertDTO != null)
             {
+                alertCompactCache.get().put(alertId, alertDTO);
                 linkWith(alertDTO, true);
             }
+        }
+
+        @Override protected void failure(THException ex)
+        {
+            THToast.show(ex);
+        }
+    };
+
+
+    private CompoundButton.OnCheckedChangeListener alertToggleCheckedChangeListener = new CompoundButton.OnCheckedChangeListener()
+    {
+        @Override public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
+        {
+            handleAlertToggleChanged(isChecked);
+        }
+    };
+
+    private void handleAlertToggleChanged(boolean alertActive)
+    {
+        progressDialog = ProgressDialogUtil.show(getActivity(), R.string.loading_loading, R.string.please_wait);
+
+        if (alertDTO != null)
+        {
+            AlertFormDTO alertFormDTO = new AlertFormDTO();
+            alertFormDTO.securityId = alertDTO.security.id;
+            alertFormDTO.targetPrice = alertDTO.targetPrice;
+            alertFormDTO.upOrDown = alertDTO.upOrDown;
+            alertFormDTO.priceMovement = alertDTO.priceMovement;
+            alertFormDTO.active = alertActive;
+            alertServiceWrapper.get().updateAlert(alertId, alertFormDTO, alertUpdateCallback);
+        }
+    }
+
+    private THCallback<AlertCompactDTO> alertUpdateCallback = new THCallback<AlertCompactDTO>()
+    {
+        @Override protected void finish()
+        {
+            progressDialog.hide();
+        }
+
+        @Override protected void success(AlertCompactDTO alertCompactDTO, THResponse thResponse)
+        {
+            alertCompactCache.get().put(alertId, alertCompactDTO);
         }
 
         @Override protected void failure(THException ex)

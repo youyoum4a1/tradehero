@@ -35,6 +35,7 @@ import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.service.AlertServiceWrapper;
 import com.tradehero.th.persistence.alert.AlertCompactCache;
 import com.tradehero.th.utils.DateUtils;
+import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.THSignedNumber;
 import dagger.Lazy;
 import javax.inject.Inject;
@@ -43,7 +44,6 @@ import javax.inject.Inject;
  * Created with IntelliJ IDEA. User: tho Date: 1/28/14 Time: 5:18 PM Copyright (c) TradeHero
  */
 public class AlertEditFragment extends DashboardFragment
-    implements WithDialog
 {
     public static final String BUNDLE_KEY_ALERT_ID_BUNDLE = AlertEditFragment.class.getName() + ".alertId";
 
@@ -145,7 +145,8 @@ public class AlertEditFragment extends DashboardFragment
             {
                 alertFormDTO.upOrDown = getSeekingTargetPrice() > alertDTO.security.lastPrice;
             }
-            getProgressDialog().show();
+            progressDialog = ProgressDialogUtil.create(getActivity(), getString(R.string.loading_loading), getString(R.string.please_wait));
+            progressDialog.show();
             alertServiceWrapper.get().updateAlert(alertId, alertFormDTO, alertUpdateCallback);
         }
     }
@@ -472,7 +473,7 @@ public class AlertEditFragment extends DashboardFragment
     {
         @Override protected void finish()
         {
-            getProgressDialog().dismiss();
+            progressDialog.hide();
         }
 
         @Override protected void success(AlertCompactDTO alertCompactDTO, THResponse thResponse)
@@ -490,15 +491,5 @@ public class AlertEditFragment extends DashboardFragment
     @Override public boolean isTabBarVisible()
     {
         return false;
-    }
-
-    @Override public ProgressDialog getProgressDialog()
-    {
-        if (progressDialog == null)
-        {
-            progressDialog = ProgressDialog.show(getActivity(), getString(R.string.loading_loading), getString(R.string.please_wait), false);
-        }
-
-        return progressDialog;
     }
 }

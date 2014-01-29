@@ -1,5 +1,6 @@
 package com.tradehero.th.fragments.alert;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,6 +21,7 @@ import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.persistence.alert.AlertCompactListCache;
+import com.tradehero.th.utils.ProgressDialogUtil;
 import dagger.Lazy;
 import javax.inject.Inject;
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
@@ -40,6 +42,7 @@ public class AlertManagerFragment extends BasePurchaseManagerFragment
 
     private AlertListItemAdapter alertListItemAdapter;
     private DTOCache.GetOrFetchTask<UserBaseKey, AlertIdList> refreshAlertCompactListCacheTask;
+    private ProgressDialog progressDialog;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -95,6 +98,14 @@ public class AlertManagerFragment extends BasePurchaseManagerFragment
 
     @Override public void onResume()
     {
+        if (alertCompactListCache.get().get(currentUserBaseKeyHolder.getCurrentUserBaseKey()) != null)
+        {
+            alertListItemAdapter.notifyDataSetChanged();
+        }
+        else
+        {
+            progressDialog = ProgressDialogUtil.show(getActivity(), R.string.loading_loading, R.string.please_wait);
+        }
         refreshAlertCompactListCacheTask = alertCompactListCache.get().getOrFetch(
                 currentUserBaseKeyHolder.getCurrentUserBaseKey(), true, alertCompactListCallback);
         refreshAlertCompactListCacheTask.execute();
@@ -118,11 +129,19 @@ public class AlertManagerFragment extends BasePurchaseManagerFragment
     {
         @Override public void onDTOReceived(UserBaseKey key, AlertIdList value)
         {
+            if (progressDialog != null)
+            {
+                progressDialog.hide();
+            }
             alertListItemAdapter.notifyDataSetChanged();
         }
 
         @Override public void onErrorThrown(UserBaseKey key, Throwable error)
         {
+            if (progressDialog != null)
+            {
+                progressDialog.hide();
+            }
             THToast.show(R.string.error_fetch_alert);
         }
     };
