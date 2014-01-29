@@ -5,7 +5,9 @@ import android.util.AttributeSet;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Transformation;
 import com.tradehero.common.graphics.RoundedShapeTransformation;
+import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
 import com.tradehero.th.api.users.UserProfileCompactDTO;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneDTO;
@@ -19,11 +21,7 @@ public class CompetitionZonePortfolioView extends CompetitionZoneListItemView
 {
     public static final String TAG = CompetitionZonePortfolioView.class.getSimpleName();
 
-    protected ImageView zoneIcon;
-    protected TextView title;
-    protected TextView description;
-
-    @Inject protected Picasso picasso;
+    protected Transformation zoneIconTransformation;
 
     //<editor-fold desc="Constructors">
     public CompetitionZonePortfolioView(Context context)
@@ -42,6 +40,12 @@ public class CompetitionZonePortfolioView extends CompetitionZoneListItemView
     }
     //</editor-fold>
 
+    @Override protected void initViews()
+    {
+        super.initViews();
+        zoneIconTransformation = new RoundedShapeTransformation();
+    }
+
     //<editor-fold desc="Display Methods">
     @Override public void displayIcon()
     {
@@ -56,7 +60,7 @@ public class CompetitionZonePortfolioView extends CompetitionZoneListItemView
                 if (profileDTO != null && profileDTO.largePicture != null)
                 {
                     picasso.load(profileDTO.largePicture)
-                            .transform(new RoundedShapeTransformation())
+                            .transform(zoneIconTransformation)
                             .into(zoneIcon);
                     loaded = true;
                 }
@@ -65,7 +69,7 @@ public class CompetitionZonePortfolioView extends CompetitionZoneListItemView
             if (!loaded)
             {
                 picasso.load(R.drawable.superman_facebook)
-                        .transform(new RoundedShapeTransformation())
+                        .transform(zoneIconTransformation)
                         .into(zoneIcon);
             }
         }

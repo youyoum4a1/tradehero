@@ -2,6 +2,7 @@ package com.tradehero.th.fragments.competition.zone;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.squareup.picasso.Picasso;
@@ -46,7 +47,7 @@ public class CompetitionZoneListItemView extends AbstractCompetitionZoneListItem
         DaggerUtils.inject(this);
     }
 
-    private void initViews()
+    protected void initViews()
     {
         zoneIcon = (ImageView) findViewById(R.id.icn_competition_zone);
         title = (TextView) findViewById(R.id.competition_zone_title);
@@ -110,6 +111,9 @@ public class CompetitionZoneListItemView extends AbstractCompetitionZoneListItem
             {
                 descriptionCopy.setText(competitionZoneDTO.description);
             }
+            descriptionCopy.setVisibility(competitionZoneDTO == null ||
+                    competitionZoneDTO.description == null ||
+                    competitionZoneDTO.description.length() == 0 ? GONE : VISIBLE);
         }
     }
     //</editor-fold>
