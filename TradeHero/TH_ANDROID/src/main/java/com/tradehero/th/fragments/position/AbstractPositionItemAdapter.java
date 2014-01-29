@@ -17,11 +17,11 @@ import java.util.HashMap;
 import java.util.List;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/14/13 Time: 4:12 PM To change this template use File | Settings | File Templates. */
-public abstract class AbstractPositionItemAdapter<T extends PositionDTO> extends BaseAdapter implements ExpandableListReporter
+public abstract class AbstractPositionItemAdapter<PositionDTOType extends PositionDTO> extends BaseAdapter implements ExpandableListReporter
 {
     public static final String TAG = AbstractPositionItemAdapter.class.getName();
 
-    private List<T> receivedPositions;
+    private List<PositionDTOType> receivedPositions;
     private List<ExpandableListItem> openPositions; // If nothing, it will show the positionNothingId layout
     private List<ExpandableListItem> closedPositions;
 
@@ -293,7 +293,7 @@ public abstract class AbstractPositionItemAdapter<T extends PositionDTO> extends
         this.cellListener = new WeakReference<>(cellListener);
     }
 
-    public void setPositions(List<T> positions, PortfolioId portfolioId)
+    public void setPositions(List<PositionDTOType> positions, PortfolioId portfolioId)
     {
         this.receivedPositions = positions;
 
@@ -307,14 +307,14 @@ public abstract class AbstractPositionItemAdapter<T extends PositionDTO> extends
             openPositions = new ArrayList<>();
             closedPositions = new ArrayList<>();
 
-            for (T positionDTO: positions)
+            for (PositionDTOType positionDTO: positions)
             {
                 setPosition(positionDTO);
             }
         }
     }
 
-    protected abstract void setPosition(T positionDTO);
+    protected abstract void setPosition(PositionDTOType positionDTO);
 
 
     private void bindCell(View convertView, OwnedPositionId model)
