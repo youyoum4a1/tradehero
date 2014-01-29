@@ -12,6 +12,7 @@ public class ProviderSpecificResourcesDTO
     public int helpVideoLinkBackgroundResId;
     public int timedHeaderLeaderboardTitleResId;
     public int competitionPortfolioTitleResId;
+    public int securityListFragmentTitleResId;
 
     //<editor-fold desc="Constructors">
     public ProviderSpecificResourcesDTO()
@@ -28,6 +29,7 @@ public class ProviderSpecificResourcesDTO
                 ", helpVideoLinkBackgroundResId=" + helpVideoLinkBackgroundResId +
                 ", timedHeaderLeaderboardTitleResId=" + timedHeaderLeaderboardTitleResId +
                 ", competitionPortfolioTitleResId=" + competitionPortfolioTitleResId +
+                ", securityListFragmentTitleResId=" + securityListFragmentTitleResId +
                 '}';
     }
 }

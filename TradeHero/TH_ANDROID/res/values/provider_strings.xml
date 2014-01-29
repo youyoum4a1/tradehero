@@ -12,6 +12,7 @@
   <string name="provider_competition_rules_title">Competition Rules</string>
   <string name="provider_competition_terms_title">Terms &amp; Conditions</string>
 
+  <string name="provider_security_list_title">Competition Securities</string>
   <string name="provider_security_list_search_hint">Filter By Underlying Name or Code</string>
 
   <string name="competition_leaderboard_timer_time_left_1">TIME</string>
@@ -21,6 +22,7 @@
 
   <!-- Macquarie WarrantHero specific strings. providerId == 3-->
   <string name="competition_macquarie_warrant_hero_main_title">Macquarie WarrantHero</string>
+  <string name="competition_macquarie_warrant_hero_security_list_title">Macquarie Securities - WarrantHero</string>
   <string name="competition_macquarie_warrant_hero_help_video_title">Help Videos - Macquarie WarrantHero</string>
   <color name="competition_macquarie_btn_help_video_background_light">#ffce3b</color>
   <color name="competition_macquarie_btn_help_video_background_dark">#e6ad03</color>

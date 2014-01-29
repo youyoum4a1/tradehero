@@ -54,6 +54,7 @@ import javax.inject.Singleton;
         resourcesDTO.helpVideoLinkBackgroundResId = R.drawable.btn_help_video_macquarie;
         resourcesDTO.timedHeaderLeaderboardTitleResId = R.string.competition_macquarie_warrant_hero_main_title;
         resourcesDTO.competitionPortfolioTitleResId = R.string.competition_macquarie_warrant_hero_main_title;
+        resourcesDTO.securityListFragmentTitleResId = R.string.competition_macquarie_warrant_hero_security_list_title;
 
         return resourcesDTO;
     }

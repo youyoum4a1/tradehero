@@ -6,6 +6,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import com.actionbarsherlock.app.ActionBar;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
@@ -24,6 +27,8 @@ import com.tradehero.th.fragments.security.SimpleSecurityItemViewAdapter;
 import com.tradehero.th.fragments.trade.BuySellFragment;
 import com.tradehero.th.loaders.security.SecurityListPagedLoader;
 import com.tradehero.th.loaders.security.macquarie.MacquarieSecurityListPagedLoader;
+import com.tradehero.th.models.provider.ProviderSpecificResourcesDTO;
+import com.tradehero.th.models.provider.ProviderSpecificResourcesFactory;
 import com.tradehero.th.persistence.competition.ProviderCache;
 import javax.inject.Inject;
 
@@ -39,9 +44,11 @@ public class ProviderSecurityListFragment extends SecurityListFragment
     // TODO sort warrants
     protected ProviderId providerId;
     protected ProviderDTO providerDTO;
+    protected ProviderSpecificResourcesDTO providerSpecificResourcesDTO;
     @Inject protected ProviderCache providerCache;
     private DTOCache.Listener<ProviderId, ProviderDTO> providerCacheListener;
     private DTOCache.GetOrFetchTask<ProviderId, ProviderDTO> providerCacheFetchTask;
+    @Inject ProviderSpecificResourcesFactory providerSpecificResourcesFactory;
 
     @Inject SecurityItemLayoutFactory securityItemLayoutFactory;
 
@@ -60,6 +67,7 @@ public class ProviderSecurityListFragment extends SecurityListFragment
         {
             throw new IllegalArgumentException("There is no defined providerId");
         }
+        this.providerSpecificResourcesDTO = this.providerSpecificResourcesFactory.createResourcesDTO(providerId);
 
         this.providerCacheListener = new ProviderSecurityListFragmentProviderCacheListener();
     }
@@ -69,6 +77,22 @@ public class ProviderSecurityListFragment extends SecurityListFragment
         View view = inflater.inflate(R.layout.fragment_provider_security_list, container, false);
         initViews(view);
         return view;
+    }
+
+    @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
+    {
+        //THLog.i(TAG, "onCreateOptionsMenu");
+        super.onCreateOptionsMenu(menu, inflater);
+        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
+        actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_HOME_AS_UP);
+        if (providerSpecificResourcesDTO != null && providerSpecificResourcesDTO.securityListFragmentTitleResId > 0)
+        {
+            actionBar.setTitle(providerSpecificResourcesDTO.securityListFragmentTitleResId);
+        }
+        else
+        {
+            actionBar.setTitle(R.string.provider_security_list_title);
+        }
     }
 
     @Override public void onStart()
