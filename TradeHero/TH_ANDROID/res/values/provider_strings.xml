@@ -22,5 +22,8 @@
   <!-- Macquarie WarrantHero specific strings. providerId == 3-->
   <string name="competition_macquarie_warrant_hero_main_title">Macquarie WarrantHero</string>
   <string name="competition_macquarie_warrant_hero_help_video_title">Help Videos - Macquarie WarrantHero</string>
+  <color name="competition_macquarie_btn_help_video_background_light">#ffce3b</color>
+  <color name="competition_macquarie_btn_help_video_background_dark">#e6ad03</color>
+
 
 </resources>

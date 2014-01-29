@@ -15,6 +15,7 @@
         android:id="@+id/warrant_help_video_link"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_margin="8dp"
         android:background="@color/btn_linkedin_color_light"
         android:padding="8dp">
 
@@ -23,11 +24,18 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_centerInParent="true"
-          android:padding="8dp"
+          android:padding="4dp"
           android:text="help video"
           />
 
     </RelativeLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/warrant_info_header_warrant_data"
+        android:gravity="center_horizontal"
+        />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -35,7 +43,7 @@
         android:orientation="horizontal"
         android:paddingLeft="4dp"
         android:paddingRight="4dp"
-        android:paddingTop="4dp"
+        android:paddingTop="8dp"
         android:background="@color/white"
         android:baselineAligned="false"
         >

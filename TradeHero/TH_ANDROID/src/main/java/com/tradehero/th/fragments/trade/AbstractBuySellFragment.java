@@ -78,6 +78,7 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        collectFromParameters(getArguments());
         collectFromParameters(savedInstanceState);
     }
 
@@ -94,6 +95,12 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
             isTransactionTypeBuy = args.getBoolean(BUNDLE_KEY_IS_BUY, isTransactionTypeBuy);
             mBuyQuantity = args.getInt(BUNDLE_KEY_QUANTITY_BUY, mBuyQuantity);
             mSellQuantity = args.getInt(BUNDLE_KEY_QUANTITY_SELL, mSellQuantity);
+
+            Bundle providerIdBundle = args.getBundle(BUNDLE_KEY_PROVIDER_ID_BUNDLE);
+            if (providerIdBundle != null)
+            {
+                providerId = new ProviderId(providerIdBundle);
+            }
         }
     }
 
@@ -111,16 +118,6 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
         super.onResume();
 
         Bundle args = getArguments();
-        isTransactionTypeBuy = args.getBoolean(BUNDLE_KEY_IS_BUY, isTransactionTypeBuy);
-        mBuyQuantity = args.getInt(BUNDLE_KEY_QUANTITY_BUY, mBuyQuantity);
-        mSellQuantity = args.getInt(BUNDLE_KEY_QUANTITY_SELL, mSellQuantity);
-
-        Bundle providerIdBundle = args.getBundle(BUNDLE_KEY_PROVIDER_ID_BUNDLE);
-        if (providerIdBundle != null)
-        {
-            providerId = new ProviderId(providerIdBundle);
-        }
-
         Bundle securityIdBundle = args.getBundle(BUNDLE_KEY_SECURITY_ID_BUNDLE);
         linkWith(new SecurityId(securityIdBundle), true);
 

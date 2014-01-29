@@ -2,6 +2,7 @@ package com.tradehero.th.models.provider;
 
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.ProviderDTO;
+import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.competition.ProviderIdConstants;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -25,7 +26,17 @@ import javax.inject.Singleton;
         ProviderSpecificResourcesDTO created = null;
         if (providerDTO != null)
         {
-            switch(providerDTO.id)
+            created = createResourcesDTO(providerDTO.getProviderId());
+        }
+        return created;
+    }
+
+    public ProviderSpecificResourcesDTO createResourcesDTO(ProviderId providerId)
+    {
+        ProviderSpecificResourcesDTO created = null;
+        if (providerId != null)
+        {
+            switch(providerId.key)
             {
                 case ProviderIdConstants.PROVIDER_ID_MACQUARIE_WARRANTS:
                     created = getMacquarieWarrantHeroResources();
@@ -40,7 +51,9 @@ import javax.inject.Singleton;
         ProviderSpecificResourcesDTO resourcesDTO = new ProviderSpecificResourcesDTO();
         resourcesDTO.mainCompetitionFragmentTitleResId = R.string.competition_macquarie_warrant_hero_main_title;
         resourcesDTO.helpVideoListFragmentTitleResId = R.string.competition_macquarie_warrant_hero_help_video_title;
+        resourcesDTO.helpVideoLinkBackgroundResId = R.drawable.btn_help_video_macquarie;
         resourcesDTO.timedHeaderLeaderboardTitleResId = R.string.competition_macquarie_warrant_hero_main_title;
+        resourcesDTO.competitionPortfolioTitleResId = R.string.competition_macquarie_warrant_hero_main_title;
 
         return resourcesDTO;
     }

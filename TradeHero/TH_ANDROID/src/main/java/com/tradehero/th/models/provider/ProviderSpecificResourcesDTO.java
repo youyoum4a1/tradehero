@@ -9,7 +9,9 @@ public class ProviderSpecificResourcesDTO
 
     public int mainCompetitionFragmentTitleResId;
     public int helpVideoListFragmentTitleResId;
+    public int helpVideoLinkBackgroundResId;
     public int timedHeaderLeaderboardTitleResId;
+    public int competitionPortfolioTitleResId;
 
     //<editor-fold desc="Constructors">
     public ProviderSpecificResourcesDTO()
@@ -23,7 +25,9 @@ public class ProviderSpecificResourcesDTO
         return "ProviderSpecificResourcesDTO{" +
                 "mainCompetitionFragmentTitleResId=" + mainCompetitionFragmentTitleResId +
                 ", helpVideoListFragmentTitleResId=" + helpVideoListFragmentTitleResId +
+                ", helpVideoLinkBackgroundResId=" + helpVideoLinkBackgroundResId +
                 ", timedHeaderLeaderboardTitleResId=" + timedHeaderLeaderboardTitleResId +
+                ", competitionPortfolioTitleResId=" + competitionPortfolioTitleResId +
                 '}';
     }
 }

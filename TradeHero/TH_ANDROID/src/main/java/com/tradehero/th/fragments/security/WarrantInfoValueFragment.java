@@ -15,6 +15,8 @@ import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.WarrantDTO;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.fragments.competition.ProviderVideoListFragment;
+import com.tradehero.th.models.provider.ProviderSpecificResourcesDTO;
+import com.tradehero.th.models.provider.ProviderSpecificResourcesFactory;
 import com.tradehero.th.persistence.competition.ProviderCache;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.utils.DaggerUtils;
@@ -43,7 +45,9 @@ public class WarrantInfoValueFragment extends AbstractSecurityInfoFragment<Secur
     protected WarrantDTO warrantDTO;
     protected ProviderId providerId;
     protected ProviderDTO providerDTO;
+    protected ProviderSpecificResourcesDTO providerSpecificResourcesDTO;
     @Inject protected Lazy<ProviderCache> providerCache;
+    @Inject protected ProviderSpecificResourcesFactory providerSpecificResourcesFactory;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -135,6 +139,7 @@ public class WarrantInfoValueFragment extends AbstractSecurityInfoFragment<Secur
     public void linkWith(ProviderDTO providerDTO, boolean andDisplay)
     {
         this.providerDTO = providerDTO;
+        this.providerSpecificResourcesDTO = providerSpecificResourcesFactory.createResourcesDTO(providerDTO);
         if (andDisplay)
         {
             displayLinkHelpVideoLink();
@@ -176,6 +181,10 @@ public class WarrantInfoValueFragment extends AbstractSecurityInfoFragment<Secur
         if (mHelpVideoLink != null)
         {
             mHelpVideoLink.setVisibility(hasHelpVideo() ? View.VISIBLE : View.GONE);
+            if (providerSpecificResourcesDTO != null && providerSpecificResourcesDTO.helpVideoLinkBackgroundResId > 0)
+            {
+                mHelpVideoLink.setBackgroundResource(providerSpecificResourcesDTO.helpVideoLinkBackgroundResId);
+            }
         }
     }
 

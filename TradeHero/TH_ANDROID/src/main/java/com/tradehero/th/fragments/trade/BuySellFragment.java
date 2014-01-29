@@ -59,6 +59,8 @@ import com.tradehero.th.fragments.security.BuySellBottomStockPagerAdapter;
 import com.tradehero.th.fragments.security.StockInfoFragment;
 import com.tradehero.th.models.alert.SecurityAlertAssistant;
 import com.tradehero.th.models.portfolio.MenuOwnedPortfolioId;
+import com.tradehero.th.models.provider.ProviderSpecificResourcesDTO;
+import com.tradehero.th.models.provider.ProviderSpecificResourcesFactory;
 import com.tradehero.th.persistence.portfolio.PortfolioCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
@@ -106,6 +108,7 @@ public class BuySellFragment extends AbstractBuySellFragment
     @Inject protected PortfolioCache portfolioCache;
     @Inject protected PortfolioCompactListCache portfolioCompactListCache;
     @Inject protected PortfolioCompactCache portfolioCompactCache;
+    @Inject protected ProviderSpecificResourcesFactory providerSpecificResourcesFactory;
 
     double lastPrice;
     int sliderIncrement = 0;
@@ -331,12 +334,27 @@ public class BuySellFragment extends AbstractBuySellFragment
         PortfolioCompactDTO defaultPortfolioCompactDTO = portfolioCompactCache.get(defaultOwnedPortfolioId.getPortfolioId());
         newMenus.add(new MenuOwnedPortfolioId(defaultOwnedPortfolioId, defaultPortfolioCompactDTO));
 
+        ProviderSpecificResourcesDTO providerSpecificResourcesDTO = providerSpecificResourcesFactory.createResourcesDTO(providerId);
+
         Bundle ownedPortfolioArgs = getArguments().getBundle(BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE);
         if (ownedPortfolioArgs != null)
         {
             OwnedPortfolioId ownedPortfolioId = new OwnedPortfolioId(ownedPortfolioArgs);
-            PortfolioCompactDTO portfolioCompactDTO = portfolioCompactCache.get(ownedPortfolioId.getPortfolioId());
-            newMenus.add(new MenuOwnedPortfolioId(ownedPortfolioId, portfolioCompactDTO));
+            if (!ownedPortfolioId.equals(defaultOwnedPortfolioId))
+            {
+                PortfolioCompactDTO portfolioCompactDTO = portfolioCompactCache.get(ownedPortfolioId.getPortfolioId());
+                if (portfolioCompactDTO != null && portfolioCompactDTO.providerId != null && providerId != null &&
+                        providerId.key.equals(portfolioCompactDTO.providerId) &&
+                        providerSpecificResourcesDTO != null && providerSpecificResourcesDTO.competitionPortfolioTitleResId > 0)
+                {
+
+                    newMenus.add(new MenuOwnedPortfolioId(ownedPortfolioId, getString(providerSpecificResourcesDTO.competitionPortfolioTitleResId)));
+                }
+                else
+                {
+                    newMenus.add(new MenuOwnedPortfolioId(ownedPortfolioId, portfolioCompactDTO));
+                }
+            }
         }
 
         usedMenuOwnedPortfolioIds = newMenus;

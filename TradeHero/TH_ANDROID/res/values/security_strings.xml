@@ -28,6 +28,7 @@
   <string name="warrant_strike_header">Strike</string>
   <string name="warrant_strike_value">%1$s &lt;b>%2$.2f&lt;/b> (%3$s)</string>
   <string name="warrant_expiry_header">Expiry</string>
+  <string name="warrant_info_header_warrant_data">Warrant Data</string>
   <string name="warrant_info_type">Type</string>
   <string name="warrant_info_code">Code</string>
   <string name="warrant_info_expiry">Expiry</string>
