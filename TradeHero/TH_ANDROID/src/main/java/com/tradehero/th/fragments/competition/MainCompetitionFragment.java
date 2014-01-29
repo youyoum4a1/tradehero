@@ -25,6 +25,7 @@ import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileCompactDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.base.Navigator;
 import com.tradehero.th.fragments.competition.zone.CompetitionZoneLegalMentionsView;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneDTO;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneLeaderboardDTO;
@@ -401,54 +402,36 @@ public class MainCompetitionFragment extends CompetitionFragment
         }
     }
 
-    private class MainCompetitionWebViewTHIntentPassedListener implements THIntentPassedListener
+    private class MainCompetitionWebViewTHIntentPassedListener extends CompetitionWebFragmentTHIntentPassedListener
     {
-        @Override public void onIntentPassed(THIntent thIntent)
+        public MainCompetitionWebViewTHIntentPassedListener()
         {
-            if (thIntent instanceof ProviderPageIntent)
-            {
-                THLog.d(TAG, "Intent is ProviderPageIntent");
-                if (webViewFragment != null)
-                {
-                    THLog.d(TAG, "Passing on " + ((ProviderPageIntent) thIntent).getCompleteForwardUriPath());
-                    webViewFragment.loadUrl(((ProviderPageIntent) thIntent).getCompleteForwardUriPath());
-                }
-                else
-                {
-                    THLog.d(TAG, "WebFragment is null");
-                }
-            }
-            else if (thIntent instanceof SecurityPushBuyIntent)
-            {
-                handleSecurityPushBuyIntent((SecurityPushBuyIntent) thIntent);
-            }
-            else if (thIntent == null)
-            {
-                navigator.popFragment();
-            }
-            else
-            {
-                THLog.w(TAG, "Unhandled intent " + thIntent);
-            }
+            super();
         }
 
-        protected void handleSecurityPushBuyIntent(SecurityPushBuyIntent thIntent)
+        @Override protected WebViewFragment getApplicableWebViewFragment()
         {
-            // We are probably coming back from the wizard
-            getNavigator().popFragment(MainCompetitionFragment.class.getName());
-            // Now moving on
-            Bundle argsBundle = thIntent.getBundle();
-            if (thIntent.getActionFragment().equals(BuySellFragment.class))
-            {
-                argsBundle.putBundle(BuySellFragment.BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE, getApplicablePortfolioId().getArgs());
-                argsBundle.putBundle(BuySellFragment.BUNDLE_KEY_PROVIDER_ID_BUNDLE, providerId.getArgs());
-            }
-            getNavigator().pushFragment(thIntent.getActionFragment(), argsBundle,
-                    new int[] {
-                            R.anim.slide_right_in, R.anim.alpha_out,
-                            R.anim.slide_left_in, R.anim.slide_right_out
-                    }, null);
-            THLog.d(TAG, "onIntentPassed " + thIntent);
+            return webViewFragment;
+        }
+
+        @Override protected OwnedPortfolioId getApplicablePortfolioId()
+        {
+            return MainCompetitionFragment.this.getApplicablePortfolioId();
+        }
+
+        @Override protected ProviderId getProviderId()
+        {
+            return providerId;
+        }
+
+        @Override protected Navigator getNavigator()
+        {
+            return MainCompetitionFragment.this.getNavigator();
+        }
+
+        @Override protected Class<?> getClassToPop()
+        {
+            return MainCompetitionFragment.class;
         }
     }
 
