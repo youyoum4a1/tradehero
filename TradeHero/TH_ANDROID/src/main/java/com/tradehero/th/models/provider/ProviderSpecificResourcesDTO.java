@@ -9,6 +9,7 @@ public class ProviderSpecificResourcesDTO
 
     public int mainCompetitionFragmentTitleResId;
     public int helpVideoListFragmentTitleResId;
+    public int timedHeaderLeaderboardTitleResId;
 
     //<editor-fold desc="Constructors">
     public ProviderSpecificResourcesDTO()
@@ -16,4 +17,13 @@ public class ProviderSpecificResourcesDTO
         super();
     }
     //</editor-fold>
+
+    @Override public String toString()
+    {
+        return "ProviderSpecificResourcesDTO{" +
+                "mainCompetitionFragmentTitleResId=" + mainCompetitionFragmentTitleResId +
+                ", helpVideoListFragmentTitleResId=" + helpVideoListFragmentTitleResId +
+                ", timedHeaderLeaderboardTitleResId=" + timedHeaderLeaderboardTitleResId +
+                '}';
+    }
 }

@@ -7,6 +7,7 @@ import android.widget.TextView;
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.CompetitionDTO;
 import com.tradehero.th.api.competition.ProviderDTO;
+import com.tradehero.th.models.provider.ProviderSpecificResourcesDTO;
 import com.tradehero.th.widget.time.TimeDisplayViewHolder;
 
 /**
@@ -22,6 +23,7 @@ public class CompetitionLeaderboardTimedHeader extends LinearLayout
     protected TimeDisplayViewHolder timeDisplayViewHolder;
     protected ProviderDTO providerDTO;
     protected CompetitionDTO competitionDTO;
+    protected ProviderSpecificResourcesDTO providerSpecificResourcesDTO;
     protected Runnable viewUpdater;
 
     //<editor-fold desc="Constructors">
@@ -107,11 +109,20 @@ public class CompetitionLeaderboardTimedHeader extends LinearLayout
         this.competitionDTO = competitionDTO;
     }
 
+    public void setProviderSpecificResourcesDTO(ProviderSpecificResourcesDTO providerSpecificResourcesDTO)
+    {
+        this.providerSpecificResourcesDTO = providerSpecificResourcesDTO;
+    }
+
     public void displayProviderTitle()
     {
         if (providerTitle != null)
         {
-            if (providerDTO != null)
+            if (providerSpecificResourcesDTO != null && providerSpecificResourcesDTO.timedHeaderLeaderboardTitleResId > 0)
+            {
+                providerTitle.setText(providerSpecificResourcesDTO.timedHeaderLeaderboardTitleResId);
+            }
+            else if (providerDTO != null)
             {
                 providerTitle.setText(providerDTO.name);
             }

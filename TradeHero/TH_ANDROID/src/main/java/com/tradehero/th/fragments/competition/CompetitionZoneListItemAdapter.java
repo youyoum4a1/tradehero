@@ -203,7 +203,8 @@ public class CompetitionZoneListItemAdapter extends ArrayDTOAdapter<CompetitionZ
     @Override public boolean isEnabled(int position)
     {
         int viewType = getItemViewType(position);
-        return viewType == ITEM_TYPE_ZONE_ITEM || viewType == ITEM_TYPE_TRADE_NOW || viewType == ITEM_TYPE_LEADERBOARD;
+        return viewType != ITEM_TYPE_HEADER &&
+                viewType != ITEM_TYPE_LEGAL_MENTIONS;
     }
 
     @Override protected void fineTune(int position, CompetitionZoneDTO dto, CompetitionZoneListItemView dtoView)

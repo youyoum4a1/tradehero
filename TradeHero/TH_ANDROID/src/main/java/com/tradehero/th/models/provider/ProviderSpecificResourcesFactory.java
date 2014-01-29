@@ -40,6 +40,7 @@ import javax.inject.Singleton;
         ProviderSpecificResourcesDTO resourcesDTO = new ProviderSpecificResourcesDTO();
         resourcesDTO.mainCompetitionFragmentTitleResId = R.string.competition_macquarie_warrant_hero_main_title;
         resourcesDTO.helpVideoListFragmentTitleResId = R.string.competition_macquarie_warrant_hero_help_video_title;
+        resourcesDTO.timedHeaderLeaderboardTitleResId = R.string.competition_macquarie_warrant_hero_main_title;
 
         return resourcesDTO;
     }

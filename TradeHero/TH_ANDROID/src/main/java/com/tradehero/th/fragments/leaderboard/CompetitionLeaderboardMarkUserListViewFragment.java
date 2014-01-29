@@ -8,6 +8,8 @@ import com.tradehero.th.api.competition.CompetitionDTO;
 import com.tradehero.th.api.competition.CompetitionId;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderId;
+import com.tradehero.th.models.provider.ProviderSpecificResourcesDTO;
+import com.tradehero.th.models.provider.ProviderSpecificResourcesFactory;
 import com.tradehero.th.persistence.competition.CompetitionCache;
 import com.tradehero.th.persistence.competition.ProviderCache;
 import javax.inject.Inject;
@@ -24,6 +26,8 @@ public class CompetitionLeaderboardMarkUserListViewFragment extends LeaderboardM
     protected CompetitionLeaderboardTimedHeader headerView;
     @Inject ProviderCache providerCache;
     protected ProviderDTO providerDTO;
+    @Inject ProviderSpecificResourcesFactory providerSpecificResourcesFactory;
+    protected ProviderSpecificResourcesDTO providerSpecificResourcesDTO;
     @Inject CompetitionCache competitionCache;
     protected CompetitionDTO competitionDTO;
 
@@ -33,6 +37,8 @@ public class CompetitionLeaderboardMarkUserListViewFragment extends LeaderboardM
         ProviderId providerId = new ProviderId(getArguments().getBundle(BUNDLE_KEY_PROVIDER_ID));
         providerDTO = providerCache.get(providerId);
         THLog.d(TAG, "providerDTO " + providerDTO);
+        providerSpecificResourcesDTO = providerSpecificResourcesFactory.createResourcesDTO(providerDTO);
+        THLog.d(TAG, "providerSpecificResourcesDTO " + providerSpecificResourcesDTO);
 
         CompetitionId competitionId = new CompetitionId(getArguments().getBundle(BUNDLE_KEY_COMPETITION_ID));
         competitionDTO = competitionCache.get(competitionId);
@@ -48,8 +54,9 @@ public class CompetitionLeaderboardMarkUserListViewFragment extends LeaderboardM
     {
         super.initHeaderView(headerView);
         this.headerView = (CompetitionLeaderboardTimedHeader) headerView;
-        this.headerView.linkWith(providerDTO, true);
         this.headerView.setCompetitionDTO(competitionDTO);
+        this.headerView.setProviderSpecificResourcesDTO(providerSpecificResourcesDTO);
+        this.headerView.linkWith(providerDTO, true);
     }
 
     @Override public void onDestroyView()
