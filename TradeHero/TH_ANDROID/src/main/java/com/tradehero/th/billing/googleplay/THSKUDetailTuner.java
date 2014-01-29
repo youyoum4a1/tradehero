@@ -65,6 +65,24 @@ public class THSKUDetailTuner implements ProductDetailTuner<IABSKU, THIABProduct
                 productDetails.domain = THIABProductDetail.DOMAIN_FOLLOW_CREDITS;
                 break;
 
+            case THIABSKUFetcher.ALERT_1:
+                productDetails.iconResId = R.drawable.buy_alerts_2;
+                productDetails.hasRibbon = false;
+                productDetails.domain = THIABProductDetail.DOMAIN_STOCK_ALERTS;
+                break;
+            case THIABSKUFetcher.ALERT_5:
+                productDetails.iconResId = R.drawable.buy_alerts_5;
+                productDetails.hasRibbon = true;
+                productDetails.iconRibbonResId = R.drawable.ribbon_cash_disc10;
+                productDetails.domain = THIABProductDetail.DOMAIN_STOCK_ALERTS;
+                break;
+            case THIABSKUFetcher.ALERT_UNLIMITED:
+                productDetails.iconResId = R.drawable.buy_alerts_infinite;
+                productDetails.hasRibbon = true;
+                productDetails.iconRibbonResId = R.drawable.ribbon_buy_alerts_best;
+                productDetails.domain = THIABProductDetail.DOMAIN_STOCK_ALERTS;
+                break;
+
             default:
                 THLog.d(TAG, "Unhandled productDetails key " + productDetails.getProductIdentifier().identifier);
         }

@@ -54,7 +54,7 @@ public class Constants
     // some fields on the getSkuDetails response bundle
     public static final String GET_SKU_DETAILS_ITEM_LIST = "ITEM_ID_LIST";
     public static final String GET_SKU_DETAILS_ITEM_TYPE_LIST = "ITEM_TYPE_LIST";
-
+    public static final int ALERT_PLAN_UNLIMITED = 10000;
 
     /**
      * Returns a human-readable description for the given response code.

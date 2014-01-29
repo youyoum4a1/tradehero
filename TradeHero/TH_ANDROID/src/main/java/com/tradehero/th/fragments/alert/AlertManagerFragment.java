@@ -7,11 +7,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.TextView;
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
+import com.tradehero.common.billing.googleplay.Constants;
+import com.tradehero.common.milestone.Milestone;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
@@ -19,8 +22,11 @@ import com.tradehero.th.api.alert.AlertId;
 import com.tradehero.th.api.alert.AlertIdList;
 import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
 import com.tradehero.th.api.users.UserBaseKey;
+import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.persistence.alert.AlertCompactListCache;
+import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.persistence.user.UserProfileRetrievedMilestone;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import dagger.Lazy;
 import javax.inject.Inject;
@@ -32,13 +38,14 @@ public class AlertManagerFragment extends BasePurchaseManagerFragment
     public static final String TAG = AlertManagerFragment.class.getSimpleName();
     public static final String BUNDLE_KEY_USER_ID = AlertManagerFragment.class.getName() + ".userId";
 
-    private TextView planCount;
-    private ImageView planCountHint;
-    private ImageButton btnPlanUpgrade;
-    private StickyListHeadersListView alertListView;
+    @InjectView(R.id.manage_alerts_count) TextView alertPlanCount;
+    //@InjectView(R.id.icn_alert_plan_hint) ImageView planCountHint;
+    @InjectView(R.id.btn_upgrade_plan) ImageButton btnPlanUpgrade;
+    @InjectView(R.id.alerts_list) StickyListHeadersListView alertListView;
 
     @Inject protected Lazy<AlertCompactListCache> alertCompactListCache;
     @Inject protected CurrentUserBaseKeyHolder currentUserBaseKeyHolder;
+    @Inject protected Lazy<UserProfileCache> userProfileCache;
 
     private AlertListItemAdapter alertListItemAdapter;
     private DTOCache.GetOrFetchTask<UserBaseKey, AlertIdList> refreshAlertCompactListCacheTask;
@@ -47,6 +54,7 @@ public class AlertManagerFragment extends BasePurchaseManagerFragment
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.fragment_store_manage_alerts, container, false);
+        ButterKnife.inject(this, view);
         initViews(view);
         return view;
     }
@@ -62,11 +70,6 @@ public class AlertManagerFragment extends BasePurchaseManagerFragment
 
     @Override protected void initViews(View view)
     {
-        planCount = (TextView) view.findViewById(R.id.manage_alerts_count);
-        //planCountHint = (ImageView) view.findViewById(R.id.icn_alert_plan_hint);
-        btnPlanUpgrade = (ImageButton) view.findViewById(R.id.btn_upgrade_plan);
-        alertListView = (StickyListHeadersListView) view.findViewById(R.id.alerts_list);
-
         if (alertListItemAdapter == null)
         {
             alertListItemAdapter = new AlertListItemAdapter(getActivity(), R.layout.alert_list_item);
@@ -86,6 +89,37 @@ public class AlertManagerFragment extends BasePurchaseManagerFragment
                 }
             });
             alertListView.setAdapter(alertListItemAdapter);
+        }
+
+        UserProfileRetrievedMilestone userProfileRetrievedMilestone =
+                new UserProfileRetrievedMilestone(currentUserBaseKeyHolder.getCurrentUserBaseKey());
+        userProfileRetrievedMilestone.setOnCompleteListener(userProfileRetrievedMilestoneCompleteListener);
+        userProfileRetrievedMilestone.launch();
+
+        displayAlertCount();
+    }
+
+    private void displayAlertCount()
+    {
+        UserProfileDTO currentUserProfile = userProfileCache.get().get(currentUserBaseKeyHolder.getCurrentUserBaseKey());
+        if (currentUserProfile != null)
+        {
+            int count = currentUserProfile.getUserAlertPlansAlertCount();
+            if (count == 0)
+            {
+                alertPlanCount.setText(R.string.no_alerts);
+                btnPlanUpgrade.setVisibility(View.VISIBLE);
+            }
+            else if (count < Constants.ALERT_PLAN_UNLIMITED)
+            {
+                alertPlanCount.setText(String.format(getString(R.string.count_alert_format), count));
+                btnPlanUpgrade.setVisibility(View.VISIBLE);
+            }
+            else
+            {
+                alertPlanCount.setText(R.string.alert_plan_unlimited);
+                btnPlanUpgrade.setVisibility(View.GONE);
+            }
         }
     }
 
@@ -117,6 +151,19 @@ public class AlertManagerFragment extends BasePurchaseManagerFragment
         alertListView.setOnItemClickListener(null);
         super.onDestroy();
     }
+
+    private Milestone.OnCompleteListener userProfileRetrievedMilestoneCompleteListener = new Milestone.OnCompleteListener()
+    {
+        @Override public void onComplete(Milestone milestone)
+        {
+            displayAlertCount();
+        }
+
+        @Override public void onFailed(Milestone milestone, Throwable throwable)
+        {
+            // TODO THToast.show();
+        }
+    };
 
     //<editor-fold desc="BaseFragment.TabBarVisibilityInformer">
     @Override public boolean isTabBarVisible()

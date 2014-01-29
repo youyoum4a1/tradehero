@@ -27,6 +27,9 @@ public class THIABSKUFetcher extends BaseSKUFetcher<
     public static final String CREDIT_20 = "com.myhero.th.20cc";
 
     public static final String RESET_PORTFOLIO_0 = "com.myhero.th.resetportfolio.0";
+    public static final String ALERT_1 = "com.myhero.th.stockalert.subscription.t0";
+    public static final String ALERT_5 = "com.myhero.th.stockalert.subscription.t1";
+    public static final String ALERT_UNLIMITED = "com.myhero.th.stockalert.subscription.t2";
 
     public THIABSKUFetcher()
     {
@@ -40,6 +43,11 @@ public class THIABSKUFetcher extends BaseSKUFetcher<
         //inAppIABSKUs.add(new IABSKU(CREDIT_5));
         inAppIABSKUs.add(new IABSKU(CREDIT_10));
         inAppIABSKUs.add(new IABSKU(CREDIT_20));
+
+        inAppIABSKUs.add(new IABSKU(ALERT_1));
+        inAppIABSKUs.add(new IABSKU(ALERT_5));
+        inAppIABSKUs.add(new IABSKU(ALERT_UNLIMITED));
+
         inAppIABSKUs.add(new IABSKU(RESET_PORTFOLIO_0));
         availableSkus.put(Constants.ITEM_TYPE_INAPP, inAppIABSKUs);
 
