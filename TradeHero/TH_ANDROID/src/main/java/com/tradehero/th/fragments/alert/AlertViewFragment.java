@@ -37,7 +37,6 @@ import com.tradehero.th.utils.THSignedNumber;
 import dagger.Lazy;
 import javax.inject.Inject;
 import org.ocpsoft.prettytime.PrettyTime;
-import retrofit.Callback;
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 
 /**
@@ -51,6 +50,7 @@ public class AlertViewFragment extends DashboardFragment
     @InjectView(R.id.stock_symbol) TextView stockSymbol;
     @InjectView(R.id.company_name) TextView companyName;
     @InjectView(R.id.target_price) TextView targetPrice;
+    @InjectView(R.id.target_price_label) TextView targetPriceLabel;
     @InjectView(R.id.current_price) TextView currentPrice;
     @InjectView(R.id.active_until) TextView activeUntil;
     @InjectView(R.id.alert_toggle) Switch alertToggle;
@@ -158,9 +158,9 @@ public class AlertViewFragment extends DashboardFragment
 
             displayTargetPrice();
 
-            displayActiveUntil();
-
             displayToggle();
+
+            displayActiveUntil();
         }
     }
 
@@ -186,7 +186,7 @@ public class AlertViewFragment extends DashboardFragment
 
     private void displayActiveUntil()
     {
-        if (!alertDTO.active)
+        if (!alertToggle.isChecked())
         {
             activeUntil.setText("-");
         }
@@ -202,8 +202,18 @@ public class AlertViewFragment extends DashboardFragment
 
     private void displayTargetPrice()
     {
-        THSignedNumber thTargetPrice = new THSignedNumber(THSignedNumber.TYPE_MONEY, alertDTO.targetPrice, false);
-        targetPrice.setText(thTargetPrice.toString());
+        if (alertDTO.priceMovement == null)
+        {
+            THSignedNumber thTargetPrice = new THSignedNumber(THSignedNumber.TYPE_MONEY, alertDTO.targetPrice, false);
+            targetPrice.setText(thTargetPrice.toString());
+            targetPriceLabel.setText(getString(R.string.target_price));
+        }
+        else
+        {
+            THSignedNumber thPriceMovement = new THSignedNumber(THSignedNumber.TYPE_PERCENTAGE, alertDTO.priceMovement * 100);
+            targetPrice.setText(thPriceMovement.toString(0));
+            targetPriceLabel.setText(getString(R.string.percentage_movement));
+        }
     }
 
     private void displayCurrentPrice()
@@ -302,6 +312,7 @@ public class AlertViewFragment extends DashboardFragment
         @Override protected void success(AlertCompactDTO alertCompactDTO, THResponse thResponse)
         {
             alertCompactCache.get().put(alertId, alertCompactDTO);
+            displayActiveUntil();
         }
 
         @Override protected void failure(THException ex)

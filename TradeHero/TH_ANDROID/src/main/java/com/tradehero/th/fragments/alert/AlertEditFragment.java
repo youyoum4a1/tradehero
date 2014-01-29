@@ -51,6 +51,7 @@ public class AlertEditFragment extends DashboardFragment
     @InjectView(R.id.stock_symbol) TextView stockSymbol;
     @InjectView(R.id.company_name) TextView companyName;
     @InjectView(R.id.target_price) TextView targetPrice;
+    @InjectView(R.id.target_price_label) TextView targetPriceLabel;
     @InjectView(R.id.current_price) TextView currentPrice;
     @InjectView(R.id.active_until) TextView activeUntil;
     @InjectView(R.id.alert_toggle) Switch alertToggle;
@@ -264,16 +265,17 @@ public class AlertEditFragment extends DashboardFragment
 
     private void displayTargetPrice()
     {
-        THSignedNumber thTargetPrice = new THSignedNumber(THSignedNumber.TYPE_MONEY, alertDTO.targetPrice, false);
-        targetPrice.setText(thTargetPrice.toString());
-
-        if (alertDTO.active)
+        if (alertDTO.priceMovement == null)
         {
-            targetPriceChange.setText(getFormattedTargetPriceChange(thTargetPrice.toString()));
+            THSignedNumber thTargetPrice = new THSignedNumber(THSignedNumber.TYPE_MONEY, alertDTO.targetPrice, false);
+            targetPrice.setText(thTargetPrice.toString());
+            targetPriceLabel.setText(getString(R.string.target_price));
         }
         else
         {
-            targetPriceChange.setText(getFormattedTargetPriceChange("-"));
+            THSignedNumber thPriceMovement = new THSignedNumber(THSignedNumber.TYPE_PERCENTAGE, alertDTO.priceMovement * 100);
+            targetPrice.setText(thPriceMovement.toString(0));
+            targetPriceLabel.setText(getString(R.string.percentage_movement));
         }
     }
 

@@ -208,4 +208,8 @@
   <string name="percentage_change_format"><![CDATA[Price Change <b>%s</b>]]></string>
   <string name="percentage_change_target_value_format"><![CDATA[(Alert Price <b>%s</b>)]]></string>
   <string name="edit_alert">Edit Alert</string>
+  <string name="percentage_movement">% Movement</string>
+  <string name="alert_when_price_move">Alerts when price moves by <b>%s</b></string>
+  <string name="alert_when_price_raises"><![CDATA[Alerts when price raises to <b>%s</b>]]></string>
+  <string name="alert_when_price_falls"><![CDATA[Alerts when price falls to <b>%s</b>]]></string>
 </resources>

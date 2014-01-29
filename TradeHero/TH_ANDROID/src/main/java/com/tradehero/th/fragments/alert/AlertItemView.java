@@ -22,6 +22,7 @@ import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.persistence.alert.AlertCompactCache;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.DateUtils;
+import com.tradehero.th.utils.THSignedNumber;
 import dagger.Lazy;
 import java.util.Date;
 import javax.inject.Inject;
@@ -97,24 +98,69 @@ public class AlertItemView extends RelativeLayout
         this.alertCompactDTO = alertCompactDTO;
         if (alertCompactDTO != null)
         {
-            displayStockSymbol(alertCompactDTO);
+            displayStockSymbol();
 
-            displayStockLogo(alertCompactDTO);
+            displayStockLogo();
 
-            displayAlertStatus(alertCompactDTO);
+            displayAlertDescription();
+
+            displayAlertStatus();
             
-            displayTrigger(alertCompactDTO);
+            displayTrigger();
 
-            updateActionButtonsVisibility(alertCompactDTO);
+            updateActionButtonsVisibility();
         }
     }
 
-    private void updateActionButtonsVisibility(AlertCompactDTO alertCompactDTO)
+    private void displayAlertDescription()
+    {
+        if (alertCompactDTO.priceMovement != null)
+        {
+            alertDescription.setText(getPriceMovementDescription(alertCompactDTO.priceMovement * 100));
+        }
+        else if (alertCompactDTO.upOrDown) // up
+        {
+            alertDescription.setText(getPriceRaiseDescription(alertCompactDTO.targetPrice));
+        }
+        else
+        {
+            alertDescription.setText(getPriceFallDescription(alertCompactDTO.targetPrice));
+        }
+    }
+
+    private Spanned getPriceFallDescription(double targetPrice)
+    {
+        THSignedNumber thPriceRaise = new THSignedNumber(THSignedNumber.TYPE_MONEY, targetPrice, false);
+        return Html.fromHtml(String.format(
+                getContext().getString(R.string.alert_when_price_falls),
+                thPriceRaise.toString()
+        ));
+    }
+
+    private Spanned getPriceRaiseDescription(double targetPrice)
+    {
+        THSignedNumber thPriceRaise = new THSignedNumber(THSignedNumber.TYPE_MONEY, targetPrice, false);
+        return Html.fromHtml(String.format(
+                getContext().getString(R.string.alert_when_price_raises),
+                thPriceRaise.toString()
+        ));
+    }
+
+    private Spanned getPriceMovementDescription(double percentage)
+    {
+        THSignedNumber thPercentageChange = new THSignedNumber(THSignedNumber.TYPE_PERCENTAGE, percentage);
+        return Html.fromHtml(String.format(
+                getContext().getString(R.string.alert_when_price_move),
+                thPercentageChange.toString()
+        ));
+    }
+
+    private void updateActionButtonsVisibility()
     {
 
     }
 
-    private void displayTrigger(AlertCompactDTO alertCompactDTO)
+    private void displayTrigger()
     {
         if (alertCompactDTO.activeUntilDate != null)
         {
@@ -127,7 +173,7 @@ public class AlertItemView extends RelativeLayout
         return null;
     }
 
-    private void displayAlertStatus(AlertCompactDTO alertCompactDTO)
+    private void displayAlertStatus()
     {
         if (alertCompactDTO.active)
         {
@@ -146,7 +192,7 @@ public class AlertItemView extends RelativeLayout
         return Html.fromHtml(String.format(getContext().getString(R.string.stock_alerts_active_until), DateUtils.getFormattedDate(activeUntilDate)));
     }
 
-    private void displayStockSymbol(AlertCompactDTO alertCompactDTO)
+    private void displayStockSymbol()
     {
         if (alertCompactDTO.security != null)
         {
@@ -154,7 +200,7 @@ public class AlertItemView extends RelativeLayout
         }
     }
 
-    private void displayStockLogo(AlertCompactDTO alertCompactDTO)
+    private void displayStockLogo()
     {
         SecurityCompactDTO securityCompactDTO = alertCompactDTO.security;
         if (securityCompactDTO != null && securityCompactDTO.imageBlobUrl != null)
