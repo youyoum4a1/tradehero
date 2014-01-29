@@ -233,7 +233,7 @@ public class ProfileView extends LinearLayout implements DTOView<UserProfileDTO>
 
         if (memberSince != null)
         {
-            SimpleDateFormat memberSinceFormat = new SimpleDateFormat("MMMMM yyyy");
+            SimpleDateFormat memberSinceFormat = new SimpleDateFormat("MMM yyyy");
             memberSince.setText(memberSinceFormat.format(dto.memberSince));
         }
 

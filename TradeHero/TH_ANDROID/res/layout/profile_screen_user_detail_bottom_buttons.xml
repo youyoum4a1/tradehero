@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<merge xmlns:android="http://schemas.android.com/apk/res/android">
+<merge
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    >
   <LinearLayout
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
@@ -23,11 +26,12 @@
           android:layout_height="wrap_content"
           android:gravity="center"
           android:textColor="@color/black"
-          android:text="@null"
           android:textSize="20sp"
           android:textStyle="bold"
           android:drawablePadding="@dimen/timeline_bottom_button_drawable_adjustment"
-          android:drawableTop="@drawable/icn_followers"/>
+          android:drawableTop="@drawable/icn_followers"
+          tools:text="0"
+          />
 
       <TextView
           android:layout_width="wrap_content"
@@ -56,9 +60,10 @@
           android:textColor="@color/black"
           android:textSize="20sp"
           android:textStyle="bold"
-          android:text="@null"
           android:drawablePadding="@dimen/timeline_bottom_button_drawable_adjustment"
-          android:drawableTop="@drawable/icn_heroes"/>
+          android:drawableTop="@drawable/icn_heroes"
+          tools:text="1"
+          />
 
       <TextView
           android:layout_width="wrap_content"
@@ -68,7 +73,9 @@
           android:text="@string/heroes"
           android:textColor="@color/text_gray_normal"
           android:textSize="12sp"
-          android:textStyle="normal"/>
+          android:textStyle="normal"
+          />
+
     </LinearLayout>
 
     <!--Trades-->
@@ -87,9 +94,10 @@
           android:textColor="@color/black"
           android:textSize="20sp"
           android:textStyle="bold"
-          android:text="@null"
           android:drawablePadding="@dimen/timeline_bottom_button_drawable_adjustment"
-          android:drawableTop="@drawable/icn_trades"/>
+          android:drawableTop="@drawable/icn_trades"
+          tools:text="56"
+          />
 
       <TextView
           android:layout_width="wrap_content"
@@ -99,7 +107,9 @@
           android:text="@string/trades"
           android:textColor="@color/text_gray_normal"
           android:textSize="12sp"
-          android:textStyle="normal"/>
+          android:textStyle="normal"
+          />
+
     </LinearLayout>
 
     <!--Exchanges-->
@@ -115,12 +125,12 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:gravity="center"
-          android:text="@null"
           android:textColor="@color/black"
           android:textSize="20sp"
           android:textStyle="bold"
           android:drawableTop="@drawable/icn_exchanges"
           android:drawablePadding="-5dp"
+          tools:text="2"
           />
 
       <TextView
@@ -131,7 +141,9 @@
           android:text="@string/exchanges"
           android:textColor="@color/text_gray_normal"
           android:textSize="12sp"
-          android:textStyle="normal"/>
+          android:textStyle="normal"
+          />
+
     </LinearLayout>
 
     <!--Default Portfolio-->
@@ -145,4 +157,5 @@
         />
 
   </LinearLayout>
+
 </merge>
