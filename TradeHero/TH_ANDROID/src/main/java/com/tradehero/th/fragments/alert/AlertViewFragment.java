@@ -61,6 +61,7 @@ public class AlertViewFragment extends DashboardFragment
     private SecurityCompactDTO securityCompactDTO;
     private AlertEventAdapter alertEventAdapter;
     private AlertId alertId;
+    private ActionBar actionBar;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -102,6 +103,7 @@ public class AlertViewFragment extends DashboardFragment
     {
         super.onCreateOptionsMenu(menu, inflater);
 
+        actionBar = getSherlockActivity().getSupportActionBar();
         inflater.inflate(R.menu.alert_view_menu, menu);
     }
 
@@ -201,13 +203,7 @@ public class AlertViewFragment extends DashboardFragment
     private void displayStockSymbol()
     {
         stockSymbol.setText(securityCompactDTO.getExchangeSymbol());
-        getView().post(new Runnable()
-        {
-            @Override public void run()
-            {
-                getSherlockActivity().getSupportActionBar().setTitle(securityCompactDTO.getExchangeSymbol());
-            }
-        });
+        if (actionBar != null) actionBar.setTitle(securityCompactDTO.getExchangeSymbol());
     }
 
     private void displayStockLogo()

@@ -25,4 +25,9 @@ public class AlertIdList extends DTOKeyIdList<AlertId>
         super(collection);
     }
     //</editor-fold>
+
+    @Override public boolean add(AlertId object)
+    {
+        return super.add(object);
+    }
 }
