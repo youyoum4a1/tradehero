@@ -41,33 +41,37 @@
             android:id="@+id/portfolio_selector_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:padding="8dp"
             android:visibility="visible"
-            android:background="@color/gray_3">
+            android:background="@color/gray_3"
+            >
+
+          <TextView
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_alignParentLeft="true"
+              android:text="@string/buy_sell_portfolio_selected_title"
+              android:textSize="16sp"
+              />
+
+          <ImageView
+              android:id="@+id/portfolio_drop_down_hint"
+              android:layout_width="16dp"
+              android:layout_height="16dp"
+              android:layout_alignParentRight="true"
+              android:layout_marginLeft="8dp"
+              android:src="@drawable/expand"
+              android:rotation="90"
+              />
 
           <TextView
               android:id="@+id/portfolio_selected"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
               android:layout_marginLeft="16dp"
-              android:layout_alignParentRight="true"
+              android:layout_toLeftOf="@id/portfolio_drop_down_hint"
               android:text="@string/na"
               android:textSize="16sp"
-              />
-
-          <TextView
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:layout_toLeftOf="@id/portfolio_selected"
-              android:text="@string/buy_sell_portfolio_selected_title"
-              android:textSize="16sp"
-              />
-
-          <ViewStub
-              android:id="@+id/other_portfolio_menu_item"
-              android:layout_width="0dp"
-              android:layout_height="0dp"
-              android:visibility="gone"
-              android:text="Just in order to get a unique id"
               />
 
         </RelativeLayout>
