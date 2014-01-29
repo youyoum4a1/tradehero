@@ -6,9 +6,11 @@ import com.tradehero.th.api.security.TrendingBasicSecurityListType;
 import com.tradehero.th.api.security.TrendingSecurityListType;
 import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
 import com.tradehero.th.fragments.trending.TrendingFragment;
+import com.tradehero.th.models.security.WarrantSpecificKnowledgeFactory;
 import com.tradehero.th.persistence.alert.AlertCache;
 import com.tradehero.th.persistence.alert.AlertCompactCache;
 import com.tradehero.th.persistence.alert.AlertCompactListCache;
+import com.tradehero.th.persistence.competition.ProviderCache;
 import com.tradehero.th.persistence.competition.ProviderListCache;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefCache;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefListCache;
@@ -66,6 +68,9 @@ import javax.inject.Singleton;
     @Inject protected Lazy<ExchangeListCache> exchangeListCache;
     @Inject protected Lazy<UserWatchlistPositionCache> watchlistPositionCache;
     @Inject protected Lazy<ProviderListCache> providerListCache;
+    @Inject protected Lazy<ProviderCache> providerCache;
+
+    @Inject protected Lazy<WarrantSpecificKnowledgeFactory> warrantSpecificKnowledgeFactoryLazy;
 
     @Inject public DTOCacheUtil()
     {
@@ -98,6 +103,9 @@ import javax.inject.Singleton;
         exchangeListCache.get().invalidateAll();
         watchlistPositionCache.get().invalidateAll();
         providerListCache.get().invalidateAll();
+        providerCache.get().invalidateAll();
+
+        warrantSpecificKnowledgeFactoryLazy.get().clear();
     }
 
     public void initialPrefetches()
