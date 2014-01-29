@@ -52,7 +52,7 @@ import javax.inject.Singleton;
                 preparedOrderedItems.add(new CompetitionZoneVideoDTO(providerDTO.helpVideoText, null));
             }
 
-            if (providerDTO.wizardUrl != null && !providerDTO.wizardUrl.equals(""))
+            if (providerDTO.hasWizard())
             {
                 preparedOrderedTypes.add(CompetitionZoneListItemAdapter.ITEM_TYPE_ZONE_ITEM);
                 preparedOrderedItems.add(new CompetitionZoneWizardDTO(context.getString(R.string.provider_competition_wizard_title), null));

@@ -363,6 +363,7 @@ public class MainCompetitionFragment extends CompetitionFragment
             args.putInt(CompetitionLeaderboardMarkUserListViewFragment.BUNDLE_KEY_CURRENT_SORT_TYPE, leaderboardDefDTO.getDefaultSortType().getFlag());
             args.putString(CompetitionLeaderboardMarkUserListViewFragment.BUNDLE_KEY_LEADERBOARD_DEF_DESC, leaderboardDefDTO.desc);
             args.putInt(CompetitionLeaderboardMarkUserListViewFragment.BUNDLE_KEY_SORT_OPTION_FLAGS, leaderboardDefDTO.getSortOptionFlags());
+            args.putBundle(CompetitionLeaderboardMarkUserListViewFragment.BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE, getApplicablePortfolioId().getArgs());
             navigator.pushFragment(CompetitionLeaderboardMarkUserListViewFragment.class, args);
         }
         else

@@ -39,7 +39,7 @@ import javax.inject.Singleton;
             switch(providerId.key)
             {
                 case ProviderIdConstants.PROVIDER_ID_MACQUARIE_WARRANTS:
-                    created = getMacquarieWarrantHeroResources();
+                    //created = getMacquarieWarrantHeroResources();
                     break;
             }
         }

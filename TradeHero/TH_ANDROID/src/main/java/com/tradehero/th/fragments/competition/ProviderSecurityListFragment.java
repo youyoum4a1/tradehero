@@ -9,11 +9,13 @@ import android.widget.AdapterView;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.BasicProviderSecurityListType;
+import com.tradehero.th.api.competition.ProviderConstants;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.competition.ProviderIdConstants;
@@ -21,12 +23,18 @@ import com.tradehero.th.api.competition.ProviderSecurityListType;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityIdList;
 import com.tradehero.th.fragments.competition.macquarie.MacquarieWarrantItemViewAdapter;
+import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneWizardDTO;
 import com.tradehero.th.fragments.security.SecurityItemViewAdapter;
 import com.tradehero.th.fragments.security.SecurityListFragment;
 import com.tradehero.th.fragments.security.SimpleSecurityItemViewAdapter;
 import com.tradehero.th.fragments.trade.BuySellFragment;
+import com.tradehero.th.fragments.web.WebViewFragment;
 import com.tradehero.th.loaders.security.SecurityListPagedLoader;
 import com.tradehero.th.loaders.security.macquarie.MacquarieSecurityListPagedLoader;
+import com.tradehero.th.models.intent.THIntent;
+import com.tradehero.th.models.intent.THIntentPassedListener;
+import com.tradehero.th.models.intent.competition.ProviderPageIntent;
+import com.tradehero.th.models.intent.security.SecurityPushBuyIntent;
 import com.tradehero.th.models.provider.ProviderSpecificResourcesDTO;
 import com.tradehero.th.models.provider.ProviderSpecificResourcesFactory;
 import com.tradehero.th.persistence.competition.ProviderCache;
@@ -51,6 +59,11 @@ public class ProviderSecurityListFragment extends SecurityListFragment
     @Inject ProviderSpecificResourcesFactory providerSpecificResourcesFactory;
 
     @Inject SecurityItemLayoutFactory securityItemLayoutFactory;
+    private THIntentPassedListener webViewTHIntentPassedListener;
+    private WebViewFragment webViewFragment;
+
+    ActionBar actionBar;
+    private MenuItem wizardButton;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -70,6 +83,7 @@ public class ProviderSecurityListFragment extends SecurityListFragment
         this.providerSpecificResourcesDTO = this.providerSpecificResourcesFactory.createResourcesDTO(providerId);
 
         this.providerCacheListener = new ProviderSecurityListFragmentProviderCacheListener();
+        this.webViewTHIntentPassedListener = new ProviderSecurityListWebViewTHIntentPassedListener();
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -83,7 +97,7 @@ public class ProviderSecurityListFragment extends SecurityListFragment
     {
         //THLog.i(TAG, "onCreateOptionsMenu");
         super.onCreateOptionsMenu(menu, inflater);
-        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
+        actionBar = getSherlockActivity().getSupportActionBar();
         actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_HOME_AS_UP);
         if (providerSpecificResourcesDTO != null && providerSpecificResourcesDTO.securityListFragmentTitleResId > 0)
         {
@@ -93,6 +107,25 @@ public class ProviderSecurityListFragment extends SecurityListFragment
         {
             actionBar.setTitle(R.string.provider_security_list_title);
         }
+
+        inflater.inflate(R.menu.provider_security_list_menu, menu);
+
+        wizardButton = menu.findItem(R.id.btn_wizard);
+        if (wizardButton != null)
+        {
+            wizardButton.setVisible(providerDTO != null && providerDTO.hasWizard());
+        }
+    }
+
+    @Override public boolean onOptionsItemSelected(MenuItem item)
+    {
+        switch (item.getItemId())
+        {
+            case R.id.btn_wizard:
+                pushWizardElement();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override public void onStart()
@@ -109,6 +142,12 @@ public class ProviderSecurityListFragment extends SecurityListFragment
     {
         super.onResume();
         forceInitialLoad();
+        // We came back into view so we have to forget the web fragment
+        if (this.webViewFragment != null)
+        {
+            this.webViewFragment.setThIntentPassedListener(null);
+        }
+        this.webViewFragment = null;
     }
 
     @Override public void onStop()
@@ -121,6 +160,7 @@ public class ProviderSecurityListFragment extends SecurityListFragment
     @Override public void onDestroy()
     {
         this.providerCacheListener = null;
+        this.webViewTHIntentPassedListener = null;
         super.onDestroy();
     }
 
@@ -141,6 +181,9 @@ public class ProviderSecurityListFragment extends SecurityListFragment
     protected void linkWith(ProviderDTO providerDTO, boolean andDisplay)
     {
         this.providerDTO = providerDTO;
+
+        getActivity().invalidateOptionsMenu();
+
         if (andDisplay)
         {
         }
@@ -176,6 +219,15 @@ public class ProviderSecurityListFragment extends SecurityListFragment
     @Override public ProviderSecurityListType getSecurityListType(int page)
     {
         return new BasicProviderSecurityListType(providerId, page, perPage);
+    }
+
+    private void pushWizardElement()
+    {
+        Bundle args = new Bundle();
+        args.putString(WebViewFragment.BUNDLE_KEY_URL, ProviderConstants.getWizardPage(providerId) + "&previous=whatever");
+        args.putBoolean(WebViewFragment.BUNDLE_KEY_IS_OPTION_MENU_VISIBLE, false);
+        this.webViewFragment = (WebViewFragment) navigator.pushFragment(WebViewFragment.class, args);
+        this.webViewFragment.setThIntentPassedListener(this.webViewTHIntentPassedListener);
     }
 
     @Override public boolean isTabBarVisible()
@@ -229,6 +281,57 @@ public class ProviderSecurityListFragment extends SecurityListFragment
             navigator.pushFragment(BuySellFragment.class, args);
 
             // startActivity(new SecurityBuyIntent(securityCompactDTO)); // Example using external navigation
+        }
+    }
+
+    private class ProviderSecurityListWebViewTHIntentPassedListener implements THIntentPassedListener
+    {
+        @Override public void onIntentPassed(THIntent thIntent)
+        {
+            if (thIntent instanceof ProviderPageIntent)
+            {
+                THLog.d(TAG, "Intent is ProviderPageIntent");
+                if (webViewFragment != null)
+                {
+                    THLog.d(TAG, "Passing on " + ((ProviderPageIntent) thIntent).getCompleteForwardUriPath());
+                    webViewFragment.loadUrl(((ProviderPageIntent) thIntent).getCompleteForwardUriPath());
+                }
+                else
+                {
+                    THLog.d(TAG, "WebFragment is null");
+                }
+            }
+            else if (thIntent instanceof SecurityPushBuyIntent)
+            {
+                handleSecurityPushBuyIntent((SecurityPushBuyIntent) thIntent);
+            }
+            else if (thIntent == null)
+            {
+                navigator.popFragment();
+            }
+            else
+            {
+                THLog.w(TAG, "Unhandled intent " + thIntent);
+            }
+        }
+
+        protected void handleSecurityPushBuyIntent(SecurityPushBuyIntent thIntent)
+        {
+            // We are probably coming back from the wizard
+            getNavigator().popFragment(ProviderSecurityListFragment.class.getName());
+            // Now moving on
+            Bundle argsBundle = thIntent.getBundle();
+            if (thIntent.getActionFragment().equals(BuySellFragment.class))
+            {
+                argsBundle.putBundle(BuySellFragment.BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE, getApplicablePortfolioId().getArgs());
+                argsBundle.putBundle(BuySellFragment.BUNDLE_KEY_PROVIDER_ID_BUNDLE, providerId.getArgs());
+            }
+            getNavigator().pushFragment(thIntent.getActionFragment(), argsBundle,
+                    new int[] {
+                            R.anim.slide_right_in, R.anim.alpha_out,
+                            R.anim.slide_left_in, R.anim.slide_right_out
+                    }, null);
+            THLog.d(TAG, "onIntentPassed " + thIntent);
         }
     }
 }

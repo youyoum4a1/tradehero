@@ -163,7 +163,7 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
         leaderboardDefListCacheFetchMostSkilledTask.execute();
     }
 
-    private void initViews(View view)
+    @Override protected void initViews(View view)
     {
         this.firstProviderLink = (ImageView) view.findViewById(R.id.btn_first_provider);
         if (this.firstProviderLink != null)

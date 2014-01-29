@@ -34,8 +34,13 @@ public class LeaderboardDefListViewFragment extends BaseLeaderboardFragment
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.leaderboard_def_listview, container, false);
-        contentListView = (ListView) view.findViewById(android.R.id.list);
+        initViews(view);
         return view;
+    }
+
+    @Override protected void initViews(View view)
+    {
+        contentListView = (ListView) view.findViewById(android.R.id.list);
     }
 
     @Override public void onResume()
@@ -59,7 +64,6 @@ public class LeaderboardDefListViewFragment extends BaseLeaderboardFragment
         });
         super.onResume();
     }
-
 
     private void updateLeaderboardDefListKey(Bundle bundle)
     {

@@ -58,6 +58,11 @@ public class ProviderDTO implements DTO
         return new ProviderId(id);
     }
 
+    public boolean hasWizard()
+    {
+        return wizardUrl != null && wizardUrl.length() > 0;
+    }
+
     public String getStatusSingleImageUrl(boolean isSelected)
     {
         return isSelected ? getStatusSingleSelectedImageUrl() : getStatusSingleImageUrl();
@@ -113,5 +118,49 @@ public class ProviderDTO implements DTO
         }
 
         return providerIds;
+    }
+
+    @Override public String toString()
+    {
+        return "ProviderDTO{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", logoUrl='" + logoUrl + '\'' +
+                ", isUserEnrolled=" + isUserEnrolled +
+                ", hexColor='" + hexColor + '\'' +
+                ", navigationLogoUrl='" + navigationLogoUrl + '\'' +
+                ", advertisements=" + advertisements +
+                ", competitionScreenTitle='" + competitionScreenTitle + '\'' +
+                ", competitionScreenSubtitle='" + competitionScreenSubtitle + '\'' +
+                ", joinedLogoUrl='" + joinedLogoUrl + '\'' +
+                ", secondaryHexColor='" + secondaryHexColor + '\'' +
+                ", providerSubtitle='" + providerSubtitle + '\'' +
+                ", joinedProviderSubtitle='" + joinedProviderSubtitle + '\'' +
+                ", singleRowHeightPoint=" + singleRowHeightPoint +
+                ", multiRowHeightPoint=" + multiRowHeightPoint +
+                ", singleImageUrl='" + singleImageUrl + '\'' +
+                ", singleSelectedImageUrl='" + singleSelectedImageUrl + '\'' +
+                ", multiImageUrl='" + multiImageUrl + '\'' +
+                ", multiSelectedImageUrl='" + multiSelectedImageUrl + '\'' +
+                ", singleJoinedImageUrl='" + singleJoinedImageUrl + '\'' +
+                ", singleJoinedSelectedImageUrl='" + singleJoinedSelectedImageUrl + '\'' +
+                ", multiJoinedImageUrl='" + multiJoinedImageUrl + '\'' +
+                ", multiJoinedSelectedImageUrl='" + multiJoinedSelectedImageUrl + '\'' +
+                ", tradeButtonImageUrl='" + tradeButtonImageUrl + '\'' +
+                ", tradeButtonSelectedImageUrl='" + tradeButtonSelectedImageUrl + '\'' +
+                ", tileImageUrl='" + tileImageUrl + '\'' +
+                ", tileJoinedImageUrl='" + tileJoinedImageUrl + '\'' +
+                ", timerImageUrl='" + timerImageUrl + '\'' +
+                ", volumeRestrictionEnabled=" + volumeRestrictionEnabled +
+                ", tradeRestrictionStartHourUtc=" + tradeRestrictionStartHourUtc +
+                ", tradeRestrictionEndHourUtc=" + tradeRestrictionEndHourUtc +
+                ", appiTunesUrl='" + appiTunesUrl + '\'' +
+                ", iosAppSecurityPageUrlTemplate='" + iosAppSecurityPageUrlTemplate + '\'' +
+                ", helpVideoText='" + helpVideoText + '\'' +
+                ", ruleText='" + ruleText + '\'' +
+                ", hasHelpVideo=" + hasHelpVideo +
+                ", wizardUrl='" + wizardUrl + '\'' +
+                ", associatedPortfolio=" + associatedPortfolio +
+                '}';
     }
 }
