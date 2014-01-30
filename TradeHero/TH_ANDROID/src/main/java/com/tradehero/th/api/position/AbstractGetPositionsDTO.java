@@ -58,4 +58,14 @@ abstract public class AbstractGetPositionsDTO<PositionType extends PositionDTO> 
         }
         return openPositions;
     }
+
+    @Override public String toString()
+    {
+        return "AbstractGetPositionsDTO{" +
+                "positions=" + positions +
+                ", securities=" + securities +
+                ", openPositionsCount=" + openPositionsCount +
+                ", closedPositionsCount=" + closedPositionsCount +
+                '}';
+    }
 }
