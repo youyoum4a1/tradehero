@@ -71,7 +71,7 @@
               android:layout_height="wrap_content"
               android:layout_marginLeft="16dp"
               android:layout_toLeftOf="@id/portfolio_drop_down_hint"
-              android:text="@string/na"
+              tools:text="Main Portfolio"
               android:textSize="16sp"
               />
 
@@ -131,6 +131,8 @@
                 android:textSize="18sp"
                 android:gravity="center"
                 android:maxLines="2"
+                android:textColor="@color/sec_type"
+                tools:text="UOB Mb"
                 />
             <!-- TODO Add stock name and chart icon -->
 

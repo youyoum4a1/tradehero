@@ -22,16 +22,20 @@ public class SecurityPositionDetailDTOUtil
         return null;
     }
 
-    public static Double projectedPLValue(SecurityPositionDetailDTO securityPositionDetailDTO, QuoteDTO quoteDTO, double shareQuantity)
+    public static Double projectedPLValue(SecurityPositionDetailDTO securityPositionDetailDTO, QuoteDTO quoteDTO, Integer shareQuantity)
     {
         return projectedPLValue(securityPositionDetailDTO, quoteDTO, shareQuantity, true);
     }
 
-    public static Double projectedPLValue(SecurityPositionDetailDTO securityPositionDetailDTO, QuoteDTO quoteDTO, double shareQuantity, boolean includeTransactionCost)
+    public static Double projectedPLValue(SecurityPositionDetailDTO securityPositionDetailDTO, QuoteDTO quoteDTO, Integer shareQuantity, boolean includeTransactionCost)
     {
-        if (securityPositionDetailDTO != null && securityPositionDetailDTO.positions != null &&
+        if (shareQuantity != null &&
+                securityPositionDetailDTO != null &&
+                securityPositionDetailDTO.positions != null &&
                 securityPositionDetailDTO.positions.get(0).averagePriceRefCcy != null &&
-                quoteDTO != null && quoteDTO.bid != null && quoteDTO.toUSDRate != null)
+                quoteDTO != null &&
+                quoteDTO.bid != null &&
+                quoteDTO.toUSDRate != null)
         {
             double buyPrice = shareQuantity * securityPositionDetailDTO.positions.get(0).averagePriceRefCcy;
             double sellPrice = shareQuantity * quoteDTO.bid * quoteDTO.toUSDRate;

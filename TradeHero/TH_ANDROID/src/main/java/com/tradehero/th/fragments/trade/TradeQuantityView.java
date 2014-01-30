@@ -47,7 +47,7 @@ public class TradeQuantityView extends TableLayout
     private QuoteDTO quoteDTO;
     private boolean buy = true;
     private boolean refreshingQuote = false;
-    private double shareQuantity;
+    private Integer shareQuantity;
     private boolean mHighlightQuantity = false;
     private int mNormalQuantityColor;
     private int mHighlightQuantityColor;
@@ -107,12 +107,12 @@ public class TradeQuantityView extends TableLayout
         displayTradeValueRow();
     }
 
-    public double getShareQuantity()
+    public Integer getShareQuantity()
     {
         return shareQuantity;
     }
 
-    public void setShareQuantity(double shareQuantity)
+    public void setShareQuantity(Integer shareQuantity)
     {
         this.shareQuantity = shareQuantity;
         displayShareQuantity();
@@ -307,9 +307,13 @@ public class TradeQuantityView extends TableLayout
     {
         if (mQuantity != null)
         {
-            if (shareQuantity == (int) shareQuantity)
+            if (shareQuantity == null)
             {
-                mQuantity.setText(String.format("%,d", (int) shareQuantity));
+                mQuantity.setText("");
+            }
+            else if (shareQuantity == (int) (double) shareQuantity)
+            {
+                mQuantity.setText(String.format("%,d", (int) (double) shareQuantity));
             }
             else
             {
@@ -330,12 +334,12 @@ public class TradeQuantityView extends TableLayout
     {
         if (mTradeValue != null)
         {
-            if (buy && quoteDTO != null && quoteDTO.ask != null && quoteDTO.toUSDRate != null)
+            if (shareQuantity != null && buy && quoteDTO != null && quoteDTO.ask != null && quoteDTO.toUSDRate != null)
             {
                 THSignedNumber thTradeValue = new THSignedNumber(THSignedNumber.TYPE_MONEY, shareQuantity * quoteDTO.ask * quoteDTO.toUSDRate, false);
                 mTradeValue.setText(thTradeValue.toString());
             }
-            else if (!buy && quoteDTO != null && quoteDTO.bid != null && quoteDTO.toUSDRate != null)
+            else if (shareQuantity != null && !buy && quoteDTO != null && quoteDTO.bid != null && quoteDTO.toUSDRate != null)
             {
                 THSignedNumber thTradeValue = new THSignedNumber(THSignedNumber.TYPE_MONEY, shareQuantity * quoteDTO.bid * quoteDTO.toUSDRate, false);
                 mTradeValue.setText(thTradeValue.toString());

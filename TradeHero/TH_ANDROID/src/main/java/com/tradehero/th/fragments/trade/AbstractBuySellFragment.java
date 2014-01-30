@@ -70,8 +70,8 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
     protected boolean refreshingQuote = false;
 
     protected boolean isTransactionTypeBuy = true;
-    protected int mBuyQuantity;
-    protected int mSellQuantity;
+    protected Integer mBuyQuantity;
+    protected Integer mSellQuantity;
 
     protected ImageView marketCloseIcon;
 
@@ -93,8 +93,14 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
         if (args != null)
         {
             isTransactionTypeBuy = args.getBoolean(BUNDLE_KEY_IS_BUY, isTransactionTypeBuy);
-            mBuyQuantity = args.getInt(BUNDLE_KEY_QUANTITY_BUY, mBuyQuantity);
-            mSellQuantity = args.getInt(BUNDLE_KEY_QUANTITY_SELL, mSellQuantity);
+            if (args.containsKey(BUNDLE_KEY_QUANTITY_BUY))
+            {
+                mBuyQuantity = args.getInt(BUNDLE_KEY_QUANTITY_BUY);
+            }
+            if (args.containsKey(BUNDLE_KEY_QUANTITY_SELL))
+            {
+                mSellQuantity = args.getInt(BUNDLE_KEY_QUANTITY_SELL, mSellQuantity);
+            }
 
             Bundle providerIdBundle = args.getBundle(BUNDLE_KEY_PROVIDER_ID_BUNDLE);
             if (providerIdBundle != null)
@@ -173,8 +179,14 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
     {
         super.onSaveInstanceState(outState);
         outState.putBoolean(BUNDLE_KEY_IS_BUY, isTransactionTypeBuy);
-        outState.putInt(BUNDLE_KEY_QUANTITY_BUY, mBuyQuantity);
-        outState.putInt(BUNDLE_KEY_QUANTITY_SELL, mSellQuantity);
+        if (mBuyQuantity != null)
+        {
+            outState.putInt(BUNDLE_KEY_QUANTITY_BUY, mBuyQuantity);
+        }
+        if (mSellQuantity != null)
+        {
+            outState.putInt(BUNDLE_KEY_QUANTITY_SELL, mSellQuantity);
+        }
     }
 
     @Override public void onDestroyView()
@@ -256,6 +268,10 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
 
     protected Double getTotalCostForBuy()
     {
+        if (mBuyQuantity == null)
+        {
+            return null;
+        }
         if (quoteDTO.toUSDRate == null)
         {
             return mBuyQuantity * quoteDTO.ask;
@@ -265,6 +281,10 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
 
     protected Double getTotalCostForSell()
     {
+        if (mSellQuantity == null)
+        {
+            return null;
+        }
         if (quoteDTO.toUSDRate == null)
         {
             return mSellQuantity * quoteDTO.bid;

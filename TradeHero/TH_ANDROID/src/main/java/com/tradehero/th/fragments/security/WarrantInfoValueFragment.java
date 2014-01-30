@@ -305,7 +305,7 @@ public class WarrantInfoValueFragment extends AbstractSecurityInfoFragment<Secur
             }
             else
             {
-                mIssuer.setText(warrantDTO.issuerName);
+                mIssuer.setText(warrantDTO.issuerName.toUpperCase()); // HACK upperCase
             }
         }
     }

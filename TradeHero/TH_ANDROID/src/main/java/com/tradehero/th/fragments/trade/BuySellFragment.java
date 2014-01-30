@@ -690,7 +690,8 @@ public class BuySellFragment extends AbstractBuySellFragment
     {
         if (mSelectedPortfolioContainer != null)
         {
-            mSelectedPortfolioContainer.setVisibility(usedMenuOwnedPortfolioIds != null && usedMenuOwnedPortfolioIds.size() > 1 ? View.VISIBLE : View.GONE);
+            mSelectedPortfolioContainer.setVisibility(
+                    usedMenuOwnedPortfolioIds != null && usedMenuOwnedPortfolioIds.size() > 1 ? View.VISIBLE : View.GONE);
         }
     }
 
@@ -793,13 +794,15 @@ public class BuySellFragment extends AbstractBuySellFragment
         {
             if (isTransactionTypeBuy)
             {
-                mBuyBtn.setEnabled(mBuyQuantity > 0);
-                mBuyBtn.setText(mBuyQuantity > 0 ? R.string.button_buy : R.string.button_cannot_buy);
+                boolean isOk = mBuyQuantity != null && mBuyQuantity > 0;
+                mBuyBtn.setEnabled(isOk);
+                mBuyBtn.setText(isOk ? R.string.button_buy : R.string.button_cannot_buy);
             }
             else
             {
-                mBuyBtn.setEnabled(mSellQuantity > 0);
-                mBuyBtn.setText(mSellQuantity > 0 ? R.string.button_sell : R.string.button_cannot_sell);
+                boolean isOk = mSellQuantity != null && mSellQuantity > 0;
+                mBuyBtn.setEnabled(isOk);
+                mBuyBtn.setText(isOk ? R.string.button_sell : R.string.button_cannot_sell);
             }
             mBuyBtn.setAlpha(mBuyBtn.isEnabled() ? 1 : BUY_BUTTON_DISABLED_ALPHA);
         }
@@ -898,7 +901,10 @@ public class BuySellFragment extends AbstractBuySellFragment
                 {
                     mSlider.setMax(maxPurchasableShares);
                     mSlider.setEnabled(maxPurchasableShares > 0);
-                    mSlider.setProgress(mBuyQuantity);
+                    if (mBuyQuantity != null)
+                    {
+                        mSlider.setProgress(mBuyQuantity);
+                    }
                 }
             }
             else
@@ -908,7 +914,10 @@ public class BuySellFragment extends AbstractBuySellFragment
                 {
                     mSlider.setMax(maxSellableShares);
                     mSlider.setEnabled(maxSellableShares > 0);
-                    mSlider.setProgress(mSellQuantity);
+                    if (mSellQuantity != null)
+                    {
+                        mSlider.setProgress(mSellQuantity);
+                    }
                 }
             }
         }
@@ -1129,15 +1138,21 @@ public class BuySellFragment extends AbstractBuySellFragment
     {
         Bundle args = new Bundle();
         args.putBoolean(BuySellConfirmFragment.BUNDLE_KEY_IS_BUY, isTransactionTypeBuy);
-        args.putInt(BuySellConfirmFragment.BUNDLE_KEY_QUANTITY_BUY, mBuyQuantity);
-        args.putInt(BuySellConfirmFragment.BUNDLE_KEY_QUANTITY_SELL, mSellQuantity);
+        if (isTransactionTypeBuy)
+        {
+            args.putInt(BuySellConfirmFragment.BUNDLE_KEY_QUANTITY_BUY, mBuyQuantity);
+        }
+        else
+        {
+            args.putInt(BuySellConfirmFragment.BUNDLE_KEY_QUANTITY_SELL, mSellQuantity);
+        }
         args.putBundle(BuySellConfirmFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
 
         OwnedPortfolioId applicablePortfolioId = getApplicablePortfolioId();
         if (applicablePortfolioId != null)
         {
             args.putBundle(BuySellConfirmFragment.BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE, applicablePortfolioId.getArgs());
-        };
+        }
 
         navigator.pushFragment(BuySellConfirmFragment.class, args);
     }

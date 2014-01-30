@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<merge xmlns:android="http://schemas.android.com/apk/res/android">
+<merge
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    >
 
   <TableRow
       android:id="@+id/sec_type_row"
@@ -25,6 +28,7 @@
         android:gravity="left"
         android:text=""
         android:textStyle="bold"
+        android:textColor="@color/sec_type"
         />
 
   </TableRow>

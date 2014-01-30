@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<merge xmlns:android="http://schemas.android.com/apk/res/android">
+<merge
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    >
 
   <TextView
       android:id="@+id/last_price"
@@ -7,7 +10,7 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:gravity="center_horizontal"
-      android:text="stock"
+      tools:text="US$ 4.60"
       android:textSize="18sp"
       android:textStyle="bold"
       />
@@ -38,7 +41,7 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_weight="1"
-          android:text="4.5"
+          tools:text="4.5"
           android:gravity="right"
           android:textSize="13sp"
           android:singleLine="true"
@@ -58,7 +61,7 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_weight="1"
-          android:text="4.6"
+          tools:text="4.6"
           android:gravity="left"
           android:textSize="13sp"
           android:singleLine="true"
