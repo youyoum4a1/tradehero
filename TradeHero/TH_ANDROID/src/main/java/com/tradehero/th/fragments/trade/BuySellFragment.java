@@ -139,7 +139,7 @@ public class BuySellFragment extends AbstractBuySellFragment
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        THLog.d(TAG, "onCreateView");
+        //THLog.d(TAG, "onCreateView");
         super.onCreateView(inflater, container, savedInstanceState);
 
         if (desiredArguments == null)
@@ -320,7 +320,6 @@ public class BuySellFragment extends AbstractBuySellFragment
 
         OwnedPortfolioId defaultOwnedPortfolioId = portfolioCompactListCache.getDefaultPortfolio(currentUserBaseKeyHolder.getCurrentUserBaseKey());
         PortfolioCompactDTO defaultPortfolioCompactDTO = portfolioCompactCache.get(defaultOwnedPortfolioId.getPortfolioId());
-        THLog.d(TAG, "buildUsedMenuPortfolios adding " + defaultOwnedPortfolioId);
         newMenus.add(new MenuOwnedPortfolioId(defaultOwnedPortfolioId, defaultPortfolioCompactDTO));
 
         TreeSet<OwnedPortfolioId> otherPortfolioIds = new TreeSet<>();
@@ -357,7 +356,6 @@ public class BuySellFragment extends AbstractBuySellFragment
         {
             OwnedPortfolioId ownedPortfolioId = iterator.next();
             PortfolioCompactDTO portfolioCompactDTO = portfolioCompactCache.get(ownedPortfolioId.getPortfolioId());
-            THLog.d(TAG, "buildUsedMenuPortfolios Adding " + ownedPortfolioId);
             if (portfolioCompactDTO != null && portfolioCompactDTO.providerId != null && providerId != null &&
                     providerId.key.equals(portfolioCompactDTO.providerId) &&
                     providerSpecificResourcesDTO != null && providerSpecificResourcesDTO.competitionPortfolioTitleResId > 0)
@@ -371,7 +369,6 @@ public class BuySellFragment extends AbstractBuySellFragment
             }
         }
 
-        THLog.d(TAG, "ownedPortfolioId newMenus.count " + newMenus.size());
         usedMenuOwnedPortfolioIds = newMenus;
     }
 
@@ -433,7 +430,7 @@ public class BuySellFragment extends AbstractBuySellFragment
 
     @Override public void onDestroyOptionsMenu()
     {
-        THLog.d(TAG, "onDestroyOptionsMenu");
+        //THLog.d(TAG, "onDestroyOptionsMenu");
         if (marketCloseIcon != null)
         {
             marketCloseIcon.setOnClickListener(null);
@@ -489,7 +486,7 @@ public class BuySellFragment extends AbstractBuySellFragment
 
     @Override public void onDestroyView()
     {
-        THLog.d(TAG, "onDestroyView");
+        //THLog.d(TAG, "onDestroyView");
 
         if (mSelectedPortfolioContainer != null)
         {
@@ -549,12 +546,6 @@ public class BuySellFragment extends AbstractBuySellFragment
         super.onDestroy();
     }
 
-    @Override public void onDetach()
-    {
-        THLog.d(TAG, "onDetach");
-        super.onDetach();
-    }
-
     @Override public void linkWith(SecurityId securityId, boolean andDisplay)
     {
         super.linkWith(securityId, andDisplay);
@@ -581,26 +572,10 @@ public class BuySellFragment extends AbstractBuySellFragment
 
     @Override public void linkWith(final SecurityPositionDetailDTO securityPositionDetailDTO, boolean andDisplay)
     {
-        Integer maxSellableShares = getMaxSellableShares();
-        if (this.securityPositionDetailDTO == null) // This is the first update
-        {
-            if (maxSellableShares != null)
-            {
-                mSellQuantity = maxSellableShares;
-                if (maxSellableShares == 0)
-                {
-                    setTransactionTypeBuy(true);
-                }
-            }
-        }
-
         super.linkWith(securityPositionDetailDTO, andDisplay);
 
-        if (this.securityPositionDetailDTO != null && maxSellableShares != null && maxSellableShares == 0)
-        {
-            // Nothing to sell
-            setTransactionTypeBuy(true);
-        }
+        setInitialSellQuantityIfCan();
+        flipToBuyIfCannotSell();
 
         if (andDisplay)
         {
@@ -618,6 +593,9 @@ public class BuySellFragment extends AbstractBuySellFragment
     @Override public void linkWith(UserProfileDTO userProfileDTO, boolean andDisplay)
     {
         super.linkWith(userProfileDTO, andDisplay);
+        setInitialBuyQuantityIfCan();
+        setInitialSellQuantityIfCan();
+        flipToBuyIfCannotSell();
         if (andDisplay)
         {
             displayTradeQuantityView();
@@ -629,12 +607,49 @@ public class BuySellFragment extends AbstractBuySellFragment
     @Override protected void linkWith(QuoteDTO quoteDTO, boolean andDisplay)
     {
         super.linkWith(quoteDTO, andDisplay);
+        setInitialBuyQuantityIfCan();
+        setInitialSellQuantityIfCan();
+        flipToBuyIfCannotSell();
         if (andDisplay)
         {
             displayPricingBidAskView();
             displayTradeQuantityView();
             displayQuickPriceButtonSet();
             displaySlider();
+        }
+    }
+
+    protected void setInitialBuyQuantityIfCan()
+    {
+        if (mBuyQuantity == null)
+        {
+            Integer maxPurchasableShares = getMaxPurchasableShares();
+            if (maxPurchasableShares != null)
+            {
+                mBuyQuantity = (int) Math.ceil(((double) maxPurchasableShares) / 2);
+            }
+        }
+    }
+
+    protected void setInitialSellQuantityIfCan()
+    {
+        if (mSellQuantity == null)
+        {
+            Integer maxSellableShares = getMaxSellableShares();
+            if (maxSellableShares != null)
+            {
+                mSellQuantity = maxSellableShares;
+            }
+        }
+    }
+
+    protected void flipToBuyIfCannotSell()
+    {
+        Integer maxSellableShares = getMaxSellableShares();
+        if (maxSellableShares != null && maxSellableShares == 0)
+        {
+            // Nothing to sell
+            setTransactionTypeBuy(true);
         }
     }
 
@@ -719,7 +734,6 @@ public class BuySellFragment extends AbstractBuySellFragment
                 OwnedPortfolioId currentOwnedPortfolioId = getApplicablePortfolioId();
                 MenuOwnedPortfolioId chosen = null;
 
-                THLog.d(TAG, "displaySelectedPortfolio menu size " + usedMenuOwnedPortfolioIds.size());
                 final Iterator<MenuOwnedPortfolioId> iterator = usedMenuOwnedPortfolioIds.iterator();
                 MenuOwnedPortfolioId lastElement = null;
                 while (iterator.hasNext())
@@ -1167,14 +1181,9 @@ public class BuySellFragment extends AbstractBuySellFragment
 
     private boolean selectDifferentPortfolio(MenuItem menuItem)
     {
-        THLog.d(TAG, "selectDifferentPortfolio " + menuItem.getTitle());
         if (mSelectedPortfolio != null)
         {
             mSelectedPortfolio.setText(menuItem.getTitle());
-        }
-        else
-        {
-            THLog.d(TAG, "selectDifferentPortfolio mSelectedPortfolio is null");
         }
 
         OwnedPortfolioId applicableOwnedPortfolioId = (MenuOwnedPortfolioId) menuItem.getTitle();
