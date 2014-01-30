@@ -53,6 +53,7 @@ import com.tradehero.th.persistence.user.UserProfileRetrievedMilestone;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.FacebookUtils;
 import com.tradehero.th.utils.LinkedInUtils;
+import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.TwitterUtils;
 import com.tradehero.th.utils.VersionUtils;
 import dagger.Lazy;
@@ -491,9 +492,9 @@ public class SettingsFragment extends PreferenceFragment
 
     private boolean changeEmailNotification(boolean enable)
     {
-        progressDialog = getProgressDialog();
-        progressDialog.setMessage(getString(R.string.settings_notifications_email_alert_message));
-        progressDialog.setTitle(getString(R.string.settings_notifications_email_alert_title));
+        progressDialog = ProgressDialogUtil.show(getActivity(),
+                R.string.settings_notifications_email_alert_title,
+                R.string.settings_notifications_email_alert_message);
 
         userServiceWrapper.updateProfilePropertyEmailNotifications(currentUserBaseKeyHolder.getCurrentUserBaseKey(), enable,
                 createUserProfileCallback());
@@ -502,10 +503,9 @@ public class SettingsFragment extends PreferenceFragment
 
     private boolean changePushNotification(boolean enable)
     {
-        progressDialog = getProgressDialog();
-        progressDialog.setMessage(getString(R.string.settings_notifications_push_alert_title));
-        progressDialog.setTitle(getString(R.string.settings_notifications_push_alert_message));
-        progressDialog.show();
+        progressDialog = ProgressDialogUtil.show(getActivity(),
+                R.string.settings_notifications_push_alert_title,
+                R.string.settings_notifications_push_alert_message);
 
         userServiceWrapper.updateProfilePropertyPushNotifications(currentUserBaseKeyHolder.getCurrentUserBaseKey(), enable,
                 createUserProfileCallback());
@@ -521,32 +521,33 @@ public class SettingsFragment extends PreferenceFragment
             switch (socialNetwork)
             {
                 case FB:
-                    getProgressDialog().setMessage(getString(R.string.connecting_to_facebook));
-                    getProgressDialog().setTitle(getString(R.string.facebook));
-                    getProgressDialog().show();
+                    progressDialog = ProgressDialogUtil.show(getActivity(),
+                            R.string.facebook,
+                            R.string.connecting_to_facebook);
+
                     facebookUtils.get().logIn(getActivity(), socialConnectCallback);
                     break;
                 case TW:
-                    getProgressDialog().setMessage(getString(R.string.connecting_to_twitter));
-                    getProgressDialog().setTitle(getString(R.string.twitter));
-                    getProgressDialog().show();
+                    progressDialog = ProgressDialogUtil.show(getActivity(),
+                            R.string.twitter,
+                            R.string.connecting_to_twitter);
                     twitterUtils.get().logIn(getActivity(), socialConnectCallback);
                     break;
                 case TH:
                     break;
                 case LI:
-                    getProgressDialog().setMessage(getString(R.string.connecting_to_linkedin));
-                    getProgressDialog().setTitle(getString(R.string.linkedin));
-                    getProgressDialog().show();
+                    progressDialog = ProgressDialogUtil.show(getActivity(),
+                            R.string.linkedin,
+                            R.string.connecting_to_linkedin);
                     linkedInUtils.get().logIn(getActivity(), socialConnectCallback);
                     break;
             }
         }
         else
         {
-            getProgressDialog().setMessage(getString(R.string.connecting_tradehero_only));
-            getProgressDialog().setTitle(getString(R.string.please_wait));
-            getProgressDialog().show();
+            progressDialog = ProgressDialogUtil.show(getActivity(),
+                    R.string.please_wait,
+                    R.string.connecting_tradehero_only);
             socialService.disconnect(
                     currentUserBaseKeyHolder.getCurrentUserBaseKey().key,
                     new SocialNetworkFormDTO(socialNetwork),
@@ -711,9 +712,10 @@ public class SettingsFragment extends PreferenceFragment
 
     private void handleClearCacheClicked()
     {
-        getProgressDialog().setMessage(getString(R.string.cache_clearing_alert_title));
-        getProgressDialog().setTitle(getString(R.string.cache_clearing_alert_message));
-        getProgressDialog().show();
+        progressDialog = ProgressDialogUtil.show(getActivity(),
+                R.string.cache_clearing_alert_title,
+                R.string.cache_clearing_alert_message);
+
         new SlowedAsyncTask<Void, Void, Void>(500)
         {
             @Override protected Void doBackgroundAction(Void... voids)
@@ -731,8 +733,9 @@ public class SettingsFragment extends PreferenceFragment
 
     private void handleCacheCleared()
     {
-        getProgressDialog().setTitle(R.string.cache_cleared_alert_title);
-        getProgressDialog().setMessage("");
+        progressDialog = ProgressDialogUtil.show(getActivity(),
+                R.string.cache_cleared_alert_title,
+                R.string.empty);
         getView().postDelayed(new Runnable()
         {
             @Override public void run()
@@ -768,9 +771,9 @@ public class SettingsFragment extends PreferenceFragment
 
     private void effectSignOut()
     {
-        getProgressDialog().setMessage(getString(R.string.settings_misc_sign_out_alert_message));
-        getProgressDialog().setTitle(getString(R.string.settings_misc_sign_out_alert_title));
-        getProgressDialog().show();
+        progressDialog = ProgressDialogUtil.show(getActivity(),
+                R.string.settings_misc_sign_out_alert_title,
+                R.string.settings_misc_sign_out_alert_message);
 
         THLog.d(TAG, "Before signout current user base key " + currentUserBaseKeyHolder.getCurrentUserBaseKey().key);
         sessionService.logout(createSignOutCallback());
@@ -809,20 +812,6 @@ public class SettingsFragment extends PreferenceFragment
     private void handleAboutClicked()
     {
         getNavigator().pushFragment(AboutFragment.class);
-    }
-
-    private ProgressDialog getProgressDialog()
-    {
-        if (progressDialog != null)
-        {
-            return progressDialog;
-        }
-        progressDialog = ProgressDialog.show(
-                getActivity(),
-                getString(R.string.loading_loading),
-                getString(R.string.please_wait), true);
-        progressDialog.hide();
-        return progressDialog;
     }
 
     private LogInCallback socialConnectCallback = new LogInCallback()
