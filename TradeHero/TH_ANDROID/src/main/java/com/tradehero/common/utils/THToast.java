@@ -30,7 +30,7 @@ public class THToast
 
     public static void show(int resourceId)
     {
-            show(Application.getResourceString(resourceId));
+        show(Application.getResourceString(resourceId));
     }
 
     public static void show(THException ex)

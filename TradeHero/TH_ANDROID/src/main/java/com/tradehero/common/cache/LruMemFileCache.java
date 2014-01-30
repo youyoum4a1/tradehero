@@ -28,8 +28,6 @@ public class LruMemFileCache extends LruCache
     // Here we use only 1 index value per key on the disk cache
     public static final int DEFAULT_INDEX = 0;
 
-    private static LruMemFileCache instance = null;
-
     private DiskLruCache diskLruCache;
 
     private static MessageDigest md5;
@@ -81,11 +79,6 @@ public class LruMemFileCache extends LruCache
         initDir(Application.context(), maxFileSize, dirName);
     }
     //</editor-fold>
-
-    public static LruMemFileCache getInstance()
-    {
-        return instance;
-    }
 
     private void initDir(Context context, long maxFileSize, String dirName)
     {

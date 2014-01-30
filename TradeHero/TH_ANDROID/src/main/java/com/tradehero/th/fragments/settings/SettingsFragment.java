@@ -74,15 +74,15 @@ public class SettingsFragment extends PreferenceFragment
     @Inject SocialService socialService;
     @Inject protected Lazy<UserProfileCache> userProfileCache;
     @Inject protected CurrentUserBaseKeyHolder currentUserBaseKeyHolder;
-    protected UserProfileRetrievedMilestone currentUserProfileRetrievedMilestone;
     @Inject protected PushNotificationManager pushNotificationManager;
+    @Inject protected LruMemFileCache lruCache;
+    @Inject protected PurchaseRestorerAlertUtil purchaseRestorerAlertUtil;
 
     @Inject protected Lazy<FacebookUtils> facebookUtils;
     @Inject protected Lazy<TwitterUtils> twitterUtils;
     @Inject protected Lazy<LinkedInUtils> linkedInUtils;
 
     private THIABUserInteractor userInteractor;
-    @Inject protected PurchaseRestorerAlertUtil purchaseRestorerAlertUtil;
 
     private ProgressDialog progressDialog;
     private CheckBoxPreference facebookSharing;
@@ -93,6 +93,7 @@ public class SettingsFragment extends PreferenceFragment
     private CheckBoxPreference emailNotification;
     private CheckBoxPreference pushNotificationSound;
     private CheckBoxPreference pushNotificationVibrate;
+    protected UserProfileRetrievedMilestone currentUserProfileRetrievedMilestone;
 
     @Override public void onActivityCreated(Bundle savedInstanceState)
     {
@@ -720,7 +721,7 @@ public class SettingsFragment extends PreferenceFragment
         {
             @Override protected Void doBackgroundAction(Void... voids)
             {
-                LruMemFileCache.getInstance().flush();
+                flushCache();
                 return null;
             }
 
@@ -729,6 +730,11 @@ public class SettingsFragment extends PreferenceFragment
                 handleCacheCleared();
             }
         }.execute();
+    }
+
+    private void flushCache()
+    {
+        lruCache.flush();
     }
 
     private void handleCacheCleared()
