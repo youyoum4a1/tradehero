@@ -98,6 +98,14 @@ public class AlertManagerFragment extends BasePurchaseManagerFragment
         userProfileRetrievedMilestone.launch();
 
         displayAlertCount();
+
+        btnPlanUpgrade.setOnClickListener(new View.OnClickListener()
+        {
+            @Override public void onClick(View v)
+            {
+                userInteractor.conditionalPopBuyStockAlerts();
+            }
+        });
     }
 
     private void displayAlertCount()

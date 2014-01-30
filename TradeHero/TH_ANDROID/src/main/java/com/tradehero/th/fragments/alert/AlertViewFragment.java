@@ -24,14 +24,19 @@ import com.tradehero.th.api.alert.AlertDTO;
 import com.tradehero.th.api.alert.AlertFormDTO;
 import com.tradehero.th.api.alert.AlertId;
 import com.tradehero.th.api.security.SecurityCompactDTO;
+import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
+import com.tradehero.th.api.users.UserBaseKey;
+import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.misc.callback.THCallback;
 import com.tradehero.th.misc.callback.THResponse;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.service.AlertServiceWrapper;
 import com.tradehero.th.persistence.alert.AlertCache;
 import com.tradehero.th.persistence.alert.AlertCompactCache;
+import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.DateUtils;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.THSignedNumber;
@@ -43,7 +48,7 @@ import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 /**
  * Created with IntelliJ IDEA. User: tho Date: 1/28/14 Time: 12:45 PM Copyright (c) TradeHero
  */
-public class AlertViewFragment extends DashboardFragment
+public class AlertViewFragment extends BasePurchaseManagerFragment
 {
     public static final String BUNDLE_KEY_ALERT_ID_BUNDLE = AlertViewFragment.class.getName() + ".alertId";
 
@@ -62,7 +67,9 @@ public class AlertViewFragment extends DashboardFragment
     @Inject protected Lazy<AlertCache> alertCache;
     @Inject protected Lazy<AlertServiceWrapper> alertServiceWrapper;
     @Inject protected Lazy<Picasso> picasso;
-    @Inject Lazy<PrettyTime> prettyTime;
+    @Inject protected Lazy<PrettyTime> prettyTime;
+    @Inject protected Lazy<UserProfileCache> userProfileCache;
+    @Inject protected CurrentUserBaseKeyHolder currentUserBaseKeyHolder;
 
     private View headerView;
     private AlertDTO alertDTO;
@@ -95,6 +102,11 @@ public class AlertViewFragment extends DashboardFragment
         priceChangeHistoryList.removeHeaderView(headerView);
         alertToggle.setOnCheckedChangeListener(null);
         super.onDestroyView();
+    }
+
+    @Override protected void initViews(View view)
+    {
+
     }
 
     @Override public void onResume()
@@ -179,6 +191,19 @@ public class AlertViewFragment extends DashboardFragment
     {
         alertToggle.setChecked(alertDTO.active);
         alertToggle.setOnCheckedChangeListener(alertToggleCheckedChangeListener);
+        alertToggle.setOnClickListener(new View.OnClickListener()
+        {
+            @Override public void onClick(View v)
+            {
+                UserProfileDTO userProfileDTO = userProfileCache.get().get(currentUserBaseKeyHolder.getCurrentUserBaseKey());
+
+                if (alertToggle.isChecked() && userProfileDTO.alertCount >= userProfileDTO.getUserAlertPlansAlertCount())
+                {
+                    userInteractor.conditionalPopBuyStockAlerts();
+                    alertToggle.setChecked(false);
+                }
+            }
+        });
     }
 
     private void linkWith(SecurityCompactDTO security, boolean andDisplay)
@@ -302,17 +327,22 @@ public class AlertViewFragment extends DashboardFragment
 
     private void handleAlertToggleChanged(boolean alertActive)
     {
-        progressDialog = ProgressDialogUtil.show(getActivity(), R.string.loading_loading, R.string.please_wait);
+        UserProfileDTO userProfileDTO = userProfileCache.get().get(currentUserBaseKeyHolder.getCurrentUserBaseKey());
 
-        if (alertDTO != null)
+        if (userProfileDTO != null)
         {
-            AlertFormDTO alertFormDTO = new AlertFormDTO();
-            alertFormDTO.securityId = alertDTO.security.id;
-            alertFormDTO.targetPrice = alertDTO.targetPrice;
-            alertFormDTO.upOrDown = alertDTO.upOrDown;
-            alertFormDTO.priceMovement = alertDTO.priceMovement;
-            alertFormDTO.active = alertActive;
-            alertServiceWrapper.get().updateAlert(alertId, alertFormDTO, alertUpdateCallback);
+            progressDialog = ProgressDialogUtil.show(getActivity(), R.string.loading_loading, R.string.please_wait);
+
+            if (alertDTO != null)
+            {
+                AlertFormDTO alertFormDTO = new AlertFormDTO();
+                alertFormDTO.securityId = alertDTO.security.id;
+                alertFormDTO.targetPrice = alertDTO.targetPrice;
+                alertFormDTO.upOrDown = alertDTO.upOrDown;
+                alertFormDTO.priceMovement = alertDTO.priceMovement;
+                alertFormDTO.active = alertActive;
+                alertServiceWrapper.get().updateAlert(alertId, alertFormDTO, alertUpdateCallback);
+            }
         }
     }
 

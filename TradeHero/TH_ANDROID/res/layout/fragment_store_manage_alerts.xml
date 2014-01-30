@@ -10,9 +10,8 @@
   <RelativeLayout
       android:id="@+id/manage_alerts_header"
       android:layout_width="match_parent"
-      android:layout_height="wrap_content"
+      android:layout_height="50dp"
       android:layout_alignParentTop="true"
-      android:padding="@dimen/stock_alert_header_padding"
       android:background="@color/gray_3"
       >
 
@@ -35,6 +34,7 @@
         android:layout_height="wrap_content"
         android:text="@string/manage_alerts_plan"
         android:layout_alignParentLeft="true"
+        android:padding="@dimen/stock_alert_header_padding"
         android:layout_centerVertical="true"
         />
 
