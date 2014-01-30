@@ -12,9 +12,11 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.fragments.trade.BuySellFragment;
+import com.tradehero.th.models.chart.yahoo.YahooChartDTO;
+import com.tradehero.th.models.chart.yahoo.YahooChartSize;
+import com.tradehero.th.models.chart.yahoo.YahooTimeSpan;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.utils.DaggerUtils;
-import com.tradehero.th.utils.yahoo.*;
 import com.tradehero.th.widget.news.TimeSpanButtonSet;
 import dagger.Lazy;
 import javax.inject.Inject;
@@ -32,9 +34,8 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
     private ImageView chartImage;
     private TimeSpanButtonSet timeSpanButtonSet;
     private TimeSpanButtonSet.OnTimeSpanButtonSelectedListener timeSpanButtonSetListener;
-    private TimeSpan timeSpan = TimeSpan.day1;
+    private YahooChartDTO yahooChartDTO;
     private int timeSpanButtonSetVisibility = View.VISIBLE;
-    private ChartSize chartSize = ChartSize.medium;
 
     @Inject protected Lazy<SecurityCompactCache> securityCompactCache;
     @Inject protected Picasso picasso;
@@ -43,6 +44,7 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
     {
         super.onCreate(savedInstanceState);
         DaggerUtils.inject(this);
+        yahooChartDTO = new YahooChartDTO("", YahooChartSize.medium, YahooTimeSpan.day1);
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -53,16 +55,16 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
         if (args != null)
         {
             timeSpanButtonSetVisibility = args.getInt(BUNDLE_KEY_TIME_SPAN_BUTTON_SET_VISIBILITY, timeSpanButtonSetVisibility);
-            timeSpan = TimeSpan.valueOf(args.getString(BUNDLE_KEY_TIME_SPAN_STRING, timeSpan.name()));
-            chartSize = ChartSize.valueOf(args.getString(BUNDLE_KEY_CHART_SIZE, chartSize.name()));
+            yahooChartDTO.timeSpan = YahooTimeSpan.valueOf(args.getString(BUNDLE_KEY_TIME_SPAN_STRING, yahooChartDTO.timeSpan.name()));
+            yahooChartDTO.size = YahooChartSize.valueOf(args.getString(BUNDLE_KEY_CHART_SIZE, yahooChartDTO.size.name()));
         }
 
         // Override with saved value if any
         if (savedInstanceState != null)
         {
             timeSpanButtonSetVisibility = savedInstanceState.getInt(BUNDLE_KEY_TIME_SPAN_BUTTON_SET_VISIBILITY, timeSpanButtonSetVisibility);
-            timeSpan = TimeSpan.valueOf(savedInstanceState.getString(BUNDLE_KEY_TIME_SPAN_STRING, timeSpan.name()));
-            chartSize = ChartSize.valueOf(savedInstanceState.getString(BUNDLE_KEY_CHART_SIZE, chartSize.name()));
+            yahooChartDTO.timeSpan = YahooTimeSpan.valueOf(savedInstanceState.getString(BUNDLE_KEY_TIME_SPAN_STRING, yahooChartDTO.timeSpan.name()));
+            yahooChartDTO.size = YahooChartSize.valueOf(savedInstanceState.getString(BUNDLE_KEY_CHART_SIZE, yahooChartDTO.size.name()));
         }
 
         chartImage = (ImageView) view.findViewById(R.id.chart_imageView);
@@ -73,7 +75,7 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
 
         this.timeSpanButtonSetListener = new TimeSpanButtonSet.OnTimeSpanButtonSelectedListener()
         {
-            @Override public void onTimeSpanButtonSelected(TimeSpan selected)
+            @Override public void onTimeSpanButtonSelected(YahooTimeSpan selected)
             {
                 linkWith(selected, true);
             }
@@ -84,7 +86,7 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
         {
             timeSpanButtonSetTemp.addAllChildButtons();
             timeSpanButtonSetTemp.setListener(this.timeSpanButtonSetListener);
-            timeSpanButtonSetTemp.setActive(TimeSpan.month3);
+            timeSpanButtonSetTemp.setActive(YahooTimeSpan.month3);
         }
         this.timeSpanButtonSet = timeSpanButtonSetTemp;
 
@@ -103,8 +105,8 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
     @Override public void onSaveInstanceState(Bundle outState)
     {
         super.onSaveInstanceState(outState);
-        outState.putString(BUNDLE_KEY_TIME_SPAN_STRING, timeSpan.name());
-        outState.putString(BUNDLE_KEY_CHART_SIZE, chartSize.name());
+        outState.putString(BUNDLE_KEY_TIME_SPAN_STRING, yahooChartDTO.timeSpan.name());
+        outState.putString(BUNDLE_KEY_CHART_SIZE, yahooChartDTO.size.name());
         outState.putInt(BUNDLE_KEY_TIME_SPAN_BUTTON_SET_VISIBILITY, timeSpanButtonSetVisibility);
     }
 
@@ -146,9 +148,22 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
         }
     }
 
-    public void linkWith(TimeSpan timeSpan, boolean andDisplay)
+    @Override public void linkWith(SecurityCompactDTO value, boolean andDisplay)
     {
-        this.timeSpan = timeSpan;
+        super.linkWith(value, andDisplay);
+        if (value != null)
+        {
+            yahooChartDTO.yahooSymbol = value.yahooSymbol;
+        }
+        if (andDisplay)
+        {
+            displayChartImage();
+        }
+    }
+
+    public void linkWith(YahooTimeSpan timeSpan, boolean andDisplay)
+    {
+        yahooChartDTO.timeSpan = timeSpan;
         if (andDisplay)
         {
             displayChartImage();
@@ -175,11 +190,8 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
         ImageView image = this.chartImage;
         if (image != null)
         {
-            if (this.value != null && this.value.yahooSymbol != null)
-            {
-                String imageURL = Utils.getChartURL(this.value.yahooSymbol, this.chartSize, this.timeSpan);
-                this.picasso.load(imageURL).into(image);
-            }
+            String imageURL = yahooChartDTO.getChartUrl();
+            this.picasso.load(imageURL).into(image);
             postChooseOtherSize();
         }
     }
@@ -205,10 +217,10 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
         ImageView image = chartImage;
         if (image != null)
         {
-            ChartSize newChartSize = Utils.getPreferredSize(image.getWidth(), image.getHeight());
-            if (newChartSize != chartSize)
+            YahooChartSize newChartSize = YahooChartSize.getPreferredSize(image.getWidth(), image.getHeight());
+            if (newChartSize != yahooChartDTO.size)
             {
-                chartSize = newChartSize;
+                yahooChartDTO.size = newChartSize;
                 displayChartImage();
             }
         }

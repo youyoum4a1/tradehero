@@ -1,11 +1,11 @@
-package com.tradehero.th.utils.yahoo;
+package com.tradehero.th.models.chart.yahoo;
 
 import com.tradehero.th.R;
 
 /**
  * Created by julien on 9/10/13
  */
-public enum TimeSpan
+public enum YahooTimeSpan
 {
     day1("1d", R.string.yahoo_chart_1d),
     day5("5d", R.string.yahoo_chart_5d),
@@ -19,7 +19,7 @@ public enum TimeSpan
     public final String code;
     public final int stringResId;
 
-    private TimeSpan(String c, int stringResId)
+    private YahooTimeSpan(String c, int stringResId)
     {
         code = c;
         this.stringResId = stringResId;

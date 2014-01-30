@@ -140,7 +140,7 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
 
     @Override public void onPause()
     {
-        THLog.d(TAG, "onPause");
+        //THLog.d(TAG, "onPause");
         if (freshQuoteHolder != null)
         {
             freshQuoteHolder.cancel();
@@ -374,7 +374,6 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
             throw new IllegalArgumentException("This security compact is not for " + this.securityId);
         }
         this.securityCompactDTO = securityCompactDTO;
-        THLog.d(TAG, "Display compact isNull: " + (securityCompactDTO == null ? "true" : "false"));
         if (andDisplay)
         {
             displayMarketClose();

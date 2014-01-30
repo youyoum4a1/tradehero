@@ -5,7 +5,7 @@ import android.content.res.TypedArray;
 import android.util.AttributeSet;
 import android.widget.Button;
 import com.tradehero.th.R;
-import com.tradehero.th.utils.yahoo.TimeSpan;
+import com.tradehero.th.models.chart.yahoo.YahooTimeSpan;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 9/23/13 Time: 5:40 PM To change this template use File | Settings | File Templates. */
 public class TimeSpanButton extends Button
@@ -40,14 +40,14 @@ public class TimeSpanButton extends Button
     }
 
     //<editor-fold desc="Accessors">
-    public TimeSpan getTimeSpan()
+    public YahooTimeSpan getTimeSpan()
     {
         String timeSpanString = (String) getTag(R.string.key_time_span);
         if (timeSpanString == null)
         {
             return null;
         }
-        return TimeSpan.valueOf(timeSpanString);
+        return YahooTimeSpan.valueOf(timeSpanString);
     }
 
     public void setTimeSpan(String timeSpan)

@@ -232,7 +232,7 @@ public class TradeQuantityView extends TableLayout
         {
             if (securityCompactDTO != null)
             {
-                mSecurityType.setText(securityCompactDTO.getSecurityType().stringResId);
+                mSecurityType.setText(getContext().getString(securityCompactDTO.getSecurityType().stringResId).toUpperCase()); // HACK upperCase
             }
             else
             {
