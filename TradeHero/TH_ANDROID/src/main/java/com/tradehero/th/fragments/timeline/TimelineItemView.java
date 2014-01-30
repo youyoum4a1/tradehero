@@ -72,8 +72,6 @@ public class TimelineItemView extends LinearLayout implements
     @Inject protected Lazy<WatchlistPositionCache> watchlistPositionCache;
     @Inject protected Lazy<UserWatchlistPositionCache> userWatchlistPositionCache;
     @Inject protected Lazy<UserTimelineService> userTimelineService;
-    @Inject protected Lazy<WarrantSpecificKnowledgeFactory> warrantSpecificKnowledgeFactory;
-    @Inject protected Lazy<SecurityCompactCache> securityCompactCache;
 
     private TimelineItem currentTimelineItem;
     private View tradeActionButton;
@@ -407,24 +405,6 @@ public class TimelineItemView extends LinearLayout implements
             args.putBundle(
                     BuySellFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE,
                     securityId.getArgs());
-
-            // HACK
-            {
-                SecurityCompactDTO securityCompactDTO = securityCompactCache.get().get(securityId);
-                if (securityCompactDTO instanceof WarrantDTO)
-                {
-                    for (Map.Entry<ProviderId, OwnedPortfolioId> entry: warrantSpecificKnowledgeFactory.get().getWarrantApplicablePortfolios().entrySet())
-                    {
-                        args.putBundle(
-                                BuySellFragment.BUNDLE_KEY_PROVIDER_ID_BUNDLE,
-                                entry.getKey().getArgs());
-                        args.putBundle(
-                                BuySellFragment.BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE,
-                                entry.getValue().getArgs());
-                        break; // Keep only the first
-                    }
-                }
-            }
 
             getNavigator().pushFragment(BuySellFragment.class, args);
         }

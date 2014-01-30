@@ -46,12 +46,14 @@ import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.ImageViewThreadSafe;
 import com.tradehero.th.R;
+import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.position.SecurityPositionDetailDTO;
 import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
+import com.tradehero.th.api.security.WarrantDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.billing.googleplay.THIABActor;
 import com.tradehero.th.fragments.billing.THIABUserInteractor;
@@ -61,11 +63,13 @@ import com.tradehero.th.models.alert.SecurityAlertAssistant;
 import com.tradehero.th.models.portfolio.MenuOwnedPortfolioId;
 import com.tradehero.th.models.provider.ProviderSpecificResourcesDTO;
 import com.tradehero.th.models.provider.ProviderSpecificResourcesFactory;
+import com.tradehero.th.models.security.WarrantSpecificKnowledgeFactory;
 import com.tradehero.th.persistence.portfolio.PortfolioCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
 import com.viewpagerindicator.PageIndicator;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 import javax.inject.Inject;
@@ -109,6 +113,7 @@ public class BuySellFragment extends AbstractBuySellFragment
     @Inject protected PortfolioCompactListCache portfolioCompactListCache;
     @Inject protected PortfolioCompactCache portfolioCompactCache;
     @Inject protected ProviderSpecificResourcesFactory providerSpecificResourcesFactory;
+    @Inject protected WarrantSpecificKnowledgeFactory warrantSpecificKnowledgeFactory;
 
     double lastPrice;
     int sliderIncrement = 0;
@@ -130,7 +135,6 @@ public class BuySellFragment extends AbstractBuySellFragment
     {
         super.onCreate(savedInstanceState);
         securityAlertAssistant = new SecurityAlertAssistant();
-        buildUsedMenuPortfolios();
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -175,23 +179,11 @@ public class BuySellFragment extends AbstractBuySellFragment
                     showPortfolioSelector();
                 }
             });
-            mSelectedPortfolioContainer.setVisibility(usedMenuOwnedPortfolioIds.size() > 1 ? View.VISIBLE : View.GONE);
         }
 
         mSelectedPortfolio = (TextView) view.findViewById(R.id.portfolio_selected);
         if (mSelectedPortfolio != null)
         {
-            if (usedMenuOwnedPortfolioIds.size() > 0)
-            {
-                final Iterator<MenuOwnedPortfolioId> iterator = usedMenuOwnedPortfolioIds.iterator();
-                MenuOwnedPortfolioId lastElement = iterator.next();
-                while (iterator.hasNext())
-                {
-                    lastElement = iterator.next();
-                }
-                mSelectedPortfolio.setText(lastElement);
-            }
-
             mPortfolioSelectorMenu = new PopupMenu(getActivity(), mSelectedPortfolio);
             mPortfolioSelectorMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener()
             {
@@ -200,10 +192,6 @@ public class BuySellFragment extends AbstractBuySellFragment
                     return selectDifferentPortfolio(menuItem);
                 }
             });
-            for (MenuOwnedPortfolioId menuOwnedPortfolioId: usedMenuOwnedPortfolioIds)
-            {
-                mPortfolioSelectorMenu.getMenu().add(Menu.NONE, Menu.NONE, Menu.NONE, menuOwnedPortfolioId);
-            }
         }
 
         mStockName = (TextView) view.findViewById(R.id.stock_name);
@@ -332,7 +320,25 @@ public class BuySellFragment extends AbstractBuySellFragment
 
         OwnedPortfolioId defaultOwnedPortfolioId = portfolioCompactListCache.getDefaultPortfolio(currentUserBaseKeyHolder.getCurrentUserBaseKey());
         PortfolioCompactDTO defaultPortfolioCompactDTO = portfolioCompactCache.get(defaultOwnedPortfolioId.getPortfolioId());
+        THLog.d(TAG, "buildUsedMenuPortfolios adding " + defaultOwnedPortfolioId);
         newMenus.add(new MenuOwnedPortfolioId(defaultOwnedPortfolioId, defaultPortfolioCompactDTO));
+
+        TreeSet<OwnedPortfolioId> otherPortfolioIds = new TreeSet<>();
+        // HACK
+        {
+            if (securityCompactDTO instanceof WarrantDTO)
+            {
+                for (Map.Entry<ProviderId, OwnedPortfolioId> entry: warrantSpecificKnowledgeFactory.getWarrantApplicablePortfolios().entrySet())
+                {
+                    if (providerId == null)
+                    {
+                        providerId = entry.getKey();
+                    }
+                    otherPortfolioIds.add(entry.getValue());
+                    break; // Keep only the first
+                }
+            }
+        }
 
         ProviderSpecificResourcesDTO providerSpecificResourcesDTO = providerSpecificResourcesFactory.createResourcesDTO(providerId);
 
@@ -342,21 +348,30 @@ public class BuySellFragment extends AbstractBuySellFragment
             OwnedPortfolioId ownedPortfolioId = new OwnedPortfolioId(ownedPortfolioArgs);
             if (!ownedPortfolioId.equals(defaultOwnedPortfolioId))
             {
-                PortfolioCompactDTO portfolioCompactDTO = portfolioCompactCache.get(ownedPortfolioId.getPortfolioId());
-                if (portfolioCompactDTO != null && portfolioCompactDTO.providerId != null && providerId != null &&
-                        providerId.key.equals(portfolioCompactDTO.providerId) &&
-                        providerSpecificResourcesDTO != null && providerSpecificResourcesDTO.competitionPortfolioTitleResId > 0)
-                {
-
-                    newMenus.add(new MenuOwnedPortfolioId(ownedPortfolioId, getString(providerSpecificResourcesDTO.competitionPortfolioTitleResId)));
-                }
-                else
-                {
-                    newMenus.add(new MenuOwnedPortfolioId(ownedPortfolioId, portfolioCompactDTO));
-                }
+                otherPortfolioIds.add(ownedPortfolioId);
             }
         }
 
+        Iterator<OwnedPortfolioId> iterator = otherPortfolioIds.iterator();
+        while (iterator.hasNext())
+        {
+            OwnedPortfolioId ownedPortfolioId = iterator.next();
+            PortfolioCompactDTO portfolioCompactDTO = portfolioCompactCache.get(ownedPortfolioId.getPortfolioId());
+            THLog.d(TAG, "buildUsedMenuPortfolios Adding " + ownedPortfolioId);
+            if (portfolioCompactDTO != null && portfolioCompactDTO.providerId != null && providerId != null &&
+                    providerId.key.equals(portfolioCompactDTO.providerId) &&
+                    providerSpecificResourcesDTO != null && providerSpecificResourcesDTO.competitionPortfolioTitleResId > 0)
+            {
+
+                newMenus.add(new MenuOwnedPortfolioId(ownedPortfolioId, getString(providerSpecificResourcesDTO.competitionPortfolioTitleResId)));
+            }
+            else
+            {
+                newMenus.add(new MenuOwnedPortfolioId(ownedPortfolioId, portfolioCompactDTO));
+            }
+        }
+
+        THLog.d(TAG, "ownedPortfolioId newMenus.count " + newMenus.size());
         usedMenuOwnedPortfolioIds = newMenus;
     }
 
@@ -548,9 +563,13 @@ public class BuySellFragment extends AbstractBuySellFragment
     @Override public void linkWith(SecurityCompactDTO securityCompactDTO, boolean andDisplay)
     {
         super.linkWith(securityCompactDTO, andDisplay);
+        buildUsedMenuPortfolios();
         if (andDisplay)
         {
             displayMarketClose();
+            displaySelectedPortfolioContainer();
+            displayPortfolioSelectorMenu();
+            displaySelectedPortfolio();
             displayPricingBidAskView();
             displayTradeQuantityView();
             displayStockName();
@@ -585,6 +604,9 @@ public class BuySellFragment extends AbstractBuySellFragment
 
         if (andDisplay)
         {
+            displaySelectedPortfolioContainer();
+            displayPortfolioSelectorMenu();
+            displaySelectedPortfolio();
             displayPricingBidAskView();
             displayTradeQuantityView();
             displayQuickPriceButtonSet();
@@ -649,6 +671,9 @@ public class BuySellFragment extends AbstractBuySellFragment
 
     public void displayPageElements()
     {
+        displaySelectedPortfolioContainer();
+        displayPortfolioSelectorMenu();
+        displaySelectedPortfolio();
         displayPricingBidAskView();
         displayTradeQuantityView();
         displayBuyButton();
@@ -659,6 +684,59 @@ public class BuySellFragment extends AbstractBuySellFragment
         displayTriggerButton();
         storeImageUrlInImageViews();
         loadImages();
+    }
+
+    public void displaySelectedPortfolioContainer()
+    {
+        if (mSelectedPortfolioContainer != null)
+        {
+            mSelectedPortfolioContainer.setVisibility(usedMenuOwnedPortfolioIds != null && usedMenuOwnedPortfolioIds.size() > 1 ? View.VISIBLE : View.GONE);
+        }
+    }
+
+    public void displayPortfolioSelectorMenu()
+    {
+        if (mPortfolioSelectorMenu != null)
+        {
+            mPortfolioSelectorMenu.getMenu().clear();
+            if (usedMenuOwnedPortfolioIds != null)
+            {
+                for (MenuOwnedPortfolioId menuOwnedPortfolioId: usedMenuOwnedPortfolioIds)
+                {
+                    mPortfolioSelectorMenu.getMenu().add(Menu.NONE, Menu.NONE, Menu.NONE, menuOwnedPortfolioId);
+                }
+            }
+        }
+    }
+
+    public void displaySelectedPortfolio()
+    {
+        if (mSelectedPortfolio != null)
+        {
+            if (usedMenuOwnedPortfolioIds != null && usedMenuOwnedPortfolioIds.size() > 0)
+            {
+                OwnedPortfolioId currentOwnedPortfolioId = getApplicablePortfolioId();
+                MenuOwnedPortfolioId chosen = null;
+
+                THLog.d(TAG, "displaySelectedPortfolio menu size " + usedMenuOwnedPortfolioIds.size());
+                final Iterator<MenuOwnedPortfolioId> iterator = usedMenuOwnedPortfolioIds.iterator();
+                MenuOwnedPortfolioId lastElement = null;
+                while (iterator.hasNext())
+                {
+                    lastElement = iterator.next();
+                    if (currentOwnedPortfolioId.equals(lastElement))
+                    {
+                        chosen = lastElement;
+                    }
+                }
+                if (chosen == null)
+                {
+                    chosen = lastElement;
+                }
+
+                mSelectedPortfolio.setText(chosen);
+            }
+        }
     }
 
     public void displayPricingBidAskView()
@@ -1078,6 +1156,10 @@ public class BuySellFragment extends AbstractBuySellFragment
         if (mSelectedPortfolio != null)
         {
             mSelectedPortfolio.setText(menuItem.getTitle());
+        }
+        else
+        {
+            THLog.d(TAG, "selectDifferentPortfolio mSelectedPortfolio is null");
         }
 
         OwnedPortfolioId applicableOwnedPortfolioId = (MenuOwnedPortfolioId) menuItem.getTitle();

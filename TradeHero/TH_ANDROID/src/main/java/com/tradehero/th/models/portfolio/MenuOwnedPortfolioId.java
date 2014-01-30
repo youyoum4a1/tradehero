@@ -60,6 +60,7 @@ public class MenuOwnedPortfolioId extends OwnedPortfolioId implements CharSequen
     }
     //</editor-fold>
 
+    //<editor-fold desc="CharSequence">
     @Override public int length()
     {
         return title.length();
@@ -79,6 +80,7 @@ public class MenuOwnedPortfolioId extends OwnedPortfolioId implements CharSequen
     {
         return title;
     }
+    //</editor-fold>
 
     @Override public int hashCode()
     {
