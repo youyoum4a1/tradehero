@@ -126,13 +126,6 @@ public class PortfolioListFragment extends DashboardFragment
 
     @Override public void onPause()
     {
-        ownPortfolioListListener = null;
-        if (fetchOwnPortfolioListFetchTask != null)
-        {
-            fetchOwnPortfolioListFetchTask.cancel(false);
-        }
-        fetchOwnPortfolioListFetchTask = null;
-
         if (otherPortfolioFetchAssistant != null)
         {
             otherPortfolioFetchAssistant.clear();

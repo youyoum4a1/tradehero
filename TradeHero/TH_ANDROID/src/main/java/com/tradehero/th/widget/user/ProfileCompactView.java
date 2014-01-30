@@ -5,25 +5,25 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.View;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
+import com.squareup.picasso.Transformation;
 import com.tradehero.common.graphics.FastBlurTransformation;
 import com.tradehero.common.graphics.GradientTransformation;
 import com.tradehero.common.graphics.GrayscaleTransformation;
-import com.tradehero.common.graphics.RoundedShapeTransformation;
-import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.models.graphics.TransformationUsage;
 import com.tradehero.th.utils.THSignedNumber;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.fragments.portfolio.PortfolioRequestListener;
 import java.lang.ref.WeakReference;
 import javax.inject.Inject;
+import javax.inject.Named;
 
 /** Created with IntelliJ IDEA. User: tho Date: 10/17/13 Time: 12:51 PM Copyright (c) TradeHero */
 public class ProfileCompactView extends RelativeLayout implements DTOView<UserProfileDTO>
@@ -37,6 +37,7 @@ public class ProfileCompactView extends RelativeLayout implements DTOView<UserPr
     private TextView username;
     private ImageView btnDefaultPortfolio;
 
+    @Inject @Named(TransformationUsage.USER_PHOTO) protected Transformation peopleIconTransformation;
     @Inject protected Picasso picasso;
     private WeakReference<PortfolioRequestListener> portfolioRequestListener = new WeakReference<>(null);
 
@@ -96,7 +97,7 @@ public class ProfileCompactView extends RelativeLayout implements DTOView<UserPr
 
         picasso
                 .load(dto.picture)
-                .transform(new RoundedShapeTransformation())
+                .transform(peopleIconTransformation)
                 .into(avatar);
 
         picasso

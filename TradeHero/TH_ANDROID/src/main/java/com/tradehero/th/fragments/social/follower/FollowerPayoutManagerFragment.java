@@ -10,7 +10,7 @@ import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.squareup.picasso.Picasso;
-import com.tradehero.common.graphics.RoundedShapeTransformation;
+import com.squareup.picasso.Transformation;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
@@ -18,10 +18,12 @@ import com.tradehero.th.api.social.FollowerId;
 import com.tradehero.th.api.social.UserFollowerDTO;
 import com.tradehero.th.api.users.UserBaseDTOUtil;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
+import com.tradehero.th.models.graphics.TransformationUsage;
 import com.tradehero.th.persistence.social.UserFollowerCache;
 import com.tradehero.th.utils.SecurityUtils;
 import dagger.Lazy;
 import javax.inject.Inject;
+import javax.inject.Named;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/11/13 Time: 11:04 AM To change this template use File | Settings | File Templates. */
 public class FollowerPayoutManagerFragment extends BasePurchaseManagerFragment
@@ -40,6 +42,7 @@ public class FollowerPayoutManagerFragment extends BasePurchaseManagerFragment
     private FollowerId followerId;
     private UserFollowerDTO userFollowerDTO;
 
+    @Inject @Named(TransformationUsage.USER_PHOTO) protected Transformation peopleIconTransformation;
     @Inject protected Lazy<Picasso> picasso;
     @Inject protected Lazy<UserFollowerCache> userFollowerCache;
     private DTOCache.Listener<FollowerId, UserFollowerDTO> userFollowerListener;
@@ -189,7 +192,7 @@ public class FollowerPayoutManagerFragment extends BasePurchaseManagerFragment
             if (userFollowerDTO != null)
             {
                 picasso.get().load(userFollowerDTO.picture)
-                        .transform(new RoundedShapeTransformation())
+                        .transform(peopleIconTransformation)
                         .into(followerPicture);
             }
         }

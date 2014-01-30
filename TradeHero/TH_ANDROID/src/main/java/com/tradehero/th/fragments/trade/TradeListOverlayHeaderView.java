@@ -7,7 +7,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.squareup.picasso.Picasso;
-import com.tradehero.common.graphics.RoundedShapeTransformation;
+import com.squareup.picasso.Transformation;
 import com.tradehero.th.R;
 import com.tradehero.th.api.position.OwnedPositionId;
 import com.tradehero.th.api.position.PositionDTO;
@@ -15,6 +15,7 @@ import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.SecurityIntegerId;
 import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.api.users.UserBaseKey;
+import com.tradehero.th.models.graphics.TransformationUsage;
 import com.tradehero.th.persistence.position.PositionCache;
 import com.tradehero.th.persistence.security.SecurityIdCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
@@ -22,12 +23,14 @@ import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
 import javax.inject.Inject;
 import java.lang.ref.WeakReference;
+import javax.inject.Named;
 
 /**
  * Created by julien on 28/10/13
  */
 public class TradeListOverlayHeaderView extends LinearLayout
 {
+    @Inject @Named(TransformationUsage.USER_PHOTO) protected Transformation peopleIconTransformation;
     @Inject Lazy<Picasso> picasso;
     @Inject Lazy<PositionCache> positionCache;
     @Inject Lazy<SecurityIdCache> securityIdCache;
@@ -166,7 +169,7 @@ public class TradeListOverlayHeaderView extends LinearLayout
             if (this.imageProfile != null)
             {
                 picasso.get().load(user.picture)
-                        .transform(new RoundedShapeTransformation())
+                        .transform(peopleIconTransformation)
                         .into(this.imageProfile);
             }
         }

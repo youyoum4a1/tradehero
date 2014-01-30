@@ -5,7 +5,7 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.*;
 import com.squareup.picasso.Picasso;
-import com.tradehero.common.graphics.RoundedShapeTransformation;
+import com.squareup.picasso.Transformation;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
@@ -14,12 +14,14 @@ import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.models.graphics.TransformationUsage;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
 
 import java.lang.ref.WeakReference;
 import javax.inject.Inject;
+import javax.inject.Named;
 
 /**
  * Created by julien on 21/10/13
@@ -28,6 +30,7 @@ public class OtherUserPortfolioHeaderView extends RelativeLayout implements Port
 {
     public static final String TAG = OtherUserPortfolioHeaderView.class.getSimpleName();
 
+    private View userViewContainer;
     private ImageView userImageView;
     private TextView usernameTextView;
     private ImageView followingImageView;
@@ -35,6 +38,7 @@ public class OtherUserPortfolioHeaderView extends RelativeLayout implements Port
 
     @Inject protected CurrentUserBaseKeyHolder currentUserBaseKeyHolder;
     @Inject Lazy<UserProfileCache> userCache;
+    @Inject @Named(TransformationUsage.USER_PHOTO) protected Transformation peopleIconTransformation;
     @Inject Lazy<Picasso> picasso;
     private UserProfileDTO userProfileDTO;
     private WeakReference<OnFollowRequestedListener> followRequestedListenerWeak = new WeakReference<>(null);
@@ -69,6 +73,7 @@ public class OtherUserPortfolioHeaderView extends RelativeLayout implements Port
 
     private void initViews()
     {
+        userViewContainer = findViewById(R.id.portfolio_person_container);
         userImageView = (ImageView) findViewById(R.id.portfolio_header_avatar);
         usernameTextView = (TextView) findViewById(R.id.header_portfolio_username);
         followingImageView = (ImageView) findViewById(R.id.header_portfolio_following_image);
@@ -107,9 +112,9 @@ public class OtherUserPortfolioHeaderView extends RelativeLayout implements Port
             });
         }
 
-        if (usernameTextView != null)
+        if (userViewContainer != null)
         {
-            usernameTextView.setOnClickListener(new OnClickListener()
+            userViewContainer.setOnClickListener(new OnClickListener()
             {
                 @Override public void onClick(View v)
                 {
@@ -128,14 +133,15 @@ public class OtherUserPortfolioHeaderView extends RelativeLayout implements Port
         {
             followButton.setOnClickListener(null);
         }
-        if (usernameTextView != null)
+        if (userViewContainer != null)
         {
-            usernameTextView.setOnClickListener(null);
+            userViewContainer.setOnClickListener(null);
         }
         if (fetchUserProfileTask != null)
         {
             fetchUserProfileTask.setListener(null);
         }
+        fetchUserProfileTask = null;
         getUserCacheListener = null;
 
         super.onDetachedFromWindow();
@@ -164,7 +170,7 @@ public class OtherUserPortfolioHeaderView extends RelativeLayout implements Port
         if (this.userImageView != null)
         {
             picasso.get().load(this.userProfileDTO.picture)
-                    .transform(new RoundedShapeTransformation())
+                    .transform(peopleIconTransformation)
                     .into(this.userImageView);
         }
     }

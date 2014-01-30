@@ -6,15 +6,17 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import com.squareup.picasso.Picasso;
-import com.tradehero.common.graphics.RoundedShapeTransformation;
+import com.squareup.picasso.Transformation;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.social.UserFollowerDTO;
 import com.tradehero.th.api.users.UserBaseDTOUtil;
+import com.tradehero.th.models.graphics.TransformationUsage;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.SecurityUtils;
 import dagger.Lazy;
 import javax.inject.Inject;
+import javax.inject.Named;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/14/13 Time: 12:28 PM To change this template use File | Settings | File Templates. */
 public class FollowerListItemView extends RelativeLayout implements DTOView<UserFollowerDTO>
@@ -26,6 +28,7 @@ public class FollowerListItemView extends RelativeLayout implements DTOView<User
     private TextView revenueInfo;
 
     private UserFollowerDTO userFollowerDTO;
+    @Inject @Named(TransformationUsage.USER_PHOTO) protected Transformation peopleIconTransformation;
     @Inject Lazy<Picasso> picasso;
 
     //<editor-fold desc="Constructors">
@@ -53,7 +56,7 @@ public class FollowerListItemView extends RelativeLayout implements DTOView<User
         if (userIcon != null)
         {
             picasso.get().load(R.drawable.superman_facebook)
-                    .transform(new RoundedShapeTransformation())
+                    .transform(peopleIconTransformation)
                     .into(userIcon);
         }
     }
@@ -101,7 +104,7 @@ public class FollowerListItemView extends RelativeLayout implements DTOView<User
             if (userFollowerDTO != null)
             {
                 picasso.get().load(userFollowerDTO.picture)
-                             .transform(new RoundedShapeTransformation())
+                             .transform(peopleIconTransformation)
                              .into(userIcon);
             }
         }

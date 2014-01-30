@@ -11,25 +11,28 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
+import com.squareup.picasso.Transformation;
 import com.tradehero.common.graphics.FastBlurTransformation;
 import com.tradehero.common.graphics.GradientTransformation;
 import com.tradehero.common.graphics.GrayscaleTransformation;
-import com.tradehero.common.graphics.RoundedShapeTransformation;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.portfolio.PortfolioRequestListener;
+import com.tradehero.th.models.graphics.TransformationUsage;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.THSignedNumber;
 import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
 import javax.inject.Inject;
+import javax.inject.Named;
 
 /** Created with IntelliJ IDEA. User: tho Date: 9/10/13 Time: 6:34 PM Copyright (c) TradeHero */
 public class ProfileView extends LinearLayout implements DTOView<UserProfileDTO>
 {
     private static final String TAG = ProfileView.class.getName();
     @Inject protected Picasso picasso;
+    @Inject @Named(TransformationUsage.USER_PHOTO) protected Transformation peopleIconTransformation;
 
     private ImageView avatar;
     private LinearLayout profileTop;
@@ -150,7 +153,7 @@ public class ProfileView extends LinearLayout implements DTOView<UserProfileDTO>
         {
             picasso
                 .load(dto.picture)
-                .transform(new RoundedShapeTransformation())
+                .transform(peopleIconTransformation)
                 .into(avatar);
 
             profileTop.post(new Runnable()

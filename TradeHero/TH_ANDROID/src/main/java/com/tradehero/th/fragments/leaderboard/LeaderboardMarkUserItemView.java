@@ -10,7 +10,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import com.squareup.picasso.Picasso;
-import com.tradehero.common.graphics.RoundedShapeTransformation;
+import com.squareup.picasso.Transformation;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.leaderboard.LeaderboardDefDTO;
@@ -23,6 +23,7 @@ import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.position.LeaderboardPositionListFragment;
 import com.tradehero.th.fragments.position.PositionListFragment;
+import com.tradehero.th.models.graphics.TransformationUsage;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefCache;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.NumberDisplayUtils;
@@ -32,12 +33,14 @@ import com.tradehero.th.widget.MarkdownTextView;
 import dagger.Lazy;
 import java.text.SimpleDateFormat;
 import javax.inject.Inject;
+import javax.inject.Named;
 
 /** Created with IntelliJ IDEA. User: tho Date: 10/21/13 Time: 4:14 PM Copyright (c) TradeHero */
 public class LeaderboardMarkUserItemView extends RelativeLayout
         implements DTOView<LeaderboardUserDTO>, View.OnClickListener
 {
     @Inject protected Lazy<Picasso> picasso;
+    @Inject @Named(TransformationUsage.USER_PHOTO) protected Transformation peopleIconTransformation;
     @Inject protected Lazy<LeaderboardDefCache> leaderboardDefCache;
     @Inject protected CurrentUserBaseKeyHolder currentUserBaseKeyHolder;
 
@@ -203,13 +206,13 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         if (leaderboardItem.picture != null)
         {
             picasso.get().load(leaderboardItem.picture)
-                    .transform(new RoundedShapeTransformation())
+                    .transform(peopleIconTransformation)
                     .into(lbmuProfilePicture);
         }
         else
         {
             picasso.get().load(R.drawable.superman_facebook)
-                    .transform(new RoundedShapeTransformation())
+                    .transform(peopleIconTransformation)
                     .into(lbmuProfilePicture);
         }
     }

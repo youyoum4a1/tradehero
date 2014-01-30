@@ -8,13 +8,15 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import com.squareup.picasso.Picasso;
-import com.tradehero.common.graphics.RoundedShapeTransformation;
+import com.squareup.picasso.Transformation;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.social.UserFriendsDTO;
+import com.tradehero.th.models.graphics.TransformationUsage;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
 import javax.inject.Inject;
+import javax.inject.Named;
 
 /**
  * Created with IntelliJ IDEA. User: tho Date: 1/22/14 Time: 11:53 AM Copyright (c) TradeHero
@@ -29,6 +31,7 @@ public class UserFriendDTOView extends RelativeLayout
     private TextView userFriendSourceContact;
     private UserFriendsDTO userFriendDTO;
 
+    @Inject @Named(TransformationUsage.USER_PHOTO) protected Transformation peopleIconTransformation;
     @Inject protected Lazy<Picasso> picasso;
 
     //<editor-fold desc="Constructors">
@@ -135,13 +138,13 @@ public class UserFriendDTOView extends RelativeLayout
         if (avatarUrl != null)
         {
             picasso.get().load(avatarUrl)
-                    .transform(new RoundedShapeTransformation())
+                    .transform(peopleIconTransformation)
                     .into(userFriendAvatar);
         }
         else
         {
             picasso.get().load(R.drawable.superman_facebook)
-                    .transform(new RoundedShapeTransformation())
+                    .transform(peopleIconTransformation)
                     .into(userFriendAvatar);
         }
     }

@@ -13,19 +13,15 @@ import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 import com.squareup.picasso.Picasso;
-import com.tradehero.common.graphics.RoundedShapeTransformation;
+import com.squareup.picasso.Transformation;
 import com.tradehero.common.graphics.ScaleKeepRatioTransformation;
 import com.tradehero.common.graphics.WhiteToTransparentTransformation;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
-import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.local.TimelineItem;
-import com.tradehero.th.api.portfolio.OwnedPortfolioId;
-import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.SecurityMediaDTO;
-import com.tradehero.th.api.security.WarrantDTO;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.timeline.TimelineItemShareRequestDTO;
 import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
@@ -40,17 +36,16 @@ import com.tradehero.th.fragments.trade.BuySellFragment;
 import com.tradehero.th.misc.callback.THCallback;
 import com.tradehero.th.misc.callback.THResponse;
 import com.tradehero.th.misc.exception.THException;
-import com.tradehero.th.models.security.WarrantSpecificKnowledgeFactory;
+import com.tradehero.th.models.graphics.TransformationUsage;
 import com.tradehero.th.network.service.UserTimelineService;
-import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.widget.MarkdownTextView;
 import dagger.Lazy;
 import java.util.List;
-import java.util.Map;
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.inject.Provider;
 import org.ocpsoft.prettytime.PrettyTime;
 import retrofit.Callback;
@@ -70,6 +65,7 @@ public class TimelineItemView extends LinearLayout implements
     @Inject protected Provider<PrettyTime> prettyTime;
     @Inject protected CurrentUserBaseKeyHolder currentUserBaseKeyHolder;
     @Inject protected Lazy<Picasso> picasso;
+    @Inject @Named(TransformationUsage.USER_PHOTO) protected Transformation peopleIconTransformation;
     @Inject protected Lazy<WatchlistPositionCache> watchlistPositionCache;
     @Inject protected Lazy<UserWatchlistPositionCache> userWatchlistPositionCache;
     @Inject protected Lazy<UserTimelineService> userTimelineService;
@@ -221,7 +217,7 @@ public class TimelineItemView extends LinearLayout implements
         {
             picasso.get()
                     .load(user.picture)
-                    .transform(new RoundedShapeTransformation())
+                    .transform(peopleIconTransformation)
                     .into(avatar);
         }
     }

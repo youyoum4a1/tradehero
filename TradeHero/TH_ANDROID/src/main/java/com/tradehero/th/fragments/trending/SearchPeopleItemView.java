@@ -14,7 +14,6 @@ import com.tradehero.common.graphics.AbstractSequentialTransformation;
 import com.tradehero.common.graphics.GaussianTransformation;
 import com.tradehero.common.graphics.GrayscaleTransformation;
 import com.tradehero.common.graphics.RoundedCornerTransformation;
-import com.tradehero.common.graphics.RoundedShapeTransformation;
 import com.tradehero.common.thread.KnownExecutorServices;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.common.widget.ImageUrlView;
@@ -22,18 +21,20 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserSearchResultDTO;
+import com.tradehero.th.models.graphics.TransformationUsage;
 import com.tradehero.th.persistence.user.UserSearchResultCache;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.DateUtils;
 import dagger.Lazy;
 import java.util.concurrent.Future;
 import javax.inject.Inject;
+import javax.inject.Named;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 9/17/13 Time: 3:39 PM To change this template use File | Settings | File Templates. */
 public class SearchPeopleItemView extends FrameLayout implements DTOView<UserBaseKey>
 {
     private static final String TAG = SearchPeopleItemView.class.getSimpleName();
-    private static Transformation roundedShapeTransformation;
+    @Inject @Named(TransformationUsage.USER_PHOTO) protected Transformation peopleIconTransformation;
     private static Transformation backgroundTransformation;
 
     @Inject protected Picasso mPicasso;
@@ -79,10 +80,6 @@ public class SearchPeopleItemView extends FrameLayout implements DTOView<UserBas
 
     protected void init ()
     {
-        if (roundedShapeTransformation == null)
-        {
-            roundedShapeTransformation = new RoundedShapeTransformation();
-        }
         if (backgroundTransformation == null)
         {
             backgroundTransformation = new AbstractSequentialTransformation()
@@ -257,7 +254,7 @@ public class SearchPeopleItemView extends FrameLayout implements DTOView<UserBas
         }
 
         mPicasso.load(defaultDrawable)
-                .transform(roundedShapeTransformation)
+                .transform(peopleIconTransformation)
                 .into(userPhoto);
         mPicasso.load(defaultDrawable)
             .transform(backgroundTransformation)
@@ -276,7 +273,7 @@ public class SearchPeopleItemView extends FrameLayout implements DTOView<UserBas
                         THLog.i(TAG, "Loading Fore for " + userPhoto.getUrl());
                         mPicasso.load(userPhoto.getUrl())
                                 .error(defaultDrawable)
-                                .transform(roundedShapeTransformation)
+                                .transform(peopleIconTransformation)
                                 .into(userPhoto, loadIntoBg);
                     }
                 }
