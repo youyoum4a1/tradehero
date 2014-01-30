@@ -131,4 +131,13 @@ public class DisplayablePortfolioDTO implements Comparable
 
         return this.ownedPortfolioId.compareTo(other.ownedPortfolioId);
     }
+
+    @Override public String toString()
+    {
+        return "DisplayablePortfolioDTO{" +
+                "ownedPortfolioId=" + ownedPortfolioId +
+                ", userBaseDTO=" + userBaseDTO +
+                ", portfolioDTO=" + portfolioDTO +
+                '}';
+    }
 }
