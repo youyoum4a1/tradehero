@@ -19,6 +19,7 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.squareup.picasso.Picasso;
 import com.tradehero.common.graphics.WhiteToTransparentTransformation;
+import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.alert.AlertCompactDTO;
@@ -26,14 +27,15 @@ import com.tradehero.th.api.alert.AlertDTO;
 import com.tradehero.th.api.alert.AlertFormDTO;
 import com.tradehero.th.api.alert.AlertId;
 import com.tradehero.th.api.security.SecurityCompactDTO;
+import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
-import com.tradehero.th.fragments.WithDialog;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.misc.callback.THCallback;
 import com.tradehero.th.misc.callback.THResponse;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.service.AlertServiceWrapper;
 import com.tradehero.th.persistence.alert.AlertCompactCache;
+import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.utils.DateUtils;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.THSignedNumber;
@@ -46,6 +48,7 @@ import javax.inject.Inject;
 public class AlertEditFragment extends DashboardFragment
 {
     public static final String BUNDLE_KEY_ALERT_ID_BUNDLE = AlertEditFragment.class.getName() + ".alertId";
+    public static final String BUNDLE_KEY_SECURITY_ID_BUNDLE = AlertEditFragment.class.getName() + ".securityId";
 
     @InjectView(R.id.stock_logo) ImageView stockLogo;
     @InjectView(R.id.stock_symbol) TextView stockSymbol;
@@ -67,14 +70,19 @@ public class AlertEditFragment extends DashboardFragment
     @InjectView(R.id.alert_edit_price_changer_percentage_seek_bar) SeekBar percentageSeekBar;
 
     @Inject protected Lazy<AlertCompactCache> alertCompactCache;
+    @Inject protected Lazy<SecurityCompactCache> securityCompactCache;
     @Inject protected Lazy<AlertServiceWrapper> alertServiceWrapper;
     @Inject protected Lazy<Picasso> picasso;
     @Inject protected CurrentUserBaseKeyHolder currentUserBaseKeyHolder;
 
+    private AlertId alertId;
+    private SecurityId securityId;
+
     private AlertDTO alertDTO;
     private SecurityCompactDTO securityCompactDTO;
-    private AlertId alertId;
+
     private ProgressDialog progressDialog;
+    private DTOCache.GetOrFetchTask<SecurityId, SecurityCompactDTO> securityCompactCacheFetchTask;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -106,6 +114,7 @@ public class AlertEditFragment extends DashboardFragment
         targetPercentageChangeToggle.setOnCheckedChangeListener(null);
         percentageSeekBar.setOnSeekBarChangeListener(null);
         targetPriceSeekBar.setOnSeekBarChangeListener(null);
+        securityCompactCacheFetchTask = null;
         super.onDestroyView();
     }
 
@@ -116,9 +125,38 @@ public class AlertEditFragment extends DashboardFragment
         Bundle args = getArguments();
         if (args != null)
         {
-            alertId = new AlertId(args.getBundle(BUNDLE_KEY_ALERT_ID_BUNDLE));
-            linkWith(alertId, true);
+            Bundle alertBundle = args.getBundle(BUNDLE_KEY_ALERT_ID_BUNDLE);
+            if (alertBundle != null)
+            {
+                alertId = new AlertId(args.getBundle(BUNDLE_KEY_ALERT_ID_BUNDLE));
+                linkWith(alertId, true);
+            }
+
+            Bundle securityBundle = args.getBundle(BUNDLE_KEY_SECURITY_ID_BUNDLE);
+            if (securityBundle != null)
+            {
+                SecurityId securityId = new SecurityId(securityBundle);
+                linkWith(securityId, true);
+            }
         }
+    }
+
+    private void linkWith(SecurityId securityId, boolean andDisplay)
+    {
+        this.securityId = securityId;
+
+        securityCompactDTO = securityCompactCache.get().get(securityId);
+        if (securityCompactDTO != null)
+        {
+            linkWith(securityCompactDTO, andDisplay);
+        }
+        else
+        {
+            progressDialog = ProgressDialogUtil.show(getActivity(), R.string.loading_loading, R.string.please_wait);
+        }
+
+        securityCompactCacheFetchTask = securityCompactCache.get().getOrFetch(securityId, true, securityCompactCallback);
+        securityCompactCacheFetchTask.execute();
     }
 
     @Override public boolean onOptionsItemSelected(MenuItem item)
@@ -138,17 +176,20 @@ public class AlertEditFragment extends DashboardFragment
         alertFormDTO.active = targetPriceToggle.isChecked() || targetPercentageChangeToggle.isChecked();
         if (alertFormDTO.active)
         {
-            alertFormDTO.securityId = alertDTO.security.id;
+            alertFormDTO.securityId = securityCompactDTO.id;
             alertFormDTO.targetPrice = targetPriceToggle.isChecked() ? getSeekingTargetPrice() : alertDTO.targetPrice;
             alertFormDTO.priceMovement = targetPercentageChangeToggle.isChecked() ? getSeekingMovementPercentage() / 100.0 : null;
 
             if (targetPriceToggle.isChecked())
             {
-                alertFormDTO.upOrDown = getSeekingTargetPrice() > alertDTO.security.lastPrice;
+                alertFormDTO.upOrDown = getSeekingTargetPrice() > securityCompactDTO.lastPrice;
             }
             progressDialog = ProgressDialogUtil.create(getActivity(), getString(R.string.loading_loading), getString(R.string.please_wait));
             progressDialog.show();
-            alertServiceWrapper.get().updateAlert(alertId, alertFormDTO, alertUpdateCallback);
+            alertServiceWrapper.get().updateAlert(
+                    alertId != null ? alertId : new AlertId(currentUserBaseKeyHolder.getCurrentUserBaseKey().key, 0),
+                    alertFormDTO,
+                    alertUpdateCallback);
         }
     }
 
@@ -172,8 +213,6 @@ public class AlertEditFragment extends DashboardFragment
         if (andDisplay)
         {
             updateSwitchVisibility();
-
-            displayCurrentPrice();
 
             displayTargetPrice();
 
@@ -226,9 +265,9 @@ public class AlertEditFragment extends DashboardFragment
         THSignedNumber thTargetPrice = new THSignedNumber(THSignedNumber.TYPE_MONEY, alertDTO.targetPrice, false);
         targetPrice.setText(thTargetPrice.toString());
 
-        if (alertDTO.security != null && alertDTO.security.lastPrice != null)
+        if (securityCompactDTO != null && securityCompactDTO.lastPrice != null)
         {
-            targetPriceSeekBar.setProgress((int) (50.0 * alertDTO.targetPrice / alertDTO.security.lastPrice));
+            targetPriceSeekBar.setProgress((int) (50.0 * alertDTO.targetPrice / securityCompactDTO.lastPrice));
         }
         updateTargetPriceChangeValues(targetPriceToggle.isChecked());
     }
@@ -240,6 +279,8 @@ public class AlertEditFragment extends DashboardFragment
         if (andDisplay)
         {
             displayStockLogo();
+
+            displayCurrentPrice();
 
             displayStockSymbol();
 
@@ -293,7 +334,7 @@ public class AlertEditFragment extends DashboardFragment
 
     private void displayCurrentPrice()
     {
-        THSignedNumber thCurrentPrice = new THSignedNumber(THSignedNumber.TYPE_MONEY, alertDTO.security.lastPrice, false);
+        THSignedNumber thCurrentPrice = new THSignedNumber(THSignedNumber.TYPE_MONEY, securityCompactDTO.lastPrice, false);
         currentPrice.setText(thCurrentPrice.toString());
     }
 
@@ -389,7 +430,7 @@ public class AlertEditFragment extends DashboardFragment
         THSignedNumber thPercentageChange = new THSignedNumber(THSignedNumber.TYPE_PERCENTAGE, (double) getSeekingMovementPercentage(), true);
         percentageChange.setText(getFormattedPercentageChange(isChecked ? thPercentageChange.toString(0) : "-"));
 
-        if (alertDTO.security != null && alertDTO.security.lastPrice != null)
+        if (securityCompactDTO != null && securityCompactDTO.lastPrice != null)
         {
             THSignedNumber thPercentageChangePriceValue = new THSignedNumber(
                     THSignedNumber.TYPE_MONEY,
@@ -404,7 +445,7 @@ public class AlertEditFragment extends DashboardFragment
 
     private double getSeekingMovementPrice()
     {
-        return alertDTO.security.lastPrice + alertDTO.security.lastPrice * percentageSeekBar.getProgress() / 100;
+        return securityCompactDTO.lastPrice + securityCompactDTO.lastPrice * percentageSeekBar.getProgress() / 100;
     }
 
     private int getSeekingMovementPercentage()
@@ -449,7 +490,7 @@ public class AlertEditFragment extends DashboardFragment
 
     private Double getSeekingTargetPrice()
     {
-        return (alertDTO.security.lastPrice * 2) * targetPriceSeekBar.getProgress() / targetPriceSeekBar.getMax();
+        return (securityCompactDTO.lastPrice * 2) * targetPriceSeekBar.getProgress() / targetPriceSeekBar.getMax();
     }
 
     private SeekBar.OnSeekBarChangeListener priceSeekBarChangeListener = new SeekBar.OnSeekBarChangeListener()
@@ -487,6 +528,30 @@ public class AlertEditFragment extends DashboardFragment
         @Override protected void failure(THException ex)
         {
             THToast.show(ex);
+        }
+    };
+
+    private DTOCache.Listener<SecurityId, SecurityCompactDTO> securityCompactCallback = new DTOCache.Listener<SecurityId, SecurityCompactDTO>()
+    {
+        @Override public void onDTOReceived(SecurityId key, SecurityCompactDTO value)
+        {
+            hideDialog();
+            securityCompactCache.get().put(key, value);
+            linkWith(value, true);
+        }
+
+        @Override public void onErrorThrown(SecurityId key, Throwable error)
+        {
+            hideDialog();
+            THToast.show(new THException(error));
+        }
+
+        private void hideDialog()
+        {
+            if (progressDialog != null)
+            {
+                progressDialog.hide();
+            }
         }
     };
 

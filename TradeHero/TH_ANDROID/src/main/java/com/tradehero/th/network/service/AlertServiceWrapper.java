@@ -8,6 +8,9 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import retrofit.Callback;
 import retrofit.RetrofitError;
+import retrofit.http.Body;
+import retrofit.http.POST;
+import retrofit.http.Path;
 
 /**
  * Repurposes requests
@@ -60,13 +63,28 @@ import retrofit.RetrofitError;
             throws RetrofitError
     {
         basicCheck(alertId);
-        return this.alertService.updateAlert(alertId.userId, alertId.alertId, alertFormDTO);
+
+        if (alertId.alertId == 0)
+        {
+            return this.alertService.createAlert(alertId.alertId, alertFormDTO);
+        }
+        else
+        {
+            return this.alertService.updateAlert(alertId.userId, alertId.alertId, alertFormDTO);
+        }
     }
 
     public void updateAlert(AlertId alertId, AlertFormDTO alertFormDTO, Callback<AlertCompactDTO> callback)
     {
         basicCheck(alertId);
-        this.alertService.updateAlert(alertId.userId, alertId.alertId, alertFormDTO, callback);
+        if (alertId.alertId == 0)
+        {
+            this.alertService.createAlert(alertId.userId, alertFormDTO, callback);
+        }
+        else
+        {
+            this.alertService.updateAlert(alertId.userId, alertId.alertId, alertFormDTO, callback);
+        }
     }
     //</editor-fold>
 }

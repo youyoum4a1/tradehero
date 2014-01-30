@@ -33,6 +33,7 @@ import com.tradehero.th.api.users.UserProfileCompactDTO;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.fragments.DashboardNavigator;
+import com.tradehero.th.fragments.alert.AlertEditFragment;
 import com.tradehero.th.fragments.security.StockInfoFragment;
 import com.tradehero.th.fragments.security.WatchlistEditFragment;
 import com.tradehero.th.fragments.trade.BuySellFragment;
@@ -291,8 +292,7 @@ public class TimelineItemView extends LinearLayout implements
                 }
 
                 case R.id.timeline_popup_menu_monitor_enable_stock_alert:
-                    // TODO add stock alert
-                    THToast.show(getContext().getString(R.string.not_yet_implemented));
+                    openStockAlertEditor();
                     return true;
 
                 case R.id.timeline_popup_menu_monitor_view_graph:
@@ -310,6 +310,13 @@ public class TimelineItemView extends LinearLayout implements
             return false;
         }
     };
+
+    private void openStockAlertEditor()
+    {
+        Bundle args = new Bundle();
+        args.putBundle(AlertEditFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, getSecurityId().getArgs());
+        getNavigator().pushFragment(AlertEditFragment.class, args);
+    }
 
     private void openWatchlistEditor()
     {

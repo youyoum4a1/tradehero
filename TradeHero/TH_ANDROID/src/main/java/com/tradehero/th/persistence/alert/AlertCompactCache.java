@@ -52,6 +52,11 @@ import javax.inject.Singleton;
     {
         AlertCompactDTO previous = null;
 
+        if (value.security != null)
+        {
+            securityCompactCache.get().put(value.security.getSecurityId(), value.security);
+        }
+
         AlertCompactCutDTO previousCut = lruCache.put(
                 key,
                 new AlertCompactCutDTO(value, securityCompactCache.get()));

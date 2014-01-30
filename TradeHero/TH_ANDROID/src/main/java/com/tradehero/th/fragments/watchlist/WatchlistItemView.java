@@ -21,6 +21,7 @@ import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
+import com.tradehero.th.api.alert.AlertId;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.SecurityIdList;
@@ -28,6 +29,7 @@ import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
 import com.tradehero.th.api.watchlist.WatchlistPositionDTO;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.base.NavigatorActivity;
+import com.tradehero.th.fragments.alert.AlertEditFragment;
 import com.tradehero.th.fragments.security.StockInfoFragment;
 import com.tradehero.th.fragments.security.WatchlistEditFragment;
 import com.tradehero.th.fragments.trade.BuySellFragment;
@@ -419,8 +421,7 @@ public class WatchlistItemView extends FrameLayout implements DTOView<SecurityId
             switch (item.getItemId())
             {
                 case R.id.watchlist_item_add_alert:
-                    // TODO add alert
-                    THToast.show(getContext().getString(R.string.not_yet_implemented));
+                    openAlertEditor();
                     break;
                 case R.id.watchlist_item_edit_in_watchlist:
                     openWatchlistEditor();
@@ -438,6 +439,13 @@ public class WatchlistItemView extends FrameLayout implements DTOView<SecurityId
             return true;
         }
     };
+
+    private void openAlertEditor()
+    {
+        Bundle args = new Bundle();
+        args.putBundle(AlertEditFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
+        getNavigator().pushFragment(AlertEditFragment.class, args);
+    }
 
     private void openSecurityProfile()
     {
