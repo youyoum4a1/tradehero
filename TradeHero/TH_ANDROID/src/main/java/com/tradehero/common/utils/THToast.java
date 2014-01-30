@@ -35,8 +35,8 @@ public class THToast
 
     public static void show(THException ex)
     {
-        show(ex.getClass().getSimpleName() + ", code: " + ex.getCode() + ", message: " + ex.getMessage());
-        THLog.e(TAG, "Tracing", ex);
+        show(ex.getMessage());
+        THLog.e(TAG, ex.getClass().getSimpleName() + ", code: " + ex.getCode() + ", message: " + ex.getMessage(), ex);
     }
 
     /**
