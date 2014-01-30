@@ -34,10 +34,7 @@ public class UserPortfolioFetchAssistant extends BasicFetchAssistant<UserBaseKey
     @Override public void clear()
     {
         super.clear();
-        if (this.userProfileFetchAssistant != null)
-        {
-            this.userProfileFetchAssistant.setListener(null);
-        }
+        this.userProfileFetchAssistant.setListener(null);
     }
 
     @Override public void onInfoFetched(Map<UserBaseKey, UserProfileDTO> fetched, boolean isDataComplete)
