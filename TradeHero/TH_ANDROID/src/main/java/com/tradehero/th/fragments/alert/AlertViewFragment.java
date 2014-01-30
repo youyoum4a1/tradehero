@@ -30,6 +30,7 @@ import com.tradehero.th.misc.callback.THCallback;
 import com.tradehero.th.misc.callback.THResponse;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.service.AlertServiceWrapper;
+import com.tradehero.th.persistence.alert.AlertCache;
 import com.tradehero.th.persistence.alert.AlertCompactCache;
 import com.tradehero.th.utils.DateUtils;
 import com.tradehero.th.utils.ProgressDialogUtil;
@@ -58,6 +59,7 @@ public class AlertViewFragment extends DashboardFragment
     private StickyListHeadersListView priceChangeHistoryList;
 
     @Inject protected Lazy<AlertCompactCache> alertCompactCache;
+    @Inject protected Lazy<AlertCache> alertCache;
     @Inject protected Lazy<AlertServiceWrapper> alertServiceWrapper;
     @Inject protected Lazy<Picasso> picasso;
     @Inject Lazy<PrettyTime> prettyTime;
@@ -135,7 +137,16 @@ public class AlertViewFragment extends DashboardFragment
     {
         if (alertId != null)
         {
-            progressDialog = ProgressDialogUtil.show(getActivity(), R.string.loading_loading, R.string.please_wait);
+
+            AlertDTO cachedAlertDTO = alertCache.get().get(alertId);
+            if (cachedAlertDTO != null)
+            {
+                linkWith(cachedAlertDTO, true);
+            }
+            else
+            {
+                progressDialog = ProgressDialogUtil.show(getActivity(), R.string.loading_loading, R.string.please_wait);
+            }
             alertServiceWrapper.get().getAlert(alertId, alertCallback);
         }
     }
@@ -259,14 +270,17 @@ public class AlertViewFragment extends DashboardFragment
     {
         @Override protected void finish()
         {
-            progressDialog.hide();
+            if (progressDialog != null)
+            {
+                progressDialog.hide();
+            }
         }
 
         @Override protected void success(AlertDTO alertDTO, THResponse thResponse)
         {
             if (alertDTO != null)
             {
-                alertCompactCache.get().put(alertId, alertDTO);
+                alertCache.get().put(alertId, alertDTO);
                 linkWith(alertDTO, true);
             }
         }

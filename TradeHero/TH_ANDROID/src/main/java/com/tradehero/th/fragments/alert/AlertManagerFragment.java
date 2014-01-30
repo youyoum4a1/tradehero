@@ -24,6 +24,7 @@ import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
+import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.persistence.alert.AlertCompactListCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.persistence.user.UserProfileRetrievedMilestone;
@@ -161,7 +162,7 @@ public class AlertManagerFragment extends BasePurchaseManagerFragment
 
         @Override public void onFailed(Milestone milestone, Throwable throwable)
         {
-            // TODO THToast.show();
+            THToast.show(new THException(throwable));
         }
     };
 
