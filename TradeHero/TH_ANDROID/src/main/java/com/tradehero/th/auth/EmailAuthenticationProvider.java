@@ -69,7 +69,8 @@ public class EmailAuthenticationProvider implements THAuthenticationProvider
 
     @Override public void deauthenticate()
     {
-        throw new UnsupportedOperationException();
+        // TODO do we need it for email authentication?
+        // throw new UnsupportedOperationException();
     }
 
     @Override public boolean restoreAuthentication(JSONObject paramJSONObject)
