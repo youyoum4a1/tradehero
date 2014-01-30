@@ -37,6 +37,7 @@
       layout="@layout/position_partial_bottom_closed_tablelayout"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"/>
+
   <include layout="@layout/position_partial_shortcut_buttons"/>
 
 </com.tradehero.th.fragments.position.partial.PositionPartialBottomInPeriodClosedView>

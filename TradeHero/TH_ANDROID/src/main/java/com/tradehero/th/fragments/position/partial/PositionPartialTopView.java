@@ -50,7 +50,7 @@ public class PositionPartialTopView extends LinearLayout
     private ImageView marketClose;
     private TextView positionPercent;
     private TextView positionLastAmount;
-    private ImageButton tradeHistoryButton;
+    private View tradeHistoryButton;
 
     protected SecurityId securityId;
     protected SecurityCompactDTO securityCompactDTO;
@@ -95,7 +95,7 @@ public class PositionPartialTopView extends LinearLayout
         marketClose = (ImageView) findViewById(R.id.ic_market_close);
         positionPercent = (TextView) findViewById(R.id.position_percentage);
         positionLastAmount = (TextView) findViewById(R.id.position_last_amount);
-        tradeHistoryButton = (ImageButton) findViewById(R.id.btn_trade_history);
+        tradeHistoryButton = findViewById(R.id.btn_trade_history);
     }
 
     @Override protected void onDetachedFromWindow()
@@ -384,7 +384,7 @@ public class PositionPartialTopView extends LinearLayout
         };
     }
 
-    public ImageButton getTradeHistoryButton()
+    public View getTradeHistoryButton()
     {
         return tradeHistoryButton;
     }

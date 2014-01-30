@@ -200,6 +200,7 @@ public class TradeListItemAdapter extends ExpandableDTOAdapter<OwnedTradeId, Tra
                 }
 
                 ((AbstractPositionView) convertView).linkWith((OwnedPositionId) item, true);
+                ((AbstractPositionView) convertView).linkWithHasHistoryButton(false, true);
                 View buttons = convertView.findViewById(R.id.position_shortcuts);
                 if (buttons != null)
                 {

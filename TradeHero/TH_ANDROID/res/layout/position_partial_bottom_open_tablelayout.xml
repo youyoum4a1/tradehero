@@ -7,6 +7,7 @@
     android:layout_height="wrap_content"
     android:gravity="left"
     android:stretchColumns="1">
+
     <TableRow
             android:id="@+id/unrealised_pl_value_row"
             android:layout_width="match_parent"
@@ -126,4 +127,5 @@
                 />
 
     </TableRow>
+
 </TableLayout>

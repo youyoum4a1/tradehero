@@ -24,6 +24,7 @@ import com.tradehero.th.api.position.GetPositionsDTO;
 import com.tradehero.th.api.position.OwnedPositionId;
 import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.api.security.SecurityId;
+import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.billing.googleplay.THIABActor;
@@ -59,6 +60,7 @@ public class PositionListFragment extends BasePurchaseManagerFragment
     public static final String BUNDLE_KEY_FIRST_POSITION_VISIBLE = PositionListFragment.class.getName() + ".firstPositionVisible";
     public static final String BUNDLE_KEY_EXPANDED_LIST_FLAGS = PositionListFragment.class.getName() + ".expandedListFlags";
 
+    @Inject CurrentUserBaseKeyHolder currentUserBaseKeyHolder;
     @Inject Lazy<SecurityIdCache> securityIdCache;
     @Inject Lazy<PositionCache> positionCache;
     @Inject Lazy<PortfolioHeaderFactory> headerFactory;
@@ -403,7 +405,11 @@ public class PositionListFragment extends BasePurchaseManagerFragment
                 {
                     Bundle args = new Bundle();
                     args.putBundle(BuySellFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
-                    args.putBundle(BuySellFragment.BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE, clickedOwnedPositionId.getArgs());
+                    if (currentUserBaseKeyHolder.getCurrentUserBaseKey().equals(clickedOwnedPositionId.getUserBaseKey()))
+                    {
+                        // We only add if this the current user portfolio
+                        args.putBundle(BuySellFragment.BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE, clickedOwnedPositionId.getArgs());
+                    }
                     args.putBoolean(BuySellFragment.BUNDLE_KEY_IS_BUY, isBuy);
                     navigator.pushFragment(BuySellFragment.class, args);
                 }

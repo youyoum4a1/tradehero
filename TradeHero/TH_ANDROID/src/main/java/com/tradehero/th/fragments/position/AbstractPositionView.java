@@ -27,11 +27,12 @@ public abstract class AbstractPositionView extends LinearLayout
     protected PositionPartialTopView topView;
     protected ColorIndicator colorIndicator;
 
-    protected ImageButton btnBuy;
-    protected ImageButton btnSell;
-    protected ImageButton btnAddAlert;
-    protected ImageButton btnStockInfo;
-    protected ImageButton historyButton;
+    protected View btnBuy;
+    protected View btnSell;
+    protected View btnAddAlert;
+    protected View btnStockInfo;
+    protected View historyButton;
+    protected boolean hasHistoryButton = true;
 
     @Inject Lazy<PositionCache> positionCache;
     @Inject Lazy<LeaderboardPositionCache> leaderboardPositionCache;
@@ -68,10 +69,10 @@ public abstract class AbstractPositionView extends LinearLayout
     {
         topView = (PositionPartialTopView) findViewById(R.id.position_partial_top);
         colorIndicator = (ColorIndicator) findViewById(R.id.color_indicator);
-        btnBuy = (ImageButton) findViewById(R.id.btn_buy_now);
-        btnSell = (ImageButton) findViewById(R.id.btn_sell_now);
-        btnAddAlert = (ImageButton) findViewById(R.id.btn_add_alert);
-        btnStockInfo = (ImageButton) findViewById(R.id.btn_stock_info);
+        btnBuy = findViewById(R.id.btn_buy_now);
+        btnSell = findViewById(R.id.btn_sell_now);
+        btnAddAlert = findViewById(R.id.btn_add_alert);
+        btnStockInfo = findViewById(R.id.btn_stock_info);
         if (topView != null)
         {
             historyButton = topView.getTradeHistoryButton();
@@ -187,6 +188,15 @@ public abstract class AbstractPositionView extends LinearLayout
         super.onDetachedFromWindow();
     }
 
+    public void linkWithHasHistoryButton(boolean hasHistoryButton, boolean andDisplay)
+    {
+        this.hasHistoryButton = hasHistoryButton;
+        if (andDisplay)
+        {
+            displayHistoryButton();
+        }
+    }
+
     public void linkWith(OwnedPositionId ownedPositionId, boolean andDisplay)
     {
         this.ownedPositionId = ownedPositionId;
@@ -214,6 +224,7 @@ public abstract class AbstractPositionView extends LinearLayout
     {
         displayColorIndicator();
         displayButtonSell();
+        displayHistoryButton();
     }
 
     protected void displayColorIndicator()
@@ -230,6 +241,14 @@ public abstract class AbstractPositionView extends LinearLayout
         if (btnSell != null)
         {
             btnSell.setVisibility(this.positionDTO == null || this.positionDTO.isClosed() ? GONE : VISIBLE);
+        }
+    }
+
+    protected void displayHistoryButton()
+    {
+        if (historyButton != null)
+        {
+            historyButton.setVisibility(hasHistoryButton ? VISIBLE : GONE);
         }
     }
 

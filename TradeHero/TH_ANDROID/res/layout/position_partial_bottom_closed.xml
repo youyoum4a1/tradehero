@@ -8,6 +8,7 @@
   >
 
     <include layout="@layout/position_partial_bottom_closed_tablelayout"/>
+
     <include layout="@layout/position_partial_shortcut_buttons"/>
 
 </com.tradehero.th.fragments.position.partial.PositionPartialBottomClosedView>

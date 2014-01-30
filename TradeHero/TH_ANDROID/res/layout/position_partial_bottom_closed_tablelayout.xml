@@ -94,5 +94,7 @@
         android:id="@+id/period_value"
         style="@style/TH.SmallValue"
         />
+
   </TableRow>
+
 </TableLayout>
