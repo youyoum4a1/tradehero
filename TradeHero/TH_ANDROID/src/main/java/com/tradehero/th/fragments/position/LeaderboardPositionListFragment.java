@@ -57,8 +57,6 @@ public class LeaderboardPositionListFragment
         return getLeaderboardPositionsCache.get().getOrFetch(leaderboardMarkUserId, getPositionsCacheListener);
     }
 
-
-
     @Override public void onResume()
     {
         this.leaderboardMarkUserId = new LeaderboardMarkUserId((int) getArguments().getLong(LeaderboardMarkUserId.BUNDLE_KEY));

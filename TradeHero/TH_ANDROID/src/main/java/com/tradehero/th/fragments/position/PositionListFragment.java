@@ -36,6 +36,24 @@ public class PositionListFragment extends AbstractPositionListFragment<OwnedPort
         positionItemAdapter.setCellListener(this);
     }
 
+    protected void fetchSimplePage()
+    {
+        if (ownedPortfolioId != null && ownedPortfolioId.isValid())
+        {
+            if (getPositionsCacheListener == null)
+            {
+                getPositionsCacheListener = createCacheListener();
+            }
+            if (fetchGetPositionsDTOTask != null)
+            {
+                fetchGetPositionsDTOTask.setListener(null);
+            }
+            fetchGetPositionsDTOTask = createCacheFetchTask();
+            displayProgress(true);
+            fetchGetPositionsDTOTask.execute();
+        }
+    }
+
     @Override protected DTOCache.Listener<OwnedPortfolioId, GetPositionsDTO> createCacheListener()
     {
         return new GetPositionsListener();

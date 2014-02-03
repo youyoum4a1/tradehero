@@ -61,9 +61,9 @@ abstract public class AbstractPositionListFragment<
             PortfolioHeaderView.OnTimelineRequestedListener
 {
     public static final String TAG = PositionListFragment.class.getSimpleName();
-    public static final String BUNDLE_KEY_SHOW_PORTFOLIO_ID_BUNDLE = PositionListFragment.class.getName() + ".showPortfolioId";
-    public static final String BUNDLE_KEY_FIRST_POSITION_VISIBLE = PositionListFragment.class.getName() + ".firstPositionVisible";
-    public static final String BUNDLE_KEY_EXPANDED_LIST_FLAGS = PositionListFragment.class.getName() + ".expandedListFlags";
+    public static final String BUNDLE_KEY_SHOW_PORTFOLIO_ID_BUNDLE = AbstractPositionListFragment.class.getName() + ".showPortfolioId";
+    public static final String BUNDLE_KEY_FIRST_POSITION_VISIBLE = AbstractPositionListFragment.class.getName() + ".firstPositionVisible";
+    public static final String BUNDLE_KEY_EXPANDED_LIST_FLAGS = AbstractPositionListFragment.class.getName() + ".expandedListFlags";
 
     @Inject CurrentUserBaseKeyHolder currentUserBaseKeyHolder;
     @Inject Lazy<SecurityIdCache> securityIdCache;
@@ -278,24 +278,7 @@ abstract public class AbstractPositionListFragment<
         }
     }
 
-    protected void fetchSimplePage()
-    {
-        if (ownedPortfolioId != null && ownedPortfolioId.isValid())
-        {
-            if (getPositionsCacheListener == null)
-            {
-                getPositionsCacheListener = createCacheListener();
-            }
-            if (fetchGetPositionsDTOTask != null)
-            {
-                fetchGetPositionsDTOTask.setListener(null);
-            }
-            fetchGetPositionsDTOTask = createCacheFetchTask();
-            displayProgress(true);
-            fetchGetPositionsDTOTask.execute();
-        }
-    }
-
+    abstract protected void fetchSimplePage();
     abstract protected DTOCache.Listener<CacheQueryIdType, GetPositionsDTOType> createCacheListener();
     abstract protected DTOCache.GetOrFetchTask<CacheQueryIdType, GetPositionsDTOType> createCacheFetchTask();
 

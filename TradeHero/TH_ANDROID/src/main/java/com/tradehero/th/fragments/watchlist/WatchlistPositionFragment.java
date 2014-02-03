@@ -45,7 +45,10 @@ import javax.inject.Inject;
 public class WatchlistPositionFragment extends DashboardFragment
     implements BaseFragment.TabBarVisibilityInformer
 {
-    private static final String TAG = WatchlistPositionFragment.class.getName();
+    private static final String TAG = WatchlistPositionFragment.class.getSimpleName();
+
+    public static final String BUNDLE_KEY_SHOW_PORTFOLIO_ID_BUNDLE = WatchlistPositionFragment.class.getName() + ".showPortfolioId";
+
     private static final int NUMBER_OF_WATCHLIST_SWIPE_BUTTONS_BEHIND = 2;
     private ProgressBar progressBar;
 
