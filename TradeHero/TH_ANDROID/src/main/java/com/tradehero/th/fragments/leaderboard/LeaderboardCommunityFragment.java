@@ -7,7 +7,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ImageView;
-import android.widget.ListView;
+import android.widget.ViewAnimator;
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
@@ -45,7 +47,6 @@ import javax.inject.Inject;
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 
 public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
-        implements DTOCache.Listener<LeaderboardDefListKey, LeaderboardDefKeyList>
 {
     private static final String TAG = LeaderboardCommunityFragment.class.getName();
 
@@ -59,10 +60,11 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
     @Inject protected Picasso picasso;
     @Inject protected CurrentUserBaseKeyHolder currentUserBaseKeyHolder;
 
-    private ImageView firstProviderLink;
-    private StickyListHeadersListView leaderboardDefListView;
-
+    @InjectView(R.id.btn_first_provider) ImageView firstProviderLink;
+    @InjectView(R.id.community_screen) ViewAnimator communityScreen;
+    @InjectView(android.R.id.list) StickyListHeadersListView leaderboardDefListView;
     @Inject protected ProviderListRetrievedMilestone providerListRetrievedMilestone;
+
     private Milestone.OnCompleteListener providerListRetrievedListener;
     private ProviderDTO firstProvider;
     private THIntentPassedListener thIntentPassedListener;
@@ -73,6 +75,7 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.leaderboard_community_screen, container, false);
+        ButterKnife.inject(this, view);
         initViews(view);
         return view;
     }
@@ -85,17 +88,12 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
         this.providerListRetrievedMilestone.setOnCompleteListener(this.providerListRetrievedListener);
     }
 
-    @Override public void onStart()
-    {
-        super.onStart();
-        this.providerListRetrievedMilestone.launch();
-        prepareAdapters();
-    }
-
     @Override public void onResume()
     {
         super.onResume();
 
+        this.providerListRetrievedMilestone.launch();
+        prepareAdapters();
         // We came back into view so we have to forget the web fragment
         if (this.webFragment != null)
         {
@@ -122,14 +120,22 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
     private void prepareAdapters()
     {
         detachLeaderboardDefListCacheFetchMostSkilledTask();
-        leaderboardDefListFetchTask = leaderboardDefListCache.get().getOrFetch(new LeaderboardDefCommunityListKey(), false, this);
-        leaderboardDefListFetchTask.execute();
+
+        if (leaderboardDefListCache.get().get(new LeaderboardDefCommunityListKey()) == null)
+        {
+            leaderboardDefListFetchTask = leaderboardDefListCache.get().getOrFetch(
+                    new LeaderboardDefCommunityListKey(), false, leaderboardDefFetchListener);
+            leaderboardDefListFetchTask.execute();
+        }
+        else
+        {
+            handleLeaderboardDefKeyListReceived();
+        }
     }
 
     @Override protected void initViews(View view)
     {
         // competition
-        this.firstProviderLink = (ImageView) view.findViewById(R.id.btn_first_provider);
         if (this.firstProviderLink != null)
         {
             this.firstProviderLink.setOnClickListener(new LeaderboardCommunityFragmentProviderLinkClickListener());
@@ -139,7 +145,6 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
         leaderboardDefListAdapter = new LeaderboardCommunityAdapter(
                 getActivity(), getActivity().getLayoutInflater(), R.layout.leaderboard_definition_item_view);
 
-        leaderboardDefListView = (StickyListHeadersListView) view.findViewById(android.R.id.list);
         leaderboardDefListView.setAdapter(leaderboardDefListAdapter);
         leaderboardDefListView.setOnItemClickListener(leaderboardCommunityListOnClickListener);
 
@@ -182,22 +187,6 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
         super.onDestroyView();
     }
 
-    private AdapterView.OnItemClickListener createLeaderboardItemClickListener()
-    {
-        return new AdapterView.OnItemClickListener()
-        {
-            @Override public void onItemClick(AdapterView<?> adapterView, View view, int position, long id)
-            {
-                LeaderboardDefDTO dto = (LeaderboardDefDTO) adapterView.getAdapter().getItem(position);
-
-                if (dto != null)
-                {
-                    pushLeaderboardListViewFragment(dto);
-                }
-            }
-        };
-    }
-
     //<editor-fold desc="ActionBar">
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
@@ -220,19 +209,6 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
         {
         }
         return super.onOptionsItemSelected(item);
-    }
-    //</editor-fold>
-
-    //<editor-fold desc="DTOCache Listeners">
-    @Override public void onDTOReceived(LeaderboardDefListKey key, LeaderboardDefKeyList value)
-    {
-        leaderboardDefListAdapter.notifyDataSetChanged();
-    }
-
-    @Override public void onErrorThrown(LeaderboardDefListKey key, Throwable error)
-    {
-        THToast.show(getString(R.string.error_fetch_leaderboard_def_list_key));
-        THLog.e(TAG, "Error fetching the leaderboard def key list " + key, error);
     }
     //</editor-fold>
 
@@ -354,6 +330,27 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
             }
         }
     };
+
+
+    private DTOCache.Listener<LeaderboardDefListKey, LeaderboardDefKeyList> leaderboardDefFetchListener = new DTOCache.Listener<LeaderboardDefListKey, LeaderboardDefKeyList>()
+    {
+        @Override public void onDTOReceived(LeaderboardDefListKey key, LeaderboardDefKeyList value)
+        {
+            handleLeaderboardDefKeyListReceived();
+        }
+
+        @Override public void onErrorThrown(LeaderboardDefListKey key, Throwable error)
+        {
+            THToast.show(getString(R.string.error_fetch_leaderboard_def_list_key));
+            THLog.e(TAG, "Error fetching the leaderboard def key list " + key, error);
+        }
+    };
+
+    private void handleLeaderboardDefKeyListReceived()
+    {
+        communityScreen.setDisplayedChild(1);
+        leaderboardDefListAdapter.notifyDataSetChanged();
+    }
 
     //<editor-fold desc="Navigation">
     private void pushLeaderboardDefSector()

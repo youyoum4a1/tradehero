@@ -1,16 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<RelativeLayout
+<ViewAnimator
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res/com.tradehero.th"
+    android:id="@+id/community_screen"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     >
 
-
   <ProgressBar
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:layout_centerInParent="true"/>
+      android:layout_gravity="center"
+      />
 
   <LinearLayout
       android:orientation="vertical"
@@ -33,9 +35,10 @@
         android:id="@android:id/list"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
+        app:hasStickyHeaders="false"
         />
 
   </LinearLayout>
 
-</RelativeLayout>
+</ViewAnimator>
 
