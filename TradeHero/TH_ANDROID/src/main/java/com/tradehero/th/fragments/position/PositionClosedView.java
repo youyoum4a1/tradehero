@@ -11,6 +11,8 @@ import com.tradehero.th.fragments.position.partial.PositionPartialBottomClosedVi
  */
 public class PositionClosedView extends AbstractPositionView
 {
+    public static final String TAG = PositionClosedView.class.getSimpleName();
+
     private PositionPartialBottomClosedView bottomView;
 
     //<editor-fold desc="Constructors">

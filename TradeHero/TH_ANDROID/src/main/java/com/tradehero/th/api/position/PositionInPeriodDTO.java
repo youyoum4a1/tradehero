@@ -69,7 +69,6 @@ public class PositionInPeriodDTO extends PositionDTO
         return marketValueStartPeriodRefCcy == null ? 0 : marketValueStartPeriodRefCcy;
     }
 
-
     public Double getROIInPeriod()
     {
         if (marketValueEndPeriodRefCcy == null || marketValueStartPeriodRefCcy == null)
@@ -96,5 +95,32 @@ public class PositionInPeriodDTO extends PositionDTO
     private double getInPeriodPL()
     {
         return marketValueEndPeriodRefCcy + sum_salesInPeriodRefCcy - getInvestedInPeriod();
+    }
+
+    @Override public String toString()
+    {
+        return "PositionInPeriodDTO{" +
+                "id=" + id +
+                ", shares=" + shares +
+                ", portfolioId=" + portfolioId +
+                ", averagePriceRefCcy=" + averagePriceRefCcy +
+                ", userId=" + userId +
+                ", securityId=" + securityId +
+                ", realizedPLRefCcy=" + realizedPLRefCcy +
+                ", unrealizedPLRefCcy=" + unrealizedPLRefCcy +
+                ", marketValueRefCcy=" + marketValueRefCcy +
+                ", earliestTradeUtc=" + earliestTradeUtc +
+                ", latestTradeUtc=" + latestTradeUtc +
+                ", sumInvestedAmountRefCcy=" + sumInvestedAmountRefCcy +
+                ", totalTransactionCostRefCcy=" + totalTransactionCostRefCcy +
+                ", aggregateCount=" + aggregateCount +
+                ", leaderboardMarkUserId=" + leaderboardMarkUserId +
+                ", totalPLInPeriodRefCcy=" + totalPLInPeriodRefCcy +
+                ", marketValueStartPeriodRefCcy=" + marketValueStartPeriodRefCcy +
+                ", marketValueEndPeriodRefCcy=" + marketValueEndPeriodRefCcy +
+                ", sum_salesInPeriodRefCcy=" + sum_salesInPeriodRefCcy +
+                ", sum_purchasesInPeriodRefCcy=" + sum_purchasesInPeriodRefCcy +
+                ", extras={" + formatExtras(", ").toString() + "}" +
+                '}';
     }
 }

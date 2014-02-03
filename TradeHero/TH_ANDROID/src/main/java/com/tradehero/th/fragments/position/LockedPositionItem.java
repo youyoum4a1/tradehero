@@ -36,6 +36,7 @@ public class LockedPositionItem extends LinearLayout
 
     private OwnedLeaderboardPositionId ownedLeaderboardPositionId;
 
+    //<editor-fold desc="Constructors">
     public LockedPositionItem(Context context)
     {
         super(context);
@@ -50,6 +51,7 @@ public class LockedPositionItem extends LinearLayout
     {
         super(context, attrs, defStyle);
     }
+    //</editor-fold>
 
     @Override protected void onFinishInflate()
     {
@@ -60,10 +62,10 @@ public class LockedPositionItem extends LinearLayout
 
     protected void initViews()
     {
-        positionPercent = (TextView)findViewById(R.id.position_percentage);
-        colorIndicator = (ColorIndicator)findViewById(R.id.color_indicator);
+        positionPercent = (TextView) findViewById(R.id.position_percentage);
+        colorIndicator = (ColorIndicator) findViewById(R.id.color_indicator);
         unrealisedPLValue = (TextView) findViewById(R.id.unrealised_pl_value);
-        realisedPLValue = (TextView)findViewById(R.id.realised_pl_value);
+        realisedPLValue = (TextView) findViewById(R.id.realised_pl_value);
         totalInvestedValue = (TextView) findViewById(R.id.total_invested_value);
     }
 
@@ -83,12 +85,15 @@ public class LockedPositionItem extends LinearLayout
     {
         this.positionDTO = positionDTO;
         if (andDisplay)
+        {
             display();
+        }
     }
 
     protected void display()
     {
-        if (colorIndicator != null && positionDTO != null) {
+        if (colorIndicator != null && positionDTO != null)
+        {
             Double roi = positionDTO.getROISinceInception();
             colorIndicator.linkWith(roi);
         }

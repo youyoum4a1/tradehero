@@ -103,4 +103,24 @@ public class PositionDTO extends PositionDTOCompact
         return this.securityId < 0;
     }
 
+    @Override public String toString()
+    {
+        return "PositionDTO{" +
+                "id=" + id +
+                ", shares=" + shares +
+                ", portfolioId=" + portfolioId +
+                ", averagePriceRefCcy=" + averagePriceRefCcy +
+                ", userId=" + userId +
+                ", securityId=" + securityId +
+                ", realizedPLRefCcy=" + realizedPLRefCcy +
+                ", unrealizedPLRefCcy=" + unrealizedPLRefCcy +
+                ", marketValueRefCcy=" + marketValueRefCcy +
+                ", earliestTradeUtc=" + earliestTradeUtc +
+                ", latestTradeUtc=" + latestTradeUtc +
+                ", sumInvestedAmountRefCcy=" + sumInvestedAmountRefCcy +
+                ", totalTransactionCostRefCcy=" + totalTransactionCostRefCcy +
+                ", aggregateCount=" + aggregateCount +
+                ", extras={" + formatExtras(", ").toString() + "}" +
+                '}';
+    }
 }

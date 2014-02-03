@@ -4,7 +4,6 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.TextView;
-import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.position.LeaderboardPositionItemAdapter;
 import com.tradehero.th.api.leaderboard.position.OwnedLeaderboardPositionId;
@@ -32,7 +31,7 @@ public class PositionPartialBottomInPeriodClosedView extends PositionPartialBott
     private TextView inPeriodRoiValue;
     private boolean isTimeRestricted;
     private View inPeriodTitle;
-    private View inPeriodPositionList;
+    private View inPeriodPositionContainer;
 
     //<editor-fold desc="Constructors">
     public PositionPartialBottomInPeriodClosedView(Context context)
@@ -61,7 +60,7 @@ public class PositionPartialBottomInPeriodClosedView extends PositionPartialBott
         inPeriodStartValueDate = (TextView) findViewById(R.id.in_period_start_value_date);
         inPeriodRoiValue = (TextView) findViewById(R.id.in_period_roi_value);
         inPeriodTitle = findViewById(R.id.position_list_in_period_title);
-        inPeriodPositionList = findViewById(R.id.position_list_bottom_in_period);
+        inPeriodPositionContainer = findViewById(R.id.position_list_bottom_in_period_container);
     }
 
     public void linkWith(OwnedLeaderboardPositionId ownedPositionId, boolean andDisplay)
@@ -110,7 +109,7 @@ public class PositionPartialBottomInPeriodClosedView extends PositionPartialBott
 
     private void setInPeriodVisibility(boolean visibility)
     {
-        inPeriodPositionList.setVisibility(visibility ? VISIBLE : GONE);
+        inPeriodPositionContainer.setVisibility(visibility ? VISIBLE : GONE);
         inPeriodTitle.setVisibility(visibility ? VISIBLE : GONE);
     }
 

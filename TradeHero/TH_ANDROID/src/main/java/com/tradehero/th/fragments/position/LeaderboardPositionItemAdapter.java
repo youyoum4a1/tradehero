@@ -148,7 +148,7 @@ public class LeaderboardPositionItemAdapter extends AbstractPositionItemAdapter<
 
     public static class ExpandableLeaderboardPositionItem extends ExpandableListItem<OwnedLeaderboardPositionId>
     {
-        private boolean timeRestricted;
+        protected boolean timeRestricted;
 
         public ExpandableLeaderboardPositionItem(OwnedLeaderboardPositionId model)
         {
@@ -163,6 +163,15 @@ public class LeaderboardPositionItemAdapter extends AbstractPositionItemAdapter<
         public void setTimeRestricted(boolean timeRestricted)
         {
             this.timeRestricted = timeRestricted;
+        }
+
+        @Override public String toString()
+        {
+            return "ExpandableLeaderboardPositionItem{" +
+                    "expanded=" + expanded +
+                    ", model=" + model +
+                    ", timeRestricted=" + timeRestricted +
+                    '}';
         }
     }
 }

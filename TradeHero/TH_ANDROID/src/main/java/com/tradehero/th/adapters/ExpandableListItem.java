@@ -7,8 +7,8 @@ public class ExpandableListItem<T> implements
         ExpandableItem,
         OnSizeChangedListener
 {
-    private boolean expanded;
-    private T model;
+    protected boolean expanded;
+    protected T model;
 
     public ExpandableListItem(T model)
     {
@@ -32,5 +32,13 @@ public class ExpandableListItem<T> implements
     @Override public void setExpanded(boolean expanded)
     {
         this.expanded = expanded;
+    }
+
+    @Override public String toString()
+    {
+        return "ExpandableListItem{" +
+                "expanded=" + expanded +
+                ", model=" + model +
+                '}';
     }
 }

@@ -51,4 +51,15 @@ public class PositionDTOCompact extends ExtendedDTO
         }
         return positionCompactIds;
     }
+
+    @Override public String toString()
+    {
+        return "PositionDTOCompact{" +
+                "id=" + id +
+                ", shares=" + shares +
+                ", portfolioId=" + portfolioId +
+                ", averagePriceRefCcy=" + averagePriceRefCcy +
+                ", extras={" + formatExtras(", ").toString() + "}" +
+                '}';
+    }
 }

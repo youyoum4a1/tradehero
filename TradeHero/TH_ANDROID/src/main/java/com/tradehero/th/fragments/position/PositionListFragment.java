@@ -173,7 +173,7 @@ public class PositionListFragment extends BasePurchaseManagerFragment
         }
         else if (view instanceof LockedPositionItem)
         {
-            THToast.show("show prompt to follow user");
+            popFollowUser(ownedPortfolioId.getUserBaseKey());
         }
     }
 
@@ -432,6 +432,12 @@ public class PositionListFragment extends BasePurchaseManagerFragment
     @Override public void onFollowRequested(final UserBaseKey userBaseKey)
     {
         THLog.d(TAG, "onFollowRequested " + userBaseKey);
+        popFollowUser(userBaseKey);
+    }
+    //</editor-fold>
+
+    protected void popFollowUser(final UserBaseKey userBaseKey)
+    {
         heroAlertDialogUtil.popAlertFollowHero(getActivity(), new DialogInterface.OnClickListener()
         {
             @Override public void onClick(DialogInterface dialog, int which)
@@ -440,7 +446,6 @@ public class PositionListFragment extends BasePurchaseManagerFragment
             }
         });
     }
-    //</editor-fold>
 
     //<editor-fold desc="PortfolioHeaderView.OnTimelineRequestedListener">
     @Override public void onTimelineRequested(UserBaseKey userBaseKey)

@@ -6,8 +6,27 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <include layout="@layout/position_partial_bottom_open_tablelayout"/>
+  <TableLayout
+      android:id="@+id/position_partial_bottom_open_container"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content">
 
-    <include layout="@layout/position_partial_shortcut_buttons"/>
+    <include
+        layout="@layout/position_partial_bottom_open_merge"
+        />
+
+  </TableLayout>
+
+  <RelativeLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_below="@id/position_partial_bottom_open_container"
+      >
+
+    <include
+        layout="@layout/position_partial_shortcut_buttons"
+        />
+
+  </RelativeLayout>
 
 </com.tradehero.th.fragments.position.partial.PositionPartialBottomOpenView>

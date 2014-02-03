@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<RelativeLayout
+<merge
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/position_shortcuts"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_below="@id/position_value_table"
-    android:padding="8dp"
-  >
+    >
+
+  <RelativeLayout
+      android:id="@+id/position_shortcuts"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:padding="8dp"
+      >
 
     <ImageButton
         android:id="@+id/btn_buy_now"
@@ -18,7 +20,7 @@
         android:contentDescription="@null"
         android:scaleType="fitXY"
         android:background="@android:color/transparent"
-      />
+        />
 
     <ImageButton
         android:id="@+id/btn_sell_now"
@@ -30,7 +32,7 @@
         android:contentDescription="@null"
         android:scaleType="fitXY"
         android:background="@android:color/transparent"
-      />
+        />
 
     <ImageButton
         android:id="@+id/btn_add_alert"
@@ -42,7 +44,7 @@
         android:contentDescription="@null"
         android:scaleType="centerInside"
         android:background="@android:color/transparent"
-      />
+        />
 
     <ImageButton
         android:id="@+id/btn_stock_info"
@@ -54,7 +56,9 @@
         android:contentDescription="@null"
         android:scaleType="centerInside"
         android:background="@android:color/transparent"
-      />
+        />
 
-</RelativeLayout>
+  </RelativeLayout>
+
+</merge>
 

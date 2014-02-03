@@ -6,10 +6,84 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-    <include layout="@layout/position_period_bottom_in_period_tablelayout"/>
+  <TableLayout
+      android:id="@+id/position_period_bottom_in_period_container"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      >
 
-    <include layout="@layout/position_partial_bottom_open_tablelayout"/>
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
 
-    <include layout="@layout/position_partial_shortcut_buttons"/>
+      <TextView
+          android:id="@+id/position_list_in_period_title"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:gravity="right"
+          android:textStyle="bold"
+          android:maxLines="1"
+          android:text="@string/in_period"
+          />
+
+    </TableRow>
+
+    <include
+        layout="@layout/position_period_bottom_in_period_merge"
+        />
+
+  </TableLayout>
+
+  <ImageView
+      android:id="@+id/image_separator"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_below="@id/position_period_bottom_in_period_container"
+      android:layout_margin="4dp"
+      android:src="@drawable/bg_gradient_separator_horizontal"
+      />
+
+  <TableLayout
+      android:id="@+id/position_partial_bottom_open_container"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_below="@id/image_separator"
+      >
+
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
+
+      <TextView
+          android:id="@+id/position_list_overall_title"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:gravity="right"
+          android:textStyle="bold"
+          android:maxLines="1"
+          android:text="@string/overall"
+          />
+
+    </TableRow>
+
+    <include
+        layout="@layout/position_partial_bottom_open_merge"
+        />
+
+  </TableLayout>
+
+  <RelativeLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_below="@id/position_partial_bottom_open_container"
+      >
+
+    <include
+        layout="@layout/position_partial_shortcut_buttons"
+        />
+
+  </RelativeLayout>
 
 </com.tradehero.th.fragments.position.partial.PositionPartialBottomInPeriodOpenView>
