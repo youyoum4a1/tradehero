@@ -1,7 +1,12 @@
 package com.tradehero.th.models.graphics;
 
+import android.content.Context;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import com.squareup.picasso.Transformation;
 import com.tradehero.common.graphics.RoundedShapeTransformation;
+import com.tradehero.th.R;
 import dagger.Module;
 import dagger.Provides;
 
@@ -28,8 +33,18 @@ public class TransformationModule
     }
 
     @Provides @ForUserPhoto
-    public Transformation provideUserImageTransformation2()
+    public Transformation provideUserImageTransformation()
     {
         return new RoundedShapeTransformation();
+    }
+
+    @Provides @ForUserPhoto
+    public Drawable provideDefaultUserPhoto(Context context, @ForUserPhoto Transformation userImageTransformation)
+    {
+        return new BitmapDrawable (
+                context.getResources(),
+                userImageTransformation.transform(
+                        BitmapFactory.decodeResource(context.getResources(),
+                        R.drawable.superman_facebook)));
     }
 }
