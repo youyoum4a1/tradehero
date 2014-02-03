@@ -1,8 +1,8 @@
 package com.tradehero.th.api.portfolio;
 
-import edu.emory.mathcs.backport.java.util.TreeSet;
 import java.util.Iterator;
 import java.util.SortedSet;
+import java.util.TreeSet;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -189,7 +189,7 @@ public class PortfolioCompactDTODisplayComparatorTest
 
     @Test public void getExpectedOrder()
     {
-        SortedSet<PortfolioCompactDTO> set = new TreeSet(new PortfolioCompactDTODisplayComparator());
+        SortedSet<PortfolioCompactDTO> set = new TreeSet<>(new PortfolioCompactDTODisplayComparator());
 
         set.add(getSecondWatchlistPortfolio());
         set.add(getFirstWatchlistPortfolio());

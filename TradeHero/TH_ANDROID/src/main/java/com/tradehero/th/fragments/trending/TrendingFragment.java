@@ -27,10 +27,13 @@ import com.tradehero.th.fragments.trending.filter.TrendingFilterSelectorView;
 import com.tradehero.th.fragments.trending.filter.TrendingFilterTypeBasicDTO;
 import com.tradehero.th.fragments.trending.filter.TrendingFilterTypeDTO;
 import com.tradehero.th.fragments.trending.filter.TrendingFilterTypeDTOFactory;
+import com.tradehero.th.models.market.ExchangeDTODescriptionNameComparator;
 import com.tradehero.th.persistence.market.ExchangeListCache;
 import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 import javax.inject.Inject;
 
 public class TrendingFragment extends SecurityListFragment
@@ -191,20 +194,21 @@ public class TrendingFragment extends SecurityListFragment
         }
         else
         {
-            // We keep only those included in Trending
-            this.exchangeDTOs = new ArrayList<>();
+            // We keep only those included in Trending and order by desc / name
+            Set<ExchangeDTO> ordered = new TreeSet<>(new ExchangeDTODescriptionNameComparator());
             for (ExchangeDTO exchangeDTO: exchangeDTOs)
             {
                 if (exchangeDTO.isIncludedInTrending)
                 {
-                    this.exchangeDTOs.add(exchangeDTO);
+                    ordered.add(exchangeDTO);
                 }
             }
+            this.exchangeDTOs = new ArrayList<>(ordered);
         }
 
         if (filterSelectorView != null)
         {
-            filterSelectorView.setUpExchangeSpinner(exchangeDTOs);
+            filterSelectorView.setUpExchangeSpinner(this.exchangeDTOs);
             filterSelectorView.apply(trendingFilterTypeDTO);
         }
 
