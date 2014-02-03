@@ -14,9 +14,7 @@ public class TrendingFilterSpinnerIconAdapter extends SpinnerIconAdapter
 {
     public static final String TAG = TrendingFilterSpinnerIconAdapter.class.getSimpleName();
 
-    private int firstItemResId;
     private int itemResId;
-    private int firstItemDropDrownResId;
     private int itemDropDrownResId;
 
     public TrendingFilterSpinnerIconAdapter(Context context, CharSequence[] objects, Drawable[] icons, Drawable[] dropDownIcons)
@@ -28,9 +26,7 @@ public class TrendingFilterSpinnerIconAdapter extends SpinnerIconAdapter
                 R.id.trending_filter_spinner_item_icon,
                 objects, icons, dropDownIcons);
 
-        this.firstItemResId = R.layout.trending_filter_spinner_item_first;
         this.itemResId = R.layout.trending_filter_spinner_item;
-        this.firstItemDropDrownResId = R.layout.trending_filter_spinner_dropdown_item_first;
     }
 
     @Override public void setDropDownViewResource(int resource)
@@ -41,35 +37,17 @@ public class TrendingFilterSpinnerIconAdapter extends SpinnerIconAdapter
 
     @Override public View getView(int position, View convertView, ViewGroup parent)
     {
-        View view;
-        if (position == 0)
-        {
-            view = View.inflate(getContext(), this.firstItemResId, null);
-        }
-        else
-        {
-            view = View.inflate(getContext(), this.itemResId, null);
-        }
-
-        updateText(view, position);
-        updateIcon(view, position);
-        return view;
+        convertView = View.inflate(getContext(), this.itemResId, null);
+        updateText(convertView, position);
+        updateIcon(convertView, position);
+        return convertView;
     }
 
     @Override public View getDropDownView(int position, View convertView, ViewGroup parent)
     {
-        View view;
-        if (position == 0)
-        {
-            view = View.inflate(getContext(), firstItemDropDrownResId, null);
-        }
-        else
-        {
-            view = View.inflate(getContext(), itemDropDrownResId, null);
-        }
-
-        updateText(view, position);
-        updateDropDownIcon(view, position);
-        return view;
+        convertView = View.inflate(getContext(), itemDropDrownResId, null);
+        updateText(convertView, position);
+        updateDropDownIcon(convertView, position);
+        return convertView;
     }
 }

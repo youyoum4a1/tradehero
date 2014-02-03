@@ -13,6 +13,7 @@ public class ExchangeSpinnerDTO extends ExchangeDTO implements CharSequence
 
     private Context context;
 
+    //<editor-fold desc="Constructors">
     public ExchangeSpinnerDTO(Context context)
     {
         this.context = context;
@@ -24,6 +25,7 @@ public class ExchangeSpinnerDTO extends ExchangeDTO implements CharSequence
         super(exchangeDTO);
         this.context = context;
     }
+    //</editor-fold>
 
     @Override public String toString()
     {

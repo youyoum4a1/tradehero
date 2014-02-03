@@ -2,8 +2,9 @@
 
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="horizontal"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     >
 
@@ -14,7 +15,7 @@
       android:layout_alignParentLeft="true"
       android:layout_centerVertical="true"
       android:baselineAlignBottom="true"
-      android:src="@null"
+      tools:src="@drawable/flag_country_round_united_states"
       android:scaleType="centerInside"
       android:contentDescription="@null"
     />
@@ -23,10 +24,10 @@
       android:id="@+id/trending_filter_spinner_item_label"
       android:layout_height="wrap_content"
       android:layout_width="wrap_content"
-      android:layout_toRightOf="@id/trending_filter_spinner_item_icon"
-      android:layout_alignParentRight="true"
-      android:layout_marginLeft="10dp"
+      android:layout_centerInParent="true"
       android:textSize="16sp"
       android:maxLines="1"
+      tools:text="US NYSE - NYSE"
       />
+
 </RelativeLayout>

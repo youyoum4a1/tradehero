@@ -46,21 +46,26 @@ public class TrendingFilterSelectorView extends RelativeLayout
     public TrendingFilterSelectorView(Context context)
     {
         super(context);
-        DaggerUtils.inject(this);
+        init();
     }
 
     public TrendingFilterSelectorView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
-        DaggerUtils.inject(this);
+        init();
     }
 
     public TrendingFilterSelectorView(Context context, AttributeSet attrs, int defStyle)
     {
         super(context, attrs, defStyle);
-        DaggerUtils.inject(this);
+        init();
     }
     //</editor-fold>
+
+    protected void init()
+    {
+        DaggerUtils.inject(this);
+    }
 
     @Override protected void onFinishInflate()
     {
