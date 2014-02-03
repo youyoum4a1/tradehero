@@ -2,6 +2,7 @@ package com.tradehero.th.persistence.alert;
 
 import android.support.v4.util.LruCache;
 import com.tradehero.common.persistence.PartialDTOCache;
+import com.tradehero.common.persistence.THLruCache;
 import com.tradehero.th.api.alert.AlertCompactDTO;
 import com.tradehero.th.api.alert.AlertId;
 import com.tradehero.th.api.security.SecurityId;
@@ -17,7 +18,7 @@ import javax.inject.Singleton;
     public static final String TAG = AlertCompactCache.class.getSimpleName();
     public static final int DEFAULT_MAX_SIZE = 100;
 
-    private LruCache<AlertId, AlertCompactCutDTO> lruCache;
+    private THLruCache<AlertId, AlertCompactCutDTO> lruCache;
     @Inject protected Lazy<SecurityCompactCache> securityCompactCache;
 
     //<editor-fold desc="Constructors">
@@ -29,7 +30,7 @@ import javax.inject.Singleton;
     public AlertCompactCache(int maxSize)
     {
         super();
-        lruCache = new LruCache<>(maxSize);
+        lruCache = new THLruCache<>(maxSize);
     }
     //</editor-fold>
 

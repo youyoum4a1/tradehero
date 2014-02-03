@@ -2,6 +2,7 @@ package com.tradehero.th.persistence.position;
 
 import android.support.v4.util.LruCache;
 import com.tradehero.common.persistence.PartialDTOCache;
+import com.tradehero.common.persistence.THLruCache;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
@@ -31,7 +32,7 @@ import javax.inject.Singleton;
 
     @Inject protected CurrentUserBaseKeyHolder currentUserBaseKeyHolder;
     // We need to compose here, instead of inheritance, otherwise we get a compile error regarding erasure on put and put.
-    private LruCache<SecurityId, SecurityPositionDetailCache.SecurityPositionDetailCutDTO> lruCache;
+    private THLruCache<SecurityId, SecurityPositionDetailCutDTO> lruCache;
     @Inject protected Lazy<SecurityServiceWrapper> securityServiceWrapper;
     @Inject protected Lazy<SecurityCompactCache> securityCompactCache;
     @Inject protected Lazy<PositionCompactCache> positionCompactCache;
@@ -48,7 +49,7 @@ import javax.inject.Singleton;
     public SecurityPositionDetailCache(int maxSize)
     {
         super();
-        lruCache = new LruCache<>(maxSize);
+        lruCache = new THLruCache<>(maxSize);
     }
     //</editor-fold>
 

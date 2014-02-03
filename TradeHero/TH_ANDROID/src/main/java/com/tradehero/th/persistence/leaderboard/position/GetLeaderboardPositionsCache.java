@@ -2,6 +2,7 @@ package com.tradehero.th.persistence.leaderboard.position;
 
 import android.support.v4.util.LruCache;
 import com.tradehero.common.persistence.PartialDTOCache;
+import com.tradehero.common.persistence.THLruCache;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.api.leaderboard.position.GetLeaderboardPositionsDTO;
 import com.tradehero.th.api.leaderboard.position.LeaderboardMarkUserId;
@@ -27,7 +28,7 @@ import retrofit.RetrofitError;
     public static final int DEFAULT_MAX_SIZE = 1000;
 
     // We need to compose here, instead of inheritance, otherwise we get a compile error regarding erasure on put and put.
-    private LruCache<LeaderboardMarkUserId, GetLeaderboardPositionsCache.GetLeaderboardPositionsCutDTO> lruCache;
+    private THLruCache<LeaderboardMarkUserId, GetLeaderboardPositionsCutDTO> lruCache;
     @Inject protected Lazy<LeaderboardService> leaderboardService;
     @Inject protected Lazy<SecurityCompactCache> securityCompactCache;
     @Inject protected Lazy<LeaderboardPositionCache> filedPositionCache;
@@ -41,7 +42,7 @@ import retrofit.RetrofitError;
     public GetLeaderboardPositionsCache(int maxSize)
     {
         super();
-        lruCache = new LruCache<>(maxSize);
+        lruCache = new THLruCache<>(maxSize);
     }
     //</editor-fold>
 

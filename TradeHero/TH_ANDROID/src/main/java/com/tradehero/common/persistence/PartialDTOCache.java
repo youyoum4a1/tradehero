@@ -16,7 +16,7 @@ abstract public class PartialDTOCache<DTOKeyType extends DTOKey, DTOType extends
     public static final int DEFAULT_AUTO_FETCH_TASK_MAX_SIZE = 50;
 
     private List<WeakReference<Listener<DTOKeyType, DTOType>>> listeners;
-    private LruCache<DTOKeyType, GetOrFetchTask<DTOKeyType, DTOType>> autoFetchTasks = new LruCache<>(DEFAULT_AUTO_FETCH_TASK_MAX_SIZE);
+    private THLruCache<DTOKeyType, GetOrFetchTask<DTOKeyType, DTOType>> autoFetchTasks = new THLruCache<>(DEFAULT_AUTO_FETCH_TASK_MAX_SIZE);
 
     public PartialDTOCache()
     {

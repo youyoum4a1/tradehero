@@ -8,12 +8,12 @@ import android.support.v4.util.LruCache;
 abstract public class StraightDTOCache<DTOKeyType extends DTOKey, DTOType extends DTO>
         extends PartialDTOCache<DTOKeyType, DTOType>
 {
-    private LruCache<DTOKeyType, DTOType> lruCache;
+    private THLruCache<DTOKeyType, DTOType> lruCache;
 
     public StraightDTOCache(int maxSize)
     {
         super();
-        this.lruCache = new LruCache<>(maxSize);
+        this.lruCache = new THLruCache<>(maxSize);
     }
     
     @Override public DTOType get(DTOKeyType key)

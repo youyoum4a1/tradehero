@@ -2,6 +2,7 @@ package com.tradehero.th.persistence.competition;
 
 import android.support.v4.util.LruCache;
 import com.tradehero.common.persistence.PartialDTOCache;
+import com.tradehero.common.persistence.THLruCache;
 import com.tradehero.th.api.competition.CompetitionDTO;
 import com.tradehero.th.api.competition.CompetitionId;
 import com.tradehero.th.api.leaderboard.LeaderboardDefKey;
@@ -19,7 +20,7 @@ import javax.inject.Singleton;
     public static final int DEFAULT_MAX_SIZE = 1000;
 
     // We need to compose here, instead of inheritance, otherwise we get a compile error regarding erasure on put and put.
-    private LruCache<CompetitionId, CompetitionCache.CompetitionCutDTO> lruCache;
+    private THLruCache<CompetitionId, CompetitionCache.CompetitionCutDTO> lruCache;
     @Inject protected LeaderboardDefCache leaderboardDefCache;
     @Inject protected LeaderboardUserDTOUtil leaderboardUserDTOUtil;
 
@@ -32,7 +33,7 @@ import javax.inject.Singleton;
     public CompetitionCache(int maxSize)
     {
         super();
-        lruCache = new LruCache<>(maxSize);
+        lruCache = new THLruCache<>(maxSize);
     }
     //</editor-fold>
 

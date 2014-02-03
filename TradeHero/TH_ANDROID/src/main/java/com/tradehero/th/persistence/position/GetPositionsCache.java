@@ -2,6 +2,7 @@ package com.tradehero.th.persistence.position;
 
 import android.support.v4.util.LruCache;
 import com.tradehero.common.persistence.PartialDTOCache;
+import com.tradehero.common.persistence.THLruCache;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.position.OwnedPositionId;
 import com.tradehero.th.api.position.GetPositionsDTO;
@@ -24,7 +25,7 @@ import retrofit.RetrofitError;
     public static final int DEFAULT_MAX_SIZE = 1000;
 
     // We need to compose here, instead of inheritance, otherwise we get a compile error regarding erasure on put and put.
-    private LruCache<OwnedPortfolioId, GetPositionsCache.GetPositionsCutDTO> lruCache;
+    private THLruCache<OwnedPortfolioId, GetPositionsCutDTO> lruCache;
     @Inject protected Lazy<PositionServiceWrapper> positionServiceWrapper;
     @Inject protected Lazy<SecurityCompactCache> securityCompactCache;
     @Inject protected Lazy<PortfolioCache> portfolioCache;
@@ -39,7 +40,7 @@ import retrofit.RetrofitError;
     public GetPositionsCache(final int maxSize)
     {
         super();
-        lruCache = new LruCache<>(maxSize);
+        lruCache = new THLruCache<>(maxSize);
     }
     //</editor-fold>
 

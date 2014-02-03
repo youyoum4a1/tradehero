@@ -2,6 +2,7 @@ package com.tradehero.th.persistence.leaderboard;
 
 import android.support.v4.util.LruCache;
 import com.tradehero.common.persistence.PartialDTOCache;
+import com.tradehero.common.persistence.THLruCache;
 import com.tradehero.th.api.leaderboard.LeaderboardDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardKey;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTOUtil;
@@ -20,7 +21,7 @@ import javax.inject.Singleton;
     public static final int DEFAULT_MAX_SIZE = 1000;
 
     // We need to compose here, instead of inheritance, otherwise we get a compile error regarding erasure on put and put.
-    private LruCache<LeaderboardKey, LeaderboardCache.LeaderboardCutDTO> lruCache;
+    private THLruCache<LeaderboardKey, LeaderboardCutDTO> lruCache;
     @Inject protected Lazy<LeaderboardUserCache> leaderboardUserCache;
     @Inject protected LeaderboardUserDTOUtil leaderboardUserDTOUtil;
 
@@ -33,7 +34,7 @@ import javax.inject.Singleton;
     public LeaderboardCache(int maxSize)
     {
         super();
-        lruCache = new LruCache<>(maxSize);
+        lruCache = new THLruCache<>(maxSize);
     }
     //</editor-fold>
 
