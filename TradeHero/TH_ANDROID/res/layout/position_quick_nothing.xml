@@ -2,6 +2,7 @@
 
 <com.tradehero.th.fragments.position.PositionNothingView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -16,6 +17,7 @@
       android:layout_centerInParent="true"
       android:layout_toLeftOf="@+id/ic_more_info"
       android:textColor="#888888"
+      android:text="@string/position_nothing_description"
     />
 
   <ImageView

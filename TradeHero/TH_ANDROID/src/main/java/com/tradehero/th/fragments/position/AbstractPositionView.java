@@ -3,7 +3,6 @@ package com.tradehero.th.fragments.position;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
-import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import com.tradehero.common.widget.ColorIndicator;
 import com.tradehero.th.R;
@@ -21,7 +20,7 @@ import java.lang.ref.WeakReference;
 /**
  * Created by julien on 30/10/13
  */
-public abstract class AbstractPositionView extends LinearLayout
+public abstract class AbstractPositionView<PositionDTOType extends PositionDTO> extends LinearLayout
 {
     protected OwnedPositionId ownedPositionId;
     protected PositionPartialTopView topView;
@@ -34,12 +33,9 @@ public abstract class AbstractPositionView extends LinearLayout
     protected View historyButton;
     protected boolean hasHistoryButton = true;
 
-    @Inject Lazy<PositionCache> positionCache;
-    @Inject Lazy<LeaderboardPositionCache> leaderboardPositionCache;
+    protected PositionDTOType positionDTO;
 
-    protected PositionDTO positionDTO;
-
-    protected WeakReference<PositionListener> listener = new WeakReference<>(null);
+    protected PositionListener listener = null;
 
     //<editor-fold desc="Constructors">
     public AbstractPositionView(Context context)
@@ -87,7 +83,7 @@ public abstract class AbstractPositionView extends LinearLayout
             {
                 @Override public void onClick(View v)
                 {
-                    PositionListener listenerCopy = listener.get();
+                    PositionListener listenerCopy = listener;
                     if (listenerCopy != null)
                     {
                         listenerCopy.onBuyClicked(ownedPositionId);
@@ -102,7 +98,7 @@ public abstract class AbstractPositionView extends LinearLayout
             {
                 @Override public void onClick(View v)
                 {
-                    PositionListener listenerCopy = listener.get();
+                    PositionListener listenerCopy = listener;
                     if (listenerCopy != null)
                     {
                         listenerCopy.onSellClicked(ownedPositionId);
@@ -117,7 +113,7 @@ public abstract class AbstractPositionView extends LinearLayout
             {
                 @Override public void onClick(View v)
                 {
-                    PositionListener listenerCopy = listener.get();
+                    PositionListener listenerCopy = listener;
                     if (listenerCopy != null)
                     {
                         listenerCopy.onAddAlertClicked(ownedPositionId);
@@ -132,7 +128,7 @@ public abstract class AbstractPositionView extends LinearLayout
             {
                 @Override public void onClick(View v)
                 {
-                    PositionListener listenerCopy = listener.get();
+                    PositionListener listenerCopy = listener;
                     if (listenerCopy != null)
                     {
                         listenerCopy.onStockInfoClicked(ownedPositionId);
@@ -147,7 +143,7 @@ public abstract class AbstractPositionView extends LinearLayout
             {
                 @Override public void onClick(View v)
                 {
-                    PositionListener listenerCopy = listener.get();
+                    PositionListener listenerCopy = listener;
                     if (listenerCopy != null)
                     {
                         listenerCopy.onTradeHistoryClicked(ownedPositionId);
@@ -165,26 +161,33 @@ public abstract class AbstractPositionView extends LinearLayout
             btnBuy.setOnClickListener(null);
         }
         btnBuy = null;
+
         if (btnSell != null)
         {
             btnSell.setOnClickListener(null);
         }
         btnSell = null;
+
         if (btnAddAlert != null)
         {
             btnAddAlert.setOnClickListener(null);
         }
         btnAddAlert = null;
+
         if (btnStockInfo != null)
         {
             btnStockInfo.setOnClickListener(null);
         }
         btnStockInfo = null;
+
         if (historyButton != null)
         {
             historyButton.setOnClickListener(null);
         }
         historyButton = null;
+
+        this.listener = null;
+
         super.onDetachedFromWindow();
     }
 
@@ -197,20 +200,7 @@ public abstract class AbstractPositionView extends LinearLayout
         }
     }
 
-    public void linkWith(OwnedPositionId ownedPositionId, boolean andDisplay)
-    {
-        this.ownedPositionId = ownedPositionId;
-        this.topView.linkWith(ownedPositionId, andDisplay);
-        this.linkWith(positionCache.get().get(ownedPositionId), andDisplay);
-    }
-
-    public void linkWith(OwnedLeaderboardPositionId ownedLeaderboardPositionId, boolean andDisplay)
-    {
-        this.topView.linkWith(ownedLeaderboardPositionId, andDisplay);
-        this.linkWith(leaderboardPositionCache.get().get(ownedLeaderboardPositionId), andDisplay);
-    }
-
-    protected void linkWith(PositionDTO positionDTO, boolean andDisplay)
+    public void linkWith(PositionDTOType positionDTO, boolean andDisplay)
     {
         this.positionDTO = positionDTO;
         if (andDisplay)
@@ -254,7 +244,7 @@ public abstract class AbstractPositionView extends LinearLayout
 
     public PositionListener getListener()
     {
-        return listener.get();
+        return listener;
     }
 
     /**
@@ -263,6 +253,6 @@ public abstract class AbstractPositionView extends LinearLayout
      */
     public void setListener(PositionListener listener)
     {
-        this.listener = new WeakReference<>(listener);
+        this.listener = listener;
     }
 }

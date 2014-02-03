@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.position;
 
 import android.content.Context;
+import android.preference.PreferenceActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,11 +18,15 @@ import java.util.HashMap;
 import java.util.List;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/14/13 Time: 4:12 PM To change this template use File | Settings | File Templates. */
-public abstract class AbstractPositionItemAdapter<PositionDTOType extends PositionDTO> extends BaseAdapter implements ExpandableListReporter
+public abstract class AbstractPositionItemAdapter<PositionDTOType extends PositionDTO>
+        extends BaseAdapter implements ExpandableListReporter
 {
     public static final String TAG = AbstractPositionItemAdapter.class.getName();
 
-    private List<PositionDTOType> receivedPositions;
+    protected List<PositionDTOType> receivedPositions;
+    protected List<Integer> itemTypes = new ArrayList<>();
+    protected List<Object> items = new ArrayList<>();
+
     private List<ExpandableListItem> openPositions; // If nothing, it will show the positionNothingId layout
     private List<ExpandableListItem> closedPositions;
 
@@ -34,7 +39,6 @@ public abstract class AbstractPositionItemAdapter<PositionDTOType extends Positi
     private final int closedPositionLayoutId;
     private final int positionNothingId;
 
-    private WeakReference<View> latestView = new WeakReference<>(null);
     private HashMap<Integer, Integer> viewTypeToLayoutId;
 
     private WeakReference<PositionListener> cellListener;
@@ -77,146 +81,152 @@ public abstract class AbstractPositionItemAdapter<PositionDTOType extends Positi
         return true;
     }
 
-    //<editor-fold desc="Counting Methods">
-    public int getOpenPositionsCount()
+    public void setItems(List<PositionDTOType> dtos)
     {
-        return openPositions == null ? 0 : openPositions.size();
+        List<Integer> newItemTypes = new ArrayList<>();
+        List<Object> newItems = new ArrayList<>();
+
+        if (dtos == null || dtos.size() == 0)
+        {
+            newItemTypes.add(PositionItemType.Header.value);
+            newItems.add(null);
+
+            newItemTypes.add(PositionItemType.Placeholder.value);
+            newItems.add(null);
+        }
+        else
+        {
+            List<ExpandableListItem<PositionDTOType>> lockedPositions = new ArrayList<>();
+            List<ExpandableListItem<PositionDTOType>> openPositions = new ArrayList<>();
+            List<ExpandableListItem<PositionDTOType>> closedPositions = new ArrayList<>();
+
+            // Split in open / closed
+            for (PositionDTOType positionDTO : dtos)
+            {
+                if (positionDTO.isLocked())
+                {
+                    lockedPositions.add(createExpandableItem(positionDTO));
+                }
+                else if (positionDTO.isClosed())
+                {
+                    closedPositions.add(createExpandableItem(positionDTO));
+                }
+                else
+                {
+                    openPositions.add(createExpandableItem(positionDTO));
+                }
+            }
+
+            // Dress list
+
+            // Open area
+            if (lockedPositions.size() > 0)
+            {
+                newItemTypes.add(PositionItemType.Header.value);
+                newItems.add(new HeaderDTO(PositionItemType.Locked, lockedPositions.size()));
+
+                newItemTypes.add(PositionItemType.Locked.value);
+                newItems.add(null);
+            }
+            else if (openPositions.size() > 0)
+            {
+                newItemTypes.add(PositionItemType.Header.value);
+                newItems.add(new HeaderDTO(PositionItemType.Open, openPositions.size()));
+
+                for (ExpandableListItem<PositionDTOType> openPosition : openPositions)
+                {
+                    newItemTypes.add(PositionItemType.Open.value);
+                    newItems.add(openPosition);
+                }
+            }
+            else
+            {
+                newItemTypes.add(PositionItemType.Header.value);
+                newItems.add(new HeaderDTO(PositionItemType.Placeholder, null));
+
+                newItemTypes.add(PositionItemType.Placeholder.value);
+                newItems.add(null);
+            }
+
+            // Closed area
+            if (closedPositions.size() > 0)
+            {
+                newItemTypes.add(PositionItemType.Header.value);
+                newItems.add(new HeaderDTO(PositionItemType.Closed, closedPositions.size()));
+
+                for (ExpandableListItem<PositionDTOType> closedPosition : closedPositions)
+                {
+                    newItemTypes.add(PositionItemType.Closed.value);
+                    newItems.add(closedPosition);
+                }
+            }
+        }
+
+        this.itemTypes = newItemTypes;
+        this.items = newItems;
+        notifyDataSetChanged();
     }
 
-    public int getVisibleOpenPositionsCount()
+    protected ExpandableListItem<PositionDTOType> createExpandableItem(PositionDTOType dto)
     {
-        // If the list is empty, it will still show "tap to trade"
-        return openPositions == null ? 0 : Math.max(1, openPositions.size());
-    }
-
-    public int getClosedPositionsCount()
-    {
-        return closedPositions == null ? 0 : closedPositions.size();
+        return new ExpandableListItem<>(dto);
     }
 
     @Override public int getCount()
     {
-        return 2 + getVisibleOpenPositionsCount() + getClosedPositionsCount();
-    }
-    //</editor-fold>
-
-    //<editor-fold desc="Index Methods">
-    public int getOpenPositionIndex(int position)
-    {
-        return position - 1;
-    }
-
-    public int getClosedPositionIndex(int position)
-    {
-        return position - 2 - getVisibleOpenPositionsCount();
-    }
-
-    public boolean isPositionHeaderOpen(int position)
-    {
-        return position == 0;
-    }
-
-    public boolean isOpenPosition(int position)
-    {
-        return position >= 1 && position <= getVisibleOpenPositionsCount();
-    }
-
-    public boolean isPositionHeaderClosed(int position)
-    {
-        return position == (getVisibleOpenPositionsCount() + 1);
-    }
-
-    public boolean isClosedPosition(int position)
-    {
-        return position >= (getVisibleOpenPositionsCount() + 2);
-    }
-    //</editor-fold>
-
-    @Override public long getItemId(int position)
-    {
-        long itemId;
-        if (isPositionHeaderOpen(position))
-        {
-            itemId = "openPositionHeader".hashCode();
-        }
-        else if (isOpenPosition(position))
-        {
-            if (getOpenPositionsCount() == 0)
-            {
-                itemId = "tapToTrade".hashCode();
-            }
-            else
-            {
-                itemId = openPositions.get(position - 1).hashCode();
-            }
-        }
-        else if (isPositionHeaderClosed(position))
-        {
-            itemId = "closedPositionHeader".hashCode();
-        }
-        else
-        {
-            itemId = closedPositions.get(position - 2 - getVisibleOpenPositionsCount()).hashCode();
-        }
-        return itemId;
-    }
-
-    @Override public Object getItem(int position)
-    {
-        if (isOpenPosition(position) && getOpenPositionsCount() > 0)
-        {
-            return openPositions.get(getOpenPositionIndex(position));
-        }
-        else if (isClosedPosition(position))
-        {
-            return closedPositions.get(getClosedPositionIndex(position));
-        }
-        return null;
-    }
-
-    public String getHeaderText(boolean isForOpenPositions)
-    {
-        int stringResId;
-        int count;
-        if (isForOpenPositions)
-        {
-            stringResId = (openPositions == null) ? R.string.position_list_header_open_unsure : R.string.position_list_header_open;
-            count = getOpenPositionsCount();
-        }
-        else
-        {
-            stringResId = (closedPositions == null) ? R.string.position_list_header_closed_unsure : R.string.position_list_header_closed;
-            count = getClosedPositionsCount();
-        }
-        return String.format(context.getResources().getString(stringResId), count);
+        return itemTypes.size();
     }
 
     @Override public int getItemViewType(int position)
     {
-        if (isPositionHeaderOpen(position) || isPositionHeaderClosed(position))
+        return itemTypes.get(position);
+    }
+
+    protected int getLayoutForPosition(int position)
+    {
+        return viewTypeToLayoutId.get(getItemViewType(position));
+    }
+
+    @Override public Object getItem(int position)
+    {
+        return items.get(position);
+    }
+
+    @Override public long getItemId(int position)
+    {
+        Object item = getItem(position);
+        return item == null ? 0 : item.hashCode();
+    }
+
+    public String getHeaderText(HeaderDTO headerDTO)
+    {
+        if (headerDTO == null || headerDTO.headerFor == PositionItemType.Open || headerDTO.headerFor == PositionItemType.Placeholder)
         {
-            return PositionItemType.Header.value;
+            return getOpenHeaderText(headerDTO);
         }
-        else if (isOpenPosition(position) && getOpenPositionsCount() == 0)
+        else if (headerDTO.headerFor == PositionItemType.Closed)
         {
-            return PositionItemType.Placeholder.value;
+            return getClosedHeaderText(headerDTO);
         }
-        else if (isOpenPosition(position))
+        throw new IllegalArgumentException("Unhandled " + headerDTO.toString() );
+    }
+
+    public String getOpenHeaderText(HeaderDTO headerDTO)
+    {
+        if (headerDTO == null || headerDTO.count == null)
         {
-            ExpandableListItem<OwnedPositionId> id = (ExpandableListItem<OwnedPositionId>) getItem(position);
-            if (id.getModel().isLocked())
-            {
-                return PositionItemType.Locked.value;
-            }
-            else
-            {
-                return PositionItemType.Open.value;
-            }
+            return context.getString(R.string.position_list_header_open_unsure);
         }
-        else
+        return context.getString(R.string.position_list_header_open, headerDTO.count);
+    }
+
+    public String getClosedHeaderText(HeaderDTO headerDTO)
+    {
+        if (headerDTO == null || headerDTO.count == null)
         {
-            return PositionItemType.Closed.value;
+            return context.getString(R.string.position_list_header_closed_unsure);
         }
+        return context.getString(R.string.position_list_header_closed, headerDTO.count);
     }
 
     @Override public int getViewTypeCount()
@@ -226,51 +236,43 @@ public abstract class AbstractPositionItemAdapter<PositionDTOType extends Positi
 
     @Override public View getView(int position, View convertView, ViewGroup parent)
     {
-        if (convertView == null)
-        {
-            int layoutToInflate = getLayoutForPosition(position);
-            convertView = inflater.inflate(layoutToInflate, parent, false);
-        }
+        int itemViewType = getItemViewType(position);
+        int layoutToInflate = getLayoutForPosition(position);
+        convertView = inflater.inflate(layoutToInflate, parent, false);
 
-        if (isPositionHeaderOpen(position))
+        Object item = getItem(position);
+
+        if (itemViewType == PositionItemType.Header.value)
         {
-            ((PositionSectionHeaderItemView) convertView).setHeaderTextContent(getHeaderText(true));
+            ((PositionSectionHeaderItemView) convertView).setHeaderTextContent(getHeaderText((HeaderDTO) item));
         }
-        else if (isPositionHeaderClosed(position))
+        else if (itemViewType == PositionItemType.Locked.value)
         {
-            ((PositionSectionHeaderItemView) convertView).setHeaderTextContent(getHeaderText(false));
+            ExpandableListItem<PositionDTOType> expandableWrapper = (ExpandableListItem<PositionDTOType>) getItem(position);
+            LockedPositionItem cell = (LockedPositionItem) convertView;
+            cell.linkWith(expandableWrapper.getModel(), true);
         }
-        else if (isOpenPosition(position) && getOpenPositionsCount() == 0)
+        else if (itemViewType == PositionItemType.Closed.value || itemViewType == PositionItemType.Open.value)
         {
-            // placeholder, nothing to configure
-        }
-        else
-        {
-            ExpandableListItem<OwnedPositionId> expandableWrapper = (ExpandableListItem<OwnedPositionId>) getItem(position);
-            if (expandableWrapper.getModel().isLocked())
+            ExpandableListItem<PositionDTOType> expandableWrapper = (ExpandableListItem<PositionDTOType>) getItem(position);
+            View expandingLayout = convertView.findViewById(R.id.expanding_layout);
+            if (expandingLayout != null)
             {
-                LockedPositionItem cell = (LockedPositionItem) convertView;
-                cell.linkWith(expandableWrapper.getModel(), true);
-            }
-            else
-            {
-                View expandingLayout = convertView.findViewById(R.id.expanding_layout);
-                if (expandingLayout != null)
+                if (!expandableWrapper.isExpanded())
                 {
-                    if (!expandableWrapper.isExpanded())
-                    {
-                        expandingLayout.setVisibility(View.GONE);
-                    }
-                    else
-                    {
-                        expandingLayout.setVisibility(View.VISIBLE);
-                    }
+                    expandingLayout.setVisibility(View.GONE);
                 }
-
-                bindCell(convertView, expandableWrapper.getModel());
+                else
+                {
+                    expandingLayout.setVisibility(View.VISIBLE);
+                }
             }
+
+            AbstractPositionView cell = (AbstractPositionView) convertView;
+            cell.linkWith(expandableWrapper.getModel(), true);
+            cell.setListener(new AbstractPositionItemAdapterPositionListener());
         }
-        setLatestView(convertView);
+
         return convertView;
     }
 
@@ -291,112 +293,6 @@ public abstract class AbstractPositionItemAdapter<PositionDTOType extends Positi
     public void setCellListener(PositionListener cellListener)
     {
         this.cellListener = new WeakReference<>(cellListener);
-    }
-
-    public void setPositions(List<PositionDTOType> positions, PortfolioId portfolioId)
-    {
-        this.receivedPositions = positions;
-
-        if (positions == null)
-        {
-            openPositions = null;
-            closedPositions = null;
-        }
-        else
-        {
-            openPositions = new ArrayList<>();
-            closedPositions = new ArrayList<>();
-
-            for (PositionDTOType positionDTO: positions)
-            {
-                setPosition(positionDTO);
-            }
-        }
-    }
-
-    protected abstract void setPosition(PositionDTOType positionDTO);
-
-
-    private void bindCell(View convertView, OwnedPositionId model)
-    {
-        AbstractPositionView cell = (AbstractPositionView) convertView;
-        cell.linkWith(model, true);
-        cell.setListener(getInternalListener());
-    }
-
-    protected PositionListener getInternalListener()
-    {
-        if (internalListener == null)
-        {
-            internalListener = new PositionListener()
-            {
-                @Override public void onTradeHistoryClicked(OwnedPositionId clickedOwnedPositionId)
-                {
-                    PositionListener listener = cellListener.get();
-                    if (listener != null)
-                    {
-                        listener.onTradeHistoryClicked(clickedOwnedPositionId);
-                    }
-                }
-
-                @Override public void onBuyClicked(OwnedPositionId clickedOwnedPositionId)
-                {
-                    PositionListener listener = cellListener.get();
-                    if (listener != null)
-                    {
-                        listener.onBuyClicked(clickedOwnedPositionId);
-                    }
-                }
-
-                @Override public void onSellClicked(OwnedPositionId clickedOwnedPositionId)
-                {
-                    PositionListener listener = cellListener.get();
-                    if (listener != null)
-                    {
-                        listener.onSellClicked(clickedOwnedPositionId);
-                    }
-                }
-
-                @Override public void onAddAlertClicked(OwnedPositionId clickedOwnedPositionId)
-                {
-                    PositionListener listener = cellListener.get();
-                    if (listener != null)
-                    {
-                        listener.onAddAlertClicked(clickedOwnedPositionId);
-                    }
-                }
-
-                @Override public void onStockInfoClicked(OwnedPositionId clickedOwnedPositionId)
-                {
-                    PositionListener listener = cellListener.get();
-                    if (listener != null)
-                    {
-                        listener.onStockInfoClicked(clickedOwnedPositionId);
-                    }
-                }
-            };
-        }
-        return internalListener;
-    }
-
-    protected void setLatestView(View view)
-    {
-        latestView = new WeakReference<>(view);
-    }
-
-    protected void addOpenPosition(ExpandableListItem item)
-    {
-        openPositions.add(item);
-    }
-
-    protected void addClosedPosition(ExpandableListItem item)
-    {
-        closedPositions.add(item);
-    }
-
-    protected int getLayoutForPosition(int position)
-    {
-        return viewTypeToLayoutId.get(getItemViewType(position));
     }
 
     //<editor-fold desc="ExpandableListReporter">
@@ -456,4 +352,72 @@ public abstract class AbstractPositionItemAdapter<PositionDTOType extends Positi
         }
     }
     //</editor-fold>
+
+    public static class HeaderDTO
+    {
+        public final PositionItemType headerFor;
+        public final Integer count;
+
+        public HeaderDTO(PositionItemType headerFor, Integer count)
+        {
+            this.headerFor = headerFor;
+            this.count = count;
+        }
+
+        @Override public String toString()
+        {
+            return "HeaderDTO{" +
+                    "headerFor=" + headerFor +
+                    ", count=" + count +
+                    '}';
+        }
+    }
+
+    protected class AbstractPositionItemAdapterPositionListener implements PositionListener
+    {
+        @Override public void onTradeHistoryClicked(OwnedPositionId clickedOwnedPositionId)
+        {
+            PositionListener listener = cellListener.get();
+            if (listener != null)
+            {
+                listener.onTradeHistoryClicked(clickedOwnedPositionId);
+            }
+        }
+
+        @Override public void onBuyClicked(OwnedPositionId clickedOwnedPositionId)
+        {
+            PositionListener listener = cellListener.get();
+            if (listener != null)
+            {
+                listener.onBuyClicked(clickedOwnedPositionId);
+            }
+        }
+
+        @Override public void onSellClicked(OwnedPositionId clickedOwnedPositionId)
+        {
+            PositionListener listener = cellListener.get();
+            if (listener != null)
+            {
+                listener.onSellClicked(clickedOwnedPositionId);
+            }
+        }
+
+        @Override public void onAddAlertClicked(OwnedPositionId clickedOwnedPositionId)
+        {
+            PositionListener listener = cellListener.get();
+            if (listener != null)
+            {
+                listener.onAddAlertClicked(clickedOwnedPositionId);
+            }
+        }
+
+        @Override public void onStockInfoClicked(OwnedPositionId clickedOwnedPositionId)
+        {
+            PositionListener listener = cellListener.get();
+            if (listener != null)
+            {
+                listener.onStockInfoClicked(clickedOwnedPositionId);
+            }
+        }
+    }
 }

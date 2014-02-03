@@ -2,18 +2,14 @@ package com.tradehero.th.fragments.position;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import com.tradehero.th.R;
-import com.tradehero.th.api.position.OwnedPositionId;
-import com.tradehero.th.fragments.position.partial.PositionPartialBottomClosedView;
+import com.tradehero.th.api.position.PositionDTO;
 
 /**
- * Created by julien on 30/10/13
+ * Created by xavier on 2/3/14.
  */
-public class PositionClosedView extends AbstractPositionView
+public class PositionClosedView extends AbstractPositionClosedView<PositionDTO>
 {
     public static final String TAG = PositionClosedView.class.getSimpleName();
-
-    private PositionPartialBottomClosedView bottomView;
 
     //<editor-fold desc="Constructors">
     public PositionClosedView(Context context)
@@ -31,16 +27,4 @@ public class PositionClosedView extends AbstractPositionView
         super(context, attrs, defStyle);
     }
     //</editor-fold>
-
-    @Override protected void initViews()
-    {
-        super.initViews();
-        bottomView = (PositionPartialBottomClosedView) findViewById(R.id.expanding_layout);
-    }
-
-    @Override public void linkWith(OwnedPositionId ownedPositionId, boolean andDisplay)
-    {
-        super.linkWith(ownedPositionId, andDisplay);
-        this.bottomView.linkWith(ownedPositionId, andDisplay);
-    }
 }

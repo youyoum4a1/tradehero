@@ -4,12 +4,13 @@ import android.content.Context;
 import android.util.AttributeSet;
 import com.tradehero.th.R;
 import com.tradehero.th.api.leaderboard.position.OwnedLeaderboardPositionId;
+import com.tradehero.th.api.position.PositionInPeriodDTO;
 import com.tradehero.th.fragments.position.partial.PositionPartialBottomInPeriodClosedView;
 
 /**
  * Created by julien on 1/11/13
  */
-public class PositionInPeriodClosedView extends PositionClosedView
+public class PositionInPeriodClosedView extends AbstractPositionClosedView<PositionInPeriodDTO>
 {
     public static final String TAG = PositionInPeriodClosedView.class.getSimpleName();
 
@@ -38,10 +39,10 @@ public class PositionInPeriodClosedView extends PositionClosedView
         bottomView = (PositionPartialBottomInPeriodClosedView) findViewById(R.id.expanding_layout);
     }
 
-    @Override public void linkWith(OwnedLeaderboardPositionId ownedPositionId, boolean andDisplay)
+    @Override public void linkWith(PositionInPeriodDTO positionDTO, boolean andDisplay)
     {
-        super.linkWith(ownedPositionId, andDisplay);
-        this.bottomView.linkWith(ownedPositionId, andDisplay);
+        super.linkWith(positionDTO, andDisplay);
+        this.bottomView.linkWith(positionDTO, andDisplay);
     }
 
     public void linkWith(LeaderboardPositionItemAdapter.ExpandableLeaderboardPositionItem item, boolean andDisplay)

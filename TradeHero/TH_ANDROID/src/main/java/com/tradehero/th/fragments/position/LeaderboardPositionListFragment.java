@@ -7,12 +7,16 @@ import com.tradehero.th.api.leaderboard.LeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import com.tradehero.th.api.leaderboard.position.GetLeaderboardPositionsDTO;
 import com.tradehero.th.api.leaderboard.position.LeaderboardMarkUserId;
+import com.tradehero.th.api.portfolio.OwnedPortfolioId;
+import com.tradehero.th.api.position.GetPositionsDTO;
+import com.tradehero.th.api.position.PositionInPeriodDTO;
 import com.tradehero.th.persistence.leaderboard.position.GetLeaderboardPositionsCache;
 import dagger.Lazy;
 import javax.inject.Inject;
 
 /** Created with IntelliJ IDEA. User: tho Date: 11/6/13 Time: 12:57 PM Copyright (c) TradeHero */
-public class LeaderboardPositionListFragment extends PositionListFragment
+public class LeaderboardPositionListFragment
+        extends AbstractPositionListFragment<LeaderboardMarkUserId, PositionInPeriodDTO, GetLeaderboardPositionsDTO>
 {
     public static final String TAG = LeaderboardPositionListFragment.class.getSimpleName();
 
@@ -42,6 +46,18 @@ public class LeaderboardPositionListFragment extends PositionListFragment
                 timeRestricted);
         positionItemAdapter.setCellListener(this);
     }
+
+    @Override protected DTOCache.Listener<LeaderboardMarkUserId, GetLeaderboardPositionsDTO> createCacheListener()
+    {
+        return new GetLeaderboardPositionsListener();
+    }
+
+    @Override protected DTOCache.GetOrFetchTask<LeaderboardMarkUserId, GetLeaderboardPositionsDTO> createCacheFetchTask()
+    {
+        return getLeaderboardPositionsCache.get().getOrFetch(leaderboardMarkUserId, getPositionsCacheListener);
+    }
+
+
 
     @Override public void onResume()
     {
@@ -90,12 +106,12 @@ public class LeaderboardPositionListFragment extends PositionListFragment
     }
 
     @SuppressWarnings("unchecked")
-    private void linkWith(GetLeaderboardPositionsDTO leaderboardPositionsDTO, boolean andDisplay)
+    @Override public void linkWith(GetLeaderboardPositionsDTO leaderboardPositionsDTO, boolean andDisplay)
     {
-        if (leaderboardPositionsDTO != null && ownedPortfolioId != null)
+        if (leaderboardPositionsDTO != null)
         {
             createPositionItemAdapter();
-            positionItemAdapter.setPositions(leaderboardPositionsDTO.positions, ownedPortfolioId.getPortfolioId());
+            positionItemAdapter.setItems(leaderboardPositionsDTO.positions);
             restoreExpandingStates();
             if (positionsListView != null)
             {
@@ -106,6 +122,18 @@ public class LeaderboardPositionListFragment extends PositionListFragment
         if (andDisplay)
         {
             display();
+        }
+    }
+
+    protected class GetLeaderboardPositionsListener extends AbstractGetPositionsListener<LeaderboardMarkUserId, PositionInPeriodDTO, GetLeaderboardPositionsDTO>
+    {
+        @Override public void onDTOReceived(LeaderboardMarkUserId key, GetLeaderboardPositionsDTO value)
+        {
+            if (key.equals(leaderboardMarkUserId))
+            {
+                displayProgress(false);
+                linkWith(value, true);
+            }
         }
     }
 }

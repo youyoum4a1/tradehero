@@ -14,23 +14,4 @@ public class PositionItemAdapter extends AbstractPositionItemAdapter<PositionDTO
     {
         super(context, inflater, headerLayoutId, lockedPositionLayoutId, openPositionLayoutId, closedPositionLayoutId, positionNothingId);
     }
-
-    @Override protected void setPosition(PositionDTO positionDTO)
-    {
-        ExpandableListItem<OwnedPositionId> item = new ExpandableListItem<OwnedPositionId>(positionDTO.getOwnedPositionId());
-
-
-        if (positionDTO.isOpen() == null)
-        {
-            // TODO decide what to do
-        }
-        else if (positionDTO.isOpen())
-        {
-            addOpenPosition(item);
-        }
-        else
-        {
-            addClosedPosition(item);
-        }
-    }
 }

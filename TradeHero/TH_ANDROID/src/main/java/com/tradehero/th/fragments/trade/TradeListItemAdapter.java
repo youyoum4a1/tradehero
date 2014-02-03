@@ -199,7 +199,7 @@ public class TradeListItemAdapter extends ExpandableDTOAdapter<OwnedTradeId, Tra
                     convertView = inflater.inflate(LAYOUT_RES_ID_POSITION_CLOSED, viewGroup, false);
                 }
 
-                ((AbstractPositionView) convertView).linkWith((OwnedPositionId) item, true);
+                ((AbstractPositionView) convertView).linkWith(this.shownPositionDTO, true);
                 ((AbstractPositionView) convertView).linkWithHasHistoryButton(false, true);
                 View buttons = convertView.findViewById(R.id.position_shortcuts);
                 if (buttons != null)

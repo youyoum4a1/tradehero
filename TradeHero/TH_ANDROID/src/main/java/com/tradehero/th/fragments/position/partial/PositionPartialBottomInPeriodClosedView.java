@@ -5,24 +5,17 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.TextView;
 import com.tradehero.th.R;
-import com.tradehero.th.fragments.position.LeaderboardPositionItemAdapter;
-import com.tradehero.th.api.leaderboard.position.OwnedLeaderboardPositionId;
 import com.tradehero.th.api.position.PositionInPeriodDTO;
-import com.tradehero.th.persistence.leaderboard.position.LeaderboardPositionCache;
+import com.tradehero.th.fragments.position.LeaderboardPositionItemAdapter;
 import com.tradehero.th.utils.DateUtils;
 import com.tradehero.th.utils.PositionUtils;
-import dagger.Lazy;
-import javax.inject.Inject;
 
 /**
  * Created by julien on 1/11/13
  */
-public class PositionPartialBottomInPeriodClosedView extends PositionPartialBottomClosedView
+public class PositionPartialBottomInPeriodClosedView extends AbstractPositionPartialBottomClosedView<PositionInPeriodDTO>
 {
-    public static final String TAG = PositionPartialBottomClosedView.class.getSimpleName();
-    private OwnedLeaderboardPositionId ownedPositionId;
-
-    @Inject protected Lazy<LeaderboardPositionCache> inPeriodPositionCache;
+    public static final String TAG = PositionPartialBottomInPeriodClosedView.class.getSimpleName();
 
     private TextView inPeriodPL;
     private TextView inPeriodAdditionalInvested;
@@ -63,32 +56,20 @@ public class PositionPartialBottomInPeriodClosedView extends PositionPartialBott
         inPeriodPositionContainer = findViewById(R.id.position_list_bottom_in_period_container);
     }
 
-    public void linkWith(OwnedLeaderboardPositionId ownedPositionId, boolean andDisplay)
+    public void linkWith(LeaderboardPositionItemAdapter.ExpandableLeaderboardPositionItem item, boolean andDisplay)
     {
-        this.ownedPositionId = ownedPositionId;
-
-        linkWith(inPeriodPositionCache.get().get(ownedPositionId), andDisplay);
-    }
-
-    public void linkWith(PositionInPeriodDTO positionDTO, boolean andDisplay)
-    {
-        this.positionDTO = positionDTO;
-        if (andDisplay)
-        {
-            display();
-        }
+        isTimeRestricted = item.isTimeRestricted();
+        linkWith(item.getModel(), andDisplay);
     }
 
     private void displayInPeriod()
     {
-        PositionInPeriodDTO positionInPeriodDTO = (PositionInPeriodDTO) positionDTO;
+        inPeriodPL.setText(PositionUtils.getInPeriodRealizedPL(getContext(), positionDTO));
+        PositionUtils.setROIInPeriod(inPeriodRoiValue, positionDTO);
+        inPeriodAdditionalInvested.setText(PositionUtils.getAdditionalInvested(getContext(), positionDTO));
+        inPeriodValueAtStart.setText(PositionUtils.getValueAtStart(getContext(), positionDTO));
 
-        inPeriodPL.setText(PositionUtils.getInPeriodRealizedPL(getContext(), positionInPeriodDTO));
-        PositionUtils.setROIInPeriod(inPeriodRoiValue, positionInPeriodDTO);
-        inPeriodAdditionalInvested.setText(PositionUtils.getAdditionalInvested(getContext(), positionInPeriodDTO));
-        inPeriodValueAtStart.setText(PositionUtils.getValueAtStart(getContext(), positionInPeriodDTO));
-
-        inPeriodStartValueDate.setText(DateUtils.getDisplayableDate(getContext(), positionInPeriodDTO.latestTradeUtc));
+        inPeriodStartValueDate.setText(DateUtils.getDisplayableDate(getContext(), positionDTO.latestTradeUtc));
         //inPeriodStartValueDate.setText(String.format());
     }
 
@@ -111,11 +92,5 @@ public class PositionPartialBottomInPeriodClosedView extends PositionPartialBott
     {
         inPeriodPositionContainer.setVisibility(visibility ? VISIBLE : GONE);
         inPeriodTitle.setVisibility(visibility ? VISIBLE : GONE);
-    }
-
-    public void linkWith(LeaderboardPositionItemAdapter.ExpandableLeaderboardPositionItem item, boolean andDisplay)
-    {
-        isTimeRestricted = item.isTimeRestricted();
-        linkWith(item.getModel(), andDisplay);
     }
 }
