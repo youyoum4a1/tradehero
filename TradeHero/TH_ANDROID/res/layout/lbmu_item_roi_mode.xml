@@ -2,6 +2,7 @@
 
 <com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserItemView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="center_vertical"
@@ -9,11 +10,13 @@
     android:paddingTop="5dp"
     android:descendantFocusability="blocksDescendants"
     >
+
   <RelativeLayout
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:id="@+id/leaderboard_user_item_basic_info"
       >
+
     <TextView
         android:id="@+id/leaderboard_user_item_position"
         android:layout_width="50dp"
@@ -26,6 +29,7 @@
         android:shadowDy="1"
         android:shadowRadius="1"
         android:layout_centerVertical="true"
+        tools:text="1"
         />
 
     <ImageView
@@ -33,7 +37,7 @@
         android:layout_height="@dimen/leaderboard_user_view_profile_width"
         android:layout_width="@dimen/leaderboard_user_view_profile_width"
         android:contentDescription="@null"
-        android:src="@null"
+        tools:src="@drawable/superman_facebook"
         android:layout_toRightOf="@id/leaderboard_user_item_position"
         android:layout_centerVertical="true"
         android:layout_marginRight="5dp"
@@ -50,6 +54,7 @@
         android:shadowColor="@color/light_grey"
         android:shadowDy="1"
         android:shadowRadius="1"
+        tools:text="Rafael Barba"
         />
 
     <com.tradehero.th.widget.MarkdownTextView
@@ -60,7 +65,7 @@
         android:layout_below="@id/leaderboard_user_item_display_name"
         android:layout_toRightOf="@id/leaderboard_user_item_profile_picture"
         android:layout_toLeftOf="@id/leaderboard_user_item_hq"
-        android:text="@null"
+        tools:text="I am supposed to be gone"
         android:textSize="@dimen/leaderboard_fof_text_size"
         android:visibility="gone"
         />
@@ -71,19 +76,25 @@
         android:layout_below="@id/leaderboard_user_item_fof"
         android:layout_toRightOf="@id/leaderboard_user_item_profile_picture"
         >
+
       <TextView
           android:id="@+id/lbmu_roi"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
+          tools:text="+87%"
           />
+
       <TextView
           android:id="@+id/lbmu_roi_annualized"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:paddingLeft="5dp"
           android:textColor="@color/gray_1"
+          tools:text="(annualised: +1200%)"
           />
+
     </LinearLayout>
+
   </RelativeLayout>
 
   <ImageView
@@ -104,6 +115,7 @@
       android:layout_centerVertical="true"
       android:layout_toLeftOf="@id/leaderboard_user_item_expand"
       android:src="@drawable/info"
+      android:visibility="gone"
       />
 
   <LinearLayout
@@ -115,13 +127,16 @@
       android:padding="8dp"
       android:visibility="gone"
       >
+
     <!-- Hero Quotient -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:paddingBottom="2dp"
-        android:weightSum="3">
+        android:weightSum="3"
+        android:visibility="gone"
+        >
 
       <TextView
           android:layout_width="0dp"
@@ -145,8 +160,12 @@
           android:shadowColor="@color/light_grey"
           android:shadowDy="1"
           android:shadowRadius="1"
+          tools:text="20"
           />
+
     </LinearLayout>
+
+    <!-- Profit and Loss -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -160,13 +179,16 @@
           android:text="@string/p_n_l"
           android:gravity="right"
           android:textColor="@color/light_grey"/>
+
       <TextView
           android:id="@+id/lbmu_pl"
           android:layout_width="0dp"
           android:layout_weight="2"
           android:paddingLeft="10dp"
           android:layout_height="wrap_content"
+          tools:text="US$ 92,579,534"
           />
+
     </LinearLayout>
 
     <!-- period -->
@@ -183,16 +205,62 @@
           android:text="@string/period"
           android:gravity="right"
           android:textColor="@color/light_grey"/>
+
       <TextView
           android:id="@+id/lbmu_period"
           android:layout_width="0dp"
           android:layout_weight="2"
           android:paddingLeft="10dp"
           android:layout_height="wrap_content"
+          tools:text="27 Jan 2014 - 3 Feb 2014"
           />
+
     </LinearLayout>
 
-    <!-- Sharp ratio -->
+    <!-- Sharpe ratio -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingBottom="2dp"
+        android:visibility="gone"
+        >
+
+      <TextView
+          android:layout_width="0dp"
+          android:layout_weight="1"
+          android:layout_height="wrap_content"
+          android:text="@string/sharpe_ratio"
+          android:gravity="right"
+          android:textColor="@color/light_grey"/>
+
+      <LinearLayout
+          android:layout_width="0dp"
+          android:layout_weight="2"
+          android:paddingLeft="10dp"
+          android:layout_height="wrap_content"
+          >
+
+        <TextView
+            android:id="@+id/lbmu_sharpe_ratio"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            />
+
+        <TextView
+            android:id="@+id/lbmu_volatility"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="10dp"
+            android:textColor="@color/gray_1"
+            />
+
+      </LinearLayout>
+
+    </LinearLayout>
+
+    <!-- Number of Trades in Period -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -203,29 +271,60 @@
           android:layout_width="0dp"
           android:layout_weight="1"
           android:layout_height="wrap_content"
-          android:text="@string/sharpe_ratio"
+          android:text="@string/leaderboard_number_trades_in_period_title"
           android:gravity="right"
+          android:lines="1"
           android:textColor="@color/light_grey"/>
+
       <LinearLayout
           android:layout_width="0dp"
           android:layout_weight="2"
           android:paddingLeft="10dp"
           android:layout_height="wrap_content"
           >
+
         <TextView
-            android:id="@+id/lbmu_sharpe_ratio"
+            android:id="@+id/lbmu_number_trades_in_period"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textStyle="bold"
+            tools:text="21"
             />
-        <TextView
-            android:id="@+id/lbmu_volatility"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingLeft="10dp"
-            android:textColor="@color/gray_1"
-            />
+
       </LinearLayout>
+
+    </LinearLayout>
+
+    <!-- Win Ratio -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingBottom="2dp">
+
+      <TextView
+          android:layout_width="0dp"
+          android:layout_weight="1"
+          android:layout_height="wrap_content"
+          android:text="@string/leaderboard_win_ratio_title"
+          android:gravity="right"
+          android:textColor="@color/light_grey"/>
+
+      <LinearLayout
+          android:layout_width="0dp"
+          android:layout_weight="2"
+          android:paddingLeft="10dp"
+          android:layout_height="wrap_content"
+          >
+
+        <TextView
+            android:id="@+id/lbmu_win_ratio"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="66.8%"
+            />
+
+      </LinearLayout>
+
     </LinearLayout>
 
     <!-- Avg. Days Held -->
@@ -249,20 +348,17 @@
           android:paddingLeft="10dp"
           android:layout_height="wrap_content"
           >
+
         <TextView
             android:id="@+id/lbmu_avg_days_held"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textStyle="bold"
+            tools:text="3.77"
             />
-        <TextView
-            android:id="@+id/lbmu_win_ratio"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingLeft="5dp"
-            android:textColor="@color/gray_1"
-            />
+
       </LinearLayout>
+
     </LinearLayout>
 
     <!-- Benchmark ROI -->
@@ -279,6 +375,7 @@
           android:text="@string/benchmark_roi"
           android:gravity="right"
           android:textColor="@color/light_grey"/>
+
       <TextView
           android:id="@+id/lbmu_benchmark_roi"
           android:layout_width="0dp"
@@ -286,9 +383,12 @@
           android:paddingLeft="10dp"
           android:layout_height="wrap_content"
           android:textColor="@color/gray_1"
+          tools:text="0.11% (S&amp;P 500)"
           />
+
     </LinearLayout>
 
+    <!-- Number of positions -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -302,28 +402,36 @@
           android:text="@string/leaderboard_positions_count"
           android:gravity="right"
           android:textColor="@color/light_grey"/>
+
       <LinearLayout
           android:layout_width="0dp"
           android:layout_weight="2"
           android:paddingLeft="10dp"
           android:layout_height="wrap_content"
           >
+
         <TextView
             android:id="@+id/lbmu_positions_count"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textStyle="bold"
+            tools:text="12"
             />
+
         <TextView
             android:id="@+id/lbmu_number_of_trades"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingLeft="10dp"
             android:textColor="@color/gray_1"
+            tools:text="(21 trades)"
             />
+
       </LinearLayout>
+
     </LinearLayout>
 
+    <!-- Number of followers -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -337,6 +445,7 @@
           android:text="@string/leaderboard_followers_count"
           android:gravity="right"
           android:textColor="@color/light_grey"/>
+
       <TextView
           android:id="@+id/lbmu_followers_count"
           android:layout_width="0dp"
@@ -344,9 +453,12 @@
           android:paddingLeft="10dp"
           android:layout_height="wrap_content"
           android:textStyle="bold"
+          tools:text="3"
           />
+
     </LinearLayout>
 
+    <!-- Comments count -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -360,6 +472,7 @@
           android:text="@string/leaderboard_comments_count"
           android:gravity="right"
           android:textColor="@color/light_grey"/>
+
       <TextView
           android:id="@+id/lbmu_comments_count"
           android:layout_width="0dp"
@@ -367,7 +480,9 @@
           android:paddingLeft="10dp"
           android:layout_height="wrap_content"
           android:textStyle="bold"
+          tools:text="1"
           />
+
     </LinearLayout>
 
 

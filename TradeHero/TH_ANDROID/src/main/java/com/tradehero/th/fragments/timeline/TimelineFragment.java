@@ -246,6 +246,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     }
     //</editor-fold>
 
+    //<editor-fold desc="StepView.StepProvider">
     @Override public View provideView(int step)
     {
         switch (step)
@@ -266,6 +267,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         }
         return null;
     }
+    //</editor-fold>
 
     //<editor-fold desc="PortfolioRequestListener">
     @Override public void onPortfolioRequested(OwnedPortfolioId ownedPortfolioId)
@@ -343,6 +345,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     {
         return false;
     }
+    //</editor-fold>
 
     private static class UserProfileStepView extends StepView implements DTOView<UserProfileDTO>
     {
@@ -368,5 +371,4 @@ public class TimelineFragment extends BasePurchaseManagerFragment
             }
         }
     }
-    //</editor-fold>
 }

@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 import com.squareup.picasso.Transformation;
@@ -145,6 +146,7 @@ public class ProfileView extends LinearLayout implements DTOView<UserProfileDTO>
     {
         if (dto == null)
         {
+            loadDefaultPicture();
             return;
         }
 
@@ -153,7 +155,18 @@ public class ProfileView extends LinearLayout implements DTOView<UserProfileDTO>
             picasso
                 .load(dto.picture)
                 .transform(peopleIconTransformation)
-                .into(avatar);
+                .into(avatar, new Callback()
+                {
+                    @Override public void onSuccess()
+                    {
+
+                    }
+
+                    @Override public void onError()
+                    {
+                        loadDefaultPicture();
+                    }
+                });
 
             profileTop.post(new Runnable()
             {
@@ -253,6 +266,14 @@ public class ProfileView extends LinearLayout implements DTOView<UserProfileDTO>
         {
             userName.setText(dto.displayName);
         }
+    }
+
+    private void loadDefaultPicture()
+    {
+        picasso
+                .load(R.drawable.superman_facebook)
+                .transform(peopleIconTransformation)
+                .into(avatar);
     }
 
     /**

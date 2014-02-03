@@ -154,6 +154,8 @@ public class TimelineItemView extends LinearLayout implements
             monitorPopupMenu.setOnMenuItemClickListener(null);
         }
 
+        displayDefaultUserProfilePicture();
+
         super.onDetachedFromWindow();
     }
 
@@ -217,8 +219,31 @@ public class TimelineItemView extends LinearLayout implements
             picasso.get()
                     .load(user.picture)
                     .transform(peopleIconTransformation)
-                    .into(avatar);
+                    .into(avatar, new com.squareup.picasso.Callback()
+                    {
+                        @Override public void onSuccess()
+                        {
+
+                        }
+
+                        @Override public void onError()
+                        {
+                            displayDefaultUserProfilePicture();
+                        }
+                    });
         }
+        else
+        {
+             displayDefaultUserProfilePicture();
+        }
+    }
+
+    private void displayDefaultUserProfilePicture()
+    {
+        picasso.get()
+                .load(R.drawable.superman_facebook)
+                .transform(peopleIconTransformation)
+                .into(avatar);
     }
 
     private void displayMarkupText(TimelineItem item)

@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 import com.tradehero.th.R;
@@ -38,6 +39,8 @@ import javax.inject.Inject;
 public class LeaderboardMarkUserItemView extends RelativeLayout
         implements DTOView<LeaderboardUserDTO>, View.OnClickListener
 {
+    public static final String TAG = LeaderboardMarkUserItemView.class.getSimpleName();
+
     @Inject protected Lazy<Picasso> picasso;
     @Inject @ForUserPhoto protected Transformation peopleIconTransformation;
     @Inject protected Lazy<LeaderboardDefCache> leaderboardDefCache;
@@ -63,6 +66,7 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
     private TextView lbmuAvgDaysHeld;
     private TextView lbmuFollowersCount;
     private TextView lbmuRoiAnnualized;
+    private TextView lbmuNumberTradesInPeriod;
     private TextView lbmuWinRatio;
     private TextView lbmuVolatility;
     private TextView lbmuNumberOfTrades;
@@ -120,6 +124,7 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         lbmuAvgDaysHeld = (TextView) findViewById(R.id.lbmu_avg_days_held);
         lbmuFollowersCount = (TextView) findViewById(R.id.lbmu_followers_count);
         lbmuCommentsCount = (TextView) findViewById(R.id.lbmu_comments_count);
+        lbmuNumberTradesInPeriod = (TextView) findViewById(R.id.lbmu_number_trades_in_period);
         lbmuWinRatio = (TextView) findViewById(R.id.lbmu_win_ratio);
         lbmuNumberOfTrades = (TextView) findViewById(R.id.lbmu_number_of_trades);
 
@@ -159,6 +164,7 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         {
             lbmuPositionInfo.setOnClickListener(null);
         }
+        loadDefaultUserImage();
         super.onDetachedFromWindow();
     }
 
@@ -206,20 +212,36 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         {
             picasso.get().load(leaderboardItem.picture)
                     .transform(peopleIconTransformation)
-                    .into(lbmuProfilePicture);
+                    .into(lbmuProfilePicture,
+                            new Callback()
+                            {
+                                @Override public void onSuccess()
+                                {
+                                }
+
+                                @Override public void onError()
+                                {
+                                    loadDefaultUserImage();
+                                }
+                            });
         }
         else
         {
-            picasso.get().load(R.drawable.superman_facebook)
-                    .transform(peopleIconTransformation)
-                    .into(lbmuProfilePicture);
+            loadDefaultUserImage();
         }
+    }
+
+    private void loadDefaultUserImage()
+    {
+        picasso.get().load(R.drawable.superman_facebook)
+                .transform(peopleIconTransformation)
+                .into(lbmuProfilePicture);
     }
 
     private void displayExpandableSection()
     {
         // display P&L
-        lbmuPl.setText(leaderboardItem.getFormattedPL() + " " + getContext().getString(R.string.ref_currency));
+        lbmuPl.setText(getContext().getString(R.string.ref_currency) + " " + leaderboardItem.getFormattedPL());
         String periodFormat = getContext().getString(R.string.leaderboard_ranking_period);
 
         // display period
@@ -263,11 +285,15 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         String numberOfTrades = String.format(numberOfTradeFormat, leaderboardItem.getNumberOfTrades());
         lbmuNumberOfTrades.setText(Html.fromHtml(numberOfTrades));
 
+        // Number of trades in Period
+        lbmuNumberTradesInPeriod.setText(String.format("%,d", leaderboardItem.numberOfTradesInPeriod));
+
         // average days held
         lbmuAvgDaysHeld.setText(NumberDisplayUtils.formatWithRelevantDigits((double) leaderboardItem.avgHoldingPeriodMins / (60*24), 3));
         String winRatioFormat = getContext().getString(R.string.leaderboard_win_ratio);
-        String winRatio = String.format(winRatioFormat, NumberDisplayUtils.formatWithRelevantDigits(leaderboardItem.getWinRatio() * 100, 3));
-        lbmuWinRatio.setText(winRatio);
+        String digitsWinRatio = NumberDisplayUtils.formatWithRelevantDigits(leaderboardItem.getWinRatio() * 100, 3);
+        String winRatio = String.format(winRatioFormat, digitsWinRatio);
+        lbmuWinRatio.setText(digitsWinRatio + "%");
 
         // followers & comments count
         lbmuFollowersCount.setText("" + leaderboardItem.getTotalFollowersCount());
@@ -279,6 +305,7 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         switch (view.getId())
         {
             case R.id.leaderboard_user_item_info:
+                // TODO right now the icon is gone
                 break;
             case R.id.leaderboard_user_item_open_profile:
                 handleOpenProfileButtonClicked();

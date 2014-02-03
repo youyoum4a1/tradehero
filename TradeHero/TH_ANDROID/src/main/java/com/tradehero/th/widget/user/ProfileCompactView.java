@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 import com.squareup.picasso.Transformation;
@@ -91,13 +92,25 @@ public class ProfileCompactView extends RelativeLayout implements DTOView<UserPr
     {
         if (dto == null || dto.picture == null)
         {
+            loadDefaultPicture();
             return;
         }
 
         picasso
                 .load(dto.picture)
                 .transform(peopleIconTransformation)
-                .into(avatar);
+                .into(avatar, new Callback()
+                {
+                    @Override public void onSuccess()
+                    {
+
+                    }
+
+                    @Override public void onError()
+                    {
+                        loadDefaultPicture();
+                    }
+                });
 
         picasso
                 .load(dto.picture)
@@ -117,6 +130,14 @@ public class ProfileCompactView extends RelativeLayout implements DTOView<UserPr
         followersCount.setText(Integer.toString(dto.followerCount));
         heroesCount.setText(Integer.toString(dto.heroIds.size()));
         username.setText(dto.displayName);
+    }
+
+    private void loadDefaultPicture()
+    {
+        picasso
+                .load(R.drawable.superman_facebook)
+                .transform(peopleIconTransformation)
+                .into(avatar);
     }
 
     /**
