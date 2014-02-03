@@ -1,11 +1,12 @@
 package com.tradehero.th.utils;
 
+import com.tradehero.th.BuildConfig;
 import twitter4j.auth.RequestToken;
 
 public class Constants
 {
     // build constants
-    public static final boolean RELEASE = false;
+    public static final boolean RELEASE = !BuildConfig.DEBUG;
 
     public static final boolean PICASSO_DEBUG = RELEASE;
 
@@ -19,7 +20,6 @@ public class Constants
     //Linked In
     public static final String LINKEDIN_CONSUMER_KEY = "afed437khxve";
     public static final String LINKEDIN_CONSUMER_SECRET = "hO7VeSyL4y1W2ZiK";
-    public static final boolean LEADERBOARD_BACKGROUND_IMAGE_ENABLED = false;
     public static final String FACEBOOK_PROFILE_PICTURE = "http://graph.facebook.com/%s/picture?type=large";
     public static String OAUTH_CALLBACK_URL = "x-oauthflow-linkedin://callback";
 

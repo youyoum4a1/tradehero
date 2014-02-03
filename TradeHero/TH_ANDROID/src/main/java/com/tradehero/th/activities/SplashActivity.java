@@ -8,6 +8,7 @@ import com.crashlytics.android.Crashlytics;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
 import com.tradehero.th.base.THUser;
+import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.TestFlightUtils;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -22,7 +23,11 @@ public class SplashActivity extends SherlockActivity
     @Override protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        Crashlytics.start(this);
+
+        if (Constants.RELEASE)
+        {
+            Crashlytics.start(this);
+        }
 
         setContentView(R.layout.splash_screen);
     }

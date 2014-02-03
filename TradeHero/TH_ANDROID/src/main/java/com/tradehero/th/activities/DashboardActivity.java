@@ -22,6 +22,7 @@ import com.tradehero.th.fragments.billing.PurchaseRestorerAlertUtil;
 import com.tradehero.th.models.intent.THIntentFactory;
 import com.tradehero.th.persistence.DTOCacheUtil;
 import com.tradehero.th.persistence.watchlist.WatchlistRetrievedMilestone;
+import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.FacebookUtils;
 import dagger.Lazy;
@@ -49,7 +50,11 @@ public class DashboardActivity extends SherlockFragmentActivity
         super.onCreate(savedInstanceState);
         DaggerUtils.inject(this);
 
-        Crashlytics.setUserIdentifier("" + currentUserBaseKeyHolder.getCurrentUserBaseKey().key);
+        if (Constants.RELEASE)
+        {
+            Crashlytics.setUserIdentifier("" + currentUserBaseKeyHolder.getCurrentUserBaseKey().key);
+        }
+
         setContentView(R.layout.dashboard_with_bottom_bar);
 
         launchIAB();
