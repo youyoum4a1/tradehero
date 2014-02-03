@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.*;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 import com.tradehero.common.persistence.DTOCache;
@@ -170,8 +171,26 @@ public class OtherUserPortfolioHeaderView extends RelativeLayout implements Port
         {
             picasso.get().load(this.userProfileDTO.picture)
                     .transform(peopleIconTransformation)
-                    .into(this.userImageView);
+                    .into(this.userImageView, new Callback()
+                    {
+                        @Override public void onSuccess()
+                        {
+
+                        }
+
+                        @Override public void onError()
+                        {
+                            displayDefaultUserImage();
+                        }
+                    });
         }
+    }
+
+    private void displayDefaultUserImage()
+    {
+        picasso.get().load(R.drawable.superman_facebook)
+                .transform(peopleIconTransformation)
+                .into(this.userImageView);
     }
 
     private void configureFollowItemsVisibility()
