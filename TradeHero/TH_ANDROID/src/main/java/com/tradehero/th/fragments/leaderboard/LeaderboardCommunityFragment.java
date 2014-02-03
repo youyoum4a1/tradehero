@@ -60,16 +60,14 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
     @Inject protected Picasso picasso;
     @Inject protected CurrentUserBaseKeyHolder currentUserBaseKeyHolder;
 
-    @InjectView(R.id.btn_first_provider) ImageView firstProviderLink;
     @InjectView(R.id.community_screen) ViewAnimator communityScreen;
     @InjectView(android.R.id.list) StickyListHeadersListView leaderboardDefListView;
     @Inject protected ProviderListRetrievedMilestone providerListRetrievedMilestone;
 
     private Milestone.OnCompleteListener providerListRetrievedListener;
-    private ProviderDTO firstProvider;
     private THIntentPassedListener thIntentPassedListener;
     private WebViewFragment webFragment;
-    private LeaderboardCommunityAdapter leaderboardDefListAdapter;
+    private LeaderboardCommunityAdapterLeaderboard leaderboardDefListAdapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -135,15 +133,10 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
 
     @Override protected void initViews(View view)
     {
-        // competition
-        if (this.firstProviderLink != null)
-        {
-            this.firstProviderLink.setOnClickListener(new LeaderboardCommunityFragmentProviderLinkClickListener());
-        }
-
         // list of leaderboard definition item
-        leaderboardDefListAdapter = new LeaderboardCommunityAdapter(
-                getActivity(), getActivity().getLayoutInflater(), R.layout.leaderboard_definition_item_view);
+        leaderboardDefListAdapter = new LeaderboardCommunityAdapterLeaderboard(
+                getActivity(), getActivity().getLayoutInflater(),
+                R.layout.leaderboard_definition_item_view, R.layout.leaderboard_competition_item_view);
 
         leaderboardDefListView.setAdapter(leaderboardDefListAdapter);
         leaderboardDefListView.setOnItemClickListener(leaderboardCommunityListOnClickListener);
@@ -170,12 +163,6 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
 
     @Override public void onDestroyView()
     {
-        if (this.firstProviderLink != null)
-        {
-            this.firstProviderLink.setOnClickListener(null);
-        }
-        this.firstProviderLink = null;
-
         this.thIntentPassedListener = null;
 
         if (leaderboardDefListView != null)
@@ -225,23 +212,8 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
 
     private void displayFirstCompetitionProvider(List<ProviderId> providerIds)
     {
-        if (providerIds != null && providerIds.size() > 0)
-        {
-            displayFirstProviderButton(this.providerCache.get().get(providerIds.get(0)));
-        }
+        leaderboardDefListAdapter.setCompetitionItems(providerIds);
     }
-
-    private void displayFirstProviderButton(ProviderDTO providerDTO)
-    {
-        this.firstProvider = providerDTO;
-        if (firstProvider != null && firstProviderLink != null)
-        {
-            firstProviderLink.setVisibility(View.VISIBLE);
-            this.picasso.load(firstProvider.getStatusSingleImageUrl()).into(firstProviderLink);
-        }
-    }
-
-
     private class LeaderboardCommunityFragmentProviderListRetrievedListener implements Milestone.OnCompleteListener
     {
         @Override public void onComplete(Milestone milestone)
@@ -256,27 +228,25 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
         }
     }
 
-    private class LeaderboardCommunityFragmentProviderLinkClickListener implements View.OnClickListener
+    private void handleCompetitionItemClicked(ProviderDTO providerDTO)
     {
-        @Override public void onClick(View view)
+        if (providerDTO != null && providerDTO.isUserEnrolled)
         {
-            if (firstProvider != null && firstProvider.isUserEnrolled)
-            {
-                Bundle args = new Bundle();
-                args.putBundle(MainCompetitionFragment.BUNDLE_KEY_PROVIDER_ID, firstProvider.getProviderId().getArgs());
-                OwnedPortfolioId associatedPortfolioId = new OwnedPortfolioId(currentUserBaseKeyHolder.getCurrentUserBaseKey(), firstProvider.associatedPortfolio);
-                args.putBundle(MainCompetitionFragment.BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE, associatedPortfolioId.getArgs());
-                navigator.pushFragment(MainCompetitionFragment.class, args);
-            }
-            else if (firstProvider != null)
-            {
-                Bundle args = new Bundle();
-                args.putString(WebViewFragment.BUNDLE_KEY_URL, ProviderConstants.getLandingPage(
-                        firstProvider.getProviderId(),
-                        currentUserBaseKeyHolder.getCurrentUserBaseKey()));
-                webFragment = (WebViewFragment) navigator.pushFragment(WebViewFragment.class, args);
-                webFragment.setThIntentPassedListener(thIntentPassedListener);
-            }
+            Bundle args = new Bundle();
+            args.putBundle(MainCompetitionFragment.BUNDLE_KEY_PROVIDER_ID, providerDTO.getProviderId().getArgs());
+            OwnedPortfolioId associatedPortfolioId =
+                    new OwnedPortfolioId(currentUserBaseKeyHolder.getCurrentUserBaseKey(), providerDTO.associatedPortfolio);
+            args.putBundle(MainCompetitionFragment.BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE, associatedPortfolioId.getArgs());
+            navigator.pushFragment(MainCompetitionFragment.class, args);
+        }
+        else if (providerDTO != null)
+        {
+            Bundle args = new Bundle();
+            args.putString(WebViewFragment.BUNDLE_KEY_URL, ProviderConstants.getLandingPage(
+                    providerDTO.getProviderId(),
+                    currentUserBaseKeyHolder.getCurrentUserBaseKey()));
+            webFragment = (WebViewFragment) navigator.pushFragment(WebViewFragment.class, args);
+            webFragment.setThIntentPassedListener(thIntentPassedListener);
         }
     }
 
@@ -327,6 +297,10 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
                             break;
                     }
                 }
+            }
+            if (item instanceof ProviderId)
+            {
+                handleCompetitionItemClicked(providerCache.get().get((ProviderId) item));
             }
         }
     };

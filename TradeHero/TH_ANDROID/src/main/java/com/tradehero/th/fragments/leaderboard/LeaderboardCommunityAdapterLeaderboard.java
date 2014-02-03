@@ -6,11 +6,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.ArrayDTOAdapter;
+import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.leaderboard.LeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardDefKey;
 import com.tradehero.th.api.leaderboard.LeaderboardDefListKey;
 import com.tradehero.th.api.leaderboard.LeaderboardDefMostSkilledListKey;
 import com.tradehero.th.api.leaderboard.LeaderboardDefTimePeriodListKey;
+import com.tradehero.th.fragments.competition.LeaderboardCompetitionView;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefCache;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefListCache;
 import com.tradehero.th.utils.DaggerUtils;
@@ -25,17 +27,31 @@ import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
 /**
  * Created with IntelliJ IDEA. User: tho Date: 2/3/14 Time: 3:48 PM Copyright (c) TradeHero
  */
-public class LeaderboardCommunityAdapter extends ArrayDTOAdapter<LeaderboardDefKey, LeaderboardDefView>
+public class LeaderboardCommunityAdapterLeaderboard extends ArrayDTOAdapter<LeaderboardDefKey, LeaderboardDefView>
     implements StickyListHeadersAdapter
 {
     private Map<LeaderboardCommunityType, List<LeaderboardDefKey>> items = new HashMap<>();
+    private List<ProviderId> providerDTOs = new ArrayList<>();
+
     @Inject Lazy<LeaderboardDefListCache> leaderboardDefListCache;
     @Inject Lazy<LeaderboardDefCache> leaderboardDefCache;
 
-    public LeaderboardCommunityAdapter(Context context, LayoutInflater inflater, int layoutResourceId)
+    private final int competitionCompactViewResourceId;
+
+    public LeaderboardCommunityAdapterLeaderboard(Context context, LayoutInflater inflater,
+            int leaderboardDefViewResourceId,
+            int competitionCompactViewResourceId)
     {
-        super(context, inflater, layoutResourceId);
+        super(context, inflater, leaderboardDefViewResourceId);
+
+        this.competitionCompactViewResourceId = competitionCompactViewResourceId;
         DaggerUtils.inject(this);
+    }
+
+    public void setCompetitionItems(List<ProviderId> providerDTOs)
+    {
+        this.providerDTOs = providerDTOs;
+        notifyDataSetChanged();
     }
 
     @Override public void notifyDataSetChanged()
@@ -92,7 +108,6 @@ public class LeaderboardCommunityAdapter extends ArrayDTOAdapter<LeaderboardDefK
             leaderboardDefCache.get().put(fakeDto.getLeaderboardDefKey(), fakeDto);
             sectorAndExchange.add(fakeDto.getLeaderboardDefKey());
         }
-
     }
 
     @Override public int getCount()
@@ -105,11 +120,24 @@ public class LeaderboardCommunityAdapter extends ArrayDTOAdapter<LeaderboardDefK
                 totalItems += items.get(type).size();
             }
         }
-        return totalItems;
+        return getCompetitionCount() + totalItems;
+    }
+
+    public int getCompetitionCount()
+    {
+        return providerDTOs == null ? 0 : providerDTOs.size();
     }
 
     @Override public Object getItem(int position)
     {
+        // first items of the list are for competition
+        if (position < getCompetitionCount())
+        {
+            return providerDTOs.get(position);
+        }
+
+        position -= getCompetitionCount();
+        // the rest are for Leaderboard definition
         for (LeaderboardCommunityType type : LeaderboardCommunityType.values())
         {
             if (items.get(type) != null)
@@ -130,6 +158,12 @@ public class LeaderboardCommunityAdapter extends ArrayDTOAdapter<LeaderboardDefK
 
     @Override public int getItemViewType(int position)
     {
+        if (getCompetitionCount() > position)
+        {
+            return LeaderboardCommunityType.Competition.ordinal();
+        }
+        position -= getCompetitionCount();
+
         for (LeaderboardCommunityType type: LeaderboardCommunityType.values())
         {
             if (items.get(type) != null)
@@ -155,7 +189,21 @@ public class LeaderboardCommunityAdapter extends ArrayDTOAdapter<LeaderboardDefK
 
     @Override public View getView(int position, View convertView, ViewGroup viewGroup)
     {
-        return super.getView(position, convertView, viewGroup);
+        Object item = getItem(position);
+        if (item instanceof LeaderboardDefKey)
+        {
+            return super.getView(position, convertView, viewGroup);
+        }
+        else if (item instanceof ProviderId)
+        {
+            LeaderboardCompetitionView competitionView = getCompetitionView(position, (LeaderboardCompetitionView) convertView, viewGroup);
+            competitionView.display((ProviderId) item);
+            return competitionView;
+        }
+        else
+        {
+            return null;
+        }
     }
 
     @Override protected void fineTune(int position, LeaderboardDefKey dto, LeaderboardDefView dtoView)
@@ -163,6 +211,7 @@ public class LeaderboardCommunityAdapter extends ArrayDTOAdapter<LeaderboardDefK
 
     }
 
+    //<editor-fold desc="For headers">
     @Override public View getHeaderView(int position, View convertView, ViewGroup parent)
     {
         if (convertView == null)
@@ -177,9 +226,21 @@ public class LeaderboardCommunityAdapter extends ArrayDTOAdapter<LeaderboardDefK
 
         return getItemViewType(position);
     }
+    //</editor-fold>
+
+    @SuppressWarnings("unchecked")
+    public LeaderboardCompetitionView getCompetitionView(int position, LeaderboardCompetitionView convertView, ViewGroup parent)
+    {
+        if (convertView == null)
+        {
+            convertView = (LeaderboardCompetitionView) inflater.inflate(competitionCompactViewResourceId, parent, false);
+        }
+        return convertView;
+    }
 
     public static enum LeaderboardCommunityType
     {
+        Competition(null), // for competition
         SkillAndFriend(new LeaderboardDefMostSkilledListKey()),
         TimeRestricted(new LeaderboardDefTimePeriodListKey()),
         SectorAndExchange(null);// all fake :v

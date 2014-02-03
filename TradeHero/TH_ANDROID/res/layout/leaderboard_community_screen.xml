@@ -6,6 +6,7 @@
     android:id="@+id/community_screen"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:paddingBottom="@dimen/leaderboard_bottom_padding"
     >
 
   <ProgressBar
@@ -14,31 +15,12 @@
       android:layout_gravity="center"
       />
 
-  <LinearLayout
-      android:orientation="vertical"
+  <se.emilsjolander.stickylistheaders.StickyListHeadersListView
+      android:id="@android:id/list"
+      android:layout_height="wrap_content"
       android:layout_width="match_parent"
-      android:layout_height="match_parent"
-      android:paddingLeft="@dimen/dashboard_padding"
-      android:paddingRight="@dimen/dashboard_padding"
-      android:paddingTop="@dimen/dashboard_padding"
-      >
-
-    <ImageView
-        android:id="@+id/btn_first_provider"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:scaleType="fitCenter"
-        android:visibility="gone"
-        />
-
-    <se.emilsjolander.stickylistheaders.StickyListHeadersListView
-        android:id="@android:id/list"
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent"
-        app:hasStickyHeaders="false"
-        />
-
-  </LinearLayout>
+      app:hasStickyHeaders="false"
+      />
 
 </ViewAnimator>
 
