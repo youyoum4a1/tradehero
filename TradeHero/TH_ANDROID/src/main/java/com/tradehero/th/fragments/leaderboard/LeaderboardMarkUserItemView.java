@@ -10,6 +10,8 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import com.squareup.picasso.Callback;
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 import com.tradehero.th.R;
@@ -50,28 +52,28 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
     private LeaderboardUserDTO leaderboardItem;
 
     // top view
-    private TextView lbmuDisplayName;
-    private ImageView lbmuProfilePicture;
-    private TextView lbmuPosition;
-    private TextView lbmuHeroQuotient;
-    private ImageView lbmuPositionInfo;
+    @InjectView(R.id.leaderboard_user_item_display_name) TextView lbmuDisplayName;
+    @InjectView(R.id.leaderboard_user_item_profile_picture) ImageView lbmuProfilePicture;
+    @InjectView(R.id.leaderboard_user_item_position) TextView lbmuPosition;
+    @InjectView(R.id.leaderboard_user_item_hq) TextView lbmuHeroQuotient;
+    @InjectView(R.id.leaderboard_user_item_info) ImageView lbmuPositionInfo;
 
     // expanding view
-    private TextView lbmuPl;
-    private TextView lbmuRoi;
-    private TextView lbmuCommentsCount;
-    private TextView lbmuBenchmarkRoi;
-    private TextView lbmuSharpeRatio;
-    private TextView lbmuPositionsCount;
-    private TextView lbmuAvgDaysHeld;
-    private TextView lbmuFollowersCount;
-    private TextView lbmuRoiAnnualized;
-    private TextView lbmuNumberTradesInPeriod;
-    private TextView lbmuWinRatio;
-    private TextView lbmuVolatility;
-    private TextView lbmuNumberOfTrades;
-    private TextView lbmuPeriod;
-    private MarkdownTextView lbmuFoF;
+    @InjectView(R.id.lbmu_pl) TextView lbmuPl;
+    @InjectView(R.id.lbmu_roi) TextView lbmuRoi;
+    @InjectView(R.id.lbmu_comments_count) TextView lbmuCommentsCount;
+    @InjectView(R.id.lbmu_benchmark_roi) TextView lbmuBenchmarkRoi;
+    @InjectView(R.id.lbmu_sharpe_ratio) TextView lbmuSharpeRatio;
+    @InjectView(R.id.lbmu_positions_count) TextView lbmuPositionsCount;
+    @InjectView(R.id.lbmu_avg_days_held) TextView lbmuAvgDaysHeld;
+    @InjectView(R.id.lbmu_followers_count) TextView lbmuFollowersCount;
+    @InjectView(R.id.lbmu_roi_annualized) TextView lbmuRoiAnnualized;
+    @InjectView(R.id.lbmu_win_ratio) TextView lbmuWinRatio;
+    @InjectView(R.id.lbmu_volatility) TextView lbmuVolatility;
+    @InjectView(R.id.lbmu_number_of_trades) TextView lbmuNumberOfTrades;
+    @InjectView(R.id.lbmu_period) TextView lbmuPeriod;
+    @InjectView(R.id.leaderboard_user_item_fof) MarkdownTextView lbmuFoF;
+    @InjectView(R.id.lbmu_number_trades_in_period) TextView lbmuNumberTradesInPeriod;
 
     //<editor-fold desc="Constructors">
     public LeaderboardMarkUserItemView(Context context)
@@ -95,40 +97,18 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         super.onFinishInflate();
 
         DaggerUtils.inject(this);
+        ButterKnife.inject(this);
         initViews();
     }
 
     private void initViews()
     {
         // top part
-        lbmuPosition = (TextView) findViewById(R.id.leaderboard_user_item_position);
-        lbmuDisplayName = (TextView) findViewById(R.id.leaderboard_user_item_display_name);
-        lbmuProfilePicture = (ImageView) findViewById(R.id.leaderboard_user_item_profile_picture);
-        lbmuHeroQuotient = (TextView) findViewById(R.id.leaderboard_user_item_hq);
-        lbmuFoF = (MarkdownTextView) findViewById(R.id.leaderboard_user_item_fof);
         if (lbmuFoF != null)
         {
             DaggerUtils.inject(lbmuFoF);
         }
-        lbmuPositionInfo = (ImageView) findViewById(R.id.leaderboard_user_item_info);
 
-        // expanding part
-        lbmuPl = (TextView) findViewById(R.id.lbmu_pl);
-        lbmuPeriod = (TextView) findViewById(R.id.lbmu_period);
-        lbmuRoi = (TextView) findViewById(R.id.lbmu_roi);
-        lbmuRoiAnnualized = (TextView) findViewById(R.id.lbmu_roi_annualized);
-        lbmuBenchmarkRoi = (TextView) findViewById(R.id.lbmu_benchmark_roi);
-        lbmuSharpeRatio = (TextView) findViewById(R.id.lbmu_sharpe_ratio);
-        lbmuVolatility = (TextView) findViewById(R.id.lbmu_volatility);
-        lbmuPositionsCount = (TextView) findViewById(R.id.lbmu_positions_count);
-        lbmuAvgDaysHeld = (TextView) findViewById(R.id.lbmu_avg_days_held);
-        lbmuFollowersCount = (TextView) findViewById(R.id.lbmu_followers_count);
-        lbmuCommentsCount = (TextView) findViewById(R.id.lbmu_comments_count);
-        lbmuNumberTradesInPeriod = (TextView) findViewById(R.id.lbmu_number_trades_in_period);
-        lbmuWinRatio = (TextView) findViewById(R.id.lbmu_win_ratio);
-        lbmuNumberOfTrades = (TextView) findViewById(R.id.lbmu_number_of_trades);
-
-        // action buttons
         TextView lbmuOpenProfile = (TextView) findViewById(R.id.leaderboard_user_item_open_profile);
         if (lbmuOpenProfile != null)
         {

@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import com.actionbarsherlock.app.ActionBar;
@@ -23,17 +22,15 @@ import com.tradehero.th.api.competition.ProviderConstants;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.competition.ProviderListKey;
+import com.tradehero.th.api.leaderboard.LeaderboardDefCommunityListKey;
 import com.tradehero.th.api.leaderboard.LeaderboardDefDTO;
-import com.tradehero.th.api.leaderboard.LeaderboardDefExchangeListKey;
+import com.tradehero.th.api.leaderboard.LeaderboardDefKey;
 import com.tradehero.th.api.leaderboard.LeaderboardDefKeyList;
 import com.tradehero.th.api.leaderboard.LeaderboardDefListKey;
-import com.tradehero.th.api.leaderboard.LeaderboardDefMostSkilledListKey;
-import com.tradehero.th.api.leaderboard.LeaderboardDefSectorListKey;
-import com.tradehero.th.api.leaderboard.LeaderboardDefTimePeriodListKey;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
-import com.tradehero.th.fragments.web.WebViewFragment;
 import com.tradehero.th.fragments.competition.MainCompetitionFragment;
+import com.tradehero.th.fragments.web.WebViewFragment;
 import com.tradehero.th.models.intent.THIntent;
 import com.tradehero.th.models.intent.THIntentPassedListener;
 import com.tradehero.th.models.intent.competition.ProviderPageIntent;
@@ -43,11 +40,9 @@ import com.tradehero.th.persistence.competition.ProviderListRetrievedMilestone;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefCache;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefListCache;
 import dagger.Lazy;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import javax.inject.Inject;
+import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 
 public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
         implements DTOCache.Listener<LeaderboardDefListKey, LeaderboardDefKeyList>
@@ -55,29 +50,24 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
     private static final String TAG = LeaderboardCommunityFragment.class.getName();
 
     @Inject protected Lazy<LeaderboardDefListCache> leaderboardDefListCache;
-    protected DTOCache.GetOrFetchTask<LeaderboardDefListKey, LeaderboardDefKeyList> leaderboardDefListCacheFetchMostSkilledTask;
-    protected DTOCache.GetOrFetchTask<LeaderboardDefListKey, LeaderboardDefKeyList> leaderboardDefListCacheFetchTimePeriodTask;
-    protected DTOCache.GetOrFetchTask<LeaderboardDefListKey, LeaderboardDefKeyList> leaderboardDefListCacheFetchSectorListTask;
-    protected DTOCache.GetOrFetchTask<LeaderboardDefListKey, LeaderboardDefKeyList> leaderboardDefListCacheFetchExchangeListTask;
+
+    protected DTOCache.GetOrFetchTask<LeaderboardDefListKey, LeaderboardDefKeyList> leaderboardDefListFetchTask;
+
     @Inject protected Lazy<LeaderboardDefCache> leaderboardDefCache;
     @Inject protected Lazy<ProviderListCache> providerListCache;
     @Inject protected Lazy<ProviderCache> providerCache;
     @Inject protected Picasso picasso;
     @Inject protected CurrentUserBaseKeyHolder currentUserBaseKeyHolder;
 
-    private boolean fetched = false;
     private ImageView firstProviderLink;
-    private ListView mostSkilledListView;
-    private ListView timePeriodListView;
-    private ListView sectorListView;
-    private LeaderboardDefListAdapter mostSkilledListAdapter;
-    private LeaderboardDefListAdapter timePeriodListAdapter;
+    private StickyListHeadersListView leaderboardDefListView;
 
     @Inject protected ProviderListRetrievedMilestone providerListRetrievedMilestone;
     private Milestone.OnCompleteListener providerListRetrievedListener;
     private ProviderDTO firstProvider;
     private THIntentPassedListener thIntentPassedListener;
     private WebViewFragment webFragment;
+    private LeaderboardCommunityAdapter leaderboardDefListAdapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -117,87 +107,41 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
     @Override public void onPause()
     {
         super.onPause();
-        sectorListView.setAdapter(null);
+        leaderboardDefListView.setAdapter(null);
     }
 
     private void detachLeaderboardDefListCacheFetchMostSkilledTask()
     {
-        if (leaderboardDefListCacheFetchMostSkilledTask != null)
+        if (leaderboardDefListFetchTask != null)
         {
-            leaderboardDefListCacheFetchMostSkilledTask.setListener(null);
+            leaderboardDefListFetchTask.setListener(null);
         }
-        leaderboardDefListCacheFetchMostSkilledTask = null;
-    }
-
-    private void detachLeaderboardDefListCacheFetchTimePeriodTask()
-    {
-        if (leaderboardDefListCacheFetchTimePeriodTask != null)
-        {
-            leaderboardDefListCacheFetchTimePeriodTask.setListener(null);
-        }
-        leaderboardDefListCacheFetchTimePeriodTask = null;
-    }
-
-    private void detachLeaderboardDefListCacheFetchSectorListTask()
-    {
-        if (leaderboardDefListCacheFetchSectorListTask != null)
-        {
-            leaderboardDefListCacheFetchSectorListTask.setListener(null);
-        }
-        leaderboardDefListCacheFetchSectorListTask = null;
-    }
-
-    private void detachLeaderboardDefListCacheFetchExchangeListTask()
-    {
-        if (leaderboardDefListCacheFetchExchangeListTask != null)
-        {
-            leaderboardDefListCacheFetchExchangeListTask.setListener(null);
-        }
-        leaderboardDefListCacheFetchExchangeListTask = null;
+        leaderboardDefListFetchTask = null;
     }
 
     private void prepareAdapters()
     {
         detachLeaderboardDefListCacheFetchMostSkilledTask();
-        leaderboardDefListCacheFetchMostSkilledTask = leaderboardDefListCache.get().getOrFetch(new LeaderboardDefMostSkilledListKey(), false, this);
-        leaderboardDefListCacheFetchMostSkilledTask.execute();
+        leaderboardDefListFetchTask = leaderboardDefListCache.get().getOrFetch(new LeaderboardDefCommunityListKey(), false, this);
+        leaderboardDefListFetchTask.execute();
     }
 
     @Override protected void initViews(View view)
     {
+        // competition
         this.firstProviderLink = (ImageView) view.findViewById(R.id.btn_first_provider);
         if (this.firstProviderLink != null)
         {
             this.firstProviderLink.setOnClickListener(new LeaderboardCommunityFragmentProviderLinkClickListener());
         }
-        mostSkilledListView = (ListView) view.findViewById(R.id.leaderboard_most_skilled);
-        timePeriodListView = (ListView) view.findViewById(R.id.leaderboard_time_period);
-        sectorListView = (ListView) view.findViewById(R.id.leaderboard_sector);
-        sectorListView.setOnItemClickListener(new AdapterView.OnItemClickListener()
-        {
-            @Override public void onItemClick(AdapterView<?> adapterView, View view, int position, long id)
-            {
-                LeaderboardDefDTO dto = (LeaderboardDefDTO) adapterView.getItemAtPosition(position);
-                if (dto != null)
-                {
-                    switch (dto.id)
-                    {
-                        case LeaderboardDefDTO.LEADERBOARD_DEF_SECTOR_ID:
-                            pushLeaderboardDefSector();
-                            break;
-                        case LeaderboardDefDTO.LEADERBOARD_DEF_EXCHANGE_ID:
-                            pushLeaderboardDefExchange();
-                            break;
-                    }
-                }
-            }
-        });
 
-        ListView[] listViews = new ListView[] { mostSkilledListView, timePeriodListView, sectorListView };
-        for (ListView listView: listViews)
-        {
-            listView.setEmptyView(view.findViewById(android.R.id.empty));
-        }
+        // list of leaderboard definition item
+        leaderboardDefListAdapter = new LeaderboardCommunityAdapter(
+                getActivity(), getActivity().getLayoutInflater(), R.layout.leaderboard_definition_item_view);
+
+        leaderboardDefListView = (StickyListHeadersListView) view.findViewById(android.R.id.list);
+        leaderboardDefListView.setAdapter(leaderboardDefListAdapter);
+        leaderboardDefListView.setOnItemClickListener(leaderboardCommunityListOnClickListener);
 
         this.thIntentPassedListener = new LeaderboardCommunityTHIntentPassedListener();
     }
@@ -206,10 +150,6 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
     {
         super.onStop();
         detachLeaderboardDefListCacheFetchMostSkilledTask();
-        detachLeaderboardDefListCacheFetchTimePeriodTask();
-        detachLeaderboardDefListCacheFetchSectorListTask();
-        detachLeaderboardDefListCacheFetchExchangeListTask();
-        fetched = false;
     }
 
     @Override public void onDetach()
@@ -233,11 +173,11 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
 
         this.thIntentPassedListener = null;
 
-        if (sectorListView != null)
+        if (leaderboardDefListView != null)
         {
-            sectorListView.setOnItemClickListener(null);
+            leaderboardDefListView.setOnItemClickListener(null);
         }
-        sectorListView = null;
+        leaderboardDefListView = null;
 
         super.onDestroyView();
     }
@@ -286,156 +226,13 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
     //<editor-fold desc="DTOCache Listeners">
     @Override public void onDTOReceived(LeaderboardDefListKey key, LeaderboardDefKeyList value)
     {
-        // hide loading
-        if (!fetched)
-        {
-            fetched = true;
-            detachLeaderboardDefListCacheFetchTimePeriodTask();
-            leaderboardDefListCacheFetchTimePeriodTask = leaderboardDefListCache.get().getOrFetch(new LeaderboardDefTimePeriodListKey(), false, this);
-            leaderboardDefListCacheFetchTimePeriodTask.execute();
-
-            detachLeaderboardDefListCacheFetchSectorListTask();
-            leaderboardDefListCacheFetchSectorListTask = leaderboardDefListCache.get().getOrFetch(new LeaderboardDefSectorListKey(), false, this);
-            leaderboardDefListCacheFetchSectorListTask.execute();
-
-            detachLeaderboardDefListCacheFetchExchangeListTask();
-            leaderboardDefListCacheFetchExchangeListTask = leaderboardDefListCache.get().getOrFetch(new LeaderboardDefExchangeListKey(), false, this);
-            leaderboardDefListCacheFetchExchangeListTask.execute();
-        }
-
-        if (value != null)
-        {
-            if (key instanceof LeaderboardDefMostSkilledListKey)
-            {
-                initMostSkilledListView(key, value);
-            }
-            else if (key instanceof LeaderboardDefTimePeriodListKey)
-            {
-                initTimePeriodListView(key, value);
-            }
-            else if (key instanceof LeaderboardDefSectorListKey && (value.size() > 0))
-            {
-                LeaderboardDefDTO sectorDto = initDefaultLeaderboardDefDTOForSector();
-                addItemToSectorSection(sectorDto);
-            }
-            else if (key instanceof LeaderboardDefExchangeListKey)
-            {
-                LeaderboardDefDTO sectorDto = initDefaultLeaderboardDefDTOForExchange();
-                addItemToSectorSection(sectorDto);
-            }
-        }
+        leaderboardDefListAdapter.notifyDataSetChanged();
     }
 
     @Override public void onErrorThrown(LeaderboardDefListKey key, Throwable error)
     {
         THToast.show(getString(R.string.error_fetch_leaderboard_def_list_key));
         THLog.e(TAG, "Error fetching the leaderboard def key list " + key, error);
-    }
-    //</editor-fold>
-
-    //<editor-fold desc="Init some default LeaderboardDefDTOs - Hardcoded">
-    private LeaderboardDefDTO initDefaultLeaderboardDefDTOForExchange()
-    {
-        LeaderboardDefDTO dto = new LeaderboardDefDTO();
-        dto.id = LeaderboardDefDTO.LEADERBOARD_DEF_EXCHANGE_ID;
-        dto.name = getString(R.string.leaderboard_by_exchange);
-        return dto;
-    }
-
-    private LeaderboardDefDTO initDefaultLeaderboardDefDTOForSector()
-    {
-        LeaderboardDefDTO dto = new LeaderboardDefDTO();
-        dto.id = LeaderboardDefDTO.LEADERBOARD_DEF_SECTOR_ID;
-        dto.name = getString(R.string.leaderboard_by_sector);
-        return dto;
-    }
-    //</editor-fold>
-
-    //<editor-fold desc="ListView adapters creation">
-    private void addItemToSectorSection(LeaderboardDefDTO dto)
-    {
-        if (sectorListView.getAdapter() == null)
-        {
-            List<LeaderboardDefDTO> sectorDefDTOs = new ArrayList<>();
-            sectorListView.setAdapter(
-                    new LeaderboardDefListAdapter(getActivity(), getActivity().getLayoutInflater(), sectorDefDTOs, R.layout.leaderboard_def_item));
-        }
-        LeaderboardDefListAdapter sectorListViewAdapter = (LeaderboardDefListAdapter) sectorListView.getAdapter();
-        sectorListViewAdapter.addItem(dto);
-        sectorListViewAdapter.notifyDataSetChanged();
-    }
-
-    private void pushLeaderboardDefSector()
-    {
-        Bundle bundle = new Bundle(getArguments());
-        (new LeaderboardDefSectorListKey()).putParameters(bundle);
-        bundle.putString(LeaderboardDefListViewFragment.BUNDLE_KEY_LEADERBOARD_DEF_TITLE, getString(R.string.leaderboard_sector));
-        bundle.putInt(BaseLeaderboardFragment.BUNDLE_KEY_CURRENT_SORT_TYPE, getCurrentSortType().getFlag());
-        getNavigator().pushFragment(LeaderboardDefListViewFragment.class, bundle);
-    }
-
-    private void pushLeaderboardDefExchange()
-    {
-        Bundle bundle = new LeaderboardDefExchangeListKey().getArgs();
-        bundle.putString(LeaderboardDefListViewFragment.BUNDLE_KEY_LEADERBOARD_DEF_TITLE, getString(R.string.leaderboard_exchange));
-        bundle.putInt(BaseLeaderboardFragment.BUNDLE_KEY_CURRENT_SORT_TYPE, getCurrentSortType().getFlag());
-        getNavigator().pushFragment(LeaderboardDefListViewFragment.class, bundle);
-    }
-
-    private LeaderboardDefListAdapter createTimePeriodListAdapter(List<LeaderboardDefDTO> timePeriodItems)
-    {
-        // sort time period items by number of days
-        Collections.sort(timePeriodItems, new Comparator<LeaderboardDefDTO>()
-        {
-            @Override public int compare(LeaderboardDefDTO lhs, LeaderboardDefDTO rhs)
-            {
-                if (lhs == rhs) return 0;
-                else if (lhs == null) return -1;
-                else if (rhs == null) return 1;
-                else if (lhs.toDateDays == null) return -1;
-                else if (rhs.toDateDays == null) return 1;
-                else if (lhs.toDateDays.equals(rhs.toDateDays)) return 0;
-                else return (lhs.toDateDays > rhs.toDateDays) ? 1 : -1;
-            }
-        });
-        return new LeaderboardDefListAdapter(
-                getActivity(), getActivity().getLayoutInflater(), timePeriodItems, R.layout.leaderboard_def_item);
-    }
-
-    private LeaderboardDefMostSkilledListAdapter createMostSkilledListAdapter(List<LeaderboardDefDTO> values)
-    {
-        return new LeaderboardDefMostSkilledListAdapter(
-                getActivity(), getActivity().getLayoutInflater(), values, R.layout.leaderboard_def_item);
-    }
-    //</editor-fold>
-
-    //<editor-fold desc="ListViews creation">
-    private void initMostSkilledListView(LeaderboardDefListKey key, LeaderboardDefKeyList value)
-    {
-        try
-        {
-            mostSkilledListAdapter = createMostSkilledListAdapter(leaderboardDefCache.get().getOrFetch(value));
-            mostSkilledListView.setAdapter(mostSkilledListAdapter);
-        }
-        catch (Throwable throwable)
-        {
-            onErrorThrown(key, throwable);
-        }
-        mostSkilledListView.setOnItemClickListener(createLeaderboardItemClickListener());
-    }
-
-    private void initTimePeriodListView(LeaderboardDefListKey key, LeaderboardDefKeyList value)
-    {
-        try
-        {
-            timePeriodListAdapter = createTimePeriodListAdapter(leaderboardDefCache.get().getOrFetch(value));
-            timePeriodListView.setAdapter(timePeriodListAdapter);
-        }
-        catch (Throwable throwable)
-        {
-            onErrorThrown(key, throwable);
-        }
-        timePeriodListView.setOnItemClickListener(createLeaderboardItemClickListener());
     }
     //</editor-fold>
 
@@ -447,17 +244,6 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
 
     @Override protected void onCurrentSortTypeChanged()
     {
-        if (timePeriodListAdapter != null)
-        {
-            timePeriodListAdapter.setSortType(getCurrentSortType());
-            timePeriodListAdapter.notifyDataSetChanged();
-        }
-
-        if (mostSkilledListAdapter != null)
-        {
-            mostSkilledListAdapter.setSortType(getCurrentSortType());
-            mostSkilledListAdapter.notifyDataSetChanged();
-        }
     }
     //</editor-fold>
 
@@ -479,12 +265,6 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
         }
     }
 
-    //<editor-fold desc="BaseFragment.TabBarVisibilityInformer">
-    @Override public boolean isTabBarVisible()
-    {
-        return true;
-    }
-    //</editor-fold>
 
     private class LeaderboardCommunityFragmentProviderListRetrievedListener implements Milestone.OnCompleteListener
     {
@@ -547,4 +327,57 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
             }
         }
     }
+
+    private AdapterView.OnItemClickListener leaderboardCommunityListOnClickListener = new AdapterView.OnItemClickListener()
+    {
+        @Override public void onItemClick(AdapterView<?> adapterView, View view, int position, long id)
+        {
+            Object item = adapterView.getItemAtPosition(position);
+            if (item instanceof LeaderboardDefKey)
+            {
+                LeaderboardDefDTO dto = leaderboardDefCache.get().get((LeaderboardDefKey) item);
+                if (dto != null)
+                {
+                    switch (dto.id)
+                    {
+                        case LeaderboardDefDTO.LEADERBOARD_DEF_SECTOR_ID:
+                            pushLeaderboardDefSector();
+                            break;
+                        case LeaderboardDefDTO.LEADERBOARD_DEF_EXCHANGE_ID:
+                            pushLeaderboardDefExchange();
+                            break;
+                        default:
+                            pushLeaderboardListViewFragment(dto);
+                            break;
+                    }
+                }
+            }
+        }
+    };
+
+    //<editor-fold desc="Navigation">
+    private void pushLeaderboardDefSector()
+    {
+        Bundle bundle = new Bundle(getArguments());
+        (new LeaderboardDefListKey()).putParameters(bundle);
+        bundle.putString(LeaderboardDefListViewFragment.BUNDLE_KEY_LEADERBOARD_DEF_TITLE, getString(R.string.leaderboard_sector));
+        bundle.putInt(BaseLeaderboardFragment.BUNDLE_KEY_CURRENT_SORT_TYPE, getCurrentSortType().getFlag());
+        getNavigator().pushFragment(LeaderboardDefListViewFragment.class, bundle);
+    }
+
+    private void pushLeaderboardDefExchange()
+    {
+        Bundle bundle = new LeaderboardDefListKey().getArgs();
+        bundle.putString(LeaderboardDefListViewFragment.BUNDLE_KEY_LEADERBOARD_DEF_TITLE, getString(R.string.leaderboard_exchange));
+        bundle.putInt(BaseLeaderboardFragment.BUNDLE_KEY_CURRENT_SORT_TYPE, getCurrentSortType().getFlag());
+        getNavigator().pushFragment(LeaderboardDefListViewFragment.class, bundle);
+    }
+    //</editor-fold>
+
+    //<editor-fold desc="BaseFragment.TabBarVisibilityInformer">
+    @Override public boolean isTabBarVisible()
+    {
+        return true;
+    }
+    //</editor-fold>
 }

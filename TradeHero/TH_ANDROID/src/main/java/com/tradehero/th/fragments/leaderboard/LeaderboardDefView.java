@@ -5,34 +5,40 @@ import android.util.AttributeSet;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.leaderboard.LeaderboardDefDTO;
+import com.tradehero.th.api.leaderboard.LeaderboardDefKey;
 import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.persistence.leaderboard.LeaderboardDefCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
 import javax.inject.Inject;
 
 /** Created with IntelliJ IDEA. User: tho Date: 10/16/13 Time: 4:19 PM Copyright (c) TradeHero */
-public class LeaderboardDefView extends RelativeLayout implements DTOView<LeaderboardDefDTO>
+public class LeaderboardDefView extends RelativeLayout implements DTOView<LeaderboardDefKey>
 {
     @Inject protected CurrentUserBaseKeyHolder currentUserBaseKeyHolder;
     @Inject protected Lazy<UserProfileCache> userProfileCache;
+    @Inject protected Lazy<LeaderboardDefCache> leaderboardDefCache;
 
-    private TextView leaderboardDefName;
-    private ImageView leaderboardDefIcon;
-    private TextView leaderboardDefUserRank;
-    private TextView leaderboardDefDesc;
+    @InjectView(R.id.leaderboard_def_item_name) TextView leaderboardDefName;
+    @InjectView(R.id.leaderboard_def_item_icon) ImageView leaderboardDefIcon;
+    @InjectView(R.id.leaderboard_def_item_user_rank) TextView leaderboardDefUserRank;
+    @InjectView(R.id.leaderboard_def_item_desc) TextView leaderboardDefDesc;
 
     private LeaderboardDefDTO dto;
 
     private DTOCache.Listener<UserBaseKey, UserProfileDTO> userProfileListener;
     private DTOCache.GetOrFetchTask<UserBaseKey, UserProfileDTO> userProfileRequestTask;
+    private LeaderboardDefKey leaderboardDefKey;
 
     //<editor-fold desc="Constructors">
     public LeaderboardDefView(Context context)
@@ -55,15 +61,7 @@ public class LeaderboardDefView extends RelativeLayout implements DTOView<Leader
     {
         super.onFinishInflate();
         DaggerUtils.inject(this);
-        init();
-    }
-
-    private void init()
-    {
-        leaderboardDefName = (TextView) findViewById(R.id.leaderboard_def_item_name);
-        leaderboardDefIcon = (ImageView) findViewById(R.id.leaderboard_def_item_icon);
-        leaderboardDefUserRank = (TextView) findViewById(R.id.leaderboard_def_item_user_rank);
-        leaderboardDefDesc = (TextView) findViewById(R.id.leaderboard_def_item_desc);
+        ButterKnife.inject(this);
     }
 
     @Override protected void onAttachedToWindow()
@@ -100,11 +98,6 @@ public class LeaderboardDefView extends RelativeLayout implements DTOView<Leader
         }
         userProfileRequestTask = null;
         userProfileListener = null;
-    }
-
-    @Override public void display(LeaderboardDefDTO dto)
-    {
-        linkWith(dto, true);
     }
 
     private void linkWith(LeaderboardDefDTO dto, boolean andDisplay)
@@ -183,8 +176,8 @@ public class LeaderboardDefView extends RelativeLayout implements DTOView<Leader
     }
 
     /**
-     * Hardcoded stuff
-     * look here: https://github.com/TradeHero/TH_IOS/blob/develop/Code/Models/THLeaderboardDef+Icon.m
+     * Hardcoded stuff look here: https://github.com/TradeHero/TH_IOS/blob/develop/Code/Models/THLeaderboardDef+Icon.m
+     *
      * @return drawable id of leaderboard def icon
      */
     private int getLeaderboardDefIcon()
@@ -274,6 +267,15 @@ public class LeaderboardDefView extends RelativeLayout implements DTOView<Leader
 
             default:
                 return 0;
+        }
+    }
+
+    @Override public void display(LeaderboardDefKey dto)
+    {
+        this.leaderboardDefKey = dto;
+        if (leaderboardDefKey != null)
+        {
+            linkWith(leaderboardDefCache.get().get(leaderboardDefKey), true);
         }
     }
 }

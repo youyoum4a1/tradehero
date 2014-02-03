@@ -2,60 +2,41 @@ package com.tradehero.th.fragments.leaderboard;
 
 import android.content.Context;
 import android.view.LayoutInflater;
-import com.tradehero.th.R;
 import com.tradehero.th.adapters.ArrayDTOAdapter;
-import com.tradehero.th.api.leaderboard.LeaderboardDefDTO;
-import com.tradehero.th.utils.Constants;
+import com.tradehero.th.api.leaderboard.LeaderboardDefKey;
+import com.tradehero.th.persistence.leaderboard.LeaderboardDefCache;
+import com.tradehero.th.utils.DaggerUtils;
+import dagger.Lazy;
 import java.util.List;
+import javax.inject.Inject;
 
 /** Created with IntelliJ IDEA. User: tho Date: 10/16/13 Time: 4:08 PM Copyright (c) TradeHero */
-public class LeaderboardDefListAdapter extends ArrayDTOAdapter<LeaderboardDefDTO, LeaderboardDefView>
+public class LeaderboardDefListAdapter extends ArrayDTOAdapter<LeaderboardDefKey, LeaderboardDefView>
 {
     private LeaderboardSortType sortType;
+    @Inject protected Lazy<LeaderboardDefCache> leaderboardDefCache;
 
-    public LeaderboardDefListAdapter(Context context, LayoutInflater inflater, List<LeaderboardDefDTO> items, int layoutResourceId)
+    public LeaderboardDefListAdapter(Context context, LayoutInflater inflater, List<LeaderboardDefKey> items, int layoutResourceId)
     {
         super(context, inflater, layoutResourceId);
         setItems(items);
-    }
-
-    @Override public Object getItem(int i)
-    {
-        LeaderboardDefDTO item = (LeaderboardDefDTO) super.getItem(i);
-        item.put(LeaderboardSortType.TAG, sortType);
-
-        return item;
-    }
-
-    @Override protected void fineTune(int position, LeaderboardDefDTO dto, LeaderboardDefView dtoView)
-    {
-
-        if (Constants.LEADERBOARD_BACKGROUND_IMAGE_ENABLED)
-        {
-            if (getCount() >= 2)
-            {
-                if (position == 0)
-                {
-                    dtoView.setBackgroundResource(R.drawable.leaderboard_button_border_top);
-                }
-                else if (position == getCount() - 1)
-                {
-                    dtoView.setBackgroundResource(R.drawable.leaderboard_button_border_bottom);
-                }
-                else
-                {
-                    dtoView.setBackgroundResource(R.drawable.leaderboard_button_border_middle);
-                }
-            }
-            else
-            {
-                dtoView.setBackgroundResource(R.drawable.leaderboard_button_border_full);
-            }
-        }
+        DaggerUtils.inject(this);
     }
 
     public void setSortType(LeaderboardSortType sortType)
     {
+        if (items != null)
+        {
+            for (LeaderboardDefKey leaderboardDefKey: items)
+            {
+                leaderboardDefCache.get().get(leaderboardDefKey).put(LeaderboardSortType.TAG, sortType);
+            }
+        }
         this.sortType = sortType;
+    }
+
+    @Override protected void fineTune(int position, LeaderboardDefKey dto, LeaderboardDefView dtoView)
+    {
+
     }
 }

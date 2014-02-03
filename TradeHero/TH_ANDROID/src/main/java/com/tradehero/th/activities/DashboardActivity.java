@@ -120,11 +120,6 @@ public class DashboardActivity extends SherlockFragmentActivity
         // TODO fetch more stuff?
     }
 
-    @Override protected void onPrepareDialog(int id, Dialog dialog, Bundle args)
-    {
-        super.onPrepareDialog(id, dialog, args);
-    }
-
     @Override public void onBackPressed()
     {
         navigator.popFragment();

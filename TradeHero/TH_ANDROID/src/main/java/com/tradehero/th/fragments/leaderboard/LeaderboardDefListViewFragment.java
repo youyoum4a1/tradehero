@@ -11,6 +11,7 @@ import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.leaderboard.LeaderboardDefDTO;
+import com.tradehero.th.api.leaderboard.LeaderboardDefKey;
 import com.tradehero.th.api.leaderboard.LeaderboardDefKeyList;
 import com.tradehero.th.api.leaderboard.LeaderboardDefListKey;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefCache;
@@ -21,7 +22,7 @@ import javax.inject.Inject;
 
 /** Created with IntelliJ IDEA. User: tho Date: 10/17/13 Time: 7:21 PM Copyright (c) TradeHero */
 public class LeaderboardDefListViewFragment extends BaseLeaderboardFragment
-    implements DTOCache.Listener<LeaderboardDefListKey, LeaderboardDefKeyList>
+        implements DTOCache.Listener<LeaderboardDefListKey, LeaderboardDefKeyList>
 {
     private static final String TAG = LeaderboardDefListViewFragment.class.getName();
 
@@ -49,16 +50,21 @@ public class LeaderboardDefListViewFragment extends BaseLeaderboardFragment
 
         updateLeaderboardDefListKey(args);
 
-        leaderboardDefListAdapter = new LeaderboardDefListAdapter(getActivity(), getActivity().getLayoutInflater(), null, R.layout.leaderboard_def_item);
+        leaderboardDefListAdapter =
+                new LeaderboardDefListAdapter(getActivity(), getActivity().getLayoutInflater(), null, R.layout.leaderboard_definition_item_view);
         contentListView.setAdapter(leaderboardDefListAdapter);
         contentListView.setOnItemClickListener(new AdapterView.OnItemClickListener()
         {
             @Override public void onItemClick(AdapterView<?> parent, View view, int position, long id)
             {
-                LeaderboardDefDTO dto = (LeaderboardDefDTO) leaderboardDefListAdapter.getItem(position);
-                if (dto != null)
+                Object item = leaderboardDefListAdapter.getItem(position);
+                if (item instanceof LeaderboardDefKey)
                 {
-                    pushLeaderboardListViewFragment(dto);
+                    LeaderboardDefDTO dto = leaderboardDefCache.get().get((LeaderboardDefKey) item);
+                    if (dto != null)
+                    {
+                        pushLeaderboardListViewFragment(dto);
+                    }
                 }
             }
         });
@@ -82,16 +88,7 @@ public class LeaderboardDefListViewFragment extends BaseLeaderboardFragment
 
     @Override public void onDTOReceived(LeaderboardDefListKey key, LeaderboardDefKeyList value)
     {
-        List<LeaderboardDefDTO> leaderboardDefItems = null;
-        try
-        {
-            leaderboardDefItems = leaderboardDefCache.get().getOrFetch(value);
-        }
-        catch (Throwable error)
-        {
-            onErrorThrown(key, error);
-        }
-        leaderboardDefListAdapter.setItems(leaderboardDefItems);
+        leaderboardDefListAdapter.setItems(value);
         leaderboardDefListAdapter.notifyDataSetChanged();
     }
 

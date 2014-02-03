@@ -17,6 +17,8 @@ public class LeaderboardDefDTO extends ExtendedDTO
     public static final int LEADERBOARD_FRIEND_ID = -1;
     public static final String LEADERBOARD_DEF_TIME_RESTRICTED = "LEADERBOARD_DEF_TIME_RESTRICTED";
 
+
+
     public int id;
     public String name;
 

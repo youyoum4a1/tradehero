@@ -8,6 +8,7 @@ public class LeaderboardDefListKey extends AbstractStringDTOKey
 {
     private static final String BUNDLE_KEY_KEY = LeaderboardDefKey.class.getName() + ".key";
     private static final String ALL_LEADERBOARD_DEF = "ALL_LEADERBOARD_DEF";
+    protected static final String LEADERBOARD_DEF_COMMUNITY = "LEADERBOARD_DEF_COMMUNITY";
 
     //<editor-fold desc="Constructors">
     public LeaderboardDefListKey()
