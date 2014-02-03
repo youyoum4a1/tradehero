@@ -49,12 +49,7 @@ local.properties
 lib/
 out/
 .DS_Store
-.idea/libraries/
-.idea/dictionaries/
-.idea/codeStyleSettings.xml
-.idea/workspace.xml
-.idea/encodings.xml
-.idea/compiler.xml
+.idea
 
 # Ant build file
 th_android.xml
@@ -62,8 +57,7 @@ build.xml
 th_android.properties
 
 # output folder
-**/target/*
-TradeHero/TH_ANDROID/target/*
+**/target
 **/gen-external-apklibs
 **/*.iml
 
@@ -74,4 +68,4 @@ TradeHero/TH_ANDROID/target/*
 *.iws
 
 #Crashlytics
-TradeHero/TH_ANDROID/res/values/com_crashlytics_export_strings.xml
+**/com_crashlytics_export_strings.xml
