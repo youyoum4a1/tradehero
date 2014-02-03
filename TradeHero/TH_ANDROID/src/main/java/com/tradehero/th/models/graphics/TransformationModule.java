@@ -2,10 +2,8 @@ package com.tradehero.th.models.graphics;
 
 import com.squareup.picasso.Transformation;
 import com.tradehero.common.graphics.RoundedShapeTransformation;
-import com.tradehero.th.graphics.ForUserPhoto;
 import dagger.Module;
 import dagger.Provides;
-import javax.inject.Named;
 
 /**
  * Created by xavier on 1/30/14.

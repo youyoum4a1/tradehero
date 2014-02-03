@@ -1,4 +1,4 @@
-package com.tradehero.th.graphics;
+package com.tradehero.th.models.graphics;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;

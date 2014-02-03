@@ -33,7 +33,7 @@ import com.tradehero.th.fragments.alert.AlertEditFragment;
 import com.tradehero.th.fragments.security.StockInfoFragment;
 import com.tradehero.th.fragments.security.WatchlistEditFragment;
 import com.tradehero.th.fragments.trade.BuySellFragment;
-import com.tradehero.th.graphics.ForUserPhoto;
+import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.misc.callback.THCallback;
 import com.tradehero.th.misc.callback.THResponse;
 import com.tradehero.th.misc.exception.THException;
