@@ -16,19 +16,17 @@
 package com.tradehero.th.billing.googleplay;
 
 import com.tradehero.common.billing.googleplay.BaseIABPurchase;
-import com.tradehero.common.billing.googleplay.GooglePlayPurchaseDTO;
-import com.tradehero.common.billing.googleplay.IABPurchase;
-import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.common.utils.THJsonAdapter;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 /**
  * Represents an in-app billing purchase usable in TradeHero.
  */
 public class THIABPurchase extends BaseIABPurchase
 {
+    public static final String TAG = THIABPurchase.class.getSimpleName();
+
     public THIABPurchase(String itemType, String jsonPurchaseInfo, String signature) throws JSONException
     {
         super(itemType, jsonPurchaseInfo, signature);

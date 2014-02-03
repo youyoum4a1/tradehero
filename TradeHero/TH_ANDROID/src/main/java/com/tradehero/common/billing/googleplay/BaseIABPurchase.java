@@ -15,8 +15,6 @@
 
 package com.tradehero.common.billing.googleplay;
 
-import com.tradehero.common.utils.THJsonAdapter;
-import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.billing.googleplay.THIABOrderId;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -26,6 +24,8 @@ import org.json.JSONObject;
  */
 public class BaseIABPurchase implements IABPurchase<IABSKU, THIABOrderId>
 {
+    public static final String TAG = BaseIABPurchase.class.getSimpleName();
+
     public static final String JSON_KEY_ORDER_ID = "orderId";
     public static final String JSON_KEY_PACKAGE_NAME = "packageName";
     public static final String JSON_KEY_PRODUCT_ID = "productId";
