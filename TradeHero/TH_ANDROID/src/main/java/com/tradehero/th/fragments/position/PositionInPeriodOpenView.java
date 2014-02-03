@@ -8,6 +8,8 @@ import android.util.AttributeSet;
  */
 public class PositionInPeriodOpenView extends AbstractPositionView
 {
+    public static final String TAG = PositionInPeriodOpenView.class.getSimpleName();
+
     //<editor-fold desc="Constructors">
     public PositionInPeriodOpenView(Context context)
     {

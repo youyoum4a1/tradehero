@@ -11,6 +11,8 @@ import com.tradehero.th.fragments.position.partial.PositionPartialBottomInPeriod
  */
 public class PositionInPeriodClosedView extends PositionClosedView
 {
+    public static final String TAG = PositionInPeriodClosedView.class.getSimpleName();
+
     private PositionPartialBottomInPeriodClosedView bottomView;
 
     //<editor-fold desc="Constructors">
