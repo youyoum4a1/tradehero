@@ -23,7 +23,7 @@ import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
 import com.tradehero.th.api.users.UserBaseDTOUtil;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.models.graphics.TransformationUsage;
+import com.tradehero.th.graphics.ForUserPhoto;
 import com.tradehero.th.persistence.position.GetPositionsCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.persistence.user.UserProfileRetrievedMilestone;
@@ -31,7 +31,6 @@ import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import com.tradehero.th.utils.DaggerUtils;
 import java.util.List;
 import javax.inject.Inject;
-import javax.inject.Named;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/14/13 Time: 12:28 PM To change this template use File | Settings | File Templates. */
 public class PortfolioListItemView extends RelativeLayout implements DTOView<DisplayablePortfolioDTO>
@@ -48,7 +47,7 @@ public class PortfolioListItemView extends RelativeLayout implements DTOView<Dis
     private GetPositionsDTO getPositionsDTO;
     private SecurityIdList watchedSecurityIds;
     @Inject Picasso picasso;
-    @Inject @Named(TransformationUsage.USER_PHOTO) Transformation userImageTransformation;
+    @Inject @ForUserPhoto Transformation userImageTransformation;
     @Inject CurrentUserBaseKeyHolder currentUserBaseKeyHolder;
     @Inject UserProfileCache userProfileCache;
     @Inject GetPositionsCache getPositionsCache;

@@ -15,7 +15,7 @@ import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.SecurityIntegerId;
 import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.models.graphics.TransformationUsage;
+import com.tradehero.th.graphics.ForUserPhoto;
 import com.tradehero.th.persistence.position.PositionCache;
 import com.tradehero.th.persistence.security.SecurityIdCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
@@ -23,14 +23,13 @@ import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
 import javax.inject.Inject;
 import java.lang.ref.WeakReference;
-import javax.inject.Named;
 
 /**
  * Created by julien on 28/10/13
  */
 public class TradeListOverlayHeaderView extends LinearLayout
 {
-    @Inject @Named(TransformationUsage.USER_PHOTO) protected Transformation peopleIconTransformation;
+    @Inject @ForUserPhoto protected Transformation peopleIconTransformation;
     @Inject Lazy<Picasso> picasso;
     @Inject Lazy<PositionCache> positionCache;
     @Inject Lazy<SecurityIdCache> securityIdCache;

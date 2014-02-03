@@ -12,11 +12,10 @@ import com.squareup.picasso.Transformation;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.social.UserFriendsDTO;
-import com.tradehero.th.models.graphics.TransformationUsage;
+import com.tradehero.th.graphics.ForUserPhoto;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
 import javax.inject.Inject;
-import javax.inject.Named;
 
 /**
  * Created with IntelliJ IDEA. User: tho Date: 1/22/14 Time: 11:53 AM Copyright (c) TradeHero
@@ -31,7 +30,7 @@ public class UserFriendDTOView extends RelativeLayout
     private TextView userFriendSourceContact;
     private UserFriendsDTO userFriendDTO;
 
-    @Inject @Named(TransformationUsage.USER_PHOTO) protected Transformation peopleIconTransformation;
+    @Inject @ForUserPhoto protected Transformation peopleIconTransformation;
     @Inject protected Lazy<Picasso> picasso;
 
     //<editor-fold desc="Constructors">

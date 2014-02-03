@@ -17,13 +17,12 @@ import com.tradehero.common.graphics.GrayscaleTransformation;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.models.graphics.TransformationUsage;
+import com.tradehero.th.graphics.ForUserPhoto;
 import com.tradehero.th.utils.THSignedNumber;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.fragments.portfolio.PortfolioRequestListener;
 import java.lang.ref.WeakReference;
 import javax.inject.Inject;
-import javax.inject.Named;
 
 /** Created with IntelliJ IDEA. User: tho Date: 10/17/13 Time: 12:51 PM Copyright (c) TradeHero */
 public class ProfileCompactView extends RelativeLayout implements DTOView<UserProfileDTO>
@@ -37,7 +36,7 @@ public class ProfileCompactView extends RelativeLayout implements DTOView<UserPr
     private TextView username;
     private ImageView btnDefaultPortfolio;
 
-    @Inject @Named(TransformationUsage.USER_PHOTO) protected Transformation peopleIconTransformation;
+    @Inject @ForUserPhoto protected Transformation peopleIconTransformation;
     @Inject protected Picasso picasso;
     private WeakReference<PortfolioRequestListener> portfolioRequestListener = new WeakReference<>(null);
 

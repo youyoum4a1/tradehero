@@ -12,13 +12,12 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.social.HeroDTO;
 import com.tradehero.th.api.users.UserBaseDTOUtil;
-import com.tradehero.th.models.graphics.TransformationUsage;
+import com.tradehero.th.graphics.ForUserPhoto;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
 import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
 import javax.inject.Inject;
-import javax.inject.Named;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/14/13 Time: 12:28 PM To change this template use File | Settings | File Templates. */
 public class HeroListItemView extends RelativeLayout implements DTOView<HeroDTO>
@@ -33,7 +32,7 @@ public class HeroListItemView extends RelativeLayout implements DTOView<HeroDTO>
     private ImageView statusIcon;
 
     private HeroDTO heroDTO;
-    @Inject @Named(TransformationUsage.USER_PHOTO) protected Transformation peopleIconTransformation;
+    @Inject @ForUserPhoto protected Transformation peopleIconTransformation;
     @Inject Lazy<Picasso> picasso;
     private WeakReference<OnHeroStatusButtonClickedListener> heroStatusButtonClickedListener = new WeakReference<>(null);
 

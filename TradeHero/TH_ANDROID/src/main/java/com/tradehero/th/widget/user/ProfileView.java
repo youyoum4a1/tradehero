@@ -19,20 +19,19 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.portfolio.PortfolioRequestListener;
-import com.tradehero.th.models.graphics.TransformationUsage;
+import com.tradehero.th.graphics.ForUserPhoto;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.THSignedNumber;
 import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
 import javax.inject.Inject;
-import javax.inject.Named;
 
 /** Created with IntelliJ IDEA. User: tho Date: 9/10/13 Time: 6:34 PM Copyright (c) TradeHero */
 public class ProfileView extends LinearLayout implements DTOView<UserProfileDTO>
 {
     private static final String TAG = ProfileView.class.getName();
     @Inject protected Picasso picasso;
-    @Inject @Named(TransformationUsage.USER_PHOTO) protected Transformation peopleIconTransformation;
+    @Inject @ForUserPhoto protected Transformation peopleIconTransformation;
 
     private ImageView avatar;
     private LinearLayout profileTop;

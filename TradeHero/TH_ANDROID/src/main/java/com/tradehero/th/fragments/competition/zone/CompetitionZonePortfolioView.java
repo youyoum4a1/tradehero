@@ -6,15 +6,14 @@ import com.squareup.picasso.Transformation;
 import com.tradehero.th.R;
 import com.tradehero.th.api.users.UserProfileCompactDTO;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZonePortfolioDTO;
-import com.tradehero.th.models.graphics.TransformationUsage;
+import com.tradehero.th.graphics.ForUserPhoto;
 import javax.inject.Inject;
-import javax.inject.Named;
 
 public class CompetitionZonePortfolioView extends CompetitionZoneListItemView
 {
     public static final String TAG = CompetitionZonePortfolioView.class.getSimpleName();
 
-    @Inject @Named(TransformationUsage.USER_PHOTO) protected Transformation zoneIconTransformation;
+    @Inject @ForUserPhoto protected Transformation zoneIconTransformation;
 
     //<editor-fold desc="Constructors">
     public CompetitionZonePortfolioView(Context context)
