@@ -122,7 +122,7 @@ public abstract class AbstractPositionItemAdapter<PositionDTOType extends Positi
             if (lockedPositions.size() > 0)
             {
                 newItemTypes.add(PositionItemType.Header.value);
-                newItems.add(new HeaderDTO(PositionItemType.Locked, lockedPositions.size()));
+                newItems.add(new HeaderDTO(PositionItemType.Locked, lockedPositions.get(0).getModel().aggregateCount));
 
                 newItemTypes.add(PositionItemType.Locked.value);
                 newItems.add(null);

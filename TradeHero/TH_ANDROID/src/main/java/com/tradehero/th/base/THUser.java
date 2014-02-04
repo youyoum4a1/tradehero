@@ -42,7 +42,8 @@ import javax.inject.Inject;
 /** Created with IntelliJ IDEA. User: tho Date: 8/14/13 Time: 6:15 PM */
 public class THUser
 {
-    private static final String TAG = THUser.class.getName();
+    private static final String TAG = THUser.class.getSimpleName();
+
     public static final String PREF_CURRENT_USER_KEY = THUser.class.getName() + ".PREF_CURRENT_USER_KEY";
     public static final String PREF_MY_USER = THUser.class.getName() + ".PREF_MY_USER";
     private static final String PREF_MY_TOKEN = THUser.class.getName() + ".PREF_MY_TOKEN";

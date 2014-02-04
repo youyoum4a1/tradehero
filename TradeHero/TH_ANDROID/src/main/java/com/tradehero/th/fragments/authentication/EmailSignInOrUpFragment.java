@@ -21,6 +21,8 @@ import org.json.JSONObject;
 /** Created with IntelliJ IDEA. User: xavier Date: 9/3/13 Time: 8:18 PM To change this template use File | Settings | File Templates. */
 abstract public class EmailSignInOrUpFragment extends AuthenticationFragment implements View.OnClickListener, ValidationListener
 {
+    public static final String TAG = EmailSignInOrUpFragment.class.getSimpleName();
+
     protected Button signButton;
 
     abstract public int getDefaultViewId ();

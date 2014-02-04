@@ -10,11 +10,10 @@ import android.widget.Button;
 import android.widget.TextView;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
-import com.tradehero.th.api.users.password.ForgotPasswordFormDTO;
 import com.tradehero.th.api.form.UserFormFactory;
 import com.tradehero.th.api.users.password.ForgotPasswordDTO;
+import com.tradehero.th.api.users.password.ForgotPasswordFormDTO;
 import com.tradehero.th.auth.AuthenticationMode;
-import com.tradehero.th.base.Application;
 import com.tradehero.th.misc.callback.THCallback;
 import com.tradehero.th.misc.callback.THResponse;
 import com.tradehero.th.misc.exception.THException;
@@ -23,9 +22,8 @@ import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.widget.SelfValidatedText;
 import com.tradehero.th.widget.ServerValidatedEmailText;
 import com.tradehero.th.widget.ValidatedPasswordText;
-
-import javax.inject.Inject;
 import java.util.Map;
+import javax.inject.Inject;
 
 public class EmailSignInFragment extends EmailSignInOrUpFragment
 {
@@ -119,8 +117,8 @@ public class EmailSignInFragment extends EmailSignInOrUpFragment
     @Override protected Map<String, Object> getUserFormMap ()
     {
         Map<String, Object> map = super.getUserFormMap();
-        map.put(UserFormFactory.KEY_EMAIL, email.getText());
-        map.put(UserFormFactory.KEY_PASSWORD, password.getText());
+        map.put(UserFormFactory.KEY_EMAIL, email.getText().toString());
+        map.put(UserFormFactory.KEY_PASSWORD, password.getText().toString());
         return map;
     }
 
@@ -129,7 +127,7 @@ public class EmailSignInFragment extends EmailSignInOrUpFragment
         if (forgotDialogView == null)
         {
             LayoutInflater inflater = getActivity().getLayoutInflater();
-            forgotDialogView = inflater.inflate(R.layout.forgot_password_dialog, (ViewGroup)getView(), false);
+            forgotDialogView = inflater.inflate(R.layout.forgot_password_dialog, (ViewGroup) getView(), false);
         }
 
         String message = getActivity().getString(R.string.ask_for_email);
