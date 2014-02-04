@@ -282,7 +282,7 @@ abstract public class AbstractPositionListFragment<
     public void linkWith(GetPositionsDTOType getPositionsDTO, boolean andDisplay)
     {
         this.getPositionsDTO = getPositionsDTO;
-        if (this.getPositionsDTO != null && ownedPortfolioId != null)
+        if (this.getPositionsDTO != null)
         {
             createPositionItemAdapter();
             positionItemAdapter.setItems(getPositionsDTO.positions);

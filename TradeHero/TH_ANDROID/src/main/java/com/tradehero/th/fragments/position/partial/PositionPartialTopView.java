@@ -3,24 +3,20 @@ package com.tradehero.th.fragments.position.partial;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.tradehero.common.graphics.WhiteToTransparentTransformation;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
-import com.tradehero.th.api.leaderboard.position.OwnedLeaderboardPositionId;
 import com.tradehero.th.api.position.PositionInPeriodDTO;
-import com.tradehero.th.api.position.OwnedPositionId;
 import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
-import com.tradehero.th.persistence.leaderboard.position.LeaderboardPositionCache;
-import com.tradehero.th.persistence.position.PositionCache;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.persistence.security.SecurityIdCache;
 import com.tradehero.th.utils.*;
@@ -35,9 +31,6 @@ public class PositionPartialTopView extends LinearLayout
 {
     public static final String TAG = PositionPartialTopView.class.getSimpleName();
 
-    @Inject protected Context context;
-    @Inject protected Lazy<PositionCache> filedPositionCache;
-    @Inject protected Lazy<LeaderboardPositionCache> leaderboardPositionCache;
     @Inject protected Lazy<Picasso> picasso;
     @Inject protected Lazy<SecurityIdCache> securityIdCache;
     @Inject protected Lazy<SecurityCompactCache> securityCompactCache;
@@ -54,12 +47,10 @@ public class PositionPartialTopView extends LinearLayout
 
     protected SecurityId securityId;
     protected SecurityCompactDTO securityCompactDTO;
-    protected OwnedPositionId ownedPositionId;
     protected PositionDTO positionDTO;
 
     private SecurityCompactCache.Listener<SecurityId, SecurityCompactDTO> securityCompactCacheListener;
     private DTOCache.GetOrFetchTask<SecurityId, SecurityCompactDTO> securityCompactCacheFetchTask;
-    private OwnedLeaderboardPositionId ownedLeaderboardPositionId;
 
     //<editor-fold desc="Constructors">
     public PositionPartialTopView(Context context)
@@ -115,31 +106,7 @@ public class PositionPartialTopView extends LinearLayout
         super.onDetachedFromWindow();
     }
 
-    public void linkWith(OwnedPositionId ownedPositionId, boolean andDisplay)
-    {
-        this.ownedPositionId = ownedPositionId;
-
-        linkWith(filedPositionCache.get().get(this.ownedPositionId), andDisplay);
-
-        if (andDisplay)
-        {
-            //TODO
-        }
-    }
-
-    public void linkWith(OwnedLeaderboardPositionId ownedLeaderboardPositionId, boolean andDisplay)
-    {
-        this.ownedLeaderboardPositionId = ownedLeaderboardPositionId;
-
-        linkWith(leaderboardPositionCache.get().get(ownedLeaderboardPositionId), andDisplay);
-
-        if (andDisplay)
-        {
-            //TODO
-        }
-    }
-
-    protected void linkWith(PositionDTO positionDTO, boolean andDisplay)
+    public void linkWith(PositionDTO positionDTO, boolean andDisplay)
     {
         this.positionDTO = positionDTO;
         if (andDisplay)
@@ -219,18 +186,37 @@ public class PositionPartialTopView extends LinearLayout
                 picasso.get()
                         .load(securityCompactDTO.imageBlobUrl)
                         .transform(new WhiteToTransparentTransformation())
-                        .into(stockLogo);
-            }
-            else if (securityCompactDTO != null)
-            {
-                picasso.get()
-                        .load(securityCompactDTO.getExchangeLogoId())
-                        .into(stockLogo);
+                        .into(stockLogo, new Callback()
+                        {
+                            @Override public void onSuccess()
+                            {
+                            }
+
+                            @Override public void onError()
+                            {
+                                displayStockLogoExchange();
+                            }
+                        });
             }
             else
             {
-                stockLogo.setImageResource(R.drawable.default_image);
+                displayStockLogoExchange();
             }
+        }
+    }
+
+    public void displayStockLogoExchange()
+    {
+        if (securityCompactDTO != null)
+        {
+            picasso.get()
+
+                    .load(securityCompactDTO.getExchangeLogoId())
+                    .into(stockLogo);
+        }
+        else
+        {
+            stockLogo.setImageResource(R.drawable.default_image);
         }
     }
 
@@ -305,11 +291,11 @@ public class PositionPartialTopView extends LinearLayout
 
                 if (securityCompactDTO.marketOpen == null || securityCompactDTO.marketOpen)
                 {
-                    stockLastPrice.setTextColor(context.getResources().getColor(R.color.exchange_symbol));
+                    stockLastPrice.setTextColor(getResources().getColor(R.color.exchange_symbol));
                 }
                 else
                 {
-                    stockLastPrice.setTextColor(context.getResources().getColor(android.R.color.darker_gray));
+                    stockLastPrice.setTextColor(getResources().getColor(android.R.color.darker_gray));
                 }
             }
         }

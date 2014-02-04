@@ -1,15 +1,14 @@
 package com.tradehero.th.fragments.position;
 
 import android.content.Context;
-import android.preference.PreferenceActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.ExpandableListItem;
 import com.tradehero.th.adapters.ExpandableListReporter;
-import com.tradehero.th.api.portfolio.PortfolioId;
 import com.tradehero.th.api.position.OwnedPositionId;
 import com.tradehero.th.api.position.PositionDTO;
 import java.lang.ref.WeakReference;
@@ -21,7 +20,7 @@ import java.util.List;
 public abstract class AbstractPositionItemAdapter<PositionDTOType extends PositionDTO>
         extends BaseAdapter implements ExpandableListReporter
 {
-    public static final String TAG = AbstractPositionItemAdapter.class.getName();
+    public static final String TAG = AbstractPositionItemAdapter.class.getSimpleName();
 
     protected List<PositionDTOType> receivedPositions;
     protected List<Integer> itemTypes = new ArrayList<>();
@@ -200,7 +199,10 @@ public abstract class AbstractPositionItemAdapter<PositionDTOType extends Positi
 
     public String getHeaderText(HeaderDTO headerDTO)
     {
-        if (headerDTO == null || headerDTO.headerFor == PositionItemType.Open || headerDTO.headerFor == PositionItemType.Placeholder)
+        if (headerDTO == null ||
+                headerDTO.headerFor == PositionItemType.Open ||
+                headerDTO.headerFor == PositionItemType.Locked ||
+                headerDTO.headerFor == PositionItemType.Placeholder)
         {
             return getOpenHeaderText(headerDTO);
         }
@@ -248,9 +250,8 @@ public abstract class AbstractPositionItemAdapter<PositionDTOType extends Positi
         }
         else if (itemViewType == PositionItemType.Locked.value)
         {
-            ExpandableListItem<PositionDTOType> expandableWrapper = (ExpandableListItem<PositionDTOType>) getItem(position);
             LockedPositionItem cell = (LockedPositionItem) convertView;
-            cell.linkWith(expandableWrapper.getModel(), true);
+            cell.linkWith((PositionDTOType) null, true);
         }
         else if (itemViewType == PositionItemType.Closed.value || itemViewType == PositionItemType.Open.value)
         {
