@@ -36,9 +36,6 @@ public class DisplayablePortfolioDTOComparableTest
         {
             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
             THJsonAdapter.getInstance().toBody(getCurrentUser()).writeTo(byteArrayOutputStream);
-            SharedPreferences.Editor pref = Application.getPreferences().edit();
-            pref.putString(THUser.PREF_MY_USER, byteArrayOutputStream.toString("UTF-8"));
-            pref.commit();
         } catch (IOException e)
         {
             e.printStackTrace();

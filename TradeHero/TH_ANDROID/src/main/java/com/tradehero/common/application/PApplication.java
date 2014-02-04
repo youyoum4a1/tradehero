@@ -12,8 +12,6 @@ import android.content.SharedPreferences;
 
 public class PApplication extends Application
 {
-    private static final String PREFERENCE_KEY = "th";
-    private static final String PERSIST_NAME = "th.persist";
     private static Context context;
 
     @Override public void onCreate()
@@ -23,23 +21,8 @@ public class PApplication extends Application
         init();
     }
 
-    @Override public void unregisterReceiver(BroadcastReceiver broadcastReceiver)
-    {
-        super.unregisterReceiver(broadcastReceiver);
-    }
-
     protected void init()
     {
-    }
-
-    public static SharedPreferences getPreferences()
-    {
-        return context().getSharedPreferences(PREFERENCE_KEY, MODE_PRIVATE);
-    }
-
-    public static SharedPreferences getPersistPreferences()
-    {
-        return context().getSharedPreferences(PERSIST_NAME, MODE_PRIVATE);
     }
 
     public static PApplication context()

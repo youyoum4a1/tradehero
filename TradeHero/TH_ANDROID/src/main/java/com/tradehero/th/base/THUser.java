@@ -56,6 +56,7 @@ public class THUser
     private static String currentSessionToken;
     private static String currentAuthenticationType;
 
+    @Inject static Lazy<SharedPreferences> sharedPreferences;
     @Inject static Lazy<UserService> userService;
     @Inject static Lazy<UserServiceWrapper> userServiceWrapper;
     @Inject static Lazy<SessionService> sessionService;
@@ -72,9 +73,9 @@ public class THUser
     private static void loadCredentialsToUserDefaults()
     {
         collectCurrentUserBaseKeyFromPref();
-        Set<String> savedTokens = Application.getPreferences().getStringSet(PREF_MY_TOKEN, new HashSet<String>());
-        currentSessionToken = Application.getPreferences().getString(PREF_CURRENT_SESSION_TOKEN, null);
-        currentAuthenticationType = Application.getPreferences().getString(PREF_CURRENT_AUTHENTICATION_TYPE, null);
+        Set<String> savedTokens = sharedPreferences.get().getStringSet(PREF_MY_TOKEN, new HashSet<String>());
+        currentSessionToken = sharedPreferences.get().getString(PREF_CURRENT_SESSION_TOKEN, null);
+        currentAuthenticationType = sharedPreferences.get().getString(PREF_CURRENT_AUTHENTICATION_TYPE, null);
         for (String token : savedTokens)
         {
             try
@@ -248,7 +249,7 @@ public class THUser
 
             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
             THJsonAdapter.getInstance().toBody(userDTO).writeTo(byteArrayOutputStream);
-            SharedPreferences.Editor pref = Application.getPreferences().edit();
+            SharedPreferences.Editor pref = sharedPreferences.get().edit();
             pref.putString(PREF_MY_USER, byteArrayOutputStream.toString("UTF-8"));
             pref.commit();
         }
@@ -260,7 +261,7 @@ public class THUser
 
     public static UserBaseDTO getCurrentUserBase()
     {
-        String serializedUser = Application.getPreferences().getString(PREF_MY_USER, null);
+        String serializedUser = sharedPreferences.get().getString(PREF_MY_USER, null);
         if (serializedUser != null)
         {
             UserBaseDTO user = (UserBaseDTO) THJsonAdapter.getInstance()
@@ -272,7 +273,7 @@ public class THUser
 
     private static void saveCurrentUserBaseKey(UserBaseKey userBaseKey)
     {
-        SharedPreferences.Editor pref = Application.getPreferences().edit();
+        SharedPreferences.Editor pref = sharedPreferences.get().edit();
         pref.putInt(PREF_CURRENT_USER_KEY, userBaseKey.key);
         pref.commit();
         currentUserBaseKeyHolder.setCurrentUserBaseKey(userBaseKey);
@@ -280,7 +281,7 @@ public class THUser
 
     public static void collectCurrentUserBaseKeyFromPref()
     {
-        int key = Application.getPreferences().getInt(PREF_CURRENT_USER_KEY, 0);
+        int key = sharedPreferences.get().getInt(PREF_CURRENT_USER_KEY, 0);
         UserBaseKey userBaseKey = new UserBaseKey(key);
         currentUserBaseKeyHolder.setCurrentUserBaseKey(userBaseKey);
     }
@@ -320,7 +321,7 @@ public class THUser
         THAuthenticationProvider currentProvider = authenticationProviders.get(currentAuthenticationType);
         currentSessionToken = currentProvider.getAuthHeaderParameter();
 
-        SharedPreferences.Editor prefEditor = Application.getPreferences().edit();
+        SharedPreferences.Editor prefEditor = sharedPreferences.get().edit();
         prefEditor.putStringSet(PREF_MY_TOKEN, toSave);
         prefEditor.putString(PREF_CURRENT_SESSION_TOKEN, currentSessionToken);
         prefEditor.putString(PREF_CURRENT_AUTHENTICATION_TYPE, currentAuthenticationType);
@@ -337,7 +338,7 @@ public class THUser
         VisitedFriendListPrefs.clearVisitedIdList();
 
         // clear all preferences
-        SharedPreferences.Editor prefEditor = Application.getPreferences().edit();
+        SharedPreferences.Editor prefEditor = sharedPreferences.get().edit();
         prefEditor.clear();
         prefEditor.commit();
 
@@ -402,7 +403,7 @@ public class THUser
             toSave.add(entry.toString());
         }
 
-        SharedPreferences.Editor prefEditor = Application.getPreferences().edit();
+        SharedPreferences.Editor prefEditor = sharedPreferences.get().edit();
         prefEditor.putStringSet(PREF_MY_TOKEN, toSave);
         prefEditor.commit();
     }
