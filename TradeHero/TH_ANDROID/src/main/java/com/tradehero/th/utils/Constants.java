@@ -8,7 +8,7 @@ public class Constants
     // build constants
     public static final boolean RELEASE = !BuildConfig.DEBUG;
 
-    public static final boolean PICASSO_DEBUG = RELEASE;
+    public static final boolean PICASSO_DEBUG = !RELEASE;
 
     private static final int COMMON_ITEM_PER_PAGE = 42;
 
