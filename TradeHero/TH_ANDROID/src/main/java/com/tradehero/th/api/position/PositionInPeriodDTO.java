@@ -1,5 +1,6 @@
 package com.tradehero.th.api.position;
 
+import com.tradehero.common.utils.THLog;
 import com.tradehero.th.api.leaderboard.position.LeaderboardMarkUserPositionId;
 import com.tradehero.th.api.leaderboard.position.OwnedLeaderboardPositionId;
 import java.util.ArrayList;
@@ -8,6 +9,8 @@ import java.util.List;
 /** Created with IntelliJ IDEA. User: xavier Date: 10/16/13 Time: 12:11 PM To change this template use File | Settings | File Templates. */
 public class PositionInPeriodDTO extends PositionDTO
 {
+    public static final String TAG = PositionInPeriodDTO.class.getSimpleName();
+
     // This leaderboard Mark User Id needs to be populated by the service
     private Integer leaderboardMarkUserId;
 
@@ -71,6 +74,7 @@ public class PositionInPeriodDTO extends PositionDTO
 
     public Double getROIInPeriod()
     {
+        THLog.d(TAG, "getROIInPeriod " + this);
         if (marketValueEndPeriodRefCcy == null || marketValueStartPeriodRefCcy == null)
         {
             throw new IllegalArgumentException("Wrong values " + this);
