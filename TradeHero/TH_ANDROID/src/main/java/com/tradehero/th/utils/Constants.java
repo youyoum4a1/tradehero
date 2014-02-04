@@ -6,7 +6,8 @@ import twitter4j.auth.RequestToken;
 public class Constants
 {
     // build constants
-    public static final boolean RELEASE = !BuildConfig.DEBUG;
+    // TODO fix
+    public static final boolean RELEASE = false; // !BuildConfig.DEBUG;
 
     public static final boolean PICASSO_DEBUG = !RELEASE;
 
@@ -15,7 +16,6 @@ public class Constants
     public static final int TIMELINE_ITEM_PER_PAGE = COMMON_ITEM_PER_PAGE;
 
     public static final int LEADERBOARD_MARK_USER_ITEM_PER_PAGE = COMMON_ITEM_PER_PAGE;
-
 
     //Linked In
     public static final String LINKEDIN_CONSUMER_KEY = "afed437khxve";

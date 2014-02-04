@@ -147,14 +147,4 @@ public class OwnedPortfolioId  implements Comparable, DTOKey
                 ", userId=" + userId +
                 '}';
     }
-
-    // HACK
-    public String toJson()
-    {
-        StringBuilder builder = new StringBuilder();
-        builder.append("{").append('"').append("userId").append('"').append(":").append(userId);
-        builder.append(",").append('"').append("portfolioId").append('"').append(":").append(portfolioId);
-        builder.append("}");
-        return builder.toString();
-    }
 }

@@ -54,31 +54,18 @@ public class THIABPurchaseOrder implements IABPurchaseOrder<IABSKU>
 
     @Override public String getDeveloperPayload()
     {
-        // HACK
-        if (this.developerPayload == null)
+        try
         {
-            return "";
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            THJsonAdapter.getInstance().toBody(this.developerPayload).writeTo(byteArrayOutputStream);
+            String developerPayload = byteArrayOutputStream.toString("UTF-8");
+            return developerPayload;
         }
-        else
+        catch (IOException e)
         {
-            return developerPayload.toJson();
+            THLog.e(TAG, "Failed to stringify developerPayload", e);
         }
-
-        // TODO The "proper" method here returns too long:
-        // {"portfolioId":{"key":611105,"bundleKey":"com.tradehero.th.api.portfolio.PortfolioId.key","args":{"classLoader":{"parent":null},"pairValue":null,"empty":false,"parcelled":false}},"userId":239284,"args":{"classLoader":{"parent":null},"pairValue":null,"empty":false,"parcelled":false},"userBaseKey":{"key":239284,"bundleKey":"com.tradehero.th.api.users.UserBaseKey.key","valid":true,"args":{"classLoader":{"parent":null},"pairValue":null,"empty":false,"parcelled":false}},"valid":true}
-        //try
-        //{
-        //    ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        //    THJsonAdapter.getInstance().toBody(this.developerPayload).writeTo(byteArrayOutputStream);
-        //    String developerPayload = byteArrayOutputStream.toString("UTF-8");
-        //    THLog.d(TAG, "getDeveloperPayload " + developerPayload);
-        //    return developerPayload;
-        //}
-        //catch (IOException e)
-        //{
-        //    THLog.e(TAG, "Failed to stringify developerPayload", e);
-        //}
-        //return "";
+        return "";
     }
 
     @Override public void setDeveloperPayload(String developerPayload)
