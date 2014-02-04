@@ -33,6 +33,7 @@ import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
 import com.tradehero.th.utils.DeviceUtil;
+import com.tradehero.th.utils.ProgressDialogUtil;
 import dagger.Lazy;
 import javax.inject.Inject;
 
@@ -106,7 +107,7 @@ public class WatchlistEditFragment extends DashboardFragment
         }
         else
         {
-            progressBar = ProgressDialog.show(getActivity(), getString(R.string.please_wait), getString(R.string.updating), true);
+            progressBar = ProgressDialogUtil.show(getActivity(), R.string.please_wait, R.string.updating);
         }
         try
         {

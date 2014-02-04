@@ -12,11 +12,9 @@ import android.widget.TabHost;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
 import com.tradehero.th.api.security.SecurityId;
-import com.tradehero.th.base.Application;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.fragments.dashboard.DashboardTabType;
-import com.tradehero.th.fragments.security.WatchlistEditFragment;
 import com.tradehero.th.fragments.timeline.TimelineFragment;
 import com.tradehero.th.fragments.trade.BuySellFragment;
 import com.tradehero.th.models.intent.THIntent;
@@ -93,7 +91,7 @@ public class DashboardNavigator extends Navigator
 
     public void goToPage(final THIntent thIntent)
     {
-        final String expectedTag = Application.getResourceString(thIntent.getDashboardType().stringResId);
+        final String expectedTag = activity.getString(thIntent.getDashboardType().stringResId);
         goToTab(
                 thIntent.getDashboardType(),
                 new TabHost.OnTabChangeListener()

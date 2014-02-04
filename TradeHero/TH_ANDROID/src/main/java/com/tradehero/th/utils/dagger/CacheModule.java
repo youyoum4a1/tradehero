@@ -1,6 +1,7 @@
 package com.tradehero.th.utils.dagger;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import com.tradehero.common.cache.LruMemFileCache;
 import com.tradehero.th.fragments.alert.AlertEditFragment;
 import com.tradehero.th.fragments.alert.AlertItemView;
@@ -41,8 +42,15 @@ import javax.inject.Singleton;
 )
 public class CacheModule
 {
+    private static final String PREFERENCE_KEY = "th";
+
     @Provides @Singleton LruMemFileCache provideLruMemFileCache(Context context)
     {
         return new LruMemFileCache(context);
+    }
+
+    @Provides @Singleton SharedPreferences provideSharePreferences(Context context)
+    {
+        return context.getSharedPreferences(PREFERENCE_KEY, Context.MODE_PRIVATE);
     }
 }

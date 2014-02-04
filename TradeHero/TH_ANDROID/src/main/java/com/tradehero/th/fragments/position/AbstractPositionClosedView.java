@@ -14,8 +14,6 @@ abstract public class AbstractPositionClosedView<PositionDTOType extends Positio
 {
     public static final String TAG = AbstractPositionClosedView.class.getSimpleName();
 
-    private PositionPartialBottomClosedView bottomView;
-
     //<editor-fold desc="Constructors">
     public AbstractPositionClosedView(Context context)
     {
@@ -32,16 +30,4 @@ abstract public class AbstractPositionClosedView<PositionDTOType extends Positio
         super(context, attrs, defStyle);
     }
     //</editor-fold>
-
-    @Override protected void initViews()
-    {
-        super.initViews();
-        bottomView = (PositionPartialBottomClosedView) findViewById(R.id.expanding_layout);
-    }
-
-    @Override public void linkWith(PositionDTOType positionDTO, boolean andDisplay)
-    {
-        super.linkWith(positionDTO, andDisplay);
-        this.bottomView.linkWith(positionDTO, andDisplay);
-    }
 }

@@ -29,6 +29,7 @@ import com.tradehero.th.misc.callback.THResponse;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.service.UserService;
 import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.widget.ServerValidatedEmailText;
 import dagger.Lazy;
 
@@ -81,11 +82,10 @@ public class SettingsPayPalFragment extends DashboardFragment
             @Override
             public void onClick(View view)
             {
-                progressDialog = ProgressDialog.show(
-                        getSherlockActivity(),
-                        Application.getResourceString(R.string.please_wait),
-                        Application.getResourceString(R.string.connecting_tradehero_only),
-                        true);
+                progressDialog = ProgressDialogUtil.show(
+                        getActivity(),
+                        R.string.please_wait,
+                        R.string.connecting_tradehero_only);
                 UpdatePayPalEmailFormDTO emailDTO = new UpdatePayPalEmailFormDTO();
                 emailDTO.newPayPalEmailAddress = paypalEmailText.getText().toString();
                 userService.updatePayPalEmail(THUser.getCurrentUserBase().id, emailDTO, new THCallback<UpdatePayPalEmailDTO>()

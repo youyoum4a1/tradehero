@@ -30,6 +30,11 @@ public class ProgressDialogUtil
         return dialog;
     }
 
+    public static ProgressDialog create(Context context, int titleResId, int messageResId)
+    {
+        return create(context, context.getString(titleResId), context.getString(messageResId));
+    }
+
     public static ProgressDialog show(Context context, String title, String message)
     {
         ProgressDialog dialog = create(context, title, message);

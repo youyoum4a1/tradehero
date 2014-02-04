@@ -104,26 +104,6 @@ public class LeaderboardPositionListFragment
         };
     }
 
-    @SuppressWarnings("unchecked")
-    @Override public void linkWith(GetLeaderboardPositionsDTO leaderboardPositionsDTO, boolean andDisplay)
-    {
-        if (leaderboardPositionsDTO != null)
-        {
-            createPositionItemAdapter();
-            positionItemAdapter.setItems(leaderboardPositionsDTO.positions);
-            restoreExpandingStates();
-            if (positionsListView != null)
-            {
-                positionsListView.setAdapter(positionItemAdapter);
-            }
-        }
-
-        if (andDisplay)
-        {
-            display();
-        }
-    }
-
     @Override protected void createUserInteractor()
     {
         userInteractor = new LeaderboardPositionListTHIABUserInteractor(getActivity(), getBillingActor(), getView().getHandler());

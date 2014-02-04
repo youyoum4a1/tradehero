@@ -203,18 +203,33 @@ public abstract class AbstractPositionView<PositionDTOType extends PositionDTO> 
     public void linkWith(PositionDTOType positionDTO, boolean andDisplay)
     {
         this.positionDTO = positionDTO;
+
+        if (topView != null)
+        {
+            topView.linkWith(positionDTO, andDisplay);
+        }
+
         if (andDisplay)
         {
-            display();
+            displayColorIndicator();
             displayButtonSell();
         }
     }
 
     protected void display()
     {
+        displayTopView();
         displayColorIndicator();
         displayButtonSell();
         displayHistoryButton();
+    }
+
+    public void displayTopView()
+    {
+        if (topView != null)
+        {
+            topView.display();
+        }
     }
 
     protected void displayColorIndicator()
