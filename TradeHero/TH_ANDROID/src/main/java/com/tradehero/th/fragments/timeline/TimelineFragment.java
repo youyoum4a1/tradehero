@@ -284,7 +284,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         }
         else
         {
-            pushPositionListFragment(portfolioIdList.get(0));
+            pushPositionListFragment(portfolioCompactListCache.get().getDefaultPortfolio(shownUserBaseKey));
         }
     }
     //</editor-fold>
