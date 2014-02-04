@@ -27,7 +27,7 @@ import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
 /**
  * Created with IntelliJ IDEA. User: tho Date: 2/3/14 Time: 3:48 PM Copyright (c) TradeHero
  */
-public class LeaderboardCommunityAdapterLeaderboard extends ArrayDTOAdapter<LeaderboardDefKey, LeaderboardDefView>
+public class LeaderboardCommunityAdapter extends ArrayDTOAdapter<LeaderboardDefKey, LeaderboardDefView>
     implements StickyListHeadersAdapter
 {
     private Map<LeaderboardCommunityType, List<LeaderboardDefKey>> items = new HashMap<>();
@@ -38,7 +38,7 @@ public class LeaderboardCommunityAdapterLeaderboard extends ArrayDTOAdapter<Lead
 
     private final int competitionCompactViewResourceId;
 
-    public LeaderboardCommunityAdapterLeaderboard(Context context, LayoutInflater inflater,
+    public LeaderboardCommunityAdapter(Context context, LayoutInflater inflater,
             int leaderboardDefViewResourceId,
             int competitionCompactViewResourceId)
     {

@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ImageView;
 import android.widget.ViewAnimator;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -67,7 +66,7 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
     private Milestone.OnCompleteListener providerListRetrievedListener;
     private THIntentPassedListener thIntentPassedListener;
     private WebViewFragment webFragment;
-    private LeaderboardCommunityAdapterLeaderboard leaderboardDefListAdapter;
+    private LeaderboardCommunityAdapter leaderboardDefListAdapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -134,7 +133,7 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
     @Override protected void initViews(View view)
     {
         // list of leaderboard definition item
-        leaderboardDefListAdapter = new LeaderboardCommunityAdapterLeaderboard(
+        leaderboardDefListAdapter = new LeaderboardCommunityAdapter(
                 getActivity(), getActivity().getLayoutInflater(),
                 R.layout.leaderboard_definition_item_view, R.layout.leaderboard_competition_item_view);
 

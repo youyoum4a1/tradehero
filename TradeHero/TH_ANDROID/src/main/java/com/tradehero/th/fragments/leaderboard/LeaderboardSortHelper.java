@@ -3,7 +3,6 @@ package com.tradehero.th.fragments.leaderboard;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.actionbarsherlock.view.SubMenu;
-import com.tradehero.th.R;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 

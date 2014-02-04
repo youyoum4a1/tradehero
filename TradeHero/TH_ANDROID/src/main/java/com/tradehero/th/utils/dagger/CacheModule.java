@@ -7,7 +7,7 @@ import com.tradehero.th.fragments.alert.AlertItemView;
 import com.tradehero.th.fragments.alert.AlertListItemAdapter;
 import com.tradehero.th.fragments.alert.AlertViewFragment;
 import com.tradehero.th.fragments.competition.LeaderboardCompetitionView;
-import com.tradehero.th.fragments.leaderboard.LeaderboardCommunityAdapterLeaderboard;
+import com.tradehero.th.fragments.leaderboard.LeaderboardCommunityAdapter;
 import com.tradehero.th.fragments.leaderboard.LeaderboardDefListAdapter;
 import com.tradehero.th.fragments.settings.SettingsPayPalFragment;
 import com.tradehero.th.models.alert.SecurityAlertAssistant;
@@ -33,7 +33,7 @@ import javax.inject.Singleton;
                 AlertEditFragment.class,
 
                 LeaderboardDefListAdapter.class,
-                LeaderboardCommunityAdapterLeaderboard.class,
+                LeaderboardCommunityAdapter.class,
                 LeaderboardCompetitionView.class,
         },
         complete = false,
