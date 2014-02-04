@@ -25,8 +25,8 @@ import static org.junit.Assert.assertTrue;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/17/13 Time: 10:32 AM To change this template use File | Settings | File Templates. */
 @RunWith(RobolectricTestRunner.class)
-@Config(manifest= Config.NONE)
-public class JacksonConverterTest
+@Config(manifest = Config.NONE)
+public class JacksonConverterDeserialisationTest
 {
     private JacksonConverter jacksonConverter;
     private String localPath = "C:\\Users\\xavier\\Documents\\Projects\\TH_ANDROID3\\TradeHero\\TH_ANDROID\\src\\test\\java\\com\\tradehero\\common\\";

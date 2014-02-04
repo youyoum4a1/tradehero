@@ -1,21 +1,19 @@
 package com.tradehero.common.utils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import dagger.ObjectGraph;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
 import retrofit.converter.ConversionException;
 import retrofit.converter.Converter;
 import retrofit.converter.GsonConverter;
 import retrofit.mime.TypedInput;
 import retrofit.mime.TypedOutput;
-
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.lang.reflect.Type;
 
 /**
  * Created with IntelliJ IDEA. Date: 7/1/13 Time: 12:49 PM Copyright (c) 2013 thonguyen. All rights
@@ -102,10 +100,16 @@ public class THJsonAdapter implements Converter
         }
     }
 
-    @Override
-    public TypedOutput toBody(Object object)
+    @Override public TypedOutput toBody(Object object)
     {
         return converter.toBody(object);
+    }
+
+    public String toStringBody(Object object) throws IOException
+    {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        toBody(object).writeTo(byteArrayOutputStream);
+        return byteArrayOutputStream.toString("UTF-8");
     }
 
     private enum ConverterType

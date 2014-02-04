@@ -56,10 +56,7 @@ public class THIABPurchaseOrder implements IABPurchaseOrder<IABSKU>
     {
         try
         {
-            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-            THJsonAdapter.getInstance().toBody(this.developerPayload).writeTo(byteArrayOutputStream);
-            String developerPayload = byteArrayOutputStream.toString("UTF-8");
-            return developerPayload;
+            return THJsonAdapter.getInstance().toStringBody(this.developerPayload);
         }
         catch (IOException e)
         {

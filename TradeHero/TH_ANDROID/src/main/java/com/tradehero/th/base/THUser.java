@@ -248,10 +248,8 @@ public class THUser
         {
             saveCurrentUserBaseKey(userDTO.getBaseKey());
 
-            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-            THJsonAdapter.getInstance().toBody(userDTO).writeTo(byteArrayOutputStream);
             SharedPreferences.Editor pref = sharedPreferences.get().edit();
-            pref.putString(PREF_MY_USER, byteArrayOutputStream.toString("UTF-8"));
+            pref.putString(PREF_MY_USER, THJsonAdapter.getInstance().toStringBody(userDTO));
             pref.commit();
         }
         catch (IOException ex)

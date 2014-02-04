@@ -18,9 +18,7 @@ public class THIABOrderId extends IABOrderId
 
     public void setDeveloperPayload(OwnedPortfolioId ownedPortfolioId) throws IOException
     {
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        THJsonAdapter.getInstance().toBody(ownedPortfolioId).writeTo(byteArrayOutputStream);
-        developerPayload = byteArrayOutputStream.toString("UTF-8");
+        developerPayload = THJsonAdapter.getInstance().toStringBody(ownedPortfolioId);
     }
 
     public OwnedPortfolioId getApplicableOwnedPortfolioId()

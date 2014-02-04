@@ -30,16 +30,10 @@ public class DisplayablePortfolioDTOComparableTest
 {
     public static final String TAG = DisplayablePortfolioDTOComparableTest.class.getSimpleName();
 
-    @Before public void setUp()
+    @Before public void setUp() throws IOException
     {
-        try
-        {
-            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-            THJsonAdapter.getInstance().toBody(getCurrentUser()).writeTo(byteArrayOutputStream);
-        } catch (IOException e)
-        {
-            e.printStackTrace();
-        }
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        THJsonAdapter.getInstance().toBody(getCurrentUser()).writeTo(byteArrayOutputStream);
     }
 
     @After public void tearDown()
