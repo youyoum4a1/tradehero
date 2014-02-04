@@ -118,7 +118,7 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
     {
         detachLeaderboardDefListCacheFetchMostSkilledTask();
 
-        if (leaderboardDefListCache.get().get(new LeaderboardDefCommunityListKey()) == null)
+        if (leaderboardDefListCache.get().get(new LeaderboardDefListKey()) == null)
         {
             leaderboardDefListFetchTask = leaderboardDefListCache.get().getOrFetch(
                     new LeaderboardDefCommunityListKey(), false, leaderboardDefFetchListener);

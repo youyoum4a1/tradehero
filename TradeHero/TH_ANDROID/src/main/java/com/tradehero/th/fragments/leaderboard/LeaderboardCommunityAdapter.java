@@ -70,18 +70,18 @@ public class LeaderboardCommunityAdapter extends ArrayDTOAdapter<LeaderboardDefK
             }
         }
 
-        // hardcoded stuffs +__+
         putExtraItems(typeMap);
 
         items = typeMap;
         super.notifyDataSetChanged();
     }
 
+    // hardcoded stuffs +__+
     private void putExtraItems(Map<LeaderboardCommunityType, List<LeaderboardDefKey>> typeMap)
     {
         List<LeaderboardDefKey> skillAndFriend = typeMap.get(LeaderboardCommunityType.SkillAndFriend);
         
-        if (skillAndFriend != null)
+        if (skillAndFriend != null && leaderboardDefCache.get().get(new LeaderboardDefKey(LeaderboardDefDTO.LEADERBOARD_FRIEND_ID)) == null)
         {
             LeaderboardDefDTO fakeDto = new LeaderboardDefDTO();
             fakeDto.id = LeaderboardDefDTO.LEADERBOARD_FRIEND_ID;
