@@ -73,7 +73,8 @@ public class PositionInPeriodDTO extends PositionDTO
     {
         if (marketValueEndPeriodRefCcy == null || marketValueStartPeriodRefCcy == null)
         {
-            return null;
+            throw new IllegalArgumentException("Wrong values " + this);
+            //return null;
         }
 
         double plInPeriod = getInPeriodPL();
@@ -81,7 +82,8 @@ public class PositionInPeriodDTO extends PositionDTO
 
         if (investedInPeriod == 0)
         {
-            return null;
+            throw new IllegalArgumentException("Wrong values " + this);
+            //return null;
         }
 
         return plInPeriod / investedInPeriod;

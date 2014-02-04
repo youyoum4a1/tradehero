@@ -1,10 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<preference-headers xmlns:android="http://schemas.android.com/apk/res/android">
+<preference-headers
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
   <header
       android:title="@string/settings_primary_faq"
       android:icon="@drawable/settings_faq"
       android:fragment="com.tradehero.th.fragments.web.WebViewFragment">
-    <extra android:name="url" android:value="http://www.tradehero.mobi/faq"/>
+
+    <extra
+        android:name="url"
+        android:value="http://www.tradehero.mobi/faq"/>
+
   </header>
+
 </preference-headers>

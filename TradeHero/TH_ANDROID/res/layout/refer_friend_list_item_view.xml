@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.tradehero.th.fragments.settings.UserFriendDTOView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/refer_friend_item_background"
@@ -9,6 +10,7 @@
     android:paddingTop="@dimen/invite_friend_padding_top"
     android:paddingBottom="@dimen/invite_friend_padding_bottom"
     >
+
   <ImageView
       android:id="@+id/user_friend_avatar"
       android:layout_width="60dp"
@@ -18,8 +20,9 @@
       android:background="@drawable/layout_oval_gray"
       android:padding="1dp"
       android:layout_marginRight="10dp"
-      android:src="@drawable/avatar"
+      tools:src="@drawable/avatar"
       android:contentDescription="@null"/>
+
   <TextView
       android:id="@+id/user_friend_name"
       android:layout_width="wrap_content"
@@ -28,7 +31,7 @@
       android:textStyle="bold"
       android:maxLines="1"
       android:layout_alignParentTop="true"
-      android:text="@null"
+      tools:text="Barack Obama"
       />
 
   <TextView
@@ -78,4 +81,5 @@
       android:text="@null"
       android:visibility="invisible"
       />
+
 </com.tradehero.th.fragments.settings.UserFriendDTOView>
