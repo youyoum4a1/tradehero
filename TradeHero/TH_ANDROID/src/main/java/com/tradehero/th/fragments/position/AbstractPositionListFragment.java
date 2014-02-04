@@ -148,10 +148,7 @@ abstract public class AbstractPositionListFragment<
 
     abstract protected void createPositionItemAdapter();
 
-    @Override protected void createUserInteractor()
-    {
-        userInteractor = new PositionListTHIABUserInteractor(getActivity(), getBillingActor(), getView().getHandler());
-    }
+    @Override abstract protected void createUserInteractor();
 
     private void handlePositionItemClicked(AdapterView<?> parent, View view, int position, long id)
     {
@@ -480,11 +477,11 @@ abstract public class AbstractPositionListFragment<
     }
     //</editor-fold>
 
-    public class PositionListTHIABUserInteractor extends THIABUserInteractor
+    abstract public class AbstractPositionListTHIABUserInteractor extends THIABUserInteractor
     {
-        public final String TAG = PositionListTHIABUserInteractor.class.getName();
+        public final String TAG = AbstractPositionListTHIABUserInteractor.class.getName();
 
-        public PositionListTHIABUserInteractor(Activity activity, THIABActor billingActor, Handler handler)
+        public AbstractPositionListTHIABUserInteractor(Activity activity, THIABActor billingActor, Handler handler)
         {
             super(activity, billingActor, handler);
         }

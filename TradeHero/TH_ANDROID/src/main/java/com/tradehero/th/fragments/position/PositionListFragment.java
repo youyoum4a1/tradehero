@@ -1,11 +1,13 @@
 package com.tradehero.th.fragments.position;
 
+import android.app.Activity;
+import android.os.Handler;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.position.GetPositionsDTO;
-import com.tradehero.th.api.position.OwnedPositionId;
 import com.tradehero.th.api.position.PositionDTO;
+import com.tradehero.th.billing.googleplay.THIABActor;
 import com.tradehero.th.persistence.position.GetPositionsCache;
 import dagger.Lazy;
 import javax.inject.Inject;
@@ -73,6 +75,19 @@ public class PositionListFragment extends AbstractPositionListFragment<OwnedPort
                 displayProgress(false);
                 linkWith(value, true);
             }
+        }
+    }
+
+    @Override protected void createUserInteractor()
+    {
+        userInteractor = new PositionListTHIABUserInteractor(getActivity(), getBillingActor(), getView().getHandler());
+    }
+
+    public class PositionListTHIABUserInteractor extends AbstractPositionListTHIABUserInteractor
+    {
+        public PositionListTHIABUserInteractor(Activity activity, THIABActor billingActor, Handler handler)
+        {
+            super(activity, billingActor, handler);
         }
     }
 }

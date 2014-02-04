@@ -1,5 +1,7 @@
 package com.tradehero.th.fragments.position;
 
+import android.app.Activity;
+import android.os.Handler;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
@@ -7,9 +9,8 @@ import com.tradehero.th.api.leaderboard.LeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import com.tradehero.th.api.leaderboard.position.GetLeaderboardPositionsDTO;
 import com.tradehero.th.api.leaderboard.position.LeaderboardMarkUserId;
-import com.tradehero.th.api.portfolio.OwnedPortfolioId;
-import com.tradehero.th.api.position.GetPositionsDTO;
 import com.tradehero.th.api.position.PositionInPeriodDTO;
+import com.tradehero.th.billing.googleplay.THIABActor;
 import com.tradehero.th.persistence.leaderboard.position.GetLeaderboardPositionsCache;
 import dagger.Lazy;
 import javax.inject.Inject;
@@ -123,6 +124,11 @@ public class LeaderboardPositionListFragment
         }
     }
 
+    @Override protected void createUserInteractor()
+    {
+        userInteractor = new LeaderboardPositionListTHIABUserInteractor(getActivity(), getBillingActor(), getView().getHandler());
+    }
+
     protected class GetLeaderboardPositionsListener extends AbstractGetPositionsListener<LeaderboardMarkUserId, PositionInPeriodDTO, GetLeaderboardPositionsDTO>
     {
         @Override public void onDTOReceived(LeaderboardMarkUserId key, GetLeaderboardPositionsDTO value)
@@ -132,6 +138,14 @@ public class LeaderboardPositionListFragment
                 displayProgress(false);
                 linkWith(value, true);
             }
+        }
+    }
+
+    public class LeaderboardPositionListTHIABUserInteractor extends AbstractPositionListTHIABUserInteractor
+    {
+        public LeaderboardPositionListTHIABUserInteractor(Activity activity, THIABActor billingActor, Handler handler)
+        {
+            super(activity, billingActor, handler);
         }
     }
 }

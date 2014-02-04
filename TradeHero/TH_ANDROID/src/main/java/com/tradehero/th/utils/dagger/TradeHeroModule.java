@@ -171,6 +171,7 @@ import javax.inject.Singleton;
                         PositionListFragment.class,
                         PositionListFragment.PositionListTHIABUserInteractor.class,
                         LeaderboardPositionListFragment.class,
+                        LeaderboardPositionListFragment.LeaderboardPositionListTHIABUserInteractor.class,
                         CurrentUserPortfolioHeaderView.class,
                         OtherUserPortfolioHeaderView.class,
 
