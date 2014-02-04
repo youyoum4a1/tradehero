@@ -1,24 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
+
   <item
       android:icon="@drawable/icn_friends"
       android:id="@+id/friend_leaderboard_menu"
       android:showAsAction="ifRoom">
+
     <menu>
+
       <item android:title="@string/show_friends_only"
           android:id="@+id/friend_leaderboard_menu_show_friends_only"
           />
+
       <item android:title="@string/show_friends_of_friends"
           android:id="@+id/friend_leaderboard_menu_show_friends_of_friends"
           />
+
     </menu>
+
   </item>
+
   <item
       android:id="@+id/leaderboard_listview_menu_help"
-      android:icon="@drawable/icn_info"
+      android:icon="@drawable/icn_info_white"
       android:title="@string/action_bar_help"
       android:showAsAction="ifRoom"
       android:visible="false"
       />
+
 </menu>

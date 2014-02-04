@@ -2,6 +2,7 @@
 
 <com.tradehero.th.fragments.competition.zone.CompetitionZoneLeaderboardListItemView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res/com.tradehero.th"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -25,7 +26,7 @@
       android:layout_width="48dp"
       android:layout_height="48dp"
       android:layout_alignParentLeft="true"
-      android:src="@drawable/superman_facebook"
+      tools:src="@drawable/icn_portfolio_pressed"
       android:contentDescription="@null"
       />
 
@@ -49,7 +50,7 @@
         android:maxLines="1"
         android:layout_weight="3"
         android:textStyle="bold"
-        android:text="@string/na"
+        tools:text="February 2014"
         />
 
     <TextView
@@ -60,7 +61,7 @@
         android:maxLines="1"
         android:textSize="10sp"
         android:textColor="@color/text_gray_normal"
-        android:text="@string/na"
+        tools:text="1st to 28th February"
         />
 
   </LinearLayout>

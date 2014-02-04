@@ -2,6 +2,7 @@
 
 <com.tradehero.th.fragments.competition.zone.CompetitionZoneListItemView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:padding="5dp"
@@ -25,7 +26,7 @@
       android:layout_width="48dp"
       android:layout_height="48dp"
       android:layout_alignParentLeft="true"
-      android:src="@drawable/superman_facebook"
+      tools:src="@drawable/icn_info_blue"
       android:contentDescription="@null"
       />
 
@@ -48,6 +49,7 @@
         android:maxLines="1"
         android:layout_weight="3"
         android:textStyle="bold"
+        tools:text="Competition Portfolio"
         />
 
     <TextView
@@ -56,6 +58,9 @@
         android:layout_height="0dp"
         android:layout_weight="2"
         android:maxLines="1"
+        android:textSize="12dp"
+        android:textColor="@color/text_gray_normal"
+        tools:text="view your competition positions"
         />
 
   </LinearLayout>
