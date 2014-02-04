@@ -514,12 +514,9 @@ abstract public class AbstractPositionListFragment<
     {
         @Override public void onErrorThrown(CacheQueryIdType key, Throwable error)
         {
-            if (key.equals(ownedPortfolioId))
-            {
-                displayProgress(false);
-                THToast.show(getString(R.string.error_fetch_position_list_info));
-                THLog.e(TAG, "Error fetching the positionList info " + key, error);
-            }
+            displayProgress(false);
+            THToast.show(getString(R.string.error_fetch_position_list_info));
+            THLog.e(TAG, "Error fetching the positionList info " + key, error);
         }
     }
 }
