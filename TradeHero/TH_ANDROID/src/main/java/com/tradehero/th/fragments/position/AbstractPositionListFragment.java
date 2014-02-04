@@ -38,7 +38,6 @@ import com.tradehero.th.fragments.social.hero.HeroAlertDialogUtil;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.fragments.trade.BuySellFragment;
 import com.tradehero.th.fragments.trade.TradeListFragment;
-import com.tradehero.th.persistence.position.GetPositionsCache;
 import com.tradehero.th.persistence.position.PositionCache;
 import com.tradehero.th.persistence.security.SecurityIdCache;
 import com.tradehero.th.widget.list.ExpandingListView;

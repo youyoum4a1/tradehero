@@ -2,6 +2,7 @@
 
 <com.tradehero.th.fragments.portfolio.header.OtherUserPortfolioHeaderView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -24,7 +25,7 @@
         android:layout_width="35dp"
         android:layout_height="35dp"
         android:background="@drawable/layout_oval"
-        android:src="@drawable/th_logo"
+        android:src="@drawable/default_image"
         android:contentDescription="@null"/>
 
     <TextView
@@ -35,7 +36,7 @@
         android:textStyle="bold"
         android:paddingLeft="8dp"
         android:paddingRight="8dp"
-        android:text="@null"
+        tools:text="Sergio Barca"
         android:gravity="center_vertical"/>
 
   </LinearLayout>
@@ -45,6 +46,7 @@
       android:layout_height="34dp"
       android:gravity="right"
       android:layout_alignParentRight="true">
+
     <ImageView
         android:id="@+id/header_portfolio_following_image"
         android:layout_width="match_parent"
@@ -52,16 +54,19 @@
         android:contentDescription="@null"
         android:scaleType="centerInside"
         android:src="@drawable/following_stamp"
-        android:visibility="gone"
+        android:visibility="visible"
         />
+
     <ImageButton
         android:id="@+id/header_portfolio_follow_button"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:src="@drawable/follow_user"
         android:scaleType="fitCenter"
-        android:visibility="gone"
+        android:visibility="visible"
         android:background="@null"
         android:contentDescription="@null"/>
+
   </RelativeLayout>
+
 </com.tradehero.th.fragments.portfolio.header.OtherUserPortfolioHeaderView>
