@@ -12,6 +12,7 @@ import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.NumberDisplayUtils;
 import com.tradehero.th.utils.PositionUtils;
 import com.tradehero.th.utils.SecurityUtils;
+import com.tradehero.th.utils.THSignedNumber;
 import dagger.Lazy;
 
 import javax.inject.Inject;
@@ -148,10 +149,8 @@ public class PositionPartialBottomOpenView extends RelativeLayout
         {
             if (positionDTO != null && positionDTO.averagePriceRefCcy != null)
             {
-                averagePriceValue.setText(NumberDisplayUtils.formatWithRelevantDigits(
-                        positionDTO.averagePriceRefCcy,
-                        4,
-                        SecurityUtils.DEFAULT_VIRTUAL_CASH_CURRENCY_DISPLAY));
+                THSignedNumber ThAveragePriceRefCcy = new THSignedNumber(THSignedNumber.TYPE_MONEY, positionDTO.averagePriceRefCcy, false);
+                averagePriceValue.setText(ThAveragePriceRefCcy.toString());
             }
             else
             {

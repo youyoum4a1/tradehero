@@ -18,10 +18,9 @@ public class PositionUtils
     {
         if (position != null && position.sumInvestedAmountRefCcy != null)
         {
-            return NumberDisplayUtils.formatWithRelevantDigits(
-                    position.sumInvestedAmountRefCcy,
-                    4,
-                    SecurityUtils.DEFAULT_VIRTUAL_CASH_CURRENCY_DISPLAY);
+            THSignedNumber formattedNumber =
+                    new THSignedNumber(THSignedNumber.TYPE_MONEY, position.sumInvestedAmountRefCcy, false);
+            return formattedNumber.toString();
         }
         else
         {
@@ -33,10 +32,9 @@ public class PositionUtils
     {
         if (position != null && position.marketValueStartPeriodRefCcy != null)
         {
-            return NumberDisplayUtils.formatWithRelevantDigits(
-                    position.marketValueStartPeriodRefCcy,
-                    7,
-                    SecurityUtils.DEFAULT_VIRTUAL_CASH_CURRENCY_DISPLAY);
+            THSignedNumber formattedNumber =
+                    new THSignedNumber(THSignedNumber.TYPE_MONEY, position.marketValueStartPeriodRefCcy, false);
+            return formattedNumber.toString();
         }
         else
         {
@@ -48,10 +46,9 @@ public class PositionUtils
     {
         if (position != null && position.realizedPLRefCcy != null)
         {
-            return NumberDisplayUtils.formatWithRelevantDigits(
-                    position.realizedPLRefCcy,
-                    4,
-                    SecurityUtils.DEFAULT_VIRTUAL_CASH_CURRENCY_DISPLAY);
+            THSignedNumber formattedNumber =
+                    new THSignedNumber(THSignedNumber.TYPE_MONEY, position.realizedPLRefCcy, false);
+            return formattedNumber.toString();
         }
         else
         {
@@ -63,10 +60,9 @@ public class PositionUtils
     {
         if (position != null && position.totalPLInPeriodRefCcy != null)
         {
-            return NumberDisplayUtils.formatWithRelevantDigits(
-                    position.totalPLInPeriodRefCcy,
-                    7,
-                    SecurityUtils.DEFAULT_VIRTUAL_CASH_CURRENCY_DISPLAY);
+            THSignedNumber formattedNumber =
+                    new THSignedNumber(THSignedNumber.TYPE_MONEY, position.totalPLInPeriodRefCcy, false);
+            return formattedNumber.toString();
         }
         else
         {
@@ -78,10 +74,9 @@ public class PositionUtils
     {
         if (position != null)
         {
-            return NumberDisplayUtils.formatWithRelevantDigits(
-                    position.marketValueRefCcy,
-                    4,
-                    SecurityUtils.DEFAULT_VIRTUAL_CASH_CURRENCY_DISPLAY);
+            THSignedNumber formattedNumber =
+                    new THSignedNumber(THSignedNumber.TYPE_MONEY, position.marketValueRefCcy, false);
+            return formattedNumber.toString();
         }
         else
         {
@@ -93,10 +88,9 @@ public class PositionUtils
     {
         if (position != null && position.unrealizedPLRefCcy != null)
         {
-            return (NumberDisplayUtils.formatWithRelevantDigits(
-                    position.unrealizedPLRefCcy,
-                    4,
-                    SecurityUtils.DEFAULT_VIRTUAL_CASH_CURRENCY_DISPLAY));
+            THSignedNumber formattedNumber =
+                    new THSignedNumber(THSignedNumber.TYPE_MONEY, position.unrealizedPLRefCcy, false);
+            return formattedNumber.toString();
         }
         else
         {
@@ -142,10 +136,10 @@ public class PositionUtils
     {
         if (position != null && position.sum_purchasesInPeriodRefCcy != null)
         {
-            return NumberDisplayUtils.formatWithRelevantDigits(
-                    position.sum_purchasesInPeriodRefCcy,
-                    2,
-                    SecurityUtils.DEFAULT_VIRTUAL_CASH_CURRENCY_DISPLAY);
+
+            THSignedNumber formatSumPurchasesInPeriodRefCcy =
+                    new THSignedNumber(THSignedNumber.TYPE_MONEY, position.sum_purchasesInPeriodRefCcy, false);
+            return formatSumPurchasesInPeriodRefCcy.toString();
         }
         else
         {
