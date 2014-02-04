@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tradehero.th.adapters.ExpandableItem;
 import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.utils.NumberDisplayUtils;
+import com.tradehero.th.utils.THSignedNumber;
 import java.text.DecimalFormat;
 import java.util.Date;
 import java.util.List;
@@ -85,22 +86,6 @@ public class LeaderboardUserDTO extends UserBaseDTO
     public double getWinRatio()
     {
         return winRatio != null ? winRatio : 0;
-    }
-
-    public String getFormattedPL()
-    {
-        DecimalFormat df = new DecimalFormat("###,##0.00");
-        return df.format(PLinPeriodRefCcy);
-    }
-
-    public String getFormattedSharpeRatio()
-    {
-        if (sharpeRatioInPeriod_vsSP500 != null)
-        {
-            DecimalFormat df = new DecimalFormat("###,##0.0000");
-            return df.format(sharpeRatioInPeriod_vsSP500);
-        }
-        return "0";
     }
 
     public Double getVolatility()

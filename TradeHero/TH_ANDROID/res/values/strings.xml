@@ -40,7 +40,6 @@
   <string name="total_wealth">Total Wealth</string>
   <string name="additional_cash">Additional Cash</string>
   <string name="cash_on_hand">Cash on Hand</string>
-  <string name="ref_currency">US$</string>
   <string name="first_last_name_display">%1$s %2$s</string> <!-- It is good to have it here as other localistations may swap those -->
   <string name="date_format_gmt_day_and_time">dd MMM HH:mm \'GMT\'</string>
   <string name="date_format_day_and_time">dd MMM HH:mm</string>

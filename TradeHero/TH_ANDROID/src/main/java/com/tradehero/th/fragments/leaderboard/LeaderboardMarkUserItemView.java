@@ -34,6 +34,7 @@ import com.tradehero.th.utils.StringUtils;
 import com.tradehero.th.utils.THSignedNumber;
 import com.tradehero.th.widget.MarkdownTextView;
 import dagger.Lazy;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import javax.inject.Inject;
 
@@ -221,7 +222,9 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
     private void displayExpandableSection()
     {
         // display P&L
-        lbmuPl.setText(getContext().getString(R.string.ref_currency) + " " + leaderboardItem.getFormattedPL());
+
+        THSignedNumber formattedNumber = new THSignedNumber(THSignedNumber.TYPE_MONEY, leaderboardItem.PLinPeriodRefCcy, false);
+        lbmuPl.setText(formattedNumber.toString());
         String periodFormat = getContext().getString(R.string.leaderboard_ranking_period);
 
         // display period
@@ -249,7 +252,14 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         lbmuBenchmarkRoi.setText(Html.fromHtml(benchmarkRoiInPeriod));
 
         // sharpe ratio
-        lbmuSharpeRatio.setText(leaderboardItem.getFormattedSharpeRatio());
+        if (leaderboardItem.sharpeRatioInPeriod_vsSP500 != null)
+        {
+            lbmuSharpeRatio.setText(new THSignedNumber(THSignedNumber.TYPE_MONEY, leaderboardItem.sharpeRatioInPeriod_vsSP500, false).toString());
+        }
+        else
+        {
+            lbmuSharpeRatio.setText("0");
+        }
 
         // volatility
         String volatilityFormat = getContext().getString(R.string.leaderboard_volatility);
