@@ -22,11 +22,6 @@ public class UnhandledSKUDomainException extends RuntimeException
         super(detailMessage, throwable);
     }
 
-    protected UnhandledSKUDomainException(String s, Throwable throwable, boolean b, boolean b2)
-    {
-        super(s, throwable, b, b2);
-    }
-
     public UnhandledSKUDomainException(Throwable throwable)
     {
         super(throwable);
