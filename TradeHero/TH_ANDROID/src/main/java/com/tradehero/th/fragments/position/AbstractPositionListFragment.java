@@ -20,6 +20,7 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
+import com.tradehero.th.api.portfolio.PortfolioDTO;
 import com.tradehero.th.api.position.AbstractGetPositionsDTO;
 import com.tradehero.th.api.position.OwnedPositionId;
 import com.tradehero.th.api.position.PositionDTO;
@@ -32,12 +33,14 @@ import com.tradehero.th.billing.googleplay.THIABPurchase;
 import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.fragments.billing.THIABUserInteractor;
+import com.tradehero.th.fragments.competition.ProviderSecurityListFragment;
 import com.tradehero.th.fragments.dashboard.DashboardTabType;
 import com.tradehero.th.fragments.security.StockInfoFragment;
 import com.tradehero.th.fragments.social.hero.HeroAlertDialogUtil;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.fragments.trade.BuySellFragment;
 import com.tradehero.th.fragments.trade.TradeListFragment;
+import com.tradehero.th.persistence.portfolio.PortfolioCache;
 import com.tradehero.th.persistence.position.PositionCache;
 import com.tradehero.th.persistence.security.SecurityIdCache;
 import com.tradehero.th.widget.list.ExpandingListView;
@@ -66,6 +69,7 @@ abstract public class AbstractPositionListFragment<
 
     @Inject CurrentUserBaseKeyHolder currentUserBaseKeyHolder;
     @Inject Lazy<SecurityIdCache> securityIdCache;
+    @Inject Lazy<PortfolioCache> portfolioCache;
     @Inject Lazy<PositionCache> positionCache;
     @Inject Lazy<PortfolioHeaderFactory> headerFactory;
     @Inject protected HeroAlertDialogUtil heroAlertDialogUtil;
@@ -153,8 +157,20 @@ abstract public class AbstractPositionListFragment<
     {
         if (view instanceof PositionNothingView)
         {
-            navigator.popFragment(); // Feels HACKy
-            navigator.goToTab(DashboardTabType.TRENDING);
+            // Need to handle the case when portfolio is for a competition
+            PortfolioDTO shownPortfolio = portfolioCache.get().get(ownedPortfolioId);
+            if (shownPortfolio == null || shownPortfolio.providerId == null)
+            {
+                navigator.popFragment(); // Feels HACKy
+                navigator.goToTab(DashboardTabType.TRENDING);
+            }
+            else
+            {
+                Bundle args = new Bundle();
+                args.putBundle(ProviderSecurityListFragment.BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE, getApplicablePortfolioId().getArgs());
+                args.putBundle(ProviderSecurityListFragment.BUNDLE_KEY_PROVIDER_ID, shownPortfolio.getProviderId().getArgs());
+                navigator.pushFragment(ProviderSecurityListFragment.class, args);
+            }
         }
         else if (view instanceof LockedPositionItem)
         {

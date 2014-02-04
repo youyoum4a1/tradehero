@@ -1,6 +1,7 @@
 package com.tradehero.th.api.portfolio;
 
 import com.tradehero.common.persistence.DTO;
+import com.tradehero.th.api.competition.ProviderId;
 import java.util.Date;
 
 /** Created with IntelliJ IDEA. User: tho Date: 8/15/13 Time: 7:05 PM Copyright (c) TradeHero */
@@ -31,6 +32,11 @@ public class PortfolioCompactDTO implements DTO
         return new PortfolioId(id);
     }
     //</editor-fold>
+
+    public ProviderId getProviderId()
+    {
+        return new ProviderId(providerId);
+    }
 
     public boolean isDefault()
     {
