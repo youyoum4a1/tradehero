@@ -44,6 +44,7 @@ import com.tradehero.th.network.service.UserService;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.FacebookUtils;
 import com.tradehero.th.utils.LinkedInUtils;
+import com.tradehero.th.utils.ProgressDialogUtil;
 import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.List;
@@ -263,10 +264,10 @@ public class InviteFriendFragment extends DashboardFragment
         {
             return progressDialog;
         }
-        progressDialog = ProgressDialog.show(
+        progressDialog = ProgressDialogUtil.show(
                 getActivity(),
-                getString(R.string.loading_loading),
-                getString(R.string.please_wait), true);
+                R.string.loading_loading,
+                R.string.please_wait);
         progressDialog.hide();
         return progressDialog;
     }

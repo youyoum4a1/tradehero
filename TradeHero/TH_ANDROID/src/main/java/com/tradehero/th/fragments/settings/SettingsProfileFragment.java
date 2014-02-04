@@ -33,6 +33,7 @@ import com.tradehero.th.misc.callback.LogInCallback;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.NetworkUtils;
+import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.widget.ValidationListener;
 import com.tradehero.th.widget.ValidationMessage;
 import java.util.HashMap;
@@ -238,11 +239,10 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
         }
         else
         {
-            profileView.progressDialog = ProgressDialog.show(
-                    getSherlockActivity(),
-                    Application.getResourceString(R.string.please_wait),
-                    Application.getResourceString(R.string.connecting_tradehero_only),
-                    true);
+            profileView.progressDialog = ProgressDialogUtil.show(
+                    getActivity(),
+                    R.string.please_wait,
+                    R.string.connecting_tradehero_only);
             EmailAuthenticationProvider.setCredentials(this.getUserFormJSON());
             THUser.updateProfile(getUserFormJSON(), new LogInCallback()
             {

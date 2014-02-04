@@ -31,6 +31,7 @@ import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.FacebookUtils;
 import com.tradehero.th.utils.LinkedInUtils;
+import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.TwitterUtils;
 import dagger.Lazy;
 import java.util.HashMap;
@@ -180,11 +181,7 @@ public class AuthenticationActivity extends SherlockFragmentActivity
     {
         if (currentFragment instanceof EmailSignInOrUpFragment)
         {
-            progressDialog = ProgressDialog.show(
-                    AuthenticationActivity.this,
-                    Application.getResourceString(R.string.please_wait),
-                    Application.getResourceString(R.string.connecting_tradehero_only),
-                    true);
+            progressDialog = ProgressDialogUtil.show(this, R.string.please_wait, R.string.connecting_tradehero_only);
             EmailSignInOrUpFragment castedFragment = (EmailSignInOrUpFragment) currentFragment;
             EmailAuthenticationProvider.setCredentials(castedFragment.getUserFormJSON());
             AuthenticationMode authenticationMode = castedFragment.getAuthenticationMode();
@@ -219,31 +216,19 @@ public class AuthenticationActivity extends SherlockFragmentActivity
     //<editor-fold desc="Authenticate with Facebook/Twitter/LinkedIn">
     private void authenticateWithLinkedIn()
     {
-        progressDialog = ProgressDialog.show(
-                AuthenticationActivity.this,
-                Application.getResourceString(R.string.please_wait),
-                Application.getResourceString(R.string.connecting_to_linkedin),
-                true);
+        progressDialog = ProgressDialogUtil.show(this, R.string.please_wait, R.string.connecting_to_linkedin);
         linkedInUtils.get().logIn(this, new SocialAuthenticationCallback("LinkedIn"));
     }
 
     private void authenticateWithFacebook()
     {
-        progressDialog = ProgressDialog.show(
-                AuthenticationActivity.this,
-                Application.getResourceString(R.string.please_wait),
-                Application.getResourceString(R.string.connecting_to_facebook),
-                true);
+        progressDialog = ProgressDialogUtil.show(this, R.string.please_wait, R.string.connecting_to_facebook);
         facebookUtils.get().logIn(this, new SocialAuthenticationCallback("Facebook"));
     }
 
     private void authenticateWithTwitter()
     {
-        progressDialog = ProgressDialog.show(
-                AuthenticationActivity.this,
-                Application.getResourceString(R.string.please_wait),
-                Application.getResourceString(R.string.connecting_to_twitter),
-                true);
+        progressDialog = ProgressDialogUtil.show(this, R.string.please_wait, R.string.connecting_to_twitter);
         twitterUtils.get().logIn(this, createTwitterAuthenticationCallback());
     }
 

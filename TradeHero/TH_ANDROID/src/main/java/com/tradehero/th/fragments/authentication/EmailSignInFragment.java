@@ -19,6 +19,7 @@ import com.tradehero.th.misc.callback.THCallback;
 import com.tradehero.th.misc.callback.THResponse;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.service.UserService;
+import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.widget.SelfValidatedText;
 import com.tradehero.th.widget.ServerValidatedEmailText;
 import com.tradehero.th.widget.ValidatedPasswordText;
@@ -175,11 +176,10 @@ public class EmailSignInFragment extends EmailSignInOrUpFragment
         ForgotPasswordFormDTO forgotPasswordFormDTO = new ForgotPasswordFormDTO();
         forgotPasswordFormDTO.userEmail = email;
 
-        mProgressDialog = ProgressDialog.show(
+        mProgressDialog = ProgressDialogUtil.show(
                 getActivity(),
-                Application.getResourceString(R.string.please_wait),
-                Application.getResourceString(R.string.connecting_tradehero_only),
-                true);
+                R.string.please_wait,
+                R.string.connecting_tradehero_only);
 
         userService.forgotPassword(forgotPasswordFormDTO, createForgotPasswordCallback());
     }

@@ -1,6 +1,5 @@
 package com.tradehero.th.activities;
 
-import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.KeyEvent;
@@ -21,7 +20,6 @@ import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.billing.PurchaseRestorerAlertUtil;
 import com.tradehero.th.models.intent.THIntentFactory;
 import com.tradehero.th.persistence.DTOCacheUtil;
-import com.tradehero.th.persistence.watchlist.WatchlistRetrievedMilestone;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.FacebookUtils;

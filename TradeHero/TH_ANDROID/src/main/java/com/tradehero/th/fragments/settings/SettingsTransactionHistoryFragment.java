@@ -18,6 +18,7 @@ import com.tradehero.th.base.Application;
 import com.tradehero.th.base.THUser;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.network.service.UserService;
+import com.tradehero.th.utils.ProgressDialogUtil;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -59,11 +60,10 @@ public class SettingsTransactionHistoryFragment extends DashboardFragment
         transactionListView.setAdapter(transactionListViewAdapter);
 
         UserBaseDTO userBase = THUser.getCurrentUserBase();
-        progressDialog = ProgressDialog.show(
+        progressDialog = ProgressDialogUtil.show(
                 getActivity(),
-                Application.getResourceString(R.string.please_wait),
-                Application.getResourceString(R.string.connecting_tradehero_only),
-                true);
+                R.string.please_wait,
+                R.string.connecting_tradehero_only);
         userService.getUserTransactions(userBase.id, new Callback<List<UserTransactionHistoryDTO>>()
         {
             @Override

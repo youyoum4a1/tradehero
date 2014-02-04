@@ -19,8 +19,7 @@ public class PApplication extends Application
     @Override public void onCreate()
     {
         super.onCreate();
-        Context applicationContext = getApplicationContext();
-        context = applicationContext;
+        context = getApplicationContext();
         init();
     }
 
@@ -51,16 +50,6 @@ public class PApplication extends Application
     public static String getResourceString(int resourceId)
     {
         return context().getResources().getString(resourceId);
-    }
-
-    public static String getResourceString(int resourceId, java.lang.Object... formatArgs)
-    {
-        return context().getResources().getString(resourceId, formatArgs);
-    }
-
-    public static int getResourceColor(int resourceId)
-    {
-        return context().getResources().getColor(resourceId);
     }
 
     public static int getResourceInteger(int resourceId)
