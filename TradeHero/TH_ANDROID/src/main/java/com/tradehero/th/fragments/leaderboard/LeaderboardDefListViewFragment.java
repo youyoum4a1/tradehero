@@ -86,7 +86,7 @@ public class LeaderboardDefListViewFragment extends BaseLeaderboardFragment
         }
     }
 
-    @Override public void onDTOReceived(LeaderboardDefListKey key, LeaderboardDefKeyList value)
+    @Override public void onDTOReceived(LeaderboardDefListKey key, LeaderboardDefKeyList value, boolean fromCache)
     {
         leaderboardDefListAdapter.setItems(value);
         leaderboardDefListAdapter.notifyDataSetChanged();

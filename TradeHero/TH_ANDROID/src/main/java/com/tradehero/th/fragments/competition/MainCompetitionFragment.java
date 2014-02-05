@@ -445,7 +445,7 @@ public class MainCompetitionFragment extends CompetitionFragment
 
     private class MainCompetitionUserProfileCacheListener implements DTOCache.Listener<UserBaseKey, UserProfileDTO>
     {
-        @Override public void onDTOReceived(UserBaseKey providerId, UserProfileDTO value)
+        @Override public void onDTOReceived(UserBaseKey providerId, UserProfileDTO value, boolean fromCache)
         {
             linkWith(value, true);
         }
@@ -459,7 +459,7 @@ public class MainCompetitionFragment extends CompetitionFragment
 
     private class MainCompetitionCompetitionListCacheListener implements DTOCache.Listener<ProviderId, CompetitionIdList>
     {
-        @Override public void onDTOReceived(ProviderId providerId, CompetitionIdList value)
+        @Override public void onDTOReceived(ProviderId providerId, CompetitionIdList value, boolean fromCache)
         {
             linkWith(value, true);
         }

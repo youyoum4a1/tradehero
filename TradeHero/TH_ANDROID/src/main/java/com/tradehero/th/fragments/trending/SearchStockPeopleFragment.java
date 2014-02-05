@@ -741,7 +741,7 @@ public class SearchStockPeopleFragment extends DashboardFragment
 
     private class SecurityIdListCacheListener implements DTOCache.Listener<SecurityListType, SecurityIdList>
     {
-        @Override public void onDTOReceived(SecurityListType key, SecurityIdList value)
+        @Override public void onDTOReceived(SecurityListType key, SecurityIdList value, boolean fromCache)
         {
             if (lastLoadedPage + 1 != key.getPage())
             {
@@ -775,7 +775,7 @@ public class SearchStockPeopleFragment extends DashboardFragment
 
     private class PeopleListCacheListener implements DTOCache.Listener<UserListType, UserBaseKeyList>
     {
-        @Override public void onDTOReceived(UserListType key, UserBaseKeyList value)
+        @Override public void onDTOReceived(UserListType key, UserBaseKeyList value, boolean fromCache)
         {
             SearchUserListType castedKey = (SearchUserListType) key;
             if (lastLoadedPage + 1 != castedKey.page)

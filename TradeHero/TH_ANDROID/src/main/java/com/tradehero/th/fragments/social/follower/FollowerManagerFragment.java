@@ -5,9 +5,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ListView;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
@@ -22,9 +19,6 @@ import com.tradehero.th.api.social.UserFollowerDTO;
 import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
-import com.tradehero.th.persistence.social.FollowerSummaryCache;
-import com.tradehero.th.utils.SecurityUtils;
-import dagger.Lazy;
 import javax.inject.Inject;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/11/13 Time: 11:04 AM To change this template use File | Settings | File Templates. */
@@ -186,7 +180,7 @@ public class FollowerManagerFragment extends BasePurchaseManagerFragment
 
     private class FollowerManagerFollowerSummaryListener implements DTOCache.Listener<UserBaseKey, FollowerSummaryDTO>
     {
-        @Override public void onDTOReceived(UserBaseKey key, FollowerSummaryDTO value)
+        @Override public void onDTOReceived(UserBaseKey key, FollowerSummaryDTO value, boolean fromCache)
         {
             displayProgress(false);
             display(value);

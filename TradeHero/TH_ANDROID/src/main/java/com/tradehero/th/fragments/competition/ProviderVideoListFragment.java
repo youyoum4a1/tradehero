@@ -218,7 +218,7 @@ public class ProviderVideoListFragment extends CompetitionFragment
 
     private class ProviderVideoListFragmentVideoListCacheListener implements DTOCache.Listener<HelpVideoListKey, HelpVideoIdList>
     {
-        @Override public void onDTOReceived(HelpVideoListKey key, HelpVideoIdList value)
+        @Override public void onDTOReceived(HelpVideoListKey key, HelpVideoIdList value, boolean fromCache)
         {
             this.onFinished();
             linkWith(value, true);

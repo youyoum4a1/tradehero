@@ -380,7 +380,7 @@ public class PortfolioListItemView extends RelativeLayout implements DTOView<Dis
         {
         }
 
-        @Override public void onDTOReceived(OwnedPortfolioId key, GetPositionsDTO value)
+        @Override public void onDTOReceived(OwnedPortfolioId key, GetPositionsDTO value, boolean fromCache)
         {
             DisplayablePortfolioDTO displayablePortfolioDTOCopy = PortfolioListItemView.this.displayablePortfolioDTO;
             if (key != null && displayablePortfolioDTOCopy != null && key.equals(displayablePortfolioDTOCopy.ownedPortfolioId))
@@ -408,7 +408,7 @@ public class PortfolioListItemView extends RelativeLayout implements DTOView<Dis
         {
         }
 
-        @Override public void onDTOReceived(UserBaseKey key, SecurityIdList value)
+        @Override public void onDTOReceived(UserBaseKey key, SecurityIdList value, boolean fromCache)
         {
             DisplayablePortfolioDTO displayablePortfolioDTOCopy = PortfolioListItemView.this.displayablePortfolioDTO;
             if (key != null && displayablePortfolioDTOCopy != null &&

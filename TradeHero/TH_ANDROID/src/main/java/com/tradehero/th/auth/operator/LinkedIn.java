@@ -51,7 +51,7 @@ public class LinkedIn extends SocialOperator
         }
 
         final OAuthConsumer consumer = new CommonsHttpOAuthConsumer(getConsumerKey(), getConsumerSecret());
-        AsyncTask task = new AsyncTask<Object, Object, String>()
+        AsyncTask<Void, Void, String> task = new AsyncTask<Void, Void, String>()
         {
             private Throwable error;
 
@@ -87,12 +87,12 @@ public class LinkedIn extends SocialOperator
                                 callback.onCancel();
                                 return;
                             }
-                            AsyncTask getTokenTask =
-                                    new AsyncTask<Object, Object, HttpParameters>()
+                            AsyncTask<Void, Void, HttpParameters> getTokenTask =
+                                    new AsyncTask<Void, Void, HttpParameters>()
                                     {
                                         private Throwable error;
 
-                                        @Override protected HttpParameters doInBackground(Object... params)
+                                        @Override protected HttpParameters doInBackground(Void... params)
                                         {
                                             try
                                             {
@@ -163,7 +163,7 @@ public class LinkedIn extends SocialOperator
                 showProgress();
             }
 
-            @Override protected String doInBackground(Object... params)
+            @Override protected String doInBackground(Void... params)
             {
                 try
                 {

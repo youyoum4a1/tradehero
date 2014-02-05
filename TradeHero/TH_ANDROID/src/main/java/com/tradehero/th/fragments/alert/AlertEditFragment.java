@@ -145,16 +145,7 @@ public class AlertEditFragment extends DashboardFragment
     {
         this.securityId = securityId;
 
-        securityCompactDTO = securityCompactCache.get().get(securityId);
-        if (securityCompactDTO != null)
-        {
-            linkWith(securityCompactDTO, andDisplay);
-        }
-        else
-        {
-            progressDialog = ProgressDialogUtil.show(getActivity(), R.string.loading_loading, R.string.please_wait);
-        }
-
+        progressDialog = ProgressDialogUtil.show(getActivity(), R.string.loading_loading, R.string.please_wait);
         securityCompactCacheFetchTask = securityCompactCache.get().getOrFetch(securityId, true, securityCompactCallback);
         securityCompactCacheFetchTask.execute();
     }
@@ -533,7 +524,7 @@ public class AlertEditFragment extends DashboardFragment
 
     private DTOCache.Listener<SecurityId, SecurityCompactDTO> securityCompactCallback = new DTOCache.Listener<SecurityId, SecurityCompactDTO>()
     {
-        @Override public void onDTOReceived(SecurityId key, SecurityCompactDTO value)
+        @Override public void onDTOReceived(SecurityId key, SecurityCompactDTO value, boolean fromCache)
         {
             hideDialog();
             securityCompactCache.get().put(key, value);

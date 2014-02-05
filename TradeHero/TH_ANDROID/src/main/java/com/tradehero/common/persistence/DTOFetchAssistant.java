@@ -78,7 +78,7 @@ abstract public class DTOFetchAssistant<DTOKeyType extends DTOKey, DTOType exten
     abstract protected DTOCache<DTOKeyType, DTOType> getCache();
 
     //<editor-fold desc="DTOCache.Listener<DTOKeyType, DTOType>">
-    @Override public void onDTOReceived(final DTOKeyType key, final DTOType value)
+    @Override public void onDTOReceived(final DTOKeyType key, final DTOType value, boolean fromCache)
     {
         if (key != null && fetched.containsKey(key))
         {

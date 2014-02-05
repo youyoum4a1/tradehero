@@ -1,6 +1,5 @@
 package com.tradehero.common.persistence;
 
-import android.support.v4.util.LruCache;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
@@ -56,22 +55,35 @@ abstract public class PartialDTOCache<DTOKeyType extends DTOKey, DTOType extends
     /**
      * The listener should be strongly referenced elsewhere
      * @param key
-     * @param force
-     * @param callback
+     * @param forceUpdateCache
+     * @param initialListener
      * @return
      */
-    @Override public GetOrFetchTask<DTOKeyType, DTOType> getOrFetch(final DTOKeyType key, final boolean force, final Listener<DTOKeyType, DTOType> callback)
+    @Override public GetOrFetchTask<DTOKeyType, DTOType> getOrFetch(
+            final DTOKeyType key, final boolean forceUpdateCache, final Listener<DTOKeyType, DTOType> initialListener)
     {
-        return new GetOrFetchTask<DTOKeyType, DTOType>(callback)
+        return new GetOrFetchTask<DTOKeyType, DTOType>(initialListener)
         {
             private Throwable error = null;
+            private boolean shouldNotifyListenerOnCacheUpdated = true;
+
+            @Override protected void onPreExecute()
+            {
+                DTOType cached = PartialDTOCache.this.get(key);
+                Listener<DTOKeyType, DTOType> currentListener = getListener();
+                if (cached != null && currentListener != null)
+                {
+                    currentListener.onDTOReceived(key, cached, true);
+                    shouldNotifyListenerOnCacheUpdated = forceUpdateCache;
+                }
+            }
 
             @Override protected DTOType doInBackground(Void... voids)
             {
                 DTOType gotOrFetched = null;
                 try
                 {
-                    gotOrFetched = getOrFetch(key, force);
+                    gotOrFetched = getOrFetch(key, forceUpdateCache);
                 }
                 catch (Throwable e)
                 {
@@ -87,16 +99,17 @@ abstract public class PartialDTOCache<DTOKeyType extends DTOKey, DTOType extends
                 if (!isCancelled())
                 {
                     // We retrieve the callback right away to avoid having it vanish between the 2 usages.
-                    Listener<DTOKeyType, DTOType> retrievedCallback = getListener();
-                    if (retrievedCallback != null)
+                    Listener<DTOKeyType, DTOType> currentListener = getListener();
+                    if (currentListener != null)
                     {
                         if (error != null)
                         {
-                            retrievedCallback.onErrorThrown(key, error);
+                            currentListener.onErrorThrown(key, error);
                         }
-                        else
+                        // not to notify listener about data come from cache again
+                        else if (shouldNotifyListenerOnCacheUpdated)
                         {
-                            retrievedCallback.onDTOReceived(key, value);
+                            currentListener.onDTOReceived(key, value, !forceUpdateCache);
                         }
                     }
 
@@ -175,7 +188,7 @@ abstract public class PartialDTOCache<DTOKeyType extends DTOKey, DTOType extends
             }
             else
             {
-                knownListener.onDTOReceived(key, get(key));
+                knownListener.onDTOReceived(key, get(key), false);
             }
         }
 

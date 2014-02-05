@@ -118,16 +118,9 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
     {
         detachLeaderboardDefListCacheFetchMostSkilledTask();
 
-        if (leaderboardDefListCache.get().get(new LeaderboardDefListKey()) == null)
-        {
-            leaderboardDefListFetchTask = leaderboardDefListCache.get().getOrFetch(
-                    new LeaderboardDefCommunityListKey(), false, leaderboardDefFetchListener);
-            leaderboardDefListFetchTask.execute();
-        }
-        else
-        {
-            handleLeaderboardDefKeyListReceived();
-        }
+        leaderboardDefListFetchTask = leaderboardDefListCache.get().getOrFetch(
+                new LeaderboardDefCommunityListKey(), false, leaderboardDefFetchListener);
+        leaderboardDefListFetchTask.execute();
     }
 
     @Override protected void initViews(View view)
@@ -307,7 +300,7 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
 
     private DTOCache.Listener<LeaderboardDefListKey, LeaderboardDefKeyList> leaderboardDefFetchListener = new DTOCache.Listener<LeaderboardDefListKey, LeaderboardDefKeyList>()
     {
-        @Override public void onDTOReceived(LeaderboardDefListKey key, LeaderboardDefKeyList value)
+        @Override public void onDTOReceived(LeaderboardDefListKey key, LeaderboardDefKeyList value, boolean fromCache)
         {
             handleLeaderboardDefKeyListReceived();
         }

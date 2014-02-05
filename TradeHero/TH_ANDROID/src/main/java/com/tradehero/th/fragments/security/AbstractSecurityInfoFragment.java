@@ -33,7 +33,7 @@ abstract public class AbstractSecurityInfoFragment<InfoType> extends SherlockFra
         this.securityId = securityId;
     }
 
-    @Override public void onDTOReceived(SecurityId key, InfoType value)
+    @Override public void onDTOReceived(SecurityId key, InfoType value, boolean fromCache)
     {
         if (key.equals(securityId))
         {

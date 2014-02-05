@@ -124,7 +124,7 @@ import javax.inject.Singleton;
                     {
                         if (error != null)
                         {
-                            retrievedCallback.onDTOReceived(keys, values);
+                            retrievedCallback.onDTOReceived(keys, values, !force);
                         }
                         else
                         {

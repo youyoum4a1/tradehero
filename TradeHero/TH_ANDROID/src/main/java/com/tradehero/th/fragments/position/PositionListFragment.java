@@ -68,7 +68,7 @@ public class PositionListFragment extends AbstractPositionListFragment<OwnedPort
 
     protected class GetPositionsListener extends AbstractGetPositionsListener<OwnedPortfolioId, PositionDTO, GetPositionsDTO>
     {
-        @Override public void onDTOReceived(OwnedPortfolioId key, GetPositionsDTO value)
+        @Override public void onDTOReceived(OwnedPortfolioId key, GetPositionsDTO value, boolean fromCache)
         {
             if (key.equals(ownedPortfolioId))
             {

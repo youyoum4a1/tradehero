@@ -141,14 +141,7 @@ public class AlertManagerFragment extends BasePurchaseManagerFragment
 
     @Override public void onResume()
     {
-        if (alertCompactListCache.get().get(currentUserBaseKeyHolder.getCurrentUserBaseKey()) != null)
-        {
-            alertListItemAdapter.notifyDataSetChanged();
-        }
-        else
-        {
-            progressDialog = ProgressDialogUtil.show(getActivity(), R.string.loading_loading, R.string.please_wait);
-        }
+        progressDialog = ProgressDialogUtil.show(getActivity(), R.string.loading_loading, R.string.please_wait);
         refreshAlertCompactListCacheTask = alertCompactListCache.get().getOrFetch(
                 currentUserBaseKeyHolder.getCurrentUserBaseKey(), true, alertCompactListCallback);
         refreshAlertCompactListCacheTask.execute();
@@ -183,7 +176,7 @@ public class AlertManagerFragment extends BasePurchaseManagerFragment
 
     private DTOCache.Listener<UserBaseKey, AlertIdList> alertCompactListCallback = new DTOCache.Listener<UserBaseKey, AlertIdList>()
     {
-        @Override public void onDTOReceived(UserBaseKey key, AlertIdList value)
+        @Override public void onDTOReceived(UserBaseKey key, AlertIdList value, boolean fromCache)
         {
             if (progressDialog != null)
             {

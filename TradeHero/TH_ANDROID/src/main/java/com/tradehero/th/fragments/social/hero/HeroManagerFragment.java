@@ -325,7 +325,7 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
 
     private class HeroManagerUserProfileCacheListener implements DTOCache.Listener<UserBaseKey, UserProfileDTO>
     {
-        @Override public void onDTOReceived(UserBaseKey key, UserProfileDTO value)
+        @Override public void onDTOReceived(UserBaseKey key, UserProfileDTO value, boolean fromCache)
         {
             if (key.equals(HeroManagerFragment.this.followerId))
             {
@@ -342,7 +342,7 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
 
     private class HeroManagerHeroListCacheListener implements DTOCache.Listener<UserBaseKey, HeroIdList>
     {
-        @Override public void onDTOReceived(UserBaseKey key, HeroIdList value)
+        @Override public void onDTOReceived(UserBaseKey key, HeroIdList value, boolean fromCache)
         {
             displayProgress(false);
             display(heroCache.get().get(value));

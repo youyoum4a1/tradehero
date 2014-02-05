@@ -60,7 +60,7 @@ public class CurrentUserPortfolioHeaderView extends LinearLayout implements Port
 
         portfolioCacheListener = new DTOCache.Listener<PortfolioId, PortfolioCompactDTO>()
         {
-            @Override public void onDTOReceived(PortfolioId key, PortfolioCompactDTO value)
+            @Override public void onDTOReceived(PortfolioId key, PortfolioCompactDTO value, boolean fromCache)
             {
                 display(value);
             }

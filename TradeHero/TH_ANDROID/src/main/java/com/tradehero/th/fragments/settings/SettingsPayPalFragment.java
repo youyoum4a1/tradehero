@@ -122,7 +122,7 @@ public class SettingsPayPalFragment extends DashboardFragment
                 .getOrFetch(baseKey, false, new DTOCache.Listener<UserBaseKey, UserProfileDTO>()
                 {
                     @Override
-                    public void onDTOReceived(UserBaseKey key, UserProfileDTO value)
+                    public void onDTOReceived(UserBaseKey key, UserProfileDTO value, boolean fromCache)
                     {
                         paypalEmailText.setText(value.paypalEmailAddress);
                     }

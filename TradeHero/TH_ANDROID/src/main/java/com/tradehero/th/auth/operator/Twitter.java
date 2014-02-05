@@ -76,7 +76,7 @@ public class Twitter extends SocialOperator
                     "Twitter must be initialized with a consumer key and secret before authorization.");
         }
         final OAuthConsumer consumer = new CommonsHttpOAuthConsumer(getConsumerKey(), getConsumerSecret());
-        AsyncTask task = new AsyncTask<Object, Object, String>()
+        AsyncTask<Void, Void, String> task = new AsyncTask<Void, Void, String>()
         {
             private Throwable error;
 
@@ -111,12 +111,12 @@ public class Twitter extends SocialOperator
                                 callback.onCancel();
                                 return;
                             }
-                            AsyncTask getTokenTask = new AsyncTask<Object, Object, HttpParameters>()
+                            AsyncTask<Void, Void, HttpParameters> getTokenTask = new AsyncTask<Void, Void, HttpParameters>()
                             {
                                 private Throwable error;
 
                                 @Override protected HttpParameters doInBackground(
-                                        Object... params)
+                                        Void... params)
                                 {
                                     try
                                     {
@@ -189,13 +189,13 @@ public class Twitter extends SocialOperator
                 showProgress();
             }
 
-            @Override protected String doInBackground(Object... params)
+            @Override protected String doInBackground(Void... params)
             {
                 try
                 {
                     return Twitter.PROVIDER.retrieveRequestToken(consumer, CALLBACK_URL);
                 }
-                catch (Throwable e)
+                catch (Exception e)
                 {
                     this.error = e;
                 }

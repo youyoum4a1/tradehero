@@ -296,7 +296,7 @@ public class WatchlistPositionFragment extends DashboardFragment
 
     private DTOCache.Listener<UserBaseKey, SecurityIdList> watchlistFetchCompleteListener = new DTOCache.Listener<UserBaseKey, SecurityIdList>()
     {
-        @Override public void onDTOReceived(UserBaseKey key, SecurityIdList value)
+        @Override public void onDTOReceived(UserBaseKey key, SecurityIdList value, boolean fromCache)
         {
             watchlistPositionListView.onRefreshComplete();
             watchListAdapter.setItems(userWatchlistCache.get().get(currentUserBaseKeyHolder.getCurrentUserBaseKey()));

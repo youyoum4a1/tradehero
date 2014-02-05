@@ -37,22 +37,11 @@ public class FollowerManagerInfoFetcher
 
     public void fetch(final UserBaseKey followedId)
     {
-        FollowerSummaryDTO summaryDTO = this.followerSummaryCache.get().get(followedId);
-        if (summaryDTO != null)
+        if (this.followerSummaryFetchTask != null)
         {
-            if (this.followerSummaryListener != null)
-            {
-                this.followerSummaryListener.onDTOReceived(followedId, summaryDTO);
-            }
+            this.followerSummaryFetchTask.setListener(null);
         }
-        else
-        {
-            if (this.followerSummaryFetchTask != null)
-            {
-                this.followerSummaryFetchTask.setListener(null);
-            }
-            this.followerSummaryFetchTask = this.followerSummaryCache.get().getOrFetch(followedId, this.followerSummaryListener);
-            this.followerSummaryFetchTask.execute();
-        }
+        this.followerSummaryFetchTask = this.followerSummaryCache.get().getOrFetch(followedId, this.followerSummaryListener);
+        this.followerSummaryFetchTask.execute();
     }
 }

@@ -241,7 +241,7 @@ public class PortfolioListFragment extends DashboardFragment
     {
         return new PortfolioCompactListCache.Listener<UserBaseKey, OwnedPortfolioIdList>()
         {
-            @Override public void onDTOReceived(UserBaseKey key, OwnedPortfolioIdList value)
+            @Override public void onDTOReceived(UserBaseKey key, OwnedPortfolioIdList value, boolean fromCache)
             {
                 if (key.equals(currentUserBaseKeyHolder.getCurrentUserBaseKey()))
                 {
@@ -408,7 +408,7 @@ public class PortfolioListFragment extends DashboardFragment
         {
             fetchListener = new DTOCache.Listener<UserBaseKey, UserProfileDTO>()
             {
-                @Override public void onDTOReceived(UserBaseKey key, UserProfileDTO value)
+                @Override public void onDTOReceived(UserBaseKey key, UserProfileDTO value, boolean fromCache)
                 {
                     displayablePortfolioDTO.userBaseDTO = value;
                     displayPortfolios();
@@ -445,7 +445,7 @@ public class PortfolioListFragment extends DashboardFragment
         {
             fetchListener = new DTOCache.Listener<OwnedPortfolioId, PortfolioDTO>()
             {
-                @Override public void onDTOReceived(OwnedPortfolioId key, PortfolioDTO value)
+                @Override public void onDTOReceived(OwnedPortfolioId key, PortfolioDTO value, boolean fromCache)
                 {
                     displayablePortfolioDTO.portfolioDTO = value;
                     displayPortfolios();

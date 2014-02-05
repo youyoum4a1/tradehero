@@ -136,7 +136,7 @@ public class FollowerPayoutManagerFragment extends BasePurchaseManagerFragment
             {
                 userFollowerListener = new DTOCache.Listener<FollowerId, UserFollowerDTO>()
                 {
-                    @Override public void onDTOReceived(FollowerId key, UserFollowerDTO value)
+                    @Override public void onDTOReceived(FollowerId key, UserFollowerDTO value, boolean fromCache)
                     {
                         display(value);
                     }

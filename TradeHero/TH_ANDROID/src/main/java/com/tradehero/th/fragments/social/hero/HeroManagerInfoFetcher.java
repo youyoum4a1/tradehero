@@ -60,23 +60,12 @@ public class HeroManagerInfoFetcher
 
     public void fetchUserProfile(UserBaseKey userBaseKey)
     {
-        UserProfileDTO profileDTO = this.userProfileCache.get().get(userBaseKey);
-        if (profileDTO != null)
+        if (this.userProfileFetchTask != null)
         {
-            if (this.userProfileListener != null)
-            {
-                this.userProfileListener.onDTOReceived(userBaseKey, profileDTO);
-            }
+            this.userProfileFetchTask.setListener(null);
         }
-        else
-        {
-            if (this.userProfileFetchTask != null)
-            {
-                this.userProfileFetchTask.setListener(null);
-            }
-            this.userProfileFetchTask = this.userProfileCache.get().getOrFetch(userBaseKey, this.userProfileListener);
-            this.userProfileFetchTask.execute();
-        }
+        this.userProfileFetchTask = this.userProfileCache.get().getOrFetch(userBaseKey, this.userProfileListener);
+        this.userProfileFetchTask.execute();
     }
 
     public void fetchHeroes(UserBaseKey userBaseKey)
@@ -87,7 +76,7 @@ public class HeroManagerInfoFetcher
         {
             if (this.heroListListener != null)
             {
-                this.heroListListener.onDTOReceived(userBaseKey, heroIds);
+                this.heroListListener.onDTOReceived(userBaseKey, heroIds, true);
             }
         }
         else

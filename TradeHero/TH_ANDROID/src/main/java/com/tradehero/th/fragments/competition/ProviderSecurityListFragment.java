@@ -239,7 +239,7 @@ public class ProviderSecurityListFragment extends SecurityListFragment
 
     protected class ProviderSecurityListFragmentProviderCacheListener implements DTOCache.Listener<ProviderId, ProviderDTO>
     {
-        @Override public void onDTOReceived(ProviderId key, ProviderDTO value)
+        @Override public void onDTOReceived(ProviderId key, ProviderDTO value, boolean fromCache)
         {
             if (key.equals(ProviderSecurityListFragment.this.providerId))
             {

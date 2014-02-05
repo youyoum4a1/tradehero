@@ -174,16 +174,8 @@ public class TrendingFragment extends SecurityListFragment
             exchangeListTypeCacheListener = new TrendingExchangeListListener();
         }
 
-        ExchangeDTOList cachedExchangeDTOs = exchangeListCache.get().get(new ExchangeListType());
-        if (cachedExchangeDTOs == null)
-        {
-            exchangeListCacheFetchTask = exchangeListCache.get().getOrFetch(new ExchangeListType(), exchangeListTypeCacheListener);
-            exchangeListCacheFetchTask.execute();
-        }
-        else
-        {
-            linkWith(cachedExchangeDTOs, true);
-        }
+        exchangeListCacheFetchTask = exchangeListCache.get().getOrFetch(new ExchangeListType(), exchangeListTypeCacheListener);
+        exchangeListCacheFetchTask.execute();
     }
 
     private void linkWith(ExchangeDTOList exchangeDTOs, boolean andDisplay)
@@ -270,7 +262,7 @@ public class TrendingFragment extends SecurityListFragment
 
     private class TrendingExchangeListListener implements DTOCache.Listener<ExchangeListType, ExchangeDTOList>
     {
-        @Override public void onDTOReceived(ExchangeListType key, ExchangeDTOList value)
+        @Override public void onDTOReceived(ExchangeListType key, ExchangeDTOList value, boolean fromCache)
         {
             linkWith(value, true);
         }

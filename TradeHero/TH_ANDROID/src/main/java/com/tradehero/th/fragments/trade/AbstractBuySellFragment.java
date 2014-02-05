@@ -494,7 +494,7 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
             this.securityId = securityId;
         }
 
-        @Override public void onDTOReceived(final SecurityId key, final SecurityPositionDetailDTO value)
+        @Override public void onDTOReceived(final SecurityId key, final SecurityPositionDetailDTO value, boolean fromCache)
         {
             if (key.equals(this.securityId))
             {
@@ -518,7 +518,7 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
             this.userBaseKey = userBaseKey;
         }
 
-        @Override public void onDTOReceived(final UserBaseKey key, final UserProfileDTO value)
+        @Override public void onDTOReceived(final UserBaseKey key, final UserProfileDTO value, boolean fromCache)
         {
             if (key.equals(userBaseKey))
             {

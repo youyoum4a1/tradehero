@@ -354,7 +354,7 @@ public class PositionPartialTopView extends LinearLayout
     {
         return new SecurityCompactCache.Listener<SecurityId, SecurityCompactDTO>()
         {
-            @Override public void onDTOReceived(SecurityId key, SecurityCompactDTO value)
+            @Override public void onDTOReceived(SecurityId key, SecurityCompactDTO value, boolean fromCache)
             {
                 if (key.equals(securityId))
                 {

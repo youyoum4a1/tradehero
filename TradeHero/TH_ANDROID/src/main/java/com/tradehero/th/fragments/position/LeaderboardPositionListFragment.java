@@ -89,7 +89,7 @@ public class LeaderboardPositionListFragment
     {
         return new DTOCache.Listener<LeaderboardMarkUserId, GetLeaderboardPositionsDTO>()
         {
-            @Override public void onDTOReceived(LeaderboardMarkUserId key, GetLeaderboardPositionsDTO value)
+            @Override public void onDTOReceived(LeaderboardMarkUserId key, GetLeaderboardPositionsDTO value, boolean fromCache)
             {
                 if (key.equals(leaderboardMarkUserId))
                 {
@@ -111,7 +111,7 @@ public class LeaderboardPositionListFragment
 
     protected class GetLeaderboardPositionsListener extends AbstractGetPositionsListener<LeaderboardMarkUserId, PositionInPeriodDTO, GetLeaderboardPositionsDTO>
     {
-        @Override public void onDTOReceived(LeaderboardMarkUserId key, GetLeaderboardPositionsDTO value)
+        @Override public void onDTOReceived(LeaderboardMarkUserId key, GetLeaderboardPositionsDTO value, boolean fromCache)
         {
             if (key.equals(leaderboardMarkUserId))
             {

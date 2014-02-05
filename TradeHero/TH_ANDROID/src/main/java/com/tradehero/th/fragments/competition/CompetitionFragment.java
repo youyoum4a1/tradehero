@@ -93,7 +93,7 @@ abstract public class CompetitionFragment extends BasePurchaseManagerFragment
 
     protected class CompetitionFragmentProviderCacheListener implements DTOCache.Listener<ProviderId, ProviderDTO>
     {
-        @Override public void onDTOReceived(ProviderId key, ProviderDTO value)
+        @Override public void onDTOReceived(ProviderId key, ProviderDTO value, boolean fromCache)
         {
             if (key.equals(CompetitionFragment.this.providerId))
             {

@@ -69,7 +69,7 @@ public class LeaderboardDefView extends RelativeLayout implements DTOView<Leader
         super.onAttachedToWindow();
         userProfileListener = new DTOCache.Listener<UserBaseKey, UserProfileDTO>()
         {
-            @Override public void onDTOReceived(UserBaseKey key, UserProfileDTO value)
+            @Override public void onDTOReceived(UserBaseKey key, UserProfileDTO value, boolean fromCache)
             {
                 updateLeaderboardOwnRank(value);
             }

@@ -215,7 +215,7 @@ public class StockInfoFragment extends DashboardFragment
         {
             compactCacheListener = new DTOCache.Listener<SecurityId, SecurityCompactDTO>()
             {
-                @Override public void onDTOReceived(SecurityId key, SecurityCompactDTO value)
+                @Override public void onDTOReceived(SecurityId key, SecurityCompactDTO value, boolean fromCache)
                 {
                     linkWith(value, andDisplay);
                 }
@@ -247,7 +247,7 @@ public class StockInfoFragment extends DashboardFragment
         {
             yahooNewsCacheListener = new DTOCache.Listener<SecurityId, NewsList>()
             {
-                @Override public void onDTOReceived(SecurityId key, NewsList value)
+                @Override public void onDTOReceived(SecurityId key, NewsList value, boolean fromCache)
                 {
                     linkWith(value, andDisplay);
                 }

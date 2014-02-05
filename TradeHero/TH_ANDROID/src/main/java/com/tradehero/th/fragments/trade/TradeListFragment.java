@@ -345,7 +345,7 @@ public class TradeListFragment extends DashboardFragment
 
     private class GetTradesListener implements TradeListCache.Listener<OwnedPositionId, OwnedTradeIdList>
     {
-        @Override public void onDTOReceived(OwnedPositionId key, OwnedTradeIdList ownedTradeIds)
+        @Override public void onDTOReceived(OwnedPositionId key, OwnedTradeIdList ownedTradeIds, boolean fromCache)
         {
             if (ownedPositionId != null && ownedPositionId.equals(key))
             {
