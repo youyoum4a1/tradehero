@@ -73,10 +73,13 @@ public class THIABPurchaseReporter extends BasePurchaseReporter<
                 break;
 
             case THIABProductDetail.DOMAIN_STOCK_ALERTS:
-                alertPlanService.get().subscribeToAlertPlan(
-                        portfolioId.userId,
-                        purchase.getGooglePlayPurchaseDTO(),
-                        userProfileDTOCallback);
+                if (portfolioId != null)
+                {
+                    alertPlanService.get().subscribeToAlertPlan(
+                            portfolioId.userId,
+                            purchase.getGooglePlayPurchaseDTO(),
+                            userProfileDTOCallback);
+                }
                 break;
 
             case THIABProductDetail.DOMAIN_FOLLOW_CREDITS:
