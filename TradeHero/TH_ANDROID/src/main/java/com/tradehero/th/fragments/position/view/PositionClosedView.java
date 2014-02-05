@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.position;
+package com.tradehero.th.fragments.position.view;
 
 import android.content.Context;
 import android.util.AttributeSet;

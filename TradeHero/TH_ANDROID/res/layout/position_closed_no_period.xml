@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<com.tradehero.th.fragments.position.PositionClosedView
+<com.tradehero.th.fragments.position.view.PositionClosedView
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:orientation="horizontal"
@@ -30,4 +30,4 @@
 
     </LinearLayout>
 
-</com.tradehero.th.fragments.position.PositionClosedView>
+</com.tradehero.th.fragments.position.view.PositionClosedView>

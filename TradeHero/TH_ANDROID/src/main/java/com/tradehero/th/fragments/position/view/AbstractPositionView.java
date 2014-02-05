@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.position;
+package com.tradehero.th.fragments.position.view;
 
 import android.content.Context;
 import android.util.AttributeSet;
@@ -9,6 +9,7 @@ import com.tradehero.th.R;
 import com.tradehero.th.adapters.ExpandableListItem;
 import com.tradehero.th.api.position.OwnedPositionId;
 import com.tradehero.th.api.position.PositionDTO;
+import com.tradehero.th.fragments.position.PositionListener;
 import com.tradehero.th.fragments.position.partial.AbstractPartialBottomView;
 import com.tradehero.th.fragments.position.partial.PositionPartialTopView;
 

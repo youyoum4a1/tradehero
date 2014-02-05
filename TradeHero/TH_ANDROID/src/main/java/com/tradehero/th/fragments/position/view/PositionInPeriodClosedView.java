@@ -1,15 +1,16 @@
-package com.tradehero.th.fragments.position;
+package com.tradehero.th.fragments.position.view;
 
 import android.content.Context;
 import android.util.AttributeSet;
 import com.tradehero.th.api.position.PositionInPeriodDTO;
+import com.tradehero.th.fragments.position.LeaderboardPositionItemAdapter;
 
 /**
  * Created by julien on 1/11/13
  */
 public class PositionInPeriodClosedView extends AbstractPositionView<
             PositionInPeriodDTO,
-            LeaderboardPositionItemAdapter.ExpandableLeaderboardPositionItem>
+        LeaderboardPositionItemAdapter.ExpandableLeaderboardPositionItem>
 {
     public static final String TAG = PositionInPeriodClosedView.class.getSimpleName();
 
@@ -29,9 +30,4 @@ public class PositionInPeriodClosedView extends AbstractPositionView<
         super(context, attrs, defStyle);
     }
     //</editor-fold>
-
-    public boolean isShowingTopRoiValue()
-    {
-        return expandableListItem == null || !expandableListItem.isExpanded();
-    }
 }

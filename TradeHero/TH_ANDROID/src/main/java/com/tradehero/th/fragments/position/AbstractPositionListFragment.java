@@ -35,6 +35,8 @@ import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.fragments.billing.THIABUserInteractor;
 import com.tradehero.th.fragments.competition.ProviderSecurityListFragment;
 import com.tradehero.th.fragments.dashboard.DashboardTabType;
+import com.tradehero.th.fragments.position.view.PositionLockedView;
+import com.tradehero.th.fragments.position.view.PositionNothingView;
 import com.tradehero.th.fragments.security.StockInfoFragment;
 import com.tradehero.th.fragments.social.hero.HeroAlertDialogUtil;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
@@ -172,7 +174,7 @@ abstract public class AbstractPositionListFragment<
                 navigator.pushFragment(ProviderSecurityListFragment.class, args);
             }
         }
-        else if (view instanceof LockedPositionItem)
+        else if (view instanceof PositionLockedView)
         {
             popFollowUser(ownedPortfolioId.getUserBaseKey());
         }

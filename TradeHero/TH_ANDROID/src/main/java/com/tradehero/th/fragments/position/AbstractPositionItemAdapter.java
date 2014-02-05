@@ -11,6 +11,8 @@ import com.tradehero.th.adapters.ExpandableListItem;
 import com.tradehero.th.adapters.ExpandableListReporter;
 import com.tradehero.th.api.position.OwnedPositionId;
 import com.tradehero.th.api.position.PositionDTO;
+import com.tradehero.th.fragments.position.view.AbstractPositionView;
+import com.tradehero.th.fragments.position.view.PositionLockedView;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -236,6 +238,7 @@ public abstract class AbstractPositionItemAdapter<PositionDTOType extends Positi
         return PositionItemType.values().length;
     }
 
+    //@SuppressWarnings("unchecked")
     @Override public View getView(int position, View convertView, ViewGroup parent)
     {
         int itemViewType = getItemViewType(position);
@@ -250,28 +253,13 @@ public abstract class AbstractPositionItemAdapter<PositionDTOType extends Positi
         }
         else if (itemViewType == PositionItemType.Locked.value)
         {
-            LockedPositionItem cell = (LockedPositionItem) convertView;
+            PositionLockedView cell = (PositionLockedView) convertView;
             cell.linkWith((PositionDTOType) null, true);
         }
         else if (itemViewType == PositionItemType.Closed.value || itemViewType == PositionItemType.Open.value)
         {
             ExpandableListItem<PositionDTOType> expandableWrapper = (ExpandableListItem<PositionDTOType>) getItem(position);
-            //View expandingLayout = convertView.findViewById(R.id.expanding_layout);
-            //if (expandingLayout != null)
-            //{
-            //    if (!expandableWrapper.isExpanded())
-            //    {
-            //        expandingLayout.setVisibility(View.GONE);
-            //    }
-            //    else
-            //    {
-            //        expandingLayout.setVisibility(View.VISIBLE);
-            //    }
-            //}
-
             AbstractPositionView cell = (AbstractPositionView) convertView;
-            //cell.linkWith(expandableWrapper.getModel(), true);
-            THLog.d(TAG, "Passing " + expandableWrapper);
             cell.linkWith(expandableWrapper, true);
             cell.setListener(new AbstractPositionItemAdapterPositionListener());
         }

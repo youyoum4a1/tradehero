@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.position;
+package com.tradehero.th.fragments.position.view;
 
 import android.content.Context;
 import android.util.AttributeSet;
@@ -12,7 +12,7 @@ import com.tradehero.th.utils.PositionUtils;
 /**
  * Created by julien on 31/10/13
  */
-public class LockedPositionItem extends LinearLayout
+public class PositionLockedView extends LinearLayout
 {
     private ColorIndicator colorIndicator;
     private TextView positionPercent;
@@ -23,17 +23,17 @@ public class LockedPositionItem extends LinearLayout
     private PositionDTO positionDTO;
 
     //<editor-fold desc="Constructors">
-    public LockedPositionItem(Context context)
+    public PositionLockedView(Context context)
     {
         super(context);
     }
 
-    public LockedPositionItem(Context context, AttributeSet attrs)
+    public PositionLockedView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
     }
 
-    public LockedPositionItem(Context context, AttributeSet attrs, int defStyle)
+    public PositionLockedView(Context context, AttributeSet attrs, int defStyle)
     {
         super(context, attrs, defStyle);
     }
@@ -54,7 +54,7 @@ public class LockedPositionItem extends LinearLayout
         totalInvestedValue = (TextView) findViewById(R.id.total_invested_value);
     }
 
-    protected void linkWith(PositionDTO positionDTO, boolean andDisplay)
+    public void linkWith(PositionDTO positionDTO, boolean andDisplay)
     {
         this.positionDTO = positionDTO;
         if (andDisplay)
