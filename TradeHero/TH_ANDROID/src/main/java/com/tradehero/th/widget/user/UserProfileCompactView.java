@@ -8,6 +8,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
@@ -28,17 +30,16 @@ import javax.inject.Inject;
 /** Created with IntelliJ IDEA. User: tho Date: 10/17/13 Time: 12:51 PM Copyright (c) TradeHero */
 public class UserProfileCompactView extends RelativeLayout implements DTOView<UserProfileDTO>
 {
-    private ImageView avatar;
-
-    private TextView roiSinceInception;
-
-    private TextView followersCount;
-    private TextView heroesCount;
-    private TextView username;
-    private ImageView btnDefaultPortfolio;
+    @InjectView(R.id.user_profile_compact_avatar) ImageView avatar;
+    @InjectView(R.id.user_profile_compact_roi) TextView roiSinceInception;
+    @InjectView(R.id.user_profile_compact_followers_count) TextView followersCount;
+    @InjectView(R.id.user_profile_compact_heroes_count) TextView heroesCount;
+    @InjectView(R.id.user_profile_compact_display_name) TextView username;
+    @InjectView(R.id.btn_user_profile_default_portfolio) ImageView btnDefaultPortfolio;
 
     @Inject @ForUserPhoto protected Transformation peopleIconTransformation;
     @Inject protected Picasso picasso;
+
     private WeakReference<PortfolioRequestListener> portfolioRequestListener = new WeakReference<>(null);
 
     //<editor-fold desc="Constructors">
@@ -62,18 +63,13 @@ public class UserProfileCompactView extends RelativeLayout implements DTOView<Us
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
+        DaggerUtils.inject(this);
+        ButterKnife.inject(this);
         init();
     }
 
     private void init()
     {
-        avatar = (ImageView) findViewById(R.id.user_profile_compact_avatar);
-        username = (TextView) findViewById(R.id.user_profile_compact_display_name);
-        roiSinceInception = (TextView) findViewById(R.id.user_profile_compact_roi);
-
-        followersCount = (TextView) findViewById(R.id.user_profile_compact_followers_count);
-        heroesCount = (TextView) findViewById(R.id.user_profile_compact_heroes_count);
-        btnDefaultPortfolio = (ImageView) findViewById(R.id.btn_user_profile_default_portfolio);
         if (btnDefaultPortfolio != null)
         {
             btnDefaultPortfolio.setOnClickListener(new OnClickListener()
@@ -84,8 +80,6 @@ public class UserProfileCompactView extends RelativeLayout implements DTOView<Us
                 }
             });
         }
-
-        DaggerUtils.inject(this);
     }
 
     @Override public void display(UserProfileDTO dto)
