@@ -52,7 +52,6 @@ public class OwnedPortfolioId  implements Comparable, DTOKey
     }
     //</editor-fold>
 
-
     @Override public int hashCode()
     {
         return (userId == null ? 0 : userId.hashCode()) ^

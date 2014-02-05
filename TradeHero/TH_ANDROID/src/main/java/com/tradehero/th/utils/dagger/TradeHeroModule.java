@@ -122,12 +122,12 @@ import javax.inject.Singleton;
 /** Created with IntelliJ IDEA. User: tho Date: 9/16/13 Time: 5:36 PM Copyright (c) TradeHero */
 @Module(
         includes = {
-                RetrofitModule.class,
                 CacheModule.class,
-                SocialNetworkModule.class,
-                UserModule.class,
                 GraphicModule.class,
+                RetrofitModule.class,
+                SocialNetworkModule.class,
                 UIModule.class,
+                UserModule.class,
         },
         injects =
                 {

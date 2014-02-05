@@ -4,25 +4,21 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.LinearLayout;
+import com.tradehero.common.utils.THLog;
 import com.tradehero.common.widget.ColorIndicator;
 import com.tradehero.th.R;
-import com.tradehero.th.api.leaderboard.position.OwnedLeaderboardPositionId;
 import com.tradehero.th.api.position.OwnedPositionId;
 import com.tradehero.th.api.position.PositionDTO;
-import com.tradehero.th.persistence.leaderboard.position.LeaderboardPositionCache;
-import com.tradehero.th.persistence.position.PositionCache;
-import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.fragments.position.partial.PositionPartialTopView;
-import dagger.Lazy;
-import javax.inject.Inject;
-import java.lang.ref.WeakReference;
+import com.tradehero.th.utils.DaggerUtils;
 
 /**
  * Created by julien on 30/10/13
  */
 public abstract class AbstractPositionView<PositionDTOType extends PositionDTO> extends LinearLayout
 {
-    protected OwnedPositionId ownedPositionId;
+    public static final String TAG = AbstractPositionView.class.getSimpleName();
+
     protected PositionPartialTopView topView;
     protected ColorIndicator colorIndicator;
 
@@ -31,8 +27,8 @@ public abstract class AbstractPositionView<PositionDTOType extends PositionDTO> 
     protected View btnAddAlert;
     protected View btnStockInfo;
     protected View historyButton;
-    protected boolean hasHistoryButton = true;
 
+    protected boolean hasHistoryButton = true;
     protected PositionDTOType positionDTO;
 
     protected PositionListener listener = null;
@@ -86,7 +82,7 @@ public abstract class AbstractPositionView<PositionDTOType extends PositionDTO> 
                     PositionListener listenerCopy = listener;
                     if (listenerCopy != null)
                     {
-                        listenerCopy.onBuyClicked(ownedPositionId);
+                        listenerCopy.onBuyClicked(getOwnedPositionId());
                     }
                 }
             });
@@ -101,7 +97,7 @@ public abstract class AbstractPositionView<PositionDTOType extends PositionDTO> 
                     PositionListener listenerCopy = listener;
                     if (listenerCopy != null)
                     {
-                        listenerCopy.onSellClicked(ownedPositionId);
+                        listenerCopy.onSellClicked(getOwnedPositionId());
                     }
                 }
             });
@@ -116,7 +112,7 @@ public abstract class AbstractPositionView<PositionDTOType extends PositionDTO> 
                     PositionListener listenerCopy = listener;
                     if (listenerCopy != null)
                     {
-                        listenerCopy.onAddAlertClicked(ownedPositionId);
+                        listenerCopy.onAddAlertClicked(getOwnedPositionId());
                     }
                 }
             });
@@ -131,7 +127,7 @@ public abstract class AbstractPositionView<PositionDTOType extends PositionDTO> 
                     PositionListener listenerCopy = listener;
                     if (listenerCopy != null)
                     {
-                        listenerCopy.onStockInfoClicked(ownedPositionId);
+                        listenerCopy.onStockInfoClicked(getOwnedPositionId());
                     }
                 }
             });
@@ -146,7 +142,7 @@ public abstract class AbstractPositionView<PositionDTOType extends PositionDTO> 
                     PositionListener listenerCopy = listener;
                     if (listenerCopy != null)
                     {
-                        listenerCopy.onTradeHistoryClicked(ownedPositionId);
+                        listenerCopy.onTradeHistoryClicked(getOwnedPositionId());
                     }
                 }
             });
@@ -216,6 +212,15 @@ public abstract class AbstractPositionView<PositionDTOType extends PositionDTO> 
         }
     }
 
+    public OwnedPositionId getOwnedPositionId()
+    {
+        if (positionDTO == null)
+        {
+            return null;
+        }
+        return positionDTO.getOwnedPositionId();
+    }
+
     protected void display()
     {
         displayTopView();
@@ -262,12 +267,9 @@ public abstract class AbstractPositionView<PositionDTOType extends PositionDTO> 
         return listener;
     }
 
-    /**
-     * The listener should be strongly referenced elsewhere
-     * @param listener
-     */
     public void setListener(PositionListener listener)
     {
+        THLog.d(TAG, "Setting listener on " + this);
         this.listener = listener;
     }
 }
