@@ -46,10 +46,10 @@ abstract public class AbstractTradeListFragment<PositionDTOType extends Position
     @Inject protected Lazy<SecurityCompactCache> securityCompactCache;
     @Inject protected CurrentUserBaseKeyHolder currentUserBaseKeyHolder;
 
-    @InjectView(R.id.trade_list_header) private TradeListOverlayHeaderView header;
-    @InjectView(R.id.trade_list) private ListView tradeListView;
+    protected ProgressBar progressBar;
+    protected TradeListOverlayHeaderView header;
+    protected ListView tradeListView;
     private ActionBar actionBar;
-    @InjectView(android.R.id.empty) private ProgressBar progressBar;
 
     protected PositionDTOType positionDTO;
 
@@ -64,7 +64,6 @@ abstract public class AbstractTradeListFragment<PositionDTOType extends Position
         super.onCreateView(inflater, container, savedInstanceState);
         RelativeLayout view = (RelativeLayout) inflater.inflate(R.layout.fragment_trade_list, container, false);
 
-        ButterKnife.inject(view);
         initViews(view, inflater);
         return view;
     }
@@ -73,7 +72,7 @@ abstract public class AbstractTradeListFragment<PositionDTOType extends Position
     {
         if (view != null)
         {
-            //progressBar = (ProgressBar) view.findViewById(android.R.id.empty);
+            progressBar = (ProgressBar) view.findViewById(android.R.id.empty);
 
             this.buttonListener = new TradeListHeaderView.TradeListHeaderClickListener()
             {
@@ -91,13 +90,13 @@ abstract public class AbstractTradeListFragment<PositionDTOType extends Position
             adapter = new TradeListItemAdapter(getActivity(), getActivity().getLayoutInflater());
             adapter.setTradeListHeaderClickListener(this.buttonListener);
 
-            //tradeListView = (ListView) view.findViewById(R.id.trade_list);
+            tradeListView = (ListView) view.findViewById(R.id.trade_list);
             if (tradeListView != null)
             {
                 tradeListView.setAdapter(adapter);
             }
 
-            //header = (TradeListOverlayHeaderView) view.findViewById(R.id.trade_list_header);
+            header = (TradeListOverlayHeaderView) view.findViewById(R.id.trade_list_header);
             registerOverlayHeaderListener();
         }
     }
