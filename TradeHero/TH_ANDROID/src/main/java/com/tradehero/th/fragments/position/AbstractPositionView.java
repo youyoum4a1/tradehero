@@ -4,24 +4,28 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.LinearLayout;
-import com.tradehero.common.utils.THLog;
 import com.tradehero.common.widget.ColorIndicator;
 import com.tradehero.th.R;
+import com.tradehero.th.adapters.ExpandableListItem;
 import com.tradehero.th.api.position.OwnedPositionId;
 import com.tradehero.th.api.position.PositionDTO;
+import com.tradehero.th.fragments.position.partial.AbstractPartialBottomView;
 import com.tradehero.th.fragments.position.partial.PositionPartialTopView;
-import com.tradehero.th.utils.DaggerUtils;
 
 /**
  * Created by julien on 30/10/13
  */
-public abstract class AbstractPositionView<PositionDTOType extends PositionDTO> extends LinearLayout
+public abstract class AbstractPositionView<
+            PositionDTOType extends PositionDTO,
+            ExpandableListItemType extends ExpandableListItem<PositionDTOType>>
+        extends LinearLayout
 {
     public static final String TAG = AbstractPositionView.class.getSimpleName();
 
     protected PositionPartialTopView topView;
-    protected ColorIndicator colorIndicator;
+    protected AbstractPartialBottomView<PositionDTOType, ExpandableListItemType> bottomView;
 
+    protected ColorIndicator colorIndicator;
     protected View btnBuy;
     protected View btnSell;
     protected View btnAddAlert;
@@ -29,6 +33,7 @@ public abstract class AbstractPositionView<PositionDTOType extends PositionDTO> 
     protected View historyButton;
 
     protected boolean hasHistoryButton = true;
+    protected ExpandableListItemType expandableListItem;
     protected PositionDTOType positionDTO;
 
     protected PositionListener listener = null;
@@ -53,22 +58,23 @@ public abstract class AbstractPositionView<PositionDTOType extends PositionDTO> 
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
-        DaggerUtils.inject(this);
         initViews();
     }
 
     protected void initViews()
     {
-        topView = (PositionPartialTopView) findViewById(R.id.position_partial_top);
         colorIndicator = (ColorIndicator) findViewById(R.id.color_indicator);
         btnBuy = findViewById(R.id.btn_buy_now);
         btnSell = findViewById(R.id.btn_sell_now);
         btnAddAlert = findViewById(R.id.btn_add_alert);
         btnStockInfo = findViewById(R.id.btn_stock_info);
+
+        topView = (PositionPartialTopView) findViewById(R.id.position_partial_top);
         if (topView != null)
         {
             historyButton = topView.getTradeHistoryButton();
         }
+        bottomView = (AbstractPartialBottomView) findViewById(R.id.expanding_layout);
     }
 
     @Override protected void onAttachedToWindow()
@@ -196,6 +202,20 @@ public abstract class AbstractPositionView<PositionDTOType extends PositionDTO> 
         }
     }
 
+    public void linkWith(ExpandableListItemType expandableListItem, boolean andDisplay)
+    {
+        this.expandableListItem = expandableListItem;
+        linkWith(expandableListItem == null ? null : expandableListItem.getModel(), andDisplay);
+        if (bottomView != null)
+        {
+            this.bottomView.linkWith(expandableListItem, andDisplay);
+        }
+        if (andDisplay)
+        {
+            displayExpandingPart();
+        }
+    }
+
     public void linkWith(PositionDTOType positionDTO, boolean andDisplay)
     {
         this.positionDTO = positionDTO;
@@ -204,11 +224,14 @@ public abstract class AbstractPositionView<PositionDTOType extends PositionDTO> 
         {
             topView.linkWith(positionDTO, andDisplay);
         }
+        if (this.bottomView != null)
+        {
+            this.bottomView.linkWith(positionDTO, andDisplay);
+        }
 
         if (andDisplay)
         {
-            displayColorIndicator();
-            displayButtonSell();
+            displayModelPart();
         }
     }
 
@@ -224,9 +247,20 @@ public abstract class AbstractPositionView<PositionDTOType extends PositionDTO> 
     protected void display()
     {
         displayTopView();
+        displayBottomView();
+        displayModelPart();
+        displayExpandingPart();
+        displayHistoryButton();
+    }
+
+    public void displayModelPart()
+    {
         displayColorIndicator();
         displayButtonSell();
-        displayHistoryButton();
+    }
+
+    public void displayExpandingPart()
+    {
     }
 
     public void displayTopView()
@@ -234,6 +268,14 @@ public abstract class AbstractPositionView<PositionDTOType extends PositionDTO> 
         if (topView != null)
         {
             topView.display();
+        }
+    }
+
+    public void displayBottomView()
+    {
+        if (bottomView != null)
+        {
+            bottomView.display();
         }
     }
 
@@ -269,7 +311,6 @@ public abstract class AbstractPositionView<PositionDTOType extends PositionDTO> 
 
     public void setListener(PositionListener listener)
     {
-        THLog.d(TAG, "Setting listener on " + this);
         this.listener = listener;
     }
 }

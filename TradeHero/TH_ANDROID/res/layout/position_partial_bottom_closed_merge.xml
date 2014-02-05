@@ -2,6 +2,7 @@
 
 <merge
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
@@ -12,15 +13,39 @@
       >
 
     <TextView
-        style="@style/TH.SmallTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="0"
         android:gravity="right"
+        style="@style/TH.SmallTitle"
         android:text="@string/position_expanded_close_pl_header"
         />
 
-    <TextView
-        android:id="@+id/position_realized_pl_value"
-        style="@style/TH.SmallValue"
-        />
+    <RelativeLayout
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_weight="1"
+      >
+
+      <TextView
+          android:id="@+id/position_realized_pl_value"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_alignParentLeft="true"
+          style="@style/TH.SmallValue"
+          tools:text="US$ 819"
+          />
+
+      <TextView
+          android:id="@+id/roi_value"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_alignParentRight="true"
+          style="@style/TH.SmallValue"
+          tools:text="8.39%"
+          />
+
+    </RelativeLayout>
 
   </TableRow>
 
@@ -30,14 +55,18 @@
       >
 
     <TextView
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
         style="@style/TH.SmallTitle"
-        android:gravity="right"
         android:text="@string/position_total_invested_header"
         />
 
     <TextView
         android:id="@+id/total_invested_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         style="@style/TH.SmallValue"
+        tools:text="US$ 10,000"
         />
 
   </TableRow>
@@ -48,6 +77,8 @@
       >
 
     <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         style="@style/TH.SmallTitle"
         android:gravity="right"
         android:text="@string/position_expanded_close_opened_date_header"
@@ -56,6 +87,7 @@
     <TextView
         android:id="@+id/opened_date"
         style="@style/TH.SmallValue"
+        tools:text="27 Jan 2014 21:35"
         />
 
   </TableRow>
@@ -74,6 +106,7 @@
     <TextView
         android:id="@+id/closed_date"
         style="@style/TH.SmallValue"
+        tools:text="30 Jan 2014 01:02"
         />
 
   </TableRow>
@@ -92,6 +125,7 @@
     <TextView
         android:id="@+id/period_value"
         style="@style/TH.SmallValue"
+        tools:text="2 days"
         />
 
   </TableRow>

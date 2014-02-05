@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.res.Resources;
 import com.tradehero.th.R;
 import com.tradehero.th.base.Application;
-import java.io.StringWriter;
 import javax.inject.Inject;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/17/13 Time: 4:45 PM To change this template use File | Settings | File Templates. */
@@ -34,6 +33,16 @@ public class NumberDisplayUtils
     public static String getPlusMinusPrefix(double value)
     {
         return Application.getResourceString(getPlusMinusPrefixResId(value));
+    }
+
+    public static int getMinusOnlyPrefixResId(double value)
+    {
+        return value < 0 ? R.string.sign_prefix_negative : R.string.sign_prefix_zero;
+    }
+
+    public static String getMinusOnlyPrefix(double value)
+    {
+        return Application.getResourceString(getMinusOnlyPrefixResId(value));
     }
 
     public static int getArrowPrefixResId(double value)

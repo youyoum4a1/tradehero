@@ -5,10 +5,17 @@ import java.text.DecimalFormat;
 /** Created with IntelliJ IDEA. User: nia Date: 16/10/13 Time: 3:46 PM */
 public class THSignedNumber
 {
+    public static final String TAG = THSignedNumber.class.getSimpleName();
+
     public static final int TYPE_PERCENTAGE = 1;
     public static final int TYPE_MONEY = 2;
 
+    public static final int TYPE_SIGN_ARROW = 0;
+    public static final int TYPE_SIGN_PLUS_MINUS_ALWAYS = 1;
+    public static final int TYPE_SIGN_MINUS_ONLY = 2;
+
     private final boolean withSign;
+    private final int signType;
     private int type;
     private String sign;
     private String currency;
@@ -23,19 +30,25 @@ public class THSignedNumber
 
     public THSignedNumber(int type, Double number, boolean withSign)
     {
-        this(type, number, withSign, null);
+        this(type, number, withSign, null, TYPE_SIGN_ARROW);
     }
 
     public THSignedNumber(int type, Double number, String currency)
     {
-        this(type, number, true, currency);
+        this(type, number, true, currency, TYPE_SIGN_ARROW);
     }
 
     public THSignedNumber(int type, Double number, boolean withSign, String currency)
     {
+        this(type, number, withSign, currency, TYPE_SIGN_ARROW);
+    }
+
+    public THSignedNumber(int type, Double number, boolean withSign, String currency, int signType)
+    {
         this.type = type;
         this.number = number;
         this.withSign = withSign;
+        this.signType = signType;
 
         if (type == TYPE_MONEY && currency == null)
         {
@@ -85,10 +98,28 @@ public class THSignedNumber
         return toString(-1);
     }
 
+    private String getSignPrefix()
+    {
+        switch (signType)
+        {
+            case TYPE_SIGN_ARROW:
+                return NumberDisplayUtils.getArrowPrefix(number);
+
+            case TYPE_SIGN_MINUS_ONLY:
+                return NumberDisplayUtils.getMinusOnlyPrefix(number);
+
+            case TYPE_SIGN_PLUS_MINUS_ALWAYS:
+                return NumberDisplayUtils.getPlusMinusPrefix(number);
+
+            default:
+                throw new IllegalArgumentException("Unhandled signType: " + signType);
+        }
+    }
+
     // Private
     private String signedFormattedPercentage(int precision)
     {
-        sign = withSign ? NumberDisplayUtils.getArrowPrefix(number) : "";
+        sign = withSign ? getSignPrefix() : "";
         if (precision < 0)
         {
             precision = precisionFromNumber();
@@ -104,7 +135,7 @@ public class THSignedNumber
 
     private String signedFormattedMoney(int precision)
     {
-        sign = withSign ? NumberDisplayUtils.getArrowPrefix(number) : "";
+        sign = withSign ? getSignPrefix() : "";
         if (precision < 0)
         {
             precision = precisionFromNumber();
@@ -114,7 +145,7 @@ public class THSignedNumber
         if (precision > 0)
         {
             sb.append('.');
-            for (int i=0; i<precision; ++i)
+            for (int i = 0; i < precision; ++i)
             {
                 sb.append('#');
             }

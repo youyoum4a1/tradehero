@@ -2,36 +2,56 @@
 
 <merge
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical">
 
   <TableRow
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
+      tools:visibility="visible"
       >
 
     <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="0"
         style="@style/TH.SmallTitle"
         android:gravity="right"
         android:text="@string/position_in_period_pl"
         />
 
-    <TextView
-        android:id="@+id/in_period_pl_value"
-        style="@style/TH.SmallValue"
-        android:text="@null"
-        />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        >
 
-    <TextView
-        android:id="@+id/in_period_roi_value"
-        style="@style/TH.SmallValue"
-        android:text="@null"
-        />
+      <TextView
+          android:id="@+id/in_period_pl_value"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_alignParentLeft="true"
+          style="@style/TH.SmallValue"
+          tools:text="US$ 839"
+          />
+
+      <TextView
+          android:id="@+id/in_period_roi_value"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_alignParentRight="true"
+          style="@style/TH.SmallValue"
+          tools:text="8.39%"
+          />
+
+    </RelativeLayout>
 
   </TableRow>
 
   <TableRow
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
+      tools:visibility="visible"
       >
 
     <TextView
@@ -43,7 +63,9 @@
     <TextView
         android:id="@+id/in_period_additional_invested"
         style="@style/TH.SmallValue"
+        tools:text="US$ 10,000"
         />
+
   </TableRow>
 
   <TableRow
@@ -52,21 +74,40 @@
       >
 
     <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="0"
         style="@style/TH.SmallTitle"
         android:gravity="right"
         android:text="@string/position_in_period_start_value"
         />
 
-    <TextView
-        android:id="@+id/in_period_start_value"
-        style="@style/TH.SmallValue"
-        />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        >
 
-    <TextView
-        android:id="@+id/in_period_start_value_date"
-        style="@style/TH.SmallTitle"
-        android:text="@null"
-        />
+      <TextView
+          android:id="@+id/in_period_start_value"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_alignParentLeft="true"
+          style="@style/TH.SmallValue"
+          tools:text="Unknown"
+          />
+
+      <TextView
+          android:id="@+id/in_period_start_value_date"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_alignParentRight="true"
+          style="@style/TH.SmallTitle"
+          android:textSize="10sp"
+          tools:text="as of 27 Jan 2014"
+          />
+
+    </RelativeLayout>
 
   </TableRow>
 

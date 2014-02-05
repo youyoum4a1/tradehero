@@ -80,6 +80,7 @@
           android:layout_width="12dp"
           android:layout_height="12dp"
           android:layout_marginLeft="4dp"
+          android:layout_marginTop="2dp"
           android:contentDescription="@null"
           android:scaleType="fitCenter"
           android:src="@drawable/market_sleep_grey"
@@ -109,15 +110,31 @@
         tools:text="5.8%"
         />
 
-    <TextView
-        android:id="@+id/position_last_amount"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:maxLines="1"
-        android:textSize="10sp"
         android:layout_alignParentBottom="true"
-        tools:text="US$ 5.29k"
-        />
+        >
+
+      <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginRight="4dp"
+          android:text="@string/p_n_l"
+          android:textSize="10sp"
+          android:textColor="@color/text_gray_normal"
+          />
+
+      <TextView
+          android:id="@+id/position_last_amount"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:maxLines="1"
+          android:textSize="10sp"
+          tools:text="US$ 5.29k"
+          />
+
+    </LinearLayout>
 
     <RelativeLayout
         android:id="@+id/btn_trade_history"

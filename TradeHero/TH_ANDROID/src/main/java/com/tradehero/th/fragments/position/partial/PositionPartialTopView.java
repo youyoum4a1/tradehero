@@ -316,7 +316,7 @@ public class PositionPartialTopView extends LinearLayout
     {
         if (positionPercent != null)
         {
-            if (positionDTO instanceof PositionInPeriodDTO)
+            if (positionDTO instanceof PositionInPeriodDTO && ((PositionInPeriodDTO) positionDTO).isProperInPeriod())
             {
                 PositionUtils.setROIInPeriod(positionPercent, (PositionInPeriodDTO) positionDTO);
             }
@@ -331,20 +331,40 @@ public class PositionPartialTopView extends LinearLayout
     {
         if (positionLastAmount != null)
         {
+            THSignedNumber number = null;
             if (positionDTO != null)
             {
-                if (positionDTO.isClosed())
+                Boolean closed = positionDTO.isClosed();
+                if (closed != null && closed && positionDTO.realizedPLRefCcy != null)
                 {
-                    positionLastAmount.setText(String.format("P&L %s",
-                            NumberDisplayUtils.formatWithRelevantDigits(positionDTO.realizedPLRefCcy, 3)));
-                }
-                else
-                {
-                    positionLastAmount.setText(String.format("%s %s",
+                    number = new THSignedNumber(
+                            THSignedNumber.TYPE_MONEY,
+                            positionDTO.realizedPLRefCcy,
+                            true,
                             SecurityUtils.DEFAULT_VIRTUAL_CASH_CURRENCY_DISPLAY,
-                            NumberDisplayUtils.formatWithRelevantDigits(positionDTO.marketValueRefCcy, 3)));
+                            THSignedNumber.TYPE_SIGN_MINUS_ONLY
+                            );
+                }
+                else if (closed != null && !closed)
+                {
+                    number = new THSignedNumber(
+                            THSignedNumber.TYPE_MONEY,
+                            positionDTO.marketValueRefCcy,
+                            true,
+                            SecurityUtils.DEFAULT_VIRTUAL_CASH_CURRENCY_DISPLAY,
+                            THSignedNumber.TYPE_SIGN_MINUS_ONLY
+                    );
                 }
 
+            }
+
+            if (number == null)
+            {
+                positionLastAmount.setText(R.string.na);
+            }
+            else
+            {
+                positionLastAmount.setText(number.toString());
             }
         }
     }

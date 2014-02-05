@@ -5,13 +5,14 @@ import android.widget.TextView;
 import com.tradehero.th.R;
 import com.tradehero.th.api.position.PositionInPeriodDTO;
 import com.tradehero.th.api.position.PositionDTO;
-import com.tradehero.th.base.Application;
 
 /**
  * Created by julien on 31/10/13
  */
 public class PositionUtils
 {
+    public static final String TAG = PositionUtils.class.getSimpleName();
+
     protected static final int PERCENT_STRETCHING_FOR_COLOR = 20;
 
     public static String getSumInvested(Context context, PositionDTO position)
@@ -30,7 +31,9 @@ public class PositionUtils
 
     public static String getValueAtStart(Context context, PositionInPeriodDTO position)
     {
-        if (position != null && position.marketValueStartPeriodRefCcy != null)
+        if (position != null &&
+                position.marketValueStartPeriodRefCcy != null &&
+                /* It appears iOS version does that */position.marketValueStartPeriodRefCcy > 0)
         {
             THSignedNumber formattedNumber =
                     new THSignedNumber(THSignedNumber.TYPE_MONEY, position.marketValueStartPeriodRefCcy, false);
@@ -46,8 +49,12 @@ public class PositionUtils
     {
         if (position != null && position.realizedPLRefCcy != null)
         {
-            THSignedNumber formattedNumber =
-                    new THSignedNumber(THSignedNumber.TYPE_MONEY, position.realizedPLRefCcy, false);
+            THSignedNumber formattedNumber = new THSignedNumber(
+                    THSignedNumber.TYPE_MONEY,
+                    position.realizedPLRefCcy,
+                    true,
+                    SecurityUtils.DEFAULT_VIRTUAL_CASH_CURRENCY_DISPLAY,
+                    THSignedNumber.TYPE_SIGN_MINUS_ONLY);
             return formattedNumber.toString();
         }
         else
@@ -108,7 +115,6 @@ public class PositionUtils
 
     public static void setROIInPeriod(TextView textView, PositionInPeriodDTO positionInPeriodDTO)
     {
-
         if (positionInPeriodDTO != null)
         {
             setROILook(textView, positionInPeriodDTO.getROIInPeriod());

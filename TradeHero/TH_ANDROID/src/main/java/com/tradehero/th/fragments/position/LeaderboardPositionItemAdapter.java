@@ -58,8 +58,8 @@ public class LeaderboardPositionItemAdapter extends AbstractPositionItemAdapter<
         {
             return "ExpandableLeaderboardPositionItem{" +
                     "expanded=" + expanded +
-                    ", model=" + model +
                     ", timeRestricted=" + timeRestricted +
+                    ", model=" + model +
                     '}';
         }
     }

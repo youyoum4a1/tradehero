@@ -42,7 +42,7 @@
     <string name="position_expanded_close_pl_header">P&amp;L</string>
     <string name="position_expanded_close_opened_date_header">Opened</string>
     <string name="position_expanded_close_closed_date_header">Closed</string>
-    <string name="position_expanded_close_period_header">Period</string>
+    <string name="position_expanded_close_period_header">Holding Time</string>
     <string name="position_period_held_day_singular">%d day</string>
     <string name="position_period_held_day_plural">%d days</string>
 
@@ -55,5 +55,6 @@
     <string name="position_in_period_pl">Period P&amp;L</string>
     <string name="position_in_period_addtitional_invested">Addl. Invested</string>
     <string name="position_in_period_start_value">Value at Start</string>
+    <string name="position_in_period_as_of">as of %1$s</string>
 
 </resources>

@@ -2,25 +2,27 @@ package com.tradehero.th.fragments.position.partial;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import com.tradehero.th.R;
+import com.tradehero.th.adapters.ExpandableListItem;
 import com.tradehero.th.api.position.PositionDTO;
-import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th.api.position.PositionInPeriodDTO;
 import com.tradehero.th.utils.DateUtils;
 import com.tradehero.th.utils.PositionUtils;
 
 /**
  * Created by julien on 30/10/13
  */
-abstract public class AbstractPositionPartialBottomClosedView<PositionDTOType extends PositionDTO>
-        extends RelativeLayout
+abstract public class AbstractPositionPartialBottomClosedView<
+            PositionDTOType extends PositionDTO,
+            ExpandableListItemType extends ExpandableListItem<PositionDTOType>
+            >
+        extends AbstractPartialBottomView<PositionDTOType, ExpandableListItemType>
 {
     public static final String TAG = AbstractPositionPartialBottomClosedView.class.getSimpleName();
 
-    protected PositionDTOType positionDTO;
-
     private TextView realisedPLValue;
+    protected TextView roiValue;
     private TextView totalInvestedValue;
     private TextView openedDate;
     private TextView closedDate;
@@ -43,40 +45,24 @@ abstract public class AbstractPositionPartialBottomClosedView<PositionDTOType ex
     }
     //</editor-fold>
 
-    @Override protected void onFinishInflate()
+    @Override protected void initViews()
     {
-        super.onFinishInflate();
-        DaggerUtils.inject(this);
-        initViews();
-    }
+        super.initViews();
 
-    protected void initViews()
-    {
         // overall
         realisedPLValue = (TextView) findViewById(R.id.position_realized_pl_value);
+        roiValue = (TextView) findViewById(R.id.roi_value);
         totalInvestedValue = (TextView) findViewById(R.id.total_invested_value);
         openedDate = (TextView) findViewById(R.id.opened_date);
         closedDate = (TextView) findViewById(R.id.closed_date);
         periodHeld = (TextView) findViewById(R.id.period_value);
     }
 
-    @Override protected void onDetachedFromWindow()
+    @Override public void displayModelPart()
     {
-        super.onDetachedFromWindow();
-    }
-
-    public void linkWith(PositionDTOType positionDTO, boolean andDisplay)
-    {
-        this.positionDTO = positionDTO;
-        if (andDisplay)
-        {
-            display();
-        }
-    }
-
-    public void display()
-    {
+        super.displayModelPart();
         displayRealisedPLValue();
+        displayRoiValue();
         displayTotalInvested();
         displayOpenedDate();
         displayClosedDate();
@@ -91,7 +77,12 @@ abstract public class AbstractPositionPartialBottomClosedView<PositionDTOType ex
         }
     }
 
-    private void displayTotalInvested()
+    public void displayRoiValue()
+    {
+        PositionUtils.setROISinceInception(roiValue, positionDTO);
+    }
+
+    public void displayTotalInvested()
     {
         if (totalInvestedValue != null)
         {
@@ -99,7 +90,7 @@ abstract public class AbstractPositionPartialBottomClosedView<PositionDTOType ex
         }
     }
 
-    private void displayOpenedDate()
+    public void displayOpenedDate()
     {
         if (openedDate != null && positionDTO.earliestTradeUtc != null)
         {
@@ -107,7 +98,7 @@ abstract public class AbstractPositionPartialBottomClosedView<PositionDTOType ex
         }
     }
 
-    private void displayClosedDate()
+    public void displayClosedDate()
     {
         if (closedDate != null)
         {
@@ -115,7 +106,7 @@ abstract public class AbstractPositionPartialBottomClosedView<PositionDTOType ex
         }
     }
 
-    private void displayPeriodHeld()
+    public void displayPeriodHeld()
     {
         if (periodHeld != null)
         {

@@ -39,16 +39,7 @@ import com.tradehero.th.fragments.portfolio.PushablePortfolioListFragment;
 import com.tradehero.th.fragments.portfolio.header.CurrentUserPortfolioHeaderView;
 import com.tradehero.th.fragments.portfolio.header.OtherUserPortfolioHeaderView;
 import com.tradehero.th.fragments.position.LeaderboardPositionListFragment;
-import com.tradehero.th.fragments.position.LockedPositionItem;
-import com.tradehero.th.fragments.position.PositionClosedView;
-import com.tradehero.th.fragments.position.PositionInPeriodClosedView;
-import com.tradehero.th.fragments.position.PositionInPeriodOpenView;
 import com.tradehero.th.fragments.position.PositionListFragment;
-import com.tradehero.th.fragments.position.PositionOpenView;
-import com.tradehero.th.fragments.position.partial.PositionPartialBottomClosedView;
-import com.tradehero.th.fragments.position.partial.PositionPartialBottomInPeriodClosedView;
-import com.tradehero.th.fragments.position.partial.PositionPartialBottomInPeriodOpenView;
-import com.tradehero.th.fragments.position.partial.PositionPartialBottomOpenView;
 import com.tradehero.th.fragments.position.partial.PositionPartialTopView;
 import com.tradehero.th.fragments.security.ChartFragment;
 import com.tradehero.th.fragments.security.SecurityItemView;
@@ -175,17 +166,7 @@ import javax.inject.Singleton;
                         CurrentUserPortfolioHeaderView.class,
                         OtherUserPortfolioHeaderView.class,
 
-                        PositionOpenView.class,
-                        PositionInPeriodOpenView.class,
-
-                        PositionClosedView.class,
-                        PositionInPeriodClosedView.class,
                         PositionPartialTopView.class,
-                        PositionPartialBottomOpenView.class,
-                        PositionPartialBottomInPeriodOpenView.class,
-                        PositionPartialBottomClosedView.class,
-                        PositionPartialBottomInPeriodClosedView.class,
-                        LockedPositionItem.class,
 
                         TradeListFragment.class,
                         TradeListItemAdapter.class,

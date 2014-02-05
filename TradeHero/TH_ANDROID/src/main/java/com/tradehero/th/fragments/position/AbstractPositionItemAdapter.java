@@ -256,21 +256,23 @@ public abstract class AbstractPositionItemAdapter<PositionDTOType extends Positi
         else if (itemViewType == PositionItemType.Closed.value || itemViewType == PositionItemType.Open.value)
         {
             ExpandableListItem<PositionDTOType> expandableWrapper = (ExpandableListItem<PositionDTOType>) getItem(position);
-            View expandingLayout = convertView.findViewById(R.id.expanding_layout);
-            if (expandingLayout != null)
-            {
-                if (!expandableWrapper.isExpanded())
-                {
-                    expandingLayout.setVisibility(View.GONE);
-                }
-                else
-                {
-                    expandingLayout.setVisibility(View.VISIBLE);
-                }
-            }
+            //View expandingLayout = convertView.findViewById(R.id.expanding_layout);
+            //if (expandingLayout != null)
+            //{
+            //    if (!expandableWrapper.isExpanded())
+            //    {
+            //        expandingLayout.setVisibility(View.GONE);
+            //    }
+            //    else
+            //    {
+            //        expandingLayout.setVisibility(View.VISIBLE);
+            //    }
+            //}
 
             AbstractPositionView cell = (AbstractPositionView) convertView;
-            cell.linkWith(expandableWrapper.getModel(), true);
+            //cell.linkWith(expandableWrapper.getModel(), true);
+            THLog.d(TAG, "Passing " + expandableWrapper);
+            cell.linkWith(expandableWrapper, true);
             cell.setListener(new AbstractPositionItemAdapterPositionListener());
         }
 

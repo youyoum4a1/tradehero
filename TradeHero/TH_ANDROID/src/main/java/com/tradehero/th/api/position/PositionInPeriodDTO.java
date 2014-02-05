@@ -1,6 +1,5 @@
 package com.tradehero.th.api.position;
 
-import com.tradehero.common.utils.THLog;
 import com.tradehero.th.api.leaderboard.position.LeaderboardMarkUserPositionId;
 import com.tradehero.th.api.leaderboard.position.OwnedLeaderboardPositionId;
 import java.util.ArrayList;
@@ -20,9 +19,17 @@ public class PositionInPeriodDTO extends PositionDTO
     public Double sum_salesInPeriodRefCcy;
     public Double sum_purchasesInPeriodRefCcy;
 
+    public boolean isProperInPeriod()
+    {
+        return marketValueStartPeriodRefCcy != null ||
+                marketValueEndPeriodRefCcy != null ||
+                sum_salesInPeriodRefCcy != null ||
+                sum_purchasesInPeriodRefCcy != null;
+    }
+
     public LeaderboardMarkUserPositionId getLbPositionId()
     {
-        return new LeaderboardMarkUserPositionId(id);
+        return new LeaderboardMarkUserPositionId(leaderboardMarkUserId);
     }
 
     public OwnedLeaderboardPositionId getLbOwnedPositionId()
@@ -74,11 +81,9 @@ public class PositionInPeriodDTO extends PositionDTO
 
     public Double getROIInPeriod()
     {
-        THLog.d(TAG, "getROIInPeriod " + this);
         if (marketValueEndPeriodRefCcy == null || marketValueStartPeriodRefCcy == null)
         {
-            throw new IllegalArgumentException("Wrong values " + this);
-            //return null;
+            return null;
         }
 
         double plInPeriod = getInPeriodPL();

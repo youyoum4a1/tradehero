@@ -2,6 +2,7 @@
 
 <merge
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
@@ -22,6 +23,7 @@
     <TextView
         android:id="@+id/unrealised_pl_value"
         style="@style/TH.SmallValue"
+        tools:text="US$ 56,283"
         />
 
   </TableRow>
@@ -42,6 +44,7 @@
     <TextView
         android:id="@+id/realised_pl_value"
         style="@style/TH.SmallValue"
+        tools:text="-US$ 30"
         />
 
   </TableRow>
@@ -62,6 +65,7 @@
     <TextView
         android:id="@+id/total_invested_value"
         style="@style/TH.SmallValue"
+        tools:text="US$ 101,105"
         />
 
   </TableRow>
@@ -82,6 +86,7 @@
     <TextView
         android:id="@+id/market_value_value"
         style="@style/TH.SmallValue"
+        tools:text="US$ 157,388"
         />
 
   </TableRow>
@@ -102,6 +107,7 @@
     <TextView
         android:id="@+id/quantity_value"
         style="@style/TH.SmallValue"
+        tools:text="2,418"
         />
 
   </TableRow>
@@ -122,6 +128,7 @@
     <TextView
         android:id="@+id/average_price_value"
         style="@style/TH.SmallValue"
+        tools:text="US$ 41.8135"
         />
 
   </TableRow>
