@@ -2,14 +2,13 @@ package com.tradehero.th.persistence.leaderboard.position;
 
 import com.tradehero.common.persistence.StraightDTOCache;
 import com.tradehero.th.api.leaderboard.position.OwnedLeaderboardPositionId;
+import com.tradehero.th.api.position.PositionDTOList;
 import com.tradehero.th.api.position.PositionInPeriodDTO;
 import com.tradehero.th.persistence.trade.TradeListCache;
 import dagger.Lazy;
-
+import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by julien on 1/11/13
@@ -51,14 +50,14 @@ import java.util.List;
         //tradeListCache.get().invalidate(key);
     }
 
-    public List<PositionInPeriodDTO> put(List<PositionInPeriodDTO> values)
+    public PositionDTOList<PositionInPeriodDTO> put(List<PositionInPeriodDTO> values)
     {
         if (values == null)
         {
             return null;
         }
 
-        List<PositionInPeriodDTO> previousValues = new ArrayList<>();
+        PositionDTOList<PositionInPeriodDTO> previousValues = new PositionDTOList<>();
 
         for (PositionInPeriodDTO positionDTO: values)
         {
@@ -68,14 +67,14 @@ import java.util.List;
         return previousValues;
     }
 
-    public List<PositionInPeriodDTO> get(List<OwnedLeaderboardPositionId> keys)
+    public PositionDTOList<PositionInPeriodDTO> get(List<OwnedLeaderboardPositionId> keys)
     {
         if (keys == null)
         {
             return null;
         }
 
-        List<PositionInPeriodDTO> positionDTOs = new ArrayList<>();
+        PositionDTOList<PositionInPeriodDTO> positionDTOs = new PositionDTOList<>();
 
         for (OwnedLeaderboardPositionId key: keys)
         {

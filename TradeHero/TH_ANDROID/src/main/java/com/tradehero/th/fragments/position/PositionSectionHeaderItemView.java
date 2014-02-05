@@ -2,15 +2,20 @@ package com.tradehero.th.fragments.position;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import com.tradehero.th.R;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/17/13 Time: 7:09 PM To change this template use File | Settings | File Templates. */
 public class PositionSectionHeaderItemView extends RelativeLayout
 {
-    private TextView headerText;
+    public static final String TAG = PositionSectionHeaderItemView.class.getSimpleName();
+
+    protected TextView headerText;
+    protected TextView timeBaseText;
+    protected SimpleDateFormat sdf = new SimpleDateFormat("d MMM yyyy");
 
     //<editor-fold desc="Constructors">
     public PositionSectionHeaderItemView(Context context)
@@ -32,7 +37,13 @@ public class PositionSectionHeaderItemView extends RelativeLayout
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
+        initViews();
+    }
+
+    protected void initViews()
+    {
         headerText = (TextView) findViewById(R.id.header_text);
+        timeBaseText = (TextView) findViewById(R.id.header_time_base);
     }
 
     public void setHeaderTextContent(String text)
@@ -40,6 +51,24 @@ public class PositionSectionHeaderItemView extends RelativeLayout
         if (headerText != null)
         {
             headerText.setText(text);
+        }
+    }
+
+    public void setTimeBaseTextContent(Date left, Date right)
+    {
+        if (timeBaseText != null)
+        {
+            if (left != null || right != null)
+            {
+                timeBaseText.setText(getResources().getString(
+                        R.string.position_list_header_time_base,
+                        left != null ? sdf.format(left) : "",
+                        right != null ? sdf.format(right) : ""));
+            }
+            else
+            {
+                timeBaseText.setText("");
+            }
         }
     }
 }

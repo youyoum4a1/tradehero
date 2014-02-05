@@ -26,6 +26,7 @@
     <string name="position_list_header_open_unsure">OPEN</string>
     <string name="position_list_header_closed">CLOSED (%d)</string>
     <string name="position_list_header_closed_unsure">CLOSED</string>
+    <string name="position_list_header_time_base">%1$s - %2$s</string>
     <string name="position_unrealised_pl_header">Unrealized P&amp;L</string>
     <string name="position_realised_pl_header">Realized P&amp;L</string>
     <string name="position_total_invested_header">Total Invested</string>

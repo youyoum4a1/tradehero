@@ -3,9 +3,9 @@ package com.tradehero.th.persistence.position;
 import com.tradehero.common.persistence.StraightDTOCache;
 import com.tradehero.th.api.position.OwnedPositionId;
 import com.tradehero.th.api.position.PositionDTO;
+import com.tradehero.th.api.position.PositionDTOList;
 import com.tradehero.th.persistence.trade.TradeListCache;
 import dagger.Lazy;
-import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -50,14 +50,14 @@ import javax.inject.Singleton;
         tradeListCache.get().invalidate(key);
     }
 
-    public List<PositionDTO> put(Integer portfolioId, List<PositionDTO> values)
+    public PositionDTOList<PositionDTO> put(Integer portfolioId, List<PositionDTO> values)
     {
         if (values == null)
         {
             return null;
         }
 
-        List<PositionDTO> previousValues = new ArrayList<>();
+        PositionDTOList<PositionDTO> previousValues = new PositionDTOList<>();
 
         for (PositionDTO positionDTO: values)
         {
@@ -67,14 +67,14 @@ import javax.inject.Singleton;
         return previousValues;
     }
 
-    public List<PositionDTO> get(List<OwnedPositionId> keys)
+    public PositionDTOList<PositionDTO> get(List<OwnedPositionId> keys)
     {
         if (keys == null)
         {
             return null;
         }
 
-        List<PositionDTO> positionDTOs = new ArrayList<>();
+        PositionDTOList<PositionDTO> positionDTOs = new PositionDTOList<>();
 
         for (OwnedPositionId key: keys)
         {

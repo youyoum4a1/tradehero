@@ -8,15 +8,19 @@ import java.util.List;
 /** Created with IntelliJ IDEA. User: xavier Date: 9/20/13 Time: 3:35 PM To change this template use File | Settings | File Templates. */
 public class GetPositionsDTO extends AbstractGetPositionsDTO<PositionDTO>
 {
+    public static final String TAG = GetPositionsDTO.class.getSimpleName();
+
+    //<editor-fold desc="Constructors">
     public GetPositionsDTO()
     {
         super();
     }
 
-    public GetPositionsDTO(List<PositionDTO> positions, List<SecurityCompactDTO> securities, int openPositionsCount, int closedPositionsCount)
+    public GetPositionsDTO(PositionDTOList<PositionDTO> positions, List<SecurityCompactDTO> securities, int openPositionsCount, int closedPositionsCount)
     {
         super(positions, securities, openPositionsCount, closedPositionsCount);
     }
+    //</editor-fold>
 
     public List<OwnedPositionId> getFiledPositionIds(PortfolioId portfolioId)
     {

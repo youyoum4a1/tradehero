@@ -5,16 +5,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.ExpandableListItem;
 import com.tradehero.th.adapters.ExpandableListReporter;
 import com.tradehero.th.api.position.OwnedPositionId;
 import com.tradehero.th.api.position.PositionDTO;
+import com.tradehero.th.api.position.PositionDTOList;
 import com.tradehero.th.fragments.position.view.AbstractPositionView;
 import com.tradehero.th.fragments.position.view.PositionLockedView;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -24,12 +25,8 @@ public abstract class AbstractPositionItemAdapter<PositionDTOType extends Positi
 {
     public static final String TAG = AbstractPositionItemAdapter.class.getSimpleName();
 
-    protected List<PositionDTOType> receivedPositions;
     protected List<Integer> itemTypes = new ArrayList<>();
     protected List<Object> items = new ArrayList<>();
-
-    private List<ExpandableListItem> openPositions; // If nothing, it will show the positionNothingId layout
-    private List<ExpandableListItem> closedPositions;
 
     protected final Context context;
     protected final LayoutInflater inflater;
@@ -43,8 +40,6 @@ public abstract class AbstractPositionItemAdapter<PositionDTOType extends Positi
     private HashMap<Integer, Integer> viewTypeToLayoutId;
 
     private WeakReference<PositionListener> cellListener;
-    // this listener is used as a bridge between the cell and the listener of the adapter
-    private PositionListener internalListener;
 
     public AbstractPositionItemAdapter(
             Context context,
@@ -97,24 +92,24 @@ public abstract class AbstractPositionItemAdapter<PositionDTOType extends Positi
         }
         else
         {
-            List<ExpandableListItem<PositionDTOType>> lockedPositions = new ArrayList<>();
-            List<ExpandableListItem<PositionDTOType>> openPositions = new ArrayList<>();
-            List<ExpandableListItem<PositionDTOType>> closedPositions = new ArrayList<>();
+            PositionDTOList<PositionDTOType> lockedPositions = new PositionDTOList<>();
+            PositionDTOList<PositionDTOType> openPositions = new PositionDTOList<>();
+            PositionDTOList<PositionDTOType> closedPositions = new PositionDTOList<>();
 
             // Split in open / closed
             for (PositionDTOType positionDTO : dtos)
             {
                 if (positionDTO.isLocked())
                 {
-                    lockedPositions.add(createExpandableItem(positionDTO));
+                    lockedPositions.add(positionDTO);
                 }
                 else if (positionDTO.isClosed())
                 {
-                    closedPositions.add(createExpandableItem(positionDTO));
+                    closedPositions.add(positionDTO);
                 }
                 else
                 {
-                    openPositions.add(createExpandableItem(positionDTO));
+                    openPositions.add(positionDTO);
                 }
             }
 
@@ -124,7 +119,12 @@ public abstract class AbstractPositionItemAdapter<PositionDTOType extends Positi
             if (lockedPositions.size() > 0)
             {
                 newItemTypes.add(PositionItemType.Header.value);
-                newItems.add(new HeaderDTO(PositionItemType.Locked, lockedPositions.get(0).getModel().aggregateCount));
+                PositionDTOType positionDTO = lockedPositions.get(0);
+                newItems.add(new HeaderDTO(
+                        PositionItemType.Locked,
+                        positionDTO.aggregateCount,
+                        positionDTO.earliestTradeUtc,
+                        positionDTO.latestTradeUtc));
 
                 newItemTypes.add(PositionItemType.Locked.value);
                 newItems.add(null);
@@ -132,12 +132,17 @@ public abstract class AbstractPositionItemAdapter<PositionDTOType extends Positi
             else if (openPositions.size() > 0)
             {
                 newItemTypes.add(PositionItemType.Header.value);
-                newItems.add(new HeaderDTO(PositionItemType.Open, openPositions.size()));
+                newItems.add(new HeaderDTO(
+                        PositionItemType.Open,
+                        openPositions.size(),
+                        openPositions.getEarliestTradeUtc(),
+                        openPositions.getLatestTradeUtc()
+                        ));
 
-                for (ExpandableListItem<PositionDTOType> openPosition : openPositions)
+                for (PositionDTOType openPosition : openPositions)
                 {
                     newItemTypes.add(PositionItemType.Open.value);
-                    newItems.add(openPosition);
+                    newItems.add(createExpandableItem(openPosition));
                 }
             }
             else
@@ -153,12 +158,17 @@ public abstract class AbstractPositionItemAdapter<PositionDTOType extends Positi
             if (closedPositions.size() > 0)
             {
                 newItemTypes.add(PositionItemType.Header.value);
-                newItems.add(new HeaderDTO(PositionItemType.Closed, closedPositions.size()));
+                newItems.add(new HeaderDTO(
+                        PositionItemType.Closed,
+                        closedPositions.size(),
+                        closedPositions.getEarliestTradeUtc(),
+                        closedPositions.getLatestTradeUtc()
+                        ));
 
-                for (ExpandableListItem<PositionDTOType> closedPosition : closedPositions)
+                for (PositionDTOType closedPosition : closedPositions)
                 {
                     newItemTypes.add(PositionItemType.Closed.value);
-                    newItems.add(closedPosition);
+                    newItems.add(createExpandableItem(closedPosition));
                 }
             }
         }
@@ -249,7 +259,7 @@ public abstract class AbstractPositionItemAdapter<PositionDTOType extends Positi
 
         if (itemViewType == PositionItemType.Header.value)
         {
-            ((PositionSectionHeaderItemView) convertView).setHeaderTextContent(getHeaderText((HeaderDTO) item));
+            prepareHeaderView((PositionSectionHeaderItemView) convertView, (HeaderDTO) item);
         }
         else if (itemViewType == PositionItemType.Locked.value)
         {
@@ -265,6 +275,14 @@ public abstract class AbstractPositionItemAdapter<PositionDTOType extends Positi
         }
 
         return convertView;
+    }
+
+    protected void prepareHeaderView(PositionSectionHeaderItemView convertView, HeaderDTO info)
+    {
+        convertView.setHeaderTextContent(getHeaderText(info));
+        convertView.setTimeBaseTextContent(
+                info == null ? null : info.dateStart,
+                info == null ? null : info.dateEnd);
     }
 
     @Override public boolean areAllItemsEnabled()
@@ -348,11 +366,23 @@ public abstract class AbstractPositionItemAdapter<PositionDTOType extends Positi
     {
         public final PositionItemType headerFor;
         public final Integer count;
+        public final Date dateStart;
+        public final Date dateEnd;
 
         public HeaderDTO(PositionItemType headerFor, Integer count)
         {
             this.headerFor = headerFor;
             this.count = count;
+            this.dateStart = null;
+            this.dateEnd = null;
+        }
+
+        public HeaderDTO(PositionItemType headerFor, Integer count, Date dateStart, Date dateEnd)
+        {
+            this.headerFor = headerFor;
+            this.count = count;
+            this.dateStart = dateStart;
+            this.dateEnd = dateEnd;
         }
 
         @Override public String toString()
@@ -360,6 +390,8 @@ public abstract class AbstractPositionItemAdapter<PositionDTOType extends Positi
             return "HeaderDTO{" +
                     "headerFor=" + headerFor +
                     ", count=" + count +
+                    ", dateStart=" + dateStart +
+                    ", dateEnd=" + dateEnd +
                     '}';
         }
     }
