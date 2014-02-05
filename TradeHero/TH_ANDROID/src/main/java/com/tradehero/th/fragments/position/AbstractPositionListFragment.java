@@ -22,7 +22,6 @@ import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PortfolioDTO;
 import com.tradehero.th.api.position.AbstractGetPositionsDTO;
-import com.tradehero.th.api.position.OwnedPositionId;
 import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
@@ -60,7 +59,7 @@ abstract public class AbstractPositionListFragment<
         GetPositionsDTOType extends AbstractGetPositionsDTO<PositionDTOType>>
         extends BasePurchaseManagerFragment
         implements BaseFragment.TabBarVisibilityInformer,
-            PositionListener,
+            PositionListener<PositionDTOType>,
             PortfolioHeaderView.OnFollowRequestedListener,
             PortfolioHeaderView.OnTimelineRequestedListener
 {
@@ -374,39 +373,32 @@ abstract public class AbstractPositionListFragment<
         THToast.show("No info for now");
     }
 
-    private void pushBuySellFragment(OwnedPositionId clickedOwnedPositionId, boolean isBuy)
+    private void pushBuySellFragment(PositionDTOType clickedPositionDTO, boolean isBuy)
     {
-        if (clickedOwnedPositionId != null)
+        if (clickedPositionDTO != null)
         {
-            PositionDTO positionDTO = positionCache.get().get(clickedOwnedPositionId);
-            if (positionDTO == null)
+            SecurityId securityId = securityIdCache.get().get(clickedPositionDTO.getSecurityIntegerId());
+            if (securityId == null)
             {
-                THToast.show(getString(R.string.error_lost_position_in_cache));
+                THToast.show(getString(R.string.error_find_security_id_to_int));
             }
             else
             {
-                SecurityId securityId = securityIdCache.get().get(positionDTO.getSecurityIntegerId());
-                if (securityId == null)
+                Bundle args = new Bundle();
+                args.putBundle(BuySellFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
+                if (currentUserBaseKeyHolder.getCurrentUserBaseKey().equals(clickedPositionDTO.getUserBaseKey()))
                 {
-                    THToast.show(getString(R.string.error_find_security_id_to_int));
+                    // We only add if this the current user portfolio
+                    args.putBundle(BuySellFragment.BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE,
+                            clickedPositionDTO.getOwnedPositionId().getArgs());
                 }
-                else
-                {
-                    Bundle args = new Bundle();
-                    args.putBundle(BuySellFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
-                    if (currentUserBaseKeyHolder.getCurrentUserBaseKey().equals(clickedOwnedPositionId.getUserBaseKey()))
-                    {
-                        // We only add if this the current user portfolio
-                        args.putBundle(BuySellFragment.BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE, clickedOwnedPositionId.getArgs());
-                    }
-                    args.putBoolean(BuySellFragment.BUNDLE_KEY_IS_BUY, isBuy);
-                    navigator.pushFragment(BuySellFragment.class, args);
-                }
+                args.putBoolean(BuySellFragment.BUNDLE_KEY_IS_BUY, isBuy);
+                navigator.pushFragment(BuySellFragment.class, args);
             }
         }
         else
         {
-            THLog.e(TAG, "Was passed a null clickedOwnedPositionId", new IllegalArgumentException());
+            THLog.e(TAG, "Was passed a null clickedPositionDTO", new IllegalArgumentException());
         }
     }
 
@@ -446,39 +438,39 @@ abstract public class AbstractPositionListFragment<
     //</editor-fold>
 
     //<editor-fold desc="PositionListener">
-    @Override public void onTradeHistoryClicked(OwnedPositionId clickedOwnedPositionId)
+    @Override public void onTradeHistoryClicked(PositionDTOType clickedPositionDTO)
     {
         Bundle args = new Bundle();
-        args.putBundle(TradeListFragment.BUNDLE_KEY_OWNED_POSITION_ID_BUNDLE, clickedOwnedPositionId.getArgs());
+        // By default tries
+        args.putBundle(TradeListFragment.BUNDLE_KEY_OWNED_POSITION_ID_BUNDLE, clickedPositionDTO.getOwnedPositionId().getArgs());
         navigator.pushFragment(TradeListFragment.class, args);
     }
 
-    @Override public void onBuyClicked(OwnedPositionId clickedOwnedPositionId)
+    @Override public void onBuyClicked(PositionDTOType clickedPositionDTO)
     {
-        pushBuySellFragment(clickedOwnedPositionId, true);
+        pushBuySellFragment(clickedPositionDTO, true);
     }
 
-    @Override public void onSellClicked(OwnedPositionId clickedOwnedPositionId)
+    @Override public void onSellClicked(PositionDTOType clickedPositionDTO)
     {
-        pushBuySellFragment(clickedOwnedPositionId, false);
+        pushBuySellFragment(clickedPositionDTO, false);
     }
 
-    @Override public void onAddAlertClicked(OwnedPositionId clickedOwnedPositionId)
+    @Override public void onAddAlertClicked(PositionDTOType clickedPositionDTO)
     {
        THToast.show("Alert");
     }
 
-    @Override public void onStockInfoClicked(OwnedPositionId clickedOwnedPositionId)
+    @Override public void onStockInfoClicked(PositionDTOType clickedPositionDTO)
     {
-        PositionDTO positionDTO = positionCache.get().get(clickedOwnedPositionId);
-        if (positionDTO == null)
+        if (clickedPositionDTO == null)
         {
             THToast.show(R.string.error_lost_position_in_cache);
             THLog.e(TAG, "PositionDTO is not found", new IllegalStateException());
         }
         else
         {
-            SecurityId securityId = securityIdCache.get().get(positionDTO.getSecurityIntegerId());
+            SecurityId securityId = securityIdCache.get().get(clickedPositionDTO.getSecurityIntegerId());
             if (securityId == null)
             {
                 THToast.show(R.string.error_find_security_id_to_int);

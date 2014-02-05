@@ -1,7 +1,7 @@
 package com.tradehero.th.api.position;
 
-import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.api.security.SecurityIntegerId;
+import com.tradehero.th.api.users.UserBaseKey;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -23,6 +23,11 @@ public class PositionDTO extends PositionDTOCompact
 
     // if >1, then the values above relate to a collection of positions, not a single position -- see: MaskOpenPositions()
     public int aggregateCount;
+
+    public UserBaseKey getUserBaseKey()
+    {
+        return new UserBaseKey(userId);
+    }
 
     public OwnedPositionId getOwnedPositionId()
     {

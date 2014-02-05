@@ -100,6 +100,13 @@ public class OwnedLeaderboardPositionId implements Comparable, DTOKey, DTO
         args.putInt(BUNDLE_KEY_LEADERBOARD_MARK_USER_POSITION_ID, leaderboardMarkUserPositionId);
     }
 
+    public Bundle getArgs()
+    {
+        Bundle args = new Bundle();
+        putParameters(args);
+        return args;
+    }
+
     public LeaderboardMarkUserId getLeaderboardMarkUserKey()
     {
         return new LeaderboardMarkUserId(leaderboardMarkUserId);

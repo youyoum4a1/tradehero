@@ -39,7 +39,7 @@ public abstract class AbstractPositionItemAdapter<PositionDTOType extends Positi
 
     private HashMap<Integer, Integer> viewTypeToLayoutId;
 
-    private WeakReference<PositionListener> cellListener;
+    private WeakReference<PositionListener<PositionDTOType>> cellListener;
 
     public AbstractPositionItemAdapter(
             Context context,
@@ -299,7 +299,7 @@ public abstract class AbstractPositionItemAdapter<PositionDTOType extends Positi
      * The listener needs to be strongly referenced elsewhere
      * @param cellListener
      */
-    public void setCellListener(PositionListener cellListener)
+    public void setCellListener(PositionListener<PositionDTOType> cellListener)
     {
         this.cellListener = new WeakReference<>(cellListener);
     }
@@ -396,47 +396,48 @@ public abstract class AbstractPositionItemAdapter<PositionDTOType extends Positi
         }
     }
 
-    protected class AbstractPositionItemAdapterPositionListener implements PositionListener
+    protected class AbstractPositionItemAdapterPositionListener
+            implements PositionListener<PositionDTOType>
     {
-        @Override public void onTradeHistoryClicked(OwnedPositionId clickedOwnedPositionId)
+        @Override public void onTradeHistoryClicked(PositionDTOType clickedOwnedPositionId)
         {
-            PositionListener listener = cellListener.get();
+            PositionListener<PositionDTOType> listener = cellListener.get();
             if (listener != null)
             {
                 listener.onTradeHistoryClicked(clickedOwnedPositionId);
             }
         }
 
-        @Override public void onBuyClicked(OwnedPositionId clickedOwnedPositionId)
+        @Override public void onBuyClicked(PositionDTOType clickedOwnedPositionId)
         {
-            PositionListener listener = cellListener.get();
+            PositionListener<PositionDTOType> listener = cellListener.get();
             if (listener != null)
             {
                 listener.onBuyClicked(clickedOwnedPositionId);
             }
         }
 
-        @Override public void onSellClicked(OwnedPositionId clickedOwnedPositionId)
+        @Override public void onSellClicked(PositionDTOType clickedOwnedPositionId)
         {
-            PositionListener listener = cellListener.get();
+            PositionListener<PositionDTOType> listener = cellListener.get();
             if (listener != null)
             {
                 listener.onSellClicked(clickedOwnedPositionId);
             }
         }
 
-        @Override public void onAddAlertClicked(OwnedPositionId clickedOwnedPositionId)
+        @Override public void onAddAlertClicked(PositionDTOType clickedOwnedPositionId)
         {
-            PositionListener listener = cellListener.get();
+            PositionListener<PositionDTOType> listener = cellListener.get();
             if (listener != null)
             {
                 listener.onAddAlertClicked(clickedOwnedPositionId);
             }
         }
 
-        @Override public void onStockInfoClicked(OwnedPositionId clickedOwnedPositionId)
+        @Override public void onStockInfoClicked(PositionDTOType clickedOwnedPositionId)
         {
-            PositionListener listener = cellListener.get();
+            PositionListener<PositionDTOType> listener = cellListener.get();
             if (listener != null)
             {
                 listener.onStockInfoClicked(clickedOwnedPositionId);

@@ -41,6 +41,7 @@ public class TradeListFragment extends DashboardFragment
 {
     public static final String TAG = TradeListFragment.class.getSimpleName();
     public static final String BUNDLE_KEY_OWNED_POSITION_ID_BUNDLE = TradeListFragment.class.getName() + ".ownedPositionId";
+    public static final String BUNDLE_KEY_OWNED_LEADERBOARD_POSITION_ID_BUNDLE = TradeListFragment.class.getName() + ".ownedLeaderboardPositionId";
 
     private OwnedPositionId ownedPositionId;
     @Inject Lazy<PositionCache> positionCache;
