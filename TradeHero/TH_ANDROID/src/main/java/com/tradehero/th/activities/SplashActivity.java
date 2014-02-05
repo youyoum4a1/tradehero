@@ -5,13 +5,16 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import com.actionbarsherlock.app.SherlockActivity;
 import com.crashlytics.android.Crashlytics;
+import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
-import com.tradehero.th.base.THUser;
+import com.tradehero.th.persistence.prefs.SessionToken;
 import com.tradehero.th.utils.Constants;
+import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.TestFlightUtils;
 import java.util.Timer;
 import java.util.TimerTask;
+import javax.inject.Inject;
 
 public class SplashActivity extends SherlockActivity
 {
@@ -19,6 +22,8 @@ public class SplashActivity extends SherlockActivity
 
     private Timer timerToShiftActivity;
     private AsyncTask<Void, Void, Void> initialAsyncTask;
+
+    @Inject @SessionToken StringPreference currentSessionToken;
 
     @Override protected void onCreate(Bundle savedInstanceState)
     {
@@ -28,8 +33,9 @@ public class SplashActivity extends SherlockActivity
         {
             Crashlytics.start(this);
         }
-
         setContentView(R.layout.splash_screen);
+
+        DaggerUtils.inject(this);
     }
 
     @Override protected void onResume()
@@ -50,7 +56,7 @@ public class SplashActivity extends SherlockActivity
     {
         TestFlightUtils.initialize();
 
-        if (THUser.getSessionToken() != null)
+        if (currentSessionToken.isSet())
         {
             ActivityHelper.launchDashboard(SplashActivity.this);
             finish();

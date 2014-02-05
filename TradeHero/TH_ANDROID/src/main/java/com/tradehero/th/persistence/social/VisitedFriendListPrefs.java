@@ -3,13 +3,14 @@ package com.tradehero.th.persistence.social;
 import android.content.Context;
 import android.content.SharedPreferences;
 import com.tradehero.common.utils.THLog;
+import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.base.Application;
-import com.tradehero.th.base.THUser;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
+import javax.inject.Inject;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/1/13 Time: 1:46 PM To change this template use File | Settings | File Templates. */
 public class VisitedFriendListPrefs
@@ -18,13 +19,15 @@ public class VisitedFriendListPrefs
     public static final String KEY_PREFS = VisitedFriendListPrefs.class.getName();
     public static final String KEY_VISITED_ID_SET = VisitedFriendListPrefs.class.getName() + ".VISITED_ID_SET";
 
+    @Inject static CurrentUserBaseKeyHolder currentUserBaseKeyHolder;
+
     public static void addVisitedId(UserBaseKey userBaseKey)
     {
         if (userBaseKey == null)
         {
             return;
         }
-        if (userBaseKey.equals(THUser.getCurrentUserBase().getBaseKey()))
+        if (userBaseKey.equals(currentUserBaseKeyHolder.getCurrentUserBaseKey()))
         {
             return;
         }

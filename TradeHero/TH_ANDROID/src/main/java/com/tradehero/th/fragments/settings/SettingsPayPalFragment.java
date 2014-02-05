@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
@@ -14,15 +13,13 @@ import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
-import com.tradehero.th.api.users.UserBaseDTO;
+import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.api.users.payment.UpdatePayPalEmailDTO;
 import com.tradehero.th.api.users.payment.UpdatePayPalEmailFormDTO;
-import com.tradehero.th.base.Application;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.base.NavigatorActivity;
-import com.tradehero.th.base.THUser;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.misc.callback.THCallback;
 import com.tradehero.th.misc.callback.THResponse;
@@ -32,9 +29,7 @@ import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.widget.ServerValidatedEmailText;
 import dagger.Lazy;
-
 import javax.inject.Inject;
-import java.util.Arrays;
 
 /**
  * Created with IntelliJ IDEA.
@@ -52,8 +47,9 @@ public class SettingsPayPalFragment extends DashboardFragment
     private ProgressDialog progressDialog;
     private Button submitButton;
 
-    @Inject UserService userService;
+    @Inject protected UserService userService;
     @Inject protected Lazy<UserProfileCache> userProfileCache;
+    @Inject protected CurrentUserBaseKeyHolder currentUserBaseKeyHolder;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -88,7 +84,7 @@ public class SettingsPayPalFragment extends DashboardFragment
                         R.string.connecting_tradehero_only);
                 UpdatePayPalEmailFormDTO emailDTO = new UpdatePayPalEmailFormDTO();
                 emailDTO.newPayPalEmailAddress = paypalEmailText.getText().toString();
-                userService.updatePayPalEmail(THUser.getCurrentUserBase().id, emailDTO, new THCallback<UpdatePayPalEmailDTO>()
+                userService.updatePayPalEmail(currentUserBaseKeyHolder.getCurrentUserBaseKey().key, emailDTO, new THCallback<UpdatePayPalEmailDTO>()
                 {
                     @Override
                     protected void success(UpdatePayPalEmailDTO updatePayPalEmailDTO, THResponse thResponse)
@@ -115,11 +111,8 @@ public class SettingsPayPalFragment extends DashboardFragment
         paypalEmailText = (ServerValidatedEmailText) view.findViewById(R.id.settings_paypal_email_text);
         // HACK: force this email to focus instead of the TabHost stealing focus..
         paypalEmailText.setOnTouchListener(new FocusableOnTouchListener());
-
-        UserBaseDTO dto = THUser.getCurrentUserBase();
-        UserBaseKey baseKey = new UserBaseKey(dto.id);
         userProfileCache.get()
-                .getOrFetch(baseKey, false, new DTOCache.Listener<UserBaseKey, UserProfileDTO>()
+                .getOrFetch(currentUserBaseKeyHolder.getCurrentUserBaseKey(), false, new DTOCache.Listener<UserBaseKey, UserProfileDTO>()
                 {
                     @Override
                     public void onDTOReceived(UserBaseKey key, UserProfileDTO value, boolean fromCache)

@@ -5,26 +5,22 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ListView;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
-import com.tradehero.th.api.users.UserBaseDTO;
+import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
 import com.tradehero.th.api.users.UserTransactionHistoryDTO;
-import com.tradehero.th.base.Application;
-import com.tradehero.th.base.THUser;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.network.service.UserService;
 import com.tradehero.th.utils.ProgressDialogUtil;
+import java.util.List;
+import javax.inject.Inject;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
-
-import javax.inject.Inject;
-import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -40,7 +36,8 @@ public class SettingsTransactionHistoryFragment extends DashboardFragment
     private ListView transactionListView;
     private SettingsTransactionHistoryAdapter transactionListViewAdapter;
     private ProgressDialog progressDialog;
-    @Inject UserService userService;
+    @Inject protected UserService userService;
+    @Inject protected CurrentUserBaseKeyHolder currentUserBaseKeyHolder;
 
     //<editor-fold desc="ActionBar">
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
@@ -59,12 +56,11 @@ public class SettingsTransactionHistoryFragment extends DashboardFragment
         transactionListViewAdapter = new SettingsTransactionHistoryAdapter(getActivity(), getActivity().getLayoutInflater(), R.layout.fragment_settings_transaction_history_adapter);
         transactionListView.setAdapter(transactionListViewAdapter);
 
-        UserBaseDTO userBase = THUser.getCurrentUserBase();
         progressDialog = ProgressDialogUtil.show(
                 getActivity(),
                 R.string.please_wait,
                 R.string.connecting_tradehero_only);
-        userService.getUserTransactions(userBase.id, new Callback<List<UserTransactionHistoryDTO>>()
+        userService.getUserTransactions(currentUserBaseKeyHolder.getCurrentUserBaseKey().key, new Callback<List<UserTransactionHistoryDTO>>()
         {
             @Override
             public void success(List<UserTransactionHistoryDTO> dtos, Response response)

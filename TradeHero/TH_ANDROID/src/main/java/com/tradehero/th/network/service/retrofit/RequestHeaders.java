@@ -1,6 +1,8 @@
 package com.tradehero.th.network.service.retrofit;
 
+import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.th.base.THUser;
+import com.tradehero.th.persistence.prefs.SessionToken;
 import com.tradehero.th.utils.Constants;
 import javax.inject.Inject;
 import retrofit.RequestInterceptor;
@@ -11,6 +13,8 @@ import retrofit.RequestInterceptor;
 
 public class RequestHeaders implements RequestInterceptor
 {
+    @Inject @SessionToken StringPreference currentSessionToken;
+
     @Inject public RequestHeaders()
     {
         super();
@@ -19,7 +23,7 @@ public class RequestHeaders implements RequestInterceptor
     @Override
     public void intercept(RequestFacade request)
     {
-        if (THUser.hasSessionToken())
+        if (currentSessionToken.isSet())
         {
             buildAuthorizationHeader(request);
         }

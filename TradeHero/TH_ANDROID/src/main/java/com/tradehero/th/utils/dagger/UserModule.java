@@ -5,6 +5,7 @@ import com.tradehero.th.api.competition.ProviderConstants;
 import com.tradehero.th.api.portfolio.DisplayablePortfolioUtil;
 import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
 import com.tradehero.th.loaders.FriendListLoader;
+import com.tradehero.th.persistence.social.VisitedFriendListPrefs;
 import com.tradehero.th.persistence.user.AbstractUserStore;
 import com.tradehero.th.persistence.user.UserManager;
 import com.tradehero.th.persistence.user.UserStore;
@@ -27,6 +28,7 @@ import javax.inject.Singleton;
         staticInjections = {
                 ProviderConstants.class,
                 DisplayablePortfolioUtil.class,
+                VisitedFriendListPrefs.class,
         },
         complete = false
 )

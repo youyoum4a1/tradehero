@@ -19,6 +19,7 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.tradehero.common.cache.LruMemFileCache;
 import com.tradehero.common.milestone.Milestone;
+import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.common.utils.SlowedAsyncTask;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
@@ -48,6 +49,7 @@ import com.tradehero.th.models.push.PushNotificationManager;
 import com.tradehero.th.network.service.SessionService;
 import com.tradehero.th.network.service.SocialService;
 import com.tradehero.th.network.service.UserServiceWrapper;
+import com.tradehero.th.persistence.prefs.AuthenticationType;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.persistence.user.UserProfileRetrievedMilestone;
 import com.tradehero.th.utils.DaggerUtils;
@@ -77,6 +79,7 @@ public class SettingsFragment extends PreferenceFragment
     @Inject protected PushNotificationManager pushNotificationManager;
     @Inject protected LruMemFileCache lruCache;
     @Inject protected PurchaseRestorerAlertUtil purchaseRestorerAlertUtil;
+    @Inject @AuthenticationType protected StringPreference currentAuthenticationType;
 
     @Inject protected Lazy<FacebookUtils> facebookUtils;
     @Inject protected Lazy<TwitterUtils> twitterUtils;
@@ -554,7 +557,7 @@ public class SettingsFragment extends PreferenceFragment
                     new SocialNetworkFormDTO(socialNetwork),
                     createSocialDisconnectCallback());
 
-            if (socialNetwork.getAuthenticationHeader().equals(THUser.getCurrentAuthenticationType()))
+            if (socialNetwork.getAuthenticationHeader().equals(currentAuthenticationType.get()))
             {
                 effectSignOut();
             }

@@ -1,7 +1,6 @@
 package com.tradehero.th.fragments.settings;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -17,13 +16,16 @@ import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
+import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.form.UserFormFactory;
+import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
 import com.tradehero.th.api.users.UserBaseDTO;
+import com.tradehero.th.api.users.UserBaseKey;
+import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.auth.EmailAuthenticationProvider;
-import com.tradehero.th.base.Application;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.base.NavigatorActivity;
@@ -31,13 +33,16 @@ import com.tradehero.th.base.THUser;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.misc.callback.LogInCallback;
 import com.tradehero.th.misc.exception.THException;
+import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.NetworkUtils;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.widget.ValidationListener;
 import com.tradehero.th.widget.ValidationMessage;
+import dagger.Lazy;
 import java.util.HashMap;
 import java.util.Map;
+import javax.inject.Inject;
 import org.json.JSONObject;
 
 public class SettingsProfileFragment extends DashboardFragment implements View.OnClickListener, ValidationListener
@@ -54,6 +59,10 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
     private String selectedPath = null;
     private Bitmap imageBmp;
     private static final int REQUEST_GALLERY = 111;
+
+    @Inject protected CurrentUserBaseKeyHolder currentUserBaseKeyHolder;
+    @Inject protected Lazy<UserProfileCache> userProfileCache;
+    private DTOCache.GetOrFetchTask<UserBaseKey, UserProfileDTO> fetchUserProfileTask;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -165,6 +174,7 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
             profileView.setNullOnFields();
         }
         profileView = null;
+        userProfileCallback = null;
         super.onDestroyView();
     }
 
@@ -217,10 +227,13 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
 
     private void populateCurrentUser()
     {
-        UserBaseDTO currentUserBase = THUser.getCurrentUserBase();
+        if (fetchUserProfileTask != null)
+        {
+            fetchUserProfileTask.setListener(null);
+        }
 
-        this.updateButton.setText(getString(R.string.settings_update_profile));
-        this.profileView.populate(currentUserBase);
+        fetchUserProfileTask = userProfileCache.get().getOrFetch(currentUserBaseKeyHolder.getCurrentUserBaseKey(), false, userProfileCallback);
+        fetchUserProfileTask.execute();
         this.profileView.populateCredentials(THUser.currentCredentials());
     }
 
@@ -291,7 +304,18 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
         }
     }
 
+    private DTOCache.Listener<UserBaseKey, UserProfileDTO> userProfileCallback = new DTOCache.Listener<UserBaseKey, UserProfileDTO>()
+    {
+        @Override public void onDTOReceived(UserBaseKey key, UserProfileDTO value, boolean fromCache)
+        {
+            SettingsProfileFragment.this.profileView.populate(value);
+        }
 
+        @Override public void onErrorThrown(UserBaseKey key, Throwable error)
+        {
+            THToast.show(new THException(error));
+        }
+    };
 }
 
 
