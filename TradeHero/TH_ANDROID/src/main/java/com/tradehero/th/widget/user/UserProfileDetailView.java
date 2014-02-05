@@ -9,6 +9,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
@@ -16,6 +18,7 @@ import com.squareup.picasso.Transformation;
 import com.tradehero.common.graphics.FastBlurTransformation;
 import com.tradehero.common.graphics.GradientTransformation;
 import com.tradehero.common.graphics.GrayscaleTransformation;
+import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.users.UserProfileDTO;
@@ -28,67 +31,47 @@ import java.text.SimpleDateFormat;
 import javax.inject.Inject;
 
 /** Created with IntelliJ IDEA. User: tho Date: 9/10/13 Time: 6:34 PM Copyright (c) TradeHero */
-public class ProfileView extends LinearLayout implements DTOView<UserProfileDTO>
+public class UserProfileDetailView extends LinearLayout implements DTOView<UserProfileDTO>
 {
-    private static final String TAG = ProfileView.class.getName();
+    private static final String TAG = UserProfileDetailView.class.getName();
     @Inject protected Picasso picasso;
     @Inject @ForUserPhoto protected Transformation peopleIconTransformation;
 
-    private ImageView avatar;
-    private LinearLayout profileTop;
-    private TextView roiSinceInception;
-    //private TextView hqSinceInception;
-    private TextView plSinceInception;
-    private TextView memberSince;
-    private TextView totalWealth;
-    private TextView additionalCash;
+    private UserProfileDTO userProfileDTO;
 
-    private TextView cashOnHand;
-    private TextView followersCount;
-    private TextView heroesCount;
-    private TextView tradesCount;
-    private TextView exchangesCount;
+    @InjectView(R.id.user_profile_avatar) ImageView avatar;
+    @InjectView(R.id.profile_screen_user_detail_top) LinearLayout profileTop;
+    @InjectView(R.id.txt_roi) TextView roiSinceInception;
+    //@InjectView(R.id.txt_hero_quotient) TextView hqSinceInception;
+    @InjectView(R.id.txt_profile_tradeprofit) TextView plSinceInception;
+    @InjectView(R.id.txt_member_since) TextView memberSince;
+    @InjectView(R.id.txt_total_wealth) TextView totalWealth;
+    @InjectView(R.id.txt_additional_cash) TextView additionalCash;
 
-    private ImageView btnDefaultPortfolio;
-    private boolean initiated;
+    @InjectView(R.id.txt_cash_on_hand) TextView cashOnHand;
+    @InjectView(R.id.user_profile_followers_count) TextView followersCount;
+    @InjectView(R.id.user_profile_heroes_count) TextView heroesCount;
+    @InjectView(R.id.user_profile_trade_count) TextView tradesCount;
+    @InjectView(R.id.user_profile_exchanges_count) TextView exchangesCount;
+
+    @InjectView(R.id.btn_user_profile_default_portfolio) ImageView btnDefaultPortfolio;
+    @InjectView(R.id.user_profile_display_name) TextView userName;
+
     private WeakReference<PortfolioRequestListener> portfolioRequestListener = new WeakReference<>(null);
-    private TextView userName;
-
-    private Target topBackgroundTarget = new Target()
-    {
-        @Override public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from)
-        {
-            if (profileTop != null)
-            {
-                profileTop.setBackgroundDrawable(new BitmapDrawable(getResources(), bitmap));
-                // only available since API level 16
-                // profileTop.setBackground(new BitmapDrawable(getResources(), bitmap));
-            }
-        }
-
-        @Override public void onBitmapFailed(Drawable errorDrawable)
-        {
-
-        }
-
-        @Override public void onPrepareLoad(Drawable placeHolderDrawable)
-        {
-
-        }
-    };
+    private Runnable displayTopViewBackgroundRunnable;
 
     //<editor-fold desc="Constructors">
-    public ProfileView(Context context)
+    public UserProfileDetailView(Context context)
     {
         this(context, null);
     }
 
-    public ProfileView(Context context, AttributeSet attrs)
+    public UserProfileDetailView(Context context, AttributeSet attrs)
     {
         this(context, attrs, 0);
     }
 
-    public ProfileView(Context context, AttributeSet attrs, int defStyle)
+    public UserProfileDetailView(Context context, AttributeSet attrs, int defStyle)
     {
         super(context, attrs, defStyle);
     }
@@ -97,37 +80,50 @@ public class ProfileView extends LinearLayout implements DTOView<UserProfileDTO>
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
+        ButterKnife.inject(this);
+        DaggerUtils.inject(this);
         init();
     }
 
     @Override protected void onDetachedFromWindow()
     {
         btnDefaultPortfolio.setOnClickListener(null);
+        profileTop.removeCallbacks(displayTopViewBackgroundRunnable);
+        displayTopViewBackgroundRunnable = null;
         super.onDetachedFromWindow();
+    }
+
+    @Override protected void onAttachedToWindow()
+    {
+        super.onAttachedToWindow();
+
+        THLog.d(TAG, "onAttachedToWindow");
+
+        displayTopViewBackgroundRunnable = new Runnable()
+        {
+            @Override public void run()
+            {
+                if (userProfileDTO != null && profileTop.getWidth() > 0 && profileTop.getHeight() > 0)
+                {
+                    picasso
+                            .load(userProfileDTO.picture)
+                            .transform(new GrayscaleTransformation())
+                            .transform(new FastBlurTransformation(30))
+                            .transform(new GradientTransformation(
+                                    getResources().getColor(R.color.profile_view_gradient_top),
+                                    getResources().getColor(R.color.profile_view_gradient_bottom)))
+                            .resize(profileTop.getWidth(), profileTop.getHeight())
+                            .centerCrop()
+                            .into(topBackgroundTarget);
+                }
+
+            }
+        };
+        post(displayTopViewBackgroundRunnable);
     }
 
     private void init()
     {
-        if (initiated) return;
-        initiated = true;
-
-        profileTop = (LinearLayout) findViewById(R.id.profile_screen_user_detail_top);
-        avatar = (ImageView) findViewById(R.id.user_profile_avatar);
-        userName = (TextView) findViewById(R.id.user_profile_display_name);
-
-        roiSinceInception = (TextView) findViewById(R.id.txt_roi);
-        //hqSinceInception = (TextView) findViewById(R.id.txt_hero_quotient);
-        plSinceInception = (TextView) findViewById(R.id.txt_profile_tradeprofit);
-        memberSince = (TextView) findViewById(R.id.txt_member_since);
-        totalWealth = (TextView) findViewById(R.id.txt_total_wealth);
-        additionalCash = (TextView) findViewById(R.id.txt_additional_cash);
-        cashOnHand = (TextView) findViewById(R.id.txt_cash_on_hand);
-
-        followersCount = (TextView) findViewById(R.id.user_profile_followers_count);
-        heroesCount = (TextView) findViewById(R.id.user_profile_heroes_count);
-        tradesCount = (TextView) findViewById(R.id.user_profile_trade_count);
-        exchangesCount = (TextView) findViewById(R.id.user_profile_exchanges_count);
-        btnDefaultPortfolio = (ImageView) findViewById(R.id.btn_user_profile_default_portfolio);
         if (btnDefaultPortfolio != null)
         {
             btnDefaultPortfolio.setOnClickListener(new OnClickListener()
@@ -138,12 +134,21 @@ public class ProfileView extends LinearLayout implements DTOView<UserProfileDTO>
                 }
             });
         }
+    }
 
-        DaggerUtils.inject(this);
+    @Override public void setVisibility(int visibility)
+    {
+        super.setVisibility(visibility);
+
+        if (visibility == VISIBLE && displayTopViewBackgroundRunnable != null)
+        {
+            profileTop.post(displayTopViewBackgroundRunnable);
+        }
     }
 
     @Override public void display(final UserProfileDTO dto)
     {
+        this.userProfileDTO = dto;
         if (dto == null)
         {
             loadDefaultPicture();
@@ -167,23 +172,6 @@ public class ProfileView extends LinearLayout implements DTOView<UserProfileDTO>
                         loadDefaultPicture();
                     }
                 });
-
-            profileTop.post(new Runnable()
-            {
-                @Override public void run()
-                {
-                    picasso
-                            .load(dto.picture)
-                            .transform(new GrayscaleTransformation())
-                            .transform(new FastBlurTransformation(30))
-                            .transform(new GradientTransformation(
-                                    getResources().getColor(R.color.profile_view_gradient_top),
-                                    getResources().getColor(R.color.profile_view_gradient_bottom)))
-                            .resize(profileTop.getWidth(), profileTop.getHeight())
-                            .centerCrop()
-                            .into(topBackgroundTarget);
-                }
-            });
         }
 
         if (dto.portfolio != null)
@@ -293,4 +281,28 @@ public class ProfileView extends LinearLayout implements DTOView<UserProfileDTO>
             listener.onDefaultPortfolioRequested();
         }
     }
+
+
+    private Target topBackgroundTarget = new Target()
+    {
+        @Override public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from)
+        {
+            if (profileTop != null)
+            {
+                profileTop.setBackgroundDrawable(new BitmapDrawable(getResources(), bitmap));
+                // only available since API level 16
+                // profileTop.setBackground(new BitmapDrawable(getResources(), bitmap));
+            }
+        }
+
+        @Override public void onBitmapFailed(Drawable errorDrawable)
+        {
+
+        }
+
+        @Override public void onPrepareLoad(Drawable placeHolderDrawable)
+        {
+
+        }
+    };
 }

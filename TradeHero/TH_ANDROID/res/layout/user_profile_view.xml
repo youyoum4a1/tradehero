@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<com.tradehero.th.fragments.timeline.UserProfileView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/user_profile_view"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:animateFirstView="true"
+    android:inAnimation="@anim/alpha_in"
+    android:outAnimation="@anim/alpha_out"
+    android:measureAllChildren="false"
+    >
+  <include layout="@layout/user_profile_compact_view" android:layout_width="match_parent" android:layout_height="wrap_content"/>
+  <include layout="@layout/user_profile_detail_view" android:layout_width="match_parent" android:layout_height="wrap_content"/>
+</com.tradehero.th.fragments.timeline.UserProfileView>

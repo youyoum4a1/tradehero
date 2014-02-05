@@ -1,23 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
+<com.tradehero.common.widget.BetterViewAnimator
     xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/timeline_screen"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/timeline_background_color"
     >
-  <!--android:paddingLeft="@dimen/dashboard_padding"-->
-  <!--android:paddingRight="@dimen/dashboard_padding"-->
-
   <ProgressBar
-      android:id="@android:id/empty"
+      android:id="@android:id/progress"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:gravity="center_horizontal"
+      android:layout_gravity="center"
     />
 
-  <com.tradehero.th.fragments.timeline.TimelineListView
+  <com.handmark.pulltorefresh.library.PullToRefreshListView
       xmlns:ptr="http://schemas.android.com/apk/res-auto"
-      android:id="@+id/pull_refresh_list"
+      android:id="@+id/timeline_list_view"
       android:layout_width="fill_parent"
       android:layout_height="fill_parent"
       android:paddingBottom="56dp"
@@ -34,4 +33,4 @@
       ptr:ptrMode="both"
       />
 
-</FrameLayout>
+</com.tradehero.common.widget.BetterViewAnimator>

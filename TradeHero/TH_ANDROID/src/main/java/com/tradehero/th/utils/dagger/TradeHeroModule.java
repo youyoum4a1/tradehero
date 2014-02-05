@@ -113,8 +113,8 @@ import com.tradehero.th.persistence.watchlist.WatchlistRetrievedMilestone;
 import com.tradehero.th.utils.NumberDisplayUtils;
 import com.tradehero.th.widget.MarkdownTextView;
 import com.tradehero.th.widget.ServerValidatedUsernameText;
-import com.tradehero.th.widget.user.ProfileCompactView;
-import com.tradehero.th.widget.user.ProfileView;
+import com.tradehero.th.widget.user.UserProfileCompactView;
+import com.tradehero.th.widget.user.UserProfileDetailView;
 import dagger.Module;
 import dagger.Provides;
 import javax.inject.Singleton;
@@ -217,8 +217,8 @@ import javax.inject.Singleton;
 
                         TimelineFragment.class,
                         TimelineItemView.class,
-                        ProfileView.class,
-                        ProfileCompactView.class,
+                        UserProfileDetailView.class,
+                        UserProfileCompactView.class,
 
                         LeaderboardCommunityFragment.class,
                         LeaderboardDefListViewFragment.class,

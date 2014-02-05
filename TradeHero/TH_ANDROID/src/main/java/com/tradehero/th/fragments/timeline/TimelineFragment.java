@@ -1,20 +1,22 @@
 package com.tradehero.th.fragments.timeline;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
+import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.tradehero.common.milestone.Milestone;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
+import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.LoaderDTOAdapter;
-import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.local.TimelineItem;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.OwnedPortfolioIdList;
@@ -34,15 +36,12 @@ import com.tradehero.th.persistence.portfolio.PortfolioCompactListRetrievedMiles
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.persistence.user.UserProfileRetrievedMilestone;
 import com.tradehero.th.utils.Constants;
-import com.tradehero.th.widget.StepView;
-import com.tradehero.th.widget.user.ProfileCompactView;
-import com.tradehero.th.widget.user.ProfileView;
 import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
 
 public class TimelineFragment extends BasePurchaseManagerFragment
-        implements StepView.StepProvider, PortfolioRequestListener
+        implements PortfolioRequestListener
 {
     public static final String TAG = TimelineFragment.class.getSimpleName();
     public static final String BUNDLE_KEY_SHOW_USER_ID =
@@ -52,9 +51,11 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     @Inject protected Lazy<PortfolioCompactListCache> portfolioCompactListCache;
     @Inject protected Lazy<UserProfileCache> userProfileCache;
 
+    @InjectView(R.id.timeline_list_view) PullToRefreshListView timelineListView;
+    @InjectView(R.id.timeline_screen) BetterViewAnimator timelineScreen;
+    private UserProfileView userProfileView;
+
     private TimelineAdapter timelineAdapter;
-    private TimelineListView timelineListView;
-    private UserProfileStepView stepView;
     private ActionBar actionBar;
 
     protected UserBaseKey shownUserBaseKey;
@@ -63,19 +64,17 @@ public class TimelineFragment extends BasePurchaseManagerFragment
 
     protected UserProfileRetrievedMilestone userProfileRetrievedMilestone;
     protected PortfolioCompactListRetrievedMilestone portfolioCompactListRetrievedMilestone;
+    private int displayingProfileHeaderLayoutId;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.timeline_screen, container, false);
+        userProfileView = (UserProfileView) inflater.inflate(R.layout.user_profile_view, null);
+        ButterKnife.inject(this, view);
+
         initViews(view);
         return view;
-    }
-
-    @Override protected void initViews(View view)
-    {
-        this.timelineListView = (TimelineListView) view.findViewById(R.id.pull_refresh_list);
-        this.timelineListView.setEmptyView(view.findViewById(android.R.id.empty));
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
@@ -105,26 +104,38 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         return super.onOptionsItemSelected(item);
     }
 
+    @Override protected void initViews(View view)
+    {
+        userProfileView.setOnClickListener(new View.OnClickListener()
+        {
+            @Override public void onClick(View v)
+            {
+                userProfileView.getChildAt(userProfileView.getDisplayedChild()).setVisibility(View.GONE);
+                userProfileView.showNext();
+                userProfileView.getChildAt(userProfileView.getDisplayedChild()).setVisibility(View.VISIBLE);
+            }
+        });
+    }
+
     @Override public void onResume()
     {
         super.onResume();
-
-        // && this.timelineListView.getRefreshableView().getHeaderViewsCount() == 1
-        if (this.timelineListView != null)
+        if (displayingProfileHeaderLayoutId != 0)
         {
-            timelineListView.getRefreshableView().removeHeaderView(stepView);
-            // TODO retain state for stepView
-            stepView = new UserProfileStepView(getActivity(), getActivity().getLayoutInflater());
-            stepView.setStepProvider(this);
-            timelineListView.getRefreshableView().addHeaderView(stepView);
+            userProfileView.setDisplayedChildByLayoutId(displayingProfileHeaderLayoutId);
         }
 
-        UserBaseKey newUserBaseKey =
-                new UserBaseKey(getArguments().getInt(BUNDLE_KEY_SHOW_USER_ID));
+        UserBaseKey newUserBaseKey = new UserBaseKey(getArguments().getInt(BUNDLE_KEY_SHOW_USER_ID));
         linkWith(newUserBaseKey, true);
 
         getActivity().getSupportLoaderManager()
                 .initLoader(timelineAdapter.getLoaderId(), null, timelineAdapter.getLoaderCallback());
+    }
+
+    @Override public void onPause()
+    {
+        displayingProfileHeaderLayoutId = userProfileView.getDisplayedChildLayoutId();
+        super.onPause();
     }
 
     @Override public void onDestroyOptionsMenu()
@@ -145,7 +156,8 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     {
         this.shownUserBaseKey = userBaseKey;
 
-        this.timelineAdapter = createTimelineAdapter();
+        timelineListView.getRefreshableView().addHeaderView(userProfileView);
+        timelineAdapter = createTimelineAdapter();
         timelineListView.setAdapter(timelineAdapter);
         timelineListView.setOnRefreshListener(timelineAdapter);
         timelineListView.setOnScrollListener(timelineAdapter);
@@ -186,7 +198,8 @@ public class TimelineFragment extends BasePurchaseManagerFragment
 
     protected void updateView()
     {
-        stepView.display(shownProfile);
+        timelineScreen.setDisplayedChildByLayoutId(R.id.timeline_list_view);
+        userProfileView.display(shownProfile);
         if (this.actionBar != null)
         {
             this.actionBar.setTitle(UserBaseDTOUtil.getLongDisplayName(getActivity(), shownProfile));
@@ -243,29 +256,6 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         TimelineListLoader timelineLoader = new TimelineListLoader(getActivity(), shownUserBaseKey);
         timelineLoader.setPerPage(Constants.TIMELINE_ITEM_PER_PAGE);
         return timelineLoader;
-    }
-    //</editor-fold>
-
-    //<editor-fold desc="StepView.StepProvider">
-    @Override public View provideView(int step)
-    {
-        switch (step)
-        {
-            case 0:
-                ProfileCompactView profileCompactView =
-                        (ProfileCompactView) getActivity().getLayoutInflater()
-                                .inflate(R.layout.profile_screen_user_compact, null);
-                profileCompactView.display(shownProfile);
-                profileCompactView.setPortfolioRequestListener(this);
-                return profileCompactView;
-            case 1:
-                ProfileView profileView = (ProfileView) getActivity().getLayoutInflater()
-                        .inflate(R.layout.profile_screen_user_detail, null);
-                profileView.display(shownProfile);
-                profileView.setPortfolioRequestListener(this);
-                return profileView;
-        }
-        return null;
     }
     //</editor-fold>
 
@@ -346,29 +336,4 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         return false;
     }
     //</editor-fold>
-
-    private static class UserProfileStepView extends StepView implements DTOView<UserProfileDTO>
-    {
-        public UserProfileStepView(Context context, LayoutInflater layoutInflater, View startingView)
-        {
-            super(context, layoutInflater, startingView);
-        }
-
-        public UserProfileStepView(Context context, LayoutInflater layoutInflater)
-        {
-            super(context, layoutInflater);
-        }
-
-        @Override public void display(UserProfileDTO shownProfile)
-        {
-            View currentStep = getCurrentStep();
-            if (currentStep != null)
-            {
-                if (currentStep instanceof DTOView)
-                {
-                    ((DTOView<UserProfileDTO>) currentStep).display(shownProfile);
-                }
-            }
-        }
-    }
 }

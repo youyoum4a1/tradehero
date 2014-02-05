@@ -26,7 +26,7 @@ import java.lang.ref.WeakReference;
 import javax.inject.Inject;
 
 /** Created with IntelliJ IDEA. User: tho Date: 10/17/13 Time: 12:51 PM Copyright (c) TradeHero */
-public class ProfileCompactView extends RelativeLayout implements DTOView<UserProfileDTO>
+public class UserProfileCompactView extends RelativeLayout implements DTOView<UserProfileDTO>
 {
     private ImageView avatar;
 
@@ -42,17 +42,17 @@ public class ProfileCompactView extends RelativeLayout implements DTOView<UserPr
     private WeakReference<PortfolioRequestListener> portfolioRequestListener = new WeakReference<>(null);
 
     //<editor-fold desc="Constructors">
-    public ProfileCompactView(Context context)
+    public UserProfileCompactView(Context context)
     {
         this(context, null);
     }
 
-    public ProfileCompactView(Context context, AttributeSet attrs)
+    public UserProfileCompactView(Context context, AttributeSet attrs)
     {
         this(context, attrs, 0);
     }
 
-    public ProfileCompactView(Context context, AttributeSet attrs, int defStyle)
+    public UserProfileCompactView(Context context, AttributeSet attrs, int defStyle)
     {
         super(context, attrs, defStyle);
         init();

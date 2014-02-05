@@ -25,12 +25,18 @@ public class BetterViewAnimator extends ViewAnimator
 
     public void setDisplayedChildByLayoutId(int childLayoutId)
     {
+        if (getDisplayedChildLayoutId() == childLayoutId)
+        {
+            return;
+        }
+
         for (int i = 0; i < getChildCount(); ++i)
         {
             View child = getChildAt(i);
             if (child != null && childLayoutId == child.getId())
             {
                 super.setDisplayedChild(i);
+                return;
             }
         }
     }
@@ -47,4 +53,6 @@ public class BetterViewAnimator extends ViewAnimator
             return 0;
         }
     }
+
+
 }
