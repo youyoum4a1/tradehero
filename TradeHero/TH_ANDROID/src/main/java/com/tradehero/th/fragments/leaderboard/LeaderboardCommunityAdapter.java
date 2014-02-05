@@ -81,7 +81,7 @@ public class LeaderboardCommunityAdapter extends ArrayDTOAdapter<LeaderboardDefK
     {
         List<LeaderboardDefKey> skillAndFriend = typeMap.get(LeaderboardCommunityType.SkillAndFriend);
         
-        if (skillAndFriend != null && leaderboardDefCache.get().get(new LeaderboardDefKey(LeaderboardDefDTO.LEADERBOARD_FRIEND_ID)) == null)
+        if (skillAndFriend != null && skillAndFriend.size() < 2)
         {
             LeaderboardDefDTO fakeDto = new LeaderboardDefDTO();
             fakeDto.id = LeaderboardDefDTO.LEADERBOARD_FRIEND_ID;

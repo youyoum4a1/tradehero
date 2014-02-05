@@ -1,0 +1,50 @@
+package com.tradehero.common.widget;
+
+import android.content.Context;
+import android.os.Parcelable;
+import android.util.AttributeSet;
+import android.view.View;
+import android.widget.ViewAnimator;
+
+/**
+ * Created with IntelliJ IDEA. User: tho Date: 2/5/14 Time: 2:20 PM Copyright (c) TradeHero
+ */
+public class BetterViewAnimator extends ViewAnimator
+{
+    //region Constructors
+    public BetterViewAnimator(Context context)
+    {
+        super(context);
+    }
+
+    public BetterViewAnimator(Context context, AttributeSet attrs)
+    {
+        super(context, attrs);
+    }
+    //endregion
+
+    public void setDisplayedChildByLayoutId(int childLayoutId)
+    {
+        for (int i = 0; i < getChildCount(); ++i)
+        {
+            View child = getChildAt(i);
+            if (child != null && childLayoutId == child.getId())
+            {
+                super.setDisplayedChild(i);
+            }
+        }
+    }
+
+    public int getDisplayedChildLayoutId()
+    {
+        View displayedChild = getChildAt(getDisplayedChild());
+        if (displayedChild != null)
+        {
+            return displayedChild.getId();
+        }
+        else
+        {
+            return 0;
+        }
+    }
+}

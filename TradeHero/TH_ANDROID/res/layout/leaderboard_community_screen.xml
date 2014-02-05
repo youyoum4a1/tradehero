@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<ViewAnimator
+<com.tradehero.common.widget.BetterViewAnimator
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res/com.tradehero.th"
     android:id="@+id/community_screen"
@@ -10,6 +10,7 @@
     >
 
   <ProgressBar
+      android:id="@android:id/progress"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_gravity="center"
@@ -21,6 +22,5 @@
       android:layout_width="match_parent"
       app:hasStickyHeaders="false"
       />
-
-</ViewAnimator>
+</com.tradehero.common.widget.BetterViewAnimator>
 

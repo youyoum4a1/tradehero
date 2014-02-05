@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ViewAnimator;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.actionbarsherlock.app.ActionBar;
@@ -18,6 +17,7 @@ import com.tradehero.common.milestone.Milestone;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
+import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.ProviderConstants;
 import com.tradehero.th.api.competition.ProviderDTO;
@@ -59,7 +59,7 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
     @Inject protected Picasso picasso;
     @Inject protected CurrentUserBaseKeyHolder currentUserBaseKeyHolder;
 
-    @InjectView(R.id.community_screen) ViewAnimator communityScreen;
+    @InjectView(R.id.community_screen) BetterViewAnimator communityScreen;
     @InjectView(android.R.id.list) StickyListHeadersListView leaderboardDefListView;
     @Inject protected ProviderListRetrievedMilestone providerListRetrievedMilestone;
 
@@ -67,6 +67,7 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
     private THIntentPassedListener thIntentPassedListener;
     private WebViewFragment webFragment;
     private LeaderboardCommunityAdapter leaderboardDefListAdapter;
+    private int currentDisplayedChildLayoutId;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -89,6 +90,10 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
     {
         super.onResume();
 
+        if (currentDisplayedChildLayoutId != 0)
+        {
+            communityScreen.setDisplayedChildByLayoutId(currentDisplayedChildLayoutId);
+        }
         this.providerListRetrievedMilestone.launch();
         prepareAdapters();
         // We came back into view so we have to forget the web fragment
@@ -103,6 +108,12 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
     {
         super.onPause();
         leaderboardDefListView.setAdapter(null);
+        currentDisplayedChildLayoutId = communityScreen.getDisplayedChildLayoutId();
+    }
+
+    @Override public void onSaveInstanceState(Bundle outState)
+    {
+        super.onSaveInstanceState(outState);
     }
 
     private void detachLeaderboardDefListCacheFetchMostSkilledTask()
@@ -314,7 +325,7 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
 
     private void handleLeaderboardDefKeyListReceived()
     {
-        communityScreen.setDisplayedChild(1);
+        communityScreen.setDisplayedChildByLayoutId(android.R.id.list);
         leaderboardDefListAdapter.notifyDataSetChanged();
     }
 
