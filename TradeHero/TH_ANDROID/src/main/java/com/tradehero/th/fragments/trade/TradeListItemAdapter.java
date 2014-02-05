@@ -7,19 +7,15 @@ import android.view.ViewGroup;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.ExpandableDTOAdapter;
 import com.tradehero.th.adapters.ExpandableListItem;
-import com.tradehero.th.api.position.OwnedPositionId;
 import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.api.trade.OwnedTradeId;
 import com.tradehero.th.fragments.position.view.AbstractPositionView;
 import com.tradehero.th.fragments.position.view.PositionClosedView;
 import com.tradehero.th.fragments.position.view.PositionOpenView;
-import com.tradehero.th.persistence.position.PositionCache;
-import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.widget.list.BaseListHeaderView;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
-import javax.inject.Inject;
 
 /**
  * Created by julien on 23/10/13
@@ -40,12 +36,9 @@ public class TradeListItemAdapter extends ExpandableDTOAdapter<OwnedTradeId, Tra
     public static final int LAYOUT_RES_ID_POSITION_CLOSED = R.layout.position_closed_no_period;
     public static final int LAYOUT_RES_ID_ITEM_TRADE = R.layout.trade_list_item;
 
-    @Inject PositionCache positionCache;
-
     private List<Integer> itemTypes;
     private List<Object> objects;
 
-    private OwnedPositionId shownPositionId;
     private PositionDTO shownPositionDTO;
     private WeakReference<TradeListHeaderView.TradeListHeaderClickListener> parentTradeListHeaderClickListenerWeak = new WeakReference<>(null);
 
@@ -54,7 +47,6 @@ public class TradeListItemAdapter extends ExpandableDTOAdapter<OwnedTradeId, Tra
         super(context, inflater, LAYOUT_RES_ID_ITEM_TRADE);
         this.itemTypes = new ArrayList<>();
         this.objects = new ArrayList<>();
-        DaggerUtils.inject(this);
     }
 
     @Override public void setUnderlyingItems(final List<OwnedTradeId> underlyingItems)
@@ -93,7 +85,7 @@ public class TradeListItemAdapter extends ExpandableDTOAdapter<OwnedTradeId, Tra
             }
 
             itemTypesTemp.add(ITEM_TYPE_POSITION_SUMMARY);
-            objectsTemp.add(this.shownPositionId);
+            objectsTemp.add(this.shownPositionDTO);
 
             itemTypesTemp.add(ITEM_TYPE_HEADER_TRADE_HISTORY);
             objectsTemp.add(R.string.trade_list_header_history);
@@ -117,15 +109,9 @@ public class TradeListItemAdapter extends ExpandableDTOAdapter<OwnedTradeId, Tra
         return new ExpandableTradeItem(underlyingItem);
     }
 
-    public OwnedPositionId getShownPositionId()
+    public void setShownPositionDTO(PositionDTO positionDTO)
     {
-        return shownPositionId;
-    }
-
-    public void setShownPositionId(OwnedPositionId shownPositionId)
-    {
-        this.shownPositionId = shownPositionId;
-        this.shownPositionDTO = positionCache.get(shownPositionId);
+        this.shownPositionDTO = positionDTO;
     }
 
     /**
@@ -178,7 +164,7 @@ public class TradeListItemAdapter extends ExpandableDTOAdapter<OwnedTradeId, Tra
                     convertView = inflater.inflate(LAYOUT_RES_ID_BUTTONS, viewGroup, false);
                 }
                 ((TradeListHeaderView) convertView).setListener(parentTradeListHeaderClickListenerWeak.get());
-                ((TradeListHeaderView) convertView).bindOwnedPositionId(shownPositionId);
+                ((TradeListHeaderView) convertView).bindOwnedPositionId(shownPositionDTO);
                 break;
 
             case ITEM_TYPE_HEADER_POSITION_SUMMARY:

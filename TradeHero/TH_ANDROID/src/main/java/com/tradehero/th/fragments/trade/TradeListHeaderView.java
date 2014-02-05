@@ -4,11 +4,9 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import com.tradehero.th.R;
-import com.tradehero.th.api.position.OwnedPositionId;
 import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
@@ -30,7 +28,7 @@ public class TradeListHeaderView extends RelativeLayout
     @Inject Lazy<SecurityIdCache> securityIdCache;
     @Inject Lazy<SecurityCompactCache> securityCache;
 
-    private OwnedPositionId ownedPositionId;
+    private PositionDTO positionDTO;
     private String securityName;
     private TextView securityNameTextView;
     private Button buyButton;
@@ -86,7 +84,7 @@ public class TradeListHeaderView extends RelativeLayout
                     TradeListHeaderClickListener l = listener.get();
                     if (l != null)
                     {
-                        l.onBuyButtonClicked(TradeListHeaderView.this, ownedPositionId);
+                        l.onBuyButtonClicked(TradeListHeaderView.this);
                     }
                 }
             });
@@ -105,7 +103,7 @@ public class TradeListHeaderView extends RelativeLayout
                     TradeListHeaderClickListener l = listener.get();
                     if (l != null)
                     {
-                        l.onSellButtonClicked(TradeListHeaderView.this, ownedPositionId);
+                        l.onSellButtonClicked(TradeListHeaderView.this);
                     }
                 }
             });
@@ -125,23 +123,21 @@ public class TradeListHeaderView extends RelativeLayout
         super.onDetachedFromWindow();
     }
 
-    public void bindOwnedPositionId(OwnedPositionId ownedPositionId)
+    public void bindOwnedPositionId(PositionDTO positionDTO)
     {
-        this.ownedPositionId = ownedPositionId;
+        this.positionDTO = positionDTO;
 
-        PositionDTO position = positionCache.get().get(ownedPositionId);
-
-        if (position == null)
+        if (positionDTO == null)
         {
             return;
         }
 
-        if (position.isClosed())
+        if (positionDTO.isClosed())
         {
             this.sellButton.setVisibility(GONE);
         }
 
-        SecurityIntegerId securityIntegerId = position.getSecurityIntegerId();
+        SecurityIntegerId securityIntegerId = positionDTO.getSecurityIntegerId();
 
         if (securityIntegerId == null)
         {
@@ -172,11 +168,6 @@ public class TradeListHeaderView extends RelativeLayout
         }
     }
 
-    public OwnedPositionId getOwnedPositionId()
-    {
-        return ownedPositionId;
-    }
-
     public TradeListHeaderClickListener getListener()
     {
         return listener.get();
@@ -193,7 +184,7 @@ public class TradeListHeaderView extends RelativeLayout
 
     public static interface TradeListHeaderClickListener
     {
-        public void onBuyButtonClicked(TradeListHeaderView tradeListHeaderView, OwnedPositionId ownedPositionId);
-        public void onSellButtonClicked(TradeListHeaderView tradeListHeaderView, OwnedPositionId ownedPositionId);
+        public void onBuyButtonClicked(TradeListHeaderView tradeListHeaderView);
+        public void onSellButtonClicked(TradeListHeaderView tradeListHeaderView);
     }
 }

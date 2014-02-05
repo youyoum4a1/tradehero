@@ -180,12 +180,12 @@ public class TradeListItemView extends LinearLayout implements DTOView<TradeList
             this.realizedPLTextView.setTextColor(getResources().getColor(ColorUtils.getColorResourceForNumber(trade.realized_pl_after_trade)));
         }
 
-        if (this.unrealizedPLContainer != null)
+        if (this.unrealizedPLContainer != null && tradeItem != null && position != null)
         {
             this.unrealizedPLContainer.setVisibility(tradeItem.isLastTrade() && position.isClosed() ? GONE : VISIBLE);
         }
 
-        if (this.unrealizedPLTextView != null)
+        if (this.unrealizedPLTextView != null && tradeItem != null && position != null)
         {
             if (tradeItem.isLastTrade() && position.isClosed())
             {
@@ -199,17 +199,17 @@ public class TradeListItemView extends LinearLayout implements DTOView<TradeList
             }
         }
 
-        if (this.positionQuantityTextView != null)
+        if (this.positionQuantityTextView != null && trade != null)
         {
             String quantityAfterTradeString = String.format("%,d", trade.quantity_after_trade);
             this.positionQuantityTextView.setText(quantityAfterTradeString);
         }
 
-        if (this.commentSection != null)
+        if (this.commentSection != null && trade != null)
         {
             this.commentSection.setVisibility( trade.commentText == null ? GONE : VISIBLE);
         }
-        if (this.commentTextView != null)
+        if (this.commentTextView != null && trade != null)
         {
             this.commentTextView.setText(trade.commentText);
         }
@@ -243,7 +243,11 @@ public class TradeListItemView extends LinearLayout implements DTOView<TradeList
 
     private double getNumberToDisplay()
     {
-        if (tradeItem.isLastTrade() && !position.isClosed())
+        if (tradeItem == null || position == null)
+        {
+            return 0;
+        }
+        else if (tradeItem.isLastTrade() && !position.isClosed())
         {
            return position.unrealizedPLRefCcy;
         }

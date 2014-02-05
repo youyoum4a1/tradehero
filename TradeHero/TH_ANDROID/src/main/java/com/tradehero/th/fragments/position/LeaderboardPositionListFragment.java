@@ -12,7 +12,7 @@ import com.tradehero.th.api.leaderboard.position.GetLeaderboardPositionsDTO;
 import com.tradehero.th.api.leaderboard.position.LeaderboardMarkUserId;
 import com.tradehero.th.api.position.PositionInPeriodDTO;
 import com.tradehero.th.billing.googleplay.THIABActor;
-import com.tradehero.th.fragments.trade.TradeListFragment;
+import com.tradehero.th.fragments.trade.TradeListInPeriodFragment;
 import com.tradehero.th.persistence.leaderboard.position.GetLeaderboardPositionsCache;
 import dagger.Lazy;
 import javax.inject.Inject;
@@ -115,8 +115,8 @@ public class LeaderboardPositionListFragment
     {
         // We should not call the super method.
         Bundle args = new Bundle();
-        args.putBundle(TradeListFragment.BUNDLE_KEY_OWNED_LEADERBOARD_POSITION_ID_BUNDLE, clickedPositionDTO.getLbOwnedPositionId().getArgs());
-        navigator.pushFragment(TradeListFragment.class, args);
+        args.putBundle(TradeListInPeriodFragment.BUNDLE_KEY_OWNED_LEADERBOARD_POSITION_ID_BUNDLE, clickedPositionDTO.getLbOwnedPositionId().getArgs());
+        navigator.pushFragment(TradeListInPeriodFragment.class, args);
     }
 
     protected class GetLeaderboardPositionsListener extends AbstractGetPositionsListener<LeaderboardMarkUserId, PositionInPeriodDTO, GetLeaderboardPositionsDTO>

@@ -6,6 +6,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 import com.tradehero.th.R;
@@ -16,13 +18,12 @@ import com.tradehero.th.api.security.SecurityIntegerId;
 import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.models.graphics.ForUserPhoto;
-import com.tradehero.th.persistence.position.PositionCache;
 import com.tradehero.th.persistence.security.SecurityIdCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
-import javax.inject.Inject;
 import java.lang.ref.WeakReference;
+import javax.inject.Inject;
 
 /**
  * Created by julien on 28/10/13
@@ -31,16 +32,13 @@ public class TradeListOverlayHeaderView extends LinearLayout
 {
     @Inject @ForUserPhoto protected Transformation peopleIconTransformation;
     @Inject Lazy<Picasso> picasso;
-    @Inject Lazy<PositionCache> positionCache;
     @Inject Lazy<SecurityIdCache> securityIdCache;
     @Inject Lazy<UserProfileCache> userCache;
 
-    private OwnedPositionId ownedPositionId;
-    private TextView usernameTextView;
-    private ImageView imageProfile;
-    private TextView qualifiedSecuritySymbol;
-
-    private LinearLayout righSection;
+    @InjectView(R.id.trade_history_header_username) protected TextView usernameTextView;
+    @InjectView(R.id.trade_history_header_image) protected ImageView imageProfile;
+    @InjectView(R.id.trade_history_header_security_symbol) protected TextView qualifiedSecuritySymbol;
+    @InjectView(R.id.trade_history_header_right_section) protected View righSection;
 
     private PositionDTO position;
     private SecurityId securityId;
@@ -70,15 +68,7 @@ public class TradeListOverlayHeaderView extends LinearLayout
     {
         super.onFinishInflate();
         DaggerUtils.inject(this);
-        initViews();
-    }
-
-    private void initViews()
-    {
-        usernameTextView = (TextView) findViewById(R.id.trade_history_header_username);
-        imageProfile = (ImageView) findViewById(R.id.trade_history_header_image);
-        qualifiedSecuritySymbol = (TextView) findViewById(R.id.trade_history_header_security_symbol);
-        righSection = (LinearLayout) findViewById(R.id.trade_history_header_right_section);
+        ButterKnife.inject(this);
     }
 
     @Override protected void onAttachedToWindow()
@@ -91,7 +81,7 @@ public class TradeListOverlayHeaderView extends LinearLayout
                 Listener l = listener.get();
                 if (l != null)
                 {
-                    l.onUserClicked(TradeListOverlayHeaderView.this, ownedPositionId.getUserBaseKey());
+                    l.onUserClicked(TradeListOverlayHeaderView.this, position.getUserBaseKey());
                 }
             }
         };
@@ -115,7 +105,7 @@ public class TradeListOverlayHeaderView extends LinearLayout
                     Listener l = listener.get();
                     if (l != null)
                     {
-                        l.onSecurityClicked(TradeListOverlayHeaderView.this, ownedPositionId);
+                        l.onSecurityClicked(TradeListOverlayHeaderView.this, position.getOwnedPositionId());
                     }
                 }
             });
@@ -142,11 +132,10 @@ public class TradeListOverlayHeaderView extends LinearLayout
         super.onDetachedFromWindow();
     }
 
-    public void bindOwnedPositionId(OwnedPositionId ownedPositionId)
+    public void bindOwnedPositionId(PositionDTO positionDTO)
     {
-        this.ownedPositionId = ownedPositionId;
-        this.user = userCache.get().get(ownedPositionId.getUserBaseKey());
-        this.position = positionCache.get().get(ownedPositionId);
+        this.user = userCache.get().get(positionDTO.getUserBaseKey());
+        this.position = positionDTO;
         SecurityIntegerId securityIntegerId = this.position.getSecurityIntegerId();
         this.securityId = this.securityIdCache.get().get(securityIntegerId);
         if (this.securityId != null)
