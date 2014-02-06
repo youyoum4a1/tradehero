@@ -14,6 +14,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginRight="2dp"
         android:layout_weight="0"
         style="@style/TH.SmallTitle"
         android:gravity="right"
@@ -55,6 +56,7 @@
       >
 
     <TextView
+        android:layout_marginRight="2dp"
         style="@style/TH.SmallTitle"
         android:gravity="right"
         android:text="@string/position_in_period_addtitional_invested"
@@ -76,6 +78,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginRight="2dp"
         android:layout_weight="0"
         style="@style/TH.SmallTitle"
         android:gravity="right"

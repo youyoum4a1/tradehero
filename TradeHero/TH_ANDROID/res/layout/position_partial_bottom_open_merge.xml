@@ -15,6 +15,7 @@
 
     <TextView
         android:id="@+id/unrealised_pl_header"
+        android:layout_marginRight="2dp"
         style="@style/TH.SmallTitle"
         android:gravity="right"
         android:text="@string/position_unrealised_pl_header"
@@ -36,6 +37,7 @@
 
     <TextView
         android:id="@+id/realised_pl_header"
+        android:layout_marginRight="2dp"
         style="@style/TH.SmallTitle"
         android:gravity="right"
         android:text="@string/position_realised_pl_header"
@@ -57,6 +59,7 @@
 
     <TextView
         android:id="@+id/total_invested_header"
+        android:layout_marginRight="2dp"
         style="@style/TH.SmallTitle"
         android:gravity="right"
         android:text="@string/position_total_invested_header"
@@ -78,6 +81,7 @@
 
     <TextView
         android:id="@+id/market_value_header"
+        android:layout_marginRight="2dp"
         style="@style/TH.SmallTitle"
         android:gravity="right"
         android:text="@string/position_market_value_header"
@@ -99,6 +103,7 @@
 
     <TextView
         android:id="@+id/quantity_header"
+        android:layout_marginRight="2dp"
         style="@style/TH.SmallTitle"
         android:gravity="right"
         android:text="@string/position_quantity_header"
@@ -120,6 +125,7 @@
 
     <TextView
         android:id="@+id/average_price_header"
+        android:layout_marginRight="2dp"
         style="@style/TH.SmallTitle"
         android:gravity="right"
         android:text="@string/position_average_price_header"

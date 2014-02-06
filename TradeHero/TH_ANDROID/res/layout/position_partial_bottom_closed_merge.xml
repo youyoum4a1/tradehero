@@ -15,6 +15,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginRight="2dp"
         android:layout_weight="0"
         android:gravity="right"
         style="@style/TH.SmallTitle"
@@ -57,6 +58,7 @@
     <TextView
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
+        android:layout_marginRight="2dp"
         style="@style/TH.SmallTitle"
         android:text="@string/position_total_invested_header"
         />
@@ -79,6 +81,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginRight="2dp"
         style="@style/TH.SmallTitle"
         android:gravity="right"
         android:text="@string/position_expanded_close_opened_date_header"
@@ -98,6 +101,7 @@
       >
 
     <TextView
+        android:layout_marginRight="2dp"
         style="@style/TH.SmallTitle"
         android:gravity="right"
         android:text="@string/position_expanded_close_closed_date_header"
@@ -117,6 +121,7 @@
       >
 
     <TextView
+        android:layout_marginRight="2dp"
         style="@style/TH.SmallTitle"
         android:gravity="right"
         android:text="@string/position_expanded_close_period_header"
