@@ -1,6 +1,5 @@
 package com.tradehero.th.fragments.alert;
 
-import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +16,7 @@ import com.tradehero.common.billing.googleplay.Constants;
 import com.tradehero.common.milestone.Milestone;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THToast;
+import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.th.R;
 import com.tradehero.th.api.alert.AlertId;
 import com.tradehero.th.api.alert.AlertIdList;
@@ -28,7 +28,6 @@ import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.persistence.alert.AlertCompactListCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.persistence.user.UserProfileRetrievedMilestone;
-import com.tradehero.th.utils.ProgressDialogUtil;
 import dagger.Lazy;
 import javax.inject.Inject;
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
@@ -40,7 +39,7 @@ public class AlertManagerFragment extends BasePurchaseManagerFragment
     public static final String BUNDLE_KEY_USER_ID = AlertManagerFragment.class.getName() + ".userId";
 
     @InjectView(R.id.manage_alerts_count) TextView alertPlanCount;
-    //@InjectView(R.id.icn_alert_plan_hint) ImageView planCountHint;
+    @InjectView(R.id.progress_animator) BetterViewAnimator progressAnimator;
     @InjectView(R.id.btn_upgrade_plan) ImageButton btnPlanUpgrade;
     @InjectView(R.id.alerts_list) StickyListHeadersListView alertListView;
 
@@ -50,7 +49,7 @@ public class AlertManagerFragment extends BasePurchaseManagerFragment
 
     private AlertListItemAdapter alertListItemAdapter;
     private DTOCache.GetOrFetchTask<UserBaseKey, AlertIdList> refreshAlertCompactListCacheTask;
-    private ProgressDialog progressDialog;
+    private int currentDisplayLayoutId;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -141,11 +140,22 @@ public class AlertManagerFragment extends BasePurchaseManagerFragment
 
     @Override public void onResume()
     {
-        progressDialog = ProgressDialogUtil.show(getActivity(), R.string.loading_loading, R.string.please_wait);
+        super.onResume();
+
+        if (currentDisplayLayoutId != 0)
+        {
+            progressAnimator.setDisplayedChildByLayoutId(currentDisplayLayoutId);
+        }
+
         refreshAlertCompactListCacheTask = alertCompactListCache.get().getOrFetch(
                 currentUserId.toUserBaseKey(), true, alertCompactListCallback);
         refreshAlertCompactListCacheTask.execute();
-        super.onResume();
+    }
+
+    @Override public void onPause()
+    {
+        currentDisplayLayoutId = progressAnimator.getDisplayedChildLayoutId();
+        super.onPause();
     }
 
     @Override public void onDestroy()
@@ -178,19 +188,12 @@ public class AlertManagerFragment extends BasePurchaseManagerFragment
     {
         @Override public void onDTOReceived(UserBaseKey key, AlertIdList value, boolean fromCache)
         {
-            if (progressDialog != null)
-            {
-                progressDialog.hide();
-            }
+            progressAnimator.setDisplayedChildByLayoutId(R.id.alerts_list);
             alertListItemAdapter.notifyDataSetChanged();
         }
 
         @Override public void onErrorThrown(UserBaseKey key, Throwable error)
         {
-            if (progressDialog != null)
-            {
-                progressDialog.hide();
-            }
             THToast.show(R.string.error_fetch_alert);
         }
     };

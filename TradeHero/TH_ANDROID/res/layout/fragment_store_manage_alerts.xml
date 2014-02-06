@@ -50,12 +50,26 @@
 
   </RelativeLayout>
 
-  <se.emilsjolander.stickylistheaders.StickyListHeadersListView
-      android:id="@+id/alerts_list"
+  <com.tradehero.common.widget.BetterViewAnimator
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_below="@id/manage_alerts_header"
-      android:background="@null"
-      />
+      android:id="@+id/progress_animator"
+      >
+
+    <ProgressBar
+        android:id="@android:id/progress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        />
+
+    <se.emilsjolander.stickylistheaders.StickyListHeadersListView
+        android:id="@+id/alerts_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:background="@color/red"
+        />
+  </com.tradehero.common.widget.BetterViewAnimator>
 
 </RelativeLayout>
