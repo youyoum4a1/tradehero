@@ -4,14 +4,18 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.webkit.CookieSyncManager;
+import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.auth.OAuthDialog;
 import com.tradehero.th.auth.THAuthenticationProvider;
+import javax.inject.Inject;
 import oauth.signpost.OAuth;
 import oauth.signpost.OAuthConsumer;
 import oauth.signpost.OAuthProvider;
 import oauth.signpost.commonshttp.CommonsHttpOAuthConsumer;
 import oauth.signpost.commonshttp.CommonsHttpOAuthProvider;
 import oauth.signpost.http.HttpParameters;
+import oauth.signpost.http.HttpRequest;
+import oauth.signpost.signature.SigningStrategy;
 import org.apache.http.client.methods.HttpUriRequest;
 
 public class Twitter extends SocialOperator
@@ -27,10 +31,9 @@ public class Twitter extends SocialOperator
     private String userId;
     private String screenName;
 
-    public Twitter(String consumerKey, String consumerSecret)
+    @Inject public Twitter(@ConsumerKey("Twitter") String consumerKey, @ConsumerSecret("Twitter") String consumerSecret)
     {
-        setConsumerKey(consumerKey);
-        setConsumerSecret(consumerSecret);
+        super(consumerKey, consumerSecret);
     }
 
     public String getUserId()

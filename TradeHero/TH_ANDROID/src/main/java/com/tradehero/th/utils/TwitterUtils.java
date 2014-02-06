@@ -2,45 +2,26 @@ package com.tradehero.th.utils;
 
 import android.content.Context;
 import com.tradehero.th.auth.TwitterAuthenticationProvider;
-import com.tradehero.th.auth.operator.Twitter;
 import com.tradehero.th.base.THUser;
 import com.tradehero.th.misc.callback.LogInCallback;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 
 /** Created with IntelliJ IDEA. User: tho Date: 8/15/13 Time: 1:13 PM Copyright (c) TradeHero */
-
+@Singleton
 public final class TwitterUtils
 {
-    private Twitter twitter;
-    private TwitterAuthenticationProvider provider;
+    @Inject protected TwitterAuthenticationProvider provider;
 
-    private TwitterAuthenticationProvider getAuthenticationProvider()
+    @Inject public TwitterUtils(TwitterAuthenticationProvider provider)
     {
-        if (provider == null)
-        {
-            provider = new TwitterAuthenticationProvider(getTwitter());
-        }
-        return provider;
-    }
-
-    public Twitter getTwitter()
-    {
-        if (twitter == null)
-        {
-            twitter = new Twitter("", "");
-        }
-        return twitter;
-    }
-
-    public TwitterUtils(String consumerKey, String consumerSecret)
-    {
-        getTwitter().setConsumerKey(consumerKey);
-        getTwitter().setConsumerSecret(consumerSecret);
-        THUser.registerAuthenticationProvider(getAuthenticationProvider());
+        this.provider = provider;
+        THUser.registerAuthenticationProvider(provider);
     }
 
     public void logIn(Context context, LogInCallback callback)
     {
-        provider.setContext(context);
+        provider.with(context);
         THUser.logInWithAsync(provider.getAuthType(), callback);
     }
 }

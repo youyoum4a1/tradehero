@@ -21,9 +21,10 @@ public abstract class SocialAuthenticationProvider implements THAuthenticationPr
     protected WeakReference<Context> baseContext;
     protected THAuthenticationProvider.THAuthenticationCallback currentOperationCallback;
 
-    public void setContext(Context context)
+    public SocialAuthenticationProvider with(Context context)
     {
         baseContext = new WeakReference<>(context);
+        return this;
     }
 
     @Override public void cancel()

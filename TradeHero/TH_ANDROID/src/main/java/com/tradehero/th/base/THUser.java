@@ -9,7 +9,6 @@ import com.tradehero.th.api.form.UserFormFactory;
 import com.tradehero.th.api.misc.DeviceType;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.LoginFormDTO;
-import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserLoginDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.auth.AuthenticationMode;
@@ -52,14 +51,14 @@ public class THUser
     @Inject @SessionToken static StringPreference currentSessionToken;
     @Inject @AuthenticationType static StringPreference currentAuthenticationType;
     @Inject @SavedCredentials static StringSetPreference savedCredentials;
+    @Inject static CurrentUserId currentUserId;
 
     @Inject static Lazy<SharedPreferences> sharedPreferences;
     @Inject static Lazy<UserService> userService;
     @Inject static Lazy<UserServiceWrapper> userServiceWrapper;
     @Inject static Lazy<SessionService> sessionService;
-    @Inject static protected Lazy<UserProfileCache> userProfileCache;
-    @Inject static CurrentUserId currentUserId;
-    @Inject static protected Lazy<DTOCacheUtil> dtoCacheUtil;
+    @Inject static Lazy<UserProfileCache> userProfileCache;
+    @Inject static Lazy<DTOCacheUtil> dtoCacheUtil;
 
     public static void initialize()
     {
@@ -112,42 +111,6 @@ public class THUser
         authenticator.authenticate(outerCallback);
     }
 
-    private static THAuthenticationProvider.THAuthenticationCallback createCallbackForLogInWithAsync (final LogInCallback callback)
-    {
-        return new THAuthenticationProvider.THAuthenticationCallback()
-        {
-            @Override public void onStart()
-            {
-                callback.onStart();
-            }
-
-            @Override public void onSuccess(JSONObject json)
-            {
-                try
-                {
-                    json.put(UserFormFactory.KEY_TYPE, authenticator.getAuthType());
-                }
-                catch (JSONException ex)
-                {
-                }
-                if (callback.onSocialAuthDone(json))
-                {
-                    logInAsyncWithJson(json, callback);
-                }
-            }
-
-            @Override public void onCancel()
-            {
-                callback.done(null, ExceptionCode.UserCanceled.toException());
-            }
-
-            @Override public void onError(Throwable throwable)
-            {
-                callback.done(null, new THException(throwable));
-            }
-        };
-    }
-
     public static void logInAsyncWithJson(final JSONObject json, final LogInCallback callback)
     {
         UserFormDTO userFormDTO = UserFormFactory.create(json);
@@ -184,14 +147,50 @@ public class THUser
         }
     }
 
+
+    private static THAuthenticationProvider.THAuthenticationCallback createCallbackForLogInWithAsync (final LogInCallback callback)
+    {
+        return new THAuthenticationProvider.THAuthenticationCallback()
+        {
+            @Override public void onStart()
+            {
+                callback.onStart();
+            }
+
+            @Override public void onSuccess(JSONObject json)
+            {
+                try
+                {
+                    json.put(UserFormFactory.KEY_TYPE, authenticator.getAuthType());
+                }
+                catch (JSONException ex)
+                {
+                }
+                if (callback.onSocialAuthDone(json))
+                {
+                    logInAsyncWithJson(json, callback);
+                }
+            }
+
+            @Override public void onCancel()
+            {
+                callback.done(null, ExceptionCode.UserCanceled.toException());
+            }
+
+            @Override public void onError(Throwable throwable)
+            {
+                callback.done(null, new THException(throwable));
+            }
+        };
+    }
+
     private static THCallback<UserProfileDTO> createCallbackForSignUpAsyncWithJson(final JSONObject json, final LogInCallback callback)
     {
         return new THCallback<UserProfileDTO>()
         {
             @Override public void success(UserProfileDTO userDTO, THResponse response)
             {
-
-                saveCurrentUserBaseKey(userDTO.getBaseKey());
+                currentUserId.set(userDTO.id);
                 saveCredentialsToUserDefaults(json);
                 callback.done(userDTO, null);
             }
@@ -211,7 +210,7 @@ public class THUser
             {
                 UserProfileDTO userProfileDTO = userLoginDTO.profileDTO;
                 userProfileCache.get().put(userProfileDTO.getBaseKey(), userProfileDTO);
-                saveCurrentUserBaseKey(userProfileDTO.getBaseKey());
+                currentUserId.set(userProfileDTO.id);
                 saveCredentialsToUserDefaults(json);
                 callback.done(userProfileDTO, null);
             }
@@ -221,11 +220,6 @@ public class THUser
                 callback.done(null, error);
             }
         };
-    }
-
-    private static void saveCurrentUserBaseKey(UserBaseKey userBaseKey)
-    {
-        currentUserId.set(userBaseKey.key);
     }
 
     public static void registerAuthenticationProvider(THAuthenticationProvider provider)
@@ -299,22 +293,6 @@ public class THUser
     public static String getAuthHeader()
     {
         return currentAuthenticationType.get() + " " + currentSessionToken.get();
-    }
-
-    // whether update is posted
-    public static boolean updateProfile(JSONObject userFormJSON, final LogInCallback callback)
-    {
-        UserFormDTO userFormDTO = UserFormFactory.create(userFormJSON);
-        if (userFormDTO == null)
-        {
-            return false;
-        }
-
-        userServiceWrapper.get().updateProfile(
-                currentUserId.toUserBaseKey(),
-                userFormDTO,
-                createCallbackForSignUpAsyncWithJson(userFormJSON, callback));
-        return true;
     }
 
     public static void removeCredential(String authenticationHeader)

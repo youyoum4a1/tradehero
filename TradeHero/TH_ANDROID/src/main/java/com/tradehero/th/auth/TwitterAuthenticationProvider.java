@@ -2,14 +2,17 @@ package com.tradehero.th.auth;
 
 import android.content.Context;
 import com.tradehero.th.auth.operator.Twitter;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+@Singleton
 public class TwitterAuthenticationProvider extends SocialAuthenticationProvider
 {
     private final Twitter twitter;
 
-    public TwitterAuthenticationProvider(Twitter twitter)
+    @Inject public TwitterAuthenticationProvider(Twitter twitter)
     {
         this.twitter = twitter;
     }

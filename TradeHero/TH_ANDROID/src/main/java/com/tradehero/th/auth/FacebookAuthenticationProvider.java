@@ -16,6 +16,8 @@ import com.facebook.TokenCachingStrategy;
 import com.facebook.android.Facebook;
 import com.facebook.android.FacebookError;
 import com.tradehero.common.utils.THLog;
+import com.tradehero.th.auth.operator.FacebookAppId;
+import com.tradehero.th.auth.operator.FacebookPermissions;
 import java.lang.ref.WeakReference;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -24,9 +26,12 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.Locale;
 import java.util.SimpleTimeZone;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+@Singleton
 public class FacebookAuthenticationProvider implements THAuthenticationProvider
 {
     private static final String TAG = FacebookAuthenticationProvider.class.getName();
@@ -45,12 +50,16 @@ public class FacebookAuthenticationProvider implements THAuthenticationProvider
     private THAuthenticationProvider.THAuthenticationCallback currentOperationCallback;
     private String userId;
 
-    public FacebookAuthenticationProvider(Context context, String applicationId)
+    @Inject public FacebookAuthenticationProvider(
+            Context context,
+            @FacebookAppId String applicationId,
+            @FacebookPermissions Collection<String> permissions)
     {
         this.preciseDateFormat.setTimeZone(new SimpleTimeZone(0, "GMT"));
 
         this.activityCode = 32665;
         this.baseActivity = new WeakReference<>(null);
+        this.permissions = permissions;
 
         this.applicationId = applicationId;
         if (context != null)

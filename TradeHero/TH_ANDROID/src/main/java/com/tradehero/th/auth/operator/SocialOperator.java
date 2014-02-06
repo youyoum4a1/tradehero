@@ -6,10 +6,16 @@ import android.app.ProgressDialog;
 public abstract class SocialOperator
 {
     private ProgressDialog progressDialog;
-    private String consumerKey;
-    private String consumerSecret;
+    private final String consumerKey;
+    private final String consumerSecret;
     private String authToken;
     private String authTokenSecret;
+
+    public SocialOperator(String consumerKey, String consumerSecret)
+    {
+        this.consumerKey = consumerKey;
+        this.consumerSecret = consumerSecret;
+    }
 
     public void setProgressDialog(ProgressDialog progressDialog)
     {
@@ -37,19 +43,9 @@ public abstract class SocialOperator
         return this.consumerKey;
     }
 
-    public void setConsumerKey(String consumerKey)
-    {
-        this.consumerKey = consumerKey;
-    }
-
     public String getConsumerSecret()
     {
         return this.consumerSecret;
-    }
-
-    public void setConsumerSecret(String consumerSecret)
-    {
-        this.consumerSecret = consumerSecret;
     }
 
     public String getAuthToken()

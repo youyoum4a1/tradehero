@@ -8,6 +8,7 @@ import com.tradehero.th.auth.OAuthDialog;
 import com.tradehero.th.auth.THAuthenticationProvider;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import javax.inject.Inject;
 import oauth.signpost.OAuthConsumer;
 import oauth.signpost.OAuthProvider;
 import oauth.signpost.commonshttp.CommonsHttpOAuthConsumer;
@@ -25,10 +26,9 @@ public class LinkedIn extends SocialOperator
     private static final OAuthProvider PROVIDER =
             new CommonsHttpOAuthProvider(REQUEST_TOKEN_URL + "?scope=" + getScope(), ACCESS_TOKEN_URL, AUTHORIZE_URL);
 
-    public LinkedIn(String consumerKey, String consumerSecret)
+    @Inject public LinkedIn(@ConsumerKey("LinkedIn") String consumerKey, @ConsumerSecret("LinkedIn") String consumerSecret)
     {
-        setConsumerKey(consumerKey);
-        setConsumerSecret(consumerSecret);
+        super(consumerKey, consumerSecret);
     }
 
     public static String getScope()

@@ -2,45 +2,26 @@ package com.tradehero.th.utils;
 
 import android.content.Context;
 import com.tradehero.th.auth.LinkedInAuthenticationProvider;
-import com.tradehero.th.auth.operator.LinkedIn;
 import com.tradehero.th.base.THUser;
 import com.tradehero.th.misc.callback.LogInCallback;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 
 /** Created with IntelliJ IDEA. User: tho Date: 8/15/13 Time: 1:14 PM Copyright (c) TradeHero */
+@Singleton
 public class LinkedInUtils
 {
+    private final LinkedInAuthenticationProvider provider;
 
-    private LinkedIn linkedIn;
-    private LinkedInAuthenticationProvider provider;
-
-    private LinkedInAuthenticationProvider getAuthenticationProvider()
+    @Inject public LinkedInUtils(LinkedInAuthenticationProvider provider)
     {
-        if (provider == null)
-        {
-            provider = new LinkedInAuthenticationProvider(getLinkedIn());
-        }
-        return provider;
-    }
-
-    public LinkedIn getLinkedIn()
-    {
-        if (linkedIn == null)
-        {
-            linkedIn = new LinkedIn("", "");
-        }
-        return linkedIn;
-    }
-
-    public LinkedInUtils(String consumerKey, String consumerSecret)
-    {
-        getLinkedIn().setConsumerKey(consumerKey);
-        getLinkedIn().setConsumerSecret(consumerSecret);
-        THUser.registerAuthenticationProvider(getAuthenticationProvider());
+        this.provider = provider;
+        THUser.registerAuthenticationProvider(provider);
     }
 
     public void logIn(Context context, LogInCallback callback)
     {
-        provider.setContext(context);
+        provider.with(context);
         THUser.logInWithAsync(provider.getAuthType(), callback);
     }
 }

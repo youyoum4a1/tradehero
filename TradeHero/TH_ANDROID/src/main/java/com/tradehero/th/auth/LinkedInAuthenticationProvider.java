@@ -2,10 +2,13 @@ package com.tradehero.th.auth;
 
 import android.content.Context;
 import com.tradehero.th.auth.operator.LinkedIn;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 /** Created with IntelliJ IDEA. User: tho Date: 8/21/13 Time: 12:49 PM Copyright (c) TradeHero */
+@Singleton
 public class LinkedInAuthenticationProvider extends SocialAuthenticationProvider
 {
     private static final String AUTH_TOKEN_SECRET_KEY = "auth_token_secret";
@@ -14,7 +17,7 @@ public class LinkedInAuthenticationProvider extends SocialAuthenticationProvider
     private static final String CONSUMER_SECRET_KEY = "consumer_secret";
     private final LinkedIn linkedIn;
 
-    public LinkedInAuthenticationProvider(LinkedIn linkedIn)
+    @Inject public LinkedInAuthenticationProvider(LinkedIn linkedIn)
     {
         this.linkedIn = linkedIn;
     }

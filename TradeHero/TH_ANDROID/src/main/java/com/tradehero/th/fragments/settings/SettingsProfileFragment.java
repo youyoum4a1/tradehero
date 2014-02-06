@@ -20,6 +20,7 @@ import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
+import com.tradehero.th.api.form.UserFormDTO;
 import com.tradehero.th.api.form.UserFormFactory;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseDTO;
@@ -32,7 +33,10 @@ import com.tradehero.th.base.NavigatorActivity;
 import com.tradehero.th.base.THUser;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.misc.callback.LogInCallback;
+import com.tradehero.th.misc.callback.THCallback;
+import com.tradehero.th.misc.callback.THResponse;
 import com.tradehero.th.misc.exception.THException;
+import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.NetworkUtils;
@@ -62,6 +66,7 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
 
     @Inject protected CurrentUserId currentUserId;
     @Inject protected Lazy<UserProfileCache> userProfileCache;
+    @Inject static Lazy<UserServiceWrapper> userServiceWrapper;
     private DTOCache.GetOrFetchTask<UserBaseKey, UserProfileDTO> fetchUserProfileTask;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -160,7 +165,7 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
         return map;
     }
 
-    public JSONObject getUserFormJSON ()
+    public JSONObject getUserFormJSON()
     {
         return new JSONObject(getUserFormMap());
     }
@@ -217,7 +222,8 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
                     {
                         THToast.show("Please chose picture from appropriate path");
                     }
-                } catch (Exception e)
+                }
+                catch (Exception e)
                 {
                     e.printStackTrace();
                 }
@@ -257,25 +263,28 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
                     R.string.please_wait,
                     R.string.connecting_tradehero_only);
             EmailAuthenticationProvider.setCredentials(this.getUserFormJSON());
-            THUser.updateProfile(getUserFormJSON(), new LogInCallback()
+
+            UserFormDTO userFormDTO = UserFormFactory.create(getUserFormJSON());
+            if (userFormDTO == null)
             {
-                @Override public void done(UserBaseDTO user, THException ex)
+                return;
+            }
+
+            userServiceWrapper.get().updateProfile(
+                    currentUserId.toUserBaseKey(),
+                    userFormDTO, new THCallback<UserProfileDTO>()
+            {
+                @Override protected void success(UserProfileDTO userProfileDTO, THResponse thResponse)
                 {
                     profileView.progressDialog.hide(); // Before otherwise it is reset
-                    if (ex == null)
-                    {
-                        THToast.show(R.string.settings_update_profile_successful);
-                        Navigator navigator = ((NavigatorActivity) getActivity()).getNavigator();
-                        navigator.popFragment();
-                    }
-                    else
-                    {
-                        THToast.show(ex.getMessage());
-                    }
+                    THToast.show(R.string.settings_update_profile_successful);
+                    Navigator navigator = ((NavigatorActivity) getActivity()).getNavigator();
+                    navigator.popFragment();
                 }
 
-                @Override public void onStart()
+                @Override protected void failure(THException ex)
                 {
+                    THToast.show(ex.getMessage());
                 }
             });
         }
