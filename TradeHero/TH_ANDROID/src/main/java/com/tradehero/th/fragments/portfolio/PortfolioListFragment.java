@@ -18,7 +18,7 @@ import com.tradehero.th.api.portfolio.DisplayablePortfolioDTO;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.OwnedPortfolioIdList;
 import com.tradehero.th.api.portfolio.PortfolioDTO;
-import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
+import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.base.DashboardFragment;
@@ -48,7 +48,7 @@ public class PortfolioListFragment extends DashboardFragment
 
     private PortfolioListItemAdapter portfolioListAdapter;
 
-    @Inject protected CurrentUserBaseKeyHolder currentUserBaseKeyHolder;
+    @Inject protected CurrentUserId currentUserId;
     // We need to populate the PortfolioDTOs in order to sort them appropriately
     private Map<OwnedPortfolioId, DisplayablePortfolioDTO> displayablePortfolios;
     private UserPortfolioFetchAssistant otherPortfolioFetchAssistant;
@@ -223,7 +223,7 @@ public class PortfolioListFragment extends DashboardFragment
         {
             fetchOwnPortfolioListFetchTask.setListener(null);
         }
-        OwnedPortfolioIdList portfolioIdList = portfolioListCache.get().get(currentUserBaseKeyHolder.getCurrentUserBaseKey());
+        OwnedPortfolioIdList portfolioIdList = portfolioListCache.get().get(currentUserId.toUserBaseKey());
         if (portfolioIdList != null)
         {
             displayProgress(false);
@@ -231,7 +231,7 @@ public class PortfolioListFragment extends DashboardFragment
         }
         else
         {
-            fetchOwnPortfolioListFetchTask = portfolioListCache.get().getOrFetch(currentUserBaseKeyHolder.getCurrentUserBaseKey(), ownPortfolioListListener);
+            fetchOwnPortfolioListFetchTask = portfolioListCache.get().getOrFetch(currentUserId.toUserBaseKey(), ownPortfolioListListener);
             displayProgress(true);
             fetchOwnPortfolioListFetchTask.execute();
         }
@@ -243,7 +243,7 @@ public class PortfolioListFragment extends DashboardFragment
         {
             @Override public void onDTOReceived(UserBaseKey key, OwnedPortfolioIdList value, boolean fromCache)
             {
-                if (key.equals(currentUserBaseKeyHolder.getCurrentUserBaseKey()))
+                if (key.equals(currentUserId.toUserBaseKey()))
                 {
                     displayProgress(false);
                     linkWithOwn(value, true, (OwnedPortfolioId) null);
@@ -252,7 +252,7 @@ public class PortfolioListFragment extends DashboardFragment
 
             @Override public void onErrorThrown(UserBaseKey key, Throwable error)
             {
-                if (key.equals(currentUserBaseKeyHolder.getCurrentUserBaseKey()))
+                if (key.equals(currentUserId.toUserBaseKey()))
                 {
                     displayProgress(false);
                     THToast.show(getString(R.string.error_fetch_portfolio_list_info));

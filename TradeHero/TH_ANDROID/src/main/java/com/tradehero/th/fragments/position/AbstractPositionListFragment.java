@@ -24,7 +24,7 @@ import com.tradehero.th.api.portfolio.PortfolioDTO;
 import com.tradehero.th.api.position.AbstractGetPositionsDTO;
 import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.api.security.SecurityId;
-import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
+import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.billing.googleplay.THIABActor;
@@ -68,7 +68,7 @@ abstract public class AbstractPositionListFragment<
     public static final String BUNDLE_KEY_FIRST_POSITION_VISIBLE = AbstractPositionListFragment.class.getName() + ".firstPositionVisible";
     public static final String BUNDLE_KEY_EXPANDED_LIST_FLAGS = AbstractPositionListFragment.class.getName() + ".expandedListFlags";
 
-    @Inject CurrentUserBaseKeyHolder currentUserBaseKeyHolder;
+    @Inject CurrentUserId currentUserId;
     @Inject Lazy<SecurityIdCache> securityIdCache;
     @Inject Lazy<PortfolioCache> portfolioCache;
     @Inject Lazy<PositionCache> positionCache;
@@ -386,7 +386,7 @@ abstract public class AbstractPositionListFragment<
             {
                 Bundle args = new Bundle();
                 args.putBundle(BuySellFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
-                if (currentUserBaseKeyHolder.getCurrentUserBaseKey().equals(clickedPositionDTO.getUserBaseKey()))
+                if (currentUserId.toUserBaseKey().equals(clickedPositionDTO.getUserBaseKey()))
                 {
                     // We only add if this the current user portfolio
                     args.putBundle(BuySellFragment.BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE,

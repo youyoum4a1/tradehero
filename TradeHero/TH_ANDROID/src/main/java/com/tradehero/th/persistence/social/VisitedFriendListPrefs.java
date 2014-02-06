@@ -3,7 +3,7 @@ package com.tradehero.th.persistence.social;
 import android.content.Context;
 import android.content.SharedPreferences;
 import com.tradehero.common.utils.THLog;
-import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
+import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.base.Application;
 import java.util.ArrayList;
@@ -19,7 +19,7 @@ public class VisitedFriendListPrefs
     public static final String KEY_PREFS = VisitedFriendListPrefs.class.getName();
     public static final String KEY_VISITED_ID_SET = VisitedFriendListPrefs.class.getName() + ".VISITED_ID_SET";
 
-    @Inject static CurrentUserBaseKeyHolder currentUserBaseKeyHolder;
+    @Inject static CurrentUserId currentUserId;
 
     public static void addVisitedId(UserBaseKey userBaseKey)
     {
@@ -27,7 +27,7 @@ public class VisitedFriendListPrefs
         {
             return;
         }
-        if (userBaseKey.equals(currentUserBaseKeyHolder.getCurrentUserBaseKey()))
+        if (userBaseKey.equals(currentUserId.toUserBaseKey()))
         {
             return;
         }

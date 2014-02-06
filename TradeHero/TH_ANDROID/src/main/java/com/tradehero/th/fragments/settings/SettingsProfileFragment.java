@@ -21,7 +21,7 @@ import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.form.UserFormFactory;
-import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
+import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
@@ -60,7 +60,7 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
     private Bitmap imageBmp;
     private static final int REQUEST_GALLERY = 111;
 
-    @Inject protected CurrentUserBaseKeyHolder currentUserBaseKeyHolder;
+    @Inject protected CurrentUserId currentUserId;
     @Inject protected Lazy<UserProfileCache> userProfileCache;
     private DTOCache.GetOrFetchTask<UserBaseKey, UserProfileDTO> fetchUserProfileTask;
 
@@ -232,7 +232,7 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
             fetchUserProfileTask.setListener(null);
         }
 
-        fetchUserProfileTask = userProfileCache.get().getOrFetch(currentUserBaseKeyHolder.getCurrentUserBaseKey(), false, userProfileCallback);
+        fetchUserProfileTask = userProfileCache.get().getOrFetch(currentUserId.toUserBaseKey(), false, userProfileCallback);
         fetchUserProfileTask.execute();
         this.profileView.populateCredentials(THUser.currentCredentials());
     }

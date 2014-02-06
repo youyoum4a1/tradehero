@@ -7,8 +7,6 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
-import butterknife.ButterKnife;
-import butterknife.InjectView;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
@@ -23,7 +21,7 @@ import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.SecurityIntegerId;
 import com.tradehero.th.api.trade.OwnedTradeId;
 import com.tradehero.th.api.trade.OwnedTradeIdList;
-import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
+import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
@@ -44,7 +42,7 @@ abstract public class AbstractTradeListFragment<PositionDTOType extends Position
     @Inject protected Lazy<TradeListCache> tradeListCache;
     @Inject protected Lazy<SecurityIdCache> securityIdCache;
     @Inject protected Lazy<SecurityCompactCache> securityCompactCache;
-    @Inject protected CurrentUserBaseKeyHolder currentUserBaseKeyHolder;
+    @Inject protected CurrentUserId currentUserId;
 
     protected ProgressBar progressBar;
     protected TradeListOverlayHeaderView header;
@@ -150,7 +148,7 @@ abstract public class AbstractTradeListFragment<PositionDTOType extends Position
         Bundle b = new Bundle();
         b.putInt(PushableTimelineFragment.BUNDLE_KEY_SHOW_USER_ID, userId.key);
 
-        if (!currentUserBaseKeyHolder.getCurrentUserBaseKey().key.equals(userId.key))
+        if (!currentUserId.toUserBaseKey().equals(userId.key))
         {
             navigator.pushFragment(PushableTimelineFragment.class, b);
         }

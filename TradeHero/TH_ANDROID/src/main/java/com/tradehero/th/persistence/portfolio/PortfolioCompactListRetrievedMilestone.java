@@ -2,7 +2,7 @@ package com.tradehero.th.persistence.portfolio;
 
 import com.tradehero.common.persistence.DTORetrievedAsyncMilestone;
 import com.tradehero.th.api.portfolio.OwnedPortfolioIdList;
-import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
+import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
@@ -15,9 +15,9 @@ public class PortfolioCompactListRetrievedMilestone extends DTORetrievedAsyncMil
 
     @Inject Lazy<PortfolioCompactListCache> portfolioCompactListCache;
 
-    @Inject public PortfolioCompactListRetrievedMilestone(CurrentUserBaseKeyHolder currentUserBaseKeyHolder)
+    @Inject public PortfolioCompactListRetrievedMilestone(CurrentUserId currentUserId)
     {
-        this(currentUserBaseKeyHolder.getCurrentUserBaseKey());
+        this(currentUserId.toUserBaseKey());
     }
 
     public PortfolioCompactListRetrievedMilestone(UserBaseKey key)

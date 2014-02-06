@@ -318,7 +318,7 @@ public class BuySellFragment extends AbstractBuySellFragment
     {
         Set<MenuOwnedPortfolioId> newMenus = new TreeSet<>();
 
-        OwnedPortfolioId defaultOwnedPortfolioId = portfolioCompactListCache.getDefaultPortfolio(currentUserBaseKeyHolder.getCurrentUserBaseKey());
+        OwnedPortfolioId defaultOwnedPortfolioId = portfolioCompactListCache.getDefaultPortfolio(currentUserId.toUserBaseKey());
         PortfolioCompactDTO defaultPortfolioCompactDTO = portfolioCompactCache.get(defaultOwnedPortfolioId.getPortfolioId());
         newMenus.add(new MenuOwnedPortfolioId(defaultOwnedPortfolioId, defaultPortfolioCompactDTO));
 
@@ -464,7 +464,7 @@ public class BuySellFragment extends AbstractBuySellFragment
                 .registerReceiver(chartImageButtonClickReceiver, new IntentFilter(EVENT_CHART_IMAGE_CLICKED));
 
         securityAlertAssistant.setOnPopulatedListener(this);
-        securityAlertAssistant.setUserBaseKey(currentUserBaseKeyHolder.getCurrentUserBaseKey());
+        securityAlertAssistant.setUserBaseKey(currentUserId.toUserBaseKey());
         securityAlertAssistant.populate();
 
         userInteractor.waitForSkuDetailsMilestoneComplete(new Runnable()

@@ -24,7 +24,7 @@ import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.SecurityIdList;
-import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
+import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.watchlist.WatchlistPositionDTO;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.base.NavigatorActivity;
@@ -58,7 +58,7 @@ public class WatchlistItemView extends FrameLayout implements DTOView<SecurityId
     @Inject protected Lazy<UserWatchlistPositionCache> userWatchlistPositionCache;
     @Inject protected Lazy<WatchlistService> watchlistService;
     @Inject protected Lazy<Picasso> picasso;
-    @Inject protected CurrentUserBaseKeyHolder currentUserBaseKeyHolder;
+    @Inject protected CurrentUserId currentUserId;
 
     private ImageView stockLogo;
     private TextView stockSymbol;
@@ -384,7 +384,7 @@ public class WatchlistItemView extends FrameLayout implements DTOView<SecurityId
         @Override public void onClick(View v)
         {
             // remove current security from the watchlist
-            SecurityIdList securityIds = userWatchlistPositionCache.get().get(currentUserBaseKeyHolder.getCurrentUserBaseKey());
+            SecurityIdList securityIds = userWatchlistPositionCache.get().get(currentUserId.toUserBaseKey());
 
             // not to show dialog but request deletion in background
             watchlistService.get().deleteWatchlist(watchlistPositionDTO.id, watchlistDeletionCallback);

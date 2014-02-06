@@ -30,7 +30,7 @@ import com.tradehero.th.api.social.InviteDTO;
 import com.tradehero.th.api.social.InviteFormDTO;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.social.UserFriendsDTO;
-import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
+import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.base.DashboardFragment;
@@ -62,7 +62,7 @@ public class InviteFriendFragment extends DashboardFragment
     private static final int MAX_FACEBOOK_FRIENDS_RECEIVERS = 50;
     private static final int CONTACT_LOADER_ID = 0;
 
-    @Inject protected CurrentUserBaseKeyHolder currentUserBaseKeyHolder;
+    @Inject protected CurrentUserId currentUserId;
     @Inject protected Lazy<UserService> userService;
     @Inject protected Lazy<SocialService> socialService;
     @Inject protected Lazy<LinkedInUtils> linkedInUtils;
@@ -187,7 +187,7 @@ public class InviteFriendFragment extends DashboardFragment
             }
             //getProgressDialog().setMessage(getString(R.string.sending_email_invitation));
             getProgressDialog().show();
-            userService.get().inviteFriends(currentUserBaseKeyHolder.getCurrentUserBaseKey().key, inviteFriendForm, inviteFriendCallback);
+            userService.get().inviteFriends(currentUserId.get(), inviteFriendForm, inviteFriendCallback);
         }
         else
         {
@@ -244,7 +244,7 @@ public class InviteFriendFragment extends DashboardFragment
         getProgressDialog().show();
 
         // load friend list from server side
-        // userService.get().getFriends(currentUserBaseKeyHolder.getCurrentUserBaseKey().key, getFriendsCallback);
+        // userService.get().getFriends(currentUserId.get(), getFriendsCallback);
         // load contact (with email) list of the phone
         getLoaderManager().initLoader(CONTACT_LOADER_ID, null, contactListLoaderCallback);
     }
@@ -450,7 +450,7 @@ public class InviteFriendFragment extends DashboardFragment
         @Override public boolean onSocialAuthDone(JSONObject json)
         {
             socialService.get().connect(
-                    currentUserBaseKeyHolder.getCurrentUserBaseKey().key,
+                    currentUserId.get(),
                     UserFormFactory.create(json),
                     createSocialConnectCallback());
             progressDialog.setMessage(String.format(getString(R.string.connecting_tradehero), currentSocialNetworkConnect.getName()));
@@ -473,7 +473,7 @@ public class InviteFriendFragment extends DashboardFragment
 
         @Override protected void success(UserProfileDTO userProfileDTO, THResponse thResponse)
         {
-            userProfileCache.get().put(currentUserBaseKeyHolder.getCurrentUserBaseKey(), userProfileDTO);
+            userProfileCache.get().put(currentUserId.toUserBaseKey(), userProfileDTO);
             sendInvitation();
         }
 
@@ -510,7 +510,7 @@ public class InviteFriendFragment extends DashboardFragment
                         }
                         selectedLinkedInFriends = null;
                         getProgressDialog().show();
-                        userService.get().inviteFriends(currentUserBaseKeyHolder.getCurrentUserBaseKey().key, inviteFriendForm, inviteFriendCallback);
+                        userService.get().inviteFriends(currentUserId.get(), inviteFriendForm, inviteFriendCallback);
                     }
                 case FB:
                     if (Session.getActiveSession() == null)

@@ -1,6 +1,5 @@
 package com.tradehero.th.persistence.position;
 
-import android.support.v4.util.LruCache;
 import com.tradehero.common.persistence.PartialDTOCache;
 import com.tradehero.common.persistence.THLruCache;
 import com.tradehero.th.api.competition.ProviderDTO;
@@ -13,7 +12,7 @@ import com.tradehero.th.api.position.SecurityPositionDetailDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityCompactDTOFactory;
 import com.tradehero.th.api.security.SecurityId;
-import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
+import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.network.service.SecurityServiceWrapper;
 import com.tradehero.th.persistence.competition.ProviderCache;
@@ -30,7 +29,7 @@ import javax.inject.Singleton;
     public static final String TAG = SecurityPositionDetailCache.class.getSimpleName();
     public static final int DEFAULT_MAX_SIZE = 1000;
 
-    @Inject protected CurrentUserBaseKeyHolder currentUserBaseKeyHolder;
+    @Inject protected CurrentUserId currentUserId;
     // We need to compose here, instead of inheritance, otherwise we get a compile error regarding erasure on put and put.
     private THLruCache<SecurityId, SecurityPositionDetailCutDTO> lruCache;
     @Inject protected Lazy<SecurityServiceWrapper> securityServiceWrapper;
@@ -72,7 +71,7 @@ import javax.inject.Singleton;
             return null;
         }
         return securityPositionDetailCutDTO.create(securityCompactCache.get(), portfolioCache.get(), positionCompactCache.get(), providerCache.get(),
-                currentUserBaseKeyHolder.getCurrentUserBaseKey());
+                currentUserId.toUserBaseKey());
     }
 
     @Override public SecurityPositionDetailDTO put(SecurityId key, SecurityPositionDetailDTO value)
@@ -87,12 +86,12 @@ import javax.inject.Singleton;
                         portfolioCache.get(),
                         positionCompactCache.get(),
                         providerCache.get(),
-                        currentUserBaseKeyHolder.getCurrentUserBaseKey()));
+                        currentUserId.toUserBaseKey()));
 
         if (previousCut != null)
         {
             previous = previousCut.create(securityCompactCache.get(), portfolioCache.get(), positionCompactCache.get(), providerCache.get(),
-                    currentUserBaseKeyHolder.getCurrentUserBaseKey());
+                    currentUserId.toUserBaseKey());
         }
 
         return previous;

@@ -1,14 +1,13 @@
 package com.tradehero.th.base;
 
 import android.content.SharedPreferences;
-import com.tradehero.common.persistence.prefs.IntPreference;
 import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.common.persistence.prefs.StringSetPreference;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.api.form.UserFormDTO;
 import com.tradehero.th.api.form.UserFormFactory;
 import com.tradehero.th.api.misc.DeviceType;
-import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
+import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.LoginFormDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserLoginDTO;
@@ -23,9 +22,8 @@ import com.tradehero.th.misc.exception.THException.ExceptionCode;
 import com.tradehero.th.network.service.SessionService;
 import com.tradehero.th.network.service.UserService;
 import com.tradehero.th.network.service.UserServiceWrapper;
-import com.tradehero.th.persistence.prefs.AuthenticationType;
-import com.tradehero.th.persistence.prefs.CurrentUserId;
 import com.tradehero.th.persistence.DTOCacheUtil;
+import com.tradehero.th.persistence.prefs.AuthenticationType;
 import com.tradehero.th.persistence.prefs.SavedCredentials;
 import com.tradehero.th.persistence.prefs.SessionToken;
 import com.tradehero.th.persistence.social.VisitedFriendListPrefs;
@@ -37,10 +35,9 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import javax.inject.Inject;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import javax.inject.Inject;
 
 /** Created with IntelliJ IDEA. User: tho Date: 8/14/13 Time: 6:15 PM */
 public class THUser
@@ -55,14 +52,13 @@ public class THUser
     @Inject @SessionToken static StringPreference currentSessionToken;
     @Inject @AuthenticationType static StringPreference currentAuthenticationType;
     @Inject @SavedCredentials static StringSetPreference savedCredentials;
-    @Inject @CurrentUserId static IntPreference currentUserId;
 
     @Inject static Lazy<SharedPreferences> sharedPreferences;
     @Inject static Lazy<UserService> userService;
     @Inject static Lazy<UserServiceWrapper> userServiceWrapper;
     @Inject static Lazy<SessionService> sessionService;
     @Inject static protected Lazy<UserProfileCache> userProfileCache;
-    @Inject static protected CurrentUserBaseKeyHolder currentUserBaseKeyHolder;
+    @Inject static CurrentUserId currentUserId;
     @Inject static protected Lazy<DTOCacheUtil> dtoCacheUtil;
 
     public static void initialize()
@@ -73,8 +69,6 @@ public class THUser
 
     private static void loadCredentialsToUserDefaults()
     {
-        collectCurrentUserBaseKeyFromPref();
-
         for (String token : savedCredentials.get())
         {
             try
@@ -87,9 +81,6 @@ public class THUser
                 THLog.e(TAG, String.format("Unable to parse [%s] to JSON", token), e);
             }
         }
-
-        THLog.d(TAG, "loadCredentialsToUserDefaults: SessionToken: " + currentSessionToken.get());
-        THLog.d(TAG, "loadCredentialsToUserDefaults: CurrentAuthenticationType: " + currentAuthenticationType.get());
     }
 
     public static void logInWithAsync(String authType, LogInCallback callback)
@@ -235,13 +226,6 @@ public class THUser
     private static void saveCurrentUserBaseKey(UserBaseKey userBaseKey)
     {
         currentUserId.set(userBaseKey.key);
-        currentUserBaseKeyHolder.setCurrentUserBaseKey(userBaseKey);
-    }
-
-    public static void collectCurrentUserBaseKeyFromPref()
-    {
-        UserBaseKey userBaseKey = new UserBaseKey(currentUserId.get());
-        currentUserBaseKeyHolder.setCurrentUserBaseKey(userBaseKey);
     }
 
     public static void registerAuthenticationProvider(THAuthenticationProvider provider)
@@ -284,9 +268,9 @@ public class THUser
     public static void clearCurrentUser()
     {
         currentSessionToken.delete();
-        userProfileCache.get().invalidate(currentUserBaseKeyHolder.getCurrentUserBaseKey());
+        userProfileCache.get().invalidate(currentUserId.toUserBaseKey());
         dtoCacheUtil.get().clearUserRelatedCaches();
-        currentUserBaseKeyHolder.setCurrentUserBaseKey(new UserBaseKey(0));
+        currentUserId.delete();
         credentials.clear();
         VisitedFriendListPrefs.clearVisitedIdList();
 
@@ -327,7 +311,7 @@ public class THUser
         }
 
         userServiceWrapper.get().updateProfile(
-                currentUserBaseKeyHolder.getCurrentUserBaseKey(),
+                currentUserId.toUserBaseKey(),
                 userFormDTO,
                 createCallbackForSignUpAsyncWithJson(userFormJSON, callback));
         return true;

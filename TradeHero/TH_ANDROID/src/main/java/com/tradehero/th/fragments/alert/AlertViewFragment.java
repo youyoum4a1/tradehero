@@ -24,7 +24,7 @@ import com.tradehero.th.api.alert.AlertDTO;
 import com.tradehero.th.api.alert.AlertFormDTO;
 import com.tradehero.th.api.alert.AlertId;
 import com.tradehero.th.api.security.SecurityCompactDTO;
-import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
+import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
@@ -67,7 +67,7 @@ public class AlertViewFragment extends BasePurchaseManagerFragment
     @Inject protected Lazy<Picasso> picasso;
     @Inject protected Lazy<PrettyTime> prettyTime;
     @Inject protected Lazy<UserProfileCache> userProfileCache;
-    @Inject protected CurrentUserBaseKeyHolder currentUserBaseKeyHolder;
+    @Inject protected CurrentUserId currentUserId;
 
     private View headerView;
     private AlertDTO alertDTO;
@@ -193,7 +193,7 @@ public class AlertViewFragment extends BasePurchaseManagerFragment
         {
             @Override public void onClick(View v)
             {
-                UserProfileDTO userProfileDTO = userProfileCache.get().get(currentUserBaseKeyHolder.getCurrentUserBaseKey());
+                UserProfileDTO userProfileDTO = userProfileCache.get().get(currentUserId.toUserBaseKey());
 
                 if (alertToggle.isChecked() && userProfileDTO.alertCount >= userProfileDTO.getUserAlertPlansAlertCount())
                 {
@@ -325,7 +325,7 @@ public class AlertViewFragment extends BasePurchaseManagerFragment
 
     private void handleAlertToggleChanged(boolean alertActive)
     {
-        UserProfileDTO userProfileDTO = userProfileCache.get().get(currentUserBaseKeyHolder.getCurrentUserBaseKey());
+        UserProfileDTO userProfileDTO = userProfileCache.get().get(currentUserId.toUserBaseKey());
 
         if (userProfileDTO != null)
         {

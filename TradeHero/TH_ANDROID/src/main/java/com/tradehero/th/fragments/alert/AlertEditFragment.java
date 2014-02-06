@@ -28,7 +28,7 @@ import com.tradehero.th.api.alert.AlertFormDTO;
 import com.tradehero.th.api.alert.AlertId;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
-import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
+import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.misc.callback.THCallback;
 import com.tradehero.th.misc.callback.THResponse;
@@ -73,7 +73,7 @@ public class AlertEditFragment extends DashboardFragment
     @Inject protected Lazy<SecurityCompactCache> securityCompactCache;
     @Inject protected Lazy<AlertServiceWrapper> alertServiceWrapper;
     @Inject protected Lazy<Picasso> picasso;
-    @Inject protected CurrentUserBaseKeyHolder currentUserBaseKeyHolder;
+    @Inject protected CurrentUserId currentUserId;
 
     private AlertId alertId;
     private SecurityId securityId;
@@ -178,7 +178,7 @@ public class AlertEditFragment extends DashboardFragment
             progressDialog = ProgressDialogUtil.create(getActivity(), getString(R.string.loading_loading), getString(R.string.please_wait));
             progressDialog.show();
             alertServiceWrapper.get().updateAlert(
-                    alertId != null ? alertId : new AlertId(currentUserBaseKeyHolder.getCurrentUserBaseKey().key, 0),
+                    alertId != null ? alertId : new AlertId(currentUserId.get(), 0),
                     alertFormDTO,
                     alertUpdateCallback);
         }
@@ -512,7 +512,7 @@ public class AlertEditFragment extends DashboardFragment
 
         @Override protected void success(AlertCompactDTO alertCompactDTO, THResponse thResponse)
         {
-            alertCompactCache.get().put(alertCompactDTO.getAlertId(currentUserBaseKeyHolder.getCurrentUserBaseKey().key), alertCompactDTO);
+            alertCompactCache.get().put(alertCompactDTO.getAlertId(currentUserId.get()), alertCompactDTO);
             getNavigator().popFragment();
         }
 

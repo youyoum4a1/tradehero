@@ -7,10 +7,9 @@ import android.view.ViewGroup;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.ArrayDTOAdapter;
-import com.tradehero.th.adapters.DTOAdapter;
 import com.tradehero.th.api.portfolio.DisplayablePortfolioDTO;
 import com.tradehero.th.api.portfolio.DisplayablePortfolioDTOWithinUserComparator;
-import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
+import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.DaggerUtils;
@@ -39,7 +38,7 @@ public class PortfolioListItemAdapter extends ArrayDTOAdapter<DisplayablePortfol
     private List<Integer> orderedTypes;
     private List<Object> orderedItems;
 
-    @Inject CurrentUserBaseKeyHolder currentUserBaseKeyHolder;
+    @Inject CurrentUserId currentUserId;
     @Inject Lazy<UserProfileCache> userProfileCache;
     private final DisplayablePortfolioDTOWithinUserComparator ownDisplayablePortfolioDTOWithinUserComparator;
     private final int otherHeaderResId;
@@ -70,7 +69,7 @@ public class PortfolioListItemAdapter extends ArrayDTOAdapter<DisplayablePortfol
         {
             // TODO This could be improved
             // Here it is relying on the cache to be already filled to separate the heroes from the others.
-            UserProfileDTO currentUserProfile = userProfileCache.get().get(currentUserBaseKeyHolder.getCurrentUserBaseKey());
+            UserProfileDTO currentUserProfile = userProfileCache.get().get(currentUserId.toUserBaseKey());
             SortedSet<DisplayablePortfolioDTO> ownPortfolios = new TreeSet<>(this.ownDisplayablePortfolioDTOWithinUserComparator);
             Set<DisplayablePortfolioDTO> heroPortfolios = new HashSet<>();
             Set<DisplayablePortfolioDTO> otherPortfolios = new HashSet<>();
@@ -85,7 +84,7 @@ public class PortfolioListItemAdapter extends ArrayDTOAdapter<DisplayablePortfol
                 {
                     heroPortfolios.add(displayablePortfolioDTO);
                 }
-                else if (currentUserBaseKeyHolder.getCurrentUserBaseKey().equals(displayablePortfolioDTO.ownedPortfolioId.getUserBaseKey()))
+                else if (currentUserId.toUserBaseKey().equals(displayablePortfolioDTO.ownedPortfolioId.getUserBaseKey()))
                 {
                     ownPortfolios.add(displayablePortfolioDTO);
                 }

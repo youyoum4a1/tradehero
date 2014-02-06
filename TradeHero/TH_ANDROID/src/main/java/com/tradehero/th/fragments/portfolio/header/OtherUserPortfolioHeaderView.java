@@ -12,7 +12,7 @@ import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
-import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
+import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.models.graphics.ForUserPhoto;
@@ -36,7 +36,7 @@ public class OtherUserPortfolioHeaderView extends RelativeLayout implements Port
     private ImageView followingImageView;
     private ImageButton followButton;
 
-    @Inject protected CurrentUserBaseKeyHolder currentUserBaseKeyHolder;
+    @Inject protected CurrentUserId currentUserId;
     @Inject Lazy<UserProfileCache> userCache;
     @Inject @ForUserPhoto protected Transformation peopleIconTransformation;
     @Inject Lazy<Picasso> picasso;
@@ -195,7 +195,7 @@ public class OtherUserPortfolioHeaderView extends RelativeLayout implements Port
 
     private void configureFollowItemsVisibility()
     {
-        UserProfileDTO currentUser = this.userCache.get().get(currentUserBaseKeyHolder.getCurrentUserBaseKey());
+        UserProfileDTO currentUser = this.userCache.get().get(currentUserId.toUserBaseKey());
         if (this.userProfileDTO == null)
         {
             this.followingImageView.setVisibility(GONE);

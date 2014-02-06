@@ -20,7 +20,7 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.alert.AlertId;
 import com.tradehero.th.api.alert.AlertIdList;
-import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
+import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
@@ -45,7 +45,7 @@ public class AlertManagerFragment extends BasePurchaseManagerFragment
     @InjectView(R.id.alerts_list) StickyListHeadersListView alertListView;
 
     @Inject protected Lazy<AlertCompactListCache> alertCompactListCache;
-    @Inject protected CurrentUserBaseKeyHolder currentUserBaseKeyHolder;
+    @Inject protected CurrentUserId currentUserId;
     @Inject protected Lazy<UserProfileCache> userProfileCache;
 
     private AlertListItemAdapter alertListItemAdapter;
@@ -93,7 +93,7 @@ public class AlertManagerFragment extends BasePurchaseManagerFragment
         }
 
         UserProfileRetrievedMilestone userProfileRetrievedMilestone =
-                new UserProfileRetrievedMilestone(currentUserBaseKeyHolder.getCurrentUserBaseKey());
+                new UserProfileRetrievedMilestone(currentUserId.toUserBaseKey());
         userProfileRetrievedMilestone.setOnCompleteListener(userProfileRetrievedMilestoneCompleteListener);
         userProfileRetrievedMilestone.launch();
 
@@ -110,7 +110,7 @@ public class AlertManagerFragment extends BasePurchaseManagerFragment
 
     private void displayAlertCount()
     {
-        UserProfileDTO currentUserProfile = userProfileCache.get().get(currentUserBaseKeyHolder.getCurrentUserBaseKey());
+        UserProfileDTO currentUserProfile = userProfileCache.get().get(currentUserId.toUserBaseKey());
         if (currentUserProfile != null)
         {
             int count = currentUserProfile.getUserAlertPlansAlertCount();
@@ -143,7 +143,7 @@ public class AlertManagerFragment extends BasePurchaseManagerFragment
     {
         progressDialog = ProgressDialogUtil.show(getActivity(), R.string.loading_loading, R.string.please_wait);
         refreshAlertCompactListCacheTask = alertCompactListCache.get().getOrFetch(
-                currentUserBaseKeyHolder.getCurrentUserBaseKey(), true, alertCompactListCallback);
+                currentUserId.toUserBaseKey(), true, alertCompactListCallback);
         refreshAlertCompactListCacheTask.execute();
         super.onResume();
     }

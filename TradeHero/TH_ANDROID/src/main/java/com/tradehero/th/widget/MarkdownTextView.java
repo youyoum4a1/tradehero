@@ -8,7 +8,7 @@ import android.widget.TextView;
 import com.tradehero.common.text.OnElementClickListener;
 import com.tradehero.common.text.RichTextCreator;
 import com.tradehero.th.api.security.SecurityId;
-import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
+import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.base.NavigatorActivity;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
@@ -19,7 +19,7 @@ import javax.inject.Inject;
 public class MarkdownTextView extends TextView implements OnElementClickListener
 {
     @Inject RichTextCreator parser;
-    @Inject CurrentUserBaseKeyHolder currentUserBaseKeyHolder;
+    @Inject CurrentUserId currentUserId;
 
     //<editor-fold desc="Constructors">
     public MarkdownTextView(Context context)
@@ -88,7 +88,7 @@ public class MarkdownTextView extends TextView implements OnElementClickListener
         Bundle b = new Bundle();
         b.putInt(PushableTimelineFragment.BUNDLE_KEY_SHOW_USER_ID, userId);
 
-        if (currentUserBaseKeyHolder.getCurrentUserBaseKey().key != userId)
+        if (currentUserId.get() != userId)
         {
             getNavigator().pushFragment(PushableTimelineFragment.class, b);
         }

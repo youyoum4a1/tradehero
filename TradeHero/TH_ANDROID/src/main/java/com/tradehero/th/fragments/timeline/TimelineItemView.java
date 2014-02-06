@@ -24,7 +24,7 @@ import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.SecurityMediaDTO;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.timeline.TimelineItemShareRequestDTO;
-import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
+import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileCompactDTO;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.base.Navigator;
@@ -62,7 +62,7 @@ public class TimelineItemView extends LinearLayout implements
     private TextView time;
 
     @Inject protected Provider<PrettyTime> prettyTime;
-    @Inject protected CurrentUserBaseKeyHolder currentUserBaseKeyHolder;
+    @Inject protected CurrentUserId currentUserId;
     @Inject protected Lazy<Picasso> picasso;
     @Inject @ForUserPhoto protected Transformation peopleIconTransformation;
     @Inject protected Lazy<WatchlistPositionCache> watchlistPositionCache;
@@ -179,7 +179,7 @@ public class TimelineItemView extends LinearLayout implements
         }
         currentTimelineItem = item;
 
-        if (user.id != currentUserBaseKeyHolder.getCurrentUserBaseKey().key)
+        if (user.id != currentUserId.get())
         {
             shareActionButton.setVisibility(View.INVISIBLE);
         }
@@ -380,7 +380,7 @@ public class TimelineItemView extends LinearLayout implements
             }
 
             userTimelineService.get().shareTimelineItem(
-                    currentUserBaseKeyHolder.getCurrentUserBaseKey().key,
+                    currentUserId.get(),
                     currentTimelineItem.getTimelineItemId(), new TimelineItemShareRequestDTO(socialNetworkEnum),
                     createShareRequestCallback(socialNetworkEnum));
             return true;
@@ -398,7 +398,7 @@ public class TimelineItemView extends LinearLayout implements
                     UserProfileCompactDTO user = currentTimelineItem.getUser();
                     if (user != null)
                     {
-                        if (currentUserBaseKeyHolder.getCurrentUserBaseKey().key != user.id)
+                        if (currentUserId.get() != user.id)
                         {
                             getNavigator().openTimeline(user.id);
                         }
@@ -487,7 +487,7 @@ public class TimelineItemView extends LinearLayout implements
                 if (securityId != null)
                 {
                     // if Watchlist milestone has finished receiving data
-                    if (userWatchlistPositionCache.get().get(currentUserBaseKeyHolder.getCurrentUserBaseKey()) != null)
+                    if (userWatchlistPositionCache.get().get(currentUserId.toUserBaseKey()) != null)
                     {
                         if (watchlistPositionCache.get().get(securityId) == null)
                         {

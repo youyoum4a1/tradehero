@@ -29,7 +29,7 @@ import com.tradehero.th.api.leaderboard.LeaderboardDefKey;
 import com.tradehero.th.api.leaderboard.LeaderboardDefKeyList;
 import com.tradehero.th.api.leaderboard.LeaderboardDefListKey;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
-import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
+import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.fragments.competition.MainCompetitionFragment;
 import com.tradehero.th.fragments.web.WebViewFragment;
 import com.tradehero.th.models.intent.THIntent;
@@ -57,7 +57,7 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
     @Inject protected Lazy<ProviderListCache> providerListCache;
     @Inject protected Lazy<ProviderCache> providerCache;
     @Inject protected Picasso picasso;
-    @Inject protected CurrentUserBaseKeyHolder currentUserBaseKeyHolder;
+    @Inject protected CurrentUserId currentUserId;
 
     @InjectView(R.id.community_screen) BetterViewAnimator communityScreen;
     @InjectView(android.R.id.list) StickyListHeadersListView leaderboardDefListView;
@@ -238,7 +238,7 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
             Bundle args = new Bundle();
             args.putBundle(MainCompetitionFragment.BUNDLE_KEY_PROVIDER_ID, providerDTO.getProviderId().getArgs());
             OwnedPortfolioId associatedPortfolioId =
-                    new OwnedPortfolioId(currentUserBaseKeyHolder.getCurrentUserBaseKey(), providerDTO.associatedPortfolio);
+                    new OwnedPortfolioId(currentUserId.toUserBaseKey(), providerDTO.associatedPortfolio);
             args.putBundle(MainCompetitionFragment.BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE, associatedPortfolioId.getArgs());
             navigator.pushFragment(MainCompetitionFragment.class, args);
         }
@@ -247,7 +247,7 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
             Bundle args = new Bundle();
             args.putString(WebViewFragment.BUNDLE_KEY_URL, ProviderConstants.getLandingPage(
                     providerDTO.getProviderId(),
-                    currentUserBaseKeyHolder.getCurrentUserBaseKey()));
+                    currentUserId.toUserBaseKey()));
             webFragment = (WebViewFragment) navigator.pushFragment(WebViewFragment.class, args);
             webFragment.setThIntentPassedListener(thIntentPassedListener);
         }

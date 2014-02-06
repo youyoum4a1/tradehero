@@ -6,7 +6,7 @@ import com.tradehero.common.utils.THLog;
 import com.tradehero.th.api.position.SecurityPositionDetailDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.TransactionFormDTO;
-import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
+import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.misc.exception.THException;
@@ -37,7 +37,7 @@ abstract public class BaseBuySellAsyncTask extends AsyncTask<Void, Void, Securit
     protected final TransactionFormDTO buySellOrder;
     @Inject protected Lazy<SecurityServiceWrapper> securityServiceWrapper;
     @Inject protected Lazy<SecurityPositionDetailCache> securityPositionDetailCache;
-    @Inject protected Lazy<CurrentUserBaseKeyHolder> currentUserBaseKeyHolder;
+    @Inject protected CurrentUserId currentUserId;
     @Inject protected Lazy<UserProfileCache> userProfileCache;
     @Inject protected AlertDialogUtilBuySell alertDialogUtilBuySell;
 
@@ -122,7 +122,7 @@ abstract public class BaseBuySellAsyncTask extends AsyncTask<Void, Void, Securit
 
             if (returned.portfolio != null)
             {
-                UserBaseKey userBaseKey = currentUserBaseKeyHolder.get().getCurrentUserBaseKey();
+                UserBaseKey userBaseKey = currentUserId.toUserBaseKey();
                 UserProfileDTO userProfileDTO = userProfileCache.get().get(userBaseKey);
                 if (userProfileDTO != null && (userProfileDTO.portfolio == null || userProfileDTO.portfolio.id == returned.portfolio.id))
                 {

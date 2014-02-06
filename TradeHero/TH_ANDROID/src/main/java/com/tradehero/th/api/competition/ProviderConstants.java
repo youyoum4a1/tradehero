@@ -1,7 +1,7 @@
 package com.tradehero.th.api.competition;
 
 import android.net.Uri;
-import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
+import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.base.THUser;
 import com.tradehero.th.utils.Constants;
@@ -33,7 +33,7 @@ public class ProviderConstants
     public static final String WIZARD_URL = PAGES_URL + WIZARD;
     public static final String QUERY_KEY_FULL_SCREEN = "fullScreen";
 
-    @Inject static CurrentUserBaseKeyHolder currentUserBaseKeyHolder;
+    @Inject static CurrentUserId currentUserId;
 
     public static String getLandingPage(ProviderId providerId, UserBaseKey userBaseKey)
     {
@@ -53,7 +53,7 @@ public class ProviderConstants
     {
         String url = RULES_URL;
         url = appendProviderId(url, '?', providerId);
-        url = appendUserId(url, '&', currentUserBaseKeyHolder.getCurrentUserBaseKey());
+        url = appendUserId(url, '&', currentUserId.toUserBaseKey());
         if (showNextButton)
         {
             url = appendShowNextButton(url, '&');
@@ -65,7 +65,7 @@ public class ProviderConstants
     {
         String url = TERMS_URL;
         url = appendProviderId(url, '?', providerId);
-        url = appendUserId(url, '&', currentUserBaseKeyHolder.getCurrentUserBaseKey());
+        url = appendUserId(url, '&', currentUserId.toUserBaseKey());
         return appendAuthorization(url, '&');
     }
 

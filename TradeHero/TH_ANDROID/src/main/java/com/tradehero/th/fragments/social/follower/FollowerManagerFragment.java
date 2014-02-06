@@ -16,7 +16,7 @@ import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.social.FollowerId;
 import com.tradehero.th.api.social.FollowerSummaryDTO;
 import com.tradehero.th.api.social.UserFollowerDTO;
-import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
+import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import javax.inject.Inject;
@@ -34,7 +34,7 @@ public class FollowerManagerFragment extends BasePurchaseManagerFragment
     private UserBaseKey followedId;
     private FollowerSummaryDTO followerSummaryDTO;
 
-    @Inject protected CurrentUserBaseKeyHolder currentUserBaseKeyHolder;
+    @Inject protected CurrentUserId currentUserId;
     private FollowerManagerInfoFetcher infoFetcher;
 
     //<editor-fold desc="BaseFragment.TabBarVisibilityInformer">

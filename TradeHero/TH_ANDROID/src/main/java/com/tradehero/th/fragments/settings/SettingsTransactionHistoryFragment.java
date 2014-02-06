@@ -11,7 +11,7 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
-import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
+import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserTransactionHistoryDTO;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.network.service.UserService;
@@ -37,7 +37,7 @@ public class SettingsTransactionHistoryFragment extends DashboardFragment
     private SettingsTransactionHistoryAdapter transactionListViewAdapter;
     private ProgressDialog progressDialog;
     @Inject protected UserService userService;
-    @Inject protected CurrentUserBaseKeyHolder currentUserBaseKeyHolder;
+    @Inject protected CurrentUserId currentUserId;
 
     //<editor-fold desc="ActionBar">
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
@@ -60,7 +60,7 @@ public class SettingsTransactionHistoryFragment extends DashboardFragment
                 getActivity(),
                 R.string.please_wait,
                 R.string.connecting_tradehero_only);
-        userService.getUserTransactions(currentUserBaseKeyHolder.getCurrentUserBaseKey().key, new Callback<List<UserTransactionHistoryDTO>>()
+        userService.getUserTransactions(currentUserId.get(), new Callback<List<UserTransactionHistoryDTO>>()
         {
             @Override
             public void success(List<UserTransactionHistoryDTO> dtos, Response response)

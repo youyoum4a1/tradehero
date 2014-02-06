@@ -29,7 +29,7 @@ import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.form.UserFormFactory;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.social.SocialNetworkFormDTO;
-import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
+import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.DashboardNavigatorActivity;
@@ -75,7 +75,7 @@ public class SettingsFragment extends PreferenceFragment
     @Inject SessionService sessionService;
     @Inject SocialService socialService;
     @Inject protected Lazy<UserProfileCache> userProfileCache;
-    @Inject protected CurrentUserBaseKeyHolder currentUserBaseKeyHolder;
+    @Inject protected CurrentUserId currentUserId;
     @Inject protected PushNotificationManager pushNotificationManager;
     @Inject protected LruMemFileCache lruCache;
     @Inject protected PurchaseRestorerAlertUtil purchaseRestorerAlertUtil;
@@ -110,7 +110,7 @@ public class SettingsFragment extends PreferenceFragment
         View view = super.onCreateView(paramLayoutInflater, paramViewGroup, paramBundle);
         view.setBackgroundColor(getResources().getColor(R.color.white));
 
-        this.currentUserProfileRetrievedMilestone = new UserProfileRetrievedMilestone(currentUserBaseKeyHolder.getCurrentUserBaseKey());
+        this.currentUserProfileRetrievedMilestone = new UserProfileRetrievedMilestone(currentUserId.toUserBaseKey());
         this.currentUserProfileRetrievedMilestone.setOnCompleteListener(new SettingsUserProfileRetrievedCompleteListener());
         this.currentUserProfileRetrievedMilestone.launch();
 
@@ -460,7 +460,7 @@ public class SettingsFragment extends PreferenceFragment
 
     private void updateNotificationStatus()
     {
-        final UserProfileDTO currentUserProfile = userProfileCache.get().get(currentUserBaseKeyHolder.getCurrentUserBaseKey());
+        final UserProfileDTO currentUserProfile = userProfileCache.get().get(currentUserId.toUserBaseKey());
         if (currentUserProfile != null)
         {
             if (emailNotification != null)
@@ -500,7 +500,7 @@ public class SettingsFragment extends PreferenceFragment
                 R.string.settings_notifications_email_alert_title,
                 R.string.settings_notifications_email_alert_message);
 
-        userServiceWrapper.updateProfilePropertyEmailNotifications(currentUserBaseKeyHolder.getCurrentUserBaseKey(), enable,
+        userServiceWrapper.updateProfilePropertyEmailNotifications(currentUserId.toUserBaseKey(), enable,
                 createUserProfileCallback());
         return false;
     }
@@ -511,7 +511,7 @@ public class SettingsFragment extends PreferenceFragment
                 R.string.settings_notifications_push_alert_title,
                 R.string.settings_notifications_push_alert_message);
 
-        userServiceWrapper.updateProfilePropertyPushNotifications(currentUserBaseKeyHolder.getCurrentUserBaseKey(), enable,
+        userServiceWrapper.updateProfilePropertyPushNotifications(currentUserId.toUserBaseKey(), enable,
                 createUserProfileCallback());
         return false;
     }
@@ -553,7 +553,7 @@ public class SettingsFragment extends PreferenceFragment
                     R.string.please_wait,
                     R.string.connecting_tradehero_only);
             socialService.disconnect(
-                    currentUserBaseKeyHolder.getCurrentUserBaseKey().key,
+                    currentUserId.get(),
                     new SocialNetworkFormDTO(socialNetwork),
                     createSocialDisconnectCallback());
 
@@ -584,7 +584,7 @@ public class SettingsFragment extends PreferenceFragment
 
     private void updateSocialConnectStatus()
     {
-        UserProfileDTO updatedUserProfileDTO = userProfileCache.get().get(currentUserBaseKeyHolder.getCurrentUserBaseKey());
+        UserProfileDTO updatedUserProfileDTO = userProfileCache.get().get(currentUserId.toUserBaseKey());
         if (updatedUserProfileDTO != null)
         {
             if (facebookSharing != null)
@@ -784,7 +784,7 @@ public class SettingsFragment extends PreferenceFragment
                 R.string.settings_misc_sign_out_alert_title,
                 R.string.settings_misc_sign_out_alert_message);
 
-        THLog.d(TAG, "Before signout current user base key " + currentUserBaseKeyHolder.getCurrentUserBaseKey().key);
+        THLog.d(TAG, "Before signout current user base key " + currentUserId.toUserBaseKey());
         sessionService.logout(createSignOutCallback());
     }
 
@@ -800,7 +800,7 @@ public class SettingsFragment extends PreferenceFragment
                 ActivityHelper.launchAuthentication(getActivity());
                 getActivity().finish();
                 // TODO clear caches
-                THLog.d(TAG, "After successful signout current user base key " + currentUserBaseKeyHolder.getCurrentUserBaseKey().key);
+                THLog.d(TAG, "After successful signout current user base key " + currentUserId.toUserBaseKey());
             }
 
             @Override public void failure(RetrofitError error)
@@ -838,7 +838,7 @@ public class SettingsFragment extends PreferenceFragment
         @Override public boolean onSocialAuthDone(JSONObject json)
         {
             socialService.connect(
-                    currentUserBaseKeyHolder.getCurrentUserBaseKey().key,
+                    currentUserId.get(),
                     UserFormFactory.create(json),
                     createSocialConnectCallback());
             progressDialog.setMessage(String.format(getString(R.string.connecting_tradehero), currentSocialNetworkConnect.getName()));
@@ -851,7 +851,7 @@ public class SettingsFragment extends PreferenceFragment
 
         @Override protected void success(UserProfileDTO userProfileDTO, THResponse thResponse)
         {
-            userProfileCache.get().put(currentUserBaseKeyHolder.getCurrentUserBaseKey(), userProfileDTO);
+            userProfileCache.get().put(currentUserId.toUserBaseKey(), userProfileDTO);
         }
 
         @Override protected void failure(THException ex)

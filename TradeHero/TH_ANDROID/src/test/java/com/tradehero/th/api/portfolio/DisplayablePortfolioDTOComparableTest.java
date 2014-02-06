@@ -171,7 +171,7 @@ public class DisplayablePortfolioDTOComparableTest
     {
         PortfolioDTO portfolioDTO = new PortfolioDTO();
         portfolioDTO.id = 15;
-        portfolioDTO.title = "CurrentUser Older";
+        portfolioDTO.title = "CurrentUserId Older";
         portfolioDTO.creationDate = new Date(2013, 1, 1);
         return portfolioDTO;
     }
@@ -180,7 +180,7 @@ public class DisplayablePortfolioDTOComparableTest
     {
         PortfolioDTO portfolioDTO = new PortfolioDTO();
         portfolioDTO.id = 20;
-        portfolioDTO.title = "CurrentUser Younger";
+        portfolioDTO.title = "CurrentUserId Younger";
         portfolioDTO.creationDate = new Date(2013, 1, 2);
         return portfolioDTO;
     }

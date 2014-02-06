@@ -19,7 +19,7 @@ import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.position.GetPositionsDTO;
 import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.api.security.SecurityIdList;
-import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
+import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseDTOUtil;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
@@ -48,7 +48,7 @@ public class PortfolioListItemView extends RelativeLayout implements DTOView<Dis
     private SecurityIdList watchedSecurityIds;
     @Inject Picasso picasso;
     @Inject @ForUserPhoto Transformation userImageTransformation;
-    @Inject CurrentUserBaseKeyHolder currentUserBaseKeyHolder;
+    @Inject CurrentUserId currentUserId;
     @Inject UserProfileCache userProfileCache;
     @Inject GetPositionsCache getPositionsCache;
     @Inject UserWatchlistPositionCache userWatchlistPositionCache;
@@ -106,7 +106,7 @@ public class PortfolioListItemView extends RelativeLayout implements DTOView<Dis
         super.onAttachedToWindow();
         this.currentUserProfileRetrievedMilestoneListener = new PortfolioListItemViewUserProfileRetrievedListener();
 
-        UserProfileRetrievedMilestone milestone = new UserProfileRetrievedMilestone(this.currentUserBaseKeyHolder.getCurrentUserBaseKey());
+        UserProfileRetrievedMilestone milestone = new UserProfileRetrievedMilestone(currentUserId.toUserBaseKey());
         milestone.setOnCompleteListener(this.currentUserProfileRetrievedMilestoneListener);
         this.currentUserProfileRetrievedMilestone = milestone;
 
@@ -200,7 +200,7 @@ public class PortfolioListItemView extends RelativeLayout implements DTOView<Dis
                 displayablePortfolioDTOCopy.portfolioDTO != null &&
                 !displayablePortfolioDTOCopy.portfolioDTO.isWatchlist&&
                 displayablePortfolioDTOCopy.userBaseDTO != null &&
-                displayablePortfolioDTOCopy.userBaseDTO.getBaseKey().equals(currentUserBaseKeyHolder.getCurrentUserBaseKey()))
+                displayablePortfolioDTOCopy.userBaseDTO.getBaseKey().equals(currentUserId.toUserBaseKey()))
         {
             THLog.d(TAG, "fetchGetPositions launching");
             DTOCache.GetOrFetchTask<OwnedPortfolioId, GetPositionsDTO> task = this.getPositionsCache.getOrFetch(displayablePortfolioDTOCopy.ownedPortfolioId, getPositionsListener);
@@ -223,7 +223,7 @@ public class PortfolioListItemView extends RelativeLayout implements DTOView<Dis
                 displayablePortfolioDTOCopy.portfolioDTO != null &&
                 displayablePortfolioDTOCopy.portfolioDTO.isWatchlist &&
                 displayablePortfolioDTOCopy.userBaseDTO != null &&
-                displayablePortfolioDTOCopy.userBaseDTO.getBaseKey().equals(currentUserBaseKeyHolder.getCurrentUserBaseKey()))
+                displayablePortfolioDTOCopy.userBaseDTO.getBaseKey().equals(currentUserId.toUserBaseKey()))
         {
             THLog.d(TAG, "fetchWatchedSecurities launching");
             DTOCache.GetOrFetchTask<UserBaseKey, SecurityIdList> task = this.userWatchlistPositionCache.getOrFetch(displayablePortfolioDTOCopy.userBaseDTO.getBaseKey(), userWatchlistListener);
@@ -306,7 +306,7 @@ public class PortfolioListItemView extends RelativeLayout implements DTOView<Dis
         }
 
         // When this is another user
-        if (!currentUserBaseKeyHolder.getCurrentUserBaseKey().equals(displayablePortfolioDTOCopy.userBaseDTO.getBaseKey()))
+        if (!currentUserId.toUserBaseKey().equals(displayablePortfolioDTOCopy.userBaseDTO.getBaseKey()))
         {
             return UserBaseDTOUtil.getFirstLastName(getContext(), displayablePortfolioDTOCopy.userBaseDTO);
         }
@@ -353,7 +353,7 @@ public class PortfolioListItemView extends RelativeLayout implements DTOView<Dis
 
     public boolean isThisUserFollowed()
     {
-        UserProfileDTO currentUserProfile = userProfileCache.get(currentUserBaseKeyHolder.getCurrentUserBaseKey());
+        UserProfileDTO currentUserProfile = userProfileCache.get(currentUserId.toUserBaseKey());
         return currentUserProfile != null && displayablePortfolioDTO != null &&
                 currentUserProfile.isFollowingUser(displayablePortfolioDTO.userBaseDTO);
     }

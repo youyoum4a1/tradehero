@@ -13,7 +13,7 @@ import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
-import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
+import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.api.users.payment.UpdatePayPalEmailDTO;
@@ -49,7 +49,7 @@ public class SettingsPayPalFragment extends DashboardFragment
 
     @Inject protected UserService userService;
     @Inject protected Lazy<UserProfileCache> userProfileCache;
-    @Inject protected CurrentUserBaseKeyHolder currentUserBaseKeyHolder;
+    @Inject protected CurrentUserId currentUserId;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -84,7 +84,7 @@ public class SettingsPayPalFragment extends DashboardFragment
                         R.string.connecting_tradehero_only);
                 UpdatePayPalEmailFormDTO emailDTO = new UpdatePayPalEmailFormDTO();
                 emailDTO.newPayPalEmailAddress = paypalEmailText.getText().toString();
-                userService.updatePayPalEmail(currentUserBaseKeyHolder.getCurrentUserBaseKey().key, emailDTO, new THCallback<UpdatePayPalEmailDTO>()
+                userService.updatePayPalEmail(currentUserId.get(), emailDTO, new THCallback<UpdatePayPalEmailDTO>()
                 {
                     @Override
                     protected void success(UpdatePayPalEmailDTO updatePayPalEmailDTO, THResponse thResponse)
@@ -112,7 +112,7 @@ public class SettingsPayPalFragment extends DashboardFragment
         // HACK: force this email to focus instead of the TabHost stealing focus..
         paypalEmailText.setOnTouchListener(new FocusableOnTouchListener());
         userProfileCache.get()
-                .getOrFetch(currentUserBaseKeyHolder.getCurrentUserBaseKey(), false, new DTOCache.Listener<UserBaseKey, UserProfileDTO>()
+                .getOrFetch(currentUserId.toUserBaseKey(), false, new DTOCache.Listener<UserBaseKey, UserProfileDTO>()
                 {
                     @Override
                     public void onDTOReceived(UserBaseKey key, UserProfileDTO value, boolean fromCache)

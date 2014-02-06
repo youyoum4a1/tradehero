@@ -16,7 +16,7 @@ import com.tradehero.th.api.position.SecurityPositionDetailDTOUtil;
 import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
-import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
+import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.api.users.UserProfileDTOUtil;
@@ -47,7 +47,7 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
 
     @Inject protected AlertDialogUtil alertDialogUtil;
 
-    @Inject protected CurrentUserBaseKeyHolder currentUserBaseKeyHolder;
+    @Inject protected CurrentUserId currentUserId;
     @Inject protected Lazy<SecurityCompactCache> securityCompactCache;
     @Inject protected Lazy<SecurityPositionDetailCache> securityPositionDetailCache;
     protected SecurityId securityId;
@@ -127,7 +127,7 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
         Bundle securityIdBundle = args.getBundle(BUNDLE_KEY_SECURITY_ID_BUNDLE);
         linkWith(new SecurityId(securityIdBundle), true);
 
-        UserProfileDTO profileDTO = userProfileCache.get().get(currentUserBaseKeyHolder.getCurrentUserBaseKey());
+        UserProfileDTO profileDTO = userProfileCache.get().get(currentUserId.toUserBaseKey());
         if (profileDTO != null)
         {
             linkWith(profileDTO, true);
@@ -250,7 +250,7 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
         {
             fetchUserProfileTask.cancel(false);
         }
-        UserBaseKey baseKey = currentUserBaseKeyHolder.getCurrentUserBaseKey();
+        UserBaseKey baseKey = currentUserId.toUserBaseKey();
         userProfileCacheListener = new AbstractBuySellUserProfileCacheListener(baseKey); // We need to keep a strong reference because the cache does not
         fetchUserProfileTask = userProfileCache.get().getOrFetch(baseKey, false, userProfileCacheListener);
         fetchUserProfileTask.execute();

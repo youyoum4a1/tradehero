@@ -1,9 +1,10 @@
 package com.tradehero.th.utils.dagger;
 
+import android.content.SharedPreferences;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.competition.ProviderConstants;
 import com.tradehero.th.api.portfolio.DisplayablePortfolioUtil;
-import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
+import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.loaders.FriendListLoader;
 import com.tradehero.th.persistence.social.VisitedFriendListPrefs;
 import com.tradehero.th.persistence.user.AbstractUserStore;
@@ -34,9 +35,11 @@ import javax.inject.Singleton;
 )
 public class UserModule
 {
-    @Provides @Singleton CurrentUserBaseKeyHolder provideCurrentUserBaseKeyHolder()
+    private static final String PREF_CURRENT_USER_ID_KEY = "PREF_CURRENT_USER_ID_KEY";
+
+    @Provides @Singleton CurrentUserId provideCurrentUser(SharedPreferences sharedPreferences)
     {
-        return new CurrentUserBaseKeyHolder();
+        return new CurrentUserId(sharedPreferences, PREF_CURRENT_USER_ID_KEY, 0);
     }
 
     @Provides @Singleton AbstractUserStore provideUserStore(UserStore store)

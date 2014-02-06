@@ -21,7 +21,7 @@ import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.leaderboard.LeaderboardDefDTO;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
-import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
+import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileCompactDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
@@ -37,13 +37,8 @@ import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneWizardDTO;
 import com.tradehero.th.fragments.leaderboard.CompetitionLeaderboardMarkUserListViewFragment;
 import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserListViewFragment;
 import com.tradehero.th.fragments.position.PositionListFragment;
-import com.tradehero.th.fragments.trade.BuySellFragment;
 import com.tradehero.th.fragments.web.WebViewFragment;
-import com.tradehero.th.models.intent.THIntent;
 import com.tradehero.th.models.intent.THIntentPassedListener;
-import com.tradehero.th.models.intent.competition.ProviderPageIntent;
-import com.tradehero.th.models.intent.security.SecurityPushBuyIntent;
-import com.tradehero.th.models.provider.ProviderSpecificResourcesFactory;
 import com.tradehero.th.persistence.competition.CompetitionCache;
 import com.tradehero.th.persistence.competition.CompetitionListCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
@@ -65,7 +60,7 @@ public class MainCompetitionFragment extends CompetitionFragment
     private THIntentPassedListener webViewTHIntentPassedListener;
     private WebViewFragment webViewFragment;
 
-    @Inject CurrentUserBaseKeyHolder currentUserBaseKeyHolder;
+    @Inject CurrentUserId currentUserId;
     @Inject UserProfileCache userProfileCache;
     @Inject CompetitionListCache competitionListCache;
     @Inject CompetitionCache competitionCache;
@@ -131,7 +126,7 @@ public class MainCompetitionFragment extends CompetitionFragment
     {
         super.onStart();
         detachUserProfileCacheTask();
-        profileCacheFetchTask = userProfileCache.getOrFetch(currentUserBaseKeyHolder.getCurrentUserBaseKey(), profileCacheListener);
+        profileCacheFetchTask = userProfileCache.getOrFetch(currentUserId.toUserBaseKey(), profileCacheListener);
         profileCacheFetchTask.execute();
 
         detachCompetitionListCacheTask();

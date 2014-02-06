@@ -8,7 +8,7 @@ import com.tradehero.common.persistence.DTOListCacheAdapter;
 import com.tradehero.th.R;
 import com.tradehero.th.api.alert.AlertCompactDTO;
 import com.tradehero.th.api.alert.AlertId;
-import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
+import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.persistence.alert.AlertCompactCache;
 import com.tradehero.th.persistence.alert.AlertCompactListCache;
 import com.tradehero.th.utils.DaggerUtils;
@@ -29,7 +29,7 @@ public class AlertListItemAdapter extends DTOListCacheAdapter<AlertId, AlertItem
     @Inject protected Lazy<AlertCompactListCache> alertCompactListCache;
     @Inject protected Lazy<AlertCompactCache> alertCompactCache;
 
-    @Inject protected CurrentUserBaseKeyHolder currentUserBaseKeyHolder;
+    @Inject protected CurrentUserId currentUserId;
 
     protected final Context context;
     protected final int alertResId;
@@ -87,7 +87,7 @@ public class AlertListItemAdapter extends DTOListCacheAdapter<AlertId, AlertItem
 
     @Override public DTOKeyIdList<AlertId> getItems()
     {
-        return alertCompactListCache.get().get(currentUserBaseKeyHolder.getCurrentUserBaseKey());
+        return alertCompactListCache.get().get(currentUserId.toUserBaseKey());
     }
 
     @Override protected void fineTune(int position, AlertId dto, AlertItemView dtoView)

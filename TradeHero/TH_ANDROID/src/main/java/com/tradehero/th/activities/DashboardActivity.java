@@ -8,7 +8,7 @@ import com.actionbarsherlock.view.MenuItem;
 import com.crashlytics.android.Crashlytics;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
-import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
+import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.billing.googleplay.THIABActor;
@@ -38,7 +38,7 @@ public class DashboardActivity extends SherlockFragmentActivity
     private THIABPurchaseRestorer.OnPurchaseRestorerFinishedListener purchaseRestorerFinishedListener;
 
     @Inject protected Lazy<FacebookUtils> facebookUtils;
-    @Inject CurrentUserBaseKeyHolder currentUserBaseKeyHolder;
+    @Inject CurrentUserId currentUserId;
     @Inject Lazy<THIntentFactory> thIntentFactory;
     @Inject DTOCacheUtil dtoCacheUtil;
     @Inject PurchaseRestorerAlertUtil purchaseRestorerAlertUtil;
@@ -50,7 +50,7 @@ public class DashboardActivity extends SherlockFragmentActivity
 
         if (Constants.RELEASE)
         {
-            Crashlytics.setUserIdentifier("" + currentUserBaseKeyHolder.getCurrentUserBaseKey().key);
+            Crashlytics.setUserIdentifier("" + currentUserId.toUserBaseKey());
         }
 
         setContentView(R.layout.dashboard_with_bottom_bar);

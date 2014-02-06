@@ -13,7 +13,7 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.leaderboard.LeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardDefKey;
-import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
+import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefCache;
@@ -25,7 +25,7 @@ import javax.inject.Inject;
 /** Created with IntelliJ IDEA. User: tho Date: 10/16/13 Time: 4:19 PM Copyright (c) TradeHero */
 public class LeaderboardDefView extends RelativeLayout implements DTOView<LeaderboardDefKey>
 {
-    @Inject protected CurrentUserBaseKeyHolder currentUserBaseKeyHolder;
+    @Inject protected CurrentUserId currentUserId;
     @Inject protected Lazy<UserProfileCache> userProfileCache;
     @Inject protected Lazy<LeaderboardDefCache> leaderboardDefCache;
 
@@ -80,11 +80,11 @@ public class LeaderboardDefView extends RelativeLayout implements DTOView<Leader
             }
         };
 
-        if (currentUserBaseKeyHolder != null)
+        if (currentUserId != null)
         {
             // TODO this is just for getting leaderboard ranking of current user, which is already done by getting user rank from DefDTO, see
             // method @updateRankTitle
-            //userProfileRequestTask = userProfileCache.get().getOrFetch(currentUserBaseKeyHolder.getCurrentUserBaseKey(), false, userProfileListener);
+            //userProfileRequestTask = userProfileCache.get().getOrFetch(currentUserId.get(), false, userProfileListener);
             //userProfileRequestTask.execute();
         }
     }

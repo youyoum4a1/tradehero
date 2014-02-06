@@ -21,7 +21,7 @@ import com.tradehero.th.api.leaderboard.LeaderboardDefKey;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import com.tradehero.th.api.leaderboard.position.LeaderboardMarkUserId;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
-import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
+import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.position.LeaderboardPositionListFragment;
@@ -34,7 +34,6 @@ import com.tradehero.th.utils.StringUtils;
 import com.tradehero.th.utils.THSignedNumber;
 import com.tradehero.th.widget.MarkdownTextView;
 import dagger.Lazy;
-import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import javax.inject.Inject;
 
@@ -47,7 +46,7 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
     @Inject protected Lazy<Picasso> picasso;
     @Inject @ForUserPhoto protected Transformation peopleIconTransformation;
     @Inject protected Lazy<LeaderboardDefCache> leaderboardDefCache;
-    @Inject protected CurrentUserBaseKeyHolder currentUserBaseKeyHolder;
+    @Inject protected CurrentUserId currentUserId;
 
     // data
     private LeaderboardUserDTO leaderboardItem;
@@ -349,7 +348,7 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
     {
         int userId = leaderboardItem.id;
 
-        if (currentUserBaseKeyHolder != null && currentUserBaseKeyHolder.getCurrentUserBaseKey().key != userId)
+        if (currentUserId != null && currentUserId.get() != userId)
         {
             getNavigator().openTimeline(userId);
         }

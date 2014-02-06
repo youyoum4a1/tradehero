@@ -25,7 +25,7 @@ import com.tradehero.common.widget.TwoStateView;
 import com.tradehero.th.R;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.SecurityIdList;
-import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
+import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.fragments.base.BaseFragment;
@@ -55,7 +55,7 @@ public class WatchlistPositionFragment extends DashboardFragment
     @Inject protected Lazy<WatchlistPositionCache> watchlistCache;
     @Inject protected Lazy<UserWatchlistPositionCache> userWatchlistCache;
     @Inject protected Lazy<PortfolioHeaderFactory> headerFactory;
-    @Inject protected CurrentUserBaseKeyHolder currentUserBaseKeyHolder;
+    @Inject protected CurrentUserId currentUserId;
 
     private SwipeListView watchlistListView;
     private WatchlistPortfolioHeaderView watchlistPortfolioHeaderView;
@@ -104,7 +104,7 @@ public class WatchlistPositionFragment extends DashboardFragment
         {
             @Override public void onRefresh(PullToRefreshBase<ListView> refreshView)
             {
-                refreshWatchlistCache = userWatchlistCache.get().getOrFetch(currentUserBaseKeyHolder.getCurrentUserBaseKey(), true, watchlistFetchCompleteListener);
+                refreshWatchlistCache = userWatchlistCache.get().getOrFetch(currentUserId.toUserBaseKey(), true, watchlistFetchCompleteListener);
                 refreshWatchlistCache.execute();
             }
         });
@@ -118,9 +118,9 @@ public class WatchlistPositionFragment extends DashboardFragment
                 .registerReceiver(broadcastReceiver, new IntentFilter(WatchlistItemView.WATCHLIST_ITEM_DELETED));
 
         // watchlist is not yet retrieved
-        if (userWatchlistCache.get().get(currentUserBaseKeyHolder.getCurrentUserBaseKey()) == null)
+        if (userWatchlistCache.get().get(currentUserId.toUserBaseKey()) == null)
         {
-            WatchlistRetrievedMilestone watchlistRetrievedMilestone = new WatchlistRetrievedMilestone(currentUserBaseKeyHolder.getCurrentUserBaseKey());
+            WatchlistRetrievedMilestone watchlistRetrievedMilestone = new WatchlistRetrievedMilestone(currentUserId.toUserBaseKey());
             watchlistRetrievedMilestone.setOnCompleteListener(watchlistRetrievedMilestoneListener);
 
             displayProgress(true);
@@ -189,7 +189,7 @@ public class WatchlistPositionFragment extends DashboardFragment
     {
         if (watchlistPortfolioHeaderView != null)
         {
-            watchlistPortfolioHeaderView.display(currentUserBaseKeyHolder.getCurrentUserBaseKey());
+            watchlistPortfolioHeaderView.display(currentUserId.toUserBaseKey());
             watchlistPortfolioHeaderView.setOnStateChangeListener(gainLossModeListener);
         }
     }
@@ -197,7 +197,7 @@ public class WatchlistPositionFragment extends DashboardFragment
     private void displayWatchlist()
     {
         watchListAdapter = createWatchlistAdapter();
-        watchListAdapter.setItems(userWatchlistCache.get().get(currentUserBaseKeyHolder.getCurrentUserBaseKey()));
+        watchListAdapter.setItems(userWatchlistCache.get().get(currentUserId.toUserBaseKey()));
         watchlistListView.setAdapter(watchListAdapter);
         watchlistListView.setSwipeListViewListener(new BaseSwipeListViewListener()
         {
@@ -213,7 +213,7 @@ public class WatchlistPositionFragment extends DashboardFragment
                 super.onDismiss(reverseSortedPositions);
                 if (watchListAdapter != null)
                 {
-                    watchListAdapter.setItems(userWatchlistCache.get().get(currentUserBaseKeyHolder.getCurrentUserBaseKey()));
+                    watchListAdapter.setItems(userWatchlistCache.get().get(currentUserId.toUserBaseKey()));
                     watchListAdapter.notifyDataSetChanged();
                 }
             }
@@ -299,7 +299,7 @@ public class WatchlistPositionFragment extends DashboardFragment
         @Override public void onDTOReceived(UserBaseKey key, SecurityIdList value, boolean fromCache)
         {
             watchlistPositionListView.onRefreshComplete();
-            watchListAdapter.setItems(userWatchlistCache.get().get(currentUserBaseKeyHolder.getCurrentUserBaseKey()));
+            watchListAdapter.setItems(userWatchlistCache.get().get(currentUserId.toUserBaseKey()));
             watchListAdapter.notifyDataSetChanged();
         }
 

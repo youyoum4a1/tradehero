@@ -5,7 +5,7 @@ import android.content.SharedPreferences;
 /**
  * Created with IntelliJ IDEA. User: tho Date: 2/5/14 Time: 5:44 PM Copyright (c) TradeHero
  */
-public abstract class AbstractPreference<T>
+public abstract class AbstractPreference<T> implements TypePreference<T>
 {
     protected final T defaultValue;
     protected final String key;
@@ -18,15 +18,12 @@ public abstract class AbstractPreference<T>
         this.defaultValue = defaultValue;
     }
 
-    public abstract T get();
-    public abstract void set(T value);
-
-    public void delete()
+    @Override public void delete()
     {
         preference.edit().remove(key).apply();
     }
 
-    public boolean isSet()
+    @Override public boolean isSet()
     {
         return preference.contains(key);
     }

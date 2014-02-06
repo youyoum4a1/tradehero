@@ -21,7 +21,7 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.SecurityIdList;
-import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
+import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.watchlist.WatchlistPositionDTO;
 import com.tradehero.th.api.watchlist.WatchlistPositionFormDTO;
 import com.tradehero.th.fragments.base.DashboardFragment;
@@ -62,7 +62,7 @@ public class WatchlistEditFragment extends DashboardFragment
     @Inject protected Lazy<UserWatchlistPositionCache> userWatchlistPositionCache;
     @Inject protected Lazy<WatchlistService> watchlistService;
     @Inject protected Lazy<Picasso> picasso;
-    @Inject protected CurrentUserBaseKeyHolder currentUserBaseKeyHolder;
+    @Inject protected CurrentUserId currentUserId;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -323,7 +323,7 @@ public class WatchlistEditFragment extends DashboardFragment
             SecurityId securityId = watchlistPositionDTO.securityDTO.getSecurityId();
             watchlistPositionCache.get().put(securityId, watchlistPositionDTO);
             SecurityIdList currentUserWatchlistSecurities =
-                    userWatchlistPositionCache.get().get(currentUserBaseKeyHolder.getCurrentUserBaseKey());
+                    userWatchlistPositionCache.get().get(currentUserId.toUserBaseKey());
             if (currentUserWatchlistSecurities != null && !currentUserWatchlistSecurities.contains(securityId))
             {
                 currentUserWatchlistSecurities.add(watchlistPositionDTO.securityDTO.getSecurityId());

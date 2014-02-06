@@ -6,7 +6,7 @@ import android.provider.ContactsContract.CommonDataKinds.Email;
 import android.provider.ContactsContract.Contacts;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.api.social.UserFriendsDTO;
-import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
+import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.network.service.UserService;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
@@ -47,7 +47,7 @@ public class FriendListLoader extends ListLoader<UserFriendsDTO>
     private static final String EMAIL_CONTACT_ID_SORT_ORDER = Email.CONTACT_ID + " ASC";
 
     @Inject protected Lazy<UserService> userService;
-    @Inject protected CurrentUserBaseKeyHolder currentUserBaseKeyHolder;
+    @Inject protected CurrentUserId currentUserId;
 
     private List<UserFriendsDTO> contactEntries;
     private List<UserFriendsDTO> userFriendsDTOs;
@@ -165,6 +165,6 @@ public class FriendListLoader extends ListLoader<UserFriendsDTO>
 
     private void retrieveFriendList()
     {
-        userFriendsDTOs = userService.get().getFriends(currentUserBaseKeyHolder.getCurrentUserBaseKey().key);
+        userFriendsDTOs = userService.get().getFriends(currentUserId.get());
     }
 }

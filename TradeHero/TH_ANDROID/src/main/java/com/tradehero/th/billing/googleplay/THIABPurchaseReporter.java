@@ -3,7 +3,7 @@ package com.tradehero.th.billing.googleplay;
 import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
-import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
+import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.billing.BasePurchaseReporter;
 import com.tradehero.th.billing.PurchaseReporter;
@@ -30,7 +30,7 @@ public class THIABPurchaseReporter extends BasePurchaseReporter<
 {
     public static final String TAG = THIABPurchaseReporter.class.getSimpleName();
 
-    @Inject Lazy<CurrentUserBaseKeyHolder> currentUserBaseKeyHolder;
+    @Inject CurrentUserId currentUserId;
     @Inject Lazy<PortfolioServiceWrapper> portfolioServiceWrapper;
     @Inject Lazy<AlertPlanService> alertPlanService;
     @Inject Lazy<UserService> userService;
@@ -49,7 +49,7 @@ public class THIABPurchaseReporter extends BasePurchaseReporter<
         OwnedPortfolioId portfolioId = purchase.getApplicableOwnedPortfolioId();
         if (portfolioId == null || portfolioId.userId == null || portfolioId.portfolioId == null)
         {
-            portfolioId = portfolioCompactListCache.get().getDefaultPortfolio(currentUserBaseKeyHolder.get().getCurrentUserBaseKey());
+            portfolioId = portfolioCompactListCache.get().getDefaultPortfolio(currentUserId.toUserBaseKey());
         }
         return portfolioId;
     }

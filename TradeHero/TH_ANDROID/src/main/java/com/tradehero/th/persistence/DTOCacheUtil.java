@@ -4,7 +4,7 @@ import com.tradehero.th.api.competition.ProviderListKey;
 import com.tradehero.th.api.market.ExchangeListType;
 import com.tradehero.th.api.security.TrendingBasicSecurityListType;
 import com.tradehero.th.api.security.TrendingSecurityListType;
-import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
+import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.fragments.trending.TrendingFragment;
 import com.tradehero.th.models.security.WarrantSpecificKnowledgeFactory;
 import com.tradehero.th.persistence.alert.AlertCache;
@@ -42,7 +42,7 @@ import javax.inject.Singleton;
 {
     public final String TAG = DTOCacheUtil.class.getSimpleName();
 
-    @Inject protected CurrentUserBaseKeyHolder currentUserBaseKeyHolder;
+    @Inject protected CurrentUserId currentUserId;
     @Inject protected Lazy<AlertCache> alertCache;
     @Inject protected Lazy<AlertCompactCache> alertCompactCache;
     @Inject protected Lazy<AlertCompactListCache> alertCompactListCache;
@@ -123,7 +123,7 @@ import javax.inject.Singleton;
     
     public void preFetchWatchlist()
     {
-        watchlistPositionCache.get().autoFetch(currentUserBaseKeyHolder.getCurrentUserBaseKey());
+        watchlistPositionCache.get().autoFetch(currentUserId.toUserBaseKey());
     }
 
     public void preFetchProviders()

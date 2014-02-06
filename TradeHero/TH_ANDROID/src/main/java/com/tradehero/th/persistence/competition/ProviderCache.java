@@ -4,7 +4,7 @@ import com.tradehero.common.persistence.StraightDTOCache;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.competition.ProviderListKey;
-import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
+import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.models.security.WarrantSpecificKnowledgeFactory;
 import dagger.Lazy;
 import java.util.ArrayList;
@@ -19,7 +19,7 @@ import javax.inject.Singleton;
     public static final int DEFAULT_MAX_SIZE = 1000;
 
     @Inject protected Lazy<ProviderListCache> providerListCache;
-    @Inject protected CurrentUserBaseKeyHolder currentUserBaseKeyHolder;
+    @Inject protected CurrentUserId currentUserId;
     @Inject protected WarrantSpecificKnowledgeFactory warrantSpecificKnowledgeFactory;
 
     //<editor-fold desc="Constructors">
@@ -41,7 +41,7 @@ import javax.inject.Singleton;
     {
         if (value != null)
         {
-            warrantSpecificKnowledgeFactory.add(key, value.getAssociatedOwnedPortfolioId(currentUserBaseKeyHolder.getCurrentUserBaseKey()));
+            warrantSpecificKnowledgeFactory.add(key, value.getAssociatedOwnedPortfolioId(currentUserId.toUserBaseKey()));
         }
         return super.put(key, value);
     }

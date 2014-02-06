@@ -8,7 +8,6 @@ import android.content.DialogInterface;
 import android.os.Handler;
 import com.tradehero.common.billing.BillingPurchaser;
 import com.tradehero.common.billing.InventoryFetcher;
-import com.tradehero.common.billing.googleplay.BaseIABPurchase;
 import com.tradehero.common.billing.googleplay.IABPurchaseConsumer;
 import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.common.billing.googleplay.IABSKUListType;
@@ -25,7 +24,7 @@ import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
-import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
+import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.Application;
@@ -76,7 +75,7 @@ public class THIABUserInteractor
     protected Throwable showSkuDetailsMilestoneException;
 
     private ProgressDialog progressDialog;
-    @Inject Lazy<CurrentUserBaseKeyHolder> currentUserBaseKeyHolder;
+    @Inject CurrentUserId currentUserId;
     @Inject Lazy<PortfolioCompactListCache> portfolioCompactListCache;
     @Inject Lazy<THIABProductDetailCache> thiabProductDetailCache;
     protected WeakReference<THIABActor> billingActor = new WeakReference<>(null);
@@ -346,11 +345,11 @@ public class THIABUserInteractor
     {
         if (this.applicablePortfolioId == null)
         {
-            this.applicablePortfolioId = new OwnedPortfolioId(currentUserBaseKeyHolder.get().getCurrentUserBaseKey().key, null);
+            this.applicablePortfolioId = new OwnedPortfolioId(currentUserId.get(), null);
         }
         if (this.applicablePortfolioId.userId == null)
         {
-            this.applicablePortfolioId = new OwnedPortfolioId(currentUserBaseKeyHolder.get().getCurrentUserBaseKey().key, this.applicablePortfolioId.portfolioId);
+            this.applicablePortfolioId = new OwnedPortfolioId(currentUserId.get(), this.applicablePortfolioId.portfolioId);
         }
 
         if (this.applicablePortfolioId.portfolioId == null)

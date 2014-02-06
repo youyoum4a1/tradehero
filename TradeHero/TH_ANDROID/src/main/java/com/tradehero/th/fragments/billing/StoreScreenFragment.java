@@ -17,14 +17,13 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
-import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
+import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.billing.googleplay.IABAlertDialogUtil;
 import com.tradehero.th.billing.googleplay.THIABActor;
 import com.tradehero.th.fragments.alert.AlertManagerFragment;
 import com.tradehero.th.fragments.social.follower.FollowerManagerFragment;
 import com.tradehero.th.fragments.social.hero.HeroManagerFragment;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListRetrievedMilestone;
-import com.tradehero.th.utils.AlertDialogUtil;
 import javax.inject.Inject;
 
 public class StoreScreenFragment extends BasePurchaseManagerFragment
@@ -33,7 +32,7 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
 
     public static boolean alreadyNotifiedNeedCreateAccount = false;
 
-    @Inject CurrentUserBaseKeyHolder currentUserBaseKeyHolder;
+    @Inject CurrentUserId currentUserId;
     @Inject IABAlertDialogUtil iabAlertDialogUtil;
 
     private ListView listView;
@@ -141,14 +140,14 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
     private void pushStockAlertFragment()
     {
         Bundle bundle = new Bundle();
-        bundle.putInt(AlertManagerFragment.BUNDLE_KEY_USER_ID, currentUserBaseKeyHolder.getCurrentUserBaseKey().key);
+        bundle.putInt(AlertManagerFragment.BUNDLE_KEY_USER_ID, currentUserId.get());
         pushFragment(AlertManagerFragment.class, bundle);
     }
 
     protected void pushHeroFragment()
     {
         Bundle bundle = new Bundle();
-        bundle.putInt(HeroManagerFragment.BUNDLE_KEY_FOLLOWER_ID, currentUserBaseKeyHolder.getCurrentUserBaseKey().key);
+        bundle.putInt(HeroManagerFragment.BUNDLE_KEY_FOLLOWER_ID, currentUserId.get());
         OwnedPortfolioId applicablePortfolio = userInteractor.getApplicablePortfolioId();
         if (applicablePortfolio != null)
         {
@@ -160,7 +159,7 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
     protected void pushFollowerFragment()
     {
         Bundle bundle = new Bundle();
-        bundle.putInt(FollowerManagerFragment.BUNDLE_KEY_FOLLOWED_ID, currentUserBaseKeyHolder.getCurrentUserBaseKey().key);
+        bundle.putInt(FollowerManagerFragment.BUNDLE_KEY_FOLLOWED_ID, currentUserId.get());
         OwnedPortfolioId applicablePortfolio = userInteractor.getApplicablePortfolioId();
         if (applicablePortfolio != null)
         {

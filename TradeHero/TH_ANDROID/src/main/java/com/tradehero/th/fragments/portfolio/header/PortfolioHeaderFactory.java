@@ -3,11 +3,8 @@ package com.tradehero.th.fragments.portfolio.header;
 import android.os.Bundle;
 import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
-import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
+import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.persistence.user.UserProfileCache;
-import dagger.Lazy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
@@ -17,7 +14,7 @@ import javax.inject.Singleton;
  */
 @Singleton public class PortfolioHeaderFactory
 {
-    @Inject protected CurrentUserBaseKeyHolder currentUserBaseKeyHolder;
+    @Inject protected CurrentUserId currentUserId;
 
     public int layoutIdFor(Bundle ownedPortfolioIdBundle)
     {
@@ -35,7 +32,7 @@ import javax.inject.Singleton;
 
     public int layoutIdFor(UserBaseKey userBaseKey)
     {
-        if (userBaseKey.equals(currentUserBaseKeyHolder.getCurrentUserBaseKey()))
+        if (userBaseKey.equals(currentUserId.toUserBaseKey()))
         {
             return R.layout.portfolio_header_current_user_view;
         }

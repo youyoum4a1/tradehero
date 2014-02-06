@@ -2,7 +2,7 @@ package com.tradehero.th.persistence.watchlist;
 
 import com.tradehero.common.persistence.DTORetrievedAsyncMilestone;
 import com.tradehero.th.api.security.SecurityIdList;
-import com.tradehero.th.api.users.CurrentUserBaseKeyHolder;
+import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
@@ -15,9 +15,9 @@ public class WatchlistRetrievedMilestone extends DTORetrievedAsyncMilestone<User
 {
     @Inject protected Lazy<UserWatchlistPositionCache> watchlistPositionCache;
 
-    @Inject public WatchlistRetrievedMilestone(CurrentUserBaseKeyHolder currentUserBaseKeyHolder)
+    @Inject public WatchlistRetrievedMilestone(CurrentUserId currentUserId)
     {
-        this(currentUserBaseKeyHolder.getCurrentUserBaseKey());
+        this(currentUserId.toUserBaseKey());
     }
 
     public WatchlistRetrievedMilestone(UserBaseKey key)
