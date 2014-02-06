@@ -102,7 +102,7 @@
                 android:scaleType="fitCenter"
                 android:visibility="visible"/>
 
-            <com.tradehero.th.fragments.trade.PricingBidAskView
+            <com.tradehero.th.fragments.trade.view.PricingBidAskView
                 android:id="@+id/pricing_bid_ask_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -113,7 +113,7 @@
 
               <include layout="@layout/trade_pricing_bid_ask_view"/>
 
-            </com.tradehero.th.fragments.trade.PricingBidAskView>
+            </com.tradehero.th.fragments.trade.view.PricingBidAskView>
 
           </LinearLayout>
 
@@ -137,7 +137,7 @@
                 />
             <!-- TODO Add stock name and chart icon -->
 
-            <com.tradehero.th.fragments.trade.TradeQuantityView
+            <com.tradehero.th.fragments.trade.view.TradeQuantityView
                 android:id="@+id/trade_quantity_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -146,7 +146,7 @@
 
               <include layout="@layout/trade_quantity_view" />
 
-            </com.tradehero.th.fragments.trade.TradeQuantityView>
+            </com.tradehero.th.fragments.trade.view.TradeQuantityView>
 
           </LinearLayout>
 
@@ -225,7 +225,7 @@
             android:paddingBottom="4dp"
           >
 
-          <com.tradehero.th.fragments.trade.QuickPriceButtonSet
+          <com.tradehero.th.fragments.trade.view.QuickPriceButtonSet
               android:id="@+id/quick_price_button_set"
               android:layout_width="match_parent"
               android:layout_height="48dp"
@@ -234,7 +234,7 @@
               android:background="@drawable/trend_price_bar"
               android:orientation="horizontal" >
 
-              <com.tradehero.th.fragments.trade.QuickPriceButton
+              <com.tradehero.th.fragments.trade.view.QuickPriceButton
                   android:id="@+id/toggle5k"
                   style="@style/TH.Btn_Price_Bar"
                   android:text="@string/p5k"
@@ -243,7 +243,7 @@
 
               <View style="@style/TH.Btn_Price_Bar_Separator" />
 
-              <com.tradehero.th.fragments.trade.QuickPriceButton
+              <com.tradehero.th.fragments.trade.view.QuickPriceButton
                   android:id="@+id/toggle10k"
                   style="@style/TH.Btn_Price_Bar"
                   android:text="@string/p10k"
@@ -252,7 +252,7 @@
 
               <View style="@style/TH.Btn_Price_Bar_Separator" />
 
-              <com.tradehero.th.fragments.trade.QuickPriceButton
+              <com.tradehero.th.fragments.trade.view.QuickPriceButton
                   android:id="@+id/toggle25k"
                   style="@style/TH.Btn_Price_Bar"
                   android:text="@string/p25k"
@@ -261,14 +261,14 @@
 
               <View style="@style/TH.Btn_Price_Bar_Separator" />
 
-              <com.tradehero.th.fragments.trade.QuickPriceButton
+              <com.tradehero.th.fragments.trade.view.QuickPriceButton
                   android:id="@+id/toggle50k"
                   style="@style/TH.Btn_Price_Bar"
                   android:text="@string/p50k"
                   app:price="50000"
                   />
 
-          </com.tradehero.th.fragments.trade.QuickPriceButtonSet>
+          </com.tradehero.th.fragments.trade.view.QuickPriceButtonSet>
 
           <Button
               android:id="@+id/btn_buy"

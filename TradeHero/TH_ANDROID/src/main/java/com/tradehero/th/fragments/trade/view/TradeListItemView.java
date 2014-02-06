@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.trade;
+package com.tradehero.th.fragments.trade.view;
 
 import android.content.Context;
 import android.util.AttributeSet;
@@ -14,6 +14,7 @@ import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.trade.TradeDTO;
+import com.tradehero.th.fragments.trade.TradeListItemAdapter;
 import com.tradehero.th.persistence.position.PositionCache;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.persistence.security.SecurityIdCache;

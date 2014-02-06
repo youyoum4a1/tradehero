@@ -12,6 +12,8 @@ import com.tradehero.th.api.trade.OwnedTradeId;
 import com.tradehero.th.fragments.position.view.AbstractPositionView;
 import com.tradehero.th.fragments.position.view.PositionClosedView;
 import com.tradehero.th.fragments.position.view.PositionOpenView;
+import com.tradehero.th.fragments.trade.view.TradeListHeaderView;
+import com.tradehero.th.fragments.trade.view.TradeListItemView;
 import com.tradehero.th.widget.list.BaseListHeaderView;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;

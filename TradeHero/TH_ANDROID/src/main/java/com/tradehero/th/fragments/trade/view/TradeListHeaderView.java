@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.trade;
+package com.tradehero.th.fragments.trade.view;
 
 import android.content.Context;
 import android.util.AttributeSet;
