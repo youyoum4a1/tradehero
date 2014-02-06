@@ -1,4 +1,4 @@
-package com.tradehero.th.widget.user;
+package com.tradehero.th.fragments.timeline;
 
 import android.content.Context;
 import android.graphics.Bitmap;

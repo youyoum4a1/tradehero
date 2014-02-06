@@ -8,8 +8,6 @@ import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.widget.user.UserProfileCompactView;
-import com.tradehero.th.widget.user.UserProfileDetailView;
 
 /**
  * Created with IntelliJ IDEA. User: tho Date: 2/5/14 Time: 3:00 PM Copyright (c) TradeHero

@@ -3,7 +3,8 @@
 <merge
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
-  <com.tradehero.th.widget.user.UserProfileCompactView
+
+  <com.tradehero.th.fragments.timeline.UserProfileCompactView
       android:id="@+id/user_profile_compact_view"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
@@ -120,5 +121,5 @@
           />
 
     </LinearLayout>
-  </com.tradehero.th.widget.user.UserProfileCompactView>
+  </com.tradehero.th.fragments.timeline.UserProfileCompactView>
 </merge>

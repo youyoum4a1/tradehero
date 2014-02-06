@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.tradehero.th.fragments.security.SecurityItemView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/trending_grid_item_bg"
@@ -28,8 +29,9 @@
       android:ellipsize="end"
       android:lines="1"
       android:textColor="@color/trending_grid_item_stock_name"
-      android:text=""
-      android:textStyle="bold"/>
+      tools:text="Google"
+      android:textStyle="bold"
+      />
 
   <com.tradehero.common.widget.ImageViewThreadSafe
       android:id="@+id/stock_logo"
@@ -44,7 +46,7 @@
       android:adjustViewBounds="true"
       android:contentDescription="@null"
       android:scaleType="centerInside"
-      android:src="@drawable/default_image"/>
+      tools:src="@drawable/flag_country_round_united_states"/>
 
   <TextView
       android:id="@+id/exchange_symbol"
@@ -55,7 +57,7 @@
       android:ellipsize="end"
       android:lines="1"
       android:textColor="@color/trending_grid_item_stock_name"
-      android:text=""/>
+      tools:text="GOOG"/>
 
   <LinearLayout
       android:layout_width="wrap_content"
@@ -73,7 +75,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="2dp"
         android:lines="1"
-        android:text="@null"
+        tools:text="@string/arrow_prefix_positive"
         android:textColor="@color/black"
         android:textStyle="bold"
         />
@@ -85,7 +87,7 @@
         android:layout_marginLeft="2dp"
         android:lines="1"
         android:textColor="@color/black"
-        android:text="@null"
+        tools:text="US$"
         />
 
     <TextView
@@ -93,10 +95,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:lines="1"
-        android:text="@null"
+        tools:text="1,014"
         android:textColor="@color/black"
         android:textStyle="bold"
         />
+
   </LinearLayout>
 
   <ImageView
@@ -111,4 +114,5 @@
       android:scaleType="centerInside"
       android:src="@drawable/market_sleep_grey"
       />
+
 </com.tradehero.th.fragments.security.SecurityItemView>

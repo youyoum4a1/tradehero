@@ -10,6 +10,17 @@
     android:outAnimation="@anim/alpha_out"
     android:measureAllChildren="false"
     >
-  <include layout="@layout/user_profile_compact_view" android:layout_width="match_parent" android:layout_height="wrap_content"/>
-  <include layout="@layout/user_profile_detail_view" android:layout_width="match_parent" android:layout_height="wrap_content"/>
+
+  <include
+      layout="@layout/user_profile_compact_view"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      />
+
+  <include
+      layout="@layout/user_profile_detail_view"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      />
+
 </com.tradehero.th.fragments.timeline.UserProfileView>

@@ -1,4 +1,4 @@
-package com.tradehero.th.widget.user;
+package com.tradehero.th.fragments.timeline;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -25,6 +25,7 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.portfolio.PortfolioRequestListener;
 import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th.utils.SecurityUtils;
 import com.tradehero.th.utils.THSignedNumber;
 import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
@@ -43,7 +44,7 @@ public class UserProfileDetailView extends LinearLayout implements DTOView<UserP
     @InjectView(R.id.profile_screen_user_detail_top) LinearLayout profileTop;
     @InjectView(R.id.txt_roi) TextView roiSinceInception;
     //@InjectView(R.id.txt_hero_quotient) TextView hqSinceInception;
-    @InjectView(R.id.txt_profile_tradeprofit) TextView plSinceInception;
+    @InjectView(R.id.txt_profile_tradeprofit) TextView profitFromTrades;
     @InjectView(R.id.txt_member_since) TextView memberSince;
     @InjectView(R.id.txt_total_wealth) TextView totalWealth;
     @InjectView(R.id.txt_additional_cash) TextView additionalCash;
@@ -55,7 +56,8 @@ public class UserProfileDetailView extends LinearLayout implements DTOView<UserP
     @InjectView(R.id.user_profile_exchanges_count) TextView exchangesCount;
 
     @InjectView(R.id.btn_user_profile_default_portfolio) ImageView btnDefaultPortfolio;
-    @InjectView(R.id.user_profile_display_name) TextView userName;
+    @InjectView(R.id.user_profile_display_name) TextView displayName;
+    @InjectView(R.id.user_profile_first_last_name) TextView firstLastName;
 
     private WeakReference<PortfolioRequestListener> portfolioRequestListener = new WeakReference<>(null);
     private Runnable displayTopViewBackgroundRunnable;
@@ -82,13 +84,18 @@ public class UserProfileDetailView extends LinearLayout implements DTOView<UserP
         super.onFinishInflate();
         ButterKnife.inject(this);
         DaggerUtils.inject(this);
-        init();
     }
 
     @Override protected void onDetachedFromWindow()
     {
-        btnDefaultPortfolio.setOnClickListener(null);
-        profileTop.removeCallbacks(displayTopViewBackgroundRunnable);
+        if (btnDefaultPortfolio != null)
+        {
+            btnDefaultPortfolio.setOnClickListener(null);
+        }
+        if (profileTop != null)
+        {
+            profileTop.removeCallbacks(displayTopViewBackgroundRunnable);
+        }
         displayTopViewBackgroundRunnable = null;
         super.onDetachedFromWindow();
     }
@@ -96,8 +103,18 @@ public class UserProfileDetailView extends LinearLayout implements DTOView<UserP
     @Override protected void onAttachedToWindow()
     {
         super.onAttachedToWindow();
-
         THLog.d(TAG, "onAttachedToWindow");
+
+        if (btnDefaultPortfolio != null)
+        {
+            btnDefaultPortfolio.setOnClickListener(new OnClickListener()
+            {
+                @Override public void onClick(View view)
+                {
+                    pushDefaultPortfolio();
+                }
+            });
+        }
 
         displayTopViewBackgroundRunnable = new Runnable()
         {
@@ -120,20 +137,6 @@ public class UserProfileDetailView extends LinearLayout implements DTOView<UserP
             }
         };
         post(displayTopViewBackgroundRunnable);
-    }
-
-    private void init()
-    {
-        if (btnDefaultPortfolio != null)
-        {
-            btnDefaultPortfolio.setOnClickListener(new OnClickListener()
-            {
-                @Override public void onClick(View view)
-                {
-                    pushDefaultPortfolio();
-                }
-            });
-        }
     }
 
     @Override public void setVisibility(int visibility)
@@ -188,16 +191,21 @@ public class UserProfileDetailView extends LinearLayout implements DTOView<UserP
                 roiSinceInception.setTextColor(getResources().getColor(thRoiSinceInception.getColor()));
             }
 
-            if (plSinceInception != null)
+            if (profitFromTrades != null)
             {
                 Double pl = dto.portfolio.plSinceInception;
                 if (pl == null)
                 {
                     pl = 0.0;
                 }
-                THSignedNumber thPlSinceInception = new THSignedNumber(THSignedNumber.TYPE_MONEY, pl);
-                plSinceInception.setText(thPlSinceInception.toString());
-                plSinceInception.setTextColor(getResources().getColor(thPlSinceInception.getColor()));
+                THSignedNumber thPlSinceInception = new THSignedNumber(
+                        THSignedNumber.TYPE_MONEY,
+                        pl,
+                        true,
+                        SecurityUtils.DEFAULT_VIRTUAL_CASH_CURRENCY_DISPLAY,
+                        THSignedNumber.TYPE_SIGN_PLUS_MINUS_ALWAYS);
+                profitFromTrades.setText(thPlSinceInception.toString());
+                profitFromTrades.setTextColor(getResources().getColor(thPlSinceInception.getColor()));
             }
 
             if (totalWealth != null)
@@ -250,9 +258,14 @@ public class UserProfileDetailView extends LinearLayout implements DTOView<UserP
             heroesCount.setText(Integer.toString(dto.heroIds == null ? 0 : dto.heroIds.size()));
         }
 
-        if (userName != null)
+        if (displayName != null)
         {
-            userName.setText(dto.displayName);
+            displayName.setText(dto.displayName);
+        }
+
+        if (firstLastName != null)
+        {
+            firstLastName.setText(getResources().getString(R.string.first_last_name_display, dto.firstName, dto.lastName));
         }
     }
 
