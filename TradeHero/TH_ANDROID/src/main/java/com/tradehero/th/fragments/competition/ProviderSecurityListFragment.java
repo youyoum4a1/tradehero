@@ -25,18 +25,13 @@ import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityIdList;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.fragments.competition.macquarie.MacquarieWarrantItemViewAdapter;
-import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneWizardDTO;
 import com.tradehero.th.fragments.security.SecurityItemViewAdapter;
 import com.tradehero.th.fragments.security.SecurityListFragment;
 import com.tradehero.th.fragments.security.SimpleSecurityItemViewAdapter;
 import com.tradehero.th.fragments.trade.BuySellFragment;
 import com.tradehero.th.fragments.web.WebViewFragment;
 import com.tradehero.th.loaders.security.SecurityListPagedLoader;
-import com.tradehero.th.loaders.security.macquarie.MacquarieSecurityListPagedLoader;
-import com.tradehero.th.models.intent.THIntent;
 import com.tradehero.th.models.intent.THIntentPassedListener;
-import com.tradehero.th.models.intent.competition.ProviderPageIntent;
-import com.tradehero.th.models.intent.security.SecurityPushBuyIntent;
 import com.tradehero.th.models.provider.ProviderSpecificResourcesDTO;
 import com.tradehero.th.models.provider.ProviderSpecificResourcesFactory;
 import com.tradehero.th.persistence.competition.ProviderCache;
@@ -281,8 +276,6 @@ public class ProviderSecurityListFragment extends SecurityListFragment
             args.putBundle(BuySellFragment.BUNDLE_KEY_PROVIDER_ID_BUNDLE, providerId.getArgs());
             // TODO use other positions
             navigator.pushFragment(BuySellFragment.class, args);
-
-            // startActivity(new SecurityBuyIntent(securityCompactDTO)); // Example using external navigation
         }
     }
 

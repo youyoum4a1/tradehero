@@ -24,8 +24,8 @@
       android:paddingBottom="@dimen/trending_padding_bottom"
       android:clipToPadding="false"
       android:scrollbarStyle="outsideOverlay"
-      >
-  </com.tradehero.th.fragments.trending.TrendingSecurityGridView>
+      android:listSelector="@color/transparent"
+      />
 
   <include
       layout="@layout/fragment_trending_filter"

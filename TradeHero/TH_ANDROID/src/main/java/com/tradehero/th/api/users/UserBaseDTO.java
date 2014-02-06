@@ -12,6 +12,9 @@ public class UserBaseDTO  extends ExtendedDTO
     public String firstName;
     public String lastName;
     public Date memberSince;
+    public String activeSurveyURL;
+    public String activeSurveyImageURL;
+    public boolean isAdmin;
 
     public UserBaseDTO()
     {

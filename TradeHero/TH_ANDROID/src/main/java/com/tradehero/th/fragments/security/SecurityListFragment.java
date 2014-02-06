@@ -12,6 +12,9 @@ import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import butterknife.Optional;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.common.widget.FlagNearEndScrollListener;
 import com.tradehero.th.R;
@@ -36,15 +39,11 @@ abstract public class SecurityListFragment extends BasePurchaseManagerFragment
 
     public final static float MIN_FLING_VELOCITY_Y_FOR_HIDE_FILTER = 1000f;
 
-    protected PagedDTOCacheLoader.OnQueryingChangedListener queryingChangedListener;
-    protected PagedDTOCacheLoader.OnNoMorePagesChangedListener noMorePagesChangedListener;
+    @InjectView(R.id.progress_spinner) ProgressBar mProgressSpinner;
+    @InjectView(R.id.filter_text) @Optional EditText filterText;
+    @InjectView(R.id.trending_gridview) AbsListView securityListView;
 
-    protected ProgressBar mProgressSpinner;
-
-    protected EditText filterText;
     protected TextWatcher filterTextWatcher;
-
-    protected AbsListView securityListView;
     protected FlagNearEndScrollListener listViewScrollListener;
     protected GestureDetector listViewGesture;
 
@@ -62,17 +61,15 @@ abstract public class SecurityListFragment extends BasePurchaseManagerFragment
 
     @Override protected void initViews(View view)
     {
-        mProgressSpinner = (ProgressBar) view.findViewById(R.id.progress_spinner);
+        ButterKnife.inject(this, view);
+
         if (mProgressSpinner != null)
         {
             mProgressSpinner.setVisibility(View.GONE);
         }
 
         listViewScrollListener = new SecurityListFlagNearEndScrollListener(DEFAULT_VISIBLE_THRESHOLD);
-        queryingChangedListener = new SecurityListOnQueryingChangedListener();
-        noMorePagesChangedListener = new SecurityListOnNoMorePagesChangedListener();
         securityItemViewAdapter = createSecurityItemViewAdapter();
-        securityListView = (AbsListView) view.findViewById(R.id.trending_gridview);
         if (securityListView != null)
         {
             securityListView.setOnItemClickListener(createOnItemClickListener());
@@ -82,7 +79,6 @@ abstract public class SecurityListFragment extends BasePurchaseManagerFragment
             securityListView.setOnTouchListener(new SecurityListOnTouchListener());
         }
 
-        this.filterText = (EditText) view.findViewById(R.id.filter_text);
         if (this.filterText != null)
         {
             this.filterText.addTextChangedListener(this.filterTextWatcher);
@@ -258,7 +254,7 @@ abstract public class SecurityListFragment extends BasePurchaseManagerFragment
         }
     }
 
-    protected class SecurityListOnQueryingChangedListener implements PagedDTOCacheLoader.OnQueryingChangedListener
+    protected PagedDTOCacheLoader.OnQueryingChangedListener queryingChangedListener = new PagedDTOCacheLoader.OnQueryingChangedListener()
     {
         @Override public void onQueryingChanged(boolean querying)
         {
@@ -272,9 +268,9 @@ abstract public class SecurityListFragment extends BasePurchaseManagerFragment
                 }
             });
         }
-    }
+    };
 
-    protected class SecurityListOnNoMorePagesChangedListener implements PagedDTOCacheLoader.OnNoMorePagesChangedListener
+    protected PagedDTOCacheLoader.OnNoMorePagesChangedListener noMorePagesChangedListener = new PagedDTOCacheLoader.OnNoMorePagesChangedListener()
     {
         @Override public void onNoMorePagesChanged(boolean noMorePages)
         {
@@ -288,7 +284,7 @@ abstract public class SecurityListFragment extends BasePurchaseManagerFragment
                 listViewScrollListener.deactivate();
             }
         }
-    }
+    };
 
     protected class SecurityListLoaderCallback implements LoaderManager.LoaderCallbacks<SecurityIdList>
     {

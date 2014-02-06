@@ -50,7 +50,7 @@ public class DashboardActivity extends SherlockFragmentActivity
 
         if (Constants.RELEASE)
         {
-            Crashlytics.setUserIdentifier("" + currentUserId.toUserBaseKey());
+            Crashlytics.setUserIdentifier("" + currentUserId.get());
         }
 
         setContentView(R.layout.dashboard_with_bottom_bar);
