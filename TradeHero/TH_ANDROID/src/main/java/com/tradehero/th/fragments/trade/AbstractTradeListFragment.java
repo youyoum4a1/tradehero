@@ -55,7 +55,7 @@ abstract public class AbstractTradeListFragment<PositionDTOType extends Position
 
     protected PositionDTOType positionDTO;
 
-    protected TradeListItemAdapter adapter;
+    protected AbstractTradeListItemAdapter<PositionDTOType> adapter;
     protected TradeListHeaderView.TradeListHeaderClickListener buttonListener;
 
     private DTOCache.GetOrFetchTask<OwnedPositionId, OwnedTradeIdList> fetchTradesTask;
@@ -88,8 +88,8 @@ abstract public class AbstractTradeListFragment<PositionDTOType extends Position
                 }
             };
 
-            adapter = new TradeListItemAdapter(getActivity(), getActivity().getLayoutInflater());
-            adapter.setTradeListHeaderClickListener(this.buttonListener);
+            createAdapter();
+             adapter.setTradeListHeaderClickListener(this.buttonListener);
 
             if (tradeListView != null)
             {
@@ -99,6 +99,8 @@ abstract public class AbstractTradeListFragment<PositionDTOType extends Position
             registerOverlayHeaderListener();
         }
     }
+
+    abstract protected void createAdapter();
 
     private void registerOverlayHeaderListener()
     {

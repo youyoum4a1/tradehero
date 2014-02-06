@@ -21,8 +21,9 @@ public class TradeDTO implements DTO
 
     public boolean isLastTrade;
 
-    public TradeDTO() { }
-
+    public TradeDTO()
+    {
+    }
 
     public TradeId getTradeId()
     {

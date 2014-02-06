@@ -13,6 +13,7 @@ import com.tradehero.th.api.users.UserBaseKey;
 public class OwnedTradeId extends OwnedPositionId implements DTOKey
 {
     public final static String BUNDLE_KEY_TRADE_ID = OwnedTradeId.class.getName() + ".tradeId";
+
     public final Integer tradeId;
 
     //<editor-fold desc="Constructors">

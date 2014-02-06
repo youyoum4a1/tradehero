@@ -20,6 +20,11 @@ public class TradeListInPeriodFragment extends AbstractTradeListFragment<Positio
     protected OwnedLeaderboardPositionId ownedLeaderboardPositionId;
     @Inject protected Lazy<LeaderboardPositionCache> leaderboardPositionCache;
 
+    @Override protected void createAdapter()
+    {
+        adapter = new TradeListItemInPeriodAdapter(getActivity(), getActivity().getLayoutInflater());
+    }
+
     @Override public void onResume()
     {
         super.onResume();

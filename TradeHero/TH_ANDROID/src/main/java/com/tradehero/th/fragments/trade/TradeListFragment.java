@@ -20,6 +20,11 @@ public class TradeListFragment extends AbstractTradeListFragment<PositionDTO>
     protected OwnedPositionId ownedPositionId;
     @Inject protected Lazy<PositionCache> positionCache;
 
+    @Override protected void createAdapter()
+    {
+        adapter = new TradeListItemAdapter(getActivity(), getActivity().getLayoutInflater());
+    }
+
     @Override public void onResume()
     {
         super.onResume();

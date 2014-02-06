@@ -5,6 +5,8 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 import com.squareup.picasso.Picasso;
 import com.tradehero.common.widget.ColorIndicator;
 import com.tradehero.th.R;
@@ -14,7 +16,7 @@ import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.trade.TradeDTO;
-import com.tradehero.th.fragments.trade.TradeListItemAdapter;
+import com.tradehero.th.fragments.trade.AbstractTradeListItemAdapter;
 import com.tradehero.th.persistence.position.PositionCache;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.persistence.security.SecurityIdCache;
@@ -23,18 +25,18 @@ import com.tradehero.th.utils.ColorUtils;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.SecurityUtils;
 import dagger.Lazy;
-import javax.inject.Inject;
 import java.text.SimpleDateFormat;
 import java.util.TimeZone;
+import javax.inject.Inject;
 
 /**
  * Created by julien on 23/10/13
  */
-public class TradeListItemView extends LinearLayout implements DTOView<TradeListItemAdapter.ExpandableTradeItem>
+public class TradeListItemView extends LinearLayout implements DTOView<AbstractTradeListItemAdapter.ExpandableTradeItem>
 {
     public static final String TAG = TradeListItemView.class.getName();
 
-    private TradeListItemAdapter.ExpandableTradeItem tradeItem;
+    private AbstractTradeListItemAdapter.ExpandableTradeItem tradeItem;
     private TradeDTO trade;
     private PositionDTO position;
 
@@ -51,19 +53,16 @@ public class TradeListItemView extends LinearLayout implements DTOView<TradeList
     @Inject Lazy<SecurityIdCache> securityIdCache;
     @Inject Lazy<SecurityCompactCache> securityCache;
 
-    private ColorIndicator profitIndicatorView;
-
-    private TextView dateTextView;
-    private TextView quantityTextView;
-
-    private TextView averagePriceTextView;
-    private TextView realizedPLTextView;
-    private View unrealizedPLContainer;
-    private TextView unrealizedPLTextView;
-    private TextView positionQuantityTextView;
-
-    private View commentSection;
-    private TextView commentTextView;
+    @InjectView(R.id.ic_position_profit_indicator_left) protected ColorIndicator profitIndicatorView;
+    @InjectView(R.id.trade_date_label) protected TextView dateTextView;
+    @InjectView(R.id.trade_quantity_label) protected TextView quantityTextView;
+    @InjectView(R.id.trade_avg_price) protected TextView averagePriceTextView;
+    @InjectView(R.id.trade_realized_pl) protected TextView realizedPLTextView;
+    @InjectView(R.id.trade_unrealized_pl_container) protected View unrealizedPLContainer;
+    @InjectView(R.id.trade_unrealized_pl) protected TextView unrealizedPLTextView;
+    @InjectView(R.id.trade_quantity) protected TextView positionQuantityTextView;
+    @InjectView(R.id.trade_list_comment_section) protected View commentSection;
+    @InjectView(R.id.trade_list_comment) protected TextView commentTextView;
 
     //<editor-fold desc="Constructors">
     public TradeListItemView(Context context)
@@ -86,23 +85,12 @@ public class TradeListItemView extends LinearLayout implements DTOView<TradeList
     {
         super.onFinishInflate();
         DaggerUtils.inject(this);
+        ButterKnife.inject(this);
         initViews();
     }
 
-    private void initViews()
+    protected void initViews()
     {
-        profitIndicatorView = (ColorIndicator) findViewById(R.id.ic_position_profit_indicator_left);
-
-        dateTextView = (TextView) findViewById(R.id.trade_date_label);
-        quantityTextView = (TextView) findViewById(R.id.trade_quantity_label);
-
-        averagePriceTextView = (TextView) findViewById(R.id.trade_avg_price);
-        realizedPLTextView = (TextView) findViewById(R.id.trade_realized_pl);
-        unrealizedPLContainer = findViewById(R.id.trade_unrealized_pl_container);
-        unrealizedPLTextView = (TextView) findViewById(R.id.trade_unrealized_pl);
-        positionQuantityTextView = (TextView) findViewById(R.id.trade_quantity);
-        commentSection = findViewById(R.id.trade_list_comment_section);
-        commentTextView = (TextView) findViewById(R.id.trade_list_comment);
     }
 
     @Override protected void onDetachedFromWindow()
@@ -111,19 +99,23 @@ public class TradeListItemView extends LinearLayout implements DTOView<TradeList
         super.onDetachedFromWindow();
     }
 
-    @Override public void display(TradeListItemAdapter.ExpandableTradeItem expandableItem)
+    @Override public void display(AbstractTradeListItemAdapter.ExpandableTradeItem expandableItem)
     {
         linkWith(expandableItem, true);
     }
 
-    // Link the trade to the cell
-    public void linkWith(TradeListItemAdapter.ExpandableTradeItem item, boolean andDisplay)
+    public void linkWith(AbstractTradeListItemAdapter.ExpandableTradeItem item, boolean andDisplay)
     {
         this.tradeItem = item;
         if (this.tradeItem != null)
         {
             this.position = positionCache.get().get(new OwnedPositionId(tradeItem.getModel()));
-            this.trade = tradeCache.get().get(tradeItem.getModel().getTradeId());
+            this.trade = tradeCache.get().get(tradeItem.getModel());
+        }
+        else
+        {
+            this.position = null;
+            this.trade = null;
         }
 
         if (andDisplay)
@@ -150,13 +142,13 @@ public class TradeListItemView extends LinearLayout implements DTOView<TradeList
             this.profitIndicatorView.linkWith(getNumberToDisplay());
         }
 
-        if (this.quantityTextView != null)
+        if (this.quantityTextView != null && trade != null)
         {
             String quantityString = String.format("%+,d @ %s %,.2f", trade.quantity, getCurrencyDisplay(), trade.unit_price);
             this.quantityTextView.setText(quantityString);
         }
 
-        if (this.dateTextView != null && trade.date_time != null)
+        if (this.dateTextView != null && trade != null && trade.date_time != null)
         {
             SimpleDateFormat sdf = new SimpleDateFormat("d MMM H:m z");
             sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
@@ -168,13 +160,13 @@ public class TradeListItemView extends LinearLayout implements DTOView<TradeList
 
     private void displayExpandableSection()
     {
-        if (this.averagePriceTextView != null)
+        if (this.averagePriceTextView != null && trade != null)
         {
             String avgPriceString = String.format("%s %,.2f", SecurityUtils.DEFAULT_VIRTUAL_CASH_CURRENCY_DISPLAY, trade.average_price_after_trade);
             this.averagePriceTextView.setText(avgPriceString);
         }
 
-        if (this.realizedPLTextView != null)
+        if (this.realizedPLTextView != null && trade != null)
         {
             String realizedPLString = String.format("%s %+,.2f", SecurityUtils.DEFAULT_VIRTUAL_CASH_CURRENCY_DISPLAY, trade.realized_pl_after_trade);
             this.realizedPLTextView.setText(realizedPLString);
