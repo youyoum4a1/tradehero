@@ -8,6 +8,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 import com.tradehero.th.R;
@@ -158,7 +159,18 @@ public class TradeListOverlayHeaderView extends LinearLayout
             {
                 picasso.get().load(user.picture)
                         .transform(peopleIconTransformation)
-                        .into(this.imageProfile);
+                        .into(this.imageProfile, new Callback()
+                        {
+                            @Override public void onSuccess()
+                            {
+
+                            }
+
+                            @Override public void onError()
+                            {
+                                loadDefaultImage();
+                            }
+                        });
             }
         }
 
@@ -166,6 +178,13 @@ public class TradeListOverlayHeaderView extends LinearLayout
         {
             qualifiedSecuritySymbol.setText(qualifiedSymbol);
         }
+    }
+
+    protected void loadDefaultImage()
+    {
+        picasso.get().load(R.drawable.superman_facebook)
+                .transform(peopleIconTransformation)
+                .into(this.imageProfile);
     }
 
     public void setListener(Listener listener)
