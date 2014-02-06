@@ -25,7 +25,7 @@
 
       <TextView
           style="@style/TH.SmallValue"
-          android:id="@+id/txt_roi"
+          android:id="@+id/user_profile_roi"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_marginLeft="3dp"

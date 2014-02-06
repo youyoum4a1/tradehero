@@ -66,12 +66,14 @@ import com.tradehero.th.fragments.timeline.MeTimelineFragment;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.fragments.timeline.TimelineFragment;
 import com.tradehero.th.fragments.timeline.TimelineItemView;
+import com.tradehero.th.fragments.timeline.UserProfileCompactViewHolder;
+import com.tradehero.th.fragments.timeline.UserProfileDetailViewHolder;
 import com.tradehero.th.fragments.trade.BuySellConfirmFragment;
 import com.tradehero.th.fragments.trade.BuySellFragment;
 import com.tradehero.th.fragments.trade.FreshQuoteHolder;
 import com.tradehero.th.fragments.trade.TradeListFragment;
-import com.tradehero.th.fragments.trade.view.TradeListHeaderView;
 import com.tradehero.th.fragments.trade.TradeListInPeriodFragment;
+import com.tradehero.th.fragments.trade.view.TradeListHeaderView;
 import com.tradehero.th.fragments.trade.view.TradeListItemView;
 import com.tradehero.th.fragments.trade.view.TradeListOverlayHeaderView;
 import com.tradehero.th.fragments.trending.SearchPeopleItemView;
@@ -91,10 +93,10 @@ import com.tradehero.th.models.intent.trending.TrendingIntentFactory;
 import com.tradehero.th.models.push.PushNotificationManager;
 import com.tradehero.th.models.push.urbanairship.UrbanAirshipPushNotificationManager;
 import com.tradehero.th.network.service.retrofit.RetrofitModule;
-import com.tradehero.th.persistence.prefs.PreferenceModule;
 import com.tradehero.th.persistence.billing.googleplay.IABSKUListRetrievedAsyncMilestone;
 import com.tradehero.th.persistence.leaderboard.LeaderboardManager;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListRetrievedMilestone;
+import com.tradehero.th.persistence.prefs.PreferenceModule;
 import com.tradehero.th.persistence.timeline.TimelineManager;
 import com.tradehero.th.persistence.timeline.TimelineStore;
 import com.tradehero.th.persistence.user.UserManager;
@@ -105,8 +107,6 @@ import com.tradehero.th.persistence.watchlist.WatchlistRetrievedMilestone;
 import com.tradehero.th.utils.NumberDisplayUtils;
 import com.tradehero.th.widget.MarkdownTextView;
 import com.tradehero.th.widget.ServerValidatedUsernameText;
-import com.tradehero.th.fragments.timeline.UserProfileCompactView;
-import com.tradehero.th.fragments.timeline.UserProfileDetailView;
 import dagger.Module;
 import dagger.Provides;
 import javax.inject.Singleton;
@@ -200,8 +200,8 @@ import javax.inject.Singleton;
 
                         TimelineFragment.class,
                         TimelineItemView.class,
-                        UserProfileDetailView.class,
-                        UserProfileCompactView.class,
+                        UserProfileCompactViewHolder.class,
+                        UserProfileDetailViewHolder.class,
 
                         LeaderboardCommunityFragment.class,
                         LeaderboardDefListViewFragment.class,

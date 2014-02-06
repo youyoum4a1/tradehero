@@ -72,7 +72,6 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         View view = inflater.inflate(R.layout.timeline_screen, container, false);
         userProfileView = (UserProfileView) inflater.inflate(R.layout.user_profile_view, null);
         ButterKnife.inject(this, view);
-
         initViews(view);
         return view;
     }
@@ -115,6 +114,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
                 userProfileView.getChildAt(userProfileView.getDisplayedChild()).setVisibility(View.VISIBLE);
             }
         });
+        userProfileView.setPortfolioRequestListener(this);
     }
 
     @Override public void onResume()
@@ -148,6 +148,12 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     {
         this.timelineListView = null;
         this.timelineAdapter = null;
+
+        if (userProfileView != null)
+        {
+            userProfileView.setPortfolioRequestListener(null);
+        }
+        this.userProfileView = null;
         super.onDestroyView();
     }
 
