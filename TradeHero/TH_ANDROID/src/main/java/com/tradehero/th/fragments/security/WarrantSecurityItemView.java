@@ -3,6 +3,7 @@ package com.tradehero.th.fragments.security;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.TextView;
+import butterknife.InjectView;
 import com.tradehero.th.R;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.WarrantDTO;
@@ -18,11 +19,11 @@ public class WarrantSecurityItemView extends SecurityItemView<SecurityCompactDTO
 {
     public static final String TAG = WarrantSecurityItemView.class.getSimpleName();
 
-    private TextView combinedStrikePriceType;
-    private TextView strikePrice;
-    private TextView strikePriceCcy;
-    private TextView warrantType;
-    private TextView expiryDate;
+    @InjectView(R.id.combined_strike_price_type) TextView combinedStrikePriceType;
+    @InjectView(R.id.strike_price) TextView strikePrice;
+    @InjectView(R.id.strike_currency_display) TextView strikePriceCcy;
+    @InjectView(R.id.strike_currency_display) TextView warrantType;
+    @InjectView(R.id.expiry_date) TextView expiryDate;
 
     @Inject protected WarrantDTOFormatter warrantDTOFormatter;
 
@@ -43,19 +44,14 @@ public class WarrantSecurityItemView extends SecurityItemView<SecurityCompactDTO
     }
     //</editor-fold>
 
-    @Override protected void fetchViews()
+    @Override protected void onFinishInflate()
     {
-        super.fetchViews();
+        super.onFinishInflate();
 
-        combinedStrikePriceType = (TextView) findViewById(R.id.combined_strike_price_type);
         if (combinedStrikePriceType != null)
         {
             combinedStrikePriceType.setSelected(true);
         }
-        strikePrice = (TextView) findViewById(R.id.strike_price);
-        strikePriceCcy = (TextView) findViewById(R.id.strike_currency_display);
-        warrantType = (TextView) findViewById(R.id.warrant_type);
-        expiryDate = (TextView) findViewById(R.id.expiry_date);
     }
 
     @Override public void linkWith(SecurityCompactDTO securityCompactDTO, boolean andDisplay)

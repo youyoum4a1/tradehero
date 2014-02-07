@@ -84,5 +84,6 @@
   <dimen name="alert_company_name">@dimen/text_small</dimen>
   <dimen name="alert_item_view_logo_width">80dp</dimen>
   <dimen name="leaderboard_bottom_padding">50dp</dimen>
+  <dimen name="todo_trending_security_item_height">105dp</dimen>
 
 </resources>

@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ListAdapter;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
@@ -19,7 +20,6 @@ import com.tradehero.th.api.market.ExchangeDTOList;
 import com.tradehero.th.api.market.ExchangeListType;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.TrendingSecurityListType;
-import com.tradehero.th.fragments.security.SecurityItemViewAdapter;
 import com.tradehero.th.fragments.security.SecurityListFragment;
 import com.tradehero.th.fragments.security.SimpleSecurityItemViewAdapter;
 import com.tradehero.th.fragments.trade.BuySellFragment;
@@ -31,9 +31,8 @@ import com.tradehero.th.models.market.ExchangeDTODescriptionNameComparator;
 import com.tradehero.th.persistence.market.ExchangeListCache;
 import dagger.Lazy;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
 import javax.inject.Inject;
 
 public class TrendingFragment extends SecurityListFragment
@@ -41,17 +40,15 @@ public class TrendingFragment extends SecurityListFragment
     private final static String TAG = TrendingFragment.class.getSimpleName();
 
     public static final String BUNDLE_KEY_TRENDING_FILTER_TYPE_DTO = TrendingFragment.class.getName() + ".trendingFilterTypeDTO";
-
     public final static int SECURITY_ID_LIST_LOADER_ID = 2532;
+
+    @Inject TrendingFilterTypeDTOFactory trendingFilterTypeDTOFactory;
+    @Inject protected Lazy<ExchangeListCache> exchangeListCache;
 
     private TrendingFilterSelectorView filterSelectorView;
     private TrendingOnFilterTypeChangedListener onFilterTypeChangedListener;
     private TrendingFilterTypeDTO trendingFilterTypeDTO;
-    @Inject TrendingFilterTypeDTOFactory trendingFilterTypeDTOFactory;
 
-    @Inject protected Lazy<ExchangeListCache> exchangeListCache;
-    private List<ExchangeDTO> exchangeDTOs;
-    private DTOCache.Listener<ExchangeListType, ExchangeDTOList> exchangeListTypeCacheListener;
     private DTOCache.GetOrFetchTask<ExchangeListType, ExchangeDTOList> exchangeListCacheFetchTask;
 
     @Override public void onCreate(Bundle savedInstanceState)
@@ -143,9 +140,11 @@ public class TrendingFragment extends SecurityListFragment
         return new OnSecurityViewClickListener();
     }
 
-    @Override protected SecurityItemViewAdapter createSecurityItemViewAdapter()
+    @Override protected ListAdapter createSecurityItemViewAdapter()
     {
-        return new SimpleSecurityItemViewAdapter(getActivity(), getActivity().getLayoutInflater(), R.layout.trending_security_item);
+        SimpleSecurityItemViewAdapter simpleSecurityItemViewAdapter =
+                new SimpleSecurityItemViewAdapter(getActivity(), getActivity().getLayoutInflater(), R.layout.trending_security_item);
+        return new ExtraTileAdapter(getActivity(), simpleSecurityItemViewAdapter);
     }
 
     @Override public int getSecurityIdListLoaderId()
@@ -169,10 +168,6 @@ public class TrendingFragment extends SecurityListFragment
         {
             exchangeListCacheFetchTask.setListener(null);
         }
-        if (exchangeListTypeCacheListener == null)
-        {
-            exchangeListTypeCacheListener = new TrendingExchangeListListener();
-        }
 
         exchangeListCacheFetchTask = exchangeListCache.get().getOrFetch(new ExchangeListType(), exchangeListTypeCacheListener);
         exchangeListCacheFetchTask.execute();
@@ -180,32 +175,21 @@ public class TrendingFragment extends SecurityListFragment
 
     private void linkWith(ExchangeDTOList exchangeDTOs, boolean andDisplay)
     {
-        if (exchangeDTOs == null)
-        {
-            this.exchangeDTOs = null;
-        }
-        else
+        if (filterSelectorView != null && exchangeDTOs != null)
         {
             // We keep only those included in Trending and order by desc / name
-            Set<ExchangeDTO> ordered = new TreeSet<>(new ExchangeDTODescriptionNameComparator());
+            List<ExchangeDTO> exchangeDTOList = new ArrayList<>();
             for (ExchangeDTO exchangeDTO: exchangeDTOs)
             {
                 if (exchangeDTO.isIncludedInTrending)
                 {
-                    ordered.add(exchangeDTO);
+                    exchangeDTOList.add(exchangeDTO);
                 }
             }
-            this.exchangeDTOs = new ArrayList<>(ordered);
-        }
+            Collections.sort(exchangeDTOList, new ExchangeDTODescriptionNameComparator());
 
-        if (filterSelectorView != null)
-        {
-            filterSelectorView.setUpExchangeSpinner(this.exchangeDTOs);
+            filterSelectorView.setUpExchangeSpinner(exchangeDTOList);
             filterSelectorView.apply(trendingFilterTypeDTO);
-        }
-
-        if (andDisplay)
-        {
         }
     }
 
@@ -240,13 +224,14 @@ public class TrendingFragment extends SecurityListFragment
     {
         @Override public void onItemClick(AdapterView<?> parent, View view, int position, long id)
         {
-            SecurityCompactDTO securityCompactDTO = (SecurityCompactDTO) parent.getItemAtPosition(position);
-            Bundle args = new Bundle();
-            args.putBundle(BuySellFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityCompactDTO.getSecurityId().getArgs());
-            // TODO use other positions
-            navigator.pushFragment(BuySellFragment.class, args);
-
-            // startActivity(new SecurityBuyIntent(securityCompactDTO)); // Example using external navigation
+            Object item = parent.getItemAtPosition(position);
+            if (item instanceof SecurityCompactDTO)
+            {
+                SecurityCompactDTO securityCompactDTO = (SecurityCompactDTO) item;
+                Bundle args = new Bundle();
+                args.putBundle(BuySellFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityCompactDTO.getSecurityId().getArgs());
+                navigator.pushFragment(BuySellFragment.class, args);
+            }
         }
     }
 
@@ -260,7 +245,8 @@ public class TrendingFragment extends SecurityListFragment
         }
     }
 
-    private class TrendingExchangeListListener implements DTOCache.Listener<ExchangeListType, ExchangeDTOList>
+    private DTOCache.Listener<ExchangeListType, ExchangeDTOList> exchangeListTypeCacheListener =
+            new DTOCache.Listener<ExchangeListType, ExchangeDTOList>()
     {
         @Override public void onDTOReceived(ExchangeListType key, ExchangeDTOList value, boolean fromCache)
         {

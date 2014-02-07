@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.tradehero.th.fragments.security.SecurityItemView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/trending_grid_item_bg"
     >
 
-    <com.tradehero.common.widget.ImageViewThreadSafe
-        android:id="@+id/stock_bg_logo"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:contentDescription="@null"
-        android:scaleType="centerCrop"
-        android:src="@null"
-        android:alpha="0.2"
-        />
-
+  <com.tradehero.common.widget.ImageViewThreadSafe
+      android:id="@+id/stock_bg_logo"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_alignParentTop="true"
+      android:contentDescription="@null"
+      android:scaleType="centerCrop"
+      android:src="@null"
+      android:alpha="0.2"
+      />
 
   <com.tradehero.common.widget.ImageViewThreadSafe
       android:id="@+id/country_logo"
@@ -27,7 +27,9 @@
       android:adjustViewBounds="true"
       android:contentDescription="@null"
       android:scaleType="centerInside"
-      android:src="@drawable/default_image"/>
+      android:src="@drawable/default_image"
+      tools:background="@color/gray_normal"
+      />
 
   <LinearLayout
       android:layout_width="match_parent"
@@ -36,7 +38,9 @@
       android:layout_toLeftOf="@+id/stock_details"
       android:layout_toRightOf="@+id/country_logo"
       android:gravity="center_horizontal"
-      android:orientation="vertical" >
+      android:orientation="vertical"
+      tools:background="@color/light_grey"
+      >
 
     <TextView
         android:id="@+id/stock_name"
@@ -48,7 +52,7 @@
         android:text=""
         android:textColor="@color/black"
         android:textSize="14sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"/>
 
     <com.tradehero.common.widget.ImageUrlView
         android:id="@+id/stock_logo"
@@ -69,7 +73,9 @@
       android:layout_alignParentRight="true"
       android:layout_marginLeft="5dp"
       android:layout_marginRight="2dp"
-      android:orientation="vertical" >
+      android:orientation="vertical"
+      tools:background="@color/gray_normal"
+      >
 
     <TextView
         android:id="@+id/exchange_symbol"
@@ -81,7 +87,7 @@
         android:text=""
         android:textColor="@color/black"
         android:textSize="16sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -90,7 +96,7 @@
         android:layout_marginRight="2dp"
         android:layout_marginBottom="-4dp"
         android:gravity="right"
-        android:orientation="horizontal" >
+        android:orientation="horizontal">
 
       <ImageView
           android:id="@+id/ic_market_close"
@@ -112,7 +118,7 @@
           android:lines="1"
           android:text=""
           android:textColor="@color/black"
-          android:textSize="24sp" />
+          android:textSize="24sp"/>
 
       <TextView
           android:id="@+id/currency_display"
@@ -123,7 +129,7 @@
           android:lines="1"
           android:text=""
           android:textColor="@color/text_gray_normal"
-          android:textSize="13sp" />
+          android:textSize="13sp"/>
 
       <TextView
           android:id="@+id/last_price"
@@ -132,7 +138,7 @@
           android:lines="1"
           android:text=""
           android:textColor="@color/text_gray_normal"
-          android:textSize="13sp" />
+          android:textSize="13sp"/>
 
     </LinearLayout>
 
@@ -146,7 +152,7 @@
         android:lines="1"
         android:text=""
         android:textColor="@color/text_gray_normal"
-        android:textSize="12sp" />
+        android:textSize="12sp"/>
 
     <TextView
         android:id="@+id/sec_type"
@@ -156,7 +162,7 @@
         android:lines="1"
         android:text=""
         android:textColor="@color/sec_type"
-        android:textSize="14sp" />
+        android:textSize="14sp"/>
   </LinearLayout>
 
 </com.tradehero.th.fragments.security.SecurityItemView>

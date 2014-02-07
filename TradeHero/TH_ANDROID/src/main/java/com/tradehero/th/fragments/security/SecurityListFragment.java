@@ -11,7 +11,10 @@ import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.EditText;
+import android.widget.ListAdapter;
+import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.WrapperListAdapter;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.Optional;
@@ -69,12 +72,16 @@ abstract public class SecurityListFragment extends BasePurchaseManagerFragment
         }
 
         listViewScrollListener = new SecurityListFlagNearEndScrollListener(DEFAULT_VISIBLE_THRESHOLD);
-        securityItemViewAdapter = createSecurityItemViewAdapter();
+
+        ListAdapter adapter = createSecurityItemViewAdapter();
+            securityItemViewAdapter = (SecurityItemViewAdapter<SecurityCompactDTO>)
+                    (adapter instanceof WrapperListAdapter ? ((WrapperListAdapter) adapter).getWrappedAdapter() : adapter);
+
         if (securityListView != null)
         {
             securityListView.setOnItemClickListener(createOnItemClickListener());
             securityListView.setOnScrollListener(listViewScrollListener);
-            securityListView.setAdapter(securityItemViewAdapter);
+            securityListView.setAdapter(adapter);
             listViewGesture = new GestureDetector(getActivity(), new SecurityListOnGestureListener());
             securityListView.setOnTouchListener(new SecurityListOnTouchListener());
         }
@@ -85,7 +92,7 @@ abstract public class SecurityListFragment extends BasePurchaseManagerFragment
         }
     }
 
-    abstract protected SecurityItemViewAdapter createSecurityItemViewAdapter();
+    abstract protected ListAdapter createSecurityItemViewAdapter();
 
     abstract protected AdapterView.OnItemClickListener createOnItemClickListener();
 

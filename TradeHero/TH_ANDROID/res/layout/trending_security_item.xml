@@ -3,9 +3,10 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:background="@drawable/trending_grid_item_bg"
     android:padding="@dimen/trending_grid_item_padding"
+    tools:context=".activities.DashboardActivity"
     >
 
   <com.tradehero.common.widget.ImageViewThreadSafe
@@ -15,8 +16,8 @@
       android:layout_alignParentTop="true"
       android:contentDescription="@null"
       android:scaleType="centerCrop"
-      android:src="@null"
       android:alpha="0.2"
+      tools:background="@color/red"
       />
 
   <TextView
@@ -29,8 +30,8 @@
       android:ellipsize="end"
       android:lines="1"
       android:textColor="@color/trending_grid_item_stock_name"
-      tools:text="Google"
       android:textStyle="bold"
+      tools:text="Google"
       />
 
   <com.tradehero.common.widget.ImageViewThreadSafe

@@ -63,7 +63,7 @@ public class SearchStockPeopleFragment extends DashboardFragment
 
     public final static int FIRST_PAGE = 1;
     public final static int DEFAULT_PER_PAGE = 15;
-    public final static long DELAY_REQUEST_DATA_MILLI_SEC = 1000;;
+    public final static long DELAY_REQUEST_DATA_MILLI_SEC = 1000;
 
     private TextView mNothingYet;
     private ListView mSearchStockListView;
@@ -150,7 +150,7 @@ public class SearchStockPeopleFragment extends DashboardFragment
             mSearchStockListView.setOnScrollListener(nearEndScrollListener);
         }
 
-        peopleItemViewAdapter = new PeopleItemViewAdapter(getActivity().getApplicationContext(), inflater, R.layout.search_people_item);
+        peopleItemViewAdapter = new PeopleItemViewAdapter(getActivity(), inflater, R.layout.search_people_item);
         mSearchPeopleListView = (ListView) view.findViewById(R.id.people_listview);
         if (mSearchPeopleListView != null)
         {

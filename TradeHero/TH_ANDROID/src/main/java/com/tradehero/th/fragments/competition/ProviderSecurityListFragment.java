@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ListAdapter;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
@@ -191,7 +192,7 @@ public class ProviderSecurityListFragment extends SecurityListFragment
         return new OnSecurityViewClickListener();
     }
 
-    @Override protected SecurityItemViewAdapter createSecurityItemViewAdapter()
+    @Override protected ListAdapter createSecurityItemViewAdapter()
     {
         if (providerId != null && providerId.key.equals(ProviderIdConstants.PROVIDER_ID_MACQUARIE_WARRANTS))
         {

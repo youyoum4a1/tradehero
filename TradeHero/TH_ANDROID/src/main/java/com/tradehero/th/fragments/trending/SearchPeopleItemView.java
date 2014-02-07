@@ -10,10 +10,6 @@ import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
 import com.squareup.picasso.Transformation;
-import com.tradehero.common.graphics.AbstractSequentialTransformation;
-import com.tradehero.common.graphics.GaussianTransformation;
-import com.tradehero.common.graphics.GrayscaleTransformation;
-import com.tradehero.common.graphics.RoundedCornerTransformation;
 import com.tradehero.common.thread.KnownExecutorServices;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.common.widget.ImageUrlView;
@@ -21,6 +17,7 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserSearchResultDTO;
+import com.tradehero.th.models.graphics.ForSearchPeopleItemBackground;
 import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.persistence.user.UserSearchResultCache;
 import com.tradehero.th.utils.DaggerUtils;
@@ -33,8 +30,8 @@ import javax.inject.Inject;
 public class SearchPeopleItemView extends FrameLayout implements DTOView<UserBaseKey>
 {
     private static final String TAG = SearchPeopleItemView.class.getSimpleName();
-    @Inject @ForUserPhoto protected Transformation peopleIconTransformation;
-    private static Transformation backgroundTransformation;
+    @Inject @ForUserPhoto Transformation peopleIconTransformation;
+    @Inject @ForSearchPeopleItemBackground Transformation backgroundTransformation;
 
     @Inject protected Picasso mPicasso;
     @Inject protected Lazy<UserSearchResultCache> userSearchResultCache;
@@ -71,30 +68,13 @@ public class SearchPeopleItemView extends FrameLayout implements DTOView<UserBas
 
     @Override protected void onFinishInflate()
     {
-        THLog.i(TAG, "onFinishInflate");
         super.onFinishInflate();
-        DaggerUtils.inject(this);
         init();
     }
 
-    protected void init ()
+    protected void init()
     {
-        if (backgroundTransformation == null)
-        {
-            backgroundTransformation = new AbstractSequentialTransformation()
-            {
-                @Override public String key()
-                {
-                    return "toRoundedGaussianGrayscale2";
-                }
-            };
-            ((AbstractSequentialTransformation) backgroundTransformation).add(new GrayscaleTransformation());
-            ((AbstractSequentialTransformation) backgroundTransformation).add(new GaussianTransformation());
-            ((AbstractSequentialTransformation) backgroundTransformation).add(new RoundedCornerTransformation(
-                    getResources().getDimensionPixelSize(R.dimen.trending_grid_item_corner_radius),
-                    getResources().getColor(R.color.black)));
-        }
-
+        DaggerUtils.inject(this);
         userName = (TextView) findViewById(R.id.user_name);
         profitIndicator = (TextView) findViewById(R.id.profit_indicator);
         stockPercentage = (TextView) findViewById(R.id.stock_percentage);

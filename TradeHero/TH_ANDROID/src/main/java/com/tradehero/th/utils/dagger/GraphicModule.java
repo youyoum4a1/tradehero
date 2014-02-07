@@ -4,6 +4,10 @@ import android.content.Context;
 import com.squareup.picasso.Picasso;
 import com.tradehero.common.cache.LruMemFileCache;
 import com.tradehero.th.fragments.alert.AlertItemView;
+import com.tradehero.th.fragments.trending.EarnCreditTileView;
+import com.tradehero.th.fragments.trending.ExtraCashTileView;
+import com.tradehero.th.fragments.trending.ResetPortfolioTileView;
+import com.tradehero.th.fragments.trending.SurveyTileView;
 import com.tradehero.th.utils.Constants;
 import dagger.Module;
 import dagger.Provides;
@@ -14,7 +18,12 @@ import javax.inject.Singleton;
  */
 @Module(
         injects = {
-                AlertItemView.class
+                AlertItemView.class,
+
+                SurveyTileView.class,
+                ResetPortfolioTileView.class,
+                EarnCreditTileView.class,
+                ExtraCashTileView.class
         },
         complete = false,
         library = true // TODO remove

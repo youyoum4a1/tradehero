@@ -6,51 +6,47 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import butterknife.Optional;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
 import com.squareup.picasso.Transformation;
-import com.tradehero.common.graphics.AbstractSequentialTransformation;
-import com.tradehero.common.graphics.FastBlurTransformation;
-import com.tradehero.common.graphics.GrayscaleTransformation;
-import com.tradehero.common.graphics.RoundedCornerTransformation;
-import com.tradehero.common.graphics.WhiteToTransparentTransformation;
-import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.thread.KnownExecutorServices;
 import com.tradehero.common.utils.THLog;
-import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.security.SecurityCompactDTO;
-import com.tradehero.th.api.security.SecurityId;
-import com.tradehero.th.persistence.security.SecurityCompactCache;
+import com.tradehero.th.models.graphics.ForSecurityItemBackground;
+import com.tradehero.th.models.graphics.ForSecurityItemForeground;
 import com.tradehero.th.utils.ColorUtils;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.DateUtils;
-import dagger.Lazy;
 import javax.inject.Inject;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 9/5/13 Time: 5:19 PM To change this template use File | Settings | File Templates. */
-public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
-        extends RelativeLayout implements DTOView<SecurityCompactDTOType>
+public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO> extends RelativeLayout
+        implements DTOView<SecurityCompactDTOType>
 {
     private static final String TAG = SecurityItemView.class.getSimpleName();
-    private static Transformation foregroundTransformation;
-    private static Transformation backgroundTransformation;
     public static final float DIVISOR_PC_50_COLOR = 5f;
+
+    @Inject @ForSecurityItemForeground Transformation foregroundTransformation;
+    @Inject @ForSecurityItemBackground Transformation backgroundTransformation;
 
     @Inject protected Picasso mPicasso;
 
-    protected ImageView stockBgLogo;
-    protected ImageView stockLogo;
-    protected ImageView countryLogo;
-    protected ImageView marketCloseIcon;
-    protected TextView stockName;
-    protected TextView exchangeSymbol;
-    protected TextView profitIndicator;
-    protected TextView currencyDisplay;
-    protected TextView lastPrice;
-    protected TextView date;
-    protected TextView securityType;
+    @InjectView(R.id.stock_bg_logo) ImageView stockBgLogo;
+    @InjectView(R.id.stock_logo) ImageView stockLogo;
+    @InjectView(R.id.ic_market_close) ImageView marketCloseIcon;
+    @InjectView(R.id.stock_name) TextView stockName;
+    @InjectView(R.id.exchange_symbol) TextView exchangeSymbol;
+    @InjectView(R.id.profit_indicator) TextView profitIndicator;
+    @InjectView(R.id.currency_display) TextView currencyDisplay;
+    @InjectView(R.id.last_price) TextView lastPrice;
+    @InjectView(R.id.country_logo) @Optional ImageView countryLogo;
+    @InjectView(R.id.date) @Optional TextView date;
+    @InjectView(R.id.sec_type) @Optional TextView securityType;
 
     protected SecurityCompactDTOType securityCompactDTO;
 
@@ -67,12 +63,12 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
     //<editor-fold desc="Constructors">
     public SecurityItemView(Context context)
     {
-        this(context, null);
+        super(context);
     }
 
     public SecurityItemView(Context context, AttributeSet attrs)
     {
-        this(context, attrs, 0);
+        super(context, attrs);
     }
 
     public SecurityItemView(Context context, AttributeSet attrs, int defStyle)
@@ -90,46 +86,7 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
     protected void init ()
     {
         DaggerUtils.inject(this);
-        createTransformations();
-        fetchViews();
-    }
-
-    private void createTransformations()
-    {
-        if (foregroundTransformation == null)
-        {
-            foregroundTransformation = new WhiteToTransparentTransformation();
-        }
-        if (backgroundTransformation == null)
-        {
-            backgroundTransformation = new AbstractSequentialTransformation()
-            {
-                @Override public String key()
-                {
-                    return "toRoundedGaussianGrayscale11";
-                }
-            };
-            ((AbstractSequentialTransformation) backgroundTransformation).add(new GrayscaleTransformation());
-            ((AbstractSequentialTransformation) backgroundTransformation).add(new FastBlurTransformation(10));
-            ((AbstractSequentialTransformation) backgroundTransformation).add(new RoundedCornerTransformation(
-                            getResources().getDimensionPixelSize(R.dimen.trending_grid_item_corner_radius),
-                            getResources().getColor(R.color.black)));
-        }
-    }
-
-    protected void fetchViews()
-    {
-        stockName = (TextView) findViewById(R.id.stock_name);
-        exchangeSymbol = (TextView) findViewById(R.id.exchange_symbol);
-        profitIndicator = (TextView) findViewById(R.id.profit_indicator);
-        currencyDisplay = (TextView) findViewById(R.id.currency_display);
-        lastPrice = (TextView) findViewById(R.id.last_price);
-        marketCloseIcon = (ImageView) findViewById(R.id.ic_market_close);
-        stockLogo = (ImageView) findViewById(R.id.stock_logo);
-        stockBgLogo = (ImageView) findViewById(R.id.stock_bg_logo);
-        countryLogo = (ImageView) findViewById(R.id.country_logo);
-        date = (TextView) findViewById(R.id.date);
-        securityType = (TextView) findViewById(R.id.sec_type);
+        ButterKnife.inject(this);
     }
 
     public boolean isMyUrlOk()

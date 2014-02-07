@@ -7,9 +7,12 @@ import android.graphics.drawable.Drawable;
 import com.squareup.picasso.Transformation;
 import com.tradehero.common.graphics.AbstractSequentialTransformation;
 import com.tradehero.common.graphics.FastBlurTransformation;
+import com.tradehero.common.graphics.GaussianTransformation;
 import com.tradehero.common.graphics.GradientTransformation;
 import com.tradehero.common.graphics.GrayscaleTransformation;
+import com.tradehero.common.graphics.RoundedCornerTransformation;
 import com.tradehero.common.graphics.RoundedShapeTransformation;
+import com.tradehero.common.graphics.WhiteToTransparentTransformation;
 import com.tradehero.th.R;
 import dagger.Module;
 import dagger.Provides;
@@ -68,5 +71,54 @@ public class TransformationModule
                 context.getResources().getColor(R.color.profile_view_gradient_top),
                 context.getResources().getColor(R.color.profile_view_gradient_bottom)));
         return transformation;
+    }
+
+    @Provides @ForSecurityItemBackground
+    public Transformation provideSecurityItemBackgroundTransformation(Context context)
+    {
+        AbstractSequentialTransformation transformation = new AbstractSequentialTransformation()
+        {
+            @Override public String key()
+            {
+                return "toFastBlurGrayScale";
+            }
+        };
+        transformation.add(new GrayscaleTransformation());
+        transformation.add(new FastBlurTransformation(10));
+        transformation.add(new RoundedCornerTransformation(
+                context.getResources().getDimensionPixelSize(R.dimen.trending_grid_item_corner_radius),
+                context.getResources().getColor(R.color.black)));
+        return transformation;
+    }
+
+    @Provides @ForSecurityItemForeground
+    public Transformation provideSecurityItemForegroundTransformation()
+    {
+        return new WhiteToTransparentTransformation();
+    }
+
+    @Provides @ForSearchPeopleItemBackground
+    public Transformation provideSearchPeopleItemBackgroundTransformation(Context context)
+    {
+        AbstractSequentialTransformation backgroundTransformation = new AbstractSequentialTransformation()
+        {
+            @Override public String key()
+            {
+                return "toRoundedGaussianGrayscale2";
+            }
+        };
+        backgroundTransformation.add(new GrayscaleTransformation());
+        backgroundTransformation.add(new GaussianTransformation());
+        backgroundTransformation.add(new RoundedCornerTransformation(
+                context.getResources().getDimensionPixelSize(R.dimen.trending_grid_item_corner_radius),
+                context.getResources().getColor(R.color.black)));
+        return backgroundTransformation;
+    }
+
+    @Provides @ForExtraTileBackground Transformation provideExtraTileBackgroundTransformation(Context context)
+    {
+        return new RoundedCornerTransformation(
+                context.getResources().getDimensionPixelSize(R.dimen.trending_grid_item_corner_radius),
+                context.getResources().getColor(R.color.black));
     }
 }
