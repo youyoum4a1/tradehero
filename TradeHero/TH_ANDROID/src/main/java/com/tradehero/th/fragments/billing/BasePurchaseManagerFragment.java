@@ -2,6 +2,7 @@ package com.tradehero.th.fragments.billing;
 
 import android.os.Bundle;
 import android.view.View;
+import com.tradehero.common.utils.THLog;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.billing.googleplay.THIABActor;
 import com.tradehero.th.billing.googleplay.THIABActorUser;
@@ -49,6 +50,7 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
             }
         }
 
+        THLog.d(TAG, "pusrchase applicablePortfolio " + applicablePortfolioId);
         userInteractor.setApplicablePortfolioId(applicablePortfolioId);
     }
 

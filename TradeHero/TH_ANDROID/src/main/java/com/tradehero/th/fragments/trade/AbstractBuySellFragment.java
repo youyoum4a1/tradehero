@@ -99,7 +99,7 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
             }
             if (args.containsKey(BUNDLE_KEY_QUANTITY_SELL))
             {
-                mSellQuantity = args.getInt(BUNDLE_KEY_QUANTITY_SELL, mSellQuantity);
+                mSellQuantity = args.getInt(BUNDLE_KEY_QUANTITY_SELL);
             }
 
             Bundle providerIdBundle = args.getBundle(BUNDLE_KEY_PROVIDER_ID_BUNDLE);
@@ -276,10 +276,10 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
         {
             return mBuyQuantity * quoteDTO.ask;
         }
-        return mBuyQuantity * quoteDTO.ask * quoteDTO.toUSDRate;
+        return mBuyQuantity * quoteDTO.ask * quoteDTO.toUSDRate + SecurityUtils.DEFAULT_TRANSACTION_COST;
     }
 
-    protected Double getTotalCostForSell()
+    protected Double getNetProceedsForSell()
     {
         if (mSellQuantity == null)
         {
@@ -289,7 +289,7 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
         {
             return mSellQuantity * quoteDTO.bid;
         }
-        return mSellQuantity * quoteDTO.bid * quoteDTO.toUSDRate;
+        return mSellQuantity * quoteDTO.bid * quoteDTO.toUSDRate - SecurityUtils.DEFAULT_TRANSACTION_COST;
     }
 
     public String getBuyDetails()
@@ -329,7 +329,7 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
                 SecurityUtils.DEFAULT_TRANSACTION_CURRENCY_DISPLAY, // TODO Have this currency taken from somewhere
                 SecurityUtils.DEFAULT_TRANSACTION_COST, // TODO Have this value taken from somewhere
                 SecurityUtils.DEFAULT_VIRTUAL_CASH_CURRENCY_DISPLAY, // TODO Have this currency taken from somewhere
-                getTotalCostForSell());
+                getNetProceedsForSell());
     }
 
     public void linkWith(SecurityId securityId, boolean andDisplay)
