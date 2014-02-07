@@ -68,6 +68,26 @@ public class TrendingFragment extends SecurityListFragment
         {
             this.trendingFilterTypeDTO = new TrendingFilterTypeBasicDTO();
         }
+
+        createExchangeListTypeCacheListener();
+    }
+
+    private void createExchangeListTypeCacheListener()
+    {
+        exchangeListTypeCacheListener =
+                new DTOCache.Listener<ExchangeListType, ExchangeDTOList>()
+                {
+                    @Override public void onDTOReceived(ExchangeListType key, ExchangeDTOList value, boolean fromCache)
+                    {
+                        linkWith(value, true);
+                    }
+
+                    @Override public void onErrorThrown(ExchangeListType key, Throwable error)
+                    {
+                        THToast.show(getString(R.string.error_fetch_exchange_list_info));
+                        THLog.e(TAG, "Error fetching the list of exchanges " + key, error);
+                    }
+                };
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -130,9 +150,14 @@ public class TrendingFragment extends SecurityListFragment
             exchangeListCacheFetchTask.setListener(null);
         }
         exchangeListCacheFetchTask = null;
-        exchangeListTypeCacheListener = null;
 
         super.onDestroyView();
+    }
+
+    @Override public void onDestroy()
+    {
+        exchangeListTypeCacheListener = null;
+        super.onDestroy();
     }
 
     @Override protected OnItemClickListener createOnItemClickListener()
@@ -245,19 +270,6 @@ public class TrendingFragment extends SecurityListFragment
         }
     }
 
-    private DTOCache.Listener<ExchangeListType, ExchangeDTOList> exchangeListTypeCacheListener =
-            new DTOCache.Listener<ExchangeListType, ExchangeDTOList>()
-    {
-        @Override public void onDTOReceived(ExchangeListType key, ExchangeDTOList value, boolean fromCache)
-        {
-            linkWith(value, true);
-        }
-
-        @Override public void onErrorThrown(ExchangeListType key, Throwable error)
-        {
-            THToast.show(getString(R.string.error_fetch_exchange_list_info));
-            THLog.e(TAG, "Error fetching the list of exchanges " + key, error);
-        }
-    };
+    private DTOCache.Listener<ExchangeListType, ExchangeDTOList> exchangeListTypeCacheListener;
     //</editor-fold>
 }
