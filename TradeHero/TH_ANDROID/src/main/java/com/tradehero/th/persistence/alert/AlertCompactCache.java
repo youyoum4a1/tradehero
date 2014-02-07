@@ -1,14 +1,16 @@
 package com.tradehero.th.persistence.alert;
 
-import android.support.v4.util.LruCache;
 import com.tradehero.common.persistence.PartialDTOCache;
 import com.tradehero.common.persistence.THLruCache;
 import com.tradehero.th.api.alert.AlertCompactDTO;
 import com.tradehero.th.api.alert.AlertId;
 import com.tradehero.th.api.security.SecurityId;
+import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import dagger.Lazy;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
@@ -67,6 +69,21 @@ import javax.inject.Singleton;
             previous = previousCut.create(securityCompactCache.get());
         }
 
+        return previous;
+    }
+
+    public ArrayList<AlertCompactDTO> put(UserBaseKey userBaseKey, List<AlertCompactDTO> values)
+    {
+        if (values == null)
+        {
+            return null;
+        }
+
+        ArrayList<AlertCompactDTO> previous = new ArrayList<>();
+        for (AlertCompactDTO alertCompactDTO: values)
+        {
+            previous.add(put(new AlertId(userBaseKey, alertCompactDTO.id), alertCompactDTO));
+        }
         return previous;
     }
 

@@ -2,6 +2,7 @@ package com.tradehero.th.api.alert;
 
 import android.os.Bundle;
 import com.tradehero.common.persistence.DTOKey;
+import com.tradehero.th.api.users.UserBaseKey;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/1/13 Time: 12:29 PM To change this template use File | Settings | File Templates. */
 public class AlertId implements Comparable, DTOKey
@@ -13,16 +14,21 @@ public class AlertId implements Comparable, DTOKey
     public final Integer alertId;
 
     //<editor-fold desc="Constructors">
-    public AlertId(final Integer userId, final Integer alertId)
+    public AlertId(final UserBaseKey userBaseKey, final Integer alertId)
     {
-        this.userId = userId;
-        this.alertId = alertId;
+        this(userBaseKey.key, alertId);
     }
 
     public AlertId(Bundle args)
     {
         this.userId = args.containsKey(BUNDLE_KEY_USER_ID) ? args.getInt(BUNDLE_KEY_USER_ID) : null;
         this.alertId = args.containsKey(BUNDLE_KEY_ALERT_ID) ? args.getInt(BUNDLE_KEY_ALERT_ID) : null;
+    }
+
+    public AlertId(final Integer userId, final Integer alertId)
+    {
+        this.userId = userId;
+        this.alertId = alertId;
     }
     //</editor-fold>
 

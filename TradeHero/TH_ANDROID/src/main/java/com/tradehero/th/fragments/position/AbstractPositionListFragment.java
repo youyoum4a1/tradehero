@@ -29,6 +29,7 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.billing.googleplay.THIABActor;
 import com.tradehero.th.billing.googleplay.THIABPurchase;
+import com.tradehero.th.fragments.alert.AlertEditFragment;
 import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.fragments.billing.THIABUserInteractor;
@@ -458,30 +459,33 @@ abstract public class AbstractPositionListFragment<
 
     @Override public void onAddAlertClicked(PositionDTOType clickedPositionDTO)
     {
-       THToast.show("Alert");
+        SecurityId securityId = securityIdCache.get().get(clickedPositionDTO.getSecurityIntegerId());
+        if (securityId != null)
+        {
+            Bundle args = new Bundle();
+            args.putBundle(AlertEditFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
+            getNavigator().pushFragment(AlertEditFragment.class, args);
+        }
+        else
+        {
+            THLog.d(TAG, "SecurityId was lost for clickedPositionDTO " + clickedPositionDTO);
+            THToast.show(R.string.error_find_security_id_to_int);
+        }
     }
 
     @Override public void onStockInfoClicked(PositionDTOType clickedPositionDTO)
     {
-        if (clickedPositionDTO == null)
+        SecurityId securityId = securityIdCache.get().get(clickedPositionDTO.getSecurityIntegerId());
+        if (securityId == null)
         {
-            THToast.show(R.string.error_lost_position_in_cache);
-            THLog.e(TAG, "PositionDTO is not found", new IllegalStateException());
+            THToast.show(R.string.error_find_security_id_to_int);
+            THLog.e(TAG, "SecurityId is null", new IllegalStateException());
         }
         else
         {
-            SecurityId securityId = securityIdCache.get().get(clickedPositionDTO.getSecurityIntegerId());
-            if (securityId == null)
-            {
-                THToast.show(R.string.error_find_security_id_to_int);
-                THLog.e(TAG, "SecurityId is null", new IllegalStateException());
-            }
-            else
-            {
-                Bundle args = new Bundle();
-                args.putBundle(StockInfoFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
-                navigator.pushFragment(StockInfoFragment.class, args);
-            }
+            Bundle args = new Bundle();
+            args.putBundle(StockInfoFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
+            navigator.pushFragment(StockInfoFragment.class, args);
         }
     }
     //</editor-fold>

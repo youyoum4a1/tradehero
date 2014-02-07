@@ -5,7 +5,6 @@ import com.tradehero.th.api.alert.AlertDTO;
 import com.tradehero.th.api.alert.AlertFormDTO;
 import java.util.List;
 import retrofit.Callback;
-import retrofit.RetrofitError;
 import retrofit.http.Body;
 import retrofit.http.GET;
 import retrofit.http.POST;
@@ -18,8 +17,7 @@ public interface AlertService
     //<editor-fold desc="Get Alerts">
     @GET("/users/{userId}/alerts")
     List<AlertCompactDTO> getAlerts(
-            @Path("userId") int userId)
-        throws RetrofitError;
+            @Path("userId") int userId);
 
     @GET("/users/{userId}/alerts")
     void getAlerts(
@@ -31,8 +29,7 @@ public interface AlertService
     @GET("/users/{userId}/alerts/{alertId}")
     AlertDTO getAlert(
             @Path("userId") int userId,
-            @Path("alertId") int alertId)
-        throws RetrofitError;
+            @Path("alertId") int alertId);
 
     @GET("/users/{userId}/alerts/{alertId}")
     void getAlert(
@@ -45,8 +42,7 @@ public interface AlertService
     @POST("/users/{userId}/alerts")
     AlertCompactDTO createAlert(
             @Path("userId") int userId,
-            @Body AlertFormDTO alertFormDTO)
-        throws RetrofitError;
+            @Body AlertFormDTO alertFormDTO);
 
     @POST("/users/{userId}/alerts")
     void createAlert(
@@ -60,8 +56,7 @@ public interface AlertService
     AlertCompactDTO updateAlert(
             @Path("userId") int userId,
             @Path("alertId") int alertId,
-            @Body AlertFormDTO alertFormDTO)
-        throws RetrofitError;
+            @Body AlertFormDTO alertFormDTO);
 
     @PUT("/users/{userId}/alerts/{alertId}")
     void updateAlert(

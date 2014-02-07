@@ -4,13 +4,11 @@ import com.tradehero.th.api.alert.AlertCompactDTO;
 import com.tradehero.th.api.alert.AlertDTO;
 import com.tradehero.th.api.alert.AlertFormDTO;
 import com.tradehero.th.api.alert.AlertId;
+import com.tradehero.th.api.users.UserBaseKey;
+import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.http.Body;
-import retrofit.http.POST;
-import retrofit.http.Path;
 
 /**
  * Repurposes requests
@@ -26,6 +24,32 @@ import retrofit.http.Path;
     {
         super();
     }
+
+    private void basicCheck(UserBaseKey userBaseKey)
+    {
+        if (userBaseKey == null)
+        {
+            throw new NullPointerException("userBaseKey cannot be null");
+        }
+        if (userBaseKey.key == null)
+        {
+            throw new NullPointerException("userBaseKey.key cannot be null");
+        }
+    }
+
+    //<editor-fold desc="Get Alerts">
+    public List<AlertCompactDTO> getAlerts(UserBaseKey userBaseKey)
+    {
+        basicCheck(userBaseKey);
+        return alertService.getAlerts(userBaseKey.key);
+    }
+
+    public void getAlerts(UserBaseKey userBaseKey, Callback<List<AlertCompactDTO>> callback)
+    {
+        basicCheck(userBaseKey);
+        alertService.getAlerts(userBaseKey.key, callback);
+    }
+    //</editor-fold>
 
     private void basicCheck(AlertId alertId)
     {
@@ -45,7 +69,6 @@ import retrofit.http.Path;
 
     //<editor-fold desc="Get Alert">
     public AlertDTO getAlert(AlertId alertId)
-            throws RetrofitError
     {
         basicCheck(alertId);
         return this.alertService.getAlert(alertId.userId, alertId.alertId);
@@ -60,7 +83,6 @@ import retrofit.http.Path;
 
     //<editor-fold desc="Update Alert">
     public AlertCompactDTO updateAlert(AlertId alertId, AlertFormDTO alertFormDTO)
-            throws RetrofitError
     {
         basicCheck(alertId);
 
