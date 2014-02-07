@@ -46,6 +46,7 @@ import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.ImageViewThreadSafe;
 import com.tradehero.th.R;
+import com.tradehero.th.api.alert.AlertId;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
@@ -56,6 +57,7 @@ import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.WarrantDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.billing.googleplay.THIABActor;
+import com.tradehero.th.fragments.alert.AlertEditFragment;
 import com.tradehero.th.fragments.billing.THIABUserInteractor;
 import com.tradehero.th.fragments.security.BuySellBottomStockPagerAdapter;
 import com.tradehero.th.fragments.security.StockInfoFragment;
@@ -1133,13 +1135,18 @@ public class BuySellFragment extends AbstractBuySellFragment
 
     private void handleBtnAddTriggerClicked()
     {
-        if (securityAlertAssistant.isPopulated() && securityAlertAssistant.getAlertId(securityId) != null)
+        if (securityAlertAssistant.isPopulated())
         {
-            THToast.show("Push fragment to display the alert");
-        }
-        else if (securityAlertAssistant.isPopulated() && securityAlertAssistant.getAlertId(securityId) == null)
-        {
-            THToast.show("Push fragment to display a new alert");
+            Bundle args = new Bundle();
+            args.putBundle(AlertEditFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
+
+            AlertId alertId = securityAlertAssistant.getAlertId(securityId);
+            if (alertId != null)
+            {
+                args.putBundle(AlertEditFragment.BUNDLE_KEY_ALERT_ID_BUNDLE, alertId.getArgs());
+            }
+
+            navigator.pushFragment(AlertEditFragment.class, args);
         }
         else if (securityAlertAssistant.isFailed())
         {

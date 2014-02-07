@@ -18,27 +18,23 @@
       android:layout_alignParentTop="true"
       android:layout_alignParentLeft="true"
       tools:layout_height="80dp"
-      tools:background="@color/red"
-      />
-
-  <Switch
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:id="@+id/alert_toggle"
-      android:layout_alignParentTop="true"
-      android:layout_alignParentRight="true"
+      tools:background="#ffffee"
+      tools:src="@drawable/flag_country_round_united_kingdom"
       />
 
   <TextView
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
+      android:layout_marginTop="8dp"
       android:id="@+id/stock_symbol"
       android:textSize="@dimen/stock_symbol_header"
       android:layout_toRightOf="@id/stock_logo"
       android:layout_alignParentTop="true"
       android:paddingLeft="5dp"
       tools:text="NASDAQ:GOOG"
+      android:textStyle="bold"
       />
+
   <TextView
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
@@ -50,7 +46,17 @@
       tools:text="Google Inc."
       />
 
-  <RelativeLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+  <Switch
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:id="@+id/alert_toggle"
+      android:layout_alignParentTop="true"
+      android:layout_alignParentRight="true"
+      />
+
+  <RelativeLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
       android:layout_below="@id/stock_logo"
       >
 
@@ -86,8 +92,9 @@
         android:layout_below="@id/target_price_label"
         android:textSize="@dimen/text_small"
         android:textColor="@color/text_gray_normal"
-        tools:background="@color/white"
+        tools:background="#eeddcc"
         />
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -96,9 +103,21 @@
         android:gravity="left"
         android:paddingLeft="5dp"
         android:textSize="@dimen/text_small"
-        tools:background="@color/red"
-        tools:text="US$ 16.14 as of 28 Jan 2014 05:00"
+        tools:background="#ffeeee"
+        tools:text="US$ 16.14"
         android:singleLine="true"
+        android:textStyle="bold"
+        />
+
+    <TextView
+        android:id="@+id/as_of_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/current_price"
+        android:layout_marginLeft="4dp"
+        tools:text="as of 2 Feb 2014 16:12"
+        android:textSize="11sp"
+        android:maxLines="1"
         />
 
     <TextView
@@ -110,7 +129,7 @@
         android:gravity="left"
         android:paddingLeft="5dp"
         android:textSize="@dimen/text_small"
-        tools:background="@color/red"
+        tools:background="#ffeeee"
         tools:text="US$ 12.97"
         />
 
@@ -126,7 +145,6 @@
         tools:background="@color/red"
         tools:text="-"
         />
-
 
   </RelativeLayout>
 
