@@ -13,7 +13,6 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.squareup.picasso.Picasso;
-import com.tradehero.common.milestone.Milestone;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
@@ -22,6 +21,7 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.competition.ProviderConstants;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderId;
+import com.tradehero.th.api.competition.ProviderIdList;
 import com.tradehero.th.api.competition.ProviderListKey;
 import com.tradehero.th.api.leaderboard.LeaderboardDefCommunityListKey;
 import com.tradehero.th.api.leaderboard.LeaderboardDefDTO;
@@ -61,13 +61,12 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
 
     @InjectView(R.id.community_screen) BetterViewAnimator communityScreen;
     @InjectView(android.R.id.list) StickyListHeadersListView leaderboardDefListView;
-    @Inject protected ProviderListRetrievedMilestone providerListRetrievedMilestone;
 
-    private Milestone.OnCompleteListener providerListRetrievedListener;
     private THIntentPassedListener thIntentPassedListener;
     private WebViewFragment webFragment;
     private LeaderboardCommunityAdapter leaderboardDefListAdapter;
     private int currentDisplayedChildLayoutId;
+    private DTOCache.GetOrFetchTask<ProviderListKey, ProviderIdList> providerListFetchTask;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -81,21 +80,29 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
     @Override public void onAttach(Activity activity)
     {
         super.onAttach(activity);
-
-        this.providerListRetrievedListener = new LeaderboardCommunityFragmentProviderListRetrievedListener();
-        this.providerListRetrievedMilestone.setOnCompleteListener(this.providerListRetrievedListener);
     }
 
     @Override public void onResume()
     {
         super.onResume();
 
+        // show either progress bar or def list, whichever last seen on this screen
         if (currentDisplayedChildLayoutId != 0)
         {
             communityScreen.setDisplayedChildByLayoutId(currentDisplayedChildLayoutId);
         }
-        this.providerListRetrievedMilestone.launch();
+
+        // prepare adapter for this screen
         prepareAdapters();
+
+        // get the data
+        if (providerListFetchTask != null)
+        {
+            providerListFetchTask.setListener(null);
+        }
+        providerListFetchTask = providerListCache.get().getOrFetch(new ProviderListKey(), false, providerListCallback);
+        providerListFetchTask.execute();
+
         // We came back into view so we have to forget the web fragment
         if (this.webFragment != null)
         {
@@ -155,12 +162,6 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
 
     @Override public void onDetach()
     {
-        this.providerListRetrievedListener = null;
-        if (this.providerListRetrievedMilestone != null)
-        {
-            this.providerListRetrievedMilestone.setOnCompleteListener(null);
-        }
-        this.providerListRetrievedMilestone = null;
         super.onDetach();
     }
 
@@ -216,19 +217,6 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
     private void displayFirstCompetitionProvider(List<ProviderId> providerIds)
     {
         leaderboardDefListAdapter.setCompetitionItems(providerIds);
-    }
-    private class LeaderboardCommunityFragmentProviderListRetrievedListener implements Milestone.OnCompleteListener
-    {
-        @Override public void onComplete(Milestone milestone)
-        {
-            displayFirstCompetitionProvider(providerListCache.get().get(new ProviderListKey()));
-        }
-
-        @Override public void onFailed(Milestone milestone, Throwable throwable)
-        {
-            THToast.show(getString(R.string.error_fetch_provider_info_list));
-            THLog.e(TAG, "Failed retrieving the list of competition providers", throwable);
-        }
     }
 
     private void handleCompetitionItemClicked(ProviderDTO providerDTO)
@@ -320,6 +308,20 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
         {
             THToast.show(getString(R.string.error_fetch_leaderboard_def_list_key));
             THLog.e(TAG, "Error fetching the leaderboard def key list " + key, error);
+        }
+    };
+
+    private DTOCache.Listener<ProviderListKey, ProviderIdList> providerListCallback = new DTOCache.Listener<ProviderListKey, ProviderIdList>()
+    {
+        @Override public void onDTOReceived(ProviderListKey key, ProviderIdList value, boolean fromCache)
+        {
+            displayFirstCompetitionProvider(value);
+        }
+
+        @Override public void onErrorThrown(ProviderListKey key, Throwable error)
+        {
+            THToast.show(getString(R.string.error_fetch_provider_info_list));
+            THLog.e(TAG, "Failed retrieving the list of competition providers", error);
         }
     };
 
