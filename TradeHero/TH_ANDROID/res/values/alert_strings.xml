@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+  <string name="stock_alerts_active">Active stock alerts</string>
+  <string name="stock_alerts_inactive_title">Inactive stock alerts</string>
+  <string name="stock_alerts_active_until">Active Until <b>%s</b></string>
+  <string name="inactive">Inactive</string>
+  <string name="target_price">Target Price</string>
+  <string name="active_until">Active Until</string>
+  <string name="current_price">Current Price</string>
+  <string name="alert_price_info_as_of_date">as of %s</string>
+  <string name="alert_price_info_as_of_date_format">d MMM yyyy HH:mm</string>
+  <string name="notification_received">Notifications Received</string>
+  <string name="edit">Edit</string>
+  <string name="save">Save</string>
+  <string name="trigger_conditions">Trigger Conditions</string>
+  <string name="alert_target_price_help_text">You will receive an alert whenever the price of the security rises/falls to the set price.</string>
+  <string name="price_change">Price Change</string>
+  <string name="alert_price_change_help_text">You will receive an alert when the price of the given security moves by more than the given percentage.</string>
+  <string name="alert_edit_note">Please note: price checks for stock alerts are done every 15 minutes and some price sources are delayed by up to 15 minutes</string>
+  <string name="target_price_change_format"><![CDATA[Target Price <b>%s</b>]]></string>
+  <string name="percentage_change_format"><![CDATA[Price Change <b>%s</b>]]></string>
+  <string name="percentage_change_target_value_format"><![CDATA[(Alert Price <b>%s</b>)]]></string>
+  <string name="edit_alert">Edit Alert</string>
+  <string name="add_alert">Add Alert</string>
+  <string name="percentage_movement">% Movement</string>
+  <string name="alert_when_price_move">Alerts when price moves by <b>%s</b></string>
+  <string name="alert_when_price_raises"><![CDATA[Alerts when price raises to <b>%s</b>]]></string>
+  <string name="alert_when_price_falls"><![CDATA[Alerts when price falls to <b>%s</b>]]></string>
+  <string name="no_alerts">No Alerts</string>
+  <string name="count_alert_format">alerts</string>
+  <string name="alert_plan_unlimited">Unlimited</string>
+
+  <string name="error_alert_insufficient_info">There is insufficient information to submit the alert</string>
+
+</resources>

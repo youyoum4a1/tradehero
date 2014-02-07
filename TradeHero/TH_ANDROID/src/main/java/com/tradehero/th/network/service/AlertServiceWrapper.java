@@ -81,32 +81,31 @@ import retrofit.Callback;
     }
     //</editor-fold>
 
+    //<editor-fold desc="Create Alert">
+    public AlertCompactDTO createAlert(UserBaseKey userBaseKey, AlertFormDTO alertFormDTO)
+    {
+        basicCheck(userBaseKey);
+        return this.alertService.createAlert(userBaseKey.key, alertFormDTO);
+    }
+
+    public void createAlert(UserBaseKey userBaseKey, AlertFormDTO alertFormDTO, Callback<AlertCompactDTO> callback)
+    {
+        basicCheck(userBaseKey);
+        this.alertService.createAlert(userBaseKey.key, alertFormDTO, callback);
+    }
+    //</editor-fold>
+
     //<editor-fold desc="Update Alert">
     public AlertCompactDTO updateAlert(AlertId alertId, AlertFormDTO alertFormDTO)
     {
         basicCheck(alertId);
-
-        if (alertId.alertId == 0)
-        {
-            return this.alertService.createAlert(alertId.alertId, alertFormDTO);
-        }
-        else
-        {
-            return this.alertService.updateAlert(alertId.userId, alertId.alertId, alertFormDTO);
-        }
+        return this.alertService.updateAlert(alertId.userId, alertId.alertId, alertFormDTO);
     }
 
     public void updateAlert(AlertId alertId, AlertFormDTO alertFormDTO, Callback<AlertCompactDTO> callback)
     {
         basicCheck(alertId);
-        if (alertId.alertId == 0)
-        {
-            this.alertService.createAlert(alertId.userId, alertFormDTO, callback);
-        }
-        else
-        {
-            this.alertService.updateAlert(alertId.userId, alertId.alertId, alertFormDTO, callback);
-        }
+        this.alertService.updateAlert(alertId.userId, alertId.alertId, alertFormDTO, callback);
     }
     //</editor-fold>
 }

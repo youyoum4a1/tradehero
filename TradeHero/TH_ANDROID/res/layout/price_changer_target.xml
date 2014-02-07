@@ -4,6 +4,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     >
+
   <RelativeLayout
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
@@ -20,13 +21,16 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
         />
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="@dimen/text_header"
+        android:textColor="@color/sec_type"
         tools:text="Target price US$ 19.50"
         android:id="@+id/alert_edit_target_price_change"
         android:layout_alignParentTop="true"/>
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -39,6 +43,7 @@
         android:layout_alignParentLeft="true"
         android:paddingTop="10dp"
         />
+
     <SeekBar
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -49,5 +54,7 @@
         android:enabled="false"
         android:max="100"
         />
+
   </RelativeLayout>
+
 </merge>

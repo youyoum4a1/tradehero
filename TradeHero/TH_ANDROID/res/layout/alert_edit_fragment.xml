@@ -2,12 +2,15 @@
 
 <com.tradehero.common.widget.StickyScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
   <LinearLayout
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:orientation="vertical">
+
     <include layout="@layout/alert_security_profile"/>
 
     <TextView
@@ -19,29 +22,25 @@
         android:tag="sticky"
         android:background="@color/divider_gray"
         />
+
     <include layout="@layout/price_changer_target"/>
 
-    <View android:layout_width="match_parent" android:layout_height="1dp"
-        android:paddingTop="10dp"
-        android:paddingBottom="10dp"
-        android:background="@color/divider_gray"
-        />
+    <include layout="@layout/alert_edit_divider"/>
 
     <include layout="@layout/price_changer_delta"/>
 
-    <View android:layout_width="match_parent" android:layout_height="1dp"
-        android:paddingTop="10dp"
-        android:paddingBottom="10dp"
-        android:background="@color/divider_gray"
-        />
+    <include layout="@layout/alert_edit_divider"/>
 
-    <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:text="@string/alert_edit_note"
         android:textSize="@dimen/text_small"
         android:gravity="center_horizontal"
         android:textColor="@color/text_gray_normal"
         android:padding="15sp"
         />
+
   </LinearLayout>
 
 </com.tradehero.common.widget.StickyScrollView>
