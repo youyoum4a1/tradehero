@@ -18,6 +18,7 @@ import com.tradehero.th.misc.callback.THCallback;
 import com.tradehero.th.misc.callback.THResponse;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.service.UserService;
+import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.widget.SelfValidatedText;
 import com.tradehero.th.widget.ServerValidatedEmailText;
@@ -49,6 +50,13 @@ public class EmailSignInFragment extends EmailSignInOrUpFragment
 
         password = (ValidatedPasswordText) view.findViewById(R.id.et_pwd_login);
         password.addListener(this);
+
+        // HACK
+        if (!Constants.RELEASE)
+        {
+            email.setText("neeraj@eatechnologies.com");
+            password.setText("asd123");
+        }
 
         signButton = (Button) view.findViewById(R.id.btn_login);
         signButton.setOnClickListener(this);

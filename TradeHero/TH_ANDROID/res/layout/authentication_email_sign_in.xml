@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -9,12 +10,14 @@
       android:id="@+id/authentication_sign_in_email"
       android:layout_width="fill_parent"
       android:layout_height="wrap_content"
-      android:text="neeraj@eatechnologies.com"
+      android:text=""
       android:hint="@string/email"
       android:drawableLeft="@drawable/accounts_glyph_email_default"
       android:inputType="textEmailAddress"
       style="@style/TradeHero.Authentication.EditText">
+
     <requestFocus/>
+
   </com.tradehero.th.widget.SelfValidatedText>
 
   <com.tradehero.th.widget.ValidatedPasswordText
@@ -23,7 +26,7 @@
       android:layout_height="wrap_content"
       android:layout_below="@+id/authentication_sign_in_email"
       android:layout_marginTop="10dip"
-      android:text="asd123"
+      android:text=""
       android:hint="@string/pwd"
       android:drawableLeft="@drawable/accounts_glyph_password_default"
       android:inputType="textPassword"
