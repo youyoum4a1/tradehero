@@ -10,307 +10,307 @@
     android:background="@color/white"
     >
 
-    <ProgressBar
-        android:id="@+id/quote_refresh_countdown"
+  <ProgressBar
+      android:id="@+id/quote_refresh_countdown"
+      android:layout_width="match_parent"
+      style="@android:style/Widget.ProgressBar.Horizontal"
+      android:layout_height="4dp"
+      android:progressDrawable="@drawable/progress_thin_square"
+      />
+
+  <FrameLayout
+      android:id="@+id/chart_frame"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      >
+
+    <com.tradehero.common.widget.ImageViewThreadSafe
+        android:id="@+id/stock_bg_logo"
         android:layout_width="match_parent"
-        style="@android:style/Widget.ProgressBar.Horizontal"
-        android:layout_height="4dp"
-        android:progressDrawable="@drawable/progress_thin_square"
+        android:layout_height="match_parent"
+        android:contentDescription="@null"
+        android:scaleType="fitCenter"
+        android:alpha="0.08"
+        tools:background="@color/gray_1"
         />
 
-    <FrameLayout
-        android:id="@+id/chart_frame"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        >
+        android:orientation="vertical">
 
-        <com.tradehero.common.widget.ImageViewThreadSafe
-            android:id="@+id/stock_bg_logo"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:contentDescription="@null"
-            android:scaleType="fitCenter"
-            android:alpha="0.08"
-            tools:background="@color/gray_1"
+      <RelativeLayout
+          android:id="@+id/portfolio_selector_container"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:padding="8dp"
+          android:visibility="visible"
+          android:background="#80F3F3F3"
+          >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:text="@string/buy_sell_portfolio_selected_title"
+            android:textSize="16sp"
             />
+
+        <ImageView
+            android:id="@+id/portfolio_drop_down_hint"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_alignParentRight="true"
+            android:layout_marginLeft="8dp"
+            android:src="@drawable/expand"
+            android:rotation="90"
+            />
+
+        <TextView
+            android:id="@+id/portfolio_selected"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_toLeftOf="@id/portfolio_drop_down_hint"
+            tools:text="Main Portfolio"
+            android:textSize="16sp"
+            />
+
+      </RelativeLayout>
 
       <LinearLayout
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:orientation="vertical">
-
-        <RelativeLayout
-            android:id="@+id/portfolio_selector_container"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="8dp"
-            android:visibility="visible"
-            android:background="#80F3F3F3"
-            >
-
-          <TextView
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:layout_alignParentLeft="true"
-              android:text="@string/buy_sell_portfolio_selected_title"
-              android:textSize="16sp"
-              />
-
-          <ImageView
-              android:id="@+id/portfolio_drop_down_hint"
-              android:layout_width="16dp"
-              android:layout_height="16dp"
-              android:layout_alignParentRight="true"
-              android:layout_marginLeft="8dp"
-              android:src="@drawable/expand"
-              android:rotation="90"
-              />
-
-          <TextView
-              android:id="@+id/portfolio_selected"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:layout_marginLeft="16dp"
-              android:layout_toLeftOf="@id/portfolio_drop_down_hint"
-              tools:text="Main Portfolio"
-              android:textSize="16sp"
-              />
-
-        </RelativeLayout>
+          android:baselineAligned="false"
+          android:orientation="horizontal"
+          >
 
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:baselineAligned="false"
-            android:orientation="horizontal"
+            android:orientation="vertical"
+            android:layout_weight="2"
             >
 
-          <LinearLayout
-              android:layout_width="0dp"
+          <com.tradehero.common.widget.ImageViewThreadSafe
+              android:id="@+id/stock_logo"
+              android:layout_width="match_parent"
+              android:layout_height="40dp"
+              android:layout_margin="4dp"
+              android:adjustViewBounds="true"
+              android:contentDescription="@null"
+              android:scaleType="fitCenter"
+              android:visibility="visible"/>
+
+          <com.tradehero.th.fragments.trade.view.PricingBidAskView
+              android:id="@+id/pricing_bid_ask_view"
+              android:layout_width="match_parent"
               android:layout_height="wrap_content"
+              android:layout_marginRight="0dp"
+              android:layout_marginTop="20dp"
               android:orientation="vertical"
-              android:layout_weight="2"
               >
 
-            <com.tradehero.common.widget.ImageViewThreadSafe
-                android:id="@+id/stock_logo"
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:layout_margin="4dp"
-                android:adjustViewBounds="true"
-                android:contentDescription="@null"
-                android:scaleType="fitCenter"
-                android:visibility="visible"/>
+            <include layout="@layout/trade_pricing_bid_ask_view"/>
 
-            <com.tradehero.th.fragments.trade.view.PricingBidAskView
-                android:id="@+id/pricing_bid_ask_view"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="0dp"
-                android:layout_marginTop="20dp"
-                android:orientation="vertical"
-                >
+          </com.tradehero.th.fragments.trade.view.PricingBidAskView>
 
-              <include layout="@layout/trade_pricing_bid_ask_view"/>
+        </LinearLayout>
 
-            </com.tradehero.th.fragments.trade.view.PricingBidAskView>
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_weight="3"
+            >
 
-          </LinearLayout>
-
-          <LinearLayout
-              android:layout_width="0dp"
+          <TextView
+              android:id="@+id/stock_name"
+              android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:orientation="vertical"
-              android:layout_weight="3"
+              android:layout_gravity="center_vertical"
+              android:textSize="18sp"
+              android:gravity="center"
+              android:maxLines="2"
+              android:textColor="@color/sec_type"
+              tools:text="UOB Mb"
+              />
+          <!-- TODO Add stock name and chart icon -->
+
+          <com.tradehero.th.fragments.trade.view.TradeQuantityView
+              android:id="@+id/trade_quantity_view"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:layout_marginBottom="0dp"
               >
 
-            <TextView
-                android:id="@+id/stock_name"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:textSize="18sp"
-                android:gravity="center"
-                android:maxLines="2"
-                android:textColor="@color/sec_type"
-                tools:text="UOB Mb"
-                />
-            <!-- TODO Add stock name and chart icon -->
+            <include layout="@layout/trade_quantity_view" />
 
-            <com.tradehero.th.fragments.trade.view.TradeQuantityView
-                android:id="@+id/trade_quantity_view"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="0dp"
-                >
-
-              <include layout="@layout/trade_quantity_view" />
-
-            </com.tradehero.th.fragments.trade.view.TradeQuantityView>
-
-          </LinearLayout>
+          </com.tradehero.th.fragments.trade.view.TradeQuantityView>
 
         </LinearLayout>
 
       </LinearLayout>
 
-    </FrameLayout>
+    </LinearLayout>
+
+  </FrameLayout>
+
+  <RelativeLayout
+      android:id="@+id/quotes_frame"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:layout_weight="0.7"
+      android:orientation="vertical" >
 
     <RelativeLayout
-        android:id="@+id/quotes_frame"
+        android:id="@+id/seek_bar_buttons_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="0.7"
-        android:orientation="vertical" >
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginBottom="4dp"
+        >
 
-        <RelativeLayout
-            android:id="@+id/seek_bar_buttons_container"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_marginBottom="4dp"
-          >
-
-          <ImageButton
-              android:id="@+id/btn_add_trigger"
-              android:layout_width="48dp"
-              android:layout_height="48dp"
-              android:layout_alignParentRight="true"
-              android:layout_marginRight="8dp"
-              android:contentDescription="@null"
-              android:background="@null"
-              android:src="@drawable/buyscreen_txtnotice_buy"
-              android:scaleType="fitCenter"
-              />
-
-          <ImageButton
-              android:id="@+id/btn_add_cash"
-              android:layout_width="48dp"
-              android:layout_height="48dp"
-              android:layout_toLeftOf="@id/btn_add_trigger"
-              android:contentDescription="@null"
-              android:background="@null"
-              android:src="@drawable/buyscreen_buy_credit"
-              android:scaleType="fitCenter"
-              />
-
-          <ImageButton
-              android:id="@+id/btn_trade_info"
-              android:layout_width="48dp"
-              android:layout_height="48dp"
-              android:layout_toLeftOf="@+id/btn_add_cash"
-              android:contentDescription="@null"
-              android:background="@null"
-              android:src="@drawable/buyscreen_info"
-              android:scaleType="fitCenter"
-              />
-
-          <SeekBar
-              android:id="@+id/seekBar"
-              android:layout_width="match_parent"
-              android:layout_height="32dp"
-              android:layout_alignParentLeft="true"
-              android:layout_toLeftOf="@+id/btn_trade_info"
-              android:layout_centerVertical="true"
-              android:background="@null"
-              />
-
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/quick_price_button_set_container"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/seek_bar_buttons_container"
-            android:paddingBottom="4dp"
-          >
-
-          <com.tradehero.th.fragments.trade.view.QuickPriceButtonSet
-              android:id="@+id/quick_price_button_set"
-              android:layout_width="match_parent"
-              android:layout_height="48dp"
-              android:layout_margin="4dp"
-              android:layout_toLeftOf="@+id/btn_buy"
-              android:background="@drawable/trend_price_bar"
-              android:orientation="horizontal" >
-
-              <com.tradehero.th.fragments.trade.view.QuickPriceButton
-                  android:id="@+id/toggle5k"
-                  style="@style/TH.Btn_Price_Bar"
-                  android:text="@string/p5k"
-                  app:price="5000"
-            />
-
-              <View style="@style/TH.Btn_Price_Bar_Separator" />
-
-              <com.tradehero.th.fragments.trade.view.QuickPriceButton
-                  android:id="@+id/toggle10k"
-                  style="@style/TH.Btn_Price_Bar"
-                  android:text="@string/p10k"
-                  app:price="10000"
-                  />
-
-              <View style="@style/TH.Btn_Price_Bar_Separator" />
-
-              <com.tradehero.th.fragments.trade.view.QuickPriceButton
-                  android:id="@+id/toggle25k"
-                  style="@style/TH.Btn_Price_Bar"
-                  android:text="@string/p25k"
-                  app:price="25000"
-                  />
-
-              <View style="@style/TH.Btn_Price_Bar_Separator" />
-
-              <com.tradehero.th.fragments.trade.view.QuickPriceButton
-                  android:id="@+id/toggle50k"
-                  style="@style/TH.Btn_Price_Bar"
-                  android:text="@string/p50k"
-                  app:price="50000"
-                  />
-
-          </com.tradehero.th.fragments.trade.view.QuickPriceButtonSet>
-
-          <Button
-              android:id="@+id/btn_buy"
-              style="@style/TH.Btn_Price_Bar"
-              android:layout_height="48dp"
-              android:layout_width="wrap_content"
-              android:layout_margin="4dp"
-              android:layout_marginLeft="0dp"
-              android:background="@drawable/btn_buy"
-              android:text="@string/button_buy"
-              android:textColor="@color/white"
-              android:layout_alignParentRight="true"
-              />
-
-        </RelativeLayout>
-
-      <android.support.v4.view.ViewPager
-          android:id="@+id/trade_bottom_pager"
-          android:layout_width="match_parent"
-          android:layout_height="match_parent"
-          android:layout_below="@+id/quick_price_button_set_container"
-          android:layout_above="@+id/trade_bottom_pager_indicator"
+      <ImageButton
+          android:id="@+id/btn_add_trigger"
+          android:layout_width="48dp"
+          android:layout_height="48dp"
+          android:layout_alignParentRight="true"
+          android:layout_marginRight="8dp"
+          android:contentDescription="@null"
+          android:background="@null"
+          android:src="@drawable/buyscreen_txtnotice_buy"
+          android:scaleType="fitCenter"
           />
 
-      <com.viewpagerindicator.CirclePageIndicator
-          android:id="@+id/trade_bottom_pager_indicator"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:layout_alignParentBottom="true"
-          android_auto:strokeWidth="1dp"
-          android_auto:lineWidth="30dp"
-          android_auto:unselectedColor="#FFbbbbbb"
-          android_auto:selectedColor="@color/btn_new_user_color_light"
+      <ImageButton
+          android:id="@+id/btn_add_cash"
+          android:layout_width="48dp"
+          android:layout_height="48dp"
+          android:layout_toLeftOf="@id/btn_add_trigger"
+          android:contentDescription="@null"
+          android:background="@null"
+          android:src="@drawable/buyscreen_buy_credit"
+          android:scaleType="fitCenter"
+          />
 
-          android:paddingBottom="4dp"
-          android:background="@android:color/transparent"
-          android_auto:radius="4dp"
-          android_auto:fillColor="@color/btn_new_user_color_light"
-          android_auto:pageColor="@android:color/transparent"
-          android_auto:strokeColor="@color/btn_new_user_color_light"
+      <ImageButton
+          android:id="@+id/btn_trade_info"
+          android:layout_width="48dp"
+          android:layout_height="48dp"
+          android:layout_toLeftOf="@+id/btn_add_cash"
+          android:contentDescription="@null"
+          android:background="@null"
+          android:src="@drawable/buyscreen_info"
+          android:scaleType="fitCenter"
+          />
+
+      <SeekBar
+          android:id="@+id/seekBar"
+          android:layout_width="match_parent"
+          android:layout_height="32dp"
+          android:layout_alignParentLeft="true"
+          android:layout_toLeftOf="@+id/btn_trade_info"
+          android:layout_centerVertical="true"
+          android:background="@null"
           />
 
     </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/quick_price_button_set_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/seek_bar_buttons_container"
+        android:paddingBottom="4dp"
+        >
+
+      <com.tradehero.th.fragments.trade.view.QuickPriceButtonSet
+          android:id="@+id/quick_price_button_set"
+          android:layout_width="match_parent"
+          android:layout_height="48dp"
+          android:layout_margin="4dp"
+          android:layout_toLeftOf="@+id/btn_buy"
+          android:background="@drawable/trend_price_bar"
+          android:orientation="horizontal" >
+
+        <com.tradehero.th.fragments.trade.view.QuickPriceButton
+            android:id="@+id/toggle5k"
+            style="@style/TH.Btn_Price_Bar"
+            android:text="@string/p5k"
+            app:price="5000"
+            />
+
+        <View style="@style/TH.Btn_Price_Bar_Separator" />
+
+        <com.tradehero.th.fragments.trade.view.QuickPriceButton
+            android:id="@+id/toggle10k"
+            style="@style/TH.Btn_Price_Bar"
+            android:text="@string/p10k"
+            app:price="10000"
+            />
+
+        <View style="@style/TH.Btn_Price_Bar_Separator" />
+
+        <com.tradehero.th.fragments.trade.view.QuickPriceButton
+            android:id="@+id/toggle25k"
+            style="@style/TH.Btn_Price_Bar"
+            android:text="@string/p25k"
+            app:price="25000"
+            />
+
+        <View style="@style/TH.Btn_Price_Bar_Separator" />
+
+        <com.tradehero.th.fragments.trade.view.QuickPriceButton
+            android:id="@+id/toggle50k"
+            style="@style/TH.Btn_Price_Bar"
+            android:text="@string/p50k"
+            app:price="50000"
+            />
+
+      </com.tradehero.th.fragments.trade.view.QuickPriceButtonSet>
+
+      <Button
+          android:id="@+id/btn_buy"
+          style="@style/TH.Btn_Price_Bar"
+          android:layout_height="48dp"
+          android:layout_width="wrap_content"
+          android:layout_margin="4dp"
+          android:layout_marginLeft="0dp"
+          android:background="@drawable/btn_buy"
+          android:text="@string/button_buy"
+          android:textColor="@color/white"
+          android:layout_alignParentRight="true"
+          />
+
+    </RelativeLayout>
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/trade_bottom_pager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/quick_price_button_set_container"
+        android:layout_above="@+id/trade_bottom_pager_indicator"
+        />
+
+    <com.viewpagerindicator.CirclePageIndicator
+        android:id="@+id/trade_bottom_pager_indicator"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android_auto:strokeWidth="1dp"
+        android_auto:lineWidth="30dp"
+        android_auto:unselectedColor="#FFbbbbbb"
+        android_auto:selectedColor="@color/btn_new_user_color_light"
+
+        android:paddingBottom="4dp"
+        android:background="@android:color/transparent"
+        android_auto:radius="4dp"
+        android_auto:fillColor="@color/btn_new_user_color_light"
+        android_auto:pageColor="@android:color/transparent"
+        android_auto:strokeColor="@color/btn_new_user_color_light"
+        />
+
+  </RelativeLayout>
 
 </LinearLayout>

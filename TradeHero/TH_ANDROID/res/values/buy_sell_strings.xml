@@ -13,6 +13,8 @@
   <string name="loading_loading">Loading…</string>
   <string name="bid_with_bracket">(bid)</string>
   <string name="ask_with_bracket">(ask)</string>
+  <string name="buy_sell_bid_price_not_available">No Bid</string>
+  <string name="buy_sell_ask_price_not_available">No Ask</string>
   <string name="p5k">$5K</string>
   <string name="p10k">$10K</string>
   <string name="p25k">$25K</string>

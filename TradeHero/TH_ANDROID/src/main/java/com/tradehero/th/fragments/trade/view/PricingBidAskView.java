@@ -249,9 +249,8 @@ public class PricingBidAskView extends LinearLayout implements DTOView<SecurityC
         }
         else if (quoteDTO.ask == null)
         {
-            return "N/A";
+            return getResources().getString(R.string.buy_sell_ask_price_not_available);
         }
-
         THSignedNumber thSignedNumber = new THSignedNumber(THSignedNumber.TYPE_MONEY, quoteDTO.ask, false, "");
         return thSignedNumber.toString();
     }
@@ -264,7 +263,7 @@ public class PricingBidAskView extends LinearLayout implements DTOView<SecurityC
         }
         else if (quoteDTO.bid == null)
         {
-            return "N/A";
+            return getResources().getString(R.string.buy_sell_bid_price_not_available);
         }
         THSignedNumber thSignedNumber = new THSignedNumber(THSignedNumber.TYPE_MONEY, quoteDTO.bid, false, "");
         return thSignedNumber.toString();
