@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     android:background="@color/timeline_background_color"
     >
+
   <ProgressBar
       android:id="@android:id/progress"
       android:layout_width="wrap_content"

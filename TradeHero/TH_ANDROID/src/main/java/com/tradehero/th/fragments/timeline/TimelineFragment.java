@@ -146,6 +146,12 @@ public class TimelineFragment extends BasePurchaseManagerFragment
 
     @Override public void onDestroyView()
     {
+        if (userProfileRetrievedMilestone != null)
+        {
+            userProfileRetrievedMilestone.setOnCompleteListener(null);
+        }
+        userProfileRetrievedMilestone = null;
+
         this.timelineListView = null;
         this.timelineAdapter = null;
 
@@ -204,8 +210,14 @@ public class TimelineFragment extends BasePurchaseManagerFragment
 
     protected void updateView()
     {
-        timelineScreen.setDisplayedChildByLayoutId(R.id.timeline_list_view);
-        userProfileView.display(shownProfile);
+        if (timelineScreen != null)
+        {
+            timelineScreen.setDisplayedChildByLayoutId(R.id.timeline_list_view);
+        }
+        if (userProfileView != null)
+        {
+            userProfileView.display(shownProfile);
+        }
         if (this.actionBar != null)
         {
             this.actionBar.setTitle(UserBaseDTOUtil.getLongDisplayName(getActivity(), shownProfile));
