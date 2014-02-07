@@ -16,7 +16,10 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.inject.Inject;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 11/15/13 Time: 6:40 PM To change this template use File | Settings | File Templates. */
+/**
+ * This assistant provides a mapping from securityId to alertId.
+ * It is able to fetch the relevant data if necessary.
+ */
 public class SecurityAlertAssistant
 {
     public static final String TAG = SecurityAlertAssistant.class.getSimpleName();

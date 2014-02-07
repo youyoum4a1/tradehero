@@ -319,6 +319,12 @@ public class BuySellFragment extends AbstractBuySellFragment
         }
     }
 
+    @Override public void onViewCreated(View view, Bundle savedInstanceState)
+    {
+        super.onViewCreated(view, savedInstanceState);
+        securityAlertAssistant.setOnPopulatedListener(this);
+    }
+
     protected void buildUsedMenuPortfolios()
     {
         Set<MenuOwnedPortfolioId> newMenus = new TreeSet<>();
@@ -468,7 +474,6 @@ public class BuySellFragment extends AbstractBuySellFragment
         LocalBroadcastManager.getInstance(getActivity())
                 .registerReceiver(chartImageButtonClickReceiver, new IntentFilter(EVENT_CHART_IMAGE_CLICKED));
 
-        securityAlertAssistant.setOnPopulatedListener(this);
         securityAlertAssistant.setUserBaseKey(currentUserId.toUserBaseKey());
         securityAlertAssistant.populate();
 
@@ -485,13 +490,13 @@ public class BuySellFragment extends AbstractBuySellFragment
     {
         LocalBroadcastManager.getInstance(getActivity())
                 .unregisterReceiver(chartImageButtonClickReceiver);
-        securityAlertAssistant.setOnPopulatedListener(null);
         super.onPause();
     }
 
     @Override public void onDestroyView()
     {
         //THLog.d(TAG, "onDestroyView");
+        securityAlertAssistant.setOnPopulatedListener(null);
 
         if (mSelectedPortfolioContainer != null)
         {

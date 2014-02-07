@@ -37,6 +37,7 @@ import com.tradehero.th.misc.callback.THResponse;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.service.AlertServiceWrapper;
 import com.tradehero.th.persistence.alert.AlertCompactCache;
+import com.tradehero.th.persistence.alert.AlertCompactListCache;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.utils.DateUtils;
 import com.tradehero.th.utils.ProgressDialogUtil;
@@ -75,9 +76,10 @@ public class AlertEditFragment extends DashboardFragment
     @InjectView(R.id.alert_edit_price_changer_percentage_seek_bar) SeekBar percentageSeekBar;
 
     @Inject protected Lazy<AlertCompactCache> alertCompactCache;
-    @Inject protected Lazy<SecurityCompactCache> securityCompactCache;
+    @Inject protected Lazy<AlertCompactListCache> alertCompactListCache;
+    @Inject protected SecurityCompactCache securityCompactCache;
     @Inject protected Lazy<AlertServiceWrapper> alertServiceWrapper;
-    @Inject protected Lazy<Picasso> picasso;
+    @Inject protected Picasso picasso;
     @Inject protected CurrentUserId currentUserId;
 
     private AlertId alertId;
@@ -159,7 +161,7 @@ public class AlertEditFragment extends DashboardFragment
         this.securityId = securityId;
 
         progressDialog = ProgressDialogUtil.show(getActivity(), R.string.loading_loading, R.string.please_wait);
-        securityCompactCacheFetchTask = securityCompactCache.get().getOrFetch(securityId, true, securityCompactCallback);
+        securityCompactCacheFetchTask = securityCompactCache.getOrFetch(securityId, true, securityCompactCallback);
         securityCompactCacheFetchTask.execute();
     }
 
@@ -174,8 +176,9 @@ public class AlertEditFragment extends DashboardFragment
 
     private AlertFormDTO getFormDTO()
     {
-        if (targetPriceToggle == null || targetPercentageChangeToggle == null || securityCompactDTO == null)
+        if (targetPriceToggle == null || targetPercentageChangeToggle == null || securityCompactDTO == null || securityCompactDTO.lastPrice == null)
         {
+            THLog.d(TAG, "securityCompact " + securityCompactDTO);
             return null;
         }
 
@@ -184,7 +187,7 @@ public class AlertEditFragment extends DashboardFragment
         if (alertFormDTO.active)
         {
             alertFormDTO.securityId = securityCompactDTO.id;
-            alertFormDTO.targetPrice = targetPriceToggle.isChecked() ? getSeekingTargetPrice() : alertDTO.targetPrice;
+            alertFormDTO.targetPrice = targetPriceToggle.isChecked() ? getSeekingTargetPrice() : securityCompactDTO.lastPrice;
             alertFormDTO.priceMovement = targetPercentageChangeToggle.isChecked() ? getSeekingMovementPercentage() / 100.0 : null;
 
             if (targetPriceToggle.isChecked())
@@ -284,11 +287,11 @@ public class AlertEditFragment extends DashboardFragment
         {
             if (alertId == null)
             {
-                actionBar.setTitle(R.string.edit_alert);
+                actionBar.setTitle(R.string.add_alert);
             }
             else
             {
-                actionBar.setTitle(R.string.add_alert);
+                actionBar.setTitle(R.string.edit_alert);
             }
         }
     }
@@ -364,7 +367,8 @@ public class AlertEditFragment extends DashboardFragment
             }
             else if (alertDTO.activeUntilDate != null)
             {
-                activeUntil.setText(DateUtils.getDisplayableDate(getActivity(), alertDTO.activeUntilDate));
+                SimpleDateFormat sdf = new SimpleDateFormat(getString(R.string.alert_price_info_as_of_date_format));
+                activeUntil.setText(getString(R.string.alert_info_active_until_date_format, sdf.format(alertDTO.activeUntilDate)));
             }
             else
             {
@@ -472,14 +476,14 @@ public class AlertEditFragment extends DashboardFragment
     {
         if (securityCompactDTO != null && securityCompactDTO.imageBlobUrl != null)
         {
-            picasso.get()
+            picasso
                     .load(securityCompactDTO.imageBlobUrl)
                     .transform(new WhiteToTransparentTransformation())
                     .into(stockLogo);
         }
         else if (securityCompactDTO != null)
         {
-            picasso.get()
+            picasso
                     .load(securityCompactDTO.getExchangeLogoId())
                     .into(stockLogo);
         }
@@ -653,6 +657,7 @@ public class AlertEditFragment extends DashboardFragment
         @Override protected void success(AlertCompactDTO alertCompactDTO, THResponse thResponse)
         {
             alertCompactCache.get().put(alertCompactDTO.getAlertId(currentUserId.get()), alertCompactDTO);
+            alertCompactListCache.get().invalidate(currentUserId.toUserBaseKey());
             getNavigator().popFragment();
         }
 
@@ -667,7 +672,6 @@ public class AlertEditFragment extends DashboardFragment
         @Override public void onDTOReceived(SecurityId key, SecurityCompactDTO value, boolean fromCache)
         {
             hideDialog();
-            securityCompactCache.get().put(key, value);
             linkWith(value, true);
         }
 
