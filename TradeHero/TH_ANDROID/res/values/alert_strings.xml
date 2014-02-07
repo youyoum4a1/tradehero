@@ -13,7 +13,7 @@
   <string name="alert_price_info_as_of_date_format">d MMM yyyy HH:mm</string>
   <string name="notification_received">Notifications Received</string>
   <string name="edit">Edit</string>
-  <string name="save">Save</string>
+  <string name="alert_edit_menu_save">Save</string>
   <string name="trigger_conditions">Trigger Conditions</string>
   <string name="alert_target_price_help_text">You will receive an alert whenever the price of the security rises/falls to the set price.</string>
   <string name="price_change">Price Change</string>

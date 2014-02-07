@@ -28,7 +28,7 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.watchlist.WatchlistPositionDTO;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.base.NavigatorActivity;
-import com.tradehero.th.fragments.alert.AlertEditFragment;
+import com.tradehero.th.fragments.alert.AlertCreateFragment;
 import com.tradehero.th.fragments.security.StockInfoFragment;
 import com.tradehero.th.fragments.security.WatchlistEditFragment;
 import com.tradehero.th.fragments.trade.BuySellFragment;
@@ -442,8 +442,8 @@ public class WatchlistItemView extends FrameLayout implements DTOView<SecurityId
     private void openAlertEditor()
     {
         Bundle args = new Bundle();
-        args.putBundle(AlertEditFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
-        getNavigator().pushFragment(AlertEditFragment.class, args);
+        args.putBundle(AlertCreateFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
+        getNavigator().pushFragment(AlertCreateFragment.class, args);
     }
 
     private void openSecurityProfile()

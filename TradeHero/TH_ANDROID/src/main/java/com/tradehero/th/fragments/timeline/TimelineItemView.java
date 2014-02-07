@@ -29,14 +29,14 @@ import com.tradehero.th.api.users.UserProfileCompactDTO;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.fragments.DashboardNavigator;
-import com.tradehero.th.fragments.alert.AlertEditFragment;
+import com.tradehero.th.fragments.alert.AlertCreateFragment;
 import com.tradehero.th.fragments.security.StockInfoFragment;
 import com.tradehero.th.fragments.security.WatchlistEditFragment;
 import com.tradehero.th.fragments.trade.BuySellFragment;
-import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.misc.callback.THCallback;
 import com.tradehero.th.misc.callback.THResponse;
 import com.tradehero.th.misc.exception.THException;
+import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.network.service.UserTimelineService;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
@@ -334,8 +334,8 @@ public class TimelineItemView extends LinearLayout implements
     private void openStockAlertEditor()
     {
         Bundle args = new Bundle();
-        args.putBundle(AlertEditFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, getSecurityId().getArgs());
-        getNavigator().pushFragment(AlertEditFragment.class, args);
+        args.putBundle(AlertCreateFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, getSecurityId().getArgs());
+        getNavigator().pushFragment(AlertCreateFragment.class, args);
     }
 
     private void openWatchlistEditor()

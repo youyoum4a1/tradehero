@@ -29,12 +29,14 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.billing.googleplay.THIABActor;
 import com.tradehero.th.billing.googleplay.THIABPurchase;
-import com.tradehero.th.fragments.alert.AlertEditFragment;
+import com.tradehero.th.fragments.alert.AlertCreateFragment;
 import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.fragments.billing.THIABUserInteractor;
 import com.tradehero.th.fragments.competition.ProviderSecurityListFragment;
 import com.tradehero.th.fragments.dashboard.DashboardTabType;
+import com.tradehero.th.fragments.portfolio.header.PortfolioHeaderFactory;
+import com.tradehero.th.fragments.portfolio.header.PortfolioHeaderView;
 import com.tradehero.th.fragments.position.view.PositionLockedView;
 import com.tradehero.th.fragments.position.view.PositionNothingView;
 import com.tradehero.th.fragments.security.StockInfoFragment;
@@ -46,8 +48,6 @@ import com.tradehero.th.persistence.portfolio.PortfolioCache;
 import com.tradehero.th.persistence.position.PositionCache;
 import com.tradehero.th.persistence.security.SecurityIdCache;
 import com.tradehero.th.widget.list.ExpandingListView;
-import com.tradehero.th.fragments.portfolio.header.PortfolioHeaderFactory;
-import com.tradehero.th.fragments.portfolio.header.PortfolioHeaderView;
 import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
@@ -463,8 +463,8 @@ abstract public class AbstractPositionListFragment<
         if (securityId != null)
         {
             Bundle args = new Bundle();
-            args.putBundle(AlertEditFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
-            getNavigator().pushFragment(AlertEditFragment.class, args);
+            args.putBundle(AlertCreateFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
+            getNavigator().pushFragment(AlertCreateFragment.class, args);
         }
         else
         {

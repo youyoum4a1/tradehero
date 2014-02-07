@@ -17,6 +17,8 @@ import com.tradehero.th.billing.googleplay.THIABPurchaseFetcher;
 import com.tradehero.th.billing.googleplay.THIABPurchaseReporter;
 import com.tradehero.th.billing.googleplay.THIABPurchaser;
 import com.tradehero.th.billing.googleplay.THInventoryFetchMilestone;
+import com.tradehero.th.fragments.alert.AlertCreateFragment;
+import com.tradehero.th.fragments.alert.AlertEditFragment;
 import com.tradehero.th.fragments.alert.AlertManagerFragment;
 import com.tradehero.th.fragments.authentication.EmailSignInFragment;
 import com.tradehero.th.fragments.billing.StoreScreenFragment;
@@ -249,6 +251,8 @@ import javax.inject.Singleton;
                         TrendingIntentFactory.class,
 
                         AlertManagerFragment.class,
+                        AlertEditFragment.class,
+                        AlertCreateFragment.class,
 
                         InviteFriendFragment.class,
 

@@ -57,6 +57,7 @@ import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.WarrantDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.billing.googleplay.THIABActor;
+import com.tradehero.th.fragments.alert.AlertCreateFragment;
 import com.tradehero.th.fragments.alert.AlertEditFragment;
 import com.tradehero.th.fragments.billing.THIABUserInteractor;
 import com.tradehero.th.fragments.security.BuySellBottomStockPagerAdapter;
@@ -1143,15 +1144,17 @@ public class BuySellFragment extends AbstractBuySellFragment
         if (securityAlertAssistant.isPopulated())
         {
             Bundle args = new Bundle();
-            args.putBundle(AlertEditFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
-
             AlertId alertId = securityAlertAssistant.getAlertId(securityId);
             if (alertId != null)
             {
                 args.putBundle(AlertEditFragment.BUNDLE_KEY_ALERT_ID_BUNDLE, alertId.getArgs());
+                navigator.pushFragment(AlertEditFragment.class, args);
             }
-
-            navigator.pushFragment(AlertEditFragment.class, args);
+            else
+            {
+                args.putBundle(AlertCreateFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
+                navigator.pushFragment(AlertCreateFragment.class, args);
+            }
         }
         else if (securityAlertAssistant.isFailed())
         {

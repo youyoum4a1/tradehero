@@ -172,7 +172,6 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
                     securityId == null ? "-:-": String.format("%s:%s", securityId.exchange, securityId.securitySymbol));
         }
     }
-
     //</editor-fold>
 
     @Override public void onSaveInstanceState(Bundle outState)
