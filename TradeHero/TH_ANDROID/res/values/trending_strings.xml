@@ -2,6 +2,7 @@
 <resources>
 
   <!-- What's Trending -->
+  <integer name="trending_list_column_count">2</integer>
   <string name="header_trending">What\'s Trending</string>
   <string name="search_stock_hint">Select to search &gt;</string>
   <string name="search_stock_nothing_yet">Nothing to show.\nType in the search field</string>

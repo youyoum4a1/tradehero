@@ -17,7 +17,7 @@
       android:gravity="center"
       android:horizontalSpacing="@dimen/trending_horizontal_spacing"
       android:verticalSpacing="@dimen/trending_vertical_spacing"
-      android:numColumns="2"
+      android:numColumns="@integer/trending_list_column_count"
       android:paddingRight="@dimen/trending_horizontal_spacing"
       android:paddingLeft="@dimen/trending_horizontal_spacing"
       android:paddingTop="@dimen/trending_padding_top"
