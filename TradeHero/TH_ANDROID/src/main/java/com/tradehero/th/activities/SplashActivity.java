@@ -12,6 +12,7 @@ import com.tradehero.th.persistence.prefs.SessionToken;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.TestFlightUtils;
+import com.tradehero.th.utils.VersionUtils;
 import java.util.Timer;
 import java.util.TimerTask;
 import javax.inject.Inject;
@@ -50,6 +51,11 @@ public class SplashActivity extends SherlockActivity
             }
         };
         initialAsyncTask.execute();
+
+        if (!Constants.RELEASE)
+        {
+            VersionUtils.logScreenMeasurements(this);
+        }
     }
 
     protected void initialisation()

@@ -1,11 +1,15 @@
 package com.tradehero.th.utils;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
+import android.util.DisplayMetrics;
+import android.view.Display;
+import com.tradehero.common.utils.THLog;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -104,6 +108,20 @@ public class VersionUtils
         {
             return capitalize(manufacturer) + " " + model;
         }
+    }
+
+    public static void logScreenMeasurements(Activity activity)
+    {
+
+        Display display = activity.getWindowManager().getDefaultDisplay();
+        DisplayMetrics outMetrics = new DisplayMetrics ();
+        display.getMetrics(outMetrics);
+
+        float density  = activity.getResources().getDisplayMetrics().density;
+        float dpHeight = outMetrics.heightPixels / density;
+        float dpWidth  = outMetrics.widthPixels / density;
+
+        THLog.d(TAG, "view " + dpHeight + dpHeight + ", dpWidth " + dpWidth);
     }
 
     private static String capitalize(String s)
