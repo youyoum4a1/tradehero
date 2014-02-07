@@ -63,6 +63,6 @@ public class RoundedCornerTransformation  implements com.squareup.picasso.Transf
 
     @Override public String key()
     {
-        return "toRoundedCorner";
+        return String.format("toRoundedCorner(%d, %d)", pixelRadius, color);
     }
 }
