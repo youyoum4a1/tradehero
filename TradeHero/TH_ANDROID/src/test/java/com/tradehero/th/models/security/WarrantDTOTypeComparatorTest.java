@@ -18,7 +18,7 @@ import static org.junit.Assert.assertNull;
  * Created by xavier on 1/23/14.
  */
 @RunWith(RobolectricTestRunner.class)
-@Config(manifest= Config.NONE)
+@Config(manifest = Config.NONE)
 public class WarrantDTOTypeComparatorTest
 {
     public static final String TAG = WarrantDTOTypeComparatorTest.class.getSimpleName();

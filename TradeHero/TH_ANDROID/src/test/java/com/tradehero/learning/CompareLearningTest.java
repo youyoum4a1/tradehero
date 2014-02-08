@@ -14,7 +14,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/24/13 Time: 7:19 PM To change this template use File | Settings | File Templates. */
 @RunWith(RobolectricTestRunner.class)
-@Config(manifest= Config.NONE)
+@Config(manifest = Config.NONE)
 public class CompareLearningTest
 {
     public static final String TAG = CompareLearningTest.class.getSimpleName();

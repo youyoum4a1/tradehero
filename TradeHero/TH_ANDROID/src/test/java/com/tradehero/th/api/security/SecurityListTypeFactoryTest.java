@@ -16,7 +16,7 @@ import static org.junit.Assert.assertEquals;
  * Created by xavier on 1/23/14.
  */
 @RunWith(RobolectricTestRunner.class)
-@Config(manifest= Config.NONE)
+@Config(manifest = Config.NONE)
 public class SecurityListTypeFactoryTest
 {
     public static final String TAG = SecurityListTypeFactoryTest.class.getSimpleName();

@@ -18,7 +18,7 @@ import static junit.framework.Assert.assertTrue;
  * Created by xavier on 12/16/13.
  */
 @RunWith(RobolectricTestRunner.class)
-@Config(manifest= Config.NONE)
+@Config(manifest = Config.NONE)
 public class SecurityCompactListCacheTest
 {
     public static final String TAG = SecurityCompactListCacheTest.class.getSimpleName();

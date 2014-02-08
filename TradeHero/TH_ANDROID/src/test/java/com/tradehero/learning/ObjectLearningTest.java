@@ -23,7 +23,7 @@ import static org.junit.Assert.assertTrue;
  * the cache as identical.
  * */
 @RunWith(RobolectricTestRunner.class)
-@Config(manifest= Config.NONE)
+@Config(manifest = Config.NONE)
 public class ObjectLearningTest
 {
     public static final String TAG = ObjectLearningTest.class.getSimpleName();

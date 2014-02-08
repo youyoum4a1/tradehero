@@ -21,7 +21,7 @@ import static org.junit.Assert.assertTrue;
  * Created by xavier on 2/3/14.
  */
 @RunWith(RobolectricTestRunner.class)
-@Config(manifest= Config.NONE)
+@Config(manifest = Config.NONE)
 public class ExchangeDTODescriptionNameComparatorTest
 {
     public static final String TAG = ExchangeDTODescriptionNameComparatorTest.class.getSimpleName();

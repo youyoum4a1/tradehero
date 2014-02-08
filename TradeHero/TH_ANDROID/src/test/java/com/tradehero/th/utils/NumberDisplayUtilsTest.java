@@ -15,7 +15,7 @@ import static org.junit.Assert.assertThat;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/17/13 Time: 4:29 PM To change this template use File | Settings | File Templates. */
 @RunWith(RobolectricTestRunner.class)
-@Config(manifest= Config.NONE)
+@Config(manifest = Config.NONE)
 public class NumberDisplayUtilsTest
 {
     @Before public void setUp()

@@ -20,7 +20,7 @@ import static org.junit.Assert.assertTrue;
  * Created by xavier on 1/14/14.
  */
 @RunWith(RobolectricTestRunner.class)
-@Config(manifest= Config.NONE)
+@Config(manifest = Config.NONE)
 public class PortfolioCompactDTODisplayComparatorTest
 {
     public static final String TAG = PortfolioCompactDTODisplayComparatorTest.class.getSimpleName();

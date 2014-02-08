@@ -22,5 +22,6 @@
       android:layout_width="match_parent"
       app:hasStickyHeaders="false"
       />
+
 </com.tradehero.common.widget.BetterViewAnimator>
 

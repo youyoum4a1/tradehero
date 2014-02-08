@@ -13,7 +13,7 @@ import static org.junit.Assert.assertEquals;
  * Created by xavier on 1/14/14.
  */
 @RunWith(RobolectricTestRunner.class)
-@Config(manifest= Config.NONE)
+@Config(manifest = Config.NONE)
 public class DisplayablePortfolioDTOWithinUserComparatorTest
 {
     public static final String TAG = DisplayablePortfolioDTOWithinUserComparatorTest.class.getSimpleName();

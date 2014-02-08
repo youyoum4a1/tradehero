@@ -10,7 +10,7 @@ import static org.junit.Assert.assertThat;
 
 /** Created with IntelliJ IDEA. User: tho Date: 9/20/13 Time: 6:07 PM Copyright (c) TradeHero */
 @RunWith(RobolectricTestRunner.class)
-@Config(manifest= Config.NONE)
+@Config(manifest = Config.NONE)
 public class SecurityCompactDTOTest
 {
     public static final String EXT_KEY_EXCHANGE = "exchange";
