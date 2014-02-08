@@ -1,34 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-  <declare-styleable name="ValidatedText">
-    <attr name="indicator" format="reference"/>
-    <attr name="invalidDrawable" format="reference"/>
-    <attr name="validDrawable" format="reference"/>
-    <attr name="invalidDrawableRight" format="reference"/>
-    <attr name="validDrawableRight" format="reference"/>
-  </declare-styleable>
-  <declare-styleable name="SelfValidatedText">
-    <attr name="minSize" format="integer"/>
-    <attr name="maxSize" format="integer"/>
-    <attr name="validatePattern" format="string"/>
-    <attr name="delayValidationByMilliSec" format="integer"/>
-    <attr name="invalidMinSizeMessage" format="string"/>
-    <attr name="invalidMaxSizeMessage" format="string"/>
-    <attr name="invalidBetweenSizeMessage" format="string"/>
-    <attr name="invalidPatternMessage" format="string"/>
-  </declare-styleable>
-  <declare-styleable name="MatchingPasswordText">
-    <attr name="matchWith" format="reference"/>
-  </declare-styleable>
-  <declare-styleable name="ServerValidatedText">
-    <attr name="progressIndicator" format="reference"/>
-  </declare-styleable>
 
-  <declare-styleable name="QuickPriceButton">
-    <attr name="price" format="integer"/>
-  </declare-styleable>
+    <declare-styleable name="ValidatedText">
+        <attr name="indicator" format="reference"/>
+        <attr name="invalidDrawable" format="reference"/>
+        <attr name="validDrawable" format="reference"/>
+        <attr name="invalidDrawableRight" format="reference"/>
+        <attr name="validDrawableRight" format="reference"/>
+    </declare-styleable>
 
-  <declare-styleable name="TimeSpanButton">
-    <attr name="timeSpan" format="string"/>
-  </declare-styleable>
+    <declare-styleable name="SelfValidatedText">
+        <attr name="minSize" format="integer"/>
+        <attr name="maxSize" format="integer"/>
+        <attr name="validatePattern" format="string"/>
+        <attr name="delayValidationByMilliSec" format="integer"/>
+        <attr name="invalidMinSizeMessage" format="string"/>
+        <attr name="invalidMaxSizeMessage" format="string"/>
+        <attr name="invalidBetweenSizeMessage" format="string"/>
+        <attr name="invalidPatternMessage" format="string"/>
+    </declare-styleable>
+
+    <declare-styleable name="MatchingPasswordText">
+        <attr name="matchWith" format="reference"/>
+    </declare-styleable>
+
+    <declare-styleable name="ServerValidatedText">
+        <attr name="progressIndicator" format="reference"/>
+    </declare-styleable>
+
+    <declare-styleable name="QuickPriceButton">
+        <attr name="price" format="integer"/>
+    </declare-styleable>
+
+    <declare-styleable name="TimeSpanButton">
+        <attr name="timeSpan" format="string"/>
+    </declare-styleable>
+
 </resources>

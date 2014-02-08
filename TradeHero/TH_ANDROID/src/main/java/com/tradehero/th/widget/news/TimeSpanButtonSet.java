@@ -6,7 +6,6 @@ import android.view.View;
 import android.widget.LinearLayout;
 import com.tradehero.th.R;
 import com.tradehero.th.models.chart.ChartTimeSpan;
-import com.tradehero.th.models.chart.yahoo.YahooTimeSpan;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
@@ -97,7 +96,7 @@ public class TimeSpanButtonSet extends LinearLayout
         buttons.clear();
     }
 
-    public void setActive(YahooTimeSpan timeSpan)
+    public void setActive(ChartTimeSpan timeSpan)
     {
         for(TimeSpanButton button: buttons)
         {
@@ -119,12 +118,12 @@ public class TimeSpanButtonSet extends LinearLayout
         this.listener = new WeakReference<>(listener);
     }
 
-    private void notifyListener(YahooTimeSpan timeSpan)
+    private void notifyListener(ChartTimeSpan timeSpan)
     {
         OnTimeSpanButtonSelectedListener listener = this.listener.get();
         if (listener != null)
         {
-            listener.onTimeSpanButtonSelected(timeSpan.getChartTimeSpan()   );
+            listener.onTimeSpanButtonSelected(timeSpan);
         }
     }
 

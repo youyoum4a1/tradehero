@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import com.squareup.picasso.Picasso;
-import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
@@ -17,7 +16,6 @@ import com.tradehero.th.models.chart.ChartDTO;
 import com.tradehero.th.models.chart.ChartDTOFactory;
 import com.tradehero.th.models.chart.ChartSize;
 import com.tradehero.th.models.chart.ChartTimeSpan;
-import com.tradehero.th.models.chart.yahoo.YahooTimeSpan;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.widget.news.TimeSpanButtonSet;
@@ -103,7 +101,7 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
         {
             timeSpanButtonSetTemp.addAllChildButtons();
             timeSpanButtonSetTemp.setListener(this.timeSpanButtonSetListener);
-            timeSpanButtonSetTemp.setActive(YahooTimeSpan.month3);
+            timeSpanButtonSetTemp.setActive(chartDTO.getChartTimeSpan());
         }
         this.timeSpanButtonSet = timeSpanButtonSetTemp;
 
@@ -231,7 +229,6 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
 
     protected void chooseOtherSize()
     {
-        THLog.d(TAG, "chooseOtherSize");
         ImageView image = chartImage;
         if (image != null)
         {

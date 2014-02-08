@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<merge
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res/com.tradehero.th"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    <com.tradehero.th.widget.news.yahoo.YahooTimeSpanButton
+            style="@style/TH.Btn_Price_Bar"
+            android:text="@string/yahoo_chart_1d"
+            app:timeSpan="day1"
+            />
+
+    <View style="@style/TH.Btn_Price_Bar_Separator" />
+
+    <com.tradehero.th.widget.news.yahoo.YahooTimeSpanButton
+            style="@style/TH.Btn_Price_Bar"
+            android:text="@string/yahoo_chart_5d"
+            app:timeSpan="day5"
+            />
+
+    <View style="@style/TH.Btn_Price_Bar_Separator" />
+
+    <com.tradehero.th.widget.news.yahoo.YahooTimeSpanButton
+            style="@style/TH.Btn_Price_Bar"
+            android:text="@string/yahoo_chart_3m"
+            app:timeSpan="month3"
+            />
+
+    <View style="@style/TH.Btn_Price_Bar_Separator" />
+
+    <com.tradehero.th.widget.news.yahoo.YahooTimeSpanButton
+            style="@style/TH.Btn_Price_Bar"
+            android:text="@string/yahoo_chart_6m"
+            app:timeSpan="month6"
+            />
+
+    <View style="@style/TH.Btn_Price_Bar_Separator" />
+
+    <com.tradehero.th.widget.news.yahoo.YahooTimeSpanButton
+            style="@style/TH.Btn_Price_Bar"
+            android:text="@string/yahoo_chart_1y"
+            app:timeSpan="year1"
+            />
+
+    <View style="@style/TH.Btn_Price_Bar_Separator" />
+
+    <com.tradehero.th.widget.news.yahoo.YahooTimeSpanButton
+            style="@style/TH.Btn_Price_Bar"
+            android:text="@string/yahoo_chart_2y"
+            app:timeSpan="year2"
+            />
+
+    <View style="@style/TH.Btn_Price_Bar_Separator" />
+
+    <com.tradehero.th.widget.news.yahoo.YahooTimeSpanButton
+            style="@style/TH.Btn_Price_Bar"
+            android:text="@string/yahoo_chart_5y"
+            app:timeSpan="year5"
+            />
+
+    <View style="@style/TH.Btn_Price_Bar_Separator" />
+
+    <com.tradehero.th.widget.news.yahoo.YahooTimeSpanButton
+            style="@style/TH.Btn_Price_Bar"
+            android:text="@string/yahoo_chart_max"
+            app:timeSpan="yearMax"
+            />
+
+</merge>

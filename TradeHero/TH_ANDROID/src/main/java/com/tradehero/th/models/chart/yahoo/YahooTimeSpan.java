@@ -3,8 +3,6 @@ package com.tradehero.th.models.chart.yahoo;
 import com.tradehero.th.R;
 import com.tradehero.th.models.chart.ChartTimeSpan;
 
-import java.util.Map;
-
 /**
  * Created by julien on 9/10/13
  */
@@ -22,8 +20,6 @@ public enum YahooTimeSpan
     public final String code;
     public final int stringResId;
     public final long chartTimeSpanDuration;
-
-    private static Map<Long, YahooTimeSpan> timeSpans;
 
     private YahooTimeSpan(String c, int stringResId, long chartTimeSpanDuration)
     {

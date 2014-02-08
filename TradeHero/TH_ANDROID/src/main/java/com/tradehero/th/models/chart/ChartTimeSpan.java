@@ -24,4 +24,19 @@ public class ChartTimeSpan
         super();
         this.duration = duration;
     }
+
+    @Override public int hashCode()
+    {
+        return Long.valueOf(duration).hashCode();
+    }
+
+    @Override public boolean equals(Object other)
+    {
+        return other instanceof ChartTimeSpan && equals((ChartTimeSpan) other);
+    }
+
+    public boolean equals(ChartTimeSpan other)
+    {
+        return other != null && Long.valueOf(duration).equals(other.duration);
+    }
 }
