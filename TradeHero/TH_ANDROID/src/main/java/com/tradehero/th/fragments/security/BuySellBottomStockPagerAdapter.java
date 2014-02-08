@@ -10,8 +10,7 @@ import com.tradehero.common.utils.THLog;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.WarrantDTO;
-import com.tradehero.th.models.chart.yahoo.YahooChartSize;
-import com.tradehero.th.models.chart.yahoo.YahooTimeSpan;
+import com.tradehero.th.models.chart.ChartTimeSpan;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/3/13 Time: 12:42 PM To change this template use File | Settings | File Templates. */
 public class BuySellBottomStockPagerAdapter extends FragmentStatePagerAdapter
@@ -122,8 +121,7 @@ public class BuySellBottomStockPagerAdapter extends FragmentStatePagerAdapter
     private void populateForChartFragment(Bundle args)
     {
         args.putInt(ChartFragment.BUNDLE_KEY_TIME_SPAN_BUTTON_SET_VISIBILITY, View.GONE);
-        args.putString(ChartFragment.BUNDLE_KEY_TIME_SPAN_STRING, YahooTimeSpan.month3.name());
-        args.putString(ChartFragment.BUNDLE_KEY_CHART_SIZE, YahooChartSize.large.name()); // TODO have a util class that decides on size
+        args.putLong(ChartFragment.BUNDLE_KEY_TIME_SPAN_SECONDS_LONG, ChartTimeSpan.MONTH_3);
     }
 
     @Override public int getItemPosition(Object object)

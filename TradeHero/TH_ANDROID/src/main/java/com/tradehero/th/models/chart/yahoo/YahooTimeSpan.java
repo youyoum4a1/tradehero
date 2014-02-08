@@ -37,6 +37,11 @@ public enum YahooTimeSpan
         return (otherCode != null) && otherCode.equals(code);
     }
 
+    public ChartTimeSpan getChartTimeSpan()
+    {
+        return new ChartTimeSpan(chartTimeSpanDuration);
+    }
+
     public String toString()
     {
         return code;

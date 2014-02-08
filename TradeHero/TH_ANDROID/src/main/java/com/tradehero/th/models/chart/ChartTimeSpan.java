@@ -1,6 +1,7 @@
 package com.tradehero.th.models.chart;
 
 /**
+ * Indicates a duration in seconds
  * Created by xavier on 8/2/14.
  */
 public class ChartTimeSpan

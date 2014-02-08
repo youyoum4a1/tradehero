@@ -91,6 +91,7 @@ import com.tradehero.th.loaders.SearchStockPageListLoader;
 import com.tradehero.th.loaders.TimelineListLoader;
 import com.tradehero.th.loaders.security.SecurityListPagedLoader;
 import com.tradehero.th.loaders.security.macquarie.MacquarieSecurityListPagedLoader;
+import com.tradehero.th.models.chart.ChartModule;
 import com.tradehero.th.models.intent.trending.TrendingIntentFactory;
 import com.tradehero.th.models.push.PushNotificationManager;
 import com.tradehero.th.models.push.urbanairship.UrbanAirshipPushNotificationManager;
@@ -123,6 +124,7 @@ import javax.inject.Singleton;
                 UIModule.class,
                 UserModule.class,
                 PreferenceModule.class,
+                ChartModule.class,
         },
         injects =
                 {

@@ -8,17 +8,21 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import com.squareup.picasso.Picasso;
+import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.fragments.trade.BuySellFragment;
-import com.tradehero.th.models.chart.yahoo.YahooChartDTO;
-import com.tradehero.th.models.chart.yahoo.YahooChartSize;
+import com.tradehero.th.models.chart.ChartDTO;
+import com.tradehero.th.models.chart.ChartDTOFactory;
+import com.tradehero.th.models.chart.ChartSize;
+import com.tradehero.th.models.chart.ChartTimeSpan;
 import com.tradehero.th.models.chart.yahoo.YahooTimeSpan;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.widget.news.TimeSpanButtonSet;
 import dagger.Lazy;
+
 import javax.inject.Inject;
 
 /**
@@ -28,23 +32,24 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
 {
     private final static String TAG = ChartFragment.class.getSimpleName();
     public final static String BUNDLE_KEY_TIME_SPAN_BUTTON_SET_VISIBILITY = ChartFragment.class.getName() + ".timeSpanButtonSetVisibility";
-    public final static String BUNDLE_KEY_TIME_SPAN_STRING = ChartFragment.class.getName() + ".timeSpanString";
-    public final static String BUNDLE_KEY_CHART_SIZE = ChartFragment.class.getName() + ".chartSize";
+    public final static String BUNDLE_KEY_TIME_SPAN_SECONDS_LONG = ChartFragment.class.getName() + ".timeSpanSecondsLong";
+    public final static String BUNDLE_KEY_CHART_SIZE_ARRAY_INT = ChartFragment.class.getName() + ".chartSizeArrayInt";
 
     private ImageView chartImage;
     private TimeSpanButtonSet timeSpanButtonSet;
     private TimeSpanButtonSet.OnTimeSpanButtonSelectedListener timeSpanButtonSetListener;
-    private YahooChartDTO yahooChartDTO;
+    private ChartDTO chartDTO;
     private int timeSpanButtonSetVisibility = View.VISIBLE;
 
     @Inject protected Lazy<SecurityCompactCache> securityCompactCache;
     @Inject protected Picasso picasso;
+    @Inject protected ChartDTOFactory chartDTOFactory;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         DaggerUtils.inject(this);
-        yahooChartDTO = new YahooChartDTO("", YahooChartSize.medium, YahooTimeSpan.day1);
+        chartDTO = chartDTOFactory.createChartDTO();
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -55,16 +60,28 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
         if (args != null)
         {
             timeSpanButtonSetVisibility = args.getInt(BUNDLE_KEY_TIME_SPAN_BUTTON_SET_VISIBILITY, timeSpanButtonSetVisibility);
-            yahooChartDTO.timeSpan = YahooTimeSpan.valueOf(args.getString(BUNDLE_KEY_TIME_SPAN_STRING, yahooChartDTO.timeSpan.name()));
-            yahooChartDTO.size = YahooChartSize.valueOf(args.getString(BUNDLE_KEY_CHART_SIZE, yahooChartDTO.size.name()));
+            if (args.containsKey(BUNDLE_KEY_TIME_SPAN_SECONDS_LONG))
+            {
+                chartDTO.setChartTimeSpan(new ChartTimeSpan(args.getLong(BUNDLE_KEY_TIME_SPAN_SECONDS_LONG)));
+            }
+            if (args.containsKey(BUNDLE_KEY_CHART_SIZE_ARRAY_INT))
+            {
+                chartDTO.setChartSize(new ChartSize(args.getIntArray(BUNDLE_KEY_CHART_SIZE_ARRAY_INT)));
+            }
         }
 
         // Override with saved value if any
         if (savedInstanceState != null)
         {
             timeSpanButtonSetVisibility = savedInstanceState.getInt(BUNDLE_KEY_TIME_SPAN_BUTTON_SET_VISIBILITY, timeSpanButtonSetVisibility);
-            yahooChartDTO.timeSpan = YahooTimeSpan.valueOf(savedInstanceState.getString(BUNDLE_KEY_TIME_SPAN_STRING, yahooChartDTO.timeSpan.name()));
-            yahooChartDTO.size = YahooChartSize.valueOf(savedInstanceState.getString(BUNDLE_KEY_CHART_SIZE, yahooChartDTO.size.name()));
+            if (savedInstanceState.containsKey(BUNDLE_KEY_TIME_SPAN_SECONDS_LONG))
+            {
+                chartDTO.setChartTimeSpan(new ChartTimeSpan(savedInstanceState.getLong(BUNDLE_KEY_TIME_SPAN_SECONDS_LONG)));
+            }
+            if (savedInstanceState.containsKey(BUNDLE_KEY_CHART_SIZE_ARRAY_INT))
+            {
+                chartDTO.setChartSize(new ChartSize(savedInstanceState.getIntArray(BUNDLE_KEY_CHART_SIZE_ARRAY_INT)));
+            }
         }
 
         chartImage = (ImageView) view.findViewById(R.id.chart_imageView);
@@ -75,7 +92,7 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
 
         this.timeSpanButtonSetListener = new TimeSpanButtonSet.OnTimeSpanButtonSelectedListener()
         {
-            @Override public void onTimeSpanButtonSelected(YahooTimeSpan selected)
+            @Override public void onTimeSpanButtonSelected(ChartTimeSpan selected)
             {
                 linkWith(selected, true);
             }
@@ -105,8 +122,8 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
     @Override public void onSaveInstanceState(Bundle outState)
     {
         super.onSaveInstanceState(outState);
-        outState.putString(BUNDLE_KEY_TIME_SPAN_STRING, yahooChartDTO.timeSpan.name());
-        outState.putString(BUNDLE_KEY_CHART_SIZE, yahooChartDTO.size.name());
+        outState.putLong(BUNDLE_KEY_TIME_SPAN_SECONDS_LONG, chartDTO.getChartTimeSpan().duration);
+        outState.putIntArray(BUNDLE_KEY_CHART_SIZE_ARRAY_INT, chartDTO.getChartSize().getSizeArray());
         outState.putInt(BUNDLE_KEY_TIME_SPAN_BUTTON_SET_VISIBILITY, timeSpanButtonSetVisibility);
     }
 
@@ -153,7 +170,7 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
         super.linkWith(value, andDisplay);
         if (value != null)
         {
-            yahooChartDTO.yahooSymbol = value.yahooSymbol;
+            chartDTO.setSecurityCompactDTO(value);
         }
         if (andDisplay)
         {
@@ -161,9 +178,9 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
         }
     }
 
-    public void linkWith(YahooTimeSpan timeSpan, boolean andDisplay)
+    public void linkWith(ChartTimeSpan timeSpan, boolean andDisplay)
     {
-        yahooChartDTO.timeSpan = timeSpan;
+        chartDTO.setChartTimeSpan(timeSpan);
         if (andDisplay)
         {
             displayChartImage();
@@ -190,7 +207,7 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
         ImageView image = this.chartImage;
         if (image != null)
         {
-            String imageURL = yahooChartDTO.getChartUrl();
+            String imageURL = chartDTO.getChartUrl();
             this.picasso.load(imageURL).into(image);
             postChooseOtherSize();
         }
@@ -214,13 +231,14 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
 
     protected void chooseOtherSize()
     {
+        THLog.d(TAG, "chooseOtherSize");
         ImageView image = chartImage;
         if (image != null)
         {
-            YahooChartSize newChartSize = YahooChartSize.getPreferredSize(image.getWidth(), image.getHeight());
-            if (newChartSize != yahooChartDTO.size)
+            ChartSize currentSize = chartDTO.getChartSize();
+            chartDTO.setChartSize(new ChartSize(image.getWidth(), image.getHeight()));
+            if (!chartDTO.getChartSize().equals(currentSize))
             {
-                yahooChartDTO.size = newChartSize;
                 displayChartImage();
             }
         }

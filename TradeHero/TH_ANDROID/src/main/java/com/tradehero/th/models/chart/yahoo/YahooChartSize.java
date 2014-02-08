@@ -1,5 +1,7 @@
 package com.tradehero.th.models.chart.yahoo;
 
+import com.tradehero.th.models.chart.ChartSize;
+
 /**
  * Created by julien on 9/10/13
  */
@@ -24,6 +26,11 @@ public enum YahooChartSize
     public boolean equalsCode(String otherCode)
     {
         return (otherCode != null) && otherCode.equals(code);
+    }
+
+    public ChartSize getChartSize()
+    {
+        return new ChartSize(yahooPixelWidth, yahooPixelHeight);
     }
 
     public String toString()

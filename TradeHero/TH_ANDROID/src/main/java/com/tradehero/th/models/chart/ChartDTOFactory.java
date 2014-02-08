@@ -7,5 +7,8 @@ import com.tradehero.th.api.security.SecurityCompactDTO;
  */
 public interface ChartDTOFactory
 {
-    ChartDTO createChartDTO(SecurityCompactDTO securityCompactDTO, ChartTimeSpan timeSpan);
+    ChartDTO createChartDTO();
+    ChartDTO createChartDTO(SecurityCompactDTO securityCompactDTO);
+    ChartDTO createChartDTO(SecurityCompactDTO securityCompactDTO, ChartSize chartSize);
+    ChartDTO createChartDTO(SecurityCompactDTO securityCompactDTO, ChartSize chartSize, ChartTimeSpan timeSpan);
 }
