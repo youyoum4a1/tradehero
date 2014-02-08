@@ -11,6 +11,6 @@ public class YahooChartDTOFactory implements ChartDTOFactory
 {
     @Override public YahooChartDTO createChartDTO(SecurityCompactDTO securityCompactDTO, ChartTimeSpan timeSpan)
     {
-
+        throw new IllegalArgumentException("Not implemented");
     }
 }
