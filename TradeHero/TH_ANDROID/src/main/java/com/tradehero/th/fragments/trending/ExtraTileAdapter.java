@@ -202,13 +202,12 @@ public class ExtraTileAdapter extends BaseAdapter
             int[] extraTileIndexes = generateExtraTileIndexes(extraTileCount);
             List<TileType> showingTiles = generateRandomTypeForTiles(extraTileIndexes);
 
-            Pair<TileType, Integer>[] tempSections = new Pair[extraTileCount];
-            for (int i=0; i<extraTileCount; ++i)
+            Pair<TileType, Integer>[] tempMarker = new Pair[extraTileCount];
+            for (int i = 0; i < extraTileCount; ++i)
             {
-                THLog.d(TAG, String.format("Section: %d, position %d, type: %s", i, extraTileIndexes[i], showingTiles.get(i)));
-                tempSections[i] = new Pair<>(showingTiles.get(i), extraTileIndexes[i]);
+                tempMarker[i] = new Pair<>(showingTiles.get(i), extraTileIndexes[i]);
             }
-            extraTilesMarker = tempSections;
+            extraTilesMarker = tempMarker;
         }
         else
         {
@@ -219,7 +218,7 @@ public class ExtraTileAdapter extends BaseAdapter
     private List<TileType> generateRandomTypeForTiles(int[] extraTileIndexes)
     {
         List<TileType> showingTileTypes = new ArrayList<>();
-        for (TileType tileType: TileType.values())
+        for (TileType tileType : TileType.values())
         {
             if (tileType.isExtra())
             {
@@ -233,7 +232,8 @@ public class ExtraTileAdapter extends BaseAdapter
             showingTiles.add(showingTileTypes.get(i % showingTileTypes.size()));
         }
         Collections.shuffle(showingTiles);
-        return showingTiles;
+        showingTiles.set(0, TileType.Survey);
+        return Collections.unmodifiableList(showingTiles);
     }
 
     private int[] generateExtraTileIndexes(int extraTileCount)
@@ -242,7 +242,9 @@ public class ExtraTileAdapter extends BaseAdapter
         int maxTileIndex = wrappedAdapter.getCount() + extraTileCount - 1;
         int previousIndex = -1;
 
-        for (int i = 0; i < extraTileCount; ++i)
+        // first element is always at 0
+        extraTileIndexes[0] = 0;
+        for (int i = 1; i < extraTileCount; ++i)
         {
             int newTileIndex = i * EXTRA_TILE_FREQUENCY + (int) (Math.random() * EXTRA_TILE_FREQUENCY);
             if (previousIndex > 0 && (newTileIndex - previousIndex < EXTRA_TILE_MIN_DISTANCE))
@@ -254,6 +256,7 @@ public class ExtraTileAdapter extends BaseAdapter
             previousIndex = newTileIndex;
             extraTileIndexes[i] = newTileIndex;
         }
+
         return extraTileIndexes;
     }
 
