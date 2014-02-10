@@ -31,6 +31,10 @@ public class THIABSKUFetcher extends BaseSKUFetcher<
     public static final String ALERT_5 = "com.myhero.th.stockalert.subscription.t1";
     public static final String ALERT_UNLIMITED = "com.myhero.th.stockalert.subscription.t2";
 
+    public static final String SERVER_ALERT_1 = "TH.StockAlert.Subscription.0";
+    public static final String SERVER_ALERT_5 = "TH.StockAlert.Subscription.1";
+    public static final String SERVER_ALERT_UNLIMITED = "TH.StockAlert.Subscription.2";
+
     public THIABSKUFetcher()
     {
         super();
