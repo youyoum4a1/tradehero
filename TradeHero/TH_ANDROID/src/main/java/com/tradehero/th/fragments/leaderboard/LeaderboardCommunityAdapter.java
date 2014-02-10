@@ -208,7 +208,6 @@ public class LeaderboardCommunityAdapter extends ArrayDTOAdapter<LeaderboardDefK
 
     @Override protected void fineTune(int position, LeaderboardDefKey dto, LeaderboardDefView dtoView)
     {
-
     }
 
     //<editor-fold desc="For headers">
@@ -243,7 +242,7 @@ public class LeaderboardCommunityAdapter extends ArrayDTOAdapter<LeaderboardDefK
         Competition(null), // for competition
         SkillAndFriend(new LeaderboardDefMostSkilledListKey()),
         TimeRestricted(new LeaderboardDefTimePeriodListKey()),
-        SectorAndExchange(null);// all fake :v
+        SectorAndExchange(null); // all fake :v
 
         private final LeaderboardDefListKey key;
 
