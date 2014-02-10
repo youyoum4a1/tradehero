@@ -26,6 +26,7 @@ import javax.inject.Singleton;
             Runnable runOnPurchaseComplete)
     {
         final THSKUDetailsAdapter detailsAdapter = new THSKUDetailsAdapter(activity, activity.getLayoutInflater(), skuDomain);
+        detailsAdapter.setSkuDetailsComparator(new THIABProductDetailComparator<>());
         detailsAdapter.setSkuDetailsComparator(new BaseIABProductDetailsDecreasingPriceComparator<THIABProductDetail>());
         List<THIABProductDetail> desiredSkuDetails = domainInformer.getDetailsOfDomain(skuDomain);
         detailsAdapter.setItems(desiredSkuDetails);

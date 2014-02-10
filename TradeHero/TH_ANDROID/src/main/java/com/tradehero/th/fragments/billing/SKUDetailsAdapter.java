@@ -6,7 +6,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import com.tradehero.common.billing.googleplay.BaseIABProductDetail;
 import com.tradehero.th.adapters.ArrayDTOAdapter;
+import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
+import java.util.TreeSet;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/6/13 Time: 4:14 PM To change this template use File | Settings | File Templates. */
 abstract public class SKUDetailsAdapter<SKUDetailsType extends BaseIABProductDetail,
@@ -18,8 +21,7 @@ abstract public class SKUDetailsAdapter<SKUDetailsType extends BaseIABProductDet
     public static final int ITEM_TYPE_HEADER = 0;
     public static final int ITEM_TYPE_VALUE = 1;
 
-    private Comparator<SKUDetailsType> skuDetailsComparator;
-
+    protected Comparator<SKUDetailsType> skuDetailsComparator;
 
     public SKUDetailsAdapter(Context context, LayoutInflater inflater, int layoutResourceId)
     {
@@ -36,6 +38,19 @@ abstract public class SKUDetailsAdapter<SKUDetailsType extends BaseIABProductDet
         this.skuDetailsComparator = skuDetailsComparator;
     }
 
+    @Override public void setItems(List<SKUDetailsType> items)
+    {
+        if (skuDetailsComparator == null || items == null)
+        {
+            super.setItems(items);
+        }
+        else
+        {
+            TreeSet<SKUDetailsType> sorted = new TreeSet<>(skuDetailsComparator);
+            sorted.addAll(items);
+            super.setItems(new ArrayList<>(sorted));
+        }
+    }
 
     @Override public int getViewTypeCount()
     {
