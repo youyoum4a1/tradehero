@@ -233,7 +233,7 @@ public class PricingBidAskView extends LinearLayout implements DTOView<SecurityC
 
     public String getLastPriceText()
     {
-        return String.format("%s %s", SecurityUtils.DEFAULT_VIRTUAL_CASH_CURRENCY_DISPLAY,  buy ? getAskPriceText() : getBidPriceText());
+        return String.format("%s %s", securityCompactDTO == null ? "-" : securityCompactDTO.currencyDisplay,  buy ? getAskPriceText() : getBidPriceText());
     }
 
     public String getCurrencyDisplay()
