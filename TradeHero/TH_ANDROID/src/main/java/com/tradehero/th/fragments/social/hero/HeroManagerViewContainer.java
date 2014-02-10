@@ -1,9 +1,9 @@
 package com.tradehero.th.fragments.social.hero;
 
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import com.tradehero.th.R;
@@ -19,9 +19,8 @@ public class HeroManagerViewContainer
     public final TextView followCreditCount;
     public final ImageView icnCoinStack;
     public final ImageButton btnBuyMore;
-    public final Button btnGoMostSkilled;
     public final ProgressBar progressBar;
-    public final HeroListView heroListView;
+    public final ListView heroListView;
 
     public HeroManagerViewContainer(View view)
     {
@@ -31,8 +30,7 @@ public class HeroManagerViewContainer
         followCreditCount = (TextView) view.findViewById(R.id.manage_heroes_follow_credit_count);
         icnCoinStack = (ImageView) view.findViewById(R.id.icn_credit_quantity);
         btnBuyMore = (ImageButton) view.findViewById(R.id.btn_buy_more);
-        btnGoMostSkilled = (Button) view.findViewById(R.id.btn_leaderboard_most_skilled);
-        heroListView = (HeroListView) view.findViewById(R.id.heros_list);
+        heroListView = (ListView) view.findViewById(R.id.heros_list);
     }
 
     public void displayFollowCount(UserProfileDTO userProfileDTO)

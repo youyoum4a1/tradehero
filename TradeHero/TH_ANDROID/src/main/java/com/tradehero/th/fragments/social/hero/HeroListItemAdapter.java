@@ -32,6 +32,7 @@ public class HeroListItemAdapter extends ArrayDTOAdapter<HeroDTO, HeroListItemVi
     protected List<HeroDTO> activeHeroes;
     protected List<HeroDTO> inactiveHeroes;
     private WeakReference<HeroListItemView.OnHeroStatusButtonClickedListener> heroStatusButtonClickedListener = new WeakReference<>(null);
+    private WeakReference<View.OnClickListener> mostSkilledClicked = new WeakReference<>(null);
 
     public HeroListItemAdapter(Context context, LayoutInflater inflater, int heroEmptyPlaceholderResId, int heroLayoutResId, int headerActiveResId, int headerInactiveResId)
     {
@@ -44,6 +45,11 @@ public class HeroListItemAdapter extends ArrayDTOAdapter<HeroDTO, HeroListItemVi
     public void setHeroStatusButtonClickedListener(HeroListItemView.OnHeroStatusButtonClickedListener heroStatusButtonClickedListener)
     {
         this.heroStatusButtonClickedListener = new WeakReference<>(heroStatusButtonClickedListener);
+    }
+
+    public void setMostSkilledClicked(View.OnClickListener mostSkilledClicked)
+    {
+        this.mostSkilledClicked = new WeakReference<>(mostSkilledClicked);
     }
 
     @Override public boolean hasStableIds()
@@ -183,6 +189,11 @@ public class HeroListItemAdapter extends ArrayDTOAdapter<HeroDTO, HeroListItemVi
         {
             case VIEW_TYPE_EMPTY_PLACEHOLDER:
                 convertView = inflater.inflate(heroEmptyPlaceholderResId, parent, false);
+                View mostSkilledButton = convertView.findViewById(R.id.btn_leaderboard_most_skilled);
+                if (mostSkilledButton != null)
+                {
+                    mostSkilledButton.setOnClickListener(mostSkilledClicked.get());
+                }
                 break;
 
             case VIEW_TYPE_HEADER_ACTIVE:

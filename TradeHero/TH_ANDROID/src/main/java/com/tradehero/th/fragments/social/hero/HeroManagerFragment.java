@@ -48,6 +48,7 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
 
     private HeroListItemAdapter heroListAdapter;
     private HeroListItemView.OnHeroStatusButtonClickedListener heroStatusButtonClickedListener;
+    private HeroListMostSkilledClickedListener heroListMostSkilledClickedListener;
 
     // The user whose heroes we are listing
     private UserBaseKey followerId;
@@ -85,16 +86,6 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
                 }
             });
         }
-        if (this.viewContainer.btnGoMostSkilled != null)
-        {
-            this.viewContainer.btnGoMostSkilled.setOnClickListener(new View.OnClickListener()
-            {
-                @Override public void onClick(View view)
-                {
-                    handleGoMostSkilled();
-                }
-            });
-        }
 
         this.heroStatusButtonClickedListener = new HeroListItemView.OnHeroStatusButtonClickedListener()
         {
@@ -103,6 +94,7 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
                 pushTimelineFragment(heroDTO.getBaseKey());
             }
         };
+        this.heroListMostSkilledClickedListener = new HeroListMostSkilledClickedListener();
         this.heroListAdapter = new HeroListItemAdapter(
                 getActivity(),
                 getActivity().getLayoutInflater(),
@@ -111,6 +103,7 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
                 R.layout.hero_list_header,
                 R.layout.hero_list_header);
         this.heroListAdapter.setHeroStatusButtonClickedListener(this.heroStatusButtonClickedListener);
+        this.heroListAdapter.setMostSkilledClicked(this.heroListMostSkilledClickedListener);
         if (this.viewContainer.heroListView != null)
         {
             this.viewContainer.heroListView.setAdapter(this.heroListAdapter);
@@ -170,6 +163,7 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
         if (this.heroListAdapter != null)
         {
             this.heroListAdapter.setHeroStatusButtonClickedListener(null);
+            this.heroListAdapter.setMostSkilledClicked(null);
         }
         this.heroListAdapter = null;
         if (this.viewContainer.heroListView != null)
@@ -356,6 +350,14 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
             displayProgress(false);
             THLog.e(TAG, "Could not fetch heroes", error);
             THToast.show(R.string.error_fetch_hero);
+        }
+    }
+
+    private class HeroListMostSkilledClickedListener implements View.OnClickListener
+    {
+        @Override public void onClick(View view)
+        {
+            handleGoMostSkilled();
         }
     }
 }
