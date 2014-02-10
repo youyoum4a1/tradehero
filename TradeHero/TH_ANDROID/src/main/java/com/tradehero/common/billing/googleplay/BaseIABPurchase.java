@@ -15,6 +15,7 @@
 
 package com.tradehero.common.billing.googleplay;
 
+import com.tradehero.common.utils.THLog;
 import com.tradehero.th.billing.googleplay.THIABOrderId;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -58,7 +59,20 @@ public class BaseIABPurchase implements IABPurchase<IABSKU, THIABOrderId>
         this.iabSKU = new IABSKU(skuString);
         this.purchaseTime = o.optLong(JSON_KEY_PURCHASE_TIME);
         this.purchaseState = o.optInt(JSON_KEY_PURCHASE_STATE);
-        this.developerPayload = o.optString(JSON_KEY_DEVELOPER_PAY_LOAD);
+
+        // HACK
+        THLog.d(TAG, o.optString(JSON_KEY_DEVELOPER_PAY_LOAD) + " " + "{\"userId\":239284,\"portfolioId\"611105}");
+        if (o.optString(JSON_KEY_DEVELOPER_PAY_LOAD) != null &&
+                o.optString(JSON_KEY_DEVELOPER_PAY_LOAD).equals("{\"userId\":239284,\"portfolioId\"611105}"))
+        {
+            THLog.d(TAG, "HACK Fixing bad Json");
+            developerPayload = "{\"userId\":239284,\"portfolioId\":611105}";
+        }
+        else
+        {
+            this.developerPayload = o.optString(JSON_KEY_DEVELOPER_PAY_LOAD); // This is the only non-HACK line
+        }
+
         this.token = o.optString(JSON_KEY_TOKEN, o.optString(JSON_KEY_PURCHASE_TOKEN));
         this.signature = signature;
     }

@@ -11,10 +11,14 @@ public class OwnedPortfolioId  implements Comparable, DTOKey
     public final static String BUNDLE_KEY_USER_ID = OwnedPortfolioId.class.getName() + ".userId";
     public final static String BUNDLE_KEY_PORTFOLIO_ID = OwnedPortfolioId.class.getName() + ".portfolioId";
 
-    public final Integer userId;
-    public final Integer portfolioId;
+    public Integer userId;
+    public Integer portfolioId;
 
     //<editor-fold desc="Constructors">
+    public OwnedPortfolioId()
+    {
+    }
+
     public OwnedPortfolioId(final Integer userId, final Integer portfolioId)
     {
         this.userId = userId;

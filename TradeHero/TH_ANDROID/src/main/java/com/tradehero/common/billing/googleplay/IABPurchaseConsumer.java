@@ -24,10 +24,12 @@ public class IABPurchaseConsumer<
     protected IABPurchaseType purchase;
     private WeakReference<OnIABConsumptionFinishedListener<IABSKUType, IABOrderIdType, IABPurchaseType, IABException>> consumptionFinishedListener = new WeakReference<>(null);
 
+    //<editor-fold desc="Constructors">
     public IABPurchaseConsumer(Activity activity)
     {
         super(activity);
     }
+    //</editor-fold>
 
     protected Activity getActivity()
     {

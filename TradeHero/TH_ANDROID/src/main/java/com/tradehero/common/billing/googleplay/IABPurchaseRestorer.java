@@ -134,7 +134,13 @@ abstract public class IABPurchaseRestorer<
     protected void launchOneConsumeSequence(IABPurchaseType purchase)
     {
         IABActorPurchaseConsumerType billingActor = getConsumeActor();
-        if (billingActor != null)
+        if (!purchase.getType().equals(Constants.ITEM_TYPE_INAPP))
+        {
+            THLog.d(TAG, "No point in consuming this purchase");
+            // No need to add to okPurchases.add(purchase);
+            continueSequenceOrNotify();
+        }
+        else if (billingActor != null)
         {
             requestCodeConsumer = billingActor.registerConsumeFinishedListener(purchaseConsumerListener);
             billingActor.launchConsumeSequence(requestCodeConsumer, purchase);
