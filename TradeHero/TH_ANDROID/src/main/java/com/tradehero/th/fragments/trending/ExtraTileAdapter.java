@@ -11,6 +11,7 @@ import android.widget.ListAdapter;
 import android.widget.WrapperListAdapter;
 import com.tradehero.common.utils.THLog;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -28,6 +29,9 @@ public class ExtraTileAdapter extends BaseAdapter
     private final LayoutInflater inflater;
 
     private Pair<TileType, Integer>[] extraTilesMarker;
+
+    // selected marker which contain the most number of tiles and positions
+    private Pair<TileType, Integer>[] masterTilesMarker;
 
     public ExtraTileAdapter(Context context, ListAdapter wrappedAdapter)
     {
@@ -69,7 +73,8 @@ public class ExtraTileAdapter extends BaseAdapter
                 }
                 else if (position < extraTilesMarker[i].second)
                 {
-                    THLog.d(TAG, String.format("%d ---> %d", position, position - i));
+                    THLog.d(TAG, String.format("position: %d ---> position-i %d, extraTilesMarker[i].second: %d",
+                            position, position - i, extraTilesMarker[i].second));
                     return position - i;
                 }
             }
@@ -202,15 +207,31 @@ public class ExtraTileAdapter extends BaseAdapter
 
         if (extraTileCount > 0)
         {
-            int[] extraTileIndexes = generateExtraTileIndexes(extraTileCount);
-            TileType[] showingTiles = generateRandomTypeForTiles(extraTileIndexes);
-
-            Pair<TileType, Integer>[] tempMarker = new Pair[extraTileCount];
-            for (int i = 0; i < extraTileCount; ++i)
+            if (extraTilesMarker != null && extraTileCount < masterTilesMarker.length)
             {
-                tempMarker[i] = new Pair<>(showingTiles[i], extraTileIndexes[i]);
+                THLog.d(TAG, "Reusing marker!");
+                extraTilesMarker = Arrays.copyOf(masterTilesMarker, extraTileCount);
             }
-            extraTilesMarker = tempMarker;
+            else
+            {
+                int[] extraTileIndexes = generateExtraTileIndexes(extraTileCount);
+                TileType[] showingTiles = generateRandomTypeForTiles(extraTileIndexes);
+
+                Pair<TileType, Integer>[] tempMarker = new Pair[extraTileCount];
+
+
+                // TODO make it litter bit better by only generate new tile positions
+                for (int i = 0; i < extraTileCount; ++i)
+                {
+                    tempMarker[i] = new Pair<>(showingTiles[i], extraTileIndexes[i]);
+                }
+                if (masterTilesMarker != null)
+                {
+                    System.arraycopy(masterTilesMarker, 0, tempMarker, 0, masterTilesMarker.length);
+                }
+                extraTilesMarker = tempMarker;
+                masterTilesMarker = tempMarker;
+            }
         }
         else
         {
@@ -218,6 +239,7 @@ public class ExtraTileAdapter extends BaseAdapter
         }
     }
 
+    //<editor-fold desc="Completion functions for regenerateExtraTiles">
     private TileType[] generateRandomTypeForTiles(int[] extraTileIndexes)
     {
         List<TileType> showingTileTypes = new ArrayList<>();
@@ -248,6 +270,7 @@ public class ExtraTileAdapter extends BaseAdapter
     private int[] generateExtraTileIndexes(int extraTileCount)
     {
         int[] extraTileIndexes = new int[extraTileCount];
+        THLog.d(TAG, String.format("Old count: %d, extra: %d", wrappedAdapter.getCount(), extraTileCount));
         int maxTileIndex = wrappedAdapter.getCount() + extraTileCount - 1;
         int previousIndex = -1;
 
@@ -260,7 +283,8 @@ public class ExtraTileAdapter extends BaseAdapter
             {
                 newTileIndex = previousIndex + EXTRA_TILE_MIN_DISTANCE;
             }
-            newTileIndex += i; // side effect of previous tiles insertion
+            // side effect of previous tiles insertion, also there should not be any overlapping between 2 tiles random space
+            newTileIndex += i % EXTRA_TILE_MIN_DISTANCE;
             newTileIndex = Math.min(maxTileIndex, newTileIndex);
             previousIndex = newTileIndex;
             extraTileIndexes[i] = newTileIndex;
@@ -268,6 +292,7 @@ public class ExtraTileAdapter extends BaseAdapter
 
         return extraTileIndexes;
     }
+    //</editor-fold>
 
     private final DataSetObserver wrappedAdapterDataSetObserver = new DataSetObserver()
     {

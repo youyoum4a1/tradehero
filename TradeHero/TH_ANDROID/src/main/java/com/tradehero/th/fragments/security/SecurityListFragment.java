@@ -73,9 +73,13 @@ abstract public class SecurityListFragment extends BasePurchaseManagerFragment
 
         listViewScrollListener = new SecurityListFlagNearEndScrollListener(DEFAULT_VISIBLE_THRESHOLD);
 
+        // TODO this part is tricky, we have multiple screens using the same kind of data, list of security item data,
+        // trending screen is the special one, which will use wrapped adapter which provides security item data AND extra tiles such as survey,
+        // earn credit ..., the others which is competition, search stock/people will use normal adapter, which only provides security item data
+        // if listview is set to original one, the trending screen will only display normal security item
         ListAdapter adapter = createSecurityItemViewAdapter();
-            securityItemViewAdapter = (SecurityItemViewAdapter<SecurityCompactDTO>)
-                    (adapter instanceof WrapperListAdapter ? ((WrapperListAdapter) adapter).getWrappedAdapter() : adapter);
+        securityItemViewAdapter = (SecurityItemViewAdapter<SecurityCompactDTO>)
+                (adapter instanceof WrapperListAdapter ? ((WrapperListAdapter) adapter).getWrappedAdapter() : adapter);
 
         if (securityListView != null)
         {
