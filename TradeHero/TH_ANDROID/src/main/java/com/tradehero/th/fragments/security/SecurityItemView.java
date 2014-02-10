@@ -41,7 +41,7 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
     @InjectView(R.id.ic_market_close) ImageView marketCloseIcon;
     @InjectView(R.id.stock_name) TextView stockName;
     @InjectView(R.id.exchange_symbol) TextView exchangeSymbol;
-    @InjectView(R.id.profit_indicator) TextView profitIndicator;
+    @InjectView(R.id.profit_indicator) @Optional TextView profitIndicator;
     @InjectView(R.id.currency_display) TextView currencyDisplay;
     @InjectView(R.id.last_price) TextView lastPrice;
     @InjectView(R.id.country_logo) @Optional ImageView countryLogo;

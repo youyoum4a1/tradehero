@@ -19,11 +19,11 @@ public class WarrantSecurityItemView extends SecurityItemView<SecurityCompactDTO
 {
     public static final String TAG = WarrantSecurityItemView.class.getSimpleName();
 
-    @InjectView(R.id.combined_strike_price_type) TextView combinedStrikePriceType;
-    @InjectView(R.id.strike_price) TextView strikePrice;
-    @InjectView(R.id.strike_currency_display) TextView strikePriceCcy;
-    @InjectView(R.id.strike_currency_display) TextView warrantType;
-    @InjectView(R.id.expiry_date) TextView expiryDate;
+    protected TextView combinedStrikePriceType;
+    protected TextView strikePrice;
+    protected TextView strikePriceCcy;
+    protected TextView warrantType;
+    protected TextView expiryDate;
 
     @Inject protected WarrantDTOFormatter warrantDTOFormatter;
 
@@ -48,10 +48,21 @@ public class WarrantSecurityItemView extends SecurityItemView<SecurityCompactDTO
     {
         super.onFinishInflate();
 
+        initViews();
+
         if (combinedStrikePriceType != null)
         {
             combinedStrikePriceType.setSelected(true);
         }
+    }
+
+    private void initViews()
+    {
+        combinedStrikePriceType = (TextView) findViewById(R.id.combined_strike_price_type);
+        strikePrice = (TextView) findViewById(R.id.strike_price);
+        strikePriceCcy = (TextView) findViewById(R.id.strike_currency_display);
+        warrantType = (TextView) findViewById(R.id.strike_currency_display);
+        expiryDate = (TextView) findViewById(R.id.expiry_date);
     }
 
     @Override public void linkWith(SecurityCompactDTO securityCompactDTO, boolean andDisplay)
