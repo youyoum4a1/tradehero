@@ -296,12 +296,12 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
 
     public void storeImageUrlInImageViews()
     {
-        if (stockLogo != null)
+        if (stockLogo != null && this.securityCompactDTO != null)
         {
             stockLogo.setTag(R.string.image_url, this.securityCompactDTO.imageBlobUrl);
         }
 
-        if (stockBgLogo != null)
+        if (stockBgLogo != null && this.securityCompactDTO != null)
         {
             stockBgLogo.setTag(R.string.image_url, this.securityCompactDTO.imageBlobUrl);
         }
