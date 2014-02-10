@@ -15,7 +15,6 @@ public abstract class DTOListCacheAdapter<
         >
         extends DTOAdapter<DTOKeyType, DTOViewType>
 {
-
     public DTOListCacheAdapter(Context context, int layoutResourceId)
     {
         super(context, LayoutInflater.from(context), layoutResourceId);

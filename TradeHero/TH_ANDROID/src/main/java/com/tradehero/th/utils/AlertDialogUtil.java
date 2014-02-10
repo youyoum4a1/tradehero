@@ -60,6 +60,7 @@ import javax.inject.Singleton;
                 .setNegativeButton(cancelRes, cancelListener);
         AlertDialog alertDialog = alertDialogBuilder.create();
         alertDialog.show();
+        alertDialog.setCanceledOnTouchOutside(true);
         return alertDialog;
     }
 
@@ -102,6 +103,7 @@ import javax.inject.Singleton;
                 .setPositiveButton(okResId, okClickListener);
         AlertDialog alertDialog = alertDialogBuilder.create();
         alertDialog.show();
+        alertDialog.setCanceledOnTouchOutside(true);
         return alertDialog;
     }
 }

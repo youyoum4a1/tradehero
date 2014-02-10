@@ -28,4 +28,11 @@ public class IABSKU implements ProductIdentifier
     {
         return identifier == null ? 0 : identifier.hashCode();
     }
+
+    @Override public String toString()
+    {
+        return "IABSKU{" +
+                "identifier='" + identifier + '\'' +
+                '}';
+    }
 }

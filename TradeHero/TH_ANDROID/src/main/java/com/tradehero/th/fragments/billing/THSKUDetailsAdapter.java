@@ -14,6 +14,7 @@ public class THSKUDetailsAdapter extends SKUDetailsAdapter<THIABProductDetail, S
 
     private String skuDomain;
 
+    //<editor-fold desc="Constructors">
     public THSKUDetailsAdapter(Context context, LayoutInflater inflater, String skuDomain)
     {
         super(context, inflater, R.layout.store_sku_detail);
@@ -25,6 +26,7 @@ public class THSKUDetailsAdapter extends SKUDetailsAdapter<THIABProductDetail, S
         super(context, inflater, layoutResourceId);
         this.skuDomain = skuDomain;
     }
+    //</editor-fold>
 
     @Override protected View getHeaderView(int position, View convertView, ViewGroup viewGroup)
     {

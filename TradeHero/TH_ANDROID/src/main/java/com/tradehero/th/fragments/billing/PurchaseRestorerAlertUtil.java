@@ -55,6 +55,11 @@ import javax.inject.Singleton;
         {
             alertDialog = popNoPurchaseToRestore(context);
         }
+
+        if (alertDialog != null)
+        {
+            alertDialog.setCanceledOnTouchOutside(true);
+        }
         THLog.d(TAG, "Restored purchases: " + countOk + ", failed report: " + countReportFailed + ", failed consume: " + countConsumeFailed);
         return alertDialog;
     }

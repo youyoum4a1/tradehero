@@ -16,6 +16,7 @@ public class StoreSKUDetailView extends SKUDetailView<THIABProductDetail>
     protected TextView furtherDescription;
     protected ImageView icRibbon;
 
+
     //<editor-fold desc="Constructors">
     public StoreSKUDetailView(Context context)
     {
