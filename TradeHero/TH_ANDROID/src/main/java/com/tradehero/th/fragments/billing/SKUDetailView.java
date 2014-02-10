@@ -16,6 +16,9 @@ public class SKUDetailView<SKUDetailsType extends BaseIABProductDetail>
 {
     public static final String TAG = SKUDetailView.class.getSimpleName();
 
+    public static int BG_COLOR_DISABLED_RES_ID = R.color.gray_2;
+    public static int BG_COLOR_ENABLED_RES_ID = R.color.gray_3;
+
     protected RadioButton hintSelected;
     protected View priceAndText;
     protected TextView skuPrice;
@@ -55,6 +58,12 @@ public class SKUDetailView<SKUDetailsType extends BaseIABProductDetail>
         deliverableText = (TextView) findViewById(R.id.text_deliverable);
     }
 
+    public void setEnabled(boolean enabled)
+    {
+        super.setEnabled(enabled);
+        displayHintEnabled();
+    }
+
     public boolean isSelected()
     {
         return selected;
@@ -82,9 +91,15 @@ public class SKUDetailView<SKUDetailsType extends BaseIABProductDetail>
 
     public void display()
     {
+        displayHintEnabled();
         displayHintSelected();
         displayPrice();
         displayDeliverableText();
+    }
+
+    protected void displayHintEnabled()
+    {
+        setBackgroundColor(getResources().getColor(isEnabled() ? BG_COLOR_ENABLED_RES_ID : BG_COLOR_DISABLED_RES_ID));
     }
 
     protected void displayHintSelected()

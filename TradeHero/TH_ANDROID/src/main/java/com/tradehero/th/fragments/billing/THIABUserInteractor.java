@@ -27,6 +27,7 @@ import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.api.users.UserProfileDTOUtil;
 import com.tradehero.th.base.Application;
 import com.tradehero.th.billing.PurchaseReporter;
 import com.tradehero.th.billing.googleplay.IABAlertDialogSKUUtil;
@@ -50,6 +51,7 @@ import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
 import java.lang.ref.WeakReference;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
@@ -86,6 +88,7 @@ public class THIABUserInteractor
 
     @Inject protected IABAlertDialogSKUUtil iabAlertDialogSKUUtil;
     @Inject protected PurchaseRestorerAlertUtil purchaseRestorerAlertUtil;
+    @Inject protected UserProfileDTOUtil userProfileDTOUtil;
 
     protected BillingPurchaser.OnPurchaseFinishedListener<
         IABSKU,
@@ -632,8 +635,14 @@ public class THIABUserInteractor
                     {
                         @Override public void run()
                         {
-                            iabAlertDialogSKUUtil.popBuyDialog(activityWeak.get(), getBillingActor(), THIABUserInteractor.this, skuDomain, titleResId,
-                                    runOnPurchaseComplete);
+                            iabAlertDialogSKUUtil.popBuyDialog(
+                                    activityWeak.get(),
+                                    getBillingActor(),
+                                    THIABUserInteractor.this,
+                                    skuDomain,
+                                    titleResId,
+                                    runOnPurchaseComplete,
+                                    getEnabledSKUs());
                         }
                     });
                 }
@@ -641,6 +650,25 @@ public class THIABUserInteractor
         });
     }
     //</editor-fold>
+
+    public HashMap<IABSKU, Boolean> getEnabledSKUs()
+    {
+        if (userProfileDTO == null)
+        {
+            return null;
+        }
+        List<IABSKU> alertSkus = userProfileDTOUtil.getSubscribedAlerts(userProfileDTO);
+        if (alertSkus == null)
+        {
+            return null;
+        }
+        HashMap<IABSKU, Boolean> toDisable = new HashMap<>();
+        for (IABSKU sku: alertSkus)
+        {
+            toDisable.put(sku, false);
+        }
+        return toDisable;
+    }
 
     //<editor-fold desc="IABAlertDialogUtil.OnDialogSKUDetailsClickListener">
     @Override public void onDialogSKUDetailsClicked(DialogInterface dialogInterface, int position, THIABProductDetail skuDetails, Runnable runOnPurchaseComplete)

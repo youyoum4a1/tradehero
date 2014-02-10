@@ -3,8 +3,10 @@ package com.tradehero.th.billing.googleplay;
 import android.app.Activity;
 import android.app.AlertDialog;
 import com.tradehero.common.billing.googleplay.BaseIABProductDetailsDecreasingPriceComparator;
+import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.th.fragments.billing.THSKUDetailsAdapter;
 import java.util.List;
+import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
@@ -25,8 +27,21 @@ import javax.inject.Singleton;
             int titleResId,
             Runnable runOnPurchaseComplete)
     {
+        return popBuyDialog(activity, domainInformer, clickListener, skuDomain, titleResId, runOnPurchaseComplete, null);
+    }
+
+    public AlertDialog popBuyDialog(
+            Activity activity,
+            SKUDomainInformer domainInformer,
+            IABAlertDialogUtil.OnDialogSKUDetailsClickListener<THIABProductDetail> clickListener,
+            String skuDomain,
+            int titleResId,
+            Runnable runOnPurchaseComplete,
+            Map<IABSKU, Boolean> enabledItems)
+    {
         final THSKUDetailsAdapter detailsAdapter = new THSKUDetailsAdapter(activity, activity.getLayoutInflater(), skuDomain);
         detailsAdapter.setSkuDetailsComparator(new THIABProductDetailComparator<>());
+        detailsAdapter.setEnabledItems(enabledItems);
         detailsAdapter.setSkuDetailsComparator(new BaseIABProductDetailsDecreasingPriceComparator<THIABProductDetail>());
         List<THIABProductDetail> desiredSkuDetails = domainInformer.getDetailsOfDomain(skuDomain);
         detailsAdapter.setItems(desiredSkuDetails);

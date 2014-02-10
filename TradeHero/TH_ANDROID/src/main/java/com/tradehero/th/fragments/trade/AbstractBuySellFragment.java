@@ -61,6 +61,7 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
 
     @Inject protected Lazy<UserProfileCache> userProfileCache;
     protected UserProfileDTO userProfileDTO;
+    @Inject protected UserProfileDTOUtil userProfileDTOUtil;
     protected DTOCache.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
     protected DTOCache.GetOrFetchTask<UserBaseKey, UserProfileDTO> fetchUserProfileTask;
 
@@ -222,7 +223,7 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
 
     public Integer getMaxPurchasableShares()
     {
-        return UserProfileDTOUtil.getMaxPurchasableShares(this.userProfileDTO, this.quoteDTO);
+        return userProfileDTOUtil.getMaxPurchasableShares(this.userProfileDTO, this.quoteDTO);
     }
 
     public Integer getMaxSellableShares()
