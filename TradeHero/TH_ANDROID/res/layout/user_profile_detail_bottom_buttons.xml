@@ -14,7 +14,7 @@
 
     <!--Followers-->
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:layout_weight="1"
@@ -38,7 +38,7 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:gravity="center_vertical"
-          android:layout_marginTop="-5dip"
+          android:layout_marginTop="0dp"
           android:text="@string/followers"
           android:textColor="@color/text_gray_normal"
           android:textSize="12sp"
@@ -47,7 +47,7 @@
 
     <!--Heroes-->
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:layout_weight="1"
@@ -69,7 +69,7 @@
       <TextView
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:layout_marginTop="-5dip"
+          android:layout_marginTop="0dp"
           android:gravity="center_vertical"
           android:text="@string/heroes"
           android:textColor="@color/text_gray_normal"
@@ -81,7 +81,7 @@
 
     <!--Trades-->
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:layout_weight="1"
@@ -104,7 +104,7 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:gravity="center_vertical"
-          android:layout_marginTop="-5dip"
+          android:layout_marginTop="0dp"
           android:text="@string/trades"
           android:textColor="@color/text_gray_normal"
           android:textSize="12sp"
@@ -115,7 +115,7 @@
 
     <!--Exchanges-->
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:layout_weight="1"
@@ -130,7 +130,6 @@
           android:textSize="20sp"
           android:textStyle="bold"
           android:drawableTop="@drawable/icn_exchanges"
-          android:drawablePadding="-5dp"
           tools:text="2"
           />
 
