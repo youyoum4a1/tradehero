@@ -25,4 +25,7 @@
   <color name="transparent">@android:color/transparent</color>
   <color name="divider_gray">#80aaaaaa</color>
   <color name="orange">@android:color/holo_orange_light</color>
+  <!--<color name="splash_background_solid">#4699c4</color>-->
+  <color name="splash_background_solid">#58b0dd</color>
+  <color name="follow_button_background">#1376FB</color>
 </resources>

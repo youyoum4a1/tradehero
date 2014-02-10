@@ -17,6 +17,7 @@
   <style name="AppBaseTheme.NoActionBar" parent="TradeHero">
     <item name="android:windowActionBar">false</item>
     <item name="android:windowNoTitle">true</item>
+    <item name="android:background">@color/splash_background_solid</item>
   </style>
 
   <style name="TradeHero.Menu.ItemTextIcon" parent="TextAppearance.Sherlock.Light.SearchResult">
@@ -130,5 +131,19 @@
     <item name="android:background">@drawable/list_item_bg</item>
     <item name="android:minHeight">48dp</item>
   </style>
+
+  <style name="TradeHero.Leaderboard" parent="TradeHero">
+
+  </style>
+  <style name="TradeHero.Leaderboard.ActionButton">
+    <item name="android:textViewStyle">@style/TradeHero.Leaderboard.ActionButton.TextStyle</item>
+  </style>
+  <style name="TradeHero.Leaderboard.ActionButton.TextStyle">
+    <item name="android:background">@drawable/leaderboard_user_item_border_background</item>
+    <item name="android:padding">@dimen/leaderboard_user_item_action_button_padding</item>
+    <item name="android:layout_marginRight">@dimen/leaderboard_user_item_action_button_margin</item>
+    <item name="android:layout_marginLeft">@dimen/leaderboard_user_item_action_button_margin</item>
+  </style>
+
   <color name="actionbar_menu_text_color">@color/white</color>
 </resources>

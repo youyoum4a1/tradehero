@@ -82,12 +82,6 @@ public class SplashActivity extends SherlockActivity
         }
     }
 
-    @Override protected void onActivityResult(int requestCode, int resultCode, Intent data)
-    {
-        super.onActivityResult(requestCode, resultCode, data);
-        THLog.d(TAG, "onActivityResult " + requestCode + ", " + resultCode + ", " + data);
-    }
-
     @Override protected void onDestroy()
     {
         initialAsyncTask = null;
