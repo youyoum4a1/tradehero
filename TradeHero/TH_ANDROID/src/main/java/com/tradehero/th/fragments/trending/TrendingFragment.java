@@ -20,15 +20,21 @@ import com.tradehero.th.api.market.ExchangeDTOList;
 import com.tradehero.th.api.market.ExchangeListType;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.TrendingSecurityListType;
+import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.base.Navigator;
 import com.tradehero.th.fragments.security.SecurityListFragment;
 import com.tradehero.th.fragments.security.SimpleSecurityItemViewAdapter;
+import com.tradehero.th.fragments.settings.InviteFriendFragment;
 import com.tradehero.th.fragments.trade.BuySellFragment;
 import com.tradehero.th.fragments.trending.filter.TrendingFilterSelectorView;
 import com.tradehero.th.fragments.trending.filter.TrendingFilterTypeBasicDTO;
 import com.tradehero.th.fragments.trending.filter.TrendingFilterTypeDTO;
 import com.tradehero.th.fragments.trending.filter.TrendingFilterTypeDTOFactory;
+import com.tradehero.th.fragments.web.WebViewFragment;
 import com.tradehero.th.models.market.ExchangeDTODescriptionNameComparator;
 import com.tradehero.th.persistence.market.ExchangeListCache;
+import com.tradehero.th.persistence.user.UserProfileCache;
 import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -43,7 +49,9 @@ public class TrendingFragment extends SecurityListFragment
     public final static int SECURITY_ID_LIST_LOADER_ID = 2532;
 
     @Inject TrendingFilterTypeDTOFactory trendingFilterTypeDTOFactory;
-    @Inject protected Lazy<ExchangeListCache> exchangeListCache;
+    @Inject Lazy<ExchangeListCache> exchangeListCache;
+    @Inject Lazy<UserProfileCache> userProfileCache;
+    @Inject CurrentUserId currentUserId;
 
     private TrendingFilterSelectorView filterSelectorView;
     private TrendingOnFilterTypeChangedListener onFilterTypeChangedListener;
@@ -252,12 +260,71 @@ public class TrendingFragment extends SecurityListFragment
             Object item = parent.getItemAtPosition(position);
             if (item instanceof SecurityCompactDTO)
             {
-                SecurityCompactDTO securityCompactDTO = (SecurityCompactDTO) item;
-                Bundle args = new Bundle();
-                args.putBundle(BuySellFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityCompactDTO.getSecurityId().getArgs());
-                navigator.pushFragment(BuySellFragment.class, args);
+                handleSecurityItemOnClick((SecurityCompactDTO) item);
+            }
+            else if (item instanceof TileType)
+            {
+                handleExtraTileItemOnClick((TileType) item);
             }
         }
+    }
+
+    private void handleExtraTileItemOnClick(TileType item)
+    {
+        switch (item)
+        {
+            case EarnCredit:
+                handleEarnCreditItemOnClick();
+                break;
+            case ExtraCash:
+                handleExtraCashItemOnClick();
+                break;
+            case ResetPortfolio:
+                handleResetPortfolioItemOnClick();
+                break;
+            case Survey:
+                handleSurveyItemOnClick();
+                break;
+        }
+    }
+
+    private void handleSurveyItemOnClick()
+    {
+        UserProfileDTO userProfileDTO = userProfileCache.get().get(currentUserId.toUserBaseKey());
+        if (userProfileDTO != null && userProfileDTO.activeSurveyURL != null)
+        {
+            Bundle bundle = new Bundle();
+            bundle.putString(WebViewFragment.BUNDLE_KEY_URL, userProfileDTO.activeSurveyURL);
+            getNavigator().pushFragment(WebViewFragment.class, bundle, Navigator.PUSH_UP_FROM_BOTTOM);
+        }
+    }
+
+    private void handleResetPortfolioItemOnClick()
+    {
+        if (userInteractor != null)
+        {
+            userInteractor.conditionalPopBuyResetPortfolio();
+        }
+    }
+
+    private void handleExtraCashItemOnClick()
+    {
+        if (userInteractor != null)
+        {
+            userInteractor.conditionalPopBuyVirtualDollars();
+        }
+    }
+
+    private void handleEarnCreditItemOnClick()
+    {
+        getNavigator().pushFragment(InviteFriendFragment.class);
+    }
+
+    private void handleSecurityItemOnClick(SecurityCompactDTO securityCompactDTO)
+    {
+        Bundle args = new Bundle();
+        args.putBundle(BuySellFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityCompactDTO.getSecurityId().getArgs());
+        navigator.pushFragment(BuySellFragment.class, args);
     }
 
     private class TrendingOnFilterTypeChangedListener implements TrendingFilterSelectorView.OnFilterTypeChangedListener
