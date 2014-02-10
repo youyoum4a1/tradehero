@@ -40,10 +40,10 @@ public class PortfolioListItemView extends RelativeLayout implements DTOView<Dis
     public static final String TAG = PortfolioListItemView.class.getSimpleName();
     private static int countUp = 0;
 
-    @InjectView(R.id.follower_profile_picture) private ImageView userIcon;
-    @InjectView(R.id.portfolio_title) private TextView title;
-    @InjectView(R.id.portfolio_description) private TextView description;
-    @InjectView(R.id.following_image) private ImageView followingStamp;
+    @InjectView(R.id.follower_profile_picture) protected ImageView userIcon;
+    @InjectView(R.id.portfolio_title) protected TextView title;
+    @InjectView(R.id.portfolio_description) protected TextView description;
+    @InjectView(R.id.following_image) protected ImageView followingStamp;
 
     private DisplayablePortfolioDTO displayablePortfolioDTO;
     private GetPositionsDTO getPositionsDTO;
