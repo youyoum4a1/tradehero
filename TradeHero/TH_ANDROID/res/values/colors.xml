@@ -28,4 +28,7 @@
   <!--<color name="splash_background_solid">#4699c4</color>-->
   <color name="splash_background_solid">#58b0dd</color>
   <color name="follow_button_background">#1376FB</color>
+
+  <color name="actionbar_menu_text_color">@color/white</color>
+  <color name="leaderboard_user_item_text_color">#4C566B</color>
 </resources>

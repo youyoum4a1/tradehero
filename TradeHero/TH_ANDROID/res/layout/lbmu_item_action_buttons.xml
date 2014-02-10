@@ -3,9 +3,10 @@
 <merge xmlns:android="http://schemas.android.com/apk/res/android">
   <LinearLayout
       android:id="@+id/leaderboard_user_item_action_buttons"
-      android:layout_width="wrap_content"
+      android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:orientation="horizontal"
+      android:gravity="center_horizontal"
       android:layout_marginTop="10dp"
       >
     <TextView
@@ -13,30 +14,22 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/profile"
-        android:background="@drawable/leaderboard_user_item_border_background"
-        android:padding="@dimen/leaderboard_user_item_action_button_padding"
-        android:layout_marginRight="@dimen/leaderboard_user_item_action_button_margin"
-        android:layout_marginLeft="@dimen/leaderboard_user_item_action_button_margin"
+        style="@style/Leaderboard_ActionButton"
         />
     <TextView
         android:id="@+id/leaderboard_user_item_open_positions_list"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/positions"
-        android:background="@drawable/leaderboard_user_item_border_background"
-        android:padding="@dimen/leaderboard_user_item_action_button_padding"
-        android:layout_marginRight="@dimen/leaderboard_user_item_action_button_margin"
-        android:layout_marginLeft="@dimen/leaderboard_user_item_action_button_margin"
+        style="@style/Leaderboard_ActionButton"
         />
 
-    <ImageButton
+    <TextView
         android:id="@+id/leaderboard_user_item_follow"
         android:layout_width="wrap_content"
-        android:layout_height="@dimen/temp_leaderboard_user_item_action_buttons_height"
-        android:src="@drawable/follow_user"
-        android:scaleType="fitCenter"
-        android:background="@null"
-        android:contentDescription="@null"
+        android:layout_height="wrap_content"
+        android:text="@string/follow"
+        style="@style/Leaderboard_ActionButton_Blue"
         />
   </LinearLayout>
 </merge>
