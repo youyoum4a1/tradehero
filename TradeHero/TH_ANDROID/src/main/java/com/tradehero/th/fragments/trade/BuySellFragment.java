@@ -59,6 +59,7 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.billing.googleplay.THIABActor;
 import com.tradehero.th.fragments.alert.AlertCreateFragment;
 import com.tradehero.th.fragments.alert.AlertEditFragment;
+import com.tradehero.th.fragments.alert.BaseAlertEditFragment;
 import com.tradehero.th.fragments.billing.THIABUserInteractor;
 import com.tradehero.th.fragments.security.BuySellBottomStockPagerAdapter;
 import com.tradehero.th.fragments.security.StockInfoFragment;
@@ -331,6 +332,7 @@ public class BuySellFragment extends AbstractBuySellFragment
         Set<MenuOwnedPortfolioId> newMenus = new TreeSet<>();
 
         OwnedPortfolioId defaultOwnedPortfolioId = portfolioCompactListCache.getDefaultPortfolio(currentUserId.toUserBaseKey());
+        // TODO fix issue whereby defaultOwnedPortfolioId is null
         PortfolioCompactDTO defaultPortfolioCompactDTO = portfolioCompactCache.get(defaultOwnedPortfolioId.getPortfolioId());
         newMenus.add(new MenuOwnedPortfolioId(defaultOwnedPortfolioId, defaultPortfolioCompactDTO));
 
@@ -1144,6 +1146,7 @@ public class BuySellFragment extends AbstractBuySellFragment
         if (securityAlertAssistant.isPopulated())
         {
             Bundle args = new Bundle();
+            args.putBundle(BaseAlertEditFragment.BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE, getApplicablePortfolioId().getArgs());
             AlertId alertId = securityAlertAssistant.getAlertId(securityId);
             if (alertId != null)
             {

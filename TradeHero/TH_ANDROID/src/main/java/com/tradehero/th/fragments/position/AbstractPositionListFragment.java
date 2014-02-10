@@ -468,6 +468,7 @@ abstract public class AbstractPositionListFragment<
         if (securityId != null)
         {
             Bundle args = new Bundle();
+            args.putBundle(AlertCreateFragment.BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE, getApplicablePortfolioId().getArgs());
             args.putBundle(AlertCreateFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
             getNavigator().pushFragment(AlertCreateFragment.class, args);
         }

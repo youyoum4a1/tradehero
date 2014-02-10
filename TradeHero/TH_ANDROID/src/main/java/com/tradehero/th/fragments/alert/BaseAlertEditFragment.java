@@ -30,10 +30,11 @@ import com.tradehero.th.api.alert.AlertFormDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.misc.callback.THCallback;
 import com.tradehero.th.misc.callback.THResponse;
 import com.tradehero.th.misc.exception.THException;
+import com.tradehero.th.models.alert.SecurityAlertCountingHelper;
 import com.tradehero.th.network.service.AlertServiceWrapper;
 import com.tradehero.th.persistence.alert.AlertCompactCache;
 import com.tradehero.th.persistence.alert.AlertCompactListCache;
@@ -48,7 +49,7 @@ import retrofit.Callback;
 /**
  * Created with IntelliJ IDEA. User: tho Date: 1/28/14 Time: 5:18 PM Copyright (c) TradeHero
  */
-abstract public class BaseAlertEditFragment extends DashboardFragment
+abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
 {
     public static final String TAG = BaseAlertEditFragment.class.getSimpleName();
     @InjectView(R.id.stock_logo) ImageView stockLogo;
@@ -82,6 +83,7 @@ abstract public class BaseAlertEditFragment extends DashboardFragment
     protected Callback<AlertCompactDTO> alertUpdateCallback;
     @Inject protected Picasso picasso;
     @Inject protected CurrentUserId currentUserId;
+    @Inject protected SecurityAlertCountingHelper securityAlertCountingHelper;
 
     protected SecurityId securityId;
     protected AlertDTO alertDTO;
@@ -197,15 +199,21 @@ abstract public class BaseAlertEditFragment extends DashboardFragment
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.alert_edit_fragment, container, false);
-        ButterKnife.inject(this, view);
+        initViews(view);
         return view;
+    }
+
+    @Override protected void initViews(View view)
+    {
+        ButterKnife.inject(this, view);
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.alert_edit_menu, menu);
-        getSherlockActivity().getActionBar().setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_SHOW_TITLE);
+        getSherlockActivity().getActionBar().setDisplayOptions(
+                ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_SHOW_TITLE);
         displayActionBarTitle();
     }
 
@@ -222,7 +230,7 @@ abstract public class BaseAlertEditFragment extends DashboardFragment
         switch (item.getItemId())
         {
             case R.id.alert_menu_save:
-                saveAlert();
+                conditionalSaveAlert();
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -290,6 +298,29 @@ abstract public class BaseAlertEditFragment extends DashboardFragment
             }
         }
         return alertFormDTO;
+    }
+
+    protected void conditionalSaveAlert()
+    {
+        AlertFormDTO alertFormDTO = getFormDTO();
+        if (alertFormDTO == null)
+        {
+            THToast.show(R.string.error_alert_insufficient_info);
+        }
+        else if (securityAlertCountingHelper.getAlertSlots(currentUserId.toUserBaseKey()).freeAlertSlots <= 0)
+        {
+            userInteractor.conditionalPopBuyStockAlerts(new Runnable()
+            {
+                @Override public void run()
+                {
+                    saveAlert();
+                }
+            });
+        }
+        else
+        {
+            saveAlert();
+        }
     }
 
     protected void saveAlert()
