@@ -145,7 +145,7 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
 
     public void linkWith(SecurityCompactDTOType securityCompactDTO, boolean andDisplay)
     {
-        if (this.securityCompactDTO != null && securityCompactDTO.name.equals(this.securityCompactDTO.name))
+        if (this.securityCompactDTO != null && securityCompactDTO != null && securityCompactDTO.name.equals(this.securityCompactDTO.name))
         {
             return;
             // Note that this prevents updating values inside the securityCompactDTO
