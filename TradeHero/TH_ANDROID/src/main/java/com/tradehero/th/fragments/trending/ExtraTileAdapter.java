@@ -25,7 +25,6 @@ public class ExtraTileAdapter extends BaseAdapter
     private static final String TAG = ExtraTileAdapter.class.getName();
 
     private final ListAdapter wrappedAdapter;
-    private static Object DUMMY_ITEM = new Object();
     private final LayoutInflater inflater;
 
     private Pair<TileType, Integer>[] extraTilesMarker;

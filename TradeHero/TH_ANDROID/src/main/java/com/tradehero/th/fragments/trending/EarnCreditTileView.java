@@ -49,7 +49,7 @@ public class EarnCreditTileView extends ImageView
 
         // no nid to clean on detach, coz this view's content will never change
         picasso.get()
-                .load(R.drawable.tile_trending_low_cash)
+                .load(R.drawable.tile_trending_refer)
                 .transform(backgroundTransformation)
                 .fit()
                 .into(this);
