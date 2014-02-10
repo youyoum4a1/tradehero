@@ -6,7 +6,7 @@
     android:id="@+id/title"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/gray_normal"
+    android:background="@null"
     android:textAllCaps="true"
     tools:text="Active/Inactive stock alerts"
     android:padding="5dp"
