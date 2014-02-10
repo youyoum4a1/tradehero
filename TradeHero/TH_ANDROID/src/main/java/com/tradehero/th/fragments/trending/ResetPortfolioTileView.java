@@ -50,6 +50,7 @@ public class ResetPortfolioTileView extends ImageView
         // no nid to clean on detach, coz this view's content will never change
         picasso.get()
                 .load(R.drawable.tile_trending_reset_portfolio)
+                .placeholder(R.drawable.white_rounded_background_xml)
                 .transform(backgroundTransformation)
                 .fit()
                 .into(this);

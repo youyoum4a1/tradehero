@@ -6,6 +6,7 @@ import android.widget.ImageView;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 import com.tradehero.common.persistence.DTOCache;
+import com.tradehero.th.R;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
@@ -81,6 +82,7 @@ public class SurveyTileView extends ImageView
         {
             picasso.get()
                     .load(userProfileDTO.activeSurveyImageURL)
+                    .placeholder(R.drawable.white_rounded_background_xml)
                     .transform(backgroundTransformation)
                     .fit()
                     .into(this);
