@@ -320,16 +320,21 @@ abstract public class AbstractPositionListFragment<
     protected void restoreExpandingStates()
     {
         positionItemAdapter.setExpandedStatesPerPosition(expandedPositions);
-        getView().post(
-                new Runnable()
-                {
-                    @Override public void run()
+
+        // temporary fix! reason to check if the view is null: sometime dto is received too fast, before onCreateView ....
+        if (getView() != null)
+        {
+            getView().post(
+                    new Runnable()
                     {
-                        positionItemAdapter.notifyDataSetChanged();
-                        positionsListView.setSelection(firstPositionVisible);
+                        @Override public void run()
+                        {
+                            positionItemAdapter.notifyDataSetChanged();
+                            positionsListView.setSelection(firstPositionVisible);
+                        }
                     }
-                }
-        );
+            );
+        }
     }
 
     public void display()

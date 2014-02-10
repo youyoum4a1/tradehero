@@ -69,7 +69,7 @@ public abstract class LoaderDTOAdapter<
 
             @Override public void onLoaderReset(Loader<List<DTOType>> loader)
             {
-                if (loader instanceof ListLoader)
+                if (loader instanceof ListLoader && callback != null)
                 {
                     callback.onLoaderReset((ListLoader<DTOType>)loader);
                 }
