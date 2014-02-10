@@ -130,8 +130,9 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
         if (chartImage != null)
         {
             chartImage.setOnClickListener(null);
-            this.chartImage = null;
         }
+        this.chartImage = null;
+
         TimeSpanButtonSet buttonSet = this.timeSpanButtonSet;
         if (buttonSet != null)
         {

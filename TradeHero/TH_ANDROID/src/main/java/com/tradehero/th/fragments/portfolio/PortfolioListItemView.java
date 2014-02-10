@@ -5,6 +5,8 @@ import android.util.AttributeSet;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 import com.tradehero.common.milestone.Milestone;
@@ -38,10 +40,10 @@ public class PortfolioListItemView extends RelativeLayout implements DTOView<Dis
     public static final String TAG = PortfolioListItemView.class.getSimpleName();
     private static int countUp = 0;
 
-    private ImageView userIcon;
-    private TextView title;
-    private TextView description;
-    private ImageView followingStamp;
+    @InjectView(R.id.follower_profile_picture) private ImageView userIcon;
+    @InjectView(R.id.portfolio_title) private TextView title;
+    @InjectView(R.id.portfolio_description) private TextView description;
+    @InjectView(R.id.following_image) private ImageView followingStamp;
 
     private DisplayablePortfolioDTO displayablePortfolioDTO;
     private GetPositionsDTO getPositionsDTO;
@@ -82,7 +84,7 @@ public class PortfolioListItemView extends RelativeLayout implements DTOView<Dis
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
-        initViews();
+        ButterKnife.inject(this);
         DaggerUtils.inject(this);
         if (userIcon != null)
         {
@@ -90,14 +92,6 @@ public class PortfolioListItemView extends RelativeLayout implements DTOView<Dis
                     .transform(userImageTransformation)
                     .into(userIcon);
         }
-    }
-
-    private void initViews()
-    {
-        userIcon = (ImageView) findViewById(R.id.follower_profile_picture);
-        title = (TextView) findViewById(R.id.portfolio_title);
-        description = (TextView) findViewById(R.id.portfolio_description);
-        followingStamp = (ImageView) findViewById(R.id.following_image);
     }
 
     @Override protected void onAttachedToWindow()
