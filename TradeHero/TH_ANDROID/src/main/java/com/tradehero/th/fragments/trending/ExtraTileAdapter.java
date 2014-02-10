@@ -69,12 +69,15 @@ public class ExtraTileAdapter extends BaseAdapter
                 }
                 else if (position < extraTilesMarker[i].second)
                 {
+                    THLog.d(TAG, String.format("%d ---> %d", position, position - i));
                     return position - i;
                 }
             }
+
+            THLog.d(TAG, String.format("%d ---> %d (extraTilesMarker)", position, position - extraTilesMarker.length));
             return position - extraTilesMarker.length;
         }
-        throw new IllegalAccessError("Sections should be initialized");
+        throw new IllegalAccessError("extra tile marker should be initialized");
     }
 
     @Override public Object getItem(int position)
@@ -200,12 +203,12 @@ public class ExtraTileAdapter extends BaseAdapter
         if (extraTileCount > 0)
         {
             int[] extraTileIndexes = generateExtraTileIndexes(extraTileCount);
-            List<TileType> showingTiles = generateRandomTypeForTiles(extraTileIndexes);
+            TileType[] showingTiles = generateRandomTypeForTiles(extraTileIndexes);
 
             Pair<TileType, Integer>[] tempMarker = new Pair[extraTileCount];
             for (int i = 0; i < extraTileCount; ++i)
             {
-                tempMarker[i] = new Pair<>(showingTiles.get(i), extraTileIndexes[i]);
+                tempMarker[i] = new Pair<>(showingTiles[i], extraTileIndexes[i]);
             }
             extraTilesMarker = tempMarker;
         }
@@ -215,7 +218,7 @@ public class ExtraTileAdapter extends BaseAdapter
         }
     }
 
-    private List<TileType> generateRandomTypeForTiles(int[] extraTileIndexes)
+    private TileType[] generateRandomTypeForTiles(int[] extraTileIndexes)
     {
         List<TileType> showingTileTypes = new ArrayList<>();
         for (TileType tileType : TileType.values())
@@ -227,13 +230,19 @@ public class ExtraTileAdapter extends BaseAdapter
         }
 
         List<TileType> showingTiles = new ArrayList<>();
+
         for (int i = 0; i < extraTileIndexes.length; ++i)
         {
             showingTiles.add(showingTileTypes.get(i % showingTileTypes.size()));
         }
+        // and suffer the tile
         Collections.shuffle(showingTiles);
+        // always show the first one as survey tile
         showingTiles.set(0, TileType.Survey);
-        return Collections.unmodifiableList(showingTiles);
+
+        TileType[] retArray = new TileType[showingTiles.size()];
+        showingTiles.toArray(retArray);
+        return retArray;
     }
 
     private int[] generateExtraTileIndexes(int extraTileCount)
