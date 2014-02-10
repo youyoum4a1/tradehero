@@ -201,16 +201,17 @@ import javax.inject.Singleton;
                         dialogInterface.cancel();
                     }
                 })
-                .setCancelable(true)
-                .setNegativeButton(R.string.store_buy_virtual_dollar_window_button_cancel, new DialogInterface.OnClickListener()
-                {
-                    public void onClick(DialogInterface dialog, int id)
-                    {
-                        dialog.cancel();
-                    }
-                });
+                .setCancelable(true);
+                //.setNegativeButton(R.string.store_buy_virtual_dollar_window_button_cancel, new DialogInterface.OnClickListener()
+                //{
+                //    public void onClick(DialogInterface dialog, int id)
+                //    {
+                //        dialog.cancel();
+                //    }
+                //});
         AlertDialog alertDialog = alertDialogBuilder.create();
         alertDialog.show();
+        alertDialog.setCanceledOnTouchOutside(true);
         return alertDialog;
     }
 
