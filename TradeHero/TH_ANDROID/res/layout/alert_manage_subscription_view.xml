@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<com.tradehero.th.widget.list.BaseListHeaderView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    android:background="@null">
+
+  <TextView
+      android:id="@+id/header_text"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_centerInParent="true"
+      android:textStyle="bold"
+      android:textSize="16sp"
+      android:text="@string/alert_manage_subscriptions"
+      />
+
+</com.tradehero.th.widget.list.BaseListHeaderView>

@@ -56,6 +56,8 @@ public class Constants
     public static final String GET_SKU_DETAILS_ITEM_TYPE_LIST = "ITEM_TYPE_LIST";
     public static final int ALERT_PLAN_UNLIMITED = 10000;
 
+    public static final String GOOGLE_PLAY_ACCOUNT_URL = "https://play.google.com/store/account";
+
     /**
      * Returns a human-readable description for the given response code.
      *

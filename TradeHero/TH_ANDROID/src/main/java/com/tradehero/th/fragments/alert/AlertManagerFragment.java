@@ -1,5 +1,7 @@
 package com.tradehero.th.fragments.alert;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,6 +32,7 @@ import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.persistence.alert.AlertCompactListCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.persistence.user.UserProfileRetrievedMilestone;
+import com.tradehero.th.widget.list.BaseListHeaderView;
 import dagger.Lazy;
 import javax.inject.Inject;
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
@@ -45,19 +48,56 @@ public class AlertManagerFragment extends BasePurchaseManagerFragment
     @InjectView(R.id.progress_animator) BetterViewAnimator progressAnimator;
     @InjectView(R.id.btn_upgrade_plan) ImageButton btnPlanUpgrade;
     @InjectView(R.id.alerts_list) StickyListHeadersListView alertListView;
+    protected BaseListHeaderView footerView;
 
     @Inject protected Lazy<AlertCompactListCache> alertCompactListCache;
     @Inject protected CurrentUserId currentUserId;
     @Inject protected Lazy<UserProfileCache> userProfileCache;
     @Inject protected SecurityAlertKnowledge securityAlertKnowledge;
 
+    private Milestone.OnCompleteListener userProfileRetrievedMilestoneCompleteListener;
+    private UserProfileRetrievedMilestone userProfileRetrievedMilestone;
+
     private AlertListItemAdapter alertListItemAdapter;
     private DTOCache.GetOrFetchTask<UserBaseKey, AlertIdList> refreshAlertCompactListCacheTask;
+    private DTOCache.Listener<UserBaseKey, AlertIdList> alertCompactListCallback;
     private int currentDisplayLayoutId;
+
+    @Override public void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        userProfileRetrievedMilestoneCompleteListener = new Milestone.OnCompleteListener()
+        {
+            @Override public void onComplete(Milestone milestone)
+            {
+                displayAlertCount();
+                displayAlertCountIcon();
+            }
+
+            @Override public void onFailed(Milestone milestone, Throwable throwable)
+            {
+                THToast.show(new THException(throwable));
+            }
+        };
+        alertCompactListCallback = new DTOCache.Listener<UserBaseKey, AlertIdList>()
+        {
+            @Override public void onDTOReceived(UserBaseKey key, AlertIdList value, boolean fromCache)
+            {
+                progressAnimator.setDisplayedChildByLayoutId(R.id.alerts_list);
+                alertListItemAdapter.notifyDataSetChanged();
+            }
+
+            @Override public void onErrorThrown(UserBaseKey key, Throwable error)
+            {
+                THToast.show(R.string.error_fetch_alert);
+            }
+        };
+    }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.fragment_store_manage_alerts, container, false);
+        footerView = (BaseListHeaderView) inflater.inflate(R.layout.alert_manage_subscription_view, null);
         ButterKnife.inject(this, view);
         initViews(view);
         return view;
@@ -93,9 +133,11 @@ public class AlertManagerFragment extends BasePurchaseManagerFragment
                 }
             });
             alertListView.setAdapter(alertListItemAdapter);
+            alertListView.addFooterView(footerView);
         }
 
-        UserProfileRetrievedMilestone userProfileRetrievedMilestone =
+        detachUserProfileMilestone();
+        userProfileRetrievedMilestone =
                 new UserProfileRetrievedMilestone(currentUserId.toUserBaseKey());
         userProfileRetrievedMilestone.setOnCompleteListener(userProfileRetrievedMilestoneCompleteListener);
         userProfileRetrievedMilestone.launch();
@@ -110,6 +152,87 @@ public class AlertManagerFragment extends BasePurchaseManagerFragment
                 userInteractor.conditionalPopBuyStockAlerts();
             }
         });
+
+        footerView.setOnClickListener(new View.OnClickListener()
+        {
+            @Override public void onClick(View view)
+            {
+                handleManageSubscriptionClicked();
+            }
+        });
+    }
+
+    @Override public void onResume()
+    {
+        super.onResume();
+
+        if (currentDisplayLayoutId != 0)
+        {
+            progressAnimator.setDisplayedChildByLayoutId(currentDisplayLayoutId);
+        }
+
+        detachCompactListCacheFetchTask();
+        refreshAlertCompactListCacheTask = alertCompactListCache.get().getOrFetch(
+                currentUserId.toUserBaseKey(), true, alertCompactListCallback);
+        refreshAlertCompactListCacheTask.execute();
+    }
+
+    @Override public void onPause()
+    {
+        currentDisplayLayoutId = progressAnimator.getDisplayedChildLayoutId();
+        super.onPause();
+    }
+
+    @Override public void onDestroyView()
+    {
+        detachUserProfileMilestone();
+        detachCompactListCacheFetchTask();
+
+        if (alertListView != null)
+        {
+            alertListView.setOnItemClickListener(null);
+        }
+        alertListView = null;
+
+        alertListItemAdapter = null;
+
+        if (btnPlanUpgrade != null)
+        {
+            btnPlanUpgrade.setOnClickListener(null);
+        }
+        btnPlanUpgrade = null;
+
+        if (footerView != null)
+        {
+            footerView.setOnClickListener(null);
+        }
+        footerView = null;
+        super.onDestroyView();
+    }
+
+    @Override public void onDestroy()
+    {
+        userProfileRetrievedMilestoneCompleteListener = null;
+        alertCompactListCallback = null;
+        super.onDestroy();
+    }
+
+    protected void detachUserProfileMilestone()
+    {
+        if (userProfileRetrievedMilestone != null)
+        {
+            userProfileRetrievedMilestone.setOnCompleteListener(null);
+        }
+        userProfileRetrievedMilestone = null;
+    }
+
+    protected void detachCompactListCacheFetchTask()
+    {
+        if (refreshAlertCompactListCacheTask != null)
+        {
+            refreshAlertCompactListCacheTask.setListener(null);
+        }
+        refreshAlertCompactListCacheTask = null;
     }
 
     private void displayAlertCount()
@@ -154,45 +277,11 @@ public class AlertManagerFragment extends BasePurchaseManagerFragment
         getNavigator().pushFragment(AlertViewFragment.class, bundle);
     }
 
-    @Override public void onResume()
+    private void handleManageSubscriptionClicked()
     {
-        super.onResume();
-
-        if (currentDisplayLayoutId != 0)
-        {
-            progressAnimator.setDisplayedChildByLayoutId(currentDisplayLayoutId);
-        }
-
-        refreshAlertCompactListCacheTask = alertCompactListCache.get().getOrFetch(
-                currentUserId.toUserBaseKey(), true, alertCompactListCallback);
-        refreshAlertCompactListCacheTask.execute();
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(Constants.GOOGLE_PLAY_ACCOUNT_URL));
+        getActivity().startActivity(intent);
     }
-
-    @Override public void onPause()
-    {
-        currentDisplayLayoutId = progressAnimator.getDisplayedChildLayoutId();
-        super.onPause();
-    }
-
-    @Override public void onDestroy()
-    {
-        alertListView.setOnItemClickListener(null);
-        super.onDestroy();
-    }
-
-    private Milestone.OnCompleteListener userProfileRetrievedMilestoneCompleteListener = new Milestone.OnCompleteListener()
-    {
-        @Override public void onComplete(Milestone milestone)
-        {
-            displayAlertCount();
-            displayAlertCountIcon();
-        }
-
-        @Override public void onFailed(Milestone milestone, Throwable throwable)
-        {
-            THToast.show(new THException(throwable));
-        }
-    };
 
     //<editor-fold desc="BaseFragment.TabBarVisibilityInformer">
     @Override public boolean isTabBarVisible()
@@ -200,18 +289,4 @@ public class AlertManagerFragment extends BasePurchaseManagerFragment
         return false;
     }
     //</editor-fold>
-
-    private DTOCache.Listener<UserBaseKey, AlertIdList> alertCompactListCallback = new DTOCache.Listener<UserBaseKey, AlertIdList>()
-    {
-        @Override public void onDTOReceived(UserBaseKey key, AlertIdList value, boolean fromCache)
-        {
-            progressAnimator.setDisplayedChildByLayoutId(R.id.alerts_list);
-            alertListItemAdapter.notifyDataSetChanged();
-        }
-
-        @Override public void onErrorThrown(UserBaseKey key, Throwable error)
-        {
-            THToast.show(R.string.error_fetch_alert);
-        }
-    };
 }
