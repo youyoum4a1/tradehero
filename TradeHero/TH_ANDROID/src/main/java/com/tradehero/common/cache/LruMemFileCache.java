@@ -7,6 +7,7 @@ import android.util.Base64;
 import android.util.Log;
 import com.jakewharton.disklrucache.DiskLruCache;
 import com.squareup.picasso.LruCache;
+import com.squareup.picasso.PicassoUtils;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
@@ -65,6 +66,7 @@ public class LruMemFileCache extends LruCache
     public LruMemFileCache(Context context, String dirName)
     {
         super(context);
+        THLog.d(TAG, "Constructing with memory " + PicassoUtils.calculateMemoryCacheSize(context));
         initDir(context, getDefaultFolderSizeToUse(getPreferredCacheParentDirectory(context)), dirName);
     }
 

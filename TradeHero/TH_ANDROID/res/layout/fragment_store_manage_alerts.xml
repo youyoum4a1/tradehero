@@ -19,10 +19,11 @@
         android:id="@+id/btn_upgrade_plan"
         android:layout_width="125dp"
         android:layout_height="48dp"
+        android:layout_marginRight="8dp"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         android:scaleType="fitCenter"
-        android:src="@drawable/btn_buy_stock_alerts"
+        android:src="@drawable/upgrade_alerts"
         android:background="@null"
         android:contentDescription="@null"
         />
@@ -36,6 +37,7 @@
         android:layout_alignParentLeft="true"
         android:padding="@dimen/stock_alert_header_padding"
         android:layout_centerVertical="true"
+        android:textStyle="bold"
         />
 
     <TextView
@@ -46,6 +48,17 @@
         android:layout_toRightOf="@id/manage_alerts_plan_title"
         tools:text="Type of alert plan"
         tools:textColor="@color/red"
+        android:textStyle="bold"
+        />
+
+    <ImageView
+        android:id="@+id/icn_manage_alert_count"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginLeft="8dp"
+        android:layout_toRightOf="@id/manage_alerts_count"
+        android:layout_centerVertical="true"
+        tools:src="@drawable/buy_alerts_2"
         />
 
   </RelativeLayout>

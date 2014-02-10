@@ -92,17 +92,19 @@ public class AlertListItemAdapter extends DTOListCacheAdapter<AlertId, AlertItem
 
     @Override protected void fineTune(int position, AlertId dto, AlertItemView dtoView)
     {
-
     }
 
     @Override public View getHeaderView(int position, View convertView, ViewGroup parent)
     {
         TextHolder holder = null;
-        if (convertView == null) {
+        if (convertView == null)
+        {
             convertView = inflater.inflate(R.layout.alert_management_title, parent, false);
             holder = new TextHolder(convertView);
             convertView.setTag(holder);
-        } else {
+        }
+        else
+        {
             holder = (TextHolder) convertView.getTag();
         }
 

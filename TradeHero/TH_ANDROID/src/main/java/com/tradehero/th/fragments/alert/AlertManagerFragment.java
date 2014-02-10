@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -23,6 +24,7 @@ import com.tradehero.th.api.alert.AlertIdList;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.billing.googleplay.SecurityAlertKnowledge;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.persistence.alert.AlertCompactListCache;
@@ -39,6 +41,7 @@ public class AlertManagerFragment extends BasePurchaseManagerFragment
     public static final String BUNDLE_KEY_USER_ID = AlertManagerFragment.class.getName() + ".userId";
 
     @InjectView(R.id.manage_alerts_count) TextView alertPlanCount;
+    @InjectView(R.id.icn_manage_alert_count) ImageView alertPlanCountIcon;
     @InjectView(R.id.progress_animator) BetterViewAnimator progressAnimator;
     @InjectView(R.id.btn_upgrade_plan) ImageButton btnPlanUpgrade;
     @InjectView(R.id.alerts_list) StickyListHeadersListView alertListView;
@@ -46,6 +49,7 @@ public class AlertManagerFragment extends BasePurchaseManagerFragment
     @Inject protected Lazy<AlertCompactListCache> alertCompactListCache;
     @Inject protected CurrentUserId currentUserId;
     @Inject protected Lazy<UserProfileCache> userProfileCache;
+    @Inject protected SecurityAlertKnowledge securityAlertKnowledge;
 
     private AlertListItemAdapter alertListItemAdapter;
     private DTOCache.GetOrFetchTask<UserBaseKey, AlertIdList> refreshAlertCompactListCacheTask;
@@ -97,6 +101,7 @@ public class AlertManagerFragment extends BasePurchaseManagerFragment
         userProfileRetrievedMilestone.launch();
 
         displayAlertCount();
+        displayAlertCountIcon();
 
         btnPlanUpgrade.setOnClickListener(new View.OnClickListener()
         {
@@ -128,6 +133,17 @@ public class AlertManagerFragment extends BasePurchaseManagerFragment
                 alertPlanCount.setText(R.string.alert_plan_unlimited);
                 btnPlanUpgrade.setVisibility(View.GONE);
             }
+        }
+    }
+
+    private void displayAlertCountIcon()
+    {
+        UserProfileDTO currentUserProfile = userProfileCache.get().get(currentUserId.toUserBaseKey());
+        if (currentUserProfile != null)
+        {
+            int count = currentUserProfile.getUserAlertPlansAlertCount();
+            alertPlanCountIcon.setVisibility(count == 0 ? View.GONE : View.VISIBLE);
+            alertPlanCountIcon.setImageResource(securityAlertKnowledge.getStockAlertIcon(count));
         }
     }
 
@@ -169,6 +185,7 @@ public class AlertManagerFragment extends BasePurchaseManagerFragment
         @Override public void onComplete(Milestone milestone)
         {
             displayAlertCount();
+            displayAlertCountIcon();
         }
 
         @Override public void onFailed(Milestone milestone, Throwable throwable)
