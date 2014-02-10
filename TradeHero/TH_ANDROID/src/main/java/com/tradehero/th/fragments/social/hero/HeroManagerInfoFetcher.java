@@ -23,9 +23,9 @@ public class HeroManagerInfoFetcher
     @Inject protected Lazy<HeroListCache> heroListCache;
     @Inject protected Lazy<HeroCache> heroCache;
 
-    private final DTOCache.Listener<UserBaseKey, UserProfileDTO> userProfileListener;
+    private DTOCache.Listener<UserBaseKey, UserProfileDTO> userProfileListener;
     private DTOCache.GetOrFetchTask<UserBaseKey, UserProfileDTO> userProfileFetchTask;
-    private final DTOCache.Listener<UserBaseKey, HeroIdList> heroListListener;
+    private DTOCache.Listener<UserBaseKey, HeroIdList> heroListListener;
     private DTOCache.GetOrFetchTask<UserBaseKey, HeroIdList> heroListFetchTask;
 
     public HeroManagerInfoFetcher(DTOCache.Listener<UserBaseKey, UserProfileDTO> userProfileListener,
@@ -39,6 +39,10 @@ public class HeroManagerInfoFetcher
 
     public void onPause()
     {
+    }
+
+    public void onDestroyView()
+    {
         if (this.userProfileFetchTask != null)
         {
             this.userProfileFetchTask.setListener(null);
@@ -50,6 +54,19 @@ public class HeroManagerInfoFetcher
             this.heroListFetchTask.setListener(null);
         }
         this.heroListFetchTask = null;
+
+        setUserProfileListener(null);
+        setHeroListListener(null);
+    }
+
+    public void setUserProfileListener(DTOCache.Listener<UserBaseKey, UserProfileDTO> userProfileListener)
+    {
+        this.userProfileListener = userProfileListener;
+    }
+
+    public void setHeroListListener(DTOCache.Listener<UserBaseKey, HeroIdList> heroListListener)
+    {
+        this.heroListListener = heroListListener;
     }
 
     public void fetch(UserBaseKey userBaseKey)

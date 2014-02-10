@@ -100,7 +100,7 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
         {
             @Override public void onHeroStatusButtonClicked(HeroListItemView heroListItemView, HeroDTO heroDTO)
             {
-                handleHeroStatusChangeRequired(heroDTO);
+                pushTimelineFragment(heroDTO.getBaseKey());
             }
         };
         this.heroListAdapter = new HeroListItemAdapter(
@@ -160,6 +160,10 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
 
     @Override public void onDestroyView()
     {
+        if (this.infoFetcher != null)
+        {
+            this.infoFetcher.onDestroyView();
+        }
         this.infoFetcher = null;
 
         this.heroStatusButtonClickedListener = null;
@@ -184,8 +188,7 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
     private void handleHeroClicked(AdapterView<?> parent, View view, int position, long id)
     {
         THLog.d(TAG, "handleHeroClicked view " + view + ", id " + id);
-        final HeroDTO clickedHeroDTO = (HeroDTO) heroListAdapter.getItem(position);
-        pushTimelineFragment(clickedHeroDTO.getBaseKey());
+        handleHeroStatusChangeRequired((HeroDTO) parent.getItemAtPosition(position));
     }
 
     private void handleHeroStatusChangeRequired(final HeroDTO clickedHeroDTO)
