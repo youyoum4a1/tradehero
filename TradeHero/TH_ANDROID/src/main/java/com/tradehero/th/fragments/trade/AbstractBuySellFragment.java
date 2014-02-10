@@ -11,6 +11,7 @@ import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.ProviderId;
+import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.position.SecurityPositionDetailDTO;
 import com.tradehero.th.api.position.SecurityPositionDetailDTOUtil;
 import com.tradehero.th.api.quote.QuoteDTO;
@@ -228,9 +229,14 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
 
     public Integer getMaxSellableShares()
     {
-        return SecurityPositionDetailDTOUtil.getMaxSellableShares(this.securityPositionDetailDTO, this.quoteDTO,
-                getApplicablePortfolioId().getPortfolioId(), this.userProfileDTO
-        );
+        OwnedPortfolioId ownedPortfolioId = getApplicablePortfolioId();
+        if (ownedPortfolioId != null && ownedPortfolioId.portfolioId != null)
+        {
+            return SecurityPositionDetailDTOUtil.getMaxSellableShares(this.securityPositionDetailDTO, this.quoteDTO,
+                    getApplicablePortfolioId().getPortfolioId(), this.userProfileDTO
+            );
+        }
+        return 0;
     }
 
     protected void requestPositionDetail()

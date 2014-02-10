@@ -50,7 +50,7 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
             }
         }
 
-        THLog.d(TAG, "pusrchase applicablePortfolio " + applicablePortfolioId);
+        THLog.d(TAG, "purchase applicablePortfolio " + applicablePortfolioId);
         userInteractor.setApplicablePortfolioId(applicablePortfolioId);
     }
 
