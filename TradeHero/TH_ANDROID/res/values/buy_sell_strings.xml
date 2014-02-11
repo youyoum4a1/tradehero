@@ -35,7 +35,7 @@
   <string name="alert_dialog_market_close_title">Market Closed</string>
   <string name="alert_dialog_market_close_message_basic">The stock exchange for this security is currently closed.\nYou can still trade off-hours quoted bid and ask prices, but be aware that the spread may be much larger than it is during regular hours.</string>
   <string name="alert_dialog_market_close_message">%1$s is currently closed.\nYou can still trade %2$s off-hours quoted bid and ask prices, but be aware that the spread may be much larger than it is during regular hours.</string>
-  <string name="alert_dialog_market_close_cancel">Right!</string>
+  <string name="alert_dialog_market_close_cancel">Dismiss</string>
 
   <string name="alert_dialog_buy_sell_order_null_title">This is embarrassing</string>
   <string name="alert_dialog_buy_sell_order_null_message">We failed to prepare the buy or sell order.</string>
