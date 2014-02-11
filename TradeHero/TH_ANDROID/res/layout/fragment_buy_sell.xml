@@ -173,14 +173,25 @@
         >
 
       <ImageButton
-          android:id="@+id/btn_add_trigger"
+          android:id="@+id/btn_trade_info"
           android:layout_width="48dp"
           android:layout_height="48dp"
           android:layout_alignParentRight="true"
+          android:contentDescription="@null"
+          android:background="@null"
+          android:src="@drawable/icn_info_blue"
+          android:scaleType="fitCenter"
+          />
+
+      <ImageButton
+          android:id="@+id/btn_add_trigger"
+          android:layout_width="48dp"
+          android:layout_height="48dp"
+          android:layout_toLeftOf="@id/btn_trade_info"
           android:layout_marginRight="8dp"
           android:contentDescription="@null"
           android:background="@null"
-          android:src="@drawable/add_alert_default"
+          android:src="@drawable/add_alert"
           android:scaleType="fitCenter"
           />
 
@@ -192,18 +203,6 @@
           android:contentDescription="@null"
           android:background="@null"
           android:src="@drawable/buy_vd"
-          android:scaleType="fitCenter"
-          />
-
-      <ImageButton
-          android:id="@+id/btn_trade_info"
-          android:layout_width="48dp"
-          android:layout_height="48dp"
-          android:layout_alignParentRight="true"
-          android:layout_toLeftOf="@id/btn_add_cash"
-          android:contentDescription="@null"
-          android:background="@null"
-          android:src="@drawable/icn_info_blue"
           android:scaleType="fitCenter"
           />
 
