@@ -164,7 +164,7 @@
     <item name="android:textSize">@dimen/text_header</item>
     <item name="android:textColor">@color/white</item>
     <item name="android:textStyle">bold</item>
-    <item name="android:drawableLeft">@drawable/icn_info_blue</item>
+    <item name="android:drawableLeft">@drawable/icn_info_normal_small</item>
   </style>
 
 </resources>
