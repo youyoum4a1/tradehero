@@ -156,14 +156,7 @@ public class QuickPriceButtonSet extends LinearLayout
         }
         for (Button button: buttons)
         {
-            if (button == this.currentSelected && button.isEnabled())
-            {
-                button.setTextColor(getResources().getColor(R.color.black));
-            }
-            else
-            {
-                button.setTextColor(getResources().getColor(R.color.price_bar_text_default));
-            }
+            button.setSelected(button == this.currentSelected && button.isEnabled());
         }
     }
 
