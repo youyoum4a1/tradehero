@@ -40,7 +40,7 @@
         android:layout_height="48dp"
         android:layout_toLeftOf="@+id/btn_stock_info"
         android:layout_marginLeft="8dp"
-        android:src="@drawable/add_alert_big"
+        android:src="@drawable/add_alert"
         android:contentDescription="@null"
         android:scaleType="centerInside"
         android:background="@android:color/transparent"
