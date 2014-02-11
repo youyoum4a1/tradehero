@@ -51,6 +51,7 @@ import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -641,8 +642,7 @@ public class THIABUserInteractor
                                     THIABUserInteractor.this,
                                     skuDomain,
                                     titleResId,
-                                    runOnPurchaseComplete,
-                                    getEnabledSKUs());
+                                    runOnPurchaseComplete);
                         }
                     });
                 }
@@ -650,25 +650,6 @@ public class THIABUserInteractor
         });
     }
     //</editor-fold>
-
-    public HashMap<IABSKU, Boolean> getEnabledSKUs()
-    {
-        if (userProfileDTO == null)
-        {
-            return null;
-        }
-        List<IABSKU> alertSkus = userProfileDTOUtil.getSubscribedAlerts(userProfileDTO);
-        if (alertSkus == null)
-        {
-            return null;
-        }
-        HashMap<IABSKU, Boolean> toDisable = new HashMap<>();
-        for (IABSKU sku: alertSkus)
-        {
-            toDisable.put(sku, false);
-        }
-        return toDisable;
-    }
 
     //<editor-fold desc="IABAlertDialogUtil.OnDialogSKUDetailsClickListener">
     @Override public void onDialogSKUDetailsClicked(DialogInterface dialogInterface, int position, THIABProductDetail skuDetails, Runnable runOnPurchaseComplete)

@@ -4,7 +4,9 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import com.tradehero.common.billing.googleplay.BaseIABProductDetailsDecreasingPriceComparator;
 import com.tradehero.common.billing.googleplay.IABSKU;
+import com.tradehero.common.utils.THLog;
 import com.tradehero.th.fragments.billing.THSKUDetailsAdapter;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
@@ -14,6 +16,8 @@ import javax.inject.Singleton;
 @Singleton public class IABAlertDialogSKUUtil extends IABAlertDialogUtil
 {
     public static final String TAG = IABAlertDialogSKUUtil.class.getSimpleName();
+
+    @Inject THIABPurchaseCache thiabPurchaseCache;
 
     @Inject public IABAlertDialogSKUUtil()
     {
@@ -27,10 +31,10 @@ import javax.inject.Singleton;
             int titleResId,
             Runnable runOnPurchaseComplete)
     {
-        return popBuyDialog(activity, domainInformer, clickListener, skuDomain, titleResId, runOnPurchaseComplete, null);
+        return popBuyDialog(activity, domainInformer, clickListener, skuDomain, titleResId, runOnPurchaseComplete, getEnabledItems());
     }
 
-    public AlertDialog popBuyDialog(
+    protected AlertDialog popBuyDialog(
             Activity activity,
             SKUDomainInformer domainInformer,
             IABAlertDialogUtil.OnDialogSKUDetailsClickListener<THIABProductDetail> clickListener,
@@ -47,5 +51,22 @@ import javax.inject.Singleton;
         detailsAdapter.setItems(desiredSkuDetails);
 
         return popBuyDialog(activity, detailsAdapter, titleResId, clickListener, runOnPurchaseComplete);
+    }
+
+    public HashMap<IABSKU, Boolean> getEnabledItems()
+    {
+        HashMap<IABSKU, Boolean> enabledItems = new HashMap<>();
+
+        for (IABSKU key : thiabPurchaseCache.getKeys())
+        {
+            THLog.d(TAG, "Disabling " + key);
+            enabledItems.put(key, false);
+        }
+
+        if (enabledItems.size() == 0)
+        {
+            enabledItems = null;
+        }
+        return enabledItems;
     }
 }

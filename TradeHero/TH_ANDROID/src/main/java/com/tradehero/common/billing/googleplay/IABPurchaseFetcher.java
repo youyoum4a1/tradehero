@@ -40,6 +40,8 @@ abstract public class IABPurchaseFetcher<
         purchases = new HashMap<>();
     }
 
+    abstract protected IABPurchaseCache<IABSKUType, IABOrderIdType, IABPurchaseType> getPurchaseCache();
+
     public void fetchPurchases(int requestCode)
     {
         checkNotFetching();
@@ -109,6 +111,7 @@ abstract public class IABPurchaseFetcher<
             HashMap<IABSKUType, IABPurchaseType> subscriptionMap = queryPurchases(Constants.ITEM_TYPE_SUBS);
             map.putAll(subscriptionMap);
         }
+        getPurchaseCache().put(map);
         return map;
     }
 

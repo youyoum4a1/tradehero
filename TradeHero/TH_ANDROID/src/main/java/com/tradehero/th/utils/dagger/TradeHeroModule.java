@@ -227,7 +227,6 @@ import javax.inject.Singleton;
                         THIABPurchaseFetcher.class,
                         THIABInventoryFetcher.class,
                         THIABPurchaser.class,
-                        THIABPurchaseFetcher.class,
                         THIABPurchaseReporter.class,
                         THIABLogicHolder.class,
                         THIABPurchaseConsumer.class,

@@ -5,6 +5,7 @@ import com.tradehero.th.api.market.ExchangeListType;
 import com.tradehero.th.api.security.TrendingBasicSecurityListType;
 import com.tradehero.th.api.security.TrendingSecurityListType;
 import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.billing.googleplay.THIABPurchaseCache;
 import com.tradehero.th.fragments.trending.TrendingFragment;
 import com.tradehero.th.models.security.WarrantSpecificKnowledgeFactory;
 import com.tradehero.th.persistence.alert.AlertCache;
@@ -69,6 +70,7 @@ import javax.inject.Singleton;
     @Inject protected Lazy<UserWatchlistPositionCache> watchlistPositionCache;
     @Inject protected Lazy<ProviderListCache> providerListCache;
     @Inject protected Lazy<ProviderCache> providerCache;
+    @Inject protected Lazy<THIABPurchaseCache> thiabSubscriptionCache;
 
     @Inject protected Lazy<WarrantSpecificKnowledgeFactory> warrantSpecificKnowledgeFactoryLazy;
 
@@ -104,6 +106,7 @@ import javax.inject.Singleton;
         watchlistPositionCache.get().invalidateAll();
         providerListCache.get().invalidateAll();
         providerCache.get().invalidateAll();
+        thiabSubscriptionCache.get().invalidateAll();
 
         warrantSpecificKnowledgeFactoryLazy.get().clear();
     }

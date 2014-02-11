@@ -11,7 +11,7 @@ import com.tradehero.common.utils.THLog;
 import java.lang.ref.WeakReference;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/18/13 Time: 3:23 PM To change this template use File | Settings | File Templates. */
-public class IABPurchaseConsumer<
+abstract public class IABPurchaseConsumer<
             IABSKUType extends IABSKU,
             IABOrderIdType extends IABOrderId,
             IABPurchaseType extends IABPurchase<IABSKUType, IABOrderIdType>>
@@ -35,6 +35,8 @@ public class IABPurchaseConsumer<
     {
         return (Activity) context;
     }
+
+    abstract protected IABPurchaseCache<IABSKUType, IABOrderIdType, IABPurchaseType> getPurchaseCache();
 
     public boolean isConsuming()
     {
@@ -133,6 +135,7 @@ public class IABPurchaseConsumer<
     private void handleConsumeFinishedInternal(IABPurchaseType purchase)
     {
         consuming = false;
+        getPurchaseCache().invalidate(purchase.getProductIdentifier());
         handleConsumeFinished(purchase);
         notifyListenerConsumeFinished(purchase);
     }
