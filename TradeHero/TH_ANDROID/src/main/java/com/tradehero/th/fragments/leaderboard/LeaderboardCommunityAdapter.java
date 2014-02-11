@@ -96,15 +96,17 @@ public class LeaderboardCommunityAdapter extends ArrayDTOAdapter<LeaderboardDefK
 
         if (sectorAndExchange != null)
         {
-            LeaderboardDefDTO fakeDto = new LeaderboardDefDTO();
-            fakeDto.id = LeaderboardDefDTO.LEADERBOARD_DEF_SECTOR_ID;
-            fakeDto.name = getContext().getString(R.string.leaderboard_by_sector);
-            leaderboardDefCache.get().put(fakeDto.getLeaderboardDefKey(), fakeDto);
-            sectorAndExchange.add(fakeDto.getLeaderboardDefKey());
+            LeaderboardDefDTO fakeDto;
 
             fakeDto = new LeaderboardDefDTO();
             fakeDto.id = LeaderboardDefDTO.LEADERBOARD_DEF_EXCHANGE_ID;
             fakeDto.name = getContext().getString(R.string.leaderboard_by_exchange);
+            leaderboardDefCache.get().put(fakeDto.getLeaderboardDefKey(), fakeDto);
+            sectorAndExchange.add(fakeDto.getLeaderboardDefKey());
+
+            fakeDto = new LeaderboardDefDTO();
+            fakeDto.id = LeaderboardDefDTO.LEADERBOARD_DEF_SECTOR_ID;
+            fakeDto.name = getContext().getString(R.string.leaderboard_by_sector);
             leaderboardDefCache.get().put(fakeDto.getLeaderboardDefKey(), fakeDto);
             sectorAndExchange.add(fakeDto.getLeaderboardDefKey());
         }
