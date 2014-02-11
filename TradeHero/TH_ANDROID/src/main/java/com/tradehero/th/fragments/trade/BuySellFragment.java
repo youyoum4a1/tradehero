@@ -1016,12 +1016,12 @@ public class BuySellFragment extends AbstractBuySellFragment
             if (securityAlertAssistant.isPopulated() && securityAlertAssistant.getAlertId(securityId) != null)
             {
                 mBtnAddTrigger.setEnabled(true);
-                mBtnAddTrigger.setImageResource(R.drawable.buyscreen_txtnotice_bought);
+                mBtnAddTrigger.setImageResource(R.drawable.active_alert);
             }
             else if (securityAlertAssistant.isPopulated() && securityAlertAssistant.getAlertId(securityId) == null)
             {
                 mBtnAddTrigger.setEnabled(true);
-                mBtnAddTrigger.setImageResource(R.drawable.buyscreen_txtnotice_buy);
+                mBtnAddTrigger.setImageResource(R.drawable.add_alert_big_noborder);
             }
             else // TODO check if failed
             {
