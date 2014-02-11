@@ -207,7 +207,8 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
         if (image != null)
         {
             String imageURL = chartDTO.getChartUrl();
-            this.picasso.load(imageURL).into(image);
+            // HACK TODO find something better than skipCache to avoid OutOfMemory
+            this.picasso.load(imageURL).skipMemoryCache().into(image);
             postChooseOtherSize();
         }
     }
