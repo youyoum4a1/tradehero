@@ -11,8 +11,8 @@ import com.actionbarsherlock.view.MenuItem;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.LoaderDTOAdapter;
 import com.tradehero.th.api.leaderboard.LeaderboardDTO;
-import com.tradehero.th.api.leaderboard.LeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
+import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.loaders.ListLoader;
 import com.tradehero.th.utils.Constants;
@@ -45,6 +45,39 @@ public class LeaderboardMarkUserListViewFragment extends BaseLeaderboardFragment
     protected void initViews(View view)
     {
         leaderboardMarkUserListView = (LeaderboardMarkUserListView) view.findViewById(R.id.leaderboard_listview);
+    }
+
+    //<editor-fold desc="ActionBar">
+    @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
+    {
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override protected int getMenuResource()
+    {
+        return R.menu.leaderboard_listview_menu;
+    }
+
+    @Override public boolean onOptionsItemSelected(MenuItem item)
+    {
+        switch (item.getItemId())
+        {
+            case R.id.leaderboard_listview_menu_help:
+                getNavigator().showTutorial(this);
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+    //</editor-fold>
+
+    @Override protected void setCurrentUserProfileDTO(UserProfileDTO currentUserProfileDTO)
+    {
+        super.setCurrentUserProfileDTO(currentUserProfileDTO);
+        if (leaderboardMarkUserListAdapter != null)
+        {
+            leaderboardMarkUserListAdapter.setCurrentUserProfileDTO(currentUserProfileDTO);
+            leaderboardMarkUserListAdapter.notifyDataSetChanged();
+        }
     }
 
     protected void inflateHeaderView(LayoutInflater inflater)
@@ -94,6 +127,8 @@ public class LeaderboardMarkUserListViewFragment extends BaseLeaderboardFragment
         leaderboardMarkUserListAdapter = new LeaderboardMarkUserListAdapter(
                 getActivity(), getActivity().getLayoutInflater(), leaderboardId, getCurrentSortType().getLayoutResourceId());
         leaderboardMarkUserListAdapter.setDTOLoaderCallback(new LeaderboardMarkUserListViewFragmentListLoaderCallback());
+        leaderboardMarkUserListAdapter.setCurrentUserProfileDTO(currentUserProfileDTO);
+        leaderboardMarkUserListAdapter.setUserInteractor(userInteractor);
         leaderboardMarkUserListView.setAdapter(leaderboardMarkUserListAdapter);
         leaderboardMarkUserListView.setOnRefreshListener(leaderboardMarkUserListAdapter);
         leaderboardMarkUserListView.setEmptyView(getView().findViewById(android.R.id.empty));
@@ -140,29 +175,6 @@ public class LeaderboardMarkUserListViewFragment extends BaseLeaderboardFragment
     {
         leaderboardMarkUserListView.setAdapter(leaderboardMarkUserListAdapter);
     }
-
-    //<editor-fold desc="ActionBar">
-    @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
-    {
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-
-    @Override protected int getMenuResource()
-    {
-        return R.menu.leaderboard_listview_menu;
-    }
-
-    @Override public boolean onOptionsItemSelected(MenuItem item)
-    {
-        switch (item.getItemId())
-        {
-            case R.id.leaderboard_listview_menu_help:
-                getNavigator().showTutorial(this);
-                break;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-    //</editor-fold>
 
     //<editor-fold desc="BaseFragment.TabBarVisibilityInformer">
     @Override public boolean isTabBarVisible()

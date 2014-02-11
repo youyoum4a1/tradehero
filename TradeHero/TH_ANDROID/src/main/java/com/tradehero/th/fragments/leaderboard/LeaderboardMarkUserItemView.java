@@ -14,6 +14,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
+import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.leaderboard.LeaderboardDefDTO;
@@ -22,8 +23,10 @@ import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import com.tradehero.th.api.leaderboard.position.LeaderboardMarkUserId;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.fragments.DashboardNavigator;
+import com.tradehero.th.fragments.billing.THIABUserInteractor;
 import com.tradehero.th.fragments.position.LeaderboardPositionListFragment;
 import com.tradehero.th.fragments.position.PositionListFragment;
 import com.tradehero.th.models.graphics.ForUserPhoto;
@@ -34,6 +37,7 @@ import com.tradehero.th.utils.StringUtils;
 import com.tradehero.th.utils.THSignedNumber;
 import com.tradehero.th.widget.MarkdownTextView;
 import dagger.Lazy;
+import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
 import javax.inject.Inject;
 
@@ -47,9 +51,11 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
     @Inject @ForUserPhoto protected Transformation peopleIconTransformation;
     @Inject protected Lazy<LeaderboardDefCache> leaderboardDefCache;
     @Inject protected CurrentUserId currentUserId;
+    protected UserProfileDTO currentUserProfileDTO;
 
     // data
     private LeaderboardUserDTO leaderboardItem;
+    protected WeakReference<THIABUserInteractor> userInteractor = new WeakReference<>(null);
 
     // top view
     @InjectView(R.id.leaderboard_user_item_display_name) TextView lbmuDisplayName;
@@ -74,6 +80,8 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
     @InjectView(R.id.lbmu_period) TextView lbmuPeriod;
     @InjectView(R.id.leaderboard_user_item_fof) MarkdownTextView lbmuFoF;
     @InjectView(R.id.lbmu_number_trades_in_period) TextView lbmuNumberTradesInPeriod;
+    @InjectView(R.id.leaderboard_user_item_follow) View lbmuFollowUser;
+    @InjectView(R.id.leaderboard_user_item_following) View lbmuFollowingUser;
 
     //<editor-fold desc="Constructors">
     public LeaderboardMarkUserItemView(Context context)
@@ -97,12 +105,12 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         super.onFinishInflate();
 
         DaggerUtils.inject(this);
-        ButterKnife.inject(this);
         initViews();
     }
 
     private void initViews()
     {
+        ButterKnife.inject(this);
         // top part
         if (lbmuFoF != null)
         {
@@ -119,11 +127,8 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         {
             lbmuOpenPositionsList.setOnClickListener(this);
         }
-        TextView lbmuFollowUser = (TextView) findViewById(R.id.leaderboard_user_item_follow);
-        if (lbmuFollowUser != null)
-        {
-            lbmuFollowUser.setOnClickListener(this);
-        }
+
+        lbmuFollowUser.setEnabled(false);
     }
 
     @Override protected void onAttachedToWindow()
@@ -137,6 +142,10 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         {
             lbmuPositionInfo.setOnClickListener(this);
         }
+        if (lbmuFollowUser != null)
+        {
+            lbmuFollowUser.setOnClickListener(this);
+        }
     }
 
     @Override protected void onDetachedFromWindow()
@@ -149,8 +158,47 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         {
             lbmuPositionInfo.setOnClickListener(null);
         }
+        if (lbmuFollowUser != null)
+        {
+            lbmuFollowUser.setOnClickListener(null);
+        }
         loadDefaultUserImage();
+
         super.onDetachedFromWindow();
+    }
+
+    public void linkWith(UserProfileDTO currentUserProfileDTO, boolean andDisplay)
+    {
+        THLog.d(TAG, "linkWith " + currentUserProfileDTO);
+        this.currentUserProfileDTO = currentUserProfileDTO;
+        if (andDisplay)
+        {
+            displayFollow();
+            displayIsFollowing();
+        }
+    }
+
+    /**
+     * The userInteractor should be strongly referenced elsewhere
+     * @param userInteractor
+     * @param andDisplay
+     */
+    public void linkWith(THIABUserInteractor userInteractor, boolean andDisplay)
+    {
+        this.userInteractor = new WeakReference<>(userInteractor);
+        if (andDisplay)
+        {
+            displayFollow();
+        }
+    }
+
+    public Boolean isCurrentUserFollowing()
+    {
+        if (currentUserProfileDTO == null || leaderboardItem == null)
+        {
+            return null;
+        }
+        return currentUserProfileDTO.isFollowingUser(leaderboardItem.getBaseKey());
     }
 
     @Override public void display(LeaderboardUserDTO expandableItem)
@@ -180,6 +228,8 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
 
         displayTopSection();
         displayExpandableSection();
+        displayFollow();
+        displayIsFollowing();
     }
 
     private void displayTopSection()
@@ -294,6 +344,28 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         lbmuCommentsCount.setText("" + leaderboardItem.getCommentsCount());
     }
 
+    private void displayFollow()
+    {
+        if (lbmuFollowUser != null)
+        {
+            Boolean isFollowing = isCurrentUserFollowing();
+            boolean showButton = isFollowing == null || !isFollowing;
+            lbmuFollowUser.setVisibility(showButton ? VISIBLE : GONE);
+            boolean enableButton = isFollowing != null && !isFollowing;
+            lbmuFollowUser.setEnabled(enableButton);
+        }
+    }
+
+    private void displayIsFollowing()
+    {
+        if (lbmuFollowingUser != null)
+        {
+            Boolean isFollowing = isCurrentUserFollowing();
+            boolean showImage = isFollowing != null && isFollowing;
+            lbmuFollowingUser.setVisibility(showImage ? VISIBLE : GONE);
+        }
+    }
+
     @Override public void onClick(View view)
     {
         switch (view.getId())
@@ -308,6 +380,7 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
             case R.id.leaderboard_user_item_open_positions_list:
                 handleOpenPositionListClicked();
                 break;
+
             case R.id.leaderboard_user_item_follow:
                 openFollowUserDialog();
                 break;
@@ -316,6 +389,11 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
 
     private void openFollowUserDialog()
     {
+        THIABUserInteractor interactor = userInteractor.get();
+        if (interactor != null)
+        {
+            interactor.followHero(leaderboardItem.getBaseKey());
+        }
     }
 
     private void handleOpenPositionListClicked()

@@ -1,12 +1,10 @@
 package com.tradehero.th.fragments.trade;
 
-import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
@@ -57,7 +55,6 @@ import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.WarrantDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.billing.googleplay.THIABActor;
 import com.tradehero.th.fragments.alert.AlertCreateFragment;
 import com.tradehero.th.fragments.alert.AlertEditFragment;
 import com.tradehero.th.fragments.alert.BaseAlertEditFragment;
@@ -90,6 +87,8 @@ public class BuySellFragment extends AbstractBuySellFragment
     private final static String TAG = BuySellFragment.class.getSimpleName();
     public static final String EVENT_CHART_IMAGE_CLICKED = BuySellFragment.class.getName() + ".chartButtonClicked";
 
+    public final static int ADD_ALERT_RES_ID = R.drawable.add_alert;
+    public final static int EDIT_ALERT_RES_ID = R.drawable.active_alert;
     public final static int TRANSACTION_COST = 10;
     public final static float BUY_BUTTON_DISABLED_ALPHA = 0.5f;
 
@@ -1017,12 +1016,12 @@ public class BuySellFragment extends AbstractBuySellFragment
             if (securityAlertAssistant.isPopulated() && securityAlertAssistant.getAlertId(securityId) != null)
             {
                 mBtnAddTrigger.setEnabled(true);
-                mBtnAddTrigger.setImageResource(R.drawable.active_alert);
+                mBtnAddTrigger.setImageResource(EDIT_ALERT_RES_ID);
             }
             else if (securityAlertAssistant.isPopulated() && securityAlertAssistant.getAlertId(securityId) == null)
             {
                 mBtnAddTrigger.setEnabled(true);
-                mBtnAddTrigger.setImageResource(R.drawable.add_alert);
+                mBtnAddTrigger.setImageResource(ADD_ALERT_RES_ID);
             }
             else // TODO check if failed
             {

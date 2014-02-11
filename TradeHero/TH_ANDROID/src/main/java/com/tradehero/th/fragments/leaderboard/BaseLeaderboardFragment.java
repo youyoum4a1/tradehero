@@ -6,11 +6,18 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.actionbarsherlock.view.SubMenu;
+import com.tradehero.common.persistence.DTOCache;
+import com.tradehero.common.utils.THLog;
+import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.leaderboard.LeaderboardDefDTO;
+import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.api.users.UserBaseKey;
+import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
+import com.tradehero.th.persistence.user.UserProfileCache;
 import javax.inject.Inject;
 
 /** Created with IntelliJ IDEA. User: tho Date: 11/1/13 Time: 6:24 PM Copyright (c) TradeHero */
@@ -24,30 +31,20 @@ abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragmen
     public static final String BUNDLE_KEY_SORT_OPTION_FLAGS = BaseLeaderboardFragment.class.getName() + ".sortOptionFlags";
 
     @Inject protected LeaderboardSortHelper leaderboardSortHelper;
+    @Inject protected CurrentUserId currentUserId;
+    protected UserProfileDTO currentUserProfileDTO;
+    @Inject protected UserProfileCache userProfileCache;
+    protected DTOCache.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
+    protected DTOCache.GetOrFetchTask<UserBaseKey, UserProfileDTO> userProfileCacheFetchTask;
 
     private LeaderboardSortType currentSortType;
     private SortTypeChangedListener sortTypeChangeListener;
     private SubMenu sortSubMenu;
 
-    protected void pushLeaderboardListViewFragment(LeaderboardDefDTO dto)
+    @Override public void onCreate(Bundle savedInstanceState)
     {
-        Bundle bundle = new Bundle(getArguments());
-        bundle.putInt(BUNDLE_KEY_LEADERBOARD_ID, dto.id);
-        bundle.putString(BUNDLE_KEY_LEADERBOARD_DEF_TITLE, dto.name);
-        bundle.putInt(BUNDLE_KEY_CURRENT_SORT_TYPE, getCurrentSortType() != null ? getCurrentSortType().getFlag() : dto.getDefaultSortType().getFlag());
-        bundle.putString(BUNDLE_KEY_LEADERBOARD_DEF_DESC, dto.desc);
-        bundle.putInt(BUNDLE_KEY_SORT_OPTION_FLAGS, dto.getSortOptionFlags());
-
-        switch (dto.id)
-        {
-            case LeaderboardDefDTO.LEADERBOARD_FRIEND_ID:
-                getNavigator().pushFragment(FriendLeaderboardMarkUserListViewFragment.class, bundle);
-                break;
-
-            default:
-                getNavigator().pushFragment(LeaderboardMarkUserListViewFragment.class, bundle);
-                break;
-        }
+        super.onCreate(savedInstanceState);
+        this.userProfileCacheListener = new BaseLeaderboardFragmentProfileCacheListener();
     }
 
     //<editor-fold desc="ActionBar">
@@ -70,11 +67,6 @@ abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragmen
         }
     }
 
-    protected int getMenuResource()
-    {
-        return R.menu.leaderboard_menu;
-    }
-
     @Override public boolean onOptionsItemSelected(MenuItem item)
     {
         LeaderboardSortType selectedSortType = LeaderboardSortType.byFlag(item.getItemId());
@@ -85,6 +77,66 @@ abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragmen
         return super.onOptionsItemSelected(item);
     }
     //</editor-fold>
+
+    @Override public void onResume()
+    {
+        super.onResume();
+        detachUserProfileCacheFetchTask();
+        userProfileCacheFetchTask = userProfileCache.getOrFetch(currentUserId.toUserBaseKey(), false, userProfileCacheListener);
+        userProfileCacheFetchTask.execute();
+    }
+
+    @Override public void onDestroyView()
+    {
+        detachUserProfileCacheFetchTask();
+        super.onDestroyView();
+    }
+
+    @Override public void onDestroy()
+    {
+        this.userProfileCacheListener = null;
+        super.onDestroy();
+    }
+
+    protected void detachUserProfileCacheFetchTask()
+    {
+        if (userProfileCacheFetchTask != null)
+        {
+            userProfileCacheFetchTask.setListener(null);
+        }
+        userProfileCacheFetchTask = null;
+    }
+
+    protected int getMenuResource()
+    {
+        return R.menu.leaderboard_menu;
+    }
+
+    protected void setCurrentUserProfileDTO(UserProfileDTO currentUserProfileDTO)
+    {
+        this.currentUserProfileDTO = currentUserProfileDTO;
+    }
+
+    protected void pushLeaderboardListViewFragment(LeaderboardDefDTO dto)
+    {
+        Bundle bundle = new Bundle(getArguments());
+        bundle.putInt(BUNDLE_KEY_LEADERBOARD_ID, dto.id);
+        bundle.putString(BUNDLE_KEY_LEADERBOARD_DEF_TITLE, dto.name);
+        bundle.putInt(BUNDLE_KEY_CURRENT_SORT_TYPE, getCurrentSortType() != null ? getCurrentSortType().getFlag() : dto.getDefaultSortType().getFlag());
+        bundle.putString(BUNDLE_KEY_LEADERBOARD_DEF_DESC, dto.desc);
+        bundle.putInt(BUNDLE_KEY_SORT_OPTION_FLAGS, dto.getSortOptionFlags());
+
+        switch (dto.id)
+        {
+            case LeaderboardDefDTO.LEADERBOARD_FRIEND_ID:
+                getNavigator().pushFragment(FriendLeaderboardMarkUserListViewFragment.class, bundle);
+                break;
+
+            default:
+                getNavigator().pushFragment(LeaderboardMarkUserListViewFragment.class, bundle);
+                break;
+        }
+    }
 
     //<editor-fold desc="Sort menu stuffs">
     private void createSortSubMenu(Menu menu)
@@ -135,5 +187,24 @@ abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragmen
     @Override public boolean isTabBarVisible()
     {
         return false;
+    }
+
+    protected class BaseLeaderboardFragmentProfileCacheListener implements DTOCache.Listener<UserBaseKey, UserProfileDTO>
+    {
+        public BaseLeaderboardFragmentProfileCacheListener()
+        {
+            super();
+        }
+
+        @Override public void onDTOReceived(UserBaseKey key, UserProfileDTO value, boolean fromCache)
+        {
+            setCurrentUserProfileDTO(value);
+        }
+
+        @Override public void onErrorThrown(UserBaseKey key, Throwable error)
+        {
+            THLog.e(TAG, "Failed to download current UserProfile", error);
+            THToast.show(R.string.error_fetch_your_user_profile);
+        }
     }
 }

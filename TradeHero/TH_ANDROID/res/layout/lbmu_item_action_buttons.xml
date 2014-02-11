@@ -1,35 +1,83 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <merge xmlns:android="http://schemas.android.com/apk/res/android">
+
   <LinearLayout
       android:id="@+id/leaderboard_user_item_action_buttons"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:orientation="horizontal"
       android:gravity="center_horizontal"
-      android:layout_marginTop="10dp"
       >
-    <TextView
-        android:id="@+id/leaderboard_user_item_open_profile"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/profile"
-        style="@style/Leaderboard_ActionButton"
-        />
-    <TextView
-        android:id="@+id/leaderboard_user_item_open_positions_list"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/positions"
-        style="@style/Leaderboard_ActionButton"
-        />
 
-    <TextView
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        >
+
+      <TextView
+          android:id="@+id/leaderboard_user_item_open_profile"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_centerInParent="true"
+          android:text="@string/profile"
+          style="@style/Leaderboard_ActionButton"
+          />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:layout_marginLeft="8dp"
+        >
+
+      <TextView
+          android:id="@+id/leaderboard_user_item_open_positions_list"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_centerInParent="true"
+          android:text="@string/positions"
+          style="@style/Leaderboard_ActionButton"
+          />
+
+    </RelativeLayout>
+
+    <RelativeLayout
         android:id="@+id/leaderboard_user_item_follow"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/follow"
-        style="@style/Leaderboard_ActionButton_Blue"
-        />
+        android:layout_height="48dp"
+        android:layout_marginLeft="8dp"
+        >
+
+      <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_centerInParent="true"
+          android:text="@string/follow"
+          style="@style/Leaderboard_ActionButton_Blue"
+          />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/leaderboard_user_item_following"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:layout_marginLeft="8dp"
+        android:visibility="gone"
+        >
+
+      <ImageView
+          android:layout_width="87dp"
+          android:layout_height="32dp"
+          android:layout_centerInParent="true"
+          android:src="@drawable/following_stamp"
+          android:scaleType="fitCenter"
+          />
+
+    </RelativeLayout>
+
   </LinearLayout>
+
 </merge>
