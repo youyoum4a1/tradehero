@@ -180,7 +180,7 @@
           android:layout_marginRight="8dp"
           android:contentDescription="@null"
           android:background="@null"
-          android:src="@drawable/add_alert_big_noborder"
+          android:src="@drawable/add_alert"
           android:scaleType="fitCenter"
           />
 
@@ -191,7 +191,7 @@
           android:layout_toLeftOf="@id/btn_add_trigger"
           android:contentDescription="@null"
           android:background="@null"
-          android:src="@drawable/buy_thd_big"
+          android:src="@drawable/buy_vd"
           android:scaleType="fitCenter"
           />
 
