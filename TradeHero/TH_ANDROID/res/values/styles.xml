@@ -156,6 +156,7 @@
     <item name="android:textSize">@dimen/text_small</item>
     <item name="android:textColor">@color/white</item>
   </style>
+
   <style name="TutorialTextHeader">
     <item name="android:layout_width">match_parent</item>
     <item name="android:layout_height">wrap_content</item>
@@ -165,6 +166,5 @@
     <item name="android:textStyle">bold</item>
     <item name="android:drawableLeft">@drawable/icn_info_blue</item>
   </style>
-
 
 </resources>
