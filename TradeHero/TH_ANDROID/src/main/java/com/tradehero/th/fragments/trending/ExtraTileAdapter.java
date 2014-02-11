@@ -186,22 +186,27 @@ public class ExtraTileAdapter extends BaseAdapter
     {
         if (getItemViewType(position) == TileType.Normal.ordinal())
         {
-            return wrappedAdapter.isEnabled(position);
+            return wrappedAdapter.isEnabled(getWrappedPosition(position));
         }
         else
         {
-            // TODO
-            return true;
+            Object item = getItem(position);
+            if (item instanceof TileType)
+            {
+                return ((TileType) item).isEnable();
+            }
         }
+        return false;
     }
 
     @Override public void notifyDataSetChanged()
     {
-        regenerateExtraTiles();
+        // consider uncomment following line when the hack in securityListFragment is resolved
+        // regenerateExtraTiles();
         super.notifyDataSetChanged();
     }
 
-    private void regenerateExtraTiles()
+    public void regenerateExtraTiles()
     {
         int extraTileCount = Math.round(wrappedAdapter.getCount() / EXTRA_TILE_FREQUENCY);
 

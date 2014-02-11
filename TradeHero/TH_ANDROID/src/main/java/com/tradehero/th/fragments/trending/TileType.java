@@ -15,6 +15,7 @@ public enum TileType
 
     private final boolean extra;
     private final int layoutResourceId;
+    private final boolean enable;
 
     TileType(int layoutResourceId)
     {
@@ -23,8 +24,20 @@ public enum TileType
 
     TileType(int layoutResourceId, boolean extra)
     {
+        this(layoutResourceId, extra, true);
+    }
+
+    /**
+     *
+     * @param layoutResourceId layout to display this tile
+     * @param extra whether this tile is kind of extra or not (security item, or normal tile is not)
+     * @param enable whether this tile is enable (clickable, react to user interaction)
+     */
+    TileType(int layoutResourceId, boolean extra, boolean enable)
+    {
         this.layoutResourceId = layoutResourceId;
         this.extra = extra;
+        this.enable = enable;
     }
 
     public boolean isExtra()
@@ -40,5 +53,10 @@ public enum TileType
     static TileType at(int i)
     {
         return TileType.values()[i];
+    }
+
+    public boolean isEnable()
+    {
+        return enable;
     }
 }

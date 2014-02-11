@@ -25,6 +25,7 @@ import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityIdList;
 import com.tradehero.th.api.security.SecurityListType;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
+import com.tradehero.th.fragments.trending.ExtraTileAdapter;
 import com.tradehero.th.loaders.PagedDTOCacheLoader;
 import com.tradehero.th.loaders.security.SecurityListPagedLoader;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
@@ -55,6 +56,7 @@ abstract public class SecurityListFragment extends BasePurchaseManagerFragment
     protected int firstVisiblePosition = 0;
 
     @Inject protected SecurityCompactCache securityCompactCache;
+    private ExtraTileAdapter wrapperAdapter;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -78,8 +80,17 @@ abstract public class SecurityListFragment extends BasePurchaseManagerFragment
         // earn credit ..., the others which is competition, search stock/people will use normal adapter, which only provides security item data
         // if listview is set to original one, the trending screen will only display normal security item
         ListAdapter adapter = createSecurityItemViewAdapter();
-        securityItemViewAdapter = (SecurityItemViewAdapter<SecurityCompactDTO>)
-                (adapter instanceof WrapperListAdapter ? ((WrapperListAdapter) adapter).getWrappedAdapter() : adapter);
+
+        // TODO ListView should not have to care about whether its ListAdapter is wrapped or not
+        if (adapter instanceof ExtraTileAdapter)
+        {
+            wrapperAdapter = (ExtraTileAdapter) adapter;
+            securityItemViewAdapter = (SecurityItemViewAdapter<SecurityCompactDTO>) ((WrapperListAdapter) adapter).getWrappedAdapter();
+        }
+        else
+        {
+            securityItemViewAdapter = (SecurityItemViewAdapter<SecurityCompactDTO>) adapter;
+        }
 
         if (securityListView != null)
         {
@@ -317,6 +328,15 @@ abstract public class SecurityListFragment extends BasePurchaseManagerFragment
             {
                 // It may have been nullified if coming out
                 securityItemViewAdapter.setItems(securityCompactCache.get(securityIds));
+
+                // TODO hack, experience some synchronization matter here, generateExtraTiles should be call inside wrapperAdapter
+                // when data is changed
+                // Note that this is just to minimize the chance of happening, need synchronize the data changes inside super class DTOAdapter
+                if (wrapperAdapter != null)
+                {
+                    wrapperAdapter.regenerateExtraTiles();
+                }
+
                 securityItemViewAdapter.notifyDataSetChanged();
             }
             if (listViewScrollListener != null)
