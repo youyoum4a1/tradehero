@@ -82,7 +82,10 @@ public class ExtraTileAdapter extends BaseAdapter
             THLog.d(TAG, String.format("%d ---> %d (extraTilesMarker)", position, position - extraTilesMarker.length));
             return position - extraTilesMarker.length;
         }
-        throw new IllegalAccessError("extra tile marker should be initialized");
+        else
+        {
+            return position;
+        }
     }
 
     @Override public Object getItem(int position)
