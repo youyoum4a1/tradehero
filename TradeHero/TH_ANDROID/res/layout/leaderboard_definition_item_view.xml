@@ -4,7 +4,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="50dp"
     android:gravity="center_vertical"
     android:background="@color/white"
     >
@@ -19,27 +19,30 @@
       tools:background="@color/red"
       />
 
-  <TextView android:id="@+id/leaderboard_def_item_name"
+  <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
       android:layout_toRightOf="@id/leaderboard_def_item_icon"
-      android:layout_height="wrap_content"
-      android:layout_width="wrap_content"
-      android:textSize="@dimen/leaderboard_title_text_size"
-      android:paddingTop="@dimen/leaderboard_title_text_padding"
+      android:orientation="vertical"
+      android:gravity="center_vertical"
       android:paddingLeft="@dimen/leaderboard_title_text_padding"
-      android:textStyle="bold"
-      android:shadowColor="@color/black"
-      android:shadowDy="1"
-      android:shadowRadius="1"
-      tools:text="Vietnam"
-      />
-  <TextView android:id="@+id/leaderboard_def_item_desc"
-      android:layout_below="@id/leaderboard_def_item_name"
-      android:layout_toRightOf="@id/leaderboard_def_item_icon"
-      android:paddingLeft="@dimen/leaderboard_title_text_padding"
-      android:layout_height="wrap_content"
-      android:layout_width="wrap_content"
-      tools:text="Exchanges: VND"
-      />
+      >
+    <TextView android:id="@+id/leaderboard_def_item_name"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:textSize="@dimen/leaderboard_title_text_size"
+        android:textStyle="bold"
+        android:shadowColor="@color/black"
+        android:shadowDy="1"
+        android:shadowRadius="1"
+        tools:text="Vietnam"
+        />
+    <TextView android:id="@+id/leaderboard_def_item_desc"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        tools:text="Exchanges: VND"
+        />
+  </LinearLayout>
 
   <ImageView android:id="@+id/leaderboard_def_item_action_icon"
       android:layout_width="wrap_content"

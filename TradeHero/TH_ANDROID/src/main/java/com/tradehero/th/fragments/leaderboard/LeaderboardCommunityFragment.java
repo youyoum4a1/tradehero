@@ -25,9 +25,11 @@ import com.tradehero.th.api.competition.ProviderIdList;
 import com.tradehero.th.api.competition.ProviderListKey;
 import com.tradehero.th.api.leaderboard.LeaderboardDefCommunityListKey;
 import com.tradehero.th.api.leaderboard.LeaderboardDefDTO;
+import com.tradehero.th.api.leaderboard.LeaderboardDefExchangeListKey;
 import com.tradehero.th.api.leaderboard.LeaderboardDefKey;
 import com.tradehero.th.api.leaderboard.LeaderboardDefKeyList;
 import com.tradehero.th.api.leaderboard.LeaderboardDefListKey;
+import com.tradehero.th.api.leaderboard.LeaderboardDefSectorListKey;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.fragments.competition.MainCompetitionFragment;
@@ -335,7 +337,7 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
     private void pushLeaderboardDefSector()
     {
         Bundle bundle = new Bundle(getArguments());
-        (new LeaderboardDefListKey()).putParameters(bundle);
+        (new LeaderboardDefSectorListKey()).putParameters(bundle);
         bundle.putString(LeaderboardDefListViewFragment.BUNDLE_KEY_LEADERBOARD_DEF_TITLE, getString(R.string.leaderboard_sector));
         bundle.putInt(BaseLeaderboardFragment.BUNDLE_KEY_CURRENT_SORT_TYPE, getCurrentSortType().getFlag());
         getNavigator().pushFragment(LeaderboardDefListViewFragment.class, bundle);
@@ -343,7 +345,8 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
 
     private void pushLeaderboardDefExchange()
     {
-        Bundle bundle = new LeaderboardDefListKey().getArgs();
+        Bundle bundle = new Bundle(getArguments());
+        (new LeaderboardDefExchangeListKey()).putParameters(bundle);
         bundle.putString(LeaderboardDefListViewFragment.BUNDLE_KEY_LEADERBOARD_DEF_TITLE, getString(R.string.leaderboard_exchange));
         bundle.putInt(BaseLeaderboardFragment.BUNDLE_KEY_CURRENT_SORT_TYPE, getCurrentSortType().getFlag());
         getNavigator().pushFragment(LeaderboardDefListViewFragment.class, bundle);
