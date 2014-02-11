@@ -89,6 +89,7 @@ public class BuySellFragment extends AbstractBuySellFragment
 
     public final static int ADD_ALERT_RES_ID = R.drawable.add_alert;
     public final static int EDIT_ALERT_RES_ID = R.drawable.active_alert;
+    public final static int INACTIVE_ALERT_RES_ID = R.drawable.alert_inactive;
     public final static int TRANSACTION_COST = 10;
     public final static float BUY_BUTTON_DISABLED_ALPHA = 0.5f;
 
@@ -1026,6 +1027,7 @@ public class BuySellFragment extends AbstractBuySellFragment
             else // TODO check if failed
             {
                 mBtnAddTrigger.setEnabled(false);
+                mBtnAddTrigger.setImageResource(INACTIVE_ALERT_RES_ID);
             }
         }
     }
