@@ -33,7 +33,11 @@ public class DashboardActivity extends SherlockFragmentActivity
     public static final String TAG = DashboardActivity.class.getSimpleName();
 
     private DashboardNavigator navigator;
-    private THIABLogicHolder thiabLogicHolder;
+
+    // It is important to have Lazy here because we set the current Activity after the injection
+    // and the LogicHolder creator needs the current Activity...
+    @Inject protected Lazy<THIABLogicHolder> thiabLogicHolder;
+
     private THIABPurchaseRestorer purchaseRestorer;
     private THIABPurchaseRestorer.OnPurchaseRestorerFinishedListener purchaseRestorerFinishedListener;
 
@@ -42,11 +46,13 @@ public class DashboardActivity extends SherlockFragmentActivity
     @Inject Lazy<THIntentFactory> thIntentFactory;
     @Inject DTOCacheUtil dtoCacheUtil;
     @Inject PurchaseRestorerAlertUtil purchaseRestorerAlertUtil;
+    @Inject CurrentActivityHolder currentActivityHolder;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         DaggerUtils.inject(this);
+        currentActivityHolder.setCurrentActivity(this);
 
         if (Constants.RELEASE)
         {
@@ -82,7 +88,6 @@ public class DashboardActivity extends SherlockFragmentActivity
 
     private void launchIAB()
     {
-        thiabLogicHolder = new THIABLogicHolder(this);
         purchaseRestorer = new THIABPurchaseRestorer(this,
                 getBillingActor(),
                 getBillingActor(),
@@ -157,7 +162,7 @@ public class DashboardActivity extends SherlockFragmentActivity
         THLog.d(TAG, "onDestroy");
         if (thiabLogicHolder != null)
         {
-            thiabLogicHolder.onDestroy();
+            thiabLogicHolder.get().onDestroy();
         }
         thiabLogicHolder = null;
         if (navigator != null)
@@ -165,6 +170,11 @@ public class DashboardActivity extends SherlockFragmentActivity
             navigator.onDestroy();
         }
         navigator = null;
+
+        if (currentActivityHolder != null)
+        {
+            currentActivityHolder.unsetActivity(this);
+        }
         super.onDestroy();
     }
 
@@ -187,7 +197,7 @@ public class DashboardActivity extends SherlockFragmentActivity
 
     @Override public THIABActor getBillingActor()
     {
-        return thiabLogicHolder;
+        return thiabLogicHolder.get();
     }
 
     @Override protected void onActivityResult(int requestCode, int resultCode, Intent data)
@@ -195,6 +205,6 @@ public class DashboardActivity extends SherlockFragmentActivity
         super.onActivityResult(requestCode, resultCode, data);
         facebookUtils.get().finishAuthentication(requestCode, resultCode, data);
         // Passing it on just in case it is expecting something
-        thiabLogicHolder.onActivityResult(requestCode, resultCode, data);
+        thiabLogicHolder.get().onActivityResult(requestCode, resultCode, data);
     }
 }

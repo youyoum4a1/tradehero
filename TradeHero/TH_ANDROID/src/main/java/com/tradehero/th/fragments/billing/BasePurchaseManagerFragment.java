@@ -30,9 +30,12 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
         createUserInteractor();
     }
 
+    /**
+     * You are encouraged to override this method to specify your own UserInteractor.
+     */
     protected void createUserInteractor()
     {
-        userInteractor = new THIABUserInteractor(getActivity(), getBillingActor(), getView().getHandler());
+        userInteractor = new THIABUserInteractor();
     }
 
     @Override public void onResume()
@@ -62,8 +65,12 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
 
     @Override public void onDestroyView()
     {
-        userInteractor.onDestroy();
+        if (userInteractor != null)
+        {
+            userInteractor.onDestroy();
+        }
         userInteractor = null;
+
         super.onDestroyView();
     }
 

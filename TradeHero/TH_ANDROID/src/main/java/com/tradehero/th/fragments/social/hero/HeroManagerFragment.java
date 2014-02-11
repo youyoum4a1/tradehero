@@ -121,7 +121,7 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
 
     @Override protected void createUserInteractor()
     {
-        userInteractor = new HeroManagerTHIABUserInteractor(getActivity(), getBillingActor(), getView().getHandler());
+        userInteractor = new HeroManagerTHIABUserInteractor();
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
@@ -282,9 +282,9 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
 
     public class HeroManagerTHIABUserInteractor extends THIABUserInteractor
     {
-        public HeroManagerTHIABUserInteractor(Activity activity, THIABActor billingActor, Handler handler)
+        public HeroManagerTHIABUserInteractor()
         {
-            super(activity, billingActor, handler);
+            super();
         }
 
         @Override protected void handleShowSkuDetailsMilestoneComplete()

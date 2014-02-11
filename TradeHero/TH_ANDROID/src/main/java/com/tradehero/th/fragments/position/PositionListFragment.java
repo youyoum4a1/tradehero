@@ -80,14 +80,14 @@ public class PositionListFragment extends AbstractPositionListFragment<OwnedPort
 
     @Override protected void createUserInteractor()
     {
-        userInteractor = new PositionListTHIABUserInteractor(getActivity(), getBillingActor(), getView().getHandler());
+        userInteractor = new PositionListTHIABUserInteractor();
     }
 
     public class PositionListTHIABUserInteractor extends AbstractPositionListTHIABUserInteractor
     {
-        public PositionListTHIABUserInteractor(Activity activity, THIABActor billingActor, Handler handler)
+        public PositionListTHIABUserInteractor()
         {
-            super(activity, billingActor, handler);
+            super();
         }
     }
 }

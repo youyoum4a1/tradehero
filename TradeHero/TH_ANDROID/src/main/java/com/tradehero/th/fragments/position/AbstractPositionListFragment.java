@@ -500,9 +500,9 @@ abstract public class AbstractPositionListFragment<
     {
         public final String TAG = AbstractPositionListTHIABUserInteractor.class.getName();
 
-        public AbstractPositionListTHIABUserInteractor(Activity activity, THIABActor billingActor, Handler handler)
+        public AbstractPositionListTHIABUserInteractor()
         {
-            super(activity, billingActor, handler);
+            super();
         }
 
         @Override protected void handlePurchaseReportSuccess(THIABPurchase reportedPurchase, UserProfileDTO updatedUserProfile)

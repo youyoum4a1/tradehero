@@ -33,6 +33,11 @@ public class PushableTimelineFragment extends TimelineFragment
     private MenuItem followingStamp;
     @Inject protected HeroAlertDialogUtil heroAlertDialogUtil;
 
+    @Override protected void createUserInteractor()
+    {
+        userInteractor = new PushableTimelineTHIABUserInteractor();
+    }
+
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         inflater.inflate(R.menu.timeline_menu_pushable_other, menu);
@@ -82,11 +87,6 @@ public class PushableTimelineFragment extends TimelineFragment
         this.btnFollow = null;
         this.followingStamp = null;
         super.onDestroyOptionsMenu();
-    }
-
-    @Override protected void createUserInteractor()
-    {
-        userInteractor = new PushableTimelineTHIABUserInteractor(getActivity(), getBillingActor(), getView().getHandler());
     }
 
     @Override protected void linkWith(UserProfileDTO userProfileDTO, boolean andDisplay)
@@ -166,9 +166,9 @@ public class PushableTimelineFragment extends TimelineFragment
     {
         public final String TAG = PushableTimelineTHIABUserInteractor.class.getName();
 
-        public PushableTimelineTHIABUserInteractor(Activity activity, THIABActor billingActor, Handler handler)
+        public PushableTimelineTHIABUserInteractor()
         {
-            super(activity, billingActor, handler);
+            super();
         }
 
         @Override protected void handleShowSkuDetailsMilestoneComplete()

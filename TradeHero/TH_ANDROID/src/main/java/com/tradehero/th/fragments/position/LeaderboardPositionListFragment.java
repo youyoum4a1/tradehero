@@ -108,7 +108,7 @@ public class LeaderboardPositionListFragment
 
     @Override protected void createUserInteractor()
     {
-        userInteractor = new LeaderboardPositionListTHIABUserInteractor(getActivity(), getBillingActor(), getView().getHandler());
+        userInteractor = new LeaderboardPositionListTHIABUserInteractor();
     }
 
     @Override public void onTradeHistoryClicked(PositionInPeriodDTO clickedPositionDTO)
@@ -133,9 +133,9 @@ public class LeaderboardPositionListFragment
 
     public class LeaderboardPositionListTHIABUserInteractor extends AbstractPositionListTHIABUserInteractor
     {
-        public LeaderboardPositionListTHIABUserInteractor(Activity activity, THIABActor billingActor, Handler handler)
+        public LeaderboardPositionListTHIABUserInteractor()
         {
-            super(activity, billingActor, handler);
+            super();
         }
     }
 }

@@ -23,6 +23,7 @@ import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
+import com.tradehero.th.activities.CurrentActivityHolder;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
@@ -69,8 +70,7 @@ public class THIABUserInteractor
 {
     public static final String TAG = THIABUserInteractor.class.getSimpleName();
 
-    protected WeakReference<Activity> activityWeak = new WeakReference<>(null);
-    protected WeakReference<Handler> handlerWeak = new WeakReference<>(null);
+    @Inject protected CurrentActivityHolder currentActivityHolder;
 
     private ShowSkuDetailsMilestone showSkuDetailsMilestone;
     private Milestone.OnCompleteListener showSkuDetailsMilestoneListener;
@@ -81,7 +81,7 @@ public class THIABUserInteractor
     @Inject CurrentUserId currentUserId;
     @Inject Lazy<PortfolioCompactListCache> portfolioCompactListCache;
     @Inject Lazy<THIABProductDetailCache> thiabProductDetailCache;
-    protected WeakReference<THIABActor> billingActor = new WeakReference<>(null);
+    @Inject protected THIABActor billingActor;
     protected THIABPurchaseRestorer purchaseRestorer;
     protected InventoryFetcher.OnInventoryFetchedListener<IABSKU, THIABProductDetail, IABException> inventoryFetchedForgetListener;
     protected OwnedPortfolioId applicablePortfolioId;
@@ -117,22 +117,15 @@ public class THIABUserInteractor
     private DTOCache.Listener<UserBaseKey, UserProfileDTO> userProfileListener;
     private DTOCache.GetOrFetchTask<UserBaseKey, UserProfileDTO> userProfileFetchTask;
 
-    /**
-     * The activityWeak and handler should be strongly referenced elsewhere
-     * @param activity
-     */
-    public THIABUserInteractor(Activity activity, THIABActor billingActor, Handler handler)
+    public THIABUserInteractor()
     {
         super();
         DaggerUtils.inject(this);
-        this.activityWeak = new WeakReference<>(activity);
-        setBillingActor(billingActor);
-        purchaseRestorer = new THIABPurchaseRestorer(activity,
+        purchaseRestorer = new THIABPurchaseRestorer(currentActivityHolder.getCurrentActivity(),
                 billingActor,
                 billingActor,
                 billingActor,
                 billingActor);
-        this.handlerWeak = new WeakReference<>(handler);
         showSkuDetailsMilestoneListener = new Milestone.OnCompleteListener()
         {
             @Override public void onComplete(Milestone milestone)
@@ -147,7 +140,7 @@ public class THIABUserInteractor
                 handleShowSkuDetailsMilestoneFailed(throwable);
             }
         };
-        prepareCallbacks(activity);
+        prepareCallbacks(currentActivityHolder.getCurrentActivity());
 
         purchaseRestorer.setFinishedListener(purchaseRestorerFinishedListener);
         purchaseRestorer.init();
@@ -338,7 +331,7 @@ public class THIABUserInteractor
 
     protected void haveActorForget(int requestCode)
     {
-        THIABActor actor = getBillingActor();
+        THIABActor actor = this.billingActor;
         if (actor != null)
         {
             actor.forgetRequestCode(requestCode);
@@ -365,7 +358,11 @@ public class THIABUserInteractor
             }
         }
 
-        showSkuDetailsMilestone = new ShowSkuDetailsMilestone(activityWeak.get(), getBillingActor(), IABSKUListType.getInApp(), this.applicablePortfolioId.getUserBaseKey());
+        showSkuDetailsMilestone = new ShowSkuDetailsMilestone(
+                currentActivityHolder.getCurrentActivity(),
+                billingActor,
+                IABSKUListType.getInApp(),
+                this.applicablePortfolioId.getUserBaseKey());
         showSkuDetailsMilestone.setOnCompleteListener(showSkuDetailsMilestoneListener);
         showSkuDetailsMilestoneException = null;
         showSkuDetailsMilestone.launch();
@@ -431,26 +428,26 @@ public class THIABUserInteractor
 
     protected boolean isBillingAvailable()
     {
-        THIABActor billingActor = getBillingActor();
-        return billingActor != null && billingActor.isBillingAvailable();
+        THIABActor billingActorCopy = this.billingActor;
+        return billingActorCopy != null && billingActorCopy.isBillingAvailable();
     }
 
     protected boolean hadErrorLoadingInventory()
     {
-        THIABActor billingActor = getBillingActor();
-        return billingActor != null && billingActor.hadErrorLoadingInventory();
+        THIABActor billingActorCopy = this.billingActor;
+        return billingActorCopy != null && billingActorCopy.hadErrorLoadingInventory();
     }
 
     protected boolean isInventoryReady()
     {
-        THIABActor billingActor = getBillingActor();
-        return billingActor != null && billingActor.isInventoryReady();
+        THIABActor billingActorCopy = this.billingActor;
+        return billingActorCopy != null && billingActorCopy.isInventoryReady();
     }
 
     //<editor-fold desc="THIABActorUser">
     public THIABActor getBillingActor()
     {
-        return billingActor.get();
+        return billingActor;
     }
 
     /**
@@ -459,7 +456,7 @@ public class THIABUserInteractor
      */
     public void setBillingActor(THIABActor billingActor)
     {
-        this.billingActor = new WeakReference<>(billingActor);
+        throw new IllegalStateException("You cannot change the billing Actor");
     }
     //</editor-fold>
 
@@ -467,7 +464,7 @@ public class THIABUserInteractor
     {
         if (!isBillingAvailable())
         {
-            return iabAlertDialogSKUUtil.popBillingUnavailable(activityWeak.get());
+            return iabAlertDialogSKUUtil.popBillingUnavailable(currentActivityHolder.getCurrentActivity());
         }
         return null;
     }
@@ -476,7 +473,7 @@ public class THIABUserInteractor
     {
         if (!isBillingAvailable())
         {
-            return iabAlertDialogSKUUtil.popBillingUnavailable(activityWeak.get());
+            return iabAlertDialogSKUUtil.popBillingUnavailable(currentActivityHolder.getCurrentActivity());
         }
         else if (hadErrorLoadingInventory())
         {
@@ -487,7 +484,7 @@ public class THIABUserInteractor
 
     public AlertDialog popErrorWhenLoading()
     {
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(activityWeak.get());
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(currentActivityHolder.getCurrentActivity());
         alertDialogBuilder
                 .setTitle(R.string.store_billing_error_loading_window_title)
                 .setMessage(R.string.store_billing_error_loading_window_description)
@@ -629,7 +626,8 @@ public class THIABUserInteractor
         {
             @Override public void run()
             {
-                Handler handler = THIABUserInteractor.this.handlerWeak.get();
+                Handler handler = THIABUserInteractor.this.currentActivityHolder.getCurrentHandler();
+                THLog.d(TAG, "handler " + handler);
                 if (handler != null)
                 {
                     handler.post(new Runnable()
@@ -637,7 +635,7 @@ public class THIABUserInteractor
                         @Override public void run()
                         {
                             iabAlertDialogSKUUtil.popBuyDialog(
-                                    activityWeak.get(),
+                                    currentActivityHolder.getCurrentActivity(),
                                     getBillingActor(),
                                     THIABUserInteractor.this,
                                     skuDomain,
@@ -672,7 +670,7 @@ public class THIABUserInteractor
 
     protected void popDialogLoadingInfo()
     {
-        Activity activity = this.activityWeak.get();
+        Activity activity = this.currentActivityHolder.getCurrentActivity();
         if (activity != null)
         {
             progressDialog = ProgressDialog.show(
@@ -693,7 +691,7 @@ public class THIABUserInteractor
 
     protected void popFailedToLoadRequiredInfo()
     {
-        iabAlertDialogSKUUtil.popFailedToLoadRequiredInfo(activityWeak.get());
+        iabAlertDialogSKUUtil.popFailedToLoadRequiredInfo(currentActivityHolder.getCurrentActivity());
     }
 
     protected void launchReportPurchaseSequence(THIABPurchase purchase)
@@ -703,7 +701,7 @@ public class THIABUserInteractor
 
     protected void launchReportPurchaseSequence(THIABActorPurchaseReporter actorPurchaseReporter, THIABPurchase purchase)
     {
-        Activity activity = this.activityWeak.get();
+        Activity activity = this.currentActivityHolder.getCurrentActivity();
         if (activity != null)
         {
             progressDialog = ProgressDialog.show(
@@ -740,14 +738,14 @@ public class THIABUserInteractor
         if (dialog != null)
         {
             dialog.setTitle(R.string.store_billing_report_api_finishing_window_title);
-            Activity activity = this.activityWeak.get();
+            Activity activity = this.currentActivityHolder.getCurrentActivity();
             if (activity != null)
             {
                 dialog.setMessage(activity.getString(R.string.store_billing_report_api_finishing_window_title));
             }
         }
 
-        Handler handler = handlerWeak.get();
+        Handler handler = currentActivityHolder.getCurrentHandler();
         if (handler != null)
         {
             handler.postDelayed(new Runnable()
@@ -781,7 +779,7 @@ public class THIABUserInteractor
 
     public void launchRestoreSequence()
     {
-        Activity activity = this.activityWeak.get();
+        Activity activity = this.currentActivityHolder.getCurrentActivity();
         if (activity != null)
         {
             progressDialog = ProgressDialog.show(
@@ -844,7 +842,7 @@ public class THIABUserInteractor
         }
         else
         {
-            Activity activity = activityWeak.get();
+            Activity activity = currentActivityHolder.getCurrentActivity();
             if (activity != null)
             {
                 progressDialog = ProgressDialog.show(
@@ -861,7 +859,7 @@ public class THIABUserInteractor
 
     public void unfollowHero(UserBaseKey userBaseKey)
     {
-        Activity activity = activityWeak.get();
+        Activity activity = currentActivityHolder.getCurrentActivity();
         if (activity != null)
         {
             progressDialog = ProgressDialog.show(

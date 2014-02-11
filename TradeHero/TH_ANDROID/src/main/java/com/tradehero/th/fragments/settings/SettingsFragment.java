@@ -25,7 +25,6 @@ import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.ActivityHelper;
-import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.form.UserFormFactory;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.social.SocialNetworkFormDTO;
@@ -71,6 +70,7 @@ public class SettingsFragment extends PreferenceFragment
 {
     public static final String TAG = SettingsFragment.class.getSimpleName();
 
+    @Inject protected THIABUserInteractor userInteractor;
     @Inject UserServiceWrapper userServiceWrapper;
     @Inject SessionService sessionService;
     @Inject SocialService socialService;
@@ -85,8 +85,6 @@ public class SettingsFragment extends PreferenceFragment
     @Inject protected Lazy<TwitterUtils> twitterUtils;
     @Inject protected Lazy<LinkedInUtils> linkedInUtils;
 
-    private THIABUserInteractor userInteractor;
-
     private ProgressDialog progressDialog;
     private CheckBoxPreference facebookSharing;
     private SocialNetworkEnum currentSocialNetworkConnect;
@@ -98,11 +96,14 @@ public class SettingsFragment extends PreferenceFragment
     private CheckBoxPreference pushNotificationVibrate;
     protected UserProfileRetrievedMilestone currentUserProfileRetrievedMilestone;
 
-    @Override public void onActivityCreated(Bundle savedInstanceState)
+    @Override public void onCreate(Bundle savedInstanceState)
     {
-        super.onActivityCreated(savedInstanceState);
-        userInteractor = new THIABUserInteractor(getActivity(), ((DashboardActivity) getActivity()).getBillingActor(), getView().getHandler());
-        userInteractor.setApplicablePortfolioId(null);
+        super.onCreate(savedInstanceState);
+
+        setHasOptionsMenu(true);
+        addPreferencesFromResource(R.xml.settings);
+
+        DaggerUtils.inject(this);
     }
 
     @Override public View onCreateView(LayoutInflater paramLayoutInflater, ViewGroup paramViewGroup, Bundle paramBundle)
@@ -110,6 +111,7 @@ public class SettingsFragment extends PreferenceFragment
         View view = super.onCreateView(paramLayoutInflater, paramViewGroup, paramBundle);
         view.setBackgroundColor(getResources().getColor(R.color.white));
 
+        detachCurrentUserProfileMilestone();
         this.currentUserProfileRetrievedMilestone = new UserProfileRetrievedMilestone(currentUserId.toUserBaseKey());
         this.currentUserProfileRetrievedMilestone.setOnCompleteListener(new SettingsUserProfileRetrievedCompleteListener());
         this.currentUserProfileRetrievedMilestone.launch();
@@ -136,21 +138,46 @@ public class SettingsFragment extends PreferenceFragment
         super.onViewCreated(view, savedInstanceState);
     }
 
-    @Override public void onCreate(Bundle savedInstanceState)
+    @Override public void onActivityCreated(Bundle savedInstanceState)
     {
-        super.onCreate(savedInstanceState);
-
-        setHasOptionsMenu(true);
-        addPreferencesFromResource(R.xml.settings);
-
-        DaggerUtils.inject(this);
+        super.onActivityCreated(savedInstanceState);
+        userInteractor.setApplicablePortfolioId(null);
     }
+
+    //<editor-fold desc="ActionBar">
+    @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
+    {
+        super.onCreateOptionsMenu(menu, inflater);
+        getSherlockActivity().getSupportActionBar().setDisplayOptions(
+                ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_SHOW_TITLE);
+        getSherlockActivity().getSupportActionBar().setTitle(getString(R.string.settings));
+    }
+
+    @Override public boolean onOptionsItemSelected(MenuItem item)
+    {
+        switch (item.getItemId())
+        {
+            case android.R.id.home:
+                getNavigator().popFragment();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+    //</editor-fold>
 
     @Override public void onDestroyView()
     {
-        this.currentUserProfileRetrievedMilestone.setOnCompleteListener(null);
-        this.currentUserProfileRetrievedMilestone = null;
+        detachCurrentUserProfileMilestone();
         super.onDestroyView();
+    }
+
+    protected void detachCurrentUserProfileMilestone()
+    {
+        if (this.currentUserProfileRetrievedMilestone != null)
+        {
+            this.currentUserProfileRetrievedMilestone.setOnCompleteListener(null);
+        }
+        this.currentUserProfileRetrievedMilestone = null;
     }
 
     private THIABPurchaseRestorer.OnPurchaseRestorerFinishedListener createPurchaseRestorerListener()
@@ -602,27 +629,6 @@ public class SettingsFragment extends PreferenceFragment
             THLog.d(TAG, "Sharing is updated");
         }
     }
-
-    //<editor-fold desc="ActionBar">
-    @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
-    {
-        super.onCreateOptionsMenu(menu, inflater);
-        getSherlockActivity().getSupportActionBar().setDisplayOptions(
-                ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_SHOW_TITLE);
-        getSherlockActivity().getSupportActionBar().setTitle(getString(R.string.settings));
-    }
-
-    @Override public boolean onOptionsItemSelected(MenuItem item)
-    {
-        switch (item.getItemId())
-        {
-            case android.R.id.home:
-                getNavigator().popFragment();
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-    //</editor-fold>
 
     private DashboardNavigator getNavigator()
     {

@@ -334,7 +334,7 @@ public class BuySellFragment extends AbstractBuySellFragment
 
     @Override protected void createUserInteractor()
     {
-        userInteractor = new BuySellTHIABUserInteractor(getActivity(), getBillingActor(), getView().getHandler());
+        userInteractor = new BuySellTHIABUserInteractor();
     }
 
     //<editor-fold desc="ActionBar">
@@ -1421,9 +1421,9 @@ public class BuySellFragment extends AbstractBuySellFragment
 
     public class BuySellTHIABUserInteractor extends THIABUserInteractor
     {
-        public BuySellTHIABUserInteractor(Activity activity, THIABActor billingActor, Handler handler)
+        public BuySellTHIABUserInteractor()
         {
-            super(activity, billingActor, handler);
+            super();
         }
 
         @Override protected void handleShowSkuDetailsMilestoneComplete()

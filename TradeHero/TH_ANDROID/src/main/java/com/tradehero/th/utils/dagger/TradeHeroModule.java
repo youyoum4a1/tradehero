@@ -6,12 +6,14 @@ import com.tradehero.common.billing.googleplay.IABInventoryFetcher;
 import com.tradehero.common.billing.googleplay.IABServiceConnector;
 import com.tradehero.common.cache.DatabaseCache;
 import com.tradehero.common.persistence.CacheHelper;
+import com.tradehero.th.activities.ActivityModule;
 import com.tradehero.th.api.form.AbstractUserAvailabilityRequester;
 import com.tradehero.th.api.position.PositionDTOCompactList;
 import com.tradehero.th.base.THUser;
 import com.tradehero.th.billing.googleplay.PurchaseRestorerRequiredMilestone;
 import com.tradehero.th.billing.googleplay.THIABInventoryFetcher;
 import com.tradehero.th.billing.googleplay.THIABLogicHolder;
+import com.tradehero.th.billing.googleplay.THIABModule;
 import com.tradehero.th.billing.googleplay.THIABPurchaseConsumer;
 import com.tradehero.th.billing.googleplay.THIABPurchaseFetcher;
 import com.tradehero.th.billing.googleplay.THIABPurchaseReporter;
@@ -125,6 +127,8 @@ import javax.inject.Singleton;
                 UserModule.class,
                 PreferenceModule.class,
                 ChartModule.class,
+                ActivityModule.class,
+                THIABModule.class,
         },
         injects =
                 {

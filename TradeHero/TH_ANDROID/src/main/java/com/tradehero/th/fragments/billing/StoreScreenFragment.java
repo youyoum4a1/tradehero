@@ -66,7 +66,7 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
 
     @Override protected void createUserInteractor()
     {
-        userInteractor = new StoreScreenTHIABUserInteractor(getActivity(), getBillingActor(), getView().getHandler());
+        userInteractor = new StoreScreenTHIABUserInteractor();
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
@@ -188,9 +188,9 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
 
     public class StoreScreenTHIABUserInteractor extends THIABUserInteractor
     {
-        public StoreScreenTHIABUserInteractor(Activity activity, THIABActor billingActor, Handler handler)
+        public StoreScreenTHIABUserInteractor()
         {
-            super(activity, billingActor, handler);
+            super();
         }
 
         @Override protected void handleShowSkuDetailsMilestoneFailed(Throwable throwable)
