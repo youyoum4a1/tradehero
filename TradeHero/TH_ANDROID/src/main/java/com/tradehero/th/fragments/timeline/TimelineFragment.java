@@ -28,6 +28,7 @@ import com.tradehero.th.base.NavigatorActivity;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.fragments.portfolio.PortfolioRequestListener;
 import com.tradehero.th.fragments.position.PositionListFragment;
+import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.loaders.ListLoader;
 import com.tradehero.th.loaders.TimelineListLoader;
 import com.tradehero.th.persistence.portfolio.PortfolioCache;
@@ -41,7 +42,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 public class TimelineFragment extends BasePurchaseManagerFragment
-        implements PortfolioRequestListener
+        implements PortfolioRequestListener, WithTutorial
 {
     public static final String TAG = TimelineFragment.class.getSimpleName();
     public static final String BUNDLE_KEY_SHOW_USER_ID =
@@ -352,6 +353,11 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     @Override public boolean isTabBarVisible()
     {
         return false;
+    }
+
+    @Override public int getTutorialLayout()
+    {
+        return R.layout.tutorial_timeline;
     }
     //</editor-fold>
 }

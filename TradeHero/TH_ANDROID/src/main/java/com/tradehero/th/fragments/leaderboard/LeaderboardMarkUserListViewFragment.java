@@ -24,7 +24,7 @@ import org.ocpsoft.prettytime.PrettyTime;
 
 /** Created with IntelliJ IDEA. User: tho Date: 10/14/13 Time: 12:34 PM Copyright (c) TradeHero */
 public class LeaderboardMarkUserListViewFragment extends BaseLeaderboardFragment
-        implements SortTypeChangedListener, WithTutorial
+        implements SortTypeChangedListener
 {
     @Inject protected Provider<PrettyTime> prettyTime;
 
@@ -170,11 +170,6 @@ public class LeaderboardMarkUserListViewFragment extends BaseLeaderboardFragment
         return false;
     }
     //</editor-fold>
-
-    @Override public int getTutorialLayout()
-    {
-        return R.layout.authentication_agreement;
-    }
 
     private class LeaderboardMarkUserListViewFragmentListLoaderCallback extends LoaderDTOAdapter.ListLoaderCallback<LeaderboardUserDTO>
     {

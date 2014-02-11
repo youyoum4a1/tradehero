@@ -31,6 +31,7 @@ import com.tradehero.th.fragments.trending.filter.TrendingFilterSelectorView;
 import com.tradehero.th.fragments.trending.filter.TrendingFilterTypeBasicDTO;
 import com.tradehero.th.fragments.trending.filter.TrendingFilterTypeDTO;
 import com.tradehero.th.fragments.trending.filter.TrendingFilterTypeDTOFactory;
+import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.fragments.web.WebViewFragment;
 import com.tradehero.th.models.market.ExchangeDTODescriptionNameComparator;
 import com.tradehero.th.persistence.market.ExchangeListCache;
@@ -42,6 +43,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 public class TrendingFragment extends SecurityListFragment
+    implements WithTutorial
 {
     private final static String TAG = TrendingFragment.class.getSimpleName();
 
@@ -123,12 +125,12 @@ public class TrendingFragment extends SecurityListFragment
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         //THLog.i(TAG, "onCreateOptionsMenu");
-        super.onCreateOptionsMenu(menu, inflater);
         ActionBar actionBar = getSherlockActivity().getSupportActionBar();
         actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME);
         actionBar.setTitle(R.string.header_trending);
 
         inflater.inflate(R.menu.trending_menu, menu);
+        super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override public boolean onOptionsItemSelected(MenuItem item)
@@ -342,4 +344,10 @@ public class TrendingFragment extends SecurityListFragment
 
     private DTOCache.Listener<ExchangeListType, ExchangeDTOList> exchangeListTypeCacheListener;
     //</editor-fold>
+
+
+    @Override public int getTutorialLayout()
+    {
+        return R.layout.tutorial_trending_screen;
+    }
 }

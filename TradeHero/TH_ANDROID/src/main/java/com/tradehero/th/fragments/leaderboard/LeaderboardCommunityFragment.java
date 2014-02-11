@@ -33,6 +33,7 @@ import com.tradehero.th.api.leaderboard.LeaderboardDefSectorListKey;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.fragments.competition.MainCompetitionFragment;
+import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.fragments.web.WebViewFragment;
 import com.tradehero.th.models.intent.THIntent;
 import com.tradehero.th.models.intent.THIntentPassedListener;
@@ -48,6 +49,7 @@ import javax.inject.Inject;
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 
 public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
+    implements WithTutorial
 {
     private static final String TAG = LeaderboardCommunityFragment.class.getName();
 
@@ -241,6 +243,11 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
             webFragment = (WebViewFragment) navigator.pushFragment(WebViewFragment.class, args);
             webFragment.setThIntentPassedListener(thIntentPassedListener);
         }
+    }
+
+    @Override public int getTutorialLayout()
+    {
+        return R.layout.tutorial_leaderboard_community;
     }
 
     private class LeaderboardCommunityTHIntentPassedListener implements THIntentPassedListener

@@ -56,8 +56,8 @@ abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragmen
         createSortSubMenu(menu);
         initSortTypeFromArguments();
 
-        super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(getMenuResource(), menu);
+        super.onCreateOptionsMenu(menu, inflater);
 
         ActionBar actionBar = getSherlockActivity().getSupportActionBar();
         actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME);

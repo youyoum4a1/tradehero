@@ -1,8 +1,16 @@
 package com.tradehero.th.utils;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.drawable.ColorDrawable;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.TextView;
 import com.tradehero.th.R;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -105,5 +113,29 @@ import javax.inject.Singleton;
         alertDialog.show();
         alertDialog.setCanceledOnTouchOutside(true);
         return alertDialog;
+    }
+
+    public Dialog popCustom(final Context context, int layoutResourceId)
+    {
+        final Dialog dialog = new Dialog(context);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.tutorial_master_layout);
+        ViewGroup tutorialContentView = (ViewGroup) dialog.findViewById(R.id.tutorial_content);
+        LayoutInflater.from(context).inflate(layoutResourceId, tutorialContentView, true);
+        ((View) tutorialContentView.getParent()).setOnClickListener(new View.OnClickListener()
+        {
+            @Override public void onClick(View v)
+            {
+                dialog.dismiss();
+            }
+        });
+
+        WindowManager.LayoutParams lp = dialog.getWindow().getAttributes();
+        lp.dimAmount=0.85f; // Dim level. 0.0 - no dim, 1.0 - completely opaque
+        dialog.getWindow().setAttributes(lp);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+
+        dialog.show();
+        return dialog;
     }
 }

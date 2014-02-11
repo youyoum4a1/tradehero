@@ -23,10 +23,12 @@ import com.tradehero.th.billing.googleplay.THIABActor;
 import com.tradehero.th.fragments.alert.AlertManagerFragment;
 import com.tradehero.th.fragments.social.follower.FollowerManagerFragment;
 import com.tradehero.th.fragments.social.hero.HeroManagerFragment;
+import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListRetrievedMilestone;
 import javax.inject.Inject;
 
 public class StoreScreenFragment extends BasePurchaseManagerFragment
+    implements WithTutorial
 {
     public static final String TAG = StoreScreenFragment.class.getSimpleName();
 
@@ -184,6 +186,11 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
                 R.string.error_incomplete_info_title,
                 R.string.error_incomplete_info_message,
                 R.string.error_incomplete_info_cancel);
+    }
+
+    @Override public int getTutorialLayout()
+    {
+        return R.layout.tutorial_store_screen;
     }
 
     public class StoreScreenTHIABUserInteractor extends THIABUserInteractor

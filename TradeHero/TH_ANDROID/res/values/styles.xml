@@ -168,6 +168,20 @@
     <item name="android:paddingLeft">@dimen/leaderboard_user_item_action_follow_button_horizontal_padding</item>
     <item name="android:paddingRight">@dimen/leaderboard_user_item_action_follow_button_horizontal_padding</item>
   </style>
+  <style name="TutorialTextContent">
+    <item name="android:layout_width">wrap_content</item>
+    <item name="android:layout_height">wrap_content</item>
+    <item name="android:textSize">@dimen/text_small</item>
+    <item name="android:textColor">@color/white</item>
+  </style>
+  <style name="TutorialTextHeader">
+    <item name="android:layout_width">match_parent</item>
+    <item name="android:layout_height">wrap_content</item>
+    <item name="android:textSize">@dimen/text_header</item>
+    <item name="android:textColor">@color/white</item>
+    <item name="android:textStyle">bold</item>
+    <item name="android:drawableLeft">@drawable/icn_info_blue</item>
+  </style>
 
   <dimen name="leaderboard_user_item_action_button_horizontal_padding">10sp</dimen>
   <dimen name="leaderboard_user_item_action_follow_button_horizontal_padding">20sp</dimen>

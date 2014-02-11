@@ -23,6 +23,7 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.position.PositionListFragment;
+import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.fragments.watchlist.WatchlistPositionFragment;
 import com.tradehero.th.persistence.portfolio.PortfolioCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
@@ -38,7 +39,7 @@ import javax.inject.Inject;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/14/13 Time: 11:47 AM To change this template use File | Settings | File Templates. */
 public class PortfolioListFragment extends DashboardFragment
-    implements FetchAssistant.OnInfoFetchedListener<UserBaseKey, OwnedPortfolioId>
+    implements FetchAssistant.OnInfoFetchedListener<UserBaseKey, OwnedPortfolioId>, WithTutorial
 {
     public static final String TAG = PortfolioListFragment.class.getSimpleName();
 
@@ -559,6 +560,11 @@ public class PortfolioListFragment extends DashboardFragment
     @Override public boolean isTabBarVisible()
     {
         return true;
+    }
+
+    @Override public int getTutorialLayout()
+    {
+        return R.layout.tutorial_portfolio_list;
     }
     //</editor-fold>
 }

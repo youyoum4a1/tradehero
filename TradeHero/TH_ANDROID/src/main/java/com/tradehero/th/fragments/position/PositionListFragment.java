@@ -8,6 +8,7 @@ import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.position.GetPositionsDTO;
 import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.billing.googleplay.THIABActor;
+import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.persistence.position.GetPositionsCache;
 import dagger.Lazy;
 import javax.inject.Inject;

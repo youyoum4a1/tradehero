@@ -184,5 +184,7 @@
   <string name="request_canceled">Request canceled</string>
   <string name="request_sent">Request sent</string>
   <string name="follow">Follow</string>
-
+  <string name="help">Help</string>
+  <string name="tab_to_dismiss">tab to dismiss</string>
+  <string name="welcome_to_tradehero">Welcome to TradeHero!</string>
 </resources>

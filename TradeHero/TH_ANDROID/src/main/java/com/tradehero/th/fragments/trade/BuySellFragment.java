@@ -76,6 +76,7 @@ import com.tradehero.th.persistence.portfolio.PortfolioCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListRetrievedMilestone;
+import com.tradehero.th.utils.AlertDialogUtil;
 import com.viewpagerindicator.PageIndicator;
 import java.util.Iterator;
 import java.util.Map;
@@ -1240,8 +1241,7 @@ public class BuySellFragment extends AbstractBuySellFragment
 
     private void showInfoDialog()
     {
-        THToast.show("Nothing for now");
-        // TODO
+        alertDialogUtil.popCustom(getActivity(), R.layout.tutorial_buy_sell);
     }
 
     //<editor-fold desc="BaseFragment.TabBarVisibilityInformer">
