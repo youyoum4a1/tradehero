@@ -47,6 +47,11 @@
   <string name="settings_privacy">Privacy Policy</string>
   <string name="settings_terms">Terms and Conditions</string>
   <string name="settings_about_header">About</string>
+  <string name="settings_about_trademark">TM\n</string>
+  <string name="settings_version_holder">v%s</string>
+  <string name="settings_about_copyright">&#169; Copyright 2012-2013 My Manisku Pte. Ltd.</string>
+  <string name="settings_about_registered_company">Registered in Singapore company number 201003309N</string>
+  <string name="settings_about_patents_pending">Patents Pending</string>
   <string name="settings_about">Any use of trademarks or copyright images is for the fair and reasonable uses of research, study, description and/or identification. Such trademarks or images remain the sole property of their respective owners.</string>
   <string name="settings_paypal_header">PayPal</string>
   <string name="settings_paypal_label">PayPal Account (email address)</string>
@@ -58,5 +63,6 @@
   <string name="settings_transaction_date">DATE</string>
   <string name="settings_transaction_balance">BALANCE</string>
   <string name="settings_transaction_comment">COMMENT</string>
+
 
 </resources>

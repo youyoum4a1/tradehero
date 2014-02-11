@@ -1,45 +1,138 @@
 <?xml version="1.0" encoding="utf-8"?>
+    
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black">
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="vertical"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:background="@color/black">
+  <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="vertical"
+      >
 
-    <ImageView android:id="@+id/bg_about"
-               android:layout_width="wrap_content"
-               android:layout_height="wrap_content"
-               android:src="@drawable/pimp_bull"
-               android:layout_marginLeft="10dp"
-               android:layout_marginRight="10dp"
-               android:layout_marginTop="10dp"
-               android:layout_marginBottom="10dp" />
-    <TextView
-            android:id="@+id/about_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/white"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginBottom="20dp"
-            android:gravity="center"
-            android:text="@string/settings_about" />
+    <ImageView
+        android:id="@+id/bg_about"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/pimp_bull"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp" />
 
-    <LinearLayout android:orientation="horizontal"
-                  android:layout_width="wrap_content"
-                  android:layout_height="wrap_content"
-                  android:layout_gravity="center_horizontal">
-        <Button
-                android:id="@+id/settings_privacy"
-                android:textColor="@color/white"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/settings_privacy" />
-        <Button
-                android:id="@+id/settings_terms"
-                android:textColor="@color/white"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/settings_terms" />
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        >
+
+      <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginRight="0dp"
+          style="@style/TradeHero_Settings_About_Text"
+          android:text="@string/app_name"
+          android:textStyle="bold"
+          android:textSize="16sp"
+          />
+
+      <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginLeft="0dp"
+          style="@style/TradeHero_Settings_About_Text"
+          android:text="@string/settings_about_trademark"
+          android:textSize="8sp"
+          android:lines="2"
+          />
+
+      <TextView
+          android:id="@+id/settings_about_version"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          style="@style/TradeHero_Settings_About_Text"
+          tools:text="v1.5.9.3500"
+          />
+
     </LinearLayout>
-</LinearLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/settings_about_copyright"
+        style="@style/TradeHero_Settings_About_Text"
+        />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/settings_about_registered_company"
+        style="@style/TradeHero_Settings_About_Text"
+        />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:text="@string/settings_about_patents_pending"
+        style="@style/TradeHero_Settings_About_Text"
+        />
+
+    <TextView
+        android:id="@+id/about_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/TradeHero_Settings_About_Text"
+        android:text="@string/settings_about" />
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        >
+
+      <Button
+          android:id="@+id/settings_privacy"
+          style="@style/TradeHero_Settings_About_Text"
+          android:layout_width="wrap_content"
+          android:layout_height="48dp"
+          android:layout_marginTop="8dp"
+          android:layout_marginBottom="8dp"
+          android:layout_marginRight="4dp"
+          android:text="@string/settings_privacy"
+          android:textStyle="bold"
+          />
+
+      <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="48dp"
+          android:layout_marginTop="8dp"
+          android:layout_marginBottom="8dp"
+          android:layout_marginLeft="0dp"
+          android:layout_marginRight="0dp"
+          style="@style/TradeHero_Settings_About_Text"
+          android:text="|"
+          />
+
+      <Button
+          android:id="@+id/settings_terms"
+          style="@style/TradeHero_Settings_About_Text"
+          android:layout_width="wrap_content"
+          android:layout_height="48dp"
+          android:layout_marginTop="8dp"
+          android:layout_marginBottom="8dp"
+          android:layout_marginLeft="4dp"
+          android:text="@string/settings_terms"
+          android:textStyle="bold"
+          />
+
+    </LinearLayout>
+
+  </LinearLayout>
+
+</ScrollView>
