@@ -207,7 +207,7 @@ public class ExtraTileAdapter extends BaseAdapter
 
         if (extraTileCount > 0)
         {
-            if (extraTilesMarker != null && extraTileCount < masterTilesMarker.length)
+            if (masterTilesMarker != null && extraTileCount < masterTilesMarker.length)
             {
                 THLog.d(TAG, "Reusing marker!");
                 extraTilesMarker = Arrays.copyOf(masterTilesMarker, extraTileCount);
