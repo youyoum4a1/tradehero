@@ -7,6 +7,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 import com.tradehero.common.milestone.Milestone;
@@ -267,8 +268,32 @@ public class PortfolioListItemView extends RelativeLayout implements DTOView<Dis
             {
                 picasso.load(displayablePortfolioDTO.userBaseDTO.picture)
                              .transform(userImageTransformation)
-                             .into(userIcon);
+                             .into(userIcon, new Callback()
+                             {
+                                 @Override public void onSuccess()
+                                 {
+                                 }
+
+                                 @Override public void onError()
+                                 {
+                                     displayDefaultUserIcon();
+                                 }
+                             });
             }
+            else
+            {
+                displayDefaultUserIcon();
+            }
+        }
+    }
+
+    public void displayDefaultUserIcon()
+    {
+        if (userIcon != null)
+        {
+            picasso.load(R.drawable.superman_facebook)
+                    .transform(userImageTransformation)
+                    .into(userIcon);
         }
     }
 
