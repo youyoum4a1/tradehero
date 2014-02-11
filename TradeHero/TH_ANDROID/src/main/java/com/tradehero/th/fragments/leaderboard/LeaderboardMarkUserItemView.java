@@ -119,6 +119,11 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         {
             lbmuOpenPositionsList.setOnClickListener(this);
         }
+        TextView lbmuFollowUser = (TextView) findViewById(R.id.leaderboard_user_item_follow);
+        if (lbmuFollowUser != null)
+        {
+            lbmuFollowUser.setOnClickListener(this);
+        }
     }
 
     @Override protected void onAttachedToWindow()
@@ -303,7 +308,14 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
             case R.id.leaderboard_user_item_open_positions_list:
                 handleOpenPositionListClicked();
                 break;
+            case R.id.leaderboard_user_item_follow:
+                openFollowUserDialog();
+                break;
         }
+    }
+
+    private void openFollowUserDialog()
+    {
     }
 
     private void handleOpenPositionListClicked()

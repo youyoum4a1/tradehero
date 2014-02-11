@@ -36,7 +36,6 @@ public class LeaderboardDefView extends RelativeLayout implements DTOView<Leader
 
     private LeaderboardDefDTO dto;
 
-    private DTOCache.Listener<UserBaseKey, UserProfileDTO> userProfileListener;
     private DTOCache.GetOrFetchTask<UserBaseKey, UserProfileDTO> userProfileRequestTask;
     private LeaderboardDefKey leaderboardDefKey;
 
@@ -67,18 +66,6 @@ public class LeaderboardDefView extends RelativeLayout implements DTOView<Leader
     @Override protected void onAttachedToWindow()
     {
         super.onAttachedToWindow();
-        userProfileListener = new DTOCache.Listener<UserBaseKey, UserProfileDTO>()
-        {
-            @Override public void onDTOReceived(UserBaseKey key, UserProfileDTO value, boolean fromCache)
-            {
-                updateLeaderboardOwnRank(value);
-            }
-
-            @Override public void onErrorThrown(UserBaseKey key, Throwable error)
-            {
-                THToast.show("Error getting current user profile");
-            }
-        };
 
         if (currentUserId != null)
         {
@@ -97,7 +84,6 @@ public class LeaderboardDefView extends RelativeLayout implements DTOView<Leader
             userProfileRequestTask.setListener(null);
         }
         userProfileRequestTask = null;
-        userProfileListener = null;
     }
 
     private void linkWith(LeaderboardDefDTO dto, boolean andDisplay)
