@@ -180,7 +180,7 @@
           android:layout_marginRight="8dp"
           android:contentDescription="@null"
           android:background="@null"
-          android:src="@drawable/buyscreen_txtnotice_buy"
+          android:src="@drawable/add_alert_big_noborder"
           android:scaleType="fitCenter"
           />
 
@@ -191,7 +191,7 @@
           android:layout_toLeftOf="@id/btn_add_trigger"
           android:contentDescription="@null"
           android:background="@null"
-          android:src="@drawable/buyscreen_buy_credit"
+          android:src="@drawable/buy_thd_big"
           android:scaleType="fitCenter"
           />
 
@@ -199,11 +199,12 @@
           android:id="@+id/btn_trade_info"
           android:layout_width="48dp"
           android:layout_height="48dp"
-          android:layout_toLeftOf="@+id/btn_add_cash"
+          android:layout_alignParentRight="true"
           android:contentDescription="@null"
           android:background="@null"
-          android:src="@drawable/buyscreen_info"
+          android:src="@drawable/icn_info_blue"
           android:scaleType="fitCenter"
+          android:visibility="gone"
           />
 
       <SeekBar
@@ -211,7 +212,7 @@
           android:layout_width="match_parent"
           android:layout_height="32dp"
           android:layout_alignParentLeft="true"
-          android:layout_toLeftOf="@+id/btn_trade_info"
+          android:layout_toLeftOf="@+id/btn_add_cash"
           android:layout_centerVertical="true"
           android:background="@null"
           />
