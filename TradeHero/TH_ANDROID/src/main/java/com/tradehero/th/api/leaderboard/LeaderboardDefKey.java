@@ -2,6 +2,7 @@ package com.tradehero.th.api.leaderboard;
 
 import android.os.Bundle;
 import com.tradehero.common.persistence.AbstractIntegerDTOKey;
+import com.tradehero.common.persistence.AbstractPrimitiveDTOKey;
 
 /** Created with IntelliJ IDEA. User: tho Date: 10/16/13 Time: 12:46 PM Copyright (c) TradeHero */
 public class LeaderboardDefKey extends AbstractIntegerDTOKey
