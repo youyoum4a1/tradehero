@@ -2,6 +2,7 @@ package com.tradehero.th.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.view.KeyEvent;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.MenuItem;
@@ -18,6 +19,7 @@ import com.tradehero.th.billing.googleplay.THIABPurchase;
 import com.tradehero.th.billing.googleplay.THIABPurchaseRestorer;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.billing.PurchaseRestorerAlertUtil;
+import com.tradehero.th.fragments.settings.SettingsFragment;
 import com.tradehero.th.models.intent.THIntentFactory;
 import com.tradehero.th.persistence.DTOCacheUtil;
 import com.tradehero.th.utils.Constants;
@@ -151,7 +153,11 @@ public class DashboardActivity extends SherlockFragmentActivity
         switch (keyCode)
         {
             case KeyEvent.KEYCODE_MENU:
-                getNavigator().openSettings();
+                Fragment currentDashboardFragment = getSupportFragmentManager().findFragmentById(R.id.realtabcontent);
+                if (!(currentDashboardFragment instanceof SettingsFragment))
+                {
+                    getNavigator().openSettings();
+                }
                 break;
         }
         return super.onKeyDown(keyCode, event);
