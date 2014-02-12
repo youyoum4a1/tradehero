@@ -66,24 +66,24 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 
 /** Created with IntelliJ IDEA. User: nia Date: 17/10/13 Time: 12:38 PM To change this template use File | Settings | File Templates. */
-public class SettingsFragment extends PreferenceFragment
+public final class SettingsFragment extends PreferenceFragment
 {
     public static final String TAG = SettingsFragment.class.getSimpleName();
 
-    @Inject protected THIABUserInteractor userInteractor;
+    @Inject THIABUserInteractor userInteractor;
     @Inject UserServiceWrapper userServiceWrapper;
     @Inject SessionService sessionService;
     @Inject SocialService socialService;
-    @Inject protected Lazy<UserProfileCache> userProfileCache;
-    @Inject protected CurrentUserId currentUserId;
-    @Inject protected PushNotificationManager pushNotificationManager;
-    @Inject protected LruMemFileCache lruCache;
-    @Inject protected PurchaseRestorerAlertUtil purchaseRestorerAlertUtil;
-    @Inject @AuthenticationType protected StringPreference currentAuthenticationType;
+    @Inject Lazy<UserProfileCache> userProfileCache;
+    @Inject CurrentUserId currentUserId;
+    @Inject PushNotificationManager pushNotificationManager;
+    @Inject LruMemFileCache lruCache;
+    @Inject PurchaseRestorerAlertUtil purchaseRestorerAlertUtil;
+    @Inject @AuthenticationType StringPreference currentAuthenticationType;
 
-    @Inject protected Lazy<FacebookUtils> facebookUtils;
-    @Inject protected Lazy<TwitterUtils> twitterUtils;
-    @Inject protected Lazy<LinkedInUtils> linkedInUtils;
+    @Inject Lazy<FacebookUtils> facebookUtils;
+    @Inject Lazy<TwitterUtils> twitterUtils;
+    @Inject Lazy<LinkedInUtils> linkedInUtils;
 
     private ProgressDialog progressDialog;
     private CheckBoxPreference facebookSharing;
@@ -94,7 +94,7 @@ public class SettingsFragment extends PreferenceFragment
     private CheckBoxPreference emailNotification;
     private CheckBoxPreference pushNotificationSound;
     private CheckBoxPreference pushNotificationVibrate;
-    protected UserProfileRetrievedMilestone currentUserProfileRetrievedMilestone;
+    private UserProfileRetrievedMilestone currentUserProfileRetrievedMilestone;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
