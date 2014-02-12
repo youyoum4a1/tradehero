@@ -1,6 +1,6 @@
 package com.tradehero.th.api.leaderboard;
 
-import org.junit.Test;
+import com.tradehero.th.api.leaderboard.key.PagedLeaderboardDefKey;
 
 /**
  * Created by xavier on 2/12/14.

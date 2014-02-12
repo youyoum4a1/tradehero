@@ -1,8 +1,6 @@
-package com.tradehero.th.api.leaderboard;
+package com.tradehero.th.api.leaderboard.key;
 
 import android.os.Bundle;
-import com.tradehero.common.persistence.AbstractPrimitiveDTOKey;
-import com.tradehero.th.api.leaderboard.position.PagedLeaderboardMarkUserId;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/16/13 Time: 3:30 PM To change this template use File | Settings | File Templates. */
 public class PerPagedLeaderboardDefKey extends PagedLeaderboardDefKey

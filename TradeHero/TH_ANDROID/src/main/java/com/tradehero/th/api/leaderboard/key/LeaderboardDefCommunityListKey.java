@@ -1,4 +1,6 @@
-package com.tradehero.th.api.leaderboard;
+package com.tradehero.th.api.leaderboard.key;
+
+import com.tradehero.th.api.leaderboard.key.LeaderboardDefListKey;
 
 /**
  * Created with IntelliJ IDEA. User: tho Date: 2/3/14 Time: 3:37 PM Copyright (c) TradeHero

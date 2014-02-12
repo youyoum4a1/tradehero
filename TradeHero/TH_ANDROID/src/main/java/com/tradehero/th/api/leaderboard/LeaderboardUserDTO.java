@@ -2,10 +2,9 @@ package com.tradehero.th.api.leaderboard;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tradehero.th.adapters.ExpandableItem;
+import com.tradehero.th.api.leaderboard.key.LeaderboardUserId;
 import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.utils.NumberDisplayUtils;
-import com.tradehero.th.utils.THSignedNumber;
-import java.text.DecimalFormat;
 import java.util.Date;
 import java.util.List;
 

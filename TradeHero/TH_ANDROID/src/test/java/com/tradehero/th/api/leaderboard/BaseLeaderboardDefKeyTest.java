@@ -1,5 +1,7 @@
 package com.tradehero.th.api.leaderboard;
 
+import com.tradehero.th.api.leaderboard.key.LeaderboardDefKey;
+
 /**
  * Created by xavier on 2/12/14.
  */

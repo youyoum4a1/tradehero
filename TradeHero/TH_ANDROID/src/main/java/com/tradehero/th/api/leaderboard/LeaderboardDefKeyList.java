@@ -1,6 +1,7 @@
 package com.tradehero.th.api.leaderboard;
 
 import com.tradehero.common.persistence.DTOKeyIdList;
+import com.tradehero.th.api.leaderboard.key.LeaderboardDefKey;
 import java.util.Collection;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/22/13 Time: 7:41 PM To change this template use File | Settings | File Templates. */
