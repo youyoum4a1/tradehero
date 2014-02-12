@@ -77,6 +77,74 @@ public interface LeaderboardService
             Callback<LeaderboardDTO> callback);
     //</editor-fold>
 
+    //<editor-fold desc="Get Filtered Leaderboard">
+    @GET("/filteredLeaderboards/{leaderboardId}")
+    LeaderboardDTO getFilteredLeaderboard(
+            @Path("leaderboardId") Integer leaderboardId,
+            @Query("winRatio") Float winRatio,
+            @Query("avgMonthlyTradeCount") Float averageMonthlyTradeCount,
+            @Query("avgHoldingDays") Float averageHoldingDays,
+            @Query("minSharpeRatio") Float minSharpeRatio,
+            @Query("maxPosRoiVolatility") Float maxPosRoiVolatility)
+        throws RetrofitError;
+
+    @GET("/filteredLeaderboards/{leaderboardId}")
+    void getFilteredLeaderboard(
+            @Path("leaderboardId") Integer leaderboardId,
+            @Query("winRatio") Float winRatio,
+            @Query("avgMonthlyTradeCount") Float averageMonthlyTradeCount,
+            @Query("avgHoldingDays") Float averageHoldingDays,
+            @Query("minSharpeRatio") Float minSharpeRatio,
+            @Query("maxPosRoiVolatility") Float maxPosRoiVolatility,
+            Callback<LeaderboardDTO> callback);
+
+    @GET("/filteredLeaderboards/{leaderboardId}")
+    LeaderboardDTO getFilteredLeaderboard(
+            @Path("leaderboardId") Integer leaderboardId,
+            @Query("winRatio") Float winRatio,
+            @Query("avgMonthlyTradeCount") Float averageMonthlyTradeCount,
+            @Query("avgHoldingDays") Float averageHoldingDays,
+            @Query("minSharpeRatio") Float minSharpeRatio,
+            @Query("maxPosRoiVolatility") Float maxPosRoiVolatility,
+            @Query("page") Integer page)
+        throws RetrofitError;
+
+    @GET("/filteredLeaderboards/{leaderboardId}")
+    void getFilteredLeaderboard(
+            @Path("leaderboardId") Integer leaderboardId,
+            @Query("winRatio") Float winRatio,
+            @Query("avgMonthlyTradeCount") Float averageMonthlyTradeCount,
+            @Query("avgHoldingDays") Float averageHoldingDays,
+            @Query("minSharpeRatio") Float minSharpeRatio,
+            @Query("maxPosRoiVolatility") Float maxPosRoiVolatility,
+            @Query("page") Integer page,
+            Callback<LeaderboardDTO> callback);
+
+    @GET("/filteredLeaderboards/{leaderboardId}")
+    LeaderboardDTO getFilteredLeaderboard(
+            @Path("leaderboardId") Integer leaderboardId,
+            @Query("winRatio") Float winRatio,
+            @Query("avgMonthlyTradeCount") Float averageMonthlyTradeCount,
+            @Query("avgHoldingDays") Float averageHoldingDays,
+            @Query("minSharpeRatio") Float minSharpeRatio,
+            @Query("maxPosRoiVolatility") Float maxPosRoiVolatility,
+            @Query("page") Integer page,
+            @Query("perPage") Integer perPage)
+        throws RetrofitError;
+
+    @GET("/filteredLeaderboards/{leaderboardId}")
+    void getFilteredLeaderboard(
+            @Path("leaderboardId") Integer leaderboardId,
+            @Query("winRatio") Float winRatio,
+            @Query("avgMonthlyTradeCount") Float averageMonthlyTradeCount,
+            @Query("avgHoldingDays") Float averageHoldingDays,
+            @Query("minSharpeRatio") Float minSharpeRatio,
+            @Query("maxPosRoiVolatility") Float maxPosRoiVolatility,
+            @Query("page") Integer page,
+            @Query("perPage") Integer perPage,
+            Callback<LeaderboardDTO> callback);
+    //</editor-fold>
+
     //<editor-fold desc="Get User On Leaderboard">
     @GET("/leaderboards/{leaderboardId}/users/{userId}")
     LeaderboardDTO getUserOnLeaderboard(
