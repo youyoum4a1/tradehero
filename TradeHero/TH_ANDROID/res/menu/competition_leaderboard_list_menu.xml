@@ -4,7 +4,7 @@
 
   <item
       android:id="@+id/btn_wizard"
-      android:icon="@drawable/icn_wizard_menu"
+      android:icon="@drawable/wizard_white"
       android:enabled="true"
       android:visible="false"
       android:title="@string/provider_competition_wizard_title"

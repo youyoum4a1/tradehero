@@ -2,7 +2,6 @@ package com.tradehero.th.fragments.competition.zone;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.squareup.picasso.Picasso;
@@ -80,11 +79,11 @@ public class CompetitionZoneListItemView extends AbstractCompetitionZoneListItem
         {
             if (competitionZoneDTO instanceof CompetitionZoneWizardDTO)
             {
-                zoneIcon.setImageResource(R.drawable.icn_wizard);
+                zoneIcon.setImageResource(R.drawable.wizard);
             }
             else if (competitionZoneDTO instanceof CompetitionZoneVideoDTO)
             {
-                zoneIcon.setImageResource(R.drawable.icn_info_blue);
+                zoneIcon.setImageResource(R.drawable.icn_info);
             }
             else if (competitionZoneDTO != null)
             {
