@@ -2,7 +2,7 @@ package com.tradehero.th.persistence.leaderboard;
 
 import com.tradehero.common.persistence.StraightDTOCache;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
-import com.tradehero.th.api.leaderboard.LeaderboardUserId;
+import com.tradehero.th.api.leaderboard.key.LeaderboardUserId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;

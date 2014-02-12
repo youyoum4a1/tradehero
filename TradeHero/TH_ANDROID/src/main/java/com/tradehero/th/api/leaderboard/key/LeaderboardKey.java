@@ -1,4 +1,4 @@
-package com.tradehero.th.api.leaderboard;
+package com.tradehero.th.api.leaderboard.key;
 
 import android.os.Bundle;
 import com.tradehero.common.persistence.AbstractIntegerDTOKey;

@@ -1,11 +1,10 @@
 package com.tradehero.th.persistence.leaderboard;
 
-import android.support.v4.util.LruCache;
 import com.tradehero.common.persistence.PartialDTOCache;
 import com.tradehero.common.persistence.THLruCache;
 import com.tradehero.th.api.competition.AdDTO;
 import com.tradehero.th.api.competition.PrizeDTO;
-import com.tradehero.th.api.leaderboard.LeaderboardKey;
+import com.tradehero.th.api.leaderboard.key.LeaderboardKey;
 import com.tradehero.th.api.leaderboard.competition.CompetitionLeaderboardDTO;
 import com.tradehero.th.api.leaderboard.competition.CompetitionLeaderboardId;
 import com.tradehero.th.network.service.CompetitionServiceWrapper;

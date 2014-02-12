@@ -1,6 +1,7 @@
 package com.tradehero.th.api.leaderboard;
 
 import com.tradehero.th.api.ExtendedDTO;
+import com.tradehero.th.api.leaderboard.key.LeaderboardDefKey;
 import com.tradehero.th.fragments.leaderboard.LeaderboardSortType;
 import java.util.Date;
 import java.util.List;

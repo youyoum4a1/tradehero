@@ -60,12 +60,18 @@ public abstract class AbstractPrimitiveDTOKey<T extends Comparable> implements C
 
     @Override public boolean equals(Object other)
     {
-        return getClass().isInstance(other) && equals(getClass().cast(other));
+        return other != null &&
+        getClass().isInstance(other) &&
+        other.getClass().isInstance(this) &&
+        equals(getClass().cast(other));
     }
 
     public boolean equals(AbstractPrimitiveDTOKey other)
     {
-        return (other != null) && (key == null ? other.key == null : key.equals(other.key));
+        return (other != null) &&
+                getClass().isInstance(other) &&
+                other.getClass().isInstance(this) &&
+                (key == null ? other.key == null : key.equals(other.key));
     }
 
     @Override public int compareTo(Object o)

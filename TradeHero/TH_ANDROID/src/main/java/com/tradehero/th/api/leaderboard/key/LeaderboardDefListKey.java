@@ -1,7 +1,8 @@
-package com.tradehero.th.api.leaderboard;
+package com.tradehero.th.api.leaderboard.key;
 
 import android.os.Bundle;
 import com.tradehero.common.persistence.AbstractStringDTOKey;
+import com.tradehero.th.api.leaderboard.key.LeaderboardDefKey;
 
 /** Created with IntelliJ IDEA. User: tho Date: 10/16/13 Time: 10:33 AM Copyright (c) TradeHero */
 public class LeaderboardDefListKey extends AbstractStringDTOKey

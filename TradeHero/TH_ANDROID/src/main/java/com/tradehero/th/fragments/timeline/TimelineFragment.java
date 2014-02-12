@@ -114,6 +114,8 @@ public class TimelineFragment extends BasePurchaseManagerFragment
             }
         });
         userProfileView.setPortfolioRequestListener(this);
+
+        timelineListView.getRefreshableView().addHeaderView(userProfileView);
     }
 
     @Override public void onResume()
@@ -167,7 +169,6 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     {
         this.shownUserBaseKey = userBaseKey;
 
-        timelineListView.getRefreshableView().addHeaderView(userProfileView);
         timelineAdapter = createTimelineAdapter();
         timelineListView.setAdapter(timelineAdapter);
         timelineListView.setOnRefreshListener(timelineAdapter);

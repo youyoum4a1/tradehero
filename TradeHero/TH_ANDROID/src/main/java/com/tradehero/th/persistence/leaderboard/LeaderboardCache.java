@@ -1,13 +1,11 @@
 package com.tradehero.th.persistence.leaderboard;
 
-import android.support.v4.util.LruCache;
 import com.tradehero.common.persistence.PartialDTOCache;
 import com.tradehero.common.persistence.THLruCache;
 import com.tradehero.th.api.leaderboard.LeaderboardDTO;
-import com.tradehero.th.api.leaderboard.LeaderboardKey;
+import com.tradehero.th.api.leaderboard.key.LeaderboardKey;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTOUtil;
-import com.tradehero.th.api.leaderboard.LeaderboardUserId;
-import com.tradehero.th.api.security.SecurityCompactDTO;
+import com.tradehero.th.api.leaderboard.key.LeaderboardUserId;
 import dagger.Lazy;
 import java.util.Date;
 import java.util.List;

@@ -1,6 +1,7 @@
 package com.tradehero.th.api.leaderboard;
 
 import com.tradehero.common.persistence.DTO;
+import com.tradehero.th.api.leaderboard.key.LeaderboardKey;
 import java.util.Date;
 import java.util.List;
 

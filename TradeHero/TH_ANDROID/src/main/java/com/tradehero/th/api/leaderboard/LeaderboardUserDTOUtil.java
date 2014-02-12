@@ -1,5 +1,6 @@
 package com.tradehero.th.api.leaderboard;
 
+import com.tradehero.th.api.leaderboard.key.LeaderboardUserId;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

@@ -1,6 +1,6 @@
-package com.tradehero.th.api.leaderboard;
+package com.tradehero.th.api.leaderboard.key;
 
-import android.os.Bundle;
+import com.tradehero.th.api.leaderboard.key.LeaderboardDefListKey;
 
 /** Created with IntelliJ IDEA. User: tho Date: 10/16/13 Time: 3:24 PM Copyright (c) TradeHero */
 public class LeaderboardDefTimePeriodListKey extends LeaderboardDefListKey
