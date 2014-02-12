@@ -217,7 +217,7 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
     }
     //</editor-fold>
 
-    private void displayFirstCompetitionProvider(List<ProviderId> providerIds)
+    private void displayCompetitionProviders(List<ProviderId> providerIds)
     {
         leaderboardDefListAdapter.setCompetitionItems(providerIds);
     }
@@ -323,7 +323,7 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
     {
         @Override public void onDTOReceived(ProviderListKey key, ProviderIdList value, boolean fromCache)
         {
-            displayFirstCompetitionProvider(value);
+            displayCompetitionProviders(value);
         }
 
         @Override public void onErrorThrown(ProviderListKey key, Throwable error)
