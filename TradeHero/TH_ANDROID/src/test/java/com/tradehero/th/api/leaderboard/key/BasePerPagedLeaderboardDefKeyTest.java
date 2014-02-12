@@ -1,6 +1,4 @@
-package com.tradehero.th.api.leaderboard;
-
-import com.tradehero.th.api.leaderboard.key.PerPagedLeaderboardDefKey;
+package com.tradehero.th.api.leaderboard.key;
 
 /**
  * Created by xavier on 2/12/14.

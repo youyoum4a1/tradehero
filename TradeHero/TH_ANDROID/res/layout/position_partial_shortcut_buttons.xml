@@ -52,7 +52,7 @@
         android:layout_height="48dp"
         android:layout_alignParentRight="true"
         android:layout_marginLeft="8dp"
-        android:src="@drawable/sort_chart"
+        android:src="@drawable/graph"
         android:contentDescription="@null"
         android:scaleType="centerInside"
         android:background="@android:color/transparent"

@@ -1,4 +1,4 @@
-package com.tradehero.th.api.leaderboard;
+package com.tradehero.th.api.leaderboard.key;
 
 import org.junit.After;
 import org.junit.Before;

@@ -1,8 +1,5 @@
-package com.tradehero.th.api.leaderboard;
+package com.tradehero.th.api.leaderboard.key;
 
-import com.tradehero.common.utils.THJsonAdapter;
-import com.tradehero.th.api.portfolio.OwnedPortfolioId;
-import java.io.IOException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
