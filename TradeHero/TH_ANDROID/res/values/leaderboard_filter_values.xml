@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+  <declare-styleable name="LeaderboardFilterValueSlider">
+    <attr name="valueMin" format="integer"/>
+    <attr name="valueMax" format="integer"/>
+  </declare-styleable>
+
+  <integer name="leaderboard_filter_monthly_activity_min">1</integer>
+  <integer name="leaderboard_filter_monthly_activity_max">30</integer>
+  <integer name="leaderboard_filter_win_ratio_min">0</integer>
+  <integer name="leaderboard_filter_win_ratio_max">100</integer>
+  <integer name="leaderboard_filter_holding_period_min">1</integer>
+  <integer name="leaderboard_filter_holding_period_max">120</integer>
+
+  <style name="LeaderboardFilter">
+  </style>
+
+  <style name="LeaderboardFilter.Header">
+    <item name="android:textStyle">bold</item>
+    <item name="android:layout_marginRight">4dp</item>
+  </style>
+
+  <style name="LeaderboardFilter.Value">
+    <item name="android:textStyle">bold</item>
+    <item name="android:layout_marginLeft">4dp</item>
+    <item name="android:layout_marginRight">4dp</item>
+  </style>
+
+  <style name="LeaderboardFilter.Descrription">
+    <item name="android:textColor">@color/gray_normal</item>
+    <item name="android:textSize">10dp</item>
+  </style>
+
+</resources>

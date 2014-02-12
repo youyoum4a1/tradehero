@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<com.tradehero.th.fragments.leaderboard.filter.LeaderboardFilterValueSlider
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res/com.tradehero.th"
+    android:id="@+id/leaderboard_filter_win_ratio_container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:valueMin="@integer/leaderboard_filter_win_ratio_min"
+    app:valueMax="@integer/leaderboard_filter_win_ratio_max"
+    >
+
+  <LinearLayout
+      android:id="@+id/leaderboard_filter_header_value_container"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_alignParentTop="true"
+      android:layout_alignParentLeft="true"
+      android:orientation="horizontal"
+      >
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/leaderboard_filter_win_ratio_header"
+        style="@style/LeaderboardFilter.Header"
+        />
+
+    <TextView
+        android:id="@+id/leaderboard_filter_comparator_symbol"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/leaderboard_filter_comparator_sign_bigger_than"
+        />
+
+    <TextView
+        android:id="@+id/leaderboard_filter_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="1"
+        style="@style/LeaderboardFilter.Value"
+        />
+
+    <TextView
+        android:id="@+id/leaderboard_filter_value_unit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/leaderboard_filter_win_ratio_value_unit"
+        />
+
+  </LinearLayout>
+
+  <TextView
+      android:id="@+id/leaderboard_filter_header_description"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_below="@id/leaderboard_filter_header_value_container"
+      android:text="@string/leaderboard_filter_win_ratio_description"
+      style="@style/LeaderboardFilter.Descrription"
+      />
+
+  <RelativeLayout
+      android:id="@+id/leaderboard_filter_min_max_container"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_below="@+id/leaderboard_filter_header_description">
+
+    <TextView
+        android:id="@+id/leaderboard_filter_min"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:text="@integer/leaderboard_filter_win_ratio_min"
+        />
+
+    <TextView
+        android:id="@+id/leaderboard_filter_max"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:text="@integer/leaderboard_filter_win_ratio_max"
+        />
+
+  </RelativeLayout>
+
+  <SeekBar
+      android:id="@+id/leaderboard_filter_value_slider"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_below="@+id/leaderboard_filter_min_max_container"
+      />
+
+  <RelativeLayout
+      android:id="@+id/leaderboard_filter_min_max_description_container"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_below="@+id/leaderboard_filter_value_slider"
+      >
+
+    <TextView
+        android:id="@+id/leaderboard_filter_min_description"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:text="@string/leaderboard_filter_win_ratio_min_description"
+        />
+
+    <TextView
+        android:id="@+id/leaderboard_filter_max_description"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:text="@string/leaderboard_filter_win_ratio_max_description"
+        />
+
+  </RelativeLayout>
+
+</com.tradehero.th.fragments.leaderboard.filter.LeaderboardFilterValueSlider>
