@@ -5,6 +5,7 @@ import com.actionbarsherlock.view.MenuItem;
 import com.tradehero.th.R;
 import com.tradehero.th.api.leaderboard.LeaderboardDTO;
 import com.tradehero.th.api.leaderboard.key.FriendsPerPagedLeaderboardKey;
+import com.tradehero.th.api.leaderboard.key.PerPagedLeaderboardKey;
 
 /** Created with IntelliJ IDEA. User: tho Date: 11/21/13 Time: 6:26 PM Copyright (c) TradeHero */
 public class FriendLeaderboardMarkUserListViewFragment extends LeaderboardMarkUserListViewFragment
@@ -36,6 +37,11 @@ public class FriendLeaderboardMarkUserListViewFragment extends LeaderboardMarkUs
             }
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override protected PerPagedLeaderboardKey getInitialLeaderboardKey()
+    {
+        return new FriendsPerPagedLeaderboardKey(leaderboardId, null, null, false);
     }
 
     private void setFriendOfFriendFilter(boolean isFoF)

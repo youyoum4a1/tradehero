@@ -126,7 +126,7 @@ public class LeaderboardMarkUserListViewFragment extends BaseLeaderboardFragment
         super.onActivityCreated(savedInstanceState);
 
         leaderboardId = getArguments().getInt(BUNDLE_KEY_LEADERBOARD_ID);
-        currentLeaderboardFilterKey = LeaderboardFilterSliderContainer.getStartingFilter(getResources(), leaderboardId);
+        currentLeaderboardFilterKey = getInitialLeaderboardKey();
 
         leaderboardMarkUserListAdapter = new LeaderboardMarkUserListAdapter(
                 getActivity(), getActivity().getLayoutInflater(), leaderboardId, R.layout.lbmu_item_roi_mode);
@@ -140,6 +140,11 @@ public class LeaderboardMarkUserListViewFragment extends BaseLeaderboardFragment
         Bundle loaderBundle = new Bundle(getArguments());
         leaderboardMarkUserLoader = (LeaderboardMarkUserLoader) getActivity().getSupportLoaderManager().initLoader(
                 leaderboardId, loaderBundle, leaderboardMarkUserListAdapter.getLoaderCallback());
+    }
+
+    protected PerPagedLeaderboardKey getInitialLeaderboardKey()
+    {
+        return LeaderboardFilterSliderContainer.getStartingFilter(getResources(), leaderboardId);
     }
 
     @Override public void onStart()
