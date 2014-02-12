@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.leaderboard.filter;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -80,7 +81,7 @@ public class LeaderboardFilterSliderContainer extends LinearLayout
     public PerPagedFilteredLeaderboardKey getFilteredLeaderboardKey()
     {
         this.perPagedFilteredLeaderboardKey = new PerPagedFilteredLeaderboardKey(
-                this.perPagedFilteredLeaderboardKey.key, // To be replaced with Key
+                this.perPagedFilteredLeaderboardKey.key,
                 null, // Page but we don't care
                 null, // PerPage but we don't care
                 winRatioView.getCurrentValue(),
@@ -123,5 +124,19 @@ public class LeaderboardFilterSliderContainer extends LinearLayout
                 holdingPeriodView.setDefaultCurrentValue();
             }
         }
+    }
+
+    public static PerPagedFilteredLeaderboardKey getStartingFilter(Resources resources, Integer key)
+    {
+         return new PerPagedFilteredLeaderboardKey(
+                 key,
+                 null, // Page but we don't care
+                 null, // PerPage but we don't care
+                 (float) resources.getInteger(R.integer.leaderboard_filter_win_ratio_min),
+                 (float) resources.getInteger(R.integer.leaderboard_filter_monthly_activity_min),
+                 (float) resources.getInteger(R.integer.leaderboard_filter_holding_period_min),
+                 null, // MinSharpeRatio but we don't care
+                 null // MaxPosRoiVolatility but we don't care
+         );
     }
 }

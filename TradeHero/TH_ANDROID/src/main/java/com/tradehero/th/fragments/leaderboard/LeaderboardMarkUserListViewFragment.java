@@ -13,10 +13,10 @@ import com.tradehero.th.R;
 import com.tradehero.th.adapters.LoaderDTOAdapter;
 import com.tradehero.th.api.leaderboard.LeaderboardDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
-import com.tradehero.th.api.leaderboard.key.PerPagedFilteredLeaderboardKey;
 import com.tradehero.th.api.leaderboard.key.PerPagedLeaderboardKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.leaderboard.filter.LeaderboardFilterFragment;
+import com.tradehero.th.fragments.leaderboard.filter.LeaderboardFilterSliderContainer;
 import com.tradehero.th.loaders.ListLoader;
 import com.tradehero.th.utils.Constants;
 import java.util.Date;
@@ -123,7 +123,7 @@ public class LeaderboardMarkUserListViewFragment extends BaseLeaderboardFragment
         super.onActivityCreated(savedInstanceState);
 
         leaderboardId = getArguments().getInt(BUNDLE_KEY_LEADERBOARD_ID);
-        currentLeaderboardFilterKey = new PerPagedFilteredLeaderboardKey(leaderboardId, null, null);
+        currentLeaderboardFilterKey = LeaderboardFilterSliderContainer.getStartingFilter(getResources(), leaderboardId);
 
         leaderboardMarkUserListAdapter = new LeaderboardMarkUserListAdapter(
                 getActivity(), getActivity().getLayoutInflater(), leaderboardId, R.layout.lbmu_item_roi_mode);
@@ -152,6 +152,7 @@ public class LeaderboardMarkUserListViewFragment extends BaseLeaderboardFragment
         {
             currentLeaderboardFilterKey = leaderboardFilterFragment.getPerPagedFilteredLeaderboardKey();
             leaderboardFilterFragment = null;
+            initialLoad();
             THLog.d(TAG, "onResume " + currentLeaderboardFilterKey);
         }
         else
