@@ -42,6 +42,7 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
     @Inject protected Lazy<SecurityCompactCache> securityCompactCache;
     @Inject protected Picasso picasso;
     @Inject protected ChartDTOFactory chartDTOFactory;
+    private Runnable chooseChartImageSizeTask;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -140,6 +141,12 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
         }
         this.timeSpanButtonSet = null;
         this.timeSpanButtonSetListener = null;
+        View rootView = getView();
+        if (chooseChartImageSizeTask != null && rootView != null)
+        {
+            rootView.removeCallbacks(chooseChartImageSizeTask);
+            chooseChartImageSizeTask = null;
+        }
         super.onDestroyView();
     }
 
@@ -215,7 +222,8 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
 
     public void postChooseOtherSize()
     {
-        postDelayed(getChooseOtherSizeRunnable(), 500);
+        chooseChartImageSizeTask = getChooseOtherSizeRunnable();
+        postDelayed(chooseChartImageSizeTask, 500);
     }
 
     protected Runnable getChooseOtherSizeRunnable()
