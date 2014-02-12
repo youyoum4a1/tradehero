@@ -72,7 +72,7 @@ public class AuthenticationActivity extends SherlockFragmentActivity
         }
         else
         {
-            currentFragment = FragmentFactory.getInstance(WelcomeFragment.class);
+            currentFragment = Fragment.instantiate(this, WelcomeFragment.class.getName(), null);
         }
 
         setupViewFragmentMapping();
@@ -167,7 +167,7 @@ public class AuthenticationActivity extends SherlockFragmentActivity
 
     private void setCurrentFragmentByClass(Class<?> fragmentClass)
     {
-        currentFragment = FragmentFactory.getInstance(fragmentClass);
+        currentFragment = Fragment.instantiate(this, fragmentClass.getName(), null);
         getSupportFragmentManager().beginTransaction()
                 .setCustomAnimations(
                         R.anim.slide_right_in, R.anim.slide_left_out,
@@ -238,7 +238,7 @@ public class AuthenticationActivity extends SherlockFragmentActivity
         {
             @Override public boolean isSigningUp()
             {
-                return currentFragment != FragmentFactory.getInstance(SignInFragment.class);
+                return !(currentFragment instanceof SignInFragment);
             }
 
             @Override public boolean onSocialAuthDone(JSONObject json)
@@ -362,22 +362,5 @@ public class AuthenticationActivity extends SherlockFragmentActivity
             return false;
         }
 
-    }
-
-    private static class FragmentFactory
-    {
-        private static Map<Class<?>, Fragment> instances = new HashMap<>();
-
-        public static Fragment getInstance(Class<?> clss)
-        {
-            Fragment fragment = instances.get(clss);
-            if (fragment == null)
-            {
-                // TODO should we use Application context to create fragment?
-                fragment = Fragment.instantiate(Application.context(), clss.getName(), null);
-                instances.put(clss, fragment);
-            }
-            return fragment;
-        }
     }
 }

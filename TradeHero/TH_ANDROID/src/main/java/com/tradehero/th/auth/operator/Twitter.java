@@ -4,7 +4,6 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.webkit.CookieSyncManager;
-import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.auth.OAuthDialog;
 import com.tradehero.th.auth.THAuthenticationProvider;
 import javax.inject.Inject;
@@ -14,9 +13,6 @@ import oauth.signpost.OAuthProvider;
 import oauth.signpost.commonshttp.CommonsHttpOAuthConsumer;
 import oauth.signpost.commonshttp.CommonsHttpOAuthProvider;
 import oauth.signpost.http.HttpParameters;
-import oauth.signpost.http.HttpRequest;
-import oauth.signpost.signature.SigningStrategy;
-import org.apache.http.client.methods.HttpUriRequest;
 
 public class Twitter extends SocialOperator
 {
@@ -54,21 +50,6 @@ public class Twitter extends SocialOperator
     public void setScreenName(String screenName)
     {
         this.screenName = screenName;
-    }
-
-    public void signRequest(HttpUriRequest request)
-    {
-        OAuthConsumer consumer =
-                new CommonsHttpOAuthConsumer(getConsumerKey(), getConsumerSecret());
-        consumer.setTokenWithSecret(getAuthToken(), getAuthTokenSecret());
-        try
-        {
-            consumer.sign(request);
-        }
-        catch (Exception e)
-        {
-            throw new RuntimeException(e);
-        }
     }
 
     public void authorize(final Context context, final THAuthenticationProvider.THAuthenticationCallback callback)

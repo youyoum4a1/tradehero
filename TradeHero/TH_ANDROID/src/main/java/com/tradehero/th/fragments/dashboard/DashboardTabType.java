@@ -1,5 +1,6 @@
 package com.tradehero.th.fragments.dashboard;
 
+import android.support.v4.app.Fragment;
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.billing.StoreScreenFragment;
 import com.tradehero.th.fragments.leaderboard.LeaderboardCommunityFragment;
@@ -18,9 +19,9 @@ public enum DashboardTabType
 
     public final int stringResId;
     public final int drawableResId;
-    public final Class<?> fragmentClass;
+    public final Class<? extends Fragment> fragmentClass;
 
-    private DashboardTabType(int stringResId, int drawableResId, Class<?> fragmentClass)
+    private DashboardTabType(int stringResId, int drawableResId, Class<? extends Fragment> fragmentClass)
     {
         this.stringResId = stringResId;
         this.drawableResId = drawableResId;
