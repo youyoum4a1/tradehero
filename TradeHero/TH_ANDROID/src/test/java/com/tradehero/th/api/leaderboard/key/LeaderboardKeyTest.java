@@ -16,9 +16,9 @@ import static org.junit.Assert.assertTrue;
  */
 @RunWith(RobolectricTestRunner.class)
 @Config(manifest = Config.NONE)
-public class LeaderboardDefKeyTest extends BaseLeaderboardDefKeyTest
+public class LeaderboardKeyTest extends BaseLeaderboardKeyTest
 {
-    public static final String TAG = LeaderboardDefKeyTest.class.getSimpleName();
+    public static final String TAG = LeaderboardKeyTest.class.getSimpleName();
 
     @Before public void setUp()
     {
@@ -30,16 +30,16 @@ public class LeaderboardDefKeyTest extends BaseLeaderboardDefKeyTest
 
     @Test public void testEqualsItself()
     {
-        assertTrue(getDefKey1().equals(getDefKey1()));
-        assertEquals(getDefKey1(), getDefKey1());
+        assertTrue(getKey1().equals(getKey1()));
+        assertEquals(getKey1(), getKey1());
 
-        assertTrue(getDefKey2().equals(getDefKey2()));
-        assertEquals(getDefKey2(), getDefKey2());
+        assertTrue(getKey2().equals(getKey2()));
+        assertEquals(getKey2(), getKey2());
     }
 
     @Test public void testEqualsDefMakesADifference()
     {
-        assertFalse(getDefKey1().equals(getDefKey2()));
-        assertFalse(getDefKey2().equals(getDefKey1()));
+        assertFalse(getKey1().equals(getKey2()));
+        assertFalse(getKey2().equals(getKey1()));
     }
 }

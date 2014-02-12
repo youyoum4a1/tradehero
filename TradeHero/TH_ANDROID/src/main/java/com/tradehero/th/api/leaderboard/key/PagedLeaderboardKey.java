@@ -4,20 +4,20 @@ import android.os.Bundle;
 import com.tradehero.common.persistence.AbstractPrimitiveDTOKey;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/16/13 Time: 3:30 PM To change this template use File | Settings | File Templates. */
-public class PagedLeaderboardDefKey extends LeaderboardDefKey
+public class PagedLeaderboardKey extends LeaderboardKey
 {
-    public final static String BUNDLE_KEY_PAGE = PagedLeaderboardDefKey.class.getName() + ".page";
+    public final static String BUNDLE_KEY_PAGE = PagedLeaderboardKey.class.getName() + ".page";
 
     public final Integer page;
 
     //<editor-fold desc="Constructors">
-    public PagedLeaderboardDefKey(Integer leaderboardDefKey, int page)
+    public PagedLeaderboardKey(Integer leaderboardKey, int page)
     {
-        super(leaderboardDefKey);
+        super(leaderboardKey);
         this.page = page;
     }
 
-    public PagedLeaderboardDefKey(Bundle args)
+    public PagedLeaderboardKey(Bundle args)
     {
         super(args);
         this.page = args.containsKey(BUNDLE_KEY_PAGE) ? args.getInt(BUNDLE_KEY_PAGE) : null;
@@ -31,18 +31,18 @@ public class PagedLeaderboardDefKey extends LeaderboardDefKey
 
     @Override public boolean equals(AbstractPrimitiveDTOKey other)
     {
-        return super.equals(other) && other instanceof PagedLeaderboardDefKey &&
-                equals((PagedLeaderboardDefKey) other);
+        return super.equals(other) && other instanceof PagedLeaderboardKey &&
+                equals((PagedLeaderboardKey) other);
     }
 
-    public boolean equals(PagedLeaderboardDefKey other)
+    public boolean equals(PagedLeaderboardKey other)
     {
         return other != null &&
                 super.equals(other) &&
                 (page == null ? other.page == null : page.equals(other.page));
     }
 
-    public int compareTo(PagedLeaderboardDefKey other)
+    public int compareTo(PagedLeaderboardKey other)
     {
         if (this == other)
         {

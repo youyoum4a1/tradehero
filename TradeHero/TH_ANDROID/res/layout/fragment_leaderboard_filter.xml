@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-  <LinearLayout
+  <com.tradehero.th.fragments.leaderboard.filter.LeaderboardFilterSliderContainer
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_marginRight="16dp"
@@ -41,6 +41,6 @@
         android:gravity="center"
         android:text="@string/leaderboard_filter_reset_filter"/>
 
-  </LinearLayout>
+  </com.tradehero.th.fragments.leaderboard.filter.LeaderboardFilterSliderContainer>
 
 </ScrollView>

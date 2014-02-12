@@ -3,20 +3,20 @@ package com.tradehero.th.api.leaderboard.key;
 import android.os.Bundle;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/16/13 Time: 3:30 PM To change this template use File | Settings | File Templates. */
-public class SortedPerPagedLeaderboardDefKey extends PerPagedLeaderboardDefKey
+public class SortedPerPagedLeaderboardKey extends PerPagedLeaderboardKey
 {
-    public final static String BUNDLE_KEY_SORT_TYPE = SortedPerPagedLeaderboardDefKey.class.getName() + ".sortType";
+    public final static String BUNDLE_KEY_SORT_TYPE = SortedPerPagedLeaderboardKey.class.getName() + ".sortType";
 
     public final Integer sortType;
 
     //<editor-fold desc="Constructors">
-    public SortedPerPagedLeaderboardDefKey(Integer leaderboardDefKey, int page, int perPage, int sortType)
+    public SortedPerPagedLeaderboardKey(Integer leaderboardDefKey, int page, int perPage, int sortType)
     {
         super(leaderboardDefKey, page, perPage);
         this.sortType = sortType;
     }
 
-    public SortedPerPagedLeaderboardDefKey(Bundle args)
+    public SortedPerPagedLeaderboardKey(Bundle args)
     {
         super(args);
         this.sortType = args.containsKey(BUNDLE_KEY_SORT_TYPE) ? args.getInt(BUNDLE_KEY_SORT_TYPE) : null;
@@ -28,20 +28,20 @@ public class SortedPerPagedLeaderboardDefKey extends PerPagedLeaderboardDefKey
         return super.hashCode() ^ (sortType == null ? 0 : sortType.hashCode());
     }
 
-    @Override public boolean equals(PerPagedLeaderboardDefKey other)
+    @Override public boolean equals(PerPagedLeaderboardKey other)
     {
-        return super.equals(other) && other instanceof SortedPerPagedLeaderboardDefKey &&
-                equals((SortedPerPagedLeaderboardDefKey) other);
+        return super.equals(other) && other instanceof SortedPerPagedLeaderboardKey &&
+                equals((SortedPerPagedLeaderboardKey) other);
     }
 
-    public boolean equals(SortedPerPagedLeaderboardDefKey other)
+    public boolean equals(SortedPerPagedLeaderboardKey other)
     {
         return other != null &&
                 super.equals(other) &&
                 (sortType == null ? other.sortType == null : sortType.equals(other.sortType));
     }
 
-    public int compareTo(SortedPerPagedLeaderboardDefKey other)
+    public int compareTo(SortedPerPagedLeaderboardKey other)
     {
         if (this == other)
         {

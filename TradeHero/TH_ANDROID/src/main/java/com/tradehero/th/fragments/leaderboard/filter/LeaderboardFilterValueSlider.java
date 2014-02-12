@@ -22,6 +22,7 @@ public class LeaderboardFilterValueSlider extends RelativeLayout
 
     protected int minValue = 0;
     protected int maxValue = 100;
+    protected int currentValue = 0;
 
     //<editor-fold desc="Constructors">
     public LeaderboardFilterValueSlider(Context context)
@@ -79,11 +80,28 @@ public class LeaderboardFilterValueSlider extends RelativeLayout
         super.onDetachedFromWindow();
     }
 
-    protected void displayValue(int fromSeekBar)
+    public int getCurrentValue()
+    {
+        return currentValue;
+    }
+
+    public void setCurrentValue(int currentValue)
+    {
+        this.currentValue = currentValue;
+        displayValue();
+    }
+
+    protected void setValueFromSeekBar(int fromSeekBar)
+    {
+        this.currentValue = ((fromSeekBar * (maxValue - minValue)) / 100 + minValue);
+        displayValue();
+    }
+
+    protected void displayValue()
     {
         if (valueText != null)
         {
-            valueText.setText("" + ((fromSeekBar * (maxValue - minValue)) / 100 + minValue));
+            valueText.setText("" + currentValue);
         }
     }
 
@@ -96,7 +114,7 @@ public class LeaderboardFilterValueSlider extends RelativeLayout
 
         @Override public void onProgressChanged(SeekBar seekBar, int i, boolean b)
         {
-            displayValue(i);
+            setValueFromSeekBar(i);
         }
 
         @Override public void onStartTrackingTouch(SeekBar seekBar)

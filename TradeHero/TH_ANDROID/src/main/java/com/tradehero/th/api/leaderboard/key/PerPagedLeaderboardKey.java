@@ -3,20 +3,20 @@ package com.tradehero.th.api.leaderboard.key;
 import android.os.Bundle;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/16/13 Time: 3:30 PM To change this template use File | Settings | File Templates. */
-public class PerPagedLeaderboardDefKey extends PagedLeaderboardDefKey
+public class PerPagedLeaderboardKey extends PagedLeaderboardKey
 {
-    public final static String BUNDLE_KEY_PER_PAGE = PerPagedLeaderboardDefKey.class.getName() + ".perPage";
+    public final static String BUNDLE_KEY_PER_PAGE = PerPagedLeaderboardKey.class.getName() + ".perPage";
 
     public final Integer perPage;
 
     //<editor-fold desc="Constructors">
-    public PerPagedLeaderboardDefKey(Integer leaderboardDefKey, int page, int perPage)
+    public PerPagedLeaderboardKey(Integer leaderboardKey, int page, int perPage)
     {
-        super(leaderboardDefKey, page);
+        super(leaderboardKey, page);
         this.perPage = perPage;
     }
 
-    public PerPagedLeaderboardDefKey(Bundle args)
+    public PerPagedLeaderboardKey(Bundle args)
     {
         super(args);
         this.perPage = args.containsKey(BUNDLE_KEY_PER_PAGE) ? args.getInt(BUNDLE_KEY_PER_PAGE) : null;
@@ -28,20 +28,20 @@ public class PerPagedLeaderboardDefKey extends PagedLeaderboardDefKey
         return super.hashCode() ^ (perPage == null ? 0 : perPage.hashCode());
     }
 
-    @Override public boolean equals(PagedLeaderboardDefKey other)
+    @Override public boolean equals(PagedLeaderboardKey other)
     {
-        return super.equals(other) && other instanceof PerPagedLeaderboardDefKey &&
-                equals((PerPagedLeaderboardDefKey) other);
+        return super.equals(other) && other instanceof PerPagedLeaderboardKey &&
+                equals((PerPagedLeaderboardKey) other);
     }
 
-    public boolean equals(PerPagedLeaderboardDefKey other)
+    public boolean equals(PerPagedLeaderboardKey other)
     {
         return other != null &&
                 super.equals(other) &&
                 (perPage == null ? other.perPage == null : perPage.equals(other.perPage));
     }
 
-    public int compareTo(PerPagedLeaderboardDefKey other)
+    public int compareTo(PerPagedLeaderboardKey other)
     {
         if (this == other)
         {

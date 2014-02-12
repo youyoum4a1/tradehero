@@ -1,11 +1,13 @@
 package com.tradehero.th.persistence.leaderboard;
 
+import butterknife.InjectView;
 import com.tradehero.common.persistence.PartialDTOCache;
 import com.tradehero.common.persistence.THLruCache;
 import com.tradehero.th.api.leaderboard.LeaderboardDTO;
 import com.tradehero.th.api.leaderboard.key.LeaderboardKey;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTOUtil;
 import com.tradehero.th.api.leaderboard.key.LeaderboardUserId;
+import com.tradehero.th.network.service.LeaderboardServiceWrapper;
 import dagger.Lazy;
 import java.util.Date;
 import java.util.List;
@@ -22,6 +24,7 @@ import javax.inject.Singleton;
     private THLruCache<LeaderboardKey, LeaderboardCutDTO> lruCache;
     @Inject protected Lazy<LeaderboardUserCache> leaderboardUserCache;
     @Inject protected LeaderboardUserDTOUtil leaderboardUserDTOUtil;
+    @Inject protected LeaderboardServiceWrapper leaderboardServiceWrapper;
 
     //<editor-fold desc="Constructors">
     @Inject public LeaderboardCache()
@@ -38,7 +41,7 @@ import javax.inject.Singleton;
 
     protected LeaderboardDTO fetch(LeaderboardKey key) throws Throwable
     {
-        throw new IllegalStateException("There is no fetch on this cache");
+        return leaderboardServiceWrapper.getLeaderboard(key);
     }
 
     @Override public LeaderboardDTO get(LeaderboardKey key)

@@ -5,15 +5,15 @@ import android.os.Bundle;
 /**
  * Created by xavier on 2/12/14.
  */
-public class PerPagedFilteredLeaderboardDefKey extends PerPagedLeaderboardDefKey
+public class PerPagedFilteredLeaderboardKey extends PerPagedLeaderboardKey
 {
-    public static final String TAG = PerPagedFilteredLeaderboardDefKey.class.getSimpleName();
+    public static final String TAG = PerPagedFilteredLeaderboardKey.class.getSimpleName();
 
-    public static final String BUNDLE_KEY_WIN_RATIO = PerPagedFilteredLeaderboardDefKey.class.getName() + ".winRatio";
-    public static final String BUNDLE_KEY_AVERAGE_MONTHLY_TRADE_COUNT = PerPagedFilteredLeaderboardDefKey.class.getName() + ".averageMonthlyTradeCount";
-    public static final String BUNDLE_KEY_AVERAGE_HOLDING_DAYS = PerPagedFilteredLeaderboardDefKey.class.getName() + ".averageHoldingDays";
-    public static final String BUNDLE_KEY_MIN_SHARPE_RATIO = PerPagedFilteredLeaderboardDefKey.class.getName() + ".minSharpeRatio";
-    public static final String BUNDLE_KEY_MAX_POS_ROI_VOLATILITY = PerPagedFilteredLeaderboardDefKey.class.getName() + ".maxPosRoiVolatility";
+    public static final String BUNDLE_KEY_WIN_RATIO = PerPagedFilteredLeaderboardKey.class.getName() + ".winRatio";
+    public static final String BUNDLE_KEY_AVERAGE_MONTHLY_TRADE_COUNT = PerPagedFilteredLeaderboardKey.class.getName() + ".averageMonthlyTradeCount";
+    public static final String BUNDLE_KEY_AVERAGE_HOLDING_DAYS = PerPagedFilteredLeaderboardKey.class.getName() + ".averageHoldingDays";
+    public static final String BUNDLE_KEY_MIN_SHARPE_RATIO = PerPagedFilteredLeaderboardKey.class.getName() + ".minSharpeRatio";
+    public static final String BUNDLE_KEY_MAX_POS_ROI_VOLATILITY = PerPagedFilteredLeaderboardKey.class.getName() + ".maxPosRoiVolatility";
 
     public final Float winRatio;
     public final Float averageMonthlyTradeCount;
@@ -22,10 +22,10 @@ public class PerPagedFilteredLeaderboardDefKey extends PerPagedLeaderboardDefKey
     public final Float maxPosRoiVolatility;
 
     //<editor-fold desc="Constructors">
-    public PerPagedFilteredLeaderboardDefKey(Integer leaderboardDefKey, int page, int perPage,
+    public PerPagedFilteredLeaderboardKey(Integer leaderboardKey, int page, int perPage,
             Float winRatio, Float averageMonthlyTradeCount, Float averageHoldingDays, Float minSharpeRatio, Float maxPosRoiVolatility)
     {
-        super(leaderboardDefKey, page, perPage);
+        super(leaderboardKey, page, perPage);
         this.winRatio = winRatio;
         this.averageMonthlyTradeCount = averageMonthlyTradeCount;
         this.averageHoldingDays = averageHoldingDays;
@@ -33,9 +33,9 @@ public class PerPagedFilteredLeaderboardDefKey extends PerPagedLeaderboardDefKey
         this.maxPosRoiVolatility = maxPosRoiVolatility;
     }
 
-    public PerPagedFilteredLeaderboardDefKey(Integer leaderboardDefKey, int page, int perPage)
+    public PerPagedFilteredLeaderboardKey(Integer leaderboardKey, int page, int perPage)
     {
-        super(leaderboardDefKey, page, perPage);
+        super(leaderboardKey, page, perPage);
         this.winRatio = null;
         this.averageMonthlyTradeCount = null;
         this.averageHoldingDays = null;
@@ -43,7 +43,7 @@ public class PerPagedFilteredLeaderboardDefKey extends PerPagedLeaderboardDefKey
         this.maxPosRoiVolatility = null;
     }
 
-    public PerPagedFilteredLeaderboardDefKey(Bundle args)
+    public PerPagedFilteredLeaderboardKey(Bundle args)
     {
         super(args);
         this.winRatio = args.containsKey(BUNDLE_KEY_WIN_RATIO) ? args.getFloat(BUNDLE_KEY_WIN_RATIO) : null;
@@ -63,13 +63,13 @@ public class PerPagedFilteredLeaderboardDefKey extends PerPagedLeaderboardDefKey
                 ^ (maxPosRoiVolatility == null ? 0 : maxPosRoiVolatility.hashCode());
     }
 
-    @Override public boolean equals(PerPagedLeaderboardDefKey other)
+    @Override public boolean equals(PerPagedLeaderboardKey other)
     {
-        return super.equals(other) && other instanceof PerPagedFilteredLeaderboardDefKey &&
-                equals((PerPagedFilteredLeaderboardDefKey) other);
+        return super.equals(other) && other instanceof PerPagedFilteredLeaderboardKey &&
+                equals((PerPagedFilteredLeaderboardKey) other);
     }
 
-    public boolean equals(PerPagedFilteredLeaderboardDefKey other)
+    public boolean equals(PerPagedFilteredLeaderboardKey other)
     {
         return other != null &&
                 super.equals(other) &&
@@ -80,7 +80,7 @@ public class PerPagedFilteredLeaderboardDefKey extends PerPagedLeaderboardDefKey
                 (maxPosRoiVolatility == null ? other.maxPosRoiVolatility == null : maxPosRoiVolatility.equals(other.maxPosRoiVolatility));
     }
 
-    public int compareTo(PerPagedFilteredLeaderboardDefKey other)
+    public int compareTo(PerPagedFilteredLeaderboardKey other)
     {
         // It looks like it does not compare well with all the subclasses
         if (this == other)
