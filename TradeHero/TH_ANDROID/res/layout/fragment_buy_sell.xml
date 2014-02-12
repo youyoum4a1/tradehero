@@ -179,7 +179,7 @@
           android:layout_alignParentRight="true"
           android:contentDescription="@null"
           android:background="@null"
-          android:src="@drawable/icn_info_blue"
+          android:src="@drawable/icn_info_normal"
           android:scaleType="fitCenter"
           />
 

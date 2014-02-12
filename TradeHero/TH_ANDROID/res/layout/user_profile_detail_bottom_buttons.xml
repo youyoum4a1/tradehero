@@ -152,7 +152,7 @@
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:scaleType="fitXY"
-        android:src="@drawable/icn_info_blue"
+        android:src="@drawable/icn_info_normal"
         android:contentDescription="@null"
         />
 
