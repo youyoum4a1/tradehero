@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
   <item
       android:id="@+id/leaderboard_listview_menu_help"
@@ -9,5 +10,12 @@
       android:showAsAction="ifRoom"
       android:visible="false"
       />
+
+  <item
+    android:id="@+id/button_leaderboard_filter"
+    android:icon="@drawable/filter"
+    android:showAsAction="always"
+    android:visible="true"
+    />
 
 </menu>

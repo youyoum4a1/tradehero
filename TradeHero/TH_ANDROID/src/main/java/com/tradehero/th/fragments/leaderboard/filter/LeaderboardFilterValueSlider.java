@@ -91,6 +91,11 @@ public class LeaderboardFilterValueSlider extends RelativeLayout
         displayValue();
     }
 
+    public void setDefaultCurrentValue()
+    {
+        setCurrentValue(minValue);
+    }
+
     protected void setValueFromSeekBar(int fromSeekBar)
     {
         this.currentValue = ((fromSeekBar * (maxValue - minValue)) / 100 + minValue);

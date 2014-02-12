@@ -4,6 +4,8 @@
   <!-- Full page elements -->
   <string name="leaderboard_filter_top_ranking_reminder">Must have at least 2 positions to qualify for ranking</string>
   <string name="leaderboard_filter_reset_filter">Reset Filters</string>
+  <string name="leaderboard_filter_menu_title">Filter Options</string>
+  <string name="leaderboard_filter_menu_button_done">Done</string>
 
   <!-- For individual LeaderboardFilterValueSlider -->
   <string name="leaderboard_filter_comparator_sign_bigger_than">&gt;</string>

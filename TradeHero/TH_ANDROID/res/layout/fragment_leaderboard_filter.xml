@@ -7,6 +7,7 @@
     android:layout_height="match_parent">
 
   <com.tradehero.th.fragments.leaderboard.filter.LeaderboardFilterSliderContainer
+      android:id="@+id/leaderboard_filter_slider_container"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_marginRight="16dp"

@@ -15,6 +15,8 @@ public class LeaderboardFilterSliderContainer extends LinearLayout
 {
     public static final String TAG = LeaderboardFilterSliderContainer.class.getSimpleName();
 
+    protected PerPagedFilteredLeaderboardKey perPagedFilteredLeaderboardKey;
+
     //<editor-fold desc="Constructors">
     public LeaderboardFilterSliderContainer(Context context)
     {
@@ -40,11 +42,18 @@ public class LeaderboardFilterSliderContainer extends LinearLayout
     {
         super.onFinishInflate();
         ButterKnife.inject(this);
+        displayPerPagedFilteredLeaderboardKey();
+    }
+
+    public void setFilteredLeaderboardKey(PerPagedFilteredLeaderboardKey perPagedFilteredLeaderboardKey)
+    {
+        this.perPagedFilteredLeaderboardKey = perPagedFilteredLeaderboardKey;
+        displayPerPagedFilteredLeaderboardKey();
     }
 
     public PerPagedFilteredLeaderboardKey getFilteredLeaderboardKey()
     {
-        return new PerPagedFilteredLeaderboardKey(
+        this.perPagedFilteredLeaderboardKey = new PerPagedFilteredLeaderboardKey(
                 null, // To be replaced with Key
                 0, // Page but we don't care
                 0, // PerPage but we don't care
@@ -54,5 +63,39 @@ public class LeaderboardFilterSliderContainer extends LinearLayout
                 null, // MinSharpeRatio but we don't care
                 null // MaxPosRoiVolatility but we don't care
         );
+        return this.perPagedFilteredLeaderboardKey;
+    }
+
+    public void displayPerPagedFilteredLeaderboardKey()
+    {
+        if (perPagedFilteredLeaderboardKey != null)
+        {
+            if (perPagedFilteredLeaderboardKey.averageMonthlyTradeCount != null && monthlyActivityView != null)
+            {
+                monthlyActivityView.setCurrentValue(Math.round(perPagedFilteredLeaderboardKey.averageMonthlyTradeCount));
+            }
+            else if (monthlyActivityView != null)
+            {
+                monthlyActivityView.setDefaultCurrentValue();
+            }
+
+            if (perPagedFilteredLeaderboardKey.winRatio != null && winRatioView != null)
+            {
+                winRatioView.setCurrentValue(Math.round(perPagedFilteredLeaderboardKey.winRatio));
+            }
+            else if (winRatioView != null)
+            {
+                winRatioView.setDefaultCurrentValue();
+            }
+
+            if (perPagedFilteredLeaderboardKey.averageHoldingDays != null && holdingPeriodView != null)
+            {
+                holdingPeriodView.setCurrentValue(Math.round(perPagedFilteredLeaderboardKey.averageHoldingDays));
+            }
+            else if (holdingPeriodView != null)
+            {
+                holdingPeriodView.setDefaultCurrentValue();
+            }
+        }
     }
 }

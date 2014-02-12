@@ -3,11 +3,10 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
   <item
-      android:id="@+id/leaderboard_listview_menu_help"
-      android:icon="@drawable/icn_info_white"
-      android:title="@string/action_bar_help"
-      android:showAsAction="ifRoom"
-      android:visible="false"
+      android:id="@+id/btn_leaderboard_filter_confirm"
+      android:title="@string/leaderboard_filter_menu_button_done"
+      android:showAsAction="always"
+      android:enabled="true"
       />
 
 </menu>
