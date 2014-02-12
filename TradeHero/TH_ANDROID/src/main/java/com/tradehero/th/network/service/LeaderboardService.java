@@ -211,6 +211,50 @@ public interface LeaderboardService
             Callback<GetLeaderboardPositionsDTO> callback);
     //</editor-fold>
 
+    //<editor-fold desc="Get Friends Leaderboard">
+    @GET("/leaderboards/friends")
+    LeaderboardDTO getFriendsLeaderboard()
+            throws RetrofitError;
+
+    @GET("/leaderboards/friends")
+    void getFriendsLeaderboard(Callback<LeaderboardDTO> callback);
+
+    @GET("/leaderboards/friends")
+    LeaderboardDTO getFriendsLeaderboard(
+            @Query("page") Integer page)
+            throws RetrofitError;
+
+    @GET("/leaderboards/friends")
+    void getFriendsLeaderboard(
+            @Query("page") Integer page,
+            Callback<LeaderboardDTO> callback);
+
+    @GET("/leaderboards/friends")
+    LeaderboardDTO getFriendsLeaderboard(
+            @Query("page") Integer page,
+            @Query("perPage") Integer perPage)
+            throws RetrofitError;
+
+    @GET("/leaderboards/friends")
+    void getFriendsLeaderboard(
+            @Query("page") Integer page,
+            @Query("perPage") Integer perPage,
+            Callback<LeaderboardDTO> callback);
+
+    @GET("/leaderboards/friends")
+    LeaderboardDTO getFriendsLeaderboard(
+            @Query("page") Integer page,
+            @Query("perPage") Integer perPage,
+            @Query("includeFoF") Boolean includeFoF)
+            throws RetrofitError;
+
+    @GET("/leaderboards/friends")
+    void getFriendsLeaderboard(
+            @Query("page") Integer page,
+            @Query("perPage") Integer perPage,
+            @Query("includeFoF") Boolean includeFoF,
+            Callback<LeaderboardDTO> callback);
+
     /**
      *
      * @param page pagination parameter
@@ -224,6 +268,15 @@ public interface LeaderboardService
             @Query("page") Integer page,
             @Query("perPage") Integer perPage,
             @Query("includeFoF") Boolean includeFoF,
-            @Query("sortType") Integer sortType
-    ) throws RetrofitError;
+            @Query("sortType") Integer sortType)
+        throws RetrofitError;
+
+    @GET("/leaderboards/friends")
+    void getFriendsLeaderboard(
+            @Query("page") Integer page,
+            @Query("perPage") Integer perPage,
+            @Query("includeFoF") Boolean includeFoF,
+            @Query("sortType") Integer sortType,
+            Callback<LeaderboardDTO> callback);
+    //</editor-fold>
 }

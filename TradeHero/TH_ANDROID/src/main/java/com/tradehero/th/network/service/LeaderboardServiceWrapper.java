@@ -2,6 +2,7 @@ package com.tradehero.th.network.service;
 
 import com.tradehero.th.api.leaderboard.LeaderboardDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardDefDTO;
+import com.tradehero.th.api.leaderboard.key.FriendsSortedPerPagedLeaderboardKey;
 import com.tradehero.th.api.leaderboard.key.LeaderboardKey;
 import com.tradehero.th.api.leaderboard.key.PagedLeaderboardKey;
 import com.tradehero.th.api.leaderboard.key.PerPagedFilteredLeaderboardKey;
@@ -67,7 +68,8 @@ import retrofit.RetrofitError;
         {
             return getLeaderboard((PerPagedLeaderboardKey) pagedLeaderboardKey);
         }
-        return leaderboardService.getLeaderboard(pagedLeaderboardKey.key,
+        return leaderboardService.getLeaderboard(
+                pagedLeaderboardKey.key,
                 pagedLeaderboardKey.page);
     }
 
@@ -79,7 +81,8 @@ import retrofit.RetrofitError;
         }
         else
         {
-            leaderboardService.getLeaderboard(pagedLeaderboardKey.key,
+            leaderboardService.getLeaderboard(
+                    pagedLeaderboardKey.key,
                     pagedLeaderboardKey.page,
                     callback);
         }
@@ -95,7 +98,8 @@ import retrofit.RetrofitError;
         {
             return getLeaderboard((PerPagedFilteredLeaderboardKey) perPagedLeaderboardKey);
         }
-        return leaderboardService.getLeaderboard(perPagedLeaderboardKey.key,
+        return leaderboardService.getLeaderboard(
+                perPagedLeaderboardKey.key,
                 perPagedLeaderboardKey.page,
                 perPagedLeaderboardKey.perPage);
     }
@@ -112,7 +116,8 @@ import retrofit.RetrofitError;
         }
         else
         {
-            leaderboardService.getLeaderboard(perPagedLeaderboardKey.key,
+            leaderboardService.getLeaderboard(
+                    perPagedLeaderboardKey.key,
                     perPagedLeaderboardKey.page,
                     perPagedLeaderboardKey.perPage,
                     callback);
@@ -121,7 +126,12 @@ import retrofit.RetrofitError;
 
     public LeaderboardDTO getLeaderboard(SortedPerPagedLeaderboardKey sortedPerPagedLeaderboardKey) throws RetrofitError
     {
-        return leaderboardService.getLeaderboard(sortedPerPagedLeaderboardKey.key,
+        if (sortedPerPagedLeaderboardKey instanceof FriendsSortedPerPagedLeaderboardKey)
+        {
+            return getLeaderboard((FriendsSortedPerPagedLeaderboardKey) sortedPerPagedLeaderboardKey);
+        }
+        return leaderboardService.getLeaderboard(
+                sortedPerPagedLeaderboardKey.key,
                 sortedPerPagedLeaderboardKey.page,
                 sortedPerPagedLeaderboardKey.perPage,
                 sortedPerPagedLeaderboardKey.sortType);
@@ -129,11 +139,88 @@ import retrofit.RetrofitError;
 
     public void getLeaderboard(SortedPerPagedLeaderboardKey sortedPerPagedLeaderboardKey, Callback<LeaderboardDTO> callback)
     {
-        leaderboardService.getLeaderboard(sortedPerPagedLeaderboardKey.key,
-                sortedPerPagedLeaderboardKey.page,
-                sortedPerPagedLeaderboardKey.perPage,
-                sortedPerPagedLeaderboardKey.sortType,
-                callback);
+        if (sortedPerPagedLeaderboardKey instanceof FriendsSortedPerPagedLeaderboardKey)
+        {
+            getLeaderboard((FriendsSortedPerPagedLeaderboardKey) sortedPerPagedLeaderboardKey, callback);
+        }
+        else
+        {
+            leaderboardService.getLeaderboard(
+                    sortedPerPagedLeaderboardKey.key,
+                    sortedPerPagedLeaderboardKey.page,
+                    sortedPerPagedLeaderboardKey.perPage,
+                    sortedPerPagedLeaderboardKey.sortType,
+                    callback);
+        }
+    }
+
+    public LeaderboardDTO getLeaderboard(FriendsSortedPerPagedLeaderboardKey friendsSortedPerPagedLeaderboardKey) throws RetrofitError
+    {
+        if (friendsSortedPerPagedLeaderboardKey.sortType == null)
+        {
+            return leaderboardService.getFriendsLeaderboard(
+                    friendsSortedPerPagedLeaderboardKey.page,
+                    friendsSortedPerPagedLeaderboardKey.perPage,
+                    friendsSortedPerPagedLeaderboardKey.includeFoF);
+        }
+        else if (friendsSortedPerPagedLeaderboardKey.includeFoF == null)
+        {
+            return leaderboardService.getFriendsLeaderboard(
+                    friendsSortedPerPagedLeaderboardKey.page,
+                    friendsSortedPerPagedLeaderboardKey.perPage);
+        }
+        else if (friendsSortedPerPagedLeaderboardKey.perPage == null)
+        {
+            return leaderboardService.getFriendsLeaderboard(
+                    friendsSortedPerPagedLeaderboardKey.page);
+        }
+        else if (friendsSortedPerPagedLeaderboardKey.page == null)
+        {
+            return leaderboardService.getFriendsLeaderboard();
+        }
+        return leaderboardService.getFriendsLeaderboard(
+                friendsSortedPerPagedLeaderboardKey.page,
+                friendsSortedPerPagedLeaderboardKey.perPage,
+                friendsSortedPerPagedLeaderboardKey.includeFoF,
+                friendsSortedPerPagedLeaderboardKey.sortType);
+    }
+
+    public void getLeaderboard(FriendsSortedPerPagedLeaderboardKey friendsSortedPerPagedLeaderboardKey, Callback<LeaderboardDTO> callback)
+    {
+        if (friendsSortedPerPagedLeaderboardKey.sortType == null)
+        {
+            leaderboardService.getFriendsLeaderboard(
+                    friendsSortedPerPagedLeaderboardKey.page,
+                    friendsSortedPerPagedLeaderboardKey.perPage,
+                    friendsSortedPerPagedLeaderboardKey.includeFoF,
+                    callback);
+        }
+        else if (friendsSortedPerPagedLeaderboardKey.includeFoF == null)
+        {
+            leaderboardService.getFriendsLeaderboard(
+                    friendsSortedPerPagedLeaderboardKey.page,
+                    friendsSortedPerPagedLeaderboardKey.perPage,
+                    callback);
+        }
+        else if (friendsSortedPerPagedLeaderboardKey.perPage == null)
+        {
+            leaderboardService.getFriendsLeaderboard(
+                    friendsSortedPerPagedLeaderboardKey.page,
+                    callback);
+        }
+        else if (friendsSortedPerPagedLeaderboardKey.page == null)
+        {
+            leaderboardService.getFriendsLeaderboard(callback);
+        }
+        else
+        {
+            leaderboardService.getFriendsLeaderboard(
+                    friendsSortedPerPagedLeaderboardKey.page,
+                    friendsSortedPerPagedLeaderboardKey.perPage,
+                    friendsSortedPerPagedLeaderboardKey.includeFoF,
+                    friendsSortedPerPagedLeaderboardKey.sortType,
+                    callback);
+        }
     }
 
     public LeaderboardDTO getLeaderboard(PerPagedFilteredLeaderboardKey perPagedFilteredLeaderboardKey) throws RetrofitError
