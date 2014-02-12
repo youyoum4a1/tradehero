@@ -54,7 +54,7 @@ public class LeaderboardFilterSliderContainer extends LinearLayout
     public PerPagedFilteredLeaderboardKey getFilteredLeaderboardKey()
     {
         this.perPagedFilteredLeaderboardKey = new PerPagedFilteredLeaderboardKey(
-                null, // To be replaced with Key
+                this.perPagedFilteredLeaderboardKey.key, // To be replaced with Key
                 0, // Page but we don't care
                 0, // PerPage but we don't care
                 (float) winRatioView.getCurrentValue(),

@@ -74,9 +74,4 @@ public class SortedPerPagedLeaderboardKey extends PerPagedLeaderboardKey
             args.putInt(BUNDLE_KEY_SORT_TYPE, sortType);
         }
     }
-
-    @Override public String toString()
-    {
-        return String.format("[key=%d; page=%d; perPage=%d; sortType=%d]", key, page, perPage, sortType);
-    }
 }

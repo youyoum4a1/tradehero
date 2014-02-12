@@ -2,6 +2,9 @@ package com.tradehero.th.api.leaderboard.key;
 
 import android.os.Bundle;
 import com.tradehero.common.persistence.AbstractIntegerDTOKey;
+import com.tradehero.common.utils.THJsonAdapter;
+import com.tradehero.common.utils.THLog;
+import java.io.IOException;
 
 /**
  * Created by xavier on 1/22/14.
@@ -26,5 +29,18 @@ public class LeaderboardKey extends AbstractIntegerDTOKey
     @Override public String getBundleKey()
     {
         return BUNDLE_KEY_KEY;
+    }
+
+    @Override public String toString()
+    {
+        try
+        {
+            return THJsonAdapter.getInstance().toStringBody(this);
+        }
+        catch (IOException e)
+        {
+            THLog.e(TAG, "Failed toString", e);
+            return "";
+        }
     }
 }

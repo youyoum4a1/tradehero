@@ -74,9 +74,4 @@ public class PerPagedLeaderboardKey extends PagedLeaderboardKey
             args.putInt(BUNDLE_KEY_PER_PAGE, perPage);
         }
     }
-
-    @Override public String toString()
-    {
-        return String.format("[key=%d; page=%d; perPage=%d]", key, page, perPage);
-    }
 }

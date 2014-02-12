@@ -8,12 +8,14 @@ import android.widget.TextView;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
+import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.LoaderDTOAdapter;
 import com.tradehero.th.api.leaderboard.LeaderboardDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
+import com.tradehero.th.api.leaderboard.key.PerPagedFilteredLeaderboardKey;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.fragments.tutorial.WithTutorial;
+import com.tradehero.th.fragments.leaderboard.filter.LeaderboardFilterFragment;
 import com.tradehero.th.loaders.ListLoader;
 import com.tradehero.th.utils.Constants;
 import java.util.Date;
@@ -28,11 +30,15 @@ public class LeaderboardMarkUserListViewFragment extends BaseLeaderboardFragment
 {
     @Inject protected Provider<PrettyTime> prettyTime;
 
+    protected int leaderboardId;
     private LeaderboardMarkUserListAdapter leaderboardMarkUserListAdapter;
     private LeaderboardMarkUserListView leaderboardMarkUserListView;
     private TextView leaderboardMarkUserMarkingTime;
 
     protected LeaderboardMarkUserLoader leaderboardMarkUserLoader;
+
+    protected LeaderboardFilterFragment leaderboardFilterFragment;
+    protected PerPagedFilteredLeaderboardKey currentLeaderboardFilterKey;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -45,39 +51,6 @@ public class LeaderboardMarkUserListViewFragment extends BaseLeaderboardFragment
     protected void initViews(View view)
     {
         leaderboardMarkUserListView = (LeaderboardMarkUserListView) view.findViewById(R.id.leaderboard_listview);
-    }
-
-    //<editor-fold desc="ActionBar">
-    @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
-    {
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-
-    @Override protected int getMenuResource()
-    {
-        return R.menu.leaderboard_listview_menu;
-    }
-
-    @Override public boolean onOptionsItemSelected(MenuItem item)
-    {
-        switch (item.getItemId())
-        {
-            case R.id.leaderboard_listview_menu_help:
-                getNavigator().showTutorial(this);
-                break;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-    //</editor-fold>
-
-    @Override protected void setCurrentUserProfileDTO(UserProfileDTO currentUserProfileDTO)
-    {
-        super.setCurrentUserProfileDTO(currentUserProfileDTO);
-        if (leaderboardMarkUserListAdapter != null)
-        {
-            leaderboardMarkUserListAdapter.setCurrentUserProfileDTO(currentUserProfileDTO);
-            leaderboardMarkUserListAdapter.notifyDataSetChanged();
-        }
     }
 
     protected void inflateHeaderView(LayoutInflater inflater)
@@ -118,11 +91,39 @@ public class LeaderboardMarkUserListViewFragment extends BaseLeaderboardFragment
         leaderboardMarkUserMarkingTime = (TextView) headerView.findViewById(R.id.leaderboard_marking_time);
     }
 
+    //<editor-fold desc="ActionBar">
+    @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
+    {
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override protected int getMenuResource()
+    {
+        return R.menu.leaderboard_listview_menu;
+    }
+
+    @Override public boolean onOptionsItemSelected(MenuItem item)
+    {
+        switch (item.getItemId())
+        {
+            case R.id.leaderboard_listview_menu_help:
+                getNavigator().showTutorial(this);
+                break;
+
+            case R.id.button_leaderboard_filter:
+                pushFilterFragmentIn();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+    //</editor-fold>
+
     @Override public void onActivityCreated(Bundle savedInstanceState)
     {
         super.onActivityCreated(savedInstanceState);
 
-        int leaderboardId = getArguments().getInt(BUNDLE_KEY_LEADERBOARD_ID);
+        leaderboardId = getArguments().getInt(BUNDLE_KEY_LEADERBOARD_ID);
+        currentLeaderboardFilterKey = new PerPagedFilteredLeaderboardKey(leaderboardId, 0, 0);
 
         leaderboardMarkUserListAdapter = new LeaderboardMarkUserListAdapter(
                 getActivity(), getActivity().getLayoutInflater(), leaderboardId, getCurrentSortType().getLayoutResourceId());
@@ -141,6 +142,23 @@ public class LeaderboardMarkUserListViewFragment extends BaseLeaderboardFragment
         setSortTypeChangeListener(this);
     }
 
+    @Override public void onResume()
+    {
+        super.onResume();
+        if (leaderboardFilterFragment != null)
+        {
+            currentLeaderboardFilterKey = leaderboardFilterFragment.getPerPagedFilteredLeaderboardKey();
+            leaderboardFilterFragment = null;
+            THLog.d(TAG, "onResume " + currentLeaderboardFilterKey);
+        }
+        else
+        {
+            THLog.d(TAG, "onResume filterFragment is null");
+        }
+
+        // TODO update view
+    }
+
     @Override public void onDestroyView()
     {
         if (leaderboardMarkUserListAdapter != null)
@@ -155,6 +173,22 @@ public class LeaderboardMarkUserListViewFragment extends BaseLeaderboardFragment
         }
         leaderboardMarkUserListView = null;
         super.onDestroyView();
+    }
+
+    @Override public void onDestroy()
+    {
+        this.leaderboardFilterFragment = null;
+        super.onDestroy();
+    }
+
+    @Override protected void setCurrentUserProfileDTO(UserProfileDTO currentUserProfileDTO)
+    {
+        super.setCurrentUserProfileDTO(currentUserProfileDTO);
+        if (leaderboardMarkUserListAdapter != null)
+        {
+            leaderboardMarkUserListAdapter.setCurrentUserProfileDTO(currentUserProfileDTO);
+            leaderboardMarkUserListAdapter.notifyDataSetChanged();
+        }
     }
 
     @Override public void onSortTypeChange(LeaderboardSortType sortType)
@@ -174,6 +208,13 @@ public class LeaderboardMarkUserListViewFragment extends BaseLeaderboardFragment
     protected void invalidateCachedItemView()
     {
         leaderboardMarkUserListView.setAdapter(leaderboardMarkUserListAdapter);
+    }
+
+    protected void pushFilterFragmentIn()
+    {
+        Bundle args = new Bundle();
+        args.putBundle(LeaderboardFilterFragment.BUNDLE_KEY_PER_PAGED_FILTERED_LEADERBOARD_KEY_BUNDLE, currentLeaderboardFilterKey.getArgs());
+        this.leaderboardFilterFragment = (LeaderboardFilterFragment) getNavigator().pushFragment(LeaderboardFilterFragment.class, args);
     }
 
     //<editor-fold desc="BaseFragment.TabBarVisibilityInformer">

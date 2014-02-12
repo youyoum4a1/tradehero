@@ -75,9 +75,4 @@ public class PagedLeaderboardKey extends LeaderboardKey
             args.putInt(BUNDLE_KEY_PAGE, page);
         }
     }
-
-    @Override public String toString()
-    {
-        return String.format("[key=%d; page=%d]", key, page);
-    }
 }

@@ -36,6 +36,7 @@ import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserItemView;
 import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserListView;
 import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserListViewFragment;
 import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserLoader;
+import com.tradehero.th.fragments.leaderboard.filter.LeaderboardFilterFragment;
 import com.tradehero.th.fragments.portfolio.PortfolioListFragment;
 import com.tradehero.th.fragments.portfolio.PortfolioListItemAdapter;
 import com.tradehero.th.fragments.portfolio.PortfolioListItemView;
@@ -223,6 +224,7 @@ import javax.inject.Singleton;
                         LeaderboardMarkUserListView.class,
                         FriendLeaderboardMarkUserListViewFragment.class,
                         CompetitionLeaderboardMarkUserListViewFragment.class,
+                        LeaderboardFilterFragment.class,
 
                         WebViewFragment.class,
 

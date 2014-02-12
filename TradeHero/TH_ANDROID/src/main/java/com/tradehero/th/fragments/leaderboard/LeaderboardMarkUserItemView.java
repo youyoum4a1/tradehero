@@ -9,17 +9,16 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import com.squareup.picasso.Callback;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
-import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.leaderboard.LeaderboardDefDTO;
-import com.tradehero.th.api.leaderboard.key.LeaderboardDefKey;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
+import com.tradehero.th.api.leaderboard.key.LeaderboardDefKey;
 import com.tradehero.th.api.leaderboard.position.LeaderboardMarkUserId;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.CurrentUserId;
@@ -169,7 +168,6 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
 
     public void linkWith(UserProfileDTO currentUserProfileDTO, boolean andDisplay)
     {
-        THLog.d(TAG, "linkWith " + currentUserProfileDTO);
         this.currentUserProfileDTO = currentUserProfileDTO;
         if (andDisplay)
         {
