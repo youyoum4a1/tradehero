@@ -124,6 +124,10 @@ public class ProviderDTO implements DTO
 
     public OwnedPortfolioId getAssociatedOwnedPortfolioId(UserBaseKey userBaseKey)
     {
+        if (associatedPortfolio == null)
+        {
+            return null;
+        }
         return new OwnedPortfolioId(userBaseKey, associatedPortfolio);
     }
 

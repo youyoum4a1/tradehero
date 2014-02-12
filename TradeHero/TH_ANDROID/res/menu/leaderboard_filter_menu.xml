@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+  <item
+      android:id="@+id/leaderboard_listview_menu_help"
+      android:icon="@drawable/icn_info_white"
+      android:title="@string/action_bar_help"
+      android:showAsAction="ifRoom"
+      android:visible="false"
+      />
+
+</menu>
