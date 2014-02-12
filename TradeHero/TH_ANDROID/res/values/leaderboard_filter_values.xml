@@ -2,8 +2,8 @@
 <resources>
 
   <declare-styleable name="LeaderboardFilterValueSlider">
-    <attr name="valueMin" format="integer"/>
-    <attr name="valueMax" format="integer"/>
+    <attr name="valueMin" format="float"/>
+    <attr name="valueMax" format="float"/>
   </declare-styleable>
 
   <integer name="leaderboard_filter_monthly_activity_min">1</integer>
@@ -27,9 +27,13 @@
     <item name="android:layout_marginRight">4dp</item>
   </style>
 
-  <style name="LeaderboardFilter.Descrription">
+  <style name="LeaderboardFilter.Description">
     <item name="android:textColor">@color/gray_normal</item>
     <item name="android:textSize">10dp</item>
+  </style>
+
+  <style name="LeaderboardFilter.Button">
+    <item name="android:textColor">#0000ff</item>
   </style>
 
 </resources>

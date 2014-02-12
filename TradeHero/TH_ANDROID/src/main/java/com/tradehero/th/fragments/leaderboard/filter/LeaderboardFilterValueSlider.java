@@ -20,9 +20,9 @@ public class LeaderboardFilterValueSlider extends RelativeLayout
     @InjectView(R.id.leaderboard_filter_value) protected TextView valueText;
     @InjectView(R.id.leaderboard_filter_value_slider) protected SeekBar valueSlider;
 
-    protected int minValue = 0;
-    protected int maxValue = 100;
-    protected int currentValue = 0;
+    protected float minValue = 0;
+    protected float maxValue = 100;
+    protected float currentValue = 0;
 
     //<editor-fold desc="Constructors">
     public LeaderboardFilterValueSlider(Context context)
@@ -46,8 +46,8 @@ public class LeaderboardFilterValueSlider extends RelativeLayout
     protected void init(Context context, AttributeSet attrs)
     {
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.LeaderboardFilterValueSlider);
-        minValue = a.getInteger(R.styleable.LeaderboardFilterValueSlider_valueMin, minValue);
-        maxValue = a.getInteger(R.styleable.LeaderboardFilterValueSlider_valueMax, maxValue);
+        minValue = a.getFloat(R.styleable.LeaderboardFilterValueSlider_valueMin, minValue);
+        maxValue = a.getFloat(R.styleable.LeaderboardFilterValueSlider_valueMax, maxValue);
         a.recycle();
     }
 
@@ -80,12 +80,12 @@ public class LeaderboardFilterValueSlider extends RelativeLayout
         super.onDetachedFromWindow();
     }
 
-    public int getCurrentValue()
+    public float getCurrentValue()
     {
         return currentValue;
     }
 
-    public void setCurrentValue(int currentValue)
+    public void setCurrentValue(float currentValue)
     {
         this.currentValue = currentValue;
         displayValue();
@@ -106,7 +106,11 @@ public class LeaderboardFilterValueSlider extends RelativeLayout
     {
         if (valueText != null)
         {
-            valueText.setText("" + currentValue);
+            valueText.setText(String.format("%d", Math.round(currentValue)));
+        }
+        if (valueSlider != null)
+        {
+            valueSlider.setProgress((int) (100 * (currentValue - minValue) / (maxValue - minValue)));
         }
     }
 

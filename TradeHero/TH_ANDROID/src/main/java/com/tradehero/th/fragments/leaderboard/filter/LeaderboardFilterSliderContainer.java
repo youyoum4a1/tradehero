@@ -2,6 +2,7 @@ package com.tradehero.th.fragments.leaderboard.filter;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.view.View;
 import android.widget.LinearLayout;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -37,12 +38,37 @@ public class LeaderboardFilterSliderContainer extends LinearLayout
     @InjectView(R.id.leaderboard_filter_monthly_activity_container) protected LeaderboardFilterValueSlider monthlyActivityView;
     @InjectView(R.id.leaderboard_filter_win_ratio_container) protected LeaderboardFilterValueSlider winRatioView;
     @InjectView(R.id.leaderboard_filter_holding_period_container) protected LeaderboardFilterValueSlider holdingPeriodView;
+    @InjectView(R.id.leaderboard_filter_reset_button) protected View buttonResetFilters;
 
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
         ButterKnife.inject(this);
         displayPerPagedFilteredLeaderboardKey();
+    }
+
+    @Override protected void onAttachedToWindow()
+    {
+        super.onAttachedToWindow();
+        if (buttonResetFilters != null)
+        {
+            buttonResetFilters.setOnClickListener(new OnClickListener()
+            {
+                @Override public void onClick(View view)
+                {
+                    displayPerPagedFilteredLeaderboardKey();
+                }
+            });
+        }
+    }
+
+    @Override protected void onDetachedFromWindow()
+    {
+        if (buttonResetFilters != null)
+        {
+            buttonResetFilters.setOnClickListener(null);
+        }
+        super.onDetachedFromWindow();
     }
 
     public void setFilteredLeaderboardKey(PerPagedFilteredLeaderboardKey perPagedFilteredLeaderboardKey)
@@ -57,9 +83,9 @@ public class LeaderboardFilterSliderContainer extends LinearLayout
                 this.perPagedFilteredLeaderboardKey.key, // To be replaced with Key
                 0, // Page but we don't care
                 0, // PerPage but we don't care
-                (float) winRatioView.getCurrentValue(),
-                (float) monthlyActivityView.getCurrentValue(),
-                (float) holdingPeriodView.getCurrentValue(),
+                winRatioView.getCurrentValue(),
+                monthlyActivityView.getCurrentValue(),
+                holdingPeriodView.getCurrentValue(),
                 null, // MinSharpeRatio but we don't care
                 null // MaxPosRoiVolatility but we don't care
         );

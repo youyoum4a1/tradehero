@@ -57,7 +57,7 @@
       android:layout_height="wrap_content"
       android:layout_below="@id/leaderboard_filter_header_value_container"
       android:text="@string/leaderboard_filter_monthly_activity_description"
-      style="@style/LeaderboardFilter.Descrription"
+      style="@style/LeaderboardFilter.Description"
       />
 
   <RelativeLayout
