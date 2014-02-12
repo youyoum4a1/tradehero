@@ -20,7 +20,7 @@ public interface PurchaseReporter<
     OnPurchaseReportedListenerType getListener();
     void setListener(final OnPurchaseReportedListenerType listener);
     void reportPurchase(int requestCode, ProductPurchaseType purchase);
-    UserProfileDTO reportPurchaseSync(ProductPurchaseType purchase);
+    UserProfileDTO reportPurchaseSync(ProductPurchaseType purchase) throws Exception;
 
     public static interface OnPurchaseReportedListener<
             ProductIdentifierType extends ProductIdentifier,

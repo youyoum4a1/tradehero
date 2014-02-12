@@ -23,5 +23,5 @@ public interface ActorPurchaseReporter<
     OnPurchaseReportedListenerType getPurchaseReportHandler(int requestCode);
     int registerPurchaseReportedHandler(OnPurchaseReportedListenerType purchaseReportedHandler);
     void launchReportSequence(int requestCode, ProductPurchaseType purchase);
-    UserProfileDTOType launchReportSequenceSync(ProductPurchaseType purchase);
+    UserProfileDTOType launchReportSequenceSync(ProductPurchaseType purchase) throws Exception;
 }

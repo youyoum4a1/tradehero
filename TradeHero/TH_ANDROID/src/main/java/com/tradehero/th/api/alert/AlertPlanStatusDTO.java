@@ -10,4 +10,10 @@ public class AlertPlanStatusDTO
     public String product_id;
     public String productId;
     public boolean isYours;
+
+    // TODO remove this HACK when the server has been newly deployed
+    public String getProductId()
+    {
+        return productId != null ? productId : product_id;
+    }
 }

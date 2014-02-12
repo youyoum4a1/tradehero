@@ -296,7 +296,7 @@ public class THIABLogicHolder
         purchaseReporter.reportPurchase(requestCode, purchase);
     }
 
-    @Override public UserProfileDTO launchReportSequenceSync(THIABPurchase purchase) throws RetrofitError
+    @Override public UserProfileDTO launchReportSequenceSync(THIABPurchase purchase) throws Exception
     {
         return new THIABPurchaseReporter().reportPurchaseSync(purchase);
     }

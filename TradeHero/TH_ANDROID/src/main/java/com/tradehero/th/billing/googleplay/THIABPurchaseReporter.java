@@ -1,14 +1,18 @@
 package com.tradehero.th.billing.googleplay;
 
+import com.sun.org.apache.regexp.internal.recompile;
 import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.common.utils.THLog;
+import com.tradehero.th.api.alert.AlertPlanStatusDTO;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.billing.BasePurchaseReporter;
 import com.tradehero.th.billing.PurchaseReporter;
+import com.tradehero.th.billing.googleplay.exception.PurchaseReportedToOtherUserException;
 import com.tradehero.th.billing.googleplay.exception.UnhandledSKUDomainException;
 import com.tradehero.th.network.service.AlertPlanService;
+import com.tradehero.th.network.service.AlertPlanServiceWrapper;
 import com.tradehero.th.network.service.PortfolioServiceWrapper;
 import com.tradehero.th.network.service.UserService;
 import com.tradehero.th.persistence.billing.googleplay.THIABProductDetailCache;
@@ -33,11 +37,10 @@ public class THIABPurchaseReporter extends BasePurchaseReporter<
     @Inject CurrentUserId currentUserId;
     @Inject Lazy<PortfolioServiceWrapper> portfolioServiceWrapper;
     @Inject Lazy<AlertPlanService> alertPlanService;
+    @Inject Lazy<AlertPlanServiceWrapper> alertPlanServiceWrapper;
     @Inject Lazy<UserService> userService;
     @Inject Lazy<THIABProductDetailCache> skuDetailCache;
     @Inject Lazy<PortfolioCompactListCache> portfolioCompactListCache;
-
-    private Callback<UserProfileDTO> userProfileDTOCallback;
 
     public THIABPurchaseReporter()
     {
@@ -59,17 +62,16 @@ public class THIABPurchaseReporter extends BasePurchaseReporter<
         this.requestCode = requestCode;
         this.purchase = purchase;
         OwnedPortfolioId portfolioId = getApplicableOwnedPortfolioId(purchase);
-        createCallbackIfMissing();
 
         // TODO do something when info is not available
         switch (skuDetailCache.get().get(purchase.getProductIdentifier()).domain)
         {
             case THIABProductDetail.DOMAIN_RESET_PORTFOLIO:
-                portfolioServiceWrapper.get().resetPortfolio(portfolioId, purchase.getGooglePlayPurchaseDTO(), userProfileDTOCallback);
+                portfolioServiceWrapper.get().resetPortfolio(portfolioId, purchase.getGooglePlayPurchaseDTO(), new THIABPurchaseReporterPurchaseCallback());
                 break;
 
             case THIABProductDetail.DOMAIN_VIRTUAL_DOLLAR:
-                portfolioServiceWrapper.get().addCash(portfolioId, purchase.getGooglePlayPurchaseDTO(), userProfileDTOCallback);
+                portfolioServiceWrapper.get().addCash(portfolioId, purchase.getGooglePlayPurchaseDTO(), new THIABPurchaseReporterPurchaseCallback());
                 break;
 
             case THIABProductDetail.DOMAIN_STOCK_ALERTS:
@@ -78,7 +80,12 @@ public class THIABPurchaseReporter extends BasePurchaseReporter<
                     alertPlanService.get().subscribeToAlertPlan(
                             portfolioId.userId,
                             purchase.getGooglePlayPurchaseDTO(),
-                            userProfileDTOCallback);
+                            new THIABPurchaseReporterAlertPlanPurchaseCallback());
+                }
+                else
+                {
+                    THLog.d(TAG, "reportPurchase portfolioId is null for " + purchase);
+                    // TODO decide what to do
                 }
                 break;
 
@@ -86,7 +93,7 @@ public class THIABPurchaseReporter extends BasePurchaseReporter<
                 userService.get().addCredit(
                         portfolioId.userId,
                         purchase.getGooglePlayPurchaseDTO(),
-                        userProfileDTOCallback);
+                        new THIABPurchaseReporterPurchaseCallback());
                 break;
 
             default:
@@ -95,7 +102,16 @@ public class THIABPurchaseReporter extends BasePurchaseReporter<
         }
     }
 
-    @Override public UserProfileDTO reportPurchaseSync(THIABPurchase purchase) throws RetrofitError
+    protected void checkAlertPlanAttribution(RetrofitError retrofitErrorFromReport)
+    {
+        OwnedPortfolioId portfolioId = getApplicableOwnedPortfolioId(purchase);
+        alertPlanServiceWrapper.get().checkAlertPlanAttribution(
+                portfolioId.getUserBaseKey(),
+                purchase.getGooglePlayPurchaseDTO(),
+                new THIABPurchaseReporterAlertPlanStatusCallback(retrofitErrorFromReport));
+    }
+
+    @Override public UserProfileDTO reportPurchaseSync(THIABPurchase purchase) throws Exception
     {
         OwnedPortfolioId portfolioId = getApplicableOwnedPortfolioId(purchase);
 
@@ -108,9 +124,7 @@ public class THIABPurchaseReporter extends BasePurchaseReporter<
                 return portfolioServiceWrapper.get().addCash(portfolioId, purchase.getGooglePlayPurchaseDTO());
 
             case THIABProductDetail.DOMAIN_STOCK_ALERTS:
-                return alertPlanService.get().subscribeToAlertPlan(
-                        portfolioId.userId,
-                        purchase.getGooglePlayPurchaseDTO());
+                return reportAlertPurchaseSync(purchase);
 
             case THIABProductDetail.DOMAIN_FOLLOW_CREDITS:
                 return userService.get().addCredit(
@@ -122,22 +136,38 @@ public class THIABPurchaseReporter extends BasePurchaseReporter<
         }
     }
 
-    protected void createCallbackIfMissing()
+    protected UserProfileDTO reportAlertPurchaseSync(THIABPurchase purchase) throws Exception
     {
-        if (userProfileDTOCallback == null)
-        {
-            userProfileDTOCallback = new Callback<UserProfileDTO>()
-            {
-                @Override public void success(UserProfileDTO userProfileDTO, Response response)
-                {
-                    handleCallbackSuccess(userProfileDTO, response);
-                }
+        OwnedPortfolioId portfolioId = getApplicableOwnedPortfolioId(purchase);
 
-                @Override public void failure(RetrofitError error)
-                {
-                    handleCallbackFailed(error);
-                }
-            };
+        Exception thrown = null;
+        try
+        {
+            return alertPlanService.get().subscribeToAlertPlan(
+                    portfolioId.userId,
+                    purchase.getGooglePlayPurchaseDTO());
+        }
+        catch (Exception e)
+        {
+            thrown = e;
+            // Maybe it was already submitted
+        }
+
+        try
+        {
+            AlertPlanStatusDTO statusDTO = alertPlanServiceWrapper.get().checkAlertPlanAttribution(portfolioId.getUserBaseKey(), purchase.getGooglePlayPurchaseDTO());
+            if (!statusDTO.isYours)
+            {
+                throw new PurchaseReportedToOtherUserException("Your alert plan purchase " + purchase + " has already been attributed to another user");
+            }
+
+            // Since the purchase was already reported, just return the latest profile
+            return alertPlanService.get().checkAlertPlanSubscription(portfolioId.userId);
+        }
+        catch (Exception e)
+        {
+            // Since the purchase cannot be found, the previous error was the correct one
+            throw thrown;
         }
     }
 
@@ -150,5 +180,72 @@ public class THIABPurchaseReporter extends BasePurchaseReporter<
     {
         THLog.e(TAG, "Failed reporting to TradeHero server", error);
         notifyListenerReportFailed(error);
+    }
+
+    protected void handleCallbackStatusSuccess(AlertPlanStatusDTO alertPlanStatusDTO, Response response, RetrofitError errorFromReport)
+    {
+        OwnedPortfolioId portfolioId = getApplicableOwnedPortfolioId(purchase);
+        if (!alertPlanStatusDTO.isYours)
+        {
+            // TODO we need to pass a PurchaseReportedToOtherUserException here
+            handleCallbackFailed(errorFromReport); // This is not what is intended
+        }
+        else
+        {
+            alertPlanService.get().checkAlertPlanSubscription(portfolioId.userId, new THIABPurchaseReporterPurchaseCallback());
+        }
+    }
+
+    protected class THIABPurchaseReporterPurchaseCallback implements Callback<UserProfileDTO>
+    {
+        public THIABPurchaseReporterPurchaseCallback()
+        {
+            super();
+        }
+
+        @Override public void success(UserProfileDTO userProfileDTO, Response response)
+        {
+            handleCallbackSuccess(userProfileDTO, response);
+        }
+
+        @Override public void failure(RetrofitError retrofitError)
+        {
+            handleCallbackFailed(retrofitError);
+        }
+    }
+
+    protected class THIABPurchaseReporterAlertPlanPurchaseCallback extends THIABPurchaseReporterPurchaseCallback
+    {
+        public THIABPurchaseReporterAlertPlanPurchaseCallback()
+        {
+            super();
+        }
+
+        @Override public void failure(RetrofitError retrofitError)
+        {
+            checkAlertPlanAttribution(retrofitError);
+        }
+    }
+
+    protected class THIABPurchaseReporterAlertPlanStatusCallback implements Callback<AlertPlanStatusDTO>
+    {
+        protected final RetrofitError errorFromReport;
+
+        public THIABPurchaseReporterAlertPlanStatusCallback(RetrofitError errorFromReport)
+        {
+            super();
+            this.errorFromReport = errorFromReport;
+        }
+
+        @Override public void success(AlertPlanStatusDTO alertPlanStatusDTO, Response response)
+        {
+            handleCallbackStatusSuccess(alertPlanStatusDTO, response, errorFromReport);
+        }
+
+        @Override public void failure(RetrofitError retrofitError)
+        {
+            // We report on the previous error as this means it was valid
+            handleCallbackFailed(errorFromReport);
+        }
     }
 }
