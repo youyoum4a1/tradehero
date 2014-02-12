@@ -3,20 +3,26 @@ package com.tradehero.th.api.leaderboard.key;
 import android.os.Bundle;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/16/13 Time: 3:30 PM To change this template use File | Settings | File Templates. */
-public class FriendsSortedPerPagedLeaderboardKey extends SortedPerPagedLeaderboardKey
+public class FriendsPerPagedLeaderboardKey extends PerPagedLeaderboardKey
 {
-    public final static String BUNDLE_KEY_INCLUDE_FRIEND_OF_FRIEND = FriendsSortedPerPagedLeaderboardKey.class.getName() + ".includeFoF";
+    public final static String BUNDLE_KEY_INCLUDE_FRIEND_OF_FRIEND = FriendsPerPagedLeaderboardKey.class.getName() + ".includeFoF";
 
     public final Boolean includeFoF;
 
     //<editor-fold desc="Constructors">
-    public FriendsSortedPerPagedLeaderboardKey(Integer leaderboardDefKey, int page, int perPage, int sortType, boolean includeFoF)
+    public FriendsPerPagedLeaderboardKey(Integer leaderboardDefKey, Integer page, Integer perPage, Boolean includeFoF)
     {
-        super(leaderboardDefKey, page, perPage, sortType);
+        super(leaderboardDefKey, page, perPage);
         this.includeFoF = includeFoF;
     }
 
-    public FriendsSortedPerPagedLeaderboardKey(Bundle args)
+    public FriendsPerPagedLeaderboardKey(FriendsPerPagedLeaderboardKey other, Integer page)
+    {
+        super(other, page);
+        this.includeFoF = other.includeFoF;
+    }
+
+    public FriendsPerPagedLeaderboardKey(Bundle args)
     {
         super(args);
         this.includeFoF = args.containsKey(BUNDLE_KEY_INCLUDE_FRIEND_OF_FRIEND) ? args.getBoolean(BUNDLE_KEY_INCLUDE_FRIEND_OF_FRIEND) : null;
@@ -28,20 +34,20 @@ public class FriendsSortedPerPagedLeaderboardKey extends SortedPerPagedLeaderboa
         return super.hashCode() ^ (includeFoF == null ? 0 : includeFoF.hashCode());
     }
 
-    @Override public boolean equals(SortedPerPagedLeaderboardKey other)
+    @Override public boolean equals(PerPagedLeaderboardKey other)
     {
-        return super.equals(other) && other instanceof FriendsSortedPerPagedLeaderboardKey &&
-                equals((FriendsSortedPerPagedLeaderboardKey) other);
+        return super.equals(other) && other instanceof FriendsPerPagedLeaderboardKey &&
+                equals((FriendsPerPagedLeaderboardKey) other);
     }
 
-    public boolean equals(FriendsSortedPerPagedLeaderboardKey other)
+    public boolean equals(FriendsPerPagedLeaderboardKey other)
     {
         return other != null &&
                 super.equals(other) &&
                 (includeFoF == null ? other.includeFoF == null : includeFoF.equals(other.includeFoF));
     }
 
-    public int compareTo(FriendsSortedPerPagedLeaderboardKey other)
+    public int compareTo(FriendsPerPagedLeaderboardKey other)
     {
         if (this == other)
         {
@@ -60,6 +66,11 @@ public class FriendsSortedPerPagedLeaderboardKey extends SortedPerPagedLeaderboa
         }
 
         return includeFoF.compareTo(other.includeFoF);
+    }
+
+    @Override public PagedLeaderboardKey cloneAtPage(int page)
+    {
+        return new FriendsPerPagedLeaderboardKey(this, page);
     }
 
     @Override public void putParameters(Bundle args)

@@ -22,7 +22,7 @@ public class PerPagedFilteredLeaderboardKey extends PerPagedLeaderboardKey
     public final Float maxPosRoiVolatility;
 
     //<editor-fold desc="Constructors">
-    public PerPagedFilteredLeaderboardKey(Integer leaderboardKey, int page, int perPage,
+    public PerPagedFilteredLeaderboardKey(Integer leaderboardKey, Integer page, Integer perPage,
             Float winRatio, Float averageMonthlyTradeCount, Float averageHoldingDays, Float minSharpeRatio, Float maxPosRoiVolatility)
     {
         super(leaderboardKey, page, perPage);
@@ -33,7 +33,7 @@ public class PerPagedFilteredLeaderboardKey extends PerPagedLeaderboardKey
         this.maxPosRoiVolatility = maxPosRoiVolatility;
     }
 
-    public PerPagedFilteredLeaderboardKey(Integer leaderboardKey, int page, int perPage)
+    public PerPagedFilteredLeaderboardKey(Integer leaderboardKey, Integer page, Integer perPage)
     {
         super(leaderboardKey, page, perPage);
         this.winRatio = null;
@@ -41,6 +41,16 @@ public class PerPagedFilteredLeaderboardKey extends PerPagedLeaderboardKey
         this.averageHoldingDays = null;
         this.minSharpeRatio = null;
         this.maxPosRoiVolatility = null;
+    }
+
+    public PerPagedFilteredLeaderboardKey(PerPagedFilteredLeaderboardKey other, Integer page)
+    {
+        super(other, page);
+        this.winRatio = other.winRatio;
+        this.averageMonthlyTradeCount = other.averageMonthlyTradeCount;
+        this.averageHoldingDays = other.averageHoldingDays;
+        this.minSharpeRatio = other.minSharpeRatio;
+        this.maxPosRoiVolatility = other.maxPosRoiVolatility;
     }
 
     public PerPagedFilteredLeaderboardKey(Bundle args)
@@ -104,6 +114,11 @@ public class PerPagedFilteredLeaderboardKey extends PerPagedLeaderboardKey
                 (averageHoldingDays == null ? (other.averageHoldingDays == null ? 0 : 1) : averageHoldingDays.compareTo(other.averageHoldingDays)) *
                 (minSharpeRatio == null ? (other.minSharpeRatio == null ? 0 : 1) : minSharpeRatio.compareTo(other.minSharpeRatio)) *
                 (maxPosRoiVolatility == null ? (other.maxPosRoiVolatility == null ? 0 : 1) : maxPosRoiVolatility.compareTo(other.maxPosRoiVolatility));
+    }
+
+    @Override public PagedLeaderboardKey cloneAtPage(int page)
+    {
+        return new PerPagedFilteredLeaderboardKey(this, page);
     }
 
     @Override public void putParameters(Bundle args)

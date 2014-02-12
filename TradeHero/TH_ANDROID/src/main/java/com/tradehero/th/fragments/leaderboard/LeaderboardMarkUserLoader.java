@@ -1,16 +1,14 @@
 package com.tradehero.th.fragments.leaderboard;
 
 import android.content.Context;
-import com.tradehero.common.persistence.LeaderboardQuery;
 import com.tradehero.common.utils.THLog;
-import com.tradehero.th.R;
 import com.tradehero.th.api.leaderboard.LeaderboardDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
+import com.tradehero.th.api.leaderboard.key.FriendsPerPagedLeaderboardKey;
+import com.tradehero.th.api.leaderboard.key.PagedLeaderboardKey;
 import com.tradehero.th.loaders.PaginationListLoader;
-import com.tradehero.th.persistence.leaderboard.LeaderboardManager;
-import com.tradehero.th.persistence.leaderboard.LeaderboardStore;
+import com.tradehero.th.persistence.leaderboard.LeaderboardCache;
 import com.tradehero.th.utils.DaggerUtils;
-import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 import javax.inject.Inject;
@@ -19,23 +17,16 @@ import javax.inject.Inject;
 public class LeaderboardMarkUserLoader extends PaginationListLoader<LeaderboardUserDTO>
 {
     private static final String TAG = LeaderboardMarkUserLoader.class.getName();
-    public static final int UNIQUE_LOADER_ID = R.string.loaderboard_loader_id;
 
-    private Integer currentPage;
-    private Integer leaderboardId;
-    private boolean includeFoF;
-    private LeaderboardSortType sortType = LeaderboardSortType.DefaultSortType;
+    protected PagedLeaderboardKey pagedLeaderboardKey;
 
-    @Inject
-    protected LeaderboardManager leaderboardManager;
+    @Inject protected LeaderboardCache leaderboardCache;
     private Date markUtc;
 
-    public LeaderboardMarkUserLoader(Context context, int leaderboardId, LeaderboardSortType sortType, boolean includeFoF)
+    public LeaderboardMarkUserLoader(Context context, PagedLeaderboardKey pagedLeaderboardKey)
     {
         super(context);
-        this.leaderboardId = leaderboardId;
-        this.sortType = sortType;
-        this.includeFoF = includeFoF;
+        this.pagedLeaderboardKey = pagedLeaderboardKey;
         DaggerUtils.inject(this);
     }
 
@@ -46,49 +37,43 @@ public class LeaderboardMarkUserLoader extends PaginationListLoader<LeaderboardU
 
     @Override protected void onLoadPrevious(LeaderboardUserDTO lastVisibleItem)
     {
+        Integer currentPage = pagedLeaderboardKey.page;
         if (currentPage == null)
         {
             currentPage = 1;
         }
-        ++currentPage;
+        this.pagedLeaderboardKey = pagedLeaderboardKey.cloneAtPage(currentPage + 1);
         forceLoad();
     }
 
     @Override public List<LeaderboardUserDTO> loadInBackground()
     {
+        THLog.d(TAG, "loadInBackground " + pagedLeaderboardKey);
         THLog.d(TAG, String.format("Loader with id = " + getId()));
-        THLog.d(TAG, String.format("Start loading leaderboard %d, page=%d, sortType=%s", leaderboardId, currentPage, sortType.toString()));
-
-        LeaderboardQuery query = new LeaderboardQuery();
-        query.setId(leaderboardId);
-        query.setPage(currentPage);
-        query.setSortType(sortType.getServerFlag());
-        query.setProperty(LeaderboardStore.INCLUDE_FRIENDS_OF_FRIENDS, includeFoF);
-        query.setProperty(LeaderboardStore.PER_PAGE, getPerPage());
 
         try
         {
-            LeaderboardDTO dto = leaderboardManager.firstOrDefault(query, true);
+            LeaderboardDTO fetched = leaderboardCache.getOrFetch(pagedLeaderboardKey);
 
-            if (dto == null)
+            if (fetched == null)
             {
                 return null;
             }
 
-            markUtc = dto.markUtc;
-            THLog.d(TAG, "Leaderboard marked at " + dto.markUtc);
-            return dto.users;
+            markUtc = fetched.markUtc;
+            THLog.d(TAG, "Leaderboard marked at " + fetched.markUtc);
+            return fetched.users;
         }
-        catch (IOException e)
+        catch (Throwable throwable)
         {
-            THLog.e(TAG, "Error loading Leaderboard ranking", e);
+            THLog.e(TAG, "Error loading Leaderboard ranking", throwable);
             return null;
         }
     }
 
-    public void setSortType(LeaderboardSortType sortType)
+    public void setPagedLeaderboardKey(PagedLeaderboardKey pagedLeaderboardKey)
     {
-        this.sortType = sortType;
+        this.pagedLeaderboardKey = pagedLeaderboardKey;
     }
 
     public void reload()
@@ -99,7 +84,7 @@ public class LeaderboardMarkUserLoader extends PaginationListLoader<LeaderboardU
 
     private void resetQuery()
     {
-        currentPage = 1;
+        this.pagedLeaderboardKey = this.pagedLeaderboardKey.cloneAtPage(1);
         if (items != null)
         {
             items.clear();
@@ -113,16 +98,13 @@ public class LeaderboardMarkUserLoader extends PaginationListLoader<LeaderboardU
 
     public Integer getLeaderboardId()
     {
-        return leaderboardId;
-    }
-
-    public void setIncludeFoF(boolean includeFoF)
-    {
-        this.includeFoF = includeFoF;
+        return pagedLeaderboardKey.key;
     }
 
     public boolean isIncludeFoF()
     {
-        return includeFoF;
+        return pagedLeaderboardKey instanceof FriendsPerPagedLeaderboardKey &&
+                ((FriendsPerPagedLeaderboardKey) pagedLeaderboardKey).includeFoF != null &&
+                ((FriendsPerPagedLeaderboardKey) pagedLeaderboardKey).includeFoF;
     }
 }

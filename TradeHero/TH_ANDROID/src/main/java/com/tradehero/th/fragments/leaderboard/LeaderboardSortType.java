@@ -3,6 +3,7 @@ package com.tradehero.th.fragments.leaderboard;
 import com.tradehero.th.R;
 
 /** Created with IntelliJ IDEA. User: tho Date: 10/23/13 Time: 3:36 PM Copyright (c) TradeHero */
+@Deprecated
 public enum LeaderboardSortType
 {
 

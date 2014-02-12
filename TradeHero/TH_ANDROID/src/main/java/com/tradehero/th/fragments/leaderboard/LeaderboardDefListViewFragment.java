@@ -47,7 +47,6 @@ public class LeaderboardDefListViewFragment extends BaseLeaderboardFragment
     {
         Bundle args = getArguments();
 
-
         leaderboardDefListAdapter =
                 new LeaderboardDefListAdapter(getActivity(), getActivity().getLayoutInflater(), null, R.layout.leaderboard_definition_item_view);
         contentListView.setAdapter(leaderboardDefListAdapter);
@@ -67,22 +66,22 @@ public class LeaderboardDefListViewFragment extends BaseLeaderboardFragment
             }
         });
         updateLeaderboardDefListKey(args);
+        refresh();
         super.onResume();
+    }
+
+    protected void refresh()
+    {
+        if (leaderboardDefListAdapter != null)
+        {
+            leaderboardDefListAdapter.notifyDataSetChanged();
+        }
     }
 
     private void updateLeaderboardDefListKey(Bundle bundle)
     {
         LeaderboardDefListKey key = new LeaderboardDefListKey(bundle);
         leaderboardDefListCache.get().getOrFetch(key, false, this).execute();
-    }
-
-    @Override protected void onCurrentSortTypeChanged()
-    {
-        if (leaderboardDefListAdapter != null)
-        {
-            leaderboardDefListAdapter.setSortType(getCurrentSortType());
-            leaderboardDefListAdapter.notifyDataSetChanged();
-        }
     }
 
     @Override public void onDTOReceived(LeaderboardDefListKey key, LeaderboardDefKeyList value, boolean fromCache)

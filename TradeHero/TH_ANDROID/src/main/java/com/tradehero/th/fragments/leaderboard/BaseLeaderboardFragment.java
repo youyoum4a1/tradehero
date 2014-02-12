@@ -27,8 +27,6 @@ abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragmen
     public static final String BUNDLE_KEY_LEADERBOARD_ID = BaseLeaderboardFragment.class.getName() + ".leaderboardId";
     public static final String BUNDLE_KEY_LEADERBOARD_DEF_TITLE = BaseLeaderboardFragment.class.getName() + ".leaderboardDefTitle";
     public static final String BUNDLE_KEY_LEADERBOARD_DEF_DESC = BaseLeaderboardFragment.class.getName() + ".leaderboardDefDesc";
-    public static final String BUNDLE_KEY_CURRENT_SORT_TYPE = BaseLeaderboardFragment.class.getName() + ".currentSortType";
-    public static final String BUNDLE_KEY_SORT_OPTION_FLAGS = BaseLeaderboardFragment.class.getName() + ".sortOptionFlags";
 
     @Inject protected LeaderboardSortHelper leaderboardSortHelper;
     @Inject protected CurrentUserId currentUserId;
@@ -36,10 +34,6 @@ abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragmen
     @Inject protected UserProfileCache userProfileCache;
     protected DTOCache.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
     protected DTOCache.GetOrFetchTask<UserBaseKey, UserProfileDTO> userProfileCacheFetchTask;
-
-    private LeaderboardSortType currentSortType;
-    private SortTypeChangedListener sortTypeChangeListener;
-    private SubMenu sortSubMenu;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -50,9 +44,6 @@ abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragmen
     //<editor-fold desc="ActionBar">
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
-        createSortSubMenu(menu);
-        initSortTypeFromArguments();
-
         inflater.inflate(getMenuResource(), menu);
         super.onCreateOptionsMenu(menu, inflater);
 
@@ -65,16 +56,6 @@ abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragmen
             String title = args.getString(BUNDLE_KEY_LEADERBOARD_DEF_TITLE);
             actionBar.setTitle(title == null ? "" : title);
         }
-    }
-
-    @Override public boolean onOptionsItemSelected(MenuItem item)
-    {
-        LeaderboardSortType selectedSortType = LeaderboardSortType.byFlag(item.getItemId());
-        if (selectedSortType != null && selectedSortType != currentSortType)
-        {
-            setCurrentSortType(selectedSortType);
-        }
-        return super.onOptionsItemSelected(item);
     }
     //</editor-fold>
 
@@ -122,9 +103,7 @@ abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragmen
         Bundle bundle = new Bundle(getArguments());
         bundle.putInt(BUNDLE_KEY_LEADERBOARD_ID, dto.id);
         bundle.putString(BUNDLE_KEY_LEADERBOARD_DEF_TITLE, dto.name);
-        bundle.putInt(BUNDLE_KEY_CURRENT_SORT_TYPE, getCurrentSortType() != null ? getCurrentSortType().getFlag() : dto.getDefaultSortType().getFlag());
         bundle.putString(BUNDLE_KEY_LEADERBOARD_DEF_DESC, dto.desc);
-        bundle.putInt(BUNDLE_KEY_SORT_OPTION_FLAGS, dto.getSortOptionFlags());
 
         switch (dto.id)
         {
@@ -137,52 +116,6 @@ abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragmen
                 break;
         }
     }
-
-    //<editor-fold desc="Sort menu stuffs">
-    private void createSortSubMenu(Menu menu)
-    {
-        LeaderboardSortType sortType = getCurrentSortType();
-        sortSubMenu = menu.addSubMenu("").setIcon(sortType.getSelectedResourceIcon());
-        //leaderboardSortHelper.addSortMenu(sortSubMenu, getSortMenuFlag());
-    }
-
-    private int getSortMenuFlag()
-    {
-        return getArguments().getInt(BUNDLE_KEY_SORT_OPTION_FLAGS);
-    }
-
-    protected void setCurrentSortType(LeaderboardSortType selectedSortType)
-    {
-        if (sortTypeChangeListener != null && currentSortType != selectedSortType)
-        {
-            sortTypeChangeListener.onSortTypeChange(selectedSortType);
-        }
-        sortSubMenu.setIcon(selectedSortType.getSelectedResourceIcon());
-        currentSortType = selectedSortType;
-        onCurrentSortTypeChanged();
-    }
-
-    protected LeaderboardSortType getCurrentSortType()
-    {
-        return currentSortType != null ? currentSortType : LeaderboardSortType.DefaultSortType;
-    }
-
-    public void setSortTypeChangeListener(SortTypeChangedListener sortTypeChangeListener)
-    {
-        this.sortTypeChangeListener = sortTypeChangeListener;
-    }
-
-    protected void initSortTypeFromArguments()
-    {
-        setCurrentSortType(LeaderboardSortType.byFlag(getArguments().getInt(BUNDLE_KEY_CURRENT_SORT_TYPE)));
-    }
-
-    protected void onCurrentSortTypeChanged()
-    {
-        // do nothing
-    }
-
-    //</editor-fold>
 
     @Override public boolean isTabBarVisible()
     {

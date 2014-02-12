@@ -356,9 +356,7 @@ public class MainCompetitionFragment extends CompetitionFragment
             args.putBundle(CompetitionLeaderboardMarkUserListViewFragment.BUNDLE_KEY_COMPETITION_ID, competitionZoneDTO.competitionDTO.getCompetitionId().getArgs());
             args.putInt(CompetitionLeaderboardMarkUserListViewFragment.BUNDLE_KEY_LEADERBOARD_ID, leaderboardDefDTO.id);
             args.putString(CompetitionLeaderboardMarkUserListViewFragment.BUNDLE_KEY_LEADERBOARD_DEF_TITLE, leaderboardDefDTO.name);
-            args.putInt(CompetitionLeaderboardMarkUserListViewFragment.BUNDLE_KEY_CURRENT_SORT_TYPE, leaderboardDefDTO.getDefaultSortType().getFlag());
             args.putString(CompetitionLeaderboardMarkUserListViewFragment.BUNDLE_KEY_LEADERBOARD_DEF_DESC, leaderboardDefDTO.desc);
-            args.putInt(CompetitionLeaderboardMarkUserListViewFragment.BUNDLE_KEY_SORT_OPTION_FLAGS, leaderboardDefDTO.getSortOptionFlags());
             args.putBundle(CompetitionLeaderboardMarkUserListViewFragment.BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE, getApplicablePortfolioId().getArgs());
             navigator.pushFragment(CompetitionLeaderboardMarkUserListViewFragment.class, args);
         }
@@ -366,9 +364,7 @@ public class MainCompetitionFragment extends CompetitionFragment
         {
             args.putInt(LeaderboardMarkUserListViewFragment.BUNDLE_KEY_LEADERBOARD_ID, leaderboardDefDTO.id);
             args.putString(LeaderboardMarkUserListViewFragment.BUNDLE_KEY_LEADERBOARD_DEF_TITLE, leaderboardDefDTO.name);
-            args.putInt(LeaderboardMarkUserListViewFragment.BUNDLE_KEY_CURRENT_SORT_TYPE, leaderboardDefDTO.getDefaultSortType().getFlag());
             args.putString(LeaderboardMarkUserListViewFragment.BUNDLE_KEY_LEADERBOARD_DEF_DESC, leaderboardDefDTO.desc);
-            args.putInt(LeaderboardMarkUserListViewFragment.BUNDLE_KEY_SORT_OPTION_FLAGS, leaderboardDefDTO.getSortOptionFlags());
             navigator.pushFragment(LeaderboardMarkUserListViewFragment.class, args);
         }
     }

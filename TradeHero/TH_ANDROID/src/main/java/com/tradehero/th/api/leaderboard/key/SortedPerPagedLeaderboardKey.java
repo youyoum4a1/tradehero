@@ -3,6 +3,7 @@ package com.tradehero.th.api.leaderboard.key;
 import android.os.Bundle;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/16/13 Time: 3:30 PM To change this template use File | Settings | File Templates. */
+@Deprecated
 public class SortedPerPagedLeaderboardKey extends PerPagedLeaderboardKey
 {
     public final static String BUNDLE_KEY_SORT_TYPE = SortedPerPagedLeaderboardKey.class.getName() + ".sortType";
@@ -10,10 +11,16 @@ public class SortedPerPagedLeaderboardKey extends PerPagedLeaderboardKey
     public final Integer sortType;
 
     //<editor-fold desc="Constructors">
-    public SortedPerPagedLeaderboardKey(Integer leaderboardDefKey, int page, int perPage, int sortType)
+    public SortedPerPagedLeaderboardKey(Integer leaderboardDefKey, Integer page, Integer perPage, Integer sortType)
     {
         super(leaderboardDefKey, page, perPage);
         this.sortType = sortType;
+    }
+
+    public SortedPerPagedLeaderboardKey(SortedPerPagedLeaderboardKey other, Integer page)
+    {
+        super(other, page);
+        this.sortType = other.sortType;
     }
 
     public SortedPerPagedLeaderboardKey(Bundle args)
@@ -60,6 +67,11 @@ public class SortedPerPagedLeaderboardKey extends PerPagedLeaderboardKey
         }
 
         return sortType.compareTo(other.sortType);
+    }
+
+    @Override public PagedLeaderboardKey cloneAtPage(int page)
+    {
+        return new SortedPerPagedLeaderboardKey(this, page);
     }
 
     @Override public void putParameters(Bundle args)

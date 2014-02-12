@@ -184,11 +184,6 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
     //<editor-fold desc="ActionBar">
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
-        int defaultSortFlags =
-                //LeaderboardSortType.HeroQuotient.getFlag() |
-                LeaderboardSortType.Roi.getFlag();
-        getArguments().putInt(BUNDLE_KEY_SORT_OPTION_FLAGS, defaultSortFlags);
-
         super.onCreateOptionsMenu(menu, inflater);
 
         ActionBar actionBar = getSherlockActivity().getSupportActionBar();
@@ -203,17 +198,6 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
         {
         }
         return super.onOptionsItemSelected(item);
-    }
-    //</editor-fold>
-
-    //<editor-fold desc="Sorting">
-    @Override protected void initSortTypeFromArguments()
-    {
-        // I'm the leaderboard master screen, one can change my sort type :))
-    }
-
-    @Override protected void onCurrentSortTypeChanged()
-    {
     }
     //</editor-fold>
 
@@ -345,7 +329,6 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
         Bundle bundle = new Bundle(getArguments());
         (new LeaderboardDefSectorListKey()).putParameters(bundle);
         bundle.putString(LeaderboardDefListViewFragment.BUNDLE_KEY_LEADERBOARD_DEF_TITLE, getString(R.string.leaderboard_sector));
-        bundle.putInt(BaseLeaderboardFragment.BUNDLE_KEY_CURRENT_SORT_TYPE, getCurrentSortType().getFlag());
         getNavigator().pushFragment(LeaderboardDefListViewFragment.class, bundle);
     }
 
@@ -354,7 +337,6 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
         Bundle bundle = new Bundle(getArguments());
         (new LeaderboardDefExchangeListKey()).putParameters(bundle);
         bundle.putString(LeaderboardDefListViewFragment.BUNDLE_KEY_LEADERBOARD_DEF_TITLE, getString(R.string.leaderboard_exchange));
-        bundle.putInt(BaseLeaderboardFragment.BUNDLE_KEY_CURRENT_SORT_TYPE, getCurrentSortType().getFlag());
         getNavigator().pushFragment(LeaderboardDefListViewFragment.class, bundle);
     }
     //</editor-fold>

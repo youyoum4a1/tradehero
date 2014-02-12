@@ -7,6 +7,7 @@ import com.tradehero.common.persistence.PersistableResource;
 import com.tradehero.common.persistence.Query;
 import com.tradehero.th.api.leaderboard.LeaderboardDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardDefDTO;
+import com.tradehero.th.network.service.LeaderboardServiceWrapper;
 import com.tradehero.th.network.service.retrofit.BasicRetrofitErrorHandler;
 import com.tradehero.th.network.service.LeaderboardService;
 import dagger.Lazy;
@@ -26,6 +27,7 @@ public class LeaderboardStore implements PersistableResource<LeaderboardDTO>
     private static final Integer DEFAULT_PER_PAGE = 42;
 
     @Inject protected Lazy<LeaderboardService> leaderboardService;
+    @Inject protected Lazy<LeaderboardServiceWrapper> leaderboardServiceWrapper;
 
     private LeaderboardQuery query;
 

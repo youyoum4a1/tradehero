@@ -11,9 +11,15 @@ public class PagedLeaderboardKey extends LeaderboardKey
     public final Integer page;
 
     //<editor-fold desc="Constructors">
-    public PagedLeaderboardKey(Integer leaderboardKey, int page)
+    public PagedLeaderboardKey(Integer leaderboardKey, Integer page)
     {
         super(leaderboardKey);
+        this.page = page;
+    }
+
+    public PagedLeaderboardKey(PagedLeaderboardKey other, Integer page)
+    {
+        super(other.key);
         this.page = page;
     }
 
@@ -61,6 +67,11 @@ public class PagedLeaderboardKey extends LeaderboardKey
         }
 
         return page.compareTo(other.page);
+    }
+
+    public PagedLeaderboardKey cloneAtPage(int page)
+    {
+        return new PagedLeaderboardKey(this, page);
     }
 
     @Override public void putParameters(Bundle args)

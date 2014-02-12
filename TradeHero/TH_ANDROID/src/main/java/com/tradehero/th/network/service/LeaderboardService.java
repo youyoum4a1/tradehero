@@ -60,6 +60,7 @@ public interface LeaderboardService
             @Query("perPage") Integer perPage,
             Callback<LeaderboardDTO> callback);
 
+    @Deprecated
     @GET("/leaderboards/{leaderboardId}")
     LeaderboardDTO getLeaderboard(
             @Path("leaderboardId") Integer leaderboardId,
@@ -68,6 +69,7 @@ public interface LeaderboardService
             @Query("sortType") Integer sortType)
         throws RetrofitError;
 
+    @Deprecated
     @GET("/leaderboards/{leaderboardId}")
     void getLeaderboard(
             @Path("leaderboardId") Integer leaderboardId,
@@ -158,6 +160,7 @@ public interface LeaderboardService
             @Path("userId") int userId,
             Callback<LeaderboardDTO> callback);
 
+    @Deprecated
     @GET("/leaderboards/{leaderboardId}/users/{userId}")
     LeaderboardDTO getUserOnLeaderboard(
             @Path("leaderboardId") int leaderboardId,
@@ -165,6 +168,7 @@ public interface LeaderboardService
             @Query("sortType") int sortType)
         throws RetrofitError;
 
+    @Deprecated
     @GET("/leaderboards/{leaderboardId}/users/{userId}")
     void getUserOnLeaderboard(
             @Path("leaderboardId") int leaderboardId,
@@ -263,6 +267,7 @@ public interface LeaderboardService
      * @return
      * @throws RetrofitError
      */
+    @Deprecated
     @GET("/leaderboards/friends")
     LeaderboardDTO getFriendsLeaderboard(
             @Query("page") Integer page,
@@ -271,6 +276,7 @@ public interface LeaderboardService
             @Query("sortType") Integer sortType)
         throws RetrofitError;
 
+    @Deprecated
     @GET("/leaderboards/friends")
     void getFriendsLeaderboard(
             @Query("page") Integer page,

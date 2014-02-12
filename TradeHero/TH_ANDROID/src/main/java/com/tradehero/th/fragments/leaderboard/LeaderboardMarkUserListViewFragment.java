@@ -14,6 +14,7 @@ import com.tradehero.th.adapters.LoaderDTOAdapter;
 import com.tradehero.th.api.leaderboard.LeaderboardDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import com.tradehero.th.api.leaderboard.key.PerPagedFilteredLeaderboardKey;
+import com.tradehero.th.api.leaderboard.key.PerPagedLeaderboardKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.leaderboard.filter.LeaderboardFilterFragment;
 import com.tradehero.th.loaders.ListLoader;
@@ -26,7 +27,6 @@ import org.ocpsoft.prettytime.PrettyTime;
 
 /** Created with IntelliJ IDEA. User: tho Date: 10/14/13 Time: 12:34 PM Copyright (c) TradeHero */
 public class LeaderboardMarkUserListViewFragment extends BaseLeaderboardFragment
-        implements SortTypeChangedListener
 {
     @Inject protected Provider<PrettyTime> prettyTime;
 
@@ -38,7 +38,7 @@ public class LeaderboardMarkUserListViewFragment extends BaseLeaderboardFragment
     protected LeaderboardMarkUserLoader leaderboardMarkUserLoader;
 
     protected LeaderboardFilterFragment leaderboardFilterFragment;
-    protected PerPagedFilteredLeaderboardKey currentLeaderboardFilterKey;
+    protected PerPagedLeaderboardKey currentLeaderboardFilterKey;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -123,10 +123,10 @@ public class LeaderboardMarkUserListViewFragment extends BaseLeaderboardFragment
         super.onActivityCreated(savedInstanceState);
 
         leaderboardId = getArguments().getInt(BUNDLE_KEY_LEADERBOARD_ID);
-        currentLeaderboardFilterKey = new PerPagedFilteredLeaderboardKey(leaderboardId, 0, 0);
+        currentLeaderboardFilterKey = new PerPagedFilteredLeaderboardKey(leaderboardId, null, null);
 
         leaderboardMarkUserListAdapter = new LeaderboardMarkUserListAdapter(
-                getActivity(), getActivity().getLayoutInflater(), leaderboardId, getCurrentSortType().getLayoutResourceId());
+                getActivity(), getActivity().getLayoutInflater(), leaderboardId, R.layout.lbmu_item_roi_mode);
         leaderboardMarkUserListAdapter.setDTOLoaderCallback(new LeaderboardMarkUserListViewFragmentListLoaderCallback());
         leaderboardMarkUserListAdapter.setCurrentUserProfileDTO(currentUserProfileDTO);
         leaderboardMarkUserListAdapter.setUserInteractor(userInteractor);
@@ -137,9 +137,12 @@ public class LeaderboardMarkUserListViewFragment extends BaseLeaderboardFragment
         Bundle loaderBundle = new Bundle(getArguments());
         leaderboardMarkUserLoader = (LeaderboardMarkUserLoader) getActivity().getSupportLoaderManager().initLoader(
                 leaderboardId, loaderBundle, leaderboardMarkUserListAdapter.getLoaderCallback());
+    }
 
-        // when loader is available
-        setSortTypeChangeListener(this);
+    @Override public void onStart()
+    {
+        super.onStart();
+        initialLoad();
     }
 
     @Override public void onResume()
@@ -191,13 +194,10 @@ public class LeaderboardMarkUserListViewFragment extends BaseLeaderboardFragment
         }
     }
 
-    @Override public void onSortTypeChange(LeaderboardSortType sortType)
+    public void initialLoad()
     {
-        leaderboardMarkUserLoader.setSortType(sortType);
+        leaderboardMarkUserLoader.setPagedLeaderboardKey(currentLeaderboardFilterKey);
         leaderboardMarkUserLoader.reload();
-
-        //update layoutResourceId
-        leaderboardMarkUserListAdapter.setLayoutResourceId(sortType.getLayoutResourceId());
         invalidateCachedItemView();
     }
 
@@ -230,7 +230,7 @@ public class LeaderboardMarkUserListViewFragment extends BaseLeaderboardFragment
         {
             int leaderboardId = args.getInt(BUNDLE_KEY_LEADERBOARD_ID);
             boolean includeFoF = args.getBoolean(LeaderboardDTO.INCLUDE_FOF);
-            LeaderboardMarkUserLoader leaderboardMarkUserLoader = new LeaderboardMarkUserLoader(getActivity(), leaderboardId, getCurrentSortType(), includeFoF);
+            LeaderboardMarkUserLoader leaderboardMarkUserLoader = new LeaderboardMarkUserLoader(getActivity(), currentLeaderboardFilterKey);
             leaderboardMarkUserLoader.setPerPage(Constants.LEADERBOARD_MARK_USER_ITEM_PER_PAGE);
             return leaderboardMarkUserLoader;
         }

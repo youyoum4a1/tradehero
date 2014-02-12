@@ -4,6 +4,7 @@ import android.os.Bundle;
 import com.actionbarsherlock.view.MenuItem;
 import com.tradehero.th.R;
 import com.tradehero.th.api.leaderboard.LeaderboardDTO;
+import com.tradehero.th.api.leaderboard.key.FriendsPerPagedLeaderboardKey;
 
 /** Created with IntelliJ IDEA. User: tho Date: 11/21/13 Time: 6:26 PM Copyright (c) TradeHero */
 public class FriendLeaderboardMarkUserListViewFragment extends LeaderboardMarkUserListViewFragment
@@ -39,7 +40,12 @@ public class FriendLeaderboardMarkUserListViewFragment extends LeaderboardMarkUs
 
     private void setFriendOfFriendFilter(boolean isFoF)
     {
-        leaderboardMarkUserLoader.setIncludeFoF(isFoF);
+        currentLeaderboardFilterKey = new FriendsPerPagedLeaderboardKey(
+                currentLeaderboardFilterKey.key,
+                currentLeaderboardFilterKey.page,
+                currentLeaderboardFilterKey.perPage,
+                isFoF);
+        leaderboardMarkUserLoader.setPagedLeaderboardKey(currentLeaderboardFilterKey);
         leaderboardMarkUserLoader.reload();
         invalidateCachedItemView();
     }

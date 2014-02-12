@@ -10,10 +10,16 @@ public class PerPagedLeaderboardKey extends PagedLeaderboardKey
     public final Integer perPage;
 
     //<editor-fold desc="Constructors">
-    public PerPagedLeaderboardKey(Integer leaderboardKey, int page, int perPage)
+    public PerPagedLeaderboardKey(Integer leaderboardKey, Integer page, Integer perPage)
     {
         super(leaderboardKey, page);
         this.perPage = perPage;
+    }
+
+    public PerPagedLeaderboardKey(PerPagedLeaderboardKey other, Integer page)
+    {
+        super(other, page);
+        this.perPage = other.perPage;
     }
 
     public PerPagedLeaderboardKey(Bundle args)
@@ -60,6 +66,11 @@ public class PerPagedLeaderboardKey extends PagedLeaderboardKey
         }
 
         return perPage.compareTo(other.perPage);
+    }
+
+    @Override public PagedLeaderboardKey cloneAtPage(int page)
+    {
+        return new PerPagedLeaderboardKey(this, page);
     }
 
     @Override public void putParameters(Bundle args)
