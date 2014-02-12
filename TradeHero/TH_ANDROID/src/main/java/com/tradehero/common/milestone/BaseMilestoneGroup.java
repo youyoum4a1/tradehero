@@ -167,13 +167,11 @@ public class BaseMilestoneGroup extends BaseMilestone implements MilestoneGroup
     {
         @Override public void onComplete(Milestone milestone)
         {
-            THLog.d(TAG, "onComplete");
             conditionalNotifyCompleteListener();
         }
 
         @Override public void onFailed(Milestone milestone, Throwable throwable)
         {
-            THLog.d(TAG, "onFailed");
             conditionalNotifyFailedListener(throwable);
         }
     }

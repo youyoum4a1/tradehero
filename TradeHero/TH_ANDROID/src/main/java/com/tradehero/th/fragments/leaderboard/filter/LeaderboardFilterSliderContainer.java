@@ -139,4 +139,9 @@ public class LeaderboardFilterSliderContainer extends LinearLayout
                  null // MaxPosRoiVolatility but we don't care
          );
     }
+
+    public static boolean areInnerValuesEqualToStarting(Resources resources, PerPagedFilteredLeaderboardKey other)
+    {
+        return getStartingFilter(resources, 0).areInnerValuesEqual(other);
+    }
 }

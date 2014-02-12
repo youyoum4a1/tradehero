@@ -6,13 +6,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.LoaderDTOAdapter;
 import com.tradehero.th.api.leaderboard.LeaderboardDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
+import com.tradehero.th.api.leaderboard.key.PerPagedFilteredLeaderboardKey;
 import com.tradehero.th.api.leaderboard.key.PerPagedLeaderboardKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.leaderboard.filter.LeaderboardFilterFragment;
@@ -28,6 +28,8 @@ import org.ocpsoft.prettytime.PrettyTime;
 /** Created with IntelliJ IDEA. User: tho Date: 10/14/13 Time: 12:34 PM Copyright (c) TradeHero */
 public class LeaderboardMarkUserListViewFragment extends BaseLeaderboardFragment
 {
+    public static final String TAG = LeaderboardMarkUserListViewFragment.class.getSimpleName();
+
     @Inject protected Provider<PrettyTime> prettyTime;
 
     protected int leaderboardId;
@@ -92,14 +94,15 @@ public class LeaderboardMarkUserListViewFragment extends BaseLeaderboardFragment
     }
 
     //<editor-fold desc="ActionBar">
-    @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
-    {
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-
     @Override protected int getMenuResource()
     {
         return R.menu.leaderboard_listview_menu;
+    }
+
+    @Override public void onPrepareOptionsMenu(Menu menu)
+    {
+        displayFilterIcon(menu.findItem(R.id.leaderboard_listview_menu_help));
+        super.onPrepareOptionsMenu(menu);
     }
 
     @Override public boolean onOptionsItemSelected(MenuItem item)
@@ -154,13 +157,12 @@ public class LeaderboardMarkUserListViewFragment extends BaseLeaderboardFragment
             leaderboardFilterFragment = null;
             initialLoad();
             THLog.d(TAG, "onResume " + currentLeaderboardFilterKey);
+            getActivity().invalidateOptionsMenu();
         }
         else
         {
             THLog.d(TAG, "onResume filterFragment is null");
         }
-
-        // TODO update view
     }
 
     @Override public void onDestroyView()
@@ -216,6 +218,28 @@ public class LeaderboardMarkUserListViewFragment extends BaseLeaderboardFragment
         Bundle args = new Bundle();
         args.putBundle(LeaderboardFilterFragment.BUNDLE_KEY_PER_PAGED_FILTERED_LEADERBOARD_KEY_BUNDLE, currentLeaderboardFilterKey.getArgs());
         this.leaderboardFilterFragment = (LeaderboardFilterFragment) getNavigator().pushFragment(LeaderboardFilterFragment.class, args);
+    }
+
+    protected void displayFilterIcon(MenuItem filterIcon)
+    {
+        if (filterIcon != null)
+        {
+            if (currentLeaderboardFilterKey instanceof PerPagedFilteredLeaderboardKey)
+            {
+                boolean areEqual = LeaderboardFilterSliderContainer.areInnerValuesEqualToStarting(
+                        getResources(),
+                        (PerPagedFilteredLeaderboardKey) currentLeaderboardFilterKey);
+                filterIcon.setIcon(
+                         areEqual ?
+                            R.drawable.filter :
+                            R.drawable.filter_active
+                );
+            }
+            else
+            {
+                filterIcon.setIcon(R.drawable.filter);
+            }
+        }
     }
 
     //<editor-fold desc="BaseFragment.TabBarVisibilityInformer">

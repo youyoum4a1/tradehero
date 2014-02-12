@@ -90,6 +90,16 @@ public class PerPagedFilteredLeaderboardKey extends PerPagedLeaderboardKey
                 (maxPosRoiVolatility == null ? other.maxPosRoiVolatility == null : maxPosRoiVolatility.equals(other.maxPosRoiVolatility));
     }
 
+    public boolean areInnerValuesEqual(PerPagedFilteredLeaderboardKey other)
+    {
+        return other != null &&
+                (winRatio == null ? other.winRatio == null : winRatio.equals(other.winRatio)) &&
+                (averageMonthlyTradeCount == null ? other.averageMonthlyTradeCount == null : averageMonthlyTradeCount.equals(other.averageMonthlyTradeCount)) &&
+                (averageHoldingDays == null ? other.averageHoldingDays == null : averageHoldingDays.equals(other.averageHoldingDays)) &&
+                (minSharpeRatio == null ? other.minSharpeRatio == null : minSharpeRatio.equals(other.minSharpeRatio)) &&
+                (maxPosRoiVolatility == null ? other.maxPosRoiVolatility == null : maxPosRoiVolatility.equals(other.maxPosRoiVolatility));
+    }
+
     public int compareTo(PerPagedFilteredLeaderboardKey other)
     {
         // It looks like it does not compare well with all the subclasses
