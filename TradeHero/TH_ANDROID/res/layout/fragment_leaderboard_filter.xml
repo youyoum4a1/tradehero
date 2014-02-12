@@ -40,8 +40,10 @@
         android:id="@+id/leaderboard_filter_reset_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:padding="16dp"
         android:gravity="center"
-        android:text="@string/leaderboard_filter_reset_filter"/>
+        android:text="@string/leaderboard_filter_reset_filter"
+        style="@style/LeaderboardFilter.Button"/>
 
   </com.tradehero.th.fragments.leaderboard.filter.LeaderboardFilterSliderContainer>
 
