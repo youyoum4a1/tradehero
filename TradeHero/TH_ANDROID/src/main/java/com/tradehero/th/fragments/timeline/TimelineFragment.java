@@ -79,8 +79,6 @@ public class TimelineFragment extends BasePurchaseManagerFragment
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
-        inflater.inflate(R.menu.timeline_menu, menu);
-
         this.actionBar = getSherlockActivity().getSupportActionBar();
         this.actionBar.setDisplayOptions(
                 (isTabBarVisible() ? 0 : ActionBar.DISPLAY_HOME_AS_UP)
