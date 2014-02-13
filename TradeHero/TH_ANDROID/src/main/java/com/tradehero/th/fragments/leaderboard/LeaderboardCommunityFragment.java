@@ -23,13 +23,10 @@ import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.competition.ProviderIdList;
 import com.tradehero.th.api.competition.ProviderListKey;
-import com.tradehero.th.api.leaderboard.key.LeaderboardDefCommunityListKey;
 import com.tradehero.th.api.leaderboard.LeaderboardDefDTO;
-import com.tradehero.th.api.leaderboard.key.LeaderboardDefExchangeListKey;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefKey;
 import com.tradehero.th.api.leaderboard.LeaderboardDefKeyList;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefListKey;
-import com.tradehero.th.api.leaderboard.key.LeaderboardDefSectorListKey;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.fragments.competition.MainCompetitionFragment;
@@ -102,7 +99,7 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
         {
             providerListFetchTask.setListener(null);
         }
-        providerListFetchTask = providerListCache.get().getOrFetch(new ProviderListKey(), false, providerListCallback);
+        providerListFetchTask = providerListCache.get().getOrFetch(new ProviderListKey(), providerListCallback);
         providerListFetchTask.execute();
 
         // We came back into view so we have to forget the web fragment
@@ -139,7 +136,7 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
         detachLeaderboardDefListCacheFetchMostSkilledTask();
 
         leaderboardDefListFetchTask = leaderboardDefListCache.get().getOrFetch(
-                new LeaderboardDefCommunityListKey(), false, leaderboardDefFetchListener);
+                LeaderboardDefListKey.getCommunity(), leaderboardDefFetchListener);
         leaderboardDefListFetchTask.execute();
     }
 
@@ -326,7 +323,7 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
     private void pushLeaderboardDefSector()
     {
         Bundle bundle = new Bundle(getArguments());
-        (new LeaderboardDefSectorListKey()).putParameters(bundle);
+        (LeaderboardDefListKey.getSector()).putParameters(bundle);
         bundle.putString(LeaderboardDefListViewFragment.BUNDLE_KEY_LEADERBOARD_DEF_TITLE, getString(R.string.leaderboard_sector));
         getNavigator().pushFragment(LeaderboardDefListViewFragment.class, bundle);
     }
@@ -334,7 +331,7 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
     private void pushLeaderboardDefExchange()
     {
         Bundle bundle = new Bundle(getArguments());
-        (new LeaderboardDefExchangeListKey()).putParameters(bundle);
+        (LeaderboardDefListKey.getExchange()).putParameters(bundle);
         bundle.putString(LeaderboardDefListViewFragment.BUNDLE_KEY_LEADERBOARD_DEF_TITLE, getString(R.string.leaderboard_exchange));
         getNavigator().pushFragment(LeaderboardDefListViewFragment.class, bundle);
     }

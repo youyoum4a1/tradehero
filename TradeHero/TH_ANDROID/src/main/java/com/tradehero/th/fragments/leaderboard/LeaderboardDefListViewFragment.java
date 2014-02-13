@@ -21,15 +21,22 @@ import javax.inject.Inject;
 
 /** Created with IntelliJ IDEA. User: tho Date: 10/17/13 Time: 7:21 PM Copyright (c) TradeHero */
 public class LeaderboardDefListViewFragment extends BaseLeaderboardFragment
-        implements DTOCache.Listener<LeaderboardDefListKey, LeaderboardDefKeyList>
 {
     private static final String TAG = LeaderboardDefListViewFragment.class.getName();
 
     @Inject protected Lazy<LeaderboardDefListCache> leaderboardDefListCache;
+    protected DTOCache.Listener<LeaderboardDefListKey, LeaderboardDefKeyList> leaderboardDefListCacheFetchListener;
+    protected DTOCache.GetOrFetchTask<LeaderboardDefListKey, LeaderboardDefKeyList> leaderboardDefListCacheFetchTask;
     @Inject protected Lazy<LeaderboardDefCache> leaderboardDefCache;
 
     private LeaderboardDefListAdapter leaderboardDefListAdapter;
     private ListView contentListView;
+
+    @Override public void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        leaderboardDefListCacheFetchListener = new LeaderboardDefListViewFragmentDefKeyListListener();
+    }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -79,6 +86,27 @@ public class LeaderboardDefListViewFragment extends BaseLeaderboardFragment
         super.onPause();
     }
 
+    @Override public void onDestroyView()
+    {
+        detachLeaderboardDefListCacheFetchTask();
+        super.onDestroyView();
+    }
+
+    @Override public void onDestroy()
+    {
+        leaderboardDefListCacheFetchListener = null;
+        super.onDestroy();
+    }
+
+    protected void detachLeaderboardDefListCacheFetchTask()
+    {
+        if (leaderboardDefListCacheFetchTask != null)
+        {
+            leaderboardDefListCacheFetchTask.setListener(null);
+        }
+        leaderboardDefListCacheFetchTask = null;
+    }
+
     protected void refresh()
     {
         if (leaderboardDefListAdapter != null)
@@ -90,10 +118,12 @@ public class LeaderboardDefListViewFragment extends BaseLeaderboardFragment
     private void updateLeaderboardDefListKey(Bundle bundle)
     {
         LeaderboardDefListKey key = new LeaderboardDefListKey(bundle);
-        leaderboardDefListCache.get().getOrFetch(key, false, this).execute();
+        detachLeaderboardDefListCacheFetchTask();
+        leaderboardDefListCacheFetchTask  = leaderboardDefListCache.get().getOrFetch(key, leaderboardDefListCacheFetchListener);
+        leaderboardDefListCacheFetchTask.execute();
     }
 
-    @Override public void onDTOReceived(LeaderboardDefListKey key, LeaderboardDefKeyList value, boolean fromCache)
+    protected void handleDTOReceived(LeaderboardDefListKey key, LeaderboardDefKeyList value, boolean fromCache)
     {
         if (leaderboardDefListAdapter != null)
         {
@@ -102,9 +132,22 @@ public class LeaderboardDefListViewFragment extends BaseLeaderboardFragment
         }
     }
 
-    @Override public void onErrorThrown(LeaderboardDefListKey key, Throwable error)
+    protected class LeaderboardDefListViewFragmentDefKeyListListener implements DTOCache.Listener<LeaderboardDefListKey, LeaderboardDefKeyList>
     {
-        THToast.show(getString(R.string.error_fetch_leaderboard_def_list_key));
-        THLog.e(TAG, "Error fetching the leaderboard def key list " + key, error);
+        public LeaderboardDefListViewFragmentDefKeyListListener()
+        {
+            super();
+        }
+
+        @Override public void onDTOReceived(LeaderboardDefListKey key, LeaderboardDefKeyList value, boolean fromCache)
+        {
+            handleDTOReceived(key, value, fromCache);
+        }
+
+        @Override public void onErrorThrown(LeaderboardDefListKey key, Throwable error)
+        {
+            THToast.show(getString(R.string.error_fetch_leaderboard_def_list_key));
+            THLog.e(TAG, "Error fetching the leaderboard def key list " + key, error);
+        }
     }
 }

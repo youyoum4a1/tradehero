@@ -63,7 +63,7 @@ abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragmen
     {
         super.onResume();
         detachUserProfileCacheFetchTask();
-        userProfileCacheFetchTask = userProfileCache.getOrFetch(currentUserId.toUserBaseKey(), false, userProfileCacheListener);
+        userProfileCacheFetchTask = userProfileCache.getOrFetch(currentUserId.toUserBaseKey(), userProfileCacheListener);
         userProfileCacheFetchTask.execute();
     }
 

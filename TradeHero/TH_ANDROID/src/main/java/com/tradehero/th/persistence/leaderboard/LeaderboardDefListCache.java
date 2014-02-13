@@ -2,13 +2,9 @@ package com.tradehero.th.persistence.leaderboard;
 
 import com.tradehero.common.persistence.StraightDTOCache;
 import com.tradehero.th.api.leaderboard.LeaderboardDefDTO;
-import com.tradehero.th.api.leaderboard.key.LeaderboardDefExchangeListKey;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefKey;
 import com.tradehero.th.api.leaderboard.LeaderboardDefKeyList;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefListKey;
-import com.tradehero.th.api.leaderboard.key.LeaderboardDefMostSkilledListKey;
-import com.tradehero.th.api.leaderboard.key.LeaderboardDefSectorListKey;
-import com.tradehero.th.api.leaderboard.key.LeaderboardDefTimePeriodListKey;
 import com.tradehero.th.network.service.LeaderboardService;
 import dagger.Lazy;
 import java.util.List;
@@ -18,6 +14,7 @@ import javax.inject.Singleton;
 /** Created with IntelliJ IDEA. User: tho Date: 10/16/13 Time: 10:32 AM Copyright (c) TradeHero */
 @Singleton public class LeaderboardDefListCache extends StraightDTOCache<LeaderboardDefListKey, LeaderboardDefKeyList>
 {
+    public static final String TAG = LeaderboardDefListCache.class.getSimpleName();
     private static final int DEFAULT_MAX_SIZE = 1000;
 
     @Inject protected Lazy<LeaderboardService> leaderboardService;
@@ -74,10 +71,10 @@ import javax.inject.Singleton;
             }
         }
 
-        put(new LeaderboardDefMostSkilledListKey(), mostSkilledKeys);
-        put(new LeaderboardDefExchangeListKey(), exchangeKeys);
-        put(new LeaderboardDefSectorListKey(), sectorKeys);
-        put(new LeaderboardDefTimePeriodListKey(), timePeriodKeys);
+        put(LeaderboardDefListKey.getMostSkilled(), mostSkilledKeys);
+        put(LeaderboardDefListKey.getExchange(), exchangeKeys);
+        put(LeaderboardDefListKey.getSector(), sectorKeys);
+        put(LeaderboardDefListKey.getTimePeriod(), timePeriodKeys);
         put(new LeaderboardDefListKey(), allKeys);
 
         return get(listKey);

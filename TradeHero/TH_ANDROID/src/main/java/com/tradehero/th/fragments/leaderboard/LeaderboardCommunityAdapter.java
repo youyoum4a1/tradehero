@@ -10,8 +10,6 @@ import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.leaderboard.LeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefKey;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefListKey;
-import com.tradehero.th.api.leaderboard.key.LeaderboardDefMostSkilledListKey;
-import com.tradehero.th.api.leaderboard.key.LeaderboardDefTimePeriodListKey;
 import com.tradehero.th.fragments.competition.LeaderboardCompetitionView;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefCache;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefListCache;
@@ -242,8 +240,8 @@ public class LeaderboardCommunityAdapter extends ArrayDTOAdapter<LeaderboardDefK
     public static enum LeaderboardCommunityType
     {
         Competition(null), // for competition
-        SkillAndFriend(new LeaderboardDefMostSkilledListKey()),
-        TimeRestricted(new LeaderboardDefTimePeriodListKey()),
+        SkillAndFriend(LeaderboardDefListKey.getMostSkilled()),
+        TimeRestricted(LeaderboardDefListKey.getTimePeriod()),
         SectorAndExchange(null); // all fake :v
 
         private final LeaderboardDefListKey key;
