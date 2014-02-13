@@ -132,11 +132,8 @@ public class EmailSignInFragment extends EmailSignInOrUpFragment
 
     private void showForgotPasswordUI()
     {
-        if (forgotDialogView == null)
-        {
-            LayoutInflater inflater = getActivity().getLayoutInflater();
-            forgotDialogView = inflater.inflate(R.layout.forgot_password_dialog, (ViewGroup) getView(), false);
-        }
+        LayoutInflater inflater = getActivity().getLayoutInflater();
+        forgotDialogView = inflater.inflate(R.layout.forgot_password_dialog, null);
 
         String message = getActivity().getString(R.string.ask_for_email);
         final AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
