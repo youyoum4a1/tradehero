@@ -62,9 +62,9 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
     private Bitmap imageBmp;
     private static final int REQUEST_GALLERY = 111;
 
-    @Inject protected CurrentUserId currentUserId;
-    @Inject protected Lazy<UserProfileCache> userProfileCache;
-    @Inject static Lazy<UserServiceWrapper> userServiceWrapper;
+    @Inject CurrentUserId currentUserId;
+    @Inject Lazy<UserProfileCache> userProfileCache;
+    @Inject Lazy<UserServiceWrapper> userServiceWrapper;
     private DTOCache.GetOrFetchTask<UserBaseKey, UserProfileDTO> fetchUserProfileTask;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
