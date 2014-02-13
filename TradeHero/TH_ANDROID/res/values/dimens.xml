@@ -75,7 +75,7 @@
   <dimen name="invite_friend_announcement_horizontal_padding">15dp</dimen>
   <dimen name="refer_friend_invite_button_padding">10dp</dimen>
   <dimen name="watchlist_item_shares_font_size">12sp</dimen>
-  <dimen name="refer_friend_action_button_vertical_padding">3dp</dimen>
+  <dimen name="refer_friend_action_button_vertical_padding">5dp</dimen>
   <dimen name="refer_friend_source_drawable_padding">3dp</dimen>
   <dimen name="timeline_item_date">@dimen/text_small</dimen>
   <dimen name="text_small">12sp</dimen>

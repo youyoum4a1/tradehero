@@ -11,7 +11,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 import android.widget.ToggleButton;
@@ -72,7 +71,7 @@ public class InviteFriendFragment extends DashboardFragment
     private FriendListAdapter referFriendListAdapter;
     private ProgressDialog progressDialog;
     private View headerView;
-    private Button inviteFriendButton;
+    private TextView inviteFriendButton;
     private TextView searchTextView;
     private StickyListHeadersListView stickyListHeadersListView;
     private SocialNetworkEnum currentSocialNetworkConnect;
@@ -113,7 +112,7 @@ public class InviteFriendFragment extends DashboardFragment
 
     private void initView(View view)
     {
-        inviteFriendButton = (Button) view.findViewById(R.id.refer_friend_invite_button);
+        inviteFriendButton = (TextView) view.findViewById(R.id.refer_friend_invite_button);
         if (inviteFriendButton != null)
         {
             inviteFriendButton.setOnClickListener(new View.OnClickListener()
