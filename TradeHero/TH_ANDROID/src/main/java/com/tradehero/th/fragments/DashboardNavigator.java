@@ -6,8 +6,10 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.r11.app.FragmentTabHost;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
 import android.widget.TabHost;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
@@ -54,6 +56,7 @@ public class DashboardNavigator extends Navigator
             addNewTab(tabType);
         }
 
+        mTabHost.getTabWidget().setDividerDrawable(null);
         mTabHost.setCurrentTabByTag(activity.getString(R.string.home));
     }
 
@@ -72,21 +75,27 @@ public class DashboardNavigator extends Navigator
 
     private TabHost.TabSpec makeTabSpec(DashboardTabType tabType)
     {
-        return mTabHost.newTabSpec(activity.getString(tabType.stringResId));
+        return mTabHost.newTabSpec(activity.getString(tabType.stringResId))
+                .setIndicator(null, activity.getResources().getDrawable(tabType.drawableResId));
+    }
+
+    private TabHost.TabSpec makeNewTabSpec(DashboardTabType tabType)
+    {
+        View tabView = activity.getLayoutInflater().inflate(tabType.viewResId, mTabHost.getTabWidget(), false);
+        ImageView imageView = (ImageView) tabView.findViewById(android.R.id.icon);
+        imageView.setImageResource(tabType.drawableResId);
+        imageView.setVisibility(View.VISIBLE);
+
+        return mTabHost.newTabSpec(activity.getString(tabType.stringResId))
+                .setIndicator(tabView);
     }
 
     private void addNewTab(DashboardTabType tabType)
     {
-        Bundle b = new Bundle();
-        b.putString(BUNDLE_KEY, activity.getString(tabType.stringResId));
-        mTabHost.addTab(
-                makeTabSpec(tabType)
-                        .setIndicator(
-                                "",
-                                activity.getResources().getDrawable(tabType.drawableResId)
-                        ),
-                tabType.fragmentClass,
-                b);
+        Bundle bundle = new Bundle();
+        bundle.putString(BUNDLE_KEY, activity.getString(tabType.stringResId));
+
+        mTabHost.addTab(makeTabSpec(tabType), tabType.fragmentClass, bundle);
     }
 
     public void goToPage(final THIntent thIntent)

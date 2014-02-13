@@ -13,18 +13,26 @@ public enum DashboardTabType
 {
     TRENDING(R.string.trending, R.drawable.trending_selector, TrendingFragment.class),
     COMMUNITY(R.string.community, R.drawable.community_selector, LeaderboardCommunityFragment.class),
-    TIMELINE(R.string.home, R.drawable.home_selector, MeTimelineFragment.class),
+    TIMELINE(R.layout.home_selector, R.string.home, R.drawable.home_selector, MeTimelineFragment.class),
     PORTFOLIO(R.string.portfolio, R.drawable.portfolio_selector, PortfolioListFragment.class),
     STORE(R.string.store, R.drawable.store_selector, StoreScreenFragment.class);
 
     public final int stringResId;
     public final int drawableResId;
+    public final int viewResId;
+
     public final Class<? extends Fragment> fragmentClass;
 
-    private DashboardTabType(int stringResId, int drawableResId, Class<? extends Fragment> fragmentClass)
+    private DashboardTabType(int viewResId, int stringResId, int drawableResId, Class<? extends Fragment> fragmentClass)
     {
+        this.viewResId = viewResId;
         this.stringResId = stringResId;
         this.drawableResId = drawableResId;
         this.fragmentClass = fragmentClass;
+    }
+
+    private DashboardTabType(int stringResId, int drawableResId, Class<? extends Fragment> fragmentClass)
+    {
+        this(R.layout.tab_indicator_holo, stringResId, drawableResId, fragmentClass);
     }
 }

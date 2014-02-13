@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="0dp"
+    android:layout_height="wrap_content"
+    android:layout_weight="1"
+    >
+
+  <View
+      android:layout_width="match_parent"
+      android:layout_height="40dp"
+      android:background="@color/tab_color"
+      android:layout_gravity="bottom"
+    />
+  <ImageView
+      xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:tools="http://schemas.android.com/tools"
+      android:id="@android:id/icon"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_gravity="bottom"
+      android:visibility="gone"
+      tools:background="@color/red"
+      tools:visibility="visible"
+      android:contentDescription="@null"
+      />
+</FrameLayout>
