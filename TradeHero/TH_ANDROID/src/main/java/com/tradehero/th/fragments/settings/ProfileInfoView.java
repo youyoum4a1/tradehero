@@ -6,6 +6,8 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
 import com.tradehero.th.api.form.UserFormFactory;
@@ -26,12 +28,13 @@ public class ProfileInfoView extends LinearLayout
 {
     public static final String TAG = ProfileInfoView.class.getSimpleName();
 
-    public ServerValidatedEmailText email;
-    public ValidatedPasswordText password;
-    public MatchingPasswordText confirmPassword;
-    public ServerValidatedUsernameText displayName;
-    public EditText firstName, lastName;
-    public ProgressDialog progressDialog;
+    @InjectView(R.id.authentication_sign_up_email) ServerValidatedEmailText email;
+    @InjectView(R.id.authentication_sign_up_password) ValidatedPasswordText password;
+    @InjectView(R.id.authentication_sign_up_confirm_password) MatchingPasswordText confirmPassword;
+    @InjectView(R.id.authentication_sign_up_username) ServerValidatedUsernameText displayName;
+    @InjectView(R.id.et_firstname) EditText firstName;
+    @InjectView(R.id.et_lastname) EditText lastName;
+    ProgressDialog progressDialog;
 
     //<editor-fold desc="Constructors">
     public ProfileInfoView(Context context)
@@ -54,13 +57,7 @@ public class ProfileInfoView extends LinearLayout
     {
         super.onFinishInflate();
 
-        email = (ServerValidatedEmailText) findViewById(R.id.authentication_sign_up_email);
-        password = (ValidatedPasswordText) findViewById(R.id.authentication_sign_up_password);
-        confirmPassword = (MatchingPasswordText) findViewById(R.id.authentication_sign_up_confirm_password);
-        displayName = (ServerValidatedUsernameText) findViewById(R.id.authentication_sign_up_username);
-        firstName = (EditText) findViewById(R.id.et_firstname);
-        lastName = (EditText) findViewById(R.id.et_lastname);
-
+        ButterKnife.inject(this);
     }
 
     public void forceValidateFields()

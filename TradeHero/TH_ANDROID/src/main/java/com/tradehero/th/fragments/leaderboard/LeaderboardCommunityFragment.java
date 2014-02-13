@@ -52,15 +52,14 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
 {
     private static final String TAG = LeaderboardCommunityFragment.class.getName();
 
-    @Inject protected Lazy<LeaderboardDefListCache> leaderboardDefListCache;
-
     protected DTOCache.GetOrFetchTask<LeaderboardDefListKey, LeaderboardDefKeyList> leaderboardDefListFetchTask;
 
-    @Inject protected Lazy<LeaderboardDefCache> leaderboardDefCache;
-    @Inject protected Lazy<ProviderListCache> providerListCache;
-    @Inject protected Lazy<ProviderCache> providerCache;
-    @Inject protected Picasso picasso;
-    @Inject protected CurrentUserId currentUserId;
+    @Inject Lazy<LeaderboardDefListCache> leaderboardDefListCache;
+    @Inject Lazy<LeaderboardDefCache> leaderboardDefCache;
+    @Inject Lazy<ProviderListCache> providerListCache;
+    @Inject Lazy<ProviderCache> providerCache;
+    @Inject Picasso picasso;
+    @Inject CurrentUserId currentUserId;
 
     @InjectView(R.id.community_screen) BetterViewAnimator communityScreen;
     @InjectView(android.R.id.list) StickyListHeadersListView leaderboardDefListView;

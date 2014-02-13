@@ -56,10 +56,6 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
     protected Button updateButton;
     private ProfileInfoView profileView;
 
-    private boolean showButtonBack;
-
-    private String selectedPath = null;
-    private Bitmap imageBmp;
     private static final int REQUEST_GALLERY = 111;
 
     @Inject CurrentUserId currentUserId;
@@ -97,7 +93,7 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         Bundle args = getArguments();
-        showButtonBack = args != null && args.containsKey(BUNDLE_KEY_SHOW_BUTTON_BACK) && args.getBoolean(BUNDLE_KEY_SHOW_BUTTON_BACK);
+        boolean showButtonBack = args != null && args.containsKey(BUNDLE_KEY_SHOW_BUTTON_BACK) && args.getBoolean(BUNDLE_KEY_SHOW_BUTTON_BACK);
 
         ActionBar actionBar = getSherlockActivity().getSupportActionBar();
         if (showButtonBack)
@@ -193,8 +189,8 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
                 try
                 {
                     Uri selectedImageUri = data.getData();
-                    selectedPath = getPath(selectedImageUri);
-                    imageBmp = BitmapFactory.decodeFile(selectedPath);
+                    String selectedPath = getPath(selectedImageUri);
+                    Bitmap imageBmp = BitmapFactory.decodeFile(selectedPath);
                     BitmapFactory.Options options;
                     if (imageBmp != null)
                     {
@@ -311,7 +307,7 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
     {
         @Override public void onDTOReceived(UserBaseKey key, UserProfileDTO value, boolean fromCache)
         {
-            SettingsProfileFragment.this.profileView.populate(value);
+            profileView.populate(value);
         }
 
         @Override public void onErrorThrown(UserBaseKey key, Throwable error)
