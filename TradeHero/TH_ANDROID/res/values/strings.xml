@@ -187,4 +187,5 @@
   <string name="help">Help</string>
   <string name="tab_to_dismiss">tab to dismiss</string>
   <string name="welcome_to_tradehero">Welcome to TradeHero!</string>
+  <string name="reset_help_screen">Help Screens Reset</string>
 </resources>

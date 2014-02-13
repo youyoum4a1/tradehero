@@ -19,6 +19,7 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.tradehero.common.cache.LruMemFileCache;
 import com.tradehero.common.milestone.Milestone;
+import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.common.utils.SlowedAsyncTask;
 import com.tradehero.common.utils.THLog;
@@ -49,6 +50,7 @@ import com.tradehero.th.network.service.SessionService;
 import com.tradehero.th.network.service.SocialService;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.prefs.AuthenticationType;
+import com.tradehero.th.persistence.prefs.ResetHelpScreens;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.persistence.user.UserProfileRetrievedMilestone;
 import com.tradehero.th.utils.DaggerUtils;
@@ -80,6 +82,7 @@ public final class SettingsFragment extends PreferenceFragment
     @Inject LruMemFileCache lruCache;
     @Inject PurchaseRestorerAlertUtil purchaseRestorerAlertUtil;
     @Inject @AuthenticationType StringPreference currentAuthenticationType;
+    @Inject @ResetHelpScreens BooleanPreference resetHelpScreen;
 
     @Inject Lazy<FacebookUtils> facebookUtils;
     @Inject Lazy<TwitterUtils> twitterUtils;
@@ -716,8 +719,8 @@ public final class SettingsFragment extends PreferenceFragment
 
     private void handleResetHelpScreensClicked()
     {
-        // TODO
-        THToast.show("Not implemented yet");
+        resetHelpScreen.delete();
+        THToast.show(R.string.reset_help_screen);
     }
 
     private void handleClearCacheClicked()

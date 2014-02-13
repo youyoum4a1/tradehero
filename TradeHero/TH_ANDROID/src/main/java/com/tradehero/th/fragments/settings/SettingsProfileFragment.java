@@ -194,11 +194,7 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
                 {
                     Uri selectedImageUri = data.getData();
                     selectedPath = getPath(selectedImageUri);
-                    System.out.println("image path......."
-                            + selectedPath);
                     imageBmp = BitmapFactory.decodeFile(selectedPath);
-                    System.out.println("image size1......."
-                            + imageBmp.getByteCount());
                     BitmapFactory.Options options;
                     if (imageBmp != null)
                     {

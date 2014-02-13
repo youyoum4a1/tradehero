@@ -1,6 +1,7 @@
 package com.tradehero.th.persistence.prefs;
 
 import android.content.SharedPreferences;
+import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.common.persistence.prefs.StringSetPreference;
 import com.tradehero.th.activities.SplashActivity;
@@ -24,6 +25,7 @@ public class PreferenceModule
     private static final String PREF_CURRENT_SESSION_TOKEN_KEY = "PREF_CURRENT_SESSION_TOKEN_KEY";
     private static final String PREF_CURRENT_AUTHENTICATION_TYPE_KEY = "PREF_CURRENT_AUTHENTICATION_TYPE_KEY";
     private static final String PREF_SAVED_CREDENTIALS_KEY = "PREF_SAVED_CREDENTIALS_KEY";
+    private static final String PREF_RESET_HELP_SCREENS = "PREF_RESET_HELP_SCREENS";
 
     @Provides @Singleton @SessionToken StringPreference provideCurrentSessionToken(SharedPreferences sharedPreferences)
     {
@@ -38,5 +40,10 @@ public class PreferenceModule
     @Provides @Singleton @SavedCredentials StringSetPreference provideSavedCredentials(SharedPreferences sharedPreferences)
     {
         return new StringSetPreference(sharedPreferences, PREF_SAVED_CREDENTIALS_KEY, new HashSet<String>());
+    }
+
+    @Provides @Singleton @ResetHelpScreens BooleanPreference provideResetHelpScreen(SharedPreferences sharedPreferences)
+    {
+        return new BooleanPreference(sharedPreferences, PREF_RESET_HELP_SCREENS, false);
     }
 }
