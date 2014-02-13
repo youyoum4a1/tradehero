@@ -14,6 +14,24 @@ public class PositionDTOCompact extends ExtendedDTO
     // This price is always is USD
     public Double averagePriceRefCcy;
 
+    //<editor-fold desc="Constructors">
+    public PositionDTOCompact()
+    {
+        super();
+    }
+
+    public <ExtendedDTOType extends ExtendedDTO> PositionDTOCompact(ExtendedDTOType other, Class<? extends ExtendedDTO> myClass)
+    {
+        super(other, myClass);
+    }
+
+    public<PositionDTOCompactType extends PositionDTOCompact> PositionDTOCompact(PositionDTOCompactType other,
+            Class<? extends PositionDTOCompact> myClass)
+    {
+        super(other, myClass);
+    }
+    //</editor-fold>
+
     public Boolean isClosed()
     {
         if (shares == null)

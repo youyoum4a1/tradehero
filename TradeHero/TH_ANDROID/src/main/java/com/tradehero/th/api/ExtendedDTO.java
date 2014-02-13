@@ -31,54 +31,13 @@ public class ExtendedDTO implements DTO
         dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
         //dateFormat = new ISO8601DateFormat();
     }
+
+    public<ExtendedDTOType extends ExtendedDTO> ExtendedDTO(ExtendedDTOType other, Class<? extends ExtendedDTO> myClass)
+    {
+        this();
+        putAll(other, myClass);
+    }
     //</editor-fold>
-
-    @JsonAnySetter
-    public void put(String key, Object value)
-    {
-        if (VERBOSE)
-        {
-            THLog.w(TAG, String.format("'%s' is not parsed properly in class: '%s'", key, getClass().getName()));
-        }
-
-        extra.put(key, value);
-    }
-
-    protected void put(String key, Object value, Class<? extends ExtendedDTO> myClass)
-    {
-        try
-        {
-            Field field = myClass.getDeclaredField(key);
-            if (field.getType().equals(Date.class))
-            {
-                value = dateFormat.parse((String) value);
-                // TODO make it work more generically
-                //value = THJsonAdapter.getInstance().fromBody((String) value, field.getType());
-            }
-            field.set(this, value);
-        }
-        catch (NoSuchFieldException | IllegalAccessException | IllegalArgumentException | ParseException e)
-        {
-            if (VERBOSE)
-            {
-                THLog.e(TAG, "Tried to set key " + key + " with value " + value, e);
-            }
-            put(key, value);
-        }
-    }
-
-    public void putAll(Map<String, Object> pairs, Class<? extends ExtendedDTO> myClass)
-    {
-        if (pairs == null)
-        {
-            return;
-        }
-
-        for (Map.Entry<String, Object> pair: pairs.entrySet())
-        {
-            put(pair.getKey(), pair.getValue(), myClass);
-        }
-    }
 
     @JsonAnyGetter
     public Map<String, Object> getAll()
@@ -102,6 +61,82 @@ public class ExtendedDTO implements DTO
         {
             return defaultValue;
         }
+    }
+
+    protected void putAll(ExtendedDTO other, Class<? extends ExtendedDTO> myClass)
+    {
+        if (other == null)
+        {
+            return;
+        }
+        putAll(other.getAll(), myClass);
+        Field otherField;
+        for (Field myField : myClass.getFields())
+        {
+            try
+            {
+                otherField = other.getClass().getField(myField.getName());
+                put(myField, otherField.get(other));
+            }
+            catch (NoSuchFieldException | IllegalAccessException | ParseException e)
+            {
+                if (VERBOSE)
+                {
+                    THLog.e(TAG, "Tried to set field " + myField.getName() + " from " + other, e);
+                }
+            }
+        }
+    }
+
+    @JsonAnySetter
+    public void put(String key, Object value)
+    {
+        if (VERBOSE)
+        {
+            THLog.w(TAG, String.format("'%s' is not parsed properly in class: '%s'", key, getClass().getName()));
+        }
+
+        extra.put(key, value);
+    }
+
+    public void putAll(Map<String, Object> pairs, Class<? extends ExtendedDTO> myClass)
+    {
+        if (pairs == null)
+        {
+            return;
+        }
+
+        for (Map.Entry<String, Object> pair: pairs.entrySet())
+        {
+            put(pair.getKey(), pair.getValue(), myClass);
+        }
+    }
+
+    protected void put(String key, Object value, Class<? extends ExtendedDTO> myClass)
+    {
+        try
+        {
+            put(myClass.getDeclaredField(key), value);
+        }
+        catch (NoSuchFieldException | IllegalAccessException | IllegalArgumentException | ParseException e)
+        {
+            if (VERBOSE)
+            {
+                THLog.e(TAG, "Tried to set key " + key + " with value " + value, e);
+            }
+            put(key, value);
+        }
+    }
+
+    protected void put(Field myField, Object value) throws ParseException, IllegalAccessException
+    {
+        if (myField.getType().equals(Date.class) && value != null && value instanceof String)
+        {
+            value = dateFormat.parse((String) value);
+            // TODO make it work more generically
+            //value = THJsonAdapter.getInstance().fromBody((String) value, field.getType());
+        }
+        myField.set(this, value);
     }
 
     protected StringBuilder formatExtras(String repeatSeparator)

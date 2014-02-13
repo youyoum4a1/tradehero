@@ -1,5 +1,6 @@
 package com.tradehero.th.api.position;
 
+import com.tradehero.th.api.ExtendedDTO;
 import com.tradehero.th.api.security.SecurityIntegerId;
 import com.tradehero.th.api.users.UserBaseKey;
 import java.util.ArrayList;
@@ -23,6 +24,28 @@ public class PositionDTO extends PositionDTOCompact
 
     // if >1, then the values above relate to a collection of positions, not a single position -- see: MaskOpenPositions()
     public int aggregateCount;
+
+    //<editor-fold desc="Constructors">
+    public PositionDTO()
+    {
+        super();
+    }
+
+    public <ExtendedDTOType extends ExtendedDTO> PositionDTO(ExtendedDTOType other, Class<? extends ExtendedDTO> myClass)
+    {
+        super(other, myClass);
+    }
+
+    public <PositionDTOCompactType extends PositionDTOCompact> PositionDTO(PositionDTOCompactType other, Class<? extends PositionDTOCompact> myClass)
+    {
+        super(other, myClass);
+    }
+
+    public <PositionDTOType extends PositionDTO> PositionDTO(PositionDTOType other, Class<? extends PositionDTO> myClass)
+    {
+        super(other, myClass);
+    }
+    //</editor-fold>
 
     public UserBaseKey getUserBaseKey()
     {
