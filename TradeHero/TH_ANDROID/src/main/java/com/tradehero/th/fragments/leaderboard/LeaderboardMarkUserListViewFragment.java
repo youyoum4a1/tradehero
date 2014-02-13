@@ -47,13 +47,13 @@ public class LeaderboardMarkUserListViewFragment extends BaseLeaderboardFragment
     protected PerPagedLeaderboardKeyPreference savedPreference;
 
     protected LeaderboardFilterFragment leaderboardFilterFragment;
-    protected PerPagedLeaderboardKey currentLeaderboardFilterKey;
+    protected PerPagedLeaderboardKey currentLeaderboardKey;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         leaderboardId = getArguments().getInt(BUNDLE_KEY_LEADERBOARD_ID);
-        currentLeaderboardFilterKey = getInitialLeaderboardKey();
+        currentLeaderboardKey = getInitialLeaderboardKey();
     }
 
     protected PerPagedLeaderboardKey getInitialLeaderboardKey()
@@ -176,10 +176,10 @@ public class LeaderboardMarkUserListViewFragment extends BaseLeaderboardFragment
         super.onResume();
         if (leaderboardFilterFragment != null)
         {
-            currentLeaderboardFilterKey = leaderboardFilterFragment.getPerPagedFilteredLeaderboardKey();
+            currentLeaderboardKey = leaderboardFilterFragment.getPerPagedFilteredLeaderboardKey();
             leaderboardFilterFragment = null;
             initialLoad();
-            THLog.d(TAG, "onResume " + currentLeaderboardFilterKey);
+            THLog.d(TAG, "onResume " + currentLeaderboardKey);
             getActivity().invalidateOptionsMenu();
         }
         else
@@ -213,7 +213,7 @@ public class LeaderboardMarkUserListViewFragment extends BaseLeaderboardFragment
 
     protected void saveCurrentFilterKey()
     {
-        savedPreference.set(currentLeaderboardFilterKey);
+        savedPreference.set(currentLeaderboardKey);
     }
 
     @Override protected void setCurrentUserProfileDTO(UserProfileDTO currentUserProfileDTO)
@@ -228,7 +228,7 @@ public class LeaderboardMarkUserListViewFragment extends BaseLeaderboardFragment
 
     public void initialLoad()
     {
-        leaderboardMarkUserLoader.setPagedLeaderboardKey(currentLeaderboardFilterKey);
+        leaderboardMarkUserLoader.setPagedLeaderboardKey(currentLeaderboardKey);
         leaderboardMarkUserLoader.reload();
         invalidateCachedItemView();
     }
@@ -245,7 +245,7 @@ public class LeaderboardMarkUserListViewFragment extends BaseLeaderboardFragment
     protected void pushFilterFragmentIn()
     {
         Bundle args = new Bundle();
-        args.putBundle(LeaderboardFilterFragment.BUNDLE_KEY_PER_PAGED_FILTERED_LEADERBOARD_KEY_BUNDLE, currentLeaderboardFilterKey.getArgs());
+        args.putBundle(LeaderboardFilterFragment.BUNDLE_KEY_PER_PAGED_FILTERED_LEADERBOARD_KEY_BUNDLE, currentLeaderboardKey.getArgs());
         this.leaderboardFilterFragment = (LeaderboardFilterFragment) getNavigator().pushFragment(LeaderboardFilterFragment.class, args);
     }
 
@@ -253,11 +253,11 @@ public class LeaderboardMarkUserListViewFragment extends BaseLeaderboardFragment
     {
         if (filterIcon != null)
         {
-            if (currentLeaderboardFilterKey instanceof PerPagedFilteredLeaderboardKey)
+            if (currentLeaderboardKey instanceof PerPagedFilteredLeaderboardKey)
             {
                 boolean areEqual = LeaderboardFilterSliderContainer.areInnerValuesEqualToStarting(
                         getResources(),
-                        (PerPagedFilteredLeaderboardKey) currentLeaderboardFilterKey);
+                        (PerPagedFilteredLeaderboardKey) currentLeaderboardKey);
                 filterIcon.setIcon(
                          areEqual ?
                             R.drawable.filter :
@@ -284,7 +284,7 @@ public class LeaderboardMarkUserListViewFragment extends BaseLeaderboardFragment
         {
             int leaderboardId = args.getInt(BUNDLE_KEY_LEADERBOARD_ID);
             boolean includeFoF = args.getBoolean(LeaderboardDTO.INCLUDE_FOF);
-            LeaderboardMarkUserLoader leaderboardMarkUserLoader = new LeaderboardMarkUserLoader(getActivity(), currentLeaderboardFilterKey);
+            LeaderboardMarkUserLoader leaderboardMarkUserLoader = new LeaderboardMarkUserLoader(getActivity(), currentLeaderboardKey);
             leaderboardMarkUserLoader.setPerPage(Constants.LEADERBOARD_MARK_USER_ITEM_PER_PAGE);
             return leaderboardMarkUserLoader;
         }

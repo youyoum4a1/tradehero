@@ -90,7 +90,6 @@ public class BuySellFragment extends AbstractBuySellFragment
     public final static int ADD_ALERT_RES_ID = R.drawable.add_alert;
     public final static int EDIT_ALERT_RES_ID = R.drawable.active_alert;
     public final static int INACTIVE_ALERT_RES_ID = R.drawable.alert_inactive;
-    public final static int TRANSACTION_COST = 10;
     public final static float BUY_BUTTON_DISABLED_ALPHA = 0.5f;
 
     private ToggleButton mBuySellSwitch;
@@ -127,12 +126,7 @@ public class BuySellFragment extends AbstractBuySellFragment
     @Inject protected ProviderSpecificResourcesFactory providerSpecificResourcesFactory;
     @Inject protected WarrantSpecificKnowledgeFactory warrantSpecificKnowledgeFactory;
 
-    double lastPrice;
-    int sliderIncrement = 0;
-    int maxQuantity = 0;
     int mQuantity = 0;
-    int sliderMaxValue = 0;
-
     int volume = 0;
     int avgDailyVolume = 0;
 

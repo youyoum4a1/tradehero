@@ -70,6 +70,15 @@ public class LeaderboardDefListViewFragment extends BaseLeaderboardFragment
         super.onResume();
     }
 
+    @Override public void onPause()
+    {
+        if (contentListView != null)
+        {
+            contentListView.setOnItemClickListener(null);
+        }
+        super.onPause();
+    }
+
     protected void refresh()
     {
         if (leaderboardDefListAdapter != null)

@@ -1,9 +1,7 @@
 package com.tradehero.th.fragments.leaderboard;
 
-import android.os.Bundle;
 import com.actionbarsherlock.view.MenuItem;
 import com.tradehero.th.R;
-import com.tradehero.th.api.leaderboard.LeaderboardDTO;
 import com.tradehero.th.api.leaderboard.key.FriendsPerPagedLeaderboardKey;
 import com.tradehero.th.api.leaderboard.key.PerPagedLeaderboardKey;
 
@@ -51,12 +49,12 @@ public class FriendLeaderboardMarkUserListViewFragment extends LeaderboardMarkUs
 
     private void setFriendOfFriendFilter(boolean isFoF)
     {
-        currentLeaderboardFilterKey = new FriendsPerPagedLeaderboardKey(
-                currentLeaderboardFilterKey.key,
-                currentLeaderboardFilterKey.page,
-                currentLeaderboardFilterKey.perPage,
+        currentLeaderboardKey = new FriendsPerPagedLeaderboardKey(
+                currentLeaderboardKey.key,
+                currentLeaderboardKey.page,
+                currentLeaderboardKey.perPage,
                 isFoF);
-        leaderboardMarkUserLoader.setPagedLeaderboardKey(currentLeaderboardFilterKey);
+        leaderboardMarkUserLoader.setPagedLeaderboardKey(currentLeaderboardKey);
         leaderboardMarkUserLoader.reload();
         invalidateCachedItemView();
     }
