@@ -9,4 +9,9 @@
       android:showAsAction="always"
     />
 
+  <item android:id="@+id/buy_sell_info"
+      android:icon="@drawable/icn_info_white"
+      android:title="@string/action_bar_help"
+      android:showAsAction="always"/>
+
 </menu>

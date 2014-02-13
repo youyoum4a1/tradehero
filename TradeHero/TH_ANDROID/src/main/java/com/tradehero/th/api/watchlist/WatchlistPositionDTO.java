@@ -10,6 +10,6 @@ public class WatchlistPositionDTO extends PositionDTO
     {
         return (Double) get("watchlistPrice");
     }
-    public SecurityCompactDTO securityDTO;
 
+    public SecurityCompactDTO securityDTO;
 }

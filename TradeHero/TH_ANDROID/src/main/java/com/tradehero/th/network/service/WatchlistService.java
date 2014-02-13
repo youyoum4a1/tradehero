@@ -67,6 +67,5 @@ public interface WatchlistService
 
     @DELETE("/watchlistPositions/{watchlistId}")
     void deleteWatchlist(@Path("watchlistId") int watchlistId, Callback<WatchlistPositionDTO> callback);
-
     //</editor-fold>
 }

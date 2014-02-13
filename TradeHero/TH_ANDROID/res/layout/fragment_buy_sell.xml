@@ -173,13 +173,13 @@
         >
 
       <ImageButton
-          android:id="@+id/btn_trade_info"
+          android:id="@+id/btn_watch_list"
           android:layout_width="48dp"
           android:layout_height="48dp"
           android:layout_alignParentRight="true"
           android:contentDescription="@null"
           android:background="@null"
-          android:src="@drawable/icn_info_normal"
+          android:src="@drawable/add_watchlist"
           android:scaleType="fitCenter"
           />
 
@@ -187,8 +187,7 @@
           android:id="@+id/btn_add_trigger"
           android:layout_width="48dp"
           android:layout_height="48dp"
-          android:layout_toLeftOf="@id/btn_trade_info"
-          android:layout_marginRight="8dp"
+          android:layout_toLeftOf="@id/btn_watch_list"
           android:contentDescription="@null"
           android:background="@null"
           android:src="@drawable/add_alert"

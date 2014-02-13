@@ -73,7 +73,6 @@ import com.tradehero.th.persistence.portfolio.PortfolioCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListRetrievedMilestone;
-import com.tradehero.th.utils.AlertDialogUtil;
 import com.viewpagerindicator.PageIndicator;
 import java.util.Iterator;
 import java.util.Map;
@@ -116,6 +115,7 @@ public class BuySellFragment extends AbstractBuySellFragment
     private SeekBar mSlider;
     private ImageButton mBtnAddCash;
     private ImageButton mBtnAddTrigger;
+    private ImageView mBtnWatchlist;
 
     protected SecurityAlertAssistant securityAlertAssistant;
     @Inject protected PortfolioCache portfolioCache;
@@ -205,14 +205,14 @@ public class BuySellFragment extends AbstractBuySellFragment
 
         mInfoFrame = (FrameLayout) view.findViewById(R.id.chart_frame);
 
-        ImageView mInfoButton = (ImageView) view.findViewById(R.id.btn_trade_info);
-        if (mInfoButton != null)
+        mBtnWatchlist = (ImageView) view.findViewById(R.id.btn_watch_list);
+        if (mBtnWatchlist != null)
         {
-            mInfoButton.setOnClickListener(new OnClickListener()
+            mBtnWatchlist.setOnClickListener(new OnClickListener()
             {
                 @Override public void onClick(View view)
                 {
-                    showInfoDialog();
+                    //TODO
                 }
             });
         }
@@ -381,6 +381,17 @@ public class BuySellFragment extends AbstractBuySellFragment
             });
         }
         displayActionBarElements();
+    }
+
+    @Override public boolean onOptionsItemSelected(com.actionbarsherlock.view.MenuItem item)
+    {
+        switch (item.getItemId())
+        {
+            case R.id.buy_sell_info:
+                showInfoDialog();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override public void onDestroyOptionsMenu()
