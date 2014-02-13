@@ -17,9 +17,9 @@ public class SortedPerPagedLeaderboardKey extends PerPagedLeaderboardKey
         this.sortType = sortType;
     }
 
-    public SortedPerPagedLeaderboardKey(SortedPerPagedLeaderboardKey other, Integer page)
+    public SortedPerPagedLeaderboardKey(SortedPerPagedLeaderboardKey other, Integer overrideKey, Integer page)
     {
-        super(other, page);
+        super(other, overrideKey, page);
         this.sortType = other.sortType;
     }
 
@@ -71,7 +71,7 @@ public class SortedPerPagedLeaderboardKey extends PerPagedLeaderboardKey
 
     @Override public PagedLeaderboardKey cloneAtPage(int page)
     {
-        return new SortedPerPagedLeaderboardKey(this, page);
+        return new SortedPerPagedLeaderboardKey(this, key, page);
     }
 
     @Override public void putParameters(Bundle args)

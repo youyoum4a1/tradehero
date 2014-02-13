@@ -45,7 +45,6 @@ public class LeaderboardFilterSliderContainer extends LinearLayout
     {
         super.onFinishInflate();
         ButterKnife.inject(this);
-        displayPerPagedFilteredLeaderboardKey();
     }
 
     @Override protected void onAttachedToWindow()
@@ -57,10 +56,11 @@ public class LeaderboardFilterSliderContainer extends LinearLayout
             {
                 @Override public void onClick(View view)
                 {
-                    displayPerPagedFilteredLeaderboardKey();
+                    setFilteredLeaderboardKey(getStartingFilter(getResources(), 0));
                 }
             });
         }
+        displayPerPagedFilteredLeaderboardKey();
     }
 
     @Override protected void onDetachedFromWindow()

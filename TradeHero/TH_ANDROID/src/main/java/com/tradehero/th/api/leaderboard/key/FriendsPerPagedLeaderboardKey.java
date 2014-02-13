@@ -16,9 +16,9 @@ public class FriendsPerPagedLeaderboardKey extends PerPagedLeaderboardKey
         this.includeFoF = includeFoF;
     }
 
-    public FriendsPerPagedLeaderboardKey(FriendsPerPagedLeaderboardKey other, Integer page)
+    public FriendsPerPagedLeaderboardKey(FriendsPerPagedLeaderboardKey other, Integer overrideKey, Integer page)
     {
-        super(other, page);
+        super(other, overrideKey, page);
         this.includeFoF = other.includeFoF;
     }
 
@@ -70,7 +70,7 @@ public class FriendsPerPagedLeaderboardKey extends PerPagedLeaderboardKey
 
     @Override public PagedLeaderboardKey cloneAtPage(int page)
     {
-        return new FriendsPerPagedLeaderboardKey(this, page);
+        return new FriendsPerPagedLeaderboardKey(this, key, page);
     }
 
     @Override public void putParameters(Bundle args)

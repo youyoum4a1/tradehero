@@ -1,11 +1,14 @@
 package com.tradehero.th.api.leaderboard.key;
 
 import android.os.Bundle;
+import java.util.Iterator;
+import java.util.Set;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/16/13 Time: 3:30 PM To change this template use File | Settings | File Templates. */
 public class PerPagedLeaderboardKey extends PagedLeaderboardKey
 {
     public final static String BUNDLE_KEY_PER_PAGE = PerPagedLeaderboardKey.class.getName() + ".perPage";
+    public static final String STRING_SET_LEFT_PER_PAGE = "perPage";
 
     public final Integer perPage;
 
@@ -16,9 +19,9 @@ public class PerPagedLeaderboardKey extends PagedLeaderboardKey
         this.perPage = perPage;
     }
 
-    public PerPagedLeaderboardKey(PerPagedLeaderboardKey other, Integer page)
+    public PerPagedLeaderboardKey(PerPagedLeaderboardKey other, Integer overrideKey, Integer page)
     {
-        super(other, page);
+        super(overrideKey, page);
         this.perPage = other.perPage;
     }
 
@@ -26,6 +29,12 @@ public class PerPagedLeaderboardKey extends PagedLeaderboardKey
     {
         super(args);
         this.perPage = args.containsKey(BUNDLE_KEY_PER_PAGE) ? args.getInt(BUNDLE_KEY_PER_PAGE) : null;
+    }
+
+    public PerPagedLeaderboardKey(Set<String> catValues)
+    {
+        super(catValues);
+        this.perPage = findPerPage(catValues);
     }
     //</editor-fold>
 
@@ -70,7 +79,7 @@ public class PerPagedLeaderboardKey extends PagedLeaderboardKey
 
     @Override public PagedLeaderboardKey cloneAtPage(int page)
     {
-        return new PerPagedLeaderboardKey(this, page);
+        return new PerPagedLeaderboardKey(this, key, page);
     }
 
     @Override public void putParameters(Bundle args)
@@ -83,6 +92,37 @@ public class PerPagedLeaderboardKey extends PagedLeaderboardKey
         else
         {
             args.putInt(BUNDLE_KEY_PER_PAGE, perPage);
+        }
+    }
+
+    public static Integer findPerPage(Set<String> catValues)
+    {
+        Iterator<String> iterator = catValues.iterator();
+        String catValue;
+        String[] split;
+        while (iterator.hasNext())
+        {
+            catValue = iterator.next();
+            split = catValue.split(STRING_SET_VALUE_SEPARATOR);
+            if (split[0].equals(STRING_SET_LEFT_PER_PAGE))
+            {
+                return Integer.valueOf(split[1]);
+            }
+        }
+        return null;
+    }
+
+    @Override public void putParameters(Set<String> catValues)
+    {
+        super.putParameters(catValues);
+        putPerPage(catValues, this.perPage);
+    }
+
+    public static void putPerPage(Set<String> catValues, Integer perPage)
+    {
+        if (perPage != null)
+        {
+            catValues.add(STRING_SET_LEFT_PER_PAGE + STRING_SET_VALUE_SEPARATOR + perPage);
         }
     }
 }

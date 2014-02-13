@@ -2,11 +2,14 @@ package com.tradehero.th.api.leaderboard.key;
 
 import android.os.Bundle;
 import com.tradehero.common.persistence.AbstractPrimitiveDTOKey;
+import java.util.Iterator;
+import java.util.Set;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/16/13 Time: 3:30 PM To change this template use File | Settings | File Templates. */
 public class PagedLeaderboardKey extends LeaderboardKey
 {
     public final static String BUNDLE_KEY_PAGE = PagedLeaderboardKey.class.getName() + ".page";
+    public static final String STRING_SET_LEFT_PAGE = "page";
 
     public final Integer page;
 
@@ -27,6 +30,12 @@ public class PagedLeaderboardKey extends LeaderboardKey
     {
         super(args);
         this.page = args.containsKey(BUNDLE_KEY_PAGE) ? args.getInt(BUNDLE_KEY_PAGE) : null;
+    }
+
+    public PagedLeaderboardKey(Set<String> catValues)
+    {
+        super(catValues);
+        this.page = findPage(catValues);
     }
     //</editor-fold>
 
@@ -84,6 +93,37 @@ public class PagedLeaderboardKey extends LeaderboardKey
         else
         {
             args.putInt(BUNDLE_KEY_PAGE, page);
+        }
+    }
+
+    public static Integer findPage(Set<String> catValues)
+    {
+        Iterator<String> iterator = catValues.iterator();
+        String catValue;
+        String[] split;
+        while (iterator.hasNext())
+        {
+            catValue = iterator.next();
+            split = catValue.split(STRING_SET_VALUE_SEPARATOR);
+            if (split[0].equals(STRING_SET_LEFT_PAGE))
+            {
+                return Integer.valueOf(split[1]);
+            }
+        }
+        return null;
+    }
+
+    @Override public void putParameters(Set<String> catValues)
+    {
+        super.putParameters(catValues);
+        putPage(catValues, this.page);
+    }
+
+    public static void putPage(Set<String> catValues, Integer page)
+    {
+        if (page != null)
+        {
+            catValues.add(STRING_SET_LEFT_PAGE + STRING_SET_VALUE_SEPARATOR + page);
         }
     }
 }

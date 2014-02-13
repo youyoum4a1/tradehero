@@ -6,14 +6,20 @@
     <attr name="valueMax" format="float"/>
   </declare-styleable>
 
+  <!-- Monthly Activity -->
   <integer name="leaderboard_filter_monthly_activity_min">1</integer>
   <integer name="leaderboard_filter_monthly_activity_max">30</integer>
+
+  <!-- Win Ratio -->
   <integer name="leaderboard_filter_win_ratio_min">0</integer>
   <integer name="leaderboard_filter_win_ratio_max">100</integer>
+
+  <!-- Holding Period -->
   <integer name="leaderboard_filter_holding_period_min">1</integer>
   <integer name="leaderboard_filter_holding_period_max">120</integer>
 
   <style name="LeaderboardFilter">
+    <!-- Just a base style for now -->
   </style>
 
   <style name="LeaderboardFilter.Header">

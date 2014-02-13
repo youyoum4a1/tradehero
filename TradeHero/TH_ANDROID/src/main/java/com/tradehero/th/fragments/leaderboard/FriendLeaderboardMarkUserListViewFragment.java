@@ -44,6 +44,11 @@ public class FriendLeaderboardMarkUserListViewFragment extends LeaderboardMarkUs
         return new FriendsPerPagedLeaderboardKey(leaderboardId, null, null, false);
     }
 
+    @Override protected void saveCurrentFilterKey()
+    {
+        // Do nothing really
+    }
+
     private void setFriendOfFriendFilter(boolean isFoF)
     {
         currentLeaderboardFilterKey = new FriendsPerPagedLeaderboardKey(

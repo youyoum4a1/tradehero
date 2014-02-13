@@ -5,6 +5,9 @@ import com.tradehero.common.persistence.AbstractIntegerDTOKey;
 import com.tradehero.common.utils.THJsonAdapter;
 import com.tradehero.common.utils.THLog;
 import java.io.IOException;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 
 /**
  * Created by xavier on 1/22/14.
@@ -13,6 +16,8 @@ public class LeaderboardKey extends AbstractIntegerDTOKey
 {
     public static final String TAG = LeaderboardKey.class.getSimpleName();
     public static final String BUNDLE_KEY_KEY = LeaderboardKey.class.getName() + ".key";
+    public static final String STRING_SET_VALUE_SEPARATOR = ":";
+    public static final String STRING_SET_LEFT_KEY = "key";
 
     //<editor-fold desc="Constructors">
     public LeaderboardKey(Integer key)
@@ -24,11 +29,53 @@ public class LeaderboardKey extends AbstractIntegerDTOKey
     {
         super(args);
     }
+
+    public LeaderboardKey(Set<String> catValues)
+    {
+        super(findKey(catValues));
+    }
     //</editor-fold>
 
     @Override public String getBundleKey()
     {
         return BUNDLE_KEY_KEY;
+    }
+
+    public static Integer findKey(Set<String> catValues)
+    {
+        Iterator<String> iterator = catValues.iterator();
+        String catValue;
+        String[] split;
+        while (iterator.hasNext())
+        {
+            catValue = iterator.next();
+            split = catValue.split(STRING_SET_VALUE_SEPARATOR);
+            if (split[0].equals(STRING_SET_LEFT_KEY))
+            {
+                    return Integer.valueOf(split[1]);
+            }
+        }
+        return null;
+    }
+
+    public HashSet<String> getFilterStringSet()
+    {
+        HashSet<String> set = new HashSet<>();
+        putParameters(set);
+        return set;
+    }
+
+    public void putParameters(Set<String> catValues)
+    {
+        putKey(catValues, this.key);
+    }
+
+    public static void putKey(Set<String> catValues, Integer key)
+    {
+        if (key != null)
+        {
+            catValues.add(STRING_SET_LEFT_KEY + STRING_SET_VALUE_SEPARATOR + key);
+        }
     }
 
     @Override public String toString()

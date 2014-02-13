@@ -1,5 +1,6 @@
 package com.tradehero.th.fragments.leaderboard;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +18,8 @@ import com.tradehero.th.api.leaderboard.key.PerPagedLeaderboardKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.leaderboard.filter.LeaderboardFilterFragment;
 import com.tradehero.th.fragments.leaderboard.filter.LeaderboardFilterSliderContainer;
+import com.tradehero.th.persistence.leaderboard.PerPagedFilteredLeaderboardKeyPreference;
+import com.tradehero.th.persistence.leaderboard.PerPagedLeaderboardKeyPreference;
 import com.tradehero.th.loaders.ListLoader;
 import com.tradehero.th.utils.Constants;
 import java.util.Date;
@@ -29,6 +32,7 @@ import org.ocpsoft.prettytime.PrettyTime;
 public class LeaderboardMarkUserListViewFragment extends BaseLeaderboardFragment
 {
     public static final String TAG = LeaderboardMarkUserListViewFragment.class.getSimpleName();
+    public static final String PREFERENCE_KEY_PREFIX = LeaderboardMarkUserListViewFragment.class.getName();
 
     @Inject protected Provider<PrettyTime> prettyTime;
 
@@ -39,8 +43,30 @@ public class LeaderboardMarkUserListViewFragment extends BaseLeaderboardFragment
 
     protected LeaderboardMarkUserLoader leaderboardMarkUserLoader;
 
+    @Inject protected SharedPreferences preferences;
+    protected PerPagedLeaderboardKeyPreference savedPreference;
+
     protected LeaderboardFilterFragment leaderboardFilterFragment;
     protected PerPagedLeaderboardKey currentLeaderboardFilterKey;
+
+    @Override public void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        leaderboardId = getArguments().getInt(BUNDLE_KEY_LEADERBOARD_ID);
+        currentLeaderboardFilterKey = getInitialLeaderboardKey();
+    }
+
+    protected PerPagedLeaderboardKey getInitialLeaderboardKey()
+    {
+        savedPreference = new PerPagedFilteredLeaderboardKeyPreference(
+                preferences,
+                PREFERENCE_KEY_PREFIX + leaderboardId,
+                LeaderboardFilterSliderContainer.getStartingFilter(getResources(), leaderboardId).getFilterStringSet());
+        PerPagedFilteredLeaderboardKey initialKey = ((PerPagedFilteredLeaderboardKeyPreference) savedPreference)
+                .getPerPagedFilteredLeaderboardKey();
+        // We override here to make sure we do not pick up key, page or perPage from the preference
+        return new PerPagedFilteredLeaderboardKey(initialKey, leaderboardId, null, null);
+    }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -125,9 +151,6 @@ public class LeaderboardMarkUserListViewFragment extends BaseLeaderboardFragment
     {
         super.onActivityCreated(savedInstanceState);
 
-        leaderboardId = getArguments().getInt(BUNDLE_KEY_LEADERBOARD_ID);
-        currentLeaderboardFilterKey = getInitialLeaderboardKey();
-
         leaderboardMarkUserListAdapter = new LeaderboardMarkUserListAdapter(
                 getActivity(), getActivity().getLayoutInflater(), leaderboardId, R.layout.lbmu_item_roi_mode);
         leaderboardMarkUserListAdapter.setDTOLoaderCallback(new LeaderboardMarkUserListViewFragmentListLoaderCallback());
@@ -140,11 +163,6 @@ public class LeaderboardMarkUserListViewFragment extends BaseLeaderboardFragment
         Bundle loaderBundle = new Bundle(getArguments());
         leaderboardMarkUserLoader = (LeaderboardMarkUserLoader) getActivity().getSupportLoaderManager().initLoader(
                 leaderboardId, loaderBundle, leaderboardMarkUserListAdapter.getLoaderCallback());
-    }
-
-    protected PerPagedLeaderboardKey getInitialLeaderboardKey()
-    {
-        return LeaderboardFilterSliderContainer.getStartingFilter(getResources(), leaderboardId);
     }
 
     @Override public void onStart()
@@ -189,7 +207,13 @@ public class LeaderboardMarkUserListViewFragment extends BaseLeaderboardFragment
     @Override public void onDestroy()
     {
         this.leaderboardFilterFragment = null;
+        saveCurrentFilterKey();
         super.onDestroy();
+    }
+
+    protected void saveCurrentFilterKey()
+    {
+        savedPreference.set(currentLeaderboardFilterKey);
     }
 
     @Override protected void setCurrentUserProfileDTO(UserProfileDTO currentUserProfileDTO)
