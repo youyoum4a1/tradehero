@@ -121,10 +121,10 @@ public class BuySellFragment extends AbstractBuySellFragment
     @Inject protected PortfolioCache portfolioCache;
     @Inject protected PortfolioCompactListCache portfolioCompactListCache;
     @Inject protected PortfolioCompactListRetrievedMilestone portfolioCompactListRetrievedMilestone;
-    protected Milestone.OnCompleteListener portfolioCompactListMilestoneListener;
     @Inject protected PortfolioCompactCache portfolioCompactCache;
     @Inject protected ProviderSpecificResourcesFactory providerSpecificResourcesFactory;
     @Inject protected WarrantSpecificKnowledgeFactory warrantSpecificKnowledgeFactory;
+    protected Milestone.OnCompleteListener portfolioCompactListMilestoneListener;
 
     int mQuantity = 0;
     int volume = 0;

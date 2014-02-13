@@ -6,6 +6,7 @@
  */
 package com.tradehero.th.fragments.trade;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -19,6 +20,9 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.ToggleButton;
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import butterknife.OnClick;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
@@ -35,6 +39,7 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.position.PositionListFragment;
 import com.tradehero.th.network.service.SecurityService;
 import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.utils.ProgressDialogUtil;
 import dagger.Lazy;
 import javax.inject.Inject;
 
@@ -48,14 +53,44 @@ public class BuySellConfirmFragment extends AbstractBuySellFragment
     public final static String BUNDLE_KEY_SHARE_LOCATION = BuySellConfirmFragment.class.getName() + ".shareLocation";
     public final static String BUNDLE_KEY_SHARE_PUBLIC = BuySellConfirmFragment.class.getName() + ".sharePublic";
 
-    private ProgressBar mQuoteRefreshProgressBar;
-    private EditText mCommentsET;
-    private ToggleButton mBtnShareFacebook;
-    private ToggleButton mBtnShareTwitter;
-    private ToggleButton mBtnShareLinkedIn;
-    private ToggleButton mBtnLocation;
-    private ToggleButton mBtnSharePublic;
-    private TextView mBuyDetails;
+    @InjectView(R.id.quote_refresh_countdown) ProgressBar mQuoteRefreshProgressBar;
+    @InjectView(R.id.comments) EditText mCommentsET;
+
+    @InjectView(R.id.btn_share_fb) ToggleButton mBtnShareFacebook;
+    @OnClick(R.id.btn_share_fb)
+    public void toggleShareFacebook()
+    {
+        publishToFb = !publishToFb;
+        displayPublishToFb();
+    }
+
+    @InjectView(R.id.btn_share_tw) ToggleButton mBtnShareTwitter;
+    @OnClick(R.id.btn_share_tw)
+    public void toggleShareTwitter()
+    {
+        publishToTw = !publishToTw;
+        displayPublishToTw();
+    }
+
+    @InjectView(R.id.btn_share_li)ToggleButton mBtnShareLinkedIn;
+    @OnClick(R.id.btn_share_li)
+    public void toggleShareLinkedIn()
+    {
+        publishToLi = !publishToLi;
+        displayPublishToLi();
+    }
+
+    @InjectView(R.id.btn_location) ToggleButton mBtnLocation;
+    @OnClick(R.id.btn_location)
+    public void toggleShareLocation()
+    {
+        shareLocation = !shareLocation;
+        displayShareLocation();
+    }
+
+    @InjectView(R.id.switch_share_public) ToggleButton mBtnSharePublic;
+    @InjectView(R.id.buy_info) TextView mBuyDetails;
+
     private MenuItem buySellConfirmItem;
 
     private boolean publishToFb = false;
@@ -100,69 +135,14 @@ public class BuySellConfirmFragment extends AbstractBuySellFragment
     @Override protected void initViews(View view)
     {
         super.initViews(view);
+        ButterKnife.inject(this, view);
 
-        mQuoteRefreshProgressBar = (ProgressBar) view.findViewById(R.id.quote_refresh_countdown);
         if (mQuoteRefreshProgressBar != null)
         {
             mQuoteRefreshProgressBar.setMax((int) (MILLISEC_QUOTE_REFRESH / MILLISEC_QUOTE_COUNTDOWN_PRECISION));
             mQuoteRefreshProgressBar.setProgress(mQuoteRefreshProgressBar.getMax());
         }
 
-        mCommentsET = (EditText) view.findViewById(R.id.comments);
-
-        // Commented because of removal of right button.
-        //mBtnConfirm = (Button) v.findViewById(R.id.right_button);
-
-        mBtnShareFacebook = (ToggleButton) view.findViewById(R.id.btn_share_fb);
-        if (mBtnShareFacebook != null)
-        {
-            mBtnShareFacebook.setOnClickListener(new OnClickListener()
-            {
-                @Override public void onClick(View view)
-                {
-                    toggleShareFacebook();
-                }
-            });
-        }
-
-        mBtnShareTwitter = (ToggleButton) view.findViewById(R.id.btn_share_tw);
-        if (mBtnShareTwitter != null)
-        {
-            mBtnShareTwitter.setOnClickListener(new OnClickListener()
-            {
-                @Override public void onClick(View view)
-                {
-                    toggleShareTwitter();
-                }
-            });
-        }
-
-        mBtnShareLinkedIn = (ToggleButton) view.findViewById(R.id.btn_share_li);
-        if (mBtnShareLinkedIn != null)
-        {
-            mBtnShareLinkedIn.setOnClickListener(new OnClickListener()
-            {
-                @Override public void onClick(View view)
-                {
-                    toggleShareLinkedIn();
-                }
-            });
-        }
-
-        mBtnLocation = (ToggleButton) view.findViewById(R.id.btn_location);
-        if (mBtnLocation != null)
-        {
-            mBtnLocation.setOnClickListener(new OnClickListener()
-            {
-                @Override public void onClick(View view)
-                {
-                    THLog.d(TAG, "onClick Location");
-                    toggleShareLocation();
-                }
-            });
-        }
-
-        mBtnSharePublic = (ToggleButton) view.findViewById(R.id.switch_share_public);
         if (mBtnSharePublic != null)
         {
             mBtnSharePublic.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
@@ -174,7 +154,6 @@ public class BuySellConfirmFragment extends AbstractBuySellFragment
             });
         }
 
-        mBuyDetails = (TextView) view.findViewById(R.id.buy_info);
         displayPageElements();
     }
 
@@ -240,35 +219,13 @@ public class BuySellConfirmFragment extends AbstractBuySellFragment
     @Override public void onDestroyView()
     {
         THLog.d(TAG, "onDestroyView");
+        ButterKnife.reset(this);
+
         if (buySellTask != null)
         {
             buySellTask.cancel(false);
         }
         buySellTask = null;
-
-        if (mBtnShareFacebook != null)
-        {
-            mBtnShareFacebook.setOnClickListener(null);
-        }
-        mBtnShareFacebook = null;
-
-        if (mBtnShareTwitter != null)
-        {
-            mBtnShareTwitter.setOnClickListener(null);
-        }
-        mBtnShareTwitter = null;
-
-        if (mBtnShareLinkedIn != null)
-        {
-            mBtnShareLinkedIn.setOnClickListener(null);
-        }
-        mBtnShareLinkedIn = null;
-
-        if (mBtnLocation != null)
-        {
-            mBtnLocation.setOnClickListener(null);
-        }
-        mBtnLocation = null;
 
         if (mBtnSharePublic != null)
         {
@@ -360,30 +317,6 @@ public class BuySellConfirmFragment extends AbstractBuySellFragment
             displayConfirmMenuItem();
             displayBuySellDetails();
         }
-    }
-
-    public void toggleShareFacebook()
-    {
-        publishToFb = !publishToFb;
-        displayPublishToFb();
-    }
-
-    public void toggleShareTwitter()
-    {
-        publishToTw = !publishToTw;
-        displayPublishToTw();
-    }
-
-    public void toggleShareLinkedIn()
-    {
-        publishToLi = !publishToLi;
-        displayPublishToLi();
-    }
-
-    public void toggleShareLocation()
-    {
-        shareLocation = !shareLocation;
-        displayShareLocation();
     }
 
     //<editor-fold desc="Display Methods">
@@ -554,9 +487,18 @@ public class BuySellConfirmFragment extends AbstractBuySellFragment
 
     public class BuySellAsyncTask extends BaseBuySellAsyncTask
     {
+        private ProgressDialog transactionDialog;
+
         public BuySellAsyncTask(Context context, boolean isBuy, SecurityId securityId)
         {
             super(context, isBuy, securityId);
+        }
+
+        @Override protected void onPreExecute()
+        {
+            transactionDialog =
+                    ProgressDialogUtil.show(BuySellConfirmFragment.this.getActivity(), R.string.loading_loading, R.string.please_wait);
+            super.onPreExecute();
         }
 
         @Override TransactionFormDTO getBuySellOrder()
@@ -567,6 +509,11 @@ public class BuySellConfirmFragment extends AbstractBuySellFragment
         @Override protected void onPostExecute(SecurityPositionDetailDTO securityPositionDetailDTO)
         {
             super.onPostExecute(securityPositionDetailDTO);
+            if (transactionDialog != null)
+            {
+                transactionDialog.dismiss();
+            }
+
             if (isCancelled())
             {
                 return;
@@ -581,7 +528,6 @@ public class BuySellConfirmFragment extends AbstractBuySellFragment
                 setSelling(false);
             }
             //displayConfirmMenuItem(buySellConfirmItem);
-            // TODO post to social network?
             if (errorCode == CODE_OK)
             {
                 if (securityPositionDetailDTO != null && securityPositionDetailDTO.portfolio != null)
