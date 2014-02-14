@@ -11,6 +11,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import butterknife.Optional;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
@@ -46,22 +49,105 @@ public class WatchlistPositionFragment extends DashboardFragment
     implements BaseFragment.TabBarVisibilityInformer
 {
     private static final String TAG = WatchlistPositionFragment.class.getSimpleName();
-
     public static final String BUNDLE_KEY_SHOW_PORTFOLIO_ID_BUNDLE = WatchlistPositionFragment.class.getName() + ".showPortfolioId";
-
     private static final int NUMBER_OF_WATCHLIST_SWIPE_BUTTONS_BEHIND = 2;
-    private ProgressBar progressBar;
+
+    @InjectView(android.R.id.empty) @Optional protected ProgressBar progressBar;
 
     @Inject protected Lazy<WatchlistPositionCache> watchlistCache;
     @Inject protected Lazy<UserWatchlistPositionCache> userWatchlistCache;
+    private DTOCache.Listener<UserBaseKey, SecurityIdList> watchlistFetchCompleteListener;
+    private DTOCache.GetOrFetchTask<UserBaseKey, SecurityIdList> refreshWatchlistCache;
     @Inject protected Lazy<PortfolioHeaderFactory> headerFactory;
     @Inject protected CurrentUserId currentUserId;
 
-    private SwipeListView watchlistListView;
-    private WatchlistPortfolioHeaderView watchlistPortfolioHeaderView;
+    @InjectView(android.R.id.list) protected SwipeListView watchlistListView;
+    @InjectView(R.id.watchlist_position_list_header) protected WatchlistPortfolioHeaderView watchlistPortfolioHeaderView;
     private WatchlistAdapter watchListAdapter;
-    private WatchlistPositionListView watchlistPositionListView;
-    private DTOCache.GetOrFetchTask<UserBaseKey, SecurityIdList> refreshWatchlistCache;
+    @InjectView(R.id.pull_to_refresh_watchlist_listview) protected WatchlistPositionListView watchlistPositionListView;
+
+    private WatchlistRetrievedMilestone watchlistRetrievedMilestone;
+    private Milestone.OnCompleteListener watchlistRetrievedMilestoneListener;
+    private TwoStateView.OnStateChange gainLossModeListener;
+    private BroadcastReceiver broadcastReceiver;
+
+    @Override public void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        createWatchlistRetrievedMilestoneListener();
+        createGainLossModeListener();
+        createBroadcastReceiver();
+        createWatchlistFetchCompleteListener();
+    }
+
+    protected void createWatchlistRetrievedMilestoneListener()
+    {
+        watchlistRetrievedMilestoneListener = new Milestone.OnCompleteListener()
+        {
+            @Override public void onComplete(Milestone milestone)
+            {
+                display();
+            }
+
+            @Override public void onFailed(Milestone milestone, Throwable throwable)
+            {
+                displayProgress(false);
+            }
+        };
+    }
+
+    protected void createGainLossModeListener()
+    {
+        gainLossModeListener = new TwoStateView.OnStateChange()
+        {
+            @Override public void onStateChanged(View view, boolean state)
+            {
+                if (watchListAdapter != null)
+                {
+                    watchListAdapter.setShowGainLossPercentage(!state);
+                    watchListAdapter.notifyDataSetChanged();
+                }
+            }
+        };
+    }
+
+    protected void createBroadcastReceiver()
+    {
+        broadcastReceiver = new BroadcastReceiver()
+        {
+            @Override public void onReceive(Context context, Intent intent)
+            {
+                if (watchlistListView != null)
+                {
+                    int deletedItemId = intent.getIntExtra(WatchlistItemView.BUNDLE_KEY_WATCHLIST_ITEM_INDEX, -1);
+                    if (deletedItemId != -1)
+                    {
+                        watchlistListView.dismiss(deletedItemId);
+                        watchlistListView.closeOpenedItems();
+                    }
+                }
+            }
+        };
+    }
+
+    protected void createWatchlistFetchCompleteListener()
+    {
+        watchlistFetchCompleteListener = new DTOCache.Listener<UserBaseKey, SecurityIdList>()
+        {
+            @Override public void onDTOReceived(UserBaseKey key, SecurityIdList value, boolean fromCache)
+            {
+                watchlistPositionListView.onRefreshComplete();
+                watchListAdapter.setItems(userWatchlistCache.get().get(currentUserId.toUserBaseKey()));
+                watchListAdapter.notifyDataSetChanged();
+            }
+
+            @Override public void onErrorThrown(UserBaseKey key, Throwable error)
+            {
+                watchlistPositionListView.onRefreshComplete();
+                THToast.show(getString(R.string.error_fetch_portfolio_watchlist));
+            }
+        };
+    }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -77,8 +163,7 @@ public class WatchlistPositionFragment extends DashboardFragment
     {
         if (view != null)
         {
-            progressBar = (ProgressBar) view.findViewById(android.R.id.empty);
-            watchlistListView = (SwipeListView) view.findViewById(android.R.id.list);
+            ButterKnife.inject(this, view);
             watchlistListView.post(new Runnable()
             {
                 @Override public void run()
@@ -88,8 +173,6 @@ public class WatchlistPositionFragment extends DashboardFragment
                 }
             });
             watchlistListView.setEmptyView(view.findViewById(R.id.watchlist_position_list_empty_view));
-            // portfolio header
-            watchlistPortfolioHeaderView = (WatchlistPortfolioHeaderView) view.findViewById(R.id.watchlist_position_list_header);
 
             initPullToRefreshListView(view);
         }
@@ -97,8 +180,7 @@ public class WatchlistPositionFragment extends DashboardFragment
 
     private void initPullToRefreshListView(View view)
     {
-        watchlistPositionListView = (WatchlistPositionListView) view.findViewById(R.id.pull_to_refresh_watchlist_listview);
-        ((ViewGroup)view).removeView(watchlistListView);
+        ((ViewGroup) view).removeView(watchlistListView);
         watchlistPositionListView.setRefreshableView(watchlistListView);
         watchlistPositionListView.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener<ListView>()
         {
@@ -108,43 +190,6 @@ public class WatchlistPositionFragment extends DashboardFragment
                 refreshWatchlistCache.execute();
             }
         });
-    }
-
-    @Override public void onResume()
-    {
-        super.onResume();
-
-        LocalBroadcastManager.getInstance(this.getActivity())
-                .registerReceiver(broadcastReceiver, new IntentFilter(WatchlistItemView.WATCHLIST_ITEM_DELETED));
-
-        // watchlist is not yet retrieved
-        if (userWatchlistCache.get().get(currentUserId.toUserBaseKey()) == null)
-        {
-            WatchlistRetrievedMilestone watchlistRetrievedMilestone = new WatchlistRetrievedMilestone(currentUserId.toUserBaseKey());
-            watchlistRetrievedMilestone.setOnCompleteListener(watchlistRetrievedMilestoneListener);
-
-            displayProgress(true);
-        }
-        else
-        {
-            display();
-        }
-    }
-
-    @Override public void onPause()
-    {
-        super.onPause();
-
-        LocalBroadcastManager.getInstance(this.getActivity())
-                .unregisterReceiver(broadcastReceiver);
-    }
-
-    @Override public void onDestroy()
-    {
-        super.onDestroy();
-
-        watchlistPositionListView.onRefreshComplete();
-        watchlistPositionListView.setOnRefreshListener((PullToRefreshBase.OnRefreshListener<ListView>)null);
     }
 
     //<editor-fold desc="ActionBar Menu Actions">
@@ -171,12 +216,78 @@ public class WatchlistPositionFragment extends DashboardFragment
             });
         }
     }
-
-    @Override public boolean onOptionsItemSelected(MenuItem item)
-    {
-        return super.onOptionsItemSelected(item);
-    }
     //</editor-fold>
+
+    @Override public void onResume()
+    {
+        super.onResume();
+
+        LocalBroadcastManager.getInstance(this.getActivity())
+                .registerReceiver(broadcastReceiver, new IntentFilter(WatchlistItemView.WATCHLIST_ITEM_DELETED));
+
+        // watchlist is not yet retrieved
+        if (userWatchlistCache.get().get(currentUserId.toUserBaseKey()) == null)
+        {
+            detachWatchlistRetrievedMilestone();
+            watchlistRetrievedMilestone = new WatchlistRetrievedMilestone(currentUserId.toUserBaseKey());
+            watchlistRetrievedMilestone.setOnCompleteListener(watchlistRetrievedMilestoneListener);
+
+            displayProgress(true);
+        }
+        else
+        {
+            display();
+        }
+    }
+
+    @Override public void onPause()
+    {
+        super.onPause();
+
+        LocalBroadcastManager.getInstance(this.getActivity())
+                .unregisterReceiver(broadcastReceiver);
+    }
+
+    @Override public void onDestroyView()
+    {
+        detachWatchlistRetrievedMilestone();
+        if (watchlistPortfolioHeaderView != null)
+        {
+            watchlistPortfolioHeaderView.setOnStateChangeListener(null);
+        }
+        watchlistPortfolioHeaderView = null;
+
+        if (watchlistListView != null)
+        {
+            watchlistListView.setSwipeListViewListener(null);
+        }
+        watchlistListView = null;
+
+        watchListAdapter = null;
+
+        super.onDestroyView();
+    }
+
+    @Override public void onDestroy()
+    {
+        super.onDestroy();
+
+        watchlistFetchCompleteListener = null;
+        broadcastReceiver = null;
+        gainLossModeListener = null;
+        watchlistRetrievedMilestoneListener = null;
+        watchlistPositionListView.onRefreshComplete();
+        watchlistPositionListView.setOnRefreshListener((PullToRefreshBase.OnRefreshListener<ListView>) null);
+    }
+
+    protected void detachWatchlistRetrievedMilestone()
+    {
+        if (watchlistRetrievedMilestone != null)
+        {
+            watchlistRetrievedMilestone.setOnCompleteListener(null);
+        }
+        watchlistRetrievedMilestone = null;
+    }
 
     private void display()
     {
@@ -252,61 +363,4 @@ public class WatchlistPositionFragment extends DashboardFragment
     {
         return false;
     }
-
-    private Milestone.OnCompleteListener watchlistRetrievedMilestoneListener = new Milestone.OnCompleteListener()
-    {
-        @Override public void onComplete(Milestone milestone)
-        {
-            display();
-        }
-
-        @Override public void onFailed(Milestone milestone, Throwable throwable)
-        {
-            displayProgress(false);
-        }
-    };
-
-    private TwoStateView.OnStateChange gainLossModeListener = new TwoStateView.OnStateChange()
-    {
-        @Override public void onStateChanged(View view, boolean state)
-        {
-            if (watchListAdapter != null)
-            {
-                watchListAdapter.setShowGainLossPercentage(!state);
-                watchListAdapter.notifyDataSetChanged();
-            }
-        }
-    };
-
-    private BroadcastReceiver broadcastReceiver = new BroadcastReceiver()
-    {
-        @Override public void onReceive(Context context, Intent intent)
-        {
-            if (watchlistListView != null)
-            {
-                int deletedItemId = intent.getIntExtra(WatchlistItemView.BUNDLE_KEY_WATCHLIST_ITEM_INDEX, -1);
-                if (deletedItemId != -1)
-                {
-                    watchlistListView.dismiss(deletedItemId);
-                    watchlistListView.closeOpenedItems();
-                }
-            }
-        }
-    };
-
-    private DTOCache.Listener<UserBaseKey, SecurityIdList> watchlistFetchCompleteListener = new DTOCache.Listener<UserBaseKey, SecurityIdList>()
-    {
-        @Override public void onDTOReceived(UserBaseKey key, SecurityIdList value, boolean fromCache)
-        {
-            watchlistPositionListView.onRefreshComplete();
-            watchListAdapter.setItems(userWatchlistCache.get().get(currentUserId.toUserBaseKey()));
-            watchListAdapter.notifyDataSetChanged();
-        }
-
-        @Override public void onErrorThrown(UserBaseKey key, Throwable error)
-        {
-            watchlistPositionListView.onRefreshComplete();
-            THToast.show(getString(R.string.error_fetch_portfolio_watchlist));
-        }
-    };
 }

@@ -44,4 +44,5 @@
       android:text="@string/watchlist_empty_view"
       android:gravity="center_horizontal"
       />
+
 </RelativeLayout>
