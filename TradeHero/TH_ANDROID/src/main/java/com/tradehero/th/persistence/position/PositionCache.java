@@ -3,6 +3,7 @@ package com.tradehero.th.persistence.position;
 import com.tradehero.common.persistence.StraightDTOCache;
 import com.tradehero.th.api.position.OwnedPositionId;
 import com.tradehero.th.api.position.PositionDTO;
+import com.tradehero.th.api.position.PositionDTOFactory;
 import com.tradehero.th.api.position.PositionDTOList;
 import com.tradehero.th.persistence.trade.TradeListCache;
 import dagger.Lazy;
@@ -15,8 +16,9 @@ import javax.inject.Singleton;
 {
     private static final int DEFAULT_MAX_SIZE = 5000;
 
-    @Inject Lazy<PositionCompactIdCache> positionCompactIdCache;
+    @Inject protected Lazy<PositionCompactIdCache> positionCompactIdCache;
     @Inject protected Lazy<TradeListCache> tradeListCache;
+    @Inject protected PositionDTOFactory positionDTOFactory;
 
     //<editor-fold desc="Constructors">
     @Inject public PositionCache()
@@ -36,7 +38,7 @@ import javax.inject.Singleton;
         positionCompactIdCache.get().put(value.getPositionCompactId(), key);
         invalidateMatchingTrades(key);
 
-        return super.put(key, value);
+        return super.put(key, positionDTOFactory.clonePerType(value));
     }
 
     @Override public void invalidate(OwnedPositionId key)
