@@ -470,7 +470,7 @@ public class WatchlistItemView extends FrameLayout implements DTOView<SecurityId
         if (securityId != null)
         {
             args.putBundle(WatchlistEditFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
-            args.putString(WatchlistEditFragment.BUNDLE_KEY_TITLE, getContext().getString(R.string.edit_in_watch_list));
+            args.putString(WatchlistEditFragment.BUNDLE_KEY_TITLE, getContext().getString(R.string.watchlist_edit_title));
         }
         getNavigator().pushFragment(WatchlistEditFragment.class, args, Navigator.PUSH_UP_FROM_BOTTOM);
     }

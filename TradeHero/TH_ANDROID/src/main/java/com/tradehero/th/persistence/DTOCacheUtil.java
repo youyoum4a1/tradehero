@@ -34,6 +34,7 @@ import com.tradehero.th.persistence.trade.TradeCache;
 import com.tradehero.th.persistence.trade.TradeListCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
+import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
 import dagger.Lazy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -67,7 +68,8 @@ import javax.inject.Singleton;
     @Inject protected Lazy<UserProfileCache> userProfileCache;
     @Inject protected Lazy<UserFollowerCache> userFollowerCache;
     @Inject protected Lazy<ExchangeListCache> exchangeListCache;
-    @Inject protected Lazy<UserWatchlistPositionCache> watchlistPositionCache;
+    @Inject protected Lazy<UserWatchlistPositionCache> userWatchlistPositionCache;
+    @Inject protected Lazy<WatchlistPositionCache> watchlistPositionCache;
     @Inject protected Lazy<ProviderListCache> providerListCache;
     @Inject protected Lazy<ProviderCache> providerCache;
     @Inject protected Lazy<THIABPurchaseCache> thiabSubscriptionCache;
@@ -103,6 +105,7 @@ import javax.inject.Singleton;
         userProfileCache.get().invalidateAll();
         userFollowerCache.get().invalidateAll();
         exchangeListCache.get().invalidateAll();
+        userWatchlistPositionCache.get().invalidateAll();
         watchlistPositionCache.get().invalidateAll();
         providerListCache.get().invalidateAll();
         providerCache.get().invalidateAll();
@@ -127,7 +130,7 @@ import javax.inject.Singleton;
     
     public void preFetchWatchlist()
     {
-        watchlistPositionCache.get().autoFetch(currentUserId.toUserBaseKey());
+        userWatchlistPositionCache.get().autoFetch(currentUserId.toUserBaseKey());
     }
 
     public void preFetchProviders()

@@ -153,7 +153,7 @@ public class WatchlistPositionFragment extends DashboardFragment
         inflater.inflate(R.menu.position_watchlist_menu, menu);
         ActionBar actionBar = getSherlockActivity().getSupportActionBar();
         actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_SHOW_TITLE);
-        actionBar.setTitle(getString(R.string.watchlist));
+        actionBar.setTitle(getString(R.string.watchlist_title));
         super.onCreateOptionsMenu(menu, inflater);
 
         MenuItem menuItem = menu.findItem(R.id.position_watchlist_add);
@@ -229,7 +229,7 @@ public class WatchlistPositionFragment extends DashboardFragment
             args.putBundle(WatchlistEditFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
             if (watchlistCache.get().get(securityId) != null)
             {
-                args.putString(WatchlistEditFragment.BUNDLE_KEY_TITLE, getString(R.string.edit_in_watch_list));
+                args.putString(WatchlistEditFragment.BUNDLE_KEY_TITLE, getString(R.string.watchlist_edit_title));
             }
         }
         getNavigator().pushFragment(WatchlistEditFragment.class, args, Navigator.PUSH_UP_FROM_BOTTOM);

@@ -20,7 +20,6 @@ import javax.inject.Singleton;
 
     @Override protected WatchlistPositionDTO fetch(SecurityId key) throws Throwable
     {
-        // TODO
-        return null;
+        throw new IllegalStateException("There is no fetch on WatchlistPositionCache");
     }
 }

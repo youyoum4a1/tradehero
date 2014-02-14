@@ -193,11 +193,11 @@ public class WatchlistEditFragment extends DashboardFragment
         {
             if (watchlistPositionCache.get().get(securityId) != null)
             {
-                setActionBarTitle(getString(R.string.edit_in_watch_list));
+                setActionBarTitle(getString(R.string.watchlist_edit_title));
             }
             else
             {
-                setActionBarTitle(getString(R.string.add_to_watch_list));
+                setActionBarTitle(getString(R.string.watchlist_add_title));
             }
 
             querySecurity(securityId, andDisplay);

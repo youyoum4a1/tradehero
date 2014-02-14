@@ -1,40 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
     android:orientation="vertical"
     >
+
   <RelativeLayout
       android:layout_height="wrap_content"
       android:layout_width="match_parent"
       android:padding="@dimen/add_to_watch_list_padding"
       >
+
     <ImageView
         android:id="@+id/edit_watchlist_item_security_logo"
         android:layout_width="80dp"
         android:layout_height="40dp"
         android:contentDescription="@null"
         />
+
     <TextView
         android:id="@+id/edit_watchlist_item_security_name"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
-        android:text="@string/na"
+        tools:text="GOOG"
         android:textStyle="bold"
         android:layout_toRightOf="@id/edit_watchlist_item_security_logo"
         android:paddingLeft="5dp"
         />
+
     <TextView
         android:id="@+id/edit_watchlist_item_security_desc"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
-        android:text="@string/na"
+        tools:text="Google Inc."
         android:paddingLeft="5dp"
         android:layout_below="@id/edit_watchlist_item_security_name"
         android:layout_toRightOf="@id/edit_watchlist_item_security_logo"
         />
+
   </RelativeLayout>
 
   <View android:layout_height="2dp"
@@ -48,13 +55,15 @@
       android:orientation="horizontal"
       android:padding="@dimen/add_to_watch_list_padding"
       >
+
     <TextView
         android:layout_weight="1"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="@string/average_purchase_price"
+        android:text="@string/watchlist_average_price_header"
         android:gravity="right"
         />
+
     <EditText
         android:id="@+id/edit_watchlist_item_security_price"
         android:layout_weight="1"
@@ -63,20 +72,24 @@
         android:layout_height="wrap_content"
         android:inputType="number"
         />
+
   </LinearLayout>
+
   <LinearLayout
       android:layout_height="wrap_content"
       android:layout_width="match_parent"
       android:orientation="horizontal"
       android:padding="@dimen/add_to_watch_list_padding"
       >
+
     <TextView
         android:layout_weight="1"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="@string/quantity"
+        android:text="@string/watchlist_quantity_header"
         android:gravity="right"
         />
+
     <EditText
         android:id="@+id/edit_watchlist_item_security_quantity"
         android:layout_weight="1"
@@ -84,14 +97,17 @@
         android:layout_height="wrap_content"
         android:inputType="number"
         android:maxLength="5"
-        android:text="@string/unit"
+        android:text="@string/watchlist_quantity_initial"
         />
+
   </LinearLayout>
+
   <Button
       android:id="@+id/edit_watchlist_item_done"
       android:layout_height="wrap_content"
       android:layout_width="wrap_content"
       android:layout_gravity="center"
-      android:text="@string/done"
+      android:text="@string/watchlist_button_done"
       />
+
 </LinearLayout>

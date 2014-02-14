@@ -423,6 +423,10 @@ public class THIABUserInteractor
             {
                 showSkuDetailsMilestone.launch();
             }
+            else
+            {
+                THLog.d(TAG, "showSkuDetailsMilestone is already running");
+            }
         }
     }
 
