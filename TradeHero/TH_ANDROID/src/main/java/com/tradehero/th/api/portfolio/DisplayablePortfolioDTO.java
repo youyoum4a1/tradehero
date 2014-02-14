@@ -1,8 +1,10 @@
 package com.tradehero.th.api.portfolio;
 
+import com.tradehero.common.utils.THJsonAdapter;
 import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.persistence.portfolio.PortfolioCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
+import java.io.IOException;
 
 /**
  * This compound object allows the definition of a comparable mechanism, to order the list of PortfolioDTOs in the list.
@@ -134,10 +136,14 @@ public class DisplayablePortfolioDTO implements Comparable
 
     @Override public String toString()
     {
-        return "DisplayablePortfolioDTO{" +
-                "ownedPortfolioId=" + ownedPortfolioId +
-                ", userBaseDTO=" + userBaseDTO +
-                ", portfolioDTO=" + portfolioDTO +
-                '}';
+        try
+        {
+            return THJsonAdapter.getInstance().toStringBody(this);
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+        return "Failed to StringBody";
     }
 }

@@ -447,20 +447,7 @@ public class PortfolioListFragment extends DashboardFragment
         DTOCache.Listener<OwnedPortfolioId, PortfolioDTO> fetchListener = portfolioDTOListeners.get(displayablePortfolioDTO.ownedPortfolioId);
         if (fetchListener == null)
         {
-            fetchListener = new DTOCache.Listener<OwnedPortfolioId, PortfolioDTO>()
-            {
-                @Override public void onDTOReceived(OwnedPortfolioId key, PortfolioDTO value, boolean fromCache)
-                {
-                    displayablePortfolioDTO.portfolioDTO = value;
-                    displayPortfolios();
-                }
-
-                @Override public void onErrorThrown(OwnedPortfolioId key, Throwable error)
-                {
-                    THToast.show(getString(R.string.error_fetch_portfolio_info));
-                    THLog.e(TAG, "Error fetching the portfolio " + key, error);
-                }
-            };
+            fetchListener = createPortfolioListener(displayablePortfolioDTO);
             portfolioDTOListeners.put(displayablePortfolioDTO.ownedPortfolioId, fetchListener);
         }
 
@@ -468,6 +455,24 @@ public class PortfolioListFragment extends DashboardFragment
                 displayablePortfolioDTO.ownedPortfolioId, fetchListener);
         fetchPortfolioTaskMap.put(displayablePortfolioDTO.ownedPortfolioId.portfolioId, fetchTask);
         fetchTask.execute();
+    }
+
+    protected DTOCache.Listener<OwnedPortfolioId, PortfolioDTO> createPortfolioListener(final DisplayablePortfolioDTO displayablePortfolioDTO)
+    {
+        return new DTOCache.Listener<OwnedPortfolioId, PortfolioDTO>()
+        {
+            @Override public void onDTOReceived(OwnedPortfolioId key, PortfolioDTO value, boolean fromCache)
+            {
+                displayablePortfolioDTO.portfolioDTO = value;
+                displayPortfolios();
+            }
+
+            @Override public void onErrorThrown(OwnedPortfolioId key, Throwable error)
+            {
+                THToast.show(getString(R.string.error_fetch_portfolio_info));
+                THLog.e(TAG, "Error fetching the portfolio " + key, error);
+            }
+        };
     }
 
     public void display()
