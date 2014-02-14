@@ -1,7 +1,7 @@
-package com.tradehero.th.api.position;
+package com.tradehero.th.api.watchlist;
 
+import com.tradehero.th.api.position.BasePositionDTOTest;
 import com.tradehero.th.api.security.BaseSecurityCompactDTOTest;
-import com.tradehero.th.api.watchlist.WatchlistPositionDTO;
 
 /**
  * Created by xavier on 2/13/14.

@@ -1,6 +1,7 @@
 package com.tradehero.th.network.service;
 
 import com.tradehero.th.api.watchlist.WatchlistPositionDTO;
+import com.tradehero.th.api.watchlist.WatchlistPositionDTOList;
 import com.tradehero.th.api.watchlist.WatchlistPositionFormDTO;
 import java.util.List;
 import retrofit.Callback;
@@ -16,46 +17,76 @@ import retrofit.http.Query;
 /** Created with IntelliJ IDEA. User: tho Date: 12/3/13 Time: 5:46 PM Copyright (c) TradeHero */
 public interface WatchlistService
 {
-    //<editor-fold desc="Add/Edit a watch item">
+    //<editor-fold desc="Add a watch item">
     @POST("/watchlistPositions")
     WatchlistPositionDTO createWatchlistEntry(
-            @Body WatchlistPositionFormDTO watchlistPositionFormDTO
-    ) throws RetrofitError;
+            @Body WatchlistPositionFormDTO watchlistPositionFormDTO);
 
     @POST("/watchlistPositions")
     void createWatchlistEntry(
             @Body WatchlistPositionFormDTO watchlistPositionFormDTO,
-            Callback<WatchlistPositionDTO> callback
-    );
+            Callback<WatchlistPositionDTO> callback);
+    //</editor-fold>
 
+    //<editor-fold desc="Edit a watch item">
     @PUT("/watchlistPositions/{position}")
     WatchlistPositionDTO updateWatchlistEntry(
             @Path("position") int position,
-            @Body WatchlistPositionFormDTO watchlistPositionFormDTO
-    );
+            @Body WatchlistPositionFormDTO watchlistPositionFormDTO);
 
     @PUT("/watchlistPositions/{position}")
     void updateWatchlistEntry(
             @Path("position") int position,
             @Body WatchlistPositionFormDTO watchlistPositionFormDTO,
-            Callback<WatchlistPositionDTO> callback
-    );
+            Callback<WatchlistPositionDTO> callback);
     //</editor-fold>
 
     //<editor-fold desc="Query for watchlist">
     @GET("/watchlistPositions")
-    List<WatchlistPositionDTO> getAllByUser(
+    WatchlistPositionDTOList getAllByUser();
+
+    @GET("/watchlistPositions")
+    void getAllByUser(Callback<WatchlistPositionDTOList> callback);
+
+    @GET("/watchlistPositions")
+    WatchlistPositionDTOList getAllByUser(
+            @Query("pageNumber") Integer pageNumber);
+
+    @GET("/watchlistPositions")
+    void getAllByUser(
+            @Query("pageNumber") Integer pageNumber,
+            Callback<WatchlistPositionDTOList> callback);
+
+    @GET("/watchlistPositions")
+    WatchlistPositionDTOList getAllByUser(
+            @Query("pageNumber") Integer pageNumber,
+            @Query("perPage") Integer perPage);
+
+    @GET("/watchlistPositions")
+    void getAllByUser(
+            @Query("pageNumber") Integer pageNumber,
+            @Query("perPage") Integer perPage,
+            Callback<WatchlistPositionDTOList> callback);
+
+    @GET("/watchlistPositions")
+    WatchlistPositionDTOList getAllByUser(
+            @Query("pageNumber") Integer pageNumber,
+            @Query("perPage") Integer perPage,
+            @Query("securityId") Integer securityId);
+
+    @GET("/watchlistPositions")
+    void getAllByUser(
             @Query("pageNumber") Integer pageNumber,
             @Query("perPage") Integer perPage,
             @Query("securityId") Integer securityId,
-            @Query("skipCache") Boolean skipCache)
-            throws RetrofitError;
+            Callback<WatchlistPositionDTOList> callback);
 
     @GET("/watchlistPositions")
-    List<WatchlistPositionDTO> getAllByUser(
+    WatchlistPositionDTOList getAllByUser(
             @Query("pageNumber") Integer pageNumber,
-            @Query("perPage") Integer perPage)
-            throws RetrofitError;
+            @Query("perPage") Integer perPage,
+            @Query("securityId") Integer securityId,
+            @Query("skipCache") Boolean skipCache);
 
     @GET("/watchlistPositions")
     void getAllByUser(
@@ -63,7 +94,12 @@ public interface WatchlistService
             @Query("perPage") Integer perPage,
             @Query("securityId") Integer securityId,
             @Query("skipCache") Boolean skipCache,
-            Callback<List<WatchlistPositionDTO>> callback);
+            Callback<WatchlistPositionDTOList> callback);
+    //</editor-fold>
+
+    //<editor-fold desc="Delete Watchlist">
+    @DELETE("/watchlistPositions/{watchlistId}")
+    WatchlistPositionDTO deleteWatchlist(@Path("watchlistId") int watchlistId);
 
     @DELETE("/watchlistPositions/{watchlistId}")
     void deleteWatchlist(@Path("watchlistId") int watchlistId, Callback<WatchlistPositionDTO> callback);

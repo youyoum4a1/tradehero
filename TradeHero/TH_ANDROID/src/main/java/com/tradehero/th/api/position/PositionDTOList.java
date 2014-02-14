@@ -1,5 +1,6 @@
 package com.tradehero.th.api.position;
 
+import com.tradehero.common.persistence.DTO;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -9,6 +10,7 @@ import java.util.Date;
  */
 public class PositionDTOList<PositionDTOType extends PositionDTO>
         extends ArrayList<PositionDTOType>
+    implements DTO
 {
     public static final String TAG = PositionDTOList.class.getSimpleName();
 

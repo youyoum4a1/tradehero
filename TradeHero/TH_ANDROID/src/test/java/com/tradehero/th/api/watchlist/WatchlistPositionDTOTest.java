@@ -1,8 +1,6 @@
-package com.tradehero.th.api.position;
+package com.tradehero.th.api.watchlist;
 
-import com.tradehero.th.api.security.BaseSecurityCompactDTOTest;
 import com.tradehero.th.api.security.SecurityCompactDTO;
-import com.tradehero.th.api.watchlist.WatchlistPositionDTO;
 import java.util.Date;
 import org.junit.After;
 import org.junit.Before;
