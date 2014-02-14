@@ -15,6 +15,8 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 import com.squareup.picasso.Picasso;
 import com.tradehero.common.graphics.WhiteToTransparentTransformation;
 import com.tradehero.common.utils.THLog;
@@ -60,18 +62,24 @@ public class WatchlistItemView extends FrameLayout implements DTOView<SecurityId
     @Inject protected Lazy<Picasso> picasso;
     @Inject protected CurrentUserId currentUserId;
 
-    private ImageView stockLogo;
-    private TextView stockSymbol;
-    private TextView companyName;
-    private TextView numberOfShares;
+    @InjectView(R.id.stock_logo) protected ImageView stockLogo;
+    @InjectView(R.id.stock_symbol) protected TextView stockSymbol;
+    @InjectView(R.id.company_name) protected TextView companyName;
+    @InjectView(R.id.number_of_shares) protected TextView numberOfShares;
     private WatchlistPositionDTO watchlistPositionDTO;
-    private TextView gainLossLabel;
-    private TextView positionLastAmount;
+    @InjectView(R.id.position_percentage) protected TextView gainLossLabel;
+    @InjectView(R.id.position_last_amount) protected TextView positionLastAmount;
     private SecurityId securityId;
-    private Button deleteButton;
-    private PopupMenu morePopupMenu;
 
-    private Button moreButton;
+    @InjectView(R.id.position_watchlist_delete) protected Button deleteButton;
+    private OnClickListener watchlistItemDeleteClickHandler;
+    private Callback<WatchlistPositionDTO> watchlistDeletionCallback;
+
+    @InjectView(R.id.position_watchlist_more) protected Button moreButton;
+    private OnClickListener watchlistItemMoreButtonClickHandler;
+
+    private PopupMenu morePopupMenu;
+    private PopupMenu.OnMenuItemClickListener moreButtonPopupMenuClickHandler;
 
     //<editor-fold desc="Constructors">
     public WatchlistItemView(Context context)
@@ -83,41 +91,122 @@ public class WatchlistItemView extends FrameLayout implements DTOView<SecurityId
     {
         super(context, attrs);
     }
+
     public WatchlistItemView(Context context, AttributeSet attrs, int defStyle)
     {
         super(context, attrs, defStyle);
     }
-
     //</editor-fold>
 
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
-
-        init();
+        DaggerUtils.inject(this);
+        ButterKnife.inject(this);
     }
 
-    private void init()
+    @Override protected void onAttachedToWindow()
     {
-        DaggerUtils.inject(this);
-        stockLogo = (ImageView) findViewById(R.id.stock_logo);
-        stockSymbol = (TextView) findViewById(R.id.stock_symbol);
-        companyName = (TextView) findViewById(R.id.company_name);
-        numberOfShares = (TextView) findViewById(R.id.number_of_shares);
-        gainLossLabel = (TextView) findViewById(R.id.position_percentage);
-        positionLastAmount = (TextView) findViewById(R.id.position_last_amount);
+        super.onAttachedToWindow();
 
-        deleteButton = (Button) findViewById(R.id.position_watchlist_delete);
+        watchlistItemDeleteClickHandler = createWatchlistItemDeleteClickHandler();
         if (deleteButton != null)
         {
             deleteButton.setOnClickListener(watchlistItemDeleteClickHandler);
         }
 
-        moreButton = (Button) findViewById(R.id.position_watchlist_more);
+        watchlistItemMoreButtonClickHandler = createWatchlistItemMoreButtonClickHandler();
         if (moreButton != null)
         {
             moreButton.setOnClickListener(watchlistItemMoreButtonClickHandler);
         }
+
+        moreButtonPopupMenuClickHandler = createMoreButtonPopupMenuClickHandler();
+        watchlistDeletionCallback = createWatchlistDeletionCallback();
+    }
+
+    private OnClickListener createWatchlistItemDeleteClickHandler()
+    {
+        return new OnClickListener()
+        {
+            @Override public void onClick(View v)
+            {
+                deleteSelf();
+            }
+        };
+    }
+
+    private OnClickListener createWatchlistItemMoreButtonClickHandler()
+    {
+        return new OnClickListener()
+        {
+            @Override public void onClick(View v)
+            {
+                if (morePopupMenu == null)
+                {
+                    morePopupMenu = createMoreOptionsPopupMenu();
+                }
+                morePopupMenu.show();
+            }
+        };
+    }
+
+    private PopupMenu.OnMenuItemClickListener createMoreButtonPopupMenuClickHandler()
+    {
+        return new PopupMenu.OnMenuItemClickListener()
+        {
+            @Override public boolean onMenuItemClick(MenuItem item)
+            {
+                if (item == null)
+                {
+                    return false;
+                }
+                switch (item.getItemId())
+                {
+                    case R.id.watchlist_item_add_alert:
+                        openAlertEditor();
+                        break;
+                    case R.id.watchlist_item_edit_in_watchlist:
+                        openWatchlistEditor();
+                        break;
+                    case R.id.watchlist_item_new_discussion:
+                        THToast.show(getContext().getString(R.string.not_yet_implemented));
+                        break;
+                    case R.id.watchlist_item_view_graph:
+                        openSecurityGraph();
+                        break;
+                    case R.id.watchlist_item_trade:
+                        openSecurityProfile();
+                        break;
+                }
+                return true;
+            }
+        };
+    }
+
+    private THCallback<WatchlistPositionDTO> createWatchlistDeletionCallback()
+    {
+        return new THCallback<WatchlistPositionDTO>()
+        {
+            // Make a copy here to sever links back to the origin class.
+            final private WatchlistPositionDTO watchlistPositionDTOCopy = WatchlistItemView.this.watchlistPositionDTO;
+
+            @Override protected void success(WatchlistPositionDTO watchlistPositionDTO, THResponse thResponse)
+            {
+                if (watchlistPositionDTO != null)
+                {
+                    THLog.d(TAG, String.format(getContext().getString(R.string.watchlist_item_deleted_successfully), watchlistPositionDTO.id));
+                }
+            }
+
+            @Override protected void failure(THException ex)
+            {
+                if (watchlistPositionDTOCopy != null)
+                {
+                    THLog.e(TAG, String.format(getContext().getString(R.string.watchlist_item_deleted_failed), watchlistPositionDTOCopy.id), ex);
+                }
+            }
+        };
     }
 
     @Override protected void onDetachedFromWindow()
@@ -128,16 +217,21 @@ public class WatchlistItemView extends FrameLayout implements DTOView<SecurityId
         {
             deleteButton.setOnClickListener(null);
         }
+        watchlistItemDeleteClickHandler = null;
 
         if (moreButton != null)
         {
             moreButton.setOnClickListener(null);
         }
+        watchlistItemMoreButtonClickHandler = null;
 
         if (morePopupMenu != null)
         {
             morePopupMenu.setOnMenuItemClickListener(null);
         }
+        moreButtonPopupMenuClickHandler = null;
+
+        watchlistDeletionCallback = null;
     }
 
     @Override public void display(SecurityId securityId)
@@ -351,7 +445,6 @@ public class WatchlistItemView extends FrameLayout implements DTOView<SecurityId
         }
     }
 
-
     private void displayExchangeSymbol()
     {
         SecurityCompactDTO securityCompactDTO = watchlistPositionDTO.securityDTO;
@@ -369,6 +462,23 @@ public class WatchlistItemView extends FrameLayout implements DTOView<SecurityId
         }
     }
 
+    private void deleteSelf()
+    {
+        // remove current security from the watchlist
+        SecurityIdList securityIds = userWatchlistPositionCache.get().get(currentUserId.toUserBaseKey());
+
+        // not to show dialog but request deletion in background
+        watchlistService.get().deleteWatchlist(watchlistPositionDTO.id, watchlistDeletionCallback);
+
+        // TODO review to act only on deletion success
+
+        Intent itemDeletionIntent = new Intent(WatchlistItemView.WATCHLIST_ITEM_DELETED);
+        itemDeletionIntent.putExtra(WatchlistItemView.BUNDLE_KEY_WATCHLIST_ITEM_INDEX, securityIds.indexOf(securityId));
+        LocalBroadcastManager.getInstance(WatchlistItemView.this.getContext())
+                .sendBroadcast(itemDeletionIntent);
+        securityIds.remove(securityId);
+        watchlistPositionCache.get().invalidate(securityId);
+    }
 
     private PopupMenu createMoreOptionsPopupMenu()
     {
@@ -378,66 +488,6 @@ public class WatchlistItemView extends FrameLayout implements DTOView<SecurityId
         popupMenu.setOnMenuItemClickListener(moreButtonPopupMenuClickHandler);
         return popupMenu;
     }
-
-    private OnClickListener watchlistItemDeleteClickHandler = new OnClickListener()
-    {
-        @Override public void onClick(View v)
-        {
-            // remove current security from the watchlist
-            SecurityIdList securityIds = userWatchlistPositionCache.get().get(currentUserId.toUserBaseKey());
-
-            // not to show dialog but request deletion in background
-            watchlistService.get().deleteWatchlist(watchlistPositionDTO.id, watchlistDeletionCallback);
-
-            Intent itemDeletionIntent = new Intent(WatchlistItemView.WATCHLIST_ITEM_DELETED);
-            itemDeletionIntent.putExtra(WatchlistItemView.BUNDLE_KEY_WATCHLIST_ITEM_INDEX, securityIds.indexOf(securityId));
-            LocalBroadcastManager.getInstance(WatchlistItemView.this.getContext())
-                    .sendBroadcast(itemDeletionIntent);
-            securityIds.remove(securityId);
-            watchlistPositionCache.get().invalidate(securityId);
-        }
-    };
-    private OnClickListener watchlistItemMoreButtonClickHandler = new OnClickListener()
-    {
-        @Override public void onClick(View v)
-        {
-            if (morePopupMenu == null)
-            {
-                morePopupMenu = createMoreOptionsPopupMenu();
-            }
-            morePopupMenu.show();
-        }
-    };
-
-    private PopupMenu.OnMenuItemClickListener moreButtonPopupMenuClickHandler = new PopupMenu.OnMenuItemClickListener()
-    {
-        @Override public boolean onMenuItemClick(MenuItem item)
-        {
-            if (item == null)
-            {
-                return false;
-            }
-            switch (item.getItemId())
-            {
-                case R.id.watchlist_item_add_alert:
-                    openAlertEditor();
-                    break;
-                case R.id.watchlist_item_edit_in_watchlist:
-                    openWatchlistEditor();
-                    break;
-                case R.id.watchlist_item_new_discussion:
-                    THToast.show(getContext().getString(R.string.not_yet_implemented));
-                    break;
-                case R.id.watchlist_item_view_graph:
-                    openSecurityGraph();
-                    break;
-                case R.id.watchlist_item_trade:
-                    openSecurityProfile();
-                    break;
-            }
-            return true;
-        }
-    };
 
     private void openAlertEditor()
     {
@@ -479,23 +529,4 @@ public class WatchlistItemView extends FrameLayout implements DTOView<SecurityId
     {
         return ((NavigatorActivity) getContext()).getNavigator();
     }
-
-    private Callback<WatchlistPositionDTO> watchlistDeletionCallback = new THCallback<WatchlistPositionDTO>()
-    {
-        @Override protected void success(WatchlistPositionDTO watchlistPositionDTO, THResponse thResponse)
-        {
-            if (watchlistPositionDTO != null)
-            {
-                THLog.d(TAG, String.format(getContext().getString(R.string.watchlist_item_deleted_successfully), watchlistPositionDTO.id));
-            }
-        }
-
-        @Override protected void failure(THException ex)
-        {
-            if (watchlistPositionDTO != null)
-            {
-                THLog.e(TAG, String.format(getContext().getString(R.string.watchlist_item_deleted_failed), watchlistPositionDTO.id), ex);
-            }
-        }
-    };
 }

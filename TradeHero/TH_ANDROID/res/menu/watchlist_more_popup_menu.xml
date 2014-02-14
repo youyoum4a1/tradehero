@@ -1,14 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
-  <item android:id="@+id/watchlist_item_new_discussion"
-      android:title="@string/new_discussion"/>
-  <item android:id="@+id/watchlist_item_edit_in_watchlist"
+<menu
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+  <!-- Make it visible when discussions are enabled -->
+  <item
+      android:id="@+id/watchlist_item_new_discussion"
+      android:title="@string/new_discussion"
+      android:visible="false"/>
+
+  <item
+      android:id="@+id/watchlist_item_edit_in_watchlist"
       android:title="@string/watchlist_edit_title"/>
-  <item android:id="@+id/watchlist_item_add_alert"
+
+  <item
+      android:id="@+id/watchlist_item_add_alert"
       android:title="@string/add_alert"/>
-  <item android:id="@+id/watchlist_item_view_graph"
+
+  <item
+      android:id="@+id/watchlist_item_view_graph"
       android:title="@string/view_graph"/>
-  <item android:id="@+id/watchlist_item_trade"
+
+  <item
+      android:id="@+id/watchlist_item_trade"
       android:title="@string/trade"/>
+
 </menu>
