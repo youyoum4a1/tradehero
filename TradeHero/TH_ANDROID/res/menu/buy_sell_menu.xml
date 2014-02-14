@@ -3,15 +3,16 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
   <item
+      android:id="@+id/buy_sell_info"
+      android:icon="@drawable/icn_info_white"
+      android:title="@string/action_bar_help"
+      android:showAsAction="always"/>
+
+  <item
       android:id="@+id/menu_elements_buy_sell"
       android:actionLayout="@layout/menu_elements_buy_sell"
       android:visible="true"
       android:showAsAction="always"
     />
-
-  <item android:id="@+id/buy_sell_info"
-      android:icon="@drawable/icn_info_white"
-      android:title="@string/action_bar_help"
-      android:showAsAction="always"/>
 
 </menu>
