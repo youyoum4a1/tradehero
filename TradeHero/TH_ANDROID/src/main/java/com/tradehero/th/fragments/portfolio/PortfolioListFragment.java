@@ -56,11 +56,11 @@ public class PortfolioListFragment extends DashboardFragment
     private boolean areOthersComplete = false;
 
     @Inject Lazy<PortfolioCompactListCache> portfolioListCache;
-    @Inject Lazy<PortfolioCache> portfolioCache;
-    @Inject Lazy<UserProfileCache> userProfileCache;
-
     private PortfolioCompactListCache.Listener<UserBaseKey, OwnedPortfolioIdList> ownPortfolioListListener;
     private DTOCache.GetOrFetchTask<UserBaseKey, OwnedPortfolioIdList> fetchOwnPortfolioListFetchTask;
+
+    @Inject Lazy<PortfolioCache> portfolioCache;
+    @Inject Lazy<UserProfileCache> userProfileCache;
 
     private Map<OwnedPortfolioId, UserProfileCache.Listener<UserBaseKey, UserProfileDTO>> userProfileDTOListeners = new HashMap<>();
     private Map<OwnedPortfolioId, PortfolioCache.Listener<OwnedPortfolioId, PortfolioDTO>> portfolioDTOListeners = new HashMap<>();
@@ -68,12 +68,17 @@ public class PortfolioListFragment extends DashboardFragment
     private Map<Integer /* userId */, DTOCache.GetOrFetchTask<UserBaseKey, UserProfileDTO>> fetchUserTaskMap = new HashMap<>();
     private Map<Integer /* portfolioId */, DTOCache.GetOrFetchTask<OwnedPortfolioId, PortfolioDTO>> fetchPortfolioTaskMap = new HashMap<>();
 
+    @Override public void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        ownPortfolioListListener = createOwnPortfolioListListener();
+    }
+
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.fragment_portfolios_list, container, false);
         initViews(view);
-        ownPortfolioListListener = createOwnPortfolioListListener();
         return view;
     }
 
@@ -117,22 +122,12 @@ public class PortfolioListFragment extends DashboardFragment
         return false;
     }
 
-    @Override public void onResume()
+    @Override public void onStart()
     {
-        super.onResume();
+        super.onStart();
         displayablePortfolios = new HashMap<>();
         fetchListOwn();
         fetchListOther();
-    }
-
-    @Override public void onPause()
-    {
-        if (otherPortfolioFetchAssistant != null)
-        {
-            otherPortfolioFetchAssistant.clear();
-        }
-        otherPortfolioFetchAssistant = null;
-        super.onPause();
     }
 
     @Override public void onDestroyOptionsMenu()
@@ -149,13 +144,41 @@ public class PortfolioListFragment extends DashboardFragment
         }
         portfolioListView = null;
 
+        detachOwnPortfolioListFetchTask();
+        detachAllUserProfileFetchTask();
+        detachAllUserPortfolioFetchTask();
+        detachOtherPortfolioFetchAssistant();
+
+        super.onDestroyView();
+    }
+
+    @Override public void onDestroy()
+    {
+        ownPortfolioListListener = null;
+        if (userProfileDTOListeners != null)
+        {
+            userProfileDTOListeners.clear();
+        }
+        if (portfolioDTOListeners != null)
+        {
+            portfolioDTOListeners.clear();
+        }
+
+        super.onDestroy();
+    }
+
+    //<editor-fold desc="Detach Methods">
+    protected void detachOwnPortfolioListFetchTask()
+    {
         if (fetchOwnPortfolioListFetchTask != null)
         {
             fetchOwnPortfolioListFetchTask.setListener(null);
         }
         fetchOwnPortfolioListFetchTask = null;
-        ownPortfolioListListener = null;
+    }
 
+    protected void detachAllUserProfileFetchTask()
+    {
         if (fetchUserTaskMap != null)
         {
             for (DTOCache.GetOrFetchTask<UserBaseKey, UserProfileDTO> task: fetchUserTaskMap.values())
@@ -167,11 +190,10 @@ public class PortfolioListFragment extends DashboardFragment
             }
             fetchUserTaskMap.clear();
         }
-        if (userProfileDTOListeners != null)
-        {
-            userProfileDTOListeners.clear();
-        }
+    }
 
+    protected void detachAllUserPortfolioFetchTask()
+    {
         if (fetchPortfolioTaskMap != null)
         {
             for (DTOCache.GetOrFetchTask<OwnedPortfolioId, PortfolioDTO> task: fetchPortfolioTaskMap.values())
@@ -183,13 +205,17 @@ public class PortfolioListFragment extends DashboardFragment
             }
             fetchPortfolioTaskMap.clear();
         }
-        if (portfolioDTOListeners != null)
-        {
-            portfolioDTOListeners.clear();
-        }
-
-        super.onDestroyView();
     }
+
+    protected void detachOtherPortfolioFetchAssistant()
+    {
+        if (otherPortfolioFetchAssistant != null)
+        {
+            otherPortfolioFetchAssistant.clear();
+        }
+        otherPortfolioFetchAssistant = null;
+    }
+    //</editor-fold>
 
     public int getDisplayablePortfoliosCount()
     {
@@ -220,22 +246,10 @@ public class PortfolioListFragment extends DashboardFragment
 
     private void fetchListOwn()
     {
-        if (fetchOwnPortfolioListFetchTask != null)
-        {
-            fetchOwnPortfolioListFetchTask.setListener(null);
-        }
-        OwnedPortfolioIdList portfolioIdList = portfolioListCache.get().get(currentUserId.toUserBaseKey());
-        if (portfolioIdList != null)
-        {
-            displayProgress(false);
-            linkWithOwn(portfolioIdList, true, (OwnedPortfolioId) null);
-        }
-        else
-        {
-            fetchOwnPortfolioListFetchTask = portfolioListCache.get().getOrFetch(currentUserId.toUserBaseKey(), ownPortfolioListListener);
-            displayProgress(true);
-            fetchOwnPortfolioListFetchTask.execute();
-        }
+        detachOwnPortfolioListFetchTask();
+        fetchOwnPortfolioListFetchTask = portfolioListCache.get().getOrFetch(currentUserId.toUserBaseKey(), ownPortfolioListListener);
+        displayProgress(true);
+        fetchOwnPortfolioListFetchTask.execute();
     }
 
     private PortfolioCompactListCache.Listener<UserBaseKey, OwnedPortfolioIdList> createOwnPortfolioListListener()
@@ -265,10 +279,6 @@ public class PortfolioListFragment extends DashboardFragment
 
     protected void linkWithOwn(List<OwnedPortfolioId> ownedPortfolioIds, boolean andDisplay, OwnedPortfolioId typeQualifier)
     {
-        if (displayablePortfolios == null)
-        {
-            displayablePortfolios = new HashMap<>();
-        }
         if (ownedPortfolioIds != null)
         {
             DisplayablePortfolioDTO displayablePortfolioDTO;
@@ -293,10 +303,7 @@ public class PortfolioListFragment extends DashboardFragment
 
     public void linkWithOther(List<UserBaseKey> otherPeopleUserBaseKeys, boolean andDisplay, UserBaseKey typeQualifier)
     {
-        if (otherPortfolioFetchAssistant != null)
-        {
-            otherPortfolioFetchAssistant.clear();
-        }
+        detachOtherPortfolioFetchAssistant();
 
         otherPortfolioFetchAssistant = new UserPortfolioFetchAssistant(getActivity(), otherPeopleUserBaseKeys);
         otherPortfolioFetchAssistant.setListener(this);
@@ -324,10 +331,6 @@ public class PortfolioListFragment extends DashboardFragment
 
     protected void linkWithOther(List<OwnedPortfolioId> otherPortfolioIds, boolean andDisplay, OwnedPortfolioId typeQualifier)
     {
-        if (displayablePortfolios == null)
-        {
-            displayablePortfolios = new HashMap<>();
-        }
         if (otherPortfolioIds != null)
         {
             DisplayablePortfolioDTO displayablePortfolioDTO;
@@ -476,22 +479,8 @@ public class PortfolioListFragment extends DashboardFragment
     public void displayPortfolios()
     {
         displayActionBarTitle();
-        if (displayablePortfolios != null && portfolioListAdapter != null)
-        {
-            portfolioListAdapter.setItems(getAllPortfolios());
-            getView().post(new Runnable()
-            {
-                @Override public void run()
-                {
-                    // We save it in a variable to avoid it disappearing between the 2 accesses
-                    PortfolioListItemAdapter adapter = portfolioListAdapter;
-                    if (adapter != null)
-                    {
-                        adapter.notifyDataSetChanged();
-                    }
-                }
-            });
-        }
+        portfolioListAdapter.setItems(getAllPortfolios());
+        portfolioListAdapter.notifyDataSetChanged();
     }
 
     public void displayActionBarTitle()

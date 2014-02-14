@@ -39,6 +39,7 @@ abstract public class BasicFetchAssistant<DTOKeyType, DTOType> implements FetchA
     public void clear()
     {
         fetched.clear();
+        setListener(null);
     }
 
     /**

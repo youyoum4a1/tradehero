@@ -480,8 +480,6 @@ public class WatchlistItemView extends FrameLayout implements DTOView<SecurityId
     {
         // not to show dialog but request deletion in background
         watchlistService.get().deleteWatchlist(watchlistPositionDTO.id, watchlistDeletionCallback);
-
-        // TODO review to act only on deletion success
     }
 
     private PopupMenu createMoreOptionsPopupMenu()
