@@ -163,7 +163,6 @@ abstract public class AbstractPositionListFragment<
             PortfolioDTO shownPortfolio = portfolioCache.get().get(ownedPortfolioId);
             if (shownPortfolio == null || shownPortfolio.providerId == null)
             {
-                navigator.popFragment(); // Feels HACKy
                 navigator.goToTab(DashboardTabType.TRENDING);
             }
             else

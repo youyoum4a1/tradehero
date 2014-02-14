@@ -135,6 +135,8 @@ public class DashboardNavigator extends Navigator
 
     public void goToTab(DashboardTabType tabType)
     {
+        manager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        manager.executePendingTransactions();
         goToTab(tabType, null);
     }
 
@@ -144,8 +146,9 @@ public class DashboardNavigator extends Navigator
         if (mTabHost != null)
         {
             mOnTabChangedListener = changeListener;
-            mTabHost.setCurrentTabByTag(makeTabSpec(tabType).getTag());
+            mTabHost.setCurrentTabByTag(activity.getString(tabType.stringResId));
         }
+        showTabBar();
     }
 
     public void openTimeline(int userId)
