@@ -189,13 +189,27 @@ public class WatchlistItemView extends FrameLayout implements DTOView<SecurityId
         return new THCallback<WatchlistPositionDTO>()
         {
             // Make a copy here to sever links back to the origin class.
+            final private Context contextCopy = WatchlistItemView.this.getContext();
+            final private CurrentUserId currentUserIdCopy = currentUserId;
+            final private SecurityId securityIdCopy = securityId;
             final private WatchlistPositionDTO watchlistPositionDTOCopy = WatchlistItemView.this.watchlistPositionDTO;
+            final private WatchlistPositionCache watchlistPositionCacheCopy = watchlistPositionCache.get();
+            final private UserWatchlistPositionCache userWatchlistPositionCacheCopy = userWatchlistPositionCache.get();
 
             @Override protected void success(WatchlistPositionDTO watchlistPositionDTO, THResponse thResponse)
             {
                 if (watchlistPositionDTO != null)
                 {
-                    THLog.d(TAG, String.format(getContext().getString(R.string.watchlist_item_deleted_successfully), watchlistPositionDTO.id));
+                    THLog.d(TAG, String.format(contextCopy.getString(R.string.watchlist_item_deleted_successfully), watchlistPositionDTO.id));
+
+                    // remove current security from the watchlist
+                    SecurityIdList securityIds = userWatchlistPositionCacheCopy.get(currentUserIdCopy.toUserBaseKey());
+
+                    Intent itemDeletionIntent = new Intent(WatchlistItemView.WATCHLIST_ITEM_DELETED);
+                    itemDeletionIntent.putExtra(WatchlistItemView.BUNDLE_KEY_WATCHLIST_ITEM_INDEX, securityIds.indexOf(securityIdCopy));
+                    LocalBroadcastManager.getInstance(contextCopy).sendBroadcast(itemDeletionIntent);
+                    securityIds.remove(securityIdCopy);
+                    watchlistPositionCacheCopy.invalidate(securityIdCopy);
                 }
             }
 
@@ -464,20 +478,10 @@ public class WatchlistItemView extends FrameLayout implements DTOView<SecurityId
 
     private void deleteSelf()
     {
-        // remove current security from the watchlist
-        SecurityIdList securityIds = userWatchlistPositionCache.get().get(currentUserId.toUserBaseKey());
-
         // not to show dialog but request deletion in background
         watchlistService.get().deleteWatchlist(watchlistPositionDTO.id, watchlistDeletionCallback);
 
         // TODO review to act only on deletion success
-
-        Intent itemDeletionIntent = new Intent(WatchlistItemView.WATCHLIST_ITEM_DELETED);
-        itemDeletionIntent.putExtra(WatchlistItemView.BUNDLE_KEY_WATCHLIST_ITEM_INDEX, securityIds.indexOf(securityId));
-        LocalBroadcastManager.getInstance(WatchlistItemView.this.getContext())
-                .sendBroadcast(itemDeletionIntent);
-        securityIds.remove(securityId);
-        watchlistPositionCache.get().invalidate(securityId);
     }
 
     private PopupMenu createMoreOptionsPopupMenu()
