@@ -12,7 +12,6 @@ import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListAdapter;
-import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.WrapperListAdapter;
 import butterknife.ButterKnife;
@@ -43,7 +42,7 @@ abstract public class SecurityListFragment extends BasePurchaseManagerFragment
 
     public final static float MIN_FLING_VELOCITY_Y_FOR_HIDE_FILTER = 1000f;
 
-    @InjectView(R.id.progress_spinner) ProgressBar mProgressSpinner;
+    @InjectView(R.id.progress) ProgressBar mProgressSpinner;
     @InjectView(R.id.filter_text) @Optional EditText filterText;
     @InjectView(R.id.trending_gridview) AbsListView securityListView;
 

@@ -7,8 +7,16 @@
       android:id="@+id/security_search_menu_elements"
       android:actionLayout="@layout/menu_elements_security_search"
       android:visible="true"
-      android:showAsAction="always"
+      android:showAsAction="ifRoom"
       android:enabled="true"
-    />
+      />
 
+  <item android:id="@+id/current_search_mode" android:showAsAction="always" android:title="@string/search_mode" android:icon="@drawable/toggle_stocks">
+    <menu>
+      <group android:checkableBehavior="single">
+        <item android:id="@+id/search_stock" android:title="@string/search_stock_spinner_stock" android:icon="@drawable/graph"/>
+        <item android:id="@+id/search_people" android:title="@string/search_stock_spinner_people" android:icon="@drawable/sort_community"/>
+      </group>
+    </menu>
+  </item>
 </menu>
