@@ -15,7 +15,7 @@
       android:cacheColorHint="@android:color/transparent"
       android:divider="@null"
       android:dividerHeight="5dp"
-      android:paddingTop="@dimen/dashboard_padding"
+      android:paddingTop="@dimen/search_stock_people_padding"
       android:clipToPadding="false"
       >
   </ListView>

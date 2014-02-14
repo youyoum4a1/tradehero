@@ -4,13 +4,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/trending_grid_item_bg"
+    android:background="@drawable/search_item_bg"
+    android:paddingRight="@dimen/search_stock_people_padding"
+    android:paddingLeft="@dimen/search_stock_people_padding"
     >
 
   <com.tradehero.common.widget.ImageViewThreadSafe
       android:id="@+id/stock_bg_logo"
       android:layout_width="match_parent"
-      android:layout_height="wrap_content"
+      android:layout_height="match_parent"
       android:layout_alignParentTop="true"
       android:contentDescription="@null"
       android:scaleType="centerCrop"

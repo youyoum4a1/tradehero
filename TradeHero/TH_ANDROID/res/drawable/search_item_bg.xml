@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+  <item android:left="@dimen/search_stock_people_padding" android:right="@dimen/search_stock_people_padding">
+    <shape android:shape="rectangle">
+
+      <corners android:radius="@dimen/trending_grid_item_corner_radius"/>
+
+      <stroke
+          android:width="1.5dp"
+          android:color="@color/trending_gray_border"/>
+
+      <solid android:color="@color/trending_grid_item_bg"/>
+
+    </shape>
+
+  </item>
+  <!--(for inner shadow)-->
+  <item
+      android:left="@dimen/search_stock_people_padding"
+      android:right="@dimen/search_stock_people_padding"
+      android:drawable="@drawable/util_inner_shadow_top"/>
+  <item
+      android:left="@dimen/search_stock_people_padding"
+      android:right="@dimen/search_stock_people_padding"
+      android:drawable="@drawable/util_inner_shadow_left"/>
+  <item
+      android:left="@dimen/search_stock_people_padding"
+      android:right="@dimen/search_stock_people_padding"
+      android:drawable="@drawable/util_inner_shadow_right"/>
+</layer-list>

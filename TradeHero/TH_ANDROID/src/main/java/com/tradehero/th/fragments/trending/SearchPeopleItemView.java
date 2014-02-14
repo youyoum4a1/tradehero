@@ -215,7 +215,7 @@ public class SearchPeopleItemView extends FrameLayout implements DTOView<UserBas
 
     public void conditionalLoadImages()
     {
-        if (canDisplayImages())
+        if (userDTO != null && canDisplayImages())
         {
             loadImages();
         }

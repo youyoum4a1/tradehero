@@ -12,6 +12,7 @@ import butterknife.Optional;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
 import com.squareup.picasso.Transformation;
+import com.tradehero.common.graphics.RoundedCornerTransformation;
 import com.tradehero.common.thread.KnownExecutorServices;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
@@ -83,7 +84,7 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
         init();
     }
 
-    protected void init ()
+    protected void init()
     {
         DaggerUtils.inject(this);
         ButterKnife.inject(this);
@@ -138,7 +139,7 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
         }
     }
 
-    @Override public void display (final SecurityCompactDTOType securityCompactDTO)
+    @Override public void display(final SecurityCompactDTOType securityCompactDTO)
     {
         linkWith(securityCompactDTO, true);
     }
@@ -380,7 +381,7 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
     }
     //</editor-fold>
 
-    public void loadImages ()
+    public void loadImages()
     {
         if (stockLogo != null)
         {
@@ -423,8 +424,8 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
                 if (target != null && target.getTag(R.string.image_url) != null)
                 {
                     RequestCreator requestCreator = mPicasso.load(target.getTag(R.string.image_url).toString())
-                                                            .placeholder(R.drawable.default_image)
-                                                            .error(R.drawable.default_image);
+                            .placeholder(R.drawable.default_image)
+                            .error(R.drawable.default_image);
 
                     if (resizeToWidth > 0 && resizeToHeight > 0)
                     {
@@ -432,7 +433,7 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
                     }
 
                     requestCreator.transform(t)
-                    .into(target);
+                            .into(target);
                 }
             }
         });
