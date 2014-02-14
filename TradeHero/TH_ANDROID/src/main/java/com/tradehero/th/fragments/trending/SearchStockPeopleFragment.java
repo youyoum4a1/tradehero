@@ -45,52 +45,52 @@ import com.tradehero.th.utils.DeviceUtil;
 import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 import javax.inject.Inject;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 9/18/13 Time: 12:09 PM To change this template use File | Settings | File Templates. */
 public final class SearchStockPeopleFragment extends DashboardFragment
 {
+    private final static String TAG = SearchStockPeopleFragment.class.getSimpleName();
+
     public final static String BUNDLE_KEY_SEARCH_STRING = SearchStockPeopleFragment.class.getName() + ".searchString";
     public final static String BUNDLE_KEY_SEARCH_TYPE = SearchStockPeopleFragment.class.getName() + ".searchType";
     public final static String BUNDLE_KEY_PAGE = SearchStockPeopleFragment.class.getName() + ".page";
     public final static String BUNDLE_KEY_PER_PAGE = SearchStockPeopleFragment.class.getName() + ".perPage";
-    public static final String BUNDLE_KEY_CALLER_FRAGMENT = SearchStockPeopleFragment.class.getName() + ".nextFragment";
-    private final static String TAG = SearchStockPeopleFragment.class.getSimpleName();
+    public final static String BUNDLE_KEY_CALLER_FRAGMENT = SearchStockPeopleFragment.class.getName() + ".nextFragment";
 
     public final static int FIRST_PAGE = 1;
     public final static int DEFAULT_PER_PAGE = 15;
     public final static long DELAY_REQUEST_DATA_MILLI_SEC = 1000;
 
-    @Inject SecurityCompactCache securityCompactCache;
+    @Inject Lazy<SecurityCompactCache> securityCompactCache;
     @Inject Lazy<SecurityCompactListCache> securityCompactListCache;
     @Inject Lazy<UserBaseKeyListCache> userBaseKeyListCache;
 
-    @InjectView(R.id.search_stock_nothing_yet_view) TextView mNothingYet;
-    @InjectView(R.id.trending_listview) ListView mSearchStockListView;
-    @InjectView(R.id.people_listview) ListView mSearchPeopleListView;
+    @InjectView(R.id.search_empty_view) TextView searchEmptyView;
+    @InjectView(R.id.listview) ListView listView;
     @InjectView(R.id.progress) ProgressBar mProgress;
 
-    private FlagNearEndScrollListener nearEndScrollListener;
     private int perPage = DEFAULT_PER_PAGE;
+    private FlagNearEndScrollListener nearEndScrollListener;
 
     private TrendingSearchType mSearchType = TrendingSearchType.STOCKS;
     private EditText mSearchTextField;
     private String mSearchText;
     private SearchTextWatcher mSearchTextWatcher;
 
-    private Timer requestDataTimer;
     private boolean isQuerying;
 
     private SecurityIdListCacheListener securityIdListCacheListener;
-    private DTOCache.GetOrFetchTask<SecurityListType, SecurityIdList> securitySearchTask;
-    private List<SecurityId> securityIds;
-    private SecurityItemViewAdapter securityItemViewAdapter;
     private PeopleListCacheListener peopleListCacheListener;
-    private DTOCache.GetOrFetchTask<UserListType, UserBaseKeyList> peopleSearchTask;
-    private List<UserBaseKey> userBaseKeys;
+
+    private SecurityItemViewAdapter securityItemViewAdapter;
     private PeopleItemViewAdapter peopleItemViewAdapter;
+
+    private DTOCache.GetOrFetchTask<SecurityListType, SecurityIdList> securitySearchTask;
+    private DTOCache.GetOrFetchTask<UserListType, UserBaseKeyList> peopleSearchTask;
+
+    private List<SecurityId> securityIds;
+    private List<UserBaseKey> userBaseKeys;
 
     private int currentlyLoadingPage;
     private int lastLoadedPage;
@@ -98,6 +98,7 @@ public final class SearchStockPeopleFragment extends DashboardFragment
     private MenuItem currentSearchMode;
     private MenuItem searchPeople;
     private MenuItem searchStock;
+    private Runnable requestDataTask;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -120,22 +121,15 @@ public final class SearchStockPeopleFragment extends DashboardFragment
         securityIdListCacheListener = new SecurityIdListCacheListener();
         peopleListCacheListener = new PeopleListCacheListener();
 
-        securityItemViewAdapter = new SimpleSecurityItemViewAdapter(getActivity(), getActivity().getLayoutInflater(), R.layout.search_security_item);
-        if (mSearchStockListView != null)
-        {
-            mSearchStockListView.setAdapter(securityItemViewAdapter);
-            mSearchStockListView.setOnItemClickListener(new SearchStockOnItemClickListener());
-            mSearchStockListView.setOnScrollListener(nearEndScrollListener);
-            mSearchStockListView.setEmptyView(mNothingYet);
-        }
-
+        securityItemViewAdapter = new SimpleSecurityItemViewAdapter(getActivity(), inflater, R.layout.search_security_item);
         peopleItemViewAdapter = new PeopleItemViewAdapter(getActivity(), inflater, R.layout.search_people_item);
-        if (mSearchPeopleListView != null)
+
+        if (listView != null)
         {
-            mSearchPeopleListView.setAdapter(peopleItemViewAdapter);
-            mSearchPeopleListView.setOnItemClickListener(new SearchPeopleOnItemClickListener());
-            mSearchPeopleListView.setOnScrollListener(nearEndScrollListener);
-            //mSearchStockListView.setEmptyView(mNothingYet);
+            listView.setAdapter(securityItemViewAdapter);
+            listView.setOnItemClickListener(new SearchOnItemClickListener());
+            listView.setOnScrollListener(nearEndScrollListener);
+            listView.setEmptyView(searchEmptyView);
         }
     }
 
@@ -153,6 +147,10 @@ public final class SearchStockPeopleFragment extends DashboardFragment
         currentSearchMode = menu.findItem(R.id.current_search_mode);
         searchPeople = menu.findItem(R.id.search_people);
         searchStock = menu.findItem(R.id.search_stock);
+        if (shouldDisableSearchTypeOption)
+        {
+            currentSearchMode.setVisible(false);
+        }
 
         actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_HOME);
         super.onCreateOptionsMenu(menu, inflater);
@@ -170,6 +168,16 @@ public final class SearchStockPeopleFragment extends DashboardFragment
         {
             mSearchTextField.addTextChangedListener(mSearchTextWatcher);
         }
+
+        if (mSearchType == TrendingSearchType.PEOPLE)
+        {
+            searchPeople.setChecked(true);
+        }
+        else
+        {
+            searchStock.setChecked(true);
+        }
+        updateSearchType();
 
         populateSearchActionBar();
     }
@@ -217,30 +225,18 @@ public final class SearchStockPeopleFragment extends DashboardFragment
         mSearchType = searchPeople.isChecked() ? TrendingSearchType.PEOPLE : TrendingSearchType.STOCKS;
         currentSearchMode.setIcon(mSearchType.searchDrawableResId);
 
-        if (mSearchType == TrendingSearchType.PEOPLE)
+        if (listView != null)
         {
-            if (mSearchStockListView != null)
+            if (mSearchType == TrendingSearchType.PEOPLE)
             {
-                mSearchStockListView.setVisibility(View.INVISIBLE);
+                listView.setAdapter(peopleItemViewAdapter);
             }
-            if (mSearchPeopleListView != null)
+            else if (mSearchType == TrendingSearchType.STOCKS)
             {
-                mSearchPeopleListView.setVisibility(View.VISIBLE);
-            }
-        }
-        else if (mSearchType == TrendingSearchType.STOCKS)
-        {
-            if (mSearchStockListView != null)
-            {
-                mSearchStockListView.setVisibility(View.VISIBLE);
-            }
-            if (mSearchPeopleListView != null)
-            {
-                mSearchPeopleListView.setVisibility(View.INVISIBLE);
+                listView.setAdapter(securityItemViewAdapter);
             }
         }
     }
-
     //</editor-fold>
 
     @Override public void onResume()
@@ -276,8 +272,6 @@ public final class SearchStockPeopleFragment extends DashboardFragment
 
     private void populateSearchActionBar()
     {
-        THLog.d(TAG, "populateSearchActionBar " + mSearchType + " " + mSearchText);
-
         if (mSearchTextField != null)
         {
             mSearchTextField.setText(mSearchText);
@@ -302,7 +296,7 @@ public final class SearchStockPeopleFragment extends DashboardFragment
         {
             if (userBaseKeys != null && userBaseKeys.size() > 0)
             {
-                linkWith(userBaseKeys, true, (UserBaseKey) null);
+                linkWith(userBaseKeys, true);
             }
             else
             {
@@ -320,21 +314,21 @@ public final class SearchStockPeopleFragment extends DashboardFragment
 
     @Override public void onDestroyView()
     {
-        if (mSearchStockListView != null)
+        if (listView != null)
         {
-            mSearchStockListView.setOnItemClickListener(null);
-            mSearchStockListView.setOnScrollListener(null);
+            listView.setOnItemClickListener(null);
+            listView.setOnScrollListener(null);
         }
-        securityItemViewAdapter = null;
-        mSearchStockListView = null; // To break the cycle link with the adapter
 
-        if (mSearchPeopleListView != null)
+        View rootView = getView();
+        if (rootView != null && requestDataTask != null)
         {
-            mSearchPeopleListView.setOnItemClickListener(null);
-            mSearchPeopleListView.setOnScrollListener(null);
+            rootView.removeCallbacks(requestDataTask);
         }
+
+        securityItemViewAdapter = null;
         peopleItemViewAdapter = null;
-        mSearchPeopleListView = null;
+        listView = null;
 
         cancelSearchTasks();
         securityIdListCacheListener = null;
@@ -361,12 +355,24 @@ public final class SearchStockPeopleFragment extends DashboardFragment
 
     protected void scheduleRequestData()
     {
-        if (requestDataTimer != null)
+        View view = getView();
+        if (view != null)
         {
-            requestDataTimer.cancel();
+            if (requestDataTask != null)
+            {
+                view.removeCallbacks(requestDataTask);
+            }
+
+            requestDataTask = new Runnable()
+            {
+                @Override public void run()
+                {
+                    startAnew();
+                    requestData();
+                }
+            };
+            view.postDelayed(requestDataTask, DELAY_REQUEST_DATA_MILLI_SEC);
         }
-        requestDataTimer = new Timer();
-        requestDataTimer.schedule(new RequestDataTimerTask(), DELAY_REQUEST_DATA_MILLI_SEC);
     }
 
     protected void loadNewPage(int newPage)
@@ -442,54 +448,25 @@ public final class SearchStockPeopleFragment extends DashboardFragment
             }
             else
             {
-                securityItemViewAdapter.setItems(securityCompactCache.get(securityIds));
+                securityItemViewAdapter.setItems(securityCompactCache.get().get(securityIds));
             }
-            if (andDisplay)
-            {
-                getView().post(new Runnable()
-                {
-                    @Override public void run()
-                    {
-                        securityItemViewAdapter.notifyDataSetChanged();
-                        updateVisibilities();
-                    }
-                });
-            }
+            securityItemViewAdapter.notifyDataSetChanged();
+            updateVisibilities();
         }
     }
 
-    private void linkWith(final List<UserBaseKey> users, boolean andDisplay, UserBaseKey typeQualifier)
+    private void linkWith(final List<UserBaseKey> users, boolean andDisplay)
     {
         this.userBaseKeys = users;
 
         if (peopleItemViewAdapter != null)
         {
             peopleItemViewAdapter.setItems(users);
-            if (andDisplay)
+            if (peopleItemViewAdapter != null)
             {
-                getView().post(new Runnable()
-                {
-                    @Override public void run()
-                    {
-                        PeopleItemViewAdapter adapterCopy = peopleItemViewAdapter;
-                        if (adapterCopy != null)
-                        {
-                            adapterCopy.notifyDataSetChanged();
-                        }
-
-                        // All these damn HACKs are not enough to have the list update itself!
-                        ListView peopleListView = mSearchPeopleListView;
-                        if (peopleListView != null)
-                        {
-                            mSearchPeopleListView.invalidateViews();
-                            mSearchPeopleListView.scrollBy(0, 0);
-                            mSearchPeopleListView.refreshDrawableState();
-                        }
-
-                        updateVisibilities();
-                    }
-                });
+                peopleItemViewAdapter.notifyDataSetChanged();
             }
+            updateVisibilities();
         }
     }
 
@@ -504,18 +481,6 @@ public final class SearchStockPeopleFragment extends DashboardFragment
         if (mProgress != null)
         {
             mProgress.setVisibility(isQuerying ? View.VISIBLE : View.INVISIBLE);
-        }
-
-        if (mSearchText == null || mSearchText.length() == 0 || mSearchType == null)
-        {
-            if (mSearchStockListView != null)
-            {
-                mSearchStockListView.setVisibility(View.INVISIBLE);
-            }
-            if (mSearchPeopleListView != null)
-            {
-                mSearchPeopleListView.setVisibility(View.INVISIBLE);
-            }
         }
     }
 
@@ -614,33 +579,32 @@ public final class SearchStockPeopleFragment extends DashboardFragment
         }
     }
 
-    private class SearchStockOnItemClickListener implements AdapterView.OnItemClickListener
+    private class SearchOnItemClickListener implements AdapterView.OnItemClickListener
     {
         @Override public void onItemClick(AdapterView<?> parent, View view, int position, long id)
         {
-            SecurityCompactDTO clickedItem = (SecurityCompactDTO) parent.getItemAtPosition(position);
-
-            if (shouldDisableSearchTypeOption)
+            if (mSearchType == TrendingSearchType.STOCKS)
             {
-                // pop out current fragment and push in watchlist edit fragment
-                Bundle args = new Bundle();
-                args.putBundle(WatchlistEditFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, clickedItem.getSecurityId().getArgs());
-                args.putString(WatchlistEditFragment.BUNDLE_KEY_RETURN_FRAGMENT, WatchlistPositionFragment.class.getName());
-                DeviceUtil.dismissKeyBoard(getActivity(), getView());
-                navigator.pushFragment(WatchlistEditFragment.class, args);
+                SecurityCompactDTO clickedItem = (SecurityCompactDTO) parent.getItemAtPosition(position);
+
+                if (shouldDisableSearchTypeOption)
+                {
+                    // pop out current fragment and push in watchlist edit fragment
+                    Bundle args = new Bundle();
+                    args.putBundle(WatchlistEditFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, clickedItem.getSecurityId().getArgs());
+                    args.putString(WatchlistEditFragment.BUNDLE_KEY_RETURN_FRAGMENT, WatchlistPositionFragment.class.getName());
+                    DeviceUtil.dismissKeyBoard(getActivity(), getView());
+                    navigator.pushFragment(WatchlistEditFragment.class, args);
+                }
+                else
+                {
+                    pushTradeFragmentIn(clickedItem.getSecurityId());
+                }
             }
             else
             {
-                pushTradeFragmentIn(clickedItem.getSecurityId());
+                pushUserFragmentIn((UserBaseKey) parent.getItemAtPosition(position));
             }
-        }
-    }
-
-    private class SearchPeopleOnItemClickListener implements AdapterView.OnItemClickListener
-    {
-        @Override public void onItemClick(AdapterView<?> parent, View view, int position, long id)
-        {
-            pushUserFragmentIn((UserBaseKey) parent.getItemAtPosition(position));
         }
     }
 
@@ -660,7 +624,7 @@ public final class SearchStockPeopleFragment extends DashboardFragment
             if (mSearchText == null || mSearchText.isEmpty())
             {
                 linkWith(null, true, (SecurityId) null);
-                linkWith(null, true, (UserBaseKey) null);
+                linkWith(null, true);
             }
             else
             {
@@ -677,12 +641,18 @@ public final class SearchStockPeopleFragment extends DashboardFragment
             {
                 throw new IllegalStateException("We just got a wrong page; last: " + lastLoadedPage + ", received page: " + key.getPage());
             }
+            THLog.d(TAG, "Page loaded: " + lastLoadedPage);
             lastLoadedPage = key.getPage();
             currentlyLoadingPage = FIRST_PAGE - 1;
             nearEndScrollListener.lowerFlag();
             if (value == null || value.size() == 0)
             {
                 nearEndScrollListener.deactivate();
+                if (lastLoadedPage == FIRST_PAGE)
+                {
+                    securityItemViewAdapter.setItems(null);
+                    searchEmptyView.setText(R.string.search_no_stock_found);
+                }
             }
             else
             {
@@ -690,7 +660,7 @@ public final class SearchStockPeopleFragment extends DashboardFragment
                 {
                     securityIds.addAll(value);
                 }
-                securityItemViewAdapter.setItems(securityCompactCache.get(securityIds));
+                securityItemViewAdapter.setItems(securityCompactCache.get().get(securityIds));
             }
             setQuerying(false);
             securityItemViewAdapter.notifyDataSetChanged();
@@ -718,6 +688,11 @@ public final class SearchStockPeopleFragment extends DashboardFragment
             if (value == null || value.size() == 0)
             {
                 nearEndScrollListener.deactivate();
+                if (lastLoadedPage == FIRST_PAGE)
+                {
+                    peopleItemViewAdapter.setItems(null);
+                    searchEmptyView.setText(R.string.search_no_people_found);
+                }
             }
             else
             {
@@ -732,25 +707,6 @@ public final class SearchStockPeopleFragment extends DashboardFragment
         {
             THToast.show(getString(R.string.error_fetch_people_list_info));
             THLog.e(TAG, "Error fetching the list of people " + key, error);
-        }
-    }
-
-    private class RequestDataTimerTask extends TimerTask
-    {
-        @Override public void run()
-        {
-            View view = getView();
-            if (view != null)
-            {
-                view.post(new Runnable()
-                {
-                    @Override public void run()
-                    {
-                        startAnew();
-                        requestData();
-                    }
-                });
-            }
         }
     }
     //</editor-fold>
