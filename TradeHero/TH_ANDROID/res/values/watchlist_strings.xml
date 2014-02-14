@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+  <string name="watchlist_not_enough_info">Not enough info yet</string>
+
+  <string name="watchlist_title">Watchlist</string>
+  <string name="watchlist_add_title">Add to Watchlist</string>
+  <string name="watchlist_edit_title">Edit in Watchlist</string>
+
+  <string name="watchlist_button_done">Done</string>
+  <string name="watchlist_average_price_header">Average Price (US$)</string>
+  <string name="watchlist_quantity_header">Quantity</string>
+  <string name="watchlist_quantity_initial">1</string>
+
+</resources>

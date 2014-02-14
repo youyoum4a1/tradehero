@@ -347,11 +347,11 @@ public class TimelineItemView extends LinearLayout implements
             args.putBundle(WatchlistEditFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
             if (watchlistPositionCache.get().get(securityId) != null)
             {
-                args.putString(WatchlistEditFragment.BUNDLE_KEY_TITLE, getContext().getString(R.string.edit_in_watch_list));
+                args.putString(WatchlistEditFragment.BUNDLE_KEY_TITLE, getContext().getString(R.string.watchlist_edit_title));
             }
             else
             {
-                args.putString(WatchlistEditFragment.BUNDLE_KEY_TITLE, getContext().getString(R.string.add_to_watch_list));
+                args.putString(WatchlistEditFragment.BUNDLE_KEY_TITLE, getContext().getString(R.string.watchlist_add_title));
             }
         }
         getNavigator().pushFragment(WatchlistEditFragment.class, args, Navigator.PUSH_UP_FROM_BOTTOM);
@@ -491,11 +491,11 @@ public class TimelineItemView extends LinearLayout implements
                     {
                         if (watchlistPositionCache.get().get(securityId) == null)
                         {
-                            watchListMenuItem.setTitle(getContext().getString(R.string.add_to_watch_list));
+                            watchListMenuItem.setTitle(getContext().getString(R.string.watchlist_add_title));
                         }
                         else
                         {
-                            watchListMenuItem.setTitle(getContext().getString(R.string.edit_in_watch_list));
+                            watchListMenuItem.setTitle(getContext().getString(R.string.watchlist_edit_title));
                         }
                         watchListMenuItem.setVisible(true);
                     }

@@ -40,6 +40,7 @@ import com.tradehero.common.graphics.GrayscaleTransformation;
 import com.tradehero.common.graphics.RoundedCornerTransformation;
 import com.tradehero.common.graphics.WhiteToTransparentTransformation;
 import com.tradehero.common.milestone.Milestone;
+import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.thread.KnownExecutorServices;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
@@ -53,7 +54,9 @@ import com.tradehero.th.api.position.SecurityPositionDetailDTO;
 import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
+import com.tradehero.th.api.security.SecurityIdList;
 import com.tradehero.th.api.security.WarrantDTO;
+import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.alert.AlertCreateFragment;
 import com.tradehero.th.fragments.alert.AlertEditFragment;
@@ -61,6 +64,7 @@ import com.tradehero.th.fragments.alert.BaseAlertEditFragment;
 import com.tradehero.th.fragments.billing.THIABUserInteractor;
 import com.tradehero.th.fragments.security.BuySellBottomStockPagerAdapter;
 import com.tradehero.th.fragments.security.StockInfoFragment;
+import com.tradehero.th.fragments.security.WatchlistEditFragment;
 import com.tradehero.th.fragments.trade.view.PricingBidAskView;
 import com.tradehero.th.fragments.trade.view.QuickPriceButtonSet;
 import com.tradehero.th.fragments.trade.view.TradeQuantityView;
@@ -73,6 +77,8 @@ import com.tradehero.th.persistence.portfolio.PortfolioCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListRetrievedMilestone;
+import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
+import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
 import com.viewpagerindicator.PageIndicator;
 import java.util.Iterator;
 import java.util.Map;
@@ -122,15 +128,21 @@ public class BuySellFragment extends AbstractBuySellFragment
     @Inject protected PortfolioCompactListCache portfolioCompactListCache;
     @Inject protected PortfolioCompactListRetrievedMilestone portfolioCompactListRetrievedMilestone;
     @Inject protected PortfolioCompactCache portfolioCompactCache;
+    @Inject protected UserWatchlistPositionCache userWatchlistPositionCache;
+    @Inject protected WatchlistPositionCache watchlistPositionCache;
     @Inject protected ProviderSpecificResourcesFactory providerSpecificResourcesFactory;
     @Inject protected WarrantSpecificKnowledgeFactory warrantSpecificKnowledgeFactory;
     protected Milestone.OnCompleteListener portfolioCompactListMilestoneListener;
+    protected DTOCache.Listener<UserBaseKey, SecurityIdList> userWatchlistPositionCacheListener;
+    protected DTOCache.GetOrFetchTask<UserBaseKey, SecurityIdList> userWatchlistPositionCacheFetchTask;
 
     int mQuantity = 0;
     int volume = 0;
     int avgDailyVolume = 0;
 
     private Bundle desiredArguments;
+
+    protected SecurityIdList watchedList;
 
     private Picasso mPicasso;
     private Transformation foregroundTransformation;
@@ -142,6 +154,7 @@ public class BuySellFragment extends AbstractBuySellFragment
         super.onCreate(savedInstanceState);
         securityAlertAssistant = new SecurityAlertAssistant();
         portfolioCompactListMilestoneListener = new BuySellPortfolioCompactListMilestoneListener();
+        this.userWatchlistPositionCacheListener = new BuySellUserWatchlistCacheListener();
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -212,7 +225,7 @@ public class BuySellFragment extends AbstractBuySellFragment
             {
                 @Override public void onClick(View view)
                 {
-                    //TODO
+                    handleBtnWatchlistClicked();
                 }
             });
         }
@@ -457,6 +470,7 @@ public class BuySellFragment extends AbstractBuySellFragment
     {
         //THLog.d(TAG, "onDestroyView");
         detachPortfolioCompactMilestone();
+        detachWatchlistFetchTask();
 
         securityAlertAssistant.setOnPopulatedListener(null);
 
@@ -498,6 +512,13 @@ public class BuySellFragment extends AbstractBuySellFragment
         }
         mBtnAddTrigger = null;
 
+        if (mBtnWatchlist != null)
+        {
+            mBtnWatchlist.setEnabled(false);
+            mBtnWatchlist.setOnClickListener(null);
+        }
+        mBtnWatchlist = null;
+
         if (mBuyBtn != null)
         {
             mBuyBtn.setOnClickListener(null);
@@ -515,6 +536,7 @@ public class BuySellFragment extends AbstractBuySellFragment
     @Override public void onDestroy()
     {
         portfolioCompactListMilestoneListener = null;
+        this.userWatchlistPositionCacheListener = null;
         securityAlertAssistant = null;
         super.onDestroy();
     }
@@ -528,9 +550,27 @@ public class BuySellFragment extends AbstractBuySellFragment
         portfolioCompactListRetrievedMilestone = null;
     }
 
+    protected void detachWatchlistFetchTask()
+    {
+        if (this.userWatchlistPositionCacheFetchTask != null)
+        {
+            this.userWatchlistPositionCacheFetchTask.setListener(null);
+        }
+        this.userWatchlistPositionCacheFetchTask = null;
+    }
+
     @Override public void linkWith(SecurityId securityId, boolean andDisplay)
     {
         super.linkWith(securityId, andDisplay);
+
+        detachWatchlistFetchTask();
+        this.userWatchlistPositionCacheFetchTask = userWatchlistPositionCache.getOrFetch(currentUserId.toUserBaseKey(), userWatchlistPositionCacheListener);
+        this.userWatchlistPositionCacheFetchTask.execute();
+
+        if (andDisplay)
+        {
+            displayWatchlistButton();
+        }
     }
 
     @Override public void linkWith(SecurityCompactDTO securityCompactDTO, boolean andDisplay)
@@ -598,6 +638,15 @@ public class BuySellFragment extends AbstractBuySellFragment
             displayTradeQuantityView();
             displayQuickPriceButtonSet();
             displaySlider();
+        }
+    }
+
+    protected void linkWithWatchlist(SecurityIdList watchedList, boolean andDisplay)
+    {
+        this.watchedList = watchedList;
+        if (andDisplay)
+        {
+            displayWatchlistButton();
         }
     }
 
@@ -1037,6 +1086,23 @@ public class BuySellFragment extends AbstractBuySellFragment
         }
     }
 
+    public void displayWatchlistButton()
+    {
+        if (mBtnWatchlist != null)
+        {
+            if (securityId == null || watchedList == null)
+            {
+                // TODO show disabled
+                mBtnWatchlist.setEnabled(false);
+            }
+            else
+            {
+                mBtnWatchlist.setEnabled(true);
+                mBtnWatchlist.setImageResource(watchedList.contains(securityId) ? R.drawable.active_watchlist : R.drawable.add_watchlist);
+            }
+        }
+    }
+
     private void storeImageUrlInImageViews()
     {
         if (mStockLogo != null && securityCompactDTO != null)
@@ -1199,6 +1265,20 @@ public class BuySellFragment extends AbstractBuySellFragment
         else
         {
             THToast.show("Try again in a moment");
+        }
+    }
+
+    private void handleBtnWatchlistClicked()
+    {
+        if (securityId != null)
+        {
+            Bundle args = new Bundle();
+            args.putBundle(WatchlistEditFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
+            navigator.pushFragment(WatchlistEditFragment.class, args);
+        }
+        else
+        {
+            THToast.show(R.string.watchlist_not_enough_info);
         }
     }
 
@@ -1474,6 +1554,24 @@ public class BuySellFragment extends AbstractBuySellFragment
         @Override public void onFailed(Milestone milestone, Throwable throwable)
         {
             THLog.e(TAG, "Failed to fetch list of compact portfolio", throwable);
+            THToast.show(R.string.error_fetch_portfolio_list_info);
+        }
+    }
+
+    protected class BuySellUserWatchlistCacheListener implements DTOCache.Listener<UserBaseKey, SecurityIdList>
+    {
+        public BuySellUserWatchlistCacheListener()
+        {
+        }
+
+        @Override public void onDTOReceived(UserBaseKey key, SecurityIdList value, boolean fromCache)
+        {
+            linkWithWatchlist(value, true);
+        }
+
+        @Override public void onErrorThrown(UserBaseKey key, Throwable error)
+        {
+            THLog.e(TAG, "Failed to fetch list of watch list items", error);
             THToast.show(R.string.error_fetch_portfolio_list_info);
         }
     }

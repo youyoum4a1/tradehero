@@ -136,17 +136,12 @@
   <string name="monitor">Monitor</string>
   <string name="trade">Trade</string>
   <string name="share">Share</string>
-  <string name="add_to_watch_list">Add to Watchlist</string>
-  <string name="edit_in_watch_list">Edit in Watchlist</string>
   <string name="enable_stock_alert">Enable Stock Alert</string>
   <string name="view_graph">View Graph</string>
   <string name="timeline_post_to_social_network">Successfully posted to %s</string>
   <string name="link_account">Account is not linked, please go to Settings and link %s account</string>
   <string name="show_friends_only">Show friends only</string>
   <string name="show_friends_of_friends">Show friends of friends</string>
-  <string name="average_purchase_price">Average Price (US$)</string>
-  <string name="unit">1</string>
-  <string name="watchlist">Watchlist</string>
   <string name="watchlist_number_of_shares"><![CDATA[<b>%1$d</b> shares @ <b>%2$s</b>]]></string>
   <string name="watchlist_pl_percentage_format">%s %%</string>
   <string name="watchlist_last_price_format"><![CDATA[%1$s <b>%2$s</b>]]></string>

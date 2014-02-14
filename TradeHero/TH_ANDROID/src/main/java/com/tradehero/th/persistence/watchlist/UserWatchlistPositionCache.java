@@ -16,6 +16,7 @@ import javax.inject.Singleton;
 {
     private static final int DEFAULT_MAX_SIZE = 200;
     private static final int DEFAULT_WATCHLIST_FETCH_SIZE = 100;
+    // TODO change the cache to use SkipCacheSecurityPerPagedWatchlistKey in order to provide pagination
 
     @Inject protected Lazy<WatchlistService> watchlistService;
 
