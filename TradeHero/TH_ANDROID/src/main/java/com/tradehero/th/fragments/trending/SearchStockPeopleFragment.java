@@ -314,6 +314,12 @@ public final class SearchStockPeopleFragment extends DashboardFragment
 
     @Override public void onDestroyView()
     {
+        View focusedView = getActivity().getCurrentFocus();
+        if (focusedView != null)
+        {
+            DeviceUtil.dismissKeyBoard(getActivity(), focusedView);
+        }
+
         if (listView != null)
         {
             listView.setOnItemClickListener(null);
@@ -593,7 +599,6 @@ public final class SearchStockPeopleFragment extends DashboardFragment
                     Bundle args = new Bundle();
                     args.putBundle(WatchlistEditFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, clickedItem.getSecurityId().getArgs());
                     args.putString(WatchlistEditFragment.BUNDLE_KEY_RETURN_FRAGMENT, WatchlistPositionFragment.class.getName());
-                    DeviceUtil.dismissKeyBoard(getActivity(), getView());
                     navigator.pushFragment(WatchlistEditFragment.class, args);
                 }
                 else
