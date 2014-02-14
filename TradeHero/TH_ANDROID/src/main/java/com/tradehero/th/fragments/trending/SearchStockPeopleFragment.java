@@ -14,6 +14,8 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
@@ -52,7 +54,7 @@ import java.util.TimerTask;
 import javax.inject.Inject;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 9/18/13 Time: 12:09 PM To change this template use File | Settings | File Templates. */
-public class SearchStockPeopleFragment extends DashboardFragment
+public final class SearchStockPeopleFragment extends DashboardFragment
 {
     public final static String BUNDLE_KEY_SEARCH_STRING = SearchStockPeopleFragment.class.getName() + ".searchString";
     public final static String BUNDLE_KEY_SEARCH_TYPE = SearchStockPeopleFragment.class.getName() + ".searchType";
@@ -65,17 +67,21 @@ public class SearchStockPeopleFragment extends DashboardFragment
     public final static int DEFAULT_PER_PAGE = 15;
     public final static long DELAY_REQUEST_DATA_MILLI_SEC = 1000;
 
-    private TextView mNothingYet;
-    private ListView mSearchStockListView;
-    private ListView mSearchPeopleListView;
+    @Inject SecurityCompactCache securityCompactCache;
+    @Inject Lazy<SecurityCompactListCache> securityCompactListCache;
+    @Inject Lazy<UserBaseKeyListCache> userBaseKeyListCache;
+
+    @InjectView(R.id.search_stock_nothing_yet_view) TextView mNothingYet;
+    @InjectView(R.id.trending_listview) ListView mSearchStockListView;
+    @InjectView(R.id.people_listview) ListView mSearchPeopleListView;
+    @InjectView(R.id.progress_spinner) ProgressBar mProgressSpinner;
+
     private FlagNearEndScrollListener nearEndScrollListener;
-    private ProgressBar mProgressSpinner;
     private int perPage = DEFAULT_PER_PAGE;
 
     private CharSequence[] dropDownTexts;
     private Drawable[] dropDownIcons;
     private Drawable[] spinnerIcons;
-    private View actionBar;
     private SpinnerIconAdapter mSearchTypeSpinnerAdapter;
     private Spinner mSearchTypeSpinner;
     private TrendingSearchType mSearchType = TrendingSearchType.STOCKS;
@@ -85,10 +91,6 @@ public class SearchStockPeopleFragment extends DashboardFragment
 
     private Timer requestDataTimer;
     private boolean isQuerying;
-
-    @Inject SecurityCompactCache securityCompactCache;
-    @Inject Lazy<SecurityCompactListCache> securityCompactListCache;
-    @Inject Lazy<UserBaseKeyListCache> userBaseKeyListCache;
 
     private SecurityIdListCacheListener securityIdListCacheListener;
     private DTOCache.GetOrFetchTask<SecurityListType, SecurityIdList> securitySearchTask;
@@ -102,6 +104,10 @@ public class SearchStockPeopleFragment extends DashboardFragment
     private int currentlyLoadingPage;
     private int lastLoadedPage;
     private boolean shouldDisableSearchTypeOption;
+
+    public SearchStockPeopleFragment()
+    {
+    }
 
     @Override public void onAttach(Activity activity)
     {
@@ -131,18 +137,18 @@ public class SearchStockPeopleFragment extends DashboardFragment
     {
         collectParameters(savedInstanceState);
         View view = inflater.inflate(R.layout.fragment_search_stock, container, false);
+        ButterKnife.inject(this, view);
         initViews(view, inflater);
         return view;
     }
 
     protected void initViews(View view, LayoutInflater inflater)
     {
-        mNothingYet = (TextView) view.findViewById(R.id.search_stock_nothing_yet_view);
-        mProgressSpinner = (ProgressBar) view.findViewById(R.id.progress_spinner);
         nearEndScrollListener = new SearchFlagNearEndScrollListener();
+        securityIdListCacheListener = new SecurityIdListCacheListener();
+        peopleListCacheListener = new PeopleListCacheListener();
 
         securityItemViewAdapter = new SimpleSecurityItemViewAdapter(getActivity(), getActivity().getLayoutInflater(), R.layout.search_security_item);
-        mSearchStockListView = (ListView) view.findViewById(R.id.trending_listview);
         if (mSearchStockListView != null)
         {
             mSearchStockListView.setAdapter(securityItemViewAdapter);
@@ -151,16 +157,12 @@ public class SearchStockPeopleFragment extends DashboardFragment
         }
 
         peopleItemViewAdapter = new PeopleItemViewAdapter(getActivity(), inflater, R.layout.search_people_item);
-        mSearchPeopleListView = (ListView) view.findViewById(R.id.people_listview);
         if (mSearchPeopleListView != null)
         {
             mSearchPeopleListView.setAdapter(peopleItemViewAdapter);
             mSearchPeopleListView.setOnItemClickListener(new SearchPeopleOnItemClickListener());
             mSearchPeopleListView.setOnScrollListener(nearEndScrollListener);
         }
-
-        securityIdListCacheListener = new SecurityIdListCacheListener();
-        peopleListCacheListener = new PeopleListCacheListener();
     }
 
     @Override public void onActivityCreated(Bundle savedInstanceState)
