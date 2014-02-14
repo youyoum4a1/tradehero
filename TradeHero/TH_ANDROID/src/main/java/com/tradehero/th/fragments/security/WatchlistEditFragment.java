@@ -297,7 +297,7 @@ public class WatchlistEditFragment extends DashboardFragment
             {
                 watchPrice.setText(
                         watchListItem != null ?
-                                "" + watchListItem.getWatchlistPrice() :
+                                "" + watchListItem.watchlistPrice :
                                 securityCompactDTO.lastPrice != null ? securityCompactDTO.lastPrice.toString() : "");
             }
 

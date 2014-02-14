@@ -177,7 +177,7 @@ public class WatchlistItemView extends FrameLayout implements DTOView<SecurityId
         if (securityCompactDTO != null)
         {
             Double lastPrice = securityCompactDTO.lastPrice;
-            Double watchlistPrice = watchlistPositionDTO.getWatchlistPrice();
+            Double watchlistPrice = watchlistPositionDTO.watchlistPrice;
             // pl percentage
             if (watchlistPrice != 0)
             {
@@ -227,7 +227,7 @@ public class WatchlistItemView extends FrameLayout implements DTOView<SecurityId
         if (securityCompactDTO != null)
         {
             Double lastPrice = securityCompactDTO.lastPrice;
-            Double watchlistPrice = watchlistPositionDTO.getWatchlistPrice();
+            Double watchlistPrice = watchlistPositionDTO.watchlistPrice;
             if (lastPrice == null)
             {
                 lastPrice = 0.0;
@@ -281,7 +281,7 @@ public class WatchlistItemView extends FrameLayout implements DTOView<SecurityId
         {
             if (securityCompactDTO != null)
             {
-                Double watchListPrice = watchlistPositionDTO.getWatchlistPrice();
+                Double watchListPrice = watchlistPositionDTO.watchlistPrice;
                 numberOfShares.setText(formatNumberOfShares(watchlistPositionDTO.shares, securityCompactDTO.currencyDisplay, watchListPrice));
             }
             else

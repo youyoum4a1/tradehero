@@ -33,9 +33,4 @@ public class WatchlistPositionDTO extends PositionDTO
         super(other, myClass);
     }
     //</editor-fold>
-
-    public Double getWatchlistPrice()
-    {
-        return (Double) get("watchlistPrice");
-    }
 }
