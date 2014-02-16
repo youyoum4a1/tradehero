@@ -26,9 +26,4 @@ public class PurchaseReportedToOtherUserException extends RuntimeException
     {
         super(throwable);
     }
-
-    protected PurchaseReportedToOtherUserException(String s, Throwable throwable, boolean b, boolean b2)
-    {
-        super(s, throwable, b, b2);
-    }
 }
