@@ -87,7 +87,7 @@ public class PortfolioListItemView extends RelativeLayout implements DTOView<Dis
         super.onFinishInflate();
         ButterKnife.inject(this);
         DaggerUtils.inject(this);
-        if (userIcon != null)
+        if (userIcon != null && picasso != null)
         {
             picasso.load(R.drawable.superman_facebook)
                     .transform(userImageTransformation)
@@ -99,16 +99,10 @@ public class PortfolioListItemView extends RelativeLayout implements DTOView<Dis
     {
         //THLog.d(TAG, "onAttachedToWindow ");
         super.onAttachedToWindow();
+
         this.currentUserProfileRetrievedMilestoneListener = new PortfolioListItemViewUserProfileRetrievedListener();
-
-        UserProfileRetrievedMilestone milestone = new UserProfileRetrievedMilestone(currentUserId.toUserBaseKey());
-        milestone.setOnCompleteListener(this.currentUserProfileRetrievedMilestoneListener);
-        this.currentUserProfileRetrievedMilestone = milestone;
-
         this.getPositionsListener = new PortfolioListItemViewGetPositionsListener();
         this.userWatchlistListener = new PortfolioListItemViewWatchedSecurityIdListListener();
-
-        milestone.launch();
     }
 
     @Override protected void onDetachedFromWindow()
@@ -171,6 +165,8 @@ public class PortfolioListItemView extends RelativeLayout implements DTOView<Dis
     {
         this.displayablePortfolioDTO = displayablePortfolioDTO;
 
+        fetchNecessaryInfo();
+
         if (andDisplay)
         {
             displayUserIcon();
@@ -178,6 +174,14 @@ public class PortfolioListItemView extends RelativeLayout implements DTOView<Dis
             displayDescription();
             displayFollowingStamp();
         }
+    }
+
+    protected void fetchNecessaryInfo()
+    {
+        UserProfileRetrievedMilestone milestone = new UserProfileRetrievedMilestone(currentUserId.toUserBaseKey());
+        milestone.setOnCompleteListener(this.currentUserProfileRetrievedMilestoneListener);
+        this.currentUserProfileRetrievedMilestone = milestone;
+        milestone.launch();
     }
 
     protected void fetchAdditional()

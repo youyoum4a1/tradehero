@@ -26,6 +26,6 @@ public class DisplayablePortfolioUtil
             return displayablePortfolioDTO.portfolioDTO.title;
         }
 
-        return context.getString(R.string.na);
+        return context.getString(R.string.portfolio_item_title_loading);
     }
 }

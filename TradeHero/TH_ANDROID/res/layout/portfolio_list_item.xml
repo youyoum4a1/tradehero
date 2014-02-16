@@ -2,6 +2,7 @@
 
 <com.tradehero.th.fragments.portfolio.PortfolioListItemView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingLeft="@dimen/portfolio_padding_left"
@@ -30,7 +31,7 @@
       android:layout_centerVertical="true"
       android:scaleType="fitXY"
       android:src="@drawable/following_stamp"
-      android:visibility="gone"
+      tools:visibility="visible"
       android:contentDescription="@null"
       />
 
@@ -39,7 +40,7 @@
       android:layout_width="48dp"
       android:layout_height="48dp"
       android:layout_alignParentLeft="true"
-      android:src="@drawable/superman_facebook"
+      tools:src="@drawable/superman_facebook"
       android:contentDescription="@null"
     />
 
@@ -62,6 +63,7 @@
           android:maxLines="1"
           android:layout_weight="3"
           android:textStyle="bold"
+          tools:text="Default Portfolio"
         />
 
       <TextView
@@ -70,6 +72,7 @@
           android:layout_height="0dp"
           android:layout_weight="2"
           android:maxLines="1"
+          tools:text="You have 3 open positions"
         />
 
   </LinearLayout>
