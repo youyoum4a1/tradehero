@@ -57,7 +57,7 @@ public class DashboardNavigator extends Navigator
         }
 
         mTabHost.getTabWidget().setDividerDrawable(null);
-        mTabHost.setCurrentTabByTag(activity.getString(R.string.home));
+        mTabHost.setCurrentTabByTag(activity.getString(R.string.trending));
     }
 
     /**
