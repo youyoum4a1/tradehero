@@ -235,7 +235,7 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
 
     private void updateProfile(View view)
     {
-        DeviceUtil.dismissKeyBoard(getActivity(), view);
+        DeviceUtil.dismissKeyboard(getActivity(), view);
         forceValidateFields();
 
         if (!NetworkUtils.isConnected(getActivity()))

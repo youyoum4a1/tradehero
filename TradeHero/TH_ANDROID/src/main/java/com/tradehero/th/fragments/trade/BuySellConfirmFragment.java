@@ -39,6 +39,7 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.position.PositionListFragment;
 import com.tradehero.th.network.service.SecurityService;
 import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import dagger.Lazy;
 import javax.inject.Inject;
@@ -219,6 +220,9 @@ public class BuySellConfirmFragment extends AbstractBuySellFragment
     @Override public void onDestroyView()
     {
         THLog.d(TAG, "onDestroyView");
+
+        DeviceUtil.dismissKeyboard(getActivity());
+
         ButterKnife.reset(this);
 
         if (buySellTask != null)

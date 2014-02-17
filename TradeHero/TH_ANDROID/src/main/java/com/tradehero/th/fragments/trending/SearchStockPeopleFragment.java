@@ -314,11 +314,7 @@ public final class SearchStockPeopleFragment extends DashboardFragment
 
     @Override public void onDestroyView()
     {
-        View focusedView = getActivity().getCurrentFocus();
-        if (focusedView != null)
-        {
-            DeviceUtil.dismissKeyBoard(getActivity(), focusedView);
-        }
+        DeviceUtil.dismissKeyboard(getActivity());
 
         if (listView != null)
         {

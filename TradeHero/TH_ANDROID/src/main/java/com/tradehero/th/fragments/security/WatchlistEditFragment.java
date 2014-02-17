@@ -93,7 +93,7 @@ public class WatchlistEditFragment extends DashboardFragment
         {
             @Override public void onClick(View v)
             {
-                DeviceUtil.dismissKeyBoard(getActivity(), getView());
+                DeviceUtil.dismissKeyboard(getActivity(), getView());
                 handleWatchButtonClicked();
             }
         };
