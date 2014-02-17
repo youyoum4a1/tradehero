@@ -48,7 +48,7 @@ public interface AlertService
     void createAlert(
             @Path("userId") int userId,
             @Body AlertFormDTO alertFormDTO,
-            Callback<AlertCompactDTO > callback);
+            Callback<AlertCompactDTO> callback);
     //</editor-fold>
 
     //<editor-fold desc="Update Alert">

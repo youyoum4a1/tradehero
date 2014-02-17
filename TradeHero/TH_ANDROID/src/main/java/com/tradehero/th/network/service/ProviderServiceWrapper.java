@@ -1,24 +1,21 @@
 package com.tradehero.th.network.service;
 
-import com.tradehero.th.api.competition.BasicProviderSecurityListType;
+import com.tradehero.th.api.competition.key.BasicProviderSecurityListType;
 import com.tradehero.th.api.competition.HelpVideoDTO;
-import com.tradehero.th.api.competition.HelpVideoListKey;
+import com.tradehero.th.api.competition.key.HelpVideoListKey;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderId;
-import com.tradehero.th.api.competition.ProviderSecurityListType;
-import com.tradehero.th.api.competition.WarrantProviderSecurityListType;
-import com.tradehero.th.api.security.SearchSecurityListType;
+import com.tradehero.th.api.competition.key.ProviderSecurityListType;
+import com.tradehero.th.api.competition.key.WarrantProviderSecurityListType;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityCompactDTOFactory;
-import com.tradehero.th.api.security.TrendingSecurityListType;
+
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
-import retrofit.http.GET;
-import retrofit.http.Path;
 
 /**
  * Created by xavier on 1/16/14.

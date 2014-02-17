@@ -271,6 +271,7 @@ abstract public class AbstractPositionListFragment<
         {
             positionsListView.setOnScrollListener(null);
             positionsListView.setOnTouchListener(null);
+            positionsListView.setExpandingListItemListener(null);
         }
         if (positionItemAdapter != null)
         {

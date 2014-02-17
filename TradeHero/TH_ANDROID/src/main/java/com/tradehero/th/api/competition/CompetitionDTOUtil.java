@@ -1,5 +1,6 @@
 package com.tradehero.th.api.competition;
 
+import com.tradehero.th.api.competition.key.CompetitionId;
 import com.tradehero.th.api.leaderboard.competition.CompetitionLeaderboardId;
 import java.util.ArrayList;
 import java.util.List;

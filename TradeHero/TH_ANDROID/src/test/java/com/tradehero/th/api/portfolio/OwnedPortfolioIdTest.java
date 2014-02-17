@@ -9,6 +9,8 @@ import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -16,7 +18,7 @@ import static org.junit.Assert.assertTrue;
  */
 @RunWith(RobolectricTestRunner.class)
 @Config(manifest = Config.NONE)
-public class OwnedPortfolioIdTest
+public class OwnedPortfolioIdTest extends BaseOwnedPorfolioIdTest
 {
     public static final String TAG = OwnedPortfolioIdTest.class.getSimpleName();
 
@@ -26,6 +28,30 @@ public class OwnedPortfolioIdTest
 
     @After public void tearDown()
     {
+    }
+
+    @Test public void testEqualsItself()
+    {
+        assertEquals(get1n2(), get1n2());
+        assertTrue(get1n2().equals(get1n2()));
+
+        assertEquals(get1n3(), get1n3());
+        assertTrue(get1n3().equals(get1n3()));
+
+        assertEquals(get3n2(), get3n2());
+        assertTrue(get3n2().equals(get3n2()));
+    }
+
+    @Test public void testUserIdMatters()
+    {
+        assertFalse(get1n2().equals(get3n2()));
+        assertFalse(get3n2().equals(get1n2()));
+    }
+
+    @Test public void testPortfolioIdMatters()
+    {
+        assertFalse(get1n2().equals(get1n3()));
+        assertFalse(get1n3().equals(get1n2()));
     }
 
     @Test public void testSerialisedOwnedPortfolioId() throws IOException

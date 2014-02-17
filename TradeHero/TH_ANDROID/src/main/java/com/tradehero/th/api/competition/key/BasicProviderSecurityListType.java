@@ -1,6 +1,7 @@
-package com.tradehero.th.api.competition;
+package com.tradehero.th.api.competition.key;
 
-import com.tradehero.th.api.security.SecurityListType;
+import com.tradehero.th.api.competition.ProviderId;
+import com.tradehero.th.api.security.key.SecurityListType;
 
 /**
  * Created by xavier on 1/16/14.

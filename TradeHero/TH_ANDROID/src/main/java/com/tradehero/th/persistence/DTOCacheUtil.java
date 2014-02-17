@@ -1,9 +1,9 @@
 package com.tradehero.th.persistence;
 
-import com.tradehero.th.api.competition.ProviderListKey;
+import com.tradehero.th.api.competition.key.ProviderListKey;
 import com.tradehero.th.api.market.ExchangeListType;
-import com.tradehero.th.api.security.TrendingBasicSecurityListType;
-import com.tradehero.th.api.security.TrendingSecurityListType;
+import com.tradehero.th.api.security.key.TrendingBasicSecurityListType;
+import com.tradehero.th.api.security.key.TrendingSecurityListType;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.billing.googleplay.THIABPurchaseCache;
 import com.tradehero.th.fragments.trending.TrendingFragment;

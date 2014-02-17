@@ -1,8 +1,9 @@
 package com.tradehero.th.api.security;
 
-import com.tradehero.th.api.competition.BasicProviderSecurityListType;
+import com.tradehero.th.api.competition.key.BasicProviderSecurityListType;
 import com.tradehero.th.api.competition.ProviderId;
-import com.tradehero.th.api.competition.WarrantProviderSecurityListType;
+import com.tradehero.th.api.competition.key.WarrantProviderSecurityListType;
+import com.tradehero.th.api.security.key.*;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

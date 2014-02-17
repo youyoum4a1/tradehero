@@ -1,8 +1,8 @@
 package com.tradehero.th.persistence.security;
 
 import com.tradehero.th.api.security.SecurityIdList;
-import com.tradehero.th.api.security.TrendingBasicSecurityListType;
-import com.tradehero.th.api.security.TrendingSecurityListType;
+import com.tradehero.th.api.security.key.TrendingBasicSecurityListType;
+import com.tradehero.th.api.security.key.TrendingSecurityListType;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

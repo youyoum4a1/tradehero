@@ -1,5 +1,6 @@
 package com.tradehero.th.api.competition;
 
+import com.tradehero.th.api.competition.key.HelpVideoListKey;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;

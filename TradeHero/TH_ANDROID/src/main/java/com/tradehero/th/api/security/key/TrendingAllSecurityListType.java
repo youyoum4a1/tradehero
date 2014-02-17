@@ -1,40 +1,40 @@
-package com.tradehero.th.api.security;
+package com.tradehero.th.api.security.key;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/8/13 Time: 3:19 PM To change this template use File | Settings | File Templates. */
-public class TrendingBasicSecurityListType extends TrendingSecurityListType
+public class TrendingAllSecurityListType extends TrendingSecurityListType
 {
     //<editor-fold desc="Constructors">
-    public TrendingBasicSecurityListType(TrendingSecurityListType other)
+    public TrendingAllSecurityListType(TrendingSecurityListType other)
     {
         super(other);
     }
 
-    public TrendingBasicSecurityListType(String exchange, Integer page, Integer perPage)
+    public TrendingAllSecurityListType(String exchange, Integer page, Integer perPage)
     {
         super(exchange, page, perPage);
     }
 
-    public TrendingBasicSecurityListType(String exchange, Integer page)
+    public TrendingAllSecurityListType(String exchange, Integer page)
     {
         super(exchange, page);
     }
 
-    public TrendingBasicSecurityListType(String exchange)
+    public TrendingAllSecurityListType(String exchange)
     {
         super(exchange);
     }
 
-    public TrendingBasicSecurityListType(Integer page, Integer perPage)
+    public TrendingAllSecurityListType(Integer page, Integer perPage)
     {
         super(page, perPage);
     }
 
-    public TrendingBasicSecurityListType(Integer page)
+    public TrendingAllSecurityListType(Integer page)
     {
         super(page);
     }
 
-    public TrendingBasicSecurityListType()
+    public TrendingAllSecurityListType()
     {
         super();
     }
@@ -42,7 +42,7 @@ public class TrendingBasicSecurityListType extends TrendingSecurityListType
 
     @Override public boolean equals(TrendingSecurityListType other)
     {
-        return (other instanceof TrendingBasicSecurityListType) && super.equals(other);
+        return (other instanceof TrendingAllSecurityListType) && super.equals(other);
     }
 
     @Override public int compareTo(TrendingSecurityListType another)
@@ -52,23 +52,23 @@ public class TrendingBasicSecurityListType extends TrendingSecurityListType
             return 1;
         }
 
-        if (!TrendingBasicSecurityListType.class.isInstance(another))
+        if (!TrendingAllSecurityListType.class.isInstance(another))
         {
             // TODO is it very expensive?
-            return TrendingBasicSecurityListType.class.getName().compareTo(another.getClass().getName());
+            return TrendingAllSecurityListType.class.getName().compareTo(another.getClass().getName());
         }
 
-        return compareTo(TrendingBasicSecurityListType.class.cast(another));
+        return compareTo(TrendingAllSecurityListType.class.cast(another));
     }
 
-    public int compareTo(TrendingBasicSecurityListType another)
+    public int compareTo(TrendingAllSecurityListType another)
     {
         return super.compareTo(another);
     }
 
     @Override public String toString()
     {
-        return "TrendingBasicSecurityListType{" +
+        return "TrendingAllSecurityListType{" +
                 "exchange='" + exchange + "'" +
                 ", page=" + getPage() +
                 ", perPage=" + perPage +

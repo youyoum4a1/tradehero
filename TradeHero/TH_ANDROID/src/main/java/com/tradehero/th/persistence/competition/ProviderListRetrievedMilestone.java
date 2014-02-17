@@ -2,7 +2,7 @@ package com.tradehero.th.persistence.competition;
 
 import com.tradehero.common.persistence.DTORetrievedAsyncMilestone;
 import com.tradehero.th.api.competition.ProviderIdList;
-import com.tradehero.th.api.competition.ProviderListKey;
+import com.tradehero.th.api.competition.key.ProviderListKey;
 import com.tradehero.th.utils.DaggerUtils;
 import javax.inject.Inject;
 

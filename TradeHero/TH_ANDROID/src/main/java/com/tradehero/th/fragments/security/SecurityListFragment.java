@@ -22,7 +22,7 @@ import com.tradehero.common.widget.FlagNearEndScrollListener;
 import com.tradehero.th.R;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityIdList;
-import com.tradehero.th.api.security.SecurityListType;
+import com.tradehero.th.api.security.key.SecurityListType;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.fragments.trending.ExtraTileAdapter;
 import com.tradehero.th.loaders.PagedDTOCacheLoader;

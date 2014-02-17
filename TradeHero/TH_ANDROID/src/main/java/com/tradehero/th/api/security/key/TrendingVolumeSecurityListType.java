@@ -1,4 +1,4 @@
-package com.tradehero.th.api.security;
+package com.tradehero.th.api.security.key;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/8/13 Time: 3:19 PM To change this template use File | Settings | File Templates. */
 public class TrendingVolumeSecurityListType extends TrendingSecurityListType

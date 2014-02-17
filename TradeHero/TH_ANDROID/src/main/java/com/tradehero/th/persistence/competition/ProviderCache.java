@@ -3,7 +3,7 @@ package com.tradehero.th.persistence.competition;
 import com.tradehero.common.persistence.StraightDTOCache;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderId;
-import com.tradehero.th.api.competition.ProviderListKey;
+import com.tradehero.th.api.competition.key.ProviderListKey;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.models.security.WarrantSpecificKnowledgeFactory;

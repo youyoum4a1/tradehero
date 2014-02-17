@@ -14,7 +14,7 @@ import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
-import com.tradehero.th.api.competition.CompetitionId;
+import com.tradehero.th.api.competition.key.CompetitionId;
 import com.tradehero.th.api.competition.CompetitionIdList;
 import com.tradehero.th.api.competition.ProviderConstants;
 import com.tradehero.th.api.competition.ProviderDTO;

@@ -4,7 +4,7 @@ import com.tradehero.common.persistence.StraightDTOCache;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.SecurityIdList;
-import com.tradehero.th.api.security.SecurityListType;
+import com.tradehero.th.api.security.key.SecurityListType;
 import com.tradehero.th.network.service.SecurityServiceWrapper;
 import dagger.Lazy;
 import java.util.List;

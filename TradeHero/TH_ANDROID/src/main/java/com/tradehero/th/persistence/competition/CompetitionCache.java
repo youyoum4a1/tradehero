@@ -3,7 +3,7 @@ package com.tradehero.th.persistence.competition;
 import com.tradehero.common.persistence.PartialDTOCache;
 import com.tradehero.common.persistence.THLruCache;
 import com.tradehero.th.api.competition.CompetitionDTO;
-import com.tradehero.th.api.competition.CompetitionId;
+import com.tradehero.th.api.competition.key.CompetitionId;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefKey;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTOUtil;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefCache;

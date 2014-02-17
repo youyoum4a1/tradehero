@@ -3,7 +3,7 @@ package com.tradehero.th.fragments.competition;
 import android.content.Context;
 import android.view.LayoutInflater;
 import com.tradehero.th.adapters.ArrayDTOAdapter;
-import com.tradehero.th.api.competition.HelpVideoId;
+import com.tradehero.th.api.competition.key.HelpVideoId;
 
 public class ProviderVideoAdapter extends ArrayDTOAdapter<HelpVideoId, ProviderVideoListItem>
 {

@@ -40,7 +40,7 @@ public interface DTOCache<DTOKeyType extends DTOKey, DTOType extends DTO>
      */
     abstract public static class GetOrFetchTask<DTOKeyType, DTOType> extends AsyncTask<Void, Void, DTOType>
     {
-        private WeakReference<Listener<DTOKeyType, DTOType>> listenerWeak;
+        private WeakReference<Listener<DTOKeyType, DTOType>> listenerWeak = new WeakReference<>(null);
 
         public GetOrFetchTask()
         {
@@ -53,6 +53,10 @@ public interface DTOCache<DTOKeyType extends DTOKey, DTOType extends DTO>
             this.listenerWeak = new WeakReference<>(listener);
         }
 
+        /**
+         * The listener should be strongly referenced elsewhere.
+         * @param listener
+         */
         public void setListener(Listener<DTOKeyType, DTOType> listener)
         {
             this.listenerWeak = new WeakReference<>(listener);

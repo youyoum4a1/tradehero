@@ -8,7 +8,7 @@ import com.actionbarsherlock.view.MenuItem;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.CompetitionDTO;
-import com.tradehero.th.api.competition.CompetitionId;
+import com.tradehero.th.api.competition.key.CompetitionId;
 import com.tradehero.th.api.competition.ProviderConstants;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderId;

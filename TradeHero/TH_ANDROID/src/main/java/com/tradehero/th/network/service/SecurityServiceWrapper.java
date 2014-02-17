@@ -1,17 +1,17 @@
 package com.tradehero.th.network.service;
 
-import com.tradehero.th.api.competition.ProviderSecurityListType;
+import com.tradehero.th.api.competition.key.ProviderSecurityListType;
 import com.tradehero.th.api.position.SecurityPositionDetailDTO;
-import com.tradehero.th.api.security.SearchSecurityListType;
+import com.tradehero.th.api.security.key.SearchSecurityListType;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
-import com.tradehero.th.api.security.SecurityListType;
+import com.tradehero.th.api.security.key.SecurityListType;
 import com.tradehero.th.api.security.TransactionFormDTO;
-import com.tradehero.th.api.security.TrendingAllSecurityListType;
-import com.tradehero.th.api.security.TrendingBasicSecurityListType;
-import com.tradehero.th.api.security.TrendingPriceSecurityListType;
-import com.tradehero.th.api.security.TrendingSecurityListType;
-import com.tradehero.th.api.security.TrendingVolumeSecurityListType;
+import com.tradehero.th.api.security.key.TrendingAllSecurityListType;
+import com.tradehero.th.api.security.key.TrendingBasicSecurityListType;
+import com.tradehero.th.api.security.key.TrendingPriceSecurityListType;
+import com.tradehero.th.api.security.key.TrendingSecurityListType;
+import com.tradehero.th.api.security.key.TrendingVolumeSecurityListType;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;

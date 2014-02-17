@@ -1,8 +1,9 @@
-package com.tradehero.th.api.security;
+package com.tradehero.th.api.security.key;
 
-import com.tradehero.th.api.competition.BasicProviderSecurityListType;
-import com.tradehero.th.api.competition.ProviderSecurityListType;
-import com.tradehero.th.api.competition.WarrantProviderSecurityListType;
+import com.tradehero.th.api.competition.key.BasicProviderSecurityListType;
+import com.tradehero.th.api.competition.key.ProviderSecurityListType;
+import com.tradehero.th.api.competition.key.WarrantProviderSecurityListType;
+
 import javax.inject.Inject;
 import javax.inject.Singleton;
 

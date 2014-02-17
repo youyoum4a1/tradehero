@@ -3,8 +3,8 @@ package com.tradehero.th.fragments.trending.filter;
 import android.os.Bundle;
 import com.tradehero.th.R;
 import com.tradehero.th.api.market.ExchangeDTO;
-import com.tradehero.th.api.security.TrendingPriceSecurityListType;
-import com.tradehero.th.api.security.TrendingSecurityListType;
+import com.tradehero.th.api.security.key.TrendingPriceSecurityListType;
+import com.tradehero.th.api.security.key.TrendingSecurityListType;
 
 /**
  * Created by xavier on 1/15/14.

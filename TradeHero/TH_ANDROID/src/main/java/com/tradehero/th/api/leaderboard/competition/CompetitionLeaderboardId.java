@@ -1,7 +1,7 @@
 package com.tradehero.th.api.leaderboard.competition;
 
 import com.tradehero.common.persistence.DTOKey;
-import com.tradehero.th.api.competition.CompetitionId;
+import com.tradehero.th.api.competition.key.CompetitionId;
 import com.tradehero.th.api.competition.ProviderId;
 
 /**

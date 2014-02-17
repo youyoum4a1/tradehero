@@ -5,7 +5,7 @@ import com.tradehero.common.utils.THLog;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.competition.ProviderIdList;
-import com.tradehero.th.api.competition.ProviderListKey;
+import com.tradehero.th.api.competition.key.ProviderListKey;
 import com.tradehero.th.network.service.ProviderServiceWrapper;
 import java.util.List;
 import javax.inject.Inject;

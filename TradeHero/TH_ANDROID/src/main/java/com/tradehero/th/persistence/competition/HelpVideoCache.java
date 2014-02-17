@@ -2,7 +2,7 @@ package com.tradehero.th.persistence.competition;
 
 import com.tradehero.common.persistence.StraightDTOCache;
 import com.tradehero.th.api.competition.HelpVideoDTO;
-import com.tradehero.th.api.competition.HelpVideoId;
+import com.tradehero.th.api.competition.key.HelpVideoId;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;

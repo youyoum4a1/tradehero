@@ -1,4 +1,4 @@
-package com.tradehero.th.api.competition;
+package com.tradehero.th.api.competition.key;
 
 import android.os.Bundle;
 import com.tradehero.common.persistence.AbstractIntegerDTOKey;

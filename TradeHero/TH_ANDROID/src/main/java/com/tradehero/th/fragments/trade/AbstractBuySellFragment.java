@@ -82,6 +82,8 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
         super.onCreate(savedInstanceState);
         collectFromParameters(getArguments());
         collectFromParameters(savedInstanceState);
+        securityPositionDetailCacheListener = new AbstractBuySellSecurityPositionCacheListener(this.securityId); // We need to keep a strong reference because the cache does not
+        userProfileCacheListener = new AbstractBuySellUserProfileCacheListener(currentUserId.toUserBaseKey()); // We need to keep a strong reference because the cache does not
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -192,24 +194,40 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
 
     @Override public void onDestroyView()
     {
-        if (fetchPositionDetailTask != null)
-        {
-            fetchPositionDetailTask.setListener(null);
-        }
-        fetchPositionDetailTask = null;
-        securityPositionDetailCacheListener = null;
+        detachFetchPositionDetailTask();
 
-        if (fetchUserProfileTask != null)
-        {
-            fetchUserProfileTask.setListener(null);
-        }
-        fetchUserProfileTask = null;
-        userProfileCacheListener = null;
+        detachFetchUserProfileTask();
 
         freshQuoteListener = null;
         querying = false;
 
         super.onDestroyView();
+    }
+
+    @Override
+    public void onDestroy()
+    {
+        securityPositionDetailCacheListener = null;
+        userProfileCacheListener = null;
+        super.onDestroy();
+    }
+
+    protected void detachFetchPositionDetailTask()
+    {
+        if (fetchPositionDetailTask != null)
+        {
+            fetchPositionDetailTask.setListener(null);
+        }
+        fetchPositionDetailTask = null;
+    }
+
+    protected void detachFetchUserProfileTask()
+    {
+        if (fetchUserProfileTask != null)
+        {
+            fetchUserProfileTask.setListener(null);
+        }
+        fetchUserProfileTask = null;
     }
 
     public void setTransactionTypeBuy(boolean transactionTypeBuy)
@@ -245,7 +263,6 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
         {
             fetchPositionDetailTask.setListener(null);
         }
-        securityPositionDetailCacheListener = new AbstractBuySellSecurityPositionCacheListener(this.securityId); // We need to keep a strong reference because the cache does not
         fetchPositionDetailTask = securityPositionDetailCache.get().getOrFetch(this.securityId, false, securityPositionDetailCacheListener);
         fetchPositionDetailTask.execute();
     }
@@ -257,7 +274,6 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
             fetchUserProfileTask.cancel(false);
         }
         UserBaseKey baseKey = currentUserId.toUserBaseKey();
-        userProfileCacheListener = new AbstractBuySellUserProfileCacheListener(baseKey); // We need to keep a strong reference because the cache does not
         fetchUserProfileTask = userProfileCache.get().getOrFetch(baseKey, false, userProfileCacheListener);
         fetchUserProfileTask.execute();
     }

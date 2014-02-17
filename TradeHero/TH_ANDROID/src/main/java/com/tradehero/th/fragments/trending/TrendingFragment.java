@@ -19,7 +19,7 @@ import com.tradehero.th.api.market.ExchangeDTO;
 import com.tradehero.th.api.market.ExchangeDTOList;
 import com.tradehero.th.api.market.ExchangeListType;
 import com.tradehero.th.api.security.SecurityCompactDTO;
-import com.tradehero.th.api.security.TrendingSecurityListType;
+import com.tradehero.th.api.security.key.TrendingSecurityListType;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.Navigator;

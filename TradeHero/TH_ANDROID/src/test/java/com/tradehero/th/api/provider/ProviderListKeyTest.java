@@ -1,6 +1,6 @@
 package com.tradehero.th.api.provider;
 
-import com.tradehero.th.api.competition.ProviderListKey;
+import com.tradehero.th.api.competition.key.ProviderListKey;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
