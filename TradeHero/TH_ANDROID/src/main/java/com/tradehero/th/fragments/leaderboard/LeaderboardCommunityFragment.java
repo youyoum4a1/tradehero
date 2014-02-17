@@ -113,7 +113,6 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
     @Override public void onPause()
     {
         super.onPause();
-        leaderboardDefListView.setAdapter(null);
         currentDisplayedChildLayoutId = communityScreen.getDisplayedChildLayoutId();
     }
 
@@ -171,8 +170,9 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
         if (leaderboardDefListView != null)
         {
             leaderboardDefListView.setOnItemClickListener(null);
+            leaderboardDefListView.setAdapter(null);
+            leaderboardDefListView = null;
         }
-        leaderboardDefListView = null;
 
         super.onDestroyView();
     }
