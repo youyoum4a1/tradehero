@@ -11,9 +11,11 @@ import butterknife.InjectView;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.tradehero.common.utils.THLog;
+import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.LoaderDTOAdapter;
 import com.tradehero.th.api.leaderboard.LeaderboardDTO;
+import com.tradehero.th.api.leaderboard.LeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import com.tradehero.th.api.leaderboard.key.PerPagedFilteredLeaderboardKey;
 import com.tradehero.th.api.leaderboard.key.PerPagedLeaderboardKey;
@@ -38,7 +40,8 @@ public class LeaderboardMarkUserListViewFragment extends BaseLeaderboardFragment
 
     @Inject Provider<PrettyTime> prettyTime;
     @Inject SharedPreferences preferences;
-    @InjectView(R.id.leaderboard_listview) LeaderboardMarkUserListView leaderboardMarkUserListView;
+    @InjectView(R.id.leaderboard_mark_user_listview) LeaderboardMarkUserListView leaderboardMarkUserListView;
+    @InjectView(R.id.leaderboard_mark_user_screen) BetterViewAnimator leaderboardMarkUserScreen;
 
     private TextView leaderboardMarkUserMarkingTime;
 
@@ -73,13 +76,26 @@ public class LeaderboardMarkUserListViewFragment extends BaseLeaderboardFragment
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        View view = inflater.inflate(R.layout.leaderboard_listview, container, false);
-        inflateHeaderView(inflater);
+        View view = inflater.inflate(R.layout.leaderboard_mark_user_listview, container, false);
         initViews(view);
+        inflateHeaderView(inflater, container);
+        inflateEmptyView(inflater, container);
         return view;
     }
 
-    protected void inflateHeaderView(LayoutInflater inflater)
+    private void inflateEmptyView(LayoutInflater inflater, ViewGroup container)
+    {
+        if (leaderboardMarkUserListView != null)
+        {
+            if (leaderboardId == LeaderboardDefDTO.LEADERBOARD_FRIEND_ID)
+            {
+                View friendLeaderboardEmptyView = inflater.inflate(R.layout.friend_leaderboard_empty_view, container, false);
+                leaderboardMarkUserListView.setEmptyView(friendLeaderboardEmptyView);
+            }
+        }
+    }
+
+    protected void inflateHeaderView(LayoutInflater inflater, ViewGroup container)
     {
         if (leaderboardMarkUserListView != null)
         {
@@ -157,7 +173,6 @@ public class LeaderboardMarkUserListViewFragment extends BaseLeaderboardFragment
         leaderboardMarkUserListAdapter.setUserInteractor(userInteractor);
         leaderboardMarkUserListView.setAdapter(leaderboardMarkUserListAdapter);
         leaderboardMarkUserListView.setOnRefreshListener(leaderboardMarkUserListAdapter);
-        leaderboardMarkUserListView.setEmptyView(getView().findViewById(android.R.id.empty));
 
         Bundle loaderBundle = new Bundle(getArguments());
         leaderboardMarkUserLoader = (LeaderboardMarkUserLoader) getActivity().getSupportLoaderManager().initLoader(
@@ -297,6 +312,7 @@ public class LeaderboardMarkUserListViewFragment extends BaseLeaderboardFragment
             {
                 leaderboardMarkUserMarkingTime.setText(String.format("(%s)", prettyTime.get().format(markingTime)));
             }
+            leaderboardMarkUserScreen.setDisplayedChildByLayoutId(R.id.leaderboard_mark_user_listview);
             leaderboardMarkUserListView.onRefreshComplete();
         }
     }

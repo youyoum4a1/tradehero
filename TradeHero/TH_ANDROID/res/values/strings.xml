@@ -186,4 +186,9 @@
   <string name="search_mode">Search mode</string>
   <string name="market_status">Market status</string>
   <string name="toggle_buy_sell">Toggle Buy/Sell mode</string>
+  <string name="leaderboard_keep_friends_close">Keep your friends close …</string>
+  <string name="leaderboard_friend_empty_text_invite_friends">… and your Heroes closer! Success is all the sweeter when your friends are around to
+    share. Connect your LinkedIn and Facebook accounts to see how you stack up amongst your friends.
+  </string>
+  <string name="connect_accounts">Connect Accounts…</string>
 </resources>
