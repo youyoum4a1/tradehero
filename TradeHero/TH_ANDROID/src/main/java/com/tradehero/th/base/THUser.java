@@ -268,16 +268,16 @@ public class THUser
         credentials.clear();
         VisitedFriendListPrefs.clearVisitedIdList();
 
-        // clear all preferences
-        SharedPreferences.Editor prefEditor = sharedPreferences.get().edit();
-        prefEditor.clear();
-        prefEditor.commit();
-
         THAuthenticationProvider currentProvider = authenticationProviders.get(currentAuthenticationType.get());
         if (currentProvider != null)
         {
             currentProvider.deauthenticate();
         }
+
+        // clear all preferences
+        SharedPreferences.Editor prefEditor = sharedPreferences.get().edit();
+        prefEditor.clear();
+        prefEditor.commit();
     }
 
     public static void setAuthenticationMode(AuthenticationMode authenticationMode)
