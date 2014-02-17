@@ -33,4 +33,14 @@
     stock.\n\nTrade Quantity is limited to 20% of Average Daily Volume or Current Day Volume, whichever is higher. Your Trade Value may be limited due
     to this constraint.\n\n*Price is delayed as specified by financial exchanges or our data providers.
   </string>
+
+  <!--Positions list-->
+  <string name="tutorial_position_list_header">Position Level ROI</string>
+  <string name="tutorial_position_list_content1">
+    <![CDATA[All leaderboards may be ranked by traders’ return on investment (ROI) on the invested amounts of all trades that qualify for the leaderboard.\n\nFor time-restricted leaderboards (e.g. Last 30 Days) trades qualify by being opened or closed in the time period.\n\nFor security-restricted leaderboards (e.g. Asia A-Team) trades qualify by being on the appropriate underlying security.\n\n]]></string>
+  <string name="tutorial_position_list_content2">
+    <![CDATA[NOTE:\nWe reserve the right to exclude certain trades that have incorrect price data (e.g. penny stocks below US$ 0.01 or trades with very large quantities) You can view the specific trades that make up the leaderboard P&L by drilling down on a leaderboard row and viewing the list of positions.\n\n]]></string>
+  <string name="tutorial_position_list_formula_left_text">ROI =</string>
+  <string name="tutorial_position_list_formula_top_text"><![CDATA[Total P&L (realized + unrealized)]]></string>
+  <string name="tutorial_position_list_formula_bottom_text">Total Invested (in qualifying trades)</string>
 </resources>
