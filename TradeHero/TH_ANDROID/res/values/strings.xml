@@ -184,4 +184,6 @@
   <string name="welcome_to_tradehero">Welcome to TradeHero!</string>
   <string name="reset_help_screen">Help Screens Reset</string>
   <string name="search_mode">Search mode</string>
+  <string name="market_status">Market status</string>
+  <string name="toggle_buy_sell">Toggle Buy/Sell mode</string>
 </resources>

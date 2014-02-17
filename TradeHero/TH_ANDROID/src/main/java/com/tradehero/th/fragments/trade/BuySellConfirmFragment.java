@@ -178,37 +178,22 @@ public class BuySellConfirmFragment extends AbstractBuySellFragment
         buySellConfirmItem = menu.findItem(R.id.buy_sell_menu_confirm);
         displayConfirmMenuItem();
 
-        MenuItem menuElements = menu.findItem(R.id.menu_elements_buy_sell_confirm);
-
-        marketCloseIcon = (ImageView) menuElements.getActionView().findViewById(R.id.market_status);
-        if (marketCloseIcon != null)
-        {
-            marketCloseIcon.setOnClickListener(new OnClickListener()
-            {
-                @Override public void onClick(View v)
-                {
-                    handleMarketCloseClicked();
-                }
-            });
-        }
-
+        marketCloseIcon = menu.findItem(R.id.buy_sell_menu_market_status);
         displayMarketClose();
     }
 
     @Override public void onDestroyOptionsMenu()
     {
         super.onDestroyOptionsMenu();
-        if (marketCloseIcon != null)
-        {
-            marketCloseIcon.setOnClickListener(null);
-        }
-        marketCloseIcon = null;
     }
 
     @Override public boolean onOptionsItemSelected(MenuItem item)
     {
         switch (item.getItemId())
         {
+            case R.id.buy_sell_menu_market_status:
+                handleMarketCloseClicked();
+                return true;
             case R.id.buy_sell_menu_confirm:
                 launchBuySell();
                 break;

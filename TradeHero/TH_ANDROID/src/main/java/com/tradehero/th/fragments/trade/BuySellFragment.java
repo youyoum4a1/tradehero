@@ -68,6 +68,7 @@ import com.tradehero.th.fragments.security.WatchlistEditFragment;
 import com.tradehero.th.fragments.trade.view.PricingBidAskView;
 import com.tradehero.th.fragments.trade.view.QuickPriceButtonSet;
 import com.tradehero.th.fragments.trade.view.TradeQuantityView;
+import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.models.alert.SecurityAlertAssistant;
 import com.tradehero.th.models.portfolio.MenuOwnedPortfolioId;
 import com.tradehero.th.models.provider.ProviderSpecificResourcesDTO;
@@ -87,7 +88,7 @@ import java.util.TreeSet;
 import javax.inject.Inject;
 
 public class BuySellFragment extends AbstractBuySellFragment
-    implements SecurityAlertAssistant.OnPopulatedListener
+    implements SecurityAlertAssistant.OnPopulatedListener, WithTutorial
 {
     private final static String TAG = BuySellFragment.class.getSimpleName();
     public static final String EVENT_CHART_IMAGE_CLICKED = BuySellFragment.class.getName() + ".chartButtonClicked";
@@ -349,6 +350,8 @@ public class BuySellFragment extends AbstractBuySellFragment
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         inflater.inflate(R.menu.buy_sell_menu, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.buy_sell_menu_toggle, menu);
         ActionBar actionBar = getSherlockActivity().getSupportActionBar();
         actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_SHOW_TITLE);
         displayExchangeSymbol(actionBar);
@@ -361,7 +364,6 @@ public class BuySellFragment extends AbstractBuySellFragment
         //mBuySellSwitch.setTextColor(getResources().getColor(R.color.white));
         //mBuySellSwitch.setOnCheckedChangeListener(createBuySellListener());
         //displayBuySellSwitch();
-        super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override public void onPrepareOptionsMenu(Menu menu)
@@ -369,18 +371,6 @@ public class BuySellFragment extends AbstractBuySellFragment
         super.onPrepareOptionsMenu(menu);
 
         com.actionbarsherlock.view.MenuItem menuElements = menu.findItem(R.id.menu_elements_buy_sell);
-
-        marketCloseIcon = (ImageView) menuElements.getActionView().findViewById(R.id.market_status);
-        if (marketCloseIcon != null)
-        {
-            marketCloseIcon.setOnClickListener(new OnClickListener()
-            {
-                @Override public void onClick(View v)
-                {
-                    handleMarketCloseClicked();
-                }
-            });
-        }
 
         mBuySellSwitch = (ToggleButton) menuElements.getActionView().findViewById(R.id.trade_menu_toggle_mode);
         if (mBuySellSwitch != null)
@@ -396,25 +386,9 @@ public class BuySellFragment extends AbstractBuySellFragment
         displayActionBarElements();
     }
 
-    @Override public boolean onOptionsItemSelected(com.actionbarsherlock.view.MenuItem item)
-    {
-        switch (item.getItemId())
-        {
-            case R.id.buy_sell_info:
-                showInfoDialog();
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
     @Override public void onDestroyOptionsMenu()
     {
         //THLog.d(TAG, "onDestroyOptionsMenu");
-        if (marketCloseIcon != null)
-        {
-            marketCloseIcon.setOnClickListener(null);
-        }
-        marketCloseIcon = null;
 
         if (mBuySellSwitch != null)
         {
@@ -423,6 +397,18 @@ public class BuySellFragment extends AbstractBuySellFragment
         mBuySellSwitch = null;
         super.onDestroyOptionsMenu();
     }
+
+    @Override public boolean onOptionsItemSelected(com.actionbarsherlock.view.MenuItem item)
+    {
+        switch (item.getItemId())
+        {
+            case R.id.buy_sell_menu_market_status:
+                handleMarketCloseClicked();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     //</editor-fold>
 
     @Override public void onResume()
@@ -1325,11 +1311,6 @@ public class BuySellFragment extends AbstractBuySellFragment
         return true;
     }
 
-    private void showInfoDialog()
-    {
-        alertDialogUtil.popCustom(getActivity(), R.layout.tutorial_buy_sell);
-    }
-
     //<editor-fold desc="BaseFragment.TabBarVisibilityInformer">
     @Override public boolean isTabBarVisible()
     {
@@ -1503,6 +1484,11 @@ public class BuySellFragment extends AbstractBuySellFragment
     @Override protected FreshQuoteHolder.FreshQuoteListener createFreshQuoteListener()
     {
         return new BuySellFreshQuoteListener();
+    }
+
+    @Override public int getTutorialLayout()
+    {
+        return R.layout.tutorial_buy_sell;
     }
 
     public class BuySellTHIABUserInteractor extends THIABUserInteractor

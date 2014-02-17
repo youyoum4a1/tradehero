@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import com.actionbarsherlock.app.ActionBar;
+import com.actionbarsherlock.view.MenuItem;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
@@ -75,7 +76,7 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
     protected Integer mBuyQuantity;
     protected Integer mSellQuantity;
 
-    protected ImageView marketCloseIcon;
+    protected MenuItem marketCloseIcon;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -160,7 +161,7 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
         if (marketCloseIcon != null)
         {
             boolean marketIsOpen = securityCompactDTO == null || securityCompactDTO.marketOpen == null || securityCompactDTO.marketOpen;
-            marketCloseIcon.setVisibility(marketIsOpen ? View.GONE : View.VISIBLE);
+            marketCloseIcon.setVisible(!marketIsOpen);
             if (!marketIsOpen)
             {
                 notifyOnceMarketClosed();

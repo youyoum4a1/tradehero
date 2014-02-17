@@ -6,16 +6,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-  <ImageView
-      android:id="@+id/market_status"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:scaleType="fitCenter"
-      android:visible="false"
-      android:src="@drawable/buyscreen_stock_inactive"
-      android:contentDescription="@null"
-    />
-
   <ToggleButton
       android:id="@+id/trade_menu_toggle_mode"
       android:layout_width="wrap_content"

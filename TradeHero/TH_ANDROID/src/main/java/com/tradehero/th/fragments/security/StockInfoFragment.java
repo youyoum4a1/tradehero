@@ -49,7 +49,7 @@ public class StockInfoFragment extends DashboardFragment
     private DTOCache.GetOrFetchTask<SecurityId, NewsList> yahooNewsCacheFetchTask;
 
     private ActionBar actionBar;
-    private ImageView marketCloseIcon;
+    private MenuItem marketCloseIcon;
 
     private ViewPager topPager;
     private InfoTopStockPagerAdapter topViewPagerAdapter;
@@ -121,30 +121,14 @@ public class StockInfoFragment extends DashboardFragment
     @Override public void onPrepareOptionsMenu(Menu menu)
     {
         super.onPrepareOptionsMenu(menu);
-        MenuItem menuElements = menu.findItem(R.id.menu_elements_stock_info);
 
-        marketCloseIcon = (ImageView) menuElements.getActionView().findViewById(R.id.market_status);
-        if (marketCloseIcon != null)
-        {
-            marketCloseIcon.setOnClickListener(new View.OnClickListener()
-            {
-                @Override public void onClick(View v)
-                {
-                    handleMarketCloseClicked();
-                }
-            });
-        }
+        marketCloseIcon = menu.findItem(R.id.buy_sell_menu_market_status);
 
         displayMarketClose();
     }
 
     @Override public void onDestroyOptionsMenu()
     {
-        if (marketCloseIcon != null)
-        {
-            marketCloseIcon.setOnClickListener(null);
-        }
-        marketCloseIcon = null;
         super.onDestroyOptionsMenu();
     }
 
@@ -316,7 +300,7 @@ public class StockInfoFragment extends DashboardFragment
     {
         if (marketCloseIcon != null)
         {
-            marketCloseIcon.setVisibility(securityCompactDTO == null || securityCompactDTO.marketOpen ? View.GONE : View.VISIBLE);
+            marketCloseIcon.setVisible(securityCompactDTO != null && !securityCompactDTO.marketOpen);
         }
     }
 

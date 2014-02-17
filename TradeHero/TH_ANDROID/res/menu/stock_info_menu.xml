@@ -3,10 +3,9 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
   <item
-      android:id="@+id/menu_elements_stock_info"
-      android:actionLayout="@layout/menu_elements_stock_info"
-      android:visible="true"
-      android:showAsAction="always"
+      android:id="@+id/buy_sell_menu_market_status"
+      android:title="@string/market_status"
+      android:showAsAction="ifRoom"
+      android:icon="@drawable/buyscreen_stock_inactive"
       />
-
 </menu>
