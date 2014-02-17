@@ -8,7 +8,7 @@ import com.tradehero.common.persistence.Query;
 import com.tradehero.th.api.leaderboard.LeaderboardDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardDefDTO;
 import com.tradehero.th.network.service.LeaderboardServiceWrapper;
-import com.tradehero.th.network.service.retrofit.BasicRetrofitErrorHandler;
+import com.tradehero.th.network.retrofit.BasicRetrofitErrorHandler;
 import com.tradehero.th.network.service.LeaderboardService;
 import dagger.Lazy;
 import java.util.ArrayList;

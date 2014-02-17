@@ -1,4 +1,4 @@
-package com.tradehero.th.network.service.retrofit;
+package com.tradehero.th.network.retrofit;
 
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;

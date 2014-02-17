@@ -1,4 +1,4 @@
-package com.tradehero.th.network.service.retrofit;
+package com.tradehero.th.network.retrofit;
 
 import retrofit.Callback;
 import retrofit.RetrofitError;

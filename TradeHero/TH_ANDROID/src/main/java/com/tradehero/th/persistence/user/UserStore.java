@@ -4,7 +4,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import com.tradehero.common.persistence.Query;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.network.service.retrofit.BasicRetrofitErrorHandler;
+import com.tradehero.th.network.retrofit.BasicRetrofitErrorHandler;
 import com.tradehero.th.network.service.UserService;
 
 import javax.inject.Inject;

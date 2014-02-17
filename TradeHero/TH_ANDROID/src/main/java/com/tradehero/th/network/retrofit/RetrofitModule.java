@@ -1,9 +1,11 @@
-package com.tradehero.th.network.service.retrofit;
+package com.tradehero.th.network.retrofit;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tradehero.common.utils.JacksonConverter;
 import com.tradehero.th.fragments.settings.SettingsPayPalFragment;
 import com.tradehero.th.fragments.settings.SettingsTransactionHistoryFragment;
+import com.tradehero.th.network.FriendlyUrlConnectionClient;
+import com.tradehero.th.network.NullHostNameVerifier;
 import com.tradehero.th.network.service.AlertPlanService;
 import com.tradehero.th.network.service.AlertService;
 import com.tradehero.th.network.service.CompetitionService;
@@ -26,9 +28,24 @@ import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.RetrofitConstants;
 import dagger.Module;
 import dagger.Provides;
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.security.SecureRandom;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 import javax.inject.Singleton;
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 import retrofit.RestAdapter;
 import retrofit.Server;
+import retrofit.client.Client;
+import retrofit.client.Request;
+import retrofit.client.UrlConnectionClient;
 import retrofit.converter.Converter;
 
 /**
@@ -46,6 +63,8 @@ import retrofit.converter.Converter;
 public class RetrofitModule
 {
     private static final String YAHOO_FINANCE_ENDPOINT = "http://finance.yahoo.com";
+    private static final String TRADEHERO_DEV_ENDPOINT = "https://th-paas-test-dev1.cloudapp.net/api/";
+    private static final String TRADEHERO_PROD_ENDPOINT = "https://www.tradehero.mobi/api/";
 
     //<editor-fold desc="API Services">
     @Provides @Singleton UserService provideUserService(RestAdapter engine)
@@ -141,15 +160,24 @@ public class RetrofitModule
 
     @Provides @Singleton Server provideApiServer()
     {
-        return new Server(Constants.BASE_API_URL);
+        if (Constants.RELEASE)
+        {
+            return new Server(TRADEHERO_PROD_ENDPOINT);
+        }
+        else
+        {
+            return new Server(TRADEHERO_DEV_ENDPOINT);
+        }
     }
 
     @Provides RestAdapter.Builder provideRestAdapterBuilder(
+            FriendlyUrlConnectionClient client,
             Converter converter,
             RetrofitSynchronousErrorHandler errorHandler)
     {
         return new RestAdapter.Builder()
                 .setConverter(converter)
+                .setClient(client)
                 .setErrorHandler(errorHandler)
                 .setLogLevel(RetrofitConstants.DEFAULT_SERVICE_LOG_LEVEL);
     }
