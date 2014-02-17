@@ -119,7 +119,7 @@ import javax.inject.Singleton;
         preFetchExchanges();
         preFetchWatchlist();
         preFetchProviders();
-        preFetchTrending();
+//        preFetchTrending(); // It would be too heavy on the server as we now jump first to Trending.
         preFetchAlerts();
     }
     
