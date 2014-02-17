@@ -19,12 +19,12 @@ public class UserProfileCompactView extends RelativeLayout implements DTOView<Us
     //<editor-fold desc="Constructors">
     public UserProfileCompactView(Context context)
     {
-        this(context, null);
+        super(context);
     }
 
     public UserProfileCompactView(Context context, AttributeSet attrs)
     {
-        this(context, attrs, 0);
+        super(context, attrs);
     }
 
     public UserProfileCompactView(Context context, AttributeSet attrs, int defStyle)

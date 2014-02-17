@@ -47,6 +47,7 @@ public class PushableTimelineFragment extends TimelineFragment
         btnFollow = menu.findItem(R.id.btn_follow_this_user);
         followingStamp = menu.findItem(R.id.ic_following);
         displayActionBarTitle();
+        super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override public void onPrepareOptionsMenu(Menu menu)

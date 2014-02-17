@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ImageView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/menu_follow_button"
+    android:layout_width="120dp"
+    android:layout_height="match_parent"
+    android:paddingRight="10dp"
+    android:src="@drawable/following_stamp"
+    android:contentDescription="@null"/>

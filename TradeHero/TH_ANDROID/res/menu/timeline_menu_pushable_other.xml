@@ -13,10 +13,9 @@
 
   <item
       android:id="@+id/ic_following"
-      android:icon="@drawable/following_stamp"
       android:title="@string/action_bar_following"
-      android:showAsAction="ifRoom"
-      android:visible="false"
+      android:actionLayout="@layout/menu_follow_button"
+      android:showAsAction="always"
     />
 
 </menu>
