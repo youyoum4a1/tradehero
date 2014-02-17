@@ -1,9 +1,7 @@
 package com.tradehero.th.fragments.position;
 
-import android.app.Activity;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,7 +25,6 @@ import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.billing.googleplay.THIABActor;
 import com.tradehero.th.billing.googleplay.THIABPurchase;
 import com.tradehero.th.fragments.alert.AlertCreateFragment;
 import com.tradehero.th.fragments.base.BaseFragment;
@@ -44,6 +41,7 @@ import com.tradehero.th.fragments.social.hero.HeroAlertDialogUtil;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.fragments.trade.BuySellFragment;
 import com.tradehero.th.fragments.trade.TradeListFragment;
+import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.persistence.portfolio.PortfolioCache;
 import com.tradehero.th.persistence.position.PositionCache;
 import com.tradehero.th.persistence.security.SecurityIdCache;
@@ -60,9 +58,10 @@ abstract public class AbstractPositionListFragment<
         GetPositionsDTOType extends AbstractGetPositionsDTO<PositionDTOType>>
         extends BasePurchaseManagerFragment
         implements BaseFragment.TabBarVisibilityInformer,
-            PositionListener<PositionDTOType>,
-            PortfolioHeaderView.OnFollowRequestedListener,
-            PortfolioHeaderView.OnTimelineRequestedListener
+        PositionListener<PositionDTOType>,
+        PortfolioHeaderView.OnFollowRequestedListener,
+        PortfolioHeaderView.OnTimelineRequestedListener,
+        WithTutorial
 {
     public static final String TAG = PositionListFragment.class.getSimpleName();
     public static final String BUNDLE_KEY_SHOW_PORTFOLIO_ID_BUNDLE = AbstractPositionListFragment.class.getName() + ".showPortfolioId";
@@ -130,9 +129,11 @@ abstract public class AbstractPositionListFragment<
                     {
                         handlePositionItemClicked(adapterView, view, position, id);
                     }
+
                     @Override public void onItemDidExpand(AdapterView<?> parent, View view, int position, long id)
                     {
                     }
+
                     @Override public void onItemDidCollapse(AdapterView<?> parent, View view, int position, long id)
                     {
                     }
@@ -188,17 +189,6 @@ abstract public class AbstractPositionListFragment<
         displayActionBarTitle();
     }
 
-    @Override public boolean onOptionsItemSelected(MenuItem item)
-    {
-        switch (item.getItemId())
-        {
-            case R.id.position_list_info:
-                handleInfoButtonPressed(item);
-                break;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
     @Override public void onResume()
     {
         super.onResume();
@@ -249,7 +239,7 @@ abstract public class AbstractPositionListFragment<
             {
                 expandedPositions = new boolean[expandedStates.size()];
                 int position = 0;
-                for (Boolean state: expandedStates)
+                for (Boolean state : expandedStates)
                 {
                     expandedPositions[position++] = state;
                 }
@@ -293,7 +283,9 @@ abstract public class AbstractPositionListFragment<
     }
 
     abstract protected void fetchSimplePage();
+
     abstract protected DTOCache.Listener<CacheQueryIdType, GetPositionsDTOType> createCacheListener();
+
     abstract protected DTOCache.GetOrFetchTask<CacheQueryIdType, GetPositionsDTOType> createCacheFetchTask();
 
     public void linkWith(GetPositionsDTOType getPositionsDTO, boolean andDisplay)
@@ -357,7 +349,7 @@ abstract public class AbstractPositionListFragment<
         if (getPositionsDTO != null && getPositionsDTO.positions != null)
         {
             String title = String.format(getResources().getString(R.string.position_list_action_bar_header),
-                                         getPositionsDTO.positions.size());
+                    getPositionsDTO.positions.size());
             actionBar.setTitle(title);
         }
         else
@@ -372,11 +364,6 @@ abstract public class AbstractPositionListFragment<
         {
             progressBar.setVisibility(running ? View.VISIBLE : View.GONE);
         }
-    }
-
-    private void handleInfoButtonPressed(MenuItem item)
-    {
-        THToast.show("No info for now");
     }
 
     private void pushBuySellFragment(PositionDTOType clickedPositionDTO, boolean isBuy)
@@ -509,7 +496,6 @@ abstract public class AbstractPositionListFragment<
         {
             super.handlePurchaseReportSuccess(reportedPurchase, updatedUserProfile);
             displayHeaderView();
-
         }
 
         @Override protected void createFollowCallback()
@@ -537,5 +523,10 @@ abstract public class AbstractPositionListFragment<
             THToast.show(getString(R.string.error_fetch_position_list_info));
             THLog.e(TAG, "Error fetching the positionList info " + key, error);
         }
+    }
+
+    @Override public int getTutorialLayout()
+    {
+        return R.layout.tutorial_position_list;
     }
 }

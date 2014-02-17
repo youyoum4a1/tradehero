@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_height="wrap_content"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    tools:background="@color/black"
+    >
+  <TextView
+      style="@style/TutorialTextHeader"
+      android:text="@string/tutorial_position_list_header"
+      />
+  <TextView
+      style="@style/TutorialTextContent"
+      android:text="@string/tutorial_position_list_content1"
+      />
+
+  <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="horizontal"
+      android:paddingBottom="10dp"
+      >
+    <TextView android:layout_width="wrap_content" android:layout_height="match_parent"
+        style="@style/TutorialTextContent"
+        android:gravity="center"
+        android:text="@string/tutorial_position_list_formula_left_text"
+        />
+    <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        >
+      <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+          style="@style/TutorialTextContent"
+          android:gravity="center"
+          android:paddingBottom="5dp"
+          android:text="@string/tutorial_position_list_formula_top_text"
+          />
+      <View android:layout_width="match_parent" android:layout_height="1sp"
+          android:background="@color/white"
+          />
+      <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+          style="@style/TutorialTextContent"
+          android:gravity="center"
+          android:paddingTop="5dp"
+          android:text="@string/tutorial_position_list_formula_bottom_text"
+          />
+    </LinearLayout>
+
+  </LinearLayout>
+
+  <TextView
+      style="@style/TutorialTextContent"
+      android:text="@string/tutorial_position_list_content2"
+      />
+</LinearLayout>
