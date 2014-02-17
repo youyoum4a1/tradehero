@@ -17,6 +17,13 @@ public class BaseFragment extends SherlockFragment
     protected boolean hasOptionMenu = true;
     protected boolean isOptionMenuVisible = true;
 
+    @Override public void onAttach(Activity activity)
+    {
+        super.onAttach(activity);
+
+        DaggerUtils.inject(this);
+    }
+
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
@@ -41,13 +48,6 @@ public class BaseFragment extends SherlockFragment
             actionBar.hide();
         }
         super.onCreateOptionsMenu(menu, inflater);
-    }
-
-    @Override public void onAttach(Activity activity)
-    {
-        super.onAttach(activity);
-
-        DaggerUtils.inject(this);
     }
 
     public static interface TabBarVisibilityInformer
