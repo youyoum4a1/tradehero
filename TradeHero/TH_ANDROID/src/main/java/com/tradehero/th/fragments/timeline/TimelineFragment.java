@@ -42,7 +42,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 public class TimelineFragment extends BasePurchaseManagerFragment
-        implements PortfolioRequestListener, WithTutorial
+        implements PortfolioRequestListener
 {
     public static final String TAG = TimelineFragment.class.getSimpleName();
     public static final String BUNDLE_KEY_SHOW_USER_ID =
@@ -352,11 +352,6 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     @Override public boolean isTabBarVisible()
     {
         return false;
-    }
-
-    @Override public int getTutorialLayout()
-    {
-        return R.layout.tutorial_timeline;
     }
     //</editor-fold>
 }

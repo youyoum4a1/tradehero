@@ -8,12 +8,14 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.th.R;
 import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListRetrievedMilestone;
 import com.tradehero.th.persistence.user.UserProfileRetrievedMilestone;
 import javax.inject.Inject;
 
 /** Created with IntelliJ IDEA. User: tho Date: 9/20/13 Time: 3:35 PM Copyright (c) TradeHero */
 public class MeTimelineFragment extends TimelineFragment
+    implements WithTutorial
 {
     @Inject protected CurrentUserId currentUserId;
 
@@ -46,5 +48,11 @@ public class MeTimelineFragment extends TimelineFragment
     @Override public boolean isTabBarVisible()
     {
         return true;
+    }
+
+
+    @Override public int getTutorialLayout()
+    {
+        return R.layout.tutorial_timeline;
     }
 }
