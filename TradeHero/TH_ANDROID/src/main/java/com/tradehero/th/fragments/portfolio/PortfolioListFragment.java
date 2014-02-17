@@ -31,11 +31,12 @@ import com.tradehero.th.persistence.portfolio.UserPortfolioFetchAssistant;
 import com.tradehero.th.persistence.social.VisitedFriendListPrefs;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import dagger.Lazy;
+
+import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.inject.Inject;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 10/14/13 Time: 11:47 AM To change this template use File | Settings | File Templates. */
 public class PortfolioListFragment extends DashboardFragment
@@ -122,9 +123,9 @@ public class PortfolioListFragment extends DashboardFragment
         return false;
     }
 
-    @Override public void onStart()
+    @Override public void onResume()
     {
-        super.onStart();
+        super.onResume();
         displayablePortfolios = new HashMap<>();
         fetchListOwn();
         fetchListOther();
