@@ -97,7 +97,7 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
             }
         };
 
-        TimeSpanButtonSet timeSpanButtonSetTemp = (TimeSpanButtonSet) view.findViewById(R.id.yahoo_time_span_button_set);
+        TimeSpanButtonSet timeSpanButtonSetTemp = (TimeSpanButtonSet) view.findViewById(R.id.chart_time_span_button_set);
         if (timeSpanButtonSetTemp != null)
         {
             timeSpanButtonSetTemp.addAllChildButtons();

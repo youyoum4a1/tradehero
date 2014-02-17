@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<merge xmlns:android="http://schemas.android.com/apk/res/android">
+<merge
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        >
+
   <com.tradehero.th.fragments.trending.filter.TrendingFilterSelectorView
       android:id="@+id/trending_filter_selector_view"
       android:orientation="horizontal"
@@ -54,10 +58,10 @@
             android:id="@+id/trending_filter_title_icon"
             android:layout_width="16sp"
             android:layout_height="16sp"
-            android:src="@null"
             android:scaleType="centerInside"
             android:baselineAlignBottom="true"
             android:contentDescription="@null"
+            tools:src="@drawable/ic_trending_volume"
             />
 
         <TextView
@@ -68,6 +72,7 @@
             android:textStyle="bold"
             android:textSize="16sp"
             android:drawableLeft="@null"
+            tools:text="Unusual Volumes"
             />
 
       </LinearLayout>
@@ -79,6 +84,7 @@
           android:layout_gravity="center_horizontal"
           android:textSize="9sp"
           android:maxLines="1"
+          tools:text="previous day volume > average daily volume"
           />
 
       <Spinner
@@ -91,4 +97,5 @@
     </LinearLayout>
 
   </com.tradehero.th.fragments.trending.filter.TrendingFilterSelectorView>
+
 </merge>

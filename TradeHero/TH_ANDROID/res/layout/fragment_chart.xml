@@ -9,7 +9,7 @@
   >
 
   <com.tradehero.th.widget.news.TimeSpanButtonSet
-      android:id="@+id/yahoo_time_span_button_set"
+      android:id="@+id/chart_time_span_button_set"
       android:layout_width="match_parent"
       android:layout_height="48dp"
       android:layout_alignParentBottom="true"
@@ -31,7 +31,7 @@
       android:id="@+id/chart_imageView"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
-      android:layout_above="@id/yahoo_time_span_button_set"
+      android:layout_above="@id/chart_time_span_button_set"
       android:layout_alignParentTop="true"
       android:layout_marginRight="8dp"
       android:layout_marginLeft="8dp"
