@@ -119,19 +119,6 @@ public class Navigator
     //    return pushFragment(fragmentClass, args, getSafeAnimation());
     //}
 
-    public void showTutorial(Fragment ownerFragmentClass)
-    {
-        //if (ownerFragmentClass instanceof WithTutorial)
-        //{
-        //    int tutorialLayoutId = ((WithTutorial) ownerFragmentClass).getTutorialLayout();
-        //    Bundle bundle = new Bundle();
-        //    bundle.putInt(TutorialFragment.TUTORIAL_LAYOUT, tutorialLayoutId);
-        //    THLog.d(TAG, "Showing tutorial for " + ownerFragmentClass.getClass().getName());
-        //    pushFragment(TutorialFragment.class, bundle, TUTORIAL_ANIMATION);
-        //}
-        ActivityHelper.launchAuthentication(context);
-    }
-
     public void openSettings()
     {
         pushFragment(SettingsFragment.class);

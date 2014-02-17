@@ -6,6 +6,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.tradehero.common.utils.THLog;
@@ -34,16 +36,17 @@ public class LeaderboardMarkUserListViewFragment extends BaseLeaderboardFragment
     public static final String TAG = LeaderboardMarkUserListViewFragment.class.getSimpleName();
     public static final String PREFERENCE_KEY_PREFIX = LeaderboardMarkUserListViewFragment.class.getName();
 
-    @Inject protected Provider<PrettyTime> prettyTime;
+    @Inject Provider<PrettyTime> prettyTime;
+    @Inject SharedPreferences preferences;
+    @InjectView(R.id.leaderboard_listview) LeaderboardMarkUserListView leaderboardMarkUserListView;
+
+    private TextView leaderboardMarkUserMarkingTime;
 
     protected int leaderboardId;
     private LeaderboardMarkUserListAdapter leaderboardMarkUserListAdapter;
-    private LeaderboardMarkUserListView leaderboardMarkUserListView;
-    private TextView leaderboardMarkUserMarkingTime;
 
     protected LeaderboardMarkUserLoader leaderboardMarkUserLoader;
 
-    @Inject protected SharedPreferences preferences;
     protected PerPagedLeaderboardKeyPreference savedPreference;
 
     protected LeaderboardFilterFragment leaderboardFilterFragment;
@@ -71,14 +74,9 @@ public class LeaderboardMarkUserListViewFragment extends BaseLeaderboardFragment
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.leaderboard_listview, container, false);
-        initViews(view);
         inflateHeaderView(inflater);
+        initViews(view);
         return view;
-    }
-
-    protected void initViews(View view)
-    {
-        leaderboardMarkUserListView = (LeaderboardMarkUserListView) view.findViewById(R.id.leaderboard_listview);
     }
 
     protected void inflateHeaderView(LayoutInflater inflater)
@@ -135,10 +133,6 @@ public class LeaderboardMarkUserListViewFragment extends BaseLeaderboardFragment
     {
         switch (item.getItemId())
         {
-            case R.id.leaderboard_listview_menu_help:
-                getNavigator().showTutorial(this);
-                break;
-
             case R.id.button_leaderboard_filter:
                 pushFilterFragmentIn();
                 break;
@@ -146,6 +140,11 @@ public class LeaderboardMarkUserListViewFragment extends BaseLeaderboardFragment
         return super.onOptionsItemSelected(item);
     }
     //</editor-fold>
+
+    @Override protected void initViews(View view)
+    {
+        ButterKnife.inject(this, view);
+    }
 
     @Override public void onActivityCreated(Bundle savedInstanceState)
     {

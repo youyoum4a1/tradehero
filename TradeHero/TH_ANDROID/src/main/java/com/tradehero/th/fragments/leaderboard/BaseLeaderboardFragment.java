@@ -28,10 +28,11 @@ abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragmen
     public static final String BUNDLE_KEY_LEADERBOARD_DEF_TITLE = BaseLeaderboardFragment.class.getName() + ".leaderboardDefTitle";
     public static final String BUNDLE_KEY_LEADERBOARD_DEF_DESC = BaseLeaderboardFragment.class.getName() + ".leaderboardDefDesc";
 
-    @Inject protected LeaderboardSortHelper leaderboardSortHelper;
-    @Inject protected CurrentUserId currentUserId;
+    @Inject LeaderboardSortHelper leaderboardSortHelper;
+    @Inject CurrentUserId currentUserId;
+    @Inject UserProfileCache userProfileCache;
+
     protected UserProfileDTO currentUserProfileDTO;
-    @Inject protected UserProfileCache userProfileCache;
     protected DTOCache.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
     protected DTOCache.GetOrFetchTask<UserBaseKey, UserProfileDTO> userProfileCacheFetchTask;
 
