@@ -27,6 +27,7 @@ public class BaseIABProductDetail implements IABProductDetail<IABSKU>
     public final String description;
     protected final String json;
 
+    //<editor-fold desc="Constructors">
     public BaseIABProductDetail(String jsonSkuDetails) throws JSONException
     {
         this(Constants.ITEM_TYPE_INAPP, jsonSkuDetails);
@@ -49,6 +50,7 @@ public class BaseIABProductDetail implements IABProductDetail<IABSKU>
         this.title = o.optString(JSON_KEY_TITLE);
         this.description = o.optString(JSON_KEY_DESCRIPTION);
     }
+    //</editor-fold>
 
     @Override public String toString()
     {
@@ -71,20 +73,4 @@ public class BaseIABProductDetail implements IABProductDetail<IABSKU>
         return this.type == null ? type == null : this.type.equals(type);
     }
     //</editor-fold>
-
-    public static Comparator<BaseIABProductDetail> DecreasingPriceComparator = new Comparator<BaseIABProductDetail>()
-    {
-        public int compare(BaseIABProductDetail baseIABProductDetail1, BaseIABProductDetail baseIABProductDetail2)
-        {
-            if (baseIABProductDetail1 == null)
-            {
-                return baseIABProductDetail2 == null ? 0 : 1;
-            }
-            if (baseIABProductDetail2 == null)
-            {
-                return 1;
-            }
-            return baseIABProductDetail2.priceAmountMicros.compareTo(baseIABProductDetail1.priceAmountMicros);
-        }
-    };
 }

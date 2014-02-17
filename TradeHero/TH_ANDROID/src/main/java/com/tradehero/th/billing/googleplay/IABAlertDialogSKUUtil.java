@@ -25,7 +25,7 @@ import javax.inject.Singleton;
 
     public AlertDialog popBuyDialog(
             Activity activity,
-            SKUDomainInformer domainInformer,
+            THIABProductDetailDomainInformer domainInformer,
             IABAlertDialogUtil.OnDialogSKUDetailsClickListener<THIABProductDetail> clickListener,
             String skuDomain,
             int titleResId,
@@ -36,7 +36,7 @@ import javax.inject.Singleton;
 
     protected AlertDialog popBuyDialog(
             Activity activity,
-            SKUDomainInformer domainInformer,
+            THIABProductDetailDomainInformer domainInformer,
             IABAlertDialogUtil.OnDialogSKUDetailsClickListener<THIABProductDetail> clickListener,
             String skuDomain,
             int titleResId,

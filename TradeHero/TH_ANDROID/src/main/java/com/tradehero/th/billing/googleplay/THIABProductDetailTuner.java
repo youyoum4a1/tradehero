@@ -6,11 +6,11 @@ import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 11/6/13 Time: 3:25 PM To change this template use File | Settings | File Templates. */
-public class THSKUDetailTuner implements ProductDetailTuner<IABSKU, THIABProductDetail>
+public class THIABProductDetailTuner implements ProductDetailTuner<IABSKU, THIABProductDetail>
 {
-    public static final String TAG = THSKUDetailTuner.class.getSimpleName();
+    public static final String TAG = THIABProductDetailTuner.class.getSimpleName();
 
-    public THSKUDetailTuner()
+    public THIABProductDetailTuner()
     {
         super();
     }

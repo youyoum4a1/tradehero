@@ -243,7 +243,8 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
 
         if (leaderboardItem.picture != null)
         {
-            picasso.get().load(leaderboardItem.picture)
+            picasso.get()
+                    .load(leaderboardItem.picture)
                     .transform(peopleIconTransformation)
                     .into(lbmuProfilePicture,
                             new Callback()
