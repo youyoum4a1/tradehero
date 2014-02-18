@@ -102,7 +102,7 @@ public class AlertEditFragment extends BaseAlertEditFragment
         ActionBar actionBar = getSherlockActivity().getSupportActionBar();
         if (actionBar != null)
         {
-            actionBar.setTitle(R.string.edit_alert);
+            actionBar.setTitle(R.string.stock_alert_edit_alert);
         }
     }
 

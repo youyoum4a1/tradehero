@@ -35,7 +35,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="@dimen/text_small"
-        android:text="@string/alert_target_price_help_text"
+        android:text="@string/stock_alert_target_price_help_text"
         android:id="@+id/alert_edit_target_price_help_text"
         android:layout_below="@id/alert_edit_target_price_change"
         android:textColor="@color/text_gray_normal"

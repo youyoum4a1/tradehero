@@ -5,7 +5,7 @@
   <item
       android:id="@+id/alert_menu_edit"
       android:showAsAction="always"
-      android:title="@string/edit"
+      android:title="@string/stock_alert_edit"
       />
 
 </menu>

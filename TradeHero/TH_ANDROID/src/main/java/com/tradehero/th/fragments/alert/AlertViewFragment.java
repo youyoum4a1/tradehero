@@ -241,13 +241,13 @@ public class AlertViewFragment extends BasePurchaseManagerFragment
         {
             THSignedNumber thTargetPrice = new THSignedNumber(THSignedNumber.TYPE_MONEY, alertDTO.targetPrice, false);
             targetPrice.setText(thTargetPrice.toString());
-            targetPriceLabel.setText(getString(R.string.target_price));
+            targetPriceLabel.setText(getString(R.string.stock_alert_target_price));
         }
         else
         {
             THSignedNumber thPriceMovement = new THSignedNumber(THSignedNumber.TYPE_PERCENTAGE, alertDTO.priceMovement * 100);
             targetPrice.setText(thPriceMovement.toString(0));
-            targetPriceLabel.setText(getString(R.string.percentage_movement));
+            targetPriceLabel.setText(getString(R.string.stock_alert_percentage_movement));
         }
     }
 

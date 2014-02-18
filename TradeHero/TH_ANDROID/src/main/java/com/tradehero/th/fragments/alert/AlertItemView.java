@@ -132,7 +132,7 @@ public class AlertItemView extends RelativeLayout
     {
         THSignedNumber thPriceRaise = new THSignedNumber(THSignedNumber.TYPE_MONEY, targetPrice, false);
         return Html.fromHtml(String.format(
-                getContext().getString(R.string.alert_when_price_falls),
+                getContext().getString(R.string.stock_alert_when_price_falls),
                 thPriceRaise.toString()
         ));
     }
@@ -141,7 +141,7 @@ public class AlertItemView extends RelativeLayout
     {
         THSignedNumber thPriceRaise = new THSignedNumber(THSignedNumber.TYPE_MONEY, targetPrice, false);
         return Html.fromHtml(String.format(
-                getContext().getString(R.string.alert_when_price_raises),
+                getContext().getString(R.string.stock_alert_when_price_raises),
                 thPriceRaise.toString()
         ));
     }
@@ -150,7 +150,7 @@ public class AlertItemView extends RelativeLayout
     {
         THSignedNumber thPercentageChange = new THSignedNumber(THSignedNumber.TYPE_PERCENTAGE, percentage);
         return Html.fromHtml(String.format(
-                getContext().getString(R.string.alert_when_price_move),
+                getContext().getString(R.string.stock_alert_when_price_move),
                 thPercentageChange.toString()
         ));
     }
@@ -182,14 +182,14 @@ public class AlertItemView extends RelativeLayout
         }
         else
         {
-            alertStatus.setText(R.string.inactive);
+            alertStatus.setText(R.string.stock_alert_inactive);
             alertStatus.setTextColor(getResources().getColor(R.color.text_gray_normal));
         }
     }
 
     private Spanned getFormattedActiveUntilString(Date activeUntilDate)
     {
-        return Html.fromHtml(String.format(getContext().getString(R.string.stock_alerts_active_until), DateUtils.getFormattedDate(activeUntilDate)));
+        return Html.fromHtml(String.format(getContext().getString(R.string.stock_alert_active_until), DateUtils.getFormattedDate(activeUntilDate)));
     }
 
     private void displayStockSymbol()

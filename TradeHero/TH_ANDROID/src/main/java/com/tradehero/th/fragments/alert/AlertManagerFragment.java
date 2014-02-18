@@ -243,17 +243,17 @@ public class AlertManagerFragment extends BasePurchaseManagerFragment
             int count = currentUserProfile.getUserAlertPlansAlertCount();
             if (count == 0)
             {
-                alertPlanCount.setText(R.string.no_alerts);
+                alertPlanCount.setText(R.string.stock_alerts_no_alerts);
                 btnPlanUpgrade.setVisibility(View.VISIBLE);
             }
             else if (count < Constants.ALERT_PLAN_UNLIMITED)
             {
-                alertPlanCount.setText(String.format(getString(R.string.count_alert_format), count));
+                alertPlanCount.setText(String.format(getString(R.string.stock_alert_count_alert_format), count));
                 btnPlanUpgrade.setVisibility(View.VISIBLE);
             }
             else
             {
-                alertPlanCount.setText(R.string.alert_plan_unlimited);
+                alertPlanCount.setText(R.string.stock_alert_plan_unlimited);
                 btnPlanUpgrade.setVisibility(View.GONE);
             }
         }

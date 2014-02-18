@@ -109,7 +109,7 @@ public class AlertListItemAdapter extends DTOListCacheAdapter<AlertId, AlertItem
         }
 
         holder.text.setText(getHeaderId(position) == 1 ?
-                getContext().getString(R.string.stock_alerts_active) :getContext().getString(R.string.stock_alerts_inactive_title)
+                getContext().getString(R.string.stock_alert_active) :getContext().getString(R.string.stock_alert_inactive_title)
         );
         return convertView;
     }

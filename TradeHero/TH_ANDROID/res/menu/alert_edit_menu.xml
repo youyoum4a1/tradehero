@@ -5,6 +5,6 @@
   <item
       android:showAsAction="always"
       android:id="@+id/alert_menu_save"
-      android:title="@string/alert_edit_menu_save"/>
+      android:title="@string/stock_alert_edit_menu_save"/>
 
 </menu>

@@ -449,8 +449,8 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
             }
             else if (alertDTO.activeUntilDate != null)
             {
-                SimpleDateFormat sdf = new SimpleDateFormat(getString(R.string.alert_price_info_as_of_date_format));
-                activeUntil.setText(getString(R.string.alert_info_active_until_date_format, sdf.format(alertDTO.activeUntilDate)));
+                SimpleDateFormat sdf = new SimpleDateFormat(getString(R.string.stock_alert_price_info_as_of_date_format));
+                activeUntil.setText(getString(R.string.stock_alert_info_active_until_date_format, sdf.format(alertDTO.activeUntilDate)));
             }
             else
             {
@@ -469,26 +469,26 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
         {
             THSignedNumber thTargetPrice = new THSignedNumber(THSignedNumber.TYPE_MONEY, alertDTO.targetPrice, false);
             targetPrice.setText(thTargetPrice.toString());
-            targetPriceLabel.setText(getString(R.string.target_price));
+            targetPriceLabel.setText(getString(R.string.stock_alert_target_price));
         }
         else
         {
             THSignedNumber thPriceMovement = new THSignedNumber(THSignedNumber.TYPE_PERCENTAGE, alertDTO.priceMovement * 100);
             targetPrice.setText(thPriceMovement.toString(0));
-            targetPriceLabel.setText(getString(R.string.percentage_movement));
+            targetPriceLabel.setText(getString(R.string.stock_alert_percentage_movement));
         }
     }
 
     protected Spanned getFormattedTargetPriceChange(String targetPriceString)
     {
         return Html.fromHtml(
-                String.format(getString(R.string.target_price_change_format), targetPriceString));
+                String.format(getString(R.string.stock_alert_target_price_change_format), targetPriceString));
     }
 
     protected Spanned getFormattedPercentageChange(String percentageString)
     {
         return Html.fromHtml(
-                String.format(getString(R.string.percentage_change_format), percentageString));
+                String.format(getString(R.string.stock_alert_percentage_change_format), percentageString));
     }
 
     protected void displayCurrentPrice()
@@ -514,8 +514,8 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
         {
             if (securityCompactDTO != null && securityCompactDTO.lastPriceDateAndTimeUtc != null)
             {
-                SimpleDateFormat sdf = new SimpleDateFormat(getString(R.string.alert_price_info_as_of_date_format));
-                asOfDate.setText(getString(R.string.alert_price_info_as_of_date, sdf.format(securityCompactDTO.lastPriceDateAndTimeUtc)));
+                SimpleDateFormat sdf = new SimpleDateFormat(getString(R.string.stock_alert_price_info_as_of_date_format));
+                asOfDate.setText(getString(R.string.stock_alert_price_info_as_of_date, sdf.format(securityCompactDTO.lastPriceDateAndTimeUtc)));
             }
             else
             {
@@ -628,7 +628,7 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
     protected Spanned getFormattedPercentageChangeTargetValue(String percentageChangeTargetValueString)
     {
         return Html.fromHtml(
-                String.format(getString(R.string.percentage_change_target_value_format), percentageChangeTargetValueString));
+                String.format(getString(R.string.stock_alert_percentage_change_target_value_format), percentageChangeTargetValueString));
     }
     //endregion
 

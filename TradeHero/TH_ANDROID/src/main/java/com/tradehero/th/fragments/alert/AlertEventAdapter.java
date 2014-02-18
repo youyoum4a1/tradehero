@@ -38,7 +38,7 @@ public class AlertEventAdapter extends ArrayDTOAdapter<AlertEventDTO, AlertEvent
         {
             holder = (TextHolder) convertView.getTag();
         }
-        holder.text.setText(R.string.notification_received);
+        holder.text.setText(R.string.stock_alert_notification_received);
         return convertView;
     }
 

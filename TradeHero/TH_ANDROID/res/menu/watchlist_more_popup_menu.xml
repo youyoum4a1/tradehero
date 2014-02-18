@@ -15,7 +15,7 @@
 
   <item
       android:id="@+id/watchlist_item_add_alert"
-      android:title="@string/add_alert"/>
+      android:title="@string/stock_alert_add_alert"/>
 
   <item
       android:id="@+id/watchlist_item_view_graph"

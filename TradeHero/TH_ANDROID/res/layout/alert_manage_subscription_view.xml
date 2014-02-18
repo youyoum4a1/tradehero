@@ -15,7 +15,7 @@
       android:layout_centerInParent="true"
       android:textStyle="bold"
       android:textSize="16sp"
-      android:text="@string/alert_manage_subscriptions"
+      android:text="@string/stock_alert_manage_subscriptions"
       />
 
 </com.tradehero.th.widget.list.BaseListHeaderView>
