@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.MenuItem;
 import com.tradehero.common.persistence.DTOCache;
@@ -319,11 +318,11 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
     {
         if (!hasValidInfoForBuy())
         {
-            return getResources().getString(R.string.buy_details_unavailable);
+            return getResources().getString(R.string.buy_sell_buy_details_unavailable);
         }
 
         return String.format(
-                getResources().getString(R.string.buy_details),
+                getResources().getString(R.string.buy_sell_buy_details),
                 mBuyQuantity,
                 securityId.exchange,
                 securityId.securitySymbol,
@@ -339,11 +338,11 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
     {
         if (!hasValidInfoForSell())
         {
-            return getResources().getString(R.string.sell_details_unavailable);
+            return getResources().getString(R.string.buy_sell_sell_details_unavailable);
         }
 
         return String.format(
-                getResources().getString(R.string.sell_details),
+                getResources().getString(R.string.buy_sell_sell_details),
                 mSellQuantity,
                 securityId.exchange,
                 securityId.securitySymbol,
@@ -475,20 +474,7 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
 
     protected void notifyMarketClosed()
     {
-        if (securityId == null)
-        {
-            alertDialogUtil.popWithNegativeButton(getActivity(),
-                    R.string.alert_dialog_market_close_title,
-                    R.string.alert_dialog_market_close_message_basic,
-                    R.string.alert_dialog_market_close_cancel);
-        }
-        else
-        {
-            alertDialogUtil.popWithNegativeButton(getActivity(),
-                    getString(R.string.alert_dialog_market_close_title),
-                    String.format(getString(R.string.alert_dialog_market_close_message), securityId.exchange, securityId.securitySymbol),
-                    getString(R.string.alert_dialog_market_close_cancel));
-        }
+        alertDialogUtil.popMarketClosed(getActivity(), securityId);
     }
 
     abstract protected FreshQuoteHolder.FreshQuoteListener createFreshQuoteListener();

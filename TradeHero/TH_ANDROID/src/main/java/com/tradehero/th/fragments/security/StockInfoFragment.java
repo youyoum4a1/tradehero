@@ -339,20 +339,7 @@ public class StockInfoFragment extends DashboardFragment
 
     protected void handleMarketCloseClicked()
     {
-        if (securityId == null)
-        {
-            alertDialogUtil.popWithNegativeButton(getActivity(),
-                    R.string.alert_dialog_market_close_title,
-                    R.string.alert_dialog_market_close_message_basic,
-                    R.string.alert_dialog_market_close_cancel);
-        }
-        else
-        {
-            alertDialogUtil.popWithNegativeButton(getActivity(),
-                    getString(R.string.alert_dialog_market_close_title),
-                    String.format(getString(R.string.alert_dialog_market_close_message), securityId.exchange, securityId.securitySymbol),
-                    getString(R.string.alert_dialog_market_close_cancel));
-        }
+        alertDialogUtil.popMarketClosed(getActivity(), securityId);
     }
 
     //<editor-fold desc="BaseFragment.TabBarVisibilityInformer">

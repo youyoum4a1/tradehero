@@ -890,13 +890,13 @@ public class BuySellFragment extends AbstractBuySellFragment
             {
                 boolean isOk = mBuyQuantity != null && mBuyQuantity > 0;
                 mBuyBtn.setEnabled(isOk);
-                mBuyBtn.setText(isOk ? R.string.button_buy : R.string.button_cannot_buy);
+                mBuyBtn.setText(isOk ? R.string.buy_sell_button_buy : R.string.buy_sell_button_cannot_buy);
             }
             else
             {
                 boolean isOk = mSellQuantity != null && mSellQuantity > 0;
                 mBuyBtn.setEnabled(isOk);
-                mBuyBtn.setText(isOk ? R.string.button_sell : R.string.button_cannot_sell);
+                mBuyBtn.setText(isOk ? R.string.buy_sell_button_sell : R.string.buy_sell_button_cannot_sell);
             }
             mBuyBtn.setAlpha(mBuyBtn.isEnabled() ? 1 : BUY_BUTTON_DISABLED_ALPHA);
         }

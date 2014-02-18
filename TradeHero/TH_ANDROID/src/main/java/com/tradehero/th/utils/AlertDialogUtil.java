@@ -10,8 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.TextView;
 import com.tradehero.th.R;
+import com.tradehero.th.api.security.SecurityId;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
@@ -137,5 +137,23 @@ import javax.inject.Singleton;
 
         dialog.show();
         return dialog;
+    }
+
+    public AlertDialog popMarketClosed(final Context context, SecurityId securityId)
+    {
+        if (securityId == null)
+        {
+            return popWithNegativeButton(context,
+                    R.string.alert_dialog_market_close_title,
+                    R.string.alert_dialog_market_close_message_basic,
+                    R.string.alert_dialog_market_close_cancel);
+        }
+        else
+        {
+            return popWithNegativeButton(context,
+                    context.getString(R.string.alert_dialog_market_close_title),
+                    String.format(context.getString(R.string.alert_dialog_market_close_message), securityId.exchange, securityId.securitySymbol),
+                    context.getString(R.string.alert_dialog_market_close_cancel));
+        }
     }
 }

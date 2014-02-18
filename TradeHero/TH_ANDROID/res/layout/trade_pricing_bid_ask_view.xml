@@ -81,7 +81,7 @@
           android:layout_height="wrap_content"
           android:layout_weight="1"
           android:gravity="right"
-          android:text="@string/bid_with_bracket"
+          android:text="@string/buy_sell_bid_with_bracket"
           android:textSize="12sp"
           android:singleLine="true"
           />
@@ -101,7 +101,7 @@
           android:layout_height="wrap_content"
           android:layout_weight="1"
           android:gravity="left"
-          android:text="@string/ask_with_bracket"
+          android:text="@string/buy_sell_ask_with_bracket"
           android:textSize="12sp"
           android:singleLine="true"
           />

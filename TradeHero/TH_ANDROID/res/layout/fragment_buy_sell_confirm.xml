@@ -118,8 +118,8 @@
         android:layout_alignParentRight="true"
         android:layout_centerInParent="true"
         android:textSize="16sp"
-        android:textOn="@string/share_public"
-        android:textOff="@string/share_private"
+        android:textOn="@string/buy_sell_confirm_share_public"
+        android:textOff="@string/buy_sell_confirm_share_private"
         />
 
       <!--

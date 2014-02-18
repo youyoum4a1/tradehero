@@ -24,7 +24,7 @@
           android:background="@drawable/trade_list_header_button_bg"
           android:layout_margin="5dp"
           android:textColor="@color/white"
-          android:text="@string/button_buy"/>
+          android:text="@string/trade_list_button_buy"/>
 
       <Button
           android:id="@+id/trade_list_header_sell"
@@ -34,7 +34,7 @@
           android:layout_margin="5dp"
           android:background="@drawable/trade_list_header_button_bg"
           android:textColor="@color/white"
-          android:text="@string/button_sell"/>
+          android:text="@string/trade_list_button_sell"/>
 
   </LinearLayout>
 
