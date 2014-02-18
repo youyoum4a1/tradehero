@@ -24,6 +24,7 @@ public class FriendlyUrlConnectionClient extends UrlConnectionClient
     @Inject public FriendlyUrlConnectionClient()
     {
         super();
+        HttpsURLConnection.setDefaultHostnameVerifier(new NullHostNameVerifier());
     }
 
     @Override protected HttpURLConnection openConnection(Request request) throws IOException
@@ -32,7 +33,6 @@ public class FriendlyUrlConnectionClient extends UrlConnectionClient
         if (connection instanceof HttpsURLConnection)
         {
             ((HttpsURLConnection) connection).setSSLSocketFactory(createBadSslSocketFactory());
-            HttpsURLConnection.setDefaultHostnameVerifier(new NullHostNameVerifier());
         }
         return connection;
     }
