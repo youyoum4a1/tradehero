@@ -4,8 +4,10 @@ import android.net.Uri;
 import android.support.v4.app.Fragment;
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.ProviderId;
-import com.tradehero.th.utils.Constants;
+import com.tradehero.th.utils.DaggerUtils;
 import java.util.List;
+import javax.inject.Inject;
+import retrofit.Server;
 
 /**
  * Created by xavier on 1/10/14.
@@ -13,12 +15,15 @@ import java.util.List;
 public class ProviderPageIntent extends OneProviderIntent
 {
     public static final String TAG = ProviderPageIntent.class.getSimpleName();
+    @Inject Server apiServer;
 
     //<editor-fold desc="Constructors">
     public ProviderPageIntent(ProviderId providerId, String uri)
     {
         super();
         setData(getProviderActionUri(providerId, uri));
+
+        DaggerUtils.inject(this);
     }
     //</editor-fold>
 
@@ -55,7 +60,7 @@ public class ProviderPageIntent extends OneProviderIntent
 
     public String getCompleteForwardUriPath()
     {
-        return Constants.BASE_API_URL + getForwardUriPath();
+        return apiServer.getUrl() + getForwardUriPath();
     }
 
     public String getForwardUriPath()

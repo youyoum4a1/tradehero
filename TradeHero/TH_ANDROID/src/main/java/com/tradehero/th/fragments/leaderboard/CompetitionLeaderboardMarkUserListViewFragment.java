@@ -8,8 +8,8 @@ import com.actionbarsherlock.view.MenuItem;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.CompetitionDTO;
+import com.tradehero.th.api.competition.ProviderUtil;
 import com.tradehero.th.api.competition.key.CompetitionId;
-import com.tradehero.th.api.competition.ProviderConstants;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
@@ -32,18 +32,19 @@ public class CompetitionLeaderboardMarkUserListViewFragment extends LeaderboardM
     public static final String BUNDLE_KEY_PROVIDER_ID = CompetitionLeaderboardMarkUserListViewFragment.class.getName() + ".providerId";
     public static final String BUNDLE_KEY_COMPETITION_ID = CompetitionLeaderboardMarkUserListViewFragment.class.getName() + ".competitionId";
 
-    protected CompetitionLeaderboardTimedHeader headerView;
     @Inject ProviderCache providerCache;
+    @Inject ProviderSpecificResourcesFactory providerSpecificResourcesFactory;
+    @Inject CompetitionCache competitionCache;
+    @Inject ProviderUtil providerUtil;
+
+    protected CompetitionLeaderboardTimedHeader headerView;
     protected ProviderId providerId;
     protected ProviderDTO providerDTO;
-    @Inject ProviderSpecificResourcesFactory providerSpecificResourcesFactory;
     protected ProviderSpecificResourcesDTO providerSpecificResourcesDTO;
-    @Inject CompetitionCache competitionCache;
-    protected CompetitionDTO competitionDTO;
 
+    protected CompetitionDTO competitionDTO;
     private THIntentPassedListener webViewTHIntentPassedListener;
     private WebViewFragment webViewFragment;
-
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -124,7 +125,7 @@ public class CompetitionLeaderboardMarkUserListViewFragment extends LeaderboardM
     private void pushWizardElement()
     {
         Bundle args = new Bundle();
-        args.putString(WebViewFragment.BUNDLE_KEY_URL, ProviderConstants.getWizardPage(providerId) + "&previous=whatever");
+        args.putString(WebViewFragment.BUNDLE_KEY_URL, providerUtil.getWizardPage(providerId) + "&previous=whatever");
         args.putBoolean(WebViewFragment.BUNDLE_KEY_IS_OPTION_MENU_VISIBLE, false);
         this.webViewFragment = (WebViewFragment) navigator.pushFragment(WebViewFragment.class, args);
         this.webViewFragment.setThIntentPassedListener(this.webViewTHIntentPassedListener);

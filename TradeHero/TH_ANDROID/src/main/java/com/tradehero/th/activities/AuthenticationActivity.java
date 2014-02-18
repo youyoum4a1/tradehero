@@ -15,15 +15,14 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.auth.AuthenticationMode;
 import com.tradehero.th.auth.EmailAuthenticationProvider;
-import com.tradehero.th.base.Application;
 import com.tradehero.th.base.THUser;
 import com.tradehero.th.fragments.authentication.AuthenticationFragment;
 import com.tradehero.th.fragments.authentication.EmailSignInFragment;
 import com.tradehero.th.fragments.authentication.EmailSignInOrUpFragment;
-import com.tradehero.th.fragments.authentication.TwitterEmailFragment;
 import com.tradehero.th.fragments.authentication.EmailSignUpFragment;
 import com.tradehero.th.fragments.authentication.SignInFragment;
 import com.tradehero.th.fragments.authentication.SignUpFragment;
+import com.tradehero.th.fragments.authentication.TwitterEmailFragment;
 import com.tradehero.th.fragments.authentication.WelcomeFragment;
 import com.tradehero.th.misc.callback.LogInCallback;
 import com.tradehero.th.misc.exception.THException;
@@ -55,9 +54,9 @@ public class AuthenticationActivity extends SherlockFragmentActivity
     private ProgressDialog progressDialog;
     private JSONObject twitterJson;
 
-    @Inject protected Lazy<FacebookUtils> facebookUtils;
-    @Inject protected Lazy<TwitterUtils> twitterUtils;
-    @Inject protected Lazy<LinkedInUtils> linkedInUtils;
+    @Inject Lazy<FacebookUtils> facebookUtils;
+    @Inject Lazy<TwitterUtils> twitterUtils;
+    @Inject Lazy<LinkedInUtils> linkedInUtils;
 
     @Override protected void onCreate(Bundle savedInstanceState)
     {

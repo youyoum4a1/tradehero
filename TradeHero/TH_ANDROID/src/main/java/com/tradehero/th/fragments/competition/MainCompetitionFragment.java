@@ -16,7 +16,7 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.key.CompetitionId;
 import com.tradehero.th.api.competition.CompetitionIdList;
-import com.tradehero.th.api.competition.ProviderConstants;
+import com.tradehero.th.api.competition.ProviderUtil;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.leaderboard.LeaderboardDefDTO;
@@ -64,11 +64,12 @@ public class MainCompetitionFragment extends CompetitionFragment
     @Inject UserProfileCache userProfileCache;
     @Inject CompetitionListCache competitionListCache;
     @Inject CompetitionCache competitionCache;
+    @Inject ProviderUtil providerUtil;
 
     protected UserProfileCompactDTO portfolioUserCompactDTO;
     private DTOCache.Listener<UserBaseKey, UserProfileDTO> profileCacheListener;
-    private DTOCache.GetOrFetchTask<UserBaseKey, UserProfileDTO> profileCacheFetchTask;
 
+    private DTOCache.GetOrFetchTask<UserBaseKey, UserProfileDTO> profileCacheFetchTask;
     protected List<CompetitionId> competitionIds;
     private DTOCache.Listener<ProviderId, CompetitionIdList> competitionListCacheListener;
     private DTOCache.GetOrFetchTask<ProviderId, CompetitionIdList> competitionListCacheFetchTask;
@@ -340,7 +341,7 @@ public class MainCompetitionFragment extends CompetitionFragment
     private void pushWizardElement(CompetitionZoneWizardDTO competitionZoneDTO)
     {
         Bundle args = new Bundle();
-        args.putString(WebViewFragment.BUNDLE_KEY_URL, ProviderConstants.getWizardPage(providerId) + "&previous=whatever");
+        args.putString(WebViewFragment.BUNDLE_KEY_URL, providerUtil.getWizardPage(providerId) + "&previous=whatever");
         args.putBoolean(WebViewFragment.BUNDLE_KEY_IS_OPTION_MENU_VISIBLE, false);
         this.webViewFragment = (WebViewFragment) navigator.pushFragment(WebViewFragment.class, args);
         this.webViewFragment.setThIntentPassedListener(this.webViewTHIntentPassedListener);
@@ -374,11 +375,11 @@ public class MainCompetitionFragment extends CompetitionFragment
         Bundle args = new Bundle();
         if ((competitionZoneDTO).requestedLink.equals(CompetitionZoneLegalDTO.LinkType.RULES))
         {
-            args.putString(WebViewFragment.BUNDLE_KEY_URL, ProviderConstants.getRulesPage(providerId));
+            args.putString(WebViewFragment.BUNDLE_KEY_URL, providerUtil.getRulesPage(providerId));
         }
         else
         {
-            args.putString(WebViewFragment.BUNDLE_KEY_URL, ProviderConstants.getTermsPage(providerId));
+            args.putString(WebViewFragment.BUNDLE_KEY_URL, providerUtil.getTermsPage(providerId));
         }
         navigator.pushFragment(WebViewFragment.class, args);
     }

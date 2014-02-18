@@ -30,7 +30,6 @@ public class Constants
     //public static final String BASE_TH_URL = "https://192.168.1.64:44301/";
     //public static final String BASE_TH_URL = "http://truongtho.noip.me/";
     public static final String BASE_TH_URL = "https://www.tradehero.mobi/";
-    public static final String BASE_API_URL = BASE_TH_URL + "api/";
     public static final String PRIVACY_TERMS_OF_SERVICE = BASE_TH_URL + "privacy";
 
     //Header

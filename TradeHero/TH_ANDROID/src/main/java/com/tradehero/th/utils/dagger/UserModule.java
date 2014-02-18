@@ -2,7 +2,6 @@ package com.tradehero.th.utils.dagger;
 
 import android.content.SharedPreferences;
 import com.tradehero.th.activities.DashboardActivity;
-import com.tradehero.th.api.competition.ProviderConstants;
 import com.tradehero.th.api.portfolio.DisplayablePortfolioUtil;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.loaders.FriendListLoader;
@@ -27,7 +26,6 @@ import javax.inject.Singleton;
                 UserManager.class,
         },
         staticInjections = {
-                ProviderConstants.class,
                 DisplayablePortfolioUtil.class,
                 VisitedFriendListPrefs.class,
         },

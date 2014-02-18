@@ -15,8 +15,8 @@ import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
+import com.tradehero.th.api.competition.ProviderUtil;
 import com.tradehero.th.api.competition.key.BasicProviderSecurityListType;
-import com.tradehero.th.api.competition.ProviderConstants;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.competition.ProviderIdConstants;
@@ -50,12 +50,14 @@ public class ProviderSecurityListFragment extends SecurityListFragment
     protected ProviderId providerId;
     protected ProviderDTO providerDTO;
     protected ProviderSpecificResourcesDTO providerSpecificResourcesDTO;
-    @Inject protected ProviderCache providerCache;
+    @Inject ProviderCache providerCache;
+    @Inject ProviderUtil providerUtil;
+    @Inject ProviderSpecificResourcesFactory providerSpecificResourcesFactory;
+    @Inject SecurityItemLayoutFactory securityItemLayoutFactory;
+
     private DTOCache.Listener<ProviderId, ProviderDTO> providerCacheListener;
     private DTOCache.GetOrFetchTask<ProviderId, ProviderDTO> providerCacheFetchTask;
-    @Inject ProviderSpecificResourcesFactory providerSpecificResourcesFactory;
 
-    @Inject SecurityItemLayoutFactory securityItemLayoutFactory;
     private THIntentPassedListener webViewTHIntentPassedListener;
     private WebViewFragment webViewFragment;
 
@@ -221,7 +223,7 @@ public class ProviderSecurityListFragment extends SecurityListFragment
     private void pushWizardElement()
     {
         Bundle args = new Bundle();
-        args.putString(WebViewFragment.BUNDLE_KEY_URL, ProviderConstants.getWizardPage(providerId) + "&previous=whatever");
+        args.putString(WebViewFragment.BUNDLE_KEY_URL, providerUtil.getWizardPage(providerId) + "&previous=whatever");
         args.putBoolean(WebViewFragment.BUNDLE_KEY_IS_OPTION_MENU_VISIBLE, false);
         this.webViewFragment = (WebViewFragment) navigator.pushFragment(WebViewFragment.class, args);
         this.webViewFragment.setThIntentPassedListener(this.webViewTHIntentPassedListener);

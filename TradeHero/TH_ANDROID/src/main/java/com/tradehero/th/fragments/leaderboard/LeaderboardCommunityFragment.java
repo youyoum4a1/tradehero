@@ -18,7 +18,7 @@ import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.th.R;
-import com.tradehero.th.api.competition.ProviderConstants;
+import com.tradehero.th.api.competition.ProviderUtil;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.competition.ProviderIdList;
@@ -57,6 +57,7 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
     @Inject Lazy<ProviderCache> providerCache;
     @Inject Picasso picasso;
     @Inject CurrentUserId currentUserId;
+    @Inject ProviderUtil providerUtil;
 
     @InjectView(R.id.community_screen) BetterViewAnimator communityScreen;
     @InjectView(android.R.id.list) StickyListHeadersListView leaderboardDefListView;
@@ -210,7 +211,7 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
         else if (providerDTO != null)
         {
             Bundle args = new Bundle();
-            args.putString(WebViewFragment.BUNDLE_KEY_URL, ProviderConstants.getLandingPage(
+            args.putString(WebViewFragment.BUNDLE_KEY_URL, providerUtil.getLandingPage(
                     providerDTO.getProviderId(),
                     currentUserId.toUserBaseKey()));
             webFragment = (WebViewFragment) navigator.pushFragment(WebViewFragment.class, args);

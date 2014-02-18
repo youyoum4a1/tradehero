@@ -4,8 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tradehero.common.utils.JacksonConverter;
 import com.tradehero.th.fragments.settings.SettingsPayPalFragment;
 import com.tradehero.th.fragments.settings.SettingsTransactionHistoryFragment;
+import com.tradehero.th.network.CompetitionUrl;
 import com.tradehero.th.network.FriendlyUrlConnectionClient;
-import com.tradehero.th.network.NullHostNameVerifier;
 import com.tradehero.th.network.service.AlertPlanService;
 import com.tradehero.th.network.service.AlertService;
 import com.tradehero.th.network.service.CompetitionService;
@@ -28,24 +28,9 @@ import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.RetrofitConstants;
 import dagger.Module;
 import dagger.Provides;
-import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.security.SecureRandom;
-import java.security.cert.CertificateException;
-import java.security.cert.X509Certificate;
 import javax.inject.Singleton;
-import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSession;
-import javax.net.ssl.SSLSocketFactory;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
 import retrofit.RestAdapter;
 import retrofit.Server;
-import retrofit.client.Client;
-import retrofit.client.Request;
-import retrofit.client.UrlConnectionClient;
 import retrofit.converter.Converter;
 
 /**
@@ -62,9 +47,19 @@ import retrofit.converter.Converter;
 )
 public class RetrofitModule
 {
+    //public static final String BASE_TH_URL = "http://192.168.1.64:1857/";
+    //public static final String BASE_TH_URL = "https://192.168.1.64:44301/";
+    //public static final String BASE_TH_URL = "http://truongtho.noip.me/";
+    //public static final String BASE_TH_URL = "https://www.tradehero.mobi/";
+    //public static final String BASE_TH_URL = "https://www.tradehero.mobi/";
+    //public static final String BASE_API_URL = BASE_TH_URL + "api/";
+    //public static final String PRIVACY_TERMS_OF_SERVICE = BASE_TH_URL + "privacy";
+
     private static final String YAHOO_FINANCE_ENDPOINT = "http://finance.yahoo.com";
+    //private static final String TRADEHERO_DEV_ENDPOINT = "http://truongtho.noip.me/api/";
     private static final String TRADEHERO_DEV_ENDPOINT = "https://th-paas-test-dev1.cloudapp.net/api/";
     private static final String TRADEHERO_PROD_ENDPOINT = "https://www.tradehero.mobi/api/";
+    private static final String COMPETITION_PATH = "competitionpages/";
 
     //<editor-fold desc="API Services">
     @Provides @Singleton UserService provideUserService(RestAdapter engine)
@@ -168,6 +163,11 @@ public class RetrofitModule
         {
             return new Server(TRADEHERO_DEV_ENDPOINT);
         }
+    }
+
+    @Provides @Singleton @CompetitionUrl String provideCompetitionUrl(Server server)
+    {
+        return server.getUrl() + COMPETITION_PATH;
     }
 
     @Provides RestAdapter.Builder provideRestAdapterBuilder(
