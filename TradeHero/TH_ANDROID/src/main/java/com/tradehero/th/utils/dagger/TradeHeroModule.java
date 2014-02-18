@@ -221,6 +221,7 @@ import javax.inject.Singleton;
                         LeaderboardMarkUserListViewFragment.class,
                         BaseLeaderboardFragment.class,
                         LeaderboardMarkUserItemView.class,
+                        LeaderboardMarkUserItemView.LeaderboardMarkUserItemViewTHIABUserInteractor.class,
                         LeaderboardMarkUserListView.class,
                         FriendLeaderboardMarkUserListViewFragment.class,
                         CompetitionLeaderboardMarkUserListViewFragment.class,

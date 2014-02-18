@@ -30,12 +30,16 @@ import com.tradehero.th.fragments.position.LeaderboardPositionListFragment;
 import com.tradehero.th.fragments.position.PositionListFragment;
 import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefCache;
+import com.tradehero.th.persistence.social.HeroListCache;
+import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.NumberDisplayUtils;
 import com.tradehero.th.utils.StringUtils;
 import com.tradehero.th.utils.THSignedNumber;
 import com.tradehero.th.widget.MarkdownTextView;
 import dagger.Lazy;
+import retrofit.client.Response;
+
 import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
 import javax.inject.Inject;
@@ -54,7 +58,8 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
 
     // data
     private LeaderboardUserDTO leaderboardItem;
-    protected WeakReference<THIABUserInteractor> userInteractor = new WeakReference<>(null);
+    protected WeakReference<THIABUserInteractor> parentUserInteractor = new WeakReference<>(null);
+    protected THIABUserInteractor ownUserInteractor;
 
     // top view
     @InjectView(R.id.leaderboard_user_item_display_name) TextView lbmuDisplayName;
@@ -162,6 +167,7 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
             lbmuFollowUser.setOnClickListener(null);
         }
         loadDefaultUserImage();
+        ownUserInteractor = null;
 
         super.onDetachedFromWindow();
     }
@@ -183,7 +189,7 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
      */
     public void linkWith(THIABUserInteractor userInteractor, boolean andDisplay)
     {
-        this.userInteractor = new WeakReference<>(userInteractor);
+        this.parentUserInteractor = new WeakReference<>(userInteractor);
         if (andDisplay)
         {
             displayFollow();
@@ -192,7 +198,10 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
 
     public Boolean isCurrentUserFollowing()
     {
-        if (currentUserProfileDTO == null || leaderboardItem == null)
+        THIABUserInteractor userInteractorCopy = parentUserInteractor.get();
+        if (currentUserProfileDTO == null || leaderboardItem == null ||
+                userInteractorCopy == null ||
+                userInteractorCopy.getApplicablePortfolioId() == null)
         {
             return null;
         }
@@ -388,7 +397,13 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
 
     private void openFollowUserDialog()
     {
-        THIABUserInteractor interactor = userInteractor.get();
+        THIABUserInteractor parentCopy = parentUserInteractor.get();
+        if (ownUserInteractor == null && parentCopy != null)
+        {
+            ownUserInteractor = new LeaderboardMarkUserItemViewTHIABUserInteractor();
+            ownUserInteractor.setApplicablePortfolioId(parentCopy.getApplicablePortfolioId());
+        }
+        THIABUserInteractor interactor = ownUserInteractor;
         if (interactor != null)
         {
             interactor.followHero(leaderboardItem.getBaseKey());
@@ -440,6 +455,33 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         if (currentUserId != null && currentUserId.get() != userId)
         {
             getNavigator().openTimeline(userId);
+        }
+    }
+
+    public class LeaderboardMarkUserItemViewTHIABUserInteractor extends THIABUserInteractor
+    {
+        public LeaderboardMarkUserItemViewTHIABUserInteractor()
+        {
+            super();
+        }
+
+        @Override protected void createFollowCallback()
+        {
+            followCallback = new LeaderboardMarkUserItemViewUserInteractorFollowHeroCallback(heroListCache.get(), userProfileCache.get());
+        }
+
+        protected class LeaderboardMarkUserItemViewUserInteractorFollowHeroCallback extends UserInteractorFollowHeroCallback
+        {
+            public LeaderboardMarkUserItemViewUserInteractorFollowHeroCallback(HeroListCache heroListCache, UserProfileCache userProfileCache)
+            {
+                super(heroListCache, userProfileCache);
+            }
+
+            @Override public void success(UserProfileDTO userProfileDTO, Response response)
+            {
+                super.success(userProfileDTO, response);
+                LeaderboardMarkUserItemView.this.linkWith(userProfileDTO, true);
+            }
         }
     }
 }
