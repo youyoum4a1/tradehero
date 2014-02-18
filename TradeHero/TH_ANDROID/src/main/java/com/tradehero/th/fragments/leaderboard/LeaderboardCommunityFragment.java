@@ -179,7 +179,7 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
 
         ActionBar actionBar = getSherlockActivity().getSupportActionBar();
         actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME);
-        actionBar.setTitle(getString(R.string.leaderboards));
+        actionBar.setTitle(getString(R.string.leaderboard_community_leaderboards));
     }
 
     @Override public boolean onOptionsItemSelected(MenuItem item)
@@ -319,7 +319,7 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
     {
         Bundle bundle = new Bundle(getArguments());
         (LeaderboardDefListKey.getSector()).putParameters(bundle);
-        bundle.putString(LeaderboardDefListViewFragment.BUNDLE_KEY_LEADERBOARD_DEF_TITLE, getString(R.string.leaderboard_sector));
+        bundle.putString(LeaderboardDefListViewFragment.BUNDLE_KEY_LEADERBOARD_DEF_TITLE, getString(R.string.leaderboard_community_sector));
         getNavigator().pushFragment(LeaderboardDefListViewFragment.class, bundle);
     }
 
@@ -327,7 +327,7 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
     {
         Bundle bundle = new Bundle(getArguments());
         (LeaderboardDefListKey.getExchange()).putParameters(bundle);
-        bundle.putString(LeaderboardDefListViewFragment.BUNDLE_KEY_LEADERBOARD_DEF_TITLE, getString(R.string.leaderboard_exchange));
+        bundle.putString(LeaderboardDefListViewFragment.BUNDLE_KEY_LEADERBOARD_DEF_TITLE, getString(R.string.leaderboard_community_exchange));
         getNavigator().pushFragment(LeaderboardDefListViewFragment.class, bundle);
     }
     //</editor-fold>

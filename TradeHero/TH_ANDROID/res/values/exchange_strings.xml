@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
   <string name="error_fetch_exchange_list_info">There was an error when fetching the list of exchanges</string>
+
 </resources>

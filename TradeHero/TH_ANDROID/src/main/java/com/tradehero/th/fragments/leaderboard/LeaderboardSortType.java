@@ -7,11 +7,11 @@ import com.tradehero.th.R;
 public enum LeaderboardSortType
 {
 
-    Roi(R.string.roi, R.drawable.sort_roi, R.drawable.sort_roi_white, R.layout.lbmu_item_roi_mode),
+    Roi(R.string.leaderboard_user_roi, R.drawable.sort_roi, R.drawable.sort_roi_white, R.layout.lbmu_item_roi_mode),
     //HeroQuotient(R.string.hero_quotient, R.drawable.sort_hq, R.drawable.sort_hq_white, R.layout.lbmu_item_hq_mode),
-    Followers(R.string.followers, R.drawable.sort_followers, R.drawable.sort_followers_white, R.layout.lbmu_item_followers_mode),
-    Comments(R.string.comments, R.drawable.sort_comments, R.drawable.sort_comments_white, R.layout.lbmu_item_comments_mode),
-    SharpeRatio(R.string.sharpe_ratio, R.drawable.sort_sharpe, R.drawable.sort_sharpe_white, R.layout.lbmu_item_sharpe_mode);
+    Followers(R.string.leaderboard_sort_followers, R.drawable.sort_followers, R.drawable.sort_followers_white, R.layout.lbmu_item_followers_mode),
+    Comments(R.string.leaderboard_sort_comments, R.drawable.sort_comments, R.drawable.sort_comments_white, R.layout.lbmu_item_comments_mode),
+    SharpeRatio(R.string.leaderboard_user_sharpe_ratio, R.drawable.sort_sharpe, R.drawable.sort_sharpe_white, R.layout.lbmu_item_sharpe_mode);
 
     public static final String TAG = "LEADERBOARD_SORT_TYPE";
 

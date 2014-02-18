@@ -1,27 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-  <string name="leaderboard_6months">Last 6 Months</string>
-  <string name="leaderboard_by_exchange">By Exchange</string>
-  <string name="leaderboard_by_sector">By Sector</string>
-  <string name="last_30days">Last 30 Days</string>
-  <string name="last_90days">Last 90 Days</string>
-  <string name="leaderboard_most_skilled">Most Skilled</string>
-  <string name="leaderboard_friends">Friends</string>
-  <string name="leaderboard_sort_by_hero_quotient">Sort by Hero Quotient</string>
-  <string name="leaderboard_sort_by_roi">Sort by ROI</string>
-  <string name="leaderboards">Leaderboards</string>
-  <string name="leaderboard_listview_sort">Sort</string>
-  <string name="leaderboard_exchange">Exchanges</string>
-  <string name="leaderboard_sector">Sector</string>
-  <string name="roi">ROI</string>
-  <string name="hero_quotient">Hero Quotient</string>
-  <string name="followers">Followers</string>
-  <string name="heroes">Heroes</string>
-  <string name="trades">Trades</string>
-  <string name="exchanges">Exchanges</string>
-  <string name="comments">Comments</string>
-  <string name="sharpe_ratio">Sharpe Ratio</string>
-  <string name="error_fetch_leaderboard_def_list_key">There was an error when fetching the definition list of leaderboards</string>
+
+  <string name="leaderboard_community_by_exchange">By Exchange</string>
+  <string name="leaderboard_community_by_sector">By Sector</string>
+  <string name="leaderboard_community_friends">Friends</string>
+  <string name="leaderboard_community_leaderboards">Leaderboards</string>
+  <string name="leaderboard_community_exchange">Exchanges</string>
+  <string name="leaderboard_community_sector">Sector</string>
+  <string name="leaderboard_user_roi">ROI</string>
+  <string name="leaderboard_user_hero_quotient">Hero Quotient</string>
+  <string name="leaderboard_sort_followers">Followers</string>
+  <string name="leaderboard_sort_comments">Comments</string>
+  <string name="leaderboard_user_sharpe_ratio">Sharpe Ratio</string>
   <string name="leaderboard_positions_count"># Positions</string>
   <string name="leaderboard_number_trades_in_period_title">Number of Trades In Period</string>
   <string name="leaderboard_win_ratio_title">Win Ratio</string>
@@ -31,4 +21,7 @@
   <string name="leaderboard_roi_annualized"><![CDATA[(annualized: <b>%s</b>)]]></string>
   <string name="leaderboard_datetime_format">d MMM yyyy</string>
   <string name="leaderboard_ranking_period" formatted="false">%s - %s</string>
+
+  <string name="error_fetch_leaderboard_def_list_key">There was an error when fetching the definition list of leaderboards</string>
+
 </resources>

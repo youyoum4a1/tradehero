@@ -114,7 +114,7 @@
           android:layout_width="0dp"
           android:layout_weight="1"
           android:layout_height="wrap_content"
-          android:text="@string/hero_quotient"
+          android:text="@string/leaderboard_user_hero_quotient"
           android:gravity="right"
           android:textColor="@color/light_grey"/>
 
@@ -189,7 +189,7 @@
           android:layout_width="0dp"
           android:layout_weight="1"
           android:layout_height="wrap_content"
-          android:text="@string/roi"
+          android:text="@string/leaderboard_user_roi"
           android:gravity="right"
           android:textColor="@color/light_grey"/>
       <LinearLayout
@@ -248,7 +248,7 @@
           android:layout_width="0dp"
           android:layout_weight="1"
           android:layout_height="wrap_content"
-          android:text="@string/sharpe_ratio"
+          android:text="@string/leaderboard_user_sharpe_ratio"
           android:gravity="right"
           android:textColor="@color/light_grey"/>
       <LinearLayout

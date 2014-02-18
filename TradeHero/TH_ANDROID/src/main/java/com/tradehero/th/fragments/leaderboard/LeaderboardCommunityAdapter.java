@@ -83,7 +83,7 @@ public class LeaderboardCommunityAdapter extends ArrayDTOAdapter<LeaderboardDefK
         {
             LeaderboardDefDTO fakeDto = new LeaderboardDefDTO();
             fakeDto.id = LeaderboardDefDTO.LEADERBOARD_FRIEND_ID;
-            fakeDto.name = getContext().getString(R.string.leaderboard_friends);
+            fakeDto.name = getContext().getString(R.string.leaderboard_community_friends);
             leaderboardDefCache.get().put(fakeDto.getLeaderboardDefKey(), fakeDto);
 
             leaderboardDefCache.get().put(fakeDto.getLeaderboardDefKey(), fakeDto);
@@ -98,13 +98,13 @@ public class LeaderboardCommunityAdapter extends ArrayDTOAdapter<LeaderboardDefK
 
             fakeDto = new LeaderboardDefDTO();
             fakeDto.id = LeaderboardDefDTO.LEADERBOARD_DEF_EXCHANGE_ID;
-            fakeDto.name = getContext().getString(R.string.leaderboard_by_exchange);
+            fakeDto.name = getContext().getString(R.string.leaderboard_community_by_exchange);
             leaderboardDefCache.get().put(fakeDto.getLeaderboardDefKey(), fakeDto);
             sectorAndExchange.add(fakeDto.getLeaderboardDefKey());
 
             fakeDto = new LeaderboardDefDTO();
             fakeDto.id = LeaderboardDefDTO.LEADERBOARD_DEF_SECTOR_ID;
-            fakeDto.name = getContext().getString(R.string.leaderboard_by_sector);
+            fakeDto.name = getContext().getString(R.string.leaderboard_community_by_sector);
             leaderboardDefCache.get().put(fakeDto.getLeaderboardDefKey(), fakeDto);
             sectorAndExchange.add(fakeDto.getLeaderboardDefKey());
         }
