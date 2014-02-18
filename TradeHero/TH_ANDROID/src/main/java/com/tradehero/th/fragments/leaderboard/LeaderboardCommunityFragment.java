@@ -158,11 +158,6 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
         detachLeaderboardDefListCacheFetchMostSkilledTask();
     }
 
-    @Override public void onDetach()
-    {
-        super.onDetach();
-    }
-
     @Override public void onDestroyView()
     {
         this.thIntentPassedListener = null;
@@ -170,7 +165,6 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
         if (leaderboardDefListView != null)
         {
             leaderboardDefListView.setOnItemClickListener(null);
-            leaderboardDefListView.setAdapter(null);
             leaderboardDefListView = null;
         }
 
