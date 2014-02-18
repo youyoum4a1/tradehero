@@ -8,6 +8,9 @@ import com.crashlytics.android.Crashlytics;
 import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
+import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.network.service.UserService;
 import com.tradehero.th.persistence.prefs.SessionToken;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.DaggerUtils;
@@ -16,6 +19,7 @@ import com.tradehero.th.utils.VersionUtils;
 import java.util.Timer;
 import java.util.TimerTask;
 import javax.inject.Inject;
+import retrofit.RetrofitError;
 
 public class SplashActivity extends SherlockActivity
 {
@@ -23,6 +27,8 @@ public class SplashActivity extends SherlockActivity
 
     private Timer timerToShiftActivity;
     private AsyncTask<Void, Void, Void> initialAsyncTask;
+    @Inject protected UserService userService;
+    @Inject protected CurrentUserId currentUserId;
 
     @Inject @SessionToken StringPreference currentSessionToken;
 
@@ -62,7 +68,7 @@ public class SplashActivity extends SherlockActivity
     {
         TestFlightUtils.initialize();
 
-        if (currentSessionToken.isSet())
+        if (canLoadApp())
         {
             ActivityHelper.launchDashboard(SplashActivity.this);
             finish();
@@ -81,6 +87,22 @@ public class SplashActivity extends SherlockActivity
             }, 1500);
         }
     }
+
+    public boolean canLoadApp()
+    {
+        boolean canLoad = currentSessionToken.isSet() && currentUserId.toUserBaseKey().key != 0;
+        try
+        {
+            UserProfileDTO profileDTO = userService.getUser(currentUserId.toUserBaseKey().key);
+            canLoad &= profileDTO != null && profileDTO.id == currentUserId.toUserBaseKey().key;
+        }
+        catch (RetrofitError retrofitError)
+        {
+            canLoad = false;
+        }
+        return canLoad;
+    }
+
 
     @Override protected void onDestroy()
     {
