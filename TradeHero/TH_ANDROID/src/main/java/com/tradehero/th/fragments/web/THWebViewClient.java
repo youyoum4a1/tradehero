@@ -4,6 +4,8 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.net.http.SslError;
+import android.webkit.SslErrorHandler;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -73,6 +75,13 @@ public class THWebViewClient extends WebViewClient
 
         // TODO remove this no caching thing
         view.clearCache(true);
+    }
+
+    @Override
+    public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error)
+    {
+        // TODO, maybe we should not ignore ssl error if we are in production mode, to protect our user
+        handler.proceed();
     }
 
     public Intent getPassedIntent(String url)
