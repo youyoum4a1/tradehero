@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+  <string name="webview_back">Back</string>
+  <string name="webview_forward">Forward</string>
+
+</resources>

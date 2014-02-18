@@ -9,7 +9,6 @@ import com.tradehero.th.adapters.ExpandableDTOAdapter;
 import com.tradehero.th.adapters.ExpandableListItem;
 import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.api.trade.OwnedTradeId;
-import com.tradehero.th.api.trade.TradeDTO;
 import com.tradehero.th.fragments.position.view.AbstractPositionView;
 import com.tradehero.th.fragments.position.view.PositionClosedView;
 import com.tradehero.th.fragments.position.view.PositionOpenView;
@@ -82,11 +81,11 @@ abstract public class AbstractTradeListItemAdapter<PositionDTOType extends Posit
             itemTypesTemp.add(ITEM_TYPE_HEADER_POSITION_SUMMARY);
             if (this.shownPositionDTO.isClosed())
             {
-                objectsTemp.add(R.string.position_list_header_closed_summary);
+                objectsTemp.add(R.string.trade_list_header_closed_summary);
             }
             else
             {
-                objectsTemp.add(R.string.position_list_header_open_summary);
+                objectsTemp.add(R.string.trade_list_header_open_summary);
             }
 
             itemTypesTemp.add(ITEM_TYPE_POSITION_SUMMARY);

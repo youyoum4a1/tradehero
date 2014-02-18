@@ -495,7 +495,7 @@ public class PortfolioListFragment extends DashboardFragment
         {
             if (displayablePortfolios == null || areOthersComplete)
             {
-                this.actionBar.setTitle(getString(R.string.topbar_portfolios_title));
+                this.actionBar.setTitle(getString(R.string.portfolio_topbar_title));
             }
             else
             {

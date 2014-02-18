@@ -59,7 +59,7 @@
         android:layout_marginRight="2dp"
         style="@style/TH.SmallTitle"
         android:gravity="right"
-        android:text="@string/position_in_period_addtitional_invested"
+        android:text="@string/position_in_period_additional_invested"
         />
 
     <TextView
