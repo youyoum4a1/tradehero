@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 import com.tradehero.th.R;
@@ -146,8 +147,33 @@ public class HeroListItemView extends RelativeLayout implements DTOView<HeroDTO>
             {
                 picasso.get().load(heroDTO.picture)
                              .transform(peopleIconTransformation)
-                             .into(userIcon);
+                             .into(userIcon, new Callback() {
+                                 @Override
+                                 public void onSuccess()
+                                 {
+                                 }
+
+                                 @Override
+                                 public void onError()
+                                 {
+                                     displayDefaultUserIcon();
+                                 }
+                             });
             }
+            else
+            {
+                displayDefaultUserIcon();
+            }
+        }
+    }
+
+    public void displayDefaultUserIcon()
+    {
+        if (userIcon != null)
+        {
+            picasso.get().load(R.drawable.superman_facebook)
+                    .transform(peopleIconTransformation)
+                    .into(userIcon);
         }
     }
 
