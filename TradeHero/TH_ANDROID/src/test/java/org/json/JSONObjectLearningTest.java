@@ -35,4 +35,19 @@ public class JSONObjectLearningTest
         JSONObject object = new JSONObject(map);
         assertEquals("{\"ab\":\"cd\"}", object.toString());
     }
+
+    @Test public void testConstructorAlexli()
+    {
+        Map<String, Object> map = new HashMap<>();
+
+        map.put("type", "Basic");
+        map.put("email", "alex+1@tradehero.mobi");
+        map.put("password", "alexli");
+        map.put("confirmPassword", "alexli");
+        map.put("displayName", "alex+1");
+        map.put("firstName", null);
+        map.put("lastName", null);
+        JSONObject object = new JSONObject(map);
+        object.getClass();
+    }
 }

@@ -2,6 +2,7 @@ package com.tradehero.th.fragments.settings;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.text.Editable;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.EditText;
@@ -169,13 +170,21 @@ public class ProfileInfoView extends LinearLayout
 
     public void populateUserFormMap(Map<String, Object> map)
     {
-        map.put(UserFormFactory.KEY_EMAIL, email.getText());
-        map.put(UserFormFactory.KEY_PASSWORD, password.getText());
-        map.put(UserFormFactory.KEY_PASSWORD_CONFIRM, confirmPassword.getText());
-        map.put(UserFormFactory.KEY_DISPLAY_NAME, displayName.getText());
-        map.put(UserFormFactory.KEY_FIRST_NAME, firstName.getText());
-        map.put(UserFormFactory.KEY_LAST_NAME, lastName.getText());
+        populateUserFormMapFromEditable(map, UserFormFactory.KEY_EMAIL, email.getText());
+        populateUserFormMapFromEditable(map, UserFormFactory.KEY_PASSWORD, password.getText());
+        populateUserFormMapFromEditable(map, UserFormFactory.KEY_PASSWORD_CONFIRM, confirmPassword.getText());
+        populateUserFormMapFromEditable(map, UserFormFactory.KEY_DISPLAY_NAME, displayName.getText());
+        populateUserFormMapFromEditable(map, UserFormFactory.KEY_FIRST_NAME, firstName.getText());
+        populateUserFormMapFromEditable(map, UserFormFactory.KEY_LAST_NAME, lastName.getText());
         // TODO add profile picture
+    }
+
+    private void populateUserFormMapFromEditable(Map<String, Object> toFill, String key, Editable toPick)
+    {
+        if (toPick != null)
+        {
+            toFill.put(key, toPick.toString());
+        }
     }
 
     public void populate(UserBaseDTO userBaseDTO)
