@@ -80,6 +80,7 @@
         android:enabled="true"
         android:key="@string/settings_primary_restore_purchases"
         android:title="@string/settings_primary_restore_purchases"
+        android:icon="@drawable/settings_recover_purchase"
         />
 
     <Preference
