@@ -12,6 +12,7 @@ import butterknife.InjectView;
 import butterknife.Optional;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.RequestCreator;
 import com.squareup.picasso.Transformation;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
@@ -406,23 +407,28 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
         {
             if (isMyUrlOk())
             {
-                mPicasso.load(securityCompactDTO.imageBlobUrl)
-                        .transform(backgroundTransformation)
-                        .resize(getWidth(), getHeight())
-                        .centerCrop()
-                        .into(stockBgLogo, new Callback()
-                        {
-                            @Override public void onSuccess()
+                RequestCreator requestCreator = mPicasso.load(securityCompactDTO.imageBlobUrl)
+                        .transform(backgroundTransformation);
+                int width = getWidth();
+                int height = getHeight();
+                if (width > 0 && height > 0)
+                {
+                    requestCreator.resize(getWidth(), getHeight())
+                            .centerCrop()
+                            .into(stockBgLogo, new Callback()
                             {
-                                stockBgLogo.setVisibility(VISIBLE);
-                                THLog.d(TAG, "h=" + getHeight() + ", w=" + getWidth());
-                            }
+                                @Override public void onSuccess()
+                                {
+                                    stockBgLogo.setVisibility(VISIBLE);
+                                    THLog.d(TAG, "h=" + getHeight() + ", w=" + getWidth());
+                                }
 
-                            @Override public void onError()
-                            {
-                                loadBgDefault();
-                            }
-                        });
+                                @Override public void onError()
+                                {
+                                    loadBgDefault();
+                                }
+                            });
+                }
             }
             else
             {
