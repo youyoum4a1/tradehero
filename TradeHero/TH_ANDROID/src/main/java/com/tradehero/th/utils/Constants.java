@@ -1,8 +1,5 @@
 package com.tradehero.th.utils;
 
-import com.tradehero.th.BuildConfig;
-import twitter4j.auth.RequestToken;
-
 public class Constants
 {
     // build constants
@@ -25,12 +22,11 @@ public class Constants
     public static final boolean TEST_FLIGHT_REPORT_CHECKPOINT = true;
     public static final boolean TEST_FLIGHT_REPORT_LOG = true;
 
-    //URL
-    //public static final String BASE_TH_URL = "http://192.168.1.64:1857/";
-    //public static final String BASE_TH_URL = "https://192.168.1.64:44301/";
-    //public static final String BASE_TH_URL = "http://truongtho.noip.me/";
-    public static final String BASE_TH_URL = "https://www.tradehero.mobi/";
-    public static final String PRIVACY_TERMS_OF_SERVICE = BASE_TH_URL + "privacy";
+    // this constant is dedicated for static content page (html, image, cdn that
+    // may be needed later, for Api endpoint, refer to retrofit module, we want to make it
+    // generic and easy to switch between endpoint (prod, dev, test server) as much as possible.
+    public static final String BASE_STATIC_CONTENT_URL = "https://www.tradehero.mobi/";
+    public static final String PRIVACY_TERMS_OF_SERVICE = BASE_STATIC_CONTENT_URL + "privacy";
 
     //Header
     public static final String TH_CLIENT_VERSION = "TH-Client-Version";
