@@ -43,7 +43,7 @@ public class THException extends Exception
                 }
                 catch (Exception ex)
                 {
-                    THLog.d(TAG, ex.getMessage() + error.getBodyAs(String.class));
+                    THLog.d(TAG, ex.getMessage());
                 }
                 this.code = ExceptionCode.UnknownError;
                 String errorMessage = dto != null ? dto.Message : Application.getResourceString(R.string.error_unknown);
