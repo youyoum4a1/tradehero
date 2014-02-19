@@ -302,6 +302,7 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
             args.putString(WebViewFragment.BUNDLE_KEY_URL, providerUtil.getLandingPage(
                     providerDTO.getProviderId(),
                     currentUserId.toUserBaseKey()));
+            args.putBoolean(WebViewFragment.BUNDLE_KEY_IS_OPTION_MENU_VISIBLE, false);
             webFragment = (WebViewFragment) getDashboardNavigator().pushFragment(WebViewFragment.class, args);
             webFragment.setThIntentPassedListener(thIntentPassedListener);
         }
