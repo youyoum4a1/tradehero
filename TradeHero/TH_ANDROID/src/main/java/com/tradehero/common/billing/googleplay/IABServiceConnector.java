@@ -19,7 +19,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 /** Created by julien on 5/11/13 */
-public class IABServiceConnector
+public class IABServiceConnector implements ServiceConnection
 {
     public static final String TAG = IABServiceConnector.class.getSimpleName();
     public final static String INTENT_VENDING_PACKAGE = "com.android.vending";
@@ -29,7 +29,6 @@ public class IABServiceConnector
     protected Context context;
 
     protected IInAppBillingService billingService;
-    protected ServiceConnection serviceConnection;
 
     private boolean subscriptionSupported;
     private boolean setupDone = false;
@@ -55,7 +54,6 @@ public class IABServiceConnector
 
         THLog.d(TAG, "Starting in-app billing setup for this " + getClass().getSimpleName());
 
-        setupServiceConnection();
         bindBillingServiceIfAvailable();
     }
 
@@ -67,7 +65,7 @@ public class IABServiceConnector
         {
             // service available to handle that Intent
             ComponentName myService = context.startService(serviceIntent);
-            context.bindService(serviceIntent, serviceConnection, Context.BIND_AUTO_CREATE);
+            context.bindService(serviceIntent, this, Context.BIND_AUTO_CREATE);
         }
         else
         {
@@ -98,60 +96,55 @@ public class IABServiceConnector
     {
         THLog.d(TAG, "Disposing this " + getClass().getSimpleName());
         setupDone = false;
-        if (serviceConnection != null)
+        if (context != null)
         {
-            THLog.d(TAG, "Unbinding from service.");
-            if (context != null && billingService != null)
+            try
             {
-                context.unbindService(serviceConnection);
+                context.unbindService(this);
+            }
+            catch (IllegalArgumentException e)
+            {
+                THLog.d(TAG, "It happened that we had not bound the service yet. Not to worry");
             }
         }
         disposed = true;
         context = null;
-        serviceConnection = null;
         billingService = null;
         listener = null;
     }
 
-    private ServiceConnection setupServiceConnection()
+    //<editor-fold desc="Service Connection">
+    @Override public void onServiceDisconnected(ComponentName name)
     {
-        if (serviceConnection == null)
-        {
-            serviceConnection = new ServiceConnection()
-            {
-                @Override public void onServiceDisconnected(ComponentName name)
-                {
-                    THLog.d(TAG, "Billing service disconnected.");
-                    billingService = null;
-                }
-
-                @Override public void onServiceConnected(ComponentName name, IBinder binderService)
-                {
-                    THLog.d(TAG, "Billing service connected.");
-                    billingService = IInAppBillingService.Stub.asInterface(binderService);
-                    try
-                    {
-                        checkInAppBillingV3Support();
-                        handleSetupFinishedInternal(new IABResponse(Constants.BILLING_RESPONSE_RESULT_OK, "Setup successful."));
-                    }
-                    catch (RemoteException e)
-                    {
-                        e.printStackTrace();
-                        THLog.e(TAG, "RemoteException while setting up in-app billing.", e);
-                        handleSetupFailedInternal(
-                                new IABException(Constants.IABHELPER_REMOTE_EXCEPTION, "RemoteException while setting up in-app billing."));
-                    }
-                    catch (IABException e)
-                    {
-                        e.printStackTrace();
-                        THLog.e(TAG, "IABException while setting up in-app billing.", e);
-                        handleSetupFailedInternal(e);
-                    }
-                }
-            };
-        }
-        return serviceConnection;
+        THLog.d(TAG, "Billing service disconnected.");
+        billingService = null;
     }
+
+    @Override public void onServiceConnected(ComponentName name, IBinder binderService)
+    {
+        THLog.d(TAG, "Billing service connected.");
+        billingService = IInAppBillingService.Stub.asInterface(binderService);
+        try
+        {
+            checkInAppBillingV3Support();
+            handleSetupFinishedInternal(new IABResponse(Constants.BILLING_RESPONSE_RESULT_OK, "Setup successful."));
+        }
+        catch (RemoteException e)
+        {
+            e.printStackTrace();
+            THLog.e(TAG, "RemoteException while setting up in-app billing.", e);
+            handleSetupFailedInternal(
+                    new IABException(Constants.IABHELPER_REMOTE_EXCEPTION, "RemoteException while setting up in-app billing."));
+        }
+        catch (IABException e)
+        {
+            e.printStackTrace();
+            THLog.e(TAG, "IABException while setting up in-app billing.", e);
+            handleSetupFailedInternal(e);
+        }
+    }
+    //</editor-fold>
+
 
     protected void checkInAppBillingV3Support() throws RemoteException, IABException
     {
@@ -254,6 +247,7 @@ public class IABServiceConnector
     {
         handleSetupFailed(exception);
         notifyListenerSetupFailed(exception);
+        dispose();
     }
 
     protected void handleSetupFinished(IABResponse response)

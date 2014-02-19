@@ -61,7 +61,6 @@ abstract public class IABPurchaseFetcher<
     @Override protected void handleSetupFailed(IABException exception)
     {
         super.handleSetupFailed(exception);
-        dispose();
         notifyListenerFetchFailed(exception);
     }
 

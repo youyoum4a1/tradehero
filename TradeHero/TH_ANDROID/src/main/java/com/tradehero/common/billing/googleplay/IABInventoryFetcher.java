@@ -69,7 +69,7 @@ abstract public class IABInventoryFetcher<
 
     @Override protected void handleSetupFailed(IABException exception)
     {
-        dispose();
+        super.handleSetupFailed(exception);
         handleInventoryFetchFailure(exception);
     }
 
