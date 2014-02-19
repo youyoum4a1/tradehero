@@ -43,7 +43,7 @@
     share. Connect your LinkedIn and Facebook accounts to see how you stack up amongst your friends.
   </string>
   <string name="leaderboard_connect_accounts">Connect Accounts…</string>
-  <string name="leaderboard_follow">Follow</string>
+  <string name="leaderboard_follow">@string/follow</string>
 
   <string name="error_fetch_leaderboard_def_list_key">There was an error when fetching the definition list of leaderboards</string>
 

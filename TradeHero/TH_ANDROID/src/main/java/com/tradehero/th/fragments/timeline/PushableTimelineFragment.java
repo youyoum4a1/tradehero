@@ -1,8 +1,8 @@
 package com.tradehero.th.fragments.timeline;
 
-import android.app.Activity;
 import android.content.DialogInterface;
-import android.os.Handler;
+import android.view.View;
+import android.widget.TextView;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
@@ -12,7 +12,6 @@ import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.UserBaseDTOUtil;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.billing.googleplay.THIABActor;
 import com.tradehero.th.billing.googleplay.THIABPurchase;
 import com.tradehero.th.fragments.billing.THIABUserInteractor;
 import com.tradehero.th.fragments.social.hero.HeroAlertDialogUtil;
@@ -29,9 +28,10 @@ public class PushableTimelineFragment extends TimelineFragment
     public static final String TAG = PushableTimelineFragment.class.getSimpleName();
 
     private ActionBar actionBar;
-    private MenuItem btnFollow;
+    private MenuItem menuFollow;
     private MenuItem followingStamp;
     @Inject protected HeroAlertDialogUtil heroAlertDialogUtil;
+    private TextView followButton;
 
     @Override protected void createUserInteractor()
     {
@@ -44,7 +44,19 @@ public class PushableTimelineFragment extends TimelineFragment
         this.actionBar = getSherlockActivity().getSupportActionBar();
         actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_SHOW_TITLE);
         //super.onCreateOptionsMenu(menu, inflater);
-        btnFollow = menu.findItem(R.id.btn_follow_this_user);
+        menuFollow = menu.findItem(R.id.btn_follow_this_user);
+        followButton = (TextView) menuFollow.getActionView().findViewById(R.id.menu_followed_button);
+        if (followButton != null)
+        {
+            followButton.setOnClickListener(new View.OnClickListener()
+            {
+                @Override public void onClick(View v)
+                {
+                    handleInfoButtonPressed();
+                }
+            });
+        }
+
         followingStamp = menu.findItem(R.id.ic_following);
         displayActionBarTitle();
         super.onCreateOptionsMenu(menu, inflater);
@@ -53,9 +65,9 @@ public class PushableTimelineFragment extends TimelineFragment
     @Override public void onPrepareOptionsMenu(Menu menu)
     {
         Boolean isFollowing = isPurchaserFollowingUserShown();
-        if (btnFollow != null)
+        if (menuFollow != null)
         {
-            btnFollow.setVisible(isFollowing != null && !isFollowing);
+            menuFollow.setVisible(isFollowing != null && !isFollowing);
         }
         if (followingStamp != null)
         {
@@ -85,7 +97,7 @@ public class PushableTimelineFragment extends TimelineFragment
     @Override public void onDestroyOptionsMenu()
     {
         this.actionBar = null;
-        this.btnFollow = null;
+        this.menuFollow = null;
         this.followingStamp = null;
         super.onDestroyOptionsMenu();
     }
