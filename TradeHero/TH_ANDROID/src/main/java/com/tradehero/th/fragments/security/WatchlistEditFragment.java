@@ -334,11 +334,11 @@ public class WatchlistEditFragment extends DashboardFragment
                 String returnFragment = args.getString(BUNDLE_KEY_RETURN_FRAGMENT);
                 if (returnFragment != null)
                 {
-                    getNavigator().popFragment(returnFragment);
+                    getDashboardNavigator().popFragment(returnFragment);
                     return;
                 }
             }
-            getNavigator().popFragment();
+            getDashboardNavigator().popFragment();
         }
 
         @Override protected void failure(THException ex)

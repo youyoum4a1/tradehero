@@ -10,7 +10,7 @@ import com.tradehero.common.text.RichTextCreator;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.base.Navigator;
-import com.tradehero.th.base.NavigatorActivity;
+import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.fragments.trade.BuySellFragment;
 import javax.inject.Inject;
@@ -80,7 +80,7 @@ public class MarkdownTextView extends TextView implements OnElementClickListener
 
     private Navigator getNavigator()
     {
-        return ((NavigatorActivity) getContext()).getNavigator();
+        return ((DashboardNavigatorActivity) getContext()).getDashboardNavigator();
     }
 
     private void openUserProfile(int userId)

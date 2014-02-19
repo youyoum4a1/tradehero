@@ -5,7 +5,7 @@ import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
-import com.tradehero.th.base.Navigator;
+import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.trade.BuySellFragment;
 import com.tradehero.th.fragments.web.WebViewFragment;
 import com.tradehero.th.models.intent.THIntent;
@@ -28,7 +28,7 @@ abstract public class CompetitionWebFragmentTHIntentPassedListener implements TH
     abstract protected WebViewFragment getApplicableWebViewFragment();
     abstract protected OwnedPortfolioId getApplicablePortfolioId();
     abstract protected ProviderId getProviderId();
-    abstract protected Navigator getNavigator();
+    abstract protected DashboardNavigator getDashboardNavigator();
     abstract protected Class<?> getClassToPop();
 
     @Override public void onIntentPassed(THIntent thIntent)
@@ -52,7 +52,7 @@ abstract public class CompetitionWebFragmentTHIntentPassedListener implements TH
         }
         else if (thIntent == null)
         {
-            getNavigator().popFragment();
+            getDashboardNavigator().popFragment();
         }
         else
         {
@@ -63,7 +63,7 @@ abstract public class CompetitionWebFragmentTHIntentPassedListener implements TH
     protected void handleSecurityPushBuyIntent(SecurityPushBuyIntent thIntent)
     {
         // We are probably coming back from the wizard
-        getNavigator().popFragment(getClassToPop().getName());
+        getDashboardNavigator().popFragment(getClassToPop().getName());
         // Now moving on
         Bundle argsBundle = thIntent.getBundle();
         if (thIntent.getActionFragment().equals(BuySellFragment.class))
@@ -71,7 +71,7 @@ abstract public class CompetitionWebFragmentTHIntentPassedListener implements TH
             argsBundle.putBundle(BuySellFragment.BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE, getApplicablePortfolioId().getArgs());
             argsBundle.putBundle(BuySellFragment.BUNDLE_KEY_PROVIDER_ID_BUNDLE, getProviderId().getArgs());
         }
-        getNavigator().pushFragment(thIntent.getActionFragment(), argsBundle,
+        getDashboardNavigator().pushFragment(thIntent.getActionFragment(), argsBundle,
                 new int[] {
                         R.anim.slide_right_in, R.anim.alpha_out,
                         R.anim.slide_left_in, R.anim.slide_right_out

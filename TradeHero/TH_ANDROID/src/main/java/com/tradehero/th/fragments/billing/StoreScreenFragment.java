@@ -172,12 +172,12 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
 
     private void pushFragment(Class<? extends Fragment> fragmentClass)
     {
-        ((DashboardActivity) getActivity()).getNavigator().pushFragment(fragmentClass);
+        ((DashboardActivity) getActivity()).getDashboardNavigator().pushFragment(fragmentClass);
     }
 
     private void pushFragment(Class<? extends Fragment> fragmentClass, Bundle bundle)
     {
-        ((DashboardActivity) getActivity()).getNavigator().pushFragment(fragmentClass, bundle);
+        ((DashboardActivity) getActivity()).getDashboardNavigator().pushFragment(fragmentClass, bundle);
     }
 
     private void popPleaseWait()

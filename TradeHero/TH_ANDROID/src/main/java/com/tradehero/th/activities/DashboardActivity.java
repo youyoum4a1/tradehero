@@ -86,7 +86,7 @@ public class DashboardActivity extends SherlockFragmentActivity
             case Intent.ACTION_MAIN:
                 if (thIntentFactory.get().isHandlableIntent(intent))
                 {
-                    navigator.goToPage(thIntentFactory.get().create(intent));
+                    getDashboardNavigator().goToPage(thIntentFactory.get().create(intent));
                 }
                 break;
         }
@@ -132,7 +132,7 @@ public class DashboardActivity extends SherlockFragmentActivity
 
     @Override public void onBackPressed()
     {
-        navigator.popFragment();
+        getDashboardNavigator().popFragment();
     }
 
     @Override public boolean onCreateOptionsMenu(Menu menu)
@@ -177,7 +177,7 @@ public class DashboardActivity extends SherlockFragmentActivity
                 Fragment currentDashboardFragment = getSupportFragmentManager().findFragmentById(R.id.realtabcontent);
                 if (!(currentDashboardFragment instanceof SettingsFragment))
                 {
-                    getNavigator().openSettings();
+                    getDashboardNavigator().openSettings();
                 }
                 break;
         }
@@ -206,10 +206,10 @@ public class DashboardActivity extends SherlockFragmentActivity
     }
 
     //<editor-fold desc="DashboardNavigatorActivity">
-    @Override public Navigator getNavigator()
-    {
-        return navigator;
-    }
+    //@Override public Navigator getNavigator()
+    //{
+    //    return navigator;
+    //}
 
     @Override public DashboardNavigator getDashboardNavigator()
     {

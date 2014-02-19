@@ -11,8 +11,10 @@ import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.th.R;
+import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.base.NavigatorActivity;
+import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.web.WebViewFragment;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import android.widget.Button;
@@ -84,7 +86,7 @@ public class AboutFragment extends DashboardFragment
     protected void pushUrl(int urlResId)
     {
         String url = getResources().getString(urlResId);
-        Navigator navigator = ((NavigatorActivity) getActivity()).getNavigator();
+        DashboardNavigator navigator = ((DashboardNavigatorActivity) getActivity()).getDashboardNavigator();
         Bundle bundle = new Bundle();
         bundle.putString(WebViewFragment.BUNDLE_KEY_URL, url);
         navigator.pushFragment(WebViewFragment.class, bundle);

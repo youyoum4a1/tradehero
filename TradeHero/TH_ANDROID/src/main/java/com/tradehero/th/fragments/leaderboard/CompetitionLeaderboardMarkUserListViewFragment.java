@@ -14,6 +14,7 @@ import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.base.Navigator;
+import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.competition.CompetitionWebFragmentTHIntentPassedListener;
 import com.tradehero.th.fragments.web.WebViewFragment;
 import com.tradehero.th.models.intent.THIntentPassedListener;
@@ -127,7 +128,8 @@ public class CompetitionLeaderboardMarkUserListViewFragment extends LeaderboardM
         Bundle args = new Bundle();
         args.putString(WebViewFragment.BUNDLE_KEY_URL, providerUtil.getWizardPage(providerId) + "&previous=whatever");
         args.putBoolean(WebViewFragment.BUNDLE_KEY_IS_OPTION_MENU_VISIBLE, false);
-        this.webViewFragment = (WebViewFragment) navigator.pushFragment(WebViewFragment.class, args);
+        this.webViewFragment = (WebViewFragment) getDashboardNavigator().pushFragment(
+                WebViewFragment.class, args);
         this.webViewFragment.setThIntentPassedListener(this.webViewTHIntentPassedListener);
     }
 
@@ -153,9 +155,9 @@ public class CompetitionLeaderboardMarkUserListViewFragment extends LeaderboardM
             return CompetitionLeaderboardMarkUserListViewFragment.this.providerId;
         }
 
-        @Override protected Navigator getNavigator()
+        @Override protected DashboardNavigator getDashboardNavigator()
         {
-            return CompetitionLeaderboardMarkUserListViewFragment.this.getNavigator();
+            return CompetitionLeaderboardMarkUserListViewFragment.this.getDashboardNavigator();
         }
 
         @Override protected Class<?> getClassToPop()

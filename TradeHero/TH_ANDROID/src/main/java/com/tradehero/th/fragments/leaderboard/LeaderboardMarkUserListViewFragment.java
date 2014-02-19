@@ -260,7 +260,7 @@ public class LeaderboardMarkUserListViewFragment extends BaseLeaderboardFragment
     {
         Bundle args = new Bundle();
         args.putBundle(LeaderboardFilterFragment.BUNDLE_KEY_PER_PAGED_FILTERED_LEADERBOARD_KEY_BUNDLE, currentLeaderboardKey.getArgs());
-        this.leaderboardFilterFragment = (LeaderboardFilterFragment) getNavigator().pushFragment(LeaderboardFilterFragment.class, args);
+        this.leaderboardFilterFragment = (LeaderboardFilterFragment) getDashboardNavigator().pushFragment(LeaderboardFilterFragment.class, args);
     }
 
     protected void displayFilterIcon(MenuItem filterIcon)

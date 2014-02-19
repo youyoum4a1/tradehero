@@ -450,7 +450,7 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
             else if (alertDTO.activeUntilDate != null)
             {
                 SimpleDateFormat sdf = new SimpleDateFormat(getString(R.string.stock_alert_price_info_as_of_date_format));
-                activeUntil.setText(getString(R.string.stock_alert_info_active_until_date_format, sdf.format(alertDTO.activeUntilDate)));
+                activeUntil.setText(sdf.format(alertDTO.activeUntilDate));
             }
             else
             {
@@ -672,7 +672,7 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
         {
             alertCompactCache.get().put(alertCompactDTO.getAlertId(currentUserId.get()), alertCompactDTO);
             updateCompactListCache(alertCompactDTO);
-            getNavigator().popFragment();
+            getDashboardNavigator().popFragment();
         }
 
         protected void updateCompactListCache(AlertCompactDTO alertCompactDTO)

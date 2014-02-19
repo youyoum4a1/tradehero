@@ -15,16 +15,16 @@ import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
-import com.tradehero.th.api.competition.ProviderUtil;
-import com.tradehero.th.api.competition.key.BasicProviderSecurityListType;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.competition.ProviderIdConstants;
+import com.tradehero.th.api.competition.ProviderUtil;
+import com.tradehero.th.api.competition.key.BasicProviderSecurityListType;
 import com.tradehero.th.api.competition.key.ProviderSecurityListType;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityIdList;
-import com.tradehero.th.base.Navigator;
+import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.competition.macquarie.MacquarieWarrantItemViewAdapter;
 import com.tradehero.th.fragments.security.SecurityListFragment;
 import com.tradehero.th.fragments.security.SimpleSecurityItemViewAdapter;
@@ -214,7 +214,8 @@ public class ProviderSecurityListFragment extends SecurityListFragment
         Bundle args = new Bundle();
         args.putString(WebViewFragment.BUNDLE_KEY_URL, providerUtil.getWizardPage(providerId) + "&previous=whatever");
         args.putBoolean(WebViewFragment.BUNDLE_KEY_IS_OPTION_MENU_VISIBLE, false);
-        this.webViewFragment = (WebViewFragment) navigator.pushFragment(WebViewFragment.class, args);
+        this.webViewFragment = (WebViewFragment) getDashboardNavigator().pushFragment(
+                WebViewFragment.class, args);
         this.webViewFragment.setThIntentPassedListener(this.webViewTHIntentPassedListener);
     }
 
@@ -266,7 +267,7 @@ public class ProviderSecurityListFragment extends SecurityListFragment
             args.putBundle(BuySellFragment.BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE, getApplicablePortfolioId().getArgs());
             args.putBundle(BuySellFragment.BUNDLE_KEY_PROVIDER_ID_BUNDLE, providerId.getArgs());
             // TODO use other positions
-            navigator.pushFragment(BuySellFragment.class, args);
+            getDashboardNavigator().pushFragment(BuySellFragment.class, args);
         }
     }
 
@@ -292,9 +293,9 @@ public class ProviderSecurityListFragment extends SecurityListFragment
             return providerId;
         }
 
-        @Override protected Navigator getNavigator()
+        @Override protected DashboardNavigator getDashboardNavigator()
         {
-            return ProviderSecurityListFragment.this.getNavigator();
+            return ProviderSecurityListFragment.this.getDashboardNavigator();
         }
 
         @Override protected Class<?> getClassToPop()

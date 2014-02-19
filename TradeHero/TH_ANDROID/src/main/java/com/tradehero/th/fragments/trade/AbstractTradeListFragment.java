@@ -141,7 +141,7 @@ abstract public class AbstractTradeListFragment<PositionDTOType extends Position
                 Bundle args = new Bundle();
                 args.putBoolean(BuySellFragment.BUNDLE_KEY_IS_BUY, isBuy);
                 args.putBundle(BuySellFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
-                navigator.pushFragment(BuySellFragment.class, args);
+                getDashboardNavigator().pushFragment(BuySellFragment.class, args);
             }
         }
     }
@@ -153,7 +153,7 @@ abstract public class AbstractTradeListFragment<PositionDTOType extends Position
 
         if (!currentUserId.toUserBaseKey().equals(userId.key))
         {
-            navigator.pushFragment(PushableTimelineFragment.class, b);
+            getDashboardNavigator().pushFragment(PushableTimelineFragment.class, b);
         }
     }
 

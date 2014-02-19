@@ -14,18 +14,18 @@ import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
-import com.tradehero.th.api.competition.key.CompetitionId;
 import com.tradehero.th.api.competition.CompetitionIdList;
-import com.tradehero.th.api.competition.ProviderUtil;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderId;
+import com.tradehero.th.api.competition.ProviderUtil;
+import com.tradehero.th.api.competition.key.CompetitionId;
 import com.tradehero.th.api.leaderboard.LeaderboardDefDTO;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileCompactDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.base.Navigator;
+import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.competition.zone.CompetitionZoneLegalMentionsView;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneDTO;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneLeaderboardDTO;
@@ -314,7 +314,7 @@ public class MainCompetitionFragment extends CompetitionFragment
         Bundle args = new Bundle();
         args.putBundle(ProviderSecurityListFragment.BUNDLE_KEY_PROVIDER_ID, providerId.getArgs());
         args.putBundle(ProviderSecurityListFragment.BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE, userInteractor.getApplicablePortfolioId().getArgs());
-        navigator.pushFragment(ProviderSecurityListFragment.class, args);
+        getDashboardNavigator().pushFragment(ProviderSecurityListFragment.class, args);
     }
 
     private void pushPortfolioElement(CompetitionZonePortfolioDTO competitionZoneDTO)
@@ -325,7 +325,7 @@ public class MainCompetitionFragment extends CompetitionFragment
         {
             Bundle args = new Bundle();
             args.putBundle(PositionListFragment.BUNDLE_KEY_SHOW_PORTFOLIO_ID_BUNDLE, ownedPortfolioId.getArgs());
-            navigator.pushFragment(PositionListFragment.class, args);
+            getDashboardNavigator().pushFragment(PositionListFragment.class, args);
         }
     }
 
@@ -335,7 +335,7 @@ public class MainCompetitionFragment extends CompetitionFragment
         args.putBundle(ProviderVideoListFragment.BUNDLE_KEY_PROVIDER_ID, providerId.getArgs());
         args.putBundle(ProviderVideoListFragment.BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE,
                 providerDTO.associatedPortfolio.getPortfolioId().getArgs());
-        navigator.pushFragment(ProviderVideoListFragment.class, args);
+        getDashboardNavigator().pushFragment(ProviderVideoListFragment.class, args);
     }
 
     private void pushWizardElement(CompetitionZoneWizardDTO competitionZoneDTO)
@@ -343,7 +343,8 @@ public class MainCompetitionFragment extends CompetitionFragment
         Bundle args = new Bundle();
         args.putString(WebViewFragment.BUNDLE_KEY_URL, providerUtil.getWizardPage(providerId) + "&previous=whatever");
         args.putBoolean(WebViewFragment.BUNDLE_KEY_IS_OPTION_MENU_VISIBLE, false);
-        this.webViewFragment = (WebViewFragment) navigator.pushFragment(WebViewFragment.class, args);
+        this.webViewFragment = (WebViewFragment) getDashboardNavigator().pushFragment(
+                WebViewFragment.class, args);
         this.webViewFragment.setThIntentPassedListener(this.webViewTHIntentPassedListener);
     }
 
@@ -359,14 +360,15 @@ public class MainCompetitionFragment extends CompetitionFragment
             args.putString(CompetitionLeaderboardMarkUserListViewFragment.BUNDLE_KEY_LEADERBOARD_DEF_TITLE, leaderboardDefDTO.name);
             args.putString(CompetitionLeaderboardMarkUserListViewFragment.BUNDLE_KEY_LEADERBOARD_DEF_DESC, leaderboardDefDTO.desc);
             args.putBundle(CompetitionLeaderboardMarkUserListViewFragment.BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE, getApplicablePortfolioId().getArgs());
-            navigator.pushFragment(CompetitionLeaderboardMarkUserListViewFragment.class, args);
+            getDashboardNavigator().pushFragment(
+                    CompetitionLeaderboardMarkUserListViewFragment.class, args);
         }
         else
         {
             args.putInt(LeaderboardMarkUserListViewFragment.BUNDLE_KEY_LEADERBOARD_ID, leaderboardDefDTO.id);
             args.putString(LeaderboardMarkUserListViewFragment.BUNDLE_KEY_LEADERBOARD_DEF_TITLE, leaderboardDefDTO.name);
             args.putString(LeaderboardMarkUserListViewFragment.BUNDLE_KEY_LEADERBOARD_DEF_DESC, leaderboardDefDTO.desc);
-            navigator.pushFragment(LeaderboardMarkUserListViewFragment.class, args);
+            getDashboardNavigator().pushFragment(LeaderboardMarkUserListViewFragment.class, args);
         }
     }
 
@@ -381,7 +383,7 @@ public class MainCompetitionFragment extends CompetitionFragment
         {
             args.putString(WebViewFragment.BUNDLE_KEY_URL, providerUtil.getTermsPage(providerId));
         }
-        navigator.pushFragment(WebViewFragment.class, args);
+        getDashboardNavigator().pushFragment(WebViewFragment.class, args);
     }
     //</editor-fold>
 
@@ -416,9 +418,9 @@ public class MainCompetitionFragment extends CompetitionFragment
             return providerId;
         }
 
-        @Override protected Navigator getNavigator()
+        @Override protected DashboardNavigator getDashboardNavigator()
         {
-            return MainCompetitionFragment.this.getNavigator();
+            return MainCompetitionFragment.this.getDashboardNavigator();
         }
 
         @Override protected Class<?> getClassToPop()

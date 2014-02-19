@@ -17,7 +17,6 @@ abstract public class DashboardFragment extends BaseFragment
     implements BaseFragment.TabBarVisibilityInformer
 {
     private static final String TAG = DashboardFragment.class.getName();
-    protected DashboardNavigator navigator;
     @Inject AlertDialogUtil alertDialogUtil;
 
     @Override public void onCreate(Bundle savedInstanceState)
@@ -28,8 +27,6 @@ abstract public class DashboardFragment extends BaseFragment
         {
             throw new IllegalArgumentException("DashboardActivity needs to implement DashboardNavigator");
         }
-
-        navigator = ((DashboardNavigatorActivity) getActivity()).getDashboardNavigator();
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
@@ -46,7 +43,7 @@ abstract public class DashboardFragment extends BaseFragment
         switch (item.getItemId())
         {
             case android.R.id.home:
-                navigator.popFragment();
+                ((DashboardNavigatorActivity) getActivity()).getDashboardNavigator().popFragment();
                 return true;
 
             case R.id.menu_info:
@@ -68,8 +65,8 @@ abstract public class DashboardFragment extends BaseFragment
         }
     }
 
-    protected DashboardNavigator getNavigator()
+    protected DashboardNavigator getDashboardNavigator()
     {
-        return navigator;
+        return ((DashboardNavigatorActivity) getActivity()).getDashboardNavigator();
     }
 }

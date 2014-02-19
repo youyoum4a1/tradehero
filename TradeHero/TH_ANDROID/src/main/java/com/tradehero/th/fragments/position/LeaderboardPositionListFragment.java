@@ -116,7 +116,7 @@ public class LeaderboardPositionListFragment
         // We should not call the super method.
         Bundle args = new Bundle();
         args.putBundle(TradeListInPeriodFragment.BUNDLE_KEY_OWNED_LEADERBOARD_POSITION_ID_BUNDLE, clickedPositionDTO.getLbOwnedPositionId().getArgs());
-        navigator.pushFragment(TradeListInPeriodFragment.class, args);
+        getDashboardNavigator().pushFragment(TradeListInPeriodFragment.class, args);
     }
 
     protected class GetLeaderboardPositionsListener extends AbstractGetPositionsListener<LeaderboardMarkUserId, PositionInPeriodDTO, GetLeaderboardPositionsDTO>

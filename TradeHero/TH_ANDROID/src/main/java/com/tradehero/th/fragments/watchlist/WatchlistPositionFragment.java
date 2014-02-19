@@ -211,7 +211,7 @@ public class WatchlistPositionFragment extends DashboardFragment
                 {
                     Bundle bundle = new Bundle();
                     bundle.putString(SearchStockPeopleFragment.BUNDLE_KEY_CALLER_FRAGMENT, WatchlistPositionFragment.class.getName());
-                    getNavigator().pushFragment(SearchStockPeopleFragment.class, bundle);
+                    getDashboardNavigator().pushFragment(SearchStockPeopleFragment.class, bundle);
                 }
             });
         }
@@ -343,7 +343,7 @@ public class WatchlistPositionFragment extends DashboardFragment
                 args.putString(WatchlistEditFragment.BUNDLE_KEY_TITLE, getString(R.string.watchlist_edit_title));
             }
         }
-        getNavigator().pushFragment(WatchlistEditFragment.class, args, Navigator.PUSH_UP_FROM_BOTTOM);
+        getDashboardNavigator().pushFragment(WatchlistEditFragment.class, args, Navigator.PUSH_UP_FROM_BOTTOM);
     }
 
     private WatchlistAdapter createWatchlistAdapter()

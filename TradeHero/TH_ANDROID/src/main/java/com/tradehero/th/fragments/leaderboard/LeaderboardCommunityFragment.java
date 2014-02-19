@@ -294,7 +294,7 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
             OwnedPortfolioId associatedPortfolioId =
                     new OwnedPortfolioId(currentUserId.toUserBaseKey(), providerDTO.associatedPortfolio);
             args.putBundle(MainCompetitionFragment.BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE, associatedPortfolioId.getArgs());
-            navigator.pushFragment(MainCompetitionFragment.class, args);
+            getDashboardNavigator().pushFragment(MainCompetitionFragment.class, args);
         }
         else if (providerDTO != null)
         {
@@ -302,7 +302,7 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
             args.putString(WebViewFragment.BUNDLE_KEY_URL, providerUtil.getLandingPage(
                     providerDTO.getProviderId(),
                     currentUserId.toUserBaseKey()));
-            webFragment = (WebViewFragment) navigator.pushFragment(WebViewFragment.class, args);
+            webFragment = (WebViewFragment) getDashboardNavigator().pushFragment(WebViewFragment.class, args);
             webFragment.setThIntentPassedListener(thIntentPassedListener);
         }
     }
@@ -348,7 +348,7 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
         Bundle bundle = new Bundle(getArguments());
         (LeaderboardDefListKey.getSector()).putParameters(bundle);
         bundle.putString(LeaderboardDefListViewFragment.BUNDLE_KEY_LEADERBOARD_DEF_TITLE, getString(R.string.leaderboard_community_sector));
-        getNavigator().pushFragment(LeaderboardDefListViewFragment.class, bundle);
+        getDashboardNavigator().pushFragment(LeaderboardDefListViewFragment.class, bundle);
     }
 
     private void pushLeaderboardDefExchange()
@@ -356,7 +356,7 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
         Bundle bundle = new Bundle(getArguments());
         (LeaderboardDefListKey.getExchange()).putParameters(bundle);
         bundle.putString(LeaderboardDefListViewFragment.BUNDLE_KEY_LEADERBOARD_DEF_TITLE, getString(R.string.leaderboard_community_exchange));
-        getNavigator().pushFragment(LeaderboardDefListViewFragment.class, bundle);
+        getDashboardNavigator().pushFragment(LeaderboardDefListViewFragment.class, bundle);
     }
     //</editor-fold>
 
