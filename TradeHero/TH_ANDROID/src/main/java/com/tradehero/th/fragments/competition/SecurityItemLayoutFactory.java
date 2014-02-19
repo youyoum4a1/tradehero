@@ -22,6 +22,7 @@ import javax.inject.Singleton;
         switch (providerId.key)
         {
             case ProviderIdConstants.PROVIDER_ID_MACQUARIE_WARRANTS:
+            case ProviderIdConstants.PROVIDER_ID_PHILIPS_MACQUARIE_WARRANTS:
                 return R.layout.warrant_security_item;
 
             default:

@@ -35,6 +35,7 @@ import com.tradehero.th.models.intent.THIntentPassedListener;
 import com.tradehero.th.models.provider.ProviderSpecificResourcesDTO;
 import com.tradehero.th.models.provider.ProviderSpecificResourcesFactory;
 import com.tradehero.th.persistence.competition.ProviderCache;
+import com.tradehero.th.utils.DeviceUtil;
 import javax.inject.Inject;
 
 /**
@@ -53,7 +54,7 @@ public class ProviderSecurityListFragment extends SecurityListFragment
     @Inject ProviderCache providerCache;
     @Inject ProviderUtil providerUtil;
     @Inject ProviderSpecificResourcesFactory providerSpecificResourcesFactory;
-    @Inject SecurityItemLayoutFactory securityItemLayoutFactory;
+    @Inject SecurityItemViewAdapterFactory securityItemViewAdapterFactory;
 
     private DTOCache.Listener<ProviderId, ProviderDTO> providerCacheListener;
     private DTOCache.GetOrFetchTask<ProviderId, ProviderDTO> providerCacheFetchTask;
@@ -195,19 +196,7 @@ public class ProviderSecurityListFragment extends SecurityListFragment
 
     @Override protected ListAdapter createSecurityItemViewAdapter()
     {
-        if (providerId != null && providerId.key.equals(ProviderIdConstants.PROVIDER_ID_MACQUARIE_WARRANTS))
-        {
-            THLog.d(TAG, "Macquarie adapter");
-            return new MacquarieWarrantItemViewAdapter(
-                    getActivity(),
-                    getActivity().getLayoutInflater(),
-                    securityItemLayoutFactory.getProviderLayout(providerId));
-        }
-        THLog.d(TAG, "Regular adapter");
-        return new SimpleSecurityItemViewAdapter(
-                getActivity(),
-                getActivity().getLayoutInflater(),
-                securityItemLayoutFactory.getProviderLayout(providerId));
+        return securityItemViewAdapterFactory.create(getActivity(), providerId);
     }
 
     @Override public int getSecurityIdListLoaderId()
