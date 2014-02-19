@@ -28,6 +28,8 @@ import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.billing.THIABUserInteractor;
 import com.tradehero.th.fragments.position.LeaderboardPositionListFragment;
 import com.tradehero.th.fragments.position.PositionListFragment;
+import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
+import com.tradehero.th.fragments.timeline.TimelineFragment;
 import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefCache;
 import com.tradehero.th.persistence.social.HeroListCache;
@@ -454,7 +456,9 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
 
         if (currentUserId != null && currentUserId.get() != userId)
         {
-            getNavigator().openTimeline(userId);
+            Bundle bundle = new Bundle();
+            bundle.putInt(TimelineFragment.BUNDLE_KEY_SHOW_USER_ID, userId);
+            getNavigator().pushFragment(PushableTimelineFragment.class, bundle);
         }
     }
 

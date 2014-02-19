@@ -61,13 +61,13 @@ public class TimelineItemView extends LinearLayout implements
     private ImageView vendorImage;
     private TextView time;
 
-    @Inject protected Provider<PrettyTime> prettyTime;
-    @Inject protected CurrentUserId currentUserId;
-    @Inject protected Lazy<Picasso> picasso;
-    @Inject @ForUserPhoto protected Transformation peopleIconTransformation;
-    @Inject protected Lazy<WatchlistPositionCache> watchlistPositionCache;
-    @Inject protected Lazy<UserWatchlistPositionCache> userWatchlistPositionCache;
-    @Inject protected Lazy<UserTimelineService> userTimelineService;
+    @Inject Provider<PrettyTime> prettyTime;
+    @Inject CurrentUserId currentUserId;
+    @Inject Lazy<Picasso> picasso;
+    @Inject @ForUserPhoto Transformation peopleIconTransformation;
+    @Inject Lazy<WatchlistPositionCache> watchlistPositionCache;
+    @Inject Lazy<UserWatchlistPositionCache> userWatchlistPositionCache;
+    @Inject Lazy<UserTimelineService> userTimelineService;
 
     private TimelineItem currentTimelineItem;
     private View tradeActionButton;
@@ -400,7 +400,9 @@ public class TimelineItemView extends LinearLayout implements
                     {
                         if (currentUserId.get() != user.id)
                         {
-                            getNavigator().openTimeline(user.id);
+                            Bundle bundle = new Bundle();
+                            bundle.putInt(TimelineFragment.BUNDLE_KEY_SHOW_USER_ID, user.id);
+                            getNavigator().pushFragment(PushableTimelineFragment.class, bundle);
                         }
                     }
                 }

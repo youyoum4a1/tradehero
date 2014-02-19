@@ -150,13 +150,6 @@ public class DashboardNavigator extends Navigator
         showTabBar();
     }
 
-    public void openTimeline(int userId)
-    {
-        Bundle bundle = new Bundle();
-        bundle.putInt(TimelineFragment.BUNDLE_KEY_SHOW_USER_ID, userId);
-        pushFragment(TimelineFragment.class, bundle);
-    }
-
     //public void clearBackStack()
     //{
     //    int rootFragment = manager.getBackStackEntryAt(0).getId();

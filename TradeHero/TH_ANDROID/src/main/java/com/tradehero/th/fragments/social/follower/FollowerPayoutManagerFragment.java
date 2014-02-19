@@ -18,6 +18,8 @@ import com.tradehero.th.api.social.FollowerId;
 import com.tradehero.th.api.social.UserFollowerDTO;
 import com.tradehero.th.api.users.UserBaseDTOUtil;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
+import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
+import com.tradehero.th.fragments.timeline.TimelineFragment;
 import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.persistence.social.UserFollowerCache;
 import com.tradehero.th.utils.SecurityUtils;
@@ -245,7 +247,9 @@ public class FollowerPayoutManagerFragment extends BasePurchaseManagerFragment
         {
             if (userFollowerDTO != null)
             {
-                getNavigator().openTimeline(userFollowerDTO.id);
+                Bundle bundle = new Bundle();
+                bundle.putInt(TimelineFragment.BUNDLE_KEY_SHOW_USER_ID, userFollowerDTO.id);
+                getNavigator().pushFragment(PushableTimelineFragment.class, bundle);
             }
         }
     };
