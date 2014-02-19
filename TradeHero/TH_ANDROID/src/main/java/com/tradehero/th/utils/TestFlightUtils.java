@@ -2,8 +2,6 @@ package com.tradehero.th.utils;
 
 import com.testflightapp.lib.TestFlight;
 import com.tradehero.th.base.Application;
-import java.io.OutputStream;
-import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
