@@ -8,7 +8,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.Preference;
-import android.support.v4.preference.PreferenceFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,12 +31,10 @@ import com.tradehero.th.api.social.SocialNetworkFormDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.base.THUser;
 import com.tradehero.th.billing.googleplay.THIABPurchase;
 import com.tradehero.th.billing.googleplay.THIABPurchaseRestorer;
-import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.web.WebViewFragment;
 import com.tradehero.th.fragments.billing.PurchaseRestorerAlertUtil;
 import com.tradehero.th.fragments.billing.THIABUserInteractor;
@@ -68,7 +65,7 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 
 /** Created with IntelliJ IDEA. User: nia Date: 17/10/13 Time: 12:38 PM To change this template use File | Settings | File Templates. */
-public final class SettingsFragment extends PreferenceFragment
+public final class SettingsFragment extends DashboardPreferenceFragment
 {
     public static final String TAG = SettingsFragment.class.getSimpleName();
 
@@ -154,17 +151,6 @@ public final class SettingsFragment extends PreferenceFragment
         getSherlockActivity().getSupportActionBar().setDisplayOptions(
                 ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_SHOW_TITLE);
         getSherlockActivity().getSupportActionBar().setTitle(getString(R.string.settings));
-    }
-
-    @Override public boolean onOptionsItemSelected(MenuItem item)
-    {
-        switch (item.getItemId())
-        {
-            case android.R.id.home:
-                getNavigator().popFragment();
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
     }
     //</editor-fold>
 
@@ -631,11 +617,6 @@ public final class SettingsFragment extends PreferenceFragment
             }
             THLog.d(TAG, "Sharing is updated");
         }
-    }
-
-    private DashboardNavigator getNavigator()
-    {
-        return ((DashboardNavigatorActivity) getActivity()).getDashboardNavigator();
     }
 
     private void handleSendLoveClicked()
