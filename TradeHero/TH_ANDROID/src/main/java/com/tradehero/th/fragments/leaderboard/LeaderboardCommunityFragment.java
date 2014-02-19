@@ -49,6 +49,7 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
 {
     private static final String TAG = LeaderboardCommunityFragment.class.getName();
 
+    private DTOCache.Listener<LeaderboardDefListKey, LeaderboardDefKeyList> leaderboardDefFetchListener;
     protected DTOCache.GetOrFetchTask<LeaderboardDefListKey, LeaderboardDefKeyList> leaderboardDefListFetchTask;
 
     @Inject Lazy<LeaderboardDefListCache> leaderboardDefListCache;
@@ -65,8 +66,86 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
     private THIntentPassedListener thIntentPassedListener;
     private WebViewFragment webFragment;
     private LeaderboardCommunityAdapter leaderboardDefListAdapter;
+    private AdapterView.OnItemClickListener leaderboardCommunityListOnClickListener;
     private int currentDisplayedChildLayoutId;
+    private DTOCache.Listener<ProviderListKey, ProviderIdList> providerListCallback;
     private DTOCache.GetOrFetchTask<ProviderListKey, ProviderIdList> providerListFetchTask;
+
+    @Override public void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        leaderboardCommunityListOnClickListener = createOnItemClickListener();
+        leaderboardDefFetchListener = createDefKeyListListener();
+        providerListCallback = createProviderIdListListener();
+    }
+
+    private AdapterView.OnItemClickListener createOnItemClickListener()
+    {
+        return new AdapterView.OnItemClickListener()
+        {
+            @Override public void onItemClick(AdapterView<?> adapterView, View view, int position, long id)
+            {
+                Object item = adapterView.getItemAtPosition(position);
+                if (item instanceof LeaderboardDefKey)
+                {
+                    LeaderboardDefDTO dto = leaderboardDefCache.get().get((LeaderboardDefKey) item);
+                    if (dto != null)
+                    {
+                        switch (dto.id)
+                        {
+                            case LeaderboardDefDTO.LEADERBOARD_DEF_SECTOR_ID:
+                                pushLeaderboardDefSector();
+                                break;
+                            case LeaderboardDefDTO.LEADERBOARD_DEF_EXCHANGE_ID:
+                                pushLeaderboardDefExchange();
+                                break;
+                            default:
+                                pushLeaderboardListViewFragment(dto);
+                                break;
+                        }
+                    }
+                }
+                if (item instanceof ProviderId)
+                {
+                    handleCompetitionItemClicked(providerCache.get().get((ProviderId) item));
+                }
+            }
+        };
+    }
+
+    private DTOCache.Listener<LeaderboardDefListKey, LeaderboardDefKeyList> createDefKeyListListener()
+    {
+        return new DTOCache.Listener<LeaderboardDefListKey, LeaderboardDefKeyList>()
+        {
+            @Override public void onDTOReceived(LeaderboardDefListKey key, LeaderboardDefKeyList value, boolean fromCache)
+            {
+                handleLeaderboardDefKeyListReceived();
+            }
+
+            @Override public void onErrorThrown(LeaderboardDefListKey key, Throwable error)
+            {
+                THToast.show(getString(R.string.error_fetch_leaderboard_def_list_key));
+                THLog.e(TAG, "Error fetching the leaderboard def key list " + key, error);
+            }
+        };
+    }
+
+    private DTOCache.Listener<ProviderListKey, ProviderIdList> createProviderIdListListener()
+    {
+        return new DTOCache.Listener<ProviderListKey, ProviderIdList>()
+        {
+            @Override public void onDTOReceived(ProviderListKey key, ProviderIdList value, boolean fromCache)
+            {
+                displayCompetitionProviders(value);
+            }
+
+            @Override public void onErrorThrown(ProviderListKey key, Throwable error)
+            {
+                THToast.show(getString(R.string.error_fetch_provider_info_list));
+                THLog.e(TAG, "Failed retrieving the list of competition providers", error);
+            }
+        };
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -172,6 +251,15 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
         super.onDestroyView();
     }
 
+    @Override public void onDestroy()
+    {
+        leaderboardCommunityListOnClickListener = null;
+        leaderboardDefFetchListener = null;
+        providerListCallback = null;
+
+        super.onDestroy();
+    }
+
     //<editor-fold desc="ActionBar">
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
@@ -247,66 +335,6 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
             }
         }
     }
-
-    private AdapterView.OnItemClickListener leaderboardCommunityListOnClickListener = new AdapterView.OnItemClickListener()
-    {
-        @Override public void onItemClick(AdapterView<?> adapterView, View view, int position, long id)
-        {
-            Object item = adapterView.getItemAtPosition(position);
-            if (item instanceof LeaderboardDefKey)
-            {
-                LeaderboardDefDTO dto = leaderboardDefCache.get().get((LeaderboardDefKey) item);
-                if (dto != null)
-                {
-                    switch (dto.id)
-                    {
-                        case LeaderboardDefDTO.LEADERBOARD_DEF_SECTOR_ID:
-                            pushLeaderboardDefSector();
-                            break;
-                        case LeaderboardDefDTO.LEADERBOARD_DEF_EXCHANGE_ID:
-                            pushLeaderboardDefExchange();
-                            break;
-                        default:
-                            pushLeaderboardListViewFragment(dto);
-                            break;
-                    }
-                }
-            }
-            if (item instanceof ProviderId)
-            {
-                handleCompetitionItemClicked(providerCache.get().get((ProviderId) item));
-            }
-        }
-    };
-
-
-    private DTOCache.Listener<LeaderboardDefListKey, LeaderboardDefKeyList> leaderboardDefFetchListener = new DTOCache.Listener<LeaderboardDefListKey, LeaderboardDefKeyList>()
-    {
-        @Override public void onDTOReceived(LeaderboardDefListKey key, LeaderboardDefKeyList value, boolean fromCache)
-        {
-            handleLeaderboardDefKeyListReceived();
-        }
-
-        @Override public void onErrorThrown(LeaderboardDefListKey key, Throwable error)
-        {
-            THToast.show(getString(R.string.error_fetch_leaderboard_def_list_key));
-            THLog.e(TAG, "Error fetching the leaderboard def key list " + key, error);
-        }
-    };
-
-    private DTOCache.Listener<ProviderListKey, ProviderIdList> providerListCallback = new DTOCache.Listener<ProviderListKey, ProviderIdList>()
-    {
-        @Override public void onDTOReceived(ProviderListKey key, ProviderIdList value, boolean fromCache)
-        {
-            displayCompetitionProviders(value);
-        }
-
-        @Override public void onErrorThrown(ProviderListKey key, Throwable error)
-        {
-            THToast.show(getString(R.string.error_fetch_provider_info_list));
-            THLog.e(TAG, "Failed retrieving the list of competition providers", error);
-        }
-    };
 
     private void handleLeaderboardDefKeyListReceived()
     {
