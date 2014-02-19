@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.security;
 
 import android.content.Context;
+import android.os.Handler;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
@@ -9,11 +10,9 @@ import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.Optional;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
-import com.squareup.picasso.RequestCreator;
 import com.squareup.picasso.Transformation;
-import com.tradehero.common.graphics.RoundedCornerTransformation;
-import com.tradehero.common.thread.KnownExecutorServices;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
@@ -31,13 +30,14 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
 {
     private static final String TAG = SecurityItemView.class.getSimpleName();
     public static final float DIVISOR_PC_50_COLOR = 5f;
+    public static final int MS_DELAY_FOR_BG_IMAGE  = 200;
 
     @Inject @ForSecurityItemForeground Transformation foregroundTransformation;
     @Inject @ForSecurityItemBackground Transformation backgroundTransformation;
 
     @Inject protected Picasso mPicasso;
 
-    @InjectView(R.id.stock_bg_logo) ImageView stockBgLogo;
+    @InjectView(R.id.stock_bg_logo) @Optional ImageView stockBgLogo;
     @InjectView(R.id.stock_logo) ImageView stockLogo;
     @InjectView(R.id.ic_market_close) ImageView marketCloseIcon;
     @InjectView(R.id.stock_name) TextView stockName;
@@ -50,16 +50,6 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
     @InjectView(R.id.sec_type) @Optional TextView securityType;
 
     protected SecurityCompactDTOType securityCompactDTO;
-
-    private Runnable loadBgLogoRunnable = new Runnable()
-    {
-        @Override public void run()
-        {
-            loadImageInTarget(stockLogo, foregroundTransformation);
-            // Posting it so the view has properly sized
-            loadImageInTarget(stockBgLogo, backgroundTransformation, getMeasuredWidth(), getMeasuredHeight());
-        }
-    };
 
     //<editor-fold desc="Constructors">
     public SecurityItemView(Context context)
@@ -90,6 +80,39 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
         ButterKnife.inject(this);
     }
 
+    @Override protected void onAttachedToWindow()
+    {
+        super.onAttachedToWindow();
+        if (stockBgLogo != null)
+        {
+            stockBgLogo.setVisibility(GONE);
+        }
+        if (mPicasso != null)
+        {
+            loadImage();
+        }
+    }
+
+    @Override protected void onDetachedFromWindow()
+    {
+        if (mPicasso != null)
+        {
+            loadDefaultImage();
+            loadBgDefault();
+            clearHandler();
+        }
+        super.onDetachedFromWindow();
+    }
+
+    protected void clearHandler()
+    {
+        Handler handler = getHandler();
+        if (handler != null)
+        {
+            handler.removeCallbacks(null);
+        }
+    }
+
     public boolean isMyUrlOk()
     {
         return (securityCompactDTO != null) && isUrlOk(securityCompactDTO.imageBlobUrl);
@@ -98,45 +121,6 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
     public static boolean isUrlOk(String url)
     {
         return (url != null) && (!url.isEmpty());
-    }
-
-    @Override protected void onDetachedFromWindow()
-    {
-        clearImageViewUrls();
-        clearRunningOperations();
-
-        super.onDetachedFromWindow();
-    }
-
-    private void clearImageViewUrls()
-    {
-        if (stockLogo != null)
-        {
-            stockLogo.setTag(R.string.image_url, null);
-        }
-        if (stockBgLogo != null)
-        {
-            stockBgLogo.setTag(R.string.image_url, null);
-        }
-    }
-
-    private void clearRunningOperations()
-    {
-        if (stockLogo != null)
-        {
-            mPicasso.load((String) null)
-                    .placeholder(R.drawable.default_image)
-                    .error(R.drawable.default_image)
-                    .into(stockLogo);
-        }
-
-        if (stockBgLogo != null)
-        {
-            mPicasso.load((String) null)
-                    .placeholder(R.drawable.default_image)
-                    .error(R.drawable.default_image)
-                    .into(stockBgLogo);
-        }
     }
 
     @Override public void display(final SecurityCompactDTOType securityCompactDTO)
@@ -165,8 +149,7 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
             displayMarketClose();
             displaySecurityType();
             displayCountryLogo();
-            storeImageUrlInImageViews();
-            loadImages();
+            loadImage();
         }
     }
 
@@ -182,8 +165,7 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
         displayMarketClose();
         displaySecurityType();
         displayCountryLogo();
-        storeImageUrlInImageViews();
-        loadImages();
+        loadImage();
     }
 
     public void displayStockName()
@@ -295,19 +277,6 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
         }
     }
 
-    public void storeImageUrlInImageViews()
-    {
-        if (stockLogo != null && this.securityCompactDTO != null)
-        {
-            stockLogo.setTag(R.string.image_url, this.securityCompactDTO.imageBlobUrl);
-        }
-
-        if (stockBgLogo != null && this.securityCompactDTO != null)
-        {
-            stockBgLogo.setTag(R.string.image_url, this.securityCompactDTO.imageBlobUrl);
-        }
-    }
-
     public void displayMarketClose()
     {
         if (securityCompactDTO == null)
@@ -381,61 +350,93 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
     }
     //</editor-fold>
 
-    public void loadImages()
+    public void loadImage()
     {
         if (stockLogo != null)
         {
-            stockLogo.setImageResource(R.drawable.default_image);
+            if (stockBgLogo != null)
+            {
+                stockBgLogo.setVisibility(GONE);
+            }
+            if (isMyUrlOk())
+            {
+                mPicasso.load(securityCompactDTO.imageBlobUrl)
+                        .transform(foregroundTransformation)
+                        .into(stockLogo, new Callback()
+                        {
+                            @Override public void onSuccess()
+                            {
+                                clearHandler();
+                                postDelayed(new Runnable()
+                                {
+                                    @Override public void run()
+                                    {
+                                        loadBgImage();
+                                    }
+                                }, MS_DELAY_FOR_BG_IMAGE);
+                            }
+
+                            @Override public void onError()
+                            {
+                                loadDefaultImage();
+                            }
+                        });
+            }
+            else
+            {
+                loadDefaultImage();
+            }
         }
 
-        if (stockBgLogo != null)
-        {
-            stockBgLogo.setImageResource(R.drawable.default_image);
-        }
 
-        if (isMyUrlOk())
+    }
+
+    public void loadDefaultImage()
+    {
+        if (stockLogo != null)
         {
-            loadImageInTarget(stockLogo, foregroundTransformation);
-            // Launching the bg like this will result in double downloading the file.
-            removeCallbacks(loadBgLogoRunnable); // In order to further delay the background
-            postDelayed(loadBgLogoRunnable, 200);
-        }
-        else
-        {
-            //THLog.i(TAG, "no url");
-            mPicasso.load(securityCompactDTO.getExchangeLogoId())
-                    .placeholder(R.drawable.default_image)
-                    .error(R.drawable.default_image)
+            mPicasso.load(R.drawable.default_image)
                     .into(stockLogo);
         }
     }
 
-    private void loadImageInTarget(final ImageView target, final Transformation t)
+    public void loadBgImage()
     {
-        loadImageInTarget(target, t, 0, 0);
+        if (stockBgLogo != null)
+        {
+            if (isMyUrlOk())
+            {
+                mPicasso.load(securityCompactDTO.imageBlobUrl)
+                        .transform(backgroundTransformation)
+                        .resize(getWidth(), getHeight())
+                        .centerCrop()
+                        .into(stockBgLogo, new Callback()
+                        {
+                            @Override public void onSuccess()
+                            {
+                                stockBgLogo.setVisibility(VISIBLE);
+                                THLog.d(TAG, "h=" + getHeight() + ", w=" + getWidth());
+                            }
+
+                            @Override public void onError()
+                            {
+                                loadBgDefault();
+                            }
+                        });
+            }
+            else
+            {
+                loadBgDefault();
+            }
+        }
     }
 
-    private void loadImageInTarget(final ImageView target, final Transformation t, final int resizeToWidth, final int resizeToHeight)
+    public void loadBgDefault()
     {
-        KnownExecutorServices.getCacheExecutor().submit(new Runnable()
+        if (stockBgLogo != null)
         {
-            @Override public void run()
-            {
-                if (target != null && target.getTag(R.string.image_url) != null)
-                {
-                    RequestCreator requestCreator = mPicasso.load(target.getTag(R.string.image_url).toString())
-                            .placeholder(R.drawable.default_image)
-                            .error(R.drawable.default_image);
-
-                    if (resizeToWidth > 0 && resizeToHeight > 0)
-                    {
-                        requestCreator = requestCreator.resize(resizeToWidth, resizeToHeight).centerCrop();
-                    }
-
-                    requestCreator.transform(t)
-                            .into(target);
-                }
-            }
-        });
+            mPicasso.load(R.drawable.default_image)
+                    .into(stockBgLogo);
+        }
     }
 }

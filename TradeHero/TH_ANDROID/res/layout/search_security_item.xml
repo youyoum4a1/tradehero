@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <com.tradehero.th.fragments.security.SecurityItemView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
@@ -9,28 +10,28 @@
     android:paddingLeft="@dimen/search_stock_people_padding"
     >
 
-  <com.tradehero.common.widget.ImageViewThreadSafe
+  <ImageView
       android:id="@+id/stock_bg_logo"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
       android:layout_alignParentTop="true"
       android:contentDescription="@null"
       android:scaleType="centerCrop"
-      android:src="@null"
+      android:src="@drawable/default_image"
       android:alpha="0.2"
       />
 
-  <com.tradehero.common.widget.ImageViewThreadSafe
+  <ImageView
       android:id="@+id/country_logo"
       android:layout_width="40dp"
       android:layout_height="40dp"
+      android:layout_marginLeft="@dimen/search_stock_people_padding"
       android:layout_centerVertical="true"
       android:layout_marginRight="10dp"
       android:adjustViewBounds="true"
       android:contentDescription="@null"
       android:scaleType="centerInside"
-      android:src="@drawable/default_image"
-      tools:background="@color/gray_normal"
+      tools:src="@drawable/flag_country_round_australia"
       />
 
   <LinearLayout
@@ -39,9 +40,10 @@
       android:layout_marginRight="2dp"
       android:layout_toLeftOf="@+id/stock_details"
       android:layout_toRightOf="@+id/country_logo"
+      android:paddingBottom="@dimen/search_stock_people_padding"
+      android:paddingTop="@dimen/search_stock_people_padding"
       android:gravity="center_horizontal"
       android:orientation="vertical"
-      tools:background="@color/light_grey"
       >
 
     <TextView
@@ -51,7 +53,7 @@
         android:ellipsize="middle"
         android:gravity="center_horizontal"
         android:lines="2"
-        android:text=""
+        tools:text="Telus Corp."
         android:textColor="@color/black"
         android:textSize="14sp"
         android:textStyle="bold"/>
@@ -65,7 +67,9 @@
         android:adjustViewBounds="true"
         android:contentDescription="@null"
         android:scaleType="fitCenter"
+        tools:src="@drawable/flag_country_round_australia"
         />
+
   </LinearLayout>
 
   <LinearLayout
@@ -74,9 +78,10 @@
       android:layout_height="wrap_content"
       android:layout_alignParentRight="true"
       android:layout_marginLeft="5dp"
-      android:layout_marginRight="2dp"
+      android:paddingRight="@dimen/search_stock_people_padding"
+      android:paddingBottom="@dimen/search_stock_people_padding"
+      android:paddingTop="@dimen/search_stock_people_padding"
       android:orientation="vertical"
-      tools:background="@color/gray_normal"
       >
 
     <TextView
@@ -86,7 +91,7 @@
         android:ellipsize="end"
         android:gravity="right"
         android:lines="1"
-        android:text=""
+        tools:text="NYSE:TU"
         android:textColor="@color/black"
         android:textSize="16sp"
         android:textStyle="bold"/>
@@ -118,7 +123,7 @@
           android:layout_height="wrap_content"
           android:layout_marginBottom="0sp"
           android:lines="1"
-          android:text=""
+          tools:text="@string/arrow_prefix_positive"
           android:textColor="@color/black"
           android:textSize="24sp"/>
 
@@ -129,7 +134,7 @@
           android:layout_marginLeft="2dp"
           android:layout_marginRight="2dp"
           android:lines="1"
-          android:text=""
+          tools:text="US$"
           android:textColor="@color/text_gray_normal"
           android:textSize="13sp"/>
 
@@ -138,7 +143,7 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:lines="1"
-          android:text=""
+          tools:text="8.80"
           android:textColor="@color/text_gray_normal"
           android:textSize="13sp"/>
 
@@ -152,7 +157,7 @@
         android:layout_marginTop="4dp"
         android:gravity="right"
         android:lines="1"
-        android:text=""
+        tools:text="19 Feb 19:06"
         android:textColor="@color/text_gray_normal"
         android:textSize="12sp"/>
 
@@ -162,9 +167,10 @@
         android:layout_height="wrap_content"
         android:gravity="right"
         android:lines="1"
-        android:text=""
+        tools:text="Equity"
         android:textColor="@color/sec_type"
         android:textSize="14sp"/>
+
   </LinearLayout>
 
 </com.tradehero.th.fragments.security.SecurityItemView>

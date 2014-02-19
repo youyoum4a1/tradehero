@@ -34,7 +34,6 @@ abstract public class SecurityItemViewAdapter<SecurityCompactDTOType extends Sec
 
     protected void setItemsToShow(List<SecurityCompactDTOType> showItems)
     {
-        THLog.d(TAG, "setItemsToShow " + (showItems == null ? "null" : showItems.size()));
         super.setItems(showItems);
     }
 

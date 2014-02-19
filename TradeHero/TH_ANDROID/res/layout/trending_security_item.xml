@@ -9,15 +9,16 @@
     tools:context=".activities.DashboardActivity"
     >
 
-  <com.tradehero.common.widget.ImageViewThreadSafe
+  <ImageView
       android:id="@+id/stock_bg_logo"
       android:layout_width="match_parent"
-      android:layout_height="wrap_content"
+      android:layout_height="match_parent"
       android:layout_alignParentTop="true"
       android:contentDescription="@null"
       android:scaleType="centerCrop"
       android:alpha="0.2"
       tools:background="@color/red"
+      android:visibility="visible"
       />
 
   <TextView
@@ -34,7 +35,7 @@
       tools:text="Google"
       />
 
-  <com.tradehero.common.widget.ImageViewThreadSafe
+  <ImageView
       android:id="@+id/stock_logo"
       android:layout_width="match_parent"
       android:layout_height="45dp"

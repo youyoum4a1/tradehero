@@ -83,7 +83,7 @@ public final class SearchStockPeopleFragment extends DashboardFragment
     private SecurityIdListCacheListener securityIdListCacheListener;
     private PeopleListCacheListener peopleListCacheListener;
 
-    private SecurityItemViewAdapter securityItemViewAdapter;
+    private SecurityItemViewAdapter<SecurityCompactDTO> securityItemViewAdapter;
     private PeopleItemViewAdapter peopleItemViewAdapter;
 
     private DTOCache.GetOrFetchTask<SecurityListType, SecurityIdList> securitySearchTask;
