@@ -9,11 +9,12 @@
   <string name="trade_list_quantity">Position Quantity</string>
   <string name="trade_list_comment">Comment</string>
   <string name="trade_list_header_history">TRADE HISTORY</string>
-  <string name="error_fetch_trade_list_info">There was an error when fetching the list of trades</string>
   <string name="trade_list_header_security_symbol">Stock Symbol</string>
   <string name="trade_list_button_buy">BUY</string>
   <string name="trade_list_button_sell">SELL</string>
   <string name="trade_list_header_open_summary">OPEN POSITION SUMMARY</string>
   <string name="trade_list_header_closed_summary">CLOSED POSITION SUMMARY</string>
+
+  <string name="error_fetch_trade_list_info">There was an error when fetching the list of trades</string>
 
 </resources>

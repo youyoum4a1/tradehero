@@ -250,8 +250,8 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
         {
             profileView.progressDialog = ProgressDialogUtil.show(
                     getActivity(),
-                    R.string.please_wait,
-                    R.string.connecting_tradehero_only);
+                    R.string.alert_dialog_please_wait,
+                    R.string.authentication_connecting_tradehero_only);
             EmailAuthenticationProvider.setCredentials(this.getUserFormJSON());
 
             UserFormDTO userFormDTO = UserFormFactory.create(getUserFormJSON());

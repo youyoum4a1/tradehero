@@ -124,7 +124,7 @@ public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
         {
             if (userProfileDTO != null)
             {
-                firstLastName.setText(context.getString(R.string.first_last_name_display, userProfileDTO.firstName, userProfileDTO.lastName));
+                firstLastName.setText(context.getString(R.string.user_profile_first_last_name_display, userProfileDTO.firstName, userProfileDTO.lastName));
             }
             else
             {

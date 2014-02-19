@@ -18,7 +18,7 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:textColor="@color/black"
-          android:text="@string/Roi"
+          android:text="@string/user_profile_roi"
           android:layout_weight="3"
           android:gravity="right"
           android:textStyle="bold"/>
@@ -47,7 +47,7 @@
           android:layout_height="wrap_content"
           android:layout_weight="3"
           android:gravity="right"
-          android:text="@string/trade_profit"
+          android:text="@string/user_profile_trade_profit"
           android:textColor="@color/text_gray_normal"
           android:textStyle="normal"
           />
@@ -76,7 +76,7 @@
           android:gravity="right"
           android:paddingRight="@dimen/trade_screen_info_title_padding_right"
           android:textColor="@color/text_gray_normal"
-          android:text="@string/total_wealth"
+          android:text="@string/user_profile_total_wealth"
           />
 
       <TextView
@@ -102,7 +102,7 @@
           android:gravity="right"
           android:paddingRight="@dimen/trade_screen_info_title_padding_right"
           android:textColor="@color/text_gray_normal"
-          android:text="@string/additional_cash"
+          android:text="@string/user_profile_additional_cash"
           />
 
       <TextView
@@ -128,7 +128,7 @@
           android:gravity="right"
           android:paddingRight="@dimen/trade_screen_info_title_padding_right"
           android:textColor="@color/text_gray_normal"
-          android:text="@string/cash_on_hand"
+          android:text="@string/user_profile_cash_on_hand"
           />
 
       <TextView

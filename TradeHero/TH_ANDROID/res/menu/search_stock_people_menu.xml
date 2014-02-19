@@ -11,7 +11,7 @@
       android:enabled="true"
       />
 
-  <item android:id="@+id/current_search_mode" android:showAsAction="always" android:title="@string/search_mode" android:icon="@drawable/toggle_stocks">
+  <item android:id="@+id/current_search_mode" android:showAsAction="always" android:title="@string/trending_search_mode" android:icon="@drawable/toggle_stocks">
     <menu>
       <group android:checkableBehavior="single">
         <item android:id="@+id/search_stock" android:title="@string/search_stock_spinner_stock" android:icon="@drawable/graph"/>

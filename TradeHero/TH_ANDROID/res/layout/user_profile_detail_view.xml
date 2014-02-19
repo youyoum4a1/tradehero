@@ -108,7 +108,7 @@
                   android:layout_marginRight="3sp"
                   android:textColor="@color/black"
                   android:textSize="12sp"
-                  android:text="@string/member_since"
+                  android:text="@string/user_profile_member_since"
                   />
 
               <TextView

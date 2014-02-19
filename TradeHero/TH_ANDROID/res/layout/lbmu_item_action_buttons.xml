@@ -20,7 +20,7 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_centerInParent="true"
-          android:text="@string/profile"
+          android:text="@string/leaderboard_profile"
           style="@style/Leaderboard_ActionButton"
           />
 
@@ -37,7 +37,7 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_centerInParent="true"
-          android:text="@string/positions"
+          android:text="@string/leaderboard_positions"
           style="@style/Leaderboard_ActionButton"
           />
 
@@ -54,7 +54,7 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_centerInParent="true"
-          android:text="@string/follow"
+          android:text="@string/leaderboard_follow"
           style="@style/Leaderboard_ActionButton_Blue"
           />
 

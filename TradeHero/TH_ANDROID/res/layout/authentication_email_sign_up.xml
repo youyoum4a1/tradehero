@@ -34,7 +34,7 @@
         android:layout_marginTop="30dp"
         android:background="@drawable/authentication_button"
         android:padding="10dp"
-        android:text="@string/sign_up"
+        android:text="@string/authentication_sign_up"
         android:textColor="@color/white"
         android:textSize="25sp"
         android:textStyle="bold"

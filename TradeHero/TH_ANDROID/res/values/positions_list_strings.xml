@@ -30,6 +30,9 @@
   <string name="position_locked_follow_to_unlock">Follow user to unlock!</string>
   <string name="position_locked_title">Open Positions</string>
 
+  <string name="positions_in_period">In Period</string>
+  <string name="positions_overall">Overall</string>
+
   <string name="position_in_period_pl">Period P&amp;L</string>
   <string name="position_in_period_additional_invested">Addl. Invested</string>
   <string name="position_in_period_start_value">Value at Start</string>

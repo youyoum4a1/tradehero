@@ -45,7 +45,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/email_address"
+        android:text="@string/authentication_email_address"
         android:textColor="@color/authentication_link_text"
         android:textSize="@dimen/authentication_head_text_size"
         android:singleLine="true"

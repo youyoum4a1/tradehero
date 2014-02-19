@@ -11,12 +11,10 @@ import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.widget.CompoundButton;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.ToggleButton;
@@ -486,7 +484,7 @@ public class BuySellConfirmFragment extends AbstractBuySellFragment
         @Override protected void onPreExecute()
         {
             transactionDialog =
-                    ProgressDialogUtil.show(BuySellConfirmFragment.this.getActivity(), R.string.loading_loading, R.string.please_wait);
+                    ProgressDialogUtil.show(BuySellConfirmFragment.this.getActivity(), R.string.loading_loading, R.string.alert_dialog_please_wait);
             super.onPreExecute();
         }
 

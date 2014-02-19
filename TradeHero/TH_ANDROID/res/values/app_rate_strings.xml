@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+  <string name="apprate_later">Remind me later</string>
+  <string name="apprate_no_thanks">No thanks</string>
+  <string name="apprate_message">Rate our apps</string>
+  <string name="apprate">Rate me</string>
+  <string name="apprate_dialog_title">Rate TradeHero</string>
+
+</resources>

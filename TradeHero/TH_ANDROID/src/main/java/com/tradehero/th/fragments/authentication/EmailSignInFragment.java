@@ -5,7 +5,6 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 import com.tradehero.common.utils.THToast;
@@ -135,18 +134,18 @@ public class EmailSignInFragment extends EmailSignInOrUpFragment
         LayoutInflater inflater = getActivity().getLayoutInflater();
         forgotDialogView = inflater.inflate(R.layout.forgot_password_dialog, null);
 
-        String message = getActivity().getString(R.string.ask_for_email);
+        String message = getActivity().getString(R.string.authentication_ask_for_email);
         final AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
         dialog.setMessage(message)
                 .setView(forgotDialogView)
-                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener()
+                .setNegativeButton(R.string.authentication_cancel, new DialogInterface.OnClickListener()
                 {
                     @Override public void onClick(DialogInterface dialogInterface, int which)
                     {
                         dialogInterface.cancel();
                     }
                 })
-                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener()
+                .setPositiveButton(R.string.authentication_ok, new DialogInterface.OnClickListener()
                 {
                     @Override
                     public void onClick(final DialogInterface dialogInterface, int which)
@@ -181,8 +180,8 @@ public class EmailSignInFragment extends EmailSignInOrUpFragment
 
         mProgressDialog = ProgressDialogUtil.show(
                 getActivity(),
-                R.string.please_wait,
-                R.string.connecting_tradehero_only);
+                R.string.alert_dialog_please_wait,
+                R.string.authentication_connecting_tradehero_only);
 
         userService.forgotPassword(forgotPasswordFormDTO, createForgotPasswordCallback());
     }
@@ -193,7 +192,7 @@ public class EmailSignInFragment extends EmailSignInOrUpFragment
         {
             @Override protected void success(ForgotPasswordDTO forgotPasswordDTO, THResponse thResponse)
             {
-                THToast.show(R.string.thank_you_message_email);
+                THToast.show(R.string.authentication_thank_you_message_email);
             }
 
             @Override public void failure(THException ex)

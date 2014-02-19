@@ -58,8 +58,8 @@ public class SettingsTransactionHistoryFragment extends DashboardFragment
 
         progressDialog = ProgressDialogUtil.show(
                 getActivity(),
-                R.string.please_wait,
-                R.string.connecting_tradehero_only);
+                R.string.alert_dialog_please_wait,
+                R.string.authentication_connecting_tradehero_only);
         userService.getUserTransactions(currentUserId.get(), new Callback<List<UserTransactionHistoryDTO>>()
         {
             @Override

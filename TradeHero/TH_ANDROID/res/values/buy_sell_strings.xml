@@ -25,6 +25,13 @@
   <string name="buy_sell_sell_details">Sell %1$,d %2$s:%3$s @ %4$s %5$,.2f\nTransaction fee: virtual %6$s %7$,.2f\nNet proceeds: %8$s %9$,.2f</string>
   <string name="buy_sell_confirm_share_public">Public</string>
   <string name="buy_sell_confirm_share_private">Private</string>
+  <string name="buy_sell_confirm_buy_comment">Post comments to attract followers…(optional)</string>
+  <string name="buy_sell_confirm_share_on">Share on</string>
+  <string name="buy_sell_switch_buy">Buy</string>
+  <string name="buy_sell_switch_sell">Sell</string>
+  <string name="buy_sell_usd_price_unit_left">= US$</string>
+  <string name="buy_sell_market_status">Market status</string>
+  <string name="buy_sell_toggle">Toggle Buy/Sell mode</string>
 
   <string name="buy_sell_portfolio_selected_title">Portfolio:</string>
 

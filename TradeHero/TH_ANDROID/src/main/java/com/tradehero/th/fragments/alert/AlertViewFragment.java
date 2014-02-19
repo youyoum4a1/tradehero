@@ -156,7 +156,7 @@ public class AlertViewFragment extends BasePurchaseManagerFragment
             }
             else
             {
-                progressDialog = ProgressDialogUtil.show(getActivity(), R.string.loading_loading, R.string.please_wait);
+                progressDialog = ProgressDialogUtil.show(getActivity(), R.string.loading_loading, R.string.alert_dialog_please_wait);
             }
             alertServiceWrapper.get().getAlert(alertId, alertCallback);
         }
@@ -330,7 +330,7 @@ public class AlertViewFragment extends BasePurchaseManagerFragment
 
         if (userProfileDTO != null)
         {
-            progressDialog = ProgressDialogUtil.show(getActivity(), R.string.loading_loading, R.string.please_wait);
+            progressDialog = ProgressDialogUtil.show(getActivity(), R.string.loading_loading, R.string.alert_dialog_please_wait);
 
             if (alertDTO != null)
             {

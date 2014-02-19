@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+  <string name="app_name">TradeHero</string>
+  <string name="version_text">v1.5.9(3451)</string>
+
+  <string name="na">N/A</string>
+  <string name="empty"/>
+  <string name="action_settings">Settings</string>
+
+  <string name="network_error">Please check your network connection!</string>
+
+  <string name="date_format_gmt_day_and_time">dd MMM HH:mm \'GMT\'</string>
+  <string name="date_format_day_and_time">dd MMM HH:mm</string>
+
+
+  <!-- TEMP stuff -->
+  <string name="test_email">neeraj@eatechnologies.com</string>
+  <string name="test_password">asd123</string>
+
+  <!-- Splash screen -->
+  <string name="splash_copyright_1">© Copyright 2012, 2013 My Manisku Pte. Ltd.</string>
+  <string name="splash_copyright_2">Registered in Singapore company number 201003309N</string>
+  <string name="splash_copyright_3">Patents Pending</string>
+
+  <!-- Dashboard -->
+  <string name="dashboard_trending">Trending</string>
+  <string name="dashboard_community">Community</string>
+  <string name="dashboard_home">Home</string>
+  <string name="dashboard_portfolio">Portfolio</string>
+  <string name="dashboard_store">Store</string>
+
+  <!-- To get rid of? -->
+  <string name="image_url">image_url</string>
+  <string name="key_price">price</string>
+
+  <!-- Number presentation -->
+  <string name="number_presentation_unit_suffix"/>
+  <string name="number_presentation_thousand_suffix">k</string>
+  <string name="number_presentation_million_suffix">M</string>
+  <string name="number_presentation_billion_suffix">B</string>
+  <string name="number_presentation_trillion_suffix">Tr</string>
+  <string name="arrow_prefix_positive">▲</string>
+  <string name="arrow_prefix_negative">▼</string>
+  <string name="arrow_prefix_zero"/>
+  <string name="sign_prefix_positive">+</string>
+  <string name="sign_prefix_negative">-</string>
+  <string name="sign_prefix_zero"/>
+
+  <!-- TradeHero URLs -->
+  <string name="th_faq_url">http://www.tradehero.mobi/faq</string>
+  <string name="th_help_url">http://www.tradehero.mobi/about</string>
+  <string name="th_terms_url">http://www.tradehero.mobi/terms</string>
+  <string name="th_privacy_terms_url">http://www.tradehero.mobi/privacy</string>
+
+  <string name="plus">+</string>
+
+  <!-- TimeDisplayViewHolder -->
+  <string name="time_display_view_holder_format_day">%02d</string>
+  <string name="time_display_view_holder_format_hour">%02d</string>
+  <string name="time_display_view_holder_format_minute">%02d</string>
+  <string name="time_display_view_holder_format_second">%02d</string>
+
+  <string name="help">Help</string>
+  <string name="tab_to_dismiss">tap to dismiss</string>
+
+</resources>

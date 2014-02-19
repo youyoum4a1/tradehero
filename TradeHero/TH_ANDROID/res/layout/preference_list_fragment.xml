@@ -56,7 +56,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="5dip"
         android:layout_alignParentLeft="true"
-        android:text="@string/back_button_label"
+        android:text="@string/preference_fragment_compact_back_button_label"
         />
     <LinearLayout
         android:orientation="horizontal"
@@ -68,7 +68,7 @@
           android:layout_width="150dip"
           android:layout_height="wrap_content"
           android:layout_margin="5dip"
-          android:text="@string/skip_button_label"
+          android:text="@string/preference_fragment_compact_skip_button_label"
           android:visibility="gone"
           />
 
@@ -76,7 +76,7 @@
           android:layout_width="150dip"
           android:layout_height="wrap_content"
           android:layout_margin="5dip"
-          android:text="@string/next_button_label"
+          android:text="@string/preference_fragment_compact_next_button_label"
           />
 
     </LinearLayout>

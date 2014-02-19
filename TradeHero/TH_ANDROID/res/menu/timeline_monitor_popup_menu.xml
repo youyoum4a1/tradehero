@@ -11,12 +11,12 @@
 
   <item
       android:id="@+id/timeline_popup_menu_monitor_enable_stock_alert"
-      android:title="@string/enable_stock_alert"
+      android:title="@string/timeline_enable_stock_alert"
     />
 
   <item
       android:id="@+id/timeline_popup_menu_monitor_view_graph"
-      android:title="@string/view_graph"
+      android:title="@string/timeline_view_graph"
     />
 
 </menu>

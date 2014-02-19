@@ -32,7 +32,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/previous_close"
+            android:text="@string/security_previous_close"
             android:textSize="13sp"
             android:gravity="right"
             />
@@ -58,7 +58,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/open"
+            android:text="@string/security_open"
             android:textSize="13sp"
             android:gravity="right"
             />
@@ -84,7 +84,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/days_high"
+            android:text="@string/security_days_high"
             android:textSize="13sp"
             android:gravity="right"
             />
@@ -110,7 +110,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/days_low"
+            android:text="@string/security_days_low"
             android:textSize="13sp"
             android:gravity="right"
             />
@@ -136,7 +136,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/market_cap"
+            android:text="@string/security_market_cap"
             android:textSize="13sp"
             android:gravity="right"
             />
@@ -169,7 +169,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/pe_ratio"
+            android:text="@string/security_pe_ratio"
             android:textSize="13sp"
             android:gravity="right"
             />
@@ -195,7 +195,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/eps"
+            android:text="@string/security_eps"
             android:textSize="13sp"
             android:gravity="right"
             />
@@ -222,7 +222,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/volume"
+            android:text="@string/security_volume"
             android:textSize="13sp"
             android:gravity="right"
             />
@@ -249,7 +249,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/avg_volume"
+            android:text="@string/security_avg_volume"
             android:textSize="13sp"
             android:gravity="right"
             />

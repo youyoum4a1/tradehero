@@ -149,8 +149,7 @@
   <string name="manage_alerts_plan">"Plan: "</string>
   <string name="manage_alerts_with_count">%d alerts</string>
 
-
-
+  <!-- Google Play elements -->
   <string name="google_play_send_support_email_chooser_title">Send an email to TradeHero support</string>
 
   <string name="google_play_send_support_email_report_fail_title">Purchase Report Failed</string>

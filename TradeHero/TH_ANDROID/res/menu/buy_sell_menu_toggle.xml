@@ -3,7 +3,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
   <item
       android:id="@+id/menu_elements_buy_sell"
-      android:title="@string/toggle_buy_sell"
+      android:title="@string/buy_sell_toggle"
       android:actionLayout="@layout/menu_elements_buy_sell"
       android:visible="true"
       android:showAsAction="always"

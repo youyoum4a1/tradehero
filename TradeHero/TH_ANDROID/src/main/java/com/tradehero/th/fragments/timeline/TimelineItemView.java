@@ -519,7 +519,7 @@ public class TimelineItemView extends LinearLayout implements
 
             @Override protected void failure(THException ex)
             {
-                THToast.show(String.format(getContext().getString(R.string.link_account), socialNetworkEnum.getName()));
+                THToast.show(String.format(getContext().getString(R.string.timeline_link_account), socialNetworkEnum.getName()));
                 //THToast.show(ex);
             }
         };

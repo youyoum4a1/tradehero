@@ -11,7 +11,7 @@
   <TextView
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:text="@string/required"
+      android:text="@string/user_profile_info_required"
       android:textColor="@color/text_gray_normal"
       android:layout_margin="5dip"
       android:textSize="18sp"/>
@@ -22,7 +22,7 @@
       android:layout_height="wrap_content"
       android:layout_margin="2dip"
       android:layout_gravity="left|bottom"
-      android:hint="@string/email"
+      android:hint="@string/user_profile_email"
       android:inputType="textEmailAddress"
       android:imeOptions="actionNext"
       style="@style/TradeHero.Authentication.EditText"
@@ -46,7 +46,7 @@
       android:layout_height="wrap_content"
       android:layout_margin="2dip"
       android:layout_gravity="center_vertical"
-      android:hint="@string/pwd"
+      android:hint="@string/user_profile_password"
       android:inputType="textPassword"
       style="@style/TradeHero.Authentication.EditText"
 
@@ -67,7 +67,7 @@
       android:layout_height="wrap_content"
       android:layout_margin="2dip"
       android:layout_gravity="center_vertical"
-      android:hint="@string/confirm_pwd"
+      android:hint="@string/user_profile_confirm_pwd"
       android:inputType="textPassword"
       style="@style/TradeHero.Authentication.EditText"
 
@@ -92,7 +92,7 @@
         android:id="@+id/authentication_sign_up_username"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:hint="@string/display_name"
+        android:hint="@string/user_profile_display_name"
         android:inputType="text"
         style="@style/TradeHero.Authentication.EditText"
 
@@ -125,7 +125,7 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_margin="5dp"
-      android:text="@string/optional"
+      android:text="@string/user_profile_optional"
       android:textColor="@color/text_gray_normal"
       android:textSize="18sp"/>
 
@@ -159,7 +159,7 @@
           android:id="@+id/et_firstname"
           android:layout_width="fill_parent"
           android:layout_height="wrap_content"
-          android:hint="@string/first_name"
+          android:hint="@string/user_profile_first_name"
           android:inputType="text"
 
           android:drawableLeft="@drawable/accounts_glyph_name_default"
@@ -170,7 +170,7 @@
           android:layout_width="fill_parent"
           android:layout_height="wrap_content"
           android:layout_marginTop="5dip"
-          android:hint="@string/last_name"
+          android:hint="@string/user_profile_last_name"
           android:inputType="text"
           android:drawableLeft="@drawable/accounts_glyph_name_default"
           style="@style/TradeHero.Authentication.EditText"/>

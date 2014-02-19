@@ -557,14 +557,14 @@ public final class SettingsFragment extends PreferenceFragment
                 case FB:
                     progressDialog = ProgressDialogUtil.show(getActivity(),
                             R.string.facebook,
-                            R.string.connecting_to_facebook);
+                            R.string.authentication_connecting_to_facebook);
 
                     facebookUtils.get().logIn(getActivity(), socialConnectCallback);
                     break;
                 case TW:
                     progressDialog = ProgressDialogUtil.show(getActivity(),
                             R.string.twitter,
-                            R.string.connecting_to_twitter);
+                            R.string.authentication_twitter_connecting);
                     twitterUtils.get().logIn(getActivity(), socialConnectCallback);
                     break;
                 case TH:
@@ -572,7 +572,7 @@ public final class SettingsFragment extends PreferenceFragment
                 case LI:
                     progressDialog = ProgressDialogUtil.show(getActivity(),
                             R.string.linkedin,
-                            R.string.connecting_to_linkedin);
+                            R.string.authentication_connecting_to_linkedin);
                     linkedInUtils.get().logIn(getActivity(), socialConnectCallback);
                     break;
             }
@@ -580,8 +580,8 @@ public final class SettingsFragment extends PreferenceFragment
         else
         {
             progressDialog = ProgressDialogUtil.show(getActivity(),
-                    R.string.please_wait,
-                    R.string.connecting_tradehero_only);
+                    R.string.alert_dialog_please_wait,
+                    R.string.authentication_connecting_tradehero_only);
             socialService.disconnect(
                     currentUserId.get(),
                     new SocialNetworkFormDTO(socialNetwork),
@@ -720,14 +720,14 @@ public final class SettingsFragment extends PreferenceFragment
     private void handleResetHelpScreensClicked()
     {
         resetHelpScreen.delete();
-        THToast.show(R.string.reset_help_screen);
+        THToast.show(R.string.settings_misc_reset_help_screen);
     }
 
     private void handleClearCacheClicked()
     {
         progressDialog = ProgressDialogUtil.show(getActivity(),
-                R.string.cache_clearing_alert_title,
-                R.string.cache_clearing_alert_message);
+                R.string.settings_misc_cache_clearing_alert_title,
+                R.string.settings_misc_cache_clearing_alert_message);
 
         new SlowedAsyncTask<Void, Void, Void>(500)
         {
@@ -752,7 +752,7 @@ public final class SettingsFragment extends PreferenceFragment
     private void handleCacheCleared()
     {
         progressDialog = ProgressDialogUtil.show(getActivity(),
-                R.string.cache_cleared_alert_title,
+                R.string.settings_misc_cache_cleared_alert_title,
                 R.string.empty);
         getView().postDelayed(new Runnable()
         {
@@ -850,7 +850,7 @@ public final class SettingsFragment extends PreferenceFragment
                     currentUserId.get(),
                     UserFormFactory.create(json),
                     createSocialConnectCallback());
-            progressDialog.setMessage(String.format(getString(R.string.connecting_tradehero), currentSocialNetworkConnect.getName()));
+            progressDialog.setMessage(String.format(getString(R.string.authentication_connecting_tradehero), currentSocialNetworkConnect.getName()));
             return false;
         }
     };

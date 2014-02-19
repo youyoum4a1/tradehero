@@ -180,7 +180,7 @@ public class AuthenticationActivity extends SherlockFragmentActivity
     {
         if (currentFragment instanceof EmailSignInOrUpFragment)
         {
-            progressDialog = ProgressDialogUtil.show(this, R.string.please_wait, R.string.connecting_tradehero_only);
+            progressDialog = ProgressDialogUtil.show(this, R.string.alert_dialog_please_wait, R.string.authentication_connecting_tradehero_only);
             EmailSignInOrUpFragment castedFragment = (EmailSignInOrUpFragment) currentFragment;
             EmailAuthenticationProvider.setCredentials(castedFragment.getUserFormJSON());
             AuthenticationMode authenticationMode = castedFragment.getAuthenticationMode();
@@ -215,19 +215,19 @@ public class AuthenticationActivity extends SherlockFragmentActivity
     //<editor-fold desc="Authenticate with Facebook/Twitter/LinkedIn">
     private void authenticateWithLinkedIn()
     {
-        progressDialog = ProgressDialogUtil.show(this, R.string.please_wait, R.string.connecting_to_linkedin);
+        progressDialog = ProgressDialogUtil.show(this, R.string.alert_dialog_please_wait, R.string.authentication_connecting_to_linkedin);
         linkedInUtils.get().logIn(this, new SocialAuthenticationCallback("LinkedIn"));
     }
 
     private void authenticateWithFacebook()
     {
-        progressDialog = ProgressDialogUtil.show(this, R.string.please_wait, R.string.connecting_to_facebook);
+        progressDialog = ProgressDialogUtil.show(this, R.string.alert_dialog_please_wait, R.string.authentication_connecting_to_facebook);
         facebookUtils.get().logIn(this, new SocialAuthenticationCallback("Facebook"));
     }
 
     private void authenticateWithTwitter()
     {
-        progressDialog = ProgressDialogUtil.show(this, R.string.please_wait, R.string.connecting_to_twitter);
+        progressDialog = ProgressDialogUtil.show(this, R.string.alert_dialog_please_wait, R.string.authentication_twitter_connecting);
         twitterUtils.get().logIn(this, createTwitterAuthenticationCallback());
     }
 
@@ -262,7 +262,7 @@ public class AuthenticationActivity extends SherlockFragmentActivity
         try
         {
             twitterJson.put("email", txtTwitterEmail.getText());
-            progressDialog.setMessage(String.format(getString(R.string.connecting_tradehero), "Twitter"));
+            progressDialog.setMessage(String.format(getString(R.string.authentication_connecting_tradehero), "Twitter"));
             progressDialog.show();
             THUser.logInAsyncWithJson(twitterJson, createCallbackForTwitterComplementEmail());
         }
@@ -323,7 +323,7 @@ public class AuthenticationActivity extends SherlockFragmentActivity
             else if ((cause = ex.getCause()) != null && cause instanceof RetrofitError &&
                     (response = ((RetrofitError)cause).getResponse()) != null && response.getStatus() == 403) // Forbidden
             {
-                THToast.show(R.string.not_registered);
+                THToast.show(R.string.authentication_not_registered);
             }
             else
             {
@@ -340,11 +340,11 @@ public class AuthenticationActivity extends SherlockFragmentActivity
                 // HACK
                 if (!"Email".equals(providerName))
                 {
-                    progressDialog.setMessage(String.format(getString(R.string.connecting_tradehero), providerName));
+                    progressDialog.setMessage(String.format(getString(R.string.authentication_connecting_tradehero), providerName));
                 }
                 else
                 {
-                    progressDialog.setMessage(getString(R.string.connecting_tradehero_only));
+                    progressDialog.setMessage(getString(R.string.authentication_connecting_tradehero_only));
                 }
                 return true;
             }
@@ -353,7 +353,7 @@ public class AuthenticationActivity extends SherlockFragmentActivity
 
         @Override public void onStart()
         {
-            progressDialog.setMessage(getString(R.string.connecting_tradehero_only));
+            progressDialog.setMessage(getString(R.string.authentication_connecting_tradehero_only));
         }
 
         public boolean isSigningUp()

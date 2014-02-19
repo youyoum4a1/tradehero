@@ -652,7 +652,7 @@ public final class SearchStockPeopleFragment extends DashboardFragment
                 if (lastLoadedPage == FIRST_PAGE)
                 {
                     securityItemViewAdapter.setItems(null);
-                    searchEmptyView.setText(R.string.search_no_stock_found);
+                    searchEmptyView.setText(R.string.trending_search_no_stock_found);
                 }
             }
             else
@@ -692,7 +692,7 @@ public final class SearchStockPeopleFragment extends DashboardFragment
                 if (lastLoadedPage == FIRST_PAGE)
                 {
                     peopleItemViewAdapter.setItems(null);
-                    searchEmptyView.setText(R.string.search_no_people_found);
+                    searchEmptyView.setText(R.string.trending_search_no_people_found);
                 }
             }
             else

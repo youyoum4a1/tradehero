@@ -41,7 +41,7 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_marginRight="10dp"
-          android:text="@string/share_on"
+          android:text="@string/buy_sell_confirm_share_on"
           android:textColor="@color/gray_2" />
 
       <ToggleButton
@@ -146,7 +146,7 @@
       android:background="@color/white"
       android:ems="10"
       android:gravity="top"
-      android:hint="@string/hint_buy_comment"
+      android:hint="@string/buy_sell_confirm_buy_comment"
       android:inputType="textMultiLine"
       android:padding="5dp" >
 

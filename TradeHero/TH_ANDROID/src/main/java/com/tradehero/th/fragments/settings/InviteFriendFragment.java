@@ -266,7 +266,7 @@ public class InviteFriendFragment extends DashboardFragment
         progressDialog = ProgressDialogUtil.show(
                 getActivity(),
                 R.string.loading_loading,
-                R.string.please_wait);
+                R.string.alert_dialog_please_wait);
         progressDialog.hide();
         return progressDialog;
     }
@@ -413,7 +413,7 @@ public class InviteFriendFragment extends DashboardFragment
 
         @Override protected void success(Response response, THResponse thResponse)
         {
-            THToast.show(R.string.success);
+            THToast.show(R.string.invite_friend_success);
             // just hacked it :))
         }
 
@@ -452,7 +452,7 @@ public class InviteFriendFragment extends DashboardFragment
                     currentUserId.get(),
                     UserFormFactory.create(json),
                     createSocialConnectCallback());
-            progressDialog.setMessage(String.format(getString(R.string.connecting_tradehero), currentSocialNetworkConnect.getName()));
+            progressDialog.setMessage(String.format(getString(R.string.authentication_connecting_tradehero), currentSocialNetworkConnect.getName()));
             return false;
         }
 
@@ -545,7 +545,7 @@ public class InviteFriendFragment extends DashboardFragment
         THLog.d(TAG, "list of fbIds: " + stringBuilder.toString());
 
         Bundle params = new Bundle();
-        String messageToFacebookFriends = getString(R.string.facebook_tradehero_refer_friend_message);
+        String messageToFacebookFriends = getString(R.string.invite_friend_facebook_tradehero_refer_friend_message);
         if (messageToFacebookFriends.length() > MAX_FACEBOOK_MESSAGE_LENGTH)
         {
             messageToFacebookFriends = messageToFacebookFriends.substring(0, MAX_FACEBOOK_MESSAGE_LENGTH);
@@ -565,7 +565,7 @@ public class InviteFriendFragment extends DashboardFragment
                         {
                             if (error instanceof FacebookOperationCanceledException)
                             {
-                                THToast.show(R.string.request_canceled);
+                                THToast.show(R.string.invite_friend_request_canceled);
                             }
                         }
                         else
@@ -573,11 +573,11 @@ public class InviteFriendFragment extends DashboardFragment
                             final String requestId = values.getString("request");
                             if (requestId != null)
                             {
-                                THToast.show(R.string.request_sent);
+                                THToast.show(R.string.invite_friend_request_sent);
                             }
                             else
                             {
-                                THToast.show(R.string.request_canceled);
+                                THToast.show(R.string.invite_friend_request_canceled);
                             }
                         }
                     }

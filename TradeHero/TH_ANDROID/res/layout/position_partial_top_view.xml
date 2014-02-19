@@ -120,7 +120,7 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_marginRight="4dp"
-          android:text="@string/p_n_l"
+          android:text="@string/leaderboard_p_n_l"
           android:textSize="10sp"
           android:textColor="@color/text_gray_normal"
           />

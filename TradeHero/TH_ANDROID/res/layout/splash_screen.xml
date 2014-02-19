@@ -70,7 +70,7 @@
         android:gravity="center"
         android:textColor="#ffffff"
         android:textSize="@dimen/copyright_text_size"
-        android:text="@string/copyright_1"
+        android:text="@string/splash_copyright_1"
         />
     <TextView
         android:layout_width="match_parent"
@@ -78,7 +78,7 @@
         android:textColor="#ffffff"
         android:gravity="center"
         android:textSize="@dimen/copyright_text_size"
-        android:text="@string/copyright_2"
+        android:text="@string/splash_copyright_2"
         />
     <TextView
         android:layout_width="match_parent"
@@ -86,7 +86,7 @@
         android:gravity="center"
         android:textColor="#ffffff"
         android:textSize="@dimen/copyright_text_size"
-        android:text="@string/copyright_3"
+        android:text="@string/splash_copyright_3"
         />
   </LinearLayout>
 

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
   <!--timeline-->
   <string name="tutorial_timeline_content">
     <![CDATA[Find top traders in the leaderboards, ranked either by raw P&L or by our custom Hero Quotient ranking algorithm. You can filter by stock exchange, industry sectors, monthly and quarterly returns and overall top traders.\n\nCompete with your friends from Facebook, Twitter and LinkedIn on the Friends Leaderboard.]]></string>
@@ -16,6 +17,7 @@
   <string name="tutorial_portfolio_list_content">Lists names of TradeHero users that you recently viewed. Drill down each name to see the position
     details.
   </string>
+
   <!--Leaderboard-->
   <string name="tutorial_leaderboard_content">
     <![CDATA[Find top traders in the leaderboards, ranked either by raw P&L or by our custom Hero Quotient ranking algorithm. You can filter by stock exchange, industry sectors, monthly and quarterly returns and overall top traders.\n\nCompete with your friends from Facebook, Twitter and LinkedIn on the Friends Leaderboard.]]></string>
@@ -43,4 +45,5 @@
   <string name="tutorial_position_list_formula_left_text">ROI =</string>
   <string name="tutorial_position_list_formula_top_text"><![CDATA[Total P&L (realized + unrealized)]]></string>
   <string name="tutorial_position_list_formula_bottom_text">Total Invested (in qualifying trades)</string>
+
 </resources>

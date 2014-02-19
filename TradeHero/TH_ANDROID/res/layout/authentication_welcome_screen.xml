@@ -39,7 +39,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="top|center_horizontal"
-        android:text="@string/existing_user"
+        android:text="@string/authentication_existing_user"
         android:textColor="@color/text_gray_normal"
         android:textSize="15dip"
         android:textStyle="bold"/>
@@ -47,7 +47,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/sign_in"
+        android:text="@string/authentication_sign_in"
         android:gravity="top|center_horizontal"
         android:textColor="@color/signinfnt_color"
         android:textSize="18dip"

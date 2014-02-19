@@ -1,24 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-  <!-- What's Trending Details - StockInfo -->
-  <string name="previous_close">Prev. Close</string>
-  <string name="open">Open</string>
-  <string name="days_high">Day\'s High</string>
-  <string name="days_low">Day\'s Low</string>
-  <string name="market_cap">Market Cap</string>
-  <string name="pe_ratio">P/E Ratio</string>
-  <string name="eps">EPS</string>
-  <string name="volume">Volume</string>
-  <string name="avg_volume">Avg. Volume</string>
-  <string name="na">N/A</string>
-  <string name="hint_buy_comment">Post comments to attract followers…(optional)</string>
-  <string name="btn_buy">Confirm</string>
-  <string name="share_on">Share on</string>
-  <string name="public_str">Public</string>
-  <string name="switch_buy">Buy</string>
-  <string name="switch_sell">Sell</string>
-  <string name="usd_price_unit_left">= US$</string>
+  <!-- Security Info -->
+  <string name="security_previous_close">Prev. Close</string>
+  <string name="security_open">Open</string>
+  <string name="security_days_high">Day\'s High</string>
+  <string name="security_days_low">Day\'s Low</string>
+  <string name="security_market_cap">Market Cap</string>
+  <string name="security_pe_ratio">P/E Ratio</string>
+  <string name="security_eps">EPS</string>
+  <string name="security_volume">Volume</string>
+  <string name="security_avg_volume">Avg. Volume</string>
+  <string name="security_market_status">Market status</string>
 
   <!-- Warrant info -->
   <string name="warrant_type_call">Call</string>

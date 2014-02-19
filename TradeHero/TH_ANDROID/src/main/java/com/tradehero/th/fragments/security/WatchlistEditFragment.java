@@ -107,7 +107,7 @@ public class WatchlistEditFragment extends DashboardFragment
         }
         else
         {
-            progressBar = ProgressDialogUtil.show(getActivity(), R.string.please_wait, R.string.updating);
+            progressBar = ProgressDialogUtil.show(getActivity(), R.string.alert_dialog_please_wait, R.string.watchlist_updating);
         }
         try
         {
@@ -115,7 +115,7 @@ public class WatchlistEditFragment extends DashboardFragment
             int quantity = Integer.parseInt(watchQuantity.getText().toString());
             if (quantity == 0)
             {
-                 throw new Exception(getString(R.string.quantity_should_not_be_zero));
+                 throw new Exception(getString(R.string.watchlist_quantity_should_not_be_zero));
             }
             // add new watchlist
             SecurityCompactDTO securityCompactDTO = securityCompactCache.get().get(securityKeyId);
@@ -225,7 +225,7 @@ public class WatchlistEditFragment extends DashboardFragment
         }
         else
         {
-            progressBar = ProgressDialog.show(getActivity(), getString(R.string.please_wait), getString(R.string.loading_loading), true);
+            progressBar = ProgressDialog.show(getActivity(), getString(R.string.alert_dialog_please_wait), getString(R.string.loading_loading), true);
         }
 
         compactCacheListener = new DTOCache.Listener<SecurityId, SecurityCompactDTO>()

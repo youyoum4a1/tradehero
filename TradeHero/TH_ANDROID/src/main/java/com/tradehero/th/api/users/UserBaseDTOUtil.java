@@ -30,7 +30,7 @@ public class UserBaseDTOUtil
     {
         if (userBaseDTO != null)
         {
-            return String.format(context.getString(R.string.first_last_name_display),
+            return String.format(context.getString(R.string.user_profile_first_last_name_display),
                     userBaseDTO.firstName == null ? "" : userBaseDTO.firstName,
                     userBaseDTO.lastName == null ? "" : userBaseDTO.lastName).trim();
         }

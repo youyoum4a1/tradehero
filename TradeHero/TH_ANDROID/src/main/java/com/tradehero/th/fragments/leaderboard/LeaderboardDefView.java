@@ -139,7 +139,7 @@ public class LeaderboardDefView extends RelativeLayout implements DTOView<Leader
             // not a hard coded definition
             if (dto.id > 0)
             {
-                leaderboardDefUserRank.setText(getContext().getString(R.string.not_ranked));
+                leaderboardDefUserRank.setText(getContext().getString(R.string.leaderboard_not_ranked));
             }
         }
         else

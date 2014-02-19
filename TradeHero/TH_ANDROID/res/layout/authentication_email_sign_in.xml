@@ -11,7 +11,7 @@
       android:layout_width="fill_parent"
       android:layout_height="wrap_content"
       android:text=""
-      android:hint="@string/email"
+      android:hint="@string/authentication_email"
       android:drawableLeft="@drawable/accounts_glyph_email_default"
       android:inputType="textEmailAddress"
       style="@style/TradeHero.Authentication.EditText">
@@ -27,7 +27,7 @@
       android:layout_below="@+id/authentication_sign_in_email"
       android:layout_marginTop="10dip"
       android:text=""
-      android:hint="@string/pwd"
+      android:hint="@string/authentication_password"
       android:drawableLeft="@drawable/accounts_glyph_password_default"
       android:inputType="textPassword"
       style="@style/TradeHero.Authentication.EditText"/>
@@ -41,7 +41,7 @@
       android:layout_marginTop="10dip"
       android:background="@drawable/authentication_button"
       android:padding="5dp"
-      android:text="@string/sign_in"
+      android:text="@string/authentication_sign_in"
       android:textColor="@color/signinfnt_color"
       android:textSize="25sp"
       android:textStyle="bold"
@@ -57,7 +57,7 @@
       android:layout_below="@+id/btn_login"
       android:layout_centerHorizontal="true"
       android:padding="15dip"
-      android:text="@string/forgot_password"
+      android:text="@string/authentication_forgot_password"
       android:textColor="@color/text_gray_normal"
       android:textSize="15sp"
       android:textStyle="bold"/>

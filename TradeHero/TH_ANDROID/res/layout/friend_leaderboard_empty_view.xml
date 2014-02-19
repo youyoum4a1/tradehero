@@ -25,7 +25,7 @@
       android:id="@+id/connect_accounts"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:text="@string/connect_accounts"
+      android:text="@string/leaderboard_connect_accounts"
       android:textColor="@color/connect_accounts"
       android:paddingTop="10dp"
       android:gravity="center_horizontal"

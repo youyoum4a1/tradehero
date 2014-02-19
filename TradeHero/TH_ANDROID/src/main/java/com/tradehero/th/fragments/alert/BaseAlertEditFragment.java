@@ -270,7 +270,7 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
     {
         this.securityId = securityId;
 
-        progressDialog = ProgressDialogUtil.show(getActivity(), R.string.loading_loading, R.string.please_wait);
+        progressDialog = ProgressDialogUtil.show(getActivity(), R.string.loading_loading, R.string.alert_dialog_please_wait);
         detachSecurityCompactCacheFetchTask();
         securityCompactCacheFetchTask = securityCompactCache.getOrFetch(securityId, true, securityCompactCallback);
         securityCompactCacheFetchTask.execute();
@@ -332,7 +332,7 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
         }
         else if (alertFormDTO.active) // TODO decide whether we need to submit even when it is inactive
         {
-            progressDialog = ProgressDialogUtil.create(getActivity(), R.string.loading_loading, R.string.please_wait);
+            progressDialog = ProgressDialogUtil.create(getActivity(), R.string.loading_loading, R.string.alert_dialog_please_wait);
             progressDialog.show();
             saveAlertProper(alertFormDTO);
         }

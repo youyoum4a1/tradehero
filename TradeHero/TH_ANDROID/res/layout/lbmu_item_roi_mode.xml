@@ -175,7 +175,7 @@
           android:layout_width="0dp"
           android:layout_weight="1"
           android:layout_height="wrap_content"
-          android:text="@string/p_n_l"
+          android:text="@string/leaderboard_p_n_l"
           android:gravity="right"
           android:textColor="@color/light_grey"/>
 
@@ -201,7 +201,7 @@
           android:layout_width="0dp"
           android:layout_weight="1"
           android:layout_height="wrap_content"
-          android:text="@string/period"
+          android:text="@string/leaderboard_period"
           android:gravity="right"
           android:textColor="@color/light_grey"/>
 
@@ -371,7 +371,7 @@
           android:layout_width="0dp"
           android:layout_weight="1"
           android:layout_height="wrap_content"
-          android:text="@string/benchmark_roi"
+          android:text="@string/leaderboard_benchmark_roi"
           android:gravity="right"
           android:textColor="@color/light_grey"/>
 

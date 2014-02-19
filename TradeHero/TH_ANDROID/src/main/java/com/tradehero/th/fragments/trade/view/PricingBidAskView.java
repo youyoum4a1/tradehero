@@ -12,7 +12,6 @@ import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.position.SecurityPositionDetailDTO;
 import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
-import com.tradehero.th.utils.SecurityUtils;
 import com.tradehero.th.utils.THSignedNumber;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 9/23/13 Time: 2:55 PM To change this template use File | Settings | File Templates. */
@@ -183,7 +182,7 @@ public class PricingBidAskView extends LinearLayout implements DTOView<SecurityC
         {
             if (quoteDTO == null || quoteDTO.ask == null || quoteDTO.bid == null || quoteDTO.toUSDRate == null )
             {
-                lastPrice.setText(R.string.usd_price_unit_left);
+                lastPrice.setText(R.string.buy_sell_usd_price_unit_left);
             }
             else
             {

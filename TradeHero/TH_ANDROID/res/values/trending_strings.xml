@@ -2,12 +2,12 @@
 <resources>
 
   <!-- What's Trending -->
-  <integer name="trending_list_column_count">2</integer>
-  <string name="header_trending">What\'s Trending</string>
-  <string name="search_stock_hint">Select to search →</string>
-  <string name="search_empty_result">Type something to search</string>
-  <string name="search_no_people_found">No people found</string>
-  <string name="search_no_stock_found">No stock found</string>
+  <string name="trending_header">What\'s Trending</string>
+  <string name="trending_search_stock_hint">Select to search →</string>
+  <string name="trending_search_empty_result">Type something to search</string>
+  <string name="trending_search_no_people_found">No people found</string>
+  <string name="trending_search_no_stock_found">No stock found</string>
+  <string name="trending_search_mode">Search mode</string>
 
   <!-- What's Trending filters -->
   <string name="trending_filter_basic_title">Trending Securities</string>

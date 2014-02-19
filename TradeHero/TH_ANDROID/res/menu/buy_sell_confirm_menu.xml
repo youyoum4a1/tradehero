@@ -2,13 +2,13 @@
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
   <item android:id="@+id/buy_sell_menu_market_status"
-      android:title="@string/market_status"
+      android:title="@string/buy_sell_market_status"
       android:showAsAction="ifRoom"
       android:icon="@drawable/buyscreen_stock_inactive"
       />
   <item
       android:id="@+id/buy_sell_menu_confirm"
-      android:title="@string/confirm"
+      android:title="@string/authentication_confirm"
       android:showAsAction="ifRoom"
       android:enabled="true"
       />

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+  <string name="stock_alerts">Stock Alerts</string>
   <string name="stock_alert_active">Active stock alerts</string>
   <string name="stock_alert_inactive_title">Inactive stock alerts</string>
   <string name="stock_alert_active_until">Active Until <b>%s</b></string>
@@ -32,6 +33,7 @@
   <string name="stock_alert_plan_unlimited">Unlimited</string>
   <string name="stock_alert_manage_subscriptions">Manage your subscriptions</string>
 
+  <string name="error_fetch_alert">There was an error when fetching alert information</string>
   <string name="error_alert_insufficient_info">There is insufficient information to submit the alert</string>
 
 </resources>

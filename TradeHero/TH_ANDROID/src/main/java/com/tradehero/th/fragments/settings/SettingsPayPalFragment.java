@@ -80,8 +80,8 @@ public class SettingsPayPalFragment extends DashboardFragment
             {
                 progressDialog = ProgressDialogUtil.show(
                         getActivity(),
-                        R.string.please_wait,
-                        R.string.connecting_tradehero_only);
+                        R.string.alert_dialog_please_wait,
+                        R.string.authentication_connecting_tradehero_only);
                 UpdatePayPalEmailFormDTO emailDTO = new UpdatePayPalEmailFormDTO();
                 emailDTO.newPayPalEmailAddress = paypalEmailText.getText().toString();
                 userService.updatePayPalEmail(currentUserId.get(), emailDTO, new THCallback<UpdatePayPalEmailDTO>()

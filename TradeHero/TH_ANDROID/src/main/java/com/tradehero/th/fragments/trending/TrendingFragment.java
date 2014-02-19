@@ -127,7 +127,7 @@ public class TrendingFragment extends SecurityListFragment
         //THLog.i(TAG, "onCreateOptionsMenu");
         ActionBar actionBar = getSherlockActivity().getSupportActionBar();
         actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME);
-        actionBar.setTitle(R.string.header_trending);
+        actionBar.setTitle(R.string.trending_header);
 
         inflater.inflate(R.menu.trending_menu, menu);
         super.onCreateOptionsMenu(menu, inflater);

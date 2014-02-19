@@ -4,7 +4,7 @@
 
   <item
       android:id="@+id/buy_sell_menu_market_status"
-      android:title="@string/market_status"
+      android:title="@string/security_market_status"
       android:showAsAction="ifRoom"
       android:icon="@drawable/buyscreen_stock_inactive"
       />

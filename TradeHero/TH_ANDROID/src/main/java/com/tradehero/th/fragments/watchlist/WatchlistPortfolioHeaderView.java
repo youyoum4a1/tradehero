@@ -87,13 +87,13 @@ public class WatchlistPortfolioHeaderView extends LinearLayout
         valuation = (WatchlistHeaderItem) getChildAt(0);
         if (valuation != null)
         {
-            valuation.setFirstTitle(getContext().getString(R.string.current_value));
-            valuation.setSecondTitle(getContext().getString(R.string.original_value));
+            valuation.setFirstTitle(getContext().getString(R.string.watchlist_current_value));
+            valuation.setSecondTitle(getContext().getString(R.string.watchlist_original_value));
         }
         gainLoss = (WatchlistHeaderItem) getChildAt(1);
         if (gainLoss != null)
         {
-            gainLoss.setTitle(getContext().getString(R.string.gain_loss));
+            gainLoss.setTitle(getContext().getString(R.string.watchlist_gain_loss));
         }
     }
 

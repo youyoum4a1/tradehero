@@ -20,7 +20,7 @@
       style="@style/TH.Title"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:text="@string/usd_price_unit_left"
+      android:text="@string/buy_sell_usd_price_unit_left"
       android:gravity="center_horizontal"
       android:textSize="13sp"
       />

@@ -9,7 +9,7 @@
       />
 
   <PreferenceCategory
-      android:title="@string/sharing">
+      android:title="@string/settings_sharing">
 
     <CheckBoxPreference
         android:key="@string/settings_sharing_facebook"

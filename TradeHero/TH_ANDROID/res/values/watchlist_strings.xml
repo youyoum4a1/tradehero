@@ -11,5 +11,23 @@
   <string name="watchlist_average_price_header">Average Price (US$)</string>
   <string name="watchlist_quantity_header">Quantity</string>
   <string name="watchlist_quantity_initial">1</string>
+  <string name="watchlist_view_graph">View Graph</string>
+  <string name="watchlist_number_of_shares"><![CDATA[<b>%1$d</b> shares @ <b>%2$s</b>]]></string>
+  <string name="watchlist_pl_percentage_format">%s %%</string>
+  <string name="watchlist_last_price_format"><![CDATA[%1$s <b>%2$s</b>]]></string>
+  <string name="watchlist_current_value">Current Value</string>
+  <string name="watchlist_original_value">Original Value</string>
+  <string name="watchlist_gain_loss">Gain/Loss</string>
+  <string name="watchlist_updating">Updating …</string>
+  <string name="watchlist_delete">Delete</string>
+  <string name="watchlist_item_deleted_successfully">Watchlist item for security: %d has been deleted</string>
+  <string name="watchlist_item_deleted_failed">Fail to delete watchlist item for security %d</string>
+  <string name="watchlist_more">More</string>
+  <string name="watchlist_quantity_should_not_be_zero">Quantity should be at least 1</string>
+  <string name="watchlist_empty_view">Tab the \'+\' button above to add a security to your watchlist</string>
+  <string name="watchlist_new_discussion">New Discussion</string>
+  <string name="watchlist_not_yet_implemented">Not yet implemented. Stay stuned.</string>
+
+  <string name="error_fetch_portfolio_watchlist">There was an error when fetching the watch list</string>
 
 </resources>

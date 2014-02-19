@@ -170,7 +170,7 @@ public class WatchlistItemView extends FrameLayout implements DTOView<SecurityId
                         openWatchlistEditor();
                         break;
                     case R.id.watchlist_item_new_discussion:
-                        THToast.show(getContext().getString(R.string.not_yet_implemented));
+                        THToast.show(getContext().getString(R.string.watchlist_not_yet_implemented));
                         break;
                     case R.id.watchlist_item_view_graph:
                         openSecurityGraph();

@@ -19,7 +19,7 @@
       android:gravity="center"
       android:textStyle="bold"
       android:layout_gravity="top|center_horizontal"
-      android:text="@string/refer_friend_announcement"
+      android:text="@string/invite_friend_refer_friend_announcement"
       android:height="@dimen/invite_friend_announcement_height"
       />
 
@@ -38,7 +38,7 @@
       android:paddingRight="3dp"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:text="@string/refer_friend_empty_view"
+      android:text="@string/invite_friend_refer_friend_empty_view"
       android:gravity="center_horizontal"
       android:visibility="gone"
       />
@@ -54,7 +54,7 @@
         android:id="@+id/refer_friend_invite_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/send_invitations"
+        android:text="@string/invite_friend_send_invitations"
         android:paddingLeft="@dimen/refer_friend_action_button_horizontal_padding"
         android:paddingRight="@dimen/refer_friend_action_button_horizontal_padding"
         android:paddingTop="@dimen/refer_friend_action_button_vertical_padding"

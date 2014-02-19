@@ -6,7 +6,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.r11.app.FragmentTabHost;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
@@ -57,7 +56,7 @@ public class DashboardNavigator extends Navigator
         }
 
         mTabHost.getTabWidget().setDividerDrawable(null);
-        mTabHost.setCurrentTabByTag(activity.getString(R.string.trending));
+        mTabHost.setCurrentTabByTag(activity.getString(R.string.dashboard_trending));
     }
 
     /**
