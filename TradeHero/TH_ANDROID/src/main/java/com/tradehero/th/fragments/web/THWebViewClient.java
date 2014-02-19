@@ -1,17 +1,13 @@
 package com.tradehero.th.fragments.web;
 
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.net.http.SslError;
 import android.webkit.SslErrorHandler;
-import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import com.tradehero.common.utils.THLog;
-import com.tradehero.th.R;
-import com.tradehero.th.fragments.dashboard.DashboardTabType;
 import com.tradehero.th.models.intent.THIntent;
 import com.tradehero.th.models.intent.THIntentFactory;
 import com.tradehero.th.models.intent.THIntentPassedListener;
@@ -50,6 +46,9 @@ public class THWebViewClient extends WebViewClient
             THIntent thIntent = thIntentFactory.create(getPassedIntent(url));
             if (thIntent instanceof ProviderPageIntent)
             {
+                // Somewhat of a HACK to make sure we reload the competition
+                // providers after a successful enrollment
+                providerListCache.get().invalidateAll();
                 url = ((ProviderPageIntent) thIntent).getCompleteForwardUriPath();
                 THLog.d(TAG, "shouldOverrideUrlLoading Changed page url to " + url);
             }
