@@ -7,6 +7,8 @@ import com.actionbarsherlock.view.MenuItem;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
 import com.tradehero.th.base.DashboardNavigatorActivity;
+import com.tradehero.th.base.Navigator;
+import com.tradehero.th.base.NavigatorActivity;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.utils.AlertDialogUtil;
@@ -43,7 +45,7 @@ abstract public class DashboardFragment extends BaseFragment
         switch (item.getItemId())
         {
             case android.R.id.home:
-                ((DashboardNavigatorActivity) getActivity()).getDashboardNavigator().popFragment();
+                getNavigator().popFragment();
                 return true;
 
             case R.id.menu_info:
@@ -63,6 +65,11 @@ abstract public class DashboardFragment extends BaseFragment
         {
             THLog.d(TAG, getClass().getName() + " is not implementing WithTutorial interface, but has info menu");
         }
+    }
+
+    protected Navigator getNavigator()
+    {
+        return ((NavigatorActivity) getActivity()).getNavigator();
     }
 
     protected DashboardNavigator getDashboardNavigator()

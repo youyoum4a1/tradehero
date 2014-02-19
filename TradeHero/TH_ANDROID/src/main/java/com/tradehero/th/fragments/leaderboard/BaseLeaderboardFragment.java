@@ -4,8 +4,6 @@ import android.os.Bundle;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
-import com.actionbarsherlock.view.SubMenu;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
@@ -15,7 +13,6 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.base.BaseFragment;
-import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import javax.inject.Inject;
@@ -109,11 +106,11 @@ abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragmen
         switch (dto.id)
         {
             case LeaderboardDefDTO.LEADERBOARD_FRIEND_ID:
-                getDashboardNavigator().pushFragment(FriendLeaderboardMarkUserListViewFragment.class, bundle);
+                getNavigator().pushFragment(FriendLeaderboardMarkUserListViewFragment.class, bundle);
                 break;
 
             default:
-                getDashboardNavigator().pushFragment(LeaderboardMarkUserListViewFragment.class, bundle);
+                getNavigator().pushFragment(LeaderboardMarkUserListViewFragment.class, bundle);
                 break;
         }
     }

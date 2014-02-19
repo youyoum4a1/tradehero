@@ -236,11 +236,4 @@ public class DashboardNavigator extends Navigator
             tabBar.setVisibility(View.GONE);
         }
     }
-
-    public void openSecurityProfile(SecurityId securityId)
-    {
-        Bundle args = new Bundle();
-        args.putBundle(BuySellFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
-        pushFragment(BuySellFragment.class, args);
-    }
 }

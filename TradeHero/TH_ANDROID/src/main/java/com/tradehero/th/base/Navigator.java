@@ -9,8 +9,8 @@ import android.support.v4.app.FragmentTransaction;
 import android.view.ViewGroup;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
-import com.tradehero.th.activities.ActivityHelper;
 import com.tradehero.th.fragments.settings.SettingsFragment;
+import com.tradehero.th.utils.DeviceUtil;
 
 /** Created with IntelliJ IDEA. User: tho Date: 9/30/13 Time: 5:59 PM Copyright (c) TradeHero */
 public class Navigator
@@ -87,6 +87,7 @@ public class Navigator
 
     public Fragment pushFragment(Class<? extends Fragment> fragmentClass, Bundle args, int[] anim, String backStackName)
     {
+        THLog.d(TAG, "Push Keyboard visible " + DeviceUtil.isKeyboardVisible(context));
         THLog.d(TAG, "Pushing fragment " + fragmentClass.getSimpleName());
         Fragment fragment = Fragment.instantiate(context, fragmentClass.getName(), args);
         fragment.setArguments(args);
@@ -136,6 +137,7 @@ public class Navigator
 
     public void popFragment(String backStackName)
     {
+        THLog.d(TAG, "Pop Keyboard visible " + DeviceUtil.isKeyboardVisible(context));
         THLog.d(TAG, "Popping fragment, count: " + manager.getBackStackEntryCount());
         if (backStackName == null)
         {

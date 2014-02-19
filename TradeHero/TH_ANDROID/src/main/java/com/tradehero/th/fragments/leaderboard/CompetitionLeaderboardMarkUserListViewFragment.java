@@ -8,13 +8,12 @@ import com.actionbarsherlock.view.MenuItem;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.CompetitionDTO;
-import com.tradehero.th.api.competition.ProviderUtil;
-import com.tradehero.th.api.competition.key.CompetitionId;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderId;
+import com.tradehero.th.api.competition.ProviderUtil;
+import com.tradehero.th.api.competition.key.CompetitionId;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.base.Navigator;
-import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.competition.CompetitionWebFragmentTHIntentPassedListener;
 import com.tradehero.th.fragments.web.WebViewFragment;
 import com.tradehero.th.models.intent.THIntentPassedListener;
@@ -128,7 +127,7 @@ public class CompetitionLeaderboardMarkUserListViewFragment extends LeaderboardM
         Bundle args = new Bundle();
         args.putString(WebViewFragment.BUNDLE_KEY_URL, providerUtil.getWizardPage(providerId) + "&previous=whatever");
         args.putBoolean(WebViewFragment.BUNDLE_KEY_IS_OPTION_MENU_VISIBLE, false);
-        this.webViewFragment = (WebViewFragment) getDashboardNavigator().pushFragment(
+        this.webViewFragment = (WebViewFragment) getNavigator().pushFragment(
                 WebViewFragment.class, args);
         this.webViewFragment.setThIntentPassedListener(this.webViewTHIntentPassedListener);
     }
@@ -155,9 +154,9 @@ public class CompetitionLeaderboardMarkUserListViewFragment extends LeaderboardM
             return CompetitionLeaderboardMarkUserListViewFragment.this.providerId;
         }
 
-        @Override protected DashboardNavigator getDashboardNavigator()
+        @Override protected Navigator getNavigator()
         {
-            return CompetitionLeaderboardMarkUserListViewFragment.this.getDashboardNavigator();
+            return CompetitionLeaderboardMarkUserListViewFragment.this.getNavigator();
         }
 
         @Override protected Class<?> getClassToPop()

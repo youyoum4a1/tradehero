@@ -23,7 +23,6 @@ import com.tradehero.th.api.security.key.TrendingSecurityListType;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.Navigator;
-import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.security.SecurityListFragment;
 import com.tradehero.th.fragments.security.SimpleSecurityItemViewAdapter;
 import com.tradehero.th.fragments.settings.InviteFriendFragment;
@@ -248,7 +247,7 @@ public class TrendingFragment extends SecurityListFragment
 
     public void pushSearchIn()
     {
-        getDashboardNavigator().pushFragment(SearchStockPeopleFragment.class);
+        getNavigator().pushFragment(SearchStockPeopleFragment.class);
     }
 
     //<editor-fold desc="BaseFragment.TabBarVisibilityInformer">
@@ -301,7 +300,7 @@ public class TrendingFragment extends SecurityListFragment
         {
             Bundle bundle = new Bundle();
             bundle.putString(WebViewFragment.BUNDLE_KEY_URL, userProfileDTO.activeSurveyURL);
-            getDashboardNavigator().pushFragment(WebViewFragment.class, bundle, Navigator.PUSH_UP_FROM_BOTTOM);
+            getNavigator().pushFragment(WebViewFragment.class, bundle, Navigator.PUSH_UP_FROM_BOTTOM);
         }
     }
 
@@ -323,14 +322,14 @@ public class TrendingFragment extends SecurityListFragment
 
     private void handleEarnCreditItemOnClick()
     {
-        getDashboardNavigator().pushFragment(InviteFriendFragment.class);
+        getNavigator().pushFragment(InviteFriendFragment.class);
     }
 
     private void handleSecurityItemOnClick(SecurityCompactDTO securityCompactDTO)
     {
         Bundle args = new Bundle();
         args.putBundle(BuySellFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityCompactDTO.getSecurityId().getArgs());
-        getDashboardNavigator().pushFragment(BuySellFragment.class, args);
+        getNavigator().pushFragment(BuySellFragment.class, args);
     }
 
     private class TrendingOnFilterTypeChangedListener implements TrendingFilterSelectorView.OnFilterTypeChangedListener

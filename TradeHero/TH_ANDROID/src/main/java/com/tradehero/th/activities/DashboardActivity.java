@@ -73,26 +73,6 @@ public class DashboardActivity extends SherlockFragmentActivity
         this.dtoCacheUtil.initialPrefetches();
     }
 
-    private void launchActions()
-    {
-        Intent intent = getIntent();
-        if (intent == null || intent.getAction() == null)
-        {
-            return;
-        }
-        switch (intent.getAction())
-        {
-            case Intent.ACTION_VIEW:
-            case Intent.ACTION_MAIN:
-                if (thIntentFactory.get().isHandlableIntent(intent))
-                {
-                    getDashboardNavigator().goToPage(thIntentFactory.get().create(intent));
-                }
-                break;
-        }
-        THLog.d(TAG, getIntent().getAction());
-    }
-
     private void launchIAB()
     {
         purchaseRestorer = new THIABPurchaseRestorer(this,
@@ -132,7 +112,7 @@ public class DashboardActivity extends SherlockFragmentActivity
 
     @Override public void onBackPressed()
     {
-        getDashboardNavigator().popFragment();
+        getNavigator().popFragment();
     }
 
     @Override public boolean onCreateOptionsMenu(Menu menu)
@@ -151,7 +131,7 @@ public class DashboardActivity extends SherlockFragmentActivity
         switch (item.getItemId())
         {
             case R.id.admin_settings:
-                getDashboardNavigator().pushFragment(AdminSettingsFragment.class);
+                getNavigator().pushFragment(AdminSettingsFragment.class);
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -177,7 +157,7 @@ public class DashboardActivity extends SherlockFragmentActivity
                 Fragment currentDashboardFragment = getSupportFragmentManager().findFragmentById(R.id.realtabcontent);
                 if (!(currentDashboardFragment instanceof SettingsFragment))
                 {
-                    getDashboardNavigator().openSettings();
+                    getNavigator().openSettings();
                 }
                 break;
         }
@@ -205,11 +185,31 @@ public class DashboardActivity extends SherlockFragmentActivity
         super.onDestroy();
     }
 
+    private void launchActions()
+    {
+        Intent intent = getIntent();
+        if (intent == null || intent.getAction() == null)
+        {
+            return;
+        }
+        switch (intent.getAction())
+        {
+            case Intent.ACTION_VIEW:
+            case Intent.ACTION_MAIN:
+                if (thIntentFactory.get().isHandlableIntent(intent))
+                {
+                    getDashboardNavigator().goToPage(thIntentFactory.get().create(intent));
+                }
+                break;
+        }
+        THLog.d(TAG, getIntent().getAction());
+    }
+
     //<editor-fold desc="DashboardNavigatorActivity">
-    //@Override public Navigator getNavigator()
-    //{
-    //    return navigator;
-    //}
+    @Override public Navigator getNavigator()
+    {
+        return navigator;
+    }
 
     @Override public DashboardNavigator getDashboardNavigator()
     {

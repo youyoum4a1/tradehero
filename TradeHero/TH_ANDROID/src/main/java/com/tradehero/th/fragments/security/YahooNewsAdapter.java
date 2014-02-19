@@ -1,14 +1,9 @@
 package com.tradehero.th.fragments.security;
 
 import android.content.Context;
-import android.os.Bundle;
 import android.view.LayoutInflater;
-import android.view.View;
 import com.tradehero.th.adapters.ArrayDTOAdapter;
 import com.tradehero.th.api.yahoo.News;
-import com.tradehero.th.base.Navigator;
-import com.tradehero.th.base.NavigatorActivity;
-import com.tradehero.th.fragments.web.WebViewFragment;
 
 /**
  * Created by julien on 11/10/13
@@ -26,19 +21,5 @@ public class YahooNewsAdapter extends ArrayDTOAdapter<News, YahooNewsView>
 
     @Override protected void fineTune(final int position, News dto, final YahooNewsView dtoView)
     {
-        dtoView.setOnClickListener(new View.OnClickListener()
-        {
-            @Override public void onClick(View view)
-            {
-                News news = (News) getItem(position);
-                if (news.getUrl() != null)
-                {
-                    Navigator navigator = ((NavigatorActivity) context).getNavigator();
-                    Bundle bundle = new Bundle();
-                    bundle.putString(WebViewFragment.BUNDLE_KEY_URL, news.getUrl());
-                    navigator.pushFragment(WebViewFragment.class, bundle);
-                }
-            }
-        });
     }
 }

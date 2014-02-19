@@ -672,7 +672,7 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
         {
             alertCompactCache.get().put(alertCompactDTO.getAlertId(currentUserId.get()), alertCompactDTO);
             updateCompactListCache(alertCompactDTO);
-            getDashboardNavigator().popFragment();
+            getNavigator().popFragment();
         }
 
         protected void updateCompactListCache(AlertCompactDTO alertCompactDTO)

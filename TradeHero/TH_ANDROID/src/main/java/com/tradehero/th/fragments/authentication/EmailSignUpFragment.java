@@ -20,6 +20,7 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.auth.AuthenticationMode;
 import com.tradehero.th.base.DashboardNavigatorActivity;
+import com.tradehero.th.base.NavigatorActivity;
 import com.tradehero.th.fragments.settings.FocusableOnTouchListener;
 import com.tradehero.th.fragments.settings.ProfileInfoView;
 import java.util.Map;
@@ -86,7 +87,7 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
             case android.R.id.home:
                 if (getActivity() instanceof DashboardNavigatorActivity)
                 {
-                    ((DashboardNavigatorActivity) getActivity()).getDashboardNavigator().popFragment();
+                    ((NavigatorActivity) getActivity()).getNavigator().popFragment();
                 }
                 else
                 {

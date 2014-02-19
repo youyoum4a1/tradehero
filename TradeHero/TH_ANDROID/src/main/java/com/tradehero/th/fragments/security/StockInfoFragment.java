@@ -5,7 +5,8 @@ import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
+import android.widget.AdapterView;
+import android.widget.ListView;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
@@ -17,8 +18,12 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
+import com.tradehero.th.api.yahoo.News;
 import com.tradehero.th.api.yahoo.NewsList;
+import com.tradehero.th.base.DashboardNavigatorActivity;
+import com.tradehero.th.base.Navigator;
 import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.fragments.web.WebViewFragment;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.persistence.yahoo.NewsCache;
 import com.tradehero.th.utils.AlertDialogUtil;
@@ -54,7 +59,8 @@ public class StockInfoFragment extends DashboardFragment
     private ViewPager topPager;
     private InfoTopStockPagerAdapter topViewPagerAdapter;
     private PageIndicator topPagerIndicator;
-    private YahooNewsListView yahooNewsListView;
+    private YahooNewsAdapter yahooNewsAdapter;
+    private ListView yahooNewsListView;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -65,10 +71,19 @@ public class StockInfoFragment extends DashboardFragment
 
     private void initViews(View view)
     {
-        yahooNewsListView = (YahooNewsListView) view.findViewById(R.id.list_yahooNews);
+        yahooNewsAdapter = new YahooNewsAdapter(getActivity(), getActivity().getLayoutInflater(), R.layout.yahoo_news_item);
+
+        yahooNewsListView = (ListView) view.findViewById(R.id.list_yahooNews);
         if (yahooNewsListView != null)
         {
-            yahooNewsListView.setAdapter(getActivity(), getActivity().getLayoutInflater());
+            yahooNewsListView.setAdapter(yahooNewsAdapter);
+            yahooNewsListView.setOnItemClickListener(new AdapterView.OnItemClickListener()
+            {
+                @Override public void onItemClick(AdapterView<?> adapterView, View view, int position, long l)
+                {
+                    handleNewsClicked((News) adapterView.getItemAtPosition(position));
+                }
+            });
         }
 
         topPager = (ViewPager) view.findViewById(R.id.top_pager);
@@ -154,8 +169,10 @@ public class StockInfoFragment extends DashboardFragment
     {
         if (yahooNewsListView != null)
         {
-            yahooNewsListView.onDestroyView();
+            yahooNewsListView.setOnItemClickListener(null);
         }
+        yahooNewsListView = null;
+        yahooNewsAdapter = null;
         topViewPagerAdapter = null;
         topPager = null;
         topPagerIndicator = null;
@@ -331,15 +348,26 @@ public class StockInfoFragment extends DashboardFragment
 
     private void displayYahooNewsList()
     {
-        if (yahooNewsListView != null)
+        if (yahooNewsAdapter != null)
         {
-            yahooNewsListView.display(yahooNewsList);
+            yahooNewsAdapter.setItems(yahooNewsList);
         }
     }
 
     protected void handleMarketCloseClicked()
     {
         alertDialogUtil.popMarketClosed(getActivity(), securityId);
+    }
+
+    protected void handleNewsClicked(News news)
+    {
+        if (news != null && news.getUrl() != null)
+        {
+            Navigator navigator = ((DashboardNavigatorActivity) getActivity()).getDashboardNavigator();
+            Bundle bundle = new Bundle();
+            bundle.putString(WebViewFragment.BUNDLE_KEY_URL, news.getUrl());
+            navigator.pushFragment(WebViewFragment.class, bundle);
+        }
     }
 
     //<editor-fold desc="BaseFragment.TabBarVisibilityInformer">

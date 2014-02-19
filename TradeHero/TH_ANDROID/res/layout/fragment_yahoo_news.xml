@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
   >
 
-  <com.tradehero.th.fragments.security.YahooNewsListView
+  <ListView
       android:id="@+id/list_yahooNews"
       android:layout_width="match_parent"
       android:layout_height="match_parent"

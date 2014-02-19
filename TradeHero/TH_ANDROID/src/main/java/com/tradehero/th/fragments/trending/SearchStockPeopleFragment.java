@@ -517,7 +517,7 @@ public final class SearchStockPeopleFragment extends DashboardFragment
         }
         Bundle args = new Bundle();
         args.putBundle(BuySellFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
-        getDashboardNavigator().pushFragment(BuySellFragment.class, args);
+        getNavigator().pushFragment(BuySellFragment.class, args);
     }
 
     protected void pushUserFragmentIn(UserBaseKey userBaseKey)
@@ -534,7 +534,7 @@ public final class SearchStockPeopleFragment extends DashboardFragment
         Bundle args = new Bundle();
         args.putInt(PushableTimelineFragment.BUNDLE_KEY_SHOW_USER_ID, userBaseKey.key);
 
-        getDashboardNavigator().pushFragment(PushableTimelineFragment.class, args);
+        getNavigator().pushFragment(PushableTimelineFragment.class, args);
     }
 
     //<editor-fold desc="Accessors">
@@ -595,7 +595,7 @@ public final class SearchStockPeopleFragment extends DashboardFragment
                     Bundle args = new Bundle();
                     args.putBundle(WatchlistEditFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, clickedItem.getSecurityId().getArgs());
                     args.putString(WatchlistEditFragment.BUNDLE_KEY_RETURN_FRAGMENT, WatchlistPositionFragment.class.getName());
-                    getDashboardNavigator().pushFragment(WatchlistEditFragment.class, args);
+                    getNavigator().pushFragment(WatchlistEditFragment.class, args);
                 }
                 else
                 {

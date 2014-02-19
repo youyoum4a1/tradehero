@@ -30,6 +30,13 @@ import android.view.inputmethod.InputMethodManager;
 
 public final class DeviceUtil
 {
+    // Attempt
+    public static boolean isKeyboardVisible(Context ctx)
+    {
+        InputMethodManager imm = (InputMethodManager) ctx.getSystemService(Context.INPUT_METHOD_SERVICE);
+        return imm != null && imm.isAcceptingText();
+    }
+
     public static void dismissKeyboard(Context ctx, View v)
     {
         InputMethodManager imm = (InputMethodManager) ctx.getSystemService(Context.INPUT_METHOD_SERVICE);

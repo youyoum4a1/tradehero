@@ -249,7 +249,7 @@ public class FollowerPayoutManagerFragment extends BasePurchaseManagerFragment
             {
                 Bundle bundle = new Bundle();
                 bundle.putInt(TimelineFragment.BUNDLE_KEY_SHOW_USER_ID, userFollowerDTO.id);
-                getDashboardNavigator().pushFragment(PushableTimelineFragment.class, bundle);
+                getNavigator().pushFragment(PushableTimelineFragment.class, bundle);
             }
         }
     };

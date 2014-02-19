@@ -28,6 +28,7 @@ import com.tradehero.th.fragments.trending.ExtraTileAdapter;
 import com.tradehero.th.loaders.PagedDTOCacheLoader;
 import com.tradehero.th.loaders.security.SecurityListPagedLoader;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
+import com.tradehero.th.utils.DeviceUtil;
 import javax.inject.Inject;
 
 abstract public class SecurityListFragment extends BasePurchaseManagerFragment
@@ -137,6 +138,14 @@ abstract public class SecurityListFragment extends BasePurchaseManagerFragment
             listViewScrollListener.deactivate();
         }
         super.onPause();
+    }
+
+    @Override public void onStop()
+    {
+        // It comes at the end, so that the listView does not update the view
+        //DeviceUtil.dismissKeyboard(getActivity());
+
+        super.onStop();
     }
 
     @Override public void onDestroyView()

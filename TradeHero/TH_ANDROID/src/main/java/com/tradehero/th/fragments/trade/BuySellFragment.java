@@ -1236,12 +1236,12 @@ public class BuySellFragment extends AbstractBuySellFragment
             if (alertId != null)
             {
                 args.putBundle(AlertEditFragment.BUNDLE_KEY_ALERT_ID_BUNDLE, alertId.getArgs());
-                getDashboardNavigator().pushFragment(AlertEditFragment.class, args);
+                getNavigator().pushFragment(AlertEditFragment.class, args);
             }
             else
             {
                 args.putBundle(AlertCreateFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
-                getDashboardNavigator().pushFragment(AlertCreateFragment.class, args);
+                getNavigator().pushFragment(AlertCreateFragment.class, args);
             }
         }
         else if (securityAlertAssistant.isFailed())
@@ -1260,7 +1260,7 @@ public class BuySellFragment extends AbstractBuySellFragment
         {
             Bundle args = new Bundle();
             args.putBundle(WatchlistEditFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
-            getDashboardNavigator().pushFragment(WatchlistEditFragment.class, args);
+            getNavigator().pushFragment(WatchlistEditFragment.class, args);
         }
         else
         {
@@ -1288,7 +1288,7 @@ public class BuySellFragment extends AbstractBuySellFragment
             args.putBundle(BuySellConfirmFragment.BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE, applicablePortfolioId.getArgs());
         }
 
-        getDashboardNavigator().pushFragment(BuySellConfirmFragment.class, args);
+        getNavigator().pushFragment(BuySellConfirmFragment.class, args);
     }
 
     private void showPortfolioSelector()
@@ -1456,7 +1456,7 @@ public class BuySellFragment extends AbstractBuySellFragment
         {
             args.putBundle(StockInfoFragment.BUNDLE_KEY_PROVIDER_ID_BUNDLE, this.providerId.getArgs());
         }
-        getDashboardNavigator().pushFragment(StockInfoFragment.class, args);
+        getNavigator().pushFragment(StockInfoFragment.class, args);
     }
 
     private BroadcastReceiver chartImageButtonClickReceiver = new BroadcastReceiver()

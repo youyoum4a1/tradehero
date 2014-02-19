@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.alert;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.text.Html;
 import android.text.Spanned;
 import android.util.AttributeSet;
@@ -17,8 +18,9 @@ import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.alert.AlertCompactDTO;
 import com.tradehero.th.api.alert.AlertId;
 import com.tradehero.th.api.security.SecurityCompactDTO;
-import com.tradehero.th.base.DashboardNavigatorActivity;
-import com.tradehero.th.fragments.DashboardNavigator;
+import com.tradehero.th.base.Navigator;
+import com.tradehero.th.base.NavigatorActivity;
+import com.tradehero.th.fragments.trade.BuySellFragment;
 import com.tradehero.th.persistence.alert.AlertCompactCache;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.DateUtils;
@@ -238,14 +240,18 @@ public class AlertItemView extends RelativeLayout
 
     private void handleBuyAndSellButtonClick()
     {
-        if (alertCompactDTO != null)
+        if (alertCompactDTO != null && alertCompactDTO.security != null &&
+                alertCompactDTO.security.getSecurityId() != null)
         {
-            getNavigator().openSecurityProfile(alertCompactDTO.security.getSecurityId());
+            Bundle args = new Bundle();
+            args.putBundle(BuySellFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE,
+                    alertCompactDTO.security.getSecurityId().getArgs());
+            getNavigator().pushFragment(BuySellFragment.class, args);
         }
     }
 
-    private DashboardNavigator getNavigator()
+    private Navigator getNavigator()
     {
-        return ((DashboardNavigatorActivity) getContext()).getDashboardNavigator();
+        return ((NavigatorActivity) getContext()).getNavigator();
     }
 }

@@ -11,7 +11,6 @@ import android.widget.ProgressBar;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
@@ -171,7 +170,7 @@ abstract public class AbstractPositionListFragment<
                 Bundle args = new Bundle();
                 args.putBundle(ProviderSecurityListFragment.BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE, getApplicablePortfolioId().getArgs());
                 args.putBundle(ProviderSecurityListFragment.BUNDLE_KEY_PROVIDER_ID, shownPortfolio.getProviderId().getArgs());
-                getDashboardNavigator().pushFragment(ProviderSecurityListFragment.class, args);
+                getNavigator().pushFragment(ProviderSecurityListFragment.class, args);
             }
         }
         else if (view instanceof PositionLockedView)
@@ -386,7 +385,7 @@ abstract public class AbstractPositionListFragment<
                             clickedPositionDTO.getOwnedPositionId().getArgs());
                 }
                 args.putBoolean(BuySellFragment.BUNDLE_KEY_IS_BUY, isBuy);
-                getDashboardNavigator().pushFragment(BuySellFragment.class, args);
+                getNavigator().pushFragment(BuySellFragment.class, args);
             }
         }
         else
@@ -436,7 +435,7 @@ abstract public class AbstractPositionListFragment<
         Bundle args = new Bundle();
         // By default tries
         args.putBundle(TradeListFragment.BUNDLE_KEY_OWNED_POSITION_ID_BUNDLE, clickedPositionDTO.getOwnedPositionId().getArgs());
-        getDashboardNavigator().pushFragment(TradeListFragment.class, args);
+        getNavigator().pushFragment(TradeListFragment.class, args);
     }
 
     @Override public void onBuyClicked(PositionDTOType clickedPositionDTO)
@@ -457,7 +456,7 @@ abstract public class AbstractPositionListFragment<
             Bundle args = new Bundle();
             args.putBundle(AlertCreateFragment.BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE, getApplicablePortfolioId().getArgs());
             args.putBundle(AlertCreateFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
-            getDashboardNavigator().pushFragment(AlertCreateFragment.class, args);
+            getNavigator().pushFragment(AlertCreateFragment.class, args);
         }
         else
         {
@@ -478,7 +477,7 @@ abstract public class AbstractPositionListFragment<
         {
             Bundle args = new Bundle();
             args.putBundle(StockInfoFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
-            getDashboardNavigator().pushFragment(StockInfoFragment.class, args);
+            getNavigator().pushFragment(StockInfoFragment.class, args);
         }
     }
     //</editor-fold>

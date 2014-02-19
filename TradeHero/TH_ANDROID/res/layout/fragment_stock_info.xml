@@ -33,7 +33,7 @@
       android_auto:strokeColor="@color/btn_new_user_color_light"
     />
 
-  <com.tradehero.th.fragments.security.YahooNewsListView
+  <ListView
       android:id="@+id/list_yahooNews"
       android:layout_width="match_parent"
       android:layout_height="200dp"

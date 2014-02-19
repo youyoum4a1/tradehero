@@ -4,10 +4,16 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ListView;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.th.R;
 import com.tradehero.th.api.security.SecurityId;
+import com.tradehero.th.api.yahoo.News;
 import com.tradehero.th.api.yahoo.NewsList;
+import com.tradehero.th.base.DashboardNavigatorActivity;
+import com.tradehero.th.base.Navigator;
+import com.tradehero.th.fragments.web.WebViewFragment;
 import com.tradehero.th.persistence.yahoo.NewsCache;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
@@ -25,7 +31,8 @@ public class YahooNewsFragment extends AbstractSecurityInfoFragment<NewsList>
 
     private DTOCache.GetOrFetchTask<SecurityId, NewsList> fetchTask;
     @Inject protected Lazy<NewsCache> yahooNewsCache;
-    private YahooNewsListView listView;
+    private ListView listView;
+    private YahooNewsAdapter adapter;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -36,16 +43,25 @@ public class YahooNewsFragment extends AbstractSecurityInfoFragment<NewsList>
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.fragment_yahoo_news, container, false);
-        loadViews(view);
+        initViews(view);
         return view;
     }
 
-    private void loadViews(View view)
+    private void initViews(View view)
     {
-        listView = (YahooNewsListView) view.findViewById(R.id.list_yahooNews);
+        adapter = new YahooNewsAdapter(getActivity(), getActivity().getLayoutInflater(), R.layout.yahoo_news_item);
+
+        listView = (ListView) view.findViewById(R.id.list_yahooNews);
         if (listView != null)
         {
-            listView.setAdapter(getActivity(), getActivity().getLayoutInflater(), R.layout.yahoo_news_item);
+            listView.setAdapter(adapter);
+            listView.setOnItemClickListener(new AdapterView.OnItemClickListener()
+            {
+                @Override public void onItemClick(AdapterView<?> adapterView, View view, int position, long l)
+                {
+                    handleNewsClicked((News) adapterView.getItemAtPosition(position));
+                }
+            });
         }
     }
 
@@ -64,6 +80,16 @@ public class YahooNewsFragment extends AbstractSecurityInfoFragment<NewsList>
         super.onPause();
     }
 
+    @Override public void onDestroyView()
+    {
+        if (listView != null)
+        {
+            listView.setOnItemClickListener(null);
+        }
+        listView = null;
+        adapter = null;
+        super.onDestroyView();
+    }
 
     public void linkWith(SecurityId securityId, boolean andDisplay)
     {
@@ -91,9 +117,21 @@ public class YahooNewsFragment extends AbstractSecurityInfoFragment<NewsList>
 
     public void displayYahooNewsListView()
     {
-        if (listView != null)
+        if (adapter != null)
         {
-            listView.display(value);
+            adapter.setItems(value);
+            adapter.notifyDataSetChanged();
+        }
+    }
+
+    protected void handleNewsClicked(News news)
+    {
+        if (news != null && news.getUrl() != null)
+        {
+            Navigator navigator = ((DashboardNavigatorActivity) getActivity()).getDashboardNavigator();
+            Bundle bundle = new Bundle();
+            bundle.putString(WebViewFragment.BUNDLE_KEY_URL, news.getUrl());
+            navigator.pushFragment(WebViewFragment.class, bundle);
         }
     }
 }
