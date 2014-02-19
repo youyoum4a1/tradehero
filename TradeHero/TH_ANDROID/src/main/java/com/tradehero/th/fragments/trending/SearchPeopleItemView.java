@@ -5,14 +5,11 @@ import android.graphics.Color;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
-import com.squareup.picasso.RequestCreator;
 import com.squareup.picasso.Transformation;
-import com.tradehero.common.thread.KnownExecutorServices;
-import com.tradehero.common.utils.THLog;
-import com.tradehero.common.widget.ImageUrlView;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.users.UserBaseKey;
@@ -23,7 +20,6 @@ import com.tradehero.th.persistence.user.UserSearchResultCache;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.DateUtils;
 import dagger.Lazy;
-import java.util.concurrent.Future;
 import javax.inject.Inject;
 
 /** Created with IntelliJ IDEA. User: xavier Date: 9/17/13 Time: 3:39 PM To change this template use File | Settings | File Templates. */
@@ -40,14 +36,12 @@ public class SearchPeopleItemView extends FrameLayout implements DTOView<UserBas
     private TextView stockPercentage;
     private TextView date;
     //private CircularImageView userImage;
-    private ImageUrlView userPhoto;
-    private ImageUrlView peopleBgImage;
+    private ImageView userPhoto;
+    private ImageView peopleBgImage;
     private int defaultDrawable = R.drawable.superman_facebook;
 
     private UserBaseKey userKey;
     private UserSearchResultDTO userDTO;
-    private boolean mAttachedToWindow;
-    private int mVisibility;
 
     //<editor-fold desc="Constructors">
     public SearchPeopleItemView(Context context)
@@ -80,31 +74,21 @@ public class SearchPeopleItemView extends FrameLayout implements DTOView<UserBas
         stockPercentage = (TextView) findViewById(R.id.stock_percentage);
         date = (TextView) findViewById(R.id.date);
         //userImage = (CircularImageView) findViewById(R.id.user_image);
-        userPhoto = (ImageUrlView) findViewById(R.id.user_photo);
-        peopleBgImage = (ImageUrlView) findViewById(R.id.people_bg_image);
+        userPhoto = (ImageView) findViewById(R.id.user_photo);
+        peopleBgImage = (ImageView) findViewById(R.id.people_bg_image);
     }
 
     @Override protected void onAttachedToWindow()
     {
-        THLog.i(TAG, "Attached to Window");
         super.onAttachedToWindow();
-        mAttachedToWindow = true;
-        conditionalLoadImages();
-    }
-
-    @Override protected void onWindowVisibilityChanged(int visibility)
-    {
-        THLog.i(TAG, "Visibility changed " + visibility);
-        super.onWindowVisibilityChanged(visibility);
-        this.mVisibility = visibility;
-        conditionalLoadImages();
+        loadImages();
     }
 
     @Override protected void onDetachedFromWindow()
     {
-        THLog.i(TAG, "Detached from Window");
-        mAttachedToWindow = false;
         this.userKey = null;
+        loadDefaultImage();
+        loadDefaultBackground();
         super.onDetachedFromWindow();
     }
 
@@ -205,95 +189,77 @@ public class SearchPeopleItemView extends FrameLayout implements DTOView<UserBas
             stockPercentage.setTextColor(stockPercentageColor);
         }
 
-        conditionalLoadImages();
-    }
-
-    public boolean canDisplayImages()
-    {
-        return (mVisibility == VISIBLE) && mAttachedToWindow;
-    }
-
-    public void conditionalLoadImages()
-    {
-        if (userDTO != null && canDisplayImages())
-        {
-            loadImages();
-        }
+        loadImages();
     }
 
     public void loadImages()
     {
         if (userPhoto != null)
         {
-            userPhoto.setUrl(userDTO.userPicture);
+            if (isMyUrlOk())
+            {
+                mPicasso.load(userDTO.userPicture)
+                        .transform(peopleIconTransformation)
+                        .into(userPhoto, new Callback()
+                        {
+                            @Override public void onSuccess()
+                            {
+                            }
+
+                            @Override public void onError()
+                            {
+                                loadDefaultImage();
+                            }
+                        });
+            }
+            else
+            {
+                loadDefaultImage();
+            }
         }
+
         if (peopleBgImage != null)
         {
-            peopleBgImage.setUrl(userDTO.userPicture);
-        }
-
-        mPicasso.load(defaultDrawable)
-                .transform(peopleIconTransformation)
-                .into(userPhoto);
-        mPicasso.load(defaultDrawable)
-            .transform(backgroundTransformation)
-            .into(peopleBgImage);
-
-        if (isMyUrlOk())
-        {
-            final Callback loadIntoBg = createLogoReadyCallback();
-
-            Future<?> submitted = KnownExecutorServices.getCacheExecutor().submit(new Runnable()
+            if (isMyUrlOk())
             {
-                @Override public void run()
-                {
-                    if (userPhoto != null)
-                    {
-                        THLog.i(TAG, "Loading Fore for " + userPhoto.getUrl());
-                        mPicasso.load(userPhoto.getUrl())
-                                .error(defaultDrawable)
-                                .transform(peopleIconTransformation)
-                                .into(userPhoto, loadIntoBg);
-                    }
-                }
-            });
+                mPicasso.load(userDTO.userPicture)
+                        .transform(backgroundTransformation)
+                        .into(peopleBgImage, new Callback()
+                        {
+                            @Override public void onSuccess()
+                            {
+                            }
+
+                            @Override public void onError()
+                            {
+                                loadDefaultBackground();
+                            }
+                        });
+            }
+            else
+            {
+                loadDefaultBackground();
+            }
         }
     }
 
-    private Callback createLogoReadyCallback()
+    private void loadDefaultImage()
     {
-        return new Callback()
+        if (userPhoto != null)
         {
-            @Override public void onError()
-            {
-                loadBg();
-            }
+            mPicasso.load(defaultDrawable)
+                    .transform(peopleIconTransformation)
+                    .into(userPhoto);
+        }
+    }
 
-            @Override public void onSuccess()
-            {
-                loadBg();
-            }
-
-            public void loadBg ()
-            {
-                if (peopleBgImage != null)
-                {
-                    THLog.i(TAG, "Loading Bg for " + peopleBgImage.getUrl());
-                    transformForBackground
-                            (
-                                    mPicasso.load(peopleBgImage.getUrl()).error(defaultDrawable)
-                            )
+    private void loadDefaultBackground()
+    {
+        if (peopleBgImage != null)
+        {
+            mPicasso.load(defaultDrawable)
+                    .transform(backgroundTransformation)
                     .into(peopleBgImage);
-                }
-            }
-        };
-    }
-
-    private RequestCreator transformForBackground(RequestCreator requestCreator)
-    {
-        return requestCreator
-            .resize(getWidth(), getHeight())
-            .centerCrop()
-            .transform(backgroundTransformation);
+        }
     }
 }

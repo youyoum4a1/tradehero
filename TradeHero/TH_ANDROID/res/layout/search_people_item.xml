@@ -9,7 +9,7 @@
     android:paddingLeft="@dimen/search_stock_people_padding"
     >
 
-  <com.tradehero.common.widget.ImageUrlView
+  <ImageView
       android:id="@+id/people_bg_image"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
@@ -35,7 +35,7 @@
         android:scaleType="centerInside"
         android:src="@drawable/sort_community"/>
 
-    <com.tradehero.common.widget.ImageUrlView
+    <ImageView
         android:id="@+id/user_photo"
         android:layout_width="@dimen/trending_people_search_image_size"
         android:layout_height="@dimen/trending_people_search_image_size"

@@ -56,7 +56,7 @@
         android:textSize="14sp"
         android:textStyle="bold"/>
 
-    <com.tradehero.common.widget.ImageUrlView
+    <ImageView
         android:id="@+id/stock_logo"
         android:layout_width="wrap_content"
         android:layout_height="38dp"
