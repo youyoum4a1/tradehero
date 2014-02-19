@@ -5,6 +5,7 @@ import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.common.persistence.prefs.StringSetPreference;
 import com.tradehero.th.activities.SplashActivity;
+import com.tradehero.th.fragments.settings.AdminSettingsFragment;
 import dagger.Module;
 import dagger.Provides;
 import java.util.HashSet;
@@ -16,6 +17,7 @@ import javax.inject.Singleton;
 @Module(
         injects = {
                 SplashActivity.class,
+                AdminSettingsFragment.class,
         },
         complete = false,
         library = true

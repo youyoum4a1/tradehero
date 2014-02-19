@@ -5,11 +5,13 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.KeyEvent;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
+import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.crashlytics.android.Crashlytics;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
 import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.billing.googleplay.THIABActor;
@@ -19,9 +21,11 @@ import com.tradehero.th.billing.googleplay.THIABPurchase;
 import com.tradehero.th.billing.googleplay.THIABPurchaseRestorer;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.billing.PurchaseRestorerAlertUtil;
+import com.tradehero.th.fragments.settings.AdminSettingsFragment;
 import com.tradehero.th.fragments.settings.SettingsFragment;
 import com.tradehero.th.models.intent.THIntentFactory;
 import com.tradehero.th.persistence.DTOCacheUtil;
+import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.FacebookUtils;
@@ -45,6 +49,7 @@ public class DashboardActivity extends SherlockFragmentActivity
 
     @Inject protected Lazy<FacebookUtils> facebookUtils;
     @Inject CurrentUserId currentUserId;
+    @Inject Lazy<UserProfileCache> userProfileCache;
     @Inject Lazy<THIntentFactory> thIntentFactory;
     @Inject DTOCacheUtil dtoCacheUtil;
     @Inject PurchaseRestorerAlertUtil purchaseRestorerAlertUtil;
@@ -130,9 +135,25 @@ public class DashboardActivity extends SherlockFragmentActivity
         navigator.popFragment();
     }
 
+    @Override public boolean onCreateOptionsMenu(Menu menu)
+    {
+        UserProfileDTO currentUserProfile = userProfileCache.get().get(currentUserId.toUserBaseKey());
+        if (currentUserProfile != null && currentUserProfile.isAdmin)
+        {
+            getSupportMenuInflater().inflate(R.menu.admin_menu, menu);
+        }
+        return super.onCreateOptionsMenu(menu);
+    }
+
     @Override public boolean onOptionsItemSelected(MenuItem item)
     {
         // required for fragment onOptionItemSelected to be called
+        switch (item.getItemId())
+        {
+            case R.id.admin_settings:
+                getNavigator().pushFragment(AdminSettingsFragment.class);
+                break;
+        }
         return super.onOptionsItemSelected(item);
     }
 

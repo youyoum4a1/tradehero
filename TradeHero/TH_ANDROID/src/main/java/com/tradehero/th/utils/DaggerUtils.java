@@ -8,17 +8,17 @@ public class DaggerUtils
 {
     private static ObjectGraph objectGraph;
 
-    public static void initialize()
+    public static void initialize(Application app)
     {
-        objectGraph = ObjectGraph.create(getModules());
+        objectGraph = ObjectGraph.create(getModules(app));
         objectGraph.injectStatics();
     }
 
-    private static Object[] getModules()
+    private static Object[] getModules(Application app)
     {
         return new Object[]
                 {
-                        new com.tradehero.th.utils.dagger.TradeHeroModule(Application.context()),
+                        new com.tradehero.th.utils.dagger.TradeHeroModule(app),
                         new com.tradehero.th.models.intent.IntentDaggerModule(),
                         new com.tradehero.th.fragments.competition.CompetitionModule(),
                         new com.tradehero.th.filter.FilterModule(),

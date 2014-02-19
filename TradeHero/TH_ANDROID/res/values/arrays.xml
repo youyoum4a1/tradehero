@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string-array name="servers">
+    <item>Prod</item>
+    <item>Dev</item>
+  </string-array>
+  <string-array name="server_values">
+    <item>https://www.tradehero.mobi/api/</item>
+    <item>https://th-paas-test-dev1.cloudapp.net/api/</item>
+  </string-array>
+</resources>

@@ -1,6 +1,5 @@
 package com.tradehero.th.utils.dagger;
 
-import android.app.Application;
 import android.content.Context;
 import com.tradehero.common.billing.googleplay.IABInventoryFetcher;
 import com.tradehero.common.billing.googleplay.IABServiceConnector;
@@ -9,6 +8,7 @@ import com.tradehero.common.persistence.CacheHelper;
 import com.tradehero.th.activities.ActivityModule;
 import com.tradehero.th.api.form.AbstractUserAvailabilityRequester;
 import com.tradehero.th.api.position.PositionDTOCompactList;
+import com.tradehero.th.base.Application;
 import com.tradehero.th.base.THUser;
 import com.tradehero.th.billing.googleplay.PurchaseRestorerRequiredMilestone;
 import com.tradehero.th.billing.googleplay.THIABInventoryFetcher;
@@ -289,6 +289,11 @@ public class TradeHeroModule
     @Provides Context provideContext()
     {
         return application.getApplicationContext();
+    }
+
+    @Provides @Singleton Application provideApplication()
+    {
+        return application;
     }
 
     @Provides @Singleton PushNotificationManager providePushNotificationManager()

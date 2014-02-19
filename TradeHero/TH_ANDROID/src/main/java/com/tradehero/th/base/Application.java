@@ -1,5 +1,7 @@
 package com.tradehero.th.base;
 
+import android.app.Activity;
+import android.content.Intent;
 import com.tradehero.common.application.PApplication;
 import com.tradehero.common.thread.KnownExecutorServices;
 import com.tradehero.common.utils.THLog;
@@ -23,7 +25,7 @@ public class Application extends PApplication
         KnownExecutorServices.setCpuThreadCount(Runtime.getRuntime().availableProcessors());
         THLog.d(TAG, "Available Processors Count: " + KnownExecutorServices.getCpuThreadCount());
 
-        DaggerUtils.initialize();
+        DaggerUtils.initialize(this);
         DaggerUtils.inject(this);
 
         THUser.initialize();
@@ -33,5 +35,15 @@ public class Application extends PApplication
         pushNotificationManager.initialise();
 
         THLog.showDeveloperKeyHash();
+    }
+
+    public void restartActivity(Class<? extends Activity> activityClass)
+    {
+        Intent newApp = new Intent(this, activityClass);
+        newApp.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(newApp);
+
+        DaggerUtils.initialize(this);
+        DaggerUtils.inject(this);
     }
 }
