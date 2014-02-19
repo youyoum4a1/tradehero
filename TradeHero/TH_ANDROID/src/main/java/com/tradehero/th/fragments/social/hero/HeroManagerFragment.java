@@ -91,7 +91,7 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
         {
             @Override public void onHeroStatusButtonClicked(HeroListItemView heroListItemView, HeroDTO heroDTO)
             {
-                pushTimelineFragment(heroDTO.getBaseKey());
+                handleHeroStatusButtonClicked(heroDTO);
             }
         };
         this.heroListMostSkilledClickedListener = new HeroListMostSkilledClickedListener();
@@ -179,10 +179,14 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
         userInteractor.conditionalPopBuyFollowCredits();
     }
 
+    private void handleHeroStatusButtonClicked(HeroDTO heroDTO)
+    {
+        handleHeroStatusChangeRequired(heroDTO);
+    }
+
     private void handleHeroClicked(AdapterView<?> parent, View view, int position, long id)
     {
-        THLog.d(TAG, "handleHeroClicked view " + view + ", id " + id);
-        handleHeroStatusChangeRequired((HeroDTO) parent.getItemAtPosition(position));
+        pushTimelineFragment(((HeroDTO) parent.getItemAtPosition(position)).getBaseKey());
     }
 
     private void handleHeroStatusChangeRequired(final HeroDTO clickedHeroDTO)
