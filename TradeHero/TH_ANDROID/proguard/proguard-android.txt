@@ -127,3 +127,8 @@
 -keep public class com.tradehero.th.api.** {
   public <fields>;
 }
+
+-keep public class * extends com.tradehero.common.persistence.DTO {
+  public <fields>;
+}
+
