@@ -86,5 +86,6 @@
   <dimen name="leaderboard_bottom_padding">50dp</dimen>
   <dimen name="todo_trending_security_item_height">105dp</dimen>
   <dimen name="search_stock_people_padding">8dp</dimen>
-
+  <dimen name="leaderboard_separator_height">10dp</dimen>
+  <dimen name="leaderboard_separator_height_negated">-10dp</dimen>
 </resources>
