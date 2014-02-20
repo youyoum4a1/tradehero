@@ -6,9 +6,11 @@ import com.actionbarsherlock.app.SherlockActivity;
 import com.crashlytics.android.Crashlytics;
 import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.th.R;
+import com.tradehero.th.api.market.ExchangeListType;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.network.service.UserService;
+import com.tradehero.th.persistence.market.ExchangeListCache;
 import com.tradehero.th.persistence.prefs.SessionToken;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.DaggerUtils;
@@ -27,6 +29,7 @@ public class SplashActivity extends SherlockActivity
     private AsyncTask<Void, Void, Void> initialAsyncTask;
     @Inject protected UserService userService;
     @Inject protected CurrentUserId currentUserId;
+    @Inject protected ExchangeListCache exchangeListCache;
 
     @Inject @SessionToken StringPreference currentSessionToken;
 
@@ -93,6 +96,14 @@ public class SplashActivity extends SherlockActivity
         {
             UserProfileDTO profileDTO = userService.getUser(currentUserId.toUserBaseKey().key);
             canLoad &= profileDTO != null && profileDTO.id == currentUserId.toUserBaseKey().key;
+            try
+            {
+                exchangeListCache.getOrFetch(new ExchangeListType());
+            }
+            catch (Throwable throwable)
+            {
+                throwable.printStackTrace();
+            }
         }
         catch (RetrofitError retrofitError)
         {
