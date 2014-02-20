@@ -1,6 +1,5 @@
 package com.tradehero.th.network.retrofit;
 
-import android.content.SharedPreferences;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.common.utils.JacksonConverter;
@@ -9,6 +8,7 @@ import com.tradehero.th.fragments.settings.SettingsTransactionHistoryFragment;
 import com.tradehero.th.models.intent.competition.ProviderPageIntent;
 import com.tradehero.th.network.CompetitionUrl;
 import com.tradehero.th.network.FriendlyUrlConnectionClient;
+import com.tradehero.th.network.NetworkConstants;
 import com.tradehero.th.network.ServerEndpoint;
 import com.tradehero.th.network.service.AlertPlanService;
 import com.tradehero.th.network.service.AlertService;
@@ -28,7 +28,6 @@ import com.tradehero.th.network.service.UserService;
 import com.tradehero.th.network.service.UserTimelineService;
 import com.tradehero.th.network.service.WatchlistService;
 import com.tradehero.th.network.service.YahooNewsService;
-import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.RetrofitConstants;
 import dagger.Module;
 import dagger.Provides;
@@ -59,13 +58,6 @@ public class RetrofitModule
     //public static final String BASE_TH_URL = "https://www.tradehero.mobi/";
     //public static final String BASE_API_URL = BASE_TH_URL + "api/";
     //public static final String PRIVACY_TERMS_OF_SERVICE = BASE_TH_URL + "privacy";
-
-    private static final String YAHOO_FINANCE_ENDPOINT = "http://finance.yahoo.com";
-    //private static final String TRADEHERO_DEV_ENDPOINT = "http://truongtho.noip.me/api/";
-    private static final String TRADEHERO_DEV_ENDPOINT = "https://th-paas-test-dev1.cloudapp.net/api/";
-    private static final String TRADEHERO_PROD_ENDPOINT = "https://www.tradehero.mobi/api/";
-    private static final String COMPETITION_PATH = "competitionpages/";
-    private static final String SERVER_ENDPOINT_KEY = "SERVER_ENDPOINT_KEY";
 
     //<editor-fold desc="API Services">
     @Provides @Singleton UserService provideUserService(RestAdapter engine)
@@ -159,11 +151,6 @@ public class RetrofitModule
         return new JacksonConverter(new ObjectMapper());
     }
 
-    @Provides @Singleton @ServerEndpoint StringPreference provideEndpointPreference(SharedPreferences sharedPreferences)
-    {
-        return new StringPreference(sharedPreferences, SERVER_ENDPOINT_KEY, Constants.RELEASE ? TRADEHERO_PROD_ENDPOINT : TRADEHERO_DEV_ENDPOINT);
-    }
-
     @Provides @Singleton Server provideApiServer(@ServerEndpoint StringPreference serverEndpointPreference)
     {
         return new Server(serverEndpointPreference.get());
@@ -171,7 +158,7 @@ public class RetrofitModule
 
     @Provides @Singleton @CompetitionUrl String provideCompetitionUrl(Server server)
     {
-        return server.getUrl() + COMPETITION_PATH;
+        return server.getUrl() + NetworkConstants.COMPETITION_PATH;
     }
 
     @Provides RestAdapter.Builder provideRestAdapterBuilder(
@@ -193,6 +180,6 @@ public class RetrofitModule
 
     @Provides @Singleton YahooNewsService provideYahooService(RestAdapter.Builder builder)
     {
-        return builder.setServer(YAHOO_FINANCE_ENDPOINT).build().create(YahooNewsService.class);
+        return builder.setServer(NetworkConstants.YAHOO_FINANCE_ENDPOINT).build().create(YahooNewsService.class);
     }
 }

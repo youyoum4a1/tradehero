@@ -99,7 +99,7 @@ import com.tradehero.th.models.intent.competition.ProviderPageIntent;
 import com.tradehero.th.models.intent.trending.TrendingIntentFactory;
 import com.tradehero.th.models.push.PushNotificationManager;
 import com.tradehero.th.models.push.urbanairship.UrbanAirshipPushNotificationManager;
-import com.tradehero.th.network.retrofit.RetrofitModule;
+import com.tradehero.th.network.NetworkModule;
 import com.tradehero.th.persistence.billing.googleplay.IABSKUListRetrievedAsyncMilestone;
 import com.tradehero.th.persistence.leaderboard.LeaderboardManager;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListRetrievedMilestone;
@@ -123,7 +123,7 @@ import javax.inject.Singleton;
         includes = {
                 CacheModule.class,
                 GraphicModule.class,
-                RetrofitModule.class,
+                NetworkModule.class,
                 SocialNetworkModule.class,
                 UIModule.class,
                 UserModule.class,
