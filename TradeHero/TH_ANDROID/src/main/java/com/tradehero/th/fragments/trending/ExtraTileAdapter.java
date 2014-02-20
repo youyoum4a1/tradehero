@@ -72,13 +72,13 @@ public class ExtraTileAdapter extends BaseAdapter
                 }
                 else if (position < extraTilesMarker[i].second)
                 {
-                    Timber.d("position: %d ---> position-i %d, extraTilesMarker[i].second: %d",
-                            position, position - i, extraTilesMarker[i].second);
+                    //Timber.d("position: %d ---> position-i %d, extraTilesMarker[i].second: %d",
+                    //        position, position - i, extraTilesMarker[i].second);
                     return position - i;
                 }
             }
 
-            Timber.d("%d ---> %d (extraTilesMarker)", position, position - extraTilesMarker.length);
+            //Timber.d("%d ---> %d (extraTilesMarker)", position, position - extraTilesMarker.length);
             return position - extraTilesMarker.length;
         }
         else
@@ -216,7 +216,7 @@ public class ExtraTileAdapter extends BaseAdapter
         {
             if (masterTilesMarker != null && extraTileCount < masterTilesMarker.length)
             {
-                Timber.d("Reusing marker!");
+                //Timber.d("Reusing marker!");
                 extraTilesMarker = Arrays.copyOf(masterTilesMarker, extraTileCount);
             }
             else
@@ -277,7 +277,7 @@ public class ExtraTileAdapter extends BaseAdapter
     private int[] generateExtraTileIndexes(int extraTileCount)
     {
         int[] extraTileIndexes = new int[extraTileCount];
-        Timber.d("Old count: %d, extra: %d", wrappedAdapter.getCount(), extraTileCount);
+        //Timber.d("Old count: %d, extra: %d", wrappedAdapter.getCount(), extraTileCount);
         int maxTileIndex = wrappedAdapter.getCount() + extraTileCount - 1;
         int previousIndex = -1;
 

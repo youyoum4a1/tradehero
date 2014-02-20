@@ -17,6 +17,7 @@ import com.squareup.picasso.Transformation;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
+import com.tradehero.th.api.market.Exchange;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.models.graphics.ForSecurityItemBackground;
 import com.tradehero.th.models.graphics.ForSecurityItemForeground;
@@ -379,25 +380,49 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
 
                             @Override public void onError()
                             {
-                                loadDefaultImage();
+                                loadExchangeImage();
                             }
                         });
+            }
+            else
+            {
+                loadExchangeImage();
+            }
+        }
+    }
+
+    public void loadExchangeImage()
+    {
+        if (stockLogo != null)
+        {
+            if (securityCompactDTO != null && securityCompactDTO.exchange != null)
+            {
+                THLog.d(TAG, "loadDefaultImage " + securityCompactDTO.exchange);
+                try
+                {
+                    Exchange exchange = Exchange.valueOf(securityCompactDTO.exchange);
+                    THLog.d(TAG, "Found exchange " + exchange);
+                    THLog.d(TAG, "Found exchange logo " + exchange.logoId);
+                    stockLogo.setImageResource(exchange.logoId);
+                }
+                catch (IllegalArgumentException e)
+                {
+                    THLog.e(TAG, "Unknown Exchange " + securityCompactDTO.exchange, e);
+                    loadDefaultImage();
+                }
             }
             else
             {
                 loadDefaultImage();
             }
         }
-
-
     }
 
     public void loadDefaultImage()
     {
         if (stockLogo != null)
         {
-            mPicasso.load(R.drawable.default_image)
-                    .into(stockLogo);
+            stockLogo.setImageResource(R.drawable.default_image);
         }
     }
 
@@ -409,13 +434,7 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
             {
                 RequestCreator requestCreator = mPicasso.load(securityCompactDTO.imageBlobUrl)
                         .transform(backgroundTransformation);
-                int width = getWidth();
-                int height = getHeight();
-                if (width > 0 && height > 0)
-                {
-                    requestCreator.resize(getWidth(), getHeight())
-                            .centerCrop()
-                            .into(stockBgLogo, new Callback()
+                resizeBackground(requestCreator, stockBgLogo,new Callback()
                             {
                                 @Override public void onSuccess()
                                 {
@@ -424,9 +443,34 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
 
                                 @Override public void onError()
                                 {
-                                    loadBgDefault();
+                                    loadBgExchange();
                                 }
                             });
+            }
+            else
+            {
+                loadBgExchange();
+            }
+        }
+    }
+
+    public void loadBgExchange()
+    {
+        if (stockBgLogo != null)
+        {
+            if (securityCompactDTO != null && securityCompactDTO.exchange != null)
+            {
+                try
+                {
+                    Exchange exchange = Exchange.valueOf(securityCompactDTO.exchange);
+                    RequestCreator requestCreator = mPicasso.load(exchange.logoId)
+                            .transform(backgroundTransformation);
+                    resizeBackground(requestCreator, stockBgLogo, null);
+                    stockBgLogo.setVisibility(VISIBLE);
+                }
+                catch (IllegalArgumentException e)
+                {
+                    loadBgDefault();
                 }
             }
             else
@@ -440,8 +484,19 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
     {
         if (stockBgLogo != null)
         {
-            mPicasso.load(R.drawable.default_image)
-                    .into(stockBgLogo);
+            stockBgLogo.setImageResource(R.drawable.default_image);
+        }
+    }
+
+    protected void resizeBackground(RequestCreator requestCreator, ImageView imageView, Callback callback)
+    {
+        int width = getWidth();
+        int height = getHeight();
+        if (width > 0 && height > 0)
+        {
+            requestCreator.resize(getWidth(), getHeight())
+                    .centerCrop()
+                    .into(imageView, callback);
         }
     }
 }
