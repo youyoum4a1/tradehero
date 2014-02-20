@@ -4,7 +4,7 @@
   <string name="stock_alerts">Stock Alerts</string>
   <string name="stock_alert_active">Active stock alerts</string>
   <string name="stock_alert_inactive_title">Inactive stock alerts</string>
-  <string name="stock_alert_active_until">Active Until <b>%s</b></string>
+  <string name="stock_alert_active_until_date">Active Until <b>%s</b></string>
   <string name="stock_alert_inactive">Inactive</string>
   <string name="stock_alert_target_price">Target Price</string>
   <string name="stock_alert_active_until">Active Until</string>

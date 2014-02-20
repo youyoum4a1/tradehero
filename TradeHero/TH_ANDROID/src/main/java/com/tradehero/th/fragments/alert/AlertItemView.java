@@ -191,7 +191,7 @@ public class AlertItemView extends RelativeLayout
 
     private Spanned getFormattedActiveUntilString(Date activeUntilDate)
     {
-        return Html.fromHtml(String.format(getContext().getString(R.string.stock_alert_active_until), DateUtils.getFormattedDate(activeUntilDate)));
+        return Html.fromHtml(String.format(getContext().getString(R.string.stock_alert_active_until_date), DateUtils.getFormattedDate(activeUntilDate)));
     }
 
     private void displayStockSymbol()
