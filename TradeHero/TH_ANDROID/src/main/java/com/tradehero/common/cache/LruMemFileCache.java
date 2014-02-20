@@ -4,11 +4,9 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Base64;
-import android.util.Log;
 import com.jakewharton.disklrucache.DiskLruCache;
 import com.squareup.picasso.LruCache;
 import com.squareup.picasso.PicassoUtils;
-import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.base.Application;
@@ -23,6 +21,7 @@ import timber.log.Timber;
 /** Created with IntelliJ IDEA. User: xavier Date: 9/11/13 Time: 7:38 PM To change this template use File | Settings | File Templates. */
 public class LruMemFileCache extends LruCache
 {
+    public static final String TAG = LruMemFileCache.class.getSimpleName();
     public static final String DEFAULT_DIR_NAME = LruMemFileCache.class.getPackage().getName();
     public static final int DEFAULT_BASE_64_PARAM = Base64.NO_PADDING | Base64.NO_WRAP;
 
