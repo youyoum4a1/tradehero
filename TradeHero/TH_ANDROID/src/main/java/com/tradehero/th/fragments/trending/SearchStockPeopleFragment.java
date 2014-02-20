@@ -142,14 +142,20 @@ public final class SearchStockPeopleFragment extends DashboardFragment
     //<editor-fold desc="ActionBar">
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
-        inflater.inflate(R.menu.search_stock_people_menu, menu);
-        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-        currentSearchMode = menu.findItem(R.id.current_search_mode);
-        searchPeople = menu.findItem(R.id.search_people);
-        searchStock = menu.findItem(R.id.search_stock);
         if (shouldDisableSearchTypeOption)
         {
-            currentSearchMode.setVisible(false);
+            inflater.inflate(R.menu.search_stock_menu, menu);
+        }
+        else
+        {
+            inflater.inflate(R.menu.search_stock_people_menu, menu);
+        }
+        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
+        if (!shouldDisableSearchTypeOption)
+        {
+            currentSearchMode = menu.findItem(R.id.current_search_mode);
+            searchPeople = menu.findItem(R.id.search_people);
+            searchStock = menu.findItem(R.id.search_stock);
         }
 
         actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_HOME);
@@ -169,11 +175,11 @@ public final class SearchStockPeopleFragment extends DashboardFragment
             mSearchTextField.addTextChangedListener(mSearchTextWatcher);
         }
 
-        if (mSearchType == TrendingSearchType.PEOPLE)
+        if (mSearchType == TrendingSearchType.PEOPLE && searchPeople != null)
         {
             searchPeople.setChecked(true);
         }
-        else
+        else if (mSearchType == TrendingSearchType.STOCKS && searchStock != null)
         {
             searchStock.setChecked(true);
         }
@@ -222,8 +228,19 @@ public final class SearchStockPeopleFragment extends DashboardFragment
     private void updateSearchType()
     {
         // check current search type
-        mSearchType = searchPeople.isChecked() ? TrendingSearchType.PEOPLE : TrendingSearchType.STOCKS;
-        currentSearchMode.setIcon(mSearchType.searchDrawableResId);
+        mSearchType = TrendingSearchType.STOCKS;
+        if (searchPeople != null && searchPeople.isChecked())
+        {
+            mSearchType = TrendingSearchType.PEOPLE;
+        }
+        else if (searchStock != null && searchStock.isChecked())
+        {
+            mSearchType = TrendingSearchType.STOCKS;
+        }
+        if (currentSearchMode != null)
+        {
+            currentSearchMode.setIcon(mSearchType.searchDrawableResId);
+        }
 
         if (listView != null)
         {
