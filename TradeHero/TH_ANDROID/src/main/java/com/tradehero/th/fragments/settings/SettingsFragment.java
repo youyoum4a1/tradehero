@@ -474,7 +474,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
 
     private void initInfo()
     {
-        Preference version = findPreference(getString(R.string.settings_misc_version_server));
+        Preference version = findPreference(getString(R.string.key_settings_misc_version_server));
         String serverPath = NetworkConstants.getApiEndPoint().replace("http://", "").replace("https://", "");
         version.setTitle(Constants.TH_CLIENT_VERSION_VALUE + " - " + serverPath);
     }
