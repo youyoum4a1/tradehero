@@ -1,9 +1,11 @@
 package com.tradehero.common.utils;
 
+import android.os.Handler;
 import android.os.Looper;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Toast;
+import com.tradehero.th.R;
 import com.tradehero.th.base.Application;
 import com.tradehero.th.misc.exception.THException;
 import timber.log.Timber;
@@ -11,19 +13,38 @@ import timber.log.Timber;
 /** Created with IntelliJ IDEA. User: tho Date: 8/19/13 Time: 12:33 PM Copyright (c) TradeHero */
 public class THToast
 {
-    public static void show(String message)
+    public static Handler toastHandler = null;
+    public static int toastPosition = Application.context().getResources().getDimensionPixelOffset(R.dimen.abs__action_bar_default_height);
+    public static void show(final String message)
     {
         //THLog.e(TAG, "show " + message, new IllegalArgumentException());
         if (Looper.myLooper() == Looper.getMainLooper())
         {
-            Toast toast = Toast.makeText(Application.context(), message, Toast.LENGTH_SHORT);
-            toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 100);
-            toast.show();
+            toastOnUIThread(message);
         }
         else
         {
-            Timber.e("Problem: Toast is called from background thread", new Exception("Toast message: " + message));
+            if (toastHandler == null)
+            {
+                toastHandler = new Handler(Looper.getMainLooper());
+            }
+
+            toastHandler.post(new Runnable()
+            {
+                @Override public void run()
+                {
+                    toastOnUIThread(message);
+                }
+            });
+            Timber.d("Problem: Toast is called from background thread: %s", message);
         }
+    }
+
+    private static void toastOnUIThread(String message)
+    {
+        Toast toast = Toast.makeText(Application.context(), message, Toast.LENGTH_SHORT);
+        toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, toastPosition);
+        toast.show();
     }
 
     public static void show(int resourceId)
