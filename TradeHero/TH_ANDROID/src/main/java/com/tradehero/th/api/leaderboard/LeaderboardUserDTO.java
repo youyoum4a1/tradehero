@@ -59,7 +59,7 @@ public class LeaderboardUserDTO extends UserBaseDTO
 
     public LeaderboardUserId getLeaderboardUserId()
     {
-        return new LeaderboardUserId(lbmuId);
+        return new LeaderboardUserId(id, lbmuId);
     }
 
     public String getHeroQuotientFormatted()

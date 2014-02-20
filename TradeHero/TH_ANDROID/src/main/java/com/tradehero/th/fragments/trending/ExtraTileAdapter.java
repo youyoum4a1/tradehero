@@ -73,8 +73,8 @@ public class ExtraTileAdapter extends BaseAdapter
                 }
                 else if (position < extraTilesMarker[i].second)
                 {
-                    THLog.d(TAG, String.format("position: %d ---> position-i %d, extraTilesMarker[i].second: %d",
-                            position, position - i, extraTilesMarker[i].second));
+                    //THLog.d(TAG, String.format("position: %d ---> position-i %d, extraTilesMarker[i].second: %d",
+                    //        position, position - i, extraTilesMarker[i].second));
                     return position - i;
                 }
             }

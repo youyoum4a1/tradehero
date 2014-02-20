@@ -1,7 +1,9 @@
 package com.tradehero.th.api.leaderboard;
 
 import com.tradehero.common.persistence.DTO;
+import com.tradehero.common.utils.THJsonAdapter;
 import com.tradehero.th.api.leaderboard.key.LeaderboardKey;
+import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
@@ -33,5 +35,19 @@ public class LeaderboardDTO implements DTO
     public LeaderboardKey getLeaderboardKey()
     {
         return new LeaderboardKey(id);
+    }
+
+    @Override
+    public String toString()
+    {
+        try
+        {
+            return THJsonAdapter.getInstance().toStringBody(this);
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+            return "Failed to json";
+        }
     }
 }

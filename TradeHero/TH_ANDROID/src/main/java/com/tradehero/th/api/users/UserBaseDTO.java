@@ -1,6 +1,8 @@
 package com.tradehero.th.api.users;
 
+import com.tradehero.common.utils.THJsonAdapter;
 import com.tradehero.th.api.ExtendedDTO;
+import java.io.IOException;
 import java.util.Date;
 
 /** Created with IntelliJ IDEA. User: tho Date: 8/15/13 Time: 6:47 PM Copyright (c) TradeHero */
@@ -37,13 +39,14 @@ public class UserBaseDTO  extends ExtendedDTO
 
     @Override public String toString()
     {
-        return "UserBaseDTO{" +
-                "displayName='" + displayName + '\'' +
-                ", id=" + id +
-                ", picture='" + picture + '\'' +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", memberSince=" + memberSince +
-                '}';
+        try
+        {
+            return THJsonAdapter.getInstance().toStringBody(this);
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+            return "Failed to json";
+        }
     }
 }

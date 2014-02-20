@@ -51,7 +51,8 @@ import javax.inject.Singleton;
         {
             return null;
         }
-        return leaderboardCutDTO.create(leaderboardUserCache.get());
+        LeaderboardDTO value =  leaderboardCutDTO.create(leaderboardUserCache.get());
+        return value;
     }
 
     @Override public LeaderboardDTO put(LeaderboardKey key, LeaderboardDTO value)

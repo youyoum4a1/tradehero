@@ -131,7 +131,7 @@ public class DashboardActivity extends SherlockFragmentActivity
         switch (item.getItemId())
         {
             case R.id.admin_settings:
-                getNavigator().pushFragment(AdminSettingsFragment.class);
+                getDashboardNavigator().pushFragment(AdminSettingsFragment.class);
                 break;
         }
         return super.onOptionsItemSelected(item);

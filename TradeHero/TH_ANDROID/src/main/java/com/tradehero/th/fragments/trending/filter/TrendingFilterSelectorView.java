@@ -16,8 +16,6 @@ import com.tradehero.th.api.market.ExchangeDTO;
 import com.tradehero.th.models.market.ExchangeSpinnerDTO;
 import com.tradehero.th.models.market.ExchangeSpinnerDTOUtil;
 import com.tradehero.th.utils.DaggerUtils;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import javax.inject.Inject;
 
