@@ -3,12 +3,16 @@ package com.tradehero.th.base;
 import android.app.Activity;
 import android.content.Intent;
 import com.tradehero.common.application.PApplication;
+import com.tradehero.common.log.CrashReportingTree;
+import com.tradehero.common.log.TestFlightTree;
 import com.tradehero.common.thread.KnownExecutorServices;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.models.push.PushNotificationManager;
+import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.EmailSignUtils;
 import javax.inject.Inject;
+import timber.log.Timber;
 
 /** Created with IntelliJ IDEA. User: tho Date: 8/15/13 Time: 3:33 PM Copyright (c) TradeHero */
 public class Application extends PApplication
@@ -21,9 +25,16 @@ public class Application extends PApplication
     {
         super.init();
 
+        if (Constants.RELEASE) {
+            Timber.plant(new CrashReportingTree());
+            Timber.plant(new TestFlightTree());
+        } else {
+            //Timber.plant(new Timber.DebugTree());
+        }
+
         // Supposedly get the count of cores
         KnownExecutorServices.setCpuThreadCount(Runtime.getRuntime().availableProcessors());
-        THLog.d(TAG, "Available Processors Count: " + KnownExecutorServices.getCpuThreadCount());
+        Timber.d("Available Processors Count: %d", KnownExecutorServices.getCpuThreadCount());
 
         DaggerUtils.initialize(this);
         DaggerUtils.inject(this);

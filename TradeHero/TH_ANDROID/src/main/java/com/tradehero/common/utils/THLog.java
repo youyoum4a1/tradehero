@@ -9,30 +9,47 @@ import com.tradehero.th.base.Application;
 import com.tradehero.th.utils.TestFlightUtils;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import timber.log.Timber;
 
 /**
- * Created with IntelliJ IDEA. User: thonguyen Date: 6/19/13 Time: 3:02 PM Special for debuging
+ * Created with IntelliJ IDEA. User: thonguyen Date: 6/19/13 Time: 3:02 PM Special for debugging
  * purpose
  */
 public class THLog
 {
     private static final String PREFIX = "TradeHero-";
 
+    /**
+    * Use Timber instead
+    */
+    @Deprecated
     public static void d(String tag, String msg)
     {
         Log.d(PREFIX + tag, msg);
     }
 
+    /**
+    * Use Timber instead
+    */
+    @Deprecated
     public static void i(String tag, String msg)
     {
         Log.i(PREFIX + tag, msg);
     }
 
+    /**
+    * Use Timber instead
+    */
+    @Deprecated
     public static void w(String tag, String msg)
     {
         Log.w(PREFIX + tag, msg);
     }
 
+    /**
+    * Use Timber instead
+    */
+    @Deprecated
     public static void e(String tag, String msg, Throwable ex)
     {
         String prefixedTag = PREFIX + tag;
@@ -40,12 +57,16 @@ public class THLog
         TestFlightUtils.log(prefixedTag, msg, ex);
     }
 
+    /**
+     * Use Timber instead
+     */
+    @Deprecated
     public static void d(String tag, String msg, long startNanoTime)
     {
         long finish = System.nanoTime();
         float seconds = (finish - startNanoTime) / 1000000f; //for milliseconds
 
-        d(tag, String.format("%,.3f milliseconds for %s", seconds, msg));
+        Log.d(tag, String.format("%,.3f milliseconds for %s", seconds, msg));
     }
 
     /** Display KeyHash which is required by Facebook Application */
@@ -60,12 +81,12 @@ public class THLog
             {
                 MessageDigest md = MessageDigest.getInstance("SHA");
                 md.update(signature.toByteArray());
-                THLog.d("KeyHash:", Base64.encodeToString(md.digest(), Base64.DEFAULT));
+                Timber.d("KeyHash: %s", Base64.encodeToString(md.digest(), Base64.DEFAULT));
             }
         }
         catch (NullPointerException|PackageManager.NameNotFoundException|NoSuchAlgorithmException e)
         {
-            THLog.d("KeyHash Error", e.getMessage());
+            Timber.d("KeyHash Error", e.getMessage());
         }
     }
 }
