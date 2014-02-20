@@ -21,6 +21,7 @@ import com.tradehero.th.R;
 import com.tradehero.th.auth.AuthenticationMode;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.base.NavigatorActivity;
+import com.tradehero.th.base.THUser;
 import com.tradehero.th.fragments.settings.FocusableOnTouchListener;
 import com.tradehero.th.fragments.settings.ProfileInfoView;
 import java.util.Map;
@@ -169,6 +170,8 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
         switch (view.getId())
         {
             case R.id.authentication_sign_up_button:
+                //clear old user info
+                THUser.clearCurrentUser();
                 handleSignInOrUpButtonClicked(view);
                 break;
             case R.id.image_optional:
