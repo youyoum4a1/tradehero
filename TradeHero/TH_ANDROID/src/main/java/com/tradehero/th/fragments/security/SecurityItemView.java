@@ -420,7 +420,6 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
                                 @Override public void onSuccess()
                                 {
                                     stockBgLogo.setVisibility(VISIBLE);
-                                    THLog.d(TAG, "h=" + getHeight() + ", w=" + getWidth());
                                 }
 
                                 @Override public void onError()
