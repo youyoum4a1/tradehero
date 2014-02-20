@@ -9,11 +9,11 @@ abstract public class BaseLeaderboardUserIdTest
 
     protected LeaderboardUserId getKey1()
     {
-        return new LeaderboardUserId(1l);
+        return new LeaderboardUserId(11, 1l);
     }
 
     protected LeaderboardUserId getKey2()
     {
-        return new LeaderboardUserId(2l);
+        return new LeaderboardUserId(12, 2l);
     }
 }

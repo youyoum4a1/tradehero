@@ -18,16 +18,16 @@ abstract public class BaseLeaderboardUserDTOUtilTest
     protected LeaderboardUserDTO getUser1()
     {
         LeaderboardUserDTO value = new LeaderboardUserDTO();
-        value.id = 1;
-        value.lbmuId = 11;
+        value.id = 11;
+        value.lbmuId = 21;
         return value;
     }
 
     protected LeaderboardUserDTO getUser2()
     {
         LeaderboardUserDTO value = new LeaderboardUserDTO();
-        value.id = 2;
-        value.lbmuId = 12;
+        value.id = 12;
+        value.lbmuId = 22;
         return value;
     }
 
@@ -59,15 +59,15 @@ abstract public class BaseLeaderboardUserDTOUtilTest
     protected Map<LeaderboardUserId, LeaderboardUserDTO> getMap1Item()
     {
         Map<LeaderboardUserId, LeaderboardUserDTO> map = new HashMap<>();
-        map.put(new LeaderboardUserId(11l), getUser1());
+        map.put(new LeaderboardUserId(11, 21l), getUser1());
         return map;
     }
 
     protected Map<LeaderboardUserId, LeaderboardUserDTO> getMap2Items()
     {
         Map<LeaderboardUserId, LeaderboardUserDTO> map = new HashMap<>();
-        map.put(new LeaderboardUserId(11l), getUser1());
-        map.put(new LeaderboardUserId(12l), getUser2());
+        map.put(new LeaderboardUserId(11, 21l), getUser1());
+        map.put(new LeaderboardUserId(12, 22l), getUser2());
         return map;
     }
 
@@ -79,16 +79,19 @@ abstract public class BaseLeaderboardUserDTOUtilTest
     protected void assertMap1Item(Map<LeaderboardUserId, LeaderboardUserDTO> map)
     {
         assertEquals(1, map.size());
-        LeaderboardUserDTO value = map.get(new LeaderboardUserId(11l));
-        assertEquals(11, value.lbmuId);
+        LeaderboardUserDTO value = map.get(new LeaderboardUserId(11, 21l));
+        assertEquals(11, value.id);
+        assertEquals(21, value.lbmuId);
     }
 
     protected void assertMap2Items(Map<LeaderboardUserId, LeaderboardUserDTO> map)
     {
         assertEquals(2, map.size());
-        LeaderboardUserDTO value = map.get(new LeaderboardUserId(11l));
-        assertEquals(11, value.lbmuId);
-        value = map.get(new LeaderboardUserId(12l));
-        assertEquals(12, value.lbmuId);
+        LeaderboardUserDTO value = map.get(new LeaderboardUserId(11, 21l));
+        assertEquals(11, value.id);
+        assertEquals(21, value.lbmuId);
+        value = map.get(new LeaderboardUserId(12, 22l));
+        assertEquals(12, value.id);
+        assertEquals(22, value.lbmuId);
     }
 }
